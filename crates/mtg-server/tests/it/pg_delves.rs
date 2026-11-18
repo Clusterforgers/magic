@@ -248,18 +248,10 @@ async fn a_party_of_four_meets_the_boss_and_a_minion(pool: PgPool) {
         .iter()
         .map(|seat| seat["name"].as_str().unwrap())
         .collect();
-    assert_eq!(
-        names.len(),
-        6,
-        "four heroes, the boss and one minion: {names:?}"
-    );
+    assert_eq!(names.len(), 5, "four heroes and the boss: {names:?}");
     let content = mtg_campaign::content().unwrap();
     let theme = &content.themes[0];
     assert!(theme.bosses.iter().any(|b| b.name == names[4]), "{names:?}");
-    assert!(
-        theme.minions.iter().any(|m| m.name == names[5]),
-        "{names:?}"
-    );
 }
 
 #[sqlx::test(migrations = false)]
@@ -269,18 +261,14 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
     assert_eq!(content.status, 200);
     let content = content.json();
     let themes = &mtg_campaign::content().unwrap().themes;
-    // Every boss of every theme, its upgraded forms too, which a ladder may end with.
-    let bosses: Vec<_> = themes
-        .iter()
-        .flat_map(|t| t.bosses.iter().chain(&t.upgraded))
-        .collect();
+    // Every boss of every theme.
+    let bosses: Vec<_> = themes.iter().flat_map(|t| &t.bosses).collect();
     assert_eq!(content["bosses"].as_array().unwrap().len(), bosses.len());
     for (wire, boss) in content["bosses"].as_array().unwrap().iter().zip(bosses) {
         assert_eq!(wire["art"]["card"], boss.art.card.as_str(), "{}", boss.id);
-        // An upgraded form names the boss it came from, so the ladder and the intro can say it.
         assert_eq!(
-            wire.get("upgrade_of").and_then(|id| id.as_str()),
-            boss.upgrade_of.as_deref(),
+            wire["innate"],
+            mtg_campaign::innate::innate_id(&boss.innate, 1).as_str(),
             "{}",
             boss.id
         );

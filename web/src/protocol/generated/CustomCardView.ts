@@ -41,8 +41,4 @@ price: number,
 /**
  * A relic's rarity.
  */
-rarity: Rarity, 
-/**
- * The heroes' turn from which an Enrage applies; 0 for other cards.
- */
-turn: number, };
+rarity: Rarity, };

@@ -190,7 +190,7 @@ impl FightPlan {
             .get_mut(self.heroes.len())
             .ok_or_else(|| CampaignError::Refused("no boss seat".into()))?;
         boss.opening_lands = Some(mtg_engine::opening_lands::OpeningLands::BOSS);
-        take_satchel(boss, &self.boss.satchel)?;
+        take_satchel(boss, &self.boss.satchel);
         boss.boss_sheet = Some(std::sync::Arc::new(self.boss.sheet(content)?));
         setup.validate_decks = false;
         Ok(setup)
@@ -198,14 +198,17 @@ impl FightPlan {
 }
 
 /// Moves the satchel's cards, which [`FightPlan::boss_deck`] put last in the boss's deck, from its library into its
-/// satchel: a reusable card among the reusable ones, a once card among the others.
-fn take_satchel(boss: &mut PlayerSetup, satchel: &[SatchelCard]) -> Result<(), CampaignError> {
+/// satchel: a reusable card among the reusable ones, a once card among the others. A card the caller could not
+/// resolve (a database without it) stays out, as a deck card would.
+fn take_satchel(boss: &mut PlayerSetup, satchel: &[SatchelCard]) {
     for spell in satchel.iter().rev() {
-        let at = boss
+        let Some(at) = boss
             .library
             .iter()
             .rposition(|card| card.name == spell.card)
-            .ok_or_else(|| CampaignError::Refused(format!("the boss deck lacks {}", spell.card)))?;
+        else {
+            continue;
+        };
         let card = boss.library.remove(at);
         if spell.reusable {
             boss.satchel_reusable.insert(0, card);
@@ -213,5 +216,4 @@ fn take_satchel(boss: &mut PlayerSetup, satchel: &[SatchelCard]) -> Result<(), C
             boss.satchel.insert(0, card);
         }
     }
-    Ok(())
 }

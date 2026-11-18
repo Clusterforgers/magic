@@ -513,30 +513,14 @@ const fn is_zero_level(level: &u8) -> bool {
     *level == 0
 }
 
-/// The phases and schemes of a boss seat (public).
+/// A boss seat's public parts: its innate, modifier, relics, phases by round and Satchel.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct BossView {
     /// The phases' names, in the order they begin.
     pub phases: Vec<String>,
     /// How many have begun.
     pub begun: u32,
-    /// The name of the boss's commander card, which it casts as its last phase begins.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    #[ts(optional)]
-    pub commander: Option<String>,
-    /// The name of the scheme in motion.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    #[ts(optional)]
-    pub scheme: Option<String>,
-    /// The name of the Omen: the scheme set in motion next.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    #[ts(optional)]
-    pub omen: Option<String>,
-    /// How many of the boss's turns are still to begin when the Omen is set in motion: 1 as its next turn begins.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    #[ts(optional)]
-    pub omen_in: Option<u32>,
-    /// A reworked boss's innate at its level.
+    /// Its innate at its level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub innate: Option<InnateView>,
@@ -544,7 +528,7 @@ pub struct BossView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub modifier: Option<BossPartView>,
-    /// A reworked boss's phases by round, in the order they begin; left out for a boss whose phases go by life.
+    /// Its phases by round, in the order they begin.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<RoundPhaseView>>", optional)]
     pub round_phases: Vec<RoundPhaseView>,
@@ -553,7 +537,7 @@ pub struct BossView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub phase_in: Option<u32>,
-    /// The relics a reworked boss brings, copies included.
+    /// The relics it brings, copies included.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<BossPartView>>", optional)]
     pub relics: Vec<BossPartView>,

@@ -5,7 +5,7 @@ import type { InnateView } from "./InnateView";
 import type { RoundPhaseView } from "./RoundPhaseView";
 
 /**
- * The phases and schemes of a boss seat (public).
+ * A boss seat's public parts: its innate, modifier, relics, phases by round and Satchel.
  */
 export type BossView = { 
 /**
@@ -17,23 +17,7 @@ phases: Array<string>,
  */
 begun: number, 
 /**
- * The name of the boss's commander card, which it casts as its last phase begins.
- */
-commander?: string, 
-/**
- * The name of the scheme in motion.
- */
-scheme?: string, 
-/**
- * The name of the Omen: the scheme set in motion next.
- */
-omen?: string, 
-/**
- * How many of the boss's turns are still to begin when the Omen is set in motion: 1 as its next turn begins.
- */
-omen_in?: number, 
-/**
- * A reworked boss's innate at its level.
+ * Its innate at its level.
  */
 innate?: InnateView, 
 /**
@@ -41,7 +25,7 @@ innate?: InnateView,
  */
 modifier?: BossPartView, 
 /**
- * A reworked boss's phases by round, in the order they begin; left out for a boss whose phases go by life.
+ * Its phases by round, in the order they begin.
  */
 round_phases?: Array<RoundPhaseView>, 
 /**
@@ -50,7 +34,7 @@ round_phases?: Array<RoundPhaseView>,
  */
 phase_in?: number, 
 /**
- * The relics a reworked boss brings, copies included.
+ * The relics it brings, copies included.
  */
 relics?: Array<BossPartView>, 
 /**

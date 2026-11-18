@@ -1,5 +1,4 @@
-//! A boss seat's public view: its phases, scheme and Omen, and a reworked boss's sheet (innate, modifier, relics),
-//! phases by round with the countdown to the next, and its Satchel with each card's reusable mark and tax.
+//! A boss seat's public view: its sheet (innate, modifier, relics), its phases by round with the countdown to the next, and its Satchel with each card's reusable mark and tax.
 
 use mtg_engine::boss_sheet::{BossSheet, SheetCard};
 use mtg_engine::phases::PhaseStart;
@@ -8,12 +7,12 @@ use mtg_engine::state::GameState;
 
 use crate::view::{BossPartView, BossSatchelView, BossView, InnateView, RoundPhaseView};
 
-/// The boss view of `player`; none for a seat with no phases, schemes or sheet.
+/// The boss view of `player`; none for a seat with no phases or sheet.
 pub(crate) fn of(state: &GameState, player: &Player) -> Option<BossView> {
     let seat = player.id();
     let sheet = player.boss_sheet();
-    let ((count, begun), schemes) = (player.phases(), player.schemes());
-    if count == 0 && schemes.is_none() && sheet.is_none() {
+    let (count, begun) = player.phases();
+    if count == 0 && sheet.is_none() {
         return None;
     }
     let round_phases = round_phases(player, sheet);
@@ -25,10 +24,6 @@ pub(crate) fn of(state: &GameState, player: &Player) -> Option<BossView> {
     Some(BossView {
         phases: player.phase_names().map(str::to_owned).collect(),
         begun: u32::try_from(begun).unwrap_or(u32::MAX),
-        commander: player.held().next().map(str::to_owned),
-        scheme: schemes.and_then(|(now, _)| now).map(str::to_owned),
-        omen: schemes.map(|(_, omen)| omen.to_owned()),
-        omen_in: mtg_engine::schemes::omen_in(state, seat),
         innate: sheet.and_then(|sheet| {
             sheet.innate.as_ref().map(|card| InnateView {
                 name: card.name.clone(),

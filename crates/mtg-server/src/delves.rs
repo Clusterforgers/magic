@@ -550,18 +550,15 @@ async fn make_fight(
             });
         }
     }
-    // The boss's side: the boss, then its minions, each a bot seat with its deck.
-    let side = std::iter::once((plan.boss.name.as_str(), plan.boss.brain))
-        .chain(plan.minions.iter().map(|m| (m.name.as_str(), m.brain)));
-    for (at, ((name, brain), deck)) in side.zip(plan.boss_decks()).enumerate() {
-        decks.push(Some(boss_side_deck(app, name, &deck).await?));
-        names.push(name.to_owned());
-        accounts.push(None);
-        bots.push(BotSeat {
-            seat: PlayerId::from_index(plan.heroes.len() + at),
-            level: bot_level(brain),
-        });
-    }
+    // The boss: a bot seat with its precon and satchel.
+    let name = plan.boss.name.as_str();
+    decks.push(Some(boss_side_deck(app, name, &plan.boss_deck()).await?));
+    names.push(name.to_owned());
+    accounts.push(None);
+    bots.push(BotSeat {
+        seat: plan.boss_seat(),
+        level: bot_level(plan.boss.brain),
+    });
     let options = GameOptions {
         format: FormatKind::Commander,
         visibility: Visibility::Invite,
@@ -613,28 +610,7 @@ fn fight_view(run: &Run) -> Option<DelveFightView> {
     }
     let content = campaign().ok()?;
     let plan = run.fight_plan(content).ok()??;
-    let fight = DelveFightView {
-        boss: plan.boss.name.clone(),
-        life: plan.boss.life,
-        rules: plan.boss.rules.clone(),
-        phases: plan.boss.phases.clone(),
-        commander: plan.boss.commander.clone(),
-        intensify: run.intensify(),
-        minions: plan
-            .minions
-            .iter()
-            .map(|minion| (minion.name.clone(), minion.life))
-            .collect(),
-        innate: None,
-        modifier: None,
-        round_phases: Vec::new(),
-        relics: Vec::new(),
-        satchel: Vec::new(),
-    };
-    Some(match &plan.boss.rework {
-        Some(rework) => rework::with_rework(fight, rework, content),
-        None => fight,
-    })
+    rework::fight_view(&plan, content)
 }
 
 fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> DelveView {
@@ -748,22 +724,24 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 role: card.role.clone(),
                 price: card.price,
                 rarity: card.rarity,
-                turn: card.turn,
             })
             .collect(),
         bosses: content
             .themes
             .iter()
-            .flat_map(|t| t.bosses.iter().chain(&t.upgraded))
+            .flat_map(|t| &t.bosses)
             .map(|boss| DelveBossView {
                 id: boss.id.clone(),
                 name: boss.name.clone(),
-                upgrade_of: boss.upgrade_of.clone(),
                 colors: boss.colors.clone(),
                 line: boss.line.clone(),
-                card: boss.rules.first().cloned(),
-                phases: boss.phases.clone(),
-                life: (boss.life, boss.life_per_hero),
+                final_boss: boss.final_boss,
+                innate: mtg_campaign::innate::innate_id(&boss.innate, 1),
+                round_phases: boss.round_phases.clone(),
+                life: (
+                    mtg_campaign::Scale::boss_life(1),
+                    mtg_campaign::scale::BOSS_LIFE_PER_HERO,
+                ),
                 art: BossArtView {
                     card: boss.art.card.clone(),
                     oracle_id: boss.art.oracle_id.clone(),
