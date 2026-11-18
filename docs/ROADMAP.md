@@ -176,6 +176,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl15m) The ladder and the intro name a final boss's upgraded form as the boss it came from
 - [ ] (dl15n) The uber boss also meets endless runs from floor 2, and more uber bosses with a game-changing rule each
 - [ ] (dl15o) The table shows each hero the colours their costs stand for this round under the Unmaker ("red is green")
+- [ ] (dl15p) The boss bot never declares an attack it cannot pay under a hero's attack tax (Archangel of Tithes ran a Morwenna fight into the watchdog)
 
 ## M8 Polish and deploy
 

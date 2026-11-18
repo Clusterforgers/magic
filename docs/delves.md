@@ -57,7 +57,7 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 | Seraphine | W, Angels and lifegain | Akroma, Angel of Wrath | its creatures have lifelink | a creature card at random from its graveyard to the battlefield each upkeep per heroes' turn beyond six | Halo of Wings: creatures with flying get +1/+1 |
 | Ysolde | U, Merfolk and krakens | Lorthos, the Tidemaker | taps a hero's creature each upkeep | each hero mills two per heroes' turn beyond six, each upkeep | Tidal Codex: instants and sorceries cost {1} less |
 | Hollowmere | WU, Spirits | Geist of Saint Traft | a 1/1 flying Spirit when its nontoken creature dies | 1/1 flying Spirits: the heroes' turns beyond six, each upkeep | Lantern of Lost Souls: creatures with flying have vigilance |
-| Morwenna | UB, Faeries | Alela, Cunning Conqueror | the hero in the spotlight discards a card unless they pay {2}, each upkeep | creature cards at random from the heroes' graveyards onto her battlefield, one per heroes' turn beyond six | Moonlit Veil: creatures with flying get +1/+0 |
+| Morwenna | UB, Faeries | Alela, Cunning Conqueror | the hero in the spotlight discards a card unless they pay {1}, each upkeep | creature cards at random from the heroes' graveyards onto her battlefield, one per heroes' turn beyond six | Moonlit Veil: creatures with flying get +1/+0 |
 | Korrath | RG, Dinosaurs | Ghalta, Primal Hunger | a +1/+1 counter on its creature whenever it is dealt damage | 3/3 trampling Dinosaurs: the heroes' turns beyond six, each upkeep | Amber of the Ancients: creature spells with power 4 or more cost {1} less |
 | Sahrra | GW, Cats | Jazal Goldmane | a +1/+1 counter on each of its Cats when one of its Cats dies | 2/2 Cats: the heroes' turns beyond six, each upkeep | Sunmane Pelt: Cats get +1/+1 |
 | Valdric | WB, Vampires | The Haunt of Hightower | a +1/+1 counter on each of its Vampires when a hero's creature dies | 2/2 lifelink Vampires: the heroes' turns beyond six, each upkeep | Chalice of the Crimson Host: creatures with lifelink get +1/+0 |
@@ -266,11 +266,18 @@ Measured with two Normal heroes, `DELVE_SIM_RANK=<rank> fights <games> 2 normal 
 - The brain is the largest step: a boss one level below Hard (Normal) loses to two Normal heroes in more than 90 % of fights, so the first boss at Heat 1 and the first two at Heat 0 sit above their targets; Grimgut, the final boss of the theme, is the hardest of the four at every rank.
 - The Heat 1 rank 2 sample is three fights (a Hard boss takes 7 to 9 minutes of machine time a fight with six threads) and only shows that the Hard boss beats two Normal heroes more often than not; the Hard-boss rows (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, all of Heat 2) and parties of three or more are not yet measured against their targets.
 
-Smoke of the new bosses at the bracket generation, two Normal heroes against the first boss at Heat 1 (bracket 2, a Normal brain), `DELVE_SIM_BOSSES=seraphine_spire,ysolde_reef fights 12 2 normal 1 6 1` stopped after 20 minutes with 10 fights ended:
+First-boss tuning of the bracket generation: two Normal heroes against each boss as the first boss at Heat 1 (bracket 2, a Normal brain), `DELVE_SIM_RANK=0 DELVE_SIM_BOSSES=<ids> fights <games> 2 normal <first seed> 6 1`, about 1 to 8 s of machine time a fight with six threads; the target is about 70 % won by the heroes:
 
-| Boss | Fights won by the heroes | Turns (boss side) | Machine time a fight |
+| Boss | Life (per hero), hand | Fights won by the heroes | Turns (boss side) |
 |---|---|---|---|
-| Seraphine | 2/4 | 22.8 (11.5) | 13 s to 12 min |
-| Ysolde | 6/6 | 16.0 (7.7) | 1 s to 16 min |
+| Seraphine | 20 (24), 8 | 28/40 (70 %) | 17.3 (8.4) |
+| Ysolde | 38 (38), 10 | 30/40 (75 %) | 15.5 (7.5) |
+| Hollowmere | 27 (30), 9 | 22/23 (96 %) | 13.3 (6.2) |
+| Morwenna | 17 (21), 8 | 17/31 (55 %) | 18.0 (8.9) |
+| Korrath | 31 (30), 10 | 7/8 | 13.1 (6.4) |
+| Sahrra | 27 (30), 9 | 6/8 | 13.4 (6.6) |
+| Valdric | 27 (30), 9 | 7/8 | 14.5 (7.0) |
 
-- Both decks play their fights to the end with no loop and no failure; against the Heat 1 first-boss target (Normal heroes win about 70 %) Seraphine is harder and Ysolde easier (dl15l).
+- Before tuning the heroes won 40 of 75 fights against Seraphine at 27 life and 9 cards, 69 of 75 against Ysolde at 27 life and 9 cards, and 1 of 8 against Morwenna at 26 life with a toll of {2}.
+- The samples are small: 40 fights for Seraphine and Ysolde, 31 and 23 for Morwenna and Hollowmere, 8 for Korrath, Sahrra and Valdric, so a rate can move by 15 points or more between series. Hollowmere, Korrath and Valdric sit above the target and Morwenna below it (dl15l).
+- Hollowmere plays no attack tax: Windborn Muse made the party's shared attack cost more than a hero could pay and stopped the fight (`AttackUnaffordable`, dl2c). One Morwenna fight in 32 ran into the watchdog: a hero deck's Archangel of Tithes taxes the boss's attack, and the Normal boss bot declared an attack it could not pay and cancelled the payment again and again (dl15p).

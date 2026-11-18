@@ -1790,7 +1790,7 @@
      ["Plains", 9], ["Island", 8],
      ["Mausoleum Wanderer", 2], ["Spectral Adversary", 2], ["Rattlechains", 2], ["Grateful Apparition", 1],
      ["Nebelgast Intruder", 2], ["Dreamshackle Geist", 2], ["Moonlight Geist", 1], ["Noble Vestige", 1],
-     ["Hallowed Spiritkeeper", 1], ["Dungeon Geists", 2], ["Apothecary Geist", 1], ["Windborn Muse", 1],
+     ["Hallowed Spiritkeeper", 1], ["Dungeon Geists", 2], ["Apothecary Geist", 2],
      ["Wayward Soul", 1], ["Field of Souls", 1], ["Court of Grace", 1], ["Belfry Spirit", 1], ["Path to Exile", 1]
     ],
     "steps": [
@@ -1807,9 +1807,9 @@
    "since": 5,
    "colors": "UB",
    "brain": "Hard",
-   "life": 26,
-   "life_per_hero": 30,
-   "hand": 9,
+   "life": 17,
+   "life_per_hero": 21,
+   "hand": 8,
    "rules": ["morwenna"],
    "enrage": "stolen_dreams",
    "relic": "moonlit_veil",
@@ -1821,15 +1821,15 @@
     "base": [
      ["Island", 9], ["Swamp", 8],
      ["Faerie Mastermind", 2], ["Spellstutter Sprite", 2], ["Pestermite", 2], ["Nightveil Sprite", 2],
-     ["Faerie Duelist", 2], ["Oona's Prowler", 2], ["Briarberry Cohort", 2], ["Peppersmoke", 2],
-     ["Dream Spoilers", 1], ["Dreamspoiler Witches", 1], ["Nightmare Sower", 1], ["Stingblade Assassin", 2],
-     ["Glen Elendra Guardian", 1], ["Mistbind Clique", 1]
+     ["Faerie Duelist", 2], ["Dreamspoiler Witches", 2], ["Briarberry Cohort", 2], ["Peppersmoke", 2],
+     ["Dream Spoilers", 1], ["Nightmare Sower", 1], ["Stingblade Assassin", 2],
+     ["Glen Elendra Guardian", 2], ["Mistbind Clique", 1]
     ],
     "steps": [
-     {"add": [["Island", 2], ["Swamp", 2], ["Puppeteer Clique", 1], ["Sower of Temptation", 1], ["High Fae Trickster", 1], ["Rankle, Master of Pranks", 1], ["Dimir Strandcatcher", 1], ["Voracious Tome-Skimmer", 1]]},
-     {"add": [["Island", 2], ["Swamp", 2], ["Latchkey Faerie", 1], ["Illusion Spinners", 1], ["Archmage of Echoes", 1], ["High Fae Negotiator", 1], ["Nymris, Oona's Trickster", 1], ["Final-Sting Faerie", 1]]},
+     {"add": [["Island", 2], ["Swamp", 2], ["Puppeteer Clique", 1], ["Latchkey Faerie", 1], ["High Fae Trickster", 1], ["Rankle, Master of Pranks", 1], ["Dimir Strandcatcher", 1], ["Voracious Tome-Skimmer", 1]]},
+     {"add": [["Island", 2], ["Swamp", 2], ["Sower of Temptation", 1], ["Illusion Spinners", 1], ["Archmage of Echoes", 1], ["High Fae Negotiator", 1], ["Nymris, Oona's Trickster", 1], ["Final-Sting Faerie", 1]]},
      {"cut": [["Briarberry Cohort", 2], ["Peppersmoke", 1]], "add": [["Spellstutter Sprite", 1], ["Pestermite", 1], ["Malleable Impostor", 1]]},
-     {"cut": [["Oona's Prowler", 2], ["Dream Spoilers", 1]], "add": [["Sower of Temptation", 1], ["Puppeteer Clique", 1], ["Mistbind Clique", 1]]}
+     {"cut": [["Dreamspoiler Witches", 1], ["Glen Elendra Guardian", 1], ["Dream Spoilers", 1]], "add": [["Sower of Temptation", 1], ["Puppeteer Clique", 1], ["Mistbind Clique", 1]]}
     ]
    }
   },
