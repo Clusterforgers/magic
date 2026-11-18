@@ -54,6 +54,11 @@ interface CardRowProps {
   tuck?: { each: number; lift: number } | undefined
   /** One line that scrolls sideways instead of wrapping onto more lines. */
   single?: boolean
+  /**
+   * Lays the row out from its right edge: the first card at the right and each next one to its left, so a card that
+   * joins at the end leaves the cards already there in place in a lane that stands at the right.
+   */
+  fromRight?: boolean
   className?: string
 }
 
@@ -125,9 +130,10 @@ export function CardRow({
   fan,
   tuck,
   single = false,
+  fromRight = false,
   className,
 }: CardRowProps) {
-  const roving = useRoving(ids)
+  const roving = useRoving(ids, fromRight)
   const list = useRef<HTMLUListElement>(null)
   // A card a redraw puts elsewhere (a neighbour left, the lane wrapped) slides there instead of jumping.
   useFlip(list)
@@ -201,6 +207,7 @@ export function CardRow({
                 ? 'flex gap-x-1.5 gap-y-1'
                 : 'flex gap-1.5 p-1',
           !fanned && (single ? 'overflow-x-auto' : 'flex-wrap'),
+          fromRight && !fanned && !spaced && 'flex-row-reverse',
           className,
         )}
       >

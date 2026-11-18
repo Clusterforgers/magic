@@ -132,6 +132,7 @@ const Lane = memo(
           box={box}
           fan={fan}
           tuck={tucks}
+          fromRight={lane === 'other'}
         />
       </div>
     )
