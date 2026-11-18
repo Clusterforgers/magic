@@ -1,7 +1,7 @@
 /** Pure height split between the opponents' boards and yours, weighted by the lanes each must hold. */
 import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts, LaneLimits } from './laneFit'
-import { POD_CRAMPED_PX } from './cornerFit'
+import { POD_CRAMPED_PX, POD_PICTURES_PX } from './cornerFit'
 import {
   BOSS_ABILITIES_PX,
   BOSS_SPAN,
@@ -101,12 +101,18 @@ export const BOARD_KEEP_PX = 64
 
 /**
  * The least height of the opponents' row where an opponent's pod stands as a column beside the board (off a phone,
- * not in columns): the column holds the pod's tight blocks and the least picture (`POD_CRAMPED_PX`) above a sheet
- * standing `overhang` px over the row, so it neither scrolls nor folds its chips under the corner. 0 elsewhere.
+ * not in columns): the column holds the pod's tight blocks and the least picture (`POD_PICTURES_PX`) above a sheet
+ * standing `overhang` px over the row, so it neither scrolls nor folds its chips under the corner; with a `column` of
+ * `POD_CRAMPED_PX`, the least that holds the tight blocks with the corner's chips. 0 elsewhere.
  */
-export function podColumnFloor(regions: Regions, seats: SeatPlan, overhang: number): number {
+export function podColumnFloor(
+  regions: Regions,
+  seats: SeatPlan,
+  overhang: number,
+  column = POD_PICTURES_PX,
+): number {
   if (regions.phone || seats.shape === 'columns') return 0
-  return boardFrames(regions, seats).theirs.chrome + POD_CRAMPED_PX + Math.ceil(finite(overhang) / 8) * 8
+  return boardFrames(regions, seats).theirs.chrome + column + Math.ceil(finite(overhang) / 8) * 8
 }
 
 /**
@@ -163,6 +169,7 @@ export function splitRegions(
       ownChrome: frames.own.chrome,
       theirChrome: theirChrome + finite(reserve),
       theirFloor: podColumnFloor(regions, seats, overhang),
+      theirFloorLeast: podColumnFloor(regions, seats, overhang, POD_CRAMPED_PX),
       theirRows: frames.theirs.rows,
       theirRowChrome: theirChrome,
       theirLead: theirChrome - frames.theirs.chrome,
@@ -211,6 +218,8 @@ export interface SplitInput {
   theirChrome: number
   /** The height an opponent's pod column asks of the opponents' row (`podColumnFloor`). */
   theirFloor?: number
+  /** The least of it, where the whole floor would take your creatures under `FLOOR_OWN_CARD_PX` (chips in place of pictures). */
+  theirFloorLeast?: number
   /** The rows of boards the opponents' area stacks (a grid of more opponents than columns); 1 when left out. */
   theirRows?: number
   /** An opponent's cards as a share of yours; `THEIR_SCALE` when left out. */
@@ -264,11 +273,9 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   const theirNeed = (card: number): number =>
     Math.max(0, ...input.theirs.map((counts) => laneHeight(input.theirWidth, counts, card, limits)))
   const rows = Math.max(1, Math.floor(finite(input.theirRows ?? 1)))
-  const theirRow = (card: number): number =>
-    Math.max(
-      least + finite(input.theirLead ?? 0),
-      rows * theirNeed(card) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0),
-    )
+  const theirLanes = (card: number): number =>
+    rows * theirNeed(card) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0)
+  const theirRow = (card: number): number => Math.max(least + finite(input.theirLead ?? 0), theirLanes(card))
   const theirCard = (card: number): number => Math.floor(card * finite(input.theirScale ?? THEIR_SCALE))
   const fits = (rung: number): boolean => ownRow(at(rung)) + theirRow(theirCard(at(rung))) <= room
   const empty = laneHeight(input.ownWidth, input.own, at(0), limits) + theirNeed(theirCard(at(0)))
@@ -291,19 +298,34 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   }
   // The opponents' row is lifted to the floor where your creatures stay `FLOOR_OWN_CARD_PX` wide; otherwise it takes
   // only what your lanes leave.
-  const floor = Math.min(room - least, finite(input.theirFloor ?? 0))
-  const floored = (rung: number): boolean =>
-    ownRow(at(rung)) + Math.max(floor, theirRow(theirCard(at(rung)))) <= room
-  const lifted = floor > 0 && floored(0) ? at(highestRung(rungs, floored)) : 0
-  const card = lifted >= FLOOR_OWN_CARD_PX ? lifted : at(highestRung(rungs, fits))
+  // The tallest opponents' row that draws their cards no wider than `card` (yours): opponent boards shrink first.
+  const ceilFor = (card: number): number => {
+    const rung = highestRung(rungs, (each) => at(each) <= card)
+    if (rung >= rungs || theirNeed(at(rung + 1)) === 0) return Infinity
+    return Math.max(theirRow(at(rung)), theirLanes(at(rung + 1)) - 1)
+  }
+  // The pod's full floor, else its least, where it keeps your creatures `FLOOR_OWN_CARD_PX` wide and no smaller than
+  // the opponents' cards in the row it asks for; none where neither does (the pod keeps its chips).
+  const liftTo = (asked: number | undefined): { floor: number; lifted: number } | null => {
+    const floor = Math.min(room - least, finite(asked ?? 0))
+    const floored = (rung: number): boolean =>
+      ownRow(at(rung)) + Math.max(floor, theirRow(theirCard(at(rung)))) <= room
+    const lifted = floor > 0 && floored(0) ? at(highestRung(rungs, floored)) : 0
+    return lifted >= FLOOR_OWN_CARD_PX && floor <= ceilFor(lifted) ? { floor, lifted } : null
+  }
+  const chosen = liftTo(input.theirFloor) ?? liftTo(input.theirFloorLeast)
+  const card = chosen?.lifted ?? at(highestRung(rungs, fits))
+  const ceil = ceilFor(card)
+  const floor = Math.min(chosen?.floor ?? finite(input.theirFloor ?? 0), ceil)
   const spare = room - ownRow(card)
   let theirs = theirCard(card)
   while (theirs + limits.step <= card && theirRow(theirs + limits.step) <= spare) theirs += limits.step
   const held = Math.max(theirRow(theirs), Math.min(floor, spare))
   // Room your cards cannot use even all of it (the next card is too wide for a band more, or the largest) is shared
-  // evenly, so a nearly empty board keeps its place and the strip stays between the boards instead of riding up.
+  // evenly, so a nearly empty board keeps its place and the strip stays between the boards instead of riding up; the
+  // opponents' share never draws their cards wider than yours.
   const grows = card + limits.step <= limits.maxWidth && ownRow(card + limits.step) <= room - held
-  const opponents = grows ? held : held + Math.max(0, spare - held) / 2
+  const opponents = grows ? held : Math.max(held, Math.min(ceil, held + Math.max(0, spare - held) / 2))
   return { opponents, own: room - opponents, ownCard: card, theirCard: theirs }
 }
 

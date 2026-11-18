@@ -392,6 +392,9 @@ describe('a cramped column', () => {
     ).toBeNull()
     const picture = must(bo.querySelector('[data-slot="seat-corner"]'))
     expect(picture.nextElementSibling).toBe(bo.querySelector('[data-slot="pod-more"]'))
+    // One line of chips that scrolls sideways, so the cramped column keeps a single row under the corner.
+    expect(bo.querySelector('[data-slot="pod-more"]')).toHaveClass('overflow-x-auto', 'whitespace-nowrap')
+    expect(bo.querySelector('[data-slot="pod-more"]')).not.toHaveClass('flex-wrap')
   })
 
   it('draws chips where the chips under the corner leave less than the least picture, so the column does not scroll', () => {
