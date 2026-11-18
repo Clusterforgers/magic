@@ -50,6 +50,97 @@ pub(crate) fn land_types() -> Vec<ChoiceOption> {
         .collect()
 }
 
+/// The planeswalker types of the game (CR 205.3j), sorted.
+pub(crate) const R6700_PLANESWALKER_TYPES: [&str; 79] = [
+    "Ajani",
+    "Aminatou",
+    "Angrath",
+    "Arlinn",
+    "Ashiok",
+    "Bahamut",
+    "Basri",
+    "Bolas",
+    "Calix",
+    "Chandra",
+    "Comet",
+    "Dack",
+    "Dakkon",
+    "Daretti",
+    "Davriel",
+    "Dihada",
+    "Domri",
+    "Dovin",
+    "Ellywick",
+    "Elminster",
+    "Elspeth",
+    "Estrid",
+    "Freyalise",
+    "Garruk",
+    "Gideon",
+    "Grist",
+    "Guff",
+    "Huatli",
+    "Jace",
+    "Jared",
+    "Jaya",
+    "Jeska",
+    "Kaito",
+    "Karn",
+    "Kasmina",
+    "Kaya",
+    "Kiora",
+    "Koth",
+    "Liliana",
+    "Lolth",
+    "Lukka",
+    "Minsc",
+    "Mordenkainen",
+    "Nahiri",
+    "Narset",
+    "Niko",
+    "Nissa",
+    "Nixilis",
+    "Oko",
+    "Quintorius",
+    "Ral",
+    "Rowan",
+    "Saheeli",
+    "Samut",
+    "Sarkhan",
+    "Serra",
+    "Sivitri",
+    "Sorin",
+    "Szat",
+    "Tamiyo",
+    "Tasha",
+    "Teferi",
+    "Teyo",
+    "Tezzeret",
+    "Tibalt",
+    "Tyvar",
+    "Ugin",
+    "Urza",
+    "Venser",
+    "Vivien",
+    "Vraska",
+    "Vronos",
+    "Will",
+    "Windgrace",
+    "Wrenn",
+    "Xenagos",
+    "Yanggu",
+    "Yanling",
+    "Zariel",
+];
+
+/// Every planeswalker type of the game (CR 205.3j), sorted.
+pub(crate) fn r6700_planeswalker_types() -> Vec<ChoiceOption> {
+    R6700_PLANESWALKER_TYPES
+        .iter()
+        .map(|name| ChoiceOption::Label((*name).to_owned()))
+        .collect()
+}
+
 /// Every creature type of the game, sorted: the whole list, so the options say nothing of the cards in hidden zones.
 pub(crate) fn creature_types() -> Vec<ChoiceOption> {
     mtg_cards::compile::creature_types()

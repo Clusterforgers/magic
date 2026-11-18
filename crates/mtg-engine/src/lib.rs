@@ -84,6 +84,7 @@ mod r6104_activation_facts;
 mod r6401_history;
 mod r6500_caps;
 mod r6500_devoured;
+mod r6700_flips;
 mod replace_dry;
 mod rmt3_skips;
 mod saga;

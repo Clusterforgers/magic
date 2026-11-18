@@ -157,6 +157,6 @@ async fn a_failing_store_is_reported_when_resuming() {
         .await
         .unwrap();
     // Catching up needs a write, which fails.
-    let refused = resume_game_with(store, id, table_setup(2, 9), roomy()).await;
+    let refused = Box::pin(resume_game_with(store, id, table_setup(2, 9), roomy())).await;
     assert!(matches!(refused, Err(StartError::Store(_))));
 }

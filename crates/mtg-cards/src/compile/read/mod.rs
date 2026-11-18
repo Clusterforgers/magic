@@ -302,6 +302,7 @@ mod r6600_wholes;
 mod r6601_wholes;
 mod r6602_wholes;
 mod r6603_wholes;
+mod r6700_wholes;
 mod r6701_wholes;
 mod r6702_wholes;
 mod r6a_effects;
@@ -622,6 +623,11 @@ pub fn r6603_whole(text: &str) -> Option<Ability> {
     r6603_wholes::r6603_whole_read(text)
 }
 
+/// A wording of the r67-00 table, read whole whatever its kind and reminder text.
+pub fn r6700_whole(text: &str) -> Option<Ability> {
+    r6700_wholes::r6700_whole_read(text)
+}
+
 /// A wording of the r64-01 or r66-01 table, read whole whatever its kind and reminder text.
 pub fn r6401_whole(text: &str) -> Option<Ability> {
     r6401_wholes::r6401_whole_read(text).or_else(|| r6601_wholes::r6601_whole_read(text))
@@ -733,6 +739,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6603_wholes::r6603_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r6700_wholes::r6700_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6702_wholes::r6702_whole_read(text) {

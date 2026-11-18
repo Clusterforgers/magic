@@ -209,6 +209,9 @@ pub enum Modification {
     CantBlock,
     /// The object does not untap during its controller's untap step: a restriction with no layer that `steps` reads.
     DoesntUntap,
+    /// Damage dealt to the object that would remove all its loyalty counters removes all but one (a restriction with no
+    /// layer that the fold of the damage reads, CR 120.3c).
+    R6700KeepsLastLoyalty,
     /// The object can't be turned face up: a restriction with no layer that the special action of turning it up reads.
     CantBeTurnedFaceUp,
     /// The object can't be blocked: a restriction with no layer that `block_options` reads.
@@ -336,6 +339,7 @@ impl Modification {
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
+            | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
@@ -443,6 +447,7 @@ impl Modification {
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
             | Modification::DoesntUntap
+            | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
@@ -528,7 +533,9 @@ pub(crate) fn lasts(
         // `UntilCreatureSpellCast` reads the effect's own timestamp (`lasts_by`).
         | Duration::UntilCreatureSpellCast
         // `UntilEndOfTurnOrRolled` ends with the cleanup step or a roll after its own timestamp (`lasts_by`).
-        | Duration::UntilEndOfTurnOrRolled(_) => true,
+        | Duration::UntilEndOfTurnOrRolled(_)
+        // Only a delayed trigger lasts until the end of a named player's next turn (`triggers/delayed.rs`).
+        | Duration::R6700UntilEndOfTheirNextTurn(_) => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)

@@ -227,6 +227,10 @@ pub enum Rule {
     PowerUpAgain(Vec<ObjectRef>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
+    /// The players' first set of coin flips each turn comes up heads and is won (`GameRule::R6700FirstFlipsHeads`).
+    R6700FirstFlipsHeads(Vec<PlayerId>),
+    /// The players face each villainous choice an additional time (`GameRule::R6700VillainousAgain`).
+    R6700VillainousAgain(Vec<PlayerId>),
     /// The players roll one die more for each roll of one or more dice and ignore the lowest roll.
     ExtraDie(Vec<PlayerId>),
     /// After the players roll, they may pay to increase or decrease one result by `by` (`GameRule::R6402ChangeRoll`).
@@ -908,6 +912,10 @@ pub(crate) struct RulesInForce {
     power_up_again: Vec<ObjectRef>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
+    /// The players whose first set of coin flips each turn comes up heads.
+    r6700_first_heads: BTreeSet<PlayerId>,
+    /// One entry for each rule that makes a player face a villainous choice an additional time.
+    r6700_villainous_again: Vec<PlayerId>,
     /// One entry for each rule that adds a die to a player's rolls: a player listed twice rolls two more.
     extra_die: Vec<PlayerId>,
     /// The rules that let a player change a result after they roll, in timestamp order.
@@ -1427,6 +1435,8 @@ impl RulesInForce {
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::PowerUpAgain(objects) => self.power_up_again.extend(objects),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
+            Rule::R6700FirstFlipsHeads(players) => self.r6700_first_heads.extend(players),
+            Rule::R6700VillainousAgain(players) => self.r6700_villainous_again.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
             Rule::R6402ChangeRoll {
                 players,
@@ -1963,6 +1973,8 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             Zone::Battlefield,
         )?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
+        GameRule::R6700FirstFlipsHeads(who) => Rule::R6700FirstFlipsHeads(scope.players(who)?),
+        GameRule::R6700VillainousAgain(who) => Rule::R6700VillainousAgain(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
         GameRule::R6402ChangeRoll { who, pay, by, once } => Rule::R6402ChangeRoll {
             players: scope.players(who)?,
@@ -2250,6 +2262,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
+        | Rule::R6700FirstFlipsHeads(players)
+        | Rule::R6700VillainousAgain(players)
         | Rule::ExtraDie(players)
         | Rule::R6402ChangeRoll { players, .. }
         | Rule::KeepUnspentMana(players, _)
@@ -2459,6 +2473,8 @@ static NONE: RulesInForce = RulesInForce {
     skip_extra_turns: BTreeSet::new(),
     power_up_again: Vec::new(),
     flip_two: Vec::new(),
+    r6700_first_heads: BTreeSet::new(),
+    r6700_villainous_again: Vec::new(),
     extra_die: Vec::new(),
     r6402_change_roll: Vec::new(),
     keep_mana: Vec::new(),
@@ -3265,6 +3281,21 @@ pub fn ep22_coins_per_flip(state: &GameState, player: PlayerId) -> u32 {
         .count()
         .min(5);
     1 << doublings
+}
+
+/// Whether a rule makes `player`'s first set of coin flips each turn come up heads and be won (Edgar, King of Figaro).
+pub(crate) fn r6700_first_heads(state: &GameState, player: PlayerId) -> bool {
+    state.rules().r6700_first_heads.contains(&player)
+}
+
+/// How many additional times `player` faces each villainous choice: one for each rule that adds one.
+pub(crate) fn r6700_villainous_extra(state: &GameState, player: PlayerId) -> usize {
+    state
+        .rules()
+        .r6700_villainous_again
+        .iter()
+        .filter(|seat| **seat == player)
+        .count()
 }
 
 /// How many additional votes `player` gets while voting (CR 701.38d): one for each rule that gives one.

@@ -122,7 +122,9 @@ fn as_pred(chosen: &Chosen) -> Option<Pred> {
     Some(match chosen {
         Chosen::Name(name) => Pred::Named(name.clone()),
         Chosen::Color(color) => Pred::Color(*color),
-        Chosen::CreatureType(subtype) | Chosen::LandType(subtype) => Pred::Subtype(subtype.clone()),
+        Chosen::CreatureType(subtype)
+        | Chosen::LandType(subtype)
+        | Chosen::R6700PlaneswalkerType(subtype) => Pred::Subtype(subtype.clone()),
         Chosen::CardType(kind) => Pred::Type(*kind),
         _ => return None,
     })

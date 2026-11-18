@@ -196,6 +196,7 @@ mod r6405_waterbend_x;
 mod r6503_spell_fate;
 mod r6600_cards;
 mod r6602_pack;
+mod r6700_pack;
 mod r6f;
 mod repeat_each;
 mod rmt0_chroma;

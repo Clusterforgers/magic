@@ -147,7 +147,7 @@ chooser: PlayerId,
 /**
  * Whose blocks.
  */
-whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "R6402ChangeRoll": { 
+whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "R6700FirstFlipsHeads": Array<PlayerId> } | { "R6700VillainousAgain": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "R6402ChangeRoll": { 
 /**
  * Whose rolls.
  */

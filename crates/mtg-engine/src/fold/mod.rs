@@ -558,7 +558,8 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::Sought { .. } => {
             c11e_draw_random(state, event);
         }
-        Event::CoinFlipped { .. } => {
+        Event::CoinFlipped { player, .. } => {
+            crate::r6700_flips::r6700_note_flip(state, *player);
             c11e_draw_random(state, event);
             if let Some(resolving) = state.resolving.as_mut() {
                 resolving.r6702_flips = resolving.r6702_flips.saturating_add(1);

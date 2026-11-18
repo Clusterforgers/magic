@@ -583,7 +583,7 @@ async fn a_resumed_game_starts_every_bank_empty() {
         pace: pace(),
         ..roomy()
     };
-    let second = resume_game_with(store, game_id(1), setup, config)
+    let second = Box::pin(resume_game_with(store, game_id(1), setup, config))
         .await
         .unwrap();
     assert_eq!(second.status().await.unwrap().events, events);

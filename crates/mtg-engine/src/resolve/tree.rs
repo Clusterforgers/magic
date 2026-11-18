@@ -20,7 +20,8 @@ pub(crate) const fn is_next_pass(position: &[usize]) -> bool {
     position.len().is_multiple_of(2)
 }
 
-/// Whether the effect runs again after its body: a `RepeatEach`, or a `FlipCoin` until a loss after its `win` list.
+/// Whether the effect runs again after its body: a `RepeatEach`, a `FlipCoin` until a loss after its `win` list, or a
+/// villainous choice after either option (faced again or done, `w2d_villainous`).
 const fn loops(effect: &Effect) -> bool {
     matches!(
         effect,
@@ -28,6 +29,7 @@ const fn loops(effect: &Effect) -> bool {
             | Effect::RepeatWhile { .. }
             | Effect::FlipCoin { until: true, .. }
             | Effect::Clash { until: true, .. }
+            | Effect::VillainousChoice { .. }
     )
 }
 
@@ -204,8 +206,15 @@ fn sibling(root: &[Effect], chosen: &[usize], position: &[usize]) -> Vec<usize> 
         return next;
     }
     let holder = &position[..position.len().saturating_sub(2)];
-    // The body of a repeat (the `win` list of a flip until a loss) is done: the repeat begins its next pass.
-    if position.get(holder.len()) == Some(&0) && effect_at(root, chosen, holder).is_some_and(loops)
+    // The body of a repeat (the `win` list of a flip until a loss) is done: the repeat begins its next pass. Either option
+    // of a villainous choice is its body: the player may face the choice again (`w2d_villainous`).
+    if (position.get(holder.len()) == Some(&0)
+        && effect_at(root, chosen, holder).is_some_and(loops))
+        || (position.get(holder.len()).is_some_and(|branch| *branch < 2)
+            && matches!(
+                effect_at(root, chosen, holder),
+                Some(Effect::VillainousChoice { .. })
+            ))
     {
         return [holder, &[NEXT_PASS]].concat();
     }

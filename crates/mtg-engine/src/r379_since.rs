@@ -29,6 +29,11 @@ impl Since {
         self.ended.get(&player).is_none_or(|ended| entered > *ended)
     }
 
+    /// The number of the latest turn `player` finished, none before their first turn ends.
+    pub(crate) fn ended_turn(&self, player: PlayerId) -> Option<u32> {
+        self.ended.get(&player).copied()
+    }
+
     /// Whether `player` was dealt combat damage after their latest turn ended (in any turn, before their first).
     pub(crate) fn hurt_since(&self, player: PlayerId) -> bool {
         let ended = self.ended.get(&player).copied().unwrap_or(0);

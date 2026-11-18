@@ -54,6 +54,7 @@ const RULE_MARKS: Record<GivenRule, RuleMark> = {
   BlockerLimit: ['Block limit', 'Blockers', 'needs or allows only some blockers', 'plain'],
   BlocksAdditional: ['Extra blocks', 'More blocks', 'can block additional creatures', 'raise'],
   DoesntUntap: ["Doesn't untap", 'No untap', "doesn't untap", 'restrict'],
+  R6700KeepsLastLoyalty: ['Keeps loyalty', 'Last loyalty', 'damage leaves it one loyalty counter', 'raise'],
   CantBeTurnedFaceUp: ['Stays face down', 'Face down', "can't be turned face up", 'restrict'],
   LoseAbilities: ['Loses abilities', 'Blanked', 'loses all abilities', 'restrict'],
   LoseKeyword: ['Loses a keyword', 'No keyword', 'loses a keyword', 'restrict'],
