@@ -28,10 +28,10 @@ export function phaseTitle(name: string): string {
 export function phaseSteps(boss: BossView): PhaseStep[] {
   const byRound = boss.round_phases ?? []
   return byRound.map((phase, i) => ({
-      label: `Phase ${i + 1}`,
-      title: phase.name,
-      state: !phase.begun ? 'next' : byRound[i + 1]?.begun === true ? 'done' : 'current',
-    }))
+    label: `Phase ${i + 1}`,
+    title: phase.name,
+    state: !phase.begun ? 'next' : byRound[i + 1]?.begun === true ? 'done' : 'current',
+  }))
 }
 
 /** A phase that began in a batch. */

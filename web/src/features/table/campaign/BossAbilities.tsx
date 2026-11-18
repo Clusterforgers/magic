@@ -4,14 +4,7 @@
  * counted on the "All" button at its end, which lists every ability in full. The intro screen of a Delves fight lists
  * the same abilities (`BossAbilityList`).
  */
-import {
-  CrownIcon,
-  FlameIcon,
-  GemIcon,
-  HourglassIcon,
-  ListIcon,
-  SparklesIcon,
-} from 'lucide-react'
+import { CrownIcon, FlameIcon, GemIcon, HourglassIcon, ListIcon, SparklesIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'

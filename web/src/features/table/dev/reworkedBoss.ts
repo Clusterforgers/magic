@@ -86,10 +86,7 @@ export function withReworkedBoss(moment: Fixture, stage: DevRework): Fixture {
   const emblems = EMBLEMS.map((name, at) => object(first + at, boss.seat, name, 'Emblem'))
   const satchelFirst = first + emblems.length
   const satchel = SATCHEL.map((card, at) => object(satchelFirst + at, boss.seat, card.name, 'Card'))
-  const command = [
-    ...(boss.command.cards ?? []),
-    ...emblems.map((each) => each.id),
-  ]
+  const command = [...(boss.command.cards ?? []), ...emblems.map((each) => each.id)]
   const reworked: PlayerView = {
     ...boss,
     life: 90,

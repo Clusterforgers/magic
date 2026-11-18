@@ -212,7 +212,6 @@ export function campaignFacts(
     })
   }
   if (player.eyes !== undefined) {
-
     const hero = nameOf(player.eyes)
     facts.push({
       key: 'Eyes',
@@ -253,9 +252,7 @@ export function seatEffects(
  * rules.
  */
 export function withoutBossBar(effects: readonly EffectFacts[]): EffectFacts[] {
-  return effects.filter(
-    (effect) => effect.key !== 'Boss' && !effect.key.startsWith('Emblem:'),
-  )
+  return effects.filter((effect) => effect.key !== 'Boss' && !effect.key.startsWith('Emblem:'))
 }
 
 /** The name of the chip group: "Effects on Bo: Can't lose, Hexproof". */

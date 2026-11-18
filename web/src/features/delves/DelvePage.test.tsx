@@ -37,7 +37,9 @@ describe('the lobby', () => {
   it('names the run’s own theme and tells its story, whatever theme the content lists', async () => {
     await show(delveView({ theme: 'The Drowned Spire', story: 'A tower under the sea.' }))
     expect(await screen.findByRole('heading', { level: 1, name: 'The Drowned Spire' })).toBeInTheDocument()
-    expect(screen.getByRole('region', { name: 'The Drowned Spire' })).toHaveTextContent('A tower under the sea.')
+    expect(screen.getByRole('region', { name: 'The Drowned Spire' })).toHaveTextContent(
+      'A tower under the sea.',
+    )
     expect(screen.queryByText('Tunnels under the old mines.')).toBeNull()
   })
 

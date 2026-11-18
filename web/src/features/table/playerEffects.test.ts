@@ -111,7 +111,10 @@ describe('campaignFacts', () => {
     [2, 'Phase 2 of 2', 'last phase'],
   ])('a boss with %i phases begun says where it stands', (begun, label, detail) => {
     const round_phases = [phase('Rage', 8, begun >= 1), phase('Storm', 14, begun >= 2)]
-    const [fact] = campaignFacts(player({ boss: { phases: ['Rage', 'Storm'], begun, round_phases } }), 'Grimgut')
+    const [fact] = campaignFacts(
+      player({ boss: { phases: ['Rage', 'Storm'], begun, round_phases } }),
+      'Grimgut',
+    )
     expect(fact?.label).toBe(label)
     expect(fact?.detail).toContain(detail)
   })

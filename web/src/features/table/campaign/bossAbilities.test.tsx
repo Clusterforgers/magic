@@ -15,7 +15,13 @@ describe('bossAbilities', () => {
     const boss = fixture.view.players.find((player) => player.boss !== undefined)
     if (boss === undefined) throw new Error('no boss')
     const abilities = bossAbilities(boss)
-    expect(abilities.map((ability) => ability.kind)).toEqual(['innate', 'modifier', 'relic', 'phase', 'next-phase'])
+    expect(abilities.map((ability) => ability.kind)).toEqual([
+      'innate',
+      'modifier',
+      'relic',
+      'phase',
+      'next-phase',
+    ])
     expect(abilities[0]?.when).toBe('Level III')
     expect(abilities[2]?.name).toBe('Whetstone ×2')
     expect(bossAbilities({ ...boss, boss: undefined })).toEqual([])
@@ -32,7 +38,8 @@ describe('the boss abilities at the table', () => {
   it('shows a chip for the innate, the modifier and the relics, named for the boss', () => {
     renderTable({ fixture: withBoss(buildFixture({ seats: 4 }), 0), ui: <GameTable /> })
     const bar = within(screen.getByRole('list', { name: /abilities$/ }))
-    for (const name of ['Brood III', 'Deep Pockets', 'Whetstone ×2']) expect(bar.getByText(name)).toBeInTheDocument()
+    for (const name of ['Brood III', 'Deep Pockets', 'Whetstone ×2'])
+      expect(bar.getByText(name)).toBeInTheDocument()
   })
 })
 
@@ -44,7 +51,9 @@ describe('the log names a boss ability', () => {
       seat: (seat: number) => (seat === 3 ? 'Skrix, the Rat Queen' : `Seat ${seat}`),
       card: (id: number) => (id === 7 ? 'Brood III' : 'Llanowar Elves'),
       boss: (id: number) =>
-        bossOwner(id === 7 ? emblem : undefined, players, (seat) => (seat === 3 ? 'Skrix, the Rat Queen' : '')),
+        bossOwner(id === 7 ? emblem : undefined, players, (seat) =>
+          seat === 3 ? 'Skrix, the Rat Queen' : '',
+        ),
     }
     const triggered = (id: number) =>
       ({

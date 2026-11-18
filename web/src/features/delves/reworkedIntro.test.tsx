@@ -40,4 +40,3 @@ describe.each(WIDTHS)('the intro of a reworked boss at %i px', (width) => {
       expect([...list.classList].filter((name) => /^grid-cols-/.test(name))).toEqual([])
   })
 })
-

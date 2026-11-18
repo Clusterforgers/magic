@@ -19,7 +19,12 @@ const PHASES = ['Phase 1 — The Nest Stirs', 'Phase 2 — Plague Tide']
 const boss = (begun: number): BossView => ({
   phases: PHASES,
   begun,
-  round_phases: PHASES.map((name, at) => ({ name: name.slice(10), text: '', round: 8 + 6 * at, begun: at < begun })),
+  round_phases: PHASES.map((name, at) => ({
+    name: name.slice(10),
+    text: '',
+    round: 8 + 6 * at,
+    begun: at < begun,
+  })),
 })
 
 function edited(edit: (view: StateView) => void): (state: PlayState) => PlayState {
