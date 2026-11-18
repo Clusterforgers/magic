@@ -196,6 +196,10 @@ pub struct DelveBossView {
     pub id: String,
     /// Its name.
     pub name: String,
+    /// The id of the boss an upgraded form came from; left out for a boss of its own.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub upgrade_of: Option<String>,
     /// Its colours as WUBRG letters.
     pub colors: String,
     /// What it says as the fight begins.

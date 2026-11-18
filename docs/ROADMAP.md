@@ -174,7 +174,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl15i) A UG boss with its bracket deck, passive, Enrage, two phases, relic and commander card
 - [ ] (dl16a) Measure deeper Delves floors with the simulator (floors 2 and 3 at each Heat) and tune the per-floor steps against the tier targets
 - [ ] (dl15l) Measure the bracket generation against the tier targets with Hard bosses and tune each boss's brackets by its win rate
-- [ ] (dl15m) The ladder and the intro name a final boss's upgraded form as the boss it came from
 - [ ] (dl15n) More uber bosses with a game-changing rule each
 - [ ] (dl15o) The table shows each hero the colours their costs stand for this round under the Unmaker ("red is green")
 - [ ] (dl15p) The boss bot never declares an attack it cannot pay under a hero's attack tax (Archangel of Tithes ran a Morwenna fight into the watchdog)
