@@ -168,7 +168,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rw1a) The reworked fight plan plays the record's deck file (draft cards loaded from their reads), puts its satchel in the boss's command zone and counts its makeup from the deck
 - [ ] (rw1b) Skrix, Vex and Ysolde take their precons' colours (BG, B, GU) in their records once the bracket decks go (rw8)
 - [ ] (rw2) Drowned Spire innates (no mill; only the Archivist's Phase 1 mills, once)
-- [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)
 - [ ] (rw5a) The boss's satchel reaches its game: the fight's recipe carries the reusable and once satchel cards into `satchel_reusable` and `satchel`
 - [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps

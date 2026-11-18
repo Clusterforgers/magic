@@ -21,6 +21,7 @@ mod rework_warrens_a;
 mod rework_warrens_b;
 mod runs;
 mod satchel;
+mod satchel_cues;
 mod spirits;
 mod tiers;
 mod trades;

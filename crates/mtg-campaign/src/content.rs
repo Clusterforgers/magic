@@ -259,6 +259,9 @@ pub struct SatchelCard {
     /// Whether it returns to the satchel as it leaves the stack (each cast costs {2} more); otherwise once per fight.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     pub reusable: bool,
+    /// When the boss's bot casts it; none leaves it to the bot's own judgement.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cue: Option<mtg_core::cue::SatchelCue>,
 }
 
 /// The real card whose art crop pictures a boss: its name and its Scryfall oracle id, which the client's pictures go by.
@@ -701,6 +704,22 @@ pub struct Content {
 }
 
 impl Content {
+    /// The cue of every boss Satchel card that has one, by card name; the first boss's wins when two differ.
+    pub fn satchel_cues(&self) -> BTreeMap<String, mtg_core::cue::SatchelCue> {
+        let mut cues = BTreeMap::new();
+        for card in self
+            .themes
+            .iter()
+            .flat_map(|theme| &theme.bosses)
+            .flat_map(|boss| &boss.satchel)
+        {
+            if let Some(cue) = card.cue {
+                cues.entry(card.card.clone()).or_insert(cue);
+            }
+        }
+        cues
+    }
+
     /// Reads the content from its JSON texts: the custom card files (innates made at each level), the themes and the
     /// encounter modifier pool.
     pub fn parse(
