@@ -108,10 +108,11 @@ impl<S: EventStore> GameActor<S> {
     pub(crate) fn asking(
         &self,
         decision: &mtg_engine::Decision,
-    ) -> Option<mtg_protocol::AskingView> {
+    ) -> Option<Box<mtg_protocol::AskingView>> {
         match &self.phase {
             Phase::Running(running) => {
                 mtg_protocol::AskingView::of(running.engine.state(), decision.player, decision)
+                    .map(Box::new)
             }
             Phase::Lobby { .. } => None,
         }

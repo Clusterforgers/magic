@@ -154,7 +154,7 @@ export function SharedStrip({
         // The edge takes the colour of the phase; on your turn the gold glow of `your-turn-cue` lies outside it.
         data-themed=""
         className={cn(
-          'band-room absolute inset-x-0 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-width:thin] bottom-0 max-h-[max(100%,var(--sheet-max))] min-h-[max(100%,var(--band-h))] plaque rounded-xl border-2 border-phase px-3 py-1',
+          'band-room absolute inset-x-0 overflow-x-hidden overflow-y-auto overscroll-contain [scrollbar-width:thin] bottom-0 max-h-[max(100%,var(--sheet-max))] min-h-[max(100%,var(--band-h))] plaque rounded-xl border-2 border-phase px-3 py-0.5',
           yourTurn && 'your-turn-cue',
         )}
       >

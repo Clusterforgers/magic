@@ -176,7 +176,7 @@ impl AskingView {
             .filter(|found| found.counter() == source.counter)
             .and_then(|_| ObjectView::of(state, viewer, source.id));
         let text = view.rules_text;
-        let clause = text.as_deref().and_then(|text| clause_of(text, question));
+        let marked = text.as_deref().and_then(|text| clause_of(text, question));
         let cause = ability.cause().and_then(|cause| {
             let object = public_cause(state, cause)?;
             let name = ObjectView::of(state, viewer, object)?.name;
@@ -193,7 +193,7 @@ impl AskingView {
             name: view.name,
             ability: Some(ability.index()),
             text,
-            clause,
+            clause: marked,
             cause,
             run: run_of(state, viewer, stack),
         })

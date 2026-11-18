@@ -146,7 +146,7 @@ fn the_triggers_to_order_carry_their_effect_and_cause_and_each_question_its_plac
             assert_eq!(entry.done, place < at, "{place} of {at}");
             assert_eq!(entry.object.is_some(), place >= at);
             assert_eq!(entry.source, Some(resolving[place]));
-            assert!(!entry.name.is_empty());
+            assert_ne!(entry.name, "");
             assert_eq!(
                 entry.text.as_deref(),
                 (place >= at).then_some("You may gain 1 life.")

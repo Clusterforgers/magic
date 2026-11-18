@@ -469,7 +469,7 @@ pub enum ServerMessage {
         /// the opening hand).
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[ts(optional)]
-        asking: Option<crate::asking::AskingView>,
+        asking: Option<Box<crate::asking::AskingView>>,
     },
     /// The reply to [`ClientMessage::Preview`]: what combat damage would do for the answer tried.
     Forecast {
