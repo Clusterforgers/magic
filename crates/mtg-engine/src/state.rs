@@ -400,6 +400,8 @@ pub struct GameState {
     pub(crate) result: Option<GameResult>,
     /// The cards of the loop of mandatory actions that drew the game (`Event::LoopDrawn`).
     pub(crate) loop_draw: Option<Vec<String>>,
+    /// The loop offer waiting for its answer (`Event::LoopOffered`), dropped by the next event.
+    pub(crate) loop_offer: Option<Box<crate::loops::LoopOffer>>,
     /// Day or night (CR 726); neither until a permanent with daybound or nightbound appears.
     pub(crate) day_night: Option<crate::day_night::DayNight>,
     /// Each seat's latest finished turn, kept as it ends.
@@ -917,6 +919,11 @@ impl GameState {
     /// The cards of the loop of mandatory actions that drew the game, if one did (CR 104.4b).
     pub fn loop_draw(&self) -> Option<&[String]> {
         self.loop_draw.as_deref()
+    }
+
+    /// The loop offer waiting for its answer, if one is.
+    pub fn loop_offer(&self) -> Option<&crate::loops::LoopOffer> {
+        self.loop_offer.as_deref()
     }
 
     /// Whether `id` is a seat still in the game.

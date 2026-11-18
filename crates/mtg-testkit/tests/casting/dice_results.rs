@@ -1,4 +1,4 @@
-//! Goal: a trigger that judges the result of a die ("whenever you roll a 4 or higher", "a 1", "a 6", "equal to the result") triggers once for each die of its controller that qualifies, for one die and for several rolled together, at tables of two and four seats whoever rolls, reads that die's result in its "if you rolled 6 or higher" and "equal to the result", never fires for another player's die, and the log replays.
+//! Goal: a trigger that judges the result of a die ("whenever you roll a 4 or higher", "a 1", "a 6", "equal to the result") triggers once for each die of its controller that qualifies, for one die and for several rolled together, at tables of two and four seats whoever rolls, reads that die's result in its "if you rolled 6 or higher" and "equal to the result", never fires for another player's die; Mr. House's activation rolls its die and one for each Treasure mana as one roll, so "one or more dice" triggers once; and the log replays.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -14,7 +14,10 @@ use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
 use crate::common::names;
-use crate::l291_dice::{l291_replays, l291_roll};
+use crate::l291_dice::{l291_replays, l291_roll, l291_settle};
+use mtg_core::color::Color;
+use mtg_engine::decision::{Answer, PayChoice};
+use mtg_testkit::cards::land;
 
 /// The card that watches the dice of seat 0: one of the corpus, or a card with these rules (JSON).
 #[derive(Debug, Clone, Copy)]
@@ -224,5 +227,64 @@ fn l291_the_result_of_the_die_that_triggered_is_the_amount(
         total,
     )?;
     assert_eq!(mine.is_empty(), roller_seat != 0);
+    Ok(())
+}
+
+/// An artifact Treasure: "{T}, Sacrifice this artifact: Add one mana of any color."
+fn treasure() -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new("Treasure")
+            .with_type(CardType::Artifact)
+            .with_subtype("Treasure")
+            .with_rules(
+                serde_json::from_str::<Ability>(
+                    r#"{"Activated":{"cost":["Tap","SacrificeSelf"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#,
+                )
+                .unwrap(),
+            ),
+    )
+}
+
+/// "Whenever you roll one or more dice, put a +1/+1 counter on this": a counter for each roll.
+const ROLLS: Watcher = Watcher::Rules(
+    "Roll Counter",
+    r#"{"Triggered":{"when":{"DiceRolled":{"who":"You"}},"effects":[{"PutCounters":{"on":"This","counter":"+1/+1"}}]}}"#,
+);
+
+/// Mr. House's activation paid with `treasures` Treasures rolls one die plus one for each of their mana as one roll
+/// (CR 706.1): "one or more dice" triggers once for each activation, "a 4 or higher" once for each die that shows it.
+#[rstest]
+fn pf9h_mr_house_rolls_all_its_dice_at_once(
+    #[values(0, 1, 3)] treasures: usize,
+    #[values(2, 4)] seats: usize,
+    #[values(1, 2)] seed: u64,
+) -> Result<(), ScriptError> {
+    let scenario = || {
+        let mut mine = vec![ready(HOUSE.definition()), ready(ROLLS.definition())];
+        mine.extend((0..treasures).map(|_| ready(treasure())));
+        mine.extend((treasures..4).map(|_| ready(land(Color::Red))));
+        Scenario::new(seats)
+            .seed(seed)
+            .at(2, 0, Step::Main1)
+            .battlefield(0, mine)
+    };
+    let mut driver = Driver::from_scenario(scenario())?;
+    let mut rolled = Vec::new();
+    driver.begin_activation("Mr. House, President and CEO")?;
+    driver.answer(Answer::PayMana(PayChoice::Auto))?;
+    l291_settle(&mut driver, &mut rolled)?;
+    assert_eq!(rolled.len(), treasures + 1, "{rolled:?}");
+    let dice: Vec<u32> = rolled.iter().map(|(_, result)| *result).collect();
+    assert_eq!(
+        measured(&driver, ROLLS, Measure::PlusOne),
+        1,
+        "one roll: {dice:?}"
+    );
+    assert_eq!(
+        measured(&driver, HOUSE, Measure::Named("Robot")),
+        count(&dice, |d| d >= 4),
+        "{dice:?}"
+    );
+    l291_replays(&driver, scenario());
     Ok(())
 }

@@ -94,6 +94,8 @@ const SCALAR_KEYS: &[&str] = &[
     "Bottoming",
     "protocol_version",
     "player",
+    // The seats a triggered ability on the stack triggered on (`TriggerView.players`).
+    "players",
     "owner",
     "controller",
     "SetController",

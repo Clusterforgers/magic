@@ -20,6 +20,7 @@ import type { PlayerId } from "./PlayerId";
 import type { Subtype } from "./Subtype";
 import type { Supertype } from "./Supertype";
 import type { Target } from "./Target";
+import type { TriggerView } from "./TriggerView";
 import type { Zone } from "./Zone";
 
 /**
@@ -128,6 +129,11 @@ granter?: Granter,
  * the source is hidden from the viewer.
  */
 rules_text?: string, 
+/**
+ * What a triggered ability on the stack triggered on; left out for any other object and for a trigger whose event
+ * was about nothing the viewer may identify.
+ */
+trigger?: TriggerView, 
 /**
  * What a spell or ability on the stack targets, one list for each target specification.
  */

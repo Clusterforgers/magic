@@ -4,12 +4,12 @@
 use mtg_core::ids::PlayerId;
 
 use super::Engine;
-use crate::decision::{Answer, Decision, DecisionKind};
+use crate::decision::{Answer, Decision, DecisionKind, PriorityAction};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::loops::{
-    Found, How, LOOP_CAP, LOOP_WORK, LoopAnswer, LoopLife, LoopOptions, LoopStep, LoopSummary,
-    LoopTokens, Offer, Taken,
+    How, LOOP_CAP, LOOP_WORK, LoopAnswer, LoopCycle, LoopLife, LoopOffer, LoopOptions, LoopStep,
+    LoopSummary, LoopTokens, Taken,
 };
 use crate::state::{GameResult, Stage};
 
@@ -46,9 +46,9 @@ impl Engine {
         if found.mandatory() {
             // No one can do anything else: a loop that never ends is a draw (CR 104.4b), one that ends runs to its end.
             let more = if bounded {
-                self.repeat_loop(&found, None, LOOP_CAP)?
+                self.repeat_loop(&found.cycle(), &found.cards, None, LOOP_CAP)?
             } else {
-                self.draw_by_loop(&found)?
+                self.draw_by_loop(&found.cards)?
             };
             events.extend(more);
             return Ok(());
@@ -76,14 +76,18 @@ impl Engine {
             asked: self.watch.offered(found.key),
             can_draw: !driven && !bounded,
         };
-        self.offer = Some(Offer {
-            found,
-            options: options.clone(),
-        });
-        self.set_decision(Some(Decision {
+        // The offer is logged, so an engine rebuilt from the log asks it again.
+        let offer = LoopOffer {
             player,
-            kind: DecisionKind::Loop(options),
-        }));
+            options,
+            cycle: found.cycle(),
+        };
+        let decision = offer.decision();
+        let event = Event::LoopOffered(Box::new(offer));
+        crate::fold::apply_event(&mut self.state, &event)?;
+        self.events.push(event.clone());
+        events.push(event);
+        self.set_decision(Some(decision));
         Ok(())
     }
 
@@ -100,7 +104,7 @@ impl Engine {
 
     /// Answers the loop offer the engine waits on.
     pub(super) fn answer_loop(&mut self, answer: Answer) -> Result<Vec<Event>, EngineError> {
-        let Some(offer) = self.offer.as_ref() else {
+        let Some(offer) = self.state.loop_offer().cloned() else {
             return Err(EngineError::NoDecision);
         };
         let Answer::Loop(choice) = answer else {
@@ -119,32 +123,29 @@ impl Engine {
                 Err(IllegalAnswer::NotOffered("draw").into())
             }
             LoopAnswer::Repeat(times) => {
-                let found = offer.found.clone();
-                self.offer = None;
                 self.advance()?;
-                self.repeat_loop(&found, player, times)
+                self.repeat_loop(&offer.cycle, &offer.options.cards, player, times)
             }
-            LoopAnswer::Draw => {
-                let found = offer.found.clone();
-                self.offer = None;
-                self.draw_by_loop(&found)
-            }
+            LoopAnswer::Draw => self.draw_by_loop(&offer.options.cards),
             LoopAnswer::Stop => {
-                self.offer = None;
+                let mark = self.events.len();
                 self.watch.clear();
+                self.commit(vec![Event::LoopStopped {
+                    player: offer.player,
+                }])?;
                 self.advance()?;
-                Ok(Vec::new())
+                Ok(self.events[mark..].to_vec())
             }
         }
     }
 
     /// Ends the game in a draw for every player still in it (CR 104.4b, 732.4).
-    fn draw_by_loop(&mut self, found: &Found) -> Result<Vec<Event>, EngineError> {
+    fn draw_by_loop(&mut self, cards: &[String]) -> Result<Vec<Event>, EngineError> {
         let mark = self.events.len();
         self.watch.clear();
         self.commit(vec![
             Event::LoopDrawn {
-                cards: found.cards.clone(),
+                cards: cards.to_vec(),
             },
             Event::GameEnded {
                 result: GameResult::Draw,
@@ -154,12 +155,13 @@ impl Engine {
         Ok(self.events[mark..].to_vec())
     }
 
-    /// Repeats the cycle of `found` up to `times` times from the priority point it starts at, giving each recorded
-    /// answer with the ids of the iteration; it stops early when the game ends, a question differs or an answer is no
-    /// longer legal (CR 732.5). Logs `LoopRepeated` after the events it made.
+    /// Repeats `cycle`, a cycle of the loop of `cards`, up to `times` times from the priority point it starts at, giving
+    /// each recorded answer with the ids of the iteration; it stops early when the game ends, a question differs or an
+    /// answer is no longer legal (CR 732.5). Logs `LoopRepeated` after the events it made.
     fn repeat_loop(
         &mut self,
-        found: &Found,
+        cycle: &LoopCycle,
+        cards: &[String],
         player: Option<PlayerId>,
         times: u32,
     ) -> Result<Vec<Event>, EngineError> {
@@ -172,7 +174,7 @@ impl Engine {
             let starts = self.decision.as_ref().is_some_and(|decision| {
                 matches!(decision.kind, DecisionKind::Priority(_))
                     && self.pending.is_none()
-                    && crate::loops::shape_at(&self.state, decision.player) == found.start
+                    && crate::loops::shape_at(&self.state, decision.player) == cycle.start
             });
             if !starts {
                 break;
@@ -186,16 +188,20 @@ impl Engine {
                 break;
             }
             let base = self.state.next_object;
-            for (taken, value) in &found.answers {
+            for given in &cycle.answers {
                 let fits = self
                     .decision
                     .as_ref()
-                    .is_some_and(|d| d.player == taken.player && d.kind.name() == taken.kind);
-                let answer = crate::loops::absolute(value, base);
+                    .is_some_and(|d| d.player == given.player && d.kind.name() == given.kind);
+                let answer = crate::loops::absolute(&given.answer, base);
                 let Some(answer) = answer.filter(|_| fits) else {
                     break 'run;
                 };
-                if self.apply(answer).is_err() {
+                // A pass needs no options; any other answer is judged against them all.
+                if answer != Answer::Priority(PriorityAction::Pass) {
+                    self.full_priority();
+                }
+                if crate::priority::as_shortcut(|| self.apply(answer)).is_err() {
                     break 'run;
                 }
                 if self.state.result().is_some() {
@@ -206,6 +212,7 @@ impl Engine {
             done += 1;
         }
         self.looping = false;
+        self.full_priority();
         self.watch.run = self.watch.run.saturating_add(done);
         self.watch.clear();
         let made = self.events.len() - mark;
@@ -221,7 +228,7 @@ impl Engine {
             .collect();
         let summary = LoopSummary {
             player,
-            cards: found.cards.clone(),
+            cards: cards.to_vec(),
             iterations: done,
             total: LoopStep {
                 tokens: tokens_of(&self.events[mark..]),
@@ -233,6 +240,21 @@ impl Engine {
         crate::fold::apply_event(&mut self.state, &event)?;
         self.events.push(event);
         Ok(self.events[mark..].to_vec())
+    }
+
+    /// Works out every option of the priority decision the engine waits on, which a shortcut made with a pass alone.
+    fn full_priority(&mut self) {
+        if let Some(Decision {
+            player,
+            kind: DecisionKind::Priority(_),
+        }) = self.decision
+        {
+            let options = crate::priority::priority_options(&self.state, player);
+            self.set_decision(Some(Decision {
+                player,
+                kind: DecisionKind::Priority(Box::new(options)),
+            }));
+        }
     }
 
     fn lives(&self) -> Vec<(PlayerId, i64)> {

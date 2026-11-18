@@ -13,6 +13,10 @@ export type HiddenEvent = { "AnnouncementRewound": {
 /**
  * Who took it back.
  */
+player: PlayerId, } } | { "LoopOffered": { 
+/**
+ * Who is asked.
+ */
 player: PlayerId, } } | { "CardDrawn": { 
 /**
  * Who drew.

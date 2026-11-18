@@ -1,4 +1,4 @@
-//! Goal: loops at tables of two to four seats with corpus cards (CR 104.4b, 732): a loop of mandatory actions that never ends is a draw for everyone still in the game, one that ends (a life drain) runs to the end of the game, a loop driven by a choice ("may", a target, an activation) is offered to its driver, who runs N iterations in one batch summed up by one event, a player who could respond is asked about a mandatory loop and may let it be a draw, and a third player can still respond once the batch is over.
+//! Goal: loops at tables of two to four seats with corpus cards (CR 104.4b, 732): a loop of mandatory actions that never ends is a draw for everyone still in the game, one that ends (a life drain) runs to the end of the game, a loop driven by a choice ("may", a target, an activation) is offered to its driver, who runs N iterations in one batch summed up by one event, a player who could respond is asked about a mandatory loop and may let it be a draw, and a third player can still respond once the batch is over; a loop offer survives a rebuild of the engine from the log.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -11,7 +11,7 @@ use mtg_engine::choose::{OptionChoice, TargetChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::loops::{LoopAnswer, LoopOptions, LoopSummary};
 use mtg_engine::zones::Zone;
-use mtg_engine::{Event, GameResult, replay};
+use mtg_engine::{Engine, Event, GameResult, replay};
 use mtg_testkit::cards::land;
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -390,15 +390,62 @@ fn a_third_player_responds_after_the_batch_and_breaks_the_loop(
     Ok(())
 }
 
-#[test]
-fn a_growing_loop_stops_at_the_work_a_shortcut_may_do() -> Result<(), ScriptError> {
-    let (mut driver, kiki_id, pestermite) = kiki_table(2, "Pestermite", None);
+/// A loop that makes a permanent each cycle runs to the work a shortcut may do (past 400 iterations of Kiki-Jiki with
+/// Pestermite) and stops short of more, at two and four seats; the shortcut asks the passes along the way with a pass
+/// alone, and the priority decision it ends on offers every option again.
+#[rstest]
+fn a_growing_loop_stops_at_the_work_a_shortcut_may_do(
+    #[values(2, 4)] seats: usize,
+    #[values(400, 1000)] asked: u32,
+) -> Result<(), ScriptError> {
+    let (mut driver, kiki_id, pestermite) = kiki_table(seats, "Pestermite", None);
     play(&mut driver, 400, kiki(kiki_id, pestermite))?.expect("the controller is asked");
     let before = tokens_named(&driver, "Pestermite");
-    let events = driver.answer(Answer::Loop(LoopAnswer::Repeat(1000)))?;
+    let events = driver.answer(Answer::Loop(LoopAnswer::Repeat(asked)))?;
     let ran = summaries(&events).pop().expect("one summary").iterations;
-    assert!((200..1000).contains(&ran), "{ran} iterations");
+    if asked == 400 {
+        assert_eq!(ran, 400);
+    } else {
+        assert!((400..asked).contains(&ran), "{ran} iterations");
+    }
     assert_eq!(tokens_named(&driver, "Pestermite"), before + ran as usize);
-    assert!(matches!(driver.decision()?.kind, DecisionKind::Priority(_)));
+    let DecisionKind::Priority(options) = &driver.decision()?.kind else {
+        panic!("priority after the batch");
+    };
+    // Kiki-Jiki is named among the abilities, offered or held back, as only a full decision names it.
+    let named = options
+        .abilities
+        .iter()
+        .any(|ability| ability.object == kiki_id)
+        || options
+            .inactive
+            .iter()
+            .any(|held| held.ability.object == kiki_id);
+    assert!(named, "{options:?}");
+    Ok(())
+}
+
+/// An engine rebuilt from the log while a loop offer waits (a server restart) asks the same question, and each answer
+/// runs on it as on the engine that never stopped; once answered, a rebuild asks it no more.
+#[rstest]
+fn lp1_a_loop_offer_survives_a_rebuild_from_the_log(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(LoopAnswer::Repeat(7), LoopAnswer::Stop)] answer: LoopAnswer,
+) -> Result<(), ScriptError> {
+    let (mut driver, kiki_id, pestermite) = kiki_table(seats, "Pestermite", None);
+    play(&mut driver, 400, kiki(kiki_id, pestermite))?.expect("the controller is asked");
+    let setup = driver.engine().setup().clone();
+    let mut rebuilt = Engine::resume(setup.clone(), driver.engine().events().to_vec()).unwrap();
+    assert_eq!(rebuilt.decision(), driver.engine().decision());
+    assert_eq!(rebuilt.state_hash(), driver.state().state_hash());
+    let ran = driver.answer(Answer::Loop(answer.clone()))?;
+    assert_eq!(rebuilt.apply(Answer::Loop(answer)).unwrap(), ran);
+    assert_eq!(rebuilt.state_hash(), driver.state().state_hash());
+    let again = Engine::resume(setup, driver.engine().events().to_vec()).unwrap();
+    assert!(matches!(
+        again.decision().map(|decision| &decision.kind),
+        Some(DecisionKind::Priority(_))
+    ));
+    assert_eq!(again.decision(), driver.engine().decision());
     Ok(())
 }

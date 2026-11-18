@@ -419,6 +419,45 @@ pub(crate) fn still_there(state: &GameState, target: Target) -> bool {
     }
 }
 
+/// The words of the conditions of `effects` when every effect is an `If` with nothing otherwise and each condition is
+/// false in the scope: nothing changes between them, so the ability does nothing. `None` when any effect does more or
+/// any condition holds or cannot be read here ("if you do" reads an earlier effect).
+fn all_failed(scope: &Scope<'_>, effects: &[Effect]) -> Option<Vec<String>> {
+    if effects.is_empty() {
+        return None;
+    }
+    let mut words = Vec::new();
+    for effect in effects {
+        let Effect::If {
+            condition,
+            otherwise,
+            ..
+        } = effect
+        else {
+            return None;
+        };
+        if !otherwise.is_empty()
+            || reads_performed(condition)
+            || scope.holds(condition).unwrap_or(true)
+        {
+            return None;
+        }
+        words.extend(mtg_cards::compile::condition_text(condition));
+    }
+    Some(words)
+}
+
+/// Whether the condition reads "if you do", which only the resolution in progress can answer.
+fn reads_performed(condition: &mtg_cards::value::Condition) -> bool {
+    use mtg_cards::value::Condition;
+    match condition {
+        Condition::Performed => true,
+        Condition::Not(inner) => reads_performed(inner),
+        Condition::All(items) | Condition::Any(items) => items.iter().any(reads_performed),
+        _ => false,
+    }
+}
+
 /// The events that end a resolution that did what it says.
 fn finish(state: &GameState, object: &GameObject) -> Vec<Event> {
     let mut events = vec![Event::ResolutionEnded {
@@ -523,6 +562,19 @@ fn run_step(
         && state.limit_spent(*limit, ability.source(), ability.origin(), ability.index())
     {
         return Ok(Progress::Done(finish(state, object)));
+    }
+    // A triggered ability that is nothing but conditions, each false as it begins, does nothing, and the log says why.
+    if resolving.position == START
+        && resolving.bindings.is_empty()
+        && let Ability::Triggered { effects, .. } = rules
+        && let Some(conditions) = all_failed(&scope, effects)
+    {
+        let mut events = vec![Event::ConditionsFailed {
+            object: object.id(),
+            conditions,
+        }];
+        events.extend(finish(state, object));
+        return Ok(Progress::Done(events));
     }
     // CR 702.131a: an instant or sorcery spell with ascend gives the blessing before any of its effects.
     if resolving.position == START

@@ -134,5 +134,6 @@ mod token_printed_view;
 mod top_cast_view;
 mod transcript;
 mod transform_view;
+mod trigger_view;
 mod unverified_wire;
 mod vote_hidden;

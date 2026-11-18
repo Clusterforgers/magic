@@ -1,5 +1,5 @@
 /** The targets of a stack item as words: the line on its chip, the text a screen reader hears and the panel's rows. */
-import type { ObjectId, PlayerId } from '@/protocol/generated'
+import type { ObjectId, PlayerId, TriggerView } from '@/protocol/generated'
 import { joinWords, targetName } from './eventText'
 import { live, MAX_ARROWS, MAX_NAMED } from './stackTargets'
 import type { StackEntry } from './stackTargets'
@@ -49,4 +49,16 @@ export function targetsAria(entry: StackEntry, n: TargetNamer): string {
     names.length > MAX_NAMED ? [...names.slice(0, MAX_NAMED), `${names.length - MAX_NAMED} more`] : names
   const gone = entry.targets.length - targets.length
   return `, targeting ${joinWords(shown)}${gone > 0 ? `, ${gone} no longer legal` : ''}`
+}
+
+/**
+ * "on Hill Giant, Bo (5)": what a triggered ability triggered on, which tells copies of one trigger apart; nothing for
+ * an item that says nothing of it.
+ */
+export function triggerLine(trigger: TriggerView | undefined, seat: (seat: PlayerId) => string): string {
+  if (trigger === undefined) return ''
+  const names = [...(trigger.objects ?? []), ...(trigger.players ?? []).map(seat)]
+  const amount = trigger.amount === undefined ? '' : `(${trigger.amount})`
+  if (names.length === 0) return amount
+  return `on ${names.join(', ')}${amount === '' ? '' : ` ${amount}`}`
 }

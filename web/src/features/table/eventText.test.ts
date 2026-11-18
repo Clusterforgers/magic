@@ -279,6 +279,25 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { LoopDrawn: { cards: ['Polyraptor', 'Aether Flash'] } },
     'Polyraptor and Aether Flash would loop forever with no one able to stop it: the game is a draw',
   ],
+  LoopOffered: [
+    {
+      LoopOffered: {
+        player: 0,
+        options: {
+          cards: ['Kiki-Jiki, Mirror Breaker', 'Pestermite'],
+          per_iteration: {},
+          mandatory: false,
+          bounded: false,
+          max: 10000,
+          asked: 0,
+          can_draw: false,
+        },
+        cycle: { start: 7, answers: [] },
+      },
+    },
+    'Ana is asked how many times to repeat the loop',
+  ],
+  LoopStopped: [{ LoopStopped: { player: 1 } }, 'Bo plays on by hand instead of repeating the loop'],
   SpellCast: [{ SpellCast: { player: 1, object: 4 } }, 'Bo casts Lightning Bolt'],
   SpellResolved: [{ SpellResolved: { object: 4 } }, 'Lightning Bolt resolves'],
   PermanentTapped: [{ PermanentTapped: { object: 3 } }, 'Forest becomes tapped'],
@@ -462,6 +481,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { ResolutionEnded: { object: 4, outcome: 'Resolved' } },
     'Lightning Bolt finishes resolving',
   ],
+  ConditionsFailed: [
+    { ConditionsFailed: { object: 4, conditions: ['you control a Wizard'] } },
+    'Lightning Bolt does nothing: it is not true that you control a Wizard',
+  ],
   AbilityLeftToTable: [
     { AbilityLeftToTable: { source: { id: 6, counter: 0 }, controller: 0, text: 'Draw a card.' } },
     "Jace Beleren's ability could not be run by the game: apply its text by hand",
@@ -525,6 +548,11 @@ const MORE: [Event, string][] = [
     { ResolutionEnded: { object: 4, outcome: 'Lapsed' } },
     'Lightning Bolt does nothing: its condition is no longer true',
   ],
+  [{ ConditionsFailed: { object: 4 } }, 'Lightning Bolt does nothing: none of its conditions holds'],
+  [
+    { ConditionsFailed: { object: 4, conditions: ['you control a Wizard', 'it is your turn'] } },
+    'Lightning Bolt does nothing: none of these is true: you control a Wizard; it is your turn',
+  ],
   [
     { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'Sacrificed' } },
     'Grizzly Bears is sacrificed',
@@ -543,6 +571,11 @@ const MORE: [Event, string][] = [
   [
     { ZoneChanged: { object: 3, from: { Library: 1 }, to: 'Battlefield', cause: { Cloaked: { by: 0 } } } },
     'Forest is cloaked',
+  ],
+  [{ ConditionsFailed: { object: 4 } }, 'Lightning Bolt does nothing: none of its conditions holds'],
+  [
+    { ConditionsFailed: { object: 4, conditions: ['you control a Wizard', 'it is your turn'] } },
+    'Lightning Bolt does nothing: none of these is true: you control a Wizard; it is your turn',
   ],
   [
     {
@@ -673,6 +706,7 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   CardDrawn: [{ CardDrawn: { player: 1 } }, 'Bo draws a card'],
   CardConjured: [{ CardConjured: { player: 1 } }, 'Bo conjures a card'],
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
+  LoopOffered: [{ LoopOffered: { player: 1 } }, 'Bo is asked how many times to repeat the loop'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
   AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],

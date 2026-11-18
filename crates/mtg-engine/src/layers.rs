@@ -612,6 +612,8 @@ pub(crate) fn leaves_alone(event: &Event) -> bool {
             | Event::AbilityTriggered { .. }
             | Event::StepDone { .. }
             | Event::ChoiceMade { .. }
+            | Event::LoopOffered(_)
+            | Event::LoopStopped { .. }
             | Event::ResolutionBegan { .. }
     )
 }

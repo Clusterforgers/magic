@@ -90,6 +90,24 @@ pub struct CopyView {
     pub of: Option<ObjectId>,
 }
 
+/// What a triggered ability on the stack triggered on, so copies of one trigger can be told apart: the players and
+/// objects the event was about and how much it was.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct TriggerView {
+    /// The players the event was about (the player who rolled, who was dealt damage).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<PlayerId>>", optional)]
+    pub players: Vec<PlayerId>,
+    /// The names of the objects the event was about, as they were; an object the viewer may not identify is left out.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<String>>", optional)]
+    pub objects: Vec<String>,
+    /// How much the event was: the die's result, the damage dealt, the life gained; left out for an event with none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub amount: Option<u32>,
+}
+
 /// One card of a merged permanent (CR 729): the creature spells that mutated onto a creature, and the creature itself.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct MergedCardView {
@@ -359,6 +377,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub rules_text: Option<String>,
+    /// What a triggered ability on the stack triggered on; left out for any other object and for a trigger whose event
+    /// was about nothing the viewer may identify.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub trigger: Option<TriggerView>,
     /// What a spell or ability on the stack targets, one list for each target specification.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<Vec<Target>>>", optional)]

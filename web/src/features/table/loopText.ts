@@ -45,6 +45,11 @@ export function loopDrawLine(cards: readonly string[]): string {
   return `${loopCards(cards)} would loop forever with no one able to stop it: the game is a draw`
 }
 
+/** The log line of a loop offered to `seat`, named. */
+export function loopOfferLine(seat: string): string {
+  return `${seat} is asked how many times to repeat the loop`
+}
+
 /** Why a number typed for the loop is refused, or null when it is fine. */
 export function iterationsProblem(text: string, max: number): string | null {
   if (!/^\d+$/.test(text.trim())) return 'Enter a whole number'

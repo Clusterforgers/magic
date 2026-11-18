@@ -28,6 +28,11 @@ pub enum HiddenEvent {
         /// Who took it back.
         player: PlayerId,
     },
+    /// A player is asked how often to repeat a loop; the cycle it repeats is the engine's.
+    LoopOffered {
+        /// Who is asked.
+        player: PlayerId,
+    },
     /// A player drew a card.
     CardDrawn {
         /// Who drew.
@@ -339,6 +344,10 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         Event::AnnouncementRewound { player, .. } if *player != viewer => {
             Some(HiddenEvent::AnnouncementRewound { player: *player })
         }
+        // The cycle it carries can hold a choice among hidden cards; the question itself is the decision.
+        Event::LoopOffered(offer) => Some(HiddenEvent::LoopOffered {
+            player: offer.player,
+        }),
         Event::ObjectLeftGame { object } => {
             (!knows(before, *object, viewer)).then_some(HiddenEvent::ObjectLeftGame)
         }
@@ -398,6 +407,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::TookBack { .. }
         | Event::LoopDrawn { .. }
         | Event::LoopRepeated(_)
+        | Event::LoopStopped { .. }
         | Event::PriorityGranted { .. }
         | Event::PriorityPassed { .. }
         | Event::LandPlayed { .. }
@@ -454,6 +464,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::DelayedTriggerExpired { .. }
         | Event::ResolutionBegan { .. }
         | Event::ResolutionEnded { .. }
+        | Event::ConditionsFailed { .. }
         | Event::LifeGained { .. }
         | Event::LifeLost { .. }
         | Event::CountersChanged(_)

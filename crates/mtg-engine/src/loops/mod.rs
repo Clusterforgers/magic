@@ -16,7 +16,7 @@ pub const LOOP_CAP: u32 = 10_000;
 /// The work one shortcut may do: the permanents on the battlefield summed over its iterations. Every step of the engine
 /// reads every permanent, so a loop that makes a permanent each time costs the square of its iterations; the shortcut
 /// stops once it has done this much (a few hundred iterations of a growing loop, thousands of one that stays small).
-pub const LOOP_WORK: usize = 60_000;
+pub const LOOP_WORK: usize = 90_000;
 
 /// A loop offered to the player whose choice drives it: repeat it a number of times, or stop (CR 732.2a, 732.6).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -105,11 +105,66 @@ pub struct LoopSummary {
     pub events: u32,
 }
 
-/// The offer the engine waits on, with the iteration it repeats.
-#[derive(Debug, Clone)]
-pub(crate) struct Offer {
-    /// The loop found.
-    pub found: Found,
-    /// The question shown.
+/// A loop offered and waiting for its answer (`Event::LoopOffered`): the player asked, the question and the cycle the
+/// answer repeats. The log keeps it, so an engine rebuilt from the log asks the same question.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct LoopOffer {
+    /// Who is asked.
+    pub player: PlayerId,
+    /// The question.
     pub options: LoopOptions,
+    /// The cycle a repeat runs again.
+    pub cycle: LoopCycle,
+}
+
+/// One cycle of a loop, ready to be given again: where it starts and the answers given in it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct LoopCycle {
+    /// The fingerprint of the priority point the cycle starts and ends at.
+    pub start: u64,
+    /// The answers, in order, with the ids of objects made in the cycle written relative to its first new id.
+    pub answers: Vec<CycleAnswer>,
+}
+
+/// One answer of a loop's cycle.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct CycleAnswer {
+    /// Who answered.
+    pub player: PlayerId,
+    /// The kind of question (`DecisionKind::name`).
+    pub kind: String,
+    /// The answer as JSON, its new ids relative (`watch::relative`).
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub answer: serde_json::Value,
+}
+
+impl LoopOffer {
+    /// The question the offer puts.
+    pub(crate) fn decision(&self) -> crate::decision::Decision {
+        crate::decision::Decision {
+            player: self.player,
+            kind: crate::decision::DecisionKind::Loop(self.options.clone()),
+        }
+    }
+}
+
+impl Found {
+    /// The cycle a repeat of this loop gives again.
+    pub(crate) fn cycle(&self) -> LoopCycle {
+        LoopCycle {
+            start: self.start,
+            answers: self
+                .answers
+                .iter()
+                .map(|(taken, answer)| CycleAnswer {
+                    player: taken.player,
+                    kind: taken.kind.to_owned(),
+                    answer: answer.clone(),
+                })
+                .collect(),
+        }
+    }
 }
