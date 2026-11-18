@@ -134,7 +134,8 @@ function RunRow({
       <span className="grid min-w-0">
         <span className="truncate text-[0.8125rem] leading-[1.125rem] font-semibold">{name}</span>
         <span
-          className={cn('truncate text-xs leading-4', done ? 'text-success' : 'text-muted-foreground')}
+          // Two lines that wrap: nothing in the column is cut sideways.
+          className={cn('line-clamp-2 text-xs leading-4', done ? 'text-success' : 'text-muted-foreground')}
           title={runRowWords(entry, place, index, outcome)}
         >
           <RulesText text={runRowWords(entry, place, index, outcome)} />

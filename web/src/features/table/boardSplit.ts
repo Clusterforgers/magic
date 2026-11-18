@@ -373,8 +373,8 @@ function bossFrames(
  */
 export function withSplit(regions: Regions, split: BoardSplit, keep = 0): Regions {
   const most = sheetMost(regions.main.height, regions.shared, split.opponents, regions.phone, keep)
-  // The band is the strip with the room kept above it (a phone's second line); never more, whatever the split leaves.
-  const sheet = Math.min(regions.shared + finite(regions.sheetRoom), Math.max(most, regions.shared))
+  // The band is the strip with the room kept above it (the ticker's line, a narrow window's second line), whatever the split leaves.
+  const sheet = regions.shared + finite(regions.sheetRoom)
   return { ...regions, opponents: split.opponents, own: split.own, sheet, sheetWide: Math.max(sheet, most) }
 }
 

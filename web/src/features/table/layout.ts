@@ -254,8 +254,16 @@ export const BAND_TICKER_PX = 16
  * moves for a prompt and the band lies over no card. A phone's is two lines over the ticker. What a prompt chooses
  * among is drawn in the Stack column or the decision sheet, never in the band.
  */
-export function bandHeight(height: number, phone: boolean): number {
-  return phone ? BAND_PHONE_PX : clampedHeight(SHARED_CLAMP, height) + BAND_TICKER_PX
+export function bandHeight(height: number, twoLines: boolean): number {
+  return twoLines ? BAND_PHONE_PX : clampedHeight(SHARED_CLAMP, height) + BAND_TICKER_PX
+}
+
+/**
+ * Whether the band is two lines: a narrow window (XS and S), whose band beside a pod column is under the 40 rem at
+ * which `promptBand.css` lays it out in one.
+ */
+export function twoLineBand(breakpoint: Breakpoint): boolean {
+  return breakpoint === 'xs' || breakpoint === 's'
 }
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
 export const SIDE_SHARE = 0.18
@@ -348,9 +356,10 @@ export function sheetMost(
   )
 }
 
-/** `regions` without the band's room: a spectator answers no prompt, so the boards keep that room. */
+/** `regions` with one line for the band: a spectator answers no prompt, so the boards keep a second line's room. */
 export function withoutBand(regions: Regions): Regions {
-  return { ...regions, sheetRoom: 0 }
+  const sheetRoom = Math.min(regions.sheetRoom, BAND_TICKER_PX)
+  return { ...regions, sheetRoom, sheet: regions.shared + sheetRoom }
 }
 
 /** The px a `HeightClamp` gives in a window of this height. */
@@ -377,9 +386,9 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
   const opponents = rest / (1 + OWN_SHARE)
   const own = rest - opponents
   // The room is counted first, so it is a whole number of px whatever the strip's height.
-  const sheetRoom = phone ? Math.max(0, BAND_PHONE_PX - shared) : BAND_TICKER_PX
-  const band = shared + sheetRoom
-  const sheet = Math.min(band, sheetMost(height, shared, opponents, phone))
+  const sheetRoom = twoLineBand(breakpoint) ? Math.max(0, BAND_PHONE_PX - shared) : BAND_TICKER_PX
+  // The band is one height whatever the boards leave it: nothing in it depends on the prompt.
+  const sheet = shared + sheetRoom
   return {
     breakpoint,
     phone,

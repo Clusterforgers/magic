@@ -15,43 +15,25 @@ export const BAND_PHONE_REM = 40
 export const BAND_NARROW_REM = 64
 
 /** Below this band width (in rem) the answers leave out their key hints and the rest of "Cancel the spell". */
-export const BAND_HINTS_REM = 48
+export const BAND_HINTS_REM = 56
 
 /** The lines the sentence keeps before its ellipsis. */
 export const SENTENCE_LINES = 2
 
 /** What else shapes the band. */
 export interface BandParts {
-  /** A status beside the prompt (a note, the combat key); a decision with detail has none. */
-  status?: boolean
   /** The sentence is read aloud and not drawn (a payment's): the meter stands in its place. */
   quiet?: boolean
 }
 
 /** The rows of the band's grid areas for a band `rem` wide holding `choices`; each row lists its cells left to right. */
-export function bandAreas(
-  rem: number,
-  choices: BandChoices,
-  { status = false, quiet = false }: BandParts = {},
-): string[][] {
+export function bandAreas(rem: number, choices: BandChoices, { quiet = false }: BandParts = {}): string[][] {
   if (rem < BAND_PHONE_REM) {
-    if (choices === 'fallback') {
-      return [
-        ['lead', 'text', 'text', 'text'],
-        ['choices', 'choices', 'choices', 'choices'],
-        ['meter', 'meter', 'clock', 'actions'],
-      ]
-    }
-    if (quiet) {
-      return [
-        ['lead', 'meter', 'meter', 'meter'],
-        ['choices', 'clock', 'actions', 'actions'],
-      ]
-    }
-    return [
-      ['lead', 'text', 'text', 'text'],
-      [status ? 'status' : 'meter', 'choices', 'clock', 'actions'],
-    ]
+    // The second line is one cell: the meter, a status or short choices from its left, the answers from its right.
+    const foot = ['foot', 'foot', 'foot']
+    return choices === 'fallback'
+      ? [['lead', 'text', 'clock'], ['choices', 'choices', 'choices'], foot]
+      : [['lead', 'text', 'clock'], foot]
   }
   if (choices === 'fallback') {
     return [

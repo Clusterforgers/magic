@@ -4,7 +4,7 @@ import { BOARD_KEEP_PX, boardCounts, boardFrames, splitRegions } from './boardSp
 import { fixtureState, withBoss } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import { DEV_PROMPTS } from './dev/prompts'
-import { BAND_PHONE_PX, BAND_TICKER_PX, planTable } from './layout'
+import { BAND_PHONE_PX, BAND_TICKER_PX, planTable, twoLineBand } from './layout'
 import type { TableMode, Viewport } from './layout'
 import { bossSidesOf } from './selectors'
 
@@ -58,7 +58,9 @@ describe('the prompt sheet over the opponents', () => {
     (_name, seats, mode, boss, permanents, viewport) => {
       const { plan, regions } = tableOf(seats, mode, boss, permanents, viewport)
       // One line is the strip with the ticker's line kept above it; a phone's second line too.
-      expect(regions.sheetRoom).toBe(regions.phone ? BAND_PHONE_PX - regions.shared : BAND_TICKER_PX)
+      expect(regions.sheetRoom).toBe(
+        twoLineBand(regions.breakpoint) ? BAND_PHONE_PX - regions.shared : BAND_TICKER_PX,
+      )
       // The sheet's height over the strip is never more than the room kept below the opponents' boards.
       expect(regions.sheet - regions.shared).toBeLessThanOrEqual(regions.sheetRoom + 1e-9)
       // Above that room the opponents' row keeps its chrome and a row of cards, which a sheet of cards leaves too.

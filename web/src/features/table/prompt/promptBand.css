@@ -19,7 +19,7 @@
   align-content: safe center;
   column-gap: 0.75rem;
   row-gap: 0.25rem;
-  grid-template-columns: fit-content(16rem) fit-content(12rem) minmax(8rem, 1fr) auto auto auto auto;
+  grid-template-columns: fit-content(16rem) fit-content(12rem) minmax(4rem, 1fr) auto auto auto auto;
   grid-template-areas: 'lead status text meter choices clock actions';
 
   /* Choices with no column or sheet to hold them (the opening hand on a phone) take a line of their own; the sheet grows for it. */
@@ -38,33 +38,21 @@
   /* A phone: two lines. The lead and the sentence, then the meter, short choices, the clock and the answers. */
   @container band (width < 40rem) {
     & {
-      /* The answers have the second line's free room, so they are cut only when they are wider than the band. */
-      grid-template-columns: auto auto auto minmax(0, 1fr);
+      /*
+       * The lead takes half the first line at most. The second line is one cell, the foot: the meter (or the status,
+       * or short choices) from its left and the answers from its right, so the answers have the band's whole width.
+       */
+      grid-template-columns: fit-content(50%) minmax(0, 1fr) auto;
       grid-template-areas:
-        'lead text text text'
-        'meter choices clock actions';
+        'lead text clock'
+        'foot foot foot';
       column-gap: 0.5rem;
-    }
-    &:has([data-slot='strip-status']:not(:empty):not([hidden])) {
-      grid-template-areas:
-        'lead text text text'
-        'status choices clock actions';
     }
     &:has([data-slot='decision-line'] > [data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
       grid-template-areas:
-        'lead text text text'
-        'choices choices choices choices'
-        'meter meter clock actions';
-    }
-    /* The meter stands beside the lead, so the second line is the answers' alone. */
-    &:has([data-slot='prompt-sentence'][data-quiet]) {
-      grid-template-columns: auto auto auto minmax(0, 1fr);
-      grid-template-areas:
-        'lead meter meter meter'
-        'choices clock actions actions';
-    }
-    &:has([data-slot='prompt-sentence'][data-quiet]) [data-slot='prompt-meter'] {
-      justify-self: end;
+        'lead text clock'
+        'choices choices choices'
+        'foot foot foot';
     }
   }
 
@@ -123,19 +111,35 @@
       display: none;
     }
   }
-  /* Under 48 rem the answers' key hints give their room to the answers' one row; the keys still work and each button names its key. */
-  @container band (width < 48rem) {
+  /* Under 56 rem the answers' key hints give their room to the answers' one row; the keys still work and each button names its key. */
+  @container band (width < 56rem) {
     & [data-slot='prompt-actions'] [data-slot='key-hint'],
     & [data-slot='prompt-actions'] [data-slot='undo-rest'] {
       display: none;
     }
   }
 
-  /* On a phone the answers are smaller, so two or three keep to the second line. */
+  /* On a phone the second line is the foot, and the answers are smaller, so three or four keep to it. */
   @container band (width < 40rem) {
+    & > [data-slot='strip-status'],
+    & [data-slot='decision-line'] > [data-slot='prompt-meter'],
+    & [data-slot='decision-line'] > [data-slot='prompt-choices'][data-inline] {
+      grid-area: foot;
+      justify-self: start;
+    }
+    & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
+      grid-area: foot;
+      justify-self: end;
+    }
+    /* A sentence that is not drawn gives the meter its place beside the lead. */
+    &:has([data-slot='prompt-sentence'][data-quiet])
+      [data-slot='decision-line']
+      > [data-slot='prompt-meter'] {
+      grid-area: text;
+      justify-self: end;
+    }
     & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
       gap: 0.25rem;
-      justify-self: end;
     }
     & [data-slot='decision-line'] > [data-slot='prompt-actions'] button {
       height: 2.5rem;

@@ -71,7 +71,9 @@ describe('the band rules', () => {
     for (const rem of [24, 39, 40, 64, 90, 150]) {
       for (const quiet of [false, true]) {
         const rows = bandAreas(rem, choices, { quiet })
-        expect(must(rows.find((row) => row.includes('actions'))).at(-1)).toBe('actions')
+        // A narrow band's second line is the foot, whose right end the answers have.
+        if (rem < BAND_PHONE_REM) expect(new Set(rows.at(-1))).toEqual(new Set(['foot']))
+        else expect(must(rows.find((row) => row.includes('actions'))).at(-1)).toBe('actions')
         expect(rows.flat().filter((cell) => cell === 'lead')).toHaveLength(1)
       }
     }
@@ -89,9 +91,8 @@ describe('the band rules', () => {
 
   it('gives a quiet sentence`s place to the meter', () => {
     expect(bandAreas(64, 'none', { quiet: true })[0]).not.toContain('text')
-    expect(bandAreas(24, 'none', { quiet: true })[0]).toEqual(['lead', 'meter', 'meter', 'meter'])
-    // The answers then have a phone's second line to themselves.
-    expect(bandAreas(24, 'none', { quiet: true })[1]?.filter((cell) => cell === 'actions')).toHaveLength(2)
+    // A narrow band moves the meter into the sentence's cell by a rule of its own; the foot is then the answers' alone.
+    expect(bandAreas(24, 'none', { quiet: true })).toEqual(bandAreas(24, 'none'))
   })
 
   it('tells a cut sentence from one that fits', () => {
@@ -112,11 +113,16 @@ describe('the stylesheet', () => {
     expect(areasIn(band, fallback)).toEqual(bandAreas(64, 'fallback'))
     expect(areasIn(band, quiet)).toEqual(bandAreas(64, 'none', { quiet: true }))
     expect(areasIn(phone, '& {')).toEqual(bandAreas(24, 'none'))
-    expect(areasIn(phone, "[data-slot='strip-status']:not(:empty):not([hidden])")).toEqual(
-      bandAreas(24, 'none', { status: true }),
-    )
     expect(areasIn(phone, fallback)).toEqual(bandAreas(24, 'fallback'))
-    expect(areasIn(phone, quiet)).toEqual(bandAreas(24, 'none', { quiet: true }))
+    // The foot: the meter, the status and short choices from its left, the answers from its right.
+    const foot = blockAfter(band, 'On a phone the second line is the foot')
+    expect(blockAfter(foot, "[data-slot='prompt-choices'][data-inline] {")).toMatch(
+      /grid-area:\s*foot;\s*justify-self:\s*start/,
+    )
+    expect(blockAfter(foot, "& [data-slot='decision-line'] > [data-slot='prompt-actions'] {")).toMatch(
+      /grid-area:\s*foot;\s*justify-self:\s*end/,
+    )
+    expect(blockAfter(foot, "[data-slot='prompt-sentence'][data-quiet]")).toMatch(/grid-area:\s*text/)
   })
 
   it('places every part of a prompt in its cell', () => {
@@ -266,7 +272,10 @@ describe('the band`s height', () => {
     [390, 844],
     [360, 640],
     [430, 932],
-  ])('is two lines on a phone at %ix%i, the second kept above the strip', (width, height) => {
+    // A tablet's band beside a pod column is under 40 rem wide: two lines as well.
+    [768, 1024],
+    [1000, 700],
+  ])('is two lines in a narrow window at %ix%i, the second kept above the strip', (width, height) => {
     const regions = regionSizes({ width, height })
     expect(regions.sheet).toBe(BAND_PHONE_PX)
     expect(regions.sheetRoom).toBe(BAND_PHONE_PX - regions.shared)
