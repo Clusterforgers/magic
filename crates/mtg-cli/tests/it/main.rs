@@ -19,6 +19,7 @@ mod fb27_reported;
 mod fetch_decks;
 mod fetch_printings;
 mod fetch_scryfall;
+mod export_precon;
 mod fix_marks;
 mod forge_check;
 mod forge_hint;

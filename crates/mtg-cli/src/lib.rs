@@ -18,6 +18,7 @@ pub mod coverage_decks;
 pub mod draft_suspects;
 pub mod drafts;
 pub mod error;
+pub mod export_precon;
 pub mod fetch;
 pub mod files;
 pub mod fix_marks;
@@ -133,6 +134,9 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         Command::TranslateForge(args) => translate_command(cli.database_url, &cache, &args).await,
         Command::Coverage(args) => {
             coverage::report(&connect(cli.database_url).await?, &cache, &args).await
+        }
+        Command::ExportPrecon(args) => {
+            export_precon::export_precon(&connect(cli.database_url).await?, &args).await
         }
         Command::Promote(args) => {
             let db = connect(cli.database_url).await?;

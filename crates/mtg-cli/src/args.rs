@@ -76,6 +76,9 @@ pub enum Command {
     ProposeOrder(ProposeOrderArgs),
     /// Copy the proposals the checker accepts as `Verified` into the corpus: the rules file in `cards/` and the card's Scryfall record from the cache as its fixture.
     Promote(PromoteArgs),
+    /// Write a stored precon as a content deck file of `mtg-campaign`: card names and counts, the face commander shuffled
+    /// in, the listed swaps applied; read-only.
+    ExportPrecon(ExportPreconArgs),
     /// Print the reference of the rules DSL that `propose` sends to the model: the type tree and its vocabulary.
     DslReference,
     /// Print the JSON schema of a rules file that `propose --schema` sends to an OpenAI-style server.
@@ -575,6 +578,26 @@ pub struct ExportPairsArgs {
     /// against K random examples; no model is asked.
     #[arg(long)]
     pub measure: bool,
+}
+
+/// Options of `export-precon`.
+#[derive(Debug, Args)]
+pub struct ExportPreconArgs {
+    /// The set code of the precon (any case).
+    #[arg(long, value_name = "CODE")]
+    pub code: String,
+
+    /// The precon's exact name.
+    #[arg(long, value_name = "NAME")]
+    pub name: String,
+
+    /// A swap `Old card=New card`: every copy of the old card becomes the new one; repeatable.
+    #[arg(long, value_name = "OLD=NEW")]
+    pub swap: Vec<String>,
+
+    /// The directory the deck file goes to.
+    #[arg(long, value_name = "DIR", default_value = "crates/mtg-campaign/content/decks")]
+    pub out: PathBuf,
 }
 
 /// Options of `promote`.
