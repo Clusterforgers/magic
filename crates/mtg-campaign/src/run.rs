@@ -12,7 +12,7 @@ use crate::content::{
     Brain, Content, CustomCard, EventOption, MIN_LIFE_CAP, Needs, Outcome, Rarity, Theme,
 };
 use crate::fight::{BossSeat, FightPlan, HAND, HeroSeat, MinionSeat};
-use crate::map::{FloorMap, RoomKind, generate, generate_for};
+use crate::map::{FloorMap, RoomKind, generate, generate_floor, generate_for};
 use crate::relics::{
     DeckMakeup, FILTER_FROM, RARE_ODDS, RARITY_FROM, TREASURE_RARE_BONUS, offerable,
 };
@@ -44,8 +44,14 @@ pub const DRAUGHT: i32 = 15;
 pub const UPGRADE_PRICE: u32 = 50;
 /// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0. From 2
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
-/// known trade-offs; from 4 bosses play bracket decks with their commander card.
-pub const CONTENT: u32 = crate::scale::BRACKETS_FROM;
+/// known trade-offs; from 4 bosses play bracket decks with their commander card; from 5 a cleared floor may descend.
+pub const CONTENT: u32 = ENDLESS_FROM;
+/// The content generation from which the party may descend to a deeper floor after a floor's final boss.
+pub const ENDLESS_FROM: u32 = 5;
+/// The hearts a descent gives back, up to [`HEARTS`].
+pub const DESCENT_HEARTS: u8 = 1;
+/// The deepest floor a run reaches; a party on it can only bank the win.
+pub const DEEPEST: u8 = 99;
 
 /// The deck a hero brings.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -265,8 +271,14 @@ impl Hero {
 pub struct FoughtFight {
     /// The game's id, whose replay holds the fight's log.
     pub game: String,
-    /// The boss's room.
+    /// The boss's room on its floor's ladder.
     pub room: u8,
+    /// The floor it was fought on.
+    #[serde(default = "first_floor")]
+    pub floor: u8,
+    /// The boss, by id.
+    #[serde(default)]
+    pub boss: Option<String>,
     /// Whether the party won.
     pub won: bool,
 }
@@ -286,7 +298,9 @@ pub enum Status {
     },
     /// The heroes answer their offers.
     Room,
-    /// The final boss fell.
+    /// The floor's final boss fell: the party votes to bank the win or descend (the endless generation).
+    FloorCleared,
+    /// The final boss fell and the party banked the win.
     Victory,
     /// The party lost a fight with no hearts left.
     Defeat,
@@ -376,6 +390,17 @@ pub enum RunEvent {
     },
     /// The host ended the run.
     Abandoned,
+    /// A hero voted, on a cleared floor, to descend (`true`) or bank the win.
+    FloorVoted {
+        /// Their index.
+        hero: u8,
+        /// Whether they vote to descend.
+        descend: bool,
+    },
+}
+
+fn first_floor() -> u8 {
+    1
 }
 
 /// A run: its seed and theme, the ladder, the party and where they are.
@@ -395,8 +420,17 @@ pub struct Run {
     pub timers: Timers,
     /// The theme's id.
     pub theme: String,
-    /// The ladder.
+    /// The ladder of the floor the party is on.
     pub map: FloorMap,
+    /// The floor the party is on, from 1.
+    #[serde(default = "first_floor")]
+    pub floor: u8,
+    /// The floors whose final boss fell.
+    #[serde(default)]
+    pub floors_cleared: u8,
+    /// Each hero's vote on a cleared floor: `true` to descend, `false` to bank the win.
+    #[serde(default)]
+    pub floor_votes: BTreeMap<u8, bool>,
     /// The party.
     pub heroes: Vec<Hero>,
     /// The room the party is in or last left.
@@ -433,6 +467,9 @@ impl Run {
             theme: theme.to_owned(),
             timers: Timers::default(),
             map,
+            floor: 1,
+            floors_cleared: 0,
+            floor_votes: BTreeMap::new(),
             heroes: Vec::new(),
             at: None,
             cleared: Vec::new(),
@@ -674,8 +711,134 @@ impl Run {
                 self.status = Status::Abandoned;
                 self.log.push("The party turned back.".to_owned());
             }
+            RunEvent::FloorVoted { hero, descend } => {
+                if self.status != Status::FloorCleared {
+                    return Err(refused("no floor to leave now"));
+                }
+                if usize::from(*hero) >= self.heroes.len() {
+                    return Err(refused(format!("no hero {hero}")));
+                }
+                if *descend && self.floor >= DEEPEST {
+                    return Err(refused("there is no deeper floor"));
+                }
+                self.floor_votes.insert(*hero, *descend);
+                if self.floor_votes.len() == self.heroes.len() {
+                    let descend = self.floor_tally();
+                    self.floor_votes.clear();
+                    if descend {
+                        self.descend(content)?;
+                    } else {
+                        self.bank();
+                    }
+                }
+            }
         }
         Ok(())
+    }
+
+    /// Whether the floor votes descend: more votes to descend than to bank, a tie going to the torch bearer's vote.
+    fn floor_tally(&self) -> bool {
+        let down = self.floor_votes.values().filter(|d| **d).count();
+        let bank = self.floor_votes.len() - down;
+        match down.cmp(&bank) {
+            std::cmp::Ordering::Greater => true,
+            std::cmp::Ordering::Less => false,
+            std::cmp::Ordering::Equal => self
+                .floor_votes
+                .get(&self.torch())
+                .copied()
+                .unwrap_or(false),
+        }
+    }
+
+    /// The party banks the win: the run ends in victory.
+    fn bank(&mut self) {
+        self.status = Status::Victory;
+        let floors = self.floors_cleared;
+        self.log.push(format!(
+            "The party banks the win after {floors} floor{}.",
+            if floors == 1 { "" } else { "s" }
+        ));
+    }
+
+    /// The party descends: the next floor's ladder, drawn from the seed and avoiding the bosses just fought, a heart
+    /// back (up to [`HEARTS`]); the heroes keep everything else, and the floor's first boss awaits.
+    fn descend(&mut self, content: &Content) -> Result<(), CampaignError> {
+        let fought: Vec<String> = self
+            .map
+            .nodes
+            .iter()
+            .filter_map(|n| n.boss.clone())
+            .collect();
+        let avoid: Vec<&str> = fought.iter().map(String::as_str).collect();
+        self.floor = self.floor.saturating_add(1);
+        self.map = generate_floor(
+            self.theme(content)?,
+            self.seed,
+            self.content,
+            self.floor,
+            &avoid,
+        );
+        self.hearts = self.hearts.saturating_add(DESCENT_HEARTS).min(HEARTS);
+        self.at = None;
+        self.cleared.clear();
+        self.votes.clear();
+        self.results.clear();
+        self.status = Status::Map;
+        self.log.push(format!(
+            "The party descends to floor {} ({} hearts).",
+            self.floor, self.hearts
+        ));
+        if let [only] = self.map.choices(None).as_slice() {
+            self.enter(content, *only)?;
+        }
+        Ok(())
+    }
+
+    /// What a descent changes, one line each, for the choice on a cleared floor: empty while there is none to make.
+    pub fn descent_words(&self) -> Vec<String> {
+        if self.status != Status::FloorCleared {
+            return Vec::new();
+        }
+        let next = self.floor.saturating_add(1);
+        let scale = Scale::of_content(self.heroes.len(), self.heat, 0, self.content).on_floor(next);
+        let deeper = scale.deeper();
+        let hearts = self.hearts.saturating_add(DESCENT_HEARTS).min(HEARTS);
+        vec![
+            format!(
+                "Floor {next}: four new bosses, one bracket stronger per floor (bracket {} from the first fight, at most {})",
+                scale.bracket(),
+                crate::scale::MAX_BRACKET
+            ),
+            "No easy first fights: every boss plays the Heat's top tier".to_owned(),
+            format!(
+                "Intensify: each Enrage {deeper} turn{} earlier, each passive {} more, {} extra risky relic{}",
+                if deeper == 1 { "" } else { "s" },
+                if deeper == 1 {
+                    "once".to_owned()
+                } else {
+                    format!("{deeper} times")
+                },
+                scale.extra_relics(),
+                if scale.extra_relics() == 1 { "" } else { "s" }
+            ),
+            format!(
+                "The party keeps its life, relics, Satchels and upgrades, and has {hearts} hearts"
+            ),
+            "Bank the win to end the run in victory now".to_owned(),
+        ]
+    }
+
+    /// What the party's floor changes for the boss of the room it is in, one line each (`Scale::intensify`): empty on
+    /// the first floor.
+    pub fn intensify(&self) -> Vec<String> {
+        let rank = self.at.map_or(0, |node| self.boss_rank(node));
+        self.scale(self.heroes.len(), rank).intensify()
+    }
+
+    /// The scale of the boss at `rank` on the party's floor.
+    fn scale(&self, heroes: usize, rank: usize) -> Scale {
+        Scale::of_content(heroes, self.heat, rank, self.content).on_floor(self.floor)
     }
 
     fn lobby(&self) -> Result<(), CampaignError> {
@@ -684,6 +847,18 @@ impl Run {
         } else {
             Err(refused("the run has started"))
         }
+    }
+
+    /// Whether bot allies vote to descend from a cleared floor: the party holds at least two
+    /// hearts and 60 % of its life cap.
+    pub fn bots_descend(&self, content: &Content) -> bool {
+        let life: i64 = self.heroes.iter().map(|h| i64::from(h.life.max(0))).sum();
+        let cap: i64 = self
+            .heroes
+            .iter()
+            .map(|h| i64::from(h.max_life(content)))
+            .sum();
+        self.hearts >= 2 && life * 100 >= cap * 60 && self.floor < DEEPEST
     }
 
     /// Whether the run ended.
@@ -957,7 +1132,14 @@ impl Run {
     /// Keeps the fight of `game` in the room the party is in for the run's fight log.
     fn record_fight(&mut self, game: String, won: bool) {
         if let Some(room) = self.at {
-            self.fights.push(FoughtFight { game, room, won });
+            let boss = self.map.node(room).and_then(|n| n.boss.clone());
+            self.fights.push(FoughtFight {
+                game,
+                room,
+                floor: self.floor,
+                boss,
+                won,
+            });
         }
     }
 
@@ -1008,6 +1190,15 @@ impl Run {
         }
         self.log.push("The boss falls!".to_owned());
         if final_room {
+            self.floors_cleared = self.floors_cleared.saturating_add(1);
+            if self.content >= ENDLESS_FROM {
+                self.status = Status::FloorCleared;
+                self.log.push(format!(
+                    "Floor {} is cleared. Bank the win or descend?",
+                    self.floor
+                ));
+                return Ok(());
+            }
             self.status = Status::Victory;
             self.log
                 .push("The Warren King is dead. The party wins the delve!".to_owned());
@@ -1322,8 +1513,7 @@ impl Run {
             .iter()
             .filter_map(|n| {
                 let boss = theme.boss(n.boss.as_deref()?)?;
-                let scale =
-                    Scale::of_content(heroes, self.heat, self.boss_rank(n.id), self.content);
+                let scale = self.scale(heroes, self.boss_rank(n.id));
                 Some((boss.id.clone(), scale.life(boss)))
             })
             .collect()
@@ -1370,7 +1560,7 @@ impl Run {
                 upgrades: h.upgrades.clone(),
             })
             .collect();
-        let scale = Scale::of_content(heroes.len(), self.heat, rank, self.content);
+        let scale = self.scale(heroes.len(), rank);
         let life = scale.life(boss);
         let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
             .pick(&theme.schemes, theme.schemes.len());
@@ -1380,6 +1570,7 @@ impl Run {
                 Stream::new(self.seed, "modifier", u64::from(node), 0).pick(&theme.modifiers, 1),
             );
         }
+        rules.extend(self.boss_relics(content, boss, node, scale.extra_relics()));
         let minions = scale
             .minions(theme, boss)
             .into_iter()
@@ -1418,6 +1609,29 @@ impl Run {
             minions,
             run: None,
         }))
+    }
+
+    /// The risky relics a boss brings beyond its own on a deeper floor, drawn by the seed keyed by floor and room from
+    /// those of the run's generation that are neither its own relic nor a hero's.
+    fn boss_relics(
+        &self,
+        content: &Content,
+        boss: &crate::Boss,
+        node: u8,
+        count: usize,
+    ) -> Vec<String> {
+        if count == 0 {
+            return Vec::new();
+        }
+        let pool: Vec<String> = content
+            .relics()
+            .into_iter()
+            .filter(|c| c.role == "Risky" && c.since <= self.content && c.id != boss.relic)
+            .filter(|c| !self.heroes.iter().any(|h| h.relics.contains(&c.id)))
+            .map(|c| c.id.clone())
+            .collect();
+        let key = u64::from(self.floor) * 256 + u64::from(node);
+        Stream::new(self.seed, "boss-relics", key, 0).pick(&pool, count)
     }
 
     /// A bot hero's answer to `event`: in an older run the first option it can afford, else the best trade it can make
@@ -1478,6 +1692,26 @@ impl Run {
                         if !self.votes.contains_key(&hero) {
                             out.push(RunEvent::Voted { hero, node });
                         }
+                    }
+                }
+            }
+            Status::FloorCleared => {
+                let players_done = self
+                    .heroes
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, h)| h.user.is_some())
+                    .all(|(at, _)| {
+                        self.floor_votes
+                            .contains_key(&u8::try_from(at).unwrap_or(0))
+                    });
+                if !players_done {
+                    return out;
+                }
+                let descend = self.bots_descend(content);
+                for (hero, _) in bots {
+                    if !self.floor_votes.contains_key(&hero) {
+                        out.push(RunEvent::FloorVoted { hero, descend });
                     }
                 }
             }

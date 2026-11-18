@@ -25,7 +25,11 @@ deck: string, } | { "kind": "start" } | { "kind": "vote",
 /**
  * The room.
  */
-node: number, } | { "kind": "pick", 
+node: number, } | { "kind": "floor_vote", 
+/**
+ * Whether to descend.
+ */
+descend: boolean, } | { "kind": "pick", 
 /**
  * The answer.
  */

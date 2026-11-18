@@ -9,6 +9,7 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 - Each side takes one shared team turn (`TeamMode::SharedTurns`, CR 805): every hero untaps, draws, plays a land and casts sorceries in the party's turn, a side's turn is led by its first seat (`turn_lead`: the first living hero, the boss) and priority goes round the table from it. In the declare-attackers step each player of the side chooses the attacks of their own creatures in turn order, seeing what the teammates before chose; the side declares every choice at once, so limits, requirements, costs and "attacks alone" read the whole declaration (`party_attacks`). A choice illegal only together is refused with its reason and chosen again; after two refusals the engine declares the plain legal attack. Life totals stay per hero. The table names the party's turn ("Your party's turn").
 - Life carries over between fights. After a won fight each hero keeps their end life and heals 15; a hero who ended it as a Spirit comes back at 10 first. A Campfire rest heals 20, the shop's draught 15; nothing heals above 40 plus relic bonuses.
 - The party has 3 hearts. A lost fight costs one and the fight is retried: against the first boss every hero regroups at full life, against a later one at half life; with no hearts left the run ends in defeat.
+- From content generation 5 a run is endless: when a floor's final boss falls the party votes to bank the win or descend to the next floor (Endless).
 - A fight counts as lost, at the same price, when its table closes or expires without a result (the host closed the lobby, or the janitor dropped an unstarted lobby or a game nobody sat at; a bot ally is nobody) and when the host retreats, which ends the table. A game an admin ended or that failed to load was never played: the fight is made again at no cost.
 - Timers: the host picks Relaxed (default), Quick or Off when starting a run (`CreateDelve.timers`, stored as the run's first settings event, `Run.timers`); every fight's game plays under it, so the clocks of [server.md](server.md) (Response clocks) are the same in each fight, and Off never passes for a hero by time. A run stored without the setting is Relaxed. The boss and its minions are bots and have no clock.
 - Within a fight a hero at 0 life is a Restless Spirit while a teammate lives (`docs/engine.md`, Campaign seats); the party loses when every hero has fallen. See Spirits.
@@ -162,6 +163,19 @@ A run of an earlier generation keeps the decks as written and the rank × Heat t
 - A content test holds both tables monotonic: at every party size a later rank or a higher Heat never gives a boss a lower bracket, less life, hand, brain or minions, never takes away its relic or modifier and never delays its Enrage.
 - The run view lists each boss of the ladder with the life it starts with against the party at its rank (`DelveView.boss_lives`), which the ladder and the intro show.
 
+## Endless
+
+From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor (`Run.floor`, from 1).
+
+- Floor cleared: when a floor's final boss falls the run waits on the cleared floor (`Status::FloorCleared`, `Run.floors_cleared` counts it). Each hero votes to bank the win or descend (`RunEvent::FloorVoted`, `DelveAction::FloorVote`); with every vote in, the most votes win and a tie goes to the torch bearer's vote, as the camp vote. Bank ends the run in victory.
+- Descent: the next floor's ladder is drawn from the seed keyed by the floor (`map::generate_floor`): three lieutenants and a final boss as on the first floor, avoiding by identity the bosses of the floor above while enough others are left. The heroes keep their life, relics, Satchel, upgrades, banes and gold; the party gets one heart back, up to 3 (`DESCENT_HEARTS`). The floor's first boss awaits at once.
+- Difficulty by floor (`Scale::on_floor`, `Scale::deeper`): below the first floor every boss plays the Heat's top row of `BRACKET_TIERS` (no smaller deck, lower life, weaker brain, fewer minions or missing relic for the first fights), at the bracket of `BRACKETS` one higher per floor below the first, capped at bracket 5. Each step beyond the cap adds 10 % life (`OVERFLOW_LIFE`), a card to its opening hand and a brain level.
+- Boss relics: each boss brings one risky relic more per floor below the first, drawn by the seed keyed by floor and room from the risky relics of the run's generation that are neither its own relic nor held by a hero.
+- Intensify: per floor below the first, each boss's Enrage begins one heroes' turn earlier (never before turn 4, `ENRAGE_EARLIEST`; the content makes Enrage variants for turns 4 to 9) and its passive cards (`rules`, an upgraded form's added card too) are in its command zone once more, so a token passive makes one more token and an anthem stacks.
+- The intro lists what the floor changes (`DelveFightView.intensify`, `Scale::intensify`); the cleared floor lists what a descent changes (`DelveView.descent`, `Run::descent_words`).
+- Bots: bot allies vote once every player voted; they descend while the party holds 2 hearts or more and 60 % of its life cap or more (`Run::bots_descend`), else bank.
+- The first floor of a generation-5 run plays as generation 4: the same ladder, scale and fight plans; only the final boss's fall asks the vote. A run of an earlier generation ends in victory at its final boss as before.
+
 ## Loot
 
 - After each lieutenant every hero gets 50 gold, a pick of one of three relics and a pick of one of three cards in their colours (skipping a card gives 10 gold).
@@ -196,7 +210,7 @@ A run of an earlier generation keeps the decks as written and the rank × Heat t
 
 ## Run state
 
-- A run is the fold of its events (`run.rs`): `Content`, `Joined`, `Left`, `DeckChosen`, `Timers`, `Started`, `Voted`, `FightCreated`, `FightEnded`, `Picked`, `Abandoned`. The ladder is regenerated from the seed, never stored.
+- A run is the fold of its events (`run.rs`): `Content`, `Joined`, `Left`, `DeckChosen`, `Timers`, `Started`, `Voted`, `FightCreated`, `FightEnded`, `Picked`, `FloorVoted`, `Abandoned`. The ladder is regenerated from the seed, never stored.
 - Decks are chosen once, in the lobby; afterwards only rewards change them. A fight is made from those decks (`FightPlan.run` names the run, so the game links back); its game lobby refuses a deck change (409 `deck_fixed`). A hero whose deck no longer plays (deleted, nothing playable) holds the fight: the run view lists it in `deck_problems`, and only that hero may then choose another deck (`DeckChosen` while the fight waits for its game).
 - The party's list leaves abandoned runs out; the rows stay stored. A run unchanged for 7 days (`STALE_DAYS`) with no live fight is abandoned when the list is read.
 - Every random draw comes from the seed keyed by room, hero and purpose (`rng.rs`), so a reload never rerolls loot.
@@ -205,7 +219,8 @@ A run of an earlier generation keeps the decks as written and the rank × Heat t
 
 ## Interface
 
-- The run page reads as a descent: a header with the party's life, hearts, Heat and seed; the ladder as a path from the first boss to the final one, every room cleared, current, next or locked; votes show who chose which camp.
+- The run page reads as a descent: a header with the party's life, hearts, Heat, floor and seed; the ladder of the floor as a path from the first boss to the final one, every room cleared, current, next or locked, with its floor; votes show who chose which camp.
+- A cleared floor shows the choice to bank the win or descend, each hero's ballot and what a descent changes (`DescendPanel`); the run summary counts the floors cleared and the fight log names each fight's boss and, below the first floor, its floor.
 - Each camp is a scene of its own (loot, shop, campfire with Temper, event, the Mirror Pool, a card or relic to give up); a risky relic is always marked Dangerous, and every relic chip and card shows its rarity by colour and word. The run header lists each hero's Satchel, commander upgrades and banes, and a cut life cap. An event shows each option's cost and reward before the choice (relic rewards in their rarity's colour, odds in an older run, why an option is shut) and a "What happened" panel with the chronicle after it (Events). Implementation in [web.md](web.md), Delves.
 - A fight opens with the boss intro (the run view's `fight`: the plan's boss, life, custom cards, phase thresholds and minions), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight; the host also has Retreat, confirmed first. When the game ends the final table stays under the fight's result (`FightEnd`: won or lost, each seat's end, the log's last turns) until the player presses "Continue to the run", or after a 60 s countdown that "Stay" stops; the run then greets the loot or the lost heart.
 - The run keeps each fight whose game ended or lost its table (`Run.fights`: the game, the room, won or lost; a voided game and a retreat before a game leave none). The run page lists them newest first as the Fight log, each linking to its recorded game (`/replay/$gameId`), where the whole log of the fight reads back.
@@ -215,7 +230,7 @@ A run of an earlier generation keeps the decks as written and the rank × Heat t
 
 - Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint.
 - A content test checks that every boss, commander and reward card plays automatically (Verified or Read) in the corpus, every deck as written has 40 cards, every bracket deck keeps the rules of Bosses at every bracket and every custom card keeps all its abilities.
-- Content generations of bosses: 4 brings the bracket decks, the commander cards, Seraphine, Ysolde and the upgraded forms (`RunEvent::Content`; the map is drawn again for the generation the run stores).
+- Content generations of bosses: 4 brings the bracket decks, the commander cards, Seraphine, Ysolde and the upgraded forms (`RunEvent::Content`; the map is drawn again for the generation the run stores); 5 brings endless floors (Endless).
 
 ## Tuning
 

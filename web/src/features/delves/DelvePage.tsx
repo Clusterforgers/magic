@@ -31,6 +31,7 @@ import { DelveOffer } from './DelveOffer'
 import { loadPickerDecks, notePlayed, readPlayed } from './deckPicker'
 import type { LastPlayed, PickerDecks } from './deckPicker'
 import { BossIntro } from './BossIntro'
+import { DescendPanel } from './DescendPanel'
 import { DeckPicker } from './DeckPicker'
 import { FightLog } from './FightLog'
 import { heatTier, lastFight, listOf, nextStep, regroupLife } from './model'
@@ -206,6 +207,8 @@ function EndPanel({ view, content }: { view: DelveView; content: DelveContent })
         </dd>
         <dt className="text-muted-foreground">Rooms</dt>
         <dd className="font-semibold">{view.run.cleared.length}</dd>
+        <dt className="text-muted-foreground">Floors cleared</dt>
+        <dd className="font-semibold">{view.run.floors_cleared}</dd>
       </dl>
       <ul aria-label="Heroes" className="grid w-full max-w-prose gap-1 text-left text-sm">
         {view.run.heroes.map((hero, at) => (
@@ -467,6 +470,7 @@ export function DelvePage({
             </DialogContent>
           </Dialog>
           {status === 'Map' ? <VotePanel view={view} act={act} busy={busy} /> : null}
+          {status === 'FloorCleared' ? <DescendPanel view={view} act={act} busy={busy} /> : null}
           {status === 'Room' ? (
             <RoomPanel view={view} content={content} act={act} busy={busy} find={find} />
           ) : null}

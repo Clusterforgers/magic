@@ -17,7 +17,7 @@ code: string,
  */
 theme: string, 
 /**
- * Where the run is: lobby, map, fight, room, victory, defeat or abandoned.
+ * Where the run is: lobby, map, fight, room, `floor_cleared`, victory, defeat or abandoned.
  */
 status: string, 
 /**

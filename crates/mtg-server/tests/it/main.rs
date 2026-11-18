@@ -60,6 +60,7 @@ mod pg_conjure;
 mod pg_deck_groups;
 mod pg_deck_import_printings;
 mod pg_decks;
+mod pg_delve_descend;
 mod pg_delve_fights;
 mod pg_delve_forfeit;
 mod pg_delve_hooks;

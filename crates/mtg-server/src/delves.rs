@@ -148,6 +148,7 @@ fn status_word(status: &Status) -> &'static str {
         Status::Map => "map",
         Status::Fight { .. } => "fight",
         Status::Room => "room",
+        Status::FloorCleared => "floor_cleared",
         Status::Victory => "victory",
         Status::Defeat => "defeat",
         Status::Abandoned => "abandoned",
@@ -597,6 +598,7 @@ fn fight_view(run: &Run) -> Option<DelveFightView> {
         rules: plan.boss.rules.clone(),
         phases: plan.boss.phases.clone(),
         commander: plan.boss.commander.clone(),
+        intensify: run.intensify(),
         minions: plan
             .minions
             .iter()
@@ -637,6 +639,7 @@ fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> 
         boss_lives: campaign().map_or_default(|content| loaded.run.boss_lives(content)),
         deck_problems,
         fight: fight_view(&loaded.run),
+        descent: loaded.run.descent_words(),
         mirror: Vec::new(),
     }
 }
@@ -1064,12 +1067,18 @@ async fn event_of(
         }
         DelveAction::Start => host_only(RunEvent::Started),
         DelveAction::Vote { node } => Ok(RunEvent::Voted { hero: member, node }),
+        DelveAction::FloorVote { descend } => Ok(floor_vote(member, descend)),
         DelveAction::Pick { pick } => pick_event(app, loaded, member, pick).await,
         DelveAction::Abandon => host_only(RunEvent::Abandoned),
         DelveAction::Retreat => host_only(RunEvent::FightForfeited {
             cause: Forfeit::Retreat,
         }),
     }
+}
+
+/// A hero's vote on a cleared floor.
+fn floor_vote(hero: u8, descend: bool) -> RunEvent {
+    RunEvent::FloorVoted { hero, descend }
 }
 
 /// Ends the table of the fight the party retreats from, so nobody plays on in a game the run has given up.
@@ -1143,6 +1152,7 @@ mod tests {
             Status::Map,
             Status::Fight { game: None },
             Status::Room,
+            Status::FloorCleared,
             Status::Victory,
             Status::Defeat,
             Status::Abandoned,
@@ -1150,6 +1160,6 @@ mod tests {
         .iter()
         .map(status_word)
         .collect();
-        assert_eq!(words.len(), 7);
+        assert_eq!(words.len(), 8);
     }
 }

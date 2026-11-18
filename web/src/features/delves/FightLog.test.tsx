@@ -23,8 +23,8 @@ describe('the fight log', () => {
           at: 0,
           cleared: [0],
           fights: [
-            { game: 'g-lost', room: 0, won: false },
-            { game: 'g-won', room: 0, won: true },
+            { game: 'g-lost', room: 0, floor: 1, boss: null, won: false },
+            { game: 'g-won', room: 0, floor: 1, boss: null, won: true },
           ],
         },
       ),

@@ -666,10 +666,9 @@ impl Content {
             .values()
             .filter(|c| c.kind == CardKind::Enrage)
             .flat_map(|c| {
-                crate::scale::ENRAGE_TURN
-                    .iter()
-                    .filter(move |turn| **turn != c.turn)
-                    .map(move |turn| enrage_at(c, *turn))
+                crate::scale::ENRAGE_TURNS
+                    .filter(move |turn| *turn != c.turn)
+                    .map(move |turn| enrage_at(c, turn))
             })
             .collect::<Result<Vec<_>, _>>()?;
         cards.extend(variants.into_iter().map(|c| (c.id.clone(), c)));
@@ -718,7 +717,7 @@ fn every_turn() -> u32 {
     1
 }
 
-/// The Enrage `card` made to begin on the heroes' turn `turn` (`scale::ENRAGE_TURN`): its id, `turn`, rules text and
+/// The Enrage `card` made to begin on the heroes' turn `turn` (`scale::ENRAGE_TURNS`): its id, `turn`, rules text and
 /// the turn counts its abilities compare with and count beyond.
 fn enrage_at(card: &CustomCard, turn: u32) -> Result<CustomCard, CampaignError> {
     const WORDS: [&str; 13] = [
