@@ -40,17 +40,6 @@ use serde::Deserialize;
 /// The two heroes sit at 0 and 1, the boss last.
 const BOSS: usize = 2;
 
-const BOSSES: [&str; 8] = [
-    "korrath_wilds",
-    "sahrra_pride",
-    "valdric_manor",
-    "ozrith_observatory",
-    "aurenne_bastion",
-    "vorthana_hive",
-    "sivanne_mire",
-    "unmaker_void",
-];
-
 fn pid(seat: usize) -> PlayerId {
     PlayerId::from_index(seat)
 }
@@ -528,7 +517,11 @@ fn tapped_heroes(driver: &Driver) -> usize {
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| state.object(*id))
-        .filter(|o| o.controller() != pid(BOSS) && o.permanent().is_some_and(|p| p.tapped()))
+        .filter(|o| {
+            o.controller() != pid(BOSS)
+                && o.permanent()
+                    .is_some_and(mtg_engine::object::PermanentState::tapped)
+        })
         .count()
 }
 
