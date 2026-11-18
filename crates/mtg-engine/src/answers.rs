@@ -22,8 +22,13 @@ pub(crate) enum Outcome {
     Events(Vec<Event>),
     /// Start casting this spell; its announcement and payment are decided next.
     BeginCast(ObjectId),
-    /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next.
-    BeginAttack(Vec<(ObjectId, AttackTarget)>, crate::combat::AttackExtras),
+    /// This attack is declared once its cost is paid (CR 508.1h): the payment is decided next, led by the attacking
+    /// player (the active player of a team that attacks together).
+    BeginAttack(
+        mtg_core::ids::PlayerId,
+        Vec<(ObjectId, AttackTarget)>,
+        crate::combat::AttackExtras,
+    ),
     /// This block is declared once its cost is paid (CR 509.1d): the payment is decided next, by the player whose
     /// creatures block.
     BeginBlock(Vec<(ObjectId, ObjectId)>, mtg_core::ids::PlayerId),

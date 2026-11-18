@@ -131,6 +131,8 @@ pub struct HeuristicBot {
     started: Instant,
     /// When the next decision was asked, if the caller said ([`SeatBrain::set_asked`]).
     next_asked: Option<Instant>,
+    /// The bot backed out of paying for its attack: the declaration that comes back does only what the rules require.
+    backed_out: bool,
 }
 
 /// The longest a timed bot looks for a forced win ([`endgame::forced_win`]).
@@ -157,6 +159,46 @@ impl HeuristicBot {
             history: deep::History::default(),
             started: Instant::now(),
             next_asked: None,
+            backed_out: false,
+        }
+    }
+
+    /// `answer` as the table can take it under an attack tax (CR 508.1h): a declaration of attackers is cut back to the
+    /// mana the seat surely has, and after backing out of paying for one the next declaration does only what the rules
+    /// require, so the seat never declares the same attack again and again.
+    fn payable(&mut self, decision: &Decision, answer: Answer) -> Answer {
+        match (&decision.kind, answer) {
+            (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attack)) => {
+                if std::mem::take(&mut self.backed_out) {
+                    Answer::DeclareAttackers(options.legal_attack())
+                } else {
+                    Answer::DeclareAttackers(crate::bot::affordable_attack(options, &attack))
+                }
+            }
+            (
+                DecisionKind::DeclareAttackers(options),
+                Answer::DeclareExerting {
+                    attackers, exert, ..
+                },
+            ) => {
+                let attack = if std::mem::take(&mut self.backed_out) {
+                    options.legal_attack()
+                } else {
+                    crate::bot::affordable_attack(options, &attackers)
+                };
+                let exert = exert
+                    .into_iter()
+                    .filter(|object| attack.iter().any(|(attacker, _)| attacker == object))
+                    .collect();
+                crate::bot::w11a_declaration(attack, exert)
+            }
+            (DecisionKind::PayMana(options), answer @ Answer::PayMana(PayChoice::Cancel))
+                if options.attack =>
+            {
+                self.backed_out = true;
+                answer
+            }
+            (_, answer) => answer,
         }
     }
 
@@ -510,7 +552,7 @@ impl SeatBrain for HeuristicBot {
 
     fn choose(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
         self.started = self.next_asked.take().unwrap_or_else(Instant::now);
-        match table {
+        let answer = match table {
             // A timed brain stops every loop of its search at the decision cap.
             Some(engine) if self.settings.time.is_some() => {
                 clock::stopping(clock::Stop::at(clock::cap(self.started)), || {
@@ -519,6 +561,7 @@ impl SeatBrain for HeuristicBot {
             }
             Some(engine) => self.answer(decision, engine),
             None => self.random.choose(decision),
-        }
+        };
+        self.payable(decision, answer)
     }
 }

@@ -1,7 +1,7 @@
 //! A team's shared combat (CR 805.10, CR 810.7, CR 508.1): where teams share their turns (Two-Headed Giant, shared team
 //! turns) each player of the active team chooses the attacks of their own creatures in turn order, and the team makes
 //! one combined declaration of every choice, checked as a whole: its limits, requirements, costs and "attacks alone"
-//! read the combined set (CR 805.10b).
+//! read the combined set (CR 805.10b), and each player pays the attack costs of their own creatures (`attack_tax`).
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -83,6 +83,19 @@ pub(crate) fn pick_options(state: &GameState, picker: PlayerId) -> AttackOptions
     options.cant_alone.clear();
     options.joins.clear();
     options.at_least_one = None;
+    // Each player pays for their own creatures, so the budget is the picker's.
+    if options
+        .attackers
+        .iter()
+        .any(|option| !option.tax.is_empty())
+    {
+        let own: Vec<ObjectId> = options
+            .attackers
+            .iter()
+            .map(|option| option.object)
+            .collect();
+        options.mana = crate::attack_tax::budget(state, picker, &own);
+    }
     options.most = options.most.map(|most| most.saturating_sub(before.len()));
     for (target, most) in &mut options.most_at {
         let taken = before.iter().filter(|(_, at)| at == target).count();
@@ -118,6 +131,7 @@ pub(crate) fn answer(
     check_attackers(options, &attackers)?;
     crate::w11a_exert::w11a_check_exert(options, &attackers, &extras.exert)?;
     crate::keywords::banding::check_bands(state, &attackers, &extras.bands)?;
+    crate::attack_tax::check_pick(state, player, &attackers)?;
     let note = crate::spotlight_aim::shifted(state, player, options, &attackers);
     if !is_last(state, player) {
         let chosen = Event::AttackersChosen {
@@ -155,8 +169,11 @@ fn declare(
             crate::w11a_exert::w11a_check_exert(&options, &attackers, &extras.exert)
                 .map_err(EngineError::from)
         });
-    match checked {
-        Ok(()) => crate::attack_tax::declare(state, active, attackers, extras),
+    // What the team's whole declaration costs is refused to the team like a rule it breaks.
+    let declared =
+        checked.and_then(|()| crate::attack_tax::declare(state, active, attackers, extras));
+    match declared {
+        Ok(outcome) => Ok(outcome),
         Err(_) if state.combat.attack_refusals.len() >= MOST_REFUSALS => {
             crate::attack_tax::declare(
                 state,

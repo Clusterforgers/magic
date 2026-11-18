@@ -105,24 +105,80 @@ fn can_pay_life(state: &GameState, player: PlayerId, life: u32) -> bool {
                 .is_some_and(|seat| i64::from(seat.life()) >= i64::from(life)))
 }
 
-/// The events of an attack declared and paid for: the declaration, the bands (CR 702.22c), the exerts (CR 701.43), then
-/// the life it costs and its other costs with the permanents picked for them (`picked`); `None` when a pick is missing.
-pub(crate) fn made(
+/// The attack an attack's paying owes for: each controller of its attackers with their own creatures, the attacking
+/// player first. Where a team shares its turns each player pays the costs of their own creatures of the team's combined
+/// attack; else the attacking player pays for every attacker (CR 508.1h).
+fn shares(
     state: &GameState,
     player: PlayerId,
     attackers: &[(ObjectId, AttackTarget)],
-    extras: &AttackExtras,
+) -> Vec<(PlayerId, Vec<(ObjectId, AttackTarget)>)> {
+    let mut shares = vec![(player, Vec::new())];
+    let split = crate::party_attacks::splits(state);
+    for (object, target) in attackers {
+        let paying = if split {
+            crate::characteristics::controller_of(state, *object).unwrap_or(player)
+        } else {
+            player
+        };
+        match shares.iter_mut().find(|(seat, _)| *seat == paying) {
+            Some((_, own)) => own.push((*object, *target)),
+            None => shares.push((paying, vec![(*object, *target)])),
+        }
+    }
+    shares
+}
+
+/// The teammates who pay mana for their own creatures of a team's attack, in the order they are asked, each with
+/// their creatures; the attacking player pays last, with the declaration.
+fn teammates(
+    state: &GameState,
+    player: PlayerId,
+    attackers: &[(ObjectId, AttackTarget)],
+) -> Vec<(PlayerId, Vec<(ObjectId, AttackTarget)>)> {
+    let mut mates: Vec<_> = shares(state, player, attackers)
+        .into_iter()
+        .filter(|(paying, own)| *paying != player && !total(state, own).symbols().is_empty())
+        .collect();
+    mates.sort_by_key(|(paying, _)| *paying);
+    mates
+}
+
+/// The creatures of an attack the attacking player pays for themselves.
+fn own_share(
+    state: &GameState,
+    player: PlayerId,
+    attackers: &[(ObjectId, AttackTarget)],
+) -> Vec<(ObjectId, AttackTarget)> {
+    shares(state, player, attackers)
+        .into_iter()
+        .find(|(paying, _)| *paying == player)
+        .map(|(_, own)| own)
+        .unwrap_or_default()
+}
+
+/// The events of an attack declared and paid for: the teammates' payments of a team's attack (`paid`), the
+/// declaration, the bands (CR 702.22c), the exerts (CR 701.43), then the life it costs, each player paying for their
+/// own creatures, and its other costs with the permanents picked for them (`picked`); `None` when a pick is missing.
+pub(crate) fn made(
+    state: &GameState,
+    player: PlayerId,
+    (attackers, extras): (&[(ObjectId, AttackTarget)], &AttackExtras),
     picked: &Choices,
+    paid: &[Event],
 ) -> Option<Vec<Event>> {
-    let mut events = attack_events(state, player, attackers);
+    let mut events = paid.to_vec();
+    events.extend(attack_events(state, player, attackers));
     events.extend(crate::keywords::banding::band_events(player, &extras.bands));
     events.extend(crate::w11a_exert::w11a_exert_events(player, &extras.exert));
-    let life = life_total(state, attackers);
-    if life > 0 {
-        events.push(Event::LifePaid {
-            player,
-            amount: life,
-        });
+    for (paying, own) in shares(state, player, attackers) {
+        let life = life_total(state, &own);
+        if life > 0 {
+            events.push(Event::LifePaid {
+                player: paying,
+                amount: life,
+            });
+        }
     }
     events.extend(r6400_events(
         state,
@@ -233,67 +289,98 @@ fn by_hand(state: &GameState, player: PlayerId) -> bool {
     })
 }
 
-/// The payment of the total cost of an attack, if its player can make it. The mana abilities offered are those of the
-/// permanents the attack leaves untapped; the object named is the first attacker.
+/// The payment `paying` makes for their creatures `own` of the attack `attackers`, if they can make it. The mana
+/// abilities offered are those of the permanents the attack leaves untapped; the object named is the first of `own`.
 ///
 /// The attack is payable when an automatic payment exists, which never pays life down to 0: an attack that only a
 /// payment taking the player's last life would cover is not made, so a payment decision always has the automatic answer
 /// beside backing out and a player who backs out is not offered the same attack for nothing.
 fn payment(
     state: &GameState,
-    player: PlayerId,
+    (player, paying): (PlayerId, PlayerId),
     attackers: &[(ObjectId, AttackTarget)],
+    own: &[(ObjectId, AttackTarget)],
 ) -> Option<PayOptions> {
-    let owed = total(state, attackers);
-    can_pay_life(state, player, life_total(state, attackers)).then_some(())?;
+    let owed = total(state, own);
+    can_pay_life(state, paying, life_total(state, own)).then_some(())?;
     let after = tapped(state, player, attackers)?;
     let options = payment_decision(
         &after,
-        player,
-        attackers.first()?.0,
+        paying,
+        own.first()?.0,
         owed,
-        mana_options(&after, player),
+        mana_options(&after, paying),
         Offered::default(),
         Spend::other(),
         true,
         0,
     )?;
-    (options.auto_available || by_hand(&after, player)).then_some(PayOptions {
+    (options.auto_available || by_hand(&after, paying)).then_some(PayOptions {
         attack: true,
         ..options
     })
 }
 
-/// What a declared attack does: with nothing to pay it is made, else it is paid for first (CR 508.1h) or, if its player
-/// cannot pay, refused.
+/// Whether `paying` can pay for their creatures `own` of the attack `attackers`: the life and the mana they cost.
+fn check_share(
+    state: &GameState,
+    (player, paying): (PlayerId, PlayerId),
+    attackers: &[(ObjectId, AttackTarget)],
+    own: &[(ObjectId, AttackTarget)],
+) -> Result<(), EngineError> {
+    let life = life_total(state, own);
+    if !can_pay_life(state, paying, life) {
+        return Err(IllegalAnswer::AttackUnaffordable(format!("{life} life")).into());
+    }
+    let owed = total(state, own);
+    if !owed.symbols().is_empty() && payment(state, (player, paying), attackers, own).is_none() {
+        return Err(IllegalAnswer::AttackUnaffordable(owed.to_string()).into());
+    }
+    Ok(())
+}
+
+/// Whether `player` can pay for their own choice `own` of a team's attack, checked as they choose, so a choice only
+/// its own player can mend is refused to them (CR 508.1h).
+pub(crate) fn check_pick(
+    state: &GameState,
+    player: PlayerId,
+    own: &[(ObjectId, AttackTarget)],
+) -> Result<(), EngineError> {
+    check_share(state, (player, player), own, own)
+}
+
+/// What a declared attack does: with nothing to pay it is made, else it is paid for first (CR 508.1h) or, if a player
+/// who pays for it cannot pay, refused.
 pub(crate) fn declare(
     state: &GameState,
     player: PlayerId,
     attackers: Vec<(ObjectId, AttackTarget)>,
     extras: AttackExtras,
 ) -> Result<Outcome, EngineError> {
-    let owed = total(state, &attackers);
-    let life = life_total(state, &attackers);
-    if !can_pay_life(state, player, life) {
-        return Err(IllegalAnswer::AttackUnaffordable(format!("{life} life")).into());
+    for (paying, own) in shares(state, player, &attackers) {
+        check_share(state, (player, paying), &attackers, &own)?;
     }
     let parts = other_parts(state, &attackers);
     if !r6400_payable(state, player, &declared(&attackers), &parts) {
         return Err(IllegalAnswer::AttackUnaffordable("the permanents it takes".to_owned()).into());
     }
-    if owed.symbols().is_empty() && parts.is_empty() {
-        let events = made(state, player, &attackers, &extras, &Choices::default())
-            .ok_or_else(|| EngineError::InvalidEvent("an attack without its picks".into()))?;
+    if total(state, &attackers).symbols().is_empty() && parts.is_empty() {
+        let events = made(
+            state,
+            player,
+            (&attackers, &extras),
+            &Choices::default(),
+            &[],
+        )
+        .ok_or_else(|| EngineError::InvalidEvent("an attack without its picks".into()))?;
         return Ok(Outcome::Events(events));
     }
-    if !owed.symbols().is_empty() && payment(state, player, &attackers).is_none() {
-        return Err(IllegalAnswer::AttackUnaffordable(owed.to_string()).into());
-    }
-    Ok(Outcome::BeginAttack(attackers, extras))
+    Ok(Outcome::BeginAttack(player, attackers, extras))
 }
 
-/// The decision of an attack that waits for its payment: the permanents its other costs take, then `PayMana` for the
-/// total cost, which can be backed out of. An attack that can no longer be paid is dropped.
+/// The decision of an attack that waits for its payment: the permanents its other costs take, then `PayMana` of each
+/// teammate for their own creatures of a team's attack, then `PayMana` of the attacking player for theirs, each of
+/// which can be backed out of. An attack that can no longer be paid is dropped.
 pub(crate) fn next(
     state: &GameState,
     player: PlayerId,
@@ -305,10 +392,31 @@ pub(crate) fn next(
     if let Some(next) = r6400_next(state, player, &declared(attackers), &parts, (choices, done)) {
         return next;
     }
-    if total(state, attackers).symbols().is_empty() {
-        return made(state, player, attackers, extras, choices).map_or(Next::Drop, Next::Commit);
+    if let Some((mate, own)) = teammates(state, player, attackers).get(usize::from(done.party_paid))
+    {
+        return match payment(state, (player, *mate), attackers, own) {
+            Some(options) => {
+                done.asking_teammate();
+                Next::Ask(Decision {
+                    player: *mate,
+                    kind: DecisionKind::PayMana(options),
+                })
+            }
+            None => Next::Drop,
+        };
     }
-    match payment(state, player, attackers) {
+    let own = own_share(state, player, attackers);
+    if total(state, &own).symbols().is_empty() {
+        return made(
+            state,
+            player,
+            (attackers, extras),
+            choices,
+            done.assist_events.as_deref().unwrap_or_default(),
+        )
+        .map_or(Next::Drop, Next::Commit);
+    }
+    match payment(state, (player, player), attackers, &own) {
         Some(options) => Next::Ask(Decision {
             player,
             kind: DecisionKind::PayMana(options),

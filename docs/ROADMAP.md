@@ -49,7 +49,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 - Delves: the co-op boss rush with own Commander decks for 1 to 6 heroes, the Warrens ladder of four bosses with phases, relics, loot, shop, campfire and events, Spirits at 0 life, runs stored as event logs with fights as recorded games, the web pages and the bot simulator (`docs/delves.md`).
 - Delves at the table and between fights: boss mode (the boss's side on top with its abilities in plain words from the content the engine plays, the party together at the bottom), the boss intro in place of the game's lobby, decks fixed for the run with a lost deck held on the run page, the return to the run after a fight, the runs list without abandoned runs and with past runs folded (`docs/delves.md`).
-- Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, and the table shows whom each boss-side seat eyes (`docs/delves.md`).
+- Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, the table shows whom each boss-side seat eyes, each hero pays the attack tax of their own creatures, and the boss bot attacks only within what it can pay (`docs/delves.md`).
 - Delves difficulty: one scaling table by party size (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size; the bosses ramp by ladder rank and the three Heats (Casual, Seasoned, Heroic) by one rank × Heat table with the Enrage turn by Heat, worded on the new-run form and the run header (`docs/delves.md`).
 - Delves boss roster: thematic boss decks written in brackets 1 to 5 (40, 50 and 60 cards) that carry the difficulty by Heat and ladder rank, a commander card each boss casts free as its last phase begins, no infinite combos and a loop cap of five for the boss's side, the five mono-colour bosses (Seraphine and Ysolde new) and upgraded final bosses, behind content generation 4 (`docs/delves.md`).
 - Delves generation 5: five two-colour bosses (Hollowmere WU Spirits, Morwenna UB Faeries, Korrath RG Dinosaurs, Sahrra GW Cats, Valdric WB Vampires), upgraded Vex, Seraphine and Ysolde, and the Unmaker, an uber boss at Heat 2 whose engine rule draws the heroes' cost colours anew each round with the cost now on the card (`docs/delves.md`).
@@ -145,7 +145,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] (dl3c) Delves balance at three to six heroes: measure them on seeds 1 to 8 (a fight takes 30 to 90 minutes of machine time or more) and lift any size that wins below 50 %
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
-- [ ] (dl2c) Each hero pays the attack costs of their own creatures in the party's combined attack
+- [ ] (dl2d) Each hero gives up the permanents an attack tax takes (sacrifice a land) for their own creatures in the party's combined attack, not the leader
 - [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
 - [ ] (dl8d) The glossary explains each boss's Enrage by its own rules, not as the Magic keyword
 - [ ] (dl4a) Bot allies temper and buy commander upgrades, and the simulator's heroes bring their commander facts
@@ -170,7 +170,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl15m) The ladder and the intro name a final boss's upgraded form as the boss it came from
 - [ ] (dl15n) More uber bosses with a game-changing rule each
 - [ ] (dl15o) The table shows each hero the colours their costs stand for this round under the Unmaker ("red is green")
-- [ ] (dl15p) The boss bot never declares an attack it cannot pay under a hero's attack tax (Archangel of Tithes ran a Morwenna fight into the watchdog)
 
 ## M8 Polish and deploy
 

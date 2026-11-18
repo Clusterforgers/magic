@@ -13,6 +13,7 @@ use super::eval::{creature_value, life_value, pressure};
 use super::seen::{Body, Seen};
 use super::sim::{Horizon, Search};
 use super::threat;
+use crate::bot::affordable_attack;
 
 /// A declaration of attackers.
 pub type Attack = Vec<(ObjectId, AttackTarget)>;
@@ -595,6 +596,7 @@ pub fn attack_candidates(seen: &Seen<'_>, options: &AttackOptions) -> Vec<Attack
     let mut keys: Vec<Attack> = Vec::new();
     let mut unique: Vec<Attack> = Vec::new();
     for attack in candidates {
+        let attack = affordable_attack(options, &attack);
         let mut key = attack.clone();
         key.sort_unstable_by_key(|(id, _)| *id);
         if !keys.contains(&key) && options.accepts(&attack) {
@@ -618,11 +620,12 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
     let seat = search.seat();
     let seen = Seen::new(engine.state(), seat);
     if !search.settings().combat_search {
-        return if search.settings().careful {
+        let attack = if search.settings().careful {
             safe_attack(&seen, options)
         } else {
             quick_attack(&seen, options)
         };
+        return affordable_attack(options, &attack);
     }
     let bodies = bodies_by_id(&seen);
     let offered = offered_players(options);
@@ -655,6 +658,7 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
     let mut tried: Vec<Attack> = Vec::new();
     let mut best: Option<(f64, Attack)> = None;
     let mut consider = |search: &mut Search, attack: Attack, best: &mut Option<(f64, Attack)>| {
+        let attack = affordable_attack(options, &attack);
         let mut key = attack.clone();
         key.sort_unstable_by_key(|(id, _)| *id);
         if tried.contains(&key) || !options.accepts(&attack) {
@@ -699,7 +703,10 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
         };
         consider(search, toggled, &mut best);
     }
-    best.map_or_else(|| safe_attack(&seen, options), |(_, attack)| attack)
+    best.map_or_else(
+        || affordable_attack(options, &safe_attack(&seen, options)),
+        |(_, attack)| attack,
+    )
 }
 
 #[cfg(test)]
