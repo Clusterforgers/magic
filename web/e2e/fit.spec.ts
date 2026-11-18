@@ -262,7 +262,9 @@ test.describe('the development table with 40 permanents a seat', () => {
   test('fits at every size at the opening hands, with the hand in view while the player decides', async ({
     page,
   }) => {
-    await page.goto(`${DEV_WEB_URL}/dev/table?seats=4&prompt=mulligan`)
+    // The opening hands come before any permanent, so the boards are bare as in a real game (`bare=1`): a phone's sheet
+    // grows over the opponents' board for the hand (docs/web.md, Prompt band), which holds nothing yet.
+    await page.goto(`${DEV_WEB_URL}/dev/table?seats=4&prompt=mulligan&bare=1`)
     await page.locator(THINGS.keep).first().waitFor()
     await atEverySize(page, ['hand', 'life', 'keep'], onTable('the opening hands'))
     // Seven cards of the opening hand are in the dock, with the commanders that wait before them in a list of their own.
