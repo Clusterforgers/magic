@@ -68,6 +68,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members; an effect that sets each player's life sets a shared total once.
 - Card preview modifiers: under the rules text the preview lists everything that changes the card with its source and duration, identical sources added together, a line pointing at its source on the board, and no hidden source named (`docs/protocol.md`, `docs/web.md`).
 - Middle bar: a prompt band of one fixed line with the asking card's chip, and the decision's detail (the asking card with its clause, runs of triggers, ordering, paying) in the Stack column or a sheet over the hand (`docs/ui-design.md`, The band and the Stack column).
+- Delves encounter modifiers: the 23 rules of the pool as emblems with their `not_with` lists, no commander tax for the heroes, and "first instant or sorcery each turn" counting only the spells it names (`docs/delves.md`).
 
 ## Live game
 
@@ -162,7 +163,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw2) Drowned Spire innates (no mill; only the Archivist's Phase 1 mills, once)
-- [ ] (rw3) Encounter modifier content: the 23 modifiers of the pool with their `not_with` lists and a check each
 - [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)
 - [ ] (rw5a) The boss's satchel reaches its game: the fight's recipe carries the reusable and once satchel cards into `satchel_reusable` and `satchel`
 - [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase

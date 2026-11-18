@@ -147,8 +147,15 @@ impl GameState {
             .fold(0, u32::saturating_add)
     }
 
-    /// The generic mana the commander `id` costs more to cast from the command zone now (CR 903.8).
+    /// The generic mana the commander `id` costs more to cast from the command zone now (CR 903.8); nothing for an owner who pays no
+    /// commander tax.
     pub fn commander_tax(&self, id: ObjectId) -> u32 {
+        if self
+            .object(id)
+            .is_some_and(|card| crate::rules::pays_no_commander_tax(self, card.owner()))
+        {
+            return 0;
+        }
         self.commander_casts(id)
             .saturating_mul(self.ruleset().commander_tax())
     }

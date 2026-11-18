@@ -59,6 +59,36 @@ Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`
 - Drain rule: a boss's innate, modifier, phase or satchel card takes life from a hero only as damage or unless the hero pays.
 - Relics for heroes: from generation 8 a relic can drop again; owning it never lowers its chance, and copies stack.
 
+### Encounter modifiers
+
+Each modifier is an emblem on the boss's seat whose rule binds every player alike unless it names the heroes; most copy the rule a Verified card runs. The Spire bosses are `siren_queen`, `drowned_archivist` and `leviathan` in `not_with`.
+
+| Modifier | Rule | Never with |
+|---|---|---|
+| Mirror Hall | No one controls more than five creatures of one name; the newest beyond five are sacrificed. | Skrix, Grimgut, Vex, Hollowmere, Sahrra, the Leviathan |
+| Living Stone | Artifacts have "{T}: Add {C}." | |
+| Waking Earth | Lands are 1/1 creatures too (Kormus Bell). | Vex, Seraphine, Korrath, Ozrith, Ysolde, Hollowmere, Valdric, Vorthana, the Leviathan |
+| Bloodlust | Creatures have double strike and attack each combat (Avatar of Slaughter). | the Siren Queen, Aurenne |
+| Twin Flames | Damage is doubled (Furnace of Rath). | |
+| Overflowing Mana | A land tapped for mana adds one more of a type it made. | |
+| Deep Pockets | An extra card in each draw step and no maximum hand size (Howling Mine, Anvil of Bogardan). | |
+| Quickening | Spells may be cast as though they had flash (Vedalken Orrery). | |
+| One Voice | One spell per player each turn (Rule of Law). | Ozrith, Morwenna, the Drowned Archivist |
+| Narrow Pass | At most two attackers and two blockers each combat (Caverns of Despair). | Skrix, Grimgut, Aurenne, Hollowmere, Sahrra |
+| Second Spring | Tokens and +1/+1 counters on creatures are doubled (Primal Vigor). | Sivanne, Sahrra, Skrix |
+| No Rest | Each card or token going to a graveyard flips a coin; on a loss it is exiled. | Vex, Vorthana, Hollowmere, the Siren Queen, the Drowned Archivist, the Leviathan |
+| Stone Sleep | One flip for the active player each untap step; on a loss their creatures with power 3 or more stay tapped. | Mossjaw, Korrath, the Unmaker, the Leviathan |
+| Prismatic Chaos | Each round the colored symbols of the heroes' costs stand for other colors of their commander's identity. | |
+| Endless Summer | One additional land each turn (Ghirapur Orrery). | |
+| Open Book | Libraries are played with the top card revealed, and lands and spells may be played from the top (Future Sight). | |
+| Thin Veil | Creatures entering cause no triggers (Torpor Orb). | |
+| Shared Blood | Creatures are every creature type. | Vex |
+| Giant's Table | Creature spells cost {2} less. | |
+| Free Command | Heroes pay no commander tax (`GameRule::NoCommanderTax`). | |
+| Echoing Spells | Each player's first instant or sorcery each turn is copied (Double Vision). | Ozrith |
+| No Mercy | Each life gain flips a coin; on a loss no life is gained. | Seraphine, Valdric, Mossjaw |
+| Haunted Ground | A nontoken creature dying gives its controller a 1/1 white flying Spirit. | Hollowmere |
+
 ## Spotlight
 
 The boss's side spreads its pressure over the party (`mtg-engine`, `spotlight.rs`; bots in `mtg-testkit`, `brain/spotlight.rs`).
