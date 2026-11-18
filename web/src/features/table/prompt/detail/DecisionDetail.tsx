@@ -177,6 +177,37 @@ function Asking({ asker }: { asker: ShownAsker }) {
   )
 }
 
+/**
+ * The way from the choices to the band's answers for the keyboard: the band stands before the column in the page, so
+ * Tab past the last choice comes here and goes on to the first answer; Shift+Tab from below goes to the last choice.
+ */
+function FocusBridge() {
+  return (
+    <span
+      tabIndex={0}
+      data-slot="detail-bridge"
+      className="sr-only"
+      onFocus={(event) => {
+        const from = event.relatedTarget
+        const back =
+          from instanceof Node &&
+          (event.currentTarget.compareDocumentPosition(from) & Node.DOCUMENT_POSITION_FOLLOWING) !== 0
+        const choices = [
+          ...(event.currentTarget.previousElementSibling?.querySelectorAll<HTMLElement>(
+            'button:not(:disabled), input:not(:disabled), select:not(:disabled), [tabindex="0"]',
+          ) ?? []),
+        ]
+        const answer = document.querySelector<HTMLElement>(
+          '[data-slot="decision-line"] [data-slot="prompt-actions"] button:not(:disabled)',
+        )
+        ;(back ? (choices.at(-1) ?? answer) : answer)?.focus()
+      }}
+    >
+      To the answers
+    </span>
+  )
+}
+
 /** The decisions whose own choices open the detail, so the asking card is not drawn above them. */
 const OWN_HEAD: ReadonlySet<string> = new Set(['PayMana'])
 
@@ -206,6 +237,7 @@ export function DecisionDetail({ where, children }: { where: 'column' | 'sheet';
         data-decision={kind}
         className="grid min-w-0 content-start gap-2 empty:hidden"
       />
+      <FocusBridge />
       {children}
     </section>
   )

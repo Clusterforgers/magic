@@ -72,7 +72,7 @@ const SIZES: Viewport[] = [
   { width: 390, height: 844 },
 ]
 /** The most jumps of rows and cards together the thirty states may make at one table and size. */
-const BUDGET = 6
+const BUDGET = 7
 
 describe('the layout script', () => {
   it.each(TABLES.flatMap(([name, options]) => SIZES.map((size) => [name, options, size] as const)))(

@@ -1,68 +1,66 @@
 /** The prompt band's layout rules (`promptBand.css`), as data the tests and the docs read. */
 
-/** What a prompt puts in the band's middle: nothing, short choices kept beside the sentence, or choices of any size. */
-export type BandChoices = 'none' | 'inline' | 'wide'
+/**
+ * What a prompt puts in the band besides the sentence and the answers: nothing, short choices kept beside the sentence
+ * (`inline`), or choices with no column or sheet to hold them (`fallback`: the opening hand on a phone), which take a
+ * line of their own and grow the sheet. Everything else a prompt chooses among is drawn in the Stack column or the
+ * decision sheet and is no cell of the band.
+ */
+export type BandChoices = 'none' | 'inline' | 'fallback'
 
-/** Below this band width (in rem) the band is a phone's: one cell per line, the answers last. */
+/** Below this band width (in rem) the band is a phone's: two lines, the answers on the second. */
 export const BAND_PHONE_REM = 40
-/** From this band width (in rem) the cards of a prompt stand beside the sentence; other choices keep a line of their own. */
-export const BAND_WIDE_REM = 100
 
-/** Below this band width (in rem) the answers leave out their key hints and the rest of "Cancel the spell". */
+/** Below this band width (in rem) the stack's label goes to a reader and "+2 more" reads "+2". */
 export const BAND_NARROW_REM = 64
 
-/** The width of the stack's column beside a prompt's cards below `BAND_WIDE_REM`, in rem: three chips stand in it whole. */
-export const STACK_COLUMN_REM = 12
+/** Below this band width (in rem) the answers leave out their key hints and the rest of "Cancel the spell". */
+export const BAND_HINTS_REM = 48
 
-/**
- * What else shapes the band: a `status` beside the prompt (a note, the combat key), a prompt that lays out `cards`,
- * whose pictures stand in the band's own `row` of cards (`CardChoices` in place, not in the choice overlay), spells on
- * the `stack`.
- */
+/** The lines the sentence keeps before its ellipsis. */
+export const SENTENCE_LINES = 2
+
+/** What else shapes the band. */
 export interface BandParts {
+  /** A status beside the prompt (a note, the combat key); a decision with detail has none. */
   status?: boolean
-  cards?: boolean
-  row?: boolean
-  stack?: boolean
+  /** The sentence is read aloud and not drawn (a payment's): the meter stands in its place. */
+  quiet?: boolean
 }
 
 /** The rows of the band's grid areas for a band `rem` wide holding `choices`; each row lists its cells left to right. */
 export function bandAreas(
   rem: number,
   choices: BandChoices,
-  { status = false, cards = false, row = false, stack = false }: BandParts = {},
+  { status = false, quiet = false }: BandParts = {},
 ): string[][] {
   if (rem < BAND_PHONE_REM) {
+    if (choices === 'fallback') {
+      return [
+        ['lead', 'text', 'text', 'text'],
+        ['choices', 'choices', 'choices', 'choices'],
+        ['meter', 'meter', 'clock', 'actions'],
+      ]
+    }
+    if (quiet) {
+      return [
+        ['lead', 'meter', 'meter', 'meter'],
+        ['choices', 'clock', 'actions', 'actions'],
+      ]
+    }
     return [
-      ['stack', 'stack'],
-      ['text', 'text'],
-      ['choices', 'choices'],
-      ['status', 'status'],
-      ['clock', 'clock'],
-      ['actions', 'actions'],
+      ['lead', 'text', 'text', 'text'],
+      [status ? 'status' : 'meter', 'choices', 'clock', 'actions'],
     ]
   }
-  const head = ['stack', 'status', 'text', 'clock', 'actions']
-  if (choices === 'none') return [head]
-  if (choices === 'inline' || (cards && rem >= BAND_WIDE_REM))
-    return [['stack', 'status', 'text', 'choices', 'clock', 'actions']]
-  if (cards && row) {
-    // The status, the sentence and the answers keep the first line; the stack stands as a column at the cards' left.
-    if (!stack) return [['status', 'text', 'clock', 'actions'], Array<string>(4).fill('choices')]
+  if (choices === 'fallback') {
     return [
-      [status ? 'status' : 'text', 'text', 'clock', 'actions'],
-      ['stack', 'choices', 'choices', 'choices'],
+      ['lead', 'status', 'text', 'meter', 'meter', 'clock', 'actions'],
+      Array<string>(7).fill('choices'),
     ]
   }
-  if (cards && rem >= BAND_NARROW_REM) return [head, head.map(() => 'choices')]
-  // The answers keep the first line to themselves and the sentence; a status starts the choices' line.
-  const first = ['stack', 'text', 'clock', 'actions']
-  return [first, [status ? 'status' : 'choices', 'choices', 'choices', 'choices']]
-}
-
-/** How many lines the sentence keeps before its ellipsis: one, or three beside a prompt's cards in a wide band. */
-export function sentenceLines(rem: number, choices: BandChoices, cards = false): number {
-  return choices === 'wide' && cards && rem >= BAND_WIDE_REM ? 3 : 1
+  if (quiet) return [['lead', 'status', 'meter', 'choices', 'clock', 'actions']]
+  return [['lead', 'status', 'text', 'meter', 'choices', 'clock', 'actions']]
 }
 
 /** Whether a box's text is cut by its line clamp: what it would take is taller or wider than what it shows. */

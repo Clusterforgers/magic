@@ -31,7 +31,9 @@ describe('the question', () => {
   it('draws Yes and No as the only controls, each with its key', () => {
     const { yes, no, container } = mount('Draw a card?')
     expect(
-      screen.getAllByRole('button').filter((b) => container.contains(b) && b.closest('[data-decision]')),
+      screen
+        .getAllByRole('button')
+        .filter((b) => container.contains(b) && b.closest('[data-slot="prompt-actions"]')),
     ).toHaveLength(2)
     expect(yes()).toHaveAttribute('aria-keyshortcuts', 'Y')
     expect(no()).toHaveAttribute('aria-keyshortcuts', 'N')
@@ -117,7 +119,8 @@ describe('focus', () => {
 
   it('takes Tab to Yes and Enter answers it', async () => {
     const { yes, user, answer } = mount('Draw a card?')
-    await user.tab({ shift: true })
+    // No has the right end and the focus; Yes is the next one.
+    await user.tab()
     expect(yes()).toHaveFocus()
     await user.keyboard('{Enter}')
     expect(answer.mock.calls[0]?.[0]).toEqual({ YesNo: true })

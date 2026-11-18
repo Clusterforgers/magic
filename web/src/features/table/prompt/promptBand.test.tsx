@@ -1,4 +1,4 @@
-// Goal: the prompt band is one grid across the strip for every prompt kind: the sentence keeps one line, the choices sit beside it or on a line of their own by the room and their size, the primary answer stands at the right end, the stylesheet says what `promptBand.ts` says, and the sheet keeps a floor that an empty board above never squeezes.
+// Goal: the prompt band is one line of one grid for every prompt kind (two lines on a phone): the lead, the sentence, the meter, short choices, the clock and the answers, the primary answer at the right end; what a prompt chooses among is no cell of it but drawn in the Stack column; the stylesheet says what `promptBand.ts` says; and the band's height is the strip's, a phone's two lines, whatever the prompt.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { screen } from '@testing-library/react'
@@ -8,15 +8,24 @@ import { buildFixture } from '@/features/table/dev/fixture'
 import { must } from '@/test-utils/batches'
 import { blockAfter } from '@/test-utils/cssBlocks'
 import { renderTable } from '@/test-utils/tableHarness'
-import { BAND_MIN_PHONE_PX, BAND_MIN_PX, SHEET_MAX_VH, sheetMost } from '../layout'
 import {
+  BAND_CLAMP,
+  BAND_MIN_PHONE_PX,
+  BAND_MIN_PX,
+  BAND_PHONE_PX,
+  SHARED_CLAMP,
+  SHEET_MAX_VH,
+  clampedHeight,
+  regionSizes,
+  sheetMost,
+} from '../layout'
+import {
+  BAND_HINTS_REM,
   BAND_NARROW_REM,
   BAND_PHONE_REM,
-  BAND_WIDE_REM,
-  STACK_COLUMN_REM,
+  SENTENCE_LINES,
   bandAreas,
   isClamped,
-  sentenceLines,
 } from './promptBand'
 import type { BandChoices } from './promptBand'
 
@@ -24,16 +33,16 @@ import type { BandChoices } from './promptBand'
 const css = readFileSync(join(import.meta.dirname, 'promptBand.css'), 'utf8')
 const band = blockAfter(css, '@utility strip-band')
 
-/** The kinds of the dev table and what each puts in the band's middle. */
-const KINDS: Array<[string, BandChoices]> = [
-  ['priority', 'none'],
-  ['yesno', 'none'],
-  ['x', 'inline'],
-  ['targets', 'wide'],
-  ['cards', 'wide'],
-  ['mode-two', 'wide'],
-  ['order', 'wide'],
-  ['pay', 'wide'],
+/** The kinds of the dev table, what each keeps in the band's middle and whether its choices go to the column. */
+const KINDS: Array<[string, BandChoices, boolean]> = [
+  ['priority', 'none', false],
+  ['yesno', 'none', false],
+  ['x', 'inline', false],
+  ['targets', 'none', true],
+  ['cards', 'none', true],
+  ['mode-two', 'none', true],
+  ['order', 'none', true],
+  ['pay', 'none', true],
 ]
 
 /** The table with the dev prompt `name` owed. */
@@ -54,37 +63,34 @@ function areasIn(block: string, head?: string): string[][] {
   return rowsOf(must(/grid-template-areas:([^;]*);/.exec(scope))[1] ?? '')
 }
 
-describe('the band rules', () => {
-  it.each(KINDS)(
-    'keeps the answers at the right end of the sentence row for %s at every width',
-    (_kind, choices) => {
-      for (const rem of [24, 64, 90, 110, 150]) {
-        const rows = bandAreas(rem, choices)
-        const withText = must(rows.find((row) => row.includes('text') || row.includes('actions')))
-        const answers = must(rows.find((row) => row.includes('actions')))
-        expect(answers.at(-1)).toBe('actions')
-        if (rem >= BAND_PHONE_REM) expect(withText).toBe(answers)
-      }
-    },
-  )
+const CHOICES: BandChoices[] = ['none', 'inline', 'fallback']
 
-  it('puts choices of any size on a line of their own, cards beside the sentence from 100 rem; short ones always beside', () => {
-    expect(bandAreas(BAND_WIDE_REM - 1, 'wide')).toHaveLength(2)
-    expect(bandAreas(BAND_WIDE_REM, 'wide')).toHaveLength(2)
-    expect(bandAreas(BAND_WIDE_REM - 1, 'wide', { cards: true })).toHaveLength(2)
-    expect(bandAreas(BAND_WIDE_REM, 'wide', { cards: true })).toHaveLength(1)
-    expect(bandAreas(BAND_PHONE_REM, 'inline')).toEqual([
-      ['stack', 'status', 'text', 'choices', 'clock', 'actions'],
-    ])
-    expect(bandAreas(BAND_WIDE_REM, 'none')).toEqual([['stack', 'status', 'text', 'clock', 'actions']])
+describe('the band rules', () => {
+  it.each(CHOICES)('keeps the answers at the right end of their line for %s at every width', (choices) => {
+    for (const rem of [24, 39, 40, 64, 90, 150]) {
+      for (const quiet of [false, true]) {
+        const rows = bandAreas(rem, choices, { quiet })
+        expect(must(rows.find((row) => row.includes('actions'))).at(-1)).toBe('actions')
+        expect(rows.flat().filter((cell) => cell === 'lead')).toHaveLength(1)
+      }
+    }
   })
 
-  it('keeps the sentence to one line, three only beside cards in a wide band', () => {
-    expect(sentenceLines(150, 'none')).toBe(1)
-    expect(sentenceLines(150, 'inline')).toBe(1)
-    expect(sentenceLines(90, 'wide', true)).toBe(1)
-    expect(sentenceLines(150, 'wide')).toBe(1)
-    expect(sentenceLines(150, 'wide', true)).toBe(3)
+  it('is one line from a tablet up and two on a phone, unless choices have nowhere else to go', () => {
+    for (const choices of ['none', 'inline'] as const) {
+      expect(bandAreas(BAND_PHONE_REM, choices)).toHaveLength(1)
+      expect(bandAreas(150, choices)).toHaveLength(1)
+      expect(bandAreas(BAND_PHONE_REM - 1, choices)).toHaveLength(2)
+    }
+    expect(bandAreas(64, 'fallback')).toHaveLength(2)
+    expect(bandAreas(24, 'fallback')).toHaveLength(3)
+  })
+
+  it('gives a quiet sentence`s place to the meter', () => {
+    expect(bandAreas(64, 'none', { quiet: true })[0]).not.toContain('text')
+    expect(bandAreas(24, 'none', { quiet: true })[0]).toEqual(['lead', 'meter', 'meter', 'meter'])
+    // The answers then have a phone's second line to themselves.
+    expect(bandAreas(24, 'none', { quiet: true })[1]?.filter((cell) => cell === 'actions')).toHaveLength(2)
   })
 
   it('tells a cut sentence from one that fits', () => {
@@ -95,98 +101,51 @@ describe('the band rules', () => {
 })
 
 describe('the stylesheet', () => {
+  const phone = blockAfter(band, `@container band (width < ${BAND_PHONE_REM}rem)`)
+  const fallback = "&:has([data-slot='decision-line'] > [data-slot='prompt-choices']:not([data-inline]):not(:empty))"
+  const quiet = "&:has([data-slot='prompt-sentence'][data-quiet])"
+
   it('draws the areas the rules name', () => {
     expect(areasIn(band)).toEqual(bandAreas(64, 'none'))
-    expect(areasIn(band, "&:has([data-slot='prompt-choices']:not(:empty))")).toEqual(
-      bandAreas(64, 'wide', { cards: true }),
+    expect(areasIn(band, fallback)).toEqual(bandAreas(64, 'fallback'))
+    expect(areasIn(band, quiet)).toEqual(bandAreas(64, 'none', { quiet: true }))
+    expect(areasIn(phone, '& {')).toEqual(bandAreas(24, 'none'))
+    expect(areasIn(phone, "[data-slot='strip-status']:not(:empty):not([hidden])")).toEqual(
+      bandAreas(24, 'none', { status: true }),
     )
-    expect(areasIn(band, `@container band (width >= ${BAND_WIDE_REM}rem)`)).toEqual(
-      bandAreas(BAND_WIDE_REM, 'wide', { cards: true }),
-    )
-    expect(areasIn(band, "&:has([data-slot='prompt-choices'][data-inline]:not(:empty))")).toEqual(
-      bandAreas(64, 'inline'),
-    )
-    expect(areasIn(band, `@container band (width < ${BAND_PHONE_REM}rem)`)).toEqual(bandAreas(24, 'wide'))
-    const mid = blockAfter(band, `@container band (width >= ${BAND_PHONE_REM}rem)`)
-    expect(areasIn(mid, '&:not([data-cards])')).toEqual(bandAreas(64, 'wide'))
-    expect(areasIn(mid, "[data-slot='strip-status']:not(:empty)")).toEqual(
-      bandAreas(64, 'wide', { status: true }),
+    expect(areasIn(phone, fallback)).toEqual(bandAreas(24, 'fallback'))
+    expect(areasIn(phone, quiet)).toEqual(bandAreas(24, 'none', { quiet: true }))
+  })
+
+  it('places every part of a prompt in its cell', () => {
+    for (const [slot, area] of [
+      ['prompt-sentence', 'text'],
+      ['prompt-meter', 'meter'],
+      ['prompt-choices', 'choices'],
+      ['response-clock', 'clock'],
+      ['prompt-actions', 'actions'],
+    ]) {
+      expect(blockAfter(band, `& [data-slot='decision-line'] > [data-slot='${slot}'] {`)).toMatch(
+        new RegExp(`grid-area:\\s*${area};`),
+      )
+    }
+    // The asking card's chip and the stack chips share the lead: one of them is drawn.
+    expect(band).toMatch(
+      /& > \[data-slot='strip-stack'\],\s*& \[data-slot='decision-line'\] > \[data-slot='prompt-asker'\] \{\s*grid-area:\s*lead;/,
     )
   })
 
-  it('gives the answers of a prompt with choices the first line from 1024 px: the status starts the choices line', () => {
-    for (const status of [false, true]) {
-      const [first, second] = bandAreas(64, 'wide', { status })
-      expect(first).toEqual(['stack', 'text', 'clock', 'actions'])
-      expect(second?.[0]).toBe(status ? 'status' : 'choices')
-    }
-    // Cards keep the whole line under the head row from 64 rem; under it they give the first line to the answers too.
-    expect(bandAreas(64, 'wide', { status: true, cards: true })[1]).toEqual(Array(5).fill('choices'))
-    for (const status of [false, true]) {
-      expect(bandAreas(50, 'wide', { status, cards: true })).toEqual(bandAreas(50, 'wide', { status }))
-    }
-    const cardsNarrow = blockAfter(
-      band,
-      `@container band (${BAND_PHONE_REM}rem <= width < ${BAND_NARROW_REM}rem)`,
-    )
-    expect(areasIn(cardsNarrow, "&[data-cards]:has([data-slot='prompt-choices']")).toEqual(
-      bandAreas(50, 'wide', { cards: true }),
-    )
-    expect(areasIn(cardsNarrow, "[data-slot='strip-status']:not(:empty)")).toEqual(
-      bandAreas(50, 'wide', { status: true, cards: true }),
-    )
-    const narrow = blockAfter(band, `@container band (width < ${BAND_NARROW_REM}rem)`)
-    expect(blockAfter(narrow, "[data-slot='prompt-actions'] [data-slot='undo-rest']")).toMatch(
-      /display:\s*none/,
-    )
-    expect(narrow).toMatch(/\[data-slot='prompt-actions'\] \[data-slot='key-hint'\],/)
+  it('keeps the answers and short choices to one row that scrolls, never a second line', () => {
+    const answers = blockAfter(band, "& [data-slot='decision-line'] > [data-slot='prompt-actions'] {")
+    expect(answers).toMatch(/flex-wrap:\s*nowrap/)
+    expect(answers).toMatch(/overflow-x:\s*auto/)
+    expect(blockAfter(band, "[data-slot='prompt-choices'][data-inline] {")).toMatch(/flex-wrap:\s*nowrap/)
   })
 
-  it('gives a row of cards in the band a line under the answers, the stack a column at its left, below 100 rem', () => {
-    for (const rem of [BAND_PHONE_REM, 56, BAND_NARROW_REM, 71, BAND_WIDE_REM - 1]) {
-      for (const status of [false, true]) {
-        const [first, second] = bandAreas(rem, 'wide', { status, cards: true, row: true, stack: true })
-        // The answers keep the first line beside the sentence, one row, and the stack never squeezes them.
-        expect(first?.slice(-3)).toEqual(['text', 'clock', 'actions'])
-        expect(first).not.toContain('stack')
-        expect(second).toEqual(['stack', 'choices', 'choices', 'choices'])
-        expect(first?.[0]).toBe(status ? 'status' : 'text')
-        expect(bandAreas(rem, 'wide', { status, cards: true, row: true })[1]).toEqual(
-          Array(4).fill('choices'),
-        )
-      }
-    }
-    expect(bandAreas(BAND_WIDE_REM, 'wide', { cards: true, row: true, stack: true })).toEqual(
-      bandAreas(BAND_WIDE_REM, 'wide', { cards: true }),
-    )
-    const rows = blockAfter(band, `@container band (${BAND_PHONE_REM}rem <= width < ${BAND_WIDE_REM}rem)`)
-    const head =
-      "&[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty) [data-slot='card-row'])"
-    expect(areasIn(rows, `${head}:not(`)).toEqual(bandAreas(70, 'wide', { cards: true, row: true }))
-    expect(areasIn(rows, `${head}:has(\n        [data-slot='stack-chips']\n      ) {`)).toEqual(
-      bandAreas(70, 'wide', { cards: true, row: true, stack: true, status: true }),
-    )
-    expect(areasIn(rows, ":not(:has([data-slot='strip-status']:not(:empty)))")).toEqual(
-      bandAreas(70, 'wide', { cards: true, row: true, stack: true }),
-    )
-    // The stack's column is as wide as the rules say, and its chips stand in a column that never sets the line's height.
-    expect(rows).toContain(`grid-template-columns: ${STACK_COLUMN_REM}rem minmax(8rem, 1fr) auto auto;`)
-    expect(blockAfter(rows, "& [data-slot='stack-chips'] {")).toMatch(
-      /position:\s*absolute;[\s\S]*flex-direction:\s*column/,
-    )
-    expect(blockAfter(rows, "& [data-slot='stack-chips'] > ol {")).toMatch(/flex-direction:\s*column/)
-  })
-
-  it('clamps the sentence to one line, and to three only in a wide band beside cards', () => {
+  it(`clamps the sentence to ${SENTENCE_LINES} lines`, () => {
     expect(blockAfter(css, ".strip-band [data-slot='prompt-sentence'] .prompt-sentence-clamp")).toMatch(
-      /line-clamp:\s*1;/,
+      new RegExp(`line-clamp:\\s*${SENTENCE_LINES};`),
     )
-    const wide = blockAfter(
-      css,
-      `@container band (width >= ${BAND_WIDE_REM}rem) {\n  .strip-band[data-cards]`,
-    )
-    expect(wide).toMatch(/:not\(\[data-inline\]\)/)
-    expect(wide).toMatch(/line-clamp:\s*3;/)
   })
 
   it('lays the answers out right to left, so the first, the primary, sits at the right end', () => {
@@ -195,34 +154,40 @@ describe('the stylesheet', () => {
     expect(answers).toMatch(/justify-content:\s*flex-start/)
   })
 
-  it('wraps the answers downward, so a short sheet that cuts them keeps the primary on the first line', () => {
-    const answers = blockAfter(css, '@utility prompt-answers')
-    expect(answers).toMatch(/flex-wrap:\s*wrap;/)
-    expect(answers).not.toMatch(/wrap-reverse/)
-  })
-
-  it('keeps a narrow band\'s stack room for the top chip: the label to a reader and "+2 more" as "+2"', () => {
-    const narrow = blockAfter(band, '@container band (width < 64rem)')
+  it('keeps a narrow band\'s lead for the top chip and drops the key hints only where the answers need the room', () => {
+    const narrow = blockAfter(band, `@container band (width < ${BAND_NARROW_REM}rem)`)
     expect(blockAfter(narrow, "[data-slot='stack-label']")).toMatch(/clip-path:\s*inset\(50%\)/)
     expect(blockAfter(narrow, "[data-slot='stack-more-word']")).toMatch(/display:\s*none/)
+    const hints = blockAfter(band, `@container band (width < ${BAND_HINTS_REM}rem)`)
+    expect(hints).toMatch(/\[data-slot='prompt-actions'\] \[data-slot='key-hint'\],/)
+    expect(blockAfter(hints, "[data-slot='prompt-actions'] [data-slot='undo-rest']")).toMatch(/display:\s*none/)
   })
 
-  it('gives a phone answers a row of their own across the band, opaque over the choices that scroll under them', () => {
-    const phone = bandAreas(BAND_PHONE_REM - 1, 'wide')
-    expect(phone.at(-1)).toEqual(['actions', 'actions'])
-    expect(phone.flat().filter((cell) => cell === 'actions')).toHaveLength(2)
-    const rule = blockAfter(
-      band.slice(band.lastIndexOf(`@container band (width < ${BAND_PHONE_REM}rem)`)),
-      "[data-slot='prompt-actions']",
+  it('draws every list one column wide in the Stack column, three cards to a row', () => {
+    const column = blockAfter(css, "\n[data-slot='decision-choices'] {")
+    expect(blockAfter(column, "& [data-slot='mode-list']")).toMatch(/grid-template-columns:\s*minmax\(0, 1fr\)/)
+    expect(blockAfter(column, "& [class*='max-h-']")).toMatch(/max-height:\s*none/)
+    expect(blockAfter(column, "> [data-candidate]")).toMatch(/--card-w:\s*calc\(\(100cqi - 1rem\) \/ 3/)
+  })
+
+  it('moves nothing under reduced motion', () => {
+    expect(blockAfter(css, '@utility decision-sheet')).toMatch(
+      /@media \(prefers-reduced-motion: no-preference\)\s*\{\s*animation:/,
     )
-    expect(rule).toMatch(/background:\s*var\(--surface\)/)
+    expect(blockAfter(css, '@utility asker-chip')).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{\s*transition:\s*none/,
+    )
+    expect(blockAfter(css, '@utility detail-row')).toMatch(
+      /@media \(prefers-reduced-motion: reduce\)\s*\{\s*transition:\s*none/,
+    )
+    expect(css).toMatch(/@media \(prefers-reduced-motion: no-preference\) \{\s*\.detail-row\[data-picked\]/)
   })
 })
 
 describe('the band in the strip', () => {
   it.each(KINDS)(
-    'draws %s as cells of one grid, the sentence one line and the primary answer first',
-    (kind, choices) => {
+    'draws %s as cells of one grid, the primary answer first and its choices where they belong',
+    (kind, choices, column) => {
       owe(kind)
       const row = must(document.querySelector<HTMLElement>('[data-slot="strip-row"]'))
       expect(row).toHaveClass('strip-band')
@@ -234,16 +199,19 @@ describe('the band in the strip', () => {
       const middle = line.querySelector('[data-slot="prompt-choices"]')
       if (choices === 'none') expect(middle).toBeNull()
       else expect(middle?.hasAttribute('data-inline')).toBe(choices === 'inline')
+      // What the prompt chooses among is in the Stack column, once.
+      const aside = document.querySelectorAll('[data-slot="decision-choices"] [data-slot="prompt-choices"]')
+      expect(aside).toHaveLength(column ? 1 : 0)
       const answers = line.querySelector<HTMLElement>('[data-slot="prompt-actions"]')
       if (kind === 'priority') return
       expect(answers).toHaveClass('prompt-answers')
       // The primary answer comes first, so the right-to-left row puts it at the right end and Tab reaches it first.
       const first = must(answers?.querySelector('button'))
-      expect(first).toHaveAccessibleName(/^(Confirm|Choose|Yes)/)
+      expect(first).toHaveAccessibleName(/^(Confirm|Choose|No)/)
     },
   )
 
-  it('keeps the stack and the status as cells beside the band, and the keep-clear mark on the sheet', () => {
+  it('keeps the stack and the status as cells beside the band, hidden while a card asks', () => {
     owe('targets')
     const row = must(document.querySelector<HTMLElement>('[data-slot="strip-row"]'))
     expect([...row.children].map((child) => child.getAttribute('data-slot'))).toEqual([
@@ -251,8 +219,18 @@ describe('the band in the strip', () => {
       'strip-prompt',
       'strip-status',
     ])
+    expect(row.querySelector('[data-slot="strip-stack"]')).toHaveAttribute('hidden')
+    expect(row.querySelector('[data-slot="strip-status"]')).toHaveAttribute('hidden')
     expect(must(document.querySelector('[data-slot="shared-sheet"]'))).toHaveClass('band-room')
     expect(document.querySelector('[data-slot="shared-sheet"]')).toHaveAttribute('data-keep-clear')
+  })
+
+  it('keeps them in view for a decision nothing asks', () => {
+    owe('priority')
+    const row = must(document.querySelector<HTMLElement>('[data-slot="strip-row"]'))
+    expect(row.querySelector('[data-slot="strip-stack"]')).not.toHaveAttribute('hidden')
+    expect(row.querySelector('[data-slot="strip-status"]')).not.toHaveAttribute('hidden')
+    expect(row.querySelector('[data-slot="prompt-asker"]')).toBeNull()
   })
 
   it('leaves out "You have priority" beside the seat\'s own prompt, which says it already', () => {
@@ -261,54 +239,51 @@ describe('the band in the strip', () => {
   })
 })
 
-describe('the sheet floor', () => {
+describe('the band`s height', () => {
   it.each([
     [1830, 855],
     [2550, 1380],
     [1400, 900],
     [1280, 720],
-  ])(
-    'never squeezes the band under a sentence and a row of answers over an empty board at %ix%i',
-    (_width, height) => {
-      // Nothing on the opponents' boards: their row is down to its pods, which a sheet may not cover.
-      const most = sheetMost(height, 56, 40, false, 120)
-      expect(most).toBeGreaterThanOrEqual(BAND_MIN_PX)
-      expect(most).toBeLessThanOrEqual((height * SHEET_MAX_VH) / 100)
-    },
-  )
+    [1100, 800],
+  ])('is the strip itself at %ix%i: no room is kept above it and no prompt grows it', (width, height) => {
+    const regions = regionSizes({ width, height })
+    expect(BAND_CLAMP).toEqual(SHARED_CLAMP)
+    expect(regions.sheet).toBe(clampedHeight(SHARED_CLAMP, height))
+    expect(regions.sheet).toBe(regions.shared)
+    expect(regions.sheetRoom).toBe(0)
+  })
 
-  it('keeps a phone its own floor, with the stack chips on a line of their own', () => {
+  it.each([
+    [390, 844],
+    [360, 640],
+    [430, 932],
+  ])('is two lines on a phone at %ix%i, the second kept above the strip', (width, height) => {
+    const regions = regionSizes({ width, height })
+    expect(regions.sheet).toBe(BAND_PHONE_PX)
+    expect(regions.sheetRoom).toBe(BAND_PHONE_PX - regions.shared)
+  })
+})
+
+describe('the sheet of a prompt with no column to draw in', () => {
+  it.each([
+    [1830, 855],
+    [2550, 1380],
+    [1400, 900],
+    [1280, 720],
+  ])('never squeezes under a sentence and a row of answers over an empty board at %ix%i', (_width, height) => {
+    // Nothing on the opponents' boards: their row is down to its pods, which a sheet may not cover.
+    const most = sheetMost(height, 56, 40, false, 120)
+    expect(most).toBeGreaterThanOrEqual(BAND_MIN_PX)
+    expect(most).toBeLessThanOrEqual((height * SHEET_MAX_VH) / 100)
+  })
+
+  it('keeps a phone its own floor', () => {
     expect(sheetMost(844, 56, 100, true)).toBe(BAND_MIN_PHONE_PX)
   })
 
   it('still grows to its room where the boards leave it, and never past 40 % of the window', () => {
     expect(sheetMost(900, 63, 400, false, 120)).toBe(343)
     expect(sheetMost(900, 63, 900, false)).toBe(360)
-  })
-})
-
-describe("a payment's band", () => {
-  it('cuts a status line that does not fit, whole in its tooltip, so it never runs into the sentence beside it', () => {
-    const fixture = buildFixture({ seats: 2 })
-    const pending = must(DEV_PROMPTS['pay'])(fixture)
-    const { container } = renderTable({
-      fixture,
-      state: (state) => ({
-        ...state,
-        pending,
-        view:
-          state.view === null || state.view.priority === null
-            ? state.view
-            : { ...state.view, priority: { ...state.view.priority, holder: 1 } },
-      }),
-    })
-    const status = must(container.querySelector<HTMLElement>('[data-slot="strip-status"]'))
-    expect(status).toHaveClass('min-w-0', 'overflow-hidden')
-    const line = must(status.querySelector<HTMLElement>('[data-slot="priority"]'))
-    expect(line.textContent).not.toBe('')
-    expect(line.title).toBe(line.textContent)
-    expect(status.className).toContain('[&_[data-slot=priority]]:truncate')
-    // The payment's choices take a line of their own at every width from a tablet up, never a column beside the sentence.
-    for (const rem of [50, 90, 120, 160]) expect(bandAreas(rem, 'wide', { status: true })).toHaveLength(2)
   })
 })

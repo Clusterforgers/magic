@@ -77,7 +77,16 @@ function useClamped(ref: RefObject<HTMLElement | null>, open: boolean): boolean 
  * The sentence of the band: one line (three beside choices, `promptBand.css`), cut with an ellipsis where it does not
  * fit, and a button that opens it whole. The live region holds every word, so a screen reader hears the whole sentence.
  */
-function Sentence({ text, quiet = false }: { text: ReactNode; quiet?: boolean }) {
+function Sentence({
+  text,
+  quiet = false,
+  capital = false,
+}: {
+  text: ReactNode
+  quiet?: boolean
+  /** The words start after a name that is not drawn: the first letter in view is drawn as a capital. */
+  capital?: boolean
+}) {
   const [open, setOpen] = useState(false)
   const words = useRef<HTMLParagraphElement>(null)
   const clamped = useClamped(words, open)
@@ -92,7 +101,7 @@ function Sentence({ text, quiet = false }: { text: ReactNode; quiet?: boolean })
       <LiveText
         id={id}
         textRef={words}
-        className={cn('min-w-0 flex-1', open ? null : 'prompt-sentence-clamp')}
+        className={cn('min-w-0 flex-1', open ? null : 'prompt-sentence-clamp', capital && 'first-letter:uppercase')}
       >
         {text}
       </LiveText>
@@ -119,18 +128,17 @@ function Sentence({ text, quiet = false }: { text: ReactNode; quiet?: boolean })
 
 /**
  * `text` without the asker's name at its start ("Grizzly Bears: Draw a card?"), which the chip beside it shows: the
- * name stays for a screen reader and the question starts with a capital.
+ * name stays for a screen reader, and the sentence draws its first letter as a capital (`Sentence`'s `lead`).
  */
 function withoutAsker(text: ReactNode, name: string): ReactNode {
   if (name === '') return text
   const lead = `${name}: `
   if (typeof text === 'string') {
     if (!text.startsWith(lead)) return text
-    const rest = text.slice(lead.length)
     return (
       <>
         <span className="sr-only">{lead}</span>
-        {rest.charAt(0).toUpperCase() + rest.slice(1)}
+        {text.slice(lead.length)}
       </>
     )
   }
@@ -227,7 +235,7 @@ export function PromptLayout({
     <>
       {title}
       {chip ? <AskerChip /> : (lead ?? null)}
-      <Sentence text={chip ? withoutAsker(text, asker.shown) : text} quiet={quiet && side !== null} />
+      <Sentence text={chip ? withoutAsker(text, asker.shown) : text} quiet={quiet && side !== null} capital={chip} />
       {meter === undefined || meter === null || meter === false ? null : (
         <div data-slot="prompt-meter" className="flex items-center gap-2 empty:hidden">
           {meter}
@@ -255,7 +263,8 @@ export function PromptLayout({
         <div
           data-slot="prompt-actions"
           data-keep-clear="answers"
-          className="prompt-answers empty:hidden"
+          // Sticky to the sheet's edges: the answers stay in view where a sheet that grows scrolls (the opening hand).
+          className="prompt-answers sticky top-0 bottom-0 z-10 empty:hidden"
         >
           {children}
         </div>

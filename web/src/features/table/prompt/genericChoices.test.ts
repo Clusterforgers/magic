@@ -80,7 +80,7 @@ describe('the labels of each kind', () => {
           max_life: 0,
         },
       },
-      ['Pay automatically'],
+      ['Pay for me'],
     ],
     ['a yes-or-no with only no', { YesNo: { source: 1, only_no: true } }, ['No']],
     ['targets, a player and a card', targets({}), ['Seat 0 (you)', 'Card 7']],

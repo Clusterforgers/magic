@@ -75,13 +75,13 @@ describe('the room kept for the prompt sheet', () => {
     expect(overhang()).toBe('0px')
   })
 
-  it("moves no board: the opponents' area keeps the band's room free below its boards and the sheet grows into it", () => {
+  it("moves no board: the band is the strip, so the opponents' area keeps no room for it and holds no part of it", () => {
     renderTable({ seats: 4 })
     const opponents = must(document.querySelector<HTMLElement>('[data-area="opponents"]'))
     expect(main()).toContainElement(opponents)
     expect(opponents).toHaveClass('pt-2', 'px-2')
     const room = Math.floor(tablePlanOf(TEST_VIEWPORT, 4).regions.sheetRoom)
-    expect(room).toBeGreaterThan(40)
+    expect(room).toBe(0)
     expect(opponents.style.paddingBottom).toBe(`calc(${room}px + 0.5rem)`)
     // The sheet is not in this area, so it can never be drawn over its cards.
     expect(opponents).not.toContainElement(

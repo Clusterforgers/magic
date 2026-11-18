@@ -49,14 +49,12 @@ export function SideProvider({
   // another meanwhile. The gap between two questions of a run is bridged, so the column does not flip back and forth.
   const asked = usePlay((state) => hasDetail(ownDecision(state)))
   const [lately, setLately] = useState(asked)
+  if (asked && !lately) setLately(true)
   useEffect(() => {
-    if (asked) {
-      setLately(true)
-      return undefined
-    }
+    if (asked || !lately) return undefined
     const timer = setTimeout(() => setLately(false), DETAIL_HOLD_MS)
     return () => clearTimeout(timer)
-  }, [asked])
+  }, [asked, lately])
   const [sheetFolded, setSheetFolded] = useState<boolean | null>(null)
   const deciding = asked || lately
   const [wasDeciding, setWasDeciding] = useState(false)

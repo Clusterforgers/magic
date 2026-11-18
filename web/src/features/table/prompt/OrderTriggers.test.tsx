@@ -51,7 +51,9 @@ describe('the list at first', () => {
       const reversed = Array.from({ length: count }, (_, i) => count - 1 - i)
       expect(shown()).toEqual(reversed)
       for (const [entry, trigger] of entries.entries()) {
-        expect(rowOf(entry)).toHaveTextContent(labelOf(trigger))
+        expect(rowOf(entry)).toHaveTextContent(nameOf(trigger.source.id))
+        expect(rowOf(entry)).toHaveTextContent(must(trigger.when))
+        expect(within(rowOf(entry)).getByRole('button', { name: `Move ${labelOf(trigger)} up` })).toBeInTheDocument()
       }
       // Nothing on the table is clickable while the triggers are ordered.
       expect([...marks().values()]).toEqual([])
@@ -65,10 +67,10 @@ describe('the list at first', () => {
     const { text, rowOf } = mount(triggers(3))
     expect(text()).toBe('Order your 3 triggers: the top one resolves first. Confirm when the order is right.')
     expect(rowOf(2)).toHaveTextContent('1.')
-    expect(rowOf(2)).toHaveTextContent('(resolves first)')
+    expect(must(rowOf(2).querySelector('[data-slot="first-tag"]'))).toHaveTextContent('first')
     expect(rowOf(0)).toHaveTextContent('3.')
-    expect(rowOf(0)).toHaveTextContent('(resolves last)')
-    expect(rowOf(1)).not.toHaveTextContent('(resolves')
+    expect(rowOf(0).querySelector('[data-slot="first-tag"]')).toBeNull()
+    expect(rowOf(1).querySelector('[data-slot="first-tag"]')).toBeNull()
   })
 
   it('has Default order disabled while the list is in the default order', () => {
@@ -232,11 +234,11 @@ describe('the rows', () => {
       [1, 2],
       [2, 3],
     ] as const) {
-      expect(rowOf(entry)).toHaveTextContent(`${name}: When it dies (${n})`)
+      expect(within(rowOf(entry)).getByRole('button', { name: `Move ${name}: When it dies (${n}) up` })).toBeInTheDocument()
     }
     await user.click(move(0, 'up'))
     expect(shown()).toEqual([2, 0, 1])
-    expect(rowOf(0)).toHaveTextContent(`${name}: When it dies (1)`)
+    expect(within(rowOf(0)).getByRole('button', { name: `Move ${name}: When it dies (1) up` })).toBeInTheDocument()
   })
 
   it('call a source the view does not hold "A card", and a trigger without words by its ability number', () => {
@@ -244,8 +246,11 @@ describe('the rows', () => {
       { source: { id: 999_999, counter: 0 }, ability: 1 },
       { source: { id: must(sources[0]), counter: 0 }, ability: 0, when: 'When it dies' },
     ])
-    expect(rowOf(0)).toHaveTextContent('A card: ability 2')
-    expect(rowOf(1)).toHaveTextContent(`${nameOf(must(sources[0]))}: When it dies`)
+    expect(within(rowOf(0)).getByRole('button', { name: 'Move A card: ability 2 up' })).toBeInTheDocument()
+    expect(rowOf(0)).toHaveTextContent('A card')
+    expect(
+      within(rowOf(1)).getByRole('button', { name: `Move ${nameOf(must(sources[0]))}: When it dies up` }),
+    ).toBeInTheDocument()
   })
 
   it('send a double click on Confirm order as one answer', async () => {

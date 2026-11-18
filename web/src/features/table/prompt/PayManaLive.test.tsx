@@ -89,7 +89,7 @@ describe('a payment decision from the server', () => {
   })
 
   it.each([
-    ['Pay automatically', { PayMana: 'Auto' }],
+    ['Pay for me', { PayMana: 'Auto' }],
     [/^Cancel the (spell|ability)$/, 'Undo'],
   ])('%s sends the answer once, even on a double click', async (name, expected) => {
     const { h, send, user, button } = mount()
@@ -116,7 +116,7 @@ describe('a payment decision from the server', () => {
     const { send, container } = mount()
     send(decision(31, pay('{2}', { can_cancel: false })))
     expect(container.querySelector('[data-slot="undo"]')).toBeNull()
-    expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Pay for me' })).toBeInTheDocument()
   })
 
   it.each([
@@ -164,9 +164,9 @@ describe('a payment decision from the server', () => {
     send(decision(26, pay('{2}')))
     await user.click(card(greenLand))
     expect(card(greenLand)).toHaveAttribute('data-highlight', 'selected')
-    expect(container.querySelectorAll('[data-slot="pay-chip"]')).toHaveLength(1)
+    expect(container.querySelectorAll('button[data-slot="pay-circle"]')).toHaveLength(1)
     send(decision(27, pay('{U}')))
-    expect(container.querySelectorAll('[data-slot="pay-chip"]')).toHaveLength(0)
+    expect(container.querySelectorAll('button[data-slot="pay-circle"]')).toHaveLength(0)
     expect(card(greenLand)).toHaveAttribute('data-highlight', 'dimmed')
     expect(card(blueLand)).toHaveAttribute('data-highlight', 'legal')
     expect(button('Confirm payment')).toBeDisabled()
@@ -175,11 +175,11 @@ describe('a payment decision from the server', () => {
   it('can be answered again when the server repeats it after a new snapshot', async () => {
     const { h, send, user, button } = mount()
     send(decision(28, pay('{2}')))
-    await user.click(button('Pay automatically'))
+    await user.click(button('Pay for me'))
     expect(h.answeredIds()).toEqual([28])
     act(() => h.deliver({ type: 'Snapshot', seq: 2, state: fixture.view }))
     send(decision(28, pay('{2}')))
-    await user.click(button('Pay automatically'))
+    await user.click(button('Pay for me'))
     expect(h.answeredIds()).toEqual([28, 28])
   })
 

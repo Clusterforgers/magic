@@ -62,7 +62,7 @@ function RowWords({
           {first ? (
             <em
               data-slot="first-tag"
-              className="shrink-0 rounded-full bg-turn-you px-1.5 text-[0.625rem] leading-[0.875rem] font-bold tracking-wider text-on-turn-you uppercase not-italic"
+              className="shrink-0 rounded-full bg-turn-you px-1.5 text-xs leading-4 font-bold tracking-wider text-on-turn-you uppercase not-italic"
             >
               first
             </em>
@@ -265,7 +265,7 @@ export const OrderTriggersPrompt: PromptComponent<'OrderTriggers'> = ({ options 
                     onClick={() => {
                       if (!end) move(place, way === 'up' ? -1 : 1)
                     }}
-                    className="grid h-[1.375rem] w-[1.875rem] place-items-center rounded-md border text-[0.6875rem] text-muted-foreground outline-offset-2 outline-primary hover:bg-accent hover:text-foreground focus-visible:outline-2 aria-disabled:pointer-events-none aria-disabled:opacity-30 pointer-coarse:h-8 pointer-coarse:w-11"
+                    className="grid h-[1.375rem] w-[1.875rem] place-items-center rounded-md border text-xs text-muted-foreground outline-offset-2 outline-primary hover:bg-accent hover:text-foreground focus-visible:outline-2 aria-disabled:pointer-events-none aria-disabled:opacity-30 pointer-coarse:h-8 pointer-coarse:w-11"
                   >
                     <span aria-hidden="true">{way === 'up' ? '▲' : '▼'}</span>
                   </button>

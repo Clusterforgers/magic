@@ -261,7 +261,7 @@ export const GAME_LESSON: Lesson = {
     {
       id: 'pay',
       title: 'Pay the cost',
-      text: 'Now pay {1}{G}: press Pay automatically in the middle bar, or click two Forests to tap them.',
+      text: 'Now pay {1}{G}: press Pay for me in the middle bar, or click two Forests to tap them.',
       targets: () => [SHARED],
       done: (facts) => cast(facts, 'Grizzly Bears', facts.hand) && facts.decision !== 'PayMana',
       waiting: 'Waiting for the payment',
@@ -333,7 +333,7 @@ export const GAME_LESSON: Lesson = {
     {
       id: 'hero-pay',
       title: 'Pay with the Plains',
-      text: 'Press Pay automatically: it taps the Plains and two Forests, and one Forest stays open.',
+      text: 'Press Pay for me: it taps the Plains and two Forests, and one Forest stays open.',
       targets: () => [SHARED],
       done: (facts) => cast(facts, 'Hero in Training', facts.hand) && facts.decision !== 'PayMana',
       waiting: 'Waiting for the payment',
@@ -405,7 +405,7 @@ export const GAME_LESSON: Lesson = {
     {
       id: 'growth-pay',
       title: 'Pay with the open Forest',
-      text: 'Press Pay automatically: the Forest you kept open pays {G}.',
+      text: 'Press Pay for me: the Forest you kept open pays {G}.',
       targets: () => [SHARED],
       done: (facts) => !has(facts.hand, 'Giant Growth') || facts.turn >= 5,
       waiting: 'Waiting for the payment',
@@ -445,7 +445,7 @@ export const GAME_LESSON: Lesson = {
     {
       id: 'commander-pay',
       title: 'Pay for your commander',
-      text: 'Press Pay automatically: the Plains pays {W}. Giada is new, so it stays home; once it resolves the game moves on to combat by itself.',
+      text: 'Press Pay for me: the Plains pays {W}. Giada is new, so it stays home; once it resolves the game moves on to combat by itself.',
       targets: () => [SHARED],
       done: (facts) => cast(facts, GIADA, facts.command) && facts.decision !== 'PayMana',
       waiting: 'Waiting for the payment',

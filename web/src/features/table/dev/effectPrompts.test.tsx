@@ -67,9 +67,12 @@ const QUESTIONS = [
 /** Answers the question in `line` as a person would: Yes, the first option or mode, or two modes and Confirm modes. */
 async function answerQuestion(user: ReturnType<typeof userEvent.setup>, line: HTMLElement, prompt: string) {
   if (prompt.startsWith('yesno')) return user.click(within(line).getByRole('button', { name: 'Yes' }))
-  const choices = within(line)
-    .getAllByRole('button')
-    .filter((b) => b.hasAttribute('aria-keyshortcuts'))
+  // The options and modes: short ones in the band, the rest in the Stack column, which carries the kind too.
+  const choices = [
+    ...document.querySelectorAll<HTMLElement>(
+      '[data-decision] [data-slot="prompt-choices"] button[aria-keyshortcuts]',
+    ),
+  ]
   await user.click(must(choices[0]))
   if (prompt !== 'mode-two') return
   await user.click(must(choices[1]))

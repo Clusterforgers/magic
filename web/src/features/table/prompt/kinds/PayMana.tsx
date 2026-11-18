@@ -47,7 +47,7 @@ interface Chosen {
 }
 const START: Chosen = { spends: [], life: [], note: '' }
 
-/** Why "Pay automatically" is off: the game found no payment (or only one that takes the last life). */
+/** Why "Pay for me" is off: the game found no payment (or only one that takes the last life). */
 export const AUTO_REASON = 'The game finds no way to pay this cost with what you have.'
 
 /**
@@ -55,7 +55,7 @@ export const AUTO_REASON = 'The game finds no way to pay this cost with what you
  * are legal; a click adds one (a permanent with several kinds of mana asks which), a click on a chosen one takes it
  * back. Mana that would be wasted is not offered, so a payment is complete when nothing is owed. A Phyrexian symbol
  * has a switch that pays 2 life for it instead of mana (within the life total and what the options allow). Confirm
- * sends the chosen payment; with nothing chosen yet "Pay automatically" lets the game choose, and after some picks
+ * sends the chosen payment; with nothing chosen yet "Pay for me" lets the game choose, and after some picks
  * "Pay the rest for me" keeps them and lets the game pay what is owed; Undo or Escape (only when the options allow
  * it) gives up on the cast, and the permanents picked stay untapped since nothing is paid until Confirm. A mana
  * ability that does more than add mana (Vexing Puzzlebox's roll, `options.announced`) is a button and a legal card:
@@ -248,6 +248,16 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   }
   useCardMarks(marks, act, { toggles: true })
 
+  // The colour of a card that was pressed on the board: the keyboard goes back to the card.
+  const pick = (option: ManaOption): void => {
+    add({ kind: 'tap', option })
+    focusCard(option.source.object)
+  }
+  const closeChooser = (): void => {
+    selection.clear()
+    if (chooser !== undefined) focusCard(chooser)
+  }
+
   const swaps = useMemo(
     () =>
       new Map(
@@ -320,9 +330,11 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           taken={taken}
           asking={chooser}
           swaps={swaps}
-          onTap={(option) => add({ kind: 'tap', option })}
+          onTap={(option) => (option.source.object === chooser ? pick(option) : add({ kind: 'tap', option }))}
+          onCancelAsk={closeChooser}
           onSwap={swap}
           onRemove={removeAt}
+          onClear={clear}
         >
           {nothingChosen && !options.auto_available ? (
             <p id={autoReasonId} data-slot="pay-auto-reason" className="text-muted-foreground text-sm">
@@ -435,7 +447,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         className="h-10 px-3"
         variant="ghost"
         data-slot="pay-undo"
-        aria-label="Take back the last choice"
+        aria-label="Undo the last choice"
         disabled={spends.length === 0}
         onClick={() => removeAt(spends.length - 1)}
       >

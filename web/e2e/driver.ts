@@ -11,7 +11,7 @@ import type { Player } from './lobby'
 export interface Style {
   /** Block the first attacker with every creature that can block (a gang block); otherwise answer "No blocks". */
   blocks: boolean
-  /** Pay with "Pay automatically"; otherwise tap sources by hand until the cost is covered. */
+  /** Pay with "Pay for me"; otherwise tap sources by hand until the cost is covered. */
   autoPay: boolean
   /** In a priority window with nothing to play press "End turn" (the server passes for the rest of the turn); otherwise continue. */
   yields: boolean
@@ -86,7 +86,8 @@ export function look(arg: { me: string; answered: string | null }): Observed | n
     banner: document.querySelector('[data-slot="banner"]')?.textContent ?? '',
     turn: Number(document.querySelector<HTMLElement>('[data-slot="banner"]')?.dataset['turn'] ?? 0),
     text,
-    buttons: Array.from(root.querySelectorAll('button')).map((button) => ({
+    // The band's answers and what the prompt draws in the Stack column or the decision sheet, which carry the kind too.
+    buttons: Array.from(document.querySelectorAll<HTMLButtonElement>('[data-decision] button')).map((button) => ({
       // The accessible name, as `getByRole` reads it: the combat bar's buttons show "All" and are named "Attack with all".
       label: (button.getAttribute('aria-label') ?? button.textContent ?? '').trim(),
       disabled: button.disabled || button.getAttribute('aria-disabled') === 'true',
@@ -434,8 +435,8 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
 
   async PayMana({ player, style, seen }) {
     const { page } = player
-    if (style.autoPay && enabled(seen, 'Pay automatically')) {
-      return payFor(page, 'Pay automatically', seen.id, 'pays automatically')
+    if (style.autoPay && enabled(seen, 'Pay for me')) {
+      return payFor(page, 'Pay for me', seen.id, 'pays automatically')
     }
     // By hand: tap the first source the prompt offers until "Confirm payment" lights up.
     let now: Seen | null = seen
@@ -451,10 +452,12 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       await card(page, source.id).click({ position: { x: 10, y: 6 } })
       // A land that makes more than one kind of mana asks which: a coloured choice is taken before a colourless one.
       const pressed = card(page, source.id).and(page.locator('[aria-pressed="true"]'))
-      const choices = page.locator('[data-slot="mana-choice"] button')
+      // Its row in the Stack column lights and offers a button for each kind that still helps.
+      const row = '[data-slot="pay-source-row"][data-lit] [data-slot="pay-tap"]:not([aria-disabled="true"])'
+      const choices = page.locator(row)
       await pressed.or(choices.first()).first().waitFor()
       if (await choices.first().isVisible()) {
-        const coloured = page.locator('[data-slot="mana-choice"] button:not([aria-label*="colorless" i])')
+        const coloured = page.locator(`${row}:not([aria-label*="colorless" i])`)
         await ((await coloured.count()) > 0 ? coloured : choices).first().click()
         await pressed.waitFor()
       }
@@ -463,7 +466,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
     }
     // After some picks the prompt offers to pay the rest instead of paying everything automatically.
     const rest =
-      now !== null && enabled(now, 'Pay the rest for me') ? 'Pay the rest for me' : 'Pay automatically'
+      now !== null && enabled(now, 'Pay the rest for me') ? 'Pay the rest for me' : 'Pay for me'
     if (now !== null && enabled(now, rest)) {
       return payFor(page, rest, seen.id, 'pays automatically (nothing left to tap by hand)')
     }

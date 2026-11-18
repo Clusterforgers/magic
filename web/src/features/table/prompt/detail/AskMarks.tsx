@@ -28,7 +28,7 @@ function badgeRules({ id, label, tone }: BoardBadge): string {
   return (
     `${card(id)}{outline:2.5px solid ${edge};outline-offset:1px;overflow:visible;z-index:3;${glow}}` +
     `${card(id)}::after{content:${quoted(label)};position:absolute;bottom:0.1875rem;left:0.1875rem;z-index:4;max-width:calc(100% - 0.375rem);overflow:hidden;text-overflow:ellipsis;` +
-    `padding:0 0.5rem;border-radius:999px;background:${edge};color:${ink};font-weight:700;font-size:0.6875rem;line-height:1rem;` +
+    `padding:0 0.5rem;border-radius:999px;background:${edge};color:${ink};font-weight:700;font-size:0.75rem;line-height:1rem;` +
     `white-space:nowrap;pointer-events:none;box-shadow:0 1px 3px oklch(0 0 0/.4)}`
   )
 }

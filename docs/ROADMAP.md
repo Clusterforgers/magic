@@ -65,6 +65,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
 - Choosing faster: quick selection buttons (all, owned, allied in team modes, none) in prompts that pick several objects, a random precon or own deck in every mode, hidden until the start, and "Always pay automatically" for payments without a real choice (`docs/web.md`, `docs/server.md`).
 - Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members; an effect that sets each player's life sets a shared total once.
+- Middle bar: a prompt band of one fixed line with the asking card's chip, and the decision's detail (the asking card with its clause, runs of triggers, ordering, paying) in the Stack column or a sheet over the hand (`docs/ui-design.md`, The band and the Stack column).
 
 ## Live game
 

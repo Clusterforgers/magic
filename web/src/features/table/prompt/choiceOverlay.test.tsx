@@ -218,10 +218,11 @@ describe('the panel lays out for the room the table measures', () => {
 })
 
 describe('a wide window', () => {
-  it('keeps a short choice of cards in the strip', () => {
+  it('keeps a short choice of cards in the Stack column, the band its one line', () => {
     const { host, strip, main } = table('cards', WIDE)
     expect(host.hidden).toBe(true)
-    expect(strip.querySelector('[data-slot="card-choices"]')).not.toBeNull()
+    expect(strip.querySelector('[data-slot="card-choices"]')).toBeNull()
+    expect(document.querySelector('[data-slot="decision-choices"] [data-slot="card-choices"]')).not.toBeNull()
     expect(main.style.gridTemplateAreas).toBe(TABLE_AREAS)
   })
 })

@@ -167,7 +167,7 @@ for (const size of SIZES) {
       await page.locator('[data-region="hand"] button[data-object-id][aria-label^="Plains"]').first().click()
       await expect(page.getByText('You have priority', { exact: false }).first()).toBeVisible()
       await infantry.first().click()
-      await page.getByRole('button', { name: 'Pay automatically', exact: true }).click()
+      await page.getByRole('button', { name: 'Pay for me', exact: true }).click()
       const field = page.locator(`section[aria-label="${active.name}'s battlefield"]`)
       const entered = field.locator(`button[data-object-id][aria-label^="${PARTIAL}"]`)
       await expect(async () => {

@@ -237,14 +237,15 @@ export const OWN_SHARE = 1.15
 export const SHEET_MAX_VH = 40
 /** What a phone's prompt sheet leaves of the opponents' area: the tile strip and a row of their board, in px. */
 export const SHEET_KEEP_PX = 120
-/**
- * The least a prompt sheet may grow to, whatever the boards leave: a sentence line and a row of 40 px answers (on a
- * phone also the stack chips' line), so an empty board above never squeezes the prompt.
- */
-export const BAND_MIN_PX = 96
-export const BAND_MIN_PHONE_PX = 136
 /** A phone's band is two lines: the asking card and the question, then the answers. */
 export const BAND_PHONE_PX = 112
+/**
+ * The least a prompt sheet that grows (a decision with no column or sheet for its choices) may grow to, whatever the
+ * boards leave: a sentence line and a row of 40 px answers, a phone's two lines, so an empty board above never
+ * squeezes the prompt.
+ */
+export const BAND_MIN_PX = 96
+export const BAND_MIN_PHONE_PX = BAND_PHONE_PX
 /**
  * The prompt band's height: one line, the shared strip itself, in every prompt and between prompts, so no board moves
  * for a prompt and the band lies over no card. A phone's is two lines, the strip with `Regions.sheetRoom` kept above it.

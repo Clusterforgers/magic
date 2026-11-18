@@ -13,7 +13,8 @@ describe('the strip and its sheet', () => {
     renderTable({ seats: 2 })
     expect(strip()).toHaveAttribute('data-region', 'shared')
     expect(strip()).toHaveClass('relative', 'z-20', 'min-h-0')
-    expect(sheet()).toHaveClass('absolute', 'inset-x-0', 'bottom-0', 'min-h-full')
+    // Never lower than the band: the strip itself, a phone's two lines.
+    expect(sheet()).toHaveClass('absolute', 'inset-x-0', 'bottom-0', 'min-h-[max(100%,var(--band-h))]')
     expect(sheet()).not.toHaveClass('top-0')
   })
 
@@ -23,13 +24,19 @@ describe('the strip and its sheet', () => {
     ['1280x720', { width: 1280, height: 720 }],
     ['1024x768', { width: 1024, height: 768 }],
     ['390x844', { width: 390, height: 844 }],
-  ])('lets the sheet grow to the most the layout allows at %s', (_name, viewport) => {
-    renderTable({ seats: 2, options: { viewport } })
-    const most = Math.floor(tablePlanOf(viewport, 2).regions.sheet)
+  ])('holds the sheet to the band for a decision with detail and lets another grow to the most the layout allows at %s', (_name, viewport) => {
+    const table = renderTable({ seats: 2, options: { viewport } })
+    const { sheet: band, sheetWide } = tablePlanOf(viewport, 2).regions
+    // A decision nothing asks (priority) may lay something out in the strip: the sheet may grow for it.
+    const most = Math.floor(sheetWide)
+    expect(strip().style.getPropertyValue('--band-h')).toBe(`${Math.floor(band)}px`)
     expect(strip().style.getPropertyValue('--sheet-max')).toBe(`${most}px`)
-    expect(sheet()).toHaveClass('max-h-(--sheet-max)')
+    expect(sheet()).toHaveClass('max-h-[max(100%,var(--sheet-max))]')
     // 40 % of the window at the most, and never further up than the top bar.
     expect(most).toBeLessThanOrEqual(Math.floor(viewport.height * 0.4))
+    // A decision with detail has it in the Stack column: its band never grows.
+    table.update(() => ({ pending: { id: 9, decision: { player: 0, kind: { YesNo: { source: 1 } } } } }))
+    expect(strip().style.getPropertyValue('--sheet-max')).toBe(`${Math.floor(band)}px`)
   })
 
   it('scrolls inside itself, opaque to its edge, when the prompt is taller than the sheet may be', () => {

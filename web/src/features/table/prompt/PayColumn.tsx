@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -51,19 +52,28 @@ function SlotDisc({ slot, sizeClass }: { slot: PaySlot; sizeClass: string }) {
   const [symbol] = costPips([slot.symbol])
   const paid = slot.fill?.mana === null || slot.fill?.mana === undefined ? undefined : costPips(madeCost([slot.fill.mana]))[0]
   if (paid !== undefined) return <Pip pip={paid} sizeClass={sizeClass} />
+  if (slot.fill === null && symbol !== undefined) {
+    // Owed: the symbol as the cost prints it (a hybrid split, a Phyrexian phi), pale in a dashed ring.
+    return (
+      <span
+        role="img"
+        aria-label={`Owed: ${symbol.name}`}
+        data-open=""
+        className="inline-flex shrink-0 rounded-full outline-[1.5px] outline-offset-1 outline-border-strong outline-dashed [&>*]:opacity-45 [&>*]:ring-0"
+      >
+        <Pip pip={symbol} sizeClass={sizeClass} />
+      </span>
+    )
+  }
   return (
     <span
       aria-hidden="true"
-      data-open={slot.fill === null || undefined}
       className={cn(
-        'inline-flex shrink-0 items-center justify-center rounded-full font-bold',
+        'inline-flex shrink-0 items-center justify-center rounded-full bg-success font-bold text-surface',
         sizeClass,
-        slot.fill === null
-          ? 'border-[1.5px] border-dashed border-border-strong text-muted-foreground'
-          : 'bg-success text-surface',
       )}
     >
-      {slot.fill === null ? (symbol?.text ?? '') : '✓'}
+      ✓
     </span>
   )
 }
@@ -133,11 +143,20 @@ export function groupByMade(
   return [...groups.values()]
 }
 
+/** The mana of one use, in words: "blue", "2 colorless", "white and blue". */
+export function madeNames(made: readonly ManaType[]): string {
+  const [first] = made
+  if (first !== undefined && made.length > 1 && made.every((mana) => mana === first)) {
+    return `${made.length} ${manaName(first)}`
+  }
+  return made.map(manaName).join(' and ')
+}
+
 /** What a group makes, in words: "white", "white or blue, you choose", "white and blue, costs 1 generic". */
 export function groupWords(gives: Gives, marks: readonly SourceMark[]): string {
   const made = gives.any
-    ? 'one mana of any colour'
-    : gives.ways.map((way) => way.made.map(manaName).join(' and ')).join(' or ')
+    ? 'one mana of any color'
+    : gives.ways.map((way) => madeNames(way.made)).join(' or ')
   const parts = [
     `Makes ${made}`,
     ...(gives.any || gives.ways.length > 1 ? ['you choose'] : []),
@@ -160,7 +179,7 @@ function GroupLabel({ gives, marks }: { gives: Gives; marks: readonly SourceMark
       {gives.any ? (
         <>
           <AnyPip sizeClass={SMALL} />
-          <span aria-hidden="true">any colour</span>
+          <span aria-hidden="true">any color</span>
         </>
       ) : (
         gives.ways.map((way, at) => (
@@ -216,8 +235,12 @@ export interface PayColumnProps {
   swaps: ReadonlyMap<ObjectId, readonly ManaOption[]>
   onTap(option: ManaOption): void
   onSwap(option: ManaOption): void
+  /** The card that waits for its colour is let go, unanswered. */
+  onCancelAsk(): void
   /** Takes the piece at this place of the payment back. */
   onRemove(index: number): void
+  /** Takes the whole payment back. */
+  onClear(): void
   /** The other ways to pay and what stands beside them: floating mana, convoke, life, abilities that activate at once. */
   children?: ReactNode
 }
@@ -242,14 +265,34 @@ export function PayColumn({
   swaps,
   onTap,
   onSwap,
+  onCancelAsk,
   onRemove,
+  onClear,
   children,
 }: PayColumnProps) {
   const objects = usePlay((state) => state.objectsById)
   const groups = groupByMade(sources, nameOf)
   const paid = paidCount(slots)
+  // A piece taken back by its circle leaves the keyboard on the next one; with none left, on the band's answers.
+  const root = useRef<HTMLDivElement>(null)
+  const refocus = useRef<number | null>(null)
+  useEffect(() => {
+    const at = refocus.current
+    if (at === null) return
+    refocus.current = null
+    const circles = [...(root.current?.querySelectorAll<HTMLElement>('button[data-slot="pay-circle"]') ?? [])]
+    const next = circles.find((circle) => Number(circle.dataset['spend']) >= at) ?? circles.at(-1)
+    const answers = document.querySelector<HTMLElement>(
+      '[data-slot="decision-line"] [data-slot="pay-auto"]:not(:disabled), [data-slot="decision-line"] [data-slot="pay-rest"], [data-slot="decision-line"] [data-slot="undo"]',
+    )
+    ;(next ?? answers)?.focus()
+  }, [spends])
+  const take = (index: number): void => {
+    refocus.current = index
+    onRemove(index)
+  }
   return (
-    <div data-slot="pay-column" className="grid min-w-0 gap-2">
+    <div ref={root} data-slot="pay-column" className="grid min-w-0 gap-2">
       <Kicker lead="Paying" rest={`${name} · ${paid} of ${slots.length}`} />
       <div data-slot="pay-track" role="group" aria-label="What is owed" className="flex flex-wrap gap-x-1 gap-y-1.5">
         {slots.map((slot, at) => {
@@ -273,10 +316,11 @@ export function PayColumn({
                 <button
                   type="button"
                   data-slot="pay-circle"
-                  aria-label={`Take back ${spendWords(spend, nameOf)}`}
-                  title={`Take back ${spendWords(spend, nameOf)}`}
+                  data-spend={index}
+                  aria-label={`Remove ${spendWords(spend, nameOf)}`}
+                  title={`Remove ${spendWords(spend, nameOf)}`}
                   className="!border-0 outline-offset-2 outline-primary focus-visible:outline-2"
-                  onClick={() => onRemove(index)}
+                  onClick={() => take(index)}
                 >
                   {disc}
                 </button>
@@ -294,6 +338,20 @@ export function PayColumn({
           : covered
             ? 'Everything is paid. Confirm, or press a filled circle to take it back.'
             : 'Tap sources here or on your board.'}
+        {spends.length === 0 ? null : (
+          <button
+            type="button"
+            data-slot="pay-clear"
+            aria-label="Clear the payment"
+            className="ml-2 rounded-sm px-1 font-medium text-foreground underline-offset-2 outline-offset-2 outline-primary hover:underline focus-visible:outline-2"
+            onClick={() => {
+              refocus.current = 0
+              onClear()
+            }}
+          >
+            Clear
+          </button>
+        )}
       </p>
       {children}
       {groups.map((group) => (
@@ -327,6 +385,7 @@ export function PayColumn({
                   swaps={last === undefined ? [] : (swaps.get(last) ?? [])}
                   onTap={onTap}
                   onSwap={onSwap}
+                  onCancelAsk={onCancelAsk}
                   onUntap={() => {
                     const at = spends.findLastIndex(
                       (spend) => spend.kind === 'tap' && spend.option.source.object === last,
@@ -357,6 +416,7 @@ function SourceRow({
   swaps,
   onTap,
   onSwap,
+  onCancelAsk,
   onUntap,
 }: {
   id: ObjectId
@@ -373,6 +433,7 @@ function SourceRow({
   swaps: readonly ManaOption[]
   onTap(option: ManaOption): void
   onSwap(option: ManaOption): void
+  onCancelAsk(): void
   onUntap(): void
 }) {
   const usable = (option: ManaOption): boolean => fits.some((other) => optionKey(other) === optionKey(option))
@@ -380,8 +441,25 @@ function SourceRow({
   const used = usedCount > 0
   const many = count > 1
   const whose = many ? `a ${name}` : name
+  // A card pressed on the board waits for its colour here: the keyboard comes to the first kind that helps.
+  const first = useRef<HTMLButtonElement>(null)
+  const firstUsable = options.findIndex(usable)
+  useEffect(() => {
+    if (asking) first.current?.focus()
+  }, [asking])
   return (
     <li
+      role={asking ? 'group' : undefined}
+      aria-label={asking ? `Mana from ${name}` : undefined}
+      onKeyDown={
+        asking
+          ? (event) => {
+              if (event.key !== 'Escape') return
+              event.preventDefault()
+              onCancelAsk()
+            }
+          : undefined
+      }
       data-slot="pay-source-row"
       data-source={id}
       data-interactive=""
@@ -402,13 +480,13 @@ function SourceRow({
           ) : null}
         </span>
         {used ? (
-          <span className="flex items-center gap-1 text-[0.6875rem] leading-[0.875rem] font-semibold text-success">
+          <span className="flex items-center gap-1 text-xs leading-4 font-semibold text-success">
             ✓ paying
-            <ManaPips pips={costPips(madeCost(paying))} sizeClass="size-3.5 text-[0.625rem]" label="Mana" />
+            <ManaPips pips={costPips(madeCost(paying))} sizeClass="size-3.5 text-xs" label="Mana" />
           </span>
         ) : fits.length === 0 && options.length > 0 ? (
           // Why the row is off: its own cost is paid from mana made before it, or nothing owed takes its mana.
-          <span data-slot="row-why" className="truncate text-[0.6875rem] leading-[0.875rem] text-muted-foreground">
+          <span data-slot="row-why" className="truncate text-xs leading-4 text-muted-foreground">
             {options.some((option) => (option.cost?.length ?? 0) > 0)
               ? 'Tap another source for its cost first'
               : 'Not needed for what is owed'}
@@ -417,20 +495,25 @@ function SourceRow({
       </span>
       <span className="flex items-center gap-1">
         {options.map((option, at) => {
-          const made = madeByOption(option).map(manaName).join(' and ')
+          const made = madeNames(madeByOption(option))
           return (
             <span key={optionKey(option)} className="flex items-center gap-1">
               {at > 0 && options.length <= 3 ? (
-                <span aria-hidden="true" className="text-[0.6875rem] text-muted-foreground">
+                <span aria-hidden="true" className="text-xs text-muted-foreground">
                   or
                 </span>
               ) : null}
               <button
+                ref={at === firstUsable ? first : undefined}
                 type="button"
                 data-slot="pay-tap"
                 // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
                 aria-disabled={!usable(option)}
-                aria-label={`Tap ${whose} for ${made}${many ? `, ${usedCount} of ${count} used` : ''}`}
+                aria-label={
+                  asking
+                    ? `Add ${made} mana`
+                    : `Tap ${whose} for ${made}${many ? `, ${usedCount} of ${count} used` : ''}`
+                }
                 title={`Tap for ${made}`}
                 className={cn(HALF, options.length > 3 && 'min-w-8 px-1')}
                 onClick={() => {
@@ -442,6 +525,18 @@ function SourceRow({
             </span>
           )
         })}
+        {asking ? (
+          <button
+            type="button"
+            data-slot="pay-ask-cancel"
+            aria-label="Cancel"
+            title="Cancel"
+            className={cn(HALF, 'min-w-8 px-1 pointer-coarse:min-w-11')}
+            onClick={onCancelAsk}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        ) : null}
         {used ? (
           <>
             {swaps.map((option) => (
@@ -449,8 +544,8 @@ function SourceRow({
                 key={optionKey(option)}
                 type="button"
                 data-slot="pay-switch"
-                aria-label={`Switch ${name} to ${madeByOption(option).map(manaName).join(' and ')}`}
-                title={`Switch to ${madeByOption(option).map(manaName).join(' and ')}`}
+                aria-label={`Switch ${name} to ${madeNames(madeByOption(option))}`}
+                title={`Switch to ${madeNames(madeByOption(option))}`}
                 className={HALF}
                 onClick={() => onSwap(option)}
               >
