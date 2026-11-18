@@ -158,6 +158,31 @@ describe('the duel board of an early Commander game', () => {
   )
 })
 
+describe('your creatures against the opponents', () => {
+  const sizes = [
+    [1920, 1080],
+    [1600, 1000],
+    [1440, 900],
+    [1400, 900],
+    [1366, 768],
+    [1280, 720],
+    [1024, 768],
+    [768, 1024],
+  ] as const
+  const cases = sizes.flatMap(([width, height]) =>
+    [2, 3, 4, 5, 6].flatMap((seats) =>
+      (['duel', 'heavy'] as const).map((board) => [width, height, seats, board] as const),
+    ),
+  )
+  it.each(cases)(
+    'at %ix%i with %i seats on the %s board: no opponent draws wider cards than yours',
+    (width, height, seats, board) => {
+      const { own, theirs } = cardsAt(width, height, seats, board)
+      for (const fit of theirs) expect(fit.cardWidth).toBeLessThanOrEqual(own.cardWidth)
+    },
+  )
+})
+
 describe('the prompt sheet of a split table', () => {
   it.each([
     [360, 740, true],
@@ -280,9 +305,9 @@ describe('the chrome of the opponents row', () => {
 })
 
 describe('the pod column of the opponent', () => {
-  // The duel board at 1366x768 under a priority prompt with three stack items, whose sheet wants 76 px over the row.
+  // The duel board under a priority prompt with three stack items, whose sheet wants 64 to 76 px over the row. At 1366x768
+  // the floor would draw the opponent's creatures wider than yours, so the pod keeps its chips there.
   it.each([
-    [1366, 768, 76],
     [1440, 900, 64],
     [1920, 1080, 76],
   ])('keeps the column at %ix%i unfolded above a sheet that wants %i px', (width, height, overhang) => {

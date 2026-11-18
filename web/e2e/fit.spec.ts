@@ -328,7 +328,7 @@ test.describe('the development table with 40 permanents a seat', () => {
     await atEverySize(page, ['hand', 'life', 'primary'], onTable('three stack items'))
   })
 
-  test('draws each seat’s corner as pictures of 44 px or more, and the opponent’s pod column does not scroll at 1920x1080, 1440x900 and 1366x768', async ({
+  test('draws each seat’s corner as pictures of 44 px or more, and the opponent’s pod column does not scroll at 1920x1080, 1440x900 and 1366x768 (chips there)', async ({
     page,
   }) => {
     await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&prompt=priority&turn=you`)
@@ -362,10 +362,15 @@ test.describe('the development table with 40 permanents a seat', () => {
         }
         return { opponent: read(1), you: read(0) }
       })
+    // At 1366x768 the pictures would draw the opponent's creatures wider than yours: the pod keeps its chips and does not
+    // scroll (opponent boards shrink first).
+    await page.setViewportSize({ width: 1366, height: 768 })
+    await expect
+      .poll(async () => (await read()).opponent, { message: '1366x768: the opponent pod' })
+      .toMatchObject({ scrolls: false })
     for (const [width, height] of [
       [1920, 1080],
       [1440, 900],
-      [1366, 768],
     ] as const) {
       await page.setViewportSize({ width, height })
       // The board split settles once the prompt sheet has told it the room it wants over the opponents' row.
