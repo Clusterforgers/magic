@@ -9,7 +9,8 @@ use crate::snapshot::Snapshot;
 use crate::zones::Zone;
 
 /// The X read by an ability that triggers on `when` because of `cause`, where `source` is the object it belongs to as it
-/// was. A delayed trigger reads the X of the spell or ability that set it up; the trigger "when this enters" the X its
+/// was. A delayed trigger reads the X of the spell or ability that set it up, or, set up without one and waiting for a spell
+/// being cast, the X of that spell; the trigger "when this enters" the X its
 /// spell was cast with (CR 107.3m); a trigger on a spell being cast the X that spell was cast with, whether it is a
 /// trigger of the spell itself ("when you cast this spell") or of another permanent ("whenever you cast a spell").
 /// The trigger "when you cycle this card", "when this creature becomes monstrous" or "when this creature is turned face
@@ -20,8 +21,17 @@ pub(crate) fn read(
     source: &Snapshot,
     cause: &Cause,
 ) -> Option<u32> {
+    // A delayed trigger on a spell being cast set up by something without an X reads the X of that spell ("when you
+    // next cast a spell with {X} in its mana cost this turn, ... gain half X life").
     if delayed {
-        return source.x;
+        let cast = matches!(when, TriggerPattern::SpellCast { .. }).then(|| {
+            cause
+                .snapshots
+                .iter()
+                .find(|shot| shot.zone == Zone::Stack)
+                .and_then(|shot| shot.x)
+        });
+        return source.x.or(cast.flatten());
     }
     match when {
         TriggerPattern::ZoneChange {

@@ -2018,6 +2018,33 @@ fn matching_event(
             )
         }
         (
+            TriggerPattern::DealsToughnessDamage { source, combat },
+            Happened::Damaged {
+                source: dealer,
+                to: DamageTarget::Object(hit),
+                combat: was,
+                amount,
+                ..
+            },
+        ) => {
+            let dealer = object(*dealer)?;
+            let hit = object(*hit)?;
+            let toughness = crate::characteristics::characteristics(state, hit.id)
+                .filter(crate::characteristics::Characteristics::is_creature)
+                .and_then(|chars| chars.toughness)?;
+            let equal = i64::from(*amount) == i64::from(toughness);
+            (combat.is_none_or(|wanted| wanted == *was) && equal && picks(source, dealer)?).then(
+                || {
+                    let mut cause = counted(state, vec![Target::Object(hit)], *amount);
+                    cause.snapshots.extend(snapshot(state, dealer.id));
+                    Cause {
+                        source: Some(dealer),
+                        ..cause
+                    }
+                },
+            )
+        }
+        (
             TriggerPattern::DealtExcess { what, combat },
             Happened::DealtExcess {
                 object: hit,

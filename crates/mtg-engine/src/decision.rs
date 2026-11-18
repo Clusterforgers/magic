@@ -204,6 +204,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PaidEnd>>", optional))]
     pub endable: Vec<PaidEnd>,
+    /// The sources whose effects the holder can ignore until end of turn by paying (a special action that does not use
+    /// the stack): "Any player may pay {2} for that player to ignore this effect until end of turn."
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PaidIgnore>>", optional))]
+    pub ignorable: Vec<PaidIgnore>,
     /// Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
     /// timing, once a game.
     #[serde(default, skip_serializing_if = "is_false")]
@@ -383,6 +388,16 @@ pub struct PaidEnd {
     /// The permanent it changes.
     pub object: ObjectId,
     /// What ending it costs.
+    pub cost: ManaCost,
+}
+
+/// A source whose effects a player may ignore until end of turn by paying (`GameRule::PayToIgnore`, CR 116.2).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct PaidIgnore {
+    /// The source.
+    pub object: ObjectId,
+    /// What ignoring it costs.
     pub cost: ManaCost,
 }
 
@@ -885,6 +900,9 @@ pub enum PriorityAction {
     UnlockDoor(ObjectId, u8),
     /// End this effect (CR 116.2c, a special action): pay what it names (it must be offered in `PriorityOptions.endable`).
     EndEffect(EffectId),
+    /// Ignore the effects of this source until end of turn (a special action): pay what it names (it must be offered in
+    /// `PriorityOptions.ignorable`).
+    IgnoreEffect(ObjectId),
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
     /// any priority, checked against the state (`manual.rs`).
     Manual(ManualAction),

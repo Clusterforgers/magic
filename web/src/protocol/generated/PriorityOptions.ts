@@ -5,6 +5,7 @@ import type { InactiveAbility } from "./InactiveAbility";
 import type { ManaOption } from "./ManaOption";
 import type { ObjectId } from "./ObjectId";
 import type { PaidEnd } from "./PaidEnd";
+import type { PaidIgnore } from "./PaidIgnore";
 import type { UnplayableCard } from "./UnplayableCard";
 
 /**
@@ -53,6 +54,11 @@ unlockable?: Array<FaceOption>,
  * pay {W} to end this effect".
  */
 endable?: Array<PaidEnd>, 
+/**
+ * The sources whose effects the holder can ignore until end of turn by paying (a special action that does not use
+ * the stack): "Any player may pay {2} for that player to ignore this effect until end of turn."
+ */
+ignorable?: Array<PaidIgnore>, 
 /**
  * Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
  * timing, once a game.

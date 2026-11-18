@@ -169,7 +169,11 @@ fn player_action(action: Action, who: &Ref) -> Option<String> {
         | Action::Discovered
         | Action::ManifestedDread
         | Action::GaveGift
-        | Action::LostCoinFlip => super::l31a_events::l31a_action_text(action, who)?,
+        | Action::LostCoinFlip
+        | Action::Waterbent
+        | Action::Earthbent
+        | Action::Firebent
+        | Action::Airbent => super::l31a_events::l31a_action_text(action, who)?,
         Action::Scried => player_verb(who, "scry")?,
         Action::Surveilled => player_verb(who, "surveil")?,
         Action::Proliferated => player_verb(who, "proliferate")?,

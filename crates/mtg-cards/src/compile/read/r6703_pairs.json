@@ -1,0 +1,28 @@
+[
+ [
+  [
+   {
+    "Rule": {
+     "rule": {
+      "CantSearch": {
+       "PlayersWhere": {
+        "who": "EachPlayer",
+        "test": {
+         "Not": "PaidToIgnore"
+        }
+       }
+      }
+     }
+    }
+   },
+   {
+    "Rule": {
+     "rule": {
+      "PayToIgnore": "{2}"
+     }
+    }
+   }
+  ],
+  "Players can't search libraries. Any player may pay {2} for that player to ignore this effect until end of turn."
+ ]
+]

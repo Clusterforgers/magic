@@ -345,6 +345,8 @@ pub(crate) enum Special {
     Unlock(u8),
     /// Ending this effect by paying its price (CR 116.2c): the card is the object it changes.
     EndEffect(mtg_core::ids::EffectId),
+    /// Paying to ignore the effects of the card until end of turn (`GameRule::PayToIgnore`).
+    IgnoreEffect,
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -746,6 +748,14 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             Special::Companion => companion::next(state, *player, *card),
             Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),
             Special::EndEffect(effect) => e15g_paid_end::next(state, *player, *effect),
+            Special::IgnoreEffect => {
+                let Some(cost) = crate::r6703_ignore::offer(state, *player, *card) else {
+                    return Next::Drop;
+                };
+                suspend::pay(state, *player, *card, cost, || {
+                    crate::r6703_ignore::events(state, *player, *card)
+                })
+            }
         };
     }
     let what: &What = what;

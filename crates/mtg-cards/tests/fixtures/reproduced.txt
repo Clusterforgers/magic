@@ -263,6 +263,7 @@ Brain Freeze
 Brainstorm
 Bramble Elemental
 Branchblight Stalker
+Brass Infiniscope
 Brass's Tunnel-Grinder // Tecutlan, the Searing Rift
 Brave the Sands
 Break the Ice
@@ -531,6 +532,7 @@ Demotion
 Dense Canopy
 Deputized Protester
 Desert
+Desertion
 Desolation
 Desperate Ravings
 Desperate Ritual
@@ -1124,6 +1126,7 @@ J. Jonah Jameson
 Jace Beleren
 Jace's Archivist
 Jace, Arcane Strategist
+Jace, Multiverse Architect
 Jack-o'-Lantern
 Jacked Rabbit
 Jadelight Ranger
@@ -1239,6 +1242,7 @@ Legerdemain
 Legion Loyalty
 Legolas Greenleaf
 Leonardo, the Balance
+Leonin Arbiter
 Letter of Acceptance
 Leviathan
 Levitation
@@ -2125,6 +2129,7 @@ Syrix, Carrier of the Flame
 Szadek, Lord of Secrets
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
+Taii Wakeen, Perfect Shot
 Tainted Adversary
 Tainted Isle
 Tainted Remedy

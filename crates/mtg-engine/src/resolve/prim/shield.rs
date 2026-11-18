@@ -18,6 +18,7 @@ use crate::rules::{DamageShield, Rule, RuleEffect};
 /// none protected: nothing begins), and lasts for its duration. It prevents all the damage or, as `PreventUpTo`, that
 /// much in all; `PreventCounted` counts that much as it begins. A shield over deaths, or over leaving the battlefield,
 /// covers the permanents its selector names now; a shield over the next draw or loss of the game is judged at that event. Any other shield refuses by the name of its effect (`ShieldShape`).
+#[allow(clippy::too_many_lines)] // one arm for each shape of shield
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::Shield { when, by, duration } = effect else {
         return Err(wrong_effect("Shield"));
@@ -32,6 +33,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         (ShieldShape::Countered, ReplaceWhen::Countered { what }, ReplaceBy::MoveTo(to)) => {
             Some((what, *to, None, true, false))
         }
+        (
+            ShieldShape::Countered,
+            ReplaceWhen::Countered { what },
+            ReplaceBy::BattlefieldUnderYours,
+        ) => Some((what, ZoneKind::Battlefield, None, true, false)),
         (
             ShieldShape::Countered,
             ReplaceWhen::Countered { what },
@@ -100,6 +106,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         | ReplaceBy::PreventAnd(_)
         | ReplaceBy::Multiply(_)
         | ReplaceBy::Add(_)
+        | ReplaceBy::AddAmount(_)
         | ReplaceBy::Instead(_)
         | ReplaceBy::InsteadNext(_)
         | ReplaceBy::RedirectUpTo { .. }
@@ -149,6 +156,10 @@ pub(super) fn damage_shield(
         | ReplaceBy::RedirectUpTo { .. }
         | ReplaceBy::Redirect { .. } => Some(by.clone()),
         ReplaceBy::InsteadNext(effects) => Some(ReplaceBy::Instead(effects.clone())),
+        // "Plus X" of a shield is fixed as it begins, X of the activation that made it (CR 611.2c).
+        ReplaceBy::AddAmount(amount) => Some(ReplaceBy::Add(
+            u32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(u32::MAX),
+        )),
         ReplaceBy::RedirectCounted { most, to } => Some(ReplaceBy::RedirectUpTo {
             most: u32::try_from(cx.scope.amount(most)?.max(0)).unwrap_or(u32::MAX),
             to: to.clone(),

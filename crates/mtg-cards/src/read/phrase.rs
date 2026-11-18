@@ -636,6 +636,7 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
             format!("{} (checked as it triggers only)", condition(ctx, inner))
         }
         Condition::YourTurn => "it is your turn".to_owned(),
+        Condition::PaidToIgnore => "you paid to ignore this effect this turn".to_owned(),
         Condition::ExtraTurn => "it is an extra turn".to_owned(),
         Condition::Among(players) => format!("you are among {}", who(ctx, players)),
         Condition::IsDay => "it is day".to_owned(),

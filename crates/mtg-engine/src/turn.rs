@@ -116,7 +116,7 @@ impl Step {
 }
 
 /// An extra turn waiting to be taken (CR 500.7).
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ExtraTurn {
     /// Who takes it.
     pub player: PlayerId,
@@ -124,6 +124,9 @@ pub struct ExtraTurn {
     pub skip_untap: bool,
     /// Whether power-up abilities can't be activated during it.
     pub no_power_up: bool,
+    /// The delayed trigger set up as it begins, for its end step ("At the beginning of that turn's end step, you lose
+    /// the game"); its id is given when it is set up.
+    pub r6703_end: Option<Box<crate::triggers::DelayedCreated>>,
 }
 
 // An extra turn that allows power-up abilities hashes as it did before the rule existed.
@@ -133,6 +136,9 @@ impl Hash for ExtraTurn {
         self.skip_untap.hash(state);
         if self.no_power_up {
             self.no_power_up.hash(state);
+        }
+        if let Some(end) = &self.r6703_end {
+            serde_json::to_vec(end).unwrap_or_default().hash(state);
         }
     }
 }

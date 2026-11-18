@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ee3d1f44-e0ca-4ce9-be76-4b675a115156",
+  "name": "Desertion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desertion",
+      "oracle_fingerprint": "a73202e4400c6e3ce3037b34ea15b51b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "Countered": {
+                      "what": [
+                        { "Is": { "Target": 0 } },
+                        "Spell",
+                        { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                      ]
+                    }
+                  },
+                  "by": "BattlefieldUnderYours",
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Counter": { "what": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

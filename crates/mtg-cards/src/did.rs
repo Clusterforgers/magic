@@ -167,6 +167,14 @@ pub enum Action {
     LostCoinFlip,
     /// A creature fought another (CR 701.14); `what` is the creature, judged as it is after the fight.
     Fought,
+    /// A player waterbent: they paid a waterbend cost, however they paid it (Avatar Aang ruling).
+    Waterbent,
+    /// A player earthbent: the steps of an earthbend were done, even those that were impossible (Avatar Aang ruling).
+    Earthbent,
+    /// A player firebent: a firebending ability they controlled resolved (Avatar Aang ruling).
+    Firebent,
+    /// A player airbent: the steps of an airbend were done, even those that were impossible (Avatar Aang ruling).
+    Airbent,
 }
 
 impl Action {
@@ -337,6 +345,10 @@ impl Action {
             Action::FinishedVoting => ("finish voting", "finish voting"),
             Action::LostCoinFlip => ("lose a coin flip", "loses a coin flip"),
             Action::Fought => ("fight", "fights"),
+            Action::Waterbent => ("waterbend", "waterbends"),
+            Action::Earthbent => ("earthbend", "earthbends"),
+            Action::Firebent => ("firebend", "firebends"),
+            Action::Airbent => ("airbend", "airbends"),
         }
     }
 

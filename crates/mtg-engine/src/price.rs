@@ -85,6 +85,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::R6702SacrificeUpTo { .. } => "Cost.R6702SacrificeUpTo",
         CostItem::R6702ExileTotalX { .. } => "Cost.R6702ExileTotalX",
         CostItem::ExileCardTypes(_) => "Cost.ExileCardTypes",
+        CostItem::ExileTotalValue { .. } => "Cost.ExileTotalValue",
         CostItem::GenericOf(_) => "Cost.GenericOf",
         CostItem::Blight(_) => "Cost.Blight",
         CostItem::Behold { .. } => "Cost.Behold",

@@ -1501,6 +1501,9 @@ pub enum Effect {
     Bolster {
         /// How many +1/+1 counters.
         count: Amount,
+        /// The name the chosen creature is bound to for the steps after it ("the chosen creature").
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// The source creature's controller fabricates (CR 702.123): they may put the counters on it, and otherwise create that many Servo tokens; a source that has left the battlefield only makes the tokens.
     Fabricate {
@@ -1690,6 +1693,10 @@ pub enum Effect {
         /// activated.").
         #[serde(default, skip_serializing_if = "is_false")]
         no_power_up: bool,
+        /// A delayed triggered ability of each of them, at the beginning of its end step ("At the beginning of that
+        /// turn's end step, you lose the game."); none when empty.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        at_end: Vec<Effect>,
     },
     /// The turn ends (CR 723): the other spells and abilities on the stack are exiled, combat ends and the game goes on
     /// at the cleanup step.

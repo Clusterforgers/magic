@@ -41,7 +41,7 @@ pub const KEYWORDS: &[Entry] = &[
     },
     Entry {
         name: "firebending",
-        template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"AddMana":{"mana":{"Fixed":["Red"]},"times":$N,"lasts":"Combat"}}]}}]"#,
+        template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"AddMana":{"mana":{"Fixed":["Red"]},"times":$N,"lasts":"Combat"}},{"Performed":{"action":"Firebent"}}]}}]"#,
     },
     Entry {
         name: "soulshift",
@@ -138,7 +138,8 @@ pub const ACTIONS: &[Entry] = &[
         template: r#"[{"Continuous":{"affected":$ON,"mods":[{"AddType":"Creature"},{"SetPT":{"power":0,"toughness":0}},{"AddKeyword":"Haste"}],"duration":"Forever"}},
             {"PutCounters":{"on":$ON,"counter":"+1/+1","count":$N}},
             {"DelayedTrigger":{"when":{"AnyOf":[{"ZoneChange":{"what":[{"Is":$ON}],"from":"Battlefield","to":"Graveyard"}},{"ZoneChange":{"what":[{"Is":$ON}],"from":"Battlefield","to":"Exile"}}]},
-             "effects":[{"Move":{"what":"Triggering","to":{"Battlefield":{"tapped":true}}}}]}}]"#,
+             "effects":[{"Move":{"what":"Triggering","to":{"Battlefield":{"tapped":true}}}}]}},
+            {"Performed":{"action":"Earthbent"}}]"#,
     },
     Entry {
         name: "blight",

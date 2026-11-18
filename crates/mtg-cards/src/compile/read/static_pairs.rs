@@ -23,6 +23,9 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Vec<Ability>> {
     if let Some(found) = r.attempt(super::render::r6105_pair_read) {
         return Some(found);
     }
+    if let Some(found) = r.attempt(super::r6703_wholes::r6703_pair_read) {
+        return Some(found);
+    }
     if let Some(found) = r.attempt(super::r4701_pairs::r4701_graveyard_only) {
         return Some(found);
     }
@@ -66,6 +69,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
         return whole_pair;
     }
     let whole_pair = super::render::r6105_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
+    let whole_pair = super::r6703_wholes::r6703_pair_texts(first, second);
     if !whole_pair.is_empty() {
         return whole_pair;
     }

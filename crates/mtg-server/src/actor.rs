@@ -141,7 +141,8 @@ pub async fn resume_game_with<S: EventStore>(
     setup: GameSetup,
     config: GameConfig,
 ) -> Result<GameHandle, StartError> {
-    resume_recorded(store, id, setup, config, None).await
+    // Boxed: the rebuilt engine makes the future large (clippy::large_futures at every caller).
+    Box::pin(resume_recorded(store, id, setup, config, None)).await
 }
 
 /// Like [`resume_game_with`], writing the game's milestones to `recorder`.

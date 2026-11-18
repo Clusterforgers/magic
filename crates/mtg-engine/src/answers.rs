@@ -43,6 +43,8 @@ pub(crate) enum Outcome {
     BeginUnlock(ObjectId, u8),
     /// Start ending this effect by paying for it: the payment of its price is decided next; the object is the one it changes.
     BeginEndEffect(ObjectId, mtg_core::ids::EffectId),
+    /// Start paying to ignore the effects of this source until end of turn: the payment is decided next.
+    BeginIgnore(ObjectId),
     /// Start casting a copy of the spell face of this prepared permanent: the copy is made and its announcement and payment are decided next.
     BeginPrepared(ObjectId),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.

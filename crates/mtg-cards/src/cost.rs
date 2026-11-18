@@ -235,6 +235,14 @@ pub enum CostItem {
     /// Exile any number of other cards from the payer's graveyard with at least this many card types among them
     /// (Nethergoyf's escape cost).
     ExileCardTypes(u32),
+    /// Exile any number of cards the filter selects from the payer's graveyard with total mana value at least `total`
+    /// ("Exile any number of historic cards from your graveyard with total mana value 30 or greater").
+    ExileTotalValue {
+        /// The cards that may be exiled, judged in the graveyard.
+        filter: Selector,
+        /// The least total mana value.
+        total: u32,
+    },
     /// Blight (Lorwyn Eclipsed): put that many -1/-1 counters on a creature the payer controls and picks.
     Blight(Amount),
     /// Behold (Lorwyn Eclipsed): choose a permanent the payer controls or reveal a card from their hand that matches.

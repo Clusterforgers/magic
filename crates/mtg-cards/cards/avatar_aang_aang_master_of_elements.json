@@ -1,7 +1,7 @@
 {
   "oracle_id": "b4872bac-5822-4c35-9b73-38c4e3ffa477",
   "name": "Avatar Aang // Aang, Master of Elements",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Avatar Aang",
@@ -10,9 +10,55 @@
         { "Keyword": "Flying" },
         { "Keyword": { "Macro": { "name": "firebending", "amount": 2 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 22, "end": 154 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "Did": { "action": "Waterbent", "who": "You" } },
+                { "Did": { "action": "Earthbent", "who": "You" } },
+                { "Did": { "action": "Firebent", "who": "You" } },
+                { "Did": { "action": "Airbent", "who": "You" } }
+              ]
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "Waterbent" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "Earthbent" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "Firebent" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "You", "what": "Airbent" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
           }
         }
       ]

@@ -50,6 +50,7 @@
                   ]
                 }
               },
+              { "Performed": { "action": "Earthbent" } },
               {
                 "Continuous": {
                   "affected": {

@@ -55,6 +55,7 @@ fn paid_from(part: &Part, ability: AbilityRef) -> ObjectId {
 ///
 /// The source is photographed before the costs, so the ability knows what it was (CR 113.7a); a token sacrificed
 /// for it has ceased to exist by then, and the ability still has the rules it was activated from.
+#[allow(clippy::too_many_lines)] // one arm for each kind of ability and of source-moving cost
 pub(crate) fn activation_events(
     state: &GameState,
     player: PlayerId,
@@ -163,6 +164,18 @@ pub(crate) fn activation_events(
         cause: None,
         delayed: None,
     })));
+    // Paying a waterbend cost is waterbending, however it was paid (Avatar Aang ruling).
+    if let Ability::Activated { cost, .. } = &*rules
+        && cost
+            .0
+            .iter()
+            .any(|item| matches!(item, CostItem::Waterbend(_)))
+    {
+        events.push(Event::Bent {
+            player,
+            element: crate::events::Bending::Water,
+        });
+    }
     Some(events)
 }
 
@@ -599,6 +612,7 @@ fn declared(
 
 /// The events that say what a payment is for, which come between the life paid and the mana: the cast of the spell,
 /// the activation of the ability, or the answer "paid" to the effect that asked.
+#[allow(clippy::too_many_lines)] // one arm for each kind of pending announcement
 fn announcement(
     state: &GameState,
     player: PlayerId,
@@ -635,6 +649,11 @@ fn announcement(
             special: Some(Special::EndEffect(effect)),
             ..
         }) => crate::e15g_paid::events(state, player, *effect).ok_or_else(unexpected),
+        Some(Pending {
+            what: What::Spell(source),
+            special: Some(Special::IgnoreEffect),
+            ..
+        }) => crate::r6703_ignore::events(state, player, *source).ok_or_else(unexpected),
         Some(Pending {
             what: What::Spell(card),
             special: Some(Special::TurnFaceUp),

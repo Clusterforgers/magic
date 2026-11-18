@@ -650,7 +650,7 @@ fn next_turn(state: &GameState) -> NextTurn {
             && !crate::rules::skips_extra_turns(state, turn.player)
             && !crate::prohibit::skips_turn(state, turn.player)
         {
-            return (passed, spent, turn.player, Some(*turn));
+            return (passed, spent, turn.player, Some(turn.clone()));
         }
         passed.push(Event::ExtraTurnSkipped {
             player: turn.player,

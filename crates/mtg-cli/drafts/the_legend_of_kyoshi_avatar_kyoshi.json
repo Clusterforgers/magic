@@ -74,6 +74,7 @@
                   ]
                 }
               },
+              { "Performed": { "action": "Earthbent" } },
               {
                 "Continuous": {
                   "affected": { "Target": 0 },

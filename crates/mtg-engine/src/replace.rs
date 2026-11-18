@@ -834,6 +834,13 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
             matches!(unit, Unit::Move { .. })
                 && !matches!(place, mtg_cards::effect::Place::Below(_))
         }
+        ReplaceBy::BattlefieldUnderYours => matches!(
+            unit,
+            Unit::Move {
+                countered: true,
+                ..
+            }
+        ),
         ReplaceBy::Tapped
         | ReplaceBy::Untapped
         | ReplaceBy::WithCounters { .. }
@@ -2510,6 +2517,22 @@ impl Pass<'_> {
                 self.slots[at].applied.clone_from(&applied);
                 if destination != *to {
                     self.redirect(at, *object, *from, destination, &applied);
+                }
+            }
+            (
+                ReplaceBy::BattlefieldUnderYours,
+                Unit::Move {
+                    object, from, to, ..
+                },
+            ) => {
+                self.slots[at].applied.clone_from(&applied);
+                if *to != Zone::Battlefield {
+                    self.r6703_onto_battlefield(
+                        at,
+                        (*object, *from),
+                        candidate.controller,
+                        &applied,
+                    );
                 }
             }
             (ReplaceBy::IntoLibrary { place, reveal, .. }, Unit::Move { object, from, .. }) => {
@@ -4249,6 +4272,7 @@ mod r5501_attached;
 mod r6008_library;
 mod r6603_draws;
 mod r6603_transforms;
+mod r6703_onto_battlefield;
 mod w9c_prevent;
 
 /// The counters for each permanent devoured: "Devour X, where X is the number of creatures devoured this way" is

@@ -106,11 +106,12 @@ pub(crate) enum Doing {
     SkipTurn { player: PlayerId },
     /// `player` casts the card `card`.
     Cast { player: PlayerId, card: ObjectId },
-    /// `object`, controlled by `player`, attacks `defender` or a planeswalker they control.
+    /// `object`, controlled by `player`, attacks `defender` or the planeswalker `walker` they control.
     Attack {
         player: PlayerId,
         object: ObjectId,
         defender: PlayerId,
+        walker: Option<ObjectId>,
     },
     /// `player` pays life for the cost of a spell or an ability, a mana ability when `mana_ability`.
     PayLifeForCost {
@@ -307,6 +308,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                 player,
                 object,
                 defender,
+                ..
             },
         ) => {
             covers(who, Some(player), Some(object))
@@ -314,6 +316,20 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                     Scope::announcing(state, defender, o.reference())
                         .holds(unless)
                         .unwrap_or(false)
+                })
+        }
+        (
+            Prohibited::AttackPlaneswalkers(walkers),
+            Doing::Attack {
+                player,
+                object,
+                walker: Some(walker),
+                ..
+            },
+        ) => {
+            covers(who, Some(player), Some(object))
+                && state.object(walker).is_some_and(|found| {
+                    picks(state, ban, walkers, found.reference()) && !walkers.is_empty()
                 })
         }
         (
@@ -350,7 +366,12 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
 }
 
 /// Whether a prohibition keeps the creature `object` from attacking `defender` or a planeswalker they control.
-pub(crate) fn attack_forbidden(state: &GameState, object: ObjectId, defender: PlayerId) -> bool {
+pub(crate) fn attack_forbidden(
+    state: &GameState,
+    object: ObjectId,
+    defender: PlayerId,
+    walker: Option<ObjectId>,
+) -> bool {
     controller_of(state, object).is_some_and(|player| {
         forbidden(
             state,
@@ -358,6 +379,7 @@ pub(crate) fn attack_forbidden(state: &GameState, object: ObjectId, defender: Pl
                 player,
                 object,
                 defender,
+                walker,
             },
         )
     })

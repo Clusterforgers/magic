@@ -1152,6 +1152,14 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
   if ('EvidenceCollected' in event) return line(`${n.seat(event.EvidenceCollected.player)} collects evidence`)
   if ('Investigated' in event) return line(`${n.seat(event.Investigated.player)} investigates`)
+  if ('IgnoredEffect' in event) {
+    const { player, source } = event.IgnoredEffect
+    return line(`${n.seat(player)} pays to ignore the effect of ${n.card(source.id)} this turn`)
+  }
+  if ('Bent' in event) {
+    const verb = { Water: 'waterbends', Earth: 'earthbends', Fire: 'firebends', Air: 'airbends' }[event.Bent.element]
+    return line(`${n.seat(event.Bent.player)} ${verb}`)
+  }
   if ('Discovered' in event) {
     const { player, value, card } = event.Discovered
     const found = card === null ? '' : `, finding ${n.card(card)}`

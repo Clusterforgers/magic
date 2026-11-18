@@ -1,7 +1,7 @@
 {
   "oracle_id": "199c4a1a-2082-417c-a174-f479d7334d15",
   "name": "Optimus Prime, Hero // Optimus Prime, Autobot Leader",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Optimus Prime, Hero",
@@ -31,9 +31,33 @@
         { "Keyword": { "Macro": { "name": "living metal", "amount": 0 } } },
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 74, "end": 243 }
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "Bolster": { "count": 2, "as": "chosen" } },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "chosen" },
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Is": { "Bound": "chosen" } }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Transform": { "what": "This" } }]
+                }
+              }
+            ]
           }
         }
       ]

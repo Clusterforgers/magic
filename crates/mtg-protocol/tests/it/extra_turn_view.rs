@@ -33,11 +33,13 @@ fn the_turn_view_names_the_extra_turns_to_every_seat(#[values(2, 3, 4)] seats: u
             player: seat(0),
             skip_untap: false,
             no_power_up: false,
+            r6703_end: None,
         },
         Event::ExtraTurnAdded {
             player: seat(1),
             skip_untap: true,
             no_power_up: false,
+            r6703_end: None,
         },
         Event::PhasesAdded {
             steps: vec![Step::BeginCombat, Step::Main2],
@@ -80,6 +82,7 @@ fn a_turn_that_is_extra_says_so_to_every_seat(#[values(2, 4)] seats: usize) {
             player: seat(0),
             skip_untap: false,
             no_power_up: false,
+            r6703_end: None,
         },
         Event::TurnBegan {
             number,

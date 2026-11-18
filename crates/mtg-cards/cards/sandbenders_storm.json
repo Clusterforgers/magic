@@ -72,7 +72,8 @@
                               }
                             ]
                           }
-                        }
+                        },
+                        { "Performed": { "action": "Earthbent" } }
                       ]
                     }
                   ]

@@ -737,6 +737,10 @@ pub(super) fn replace_by(ctx: &Ctx, by: &ReplaceBy, depth: u8, out: &mut Vec<Ste
             format!("it goes to {} instead", phrase::zone_text(*zone)),
         )),
         ReplaceBy::IntoLibrary { .. } => out.push(Step::new(depth, r6008_into_library(by))),
+        ReplaceBy::BattlefieldUnderYours => out.push(Step::new(
+            depth,
+            "its card goes onto the battlefield under your control instead",
+        )),
         ReplaceBy::Instead(list) => {
             out.push(Step::new(depth, "instead:"));
             effects::list(ctx, list, depth + 1, out);
