@@ -1157,7 +1157,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.seat(player)} pays to ignore the effect of ${n.card(source.id)} this turn`)
   }
   if ('Bent' in event) {
-    const verb = { Water: 'waterbends', Earth: 'earthbends', Fire: 'firebends', Air: 'airbends' }[event.Bent.element]
+    const verb = { Water: 'waterbends', Earth: 'earthbends', Fire: 'firebends', Air: 'airbends' }[
+      event.Bent.element
+    ]
     return line(`${n.seat(event.Bent.player)} ${verb}`)
   }
   if ('Discovered' in event) {
