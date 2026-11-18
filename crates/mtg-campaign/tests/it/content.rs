@@ -5,7 +5,7 @@ use mtg_cards::support::Support;
 use mtg_testkit::corpus;
 
 /// The basic lands, which the engine knows without a rules file.
-const BASICS: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+const BASICS: [&str; 6] = ["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"];
 
 #[test]
 fn every_card_a_boss_or_reward_names_is_played_in_full() {

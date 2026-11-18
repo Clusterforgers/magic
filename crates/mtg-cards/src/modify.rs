@@ -1022,6 +1022,10 @@ pub enum GameRule {
     /// The players' life totals can't change (CR 119.7, 119.8): they gain and lose no life, pay no life and have no life
     /// total set; damage is still dealt.
     LifeTotalCantChange(Ref),
+    /// The colored mana symbols in the costs of the spells the players cast are drawn anew each round within the color
+    /// identity of their commanders: each color of that identity stands for another one of it, so a cost keeps its mana
+    /// value, generic and colorless mana stay as they are, and a card inside the identity stays castable (`cost_colors`).
+    CostColorsDrawn(Ref),
     /// The players have a keyword, such as protection from everything (CR 702.16j), while the rule lasts.
     PlayersHave {
         /// The players.

@@ -9,6 +9,7 @@ mod endless;
 mod events;
 mod fights;
 mod mythic_cards;
+mod pair_bosses;
 mod rarity;
 mod relic_cards;
 mod relics;

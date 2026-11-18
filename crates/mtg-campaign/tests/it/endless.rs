@@ -9,7 +9,7 @@ use mtg_campaign::map::{LIEUTENANTS, generate_floor, generate_for};
 use mtg_campaign::run::{CONTENT, ENDLESS_FROM, HEARTS};
 use mtg_campaign::scale::{
     BRACKET_TIERS, BRACKETS, BRACKETS_FROM, ENRAGE_EARLIEST, ENRAGE_TURN, MAX_BRACKET, MAX_HEAT,
-    MOST, OVERFLOW_LIFE, RANKS, enrage_id,
+    MOST, OVERFLOW_LIFE, RANKS, UBER_HEAT, enrage_id,
 };
 use mtg_campaign::{Brain, HeroDeck, Run, RunEvent, Scale, Status, content};
 use proptest::prelude::*;
@@ -174,7 +174,7 @@ fn a_descent_keeps_the_party_and_gives_a_heart_back() {
     );
     let avoid: Vec<&str> = fought.iter().map(String::as_str).collect();
     let theme = &content.themes[0];
-    assert_eq!(run.map, generate_floor(theme, 9, CONTENT, 2, &avoid));
+    assert_eq!(run.map, generate_floor(theme, 9, CONTENT, 1, 2, &avoid));
     assert_eq!(run.cleared, Vec::<u8>::new());
     assert_eq!(run.at, run.map.choices(None).first().copied());
     // A full party gets no heart above the start.
@@ -195,28 +195,86 @@ fn a_descent_keeps_the_party_and_gives_a_heart_back() {
 proptest! {
     #![proptest_config(ProptestConfig::with_cases(64))]
     #[test]
-    fn a_deeper_floor_is_drawn_by_seed_and_avoids_the_bosses_just_fought(seed in any::<u64>(), floor in 2u8..6) {
+    fn a_deeper_floor_is_drawn_by_seed_and_avoids_the_bosses_just_fought(seed in any::<u64>(), heat in 0..=MAX_HEAT, floor in 2u8..6) {
         let theme = &content().unwrap().themes[0];
-        let above = generate_floor(theme, seed, CONTENT, floor - 1, &[]);
+        let above = generate_floor(theme, seed, CONTENT, heat, floor - 1, &[]);
         let fought: Vec<&str> = above.nodes.iter().filter_map(|n| n.boss.as_deref()).collect();
-        let map = generate_floor(theme, seed, CONTENT, floor, &fought);
-        prop_assert_eq!(&map, &generate_floor(theme, seed, CONTENT, floor, &fought));
+        let map = generate_floor(theme, seed, CONTENT, heat, floor, &fought);
+        prop_assert_eq!(&map, &generate_floor(theme, seed, CONTENT, heat, floor, &fought));
         let ids: Vec<&str> = map.nodes.iter().filter_map(|n| n.boss.as_deref()).collect();
         prop_assert_eq!(ids.len(), LIEUTENANTS + 1);
-        prop_assert!(theme.boss(ids[LIEUTENANTS]).unwrap().final_boss);
+        let last = theme.boss(ids[LIEUTENANTS]).unwrap();
+        prop_assert!(last.final_boss || last.uber);
+        prop_assert!(ids[..LIEUTENANTS].iter().all(|id| !theme.boss(id).unwrap().uber));
         let identity = |id: &str| theme.boss(id).unwrap().identity().to_owned();
         let met: Vec<String> = fought.iter().map(|id| identity(id)).collect();
-        let fresh = theme.bosses.iter().filter(|b| !b.final_boss && b.since <= CONTENT && !met.contains(&b.id)).count();
+        let fresh = theme.bosses.iter().filter(|b| !b.final_boss && !b.uber && b.since <= CONTENT && !met.contains(&b.id)).count();
         let repeats = ids[..LIEUTENANTS].iter().filter(|id| met.contains(&identity(id))).count();
         prop_assert_eq!(repeats, LIEUTENANTS.saturating_sub(fresh));
     }
 }
 
 #[test]
+fn a_deeper_floor_takes_the_roster_of_the_generation() {
+    let theme = &content().unwrap().themes[0];
+    let uber = |id: &str| theme.boss(id).unwrap().uber;
+    let last = |map: &mtg_campaign::map::FloorMap| map.last().and_then(|n| n.boss.clone()).unwrap();
+    let mut met = 0;
+    let mut floors = 0;
+    for seed in 0..200u64 {
+        let mut above: Vec<String> = Vec::new();
+        for floor in 1..=5u8 {
+            let avoid: Vec<&str> = above.iter().map(String::as_str).collect();
+            let older = generate_floor(theme, seed, BRACKETS_FROM, 2, floor, &avoid);
+            for id in older.nodes.iter().filter_map(|n| n.boss.as_deref()) {
+                assert!(theme.boss(id).unwrap().since <= BRACKETS_FROM, "{id}");
+            }
+            for heat in 0..UBER_HEAT {
+                let cool = generate_floor(theme, seed, CONTENT, heat, floor, &avoid);
+                assert!(
+                    cool.nodes
+                        .iter()
+                        .filter_map(|n| n.boss.as_deref())
+                        .all(|id| !uber(id)),
+                    "no uber boss below its Heat"
+                );
+            }
+            let cool = generate_floor(theme, seed, CONTENT, 1, floor, &avoid);
+            let hot = generate_floor(theme, seed, CONTENT, UBER_HEAT, floor, &avoid);
+            let ids: Vec<&str> = hot.nodes.iter().filter_map(|n| n.boss.as_deref()).collect();
+            assert!(
+                ids[..LIEUTENANTS].iter().all(|id| !uber(id)),
+                "never a lieutenant"
+            );
+            floors += 1;
+            if uber(&last(&hot)) {
+                met += 1;
+                assert!(
+                    !above.iter().any(|id| uber(id)),
+                    "not on two floors in a row"
+                );
+                assert_eq!(
+                    hot.nodes[..hot.nodes.len() - 1],
+                    cool.nodes[..cool.nodes.len() - 1],
+                    "only the final boss differs"
+                );
+            } else {
+                assert_eq!(hot, cool);
+            }
+            above = hot.nodes.iter().filter_map(|n| n.boss.clone()).collect();
+        }
+    }
+    assert!(
+        met > 0 && met * 100 / floors < 40,
+        "{met} of {floors} floors"
+    );
+}
+
+#[test]
 fn floors_differ_by_seed_and_floor() {
     let theme = &content().unwrap().themes[0];
     let ladder = |seed: u64, floor: u8| {
-        let map = generate_floor(theme, seed, CONTENT, floor, &[]);
+        let map = generate_floor(theme, seed, CONTENT, 1, floor, &[]);
         map.nodes
             .iter()
             .map(|n| (n.kind, n.boss.clone()))
@@ -386,9 +444,15 @@ fn the_first_floor_plays_as_generation_four() {
     }
     for seed in 0..16 {
         assert_eq!(
-            generate_floor(theme, seed, CONTENT, 1, &[]),
-            generate_for(theme, seed, CONTENT)
+            generate_floor(theme, seed, CONTENT, 1, 1, &[]),
+            generate_for(theme, seed, CONTENT, 1)
         );
+        for heat in 0..=MAX_HEAT {
+            assert_eq!(
+                generate_floor(theme, seed, CONTENT, heat, 1, &[]),
+                generate_for(theme, seed, CONTENT, heat)
+            );
+        }
         let old = started(seed, 1, BRACKETS_FROM, 2, 0);
         let mut new = started(seed, 1, CONTENT, 2, 0);
         new.map = old.map.clone();

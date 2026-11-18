@@ -50,6 +50,11 @@ name: string,
  */
 mana_cost: ManaCost | null, 
 /**
+ * The mana cost its owner pays now where a rule draws the colors of their costs anew (`cost_colors`): for a card
+ * off the battlefield and the stack whose cost the rule changes; left out otherwise.
+ */
+cost_now?: ManaCost, 
+/**
  * Printed supertypes.
  */
 supertypes: Array<Supertype>, 

@@ -377,6 +377,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             format!("{} can't be regenerated", phrase::who(ctx, who))
         }
         GameRule::CantGainLife(who) => format!("{} can't gain life", phrase::who(ctx, who)),
+        GameRule::CostColorsDrawn(who) => format!(
+            "the colors of the mana symbols in the costs of spells {} cast are drawn anew each round within the color identity of their commanders",
+            phrase::who(ctx, who)
+        ),
         GameRule::CantDraw(who) => format!("{} can't draw cards", phrase::who(ctx, who)),
         GameRule::CantSearch(_) | GameRule::OwnSpellsCantSearch(_) | GameRule::SearchTop { .. } => {
             searches(ctx, rule)

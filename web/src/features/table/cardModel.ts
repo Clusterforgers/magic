@@ -435,6 +435,14 @@ export function statusWords(object: ObjectView, role: CombatRole | null, links: 
   return words
 }
 
+/**
+ * The mana cost the card's owner pays now: the cost a rule drew anew (the Delves uber boss draws the colors of a hero's
+ * costs), else the printed cost.
+ */
+export function costNow(object: Pick<ObjectView, 'mana_cost' | 'cost_now'>): ManaCost | null {
+  return object.cost_now ?? object.mana_cost
+}
+
 /** Everything a screen reader needs from a card face; `listKey` is the key that lists the clauses left to the table. */
 export function cardLabel(
   object: ObjectView,
@@ -443,12 +451,16 @@ export function cardLabel(
   listKey?: string,
 ): string {
   const parts = [object.name]
-  if (object.mana_cost !== null) {
-    parts.push(
-      `cost ${costPips(object.mana_cost)
+  const cost = costNow(object)
+  if (cost !== null) {
+    const spoken = (pips: ManaCost) =>
+      costPips(pips)
         .map((pip) => pip.name)
-        .join(', ')}`,
-    )
+        .join(', ')
+    parts.push(`cost ${spoken(cost)}`)
+    if (object.cost_now !== undefined && object.mana_cost !== null) {
+      parts.push(`printed cost ${spoken(object.mana_cost)}`)
+    }
   }
   parts.push(typeLine(object))
   if (object.power !== null && object.toughness !== null) {

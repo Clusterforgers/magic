@@ -531,6 +531,7 @@ const RUNS: &[&str] = &[
     "Rule.ManaProduced",
     "Rule.MayCastRather",
     "Rule.LifeTotalCantChange",
+    "Rule.CostColorsDrawn",
     "Rule.PlayersHave",
     "Rule.CantDraw",
     "Rule.DrawFromBottom",

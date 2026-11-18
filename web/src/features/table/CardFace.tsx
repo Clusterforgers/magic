@@ -7,6 +7,7 @@ import { Link as LinkIcon, RotateCw, Unlink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
 import {
+  costNow,
   costPips,
   counterChips,
   counterLabels,
@@ -269,7 +270,8 @@ export function TextFace({
   const modified = statBadge(object, usePrinted(object), stat)?.modified ?? null
   // A compact face that draws its cost keeps two lines of name, so the name and the cost fit the top a hand row shows.
   const narrow = size === 'compact' && width < NARROW_PX
-  const nameLines = nameLinesOf(turned, full || (cost && object.mana_cost !== null), size, narrow)
+  const shownCost = costNow(object)
+  const nameLines = nameLinesOf(turned, full || (cost && shownCost !== null), size, narrow)
   // A token whose picture is missing still looks like a card: the card back's colours, its name, "Token" and its type.
   const token = object.kind === 'Token'
   // Only a token drawn as text is dark; one drawn as a card (its picture is missing) keeps its frame colour.
@@ -299,11 +301,11 @@ export function TextFace({
           <Words text={roomTitle(object.name, links?.doors)} single={narrow} />
         </span>
       </span>
-      {(full || (cost && !turned)) && object.mana_cost !== null ? (
+      {(full || (cost && !turned)) && shownCost !== null ? (
         <ManaPips
-          pips={costPips(object.mana_cost)}
+          pips={costPips(shownCost)}
           sizeClass={classes.pip}
-          label="Mana cost"
+          label={object.cost_now === undefined ? 'Mana cost' : 'Mana cost now'}
           className="px-1 pt-0.5"
         />
       ) : null}

@@ -136,6 +136,6 @@ export function unplayableReason(
   }
   const instant = object.types.includes('Instant') || (object.keywords ?? []).includes('Flash')
   if (!instant && !sorcery) return 'Timing'
-  if (costOf(object.mana_cost) > manaAtHand(view, options)) return 'Mana'
+  if (costOf(object.cost_now ?? object.mana_cost) > manaAtHand(view, options)) return 'Mana'
   return 'Unknown'
 }

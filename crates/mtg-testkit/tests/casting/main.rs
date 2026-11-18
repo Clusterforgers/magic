@@ -30,6 +30,7 @@ mod combination_mana;
 mod common;
 mod copy_left_spell;
 mod cost_choices;
+mod cost_colors_drawn;
 mod cost_kinds;
 mod cost_modifiers;
 mod cost_parts;

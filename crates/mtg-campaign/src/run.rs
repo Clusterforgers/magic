@@ -44,8 +44,9 @@ pub const DRAUGHT: i32 = 15;
 pub const UPGRADE_PRICE: u32 = 50;
 /// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0. From 2
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
-/// known trade-offs; from 4 bosses play bracket decks with their commander card; from 5 a cleared floor may descend.
-pub const CONTENT: u32 = ENDLESS_FROM;
+/// known trade-offs; from 4 bosses play bracket decks with their commander card; from 5 the roster grows by more
+/// two-colour bosses, upgraded forms and the uber boss, and a cleared floor may descend.
+pub const CONTENT: u32 = 5;
 /// The content generation from which the party may descend to a deeper floor after a floor's final boss.
 pub const ENDLESS_FROM: u32 = 5;
 /// The hearts a descent gives back, up to [`HEARTS`].
@@ -607,7 +608,7 @@ impl Run {
                 self.lobby()?;
                 self.content = *version;
                 // The ladder is drawn from the bosses of the run's generation.
-                self.map = generate_for(self.theme(content)?, self.seed, *version);
+                self.map = generate_for(self.theme(content)?, self.seed, *version, self.heat);
             }
             RunEvent::Started => {
                 self.lobby()?;
@@ -776,6 +777,7 @@ impl Run {
             self.theme(content)?,
             self.seed,
             self.content,
+            self.heat,
             self.floor,
             &avoid,
         );
