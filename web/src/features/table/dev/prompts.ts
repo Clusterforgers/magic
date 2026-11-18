@@ -440,6 +440,23 @@ const hybridTable: DevTable = (fixture) => {
   })
 }
 
+/** The plain payment with a mana ability that does more than add mana (a roll), offered as a button and a card. */
+const payAnnounced: DevPrompt = (fixture) => {
+  const { id, decision } = pay(fixture)
+  if (!('PayMana' in decision.kind)) return { id, decision }
+  const options = decision.kind.PayMana
+  const { view } = fixture
+  const box = view.objects.find(
+    (object) =>
+      object.zone === 'Battlefield' &&
+      object.controller === view.viewer &&
+      !object.types.includes('Land') &&
+      !options.sources.some((option) => option.source.object === object.id),
+  )
+  const announced = box === undefined ? [] : [{ object: box.id, ability: 0 }]
+  return { id, decision: { ...decision, kind: { PayMana: { ...options, announced } } } }
+}
+
 /** The same cost when the viewer has 3 life: 2 can be paid for one symbol, not for both, and the switch for the second is dead. */
 const payLowLife: DevPrompt = (fixture) => {
   const { id, decision } = payHybrid(fixture)
@@ -527,6 +544,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-locked': payLocked,
   'pay-hybrid': payHybrid,
   'pay-low-life': payLowLife,
+  'pay-announced': payAnnounced,
   'pay-sources': paySources,
   'pay-marks': payMarks,
   'commander-return': commanderReturn,

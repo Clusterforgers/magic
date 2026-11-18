@@ -99,6 +99,14 @@ function wording(ref: AbilityRef, worded: ActivatedView | undefined): Pick<Play,
   return { label: full }
 }
 
+/** The line of the ability `ref` of `object` in the card's words: "{T}: Add one mana of any color. Roll a d20." */
+export function abilityLine(ref: AbilityRef, object: ObjectView | undefined): string {
+  const worded = object?.activated?.find(
+    (entry) => entry.ability !== undefined && sameAbility(entry.ability, ref),
+  )
+  return wording(ref, worded).label
+}
+
 /** Tells the unlocking of a door of a Room apart from its other plays. */
 export const unlockKey = (option: FaceOption): string => `unlock-${option.card}-${option.face}`
 

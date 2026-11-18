@@ -133,7 +133,7 @@ fn every_way_of_paying_a_symbol_occurs_in_the_games() {
                     tally.complete_that_added_life += u32::from(paid > partial.life);
                 }
                 PayChoice::Auto => tally.automatic_with_life += u32::from(paid > 0),
-                PayChoice::Cancel => {}
+                PayChoice::Cancel | PayChoice::Activate(_) => {}
             }
         }
     }
