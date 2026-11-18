@@ -1,4 +1,4 @@
-// Goal: anchors are found in the page by the data attributes cards and seats carry (a card by its face, a seat by its panel, else its tile, a card that is not drawn by its controller's, a seat's tile scrolled out of its strip by the strip's edge, a stack item by its chip or the chip that holds it), measured relative to the overlay, hidden ones skipped; lines get a curve only when both ends are on screen with room between them and identical drawings are made once; the attacks of a seat that attacks with a crowd fold by target into counted bundles from the box around them; and the scheduler runs its work once per frame however often it is asked.
+// Goal: anchors are found in the page by the data attributes cards and seats carry (a card by its face, a seat by its panel, else its tile, a card that is not drawn by its controller's, a seat's tile scrolled out of its strip by the strip's edge, a stack item by its chip or the chip that holds it), measured relative to the overlay, hidden ones skipped; lines get a curve only when both ends are on screen with room between them and identical drawings are made once; the attacks of a seat that attacks with a crowd fold by target into counted bundles from the box around them, or from the first attacker that clears a target the box reaches over; and the scheduler runs its work once per frame however often it is asked.
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { fakeFrames } from '@/test-utils/frames'
@@ -308,6 +308,17 @@ describe('bundled', () => {
     expect(bundle?.from).toEqual({ x: 0, y: 0, width: 596, height: 134 })
     expect(bundle?.line.key).toBe('bundle:1>seat:0')
     expect(shapesOf(lines, rects)).toEqual([expect.objectContaining({ count: 6 })])
+  })
+
+  it.each([
+    ['a target inside the box', { x: 250, y: 20, width: 60, height: 60 }],
+    ['a target over the box', { x: 200, y: -20, width: 200, height: 60 }],
+  ])('draws a bundle whose box reaches over %s from the first attacker that clears it', (_case, target) => {
+    const lines = crowd(6)
+    const over = new Map(rects)
+    over.set(anchorKey(seat(0)), target)
+    const drawn = shapesOf(lines, over)
+    expect(drawn).toEqual([expect.objectContaining({ count: 6 })])
   })
 })
 

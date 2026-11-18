@@ -15,6 +15,7 @@ import { promptKey } from './boardZoom'
 import { LANE_LIMITS, SHAPES } from './laneFit'
 import type { LanePlace } from './laneFit'
 import { heldBands, holdBands } from './holdFit'
+import { settling } from './resizeSettle'
 import type { BandHold, FitHold } from './holdFit'
 import { useSeatNamer } from './names'
 import {
@@ -202,6 +203,8 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   // The card width and shape drawn last: the next fit keeps them while they fit (`fitHeld`), so one permanent more or
   // less does not resize the board. Read when the inputs change, written once the fit is drawn.
   const hold = useRef<FitHold | null>(null)
+  // A window resized a moment ago fits afresh while its regions settle, so growing it back gives the size a fresh load has.
+  const held = (): FitHold | null => (settling(performance.now()) ? null : hold.current)
   // The fit of the box alone, which a grid of boards shares out as one size; it never depends on that size.
   const alone = useMemo(
     () =>
@@ -213,7 +216,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
         marked,
         held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
         least,
-        hold: hold.current,
+        hold: held(),
       }),
     [box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts, least],
   )
@@ -231,7 +234,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
             held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
             most,
             least,
-            hold: hold.current,
+            hold: held(),
           }),
     [
       alone,
