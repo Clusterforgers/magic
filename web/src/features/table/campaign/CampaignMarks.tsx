@@ -6,6 +6,7 @@ import { CrownIcon, GhostIcon } from 'lucide-react'
 import type { BossView } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
 import { phaseSteps } from './bossPhase'
+import { phaseCountdown } from './reworkedBoss'
 import { SPIRIT_TIP } from './haunt'
 
 /** The crown chip beside a boss's name. */
@@ -28,6 +29,8 @@ export function BossChip({ compact = false }: { compact?: boolean }) {
 export function BossTrack({ boss, named = true }: { boss: BossView; named?: boolean }) {
   const steps = phaseSteps(boss)
   const current = steps.find((step) => step.state === 'current')
+  // A reworked boss names its countdown ("Phase 1 in 3 rounds") or the phase in force.
+  const countdown = phaseCountdown(boss)
   return (
     <div data-slot="boss-track" className="flex min-w-0 items-center gap-2">
       <ol aria-label="Boss phases" className="flex shrink-0 items-center gap-1">
@@ -50,7 +53,16 @@ export function BossTrack({ boss, named = true }: { boss: BossView; named?: bool
           </li>
         ))}
       </ol>
-      {named && current ? (
+      {named && countdown !== null ? (
+        <span
+          aria-hidden="true"
+          data-slot="boss-track-countdown"
+          className="truncate text-xs font-medium text-boss"
+        >
+          {countdown.label}
+          {countdown.next === undefined ? '' : ` · ${countdown.next}`}
+        </span>
+      ) : named && current ? (
         <span aria-hidden="true" className="truncate text-xs font-medium text-boss">
           {current.label}
           {current.title === '' ? '' : ` · ${current.title}`}

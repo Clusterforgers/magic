@@ -94,6 +94,8 @@ pub struct Player {
     pub(crate) leader: Option<PlayerId>,
     /// The names of the cards it started with held in its command zone (a boss's commander card).
     pub(crate) held: Vec<String>,
+    /// A reworked boss seat's public sheet ([`crate::boss_sheet`]).
+    pub(crate) sheet: crate::boss_sheet::SheetSlot,
 }
 
 impl Player {
@@ -124,6 +126,7 @@ impl Player {
             scheme_every: 1,
             leader: None,
             held: Vec::new(),
+            sheet: crate::boss_sheet::SheetSlot::default(),
         }
     }
 
@@ -150,6 +153,16 @@ impl Player {
     /// The names of the cards the player started with held in its command zone, which only an effect casts.
     pub fn held(&self) -> impl Iterator<Item = &str> {
         self.held.iter().map(String::as_str)
+    }
+
+    /// A reworked boss seat's public sheet: its innate, modifier, relics and the words of its phases.
+    pub fn boss_sheet(&self) -> Option<&crate::boss_sheet::BossSheet> {
+        self.sheet.0.as_deref()
+    }
+
+    /// The player's boss phases, in the order they begin.
+    pub fn boss_phases(&self) -> &[crate::phases::BossPhase] {
+        &self.phases
     }
 
     /// The names of the player's boss phases, in order.

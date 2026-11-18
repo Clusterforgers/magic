@@ -42,7 +42,7 @@ Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`
 
 - Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`content/decks/<code>-<name>.json`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight), `makeup` what its deck is made of, `art` the real card whose art crop pictures it. `deck` stands in until the precon lands.
 - Depth: the bosses the party defeated in the run over all floors (`Run::defeated`); a lost and retried fight adds none.
-- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` in its abilities); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. A phase may be written with levels too; the fight plays it at the innate's level (`boss_plan.rs`). The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
+- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` in its abilities); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. A level may differ in more than N: `"params": {"NAME": [v1, …, v5]}` puts any value where `"$NAME"` stands (an ability that becomes `null` is left out at that level), and `"texts"` gives each level its own words. A phase may be written with levels too; the fight plays it at the innate's level (`boss_plan.rs`). The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
 
 | Depth | 0 | 1 | 2 | 3 | 4–5 | 6–7 | 8–9 | 10–11 | 12+ |
 |---|---|---|---|---|---|---|---|---|---|
@@ -55,10 +55,40 @@ Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`
 - Satchel: four spells in the boss's command zone, cast like cards in hand and public; a reusable one returns as it leaves the stack and costs {2} more for each earlier cast this fight, a once card does not return.
 - Relics: `depth − offset` relics, the offset 4, 3 and 2 at Heat 0, 1 and 2, at most 6 (`boss_relics.rs`). They come from the heroes' whole relic pool of the run's generation, risky relics included, never one that names teammates (`team`), and only those the deck's makeup can use. Each is Rare by chance (10, 15 or 20 % at Heat 0, 1 and 2 with one relic, 10 points more for each further relic, at most 60 %) or, from four relics at Heat 1 and 2, Mythic (5 % at four, 10 at five, 15 at six); the rest are Common. Copies can repeat and stack. The draw is keyed by floor and room.
 - Life: 40 and 15 for each hero after the first (`Scale::boss_life`); Heat and depth do not change it.
-- Its advantages are open: the innate, modifier and relics are emblems in its command zone from the start; the intro lists them with the phases and the satchel.
+- Its advantages are open: the innate, modifier and relics are emblems in its command zone from the start, named with their rules on the seat's sheet (`boss_sheet.rs`, `Reworked::sheet`). The intro (`DelveFightView`) lists the two effects, the phases with their rounds ("Phase 1 at round 8"), the satchel with each card's mark and the relics; at the table the bar shows the innate with its level, the modifier and relics as chips, and a pill counting down ("Phase 1 in 3 rounds") that names the phase in force once it begins, with the next one's countdown. A reusable satchel card reads "returns · +{N}" with its tax now, a once card "once" (`BossView`: `innate`, `modifier`, `round_phases`, `phase_in`, `relics`, `satchel`).
 - No loops: the bots of the boss's side answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
 - Drain rule: a boss's innate, modifier, phase or satchel card takes life from a hero only as damage or unless the hero pays.
 - Relics for heroes: from generation 8 a relic can drop again; owning it never lowers its chance, and copies stack.
+
+### Encounter modifiers
+
+Each modifier is an emblem on the boss's seat whose rule binds every player alike unless it names the heroes; most copy the rule a Verified card runs. The Spire bosses are `siren_queen`, `drowned_archivist` and `leviathan` in `not_with`.
+
+| Modifier | Rule | Never with |
+|---|---|---|
+| Mirror Hall | No one controls more than five creatures of one name; the newest beyond five are sacrificed. | Skrix, Grimgut, Vex, Hollowmere, Sahrra, the Leviathan |
+| Living Stone | Artifacts have "{T}: Add {C}." | |
+| Waking Earth | Lands are 1/1 creatures too (Kormus Bell). | Vex, Seraphine, Korrath, Ozrith, Ysolde, Hollowmere, Valdric, Vorthana, the Leviathan |
+| Bloodlust | Creatures have double strike and attack each combat (Avatar of Slaughter). | the Siren Queen, Aurenne |
+| Twin Flames | Damage is doubled (Furnace of Rath). | |
+| Overflowing Mana | A land tapped for mana adds one more of a type it made. | |
+| Deep Pockets | An extra card in each draw step and no maximum hand size (Howling Mine, Anvil of Bogardan). | |
+| Quickening | Spells may be cast as though they had flash (Vedalken Orrery). | |
+| One Voice | One spell per player each turn (Rule of Law). | Ozrith, Morwenna, the Drowned Archivist |
+| Narrow Pass | At most two attackers and two blockers each combat (Caverns of Despair). | Skrix, Grimgut, Aurenne, Hollowmere, Sahrra |
+| Second Spring | Tokens and +1/+1 counters on creatures are doubled (Primal Vigor). | Sivanne, Sahrra, Skrix |
+| No Rest | Each card or token going to a graveyard flips a coin; on a loss it is exiled. | Vex, Vorthana, Hollowmere, the Siren Queen, the Drowned Archivist, the Leviathan |
+| Stone Sleep | One flip for the active player each untap step; on a loss their creatures with power 3 or more stay tapped. | Mossjaw, Korrath, the Unmaker, the Leviathan |
+| Prismatic Chaos | Each round the colored symbols of the heroes' costs stand for other colors of their commander's identity. | |
+| Endless Summer | One additional land each turn (Ghirapur Orrery). | |
+| Open Book | Libraries are played with the top card revealed, and lands and spells may be played from the top (Future Sight). | |
+| Thin Veil | Creatures entering cause no triggers (Torpor Orb). | |
+| Shared Blood | Creatures are every creature type. | Vex |
+| Giant's Table | Creature spells cost {2} less. | |
+| Free Command | Heroes pay no commander tax (`GameRule::NoCommanderTax`). | |
+| Echoing Spells | Each player's first instant or sorcery each turn is copied (Double Vision). | Ozrith |
+| No Mercy | Each life gain flips a coin; on a loss no life is gained. | Seraphine, Valdric, Mossjaw |
+| Haunted Ground | A nontoken creature dying gives its controller a 1/1 white flying Spirit. | Hollowmere |
 
 ## Spotlight
 

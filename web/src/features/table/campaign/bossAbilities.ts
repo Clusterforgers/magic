@@ -13,13 +13,14 @@ import type {
   PlayerView,
 } from '@/protocol/generated'
 import { BULWARK_NAME, COMMANDER_TEXT, commanderLabel } from './bossPhase'
+import { isReworked, reworkedAbilities } from './reworkedBoss'
 
 /**
  * What an ability is to the fight: always on, its Enrage, this fight's modifier, the boss's relic, the phase in force,
  * a phase to come, the scheme now or next.
  */
 export type BossAbilityKind =
-  'passive' | 'enrage' | 'modifier' | 'relic' | 'phase' | 'next-phase' | 'scheme' | 'omen'
+  'passive' | 'innate' | 'enrage' | 'modifier' | 'relic' | 'phase' | 'next-phase' | 'scheme' | 'omen'
 
 /** The kind of an always-on custom card by its content kind, and when an Enrage begins. */
 export function standingKind(card: CustomCardView | undefined): { kind: BossAbilityKind; when?: string } {
@@ -103,6 +104,8 @@ export function bossAbilities(
 ): BossAbility[] {
   const view = player.boss
   if (view === undefined || view === null) return []
+  // A reworked boss's view carries its parts with their words; its emblems would only repeat them.
+  if (isReworked(view)) return reworkedAbilities(view)
   const phaseNames = new Set(view.phases)
   const out: BossAbility[] = []
   const seen = new Map<string, number>()
@@ -160,10 +163,11 @@ const BAR_RANK: Record<BossAbilityKind, number> = {
   scheme: 1,
   omen: 2,
   'next-phase': 3,
-  enrage: 4,
-  modifier: 5,
-  relic: 6,
-  passive: 7,
+  innate: 4,
+  enrage: 5,
+  modifier: 6,
+  relic: 7,
+  passive: 8,
 }
 
 /** `abilities` in the order of the table's row (`BAR_RANK`), each kind keeping its own order. */

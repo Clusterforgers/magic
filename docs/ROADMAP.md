@@ -68,6 +68,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members; an effect that sets each player's life sets a shared total once.
 - Card preview modifiers: under the rules text the preview lists everything that changes the card with its source and duration, identical sources added together, a line pointing at its source on the board, and no hidden source named (`docs/protocol.md`, `docs/web.md`).
 - Middle bar: a prompt band of one fixed line with the asking card's chip, and the decision's detail (the asking card with its clause, runs of triggers, ordering, paying) in the Stack column or a sheet over the hand (`docs/ui-design.md`, The band and the Stack column).
+- Delves encounter modifiers: the 23 rules of the pool as emblems with their `not_with` lists, no commander tax for the heroes, and "first instant or sorcery each turn" counting only the spells it names (`docs/delves.md`).
 
 ## Live game
 
@@ -170,12 +171,13 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rw2b) The run page names the run's own theme and story (the content endpoint shows the Warrens' for every run)
 - [ ] (rw2c) Spire bosses' `makeup` from their precons, so they draw usable relics
 - [ ] (rw2d) One real fight per Spire boss at innate level V under the loop detector, on the slow list
-- [ ] (rw3) Encounter modifier content: the 23 modifiers of the pool with their `not_with` lists and a check each
 - [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)
-- [ ] (rw5) Boss view and intro on screen: innate with its level, modifier, relics, satchel and the phase countdown by round
+- [ ] (rw5a) The boss's satchel reaches its game: the fight's recipe carries the reusable and once satchel cards into `satchel_reusable` and `satchel`
 - [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 - [ ] (rw8) Remove the old boss systems (Escalation, Enrage, Intensify, schemes, Omen, minion seats, Lull, Reserves to Last Bulwark, commander card, upgraded and uber bosses, own relics, old modifiers, brackets and tiers, life phases) from campaign, protocol, server, simulator and web, and make generation 8 the newest; the migration that closes open runs (and its test, in commit d973c7921) ships with it
+- [ ] (rw1u) The Unmaker stands as a Warrens final boss beside Grimgut (no longer uber) once the reworked ladder draws its final from the two
+- [ ] (rw1t) Enters-with-counters replacements apply to entering tokens; Coiled Growth then gives tokens its counters as they enter instead of by trigger
 
 ## M8 Polish and deploy
 

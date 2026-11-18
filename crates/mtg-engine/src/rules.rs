@@ -164,6 +164,8 @@ pub enum Rule {
     /// The colors of the mana symbols in the costs of the players' spells are drawn anew each round within their
     /// commanders' color identity (`cost_colors`).
     CostColorsDrawn(Vec<PlayerId>),
+    /// The players pay no commander tax.
+    NoCommanderTax(Vec<PlayerId>),
     /// The players have the keyword, such as protection from everything.
     PlayersHave {
         /// The players.
@@ -905,6 +907,8 @@ pub(crate) struct RulesInForce {
     /// The players whose costs have their colors drawn anew, one bit for each seat by index (a set this small keeps the
     /// cached rules small).
     cost_colors: u64,
+    /// The players who pay no commander tax, one bit for each seat by index.
+    no_commander_tax: u64,
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     draw_bottom: BTreeSet<PlayerId>,
@@ -1445,6 +1449,12 @@ impl RulesInForce {
             Rule::LifeTotalCantChange(players) => self.no_life_change.extend(players),
             Rule::CostColorsDrawn(players) => {
                 self.cost_colors |= players
+                    .iter()
+                    .map(|p| seat_bit(*p))
+                    .fold(0, |all, bit| all | bit);
+            }
+            Rule::NoCommanderTax(players) => {
+                self.no_commander_tax |= players
                     .iter()
                     .map(|p| seat_bit(*p))
                     .fold(0, |all, bit| all | bit);
@@ -2009,6 +2019,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::RadiationGainsLife(who) => Rule::RadiationGainsLife(scope.players(who)?),
         GameRule::LifeTotalCantChange(who) => Rule::LifeTotalCantChange(scope.players(who)?),
         GameRule::CostColorsDrawn(who) => Rule::CostColorsDrawn(scope.players(who)?),
+        GameRule::NoCommanderTax(who) => Rule::NoCommanderTax(scope.players(who)?),
         GameRule::PlayersHave { who, keyword } => Rule::PlayersHave {
             who: scope.players(who)?,
             keyword: keyword.clone(),
@@ -2345,6 +2356,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
         | Rule::CostColorsDrawn(players)
+        | Rule::NoCommanderTax(players)
         | Rule::CantDraw(players)
         | Rule::DrawFromBottom(players)
         | Rule::CantSearch(players)
@@ -2554,6 +2566,7 @@ static NONE: RulesInForce = RulesInForce {
     radiation_gains: BTreeSet::new(),
     no_life_change: BTreeSet::new(),
     cost_colors: 0,
+    no_commander_tax: 0,
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     draw_bottom: BTreeSet::new(),
@@ -2962,6 +2975,11 @@ pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
 /// identity: the one place a spell's cost reads this rule (`cost_colors`).
 pub fn cost_colors_drawn(state: &GameState, player: PlayerId) -> bool {
     state.rules().cost_colors & seat_bit(player) != 0
+}
+
+/// Whether `player` pays no commander tax now (CR 903.8).
+pub fn pays_no_commander_tax(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_commander_tax & seat_bit(player) != 0
 }
 
 /// The bit of `player` in a set of seats by index; none for a seat past the 64th.

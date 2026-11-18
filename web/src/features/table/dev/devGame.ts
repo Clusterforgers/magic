@@ -21,6 +21,8 @@ import { ruleKey } from '../autoSkips'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
 import { withRealCards } from './realCards'
+import { withReworkedBoss } from './reworkedBoss'
+import type { DevRework } from './reworkedBoss'
 import type { RealIds } from './realCards'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
@@ -254,6 +256,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   boss?: number
   /** The viewer is a fallen hero's Spirit with no permanents, hand or commander (`withSpirit`), in a boss fight. */
   spirit?: true
+  /** With `boss`, the boss is reworked (`withReworkedBoss`): 1 before Phase 1, 2 with Phase 1 in force. */
+  rework?: DevRework
   /** No seat has a permanent (`withBareBoards`): the start of a fight. */
   bare?: true
   /** Every opponent but the last out of the game, the last with an empty board. */
@@ -512,7 +516,11 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
       : prompt === undefined && table === undefined
         ? withBossAttack(withBoss(teamed, options.boss))
         : withBoss(teamed, options.boss)
-  const spirited = options.spirit === true && options.boss !== undefined ? withSpirit(bossed) : bossed
+  const reworked =
+    options.rework !== undefined && options.boss !== undefined
+      ? withReworkedBoss(bossed, options.rework)
+      : bossed
+  const spirited = options.spirit === true && options.boss !== undefined ? withSpirit(reworked) : reworked
   const bared = options.bare === true ? withBareBoards(spirited) : spirited
   const lone = options.alone === true ? withLastStanding(bared) : bared
   const fixture = options.turn === 'left' ? withActiveLeft(lone) : lone

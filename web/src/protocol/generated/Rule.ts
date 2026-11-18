@@ -111,7 +111,7 @@ players: Array<PlayerId>,
 /**
  * The life total damage leaves them at least at.
  */
-floor: number, } } | { "RadiationGainsLife": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "CostColorsDrawn": Array<PlayerId> } | { "PlayersHave": { 
+floor: number, } } | { "RadiationGainsLife": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "CostColorsDrawn": Array<PlayerId> } | { "NoCommanderTax": Array<PlayerId> } | { "PlayersHave": { 
 /**
  * The players.
  */

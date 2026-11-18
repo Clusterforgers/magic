@@ -3,6 +3,9 @@
 //! satchel, its life by party size only, and the Hard brain. No scheme, minion, commander card or Enrage. A phase written
 //! with levels (as an innate is) plays at the innate's level.
 
+use mtg_engine::boss_sheet::{BossSheet, SheetCard};
+
+use crate::CampaignError;
 use crate::boss_relics;
 use crate::content::{Boss, Brain, Content};
 use crate::fight::{BossSeat, HAND, Reworked};
@@ -76,5 +79,33 @@ fn at_level(content: &Content, id: &str, level: u8) -> String {
         leveled
     } else {
         id.to_owned()
+    }
+}
+
+impl Reworked {
+    /// The public sheet the game names these parts by: each card's name and rules text, the innate's level.
+    pub fn sheet(&self, content: &Content) -> Result<BossSheet, CampaignError> {
+        let card = |id: &String| {
+            content.card(id).map(|card| SheetCard {
+                name: card.name.clone(),
+                text: card.text.clone(),
+            })
+        };
+        let innate = self
+            .innate
+            .as_ref()
+            .map(|id| content.card(id))
+            .transpose()?;
+        Ok(BossSheet {
+            level: innate.map_or(0, |card| card.level),
+            innate: self.innate.as_ref().map(card).transpose()?,
+            modifier: self.modifier.as_ref().map(card).transpose()?,
+            relics: self.relics.iter().map(card).collect::<Result<_, _>>()?,
+            phases: self
+                .round_phases
+                .iter()
+                .map(|(id, _)| card(id))
+                .collect::<Result<_, _>>()?,
+        })
     }
 }
