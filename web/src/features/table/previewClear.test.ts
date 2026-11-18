@@ -1,4 +1,4 @@
-// Goal: the card preview always keeps the size `previewFit` gives it and only moves: to a place clear of every kept box and board card, else clear of the answers (over the sentence, the strip or cards), else over the fewest answers with the primary one uncovered, on every window from a phone to a wide desktop.
+// Goal: the card preview always keeps the size `previewFit` gives it and only moves: to a place clear of every kept box and board card, else clear of the answers (over the sentence, the strip or cards), else over the fewest answers with the primary one uncovered, over a pod only after its own card, on every window from a phone to a wide desktop.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import type { Anchor, Viewport } from './preview'
@@ -174,6 +174,33 @@ describe('fitClear picks the place in order', () => {
     fullSize(fit, shown, view)
     expect(fit.dock).toBe('left')
     expect(touches(fit, view, [...clear, ...board, shown])).toBe(false)
+  })
+
+  describe('at a rail window near 1024 px, with a pod column on the left and cards on both sides', () => {
+    const rail = { width: 1024, height: 768 }
+    const pods: ClearBox[] = [
+      { ...rect(8, 52, 176, 216), kind: 'pod' },
+      { ...rect(8, 378, 176, 612), kind: 'pod' },
+    ]
+    const board = [rect(190, 64, 970, 220), rect(190, 380, 970, 630)]
+    it.each([
+      // [card's left edge, dock, covers a pod]
+      [400, 'right', false],
+      [620, 'right', false],
+      [900, 'left', true],
+    ] as const)('a card at %i docks the panel %s, over a pod: %s', (left, dock, overPod) => {
+      const shown = rect(left, 400, left + 60, 484)
+      const fit = fitClear(shown, rail, pods, board)
+      fullSize(fit, shown, rail)
+      expect(fit.dock).toBe(dock)
+      // The card shown outranks a pod: the panel covers a pod before it covers its own card.
+      expect(touches(fit, rail, [shown])).toBe(false)
+      expect(touches(fit, rail, pods)).toBe(overPod)
+    })
+
+    it('draws a panel of at most 30 % of the window', () => {
+      expect(must(previewFit(rect(400, 400, 460, 484), rail).width)).toBeLessThanOrEqual(1024 * 0.3)
+    })
   })
 
   it('covers the sentence and the strip rather than an answer', () => {

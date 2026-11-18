@@ -13,11 +13,12 @@ export type PromptCardSize = 'normal' | 'compact'
 
 /**
  * The box of each size, 5:7 like a card: a whole card up to 7 rem wide on a tall window, and no taller than the room of
- * its grid (`--choice-room`), so a row is always whole; whole class names, so Tailwind can see them.
+ * its grid (`--choice-room`), so a row is always whole; in the band's row of cards the width it sets (`--choice-fit`,
+ * `stripCardWidth`); whole class names, so Tailwind can see them.
  */
 export const PROMPT_CARD_BOX: Record<PromptCardSize, string> = {
   normal:
-    '[--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(7rem,11dvh,calc((var(--choice-room,20rem)_-_2rem)*5/7)))] max-sm:[--card-w:4.75rem]',
+    '[--card-h:calc(var(--card-w)*7/5)] [--card-w:var(--choice-fit,max(3rem,min(7rem,11dvh,calc((var(--choice-room,20rem)_-_2rem)*5/7))))] max-sm:[--card-w:4.75rem]',
   compact:
     '[--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(3.75rem,calc((var(--choice-room,20rem)_-_2rem)*5/7)))]',
 }

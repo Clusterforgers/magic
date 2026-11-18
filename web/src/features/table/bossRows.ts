@@ -8,7 +8,9 @@ import type { Regions, SeatPlan } from './layout'
 /** The padding of a battlefield's zone and the border and padding of a seat frame, one side, in px (`p-1`, `border-2 p-1`). */
 const ZONE_PAD_PX = 4
 const FRAME_PX = 6
-/** The tile of an ally over its board (`h-14`) and the gap under it (`gap-1`). */
+/** The border and padding of a hero's frame in the party's row, one side (`border-2 p-0.5`): thin, so two heroes side by side keep a band of cards more. */
+export const ALLY_FRAME_PX = 4
+/** The tile of an ally over its board (`h-14`), its zone chips beside it, and the gap under it (`gap-1`). */
 const ALLY_TILE_PX = 56 + 4
 /** A minion's pod line over its board, and the gap under it. */
 const MINION_HEAD_PX = 40 + ZONE_GAP_PX
@@ -49,7 +51,7 @@ export function bossSplitOf(
   const allyGaps = Math.max(0, counts.allies.length - 1) * ZONE_GAP_PX
   const sum = shares.reduce((a, b) => a + b, 0)
   const allies: BossBoard[] = counts.allies.map((each, at) => ({
-    width: ((inner - allyGaps) * (shares[at] ?? 0)) / Math.max(1, sum) - 2 * FRAME_PX - 2 * ZONE_PAD_PX,
+    width: ((inner - allyGaps) * (shares[at] ?? 0)) / Math.max(1, sum) - 2 * ALLY_FRAME_PX - 2 * ZONE_PAD_PX,
     counts: each,
   }))
   const bossChrome =
@@ -66,7 +68,7 @@ export function bossSplitOf(
       bossChrome,
       bossFloor: bossChrome - 2 * ZONE_PAD_PX + POD_MIN_PX + sheet - reserve,
       allies,
-      allyChrome: 2 * FRAME_PX + ALLY_TILE_PX + 2 * ZONE_PAD_PX,
+      allyChrome: 2 * ALLY_FRAME_PX + ALLY_TILE_PX + 2 * ZONE_PAD_PX,
       own,
       ownChrome: 2 * ZONE_GAP_PX + 2 * ZONE_PAD_PX,
       ownReady: counts.ownReady,

@@ -53,8 +53,12 @@ function subscribe(onChange: () => void): () => void {
 
 /** Whether the boards lay their lands out on this kind of window, followed across tabs. */
 export function useLandsShown(phone: boolean): boolean {
-  const choice = useSyncExternalStore(subscribe, landsChoice, () => null)
-  return landsShownBy(choice, phone)
+  return landsShownBy(useLandsChoice(), phone)
+}
+
+/** The viewer's choice, followed across tabs. */
+export function useLandsChoice(): LandsChoice {
+  return useSyncExternalStore(subscribe, landsChoice, () => null)
 }
 
 /** What the table menu and every board read: whether lands are laid out now; provided by `GameTable`. */

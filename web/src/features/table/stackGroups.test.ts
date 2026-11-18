@@ -74,6 +74,9 @@ describe('chipsThatFit', () => {
     ['even the top one is too wide', [400, 500], 300, 1],
     ['nothing laid out', [0, 0, 0], 0, 3],
     ['no chips', [], 300, 0],
+    // A column beside a prompt's cards: 40 px chips 6 px apart under 4 px of padding, ends being their bottoms.
+    ['three chips in a column beside 139 px cards', [44, 90, 136], 151, 3],
+    ['two in a column beside 105 px cards', [44, 90, 136], 117, 2],
   ])('%s', (_case, rights, width, expected) => {
     expect(chipsThatFit(rights, width)).toBe(expected)
   })

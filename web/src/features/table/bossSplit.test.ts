@@ -18,7 +18,7 @@ import type { BossBoard, BossSplitInput } from './bossSplit'
 import { LANE_LIMITS, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
 import { must } from '@/test-utils/batches'
-import { bossSplitOf } from './bossRows'
+import { ALLY_FRAME_PX, bossSplitOf } from './bossRows'
 import { fixtureState, withBoss } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import { seatCounts } from './boardSplit'
@@ -208,6 +208,45 @@ describe('splitBoss', () => {
       const ownWidth = regions.main.width - 2 * ZONE_GAP_PX - POD_COLUMN_PX - ZONE_GAP_PX - 2 * 4
       const card = split.heroCard > 0 ? split.heroCard : ladderOf(LANE_LIMITS).at(0)
       expect(lanes).toBeGreaterThanOrEqual(laneHeight(ownWidth, counts.own, card) - 1e-6)
+    },
+  )
+
+  // `/dev/table?seats=4&boss=0&permanents=10` with the side column open: every hero's face stays whole (76 px and up).
+  it.each([
+    [3, 1400, 900, 76],
+    [3, 1920, 1080, 76],
+    [2, 1400, 900, 76],
+    [4, 1400, 900, 56],
+  ])(
+    "%i heroes at 10 permanents at %i x %i draw cards of %i px or more, the allies' lanes inside their band",
+    (heroes, width, height, least) => {
+      const state = fixtureState(withBoss(buildFixture({ seats: heroes + 1, permanents: 10 }), 0))
+      const plan = planTable({
+        viewport: { width, height },
+        seatCount: heroes + 1,
+        viewer: 0,
+        sides: must(bossSidesOf(must(state.view))),
+      })
+      const regions = plan.regions
+      const counts = {
+        own: seatCounts(state, 0),
+        theirs: plan.seats.boards.map((seat) => seatCounts(state, seat)),
+        allies: plan.seats.allies.map((seat) => seatCounts(state, seat)),
+        ownReady: true,
+      }
+      const { split, shares } = bossSplitOf(regions, plan.seats, counts, regions.sheetRoom, regions.sheetRoom)
+      expect(split.heroCard).toBeGreaterThanOrEqual(least)
+      expect(split.bossCard).toBeGreaterThanOrEqual(Math.floor(split.heroCard * 0.6))
+      // Each ally's frame: its border and padding, the tile and its gap, the board's padding, then the lanes.
+      const inner = regions.main.width - 2 * ZONE_GAP_PX
+      const gaps = (counts.allies.length - 1) * ZONE_GAP_PX
+      const sum = shares.reduce((a, b) => a + b, 0)
+      counts.allies.forEach((each, at) => {
+        const lanes = ((inner - gaps) * (shares[at] ?? 0)) / sum - 2 * ALLY_FRAME_PX - 2 * 4
+        expect(split.band - 2 * ALLY_FRAME_PX - 60 - 2 * 4).toBeGreaterThanOrEqual(
+          laneHeight(lanes, each, split.heroCard) - 1e-6,
+        )
+      })
     },
   )
 

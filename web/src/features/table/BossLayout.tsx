@@ -18,6 +18,8 @@ import { ALLY_STRIP_PX, ALLY_WIDE_SPAN, BOSS_SPAN } from './layout'
 import type { PartyRows, PodPlace, SeatPlan } from './layout'
 import { LeftStrip, SeatArea, TileStrip } from './Seats'
 import { SeatTile } from './SeatTile'
+import { BoardZones } from './BoardZones'
+import { useSeatNamer } from './names'
 import { BossAbilitiesBar } from './campaign/BossAbilities'
 import { BossBarContext } from './campaign/useBossAbilities'
 import { handSeat, isBattlefieldEmpty, playerOf } from './selectors'
@@ -164,7 +166,7 @@ interface PartySideProps {
   phone: boolean
 }
 
-/** One ally in its frame: its tile over its board, which is left out while it holds no permanent. */
+/** One ally in its frame: its tile with its zone chips beside it over its board, which is left out while it holds no permanent. */
 function AllyFrame({
   seat,
   size,
@@ -177,17 +179,20 @@ function AllyFrame({
   onPress: (seat: PlayerId) => void
 }) {
   const empty = usePlay((state) => isBattlefieldEmpty(state, seat))
+  const owner = useSeatNamer()(seat)
   return (
     <div
       data-slot="ally-frame"
       data-wide={wide || undefined}
       data-collapsed={empty || undefined}
-      className="flex min-h-0 min-w-0 flex-col gap-1 rounded-xl border-2 border-foreground/15 p-1"
+      className="flex min-h-0 min-w-0 flex-col gap-1 rounded-xl border-2 border-foreground/15 p-0.5"
     >
-      <div className="flex h-14 shrink-0">
+      {/* The zone chips stand beside the tile, so the board under it keeps the whole rest of the frame. */}
+      <div className="flex h-14 shrink-0 items-center gap-1">
         <SeatTile seat={seat} focused={wide} onFocusSeat={onPress} />
+        <BoardZones seat={seat} owner={owner} />
       </div>
-      <SeatArea seat={seat} size={size} facing="near" pod="none" collapsed={empty} />
+      <SeatArea seat={seat} size={size} facing="near" pod="none" collapsed={empty} zones={false} />
     </div>
   )
 }

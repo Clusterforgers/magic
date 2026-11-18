@@ -89,6 +89,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       data-variant="tile"
       style={seatHueStyle(seat)}
       data-tile-seat={seat}
+      data-keep-clear="pod"
       data-team={team?.team}
       data-away={away || undefined}
       data-boss={player.boss ? true : undefined}

@@ -26,6 +26,7 @@ import { UndoButton } from '../UndoButton'
 import { PlayerFace } from '../PlayerFace'
 import { QuickSelect } from '../QuickSelect'
 import { useAllies } from '../useAllies'
+import { QUICK_ROW_REM } from '../cardPrompts'
 import { quickButtons } from '../quickSelect'
 import { useObjects } from '../useCombatNames'
 
@@ -174,7 +175,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
             objects={byId}
             onPress={onCard}
             label="Legal targets"
-            rest={players.length === 0 ? 11 : 13.5}
+            rest={quick.length > 0 ? QUICK_ROW_REM : 0}
             lead={
               players.length === 0 ? undefined : (
                 // The players stand on a line of their own over the cards, so a player never reads as a card.

@@ -23,8 +23,11 @@ export interface Box {
   bottom: number
 }
 
-/** What a kept box is: an answer button (`primary` for the main answer), the prompt's sentence, or (none) a dock. */
-export type ClearKind = 'primary' | 'answer' | 'text'
+/**
+ * What a kept box is: an answer button (`primary` for the main answer), the prompt's sentence, a seat's pod or tile
+ * (`pod`: its life and figures, covered only after the card shown), or (none) a dock.
+ */
+export type ClearKind = 'primary' | 'answer' | 'text' | 'pod'
 
 /** A box the preview keeps clear of; a `soft` one (the strip's spare room) it covers before any other. */
 export interface ClearBox extends Anchor {
@@ -62,7 +65,7 @@ export const pictureHeight = (fit: PreviewFit): number =>
 
 /** The rank of a kept box, most important first; a panel that covers fewer of the earlier ranks wins. */
 const RANKS = ['primary', 'answer', 'dock', 'text', 'soft'] as const
-type Rank = (typeof RANKS)[number]
+type Rank = (typeof RANKS)[number] | 'pod'
 
 const rankOf = (box: ClearBox): Rank => box.kind ?? (box.soft === true ? 'soft' : 'dock')
 
@@ -74,14 +77,15 @@ interface Kept {
 
 /**
  * The cost of a panel at `panel`, compared entry by entry: how many of the primary answer, the other answers, the docks,
- * the sentence and the strip it covers, then whether it covers the card it shows and whether any board card.
+ * the sentence and the strip it covers, then whether it covers the card it shows, how many pods, and whether any board card.
  */
 function costOf(panel: Box, card: Box | null, kept: readonly Kept[], cards: readonly Box[]): number[] {
   const counts = RANKS.map(
     (rank) => kept.filter((each) => each.rank === rank && meets(panel, each.box)).length,
   )
   const shown = card !== null && meets(panel, card) ? 1 : 0
-  return [...counts, shown, cards.some((each) => meets(panel, each)) ? 1 : 0]
+  const pods = kept.filter((each) => each.rank === 'pod' && meets(panel, each.box)).length
+  return [...counts, shown, pods, cards.some((each) => meets(panel, each)) ? 1 : 0]
 }
 
 /** Whether cost `a` is lower than cost `b`. */
@@ -182,7 +186,7 @@ function bandCandidates(
  * Where the preview of the card in `anchor` stands, at the size `previewFit` gives it: the size never shrinks to stay
  * clear. Of the places on either side (a phone's: above or below the card) it takes the one that covers, in order, not
  * the primary answer, the fewest other answers, docks (`clear` without a kind), the sentence and the strip (`soft`), not
- * the card itself and no board card of `cards` (a wide window's only); among equals the tallest, the natural place first.
+ * the card itself, the fewest pods and no board card of `cards` (a wide window's only); among equals the tallest, the natural place first.
  * A box without size is ignored.
  */
 export function fitClear(

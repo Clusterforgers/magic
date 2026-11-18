@@ -88,6 +88,8 @@ export function TopBar({
       <TurnBanner />
       <PhaseBanner />
       <SpiritMoment />
+      {/* Room in the bar's flow for a development tool (`dev/DevFxControls`), so it covers no control; empty in a game. */}
+      <div data-slot="bar-tools" className="relative flex shrink-0 items-center empty:hidden" />
       <HelpMenu compact={compact} />
       <TableRules />
       <SpectatorCount />

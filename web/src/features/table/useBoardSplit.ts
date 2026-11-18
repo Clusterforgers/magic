@@ -1,11 +1,11 @@
 /** The table's regions with the board rows split by what each must hold (`boardSplit.ts`). */
 import { useContext, useLayoutEffect, useMemo, useRef } from 'react'
 import { usePlay } from '@/features/game/gameContext'
-import { foldsLands, seatCounts, splitRegions } from './boardSplit'
+import { crowdFoldsLands, foldsLands, seatCounts, splitRegions } from './boardSplit'
 import type { HeldRows } from './boardSplit'
 import { handIdle } from './handIdle'
 import type { LaneCounts } from './laneFit'
-import { useLandsShown } from './landPrefs'
+import { landsShownBy, useLandsChoice } from './landPrefs'
 import type { Regions, SeatPlan } from './layout'
 import { handSeat } from './selectors'
 import { FOLD_LANDS_BY_DEFAULT, STACKS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
@@ -33,17 +33,19 @@ export function useBoardSplit(
 ): Regions {
   const options = useContext(TableOptionsContext)
   const grouped = options.stacks ?? STACKS_BY_DEFAULT
-  const shown = useLandsShown(regions.phone)
+  const choice = useLandsChoice()
+  const folds = foldsLands(plan, options.foldLands ?? FOLD_LANDS_BY_DEFAULT, regions.phone)
   // Lands laid out take their lane in every board; only boards that fold them leave it out.
-  const folded = !shown && foldsLands(plan, options.foldLands ?? FOLD_LANDS_BY_DEFAULT, regions.phone)
+  const folded = folds && !landsShownBy(choice, regions.phone)
+  const theirFolded = folds && !landsShownBy(choice, regions.phone || crowdFoldsLands(plan))
   const boss = plan.shape === 'boss'
   const key = usePlay((state) => {
     const seats = boss ? [plan.viewer, ...plan.boards, ...plan.allies] : [plan.viewer, ...plan.boards]
     const counts = seats
-      .map((seat) => {
+      .map((seat, at) => {
         const { lands, creatures, other, tucked } = seatCounts(state, seat, grouped)
         // Folded lands take no lane of a board.
-        const laid = folded ? 0 : lands
+        const laid = (at === 0 ? folded : theirFolded) ? 0 : lands
         return `${laid},${creatures},${other},${tucked?.lands ?? 0},${tucked?.creatures ?? 0},${tucked?.other ?? 0}`
       })
       .join('|')
