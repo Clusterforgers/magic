@@ -435,9 +435,10 @@ pub(crate) fn pay_answer(
     choice: PayChoice,
     pending: Option<&Pending>,
 ) -> Result<Outcome, EngineError> {
-    // The helper of an assist pays its share when asked, before and apart from the caster's payment (CR 702.132a).
+    // The helper of an assist pays its share when asked, before and apart from the caster's payment (CR 702.132a); so
+    // does a teammate for their own creatures of a team's attack.
     if let Some(Pending {
-        what: What::Spell(_),
+        what: What::Spell(_) | What::Attack(..),
         player: caster,
         ..
     }) = pending
@@ -581,16 +582,14 @@ fn r282_suspended(state: &GameState, card: ObjectId, choices: &Choices) -> Optio
     suspend::events(state, card, x)
 }
 
-/// The events of a declaration of attackers or blockers once it is paid for, with the permanents picked for its costs.
-fn declared(
-    state: &GameState,
-    player: PlayerId,
-    what: &What,
-    choices: &Choices,
-) -> Option<Vec<Event>> {
-    match what {
+/// The events of a declaration of attackers or blockers once it is paid for, with the permanents picked for its costs
+/// and the teammates' payments of a team's attack.
+fn declared(state: &GameState, player: PlayerId, pending: &Pending) -> Option<Vec<Event>> {
+    let choices = &pending.choices;
+    match &pending.what {
         What::Attack(attackers, extras) => {
-            crate::attack_tax::made(state, player, attackers, extras, choices)
+            let paid = pending.done.assist_events.as_deref().unwrap_or_default();
+            crate::attack_tax::made(state, player, (attackers, extras), choices, paid)
         }
         What::Block(blocks) => crate::block_tax::made(state, player, blocks, choices),
         _ => None,
@@ -690,11 +689,12 @@ fn announcement(
             player,
             choice: Choice::YesNo(true),
         }]),
-        Some(Pending {
-            what: what @ (What::Attack(..) | What::Block(_)),
-            choices,
-            ..
-        }) => declared(state, player, what, choices).ok_or_else(unexpected),
+        Some(
+            pending @ Pending {
+                what: What::Attack(..) | What::Block(_),
+                ..
+            },
+        ) => declared(state, player, pending).ok_or_else(unexpected),
         Some(Pending {
             what: What::Trigger(_),
             ..
