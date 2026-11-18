@@ -100,6 +100,8 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     crate::triggers::g10c_note_crime(state, event);
     crate::spotlight::note(state, event);
     crate::rivalry::note(state, event);
+    // A loop offer waits for its answer, and any event that follows has answered it.
+    state.loop_offer = None;
     let folded = fold_event(state, event);
     // A read in the middle of the fold saw the state before the rest of the event: forget it.
     if changes_layers {
@@ -536,6 +538,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::AnnouncementRewound { .. }
         | Event::TookBack { .. }
         | Event::LoopRepeated(_)
+        | Event::LoopStopped { .. }
         | Event::ManaBurned { .. }
         | Event::Explored { .. }
         | Event::Connived { .. }
@@ -712,6 +715,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::GameEnded { result } => end_game(state, *result),
         Event::LoopDrawn { cards } => state.loop_draw = Some(cards.clone()),
+        Event::LoopOffered(offer) => state.loop_offer = Some(offer.clone()),
         other => return c6_kw_fold_rest(state, other),
     }
     Ok(())

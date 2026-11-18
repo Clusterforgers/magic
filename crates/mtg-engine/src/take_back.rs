@@ -271,6 +271,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::GameEnded { .. }
         | Event::LoopDrawn { .. }
         | Event::LoopRepeated(_)
+        | Event::LoopOffered(_)
+        | Event::LoopStopped { .. }
         | Event::PlayerLost { .. }
         | Event::BecameSpirit { .. }
         | Event::SpiritRevived { .. }

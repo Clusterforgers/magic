@@ -90,8 +90,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out
-- [ ] (lp1) A pending loop offer survives a rebuild of the engine from the log (a server restart asks priority again and finds the loop three cycles later)
-- [ ] (lp2) A loop that makes a permanent each cycle runs past the shortcut's work cap (about 350 iterations of Kiki-Jiki with Pestermite): each engine step reads every permanent
+- [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 
 ## M5 Table and prompts
 

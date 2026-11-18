@@ -78,6 +78,17 @@ fn priority_mana(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
     mana_ability::options(state, player)
 }
 
+/// The mana abilities of [`priority_mana`] and of [`mana_options`] from one walk of the battlefield.
+fn both_manas(state: &GameState, player: PlayerId) -> (Vec<ManaOption>, Vec<ManaOption>) {
+    let at_priority = priority_mana(state, player);
+    let to_pay = at_priority
+        .iter()
+        .filter(|option| !option.priority_only)
+        .cloned()
+        .collect();
+    (at_priority, to_pay)
+}
+
 /// Whether `player` may now activate the ability `rules` at `address`, which is activated only as a sorcery: they could
 /// cast a sorcery, or a permanent of theirs lets them activate its kind at instant speed (Leonin Shikari).
 pub fn sorcery_activation_open(
@@ -275,6 +286,10 @@ pub(crate) fn activation(
     rules: &Ability,
 ) -> Activation {
     use Activation::{Hindered, Never, Ready};
+    // Only an activated or loyalty ability is activated: a trigger or a keyword is never asked what forbids it.
+    if !matches!(rules, Ability::Activated { .. } | Ability::Loyalty { .. }) {
+        return Never;
+    }
     if let Some(source) = crate::prohibit::forbidder(
         state,
         crate::prohibit::Doing::Activate {
@@ -727,10 +742,58 @@ fn silence(
     }
 }
 
+thread_local! {
+    /// A loop shortcut is giving recorded answers on this thread (`Engine::repeat_loop`): a priority decision is
+    /// worked out only when its answer is more than a pass.
+    static SHORTCUT: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+/// Runs `run` as a loop shortcut does: the priority decisions made meanwhile offer a pass alone, which every
+/// priority decision allows, since walking the battlefield for every other option at each of them makes a loop that
+/// adds a permanent each cycle cost the square of its iterations.
+pub(crate) fn as_shortcut<T>(run: impl FnOnce() -> T) -> T {
+    let was = SHORTCUT.with(|on| on.replace(true));
+    let out = run();
+    SHORTCUT.with(|on| on.set(was));
+    out
+}
+
+/// The options of a priority decision as a loop shortcut makes it: a pass, and nothing worked out.
+fn shortcut_options() -> PriorityOptions {
+    PriorityOptions {
+        playable_lands: Vec::new(),
+        castable: Vec::new(),
+        mana_abilities: Vec::new(),
+        abilities: Vec::new(),
+        suspendable: Vec::new(),
+        foretellable: Vec::new(),
+        plottable: Vec::new(),
+        turnable: Vec::new(),
+        unlockable: Vec::new(),
+        endable: Vec::new(),
+        companion: false,
+        faces: Vec::new(),
+        unplayable: Vec::new(),
+        inactive: Vec::new(),
+        can_act: true,
+        can_pass: true,
+    }
+}
+
+/// The options of the priority decision `player` holds: a pass alone while a loop shortcut runs
+/// ([`as_shortcut`]), else everything.
+pub(crate) fn priority_decision_options(state: &GameState, player: PlayerId) -> PriorityOptions {
+    if SHORTCUT.with(std::cell::Cell::get) {
+        shortcut_options()
+    } else {
+        priority_options(state, player)
+    }
+}
+
 /// Everything `player` may do while holding priority.
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
-    let all_mana = mana_options(state, player);
+    let (at_priority, all_mana) = both_manas(state, player);
     let pool = state
         .player(player)
         .map(|p| p.mana().clone())
@@ -789,8 +852,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     if !silenced {
         faces.extend(prepared::options(state, player, &pool, &all_mana, life));
     }
-    let mana_abilities =
-        crate::costly_mana::at_priority(state, &priority_mana(state, player), &pool, life);
+    let mana_abilities = crate::costly_mana::at_priority(state, &at_priority, &pool, life);
     let offered = unplayable::Offered {
         lands: &playable_lands,
         castable: &castable,

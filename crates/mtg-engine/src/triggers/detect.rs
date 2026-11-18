@@ -3097,12 +3097,15 @@ fn delayed(
         // The event it waits for may name what the resolution bound ("whenever that creature deals combat damage").
         let mut scope = Scope::announcing(state, controller, source).with_caused(used.caused);
         scope.bindings = &waiting.bindings;
-        let live = snapshot(state, source.id)
-            .filter(|shot| shot.counter == source.counter)
-            .map(|shot| Snapshot {
-                x: waiting.snapshot.x,
-                ..shot
-            });
+        // The source as it is now, taken only once the ability triggers: most waiting abilities wait on other events.
+        let live = || {
+            snapshot(state, source.id)
+                .filter(|shot| shot.counter == source.counter)
+                .map(|shot| Snapshot {
+                    x: waiting.snapshot.x,
+                    ..shot
+                })
+        };
         // A batch pattern finds one cause for each group of the events together ("whenever that creature deals damage").
         for cause in causes(pattern, happened, &scope) {
             if waiting.once {
@@ -3117,7 +3120,7 @@ fn delayed(
                 origin: waiting.origin(),
                 controller,
                 cause,
-                snapshot: live.clone().unwrap_or_else(|| waiting.snapshot.clone()),
+                snapshot: live().unwrap_or_else(|| waiting.snapshot.clone()),
                 delayed: Some(waiting.id()),
             });
         }

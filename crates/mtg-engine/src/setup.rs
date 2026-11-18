@@ -676,6 +676,7 @@ impl GameState {
             possible: Possible::default(),
             result: None,
             loop_draw: None,
+            loop_offer: None,
             day_night: None,
             seat_turns: std::collections::BTreeMap::new(),
             cast_names: std::collections::BTreeMap::new(),

@@ -617,6 +617,14 @@ pub enum Event {
     },
     /// A loop ran as a shortcut (CR 732): the summary of the events right before it.
     LoopRepeated(Box<crate::loops::LoopSummary>),
+    /// A loop was found and its driver is asked how often to repeat it (CR 732.2a); the question waits until the next
+    /// event.
+    LoopOffered(Box<crate::loops::LoopOffer>),
+    /// The player asked about a loop plays on by hand instead (`LoopAnswer::Stop`).
+    LoopStopped {
+        /// Who was asked.
+        player: PlayerId,
+    },
     /// An ability was put on the stack, activated by its controller or triggered.
     AbilityPutOnStack(Box<PutOnStack>),
     /// A player activated an ability; its costs are paid and the ability goes on the stack next.
@@ -1673,6 +1681,8 @@ impl Event {
             | Event::GameEnded { .. }
             | Event::LoopDrawn { .. }
             | Event::LoopRepeated(_)
+            | Event::LoopOffered(_)
+            | Event::LoopStopped { .. }
             | Event::AbilityActivated { .. }
             | Event::ManaAbilityActivated { .. }
             | Event::AbilityTriggered(_)

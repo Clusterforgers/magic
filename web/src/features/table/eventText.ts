@@ -39,7 +39,7 @@ import { rollSentence } from './manual/panel/roll'
 import { teamLabel } from '@/lib/teams'
 import { keywordWords as grantKeywordWords } from './manual/offers'
 import { takeBackAction } from './takeBackText'
-import { loopDrawLine, loopSummaryLine } from './loopText'
+import { loopDrawLine, loopOfferLine, loopSummaryLine } from './loopText'
 import { hauntWords } from './campaign/haunt'
 import { granterAbility, granterClause, granterHolder, granterName, granterOfOrigin } from './granter'
 
@@ -1537,6 +1537,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('LoopRepeated' in event) return line(loopSummaryLine(event.LoopRepeated, (seat) => n.seat(seat)))
   if ('LoopDrawn' in event) return line(loopDrawLine(event.LoopDrawn.cards))
+  if ('LoopOffered' in event) return quiet(loopOfferLine(n.seat(event.LoopOffered.player)))
+  if ('LoopStopped' in event)
+    return line(`${n.seat(event.LoopStopped.player)} plays on by hand instead of repeating the loop`)
   if ('ConditionsFailed' in event) {
     const { object, conditions = [] } = event.ConditionsFailed
     const why =
@@ -1643,6 +1646,7 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
   if ('AnnouncementRewound' in event) {
     return quiet(`${n.seat(event.AnnouncementRewound.player)} could not finish a play`)
   }
+  if ('LoopOffered' in event) return quiet(loopOfferLine(n.seat(event.LoopOffered.player)))
   void (event satisfies { StepDone: unknown })
   return quiet('A step of the resolution is done')
 }

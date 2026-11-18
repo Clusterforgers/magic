@@ -18,7 +18,7 @@ use crate::events::{Event, NothingToDo};
 use crate::flow::Progress;
 use crate::object::{GameObject, PermanentState};
 use crate::player::Player;
-use crate::priority::{all_passed, priority_options};
+use crate::priority::all_passed;
 use crate::rules::{cant_draw, max_hand_size, no_max_hand_size, skips_draw_step, untap_during};
 use crate::stack::resolve_top;
 use crate::state::{GameResult, GameState};
@@ -392,7 +392,10 @@ fn priority_round(state: &GameState) -> Progress {
     match state.priority() {
         Some(priority) => Progress::Decide(Decision {
             player: priority.holder(),
-            kind: DecisionKind::Priority(Box::new(priority_options(state, priority.holder()))),
+            kind: DecisionKind::Priority(Box::new(crate::priority::priority_decision_options(
+                state,
+                priority.holder(),
+            ))),
         }),
         None => Progress::Events(vec![grant(state)]),
     }
