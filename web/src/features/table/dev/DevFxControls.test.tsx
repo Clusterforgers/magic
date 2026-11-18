@@ -45,12 +45,20 @@ describe('the fold', () => {
   const group = (): HTMLElement => screen.getByRole('group', { name: 'Table effects (development)' })
   const toggle = (): HTMLElement => screen.getByRole('button', { name: 'Effects' })
 
-  it('leaves the top bar at lg and wider, where the step strip lies, for the bottom left corner', () => {
-    mount(undefined, true, false)
-    const classes = group().className
-    expect(classes).toContain('lg:bottom-1.5')
-    expect(classes).toContain('lg:left-1.5')
-    expect(classes).not.toMatch(/lg:right-\[/)
+  it("stands in the top bar's tool slot, in its flow, at every width, and its moves drop below the bar", () => {
+    mount(undefined, true, true)
+    const slot = must(document.querySelector<HTMLElement>('[data-slot="bar-tools"]'))
+    expect(slot.closest('[data-region="bar"]')).not.toBeNull()
+    expect(slot.contains(group())).toBe(true)
+    expect(group().className).not.toMatch(/\bfixed\b/)
+    const moves = must(document.getElementById(toggle().getAttribute('aria-controls') ?? ''))
+    expect(moves.className).toContain('top-full')
+  })
+
+  it('keeps the bottom left corner on a page without the top bar', () => {
+    renderTable({ ui: <DevFxControls open={false} /> })
+    expect(group().className).toContain('fixed')
+    expect(group().className).toContain('bottom-1.5')
   })
 
   it('is one button and no move until it is opened', () => {
