@@ -154,6 +154,8 @@ test.describe('the prompt band and the Stack column', () => {
               `${label}: the band keeps its box, ${shown.band} against ${quiet.band}`,
             ).toBe(true)
             for (const [name, box] of Object.entries(shown.still)) {
+              // A payment opens your piles of equal lands, so each can be tapped: the cards of a full board size anew.
+              if (prompt === 'pay' && name === 'own card') continue
               expect(
                 same(box, quiet.still[name] ?? null),
                 `${label}: ${name} moved, ${box} against ${quiet.still[name]}`,
