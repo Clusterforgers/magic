@@ -37,7 +37,7 @@ The twenty rules of motion and interaction the table, lobby, deck pages and Delv
 | Exaggeration | A hit flashes white-hot (brightness 1.9) and shakes 5 px; a life total pops to 1.25 with a coloured flash |
 | Solid drawing | Cards cast a shadow on the felt, a lifted hand card a deeper one; a tap turns the face about its centre; the coin turns in 3D |
 | Appeal | One look (Spellforge), one set of motion tokens, the same moves in every layout |
-| Fitts and hit areas | Pass, Next, Resolve and Attack are the largest buttons, bottom right; under a coarse pointer every button and table chip has a 44 px hit area (`hit-area`), grown with a pseudo-element, never the layout |
+| Fitts and hit areas | Pass, Next, Resolve and Attack are the largest buttons, bottom right; under a coarse pointer every button and table chip has a 44 px hit area (`hit-area`), grown with a pseudo-element, never the layout; the top bar's step ladder is then one button that opens it below the bar with 44 px stops (`StepLadder` `zoom`) |
 | Hick | A prompt shows one primary answer and at most about six choices at once; more go to the choice overlay with a search |
 | Miller | Groups of at most about seven: stack chips fold into "×N" and "+N more", lands fold into counts, a deck list groups by type |
 | Doherty | A press shows its pressed state in the same frame; an answer sent closes its prompt at once, before the server's batch (`answerPending`); an answer the server has not followed within 400 ms shows a quiet turning ring in the strip until its next word (`answered`, `WorkingMark`); a card cast or played as a land dips and rises out of its slot on the press and stands there again if the server refuses (`handLeaving`) |

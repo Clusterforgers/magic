@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import type { FocusEvent, KeyboardEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
+import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
+import { useMediaQuery } from '@/hooks/useMediaQuery'
 import { cn } from '@/lib/utils'
 import type { StopStep } from '@/play/stops'
 import type { Step } from '@/protocol/generated'
@@ -39,16 +41,38 @@ interface MarkProps {
   yours: boolean
 }
 
-/** One step's mark: the progress of the turn, alone when the ladder only shows the turn. */
-function PlainMark({ step, state, className }: MarkProps) {
+/** One step's mark: the progress of the turn, and a held stop when the ladder is the picture of a stops button. */
+function PlainMark({ step, state, className, hold = 'off' }: MarkProps & { hold?: StopState }) {
   return (
     <li
       title={STEP_LABEL[step]}
       data-step={step}
       data-state={state}
+      data-hold={hold === 'off' ? undefined : hold}
       data-themed=""
-      className={cn('h-3 w-5 rounded-[3px]', className)}
-    />
+      className={cn(
+        'relative h-3 w-5 rounded-[3px] data-hold:outline-2 data-hold:outline-offset-1 data-hold:outline-primary',
+        className,
+      )}
+    >
+      <HoldDot hold={hold} />
+    </li>
+  )
+}
+
+/** The dot under a held stop's mark: a pin for a lasting one. */
+function HoldDot({ hold }: { hold: StopState }) {
+  return (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute top-full left-1/2 mt-1 flex -translate-x-1/2 items-center"
+    >
+      {hold === 'lasting' ? (
+        <Pin className="size-2.5 text-primary" />
+      ) : hold === 'turn' ? (
+        <span className="size-1.5 rounded-full bg-primary" />
+      ) : null}
+    </span>
   )
 }
 
@@ -57,13 +81,15 @@ interface StopMarkProps extends MarkProps {
   hold: StopState
   /** Whether this mark is the ladder's one tab stop. */
   tabbable: boolean
+  /** The ladder has room to space its marks 44 px apart under a coarse pointer (the popovers, not the top bar). */
+  roomy: boolean
 }
 
 /**
  * A step's mark that is also its stop: a press toggles the stop on the side the ladder shows. A held stop is an
  * outline round the mark and a dot under it (a pin for a lasting one); the current step is the mark's fill.
  */
-function StopMark({ step, state, className, controls, hold, tabbable }: StopMarkProps) {
+function StopMark({ step, state, className, controls, hold, tabbable, roomy }: StopMarkProps) {
   const { showing, keep, online } = controls
   const description = stopDescription(showing, hold, keep)
   return (
@@ -75,6 +101,8 @@ function StopMark({ step, state, className, controls, hold, tabbable }: StopMark
       data-themed=""
       className={cn(
         'relative h-3 w-5 rounded-[3px] data-hold:outline-2 data-hold:outline-offset-1 data-hold:outline-primary',
+        // 20 px of mark and 12 px of margin on each side: a 44 px stop button per mark, none over its neighbour.
+        roomy && 'pointer-coarse:mx-3',
         className,
       )}
     >
@@ -92,21 +120,15 @@ function StopMark({ step, state, className, controls, hold, tabbable }: StopMark
         aria-disabled={online ? undefined : true}
         title={description === undefined ? STEP_LABEL[step] : `${STEP_LABEL[step]}. ${description}`}
         tabIndex={tabbable ? 0 : -1}
-        className="absolute top-1/2 left-1/2 h-9 w-6 -translate-x-1/2 -translate-y-1/2 rounded-md outline-none hover:bg-foreground/10 focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:opacity-50 pointer-coarse:h-11 pointer-coarse:w-7"
+        className={cn(
+          'absolute top-1/2 left-1/2 h-9 w-6 -translate-x-1/2 -translate-y-1/2 rounded-md outline-none hover:bg-foreground/10 focus-visible:ring-3 focus-visible:ring-ring/50 aria-disabled:opacity-50 pointer-coarse:h-11',
+          roomy ? 'pointer-coarse:w-11' : 'pointer-coarse:w-7',
+        )}
         onClick={(event) => {
           if (online) controls.press(showing, step, event.shiftKey)
         }}
       />
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute top-full left-1/2 mt-1 flex -translate-x-1/2 items-center"
-      >
-        {hold === 'lasting' ? (
-          <Pin className="size-2.5 text-primary" />
-        ) : hold === 'turn' ? (
-          <span className="size-1.5 rounded-full bg-primary" />
-        ) : null}
-      </span>
+      <HoldDot hold={hold} />
     </li>
   )
 }
@@ -119,9 +141,10 @@ function StopMark({ step, state, className, controls, hold, tabbable }: StopMark
  * toggles the stop at that step on the side the stops control picks, with the arrow keys, Home and End moving along
  * the ladder, which is one tab stop. Otherwise it is a picture of what the turn badge already says in words, so a
  * screen reader skips it. It sits in the top bar from 1024 px (`place` bar) and in the stops popover below that
- * (`panel`), where it wraps.
+ * (`panel`), where it wraps. Under a coarse pointer the top bar's marks are too close for a finger: the ladder there is
+ * one button that opens the same ladder below it (`zoom`), where, as in the stops popover, each mark hits at 44 px.
  */
-export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
+export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' | 'zoom' }) {
   const { on, slow } = useCueOptions()
   const { stage, step } = usePlay(
     useShallow((state) => ({
@@ -133,6 +156,7 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
   const yours = usePlay(isYourTurn)
   const left = usePlay(turnLeft)
   const controls = useStopControls()
+  const coarse = useMediaQuery('(pointer: coarse)', false)
   const [last, setLast] = useState<StopStep | null>(null)
   const [dashed, setDashed] = useState<readonly Step[]>([])
   useTurnFeed((feed) => {
@@ -146,11 +170,13 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
     return () => clearTimeout(timer)
   }, [dashed, slow])
   // With a provider the ladder is drawn in one place only; without one it is the top bar's picture.
-  if (controls !== null && controls.shown && controls.inBar !== (place === 'bar')) return null
-  const interactive = controls !== null && controls.shown
+  if (controls !== null && controls.shown && controls.inBar !== (place !== 'panel')) return null
+  // A finger on the top bar opens the ladder below it rather than pressing a mark 24 px from the next.
+  const zooms = controls !== null && controls.shown && place === 'bar' && coarse
+  const interactive = controls !== null && controls.shown && !zooms
   const turns = stage === 'Turns'
   // Before the first turn (opening hands) a seat that can set stops already has its marks, every one still to come.
-  if (!turns && !interactive) return null
+  if (!turns && !interactive && !zooms) return null
   const steps = ladderSteps(turns ? step : null, stops)
   const states: readonly PipState[] = turns
     ? pipStates(steps, step, on ? dashed : [])
@@ -182,7 +208,7 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
     buttons[to]?.focus()
   }
 
-  return (
+  const ladder = (
     <div
       {...(interactive
         ? { role: 'group', 'aria-label': rowName(showing, controls.turn === showing) }
@@ -194,9 +220,9 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
       data-left={left || undefined}
       className={cn(
         'shrink-0 items-center gap-2',
-        place === 'panel'
+        place !== 'bar'
           ? 'flex flex-wrap justify-center gap-y-4 pb-3'
-          : interactive
+          : interactive || zooms
             ? 'flex'
             : 'hidden lg:flex',
       )}
@@ -231,9 +257,10 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
                     controls={controls}
                     hold={stopState(stops, showing, name)}
                     tabbable={name === tab}
+                    roomy={place !== 'bar'}
                   />
                 ) : (
-                  <PlainMark key={name} {...mark} />
+                  <PlainMark key={name} {...mark} hold={zooms ? stopState(stops, showing, name) : 'off'} />
                 )
               })}
             </ol>
@@ -241,5 +268,26 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' }) {
         )
       })}
     </div>
+  )
+  if (!zooms) return ladder
+  return (
+    <Popover>
+      <PopoverTrigger
+        render={
+          <button
+            type="button"
+            data-slot="ladder-zoom"
+            aria-label={`${rowName(showing, controls.turn === showing)}: set stops`}
+            className="hit-area relative shrink-0 rounded-md outline-none hover:bg-foreground/10 focus-visible:ring-3 focus-visible:ring-ring/50"
+          />
+        }
+      >
+        {ladder}
+      </PopoverTrigger>
+      <PopoverContent side="bottom" align="start" className="w-auto max-w-[calc(100vw-1rem)] gap-0 p-2 pt-3">
+        <PopoverTitle className="sr-only">Stops</PopoverTitle>
+        <StepLadder place="zoom" />
+      </PopoverContent>
+    </Popover>
   )
 }
