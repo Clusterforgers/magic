@@ -40,7 +40,7 @@ function PromptFor({ kind }: { kind: DecisionKind }) {
 /** One decision's worth of prompt state; `PromptHost` keys it by decision id, so a new decision starts it afresh. */
 function PromptScope({ pending }: { pending: PendingDecision }) {
   const { session } = useGame()
-  const { id, decision } = pending
+  const { id, decision, asking } = pending
   const [ids, setIds] = useState(NOTHING)
   const sent = useRef(false)
 
@@ -74,8 +74,8 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
   const name = kindName(decision.kind)
   const compact = COMPACT.has(name)
   const api = useMemo<PromptApi>(
-    () => ({ id, name, decision, answer, selection }),
-    [id, name, decision, answer, selection],
+    () => ({ id, name, decision, answer, selection, ...(asking === undefined ? {} : { asking }) }),
+    [id, name, decision, answer, selection, asking],
   )
   return (
     <PromptContext value={api}>

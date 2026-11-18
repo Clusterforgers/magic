@@ -23,6 +23,17 @@ export interface SideState {
   mount: HTMLElement | null
   /** Hands over the overlay (a ref callback). */
   setMount(element: HTMLElement | null): void
+  /**
+   * The element the pending decision's choices are drawn into: in the Stack tab of a column, else in the decision sheet
+   * over the hand; null while neither is up.
+   */
+  detail: HTMLElement | null
+  /** Hands over the choices' element (a ref callback). */
+  setDetail(element: HTMLElement | null): void
+  /** Whether the viewer folded (true) or opened (false) the decision sheet; null until they press its handle. */
+  sheetFolded: boolean | null
+  /** Folds or opens the decision sheet. */
+  setSheetFolded(folded: boolean): void
 }
 
 /** Provided by `SideProvider`. */

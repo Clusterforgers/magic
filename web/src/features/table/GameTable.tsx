@@ -38,6 +38,8 @@ import { createPreviewStore, PreviewContext } from './preview'
 import { Opponents, SeatArea } from './Seats'
 import { BossSide, PartySide } from './BossLayout'
 import { bossSidesKey, defaultFocusOf, handSeat, parseBossSides, seatCountOf, turnLeft } from './selectors'
+import { AskMarks } from './prompt/detail/AskMarks'
+import { DecisionSheet } from './prompt/detail/DecisionSheet'
 import { SharedStrip } from './SharedStrip'
 import { useSideFolded } from './sideFold'
 import { SideProvider } from './sideState'
@@ -233,7 +235,13 @@ const Table = memo(function Table() {
                                   <SidePanelMount rows={sidePanelRows(regions, lowered)} lowered={lowered} />
                                 }
                                 // Inside the grid's own stacking context, so the lines run under the shared strip and above the boards.
-                                overlay={<CombatOverlay />}
+                                overlay={
+                                  <>
+                                    <CombatOverlay />
+                                    <AskMarks />
+                                  </>
+                                }
+                                sheet={spectator ? null : <DecisionSheet phone={regions.phone} />}
                                 choice={choice}
                               />
                             </ChoiceOverlayContext>

@@ -5,6 +5,8 @@ import type { AutoYield, ObjectView } from '@/protocol/generated'
 import { answerKeyOf } from '../../autoSkips'
 import { commanderDestination, returnDetail, returnNoLabel, returnQuestion } from '../../commander'
 import { askerWords, NO_KEY, YES_NO_KEYS, yesNoSentence } from '../choiceText'
+import { rememberOutcome } from '../detail/runMemory'
+import { RunDots } from '../detail/RunDots'
 import { KeyHint } from '../KeyHint'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
@@ -47,16 +49,25 @@ function PlainYesNo({
   onlyNo: boolean
   ability: AutoYield | null
 }) {
-  const { answer } = usePrompt()
+  const { answer, asking } = usePrompt()
   const { session } = useGame()
+  const run = asking?.run
+  // The column's done row of a run says what was answered.
+  const send = (yes: boolean): void => {
+    if (run !== undefined) {
+      const asked = text.replace(/\?+$/, '')
+      rememberOutcome(run.id, run.index, asked === '' ? (yes ? 'Yes' : 'No') : `${yes ? 'Yes' : 'No'} · ${asked}`)
+    }
+    answer({ YesNo: yes })
+  }
   const always = (yes: boolean) => () => {
     if (ability === null) return
     session.autoSkip({ kind: 'Answer', ability, yes })
-    answer({ YesNo: yes })
+    send(yes)
   }
   const no = useRef<HTMLButtonElement>(null)
   useDefaultFocus(no)
-  const say = (yes: boolean) => () => void answer({ YesNo: yes })
+  const say = (yes: boolean) => () => send(yes)
   usePromptKeys(onlyNo ? { n: say(false) } : { y: say(true), n: say(false) })
 
   const sentence = yesNoSentence(askerWords(name), text)
@@ -68,18 +79,34 @@ function PlainYesNo({
           <span className="sr-only"> {onlyNo ? NO_KEY : YES_NO_KEYS}</span>
         </>
       }
+      meter={run === undefined ? undefined : <RunDots index={run.index} count={run.entries.length} />}
+      choices={
+        ability === null ? undefined : (
+          // Under the asking card, off the band: a rule for the rest of the game is no answer to press in passing.
+          <div data-slot="always-answer" className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+            <span>For the rest of the game:</span>
+            <Button
+              size="sm"
+              variant="outline"
+              aria-label={`Always answer Yes for ${ability.name}`}
+              disabled={onlyNo}
+              onClick={always(true)}
+            >
+              Always Yes
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              aria-label={`Always answer No for ${ability.name}`}
+              onClick={always(false)}
+            >
+              Always No
+            </Button>
+          </div>
+        )
+      }
     >
-      <Button
-        variant="outline"
-        className="h-10 min-w-24 px-4"
-        aria-label="Yes"
-        aria-keyshortcuts={onlyNo ? undefined : 'Y'}
-        disabled={onlyNo}
-        onClick={say(true)}
-      >
-        Yes
-        <KeyHint>Y</KeyHint>
-      </Button>
+      {/* No stands at the right end, where the answer the clock gives is; Yes is at its left. */}
       <Button
         ref={no}
         variant="outline"
@@ -91,27 +118,17 @@ function PlainYesNo({
         No
         <KeyHint>N</KeyHint>
       </Button>
-      {ability === null ? null : (
-        <span data-slot="always-answer" className="flex gap-1">
-          <Button
-            size="sm"
-            variant="ghost"
-            aria-label={`Always answer Yes for ${ability.name}`}
-            disabled={onlyNo}
-            onClick={always(true)}
-          >
-            Always Yes
-          </Button>
-          <Button
-            size="sm"
-            variant="ghost"
-            aria-label={`Always answer No for ${ability.name}`}
-            onClick={always(false)}
-          >
-            Always No
-          </Button>
-        </span>
-      )}
+      <Button
+        variant="outline"
+        className="h-10 min-w-24 px-4"
+        aria-label="Yes"
+        aria-keyshortcuts={onlyNo ? undefined : 'Y'}
+        disabled={onlyNo}
+        onClick={say(true)}
+      >
+        Yes
+        <KeyHint>Y</KeyHint>
+      </Button>
     </PromptLayout>
   )
 }

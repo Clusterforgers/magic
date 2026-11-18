@@ -26,6 +26,7 @@ import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 import { lookTopMoment } from './lookTopScene'
 import { withTopCard, withTopCast } from './topCardScene'
+import { ASK_PROMPTS, ASK_TABLES } from './askScene'
 import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
 import { companionTable, stackAbilityTable } from './previewScenes'
@@ -548,6 +549,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-sources': paySources,
   'pay-marks': payMarks,
   'commander-return': commanderReturn,
+  ...ASK_PROMPTS,
   ...EFFECT_PROMPTS,
   ...LOOKED_PROMPTS,
   ...ANNOUNCE_PROMPTS,
@@ -619,6 +621,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
     withView(fixture, { priority: { holder: fixture.view.turn.active, passed: [] } }),
   'yield-turn': quietMoment('Upkeep', false, false),
   'commander-return': commanderReturnTable,
+  ...ASK_TABLES,
   ...EFFECT_MOMENTS,
   ...LOOKED_MOMENTS,
   'look-top': lookTopMoment,

@@ -489,6 +489,7 @@ export function createSession(deps: SessionDeps): Session {
         decision: message.decision,
         ...(message.deadline_ms === undefined ? {} : { deadlineMs: message.deadline_ms }),
         ...(message.show_after_ms === undefined ? {} : { showAfterMs: message.show_after_ms }),
+        ...(message.asking === undefined ? {} : { asking: message.asking }),
       },
       answered: null,
       preview: null,

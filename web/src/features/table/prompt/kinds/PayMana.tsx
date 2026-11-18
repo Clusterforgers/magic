@@ -1,13 +1,15 @@
-import { useId, useMemo, useState } from 'react'
+import { useContext, useEffect, useId, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { AbilityRef, ManaOption, ManaType, ObjectId } from '@/protocol/generated'
 import { abilityKey, abilityLine, spoken } from '../activations'
 import { LIFE_PER_SYMBOL, manaWords } from '../../manaSymbols'
-import { ManaSources } from '../ManaSources'
+import { SideContext } from '../../sideContext'
 import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
+import { PayColumn, PayMeter } from '../PayColumn'
+import { paySlots } from '../paySlots'
 import { payText, spendWords } from '../payText'
 import {
   allowed,
@@ -111,8 +113,6 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const spellZone = usePlay((state) => state.objectsById[spell]?.zone)
 
   const [{ spends, life, note }, setChosen] = useState(START)
-  // The chosen permanent whose colour switch is open.
-  const [switching, setSwitching] = useState<ObjectId | undefined>(undefined)
   const autoReasonId = useId()
   const [choosing] = selection.ids
   const fitting = (id: ObjectId, given: readonly Spend[] = spends): ManaOption[] =>
@@ -179,7 +179,6 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   }
 
   const add = (spend: Spend): void => {
-    setSwitching(undefined)
     // Checked against the latest payment, so two quick clicks cannot add what no longer fits.
     setChosen((now) =>
       allowed(cost, pool, now.spends, spend, now.life, reach)
@@ -189,7 +188,6 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     selection.clear()
   }
   const removeAt = (index: number): void => {
-    setSwitching(undefined)
     setChosen((now) => {
       const gone = now.spends[index]
       return gone === undefined
@@ -203,12 +201,10 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     selection.clear()
   }
   const clear = (): void => {
-    setSwitching(undefined)
     setChosen({ spends: [], life: [], note: 'Cleared the payment.' })
     selection.clear()
   }
   const toggleLife = (index: number): void => {
-    setSwitching(undefined)
     setChosen((now) => {
       const paying = !now.life.includes(index)
       const next = paying ? [...now.life, index] : now.life.filter((other) => other !== index)
@@ -248,20 +244,13 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     const [only] = here
     if (only === undefined) return
     if (here.length === 1) add({ kind: 'tap', option: only })
-    else {
-      setSwitching(undefined)
-      selection.set([id])
-    }
+    else selection.set([id])
   }
   useCardMarks(marks, act, { toggles: true })
 
   const pick = (option: ManaOption): void => {
     add({ kind: 'tap', option })
     focusCard(option.source.object)
-  }
-  const closeChooser = (): void => {
-    selection.clear()
-    if (chooser !== undefined) focusCard(chooser)
   }
 
   const swaps = useMemo(
@@ -276,13 +265,6 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       ),
     [taken, byPermanent, cost, pool, spends, life, reach],
   )
-  const switchOptions = switching === undefined ? undefined : swaps.get(switching)
-  const openSwitch =
-    chooser !== undefined
-      ? { card: chooser, options: choices, swap: false }
-      : switching !== undefined && switchOptions !== undefined
-        ? { card: switching, options: switchOptions, swap: true }
-        : undefined
   const swap = (option: ManaOption): void => {
     const id = option.source.object
     setChosen((now) => {
@@ -298,17 +280,14 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           }
         : now
     })
-    setSwitching(undefined)
     focusCard(id)
   }
-  const openSwitchOn = (id: ObjectId): void => {
-    selection.clear()
-    setSwitching(id)
-  }
-  const closeSwitch = (): void => {
-    setSwitching(undefined)
-    if (switching !== undefined) focusCard(switching)
-  }
+  // A card of the board that waits for its colour is answered in its row: a folded sheet opens for it.
+  const side = useContext(SideContext)
+  const openSheet = side?.setSheetFolded
+  useEffect(() => {
+    if (chooser !== undefined) openSheet?.(false)
+  }, [chooser, openSheet])
 
   const hasLife = lifeSwitches.length > 0
   const text = payText({
@@ -327,63 +306,113 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   })
   const nothingChosen = spends.length === 0 && life.length === 0
   const restCanBePaid = completable(cost, pool, spends, life, reach)
+  const slots = paySlots(cost, spends, life)
   return (
     <PromptLayout
       text={text}
+      quiet
+      meter={<PayMeter slots={slots} />}
       choices={
-        <PaymentSummary
-          cost={cost}
-          owed={owedNow}
-          covered={covered}
-          pool={pool}
+        <PayColumn
+          name={nameOf(spell)}
+          slots={slots}
           spends={spends}
+          covered={covered}
+          note={note}
           nameOf={nameOf}
-          canSpend={canSpend}
-          onSpendPool={(mana) => add({ kind: 'pool', mana })}
-          restricted={heldRestricted}
-          offerRows={offerRows}
-          onOffer={add}
-          onSpendRestricted={(index) => {
-            const spend = inPool.find((one) => one.kind === 'restricted' && one.index === index)
-            if (spend !== undefined) add(spend)
-          }}
+          sources={byPermanent}
+          fitting={(id) => fitting(id)}
+          taken={taken}
+          asking={chooser}
+          swaps={swaps}
+          onTap={pick}
+          onSwap={swap}
           onRemove={removeAt}
-          onClear={clear}
-          sources={
-            <ManaSources
-              sources={byPermanent}
-              nameOf={nameOf}
-              legal={legal}
-              taken={taken}
-              onAct={act}
-              open={openSwitch}
-              onPick={openSwitch?.swap === true ? swap : pick}
-              onClose={openSwitch?.swap === true ? closeSwitch : closeChooser}
-              swappable={[...swaps.keys()]}
-              onSwitch={openSwitchOn}
-            />
-          }
-          life={
-            hasLife
-              ? {
-                  total: options.life,
-                  paid: paidLife,
-                  choices: lifeSwitches,
-                  words: wordsOf,
-                  onToggle: toggleLife,
-                }
-              : undefined
-          }
-        />
+        >
+          {nothingChosen && !options.auto_available ? (
+            <p id={autoReasonId} data-slot="pay-auto-reason" className="text-muted-foreground text-sm">
+              {AUTO_REASON}
+            </p>
+          ) : null}
+          <PaymentSummary
+            aside
+            cost={cost}
+            owed={owedNow}
+            covered={covered}
+            pool={pool}
+            spends={spends}
+            nameOf={nameOf}
+            canSpend={canSpend}
+            onSpendPool={(mana) => add({ kind: 'pool', mana })}
+            restricted={heldRestricted}
+            offerRows={offerRows}
+            onOffer={add}
+            onSpendRestricted={(index) => {
+              const spend = inPool.find((one) => one.kind === 'restricted' && one.index === index)
+              if (spend !== undefined) add(spend)
+            }}
+            onRemove={removeAt}
+            onClear={clear}
+            life={
+              hasLife
+                ? {
+                    total: options.life,
+                    paid: paidLife,
+                    choices: lifeSwitches,
+                    words: wordsOf,
+                    onToggle: toggleLife,
+                  }
+                : undefined
+            }
+          />
+          {announced.length === 0 ? null : (
+            <div data-slot="pay-group" className="grid gap-1.5">
+              <p className="mt-1 text-xs leading-4 font-semibold text-muted-foreground">
+                Activates at once, then the cost is asked again
+              </p>
+              <ul className="grid list-none gap-1.5">
+                {announced.map((ref, at) => {
+                  const line = lines[at] ?? 'its mana ability'
+                  const name = nameOf(ref.object)
+                  return (
+                    <li
+                      key={`${ref.object}-${abilityKey(ref)}`}
+                      data-interactive=""
+                      className="detail-row grid-cols-[minmax(0,1fr)_auto] py-1 pr-1"
+                    >
+                      <span className="grid min-w-0">
+                        <span className="truncate text-[0.8125rem] leading-[1.125rem] font-semibold">{name}</span>
+                        <span className="truncate text-xs leading-4 text-muted-foreground" title={line}>
+                          {line}
+                        </span>
+                      </span>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        data-slot="pay-activate"
+                        title={`${name}: ${line}`}
+                        aria-label={`Activate ${name}: ${spoken(line)}`}
+                        onClick={() => activate(ref)}
+                      >
+                        Activate
+                      </Button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          )}
+        </PayColumn>
       }
     >
       <Button
         className="h-10 px-4"
         data-slot="pay-confirm"
+        aria-label="Confirm payment"
         disabled={!covered}
         onClick={() => answer({ PayMana: { Manual: toPayment(spends, life) } })}
       >
-        Confirm payment
+        Confirm
       </Button>
       {nothingChosen ? (
         <Button
@@ -394,13 +423,8 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           aria-describedby={options.auto_available ? undefined : autoReasonId}
           onClick={() => answer({ PayMana: 'Auto' })}
         >
-          Pay automatically
+          Pay for me
         </Button>
-      ) : null}
-      {nothingChosen && !options.auto_available ? (
-        <p id={autoReasonId} data-slot="pay-auto-reason" className="text-muted-foreground text-sm">
-          {AUTO_REASON}
-        </p>
       ) : null}
       {options.auto_available && !nothingChosen && !covered && restCanBePaid ? (
         <Button
@@ -412,23 +436,16 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           Pay the rest for me
         </Button>
       ) : null}
-      {announced.map((ref, at) => {
-        const line = lines[at] ?? 'its mana ability'
-        const name = nameOf(ref.object)
-        return (
-          <Button
-            key={`${ref.object}-${abilityKey(ref)}`}
-            className="h-10 px-4"
-            variant="outline"
-            data-slot="pay-activate"
-            title={`${name}: ${line}`}
-            aria-label={`Activate ${name}: ${spoken(line)}`}
-            onClick={() => activate(ref)}
-          >
-            Activate {name}
-          </Button>
-        )
-      })}
+      <Button
+        className="h-10 px-3"
+        variant="ghost"
+        data-slot="pay-undo"
+        aria-label="Take back the last choice"
+        disabled={spends.length === 0}
+        onClick={() => removeAt(spends.length - 1)}
+      >
+        Undo
+      </Button>
       {options.can_cancel ? (
         options.attack === true || options.block === true ? (
           <Button

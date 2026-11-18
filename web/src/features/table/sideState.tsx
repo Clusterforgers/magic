@@ -4,10 +4,15 @@ import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ChatLine } from '@/play/store'
 import type { SideKind } from './layout'
 import { usePickStore } from './manual/panel/pick'
+import { hasDetail } from './prompt/detail/asking'
+import { ownDecision } from './prompt/ownDecision'
 import { SideContext } from './sideContext'
 import type { SideState } from './sideContext'
 import { unreadChat } from './sideCounts'
 import type { SideTab } from './sideCounts'
+
+/** How long the Stack tab stays forward after a decision is answered, in ms: the next question of a run arrives within it. */
+export const DETAIL_HOLD_MS = 700
 
 /** Where the reader had got to in the chat. */
 interface Seen {
@@ -40,6 +45,33 @@ export function SideProvider({
     setWasDue(due)
     if (due) setTab('commands')
   }
+  // A decision with detail brings the Stack tab forward and gives the tab back afterwards, unless the viewer chose
+  // another meanwhile. The gap between two questions of a run is bridged, so the column does not flip back and forth.
+  const asked = usePlay((state) => hasDetail(ownDecision(state)))
+  const [lately, setLately] = useState(asked)
+  useEffect(() => {
+    if (asked) {
+      setLately(true)
+      return undefined
+    }
+    const timer = setTimeout(() => setLately(false), DETAIL_HOLD_MS)
+    return () => clearTimeout(timer)
+  }, [asked])
+  const deciding = asked || lately
+  const [wasDeciding, setWasDeciding] = useState(false)
+  const [before, setBefore] = useState<SideTab | null | undefined>(undefined)
+  if (deciding !== wasDeciding) {
+    setWasDeciding(deciding)
+    if (deciding) {
+      setBefore(chosen)
+      setTab('stack')
+    } else {
+      if (before !== undefined && chosen === 'stack') setTab(before)
+      setBefore(undefined)
+    }
+  }
+  const [detail, setDetail] = useState<HTMLElement | null>(null)
+  const [sheetFolded, setSheetFolded] = useState<boolean | null>(null)
   const [panel, setPanel] = useState(false)
   const [mount, setMount] = useState<HTMLElement | null>(null)
   const [seen, setSeen] = useState<Seen>(() => {
@@ -107,8 +139,12 @@ export function SideProvider({
       setOpen: setPanel,
       mount,
       setMount,
+      detail,
+      setDetail,
+      sheetFolded,
+      setSheetFolded,
     }),
-    [kind, foldable, tab, open, counts, activate, mount],
+    [kind, foldable, tab, open, counts, activate, mount, detail, sheetFolded],
   )
   return <SideContext value={value}>{children}</SideContext>
 }

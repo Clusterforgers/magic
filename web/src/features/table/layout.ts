@@ -243,12 +243,15 @@ export const SHEET_KEEP_PX = 120
  */
 export const BAND_MIN_PX = 96
 export const BAND_MIN_PHONE_PX = 136
+/** A phone's band is two lines: the asking card and the question, then the answers. */
+export const BAND_PHONE_PX = 112
 /**
- * The prompt band's height, the strip with the room kept above it (`Regions.sheetRoom`): fixed per window whatever the
- * prompt, so no board moves for a prompt and the sheet lies over no card. A phone's is taller, its cells a line each.
+ * The prompt band's height: one line, the shared strip itself, in every prompt and between prompts, so no board moves
+ * for a prompt and the band lies over no card. A phone's is two lines, the strip with `Regions.sheetRoom` kept above it.
+ * What a prompt chooses among is drawn in the Stack column or the decision sheet, never in the band.
  */
-export const BAND_CLAMP: HeightClamp = { min: 128, vh: 19, max: 200 }
-export const BAND_PHONE_CLAMP: HeightClamp = { min: BAND_MIN_PHONE_PX, vh: 20, max: 200 }
+export const BAND_CLAMP: HeightClamp = SHARED_CLAMP
+export const BAND_PHONE_CLAMP: HeightClamp = { min: BAND_PHONE_PX, vh: 0, max: BAND_PHONE_PX }
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
 export const SIDE_SHARE = 0.18
 export const SIDE_MIN_PX = 272

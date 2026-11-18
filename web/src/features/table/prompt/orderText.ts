@@ -73,6 +73,22 @@ export function placeWords(place: number, count: number): string {
   return `now ${ordinal(place + 1)} of ${count}${tail}`
 }
 
+const PLACE_WORDS = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth']
+
+/** A place among `count` in a word: "first", "second", "last". */
+export function whichWord(place: number, count: number): string {
+  if (count > 1 && place === count - 1) return 'last'
+  return PLACE_WORDS[place] ?? ordinal(place + 1)
+}
+
+/** The sentence of a touch screen, where the triggers are pressed in the order they resolve; `picked` have a place. */
+export function pressSentence(count: number, picked: number): string {
+  if (picked >= count) {
+    return `Your ${countOf(count, 'trigger')} are in order. Confirm, or press one to take it out.`
+  }
+  return `Press your ${countOf(count, 'trigger')} in the order they resolve: now the one that resolves ${whichWord(picked, count)}.`
+}
+
 /** The sentence above the list. */
 export function orderSentence(count: number, note: string | null): string {
   const head = `Order your ${countOf(count, 'trigger')}: the top one resolves first.`

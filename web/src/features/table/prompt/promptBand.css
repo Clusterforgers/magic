@@ -1,4 +1,4 @@
-/* The prompt band of the shared strip (SharedStrip.tsx, prompt/PromptHost.tsx, prompt/PromptLayout.tsx); imported by the app stylesheet. */
+/* The prompt band of the shared strip (SharedStrip.tsx, prompt/PromptHost.tsx, prompt/PromptLayout.tsx) and the decision detail of the Stack column (prompt/detail/); imported by the app stylesheet. */
 
 /* The strip's sheet: the band's columns follow its width. */
 @utility band-room {
@@ -6,184 +6,70 @@
 }
 
 /*
- * The strip's row while this seat decides: one grid across the whole strip. The prompt's wrappers (`strip-prompt`, the
- * decision line) are `display: contents`, so the stack chips, the status, the sentence, the choices, the clock and the
- * answers are its cells. The answers keep the right end in every prompt; the sentence keeps one line and takes the
- * room the rest leaves. `promptBand.ts` holds the same names and widths for the tests.
+ * The strip's row while this seat decides: one line of fixed height across the strip. The prompt's wrappers
+ * (`strip-prompt`, the decision line) are `display: contents`, so its parts are the grid's cells: the lead (the asking
+ * card's chip, or the stack chips of a decision nothing asks), the status, the sentence, the meter (a run's dots, a
+ * payment's symbols), short choices, the clock and the answers, which keep the right end in every prompt. What a
+ * prompt chooses among is drawn in the Stack column or the decision sheet (`prompt/detail`), never here.
+ * `promptBand.ts` holds the same names and widths for the tests.
  */
 @utility strip-band {
   display: grid;
   align-items: center;
-  /* One line stays in the strip's middle; lines past the band's height start at its top and scroll, never cut above. */
   align-content: safe center;
   column-gap: 0.75rem;
   row-gap: 0.25rem;
-  grid-template-columns: fit-content(20%) fit-content(14rem) minmax(12rem, 1fr) auto auto;
-  grid-template-areas: 'stack status text clock actions';
+  grid-template-columns: fit-content(16rem) fit-content(12rem) minmax(8rem, 1fr) auto auto auto auto;
+  grid-template-areas: 'lead status text meter choices clock actions';
 
-  /* Choices take a line of their own under it, across the whole strip. */
-  &:has([data-slot='prompt-choices']:not(:empty)) {
+  /* Choices with no column or sheet to hold them (the opening hand on a phone) take a line of their own; the sheet grows for it. */
+  &:has([data-slot='decision-line'] > [data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
     grid-template-areas:
-      'stack status text clock actions'
-      'choices choices choices choices choices';
+      'lead status text meter meter clock actions'
+      'choices choices choices choices choices choices choices';
   }
 
-  /*
-   * From 1024 px a prompt of choices other than cards gives its first line to the sentence and the answers, which keep
-   * one row; a status (a note, the combat key) starts the choices' line instead. Cards keep the whole line.
-   */
-  @container band (width >= 40rem) {
-    &:not([data-cards]):has([data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
-      grid-template-columns: fit-content(20%) minmax(8rem, 1fr) auto auto;
-      grid-template-areas:
-        'stack text clock actions'
-        'choices choices choices choices';
-    }
-    &:not([data-cards]):has([data-slot='prompt-choices']:not([data-inline]):not(:empty)):has(
-        [data-slot='strip-status']:not(:empty)
-      ) {
-      grid-template-areas:
-        'stack text clock actions'
-        'status choices choices choices';
-      & > [data-slot='strip-status'] {
-        align-self: start;
-      }
-    }
+  /* A sentence that is read aloud and not drawn (a payment's) gives its place to the meter, beside the lead. */
+  &:has([data-slot='prompt-sentence'][data-quiet]) {
+    grid-template-columns: fit-content(16rem) fit-content(12rem) minmax(0, 1fr) auto auto auto;
+    grid-template-areas: 'lead status meter choices clock actions';
   }
 
-  /* Under 64 rem a prompt's cards do the same, so their answers keep one row beside the sentence. */
-  @container band (40rem <= width < 64rem) {
-    &[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
-      grid-template-columns: fit-content(20%) minmax(8rem, 1fr) auto auto;
-      grid-template-areas:
-        'stack text clock actions'
-        'choices choices choices choices';
-    }
-    &[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty)):has(
-        [data-slot='strip-status']:not(:empty)
-      ) {
-      grid-template-areas:
-        'stack text clock actions'
-        'status choices choices choices';
-      & > [data-slot='strip-status'] {
-        align-self: start;
-      }
-    }
-  }
-
-  /*
-   * Below 100 rem a choice of cards drawn in the band (`card-row`) takes the second line; the first holds a status, the
-   * sentence and the answers in one row. The stack stands as a column of chips (`STACK_COLUMN_REM`) at the cards' left,
-   * as high as their line, so three chips show whole; its chips never make that line taller (they fold into "+N" by its
-   * height, `StackChips`).
-   */
-  @container band (40rem <= width < 100rem) {
-    &[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty) [data-slot='card-row']):not(
-        :has([data-slot='stack-chips'])
-      ) {
-      grid-template-columns: fit-content(14rem) minmax(8rem, 1fr) auto auto;
-      grid-template-areas:
-        'status text clock actions'
-        'choices choices choices choices';
-      & > [data-slot='strip-status'] {
-        align-self: center;
-      }
-    }
-    &[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty) [data-slot='card-row']):has(
-        [data-slot='stack-chips']
-      ) {
-      grid-template-columns: 12rem minmax(8rem, 1fr) auto auto;
-      grid-template-areas:
-        'status text clock actions'
-        'stack choices choices choices';
-      & > [data-slot='strip-status'] {
-        align-self: center;
-      }
-      /*
-       * The column is at least as high as three chips (40 px, 6 px apart, 4 px of padding) and the "+N" under them,
-       * as far as the sheet's room under the first line allows, so a short line of cards still shows three whole.
-       */
-      & > [data-slot='strip-stack'] {
-        --stack-room: max(3rem, calc(var(--sheet-max, 20rem) - 4.75rem));
-        position: relative;
-        align-self: stretch;
-        min-height: 3rem;
-      }
-      & > [data-slot='strip-stack']:has(li:nth-child(2)) {
-        min-height: min(5.875rem, var(--stack-room));
-      }
-      & > [data-slot='strip-stack']:has(li:nth-child(3)) {
-        min-height: min(8.75rem, var(--stack-room));
-      }
-      & > [data-slot='strip-stack']:has(li:nth-child(4)) {
-        min-height: min(11rem, var(--stack-room));
-      }
-      & [data-slot='stack-chips'] {
-        position: absolute;
-        inset: 0;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 0.25rem;
-      }
-      & [data-slot='stack-chips'] > ol {
-        flex: 1 1 0;
-        min-height: 0;
-        flex-direction: column;
-        align-items: stretch;
-      }
-      & [data-slot='stack-label'] {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip-path: inset(50%);
-        white-space: nowrap;
-      }
-    }
-    &[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty) [data-slot='card-row']):has(
-        [data-slot='stack-chips']
-      ):not(:has([data-slot='strip-status']:not(:empty))) {
-      grid-template-areas:
-        'text text clock actions'
-        'stack choices choices choices';
-    }
-  }
-
-  /*
-   * A wide strip keeps a prompt's cards beside the sentence, which then wraps in a column of at most 22 rem; other
-   * choices keep their line across the band, which a column beside the sentence would stack past the band's height.
-   */
-  @container band (width >= 100rem) {
-    &[data-cards]:has([data-slot='prompt-choices']:not(:empty)) {
-      grid-template-columns: fit-content(18%) fit-content(12rem) minmax(10rem, 22rem) minmax(0, 1fr) auto auto;
-      grid-template-areas: 'stack status text choices clock actions';
-    }
-  }
-
-  /* Short choices (a number, a few options) stay beside the sentence, which keeps the room they leave. */
-  &:has([data-slot='prompt-choices'][data-inline]:not(:empty)) {
-    grid-template-columns: fit-content(20%) fit-content(14rem) minmax(12rem, 1fr) auto auto auto;
-    grid-template-areas: 'stack status text choices clock actions';
-  }
-
-  /* A phone: the stack, the sentence, the choices, the note, then the clock and the answers. */
+  /* A phone: two lines. The lead and the sentence, then the meter, short choices, the clock and the answers. */
   @container band (width < 40rem) {
-    &,
-    &:has([data-slot='prompt-choices']:not(:empty)),
-    &:has([data-slot='prompt-choices'][data-inline]:not(:empty)) {
-      grid-template-columns: minmax(0, 1fr) auto;
+    & {
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
       grid-template-areas:
-        'stack stack'
-        'text text'
-        'choices choices'
-        'status status'
-        'clock clock'
-        'actions actions';
+        'lead text text text'
+        'meter choices clock actions';
+      column-gap: 0.5rem;
+    }
+    &:has([data-slot='strip-status']:not(:empty):not([hidden])) {
+      grid-template-areas:
+        'lead text text text'
+        'status choices clock actions';
+    }
+    &:has([data-slot='decision-line'] > [data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
+      grid-template-areas:
+        'lead text text text'
+        'choices choices choices choices'
+        'meter meter clock actions';
+    }
+    /* The meter stands beside the lead, so the second line is the answers' alone. */
+    &:has([data-slot='prompt-sentence'][data-quiet]) {
+      grid-template-columns: auto minmax(0, 1fr) auto auto;
+      grid-template-areas:
+        'lead meter meter meter'
+        'choices clock actions actions';
+    }
+    &:has([data-slot='prompt-sentence'][data-quiet]) [data-slot='prompt-meter'] {
+      justify-self: end;
     }
   }
 
-  & > [data-slot='strip-stack'] {
-    grid-area: stack;
+  & > [data-slot='strip-stack'],
+  & [data-slot='decision-line'] > [data-slot='prompt-asker'] {
+    grid-area: lead;
   }
   & > [data-slot='strip-status'] {
     grid-area: status;
@@ -191,14 +77,30 @@
   & [data-slot='decision-line'] > [data-slot='prompt-sentence'] {
     grid-area: text;
   }
+  & [data-slot='decision-line'] > [data-slot='prompt-meter'] {
+    grid-area: meter;
+    min-width: 0;
+  }
   & [data-slot='decision-line'] > [data-slot='prompt-choices'] {
     grid-area: choices;
+  }
+  & [data-slot='decision-line'] > [data-slot='prompt-choices'][data-inline] {
+    flex-wrap: nowrap;
+    min-width: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
   & [data-slot='decision-line'] > [data-slot='response-clock'] {
     grid-area: clock;
   }
   & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
     grid-area: actions;
+    /* One row: answers past the band's width scroll, the primary one (first, at the right end) stays in view. */
+    flex-wrap: nowrap;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
   }
   /* A combat prompt is one row of its own: its sentence and buttons take the sentence's place up to the clock. */
   & [data-slot='decision-line'] > [data-slot='combat-bar'] {
@@ -206,7 +108,7 @@
     grid-row: text-start / text-end;
   }
 
-  /* A band under 64 rem keeps the stack's room for the top chip: the "Stack" word goes to a reader and "+2 more" is "+2". */
+  /* A band under 64 rem keeps the lead's room for the top chip: the "Stack" word goes to a reader and "+2 more" is "+2". */
   @container band (width < 64rem) {
     & [data-slot='stack-label'] {
       position: absolute;
@@ -219,75 +121,69 @@
     & [data-slot='stack-more-word'] {
       display: none;
     }
-    /* The answers' key hints give their room to the answers' one row; the keys still work and each button names its key. */
+  }
+  /* Under 48 rem the answers' key hints give their room to the answers' one row; the keys still work and each button names its key. */
+  @container band (width < 48rem) {
     & [data-slot='prompt-actions'] [data-slot='key-hint'],
     & [data-slot='prompt-actions'] [data-slot='undo-rest'] {
       display: none;
     }
   }
 
-  /* On a phone the sticky answers are an opaque row across the band, so the choices scrolling under them never show through. */
+  /* On a phone the answers are smaller, so two or three keep to the second line. */
   @container band (width < 40rem) {
     & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
-      background: var(--surface);
-      /* Upward a soft edge; downward a solid one over the sheet's padding, so no choice shows under the answers. */
-      box-shadow:
-        0 -0.5rem 0.5rem -0.25rem var(--surface),
-        0 0.5rem 0 0 var(--surface);
-      padding-block: 0.25rem;
-    }
-    /* Smaller answers keep to one row, so the fixed band leaves the sentence and the choices in view above them. */
-    & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
       gap: 0.25rem;
+      justify-self: end;
     }
     & [data-slot='decision-line'] > [data-slot='prompt-actions'] button {
-      height: 2.25rem;
-      padding-inline: 0.5rem;
+      height: 2.5rem;
+      min-width: 2.75rem;
+      padding-inline: 0.625rem;
+    }
+    & [data-slot='decision-line'] > [data-slot='combat-bar'] {
+      grid-column: 1 / -1;
+      grid-row: auto;
     }
   }
 }
 
 /*
- * The sentence keeps to one line of the band, three beside choices that make the band taller anyway; the rest is cut
- * with an ellipsis and opened by the button beside it (`PromptLayout`'s `Sentence`).
+ * The sentence is the question in the card's words: one line of the band, two where it is long, the rest cut with an
+ * ellipsis and opened by the button beside it (`PromptLayout`'s `Sentence`).
  */
 .strip-band [data-slot='prompt-sentence'] .prompt-sentence-clamp {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 1;
-  line-clamp: 1;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
 }
-@container band (width >= 100rem) {
-  .strip-band[data-cards]:has([data-slot='prompt-choices']:not([data-inline]):not(:empty))
-    [data-slot='prompt-sentence']
-    .prompt-sentence-clamp {
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+.strip-band [data-slot='prompt-sentence'] [data-slot='prompt-text'] {
+  font-size: 1rem;
+  line-height: 1.25rem;
+  font-weight: 600;
+}
+@container band (width < 40rem) {
+  .strip-band [data-slot='prompt-sentence'] [data-slot='prompt-text'] {
+    font-size: 0.875rem;
+    line-height: 1.125rem;
   }
 }
 
 /*
- * The players a target prompt offers beside its cards in the band (`CardChoices`): columns of buttons, the "Players"
- * word first, as many to a column as the cards' line holds, so none is cut or scrolled away.
+ * The players a target prompt offers beside its cards (`CardChoices`): columns of buttons, the "Players" word first.
  */
 [data-slot='card-choices']:not([data-overlay]) > [data-slot='player-targets'] {
-  display: grid;
-  flex-shrink: 0;
-  grid-auto-flow: column;
-  grid-auto-columns: max-content;
-  grid-template-rows: repeat(auto-fit, minmax(2rem, max-content));
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.375rem 0.5rem;
-  max-height: calc(var(--choice-room, 20rem) - 1.25rem);
-  padding-inline-end: 0.75rem;
-  border-inline-end-width: 1px;
 }
 
 /*
  * The answers stand right to left from the primary one, which kinds put first: it sits at the band's right end in
- * every prompt and is the first a Tab reaches. Answers that wrap do so downward, so the primary keeps the first line,
- * which a short sheet shows before it cuts the rest.
+ * every prompt and is the first a Tab reaches.
  */
 @utility prompt-answers {
   display: flex;
@@ -296,4 +192,259 @@
   justify-content: flex-start;
   align-items: center;
   gap: 0.375rem;
+}
+
+/* The asking card's chip at the band's left: its art in a disc and its name. */
+@utility asker-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2.75rem;
+  max-width: 16rem;
+  min-width: 0;
+  padding: 0 0.875rem 0 0.25rem;
+  border-radius: 999px;
+  border: 1.5px solid var(--turn-you);
+  background: color-mix(in oklch, var(--turn-you) 9%, var(--raised));
+  font-size: 0.875rem;
+  line-height: 1.125rem;
+  font-weight: 600;
+  text-align: left;
+  outline-offset: 2px;
+  transition:
+    box-shadow 150ms var(--ease-out),
+    background-color 150ms var(--ease-out);
+  &:hover,
+  &:focus-visible {
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--turn-you) 30%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+@container band (width < 40rem) {
+  .asker-chip {
+    max-width: 9.5rem;
+    height: 2.5rem;
+    padding-right: 0.625rem;
+  }
+}
+
+/*
+ * The decision's detail in the Stack column and in the sheet over the hand (`prompt/detail/DecisionDetail.tsx`): a
+ * kicker, the asking card with its rules text, the run it is one of, what the prompt chooses among, and what else is
+ * on the stack.
+ */
+@utility detail-kicker {
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+  & b {
+    color: var(--turn-you);
+    font-weight: 700;
+  }
+  :root:not(.dark) & b {
+    color: color-mix(in oklch, var(--turn-you) 55%, var(--foreground));
+  }
+}
+
+@utility detail-entry {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0.625rem;
+  padding: 0.5rem;
+  border-radius: 0.625rem;
+  border: 1.5px solid var(--turn-you);
+  background: color-mix(in oklch, var(--turn-you) 9%, var(--raised));
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--turn-you) 22%, transparent);
+}
+
+@utility detail-tag {
+  justify-self: start;
+  font-size: 0.6875rem;
+  line-height: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 1px 0.5rem;
+  background: var(--turn-you);
+  color: var(--on-turn-you);
+}
+
+/* The asked clause in the rules text. */
+@utility detail-clause {
+  background: color-mix(in oklch, var(--turn-you) 30%, transparent);
+  color: var(--foreground);
+  border-radius: 0.25rem;
+  padding: 1px 2px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  box-shadow: inset 0 -2px 0 var(--turn-you);
+}
+
+/* A row of the column: a number, a picture, a name over a line of words, and controls at the end. */
+@utility detail-row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  gap: 0 0.5rem;
+  align-items: center;
+  padding: 0.375rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1.5px solid var(--border-strong);
+  background: var(--raised);
+  text-align: left;
+  width: 100%;
+  min-height: 3.25rem;
+  transition:
+    border-color 150ms var(--ease-out),
+    box-shadow 150ms var(--ease-out);
+  &[data-plain] {
+    border-width: 1px;
+    border-color: var(--border);
+    min-height: 0;
+  }
+  &[data-done] {
+    opacity: 0.72;
+  }
+  &[data-interactive]:hover,
+  &[data-interactive]:focus-within,
+  &[data-lit] {
+    border-color: var(--turn-you);
+    box-shadow: 0 0 0 2px color-mix(in oklch, var(--turn-you) 30%, transparent);
+  }
+  &[data-picked] {
+    border-color: var(--selected);
+  }
+  &[data-used] {
+    border-color: var(--success);
+    background: color-mix(in oklch, var(--success) 12%, var(--raised));
+  }
+  &[data-off] {
+    opacity: 0.5;
+  }
+  &[data-dragging] {
+    opacity: 0.4;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+/* The number of a row: filled once it has a place, a dashed ring while open, a tick when done. */
+@utility detail-number {
+  width: 1.375rem;
+  height: 1.375rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex: none;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  background: var(--muted);
+  color: var(--muted-foreground);
+  border: 1px solid var(--border-strong);
+  &[data-tone='done'] {
+    background: var(--success);
+    color: var(--surface);
+    border-color: transparent;
+  }
+  &[data-tone='placed'] {
+    background: var(--selected);
+    color: var(--on-selected);
+    border: 0;
+  }
+  &[data-tone='open'] {
+    background: none;
+    border: 1.5px dashed var(--border-strong);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .detail-row[data-picked] .detail-number {
+    animation: detail-pop 300ms var(--ease-out);
+  }
+}
+@keyframes detail-pop {
+  from {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* One mana owed: a circle filled with what paid it, captioned with the source. */
+@utility pay-slot {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: 2.75rem;
+  flex: none;
+  & [data-slot='pay-circle'] {
+    width: 2.125rem;
+    height: 2.125rem;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    border: 1.5px dashed var(--border-strong);
+    color: var(--muted-foreground);
+    background: none;
+  }
+  &[data-paid] [data-slot='pay-circle'] {
+    border: 0;
+    box-shadow:
+      0 0 0 2px var(--background),
+      0 0 0 3.5px var(--success);
+  }
+  & [data-slot='pay-caption'] {
+    max-width: 2.75rem;
+    font-size: 0.625rem;
+    line-height: 0.875rem;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  &[data-extra] {
+    width: 3.375rem;
+    padding-left: 0.375rem;
+    margin-left: 2px;
+    border-left: 1px dashed var(--border-strong);
+  }
+}
+
+/* The sheet over the hand that holds the decision's detail where no column does. */
+@utility decision-sheet {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  max-height: min(20.625rem, 46dvh);
+  display: flex;
+  flex-direction: column;
+  background: var(--background);
+  border-top: 1.5px solid var(--brass);
+  border-radius: 0.875rem 0.875rem 0 0;
+  box-shadow: 0 -8px 24px oklch(0 0 0 / 0.45);
+  @media (prefers-reduced-motion: no-preference) {
+    animation: decision-sheet-in 200ms var(--ease-out);
+  }
+}
+@keyframes decision-sheet-in {
+  from {
+    transform: translateY(1.5rem);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
