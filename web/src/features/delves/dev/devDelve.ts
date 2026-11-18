@@ -18,6 +18,7 @@ export const DEV_STATES = [
   'result',
   'victory',
   'defeat',
+  'descent',
 ] as const
 
 /** One state of `/dev/delve`. */
@@ -188,6 +189,7 @@ const OFFERS: Partial<Record<DevState, Offer>> = {
   discard: 'Discard',
   surrender: { Surrender: { relics: ['idol', 'mend'] } },
   result: { Relics: { relics: ['idol'] } },
+  descent: { Relics: { relics: ['idol', 'tithe', 'mend'] } },
 }
 
 /** The run of one state. */
@@ -246,8 +248,11 @@ export function devView(state: DevState): DelveView {
       heat: 1,
       hearts: state === 'defeat' ? 0 : 2,
       heroes,
-      at: state === 'fight' ? 3 : state === 'result' ? 2 : 0,
-      cleared: state === 'fight' ? [0, 1] : state === 'victory' ? [0, 1, 3, 5, 6] : [0],
+      at: state === 'fight' ? 3 : state === 'result' ? 2 : state === 'descent' ? 6 : 0,
+      cleared:
+        state === 'fight' ? [0, 1] : state === 'victory' || state === 'descent' ? [0, 1, 3, 5, 6] : [0],
+      descending: state === 'descent',
+      floors_cleared: state === 'descent' ? 1 : 0,
       votes: state === 'map' ? { 1: 1 } : {},
       status,
       log: [...log, 'The party descended.', 'Skrix, the Rat Queen fell.'],

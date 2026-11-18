@@ -1,11 +1,13 @@
-// Goal: a run in the list shows its party and how far down the ladder it got, one skull per boss with the beaten ones marked; runs under way lead the list, finished runs (victory, defeat) sit in a collapsed "Past runs" section, abandoned runs are not shown, and the new-run form offers the three Heats as worded tiers and the timers with Relaxed as its default and sends the ones that are chosen.
+// Goal: a run in the list shows its party and how far down the ladder it got, one skull per boss with the beaten ones marked; runs under way lead the list, finished runs (victory, defeat) sit in a collapsed "Past runs" section, abandoned runs are not shown, and the new-run form offers the three Heats as worded tiers and the timers with Relaxed as its default and sends the ones that are chosen; a signed-in player sees the leaderboard after the page's own content, a visitor does not.
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import type { DelveSummary } from '@/protocol/generated'
 import { renderInRouter } from '@/test-utils/router'
 import { fakeDelves, delveView } from './fakeDelves'
-import { DelveList, DelveRow, NewDelveForm, splitRuns } from './DelvesPage'
+import { AuthContext } from '@/features/auth/context'
+import { createAuthStore, offlineAccounts } from '@/features/auth/store'
+import { DelveList, DelvesPage, DelveRow, NewDelveForm, splitRuns } from './DelvesPage'
 
 const summary = (id: string, status: string): DelveSummary => ({
   id,
@@ -119,5 +121,33 @@ describe('the new run form', () => {
     if (choice !== undefined) await user.selectOptions(screen.getByLabelText('Timers'), choice)
     await user.click(screen.getByRole('button', { name: 'Create delve' }))
     expect(bodies).toEqual([{ heat: 0, timers: sent }])
+  })
+})
+
+describe('the page with the leaderboard', () => {
+  const page = async (status: 'signed-in' | 'signed-out') => {
+    const user = status === 'signed-in' ? { id: 'u1', username: 'ana', is_admin: false } : null
+    const store = createAuthStore({ api: offlineAccounts, initial: { status, user } })
+    await renderInRouter(
+      <AuthContext.Provider value={store}>
+        <DelvesPage client={fakeDelves(delveView())} />
+      </AuthContext.Provider>,
+    )
+  }
+
+  it('stands after the page content, which keeps its order', async () => {
+    await page('signed-in')
+    const board = await screen.findByRole('complementary', { name: 'Leaderboard' })
+    const shell = document.querySelector<HTMLElement>('[data-slot="page"]')!
+    expect(shell.lastElementChild).toBe(document.querySelector('[data-slot="delves-leaderboard"]'))
+    expect(shell.lastElementChild!.contains(board)).toBe(true)
+    expect(within(shell).getAllByRole('heading')[0]).toHaveTextContent('Delves')
+    const rules = screen.getByRole('heading', { name: 'Rules in short' })
+    expect(rules.compareDocumentPosition(board) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('is not shown to a visitor who is not signed in', async () => {
+    await page('signed-out')
+    expect(screen.queryByRole('complementary', { name: 'Leaderboard' })).toBeNull()
   })
 })

@@ -58,6 +58,8 @@
   --ease-in: cubic-bezier(0.3, 0, 1, 1);
 
   --breakpoint-2xl: 100rem;
+  /* A `page` column plus a 16rem side column in its right gutter, a 1.5rem gap and a 1rem edge beside a scrollbar. */
+  --breakpoint-aside: 87rem;
 
   --container-narrow: 28rem;
   --container-page: 48rem;

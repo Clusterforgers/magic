@@ -1,7 +1,7 @@
 //! Goal: endless Delves works end to end on Postgres: a player and a bot ally clear the first floor and the run waits
-//! on the cleared floor with what a descent changes; the player's vote to descend (the healthy bot agrees) starts floor
-//! 2 with a new ladder, a heart back and the next fight made, whose intro lists Intensify; a floor vote out of turn is
-//! refused.
+//! on the cleared floor with what a descent changes; the player's vote to descend (the healthy bot agrees) gives the
+//! final boss's loot, and once it is answered floor 2 starts with a new ladder, a heart back and the next fight made,
+//! whose intro lists Intensify; a floor vote out of turn is refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{net, pg_commander};
@@ -157,13 +157,28 @@ async fn the_party_clears_a_floor_and_descends(pool: PgPool) {
     };
     let first = bosses(run);
 
-    let after = act(
+    let looted = act(
         &server,
         &id,
         &host,
         json!({"kind": "floor_vote", "descend": true}),
     )
     .await;
+    let run = &looted["run"];
+    assert_eq!(run["status"], "Room", "the final boss's loot first");
+    assert_eq!(run["floor"], 1);
+    assert_eq!(run["descending"], true);
+    let offers = &run["heroes"][0]["offers"];
+    assert!(offers[0]["Relics"].is_object(), "{offers}");
+    let mut after = looted.clone();
+    for _ in 0..4 {
+        let offer = after["run"]["heroes"][0]["offers"][0].clone();
+        if offer.is_null() {
+            break;
+        }
+        let pick = json!({"kind": "pick", "pick": answer(&offer)});
+        after = act(&server, &id, &host, pick).await;
+    }
     let run = &after["run"];
     assert_eq!(run["floor"], 2, "{}", run["log"]);
     assert!(run["status"]["Fight"].is_object(), "{}", run["status"]);

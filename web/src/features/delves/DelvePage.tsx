@@ -276,7 +276,10 @@ function RoomPanel({
           className="flex items-center gap-2 rounded-xl border-2 border-relic bg-delve-stone p-3 text-sm font-medium"
         >
           <TrophyIcon aria-hidden="true" className="size-5 text-relic" />
-          {boss ? `${boss.name} falls!` : 'The boss falls!'} Each hero heals 15, takes 50 gold and picks loot.
+          {boss ? `${boss.name} falls!` : 'The boss falls!'}{' '}
+          {view.run.descending
+            ? `Each hero takes 50 gold and picks loot, then the party descends to floor ${view.run.floor + 1}.`
+            : 'Each hero heals 15, takes 50 gold and picks loot.'}
         </p>
       ) : null}
       {offer && me ? (
@@ -295,7 +298,11 @@ function RoomPanel({
       {waiting.length > 0 && !offer ? (
         <p role="status" className="rounded-xl border bg-surface p-4 text-sm text-muted-foreground">
           Waiting for {listOf(waiting)} to pick.{' '}
-          {ways > 1 ? 'Then the party votes for the next camp.' : 'Then the party moves on.'}
+          {view.run.descending
+            ? `Then the party descends to floor ${view.run.floor + 1}.`
+            : ways > 1
+              ? 'Then the party votes for the next camp.'
+              : 'Then the party moves on.'}
         </p>
       ) : null}
     </div>

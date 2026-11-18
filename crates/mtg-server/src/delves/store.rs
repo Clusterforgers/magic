@@ -1,5 +1,7 @@
 //! The stored runs: each run's header and the log of its events, and the accounts in each party.
 
+use std::collections::HashMap;
+
 use mtg_campaign::RunEvent;
 use sqlx::PgPool;
 use uuid::Uuid;
@@ -169,4 +171,58 @@ impl DelveStore {
         .await?;
         Ok(rows.into_iter().map(|row| (row.id, row.stale)).collect())
     }
+
+    /// Every run past its lobby, abandoned ones included.
+    pub(crate) async fn started(&self) -> Result<Vec<Started>, RecordError> {
+        let rows = sqlx::query!(
+            r#"SELECT id, code, host, theme, seed, heat,
+                      to_char(updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS.US') AS "stamp!"
+               FROM delves WHERE status <> 'lobby'"#
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        Ok(rows
+            .into_iter()
+            .map(|row| Started {
+                header: Header {
+                    id: row.id,
+                    code: row.code,
+                    host: row.host,
+                    theme: row.theme,
+                    seed: u64::from_ne_bytes(row.seed.to_ne_bytes()),
+                    heat: u8::try_from(row.heat).unwrap_or(0),
+                },
+                stamp: row.stamp,
+            })
+            .collect())
+    }
+
+    /// The events of each run of `ids` in order; a run with none is left out.
+    pub(crate) async fn events_of(
+        &self,
+        ids: &[Uuid],
+    ) -> Result<HashMap<Uuid, Vec<RunEvent>>, RecordError> {
+        let rows = sqlx::query!(
+            "SELECT delve_id, event FROM delve_events WHERE delve_id = ANY($1) ORDER BY delve_id, seq",
+            ids
+        )
+        .fetch_all(&self.pool)
+        .await?;
+        let mut out: HashMap<Uuid, Vec<RunEvent>> = HashMap::new();
+        for row in rows {
+            let event = serde_json::from_value(row.event)
+                .map_err(|e| RecordError::Corrupt(format!("delve event: {e}")))?;
+            out.entry(row.delve_id).or_default().push(event);
+        }
+        Ok(out)
+    }
+}
+
+/// A started run as the leaderboard reads it: its header and when it last changed.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct Started {
+    /// The run's header.
+    pub(crate) header: Header,
+    /// When the run last changed, in UTC to the microsecond: a cached fold is current while it matches.
+    pub(crate) stamp: String,
 }
