@@ -101,7 +101,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
 - [ ] (mb4) The keyboard walks from the band's answers into the Stack column and back without crossing the boards, and the phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
 - [ ] (ft1b) On a phone the mulligan band's "Still deciding" line runs under the opening status beside Mulligan and Keep
-- [ ] (ft4b) `fit.spec.ts`'s real game-over test pays by hand: the land the driver presses lights neither itself nor a pay row (driver.ts PayMana)
 - [ ] (ft5) `layout.spec.ts` passes again under the band (43 of the first 99 failed)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 
