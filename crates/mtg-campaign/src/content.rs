@@ -9,6 +9,7 @@ use mtg_cards::ability::Ability;
 use serde::{Deserialize, Serialize};
 
 use crate::CampaignError;
+use crate::relics::Want;
 
 /// What a custom card is for.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -30,6 +31,42 @@ pub enum CardKind {
     Modifier,
     /// A boss's own risky relic, which it brings from the second boss of the ladder on.
     BossRelic,
+}
+
+/// How rare a relic is: stronger effects sit in rarer tiers, and the tier decides where the relic comes from
+/// (`docs/delves.md`, Relics).
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Default, Serialize, Deserialize,
+)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum Rarity {
+    /// Loot, treasure and the shop offer it most.
+    #[default]
+    Common,
+    /// Loot and treasure offer it now and then, more on later floors; the shop sells it dear.
+    Rare,
+    /// Run-defining: only events and the loot before the final boss offer it.
+    Mythic,
+}
+
+impl Rarity {
+    /// The tier below, `None` below Common.
+    pub fn lower(self) -> Option<Rarity> {
+        match self {
+            Rarity::Mythic => Some(Rarity::Rare),
+            Rarity::Rare => Some(Rarity::Common),
+            Rarity::Common => None,
+        }
+    }
+
+    /// Its word: "Common", "Rare", "Mythic".
+    pub fn word(self) -> &'static str {
+        match self {
+            Rarity::Common => "Common",
+            Rarity::Rare => "Rare",
+            Rarity::Mythic => "Mythic",
+        }
+    }
 }
 
 /// A card that is not on Scryfall: its printed side and the abilities it has as an emblem.
@@ -64,6 +101,16 @@ pub struct CustomCard {
     /// The heroes' turn from which an Enrage applies; 0 for other cards.
     #[serde(default)]
     pub turn: u32,
+    /// What a relic's rules care about in a deck, so offers skip it for a deck with too few such cards; none for a relic
+    /// of use to any deck.
+    #[serde(default)]
+    pub wants: Vec<Want>,
+    /// The content generation from which a relic is offered (`RunEvent::Content`); a run of an earlier one never meets it.
+    #[serde(default)]
+    pub since: u32,
+    /// A relic's rarity, which from the rarity generation on decides where it is offered and its shop price.
+    #[serde(default)]
+    pub rarity: Rarity,
     /// Its abilities, in the card DSL.
     pub abilities: Vec<Ability>,
 }
@@ -136,8 +183,24 @@ pub struct Boss {
     pub life_per_hero: i32,
     /// Its opening hand size.
     pub hand: u32,
-    /// Its deck: card names and copies.
+    /// Its deck as written before brackets, for runs of an earlier content generation: card names and copies.
+    #[serde(default)]
     pub deck: Vec<(String, u32)>,
+    /// Its deck by bracket (`scale::BRACKETS`), for runs from `scale::BRACKETS_FROM`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub brackets: Option<BracketDeck>,
+    /// Its commander card: a real card it casts free from its command zone as its last phase begins.
+    #[serde(default)]
+    pub commander: String,
+    /// The content generation it joined the theme in: a run made before it never meets it.
+    #[serde(default)]
+    pub since: u32,
+    /// Its upgraded form, which may stand as the final boss of a ladder it is not on.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub upgrade: Option<BossUpgrade>,
+    /// The boss an upgraded form is made from; none for a boss as written.
+    #[serde(skip)]
+    pub upgrade_of: Option<String>,
     /// Custom cards it starts with in its command zone: its passive.
     #[serde(default)]
     pub rules: Vec<String>,
@@ -165,6 +228,105 @@ pub struct BossArt {
     pub card: String,
     /// The card's Scryfall oracle id.
     pub oracle_id: String,
+}
+
+/// A boss's deck by bracket: the deck of bracket 1 and, for each bracket above it, the cards that bracket adds and
+/// cuts.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct BracketDeck {
+    /// The bracket 1 deck: card names and copies.
+    pub base: Vec<(String, u32)>,
+    /// Brackets 2 and up, in order: each changes the bracket below it.
+    pub steps: Vec<DeckStep>,
+}
+
+/// How one bracket's deck differs from the bracket below it.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DeckStep {
+    /// Cards added: names and copies.
+    #[serde(default)]
+    pub add: Vec<(String, u32)>,
+    /// Cards taken out: names and copies.
+    #[serde(default)]
+    pub cut: Vec<(String, u32)>,
+}
+
+impl BracketDeck {
+    /// The deck at `bracket` (from 1; past the last step the last deck): card names and copies, in the order they were
+    /// first named.
+    pub fn at(&self, bracket: u8) -> Vec<(String, u32)> {
+        let mut deck = self.base.clone();
+        for step in self
+            .steps
+            .iter()
+            .take(usize::from(bracket.saturating_sub(1)))
+        {
+            for (name, n) in &step.cut {
+                if let Some(entry) = deck.iter_mut().find(|(have, _)| have == name) {
+                    entry.1 = entry.1.saturating_sub(*n);
+                }
+            }
+            for (name, n) in &step.add {
+                match deck.iter_mut().find(|(have, _)| have == name) {
+                    Some(entry) => entry.1 += n,
+                    None => deck.push((name.clone(), *n)),
+                }
+            }
+            deck.retain(|(_, n)| *n > 0);
+        }
+        deck
+    }
+}
+
+/// A boss's upgraded form: the same identity with a new name and an extra effect, fought as a final boss.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct BossUpgrade {
+    /// The upgraded form's name.
+    pub name: String,
+    /// The boss cards it has in addition to the boss's passive.
+    pub rules: Vec<String>,
+    /// What it says as the fight begins.
+    #[serde(default)]
+    pub line: String,
+}
+
+/// The id suffix of a boss's upgraded form.
+pub const UPGRADED: &str = "_ascendant";
+
+impl Boss {
+    /// The boss whose deck, minions and identity this one shares: the boss it is upgraded from, or itself.
+    pub fn identity(&self) -> &str {
+        self.upgrade_of.as_deref().unwrap_or(&self.id)
+    }
+
+    /// Its deck at `bracket`; the deck as written for bracket 0 or a boss with no bracket decks.
+    pub fn deck_at(&self, bracket: u8) -> Vec<(String, u32)> {
+        match &self.brackets {
+            Some(decks) if bracket > 0 => decks.at(bracket),
+            _ => self.deck.clone(),
+        }
+    }
+
+    /// Its upgraded form as a final boss, if it has one: its own rules and the upgrade's, from the bracket generation.
+    pub fn upgraded(&self) -> Option<Boss> {
+        let upgrade = self.upgrade.as_ref()?;
+        let mut rules = self.rules.clone();
+        rules.extend(upgrade.rules.iter().cloned());
+        Some(Boss {
+            id: format!("{}{UPGRADED}", self.id),
+            name: upgrade.name.clone(),
+            final_boss: true,
+            rules,
+            line: upgrade.line.clone(),
+            since: self.since.max(crate::scale::BRACKETS_FROM),
+            upgrade: None,
+            upgrade_of: Some(self.id.clone()),
+            ..self.clone()
+        })
+    }
 }
 
 /// A boss's minion: a lieutenant seat on the boss's side for a big party, with another boss's deck; it falls with the
@@ -199,7 +361,17 @@ pub enum Outcome {
     CardPick,
     /// A copy of a nonland card from the hero's deck or Satchel, of their choice, for their Satchel.
     Duplicate,
-    /// A chance: `win` with `odds` percent, `lose` otherwise.
+    /// A pick of relics of this rarity the hero lacks (of a lower one when the deck can use none of it).
+    RelicOf(Rarity),
+    /// The hero's life cap moves by this much for the rest of the run; a cut also lowers their life to the new cap.
+    MaxLife(i32),
+    /// The hero gives up a card of their choice from their deck or Satchel for the rest of the run.
+    LoseCard,
+    /// The hero gives up a relic of their choice.
+    LoseRelic,
+    /// The hero's first commander is weakened for the rest of the run, as an emblem like an upgrade.
+    Bane(crate::upgrade::Bane),
+    /// A chance: `win` with `odds` percent, `lose` otherwise. Only events before the trade generation have one.
     Gamble {
         /// The chance to win, in percent.
         odds: u32,
@@ -228,7 +400,22 @@ pub struct Needs {
     pub gold: u32,
     /// The life a sure cost takes; the hero must keep more than 0 of it.
     pub life: u32,
+    /// The life cap a cut takes; the hero must keep at least `MIN_LIFE_CAP` of it.
+    #[serde(default)]
+    pub max_life: u32,
+    /// Whether the hero must hold a relic to give up.
+    #[serde(default)]
+    pub relic: bool,
+    /// Whether the hero's deck must have a commander to weaken.
+    #[serde(default)]
+    pub commander: bool,
+    /// Whether that commander must be a creature.
+    #[serde(default)]
+    pub creature_commander: bool,
 }
+
+/// The least life cap a cut may leave a hero, so an event never leaves them unable to go on.
+pub const MIN_LIFE_CAP: i32 = 20;
 
 impl Needs {
     /// Why a hero with this gold and life cannot take the option, if they cannot.
@@ -255,12 +442,30 @@ impl Outcome {
             Outcome::Relic => "a relic".to_owned(),
             Outcome::CardPick => "a card for your Satchel".to_owned(),
             Outcome::Duplicate => "a copy of a card from your deck or Satchel".to_owned(),
+            Outcome::RelicOf(rarity) => format!("a {} relic", rarity.word()),
+            Outcome::MaxLife(n) => format!("{} max life", signed(*n)),
+            Outcome::LoseCard => "lose a card of your deck or Satchel".to_owned(),
+            Outcome::LoseRelic => "give up a relic".to_owned(),
+            Outcome::Bane(bane) => bane.words("your commander"),
             Outcome::Gamble { odds, win, lose } => format!(
                 "{odds}%: {} · {}%: {}",
                 list_words(win),
                 100u32.saturating_sub(*odds),
                 list_words(lose)
             ),
+        }
+    }
+
+    /// Whether it takes something from the hero: gold, life or life cap lost, a card, a relic, a commander bane.
+    pub fn is_cost(&self) -> bool {
+        match self {
+            Outcome::Gold(n) | Outcome::Life(n) | Outcome::MaxLife(n) => *n < 0,
+            Outcome::LoseCard | Outcome::LoseRelic | Outcome::Bane(_) => true,
+            Outcome::Relic
+            | Outcome::CardPick
+            | Outcome::Duplicate
+            | Outcome::RelicOf(_)
+            | Outcome::Gamble { .. } => false,
         }
     }
 }
@@ -292,7 +497,30 @@ impl EventOption {
         list_words(&self.outcomes)
     }
 
-    /// What a hero must have to take it: gold and life for its sure costs.
+    /// What it takes from the hero, in plain words ("−8 life, give up a relic"), "nothing" for a free option.
+    pub fn cost(&self) -> String {
+        let costs: Vec<Outcome> = self
+            .outcomes
+            .iter()
+            .filter(|o| o.is_cost())
+            .cloned()
+            .collect();
+        list_words(&costs)
+    }
+
+    /// What it gives the hero, in plain words ("a Mythic relic"), "nothing" for an option that only costs.
+    pub fn reward(&self) -> String {
+        let gains: Vec<Outcome> = self
+            .outcomes
+            .iter()
+            .filter(|o| !o.is_cost())
+            .cloned()
+            .collect();
+        list_words(&gains)
+    }
+
+    /// What a hero must have to take it: gold, life and life cap for its sure costs, a relic to give up, a commander to
+    /// weaken.
     pub fn needs(&self) -> Needs {
         let cost = |pick: fn(&Outcome) -> Option<i32>| {
             let sum: i64 = self
@@ -319,6 +547,19 @@ impl EventOption {
                     None
                 }
             }),
+            max_life: cost(|o| {
+                if let Outcome::MaxLife(n) = o {
+                    Some(*n)
+                } else {
+                    None
+                }
+            }),
+            relic: self.outcomes.contains(&Outcome::LoseRelic),
+            commander: self.outcomes.iter().any(|o| matches!(o, Outcome::Bane(_))),
+            creature_commander: self
+                .outcomes
+                .iter()
+                .any(|o| matches!(o, Outcome::Bane(bane) if bane.for_creature())),
         }
     }
 }
@@ -338,6 +579,16 @@ pub struct EventSpec {
     /// The content generation it joined the theme in: a run made before it never meets it (`Run.content`).
     #[serde(default)]
     pub since: u32,
+    /// The last content generation that meets it; a later run meets the trade version that replaced it instead.
+    #[serde(default)]
+    pub until: Option<u32>,
+}
+
+impl EventSpec {
+    /// Whether a run of content generation `version` may meet it.
+    pub fn in_generation(&self, version: u32) -> bool {
+        self.since <= version && self.until.is_none_or(|last| version <= last)
+    }
 }
 
 /// A dungeon theme: its bosses, events and the cards its rewards offer.
@@ -356,6 +607,9 @@ pub struct Theme {
     pub events: Vec<EventSpec>,
     /// The cards rewards offer: a name and its colours as WUBRG letters (empty for colourless).
     pub pool: Vec<(String, String)>,
+    /// The type line of each pool card ("Creature — Angel"), which counts the Satchel's cards for the relic filter.
+    #[serde(default)]
+    pub pool_types: BTreeMap<String, String>,
     /// The bosses' scheme deck, shuffled for each fight.
     #[serde(default)]
     pub schemes: Vec<String>,
@@ -368,12 +622,18 @@ pub struct Theme {
     /// The minions a boss fields for a big party, in the order they join.
     #[serde(default)]
     pub minions: Vec<Minion>,
+    /// The upgraded forms of its bosses, made as the content is read (`Boss::upgraded`).
+    #[serde(skip)]
+    pub upgraded: Vec<Boss>,
 }
 
 impl Theme {
-    /// The boss with this id.
+    /// The boss with this id, an upgraded form included.
     pub fn boss(&self, id: &str) -> Option<&Boss> {
-        self.bosses.iter().find(|m| m.id == id)
+        self.bosses
+            .iter()
+            .chain(&self.upgraded)
+            .find(|m| m.id == id)
     }
 
     /// The event with this id.
@@ -392,10 +652,14 @@ pub struct Content {
 }
 
 impl Content {
-    /// Reads the content from its JSON texts.
-    pub fn parse(cards: &str, themes: &[&str]) -> Result<Content, CampaignError> {
-        let list: Vec<CustomCard> =
-            serde_json::from_str(cards).map_err(|e| CampaignError::Content(e.to_string()))?;
+    /// Reads the content from its JSON texts: the custom card files and the themes.
+    pub fn parse(card_files: &[&str], themes: &[&str]) -> Result<Content, CampaignError> {
+        let mut list: Vec<CustomCard> = Vec::new();
+        for text in card_files {
+            let more: Vec<CustomCard> =
+                serde_json::from_str(text).map_err(|e| CampaignError::Content(e.to_string()))?;
+            list.extend(more);
+        }
         let mut cards: BTreeMap<String, CustomCard> =
             list.into_iter().map(|c| (c.id.clone(), c)).collect();
         let variants = cards
@@ -409,12 +673,15 @@ impl Content {
             })
             .collect::<Result<Vec<_>, _>>()?;
         cards.extend(variants.into_iter().map(|c| (c.id.clone(), c)));
-        let themes = themes
+        let mut themes = themes
             .iter()
             .map(|text| {
                 serde_json::from_str(text).map_err(|e| CampaignError::Content(e.to_string()))
             })
             .collect::<Result<Vec<Theme>, _>>()?;
+        for theme in &mut themes {
+            theme.upgraded = theme.bosses.iter().filter_map(Boss::upgraded).collect();
+        }
         Ok(Content { cards, themes })
     }
 
@@ -519,7 +786,10 @@ pub fn content() -> Result<&'static Content, CampaignError> {
     CONTENT
         .get_or_init(|| {
             Content::parse(
-                include_str!("../content/cards.json"),
+                &[
+                    include_str!("../content/cards.json"),
+                    include_str!("../content/boss_cards.json"),
+                ],
                 &[include_str!("../content/warrens.json")],
             )
         })

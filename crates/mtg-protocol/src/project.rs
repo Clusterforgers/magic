@@ -78,11 +78,12 @@ pub fn zone_is_visible(zone: Zone, viewer: PlayerId) -> bool {
 }
 
 /// Whether `viewer` may see which cards are in `zone` of the game `state`: [`zone_is_visible`], and every hand when the
-/// table has open hands, and the hand of a player the viewer controls (CR 722.3).
+/// table has open hands, the hand of a teammate while the table shows hands within a team, and the hand of a player the
+/// viewer controls (CR 722.3).
 pub fn zone_is_visible_in(state: &GameState, zone: Zone, viewer: PlayerId) -> bool {
     zone_is_visible(zone, viewer)
         || (matches!(zone, Zone::Hand(_)) && state.ruleset().open_hands())
-        || matches!(zone, Zone::Hand(owner) if state.sees_for(viewer, owner))
+        || matches!(zone, Zone::Hand(owner) if state.sees_for(viewer, owner) || state.sees_team_hand(viewer, owner))
 }
 
 /// What `viewer` may identify in a state: the cards of the zones they see into, the cards the resolution in progress
@@ -667,6 +668,7 @@ impl PlayerView {
                 ((_, begun), schemes) => Some(crate::view::BossView {
                     phases: player.phase_names().map(str::to_owned).collect(),
                     begun: u32::try_from(begun).unwrap_or(u32::MAX),
+                    commander: player.held().next().map(str::to_owned),
                     scheme: schemes.and_then(|(now, _)| now).map(str::to_owned),
                     omen: schemes.map(|(_, omen)| omen.to_owned()),
                     omen_in: mtg_engine::schemes::omen_in(state, seat),

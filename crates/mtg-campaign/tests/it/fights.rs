@@ -52,6 +52,7 @@ fn run_at_first_boss(heroes: usize, heat: u8) -> Run {
                 name: "x".into(),
                 colors: "G".into(),
                 commanders: Vec::new(),
+                makeup: None,
             },
         });
     }
@@ -188,7 +189,7 @@ fn a_planned_fight_starts_as_a_game_with_its_emblems(
     let mut commanders: Vec<Vec<Arc<CardDefinition>>> =
         (0..6).map(|_| hero.commanders.clone()).collect();
     for deck in plan.boss_decks() {
-        decks.push(boss_deck(deck));
+        decks.push(boss_deck(&deck));
         commanders.push(Vec::new());
     }
     let setup = GameSetup::new(Arc::new(Commander), 4, decks).with_commanders(commanders);
@@ -244,7 +245,10 @@ fn each_boss_brings_its_relic_and_a_modifier_as_its_rank_and_heat_say(
         .iter()
         .filter_map(|n| n.boss.clone().map(|b| (n.id, b)))
         .collect();
-    assert_eq!(bosses.len(), theme.bosses.len());
+    assert_eq!(
+        bosses.len(),
+        theme.bosses.iter().filter(|b| b.since == 0).count()
+    );
     for (rank, (node, id)) in bosses.iter().enumerate() {
         run.at = Some(*node);
         assert_eq!(run.boss_rank(*node), rank);

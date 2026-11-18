@@ -151,6 +151,12 @@ pub struct AutoChoices {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub skip_triggers: bool,
+    /// "Always pay automatically": a mana payment the automatic payment makes with no real choice (no hybrid or
+    /// Phyrexian symbol, no creature or card to help pay, no mana ability that does more than add mana) is paid at
+    /// once, out of Full Control; left out (false) when off.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub auto_pay: bool,
 }
 
 /// A triggered or activated ability a seat lets resolve unasked for the rest of the game (see
@@ -658,6 +664,23 @@ pub enum ServerMessage {
         /// The spectators connected now.
         count: u32,
     },
+    /// The decks drawn at random (`RANDOM_PRECON_DECK`, `RANDOM_OWN_DECK`), by their real names.
+    ///
+    /// Sent once to every connected client as the game starts, before its opening batch; the lobby showed only the
+    /// kind of draw. Left unsent when no seat drew a deck. Never stored: the recipe holds the decks themselves.
+    DecksRevealed {
+        /// Each seat that drew its deck, in seat order.
+        decks: Vec<RevealedDeck>,
+    },
+}
+
+/// A seat's deck drawn at random, as the start reveals it (see [`ServerMessage::DecksRevealed`]).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct RevealedDeck {
+    /// The seat.
+    pub seat: PlayerId,
+    /// The deck's name, as its owner wrote it or as the precon is called.
+    pub name: String,
 }
 
 /// A seat the game waits for and the kind of decision it faces.

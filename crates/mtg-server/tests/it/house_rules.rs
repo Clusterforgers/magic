@@ -1,4 +1,4 @@
-//! Goal: `POST /api/games` takes house rules, plays the game under them, lists them in the game browser and in the table the seats see, keeps a value equal to the format's as given, and refuses a value out of range with a 400 that names the rule, while a request without them is the game it always was.
+//! Goal: `POST /api/games` takes house rules, plays the game under them, lists them in the game browser and in the table the seats see, keeps a value equal to the format's as given, and refuses a value out of range with a 400 that names the rule, while a request without them is the game it always was. At a table with teams each seat sees its teammates' hands unless `team_hands` is off.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::{self, Client};
@@ -6,6 +6,7 @@ use crate::net;
 
 use mtg_core::house::{HandLimit, Handicap, HouseRules, SkipFirstDraw};
 use mtg_core::ids::PlayerId;
+use mtg_core::teams::{TeamMode, Teams};
 use mtg_protocol::ServerMessage;
 use mtg_server::registry::{GameOptions, Registry, SeatRequest};
 use mtg_server::{ServerConfig, Visibility, demo};
@@ -361,4 +362,76 @@ async fn a_handicap_shows_in_the_table_as_the_life_of_its_seat_only(
         .map(|seat| if seat == 1 { 7 } else { 30 })
         .collect();
     assert_eq!(lives, want);
+}
+
+/// Whether each seat's first table with every hand dealt lists each hand (`true`) or only counts it.
+async fn first_hands(house_rules: HouseRules, seats: usize) -> Vec<Vec<bool>> {
+    let registry = Registry::new(&ServerConfig {
+        game: common::roomy(),
+        ..ServerConfig::default()
+    });
+    let options = GameOptions {
+        visibility: Visibility::Invite,
+        house_rules,
+        ..GameOptions::default()
+    };
+    let created = registry
+        .create_with(&requests(seats), options, None)
+        .await
+        .unwrap();
+    let handle = registry.handle(created.id).unwrap();
+    let (mut clients, _) = common::start_table(&handle, seats).await;
+    let mut seen = Vec::new();
+    for client in &mut clients {
+        let table = client
+            .until(|message| {
+                let table = match message {
+                    ServerMessage::Events(batch) => (*batch.table).clone(),
+                    ServerMessage::Snapshot { state, .. } => state.table.clone(),
+                    _ => return None,
+                };
+                table
+                    .players
+                    .iter()
+                    .all(|p| p.hand.count > 0)
+                    .then_some(table)
+            })
+            .await;
+        seen.push(
+            table
+                .players
+                .iter()
+                .map(|p| p.hand.cards.is_some())
+                .collect(),
+        );
+    }
+    seen
+}
+
+#[rstest]
+#[case::teams(TeamMode::Teams)]
+#[case::two_headed_giant(TeamMode::TwoHeadedGiant)]
+#[case::shared_turns(TeamMode::SharedTurns)]
+#[tokio::test]
+async fn a_team_table_shows_each_seat_its_teammates_hands_unless_turned_off(
+    #[case] mode: TeamMode,
+    #[values(None, Some(false))] team_hands: Option<bool>,
+) {
+    let teams = Teams::even(mode, 2, 2);
+    let house = HouseRules {
+        teams: Some(teams.clone()),
+        team_hands,
+        ..HouseRules::default()
+    };
+    let seen = first_hands(house, 4).await;
+    for (viewer, hands) in seen.iter().enumerate() {
+        for (owner, listed) in hands.iter().enumerate() {
+            let mate = teams.seats[viewer] == teams.seats[owner];
+            let want = viewer == owner || (mate && team_hands.is_none());
+            assert_eq!(
+                *listed, want,
+                "seat {viewer} reading the hand of seat {owner}"
+            );
+        }
+    }
 }

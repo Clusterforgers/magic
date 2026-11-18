@@ -8,9 +8,14 @@ use mtg_core::house::Timers;
 use serde::{Deserialize, Serialize};
 
 use crate::CampaignError;
-use crate::content::{Brain, Content, Outcome, Theme};
+use crate::content::{
+    Brain, Content, CustomCard, EventOption, MIN_LIFE_CAP, Needs, Outcome, Rarity, Theme,
+};
 use crate::fight::{BossSeat, FightPlan, HAND, HeroSeat, MinionSeat};
-use crate::map::{FloorMap, RoomKind, generate};
+use crate::map::{FloorMap, RoomKind, generate, generate_for};
+use crate::relics::{
+    DeckMakeup, FILTER_FROM, RARE_ODDS, RARITY_FROM, TREASURE_RARE_BONUS, offerable,
+};
 use crate::rng::Stream;
 use crate::scale::Scale;
 use crate::upgrade::{CommanderFacts, Upgrade, fitting};
@@ -37,8 +42,10 @@ pub const DRAUGHT_PRICE: u32 = 30;
 pub const DRAUGHT: i32 = 15;
 /// The price of a commander upgrade at the shop.
 pub const UPGRADE_PRICE: u32 = 50;
-/// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0.
-pub const CONTENT: u32 = 1;
+/// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0. From 2
+/// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
+/// known trade-offs; from 4 bosses play bracket decks with their commander card.
+pub const CONTENT: u32 = crate::scale::BRACKETS_FROM;
 
 /// The deck a hero brings.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -53,6 +60,11 @@ pub struct HeroDeck {
     /// Its commanders as their upgrades see them; none for a deck chosen before upgrades, which then gets none.
     #[serde(default)]
     pub commanders: Vec<CommanderFacts>,
+    /// What it is made of, for the relic offers; none for a deck chosen before offers followed the deck, which then
+    /// gets them unfiltered.
+    #[serde(default)]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub makeup: Option<DeckMakeup>,
 }
 
 /// A choice waiting for one hero.
@@ -85,6 +97,13 @@ pub enum Offer {
     Event {
         /// The event's id.
         event: String,
+    },
+    /// An event's cost: name a card of the deck or Satchel to give up (`Pick::Discard`); no skipping.
+    Discard,
+    /// An event's cost: give up one of these relics (`Pick::Take`); no skipping.
+    Surrender {
+        /// The relics the hero holds.
+        relics: Vec<String>,
     },
 }
 
@@ -133,6 +152,8 @@ pub enum Pick {
     Reforge,
     /// At the Mirror Pool: the card to copy, by name, from the deck or Satchel.
     Duplicate(String),
+    /// For an event's cost: the card to give up, by name, from the Satchel or else the deck.
+    Discard(String),
 }
 
 /// One roll of a gamble an answer ran into.
@@ -179,21 +200,58 @@ pub struct Hero {
     pub relics: Vec<String>,
     /// Their Satchel: every card they earned in the run, in the order they got it, castable from it in each fight.
     pub satchel: Vec<String>,
-    /// Their commander upgrades, in the order they got them.
+    /// Their commander upgrades, in the order they got them, and the banes events cost them.
     pub upgrades: Vec<Upgrade>,
     /// The choices waiting for them, first one first.
     pub offers: Vec<Offer>,
+    /// How far events moved their life cap for the rest of the run (below 0 for a cut).
+    #[serde(default)]
+    pub life_cap: i32,
+    /// Cards of their deck they gave up for the rest of the run, by name, a copy each.
+    #[serde(default)]
+    pub lost: Vec<String>,
 }
 
 impl Hero {
-    /// Their life cap: the base life plus their relics' bonus.
+    /// Their life cap: the base life plus their relics' bonus, moved by events.
     pub fn max_life(&self, content: &Content) -> i32 {
-        LIFE + self
-            .relics
-            .iter()
-            .filter_map(|id| content.cards.get(id))
-            .map(|c| c.life)
-            .sum::<i32>()
+        LIFE + self.life_cap
+            + self
+                .relics
+                .iter()
+                .filter_map(|id| content.cards.get(id))
+                .map(|c| c.life)
+                .sum::<i32>()
+    }
+
+    /// Why this hero cannot take an option with these needs, if they cannot: gold, life or life cap short, no relic to
+    /// give up, no commander (or no creature commander) to weaken.
+    pub fn lacks(&self, content: &Content, needs: &Needs) -> Option<String> {
+        if let Some(why) = needs.unmet(self.gold, self.life) {
+            return Some(why);
+        }
+        let cap = self.max_life(content);
+        if needs.max_life > 0
+            && i64::from(cap) - i64::from(needs.max_life) < i64::from(MIN_LIFE_CAP)
+        {
+            return Some(format!(
+                "needs a life cap of at least {MIN_LIFE_CAP} after the cut, yours is {cap}"
+            ));
+        }
+        if needs.relic && self.relics.is_empty() {
+            return Some("needs a relic to give up".to_owned());
+        }
+        let commanders = self
+            .deck
+            .as_ref()
+            .map_or(&[][..], |d| d.commanders.as_slice());
+        if needs.creature_commander && !commanders.first().is_some_and(|c| c.creature) {
+            return Some("needs a creature commander".to_owned());
+        }
+        if needs.commander && commanders.is_empty() {
+            return Some("needs a commander".to_owned());
+        }
+        None
     }
 
     fn heal(&mut self, content: &Content, amount: i32) {
@@ -419,7 +477,7 @@ impl Run {
     }
 
     /// Refuses a new event that is not allowed now, which a stored log may still hold (`replay` folds it as before):
-    /// an event option whose gold or life the hero lacks.
+    /// an event option whose needs the hero lacks (`Hero::lacks`).
     pub fn accepts(&self, content: &Content, event: &RunEvent) -> Result<(), CampaignError> {
         let RunEvent::Picked {
             hero,
@@ -436,7 +494,7 @@ impl Run {
                 .theme(content)?
                 .event(event)
                 .and_then(|spec| spec.options.get(usize::from(*i)))
-            && let Some(why) = option.needs().unmet(h.gold, h.life)
+            && let Some(why) = h.lacks(content, &option.needs())
         {
             return Err(refused(format!("“{}” {why}", option.label)));
         }
@@ -477,6 +535,8 @@ impl Run {
                     satchel: Vec::new(),
                     upgrades: Vec::new(),
                     offers: Vec::new(),
+                    life_cap: 0,
+                    lost: Vec::new(),
                 });
                 self.log.push(format!("{name} joined the party."));
             }
@@ -509,6 +569,8 @@ impl Run {
             RunEvent::Content { version } => {
                 self.lobby()?;
                 self.content = *version;
+                // The ladder is drawn from the bosses of the run's generation.
+                self.map = generate_for(self.theme(content)?, self.seed, *version);
             }
             RunEvent::Started => {
                 self.lobby()?;
@@ -675,7 +737,7 @@ impl Run {
             RoomKind::Treasure => {
                 self.log.push("A treasure chamber.".to_owned());
                 for hero in 0..self.heroes.len() {
-                    let relics = self.relic_offer(content, node, hero, "treasure", 3);
+                    let relics = self.relic_offer(content, node, hero, "treasure", 3, None);
                     self.push_offer(hero, Offer::Relics { relics });
                 }
             }
@@ -688,8 +750,14 @@ impl Run {
                         .into_iter()
                         .map(|name| ShopItem::Card { name, sold: false })
                         .collect();
-                    for id in self.relic_offer(content, node, hero, "shop", 2) {
-                        let price = content.cards.get(&id).map_or(60, |c| c.price);
+                    for id in self.relic_offer(content, node, hero, "shop", 2, None) {
+                        let price = content.cards.get(&id).map_or(60, |c| {
+                            if self.content >= RARITY_FROM {
+                                crate::relics::price(c.rarity)
+                            } else {
+                                c.price
+                            }
+                        });
                         items.push(ShopItem::Relic {
                             id,
                             price,
@@ -713,7 +781,7 @@ impl Run {
                 let pool: Vec<&crate::content::EventSpec> = theme
                     .events
                     .iter()
-                    .filter(|e| e.since <= self.content)
+                    .filter(|e| e.in_generation(self.content))
                     .collect();
                 let event = pool
                     .get(rng.below(pool.len()))
@@ -793,7 +861,9 @@ impl Run {
         rng.pick(&fits, count)
     }
 
-    /// Relics the hero lacks, drawn for one room and purpose; the risky ones only where `label` allows them.
+    /// Relics the hero lacks, drawn for one room and purpose; the risky ones only where `label` allows them, from the
+    /// filter's generation on only those the hero's deck can use, and from the rarity generation on by the rarity of
+    /// each slot: all of `rarity` when given, else as `relic_slots` lays them out.
     fn relic_offer(
         &self,
         content: &Content,
@@ -801,19 +871,87 @@ impl Run {
         hero: usize,
         label: &str,
         count: usize,
+        rarity: Option<Rarity>,
     ) -> Vec<String> {
         let Some(h) = self.heroes.get(hero) else {
             return Vec::new();
         };
-        let fits: Vec<String> = content
+        let shop = label == "shop";
+        let rarities = self.content >= RARITY_FROM;
+        let mut fits: Vec<&CustomCard> = content
             .relics()
             .into_iter()
-            .filter(|c| !h.relics.contains(&c.id) && (label != "shop" || c.price > 0))
-            .map(|c| c.id.clone())
+            .filter(|c| c.since <= self.content)
+            .filter(|c| {
+                // The shop never sells a risky relic: priced 0 before the rarity generation.
+                let sold = if rarities {
+                    c.role != "Risky"
+                } else {
+                    c.price > 0
+                };
+                !h.relics.contains(&c.id) && (!shop || sold)
+            })
             .collect();
+        // From the filter's generation on, only relics the deck (and its Satchel) can use.
+        if self.content >= FILTER_FROM
+            && let Some(makeup) = h.deck.as_ref().and_then(|d| d.makeup.as_ref())
+            && let Ok(theme) = self.theme(content)
+        {
+            fits = offerable(fits, &makeup.with_satchel(&h.satchel, theme));
+        }
         let salt = u64::try_from(h.offers.len() + h.relics.len()).unwrap_or(0);
         let mut rng = Stream::new(self.seed, label, u64::from(node) * 16 + salt, hero as u64);
+        if self.content >= RARITY_FROM {
+            let slots = match rarity {
+                Some(tier) => vec![tier; count],
+                None => self.relic_slots(node, label, count, &mut rng),
+            };
+            // A Mythic relic comes only where a slot asks for one.
+            if !slots.contains(&Rarity::Mythic) {
+                fits.retain(|c| c.rarity != Rarity::Mythic);
+            }
+            return crate::relics::draw(&fits, &slots, &mut rng);
+        }
+        let fits: Vec<String> = fits.into_iter().map(|c| c.id.clone()).collect();
         rng.pick(&fits, count)
+    }
+
+    /// The rarity of each slot of a relic offer of the rarity generation: the shop one Common and one Rare; loot and
+    /// treasure Common slots that turn Rare by chance, more often on later floors and at a treasure, and the loot of the
+    /// last lieutenant a Mythic first slot.
+    fn relic_slots(&self, node: u8, label: &str, count: usize, rng: &mut Stream) -> Vec<Rarity> {
+        if label == "shop" {
+            return [Rarity::Common, Rarity::Rare]
+                .into_iter()
+                .cycle()
+                .take(count)
+                .collect();
+        }
+        let rank = self.boss_rank(node);
+        let (rank, bonus) = if label == "treasure" {
+            (rank.saturating_sub(1), TREASURE_RARE_BONUS)
+        } else {
+            (rank, 0)
+        };
+        let odds = RARE_ODDS[rank.min(RARE_ODDS.len() - 1)] + bonus;
+        let mut slots: Vec<Rarity> = (0..count)
+            .map(|_| {
+                if rng.chance(odds) {
+                    Rarity::Rare
+                } else {
+                    Rarity::Common
+                }
+            })
+            .collect();
+        let bosses = self.map.nodes.iter().filter(|n| n.boss.is_some()).count();
+        if label == "loot"
+            && self.map.node(node).is_some_and(|n| n.boss.is_some())
+            && self.boss_rank(node) + 2 == bosses
+            && let Some(first) = slots.first_mut()
+        {
+            *first = Rarity::Mythic;
+        }
+        slots
     }
 
     /// Keeps the fight of `game` in the room the party is in for the run's fight log.
@@ -880,7 +1018,7 @@ impl Run {
             if let Some(h) = self.heroes.get_mut(hero) {
                 h.gold += 50;
             }
-            let relics = self.relic_offer(content, node, hero, "loot", 3);
+            let relics = self.relic_offer(content, node, hero, "loot", 3, None);
             self.push_offer(hero, Offer::Relics { relics });
             let cards = self.card_offer(&theme, node, hero, "loot", 3);
             self.push_offer(hero, Offer::Cards { cards });
@@ -911,6 +1049,8 @@ impl Run {
             }
         };
         let mut follow: Vec<Offer> = Vec::new();
+        // The rarity of a follow-up relic pick, by its place among the follow-ups.
+        let mut follow_rarity: BTreeMap<usize, Rarity> = BTreeMap::new();
         let mut done = true;
         // What the answer did, for the chronicle and the result panel.
         let mut said = String::new();
@@ -1051,6 +1191,11 @@ impl Run {
                             follow.push(Offer::Relics { relics: Vec::new() });
                             outcomes.push(Outcome::Relic);
                         }
+                        Outcome::RelicOf(rarity) => {
+                            follow.push(Offer::Relics { relics: Vec::new() });
+                            follow_rarity.insert(follow.len() - 1, rarity);
+                            outcomes.push(Outcome::RelicOf(rarity));
+                        }
                         Outcome::CardPick => {
                             follow.push(Offer::Cards { cards: Vec::new() });
                             outcomes.push(Outcome::CardPick);
@@ -1059,9 +1204,64 @@ impl Run {
                             follow.push(Offer::Duplicate);
                             outcomes.push(Outcome::Duplicate);
                         }
+                        Outcome::MaxLife(n) => {
+                            h.life_cap += n;
+                            h.life = h.life.min(h.max_life(content)).max(1);
+                            outcomes.push(Outcome::MaxLife(n));
+                        }
+                        Outcome::LoseCard => {
+                            follow.push(Offer::Discard);
+                            outcomes.push(Outcome::LoseCard);
+                        }
+                        Outcome::LoseRelic => {
+                            follow.push(Offer::Surrender {
+                                relics: h.relics.clone(),
+                            });
+                            outcomes.push(Outcome::LoseRelic);
+                        }
+                        Outcome::Bane(bane) => {
+                            let first = h
+                                .deck
+                                .as_ref()
+                                .and_then(|d| d.commanders.first())
+                                .map(|c| c.name.clone());
+                            if let Some(commander) = first {
+                                h.upgrades.push(Upgrade {
+                                    commander,
+                                    boon: bane.boon(),
+                                });
+                                outcomes.push(Outcome::Bane(bane));
+                            }
+                        }
                         Outcome::Gamble { .. } => {}
                     }
                 }
+            }
+            (Offer::Discard, Pick::Discard(card)) => {
+                if card.trim().is_empty() {
+                    return Err(refused("name the card to give up"));
+                }
+                // A Satchel card goes first; else a copy leaves the deck for the rest of the run.
+                if let Some(at) = h.satchel.iter().position(|c| *c == card) {
+                    h.satchel.remove(at);
+                } else {
+                    h.lost.push(card.clone());
+                }
+                said = format!("gave up the card {card}");
+            }
+            (Offer::Surrender { relics }, Pick::Take(i)) => {
+                let relic = relics
+                    .get(index(i, relics.len())?)
+                    .cloned()
+                    .unwrap_or_default();
+                let held = h
+                    .relics
+                    .iter()
+                    .position(|r| *r == relic)
+                    .ok_or_else(|| refused("that relic is not yours"))?;
+                h.relics.remove(held);
+                h.life = h.life.min(h.max_life(content)).max(1);
+                said = format!("gave up the relic {}", relic_name(content, &relic));
             }
             _ => return Err(refused("that answer does not fit the offer")),
         }
@@ -1080,9 +1280,14 @@ impl Run {
         for (k, offer) in follow.into_iter().enumerate() {
             let label = format!("follow{k}");
             let offer = match offer {
-                Offer::Relics { .. } => Offer::Relics {
-                    relics: self.relic_offer(content, node, at, &label, 1),
-                },
+                Offer::Relics { .. } => {
+                    let rarity = follow_rarity.get(&k).copied();
+                    // A relic of a named rarity is a pick of three; an older event's relic a pick of one.
+                    let count = if rarity.is_some() { 3 } else { 1 };
+                    Offer::Relics {
+                        relics: self.relic_offer(content, node, at, &label, count, rarity),
+                    }
+                }
                 Offer::Cards { .. } => Offer::Cards {
                     cards: self.card_offer(&theme, node, at, &label, 3),
                 },
@@ -1117,7 +1322,8 @@ impl Run {
             .iter()
             .filter_map(|n| {
                 let boss = theme.boss(n.boss.as_deref()?)?;
-                let scale = Scale::new(heroes, self.heat, self.boss_rank(n.id));
+                let scale =
+                    Scale::of_content(heroes, self.heat, self.boss_rank(n.id), self.content);
                 Some((boss.id.clone(), scale.life(boss)))
             })
             .collect()
@@ -1164,7 +1370,7 @@ impl Run {
                 upgrades: h.upgrades.clone(),
             })
             .collect();
-        let scale = Scale::new(heroes.len(), self.heat, rank);
+        let scale = Scale::of_content(heroes.len(), self.heat, rank, self.content);
         let life = scale.life(boss);
         let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
             .pick(&theme.schemes, theme.schemes.len());
@@ -1187,7 +1393,7 @@ impl Run {
                     life: scale.minion_life(minion),
                     hand: HAND,
                     brain: scale.brain(lieutenant.brain),
-                    deck: lieutenant.deck.clone(),
+                    deck: scale.deck(lieutenant),
                     rules: minion.rules.clone(),
                 })
             })
@@ -1201,7 +1407,9 @@ impl Run {
                 life,
                 hand: scale.hand(boss),
                 brain: scale.brain(boss.brain),
-                deck: boss.deck.clone(),
+                deck: scale.deck(boss),
+                commander: (scale.bracketed && !boss.commander.is_empty())
+                    .then(|| boss.commander.clone()),
                 rules,
                 phases: scale.phases(boss, life),
                 schemes,
@@ -1210,6 +1418,33 @@ impl Run {
             minions,
             run: None,
         }))
+    }
+
+    /// A bot hero's answer to `event`: in an older run the first option it can afford, else the best trade it can make
+    /// (`worth`), the first of equals.
+    fn bot_event_pick(&self, content: &Content, h: &Hero, event: &str) -> Pick {
+        self.theme(content)
+            .ok()
+            .and_then(|theme| theme.event(event))
+            .and_then(|spec| {
+                if self.content < RARITY_FROM {
+                    return spec
+                        .options
+                        .iter()
+                        .position(|o| o.needs().unmet(h.gold, h.life).is_none());
+                }
+                let mut best: Option<(usize, i32)> = None;
+                for (at, option) in spec.options.iter().enumerate() {
+                    if let Some(worth) = worth(content, h, option)
+                        && best.is_none_or(|(_, b)| worth > b)
+                    {
+                        best = Some((at, worth));
+                    }
+                }
+                best.map(|(at, _)| at)
+            })
+            .and_then(|i| u8::try_from(i).ok())
+            .map_or(Pick::Take(0), Pick::Take)
     }
 
     /// The events bot allies send now: a vote once every player voted (with the most votes, the torch's on a tie),
@@ -1262,17 +1497,20 @@ impl Run {
                                 Pick::Reforge
                             }
                         }
-                        Some(Offer::Event { event }) => self
-                            .theme(content)
-                            .ok()
-                            .and_then(|theme| theme.event(event))
-                            .and_then(|spec| {
-                                spec.options
-                                    .iter()
-                                    .position(|o| o.needs().unmet(h.gold, h.life).is_none())
+                        Some(Offer::Event { event }) => self.bot_event_pick(content, h, event),
+                        Some(Offer::Discard) => h
+                            .satchel
+                            .last()
+                            .map_or(Pick::Skip, |card| Pick::Discard(card.clone())),
+                        // The least rare relic, the oldest of those.
+                        Some(Offer::Surrender { relics }) => relics
+                            .iter()
+                            .enumerate()
+                            .min_by_key(|(at, id)| {
+                                (content.cards.get(id.as_str()).map(|c| c.rarity), *at)
                             })
-                            .and_then(|i| u8::try_from(i).ok())
-                            .map_or(Pick::Take(0), Pick::Take),
+                            .and_then(|(at, _)| u8::try_from(at).ok())
+                            .map_or(Pick::Skip, Pick::Take),
                         Some(Offer::Shop { items }) => items
                             .iter()
                             .position(|item| match item {
@@ -1293,6 +1531,53 @@ impl Run {
         }
         out
     }
+}
+
+/// What an event option is worth to a bot hero, in points (a Common relic is 8); `None` when the hero cannot take it, or
+/// would have to name a deck card it cannot see (a card to give up with an empty Satchel). Life counts double when the
+/// hero is below half their cap, and a cut to the cap weighs double when the hero is hurt or the cap already low.
+fn worth(content: &Content, h: &Hero, option: &EventOption) -> Option<i32> {
+    if h.lacks(content, &option.needs()).is_some() {
+        return None;
+    }
+    let cap = h.max_life(content);
+    let hurt = h.life * 2 < cap;
+    let mut points = 0;
+    for outcome in &option.outcomes {
+        points += match outcome {
+            Outcome::Gold(n) => n / 5,
+            Outcome::Life(n) if *n > 0 => {
+                let healed = (*n).min(cap - h.life);
+                if hurt { healed } else { healed / 2 }
+            }
+            Outcome::Life(n) => {
+                if hurt {
+                    n * 2
+                } else {
+                    *n
+                }
+            }
+            Outcome::MaxLife(n) => {
+                if hurt || cap <= 30 {
+                    n * 3
+                } else {
+                    n * 3 / 2
+                }
+            }
+            Outcome::Relic | Outcome::RelicOf(Rarity::Common) => 8,
+            Outcome::RelicOf(Rarity::Rare) => 15,
+            Outcome::RelicOf(Rarity::Mythic) => 28,
+            Outcome::CardPick => 6,
+            Outcome::Duplicate => 5,
+            Outcome::LoseCard if h.satchel.is_empty() => return None,
+            Outcome::LoseCard => -6,
+            Outcome::LoseRelic => -12,
+            Outcome::Bane(crate::upgrade::Bane::Tax(n)) => -8 * i32::try_from(*n).unwrap_or(1),
+            Outcome::Bane(crate::upgrade::Bane::Shrink(n)) => -10 * n,
+            Outcome::Gamble { .. } => 0,
+        };
+    }
+    Some(points)
 }
 
 /// The plain outcomes of `outcomes`, gambles decided by `rng`.

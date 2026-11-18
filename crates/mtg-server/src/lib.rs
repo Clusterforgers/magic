@@ -123,6 +123,7 @@ mod prefs;
 mod presence;
 mod preview;
 mod printings;
+mod random_deck;
 mod reads;
 mod recipe;
 mod recorder;

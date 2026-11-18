@@ -16,6 +16,9 @@ use crate::throttle::Blocked;
 /// Most games [`Registry::lobbies`] and [`Registry::running`] each return: the newest.
 pub const MAX_LISTED_LOBBIES: usize = 50;
 
+/// How long a list waits for a game's own answer before it takes the status the game published last.
+pub const STATUS_WAIT: Duration = Duration::from_millis(150);
+
 /// A public game in its lobby or any running game, as the game browser lists it. There is no token, join code or seat
 /// link in it: the id is all a visitor needs to ask to join a public lobby, or a signed-in visitor to watch a running
 /// game.
@@ -123,12 +126,20 @@ impl Registry {
         // Newest first; two games made in the same instant keep a fixed order by id.
         candidates.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| b.3.game.cmp(&a.3.game)));
 
+        // Every table is asked at once, and a busy one (bots thinking, a slow write) answers with its last published
+        // status, so the list never waits on one game.
+        let statuses = futures_util::future::join_all(
+            candidates
+                .iter()
+                .map(|(_, handle, _, _)| handle.status_within(STATUS_WAIT)),
+        )
+        .await;
         let mut listed = Vec::new();
-        for (_, handle, visibility, mut game) in candidates {
+        for ((_, _, visibility, mut game), status) in candidates.into_iter().zip(statuses) {
             if listed.len() == MAX_LISTED_LOBBIES {
                 break;
             }
-            let Ok(status) = handle.status().await else {
+            let Ok(status) = status else {
                 continue;
             };
             if let Some(running) = pick(visibility, &status) {

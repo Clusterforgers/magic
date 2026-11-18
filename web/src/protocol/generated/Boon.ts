@@ -4,4 +4,4 @@ import type { Gift } from "./Gift";
 /**
  * What an upgrade does.
  */
-export type Boon = { "Cheaper": number } | { "Keyword": Gift } | { "Pump": number } | "Counter" | "Loyalty";
+export type Boon = { "Cheaper": number } | { "Keyword": Gift } | { "Pump": number } | "Counter" | "Loyalty" | { "Tax": number } | { "Shrink": number };

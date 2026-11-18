@@ -119,7 +119,36 @@ pub fn check_state(state: &GameState) -> Result<(), Violation> {
     check_zone_index(state)?;
     check_merged(state)?;
     check_companions(state)?;
+    check_aura_spells(state)?;
     check_bookkeeping(state)
+}
+
+/// An Aura spell on the stack announced what it will enchant as it was cast (CR 303.4a, 601.2c): a face-up spell with an
+/// enchant ability, or a bestowed one, carries a target.
+fn check_aura_spells(state: &GameState) -> Result<(), Violation> {
+    for &id in state.zone(Zone::Stack) {
+        let Some(spell) = state.object(id) else {
+            continue;
+        };
+        if spell.kind() == ObjectKind::Ability
+            || spell.face_down().is_some()
+            || spell.card().is_type(CardType::Instant)
+            || spell.card().is_type(CardType::Sorcery)
+        {
+            continue;
+        }
+        let enchants = spell.bestowed()
+            || keywords_of(state, id)
+                .iter()
+                .any(|k| matches!(k, Keyword::Enchant(_) | Keyword::EnchantPlayer { .. }));
+        if enchants && spell.choices().targets.first().is_none_or(Vec::is_empty) {
+            return Err(Violation::Bookkeeping(format!(
+                "the Aura spell {id:?} ({}) is on the stack without the target it enchants",
+                spell.card().name
+            )));
+        }
+    }
+    Ok(())
 }
 
 /// A companion (CR 702.139) is no object while it lies outside the game and is revealed once the opening is over; once
@@ -1126,6 +1155,8 @@ impl InvariantChecker {
     }
 
     /// Updates the independent accumulators from the event and compares them to the shadow state.
+    // One arm for each kind of event the histories follow.
+    #[allow(clippy::too_many_lines)]
     fn account(&mut self, event: &Event) -> Result<(), Violation> {
         match event {
             Event::ManaAdded {
@@ -1195,6 +1226,7 @@ impl InvariantChecker {
             Event::LifeGained { player, amount } => {
                 self.change_life(*player, i64::from(*amount), "life gained")
             }
+            Event::SpiritRevived { player, life } => self.revived(*player, *life),
             Event::DamageCleared => {
                 self.expected_damage.clear();
                 Ok(())
@@ -1558,6 +1590,13 @@ impl InvariantChecker {
         let wanted = i32::try_from(amount).unwrap_or(i32::MAX);
         let lost = mtg_engine::spotlight::graced_life_loss(&self.shadow, player, wanted, before);
         self.lose_life(player, u32::try_from(lost).unwrap_or(0), "life lost")
+    }
+
+    /// A Spirit returns with a life total of its own, set rather than gained (`mtg_engine::spirits`): the history of
+    /// `player` counts on from `life`.
+    fn revived(&mut self, player: PlayerId, life: i32) -> Result<(), Violation> {
+        let before = self.expected_life.get(player.index()).copied().unwrap_or(0);
+        self.change_life(player, i64::from(life) - i64::from(before), "revival")
     }
 
     /// Takes `amount` off the independent life history of `player` and compares it with the shadow state.

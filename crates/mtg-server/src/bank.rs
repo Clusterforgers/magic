@@ -53,7 +53,8 @@ impl Banks {
         }
     }
 
-    /// Notes the turn `state` is in: when it is a new one, the seat whose turn just ended is credited with it.
+    /// Notes the turn `state` is in: when it is a new one, the seat whose turn just ended is credited with it, and
+    /// under shared team turns (CR 805) every seat of its team, whose turn it was too.
     ///
     /// Call after every change of the engine, so no turn goes by unseen.
     pub(crate) fn watch(&mut self, state: &GameState) {
@@ -63,6 +64,13 @@ impl Banks {
             && number != now.0
         {
             self.finished(seat, state.is_alive(seat));
+            if state.shares_turns() {
+                for mate in state.players().iter().map(mtg_engine::player::Player::id) {
+                    if mate != seat && state.are_teammates(seat, mate) {
+                        self.finished(mate, state.is_alive(mate));
+                    }
+                }
+            }
         }
     }
 
@@ -104,7 +112,7 @@ impl Banks {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a seat earns one extension per three own turns finished without a clock running out, holds at most three, loses the run to any clock that runs out and earns nothing with the bank off.
+    //! Goal: a seat earns one extension per three own turns finished without a clock running out (a shared team turn is the own turn of every seat of the team), holds at most three, loses the run to any clock that runs out and earns nothing with the bank off.
     use super::*;
     use rstest::rstest;
 
@@ -185,5 +193,39 @@ mod tests {
         banks.ran_out(PlayerId(7), None);
         assert!(!banks.spend(PlayerId(7)));
         assert_eq!(banks.held(PlayerId(7)), 0);
+    }
+
+    /// A game at turn `turn` with `active` playing, at a table of four seats in the teams `mode` (each for itself without).
+    fn turn_of(mode: Option<mtg_core::teams::TeamMode>, turn: u32, active: usize) -> GameState {
+        let house = mtg_core::house::HouseRules {
+            teams: mode.map(|mode| mtg_core::teams::Teams {
+                mode,
+                seats: vec![0, 0, 1, 1],
+            }),
+            ..mtg_core::house::HouseRules::default()
+        };
+        mtg_testkit::Scenario::new(4)
+            .house_rules(house)
+            .at(turn, active, mtg_engine::turn::Step::Main1)
+            .build()
+            .unwrap()
+            .state()
+            .clone()
+    }
+
+    #[rstest]
+    #[case::each_seat_its_own_turn(None, [1, 0, 0, 0])]
+    #[case::teams_apart_each_seat_its_own_turn(Some(mtg_core::teams::TeamMode::Teams), [1, 0, 0, 0])]
+    #[case::a_giant_turn_is_both_heads(Some(mtg_core::teams::TeamMode::TwoHeadedGiant), [1, 1, 0, 0])]
+    #[case::a_shared_turn_is_every_seat_of_the_team(Some(mtg_core::teams::TeamMode::SharedTurns), [1, 1, 0, 0])]
+    fn a_finished_turn_counts_for_every_seat_that_played_it(
+        #[case] mode: Option<mtg_core::teams::TeamMode>,
+        #[case] clean: [u8; 4],
+    ) {
+        let mut banks = Banks::new(4, true);
+        banks.watch(&turn_of(mode, 1, 0));
+        banks.watch(&turn_of(mode, 2, 2));
+        let got: Vec<u8> = banks.accounts.iter().map(|account| account.clean).collect();
+        assert_eq!(got, clean);
     }
 }

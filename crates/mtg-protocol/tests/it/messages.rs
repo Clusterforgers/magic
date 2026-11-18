@@ -55,7 +55,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 23;
-const SERVER_VARIANTS: usize = 25;
+const SERVER_VARIANTS: usize = 26;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -147,6 +147,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::TakeBackEnded { .. } => 22,
         ServerMessage::TakeBackRefused { .. } => 23,
         ServerMessage::EndedByAdmin { .. } => 24,
+        ServerMessage::DecksRevealed { .. } => 25,
     }
 }
 
@@ -715,12 +716,13 @@ fn mode_welcomes() -> [ServerMessage; 3] {
 }
 
 /// Every combination of the auto choices.
-fn auto_choices() -> [AutoChoices; 16] {
+fn auto_choices() -> [AutoChoices; 32] {
     std::array::from_fn(|bits| AutoChoices {
         order_triggers: bits & 1 != 0,
         assign_damage: bits & 2 != 0,
         smart_stops: bits & 4 != 0,
         skip_triggers: bits & 8 != 0,
+        auto_pay: bits & 16 != 0,
     })
 }
 
@@ -867,6 +869,12 @@ fn server_samples() -> Vec<ServerMessage> {
     out.push(ServerMessage::Deciding { seats: Vec::new() });
     out.push(ServerMessage::Spectators { count: 0 });
     out.push(ServerMessage::Spectators { count: 3 });
+    out.push(ServerMessage::DecksRevealed {
+        decks: vec![mtg_protocol::RevealedDeck {
+            seat: PlayerId(1),
+            name: "Adaptive Enchantment".into(),
+        }],
+    });
     let offer = TakeBackOffer {
         player: PlayerId(1),
         kind: TakeBackKind::Cast,
@@ -1081,8 +1089,8 @@ fn every_event_view_variant_round_trips() {
     json!({"type": "EndTurnByHand", "on": true})
 )]
 #[case(
-    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true, smart_stops: true, skip_triggers: false } },
-    json!({"type": "AutoChoices", "choices": {"order_triggers": false, "assign_damage": true, "smart_stops": true}})
+    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true, smart_stops: true, skip_triggers: false, auto_pay: true } },
+    json!({"type": "AutoChoices", "choices": {"order_triggers": false, "assign_damage": true, "smart_stops": true, "auto_pay": true}})
 )]
 #[case(
     ClientMessage::AutoYield { object: ObjectId(12) },
@@ -1124,7 +1132,7 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::Welcome {
         protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None,
         stops: vec![], full_control: FullControlMode::Off, end_turn_by_hand: false,
-        auto_choices: AutoChoices { order_triggers: true, assign_damage: false, smart_stops: false, skip_triggers: false },
+        auto_choices: AutoChoices { order_triggers: true, assign_damage: false, smart_stops: false, skip_triggers: false, auto_pay: false },
         auto_yields: vec![AutoYield { name: "Soul Warden".into(), text: "Whenever another creature enters, you gain 1 life.".into() }],
         auto_skips: auto_skips(),
     },
@@ -1201,7 +1209,7 @@ fn client_wire_shape_is_flat_and_tagged(
     json!({"type": "EndTurnByHand", "on": false})
 )]
 #[case(
-    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true, smart_stops: false, skip_triggers: false } },
+    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true, smart_stops: false, skip_triggers: false, auto_pay: false } },
     json!({"type": "AutoChoices", "choices": {"order_triggers": true, "assign_damage": true, "smart_stops": false}})
 )]
 #[case(

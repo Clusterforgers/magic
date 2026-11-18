@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::content::Theme;
 use crate::rng::Stream;
+use crate::scale::BRACKETS_FROM;
 
 /// What a room of the ladder holds.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -83,23 +84,45 @@ impl FloorMap {
     }
 }
 
-/// The ladder of `theme` for `seed`.
+/// The lieutenants a ladder of the bracket generation draws before its final boss.
+pub const LIEUTENANTS: usize = 3;
+
+/// The ladder of `theme` for `seed`, as a run of the first content generation draws it.
 pub fn generate(theme: &Theme, seed: u64) -> FloorMap {
+    generate_for(theme, seed, 0)
+}
+
+/// The ladder of `theme` for `seed` in a run of content generation `content`: only bosses of that generation or
+/// earlier. Before [`BRACKETS_FROM`] it meets every lieutenant and then the final boss; from it, [`LIEUTENANTS`] of
+/// them and then one final boss drawn from the theme's final bosses and the upgraded forms of the lieutenants left off.
+pub fn generate_for(theme: &Theme, seed: u64, content: u32) -> FloorMap {
     let mut rng = Stream::new(seed, "map", 0, 0);
     let lieutenants: Vec<&str> = theme
         .bosses
         .iter()
-        .filter(|b| !b.final_boss)
+        .filter(|b| !b.final_boss && b.since <= content)
         .map(|b| b.id.as_str())
         .collect();
-    let mut order = rng.pick(&lieutenants, lieutenants.len());
-    order.extend(
-        theme
-            .bosses
+    let finals = theme
+        .bosses
+        .iter()
+        .filter(|b| b.final_boss && b.since <= content)
+        .map(|b| b.id.as_str());
+    let mut order;
+    if content >= BRACKETS_FROM {
+        order = rng.pick(&lieutenants, LIEUTENANTS.min(lieutenants.len()));
+        let upgraded = theme
+            .upgraded
             .iter()
-            .filter(|b| b.final_boss)
-            .map(|b| b.id.as_str()),
-    );
+            .filter(|b| b.since <= content)
+            .filter(|b| !order.contains(&b.identity()))
+            .map(|b| b.id.as_str());
+        let candidates: Vec<&str> = finals.chain(upgraded).collect();
+        order.extend(rng.pick(&candidates, 1));
+    } else {
+        order = rng.pick(&lieutenants, lieutenants.len());
+        order.extend(finals);
+    }
     let mut nodes: Vec<Node> = Vec::new();
     let mut row = 0u8;
     for (at, boss) in order.iter().enumerate() {
@@ -154,7 +177,7 @@ mod tests {
             let map = generate(&theme, seed);
             prop_assert_eq!(&map, &generate(&theme, seed));
             let bosses: Vec<&str> = map.nodes.iter().filter_map(|n| n.boss.as_deref()).collect();
-            prop_assert_eq!(bosses.len(), theme.bosses.len());
+            prop_assert_eq!(bosses.len(), theme.bosses.iter().filter(|b| b.since == 0).count());
             let finals: Vec<&str> = theme.bosses.iter().filter(|b| b.final_boss).map(|b| b.id.as_str()).collect();
             prop_assert_eq!(map.last().and_then(|n| n.boss.as_deref()), finals.first().copied());
             let mut sorted = bosses.clone();

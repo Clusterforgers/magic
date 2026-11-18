@@ -1,4 +1,4 @@
-//! Goal: the janitor closes a started game that no person sits at and in which no answer has been taken for the idle time, recording it `expired` so it never resumes and its lists show it ended; a game with a person connected, a recent answer or a result is left alone, and a bot holding its seat is not a person.
+//! Goal: the janitor closes a started game that no person sits at and in which no answer has been taken for the idle time, recording it `expired` so it never resumes and its lists show it ended; a game with a person connected, a recent answer or a result is left alone; a bot holding its seat is not a person, and a game with bots closes a quarter hour after its last person left however its bots play on.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::{self, Client};
@@ -12,6 +12,7 @@ use mtg_server::bots::{BotLevel, BotSeat};
 use mtg_server::config::Retention;
 use mtg_server::registry::{GameOptions, SeatRequest};
 use mtg_server::{GameId, GameRecords, RecordStatus, Registry, ServerConfig, demo, migrate};
+use rstest::rstest;
 use sqlx::PgPool;
 
 const HOUR: Duration = Duration::from_hours(1);
@@ -195,47 +196,79 @@ async fn the_janitor_task_closes_an_idle_running_game_on_its_own(pool: PgPool) {
     janitor.await.unwrap();
 }
 
-#[tokio::test]
-async fn a_bot_holding_its_seat_is_not_a_person_at_the_table() {
-    let registry = Registry::new(&ServerConfig {
-        game: roomy(),
-        bot_delay: Duration::from_millis(5),
-        ..ServerConfig::default()
-    });
-    let options = GameOptions {
-        bots: vec![BotSeat {
-            seat: PlayerId::from_index(1),
-            level: BotLevel::Easy,
-        }],
-        ..GameOptions::default()
-    };
-    let created = registry
-        .create_with(&requests(), options, None)
-        .await
-        .unwrap();
-    let handle = registry.handle(created.id).unwrap();
-    let human = Client::join(&handle, 0).await;
-    human.say(&handle, ClientMessage::Ready).await;
-    // The bot joins, readies and plays its mulligan; the log is still once it waits for the human.
+/// Waits until the game runs, every bot of `seats` holds its seat and the log has been still for a while.
+async fn settled(handle: &mtg_server::GameHandle, seats: usize) {
     let mut quiet = 0;
     let mut events = 0;
     while quiet < 5 {
         tokio::time::sleep(Duration::from_millis(40)).await;
         let status = handle.status().await.unwrap();
-        let settled = status.started && status.connected.contains(&PlayerId::from_index(1));
-        quiet = if settled && status.events == events {
+        let bots_here =
+            (1..seats).all(|seat| status.connected.contains(&PlayerId::from_index(seat)));
+        quiet = if status.started && bots_here && status.events == events {
             quiet + 1
         } else {
             0
         };
         events = status.events;
     }
+}
+
+#[rstest]
+#[case::one_bot(2)]
+#[case::three_bots(4)]
+#[tokio::test]
+async fn bots_left_alone_are_closed_a_quarter_hour_after_the_last_person_left(
+    #[case] seats: usize,
+) {
+    let registry = Registry::new(&ServerConfig {
+        game: roomy(),
+        bot_delay: Duration::from_millis(5),
+        ..ServerConfig::default()
+    });
+    let decks = ["mono-green", "mono-red"];
+    let requests: Vec<SeatRequest> = (0..seats)
+        .map(|seat| SeatRequest {
+            name: format!("Player {seat}"),
+            deck: demo::find(decks[seat % 2]).unwrap(),
+        })
+        .collect();
+    let options = GameOptions {
+        bots: (1..seats)
+            .map(|seat| BotSeat {
+                seat: PlayerId::from_index(seat),
+                level: BotLevel::Easy,
+            })
+            .collect(),
+        ..GameOptions::default()
+    };
+    let created = registry
+        .create_with(&requests, options, None)
+        .await
+        .unwrap();
+    let handle = registry.handle(created.id).unwrap();
+    let mut human = Client::join(&handle, 0).await;
+    human.say(&handle, ClientMessage::Ready).await;
+    settled(&handle, seats).await;
+
+    // With a person at the table it stays, however long the game runs.
     let base = Instant::now();
     assert_eq!(registry.sweep(base).await, 0);
+    let left = base + 10 * HOUR;
+    assert_eq!(registry.sweep(left).await, 0);
 
-    // The human leaves; the bot stays connected, but nobody is there to play against.
+    // The person answers and leaves; the bots play on, and the next sweep sees the log grown.
+    let (id, decision) = human.decision().await;
+    let answer = common::passive(&decision);
+    let message = ClientMessage::Answer {
+        decision: id,
+        answer,
+    };
+    human.say(&handle, message).await;
+    settled(&handle, seats).await;
     drop(human);
-    assert_eq!(registry.sweep(later(base, 59)).await, 0);
-    assert_eq!(registry.sweep(later(base, 61)).await, 1);
+    assert_eq!(registry.sweep(later(left, 14)).await, 0);
+    // Moves at the table are no person: a quarter hour after the last one left, the table closes.
+    assert_eq!(registry.sweep(later(left, 16)).await, 1);
     assert!(registry.is_empty());
 }

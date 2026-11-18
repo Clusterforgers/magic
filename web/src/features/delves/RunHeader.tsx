@@ -1,6 +1,6 @@
 /**
  * The head of a run page: the theme, where the run is, Heat, the timers, the party's hearts, the seed code to copy, and each hero
- * with a life bar, gold and a row of relics whose rules show on hover or focus; a phone folds it to one line.
+ * with a life bar, gold and a row of relics whose rules show on hover or focus (edged by rarity), the Satchel, upgrades and banes; a phone folds it to one line.
  */
 import {
   BackpackIcon,
@@ -12,6 +12,8 @@ import {
   GemIcon,
   GhostIcon,
   HeartIcon,
+  SkullIcon,
+  Trash2Icon,
   TriangleAlertIcon,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -21,19 +23,32 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { cn } from '@/lib/utils'
 import type { CustomCardView, DelveContent, DelveView, Hero } from '@/protocol/generated'
 import { ColourPips } from './CommanderArt'
-import { HEARTS, heatTier, heatWords, lifeShare, lifeTone, runStage } from './model'
+import {
+  customCard,
+  HEARTS,
+  heatTier,
+  heatWords,
+  lifeShare,
+  lifeTone,
+  MAX_LIFE,
+  maxLifeOf,
+  runStage,
+} from './model'
+import { RARITY_TONE } from './rarity'
 import { timersText } from './words'
-import { satchelWords, upgradeWords } from './upgrades'
+import { isBane, satchelWords, upgradeWords } from './upgrades'
 
 const BAR = { low: 'bg-destructive', hurt: 'bg-warning', fine: 'bg-success' } as const
 
-/** A hero's life as a bar with the number. */
+/** A hero's life as a bar with the number, and the life cap beside it once an event moved it. */
 export function LifeBar({ hero, className }: { hero: Hero; className?: string }) {
-  const tone = lifeTone(hero.life)
+  const max = maxLifeOf(hero)
+  const moved = max !== MAX_LIFE
+  const tone = lifeTone(hero.life, max)
   return (
     <span
       role="img"
-      aria-label={`${hero.name}: ${hero.life} life`}
+      aria-label={`${hero.name}: ${hero.life} life${moved ? ` of a ${max} cap` : ''}`}
       className={cn('flex min-w-0 items-center gap-2', className)}
     >
       <span className="h-2 min-w-12 flex-1 overflow-hidden rounded-full bg-muted">
@@ -43,10 +58,20 @@ export function LifeBar({ hero, className }: { hero: Hero; className?: string })
             'block h-full rounded-full transition-[width] duration-slow ease-out motion-reduce:transition-none',
             BAR[tone],
           )}
-          style={{ width: `${lifeShare(hero.life) * 100}%` }}
+          style={{ width: `${lifeShare(hero.life, max) * 100}%` }}
         />
       </span>
-      <span className="w-7 text-right text-sm font-semibold tabular-nums">{hero.life}</span>
+      <span className="min-w-7 text-right text-sm font-semibold tabular-nums">
+        {hero.life}
+        {moved ? (
+          <span
+            data-slot="life-cap"
+            className={cn('font-medium', max < MAX_LIFE ? 'text-destructive' : 'text-success')}
+          >
+            /{max}
+          </span>
+        ) : null}
+      </span>
     </span>
   )
 }
@@ -77,10 +102,12 @@ export function RelicChip({ card, owner }: { card: CustomCardView; owner?: strin
             type="button"
             data-relic={card.id}
             data-risky={risky || undefined}
-            aria-label={`${card.name}${risky ? ', risky' : ''}${owner ? `, relic of ${owner}` : ''}: ${card.text}`}
+            data-rarity={card.rarity}
+            aria-label={`${card.name}, ${card.rarity}${risky ? ', risky' : ''}${owner ? `, relic of ${owner}` : ''}: ${card.text}`}
             className={cn(
-              'inline-grid size-7 place-items-center rounded-md border bg-surface',
-              risky ? 'border-destructive text-destructive' : 'border-relic text-relic',
+              'inline-grid size-7 place-items-center rounded-md border-2 bg-surface',
+              RARITY_TONE[card.rarity].border,
+              risky ? 'text-destructive' : RARITY_TONE[card.rarity].text,
             )}
           />
         }
@@ -96,6 +123,7 @@ export function RelicChip({ card, owner }: { card: CustomCardView; owner?: strin
           {card.name}
           {owner ? ` · ${owner}` : ''}
         </span>
+        <span>{card.rarity} relic</span>
         <span>{card.text}</span>
         {risky ? <span className="font-semibold">Risky: it helps the boss too.</span> : null}
       </TooltipContent>
@@ -103,22 +131,10 @@ export function RelicChip({ card, owner }: { card: CustomCardView; owner?: strin
   )
 }
 
-const relicCard = (content: DelveContent, id: string): CustomCardView =>
-  content.cards.find((c) => c.id === id) ?? {
-    id,
-    name: id,
-    kind: 'Relic',
-    type_line: 'Relic',
-    text: '',
-    art: '',
-    role: '',
-    price: 0,
-    turn: 0,
-  }
-
 /** A hero's Satchel (the cards they earned, cast from it in every fight) and commander upgrades, in words. */
 function HeroGear({ hero }: { hero: Hero }) {
-  if (hero.satchel.length === 0 && hero.upgrades.length === 0) return null
+  const { lost } = hero
+  if (hero.satchel.length === 0 && hero.upgrades.length === 0 && lost.length === 0) return null
   return (
     <ul data-slot="hero-gear" className="grid gap-1 text-xs text-muted-foreground">
       {hero.satchel.length > 0 ? (
@@ -127,12 +143,33 @@ function HeroGear({ hero }: { hero: Hero }) {
           <span>{satchelWords(hero.satchel)}</span>
         </li>
       ) : null}
-      {hero.upgrades.map((upgrade, i) => (
-        <li key={`${i}-${upgradeWords(upgrade)}`} data-slot="hero-upgrade" className="flex items-start gap-1">
-          <CrownIcon aria-hidden="true" className="mt-px size-3.5 shrink-0 text-delve" />
-          <span>{upgradeWords(upgrade)}</span>
+      {lost.length > 0 ? (
+        <li data-slot="hero-lost" className="flex items-start gap-1">
+          <Trash2Icon aria-hidden="true" className="mt-px size-3.5 shrink-0 text-destructive" />
+          <span>Given up: {lost.join(', ')}</span>
         </li>
-      ))}
+      ) : null}
+      {hero.upgrades.map((upgrade, i) => {
+        const bane = isBane(upgrade)
+        const Icon = bane ? SkullIcon : CrownIcon
+        return (
+          <li
+            key={`${i}-${upgradeWords(upgrade)}`}
+            data-slot="hero-upgrade"
+            data-bane={bane || undefined}
+            className={cn('flex items-start gap-1', bane && 'text-destructive')}
+          >
+            <Icon
+              aria-hidden="true"
+              className={cn('mt-px size-3.5 shrink-0', bane ? 'text-destructive' : 'text-delve')}
+            />
+            <span>
+              {bane ? <span className="sr-only">Bane: </span> : null}
+              {upgradeWords(upgrade)}
+            </span>
+          </li>
+        )
+      })}
     </ul>
   )
 }
@@ -157,7 +194,7 @@ function HeroLine({ hero, you, content }: { hero: Hero; you: boolean; content: D
         {hero.relics.length > 0 ? (
           <span className="ml-auto flex flex-wrap gap-1" aria-label={`Relics of ${hero.name}`} role="group">
             {hero.relics.map((id, i) => (
-              <RelicChip key={`${id}-${i}`} card={relicCard(content, id)} owner={hero.name} />
+              <RelicChip key={`${id}-${i}`} card={customCard(content, id)} owner={hero.name} />
             ))}
           </span>
         ) : null}

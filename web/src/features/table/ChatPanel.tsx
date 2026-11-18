@@ -41,12 +41,22 @@ export function ChatPanel() {
           <p className="p-2 text-muted-foreground">No messages yet.</p>
         ) : (
           <ol className="grid gap-1">
-            {chat.map((line, index) => (
-              <li key={index} className="px-1 break-words">
-                <span className="font-semibold">{line.from === me ? 'You' : name(line.from)}</span>:{' '}
-                {line.text}
-              </li>
-            ))}
+            {chat.map((line, index) =>
+              line.table === true ? (
+                <li
+                  key={index}
+                  data-slot="table-line"
+                  className="px-1 break-words text-muted-foreground italic"
+                >
+                  {line.from === me ? 'You' : name(line.from)} {line.text}
+                </li>
+              ) : (
+                <li key={index} className="px-1 break-words">
+                  <span className="font-semibold">{line.from === me ? 'You' : name(line.from)}</span>:{' '}
+                  {line.text}
+                </li>
+              ),
+            )}
           </ol>
         )}
       </div>

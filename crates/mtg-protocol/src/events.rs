@@ -298,8 +298,10 @@ fn count(len: usize) -> u32 {
 /// Every variant is listed so a new event forces a decision about what it reveals.
 #[allow(clippy::too_many_lines)]
 fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenEvent> {
-    // Every seat sees every hand, so what is dealt, bottomed or drawn is told whole.
-    let own = |player: &PlayerId| *player == viewer || before.ruleset().open_hands();
+    // A seat that sees the hand (its own, open hands, a teammate's) is told what is dealt, bottomed or drawn whole.
+    let own = |player: &PlayerId| {
+        *player == viewer || before.ruleset().open_hands() || before.sees_team_hand(viewer, *player)
+    };
     match event {
         // A pick among cards of a hand or a library names them only to a seat that sees them.
         Event::ChosenAtRandom { cards } if cards.iter().any(|card| !knows(before, *card, viewer)) => {

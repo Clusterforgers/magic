@@ -92,6 +92,8 @@ pub struct Player {
     pub(crate) scheme_every: u32,
     /// The seat whose loss makes this one lose too: a boss's minion ([`crate::schemes::leaders_fall`]).
     pub(crate) leader: Option<PlayerId>,
+    /// The names of the cards it started with held in its command zone (a boss's commander card).
+    pub(crate) held: Vec<String>,
 }
 
 impl Player {
@@ -121,6 +123,7 @@ impl Player {
             scheme: None,
             scheme_every: 1,
             leader: None,
+            held: Vec::new(),
         }
     }
 
@@ -142,6 +145,11 @@ impl Player {
     /// How many boss phases the player has, and how many of them have begun.
     pub fn phases(&self) -> (usize, usize) {
         (self.phases.len(), usize::from(self.phase))
+    }
+
+    /// The names of the cards the player started with held in its command zone, which only an effect casts.
+    pub fn held(&self) -> impl Iterator<Item = &str> {
+        self.held.iter().map(String::as_str)
     }
 
     /// The names of the player's boss phases, in order.

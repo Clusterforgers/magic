@@ -31,3 +31,22 @@ The rest is fast: page TTFB 4 to 15 ms, `auth/me`, `auth/options` and `lobbies` 
 | Font request start (throttled) | 729 ms | 66 ms |
 | First page after a release that changes app code only (gzip) | 241 kB | 137 kB |
 | Entry chunk on the wire | 150 kB (gzip 1) | 60 kB entry + 94 kB vendor at gzip 9 |
+
+## Bot load
+
+How bot thinking shares the server with requests, sockets and the database.
+
+- Method: a timing loop (a timed Very Hard brain answers every decision of four seeded Commander pods, 1,500 to 3,400 decisions each, beside Normal seats) on a loaded 24-core desktop; `cargo run --release -p mtg-server --example bot_load` (three games of one passive person and three Very Hard bots, in memory, pinned to 8 cores, 90 s) times the game browser's list, a static list and one game's page.
+- Causes found: searches past the 5 s deadline kept their thread and slot (a block declaration on a 55-permanent board took 11.2 s: the block forecasts, the judged casts inside rollouts and the endgame worlds checked no clock), so late threads filled every slot (cores − 1), later bots waited out the deadline and played the safe answer; the lists asked every table's actor in turn and waited behind its slow writes; bots playing on counted as answers, so a game its person had left never went idle.
+
+| Measure | Before | After |
+| --- | --- | --- |
+| Longest Very Hard answer, four pods | 11.2 s | 4.23 s |
+| Answers over 4.3 s | 40 | 0 |
+| Thinking slots on 8 cores | 7, and a slot stays taken past the deadline | 4, one per game, freed at the deadline |
+| Table status while its write stalls 3 s | waits for the write | the published status within 150 ms (`busy_tables`) |
+| `GET /api/lobbies` p95 under bot load (in memory) | 0.9 ms | 2.3 ms |
+| `GET /api/games/{id}` p95 under bot load (in memory) | 0.3 ms | 0.3 ms |
+| A game whose person left, bots playing | never closed | closed after 15 min |
+
+In memory and with small boards the requests stay fast either way: the stall came from crowded boards and slow `COMMIT`s, which the clock adherence and the published status address.

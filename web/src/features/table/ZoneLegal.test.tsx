@@ -1,4 +1,4 @@
-// Goal: a graveyard or exile chip and a zone's picture show, without the list being opened, that a card inside can be played or used now: a ring and a play mark, the count in the name and the tooltip, and a sentence under the list's title; they say nothing for a prompt that picks among choices, for the command zone, for a card of another mark or once the mark goes.
+// Goal: a graveyard or exile chip and a zone's picture show, without the list being opened, that a card inside can be played or used now: a ring and a play mark, the count in the name and the tooltip, and a sentence under the list's title; they say nothing for a prompt that picks among choices, for the command zone, for another seat's hand, for a card of another mark or once the mark goes.
 import { act, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { ObjectId } from '@/protocol/generated'
@@ -18,7 +18,13 @@ const exile = fixture.view.objects
   .filter((object) => object.zone === 'Exile' && object.owner === 0)
   .map((object) => object.id)
 
-const IDS: Record<ListedZone, readonly ObjectId[]> = { graveyard, exile, command: commanders, satchel: [] }
+const IDS: Record<ListedZone, readonly ObjectId[]> = {
+  graveyard,
+  exile,
+  command: commanders,
+  satchel: [],
+  hand: graveyard,
+}
 
 type Flavour = 'chip' | 'picture'
 
@@ -99,6 +105,12 @@ describe.each<Flavour>(['chip', 'picture'])('the %s of a zone', (flavour) => {
   it('stays plain for the command zone, whose commanders are cast from the hand dock', () => {
     const { zoneEl, mark } = renderZone(flavour, 'command')
     mark(markCards([], commanders))
+    expect(zoneEl()).not.toHaveAttribute('data-legal')
+  })
+
+  it("stays plain for another seat's hand, whose cards are never the viewer's to play", () => {
+    const { zoneEl, mark } = renderZone(flavour, 'hand')
+    mark(markCards([], graveyard))
     expect(zoneEl()).not.toHaveAttribute('data-legal')
   })
 

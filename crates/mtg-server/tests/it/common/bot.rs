@@ -190,6 +190,7 @@ impl Bot {
             | ServerMessage::Presence { .. }
             | ServerMessage::Deciding { .. }
             | ServerMessage::Spectators { .. }
+            | ServerMessage::DecksRevealed { .. }
             | ServerMessage::TakeBackOffer { .. }
             | ServerMessage::TakeBackAsked { .. }
             | ServerMessage::TakeBackEnded { .. }

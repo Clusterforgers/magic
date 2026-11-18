@@ -190,7 +190,13 @@ const flag = (id: Flag, label: string, help: string, group: RuleGroup, on: strin
   })
 
 /** A rule that is on unless the creator turns it off; on is never sent, since the server's default is on. */
-const defaultOn = (id: 'take_backs', label: string, help: string, group: RuleGroup, off: string): RuleSpec =>
+const defaultOn = (
+  id: 'take_backs' | 'team_hands',
+  label: string,
+  help: string,
+  group: RuleGroup,
+  off: string,
+): RuleSpec =>
   rule<false>({
     id,
     label,
@@ -504,6 +510,13 @@ export const RULES: readonly RuleSpec[] = [
     own: { normal: 'relaxed', commander: 'relaxed' },
   }),
   flag('open_hands', 'Open hands', 'Every player sees every hand.', 'Table', 'Open hands', 'Hands hidden'),
+  defaultOn(
+    'team_hands',
+    'Team hands',
+    'At a table with teams, teammates see each other’s hands; opponents and spectators do not.',
+    'Table',
+    'Team hands hidden',
+  ),
   flag(
     'revealed_library_top',
     'Revealed top cards',

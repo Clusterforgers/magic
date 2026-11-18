@@ -62,7 +62,7 @@ function FilledZone({ zone, owner, ids, width, height }: ZonePictureProps) {
   const name = usePlay((state) => state.objectsById[topId]?.name)
   const handlers = usePreviewHandlers(topId, () => setOpen(true))
   const Icon = ZONE_ICON[zone]
-  const legal = useLegalCount(zone === 'command' ? NONE : ids)
+  const legal = useLegalCount(zone === 'command' || zone === 'hand' ? NONE : ids)
   return (
     <>
       <button

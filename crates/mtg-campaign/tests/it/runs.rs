@@ -19,6 +19,7 @@ fn deck(colors: &str) -> HeroDeck {
         name: format!("Deck {colors}"),
         colors: colors.to_owned(),
         commanders: Vec::new(),
+        makeup: None,
     }
 }
 

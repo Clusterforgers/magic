@@ -41,6 +41,8 @@ pub struct ChosenDeck {
     own_issues: Arc<[Issue]>,
     reads: BTreeMap<String, String>,
     conjured: BTreeMap<String, Arc<CardDefinition>>,
+    /// The real name of a deck drawn at random, which the table hears only at the start; `None` for a deck chosen by name.
+    hidden: Option<String>,
 }
 
 impl ChosenDeck {
@@ -67,6 +69,7 @@ impl ChosenDeck {
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
+            hidden: None,
         })
     }
 
@@ -99,6 +102,7 @@ impl ChosenDeck {
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
+            hidden: None,
         })
     }
 
@@ -144,6 +148,7 @@ impl ChosenDeck {
             own_issues: Arc::from([]),
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
+            hidden: None,
         })
     }
 
@@ -172,6 +177,65 @@ impl ChosenDeck {
                 &self.satchel,
             )?;
         }
+        Ok(self)
+    }
+
+    /// The deck less one library copy of each card named in `names`: the cards a Delves hero gave up for an event's
+    /// cost. The recipe and the fingerprint follow; a built-in deck has no oracle ids to name them by and stays as it is.
+    pub fn without(mut self, names: &[String]) -> Result<ChosenDeck, FingerprintError> {
+        let DeckRef::Oracle {
+            cards: ids,
+            printings,
+            ..
+        } = &mut self.deck
+        else {
+            return Ok(self);
+        };
+        let mut left: Vec<&str> = names.iter().map(String::as_str).collect();
+        let keep: Vec<bool> = self
+            .cards
+            .iter()
+            .map(
+                |card| match left.iter().position(|name| *name == card.name) {
+                    Some(at) => {
+                        left.swap_remove(at);
+                        false
+                    }
+                    None => true,
+                },
+            )
+            .collect();
+        if keep.iter().all(|kept| *kept) {
+            return Ok(self);
+        }
+        let kept = |at: usize| keep.get(at).copied().unwrap_or(true);
+        self.cards = self
+            .cards
+            .iter()
+            .enumerate()
+            .filter(|(at, _)| kept(*at))
+            .map(|(_, card)| Arc::clone(card))
+            .collect();
+        *ids = std::mem::take(ids)
+            .into_iter()
+            .enumerate()
+            .filter(|(at, _)| kept(*at))
+            .map(|(_, id)| id)
+            .collect();
+        *printings = std::mem::take(printings)
+            .into_iter()
+            .enumerate()
+            .filter(|(at, _)| kept(*at))
+            .map(|(_, printing)| printing)
+            .collect();
+        self.fingerprint = DeckFingerprint::of_seat_all(
+            &self.cards,
+            &self.commanders,
+            self.companion.as_ref(),
+            &self.attractions,
+            &self.stickers,
+            &self.satchel,
+        )?;
         Ok(self)
     }
 
@@ -241,6 +305,20 @@ impl ChosenDeck {
     /// What the table is told of the deck.
     pub fn note(&self) -> &SeatDeck {
         &self.note
+    }
+
+    /// The deck under `label` until the start, for a deck drawn at random: the table, its holder included, sees the
+    /// label in the lobby and the real name when the game starts ([`ChosenDeck::revealed`]).
+    #[must_use]
+    pub fn hidden_as(mut self, label: &str) -> ChosenDeck {
+        let name = std::mem::replace(&mut self.note.name, label.to_owned());
+        self.hidden = Some(name);
+        self
+    }
+
+    /// The real name of a deck drawn at random, told at the start; `None` for a deck chosen by name.
+    pub fn revealed(&self) -> Option<&str> {
+        self.hidden.as_deref()
     }
 
     /// How the recipe names the deck.
@@ -600,6 +678,15 @@ impl SeatDecks {
         self.current.get(seat)?.as_ref().map(ChosenDeck::note)
     }
 
+    /// The seats whose deck was drawn at random, with its real name, in seat order: what the start tells the table.
+    pub(crate) fn revealed(&self) -> Vec<(usize, String)> {
+        self.current
+            .iter()
+            .enumerate()
+            .filter_map(|(seat, deck)| Some((seat, deck.as_ref()?.revealed()?.to_owned())))
+            .collect()
+    }
+
     /// The commanders `seat`'s deck leads; none while it has no deck.
     pub(crate) fn commanders(&self, seat: usize) -> &[Arc<CardDefinition>] {
         self.current
@@ -896,7 +983,7 @@ mod tests {
 
 #[cfg(test)]
 mod printing_tests {
-    //! Goal: a chosen deck takes the printing of each deck line for the cards of its library, its commanders and its companion, keeps them in its recipe, keeps its fingerprint, and ignores a list that names none and a built-in deck.
+    //! Goal: a chosen deck takes the printing of each deck line for the cards of its library, its commanders and its companion, keeps them in its recipe, keeps its fingerprint, and ignores a list that names none and a built-in deck; a Delves card given up leaves one library copy, its recipe line and printing, and the fingerprint.
     #![allow(clippy::unwrap_used, clippy::expect_used)]
 
     use mtg_cards::vanilla;
@@ -977,5 +1064,42 @@ mod printing_tests {
         let named = demo.clone().with_printings(vec![Some("x".to_owned()); 60]);
         assert_eq!(named.reference(), demo.reference());
         assert!(named.cards().iter().all(|card| card.identity.is_none()));
+    }
+
+    #[test]
+    fn a_card_given_up_leaves_the_library_the_recipe_and_the_fingerprint_once() {
+        let printings: Vec<Option<String>> = ["a", "b", "c"]
+            .into_iter()
+            .map(|p| Some(p.to_owned()))
+            .chain([None, None])
+            .collect();
+        let full = deck().with_printings(printings);
+        let less = full
+            .clone()
+            .without(&["Bear".to_owned(), "Wolf".to_owned()])
+            .unwrap();
+        let names: Vec<&str> = less.cards().iter().map(|c| c.name.as_str()).collect();
+        assert_eq!(
+            names,
+            ["Bear", "Elk"],
+            "one copy goes; a card the deck lacks is nothing"
+        );
+        assert_eq!(less.commanders().len(), 1);
+        assert!(less.companion().is_some());
+        assert_ne!(less.fingerprint(), full.fingerprint());
+        let DeckRef::Oracle {
+            cards, printings, ..
+        } = less.reference()
+        else {
+            panic!("a stored deck")
+        };
+        assert_eq!(cards, &["bear", "elk"]);
+        let kept: Vec<Option<&str>> = printings.iter().map(Option::as_deref).collect();
+        assert_eq!(kept, [Some("b"), Some("c"), None, None]);
+        // Nothing given up and a built-in deck stay as they are.
+        assert_eq!(deck().without(&[]).unwrap().reference(), deck().reference());
+        let demo = ChosenDeck::demo(demo::find("mono-green").unwrap()).unwrap();
+        let trimmed = demo.clone().without(&["Forest".to_owned()]).unwrap();
+        assert_eq!(trimmed.cards().len(), demo.cards().len());
     }
 }

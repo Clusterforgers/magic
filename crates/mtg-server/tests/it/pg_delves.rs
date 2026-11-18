@@ -268,13 +268,17 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
     let content = call(&server, "GET", "/api/delves/content", None, None).await;
     assert_eq!(content.status, 200);
     let content = content.json();
-    assert_eq!(content["bosses"].as_array().unwrap().len(), 4);
     let theme = &mtg_campaign::content().unwrap().themes[0];
+    // Every boss, its upgraded forms too, which a ladder may end with.
+    assert_eq!(
+        content["bosses"].as_array().unwrap().len(),
+        theme.bosses.len() + theme.upgraded.len()
+    );
     for (wire, boss) in content["bosses"]
         .as_array()
         .unwrap()
         .iter()
-        .zip(&theme.bosses)
+        .zip(theme.bosses.iter().chain(&theme.upgraded))
     {
         assert_eq!(wire["art"]["card"], boss.art.card.as_str(), "{}", boss.id);
         assert_eq!(

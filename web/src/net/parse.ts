@@ -42,6 +42,7 @@ import type {
   TakeBackOffer,
   TakeBackOutcome,
   TakeBackRefusal,
+  RevealedDeck,
   YieldUntil,
 } from '@/protocol/generated'
 import { isCount, isFlag, isInt, isListOf, isRecord, isText } from './check'
@@ -88,6 +89,7 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   TakeBackEnded: true,
   TakeBackRefused: true,
   EndedByAdmin: true,
+  DecksRevealed: true,
 }
 
 const ERROR_CODES: Record<ErrorCode, true> = {
@@ -481,6 +483,11 @@ function isDecision(value: unknown): value is Decision {
   )
 }
 
+/** A deck drawn at random as the start reveals it. */
+function isRevealedDeck(value: unknown): value is RevealedDeck {
+  return isRecord(value) && isCount(value.seat) && isText(value.name)
+}
+
 /** A seat and the name of its decision; a name this page does not know yet reads as a plain decision. */
 function isDeciding(value: unknown): value is DecidingView {
   return isRecord(value) && isCount(value.seat) && isText(value.kind)
@@ -502,7 +509,8 @@ function isAutoChoices(value: unknown): value is SentAutoChoices {
     isFlag(value.order_triggers) &&
     isFlag(value.assign_damage) &&
     (value.smart_stops === undefined || isFlag(value.smart_stops)) &&
-    (value.skip_triggers === undefined || isFlag(value.skip_triggers))
+    (value.skip_triggers === undefined || isFlag(value.skip_triggers)) &&
+    (value.auto_pay === undefined || isFlag(value.auto_pay))
   )
 }
 
@@ -749,6 +757,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'EndedByAdmin':
       if (v.reason !== undefined && !isText(v.reason)) return '"reason" must be text when present'
       return v.reason === undefined ? { type } : { type, reason: v.reason }
+    case 'DecksRevealed':
+      if (!isListOf(v.decks, isRevealedDeck)) return '"decks" must be a list of decks (seat, name)'
+      return { type, decks: v.decks }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

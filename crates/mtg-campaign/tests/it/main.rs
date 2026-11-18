@@ -3,10 +3,16 @@
 
 mod boss_cards;
 mod bosses;
+mod brackets;
 mod content;
 mod events;
 mod fights;
+mod mythic_cards;
+mod rarity;
+mod relic_cards;
+mod relics;
 mod runs;
 mod satchel;
 mod spirits;
 mod tiers;
+mod trades;

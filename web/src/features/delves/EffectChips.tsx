@@ -1,15 +1,18 @@
-/** Effects as chips: gold, life, a relic or a card, each toned as a gain or a cost, and chances with their odds. */
-import { CoinsIcon, GemIcon, HeartIcon, SparklesIcon } from 'lucide-react'
+/** Effects as chips: gold, life, life cap, a relic (with its rarity), a card or a commander bane, each toned as a gain or a cost, and chances with their odds. */
+import { CoinsIcon, GemIcon, HeartCrackIcon, HeartIcon, SkullIcon, SparklesIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Chance, Chip, ChipKind, Part } from './eventEffects'
 import { isEmpty } from './eventEffects'
+import { RARITY_TONE } from './rarity'
 
 const ICONS: Record<ChipKind, LucideIcon> = {
   gold: CoinsIcon,
   life: HeartIcon,
+  cap: HeartCrackIcon,
   relic: GemIcon,
   card: SparklesIcon,
+  bane: SkullIcon,
 }
 
 const TONES = {
@@ -17,6 +20,21 @@ const TONES = {
   cost: 'border-destructive/60 text-destructive',
   flat: 'border-border text-muted-foreground',
 } as const
+
+/** A chip's words; a relic's rarity word in its tier's colour. */
+function ChipText({ chip }: { chip: Chip }) {
+  const at = chip.rarity === undefined ? -1 : chip.text.indexOf(chip.rarity)
+  if (chip.rarity === undefined || at < 0) return chip.text
+  return (
+    <>
+      {chip.text.slice(0, at)}
+      <span data-rarity={chip.rarity} className={RARITY_TONE[chip.rarity].text}>
+        {chip.rarity}
+      </span>
+      {chip.text.slice(at + chip.rarity.length)}
+    </>
+  )
+}
 
 /** One effect: its icon and words, green for a gain, red for a cost. */
 export function EffectChip({ chip }: { chip: Chip }) {
@@ -31,7 +49,9 @@ export function EffectChip({ chip }: { chip: Chip }) {
       )}
     >
       <Icon aria-hidden="true" className="size-3.5 shrink-0" />
-      {chip.text}
+      <span>
+        <ChipText chip={chip} />
+      </span>
     </span>
   )
 }

@@ -466,6 +466,10 @@ pub struct BossView {
     pub phases: Vec<String>,
     /// How many have begun.
     pub begun: u32,
+    /// The name of the boss's commander card, which it casts as its last phase begins.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub commander: Option<String>,
     /// The name of the scheme in motion.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]

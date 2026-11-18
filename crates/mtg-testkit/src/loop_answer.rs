@@ -2,6 +2,7 @@
 //! number of times (to its end when it ends by itself), and one that does not help is stopped.
 
 use mtg_core::ids::PlayerId;
+use mtg_engine::GameState;
 use mtg_engine::decision::Answer;
 use mtg_engine::loops::{LoopAnswer, LoopOptions, LoopStep};
 
@@ -50,4 +51,19 @@ pub fn loop_answer(seat: PlayerId, options: &LoopOptions) -> Answer {
         GROWING.min(options.max)
     };
     Answer::Loop(LoopAnswer::Repeat(times))
+}
+
+/// Iterations the boss's side of a Delves fight runs of any loop at most.
+pub const BOSS_LOOP_CAP: u32 = 5;
+
+/// [`loop_answer`] for a seat of the game `state`: a seat on a boss's side (`spotlight::is_boss_side`) never draws the
+/// game and runs a loop at most [`BOSS_LOOP_CAP`] times, so a boss never wins or stalls a fight by a loop.
+pub fn loop_answer_in(state: &GameState, seat: PlayerId, options: &LoopOptions) -> Answer {
+    if !mtg_engine::spotlight::is_boss_side(state, seat) {
+        return loop_answer(seat, options);
+    }
+    if options.max == 0 || loop_worth(seat, &options.per_iteration) <= 0 {
+        return Answer::Loop(LoopAnswer::Stop);
+    }
+    Answer::Loop(LoopAnswer::Repeat(BOSS_LOOP_CAP.min(options.max)))
 }

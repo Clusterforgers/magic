@@ -14,7 +14,7 @@ import { defaultStopsWords } from './stopModel'
 /**
  * The pace settings at the foot of the Full Control menu: "End my turn by hand" (the server holds the seat at its own
  * end step until it ends the turn), the decisions the server answers for the seat outside Full Control (its triggers in
- * timestamp order, combat damage lethal in order), smart stops (a step where a permanent of the seat can act is a
+ * timestamp order, combat damage lethal in order, every mana payment with no real choice), smart stops (a step where a permanent of the seat can act is a
  * window), the sound cues (kept in this browser, `features/sound`), the abilities it always yields to (a click takes one back), and the pinned stops saved as the default of
  * every new game, with a reset. The end-turn setting and the default stops are kept in this browser (or on the account)
  * and applied when a game is joined.
@@ -64,6 +64,14 @@ export function FlowMenuItems() {
         onCheckedChange={(on) => session.setAutoChoices({ ...auto, smart_stops: on })}
       >
         Stop where my permanents can act
+      </DropdownMenuCheckboxItem>
+      <DropdownMenuCheckboxItem
+        data-slot="auto-pay"
+        checked={auto.auto_pay === true}
+        disabled={!online}
+        onCheckedChange={(on) => session.setAutoChoices({ ...auto, auto_pay: on })}
+      >
+        Always pay automatically
       </DropdownMenuCheckboxItem>
       <DropdownMenuCheckboxItem data-slot="sounds" checked={sounds} onCheckedChange={setSoundsOn}>
         Play sounds

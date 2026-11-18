@@ -16,6 +16,7 @@ const card = (
   art: '',
   role: '',
   price: 0,
+  rarity: 'Common',
   turn,
 })
 

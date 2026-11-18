@@ -12,8 +12,8 @@ import { usePreviewStore } from './preview'
 import { useLegalCount } from './prompt/marks'
 import { TopFace } from './TopFace'
 
-/** The zones whose cards a pod lists in a dialog. */
-export type ListedZone = Extract<ZoneKey, 'graveyard' | 'exile' | 'command' | 'satchel'>
+/** The zones whose cards a pod lists in a dialog: the public ones, and another seat's hand the viewer sees (a teammate's). */
+export type ListedZone = Extract<ZoneKey, 'hand' | 'graveyard' | 'exile' | 'command' | 'satchel'>
 
 interface ZoneDialogProps {
   zone: ListedZone
@@ -49,10 +49,25 @@ export function ZoneDialog({ zone, owner, ids, open, onOpenChange }: ZoneDialogP
           {owner}&rsquo;s {name}
         </DialogTitle>
         <DialogDescription>
-          {cardCount(ids.length)}, most recent first.
-          <LegalLine ids={ids} />
+          {zone === 'hand' ? (
+            <>
+              {cardCount(ids.length)} in {owner}&rsquo;s hand, shown to you. Only {owner} can play them.
+            </>
+          ) : (
+            <>
+              {cardCount(ids.length)}, most recent first.
+              <LegalLine ids={ids} />
+            </>
+          )}
         </DialogDescription>
-        <CardRow ids={[...ids].reverse()} label={`${owner}'s ${name} cards`} size="normal" />
+        {/* A hand keeps its own order; a pile lists its most recent card first. */}
+        <div data-slot={zone === 'hand' ? 'their-hand' : undefined} className="contents">
+          <CardRow
+            ids={zone === 'hand' ? ids : [...ids].reverse()}
+            label={`${owner}'s ${name} cards`}
+            size="normal"
+          />
+        </div>
       </DialogContent>
     </Dialog>
   )
@@ -120,7 +135,8 @@ export function ZoneButton({
 }: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
   const Icon = ZONE_ICON[zone]
-  const legal = useLegalCount(zone === 'command' ? NONE : ids)
+  // A hand listed here is another seat's: none of its cards is the viewer's to play.
+  const legal = useLegalCount(zone === 'command' || zone === 'hand' ? NONE : ids)
   const line = density === 'line'
   return (
     <>

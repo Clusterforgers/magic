@@ -1,6 +1,7 @@
 /** The Delves run page's pure rules of display: room states and votes, boss life, life bars, stages and ready heroes. */
 import type { DeckEntry } from '@/features/game/deckEntries'
 import { standingKind, summaryOf } from '@/features/table/campaign/bossAbilities'
+import { COMMANDER_TEXT, commanderLabel } from '@/features/table/campaign/bossPhase'
 import type { BossAbility } from '@/features/table/campaign/bossAbilities'
 import type {
   Brain,
@@ -114,6 +115,9 @@ export const MAX_LIFE = 40
 /** The hearts a party starts with. */
 export const HEARTS = 3
 
+/** A hero's life cap: the base moved by the events that cut or raised it. */
+export const maxLifeOf = (hero: Pick<Hero, 'life_cap'>): number => MAX_LIFE + hero.life_cap
+
 /** The share of a life bar a life fills, 0 to 1. */
 export const lifeShare = (life: number, max = MAX_LIFE): number => Math.max(0, Math.min(1, life / max))
 
@@ -146,6 +150,24 @@ export const lettersOf = (entry: DeckEntry): string => (entry.identity ?? []).jo
 
 /** Whether a card is a risky relic: its effect is symmetrical and helps the boss too. */
 export const isRisky = (card: Pick<CustomCardView, 'role'>): boolean => card.role === 'Risky'
+
+/** A card of the content by id; a plain common relic of that name when the content lacks it. */
+export function customCard(content: Pick<DelveContent, 'cards'>, id: string): CustomCardView {
+  return (
+    content.cards.find((c) => c.id === id) ?? {
+      id,
+      name: id,
+      kind: 'Relic',
+      type_line: 'Relic',
+      text: '',
+      art: '',
+      role: '',
+      price: 0,
+      rarity: 'Common',
+      turn: 0,
+    }
+  )
+}
 
 /**
  * The boss's abilities for the intro of a fight, from the plan its game is made with: each custom card in its command
@@ -181,6 +203,19 @@ export function introAbilities(content: DelveContent, fight: DelveFightView): Bo
       text: card.text,
       summary: summaryOf(card.text),
       when: life >= fight.life ? 'From the start' : `At ${life} life (${share}%)`,
+    })
+  }
+  if (fight.commander !== undefined) {
+    const names = fight.phases.map(([id]) => content.cards.find((entry) => entry.id === id)?.name ?? id)
+    const own = fight.phases.filter(([id]) => id !== 'bulwark')
+    const at = own.at(-1)?.[1]
+    out.push({
+      key: `commander-${fight.commander}`,
+      kind: 'next-phase',
+      name: commanderLabel(names, fight.commander),
+      text: COMMANDER_TEXT,
+      summary: summaryOf(COMMANDER_TEXT),
+      ...(at === undefined ? {} : { when: `At ${at} life` }),
     })
   }
   return out

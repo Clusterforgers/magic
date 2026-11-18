@@ -41,10 +41,18 @@ relics: Array<string>,
  */
 satchel: Array<string>, 
 /**
- * Their commander upgrades, in the order they got them.
+ * Their commander upgrades, in the order they got them, and the banes events cost them.
  */
 upgrades: Array<Upgrade>, 
 /**
  * The choices waiting for them, first one first.
  */
-offers: Array<Offer>, };
+offers: Array<Offer>, 
+/**
+ * How far events moved their life cap for the rest of the run (below 0 for a cut).
+ */
+life_cap: number, 
+/**
+ * Cards of their deck they gave up for the rest of the run, by name, a copy each.
+ */
+lost: Array<string>, };

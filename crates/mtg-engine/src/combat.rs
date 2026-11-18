@@ -264,24 +264,21 @@ impl CombatState {
         }
     }
 
-    /// The attackers and blockers whose controller changed since they were declared (CR 506.4): an attacker no longer
-    /// controlled by the active player, a blocker no longer controlled by the player its attacker attacks.
+    /// The attackers and blockers whose controller changed sides since they were declared (CR 506.4): an attacker no
+    /// longer controlled by a player whose turn it is (any teammate under shared team turns, CR 805.3), a blocker no
+    /// longer controlled by a player defending against its attacker (either head of an attacked Two-Headed Giant team).
     fn w7d_changed_sides(&self, state: &GameState) -> Vec<ObjectId> {
-        let active = state.turn().active();
         let mut changed = Vec::new();
         for attacker in &self.attackers {
-            if controller_of(state, attacker.object) != Some(active) {
+            if !controller_of(state, attacker.object).is_some_and(|c| state.is_active(c)) {
                 changed.push(attacker.object);
             }
             let Some(defender) = attacker.defender(state) else {
                 continue;
             };
-            changed.extend(
-                attacker
-                    .blockers
-                    .iter()
-                    .filter(|blocker| controller_of(state, **blocker) != Some(defender)),
-            );
+            changed.extend(attacker.blockers.iter().filter(|blocker| {
+                !controller_of(state, **blocker).is_some_and(|c| defends(state, defender, c))
+            }));
         }
         changed
     }

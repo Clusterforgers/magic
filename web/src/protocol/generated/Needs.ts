@@ -11,4 +11,20 @@ gold: number,
 /**
  * The life a sure cost takes; the hero must keep more than 0 of it.
  */
-life: number, };
+life: number, 
+/**
+ * The life cap a cut takes; the hero must keep at least `MIN_LIFE_CAP` of it.
+ */
+max_life: number, 
+/**
+ * Whether the hero must hold a relic to give up.
+ */
+relic: boolean, 
+/**
+ * Whether the hero's deck must have a commander to weaken.
+ */
+commander: boolean, 
+/**
+ * Whether that commander must be a creature.
+ */
+creature_commander: boolean, };

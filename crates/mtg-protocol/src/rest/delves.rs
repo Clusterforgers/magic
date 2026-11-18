@@ -1,7 +1,7 @@
 //! Bodies of the Delves endpoints of `mtg-server` (`/api/delves`): creating and joining a run, the party's actions,
 //! the run as the party sees it and the campaign content the web draws (custom cards, bosses, events).
 
-use mtg_campaign::{Brain, CardKind, Needs, Outcome, Pick, Run};
+use mtg_campaign::{Brain, CardKind, Needs, Outcome, Pick, Rarity, Run};
 use mtg_core::house::Timers;
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
@@ -91,8 +91,9 @@ pub struct DelveView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub fight: Option<DelveFightView>,
-    /// The cards the caller may copy at the Mirror Pool while that is their first offer: the nonland cards of their deck
-    /// and their Satchel, each name once, in name order; left out otherwise.
+    /// The cards the caller may copy at the Mirror Pool or give up for an event's cost while that is their first offer:
+    /// the nonland cards of their deck (less those given up) and their Satchel, each name once, in name order; left out
+    /// otherwise.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<String>>", optional)]
     pub mirror: Vec<String>,
@@ -109,6 +110,10 @@ pub struct DelveFightView {
     pub rules: Vec<String>,
     /// Its phases by card id, each with the life at or below which it begins.
     pub phases: Vec<(String, i32)>,
+    /// Its commander card's name: a real card it casts free as its last phase begins.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub commander: Option<String>,
     /// Its minions: name and starting life.
     pub minions: Vec<(String, i32)>,
 }
@@ -167,6 +172,8 @@ pub struct CustomCardView {
     pub role: String,
     /// A relic's shop price.
     pub price: u32,
+    /// A relic's rarity.
+    pub rarity: Rarity,
     /// The heroes' turn from which an Enrage applies; 0 for other cards.
     pub turn: u32,
 }
@@ -225,6 +232,10 @@ pub struct DelveOptionView {
     pub needs: Needs,
     /// What it does in plain words, for a screen reader.
     pub summary: String,
+    /// What it takes from the hero in plain words, "nothing" for a free option.
+    pub cost: String,
+    /// What it gives the hero in plain words.
+    pub reward: String,
 }
 
 /// The campaign content the web draws.

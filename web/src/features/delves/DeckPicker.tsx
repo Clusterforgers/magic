@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { timeSince } from '@/lib/timeSince'
 import { cn } from '@/lib/utils'
+import { RandomDeckChoice } from '@/features/game/RandomDeckChoice'
 import { firstOpen, useFolds } from '@/features/decks/groups/folds'
 import { GroupToggle } from '@/features/decks/groups/GroupFolds'
 import { groupOf } from '@/features/decks/groups/grouping'
@@ -186,6 +187,13 @@ export function DeckPicker({
   }
   return (
     <div className="grid min-h-0 gap-4" data-slot="deck-picker">
+      <RandomDeckChoice
+        signedIn
+        groups={groups}
+        current={current}
+        disabled={false}
+        onChoose={(pick) => onTake(pick.id)}
+      />
       <div className="flex flex-wrap items-center gap-2">
         <label htmlFor={searchId} className="sr-only">
           Search decks

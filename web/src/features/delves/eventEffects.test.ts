@@ -1,10 +1,12 @@
-// Goal: an event option reads from its outcome data alone: gold, life, a relic and a card become toned chips, a gamble becomes a chance with both odds, a sure cost the hero cannot pay says why the option is shut, and a result names who did what with what really moved.
+// Goal: an event option reads from its outcome data alone: gold, life, life cap, a relic of a rarity, a card, a loss and a commander bane become toned chips split into cost and reward, a gamble becomes a chance with both odds, a need the hero cannot meet (gold, life, life cap, a relic, a commander) says why the option is shut, and a result names who did what with what really moved.
 import { describe, expect, it } from 'vitest'
-import type { DelveOptionView, Outcome, Resolved } from '@/protocol/generated'
-import { hero } from './fakeDelves'
+import type { CommanderFacts, DelveOptionView, Needs, Outcome, Rarity, Resolved } from '@/protocol/generated'
+import { hero, needs } from './fakeDelves'
+import type { HeroFacts } from './eventEffects'
 import {
   blockedReason,
   chipOf,
+  heroFacts,
   optionViews,
   partOf,
   resultSentence,
@@ -21,8 +23,23 @@ describe('chips', () => {
     [{ Life: 0 }, 'life', 'flat', 'no life change'],
     ['Relic', 'relic', 'gain', 'a relic'],
     ['CardPick', 'card', 'gain', 'a card for your Satchel'],
+    [{ MaxLife: -5 }, 'cap', 'cost', '−5 max life for the run'],
+    [{ MaxLife: 5 }, 'cap', 'gain', '+5 max life for the run'],
+    ['LoseCard', 'card', 'cost', 'give up a card of your deck or Satchel'],
+    ['LoseRelic', 'relic', 'cost', 'give up a relic'],
+    [{ Bane: { Tax: 1 } }, 'bane', 'cost', 'Your commander costs {1} more to cast'],
+    [{ Bane: { Shrink: 2 } }, 'bane', 'cost', 'Your commander gets −2/−2'],
   ])('draws %j as a %s chip, a %s: %s', (outcome, kind, tone, text) => {
     expect(chipOf(outcome)).toEqual({ kind, tone, text })
+  })
+
+  it.each<Rarity>(['Common', 'Rare', 'Mythic'])('draws a %s relic with its rarity', (rarity) => {
+    expect(chipOf({ RelicOf: rarity })).toEqual({
+      kind: 'relic',
+      tone: 'gain',
+      text: `a ${rarity} relic`,
+      rarity,
+    })
   })
 
   it('has no chip for a gamble, which is a chance', () => {
@@ -59,25 +76,127 @@ describe('chances', () => {
 })
 
 describe('what blocks an option', () => {
-  it.each<[{ gold: number; life: number }, number, number, string | null]>([
-    [{ gold: 25, life: 0 }, 25, 40, null],
-    [{ gold: 25, life: 0 }, 10, 40, 'Needs 25 gold: you have 10'],
-    [{ gold: 0, life: 8 }, 0, 9, null],
-    [{ gold: 0, life: 8 }, 0, 8, 'Needs more than 8 life: you have 8'],
-    [{ gold: 0, life: 0 }, 0, 1, null],
-  ])('%j with %d gold and %d life: %s', (needs, gold, life, reason) => {
-    expect(blockedReason(needs, gold, life)).toBe(reason)
+  const creature: CommanderFacts = {
+    name: 'Ruric',
+    creature: true,
+    planeswalker: false,
+    power: 4,
+    generic: 2,
+    keywords: [],
+  }
+  const walker: CommanderFacts = { ...creature, name: 'Teferi', creature: false, planeswalker: true }
+
+  it.each<[Partial<Needs>, HeroFacts, string | null]>([
+    [{ gold: 25 }, { gold: 25, life: 40 }, null],
+    [{ gold: 25 }, { gold: 10, life: 40 }, 'Needs 25 gold: you have 10'],
+    [{ life: 8 }, { gold: 0, life: 9 }, null],
+    [{ life: 8 }, { gold: 0, life: 8 }, 'Needs more than 8 life: you have 8'],
+    [{}, { gold: 0, life: 1 }, null],
+    [{ max_life: 5 }, { gold: 0, life: 30, maxLife: 25 }, null],
+    [{ max_life: 5 }, { gold: 0, life: 20, maxLife: 24 }, 'Needs a max life of 25: yours is 24'],
+    [{ max_life: 5 }, { gold: 0, life: 20 }, null],
+    [{ relic: true }, { gold: 0, life: 40, relics: 1 }, null],
+    [{ relic: true }, { gold: 0, life: 40, relics: 0 }, 'Needs a relic to give up: you have none'],
+    [{ commander: true }, { gold: 0, life: 40, commander: walker }, null],
+    [{ commander: true }, { gold: 0, life: 40, commander: null }, 'Needs a commander: your deck has none'],
+    [{ commander: true }, { gold: 0, life: 40 }, null],
+    [{ commander: true, creature_commander: true }, { gold: 0, life: 40, commander: creature }, null],
+    [
+      { commander: true, creature_commander: true },
+      { gold: 0, life: 40, commander: walker },
+      'Needs a creature commander: Teferi is not a creature',
+    ],
+  ])('%j for %j: %s', (over, facts, reason) => {
+    expect(blockedReason(needs(over), facts)).toBe(reason)
+  })
+
+  it('reads the hero: life cap, relics and first commander', () => {
+    const facts = heroFacts(
+      hero({
+        gold: 7,
+        life: 12,
+        life_cap: -10,
+        relics: ['idol'],
+        deck: { id: 'd', name: 'D', colors: 'R', commanders: [walker, creature] },
+      }),
+    )
+    expect(facts).toEqual({ gold: 7, life: 12, maxLife: 30, relics: 1, commander: walker })
+    expect(
+      heroFacts(hero({ deck: { id: 'd', name: 'D', colors: 'R', commanders: [] } })).commander,
+    ).toBeNull()
+    expect(heroFacts(hero()).commander).toBeUndefined()
   })
 
   it('pairs every option with its chips and its reason', () => {
     const options: DelveOptionView[] = [
-      { label: 'Pay', outcomes: [{ Gold: -25 }], needs: { gold: 25, life: 0 }, summary: '−25 gold' },
-      { label: 'Leave', outcomes: [], needs: { gold: 0, life: 0 }, summary: 'nothing' },
+      {
+        label: 'Pay',
+        outcomes: [{ Gold: -25 }],
+        needs: needs({ gold: 25 }),
+        summary: '−25 gold',
+        cost: '25 gold',
+        reward: 'nothing',
+      },
+      {
+        label: 'Leave',
+        outcomes: [],
+        needs: needs(),
+        summary: 'nothing',
+        cost: 'nothing',
+        reward: 'nothing',
+      },
     ]
-    const [pay, leave] = optionViews(options, 3, 40)
+    const [pay, leave] = optionViews(options, { gold: 3, life: 40 })
     expect(pay?.blocked).toBe('Needs 25 gold: you have 3')
     expect(pay?.part.chips[0]?.tone).toBe('cost')
     expect(leave?.blocked).toBeNull()
+  })
+})
+
+describe('cost and reward', () => {
+  const split = (outcomes: Outcome[], commander?: CommanderFacts) => {
+    const option: DelveOptionView = {
+      label: 'x',
+      outcomes,
+      needs: needs(),
+      summary: '',
+      cost: '',
+      reward: '',
+    }
+    const [view] = optionViews([option], { gold: 0, life: 40, commander })
+    return {
+      cost: view?.cost.map((c) => c.text),
+      reward: view?.reward.chips.map((c) => c.text),
+      chances: view?.reward.chances.length,
+    }
+  }
+
+  it('puts what is paid on the cost side and what is gained on the reward side', () => {
+    expect(split([{ Gold: -25 }, 'CardPick', { Life: -3 }])).toEqual({
+      cost: ['−25 gold', '−3 life'],
+      reward: ['a card for your Satchel'],
+      chances: 0,
+    })
+  })
+
+  it('leaves a free option without a cost and keeps a gamble on the reward side', () => {
+    expect(split([{ Gamble: { odds: 40, win: ['Relic'], lose: [{ Life: -5 }] } }])).toEqual({
+      cost: [],
+      reward: [],
+      chances: 1,
+    })
+  })
+
+  it('names the hero’s commander in a bane', () => {
+    const ruric: CommanderFacts = {
+      name: 'Ruric',
+      creature: true,
+      planeswalker: false,
+      power: 4,
+      generic: 2,
+      keywords: [],
+    }
+    expect(split([{ Bane: { Tax: 1 } }], ruric).cost).toEqual(['Ruric costs {1} more to cast'])
   })
 })
 

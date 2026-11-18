@@ -104,6 +104,9 @@ pub struct PlayerSetup {
     /// The cards of the seat's Satchel (a Delves hero's earned cards), in its command zone from the start and castable
     /// from there like cards in hand ([`crate::satchel`]).
     pub satchel: Vec<Arc<CardDefinition>>,
+    /// Cards the seat starts with in its command zone that nothing lets it cast from there; only an effect casts them (a
+    /// Delves boss's commander card, cast by its last phase).
+    pub held: Vec<Arc<CardDefinition>>,
     /// The emblem the seat gets when it becomes a Spirit; with one, the seat at 0 life stays in the game as a Spirit
     /// while a teammate lives ([`crate::spirits`]).
     pub spirit: Option<Arc<CardDefinition>>,
@@ -472,6 +475,7 @@ fn starting_player(
     player.schemes.clone_from(&setup.schemes);
     player.scheme_every = setup.scheme_every.max(1);
     player.leader = setup.leader;
+    player.held = setup.held.iter().map(|card| card.name.clone()).collect();
     for (kind, count) in &setup.counters {
         if *count > 0 {
             *player.counters.entry(kind.clone()).or_default() += count;
@@ -534,6 +538,9 @@ impl GameState {
             }
             for card in &setup_player.satchel {
                 satchel_ids.push(create(owner, card, Zone::Command(owner)));
+            }
+            for card in &setup_player.held {
+                create(owner, card, Zone::Command(owner));
             }
             un34.bring(owner, setup_player.stickers.clone());
             let status = match setup.start {

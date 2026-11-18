@@ -280,7 +280,13 @@
     }
    }
   ],
-  "role": "Damage"
+  "role": "Damage",
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "rarity": "Common"
  },
  {
   "id": "trollhide_cloak",
@@ -314,7 +320,13 @@
     }
    }
   ],
-  "role": "Support"
+  "role": "Support",
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "rarity": "Common"
  },
  {
   "id": "hearthstone",
@@ -343,7 +355,8 @@
     }
    }
   ],
-  "role": "Healer"
+  "role": "Healer",
+  "rarity": "Common"
  },
  {
   "id": "seers_lantern",
@@ -372,7 +385,8 @@
     }
    }
   ],
-  "role": "Support"
+  "role": "Support",
+  "rarity": "Common"
  },
  {
   "id": "miners_satchel",
@@ -391,7 +405,8 @@
     }
    }
   ],
-  "role": "Support"
+  "role": "Support",
+  "rarity": "Common"
  },
  {
   "id": "wardens_horn",
@@ -403,7 +418,8 @@
   "text": "You start each fight with 10 more life.",
   "life": 10,
   "abilities": [],
-  "role": "Healer"
+  "role": "Healer",
+  "rarity": "Common"
  },
  {
   "id": "lucky_charm",
@@ -415,7 +431,8 @@
   "text": "You start each fight with one more card in your opening hand.",
   "hand": 1,
   "abilities": [],
-  "role": "Support"
+  "role": "Support",
+  "rarity": "Rare"
  },
  {
   "id": "kindling_torch",
@@ -445,7 +462,8 @@
     }
    }
   ],
-  "role": "Damage"
+  "role": "Damage",
+  "rarity": "Rare"
  },
  {
   "id": "wellspring_flask",
@@ -481,7 +499,8 @@
     }
    }
   ],
-  "role": "Healer"
+  "role": "Healer",
+  "rarity": "Common"
  },
  {
   "id": "hunters_mark",
@@ -531,7 +550,8 @@
      ]
     }
    }
-  ]
+  ],
+  "rarity": "Common"
  },
  {
   "id": "binding_chains",
@@ -580,7 +600,8 @@
      ]
     }
    }
-  ]
+  ],
+  "rarity": "Common"
  },
  {
   "id": "ruby_focus",
@@ -607,7 +628,13 @@
      "mana": "{1}"
     }
    }
-  ]
+  ],
+  "wants": [
+   {
+    "Color": "R"
+   }
+  ],
+  "rarity": "Common"
  },
  {
   "id": "emerald_focus",
@@ -634,7 +661,13 @@
      "mana": "{1}"
     }
    }
-  ]
+  ],
+  "wants": [
+   {
+    "Color": "G"
+   }
+  ],
+  "rarity": "Common"
  },
  {
   "id": "sapphire_focus",
@@ -661,7 +694,13 @@
      "mana": "{1}"
     }
    }
-  ]
+  ],
+  "wants": [
+   {
+    "Color": "U"
+   }
+  ],
+  "rarity": "Common"
  },
  {
   "id": "pearl_focus",
@@ -688,7 +727,13 @@
      "mana": "{1}"
     }
    }
-  ]
+  ],
+  "wants": [
+   {
+    "Color": "W"
+   }
+  ],
+  "rarity": "Common"
  },
  {
   "id": "jet_focus",
@@ -715,7 +760,13 @@
      "mana": "{1}"
     }
    }
-  ]
+  ],
+  "wants": [
+   {
+    "Color": "B"
+   }
+  ],
+  "rarity": "Common"
  },
  {
   "id": "wildfire_pact",
@@ -739,7 +790,13 @@
      "mana": "{2}"
     }
    }
-  ]
+  ],
+  "wants": [
+   {
+    "Color": "R"
+   }
+  ],
+  "rarity": "Rare"
  },
  {
   "id": "font_of_plenty",
@@ -767,7 +824,8 @@
      ]
     }
    }
-  ]
+  ],
+  "rarity": "Rare"
  },
  {
   "id": "battle_frenzy",
@@ -798,7 +856,13 @@
      ]
     }
    }
-  ]
+  ],
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "rarity": "Rare"
  },
  {
   "id": "phoenix_feather",
@@ -830,7 +894,8 @@
      ]
     }
    }
-  ]
+  ],
+  "rarity": "Rare"
  },
  {
   "id": "skrix",
@@ -2712,5 +2777,2065 @@
     }
    }
   ]
+ },
+ {
+  "id": "sun_idol",
+  "name": "Sun Idol",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "sun_idol",
+  "text": "Whenever you cast a white spell, you gain 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "SpellCast": {
+       "what": [
+        {
+         "Color": "White"
+        }
+       ],
+       "by": "You"
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer",
+  "wants": [
+   {
+    "Color": "W"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "tide_glass",
+  "name": "Tide Glass",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 50,
+  "art": "tide_glass",
+  "text": "Whenever you cast a blue spell, scry 1.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "SpellCast": {
+       "what": [
+        {
+         "Color": "Blue"
+        }
+       ],
+       "by": "You"
+      }
+     },
+     "effects": [
+      {
+       "Scry": {
+        "count": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Support",
+  "wants": [
+   {
+    "Color": "U"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "bone_censer",
+  "name": "Bone Censer",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 65,
+  "art": "bone_censer",
+  "text": "Whenever you cast a black spell, up to one target creature an opponent controls gets -1/-1 until end of turn.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "SpellCast": {
+       "what": [
+        {
+         "Color": "Black"
+        }
+       ],
+       "by": "You"
+      }
+     },
+     "targets": [
+      {
+       "what": {
+        "Object": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "bounds": {
+        "min": 0,
+        "max": 1
+       }
+      }
+     ],
+     "effects": [
+      {
+       "Continuous": {
+        "affected": {
+         "Target": 0
+        },
+        "mods": [
+         {
+          "ModifyPT": {
+           "power": -1,
+           "toughness": -1
+          }
+         }
+        ],
+        "duration": "UntilEndOfTurn"
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Removal",
+  "wants": [
+   {
+    "Color": "B"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "flame_brand",
+  "name": "Flame Brand",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 60,
+  "art": "flame_brand",
+  "text": "Whenever you cast a red spell, each opponent loses 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "SpellCast": {
+       "what": [
+        {
+         "Color": "Red"
+        }
+       ],
+       "by": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Damage",
+  "wants": [
+   {
+    "Color": "R"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "verdant_crest",
+  "name": "Verdant Crest",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 65,
+  "art": "verdant_crest",
+  "text": "Green creatures you control enter with an additional +1/+1 counter.",
+  "abilities": [
+   {
+    "Replacement": {
+     "when": {
+      "Enters": {
+       "what": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Color": "Green"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ]
+      }
+     },
+     "by": {
+      "WithCounters": {
+       "counter": "+1/+1",
+       "count": 1
+      }
+     }
+    }
+   }
+  ],
+  "role": "Damage",
+  "wants": [
+   {
+    "Color": "G"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "soul_vessel",
+  "name": "Soul Vessel",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "soul_vessel",
+  "text": "Whenever a creature enters under your control, you gain 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "ZoneChange": {
+       "what": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "to": "Battlefield"
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer",
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "blood_banner",
+  "name": "Blood Banner",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 65,
+  "art": "blood_banner",
+  "text": "Whenever a creature you control dies, each opponent loses 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "ZoneChange": {
+       "what": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "from": "Battlefield",
+       "to": "Graveyard"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Damage",
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "chargers_spur",
+  "name": "Charger's Spur",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 60,
+  "art": "chargers_spur",
+  "text": "Creatures you control have haste.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Haste"
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Support",
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "frostbound_anchor",
+  "name": "Frostbound Anchor",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 75,
+  "art": "frostbound_anchor",
+  "text": "Creatures your opponents control enter tapped.",
+  "abilities": [
+   {
+    "Replacement": {
+     "when": {
+      "Enters": {
+       "what": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "ControlledBy": "Opponents"
+        }
+       ]
+      }
+     },
+     "by": "Tapped"
+    }
+   }
+  ],
+  "role": "Removal",
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "giants_ring",
+  "name": "Giant's Ring",
+  "kind": "Relic",
+  "type_line": "Relic — Risky",
+  "price": 0,
+  "art": "giants_ring",
+  "text": "All creatures get +1/+1 — the boss's too.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Risky",
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "hunting_horn",
+  "name": "Hunting Horn",
+  "kind": "Relic",
+  "type_line": "Relic — Risky",
+  "price": 0,
+  "art": "hunting_horn",
+  "text": "All creatures have menace — the boss's too.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Menace"
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Risky",
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "artisans_loupe",
+  "name": "Artisan's Loupe",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "artisans_loupe",
+  "text": "Artifact spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Type": "Artifact"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ],
+  "role": "Support",
+  "wants": [
+   {
+    "Type": "Artifact"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "tinkers_apron",
+  "name": "Tinker's Apron",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "tinkers_apron",
+  "text": "Whenever an artifact enters under your control, you gain 2 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "ZoneChange": {
+       "what": [
+        {
+         "Type": "Artifact"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "to": "Battlefield"
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 2
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer",
+  "wants": [
+   {
+    "Type": "Artifact"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "lockwork_key",
+  "name": "Lockwork Key",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 70,
+  "art": "lockwork_key",
+  "text": "Whenever you cast an artifact spell, tap up to one target creature an opponent controls.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "SpellCast": {
+       "what": [
+        {
+         "Type": "Artifact"
+        }
+       ],
+       "by": "You"
+      }
+     },
+     "targets": [
+      {
+       "what": {
+        "Object": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "bounds": {
+        "min": 0,
+        "max": 1
+       }
+      }
+     ],
+     "effects": [
+      {
+       "Tap": {
+        "what": {
+         "Target": 0
+        }
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Removal",
+  "wants": [
+   {
+    "Type": "Artifact"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "scribes_lens",
+  "name": "Scribe's Lens",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "scribes_lens",
+  "text": "Enchantment spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Type": "Enchantment"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ],
+  "role": "Support",
+  "wants": [
+   {
+    "Type": "Enchantment"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "warding_script",
+  "name": "Warding Script",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "warding_script",
+  "text": "Whenever an enchantment enters under your control, you gain 2 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "ZoneChange": {
+       "what": [
+        {
+         "Type": "Enchantment"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "to": "Battlefield"
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 2
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer",
+  "wants": [
+   {
+    "Type": "Enchantment"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "spellbinders_ring",
+  "name": "Spellbinder's Ring",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 60,
+  "art": "spellbinders_ring",
+  "text": "Instant and sorcery spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "AnyOf": [
+        {
+         "Type": "Instant"
+        },
+        {
+         "Type": "Sorcery"
+        }
+       ]
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ],
+  "role": "Support",
+  "wants": [
+   {
+    "Type": "Instant"
+   },
+   {
+    "Type": "Sorcery"
+   }
+  ],
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "pyre_sigil",
+  "name": "Pyre Sigil",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 70,
+  "art": "pyre_sigil",
+  "text": "Whenever you cast an instant or sorcery spell, Pyre Sigil deals 1 damage to up to one target creature an opponent controls.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "SpellCast": {
+       "what": [
+        {
+         "AnyOf": [
+          {
+           "Type": "Instant"
+          },
+          {
+           "Type": "Sorcery"
+          }
+         ]
+        }
+       ],
+       "by": "You"
+      }
+     },
+     "targets": [
+      {
+       "what": {
+        "Object": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "Opponents"
+         }
+        ]
+       },
+       "bounds": {
+        "min": 0,
+        "max": 1
+       }
+      }
+     ],
+     "effects": [
+      {
+       "DealDamage": {
+        "to": {
+         "Target": 0
+        },
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Removal",
+  "wants": [
+   {
+    "Type": "Instant"
+   },
+   {
+    "Type": "Sorcery"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "hearth_seed",
+  "name": "Hearth Seed",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 50,
+  "art": "hearth_seed",
+  "text": "Whenever a land enters under your control, you gain 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "ZoneChange": {
+       "what": [
+        {
+         "Type": "Land"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "to": "Battlefield"
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer",
+  "wants": [
+   {
+    "Type": "Land"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "quarry_hammer",
+  "name": "Quarry Hammer",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 65,
+  "art": "quarry_hammer",
+  "text": "Whenever a land enters under your control, each opponent loses 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "ZoneChange": {
+       "what": [
+        {
+         "Type": "Land"
+        },
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "to": "Battlefield"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Damage",
+  "wants": [
+   {
+    "Type": "Land"
+   }
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "crystal_geode",
+  "name": "Crystal Geode",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 80,
+  "art": "crystal_geode",
+  "text": "At the beginning of your precombat main phase, add {C}.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Main1",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "AddMana": {
+        "mana": {
+         "Fixed": [
+          "Colorless"
+         ]
+        }
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Support",
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "spendthrifts_purse",
+  "name": "Spendthrift's Purse",
+  "kind": "Relic",
+  "type_line": "Relic — Risky",
+  "price": 0,
+  "art": "spendthrifts_purse",
+  "text": "All spells cost {1} less to cast — including the boss's.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell"
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ],
+  "role": "Risky",
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "swarm_standard",
+  "name": "Swarm Standard",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 70,
+  "art": "swarm_standard",
+  "text": "Creature tokens you control get +1/+1.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       "Token",
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Damage",
+  "wants": [
+   "Tokens"
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "kennel_charm",
+  "name": "Kennel Charm",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "kennel_charm",
+  "text": "Whenever a creature token enters under your control, you gain 1 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "ZoneChange": {
+       "what": [
+        {
+         "Type": "Creature"
+        },
+        "Token",
+        {
+         "ControlledBy": "You"
+        }
+       ],
+       "to": "Battlefield"
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer",
+  "wants": [
+   "Tokens"
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "growth_idol",
+  "name": "Growth Idol",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 75,
+  "art": "growth_idol",
+  "text": "At the beginning of your end step, put a +1/+1 counter on up to one target creature you control.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "End",
+       "whose": "You"
+      }
+     },
+     "targets": [
+      {
+       "what": {
+        "Object": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "bounds": {
+        "min": 0,
+        "max": 1
+       }
+      }
+     ],
+     "effects": [
+      {
+       "PutCounters": {
+        "on": {
+         "Target": 0
+        },
+        "counter": "+1/+1"
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Damage",
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "hardened_pendant",
+  "name": "Hardened Pendant",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 80,
+  "art": "hardened_pendant",
+  "text": "If one or more +1/+1 counters would be put on a creature you control, that many plus one +1/+1 counters are put on it instead.",
+  "abilities": [
+   {
+    "Replacement": {
+     "when": {
+      "CountersPut": {
+       "on": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "counter": "+1/+1"
+      }
+     },
+     "by": {
+      "Add": 1
+     }
+    }
+   }
+  ],
+  "role": "Support",
+  "wants": [
+   "Counters"
+  ],
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "gravebloom_urn",
+  "name": "Gravebloom Urn",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "gravebloom_urn",
+  "text": "At the beginning of your upkeep, if there are four or more creature cards in your graveyard, you gain 2 life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Upkeep",
+       "whose": "You"
+      }
+     },
+     "if": {
+      "Compare": {
+       "left": {
+        "Count": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "OwnedBy": "You"
+         },
+         {
+          "In": "Graveyard"
+         }
+        ]
+       },
+       "op": "Ge",
+       "right": 4
+      }
+     },
+     "effects": [
+      {
+       "GainLife": {
+        "amount": 2
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Healer",
+  "wants": [
+   "Graveyard"
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "bone_ledger",
+  "name": "Bone Ledger",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 55,
+  "art": "bone_ledger",
+  "text": "Whenever a nontoken creature card is put into your graveyard from anywhere, scry 1.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "ZoneChange": {
+       "what": [
+        {
+         "Type": "Creature"
+        },
+        {
+         "Not": "Token"
+        },
+        {
+         "OwnedBy": "You"
+        }
+       ],
+       "to": "Graveyard"
+      }
+     },
+     "effects": [
+      {
+       "Scry": {
+        "count": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Support",
+  "wants": [
+   "Graveyard"
+  ],
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "crown_of_command",
+  "name": "Crown of Command",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 60,
+  "art": "crown_of_command",
+  "text": "Commander spells you cast cost {1} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      "Commander",
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{1}"
+    }
+   }
+  ],
+  "role": "Support",
+  "since": 2,
+  "rarity": "Common"
+ },
+ {
+  "id": "banner_of_command",
+  "name": "Banner of Command",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 70,
+  "art": "banner_of_command",
+  "text": "Creature commanders you control get +1/+1 and have haste.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       "Commander",
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 1
+       }
+      },
+      {
+       "AddKeyword": "Haste"
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Damage",
+  "wants": [
+   "CreatureCommander"
+  ],
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "scholars_quill",
+  "name": "Scholar's Quill",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 70,
+  "art": "scholars_quill",
+  "text": "At the beginning of your end step, if you have no cards in hand, draw a card.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "End",
+       "whose": "You"
+      }
+     },
+     "if": {
+      "Compare": {
+       "left": {
+        "Count": [
+         {
+          "In": "Hand"
+         },
+         {
+          "OwnedBy": "You"
+         }
+        ]
+       },
+       "op": "Eq",
+       "right": 0
+      }
+     },
+     "effects": [
+      {
+       "Draw": {}
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Support",
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "withering_hex",
+  "name": "Withering Hex",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 70,
+  "art": "withering_hex",
+  "text": "Creatures your opponents control get -1/-0.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "Opponents"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": -1,
+        "toughness": 0
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "role": "Removal",
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "thorn_charm",
+  "name": "Thorn Charm",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "price": 70,
+  "art": "thorn_charm",
+  "text": "Spells your opponents cast cost {1} more to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "ControlledBy": "Opponents"
+      }
+     ],
+     "change": "Increase",
+     "mana": "{1}"
+    }
+   }
+  ],
+  "role": "Removal",
+  "since": 2,
+  "rarity": "Rare"
+ },
+ {
+  "id": "pearl_prism",
+  "name": "Pearl Prism",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 90,
+  "art": "pearl_prism",
+  "text": "White spells you cast cost {W} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "White"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{W}"
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Color": "W"
+   }
+  ],
+  "since": 3,
+  "rarity": "Rare"
+ },
+ {
+  "id": "sapphire_prism",
+  "name": "Sapphire Prism",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 90,
+  "art": "sapphire_prism",
+  "text": "Blue spells you cast cost {U} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Blue"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{U}"
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Color": "U"
+   }
+  ],
+  "since": 3,
+  "rarity": "Rare"
+ },
+ {
+  "id": "jet_prism",
+  "name": "Jet Prism",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 90,
+  "art": "jet_prism",
+  "text": "Black spells you cast cost {B} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Black"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{B}"
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Color": "B"
+   }
+  ],
+  "since": 3,
+  "rarity": "Rare"
+ },
+ {
+  "id": "ruby_prism",
+  "name": "Ruby Prism",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 90,
+  "art": "ruby_prism",
+  "text": "Red spells you cast cost {R} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Red"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{R}"
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Color": "R"
+   }
+  ],
+  "since": 3,
+  "rarity": "Rare"
+ },
+ {
+  "id": "emerald_prism",
+  "name": "Emerald Prism",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 90,
+  "art": "emerald_prism",
+  "text": "Green spells you cast cost {G} less to cast.",
+  "abilities": [
+   {
+    "CostModifier": {
+     "applies_to": [
+      "Spell",
+      {
+       "Color": "Green"
+      },
+      {
+       "ControlledBy": "You"
+      }
+     ],
+     "change": "Reduce",
+     "mana": "{G}"
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Color": "G"
+   }
+  ],
+  "since": 3,
+  "rarity": "Rare"
+ },
+ {
+  "id": "ember_crown",
+  "name": "Ember Crown",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Damage",
+  "price": 90,
+  "art": "ember_crown",
+  "text": "Creatures you control get +1/+1.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 3,
+  "rarity": "Rare"
+ },
+ {
+  "id": "maelstrom_crown",
+  "name": "Maelstrom Crown",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 150,
+  "art": "maelstrom_crown",
+  "text": "Whenever you cast an instant spell, exile cards from the top of your library until you exile a nonland card with lesser mana value. You may cast it without paying its mana cost. The other cards exiled this way stay in exile.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "SpellCast": {
+       "what": [
+        {
+         "Type": "Instant"
+        }
+       ],
+       "by": "You"
+      }
+     },
+     "effects": [
+      {
+       "ExileUntil": {
+        "filter": [
+         {
+          "Not": {
+           "Type": "Land"
+          }
+         },
+         {
+          "Compare": {
+           "stat": "ManaValue",
+           "op": "Lt",
+           "to": {
+            "Stat": {
+             "of": "Triggering",
+             "stat": "ManaValue"
+            }
+           }
+          }
+         }
+        ],
+        "as": "found",
+        "exiled_as": "exiled"
+       }
+      },
+      {
+       "CastFromZone": {
+        "what": {
+         "Bound": "found"
+        },
+        "free": true
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Type": "Instant"
+   }
+  ],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "codex_of_echoes",
+  "name": "Codex of Echoes",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 150,
+  "art": "codex_of_echoes",
+  "text": "Sorcery spells you cast have cascade.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Sorcery"
+       },
+       {
+        "ControlledBy": "You"
+       },
+       {
+        "WasCast": {}
+       },
+       {
+        "In": "Stack"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Cascade"
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Type": "Sorcery"
+   }
+  ],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "hydra_heart",
+  "name": "Hydra Heart",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Damage",
+  "price": 150,
+  "art": "hydra_heart",
+  "text": "Creature spells you cast with mana value 5 or greater have cascade.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "Compare": {
+         "stat": "ManaValue",
+         "op": "Ge",
+         "to": 5
+        }
+       },
+       {
+        "ControlledBy": "You"
+       },
+       {
+        "WasCast": {}
+       },
+       {
+        "In": "Stack"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Cascade"
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "banner_of_multitudes",
+  "name": "Banner of Multitudes",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Damage",
+  "price": 150,
+  "art": "banner_of_multitudes",
+  "text": "If an effect would create one or more creature tokens under your control, it creates twice that many of those tokens instead.",
+  "abilities": [
+   {
+    "Replacement": {
+     "when": {
+      "TokenCreation": {
+       "what": [
+        {
+         "Type": "Creature"
+        }
+       ]
+      }
+     },
+     "by": {
+      "Multiply": 2
+     }
+    }
+   }
+  ],
+  "wants": [
+   "Tokens"
+  ],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "everbloom_crown",
+  "name": "Everbloom Crown",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Damage",
+  "price": 150,
+  "art": "everbloom_crown",
+  "text": "If one or more +1/+1 counters would be put on a creature you control, twice that many +1/+1 counters are put on it instead.",
+  "abilities": [
+   {
+    "Replacement": {
+     "when": {
+      "CountersPut": {
+       "on": {
+        "Each": [
+         {
+          "Type": "Creature"
+         },
+         {
+          "ControlledBy": "You"
+         }
+        ]
+       },
+       "counter": "+1/+1"
+      }
+     },
+     "by": {
+      "Multiply": 2
+     }
+    }
+   }
+  ],
+  "wants": [
+   "Counters"
+  ],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "bloodbond_chalice",
+  "name": "Bloodbond Chalice",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Healer",
+  "price": 150,
+  "art": "bloodbond_chalice",
+  "text": "Whenever you gain life, each opponent loses that much life.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "LifeGained": {
+       "who": "You"
+      }
+     },
+     "effects": [
+      {
+       "LoseLife": {
+        "who": "Opponents",
+        "amount": "Triggering"
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "sovereigns_mantle",
+  "name": "Sovereign's Mantle",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Damage",
+  "price": 150,
+  "art": "sovereigns_mantle",
+  "text": "Creature commanders you control get +2/+2 and have double strike and trample.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       "Commander",
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 2,
+        "toughness": 2
+       }
+      },
+      {
+       "AddKeyword": "DoubleStrike"
+      },
+      {
+       "AddKeyword": "Trample"
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [
+   "CreatureCommander"
+  ],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "warlords_standard",
+  "name": "Warlord's Standard",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Damage",
+  "price": 150,
+  "art": "warlords_standard",
+  "text": "Creatures you control get +1/+1 and have vigilance and trample.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 1
+       }
+      },
+      {
+       "AddKeyword": "Vigilance"
+      },
+      {
+       "AddKeyword": "Trample"
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Type": "Creature"
+   }
+  ],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "endless_tome",
+  "name": "The Endless Tome",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 150,
+  "art": "endless_tome",
+  "text": "At the beginning of your draw step, draw an additional card.",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Draw",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Draw": {}
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "gravecallers_lantern",
+  "name": "Gravecaller's Lantern",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 150,
+  "art": "gravecallers_lantern",
+  "text": "During each of your turns, you may cast a creature spell from your graveyard.",
+  "abilities": [
+   {
+    "Rule": {
+     "rule": {
+      "MayCast": {
+       "what": [
+        {
+         "Type": "Creature"
+        }
+       ],
+       "from": "Graveyard",
+       "once": true
+      }
+     }
+    }
+   }
+  ],
+  "wants": [
+   "Graveyard"
+  ],
+  "since": 3,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "blight_censer",
+  "name": "Blight Censer",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Removal",
+  "price": 150,
+  "art": "blight_censer",
+  "text": "Creatures your opponents control get -1/-1.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "Opponents"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": -1,
+        "toughness": -1
+       }
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [],
+  "since": 3,
+  "rarity": "Mythic"
  }
 ]

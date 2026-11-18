@@ -1,7 +1,7 @@
 //! Bot seats: a server-side driver that plays a seat of a game the way a client would, through its `GameHandle`.
 
 use std::sync::Arc;
-use std::sync::atomic::{AtomicUsize, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicUsize, Ordering};
 use std::time::Duration;
 
 use mtg_core::ids::PlayerId;
@@ -44,12 +44,16 @@ pub fn share_for(queued: usize) -> f64 {
     (1.0 / (1.0 + queued)).max(LEAST_SHARE)
 }
 
-/// The server's slots for thinking bots: at most `capacity` bots search at once, each on a blocking thread, and a
-/// bot that finds others waiting thinks with a smaller share of its budget ([`share_for`]). Cheap to clone.
+/// The server's slots for thinking bots: at most `capacity` bots search at once across the server and one at a time
+/// per game ([`Thinkers::for_game`]), each on a blocking thread and never on the runtime's workers; a bot that finds
+/// others waiting thinks with a smaller share of its budget ([`share_for`]). A slot is held until its thread ends, so a
+/// search past its deadline still counts against the cap. Cheap to clone.
 #[derive(Clone, Debug)]
 pub struct Thinkers {
     permits: Arc<Semaphore>,
     queued: Arc<AtomicUsize>,
+    /// The game's single search slot; `None` outside a game.
+    table: Option<Arc<Semaphore>>,
 }
 
 impl Thinkers {
@@ -58,31 +62,46 @@ impl Thinkers {
         Thinkers {
             permits: Arc::new(Semaphore::new(capacity.max(1))),
             queued: Arc::new(AtomicUsize::new(0)),
+            table: None,
         }
     }
 
-    /// The slots a server of this machine gives: one fewer than its cores, at least one.
+    /// The same server slots for the bots of one game, which search one at a time.
+    #[must_use]
+    pub fn for_game(&self) -> Thinkers {
+        Thinkers {
+            table: Some(Arc::new(Semaphore::new(1))),
+            ..self.clone()
+        }
+    }
+
+    /// The slots a server of this machine gives: half its cores, at least one, so requests, sockets and the database
+    /// keep the other half.
     pub fn for_machine() -> usize {
         std::thread::available_parallelism()
-            .map_or(1, |cores| cores.get().saturating_sub(1))
+            .map_or(1, |cores| cores.get() / 2)
             .max(1)
     }
 
-    /// Runs `work` on a blocking thread once a slot is free, handing it the share of its budget to think with;
-    /// `None` if the thread failed.
+    /// Runs `work` on a blocking thread once a slot of the server and one of the game are free, handing it the share
+    /// of its budget to think with; `None` if the thread failed.
     pub async fn think<T: Send + 'static>(
         &self,
         work: impl FnOnce(f64) -> T + Send + 'static,
     ) -> Option<T> {
-        let permit = {
+        let (table, permit) = {
             // Counts this bot as waiting until it holds a slot, also when the wait is cancelled (a think deadline).
             let _waiting = Queued::on(&self.queued);
-            Arc::clone(&self.permits).acquire_owned().await
+            let table = match &self.table {
+                Some(table) => Some(Arc::clone(table).acquire_owned().await.ok()?),
+                None => None,
+            };
+            (table, Arc::clone(&self.permits).acquire_owned().await)
         };
         let permit = permit.ok()?;
         let share = share_for(self.queued.load(Ordering::SeqCst));
         tokio::task::spawn_blocking(move || {
-            let _permit = permit;
+            let _held = (permit, table);
             work(share)
         })
         .await
@@ -274,15 +293,20 @@ impl BotBrain {
         };
         let asked_at = std::time::Instant::now();
         let asked = decision.clone();
+        // Raised when the wait is given up, so a search past its deadline stops instead of burning its slot.
+        let cancel = Arc::new(AtomicBool::new(false));
+        let stop = brain::clock::Stop::at(asked_at + self.deadline).or_cancel(Arc::clone(&cancel));
         let thinking = thinkers.think(move |share| {
             if let Some(brain) = alone.brain.as_mut() {
                 brain.set_budget(share);
                 brain.set_asked(asked_at);
             }
-            let answer = alone.answer(&asked, table.as_deref());
+            let answer = brain::clock::stopping(stop, || alone.answer(&asked, table.as_deref()));
             (alone, answer)
         });
-        match tokio::time::timeout(self.deadline, thinking).await {
+        let thought = tokio::time::timeout(self.deadline, thinking).await;
+        cancel.store(true, Ordering::Relaxed);
+        match thought {
             Ok(Some((alone, answer))) => {
                 self.brain = alone.brain;
                 self.answers = alone.answers;
@@ -419,6 +443,10 @@ pub(crate) fn spawn_bot_seats(
     pace: &BotPace,
     removed: &watch::Receiver<Removal>,
 ) {
+    let pace = BotPace {
+        delay: pace.delay,
+        thinkers: pace.thinkers.for_game(),
+    };
     for bot in seats {
         spawn_bot_seat(handle.clone(), *bot, seed, pace.clone(), removed.clone());
     }
@@ -586,7 +614,7 @@ fn far_future() -> Instant {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, a stored bot seat reads back with its level (a bare seat as Easy), the thinking slots cap the bots searching at once and shrink their budgets while others wait, and every level's clock ends well before the think deadline.
+    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, a stored bot seat reads back with its level (a bare seat as Easy), the thinking slots cap the bots searching at once (half the cores, one per game) and shrink their budgets while others wait, a search past its deadline is stopped and gives its slot back, and every level's clock ends well before the think deadline.
     #![allow(clippy::unwrap_used)]
     use mtg_core::ids::ObjectId;
     use mtg_engine::decision::PriorityOptions;
@@ -732,5 +760,91 @@ mod tests {
         }
         assert!(most.load(Ordering::SeqCst) <= 2);
         assert!(shares.iter().any(|share| *share < 1.0), "{shares:?}");
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn a_game_searches_one_bot_at_a_time_and_games_share_the_server_slots() {
+        let server = Thinkers::new(4);
+        let total = Arc::new(AtomicUsize::new(0));
+        let most_total = Arc::new(AtomicUsize::new(0));
+        let mut games = Vec::new();
+        for _ in 0..2 {
+            let table = server.for_game();
+            let running = Arc::new(AtomicUsize::new(0));
+            let most = Arc::new(AtomicUsize::new(0));
+            let mut tasks = Vec::new();
+            for _ in 0..3 {
+                let table = table.clone();
+                let (running, most) = (Arc::clone(&running), Arc::clone(&most));
+                let (total, most_total) = (Arc::clone(&total), Arc::clone(&most_total));
+                tasks.push(tokio::spawn(async move {
+                    table
+                        .think(move |_| {
+                            let now = running.fetch_add(1, Ordering::SeqCst) + 1;
+                            most.fetch_max(now, Ordering::SeqCst);
+                            let all = total.fetch_add(1, Ordering::SeqCst) + 1;
+                            most_total.fetch_max(all, Ordering::SeqCst);
+                            std::thread::sleep(Duration::from_millis(40));
+                            total.fetch_sub(1, Ordering::SeqCst);
+                            running.fetch_sub(1, Ordering::SeqCst);
+                        })
+                        .await
+                        .unwrap();
+                }));
+            }
+            games.push((most, tasks));
+        }
+        for (most, tasks) in games {
+            for task in tasks {
+                task.await.unwrap();
+            }
+            assert_eq!(most.load(Ordering::SeqCst), 1, "one search per game");
+        }
+        assert!(most_total.load(Ordering::SeqCst) <= 2);
+    }
+
+    #[test]
+    fn a_server_leaves_half_its_cores_to_the_rest() {
+        let cores = std::thread::available_parallelism().map_or(1, std::num::NonZero::get);
+        let slots = Thinkers::for_machine();
+        assert!(slots >= 1);
+        assert!(slots <= (cores / 2).max(1));
+    }
+
+    /// A brain that searches until its decision's stop comes, then says it ended.
+    struct Endless {
+        ended: Arc<AtomicBool>,
+    }
+
+    impl SeatBrain for Endless {
+        fn choose(&mut self, _decision: &Decision, _table: Option<&Engine>) -> Answer {
+            while !brain::clock::stopped() {
+                std::thread::sleep(Duration::from_millis(2));
+            }
+            self.ended.store(true, Ordering::SeqCst);
+            Answer::Priority(PriorityAction::Pass)
+        }
+    }
+
+    #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+    async fn a_search_past_its_deadline_is_stopped_and_gives_its_slot_back() {
+        let ended = Arc::new(AtomicBool::new(false));
+        let endless = Endless {
+            ended: Arc::clone(&ended),
+        };
+        let mut bot = BotBrain::new(1, SEAT, BotLevel::Normal)
+            .with_brain(Box::new(endless))
+            .with_deadline(Duration::from_millis(100));
+        let thinkers = Thinkers::new(1);
+        let decision = priority(vec![ObjectId(4)], vec![]);
+        let answer = bot.think(decision.clone(), None, &thinkers).await;
+        assert_eq!(answer, safe_answer(&decision));
+        // The search stopped at the deadline, so the one slot is free again at once.
+        let freed = tokio::time::timeout(Duration::from_millis(500), thinkers.think(|_| ())).await;
+        assert!(
+            freed.is_ok_and(|done| done.is_some()),
+            "the slot stayed taken"
+        );
+        assert!(ended.load(Ordering::SeqCst), "the search never ended");
     }
 }

@@ -44,6 +44,16 @@ impl GameState {
         order
     }
 
+    /// Whether `viewer` sees the hand of `owner` by the table's team rule: a teammate seat while `team_hands` holds.
+    /// A viewer that is no seat (a spectator) is on no team.
+    pub fn sees_team_hand(&self, viewer: PlayerId, owner: PlayerId) -> bool {
+        self.ruleset().team_hands()
+            && self
+                .teams()
+                .is_some_and(|teams| viewer.index() < teams.seats.len())
+            && self.are_teammates(viewer, owner)
+    }
+
     /// Whether teams share their turns (Two-Headed Giant and shared team turns, CR 805).
     pub fn shares_turns(&self) -> bool {
         self.teams().is_some_and(Teams::shares_turns)

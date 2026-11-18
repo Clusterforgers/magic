@@ -254,6 +254,7 @@ impl Search {
     fn late(&self) -> bool {
         self.deadline
             .is_some_and(|deadline| Instant::now() >= deadline)
+            || super::clock::stopped()
     }
 
     /// Whether another simulation may start.
@@ -369,7 +370,7 @@ impl Search {
                 break;
             }
             // A simulation cut by the clock is scored where it stands.
-            if step % 16 == 15 && self.late() {
+            if step > 0 && self.late() {
                 break;
             }
             if self.branches(&engine, &decision, depth) {
@@ -553,6 +554,9 @@ impl Search {
         self.judging = true;
         let mut best: Option<(f64, PriorityAction)> = None;
         for id in casts.into_iter().take(JUDGED_CASTS) {
+            if super::clock::stopped() {
+                break;
+            }
             let play = PriorityAction::CastSpell(id);
             let mut copy = engine.clone();
             if apply_answer(&mut copy, &decision, Answer::Priority(play.clone())).is_err() {
@@ -561,11 +565,17 @@ impl Search {
             let start = Start {
                 turn: state.turn().number(),
             };
+            let mut cut = false;
             for step in 1..SIM_STEPS {
                 let Some(next) = copy.decision().cloned() else {
                     break;
                 };
                 if copy.result().is_some() || reached(&copy, &next, start, Horizon::Settle, step) {
+                    break;
+                }
+                // A cast cut by the hard stop is not judged: its stack never settled.
+                if super::clock::stopped() {
+                    cut = true;
                     break;
                 }
                 let answer = self.quick(&copy, &next);
@@ -577,6 +587,9 @@ impl Search {
                         break;
                     }
                 }
+            }
+            if cut {
+                break;
             }
             let score = evaluate_with(&Seen::new(copy.state(), seat), self.settings.weights);
             if score > bar && best.as_ref().is_none_or(|(held, _)| score > *held) {

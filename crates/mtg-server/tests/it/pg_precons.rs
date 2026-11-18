@@ -1016,3 +1016,128 @@ async fn a_request_from_another_site_cannot_set_a_precon_or_make_a_lobby_with_on
     assert_eq!(own.status, 200, "{}", own.text());
     assert_eq!(own.json()["name"], "Quest Pack");
 }
+
+// ---- random precons ----
+
+/// A Normal table draws among the precons without commanders, a Commander table among those with them.
+const RANDOM_TABLES: [(&str, &str, &[&str]); 2] = [
+    (
+        "normal",
+        "mono-red",
+        &["Evergreen Pack", "Quest Pack", "Ghost Pack", "Short Pack"],
+    ),
+    (
+        "commander",
+        "precon:tst-commander-pack",
+        &["Commander Pack"],
+    ),
+];
+
+#[sqlx::test(migrations = false)]
+async fn a_random_precon_suits_the_table_stays_hidden_in_the_lobby_and_is_revealed_at_the_start(
+    pool: PgPool,
+) {
+    let server = start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    for (format, other, fitting) in RANDOM_TABLES {
+        random_precon_at(&pool, &server, &ann, format, other, fitting).await;
+    }
+}
+
+/// One table of [`RANDOM_TABLES`]: `ann` makes it with a random precon and starts it.
+async fn random_precon_at(
+    pool: &PgPool,
+    server: &TestServer,
+    ann: &Browser,
+    format: &str,
+    other: &str,
+    fitting: &[&str],
+) {
+    let body = json!({
+        "format": format, "visibility": "public",
+        "seats": [{"name": "ann", "deck": "random:precon"}, {"name": "Bot", "deck": other}],
+    });
+    let created = ann.post(server.addr, "/api/games", &body.to_string()).await;
+    assert_eq!(created.status, 201, "{}", created.text());
+    let game = created.json()["game"].as_str().unwrap().to_owned();
+
+    // The lobby and the seat's own answer show the kind of draw, never the deck.
+    let chosen = choose(server, ann, &game, 0, "random:precon").await;
+    assert_eq!(chosen.status, 200, "{}", chosen.text());
+    assert_eq!(chosen.json()["name"], "Random precon");
+    for path in [format!("/api/games/{game}"), "/api/lobbies".to_owned()] {
+        let text = net::get(server.addr, &path).await.text();
+        for name in fitting {
+            assert!(!text.contains(name), "{name} in {text}");
+        }
+    }
+
+    let mut socket = net::open(
+        server.addr,
+        &format!("/ws/{game}"),
+        &[("Cookie", &ann.cookie)],
+    )
+    .await;
+    socket.welcome(&game).await;
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    for seat in 0..2 {
+        handle
+            .send(
+                mtg_core::ids::PlayerId(seat),
+                mtg_protocol::ClientMessage::Ready,
+            )
+            .await
+            .unwrap();
+    }
+    let revealed = loop {
+        match socket.message().await {
+            ServerMessage::DecksRevealed { decks } => break decks,
+            ServerMessage::Events(_) => panic!("the reveal comes before the opening batch"),
+            _ => {}
+        }
+    };
+    assert_eq!(revealed.len(), 1, "{revealed:?}");
+    assert_eq!(revealed[0].seat, mtg_core::ids::PlayerId(0));
+    assert!(fitting.contains(&revealed[0].name.as_str()), "{revealed:?}");
+
+    // The recipe keeps the precon's cards, so a resume plays the deck that was drawn.
+    let (recipe, _) = recipe(pool, &game).await;
+    assert!(recipe["decks"][0]["cards"].is_array(), "{recipe}");
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_draw_from_an_empty_pool_is_an_unknown_deck(pool: PgPool) {
+    let server = start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    // A guest's own decks, an account without any, a group of nobody.
+    for (id, signed_in) in [
+        ("random:mine", false),
+        ("random:mine", true),
+        ("random:mine:67e55044-10b1-426f-9247-bb680e5fe0c8", true),
+    ] {
+        empty_draw(&server, &ann, id, signed_in).await;
+    }
+}
+
+/// `id` chosen for a seat of a new game of `ann`'s, by `ann` or by a guest who joins.
+async fn empty_draw(server: &TestServer, ann: &Browser, id: &str, signed_in: bool) {
+    let game = create(server, ann, "mono-green").await;
+    let reply = if signed_in {
+        choose(server, ann, &game, 0, id).await
+    } else {
+        let joined = net::lobby::join(server.addr, &game, &json!({ "name": "Cy" }), &[]).await;
+        let token = joined.json()["token"].as_str().unwrap().to_owned();
+        net::lobby::call(
+            server.addr,
+            "PUT",
+            &seat_path(&game, 1),
+            Some(&json!({ "deck": id }).to_string()),
+            &[("Authorization", &bearer(&token))],
+        )
+        .await
+    };
+    assert_eq!(
+        (reply.status, reply.error_code().as_str()),
+        (404, "unknown_deck")
+    );
+}

@@ -32,7 +32,8 @@
      "label": "Turn back",
      "outcomes": []
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "glittering_pool",
@@ -63,7 +64,8 @@
      "label": "Leave it",
      "outcomes": []
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "trapped_miner",
@@ -87,7 +89,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "old_shrine",
@@ -121,7 +124,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "rat_kings_hoard",
@@ -150,7 +154,8 @@
      "label": "Walk around",
      "outcomes": []
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "wandering_merchant",
@@ -170,7 +175,8 @@
      "label": "Decline",
      "outcomes": []
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "mushroom_grove",
@@ -205,7 +211,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "collapsed_tunnel",
@@ -238,7 +245,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "duelling_statue",
@@ -274,7 +282,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "campfire_tales",
@@ -295,7 +304,8 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
   },
   {
    "id": "mirror_pool",
@@ -317,7 +327,450 @@
       }
      ]
     }
-   ]
+   ],
+   "until": 2
+  },
+  {
+   "id": "goblin_toll_trade",
+   "title": "The Goblin Toll",
+   "text": "A goblin with a crooked crown blocks a bridge and demands payment.",
+   "options": [
+    {
+     "label": "Pay the toll",
+     "outcomes": [
+      {
+       "Gold": -25
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Push past",
+     "outcomes": [
+      {
+       "Life": -8
+      },
+      {
+       "Gold": 40
+      }
+     ]
+    },
+    {
+     "label": "Turn back",
+     "outcomes": [
+      {
+       "Gold": 10
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "glittering_pool_trade",
+   "title": "Glittering Pool",
+   "text": "Coins shine at the bottom of a cold, still pool.",
+   "options": [
+    {
+     "label": "Dive for the coins",
+     "outcomes": [
+      {
+       "Life": -6
+      },
+      {
+       "Gold": 60
+      }
+     ]
+    },
+    {
+     "label": "Skim the shallows",
+     "outcomes": [
+      {
+       "Gold": 15
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "trapped_miner_trade",
+   "title": "The Trapped Miner",
+   "text": "A miner is pinned under fallen timber, begging for help.",
+   "options": [
+    {
+     "label": "Free him",
+     "outcomes": [
+      {
+       "Life": -5
+      },
+      {
+       "RelicOf": "Common"
+      }
+     ]
+    },
+    {
+     "label": "Take his pack and go",
+     "outcomes": [
+      {
+       "Gold": 30
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "old_shrine_trade",
+   "title": "An Old Shrine",
+   "text": "A forgotten shrine hums with warm light.",
+   "options": [
+    {
+     "label": "Pray",
+     "outcomes": [
+      {
+       "Life": 8
+      }
+     ]
+    },
+    {
+     "label": "Offer your strength",
+     "outcomes": [
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Pry out the gems",
+     "outcomes": [
+      {
+       "Life": -8
+      },
+      {
+       "Gold": 60
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "rat_kings_hoard_trade",
+   "title": "The Rat King's Hoard",
+   "text": "A tangle of rats guards a pile of trinkets.",
+   "options": [
+    {
+     "label": "Swap a trinket",
+     "outcomes": [
+      "LoseRelic",
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Reach into the nest",
+     "outcomes": [
+      {
+       "MaxLife": -10
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Walk around",
+     "outcomes": [
+      {
+       "Gold": 10
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "wandering_merchant_trade",
+   "title": "Wandering Merchant",
+   "text": "A hooded figure offers a single wrapped card.",
+   "options": [
+    {
+     "label": "Buy it",
+     "outcomes": [
+      {
+       "Gold": -30
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Trade a card for a trinket",
+     "outcomes": [
+      "LoseCard",
+      {
+       "RelicOf": "Common"
+      }
+     ]
+    },
+    {
+     "label": "Share a drink",
+     "outcomes": [
+      {
+       "Life": 4
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "mushroom_grove_trade",
+   "title": "Mushroom Grove",
+   "text": "Pale mushrooms glow in a damp cave. Some look edible.",
+   "options": [
+    {
+     "label": "Eat a pale one",
+     "outcomes": [
+      {
+       "Life": 8
+      }
+     ]
+    },
+    {
+     "label": "Gather them to sell",
+     "outcomes": [
+      {
+       "Gold": 25
+      }
+     ]
+    },
+    {
+     "label": "Eat the black cap",
+     "outcomes": [
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "collapsed_tunnel_trade",
+   "title": "Collapsed Tunnel",
+   "text": "The way ahead is half buried. Digging through will take effort.",
+   "options": [
+    {
+     "label": "Dig through",
+     "outcomes": [
+      {
+       "Gold": 30
+      }
+     ]
+    },
+    {
+     "label": "Squeeze through the gap",
+     "outcomes": [
+      {
+       "Life": -6
+      },
+      "CardPick"
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "duelling_statue_trade",
+   "title": "The Duelling Statue",
+   "text": "A stone warrior offers a challenge: strike true and claim its prize.",
+   "options": [
+    {
+     "label": "Accept the challenge",
+     "outcomes": [
+      {
+       "Life": -12
+      },
+      {
+       "RelicOf": "Rare"
+      },
+      {
+       "Gold": 20
+      }
+     ]
+    },
+    {
+     "label": "Swear the statue an oath",
+     "outcomes": [
+      {
+       "Bane": {
+        "Tax": 1
+       }
+      },
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Bow and leave",
+     "outcomes": [
+      {
+       "Gold": 10
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "campfire_tales_trade",
+   "title": "Campfire Tales",
+   "text": "Another band of adventurers shares their fire and their stories.",
+   "options": [
+    {
+     "label": "Trade stories",
+     "outcomes": [
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Trade supplies",
+     "outcomes": [
+      {
+       "Gold": 30
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "mirror_pool_trade",
+   "title": "The Mirror Pool",
+   "text": "Still water in a cave of glass. Whatever is held over it rises from it a second time.",
+   "options": [
+    {
+     "label": "Hold a card over the water",
+     "outcomes": [
+      "Duplicate"
+     ]
+    },
+    {
+     "label": "Step into the reflection",
+     "outcomes": [
+      {
+       "Bane": {
+        "Shrink": 1
+       }
+      },
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Fish out the coins",
+     "outcomes": [
+      {
+       "Gold": 20
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "bleeding_altar",
+   "title": "The Bleeding Altar",
+   "text": "A black stone altar drinks whatever is spilled on it, and gives back in kind.",
+   "options": [
+    {
+     "label": "Bleed on the altar",
+     "outcomes": [
+      {
+       "Life": -15
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Bind your blood to it",
+     "outcomes": [
+      {
+       "MaxLife": -10
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Pray beside it",
+     "outcomes": [
+      {
+       "Life": 6
+      }
+     ]
+    }
+   ],
+   "since": 3
+  },
+  {
+   "id": "kings_forge",
+   "title": "The Forge of Kings",
+   "text": "An old dwarven forge still burns. It remakes what is fed to it into something greater.",
+   "options": [
+    {
+     "label": "Melt down a relic",
+     "outcomes": [
+      "LoseRelic",
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Feed it a card",
+     "outcomes": [
+      "LoseCard",
+      {
+       "Life": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Warm your hands",
+     "outcomes": [
+      {
+       "Life": 5
+      }
+     ]
+    }
+   ],
+   "since": 3
   }
  ],
  "pool": [
@@ -494,6 +947,51 @@
    ""
   ]
  ],
+ "pool_types": {
+  "Swords to Plowshares": "Instant",
+  "Serra Angel": "Creature — Angel",
+  "Pacifism": "Enchantment — Aura",
+  "Path to Exile": "Instant",
+  "Ajani's Pridemate": "Creature — Cat Soldier",
+  "Glorious Anthem": "Enchantment",
+  "Banishing Light": "Enchantment",
+  "Wrath of God": "Sorcery",
+  "Counterspell": "Instant",
+  "Brainstorm": "Instant",
+  "Mulldrifter": "Creature — Elemental",
+  "Mana Drain": "Instant",
+  "Ponder": "Sorcery",
+  "Opt": "Instant",
+  "Fact or Fiction": "Instant",
+  "Doom Blade": "Instant",
+  "Duress": "Sorcery",
+  "Pestilence": "Enchantment",
+  "Feed the Swarm": "Sorcery",
+  "Lightning Bolt": "Instant",
+  "Fireball": "Sorcery",
+  "Fiery Temper": "Instant",
+  "Blasphemous Act": "Sorcery",
+  "Chaos Warp": "Instant",
+  "Dragon Tempest": "Enchantment",
+  "Llanowar Elves": "Creature — Elf Druid",
+  "Giant Growth": "Instant",
+  "Rancor": "Enchantment — Aura",
+  "Kodama's Reach": "Sorcery — Arcane",
+  "Beast Within": "Instant",
+  "Cultivate": "Sorcery",
+  "Rampant Growth": "Sorcery",
+  "Prey Upon": "Sorcery",
+  "Lignify": "Enchantment Kindred — Treefolk Aura",
+  "Eternal Witness": "Creature — Human Shaman",
+  "Exploration": "Enchantment",
+  "Kolaghan's Command": "Instant",
+  "Sol Ring": "Artifact",
+  "Arcane Signet": "Artifact",
+  "Swiftfoot Boots": "Artifact — Equipment",
+  "Fellwar Stone": "Artifact",
+  "Skullclamp": "Artifact — Equipment",
+  "Howling Mine": "Artifact"
+ },
  "bosses": [
   {
    "id": "skrix_nest",
@@ -505,6 +1003,70 @@
    "hand": 9,
    "line": "My children are hungry.",
    "art": { "card": "Ashcoat of the Shadow Swarm", "oracle_id": "9cc69ea5-42a2-4306-ac6d-cff5adb20bcb" },
+   "commander": "Ashcoat of the Shadow Swarm",
+   "upgrade": {"name": "Skrix, Empress of the Undercity", "rules": ["skrix_empress"], "line": "The whole undercity answers to me now."},
+   "brackets": {
+    "base": [
+     ["Swamp", 17],
+     ["Sewer Rats", 3],
+     ["Innocuous Rat", 3],
+     ["Tangled Colony", 3],
+     ["Lord Skitter's Butcher", 3],
+     ["Gnat Miser", 2],
+     ["Dirty Wererat", 2],
+     ["Rat Out", 2],
+     ["Psychic Whorl", 2],
+     ["Doom Blade", 2],
+     ["Duress", 1]
+    ],
+    "steps": [
+     {
+      "add": [
+       ["Swamp", 3],
+       ["Ruthless Radrat", 2],
+       ["Crypt Rats", 1],
+       ["Locust Miser", 1],
+       ["Sinuous Vermin", 1],
+       ["Old Flitterfang", 1],
+       ["Mukotai Ambusher", 1]
+      ]
+     },
+     {
+      "add": [
+       ["Swamp", 4],
+       ["Nashi, Moon Sage's Scion", 1],
+       ["Bitter Triumph", 2],
+       ["Pestilence", 1],
+       ["Dreaded Bat-Cloud", 1],
+       ["Mukotai Ambusher", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Sewer Rats", 2],
+       ["Duress", 1],
+       ["Rat Out", 2]
+      ],
+      "add": [
+       ["Extinguish the Light", 2],
+       ["Aberrant Return", 1],
+       ["Graf Rats", 1],
+       ["Midnight Scavengers", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Gnat Miser", 2],
+       ["Psychic Whorl", 2]
+      ],
+      "add": [
+       ["Locust Miser", 1],
+       ["Bile Blight", 2],
+       ["Diseased Vermin", 1]
+      ]
+     }
+    ]
+   },
    "deck": [
     [
      "Swamp",
@@ -586,6 +1148,67 @@
    "hand": 10,
    "line": "Moss grows on the bones of the bold.",
    "art": { "card": "Thrun, Breaker of Silence", "oracle_id": "789b7af5-ac15-40b6-b5b7-f3fcdcfb52e1" },
+   "commander": "Thrun, Breaker of Silence",
+   "upgrade": {"name": "Mossjaw the Undying", "rules": ["mossjaw_undying"], "line": "Cut me down. I grow back. I always grow back."},
+   "brackets": {
+    "base": [
+     ["Forest", 17],
+     ["Pygmy Troll", 3],
+     ["Honor Troll", 3],
+     ["Llanowar Elves", 3],
+     ["Lone Wolf", 2],
+     ["Dire Wolves", 2],
+     ["Prey Upon", 2],
+     ["Epic Confrontation", 2],
+     ["Giant Growth", 2],
+     ["Rancor", 1],
+     ["Challenger Troll", 2],
+     ["Golgari Grave-Troll", 1]
+    ],
+    "steps": [
+     {
+      "add": [
+       ["Forest", 3],
+       ["Ribtruss Roaster", 2],
+       ["Feasting Troll King", 1],
+       ["Hunt the Weak", 2],
+       ["Rampant Growth", 1],
+       ["Bannerhide Krushok", 1]
+      ]
+     },
+     {
+      "add": [
+       ["Forest", 4],
+       ["Affectionate Indrik", 2],
+       ["Baloth Gorger", 2],
+       ["Rancor", 1],
+       ["Inexorable Blob", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Dire Wolves", 2],
+       ["Giant Growth", 2],
+       ["Lone Wolf", 1]
+      ],
+      "add": [
+       ["Cragplate Baloth", 2],
+       ["Primal Might", 2],
+       ["Gnarlid Colony", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Lone Wolf", 1],
+       ["Pygmy Troll", 2]
+      ],
+      "add": [
+       ["Blastoderm", 2],
+       ["Inexorable Blob", 1]
+      ]
+     }
+    ]
+   },
    "deck": [
     [
      "Forest",
@@ -672,6 +1295,74 @@
    "relic": "bone_reliquary",
    "line": "Rise, all of you. Rise and feast.",
    "art": { "card": "Gisa, the Hellraiser", "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d" },
+   "commander": "Gisa, the Hellraiser",
+   "brackets": {
+    "base": [
+     ["Swamp", 9],
+     ["Mountain", 8],
+     ["Lord of the Accursed", 2],
+     ["Gravecrawler", 3],
+     ["Dregscape Zombie", 2],
+     ["Diregraf Colossus", 2],
+     ["Putrid Goblin", 2],
+     ["Gutterbones", 2],
+     ["Kjeldoran Dead", 2],
+     ["Lightning Bolt", 2],
+     ["Doom Blade", 2],
+     ["Rakdos Charm", 1],
+     ["Undead Butler", 2],
+     ["Tomb Tyrant", 1]
+    ],
+    "steps": [
+     {
+      "add": [
+       ["Swamp", 2],
+       ["Mountain", 1],
+       ["Unbreathing Horde", 2],
+       ["Slavering Nulls", 2],
+       ["Phyrexian Delver", 1],
+       ["Kolaghan's Command", 1],
+       ["Zombie Master", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Putrid Goblin", 2]
+      ],
+      "add": [
+       ["Swamp", 2],
+       ["Mountain", 2],
+       ["Noxious Ghoul", 1],
+       ["Liliana's Standard Bearer", 2],
+       ["Mikaeus, the Unhallowed", 1],
+       ["Rakdos Charm", 1],
+       ["Lightning Bolt", 1],
+       ["Doom Blade", 1],
+       ["Kolaghan's Command", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Dregscape Zombie", 2],
+       ["Kjeldoran Dead", 1]
+      ],
+      "add": [
+       ["Tainted Adversary", 2],
+       ["Calculating Lich", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Undead Butler", 2],
+       ["Kjeldoran Dead", 1]
+      ],
+      "add": [
+       ["Jarl of the Forsaken", 2],
+       ["Geth, Lord of the Vault", 1]
+      ]
+     }
+    ]
+   },
    "deck": [
     [
      "Swamp",
@@ -749,7 +1440,7 @@
   {
    "id": "grimgut_court",
    "name": "Grimgut, the Warren King",
-   "colors": "BR",
+   "colors": "R",
    "brain": "Hard",
    "life": 27,
    "life_per_hero": 30,
@@ -761,6 +1452,69 @@
    "relic": "crown_of_cinders",
    "line": "Kneel, or be eaten. Or both!",
    "art": { "card": "Krenko, Tin Street Kingpin", "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0" },
+   "commander": "Krenko, Tin Street Kingpin",
+   "brackets": {
+    "base": [
+     ["Mountain", 17],
+     ["Mudbrawler Cohort", 3],
+     ["Goblin Brawler", 2],
+     ["Dropkick Bomber", 2],
+     ["Searslicer Goblin", 2],
+     ["Goblin Arsonist", 2],
+     ["Broadside Bombardiers", 2],
+     ["Rundvelt Hordemaster", 1],
+     ["Lightning Bolt", 2],
+     ["Goblin Heelcutter", 2],
+     ["Frenzied Goblin", 2],
+     ["Fireball", 1],
+     ["Goblin Chieftain", 2]
+    ],
+    "steps": [
+     {
+      "add": [
+       ["Mountain", 3],
+       ["Goblin Chieftain", 1],
+       ["Krenko's Enforcer", 2],
+       ["Skirk Commando", 1],
+       ["Mogg Mob", 1],
+       ["Goblin Cratermaker", 2]
+      ]
+     },
+     {
+      "add": [
+       ["Mountain", 4],
+       ["Goblin Dark-Dwellers", 1],
+       ["Raging Goblinoids", 1],
+       ["Goblin Pyromancer", 1],
+       ["Moria Marauder", 2],
+       ["Redcap Gutter-Dweller", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Frenzied Goblin", 2],
+       ["Goblin Arsonist", 2],
+       ["Mudbrawler Cohort", 1]
+      ],
+      "add": [
+       ["Hellraiser Goblin", 1],
+       ["Squee, the Immortal", 1],
+       ["Spikeshot Elder", 2],
+       ["Grenzo's Ruffians", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Goblin Brawler", 2],
+       ["Mudbrawler Cohort", 1]
+      ],
+      "add": [
+       ["Searslicer Goblin", 1],
+       ["Torch Slinger", 2]
+      ]
+     }
+    ]
+   },
    "phases": [
     [
      "warren_wakes",
@@ -842,6 +1596,175 @@
     ]
    ],
    "final": true
+  },
+  {
+   "id": "seraphine_spire",
+   "name": "Seraphine, the Gilded Choir",
+   "since": 4,
+   "colors": "W",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["seraphine"],
+   "enrage": "choir_eternal",
+   "relic": "halo_of_wings",
+   "phases": [
+    ["choir_ascends", 66],
+    ["wings_of_wrath", 33]
+   ],
+   "line": "Kneel, and be forgiven. Stand, and be judged.",
+   "commander": "Akroma, Angel of Wrath",
+   "art": {"card": "Bruna, the Fading Light", "oracle_id": "bce7e45d-b2c5-43aa-91a6-3a3c24f30850"},
+   "brackets": {
+    "base": [
+     ["Plains", 17],
+     ["Ajani's Pridemate", 3],
+     ["Court Cleric", 2],
+     ["Expedition Healer", 2],
+     ["Angel of Vitality", 2],
+     ["Exemplar of Light", 2],
+     ["Serra Angel", 2],
+     ["Banisher Priest", 2],
+     ["Swords to Plowshares", 2],
+     ["Pacifism", 2],
+     ["Arrest", 1],
+     ["Glorious Anthem", 1],
+     ["Giada, Font of Hope", 1],
+     ["Battlegrace Angel", 1]
+    ],
+    "steps": [
+     {
+      "add": [
+       ["Plains", 3],
+       ["Angelic Quartermaster", 2],
+       ["Angel of Invention", 1],
+       ["Angelic Destiny", 1],
+       ["Auriok Champion", 2],
+       ["Arrest", 1]
+      ]
+     },
+     {
+      "add": [
+       ["Plains", 4],
+       ["Exalted Angel", 1],
+       ["Aegis Angel", 1],
+       ["Archangel of Tithes", 1],
+       ["Swords to Plowshares", 1],
+       ["Angel of Sanctions", 2]
+      ]
+     },
+     {
+      "cut": [
+       ["Court Cleric", 2],
+       ["Expedition Healer", 2],
+       ["Arrest", 1]
+      ],
+      "add": [
+       ["Exquisite Archangel", 1],
+       ["Adarkar Valkyrie", 1],
+       ["Gisela, the Broken Blade", 1],
+       ["Angel of Jubilation", 2]
+      ]
+     },
+     {
+      "cut": [
+       ["Glorious Anthem", 1],
+       ["Auriok Champion", 2]
+      ],
+      "add": [
+       ["Emeria Shepherd", 1],
+       ["Angel of the Dire Hour", 1],
+       ["Exalted Sunborn", 1]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "ysolde_reef",
+   "name": "Ysolde, Tyrant of the Undertow",
+   "since": 4,
+   "colors": "U",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["ysolde"],
+   "enrage": "rising_tide",
+   "relic": "tidal_codex",
+   "phases": [
+    ["the_undertow", 66],
+    ["the_deep_rises", 33]
+   ],
+   "line": "The sea keeps everything it takes. It will keep you.",
+   "commander": "Lorthos, the Tidemaker",
+   "art": {"card": "Kiora, the Rising Tide", "oracle_id": "5d748bce-dff8-46fa-a3d1-633863b7bbff"},
+   "brackets": {
+    "base": [
+     ["Island", 17],
+     ["Merfolk Spy", 2],
+     ["Merfolk Windrobber", 2],
+     ["Cleric of Chill Depths", 2],
+     ["Master of the Pearl Trident", 2],
+     ["Merrow Reejerey", 2],
+     ["Deepwater Hypnotist", 2],
+     ["Gravelgill Scoundrel", 2],
+     ["Kopala, Warden of Waves", 1],
+     ["Counterspell", 2],
+     ["Into the Roil", 2],
+     ["Opt", 2],
+     ["Inkfathom Divers", 1],
+     ["Biblioplex Kraken", 1]
+    ],
+    "steps": [
+     {
+      "add": [
+       ["Island", 3],
+       ["Attuma, Atlantean Warlord", 1],
+       ["Coralhelm Commander", 2],
+       ["Grappling Kraken", 1],
+       ["Monstrosity of the Lake", 1],
+       ["Fact or Fiction", 1],
+       ["Counterspell", 1]
+      ]
+     },
+     {
+      "add": [
+       ["Island", 4],
+       ["Hullbreaker Horror", 1],
+       ["Pearl Lake Ancient", 1],
+       ["Mesmerizing Benthid", 2],
+       ["Brineborn Cutthroat", 2]
+      ]
+     },
+     {
+      "cut": [
+       ["Opt", 2],
+       ["Merfolk Spy", 2],
+       ["Cleric of Chill Depths", 1]
+      ],
+      "add": [
+       ["Cyclonic Rift", 1],
+       ["Breaching Leviathan", 1],
+       ["Charix, the Raging Isle", 1],
+       ["Kiora, the Rising Tide", 1],
+       ["Alandra, Sky Dreamer", 1]
+      ]
+     },
+     {
+      "cut": [
+       ["Deepwater Hypnotist", 2],
+       ["Gravelgill Scoundrel", 1]
+      ],
+      "add": [
+       ["Archipelagore", 1],
+       ["Aethersquall Ancient", 1],
+       ["Brinelin, the Moon Kraken", 1]
+      ]
+     }
+    ]
+   }
   }
  ],
  "schemes": [
