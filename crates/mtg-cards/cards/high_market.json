@@ -1,0 +1,25 @@
+{
+  "oracle_id": "86fb3749-37d6-48a6-8524-71e996850307",
+  "name": "High Market",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "High Market",
+      "oracle_fingerprint": "e497fa438c7e64d69bfeb01e4262ff35",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

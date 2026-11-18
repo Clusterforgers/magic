@@ -104,6 +104,13 @@ pub struct PlayerSetup {
     /// The cards of the seat's Satchel (a Delves hero's earned cards), in its command zone from the start and castable
     /// from there like cards in hand ([`crate::satchel`]).
     pub satchel: Vec<Arc<CardDefinition>>,
+    /// The reusable cards of the seat's Satchel (a Delves boss's), after the others: each returns to the Satchel as it
+    /// leaves the stack or the battlefield and costs {2} more for each earlier cast ([`crate::satchel`]).
+    pub satchel_reusable: Vec<Arc<CardDefinition>>,
+    /// The land count the seat's opening hand must hold; such a seat takes no mulligan ([`crate::opening_lands`]).
+    pub opening_lands: Option<crate::opening_lands::OpeningLands>,
+    /// A reworked boss seat's public sheet, which names its innate, modifier, relics and phases ([`crate::boss_sheet`]).
+    pub boss_sheet: Option<Arc<crate::boss_sheet::BossSheet>>,
     /// Cards the seat starts with in its command zone that nothing lets it cast from there; only an effect casts them (a
     /// Delves boss's commander card, cast by its last phase).
     pub held: Vec<Arc<CardDefinition>>,
@@ -476,6 +483,7 @@ fn starting_player(
     player.scheme_every = setup.scheme_every.max(1);
     player.leader = setup.leader;
     player.held = setup.held.iter().map(|card| card.name.clone()).collect();
+    player.sheet = crate::boss_sheet::SheetSlot(setup.boss_sheet.clone());
     for (kind, count) in &setup.counters {
         if *count > 0 {
             *player.counters.entry(kind.clone()).or_default() += count;
@@ -509,6 +517,7 @@ impl GameState {
         let mut placed: BTreeMap<(usize, usize), ObjectId> = BTreeMap::new();
         let mut emblems = Vec::new();
         let mut satchel_ids = Vec::new();
+        let mut reusable_ids = Vec::new();
         for (seat, setup_player) in setup.players.iter().enumerate() {
             let owner = PlayerId::from_index(seat);
             for card in setup_player.library.iter().rev() {
@@ -538,6 +547,9 @@ impl GameState {
             }
             for card in &setup_player.satchel {
                 satchel_ids.push(create(owner, card, Zone::Command(owner)));
+            }
+            for card in &setup_player.satchel_reusable {
+                reusable_ids.push(create(owner, card, Zone::Command(owner)));
             }
             for card in &setup_player.held {
                 create(owner, card, Zone::Command(owner));
@@ -702,7 +714,16 @@ impl GameState {
             un34,
             w15a_initiative: None,
             commanders: Commanders::of(commander_ids),
-            satchels: crate::satchel::Satchels::of(satchel_ids),
+            satchels: crate::satchel::Satchels::of(satchel_ids, reusable_ids),
+            opening_rules: crate::opening_lands::OpeningRules::of(
+                setup
+                    .players
+                    .iter()
+                    .enumerate()
+                    .filter_map(|(seat, player)| {
+                        Some((PlayerId::from_index(seat), player.opening_lands?))
+                    }),
+            ),
             companions,
             looked_by_hand: Vec::new(),
             looked_face_down: Vec::new(),
@@ -718,7 +739,8 @@ impl GameState {
             game.possible.replacements = true;
         }
         // A commander is moved by a replacement effect and costs a tax, so both are looked for in its game.
-        if game.commanders.any() {
+        // A reusable Satchel card costs a tax as a commander does.
+        if game.commanders.any() || game.satchels.any_reusable() {
             game.possible.replacements = true;
             game.possible.costs = true;
         }

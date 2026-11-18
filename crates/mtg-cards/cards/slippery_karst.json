@@ -1,0 +1,21 @@
+{
+  "oracle_id": "58bfd9a1-67ce-41d0-be38-f05addd1dd9e",
+  "name": "Slippery Karst",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slippery Karst",
+      "oracle_fingerprint": "dad5164a2411e1d7ad12d27f3d04a45e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

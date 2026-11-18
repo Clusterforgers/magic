@@ -1,0 +1,76 @@
+{
+  "oracle_id": "f451b8f0-1ff5-4e8d-9f30-9352d83ed687",
+  "name": "Den of the Bugbear",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Den of the Bugbear",
+      "oracle_fingerprint": "444a7f065d95b7f42a30dbbef112bf58",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, "Other", { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 2
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}{R}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 2 } },
+                    { "SetColors": ["Red"] },
+                    { "SetCreatureTypes": ["Goblin"] },
+                    { "AddType": "Creature" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": { "Attacks": { "what": ["This"] } },
+                          "effects": [
+                            {
+                              "CreateToken": {
+                                "token": {
+                                  "Custom": {
+                                    "name": "Goblin",
+                                    "colors": ["Red"],
+                                    "types": ["Creature"],
+                                    "subtypes": ["Goblin"],
+                                    "power": 1,
+                                    "toughness": 1
+                                  }
+                                },
+                                "tapped": true,
+                                "attacking": true
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

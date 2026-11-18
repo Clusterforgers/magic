@@ -23,7 +23,7 @@ use mtg_engine::choose::Target;
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::object::ObjectKind;
-use mtg_engine::phases::BossPhase;
+use mtg_engine::phases::{BossPhase, PhaseStart};
 use mtg_engine::player::LossReason;
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
@@ -158,7 +158,7 @@ fn boss_phases_begin_in_order_at_their_thresholds(
     #[case] begun: &[&str],
 ) -> Result<(), ScriptError> {
     let phases = [("Phase II", 15), ("Phase III", 5)].map(|(name, at_life)| BossPhase {
-        at_life,
+        begins: PhaseStart::AtLife(at_life),
         emblem: emblem(name, &[ANTHEM]),
     });
     let scenario = table(&[20, life], None).phases(1, phases);

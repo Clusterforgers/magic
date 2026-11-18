@@ -1,0 +1,35 @@
+{
+  "oracle_id": "21f45043-5419-4019-8b6c-e5294bd5f549",
+  "name": "Acidic Slime",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Acidic Slime",
+      "oracle_fingerprint": "329af6a706682453752475a0232b5c97",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

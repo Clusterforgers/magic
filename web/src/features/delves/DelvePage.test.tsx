@@ -1,4 +1,4 @@
-// Goal: the run page shows each state of a run and sends the matching action: the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart and at what life the heroes regroup (full at the first boss, half later), the host's retreat (confirmed first, never for a guest), every kind of offer (the Mirror Pool from the view's list), and the end.
+// Goal: the run page shows each state of a run and sends the matching action: the run's own theme and story, the lobby's hero cards with their Ready state, the deck picker, bot ally and start (only for the host, once every hero is ready), the ladder's votes with who voted for what, the boss fight's link and phases, how a lost fight cost a heart and at what life the heroes regroup (full at the first boss, half later), the host's retreat (confirmed first, never for a guest), every kind of offer (the Mirror Pool from the view's list), and the end.
 import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -32,6 +32,15 @@ describe('the lobby', () => {
     )
     expect(screen.getByText(/heroes ready/).parentElement).toHaveTextContent('1 of 2 heroes ready')
     expect(screen.getByRole('button', { name: 'Descend' })).toBeDisabled()
+  })
+
+  it('names the run’s own theme and tells its story, whatever theme the content lists', async () => {
+    await show(delveView({ theme: 'The Drowned Spire', story: 'A tower under the sea.' }))
+    expect(await screen.findByRole('heading', { level: 1, name: 'The Drowned Spire' })).toBeInTheDocument()
+    expect(screen.getByRole('region', { name: 'The Drowned Spire' })).toHaveTextContent(
+      'A tower under the sea.',
+    )
+    expect(screen.queryByText('Tunnels under the old mines.')).toBeNull()
   })
 
   it('opens the deck picker and sends the deck taken', async () => {
@@ -95,20 +104,19 @@ describe('the ladder and the fight', () => {
   const fight = {
     boss: 'Skrix, the Rat Queen',
     life: 120,
-    rules: ['skrix'],
-    phases: [['nest', 80]] as Array<[string, number]>,
-    minions: [],
-    intensify: [] as string[],
+    innate: { name: 'Brood II', text: 'Rats.', level: 2 },
+    round_phases: [{ name: 'Phase 1 — The Nest Stirs', text: 'More rats.', round: 8, begun: false }],
   }
 
   it('opens with the boss intro: the way in, the party with its decks and life, the abilities and phases', async () => {
     await show(delveView({ boss: 'skrix_nest', fight }, { status: { Fight: { game: 'g42' } }, at: 0 }))
     const link = await screen.findByRole('link', { name: 'Enter the fight' })
     expect(link).toHaveAttribute('href', '/game/g42')
-    const abilities = within(screen.getByRole('list', { name: 'Boss abilities' }))
-    expect(abilities.getByText('Phase II — The Nest Stirs')).toBeInTheDocument()
-    expect(abilities.getByText(/At 80 life \(67%\)/)).toBeInTheDocument()
-    expect(abilities.getByText('More rats.')).toBeInTheDocument()
+    const phases = within(screen.getAllByRole('list', { name: 'Boss abilities' })[1] as HTMLElement)
+    expect(phases.getByText('Phase 1 — The Nest Stirs')).toBeInTheDocument()
+    expect(phases.getByText(/Phase 1 at round 8/)).toBeInTheDocument()
+    expect(phases.getByText('More rats.')).toBeInTheDocument()
+    expect(screen.getByText('· Level II')).toBeInTheDocument()
     expect(screen.getByRole('listitem', { name: /Skrix, the Rat Queen, You are here/ })).toHaveTextContent(
       'Fighting',
     )

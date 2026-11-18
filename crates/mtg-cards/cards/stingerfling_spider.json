@@ -1,0 +1,23 @@
+{
+  "oracle_id": "056770e2-8ab7-424d-a2d8-7be6d6cc73f1",
+  "name": "Stingerfling Spider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stingerfling Spider",
+      "oracle_fingerprint": "f138a0a2c8223b9bc47ccaeb1386e7f4",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] } }
+            ],
+            "effects": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-// Goal: a campaign fight reads at the table: a boss seat's pod and tile carry the crown chip, the boss edge and a phase track whose steps are passed, now or to come by `begun`; a fallen hero's pod and tile carry the Spirit mark, the ghost at the life figure and "Spirit" in their names; the phase banner shows the phase that began only for a batch that raises `begun`, never for the first view or a snapshot, and is announced politely.
+// Goal: a campaign fight reads at the table: a boss seat's pod and tile carry the crown chip, the boss edge and a track of its two phases by round, each passed, now or to come; a fallen hero's pod and tile carry the Spirit mark, the ghost at the life figure and "Spirit" in their names; the phase banner shows the phase that began only for a batch that raises `begun`, never for the first view or a snapshot, and is announced politely.
 import { act, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { applyBatchToStore } from '@/features/table/dev/applyBatch'
@@ -15,8 +15,17 @@ import { BANNER_TIMES } from '../turn/timing'
 import { phaseCueBetween, phaseSteps, phaseTitle, roman } from './bossPhase'
 import { PhaseBanner } from './PhaseBanner'
 
-const PHASES = ['Phase II — The Nest Stirs', 'Phase III — Plague Tide']
-const boss = (begun: number): BossView => ({ phases: PHASES, begun })
+const PHASES = ['Phase 1 — The Nest Stirs', 'Phase 2 — Plague Tide']
+const boss = (begun: number): BossView => ({
+  phases: PHASES,
+  begun,
+  round_phases: PHASES.map((name, at) => ({
+    name: name.slice(10),
+    text: '',
+    round: 8 + 6 * at,
+    begun: at < begun,
+  })),
+})
 
 function edited(edit: (view: StateView) => void): (state: PlayState) => PlayState {
   return (state) => {
@@ -30,14 +39,14 @@ const seatOf = (view: StateView, seat: number): PlayerView => must(view.players.
 
 describe('the phase words', () => {
   it.each([
-    [0, ['current', 'next', 'next']],
-    [1, ['done', 'current', 'next']],
-    [2, ['done', 'done', 'current']],
+    [0, ['next', 'next']],
+    [1, ['current', 'next']],
+    [2, ['done', 'current']],
   ])('with %i begun, the steps read %j', (begun, states) => {
     const steps = phaseSteps(boss(begun))
     expect(steps.map((s) => s.state)).toEqual(states)
-    expect(steps.map((s) => s.label)).toEqual(['Phase I', 'Phase II', 'Phase III'])
-    expect(steps.map((s) => s.title)).toEqual(['', 'The Nest Stirs', 'Plague Tide'])
+    expect(steps.map((s) => s.label)).toEqual(['Phase 1', 'Phase 2'])
+    expect(steps.map((s) => s.title)).toEqual(['The Nest Stirs', 'Plague Tide'])
   })
 
   it.each([
@@ -60,8 +69,8 @@ describe('the phase words', () => {
     ['an unchanged count', [player(1, 1)], [player(1, 1)], null],
     ['a seat new to the view', [player(0)], [player(0), player(1, 1)], null],
     ['a seat without a boss', [player(0)], [player(0)], null],
-    ['a raised count', [player(1, 0)], [player(1, 1)], 'Skrix enters Phase II: The Nest Stirs.'],
-    ['two phases at once', [player(1, 0)], [player(1, 2)], 'Skrix enters Phase III: Plague Tide.'],
+    ['a raised count', [player(1, 0)], [player(1, 1)], 'Skrix enters Phase 1: The Nest Stirs.'],
+    ['two phases at once', [player(1, 0)], [player(1, 2)], 'Skrix enters Phase 2: Plague Tide.'],
   ])('gives %s the cue %s', (_, before, after, words) => {
     expect(phaseCueBetween(before, after, name)?.announcement ?? null).toBe(words)
   })
@@ -79,10 +88,10 @@ describe('the pod and the tile', () => {
     expect(section.getAttribute('aria-label')).toMatch(/, boss$/)
     expect(section.querySelector('[data-slot="boss-chip"]')).not.toBeNull()
     const steps = [...section.querySelectorAll('[data-slot="boss-track"] li')]
-    expect(steps.map((s) => s.getAttribute('data-state'))).toEqual(['done', 'current', 'next'])
-    expect(steps[1]).toHaveAttribute('aria-current', 'step')
+    expect(steps.map((s) => s.getAttribute('data-state'))).toEqual(['current', 'next'])
+    expect(steps[0]).toHaveAttribute('aria-current', 'step')
     expect(screen.getByRole('list', { name: 'Boss phases' })).toHaveTextContent(
-      'Phase II: The Nest Stirs, now',
+      'Phase 1: The Nest Stirs, now',
     )
   })
 
@@ -174,9 +183,9 @@ describe('the phase banner', () => {
     deliver(1)
     expect(banner()).toHaveAttribute('data-phase', 'in')
     expect(banner()).toHaveAttribute('aria-hidden', 'true')
-    expect(banner()).toHaveTextContent('Phase II')
+    expect(banner()).toHaveTextContent('Phase 1')
     expect(banner()).toHaveTextContent('The Nest Stirs')
-    expect(announced()).toMatch(/enters Phase II: The Nest Stirs\.$/)
+    expect(announced()).toMatch(/enters Phase 1: The Nest Stirs\.$/)
     table.advance(BANNER_TIMES.inMs)
     expect(banner()).toHaveAttribute('data-phase', 'hold')
     table.advance(BANNER_TIMES.holdMs)

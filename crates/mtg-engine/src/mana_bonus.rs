@@ -11,6 +11,7 @@ use std::sync::Arc;
 use mtg_cards::ability::Ability;
 use mtg_cards::effect::Produce;
 use mtg_cards::mana_trigger::mana_trigger;
+use mtg_cards::refs::ZoneKind;
 use mtg_core::ids::PlayerId;
 use mtg_core::mana::ManaType;
 
@@ -38,15 +39,39 @@ struct Trigger {
     body: Arc<Ability>,
 }
 
-/// The triggered mana abilities of the permanents in play, in the order of the battlefield.
+/// The triggered mana abilities of the permanents in play, in the order of the battlefield, then those of the emblems
+/// in the command zones (a Delves modifier), seat by seat.
 fn triggers(state: &GameState) -> Vec<Trigger> {
     let mut found = Vec::new();
-    for &id in state.zone(Zone::Battlefield) {
+    let emblems = state.players().iter().flat_map(|player| {
+        state
+            .zone(Zone::Command(player.id()))
+            .iter()
+            .copied()
+            .filter(|id| {
+                state
+                    .object(*id)
+                    .is_some_and(|object| object.kind() == crate::object::ObjectKind::Emblem)
+            })
+    });
+    let sources: Vec<_> = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .copied()
+        .chain(emblems)
+        .collect();
+    for &id in &sources {
         let Some(object) = state.object(id) else {
             continue;
         };
         for (_, body) in abilities_of(state, id) {
-            if mana_trigger(&body).is_some() {
+            let home = if object.zone() == Zone::Battlefield {
+                ZoneKind::Battlefield
+            } else {
+                ZoneKind::Command
+            };
+            let works = matches!(&*body, Ability::Triggered { from, .. } if *from == home);
+            if works && mana_trigger(&body).is_some() {
                 found.push(Trigger {
                     source: object.reference(),
                     controller: controller_of_object(state, object),

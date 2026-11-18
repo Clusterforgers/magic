@@ -1,7 +1,7 @@
 //! Goal: endless Delves works end to end on Postgres: a player and a bot ally clear the first floor and the run waits
 //! on the cleared floor with what a descent changes; the player's vote to descend (the healthy bot agrees) gives the
 //! final boss's loot, and once it is answered floor 2 starts with a new ladder, a heart back and the next fight made,
-//! whose intro lists Intensify; a floor vote out of turn is refused.
+//! whose intro shows the innate at the deeper level; a floor vote out of turn is refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{net, pg_commander};
@@ -186,6 +186,7 @@ async fn the_party_clears_a_floor_and_descends(pool: PgPool) {
     assert_ne!(bosses(run), first, "a new ladder");
     assert_eq!(after["descent"], json!([]));
     let view = read(&server, &id, &host).await;
-    let intensify = view["fight"]["intensify"].as_array().unwrap();
-    assert!(!intensify.is_empty(), "{}", view["fight"]);
+    // Four bosses fell, so the innate stands at level III or higher.
+    let level = view["fight"]["innate"]["level"].as_u64().unwrap();
+    assert!(level >= 3, "{}", view["fight"]);
 }

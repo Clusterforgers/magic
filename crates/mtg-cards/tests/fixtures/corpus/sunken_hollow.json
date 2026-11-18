@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "af0eb74d-c203-42ea-a24f-c70429b3e4c3",
+  "oracle_id": "cd2c90ac-2b04-461c-92f3-939871b6b6a3",
+  "multiverse_ids": [],
+  "resource_id": "2784753CBC2A0BD85CC1137ABE8AE37601C06686D4503CEAC449D350278F5911",
+  "mtgo_id": 157346,
+  "tcgplayer_id": 726090,
+  "cardmarket_id": 919723,
+  "name": "Sunken Hollow",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/af0eb74d-c203-42ea-a24f-c70429b3e4c3",
+  "scryfall_uri": "https://scryfall.com/card/trc/564/sunken-hollow?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-26T13:29:48Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.jpg?1793021388",
+    "normal": "https://cards.scryfall.io/normal/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.jpg?1793021388",
+    "large": "https://cards.scryfall.io/large/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.jpg?1793021388",
+    "png": "https://cards.scryfall.io/png/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.png?1793021388",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.jpg?1793021388",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.jpg?1793021388",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.webp?1793021388",
+    "grid": "https://cards.scryfall.io/grid/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.webp?1793021388",
+    "display": "https://cards.scryfall.io/display/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.webp?1793021388",
+    "art": "https://cards.scryfall.io/art/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.webp?1793021388",
+    "crop": "https://cards.scryfall.io/crop/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.webp?1793021388",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/f/af0eb74d-c203-42ea-a24f-c70429b3e4c3.jpg?1793021388"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Island Swamp",
+  "oracle_text": "({T}: Add {U} or {B}.)\nThis land enters tapped unless you control two or more basic lands.",
+  "colors": [],
+  "color_identity": [
+    "B",
+    "U"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B",
+    "U"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/af0eb74d-c203-42ea-a24f-c70429b3e4c3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acd2c90ac-2b04-461c-92f3-939871b6b6a3&unique=prints",
+  "collector_number": "564",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"The outpost was not just destroyed. It's as though some great force just scooped it off the face of the planet.\"\n—Lieutenant junior grade Worf",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nadia Hurianova",
+  "artist_ids": [
+    "1ba1c5be-7a22-46e0-912c-79c87c197bdc"
+  ],
+  "illustration_id": "c259246f-24f6-4eff-9a90-bc9974002704",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 87,
+  "penny_rank": 290,
+  "preview": {
+    "source": "Commander At Home",
+    "source_uri": "https://www.youtube.com/watch?v=2VJq4uR-r4s",
+    "previewed_at": "2026-10-26"
+  },
+  "prices": {
+    "usd": "0.51",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": null,
+    "tix": "0.14"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSunken%2BHollow",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSunken%2BHollow",
+    "edhrec": "https://edhrec.com/route/?cc=Sunken+Hollow"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726090%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919723&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/157346?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

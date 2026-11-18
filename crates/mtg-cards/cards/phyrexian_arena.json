@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ee579a32-a048-4335-b966-231ba731cdea",
+  "name": "Phyrexian Arena",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Arena",
+      "oracle_fingerprint": "d8c0c9b1a461a58c8d1854f4d4e2c809",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

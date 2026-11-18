@@ -1,0 +1,32 @@
+{
+  "oracle_id": "7714af0e-41d9-4609-967f-27233b46055f",
+  "name": "Lord of the Undead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lord of the Undead",
+      "oracle_fingerprint": "ca3d6711b03eecb920905d94fe756a28",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Subtype": "Zombie" }, "Other"] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Zombie" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

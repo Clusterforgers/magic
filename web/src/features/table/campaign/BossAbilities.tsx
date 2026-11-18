@@ -4,17 +4,7 @@
  * counted on the "All" button at its end, which lists every ability in full. The intro screen of a Delves fight lists
  * the same abilities (`BossAbilityList`).
  */
-import {
-  CrownIcon,
-  EyeIcon,
-  FlameIcon,
-  GemIcon,
-  HourglassIcon,
-  ListIcon,
-  ScrollTextIcon,
-  SkullIcon,
-  SparklesIcon,
-} from 'lucide-react'
+import { CrownIcon, FlameIcon, GemIcon, HourglassIcon, ListIcon, SparklesIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
@@ -25,30 +15,23 @@ import { usePlay } from '@/features/game/gameContext'
 import { useSeatNamer } from '../names'
 import { playerOf } from '../selectors'
 import { barOrder } from './bossAbilities'
-import { phaseSteps } from './bossPhase'
-import { BossTrack } from './CampaignMarks'
+import { PhaseCountdown } from './PhaseCountdown'
 import type { BossAbility, BossAbilityKind } from './bossAbilities'
 import { KIND_WORDS, useBossAbilities } from './useBossAbilities'
 
 const ICONS: Record<BossAbilityKind, LucideIcon> = {
-  passive: CrownIcon,
+  innate: CrownIcon,
   phase: FlameIcon,
   'next-phase': HourglassIcon,
-  scheme: ScrollTextIcon,
-  omen: EyeIcon,
-  enrage: SkullIcon,
   modifier: SparklesIcon,
   relic: GemIcon,
 }
 
-/** Each kind's chip: the phase in force filled, the scheme tinted, what is always on plain, what is to come dashed. */
+/** Each kind's chip: the phase in force filled, what is always on plain, what is to come dashed. */
 const CHIP: Record<BossAbilityKind, { chip: string; icon: string }> = {
   phase: { chip: 'border-boss bg-boss text-on-boss', icon: 'text-on-boss' },
-  scheme: { chip: 'border-boss bg-boss/15', icon: 'text-boss' },
-  passive: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
+  innate: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
   'next-phase': { chip: 'border-dashed border-boss/60 bg-card text-muted-foreground', icon: 'text-boss' },
-  omen: { chip: 'border-dashed border-boss/60 bg-card text-muted-foreground', icon: 'text-boss' },
-  enrage: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
   modifier: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
   relic: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
 }
@@ -164,33 +147,22 @@ function AllAbilities({
 }
 
 /**
- * The boss's abilities as one row of chips, the phase in force and the scheme first; what does not fit is counted on
- * the button at the end, which lists them all.
+ * The boss's abilities as one row of chips after its phase countdown: its innate, modifier and relics; what does not
+ * fit is counted on the button at the end, which lists them all.
  */
 export function BossAbilitiesBar({ seat }: { seat: PlayerId }) {
-  const abilities = barOrder(useBossAbilities(seat))
+  const all = barOrder(useBossAbilities(seat))
   const name = useSeatNamer()(seat)
   const boss = usePlay((state) => playerOf(state, seat)?.boss ?? null)
+  // The phases stand in the countdown pill; the row keeps the innate, modifier and relics.
+  const abilities = all.filter((ability) => ability.kind !== 'next-phase' && ability.kind !== 'phase')
   const list = useRef<HTMLUListElement>(null)
   const hidden = useWrapped(list, abilities.length)
-  if (abilities.length === 0) return null
+  if (all.length === 0) return null
   const shown = abilities.length - hidden
-  const step = boss === null ? undefined : phaseSteps(boss).find((each) => each.state === 'current')
   return (
     <div data-slot="boss-abilities" className="flex h-8 min-w-0 shrink-0 items-center gap-1.5 px-1">
-      {boss === null || boss.phases.length === 0 ? null : (
-        <div
-          data-slot="boss-bar-track"
-          className="flex h-7 shrink-0 items-center gap-1.5 rounded-full bg-boss/10 px-2"
-        >
-          <BossTrack boss={boss} named={false} />
-          {step === undefined ? null : (
-            <span aria-hidden="true" className="text-xs font-semibold text-boss">
-              {step.label}
-            </span>
-          )}
-        </div>
-      )}
+      {boss === null ? null : <PhaseCountdown boss={boss} />}
       <ul
         ref={list}
         aria-label={`${name}'s abilities`}
@@ -207,7 +179,7 @@ export function BossAbilitiesBar({ seat }: { seat: PlayerId }) {
           </li>
         ))}
       </ul>
-      <AllAbilities name={name} abilities={abilities} hidden={hidden} />
+      <AllAbilities name={name} abilities={all} hidden={hidden} />
     </div>
   )
 }

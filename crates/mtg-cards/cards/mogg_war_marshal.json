@@ -1,0 +1,40 @@
+{
+  "oracle_id": "7b8f4879-578e-40e4-863a-41d0c32c6bdd",
+  "name": "Mogg War Marshal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mogg War Marshal",
+      "oracle_fingerprint": "95cc0fb27f56e903531129d8cc8e0b0e",
+      "abilities": [
+        { "Keyword": { "Echo": "{1}{R}" } },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

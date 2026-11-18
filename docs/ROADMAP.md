@@ -49,13 +49,10 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Deployment: two amd64 images, the Helm chart and ArgoCD app in `k3s-cluster-manifests`, `scripts/release.sh` (build, push, roll out, roll back) and a nightly `pg_dump` onto its own volume (`docs/deploy.md`).
 - Delves: the co-op boss rush with own Commander decks for 1 to 6 heroes, the Warrens ladder of four bosses with phases, relics, loot, shop, campfire and events, Spirits at 0 life, runs stored as event logs with fights as recorded games, the web pages and the bot simulator (`docs/delves.md`).
 - Delves at the table and between fights: boss mode (the boss's side on top with its abilities in plain words from the content the engine plays, the party together at the bottom), the boss intro in place of the game's lobby, decks fixed for the run with a lost deck held on the run page, the return to the run after a fight, the runs list without abandoned runs and with past runs folded (`docs/delves.md`).
-- Delves fairness: the spotlight spreads the boss's side's attacks, removal and spotlight schemes over the heroes with a cap on any one hero's share, the grace and the lull open each fight, a boss takes commander damage but never loses to 21, the table shows whom each boss-side seat eyes, each hero pays the attack tax of their own creatures, and the boss bot attacks only within what it can pay (`docs/delves.md`).
-- Delves difficulty: one scaling table by party size (life, hand, Reserves, Reinforcements, Warpath, minion seats that fall with the boss, the Last Bulwark), Escalation and Enrage, the scheme deck with its Omen, measured per party size; the bosses ramp by ladder rank and the three Heats (Casual, Seasoned, Heroic) by one rank × Heat table with the Enrage turn by Heat, worded on the new-run form and the run header (`docs/delves.md`).
-- Delves boss roster: thematic boss decks written in brackets 1 to 5 (40, 50 and 60 cards) that carry the difficulty by Heat and ladder rank, a commander card each boss casts free as its last phase begins, no infinite combos and a loop cap of five for the boss's side, the five mono-colour bosses (Seraphine and Ysolde new) and upgraded final bosses, behind content generation 4 (`docs/delves.md`).
-- Delves generation 5: five two-colour bosses (Hollowmere WU Spirits, Morwenna UB Faeries, Korrath RG Dinosaurs, Sahrra GW Cats, Valdric WB Vampires), upgraded Vex, Seraphine and Ysolde, and the Unmaker, an uber boss at Heat 2 whose engine rule draws the heroes' cost colours anew each round with the cost now on the card (`docs/delves.md`).
+- Delves fairness: the spotlight spreads the boss's side's attacks and removal over the heroes with a cap on any one hero's share, the grace opens each fight, a boss takes commander damage but never loses to 21, the table shows whom each boss-side seat eyes, each hero pays the attack tax of their own creatures, and the boss bot attacks only within what it can pay (`docs/delves.md`).
 - Delves shared turns: the party and the boss's side each take one team turn (CR 805) with life totals per hero, each hero chooses their own creatures' attacks for one shared declaration, and the table names the party's turn (`docs/delves.md`).
-- Delves endless: after a floor's final boss the party votes to bank the win or descend to a new ladder of bosses one bracket stronger per floor, with no early handicaps, a risky relic more and Intensify (earlier Enrage, passive once more), behind content generation 5; from generation 7 a descent first gives the final boss's loot (`docs/delves.md`).
-- Delves generation 6: the last four two-colour bosses (Ozrith UR Wizards, Aurenne WR Knights, Vorthana BG Insects, Sivanne UG Snakes), so a boss stands for every colour pair, with generation-5 ladders pinned (`docs/delves.md`).
+- Delves endless: after a floor's final boss the party votes to bank the win or descend to a new ladder, the bosses growing with the depth; a descent first gives the final boss's loot (`docs/delves.md`).
+- Delves roster: the Warrens' sixteen bosses (a boss for every colour and colour pair, Grimgut and the Unmaker as finals) and the Drowned Spire's three (`docs/delves.md`).
 - Delves leaderboard: each player's deepest run (floors cleared, then bosses beaten below them) with their commanders, one tab per Heat from Heroic down, beside the Delves page (`docs/delves.md`).
 - Delves rewards: the Satchel of earned cards cast from beside the command zone at every fight with the deck kept whole, the Mirror Pool's copy, commander upgrades fitted to each commander as emblems, relic rarities (Common, Rare, run-defining Mythic) that decide loot, treasure and shop offers and prices, and events as known trade-offs of life, life cap, a card, a relic or a commander bane against rewards that grow with the cost (`docs/delves.md`).
 - Fights and the table: a fight that ends without a result counts as lost and the host can retreat, Spirits are asked only where their haunts matter, the rules lexicon covers every engine term, decks sit in several groups, token planeswalkers show loyalty, the round counter, the blocker timer and grid lands as choices, and the card preview stays clear of the prompt (`docs/delves.md`, `docs/web.md`)
@@ -68,6 +65,8 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members; an effect that sets each player's life sets a shared total once.
 - Card preview modifiers: under the rules text the preview lists everything that changes the card with its source and duration, identical sources added together, a line pointing at its source on the board, and no hidden source named (`docs/protocol.md`, `docs/web.md`).
 - Middle bar: a prompt band of one fixed line with the asking card's chip, and the decision's detail (the asking card with its clause, runs of triggers, ordering, paying) in the Stack column or a sheet over the hand (`docs/ui-design.md`, The band and the Stack column).
+- Delves encounter modifiers: the 23 rules of the pool as emblems with their `not_with` lists, no commander tax for the heroes, and "first instant or sorcery each turn" counting only the spells it names (`docs/delves.md`).
+- Delves boss rework: every boss plays its stored precon (drafts loaded as live games load them), an innate in five levels by depth and Heat, one encounter modifier, two phases by round, a public satchel and relics by depth, with life by party size only; the old boss systems are gone and the rework closed the runs open at the time (`docs/delves.md`).
 
 ## Live game
 
@@ -151,7 +150,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl2d) Each hero gives up the permanents an attack tax takes (sacrifice a land) for their own creatures in the party's combined attack, not the leader
 - [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
-- [ ] (dl8d) The glossary explains each boss's Enrage by its own rules, not as the Magic keyword
 - [ ] (dl4a) Bot allies temper and buy commander upgrades, and the simulator's heroes bring their commander facts
 - [ ] (dl4b) Bot allies see their deck list, so they can give up a deck card for an event's cost and not only a Satchel card
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
@@ -163,11 +161,11 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
-- [ ] (dl14a) Measure the Hard-boss rows of the Difficulty table (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, Heat 2) and parties of three or more against the tier targets, and tune the Normal-brain rows, which win 92 to 98 % against two Normal heroes
-- [ ] (dl14b) Softer boss passives at Heat 0 and harsher ones at Heat 2, a variant of each passive by Heat as the Enrage has
-- [ ] (dl16a) Measure deeper Delves floors with the simulator (floors 2 and 3 at each Heat) and tune the per-floor steps against the tier targets
-- [ ] (dl15l) Measure the bracket generation against the tier targets with Hard bosses and tune each boss's brackets by its win rate
-- [ ] (dl15n) More uber bosses with a game-changing rule each
+- [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
+- [ ] (rw4a) The Spire satchel cues move from `brain::satchel::builtin` into `spire.json`, and the simulator installs the content cues (`brain::satchel::install`)
+- [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
+- [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
+- [ ] (rw1t) Enters-with-counters replacements apply to entering tokens; Coiled Growth then gives tokens its counters as they enter instead of by trigger
 
 ## M8 Polish and deploy
 

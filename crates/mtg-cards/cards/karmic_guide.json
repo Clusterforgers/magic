@@ -1,0 +1,29 @@
+{
+  "oracle_id": "8c31fec9-e4b3-4761-990e-7be38eb05604",
+  "name": "Karmic Guide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Karmic Guide",
+      "oracle_fingerprint": "e49a858360db175994a6c93ce19ab33e",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        { "Keyword": { "Echo": "{3}{W}{W}" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

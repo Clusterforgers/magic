@@ -1,0 +1,21 @@
+{
+  "oracle_id": "3bb7041c-4f3e-4123-9181-3442ea0c98e8",
+  "name": "Dimir Spybug",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Spybug",
+      "oracle_fingerprint": "8731882a5384bcaeedd089a5b591eb32",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Surveilled": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

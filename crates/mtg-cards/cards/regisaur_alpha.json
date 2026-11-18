@@ -1,0 +1,41 @@
+{
+  "oracle_id": "0673f4e0-66ff-458c-b4ba-eb067e560cce",
+  "name": "Regisaur Alpha",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Regisaur Alpha",
+      "oracle_fingerprint": "64ec5cd88f3152853c112ac0d5cfa116",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Haste" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

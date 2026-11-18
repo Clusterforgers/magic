@@ -212,10 +212,21 @@ impl std::fmt::Debug for BotBrain {
     }
 }
 
+/// Hands the campaign content's Satchel cues to the bot brains, once per process.
+fn install_satchel_cues() {
+    static ONCE: std::sync::Once = std::sync::Once::new();
+    ONCE.call_once(|| {
+        if let Ok(content) = mtg_campaign::content::content() {
+            brain::satchel::install(content.satchel_cues());
+        }
+    });
+}
+
 impl BotBrain {
     /// The brain of `seat` at `level` in a game shuffled with `seed`: an Easy bot's random choices replay with the seed;
     /// a searching bot is also capped by its clock.
     pub fn new(seed: u64, seat: PlayerId, level: BotLevel) -> BotBrain {
+        install_satchel_cues();
         BotBrain {
             brain: Some(brain::brain(level.brain(), seed, seat, true)),
             level,
@@ -614,7 +625,7 @@ fn far_future() -> Instant {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, a stored bot seat reads back with its level (a bare seat as Easy), the thinking slots cap the bots searching at once (half the cores, one per game) and shrink their budgets while others wait, a search past its deadline is stopped and gives its slot back, and every level's clock ends well before the think deadline.
+    //! Goal: an Easy bot plays a land whenever it can, and every bot after [`TURN_ANSWERS`] answers in one turn only passes until the turn changes, so a loop of free plays cannot hold the table; only a searching bot fetches the table, a stored bot seat reads back with its level (a bare seat as Easy), the thinking slots cap the bots searching at once (half the cores, one per game) and shrink their budgets while others wait, a search past its deadline is stopped and gives its slot back, and every level's clock ends well before the think deadline; a bot brain reads the content's Satchel cues.
     #![allow(clippy::unwrap_used)]
     use mtg_core::ids::ObjectId;
     use mtg_engine::decision::PriorityOptions;
@@ -692,6 +703,18 @@ mod tests {
     #[case::very_hard(BotLevel::VeryHard, true)]
     fn only_a_searching_bot_reads_the_table(#[case] level: BotLevel, #[case] reads: bool) {
         assert_eq!(BotBrain::new(1, SEAT, level).reads_table(), reads);
+    }
+
+    #[rstest]
+    #[case::warrens("Rat Out", Some(mtg_core::cue::SatchelCue::Kill { toughness: 1 }))]
+    #[case::spire("Sleep", Some(mtg_core::cue::SatchelCue::Lethal { reach: 0 }))]
+    #[case::not_a_satchel_card("Grizzly Bears", None)]
+    fn a_bot_brain_reads_the_contents_satchel_cues(
+        #[case] card: &str,
+        #[case] cue: Option<mtg_core::cue::SatchelCue>,
+    ) {
+        BotBrain::new(1, SEAT, BotLevel::Hard);
+        assert_eq!(brain::satchel::cue_of(card), cue);
     }
 
     #[rstest]

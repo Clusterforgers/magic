@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b9a7c722-6b24-4383-ac6e-2a30f7834269",
+  "name": "Rhonas's Monument",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rhonas's Monument",
+      "oracle_fingerprint": "86ad7e803a064fcac2b165f91a9a9a2a",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Color": "Green" },
+              { "Type": "Creature" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

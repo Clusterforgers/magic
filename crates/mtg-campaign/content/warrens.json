@@ -996,1144 +996,793 @@
   {
    "id": "skrix_nest",
    "name": "Skrix, the Rat Queen",
-   "colors": "B",
-   "brain": "Hard",
-   "life": 26,
-   "life_per_hero": 30,
-   "hand": 9,
-   "line": "My children are hungry.",
-   "art": { "card": "Ashcoat of the Shadow Swarm", "oracle_id": "9cc69ea5-42a2-4306-ac6d-cff5adb20bcb" },
-   "commander": "Ashcoat of the Shadow Swarm",
-   "upgrade": {"name": "Skrix, Empress of the Undercity", "rules": ["skrix_empress"], "line": "The whole undercity answers to me now."},
-   "brackets": {
-    "base": [
-     ["Swamp", 17],
-     ["Sewer Rats", 3],
-     ["Innocuous Rat", 3],
-     ["Tangled Colony", 3],
-     ["Lord Skitter's Butcher", 3],
-     ["Gnat Miser", 2],
-     ["Dirty Wererat", 2],
-     ["Rat Out", 2],
-     ["Psychic Whorl", 2],
-     ["Doom Blade", 2],
-     ["Duress", 1]
-    ],
-    "steps": [
-     {
-      "add": [
-       ["Swamp", 3],
-       ["Ruthless Radrat", 2],
-       ["Crypt Rats", 1],
-       ["Locust Miser", 1],
-       ["Sinuous Vermin", 1],
-       ["Old Flitterfang", 1],
-       ["Mukotai Ambusher", 1]
-      ]
-     },
-     {
-      "add": [
-       ["Swamp", 4],
-       ["Nashi, Moon Sage's Scion", 1],
-       ["Bitter Triumph", 2],
-       ["Pestilence", 1],
-       ["Dreaded Bat-Cloud", 1],
-       ["Mukotai Ambusher", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Sewer Rats", 2],
-       ["Duress", 1],
-       ["Rat Out", 2]
-      ],
-      "add": [
-       ["Extinguish the Light", 2],
-       ["Aberrant Return", 1],
-       ["Graf Rats", 1],
-       ["Midnight Scavengers", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Gnat Miser", 2],
-       ["Psychic Whorl", 2]
-      ],
-      "add": [
-       ["Locust Miser", 1],
-       ["Bile Blight", 2],
-       ["Diseased Vermin", 1]
-      ]
+   "colors": "BG",
+   "deck_file": "blc-squirreled-away.json",
+   "innate": "skrix_brood",
+   "round_phases": [
+    "skrix_nest_stirs",
+    "skrix_plague_tide"
+   ],
+   "satchel": [
+    {
+     "card": "Rat Out",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 1
      }
-    ]
-   },
-   "deck": [
-    [
-     "Swamp",
-     17
-    ],
-    [
-     "Sewer Rats",
-     3
-    ],
-    [
-     "Innocuous Rat",
-     3
-    ],
-    [
-     "Crypt Rats",
-     2
-    ],
-    [
-     "Ichor Rats",
-     2
-    ],
-    [
-     "Lord Skitter's Butcher",
-     2
-    ],
-    [
-     "Dirty Wererat",
-     2
-    ],
-    [
-     "Locust Miser",
-     1
-    ],
-    [
-     "Gnat Miser",
-     2
-    ],
-    [
-     "Doom Blade",
-     3
-    ],
-    [
-     "Duress",
-     1
-    ],
-    [
-     "Pestilence",
-     1
-    ],
-    [
-     "Dreaded Bat-Cloud",
-     1
-    ]
+    },
+    {
+     "card": "Feed the Swarm",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Village Rites",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Second Harvest",
+     "cue": {
+      "when": "board",
+      "creatures": 6
+     }
+    }
    ],
-   "rules": [
-    "skrix"
-   ],
-   "enrage": "swarm_unending",
-   "relic": "rat_kings_crown",
-   "phases": [
-    [
-     "nest_stirs",
-     66
-    ],
-    [
-     "plague_tide",
-     33
-    ]
-   ],
-   "final": false
+   "line": "My children are hungry.",
+   "art": {
+    "card": "Ashcoat of the Shadow Swarm",
+    "oracle_id": "9cc69ea5-42a2-4306-ac6d-cff5adb20bcb"
+   }
   },
   {
    "id": "mossjaw_hall",
    "name": "Old Mossjaw, Troll Patriarch",
    "colors": "G",
-   "brain": "Hard",
-   "life": 31,
-   "life_per_hero": 30,
-   "hand": 10,
-   "line": "Moss grows on the bones of the bold.",
-   "art": { "card": "Thrun, Breaker of Silence", "oracle_id": "789b7af5-ac15-40b6-b5b7-f3fcdcfb52e1" },
-   "commander": "Thrun, Breaker of Silence",
-   "upgrade": {"name": "Mossjaw the Undying", "rules": ["mossjaw_undying"], "line": "Cut me down. I grow back. I always grow back."},
-   "brackets": {
-    "base": [
-     ["Forest", 17],
-     ["Pygmy Troll", 3],
-     ["Honor Troll", 3],
-     ["Llanowar Elves", 3],
-     ["Lone Wolf", 2],
-     ["Dire Wolves", 2],
-     ["Prey Upon", 2],
-     ["Epic Confrontation", 2],
-     ["Giant Growth", 2],
-     ["Rancor", 1],
-     ["Challenger Troll", 2],
-     ["Golgari Grave-Troll", 1]
-    ],
-    "steps": [
-     {
-      "add": [
-       ["Forest", 3],
-       ["Ribtruss Roaster", 2],
-       ["Feasting Troll King", 1],
-       ["Hunt the Weak", 2],
-       ["Rampant Growth", 1],
-       ["Bannerhide Krushok", 1]
-      ]
-     },
-     {
-      "add": [
-       ["Forest", 4],
-       ["Affectionate Indrik", 2],
-       ["Baloth Gorger", 2],
-       ["Rancor", 1],
-       ["Inexorable Blob", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Dire Wolves", 2],
-       ["Giant Growth", 2],
-       ["Lone Wolf", 1]
-      ],
-      "add": [
-       ["Cragplate Baloth", 2],
-       ["Primal Might", 2],
-       ["Gnarlid Colony", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Lone Wolf", 1],
-       ["Pygmy Troll", 2]
-      ],
-      "add": [
-       ["Blastoderm", 2],
-       ["Inexorable Blob", 1]
-      ]
+   "deck_file": "fdc-tramplesaurus-rex.json",
+   "innate": "mossjaw_overgrowth",
+   "round_phases": [
+    "mossjaw_regrowth",
+    "mossjaw_primal_rage"
+   ],
+   "satchel": [
+    {
+     "card": "Rampant Growth",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 4
      }
-    ]
-   },
-   "deck": [
-    [
-     "Forest",
-     17
-    ],
-    [
-     "Pygmy Troll",
-     3
-    ],
-    [
-     "Icehide Troll",
-     3
-    ],
-    [
-     "Ribtruss Roaster",
-     2
-    ],
-    [
-     "Thrun, Breaker of Silence",
-     1
-    ],
-    [
-     "Feasting Troll King",
-     1
-    ],
-    [
-     "Inexorable Blob",
-     2
-    ],
-    [
-     "Lone Wolf",
-     2
-    ],
-    [
-     "Dire Wolves",
-     2
-    ],
-    [
-     "Llanowar Elves",
-     3
-    ],
-    [
-     "Giant Growth",
-     2
-    ],
-    [
-     "Rancor",
-     1
-    ],
-    [
-     "Rampant Growth",
-     1
-    ]
+    },
+    {
+     "card": "Beast Within",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Soul's Majesty",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Overwhelming Stampede",
+     "cue": {
+      "when": "lethal",
+      "reach": 3
+     }
+    }
    ],
-   "rules": [
-    "mossjaw"
-   ],
-   "enrage": "overgrowth",
-   "relic": "heartwood_bark",
-   "phases": [
-    [
-     "regrowth",
-     66
-    ],
-    [
-     "primal_rage",
-     33
-    ]
-   ],
-   "final": false
+   "line": "Moss grows on the bones of the bold.",
+   "art": {
+    "card": "Thrun, Breaker of Silence",
+    "oracle_id": "789b7af5-ac15-40b6-b5b7-f3fcdcfb52e1"
+   }
   },
   {
    "id": "vex_crypt",
    "name": "Bonecaller Vex",
-   "colors": "BR",
-   "brain": "Hard",
-   "life": 26,
-   "life_per_hero": 30,
-   "hand": 9,
-   "rules": [
-    "vex"
+   "colors": "B",
+   "deck_file": "fdc-wretched-ranks.json",
+   "innate": "vex_bonecalling",
+   "round_phases": [
+    "vex_grave_tide",
+    "vex_bone_storm"
    ],
-   "enrage": "deaths_toll",
-   "relic": "bone_reliquary",
-   "line": "Rise, all of you. Rise and feast.",
-   "art": { "card": "Gisa, the Hellraiser", "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d" },
-   "commander": "Gisa, the Hellraiser",
-   "upgrade": {"name": "Vex, the Deathless", "rules": ["vex_deathless"], "line": "I have died eleven times. Each time I came back with more of you.", "since": 5},
-   "brackets": {
-    "base": [
-     ["Swamp", 9],
-     ["Mountain", 8],
-     ["Lord of the Accursed", 2],
-     ["Gravecrawler", 3],
-     ["Dregscape Zombie", 2],
-     ["Diregraf Colossus", 2],
-     ["Putrid Goblin", 2],
-     ["Gutterbones", 2],
-     ["Kjeldoran Dead", 2],
-     ["Lightning Bolt", 2],
-     ["Doom Blade", 2],
-     ["Rakdos Charm", 1],
-     ["Undead Butler", 2],
-     ["Tomb Tyrant", 1]
-    ],
-    "steps": [
-     {
-      "add": [
-       ["Swamp", 2],
-       ["Mountain", 1],
-       ["Unbreathing Horde", 2],
-       ["Slavering Nulls", 2],
-       ["Phyrexian Delver", 1],
-       ["Kolaghan's Command", 1],
-       ["Zombie Master", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Putrid Goblin", 2]
-      ],
-      "add": [
-       ["Swamp", 2],
-       ["Mountain", 2],
-       ["Noxious Ghoul", 1],
-       ["Liliana's Standard Bearer", 2],
-       ["Mikaeus, the Unhallowed", 1],
-       ["Rakdos Charm", 1],
-       ["Lightning Bolt", 1],
-       ["Doom Blade", 1],
-       ["Kolaghan's Command", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Dregscape Zombie", 2],
-       ["Kjeldoran Dead", 1]
-      ],
-      "add": [
-       ["Tainted Adversary", 2],
-       ["Calculating Lich", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Undead Butler", 2],
-       ["Kjeldoran Dead", 1]
-      ],
-      "add": [
-       ["Jarl of the Forsaken", 2],
-       ["Geth, Lord of the Vault", 1]
-      ]
+   "satchel": [
+    {
+     "card": "Doom Blade",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
      }
-    ]
-   },
-   "deck": [
-    [
-     "Swamp",
-     9
-    ],
-    [
-     "Mountain",
-     8
-    ],
-    [
-     "Bolg's Company",
-     2
-    ],
-    [
-     "Hellhole Flailer",
-     2
-    ],
-    [
-     "Lightning Skelemental",
-     2
-    ],
-    [
-     "Kolaghan's Command",
-     2
-    ],
-    [
-     "Rakdos Charm",
-     1
-    ],
-    [
-     "Gutterbones",
-     2
-    ],
-    [
-     "Kjeldoran Dead",
-     2
-    ],
-    [
-     "Goblin Brawler",
-     2
-    ],
-    [
-     "Bile-Vial Boggart",
-     2
-    ],
-    [
-     "Lightning Bolt",
-     2
-    ],
-    [
-     "Doom Blade",
-     2
-    ],
-    [
-     "Death Tyrant",
-     1
-    ],
-    [
-     "Deep Goblin Skulltaker",
-     1
-    ]
+    },
+    {
+     "card": "Cemetery Recruitment",
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 1
+     }
+    },
+    {
+     "card": "Victimize",
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 2
+     }
+    },
+    {
+     "card": "Zombie Apocalypse",
+     "cue": {
+      "when": "graveyard",
+      "creatures": 3
+     }
+    }
    ],
-   "phases": [
-    [
-     "grave_tide",
-     66
-    ],
-    [
-     "bone_storm",
-     33
-    ]
-   ],
-   "final": false
+   "line": "Rise, all of you. Rise and feast.",
+   "art": {
+    "card": "Gisa, the Hellraiser",
+    "oracle_id": "696363c9-e8a7-4c65-b65c-4a94891ec43d"
+   }
   },
   {
    "id": "grimgut_court",
    "name": "Grimgut, the Warren King",
+   "final": true,
    "colors": "R",
-   "brain": "Hard",
-   "life": 27,
-   "life_per_hero": 30,
-   "hand": 9,
-   "rules": [
-    "grimgut"
+   "deck_file": "sld-goblin-storm.json",
+   "innate": "grimgut_warren",
+   "round_phases": [
+    "grimgut_warren_wakes",
+    "grimgut_last_stand"
    ],
-   "enrage": "kings_fury",
-   "relic": "crown_of_cinders",
-   "line": "Kneel, or be eaten. Or both!",
-   "art": { "card": "Krenko, Tin Street Kingpin", "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0" },
-   "commander": "Krenko, Tin Street Kingpin",
-   "brackets": {
-    "base": [
-     ["Mountain", 17],
-     ["Mudbrawler Cohort", 3],
-     ["Goblin Brawler", 2],
-     ["Dropkick Bomber", 2],
-     ["Searslicer Goblin", 2],
-     ["Goblin Arsonist", 2],
-     ["Broadside Bombardiers", 2],
-     ["Rundvelt Hordemaster", 1],
-     ["Lightning Bolt", 2],
-     ["Goblin Heelcutter", 2],
-     ["Frenzied Goblin", 2],
-     ["Fireball", 1],
-     ["Goblin Chieftain", 2]
-    ],
-    "steps": [
-     {
-      "add": [
-       ["Mountain", 3],
-       ["Goblin Chieftain", 1],
-       ["Krenko's Enforcer", 2],
-       ["Skirk Commando", 1],
-       ["Mogg Mob", 1],
-       ["Goblin Cratermaker", 2]
-      ]
-     },
-     {
-      "add": [
-       ["Mountain", 4],
-       ["Goblin Dark-Dwellers", 1],
-       ["Raging Goblinoids", 1],
-       ["Goblin Pyromancer", 1],
-       ["Moria Marauder", 2],
-       ["Redcap Gutter-Dweller", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Frenzied Goblin", 2],
-       ["Goblin Arsonist", 2],
-       ["Mudbrawler Cohort", 1]
-      ],
-      "add": [
-       ["Hellraiser Goblin", 1],
-       ["Squee, the Immortal", 1],
-       ["Spikeshot Elder", 2],
-       ["Grenzo's Ruffians", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Goblin Brawler", 2],
-       ["Mudbrawler Cohort", 1]
-      ],
-      "add": [
-       ["Searslicer Goblin", 1],
-       ["Torch Slinger", 2]
-      ]
+   "satchel": [
+    {
+     "card": "Lightning Bolt",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 3
      }
-    ]
-   },
-   "phases": [
-    [
-     "warren_wakes",
-     66
-    ],
-    [
-     "kings_last_stand",
-     33
-    ]
+    },
+    {
+     "card": "Brightstone Ritual",
+     "reusable": true,
+     "cue": {
+      "when": "board",
+      "creatures": 4
+     }
+    },
+    {
+     "card": "Chaos Warp",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Mob Rule",
+     "cue": {
+      "when": "lethal",
+      "reach": 4
+     }
+    }
    ],
-   "deck": [
-    [
-     "Mountain",
-     9
-    ],
-    [
-     "Swamp",
-     8
-    ],
-    [
-     "Frogtosser Banneret",
-     2
-    ],
-    [
-     "Boggart Prankster",
-     1
-    ],
-    [
-     "Bolg's Company",
-     2
-    ],
-    [
-     "Dropkick Bomber",
-     2
-    ],
-    [
-     "Goblin Brawler",
-     2
-    ],
-    [
-     "Broadside Bombardiers",
-     2
-    ],
-    [
-     "Deep Goblin Skulltaker",
-     2
-    ],
-    [
-     "Goblin Arsonist",
-     1
-    ],
-    [
-     "Lightning Bolt",
-     2
-    ],
-    [
-     "Kolaghan's Command",
-     1
-    ],
-    [
-     "Rakdos Charm",
-     1
-    ],
-    [
-     "Doom Blade",
-     2
-    ],
-    [
-     "Fireball",
-     1
-    ],
-    [
-     "Heartless Hidetsugu",
-     1
-    ],
-    [
-     "Ogre Chitterlord",
-     1
-    ]
-   ],
-   "final": true
+   "line": "Kneel, or be eaten. Or both!",
+   "art": {
+    "card": "Krenko, Tin Street Kingpin",
+    "oracle_id": "e8065e1d-e937-4b56-8011-78f0d07328a0"
+   }
   },
   {
    "id": "seraphine_spire",
    "name": "Seraphine, the Gilded Choir",
-   "since": 4,
    "colors": "W",
-   "brain": "Hard",
-   "life": 20,
-   "life_per_hero": 24,
-   "hand": 8,
-   "rules": ["seraphine"],
-   "enrage": "choir_eternal",
-   "relic": "halo_of_wings",
-   "phases": [
-    ["choir_ascends", 66],
-    ["wings_of_wrath", 33]
+   "since": 4,
+   "deck_file": "fdc-calling-all-angels.json",
+   "innate": "seraphine_choir",
+   "round_phases": [
+    "seraphine_choir_ascends",
+    "seraphine_wings_of_wrath"
+   ],
+   "satchel": [
+    {
+     "card": "Swords to Plowshares",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Brave the Elements",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Defy Death",
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 1
+     }
+    },
+    {
+     "card": "Angelic Accord",
+     "cue": {
+      "when": "early_turns",
+      "turns": 5
+     }
+    }
    ],
    "line": "Kneel, and be forgiven. Stand, and be judged.",
-   "commander": "Akroma, Angel of Wrath",
-   "upgrade": {"name": "Seraphine, Choir Eternal", "rules": ["seraphine_eternal"], "line": "The choir never ends. It only grows louder.", "since": 5},
-   "art": {"card": "Bruna, the Fading Light", "oracle_id": "bce7e45d-b2c5-43aa-91a6-3a3c24f30850"},
-   "brackets": {
-    "base": [
-     ["Plains", 17],
-     ["Ajani's Pridemate", 3],
-     ["Court Cleric", 2],
-     ["Expedition Healer", 2],
-     ["Angel of Vitality", 2],
-     ["Exemplar of Light", 2],
-     ["Serra Angel", 2],
-     ["Banisher Priest", 2],
-     ["Swords to Plowshares", 2],
-     ["Pacifism", 2],
-     ["Arrest", 1],
-     ["Glorious Anthem", 1],
-     ["Giada, Font of Hope", 1],
-     ["Battlegrace Angel", 1]
-    ],
-    "steps": [
-     {
-      "add": [
-       ["Plains", 3],
-       ["Angelic Quartermaster", 2],
-       ["Angel of Invention", 1],
-       ["Angelic Destiny", 1],
-       ["Auriok Champion", 2],
-       ["Arrest", 1]
-      ]
-     },
-     {
-      "add": [
-       ["Plains", 4],
-       ["Exalted Angel", 1],
-       ["Aegis Angel", 1],
-       ["Archangel of Tithes", 1],
-       ["Swords to Plowshares", 1],
-       ["Angel of Sanctions", 2]
-      ]
-     },
-     {
-      "cut": [
-       ["Court Cleric", 2],
-       ["Expedition Healer", 2],
-       ["Arrest", 1]
-      ],
-      "add": [
-       ["Exquisite Archangel", 1],
-       ["Adarkar Valkyrie", 1],
-       ["Gisela, the Broken Blade", 1],
-       ["Angel of Jubilation", 2]
-      ]
-     },
-     {
-      "cut": [
-       ["Glorious Anthem", 1],
-       ["Auriok Champion", 2]
-      ],
-      "add": [
-       ["Emeria Shepherd", 1],
-       ["Angel of the Dire Hour", 1],
-       ["Exalted Sunborn", 1]
-      ]
-     }
-    ]
+   "art": {
+    "card": "Bruna, the Fading Light",
+    "oracle_id": "bce7e45d-b2c5-43aa-91a6-3a3c24f30850"
    }
   },
   {
    "id": "ysolde_reef",
    "name": "Ysolde, Tyrant of the Undertow",
+   "colors": "UG",
    "since": 4,
-   "colors": "U",
-   "brain": "Hard",
-   "life": 38,
-   "life_per_hero": 38,
-   "hand": 10,
-   "rules": ["ysolde"],
-   "enrage": "rising_tide",
-   "relic": "tidal_codex",
-   "phases": [
-    ["the_undertow", 66],
-    ["the_deep_rises", 33]
+   "deck_file": "lcc-explorers-of-the-deep.json",
+   "innate": "ysolde_undertow",
+   "round_phases": [
+    "ysolde_the_undertow",
+    "ysolde_deep_rises"
+   ],
+   "satchel": [
+    {
+     "card": "Memory Lapse",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "River Heralds' Boon",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
+    },
+    {
+     "card": "Curse of the Swine",
+     "reusable": true,
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    },
+    {
+     "card": "River's Rebuke",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
    ],
    "line": "The sea keeps everything it takes. It will keep you.",
-   "commander": "Lorthos, the Tidemaker",
-   "upgrade": {"name": "Ysolde, Empress of the Abyss", "rules": ["ysolde_abyssal"], "line": "Down here, the tide answers only to me.", "since": 5},
-   "art": {"card": "Kiora, the Rising Tide", "oracle_id": "5d748bce-dff8-46fa-a3d1-633863b7bbff"},
-   "brackets": {
-    "base": [
-     ["Island", 17],
-     ["Merfolk Spy", 2],
-     ["Merfolk Windrobber", 2],
-     ["Cleric of Chill Depths", 2],
-     ["Master of the Pearl Trident", 2],
-     ["Merrow Reejerey", 2],
-     ["Deepwater Hypnotist", 2],
-     ["Gravelgill Scoundrel", 2],
-     ["Kopala, Warden of Waves", 1],
-     ["Counterspell", 2],
-     ["Into the Roil", 2],
-     ["Opt", 2],
-     ["Inkfathom Divers", 1],
-     ["Biblioplex Kraken", 1]
-    ],
-    "steps": [
-     {
-      "add": [
-       ["Island", 3],
-       ["Attuma, Atlantean Warlord", 1],
-       ["Coralhelm Commander", 2],
-       ["Grappling Kraken", 1],
-       ["Monstrosity of the Lake", 1],
-       ["Master of the Pearl Trident", 1],
-       ["Counterspell", 1]
-      ]
-     },
-     {
-      "add": [
-       ["Island", 4],
-       ["Hullbreaker Horror", 1],
-       ["Pearl Lake Ancient", 1],
-       ["Mesmerizing Benthid", 2],
-       ["Brineborn Cutthroat", 2]
-      ]
-     },
-     {
-      "cut": [
-       ["Opt", 2],
-       ["Merfolk Spy", 2],
-       ["Cleric of Chill Depths", 1]
-      ],
-      "add": [
-       ["Cyclonic Rift", 1],
-       ["Breaching Leviathan", 1],
-       ["Charix, the Raging Isle", 1],
-       ["Kiora, the Rising Tide", 1],
-       ["Alandra, Sky Dreamer", 1]
-      ]
-     },
-     {
-      "cut": [
-       ["Deepwater Hypnotist", 2],
-       ["Gravelgill Scoundrel", 1]
-      ],
-      "add": [
-       ["Archipelagore", 1],
-       ["Aethersquall Ancient", 1],
-       ["Brinelin, the Moon Kraken", 1]
-      ]
-     }
-    ]
+   "art": {
+    "card": "Kiora, the Rising Tide",
+    "oracle_id": "5d748bce-dff8-46fa-a3d1-633863b7bbff"
    }
   },
   {
    "id": "hollowmere_belfry",
    "name": "Hollowmere, the Drowned Bell",
-   "since": 5,
    "colors": "WU",
-   "brain": "Hard",
-   "life": 27,
-   "life_per_hero": 30,
-   "hand": 9,
-   "rules": ["hollowmere"],
-   "enrage": "tolling_of_the_drowned",
-   "relic": "lantern_of_lost_souls",
-   "phases": [["the_veil_thins", 66], ["the_last_peal", 33]],
+   "since": 5,
+   "deck_file": "voc-spirit-squadron.json",
+   "innate": "hollowmere_tolling",
+   "round_phases": [
+    "hollowmere_veil_thins",
+    "hollowmere_last_peal"
+   ],
+   "satchel": [
+    {
+     "card": "Momentary Blink",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Blessed Defiance",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Memory Lapse",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Supreme Verdict",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
    "line": "Every bell that tolls down here tolls for someone. Listen. It tolls for you.",
-   "commander": "Geist of Saint Traft",
-   "art": {"card": "Ghosts of the Innocent", "oracle_id": "9243bd95-5467-490d-9bd2-4d5ce1ebc589"},
-   "brackets": {
-    "base": [
-     ["Plains", 9], ["Island", 8],
-     ["Mausoleum Wanderer", 2], ["Spectral Adversary", 2], ["Rattlechains", 2], ["Grateful Apparition", 1],
-     ["Nebelgast Intruder", 2], ["Dreamshackle Geist", 2], ["Moonlight Geist", 1], ["Noble Vestige", 1],
-     ["Hallowed Spiritkeeper", 1], ["Dungeon Geists", 2], ["Apothecary Geist", 2],
-     ["Wayward Soul", 1], ["Field of Souls", 1], ["Court of Grace", 1], ["Belfry Spirit", 1], ["Path to Exile", 1]
-    ],
-    "steps": [
-     {"add": [["Plains", 2], ["Island", 2], ["Council of Echoes", 1], ["Spirit of the Hearth", 1], ["Celestial Messenger", 1], ["Drogskol Reinforcements", 1], ["Lone Revenant", 1], ["Emissary of the Sleepless", 1]]},
-     {"add": [["Plains", 2], ["Island", 2], ["Keiga, the Tide Star", 1], ["Kairi, the Swirling Sky", 1], ["Oyobi, Who Split the Heavens", 1], ["Eternal Dragon", 1], ["Guardian of Faith", 1], ["Celestial Crusader", 1]]},
-     {"cut": [["Moonlight Geist", 1], ["Apothecary Geist", 1], ["Wayward Soul", 1]], "add": [["Spectral Adversary", 1], ["Dungeon Geists", 1], ["Nebelgast Intruder", 1]]},
-     {"cut": [["Grateful Apparition", 1], ["Noble Vestige", 1], ["Mausoleum Wanderer", 1]], "add": [["Belfry Spirit", 1], ["Council of Echoes", 1], ["Path to Exile", 1]]}
-    ]
+   "art": {
+    "card": "Ghosts of the Innocent",
+    "oracle_id": "9243bd95-5467-490d-9bd2-4d5ce1ebc589"
    }
   },
   {
    "id": "morwenna_court",
    "name": "Morwenna, Queen of the Hollow Court",
-   "since": 5,
    "colors": "UB",
-   "brain": "Hard",
-   "life": 17,
-   "life_per_hero": 21,
-   "hand": 8,
-   "rules": ["morwenna"],
-   "enrage": "stolen_dreams",
-   "relic": "moonlit_veil",
-   "phases": [["court_of_thorns", 66], ["the_endless_night", 33]],
+   "since": 5,
+   "deck_file": "woc-fae-dominion.json",
+   "innate": "morwenna_stolen_dreams",
+   "round_phases": [
+    "morwenna_court_of_thorns",
+    "morwenna_endless_night"
+   ],
+   "satchel": [
+    {
+     "card": "Faerie Trickery",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Peppersmoke",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 1
+     }
+    },
+    {
+     "card": "Stolen by the Fae",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Syphon Mind",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    }
+   ],
    "line": "Sleep, little heroes. I will keep your dreams. I keep everyone's.",
-   "commander": "Alela, Cunning Conqueror",
-   "art": {"card": "Sower of Temptation", "oracle_id": "5881aac2-4f31-45cb-bdb5-64a29ec23316"},
-   "brackets": {
-    "base": [
-     ["Island", 9], ["Swamp", 8],
-     ["Faerie Mastermind", 2], ["Spellstutter Sprite", 2], ["Pestermite", 2], ["Nightveil Sprite", 2],
-     ["Faerie Duelist", 2], ["Dreamspoiler Witches", 2], ["Briarberry Cohort", 2], ["Peppersmoke", 2],
-     ["Dream Spoilers", 1], ["Nightmare Sower", 1], ["Stingblade Assassin", 2],
-     ["Glen Elendra Guardian", 2], ["Mistbind Clique", 1]
-    ],
-    "steps": [
-     {"add": [["Island", 2], ["Swamp", 2], ["Puppeteer Clique", 1], ["Latchkey Faerie", 1], ["High Fae Trickster", 1], ["Rankle, Master of Pranks", 1], ["Dimir Strandcatcher", 1], ["Voracious Tome-Skimmer", 1]]},
-     {"add": [["Island", 2], ["Swamp", 2], ["Sower of Temptation", 1], ["Illusion Spinners", 1], ["Archmage of Echoes", 1], ["High Fae Negotiator", 1], ["Nymris, Oona's Trickster", 1], ["Final-Sting Faerie", 1]]},
-     {"cut": [["Briarberry Cohort", 2], ["Peppersmoke", 1]], "add": [["Spellstutter Sprite", 1], ["Pestermite", 1], ["Malleable Impostor", 1]]},
-     {"cut": [["Dreamspoiler Witches", 1], ["Glen Elendra Guardian", 1], ["Dream Spoilers", 1]], "add": [["Sower of Temptation", 1], ["Puppeteer Clique", 1], ["Mistbind Clique", 1]]}
-    ]
+   "art": {
+    "card": "Sower of Temptation",
+    "oracle_id": "5881aac2-4f31-45cb-bdb5-64a29ec23316"
    }
   },
   {
    "id": "korrath_wilds",
    "name": "Korrath, the Thundering Stampede",
+   "colors": "WRG",
    "since": 5,
-   "colors": "RG",
-   "brain": "Hard",
-   "life": 31,
-   "life_per_hero": 30,
-   "hand": 10,
-   "rules": ["korrath"],
-   "enrage": "the_great_stampede",
-   "relic": "amber_of_the_ancients",
-   "phases": [["primal_roar", 66], ["the_sky_falls", 33]],
+   "deck_file": "lcc-veloci-ramp-tor.json",
+   "innate": "korrath_thick_hide",
+   "round_phases": [
+    "korrath_great_stampede",
+    "korrath_sky_falls"
+   ],
+   "satchel": [
+    {
+     "card": "Savage Stomp",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 4
+     }
+    },
+    {
+     "card": "Thunderherd Migration",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 4
+     }
+    },
+    {
+     "card": "Mizzium Mortars",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 4
+     }
+    },
+    {
+     "card": "Rishkar's Expertise",
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    }
+   ],
    "line": "Hit me. Go on. Every scar makes the herd bigger.",
-   "commander": "Ghalta, Primal Hunger",
-   "art": {"card": "Carnage Tyrant", "oracle_id": "8c411f4e-a091-447c-9450-d895b10b4985"},
-   "brackets": {
-    "base": [
-     ["Mountain", 9], ["Forest", 8],
-     ["Marauding Raptor", 3], ["Savage Stomp", 1], ["Giant Cindermaw", 2], ["Hunting Velociraptor", 2],
-     ["Topiary Stomper", 2], ["Deathmist Raptor", 2], ["Thrash of Raptors", 2], ["Fungusaur", 2],
-     ["Hulking Raptor", 2], ["Snapping Sailback", 2], ["Zilortha, Strength Incarnate", 1],
-     ["Stampeding Horncrest", 1], ["Zog, Triceraton Castaway", 1]
-    ],
-    "steps": [
-     {"add": [["Mountain", 2], ["Forest", 2], ["Carnage Tyrant", 1], ["Regal Behemoth", 1], ["Trumpeting Carnosaur", 1], ["Etali, Primal Storm", 1], ["Needletooth Pack", 1], ["Prey Upon", 1]]},
-     {"add": [["Mountain", 2], ["Forest", 2], ["Verdant Sun's Avatar", 1], ["Yidaro, Wandering Monster", 1], ["Flaming Tyrannosaurus", 1], ["Burning Sun's Avatar", 1], ["Spined Tyrranax", 1], ["Charging Tuskodon", 1]]},
-     {"cut": [["Giant Cindermaw", 2], ["Topiary Stomper", 1]], "add": [["Carnage Tyrant", 1], ["Trumpeting Carnosaur", 1], ["Regal Behemoth", 1]]},
-     {"cut": [["Fungusaur", 2], ["Hulking Raptor", 1]], "add": [["Burning Sun's Avatar", 1], ["Verdant Sun's Avatar", 1], ["Charging Tuskodon", 1]]}
-    ]
+   "art": {
+    "card": "Carnage Tyrant",
+    "oracle_id": "8c411f4e-a091-447c-9450-d895b10b4985"
    }
   },
   {
    "id": "sahrra_pride",
    "name": "Sahrra, the Pride Queen",
-   "since": 5,
    "colors": "WG",
-   "brain": "Hard",
-   "life": 27,
-   "life_per_hero": 30,
-   "hand": 9,
-   "rules": ["sahrra"],
-   "enrage": "the_pride_hunts",
-   "relic": "sunmane_pelt",
-   "phases": [["the_pride_gathers", 66], ["the_queens_roar", 33]],
+   "since": 5,
+   "deck_file": "c17-feline-ferocity.json",
+   "innate": "sahrra_the_pride",
+   "round_phases": [
+    "sahrra_pride_gathers",
+    "sahrra_queens_roar"
+   ],
+   "satchel": [
+    {
+     "card": "Path to Exile",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Krosan Grip",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "White Sun's Zenith",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 6
+     }
+    },
+    {
+     "card": "Flawless Maneuver",
+     "cue": {
+      "when": "protect"
+     }
+    }
+   ],
    "line": "You walked into the den. Now the whole pride knows your scent.",
-   "commander": "Jazal Goldmane",
-   "art": {"card": "Bast, Panther Goddess", "oracle_id": "e3233686-7703-460c-80ee-8cd37b3014ff"},
-   "brackets": {
-    "base": [
-     ["Plains", 9], ["Forest", 8],
-     ["Ajani's Pridemate", 2], ["Adorned Pouncer", 2], ["Fleecemane Lion", 2], ["Bronzehide Lion", 2],
-     ["Feline Sovereign", 2], ["Pride Sovereign", 2], ["Pridemalkin", 2], ["Kutzil's Flanker", 2],
-     ["Skyhunter Strike Force", 2], ["Brimaz, King of Oreskos", 1], ["Mirri, Weatherlight Duelist", 1],
-     ["Basri's Acolyte", 1], ["Pride of Lions", 1], ["Dromoka's Command", 1]
-    ],
-    "steps": [
-     {"add": [["Plains", 2], ["Forest", 2], ["Nacatl War-Pride", 1], ["Jedit Ojanen of Efrava", 1], ["Malamet Veteran", 1], ["Sabertooth Mauler", 1], ["Ajani, the Greathearted", 1], ["Lionheart Glimmer", 1]]},
-     {"add": [["Plains", 2], ["Forest", 2], ["Phantom Nishoba", 1], ["Kemba's Legion", 1], ["Ajani Unyielding", 1], ["Tabaxi Toucaneers", 1], ["G'raha Tia", 1], ["Leonin Lightbringer", 1]]},
-     {"cut": [["Pridemalkin", 2], ["Bronzehide Lion", 1]], "add": [["Ajani, Valiant Protector", 1], ["Feline Sovereign", 1], ["Pride Sovereign", 1]]},
-     {"cut": [["Kutzil's Flanker", 2], ["Basri's Acolyte", 1]], "add": [["Skyhunter Strike Force", 1], ["Pride of Lions", 1], ["Nacatl War-Pride", 1]]}
-    ]
+   "art": {
+    "card": "Bast, Panther Goddess",
+    "oracle_id": "e3233686-7703-460c-80ee-8cd37b3014ff"
    }
   },
   {
    "id": "valdric_manor",
    "name": "Valdric, the Crimson Count",
-   "since": 5,
    "colors": "WB",
-   "brain": "Hard",
-   "life": 27,
-   "life_per_hero": 30,
-   "hand": 9,
-   "rules": ["valdric"],
-   "enrage": "the_crimson_feast",
-   "relic": "chalice_of_the_host",
-   "phases": [["the_blood_moon", 66], ["the_night_eternal", 33]],
+   "since": 5,
+   "deck_file": "lcc-blood-rites.json",
+   "innate": "valdric_crimson_feast",
+   "round_phases": [
+    "valdric_blood_moon",
+    "valdric_night_eternal"
+   ],
+   "satchel": [
+    {
+     "card": "Feast of Blood",
+     "reusable": true,
+     "cue": {
+      "when": "board",
+      "creatures": 2
+     }
+    },
+    {
+     "card": "Vampire's Zeal",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Kaya's Guile",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
+    },
+    {
+     "card": "Olivia's Wrath",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
    "line": "Welcome to my table, honoured guests. You are the last course.",
-   "commander": "The Haunt of Hightower",
-   "art": {"card": "Edgar Markov", "oracle_id": "41e2790d-49f5-4e98-b8d9-04179f47f13a"},
-   "brackets": {
-    "base": [
-     ["Swamp", 10], ["Plains", 7],
-     ["Vampire Cutthroat", 2], ["Skymarcher Aspirant", 2], ["Tithe Drinker", 2], ["Indulging Patrician", 2],
-     ["Captivating Vampire", 2], ["Nighthawk Scavenger", 1], ["Qarsi Revenant", 2], ["Stromkirk Bloodthief", 2],
-     ["Savage Gorger", 2], ["Sangromancer", 1], ["Kalitas, Traitor of Ghet", 1], ["Bloodtracker", 1],
-     ["Rooftop Assassin", 1], ["Markov Crusader", 1], ["Bloodtithe Collector", 1]
-    ],
-    "steps": [
-     {"add": [["Swamp", 2], ["Plains", 2], ["Patron of the Vein", 1], ["Vengeful Vampire", 1], ["Sengir, the Dark Baron", 1], ["Carmen, Cruel Skymarcher", 1], ["Blood Baron of Vizkopa", 1], ["Arvad the Cursed", 1]]},
-     {"add": [["Swamp", 2], ["Plains", 2], ["Necropolis Regent", 1], ["Sorin, Vampire Lord", 1], ["Olivia's Wrath", 1], ["Drana, Kalastria Bloodchief", 1], ["Redemption Choir", 1], ["Felisa, Fang of Silverquill", 1]]},
-     {"cut": [["Skymarcher Aspirant", 2], ["Vampire Cutthroat", 1]], "add": [["Captivating Vampire", 1], ["Patron of the Vein", 1], ["Rooftop Assassin", 1]]},
-     {"cut": [["Tithe Drinker", 2], ["Bloodtracker", 1]], "add": [["Necropolis Regent", 1], ["Vengeful Vampire", 1], ["Sengir Connoisseur", 1]]}
-    ]
+   "art": {
+    "card": "Edgar Markov",
+    "oracle_id": "41e2790d-49f5-4e98-b8d9-04179f47f13a"
    }
   },
   {
    "id": "ozrith_observatory",
    "name": "Ozrith, Archmage of the Tempest",
-   "since": 6,
    "colors": "UR",
-   "brain": "Hard",
-   "life": 27,
-   "life_per_hero": 30,
-   "hand": 9,
-   "rules": ["ozrith"],
-   "enrage": "the_storm_breaks",
-   "relic": "stormglass_orrery",
-   "phases": [["the_gathering_storm", 66], ["eye_of_the_storm", 33]],
+   "since": 6,
+   "deck_file": "c15-seize-control.json",
+   "innate": "ozrith_stormcalling",
+   "round_phases": [
+    "ozrith_storm_breaks",
+    "ozrith_eye_of_the_storm"
+   ],
+   "satchel": [
+    {
+     "card": "Izzet Charm",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 2
+     }
+    },
+    {
+     "card": "Electrolyze",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 1
+     }
+    },
+    {
+     "card": "Expressive Iteration",
+     "reusable": true,
+     "cue": {
+      "when": "mana",
+      "mana": 4
+     }
+    },
+    {
+     "card": "Thunderous Wrath",
+     "cue": {
+      "when": "kill",
+      "toughness": 5
+     }
+    }
+   ],
    "line": "Every spell is a spark, and I have been gathering sparks for a thousand years.",
-   "commander": "Niv-Mizzet, Parun",
-   "art": {"card": "Archmage Emeritus", "oracle_id": "8305d576-21d8-4ce7-8eda-a7cd9793aca5"},
-   "brackets": {
-    "base": [
-     ["Island", 9], ["Mountain", 8],
-     ["Soul-Scar Mage", 2], ["Heartfire Immolator", 2], ["Coruscation Mage", 2], ["Umara Mystic", 2],
-     ["Cyclops Superconductor", 2], ["Windrider Wizard", 2], ["Veyran, Voice of Duality", 1], ["Rockslide Sorcerer", 1],
-     ["Expedition Diviner", 1], ["Lightning Bolt", 2], ["Izzet Charm", 2], ["Arc Trail", 1], ["Electrolyze", 1],
-     ["Opt", 1], ["Consider", 1]
-    ],
-    "steps": [
-     {"add": [["Island", 2], ["Mountain", 2], ["Archmage Emeritus", 1], ["Gandalf, Spark Starter", 1], ["Prismari Command", 1], ["Ral's Outburst", 1], ["Fire // Ice", 1], ["Deekah, Fractal Theorist", 1]]},
-     {"add": [["Island", 2], ["Mountain", 2], ["Aven Fateshaper", 1], ["Prismari, the Inspiration", 1], ["Sower of Temptation", 1], ["Lightning Bolt", 1], ["Expressive Iteration", 1], ["Electrolyze", 1]]},
-     {"cut": [["Coruscation Mage", 2], ["Expedition Diviner", 1]], "add": [["Lightning Bolt", 1], ["Sower of Temptation", 1], ["Archmage Emeritus", 1]]},
-     {"cut": [["Consider", 1], ["Opt", 1], ["Windrider Wizard", 1]], "add": [["Gandalf the Grey", 1], ["Umara Mystic", 1], ["Izzet Charm", 1]]}
-    ]
+   "art": {
+    "card": "Archmage Emeritus",
+    "oracle_id": "8305d576-21d8-4ce7-8eda-a7cd9793aca5"
    }
   },
   {
    "id": "aurenne_bastion",
    "name": "Aurenne, the Sunforged Marshal",
-   "since": 6,
    "colors": "WR",
-   "brain": "Hard",
-   "life": 44,
-   "life_per_hero": 48,
-   "hand": 10,
-   "rules": ["aurenne"],
-   "enrage": "the_last_charge",
-   "relic": "banner_of_the_dawn_legion",
-   "phases": [["the_banners_rise", 66], ["the_dawn_charge", 33]],
+   "since": 6,
+   "deck_file": "onc-rebellion-rising.json",
+   "innate": "aurenne_dawn_charge",
+   "round_phases": [
+    "aurenne_banners_rise",
+    "aurenne_last_charge"
+   ],
+   "satchel": [
+    {
+     "card": "Make Your Mark",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Angelic Ascension",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Lorehold Command",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
+    },
+    {
+     "card": "Gideon's Phalanx",
+     "cue": {
+      "when": "heroes_end",
+      "mana": 7
+     }
+    }
+   ],
    "line": "Form ranks! The dawn waits for no one, and neither do my knights.",
-   "commander": "Adriana, Captain of the Guard",
-   "art": {"card": "Adeline, Resplendent Cathar", "oracle_id": "38515f89-348b-4cf3-b7bd-1f6fe4ce2fba"},
-   "brackets": {
-    "base": [
-     ["Plains", 9], ["Mountain", 8],
-     ["Fervent Champion", 2], ["Knight of the White Orchid", 2], ["Sigiled Paladin", 2], ["Heartflame Duelist", 2],
-     ["Fiendslayer Paladin", 2], ["Sunrise Cavalier", 2], ["Fervent Cathar", 2], ["Inspiring Paladin", 1],
-     ["Hero of Oxid Ridge", 1], ["Embereth Paladin", 1], ["Danitha, Benalia's Hope", 1], ["Lightwielder Paladin", 1],
-     ["Lightning Bolt", 2], ["Justice Strike", 1], ["Charge the Sanctum", 1]
-    ],
-    "steps": [
-     {"add": [["Plains", 2], ["Mountain", 2], ["Adeline, Resplendent Cathar", 1], ["Hero of Bladehold", 1], ["Silverwing Squadron", 1], ["Dawnstrike Vanguard", 1], ["Cavalier of Dawn", 1], ["Márton Stromgald", 1]]},
-     {"add": [["Plains", 2], ["Mountain", 2], ["Gisela, Blade of Goldnight", 1], ["Parhelion Patrol", 1], ["Gryffwing Cavalry", 1], ["Hero of Bladehold", 1], ["Embereth Skyblazer", 1], ["Mounted Dreadknight", 1]]},
-     {"cut": [["Knight of the White Orchid", 2], ["Inspiring Paladin", 1]], "add": [["Adeline, Resplendent Cathar", 1], ["Silverwing Squadron", 1], ["Danitha, Benalia's Hope", 1]]},
-     {"cut": [["Fervent Cathar", 2], ["Embereth Paladin", 1]], "add": [["Hero of Oxid Ridge", 1], ["Lightwielder Paladin", 1], ["Cavalier of Dawn", 1]]}
-    ]
+   "art": {
+    "card": "Adeline, Resplendent Cathar",
+    "oracle_id": "38515f89-348b-4cf3-b7bd-1f6fe4ce2fba"
    }
   },
   {
    "id": "vorthana_hive",
    "name": "Vorthana, Queen of the Rot Hive",
-   "since": 6,
    "colors": "BG",
-   "brain": "Hard",
-   "life": 32,
-   "life_per_hero": 36,
-   "hand": 9,
-   "rules": ["vorthana"],
-   "enrage": "the_swarm_wakes",
-   "relic": "chitin_censer",
-   "phases": [["the_hive_stirs", 66], ["the_rot_blooms", 33]],
+   "since": 6,
+   "deck_file": "c15-plunder-the-graves.json",
+   "innate": "vorthana_rot_hive",
+   "round_phases": [
+    "vorthana_hive_stirs",
+    "vorthana_rot_blooms"
+   ],
+   "satchel": [
+    {
+     "card": "Grisly Salvage",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
+    },
+    {
+     "card": "Assassin's Trophy",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Victimize",
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 2
+     }
+    },
+    {
+     "card": "Living Death",
+     "cue": {
+      "when": "graveyard",
+      "creatures": 4
+     }
+    }
+   ],
    "line": "The hive remembers every one of its dead, and sends them back hungry.",
-   "commander": "Aatchik, Emerald Radian",
-   "art": {"card": "Gleancrawler", "oracle_id": "bb7389fa-ab01-4ca2-bd18-03cf5b4cedf6"},
-   "brackets": {
-    "base": [
-     ["Swamp", 9], ["Forest", 8],
-     ["Phyrexian Battleflies", 2], ["Seedship Broodtender", 2], ["Drudge Beetle", 2], ["Great Fierce Bee", 2],
-     ["Stinging Cave Crawler", 2], ["Voracious Brood", 2], ["Insectoid Exterminator", 2], ["Carrion Grub", 1],
-     ["Lord Dregg, Insect Invader", 1], ["Fumulus, the Infestation", 1], ["Heartstabber Mosquito", 2],
-     ["Decimator Beetle", 1], ["Moldgraf Millipede", 1], ["Extinguish the Light", 1], ["Heartless Act", 1]
-    ],
-    "steps": [
-     {"add": [["Swamp", 2], ["Forest", 2], ["Gleancrawler", 1], ["Zanikev Locust", 1], ["Chitin Gravestalker", 1], ["Rotfeaster Maggot", 1], ["Necrosquito", 1], ["Iridescent Hornbeetle", 1]]},
-     {"add": [["Swamp", 2], ["Forest", 2], ["Moldgraf Monstrosity", 1], ["Deadbridge Goliath", 1], ["Stinging Cave Crawler", 1], ["Swarm, Being of Bees", 1], ["Mortipede", 1], ["Necrosquito", 1]]},
-     {"cut": [["Phyrexian Battleflies", 2], ["Drudge Beetle", 1]], "add": [["Heartstabber Mosquito", 1], ["Moldgraf Monstrosity", 1], ["Gleancrawler", 1]]},
-     {"cut": [["Drudge Beetle", 1], ["Carrion Grub", 1], ["Seedship Broodtender", 1]], "add": [["Zanikev Locust", 1], ["Deadbridge Goliath", 1], ["Great Fierce Bee", 1]]}
-    ]
+   "art": {
+    "card": "Gleancrawler",
+    "oracle_id": "bb7389fa-ab01-4ca2-bd18-03cf5b4cedf6"
    }
   },
   {
    "id": "sivanne_mire",
    "name": "Sivanne, the Coiled Tide",
-   "since": 6,
    "colors": "UG",
-   "brain": "Hard",
-   "life": 27,
-   "life_per_hero": 30,
-   "hand": 10,
-   "rules": ["sivanne"],
-   "enrage": "the_tide_swallows",
-   "relic": "shed_scale_amulet",
-   "phases": [["the_coils_tighten", 66], ["the_great_shedding", 33]],
+   "since": 6,
+   "deck_file": "c15-swell-the-host.json",
+   "innate": "sivanne_coiled_growth",
+   "round_phases": [
+    "sivanne_coils_tighten",
+    "sivanne_great_shedding"
+   ],
+   "satchel": [
+    {
+     "card": "Sosuke's Summons",
+     "reusable": true,
+     "cue": {
+      "when": "mana",
+      "mana": 4
+     }
+    },
+    {
+     "card": "Inspiring Call",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Polymorphist's Jest",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Rite of Replication",
+     "cue": {
+      "when": "mana",
+      "mana": 9
+     }
+    }
+   ],
    "line": "Every coil I shed grows back larger. How many skins have you left?",
-   "commander": "Koma, World-Eater",
-   "art": {"card": "Kaseto, Orochi Archmage", "oracle_id": "198b6c6f-a480-4672-9d87-b0cb5d8ed1c0"},
-   "brackets": {
-    "base": [
-     ["Forest", 9], ["Island", 8],
-     ["Wasteland Viper", 2], ["Coiling Oracle", 2], ["Ice-Fang Coatl", 2], ["Tower Winder", 2], ["Orochi Ranger", 2],
-     ["Kaseto, Orochi Archmage", 1], ["Ohran Viper", 2], ["Champion of Wits", 1], ["Lonis, Genetics Expert", 1],
-     ["Patagia Viper", 2], ["Spire Winder", 1], ["Kashi-Tribe Reaver", 1], ["Constrictor Sage", 1],
-     ["Imoti, Celebrant of Bounty", 1], ["Quandrix Command", 1], ["Eureka Moment", 1]
-    ],
-    "steps": [
-     {"add": [["Forest", 2], ["Island", 2], ["Nessian Asp", 1], ["Broodbirth Viper", 1], ["Kashi-Tribe Warriors", 1], ["Matsu-Tribe Birdstalker", 1], ["Orochi Eggwatcher // Shidako, Broodmistress", 1], ["Gurmag Drowner", 1]]},
-     {"add": [["Forest", 2], ["Island", 2], ["Junk Winder", 1], ["Nessian Asp", 1], ["Patagia Viper", 1], ["Ice-Fang Coatl", 1], ["Ohran Viper", 1], ["Ramunap Hydra", 1]]},
-     {"cut": [["Orochi Ranger", 2], ["Champion of Wits", 1]], "add": [["Nessian Asp", 1], ["Broodbirth Viper", 1], ["Kashi-Tribe Warriors", 1]]},
-     {"cut": [["Tower Winder", 1], ["Wasteland Viper", 1], ["Spire Winder", 1]], "add": [["Matsu-Tribe Birdstalker", 1], ["Junk Winder", 1], ["Coiling Oracle", 1]]}
-    ]
+   "art": {
+    "card": "Kaseto, Orochi Archmage",
+    "oracle_id": "198b6c6f-a480-4672-9d87-b0cb5d8ed1c0"
    }
   },
   {
    "id": "unmaker_void",
    "name": "The Unmaker",
-   "uber": true,
-   "since": 5,
+   "final": true,
    "colors": "",
-   "brain": "Hard",
-   "life": 30,
-   "life_per_hero": 30,
-   "hand": 9,
-   "rules": ["the_unmaker"],
-   "enrage": "the_void_spills",
-   "relic": "prism_of_unmaking",
-   "phases": [["the_colors_fade", 66], ["all_is_unmade", 33]],
+   "since": 5,
+   "deck_file": "cmm-eldrazi-unbound.json",
+   "innate": "unmaker_unmaking",
+   "round_phases": [
+    "unmaker_colours_fade",
+    "unmaker_all_is_unmade"
+   ],
+   "satchel": [
+    {
+     "card": "Warping Wail",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 1
+     }
+    },
+    {
+     "card": "Titan's Presence",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Kozilek's Command",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
+    },
+    {
+     "card": "Not of This World",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    }
+   ],
    "line": "Your colors were only ever borrowed. I am taking them back.",
-   "commander": "Ulamog's Dreadsire",
-   "art": {"card": "Emrakul, the Promised End", "oracle_id": "4e7a8817-1a66-45c3-ade9-eac79b40b89f"},
-   "brackets": {
-    "base": [
-     ["Wastes", 17],
-     ["Warping Wail", 2], ["Kozilek's Command", 2], ["Matter Reshaper", 3], ["Skittering Cicada", 2],
-     ["Thought-Knot Seer", 3], ["Inversion Behemoth", 2], ["Eldrazi Confluence", 2],
-     ["Reality Smasher", 3], ["Walker of the Wastes", 3], ["Forsaken Monument", 1]
-    ],
-    "steps": [
-     {"add": [["Wastes", 4], ["Endbringer", 1], ["Kozilek's Pathfinder", 2], ["Anticausal Vestige", 1], ["Zhulodok, Void Gorger", 1], ["Echoes of Eternity", 1]]},
-     {"add": [["Wastes", 4], ["Deceiver of Form", 1], ["Bane of Bala Ged", 1], ["All Is Dust", 1], ["Not of This World", 1], ["Thought-Knot Seer", 1], ["Endbringer", 1]]},
-     {"cut": [["Inversion Behemoth", 2], ["Skittering Cicada", 1]], "add": [["Ulamog's Crusher", 1], ["Breaker of Armies", 1], ["Endbringer", 1]]},
-     {"cut": [["Kozilek's Command", 2], ["Warping Wail", 1]], "add": [["Spawnsire of Ulamog", 1], ["It That Betrays", 1], ["Bane of Bala Ged", 1]]}
-    ]
+   "art": {
+    "card": "Emrakul, the Promised End",
+    "oracle_id": "4e7a8817-1a66-45c3-ade9-eac79b40b89f"
    }
-  }
-
- ],
- "schemes": [
-  "horde_gathers",
-  "feast_of_rats",
-  "ambush",
-  "bone_wall",
-  "tunnel_collapse",
-  "hunting_party",
-  "dark_tithe",
-  "plunder",
-  "marked_prey",
-  "grave_robbers",
-  "war_drums",
-  "second_wind",
-  "gravecall",
-  "toll_of_shadows"
- ],
- "scheme_every": 2,
- "modifiers": [
-  "bloodthirst",
-  "ironhide",
-  "quickened",
-  "watchful",
-  "hoarder",
-  "far_sight"
- ],
- "minions": [
-  {
-   "id": "skrix_brood",
-   "name": "Brood of Skrix",
-   "deck_of": "skrix_nest",
-   "life": 25
-  },
-  {
-   "id": "mossjaw_whelp",
-   "name": "Mossjaw's Whelp",
-   "deck_of": "mossjaw_hall",
-   "life": 25
-  },
-  {
-   "id": "vex_acolyte",
-   "name": "Acolyte of Vex",
-   "deck_of": "vex_crypt",
-   "life": 25
   }
  ]
 }

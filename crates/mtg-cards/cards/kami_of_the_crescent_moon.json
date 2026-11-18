@@ -1,0 +1,19 @@
+{
+  "oracle_id": "38cfe4a0-6ead-435b-9f86-928205c0a52c",
+  "name": "Kami of the Crescent Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kami of the Crescent Moon",
+      "oracle_fingerprint": "f4d3e0e30a1c4692254bea6810639b51",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Draw" } },
+            "effects": [{ "Draw": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

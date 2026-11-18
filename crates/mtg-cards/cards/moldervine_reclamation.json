@@ -1,0 +1,25 @@
+{
+  "oracle_id": "68639a3d-2192-4921-8298-c76bb0cd6b02",
+  "name": "Moldervine Reclamation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moldervine Reclamation",
+      "oracle_fingerprint": "8cc9f3f3ba364c64603d02050c49146e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "91fbb25b-8521-483f-88b0-77778d25f7fd",
+  "name": "Castle Embereth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Castle Embereth",
+      "oracle_fingerprint": "571f0ffbc3b6e13fe27721c45f7e0cb0",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}{R}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

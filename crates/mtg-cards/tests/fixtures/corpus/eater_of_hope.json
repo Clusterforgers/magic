@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "a7c62113-48c1-47ae-8ede-c05c1c914c3b",
+  "oracle_id": "3055381a-fb6b-47a3-8e77-a44768808e27",
+  "multiverse_ids": [
+    539376
+  ],
+  "mtgo_id": 93646,
+  "tcgplayer_id": 248752,
+  "cardmarket_id": 575408,
+  "name": "Eater of Hope",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/a7c62113-48c1-47ae-8ede-c05c1c914c3b",
+  "scryfall_uri": "https://scryfall.com/card/mic/115/eater-of-hope?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:48:59Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.jpg?1783925339",
+    "normal": "https://cards.scryfall.io/normal/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.jpg?1783925339",
+    "large": "https://cards.scryfall.io/large/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.jpg?1783925339",
+    "png": "https://cards.scryfall.io/png/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.png?1783925339",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.jpg?1783925339",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.jpg?1783925339",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.webp?1783925339",
+    "grid": "https://cards.scryfall.io/grid/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.webp?1783925339",
+    "display": "https://cards.scryfall.io/display/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.webp?1783925339",
+    "art": "https://cards.scryfall.io/art/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.webp?1783925339",
+    "crop": "https://cards.scryfall.io/crop/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.webp?1783925339",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/7/a7c62113-48c1-47ae-8ede-c05c1c914c3b.jpg?1783925339"
+  },
+  "mana_cost": "{5}{B}{B}",
+  "cmc": 7.0,
+  "type_line": "Creature — Demon",
+  "oracle_text": "Flying\n{B}, Sacrifice another creature: Regenerate this creature.\n{2}{B}, Sacrifice two other creatures: Destroy target creature.",
+  "power": "6",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "Regenerate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set": "mic",
+  "set_name": "Midnight Hunt Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a7c62113-48c1-47ae-8ede-c05c1c914c3b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3055381a-fb6b-47a3-8e77-a44768808e27&unique=prints",
+  "collector_number": "115",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Gods can be appeased. Demons, however . . .",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mathias Kollros",
+  "artist_ids": [
+    "2ae0dd12-047c-4efb-80d7-bccc3bac5fba"
+  ],
+  "illustration_id": "841f8514-ece7-46e2-878a-6f35a1e450bc",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 17760,
+  "penny_rank": 17029,
+  "prices": {
+    "usd": "0.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.24",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=539376&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEater%2Bof%2BHope",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEater%2Bof%2BHope",
+    "edhrec": "https://edhrec.com/route/?cc=Eater+of+Hope"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248752%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=575408&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93646?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

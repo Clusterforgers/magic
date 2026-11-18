@@ -1,0 +1,25 @@
+{
+  "oracle_id": "3ae4b679-2e3c-4f60-bcf4-b279917cdc54",
+  "name": "Dimir Locket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Locket",
+      "oracle_fingerprint": "e3bf809f121f74514ac992a779b5a299",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U/B}{U/B}{U/B}{U/B}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

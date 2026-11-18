@@ -1,0 +1,40 @@
+{
+  "oracle_id": "e900f211-dc8b-40f7-a217-1b1462b15c26",
+  "name": "Stirring Wildwood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stirring Wildwood",
+      "oracle_fingerprint": "c001e667ac1fe217ed727900c571569e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{W}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 4 } },
+                    { "SetColors": ["Green", "White"] },
+                    { "SetCreatureTypes": ["Elemental"] },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Reach" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

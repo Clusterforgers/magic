@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1b94a11b-21b0-4465-a520-69608f022fb4",
+  "name": "Mavren Fein, Dusk Apostle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mavren Fein, Dusk Apostle",
+      "oracle_fingerprint": "4a5532b71df9f5ff8c6c961f59928aa1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Subtype": "Vampire" }, { "Not": "Token" }, { "ControlledBy": "You" }]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

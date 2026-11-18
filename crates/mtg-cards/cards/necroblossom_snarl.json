@@ -1,0 +1,31 @@
+{
+  "oracle_id": "761ee6f9-b0fa-43c9-8d1f-9591ea18e52d",
+  "name": "Necroblossom Snarl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Necroblossom Snarl",
+      "oracle_fingerprint": "5c8260aba4c2052582504a95acadb9c1",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [
+                { "AnyOf": [{ "Subtype": "Swamp" }, { "Subtype": "Forest" }] },
+                { "In": "Hand" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

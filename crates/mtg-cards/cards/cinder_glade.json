@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dfac0258-e148-4d7d-8ded-fc2466d9caa6",
+  "name": "Cinder Glade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cinder Glade",
+      "oracle_fingerprint": "9d31a57159608dd47c3ce17fbd81b79c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Supertype": "Basic" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -443,7 +443,7 @@ fn card(name: &str) -> Arc<CardDefinition> {
     ];
     match basic.iter().find(|(basic, _)| *basic == name) {
         Some((_, color)) => mtg_testkit::cards::land(*color),
-        None => corpus::card(name).unwrap(),
+        None => corpus::card(name).unwrap_or_else(|_| mtg_testkit::cards::wastes()),
     }
 }
 
@@ -485,14 +485,13 @@ fn setup_of(plan: &FightPlan, seed: u64) -> GameSetup {
         decks.push(deck.cards.clone());
         commanders.push(deck.commanders.clone());
     }
-    for deck in plan.boss_decks() {
-        decks.push(
-            deck.iter()
-                .flat_map(|(name, n)| (0..*n).map(move |_| card(name)))
-                .collect(),
-        );
-        commanders.push(Vec::new());
-    }
+    decks.push(
+        plan.boss_deck()
+            .iter()
+            .flat_map(|(name, n)| (0..*n).map(move |_| card(name)))
+            .collect(),
+    );
+    commanders.push(Vec::new());
     let setup = GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders);
     plan.apply(content, setup).unwrap()
 }

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "da785227-cf8a-4d44-9e7c-fc909ea868f2",
+  "name": "Prosperous Innkeeper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Prosperous Innkeeper",
+      "oracle_fingerprint": "fb6acee581faa6fc4892ecc538bb3bd9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

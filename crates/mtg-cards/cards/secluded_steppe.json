@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8dec6fcf-1254-4b1b-ba23-7a3e492a7241",
+  "name": "Secluded Steppe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Secluded Steppe",
+      "oracle_fingerprint": "97d470c81ccdbf653bc99632ed0112a7",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{W}" } }
+      ]
+    }
+  ]
+}

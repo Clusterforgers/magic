@@ -1,0 +1,136 @@
+{
+  "object": "card",
+  "id": "40e21394-146e-4648-b81e-63659c0c4764",
+  "oracle_id": "f763d118-3183-4604-a50c-7c3933e2185e",
+  "multiverse_ids": [
+    433274
+  ],
+  "mtgo_id": 73838,
+  "tcgplayer_id": 139819,
+  "cardmarket_id": 300314,
+  "name": "Qasali Slingers",
+  "lang": "en",
+  "released_at": "2017-08-25",
+  "uri": "https://api.scryfall.com/cards/40e21394-146e-4648-b81e-63659c0c4764",
+  "scryfall_uri": "https://scryfall.com/card/c17/33/qasali-slingers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:45:39Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.jpg?1783935939",
+    "normal": "https://cards.scryfall.io/normal/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.jpg?1783935939",
+    "large": "https://cards.scryfall.io/large/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.jpg?1783935939",
+    "png": "https://cards.scryfall.io/png/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.png?1783935939",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.jpg?1783935939",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.jpg?1783935939",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.webp?1783935939",
+    "grid": "https://cards.scryfall.io/grid/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.webp?1783935939",
+    "display": "https://cards.scryfall.io/display/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.webp?1783935939",
+    "art": "https://cards.scryfall.io/art/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.webp?1783935939",
+    "crop": "https://cards.scryfall.io/crop/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.webp?1783935939",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/0/40e21394-146e-4648-b81e-63659c0c4764.jpg?1783935939"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Cat Warrior",
+  "oracle_text": "Reach\nWhenever this creature or another Cat you control enters, you may destroy target artifact or enchantment.",
+  "power": "3",
+  "toughness": "5",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Reach"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "5caec427-0c78-4c37-b4ec-30f7e0ba9abf",
+  "set": "c17",
+  "set_name": "Commander 2017",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/5caec427-0c78-4c37-b4ec-30f7e0ba9abf",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac17&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c17?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/40e21394-146e-4648-b81e-63659c0c4764/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Af763d118-3183-4604-a50c-7c3933e2185e&unique=prints",
+  "collector_number": "33",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "All things will crumble, whether by time or by force.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Izzy",
+  "artist_ids": [
+    "2c3d2473-ff5d-4309-8194-e0b2def2ab65"
+  ],
+  "illustration_id": "7f8a1497-884b-4b50-ad8c-042ad8a4db3f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5657,
+  "penny_rank": 16235,
+  "prices": {
+    "usd": "9.86",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "7.07",
+    "eur_foil": null,
+    "tix": "0.10"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=433274&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DQasali%2BSlingers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DQasali%2BSlingers",
+    "edhrec": "https://edhrec.com/route/?cc=Qasali+Slingers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F139819%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=300314&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/73838?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

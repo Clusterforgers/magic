@@ -1,0 +1,36 @@
+{
+  "oracle_id": "bfa882ee-de18-4ef8-8957-3e04ed6e3c1e",
+  "name": "Nested Shambler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nested Shambler",
+      "oracle_fingerprint": "83083dfc3fb2cfad1572c725c2e21d46",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Squirrel",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Squirrel"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Stat": { "of": "This", "stat": "Power" } },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

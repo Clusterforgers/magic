@@ -46,13 +46,15 @@ async fn read(server: &TestServer, id: &str, who: &Browser) -> Value {
     reply.json()
 }
 
-/// The answer a player gives their first offer: a rest at a campfire, leaving a shop or the Mirror Pool, else the first
-/// choice.
+/// The answer a player gives their first offer: a rest at a campfire, leaving a shop or the Mirror Pool, the Capricopian of the
+/// deck for a card to give up, else the first choice.
 fn answer(offer: &Value) -> Value {
     if offer.get("Campfire").is_some() {
         json!("Rest")
     } else if offer.get("Shop").is_some() || offer == "Duplicate" {
         json!("Skip")
+    } else if offer == "Discard" {
+        json!({"Discard": "Capricopian"})
     } else {
         json!({"Take": 0})
     }

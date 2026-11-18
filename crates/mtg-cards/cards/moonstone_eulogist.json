@@ -1,0 +1,35 @@
+{
+  "oracle_id": "cf9190e0-6f53-44fb-8afa-c16f5bf9829e",
+  "name": "Moonstone Eulogist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moonstone Eulogist",
+      "oracle_fingerprint": "5b568918eb30753b03330ce7884e3ea6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Artifact" }], "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

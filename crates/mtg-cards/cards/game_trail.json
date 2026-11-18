@@ -1,0 +1,31 @@
+{
+  "oracle_id": "00de57d2-7cb6-4337-9bc6-f6711e4dfabf",
+  "name": "Game Trail",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Game Trail",
+      "oracle_fingerprint": "bf4ab9ae8cff4ed221528b36269e764c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [
+                { "AnyOf": [{ "Subtype": "Mountain" }, { "Subtype": "Forest" }] },
+                { "In": "Hand" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

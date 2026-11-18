@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3ee78cfc-0e9e-4737-a7e2-b42f94228040",
+  "name": "Cruel Celebrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cruel Celebrant",
+      "oracle_fingerprint": "4aaa6cc4764960a179f00c31bf465281",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

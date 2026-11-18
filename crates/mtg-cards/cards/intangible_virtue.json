@@ -1,0 +1,19 @@
+{
+  "oracle_id": "d21c3c8f-d105-4ba9-bf69-e5f26f0f8ec5",
+  "name": "Intangible Virtue",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Intangible Virtue",
+      "oracle_fingerprint": "f478f1f0b21316d0b99ab770939cc246",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Vigilance" }]
+          }
+        }
+      ]
+    }
+  ]
+}

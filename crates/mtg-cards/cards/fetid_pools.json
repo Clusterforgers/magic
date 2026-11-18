@@ -1,0 +1,15 @@
+{
+  "oracle_id": "32b03b48-06da-4a74-a7ac-e5ae39a4f428",
+  "name": "Fetid Pools",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fetid Pools",
+      "oracle_fingerprint": "7399a424355916fc92d9920a236e32f0",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

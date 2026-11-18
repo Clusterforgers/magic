@@ -1,0 +1,43 @@
+{
+  "oracle_id": "698e79ec-c2bc-4973-a095-f3c57b50e39c",
+  "name": "Mutilate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mutilate",
+      "oracle_fingerprint": "737ce0d824a8f69487279270dd0b545a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

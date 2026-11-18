@@ -1,0 +1,24 @@
+{
+  "oracle_id": "464bfcdb-a82b-4573-92a4-c5e463724fbe",
+  "name": "Military Intelligence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Military Intelligence",
+      "oracle_fingerprint": "bd2f7ef5768e19d8a4beb36d67f9bc8a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "at_least": 2
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

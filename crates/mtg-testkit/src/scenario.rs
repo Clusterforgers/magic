@@ -383,6 +383,29 @@ impl Scenario {
         self
     }
 
+    /// Gives a player reusable Satchel cards, which return to the Satchel after each cast and cost {2} more for each
+    /// earlier cast (`mtg_engine::satchel`).
+    #[must_use]
+    pub fn satchel_reusable(
+        mut self,
+        player: usize,
+        cards: impl IntoIterator<Item = Arc<CardDefinition>>,
+    ) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.satchel_reusable.extend(cards);
+        }
+        self
+    }
+
+    /// Gives a player a reworked boss's public sheet (`mtg_engine::boss_sheet`).
+    #[must_use]
+    pub fn boss_sheet(mut self, player: usize, sheet: mtg_engine::boss_sheet::BossSheet) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.boss_sheet = Some(Arc::new(sheet));
+        }
+        self
+    }
+
     /// Gives a player the Spirit emblem they get on becoming a Spirit (`mtg_engine::spirits`).
     #[must_use]
     pub fn spirit(mut self, player: usize, card: Arc<CardDefinition>) -> Self {

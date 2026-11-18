@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7c4dbaa8-e24f-4126-81fe-3f218f520d8c",
+  "name": "Jor Kadeen, the Prevailer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jor Kadeen, the Prevailer",
+      "oracle_fingerprint": "6d748274fea729c03db8a41d6dabed2f",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b45fdeab-00cc-4422-af9f-66f30a880a7c",
+  "name": "Evolution Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evolution Sage",
+      "oracle_fingerprint": "3c26854534abd158db9dff198fbeb7da",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Proliferate": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b81eaa2f-0554-41c6-bdf6-d1cb73b8f56f",
+  "name": "Realmwalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Realmwalker",
+      "oracle_fingerprint": "8e047b195a331aa2f8e3397f19a8a45f",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Creature" }, "ChosenSubtype"], "from": "Library" }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

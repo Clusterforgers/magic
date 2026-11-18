@@ -1,0 +1,42 @@
+{
+  "oracle_id": "cada2a1c-5db2-4702-9a57-cbe7da1bf208",
+  "name": "Tome of Legends",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tome of Legends",
+      "oracle_fingerprint": "bc2d0d2fa519015ef117782a0d506d16",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "page" }, "count": 1 } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": { "what": ["Commander", { "OwnedBy": "You" }], "to": "Battlefield" }
+                },
+                { "Attacks": { "what": ["Commander", { "OwnedBy": "You" }] } }
+              ]
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": { "Other": "page" } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}" },
+              "Tap",
+              { "RemoveCounters": { "counter": { "Other": "page" } } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

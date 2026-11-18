@@ -1,9 +1,13 @@
 //! Delves, the co-op dungeon campaign: content, the floor generator, the run as a fold of its events, the fight plans
 //! that become normal games, and the bots' choices between fights. No IO, like the engine.
 
+pub mod boss_plan;
+pub mod boss_relics;
 pub mod content;
 pub mod fight;
+pub mod innate;
 pub mod map;
+pub mod modifiers;
 pub mod relics;
 pub mod rng;
 pub mod run;
@@ -11,10 +15,10 @@ pub mod scale;
 pub mod upgrade;
 
 pub use content::{
-    Boss, BossArt, Brain, CardKind, Content, CustomCard, EventOption, Minion, Needs, Outcome,
+    Boss, BossArt, Brain, CardKind, Content, CustomCard, DeckFile, EventOption, Needs, Outcome,
     Rarity, content,
 };
-pub use fight::{BossSeat, FightPlan, HeroSeat, MinionSeat};
+pub use fight::{BossSeat, FightPlan, HeroSeat};
 pub use map::{FloorMap, Node, RoomKind};
 pub use relics::{DeckMakeup, Want};
 pub use run::{

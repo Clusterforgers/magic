@@ -1,0 +1,29 @@
+{
+  "oracle_id": "13279222-422d-4447-9451-2463b0c714c6",
+  "name": "Garruk's Packleader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garruk's Packleader",
+      "oracle_fingerprint": "a15abbc302a83992ccdfb96380c68fa8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

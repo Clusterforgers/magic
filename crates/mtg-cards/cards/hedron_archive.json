@@ -1,0 +1,25 @@
+{
+  "oracle_id": "32263baa-d3f0-463f-92b3-4e9938476add",
+  "name": "Hedron Archive",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hedron Archive",
+      "oracle_fingerprint": "f527657387005f55ccf6f5c2865764b6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

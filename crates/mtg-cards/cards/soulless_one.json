@@ -1,0 +1,37 @@
+{
+  "oracle_id": "27d98b94-a8a1-442b-8940-4ffab51b5164",
+  "name": "Soulless One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soulless One",
+      "oracle_fingerprint": "14d3f7d998e2f07d12c9b70841def7c7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Sum": [
+                      { "Count": [{ "Subtype": "Zombie" }] },
+                      { "Count": [{ "Subtype": "Zombie" }, { "In": "Graveyard" }] }
+                    ]
+                  },
+                  "toughness": {
+                    "Sum": [
+                      { "Count": [{ "Subtype": "Zombie" }] },
+                      { "Count": [{ "Subtype": "Zombie" }, { "In": "Graveyard" }] }
+                    ]
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

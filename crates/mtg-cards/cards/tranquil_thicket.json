@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9f8fe514-77ed-41b4-a6f3-c6f095bb97be",
+  "name": "Tranquil Thicket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tranquil Thicket",
+      "oracle_fingerprint": "9c162b529d102c32d4832f796888c772",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{G}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "da113cc9-bb2b-4af4-9c43-32c165b87363",
+  "name": "Spider Spawning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spider Spawning",
+      "oracle_fingerprint": "2bbdb6e402e0bca0e0ba054be97a8b39",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{6}{B}" } }
+      ]
+    }
+  ]
+}

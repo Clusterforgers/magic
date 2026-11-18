@@ -1,0 +1,29 @@
+{
+  "oracle_id": "204f9afe-c20b-4933-b5cd-aa572784762a",
+  "name": "Overrun",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overrun",
+      "oracle_fingerprint": "03f3a727dbdc5ad541efb098320ee9d9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 3, "toughness": 3 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

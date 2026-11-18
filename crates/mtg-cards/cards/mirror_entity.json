@@ -1,0 +1,28 @@
+{
+  "oracle_id": "17e905ca-c0bd-473d-95a7-e180ba5fea43",
+  "name": "Mirror Entity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Entity",
+      "oracle_fingerprint": "bd29159cf248c96f56a597090dd7a10c",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        {
+          "Activated": {
+            "cost": "{X}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "SetPT": { "power": "X", "toughness": "X" } }, "AddAllCreatureTypes"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

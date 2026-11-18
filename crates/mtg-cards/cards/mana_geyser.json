@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a8dba58b-2956-492e-ae30-49db2ae68e53",
+  "name": "Mana Geyser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mana Geyser",
+      "oracle_fingerprint": "ab0f0554db0da518f7002abde1329506",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": {
+                    "Count": [{ "Type": "Land" }, "Tapped", { "ControlledBy": "Opponents" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

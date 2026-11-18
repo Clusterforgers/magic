@@ -1,15 +1,11 @@
 /** The Delves run page's pure rules of display: room states and votes, boss life, life bars, stages and ready heroes. */
 import type { DeckEntry } from '@/features/game/deckEntries'
-import { standingKind, summaryOf } from '@/features/table/campaign/bossAbilities'
-import { COMMANDER_TEXT, commanderLabel } from '@/features/table/campaign/bossPhase'
-import type { BossAbility } from '@/features/table/campaign/bossAbilities'
 import type {
   Brain,
   CustomCardView,
   DelveBoard,
   DelveBoardEntry,
   DelveContent,
-  DelveFightView,
   DelveView,
   Hero,
   Node,
@@ -128,14 +124,6 @@ export function bossLife(view: Pick<DelveView, 'boss_lives'>, boss: string): num
   return view.boss_lives.find(([id]) => id === boss)?.[1]
 }
 
-/** "Upgraded form of Skrix, the Rat Queen" for a final boss's upgraded form; null for a boss of its own. */
-export function upgradedFrom(content: Pick<DelveContent, 'bosses'>, boss: string | undefined): string | null {
-  const from = content.bosses.find((entry) => entry.id === boss)?.upgrade_of
-  if (from === undefined) return null
-  const name = content.bosses.find((entry) => entry.id === from)?.name
-  return name === undefined ? null : `Upgraded form of ${name}`
-}
-
 /** The most life a hero carries without relic bonuses (`docs/delves.md`, Shape). */
 export const MAX_LIFE = 40
 /** The hearts a party starts with. */
@@ -191,61 +179,8 @@ export function customCard(content: Pick<DelveContent, 'cards'>, id: string): Cu
       role: '',
       price: 0,
       rarity: 'Common',
-      turn: 0,
     }
   )
-}
-
-/**
- * The boss's abilities for the intro of a fight, from the plan its game is made with: each custom card in its command
- * zone (one given twice once, with its count), then its phases with the life at which each begins. The words are the
- * content's, the records the engine plays.
- */
-export function introAbilities(content: DelveContent, fight: DelveFightView): BossAbility[] {
-  const counts = new Map<string, number>()
-  for (const id of fight.rules) counts.set(id, (counts.get(id) ?? 0) + 1)
-  const out: BossAbility[] = []
-  for (const [id, count] of counts) {
-    const card = content.cards.find((entry) => entry.id === id)
-    if (card === undefined) continue
-    const name = count > 1 ? `${card.name} ×${count}` : card.name
-    const { kind, when } = standingKind(card)
-    out.push({
-      key: `rule-${id}`,
-      kind,
-      name,
-      text: card.text,
-      summary: summaryOf(card.text),
-      ...(when === undefined ? {} : { when }),
-    })
-  }
-  for (const [id, life] of fight.phases) {
-    const card = content.cards.find((entry) => entry.id === id)
-    if (card === undefined) continue
-    const share = fight.life > 0 ? Math.round((life / fight.life) * 100) : 0
-    out.push({
-      key: `phase-${id}`,
-      kind: 'next-phase',
-      name: card.name,
-      text: card.text,
-      summary: summaryOf(card.text),
-      when: life >= fight.life ? 'From the start' : `At ${life} life (${share}%)`,
-    })
-  }
-  if (fight.commander !== undefined) {
-    const names = fight.phases.map(([id]) => content.cards.find((entry) => entry.id === id)?.name ?? id)
-    const own = fight.phases.filter(([id]) => id !== 'bulwark')
-    const at = own.at(-1)?.[1]
-    out.push({
-      key: `commander-${fight.commander}`,
-      kind: 'next-phase',
-      name: commanderLabel(names, fight.commander),
-      text: COMMANDER_TEXT,
-      summary: summaryOf(COMMANDER_TEXT),
-      ...(at === undefined ? {} : { when: `At ${at} life` }),
-    })
-  }
-  return out
 }
 
 /**

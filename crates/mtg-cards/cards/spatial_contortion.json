@@ -1,0 +1,27 @@
+{
+  "oracle_id": "7346337e-ac12-4dd2-826d-77ec0013e74f",
+  "name": "Spatial Contortion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spatial Contortion",
+      "oracle_fingerprint": "4d8c9e5f43cea6c17404db7406d391c4",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 3, "toughness": -3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -86,7 +86,13 @@ pub struct DelveView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub boss: Option<String>,
-    /// Each boss of the ladder by id with the life it starts its fight with against this party, at its rank and Heat.
+    /// The name of the run's theme.
+    #[serde(default)]
+    pub theme: String,
+    /// The story of the run's theme.
+    #[serde(default)]
+    pub story: String,
+    /// Each boss of the ladder by id with the life it starts its fight with against this party.
     #[serde(default)]
     pub boss_lives: Vec<(String, i32)>,
     /// The heroes whose decks the waiting fight cannot be made with; empty when nothing stops it.
@@ -114,19 +120,24 @@ pub struct DelveFightView {
     pub boss: String,
     /// The boss's starting life, scaled for the party.
     pub life: i32,
-    /// The custom cards in its command zone from the start, by id; one given twice is listed twice.
-    pub rules: Vec<String>,
-    /// Its phases by card id, each with the life at or below which it begins.
-    pub phases: Vec<(String, i32)>,
-    /// Its commander card's name: a real card it casts free as its last phase begins.
+    /// The boss's innate at its level.
+    pub innate: crate::view::InnateView,
+    /// The fight's encounter modifier.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
-    pub commander: Option<String>,
-    /// What the floor changes for it (Intensify), one line each; empty on the first floor.
-    #[serde(default)]
-    pub intensify: Vec<String>,
-    /// Its minions: name and starting life.
-    pub minions: Vec<(String, i32)>,
+    pub modifier: Option<crate::view::BossPartView>,
+    /// The boss's two phases, each with the round it begins at the end of.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<crate::view::RoundPhaseView>>", optional)]
+    pub round_phases: Vec<crate::view::RoundPhaseView>,
+    /// The relics the boss brings, copies included.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<crate::view::BossPartView>>", optional)]
+    pub relics: Vec<crate::view::BossPartView>,
+    /// The boss's Satchel, each card with its reusable mark.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<crate::view::BossSatchelView>>", optional)]
+    pub satchel: Vec<crate::view::BossSatchelView>,
 }
 
 /// A hero's deck that no longer plays, so the next fight waits until they choose another.
@@ -218,8 +229,6 @@ pub struct CustomCardView {
     pub price: u32,
     /// A relic's rarity.
     pub rarity: Rarity,
-    /// The heroes' turn from which an Enrage applies; 0 for other cards.
-    pub turn: u32,
 }
 
 /// A boss as the web shows it.
@@ -229,18 +238,16 @@ pub struct DelveBossView {
     pub id: String,
     /// Its name.
     pub name: String,
-    /// The id of the boss an upgraded form came from; left out for a boss of its own.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    #[ts(optional)]
-    pub upgrade_of: Option<String>,
     /// Its colours as WUBRG letters.
     pub colors: String,
     /// What it says as the fight begins.
     pub line: String,
-    /// Its boss card's id.
-    pub card: Option<String>,
-    /// Its phase cards' ids, in order, with the share of life (percent) at which each begins.
-    pub phases: Vec<(String, u32)>,
+    /// Whether it is one of its theme's final bosses.
+    pub final_boss: bool,
+    /// Its innate's card id at level I.
+    pub innate: String,
+    /// Its Phase 1 and Phase 2 card ids, as written.
+    pub round_phases: Vec<String>,
     /// Its life with one hero and for each hero more.
     pub life: (i32, i32),
     /// The real card whose art crop pictures it.

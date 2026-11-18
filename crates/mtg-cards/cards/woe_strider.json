@@ -1,0 +1,55 @@
+{
+  "oracle_id": "3adbd963-e85d-4569-963a-4472594f06f9",
+  "name": "Woe Strider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woe Strider",
+      "oracle_fingerprint": "dffedcb90253030e45864b823b729871",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goat"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Keyword": {
+            "Escape": [
+              { "Mana": "{3}{B}{B}" },
+              { "ExileFromGraveyard": { "filter": ["Other"], "count": 4 } }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": 2 } },
+            "condition": { "CastWith": "Escape" }
+          }
+        }
+      ]
+    }
+  ]
+}

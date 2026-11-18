@@ -1,0 +1,25 @@
+{
+  "oracle_id": "4b977117-741c-4157-8fcf-719e475a8a4c",
+  "name": "Battle Hymn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Hymn",
+      "oracle_fingerprint": "7228fe3461024c401b0b1ef4b68c9b89",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Red"] },
+                  "times": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

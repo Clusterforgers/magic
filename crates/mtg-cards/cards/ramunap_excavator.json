@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4f819ba4-52ef-4fdd-8e4c-5ae3b2f44db5",
+  "name": "Ramunap Excavator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ramunap Excavator",
+      "oracle_fingerprint": "1b0f605613678baf4d5b39c840009061",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Land" }], "from": "Graveyard", "play": true }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3f8e5ff1-af89-427e-924c-19a44f9a3788",
+  "name": "Retreat to Kazandu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Retreat to Kazandu",
+      "oracle_fingerprint": "eafcc4eae333e583f9d656d263fd408e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 2 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

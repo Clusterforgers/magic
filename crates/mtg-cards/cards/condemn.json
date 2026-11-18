@@ -1,0 +1,27 @@
+{
+  "oracle_id": "377d31b5-0a48-4d5b-91bd-b5a62d4f7899",
+  "name": "Condemn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Condemn",
+      "oracle_fingerprint": "a10d56b52fb7e3af82690349e4039cd8",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking"] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Bottom" } } } },
+              {
+                "GainLife": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

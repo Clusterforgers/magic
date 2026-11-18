@@ -82,6 +82,8 @@ export interface DevSearch {
   boss?: number
   /** `1` with `boss` makes the viewer a fallen hero's Spirit with no permanents, no hand and no commander (`withSpirit`). */
   spirit?: true
+  /** `1` or `2` with `boss`: how far the fight has come (`withReworkedBoss`), before Phase 1 or with Phase 1 in force. */
+  rework?: 1 | 2
   /** `1` leaves every battlefield empty (`withBareBoards`), as at the start of a fight, for the opening hands. */
   bare?: true
   /** `1` has every opponent but the last out of the game (conceded, then out of life) and leaves the last one's board empty (`withLastStanding`). */
@@ -151,7 +153,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&spirit=&bare=&alone=&states=&cards=&menu=&teams=&result=&permanents=&script=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&spirit=&rework=&bare=&alone=&states=&cards=&menu=&teams=&result=&permanents=&script=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -206,6 +208,7 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
     boss: boss === undefined || boss > 2 ? undefined : boss,
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     spirit: search.spirit === true || search.spirit === 1 || search.spirit === '1' ? true : undefined,
+    rework: search.rework === 1 || search.rework === 2 ? search.rework : undefined,
     bare: search.bare === true || search.bare === 1 || search.bare === '1' ? true : undefined,
     alone: search.alone === true || search.alone === 1 || search.alone === '1' ? true : undefined,
     takeback: search.takeback === true || search.takeback === 1 || search.takeback === '1' ? true : undefined,

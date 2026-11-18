@@ -1,0 +1,38 @@
+{
+  "oracle_id": "495e52e6-4c2b-4574-9474-eadbdcc8b4ac",
+  "name": "Farseek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Farseek",
+      "oracle_fingerprint": "476d8604489ab6ec86561e2c81f75db6",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Subtype": "Plains" },
+                        { "Subtype": "Island" },
+                        { "Subtype": "Swamp" },
+                        { "Subtype": "Mountain" }
+                      ]
+                    }
+                  ],
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

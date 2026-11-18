@@ -1,0 +1,27 @@
+{
+  "oracle_id": "1bd3e453-aa21-4ee6-95c2-d6d920ee8e7a",
+  "name": "Terramorphic Expanse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Terramorphic Expanse",
+      "oracle_fingerprint": "eb0023ce516ea01cbcfe40c185308321",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "76ae07ce-ca0c-4308-b8bd-d999eea0a65f",
+  "name": "Snakeform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Snakeform",
+      "oracle_fingerprint": "a0f13a0810503c296af310db8d859492",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    "LoseAbilities",
+                    { "SetCreatureTypes": ["Snake"] },
+                    { "SetColors": ["Green"] },
+                    { "SetPT": { "power": 1, "toughness": 1 } }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

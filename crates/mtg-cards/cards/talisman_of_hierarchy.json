@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b693c3de-2eaf-4850-b405-e79d00adefda",
+  "name": "Talisman of Hierarchy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talisman of Hierarchy",
+      "oracle_fingerprint": "94e9976598bec41a4ae081ff3d99a5c4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["White", "Black"] } } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

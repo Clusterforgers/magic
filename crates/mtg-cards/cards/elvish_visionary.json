@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c6a3a882-a127-4590-93d7-679ef4313efe",
+  "name": "Elvish Visionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Visionary",
+      "oracle_fingerprint": "954aa7dc40bb1cfe288d1c50e2bed416",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

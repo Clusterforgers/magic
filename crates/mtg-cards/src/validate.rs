@@ -3134,7 +3134,8 @@ impl<'a> Walker<'a> {
             TriggerPattern::DayNightChanges { .. }
             | TriggerPattern::DoorUnlocked { .. }
             | TriggerPattern::Visit {}
-            | TriggerPattern::Prize {} => {}
+            | TriggerPattern::Prize {}
+            | TriggerPattern::PhaseBegins {} => {}
             TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
             TriggerPattern::DealsToughnessDamage { source, .. } => {
                 self.at("source", |w| w.selector(source));
@@ -3328,6 +3329,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::RolledToVisit { .. }
                 | TriggerPattern::VisitedAttraction { .. }
                 | TriggerPattern::Prize {}
+                | TriggerPattern::PhaseBegins {}
                 | TriggerPattern::ClaimedPrize { .. }
                 | TriggerPattern::OpenedAttraction { .. }
                 | TriggerPattern::CompletedDungeon { .. }
@@ -6232,6 +6234,10 @@ impl Walker<'_> {
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));
             }
+            GameRule::FlipOrStayTapped { who, what } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.selector(what));
+            }),
             GameRule::R6400ChoosesBlocks { chooser, whose } => self.at(tag, |w| {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
@@ -6407,6 +6413,7 @@ impl Walker<'_> {
             | GameRule::RadiationGainsLife(who)
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CostColorsDrawn(who)
+            | GameRule::NoCommanderTax(who)
             | GameRule::CantDraw(who)
             | GameRule::DrawFromBottom(who)
             | GameRule::CantSearch(who)
@@ -6416,6 +6423,9 @@ impl Walker<'_> {
             | GameRule::ExtraVote(who)
             | GameRule::SkipExtraTurns(who)
             | GameRule::FlipTwoCoins(who)
+            | GameRule::FlipOrExiled(who)
+            | GameRule::FlipOrNoLifeGain(who)
+            | GameRule::SameNameLimit { who, .. }
             | GameRule::R6700FirstFlipsHeads(who)
             | GameRule::R6700VillainousAgain(who)
             | GameRule::ExtraDie(who)

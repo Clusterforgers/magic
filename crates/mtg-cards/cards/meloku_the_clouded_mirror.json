@@ -1,0 +1,36 @@
+{
+  "oracle_id": "3b96b8c3-b9c8-4712-a3b1-243a67cc013a",
+  "name": "Meloku the Clouded Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Meloku the Clouded Mirror",
+      "oracle_fingerprint": "3c988ec5c13566b80bb5c34618ab0ef0",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "ReturnToHand": { "filter": [{ "Type": "Land" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Illusion"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

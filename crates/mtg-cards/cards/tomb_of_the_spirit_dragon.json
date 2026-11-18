@@ -1,0 +1,33 @@
+{
+  "oracle_id": "22f6391e-2634-440f-af1b-9581d1bff818",
+  "name": "Tomb of the Spirit Dragon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tomb of the Spirit Dragon",
+      "oracle_fingerprint": "02fdda219aae41e9fc35baef09f48b5d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Count": [{ "Type": "Creature" }, "Colorless", { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

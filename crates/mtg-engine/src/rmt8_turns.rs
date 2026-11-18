@@ -13,6 +13,11 @@ impl GameState {
         self.rmt8_turns.get(&player).copied().unwrap_or(0)
     }
 
+    /// How many turns `player` has begun this game, the current one included.
+    pub fn turns_taken(&self, player: PlayerId) -> u32 {
+        self.rmt8_turns_taken(player)
+    }
+
     /// Counts a turn the player begins, for each teammate too when teams share their turns (CR 805.3), and keeps every
     /// player's life total as it begins.
     pub(crate) fn rmt8_count_turn(&mut self, player: PlayerId) {

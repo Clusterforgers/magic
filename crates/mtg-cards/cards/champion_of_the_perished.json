@@ -1,0 +1,24 @@
+{
+  "oracle_id": "f3654fbd-16a5-4953-84ac-534e8421032f",
+  "name": "Champion of the Perished",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of the Perished",
+      "oracle_fingerprint": "88e50c0ff56498b1097d0b27d185b468",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

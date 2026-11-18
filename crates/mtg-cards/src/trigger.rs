@@ -529,6 +529,9 @@ pub enum TriggerPattern {
     /// The prize ability of an Attraction ("Prize — "): its controller claims the prize of the source; `Triggering` is
     /// that player.
     Prize {},
+    /// A campaign phase begins ("when this phase begins"): the source is the emblem that the phase just put in its
+    /// controller's command zone; `Triggering` is that player.
+    PhaseBegins {},
     /// A player claims the prize of an Attraction ("whenever you claim the prize of an Attraction"); `Triggering` is
     /// that player.
     ClaimedPrize {

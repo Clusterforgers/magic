@@ -422,7 +422,7 @@ pub(crate) fn modified(
     let tax = if crate::r5500_tax_life::r5500_tax_life(state, spell).is_some() {
         0
     } else {
-        crate::commanders::tax_for(state, spell)
+        crate::commanders::tax_for(state, spell) + crate::satchel::tax_for(state, spell)
     };
     if tax > 0 {
         more = joined(

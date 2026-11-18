@@ -111,7 +111,7 @@ players: Array<PlayerId>,
 /**
  * The life total damage leaves them at least at.
  */
-floor: number, } } | { "RadiationGainsLife": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "CostColorsDrawn": Array<PlayerId> } | { "PlayersHave": { 
+floor: number, } } | { "RadiationGainsLife": Array<PlayerId> } | { "LifeTotalCantChange": Array<PlayerId> } | { "CostColorsDrawn": Array<PlayerId> } | { "NoCommanderTax": Array<PlayerId> } | { "PlayersHave": { 
 /**
  * The players.
  */
@@ -147,7 +147,23 @@ chooser: PlayerId,
 /**
  * Whose blocks.
  */
-whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "R6700FirstFlipsHeads": Array<PlayerId> } | { "R6700VillainousAgain": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "R6402ChangeRoll": { 
+whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "SameNameLimit": { 
+/**
+ * The players.
+ */
+players: Array<PlayerId>, 
+/**
+ * The most creatures of one name.
+ */
+most: number, } } | { "FlipOrExiled": Array<PlayerId> } | { "FlipOrStayTapped": { 
+/**
+ * The players.
+ */
+players: Array<PlayerId>, 
+/**
+ * The permanents held down on a loss.
+ */
+held: Array<ObjectRef>, } } | { "FlipOrNoLifeGain": Array<PlayerId> } | { "R6700FirstFlipsHeads": Array<PlayerId> } | { "R6700VillainousAgain": Array<PlayerId> } | { "ExtraDie": Array<PlayerId> } | { "R6402ChangeRoll": { 
 /**
  * Whose rolls.
  */

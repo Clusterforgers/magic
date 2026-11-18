@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f47e4c56-0a0b-422d-bf3d-7a20ee289f15",
+  "name": "Bartolomé del Presidio",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bartolomé del Presidio",
+      "oracle_fingerprint": "9fff0ecc2e4048dc2b0bbe115b63f05f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

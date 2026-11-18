@@ -1,0 +1,26 @@
+{
+  "oracle_id": "60bc63dc-ac9f-4a2f-aef5-c90d0aa31553",
+  "name": "Thrashing Brontodon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thrashing Brontodon",
+      "oracle_fingerprint": "767ca0588700594899b807518778f8f7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

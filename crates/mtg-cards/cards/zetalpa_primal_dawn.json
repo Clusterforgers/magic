@@ -1,0 +1,18 @@
+{
+  "oracle_id": "7da0e5de-3e4c-420a-8685-991206100b9d",
+  "name": "Zetalpa, Primal Dawn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zetalpa, Primal Dawn",
+      "oracle_fingerprint": "01f5e4c98e83b043ba5245b5f3044d76",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "DoubleStrike" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Indestructible" }
+      ]
+    }
+  ]
+}

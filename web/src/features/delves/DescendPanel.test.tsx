@@ -1,4 +1,4 @@
-// Goal: a cleared floor offers Bank the win or Descend as a party vote that sends the choice, marks the player's own vote, lists every ballot and says what a descent changes; the floor shows in the run header, the ladder and the intro, and the run summary counts the floors cleared.
+// Goal: a cleared floor offers Bank the win or Descend as a party vote that sends the choice, marks the player's own vote, lists every ballot and says what a descent changes; the floor shows in the run header and the ladder, and the intro shows the innate at its deeper level, and the run summary counts the floors cleared.
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { DelveAction, DelveFightView, DelveView, Run } from '@/protocol/generated'
@@ -95,21 +95,17 @@ describe('the floor on the page', () => {
     ).toBeInTheDocument()
   })
 
-  it('lists Intensify in the boss intro on a deeper floor', () => {
+  it('shows the innate at its deeper level in the boss intro on a deeper floor', () => {
     const fight: DelveFightView = {
       boss: 'Skrix',
       life: 60,
-      rules: [],
-      phases: [],
-      minions: [],
-      intensify: ['Intensify: the Enrage begins on the heroes’ turn 6 and the passive acts once more'],
+      innate: { name: 'Brood IV', text: 'Rats.', level: 4 },
     }
     const view = delveView(
       { boss: 'skrix_nest', fight },
       { status: { Fight: { game: null } }, at: 0, floor: 2 },
     )
     render(<BossIntro view={view} content={CONTENT} />)
-    const intensify = screen.getByRole('heading', { name: 'Floor 2: Intensified' }).parentElement!
-    expect(intensify).toHaveTextContent('the passive acts once more')
+    expect(screen.getByText('· Level IV')).toBeInTheDocument()
   })
 })

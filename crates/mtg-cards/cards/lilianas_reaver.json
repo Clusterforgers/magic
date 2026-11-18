@@ -1,0 +1,37 @@
+{
+  "oracle_id": "97332d4e-a55c-4e4f-9040-bf426a7c8e39",
+  "name": "Liliana's Reaver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Reaver",
+      "oracle_fingerprint": "494c91557f434448316300dfd5010b5d",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Discard": { "who": "Triggering" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

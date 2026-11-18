@@ -1,0 +1,27 @@
+{
+  "oracle_id": "80686908-abb5-4728-a5f6-71baca27f467",
+  "name": "Curious Altisaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curious Altisaur",
+      "oracle_fingerprint": "382c0dbf0d5734bcd175f1661d2a0d15",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

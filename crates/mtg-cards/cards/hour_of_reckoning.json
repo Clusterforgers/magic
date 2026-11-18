@@ -1,0 +1,21 @@
+{
+  "oracle_id": "3bc13640-03f8-4b19-b0a4-7e7cb5271c0c",
+  "name": "Hour of Reckoning",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hour of Reckoning",
+      "oracle_fingerprint": "faa769a853603a9fc99170709102ae3b",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "effects": [
+              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }, { "Not": "Token" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

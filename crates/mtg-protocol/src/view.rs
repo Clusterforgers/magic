@@ -513,29 +513,86 @@ const fn is_zero_level(level: &u8) -> bool {
     *level == 0
 }
 
-/// The phases and schemes of a boss seat (public).
+/// A boss seat's public parts: its innate, modifier, relics, phases by round and Satchel.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct BossView {
     /// The phases' names, in the order they begin.
     pub phases: Vec<String>,
     /// How many have begun.
     pub begun: u32,
-    /// The name of the boss's commander card, which it casts as its last phase begins.
+    /// Its innate at its level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
-    pub commander: Option<String>,
-    /// The name of the scheme in motion.
+    pub innate: Option<InnateView>,
+    /// The fight's encounter modifier.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
-    pub scheme: Option<String>,
-    /// The name of the Omen: the scheme set in motion next.
+    pub modifier: Option<BossPartView>,
+    /// Its phases by round, in the order they begin.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<RoundPhaseView>>", optional)]
+    pub round_phases: Vec<RoundPhaseView>,
+    /// The rounds still to end before its next phase by round begins: 1 while the current round is that phase's round;
+    /// left out once every phase has begun.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
-    pub omen: Option<String>,
-    /// How many of the boss's turns are still to begin when the Omen is set in motion: 1 as its next turn begins.
+    pub phase_in: Option<u32>,
+    /// The relics it brings, copies included.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<BossPartView>>", optional)]
+    pub relics: Vec<BossPartView>,
+    /// The cards in its Satchel now, each with its reusable mark and tax.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<BossSatchelView>>", optional)]
+    pub satchel: Vec<BossSatchelView>,
+}
+
+/// One effect of a reworked boss: a card's name and rules text (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct BossPartView {
+    /// The card's name.
+    pub name: String,
+    /// Its rules text.
+    pub text: String,
+}
+
+/// A reworked boss's innate at its level (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct InnateView {
+    /// The card's name with its level ("Brood III").
+    pub name: String,
+    /// Its rules text at that level.
+    pub text: String,
+    /// Its level, 1 to 5.
+    pub level: u8,
+}
+
+/// A reworked boss's phase, which begins at the end step of the last turn of its round (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct RoundPhaseView {
+    /// The phase card's name.
+    pub name: String,
+    /// Its rules text.
+    pub text: String,
+    /// The round it begins at the end of.
+    pub round: u32,
+    /// Whether it has begun.
+    pub begun: bool,
+}
+
+/// One card of a boss's Satchel (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct BossSatchelView {
+    /// The card's name.
+    pub name: String,
+    /// Whether it returns to the Satchel after each cast; otherwise it is cast once.
+    pub reusable: bool,
+    /// The generic mana a cast from the Satchel costs more now.
+    pub tax: u32,
+    /// The card in the command zone; left out before the game is made.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
-    pub omen_in: Option<u32>,
+    pub object: Option<ObjectId>,
 }
 
 /// A sticker sheet a seat plays with (public).

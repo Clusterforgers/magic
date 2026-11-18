@@ -1,0 +1,28 @@
+{
+  "oracle_id": "32116127-cf96-4a1b-8896-a1ebc087b597",
+  "name": "Llanowar Wastes",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Wastes",
+      "oracle_fingerprint": "cebf8df54301248b90690b78bd9055ab",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

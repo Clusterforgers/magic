@@ -1,0 +1,19 @@
+{
+  "oracle_id": "1cf51f50-24e4-48d0-95b3-1dad3ffa4bf5",
+  "name": "Golgari Signet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golgari Signet",
+      "oracle_fingerprint": "acb0a020e21025ccde4321fcb890b29f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

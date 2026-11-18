@@ -1,5 +1,7 @@
 //! Boss phases, a campaign rule: a seat set up with phases gets the next phase's emblem in its command zone, as a
-//! state-based action, once its life total is at or below that phase's threshold. Phases begin in order, one per pass.
+//! state-based action, once the phase's start is reached: a life threshold, or the end step of the last turn of a
+//! round (an extra turn does not advance the round). Phases begin in order, one per pass; the emblem's "when this
+//! phase begins" ability (`TriggerPattern::PhaseBegins`) then uses the stack once.
 
 use std::sync::Arc;
 
@@ -13,11 +15,34 @@ use crate::object::{GameObject, ObjectKind};
 use crate::state::GameState;
 use crate::zones::{Placement, Zone};
 
-/// One phase of a boss seat: the emblem it gets when its life total becomes `at_life` or less.
+/// When a boss phase begins.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum PhaseStart {
+    /// Once the seat's life total is this or less.
+    AtLife(i32),
+    /// At the end step of the last turn of this round (`Turn::round`), or of a later round's last turn.
+    AtRound(u32),
+}
+
+impl PhaseStart {
+    /// Whether the phase begins now for `player`.
+    fn reached(self, state: &GameState, player: &crate::player::Player) -> bool {
+        match self {
+            Self::AtLife(at) => player.life() > 0 && player.life() <= at,
+            Self::AtRound(round) => {
+                state.turn().step() == crate::turn::Step::End
+                    && state.turn().round() >= round
+                    && state.ends_round()
+            }
+        }
+    }
+}
+
+/// One phase of a boss seat: the emblem it gets once the phase begins.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct BossPhase {
-    /// The life total at or below which the phase begins.
-    pub at_life: i32,
+    /// When the phase begins.
+    pub begins: PhaseStart,
     /// The phase's emblem, made with [`emblem_definition`](crate::w6b_emblems::emblem_definition).
     pub emblem: Arc<CardDefinition>,
 }
@@ -35,7 +60,7 @@ pub(crate) fn begin(state: &GameState, taken: u64) -> Vec<Event> {
         let Some(phase) = player.phases.get(usize::from(player.phase)) else {
             continue;
         };
-        if player.life() > 0 && player.life() <= phase.at_life {
+        if phase.begins.reached(state, player) {
             events.push(Event::PhaseBegan {
                 player: player.id(),
                 emblem: ObjectId(next),

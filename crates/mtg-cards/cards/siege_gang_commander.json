@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ddc7f59a-bbb1-4ba1-82c8-6813fd191940",
+  "name": "Siege-Gang Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siege-Gang Commander",
+      "oracle_fingerprint": "e63c5b1dcbb47804f6bbcf0d3c6f811a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, { "Sacrifice": { "filter": [{ "Subtype": "Goblin" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

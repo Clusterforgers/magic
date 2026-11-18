@@ -1,0 +1,20 @@
+{
+  "oracle_id": "f27d52e6-aab9-4f95-ae46-33d1173bf4fe",
+  "name": "Submerged Boneyard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Submerged Boneyard",
+      "oracle_fingerprint": "adcef9247851409ed59f22cffa7ed8fb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

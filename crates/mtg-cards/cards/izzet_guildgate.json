@@ -1,0 +1,20 @@
+{
+  "oracle_id": "bf75a3d1-f184-4b48-a913-21caee1db084",
+  "name": "Izzet Guildgate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Izzet Guildgate",
+      "oracle_fingerprint": "6a7100ee9643d1f284ff8f7ed45e0c47",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

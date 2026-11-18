@@ -1,0 +1,39 @@
+{
+  "oracle_id": "2a86b70b-34ca-45df-8aa1-c3fb2da72dc3",
+  "name": "Ranging Raptors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ranging Raptors",
+      "oracle_fingerprint": "0085a86b6599d5d869ff1861bea06ed2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

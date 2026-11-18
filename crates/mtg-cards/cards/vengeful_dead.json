@@ -1,0 +1,30 @@
+{
+  "oracle_id": "277c8ee9-0157-4e45-96ad-1b67716955ee",
+  "name": "Vengeful Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeful Dead",
+      "oracle_fingerprint": "0c84fcf68e4ef3b1ac86769795d2410a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Zombie" }, "Other"],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

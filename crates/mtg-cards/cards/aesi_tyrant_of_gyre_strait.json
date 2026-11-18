@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6511f317-bd38-46d0-b800-7125a3f420da",
+  "name": "Aesi, Tyrant of Gyre Strait",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aesi, Tyrant of Gyre Strait",
+      "oracle_fingerprint": "1900a75e830f362230d9d18f0ab062e0",
+      "abilities": [
+        { "Rule": { "rule": { "AdditionalLandPlays": {} } } },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

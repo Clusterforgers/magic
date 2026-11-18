@@ -1,0 +1,21 @@
+{
+  "oracle_id": "326ba371-124c-4949-a048-3a0c8962e567",
+  "name": "Barren Moor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Barren Moor",
+      "oracle_fingerprint": "06f7c6dd8381b4f07fcaed5b58930969",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{B}" } }
+      ]
+    }
+  ]
+}

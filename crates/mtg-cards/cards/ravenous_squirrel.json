@@ -1,0 +1,37 @@
+{
+  "oracle_id": "8fb48d65-406b-4231-83ea-9cf3bb8dff76",
+  "name": "Ravenous Squirrel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Squirrel",
+      "oracle_fingerprint": "9b86bb8f6d15428b19c9ef6fa2cdef53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Sacrificed": {
+                "what": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{1}{B}{G}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

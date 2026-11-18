@@ -1,0 +1,45 @@
+{
+  "oracle_id": "c5b0d98b-9743-488e-a3be-07043d6ad78a",
+  "name": "Vulshok Factory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vulshok Factory",
+      "oracle_fingerprint": "00fcfdd403c2f223dfb8b4eaf4781a1e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Red"] } } },
+              { "PutCounters": { "on": "This", "counter": "charge" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{R}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Sized": {
+                      "size": { "Counters": { "on": "This", "counter": "charge" } },
+                      "token": {
+                        "name": "Golem",
+                        "types": ["Artifact", "Creature"],
+                        "subtypes": ["Golem"],
+                        "abilities": [{ "Keyword": "Haste" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
