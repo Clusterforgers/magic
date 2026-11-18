@@ -1,9 +1,18 @@
 /**
  * The attachments scene of `/dev/table?equip=1`: five Auras and Equipment on one of the viewer's creatures (an umbra
  * among them), one Equipment on another, an Equipment on no host, an opponent's Aura on the viewer's creature, the
- * viewer's Aura on an opponent's creature and a Curse on an opponent.
+ * viewer's Aura on an opponent's creature and a Curse on an opponent. Each host lists what changes it
+ * (`ObjectView.modifiers`); the main host also anthems added together, a pump until end of turn and counters.
  */
-import type { Event, GivesView, ObjectId, ObjectView, PlayerId, StateView } from '@/protocol/generated'
+import type {
+  Event,
+  GivesView,
+  ModifierView,
+  ObjectId,
+  ObjectView,
+  PlayerId,
+  StateView,
+} from '@/protocol/generated'
 import { rowOf } from '../cardModel'
 import type { Fixture } from './fixture'
 import type { PlayScene } from './playScenes'
@@ -48,6 +57,31 @@ const pieceView = (id: ObjectId, piece: Piece): ObjectView => ({
   ...(piece.player === undefined ? {} : { attached_player: piece.player }),
   ...(piece.gives === undefined ? {} : { gives: piece.gives }),
 })
+
+/** What an attachment gives its host as the server words it in `ObjectView.modifiers`. */
+const givenModifier = (piece: ObjectView): ModifierView[] => {
+  const gives = piece.gives
+  if (gives === undefined) return []
+  const sign = (value: number): string => (value < 0 ? `${value}` : `+${value}`)
+  const pt = (gives.power ?? 0) !== 0 || (gives.toughness ?? 0) !== 0
+  const parts = [
+    ...(pt ? [`${sign(gives.power ?? 0)}/${sign(gives.toughness ?? 0)}`] : []),
+    ...(gives.keywords ?? []),
+    // Umbra armor is the Aura's own keyword, which changes nothing on the host.
+    ...(gives.rules ?? []).flatMap((rule) => (rule === 'UmbraArmor' ? [] : [RULE_WORDS[rule] ?? rule])),
+  ]
+  return [{ effect: parts.join(', '), source: piece.name, sources: [piece.id], count: 1 }]
+}
+
+const RULE_WORDS: Partial<Record<string, string>> = { CantAttack: "Can't attack", CantBlock: "Can't block" }
+
+/** What else changes the scene's main host: two anthems added together, a pump until end of turn and counters. */
+const MAIN_EXTRA: ModifierView[] = [
+  { effect: '+2/+2', source: 'Glorious Anthem', count: 2 },
+  { effect: '+3/+3, Trample', source: 'Giant Growth', count: 1, duration: 'until end of turn' },
+  { effect: "Can't block", source: 'A face-down card', count: 1, duration: 'until your next turn' },
+  { effect: '+3/+3', source: '+1/+1 counter', count: 3 },
+]
 
 const creaturesOf = (fixture: Fixture, seat: PlayerId): ObjectView[] =>
   fixture.view.objects.filter(
@@ -146,9 +180,12 @@ export function withEquip(fixture: Fixture): Fixture {
   }
   const hosts = fixture.view.objects.map((object) => {
     const extra = attachments.get(object.id)
-    return extra === undefined
-      ? object
-      : { ...object, attachments: [...(object.attachments ?? []), ...extra] }
+    if (extra === undefined) return object
+    const modifiers = [
+      ...added.filter((piece) => extra.includes(piece.id)).flatMap(givenModifier),
+      ...(object.id === main?.id ? MAIN_EXTRA : []),
+    ]
+    return { ...object, attachments: [...(object.attachments ?? []), ...extra], modifiers }
   })
   const battlefield = [...(fixture.view.battlefield.cards ?? []), ...added.map((object) => object.id)]
   return {

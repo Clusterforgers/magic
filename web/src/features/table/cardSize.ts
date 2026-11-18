@@ -94,6 +94,9 @@ export const PIP_TO: Record<PipTone, string> = {
 /** The mark of the card the Commands panel acts on: a dashed outline in the chosen colour beside the solid rings of a prompt's marks. */
 export const PICKED = 'outline-3 outline-dashed outline-offset-4 outline-selected'
 
+/** The mark of a card a line of the preview's "Modified by" list points at: a solid outline in the primary colour around the card. */
+export const SOURCE_LIT = 'outline-3 outline-offset-4 outline-primary'
+
 /** A tap lays the face down and an untap stands it up in 150 ms where motion is welcome; at once otherwise. */
 export const TAP_MOTION = 'motion-safe:transition-[height] motion-safe:duration-150 motion-safe:ease-out'
 
