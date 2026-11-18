@@ -68,6 +68,15 @@ fn drains_of(id: &str) -> Vec<Drain> {
     out
 }
 
+/// The themes with a boss of the older model (passive, Enrage, schemes); a theme of reworked bosses only has none.
+fn older_themes() -> impl Iterator<Item = &'static Theme> {
+    content()
+        .unwrap()
+        .themes
+        .iter()
+        .filter(|t| t.bosses.iter().any(|b| b.innate.is_none()))
+}
+
 /// Every boss-side card a fight against `boss` can bring: its rules at every party size and Heat, its relic and phases, the
 /// theme's schemes and modifiers and the minions' rules.
 fn boss_side_cards(theme: &Theme, boss: &Boss) -> BTreeSet<String> {
@@ -91,7 +100,7 @@ fn boss_side_cards(theme: &Theme, boss: &Boss) -> BTreeSet<String> {
 #[test]
 fn a_boss_has_at_most_one_life_drain_with_no_way_out_and_words_the_way_out_of_the_others() {
     let content = content().unwrap();
-    for theme in &content.themes {
+    for theme in older_themes() {
         for boss in theme.bosses.iter().chain(&theme.upgraded) {
             let mut unavoidable = Vec::new();
             for id in boss_side_cards(theme, boss) {
@@ -130,7 +139,7 @@ fn the_drain_reader_classifies_each_life_loss(#[case] id: &str, #[case] expected
 #[test]
 fn every_boss_has_a_passive_an_enrage_two_phases_and_a_relic_of_its_own() {
     let content = content().unwrap();
-    for theme in &content.themes {
+    for theme in older_themes() {
         let mut seen = BTreeSet::new();
         for boss in &theme.bosses {
             assert_eq!(boss.rules.len(), 1, "{}: one passive", boss.id);
@@ -188,8 +197,7 @@ fn hunting_party_spares_commanders() {
 
 #[test]
 fn the_scheme_deck_outlasts_a_fight_at_one_scheme_every_other_boss_turn() {
-    let content = content().unwrap();
-    for theme in &content.themes {
+    for theme in older_themes() {
         assert_eq!(theme.scheme_every, 2, "{}", theme.id);
         let distinct: BTreeSet<_> = theme.schemes.iter().collect();
         assert_eq!(
