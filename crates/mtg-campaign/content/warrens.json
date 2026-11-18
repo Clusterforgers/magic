@@ -1930,6 +1930,134 @@
    }
   },
   {
+   "id": "ozrith_observatory",
+   "name": "Ozrith, Archmage of the Tempest",
+   "since": 6,
+   "colors": "UR",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["ozrith"],
+   "enrage": "the_storm_breaks",
+   "relic": "stormglass_orrery",
+   "phases": [["the_gathering_storm", 66], ["eye_of_the_storm", 33]],
+   "line": "Every spell is a spark, and I have been gathering sparks for a thousand years.",
+   "commander": "Niv-Mizzet, Parun",
+   "art": {"card": "Archmage Emeritus", "oracle_id": "8305d576-21d8-4ce7-8eda-a7cd9793aca5"},
+   "brackets": {
+    "base": [
+     ["Island", 9], ["Mountain", 8],
+     ["Soul-Scar Mage", 2], ["Heartfire Immolator", 2], ["Coruscation Mage", 2], ["Umara Mystic", 2],
+     ["Cyclops Superconductor", 2], ["Windrider Wizard", 2], ["Veyran, Voice of Duality", 1], ["Rockslide Sorcerer", 1],
+     ["Expedition Diviner", 1], ["Lightning Bolt", 2], ["Izzet Charm", 2], ["Arc Trail", 1], ["Electrolyze", 1],
+     ["Opt", 1], ["Consider", 1]
+    ],
+    "steps": [
+     {"add": [["Island", 2], ["Mountain", 2], ["Archmage Emeritus", 1], ["Gandalf, Spark Starter", 1], ["Prismari Command", 1], ["Ral's Outburst", 1], ["Fire // Ice", 1], ["Deekah, Fractal Theorist", 1]]},
+     {"add": [["Island", 2], ["Mountain", 2], ["Aven Fateshaper", 1], ["Prismari, the Inspiration", 1], ["Sower of Temptation", 1], ["Lightning Bolt", 1], ["Expressive Iteration", 1], ["Electrolyze", 1]]},
+     {"cut": [["Coruscation Mage", 2], ["Expedition Diviner", 1]], "add": [["Lightning Bolt", 1], ["Sower of Temptation", 1], ["Archmage Emeritus", 1]]},
+     {"cut": [["Consider", 1], ["Opt", 1], ["Windrider Wizard", 1]], "add": [["Gandalf the Grey", 1], ["Umara Mystic", 1], ["Izzet Charm", 1]]}
+    ]
+   }
+  },
+  {
+   "id": "aurenne_bastion",
+   "name": "Aurenne, the Sunforged Marshal",
+   "since": 6,
+   "colors": "WR",
+   "brain": "Hard",
+   "life": 44,
+   "life_per_hero": 48,
+   "hand": 10,
+   "rules": ["aurenne"],
+   "enrage": "the_last_charge",
+   "relic": "banner_of_the_dawn_legion",
+   "phases": [["the_banners_rise", 66], ["the_dawn_charge", 33]],
+   "line": "Form ranks! The dawn waits for no one, and neither do my knights.",
+   "commander": "Adriana, Captain of the Guard",
+   "art": {"card": "Adeline, Resplendent Cathar", "oracle_id": "38515f89-348b-4cf3-b7bd-1f6fe4ce2fba"},
+   "brackets": {
+    "base": [
+     ["Plains", 9], ["Mountain", 8],
+     ["Fervent Champion", 2], ["Knight of the White Orchid", 2], ["Sigiled Paladin", 2], ["Heartflame Duelist", 2],
+     ["Fiendslayer Paladin", 2], ["Sunrise Cavalier", 2], ["Fervent Cathar", 2], ["Inspiring Paladin", 1],
+     ["Hero of Oxid Ridge", 1], ["Embereth Paladin", 1], ["Danitha, Benalia's Hope", 1], ["Lightwielder Paladin", 1],
+     ["Lightning Bolt", 2], ["Justice Strike", 1], ["Charge the Sanctum", 1]
+    ],
+    "steps": [
+     {"add": [["Plains", 2], ["Mountain", 2], ["Adeline, Resplendent Cathar", 1], ["Hero of Bladehold", 1], ["Silverwing Squadron", 1], ["Dawnstrike Vanguard", 1], ["Cavalier of Dawn", 1], ["Márton Stromgald", 1]]},
+     {"add": [["Plains", 2], ["Mountain", 2], ["Gisela, Blade of Goldnight", 1], ["Parhelion Patrol", 1], ["Gryffwing Cavalry", 1], ["Hero of Bladehold", 1], ["Embereth Skyblazer", 1], ["Mounted Dreadknight", 1]]},
+     {"cut": [["Knight of the White Orchid", 2], ["Inspiring Paladin", 1]], "add": [["Adeline, Resplendent Cathar", 1], ["Silverwing Squadron", 1], ["Danitha, Benalia's Hope", 1]]},
+     {"cut": [["Fervent Cathar", 2], ["Embereth Paladin", 1]], "add": [["Hero of Oxid Ridge", 1], ["Lightwielder Paladin", 1], ["Cavalier of Dawn", 1]]}
+    ]
+   }
+  },
+  {
+   "id": "vorthana_hive",
+   "name": "Vorthana, Queen of the Rot Hive",
+   "since": 6,
+   "colors": "BG",
+   "brain": "Hard",
+   "life": 32,
+   "life_per_hero": 36,
+   "hand": 9,
+   "rules": ["vorthana"],
+   "enrage": "the_swarm_wakes",
+   "relic": "chitin_censer",
+   "phases": [["the_hive_stirs", 66], ["the_rot_blooms", 33]],
+   "line": "The hive remembers every one of its dead, and sends them back hungry.",
+   "commander": "Aatchik, Emerald Radian",
+   "art": {"card": "Gleancrawler", "oracle_id": "bb7389fa-ab01-4ca2-bd18-03cf5b4cedf6"},
+   "brackets": {
+    "base": [
+     ["Swamp", 9], ["Forest", 8],
+     ["Phyrexian Battleflies", 2], ["Seedship Broodtender", 2], ["Drudge Beetle", 2], ["Great Fierce Bee", 2],
+     ["Stinging Cave Crawler", 2], ["Voracious Brood", 2], ["Insectoid Exterminator", 2], ["Carrion Grub", 1],
+     ["Lord Dregg, Insect Invader", 1], ["Fumulus, the Infestation", 1], ["Heartstabber Mosquito", 2],
+     ["Decimator Beetle", 1], ["Moldgraf Millipede", 1], ["Extinguish the Light", 1], ["Heartless Act", 1]
+    ],
+    "steps": [
+     {"add": [["Swamp", 2], ["Forest", 2], ["Gleancrawler", 1], ["Zanikev Locust", 1], ["Chitin Gravestalker", 1], ["Rotfeaster Maggot", 1], ["Necrosquito", 1], ["Iridescent Hornbeetle", 1]]},
+     {"add": [["Swamp", 2], ["Forest", 2], ["Moldgraf Monstrosity", 1], ["Deadbridge Goliath", 1], ["Stinging Cave Crawler", 1], ["Swarm, Being of Bees", 1], ["Mortipede", 1], ["Necrosquito", 1]]},
+     {"cut": [["Phyrexian Battleflies", 2], ["Drudge Beetle", 1]], "add": [["Heartstabber Mosquito", 1], ["Moldgraf Monstrosity", 1], ["Gleancrawler", 1]]},
+     {"cut": [["Drudge Beetle", 1], ["Carrion Grub", 1], ["Seedship Broodtender", 1]], "add": [["Zanikev Locust", 1], ["Deadbridge Goliath", 1], ["Great Fierce Bee", 1]]}
+    ]
+   }
+  },
+  {
+   "id": "sivanne_mire",
+   "name": "Sivanne, the Coiled Tide",
+   "since": 6,
+   "colors": "UG",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 10,
+   "rules": ["sivanne"],
+   "enrage": "the_tide_swallows",
+   "relic": "shed_scale_amulet",
+   "phases": [["the_coils_tighten", 66], ["the_great_shedding", 33]],
+   "line": "Every coil I shed grows back larger. How many skins have you left?",
+   "commander": "Koma, World-Eater",
+   "art": {"card": "Kaseto, Orochi Archmage", "oracle_id": "198b6c6f-a480-4672-9d87-b0cb5d8ed1c0"},
+   "brackets": {
+    "base": [
+     ["Forest", 9], ["Island", 8],
+     ["Wasteland Viper", 2], ["Coiling Oracle", 2], ["Ice-Fang Coatl", 2], ["Tower Winder", 2], ["Orochi Ranger", 2],
+     ["Kaseto, Orochi Archmage", 1], ["Ohran Viper", 2], ["Champion of Wits", 1], ["Lonis, Genetics Expert", 1],
+     ["Patagia Viper", 2], ["Spire Winder", 1], ["Kashi-Tribe Reaver", 1], ["Constrictor Sage", 1],
+     ["Imoti, Celebrant of Bounty", 1], ["Quandrix Command", 1], ["Eureka Moment", 1]
+    ],
+    "steps": [
+     {"add": [["Forest", 2], ["Island", 2], ["Nessian Asp", 1], ["Broodbirth Viper", 1], ["Kashi-Tribe Warriors", 1], ["Matsu-Tribe Birdstalker", 1], ["Orochi Eggwatcher // Shidako, Broodmistress", 1], ["Gurmag Drowner", 1]]},
+     {"add": [["Forest", 2], ["Island", 2], ["Junk Winder", 1], ["Nessian Asp", 1], ["Patagia Viper", 1], ["Ice-Fang Coatl", 1], ["Ohran Viper", 1], ["Ramunap Hydra", 1]]},
+     {"cut": [["Orochi Ranger", 2], ["Champion of Wits", 1]], "add": [["Nessian Asp", 1], ["Broodbirth Viper", 1], ["Kashi-Tribe Warriors", 1]]},
+     {"cut": [["Tower Winder", 1], ["Wasteland Viper", 1], ["Spire Winder", 1]], "add": [["Matsu-Tribe Birdstalker", 1], ["Junk Winder", 1], ["Coiling Oracle", 1]]}
+    ]
+   }
+  },
+  {
    "id": "unmaker_void",
    "name": "The Unmaker",
    "uber": true,

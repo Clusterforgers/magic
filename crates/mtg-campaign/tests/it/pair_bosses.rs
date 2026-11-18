@@ -1,6 +1,8 @@
-//! Goal: the passives and Enrages of the two-colour bosses of generation 5 do what their words say in real games:
+//! Goal: the passives and Enrages of the two-colour bosses of generations 5 and 6 do what their words say in real games:
 //! Hollowmere's dead return as Spirits, Korrath's creatures grow when hurt, Sahrra's pride grows when a Cat falls,
-//! Valdric's Vampires feed on the heroes' dead, and each Enrage waits for the heroes' seventh turn and then grows.
+//! Valdric's Vampires feed on the heroes' dead, Ozrith's spells call up Elementals, Aurenne's attackers strike harder,
+//! Vorthana's dead return to her hand, Sivanne's creatures enter larger, and each Enrage waits for the heroes' seventh
+//! turn and then grows.
 use std::sync::Arc;
 
 use mtg_campaign::content;
@@ -132,6 +134,10 @@ fn valdrics_vampires_feed_on_the_heroes_dead(
 #[case::the_pride_grows("the_pride_hunts", "Cat", 16, 3)]
 #[case::the_feast_waits("the_crimson_feast", "Vampire", 12, 0)]
 #[case::the_feast_grows("the_crimson_feast", "Vampire", 16, 3)]
+#[case::the_charge_waits("the_last_charge", "Knight", 12, 0)]
+#[case::the_charge_grows("the_last_charge", "Knight", 16, 3)]
+#[case::the_swarm_sleeps("the_swarm_wakes", "Insect", 12, 0)]
+#[case::the_swarm_grows("the_swarm_wakes", "Insect", 16, 3)]
 #[case::no_dream_is_stolen_yet("stolen_dreams", "Fallen", 12, 0)]
 #[case::one_dream_is_stolen("stolen_dreams", "Fallen", 14, 1)]
 #[case::the_graveyard_runs_dry("stolen_dreams", "Fallen", 16, 3)]
@@ -144,5 +150,120 @@ fn a_new_enrage_waits_for_the_heroes_seventh_turn_then_grows(
     let mut driver = Driver::from_scenario(table(&[id], &[]))?;
     driver.idle_until(turn, Step::Main1)?;
     assert_eq!(count(&driver, BOSS, name), expected);
+    Ok(())
+}
+
+#[test]
+fn aurennes_attackers_strike_harder() -> Result<(), ScriptError> {
+    let scenario = table(&["aurenne"], &["Fervent Cathar"]).at(2, BOSS, Step::Main1);
+    let mut driver = Driver::from_scenario(scenario)?;
+    assert_eq!(power(&driver, "Brute"), Some(3));
+    driver.idle_until(2, Step::DeclareAttackers)?;
+    driver.attack(&[("Brute", HERO)])?;
+    assert_eq!(power(&driver, "Brute"), Some(4));
+    assert_eq!(power(&driver, "Fervent Cathar"), Some(2), "only attackers");
+    assert_eq!(power(&driver, "Bear"), Some(2));
+    Ok(())
+}
+
+#[test]
+fn vorthanas_dead_return_to_her_hand() -> Result<(), ScriptError> {
+    let scenario = table(&["vorthana"], &[])
+        .graveyard(BOSS, [free_creature("Drone", 1, 1), mountain()])
+        .at(2, BOSS, Step::Main1);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.idle_until(3, Step::Main1)?;
+    let state = driver.state();
+    let named = |zone: Zone, name: &str| {
+        state
+            .zone(zone)
+            .iter()
+            .filter_map(|id| state.object(*id))
+            .filter(|o| o.card().name == name)
+            .count()
+    };
+    let boss = PlayerId::from_index(BOSS);
+    assert_eq!(named(Zone::Hand(boss), "Drone"), 1);
+    assert_eq!(named(Zone::Graveyard(boss), "Drone"), 0);
+    assert_eq!(
+        named(Zone::Graveyard(boss), "Mountain"),
+        1,
+        "only creatures"
+    );
+    Ok(())
+}
+
+#[test]
+fn sivannes_creatures_enter_larger() -> Result<(), ScriptError> {
+    let scenario = table(&["sivanne"], &[])
+        .hand(BOSS, [free_creature("Hatchling", 1, 1)])
+        .at(2, BOSS, Step::Main1);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.cast("Hatchling")?;
+    for _ in 0..6 {
+        if driver.state().stack().is_empty() {
+            break;
+        }
+        driver.pass()?;
+    }
+    assert_eq!(power(&driver, "Hatchling"), Some(2));
+    assert_eq!(power(&driver, "Brute"), Some(3), "only as they enter");
+    Ok(())
+}
+
+// The tide returns one hero creature at the boss's 7th upkeep (game turn 14): the Bear, the hero's only creature.
+#[rstest]
+#[case::the_tide_waits(12, 1, 0)]
+#[case::the_tide_swallows(14, 0, 1)]
+fn a_tide_enrage_waits_for_the_heroes_seventh_turn_then_bounces(
+    #[case] turn: u32,
+    #[case] on_battlefield: usize,
+    #[case] in_hand: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(table(&["the_tide_swallows"], &[]))?;
+    driver.idle_until(turn, Step::Main1)?;
+    assert_eq!(count(&driver, HERO, "Bear"), on_battlefield);
+    let state = driver.state();
+    let held = state
+        .zone(Zone::Hand(PlayerId::from_index(HERO)))
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .filter(|o| o.card().name == "Bear")
+        .count();
+    assert_eq!(held, in_hand);
+    assert_eq!(
+        count(&driver, BOSS, "Brute"),
+        1,
+        "only the heroes' creatures"
+    );
+    Ok(())
+}
+
+#[test]
+fn ozriths_spells_call_up_elementals() -> Result<(), ScriptError> {
+    let driver = burn_at(&["ozrith"], &[], "Bear", 1)?;
+    assert_eq!(count(&driver, BOSS, "Elemental"), 1);
+    assert_eq!(count(&driver, HERO, "Elemental"), 0);
+    Ok(())
+}
+
+// The storm deals 1 damage at the boss's 7th upkeep (game turn 14) and 3 at its 8th (turn 16), so the Bear (2/2) falls
+// only then.
+#[rstest]
+#[case::the_storm_waits(12, 1)]
+#[case::the_storm_grazes(14, 1)]
+#[case::the_storm_grows(16, 0)]
+fn a_storm_enrage_waits_for_the_heroes_seventh_turn_then_grows(
+    #[case] turn: u32,
+    #[case] bears: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(table(&["the_storm_breaks"], &[]))?;
+    driver.idle_until(turn, Step::Main1)?;
+    assert_eq!(count(&driver, HERO, "Bear"), bears);
+    assert_eq!(
+        count(&driver, BOSS, "Brute"),
+        1,
+        "only the heroes' creatures"
+    );
     Ok(())
 }

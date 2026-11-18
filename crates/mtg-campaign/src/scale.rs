@@ -121,6 +121,9 @@ pub const BRACKETS_FROM: u32 = 4;
 /// The content generation from which the two-colour bosses after Vex, the later upgraded forms and the uber boss join the
 /// ladder; a run of an earlier generation never meets them, so its ladder stays as it was drawn.
 pub const ROSTER_FROM: u32 = 5;
+/// The content generation from which the last two-colour bosses (UR, WR, BG, UG) join the ladder; a run of an earlier
+/// generation never meets them.
+pub const PAIRS_FROM: u32 = 6;
 /// The lowest Heat at which the uber boss may stand as the final boss.
 pub const UBER_HEAT: u8 = 2;
 /// The chance, one in this many, that a ladder at [`UBER_HEAT`] or above meets the uber boss as its final boss.
