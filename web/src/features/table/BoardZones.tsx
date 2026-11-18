@@ -35,7 +35,9 @@ export function BoardZones({ seat, owner }: { seat: PlayerId; owner: string }) {
       {exile.length > 0 ? <ZoneButton zone="exile" owner={owner} ids={exile} density="line" /> : null}
       {/* Your own commanders are cast from the hand dock; a pod-less board of another seat lists them here. */}
       {listed ? <ZoneButton zone="command" owner={owner} ids={commanders} density="line" /> : null}
-      {satchel.length > 0 ? <ZoneButton zone="satchel" owner={owner} ids={satchel} density="line" /> : null}
+      {satchel.length > 0 ? (
+        <ZoneButton zone="satchel" owner={owner} ids={satchel} marks={player.boss?.satchel} density="line" />
+      ) : null}
     </div>
   )
 }

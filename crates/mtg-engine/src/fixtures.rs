@@ -47,6 +47,7 @@ pub(crate) fn setup(
             satchel: Vec::new(),
             satchel_reusable: Vec::new(),
             opening_lands: None,
+            boss_sheet: None,
             held: Vec::new(),
             spirit: None,
             phases: Vec::new(),

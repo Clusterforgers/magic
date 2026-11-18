@@ -317,6 +317,9 @@ impl FightPlan {
             && let Some(boss) = setup.players.get_mut(self.heroes.len())
         {
             boss.opening_lands = Some(mtg_engine::opening_lands::OpeningLands::BOSS);
+            if let Some(rework) = &self.boss.rework {
+                boss.boss_sheet = Some(std::sync::Arc::new(rework.sheet(content)?));
+            }
         }
         setup.validate_decks = false;
         Ok(setup)

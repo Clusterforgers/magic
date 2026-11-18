@@ -1,7 +1,8 @@
 //! Goal: the reworked boss follows the design's tables: the innate level and the relic count by depth and Heat, the
 //! life by party size, the rare and mythic odds, all never falling as depth or Heat grow; innates load as five level
 //! cards; an encounter modifier is never drawn for a boss it must not meet and a retried fight keeps it; a boss never
-//! brings a relic that names teammates; and a fight plan of the rework generation holds exactly the reworked parts.
+//! brings a relic that names teammates; a fight plan of the rework generation holds exactly the reworked parts; and the
+//! boss seat carries the sheet that names them, its innate at its level.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS};
 use mtg_campaign::content::{Content, Rarity};
@@ -253,4 +254,69 @@ fn a_reworked_boss_seat_takes_the_opening_land_rule_and_its_emblems(#[values(1, 
             .all(|p| p.opening_lands.is_none())
     );
     assert_eq!(boss.emblems.len(), plan.boss.emblems().len());
+}
+
+#[rstest]
+#[case::level_one("brood_i", 1, "Brood I", 1)]
+#[case::level_three("brood_iii", 3, "Brood III", 4)]
+#[case::level_five("brood_v", 5, "Brood V", 9)]
+fn the_sheet_names_the_innate_at_its_level(
+    #[case] id: &str,
+    #[case] level: u8,
+    #[case] name: &str,
+    #[case] n: u32,
+) {
+    let content = Content::parse(&[&innate("[1, 2, 4, 6, 9]")], &[], "[]").unwrap();
+    let rework = mtg_campaign::fight::Reworked {
+        innate: Some(id.into()),
+        ..Default::default()
+    };
+    let sheet = rework.sheet(&content).unwrap();
+    assert_eq!(sheet.level, level);
+    let innate = sheet.innate.unwrap();
+    assert_eq!(innate.name, name);
+    assert_eq!(
+        innate.text,
+        format!("At the beginning of your upkeep, you gain {n} life.")
+    );
+    assert!(sheet.modifier.is_none() && sheet.relics.is_empty() && sheet.phases.is_empty());
+    let unknown = mtg_campaign::fight::Reworked {
+        relics: vec!["nowhere".into()],
+        ..Default::default()
+    };
+    assert!(unknown.sheet(&content).is_err());
+}
+
+#[rstest]
+fn a_reworked_boss_seat_carries_its_sheet(
+    #[values(1, 2, 4)] heroes: usize,
+    #[values(0, 2)] heat: u8,
+) {
+    use mtg_engine::GameSetup;
+    use mtg_engine::format::Commander;
+    use std::sync::Arc;
+    let content = content().unwrap();
+    let plan = reworked_run(heroes, heat)
+        .fight_plan(content)
+        .unwrap()
+        .unwrap();
+    let rework = plan.boss.rework.as_deref().unwrap();
+    let land = || mtg_testkit::cards::land(mtg_core::color::Color::Green);
+    let decks = (0..=heroes)
+        .map(|_| (0..40).map(|_| land()).collect())
+        .collect();
+    let setup = plan
+        .apply(content, GameSetup::new(Arc::new(Commander), 4, decks))
+        .unwrap();
+    let sheet = setup.players[heroes].boss_sheet.as_deref().unwrap();
+    assert_eq!(*sheet, rework.sheet(content).unwrap());
+    let modifier = content.card(rework.modifier.as_deref().unwrap()).unwrap();
+    assert_eq!(sheet.modifier.as_ref().unwrap().name, modifier.name);
+    assert_eq!(sheet.relics.len(), rework.relics.len());
+    assert_eq!(sheet.phases.len(), rework.round_phases.len());
+    assert!(
+        setup.players[..heroes]
+            .iter()
+            .all(|p| p.boss_sheet.is_none())
+    );
 }

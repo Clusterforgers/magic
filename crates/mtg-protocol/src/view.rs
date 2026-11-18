@@ -536,6 +536,79 @@ pub struct BossView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub omen_in: Option<u32>,
+    /// A reworked boss's innate at its level.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub innate: Option<InnateView>,
+    /// The fight's encounter modifier.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub modifier: Option<BossPartView>,
+    /// A reworked boss's phases by round, in the order they begin; left out for a boss whose phases go by life.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<RoundPhaseView>>", optional)]
+    pub round_phases: Vec<RoundPhaseView>,
+    /// The rounds still to end before its next phase by round begins: 1 while the current round is that phase's round;
+    /// left out once every phase has begun.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub phase_in: Option<u32>,
+    /// The relics a reworked boss brings, copies included.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<BossPartView>>", optional)]
+    pub relics: Vec<BossPartView>,
+    /// The cards in its Satchel now, each with its reusable mark and tax.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<BossSatchelView>>", optional)]
+    pub satchel: Vec<BossSatchelView>,
+}
+
+/// One effect of a reworked boss: a card's name and rules text (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct BossPartView {
+    /// The card's name.
+    pub name: String,
+    /// Its rules text.
+    pub text: String,
+}
+
+/// A reworked boss's innate at its level (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct InnateView {
+    /// The card's name with its level ("Brood III").
+    pub name: String,
+    /// Its rules text at that level.
+    pub text: String,
+    /// Its level, 1 to 5.
+    pub level: u8,
+}
+
+/// A reworked boss's phase, which begins at the end step of the last turn of its round (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct RoundPhaseView {
+    /// The phase card's name.
+    pub name: String,
+    /// Its rules text.
+    pub text: String,
+    /// The round it begins at the end of.
+    pub round: u32,
+    /// Whether it has begun.
+    pub begun: bool,
+}
+
+/// One card of a boss's Satchel (public).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct BossSatchelView {
+    /// The card's name.
+    pub name: String,
+    /// Whether it returns to the Satchel after each cast; otherwise it is cast once.
+    pub reusable: bool,
+    /// The generic mana a cast from the Satchel costs more now.
+    pub tax: u32,
+    /// The card in the command zone; left out before the game is made.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub object: Option<ObjectId>,
 }
 
 /// A sticker sheet a seat plays with (public).

@@ -198,7 +198,14 @@ export const SeatPanel = memo(function SeatPanel({
   // A Delves hero's earned cards: public, listed by a chip beside the command zone; yours are cast from the hand dock too.
   const satchel =
     (player.satchel?.length ?? 0) > 0 ? (
-      <ZoneButton zone="satchel" owner={owner} ids={player.satchel ?? NO_IDS} density="line" thumbs />
+      <ZoneButton
+        zone="satchel"
+        owner={owner}
+        ids={player.satchel ?? NO_IDS}
+        marks={player.boss?.satchel}
+        density="line"
+        thumbs
+      />
     ) : null
   const eliminated = player.lost !== null
   // A seat whose client is gone; one that left the game for good is eliminated instead.

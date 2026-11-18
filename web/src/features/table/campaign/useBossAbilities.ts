@@ -40,6 +40,7 @@ export function useDelveContent(enabled: boolean): DelveContent | null {
 /** What each kind is called on its chip and in the full text. */
 export const KIND_WORDS: Record<BossAbilityKind, string> = {
   passive: 'Always',
+  innate: 'Innate',
   phase: 'Phase now',
   'next-phase': 'Next phase',
   scheme: 'Scheme now',

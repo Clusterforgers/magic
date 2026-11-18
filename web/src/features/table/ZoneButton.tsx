@@ -2,8 +2,9 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
 import { cn } from '@/lib/utils'
-import type { ObjectId } from '@/protocol/generated'
+import type { BossSatchelView, ObjectId } from '@/protocol/generated'
 import { CardRow } from './CardRow'
+import { SatchelMarks } from './campaign/SatchelMarks'
 import { LEGAL_RING, LegalBadge, ZONE_ICON } from './PodParts'
 import type { ChipDensity } from './PodParts'
 import { cardCount, legalWords, zoneLabel, zoneOpenLabel, zoneTitle, ZONE_NAME } from './podFigures'
@@ -21,6 +22,8 @@ interface ZoneDialogProps {
   owner: string
   /** The cards in the zone, oldest first. */
   ids: readonly ObjectId[]
+  /** A boss's Satchel cards with their reusable or once marks, listed under the cards. */
+  marks?: readonly BossSatchelView[]
   open: boolean
   onOpenChange: (open: boolean) => void
 }
@@ -32,7 +35,7 @@ function LegalLine({ ids }: { ids: readonly ObjectId[] }) {
 }
 
 /** The list of every card of a zone, most recent first, in a dialog. */
-export function ZoneDialog({ zone, owner, ids, open, onOpenChange }: ZoneDialogProps) {
+export function ZoneDialog({ zone, owner, ids, marks, open, onOpenChange }: ZoneDialogProps) {
   const preview = usePreviewStore()
   const name = ZONE_NAME[zone].toLowerCase()
   return (
@@ -68,6 +71,9 @@ export function ZoneDialog({ zone, owner, ids, open, onOpenChange }: ZoneDialogP
             size="normal"
           />
         </div>
+        {zone === 'satchel' && marks !== undefined && marks.length > 0 ? (
+          <SatchelMarks cards={marks} />
+        ) : null}
       </DialogContent>
     </Dialog>
   )
@@ -84,6 +90,8 @@ interface ZoneButtonProps {
   density?: Exclude<ChipDensity, 'tile'>
   /** More classes for the button, to size it in its row. */
   className?: string
+  /** A boss's Satchel cards with their reusable or once marks, listed in the dialog. */
+  marks?: readonly BossSatchelView[]
   /** Draws the top card (the commanders) as a small picture beside the figures: the one-line pod's. */
   thumbs?: boolean
 }
@@ -132,6 +140,7 @@ export function ZoneButton({
   density = 'panel',
   className,
   thumbs = false,
+  marks,
 }: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
   const Icon = ZONE_ICON[zone]
@@ -165,7 +174,7 @@ export function ZoneButton({
         </span>
         {legal > 0 ? <LegalBadge className="right-auto -left-1" /> : null}
       </Button>
-      <ZoneDialog zone={zone} owner={owner} ids={ids} open={open} onOpenChange={setOpen} />
+      <ZoneDialog zone={zone} owner={owner} ids={ids} marks={marks} open={open} onOpenChange={setOpen} />
     </>
   )
 }

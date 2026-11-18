@@ -178,7 +178,11 @@ fn hero_creatures(driver: &Driver) -> (i32, i32) {
             && HERO_BOARD.iter().any(|(n, ..)| object.card().name == *n)
         {
             all += 1;
-            tapped += i32::from(object.permanent().is_some_and(|p| p.tapped()));
+            tapped += i32::from(
+                object
+                    .permanent()
+                    .is_some_and(mtg_engine::object::PermanentState::tapped),
+            );
         }
     }
     (all, tapped)

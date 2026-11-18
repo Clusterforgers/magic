@@ -6,10 +6,12 @@
 import type { ReactNode } from 'react'
 import { SwordsIcon } from 'lucide-react'
 import { BossAbilityList } from '@/features/table/campaign/BossAbilities'
+import { isReworked, levelWords } from '@/features/table/campaign/reworkedBoss'
 import type { DelveContent, DelveView } from '@/protocol/generated'
 import { BossPortrait, ColourPips } from './CommanderArt'
 import { bossLife, introAbilities, upgradedFrom } from './model'
 import { LifeBar } from './RunHeader'
+import { ReworkedIntro } from './ReworkedIntro'
 
 /** The boss fight the party is in or about to enter. */
 export function BossIntro({
@@ -27,7 +29,8 @@ export function BossIntro({
   const name = fight?.boss ?? boss?.name ?? 'A boss'
   const from = upgradedFrom(content, view.boss)
   const life = fight?.life ?? (view.boss === undefined ? undefined : bossLife(view, view.boss)) ?? null
-  const abilities = fight === undefined ? [] : introAbilities(content, fight)
+  const reworked = fight !== undefined && isReworked(fight)
+  const abilities = fight === undefined || reworked ? [] : introAbilities(content, fight)
   const problems = new Map(view.deck_problems.map((problem) => [problem.hero, problem.reason]))
   return (
     <section
@@ -54,6 +57,7 @@ export function BossIntro({
           <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             {boss ? <ColourPips colours={boss.colors} /> : null}
             {life === null ? null : <span>{life} life</span>}
+            {fight?.innate === undefined ? null : <span>· {levelWords(fight.innate.level)}</span>}
             {fight && fight.phases.length > 0 ? <span>· {fight.phases.length + 1} phases</span> : null}
             {fight && fight.minions.length > 0 ? (
               <span>· with {fight.minions.map(([minion, hp]) => `${minion} (${hp} life)`).join(', ')}</span>
@@ -103,6 +107,7 @@ export function BossIntro({
           ))}
         </ul>
       </section>
+      {fight !== undefined && reworked ? <ReworkedIntro fight={fight} name={name} /> : null}
       {abilities.length > 0 ? (
         <section aria-labelledby="abilities-title" className="grid gap-2">
           <h3 id="abilities-title" className="text-sm font-semibold">
