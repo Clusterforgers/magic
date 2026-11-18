@@ -102,10 +102,8 @@ The table and its prompts are live; the items below polish them.
 - [ ] (mb2) An asking source that has left its zone keeps its picture: a last-known face (`AskingView` identity) for the chip and the column's card
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
 - [ ] (mb4) The keyboard walks from the band's answers into the Stack column and back without crossing the boards, and the phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
-- [ ] (ft1) The opening hands at 1920x1080 (dev table and a real game) leave the hand dock and your life uncovered by the shared sheet, or the mulligan detail moves to the Stack column where one is open
-- [ ] (ft2) With the Commands panel open the block prompt's sentence stays visible and pressable (phone, short phone, tablet, rail), and on a 360x740 phone the Commands sheet leaves your life in view
-- [ ] (ft3) The duel board at 1920x1080 keeps your creatures at 190 px under the band, the opponent's corner at 1440x900 draws pictures, and the opponent's pod column does not scroll at 1366x768
-- [ ] (ft4) The crowded scene's bundle labels stay whole and off the strip at 390x844; `fit.spec.ts`'s real game-over test reaches the end without a 30 s stall
+- [ ] (ft1b) On a phone the mulligan band's "Still deciding" line runs under the opening status beside Mulligan and Keep
+- [ ] (ft4b) `fit.spec.ts`'s real game-over test pays by hand: the land the driver presses lights neither itself nor a pay row (driver.ts PayMana)
 - [ ] (ft5) `layout.spec.ts` passes again under the band (43 of the first 99 failed)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 
@@ -173,7 +171,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rw2b) The run page names the run's own theme and story (the content endpoint shows the Warrens' for every run)
 - [ ] (rw2c) Spire bosses' `makeup` from their precons, so they draw usable relics
 - [ ] (rw2d) One real fight per Spire boss at innate level V under the loop detector, on the slow list
-- [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)
+- [ ] (rw4a) The Spire satchel cues move from `brain::satchel::builtin` into `spire.json`, and the simulator installs the content cues (`brain::satchel::install`)
 - [ ] (rw5a) The boss's satchel reaches its game: the fight's recipe carries the reusable and once satchel cards into `satchel_reusable` and `satchel`
 - [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps

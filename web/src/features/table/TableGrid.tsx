@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode, Ref } from 'react'
 import { cn } from '@/lib/utils'
 import { CHOICE_AREAS, gridColumns, gridRows, mainColumns, TABLE_AREAS } from './layout'
 import type { Regions } from './layout'
+import { useOpeningInOverlay } from './prompt/choiceOverlay'
 import { usePhase } from './turn/usePhase'
 
 interface TableGridProps {
@@ -79,6 +80,10 @@ export function TableGrid({
 }: TableGridProps) {
   // Read here, so a change of phase redraws the frame alone: the regions are elements made by the table and stay as they were.
   const phase = usePhase()
+  // A choice of cards covers both boards, your board above the strip; the opening hands cover the opponents and the strip
+  // only, so your board, your life and the hand dock stay in view while you decide.
+  const opening = useOpeningInOverlay()
+  const swap = choice?.open === true && !opening
   return (
     <div
       data-slot="table-grid"
@@ -93,9 +98,9 @@ export function TableGrid({
         data-slot="table-main"
         style={
           {
-            gridTemplateRows: gridRows(regions, choice?.open === true),
+            gridTemplateRows: gridRows(regions, swap),
             gridTemplateColumns: mainColumns(regions, stopsRow),
-            gridTemplateAreas: choice?.open === true ? CHOICE_AREAS : TABLE_AREAS,
+            gridTemplateAreas: swap ? CHOICE_AREAS : TABLE_AREAS,
           } as CSSProperties
         }
         className="felt grid min-h-0 min-w-0"
@@ -122,13 +127,18 @@ export function TableGrid({
           {controls}
         </Area>
         {choice === undefined ? null : (
-          // Over both boards, which `CHOICE_AREAS` puts next to each other, down to the top of the strip's sheet.
+          // Over both boards, which `CHOICE_AREAS` puts next to each other, down to the top of the strip's sheet; at the
+          // opening hands over the opponents and the strip (`TABLE_AREAS`).
           <div
             ref={choice.ref}
             data-slot="choice-host"
             hidden={!choice.open}
             style={{ gridRow: '2 / 4', gridColumn: '1 / -1' }}
-            className="relative z-15 flex min-h-0 min-w-0 items-center justify-center bg-scrim px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]"
+            // Over the strip at the opening hands, which it covers too.
+            className={cn(
+              'relative flex min-h-0 min-w-0 items-center justify-center bg-scrim px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]',
+              opening ? 'z-25' : 'z-15',
+            )}
           />
         )}
         {sheet}

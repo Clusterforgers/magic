@@ -107,6 +107,13 @@ export function podIsTight(height: number | null): boolean {
 export const POD_CRAMPED_PX = 160
 
 /** Whether a column of `height` px is cramped; one that is not measured is not. */
+/**
+ * The least pod column that draws the corner's least picture under the tight blocks: the name row, the figures beside
+ * the life, a pool and its chips on two lines (112 px), the gap and a picture `CORNER_MIN_PX` wide, with the panel's
+ * edge and padding.
+ */
+export const POD_PICTURES_PX = 200
+
 export function podIsCramped(height: number | null): boolean {
   return height !== null && height < POD_CRAMPED_PX
 }
