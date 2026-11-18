@@ -28,6 +28,8 @@ pub const LIFE: i32 = 40;
 pub const HEARTS: u8 = 3;
 /// Life each hero gets back after a boss falls.
 pub const HEAL_AFTER_BOSS: i32 = 15;
+/// Gold every hero takes with a won boss's loot.
+pub const LOOT_GOLD: u32 = 50;
 /// Life a Campfire rest gives.
 pub const REST: i32 = 20;
 /// Life a hero who ended a won fight as a Spirit comes back with.
@@ -46,10 +48,12 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
 /// known trade-offs; from 4 bosses play bracket decks with their commander card; from 5 the roster grows by more
 /// two-colour bosses, upgraded forms and the uber boss, and a cleared floor may descend; from 6 a boss stands for every
-/// colour pair.
-pub const CONTENT: u32 = crate::scale::PAIRS_FROM;
+/// colour pair; from 7 a descent first gives the final boss's loot.
+pub const CONTENT: u32 = DESCENT_LOOT_FROM;
 /// The content generation from which the party may descend to a deeper floor after a floor's final boss.
 pub const ENDLESS_FROM: u32 = 5;
+/// The content generation from which a descent first gives the loot of the final boss that fell.
+pub const DESCENT_LOOT_FROM: u32 = 7;
 /// The hearts a descent gives back, up to [`HEARTS`].
 pub const DESCENT_HEARTS: u8 = 1;
 /// The deepest floor a run reaches; a party on it can only bank the win.
@@ -433,6 +437,9 @@ pub struct Run {
     /// Each hero's vote on a cleared floor: `true` to descend, `false` to bank the win.
     #[serde(default)]
     pub floor_votes: BTreeMap<u8, bool>,
+    /// Whether the party voted to descend and answers the final boss's loot first.
+    #[serde(default)]
+    pub descending: bool,
     /// The party.
     pub heroes: Vec<Hero>,
     /// The room the party is in or last left.
@@ -472,6 +479,7 @@ impl Run {
             floor: 1,
             floors_cleared: 0,
             floor_votes: BTreeMap::new(),
+            descending: false,
             heroes: Vec::new(),
             at: None,
             cleared: Vec::new(),
@@ -698,6 +706,10 @@ impl Run {
                 }
                 self.pick(content, *hero, pick.clone())?;
                 if self.heroes.iter().all(|h| h.offers.is_empty()) {
+                    if self.descending {
+                        self.descending = false;
+                        return self.descend(content);
+                    }
                     // A single way on (a camp's next boss) needs no vote: the party walks into it.
                     match self.map.choices(self.at).as_slice() {
                         [] => self.status = Status::Victory,
@@ -727,7 +739,9 @@ impl Run {
                 if self.floor_votes.len() == self.heroes.len() {
                     let descend = self.floor_tally();
                     self.floor_votes.clear();
-                    if descend {
+                    if descend && self.content >= DESCENT_LOOT_FROM {
+                        self.descent_loot(content)?;
+                    } else if descend {
                         self.descend(content)?;
                     } else {
                         self.bank();
@@ -761,6 +775,34 @@ impl Run {
             "The party banks the win after {floors} floor{}.",
             if floors == 1 { "" } else { "s" }
         ));
+    }
+
+    /// The party voted to descend: every hero first takes the final boss's loot, as after a lieutenant (gold, a relic
+    /// pick and a card pick drawn for the floor), and the descent follows once every hero answered.
+    fn descent_loot(&mut self, content: &Content) -> Result<(), CampaignError> {
+        let node = self.at.ok_or_else(|| refused("no room"))?;
+        self.results.clear();
+        self.loot(content, node, &format!("loot-floor{}", self.floor))?;
+        self.descending = true;
+        self.status = Status::Room;
+        self.log
+            .push("The party takes the final boss's loot before the descent.".to_owned());
+        Ok(())
+    }
+
+    /// Every hero takes a won boss's loot in room `node`: gold, a relic pick and a card pick drawn under `label`.
+    fn loot(&mut self, content: &Content, node: u8, label: &str) -> Result<(), CampaignError> {
+        let theme = self.theme(content)?.clone();
+        for hero in 0..self.heroes.len() {
+            if let Some(h) = self.heroes.get_mut(hero) {
+                h.gold += LOOT_GOLD;
+            }
+            let relics = self.relic_offer(content, node, hero, label, 3, None);
+            self.push_offer(hero, Offer::Relics { relics });
+            let cards = self.card_offer(&theme, node, hero, label, 3);
+            self.push_offer(hero, Offer::Cards { cards });
+        }
+        Ok(())
     }
 
     /// The party descends: the next floor's ladder, drawn from the seed and avoiding the bosses just fought, a heart
@@ -807,7 +849,13 @@ impl Run {
         let scale = Scale::of_content(self.heroes.len(), self.heat, 0, self.content).on_floor(next);
         let deeper = scale.deeper();
         let hearts = self.hearts.saturating_add(DESCENT_HEARTS).min(HEARTS);
-        vec![
+        let loot = (self.content >= DESCENT_LOOT_FROM).then(|| {
+            format!(
+                "First the final boss's loot: {LOOT_GOLD} gold, a relic and a card for each hero"
+            )
+        });
+        let mut words: Vec<String> = loot.into_iter().collect();
+        words.extend([
             format!(
                 "Floor {next}: four new bosses, one bracket stronger per floor (bracket {} from the first fight, at most {})",
                 scale.bracket(),
@@ -829,7 +877,8 @@ impl Run {
                 "The party keeps its life, relics, Satchels and upgrades, and has {hearts} hearts"
             ),
             "Bank the win to end the run in victory now".to_owned(),
-        ]
+        ]);
+        words
     }
 
     /// What the party's floor changes for the boss of the room it is in, one line each (`Scale::intensify`): empty on
@@ -862,6 +911,22 @@ impl Run {
             .map(|h| i64::from(h.max_life(content)))
             .sum();
         self.hearts >= 2 && life * 100 >= cap * 60 && self.floor < DEEPEST
+    }
+
+    /// How deep the party went, as the leaderboard ranks it: the floors whose final boss fell, then the bosses beaten
+    /// on the floor below them (none while the party stands on a cleared floor).
+    pub fn depth(&self) -> (u8, u8) {
+        let beyond = if self.floors_cleared >= self.floor {
+            0
+        } else {
+            let bosses = self
+                .cleared
+                .iter()
+                .filter(|id| self.map.node(**id).is_some_and(|n| n.boss.is_some()))
+                .count();
+            u8::try_from(bosses).unwrap_or(u8::MAX)
+        };
+        (self.floors_cleared, beyond)
     }
 
     /// Whether the run ended.
@@ -1207,16 +1272,7 @@ impl Run {
                 .push("The Warren King is dead. The party wins the delve!".to_owned());
             return Ok(());
         }
-        let theme = self.theme(content)?.clone();
-        for hero in 0..self.heroes.len() {
-            if let Some(h) = self.heroes.get_mut(hero) {
-                h.gold += 50;
-            }
-            let relics = self.relic_offer(content, node, hero, "loot", 3, None);
-            self.push_offer(hero, Offer::Relics { relics });
-            let cards = self.card_offer(&theme, node, hero, "loot", 3);
-            self.push_offer(hero, Offer::Cards { cards });
-        }
+        self.loot(content, node, "loot")?;
         self.status = Status::Room;
         Ok(())
     }

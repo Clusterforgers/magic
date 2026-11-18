@@ -12,6 +12,7 @@ import type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
 import type { ManaCost } from "./ManaCost";
 import type { ManualClause } from "./ManualClause";
 import type { MergedCardView } from "./MergedCardView";
+import type { ModifierView } from "./ModifierView";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectKind } from "./ObjectKind";
 import type { PermanentView } from "./PermanentView";
@@ -171,6 +172,11 @@ attachments?: Array<ObjectId>,
  * gives nothing or is attached to neither.
  */
 gives?: GivesView, 
+/**
+ * Everything that changes the object now, each with its source as the viewer may know it, identical ones added
+ * together; left out while nothing does.
+ */
+modifiers?: Array<ModifierView>, 
 /**
  * Whether the object lies face down (a foretold card in exile). The seat that may look at it sees its characteristics
  * besides; every other seat sees an object with no name, types, colours, abilities or counters.

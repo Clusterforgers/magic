@@ -72,7 +72,7 @@ Tokens are CSS variables in `index.css`, mapped by `@theme inline`; shadcn's nam
 | Elevation | e1 `0 1px 2px` 8%; e2 `0 4px 12px` 12% menus; e3 `0 12px 32px` 20% dialogs; dark lifts the `raised` surface instead. On the table: `plaque` (pods, tiles, the centre strip) `0 6px 18px` 30% and a lit top edge, cards `0 2px 6px` 45%, `dock` (hand and controls) the darkest ground under a brass hairline, `action-glow` on the main action |
 | Motion | `duration-fast` 100 ms (hover, toggle), `base` 200 (menu, row), `slow` 300 (sheet, banner); table effects stay at most 600 ms (`fx.css`); `ease-out` in, `ease-in` out; linear for clocks only; under `reduce` opacity only |
 | Icons | lucide-react: 16 px in dense rows, 20 in controls, 24 in menus; always a label or `aria-label`; mana symbols stay in `ManaPips` |
-| Breakpoints | XS under 640, S 640 to 1023, M 1024 to 1279, L 1280 to 1599, XL 1600 up; container queries and `clamp()` inside the table |
+| Breakpoints | XS under 640, S 640 to 1023, M 1024 to 1279, L 1280 to 1599, XL 1600 up; `aside` 87rem, where a 16rem column fits in the right gutter of a `page` column; container queries and `clamp()` inside the table |
 | Page width | `narrow` 28rem (a form), `page` 48rem (reading, lists of cards), `wide` 72rem (a table of rows), `wider` 90rem (the builder) |
 
 - Button heights: 24, 32, 36 and 44 px (44 under `pointer: coarse`). A component draws no focus style of its own.

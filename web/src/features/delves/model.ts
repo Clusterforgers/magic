@@ -6,6 +6,8 @@ import type { BossAbility } from '@/features/table/campaign/bossAbilities'
 import type {
   Brain,
   CustomCardView,
+  DelveBoard,
+  DelveBoardEntry,
   DelveContent,
   DelveFightView,
   DelveView,
@@ -105,6 +107,22 @@ export function heatWords(heat: number): string {
   return `Heat ${heat} — ${tier.name}: ${tier.text}`
 }
 
+const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`
+
+/** How deep a leaderboard run went: the floors cleared, then the bosses beaten below them. */
+export function depthWords(entry: Pick<DelveBoardEntry, 'floors' | 'bosses'>): string {
+  const parts = [
+    entry.floors > 0 ? plural(entry.floors, 'floor', 'floors') : null,
+    entry.bosses > 0 || entry.floors === 0 ? plural(entry.bosses, 'boss', 'bosses') : null,
+  ]
+  return parts.filter((part) => part !== null).join(' + ')
+}
+
+/** The leaderboard's boards from the greatest Heat to the lowest, whatever order they came in. */
+export function orderBoards(boards: readonly DelveBoard[]): DelveBoard[] {
+  return [...boards].sort((a, b) => b.heat - a.heat)
+}
+
 /** A boss's starting life against this party at its place on the ladder and the run's Heat, if the view lists it. */
 export function bossLife(view: Pick<DelveView, 'boss_lives'>, boss: string): number | undefined {
   return view.boss_lives.find(([id]) => id === boss)?.[1]
@@ -140,7 +158,7 @@ export function runStage(view: DelveView): string {
   const status = view.run.status
   if (status === 'Lobby') return 'Gathering the party'
   if (status === 'Map') return 'Choosing a path'
-  if (status === 'Room') return 'At camp'
+  if (status === 'Room') return view.run.descending ? 'Loot before the descent' : 'At camp'
   if (status === 'FloorCleared') return `Floor ${view.run.floor} cleared`
   if (status === 'Victory') return 'Victory'
   if (status === 'Defeat') return 'Defeated'
@@ -262,6 +280,8 @@ export function nextStep(view: DelveView): string {
     return 'Each hero chooses a Commander deck once, for the whole run; rewards later swap cards into it. The host descends when everyone is ready.'
   if (status === 'Map')
     return 'The boss is behind you. Choose the camp the party rests at before the next boss.'
+  if (status === 'Room' && view.run.descending)
+    return "Take the final boss's loot below. When every hero has answered, the party descends to the next floor."
   if (status === 'Room')
     return 'Take your pick below. When every hero has answered, the party moves on: after a boss it votes for a camp, after a camp it faces the next boss.'
   if (status === 'FloorCleared')

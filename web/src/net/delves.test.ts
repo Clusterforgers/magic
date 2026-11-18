@@ -42,6 +42,13 @@ describe('delves client', () => {
       'GET',
       { cards: [], bosses: [], events: [] },
     ],
+    [
+      'leaderboard',
+      (api: ReturnType<typeof createDelvesApi>) => api.leaderboard(),
+      '/api/delves/leaderboard',
+      'GET',
+      { boards: [] },
+    ],
   ])('%s calls its path', async (_, call, url, method, body) => {
     const server = fakeFetch(() => jsonResponse(200, body))
     const api = createDelvesApi({ fetch: server.fetch })

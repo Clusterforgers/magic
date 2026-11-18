@@ -1,6 +1,14 @@
 /** Runs and content for the Delves tests: a run in any state and a client that answers from memory. */
 import type { DelvesApi } from '@/net/delves'
-import type { DelveAction, DelveContent, DelveView, Hero, Needs, Run } from '@/protocol/generated'
+import type {
+  DelveAction,
+  DelveContent,
+  DelveLeaderboard,
+  DelveView,
+  Hero,
+  Needs,
+  Run,
+} from '@/protocol/generated'
 
 export const CONTENT: DelveContent = {
   theme: 'The Warrens',
@@ -215,6 +223,7 @@ export function run(over: Partial<Run> = {}): Run {
     floor: 1,
     floors_cleared: 0,
     floor_votes: {},
+    descending: false,
     heroes: [hero()],
     at: null,
     cleared: [],
@@ -246,6 +255,47 @@ export function delveView(over: Partial<DelveView> = {}, runOver: Partial<Run> =
   }
 }
 
+/** A leaderboard of three boards as the server sends them, Heroic first; Seasoned has no run yet. */
+export const LEADERBOARD: DelveLeaderboard = {
+  boards: [
+    {
+      heat: 2,
+      entries: [
+        {
+          player: 'Ana',
+          floors: 2,
+          bosses: 1,
+          commanders: ['Atraxa, Praetors’ Voice'],
+          party: 3,
+          date: '2026-11-12',
+        },
+        {
+          player: 'Bodil',
+          floors: 0,
+          bosses: 3,
+          commanders: ['Thrasios, Triton Hero', 'Tymna the Weaver'],
+          party: 1,
+          date: '2026-11-10',
+        },
+      ],
+    },
+    { heat: 1, entries: [] },
+    {
+      heat: 0,
+      entries: [
+        {
+          player: 'Cato',
+          floors: 1,
+          bosses: 0,
+          commanders: ['Krenko, Mob Boss'],
+          party: 2,
+          date: '2026-11-02',
+        },
+      ],
+    },
+  ],
+}
+
 /** A client that answers every read with `view` and records the actions. */
 export function fakeDelves(view: DelveView): DelvesApi & { actions: DelveAction[] } {
   const actions: DelveAction[] = []
@@ -260,5 +310,6 @@ export function fakeDelves(view: DelveView): DelvesApi & { actions: DelveAction[
       return view
     },
     content: async () => CONTENT,
+    leaderboard: async () => LEADERBOARD,
   }
 }

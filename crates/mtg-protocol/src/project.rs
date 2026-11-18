@@ -22,6 +22,7 @@ use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
 
 use crate::message::AutoYield;
+use crate::modifiers::modifier_views;
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
     GivesView, Granter, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
@@ -242,7 +243,7 @@ fn gives_view(state: &GameState, id: ObjectId) -> Option<GivesView> {
 /// The names of granted keywords, protection with its qualities in oracle wording: "Protection from creatures", and
 /// one name for protections granted one after the other ("Protection from red and from blue"). A quality without a
 /// word stays "Protection".
-fn given_keyword_names(keywords: &[Keyword]) -> Vec<String> {
+pub(crate) fn given_keyword_names(keywords: &[Keyword]) -> Vec<String> {
     let mut names: Vec<String> = Vec::new();
     let mut protecting = false;
     for keyword in keywords {
@@ -294,7 +295,7 @@ fn shown_subtypes(card: &CardDefinition, now: &[Subtype], printed: bool) -> Vec<
     all
 }
 
-fn type_list(types: CardTypes) -> Vec<CardType> {
+pub(crate) fn type_list(types: CardTypes) -> Vec<CardType> {
     ALL_TYPES
         .into_iter()
         .filter(|ty| types.contains(*ty))
@@ -514,6 +515,7 @@ impl ObjectView {
         let rules_text = stack_text(object, &name, granter);
         let manual_owed = (printed || !name.is_empty()) && card.manual_owed();
         // A face-down permanent's abilities are the 2/2's; the card behind it is read off `abilities`.
+        let modifiers = modifier_views(state, sight, object, look, &name);
         let activated = if printed && !behind && sight.reads_rules_of(object) {
             activated_views(state, id, &chars.abilities, &card.name)
         } else {
@@ -583,6 +585,7 @@ impl ObjectView {
                 Vec::new()
             },
             gives: gives_view(state, id),
+            modifiers,
             face_down: object.face_down().is_some(),
             face: object.face().filter(|_| printed),
             copy: copy_view(state, sight, object),
@@ -642,6 +645,7 @@ impl ObjectView {
             paired_with: state.partner_of(object.id()),
             attachments: Vec::new(),
             gives: None,
+            modifiers: Vec::new(),
             face_down: true,
             face: None,
             copy: None,

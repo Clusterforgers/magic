@@ -311,6 +311,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - Designations: a suspected permanent's menace and "can't block" are in the base of layer 6 (`Held::suspect_cant_block`), so losing all abilities removes both (CR 701.60c); a solved Case (`Event::Solved`, CR 719.3) stays solved until it leaves. "As ~ is turned face up" counters (`ReplaceWhen::TurnedFaceUp`) come with the turn-up event (CR 708.8).
 - Speed (CR 702.179, `speed.rs`): start your engines! gives speed 1 with the state-based actions; an opponent's life loss on the active player's turn marks the once-per-turn rise, given at the next state-based check without the stack; speed stays after the permanent leaves.
 - Layer 7c: number counters change power and toughness, keyword counters grant the keyword. +1/+1 and -1/-1 counters annihilate in pairs (CR 704.5q).
+- Modifiers (`modifiers.rs`): what changes an object now is read off the record of the layers (`Held::applied`) by origin (one static ability, one resolution's effects with their duration, the Ring), with the copy effect and the counters that change power and toughness or give a keyword; it changes nothing and runs no rule a second time, so an ended effect or a failed condition leaves nothing.
 
 ## Control of players and spells
 

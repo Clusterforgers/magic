@@ -72,6 +72,7 @@ mod manual_tutor_view;
 mod manual_view;
 mod messages;
 mod miracle_hidden;
+mod modifiers_view;
 mod monarch_view;
 mod morph_view;
 mod mutate_view;

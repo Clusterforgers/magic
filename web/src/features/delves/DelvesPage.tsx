@@ -1,4 +1,4 @@
-/** `/delves`: the player's Delves runs, a new run (Heat and an optional seed code) and joining a friend's by code. */
+/** `/delves`: the player's Delves runs, a new run (Heat and an optional seed code), joining a friend's by code and the leaderboard. */
 import { Link, useNavigate } from '@tanstack/react-router'
 import { CircleAlertIcon, SkullIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -13,12 +13,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/features/auth/context'
 import { SignedInOnly } from '@/features/tournaments/SignedInOnly'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { delvesApi } from '@/net/delves'
 import type { DelvesApi } from '@/net/delves'
 import type { DelveSummary, Timers } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
+import { DelvesLeaderboard } from './DelvesLeaderboard'
 import { DelvesRules } from './DelvesRules'
 import { HEAT_TIERS, heatWords } from './model'
 import { errorText, statusText } from './words'
@@ -239,8 +241,11 @@ export function DelveList({ client }: { client: DelvesApi }) {
 
 export function DelvesPage({ client = delvesApi }: { client?: DelvesApi }) {
   usePageTitle('Delves')
+  const signedIn = useAuth((state) => state.status) === 'signed-in'
+  // The page's column stays where it is. The leaderboard follows its content, and from the `aside` breakpoint, where
+  // the right gutter holds it even beside a scrollbar, it stands in that gutter out of the flow.
   return (
-    <PageShell width="page" className="grid gap-6 sm:py-6">
+    <PageShell width="page" className="relative grid gap-6 sm:py-6">
       <div className="grid gap-1">
         <h1 className="text-2xl font-semibold tracking-tight">Delves</h1>
         <p className="text-sm text-muted-foreground">
@@ -253,6 +258,14 @@ export function DelvesPage({ client = delvesApi }: { client?: DelvesApi }) {
         <NewDelveForm client={client} />
       </SignedInOnly>
       <DelvesRules />
+      {signedIn ? (
+        <div
+          data-slot="delves-leaderboard"
+          className="aside:absolute aside:top-6 aside:left-full aside:ml-6 aside:w-64"
+        >
+          <DelvesLeaderboard client={client} />
+        </div>
+      ) : null}
     </PageShell>
   )
 }

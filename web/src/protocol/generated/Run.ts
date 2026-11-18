@@ -43,6 +43,10 @@ floors_cleared: number,
  */
 floor_votes: { [key in number]: boolean }, 
 /**
+ * Whether the party voted to descend and answers the final boss's loot first.
+ */
+descending: boolean, 
+/**
  * The party.
  */
 heroes: Array<Hero>, 

@@ -9,13 +9,13 @@ use mtg_campaign::map::{LIEUTENANTS, generate_floor, generate_for};
 use mtg_campaign::run::{CONTENT, ENDLESS_FROM, HEARTS};
 use mtg_campaign::scale::{
     BRACKET_TIERS, BRACKETS, BRACKETS_FROM, ENRAGE_EARLIEST, ENRAGE_TURN, MAX_BRACKET, MAX_HEAT,
-    MOST, OVERFLOW_LIFE, RANKS, UBER_HEAT, enrage_id,
+    MOST, OVERFLOW_LIFE, PAIRS_FROM, RANKS, UBER_HEAT, enrage_id,
 };
 use mtg_campaign::{Brain, HeroDeck, Run, RunEvent, Scale, Status, content};
 use proptest::prelude::*;
 use rstest::rstest;
 
-fn deck() -> HeroDeck {
+pub(crate) fn deck() -> HeroDeck {
     HeroDeck {
         id: "x".into(),
         name: "x".into(),
@@ -26,7 +26,7 @@ fn deck() -> HeroDeck {
 }
 
 /// A started run of generation `version` with `players` players and `bots` bot allies.
-fn started(seed: u64, heat: u8, version: u32, players: usize, bots: usize) -> Run {
+pub(crate) fn started(seed: u64, heat: u8, version: u32, players: usize, bots: usize) -> Run {
     let mut events = vec![RunEvent::Content { version }];
     for at in 0..players + bots {
         let bot = at >= players;
@@ -45,7 +45,7 @@ fn started(seed: u64, heat: u8, version: u32, players: usize, bots: usize) -> Ru
 }
 
 /// Wins every fight of the floor, every hero answering like a bot, until the floor is cleared or the run won.
-fn clear_floor(run: &mut Run) {
+pub(crate) fn clear_floor(run: &mut Run) {
     let content = content().unwrap();
     for _ in 0..200 {
         let event = match &run.status {
@@ -75,7 +75,7 @@ fn clear_floor(run: &mut Run) {
     panic!("the floor never ended: {:?}", run.status);
 }
 
-fn vote(run: &mut Run, hero: usize, descend: bool) {
+pub(crate) fn vote(run: &mut Run, hero: usize, descend: bool) {
     let event = RunEvent::FloorVoted {
         hero: u8::try_from(hero).unwrap(),
         descend,
@@ -129,7 +129,7 @@ fn a_cleared_floor_votes_to_bank_or_descend(
     #[case] votes: &[bool],
     #[case] expected: Option<bool>,
 ) {
-    let mut run = started(5, 1, CONTENT, players, 0);
+    let mut run = started(5, 1, PAIRS_FROM, players, 0);
     clear_floor(&mut run);
     assert_eq!(run.status, Status::FloorCleared);
     assert_eq!((run.floor, run.floors_cleared), (1, 1));
@@ -157,7 +157,7 @@ fn a_cleared_floor_votes_to_bank_or_descend(
 #[test]
 fn a_descent_keeps_the_party_and_gives_a_heart_back() {
     let content = content().unwrap();
-    let mut run = started(9, 1, CONTENT, 1, 1);
+    let mut run = started(9, 1, PAIRS_FROM, 1, 1);
     clear_floor(&mut run);
     run.hearts = 1;
     run.heroes[0].life = 23;
@@ -174,7 +174,7 @@ fn a_descent_keeps_the_party_and_gives_a_heart_back() {
     );
     let avoid: Vec<&str> = fought.iter().map(String::as_str).collect();
     let theme = &content.themes[0];
-    assert_eq!(run.map, generate_floor(theme, 9, CONTENT, 1, 2, &avoid));
+    assert_eq!(run.map, generate_floor(theme, 9, PAIRS_FROM, 1, 2, &avoid));
     assert_eq!(run.cleared, Vec::<u8>::new());
     assert_eq!(run.at, run.map.choices(None).first().copied());
     // A full party gets no heart above the start.

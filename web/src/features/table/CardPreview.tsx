@@ -24,6 +24,7 @@ import { AbilityLine, RulesText } from './RulesText'
 import { reminderTerms } from './reminders'
 import { ManaPreviewLine } from './ManaStrip'
 import { PreviewCard } from './PreviewCard'
+import { PreviewModifiers } from './PreviewModifiers'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookText } from './combat/forecastText'
 import { useSeatNamer } from './names'
@@ -365,6 +366,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
             </ul>
           </>
         )}
+        <PreviewModifiers object={object} />
         {reminders.length === 0 ? null : (
           <ul
             aria-label="Keyword reminders"

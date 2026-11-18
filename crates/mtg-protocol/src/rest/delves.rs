@@ -164,6 +164,39 @@ pub struct DelveList {
     pub delves: Vec<DelveSummary>,
 }
 
+/// The Delves leaderboard: one board per Heat, the greatest Heat first.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DelveLeaderboard {
+    /// The boards, Heat 2 to 0.
+    pub boards: Vec<DelveBoard>,
+}
+
+/// The deepest run of each player at one Heat, deepest first.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DelveBoard {
+    /// The Heat the runs were started at, 0 to 2.
+    pub heat: u8,
+    /// One entry per player, ranked.
+    pub entries: Vec<DelveBoardEntry>,
+}
+
+/// A player's deepest run at a Heat.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct DelveBoardEntry {
+    /// The player's name in that run.
+    pub player: String,
+    /// The floors whose final boss fell.
+    pub floors: u8,
+    /// The bosses beaten on the floor below those.
+    pub bosses: u8,
+    /// The commanders of the player's deck, or its name for a deck chosen before commanders were read.
+    pub commanders: Vec<String>,
+    /// Heroes in the party, bot allies included.
+    pub party: u8,
+    /// The day the run last changed, `YYYY-MM-DD`.
+    pub date: String,
+}
+
 /// A custom card as the web draws it.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct CustomCardView {

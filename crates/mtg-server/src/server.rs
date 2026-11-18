@@ -346,6 +346,7 @@ fn delve_routes() -> Router<AppState> {
     Router::new()
         .route("/api/delves", get(delves::list).post(delves::create))
         .route("/api/delves/content", get(delves::content_of))
+        .route("/api/delves/leaderboard", get(delves::leaderboard))
         .route("/api/delves/join/{code}", post(delves::join))
         .route("/api/delves/{id}", get(delves::get_one))
         .route("/api/delves/{id}/act", post(delves::act))

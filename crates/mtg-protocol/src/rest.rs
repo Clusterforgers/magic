@@ -51,9 +51,9 @@ pub use decks::{
     MAX_IMPORT_LINES, TableRules, UnresolvedLine, UnresolvedReason,
 };
 pub use delves::{
-    BossArtView, CreateDelve, CustomCardView, DelveAction, DelveBossView, DelveContent,
-    DelveDeckProblem, DelveEventView, DelveFightView, DelveList, DelveOptionView, DelveSummary,
-    DelveView,
+    BossArtView, CreateDelve, CustomCardView, DelveAction, DelveBoard, DelveBoardEntry,
+    DelveBossView, DelveContent, DelveDeckProblem, DelveEventView, DelveFightView,
+    DelveLeaderboard, DelveList, DelveOptionView, DelveSummary, DelveView,
 };
 pub use favourites::FavouritePrecons;
 pub use fix_marks::{
