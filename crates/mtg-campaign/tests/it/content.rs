@@ -82,7 +82,12 @@ fn schemes_minions_and_scaling_cards_exist() {
         content.card(mtg_campaign::scale::BULWARK).unwrap().kind,
         CardKind::Phase
     );
-    for theme in &content.themes {
+    // A theme of reworked bosses only (the Drowned Spire) has no schemes or minions.
+    let older = content
+        .themes
+        .iter()
+        .filter(|t| t.bosses.iter().any(|b| b.innate.is_none()));
+    for theme in older {
         assert!(theme.schemes.len() >= 6, "{}: a scheme deck", theme.id);
         for id in &theme.schemes {
             assert_eq!(content.card(id).unwrap().kind, CardKind::Scheme, "{id}");

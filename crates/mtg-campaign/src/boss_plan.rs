@@ -1,6 +1,7 @@
 //! The reworked boss's seat (content generation [`REWORK_FROM`] on): its innate at the level of the run's depth and
 //! Heat, one encounter modifier and its relics drawn by the seed keyed by floor and room, two phases by round, its
-//! satchel, its life by party size only, and the Hard brain. No scheme, minion, commander card or Enrage.
+//! satchel, its life by party size only, and the Hard brain. No scheme, minion, commander card or Enrage. A phase written
+//! with levels (as an innate is) plays at the innate's level.
 
 use crate::boss_relics;
 use crate::content::{Boss, Brain, Content};
@@ -58,11 +59,22 @@ impl Run {
                 round_phases: boss
                     .round_phases
                     .iter()
-                    .cloned()
+                    .map(|id| at_level(content, id, level))
                     .zip(PHASE_ROUNDS)
                     .collect(),
                 satchel: boss.satchel.clone(),
             })),
         }
+    }
+}
+
+/// The card of phase `id` at innate `level`: its level card when the phase is written with levels, else the phase as
+/// written.
+fn at_level(content: &Content, id: &str, level: u8) -> String {
+    let leveled = innate_id(id, level);
+    if content.cards.contains_key(&leveled) {
+        leveled
+    } else {
+        id.to_owned()
     }
 }

@@ -1110,6 +1110,24 @@ impl Cast {
         !self.free && self.rather.is_none() && self.instead.is_none() && self.from == Some(zone)
     }
 
+    /// Whether the permission reaches the zone `card` is in for `player`: another player's graveyard only when the
+    /// permission names the cards it covers or their owner ("from an opponent's graveyard"), so "from your graveyard" stays
+    /// at home.
+    fn reaches(&self, player: PlayerId, card: &GameObject) -> bool {
+        match card.zone() {
+            Zone::Graveyard(owner) if owner != player => self.only.is_some() || self.names_owner(),
+            _ => true,
+        }
+    }
+
+    /// Whether the permission's cards are named by their owner (`Pred::OwnedBy`).
+    pub(crate) fn names_owner(&self) -> bool {
+        self.what
+            .0
+            .iter()
+            .any(|pred| matches!(pred, mtg_cards::refs::Pred::OwnedBy(_)))
+    }
+
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         (!self.opens_no_zone || r305c_cast_anyway(state, player, card))
@@ -1117,6 +1135,7 @@ impl Cast {
             && self.r5503_open(state)
             && self.when_holds(state)
             && self.who.contains(&player)
+            && self.reaches(player, card)
             && self
                 .only
                 .as_ref()

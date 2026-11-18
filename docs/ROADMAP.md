@@ -166,7 +166,10 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
-- [ ] (rw2) Drowned Spire innates (no mill; only the Archivist's Phase 1 mills, once)
+- [ ] (rw2a) Boss seats play their `deck_file` precon (100 cards) in place of `deck`, which the Spire bosses leave empty
+- [ ] (rw2b) The run page names the run's own theme and story (the content endpoint shows the Warrens' for every run)
+- [ ] (rw2c) Spire bosses' `makeup` from their precons, so they draw usable relics
+- [ ] (rw2d) One real fight per Spire boss at innate level V under the loop detector, on the slow list
 - [ ] (rw3) Encounter modifier content: the 23 modifiers of the pool with their `not_with` lists and a check each
 - [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)
 - [ ] (rw5) Boss view and intro on screen: innate with its level, modifier, relics, satchel and the phase countdown by round

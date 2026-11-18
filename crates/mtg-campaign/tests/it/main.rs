@@ -18,6 +18,7 @@ mod relics;
 mod rework;
 mod runs;
 mod satchel;
+mod spire;
 mod spirits;
 mod tiers;
 mod trades;
