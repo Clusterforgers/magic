@@ -29,6 +29,7 @@ import { CardFace } from './CardFace'
 import type { CardSize } from './cardSize'
 import { HAND_HEAD_PX } from './handFit'
 import type { HandLayout } from './handFit'
+import { leavingCard } from './handLeaving'
 import { ManaPips } from './ManaPips'
 import { CardWidthContext } from './ImageFace'
 import { objectIdOf, rovingTarget, useRoving } from './useRoving'
@@ -102,6 +103,7 @@ function offPageElement(): HTMLElement {
  */
 export function HandFan({ ids, label, size, cost = false, layout, commanders, onMove }: HandFanProps) {
   const roving = useRoving(ids)
+  const leaving = usePlay(leavingCard)
   const list = useRef<HTMLUListElement>(null)
   const refocus = useRef<ObjectId | null>(null)
   const [dragging, setDragging] = useState<ObjectId | null>(null)
@@ -182,6 +184,7 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
             commander={commander !== undefined && commander.top !== true && commander.satchel !== true}
             top={commander?.top === true}
             satchel={commander?.satchel === true}
+            leaving={leaving === id}
             drop={
               over === id && from >= 0 && from !== index ? (from < index ? 'after' : 'before') : undefined
             }
@@ -279,6 +282,7 @@ function HandSlot({
   commander,
   top,
   satchel,
+  leaving,
   drop,
   fan,
   children,
@@ -287,6 +291,8 @@ function HandSlot({
   sortable: boolean
   back: boolean
   lifts: boolean
+  /** The card's cast or play went out and the server has not answered yet: it rises out of the hand (`handLeaving`). */
+  leaving: boolean
   /** The slot's place in the arc of a one-row hand (`fanOf`); none in a hand of several rows. */
   fan?: Fan | undefined
   commander: boolean
@@ -308,6 +314,7 @@ function HandSlot({
       data-commander={commander || undefined}
       data-library-top={top || undefined}
       data-satchel={satchel || undefined}
+      data-leaving={leaving || undefined}
       data-drag={drag.isDragging || undefined}
       data-drop={drop}
       style={back ? { height: HAND_HEAD_PX } : undefined}
