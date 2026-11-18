@@ -72,6 +72,13 @@ export function boardCounts(state: PlayState, seats: SeatPlan, grouped = true): 
 export const foldsLands = (seats: SeatPlan, fold: boolean, phone = false): boolean =>
   fold && (seats.shape === 'columns' || (phone && seats.shape !== 'boss'))
 
+/**
+ * Whether the opponents' boards of a plan fold their lands until the viewer chooses (as a phone's do): a grid of more
+ * opponents than one row of frames holds, whose boards are too low for a lands lane beside their other permanents.
+ */
+export const crowdFoldsLands = (seats: SeatPlan): boolean =>
+  seats.shape === 'columns' && seats.boards.length > seats.columns
+
 /** The most of a prompt sheet's overhang the split keeps free above the strip: two lines of a prompt. */
 export const SHEET_RESERVE_MAX_PX = 64
 

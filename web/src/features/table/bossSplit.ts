@@ -29,7 +29,7 @@ export const OWN_LINE_PX = 72
 /** What an empty board of yours that still has a hand keeps room for: a few lands, as on any early turn. */
 export const OWN_READY_COUNTS: LaneCounts = { lands: 3, creatures: 1, other: 0 }
 /** The least height of a pod column beside a board that has permanents, in px. */
-export const POD_MIN_PX = 120
+export const POD_MIN_PX = 104
 
 /** A board of the split: the width of its lanes, its boxes, and what its frame draws above the lanes in px. */
 export interface BossBoard {
@@ -128,11 +128,15 @@ export function splitBoss(input: BossSplitInput, limits: LaneLimits = LANE_LIMIT
       ? Math.max(finite(input.ownFloor), finite(input.ownChrome) + need([ownBoard], card))
       : OWN_LINE_PX
   const heroes = (rung: number): number => allyRow(at(rung)) + gap + ownRow(at(rung))
-  // The heroes grow first; the boss's row is held meanwhile at the least that draws its fair share of their card.
-  const bossLeast = (card: number): number =>
-    Math.min(bossCard(card), Math.max(BOSS_CARD_FLOOR_PX, Math.floor(card * BOSS_FAIR_SHARE)))
-  const total = (rung: number): number => bossRow(bossLeast(at(rung))) + heroes(rung)
   const floor = at(0)
+  // The heroes grow first; the boss's row is held meanwhile at the least that draws its fair share of their card, and
+  // never under the ladder's floor, the least the boss is then drawn at.
+  const bossLeast = (card: number): number =>
+    Math.max(
+      floor,
+      Math.min(bossCard(card), Math.max(BOSS_CARD_FLOOR_PX, Math.floor(card * BOSS_FAIR_SHARE))),
+    )
+  const total = (rung: number): number => bossRow(bossLeast(at(rung))) + heroes(rung)
   // Nothing fits at the floor: each row takes its share of what it needs there.
   if (!(total(0) <= room)) {
     return squeezed(room, [bossRow(floor), allyRow(floor), ownRow(floor)], cap, input, allyShows, gap)

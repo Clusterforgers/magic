@@ -31,7 +31,9 @@ describe('previewFit on a wide window', () => {
     [1440, 900, 384, 432, 684],
     [1366, 768, 323, 371, 573],
     [1280, 720, 294, 342, 532],
-    [1024, 768, 323, 371, 573],
+    // A rail window keeps to its share of the width.
+    [1024, 768, 259, 307, 573],
+    [1100, 800, 282, 330, 600],
   ])(
     'at %ix%i draws the picture %i px wide in a panel %i px wide and at most %i px tall',
     (w, h, picture, width, tall) => {

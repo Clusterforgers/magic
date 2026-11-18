@@ -6,7 +6,7 @@ import type { ClearBox } from './previewClear'
 /**
  * The attribute of an element the preview keeps clear of. Its value ranks it (`fitClear`): `answers` (the prompt's
  * buttons and the pass controls, each button measured on its own, the primary one marked), `text` (the sentence),
- * `soft` (the strip while it holds a decision), and empty for a dock.
+ * `soft` (the strip while it holds a decision), `pod` (a seat's pod or tile), and empty for a dock.
  */
 export const KEEP_CLEAR_ATTR = 'data-keep-clear'
 
@@ -46,6 +46,7 @@ export function keepClearBoxes(): ClearBox[] {
     }
     if (value === 'soft') return [{ ...box, soft: true }].filter(drawn)
     if (value === 'text') return [wordsOf(element)].filter(drawn)
+    if (value === 'pod') return [{ ...box, kind: 'pod' as const }].filter(drawn)
     return [box].filter(drawn)
   })
 }
