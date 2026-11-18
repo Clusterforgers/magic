@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "f9fa30b6-3a33-46fd-8b32-ac1cfa41500d",
+  "oracle_id": "592c91fc-6430-4c76-9460-65f047350f67",
+  "multiverse_ids": [],
+  "resource_id": "934265FFA6602C724CE44DF3BC78A129C4ACF7732343D845CA59A43744496227",
+  "tcgplayer_id": 695522,
+  "cardmarket_id": 904190,
+  "name": "Lyra Dawnbringer",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d",
+  "scryfall_uri": "https://scryfall.com/card/fdn/738/lyra-dawnbringer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-24T09:18:21Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.jpg?1787563101",
+    "normal": "https://cards.scryfall.io/normal/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.jpg?1787563101",
+    "large": "https://cards.scryfall.io/large/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.jpg?1787563101",
+    "png": "https://cards.scryfall.io/png/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.png?1787563101",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.jpg?1787563101",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.jpg?1787563101",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.webp?1787563101",
+    "grid": "https://cards.scryfall.io/grid/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.webp?1787563101",
+    "display": "https://cards.scryfall.io/display/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.webp?1787563101",
+    "art": "https://cards.scryfall.io/art/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.webp?1787563101",
+    "crop": "https://cards.scryfall.io/crop/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.webp?1787563101",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/9/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d.jpg?1787563101"
+  },
+  "mana_cost": "{3}{W}{W}",
+  "cmc": 5.0,
+  "type_line": "Legendary Creature — Angel",
+  "oracle_text": "Flying\nFirst strike (This creature deals combat damage before creatures without first strike.)\nLifelink (Damage dealt by this creature also causes you to gain that much life.)\nOther Angels you control get +1/+1 and have lifelink.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink",
+    "First strike"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f9fa30b6-3a33-46fd-8b32-ac1cfa41500d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A592c91fc-6430-4c76-9460-65f047350f67&unique=prints",
+  "collector_number": "738",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Chris Rahn",
+  "artist_ids": [
+    "7742047e-0f80-4c0f-a530-d07460165e86"
+  ],
+  "illustration_id": "ec06df73-2a92-4530-9b9e-2dcd56c3e8d2",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "setextension"
+  ],
+  "edhrec_rank": 1716,
+  "penny_rank": 1228,
+  "prices": {
+    "usd": "0.65",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "3.58",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DLyra%2BDawnbringer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DLyra%2BDawnbringer",
+    "edhrec": "https://edhrec.com/route/?cc=Lyra+Dawnbringer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F695522%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=904190&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Lyra+Dawnbringer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

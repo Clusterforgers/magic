@@ -19,7 +19,7 @@ use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::combat::AttackTarget;
 use mtg_engine::decision::{Answer, AttackOptions, DecisionKind};
 use mtg_engine::events::Event;
-use mtg_engine::phases::BossPhase;
+use mtg_engine::phases::{BossPhase, PhaseStart};
 use mtg_engine::spotlight;
 use mtg_engine::spotlight_aim::{self, AimWhy};
 use mtg_engine::turn::Step;
@@ -112,7 +112,7 @@ fn fight(
         .phases(
             boss,
             [BossPhase {
-                at_life: 1,
+                begins: PhaseStart::AtLife(1),
                 emblem: emblem("Wrath", &[]),
             }],
         )

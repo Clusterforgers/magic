@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ad3add32-cb87-4cd4-8c36-a737a897a8c8",
+  "name": "Illusory Ambusher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusory Ambusher",
+      "oracle_fingerprint": "fd0469958717eb5b745506167ffee071",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

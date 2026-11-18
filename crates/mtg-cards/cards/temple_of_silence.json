@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e6e6fce8-0f6a-4b84-865e-d4e4a4182f9f",
+  "name": "Temple of Silence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple of Silence",
+      "oracle_fingerprint": "3d22b5d7caee0ea303567db0f2f02b70",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

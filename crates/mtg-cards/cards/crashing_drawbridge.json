@@ -1,0 +1,28 @@
+{
+  "oracle_id": "328d5ef0-b25e-4f2a-80fe-35c6ae419e8a",
+  "name": "Crashing Drawbridge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crashing Drawbridge",
+      "oracle_fingerprint": "e087d35c75985c534631fff921e7977c",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

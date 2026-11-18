@@ -1,0 +1,29 @@
+{
+  "oracle_id": "14878a5f-7983-4133-a1a7-9d539531e092",
+  "name": "Angel of the Ruins",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Angel of the Ruins",
+      "oracle_fingerprint": "64c45d325ab875e22ee34d676c817515",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Typecycling": { "find": [{ "Subtype": "Plains" }], "cost": "{2}" } } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "76b003e0-15af-4f22-bdf2-1ade5430964a",
+  "name": "Zulaport Cutthroat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zulaport Cutthroat",
+      "oracle_fingerprint": "6f53b8def8027bea15a33e3bf3bbc092",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

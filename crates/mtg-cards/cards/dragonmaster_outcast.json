@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b6fb79c3-cd32-4045-8177-e52841eea65b",
+  "name": "Dragonmaster Outcast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragonmaster Outcast",
+      "oracle_fingerprint": "d6e1998d75f479d7ae94d0f1bf92d169",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 6
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dragon",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dragon"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "a7c000a8-1864-4bb2-80fa-a61d74dbd966",
+  "name": "Eternal Taskmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eternal Taskmaster",
+      "oracle_fingerprint": "221419204654eb95d2ebeefb423b00d3",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{2}{B}",
+                  "paid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

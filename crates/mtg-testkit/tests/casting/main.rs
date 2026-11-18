@@ -250,6 +250,7 @@ mod restricted_mana;
 mod rmt1_unspent;
 mod rmt2_target_rules;
 mod satchel;
+mod satchel_reuse;
 mod snow_mana;
 mod spell_copies;
 mod spell_gains_follow;

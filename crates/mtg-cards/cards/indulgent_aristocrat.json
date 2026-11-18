@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c7054a2d-2e7b-4487-8fc3-f6a47a716fd3",
+  "name": "Indulgent Aristocrat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indulgent Aristocrat",
+      "oracle_fingerprint": "5f3f159ac0537f551091a3a2e86c2b21",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

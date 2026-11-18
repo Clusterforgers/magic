@@ -1,0 +1,47 @@
+{
+  "oracle_id": "6c901ff4-15c3-468f-9a1b-4c69a7bbc31a",
+  "name": "Emperor Mihail II",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emperor Mihail II",
+      "oracle_fingerprint": "fc179a4ff99419ec63d99e33c2fb316f",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Subtype": "Merfolk" }], "from": "Library" } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Subtype": "Merfolk" }], "by": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}",
+                  "paid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Merfolk",
+                            "colors": ["Blue"],
+                            "types": ["Creature"],
+                            "subtypes": ["Merfolk"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

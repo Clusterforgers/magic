@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7f268b15-ac92-4e98-821b-78d15d9285d9",
+  "name": "Loyal Apprentice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loyal Apprentice",
+      "oracle_fingerprint": "597e094d09f216860d54bb30a232bf58",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Thopter",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Thopter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "as": "tokens"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tokens" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

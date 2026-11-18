@@ -183,7 +183,20 @@ fn only_what_the_engine_runs_is_verified() {
     verified.sort();
     assert_eq!(
         verified,
-        ["Forest", "Grizzly Bears", "Llanowar Elves", "Wastes"]
+        [
+            "Elvish Mystic",
+            "Forest",
+            "Fyndhorn Elves",
+            "Gigantosaurus",
+            "Grizzly Bears",
+            "Island",
+            "Llanowar Elves",
+            "Mountain",
+            "Plains",
+            "Swamp",
+            "Terrian, World Tyrant",
+            "Wastes"
+        ]
     );
     assert_eq!(state_of(&library, "Sol Ring", &caps), Support::Manual);
     assert_eq!(state_of(&library, "Gaea's Cradle", &caps), Support::Manual);
@@ -212,7 +225,16 @@ fn a_vanilla_or_basic_card_is_verified_without_a_rules_file() {
         verified.sort();
         assert_eq!(
             verified,
-            ["Forest", "Grizzly Bears"],
+            [
+                "Forest",
+                "Gigantosaurus",
+                "Grizzly Bears",
+                "Island",
+                "Mountain",
+                "Plains",
+                "Swamp",
+                "Terrian, World Tyrant"
+            ],
             "every other card of the corpus has rules text"
         );
     }

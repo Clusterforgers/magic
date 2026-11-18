@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1b301478-b14f-4ef8-94e6-9647d582eabe",
+  "name": "Golgari Rot Farm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golgari Rot Farm",
+      "oracle_fingerprint": "60d21e18b36ff964ff5dbfbef34f94cf",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

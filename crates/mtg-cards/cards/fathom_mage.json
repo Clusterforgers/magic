@@ -1,0 +1,20 @@
+{
+  "oracle_id": "93d0e129-e3b5-4aff-9e50-f34771ed00ff",
+  "name": "Fathom Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fathom Mage",
+      "oracle_fingerprint": "ed7e1deb2378c2fc93ada48c75d5b2a0",
+      "abilities": [
+        { "Keyword": "Evolve" },
+        {
+          "Triggered": {
+            "when": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

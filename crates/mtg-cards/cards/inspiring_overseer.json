@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d646e42b-5635-4798-b633-29c093b66a55",
+  "name": "Inspiring Overseer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Inspiring Overseer",
+      "oracle_fingerprint": "797d8ce54bc4af2c11c223744a287e47",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "3bc0bd36-70be-4180-9fb3-b10ce054107b",
+  "name": "Consuming Corruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Consuming Corruption",
+      "oracle_fingerprint": "ca18cb6e128a91c6e34d2f3351f35b56",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

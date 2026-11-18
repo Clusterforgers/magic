@@ -1,0 +1,26 @@
+{
+  "oracle_id": "666af637-9282-4121-962a-048e528f9221",
+  "name": "Steel Leaf Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Steel Leaf Champion",
+      "oracle_fingerprint": "14f667d2371fd0f82039d2af8ff9fe20",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "CantBeBlockedBy": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

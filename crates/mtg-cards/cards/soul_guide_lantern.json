@@ -1,0 +1,36 @@
+{
+  "oracle_id": "1b5e6560-ff2e-4475-96cb-63f64c8a86db",
+  "name": "Soul-Guide Lantern",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul-Guide Lantern",
+      "oracle_fingerprint": "1b2bcecda3ffe785e74d4d279b5356a9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Exile": { "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "Opponents" }] } }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "04b7362d-0490-4cb0-b5d7-2a7732f659ce",
+  "name": "Bojuka Bog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bojuka Bog",
+      "oracle_fingerprint": "9c5428f8acbd5660566419cfd4cc8fce",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

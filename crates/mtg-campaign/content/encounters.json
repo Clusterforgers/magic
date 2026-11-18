@@ -1,0 +1,71 @@
+[
+  {
+    "id": "giants_table",
+    "name": "Giant's Table",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Creature spells cost {2} less to cast.",
+    "abilities": [
+      {
+        "CostModifier": {
+          "applies_to": [
+            "Spell",
+            {
+              "Type": "Creature"
+            }
+          ],
+          "change": "Reduce",
+          "mana": "{2}"
+        }
+      }
+    ]
+  },
+  {
+    "id": "deep_pockets",
+    "name": "Deep Pockets",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "At the beginning of each player's draw step, that player draws an additional card.",
+    "abilities": [
+      {
+        "Triggered": {
+          "when": {
+            "StepBegins": {
+              "step": "Draw"
+            }
+          },
+          "effects": [
+            {
+              "Draw": {
+                "who": "Triggering"
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "shared_blood",
+    "name": "Shared Blood",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "All creatures are every creature type.",
+    "abilities": [
+      {
+        "Static": {
+          "affected": {
+            "Each": [
+              {
+                "Type": "Creature"
+              }
+            ]
+          },
+          "mods": [
+            "AddAllCreatureTypes"
+          ]
+        }
+      }
+    ]
+  }
+]

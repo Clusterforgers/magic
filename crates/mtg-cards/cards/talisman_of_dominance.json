@@ -1,0 +1,28 @@
+{
+  "oracle_id": "4c0a0448-b9d6-43a0-8549-64066dac63f0",
+  "name": "Talisman of Dominance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talisman of Dominance",
+      "oracle_fingerprint": "7ff2ef420254b21bf620b55143c5f418",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "19409704-09c4-4a4b-a5a7-f95120b425db",
+  "name": "Artisan of Kozilek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Artisan of Kozilek",
+      "oracle_fingerprint": "69956608b01c8ca1e15b58af29bc4c7b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Annihilator": 2 } }
+      ]
+    }
+  ]
+}

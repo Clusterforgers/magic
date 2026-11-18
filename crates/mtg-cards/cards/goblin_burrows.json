@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ad65bb8e-57de-49f3-ba7c-be62cf3fe3df",
+  "name": "Goblin Burrows",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Burrows",
+      "oracle_fingerprint": "a1bfa00dd4a8264041225eb792a7ccef",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Goblin" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

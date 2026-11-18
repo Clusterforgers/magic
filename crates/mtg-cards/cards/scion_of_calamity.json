@@ -1,0 +1,30 @@
+{
+  "oracle_id": "75fddffb-68f4-4b65-bf3b-4e2ada62a522",
+  "name": "Scion of Calamity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scion of Calamity",
+      "oracle_fingerprint": "656a7ddc76d5d503857ef04038f593f5",
+      "abilities": [
+        { "Keyword": "Myriad" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

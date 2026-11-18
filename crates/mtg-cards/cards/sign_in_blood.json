@@ -1,0 +1,22 @@
+{
+  "oracle_id": "c6207f6a-a624-4754-88f5-dbe700c841ff",
+  "name": "Sign in Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sign in Blood",
+      "oracle_fingerprint": "3f5a30580f494fb753f6eaecf5459da7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

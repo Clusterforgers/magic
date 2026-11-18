@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "38a61199-7471-4568-bc86-b8cc48b91c2c",
+  "oracle_id": "1a362e4d-6c02-4b67-ab63-c6622e505195",
+  "multiverse_ids": [
+    681887
+  ],
+  "arena_id": 92968,
+  "tcgplayer_id": 590150,
+  "cardmarket_id": 796486,
+  "name": "Crossway Troublemakers",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/38a61199-7471-4568-bc86-b8cc48b91c2c",
+  "scryfall_uri": "https://scryfall.com/card/j25/417/crossway-troublemakers?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:12:15Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.jpg?1783908735",
+    "normal": "https://cards.scryfall.io/normal/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.jpg?1783908735",
+    "large": "https://cards.scryfall.io/large/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.jpg?1783908735",
+    "png": "https://cards.scryfall.io/png/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.png?1783908735",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.jpg?1783908735",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.jpg?1783908735",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.webp?1783908735",
+    "grid": "https://cards.scryfall.io/grid/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.webp?1783908735",
+    "display": "https://cards.scryfall.io/display/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.webp?1783908735",
+    "art": "https://cards.scryfall.io/art/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.webp?1783908735",
+    "crop": "https://cards.scryfall.io/crop/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.webp?1783908735",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/8/38a61199-7471-4568-bc86-b8cc48b91c2c.jpg?1783908735"
+  },
+  "mana_cost": "{5}{B}",
+  "cmc": 6.0,
+  "type_line": "Creature — Vampire",
+  "oracle_text": "Attacking Vampires you control have deathtouch and lifelink. (Any amount of damage they deal to a creature is enough to destroy it. Damage dealt by those creatures also causes their controller to gain that much life.)\nWhenever a Vampire you control dies, you may pay 2 life. If you do, draw a card.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "9201567c-bab5-4720-aac9-260e6741f115",
+  "set": "j25",
+  "set_name": "Foundations Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/9201567c-bab5-4720-aac9-260e6741f115",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/38a61199-7471-4568-bc86-b8cc48b91c2c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1a362e4d-6c02-4b67-ab63-c6622e505195&unique=prints",
+  "collector_number": "417",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Aaron J. Riley",
+  "artist_ids": [
+    "f21b412c-aef5-4d15-88be-4f40615acde3"
+  ],
+  "illustration_id": "0e59c284-1370-41c9-94c3-248d8b052b17",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3680,
+  "penny_rank": 14148,
+  "prices": {
+    "usd": "0.33",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.33",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=681887&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCrossway%2BTroublemakers",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCrossway%2BTroublemakers",
+    "edhrec": "https://edhrec.com/route/?cc=Crossway+Troublemakers"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590150%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=796486&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Crossway+Troublemakers&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

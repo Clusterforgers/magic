@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7e5d9efe-48a9-434b-bb09-056e0e09cc9a",
+  "name": "Isolated Chapel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Isolated Chapel",
+      "oracle_fingerprint": "a5220c580152b636e6031e944ff9afa8",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Plains" }, { "Subtype": "Swamp" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

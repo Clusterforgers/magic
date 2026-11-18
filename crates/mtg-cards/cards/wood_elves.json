@@ -1,0 +1,23 @@
+{
+  "oracle_id": "8973bd99-20f8-4867-90ef-50392147ee1b",
+  "name": "Wood Elves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wood Elves",
+      "oracle_fingerprint": "b395d7a4bb99e1c57a54889dfe6aaf99",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Forest" }], "as": "land" } },
+              { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

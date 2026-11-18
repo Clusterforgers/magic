@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f8526a36-eb8f-457d-b532-e12b47622cfa",
+  "name": "Phyrexian Triniform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Triniform",
+      "oracle_fingerprint": "c338e67f631c559533decbe5b2d416d9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Phyrexian Golem",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Phyrexian", "Golem"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  },
+                  "count": 3
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Encore": "{12}" } }
+      ]
+    }
+  ]
+}

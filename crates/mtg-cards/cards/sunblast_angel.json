@@ -1,0 +1,20 @@
+{
+  "oracle_id": "8b34d1df-4024-497d-bd28-a7caa8c3fa24",
+  "name": "Sunblast Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunblast Angel",
+      "oracle_fingerprint": "2fb935a551bc00ccf5572b1003adcbff",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Tapped"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

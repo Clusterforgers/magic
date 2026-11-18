@@ -1,0 +1,35 @@
+{
+  "oracle_id": "d3b49970-46b7-441b-bff8-8403d982b8a7",
+  "name": "Majestic Heliopterus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Majestic Heliopterus",
+      "oracle_fingerprint": "7183e93cd3e8ee5cfc39746f2bcdb87b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Flying" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

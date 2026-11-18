@@ -1,0 +1,25 @@
+{
+  "oracle_id": "87bd0fdb-c5b9-46ea-9858-1a870960351f",
+  "name": "Invoke the Divine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invoke the Divine",
+      "oracle_fingerprint": "a2a77c30d6511b1f172dc5f18f3bf489",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "GainLife": { "amount": 4 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "41623eab-38b5-4058-8de2-e6b8706de7a2",
+  "name": "Otepec Huntmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Otepec Huntmaster",
+      "oracle_fingerprint": "f62a157a9ba42ac3ce19c60a29eee43f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Dinosaur" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": [{ "Subtype": "Dinosaur" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

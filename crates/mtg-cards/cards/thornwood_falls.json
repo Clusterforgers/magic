@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ec96cde2-f1e6-495c-94e2-3e8ae79e556c",
+  "name": "Thornwood Falls",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thornwood Falls",
+      "oracle_fingerprint": "88fcd5ec810a6cfffda0513b70d22c39",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

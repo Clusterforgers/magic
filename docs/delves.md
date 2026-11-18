@@ -37,44 +37,27 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 ## Bosses
 
-- A boss (`content/<theme>.json`, its custom cards in `content/boss_cards.json` or `cards.json`) has its colours, a thematic deck written in brackets (`brackets`, Difficulty), a commander card, a brain (Hard by default), a base life and life per hero, an opening hand, one passive (`rules`), an Enrage (`enrage`), two phases, a relic of its own (`relic`) and an art card: a real card (`art.card`, `art.oracle_id`) whose art crop pictures it on the descent and the fight panel. `since` is the content generation it joined in; `deck` is the 40-card deck runs of a generation before 4 play. A boss of a later generation is drawn only for runs of that generation or later, so the ladder of an older run never changes (tests pin generation-4 and generation-5 ladders).
-- Bracket decks: Standard-style decks of real cards that play automatically (Verified or Read), in the boss's colours, at most four copies of a card, 40 to 45 % basic lands. `base` is the bracket 1 deck of 40 cards; each of `steps` makes the next bracket from the one below by the cards it adds and cuts: 50 cards at bracket 2, 60 from bracket 3, swaps for brackets 4 and 5. Bracket 1 plays cards of mana value 5 or less, bracket 2 of 6 or less, bracket 3 of 7 or less. Theme comes before strength: each deck plays the boss's creature type and supports its passive.
-- Commander card: a real card of any type (`commander`) that waits in the boss's command zone, where nothing casts it (`PlayerSetup::held`). The boss's last own phase carries a state trigger: while the card is there, the boss casts it without paying its mana cost; a card that can't be cast then goes to the graveyard. The intro and the boss bar list it as "Phase III: <card>" until then, and the cast is logged as any spell. The plan names it (`BossSeat.commander`), the deck list sent for the boss's seat ends with it and `FightPlan::apply` moves it from the library to the command zone.
-- Upgraded boss: a boss with an `upgrade` also stands as a final boss under a new name with one extra boss card (`<id>_ascendant`, `Boss::upgraded`): the same deck, commander, phases, Enrage and relic, at the final boss's bracket; `upgrade.since` is the generation the form joins in (Vex, Seraphine and Ysolde from 5). It is drawn only for a ladder its own lieutenant form is not on, and it never fields its own minion. The ladder and the intro name it as the upgraded form of the boss it came from (`DelveBossView.upgrade_of`).
-- No loops: no boss deck holds a known infinite combo (a content test vets card pairs and plays every deck at every bracket under the loop detector). The bots of the boss's side answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
-- Its advantages are open: its passive, Enrage, modifier and relic are emblems in its command zone from the start; each phase is an emblem that arrives when its life falls to a share of its starting life (66 % and 33 %). The table shows the boss's phase and the next one on the seat's chips.
-- Enrage: each boss's own, from the heroes' seventh turn at Heat 1 (ninth at Heat 0, sixth at Heat 2; `turn` on the card, read by the boss bar and the intro). It ends a stalled fight in the boss's manner: a growing swarm, growing counters, a growing toll or a growing attack.
-- Modifier: one buff drawn from the theme's pool (`modifiers`) for each fight, from the seed and the room, so a retried fight keeps it; the first boss at Heat 0 draws none.
-- Relic: as the Difficulty table says (from the second boss at Heat 1 and 2, the third at Heat 0), the boss brings its own risky relic, which helps the boss and may help the heroes too.
-- Every boss has Escalation (each of its end steps, every hero loses 1 life for every four turns it has taken).
-- Drain rule: a boss has at most one life loss with no way out, Escalation. Every other life loss of a boss card, phase, scheme, modifier or relic happens only unless the hero pays (mana or a discard), and its text says so; a content test reads each card's abilities and enforces it.
+Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`boss_plan.rs`): one innate, one encounter modifier, two phases by round, a satchel, a precon deck and relics by depth. The boss has nothing else; its brain is Hard at every Heat and depth.
 
-| Boss | Colours, deck | Commander card | Passive | Enrage (from the heroes' turn 7 at Heat 1) | Relic (Difficulty) |
-|---|---|---|---|---|---|
-| Skrix | B, Rats | Ashcoat of the Shadow Swarm | a Rat each upkeep | Rats each upkeep: the heroes' turns beyond six | Rat King's Crown: Rats get +1/+1 |
-| Mossjaw | G, Trolls and beasts | Thrun, Breaker of Silence | its creatures +1/+1 and trample | a +1/+1 counter on each of its creatures each upkeep | Heartwood Bark: all creatures +0/+2 |
-| Vex | BR, Zombies | Gisa, the Hellraiser | a Zombie when a hero's nontoken creature dies | each hero loses 3 unless they pay {2}, each upkeep | Bone Reliquary: creature spells cost {1} less |
-| Grimgut (final) | R, Goblins | Krenko, Tin Street Kingpin | a hasty Goblin each upkeep | its creatures +1/+0 each combat per heroes' turn beyond six | Crown of Cinders: all creatures have haste |
-| Seraphine | W, Angels and lifegain | Akroma, Angel of Wrath | its creatures have lifelink | a creature card at random from its graveyard to the battlefield each upkeep per heroes' turn beyond six | Halo of Wings: creatures with flying get +1/+1 |
-| Ysolde | U, Merfolk and krakens | Lorthos, the Tidemaker | taps a hero's creature each upkeep | each hero mills two per heroes' turn beyond six, each upkeep | Tidal Codex: instants and sorceries cost {1} less |
-| Hollowmere | WU, Spirits | Geist of Saint Traft | a 1/1 flying Spirit when its nontoken creature dies | 1/1 flying Spirits: the heroes' turns beyond six, each upkeep | Lantern of Lost Souls: creatures with flying have vigilance |
-| Morwenna | UB, Faeries | Alela, Cunning Conqueror | the hero in the spotlight discards a card unless they pay {1}, each upkeep | creature cards at random from the heroes' graveyards onto her battlefield, one per heroes' turn beyond six | Moonlit Veil: creatures with flying get +1/+0 |
-| Korrath | RG, Dinosaurs | Ghalta, Primal Hunger | a +1/+1 counter on its creature whenever it is dealt damage | 3/3 trampling Dinosaurs: the heroes' turns beyond six, each upkeep | Amber of the Ancients: creature spells with power 4 or more cost {1} less |
-| Sahrra | GW, Cats | Jazal Goldmane | a +1/+1 counter on each of its Cats when one of its Cats dies | 2/2 Cats: the heroes' turns beyond six, each upkeep | Sunmane Pelt: Cats get +1/+1 |
-| Valdric | WB, Vampires | The Haunt of Hightower | a +1/+1 counter on each of its Vampires when a hero's creature dies | 2/2 lifelink Vampires: the heroes' turns beyond six, each upkeep | Chalice of the Crimson Host: creatures with lifelink get +1/+0 |
-| Ozrith | UR, Wizards and spells | Niv-Mizzet, Parun | a 1/1 Elemental when it casts an instant or sorcery | 1 damage to each hero creature per heroes' turn beyond six, each upkeep | Stormglass Orrery: creatures with haste get +1/+0 |
-| Aurenne | WR, Knights | Adriana, Captain of the Guard | its attacking creatures get +1/+0 | 2/2 first-strike Knights: the heroes' turns beyond six, each upkeep | Banner of the Dawn Legion: creatures with first strike get +1/+0 |
-| Vorthana | BG, Insects | Aatchik, Emerald Radian | a creature card at random from its graveyard to its hand at each of its end steps | 1/1 flying deathtouch Insects: the heroes' turns beyond six, each upkeep | Chitin Censer: creatures with deathtouch get +1/+0 |
-| Sivanne | UG, Snakes | Koma, World-Eater | its creatures enter with an additional +1/+1 counter | a hero creature at random back to its owner's hand per heroes' turn beyond six, each upkeep | Shed-Scale Amulet: creatures with +1/+1 counters have trample |
-| The Unmaker (uber) | colourless, Eldrazi on Wastes | Ulamog's Dreadsire | the heroes' cost colours drawn anew each round (Uber boss) | 4/4 Eldrazi: the heroes' turns beyond six, each upkeep | Prism of Unmaking: colourless spells cost {1} less |
+- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`content/decks/<code>-<name>.json`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight), `makeup` what its deck is made of, `art` the real card whose art crop pictures it. `deck` stands in until the precon lands.
+- Depth: the bosses the party defeated in the run over all floors (`Run::defeated`); a lost and retried fight adds none.
+- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` in its abilities); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
 
-- Phases of the new bosses: Seraphine's creatures get +1/+1 and vigilance, then a 4/4 flying Angel each upkeep; Ysolde's foes' creatures get −1/−0, then her creatures have hexproof and she draws at each end step. Hollowmere's Spirits get +1/+1, then all its creatures fly; Morwenna's creatures have deathtouch, then get +1/+1 and each hero mills two at her end step; Korrath's creatures have trample, then get +2/+0 and haste; Sahrra's Cats have first strike, then her creatures get +1/+1 and trample; Valdric's Vampires have lifelink, then his creatures get +1/+0 and fly; Ozrith's creatures get +1/+0 and haste, then +1/+1 and prowess; Aurenne's Knights get +1/+1, then all her creatures have first strike and haste; Vorthana's Insects get +1/+1, then all her creatures have deathtouch and menace; Sivanne's Snakes have deathtouch, then her creatures get a +1/+1 counter at each of her end steps; the Unmaker's colourless creatures get +1/+1, then all its creatures have annihilator 1.
-- Upgraded forms: Skrix, Empress of the Undercity (a menace Rat at each end step) and Mossjaw the Undying (a 3/3 Troll at each end step); from generation 5 Vex, the Deathless (a 2/2 menace Zombie), Seraphine, Choir Eternal (a 2/2 flying Angel) and Ysolde, Empress of the Abyss (a 3/3 Kraken), each at its end step.
-- Roster: the five mono-colour bosses (W Seraphine, U Ysolde, B Skrix, R Grimgut, G Mossjaw) and ten two-colour bosses, one per colour pair (BR Vex; WU Hollowmere, UB Morwenna, RG Korrath, GW Sahrra and WB Valdric from generation 5; UR Ozrith, WR Aurenne, BG Vorthana and UG Sivanne from generation 6).
-- Uber boss (`uber`): never a lieutenant or a final boss of its own; from generation 5 at Heat 2 (`UBER_HEAT`), one ladder in four (`UBER_ODDS`, a random stream of its own keyed by the floor, so the lieutenants and camps stay as drawn; a deeper floor of an endless run does not meet it again right after a floor that did) meets it in place of the final boss, at the final boss's bracket. The Unmaker's passive is the engine rule `CostColorsDrawn` ([engine.md](engine.md), Rules of the game): each round every hero's coloured mana symbols stand for other colours of their commander's identity, so costs keep their mana value and stay castable with the deck's lands; the card, its spoken name and the preview show the cost now. Its deck is colourless Eldrazi on Wastes, which the bracket rules count as basic lands.
+| Depth | 0 | 1 | 2 | 3 | 4–5 | 6–7 | 8–9 | 10–11 | 12+ |
+|---|---|---|---|---|---|---|---|---|---|
+| Heat 0 Casual | I | I | II | II | III | III | IV | IV | V |
+| Heat 1 Seasoned | I | II | II | III | III | IV | IV | V | V |
+| Heat 2 Heroic | II | II | III | III | IV | IV | V | V | V |
 
-- Schemes: the theme's scheme deck of 14, shuffled from the seed for each fight, sets one scheme in motion every other boss turn from its third (`scheme_every`, CR 314 in the manner of Archenemy); a scheme stays in motion until the boss's next turn begins, so the turns between have none. The next one is public as the Omen with the boss turns until it comes. At that cadence a fight of 30 boss turns meets each scheme at most once. Their effects count the heroes (a Rat per hero, a sacrifice and a discard from each hero, a toll on each hero) or name the hero in the spotlight; Hunting Party spares commanders.
-- Minions: a lieutenant seat on the boss's side with another boss's deck, its own life and bot brain, sharing the boss's turn; it falls with the boss (`LossReason::LeaderFell`), so the party wins when the boss falls.
+- Encounter modifier: one game-warping rule for the whole fight, drawn from the pool both themes share (`content/modifiers.json`, its cards in `content/encounters.json`) by the seed keyed by floor and room, so a retried fight keeps it. A modifier never meets a boss its `not_with` names (`modifiers.rs`).
+- Phases: Phase 1 begins at the beginning of the end step of the last turn of round 8, Phase 2 of round 14 (`PHASE_ROUNDS`, `PhaseStart::AtRound`). A round is one turn of each seat or team (`Turn::round`); an extra turn does not advance it. A phase is an emblem for the rest of the fight; its "when this phase begins" ability (`TriggerPattern::PhaseBegins`) uses the stack once.
+- Satchel: four spells in the boss's command zone, cast like cards in hand and public; a reusable one returns as it leaves the stack and costs {2} more for each earlier cast this fight, a once card does not return.
+- Relics: `depth − offset` relics, the offset 4, 3 and 2 at Heat 0, 1 and 2, at most 6 (`boss_relics.rs`). They come from the heroes' whole relic pool of the run's generation, risky relics included, never one that names teammates (`team`), and only those the deck's makeup can use. Each is Rare by chance (10, 15 or 20 % at Heat 0, 1 and 2 with one relic, 10 points more for each further relic, at most 60 %) or, from four relics at Heat 1 and 2, Mythic (5 % at four, 10 at five, 15 at six); the rest are Common. Copies can repeat and stack. The draw is keyed by floor and room.
+- Life: 40 and 15 for each hero after the first (`Scale::boss_life`); Heat and depth do not change it.
+- Its advantages are open: the innate, modifier and relics are emblems in its command zone from the start; the intro lists them with the phases and the satchel.
+- No loops: the bots of the boss's side answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
+- Drain rule: a boss's innate, modifier, phase or satchel card takes life from a hero only as damage or unless the hero pays.
+- Relics for heroes: from generation 8 a relic can drop again; owning it never lowers its chance, and copies stack.
 
 ## Spotlight
 
@@ -91,30 +74,12 @@ The boss's side spreads its pressure over the party (`mtg-engine`, `spotlight.rs
 
 ## Ramp-up
 
-- Lull: the boss's side's creatures can't attack and its schemes wait until the boss's third turn, so the heroes have three turns before the first attack. The Omen shows the first scheme from the start.
 - The boss bots hold back sweepers (wipes, and damage or sacrifice to each player or creature without a target) through the boss's first three turns.
-- Reserves and Reinforcements begin on the boss's second turn and Warpath on its fourth; Escalation grows by 1 every four boss turns and Enrage begins after the heroes' seventh turn at Heat 1 (Difficulty).
 
 ## Commander rules in a fight
 
 - Heroes play their Commander decks under the Commander rules: 40 life at the start of a run (carried after), the commander tax, 21 combat damage from one commander eliminates a hero.
 - The boss and its minions have no commander. They take commander damage as normal damage but never lose to 21 of it, so a big commander shortens the fight without ending it in one hit.
-
-## Scaling
-
-One table (`scale.rs`) sets the boss for the party's size, so every size meets the same challenge:
-
-| Heroes | Life | Hand | Reserves | Reinforcements | Warpath | Minions | Last Bulwark |
-|---|---|---|---|---|---|---|---|
-| 1 | 100 % | base − 5 | | | | | |
-| 2 | 100 % | base − 4 | 1 | | | | |
-| 3 | 100 % | base − 3 | | 1 | | | yes |
-| 4 | 85 % | base − 2 | | 1 | | 1 | yes |
-| 5 | 100 % | base − 1 | | 2 | | 1 | yes |
-| 6 | 90 % | base | | 2 | 1 | 2 | yes |
-
-- Life is a share of `life + life_per_hero × (heroes − 1)`. Reserves is a 2/2 Zombie each upkeep from the boss's second turn; Reinforcements a card and a 2/2 Zombie from its second; Warpath, from its fourth turn, untaps the boss's creatures after its first combat and adds a combat and a main phase; the Last Bulwark begins with the last phase: no more than three creatures can attack the boss each combat.
-- The party-size table is the base; the boss's place on the ladder and the Heat move it (Difficulty).
 
 ## Difficulty
 
@@ -125,54 +90,7 @@ The host picks the Heat when creating a run; the creation form and the run heade
 | 0 | Casual | any deck can win with some luck |
 | 1 | Seasoned | needs a deck that suits the format |
 | 2 | Heroic | needs a team of decks that work together and suit the format |
-
-Within a run the bosses ramp with the party's relics, loot and upgrades: the first boss (`Run::boss_rank` 0) is the gentlest and each later one harder. The deck's bracket carries most of the step (`scale.rs`, `BRACKETS`): a bracket is abstract deck power, and a lower bracket also plays a smaller deck (40 cards at bracket 1, 50 at bracket 2, 60 from bracket 3):
-
-| Heat | Fight 1 | Fights 2 and 3 | Fight 4 |
-|---|---|---|---|
-| 0 Casual | 1 | 2 | 3 |
-| 1 Seasoned | 2 | 3 | 4 |
-| 2 Heroic | 3 | 4 | 5 |
-
-Runs of content generation 4 and later (`BRACKETS_FROM`, `Scale::of_content`) play the bracket decks and the commander card under the bracket tier table (`BRACKET_TIERS`), whose life, hand and brain move less than before:
-
-| Heat | Rank | Bracket | Life | Hand | Brain | Minions | Relic | Modifier |
-|---|---|---|---|---|---|---|---|---|
-| 0 | 0 | 1 | 75 % | −1 | −1 | −1 | | |
-| 0 | 1 | 2 | 80 % | −1 | −1 | −1 | | yes |
-| 0 | 2 | 2 | 85 % | | | | yes | yes |
-| 0 | 3+ | 3 | 90 % | | | | yes | yes |
-| 1 | 0 | 2 | 85 % | −1 | −1 | −1 | | yes |
-| 1 | 1 | 3 | 90 % | | | | yes | yes |
-| 1 | 2 | 3 | 95 % | | | | yes | yes |
-| 1 | 3+ | 4 | 100 % | | | | yes | yes |
-| 2 | 0 | 3 | 95 % | | | | | yes |
-| 2 | 1 | 4 | 105 % | | | | yes | yes |
-| 2 | 2 | 4 | 110 % | | | | yes | yes |
-| 2 | 3+ | 5 | 120 % | +1 | +1 | | yes | yes |
-
-A run of an earlier generation keeps the decks as written and the rank × Heat table below (`TIERS`). That table by Heat and rank moves the party-size table, so every party size meets the same ramp; a ladder longer than four bosses plays the last row for the rest. Life is a share of the party-size life (the minions' life too), hand and minions are added to the party-size numbers, brain moves the boss's and its minions' bot level (Hard by default), relic brings the boss's own relic, modifier draws one from the theme's pool:
-
-| Heat | Rank | Life | Hand | Brain | Minions | Relic | Modifier |
-|---|---|---|---|---|---|---|---|
-| 0 | 0 | 60 % | −2 | −1 | −1 | | |
-| 0 | 1 | 70 % | −2 | −1 | −1 | | yes |
-| 0 | 2 | 80 % | −1 | | | yes | yes |
-| 0 | 3+ | 90 % | | | | yes | yes |
-| 1 | 0 | 75 % | −1 | −1 | −1 | | yes |
-| 1 | 1 | 90 % | | | | yes | yes |
-| 1 | 2 | 100 % | | | | yes | yes |
-| 1 | 3+ | 110 % | +1 | | | yes | yes |
-| 2 | 0 | 100 % | | | | | yes |
-| 2 | 1 | 115 % | +1 | +1 | | yes | yes |
-| 2 | 2 | 125 % | +1 | +1 | | yes | yes |
-| 2 | 3+ | 140 % | +2 | +1 | | yes | yes |
-
-- Enrage begins after the heroes' ninth turn at Heat 0, their seventh at Heat 1 (as each Enrage card is written) and their sixth at Heat 2 (`ENRAGE_TURN`). The content makes each Enrage card's variant for the other turns on loading (`<id>_at_<turn>`: its turn, its rules text and the turn counts its abilities read), so the boss bar and the intro read the turn the fight plays.
-- Heat 1 at rank 2 is the boss as it was balanced before the tiers (Measured); Heat 0 sits below it at every rank and Heat 2 above.
-- The drain rule holds at every Heat: no tier adds a life loss, so Escalation stays each boss's one drain with no way out.
-- A content test holds both tables monotonic: at every party size a later rank or a higher Heat never gives a boss a lower bracket, less life, hand, brain or minions, never takes away its relic or modifier and never delays its Enrage.
-- The run view lists each boss of the ladder with the life it starts with against the party at its rank (`DelveView.boss_lives`), which the ladder and the intro show.
+Depth and Heat act on the boss through its innate level and relics (Bosses); the party size sets its life.
 
 ## Endless
 
@@ -181,10 +99,6 @@ From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor
 - Floor cleared: when a floor's final boss falls the run waits on the cleared floor (`Status::FloorCleared`, `Run.floors_cleared` counts it). Each hero votes to bank the win or descend (`RunEvent::FloorVoted`, `DelveAction::FloorVote`); with every vote in, the most votes win and a tie goes to the torch bearer's vote, as the camp vote. Bank ends the run in victory.
 - Descent: the next floor's ladder is drawn from the seed keyed by the floor (`map::generate_floor`): three lieutenants and a final boss as on the first floor from the roster of the run's generation (the uber boss included), avoiding by identity the bosses of the floor above while enough others are left. The heroes keep their life, relics, Satchel, upgrades, banes and gold; the party gets one heart back, up to 3 (`DESCENT_HEARTS`). The floor's first boss awaits at once.
 - Descent loot: from content generation 7 (`DESCENT_LOOT_FROM`) a vote to descend first gives every hero the final boss's loot as after a lieutenant (Loot: 50 gold, a relic pick and a card pick, drawn for the floor), the party still in the cleared floor's last room (`Status::Room`, `Run.descending`); the descent follows once every hero answered. Bank takes no loot. A run of generation 5 or 6 descends at once, so its log replays unchanged.
-- Difficulty by floor (`Scale::on_floor`, `Scale::deeper`): below the first floor every boss plays the Heat's top row of `BRACKET_TIERS` (no smaller deck, lower life, weaker brain, fewer minions or missing relic for the first fights), at the bracket of `BRACKETS` one higher per floor below the first, capped at bracket 5. Each step beyond the cap adds 10 % life (`OVERFLOW_LIFE`), a card to its opening hand and a brain level.
-- Boss relics: each boss brings one risky relic more per floor below the first, drawn by the seed keyed by floor and room from the risky relics of the run's generation that are neither its own relic nor held by a hero.
-- Intensify: per floor below the first, each boss's Enrage begins one heroes' turn earlier (never before turn 4, `ENRAGE_EARLIEST`; the content makes Enrage variants for turns 4 to 9) and its passive cards (`rules`, an upgraded form's added card too) are in its command zone once more, so a token passive makes one more token and an anthem stacks.
-- The intro lists what the floor changes (`DelveFightView.intensify`, `Scale::intensify`); the cleared floor lists what a descent changes (`DelveView.descent`, `Run::descent_words`).
 - Bots: bot allies vote once every player voted; they descend while the party holds 2 hearts or more and 60 % of its life cap or more (`Run::bots_descend`), else bank.
 - The first floor of an endless run is the ladder `generate_for` draws and plays at its scale and fight plans as before; only the final boss's fall asks the vote. A run of an earlier generation ends in victory at its final boss as before.
 

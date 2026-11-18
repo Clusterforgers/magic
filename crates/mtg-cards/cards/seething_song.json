@@ -1,0 +1,18 @@
+{
+  "oracle_id": "64bf8929-f5f2-4d50-8667-13b1d007bcfc",
+  "name": "Seething Song",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seething Song",
+      "oracle_fingerprint": "037b484f5bc3fc46756d3783c4ea7b8c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red", "Red", "Red", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

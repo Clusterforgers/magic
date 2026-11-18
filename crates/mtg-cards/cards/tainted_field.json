@@ -1,0 +1,32 @@
+{
+  "oracle_id": "439de49b-1091-4688-9ffb-80a025df31c2",
+  "name": "Tainted Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Field",
+      "oracle_fingerprint": "17c0aae73b80f438b3914fd89a5eeff1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

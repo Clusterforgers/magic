@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5effaa94-7f87-4485-8959-473d584c5034",
+  "name": "Grim Backwoods",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grim Backwoods",
+      "oracle_fingerprint": "20c8208dc916cc9dae7e46395324badd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}{G}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

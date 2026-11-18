@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7063abe1-87dd-4526-9867-f7ce255b2cf0",
+  "name": "Bellowing Aegisaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bellowing Aegisaur",
+      "oracle_fingerprint": "9b21fbdbacf31287bc91c77c63453683",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

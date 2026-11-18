@@ -1,0 +1,19 @@
+{
+  "oracle_id": "e409c9be-0c9a-43c3-adb4-8c47afc1d551",
+  "name": "Phyrexian Rager",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Rager",
+      "oracle_fingerprint": "bdf839b555c64392c0552feb2cb1c922",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

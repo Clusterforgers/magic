@@ -27,6 +27,7 @@ export function standingKind(card: CustomCardView | undefined): { kind: BossAbil
     case 'Enrage':
       return { kind: 'enrage', when: `From the heroes' turn ${card.turn}` }
     case 'Modifier':
+    case 'Encounter':
       return { kind: 'modifier' }
     case 'BossRelic':
       return { kind: 'relic' }

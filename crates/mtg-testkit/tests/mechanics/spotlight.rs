@@ -17,7 +17,7 @@ use mtg_core::house::HouseRules;
 use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::events::{Event, NothingToDo};
 use mtg_engine::format::Commander;
-use mtg_engine::phases::BossPhase;
+use mtg_engine::phases::{BossPhase, PhaseStart};
 use mtg_engine::spotlight;
 use mtg_engine::turn::Step;
 use mtg_engine::w6b_emblems::emblem_definition;
@@ -68,7 +68,7 @@ fn fight(lives: &[i32], minions: usize, boss_upkeep: &str) -> Scenario {
             .spirit(seat, emblem("Haunt", &[]));
     }
     let phase = BossPhase {
-        at_life: 20,
+        begins: PhaseStart::AtLife(20),
         emblem: emblem("Wrath", &[&upkeep(boss_upkeep)]),
     };
     scenario = scenario.life(boss, 20).phases(boss, [phase]);
@@ -297,7 +297,7 @@ fn a_boss_takes_commander_damage_but_never_loses_to_it(
         scenario = scenario.phases(
             1,
             [BossPhase {
-                at_life: 1,
+                begins: PhaseStart::AtLife(1),
                 emblem: emblem("Last", &[]),
             }],
         );

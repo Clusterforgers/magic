@@ -1,0 +1,27 @@
+{
+  "oracle_id": "10821e37-8a83-4d8e-a12f-249a10933a22",
+  "name": "Qasali Pridemage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Qasali Pridemage",
+      "oracle_fingerprint": "e269de83f3a13e17eed004e843795f97",
+      "abilities": [
+        { "Keyword": "Exalted" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

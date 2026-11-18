@@ -1,0 +1,43 @@
+{
+  "oracle_id": "16aba9af-7a12-4c3d-87eb-06278921cb7c",
+  "name": "Merfolk Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merfolk Sovereign",
+      "oracle_fingerprint": "776b7fe1f555c2f247edd9781cf9a9c0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Merfolk" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Subtype": "Merfolk" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

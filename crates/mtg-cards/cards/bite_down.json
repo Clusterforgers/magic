@@ -1,0 +1,37 @@
+{
+  "oracle_id": "623903de-3c04-4745-9af3-d7ec9fb2574d",
+  "name": "Bite Down",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bite Down",
+      "oracle_fingerprint": "89161f83aefaaf7a7e67872b1b2c3d3b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "source": { "Target": 0 },
+                  "to": { "Target": 1 },
+                  "amount": { "Stat": { "of": { "Target": 0 }, "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

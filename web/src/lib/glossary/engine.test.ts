@@ -262,7 +262,7 @@ const TRIGGERS: Record<string, string> = {
 const ORDINARY_TRIGGERS =
   names(`ZoneChange ZoneChangeExcept ResolvedToGraveyard Attacks AttacksAlone AttacksPlayer
   AttacksPlayerOrPlaneswalker PlayerAttacked PlayerAttacks BecomesTarget PlayerBecomesTarget PutOnStack FirstDrawRevealed
-  Drew Blocks BecomesBlocked Unblocked GroupAttacks GroupAttacksAt StepBegins State Did AnyOf Batch Nth Caused R6701WhileActivating DealsToughnessDamage`)
+  Drew Blocks BecomesBlocked Unblocked GroupAttacks GroupAttacksAt StepBegins State Did AnyOf Batch Nth Caused R6701WhileActivating DealsToughnessDamage PhaseBegins`)
 
 /** The fields of the player view that are a designation, a status or a counter the rules define, by lexicon term. */
 const PLAYER_FIELDS: Record<string, string> = {

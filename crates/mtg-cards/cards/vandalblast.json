@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3567c3c8-b3c7-45b7-935b-b1fdbc973720",
+  "name": "Vandalblast",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vandalblast",
+      "oracle_fingerprint": "4e29c385d46282fbbcd53178d00196ee",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Overload": "{4}{R}" } }
+      ]
+    }
+  ]
+}

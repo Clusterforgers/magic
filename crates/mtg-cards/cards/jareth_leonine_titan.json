@@ -1,0 +1,41 @@
+{
+  "oracle_id": "019aa6a6-7be8-4c3d-8f3e-4ccce2b9c3d3",
+  "name": "Jareth, Leonine Titan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jareth, Leonine Titan",
+      "oracle_fingerprint": "1ac92e02f98735a9a635d84dd19f5dcc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Blocks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 7, "toughness": 7 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{W}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "fc5d3341-cbce-49e5-93cc-8add92479dca",
+  "name": "Bad Moon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bad Moon",
+      "oracle_fingerprint": "b1313c2b698a5881446967fae6c03e79",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "Black" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

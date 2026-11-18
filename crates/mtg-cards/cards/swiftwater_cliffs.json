@@ -1,0 +1,26 @@
+{
+  "oracle_id": "2f4ad084-2062-44c0-9975-15f100204531",
+  "name": "Swiftwater Cliffs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swiftwater Cliffs",
+      "oracle_fingerprint": "c83bd094bbf6951818da0cb250c8ffa4",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

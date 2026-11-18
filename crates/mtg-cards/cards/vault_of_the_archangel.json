@@ -1,0 +1,33 @@
+{
+  "oracle_id": "eeaac65a-3480-475a-bb28-e6375d53f487",
+  "name": "Vault of the Archangel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vault of the Archangel",
+      "oracle_fingerprint": "433ff5573ff8ae0c07f5d27d8e25aee0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{B}" }, "Tap"],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

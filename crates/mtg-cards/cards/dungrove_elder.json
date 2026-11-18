@@ -1,0 +1,28 @@
+{
+  "oracle_id": "32083c9f-04c6-4b6f-9e24-cc8f3cae3e3e",
+  "name": "Dungrove Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dungrove Elder",
+      "oracle_fingerprint": "266128ab073553ef33b103d863461fbf",
+      "abilities": [
+        { "Keyword": "Hexproof" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "046f5783-cc7b-416a-8cf6-2bcef9c2cc1a",
+  "name": "Simic Growth Chamber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simic Growth Chamber",
+      "oracle_fingerprint": "75cd40ccde9f4fc5ef049c45d9ba1ea1",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

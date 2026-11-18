@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "d5f68c73-4794-4659-b494-edf89105beab",
+  "oracle_id": "a30dee74-86e3-4888-980e-b22437fbbb66",
+  "multiverse_ids": [
+    519264
+  ],
+  "mtgo_id": 89563,
+  "tcgplayer_id": 236324,
+  "cardmarket_id": 559122,
+  "name": "Spitting Image",
+  "lang": "en",
+  "released_at": "2021-04-23",
+  "uri": "https://api.scryfall.com/cards/d5f68c73-4794-4659-b494-edf89105beab",
+  "scryfall_uri": "https://scryfall.com/card/c21/229/spitting-image?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:25:19Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.jpg?1783927519",
+    "normal": "https://cards.scryfall.io/normal/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.jpg?1783927519",
+    "large": "https://cards.scryfall.io/large/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.jpg?1783927519",
+    "png": "https://cards.scryfall.io/png/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.png?1783927519",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.jpg?1783927519",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.jpg?1783927519",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.webp?1783927519",
+    "grid": "https://cards.scryfall.io/grid/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.webp?1783927519",
+    "display": "https://cards.scryfall.io/display/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.webp?1783927519",
+    "art": "https://cards.scryfall.io/art/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.webp?1783927519",
+    "crop": "https://cards.scryfall.io/crop/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.webp?1783927519",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/5/d5f68c73-4794-4659-b494-edf89105beab.jpg?1783927519"
+  },
+  "mana_cost": "{4}{G/U}{G/U}",
+  "cmc": 6.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Create a token that's a copy of target creature.\nRetrace (You may cast this card from your graveyard by discarding a land card in addition to paying its other costs.)",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Retrace"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "2115c141-f2fb-4bfd-a8b5-2943bad9f418",
+      "component": "token",
+      "name": "Copy",
+      "type_line": "Token",
+      "uri": "https://api.scryfall.com/cards/2115c141-f2fb-4bfd-a8b5-2943bad9f418"
+    },
+    {
+      "object": "related_card",
+      "id": "d5f68c73-4794-4659-b494-edf89105beab",
+      "component": "combo_piece",
+      "name": "Spitting Image",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/d5f68c73-4794-4659-b494-edf89105beab"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set": "c21",
+  "set_name": "Commander 2021",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/27bf6dbd-a9e1-4904-afa7-d28fc7745c4f",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ac21&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/c21?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d5f68c73-4794-4659-b494-edf89105beab/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa30dee74-86e3-4888-980e-b22437fbbb66&unique=prints",
+  "collector_number": "229",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Spitting is the customary greeting between a creature and its magical impostor.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jim Nelson",
+  "artist_ids": [
+    "aa9f64d1-29e1-4c82-877e-44c18183f40b"
+  ],
+  "illustration_id": "033fe12c-b648-4e96-b4d1-04d7dd3e992f",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11902,
+  "penny_rank": 13431,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=519264&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSpitting%2BImage",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSpitting%2BImage",
+    "edhrec": "https://edhrec.com/route/?cc=Spitting+Image"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F236324%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=559122&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/89563?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

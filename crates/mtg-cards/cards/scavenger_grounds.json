@@ -1,0 +1,29 @@
+{
+  "oracle_id": "5ece7d03-9ee7-4953-a06e-9d8e41874903",
+  "name": "Scavenger Grounds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scavenger Grounds",
+      "oracle_fingerprint": "0253f9945e1834b51f53ba4a304a65c8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Subtype": "Desert" }] } }
+            ],
+            "effects": [{ "Exile": { "what": { "Each": [{ "In": "Graveyard" }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

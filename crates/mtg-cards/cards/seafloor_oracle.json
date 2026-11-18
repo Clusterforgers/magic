@@ -1,0 +1,25 @@
+{
+  "oracle_id": "f9f719cb-7778-4109-bbd3-4504ee1b5f49",
+  "name": "Seafloor Oracle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seafloor Oracle",
+      "oracle_fingerprint": "0e773d64e53a3a056f6bceb445c935ba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

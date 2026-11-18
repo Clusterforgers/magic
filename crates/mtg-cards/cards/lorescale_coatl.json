@@ -1,0 +1,19 @@
+{
+  "oracle_id": "c87440aa-4616-49ff-a211-ebdc37767f62",
+  "name": "Lorescale Coatl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lorescale Coatl",
+      "oracle_fingerprint": "cb1f80aa9fcdf42801d88d3900c1f2f0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "1fa77af1-96e1-445b-a935-a5eb4c23e954",
+  "oracle_id": "de47a1e8-9c69-4af6-9d72-1bdd41352b32",
+  "multiverse_ids": [
+    559869
+  ],
+  "tcgplayer_id": 269640,
+  "cardmarket_id": 652881,
+  "name": "Indrik Stomphowler",
+  "lang": "en",
+  "released_at": "2022-04-29",
+  "uri": "https://api.scryfall.com/cards/1fa77af1-96e1-445b-a935-a5eb4c23e954",
+  "scryfall_uri": "https://scryfall.com/card/ncc/297/indrik-stomphowler?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:14:06Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.jpg?1783923246",
+    "normal": "https://cards.scryfall.io/normal/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.jpg?1783923246",
+    "large": "https://cards.scryfall.io/large/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.jpg?1783923246",
+    "png": "https://cards.scryfall.io/png/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.png?1783923246",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.jpg?1783923246",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.jpg?1783923246",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.webp?1783923246",
+    "grid": "https://cards.scryfall.io/grid/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.webp?1783923246",
+    "display": "https://cards.scryfall.io/display/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.webp?1783923246",
+    "art": "https://cards.scryfall.io/art/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.webp?1783923246",
+    "crop": "https://cards.scryfall.io/crop/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.webp?1783923246",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/f/1fa77af1-96e1-445b-a935-a5eb4c23e954.jpg?1783923246"
+  },
+  "mana_cost": "{4}{G}",
+  "cmc": 5.0,
+  "type_line": "Creature — Beast",
+  "oracle_text": "When this creature enters, destroy target artifact or enchantment.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "c51de34b-d4d6-4179-a432-573744ded119",
+  "set": "ncc",
+  "set_name": "New Capenna Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/c51de34b-d4d6-4179-a432-573744ded119",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ancc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/ncc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1fa77af1-96e1-445b-a935-a5eb4c23e954/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ade47a1e8-9c69-4af6-9d72-1bdd41352b32&unique=prints",
+  "collector_number": "297",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"An indrik's howl has destructive power much subtler than that of its crushing foot. The sound is mundane, but inaudible vibrations scatter and sunder magical contrivances.\"\n—Simic research notes",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Carl Critchlow",
+  "artist_ids": [
+    "17948f16-611a-44b8-8d10-9895a0bdfff1"
+  ],
+  "illustration_id": "d3866d6b-aeaf-4263-97aa-fc6f8444f633",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 15781,
+  "penny_rank": 11155,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=559869&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DIndrik%2BStomphowler",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DIndrik%2BStomphowler",
+    "edhrec": "https://edhrec.com/route/?cc=Indrik+Stomphowler"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F269640%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=652881&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Indrik+Stomphowler&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

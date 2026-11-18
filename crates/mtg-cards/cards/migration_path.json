@@ -1,0 +1,31 @@
+{
+  "oracle_id": "db4907f3-4071-47c4-9329-96b4813435be",
+  "name": "Migration Path",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Migration Path",
+      "oracle_fingerprint": "06caea4c99e077eb1e801dc5d48f9a83",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

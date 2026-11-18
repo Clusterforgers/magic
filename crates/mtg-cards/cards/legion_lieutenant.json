@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5fa1b2f0-3ba4-49db-9cb5-b6130e4c255e",
+  "name": "Legion Lieutenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion Lieutenant",
+      "oracle_fingerprint": "e3dec81a97e905c797ba0c7fe96a7ed5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Vampire" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

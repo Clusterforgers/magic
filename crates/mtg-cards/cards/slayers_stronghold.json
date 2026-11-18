@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2de7367b-a5a4-43f4-8f8f-b931ea28150d",
+  "name": "Slayers' Stronghold",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Slayers' Stronghold",
+      "oracle_fingerprint": "051be40f43bb1678adc92fe177b7afe9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{R}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Vigilance" },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

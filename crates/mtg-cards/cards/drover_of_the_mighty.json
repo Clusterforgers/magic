@@ -1,0 +1,32 @@
+{
+  "oracle_id": "6deba6e8-077b-4602-86af-64db766fbbd9",
+  "name": "Drover of the Mighty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drover of the Mighty",
+      "oracle_fingerprint": "923d0c918f828356e7e61ef1db8b5eeb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Dinosaur" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

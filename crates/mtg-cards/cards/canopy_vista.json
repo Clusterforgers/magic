@@ -1,0 +1,34 @@
+{
+  "oracle_id": "dcb7e046-f01b-497c-88e5-57794eb30ce5",
+  "name": "Canopy Vista",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Canopy Vista",
+      "oracle_fingerprint": "6ffd6d488b4f0670ca9e01cc71e90875",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "Type": "Land" },
+                      { "Supertype": "Basic" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

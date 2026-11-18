@@ -1,0 +1,29 @@
+{
+  "oracle_id": "d6b2c998-a226-426c-a40d-6e6007041bfe",
+  "name": "Mask of Memory",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mask of Memory",
+      "oracle_fingerprint": "92ac2fcc413d9c91fc1b7041f2e24529",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [
+              { "May": { "effects": [{ "Draw": { "count": 2 } }] } },
+              { "If": { "condition": "Performed", "then": [{ "Discard": {} }] } }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

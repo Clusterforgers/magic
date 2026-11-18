@@ -31,6 +31,11 @@ pub enum CardKind {
     Modifier,
     /// A boss's own risky relic, which it brings from the second boss of the ladder on.
     BossRelic,
+    /// A boss's innate, its one fixed effect, written once with a number that grows over five levels
+    /// ([`crate::innate`]).
+    Innate,
+    /// An encounter modifier rolled for a fight from the shared pool ([`crate::modifiers`]).
+    Encounter,
 }
 
 /// How rare a relic is: stronger effects sit in rarer tiers, and the tier decides where the relic comes from
@@ -111,6 +116,12 @@ pub struct CustomCard {
     /// A relic's rarity, which from the rarity generation on decides where it is offered and its shop price.
     #[serde(default)]
     pub rarity: Rarity,
+    /// A relic that names the holder's teammates (a Spirit on the team, say): a boss never brings it.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub team: bool,
+    /// The level of an innate made on loading, 1 to [`crate::innate::LEVELS`]; 0 for every other card.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub level: u8,
     /// Its abilities, in the card DSL.
     pub abilities: Vec<Ability>,
 }
@@ -217,11 +228,37 @@ pub struct Boss {
     /// Its phases: a phase card and the share of its starting life, in percent, at or below which it begins.
     #[serde(default)]
     pub phases: Vec<(String, u32)>,
+    /// Its deck file (`content/decks/<code>-<name>.json`), a stored Commander precon; none while `deck` stands in.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub deck_file: Option<String>,
+    /// Its innate card, written with five levels ([`crate::innate`]); none for a boss of the older model.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub innate: Option<String>,
+    /// Its Phase 1 and Phase 2 cards, which begin by round ([`crate::scale::PHASE_ROUNDS`]).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub round_phases: Vec<String>,
+    /// Its satchel: four spells in its command zone, cast like cards in hand.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub satchel: Vec<SatchelCard>,
+    /// What its deck is made of, so it brings only relics the deck can use; none counts as a deck that wants nothing.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub makeup: Option<crate::relics::DeckMakeup>,
     /// What it says as the fight begins.
     #[serde(default)]
     pub line: String,
     /// The real card whose art pictures it.
     pub art: BossArt,
+}
+
+/// A spell of a boss's satchel.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SatchelCard {
+    /// The real card's name.
+    pub card: String,
+    /// Whether it returns to the satchel as it leaves the stack (each cast costs {2} more); otherwise once per fight.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub reusable: bool,
 }
 
 /// The real card whose art crop pictures a boss: its name and its Scryfall oracle id, which the client's pictures go by.
@@ -659,17 +696,27 @@ pub struct Content {
     pub cards: BTreeMap<String, CustomCard>,
     /// The themes.
     pub themes: Vec<Theme>,
+    /// The encounter modifiers both themes roll from ([`crate::modifiers`]).
+    pub modifiers: Vec<crate::modifiers::EncounterModifier>,
 }
 
 impl Content {
-    /// Reads the content from its JSON texts: the custom card files and the themes.
-    pub fn parse(card_files: &[&str], themes: &[&str]) -> Result<Content, CampaignError> {
+    /// Reads the content from its JSON texts: the custom card files (innates made at each level), the themes and the
+    /// encounter modifier pool.
+    pub fn parse(
+        card_files: &[&str],
+        themes: &[&str],
+        modifiers: &str,
+    ) -> Result<Content, CampaignError> {
+        let fail = |e: serde_json::Error| CampaignError::Content(e.to_string());
         let mut list: Vec<CustomCard> = Vec::new();
         for text in card_files {
-            let more: Vec<CustomCard> =
-                serde_json::from_str(text).map_err(|e| CampaignError::Content(e.to_string()))?;
-            list.extend(more);
+            let entries: Vec<serde_json::Value> = serde_json::from_str(text).map_err(fail)?;
+            for entry in crate::innate::expand(entries)? {
+                list.push(serde_json::from_value(entry).map_err(fail)?);
+            }
         }
+        let modifiers = serde_json::from_str(modifiers).map_err(fail)?;
         let mut cards: BTreeMap<String, CustomCard> =
             list.into_iter().map(|c| (c.id.clone(), c)).collect();
         let variants = cards
@@ -691,7 +738,11 @@ impl Content {
         for theme in &mut themes {
             theme.upgraded = theme.bosses.iter().filter_map(Boss::upgraded).collect();
         }
-        Ok(Content { cards, themes })
+        Ok(Content {
+            cards,
+            themes,
+            modifiers,
+        })
     }
 
     /// The custom card with this id.
@@ -725,6 +776,12 @@ impl Content {
 
 fn every_turn() -> u32 {
     1
+}
+
+/// Serde passes the field by reference.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(n: &u8) -> bool {
+    *n == 0
 }
 
 /// The Enrage `card` made to begin on the heroes' turn `turn` (`scale::ENRAGE_TURNS`): its id, `turn`, rules text and
@@ -798,8 +855,10 @@ pub fn content() -> Result<&'static Content, CampaignError> {
                 &[
                     include_str!("../content/cards.json"),
                     include_str!("../content/boss_cards.json"),
+                    include_str!("../content/encounters.json"),
                 ],
                 &[include_str!("../content/warrens.json")],
+                include_str!("../content/modifiers.json"),
             )
         })
         .as_ref()

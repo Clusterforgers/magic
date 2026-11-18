@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9410ae41-b6db-47c6-ae0a-4e33aad1d3ce",
+  "name": "Viridian Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viridian Zealot",
+      "oracle_fingerprint": "a7ebdace3f493a93e165aed8649a84a8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{G}" }, "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

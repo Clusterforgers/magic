@@ -1,0 +1,40 @@
+{
+  "oracle_id": "2d3e6549-6cc6-434f-a189-ba3b55e64c34",
+  "name": "Rampaging Baloths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rampaging Baloths",
+      "oracle_fingerprint": "5c671bfc36ded6e34f95e1597e9ac9e1",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Beast",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Beast"],
+                      "power": 4,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

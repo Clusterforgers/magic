@@ -1,0 +1,22 @@
+{
+  "oracle_id": "312a831a-5da9-4a22-9974-f2d90ae3eb75",
+  "name": "Endless Obedience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless Obedience",
+      "oracle_fingerprint": "b74aa843ca8bce4923b31f909888057e",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [
+              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": { "under": "You" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

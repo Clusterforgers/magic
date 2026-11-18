@@ -1,0 +1,43 @@
+{
+  "oracle_id": "be811e70-aaaa-41f3-bf9e-5d3f9f719b49",
+  "name": "Castle Locthwain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Castle Locthwain",
+      "oracle_fingerprint": "c88bf17f2b3b92304142ac240b8c716e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}{B}" }, "Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "LoseLife": { "amount": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

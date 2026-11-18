@@ -1,0 +1,40 @@
+{
+  "oracle_id": "41459587-7509-404e-bd7d-fb8831dee789",
+  "name": "Hostile Desert",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hostile Desert",
+      "oracle_fingerprint": "e8c8a8ac8f04570684c1e213f7ef09eb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Land" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 3, "toughness": 4 } },
+                    { "SetCreatureTypes": ["Elemental"] },
+                    { "AddType": "Creature" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "02679a2e-303d-412f-87d8-0a37a8ca259c",
+  "name": "Blighted Woodland",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blighted Woodland",
+      "oracle_fingerprint": "71007983d30a77c73c4cbeb2cb49a741",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

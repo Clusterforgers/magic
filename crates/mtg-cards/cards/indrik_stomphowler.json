@@ -1,0 +1,26 @@
+{
+  "oracle_id": "de47a1e8-9c69-4af6-9d72-1bdd41352b32",
+  "name": "Indrik Stomphowler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indrik Stomphowler",
+      "oracle_fingerprint": "009b74dfcbe5a927a9292ea03636b103",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

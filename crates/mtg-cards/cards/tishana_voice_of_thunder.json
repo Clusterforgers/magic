@@ -1,0 +1,40 @@
+{
+  "oracle_id": "479dd04b-0048-446a-9202-a4dc9472e5c3",
+  "name": "Tishana, Voice of Thunder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tishana, Voice of Thunder",
+      "oracle_fingerprint": "bdc2f4ff90c60b1bc1a79f455247547d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "toughness": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

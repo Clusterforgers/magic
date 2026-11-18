@@ -1,0 +1,26 @@
+{
+  "oracle_id": "6f0d94d9-64bb-4175-83bc-301e8f79f54f",
+  "name": "Temple of Triumph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple of Triumph",
+      "oracle_fingerprint": "b8f73c734b62471dbed482fae515040b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

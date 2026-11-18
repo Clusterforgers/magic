@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b166b670-febc-4821-855e-f8d465644c03",
+  "name": "Worn Powerstone",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worn Powerstone",
+      "oracle_fingerprint": "34556c466fed91e01df8e4fbf17d899b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

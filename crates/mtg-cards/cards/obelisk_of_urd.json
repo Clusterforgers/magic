@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e2ef3a24-9e78-47fc-9192-049aa0ddb7a0",
+  "name": "Obelisk of Urd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obelisk of Urd",
+      "oracle_fingerprint": "cb8c2a984c3a64cddb5c812d447a8bfd",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

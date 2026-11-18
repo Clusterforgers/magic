@@ -1,0 +1,65 @@
+{
+  "oracle_id": "4ba5b3f6-503b-43e6-b66e-4f8c55cffed7",
+  "name": "Avenger of Zendikar",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Avenger of Zendikar",
+      "oracle_fingerprint": "819e245adddc8793999d738b88718369",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Plant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Plant"],
+                      "power": 0,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutCounters": {
+                        "on": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Subtype": "Plant" },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "counter": "+1/+1"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

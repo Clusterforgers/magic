@@ -1,0 +1,52 @@
+{
+  "oracle_id": "a1c7cd7a-0795-4135-b787-effeb981d95b",
+  "name": "Hidden Volcano",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hidden Volcano",
+      "oracle_fingerprint": "c31d10ad0cd3a1b2c25b65c2ad479f54",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{R}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "found" },
+                  "free": true,
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              { "Performed": { "action": "Discovered", "card": { "Bound": "found" }, "value": 4 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

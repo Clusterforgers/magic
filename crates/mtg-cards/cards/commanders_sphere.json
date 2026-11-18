@@ -1,0 +1,20 @@
+{
+  "oracle_id": "0b67c4e2-f88b-4e01-85a1-9d5f5b8db13b",
+  "name": "Commander's Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commander's Sphere",
+      "oracle_fingerprint": "ab4d68163ac1876e79356dcf6b450da8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "CommanderIdentity": 1 } } }]
+          }
+        },
+        { "Activated": { "cost": ["SacrificeSelf"], "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

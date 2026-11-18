@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f2a54e85-dd8b-462c-a811-c9553dc349a5",
+  "name": "Bloodline Necromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodline Necromancer",
+      "oracle_fingerprint": "81fcb41234c96256b510b89b7b6d9e1a",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Subtype": "Vampire" }, { "Subtype": "Wizard" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

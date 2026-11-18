@@ -154,7 +154,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl2d) Each hero gives up the permanents an attack tax takes (sacrifice a land) for their own creatures in the party's combined attack, not the leader
 - [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
-- [ ] (dl8d) The glossary explains each boss's Enrage by its own rules, not as the Magic keyword
 - [ ] (dl4a) Bot allies temper and buy commander upgrades, and the simulator's heroes bring their commander facts
 - [ ] (dl4b) Bot allies see their deck list, so they can give up a deck card for an event's cost and not only a Satchel card
 - [ ] (dl5) Campfire upgrades put a sticker on a card of the hero's deck for the rest of the run
@@ -166,11 +165,14 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
-- [ ] (dl14a) Measure the Hard-boss rows of the Difficulty table (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, Heat 2) and parties of three or more against the tier targets, and tune the Normal-brain rows, which win 92 to 98 % against two Normal heroes
-- [ ] (dl14b) Softer boss passives at Heat 0 and harsher ones at Heat 2, a variant of each passive by Heat as the Enrage has
-- [ ] (dl16a) Measure deeper Delves floors with the simulator (floors 2 and 3 at each Heat) and tune the per-floor steps against the tier targets
-- [ ] (dl15l) Measure the bracket generation against the tier targets with Hard bosses and tune each boss's brackets by its win rate
-- [ ] (dl15n) More uber bosses with a game-changing rule each
+- [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
+- [ ] (rw2) Drowned Spire innates (no mill; only the Archivist's Phase 1 mills, once)
+- [ ] (rw3) Encounter modifier content: the 23 modifiers of the pool with their `not_with` lists and a check each
+- [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)
+- [ ] (rw5) Boss view and intro on screen: innate with its level, modifier, relics, satchel and the phase countdown by round
+- [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
+- [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
+- [ ] (rw8) Remove the old boss systems (Escalation, Enrage, Intensify, schemes, Omen, minion seats, Lull, Reserves to Last Bulwark, commander card, upgraded and uber bosses, own relics, old modifiers, brackets and tiers, life phases) from campaign, protocol, server, simulator and web, and make generation 8 the newest; the migration that closes open runs (and its test, in commit d973c7921) ships with it
 
 ## M8 Polish and deploy
 

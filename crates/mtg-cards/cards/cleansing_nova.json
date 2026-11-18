@@ -1,0 +1,39 @@
+{
+  "oracle_id": "aff34f28-f707-4458-8af3-1bd5b13a6b10",
+  "name": "Cleansing Nova",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cleansing Nova",
+      "oracle_fingerprint": "c9b08492abcf168b99aaf6f16310b8e0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }] },
+                    {
+                      "effects": [
+                        {
+                          "Destroy": {
+                            "what": {
+                              "Each": [
+                                { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

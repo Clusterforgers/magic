@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "f791b7fa-3d12-409d-b017-cb9fd8b71af7",
+  "oracle_id": "e5c48c6d-a7bf-45b3-b48c-dc884d49c5f7",
+  "multiverse_ids": [
+    500932
+  ],
+  "mtgo_id": 85718,
+  "tcgplayer_id": 227377,
+  "cardmarket_id": 514769,
+  "name": "Simic Sky Swallower",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/f791b7fa-3d12-409d-b017-cb9fd8b71af7",
+  "scryfall_uri": "https://scryfall.com/card/cmr/452/simic-sky-swallower?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:44:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.jpg?1783928695",
+    "normal": "https://cards.scryfall.io/normal/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.jpg?1783928695",
+    "large": "https://cards.scryfall.io/large/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.jpg?1783928695",
+    "png": "https://cards.scryfall.io/png/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.png?1783928695",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.jpg?1783928695",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.jpg?1783928695",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.webp?1783928695",
+    "grid": "https://cards.scryfall.io/grid/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.webp?1783928695",
+    "display": "https://cards.scryfall.io/display/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.webp?1783928695",
+    "art": "https://cards.scryfall.io/art/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.webp?1783928695",
+    "crop": "https://cards.scryfall.io/crop/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.webp?1783928695",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/7/f791b7fa-3d12-409d-b017-cb9fd8b71af7.jpg?1783928695"
+  },
+  "mana_cost": "{5}{G}{U}",
+  "cmc": 7.0,
+  "type_line": "Creature — Leviathan",
+  "oracle_text": "Flying, trample\nShroud (This creature can't be the target of spells or abilities.)",
+  "power": "6",
+  "toughness": "6",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Shroud",
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f791b7fa-3d12-409d-b017-cb9fd8b71af7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae5c48c6d-a7bf-45b3-b48c-dc884d49c5f7&unique=prints",
+  "collector_number": "452",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"We've bred out the shortcomings of the species' natural form and replaced them with assets of our own design.\"\n—Momir Vig",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "rk post",
+  "artist_ids": [
+    "81ae0f3f-1d88-4125-9aeb-b15b4c734c82"
+  ],
+  "illustration_id": "d49fdff4-846c-4aa7-b0b4-9138dc276dbb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 9036,
+  "penny_rank": 6870,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.23",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=500932&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSimic%2BSky%2BSwallower",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSimic%2BSky%2BSwallower",
+    "edhrec": "https://edhrec.com/route/?cc=Simic+Sky+Swallower"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F227377%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=514769&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/85718?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

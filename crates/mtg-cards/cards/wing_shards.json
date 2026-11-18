@@ -1,0 +1,27 @@
+{
+  "oracle_id": "b302bce5-d7ad-46d8-9dbf-8159e8709b4f",
+  "name": "Wing Shards",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wing Shards",
+      "oracle_fingerprint": "d40a0aa5ca2db0dbcf814f48e6209813",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }, "Attacking"]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}
