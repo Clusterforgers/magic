@@ -65,6 +65,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Loops (CR 104.4b, 732): a loop found at priority points, a draw for a mandatory loop that never ends, a shortcut of N iterations its driver chooses, run as one batch with a summary line, bot answers, and the prompt in every layout (`docs/engine.md`, Loops).
 - Choosing faster: quick selection buttons (all, owned, allied in team modes, none) in prompts that pick several objects, a random precon or own deck in every mode, hidden until the start, and "Always pay automatically" for payments without a real choice (`docs/web.md`, `docs/server.md`).
 - Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members; an effect that sets each player's life sets a shared total once.
+- Card preview modifiers: under the rules text the preview lists everything that changes the card with its source and duration, identical sources added together, a line pointing at its source on the board, and no hidden source named (`docs/protocol.md`, `docs/web.md`).
 
 ## Live game
 
@@ -94,6 +95,7 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1b2b) The other Sieges' unread clauses: the enter triggers of Invasion of Arcavios (search outside the game), Ergamon, Kamigawa, Karsus, Lorwyn (X lands) and Regatha (two targets), and back-face lines of Eldraine, Ergamon, Fiora, Kamigawa and Regatha
 - [ ] (hx29a) Detail for the refusals still told only by their reason: a cast taken back for its cost or mana (`AnnouncementRewound.why`), an Aura, bestow or mutate spell with no host (`attach`, `merged`), the abilities of cards in a graveyard, exile or the command zone (`PriorityOptions.inactive` covers the battlefield), and a `-X` or X ability whose least X has no target
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
+- [ ] (pm1) The preview's "Modified by" also names cost changes (reductions, taxes, the Unmaker's drawn colours) by source, and a seat pod lists what changes the player by source
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 
 - [ ] Playwright games with corpus decks that ask every decision kind
