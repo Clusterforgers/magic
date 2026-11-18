@@ -48,6 +48,10 @@ const MEDIUM_FACE_MIN_PX = 150
 
 const NONE: ReadonlySet<string> = new Set()
 
+/** The window's size as a key; empty outside a browser. */
+const windowKey = (): string =>
+  typeof window === 'undefined' ? '' : `${window.innerWidth}x${window.innerHeight}`
+
 /** A band as drawn: its lanes (placed once the zone is measured) and the least height it keeps in px (0: none). */
 interface DrawnBand {
   key: string
@@ -202,6 +206,9 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   // The card width and shape drawn last: the next fit keeps them while they fit (`fitHeld`), so one permanent more or
   // less does not resize the board. Read when the inputs change, written once the fit is drawn.
   const hold = useRef<FitHold | null>(null)
+  // The window the hold was drawn in: a resized window fits afresh, so growing it back gives the size a fresh load has.
+  const holdWindow = useRef('')
+  const held = (): FitHold | null => (holdWindow.current === windowKey() ? hold.current : null)
   // The fit of the box alone, which a grid of boards shares out as one size; it never depends on that size.
   const alone = useMemo(
     () =>
@@ -213,7 +220,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
         marked,
         held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
         least,
-        hold: hold.current,
+        hold: held(),
       }),
     [box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts, least],
   )
@@ -231,7 +238,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
             held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
             most,
             least,
-            hold: hold.current,
+            hold: held(),
           }),
     [
       alone,
@@ -271,6 +278,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const cardWidth = fit?.cardWidth ?? null
   useLayoutEffect(() => {
     hold.current = fit === null || fit.scrolls ? null : { width: fit.cardWidth, shape: fit.shape }
+    holdWindow.current = windowKey()
   }, [fit])
   useLayoutEffect(() => {
     onCardWidth?.(cardWidth)

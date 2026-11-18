@@ -1,7 +1,7 @@
 /** Pure height split between the opponents' boards and yours, weighted by the lanes each must hold. */
 import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts, LaneLimits } from './laneFit'
-import { POD_CRAMPED_PX } from './cornerFit'
+import { POD_CRAMPED_PX, POD_PICTURES_PX } from './cornerFit'
 import {
   BOSS_ABILITIES_PX,
   BOSS_SPAN,
@@ -101,12 +101,18 @@ export const BOARD_KEEP_PX = 64
 
 /**
  * The least height of the opponents' row where an opponent's pod stands as a column beside the board (off a phone,
- * not in columns): the column holds the pod's tight blocks and the least picture (`POD_CRAMPED_PX`) above a sheet
- * standing `overhang` px over the row, so it neither scrolls nor folds its chips under the corner. 0 elsewhere.
+ * not in columns): the column holds the pod's tight blocks and the least picture (`POD_PICTURES_PX`) above a sheet
+ * standing `overhang` px over the row, so it neither scrolls nor folds its chips under the corner; with a `column` of
+ * `POD_CRAMPED_PX`, the least that holds the tight blocks with the corner's chips. 0 elsewhere.
  */
-export function podColumnFloor(regions: Regions, seats: SeatPlan, overhang: number): number {
+export function podColumnFloor(
+  regions: Regions,
+  seats: SeatPlan,
+  overhang: number,
+  column = POD_PICTURES_PX,
+): number {
   if (regions.phone || seats.shape === 'columns') return 0
-  return boardFrames(regions, seats).theirs.chrome + POD_CRAMPED_PX + Math.ceil(finite(overhang) / 8) * 8
+  return boardFrames(regions, seats).theirs.chrome + column + Math.ceil(finite(overhang) / 8) * 8
 }
 
 /**
@@ -163,6 +169,7 @@ export function splitRegions(
       ownChrome: frames.own.chrome,
       theirChrome: theirChrome + finite(reserve),
       theirFloor: podColumnFloor(regions, seats, overhang),
+      theirFloorLeast: podColumnFloor(regions, seats, overhang, POD_CRAMPED_PX),
       theirRows: frames.theirs.rows,
       theirRowChrome: theirChrome,
       theirLead: theirChrome - frames.theirs.chrome,
@@ -211,6 +218,8 @@ export interface SplitInput {
   theirChrome: number
   /** The height an opponent's pod column asks of the opponents' row (`podColumnFloor`). */
   theirFloor?: number
+  /** The least of it, where the whole floor would take your creatures under `FLOOR_OWN_CARD_PX` (chips in place of pictures). */
+  theirFloorLeast?: number
   /** The rows of boards the opponents' area stacks (a grid of more opponents than columns); 1 when left out. */
   theirRows?: number
   /** An opponent's cards as a share of yours; `THEIR_SCALE` when left out. */
@@ -291,10 +300,16 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   }
   // The opponents' row is lifted to the floor where your creatures stay `FLOOR_OWN_CARD_PX` wide; otherwise it takes
   // only what your lanes leave.
-  const floor = Math.min(room - least, finite(input.theirFloor ?? 0))
-  const floored = (rung: number): boolean =>
-    ownRow(at(rung)) + Math.max(floor, theirRow(theirCard(at(rung)))) <= room
-  const lifted = floor > 0 && floored(0) ? at(highestRung(rungs, floored)) : 0
+  // Where the pod's full floor would take your creatures under `FLOOR_OWN_CARD_PX`, its least floor is tried.
+  const liftTo = (asked: number | undefined): { floor: number; lifted: number } => {
+    const floor = Math.min(room - least, finite(asked ?? 0))
+    const floored = (rung: number): boolean =>
+      ownRow(at(rung)) + Math.max(floor, theirRow(theirCard(at(rung)))) <= room
+    return { floor, lifted: floor > 0 && floored(0) ? at(highestRung(rungs, floored)) : 0 }
+  }
+  const full = liftTo(input.theirFloor)
+  const { floor, lifted } =
+    full.lifted >= FLOOR_OWN_CARD_PX || input.theirFloorLeast === undefined ? full : liftTo(input.theirFloorLeast)
   const card = lifted >= FLOOR_OWN_CARD_PX ? lifted : at(highestRung(rungs, fits))
   const spare = room - ownRow(card)
   let theirs = theirCard(card)

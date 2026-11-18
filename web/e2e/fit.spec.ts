@@ -49,9 +49,12 @@ interface Look {
   dockScroll: { controls: number; hand: number } | null
 }
 
-/** What each thing is, as a selector. A prompt's controls are in the dock; the hand is the first card of the row nothing lies over. */
+/**
+ * What each thing is, as a selector. A prompt's controls are in the dock; the hand is the first card of the row nothing
+ * lies over, or the first of the opening hand where the centre overlay carries it and the dock hides its copy.
+ */
 const THINGS = {
-  hand: '[data-region="hand"] [data-slot="hand-slot"]:not([data-back]) button[data-object-id]',
+  hand: '[data-region="hand"] [data-slot="hand-slot"]:not([data-back]):not([data-floating] *) button[data-object-id], [data-opening] [data-slot="opening-card"]',
   life: '[data-you] [data-slot="life"]',
   primary: '[data-region="controls"] [data-slot="primary-action"]',
   keep: '[data-decision="Mulligan"] button',
@@ -275,8 +278,10 @@ test.describe('the development table with 40 permanents a seat', () => {
     await page.locator(THINGS.primary).waitFor()
     await atEverySize(page, ['hand', 'life', 'primary'], onTable('the duel board'))
     for (const [width, height, own, theirs] of [
-      [1920, 1080, 190, 160],
-      [1440, 900, 150, 120],
+      // The band keeps the ticker's line above it (16 px): the opponent's row gives a rung (148 of the ladder) at 1920,
+      // yours at 1440, where the opponent's pod column also keeps its pictures (`POD_PICTURES_PX`).
+      [1920, 1080, 190, 148],
+      [1440, 900, 148, 116],
       // A three-line prompt stands above the strip here: the opponent keeps the name and P/T face.
       [1280, 720, 100, 60],
     ] as const) {
@@ -742,8 +747,9 @@ test.describe('the development table with 40 permanents a seat', () => {
       await expect(page.locator('[data-slot="side-overlay"][data-lowered]')).toBeAttached()
       // A trial click fails when another element would take the press.
       await block.click({ trial: true })
-      // The band's line is `display: contents` (its parts are cells of the band's grid), so the sentence is what shows.
-      const sentence = page.locator('[data-slot="prompt-sentence"]').filter({ visible: true }).first()
+      // The band's line is `display: contents` (its parts are cells of the band's grid), so its words are what show: the
+      // sentence, or a combat prompt's line in its place.
+      const sentence = page.locator('[data-slot="decision-line"] [data-slot="prompt-text"]').filter({ visible: true }).first()
       await expect(sentence).toBeVisible()
       const covered = await sentence.evaluate((line) => {
         const box = line.getBoundingClientRect()

@@ -324,6 +324,31 @@ describe('the pod column of the opponent', () => {
       expect(split.opponents).toBeGreaterThanOrEqual(floor)
     },
   )
+
+  it.each([
+    [200, 160],
+    [280, 200],
+    [1000, 280],
+    [1000, 1000],
+  ])(
+    'falls back from a floor of %i px to its least of %i px where the whole floor takes your creatures under FLOOR_OWN_CARD_PX',
+    (floor, leastFloor) => {
+      const input = {
+        room: 520,
+        ownChrome: 24,
+        theirChrome: 24,
+        ownWidth: 900,
+        theirWidth: 900,
+        own: { lands: 4, creatures: 2, other: 0 },
+        theirs: [{ lands: 4, creatures: 2, other: 0 }],
+      }
+      const whole = splitBoards({ ...input, theirFloor: floor })
+      const split = splitBoards({ ...input, theirFloor: floor, theirFloorLeast: leastFloor })
+      const least = splitBoards({ ...input, theirFloor: leastFloor })
+      // The whole floor wins where it keeps your creatures; else the least floor splits as it would alone.
+      expect(split).toEqual(whole.ownCard >= FLOOR_OWN_CARD_PX && whole.opponents >= floor ? whole : least)
+    },
+  )
 })
 
 describe('the head of the opponents area', () => {
