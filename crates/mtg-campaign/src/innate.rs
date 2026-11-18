@@ -1,9 +1,10 @@
 //! Boss innates: each boss's one fixed effect, written once in content with a number N that grows over five levels
-//! (`"levels": [n1, …, n5]`, the text's `{N}` and every `"$N"` in its abilities). A level may differ in more than N:
+//! (`"levels": [n1, …, n5]`, the text's `{N}`, every `"$N"` in its abilities, a cost's `{N}` inside an ability string
+//! and `"$L"` for the level itself where the shape changes with the level). A level may differ in more than N:
 //! `"params": {"NAME": [v1, …, v5]}` puts any JSON value wherever `"$NAME"` stands in the abilities (an ability that
-//! becomes `null` is left out at that level), and
-//! `"texts": [t1, …, t5]` gives each level its own words (`{N}` still filled in). Loading makes one card per level;
-//! the fight takes the level [`Scale::innate_level`](crate::scale::Scale::innate_level) names.
+//! becomes `null` is left out at that level), and `"texts": [t1, …, t5]` gives each level its own words (`{N}` still
+//! filled in). Loading makes one card per level; the fight takes the level
+//! [`Scale::innate_level`](crate::scale::Scale::innate_level) names.
 
 use serde_json::Value;
 
@@ -55,6 +56,7 @@ pub(crate) fn expand(entries: Vec<Value>) -> Result<Vec<Value>, CampaignError> {
                     set(&mut card["abilities"], &format!("${name}"), &value);
                 }
             }
+            mana(&mut card["abilities"], n);
             if let Some(abilities) = card["abilities"].as_array_mut() {
                 abilities.retain(|a| !a.is_null());
             }
@@ -87,10 +89,11 @@ fn take_per_level(entry: &mut Value, key: &str) -> Result<Option<Value>, Campaig
 }
 
 /// `entry` at `level`, its number `n`: id, name, level, text (the level's own words when `texts` gives them) and
-/// abilities.
+/// abilities (`$N` and `$L` filled in).
 fn at_level(entry: &Value, level: u8, n: u64, texts: Option<&Value>) -> Value {
     let mut card = entry.clone();
     set(&mut card["abilities"], "$N", &Value::from(n));
+    set(&mut card["abilities"], "$L", &Value::from(level));
     let id = card["id"].as_str().unwrap_or_default().to_owned();
     let name = card["name"].as_str().unwrap_or_default().to_owned();
     let text = texts
@@ -111,6 +114,16 @@ fn set(value: &mut Value, name: &str, to: &Value) {
         Value::String(s) if s == name => *value = to.clone(),
         Value::Array(items) => items.iter_mut().for_each(|v| set(v, name, to)),
         Value::Object(map) => map.values_mut().for_each(|v| set(v, name, to)),
+        _ => {}
+    }
+}
+
+/// Writes `{N}` inside a string of `value` (a cost) as the mana symbol of `n`.
+fn mana(value: &mut Value, n: u64) {
+    match value {
+        Value::String(s) if s.contains("{N}") => *s = s.replace("{N}", &format!("{{{n}}}")),
+        Value::Array(items) => items.iter_mut().for_each(|v| mana(v, n)),
+        Value::Object(map) => map.values_mut().for_each(|v| mana(v, n)),
         _ => {}
     }
 }

@@ -184,6 +184,36 @@ fn an_innate_needs_five_of_each_per_level_value(#[case] params: &str, #[case] te
     );
 }
 
+/// One innate using every substitution at once: a named value, `$N`, `$L`, a cost's `{N}` and its own words.
+const MIXED: &str = r#"[{"id":"levy","name":"Levy","kind":"Innate","type_line":"Boss — Innate","levels":[1,1,2,3,4],
+  "params":{"GAIN":[1,2,3,5,8]},"texts":["a {N}","b {N}","c {N}","d {N}","e {N}"],"text":"",
+  "abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},
+    "if":{"Compare":{"left":"$L","op":"Ge","right":"$N"}},
+    "effects":[{"Pay":{"who":"Spotlit","cost":"{N}","unpaid":[{"GainLife":{"amount":"$GAIN"}}]}}]}}]}]"#;
+
+#[rstest]
+#[case::one(1, "a 1", "{1}", 1)]
+#[case::three(3, "c 2", "{2}", 3)]
+#[case::five(5, "e 4", "{4}", 8)]
+fn params_level_and_mana_cost_combine_in_one_innate(
+    #[case] level: u8,
+    #[case] text: &str,
+    #[case] cost: &str,
+    #[case] gain: u32,
+) {
+    let content = mtg_campaign::content::Content::parse(&[MIXED], &[], "[]").unwrap();
+    let card = content.card(&innate_id("levy", level)).unwrap();
+    assert_eq!(card.text, text);
+    let rules = serde_json::to_string(&card.abilities).unwrap();
+    for part in [
+        format!("\"cost\":\"{cost}\""),
+        format!("\"amount\":{gain}"),
+        format!("\"left\":{level}"),
+    ] {
+        assert!(rules.contains(&part), "{part} in {rules}");
+    }
+}
+
 /// The heroes (seats 0 and 1) and the boss with libraries of lands, at the boss's first main phase.
 fn table() -> Scenario {
     let mut scenario = Scenario::new(3).life(BOSS, 40).at(3, BOSS, Step::Main1);

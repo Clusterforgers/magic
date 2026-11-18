@@ -1,0 +1,165 @@
+[
+ {"id":"skrix_brood","name":"Brood","kind":"Innate","type_line":"Boss — Innate","art":"skrix","levels":[1,2,3,4,5],
+  "text":"At the beginning of your upkeep, create {N} 1/1 black Rat creature tokens.",
+  "texts":["At the beginning of your upkeep, create a 1/1 black Rat creature token.","At the beginning of your upkeep, create {N} 1/1 black Rat creature tokens.","At the beginning of your upkeep, create {N} 1/1 black Rat creature tokens.","At the beginning of your upkeep, create {N} 1/1 black Rat creature tokens.","At the beginning of your upkeep, create {N} 1/1 black Rat creature tokens."],
+  "abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Rat","colors":["Black"],"types":["Creature"],"subtypes":["Rat"],"power":1,"toughness":1}},"count":"$N"}}]}}]},
+ {"id":"skrix_nest_stirs","name":"Phase 1 — The Nest Stirs","kind":"Phase","type_line":"Boss — Phase","art":"nest_stirs",
+  "text":"When this phase begins, create a 1/1 black Rat creature token for each creature your opponents control.\nRats you control have menace.",
+  "abilities":[
+   {"Triggered":{"when":{"PhaseBegins":{}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Rat","colors":["Black"],"types":["Creature"],"subtypes":["Rat"],"power":1,"toughness":1}},"count":{"Count":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]}}}]}},
+   {"Static":{"affected":{"Each":[{"Subtype":"Rat"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Menace"}]}}]},
+ {"id":"skrix_plague_tide","name":"Phase 2 — Plague Tide","kind":"Phase","type_line":"Boss — Phase","art":"plague_tide",
+  "text":"When this phase begins, create a 1/1 black Rat creature token for each Rat you control.\nCreature tokens you control get +2/+0.",
+  "abilities":[
+   {"Triggered":{"when":{"PhaseBegins":{}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Rat","colors":["Black"],"types":["Creature"],"subtypes":["Rat"],"power":1,"toughness":1}},"count":{"Count":[{"Subtype":"Rat"},{"ControlledBy":"You"}]}}}]}},
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},"Token",{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":2,"toughness":0}}]}}]},
+
+ {"id":"mossjaw_overgrowth","name":"Overgrowth","kind":"Innate","type_line":"Boss — Innate","art":"mossjaw","levels":[1,1,2,3,4],
+  "text":"Creatures you control get +{N}/+{N} and have trample.",
+  "texts":["Creatures you control get +1/+1.","Creatures you control get +{N}/+{N} and have trample.","Creatures you control get +{N}/+{N} and have trample.","Creatures you control get +{N}/+{N} and have trample.","Creatures you control get +{N}/+{N} and have trample."],
+  "abilities":[
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":"$N","toughness":"$N"}}]}},
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Trample"}],"condition":{"Compare":{"left":"$L","op":"Ge","right":2}}}}]},
+ {"id":"mossjaw_regrowth","name":"Phase 1 — Regrowth","kind":"Phase","type_line":"Boss — Phase","art":"regrowth",
+  "text":"When this phase begins, you gain 10 life for each opponent.\nCreatures you control have hexproof.",
+  "abilities":[
+   {"Triggered":{"when":{"PhaseBegins":{}},"effects":[{"GainLife":{"amount":{"Times":{"by":10,"of":{"Players":"Opponents"}}}}}]}},
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Hexproof"}]}}]},
+ {"id":"mossjaw_primal_rage","name":"Phase 2 — Primal Rage","kind":"Phase","type_line":"Boss — Phase","art":"primal_rage",
+  "text":"Creatures you control have haste and can't be blocked by creatures with power 2 or less.",
+  "abilities":[
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Haste"},{"CantBeBlockedBy":[{"Type":"Creature"},{"Compare":{"stat":"Power","op":"Le","to":2}}]}]}}]},
+
+ {"id":"vex_bonecalling","name":"Bonecalling","kind":"Innate","type_line":"Boss — Innate","art":"vex","levels":[1,1,1,2,2],
+  "text":"Whenever a nontoken creature an opponent controls dies, create {N} 2/2 black Zombie creature tokens.",
+  "texts":[
+   "Whenever a nontoken creature an opponent controls dies for the first time each turn, create a 2/2 black Zombie creature token.",
+   "Whenever a nontoken creature an opponent controls dies, create a 2/2 black Zombie creature token.",
+   "Whenever a nontoken creature an opponent controls dies, create a 2/2 black Zombie creature token with a +1/+1 counter on it.",
+   "Whenever a nontoken creature an opponent controls dies, create two 2/2 black Zombie creature tokens with a +1/+1 counter on each.",
+   "Whenever a nontoken creature an opponent controls dies, create two 2/2 black Zombie creature tokens with menace and a +1/+1 counter on each."],
+  "abilities":[
+   {"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":"Token"},{"ControlledBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}},
+    "limit":"OncePerTurn","if":{"Compare":{"left":"$L","op":"Eq","right":1}},
+    "effects":[{"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2}}}}]}},
+   {"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":"Token"},{"ControlledBy":"Opponents"}],"from":"Battlefield","to":"Graveyard"}},
+    "if":{"Compare":{"left":"$L","op":"Ge","right":2}},
+    "effects":[
+     {"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2}},"count":"$N","as":"risen"}},
+     {"If":{"condition":{"Compare":{"left":"$L","op":"Ge","right":3}},"then":[{"PutCounters":{"on":{"Bound":"risen"},"counter":"+1/+1"}}]}},
+     {"If":{"condition":{"Compare":{"left":"$L","op":"Ge","right":5}},"then":[{"Continuous":{"affected":{"Bound":"risen"},"mods":[{"AddKeyword":"Menace"}],"duration":"Forever"}}]}}]}}]},
+ {"id":"vex_grave_tide","name":"Phase 1 — Grave Tide","kind":"Phase","type_line":"Boss — Phase","art":"grave_tide",
+  "text":"When this phase begins, destroy all non-Zombie creatures. Create a 2/2 black Zombie creature token for each creature destroyed this way.",
+  "abilities":[
+   {"Triggered":{"when":{"PhaseBegins":{}},"effects":[
+    {"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"Subtype":"Zombie"}}]}}},
+    {"CreateToken":{"token":{"Custom":{"name":"Zombie","colors":["Black"],"types":["Creature"],"subtypes":["Zombie"],"power":2,"toughness":2}},"count":{"Destroyed":[{"Type":"Creature"}]}}}]}}]},
+ {"id":"vex_bone_storm","name":"Phase 2 — Bone Storm","kind":"Phase","type_line":"Boss — Phase","art":"bone_storm",
+  "text":"Zombies you control get +2/+0 and have menace.\nAt the beginning of your upkeep, put a creature card at random from among all graveyards onto the battlefield under your control.",
+  "abilities":[
+   {"Static":{"affected":{"Each":[{"Subtype":"Zombie"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":2,"toughness":0}},{"AddKeyword":"Menace"}]}},
+   {"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[
+    {"ChooseAtRandom":{"from":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]},"as":"risen"}},
+    {"Move":{"what":{"Bound":"risen"},"to":{"Battlefield":{"under":"You"}}}}]}}]},
+
+ {"id":"grimgut_warren","name":"The Warren","kind":"Innate","type_line":"Boss — Innate","art":"grimgut","levels":[1,2,3,4,5],
+  "text":"At the beginning of your upkeep, create {N} 1/1 red Goblin creature tokens with haste.",
+  "texts":["At the beginning of your upkeep, create a 1/1 red Goblin creature token with haste.","At the beginning of your upkeep, create {N} 1/1 red Goblin creature tokens with haste.","At the beginning of your upkeep, create {N} 1/1 red Goblin creature tokens with haste.","At the beginning of your upkeep, create {N} 1/1 red Goblin creature tokens with haste.","At the beginning of your upkeep, create {N} 1/1 red Goblin creature tokens with haste."],
+  "abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Goblin","colors":["Red"],"types":["Creature"],"subtypes":["Goblin"],"power":1,"toughness":1,"abilities":[{"Keyword":"Haste"}]}},"count":"$N"}}]}}]},
+ {"id":"grimgut_warren_wakes","name":"Phase 1 — The Warren Wakes","kind":"Phase","type_line":"Boss — Phase","art":"warren_wakes",
+  "text":"When this phase begins, create two 1/1 red Goblin creature tokens with haste for each opponent.\nGoblins you control get +1/+0.",
+  "abilities":[
+   {"Triggered":{"when":{"PhaseBegins":{}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Goblin","colors":["Red"],"types":["Creature"],"subtypes":["Goblin"],"power":1,"toughness":1,"abilities":[{"Keyword":"Haste"}]}},"count":{"Times":{"by":2,"of":{"Players":"Opponents"}}}}}]}},
+   {"Static":{"affected":{"Each":[{"Subtype":"Goblin"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":0}}]}}]},
+ {"id":"grimgut_last_stand","name":"Phase 2 — The King's Last Stand","kind":"Phase","type_line":"Boss — Phase","art":"kings_last_stand",
+  "text":"At end of combat on your turn, if it's the first combat phase of the turn, untap all creatures you control. After this phase, there is an additional combat phase followed by an additional main phase.",
+  "abilities":[{"Triggered":{"when":{"StepBegins":{"step":"EndCombat","whose":"You"}},"if":"FirstCombat","effects":[{"Untap":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}}},{"AddPhase":{"phases":["Combat","Main"]}}]}}]},
+
+ {"id":"seraphine_choir","name":"Choir","kind":"Innate","type_line":"Boss — Innate","art":"seraphine","levels":[0,1,2,3,3],
+  "text":"Creatures you control have lifelink.\nAt the beginning of your end step, if you gained life this turn, put {N} +1/+1 counters on the creature you control with the greatest power.",
+  "texts":[
+   "Creatures you control have lifelink.",
+   "Creatures you control have lifelink.\nAt the beginning of your end step, if you gained life this turn, put a +1/+1 counter on the creature you control with the greatest power.",
+   "Creatures you control have lifelink.\nAt the beginning of your end step, if you gained life this turn, put {N} +1/+1 counters on the creature you control with the greatest power.",
+   "Creatures you control have lifelink.\nAt the beginning of your end step, if you gained life this turn, put {N} +1/+1 counters on the creature you control with the greatest power.",
+   "Creatures you control have lifelink.\nAt the beginning of your end step, if you gained life this turn, put a +1/+1 counter on each creature you control."],
+  "abilities":[
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Lifelink"}]}},
+   {"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},
+    "if":{"All":[{"Compare":{"left":{"Tallied":{"who":"You","what":"LifeGainedTotal"}},"op":"Ge","right":1}},{"Compare":{"left":"$L","op":"Ge","right":2}},{"Compare":{"left":"$L","op":"Le","right":4}}]},
+    "effects":[
+     {"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},{"GreatestAmong":{"stat":"Power","group":[{"Type":"Creature"},{"ControlledBy":"You"}]}}]},"as":"choir"}},
+     {"PutCounters":{"on":{"Bound":"choir"},"counter":"+1/+1","count":"$N"}}]}},
+   {"Triggered":{"when":{"StepBegins":{"step":"End","whose":"You"}},
+    "if":{"All":[{"Compare":{"left":{"Tallied":{"who":"You","what":"LifeGainedTotal"}},"op":"Ge","right":1}},{"Compare":{"left":"$L","op":"Ge","right":5}}]},
+    "effects":[{"PutCounters":{"on":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"counter":"+1/+1"}}]}}]},
+ {"id":"seraphine_choir_ascends","name":"Phase 1 — The Choir Ascends","kind":"Phase","type_line":"Boss — Phase","art":"choir_ascends",
+  "text":"At the beginning of your upkeep, create a 4/4 white Angel creature token with flying.",
+  "abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Angel","colors":["White"],"types":["Creature"],"subtypes":["Angel"],"power":4,"toughness":4,"abilities":[{"Keyword":"Flying"}]}}}}]}}]},
+ {"id":"seraphine_wings_of_wrath","name":"Phase 2 — Wings of Wrath","kind":"Phase","type_line":"Boss — Phase","art":"wings_of_wrath",
+  "text":"When this phase begins, destroy all creatures without flying.\nCreatures you control get +1/+1 and have vigilance.",
+  "abilities":[
+   {"Triggered":{"when":{"PhaseBegins":{}},"effects":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"HasKeyword":"Flying"}}]}}}]}},
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}},{"AddKeyword":"Vigilance"}]}}]},
+
+ {"id":"ysolde_undertow","name":"Undertow","kind":"Innate","type_line":"Boss — Innate","art":"ysolde","levels":[1,1,2,3,4],
+  "text":"At the beginning of your upkeep, tap the {N} creatures with the greatest power the hero in the spotlight controls. They don't untap during their controller's next untap step.",
+  "texts":[
+   "At the beginning of your upkeep, tap the creature with the greatest power the hero in the spotlight controls.",
+   "At the beginning of your upkeep, tap the creature with the greatest power the hero in the spotlight controls. It doesn't untap during its controller's next untap step.",
+   "At the beginning of your upkeep, tap the two creatures with the greatest power the hero in the spotlight controls. They don't untap during their controller's next untap step.",
+   "At the beginning of your upkeep, tap the three creatures with the greatest power the hero in the spotlight controls. They don't untap during their controller's next untap step.",
+   "At the beginning of your upkeep, tap the four creatures with the greatest power the hero in the spotlight controls. They don't untap during their controller's next untap step."],
+  "abilities":[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[
+   {"RepeatWhile":{"condition":{"Compare":{"left":{"Count":[{"Type":"Creature"},{"ControlledBy":"Spotlit"},"Untapped"]},"op":"Gt","right":0}},"most":5,"times":"$N","effects":[
+    {"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"Spotlit"},"Untapped",{"GreatestAmong":{"stat":"Power","group":[{"Type":"Creature"},{"ControlledBy":"Spotlit"},"Untapped"]}}]},"as":"drowned"}},
+    {"Tap":{"what":{"Bound":"drowned"}}},
+    {"If":{"condition":{"Compare":{"left":"$L","op":"Ge","right":2}},"then":[{"Continuous":{"affected":{"Bound":"drowned"},"mods":["DoesntUntap"],"duration":"NextUntapStep"}}]}}]}}]}}]},
+ {"id":"ysolde_the_undertow","name":"Phase 1 — The Undertow","kind":"Phase","type_line":"Boss — Phase","art":"the_undertow",
+  "text":"When this phase begins, return all creatures your opponents control to their owners' hands.",
+  "abilities":[{"Triggered":{"when":{"PhaseBegins":{}},"effects":[{"Move":{"what":{"Each":[{"Type":"Creature"},{"ControlledBy":"Opponents"}]},"to":"Hand"}}]}}]},
+ {"id":"ysolde_deep_rises","name":"Phase 2 — The Deep Rises","kind":"Phase","type_line":"Boss — Phase","art":"the_deep_rises",
+  "text":"Creatures you control get +1/+1 and can't be blocked.",
+  "abilities":[{"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}},"CantBeBlocked"]}}]},
+
+ {"id":"hollowmere_tolling","name":"Tolling","kind":"Innate","type_line":"Boss — Innate","art":"hollowmere","levels":[1,2,3,4,5],
+  "text":"Whenever a nontoken creature you control dies, create {N} 1/1 white Spirit creature tokens with flying.",
+  "texts":["Whenever a nontoken creature you control dies, create a 1/1 white Spirit creature token with flying.","Whenever a nontoken creature you control dies, create {N} 1/1 white Spirit creature tokens with flying.","Whenever a nontoken creature you control dies, create {N} 1/1 white Spirit creature tokens with flying.","Whenever a nontoken creature you control dies, create {N} 1/1 white Spirit creature tokens with flying.","Whenever a nontoken creature you control dies, create {N} 1/1 white Spirit creature tokens with flying."],
+  "abilities":[{"Triggered":{"when":{"ZoneChange":{"what":[{"Type":"Creature"},{"Not":"Token"},{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Spirit","colors":["White"],"types":["Creature"],"subtypes":["Spirit"],"power":1,"toughness":1,"abilities":[{"Keyword":"Flying"}]}},"count":"$N"}}]}}]},
+ {"id":"hollowmere_veil_thins","name":"Phase 1 — The Veil Thins","kind":"Phase","type_line":"Boss — Phase","art":"the_veil_thins",
+  "text":"When this phase begins, create a 1/1 white Spirit creature token with flying for each creature card in your opponents' graveyards, then exile those graveyards.",
+  "abilities":[{"Triggered":{"when":{"PhaseBegins":{}},"effects":[
+   {"CreateToken":{"token":{"Custom":{"name":"Spirit","colors":["White"],"types":["Creature"],"subtypes":["Spirit"],"power":1,"toughness":1,"abilities":[{"Keyword":"Flying"}]}},"count":{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"Opponents"}]}}},
+   {"Exile":{"what":{"Each":[{"In":"Graveyard"},{"OwnedBy":"Opponents"}]}}}]}}]},
+ {"id":"hollowmere_last_peal","name":"Phase 2 — The Last Peal","kind":"Phase","type_line":"Boss — Phase","art":"the_last_peal",
+  "text":"Creatures you control get +1/+1 and have flying.\nCreatures without flying can't block.",
+  "abilities":[
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}},{"AddKeyword":"Flying"}]}},
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"Not":{"HasKeyword":"Flying"}}]},"mods":["CantBlock"]}}]},
+
+ {"id":"morwenna_stolen_dreams","name":"Stolen Dreams","kind":"Innate","type_line":"Boss — Innate","art":"morwenna","levels":[1,2,2,3,4],
+  "text":"At the beginning of your upkeep, each opponent discards a card unless they pay {{N}}.",
+  "texts":[
+   "At the beginning of your upkeep, the hero in the spotlight discards a card unless they pay {{N}}.",
+   "At the beginning of your upkeep, the hero in the spotlight discards a card unless they pay {{N}}.",
+   "At the beginning of your upkeep, each opponent discards a card unless they pay {{N}}.",
+   "At the beginning of your upkeep, each opponent discards a card unless they pay {{N}}.",
+   "At the beginning of your upkeep, each opponent discards a card unless they pay {{N}}."],
+  "abilities":[
+   {"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":"$L","op":"Le","right":2}},
+    "effects":[{"Pay":{"who":"Spotlit","cost":"{N}","unpaid":[{"Discard":{"who":"Spotlit"}}]}}]}},
+   {"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":"$L","op":"Ge","right":3}},
+    "effects":[{"RepeatEach":{"over":"Opponents","as":"each","effects":[{"Pay":{"who":{"Bound":"each"},"cost":"{N}","unpaid":[{"Discard":{"who":{"Bound":"each"}}}]}}]}}]}}]},
+ {"id":"morwenna_court_of_thorns","name":"Phase 1 — Court of Thorns","kind":"Phase","type_line":"Boss — Phase","art":"court_of_thorns",
+  "text":"When this phase begins, each opponent chooses three cards in their hand and discards the rest.\nCreatures you control have deathtouch.",
+  "abilities":[
+   {"Triggered":{"when":{"PhaseBegins":{}},"effects":[{"RepeatEach":{"over":"Opponents","as":"each","effects":[
+    {"If":{"condition":{"Compare":{"left":{"Count":[{"In":"Hand"},{"OwnedBy":{"Bound":"each"}}]},"op":"Gt","right":3}},"then":[
+     {"Discard":{"who":{"Bound":"each"},"count":{"Difference":[{"Count":[{"In":"Hand"},{"OwnedBy":{"Bound":"each"}}]},3]}}}]}}]}}]}},
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"AddKeyword":"Deathtouch"}]}}]},
+ {"id":"morwenna_endless_night","name":"Phase 2 — The Endless Night","kind":"Phase","type_line":"Boss — Phase","art":"the_endless_night",
+  "text":"Your opponents can't cast more than one spell each turn.\nCreatures you control get +1/+1.",
+  "abilities":[
+   {"Rule":{"rule":{"Cant":{"who":"Opponents","action":{"Cast":{"more_than":1}}}}}},
+   {"Static":{"affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"mods":[{"ModifyPT":{"power":1,"toughness":1}}]}}]}
+]

@@ -996,6 +996,8 @@
   {
    "id": "skrix_nest",
    "name": "Skrix, the Rat Queen",
+   "deck_file": "blc-squirreled-away.json", "innate": "skrix_brood", "round_phases": ["skrix_nest_stirs", "skrix_plague_tide"],
+   "satchel": [{"card": "Rat Out", "reusable": true}, {"card": "Feed the Swarm", "reusable": true}, {"card": "Village Rites", "reusable": true}, {"card": "Second Harvest"}],
    "colors": "B",
    "brain": "Hard",
    "life": 26,
@@ -1141,6 +1143,8 @@
   {
    "id": "mossjaw_hall",
    "name": "Old Mossjaw, Troll Patriarch",
+   "deck_file": "fdc-tramplesaurus-rex.json", "innate": "mossjaw_overgrowth", "round_phases": ["mossjaw_regrowth", "mossjaw_primal_rage"],
+   "satchel": [{"card": "Rampant Growth", "reusable": true}, {"card": "Beast Within", "reusable": true}, {"card": "Soul's Majesty", "reusable": true}, {"card": "Overwhelming Stampede"}],
    "colors": "G",
    "brain": "Hard",
    "life": 31,
@@ -1283,6 +1287,8 @@
   {
    "id": "vex_crypt",
    "name": "Bonecaller Vex",
+   "deck_file": "fdc-wretched-ranks.json", "innate": "vex_bonecalling", "round_phases": ["vex_grave_tide", "vex_bone_storm"],
+   "satchel": [{"card": "Doom Blade", "reusable": true}, {"card": "Cemetery Recruitment", "reusable": true}, {"card": "Victimize", "reusable": true}, {"card": "Zombie Apocalypse"}],
    "colors": "BR",
    "brain": "Hard",
    "life": 26,
@@ -1441,6 +1447,8 @@
   {
    "id": "grimgut_court",
    "name": "Grimgut, the Warren King",
+   "deck_file": "sld-goblin-storm.json", "innate": "grimgut_warren", "round_phases": ["grimgut_warren_wakes", "grimgut_last_stand"],
+   "satchel": [{"card": "Lightning Bolt", "reusable": true}, {"card": "Brightstone Ritual", "reusable": true}, {"card": "Chaos Warp", "reusable": true}, {"card": "Mob Rule"}],
    "colors": "R",
    "brain": "Hard",
    "life": 27,
@@ -1601,6 +1609,8 @@
   {
    "id": "seraphine_spire",
    "name": "Seraphine, the Gilded Choir",
+   "deck_file": "fdc-calling-all-angels.json", "innate": "seraphine_choir", "round_phases": ["seraphine_choir_ascends", "seraphine_wings_of_wrath"],
+   "satchel": [{"card": "Swords to Plowshares", "reusable": true}, {"card": "Brave the Elements", "reusable": true}, {"card": "Defy Death", "reusable": true}, {"card": "Angelic Accord"}],
    "since": 4,
    "colors": "W",
    "brain": "Hard",
@@ -1686,6 +1696,8 @@
   {
    "id": "ysolde_reef",
    "name": "Ysolde, Tyrant of the Undertow",
+   "deck_file": "lcc-explorers-of-the-deep.json", "innate": "ysolde_undertow", "round_phases": ["ysolde_the_undertow", "ysolde_deep_rises"],
+   "satchel": [{"card": "Memory Lapse", "reusable": true}, {"card": "River Heralds' Boon", "reusable": true}, {"card": "Curse of the Swine", "reusable": true}, {"card": "River's Rebuke"}],
    "since": 4,
    "colors": "U",
    "brain": "Hard",
@@ -1772,6 +1784,8 @@
   {
    "id": "hollowmere_belfry",
    "name": "Hollowmere, the Drowned Bell",
+   "deck_file": "voc-spirit-squadron.json", "innate": "hollowmere_tolling", "round_phases": ["hollowmere_veil_thins", "hollowmere_last_peal"],
+   "satchel": [{"card": "Momentary Blink", "reusable": true}, {"card": "Blessed Defiance", "reusable": true}, {"card": "Memory Lapse", "reusable": true}, {"card": "Supreme Verdict"}],
    "since": 5,
    "colors": "WU",
    "brain": "Hard",
@@ -1804,6 +1818,8 @@
   {
    "id": "morwenna_court",
    "name": "Morwenna, Queen of the Hollow Court",
+   "deck_file": "woc-fae-dominion.json", "innate": "morwenna_stolen_dreams", "round_phases": ["morwenna_court_of_thorns", "morwenna_endless_night"],
+   "satchel": [{"card": "Faerie Trickery", "reusable": true}, {"card": "Peppersmoke", "reusable": true}, {"card": "Stolen by the Fae", "reusable": true}, {"card": "Syphon Mind", "reusable": true}],
    "since": 5,
    "colors": "UB",
    "brain": "Hard",
