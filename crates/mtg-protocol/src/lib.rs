@@ -10,6 +10,7 @@
 mod apply;
 mod diff;
 
+pub mod asking;
 pub mod bindings;
 pub mod error;
 pub mod events;
@@ -19,6 +20,7 @@ pub mod rest;
 pub mod view;
 pub mod wording;
 
+pub use asking::{AskingCause, AskingView, RunEntryView, RunView};
 pub use error::ProtocolError;
 pub use events::{
     EventBatch, EventView, HiddenEvent, LogHost, LogName, LogWindow, SNAPSHOT_LOG, SNAPSHOT_NAMES,

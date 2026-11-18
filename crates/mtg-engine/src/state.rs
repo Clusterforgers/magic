@@ -350,6 +350,9 @@ pub struct GameState {
     pub(crate) r288_resolved_chapter: Option<(ObjectId, ObjectRef, u32)>,
     pub(crate) pending_triggers: Vec<PendingTrigger>,
     pub(crate) trigger_round: u32,
+    /// The runs of triggered abilities on the stack (`TriggerRun`); the fold sets them again from the log, so the
+    /// fingerprint leaves them out.
+    pub(crate) trigger_runs: Vec<crate::triggers::TriggerRun>,
     pub(crate) delayed: Vec<Delayed>,
     pub(crate) next_delayed: u64,
     /// The players who paid this turn to ignore the effects of a source (`GameRule::PayToIgnore`), with the source.
@@ -632,6 +635,13 @@ impl GameState {
     /// The spell or ability that is resolving, with its journal.
     pub const fn resolving(&self) -> Option<&Resolving> {
         self.resolving.as_ref()
+    }
+
+    /// The run of triggered abilities the ability `object` went on the stack with, if it is one of a run still there.
+    pub fn trigger_run_of(&self, object: ObjectId) -> Option<&crate::triggers::TriggerRun> {
+        self.trigger_runs
+            .iter()
+            .find(|run| run.members.iter().any(|member| member.object == object))
     }
 
     /// Triggered abilities that triggered and wait to go on the stack, in the order they triggered.

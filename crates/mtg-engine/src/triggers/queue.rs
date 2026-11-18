@@ -6,7 +6,7 @@
 use std::sync::Arc;
 
 use mtg_cards::ability::{Ability, Limit};
-use mtg_core::ids::PlayerId;
+use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{DelayedId, Triggered};
 use crate::abilities::{AbilityRef, AbilitySource, Cause, PutOnStack};
@@ -85,6 +85,125 @@ impl PendingTrigger {
             None => said,
         }
     }
+
+    /// What it does in the words of its card, the source by its name.
+    fn effect(&self, state: &GameState) -> String {
+        let name = state
+            .source_object(self.trigger.source.id)
+            .filter(|object| object.face_down().is_none())
+            .map_or("this permanent", |object| object.card().name.as_str());
+        effect_words(&self.rules, name)
+    }
+
+    /// The object whose event triggered it, while it lies where every player sees it.
+    fn cause(&self, state: &GameState) -> Option<ObjectId> {
+        public_cause(state, &self.trigger.cause)
+    }
+}
+
+/// The first object `cause` is about that lies face up on the battlefield or on the stack, where every player sees it.
+pub fn public_cause(state: &GameState, cause: &Cause) -> Option<ObjectId> {
+    cause
+        .subjects
+        .iter()
+        .filter_map(|subject| subject.object())
+        .chain(cause.source)
+        .find_map(|subject| {
+            let object = state.object(subject.id)?;
+            let open = matches!(
+                object.zone(),
+                crate::zones::Zone::Battlefield | crate::zones::Zone::Stack
+            ) && object.face_down().is_none()
+                && object.counter() == subject.counter;
+            open.then_some(subject.id)
+        })
+}
+
+/// The triggered abilities one player put on the stack together, in the order put: the last one resolves first.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct TriggerRun {
+    pub(crate) round: u32,
+    pub(crate) controller: PlayerId,
+    pub(crate) members: Vec<RunMember>,
+}
+
+/// One triggered ability of a [`TriggerRun`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct RunMember {
+    /// The ability's object on the stack; it is gone once the ability has resolved or left the stack.
+    pub object: ObjectId,
+    /// The object the ability came from, as it was.
+    pub source: ObjectRef,
+}
+
+impl TriggerRun {
+    /// A number that tells this run from every other run on the stack.
+    pub const fn id(&self) -> u32 {
+        self.round
+    }
+
+    /// Who controls its abilities.
+    pub const fn controller(&self) -> PlayerId {
+        self.controller
+    }
+
+    /// Its abilities in the order they resolve: the one put on the stack last comes first.
+    pub fn resolving_order(&self) -> impl DoubleEndedIterator<Item = RunMember> + '_ {
+        self.members.iter().rev().copied()
+    }
+}
+
+/// Adds `member` to the run of `round` and `controller`, and forgets the runs that have left the stack.
+fn join_run(state: &mut GameState, round: u32, controller: PlayerId, member: RunMember) {
+    let stack = state.zones.get(crate::zones::Zone::Stack).to_vec();
+    state
+        .trigger_runs
+        .retain(|run| run.members.iter().any(|m| stack.contains(&m.object)));
+    match state
+        .trigger_runs
+        .iter_mut()
+        .find(|run| run.round == round && run.controller == controller)
+    {
+        Some(run) => run.members.push(member),
+        None => state.trigger_runs.push(TriggerRun {
+            round,
+            controller,
+            members: vec![member],
+        }),
+    }
+}
+
+/// What a triggered ability does in the words of its card, without the event it waits for: "You may pay {1}. If you
+/// do, draw a card." The whole text for any other ability; empty for one the card writer cannot word.
+pub fn effect_words(rules: &Ability, name: &str) -> String {
+    let Some(text) = mtg_cards::compile::render_ability(rules) else {
+        return String::new();
+    };
+    let text = text.replace('~', name);
+    if !matches!(rules, Ability::Triggered { .. }) {
+        return text;
+    }
+    // The event ends at the first comma that does not continue a list ("creatures, planeswalkers, or battles").
+    let mut from = 0;
+    let effect = loop {
+        let Some(at) = text[from..].find(", ").map(|at| at + from) else {
+            break None;
+        };
+        let rest = &text[at + 2..];
+        if rest.starts_with("or ") || rest.starts_with("and ") {
+            from = at + 2;
+            continue;
+        }
+        break Some(rest);
+    };
+    let Some(effect) = effect.filter(|effect| !effect.is_empty()) else {
+        return text;
+    };
+    let mut effect = effect.to_owned();
+    if let Some(first) = effect.get_mut(..1) {
+        first.make_ascii_uppercase();
+    }
+    effect
 }
 
 /// Queues a trigger that triggered, and uses up what limits it.
@@ -202,7 +321,13 @@ pub(crate) fn take(state: &mut GameState, put: &PutOnStack) -> Result<PendingTri
         .ok_or_else(|| invalid(format!("no trigger of {:?} is waiting", put.source)))?;
     // Whatever triggers from here on waits for the next round.
     state.trigger_round += 1;
-    Ok(state.pending_triggers.remove(at))
+    let taken = state.pending_triggers.remove(at);
+    let member = RunMember {
+        object: put.object,
+        source: put.source,
+    };
+    join_run(state, taken.round, put.controller, member);
+    Ok(taken)
 }
 
 /// Takes a trigger out of the queue without putting it on the stack (CR 603.3d).
@@ -289,6 +414,8 @@ pub(crate) fn next(state: &GameState) -> Option<Progress> {
                         ability: e.trigger.ability,
                         when: e.words(state),
                         origin: e.trigger.origin,
+                        text: e.effect(state),
+                        cause: e.cause(state),
                     }
                 })
                 .collect();

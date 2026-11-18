@@ -465,6 +465,11 @@ pub enum ServerMessage {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[ts(optional)]
         show_after_ms: Option<u64>,
+        /// The spell or ability that asks, as this seat may see it; absent for a decision none asks (priority, combat,
+        /// the opening hand).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[ts(optional)]
+        asking: Option<crate::asking::AskingView>,
     },
     /// The reply to [`ClientMessage::Preview`]: what combat damage would do for the answer tried.
     Forecast {

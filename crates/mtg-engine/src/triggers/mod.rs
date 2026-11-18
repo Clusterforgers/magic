@@ -59,7 +59,7 @@ pub(crate) use cause_of::{CausedBy, cause_of};
 pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::{ByHandDue, detect, due};
 pub(crate) use detect::{needs_before, step_matches};
-pub use queue::PendingTrigger;
+pub use queue::{PendingTrigger, RunMember, TriggerRun, effect_words, public_cause};
 pub(crate) use reads_x::read as x_read;
 pub(crate) use w11c_crime::g10c_note_crime;
 

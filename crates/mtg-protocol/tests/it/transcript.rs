@@ -91,6 +91,7 @@ fn play(seed: u64) -> Vec<Beat> {
                 decision: decision.clone(),
                 deadline_ms: None,
                 show_after_ms: None,
+                asking: None,
             });
         }
         if let Some(result) = step.after.result() {
@@ -158,6 +159,7 @@ fn late_join(seed: u64) -> (Vec<ServerMessage>, StateView) {
             decision: decision.clone(),
             deadline_ms: None,
             show_after_ms: None,
+            asking: None,
         });
     }
     messages.extend(beats[start..].iter().flat_map(|beat| beat.sent.clone()));

@@ -506,6 +506,8 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                     ability: 0,
                     when: "When it enters the battlefield".into(),
                     origin: mtg_engine::abilities::AbilitySource::default(),
+                    text: "Draw a card.".into(),
+                    cause: Some(b),
                 },
                 TriggerEntry {
                     source: ObjectRef { id: b, counter: 0 },
@@ -517,6 +519,8 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
                             level: 2,
                         },
                     ),
+                    text: String::new(),
+                    cause: None,
                 },
             ],
         }),
@@ -952,6 +956,7 @@ fn clocked_decisions() -> impl Iterator<Item = ServerMessage> {
             },
             deadline_ms,
             show_after_ms: deadline_ms.map(|ms| ms / 3),
+            asking: None,
         })
 }
 
@@ -1230,6 +1235,7 @@ fn client_wire_shape_is_flat_and_tagged(
         },
         deadline_ms: Some(45_000),
         show_after_ms: None,
+        asking: None,
     },
     json!({
         "type": "Decision", "id": 3, "deadline_ms": 45_000,
@@ -1245,6 +1251,7 @@ fn client_wire_shape_is_flat_and_tagged(
         },
         deadline_ms: None,
         show_after_ms: None,
+        asking: None,
     },
     json!({
         "type": "Decision", "id": 4,

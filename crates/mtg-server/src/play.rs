@@ -325,6 +325,7 @@ impl<S: EventStore> GameActor<S> {
         {
             let seat = decision.player;
             self.tell_away(seat, deadline_ms);
+            let asking = self.asking(&decision);
             self.seats.send(
                 seat,
                 ServerMessage::Decision {
@@ -332,6 +333,7 @@ impl<S: EventStore> GameActor<S> {
                     decision,
                     deadline_ms,
                     show_after_ms,
+                    asking,
                 },
             );
         }

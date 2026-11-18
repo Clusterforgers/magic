@@ -574,6 +574,7 @@ impl Running {
                     .shown_at
                     .map(|at| millis(at.saturating_duration_since(now)))
                     .filter(|ms| *ms > 0),
+                asking: mtg_protocol::AskingView::of(self.engine.state(), seat, &pending.decision),
             });
         }
         if let Some(result) = self.engine.result() {

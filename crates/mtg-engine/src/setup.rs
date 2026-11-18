@@ -655,6 +655,7 @@ impl GameState {
             r288_resolved_chapter: None,
             pending_triggers: Vec::new(),
             trigger_round: 0,
+            trigger_runs: Vec::new(),
             delayed: Vec::new(),
             next_delayed: 0,
             r6703_ignored: Vec::new(),
