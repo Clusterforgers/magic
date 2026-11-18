@@ -93,7 +93,7 @@ fn a_new_run_builds_the_reworked_fight(
     assert_eq!(seat.satchel_reusable.len(), reusable);
     assert_eq!(seat.satchel.len(), 4 - reusable);
     assert_eq!(seat.opening_lands, Some(OpeningLands::BOSS));
-    assert!(seat.held.is_empty());
+    assert_eq!(seat.held.len(), 0);
     assert!(
         setup.players[..heroes]
             .iter()

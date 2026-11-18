@@ -426,8 +426,8 @@ async fn boss_side_deck(
         .iter()
         .flat_map(|(card, n)| std::iter::repeat_n(card.clone(), usize::try_from(*n).unwrap_or(0)))
         .collect();
-    let (named, mut reads) = cards_read(app, &names).await?;
-    let (ids, cards): (Vec<String>, Vec<Arc<CardDefinition>>) = named.into_iter().unzip();
+    let (found, mut reads) = cards_read(app, &names).await?;
+    let (ids, cards): (Vec<String>, Vec<Arc<CardDefinition>>) = found.into_iter().unzip();
     let note = SeatDeck {
         name: name.to_owned(),
         format: "commander".to_owned(),
