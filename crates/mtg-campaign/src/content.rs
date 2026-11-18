@@ -17,20 +17,10 @@ use crate::relics::Want;
 pub enum CardKind {
     /// A boon a hero keeps for the run, in their command zone at every fight.
     Relic,
-    /// A boss's card, in its command zone from the start.
-    Boss,
-    /// A boss phase, which begins at a life threshold.
+    /// A boss phase, which begins by round.
     Phase,
     /// The emblem a hero gets on becoming a Spirit.
     Haunt,
-    /// A scheme of a boss's scheme deck, set in motion as one of its scheme turns begins.
-    Scheme,
-    /// A boss's Enrage, which begins once the heroes have had its `turn` turns.
-    Enrage,
-    /// A boss buff drawn for each fight from the theme's pool.
-    Modifier,
-    /// A boss's own risky relic, which it brings from the second boss of the ladder on.
-    BossRelic,
     /// A boss's innate, its one fixed effect, written once with a number that grows over five levels
     /// ([`crate::innate`]).
     Innate,
@@ -103,9 +93,6 @@ pub struct CustomCard {
     /// Cards its holder's opening hand has in addition.
     #[serde(default)]
     pub hand: u32,
-    /// The heroes' turn from which an Enrage applies; 0 for other cards.
-    #[serde(default)]
-    pub turn: u32,
     /// What a relic's rules care about in a deck, so offers skip it for a deck with too few such cards; none for a relic
     /// of use to any deck.
     #[serde(default)]
@@ -173,7 +160,7 @@ impl Brain {
     }
 }
 
-/// A boss seat: a themed deck of real cards, a brain, life that grows with the party, its boss card and phases.
+/// A boss: its precon deck, its innate, two phases by round and its satchel (`docs/delves.md`, Bosses).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct Boss {
@@ -181,64 +168,21 @@ pub struct Boss {
     pub id: String,
     /// Its name.
     pub name: String,
-    /// Whether it is the theme's final boss, fought last.
+    /// Whether it is one of the theme's final bosses, one of which a ladder meets last.
     #[serde(default, rename = "final")]
     pub final_boss: bool,
-    /// Whether it is an uber boss, which a hot ladder may meet in place of its final boss (`map::generate_for`); never a
-    /// lieutenant or a final boss otherwise.
-    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-    pub uber: bool,
-    /// Its colours, as WUBRG letters.
+    /// Its colours, as WUBRG letters: its deck's.
     pub colors: String,
-    /// How its seat is played.
-    pub brain: Brain,
-    /// Its life with one hero.
-    pub life: i32,
-    /// Life it gets for each hero after the first.
-    pub life_per_hero: i32,
-    /// Its opening hand size.
-    pub hand: u32,
-    /// Its deck as written before brackets, for runs of an earlier content generation: card names and copies.
-    #[serde(default)]
-    pub deck: Vec<(String, u32)>,
-    /// Its deck by bracket (`scale::BRACKETS`), for runs from `scale::BRACKETS_FROM`.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub brackets: Option<BracketDeck>,
-    /// Its commander card: a real card it casts free from its command zone as its last phase begins.
-    #[serde(default)]
-    pub commander: String,
     /// The content generation it joined the theme in: a run made before it never meets it.
     #[serde(default)]
     pub since: u32,
-    /// Its upgraded form, which may stand as the final boss of a ladder it is not on.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub upgrade: Option<BossUpgrade>,
-    /// The boss an upgraded form is made from; none for a boss as written.
-    #[serde(skip)]
-    pub upgrade_of: Option<String>,
-    /// Custom cards it starts with in its command zone: its passive.
-    #[serde(default)]
-    pub rules: Vec<String>,
-    /// Its Enrage card.
-    #[serde(default)]
-    pub enrage: String,
-    /// Its own risky relic, which it brings from the second boss of the ladder on.
-    #[serde(default)]
-    pub relic: String,
-    /// Its phases: a phase card and the share of its starting life, in percent, at or below which it begins.
-    #[serde(default)]
-    pub phases: Vec<(String, u32)>,
-    /// Its deck file (`content/decks/<code>-<name>.json`), a stored Commander precon; none while `deck` stands in.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub deck_file: Option<String>,
-    /// Its innate card, written with five levels ([`crate::innate`]); none for a boss of the older model.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub innate: Option<String>,
+    /// Its deck file (`content/decks/<code>-<name>.json`), a stored Commander precon.
+    pub deck_file: String,
+    /// Its innate card, written with five levels ([`crate::innate`]).
+    pub innate: String,
     /// Its Phase 1 and Phase 2 cards, which begin by round ([`crate::scale::PHASE_ROUNDS`]).
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub round_phases: Vec<String>,
     /// Its satchel: four spells in its command zone, cast like cards in hand.
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub satchel: Vec<SatchelCard>,
     /// What it says as the fight begins.
     #[serde(default)]
@@ -266,129 +210,6 @@ pub struct BossArt {
     pub card: String,
     /// The card's Scryfall oracle id.
     pub oracle_id: String,
-}
-
-/// A boss's deck by bracket: the deck of bracket 1 and, for each bracket above it, the cards that bracket adds and
-/// cuts.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct BracketDeck {
-    /// The bracket 1 deck: card names and copies.
-    pub base: Vec<(String, u32)>,
-    /// Brackets 2 and up, in order: each changes the bracket below it.
-    pub steps: Vec<DeckStep>,
-}
-
-/// How one bracket's deck differs from the bracket below it.
-#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct DeckStep {
-    /// Cards added: names and copies.
-    #[serde(default)]
-    pub add: Vec<(String, u32)>,
-    /// Cards taken out: names and copies.
-    #[serde(default)]
-    pub cut: Vec<(String, u32)>,
-}
-
-impl BracketDeck {
-    /// The deck at `bracket` (from 1; past the last step the last deck): card names and copies, in the order they were
-    /// first named.
-    pub fn at(&self, bracket: u8) -> Vec<(String, u32)> {
-        let mut deck = self.base.clone();
-        for step in self
-            .steps
-            .iter()
-            .take(usize::from(bracket.saturating_sub(1)))
-        {
-            for (name, n) in &step.cut {
-                if let Some(entry) = deck.iter_mut().find(|(have, _)| have == name) {
-                    entry.1 = entry.1.saturating_sub(*n);
-                }
-            }
-            for (name, n) in &step.add {
-                match deck.iter_mut().find(|(have, _)| have == name) {
-                    Some(entry) => entry.1 += n,
-                    None => deck.push((name.clone(), *n)),
-                }
-            }
-            deck.retain(|(_, n)| *n > 0);
-        }
-        deck
-    }
-}
-
-/// A boss's upgraded form: the same identity with a new name and an extra effect, fought as a final boss.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct BossUpgrade {
-    /// The upgraded form's name.
-    pub name: String,
-    /// The boss cards it has in addition to the boss's passive.
-    pub rules: Vec<String>,
-    /// What it says as the fight begins.
-    #[serde(default)]
-    pub line: String,
-    /// The content generation from which the upgraded form stands, at least the boss's own and the bracket generation.
-    #[serde(default)]
-    pub since: u32,
-}
-
-/// The id suffix of a boss's upgraded form.
-pub const UPGRADED: &str = "_ascendant";
-
-impl Boss {
-    /// The boss whose deck, minions and identity this one shares: the boss it is upgraded from, or itself.
-    pub fn identity(&self) -> &str {
-        self.upgrade_of.as_deref().unwrap_or(&self.id)
-    }
-
-    /// Its deck at `bracket`; the deck as written for bracket 0 or a boss with no bracket decks.
-    pub fn deck_at(&self, bracket: u8) -> Vec<(String, u32)> {
-        match &self.brackets {
-            Some(decks) if bracket > 0 => decks.at(bracket),
-            _ => self.deck.clone(),
-        }
-    }
-
-    /// Its upgraded form as a final boss, if it has one: its own rules and the upgrade's, from the bracket generation.
-    pub fn upgraded(&self) -> Option<Boss> {
-        let upgrade = self.upgrade.as_ref()?;
-        let mut rules = self.rules.clone();
-        rules.extend(upgrade.rules.iter().cloned());
-        Some(Boss {
-            id: format!("{}{UPGRADED}", self.id),
-            name: upgrade.name.clone(),
-            final_boss: true,
-            rules,
-            line: upgrade.line.clone(),
-            since: self
-                .since
-                .max(upgrade.since)
-                .max(crate::scale::BRACKETS_FROM),
-            upgrade: None,
-            upgrade_of: Some(self.id.clone()),
-            ..self.clone()
-        })
-    }
-}
-
-/// A boss's minion: a lieutenant seat on the boss's side for a big party, with another boss's deck; it falls with the
-/// boss.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct Minion {
-    /// Its id in the content.
-    pub id: String,
-    /// Its name.
-    pub name: String,
-    /// The boss whose deck it plays; a fight against that boss does not field it.
-    pub deck_of: String,
-    /// Its life at Heat 0.
-    pub life: i32,
-    /// Custom cards it starts with in its command zone.
-    #[serde(default)]
-    pub rules: Vec<String>,
 }
 
 /// What an event option does to the hero who takes it.
@@ -654,29 +475,13 @@ pub struct Theme {
     /// The type line of each pool card ("Creature — Angel"), which counts the Satchel's cards for the relic filter.
     #[serde(default)]
     pub pool_types: BTreeMap<String, String>,
-    /// The bosses' scheme deck, shuffled for each fight.
-    #[serde(default)]
-    pub schemes: Vec<String>,
-    /// Every how many boss turns a scheme is set in motion, from the boss's third.
-    #[serde(default = "every_turn")]
-    pub scheme_every: u32,
-    /// The buff modifiers one of which each fight draws for the boss.
-    #[serde(default)]
-    pub modifiers: Vec<String>,
-    /// The minions a boss fields for a big party, in the order they join.
-    #[serde(default)]
-    pub minions: Vec<Minion>,
-    /// The upgraded forms of its bosses, made as the content is read (`Boss::upgraded`).
-    #[serde(skip)]
-    pub upgraded: Vec<Boss>,
 }
 
 impl Theme {
-    /// The boss with this id, an upgraded form included.
+    /// The boss with this id.
     pub fn boss(&self, id: &str) -> Option<&Boss> {
         self.bosses
             .iter()
-            .chain(&self.upgraded)
             .find(|m| m.id == id)
     }
 
@@ -748,25 +553,12 @@ impl Content {
         let modifiers = serde_json::from_str(modifiers).map_err(fail)?;
         let mut cards: BTreeMap<String, CustomCard> =
             list.into_iter().map(|c| (c.id.clone(), c)).collect();
-        let variants = cards
-            .values()
-            .filter(|c| c.kind == CardKind::Enrage)
-            .flat_map(|c| {
-                crate::scale::ENRAGE_TURNS
-                    .filter(move |turn| *turn != c.turn)
-                    .map(move |turn| enrage_at(c, turn))
-            })
-            .collect::<Result<Vec<_>, _>>()?;
-        cards.extend(variants.into_iter().map(|c| (c.id.clone(), c)));
-        let mut themes = themes
+        let themes = themes
             .iter()
             .map(|text| {
                 serde_json::from_str(text).map_err(|e| CampaignError::Content(e.to_string()))
             })
             .collect::<Result<Vec<Theme>, _>>()?;
-        for theme in &mut themes {
-            theme.upgraded = theme.bosses.iter().filter_map(Boss::upgraded).collect();
-        }
         Ok(Content {
             cards,
             themes,
@@ -821,76 +613,10 @@ impl Content {
     }
 }
 
-fn every_turn() -> u32 {
-    1
-}
-
 /// Serde passes the field by reference.
 #[allow(clippy::trivially_copy_pass_by_ref)]
 const fn is_zero(n: &u8) -> bool {
     *n == 0
-}
-
-/// The Enrage `card` made to begin on the heroes' turn `turn` (`scale::ENRAGE_TURNS`): its id, `turn`, rules text and
-/// the turn counts its abilities compare with and count beyond.
-fn enrage_at(card: &CustomCard, turn: u32) -> Result<CustomCard, CampaignError> {
-    const WORDS: [&str; 13] = [
-        "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
-        "eleven", "twelve",
-    ];
-    let word = |n: u32| {
-        WORDS
-            .get(usize::try_from(n).unwrap_or(usize::MAX))
-            .copied()
-            .unwrap_or("many")
-    };
-    let fail = |e: serde_json::Error| CampaignError::Content(e.to_string());
-    let mut abilities = serde_json::to_value(&card.abilities).map_err(fail)?;
-    retime(&mut abilities, card.turn, turn);
-    let text = card
-        .text
-        .replace(
-            &format!("have had {} turns", word(card.turn)),
-            &format!("have had {} turns", word(turn)),
-        )
-        .replace(
-            &format!("beyond {}", word(card.turn.saturating_sub(1))),
-            &format!("beyond {}", word(turn.saturating_sub(1))),
-        );
-    Ok(CustomCard {
-        id: crate::scale::enrage_id(&card.id, turn),
-        text,
-        turn,
-        abilities: serde_json::from_value(abilities).map_err(fail)?,
-        ..card.clone()
-    })
-}
-
-/// Moves the heroes' turn counts in `value` from an Enrage written for turn `from` to one beginning on `to`: a
-/// comparison of the opponents' turns with `from` and a count of their turns beyond `from − 1`.
-fn retime(value: &mut serde_json::Value, from: u32, to: u32) {
-    use serde_json::{Value, json};
-    let theirs = json!({ "TurnsTaken": "Opponents" });
-    match value {
-        Value::Object(map) => {
-            if let Some(Value::Object(compare)) = map.get_mut("Compare")
-                && compare.get("left") == Some(&theirs)
-                && compare.get("right") == Some(&json!(from))
-            {
-                compare.insert("right".into(), json!(to));
-            }
-            if let Some(Value::Array(pair)) = map.get_mut("Difference")
-                && pair.first() == Some(&theirs)
-                && pair.get(1) == Some(&json!(from.saturating_sub(1)))
-                && let Some(count) = pair.get_mut(1)
-            {
-                *count = json!(to.saturating_sub(1));
-            }
-            map.values_mut().for_each(|v| retime(v, from, to));
-        }
-        Value::Array(items) => items.iter_mut().for_each(|v| retime(v, from, to)),
-        _ => {}
-    }
 }
 
 /// The content shipped with the crate, read once.
@@ -901,7 +627,6 @@ pub fn content() -> Result<&'static Content, CampaignError> {
             Content::parse(
                 &[
                     include_str!("../content/cards.json"),
-                    include_str!("../content/boss_cards.json"),
                     include_str!("../content/encounters.json"),
                     include_str!("../content/rework_warrens_a.json"),
                     include_str!("../content/rework_warrens_b.json"),
