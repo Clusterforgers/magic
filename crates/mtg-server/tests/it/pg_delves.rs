@@ -275,12 +275,7 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
         .flat_map(|t| t.bosses.iter().chain(&t.upgraded))
         .collect();
     assert_eq!(content["bosses"].as_array().unwrap().len(), bosses.len());
-    for (wire, boss) in content["bosses"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .zip(bosses)
-    {
+    for (wire, boss) in content["bosses"].as_array().unwrap().iter().zip(bosses) {
         assert_eq!(wire["art"]["card"], boss.art.card.as_str(), "{}", boss.id);
         // An upgraded form names the boss it came from, so the ladder and the intro can say it.
         assert_eq!(
