@@ -1037,6 +1037,9 @@ pub enum GameRule {
     /// identity of their commanders: each color of that identity stands for another one of it, so a cost keeps its mana
     /// value, generic and colorless mana stay as they are, and a card inside the identity stays castable (`cost_colors`).
     CostColorsDrawn(Ref),
+    /// The players pay no commander tax (CR 903.8): their commanders cost no more to cast from the command zone, in mana or
+    /// in life.
+    NoCommanderTax(Ref),
     /// The players have a keyword, such as protection from everything (CR 702.16j), while the rule lasts.
     PlayersHave {
         /// The players.

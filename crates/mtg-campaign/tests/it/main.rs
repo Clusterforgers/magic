@@ -9,6 +9,7 @@ mod descent_loot;
 mod endless;
 mod events;
 mod fights;
+mod modifiers;
 mod mythic_cards;
 mod pair_bosses;
 mod rarity;

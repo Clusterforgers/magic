@@ -1,21 +1,179 @@
 [
   {
-    "id": "giants_table",
-    "name": "Giant's Table",
+    "id": "mirror_hall",
+    "name": "Mirror Hall",
     "kind": "Encounter",
     "type_line": "Encounter",
-    "text": "Creature spells cost {2} less to cast.",
+    "text": "A player can't control more than five creatures with the same name; a sixth is sacrificed.",
     "abilities": [
       {
-        "CostModifier": {
-          "applies_to": [
-            "Spell",
-            {
-              "Type": "Creature"
+        "Rule": {
+          "rule": {
+            "SameNameLimit": {
+              "who": "EachPlayer",
+              "most": 5
             }
-          ],
-          "change": "Reduce",
-          "mana": "{2}"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "living_stone",
+    "name": "Living Stone",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "All artifacts have \"{T}: Add {C}.\"",
+    "abilities": [
+      {
+        "Static": {
+          "affected": {
+            "Each": [
+              {
+                "Type": "Artifact"
+              }
+            ]
+          },
+          "mods": [
+            {
+              "GrantAbility": {
+                "Activated": {
+                  "cost": [
+                    "Tap"
+                  ],
+                  "effects": [
+                    {
+                      "AddMana": {
+                        "mana": {
+                          "Fixed": [
+                            "Colorless"
+                          ]
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "waking_earth",
+    "name": "Waking Earth",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "All lands are 1/1 creatures in addition to their other types.",
+    "abilities": [
+      {
+        "Static": {
+          "affected": {
+            "Each": [
+              {
+                "Type": "Land"
+              }
+            ]
+          },
+          "mods": [
+            {
+              "AddType": "Creature"
+            },
+            {
+              "SetPT": {
+                "power": 1,
+                "toughness": 1
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "bloodlust",
+    "name": "Bloodlust",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "All creatures have double strike and attack each combat if able.",
+    "abilities": [
+      {
+        "Static": {
+          "affected": {
+            "Each": [
+              {
+                "Type": "Creature"
+              }
+            ]
+          },
+          "mods": [
+            {
+              "AddKeyword": "DoubleStrike"
+            }
+          ]
+        }
+      },
+      {
+        "Rule": {
+          "rule": {
+            "MustAttack": {
+              "Each": [
+                {
+                  "Type": "Creature"
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "twin_flames",
+    "name": "Twin Flames",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "If a source would deal damage, it deals double that damage instead.",
+    "abilities": [
+      {
+        "Replacement": {
+          "when": {
+            "Damage": {}
+          },
+          "by": {
+            "Multiply": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "overflowing_mana",
+    "name": "Overflowing Mana",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Whenever a player taps a land for mana, they add one more mana of a type that land produced.",
+    "abilities": [
+      {
+        "Triggered": {
+          "when": {
+            "TappedForMana": {
+              "what": [
+                {
+                  "Type": "Land"
+                }
+              ]
+            }
+          },
+          "effects": [
+            {
+              "AddMana": {
+                "who": "Triggering",
+                "mana": "OfTapped"
+              }
+            }
+          ]
         }
       }
     ]
@@ -25,7 +183,7 @@
     "name": "Deep Pockets",
     "kind": "Encounter",
     "type_line": "Encounter",
-    "text": "At the beginning of each player's draw step, that player draws an additional card.",
+    "text": "Each player draws an additional card in their draw step and has no maximum hand size.",
     "abilities": [
       {
         "Triggered": {
@@ -41,6 +199,255 @@
               }
             }
           ]
+        }
+      },
+      {
+        "Rule": {
+          "rule": {
+            "NoMaxHandSize": "EachPlayer"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "quickening",
+    "name": "Quickening",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Players may cast spells as though they had flash.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "MayCast": {
+              "who": "EachPlayer",
+              "flash": true
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "one_voice",
+    "name": "One Voice",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Each player can't cast more than one spell each turn.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "Cant": {
+              "who": "EachPlayer",
+              "action": {
+                "Cast": {
+                  "more_than": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "narrow_pass",
+    "name": "Narrow Pass",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "No more than two creatures can attack each combat, and no more than two can block.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "AttackLimit": 2
+          }
+        }
+      },
+      {
+        "Rule": {
+          "rule": {
+            "BlockLimit": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "second_spring",
+    "name": "Second Spring",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Twice as many tokens are created, and twice as many +1/+1 counters are put on creatures.",
+    "abilities": [
+      {
+        "Replacement": {
+          "when": {
+            "TokenCreation": {
+              "controller": "EachPlayer"
+            }
+          },
+          "by": {
+            "Multiply": 2
+          }
+        }
+      },
+      {
+        "Replacement": {
+          "when": {
+            "CountersPut": {
+              "on": {
+                "Each": [
+                  {
+                    "Type": "Creature"
+                  }
+                ]
+              },
+              "counter": "+1/+1"
+            }
+          },
+          "by": {
+            "Multiply": 2
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "no_rest",
+    "name": "No Rest",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Whenever a card or token would go to a graveyard, its owner flips a coin. If they lose the flip, it is exiled instead.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "FlipOrExiled": "EachPlayer"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "stone_sleep",
+    "name": "Stone Sleep",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "At each untap step, the active player flips a coin. If they lose the flip, their creatures with power 3 or greater don't untap.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "FlipOrStayTapped": {
+              "who": "EachPlayer",
+              "what": [
+                {
+                  "Type": "Creature"
+                },
+                {
+                  "Compare": {
+                    "stat": "Power",
+                    "op": "Ge",
+                    "to": 3
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "prismatic_chaos",
+    "name": "Prismatic Chaos",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Each round, the colored mana symbols in every hero's costs stand for other colors of their commander's identity.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "CostColorsDrawn": "Opponents"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "endless_summer",
+    "name": "Endless Summer",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Each player may play an additional land on each of their turns.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "AdditionalLandPlays": {
+              "who": "EachPlayer"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "open_book",
+    "name": "Open Book",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Players play with the top card of their library revealed and may play lands and cast spells from the top of their library.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "RevealTop": "EachPlayer"
+          }
+        }
+      },
+      {
+        "Rule": {
+          "rule": {
+            "MayCast": {
+              "who": "EachPlayer",
+              "from": "Library",
+              "play": true
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "thin_veil",
+    "name": "Thin Veil",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Creatures entering the battlefield don't cause abilities to trigger.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "Cant": {
+              "who": "EachPlayer",
+              "action": {
+                "Trigger": {
+                  "ZoneChange": {
+                    "what": [
+                      {
+                        "Type": "Creature"
+                      }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              }
+            }
+          }
         }
       }
     ]
@@ -63,6 +470,160 @@
           },
           "mods": [
             "AddAllCreatureTypes"
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "giants_table",
+    "name": "Giant's Table",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Creature spells cost {2} less to cast.",
+    "abilities": [
+      {
+        "CostModifier": {
+          "applies_to": [
+            "Spell",
+            {
+              "Type": "Creature"
+            }
+          ],
+          "change": "Reduce",
+          "mana": "{2}"
+        }
+      }
+    ]
+  },
+  {
+    "id": "free_command",
+    "name": "Free Command",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Heroes pay no commander tax.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "NoCommanderTax": "Opponents"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "echoing_spells",
+    "name": "Echoing Spells",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Whenever a player casts their first instant or sorcery spell each turn, copy that spell. They may choose new targets for the copy.",
+    "abilities": [
+      {
+        "Triggered": {
+          "when": {
+            "Nth": {
+              "event": {
+                "SpellCast": {
+                  "what": [
+                    {
+                      "AnyOf": [
+                        {
+                          "Type": "Instant"
+                        },
+                        {
+                          "Type": "Sorcery"
+                        }
+                      ]
+                    }
+                  ],
+                  "by": "EachPlayer"
+                }
+              },
+              "nth": 1
+            }
+          },
+          "effects": [
+            {
+              "CopySpell": {
+                "what": "Triggering",
+                "who": "TriggeringPlayer",
+                "new_targets": true
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "id": "no_mercy",
+    "name": "No Mercy",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Whenever a player would gain life, they flip a coin. If they lose the flip, they gain no life.",
+    "abilities": [
+      {
+        "Rule": {
+          "rule": {
+            "FlipOrNoLifeGain": "EachPlayer"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "id": "haunted_ground",
+    "name": "Haunted Ground",
+    "kind": "Encounter",
+    "type_line": "Encounter",
+    "text": "Whenever a nontoken creature dies, its controller creates a 1/1 white Spirit creature token with flying.",
+    "abilities": [
+      {
+        "Triggered": {
+          "when": {
+            "ZoneChange": {
+              "what": [
+                {
+                  "Type": "Creature"
+                },
+                {
+                  "Not": "Token"
+                }
+              ],
+              "from": "Battlefield",
+              "to": "Graveyard"
+            }
+          },
+          "effects": [
+            {
+              "CreateToken": {
+                "who": {
+                  "ControllerOf": "Triggering"
+                },
+                "token": {
+                  "Custom": {
+                    "name": "Spirit",
+                    "colors": [
+                      "White"
+                    ],
+                    "types": [
+                      "Creature"
+                    ],
+                    "subtypes": [
+                      "Spirit"
+                    ],
+                    "power": 1,
+                    "toughness": 1,
+                    "abilities": [
+                      {
+                        "Keyword": "Flying"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
           ]
         }
       }

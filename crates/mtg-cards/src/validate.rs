@@ -6413,6 +6413,7 @@ impl Walker<'_> {
             | GameRule::RadiationGainsLife(who)
             | GameRule::LifeTotalCantChange(who)
             | GameRule::CostColorsDrawn(who)
+            | GameRule::NoCommanderTax(who)
             | GameRule::CantDraw(who)
             | GameRule::DrawFromBottom(who)
             | GameRule::CantSearch(who)

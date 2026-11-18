@@ -536,6 +536,7 @@ const RUNS: &[&str] = &[
     "Rule.MayCastRather",
     "Rule.LifeTotalCantChange",
     "Rule.CostColorsDrawn",
+    "Rule.NoCommanderTax",
     "Rule.PlayersHave",
     "Rule.CantDraw",
     "Rule.DrawFromBottom",

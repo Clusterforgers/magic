@@ -10,10 +10,13 @@ use crate::state::GameState;
 use crate::zones::Zone;
 
 /// The life the card `id`, cast from the command zone, pays in place of its commander tax: the life of its rule for each
-/// previous cast from the command zone. `None` for a card without the rule or outside the command zone.
+/// previous cast from the command zone. `None` for a card without the rule, outside the command zone or whose owner pays
+/// no commander tax.
 pub(crate) fn r5500_tax_life(state: &GameState, id: ObjectId) -> Option<u32> {
     let card = state.object(id)?;
-    if !matches!(card.zone(), Zone::Command(_)) {
+    if !matches!(card.zone(), Zone::Command(_))
+        || crate::rules::pays_no_commander_tax(state, card.owner())
+    {
         return None;
     }
     let life =

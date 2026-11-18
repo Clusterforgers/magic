@@ -1,7 +1,8 @@
 //! Goal: the Delves modifier rules work from an emblem on the boss's seat for every player: Mirror Hall sacrifices
 //! the newest creatures beyond five of one name; No Rest, Stone Sleep and No Mercy flip a logged coin from the game's
 //! seed and apply only on a loss; Living Stone's granted mana ability, Overflowing Mana's extra mana and Prismatic
-//! Chaos naming only the heroes all run from an emblem.
+//! Chaos naming only the heroes all run from an emblem; Free Command spares only the heroes the commander tax; and
+//! Echoing Spells copies only the first instant or sorcery of each player each turn, whatever they cast before it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -15,10 +16,15 @@ use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_engine::Event;
+use mtg_engine::choose::YesNoChoice;
+use mtg_engine::decision::{Answer, DecisionKind};
+use mtg_engine::format::Commander;
+use mtg_engine::manual::{ManualAction, ManualZone};
 use mtg_engine::turn::Step;
 use mtg_engine::w6b_emblems::emblem_definition;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{cost, creature, forest, gain_life, mountain, plains};
+use mtg_testkit::commander_cards::legend;
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, tapped};
 use rstest::rstest;
@@ -30,6 +36,8 @@ const STONE_SLEEP: &str = r#"{"Rule":{"rule":{"FlipOrStayTapped":{"who":"EachPla
 const LIVING_STONE: &str = r#"{"Static":{"affected":{"Each":[{"Type":"Artifact"}]},"mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"Fixed":["Colorless"]}}}]}}}]}}"#;
 const OVERFLOWING_MANA: &str = r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}]}},"effects":[{"AddMana":{"who":"Triggering","mana":"OfTapped"}}]}}"#;
 const PRISMATIC_CHAOS: &str = r#"{"Rule":{"rule":{"CostColorsDrawn":"Opponents"}}}"#;
+const FREE_COMMAND: &str = r#"{"Rule":{"rule":{"NoCommanderTax":"Opponents"}}}"#;
+const ECHOING_SPELLS: &str = r#"{"Triggered":{"when":{"Nth":{"event":{"SpellCast":{"what":[{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]}],"by":"EachPlayer"}},"nth":1}},"effects":[{"CopySpell":{"what":"Triggering","who":"TriggeringPlayer","new_targets":true}}]}}"#;
 
 /// An instant for {W}: its controller gains 3 life.
 fn mercy_salve() -> Arc<CardDefinition> {
@@ -277,5 +285,83 @@ fn prismatic_chaos_names_only_the_heroes(
         let drawn = mtg_engine::rules::cost_colors_drawn(driver.state(), pid(seat));
         assert_eq!(drawn, seat != seats - 1, "seat {seat}");
     }
+    Ok(())
+}
+
+/// Lets the stack resolve, keeping the targets of any copy.
+fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
+    while !driver.state().stack().is_empty() {
+        if matches!(driver.decision()?.kind, DecisionKind::YesNo(_)) {
+            driver.answer(Answer::YesNo(YesNoChoice(false)))?;
+        } else {
+            driver.pass()?;
+        }
+    }
+    Ok(())
+}
+
+#[rstest]
+fn free_command_spares_only_the_heroes_the_tax(
+    #[values(0, 1, 2)] seat: usize,
+    #[values(1, 2)] casts: u32,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(
+        table(3, FREE_COMMAND)
+            .format(Arc::new(Commander))
+            .at(1, seat, Step::Main1)
+            .commanders(seat, [legend("Cmd", 0, &[], 2, 2)])
+            .battlefield(seat, [ready(mountain()), ready(mountain())]),
+    )?;
+    let object = driver.state().commanders().next().unwrap();
+    for _ in 0..casts {
+        driver.cast("Cmd")?;
+        settle(&mut driver)?;
+        driver.manual(ManualAction::Move {
+            object,
+            to: ManualZone::Graveyard,
+        })?;
+        driver.answer(Answer::YesNo(YesNoChoice(true)))?;
+    }
+    let tax = if seat == 2 { 2 * casts } else { 0 };
+    assert_eq!(driver.state().commander_tax(object), tax);
+    Ok(())
+}
+
+#[rstest]
+#[case::bolt_first(&[], 6)]
+#[case::after_a_creature(&["Bear"], 6)]
+#[case::after_another_bolt(&["Lightning Bolt"], 9)]
+fn echoing_spells_copies_the_first_instant_or_sorcery(
+    #[case] before: &[&str],
+    #[case] dealt: i32,
+    #[values(0, 2)] seat: usize,
+) -> Result<(), ScriptError> {
+    let hand: Vec<_> = before
+        .iter()
+        .map(|name| match *name {
+            "Bear" => creature("Bear", 0, &[Color::Red], 2, 2),
+            other => card(other).unwrap(),
+        })
+        .chain([card("Lightning Bolt").unwrap()])
+        .collect();
+    let target_seat = 1;
+    let mut driver = Driver::from_scenario(
+        table(3, ECHOING_SPELLS)
+            .at(1, seat, Step::Main1)
+            .battlefield(seat, [ready(mountain()), ready(mountain())])
+            .hand(seat, hand),
+    )?;
+    let life = driver.state().player(pid(target_seat)).unwrap().life();
+    for name in before.iter().chain(&["Lightning Bolt"]) {
+        if *name == "Bear" {
+            driver.cast("Bear")?;
+        } else {
+            let target = driver.target_player(target_seat);
+            driver.cast_at(name, &[target])?;
+        }
+        settle(&mut driver)?;
+    }
+    let now = driver.state().player(pid(target_seat)).unwrap().life();
+    assert_eq!(life - now, dealt);
     Ok(())
 }

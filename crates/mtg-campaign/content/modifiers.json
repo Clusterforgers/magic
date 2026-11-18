@@ -1,5 +1,25 @@
 [
-  { "id": "giants_table" },
-  { "id": "deep_pockets" },
-  { "id": "shared_blood", "not_with": ["vex_crypt"] }
+  {"id": "mirror_hall", "not_with": ["skrix_nest", "grimgut_court", "vex_crypt", "hollowmere_belfry", "sahrra_pride", "leviathan"]},
+  {"id": "living_stone"},
+  {"id": "waking_earth", "not_with": ["vex_crypt", "seraphine_spire", "korrath_wilds", "ozrith_observatory", "ysolde_reef", "hollowmere_belfry", "valdric_manor", "vorthana_hive", "leviathan"]},
+  {"id": "bloodlust", "not_with": ["siren_queen", "aurenne_bastion"]},
+  {"id": "twin_flames"},
+  {"id": "overflowing_mana"},
+  {"id": "deep_pockets"},
+  {"id": "quickening"},
+  {"id": "one_voice", "not_with": ["ozrith_observatory", "morwenna_court", "drowned_archivist"]},
+  {"id": "narrow_pass", "not_with": ["skrix_nest", "grimgut_court", "aurenne_bastion", "hollowmere_belfry", "sahrra_pride"]},
+  {"id": "second_spring", "not_with": ["sivanne_mire", "sahrra_pride", "skrix_nest"]},
+  {"id": "no_rest", "not_with": ["vex_crypt", "vorthana_hive", "hollowmere_belfry", "siren_queen", "drowned_archivist", "leviathan"]},
+  {"id": "stone_sleep", "not_with": ["mossjaw_hall", "korrath_wilds", "unmaker_void", "leviathan"]},
+  {"id": "prismatic_chaos"},
+  {"id": "endless_summer"},
+  {"id": "open_book"},
+  {"id": "thin_veil"},
+  {"id": "shared_blood", "not_with": ["vex_crypt"]},
+  {"id": "giants_table"},
+  {"id": "free_command"},
+  {"id": "echoing_spells", "not_with": ["ozrith_observatory"]},
+  {"id": "no_mercy", "not_with": ["seraphine_spire", "valdric_manor", "mossjaw_hall"]},
+  {"id": "haunted_ground", "not_with": ["hollowmere_belfry"]}
 ]
