@@ -115,6 +115,54 @@ describe('the sources of ?prompt=pay-sources', () => {
   })
 })
 
+/** The viewer's untapped permanent on the board whose spoken name starts with `name`, marked for the payment. */
+const onBoard = (name: RegExp): HTMLElement =>
+  must(
+    [...document.querySelectorAll<HTMLElement>('button[data-object-id][data-highlight]')].find((card) =>
+      name.test(card.getAttribute('aria-label') ?? ''),
+    ),
+  )
+
+describe('a press on a card of the board pays with it', () => {
+  it.each<[string, RegExp, string | null, string]>([
+    ['a basic land', /^(Plains|Forest), Basic Land/, null, '1 of 4 paid'],
+    ['a land of any colour', /^Command Tower,/, 'green', '1 of 4 paid'],
+    ['a land of two colours', /^Azorius Chancery,/, null, '2 of 4 paid'],
+    ['Sol Ring', /^Sol Ring,/, null, '2 of 4 paid'],
+  ])('%s: the card is pressed, its row lit or used, and the circles fill', async (_, name, colour, after) => {
+    const { user } = open()
+    const card = onBoard(name)
+    expect(card).toHaveAttribute('data-highlight', 'legal')
+    await user.click(card)
+    if (colour !== null) {
+      // A source of several kinds lights its row in the column, which asks for the kind.
+      const lit = must(document.querySelector<HTMLElement>('[data-slot="pay-source-row"][data-lit]'))
+      await user.click(within(lit).getByRole('button', { name: `Add ${colour} mana` }))
+    }
+    expect(card).toHaveAttribute('aria-pressed', 'true')
+    expect(paid()).toBe(after)
+    // A second press takes it back.
+    await user.click(card)
+    expect(card).toHaveAttribute('aria-pressed', 'false')
+    expect(paid()).toBe('0 of 4 paid')
+  })
+
+  it('takes a Signet once its own cost is paid by a land pressed before it', async () => {
+    const { user } = open()
+    await user.click(onBoard(/^Sol Ring,/))
+    const signet = onBoard(/^Orzhov Signet,/)
+    await user.click(signet)
+    expect(signet).toHaveAttribute('aria-pressed', 'true')
+    expect(row('Orzhov Signet')).toHaveAttribute('data-used')
+  })
+
+  it('still lets the game pay with "Pay for me"', async () => {
+    const { user, answer } = open()
+    await user.click(screen.getByRole('button', { name: 'Pay for me' }))
+    expect(answer).toHaveBeenCalledWith({ PayMana: 'Auto' })
+  })
+})
+
 describe('the marks of ?prompt=pay-marks', () => {
   it.each<[string, string, string]>([
     ['Ancient Ziggurat', 'only', 'mana only for creature spells'],
