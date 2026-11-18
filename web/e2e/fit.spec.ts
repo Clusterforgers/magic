@@ -297,7 +297,8 @@ test.describe('the development table with 40 permanents a seat', () => {
                 document.querySelectorAll(
                   `[data-battlefield-seat="${seat}"] [data-lane="creatures"] button[data-object-id]`,
                 ),
-              ).map((card) => card.getBoundingClientRect().width),
+                // In whole px: a card of 190 px may measure 189.9999 after a resize.
+              ).map((card) => Math.round(card.getBoundingClientRect().width)),
             )
           const scrolls = Array.from(document.querySelectorAll('[data-slot="battlefield-zone"]')).some(
             (zone) => zone.scrollHeight > zone.clientHeight + 1,

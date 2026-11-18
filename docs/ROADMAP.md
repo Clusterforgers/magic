@@ -101,10 +101,8 @@ The table and its prompts are live; the items below polish them.
 - [ ] (mb2) An asking source that has left its zone keeps its picture: a last-known face (`AskingView` identity) for the chip and the column's card
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
 - [ ] (mb4) The keyboard walks from the band's answers into the Stack column and back without crossing the boards, and the phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
-- [ ] (ft1) The opening hands on a 390x844 phone leave no battlefield card under the mulligan sheet
-- [ ] (ft3) The duel board grown back to 1920x1080 from smaller windows keeps your creatures at 190 px (the fit hold survives the resize settle), and the equipment scene's opponent pod column does not scroll at 1366x768
-- [ ] (ft3b) `fit.spec.ts` "writes a keyword wider than the foot stack" finds marks over pictures again
-- [ ] (ft4) The crowded scene's bundle labels stay whole and off the strip at 390x844; `fit.spec.ts`'s real game-over test reaches the end without a 30 s stall
+- [ ] (ft1b) On a phone the mulligan band's "Still deciding" line runs under the opening status beside Mulligan and Keep
+- [ ] (ft4b) `fit.spec.ts`'s real game-over test pays by hand: the land the driver presses lights neither itself nor a pay row (driver.ts PayMana)
 - [ ] (ft5) `layout.spec.ts` passes again under the band (43 of the first 99 failed)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 
