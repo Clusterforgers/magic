@@ -41,7 +41,7 @@ Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`
 
 - Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`content/decks/<code>-<name>.json`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight), `makeup` what its deck is made of, `art` the real card whose art crop pictures it. `deck` stands in until the precon lands.
 - Depth: the bosses the party defeated in the run over all floors (`Run::defeated`); a lost and retried fight adds none.
-- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` in its abilities); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
+- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` in its abilities); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. A level may differ in more than N: `"params": {"NAME": [v1, …, v5]}` puts any value where `"$NAME"` stands (an ability that becomes `null` is left out at that level), and `"texts"` gives each level its own words. The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
 
 | Depth | 0 | 1 | 2 | 3 | 4–5 | 6–7 | 8–9 | 10–11 | 12+ |
 |---|---|---|---|---|---|---|---|---|---|

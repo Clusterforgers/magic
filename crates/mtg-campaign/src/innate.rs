@@ -73,7 +73,10 @@ fn take_per_level(entry: &mut Value, key: &str) -> Result<Option<Value>, Campaig
         Value::Object(map) => map.values().collect(),
         other => vec![other],
     };
-    let five = |list: &&Value| list.as_array().is_some_and(|l| l.len() == usize::from(LEVELS));
+    let five = |list: &&Value| {
+        list.as_array()
+            .is_some_and(|l| l.len() == usize::from(LEVELS))
+    };
     if !lists.iter().all(five) {
         return Err(CampaignError::Content(format!(
             "innate {} {key} needs {LEVELS} values each",

@@ -2088,7 +2088,7 @@
   {
    "id": "unmaker_void",
    "name": "The Unmaker",
-   "final": true,
+   "uber": true,
    "since": 5,
    "colors": "",
    "brain": "Hard",

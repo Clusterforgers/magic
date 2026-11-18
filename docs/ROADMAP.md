@@ -168,6 +168,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 - [ ] (rw8) Remove the old boss systems (Escalation, Enrage, Intensify, schemes, Omen, minion seats, Lull, Reserves to Last Bulwark, commander card, upgraded and uber bosses, own relics, old modifiers, brackets and tiers, life phases) from campaign, protocol, server, simulator and web, and make generation 8 the newest; the migration that closes open runs (and its test, in commit d973c7921) ships with it
+- [ ] (rw1u) The Unmaker stands as a Warrens final boss beside Grimgut (no longer uber) once the reworked ladder draws its final from the two
+- [ ] (rw1t) Enters-with-counters replacements apply to entering tokens; Coiled Growth then gives tokens its counters as they enter instead of by trigger
 
 ## M8 Polish and deploy
 

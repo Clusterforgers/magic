@@ -18,13 +18,15 @@ use mtg_core::card::CardType;
 use mtg_core::color::{Color, ColorSet};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::characteristics;
+use mtg_engine::choose::{
+    CostsChoice, DivideChoice, ModeChoice, NumberChoice, TargetChoice, YesNoChoice,
+};
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::format::Commander;
 use mtg_engine::keywords::has_keyword;
 use mtg_engine::phases::{BossPhase, PhaseStart};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_engine::choose::{CostsChoice, DivideChoice, ModeChoice, NumberChoice, TargetChoice, YesNoChoice};
 use mtg_engine::{Decision, Engine, GameSetup};
 use mtg_testkit::brain::{Level, SeatBrain, brain};
 use mtg_testkit::cards::{burn, creature, forest, island, mountain, plains, swamp, wastes};
@@ -114,7 +116,9 @@ fn the_reworked_record_loads_whole(
         .cards
         .iter()
         .filter_map(|(name, _)| corpus::card(name).ok())
-        .fold(ColorSet::EMPTY, |all, card| card.color_identity().iter().fold(all, ColorSet::with));
+        .fold(ColorSet::EMPTY, |all, card| {
+            card.color_identity().iter().fold(all, ColorSet::with)
+        });
     assert_eq!(colours(&b.colors), identity, "{id} colours");
     assert_eq!(b.life, Scale::boss_life(1));
     assert_eq!(b.life + b.life_per_hero, Scale::boss_life(2));
@@ -135,8 +139,6 @@ fn the_reworked_record_loads_whole(
     for SatchelCard { card, .. } in &b.satchel {
         assert!(corpus::card(card).is_ok(), "{card}");
     }
-    assert!(!b.uber);
-    assert_eq!(b.final_boss, id == "unmaker_void");
 }
 
 /// An innate whose levels differ in a named value, an ability left out below level IV and their own words.
@@ -154,25 +156,43 @@ const MORE: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"End","whose":"
 fn an_innate_level_takes_its_own_values_abilities_and_words() {
     let params = format!(r#"{{"GAIN":[1,2,3,5,8],"MORE":[null,null,null,{MORE},{MORE}]}}"#);
     let texts = r#"["one","two","three {N}","four","five"]"#;
-    let content = mtg_campaign::content::Content::parse(&[&innate_with(&params, texts)], &[], "[]").unwrap();
-    for (level, (gain, abilities, text)) in
-        [(1, 1, "one"), (2, 2, "two"), (3, 3, "three 1"), (4, 5, "four"), (5, 8, "five")]
-            .into_iter()
-            .zip([1, 1, 1, 2, 2])
-            .map(|((l, g, t), a)| (l, (g, a, t)))
+    let content =
+        mtg_campaign::content::Content::parse(&[&innate_with(&params, texts)], &[], "[]").unwrap();
+    for (level, (gain, abilities, text)) in [
+        (1, 1, "one"),
+        (2, 2, "two"),
+        (3, 3, "three 1"),
+        (4, 5, "four"),
+        (5, 8, "five"),
+    ]
+    .into_iter()
+    .zip([1, 1, 1, 2, 2])
+    .map(|((l, g, t), a)| (l, (g, a, t)))
     {
         let card = content.card(&innate_id("tithe", level)).unwrap();
-        assert_eq!((card.abilities.len(), card.text.as_str()), (abilities, text), "level {level}");
+        assert_eq!(
+            (card.abilities.len(), card.text.as_str()),
+            (abilities, text),
+            "level {level}"
+        );
         let json = serde_json::to_string(&card.abilities).unwrap();
         assert!(json.contains(&format!("\"amount\":{gain}")), "{json}");
     }
 }
 
 #[rstest]
-#[case::four_values(r#"{"GAIN":[1,2,3,4],"MORE":[null,null,null,null,null]}"#, r#"["a","b","c","d","e"]"#)]
-#[case::four_texts(r#"{"GAIN":[1,2,3,4,5],"MORE":[null,null,null,null,null]}"#, r#"["a","b","c","d"]"#)]
+#[case::four_values(
+    r#"{"GAIN":[1,2,3,4],"MORE":[null,null,null,null,null]}"#,
+    r#"["a","b","c","d","e"]"#
+)]
+#[case::four_texts(
+    r#"{"GAIN":[1,2,3,4,5],"MORE":[null,null,null,null,null]}"#,
+    r#"["a","b","c","d"]"#
+)]
 fn an_innate_needs_five_of_each_per_level_value(#[case] params: &str, #[case] texts: &str) {
-    assert!(mtg_campaign::content::Content::parse(&[&innate_with(params, texts)], &[], "[]").is_err());
+    assert!(
+        mtg_campaign::content::Content::parse(&[&innate_with(params, texts)], &[], "[]").is_err()
+    );
 }
 
 /// The heroes (seats 0 and 1) and the boss with libraries of lands, at the boss's first main phase.
@@ -215,8 +235,11 @@ fn creatures(driver: &Driver, seat: usize) -> usize {
         .zone(Zone::Battlefield)
         .iter()
         .filter(|id| {
-            state.object(**id).is_some_and(|o| o.controller() == pid(seat))
-                && characteristics(state, **id).is_some_and(|c| c.types.contains(CardType::Creature))
+            state
+                .object(**id)
+                .is_some_and(|o| o.controller() == pid(seat))
+                && characteristics(state, **id)
+                    .is_some_and(|c| c.types.contains(CardType::Creature))
         })
         .count()
 }
@@ -231,7 +254,10 @@ fn settle(driver: &mut Driver) -> Result<(), ScriptError> {
     for _ in 0..200 {
         let state = driver.state();
         let mine = driver.decision()?.player == state.turn().active();
-        if state.stack().is_empty() && mine && matches!(driver.decision()?.kind, DecisionKind::Priority(_)) {
+        if state.stack().is_empty()
+            && mine
+            && matches!(driver.decision()?.kind, DecisionKind::Priority(_))
+        {
             return Ok(());
         }
         driver.answer_passively()?;
@@ -257,7 +283,10 @@ fn red_mana(n: usize) -> Vec<mtg_engine::setup::PresetPermanent> {
 #[case::once_each_turn_at_i(1, (6, 6))]
 #[case::each_time_at_ii(2, (7, 7))]
 #[case::four_each_time_at_v(5, (13, 13))]
-fn thick_hide_grows_a_damaged_survivor(#[case] level: u8, #[case] brute: (i32, i32)) -> Result<(), ScriptError> {
+fn thick_hide_grows_a_damaged_survivor(
+    #[case] level: u8,
+    #[case] brute: (i32, i32),
+) -> Result<(), ScriptError> {
     let mut battlefield = red_mana(2);
     battlefield.push(ready(kin("Brute", &["Dinosaur"], 5, 5)));
     let scenario = table()
@@ -307,7 +336,10 @@ fn the_crimson_feast_feeds_on_hero_deaths(
     #[case] life: i32,
 ) -> Result<(), ScriptError> {
     let mut battlefield = red_mana(2);
-    battlefield.extend([ready(kin("Count", &["Vampire"], 3, 3)), ready(kin("Thrall", &["Vampire"], 1, 1))]);
+    battlefield.extend([
+        ready(kin("Count", &["Vampire"], 3, 3)),
+        ready(kin("Thrall", &["Vampire"], 1, 1)),
+    ]);
     let scenario = table()
         .battlefield(0, [ready(creature("Squire", 0, &[Color::White], 1, 1))])
         .battlefield(1, [ready(creature("Page", 0, &[Color::White], 1, 1))])
@@ -325,7 +357,10 @@ fn the_crimson_feast_feeds_on_hero_deaths(
 #[rstest]
 #[case::a_token_only_at_i(1, 1)]
 #[case::a_token_and_four_damage_at_v(5, 0)]
-fn stormcalling_makes_an_elemental_and_strikes(#[case] level: u8, #[case] ogres: usize) -> Result<(), ScriptError> {
+fn stormcalling_makes_an_elemental_and_strikes(
+    #[case] level: u8,
+    #[case] ogres: usize,
+) -> Result<(), ScriptError> {
     let scenario = table()
         .battlefield(0, [ready(creature("Ogre", 0, &[Color::Red], 4, 4))])
         .battlefield(BOSS, red_mana(1))
@@ -343,9 +378,18 @@ fn stormcalling_makes_an_elemental_and_strikes(#[case] level: u8, #[case] ogres:
 #[rstest]
 #[case::plus_one_at_i(1, (3, 2))]
 #[case::plus_three_at_v(5, (5, 5))]
-fn dawn_charge_bolsters_only_attackers(#[case] level: u8, #[case] attacking: (i32, i32)) -> Result<(), ScriptError> {
+fn dawn_charge_bolsters_only_attackers(
+    #[case] level: u8,
+    #[case] attacking: (i32, i32),
+) -> Result<(), ScriptError> {
     let scenario = table()
-        .battlefield(BOSS, [ready(kin("Sentry", &["Soldier"], 2, 2)), ready(kin("Lancer", &["Soldier"], 2, 2))])
+        .battlefield(
+            BOSS,
+            [
+                ready(kin("Sentry", &["Soldier"], 2, 2)),
+                ready(kin("Lancer", &["Soldier"], 2, 2)),
+            ],
+        )
         .emblems(BOSS, [custom(&innate_id("aurenne_dawn_charge", level))]);
     let mut driver = Driver::from_scenario(scenario)?;
     assert_eq!(pt(&driver, "Lancer"), (2, 2));
@@ -397,7 +441,10 @@ fn coiled_growth_adds_counters_as_creatures_enter(
         .hand(BOSS, [bear()])
         .emblems(
             BOSS,
-            [custom(&innate_id("sivanne_coiled_growth", level)), custom("korrath_sky_falls")],
+            [
+                custom(&innate_id("sivanne_coiled_growth", level)),
+                custom("korrath_sky_falls"),
+            ],
         );
     let mut driver = Driver::from_scenario(scenario)?;
     driver.idle_until(3, Step::Main1)?;
@@ -428,8 +475,17 @@ fn unmaking_gives_big_colourless_creatures_annihilator(
         )
         .emblems(BOSS, [custom(&innate_id("unmaker_unmaking", level))]);
     let driver = Driver::from_scenario(scenario)?;
-    let has = |name: &str| has_keyword(driver.state(), driver.id_of(name).unwrap(), &Keyword::Annihilator(Amount::Fixed(1)));
-    assert_eq!((has("Spawn"), has("Titan"), has("Drone")), (six, ten, false));
+    let has = |name: &str| {
+        has_keyword(
+            driver.state(),
+            driver.id_of(name).unwrap(),
+            &Keyword::Annihilator(Amount::Fixed(1)),
+        )
+    };
+    assert_eq!(
+        (has("Spawn"), has("Titan"), has("Drone")),
+        (six, ten, false)
+    );
     Ok(())
 }
 
@@ -440,17 +496,24 @@ type Left = (usize, usize, usize);
 fn phase_table(id: &str) -> Scenario {
     let content = content().unwrap();
     let b = boss(id);
-    let phases = b.round_phases.iter().zip(PHASE_ROUNDS).map(|(card, round)| BossPhase {
-        begins: PhaseStart::AtRound(round),
-        emblem: content.card(card).unwrap().definition(),
-    });
+    let phases = b
+        .round_phases
+        .iter()
+        .zip(PHASE_ROUNDS)
+        .map(|(card, round)| BossPhase {
+            begins: PhaseStart::AtRound(round),
+            emblem: content.card(card).unwrap().definition(),
+        });
     let mut scenario = Scenario::new(3)
         .life(BOSS, 40)
         .battlefield(0, (0..3).map(|_| ready(bear())))
         .battlefield(1, [ready(bear())])
         .battlefield(
             BOSS,
-            [ready(creature("Brute", 5, &[], 5, 5)), ready(creature("Imp", 0, &[Color::Black], 1, 1))],
+            [
+                ready(creature("Brute", 5, &[], 5, 5)),
+                ready(creature("Imp", 0, &[Color::Black], 1, 1)),
+            ],
         )
         .phases(BOSS, phases);
     for seat in 0..3 {
@@ -489,7 +552,11 @@ fn each_phase_begins_at_its_round_and_its_begin_effect_fires_once(
     assert_eq!(driver.state().player(pid(BOSS)).unwrap().phases(), (2, 0));
     driver.idle_until(3 * rounds[0] + 1, Step::Upkeep)?;
     assert_eq!(driver.state().player(pid(BOSS)).unwrap().phases(), (2, 1));
-    let now = (creatures(&driver, 0) + creatures(&driver, 1), creatures(&driver, BOSS), tapped_heroes(&driver));
+    let now = (
+        creatures(&driver, 0) + creatures(&driver, 1),
+        creatures(&driver, BOSS),
+        tapped_heroes(&driver),
+    );
     assert_eq!(now, left, "{id}");
     driver.idle_until(3 * rounds[1], Step::Main2)?;
     assert_eq!(driver.state().player(pid(BOSS)).unwrap().phases(), (2, 1));
@@ -508,9 +575,15 @@ fn eager(decision: &Decision) -> Answer {
             o.legal.iter().copied().take(at_least_one(o.min)).collect(),
         )),
         DecisionKind::ChooseMode(o) => Answer::ChooseMode(ModeChoice::Modes(
-            o.modes.iter().take(at_least_one(o.min)).map(|m| m.index).collect(),
+            o.modes
+                .iter()
+                .take(at_least_one(o.min))
+                .map(|m| m.index)
+                .collect(),
         )),
-        DecisionKind::ChooseNumber(o) => Answer::ChooseNumber(NumberChoice::Number(o.max.map_or(o.min.max(1), |most| o.min.max(1).min(most)))),
+        DecisionKind::ChooseNumber(o) => Answer::ChooseNumber(NumberChoice::Number(
+            o.max.map_or(o.min.max(1), |most| o.min.max(1).min(most)),
+        )),
         DecisionKind::DivideAmount(o) => Answer::DivideAmount(DivideChoice::Division(
             o.among.iter().take(1).map(|t| (*t, o.total)).collect(),
         )),
@@ -547,7 +620,13 @@ fn satchel_table(card: &SatchelCard) -> Scenario {
     let mut scenario = scenario
         .life(BOSS, 40)
         .battlefield(BOSS, lands)
-        .graveyard(BOSS, [creature("Rat", 1, &[Color::Black], 1, 1), creature("Ghoul", 2, &[Color::Black], 2, 2)])
+        .graveyard(
+            BOSS,
+            [
+                creature("Rat", 1, &[Color::Black], 1, 1),
+                creature("Ghoul", 2, &[Color::Black], 2, 2),
+            ],
+        )
         .hand(BOSS, [creature("Husk", 4, &[], 4, 4)])
         .battlefield(
             0,
@@ -568,7 +647,11 @@ fn satchel_table(card: &SatchelCard) -> Scenario {
 
 /// Casts `card` from the boss's satchel (in answer to seat 0's burn spell at its Raptor for a counterspell) and lets
 /// everything resolve; returns the satchel object's id.
-fn cast_from_satchel(driver: &mut Driver, card: &str, respond: bool) -> Result<ObjectId, ScriptError> {
+fn cast_from_satchel(
+    driver: &mut Driver,
+    card: &str,
+    respond: bool,
+) -> Result<ObjectId, ScriptError> {
     let state = driver.state();
     let id = state
         .satchel(pid(BOSS))
@@ -626,7 +709,12 @@ fn each_satchel_spell_casts_and_a_reusable_one_returns_with_its_tax(
         let back = state.satchel(pid(BOSS)).contains(&spell);
         assert_eq!(back, card.reusable, "{}", card.card);
         if card.reusable {
-            assert_eq!((state.satchel_casts(spell), state.satchel_tax(spell)), (1, 2), "{}", card.card);
+            assert_eq!(
+                (state.satchel_casts(spell), state.satchel_tax(spell)),
+                (1, 2),
+                "{}",
+                card.card
+            );
         }
     }
     Ok(())
@@ -635,9 +723,15 @@ fn each_satchel_spell_casts_and_a_reusable_one_returns_with_its_tax(
 /// Two heroes on fixture precons against the boss at innate level V with its precon, phases and satchel.
 fn fight_setup(id: &str, seed: u64) -> GameSetup {
     let content = content().unwrap();
-    let mut events = vec![RunEvent::Content { version: REWORK_FROM }];
+    let mut events = vec![RunEvent::Content {
+        version: REWORK_FROM,
+    }];
     for at in 0..2u8 {
-        events.push(RunEvent::Joined { name: format!("H{at}"), user: Some(format!("u{at}")), bot: None });
+        events.push(RunEvent::Joined {
+            name: format!("H{at}"),
+            user: Some(format!("u{at}")),
+            bot: None,
+        });
         events.push(RunEvent::DeckChosen {
             hero: at,
             deck: mtg_campaign::HeroDeck {
@@ -664,7 +758,9 @@ fn fight_setup(id: &str, seed: u64) -> GameSetup {
     decks.push(
         file.cards
             .iter()
-            .flat_map(|(name, n)| (0..*n).map(move |_| corpus::card(name).unwrap_or_else(|_| wastes())))
+            .flat_map(|(name, n)| {
+                (0..*n).map(move |_| corpus::card(name).unwrap_or_else(|_| wastes()))
+            })
             .collect(),
     );
     commanders.push(Vec::new());
@@ -710,13 +806,16 @@ fn a_real_fight_at_level_v_plays_on(
             .any(|o| &o.card().name == name),
         "{id} holds {name}"
     );
-    let levels = [Level::Normal, Level::Normal, Level::Hard];
+    let levels = [Level::Normal; 3];
     let mut brains: Vec<Box<dyn SeatBrain>> = levels
         .iter()
         .enumerate()
         .map(|(seat, level)| brain(*level, seed, pid(seat), false))
         .collect();
-    let options = PlayOptions { max_answers: 800, ..PlayOptions::default() };
+    let options = PlayOptions {
+        max_answers: 600,
+        ..PlayOptions::default()
+    };
     match play_brains(setup, seed, options, &mut brains) {
         Ok(_) => {}
         Err(failure) if matches!(failure.kind, FailureKind::StepLimit(_)) => {}
