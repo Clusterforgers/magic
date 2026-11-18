@@ -77,7 +77,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf10o) The lobby's seats list stands on the first screen at 1400 × 900 beside the deck chooser instead of under the invite panel
 - [ ] (pf10p) On a phone the top bar's Effects button no longer overlaps the element behind it
 - [ ] (pf11b) During play the side column opens on the Log or the Stack, the tab a player reads, with Commands one press away
-- [ ] (pf11d) An attacker taps first and lunges after, so the tap and the lunge read as two poses
 - [ ] (pf11e) The step ladder's stop marks hit at 44 px under a coarse pointer without widening the top bar
 - [ ] (pf11f) A card added in the builder travels into its group of the deck list, and a removed one leaves it
 - [ ] (pf12a) An opponent's board drawn from the middle of the table holds its bands' height until the next size step, so a line that empties or a land pile that shortens does not shift the lanes above it

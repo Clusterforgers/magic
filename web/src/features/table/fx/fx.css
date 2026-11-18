@@ -244,6 +244,33 @@
     }
   }
 
+  /*
+   * An attacker that taps to attack: the tap first (the face lies down in `TAP_MOTION`'s 150 ms, 30 % of the attack),
+   * held still, then the same wind-up, lunge, recoil and settle in the rest, so the tap and the lunge read as two poses.
+   */
+  @keyframes fx-tap-lunge {
+    0%,
+    30%,
+    100% {
+      translate: 0 0;
+      scale: 1;
+    }
+    43% {
+      translate: 0 calc(var(--fx-dir, 1) * -0.3rem);
+      scale: 1.03 0.96;
+      animation-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    }
+    59% {
+      translate: 0 calc(var(--fx-dir, 1) * 1.1rem);
+      scale: 0.97 1.04;
+      animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    }
+    79% {
+      translate: 0 calc(var(--fx-dir, 1) * -0.15rem);
+      scale: 1;
+    }
+  }
+
   @keyframes fx-glow {
     0% {
       opacity: 0;
@@ -470,6 +497,11 @@
   /* Attacking and blocking: lean toward the other side and glow along the card's own edge. */
   button[data-object-id][data-fx~='attacked'] {
     animation: fx-lunge calc(var(--fx-attacked-ms) * var(--fx-slow, 1)) cubic-bezier(0.2, 0.8, 0.3, 1);
+  }
+
+  /* A card tapped while it attacks tapped to attack (a vigilant one stays upright and lunges at once). */
+  button[data-object-id][data-tapped][data-fx~='attacked'] {
+    animation: fx-tap-lunge calc(var(--fx-attacked-ms) * var(--fx-slow, 1)) cubic-bezier(0.2, 0.8, 0.3, 1);
   }
 
   button[data-object-id][data-fx~='blocked'] {
