@@ -8,7 +8,7 @@ import type { ObjectId } from '@/protocol/generated'
 /** The card the answer in flight casts or plays as a land, or null while none is. */
 export function leavingCard(state: Pick<PlayState, 'answered'>): ObjectId | null {
   const answer = state.answered
-  if (answer === null || !('Priority' in answer)) return null
+  if (answer === null || typeof answer !== 'object' || !('Priority' in answer)) return null
   const action = answer.Priority
   if (typeof action !== 'object') return null
   if ('CastSpell' in action) return action.CastSpell
