@@ -1,509 +1,497 @@
 {
-  "id": "spire",
-  "name": "The Drowned Spire",
-  "text": "A blue-black tower sank into the sea long ago, its spire still breaking the waves. You climb in at the top and go down, room by flooded room, toward what the water keeps at the bottom.",
-  "bosses": [
+ "id": "spire",
+ "name": "The Drowned Spire",
+ "text": "A blue-black tower sank into the sea long ago, its spire still breaking the waves. You climb in at the top and go down, room by flooded room, toward what the water keeps at the bottom.",
+ "bosses": [
+  {
+   "id": "siren_queen",
+   "name": "The Siren Queen",
+   "colors": "UB",
+   "since": 8,
+   "deck_file": "znc-sneak-attack.json",
+   "innate": "siren_song",
+   "round_phases": [
+    "the_chorus",
+    "the_drowning_song"
+   ],
+   "satchel": [
     {
-      "id": "siren_queen",
-      "name": "The Siren Queen",
-      "colors": "UB",
-      "brain": "Hard",
-      "life": 40,
-      "life_per_hero": 15,
-      "hand": 7,
-      "since": 8,
-      "deck_file": "znc-sneak-attack.json",
-      "innate": "siren_song",
-      "round_phases": [
-        "the_chorus",
-        "the_drowning_song"
-      ],
-      "satchel": [
-        {
-          "card": "Entrancing Melody",
-          "reusable": true
-        },
-        {
-          "card": "Extract from Darkness",
-          "reusable": true
-        },
-        {
-          "card": "Sudden Spoiling",
-          "reusable": true
-        },
-        {
-          "card": "Aetherize"
-        }
-      ],
-      "line": "Come closer. The water is warm.",
-      "art": {
-        "card": "Siren of the Silent Song",
-        "oracle_id": "abb9a164-34cd-41d7-8e89-5700fff336dd"
-      }
+     "card": "Entrancing Melody",
+     "reusable": true
     },
     {
-      "id": "drowned_archivist",
-      "name": "The Drowned Archivist",
-      "colors": "UB",
-      "brain": "Hard",
-      "life": 40,
-      "life_per_hero": 15,
-      "hand": 7,
-      "since": 8,
-      "deck_file": "mkc-revenant-recon.json",
-      "innate": "borrowed_words",
-      "round_phases": [
-        "the_stacks_collapse",
-        "the_final_lesson"
-      ],
-      "satchel": [
-        {
-          "card": "Memory Plunder",
-          "reusable": true
-        },
-        {
-          "card": "Reanimate",
-          "reusable": true
-        },
-        {
-          "card": "Spelltwine",
-          "reusable": true
-        },
-        {
-          "card": "Rise of the Dark Realms"
-        }
-      ],
-      "line": "Every word you forget, I keep.",
-      "art": {
-        "card": "Mirko, Obsessive Theorist",
-        "oracle_id": "1692f19e-4906-4808-965f-5f0284004f55"
-      }
+     "card": "Extract from Darkness",
+     "reusable": true
     },
     {
-      "id": "leviathan",
-      "name": "The Leviathan",
-      "final": true,
-      "colors": "UG",
-      "brain": "Hard",
-      "life": 40,
-      "life_per_hero": 15,
-      "hand": 7,
-      "since": 8,
-      "deck_file": "cmr-reap-the-tides.json",
-      "innate": "grasping_deep",
-      "round_phases": [
-        "the_tower_floods",
-        "the_deep_takes_all"
-      ],
-      "satchel": [
-        {
-          "card": "Grapple with the Past",
-          "reusable": true
-        },
-        {
-          "card": "Octopus Umbra",
-          "reusable": true
-        },
-        {
-          "card": "Sleep",
-          "reusable": true
-        },
-        {
-          "card": "Crush of Tentacles"
-        }
-      ],
-      "line": "The deep rises to meet you.",
-      "art": {
-        "card": "Inkwell Leviathan",
-        "oracle_id": "dbdd0963-b395-4cb8-ad9a-ed85a3e9f2e5"
-      }
+     "card": "Sudden Spoiling",
+     "reusable": true
+    },
+    {
+     "card": "Aetherize"
     }
-  ],
-  "events": [
+   ],
+   "line": "Come closer. The water is warm.",
+   "art": {
+    "card": "Siren of the Silent Song",
+    "oracle_id": "abb9a164-34cd-41d7-8e89-5700fff336dd"
+   }
+  },
+  {
+   "id": "drowned_archivist",
+   "name": "The Drowned Archivist",
+   "colors": "UB",
+   "since": 8,
+   "deck_file": "mkc-revenant-recon.json",
+   "innate": "borrowed_words",
+   "round_phases": [
+    "the_stacks_collapse",
+    "the_final_lesson"
+   ],
+   "satchel": [
     {
-      "id": "drowned_library",
-      "since": 8,
-      "title": "The Drowned Library",
-      "text": "Shelves of swollen books line a flooded hall. A pale librarian offers to trade: a page of yours for one of hers.",
-      "options": [
-        {
-          "label": "Trade a card for a new one",
-          "outcomes": [
-            "LoseCard",
-            "CardPick"
-          ]
-        },
-        {
-          "label": "Trade a card for a relic",
-          "outcomes": [
-            "LoseCard",
-            {
-              "RelicOf": "Rare"
-            }
-          ]
-        },
-        {
-          "label": "Leave the books be",
-          "outcomes": [
-            {
-              "Life": 5
-            }
-          ]
-        }
-      ]
+     "card": "Memory Plunder",
+     "reusable": true
     },
     {
-      "id": "tide_pool_oracle",
-      "since": 8,
-      "title": "The Tide-Pool Oracle",
-      "text": "A voice speaks from a still pool: it will show you what lies below, for something you carry.",
-      "options": [
-        {
-          "label": "Give up a card to see",
-          "outcomes": [
-            "LoseCard",
-            "Relic"
-          ]
-        },
-        {
-          "label": "Give up gold to see",
-          "outcomes": [
-            {
-              "Gold": -30
-            },
-            "CardPick"
-          ]
-        },
-        {
-          "label": "Walk on",
-          "outcomes": [
-            {
-              "Gold": 15
-            }
-          ]
-        }
-      ]
+     "card": "Reanimate",
+     "reusable": true
     },
     {
-      "id": "sunken_scriptorium",
-      "since": 8,
-      "title": "The Sunken Scriptorium",
-      "text": "Copyists still work underwater, writing out whatever is put before them.",
-      "options": [
-        {
-          "label": "Have a card copied",
-          "outcomes": [
-            {
-              "Life": -5
-            },
-            "Duplicate"
-          ]
-        },
-        {
-          "label": "Sell them a card",
-          "outcomes": [
-            "LoseCard",
-            {
-              "Gold": 40
-            }
-          ]
-        },
-        {
-          "label": "Rest by the lamps",
-          "outcomes": [
-            {
-              "Life": 8
-            }
-          ]
-        }
-      ]
+     "card": "Spelltwine",
+     "reusable": true
     },
     {
-      "id": "barnacled_reliquary",
-      "since": 8,
-      "title": "The Barnacled Reliquary",
-      "text": "A shrine crusted with barnacles holds an old relic. The sea wants something back for it.",
-      "options": [
-        {
-          "label": "Give the sea a card",
-          "outcomes": [
-            "LoseCard",
-            {
-              "RelicOf": "Rare"
-            }
-          ]
-        },
-        {
-          "label": "Give the sea your strength",
-          "outcomes": [
-            {
-              "MaxLife": -5
-            },
-            {
-              "RelicOf": "Rare"
-            }
-          ]
-        },
-        {
-          "label": "Pry loose a few coins",
-          "outcomes": [
-            {
-              "Gold": 20
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "whispering_current",
-      "since": 8,
-      "title": "The Whispering Current",
-      "text": "A current pulls through the stairwell, murmuring the names of spells long lost.",
-      "options": [
-        {
-          "label": "Let it take a card and teach you one",
-          "outcomes": [
-            "LoseCard",
-            "CardPick"
-          ]
-        },
-        {
-          "label": "Let it take a relic and teach you more",
-          "outcomes": [
-            "LoseRelic",
-            {
-              "RelicOf": "Mythic"
-            }
-          ]
-        },
-        {
-          "label": "Hold fast",
-          "outcomes": [
-            {
-              "Life": 5
-            }
-          ]
-        }
-      ]
+     "card": "Rise of the Dark Realms"
     }
-  ],
-  "pool": [
-    [
-      "Swords to Plowshares",
-      "W"
-    ],
-    [
-      "Serra Angel",
-      "W"
-    ],
-    [
-      "Pacifism",
-      "W"
-    ],
-    [
-      "Path to Exile",
-      "W"
-    ],
-    [
-      "Ajani's Pridemate",
-      "W"
-    ],
-    [
-      "Glorious Anthem",
-      "W"
-    ],
-    [
-      "Banishing Light",
-      "W"
-    ],
-    [
-      "Wrath of God",
-      "W"
-    ],
-    [
-      "Counterspell",
-      "U"
-    ],
-    [
-      "Brainstorm",
-      "U"
-    ],
-    [
-      "Mulldrifter",
-      "U"
-    ],
-    [
-      "Mana Drain",
-      "U"
-    ],
-    [
-      "Ponder",
-      "U"
-    ],
-    [
-      "Opt",
-      "U"
-    ],
-    [
-      "Fact or Fiction",
-      "U"
-    ],
-    [
-      "Doom Blade",
-      "B"
-    ],
-    [
-      "Duress",
-      "B"
-    ],
-    [
-      "Pestilence",
-      "B"
-    ],
-    [
-      "Feed the Swarm",
-      "B"
-    ],
-    [
-      "Lightning Bolt",
-      "R"
-    ],
-    [
-      "Fireball",
-      "R"
-    ],
-    [
-      "Fiery Temper",
-      "R"
-    ],
-    [
-      "Blasphemous Act",
-      "R"
-    ],
-    [
-      "Chaos Warp",
-      "R"
-    ],
-    [
-      "Dragon Tempest",
-      "R"
-    ],
-    [
-      "Llanowar Elves",
-      "G"
-    ],
-    [
-      "Giant Growth",
-      "G"
-    ],
-    [
-      "Rancor",
-      "G"
-    ],
-    [
-      "Kodama's Reach",
-      "G"
-    ],
-    [
-      "Beast Within",
-      "G"
-    ],
-    [
-      "Cultivate",
-      "G"
-    ],
-    [
-      "Rampant Growth",
-      "G"
-    ],
-    [
-      "Prey Upon",
-      "G"
-    ],
-    [
-      "Lignify",
-      "G"
-    ],
-    [
-      "Eternal Witness",
-      "G"
-    ],
-    [
-      "Exploration",
-      "G"
-    ],
-    [
-      "Kolaghan's Command",
-      "BR"
-    ],
-    [
-      "Sol Ring",
-      ""
-    ],
-    [
-      "Arcane Signet",
-      ""
-    ],
-    [
-      "Swiftfoot Boots",
-      ""
-    ],
-    [
-      "Fellwar Stone",
-      ""
-    ],
-    [
-      "Skullclamp",
-      ""
-    ],
-    [
-      "Howling Mine",
-      ""
-    ]
-  ],
-  "pool_types": {
-    "Swords to Plowshares": "Instant",
-    "Serra Angel": "Creature — Angel",
-    "Pacifism": "Enchantment — Aura",
-    "Path to Exile": "Instant",
-    "Ajani's Pridemate": "Creature — Cat Soldier",
-    "Glorious Anthem": "Enchantment",
-    "Banishing Light": "Enchantment",
-    "Wrath of God": "Sorcery",
-    "Counterspell": "Instant",
-    "Brainstorm": "Instant",
-    "Mulldrifter": "Creature — Elemental",
-    "Mana Drain": "Instant",
-    "Ponder": "Sorcery",
-    "Opt": "Instant",
-    "Fact or Fiction": "Instant",
-    "Doom Blade": "Instant",
-    "Duress": "Sorcery",
-    "Pestilence": "Enchantment",
-    "Feed the Swarm": "Sorcery",
-    "Lightning Bolt": "Instant",
-    "Fireball": "Sorcery",
-    "Fiery Temper": "Instant",
-    "Blasphemous Act": "Sorcery",
-    "Chaos Warp": "Instant",
-    "Dragon Tempest": "Enchantment",
-    "Llanowar Elves": "Creature — Elf Druid",
-    "Giant Growth": "Instant",
-    "Rancor": "Enchantment — Aura",
-    "Kodama's Reach": "Sorcery — Arcane",
-    "Beast Within": "Instant",
-    "Cultivate": "Sorcery",
-    "Rampant Growth": "Sorcery",
-    "Prey Upon": "Sorcery",
-    "Lignify": "Enchantment Kindred — Treefolk Aura",
-    "Eternal Witness": "Creature — Human Shaman",
-    "Exploration": "Enchantment",
-    "Kolaghan's Command": "Instant",
-    "Sol Ring": "Artifact",
-    "Arcane Signet": "Artifact",
-    "Swiftfoot Boots": "Artifact — Equipment",
-    "Fellwar Stone": "Artifact",
-    "Skullclamp": "Artifact — Equipment",
-    "Howling Mine": "Artifact"
+   ],
+   "line": "Every word you forget, I keep.",
+   "art": {
+    "card": "Mirko, Obsessive Theorist",
+    "oracle_id": "1692f19e-4906-4808-965f-5f0284004f55"
+   }
+  },
+  {
+   "id": "leviathan",
+   "name": "The Leviathan",
+   "final": true,
+   "colors": "UG",
+   "since": 8,
+   "deck_file": "cmr-reap-the-tides.json",
+   "innate": "grasping_deep",
+   "round_phases": [
+    "the_tower_floods",
+    "the_deep_takes_all"
+   ],
+   "satchel": [
+    {
+     "card": "Grapple with the Past",
+     "reusable": true
+    },
+    {
+     "card": "Octopus Umbra",
+     "reusable": true
+    },
+    {
+     "card": "Sleep",
+     "reusable": true
+    },
+    {
+     "card": "Crush of Tentacles"
+    }
+   ],
+   "line": "The deep rises to meet you.",
+   "art": {
+    "card": "Inkwell Leviathan",
+    "oracle_id": "dbdd0963-b395-4cb8-ad9a-ed85a3e9f2e5"
+   }
   }
+ ],
+ "events": [
+  {
+   "id": "drowned_library",
+   "since": 8,
+   "title": "The Drowned Library",
+   "text": "Shelves of swollen books line a flooded hall. A pale librarian offers to trade: a page of yours for one of hers.",
+   "options": [
+    {
+     "label": "Trade a card for a new one",
+     "outcomes": [
+      "LoseCard",
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Trade a card for a relic",
+     "outcomes": [
+      "LoseCard",
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Leave the books be",
+     "outcomes": [
+      {
+       "Life": 5
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "tide_pool_oracle",
+   "since": 8,
+   "title": "The Tide-Pool Oracle",
+   "text": "A voice speaks from a still pool: it will show you what lies below, for something you carry.",
+   "options": [
+    {
+     "label": "Give up a card to see",
+     "outcomes": [
+      "LoseCard",
+      "Relic"
+     ]
+    },
+    {
+     "label": "Give up gold to see",
+     "outcomes": [
+      {
+       "Gold": -30
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Walk on",
+     "outcomes": [
+      {
+       "Gold": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "sunken_scriptorium",
+   "since": 8,
+   "title": "The Sunken Scriptorium",
+   "text": "Copyists still work underwater, writing out whatever is put before them.",
+   "options": [
+    {
+     "label": "Have a card copied",
+     "outcomes": [
+      {
+       "Life": -5
+      },
+      "Duplicate"
+     ]
+    },
+    {
+     "label": "Sell them a card",
+     "outcomes": [
+      "LoseCard",
+      {
+       "Gold": 40
+      }
+     ]
+    },
+    {
+     "label": "Rest by the lamps",
+     "outcomes": [
+      {
+       "Life": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "barnacled_reliquary",
+   "since": 8,
+   "title": "The Barnacled Reliquary",
+   "text": "A shrine crusted with barnacles holds an old relic. The sea wants something back for it.",
+   "options": [
+    {
+     "label": "Give the sea a card",
+     "outcomes": [
+      "LoseCard",
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Give the sea your strength",
+     "outcomes": [
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Pry loose a few coins",
+     "outcomes": [
+      {
+       "Gold": 20
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "whispering_current",
+   "since": 8,
+   "title": "The Whispering Current",
+   "text": "A current pulls through the stairwell, murmuring the names of spells long lost.",
+   "options": [
+    {
+     "label": "Let it take a card and teach you one",
+     "outcomes": [
+      "LoseCard",
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Let it take a relic and teach you more",
+     "outcomes": [
+      "LoseRelic",
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Hold fast",
+     "outcomes": [
+      {
+       "Life": 5
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "pool": [
+  [
+   "Swords to Plowshares",
+   "W"
+  ],
+  [
+   "Serra Angel",
+   "W"
+  ],
+  [
+   "Pacifism",
+   "W"
+  ],
+  [
+   "Path to Exile",
+   "W"
+  ],
+  [
+   "Ajani's Pridemate",
+   "W"
+  ],
+  [
+   "Glorious Anthem",
+   "W"
+  ],
+  [
+   "Banishing Light",
+   "W"
+  ],
+  [
+   "Wrath of God",
+   "W"
+  ],
+  [
+   "Counterspell",
+   "U"
+  ],
+  [
+   "Brainstorm",
+   "U"
+  ],
+  [
+   "Mulldrifter",
+   "U"
+  ],
+  [
+   "Mana Drain",
+   "U"
+  ],
+  [
+   "Ponder",
+   "U"
+  ],
+  [
+   "Opt",
+   "U"
+  ],
+  [
+   "Fact or Fiction",
+   "U"
+  ],
+  [
+   "Doom Blade",
+   "B"
+  ],
+  [
+   "Duress",
+   "B"
+  ],
+  [
+   "Pestilence",
+   "B"
+  ],
+  [
+   "Feed the Swarm",
+   "B"
+  ],
+  [
+   "Lightning Bolt",
+   "R"
+  ],
+  [
+   "Fireball",
+   "R"
+  ],
+  [
+   "Fiery Temper",
+   "R"
+  ],
+  [
+   "Blasphemous Act",
+   "R"
+  ],
+  [
+   "Chaos Warp",
+   "R"
+  ],
+  [
+   "Dragon Tempest",
+   "R"
+  ],
+  [
+   "Llanowar Elves",
+   "G"
+  ],
+  [
+   "Giant Growth",
+   "G"
+  ],
+  [
+   "Rancor",
+   "G"
+  ],
+  [
+   "Kodama's Reach",
+   "G"
+  ],
+  [
+   "Beast Within",
+   "G"
+  ],
+  [
+   "Cultivate",
+   "G"
+  ],
+  [
+   "Rampant Growth",
+   "G"
+  ],
+  [
+   "Prey Upon",
+   "G"
+  ],
+  [
+   "Lignify",
+   "G"
+  ],
+  [
+   "Eternal Witness",
+   "G"
+  ],
+  [
+   "Exploration",
+   "G"
+  ],
+  [
+   "Kolaghan's Command",
+   "BR"
+  ],
+  [
+   "Sol Ring",
+   ""
+  ],
+  [
+   "Arcane Signet",
+   ""
+  ],
+  [
+   "Swiftfoot Boots",
+   ""
+  ],
+  [
+   "Fellwar Stone",
+   ""
+  ],
+  [
+   "Skullclamp",
+   ""
+  ],
+  [
+   "Howling Mine",
+   ""
+  ]
+ ],
+ "pool_types": {
+  "Swords to Plowshares": "Instant",
+  "Serra Angel": "Creature — Angel",
+  "Pacifism": "Enchantment — Aura",
+  "Path to Exile": "Instant",
+  "Ajani's Pridemate": "Creature — Cat Soldier",
+  "Glorious Anthem": "Enchantment",
+  "Banishing Light": "Enchantment",
+  "Wrath of God": "Sorcery",
+  "Counterspell": "Instant",
+  "Brainstorm": "Instant",
+  "Mulldrifter": "Creature — Elemental",
+  "Mana Drain": "Instant",
+  "Ponder": "Sorcery",
+  "Opt": "Instant",
+  "Fact or Fiction": "Instant",
+  "Doom Blade": "Instant",
+  "Duress": "Sorcery",
+  "Pestilence": "Enchantment",
+  "Feed the Swarm": "Sorcery",
+  "Lightning Bolt": "Instant",
+  "Fireball": "Sorcery",
+  "Fiery Temper": "Instant",
+  "Blasphemous Act": "Sorcery",
+  "Chaos Warp": "Instant",
+  "Dragon Tempest": "Enchantment",
+  "Llanowar Elves": "Creature — Elf Druid",
+  "Giant Growth": "Instant",
+  "Rancor": "Enchantment — Aura",
+  "Kodama's Reach": "Sorcery — Arcane",
+  "Beast Within": "Instant",
+  "Cultivate": "Sorcery",
+  "Rampant Growth": "Sorcery",
+  "Prey Upon": "Sorcery",
+  "Lignify": "Enchantment Kindred — Treefolk Aura",
+  "Eternal Witness": "Creature — Human Shaman",
+  "Exploration": "Enchantment",
+  "Kolaghan's Command": "Instant",
+  "Sol Ring": "Artifact",
+  "Arcane Signet": "Artifact",
+  "Swiftfoot Boots": "Artifact — Equipment",
+  "Fellwar Stone": "Artifact",
+  "Skullclamp": "Artifact — Equipment",
+  "Howling Mine": "Artifact"
+ }
 }

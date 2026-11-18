@@ -7,7 +7,7 @@ use std::sync::Arc;
 
 use mtg_campaign::content::Theme;
 use mtg_campaign::innate::{LEVELS, innate_id};
-use mtg_campaign::scale::{PHASE_ROUNDS, REWORK_FROM};
+use mtg_campaign::scale::PHASE_ROUNDS;
 use mtg_campaign::{CardKind, Run, RunEvent, content};
 use mtg_cards::CardDefinition;
 use mtg_cards::support::Support;
@@ -126,9 +126,8 @@ fn a_spire_boss_holds_the_reworked_record(
     let content = content().unwrap();
     let boss = spire().boss(id).unwrap();
     assert_eq!((boss.colors.as_str(), boss.final_boss), (colors, last));
-    assert_eq!((boss.life, boss.life_per_hero), (40, 15));
-    assert_eq!(boss.since, REWORK_FROM);
-    assert_eq!(boss.deck_file.as_deref(), Some(deck));
+    assert_eq!(boss.since, mtg_campaign::run::CONTENT);
+    assert_eq!(boss.deck_file, deck);
     let path = format!("{}/content/decks/{deck}", env!("CARGO_MANIFEST_DIR"));
     let file: serde_json::Value =
         serde_json::from_str(&std::fs::read_to_string(path).unwrap()).unwrap();
@@ -139,7 +138,7 @@ fn a_spire_boss_holds_the_reworked_record(
         .map(|c| c[1].as_u64().unwrap())
         .sum();
     assert_eq!(cards, 100);
-    let innate = boss.innate.as_deref().unwrap();
+    let innate = boss.innate.as_str();
     for level in 1..=LEVELS {
         let card = content.card(&innate_id(innate, level)).unwrap();
         assert_eq!((card.kind, card.level), (CardKind::Innate, level));
@@ -170,18 +169,22 @@ fn a_spire_boss_holds_the_reworked_record(
 fn a_new_run_draws_its_theme_by_seed_from_the_spires_generation_only() {
     let content = content().unwrap();
     let draw = |seed, generation| content.theme_for(seed, generation).unwrap().id.clone();
-    assert!((0..200).all(|seed| draw(seed, REWORK_FROM - 1) == "warrens"));
-    let drawn: Vec<String> = (0..200).map(|seed| draw(seed, REWORK_FROM)).collect();
+    assert!((0..200).all(|seed| draw(seed, mtg_campaign::run::CONTENT - 1) == "warrens"));
+    let drawn: Vec<String> = (0..200)
+        .map(|seed| draw(seed, mtg_campaign::run::CONTENT))
+        .collect();
     for theme in ["warrens", "spire"] {
         assert!(drawn.iter().any(|t| t == theme), "{theme} is drawn");
     }
-    assert!((0..200).all(|seed| draw(seed, REWORK_FROM) == drawn[usize::try_from(seed).unwrap()]));
+    assert!((0..200).all(
+        |seed| draw(seed, mtg_campaign::run::CONTENT) == drawn[usize::try_from(seed).unwrap()]
+    ));
 }
 
 fn spire_run(seed: u64) -> Run {
     let mut events = vec![
         RunEvent::Content {
-            version: REWORK_FROM,
+            version: mtg_campaign::run::CONTENT,
         },
         RunEvent::Joined {
             name: "H".into(),
@@ -215,10 +218,10 @@ fn a_spire_ladder_is_three_rooms_ending_in_the_leviathan(#[values(1, 2, 3, 99)] 
     assert_eq!(bosses.len(), 3);
     assert_eq!(bosses.last(), Some(&"leviathan"));
     let plan = run.fight_plan(content().unwrap()).unwrap().unwrap();
-    let rework = plan.boss.rework.as_deref().unwrap();
+    let rework = &plan.boss;
     let boss = spire().boss(&plan.boss.boss).unwrap();
-    let innate = boss.innate.as_deref().unwrap();
-    assert_eq!(rework.innate, Some(innate_id(innate, 1)));
+    let innate = boss.innate.as_str();
+    assert_eq!(rework.innate, innate_id(innate, 1));
     let rounds: Vec<u32> = rework.round_phases.iter().map(|(_, r)| *r).collect();
     assert_eq!(rounds, PHASE_ROUNDS);
     for ((card, _), written) in rework.round_phases.iter().zip(&boss.round_phases) {

@@ -8,7 +8,7 @@ use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS};
 use mtg_campaign::content::{Content, Rarity};
 use mtg_campaign::modifiers::{self, EncounterModifier};
 use mtg_campaign::relics::DeckMakeup;
-use mtg_campaign::scale::{PHASE_ROUNDS, REWORK_FROM};
+use mtg_campaign::scale::PHASE_ROUNDS;
 use mtg_campaign::{Brain, Run, RunEvent, Scale, content};
 use proptest::prelude::*;
 use rstest::rstest;
@@ -156,7 +156,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
     let relics = boss_relics::draw(
         content,
         &DeckMakeup::default(),
-        REWORK_FROM,
+        mtg_campaign::run::CONTENT,
         (depth, heat),
         (seed, 2, 3),
     );
@@ -169,7 +169,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
     let again = boss_relics::draw(
         content,
         &DeckMakeup::default(),
-        REWORK_FROM,
+        mtg_campaign::run::CONTENT,
         (depth, heat),
         (seed, 2, 3),
     );
@@ -179,7 +179,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
 fn reworked_run(heroes: usize, heat: u8) -> Run {
     let content = content().unwrap();
     let mut events = vec![RunEvent::Content {
-        version: REWORK_FROM,
+        version: mtg_campaign::run::CONTENT,
     }];
     for at in 0..heroes {
         events.push(RunEvent::Joined {
@@ -211,21 +211,15 @@ fn a_reworked_fight_plan_holds_only_the_reworked_parts(
     let run = reworked_run(heroes, heat);
     let plan = run.fight_plan(content).unwrap().unwrap();
     let boss = &plan.boss;
-    let rework = boss.rework.as_deref().unwrap();
+    let rework = boss;
     assert_eq!(boss.life, Scale::boss_life(heroes));
     assert_eq!(boss.brain, Brain::Hard);
-    assert_eq!(plan.minions.len(), 0);
-    assert!(boss.rules.is_empty() && boss.phases.is_empty() && boss.schemes.is_empty());
-    assert_eq!(boss.commander, None);
     assert!(rework.modifier.is_some());
     assert_eq!(rework.relics.len(), boss_relics::count(0, heat));
     let rounds: Vec<u32> = rework.round_phases.iter().map(|(_, r)| *r).collect();
     assert!(rounds.is_empty() || rounds == PHASE_ROUNDS);
     // The plan's emblems: the modifier and any relics, copies kept.
-    assert_eq!(
-        boss.emblems().len(),
-        1 + rework.relics.len() + usize::from(rework.innate.is_some())
-    );
+    assert_eq!(boss.emblems().len(), 2 + rework.relics.len());
 }
 
 #[rstest]
@@ -257,6 +251,23 @@ fn a_reworked_boss_seat_takes_the_opening_land_rule_and_its_emblems(#[values(1, 
     assert_eq!(boss.emblems.len(), plan.boss.emblems().len());
 }
 
+/// A boss seat whose innate is `innate` and whose relics are `relics`.
+fn seat(innate: &str, relics: Vec<String>) -> mtg_campaign::BossSeat {
+    mtg_campaign::BossSeat {
+        boss: "b".into(),
+        name: "B".into(),
+        life: 40,
+        hand: 7,
+        brain: Brain::Hard,
+        deck: Vec::new(),
+        innate: innate.into(),
+        modifier: None,
+        relics,
+        round_phases: Vec::new(),
+        satchel: Vec::new(),
+    }
+}
+
 #[rstest]
 #[case::level_one("brood_i", 1, "Brood I", 1)]
 #[case::level_three("brood_iii", 3, "Brood III", 4)]
@@ -268,10 +279,7 @@ fn the_sheet_names_the_innate_at_its_level(
     #[case] n: u32,
 ) {
     let content = Content::parse(&[&innate("[1, 2, 4, 6, 9]")], &[], "[]").unwrap();
-    let rework = mtg_campaign::fight::Reworked {
-        innate: Some(id.into()),
-        ..Default::default()
-    };
+    let rework = seat(id, Vec::new());
     let sheet = rework.sheet(&content).unwrap();
     assert_eq!(sheet.level, level);
     let innate = sheet.innate.unwrap();
@@ -281,10 +289,7 @@ fn the_sheet_names_the_innate_at_its_level(
         format!("At the beginning of your upkeep, you gain {n} life.")
     );
     assert!(sheet.modifier.is_none() && sheet.relics.is_empty() && sheet.phases.is_empty());
-    let unknown = mtg_campaign::fight::Reworked {
-        relics: vec!["nowhere".into()],
-        ..Default::default()
-    };
+    let unknown = seat(id, vec!["nowhere".into()]);
     assert!(unknown.sheet(&content).is_err());
 }
 
@@ -301,7 +306,7 @@ fn a_reworked_boss_seat_carries_its_sheet(
         .fight_plan(content)
         .unwrap()
         .unwrap();
-    let rework = plan.boss.rework.as_deref().unwrap();
+    let rework = &plan.boss;
     let land = || mtg_testkit::cards::land(mtg_core::color::Color::Green);
     let mut decks: Vec<Vec<_>> = (0..heroes)
         .map(|_| (0..40).map(|_| land()).collect())

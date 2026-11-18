@@ -138,28 +138,6 @@ pub enum Brain {
     VeryHard,
 }
 
-impl Brain {
-    /// One level stronger, Very Hard staying itself.
-    #[must_use]
-    pub fn stronger(self) -> Brain {
-        match self {
-            Brain::Easy => Brain::Normal,
-            Brain::Normal => Brain::Hard,
-            Brain::Hard | Brain::VeryHard => Brain::VeryHard,
-        }
-    }
-
-    /// One level weaker, Easy staying itself.
-    #[must_use]
-    pub fn weaker(self) -> Brain {
-        match self {
-            Brain::Easy | Brain::Normal => Brain::Easy,
-            Brain::Hard => Brain::Normal,
-            Brain::VeryHard => Brain::Hard,
-        }
-    }
-}
-
 /// A boss: its precon deck, its innate, two phases by round and its satchel (`docs/delves.md`, Bosses).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -480,9 +458,7 @@ pub struct Theme {
 impl Theme {
     /// The boss with this id.
     pub fn boss(&self, id: &str) -> Option<&Boss> {
-        self.bosses
-            .iter()
-            .find(|m| m.id == id)
+        self.bosses.iter().find(|m| m.id == id)
     }
 
     /// The event with this id.
@@ -551,7 +527,7 @@ impl Content {
             }
         }
         let modifiers = serde_json::from_str(modifiers).map_err(fail)?;
-        let mut cards: BTreeMap<String, CustomCard> =
+        let cards: BTreeMap<String, CustomCard> =
             list.into_iter().map(|c| (c.id.clone(), c)).collect();
         let themes = themes
             .iter()
@@ -608,7 +584,7 @@ impl Content {
             .filter(|t| {
                 t.bosses
                     .iter()
-                    .any(|b| b.final_boss && !b.uber && b.since <= generation)
+                    .any(|b| b.final_boss && b.since <= generation)
             })
             .collect();
         let at = crate::rng::Stream::new(seed, "theme", 0, 0).below(open.len());

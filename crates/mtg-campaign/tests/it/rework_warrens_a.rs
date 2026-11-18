@@ -8,7 +8,7 @@ use std::sync::Arc;
 
 use mtg_campaign::content::Boss;
 use mtg_campaign::innate::innate_id;
-use mtg_campaign::scale::{PHASE_ROUNDS, REWORK_FROM};
+use mtg_campaign::scale::PHASE_ROUNDS;
 use mtg_campaign::{Run, RunEvent, content};
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
@@ -205,7 +205,7 @@ fn bolt(driver: &mut Driver, victims: &[&str]) -> Result<(), ScriptError> {
 /// What the innate of `id` at `level` has done, in two numbers the case names.
 fn innate_effect(id: &str, level: u8) -> Result<(i32, i32), ScriptError> {
     let boss = boss(id);
-    let innate = custom(&innate_id(boss.innate.as_deref().unwrap(), level));
+    let innate = custom(&innate_id(boss.innate.as_str(), level));
     let mut emblems = vec![innate];
     if id == "seraphine_spire" {
         // A source of life gain each upkeep, so the end step finds that she gained life.
@@ -473,7 +473,7 @@ fn sorted(letters: &str) -> Vec<char> {
 fn each_reworked_boss_loads_whole(#[values(0, 1, 2, 3, 4, 5, 6, 7)] at: usize) {
     let content = content().unwrap();
     let boss = boss(BOSSES[at]);
-    let file = boss.deck_file.as_deref().unwrap();
+    let file = boss.deck_file.as_str();
     // The boss takes its colours from its deck.
     assert_eq!(
         sorted(&boss.colors),
@@ -481,7 +481,7 @@ fn each_reworked_boss_loads_whole(#[values(0, 1, 2, 3, 4, 5, 6, 7)] at: usize) {
         "{}",
         boss.id
     );
-    let innate = boss.innate.as_deref().unwrap();
+    let innate = boss.innate.as_str();
     for level in 1..=5 {
         let card = content.card(&innate_id(innate, level)).unwrap();
         assert_eq!(card.level, level);
@@ -513,7 +513,7 @@ fn each_reworked_boss_loads_whole(#[values(0, 1, 2, 3, 4, 5, 6, 7)] at: usize) {
 fn fight(boss: &Boss, seed: u64) -> Engine {
     let content = content().unwrap();
     let mut events = vec![RunEvent::Content {
-        version: REWORK_FROM,
+        version: mtg_campaign::run::CONTENT,
     }];
     for at in 0..2u8 {
         events.push(RunEvent::Joined {
@@ -535,7 +535,7 @@ fn fight(boss: &Boss, seed: u64) -> Engine {
     events.push(RunEvent::Started);
     let run = Run::replay(content, "warrens", seed, 0, &events).unwrap();
     let mut plan = run.fight_plan(content).unwrap().unwrap();
-    plan.boss = run.reworked_seat(content, boss, 3, (2, 12));
+    plan.boss = run.boss_seat(content, boss, 3, (2, 12)).unwrap();
     let stand_in = match boss.colors.chars().next() {
         Some('W') => Color::White,
         Some('U') => Color::Blue,

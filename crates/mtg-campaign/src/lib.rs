@@ -15,10 +15,10 @@ pub mod scale;
 pub mod upgrade;
 
 pub use content::{
-    Boss, BossArt, Brain, CardKind, Content, CustomCard, EventOption, Minion, Needs, Outcome,
+    Boss, BossArt, Brain, CardKind, Content, CustomCard, DeckFile, EventOption, Needs, Outcome,
     Rarity, content,
 };
-pub use fight::{BossSeat, FightPlan, HeroSeat, MinionSeat, Reworked};
+pub use fight::{BossSeat, FightPlan, HeroSeat};
 pub use map::{FloorMap, Node, RoomKind};
 pub use relics::{DeckMakeup, Want};
 pub use run::{

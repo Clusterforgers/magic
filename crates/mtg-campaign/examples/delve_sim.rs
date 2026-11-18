@@ -153,49 +153,39 @@ fn setup_of(plan: &FightPlan, cards: &[Vec<String>], seed: u64) -> GameSetup {
         // The earned cards wait in the Satchel; the deck stays as it is.
         satchels.push(added.iter().map(|name| card(name)).collect());
     }
-    for deck in plan.boss_decks() {
-        decks.push(
-            deck.iter()
-                .flat_map(|(name, n)| (0..*n).map(move |_| card(name)))
-                .collect(),
-        );
-        commanders.push(Vec::new());
-    }
+    decks.push(
+        plan.boss_deck()
+            .iter()
+            .flat_map(|(name, n)| (0..*n).map(move |_| card(name)))
+            .collect(),
+    );
+    commanders.push(Vec::new());
     let setup = GameSetup::new(Arc::new(Commander), seed, decks)
         .with_commanders(commanders)
         .with_satchels(satchels);
     plan.apply(content, setup).unwrap()
 }
 
-/// The plan without the boss cards, phases and schemes `DELVE_SIM_DROP` names (comma-separated ids, `schemes` for the
-/// whole scheme deck), with the boss's life changed by `DELVE_SIM_LIFE`: tuning knobs to measure what each is worth.
+/// The plan without the boss's modifier, relics and phases `DELVE_SIM_DROP` names (comma-separated ids), with the
+/// boss's life changed by `DELVE_SIM_LIFE`: tuning knobs to measure what each is worth.
 fn dropped(plan: &FightPlan) -> FightPlan {
     let mut plan = plan.clone();
     if let Ok(drop) = std::env::var("DELVE_SIM_DROP") {
         let drop: Vec<&str> = drop.split(',').collect();
-        plan.boss.rules.retain(|id| !drop.contains(&id.as_str()));
+        plan.boss.relics.retain(|id| !drop.contains(&id.as_str()));
         plan.boss
-            .phases
+            .round_phases
             .retain(|(id, _)| !drop.contains(&id.as_str()));
-        plan.boss
-            .schemes
-            .retain(|id| !drop.contains(&id.as_str()) && !drop.contains(&"schemes"));
-    }
-    // `DELVE_SIM_MINIONS` keeps at most this many minions.
-    if let Ok(most) = std::env::var("DELVE_SIM_MINIONS") {
-        plan.minions.truncate(most.parse().unwrap());
+        plan.boss.modifier = plan.boss.modifier.filter(|id| !drop.contains(&id.as_str()));
     }
     // `DELVE_SIM_HAND` sets the boss's opening hand.
     if let Ok(hand) = std::env::var("DELVE_SIM_HAND") {
         plan.boss.hand = hand.parse().unwrap();
     }
-    // `DELVE_SIM_LIFE` sets the boss's life to this percent of the plan's, its phases with it.
+    // `DELVE_SIM_LIFE` sets the boss's life to this percent of the plan's.
     if let Ok(percent) = std::env::var("DELVE_SIM_LIFE") {
         let percent: i32 = percent.parse().unwrap();
         plan.boss.life = plan.boss.life * percent / 100;
-        for (_, at) in &mut plan.boss.phases {
-            *at = (*at * percent / 100).max(1);
-        }
     }
     plan
 }
@@ -210,8 +200,7 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
             let player = PlayerId::from_index(seat);
             let level = match seat.checked_sub(party) {
                 None => heroes,
-                Some(0) => boss_level(plan.boss.brain),
-                Some(at) => boss_level(plan.minions[at - 1].brain),
+                Some(_) => boss_level(plan.boss.brain),
             };
             brain(level, seed, player, false)
         })
@@ -242,24 +231,16 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 let count =
                     |f: &dyn Fn(&Event) -> bool| outcome.events.iter().filter(|e| f(e)).count();
                 println!(
-                    "seed {seed}: plan schemes {:?}, rules {:?}",
-                    plan.boss.schemes, plan.boss.rules
+                    "seed {seed}: plan innate {}, modifier {:?}, relics {:?}",
+                    plan.boss.innate, plan.boss.modifier, plan.boss.relics
                 );
                 println!(
-                    "seed {seed}: schemes {}, phases {}, combats {}, minions fallen {}",
-                    count(&|e| matches!(e, Event::SchemeSetInMotion { .. })),
+                    "seed {seed}: phases {}, combats {}",
                     count(&|e| matches!(e, Event::PhaseBegan { .. })),
                     count(&|e| matches!(
                         e,
                         Event::StepBegan {
                             step: mtg_engine::turn::Step::BeginCombat
-                        }
-                    )),
-                    count(&|e| matches!(
-                        e,
-                        Event::PlayerLost {
-                            reason: mtg_engine::player::LossReason::LeaderFell,
-                            ..
                         }
                     )),
                 );
@@ -495,13 +476,10 @@ fn main() {
     let bosses: Vec<String> = theme
         .bosses
         .iter()
-        .chain(&theme.upgraded)
         .map(|b| b.id.clone())
         .filter(|id| {
             only.as_deref()
-                .map_or(!id.ends_with(mtg_campaign::content::UPGRADED), |only| {
-                    only.split(',').any(|o| o == id)
-                })
+                .is_none_or(|only| only.split(',').any(|o| o == id))
         })
         .collect();
     // (boss, won, turns) per fight, and per run the cleared bosses.
@@ -541,10 +519,15 @@ fn main() {
                             }
                         };
                         run.at = Some(node);
-                        // `DELVE_SIM_RANK` scales the boss as the one at that place on the ladder.
-                        let rank = std::env::var("DELVE_SIM_RANK")
-                            .map_or(run.boss_rank(node), |r| r.parse().unwrap());
-                        let plan = run.fight_plan_at(content, rank).unwrap().unwrap();
+                        run.status = Status::Fight { game: None };
+                        let mut plan = run.fight_plan(content).unwrap().unwrap();
+                        // `DELVE_SIM_DEPTH` meets the boss at that depth (bosses defeated before it).
+                        if let Ok(depth) = std::env::var("DELVE_SIM_DEPTH") {
+                            let spec = theme.boss(boss).unwrap();
+                            plan.boss = run
+                                .boss_seat(content, spec, node, (heroes, depth.parse().unwrap()))
+                                .unwrap();
+                        }
                         let t = Instant::now();
                         let fought = fight(&plan, &vec![Vec::new(); heroes], seed, hero_level);
                         println!(
