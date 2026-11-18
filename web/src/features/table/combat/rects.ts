@@ -212,7 +212,7 @@ const bundleOf = (line: LineSpec): string | null => {
 export function bundled(
   lines: readonly LineSpec[],
   rects: RectMap,
-): { line: LineSpec; from: Rect | undefined; count?: number }[] {
+): { line: LineSpec; from: Rect | undefined; count?: number; members?: Rect[] }[] {
   const members = new Map<string, LineSpec[]>()
   const seats = new Map<string, number>()
   for (const line of lines) {
@@ -221,7 +221,7 @@ export function bundled(
     if (key !== null) members.set(key, [...(members.get(key) ?? []), line])
     if (seat !== null) seats.set(seat, (seats.get(seat) ?? 0) + 1)
   }
-  const out: { line: LineSpec; from: Rect | undefined; count?: number }[] = []
+  const out: { line: LineSpec; from: Rect | undefined; count?: number; members?: Rect[] }[] = []
   for (const line of lines) {
     const key = bundleOf(line)
     const group = key === null ? undefined : members.get(key)
@@ -235,7 +235,7 @@ export function bundled(
       const box = rects.get(anchorKey(one.from))
       return box === undefined ? [] : [box]
     })
-    out.push({ line: { ...line, key }, from: around(boxes), count: group.length })
+    out.push({ line: { ...line, key }, from: around(boxes), count: group.length, members: boxes })
   }
   return out
 }
@@ -248,7 +248,7 @@ export function bundled(
 export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[] {
   const seen = new Set<string>()
   const drawn: DrawnLine[] = []
-  for (const { line, from, count } of bundled(lines, rects)) {
+  for (const { line, from, count, members } of bundled(lines, rects)) {
     const to = rects.get(anchorKey(line.to))
     if (from === undefined || to === undefined) continue
     const curve =
@@ -259,7 +259,10 @@ export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[
           : // A block runs from the attacker to the blocker, the way an attack runs the other way round, so it bows to
             // the other side of its travel: both bow the same way on the screen, clear of the pod column at the left.
             { bow: -0.1, head: 10 }
-    const shape = connect(from, to, curve)
+    // A bundle whose box around the attackers reaches over its target starts from the first attacker that clears it.
+    const shape =
+      connect(from, to, curve) ??
+      (members ?? []).reduce<Shape | null>((found, member) => found ?? connect(member, to, curve), null)
     if (shape === null) continue
     const same = `${shape.d}|${line.kind}|${line.pending}|${line.outcome ?? ''}`
     if (seen.has(same)) continue

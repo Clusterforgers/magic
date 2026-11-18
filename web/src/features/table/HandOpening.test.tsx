@@ -1,4 +1,4 @@
-// Goal: while the Mulligan prompt waits off a phone the opening hand floats in the centre overlay, and the hand dock keeps its size and place without drawing the hand a second time, while another choice in the overlay leaves the hand drawn; on a phone the dock draws the hand as at any other decision, in a row that scrolls.
+// Goal: while the Mulligan prompt waits off a phone the opening hand floats in the centre overlay, and the hand dock keeps its size and place without drawing the hand a second time, the overlay covers the opponents and the strip but not your board, while another choice in the overlay leaves the hand drawn; on a phone the dock draws the hand as at any other decision, in a row that scrolls.
 import { screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -7,7 +7,7 @@ import { KINDS } from '@/test-utils/decisions'
 import { renderTable } from '@/test-utils/tableHarness'
 import { buildFixture } from './dev/fixture'
 import { DEV_PROMPTS } from './dev/prompts'
-import { clampedHeight, HAND_GROW_VAR, HAND_PHONE_CLAMP } from './layout'
+import { CHOICE_AREAS, clampedHeight, HAND_GROW_VAR, HAND_PHONE_CLAMP, TABLE_AREAS } from './layout'
 import { HAND_DOCK_SIDES_PX, HAND_FLOOR_PX, handCardWidth } from './handFit'
 
 /** The room every element reports; jsdom has no layout. */
@@ -71,6 +71,19 @@ describe('the hand dock at the opening hand', () => {
     expect(host.hidden).toBe(false)
     expect(host.querySelector('button[data-candidate]')).not.toBeNull()
     expect(hand().closest('[data-floating]')).toBeNull()
+  })
+
+  it('covers only the opponents and the strip at the opening hands, so your board and life stay in view; another choice covers both boards', () => {
+    room.width = 1100
+    room.height = 220
+    const main = () => must(document.querySelector<HTMLElement>('[data-slot="table-main"]'))
+    const table = renderTable({ seats: 2, state: waitingOn('Mulligan') })
+    expect(main().style.gridTemplateAreas).toBe(TABLE_AREAS)
+    table.unmount()
+    const fixture = buildFixture({ seats: 5 })
+    const pending = must(DEV_PROMPTS['targets-many'])(fixture)
+    renderTable({ fixture, state: (state) => ({ ...state, pending }) })
+    expect(main().style.gridTemplateAreas).toBe(CHOICE_AREAS)
   })
 
   it('draws its cards again once the keep or mulligan is answered', () => {

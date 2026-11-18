@@ -486,7 +486,7 @@ export function gridColumns(side: SideKind): string {
 }
 
 /** The least height a sheet that stops above your board gets from the opponents' area and the shared strip, in px. */
-export const SIDE_PANEL_MIN_PX = 300
+export const SIDE_PANEL_MIN_PX = 280
 
 /** The least height an open rail panel or sheet keeps while a prompt waits in the shared strip, in px: the tabs and a row. */
 export const SIDE_DECISION_MIN_PX = 144

@@ -69,8 +69,9 @@ export function look(arg: { me: string; answered: string | null }): Observed | n
   const id = root?.dataset['decisionId']
   if (root === null || id === undefined || id === arg.answered) return null
   // The sentence arrives in a deferred render after the prompt's first one, so that a screen reader announces it. A
-  // read before then has nothing to parse ("0 of 2 chosen"), and Discard would pick no cards.
-  const text = root.querySelector('[data-slot="prompt-text"]')?.textContent ?? ''
+  // read before then has nothing to parse ("0 of 2 chosen"), and Discard would pick no cards. A prompt drawn in the centre
+  // overlay (the opening hands) carries its kind there too, outside the band's line.
+  const text = document.querySelector('[data-decision] [data-slot="prompt-text"]')?.textContent ?? ''
   if (text === '') return null
   const legal = (scope: string): Card[] =>
     Array.from(
