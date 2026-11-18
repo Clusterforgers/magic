@@ -114,6 +114,7 @@ describe('the stylesheet', () => {
     expect(areasIn(band, quiet)).toEqual(bandAreas(64, 'none', { quiet: true }))
     expect(areasIn(phone, '& {')).toEqual(bandAreas(24, 'none'))
     expect(areasIn(phone, fallback)).toEqual(bandAreas(24, 'fallback'))
+    expect(areasIn(phone, quiet)).toEqual(bandAreas(24, 'none', { quiet: true }))
     // The foot: the meter, the status and short choices from its left, the answers from its right.
     const foot = blockAfter(band, 'On a phone the second line is the foot')
     expect(blockAfter(foot, "[data-slot='prompt-choices'][data-inline] {")).toMatch(

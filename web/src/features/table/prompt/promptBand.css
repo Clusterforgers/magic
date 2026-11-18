@@ -54,6 +54,13 @@
         'choices choices choices'
         'foot foot foot';
     }
+    /* The two lines hold for a sentence that is not drawn too: its meter takes the sentence's cell (below). */
+    &:has([data-slot='prompt-sentence'][data-quiet]) {
+      grid-template-columns: fit-content(50%) minmax(0, 1fr) auto;
+      grid-template-areas:
+        'lead text clock'
+        'foot foot foot';
+    }
   }
 
   & > [data-slot='strip-stack'],
