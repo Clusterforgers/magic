@@ -1925,6 +1925,38 @@
      {"cut": [["Tithe Drinker", 2], ["Bloodtracker", 1]], "add": [["Necropolis Regent", 1], ["Vengeful Vampire", 1], ["Sengir Connoisseur", 1]]}
     ]
    }
+  },
+  {
+   "id": "unmaker_void",
+   "name": "The Unmaker",
+   "uber": true,
+   "since": 5,
+   "colors": "",
+   "brain": "Hard",
+   "life": 30,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["the_unmaker"],
+   "enrage": "the_void_spills",
+   "relic": "prism_of_unmaking",
+   "phases": [["the_colors_fade", 66], ["all_is_unmade", 33]],
+   "line": "Your colors were only ever borrowed. I am taking them back.",
+   "commander": "Ulamog's Dreadsire",
+   "art": {"card": "Emrakul, the Promised End", "oracle_id": "4e7a8817-1a66-45c3-ade9-eac79b40b89f"},
+   "brackets": {
+    "base": [
+     ["Wastes", 17],
+     ["Warping Wail", 2], ["Kozilek's Command", 2], ["Matter Reshaper", 3], ["Skittering Cicada", 2],
+     ["Thought-Knot Seer", 3], ["Inversion Behemoth", 2], ["Eldrazi Confluence", 2],
+     ["Reality Smasher", 3], ["Walker of the Wastes", 3], ["Forsaken Monument", 1]
+    ],
+    "steps": [
+     {"add": [["Wastes", 4], ["Endbringer", 1], ["Kozilek's Pathfinder", 2], ["Anticausal Vestige", 1], ["Zhulodok, Void Gorger", 1], ["Echoes of Eternity", 1]]},
+     {"add": [["Wastes", 4], ["Deceiver of Form", 1], ["Bane of Bala Ged", 1], ["All Is Dust", 1], ["Not of This World", 1], ["Thought-Knot Seer", 1], ["Endbringer", 1]]},
+     {"cut": [["Inversion Behemoth", 2], ["Skittering Cicada", 1]], "add": [["Ulamog's Crusher", 1], ["Breaker of Armies", 1], ["Endbringer", 1]]},
+     {"cut": [["Kozilek's Command", 2], ["Warping Wail", 1]], "add": [["Spawnsire of Ulamog", 1], ["It That Betrays", 1], ["Bane of Bala Ged", 1]]}
+    ]
+   }
   }
 
  ],

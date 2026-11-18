@@ -2,8 +2,9 @@
 //! most four copies of a card, cards of its colours that play automatically and the bracket's mana value cap; the
 //! bracket table never makes a boss easier; no boss deck holds an infinite combo, and the boss's side stops any loop
 //! after five iterations; the commander card waits in the command zone and is cast as the last phase begins in real
-//! fights of two to four heroes; an upgraded boss can stand as the final boss; runs of an earlier generation keep their
-//! ladder and decks.
+//! fights of two to four heroes for every boss; an upgraded boss can stand as the final boss; runs of an earlier
+//! generation keep their ladder and decks, generation 5 adds one boss per colour pair, and the uber boss stands only as
+//! the final boss of one hot ladder in four, drawing the heroes' cost colours anew.
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
@@ -31,7 +32,7 @@ use mtg_testkit::{Driver, RandomBot};
 use rstest::rstest;
 
 /// The basic lands, which the engine knows without a rules file.
-const BASICS: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
+const BASICS: [&str; 6] = ["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"];
 /// The highest mana value a deck card may have, by bracket from 1; the commander card is apart.
 const MANA_VALUE_CAP: [u32; MAX_BRACKET as usize] = [5, 6, 7, 20, 20];
 /// Known two-card infinite combos: a boss deck never holds both cards of one.
@@ -221,7 +222,12 @@ fn run(heroes: usize, heat: u8, seed: u64, version: u32) -> Run {
 
 /// The game of `plan`, the heroes on a fixture Commander deck.
 fn engine(plan: &FightPlan, seed: u64) -> Engine {
-    let hero = fixture_deck("precon_tramplesaurus_rex").unwrap();
+    engine_with(plan, seed, "precon_tramplesaurus_rex")
+}
+
+/// The game of `plan`, the heroes on the fixture Commander deck `deck`.
+fn engine_with(plan: &FightPlan, seed: u64, deck: &str) -> Engine {
+    let hero = fixture_deck(deck).unwrap();
     let heroes = plan.heroes.len();
     let mut decks: Vec<Vec<Arc<CardDefinition>>> =
         (0..heroes).map(|_| hero.cards.clone()).collect();
@@ -583,5 +589,77 @@ fn the_new_bosses_join_from_generation_five() {
         distinct.len(),
         pairs.len(),
         "one boss per colour pair: {pairs:?}"
+    );
+}
+
+#[test]
+fn the_uber_boss_stands_as_a_final_boss_only_at_heat_two_from_generation_five() {
+    let theme = &content().unwrap().themes[0];
+    let ubers: BTreeSet<&str> = theme
+        .bosses
+        .iter()
+        .filter(|b| b.uber)
+        .map(|b| b.id.as_str())
+        .collect();
+    assert!(!ubers.is_empty());
+    let mut met = 0;
+    let seeds = 400u64;
+    for seed in 0..seeds {
+        let hot = generate_for(theme, seed, ROSTER_FROM, mtg_campaign::scale::UBER_HEAT);
+        let warm = generate_for(theme, seed, ROSTER_FROM, 1);
+        for map in [&warm, &generate_for(theme, seed, ROSTER_FROM, 0)] {
+            assert!(
+                map.nodes
+                    .iter()
+                    .filter_map(|n| n.boss.as_deref())
+                    .all(|id| !ubers.contains(id))
+            );
+        }
+        let last = hot.last().and_then(|n| n.boss.as_deref()).unwrap();
+        if ubers.contains(last) {
+            met += 1;
+            // Only the final boss differs: the lieutenants and the camps are drawn as without it.
+            assert_eq!(
+                hot.nodes[..hot.nodes.len() - 1],
+                warm.nodes[..warm.nodes.len() - 1]
+            );
+        } else {
+            assert_eq!(hot, warm, "seed {seed}");
+        }
+        assert!(
+            hot.nodes[..hot.nodes.len() - 1]
+                .iter()
+                .filter_map(|n| n.boss.as_deref())
+                .all(|id| !ubers.contains(id)),
+            "never a lieutenant"
+        );
+    }
+    let share = met * 100 / seeds;
+    assert!((15..=35).contains(&share), "{met} of {seeds} ladders");
+}
+
+#[rstest]
+fn the_uber_boss_draws_the_heroes_cost_colors_anew(#[values(2, 3, 4)] heroes: usize) {
+    let content = content().unwrap();
+    let theme = &content.themes[0];
+    let uber = theme.bosses.iter().find(|b| b.uber).unwrap();
+    let mut run = run(heroes, 2, 3, CONTENT);
+    let last = run.map.nodes.len() - 1;
+    run.map.nodes[last].boss = Some(uber.id.clone());
+    run.at = Some(u8::try_from(last).unwrap());
+    run.status = mtg_campaign::Status::Fight { game: None };
+    let plan = run.fight_plan(content).unwrap().unwrap();
+    assert_eq!(plan.boss.deck, uber.deck_at(BRACKETS[2][RANKS - 1]));
+    let engine = engine_with(&plan, 5, "owner");
+    let state = engine.state();
+    for hero in 0..heroes {
+        // The fixture deck is Esper: each of its three colors stands for another.
+        let drawn = mtg_engine::cost_colors::drawn(state, PlayerId::from_index(hero)).unwrap();
+        assert_eq!(drawn.len(), 3, "hero {hero}");
+        assert!(drawn.iter().all(|(from, to)| from != to));
+    }
+    assert_eq!(
+        mtg_engine::cost_colors::drawn(state, plan.boss_seat()),
+        None
     );
 }
