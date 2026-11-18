@@ -39,9 +39,9 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`boss_plan.rs`): one innate, one encounter modifier, two phases by round, a satchel, a precon deck and relics by depth. The boss has nothing else; its brain is Hard at every Heat and depth.
 
-- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`content/decks/<code>-<name>.json`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight), `makeup` what its deck is made of, `art` the real card whose art crop pictures it. `deck` stands in until the precon lands.
+- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`<code>-<name>.json` in `content/decks`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight), `makeup` what its deck is made of, `art` the real card whose art crop pictures it. `deck` stands in until the precon lands.
 - Depth: the bosses the party defeated in the run over all floors (`Run::defeated`); a lost and retried fight adds none.
-- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` in its abilities); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
+- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` and a cost's `{N}` in its abilities, `"$L"` for the level where the shape changes, `"level_texts"` for one text per level); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
 
 | Depth | 0 | 1 | 2 | 3 | 4–5 | 6–7 | 8–9 | 10–11 | 12+ |
 |---|---|---|---|---|---|---|---|---|---|

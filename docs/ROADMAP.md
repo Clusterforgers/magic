@@ -166,6 +166,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
+- [ ] (rw1a) The reworked fight plan plays the record's deck file (draft cards loaded from their reads), puts its satchel in the boss's command zone and counts its makeup from the deck
+- [ ] (rw1b) Skrix, Vex and Ysolde take their precons' colours (BG, B, GU) in their records once the bracket decks go (rw8)
 - [ ] (rw2) Drowned Spire innates (no mill; only the Archivist's Phase 1 mills, once)
 - [ ] (rw3) Encounter modifier content: the 23 modifiers of the pool with their `not_with` lists and a check each
 - [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)

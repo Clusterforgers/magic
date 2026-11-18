@@ -16,6 +16,7 @@ mod rarity;
 mod relic_cards;
 mod relics;
 mod rework;
+mod rework_warrens_a;
 mod runs;
 mod satchel;
 mod spirits;

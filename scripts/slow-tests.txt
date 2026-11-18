@@ -265,4 +265,5 @@ pg_team_games::
 hidden_aura_fuzz::aura_spells_always_carry_their_target
 
 # mtg-campaign::it
+rework_warrens_a::a_level_five_fight_never_loops
 relic_cards::every_relic_plays_a_real_fight

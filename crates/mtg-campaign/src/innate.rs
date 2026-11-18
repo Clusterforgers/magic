@@ -1,6 +1,7 @@
 //! Boss innates: each boss's one fixed effect, written once in content with a number N that grows over five levels
-//! (`"levels": [n1, …, n5]`, the text's `{N}` and every `"$N"` in its abilities). Loading makes one card per level;
-//! the fight takes the level [`Scale::innate_level`](crate::scale::Scale::innate_level) names.
+//! (`"levels": [n1, …, n5]`, the text's `{N}`, every `"$N"` and `{N}` in its abilities, and `"$L"` for the level
+//! itself where the shape changes with the level; `"level_texts"` gives one text per level in place of `text`).
+//! Loading makes one card per level; the fight takes the level [`Scale::innate_level`](crate::scale::Scale::innate_level) names.
 
 use serde_json::Value;
 
@@ -52,7 +53,14 @@ pub(crate) fn expand(entries: Vec<Value>) -> Result<Vec<Value>, CampaignError> {
 /// `entry` at `level`, its number `n`: id, name, level, text and abilities.
 fn at_level(entry: &Value, level: u8, n: u64) -> Value {
     let mut card = entry.clone();
-    set_n(&mut card["abilities"], n);
+    if let Some(text) = card
+        .as_object_mut()
+        .and_then(|c| c.remove("level_texts"))
+        .and_then(|texts| texts.get(usize::from(level) - 1).cloned())
+    {
+        card["text"] = text;
+    }
+    set_n(&mut card["abilities"], n, level);
     let id = card["id"].as_str().unwrap_or_default().to_owned();
     let name = card["name"].as_str().unwrap_or_default().to_owned();
     let text = card["text"]
@@ -66,12 +74,15 @@ fn at_level(entry: &Value, level: u8, n: u64) -> Value {
     card
 }
 
-/// Puts `n` wherever `value` holds the string `"$N"`.
-fn set_n(value: &mut Value, n: u64) {
+/// Puts `n` wherever `value` holds the string `"$N"`, and as a mana symbol for `{N}` inside a string (a cost); puts
+/// `level` wherever it holds `"$L"`.
+fn set_n(value: &mut Value, n: u64, level: u8) {
     match value {
         Value::String(s) if s == "$N" => *value = Value::from(n),
-        Value::Array(items) => items.iter_mut().for_each(|v| set_n(v, n)),
-        Value::Object(map) => map.values_mut().for_each(|v| set_n(v, n)),
+        Value::String(s) if s == "$L" => *value = Value::from(level),
+        Value::String(s) if s.contains("{N}") => *s = s.replace("{N}", &format!("{{{n}}}")),
+        Value::Array(items) => items.iter_mut().for_each(|v| set_n(v, n, level)),
+        Value::Object(map) => map.values_mut().for_each(|v| set_n(v, n, level)),
         _ => {}
     }
 }

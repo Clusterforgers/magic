@@ -856,6 +856,7 @@ pub fn content() -> Result<&'static Content, CampaignError> {
                     include_str!("../content/cards.json"),
                     include_str!("../content/boss_cards.json"),
                     include_str!("../content/encounters.json"),
+                    include_str!("../content/rework_warrens_a.json"),
                 ],
                 &[include_str!("../content/warrens.json")],
                 include_str!("../content/modifiers.json"),
