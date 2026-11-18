@@ -25,7 +25,7 @@ The twenty rules of motion and interaction the table, lobby, deck pages and Delv
 
 | Rule | Here |
 |---|---|
-| Squash and stretch | A press squashes a control or card to 0.97; an attacker stretches 4 % along its lunge; a hit card squashes to 0.94 on impact |
+| Squash and stretch | A press squashes a control or card to 0.97; an attacker stretches 4 % along its lunge; a hit card squashes to 0.94 on impact; a Delves vote or shop buy beats the chosen card (0.96, 1.03, settle) on the press, the vote on its way stands marked as the vote, and a vote count or the purse pops as it changes (`beat`, `TickingCount`) |
 | Anticipation | An attacker that taps lies down first and lunges after (`fx-tap-lunge`); every attacker draws back before it lunges, a strike before it lands, a flying card dips to 0.94 as it leaves |
 | Staging | What just happened is the focus: the newest stack chip is raised and rises in, older chips sit at 0.8; an attacked seat flinches and lights; the prompt band glows; nothing else dims below 0.8 |
 | Pose to pose | Every move is three to six keyframes (leave, peak, land, settle) in `fx.css` or `travel.ts`, tweened by the browser |

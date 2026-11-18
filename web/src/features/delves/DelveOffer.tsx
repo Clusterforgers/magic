@@ -19,11 +19,13 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useState } from 'react'
-import type { ReactNode } from 'react'
+import type { MouseEvent, ReactNode } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import type { CustomCardView, DelveContent, Hero, Offer, Pick, Upgrade } from '@/protocol/generated'
+import { beat } from './beat'
+import { TickingCount } from './TickingCount'
 import { CustomCardFrame } from './CustomCardFrame'
 import { customCard, isRisky, MAX_LIFE, maxLifeOf } from './model'
 import { EventScene } from './EventScene'
@@ -72,7 +74,7 @@ function Scene({
         {gold === undefined ? null : (
           <span className="inline-flex items-center gap-1 rounded-full border border-relic bg-surface px-3 py-1 text-sm font-semibold">
             <CoinsIcon aria-hidden="true" className="size-4 text-relic" />
-            {gold} gold
+            <TickingCount value={gold} className="font-semibold" /> gold
           </span>
         )}
       </div>
@@ -356,6 +358,11 @@ export function DelveOffer({
   onPick: (pick: Pick) => void
 }) {
   const take = (i: number) => onPick({ Take: i })
+  // A buy beats the offer pressed in the frame of the press, before the trader answers.
+  const buy = (event: MouseEvent<HTMLElement>, i: number) => {
+    beat(event.currentTarget.closest('[data-slot="shop-offer"]'))
+    take(i)
+  }
   if (offer === 'Duplicate') {
     return <MirrorPool cards={mirror} busy={busy} onPick={onPick} />
   }
@@ -486,7 +493,7 @@ export function DelveOffer({
                     variant="outline"
                     className="mt-auto"
                     disabled={busy || short}
-                    onClick={() => take(i)}
+                    onClick={(event) => buy(event, i)}
                     aria-label={`Healing draught: ${DRAUGHT_HEAL} life (${DRAUGHT_PRICE} gold)`}
                   >
                     {short ? `Needs ${DRAUGHT_PRICE} gold` : `Buy · ${DRAUGHT_PRICE} gold`}
@@ -515,7 +522,7 @@ export function DelveOffer({
                     variant="outline"
                     className="mt-auto"
                     disabled={busy || sold || short}
-                    onClick={() => take(i)}
+                    onClick={(event) => buy(event, i)}
                     aria-label={sold ? `${words} (sold)` : `${words} (${UPGRADE_PRICE} gold)`}
                   >
                     {sold ? 'Sold' : short ? `Needs ${UPGRADE_PRICE} gold` : `Buy · ${UPGRADE_PRICE} gold`}
@@ -537,7 +544,7 @@ export function DelveOffer({
                       size="sm"
                       variant="outline"
                       disabled={busy || item.Card.sold || short}
-                      onClick={() => take(i)}
+                      onClick={(event) => buy(event, i)}
                       aria-label={
                         item.Card.sold ? `${item.Card.name} (sold)` : `${item.Card.name} (${CARD_PRICE} gold)`
                       }
@@ -561,7 +568,7 @@ export function DelveOffer({
                   size="sm"
                   variant="outline"
                   disabled={busy || item.Relic.sold || short}
-                  onClick={() => take(i)}
+                  onClick={(event) => buy(event, i)}
                   aria-label={item.Relic.sold ? 'Sold' : `Buy (${item.Relic.price} gold)`}
                 >
                   {item.Relic.sold
