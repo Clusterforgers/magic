@@ -1537,6 +1537,16 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('LoopRepeated' in event) return line(loopSummaryLine(event.LoopRepeated, (seat) => n.seat(seat)))
   if ('LoopDrawn' in event) return line(loopDrawLine(event.LoopDrawn.cards))
+  if ('ConditionsFailed' in event) {
+    const { object, conditions = [] } = event.ConditionsFailed
+    const why =
+      conditions.length === 0
+        ? 'none of its conditions holds'
+        : conditions.length === 1
+          ? `it is not true that ${conditions[0]}`
+          : `none of these is true: ${conditions.join('; ')}`
+    return line(`${stackName(n, object, true)} does nothing: ${why}`)
+  }
   const unhandled: never = event
   return line(String(unhandled))
 }

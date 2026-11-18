@@ -21,7 +21,7 @@ import { groupStack } from './stackGroups'
 import type { StackGroup } from './stackGroups'
 import { hasNoLegalTarget } from './stackTargets'
 import type { StackEntry } from './stackTargets'
-import { NO_LEGAL_TARGET, targetsAria, targetsLine } from './stackText'
+import { NO_LEGAL_TARGET, targetsAria, targetsLine, triggerLine } from './stackText'
 import { useRoving } from './useRoving'
 import { usePreviewHandlers } from './usePreviewHandlers'
 import { useStackEntries, useTargetNamer } from './useStackEntries'
@@ -83,6 +83,7 @@ const StackItem = memo(function StackItem({
   if (object === undefined) return null
   const controller = name(object.controller)
   const aims = entry === undefined ? '' : targetsLine(entry, targetNames)
+  const trigger = triggerLine(object.trigger, name)
   const empty = entry !== undefined && hasNoLegalTarget(entry)
   const button = (
     <button
@@ -121,7 +122,7 @@ const StackItem = memo(function StackItem({
       <span className="text-xs text-muted-foreground">
         {/* An ability has no type line; its text says what it does. */}
         {object.kind === 'Ability'
-          ? `${object.rules_text ?? 'Ability'} · ${
+          ? `${object.rules_text ?? 'Ability'}${trigger === '' ? '' : ` · ${trigger}`} · ${
               object.granter === undefined || source === undefined
                 ? `controlled by ${controller}`
                 : granterHolder(object.granter, source.name, controller)

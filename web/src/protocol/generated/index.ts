@@ -402,6 +402,7 @@ export type { TournamentSummary } from "./TournamentSummary";
 export type { TournamentView } from "./TournamentView";
 export type { TriggerEntry } from "./TriggerEntry";
 export type { TriggerKey } from "./TriggerKey";
+export type { TriggerView } from "./TriggerView";
 export type { Triggered } from "./Triggered";
 export type { TriggersChoice } from "./TriggersChoice";
 export type { TriggersOptions } from "./TriggersOptions";

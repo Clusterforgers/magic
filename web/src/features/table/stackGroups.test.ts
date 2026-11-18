@@ -1,4 +1,4 @@
-// Goal: a crowded stack folds runs of the same ability of one source (and copies of one spell) into groups with their members top first and a key that survives the top ones resolving, never folds spells, other controllers, other texts or items apart, and the strip keeps as many chips as fit its width, the top one always.
+// Goal: a crowded stack folds runs of the same ability of one source (and copies of one spell) into groups with their members top first and a key that survives the top ones resolving, never folds spells, other controllers, other texts, triggers on other things or items apart, and the strip keeps as many chips as fit its width, the top one always.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView } from '@/protocol/generated'
 import { chipsThatFit, groupStack } from './stackGroups'
@@ -54,6 +54,18 @@ describe('groupStack', () => {
     ['two controllers', [item(1), item(2, { controller: 1 })], [1, 2], [[1], [2]]],
     ['a run broken by a spell', [item(1), item(2), spell(3), item(4)], [1, 2, 3, 4], [[1, 2], [3], [4]]],
     ['an object not in the view', [item(1)], [1, 9], [[1], [9]]],
+    [
+      'copies that triggered on other dice',
+      [item(1, { trigger: { players: [0], amount: 5 } }), item(2, { trigger: { players: [0], amount: 4 } })],
+      [1, 2],
+      [[1], [2]],
+    ],
+    [
+      'copies that triggered on the same thing',
+      [item(1, { trigger: { objects: ['Bear'] } }), item(2, { trigger: { objects: ['Bear'] } })],
+      [1, 2],
+      [[1, 2]],
+    ],
   ])('%s', (_case, objects, ids, expected) => {
     expect(groupStack(ids, byId(objects)).map((group) => group.ids)).toEqual(expected)
   })

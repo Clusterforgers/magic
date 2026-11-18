@@ -39,5 +39,6 @@ pub use rest::{
 pub use view::{
     ActivatedView, AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView,
     CopyView, GivesView, Granter, ManaWayView, MergedCardView, ObjectView, PermanentView,
-    PlayerView, PriorityView, StateView, TableView, TokenOfferView, TurnView, ZoneView,
+    PlayerView, PriorityView, StateView, TableView, TokenOfferView, TriggerView, TurnView,
+    ZoneView,
 };

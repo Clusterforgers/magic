@@ -179,6 +179,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         // A prevention changes nothing of its own; triggers read it.
         Event::AbilityLeftToTable(_)
         | Event::ByHandDue(_)
+        | Event::ConditionsFailed { .. }
         | Event::DamagePrevented { .. }
         // The `Revealed` before it showed the card; triggers read it from the log.
         | Event::FirstDrawRevealed { .. } => Ok(()),

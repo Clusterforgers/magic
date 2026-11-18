@@ -1,6 +1,6 @@
-// Goal: the targets of a stack item read as a short chip line ("Hill Giant, Bo +2 more"), a name plus targets ("Lightning Bolt → Hill Giant") and a screen reader sentence, naming only targets that are still legal and saying so when none is left.
+// Goal: the targets of a stack item read as a short chip line ("Hill Giant, Bo +2 more"), a name plus targets ("Lightning Bolt → Hill Giant"), a screen reader sentence and what a trigger triggered on ("on Ana (5)"), naming only targets that are still legal and saying so when none is left.
 import { describe, expect, it } from 'vitest'
-import { arrowsLeftOut, chipLine, targetsAria, targetsLine } from './stackText'
+import { arrowsLeftOut, chipLine, targetsAria, targetsLine, triggerLine } from './stackText'
 import type { TargetNamer } from './stackText'
 import type { StackEntry, StackTarget } from './stackTargets'
 
@@ -87,5 +87,18 @@ describe('the arrows left out', () => {
     [9, 3],
   ])('counts %i targets as %i arrows left out', (count, left) => {
     expect(arrowsLeftOut(entry(...Array.from({ length: count }, (_, id) => object(id))))).toBe(left)
+  })
+})
+
+describe('the trigger line', () => {
+  const seat = (player: number): string => ['Ana', 'Bo'][player] ?? `Seat ${player + 1}`
+  it.each<[string, Parameters<typeof triggerLine>[0], string]>([
+    ['no trigger', undefined, ''],
+    ['a die rolled', { players: [0], amount: 5 }, 'on Ana (5)'],
+    ['a creature that entered', { objects: ['Grizzly Bears'] }, 'on Grizzly Bears'],
+    ['an amount alone', { amount: 3 }, '(3)'],
+    ['damage to a player by a creature', { objects: ['Hill Giant'], players: [1], amount: 3 }, 'on Hill Giant, Bo (3)'],
+  ])('%s', (_case, trigger, expected) => {
+    expect(triggerLine(trigger, seat)).toBe(expected)
   })
 })

@@ -701,6 +701,16 @@ pub enum Event {
         /// Objects the step moved away, as they were.
         snapshots: Vec<Snapshot>,
     },
+    /// A triggered ability whose effects all hang on conditions found every one of them false as it began to resolve, so
+    /// it does nothing; `ResolutionEnded` follows.
+    ConditionsFailed {
+        /// The ability.
+        object: ObjectId,
+        /// The conditions in the card's words, after "if"; those the writer cannot word are left out.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<String>>", optional))]
+        conditions: Vec<String>,
+    },
     /// The resolution of a spell or ability is over.
     ResolutionEnded {
         /// The spell or ability.
@@ -1674,6 +1684,7 @@ impl Event {
             | Event::ChoiceMade { .. }
             | Event::StepDone { .. }
             | Event::ResolutionEnded { .. }
+            | Event::ConditionsFailed { .. }
             | Event::AbilityLeftToTable(_)
             | Event::ByHandDue(_)
             | Event::LifeGained { .. }

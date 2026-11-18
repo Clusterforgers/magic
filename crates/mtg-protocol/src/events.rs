@@ -454,6 +454,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::DelayedTriggerExpired { .. }
         | Event::ResolutionBegan { .. }
         | Event::ResolutionEnded { .. }
+        | Event::ConditionsFailed { .. }
         | Event::LifeGained { .. }
         | Event::LifeLost { .. }
         | Event::CountersChanged(_)

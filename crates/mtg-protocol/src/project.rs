@@ -8,6 +8,7 @@ use mtg_cards::{CardDefinition, CardIdentity};
 use mtg_core::card::{CardType, CardTypes, Subtype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::characteristics::{characteristics, controller_of};
+use mtg_engine::choose::Target;
 use mtg_engine::combat::Attacker;
 use mtg_engine::companions::CompanionStage;
 use mtg_engine::forecast::pending_combat_forecast;
@@ -25,8 +26,8 @@ use crate::message::AutoYield;
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
     GivesView, Granter, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
-    PriorityView, StateView, StickerSheetView, StickerView, TableView, TokenOfferView, TurnView,
-    ZoneView,
+    PriorityView, StateView, StickerSheetView, StickerView, TableView, TokenOfferView, TriggerView,
+    TurnView, ZoneView,
 };
 use crate::wording::activated_views;
 
@@ -366,6 +367,41 @@ fn identity_of(
     shown.identity.clone()
 }
 
+/// What the triggered ability `object` on the stack triggered on, as the viewer may know it (`ObjectView.trigger`).
+fn trigger_view(sight: &Sight<'_>, object: &GameObject) -> Option<TriggerView> {
+    let cause = object.ability()?.cause()?;
+    let state = sight.state;
+    let mut view = TriggerView {
+        amount: (cause.amount > 0).then_some(cause.amount),
+        ..TriggerView::default()
+    };
+    for subject in &cause.subjects {
+        match subject {
+            Target::Player(player) => view.players.push(*player),
+            Target::Object(subject) => {
+                // The object as it was when it triggered the ability, named so while the viewer could identify it then.
+                let printed = state.object(subject.id).map(|now| now.card().name.clone());
+                let was = cause.snapshots.iter().find(|shot| shot.id == subject.id);
+                let name = match (was, printed) {
+                    (Some(shot), Some(printed))
+                        if zone_is_visible_in(state, shot.zone, sight.viewer)
+                            && shot.face_down.is_none() =>
+                    {
+                        Some(shot.characteristics.name_for(&printed))
+                    }
+                    (None, _) => state
+                        .object(subject.id)
+                        .filter(|now| sight.look(now) == Look::Whole)
+                        .map(|now| shown_name(state, sight.viewer, now, &now.card().name)),
+                    _ => None,
+                };
+                view.objects.extend(name.filter(|name| !name.is_empty()));
+            }
+        }
+    }
+    (view != TriggerView::default()).then_some(view)
+}
+
 /// The words of the ability an object is on the stack, or nothing for a card, a hidden source or an unworded ability.
 fn stack_text(object: &GameObject, shown: &str, granter: Option<Granter>) -> Option<String> {
     if shown.is_empty() {
@@ -564,6 +600,7 @@ impl ObjectView {
             source: object.ability().map(|ability| ability.source().id),
             granter,
             rules_text,
+            trigger: trigger_view(sight, object),
             targets: object.choices().targets.clone(),
             targets_legal: targets_legal(state, id),
             // Counters and attachments are public facts of a permanent, shown to every seat that sees the permanent.
@@ -631,6 +668,7 @@ impl ObjectView {
             source: None,
             granter: None,
             rules_text: None,
+            trigger: None,
             targets: Vec::new(),
             targets_legal: Vec::new(),
             counters: Vec::new(),

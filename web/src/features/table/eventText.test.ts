@@ -457,6 +457,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { ResolutionEnded: { object: 4, outcome: 'Resolved' } },
     'Lightning Bolt finishes resolving',
   ],
+  ConditionsFailed: [
+    { ConditionsFailed: { object: 4, conditions: ['you control a Wizard'] } },
+    'Lightning Bolt does nothing: it is not true that you control a Wizard',
+  ],
   AbilityLeftToTable: [
     { AbilityLeftToTable: { source: { id: 6, counter: 0 }, controller: 0, text: 'Draw a card.' } },
     "Jace Beleren's ability could not be run by the game: apply its text by hand",
@@ -538,6 +542,11 @@ const MORE: [Event, string][] = [
   [
     { ZoneChanged: { object: 3, from: { Library: 1 }, to: 'Battlefield', cause: { Cloaked: { by: 0 } } } },
     'Forest is cloaked',
+  ],
+  [{ ConditionsFailed: { object: 4 } }, 'Lightning Bolt does nothing: none of its conditions holds'],
+  [
+    { ConditionsFailed: { object: 4, conditions: ['you control a Wizard', 'it is your turn'] } },
+    'Lightning Bolt does nothing: none of these is true: you control a Wizard; it is your turn',
   ],
   [
     {

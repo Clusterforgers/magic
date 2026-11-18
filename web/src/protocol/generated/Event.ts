@@ -711,7 +711,15 @@ bound: Array<[string, Array<Target>]>,
 /**
  * Objects the step moved away, as they were.
  */
-snapshots: Array<Snapshot>, } } | { "ResolutionEnded": { 
+snapshots: Array<Snapshot>, } } | { "ConditionsFailed": { 
+/**
+ * The ability.
+ */
+object: ObjectId, 
+/**
+ * The conditions in the card's words, after "if"; those the writer cannot word are left out.
+ */
+conditions?: Array<string>, } } | { "ResolutionEnded": { 
 /**
  * The spell or ability.
  */

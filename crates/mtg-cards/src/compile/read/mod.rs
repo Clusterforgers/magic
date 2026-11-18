@@ -457,6 +457,11 @@ pub use target_phrases::target_phrases;
 pub use tokens::{same_text, same_written_text};
 pub use un33_attractions::{is_visit_line, un33_visit_block as visit_block};
 
+/// A condition in the card writer's words, after "if" ("you control a Wizard"); none when the writer has no words for it.
+pub fn condition_text(condition: &crate::value::Condition) -> Option<String> {
+    conditional::condition_texts(condition).into_iter().next()
+}
+
 use super::{ClauseKind, classify};
 use crate::ability::Ability;
 use crate::cost::Cost;
