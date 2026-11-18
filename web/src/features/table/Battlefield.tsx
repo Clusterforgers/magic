@@ -12,9 +12,10 @@ import { BoardFloorContext } from './boardFloor'
 import { GridCardContext } from './gridCard'
 import { LandFoldContext } from './landFold'
 import { promptKey } from './boardZoom'
-import { SHAPES } from './laneFit'
+import { LANE_LIMITS, SHAPES } from './laneFit'
 import type { LanePlace } from './laneFit'
-import type { FitHold } from './holdFit'
+import { heldBands, holdBands } from './holdFit'
+import type { BandHold, FitHold } from './holdFit'
 import { useSeatNamer } from './names'
 import {
   battlefieldStacks,
@@ -46,6 +47,13 @@ const FULL_FACE_MIN_PX = 76
 const MEDIUM_FACE_MIN_PX = 150
 
 const NONE: ReadonlySet<string> = new Set()
+
+/** A band as drawn: its lanes (placed once the zone is measured) and the least height it keeps in px (0: none). */
+interface DrawnBand {
+  key: string
+  lanes: readonly (LanePlace | { lane: RowKind })[]
+  height: number
+}
 
 const faceOf = (width: number | undefined, size: CardSize): CardSize => {
   if (width === undefined) return size
@@ -266,12 +274,24 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   useLayoutEffect(() => {
     onCardWidth?.(cardWidth)
   }, [onCardWidth, cardWidth])
+  // The bands' heights since the last size step: a band keeps its height until the card size or shape changes, so a
+  // line that empties or a pile that shortens moves no lane beyond it (an opponent's board stands from the middle out).
+  const bandHold = useRef<BandHold | null>(null)
+  const boxHeight = box?.height ?? 0
+  const kept = useMemo(
+    () => holdBands(bandHold.current, fit, boxHeight, LANE_LIMITS.bandGap),
+    [fit, boxHeight],
+  )
+  useLayoutEffect(() => {
+    bandHold.current = kept
+  }, [kept])
   // Before the zone is measured every lane is drawn in the two-band shape at its own size.
-  const bands = useMemo<readonly (readonly (LanePlace | RowKind)[])[]>(() => {
-    if (fit !== null) return fit.bands.map((band) => band.lanes)
+  const bands = useMemo<readonly DrawnBand[]>(() => {
+    if (fit !== null) return heldBands(fit, kept, facing)
     const outwards = SHAPES.two
-    return facing === 'near' ? outwards : [...outwards].reverse()
-  }, [fit, facing])
+    const drawn = facing === 'near' ? outwards : [...outwards].reverse()
+    return drawn.map((lanes) => ({ key: lanes.join('-'), lanes: lanes.map((lane) => ({ lane })), height: 0 }))
+  }, [fit, kept, facing])
   return (
     <section
       aria-label={`${owner}'s battlefield`}
@@ -301,16 +321,17 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
           <p className="px-1 py-3 text-sm text-muted-foreground">No permanents on the battlefield.</p>
         ) : null}
         {bands.map((band) => {
-          const lanes = band.map((lane) => (typeof lane === 'string' ? { lane } : lane))
           return (
             <div
-              key={lanes.map((lane) => lane.lane).join('-')}
+              key={band.key}
               data-slot="board-band"
+              data-band={band.key}
+              style={band.height > 0 ? { minHeight: band.height } : undefined}
               // Lanes start at the board's left edge, so the room a short row leaves stays at the right, where a
               // side preview stands.
               className="flex shrink-0 items-start justify-start gap-3"
             >
-              {lanes.map((place) => (
+              {band.lanes.map((place) => (
                 <Lane
                   key={place.lane}
                   seat={seat}
