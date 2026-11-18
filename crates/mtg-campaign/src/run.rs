@@ -44,8 +44,9 @@ pub const DRAUGHT: i32 = 15;
 pub const UPGRADE_PRICE: u32 = 50;
 /// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0. From 2
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
-/// known trade-offs; from 4 bosses play bracket decks with their commander card.
-pub const CONTENT: u32 = crate::scale::BRACKETS_FROM;
+/// known trade-offs; from 4 bosses play bracket decks with their commander card; from 5 the roster grows by more
+/// two-colour bosses, upgraded forms and the uber boss.
+pub const CONTENT: u32 = crate::scale::ROSTER_FROM;
 
 /// The deck a hero brings.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -570,7 +571,7 @@ impl Run {
                 self.lobby()?;
                 self.content = *version;
                 // The ladder is drawn from the bosses of the run's generation.
-                self.map = generate_for(self.theme(content)?, self.seed, *version);
+                self.map = generate_for(self.theme(content)?, self.seed, *version, self.heat);
             }
             RunEvent::Started => {
                 self.lobby()?;

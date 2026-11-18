@@ -1765,7 +1765,168 @@
      }
     ]
    }
+  },
+  {
+   "id": "hollowmere_belfry",
+   "name": "Hollowmere, the Drowned Bell",
+   "since": 5,
+   "colors": "WU",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["hollowmere"],
+   "enrage": "tolling_of_the_drowned",
+   "relic": "lantern_of_lost_souls",
+   "phases": [["the_veil_thins", 66], ["the_last_peal", 33]],
+   "line": "Every bell that tolls down here tolls for someone. Listen. It tolls for you.",
+   "commander": "Geist of Saint Traft",
+   "art": {"card": "Ghosts of the Innocent", "oracle_id": "9243bd95-5467-490d-9bd2-4d5ce1ebc589"},
+   "brackets": {
+    "base": [
+     ["Plains", 9], ["Island", 8],
+     ["Mausoleum Wanderer", 2], ["Spectral Adversary", 2], ["Rattlechains", 2], ["Grateful Apparition", 1],
+     ["Nebelgast Intruder", 2], ["Dreamshackle Geist", 2], ["Moonlight Geist", 1], ["Noble Vestige", 1],
+     ["Hallowed Spiritkeeper", 1], ["Dungeon Geists", 2], ["Apothecary Geist", 1], ["Windborn Muse", 1],
+     ["Wayward Soul", 1], ["Field of Souls", 1], ["Court of Grace", 1], ["Belfry Spirit", 1], ["Path to Exile", 1]
+    ],
+    "steps": [
+     {"add": [["Plains", 2], ["Island", 2], ["Council of Echoes", 1], ["Spirit of the Hearth", 1], ["Celestial Messenger", 1], ["Drogskol Reinforcements", 1], ["Lone Revenant", 1], ["Emissary of the Sleepless", 1]]},
+     {"add": [["Plains", 2], ["Island", 2], ["Keiga, the Tide Star", 1], ["Kairi, the Swirling Sky", 1], ["Oyobi, Who Split the Heavens", 1], ["Eternal Dragon", 1], ["Guardian of Faith", 1], ["Celestial Crusader", 1]]},
+     {"cut": [["Moonlight Geist", 1], ["Apothecary Geist", 1], ["Wayward Soul", 1]], "add": [["Spectral Adversary", 1], ["Dungeon Geists", 1], ["Nebelgast Intruder", 1]]},
+     {"cut": [["Grateful Apparition", 1], ["Noble Vestige", 1], ["Mausoleum Wanderer", 1]], "add": [["Belfry Spirit", 1], ["Council of Echoes", 1], ["Path to Exile", 1]]}
+    ]
+   }
+  },
+  {
+   "id": "morwenna_court",
+   "name": "Morwenna, Queen of the Hollow Court",
+   "since": 5,
+   "colors": "UB",
+   "brain": "Hard",
+   "life": 26,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["morwenna"],
+   "enrage": "stolen_dreams",
+   "relic": "moonlit_veil",
+   "phases": [["court_of_thorns", 66], ["the_endless_night", 33]],
+   "line": "Sleep, little heroes. I will keep your dreams. I keep everyone's.",
+   "commander": "Alela, Cunning Conqueror",
+   "art": {"card": "Sower of Temptation", "oracle_id": "5881aac2-4f31-45cb-bdb5-64a29ec23316"},
+   "brackets": {
+    "base": [
+     ["Island", 9], ["Swamp", 8],
+     ["Faerie Mastermind", 2], ["Spellstutter Sprite", 2], ["Pestermite", 2], ["Nightveil Sprite", 2],
+     ["Faerie Duelist", 2], ["Oona's Prowler", 2], ["Briarberry Cohort", 2], ["Peppersmoke", 2],
+     ["Dream Spoilers", 1], ["Dreamspoiler Witches", 1], ["Nightmare Sower", 1], ["Stingblade Assassin", 2],
+     ["Glen Elendra Guardian", 1], ["Mistbind Clique", 1]
+    ],
+    "steps": [
+     {"add": [["Island", 2], ["Swamp", 2], ["Puppeteer Clique", 1], ["Sower of Temptation", 1], ["High Fae Trickster", 1], ["Rankle, Master of Pranks", 1], ["Dimir Strandcatcher", 1], ["Voracious Tome-Skimmer", 1]]},
+     {"add": [["Island", 2], ["Swamp", 2], ["Latchkey Faerie", 1], ["Illusion Spinners", 1], ["Archmage of Echoes", 1], ["High Fae Negotiator", 1], ["Nymris, Oona's Trickster", 1], ["Final-Sting Faerie", 1]]},
+     {"cut": [["Briarberry Cohort", 2], ["Peppersmoke", 1]], "add": [["Spellstutter Sprite", 1], ["Pestermite", 1], ["Malleable Impostor", 1]]},
+     {"cut": [["Oona's Prowler", 2], ["Dream Spoilers", 1]], "add": [["Sower of Temptation", 1], ["Puppeteer Clique", 1], ["Mistbind Clique", 1]]}
+    ]
+   }
+  },
+  {
+   "id": "korrath_wilds",
+   "name": "Korrath, the Thundering Stampede",
+   "since": 5,
+   "colors": "RG",
+   "brain": "Hard",
+   "life": 31,
+   "life_per_hero": 30,
+   "hand": 10,
+   "rules": ["korrath"],
+   "enrage": "the_great_stampede",
+   "relic": "amber_of_the_ancients",
+   "phases": [["primal_roar", 66], ["the_sky_falls", 33]],
+   "line": "Hit me. Go on. Every scar makes the herd bigger.",
+   "commander": "Ghalta, Primal Hunger",
+   "art": {"card": "Carnage Tyrant", "oracle_id": "8c411f4e-a091-447c-9450-d895b10b4985"},
+   "brackets": {
+    "base": [
+     ["Mountain", 9], ["Forest", 8],
+     ["Marauding Raptor", 3], ["Savage Stomp", 1], ["Giant Cindermaw", 2], ["Hunting Velociraptor", 2],
+     ["Topiary Stomper", 2], ["Deathmist Raptor", 2], ["Thrash of Raptors", 2], ["Fungusaur", 2],
+     ["Hulking Raptor", 2], ["Snapping Sailback", 2], ["Zilortha, Strength Incarnate", 1],
+     ["Stampeding Horncrest", 1], ["Zog, Triceraton Castaway", 1]
+    ],
+    "steps": [
+     {"add": [["Mountain", 2], ["Forest", 2], ["Carnage Tyrant", 1], ["Regal Behemoth", 1], ["Trumpeting Carnosaur", 1], ["Etali, Primal Storm", 1], ["Needletooth Pack", 1], ["Prey Upon", 1]]},
+     {"add": [["Mountain", 2], ["Forest", 2], ["Verdant Sun's Avatar", 1], ["Yidaro, Wandering Monster", 1], ["Flaming Tyrannosaurus", 1], ["Burning Sun's Avatar", 1], ["Spined Tyrranax", 1], ["Charging Tuskodon", 1]]},
+     {"cut": [["Giant Cindermaw", 2], ["Topiary Stomper", 1]], "add": [["Carnage Tyrant", 1], ["Trumpeting Carnosaur", 1], ["Regal Behemoth", 1]]},
+     {"cut": [["Fungusaur", 2], ["Hulking Raptor", 1]], "add": [["Burning Sun's Avatar", 1], ["Verdant Sun's Avatar", 1], ["Charging Tuskodon", 1]]}
+    ]
+   }
+  },
+  {
+   "id": "sahrra_pride",
+   "name": "Sahrra, the Pride Queen",
+   "since": 5,
+   "colors": "WG",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["sahrra"],
+   "enrage": "the_pride_hunts",
+   "relic": "sunmane_pelt",
+   "phases": [["the_pride_gathers", 66], ["the_queens_roar", 33]],
+   "line": "You walked into the den. Now the whole pride knows your scent.",
+   "commander": "Jazal Goldmane",
+   "art": {"card": "Bast, Panther Goddess", "oracle_id": "e3233686-7703-460c-80ee-8cd37b3014ff"},
+   "brackets": {
+    "base": [
+     ["Plains", 9], ["Forest", 8],
+     ["Ajani's Pridemate", 2], ["Adorned Pouncer", 2], ["Fleecemane Lion", 2], ["Bronzehide Lion", 2],
+     ["Feline Sovereign", 2], ["Pride Sovereign", 2], ["Pridemalkin", 2], ["Kutzil's Flanker", 2],
+     ["Skyhunter Strike Force", 2], ["Brimaz, King of Oreskos", 1], ["Mirri, Weatherlight Duelist", 1],
+     ["Basri's Acolyte", 1], ["Pride of Lions", 1], ["Dromoka's Command", 1]
+    ],
+    "steps": [
+     {"add": [["Plains", 2], ["Forest", 2], ["Nacatl War-Pride", 1], ["Jedit Ojanen of Efrava", 1], ["Malamet Veteran", 1], ["Sabertooth Mauler", 1], ["Ajani, the Greathearted", 1], ["Lionheart Glimmer", 1]]},
+     {"add": [["Plains", 2], ["Forest", 2], ["Phantom Nishoba", 1], ["Kemba's Legion", 1], ["Ajani Unyielding", 1], ["Tabaxi Toucaneers", 1], ["G'raha Tia", 1], ["Leonin Lightbringer", 1]]},
+     {"cut": [["Pridemalkin", 2], ["Bronzehide Lion", 1]], "add": [["Ajani, Valiant Protector", 1], ["Feline Sovereign", 1], ["Pride Sovereign", 1]]},
+     {"cut": [["Kutzil's Flanker", 2], ["Basri's Acolyte", 1]], "add": [["Skyhunter Strike Force", 1], ["Pride of Lions", 1], ["Nacatl War-Pride", 1]]}
+    ]
+   }
+  },
+  {
+   "id": "valdric_manor",
+   "name": "Valdric, the Crimson Count",
+   "since": 5,
+   "colors": "WB",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 9,
+   "rules": ["valdric"],
+   "enrage": "the_crimson_feast",
+   "relic": "chalice_of_the_host",
+   "phases": [["the_blood_moon", 66], ["the_night_eternal", 33]],
+   "line": "Welcome to my table, honoured guests. You are the last course.",
+   "commander": "The Haunt of Hightower",
+   "art": {"card": "Edgar Markov", "oracle_id": "41e2790d-49f5-4e98-b8d9-04179f47f13a"},
+   "brackets": {
+    "base": [
+     ["Swamp", 10], ["Plains", 7],
+     ["Vampire Cutthroat", 2], ["Skymarcher Aspirant", 2], ["Tithe Drinker", 2], ["Indulging Patrician", 2],
+     ["Captivating Vampire", 2], ["Nighthawk Scavenger", 1], ["Qarsi Revenant", 2], ["Stromkirk Bloodthief", 2],
+     ["Savage Gorger", 2], ["Sangromancer", 1], ["Kalitas, Traitor of Ghet", 1], ["Bloodtracker", 1],
+     ["Rooftop Assassin", 1], ["Markov Crusader", 1], ["Bloodtithe Collector", 1]
+    ],
+    "steps": [
+     {"add": [["Swamp", 2], ["Plains", 2], ["Patron of the Vein", 1], ["Vengeful Vampire", 1], ["Sengir, the Dark Baron", 1], ["Carmen, Cruel Skymarcher", 1], ["Blood Baron of Vizkopa", 1], ["Arvad the Cursed", 1]]},
+     {"add": [["Swamp", 2], ["Plains", 2], ["Necropolis Regent", 1], ["Sorin, Vampire Lord", 1], ["Olivia's Wrath", 1], ["Drana, Kalastria Bloodchief", 1], ["Redemption Choir", 1], ["Felisa, Fang of Silverquill", 1]]},
+     {"cut": [["Skymarcher Aspirant", 2], ["Vampire Cutthroat", 1]], "add": [["Captivating Vampire", 1], ["Patron of the Vein", 1], ["Rooftop Assassin", 1]]},
+     {"cut": [["Tithe Drinker", 2], ["Bloodtracker", 1]], "add": [["Necropolis Regent", 1], ["Vengeful Vampire", 1], ["Sengir Connoisseur", 1]]}
+    ]
+   }
   }
+
  ],
  "schemes": [
   "horde_gathers",

@@ -10,7 +10,9 @@ use std::sync::Arc;
 use mtg_campaign::content::{Boss, UPGRADED};
 use mtg_campaign::map::{LIEUTENANTS, generate, generate_for};
 use mtg_campaign::run::CONTENT;
-use mtg_campaign::scale::{BRACKETS, BRACKETS_FROM, DECK_SIZE, MAX_BRACKET, MAX_HEAT, RANKS};
+use mtg_campaign::scale::{
+    BRACKETS, BRACKETS_FROM, DECK_SIZE, MAX_BRACKET, MAX_HEAT, RANKS, ROSTER_FROM,
+};
 use mtg_campaign::{FightPlan, Run, RunEvent, Scale, content};
 use mtg_cards::CardDefinition;
 use mtg_cards::support::Support;
@@ -244,7 +246,7 @@ fn a_new_run_plays_bracket_decks_and_an_old_one_its_decks_as_written(#[values(0,
     let new = run(2, heat, 31, CONTENT);
     let old = run(2, heat, 31, 1);
     assert_eq!(old.map, generate(theme, 31), "an old run keeps its ladder");
-    assert_eq!(new.map, generate_for(theme, 31, CONTENT));
+    assert_eq!(new.map, generate_for(theme, 31, CONTENT, heat));
     for (rank, node) in new
         .map
         .nodes
@@ -278,11 +280,23 @@ fn a_new_run_plays_bracket_decks_and_an_old_one_its_decks_as_written(#[values(0,
 
 #[rstest]
 fn the_commander_card_waits_and_is_cast_as_the_last_phase_begins(#[values(2, 3, 4)] heroes: usize) {
+    for boss in bracket_bosses() {
+        commander_is_cast(heroes, &boss.id);
+    }
+}
+
+/// Plays the fight against the boss `id` at rank 2 with `heroes`, the boss standing at its last phase's threshold, and
+/// asserts its commander card waits in the command zone and is cast.
+fn commander_is_cast(heroes: usize, id: &str) {
     let content = content().unwrap();
-    let run = run(heroes, 1, 40 + heroes as u64, CONTENT);
+    let mut run = run(heroes, 1, 40 + heroes as u64, CONTENT);
+    let room = run.map.nodes.iter().position(|n| n.boss.is_some()).unwrap();
+    run.map.nodes[room].boss = Some(id.to_owned());
+    run.at = Some(u8::try_from(room).unwrap());
+    run.status = mtg_campaign::Status::Fight { game: None };
     let mut plan = run.fight_plan_at(content, 2).unwrap().unwrap();
     let commander = plan.boss.commander.clone().unwrap();
-    let boss = plan.boss_seat();
+    let seat = plan.boss_seat();
     // The boss stands at its last phase's threshold, so the phases begin at the first check.
     let last = plan
         .boss
@@ -295,15 +309,15 @@ fn the_commander_card_waits_and_is_cast_as_the_last_phase_begins(#[values(2, 3, 
     let engine = engine(&plan, 7);
     let held: Vec<_> = engine
         .state()
-        .zone(Zone::Command(boss))
+        .zone(Zone::Command(seat))
         .iter()
         .filter_map(|id| engine.state().object(*id))
         .filter(|o| o.card().name == commander)
         .map(mtg_engine::object::GameObject::kind)
         .collect();
     assert_eq!(held, vec![ObjectKind::Card], "{commander} waits as a card");
-    let library = engine.state().zone(Zone::Library(boss)).len()
-        + engine.state().zone(Zone::Hand(boss)).len();
+    let library = engine.state().zone(Zone::Library(seat)).len()
+        + engine.state().zone(Zone::Hand(seat)).len();
     assert_eq!(
         library,
         plan.boss
@@ -325,7 +339,7 @@ fn the_commander_card_waits_and_is_cast_as_the_last_phase_begins(#[values(2, 3, 
         let events = driver.answer(answer).unwrap();
         cast = events.iter().any(|event| {
             matches!(event, Event::SpellCast { player, object, .. }
-                if *player == boss
+                if *player == seat
                     && driver.state().object(*object).is_some_and(|o| o.card().name == commander))
         });
         if cast {
@@ -336,7 +350,7 @@ fn the_commander_card_waits_and_is_cast_as_the_last_phase_begins(#[values(2, 3, 
     assert!(
         !driver
             .state()
-            .zone(Zone::Command(boss))
+            .zone(Zone::Command(seat))
             .iter()
             .filter_map(|id| driver.state().object(*id))
             .any(|o| o.card().name == commander)
@@ -456,7 +470,7 @@ fn an_upgraded_boss_stands_as_the_final_boss_of_a_ladder_it_is_not_on() {
     }
     let mut finals = BTreeSet::new();
     for seed in 0..200u64 {
-        let map = generate_for(theme, seed, CONTENT);
+        let map = generate_for(theme, seed, CONTENT, 1);
         let bosses: Vec<&str> = map.nodes.iter().filter_map(|n| n.boss.as_deref()).collect();
         assert_eq!(bosses.len(), LIEUTENANTS + 1, "seed {seed}");
         let last = theme.boss(bosses[LIEUTENANTS]).unwrap();
@@ -470,6 +484,7 @@ fn an_upgraded_boss_stands_as_the_final_boss_of_a_ladder_it_is_not_on() {
         if last.upgrade_of.is_some() {
             // A fight against it plays its own name, the extra card and the base boss's deck at the final bracket.
             let mut run = run(3, 2, seed, CONTENT);
+            run.map = map.clone();
             run.at = map
                 .nodes
                 .iter()
@@ -500,5 +515,73 @@ fn an_upgraded_boss_stands_as_the_final_boss_of_a_ladder_it_is_not_on() {
     assert!(
         finals.iter().any(|id| id.ends_with(UPGRADED)) && finals.contains("grimgut_court"),
         "{finals:?}"
+    );
+}
+
+/// The ladders generation 4 drew before generation 5 joined, seeds 0 to 7: bosses and camps in order.
+const GENERATION_FOUR: [&str; 8] = [
+    "skrix_nest,Event,Treasure,mossjaw_hall,Campfire,Treasure,ysolde_reef,Treasure,Shop,grimgut_court",
+    "mossjaw_hall,Campfire,Treasure,seraphine_spire,Shop,Campfire,ysolde_reef,Shop,Treasure,skrix_nest_ascendant",
+    "skrix_nest,Campfire,Shop,mossjaw_hall,Campfire,Shop,vex_crypt,Treasure,Campfire,grimgut_court",
+    "mossjaw_hall,Campfire,Event,ysolde_reef,Event,Shop,vex_crypt,Campfire,Event,skrix_nest_ascendant",
+    "seraphine_spire,Campfire,Event,mossjaw_hall,Event,Campfire,ysolde_reef,Shop,Treasure,skrix_nest_ascendant",
+    "seraphine_spire,Shop,Event,vex_crypt,Campfire,Shop,skrix_nest,Event,Campfire,mossjaw_hall_ascendant",
+    "vex_crypt,Campfire,Event,ysolde_reef,Campfire,Event,seraphine_spire,Treasure,Campfire,skrix_nest_ascendant",
+    "ysolde_reef,Treasure,Shop,skrix_nest,Campfire,Shop,vex_crypt,Campfire,Shop,grimgut_court",
+];
+
+/// The rooms of `map` in order: the boss of a boss room, the kind of a camp.
+fn rooms(map: &mtg_campaign::map::FloorMap) -> String {
+    map.nodes
+        .iter()
+        .map(|n| n.boss.clone().unwrap_or_else(|| format!("{:?}", n.kind)))
+        .collect::<Vec<_>>()
+        .join(",")
+}
+
+#[rstest]
+fn a_generation_four_ladder_never_changes(#[values(0, 1, 2)] heat: u8) {
+    let theme = &content().unwrap().themes[0];
+    for (seed, ladder) in GENERATION_FOUR.iter().enumerate() {
+        let map = generate_for(theme, seed as u64, BRACKETS_FROM, heat);
+        assert_eq!(rooms(&map), *ladder, "seed {seed}");
+    }
+    for seed in 0..300u64 {
+        let map = generate_for(theme, seed, BRACKETS_FROM, heat);
+        for id in map.nodes.iter().filter_map(|n| n.boss.as_deref()) {
+            assert!(
+                theme.boss(id).unwrap().since <= BRACKETS_FROM,
+                "seed {seed}: {id}"
+            );
+        }
+    }
+}
+
+#[test]
+fn the_new_bosses_join_from_generation_five() {
+    let theme = &content().unwrap().themes[0];
+    let mut met = BTreeSet::new();
+    for seed in 0..400u64 {
+        let map = generate_for(theme, seed, ROSTER_FROM, 1);
+        met.extend(map.nodes.iter().filter_map(|n| n.boss.clone()));
+    }
+    for boss in theme
+        .bosses
+        .iter()
+        .chain(&theme.upgraded)
+        .filter(|b| b.since == ROSTER_FROM && !b.uber)
+    {
+        assert!(met.contains(&boss.id), "{} is drawn", boss.id);
+    }
+    let pairs = bracket_bosses()
+        .iter()
+        .filter(|b| b.colors.len() == 2)
+        .map(|b| b.colors.as_str())
+        .collect::<Vec<_>>();
+    let distinct: BTreeSet<&str> = pairs.iter().copied().collect();
+    assert_eq!(
+        distinct.len(),
+        pairs.len(),
+        "one boss per colour pair: {pairs:?}"
     );
 }
