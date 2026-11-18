@@ -1,0 +1,93 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, code, host, theme, seed, heat,\n                      to_char(updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS.US') AS \"stamp!\"\n               FROM delves WHERE status <> 'lobby'",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "delves",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "code",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "delves",
+            "name": "code"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "host",
+        "type_info": "Uuid",
+        "origin": {
+          "Table": {
+            "table": "delves",
+            "name": "host"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "theme",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "delves",
+            "name": "theme"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "seed",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "delves",
+            "name": "seed"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "heat",
+        "type_info": "Int2",
+        "origin": {
+          "Table": {
+            "table": "delves",
+            "name": "heat"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "stamp!",
+        "type_info": "Text",
+        "origin": "Expression"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      null
+    ]
+  },
+  "hash": "c42081704256be3b2157a24d06a29607082ec0c70dcfdf1ab94a9c1d3f836048"
+}

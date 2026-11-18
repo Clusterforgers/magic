@@ -1,4 +1,4 @@
-/** `/delves`: the player's Delves runs, a new run (Heat and an optional seed code) and joining a friend's by code. */
+/** `/delves`: the player's Delves runs, a new run (Heat and an optional seed code), joining a friend's by code and the leaderboard. */
 import { Link, useNavigate } from '@tanstack/react-router'
 import { CircleAlertIcon, SkullIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
@@ -13,12 +13,14 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useAuth } from '@/features/auth/context'
 import { SignedInOnly } from '@/features/tournaments/SignedInOnly'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { delvesApi } from '@/net/delves'
 import type { DelvesApi } from '@/net/delves'
 import type { DelveSummary, Timers } from '@/protocol/generated'
 import { cn } from '@/lib/utils'
+import { DelvesLeaderboard } from './DelvesLeaderboard'
 import { DelvesRules } from './DelvesRules'
 import { HEAT_TIERS, heatWords } from './model'
 import { errorText, statusText } from './words'
@@ -239,20 +241,32 @@ export function DelveList({ client }: { client: DelvesApi }) {
 
 export function DelvesPage({ client = delvesApi }: { client?: DelvesApi }) {
   usePageTitle('Delves')
+  const signedIn = useAuth((state) => state.status) === 'signed-in'
+  // The page's own column keeps its width; from 1280 px the leaderboard stands beside it, below that under it.
   return (
-    <PageShell width="page" className="grid gap-6 sm:py-6">
-      <div className="grid gap-1">
-        <h1 className="text-2xl font-semibold tracking-tight">Delves</h1>
-        <p className="text-sm text-muted-foreground">
-          A co-op boss rush: your party fights the Warrens' bosses one after another, life carried between
-          fights, loot between bosses.
-        </p>
+    <PageShell
+      width="wide"
+      className="grid gap-6 sm:py-6 xl:grid-cols-[minmax(0,var(--container-page))_20rem] xl:items-start xl:justify-center"
+    >
+      <div data-slot="delves-main" className="mx-auto grid w-full max-w-page gap-6">
+        <div className="grid gap-1">
+          <h1 className="text-2xl font-semibold tracking-tight">Delves</h1>
+          <p className="text-sm text-muted-foreground">
+            A co-op boss rush: your party fights the Warrens' bosses one after another, life carried between
+            fights, loot between bosses.
+          </p>
+        </div>
+        <SignedInOnly next="/delves">
+          <DelveList client={client} />
+          <NewDelveForm client={client} />
+        </SignedInOnly>
+        <DelvesRules />
       </div>
-      <SignedInOnly next="/delves">
-        <DelveList client={client} />
-        <NewDelveForm client={client} />
-      </SignedInOnly>
-      <DelvesRules />
+      {signedIn ? (
+        <div className="mx-auto w-full max-w-page">
+          <DelvesLeaderboard client={client} />
+        </div>
+      ) : null}
     </PageShell>
   )
 }

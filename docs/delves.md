@@ -238,6 +238,12 @@ From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor
 - The run keeps each fight whose game ended or lost its table (`Run.fights`: the game, the room, won or lost; a voided game and a retreat before a game leave none). The run page lists them newest first as the Fight log, each linking to its recorded game (`/replay/$gameId`), where the whole log of the fight reads back.
 - At the table the boss's side sits on top and the party together at the bottom (boss mode); the boss's passive, Enrage (with the heroes' turn it begins on), modifier, relic, phases to come, scheme and Omen are a row of chips with their rules, and the intro lists the same. Their words come from the content records the engine plays, matched to the emblems in the boss's command zone and its `BossView`.
 
+## Leaderboard
+
+- `GET /api/delves/leaderboard` ([server.md](server.md), Delves) folds every stored run past its lobby, abandoned ones included, into one board per Heat the run was started at (Heroic, Seasoned, Casual), the greatest first.
+- Depth (`Run::depth`): the floors whose final boss fell, then the bosses beaten on the floor below them (none while the party stands on a cleared floor). A deeper run ranks first by floors, then by bosses; a tie goes to the run that last changed earlier, then by name.
+- Each signed-in player stands once per board with their deepest run: their name in it, its depth, their commanders (the deck name for a deck chosen before commanders were read), the party size with bot allies and the day the run last changed. A run with no boss beaten and a bot ally never stand on it; a board lists at most 20 (`BOARD_LIMIT`).
+
 ## Content
 
 - Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint.

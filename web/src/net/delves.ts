@@ -1,8 +1,15 @@
 /**
  * The Delves endpoints of `mtg-server` (docs/server.md, Delves): the caller's runs, a new run, joining by code, the
- * run brought up to date, one action of a member, and the campaign content the pages draw.
+ * run brought up to date, one action of a member, the campaign content the pages draw and the leaderboard.
  */
-import type { CreateDelve, DelveAction, DelveContent, DelveList, DelveView } from '@/protocol/generated'
+import type {
+  CreateDelve,
+  DelveAction,
+  DelveContent,
+  DelveLeaderboard,
+  DelveList,
+  DelveView,
+} from '@/protocol/generated'
 import type { Fetch } from './api'
 import { isRecord } from './check'
 
@@ -26,6 +33,7 @@ export interface DelvesApi {
   get(id: string): Promise<DelveView>
   act(id: string, action: DelveAction): Promise<DelveView>
   content(): Promise<DelveContent>
+  leaderboard(): Promise<DelveLeaderboard>
 }
 
 function isView(body: unknown): body is DelveView {
@@ -38,6 +46,10 @@ function isList(body: unknown): body is DelveList {
 
 function isContent(body: unknown): body is DelveContent {
   return isRecord(body) && Array.isArray(body.cards) && Array.isArray(body.bosses)
+}
+
+function isLeaderboard(body: unknown): body is DelveLeaderboard {
+  return isRecord(body) && Array.isArray(body.boards)
 }
 
 /** Builds the client; call it once, or use the shared `delvesApi`. */
@@ -94,6 +106,7 @@ export function createDelvesApi(options: { fetch?: Fetch; baseUrl?: string } = {
     get: (id) => call(`${base}/${encodeURIComponent(id)}`, isView),
     act: (id, action) => call(`${base}/${encodeURIComponent(id)}/act`, isView, post(action)),
     content: () => call(`${base}/content`, isContent),
+    leaderboard: () => call(`${base}/leaderboard`, isLeaderboard),
   }
 }
 

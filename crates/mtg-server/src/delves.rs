@@ -3,9 +3,11 @@
 //! boss fight's game when the party reaches one (a normal recorded game with the run's plan in its recipe) and reads
 //! a finished fight back into the run.
 
+mod board;
 mod hooks;
 mod store;
 
+pub(crate) use board::leaderboard;
 pub(crate) use hooks::boss_concedes;
 
 use std::collections::BTreeSet;
@@ -60,6 +62,8 @@ pub(crate) struct Delves {
     store: DelveStore,
     /// One request changes runs at a time, so two answers never fold the same log twice.
     turn: Arc<tokio::sync::Mutex<()>>,
+    /// The leaderboard's folds of the runs.
+    board: board::BoardCache,
 }
 
 impl Delves {
@@ -68,6 +72,7 @@ impl Delves {
         Delves {
             store: DelveStore::new(pool),
             turn: Arc::new(tokio::sync::Mutex::new(())),
+            board: board::BoardCache::default(),
         }
     }
 }

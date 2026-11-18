@@ -6,6 +6,8 @@ import type { BossAbility } from '@/features/table/campaign/bossAbilities'
 import type {
   Brain,
   CustomCardView,
+  DelveBoard,
+  DelveBoardEntry,
   DelveContent,
   DelveFightView,
   DelveView,
@@ -103,6 +105,22 @@ export function heatTier(heat: number): HeatTier {
 export function heatWords(heat: number): string {
   const tier = heatTier(heat)
   return `Heat ${heat} — ${tier.name}: ${tier.text}`
+}
+
+const plural = (count: number, one: string, many: string) => `${count} ${count === 1 ? one : many}`
+
+/** How deep a leaderboard run went: the floors cleared, then the bosses beaten below them. */
+export function depthWords(entry: Pick<DelveBoardEntry, 'floors' | 'bosses'>): string {
+  const parts = [
+    entry.floors > 0 ? plural(entry.floors, 'floor', 'floors') : null,
+    entry.bosses > 0 || entry.floors === 0 ? plural(entry.bosses, 'boss', 'bosses') : null,
+  ]
+  return parts.filter((part) => part !== null).join(' + ')
+}
+
+/** The leaderboard's boards from the greatest Heat to the lowest, whatever order they came in. */
+export function orderBoards(boards: readonly DelveBoard[]): DelveBoard[] {
+  return [...boards].sort((a, b) => b.heat - a.heat)
 }
 
 /** A boss's starting life against this party at its place on the ladder and the run's Heat, if the view lists it. */
