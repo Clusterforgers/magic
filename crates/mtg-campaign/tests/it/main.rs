@@ -14,6 +14,7 @@ mod pair_bosses;
 mod rarity;
 mod relic_cards;
 mod relics;
+mod rework;
 mod runs;
 mod satchel;
 mod spirits;

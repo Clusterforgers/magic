@@ -1,9 +1,13 @@
 //! Delves, the co-op dungeon campaign: content, the floor generator, the run as a fold of its events, the fight plans
 //! that become normal games, and the bots' choices between fights. No IO, like the engine.
 
+pub mod boss_plan;
+pub mod boss_relics;
 pub mod content;
 pub mod fight;
+pub mod innate;
 pub mod map;
+pub mod modifiers;
 pub mod relics;
 pub mod rng;
 pub mod run;

@@ -187,7 +187,37 @@ pub struct Scale {
     pub floor: u8,
 }
 
+/// The content generation of the reworked boss: innate, encounter modifier, two phases by round, satchel, precon deck
+/// and relics by depth (`docs/delves.md`, Bosses).
+pub const REWORK_FROM: u32 = 8;
+/// The rounds whose last turn's end step begins Phase 1 and Phase 2 of a reworked boss.
+pub const PHASE_ROUNDS: [u32; 2] = [8, 14];
+/// A reworked boss's life against one hero.
+pub const BOSS_LIFE: i32 = 40;
+/// What each hero after the first adds to a reworked boss's life.
+pub const BOSS_LIFE_PER_HERO: i32 = 15;
+/// The bosses of a run whose depth counts one point each; beyond them every second boss adds a point.
+pub const FULL_DEPTH: u32 = 4;
+
 impl Scale {
+    /// The level (1 to [`LEVELS`](crate::innate::LEVELS)) of a reworked boss's innate at `depth` (bosses the party
+    /// defeated in the run, over all floors) and `heat`: `1 + (depth points + Heat) / 2`.
+    pub fn innate_level(depth: u32, heat: u8) -> u8 {
+        let points = if depth < FULL_DEPTH {
+            depth
+        } else {
+            FULL_DEPTH + (depth - FULL_DEPTH) / 2
+        };
+        let level = 1 + u32::midpoint(points, u32::from(heat.min(MAX_HEAT)));
+        u8::try_from(level.min(u32::from(crate::innate::LEVELS))).unwrap_or(crate::innate::LEVELS)
+    }
+
+    /// A reworked boss's starting life against `heroes` heroes (at least one).
+    pub fn boss_life(heroes: usize) -> i32 {
+        let extra = i32::try_from(heroes.clamp(1, MOST) - 1).unwrap_or(0);
+        BOSS_LIFE + BOSS_LIFE_PER_HERO * extra
+    }
+
     /// The scaling for `heroes` (clamped to 1..=[`MOST`]) at `heat` (at most [`MAX_HEAT`]) against the boss at `rank`,
     /// before brackets ([`TIERS`]).
     pub fn new(heroes: usize, heat: u8, rank: usize) -> Scale {

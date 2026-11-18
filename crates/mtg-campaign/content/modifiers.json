@@ -1,0 +1,5 @@
+[
+  { "id": "giants_table" },
+  { "id": "deep_pockets" },
+  { "id": "shared_blood", "not_with": ["vex_crypt"] }
+]

@@ -217,9 +217,10 @@ pub(crate) fn introduces(events: &[Event]) -> bool {
         // A new dungeon's first room and the initiative's object trigger on the event that makes them.
         Event::Ventured(ventured) => ventured.definition.is_some(),
         // A delayed trigger set up by a cast that spends mana (`spend_rider.rs`) triggers on the cast in the same batch.
-        Event::InitiativeTaken { .. } | Event::DelayedTriggerCreated(_) => true,
         // A boss phase's emblem triggers on the event that makes it ("when this phase begins").
-        Event::PhaseBegan { .. } => true,
+        Event::InitiativeTaken { .. }
+        | Event::DelayedTriggerCreated(_)
+        | Event::PhaseBegan { .. } => true,
         Event::EffectCreated { effect } => match &effect.modification {
             crate::effects::Modification::GrantAbility(granted) => triggers_something(granted),
             crate::effects::Modification::AddKeyword(keyword) => keyword_triggers(keyword),

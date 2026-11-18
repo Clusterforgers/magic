@@ -1921,10 +1921,6 @@ fn matching_player_action(
                 && crate::characteristics::controller_of(state, scope.source.id) == Some(*player))
             .then(|| counted(state, vec![Target::Player(*player)], 0))
         }
-        // A phase's "when this phase begins" ability triggers for the emblem the phase just made.
-        (TriggerPattern::PhaseBegins {}, Happened::PhaseBegan { player, emblem }) => {
-            (scope.source.id == *emblem).then(|| counted(state, vec![Target::Player(*player)], 0))
-        }
         // The number rolled is the amount ("if you roll a 6").
         (TriggerPattern::RolledToVisit { who }, Happened::RolledToVisit { player, result }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], *result))
@@ -2165,7 +2161,19 @@ fn matching_event(
             .then(|| cause(state, Vec::new())),
         _ => matching_player_action(pattern, happened, scope)
             .or_else(|| matching_permanents(pattern, happened, scope))
-            .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope)),
+            .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope))
+            .or_else(|| phase_began(pattern, happened, scope)),
+    }
+}
+
+/// A phase's "when this phase begins" ability triggers for the emblem the phase just made.
+fn phase_began(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Option<Cause> {
+    match (pattern, happened) {
+        (TriggerPattern::PhaseBegins {}, Happened::PhaseBegan { player, emblem }) => {
+            (scope.source.id == *emblem)
+                .then(|| counted(scope.state, vec![Target::Player(*player)], 0))
+        }
+        _ => None,
     }
 }
 

@@ -7,7 +7,7 @@ use mtg_core::house::{Handicap, HouseRules};
 use mtg_core::ids::PlayerId;
 use mtg_core::teams::{TeamMode, Teams};
 use mtg_engine::GameSetup;
-use mtg_engine::phases::BossPhase;
+use mtg_engine::phases::{BossPhase, PhaseStart};
 use serde::{Deserialize, Serialize};
 
 use crate::CampaignError;
@@ -60,10 +60,37 @@ pub struct BossSeat {
     /// Every how many of its turns a scheme is set in motion, from its third.
     #[serde(default = "every_turn")]
     pub scheme_every: u32,
+    /// The reworked boss's innate at its level ([`crate::innate`]), in its command zone from the start.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub innate: Option<String>,
+    /// The fight's encounter modifier ([`crate::modifiers`]), in the boss's command zone from the start.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub modifier: Option<String>,
+    /// The relics the reworked boss brings, copies included ([`crate::boss_relics`]).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub relics: Vec<String>,
+    /// The reworked boss's phases: the phase card and the round whose last turn's end step begins it.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub round_phases: Vec<(String, u32)>,
+    /// The reworked boss's satchel; the caller resolves the cards with [`FightPlan::boss_decks`]'s.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub satchel: Vec<crate::content::SatchelCard>,
 }
 
 fn every_turn() -> u32 {
     1
+}
+
+impl BossSeat {
+    /// The custom cards in its command zone from the start: its rules, then a reworked boss's innate, modifier and
+    /// relics (copies stack).
+    pub fn emblems(&self) -> Vec<String> {
+        let mut ids = self.rules.clone();
+        ids.extend(self.innate.iter().cloned());
+        ids.extend(self.modifier.iter().cloned());
+        ids.extend(self.relics.iter().cloned());
+        ids
+    }
 }
 
 /// A minion's seat in a fight: a lieutenant on the boss's side that falls with the boss.
@@ -195,7 +222,7 @@ impl FightPlan {
             }
             emblems.push(own);
         }
-        emblems.push(cards(&self.boss.rules)?);
+        emblems.push(cards(&self.boss.emblems())?);
         for minion in &self.minions {
             emblems.push(cards(&minion.rules)?);
         }
@@ -221,10 +248,16 @@ impl FightPlan {
                     _ => card.definition(),
                 };
                 Ok(BossPhase {
-                    at_life: *at_life,
+                    begins: PhaseStart::AtLife(*at_life),
                     emblem,
                 })
             })
+            .chain(self.boss.round_phases.iter().map(|(id, round)| {
+                Ok(BossPhase {
+                    begins: PhaseStart::AtRound(*round),
+                    emblem: content.card(id)?.definition(),
+                })
+            }))
             .collect::<Result<Vec<_>, CampaignError>>()?;
         let boss_side = 1 + self.minions.len();
         let mut spirits = vec![haunt; self.heroes.len()];
