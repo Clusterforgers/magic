@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { cardLabel } from './cardModel'
 import type { Highlight } from './cardModel'
-import { HIGHLIGHT, PICKED, SIZE } from './cardSize'
+import { HIGHLIGHT, PICKED, SIZE, SOURCE_LIT } from './cardSize'
 import type { CardSize } from './cardSize'
 import { CardFace } from './CardFace'
 import { ChosenMark } from './ChosenMark'
@@ -22,6 +22,7 @@ import { ManaStrip } from './ManaStrip'
 import { BY_HAND_KEY, clausesOf } from './manual/clauses'
 import { useIsPicked } from './manual/panel/pick'
 import { useManualMenu } from './manual/useManualMenu'
+import { useIsSourceLit } from './modifiers'
 import { useCardMark, useMarksStore } from './prompt/marks'
 import type { CardSelect } from './prompt/marks'
 import { handMarkWords, revealedPlace } from './revealed'
@@ -93,6 +94,7 @@ export const Card = memo(function Card({
   const handlers = usePreviewHandlers(id, onSelect === undefined ? undefined : (from) => onSelect(id, from))
   const manual = useManualMenu(id)
   const picked = useIsPicked(id)
+  const sourceLit = useIsSourceLit(id)
   if (object === undefined) return null
   const tapped = object.permanent?.tapped === true
   const attached = object.attached_to !== undefined || object.attached_player !== undefined
@@ -113,6 +115,7 @@ export const Card = memo(function Card({
       data-highlight={highlight}
       data-cue={note?.cue}
       data-picked={picked || undefined}
+      data-source-lit={sourceLit || undefined}
       data-size={size}
       data-tapped={tapped || undefined}
       data-phased-out={object.permanent?.phased_out === true ? true : undefined}
@@ -138,6 +141,7 @@ export const Card = memo(function Card({
         fit ? null : SIZE[size].vars,
         highlight === undefined ? null : HIGHLIGHT[highlight],
         picked ? PICKED : null,
+        sourceLit ? SOURCE_LIT : null,
         object.permanent?.phased_out === true ? 'opacity-50 saturate-50' : null,
         // A card that says why it is dimmed is read whole while it says so.
         note?.hint === undefined

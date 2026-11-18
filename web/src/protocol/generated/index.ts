@@ -248,6 +248,7 @@ export type { ModeChoice } from "./ModeChoice";
 export type { ModeOption } from "./ModeOption";
 export type { ModeOptions } from "./ModeOptions";
 export type { Modification } from "./Modification";
+export type { ModifierView } from "./ModifierView";
 export type { MulliganChoice } from "./MulliganChoice";
 export type { MulliganOptions } from "./MulliganOptions";
 export type { MulliganStatus } from "./MulliganStatus";

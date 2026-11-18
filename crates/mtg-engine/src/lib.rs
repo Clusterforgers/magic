@@ -153,6 +153,7 @@ mod manual_show;
 pub mod manual_tokens;
 pub mod memory;
 pub mod merged;
+pub mod modifiers;
 pub mod monarch;
 pub mod object;
 mod party;

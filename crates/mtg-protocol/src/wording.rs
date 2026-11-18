@@ -189,7 +189,7 @@ fn worded(rules: &Ability, name: &str, loyalty: Option<LoyaltyCost>) -> Option<A
 }
 
 /// The text with the card's name for `~`.
-fn named(text: &str, name: &str) -> String {
+pub(crate) fn named(text: &str, name: &str) -> String {
     text.replace('~', name)
 }
 
