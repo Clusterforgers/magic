@@ -1,0 +1,14 @@
+{
+  "oracle_id": "84de4fec-2f38-4293-93d3-b3882c5aac14",
+  "name": "Ambition's Cost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ambition's Cost",
+      "oracle_fingerprint": "8144d6518bc0d34b79d50e9bc3d66167",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 3 } }, { "LoseLife": { "amount": 3 } }] } }
+      ]
+    }
+  ]
+}

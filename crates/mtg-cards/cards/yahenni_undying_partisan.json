@@ -1,0 +1,40 @@
+{
+  "oracle_id": "fdba89eb-1cf5-46e6-9d09-1adb9bc40fcd",
+  "name": "Yahenni, Undying Partisan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yahenni, Undying Partisan",
+      "oracle_fingerprint": "351da2b10e0d3a11ba234ceff5bd7ebe",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Indestructible" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "8fa3ac81-3dfe-4565-be99-5554f7597b4b",
+  "name": "Boros Garrison",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boros Garrison",
+      "oracle_fingerprint": "66645156b5d70093e6cc2635105957ca",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

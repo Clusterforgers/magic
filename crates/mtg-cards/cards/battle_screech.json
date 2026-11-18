@@ -1,0 +1,47 @@
+{
+  "oracle_id": "e73131cd-b454-405b-9539-9d777e232b9e",
+  "name": "Battle Screech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle Screech",
+      "oracle_fingerprint": "d0630d74f02b2571fbc9f519a81a966c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Keyword": {
+            "Flashback": [
+              {
+                "TapPermanents": {
+                  "filter": [{ "Type": "Creature" }, { "Color": "White" }],
+                  "count": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

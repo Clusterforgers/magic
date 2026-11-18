@@ -1,0 +1,36 @@
+{
+  "oracle_id": "75d667ec-86f4-4850-a3b6-e7a9fc7053b0",
+  "name": "Army of the Damned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Army of the Damned",
+      "oracle_fingerprint": "a66fb2f68ec70ab494f25f30268dfc64",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 13,
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{7}{B}{B}{B}" } }
+      ]
+    }
+  ]
+}

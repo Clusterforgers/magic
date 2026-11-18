@@ -1,0 +1,133 @@
+{
+  "object": "card",
+  "id": "337f2d97-b317-4c10-b151-7acccf38fca8",
+  "oracle_id": "91fbb25b-8521-483f-88b0-77778d25f7fd",
+  "multiverse_ids": [
+    696503
+  ],
+  "mtgo_id": 138635,
+  "tcgplayer_id": 624307,
+  "cardmarket_id": 818916,
+  "name": "Castle Embereth",
+  "lang": "en",
+  "released_at": "2025-04-11",
+  "uri": "https://api.scryfall.com/cards/337f2d97-b317-4c10-b151-7acccf38fca8",
+  "scryfall_uri": "https://scryfall.com/card/tdc/347/castle-embereth?utm_source=api",
+  "layout": "normal",
+  "highres_image": false,
+  "image_status": "lowres",
+  "image_updated_at": "2026-07-13T01:43:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.jpg?1783906997",
+    "normal": "https://cards.scryfall.io/normal/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.jpg?1783906997",
+    "large": "https://cards.scryfall.io/large/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.jpg?1783906997",
+    "png": "https://cards.scryfall.io/png/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.png?1783906997",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.jpg?1783906997",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.jpg?1783906997",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.webp?1783906997",
+    "grid": "https://cards.scryfall.io/grid/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.webp?1783906997",
+    "display": "https://cards.scryfall.io/display/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.webp?1783906997",
+    "art": "https://cards.scryfall.io/art/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.webp?1783906997",
+    "crop": "https://cards.scryfall.io/crop/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.webp?1783906997",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/3/337f2d97-b317-4c10-b151-7acccf38fca8.jpg?1783906997"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land",
+  "oracle_text": "This land enters tapped unless you control a Mountain.\n{T}: Add {R}.\n{1}{R}{R}, {T}: Creatures you control get +1/+0 until end of turn.",
+  "colors": [],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "R"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set": "tdc",
+  "set_name": "Tarkir: Dragonstorm Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/bca9779c-0a0b-4ac1-8794-f3fc25549cf4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atdc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/tdc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/337f2d97-b317-4c10-b151-7acccf38fca8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A91fbb25b-8521-483f-88b0-77778d25f7fd&unique=prints",
+  "collector_number": "347",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Without Embereth's courage, the realm would falter and fall.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jaime Jones",
+  "artist_ids": [
+    "92f6c2c1-fa57-4b52-99c4-0fd866c13dc9"
+  ],
+  "illustration_id": "8da981e5-4bd1-45cf-8a87-7a21762dd950",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1104,
+  "penny_rank": 687,
+  "prices": {
+    "usd": "0.32",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.31",
+    "eur_foil": null,
+    "tix": "0.26"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=696503&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCastle%2BEmbereth",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCastle%2BEmbereth",
+    "edhrec": "https://edhrec.com/route/?cc=Castle+Embereth"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F624307%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=818916&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/138635?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

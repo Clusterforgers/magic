@@ -1,0 +1,19 @@
+{
+  "oracle_id": "df317532-7d36-40fd-938f-e972749c8792",
+  "name": "Fyndhorn Elves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fyndhorn Elves",
+      "oracle_fingerprint": "9231ec8ed88e95d1df0ea928fdee13d6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

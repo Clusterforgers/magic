@@ -1,0 +1,24 @@
+{
+  "oracle_id": "0cb41c3f-5e6a-4c63-80b5-c9ab84b4e4bf",
+  "name": "Order of Sacred Dusk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Order of Sacred Dusk",
+      "oracle_fingerprint": "4199d762800cae3e9896951bb1d5a56f",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Keyword": "Haste" },
+        { "Keyword": "Exalted" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Vampire" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Exalted" }]
+          }
+        }
+      ]
+    }
+  ]
+}

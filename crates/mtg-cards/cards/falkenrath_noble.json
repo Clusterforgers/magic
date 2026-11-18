@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3739b179-bc81-4737-8376-66a57e16b942",
+  "name": "Falkenrath Noble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Falkenrath Noble",
+      "oracle_fingerprint": "e0dfec22b74c9051305a4d676b2729b8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other"],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "68f1db12-82fb-4bf1-908d-db38fd67efe5",
+  "name": "Sire of the Storm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sire of the Storm",
+      "oracle_fingerprint": "537b918bddc57979d81ad190bf44496a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Subtype": "Spirit" }, { "Subtype": "Arcane" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

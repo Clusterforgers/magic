@@ -596,7 +596,11 @@ pub struct ExportPreconArgs {
     pub swap: Vec<String>,
 
     /// The directory the deck file goes to.
-    #[arg(long, value_name = "DIR", default_value = "crates/mtg-campaign/content/decks")]
+    #[arg(
+        long,
+        value_name = "DIR",
+        default_value = "crates/mtg-campaign/content/decks"
+    )]
     pub out: PathBuf,
 }
 

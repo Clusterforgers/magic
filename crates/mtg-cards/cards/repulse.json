@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6f7ef1d1-c441-41ba-b7d6-6b7727ffcf04",
+  "name": "Repulse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repulse",
+      "oracle_fingerprint": "f0d49a015a3832bcd77609f6ef5536d0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

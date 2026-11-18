@@ -1,0 +1,19 @@
+{
+  "oracle_id": "7b0767b8-b504-456e-93bd-218502f73b3d",
+  "name": "Palladium Myr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Palladium Myr",
+      "oracle_fingerprint": "8310b06afdea748af91bd3f1f2320614",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

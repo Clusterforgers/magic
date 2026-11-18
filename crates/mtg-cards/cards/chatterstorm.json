@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7e6c7b57-bd6a-4ac8-bcab-c3a879f479c2",
+  "name": "Chatterstorm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chatterstorm",
+      "oracle_fingerprint": "4069c07f1f666a11acc2f7e211dd4827",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Squirrel",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Squirrel"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

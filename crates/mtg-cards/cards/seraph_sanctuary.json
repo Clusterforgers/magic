@@ -1,0 +1,36 @@
+{
+  "oracle_id": "0b504dc6-61cc-4a72-907c-145fa4c72466",
+  "name": "Seraph Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seraph Sanctuary",
+      "oracle_fingerprint": "264fd4bb7e31cfb7f6e598392d30acbc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Angel" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

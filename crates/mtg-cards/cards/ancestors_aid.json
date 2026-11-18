@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a95a0b13-d50f-41cf-8668-de60d445e7b0",
+  "name": "Ancestors' Aid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ancestors' Aid",
+      "oracle_fingerprint": "ea1727245558617793fb493f96ec17f9",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "FirstStrike" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

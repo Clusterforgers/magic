@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "deb328c7-fdda-4d63-9fe4-0482c1de6098",
+  "oracle_id": "fa56a5fa-ef96-404c-8fb6-d1f5fcebb52e",
+  "multiverse_ids": [],
+  "resource_id": "E5EE04728925CFDEF8CA42BF64985FC643167562F4147201F823331776E66143",
+  "tcgplayer_id": 695552,
+  "cardmarket_id": 904223,
+  "name": "Surrak, the Hunt Caller",
+  "lang": "en",
+  "released_at": "2026-04-24",
+  "uri": "https://api.scryfall.com/cards/deb328c7-fdda-4d63-9fe4-0482c1de6098",
+  "scryfall_uri": "https://scryfall.com/card/fdn/768/surrak-the-hunt-caller?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-08-24T09:08:01Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.jpg?1787562481",
+    "normal": "https://cards.scryfall.io/normal/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.jpg?1787562481",
+    "large": "https://cards.scryfall.io/large/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.jpg?1787562481",
+    "png": "https://cards.scryfall.io/png/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.png?1787562481",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.jpg?1787562481",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.jpg?1787562481",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.webp?1787562481",
+    "grid": "https://cards.scryfall.io/grid/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.webp?1787562481",
+    "display": "https://cards.scryfall.io/display/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.webp?1787562481",
+    "art": "https://cards.scryfall.io/art/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.webp?1787562481",
+    "crop": "https://cards.scryfall.io/crop/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.webp?1787562481",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/e/deb328c7-fdda-4d63-9fe4-0482c1de6098.jpg?1787562481"
+  },
+  "mana_cost": "{2}{G}{G}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Warrior",
+  "oracle_text": "Formidable — At the beginning of combat on your turn, if creatures you control have total power 8 or greater, target creature you control gains haste until end of turn. (It can attack and {T} no matter when it came under your control.)",
+  "power": "5",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Formidable"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set": "fdn",
+  "set_name": "Foundations",
+  "set_type": "core",
+  "set_uri": "https://api.scryfall.com/sets/a7ecb771-d1b6-4dec-8cf5-8d45179f21e0",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Afdn&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/fdn?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/deb328c7-fdda-4d63-9fe4-0482c1de6098/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afa56a5fa-ef96-404c-8fb6-d1f5fcebb52e&unique=prints",
+  "collector_number": "768",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"The greatest honor is to feed Atarka.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Wesley Burt",
+  "artist_ids": [
+    "b98c9d94-8bdb-49af-871d-7bac92274535"
+  ],
+  "illustration_id": "deeb4135-ba1c-47d0-ae77-e083a3ffbb4b",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "setextension"
+  ],
+  "edhrec_rank": 7208,
+  "penny_rank": 3800,
+  "prices": {
+    "usd": "0.30",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": null,
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSurrak%252C%2Bthe%2BHunt%2BCaller",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSurrak%252C%2Bthe%2BHunt%2BCaller",
+    "edhrec": "https://edhrec.com/route/?cc=Surrak%2C+the+Hunt+Caller"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F695552%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=904223&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Surrak%2C+the+Hunt+Caller&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

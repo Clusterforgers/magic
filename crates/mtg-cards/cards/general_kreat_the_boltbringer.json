@@ -1,0 +1,49 @@
+{
+  "oracle_id": "da1c1c70-c2fa-4ba7-89fe-d9af3fb353b9",
+  "name": "General Kreat, the Boltbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "General Kreat, the Boltbringer",
+      "oracle_fingerprint": "ad5f525660af08400c2625e760f57110",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

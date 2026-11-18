@@ -1,0 +1,51 @@
+{
+  "oracle_id": "397b9dcf-690a-4a58-8637-bb9baab7cc2f",
+  "name": "Elder Gargaroth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elder Gargaroth",
+      "oracle_fingerprint": "58d562cd68bebdf9b1762909ea63d70a",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [{ "Attacks": { "what": ["This"] } }, { "Blocks": { "what": ["This"] } }]
+            },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Beast",
+                                "colors": ["Green"],
+                                "types": ["Creature"],
+                                "subtypes": ["Beast"],
+                                "power": 3,
+                                "toughness": 3
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "GainLife": { "amount": 3 } }] },
+                    { "effects": [{ "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

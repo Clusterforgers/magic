@@ -1,0 +1,26 @@
+{
+  "oracle_id": "45429b2c-be3b-4b2e-9bab-a059ccbda8cd",
+  "name": "Blossoming Sands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blossoming Sands",
+      "oracle_fingerprint": "e1e5ffb5492349ccf51aeff240bce97e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

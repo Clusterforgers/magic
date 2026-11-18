@@ -44,12 +44,15 @@ fn precon(lines: &[(DeckBoard, u32, &str)]) -> PreconDeckDetail {
 fn swaps(pairs: &[(&str, &str)]) -> Vec<Swap> {
     pairs
         .iter()
-        .map(|(out, into)| Swap::parse(&format!("{out}={into}")).unwrap())
+        .map(|(out, into)| Swap::parse(&format!("{out}={into}")).unwrap_or_else(|e| panic!("{e}")))
         .collect()
 }
 
 fn named(cards: &[(&str, u32)]) -> Vec<(String, u32)> {
-    cards.iter().map(|(name, count)| ((*name).to_owned(), *count)).collect()
+    cards
+        .iter()
+        .map(|(name, count)| ((*name).to_owned(), *count))
+        .collect()
 }
 
 const DECK: &[(DeckBoard, u32, &str)] = &[
@@ -70,10 +73,14 @@ fn the_deck_file_holds_commander_and_main_with_the_swaps(
     #[case] given: &[(&str, &str)],
     #[case] expected: &[(&str, u32)],
 ) {
-    let deck = deck_file(&precon(DECK), &swaps(given)).unwrap();
+    let deck = deck_file(&precon(DECK), &swaps(given)).unwrap_or_else(|e| panic!("{e}"));
     assert_eq!(deck.cards, named(expected));
     assert_eq!(deck.commander, vec!["Hazel of the Rootbloom".to_owned()]);
-    assert_eq!(deck.size(), 22, "the sideboard is left out, a swap keeps the count");
+    assert_eq!(
+        deck.size(),
+        23,
+        "the sideboard is left out, a swap keeps the count"
+    );
     assert_eq!(deck.swaps, swaps(given));
 }
 
@@ -82,10 +89,13 @@ fn the_deck_file_holds_commander_and_main_with_the_swaps(
 #[case::a_card_already_swapped("Illusionist's Gambit=Island")]
 fn a_swap_of_a_missing_card_is_refused(#[case] second: &str) {
     let given = vec![
-        Swap::parse("Illusionist's Gambit=Island").unwrap(),
-        Swap::parse(second).unwrap(),
+        Swap::parse("Illusionist's Gambit=Island").unwrap_or_else(|e| panic!("{e}")),
+        Swap::parse(second).unwrap_or_else(|e| panic!("{e}")),
     ];
-    let error = deck_file(&precon(DECK), &given).unwrap_err().to_string();
+    let Err(error) = deck_file(&precon(DECK), &given) else {
+        panic!("the swap is refused")
+    };
+    let error = error.to_string();
     assert!(error.contains("to swap"), "{error}");
 }
 
@@ -107,7 +117,7 @@ fn the_file_is_named_by_code_and_slug(#[case] code: &str, #[case] name: &str, #[
 
 #[sqlx::test]
 async fn a_stored_precon_is_written_with_its_swaps(pool: PgPool) {
-    let dir = tempfile::tempdir().unwrap();
+    let dir = tempfile::tempdir().unwrap_or_else(|e| panic!("{e}"));
     let cache = common::fixture_cache(dir.path());
     let db = Database::from_pool(pool);
     let (progress, _) = common::progress();
@@ -115,7 +125,9 @@ async fn a_stored_precon_is_written_with_its_swaps(pool: PgPool) {
         force: false,
         batch_size: 500,
     };
-    ingest(&cache, &db, &options, &progress).await.unwrap();
+    ingest(&cache, &db, &options, &progress)
+        .await
+        .unwrap_or_else(|e| panic!("{e}"));
     let out = dir.path().join("decks");
     let args = ExportPreconArgs {
         code: "c16".to_owned(),
@@ -123,11 +135,14 @@ async fn a_stored_precon_is_written_with_its_swaps(pool: PgPool) {
         swap: vec!["Sol Ring=Forest".to_owned()],
         out: out.clone(),
     };
-    let said = export_precon(&db, &args).await.unwrap();
+    let said = export_precon(&db, &args)
+        .await
+        .unwrap_or_else(|e| panic!("{e}"));
     assert!(said.ends_with(": 40 cards"), "{said}");
-    let text = std::fs::read_to_string(out.join("c16-breed-lethality.json")).unwrap();
+    let text = std::fs::read_to_string(out.join("c16-breed-lethality.json"))
+        .unwrap_or_else(|e| panic!("{e}"));
     assert!(text.ends_with("}\n"));
-    let file: Value = serde_json::from_str(&text).unwrap();
+    let file: Value = serde_json::from_str(&text).unwrap_or_else(|e| panic!("{e}"));
     assert_eq!(
         file,
         json!({

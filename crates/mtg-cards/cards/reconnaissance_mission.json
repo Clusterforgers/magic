@@ -1,0 +1,26 @@
+{
+  "oracle_id": "11bf211c-95a3-4e7f-bd08-13f979d54e73",
+  "name": "Reconnaissance Mission",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reconnaissance Mission",
+      "oracle_fingerprint": "fa003dc7a7e043cbac9d0240d7ee8596",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

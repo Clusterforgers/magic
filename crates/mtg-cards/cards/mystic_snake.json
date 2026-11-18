@@ -1,0 +1,21 @@
+{
+  "oracle_id": "161b6d06-e6a7-488e-9f9c-d266c1402a3a",
+  "name": "Mystic Snake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Snake",
+      "oracle_fingerprint": "07f06c269e7731dab9eee563e50b9865",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

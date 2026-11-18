@@ -1,0 +1,26 @@
+{
+  "oracle_id": "e366afb3-c447-4bde-b358-41c8568142d5",
+  "name": "Sword of Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sword of Vengeance",
+      "oracle_fingerprint": "d94bfa742def3e19d8b49d6a94c1b0c5",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 2, "toughness": 0 } },
+              { "AddKeyword": "FirstStrike" },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Haste" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

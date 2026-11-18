@@ -1,0 +1,26 @@
+{
+  "oracle_id": "060ae1bb-956a-4264-b405-a33151f31493",
+  "name": "Unstable Obelisk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unstable Obelisk",
+      "oracle_fingerprint": "56002e9fc48db1869affe28ce8ec31bb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{7}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

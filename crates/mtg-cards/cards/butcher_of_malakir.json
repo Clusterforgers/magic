@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a85197ab-dc94-4b72-9716-8dbdbbe90ff8",
+  "name": "Butcher of Malakir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Butcher of Malakir",
+      "oracle_fingerprint": "0f21ae0fe075916d75a88a8c007a0346",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Type": "Creature" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

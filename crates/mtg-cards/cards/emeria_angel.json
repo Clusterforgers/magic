@@ -1,0 +1,47 @@
+{
+  "oracle_id": "ea6616e4-db8d-4905-80f8-cb0162906850",
+  "name": "Emeria Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Emeria Angel",
+      "oracle_fingerprint": "8d030bc9f36ad9b6ad3ad87e738145d9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Bird",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Bird"],
+                            "power": 1,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Flying" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

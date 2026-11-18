@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7b459306-149b-4f43-abc1-2dd70c748c0e",
+  "name": "Ravenous Chupacabra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenous Chupacabra",
+      "oracle_fingerprint": "e51d85301a2db4509ded5e25e07a13c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

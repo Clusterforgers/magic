@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3d794629-9014-460a-8d3b-785eadc1cdb5",
+  "name": "Wickerbough Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wickerbough Elder",
+      "oracle_fingerprint": "3b793a8ab74714b70948b17f60dbc3bf",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "-1/-1", "count": 1 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, { "RemoveCounters": { "counter": "-1/-1" } }],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

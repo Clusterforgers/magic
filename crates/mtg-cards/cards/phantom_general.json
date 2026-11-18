@@ -1,0 +1,19 @@
+{
+  "oracle_id": "b800c3e5-4ed9-4603-a987-d830e90cf25e",
+  "name": "Phantom General",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phantom General",
+      "oracle_fingerprint": "5028955e15092b1adc44ff3f1e7910ae",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Token", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

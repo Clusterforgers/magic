@@ -1,0 +1,36 @@
+{
+  "oracle_id": "06692cd9-ac2f-4a32-8fd1-043ba3c0fe71",
+  "name": "Rapid Hybridization",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rapid Hybridization",
+      "oracle_fingerprint": "879dcc10da8f35bd8860a9272df669d0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 }, "regenerate": false } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Frog Lizard",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Frog", "Lizard"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

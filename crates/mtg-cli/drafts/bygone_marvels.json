@@ -32,7 +32,8 @@
                 "right": 8
               }
             },
-            "effects": [{ "CopySpell": { "what": "Triggering", "count": 2, "new_targets": true } }]
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This", "count": 2, "new_targets": true } }]
           }
         },
         {

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "626709bc-6c29-434f-9e3f-b84bb8a5c431",
+  "name": "Raging Swordtooth",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raging Swordtooth",
+      "oracle_fingerprint": "6889d392623fff3c24473fa2cb8e1987",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "DealDamage": { "to": { "Each": [{ "Type": "Creature" }, "Other"] }, "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

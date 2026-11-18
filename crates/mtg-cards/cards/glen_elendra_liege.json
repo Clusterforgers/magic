@@ -1,0 +1,40 @@
+{
+  "oracle_id": "946bba74-0951-408c-b06f-167739b10934",
+  "name": "Glen Elendra Liege",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glen Elendra Liege",
+      "oracle_fingerprint": "5041b27cacc83ce5e24933d1177b4ff1",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "Blue" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Color": "Black" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

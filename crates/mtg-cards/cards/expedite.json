@@ -1,0 +1,28 @@
+{
+  "oracle_id": "3501a839-eef5-44e4-8637-b5754780454e",
+  "name": "Expedite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Expedite",
+      "oracle_fingerprint": "609ae597c89b4eb51487ced3782b81ef",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

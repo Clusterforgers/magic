@@ -1,0 +1,26 @@
+{
+  "oracle_id": "dc55421f-dee8-4263-9df0-2365df5f14bb",
+  "name": "Temple of Malady",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple of Malady",
+      "oracle_fingerprint": "c04e5fe7a860d158992bfcc21c0ff784",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

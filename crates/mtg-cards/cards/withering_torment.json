@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ffce81c5-1b58-4882-a4e7-6f8d7cb170de",
+  "name": "Withering Torment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Withering Torment",
+      "oracle_fingerprint": "bc56da5c59527e6d380f88e47d8c3852",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "LoseLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

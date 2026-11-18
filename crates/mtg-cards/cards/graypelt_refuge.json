@@ -1,0 +1,26 @@
+{
+  "oracle_id": "60b36821-0fad-423c-98c4-f64d991719f3",
+  "name": "Graypelt Refuge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Graypelt Refuge",
+      "oracle_fingerprint": "e1e5ffb5492349ccf51aeff240bce97e",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ba0fc2ca-7084-454a-9d4e-5cbca945a7ca",
+  "name": "Tribute to the Wild",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tribute to the Wild",
+      "oracle_fingerprint": "f38832d869aaa607aea3dbca3f824a76",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

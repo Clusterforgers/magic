@@ -1,0 +1,49 @@
+{
+  "oracle_id": "0ccb9af3-6902-4130-a59c-4c882dc3a2fd",
+  "name": "Legion Warboss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Legion Warboss",
+      "oracle_fingerprint": "04004ab5c3394131685a3cf7fcdae27d",
+      "abilities": [
+        { "Keyword": "Mentor" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "as": "tokens"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tokens" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": { "MustAttack": { "Bound": "tokens" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

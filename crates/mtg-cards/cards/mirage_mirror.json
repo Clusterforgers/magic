@@ -1,0 +1,43 @@
+{
+  "oracle_id": "6a84eda1-7e72-4b5a-849f-b6e177565aeb",
+  "name": "Mirage Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirage Mirror",
+      "oracle_fingerprint": "863aaf96acf0b4e8054dcebcd5c42be5",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": "This",
+                  "of": { "Target": 0 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

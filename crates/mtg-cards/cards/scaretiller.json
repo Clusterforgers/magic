@@ -1,0 +1,75 @@
+{
+  "oracle_id": "e4b32e47-5484-4ee9-bac3-4ba37558a56a",
+  "name": "Scaretiller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scaretiller",
+      "oracle_fingerprint": "24c4b666c8ce97801832ab81ee18c480",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "May": {
+                            "effects": [
+                              {
+                                "Choose": {
+                                  "from": {
+                                    "Each": [
+                                      { "In": "Hand" },
+                                      { "OwnedBy": "You" },
+                                      { "Type": "Land" }
+                                    ]
+                                  },
+                                  "as": "card"
+                                }
+                              },
+                              {
+                                "Move": {
+                                  "what": { "Bound": "card" },
+                                  "to": { "Battlefield": { "tapped": true } }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Land" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

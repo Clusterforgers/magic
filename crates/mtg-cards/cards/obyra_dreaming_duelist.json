@@ -1,0 +1,26 @@
+{
+  "oracle_id": "4162e60f-9d70-4b8c-a838-df57b83c208d",
+  "name": "Obyra, Dreaming Duelist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obyra, Dreaming Duelist",
+      "oracle_fingerprint": "b27b64db85e895a582b7ebb915c4c923",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Faerie" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

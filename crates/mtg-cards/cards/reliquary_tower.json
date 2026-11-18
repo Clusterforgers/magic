@@ -1,0 +1,20 @@
+{
+  "oracle_id": "c23e5b80-08d2-4e24-9908-fe2aa4f30f6f",
+  "name": "Reliquary Tower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reliquary Tower",
+      "oracle_fingerprint": "55cfe3fe96d4b3e139dec6d43129d019",
+      "abilities": [
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

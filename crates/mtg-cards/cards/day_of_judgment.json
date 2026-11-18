@@ -1,0 +1,16 @@
+{
+  "oracle_id": "d057289d-5e28-43d5-8ff3-4a1bc723477d",
+  "name": "Day of Judgment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Day of Judgment",
+      "oracle_fingerprint": "fd4a790cd3a16482604c4ca155f30aeb",
+      "abilities": [
+        {
+          "Spell": { "effects": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }] } } }] }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9965d9c5-2ebf-4a6c-930e-55c5890979be",
+  "name": "Thought Vessel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thought Vessel",
+      "oracle_fingerprint": "55cfe3fe96d4b3e139dec6d43129d019",
+      "abilities": [
+        { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

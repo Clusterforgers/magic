@@ -1,0 +1,50 @@
+{
+  "oracle_id": "d4fdacd7-3101-44e2-a880-dde7326137a4",
+  "name": "Headless Rider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Headless Rider",
+      "oracle_fingerprint": "f6728772aa1a7c10a513c206bfeef300",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Subtype": "Zombie" },
+                      { "Not": "Token" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

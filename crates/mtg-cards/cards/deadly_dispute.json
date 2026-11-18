@@ -1,0 +1,33 @@
+{
+  "oracle_id": "457af74a-02b3-4659-846d-63e482667f34",
+  "name": "Deadly Dispute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deadly Dispute",
+      "oracle_fingerprint": "94b1df6f1c218ef1bafac29603d71a5e",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

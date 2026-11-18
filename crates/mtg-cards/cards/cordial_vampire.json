@@ -1,0 +1,37 @@
+{
+  "oracle_id": "d61fb9e8-d05a-481a-a90f-5def300c9abb",
+  "name": "Cordial Vampire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cordial Vampire",
+      "oracle_fingerprint": "6d86738b020ddf8e677ccd96713f548b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other"],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

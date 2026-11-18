@@ -1,0 +1,60 @@
+{
+  "oracle_id": "2b76f9e9-cd28-4eaf-8674-215c34263f96",
+  "name": "Return of the Wildspeaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Return of the Wildspeaker",
+      "oracle_fingerprint": "05e6fe93c48f19b2ef841a67e6172fcf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Draw": {
+                            "count": {
+                              "Greatest": {
+                                "of": [
+                                  { "Type": "Creature" },
+                                  { "Not": { "Subtype": "Human" } },
+                                  { "ControlledBy": "You" }
+                                ],
+                                "stat": "Power"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": {
+                              "Each": [
+                                { "Type": "Creature" },
+                                { "Not": { "Subtype": "Human" } },
+                                { "ControlledBy": "You" }
+                              ]
+                            },
+                            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

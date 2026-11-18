@@ -1,0 +1,34 @@
+{
+  "oracle_id": "1cb9d94a-3039-4f2e-8fcc-6996f9a45f74",
+  "name": "Izzet Boilerworks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Izzet Boilerworks",
+      "oracle_fingerprint": "3a024098b0a082321f8e981ba6a17d47",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "794aaf8a-6d8e-41fb-acbe-a2b73d65d9d9",
+  "name": "Martyr of Dusk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martyr of Dusk",
+      "oracle_fingerprint": "230f82ff7529c7a9d70e55e80ad6aabb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Vampire",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Vampire"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Lifelink" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

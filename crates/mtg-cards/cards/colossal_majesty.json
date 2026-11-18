@@ -1,0 +1,32 @@
+{
+  "oracle_id": "cac95494-0db0-4bec-8665-998431a6f76b",
+  "name": "Colossal Majesty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossal Majesty",
+      "oracle_fingerprint": "010246973b3e14a4219d188b82ccaec9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

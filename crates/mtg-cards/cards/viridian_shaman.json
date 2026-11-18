@@ -1,0 +1,20 @@
+{
+  "oracle_id": "5aa6d553-a144-4c5b-83fa-65e931903899",
+  "name": "Viridian Shaman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viridian Shaman",
+      "oracle_fingerprint": "2bfa08356ecea7d05fd4f1ed0d719652",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

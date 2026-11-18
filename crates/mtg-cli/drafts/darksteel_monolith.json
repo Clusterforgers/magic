@@ -11,7 +11,13 @@
         {
           "Rule": {
             "rule": {
-              "MayCast": { "what": ["Colorless"], "from": "Hand", "free": true, "once": true }
+              "MayCast": {
+                "what": ["Colorless"],
+                "from": "Hand",
+                "free": true,
+                "once": true,
+                "any_turn": true
+              }
             }
           }
         }

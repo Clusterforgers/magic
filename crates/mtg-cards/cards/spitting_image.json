@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a30dee74-86e3-4888-980e-b22437fbbb66",
+  "name": "Spitting Image",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spitting Image",
+      "oracle_fingerprint": "9c4de4c338b56a28a3a7457064277188",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        },
+        { "Keyword": "Retrace" }
+      ]
+    }
+  ]
+}

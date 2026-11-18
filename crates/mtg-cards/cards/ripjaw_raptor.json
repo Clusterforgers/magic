@@ -1,0 +1,19 @@
+{
+  "oracle_id": "80bb9ce4-1f3c-42ca-b75f-9a6b2f42073b",
+  "name": "Ripjaw Raptor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ripjaw Raptor",
+      "oracle_fingerprint": "141a45272b02606859660b2cddb8a576",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Batch": { "DealsDamage": { "source": [], "to": "This" } } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

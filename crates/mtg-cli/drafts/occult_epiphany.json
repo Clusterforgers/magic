@@ -25,7 +25,9 @@
                       "abilities": [{ "Keyword": "Flying" }]
                     }
                   },
-                  "count": { "CardTypes": [{ "Is": { "Bound": "discarded" } }] }
+                  "count": {
+                    "CardTypes": [{ "Is": { "Bound": "discarded" } }, { "In": "Graveyard" }]
+                  }
                 }
               }
             ]

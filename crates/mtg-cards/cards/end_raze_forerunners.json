@@ -1,0 +1,36 @@
+{
+  "oracle_id": "69b52907-8aff-4f2a-a391-7d1ab2669b5c",
+  "name": "End-Raze Forerunners",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "End-Raze Forerunners",
+      "oracle_fingerprint": "7b70d79f55ebe8aff3c7c90660c8b86a",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Vigilance" },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

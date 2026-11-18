@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3d563149-7d4e-43e5-b701-28e3212051ec",
+  "name": "Raging Regisaur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raging Regisaur",
+      "oracle_fingerprint": "7a498c363ccd460b21259e04c92c6f0f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

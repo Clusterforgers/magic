@@ -1,0 +1,33 @@
+{
+  "oracle_id": "4fb00dbe-1f82-4ba6-b18c-97e816d10d3a",
+  "name": "Patchwork Banner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Patchwork Banner",
+      "oracle_fingerprint": "5598c9e7cf10abdb7563fb66a16ce07e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "CreatureType" }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenSubtype"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

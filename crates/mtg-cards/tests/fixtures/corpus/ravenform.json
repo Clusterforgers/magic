@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "f2d5e87b-1ee8-47db-9bc3-f5becfe79b37",
+  "oracle_id": "d3d61a6a-7870-44df-92e5-513dac2c2c3e",
+  "multiverse_ids": [
+    640463
+  ],
+  "mtgo_id": 118734,
+  "tcgplayer_id": 526078,
+  "cardmarket_id": 743728,
+  "name": "Ravenform",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37",
+  "scryfall_uri": "https://scryfall.com/card/lcc/167/ravenform?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:03Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.jpg?1783913883",
+    "normal": "https://cards.scryfall.io/normal/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.jpg?1783913883",
+    "large": "https://cards.scryfall.io/large/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.jpg?1783913883",
+    "png": "https://cards.scryfall.io/png/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.png?1783913883",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.jpg?1783913883",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.jpg?1783913883",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.webp?1783913883",
+    "grid": "https://cards.scryfall.io/grid/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.webp?1783913883",
+    "display": "https://cards.scryfall.io/display/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.webp?1783913883",
+    "art": "https://cards.scryfall.io/art/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.webp?1783913883",
+    "crop": "https://cards.scryfall.io/crop/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.webp?1783913883",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/2/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37.jpg?1783913883"
+  },
+  "mana_cost": "{2}{U}",
+  "cmc": 3.0,
+  "type_line": "Sorcery",
+  "oracle_text": "Exile target artifact or creature. Its controller creates a 1/1 blue Bird creature token with flying.\nForetell {U} (During your turn, you may pay {2} and exile this card from your hand face down. Cast it on a later turn for its foretell cost.)",
+  "colors": [
+    "U"
+  ],
+  "color_identity": [
+    "U"
+  ],
+  "keywords": [
+    "Foretell"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "8ccdac6c-5bce-4f39-a7d9-b459f5113812",
+      "component": "token",
+      "name": "Bird",
+      "type_line": "Token Creature — Bird",
+      "uri": "https://api.scryfall.com/cards/8ccdac6c-5bce-4f39-a7d9-b459f5113812"
+    },
+    {
+      "object": "related_card",
+      "id": "f2d5e87b-1ee8-47db-9bc3-f5becfe79b37",
+      "component": "combo_piece",
+      "name": "Ravenform",
+      "type_line": "Sorcery",
+      "uri": "https://api.scryfall.com/cards/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37"
+    },
+    {
+      "object": "related_card",
+      "id": "207b3d62-2541-4a51-8152-3c54218ab6f7",
+      "component": "combo_piece",
+      "name": "Foretell",
+      "type_line": "Card",
+      "uri": "https://api.scryfall.com/cards/207b3d62-2541-4a51-8152-3c54218ab6f7"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f2d5e87b-1ee8-47db-9bc3-f5becfe79b37/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad3d61a6a-7870-44df-92e5-513dac2c2c3e&unique=prints",
+  "collector_number": "167",
+  "digital": false,
+  "rarity": "common",
+  "watermark": "foretell",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anna Steinbauer",
+  "artist_ids": [
+    "3516496c-c279-4b56-8239-720683d03ae0"
+  ],
+  "illustration_id": "6f77d61c-52d3-4577-bf1b-d2489b92f37b",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2071,
+  "penny_rank": 4867,
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.20",
+    "eur_foil": null,
+    "tix": "0.26"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640463&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DRavenform",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DRavenform",
+    "edhrec": "https://edhrec.com/route/?cc=Ravenform"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F526078%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743728&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118734?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

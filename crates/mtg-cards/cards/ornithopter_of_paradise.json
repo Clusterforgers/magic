@@ -1,0 +1,20 @@
+{
+  "oracle_id": "3a940dfa-a026-4969-8981-ef90cdfbe9ef",
+  "name": "Ornithopter of Paradise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ornithopter of Paradise",
+      "oracle_fingerprint": "c59d430350b655c6f9bbc5ac2978fc67",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

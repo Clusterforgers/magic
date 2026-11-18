@@ -1,0 +1,39 @@
+{
+  "oracle_id": "7fd4c452-07f2-492c-9c78-d1c6362d9eec",
+  "name": "Yavimaya Elder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yavimaya Elder",
+      "oracle_fingerprint": "1bf50faa09e967c87f789b2bcc3171e3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "count": { "min": 0, "max": 2 },
+                        "reveal": true,
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": { "cost": [{ "Mana": "{2}" }, "SacrificeSelf"], "effects": [{ "Draw": {} }] }
+        }
+      ]
+    }
+  ]
+}

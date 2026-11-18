@@ -1,0 +1,19 @@
+{
+  "oracle_id": "41c84665-1f99-40ab-aaca-1188649eb263",
+  "name": "Boros Signet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boros Signet",
+      "oracle_fingerprint": "324a680fbbfa421309b523a1fe951e86",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

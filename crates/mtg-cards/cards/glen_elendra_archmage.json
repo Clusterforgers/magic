@@ -1,0 +1,22 @@
+{
+  "oracle_id": "5f3f68b5-8c6a-4181-bb8a-9c73967d198a",
+  "name": "Glen Elendra Archmage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glen Elendra Archmage",
+      "oracle_fingerprint": "577d047a04284947965c767feaed627f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "SacrificeSelf"],
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": "Persist" }
+      ]
+    }
+  ]
+}

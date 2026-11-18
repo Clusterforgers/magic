@@ -1,0 +1,26 @@
+{
+  "oracle_id": "0283bf5e-ddf2-4a4a-a7cf-d3e27eed7e7d",
+  "name": "Goblin Trashmaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Trashmaster",
+      "oracle_fingerprint": "bf43779193fa20dbcdc626516531e1e2",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Goblin" }] } }],
+            "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

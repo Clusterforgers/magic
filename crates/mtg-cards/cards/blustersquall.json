@@ -1,0 +1,24 @@
+{
+  "oracle_id": "2dfad8c3-1973-4fc8-971d-f66cacd88070",
+  "name": "Blustersquall",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blustersquall",
+      "oracle_fingerprint": "61736602d58e0ab69bc5c5604b348920",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Overload": "{3}{U}" } }
+      ]
+    }
+  ]
+}

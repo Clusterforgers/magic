@@ -25,7 +25,9 @@ impl Swap {
             .split_once('=')
             .map(|(out, into)| (out.trim(), into.trim()))
             .filter(|(out, into)| !out.is_empty() && !into.is_empty())
-            .ok_or_else(|| CliError::Config(format!("a swap reads `Old card=New card`, not `{text}`")))?;
+            .ok_or_else(|| {
+                CliError::Config(format!("a swap reads `Old card=New card`, not `{text}`"))
+            })?;
         Ok(Swap {
             out: out.to_owned(),
             into: into.to_owned(),
@@ -132,15 +134,22 @@ pub async fn export_precon(db: &Database, args: &ExportPreconArgs) -> Result<Str
         .await?
         .into_iter()
         .find(|deck| deck.code.eq_ignore_ascii_case(&args.code) && deck.name == args.name)
-        .ok_or_else(|| {
-            CliError::Config(format!("no stored precon {} {}", args.code, args.name))
-        })?;
-    let detail = repo.get(summary.id).await?.ok_or_else(|| {
-        CliError::Config(format!("precon {} {} vanished", args.code, args.name))
-    })?;
+        .ok_or_else(|| CliError::Config(format!("no stored precon {} {}", args.code, args.name)))?;
+    let detail = repo
+        .get(summary.id)
+        .await?
+        .ok_or_else(|| CliError::Config(format!("precon {} {} vanished", args.code, args.name)))?;
     let deck = deck_file(&detail, &swaps)?;
     let path = write(&args.out, &deck)?;
     Ok(format!("{}: {} cards", path.display(), deck.size()))
+}
+
+/// `export-precon` from the command line: connects, then [`export_precon`].
+pub async fn command(
+    database_url: Option<String>,
+    args: &ExportPreconArgs,
+) -> Result<String, CliError> {
+    export_precon(&crate::connect(database_url).await?, args).await
 }
 
 /// Writes the deck file into `dir` under [`file_name`].

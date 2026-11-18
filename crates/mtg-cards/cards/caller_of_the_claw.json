@@ -1,0 +1,36 @@
+{
+  "oracle_id": "ec79255f-4b4d-4a0a-89d8-c59ba640275b",
+  "name": "Caller of the Claw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caller of the Claw",
+      "oracle_fingerprint": "37dfaae48bec0be27939726a1f86c51c",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Bear",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bear"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": { "Tallied": { "who": "You", "what": "NontokenCreaturesDied" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "fa6d05a1-3df4-4751-b1a0-8d9693faec73",
+  "name": "Tainted Wood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tainted Wood",
+      "oracle_fingerprint": "ae66306b3dd46863c397ed55a7e05809",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

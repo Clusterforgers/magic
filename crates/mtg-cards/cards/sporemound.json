@@ -1,0 +1,39 @@
+{
+  "oracle_id": "1be56a3d-a6c0-4b65-ae71-3d90ceefc6c0",
+  "name": "Sporemound",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sporemound",
+      "oracle_fingerprint": "8bd40628891b1797c05cd4a1e2a5d7a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

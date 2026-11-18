@@ -1,0 +1,34 @@
+{
+  "oracle_id": "940ba435-7abc-40f8-a5af-c1c653b3284e",
+  "name": "Bontu's Monument",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bontu's Monument",
+      "oracle_fingerprint": "fac16b6568cdfa3c2fa1e6afa0de3343",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "Color": "Black" },
+              { "Type": "Creature" },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "b9f4f96b-6e54-4fe6-8df7-623e0fc72409",
+  "name": "Mentor of the Meek",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mentor of the Meek",
+      "oracle_fingerprint": "954e5f6bcac27b99949c4aa1b4dda82d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Pay": { "cost": "{1}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

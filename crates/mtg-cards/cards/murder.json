@@ -1,0 +1,19 @@
+{
+  "oracle_id": "938b4e2c-88d9-4637-bc00-e228920c9a78",
+  "name": "Murder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Murder",
+      "oracle_fingerprint": "4450f881acf81db3f315d77019f00046",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

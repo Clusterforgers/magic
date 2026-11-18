@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f43d1ea5-8127-4b64-a87b-ee5cc9b9e9fa",
+  "name": "Squirrel Sovereign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Squirrel Sovereign",
+      "oracle_fingerprint": "c435840d2e79e4f6ed4b87684eedc711",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Squirrel" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

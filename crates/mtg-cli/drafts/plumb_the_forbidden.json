@@ -13,6 +13,14 @@
             "repeatable": true
           }
         },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"] } },
+            "if": { "Compare": { "left": "AdditionalPaid", "op": "Ge", "right": 1 } },
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This", "count": "AdditionalPaid" } }]
+          }
+        },
         { "Spell": { "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }] } }
       ]
     }
