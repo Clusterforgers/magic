@@ -268,18 +268,14 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
     let content = call(&server, "GET", "/api/delves/content", None, None).await;
     assert_eq!(content.status, 200);
     let content = content.json();
-    let theme = &mtg_campaign::content().unwrap().themes[0];
-    // Every boss, its upgraded forms too, which a ladder may end with.
-    assert_eq!(
-        content["bosses"].as_array().unwrap().len(),
-        theme.bosses.len() + theme.upgraded.len()
-    );
-    for (wire, boss) in content["bosses"]
-        .as_array()
-        .unwrap()
+    let themes = &mtg_campaign::content().unwrap().themes;
+    // Every boss of every theme, its upgraded forms too, which a ladder may end with.
+    let bosses: Vec<_> = themes
         .iter()
-        .zip(theme.bosses.iter().chain(&theme.upgraded))
-    {
+        .flat_map(|t| t.bosses.iter().chain(&t.upgraded))
+        .collect();
+    assert_eq!(content["bosses"].as_array().unwrap().len(), bosses.len());
+    for (wire, boss) in content["bosses"].as_array().unwrap().iter().zip(bosses) {
         assert_eq!(wire["art"]["card"], boss.art.card.as_str(), "{}", boss.id);
         // An upgraded form names the boss it came from, so the ladder and the intro can say it.
         assert_eq!(
@@ -299,7 +295,7 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
         .as_array()
         .unwrap()
         .iter()
-        .zip(&theme.events)
+        .zip(themes.iter().flat_map(|t| &t.events))
     {
         let options = wire["options"].as_array().unwrap();
         assert_eq!(options.len(), event.options.len(), "{}", event.id);

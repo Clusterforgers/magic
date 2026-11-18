@@ -222,6 +222,7 @@ mod rmt7_keyword_kinds;
 mod rmt8_mechanics;
 mod round_phases;
 mod runed_crown;
+mod rw2_other_graveyards;
 mod spotlight;
 mod t19b_reminder_duals;
 mod tail_alone;

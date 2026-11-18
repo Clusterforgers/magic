@@ -50,7 +50,7 @@ use crate::server::AppState;
 use crate::user_id::UserId;
 use store::{DelveStore, Header};
 
-/// The theme every run plays for now.
+/// The theme whose name and story the content endpoint shows.
 const THEME: &str = "warrens";
 /// The most runs a list shows.
 const LIST_LIMIT: i64 = 50;
@@ -737,10 +737,10 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 turn: card.turn,
             })
             .collect(),
-        bosses: theme
-            .bosses
+        bosses: content
+            .themes
             .iter()
-            .chain(&theme.upgraded)
+            .flat_map(|t| t.bosses.iter().chain(&t.upgraded))
             .map(|boss| DelveBossView {
                 id: boss.id.clone(),
                 name: boss.name.clone(),
@@ -756,9 +756,10 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 },
             })
             .collect(),
-        events: theme
-            .events
+        events: content
+            .themes
             .iter()
+            .flat_map(|t| &t.events)
             .map(|event| DelveEventView {
                 id: event.id.clone(),
                 title: event.title.clone(),
@@ -843,7 +844,7 @@ pub(crate) async fn list(
     Ok(Json(DelveList { delves: out }))
 }
 
-/// `POST /api/delves`: a new run in its lobby, the caller its host and first hero; 201.
+/// `POST /api/delves`: a new run in its lobby, its theme drawn by its seed, the caller its host and first hero; 201.
 pub(crate) async fn create(
     State(app): State<AppState>,
     request: Request,
@@ -868,12 +869,17 @@ pub(crate) async fn create(
         })?,
         None => crate::secret::random_seed().map_err(|_| ApiError::internal())?,
     };
+    let theme = campaign()?
+        .theme_for(seed, mtg_campaign::run::CONTENT)
+        .map_err(|_| ApiError::internal())?
+        .id
+        .clone();
     let code = JoinCode::generate().map_err(|_| ApiError::internal())?;
     let header = Header {
         id: Uuid::new_v4(),
         code: code.expose().to_owned(),
         host: user.id.uuid(),
-        theme: THEME.to_owned(),
+        theme: theme.clone(),
         seed,
         heat: body.heat,
     };
@@ -883,7 +889,7 @@ pub(crate) async fn create(
         .create(&header)
         .await
         .map_err(|e| unavailable(&e))?;
-    let run = Run::new(campaign()?, THEME, seed, body.heat).map_err(|_| ApiError::internal())?;
+    let run = Run::new(campaign()?, &theme, seed, body.heat).map_err(|_| ApiError::internal())?;
     let mut loaded = Loaded {
         header,
         events: Vec::new(),

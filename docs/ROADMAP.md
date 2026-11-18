@@ -169,7 +169,10 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw1a) The reworked fight plan plays the record's deck file (draft cards loaded from their reads), puts its satchel in the boss's command zone and counts its makeup from the deck
 - [ ] (rw1b) Skrix, Vex and Ysolde take their precons' colours (BG, B, GU) in their records once the bracket decks go (rw8)
-- [ ] (rw2) Drowned Spire innates (no mill; only the Archivist's Phase 1 mills, once)
+- [ ] (rw2a) Boss seats play their `deck_file` precon (100 cards) in place of `deck`, which the Spire bosses leave empty
+- [ ] (rw2b) The run page names the run's own theme and story (the content endpoint shows the Warrens' for every run)
+- [ ] (rw2c) Spire bosses' `makeup` from their precons, so they draw usable relics
+- [ ] (rw2d) One real fight per Spire boss at innate level V under the loop detector, on the slow list
 - [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)
 - [ ] (rw5a) The boss's satchel reaches its game: the fight's recipe carries the reusable and once satchel cards into `satchel_reusable` and `satchel`
 - [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
