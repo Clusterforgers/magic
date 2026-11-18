@@ -24,6 +24,8 @@ const PENDING: &[&str] = &[
     "Wayta, Trainer Prodigy",
     // Read wrong: proliferate cannot bind the permanents it put counters on.
     "Ripples of Potential",
+    // Read wrong: its draft lacks the copy for each creature sacrificed.
+    "Plumb the Forbidden",
 ];
 
 fn deck_dir() -> PathBuf {
