@@ -75,13 +75,12 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9b3) At 1280 × 720 a card prompt's sheet holds its first line and one row of whole cards without scrolling, and more than eight target cards wrap at 1400 × 900
 - [ ] (pf9d2) An eight-seat grid at 1400 × 900 shows a row of each opponent's cards
 - [ ] (pf9d3) Your pod column in boss mode at 1400 × 900 shows all its chips without scrolling
-- [ ] (pf10o) The lobby's seats list stands on the first screen at 1400 × 900 beside the deck chooser instead of under the invite panel
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
+- [ ] (pf9k) Priority offers a spell that only an announced mana ability (Vexing Puzzlebox) makes affordable, so it can be cast and paid from the payment prompt
 - [ ] (pf9g) Copies of one trigger are told apart on the stack, and a trigger whose conditions all fail says why in the log
 - [ ] (pf9h) An ability that rolls several dice makes one roll of them (Mr. House), so "one or more dice" triggers fire once
-- [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out
 - [ ] (lp1) A pending loop offer survives a rebuild of the engine from the log (a server restart asks priority again and finds the loop three cycles later)
 - [ ] (lp2) A loop that makes a permanent each cycle runs past the shortcut's work cap (about 350 iterations of Kiki-Jiki with Pestermite): each engine step reads every permanent
 
@@ -161,9 +160,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl14b) Softer boss passives at Heat 0 and harsher ones at Heat 2, a variant of each passive by Heat as the Enrage has
 - [ ] (dl16a) Measure deeper Delves floors with the simulator (floors 2 and 3 at each Heat) and tune the per-floor steps against the tier targets
 - [ ] (dl15l) Measure the bracket generation against the tier targets with Hard bosses and tune each boss's brackets by its win rate
-- [ ] (dl15m) The ladder and the intro name a final boss's upgraded form as the boss it came from
 - [ ] (dl15n) More uber bosses with a game-changing rule each
-- [ ] (dl15o) The table shows each hero the colours their costs stand for this round under the Unmaker ("red is green")
 
 ## M8 Polish and deploy
 

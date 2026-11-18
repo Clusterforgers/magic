@@ -14,6 +14,10 @@ id: string,
  */
 name: string, 
 /**
+ * The id of the boss an upgraded form came from; left out for a boss of its own.
+ */
+upgrade_of?: string, 
+/**
  * Its colours as WUBRG letters.
  */
 colors: string, 

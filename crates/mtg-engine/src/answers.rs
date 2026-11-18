@@ -68,6 +68,9 @@ pub(crate) enum Outcome {
     Division(Vec<(Target, u32)>),
     /// These are the events of the helper's payment for the assist of the spell in progress.
     Assisted(Vec<Event>),
+    /// Set the payment in progress aside and activate this mana ability; the payment is asked again once it resolved
+    /// (CR 601.2g, 605.3a).
+    PauseFor(AbilityRef),
     /// Abandon the cast or activation in progress.
     CancelCast,
     /// Remove the triggered ability being put on the stack, whose controller chose no target (CR 603.3d).

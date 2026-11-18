@@ -202,7 +202,7 @@ describe('/dev/lobby in development', () => {
     expect(screen.queryByRole('button', { name: 'Close game' })).toBeNull()
   })
 
-  it('gives the host the invite link and code, ahead of the seats, with `invites=1`', async () => {
+  it('gives the host the invite link and code, under the seats, with `invites=1`', async () => {
     window.sessionStorage.clear()
     await visit('/dev/lobby?seats=3&invites=1')
     await screen.findByRole('heading', { name: 'Waiting for players' })
@@ -213,8 +213,8 @@ describe('/dev/lobby in development', () => {
       'href',
       expect.stringContaining('/join/K7M29QXA'),
     )
-    // The invite comes first in the reading order, so the host sees it without scrolling on a laptop.
-    expect(invite?.compareDocumentPosition(seats as Node)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
+    // The seats come first in the reading order, so they stand on the first screen beside the deck chooser.
+    expect(seats?.compareDocumentPosition(invite as Node)).toBe(Node.DOCUMENT_POSITION_FOLLOWING)
     cleanup()
     window.sessionStorage.clear()
     await visit('/dev/lobby?seats=3')

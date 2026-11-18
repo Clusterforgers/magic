@@ -433,6 +433,12 @@ pub struct PayOptions {
     pub pool: ManaPool,
     /// Mana abilities that may be tapped.
     pub sources: Vec<ManaOption>,
+    /// The payer's mana abilities that do more than add mana (a roll, a discard, CR 605.3a): an `Activate` answer activates
+    /// one at once and the payment is asked again with its mana; never part of an automatic payment, and left out while
+    /// there are none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<AbilityRef>>", optional))]
+    pub announced: Vec<AbilityRef>,
     /// The creatures that may be tapped (`convoke`) and the graveyard cards that may be exiled (`delve`) to pay part of the cost; boxed to keep a decision small, and flat on the wire.
     #[serde(flatten)]
     #[cfg_attr(feature = "ts", ts(flatten))]
@@ -920,6 +926,8 @@ pub enum PayChoice {
     Complete(Payment),
     /// Abandon the cast (when `can_cancel`): the spell stays where it was, nothing is logged.
     Cancel,
+    /// Activate this mana ability of `PayOptions.announced` now (CR 601.2g); the payment is asked again once it resolved.
+    Activate(AbilityRef),
 }
 
 /// A player's answer to the pending decision.

@@ -1,7 +1,7 @@
 //! Goal: where a rule draws the colors of a hero's costs anew (the Delves uber boss), the view of each card in their
 //! hand and command zone carries the cost they pay now beside the printed one, at tables of two to four seats; the
 //! field is left out for a card whose cost stays, for the boss's own cards and for a permanent, so other games keep
-//! their wire form.
+//! their wire form. Every seat sees on each hero's view which color their costs stand for this round.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -12,6 +12,7 @@ use mtg_cards::ability::Ability;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_engine::format::Commander;
+use mtg_engine::rules::PlayerEffect;
 use mtg_engine::w6b_emblems::emblem_definition;
 use mtg_protocol::{ObjectView, StateView};
 use mtg_testkit::cards::{creature, land};
@@ -114,4 +115,28 @@ fn without_the_rule_the_field_is_left_out() {
     assert_eq!(view.cost_now, None);
     let json = serde_json::to_value(&view).unwrap();
     assert!(json.get("cost_now").is_none());
+    let state = StateView::for_player(driver.state(), PlayerId::from_index(0));
+    assert!(
+        state
+            .table
+            .players
+            .iter()
+            .all(|player| player.effects.is_empty())
+    );
+}
+
+#[rstest]
+fn every_seat_sees_what_each_heros_colors_stand_for(#[values(2, 3, 4)] seats: usize) {
+    let driver = driver(seats, true);
+    let drawn = PlayerEffect::CostColorsDrawn(vec![
+        (Color::White, Color::Blue),
+        (Color::Blue, Color::White),
+    ]);
+    for viewer in 0..seats {
+        let view = StateView::for_player(driver.state(), PlayerId::from_index(viewer));
+        for (seat, player) in view.table.players.iter().enumerate() {
+            let shown = player.effects.contains(&drawn);
+            assert_eq!(shown, seat < seats - 1, "seat {seat} seen by {viewer}");
+        }
+    }
 }

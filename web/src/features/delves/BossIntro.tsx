@@ -8,7 +8,7 @@ import { SwordsIcon } from 'lucide-react'
 import { BossAbilityList } from '@/features/table/campaign/BossAbilities'
 import type { DelveContent, DelveView } from '@/protocol/generated'
 import { BossPortrait, ColourPips } from './CommanderArt'
-import { bossLife, introAbilities } from './model'
+import { bossLife, introAbilities, upgradedFrom } from './model'
 import { LifeBar } from './RunHeader'
 
 /** The boss fight the party is in or about to enter. */
@@ -25,6 +25,7 @@ export function BossIntro({
   const boss = content.bosses.find((entry) => entry.id === view.boss)
   const fight = view.fight
   const name = fight?.boss ?? boss?.name ?? 'A boss'
+  const from = upgradedFrom(content, view.boss)
   const life = fight?.life ?? (view.boss === undefined ? undefined : bossLife(view, view.boss)) ?? null
   const abilities = fight === undefined ? [] : introAbilities(content, fight)
   const problems = new Map(view.deck_problems.map((problem) => [problem.hero, problem.reason]))
@@ -45,6 +46,11 @@ export function BossIntro({
             Boss fight
           </p>
           <h2 className="text-2xl font-semibold">{name}</h2>
+          {from === null ? null : (
+            <p data-slot="upgraded-from" className="text-sm font-medium text-delve">
+              {from}
+            </p>
+          )}
           <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             {boss ? <ColourPips colours={boss.colors} /> : null}
             {life === null ? null : <span>{life} life</span>}

@@ -1,4 +1,4 @@
-// Goal: the lobby tells everybody who may find the game, and hands the host the invite link and the code kept in this tab, each with a copy button that confirms in words; it says plainly when the tab does not have the code, never shows a guest the code, and keeps working when the browser stores nothing.
+// Goal: the lobby tells everybody who may find the game, and hands the host the invite link and the code kept in this tab under the seats, each with a copy button that confirms in words; it says plainly when the tab does not have the code, never shows a guest the code, and keeps working when the browser stores nothing.
 import { screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { saveInvites } from '@/lib/invites'
@@ -102,6 +102,15 @@ describe('the invite of the host', () => {
     expect(section.getByRole('link')).toHaveAttribute('href', LINK)
     expect(section.getByRole('link')).toHaveTextContent(LINK)
     expect(document.querySelector('[data-slot="invite-code"]')).toHaveTextContent('K7M2-9QXA')
+  })
+
+  it('stands under the seats, which keep the first screen beside the deck chooser', async () => {
+    remember()
+    await hostLobby()
+    const seats = document.querySelector('[data-slot="lobby-status"]') as HTMLElement
+    expect(
+      seats.compareDocumentPosition(invite() as HTMLElement) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy()
   })
 
   it('copies the link and says so in words', async () => {

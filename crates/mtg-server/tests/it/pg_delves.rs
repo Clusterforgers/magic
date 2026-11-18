@@ -281,6 +281,13 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
         .zip(theme.bosses.iter().chain(&theme.upgraded))
     {
         assert_eq!(wire["art"]["card"], boss.art.card.as_str(), "{}", boss.id);
+        // An upgraded form names the boss it came from, so the ladder and the intro can say it.
+        assert_eq!(
+            wire.get("upgrade_of").and_then(|id| id.as_str()),
+            boss.upgrade_of.as_deref(),
+            "{}",
+            boss.id
+        );
         assert_eq!(
             wire["art"]["oracle_id"],
             boss.art.oracle_id.as_str(),

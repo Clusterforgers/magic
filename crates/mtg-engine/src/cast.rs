@@ -225,6 +225,7 @@ pub(crate) fn payment_decision(
         cost,
         pool,
         sources,
+        announced: Vec::new(),
     })
 }
 
@@ -473,6 +474,13 @@ pub(crate) fn pay_answer(
             }
             other => other,
         });
+    }
+    if let PayChoice::Activate(ability) = choice {
+        return if options.announced.contains(&ability) {
+            Ok(Outcome::PauseFor(ability))
+        } else {
+            Err(IllegalAnswer::NotOffered("mana ability").into())
+        };
     }
     let announced = match choice {
         PayChoice::Cancel => Vec::new(),
@@ -833,6 +841,7 @@ fn pay_with(
     let payment = match choice {
         PayChoice::Cancel if options.can_cancel => return Ok(Outcome::CancelCast),
         PayChoice::Cancel => return Err(IllegalAnswer::NotOffered("cancel").into()),
+        PayChoice::Activate(_) => return Err(IllegalAnswer::NotOffered("mana ability").into()),
         PayChoice::Manual(payment) => payment,
         PayChoice::Complete(partial) => complete_payment_with(
             &options.cost,
@@ -921,6 +930,7 @@ mod tests {
             help: Box::default(),
             spend: Box::new(Spend::other()),
             can_cancel,
+            announced: Vec::new(),
             attack: false,
             block: false,
             life,

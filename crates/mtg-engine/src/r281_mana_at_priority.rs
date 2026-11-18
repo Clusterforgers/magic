@@ -45,3 +45,24 @@ pub(crate) fn r281_resolve_at_once(state: &GameState, events: &mut Vec<Event>) {
         events.push(Event::ResolutionBegan { object });
     }
 }
+
+/// The mana abilities of this kind `player` may activate while paying for `paying` (CR 601.2g): each one offered at
+/// priority now but the ability being paid for; none while a resolution is under way, whose cast asks its payment in
+/// the middle of it.
+pub(crate) fn r281_while_paying(
+    state: &GameState,
+    player: PlayerId,
+    paying: Option<AbilityRef>,
+) -> Vec<AbilityRef> {
+    if state.resolving().is_some() {
+        return Vec::new();
+    }
+    crate::priority::abilities_now(state, player)
+        .0
+        .into_iter()
+        .filter(|address| Some(*address) != paying)
+        .filter(|address| {
+            ability_reader::ability(state, *address).is_some_and(|rules| r281_at_priority(&rules))
+        })
+        .collect()
+}

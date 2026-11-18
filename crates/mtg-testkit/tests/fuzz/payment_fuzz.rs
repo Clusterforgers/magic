@@ -62,6 +62,7 @@ fn cancel_and_complete_hold_in_every_position(#[case] players: usize) {
                     }
                     PayChoice::Auto => tally.automatic += 1,
                     PayChoice::Manual(_) => tally.manual += 1,
+                    PayChoice::Activate(_) => {}
                 }
             }
             previous = Some(decision);

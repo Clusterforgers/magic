@@ -728,6 +728,7 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
             .map(|boss| DelveBossView {
                 id: boss.id.clone(),
                 name: boss.name.clone(),
+                upgrade_of: boss.upgrade_of.clone(),
                 colors: boss.colors.clone(),
                 line: boss.line.clone(),
                 card: boss.rules.first().cloned(),
