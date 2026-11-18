@@ -101,7 +101,7 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 | top bar | home, turn badge, step ladder (from 1024 px), menu (layout, theme, card images, hand order, Concede); 44 px |
 | opponents, own | a pod and board per seat; the rows share the room by what their boards hold, not by a fixed ratio |
 | shared | stack chips, ticker, prompt line. A prompt is one band of fixed height across the whole width: the asking card's chip, the question in the card's words, the answers in a fixed place with the primary one at the right end; two lines in a narrow window. Its detail is in the Stack column ([The band and the Stack column](#the-band-and-the-stack-column)) |
-| hand dock | whole cards in one row lying in a gentle arc (`fanOf`: the ends turned up to 6° and 8 px lower), overlapping in rows only when they do not fit; hover or focus lifts a card upright and opens the preview |
+| hand dock | whole cards in one row lying in a gentle arc (`fanOf`: the ends turned up to 6° and 8 px lower; `fanPlace` raises the arc and moves turned cards inwards so it stays inside the dock), overlapping in rows only when they do not fit; hover or focus lifts a card upright and opens the preview |
 | controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more |
 | side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 272 to 304 px column that the viewer folds to the 44 px rail from its edge and opens again from the rail (kept per browser); M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
 
