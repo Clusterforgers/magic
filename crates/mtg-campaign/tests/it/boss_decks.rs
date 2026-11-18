@@ -1,6 +1,7 @@
 //! Goal: every boss precon deck file of `content/decks` is 100 cards with its face commander shuffled in; each card
 //! plays automatically from the test corpus (Verified or Read) or from a whole draft of the read tier, unless it waits
-//! on the pending list; and each corpus card lies within the colour identity of the precon's face commander.
+//! on the pending list; each corpus card lies within the colour identity of the precon's face commander; and each
+//! file's makeup is the count of its cards (`MTG_UPDATE_MAKEUPS=1` writes it).
 
 use std::path::{Path, PathBuf};
 
@@ -145,4 +146,59 @@ fn every_boss_deck_card_lies_within_its_commanders_colours() {
             }
         }
     }
+}
+
+/// The makeup of a deck file's cards: a corpus card by its rules, any other by the colours and type line of its
+/// Scryfall fixture.
+fn counted(deck: &mtg_campaign::content::DeckFile) -> mtg_campaign::DeckMakeup {
+    let drafts = Path::new(env!("CARGO_MANIFEST_DIR")).join("../mtg-cli/drafts/fixtures");
+    let mut makeup = mtg_campaign::DeckMakeup::default();
+    for (name, copies) in &deck.cards {
+        for _ in 0..*copies {
+            if let Ok(card) = corpus::card(name) {
+                makeup.add_card(&card, false);
+                continue;
+            }
+            let slug = mtg_cards::load::slug(name);
+            let text = [corpus::fixture_dir(), drafts.clone()]
+                .iter()
+                .find_map(|dir| std::fs::read_to_string(dir.join(format!("{slug}.json"))).ok());
+            // A pending card with no fixture counts for nothing.
+            let Some(text) = text else {
+                assert!(PENDING.contains(&name.as_str()), "{name} has no fixture");
+                continue;
+            };
+            let card: serde_json::Value = serde_json::from_str(&text).unwrap();
+            let face = card["card_faces"].get(0).unwrap_or(&card);
+            let colors: String = card["colors"]
+                .as_array()
+                .or_else(|| face["colors"].as_array())
+                .into_iter()
+                .flatten()
+                .filter_map(|c| c.as_str())
+                .collect();
+            makeup.add_type_line(&colors, face["type_line"].as_str().unwrap_or_default());
+        }
+    }
+    makeup
+}
+
+#[test]
+fn every_deck_file_holds_the_makeup_of_its_cards() {
+    let update = std::env::var_os("MTG_UPDATE_MAKEUPS").is_some();
+    let content = mtg_campaign::content().unwrap();
+    for (file, deck) in &content.decks {
+        let makeup = counted(deck);
+        if update {
+            let written = mtg_campaign::content::DeckFile {
+                makeup,
+                ..deck.clone()
+            };
+            let text = serde_json::to_string_pretty(&written).unwrap() + "\n";
+            std::fs::write(deck_dir().join(file), text).unwrap();
+        } else {
+            assert_eq!(deck.makeup, makeup, "{file}: run with MTG_UPDATE_MAKEUPS=1");
+        }
+    }
+    assert_eq!(content.decks.len(), decks().len());
 }

@@ -363,5 +363,43 @@
       "Vivid Grove",
       1
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 24,
+      "W": 27
+    },
+    "types": {
+      "Artifact": 19,
+      "Creature": 23,
+      "Enchantment": 5,
+      "Instant": 6,
+      "Land": 38,
+      "Sorcery": 8
+    },
+    "subtypes": {
+      "Artificer": 1,
+      "Aura": 2,
+      "Avatar": 1,
+      "Beast": 1,
+      "Cat": 23,
+      "Cleric": 3,
+      "Curse": 2,
+      "Equipment": 14,
+      "Forest": 6,
+      "Gate": 1,
+      "Giant": 1,
+      "Knight": 1,
+      "Plains": 8,
+      "Scout": 1,
+      "Soldier": 4,
+      "Spirit": 2,
+      "Warrior": 4,
+      "Wizard": 1
+    },
+    "tokens": 5,
+    "counters": 2,
+    "graveyard": 0,
+    "creature_commanders": 0
+  }
 }

@@ -282,5 +282,53 @@
       "Forest",
       32
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 57
+    },
+    "types": {
+      "Artifact": 5,
+      "Creature": 38,
+      "Enchantment": 7,
+      "Instant": 6,
+      "Land": 39,
+      "Sorcery": 6
+    },
+    "subtypes": {
+      "Archer": 1,
+      "Aura": 1,
+      "Avatar": 1,
+      "Bear": 2,
+      "Beast": 3,
+      "Bird": 1,
+      "Desert": 1,
+      "Dinosaur": 11,
+      "Druid": 7,
+      "Elder": 1,
+      "Elf": 9,
+      "Equipment": 2,
+      "Forest": 32,
+      "Frog": 1,
+      "God": 1,
+      "Human": 3,
+      "Hydra": 2,
+      "Knight": 1,
+      "Lizard": 1,
+      "Noble": 1,
+      "Ooze": 2,
+      "Plant": 1,
+      "Raccoon": 1,
+      "Scout": 1,
+      "Shaman": 2,
+      "Spider": 1,
+      "Treefolk": 1,
+      "Troll": 1,
+      "Warrior": 1
+    },
+    "tokens": 4,
+    "counters": 6,
+    "graveyard": 2,
+    "creature_commanders": 0
+  }
 }

@@ -15,10 +15,7 @@ const TABLE: SeatFlags[] = [
 const fight = {
   boss: 'Skrix, the Rat Queen',
   life: 120,
-  rules: ['skrix'],
-  phases: [['nest', 80]] as Array<[string, number]>,
-  minions: [],
-  intensify: [],
+  innate: { name: 'Brood II', text: 'Rats.', level: 2 },
 }
 
 function info(result: unknown = null) {

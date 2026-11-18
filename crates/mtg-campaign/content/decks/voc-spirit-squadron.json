@@ -322,5 +322,42 @@
       "Island",
       11
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "U": 27,
+      "W": 36
+    },
+    "types": {
+      "Artifact": 8,
+      "Creature": 34,
+      "Enchantment": 9,
+      "Instant": 7,
+      "Land": 35,
+      "Planeswalker": 1,
+      "Sorcery": 6
+    },
+    "subtypes": {
+      "Angel": 2,
+      "Aura": 2,
+      "Avatar": 1,
+      "Cleric": 6,
+      "Dovin": 1,
+      "Human": 6,
+      "Island": 12,
+      "Knight": 1,
+      "Pegasus": 1,
+      "Pirate": 1,
+      "Plains": 13,
+      "Rogue": 1,
+      "Shapeshifter": 1,
+      "Soldier": 5,
+      "Spirit": 24,
+      "Wizard": 2
+    },
+    "tokens": 15,
+    "counters": 3,
+    "graveyard": 6,
+    "creature_commanders": 0
+  }
 }

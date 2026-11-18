@@ -1,5 +1,5 @@
-//! Goal: every boss Satchel card of the content has a bot cue, a card two bosses carry has one cue, and the Drowned
-//! Spire's Satchel cards, which its content does not hold yet, have the brain's built-in cues.
+//! Goal: every boss Satchel card has a bot cue (the content's, or the brain's built-in one for the Drowned Spire's),
+//! and a card two bosses carry has one cue.
 
 use std::collections::BTreeMap;
 
@@ -15,9 +15,15 @@ fn every_boss_satchel_card_has_one_cue() {
     for boss in content.themes.iter().flat_map(|theme| &theme.bosses) {
         for card in &boss.satchel {
             cards += 1;
-            let cue = card
-                .cue
-                .unwrap_or_else(|| panic!("{}: {} has no cue", boss.name, card.card));
+            let Some(cue) = card.cue else {
+                assert!(
+                    satchel::builtin(&card.card).is_some(),
+                    "{}: {} has no cue",
+                    boss.name,
+                    card.card
+                );
+                continue;
+            };
             let first = *seen.entry(card.card.clone()).or_insert(cue);
             assert_eq!(first, cue, "{} has two cues", card.card);
         }

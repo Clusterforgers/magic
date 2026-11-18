@@ -4,15 +4,15 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 
 ## Shape
 
-- A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds three of the theme's lieutenants drawn from the seed, then a final boss drawn from the theme's final bosses and the upgraded forms of the lieutenants left off the ladder (a run of a content generation before 4 meets every lieutenant of its generation, then the theme's final boss); between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
-- Themes: the Warrens and, from content generation 8, the Drowned Spire (`content/spire.json`: the Siren Queen and the Drowned Archivist, then the Leviathan; three rooms). A new run draws its theme by its seed among the themes whose final boss its generation meets (`Content::theme_for`).
-- Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them and its minions after it (`FightPlan`).
+- A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds three of the theme's lieutenants drawn from the seed (fewer when the theme has fewer), then one of the theme's final bosses drawn by the seed (the Warrens: Grimgut or the Unmaker); a stored run of a generation before 4 folds by its older ladder of every lieutenant, then the final boss; between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
+- Themes: the Warrens and the Drowned Spire (`content/spire.json`: the Siren Queen and the Drowned Archivist, then the Leviathan; three rooms). A new run draws its theme by its seed among the themes whose final boss its generation meets (`Content::theme_for`).
+- Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them (`FightPlan`).
 - Each side takes one shared team turn (`TeamMode::SharedTurns`, CR 805): every hero untaps, draws, plays a land and casts sorceries in the party's turn, a side's turn is led by its first seat (`turn_lead`: the first living hero, the boss) and priority goes round the table from it. In the declare-attackers step each player of the side chooses the attacks of their own creatures in turn order, seeing what the teammates before chose; the side declares every choice at once, so limits, requirements and "attacks alone" read the whole declaration (`party_attacks`), and each hero pays the attack costs of their own creatures. A choice illegal only together is refused with its reason and chosen again; after two refusals the engine declares the plain legal attack. Life totals stay per hero. The table names the party's turn ("Your party's turn").
 - Life carries over between fights. After a won fight each hero keeps their end life and heals 15; a hero who ended it as a Spirit comes back at 10 first. A Campfire rest heals 20, the shop's draught 15; nothing heals above 40 plus relic bonuses.
 - The party has 3 hearts. A lost fight costs one and the fight is retried: against the first boss every hero regroups at full life, against a later one at half life; with no hearts left the run ends in defeat.
 - From content generation 5 a run is endless: when a floor's final boss falls the party votes to bank the win or descend to the next floor (Endless).
 - A fight counts as lost, at the same price, when its table closes or expires without a result (the host closed the lobby, or the janitor dropped an unstarted lobby or a game nobody sat at; a bot ally is nobody) and when the host retreats, which ends the table. A game an admin ended or that failed to load was never played: the fight is made again at no cost.
-- Timers: the host picks Relaxed (default), Quick or Off when starting a run (`CreateDelve.timers`, stored as the run's first settings event, `Run.timers`); every fight's game plays under it, so the clocks of [server.md](server.md) (Response clocks) are the same in each fight, and Off never passes for a hero by time. A run stored without the setting is Relaxed. The boss and its minions are bots and have no clock.
+- Timers: the host picks Relaxed (default), Quick or Off when starting a run (`CreateDelve.timers`, stored as the run's first settings event, `Run.timers`); every fight's game plays under it, so the clocks of [server.md](server.md) (Response clocks) are the same in each fight, and Off never passes for a hero by time. A run stored without the setting is Relaxed. The boss is a bot and has no clock.
 - Within a fight a hero at 0 life is a Restless Spirit while a teammate lives (`docs/engine.md`, Campaign seats); the party loses when every hero has fallen. See Spirits.
 
 ## Spirits
@@ -38,11 +38,11 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 ## Bosses
 
-Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`boss_plan.rs`): one innate, one encounter modifier, two phases by round, a satchel, a precon deck and relics by depth. The boss has nothing else; its brain is Hard at every Heat and depth.
+Every boss (`boss_plan.rs`) is: one innate, one encounter modifier, two phases by round, a satchel, a precon deck and relics by depth. The boss has nothing else; its brain is Hard at every Heat and depth.
 
-- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`<code>-<name>.json` in `content/decks`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight; `cue`, when its bot casts it, `docs/bots.md`), `makeup` what its deck is made of, `art` the real card whose art crop pictures it. `deck` stands in until the precon lands.
+- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`<code>-<name>.json` in `content/decks`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight; `cue`, when its bot casts it, `docs/bots.md`), `art` the real card whose art crop pictures it. The deck file holds the precon's cards with its by-hand cards swapped for basics (`swaps`) and its `makeup`, counted from the corpus by the `boss_decks` test (`MTG_UPDATE_MAKEUPS=1` rewrites it). The server loads the deck as a live game loads a deck: each Read or Unverified card plays its draft, pinned in the recipe (`cards_read`); the satchel cards come last in the deck (`FightPlan::boss_deck`) and the plan moves them into the seat's satchel.
 - Depth: the bosses the party defeated in the run over all floors (`Run::defeated`); a lost and retried fight adds none.
-- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` and a cost's `{N}` in its abilities, `"$L"` for the level where the shape changes); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. A level may differ in more than N: `"params": {"NAME": [v1, …, v5]}` puts any value where `"$NAME"` stands (an ability that becomes `null` is left out at that level), and `"texts"` gives each level its own words A phase may be written with levels too; the fight plays it at the innate's level (`boss_plan.rs`). The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
+- Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` and a cost's `{N}` in its abilities, `"$L"` for the level where the shape changes); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. A level may differ in more than N: `"params": {"NAME": [v1, …, v5]}` puts any value where `"$NAME"` stands (an ability that becomes `null` is left out at that level), and `"texts"` gives each level its own words. A phase may be written with levels too; the fight plays it at the innate's level (`boss_plan.rs`). The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
 
 | Depth | 0 | 1 | 2 | 3 | 4–5 | 6–7 | 8–9 | 10–11 | 12+ |
 |---|---|---|---|---|---|---|---|---|---|
@@ -55,10 +55,11 @@ Runs of content generation 8 and later (`REWORK_FROM`) play the reworked boss (`
 - Satchel: four spells in the boss's command zone, cast like cards in hand and public; a reusable one returns as it leaves the stack and costs {2} more for each earlier cast this fight, a once card does not return.
 - Relics: `depth − offset` relics, the offset 4, 3 and 2 at Heat 0, 1 and 2, at most 6 (`boss_relics.rs`). They come from the heroes' whole relic pool of the run's generation, risky relics included, never one that names teammates (`team`), and only those the deck's makeup can use. Each is Rare by chance (10, 15 or 20 % at Heat 0, 1 and 2 with one relic, 10 points more for each further relic, at most 60 %) or, from four relics at Heat 1 and 2, Mythic (5 % at four, 10 at five, 15 at six); the rest are Common. Copies can repeat and stack. The draw is keyed by floor and room.
 - Life: 40 and 15 for each hero after the first (`Scale::boss_life`); Heat and depth do not change it.
-- Its advantages are open: the innate, modifier and relics are emblems in its command zone from the start, named with their rules on the seat's sheet (`boss_sheet.rs`, `Reworked::sheet`). The intro (`DelveFightView`) lists the two effects, the phases with their rounds ("Phase 1 at round 8"), the satchel with each card's mark and the relics; at the table the bar shows the innate with its level, the modifier and relics as chips, and a pill counting down ("Phase 1 in 3 rounds") that names the phase in force once it begins, with the next one's countdown. A reusable satchel card reads "returns · +{N}" with its tax now, a once card "once" (`BossView`: `innate`, `modifier`, `round_phases`, `phase_in`, `relics`, `satchel`).
-- No loops: the bots of the boss's side answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
+- Its advantages are open: the innate, modifier and relics are emblems in its command zone from the start, named with their rules on the seat's sheet (`boss_sheet.rs`, `BossSeat::sheet`). The intro (`DelveFightView`) lists the two effects, the phases with their rounds ("Phase 1 at round 8"), the satchel with each card's mark and the relics; at the table the bar shows the innate with its level, the modifier and relics as chips, and a pill counting down ("Phase 1 in 3 rounds") that names the phase in force once it begins, with the next one's countdown. A reusable satchel card reads "returns · +{N}" with its tax now, a once card "once" (`BossView`: `innate`, `modifier`, `round_phases`, `phase_in`, `relics`, `satchel`).
+- Opening hand: the boss draws 7 with 2 to 4 lands and takes no mulligan (`OpeningLands::BOSS`).
+- No loops: the boss's bot answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
 - Drain rule: a boss's innate, modifier, phase or satchel card takes life from a hero only as damage or unless the hero pays.
-- Relics for heroes: from generation 8 a relic can drop again; owning it never lowers its chance, and copies stack.
+- Relics for heroes: from generation 8 (`RELICS_AGAIN_FROM`) a relic can drop again; owning it never lowers its chance, and copies stack.
 
 ### Encounter modifiers
 
@@ -96,10 +97,9 @@ The boss's side spreads its pressure over the party (`mtg-engine`, `spotlight.rs
 
 - Attention: damage a boss-side source deals a hero, life a hero loses to a boss-side spell or ability, and each permanent of a hero that one removes (3, a token 1) count as pressure on that hero. The window is the last three rounds of the table, or one round per hero for a bigger party.
 - Cap: a hero who took more than 40 % of the window's pressure (60 % with two heroes standing, from 6 pressure on) is capped. The boss's side neither attacks a capped hero nor aims removal or player effects at them while another hero is a fair target, unless the capped hero is an overwhelming threat: a presence at least twice every other hero's (and 15 or more), or creatures whose power reaches the boss's life.
-- Focus: the boss eyes the uncapped hero with the most presence (creature power, 2 per other nonland permanent, cards in hand) less attention, ties going round the table with the boss's turns; each minion eyes the next hero of that order, so the boss's side splits its targets. The table shows the eyed hero on each boss-side seat ("Eyes Ann").
+- Focus: the boss eyes the uncapped hero with the most presence (creature power, 2 per other nonland permanent, cards in hand) less attention, ties going round the table with the boss's turns. The table shows the eyed hero on each boss-side seat ("Eyes Ann").
 - Binding: each boss-side seat's attacks and its targeted spells and abilities go at the hero it eyes (`spotlight_aim.rs`). A seat leaves that hero only when (a) the eyed hero can't be attacked or targeted (no legal way, protection, hexproof), (b) another hero is an overwhelming threat or their creatures' power reaches the boss's life while the eyed hero is neither, (c) every attacker that could go at the eyed hero would be blocked and killed with no damage through (a blocker that kills it and lives, or strikes first; flyers need a flyer or reach, menace two blockers) while an attack at another hero is not futile, or (d) the attack kills another hero (not in the grace; damage past each blocker, the biggest attackers blocked first): a kill is always taken. Blocks are free. Outside these cases nothing moves a seat off its eyed hero; inside them the aim follows the order the boss eyes the heroes. Within the aimed hero's board the bots weigh a target by its worth less attention (1 per point) plus 6 for the eyed hero, never by low life alone.
 - The log names the reason: "Skrix attacks Chrisser instead of Mattias: Mattias can't be attacked" (`Event::FocusShifted`: the seat, the eyed hero, the hero attacked instead, and one of Unreachable, Overwhelming, Deadly, Futile, Lethal). Targeted spells and abilities follow the same rule without a log line.
-- "The hero in the spotlight" (`Ref::Spotlit`) is the controller's focus: a scheme that names it (Marked Prey) goes round the party as its own drain adds attention.
 - Grace: until every standing hero has finished three turns, damage and life loss from the boss's side leave a hero at 1 life at least. A hero's own cards are not held back.
 - Politics-free: the boss's side reads only the board, the spotlight and the life totals; no deals, no kingmaking.
 
@@ -110,7 +110,7 @@ The boss's side spreads its pressure over the party (`mtg-engine`, `spotlight.rs
 ## Commander rules in a fight
 
 - Heroes play their Commander decks under the Commander rules: 40 life at the start of a run (carried after), the commander tax, 21 combat damage from one commander eliminates a hero.
-- The boss and its minions have no commander. They take commander damage as normal damage but never lose to 21 of it, so a big commander shortens the fight without ending it in one hit.
+- The boss has no commander. They take commander damage as normal damage but never lose to 21 of it, so a big commander shortens the fight without ending it in one hit.
 
 ## Difficulty
 
@@ -121,6 +121,7 @@ The host picks the Heat when creating a run; the creation form and the run heade
 | 0 | Casual | any deck can win with some luck |
 | 1 | Seasoned | needs a deck that suits the format |
 | 2 | Heroic | needs a team of decks that work together and suit the format |
+
 Depth and Heat act on the boss through its innate level and relics (Bosses); the party size sets its life.
 
 ## Endless
@@ -128,16 +129,16 @@ Depth and Heat act on the boss through its innate level and relics (Bosses); the
 From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor (`Run.floor`, from 1).
 
 - Floor cleared: when a floor's final boss falls the run waits on the cleared floor (`Status::FloorCleared`, `Run.floors_cleared` counts it). Each hero votes to bank the win or descend (`RunEvent::FloorVoted`, `DelveAction::FloorVote`); with every vote in, the most votes win and a tie goes to the torch bearer's vote, as the camp vote. Bank ends the run in victory.
-- Descent: the next floor's ladder is drawn from the seed keyed by the floor (`map::generate_floor`): three lieutenants and a final boss as on the first floor from the roster of the run's generation (the uber boss included), avoiding by identity the bosses of the floor above while enough others are left. The heroes keep their life, relics, Satchel, upgrades, banes and gold; the party gets one heart back, up to 3 (`DESCENT_HEARTS`). The floor's first boss awaits at once.
+- Descent: the next floor's ladder is drawn from the seed keyed by the floor (`map::generate_floor`): three lieutenants and a final boss as on the first floor from the roster of the run's generation, avoiding the bosses of the floor above while enough others are left. The heroes keep their life, relics, Satchel, upgrades, banes and gold; the party gets one heart back, up to 3 (`DESCENT_HEARTS`). The floor's first boss awaits at once.
 - Descent loot: from content generation 7 (`DESCENT_LOOT_FROM`) a vote to descend first gives every hero the final boss's loot as after a lieutenant (Loot: 50 gold, a relic pick and a card pick, drawn for the floor), the party still in the cleared floor's last room (`Status::Room`, `Run.descending`); the descent follows once every hero answered. Bank takes no loot. A run of generation 5 or 6 descends at once, so its log replays unchanged.
 - Bots: bot allies vote once every player voted; they descend while the party holds 2 hearts or more and 60 % of its life cap or more (`Run::bots_descend`), else bank.
-- The first floor of an endless run is the ladder `generate_for` draws and plays at its scale and fight plans as before; only the final boss's fall asks the vote. A run of an earlier generation ends in victory at its final boss as before.
+- Only the final boss's fall asks the vote. A run of an earlier generation ends in victory at its final boss as before.
 
 ## Loot
 
 - After each lieutenant, and from generation 7 after a final boss the party descends from (Endless), every hero gets 50 gold (`LOOT_GOLD`), a pick of one of three relics and a pick of one of three cards in their colours (skipping a card gives 10 gold).
 - The Satchel: every card a hero earns (loot, shop, an event, the Mirror Pool) goes to their Satchel (`Hero.satchel`), never into the deck, so the deck's land count never shifts. Each fight starts with the whole Satchel in the hero's command zone (`PlayerSetup::satchel`, [engine.md](engine.md), Campaign seats); the hero casts its cards there like cards in hand, and a card cast stays out of it for the rest of that fight. The server lays it over the chosen deck (`ChosenDeck::with_satchel`), and the recipe keeps it. A run stored before the Satchel reads its earned cards as Satchel cards, and its decks play whole.
-- Relics (`content/cards.json`) are emblems the hero keeps for the run, each with a role that shapes the party: Healer, Removal, Damage, Support, and Risky relics whose effect is symmetrical and helps the boss too (all red spells cost {2} less, every player draws an extra card, all creatures get +2/+0). Risky relics come only from loot and treasure, never the shop. A boss's own relic (Bosses) is risky in the same way and stays with the boss.
+- Relics (`content/cards.json`) are emblems the hero keeps for the run, each with a role that shapes the party: Healer, Removal, Damage, Support, and Risky relics whose effect is symmetrical and helps the boss too (all red spells cost {2} less, every player draws an extra card, all creatures get +2/+0). Risky relics come only from loot and treasure, never the shop.
 - The relic pool holds 70 relics: 20 of generation 0, 33 of generation 2 and 17 of generation 3 (`CustomCard::since`; a run of an older generation draws only the relics of its own). Each is written with abilities the engine runs (static, triggered, replacement, cost-modifier and rule abilities), and none takes life from the party: a relic's life loss hits only its holder's opponents, and a risky relic names no side:
 
 | Role | Relics | What they do |
@@ -179,9 +180,10 @@ From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor
 - The run page reads as a descent: a header with the party's life, hearts, Heat, floor and seed; the ladder of the floor as a path from the first boss to the final one, every room cleared, current, next or locked, with its floor; votes show who chose which camp.
 - A cleared floor shows the choice to bank the win or descend, each hero's ballot and what a descent changes (`DescendPanel`), and the loot before a descent names the floor it leads to; the run summary counts the floors cleared and the fight log names each fight's boss and, below the first floor, its floor.
 - Each camp is a scene of its own (loot, shop, campfire with Temper, event, the Mirror Pool, a card or relic to give up); a risky relic is always marked Dangerous, and every relic chip and card shows its rarity by colour and word. The run header lists each hero's Satchel, commander upgrades and banes, and a cut life cap. An event shows each option's cost and reward before the choice (relic rewards in their rarity's colour, odds in an older run, why an option is shut) and a "What happened" panel with the chronicle after it (Events). Implementation in [web.md](web.md), Delves.
-- A fight opens with the boss intro (the run view's `fight`: the plan's boss, life, custom cards, phase thresholds and minions), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight; the host also has Retreat, confirmed first. When the game ends the final table stays under the fight's result (`FightEnd`: won or lost, each seat's end, the log's last turns) until the player presses "Continue to the run", or after a 60 s countdown that "Stay" stops; the run then greets the loot or the lost heart.
+- The run page names the run's own theme and its story (`DelveView.theme`, `story`).
+- A fight opens with the boss intro (the run view's `fight`: the boss, its life, innate at its level, modifier, relics, phases with their rounds and satchel), in place of the game's lobby: the boss's abilities in full, the party's decks and carried life, and Ready to fight; the host also has Retreat, confirmed first. When the game ends the final table stays under the fight's result (`FightEnd`: won or lost, each seat's end, the log's last turns) until the player presses "Continue to the run", or after a 60 s countdown that "Stay" stops; the run then greets the loot or the lost heart.
 - The run keeps each fight whose game ended or lost its table (`Run.fights`: the game, the room, won or lost; a voided game and a retreat before a game leave none). The run page lists them newest first as the Fight log, each linking to its recorded game (`/replay/$gameId`), where the whole log of the fight reads back.
-- At the table the boss's side sits on top and the party together at the bottom (boss mode); the boss's passive, Enrage (with the heroes' turn it begins on), modifier, relic, phases to come, scheme and Omen are a row of chips with their rules, and the intro lists the same. Their words come from the content records the engine plays, matched to the emblems in the boss's command zone and its `BossView`.
+- At the table the boss sits on top and the party together at the bottom (boss mode); the boss bar shows the innate, modifier and relics as chips with their rules, the phase countdown and the satchel (Bosses). Their words come from the boss's sheet the engine plays (`BossView`).
 
 ## Leaderboard
 
@@ -191,68 +193,13 @@ From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor
 
 ## Content
 
-- Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint.
-- A content test checks that every boss, commander and reward card plays automatically (Verified or Read) in the corpus, every deck as written has 40 cards, every bracket deck keeps the rules of Bosses at every bracket and every custom card keeps all its abilities.
-- Content generations of bosses: 4 brings the bracket decks, the commander cards, Seraphine, Ysolde and the upgraded forms; 5 brings Hollowmere, Morwenna, Korrath, Sahrra, Valdric, the upgraded forms of Vex, Seraphine and Ysolde and the Unmaker (`ROSTER_FROM`), and endless floors (`ENDLESS_FROM`, Endless); 6 brings Ozrith, Aurenne, Vorthana and Sivanne (`PAIRS_FROM`); 7 brings the final boss's loot before a descent (`DESCENT_LOOT_FROM`, Endless); `RunEvent::Content` stores the generation and the map is drawn again for it.
+- Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint. The kinds are relics, the Spirit's haunt, innates, phases and encounter modifiers.
+- Files: `cards.json` (relics, the haunt), `encounters.json` and `modifiers.json` (encounter modifiers), `rework_*.json` (innates and phases), `<theme>.json` (bosses, events, reward pool), `decks/` (the bosses' precons).
+- Content tests check that every satchel and reward card plays automatically (Verified or Read) in the corpus, every boss names a 100-card deck file, an innate with five levels, two phases and four satchel cards, every custom card keeps all its abilities, and each boss plays a real fight at level V under the loop detector.
+- Content generations of bosses: a boss's `since` keeps it off the ladder of an older run (Ozrith, Aurenne, Vorthana and Sivanne 6, the Spire 8); every run plays the boss of Bosses whatever its generation; `RunEvent::Content` stores the generation and the map is drawn again for it.
 
 ## Tuning
 
-- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_RANK` scales each boss as the one at that rank of the ladder; `DELVE_SIM_DROP` (boss cards, phases or schemes by id), `DELVE_SIM_LIFE` (percent), `DELVE_SIM_HAND` and `DELVE_SIM_MINIONS` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass, to measure what haunt actions are worth. Each line also counts falls, rises and haunt actions. A run plays the newest content generation (`DELVE_SIM_CONTENT` sets another); `DELVE_SIM_BOSSES` (ids, an upgraded form included) plays only those bosses, a boss off the seed's ladder taking the place of the boss of its rank.
-- Minutes are estimated at 0.6 per hero turn and 0.5 per turn of the boss's side.
-- Each fight prints the pressure each hero took, the round a hero first fell to half life and the round a hero first fell.
-- The Heat 1 target for a party of Hard bots, at every size: each fight from the second boss won in 50 to 60 % of fights, a whole run in 20 to 35 %, a fight in 25 to 60 minutes for four heroes; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).
-
-Measured with Hard heroes against the boss at Heat 1, rank 2 strength (life 100 %, its own brain and hand), on the four fixture Commander decks (three precons and a tuned player deck), `fights 1 <heroes> hard <seed>`, one boss per seed (seeds 1 to 4 meet Skrix, Mossjaw, Vex and Grimgut, seeds 5 to 8 again), with the spotlight and the ramp-up:
-
-| Heroes | Seeds | Fights won | Turns (boss side) | Minutes | Largest hero share (worst) | First at half life | First fall |
-|---|---|---|---|---|---|---|---|
-| 1 | 1 to 8 | 6/7 | 15.0 (7.1) | 8 | 100 % | round 6.6 | round 6.0 |
-| 2 | 1 to 8 | 5/8 | 22.4 (7.5) | 13 | 61 % (74 %) | round 6.0 | round 7.2 |
-| 3 | 1, 4 | 2/2 | 23.5 (5.5) | 14 | 49 % (54 %) | round 5.0 | none |
-
-- Won per boss (Skrix, Mossjaw, Vex, Grimgut): one hero 1/1, 2/2, 2/2, 1/2; two heroes 2/2, 1/2, 1/2, 1/2; three heroes 1/1, unfinished, unfinished, 1/1.
-- The grace keeps every hero above 0 life through their first three turns.
-- Solo seed 5 (Skrix) is not counted: the boss bot repeats one paid ability until the runaway watchdog stops the game in turn 13.
-- Three heroes on seeds 2 and 3 and four heroes on seeds 1 to 4 had not ended after 110 minutes of machine time per fight; five and six heroes are slower still and are not in this table.
-
-### Tier targets and measures
-
-Targets by Heat and rank, for a party of Normal bots (a deck of any kind played plainly) and of Hard bots (a deck played well); one fight at a time, each a fresh party at full life:
-
-| Heat | First boss (rank 0) | Middle bosses (ranks 1, 2) | Final boss (rank 3) |
-|---|---|---|---|
-| 0 Casual | Normal bots win about 80 % | Normal bots win 60 to 70 % | Normal bots win about 50 % |
-| 1 Seasoned | Normal bots win about 70 % | Hard bots win 50 to 60 % | Hard bots win about 45 % |
-| 2 Heroic | Hard bots win about 50 % | Hard bots win 35 to 45 % | Hard bots win about 30 % |
-
-Measured with two Normal heroes, `DELVE_SIM_RANK=<rank> fights <games> 2 normal 1 6 <heat>` (seeds from 1, the boss following the seed):
-
-| Heat | Rank | Fights won | Skrix, Mossjaw, Vex, Grimgut | Turns (boss side) | Machine time a fight |
-|---|---|---|---|---|---|
-| 0 | 0 | 38/40 (95 %) | 10/10, 10/10, 10/10, 8/10 | 12.2 (5.8) | about 1 s |
-| 0 | 1 | 39/40 (98 %) | 10/10, 10/10, 10/10, 9/10 | 12.7 (6.0) | about 1 s |
-| 1 | 0 | 37/40 (92 %) | 10/10, 10/10, 10/10, 7/10 | 13.4 (6.5) | about 1 s |
-| 1 | 2 | 1/3 | Skrix 0/1, Vex 1/1, Grimgut 0/1 | 15.0 (7.7) | 7 to 9 min |
-
-- The brain is the largest step: a boss one level below Hard (Normal) loses to two Normal heroes in more than 90 % of fights, so the first boss at Heat 1 and the first two at Heat 0 sit above their targets; Grimgut, the final boss of the theme, is the hardest of the four at every rank.
-- The Heat 1 rank 2 sample is three fights (a Hard boss takes 7 to 9 minutes of machine time a fight with six threads) and only shows that the Hard boss beats two Normal heroes more often than not; the Hard-boss rows (Heat 0 ranks 2 and 3, Heat 1 ranks 1 to 3, all of Heat 2) and parties of three or more are not yet measured against their targets.
-
-First-boss tuning of the bracket generation: two Normal heroes against each boss as the first boss at Heat 1 (bracket 2, a Normal brain), `DELVE_SIM_RANK=0 DELVE_SIM_BOSSES=<ids> fights <games> 2 normal <first seed> 6 1`, about 1 to 8 s of machine time a fight with six threads; the target is about 70 % won by the heroes:
-
-| Boss | Life (per hero), hand | Fights won by the heroes | Turns (boss side) |
-|---|---|---|---|
-| Seraphine | 20 (24), 8 | 28/40 (70 %) | 17.3 (8.4) |
-| Ysolde | 38 (38), 10 | 30/40 (75 %) | 15.5 (7.5) |
-| Hollowmere | 27 (30), 9 | 22/23 (96 %) | 13.3 (6.2) |
-| Morwenna | 17 (21), 8 | 17/31 (55 %) | 18.0 (8.9) |
-| Korrath | 31 (30), 10 | 7/8 | 13.1 (6.4) |
-| Sahrra | 27 (30), 9 | 6/8 | 13.4 (6.6) |
-| Valdric | 27 (30), 9 | 7/8 | 14.5 (7.0) |
-| Ozrith | 27 (30), 9 | 46/64 (72 %) | 14.5 (7.1) |
-| Aurenne | 44 (48), 10 | 48/64 (75 %) | 15.0 (7.3) |
-| Vorthana | 32 (36), 9 | 46/64 (72 %) | 16.5 (8.1) |
-| Sivanne | 27 (30), 10 | 47/64 (73 %) | 16.0 (7.8) |
-
-- Before tuning the heroes won 40 of 75 fights against Seraphine at 27 life and 9 cards, 69 of 75 against Ysolde at 27 life and 9 cards, 1 of 8 against Morwenna at 26 life with a toll of {2}, 60 of 64 against Aurenne and 53 of 64 against Vorthana at 27 life and 9 cards, 35 of 64 against Vorthana at 38 life and 10 cards, and 50 of 64 against Sivanne at 27 life and 9 cards.
-- The samples are small: 64 fights for each generation-6 boss, 40 for Seraphine and Ysolde, 31 and 23 for Morwenna and Hollowmere, 8 for Korrath, Sahrra and Valdric, so a rate can move by 15 points or more between series. Hollowmere, Korrath and Valdric sit above the target and Morwenna below it (dl15l).
-- The Unmaker as the final boss at Heat 2 (bracket 5, a Hard brain), `DELVE_SIM_RANK=3 DELVE_SIM_BOSSES=unmaker_void fights 6 2 normal 1 6 2`: no fight ended within 8 minutes of machine time, so it is not measured yet (dl15l).
+- `cargo run --release -p mtg-campaign --example delve_sim -- fights <games> <heroes> <level> [first seed] [threads] [heat]` plays each boss in turn against a fresh party of bot heroes on the four fixture Commander decks; `runs` plays whole runs with life carried and loot taken. Games are untimed and seeded, so each result replays. `DELVE_SIM_DEPTH` meets each boss at that depth; `DELVE_SIM_DROP` (modifier, relics or phases by id), `DELVE_SIM_LIFE` (percent) and `DELVE_SIM_HAND` change the plan to measure what each part is worth; `DELVE_SIM_IDLE_SPIRITS` makes every Spirit pass. `DELVE_SIM_CONTENT` sets the content generation and `DELVE_SIM_BOSSES` (ids) plays only those bosses, a boss off the seed's ladder taking the place of the boss of its rank.
+- Minutes are estimated at 0.6 per hero turn and 0.5 per boss turn; each fight prints the pressure each hero took, the round a hero first fell to half life and the round a hero first fell.
+- Targets: the median fight ends in rounds 9 to 13, so most fights see Phase 1 and about a third see Phase 2; a party of Hard heroes wins each fight from the second boss in 50 to 60 % at Heat 1 and a whole run in 20 to 35 %; no hero takes more than 40 % of the boss's pressure with three or more heroes (60 % with two).

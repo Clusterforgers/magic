@@ -8,7 +8,7 @@ use std::collections::BTreeSet;
 
 use mtg_campaign::relics::{FILTER_FROM, MIN_CARDS, offerable, usable};
 use mtg_campaign::rng::Stream;
-use mtg_campaign::run::CONTENT;
+use mtg_campaign::run::{CONTENT, RELICS_AGAIN_FROM};
 use mtg_campaign::{DeckMakeup, HeroDeck, Offer, Run, RunEvent, Want, content};
 use mtg_core::card::CardType;
 use mtg_testkit::corpus;
@@ -201,7 +201,13 @@ fn a_short_pick_is_filled_from_the_generic_relics_and_is_never_empty() {
         .filter(|id| !left.contains(&id.as_str()))
         .collect();
     for seed in 0..20 {
-        let mut got = loot(seed, CONTENT, hero_deck(Some(deck.clone())), &owned, &[]);
+        let mut got = loot(
+            seed,
+            RELICS_AGAIN_FROM - 1,
+            hero_deck(Some(deck.clone())),
+            &owned,
+            &[],
+        );
         got.sort();
         assert_eq!(got, ["hearthstone", "seers_lantern"], "seed {seed}");
     }
@@ -211,13 +217,22 @@ fn a_short_pick_is_filled_from_the_generic_relics_and_is_never_empty() {
         .filter(|id| !["ruby_focus", "artisans_loupe"].contains(&id.as_str()))
         .collect();
     for seed in 0..20 {
-        let mut got = loot(seed, CONTENT, hero_deck(Some(deck.clone())), &owned, &[]);
+        let mut got = loot(
+            seed,
+            RELICS_AGAIN_FROM - 1,
+            hero_deck(Some(deck.clone())),
+            &owned,
+            &[],
+        );
         got.sort();
         assert_eq!(got, ["artisans_loupe", "ruby_focus"], "seed {seed}");
     }
     // A hero who holds every relic is offered none.
     let all = relic_ids();
-    assert_eq!(loot(1, CONTENT, hero_deck(Some(deck)), &all, &[]).len(), 0);
+    assert_eq!(
+        loot(1, RELICS_AGAIN_FROM - 1, hero_deck(Some(deck)), &all, &[]).len(),
+        0
+    );
     assert!(content.relics().len() > 40);
 }
 

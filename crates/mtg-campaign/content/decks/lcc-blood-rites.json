@@ -330,5 +330,42 @@
       "Swamp",
       13
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 41,
+      "W": 23
+    },
+    "types": {
+      "Artifact": 11,
+      "Creature": 36,
+      "Enchantment": 6,
+      "Instant": 4,
+      "Land": 37,
+      "Planeswalker": 1,
+      "Sorcery": 5
+    },
+    "subtypes": {
+      "Aetherborn": 1,
+      "Ally": 1,
+      "Cleric": 6,
+      "Equipment": 3,
+      "Knight": 8,
+      "Noble": 3,
+      "Plains": 8,
+      "Rogue": 1,
+      "Shaman": 1,
+      "Soldier": 5,
+      "Sorin": 1,
+      "Spirit": 1,
+      "Swamp": 13,
+      "Vampire": 36,
+      "Warrior": 1,
+      "Wizard": 3
+    },
+    "tokens": 8,
+    "counters": 11,
+    "graveyard": 8,
+    "creature_commanders": 0
+  }
 }

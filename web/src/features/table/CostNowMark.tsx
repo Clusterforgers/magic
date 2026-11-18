@@ -3,7 +3,7 @@ import { costPips } from './cardModel'
 import { ManaPips } from './ManaPips'
 
 /**
- * The cost a card's owner pays now where a rule drew its colors anew (the Delves uber boss), on the card's top edge over
+ * The cost a card's owner pays now where a rule drew its colors anew (the Delves Unmaker), on the card's top edge over
  * the printed cost of its picture. It is decoration: the card's spoken name says the cost now and the printed one.
  */
 export function CostNowMark({ cost }: { cost: ManaCost }) {

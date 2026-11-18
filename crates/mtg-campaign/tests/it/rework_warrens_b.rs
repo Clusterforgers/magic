@@ -9,8 +9,8 @@ use std::sync::Arc;
 
 use mtg_campaign::content::{CardKind, SatchelCard};
 use mtg_campaign::innate::{LEVELS, innate_id};
-use mtg_campaign::scale::{PHASE_ROUNDS, REWORK_FROM};
-use mtg_campaign::{Run, RunEvent, Scale, content};
+use mtg_campaign::scale::PHASE_ROUNDS;
+use mtg_campaign::{Run, RunEvent, content};
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::Amount;
@@ -45,7 +45,8 @@ fn pid(seat: usize) -> PlayerId {
 }
 
 fn boss(id: &str) -> &'static mtg_campaign::content::Boss {
-    content().unwrap().themes[0].boss(id).unwrap()
+    let mut themes = content().unwrap().themes.iter();
+    themes.find_map(|theme| theme.boss(id)).unwrap()
 }
 
 fn custom(id: &str) -> Arc<CardDefinition> {
@@ -98,7 +99,7 @@ fn the_reworked_record_loads_whole(
 ) {
     let content = content().unwrap();
     let b = boss(id);
-    let deck = deck_file(b.deck_file.as_deref().unwrap());
+    let deck = deck_file(b.deck_file.as_str());
     assert_eq!(deck.cards.iter().map(|(_, n)| n).sum::<u32>(), 100);
     // The deck's corpus cards together span the boss's colours (its face commander may play from a draft).
     let identity = deck
@@ -109,9 +110,7 @@ fn the_reworked_record_loads_whole(
             card.color_identity().iter().fold(all, ColorSet::with)
         });
     assert_eq!(colours(&b.colors), identity, "{id} colours");
-    assert_eq!(b.life, Scale::boss_life(1));
-    assert_eq!(b.life + b.life_per_hero, Scale::boss_life(2));
-    let innate = b.innate.as_deref().unwrap();
+    let innate = b.innate.as_str();
     for level in 1..=LEVELS {
         let at = innate_id(innate, level);
         let card = content.card(&at).unwrap();
@@ -747,7 +746,7 @@ fn each_satchel_spell_casts_and_a_reusable_one_returns_with_its_tax(
 fn fight_setup(id: &str, seed: u64) -> GameSetup {
     let content = content().unwrap();
     let mut events = vec![RunEvent::Content {
-        version: REWORK_FROM,
+        version: mtg_campaign::run::CONTENT,
     }];
     for at in 0..2u8 {
         events.push(RunEvent::Joined {
@@ -769,7 +768,7 @@ fn fight_setup(id: &str, seed: u64) -> GameSetup {
     events.push(RunEvent::Started);
     let run = Run::replay(content, "warrens", seed, 0, &events).unwrap();
     let mut plan = run.fight_plan(content).unwrap().unwrap();
-    plan.boss = run.reworked_seat(content, boss(id), 1, (2, 12));
+    plan.boss = run.boss_seat(content, boss(id), 1, (2, 12)).unwrap();
     let mut decks = Vec::new();
     let mut commanders = Vec::new();
     for name in ["precon_tramplesaurus_rex", "precon_calling_all_angels"] {
@@ -777,28 +776,10 @@ fn fight_setup(id: &str, seed: u64) -> GameSetup {
         decks.push(deck.cards.clone());
         commanders.push(deck.commanders.clone());
     }
-    let file = deck_file(boss(id).deck_file.as_deref().unwrap());
-    decks.push(
-        file.cards
-            .iter()
-            .flat_map(|(name, n)| {
-                (0..*n).map(move |_| corpus::card(name).unwrap_or_else(|_| wastes()))
-            })
-            .collect(),
-    );
+    decks.push(crate::common::boss_deck(&plan));
     commanders.push(Vec::new());
     let setup = GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders);
-    let mut setup = plan.apply(content, setup).unwrap();
-    for card in &boss(id).satchel {
-        let spell = corpus::card(&card.card).unwrap();
-        let seat = &mut setup.players[BOSS];
-        if card.reusable {
-            seat.satchel_reusable.push(spell);
-        } else {
-            seat.satchel.push(spell);
-        }
-    }
-    setup
+    plan.apply(content, setup).unwrap()
 }
 
 #[rstest]
@@ -811,13 +792,16 @@ fn a_real_fight_at_level_v_plays_on(
         "aurenne_bastion",
         "vorthana_hive",
         "sivanne_mire",
-        "unmaker_void"
+        "unmaker_void",
+        "siren_queen",
+        "drowned_archivist",
+        "leviathan"
     )]
     id: &str,
 ) {
     let seed = 7;
     let setup = fight_setup(id, seed);
-    let innate = innate_id(boss(id).innate.as_deref().unwrap(), LEVELS);
+    let innate = innate_id(boss(id).innate.as_str(), LEVELS);
     let name = &content().unwrap().card(&innate).unwrap().name;
     let engine = Engine::new(setup.clone()).unwrap();
     let state = engine.state();

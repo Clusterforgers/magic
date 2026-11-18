@@ -436,7 +436,7 @@ export function statusWords(object: ObjectView, role: CombatRole | null, links: 
 }
 
 /**
- * The mana cost the card's owner pays now: the cost a rule drew anew (the Delves uber boss draws the colors of a hero's
+ * The mana cost the card's owner pays now: the cost a rule drew anew (the Delves Unmaker draws the colors of a hero's
  * costs), else the printed cost.
  */
 export function costNow(object: Pick<ObjectView, 'mana_cost' | 'cost_now'>): ManaCost | null {

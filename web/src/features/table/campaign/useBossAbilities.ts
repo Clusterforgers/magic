@@ -3,7 +3,6 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { delvesApi } from '@/net/delves'
 import type { DelveContent, PlayerId } from '@/protocol/generated'
-import { useSeatNamer } from '../names'
 import { playerOf } from '../selectors'
 import { useStable } from '../useStable'
 import { bossAbilities } from './bossAbilities'
@@ -39,25 +38,19 @@ export function useDelveContent(enabled: boolean): DelveContent | null {
 
 /** What each kind is called on its chip and in the full text. */
 export const KIND_WORDS: Record<BossAbilityKind, string> = {
-  passive: 'Always',
   innate: 'Innate',
   phase: 'Phase now',
   'next-phase': 'Next phase',
-  scheme: 'Scheme now',
-  omen: 'Omen',
-  enrage: 'Enrage',
   modifier: 'This fight',
   relic: 'Boss relic',
 }
 
-/** The abilities of the boss at `seat`, read from the table and the content. */
+/** The abilities of the boss at `seat`, read from the table. */
 export function useBossAbilities(seat: PlayerId): BossAbility[] {
-  const name = useSeatNamer()(seat)
-  const content = useDelveContent(true)
   return usePlay(
     useStable((state) => {
       const player = playerOf(state, seat)
-      return player === undefined ? [] : bossAbilities(player, name, state.objectsById, content)
+      return player === undefined ? [] : bossAbilities(player)
     }),
   )
 }

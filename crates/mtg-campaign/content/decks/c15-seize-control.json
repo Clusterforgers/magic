@@ -306,5 +306,47 @@
       "Mountain",
       13
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 28,
+      "U": 38
+    },
+    "types": {
+      "Artifact": 7,
+      "Creature": 15,
+      "Enchantment": 3,
+      "Instant": 23,
+      "Land": 39,
+      "Sorcery": 15
+    },
+    "subtypes": {
+      "Cat": 1,
+      "Devil": 1,
+      "Dragon": 1,
+      "Gate": 1,
+      "Giant": 1,
+      "Goblin": 2,
+      "Horror": 1,
+      "Illusion": 1,
+      "Island": 14,
+      "Merfolk": 1,
+      "Minotaur": 1,
+      "Mountain": 13,
+      "Phyrexian": 1,
+      "Shapeshifter": 1,
+      "Snake": 1,
+      "Sorcerer": 1,
+      "Sphinx": 1,
+      "Spirit": 1,
+      "Vedalken": 1,
+      "Warrior": 1,
+      "Weird": 1,
+      "Wizard": 8
+    },
+    "tokens": 6,
+    "counters": 0,
+    "graveyard": 6,
+    "creature_commanders": 0
+  }
 }

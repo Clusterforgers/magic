@@ -1,15 +1,14 @@
 /**
  * The intro of a boss fight, shown on the run page while the party is in a fight and in place of the game's lobby
- * before it starts: the boss (portrait, name, line, life), its abilities and phases from the plan its game is made
- * with, its minions, and the party with the life it carries in. The caller adds the way in.
+ * before it starts: the boss (portrait, name, line, life), its innate, modifier, phases, Satchel and relics from the
+ * plan its game is made with, and the party with the life it carries in. The caller adds the way in.
  */
 import type { ReactNode } from 'react'
 import { SwordsIcon } from 'lucide-react'
-import { BossAbilityList } from '@/features/table/campaign/BossAbilities'
-import { isReworked, levelWords } from '@/features/table/campaign/reworkedBoss'
+import { levelWords } from '@/features/table/campaign/reworkedBoss'
 import type { DelveContent, DelveView } from '@/protocol/generated'
 import { BossPortrait, ColourPips } from './CommanderArt'
-import { bossLife, introAbilities, upgradedFrom } from './model'
+import { bossLife } from './model'
 import { LifeBar } from './RunHeader'
 import { ReworkedIntro } from './ReworkedIntro'
 
@@ -27,10 +26,7 @@ export function BossIntro({
   const boss = content.bosses.find((entry) => entry.id === view.boss)
   const fight = view.fight
   const name = fight?.boss ?? boss?.name ?? 'A boss'
-  const from = upgradedFrom(content, view.boss)
   const life = fight?.life ?? (view.boss === undefined ? undefined : bossLife(view, view.boss)) ?? null
-  const reworked = fight !== undefined && isReworked(fight)
-  const abilities = fight === undefined || reworked ? [] : introAbilities(content, fight)
   const problems = new Map(view.deck_problems.map((problem) => [problem.hero, problem.reason]))
   return (
     <section
@@ -49,40 +45,15 @@ export function BossIntro({
             Boss fight
           </p>
           <h2 className="text-2xl font-semibold">{name}</h2>
-          {from === null ? null : (
-            <p data-slot="upgraded-from" className="text-sm font-medium text-delve">
-              {from}
-            </p>
-          )}
           <p className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
             {boss ? <ColourPips colours={boss.colors} /> : null}
             {life === null ? null : <span>{life} life</span>}
-            {fight?.innate === undefined ? null : <span>· {levelWords(fight.innate.level)}</span>}
-            {fight && fight.phases.length > 0 ? <span>· {fight.phases.length + 1} phases</span> : null}
-            {fight && fight.minions.length > 0 ? (
-              <span>· with {fight.minions.map(([minion, hp]) => `${minion} (${hp} life)`).join(', ')}</span>
-            ) : null}
+            {fight === undefined ? null : <span>· {levelWords(fight.innate.level)}</span>}
           </p>
           {boss ? <p className="text-sm italic">“{boss.line}”</p> : null}
         </div>
       </header>
       {children}
-      {fight && fight.intensify.length > 0 ? (
-        <section
-          aria-labelledby="intensify-title"
-          data-slot="intensify"
-          className="grid gap-1 rounded-lg border border-delve/60 bg-surface p-3 text-sm"
-        >
-          <h3 id="intensify-title" className="font-semibold">
-            Floor {view.run.floor}: Intensified
-          </h3>
-          <ul className="grid list-disc gap-1 pl-4 text-muted-foreground">
-            {fight.intensify.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
       <section aria-labelledby="party-title" className="grid gap-2">
         <h3 id="party-title" className="text-sm font-semibold">
           The party
@@ -107,19 +78,7 @@ export function BossIntro({
           ))}
         </ul>
       </section>
-      {fight !== undefined && reworked ? <ReworkedIntro fight={fight} name={name} /> : null}
-      {abilities.length > 0 ? (
-        <section aria-labelledby="abilities-title" className="grid gap-2">
-          <h3 id="abilities-title" className="text-sm font-semibold">
-            What {name} does
-          </h3>
-          <p className="text-xs text-muted-foreground">
-            Its abilities are always in play. Each phase begins when its life falls to the amount shown; at
-            the table the Omen shows the scheme its next turn sets in motion.
-          </p>
-          <BossAbilityList abilities={abilities} />
-        </section>
-      ) : null}
+      {fight === undefined ? null : <ReworkedIntro fight={fight} name={name} />}
     </section>
   )
 }

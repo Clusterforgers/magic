@@ -187,8 +187,8 @@ export function emblemFacts(
 }
 
 /**
- * A campaign fight's seat states: a hero who became a Spirit, a boss's phase with the one still to come, the Omen (the
- * scheme it sets in motion next) and the hero a seat of the boss's side eyes under the spotlight.
+ * A campaign fight's seat states: a hero who became a Spirit, a boss's phase by round with the one still to come, and
+ * the hero a seat of the boss's side eyes under the spotlight.
  */
 export function campaignFacts(
   player: PlayerView,
@@ -196,38 +196,19 @@ export function campaignFacts(
   nameOf: (seat: PlayerId) => string = (seat) => `Seat ${seat}`,
 ): EffectFacts[] {
   const facts: EffectFacts[] = []
-  if (player.boss && player.boss.phases.length > 0) {
-    const { phases, begun } = player.boss
+  const phases = player.boss?.round_phases ?? []
+  if (phases.length > 0) {
+    const begun = phases.filter((phase) => phase.begun).length
     const next = phases[begun]
     facts.push({
       key: 'Boss',
       icon: 'boss',
-      label: `Phase ${begun + 1} of ${phases.length + 1}`,
+      label: begun === 0 ? 'Before Phase 1' : `Phase ${begun} of ${phases.length}`,
       tone: 'neutral',
       detail:
         next === undefined
           ? `${owner} is in their last phase.`
-          : `${owner} is in phase ${begun + 1}; next comes ${next} as their life drops.`,
-    })
-  }
-  const scheme = player.boss?.scheme
-  if (scheme !== undefined) {
-    facts.push({
-      key: 'Scheme',
-      icon: 'boss',
-      label: `Scheme: ${scheme}`,
-      tone: 'neutral',
-      detail: `${owner} set ${scheme} in motion this turn.`,
-    })
-  }
-  const omen = player.boss?.omen
-  if (omen !== undefined) {
-    facts.push({
-      key: 'Omen',
-      icon: 'boss',
-      label: `Omen: ${omen}`,
-      tone: 'neutral',
-      detail: `${owner} sets ${omen} in motion as their next turn begins.`,
+          : `${owner} enters ${next.name} at the end of round ${next.round}.`,
     })
   }
   if (player.eyes !== undefined) {
@@ -267,13 +248,11 @@ export function seatEffects(
 }
 
 /**
- * A boss's effects less those the abilities bar over its side already shows: its phase, scheme and Omen and its
- * emblems, which are its rules.
+ * A boss's effects less those the abilities bar over its side already shows: its phase and its emblems, which are its
+ * rules.
  */
 export function withoutBossBar(effects: readonly EffectFacts[]): EffectFacts[] {
-  return effects.filter(
-    (effect) => !['Boss', 'Scheme', 'Omen'].includes(effect.key) && !effect.key.startsWith('Emblem:'),
-  )
+  return effects.filter((effect) => effect.key !== 'Boss' && !effect.key.startsWith('Emblem:'))
 }
 
 /** The name of the chip group: "Effects on Bo: Can't lose, Hexproof". */

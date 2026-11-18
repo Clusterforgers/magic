@@ -14,10 +14,6 @@ id: string,
  */
 name: string, 
 /**
- * The id of the boss an upgraded form came from; left out for a boss of its own.
- */
-upgrade_of?: string, 
-/**
  * Its colours as WUBRG letters.
  */
 colors: string, 
@@ -26,13 +22,17 @@ colors: string,
  */
 line: string, 
 /**
- * Its boss card's id.
+ * Whether it is one of its theme's final bosses.
  */
-card: string | null, 
+final_boss: boolean, 
 /**
- * Its phase cards' ids, in order, with the share of life (percent) at which each begins.
+ * Its innate's card id at level I.
  */
-phases: Array<[string, number]>, 
+innate: string, 
+/**
+ * Its Phase 1 and Phase 2 card ids, as written.
+ */
+round_phases: Array<string>, 
 /**
  * Its life with one hero and for each hero more.
  */

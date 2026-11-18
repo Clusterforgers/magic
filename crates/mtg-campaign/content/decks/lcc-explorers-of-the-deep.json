@@ -334,5 +334,45 @@
       "Island",
       13
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 31,
+      "U": 44
+    },
+    "types": {
+      "Artifact": 6,
+      "Creature": 38,
+      "Enchantment": 7,
+      "Instant": 9,
+      "Land": 36,
+      "Sorcery": 6
+    },
+    "subtypes": {
+      "Arcane": 1,
+      "Druid": 3,
+      "Elf": 1,
+      "Equipment": 1,
+      "Forest": 7,
+      "God": 2,
+      "Human": 1,
+      "Island": 13,
+      "Merfolk": 33,
+      "Mutant": 2,
+      "Noble": 2,
+      "Rogue": 2,
+      "Salamander": 1,
+      "Scout": 4,
+      "Serpent": 1,
+      "Shaman": 5,
+      "Shapeshifter": 2,
+      "Soldier": 2,
+      "Warrior": 2,
+      "Wizard": 9
+    },
+    "tokens": 7,
+    "counters": 18,
+    "graveyard": 2,
+    "creature_commanders": 0
+  }
 }

@@ -28,15 +28,11 @@ export type DevState = (typeof DEV_STATES)[number]
 /** Reads `?state=`; the lobby when missing or unknown. */
 export const devState = (value: unknown): DevState => DEV_STATES.find((state) => state === value) ?? 'lobby'
 
-/** A reworked boss's fight: its innate at level III, this fight's modifier, two phases by round, its Satchel and two
+/** A boss's fight: its innate at level III, this fight's modifier, two phases by round, its Satchel and two
  * copies of a relic, worded as the design's Skrix. */
 export const DEV_REWORKED_FIGHT: DelveFightView = {
   boss: 'Skrix, the Rat Queen',
   life: 90,
-  rules: [],
-  phases: [],
-  minions: [],
-  intensify: [],
   innate: {
     name: 'Brood III',
     text: 'At the beginning of your upkeep, create three 1/1 black Rat creature tokens.',
@@ -87,7 +83,6 @@ export const DEV_CONTENT: DelveContent = {
       role: 'Healer',
       price: 60,
       rarity: 'Common',
-      turn: 0,
     },
     {
       id: 'tithe',
@@ -99,19 +94,6 @@ export const DEV_CONTENT: DelveContent = {
       role: 'Risky',
       price: 0,
       rarity: 'Mythic',
-      turn: 0,
-    },
-    {
-      id: 'grim',
-      name: 'Grimgut, Tunnel King',
-      kind: 'Boss',
-      type_line: 'Boss — Ogre',
-      text: 'Whenever Grimgut attacks, each hero sacrifices a creature.',
-      art: 'grim',
-      role: '',
-      price: 0,
-      rarity: 'Common',
-      turn: 0,
     },
   ],
   bosses: [
@@ -121,9 +103,10 @@ export const DEV_CONTENT: DelveContent = {
       name: 'The Hollow Choir',
       colors: 'UB',
       line: 'Sing with us.',
-      card: null,
-      phases: [],
-      life: [32, 36],
+      final_boss: false,
+      innate: 'brood_i',
+      round_phases: ['nest'],
+      life: [40, 15],
       art: { card: 'Gisa, the Hellraiser', oracle_id: '696363c9-e8a7-4c65-b65c-4a94891ec43d' },
     },
     {
@@ -131,9 +114,10 @@ export const DEV_CONTENT: DelveContent = {
       name: 'Grimgut',
       colors: 'BR',
       line: 'Kneel.',
-      card: 'grim',
-      phases: [['nest', 50]],
-      life: [36, 40],
+      final_boss: true,
+      innate: 'brood_i',
+      round_phases: ['nest'],
+      life: [40, 15],
       art: { card: 'Krenko, Tin Street Kingpin', oracle_id: 'e8065e1d-e937-4b56-8011-78f0d07328a0' },
     },
   ],
@@ -268,14 +252,7 @@ export function devView(state: DevState): DelveView {
             : ('Room' as const)
   const fight =
     state === 'fight'
-      ? {
-          boss: 'The Hollow Choir',
-          life: 140,
-          rules: ['grim', 'skrix', 'skrix'],
-          phases: [['nest', 93]] as Array<[string, number]>,
-          minions: [['Brood of Skrix', 25]] as Array<[string, number]>,
-          intensify: [],
-        }
+      ? { ...DEV_REWORKED_FIGHT, boss: 'The Hollow Choir', life: 140 }
       : state === 'rework'
         ? DEV_REWORKED_FIGHT
         : undefined

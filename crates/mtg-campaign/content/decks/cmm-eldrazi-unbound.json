@@ -350,5 +350,48 @@
       "Wastes",
       15
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {},
+    "types": {
+      "Artifact": 39,
+      "Creature": 31,
+      "Enchantment": 1,
+      "Instant": 5,
+      "Kindred": 2,
+      "Land": 38,
+      "Planeswalker": 1,
+      "Sorcery": 3
+    },
+    "subtypes": {
+      "Avatar": 2,
+      "Book": 2,
+      "Clue": 1,
+      "Construct": 3,
+      "Desert": 1,
+      "Dragon": 1,
+      "Eldrazi": 12,
+      "Elk": 1,
+      "Equipment": 3,
+      "Golem": 5,
+      "Insect": 1,
+      "Mine": 1,
+      "Myr": 1,
+      "Phyrexian": 2,
+      "Power-Plant": 1,
+      "Scarecrow": 1,
+      "Shapeshifter": 1,
+      "Snake": 2,
+      "Spirit": 1,
+      "Thopter": 1,
+      "Tower": 1,
+      "Ugin": 1,
+      "Urza's": 3,
+      "Wall": 2
+    },
+    "tokens": 6,
+    "counters": 5,
+    "graveyard": 5,
+    "creature_commanders": 0
+  }
 }

@@ -1,5 +1,6 @@
-//! Goal: the shipped content holds together: every boss deck card and reward card is a real card the engine verifies, every boss deck as written before brackets has 40 cards, every custom card keeps all its abilities as an emblem, every content id a boss
-//! names exists, relics carry a role, the scheme deck holds schemes and every boss has two minions to field and is pictured by its own real card.
+//! Goal: the shipped content holds together: every satchel and reward card is a real card the engine plays in full,
+//! every boss names its deck file, innate, two phases and four satchel cards, each theme has a final boss, every custom
+//! card keeps all its abilities as an emblem, relics carry a role, and every boss is pictured by its own real card.
 use mtg_campaign::{CardKind, content};
 use mtg_cards::support::Support;
 use mtg_testkit::corpus;
@@ -8,23 +9,14 @@ use mtg_testkit::corpus;
 const BASICS: [&str; 6] = ["Plains", "Island", "Swamp", "Mountain", "Forest", "Wastes"];
 
 #[test]
-fn every_card_a_boss_or_reward_names_is_played_in_full() {
+fn every_satchel_or_reward_card_is_played_in_full() {
     let content = content().unwrap();
     let corpus = corpus::corpus().unwrap();
     for theme in &content.themes {
         let names = theme
             .bosses
             .iter()
-            .flat_map(|b| {
-                let brackets = (1..=mtg_campaign::scale::MAX_BRACKET).flat_map(|at| b.deck_at(at));
-                b.deck
-                    .iter()
-                    .cloned()
-                    .chain(brackets)
-                    .map(|(name, _)| name)
-                    .chain(std::iter::once(b.commander.clone()).filter(|c| !c.is_empty()))
-                    .collect::<Vec<_>>()
-            })
+            .flat_map(|b| b.satchel.iter().map(|s| s.card.clone()))
             .chain(theme.pool.iter().map(|(name, _)| name.clone()))
             .collect::<Vec<_>>();
         for name in names.iter().filter(|name| !BASICS.contains(&name.as_str())) {
@@ -40,73 +32,33 @@ fn every_card_a_boss_or_reward_names_is_played_in_full() {
 }
 
 #[test]
-fn boss_decks_have_forty_cards_and_their_rules_exist() {
+fn every_boss_names_its_parts() {
     let content = content().unwrap();
     for theme in &content.themes {
-        assert_eq!(
-            theme.bosses.iter().filter(|b| b.final_boss).count(),
-            1,
-            "{}",
-            theme.id
-        );
+        assert!(theme.bosses.iter().any(|b| b.final_boss), "{}", theme.id);
         for boss in &theme.bosses {
-            if boss.since == 0 {
-                let size: u32 = boss.deck.iter().map(|(_, n)| n).sum();
-                assert_eq!(size, 40, "{}", boss.id);
+            let deck = content.deck(&boss.deck_file).unwrap();
+            assert_eq!(
+                deck.cards.iter().map(|(_, n)| n).sum::<u32>(),
+                100,
+                "{}",
+                boss.id
+            );
+            let innate = mtg_campaign::innate::innate_id(&boss.innate, 1);
+            assert_eq!(
+                content.card(&innate).unwrap().kind,
+                CardKind::Innate,
+                "{}",
+                boss.id
+            );
+            assert_eq!(boss.round_phases.len(), 2, "{}", boss.id);
+            for id in &boss.round_phases {
+                let id = content
+                    .card(id)
+                    .or_else(|_| content.card(&mtg_campaign::innate::innate_id(id, 1)));
+                assert_eq!(id.unwrap().kind, CardKind::Phase);
             }
-            for id in &boss.rules {
-                assert_eq!(content.card(id).unwrap().kind, CardKind::Boss, "{id}");
-            }
-            let mut last = 100;
-            for (id, percent) in &boss.phases {
-                assert_eq!(content.card(id).unwrap().kind, CardKind::Phase, "{id}");
-                assert!(*percent < last, "{}: phases go down", boss.id);
-                last = *percent;
-            }
-        }
-    }
-}
-
-#[test]
-fn schemes_minions_and_scaling_cards_exist() {
-    let content = content().unwrap();
-    for id in [
-        mtg_campaign::scale::REINFORCEMENTS,
-        mtg_campaign::scale::RESERVES,
-        mtg_campaign::scale::WARPATH,
-        mtg_campaign::scale::ESCALATION,
-    ] {
-        assert_eq!(content.card(id).unwrap().kind, CardKind::Boss, "{id}");
-    }
-    assert_eq!(
-        content.card(mtg_campaign::scale::BULWARK).unwrap().kind,
-        CardKind::Phase
-    );
-    // A theme of reworked bosses only (the Drowned Spire) has no schemes or minions.
-    let older = content
-        .themes
-        .iter()
-        .filter(|t| t.bosses.iter().any(|b| b.innate.is_none()));
-    for theme in older {
-        assert!(theme.schemes.len() >= 6, "{}: a scheme deck", theme.id);
-        for id in &theme.schemes {
-            assert_eq!(content.card(id).unwrap().kind, CardKind::Scheme, "{id}");
-        }
-        // The biggest party meets two minions in every fight.
-        for boss in &theme.bosses {
-            let fielded = theme
-                .minions
-                .iter()
-                .filter(|m| m.deck_of != boss.id)
-                .count();
-            assert!(fielded >= 2, "{}: minions", boss.id);
-        }
-        for minion in &theme.minions {
-            assert!(theme.boss(&minion.deck_of).is_some(), "{}", minion.id);
-            assert!(minion.life > 0, "{}", minion.id);
-            for id in &minion.rules {
-                assert_eq!(content.card(id).unwrap().kind, CardKind::Boss, "{id}");
-            }
+            assert_eq!(boss.satchel.len(), 4, "{}", boss.id);
         }
     }
 }

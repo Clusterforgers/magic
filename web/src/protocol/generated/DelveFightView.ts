@@ -17,42 +17,22 @@ boss: string,
  */
 life: number, 
 /**
- * The custom cards in its command zone from the start, by id; one given twice is listed twice.
+ * The boss's innate at its level.
  */
-rules: Array<string>, 
-/**
- * Its phases by card id, each with the life at or below which it begins.
- */
-phases: Array<[string, number]>, 
-/**
- * Its commander card's name: a real card it casts free as its last phase begins.
- */
-commander?: string, 
-/**
- * What the floor changes for it (Intensify), one line each; empty on the first floor.
- */
-intensify: Array<string>, 
-/**
- * Its minions: name and starting life.
- */
-minions: Array<[string, number]>, 
-/**
- * A reworked boss's innate at its level.
- */
-innate?: InnateView, 
+innate: InnateView, 
 /**
  * The fight's encounter modifier.
  */
 modifier?: BossPartView, 
 /**
- * A reworked boss's two phases, each with the round it begins at the end of.
+ * The boss's two phases, each with the round it begins at the end of.
  */
 round_phases?: Array<RoundPhaseView>, 
 /**
- * The relics a reworked boss brings, copies included.
+ * The relics the boss brings, copies included.
  */
 relics?: Array<BossPartView>, 
 /**
- * A reworked boss's Satchel, each card with its reusable mark.
+ * The boss's Satchel, each card with its reusable mark.
  */
 satchel?: Array<BossSatchelView>, };

@@ -294,5 +294,48 @@
       "Swamp",
       15
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 30,
+      "U": 31
+    },
+    "types": {
+      "Artifact": 13,
+      "Creature": 31,
+      "Enchantment": 2,
+      "Instant": 8,
+      "Kindred": 1,
+      "Land": 38,
+      "Sorcery": 9
+    },
+    "subtypes": {
+      "Aetherborn": 1,
+      "Ally": 1,
+      "Artificer": 1,
+      "Avatar": 1,
+      "Equipment": 5,
+      "Faerie": 6,
+      "Gate": 1,
+      "Goblin": 2,
+      "Horror": 2,
+      "Human": 8,
+      "Island": 15,
+      "Knight": 1,
+      "Kraken": 1,
+      "Merfolk": 4,
+      "Ogre": 1,
+      "Rogue": 24,
+      "Shapeshifter": 2,
+      "Snake": 1,
+      "Sphinx": 1,
+      "Swamp": 15,
+      "Vampire": 1,
+      "Wizard": 1
+    },
+    "tokens": 4,
+    "counters": 2,
+    "graveyard": 11,
+    "creature_commanders": 0
+  }
 }

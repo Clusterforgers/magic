@@ -8,7 +8,7 @@ use std::sync::Arc;
 
 use mtg_campaign::content::Boss;
 use mtg_campaign::innate::innate_id;
-use mtg_campaign::scale::{PHASE_ROUNDS, REWORK_FROM};
+use mtg_campaign::scale::PHASE_ROUNDS;
 use mtg_campaign::{Run, RunEvent, content};
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
@@ -45,8 +45,6 @@ const BOSSES: [&str; 8] = [
     "hollowmere_belfry",
     "morwenna_court",
 ];
-/// The colours of each boss's precon, as the design names them, in the order of [`BOSSES`].
-const DECK_COLORS: [&str; 8] = ["BG", "G", "B", "R", "W", "GU", "WU", "UB"];
 /// The boss's seat at the two-hero table.
 const BOSS: usize = 2;
 /// The creatures each hero starts with: name, power and toughness.
@@ -207,7 +205,7 @@ fn bolt(driver: &mut Driver, victims: &[&str]) -> Result<(), ScriptError> {
 /// What the innate of `id` at `level` has done, in two numbers the case names.
 fn innate_effect(id: &str, level: u8) -> Result<(i32, i32), ScriptError> {
     let boss = boss(id);
-    let innate = custom(&innate_id(boss.innate.as_deref().unwrap(), level));
+    let innate = custom(&innate_id(boss.innate.as_str(), level));
     let mut emblems = vec![innate];
     if id == "seraphine_spire" {
         // A source of life gain each upkeep, so the end step finds that she gained life.
@@ -475,15 +473,15 @@ fn sorted(letters: &str) -> Vec<char> {
 fn each_reworked_boss_loads_whole(#[values(0, 1, 2, 3, 4, 5, 6, 7)] at: usize) {
     let content = content().unwrap();
     let boss = boss(BOSSES[at]);
-    let file = boss.deck_file.as_deref().unwrap();
-    // The colours the reworked boss takes from its deck; the record's `colors` follow once the bracket decks go (rw8).
+    let file = boss.deck_file.as_str();
+    // The boss takes its colours from its deck.
     assert_eq!(
-        sorted(DECK_COLORS[at]),
+        sorted(&boss.colors),
         sorted(&deck_colors(file)),
         "{}",
         boss.id
     );
-    let innate = boss.innate.as_deref().unwrap();
+    let innate = boss.innate.as_str();
     for level in 1..=5 {
         let card = content.card(&innate_id(innate, level)).unwrap();
         assert_eq!(card.level, level);
@@ -515,7 +513,7 @@ fn each_reworked_boss_loads_whole(#[values(0, 1, 2, 3, 4, 5, 6, 7)] at: usize) {
 fn fight(boss: &Boss, seed: u64) -> Engine {
     let content = content().unwrap();
     let mut events = vec![RunEvent::Content {
-        version: REWORK_FROM,
+        version: mtg_campaign::run::CONTENT,
     }];
     for at in 0..2u8 {
         events.push(RunEvent::Joined {
@@ -537,7 +535,7 @@ fn fight(boss: &Boss, seed: u64) -> Engine {
     events.push(RunEvent::Started);
     let run = Run::replay(content, "warrens", seed, 0, &events).unwrap();
     let mut plan = run.fight_plan(content).unwrap().unwrap();
-    plan.boss = run.reworked_seat(content, boss, 3, (2, 12));
+    plan.boss = run.boss_seat(content, boss, 3, (2, 12)).unwrap();
     let stand_in = match boss.colors.chars().next() {
         Some('W') => Color::White,
         Some('U') => Color::Blue,
@@ -545,32 +543,25 @@ fn fight(boss: &Boss, seed: u64) -> Engine {
         Some('R') => Color::Red,
         _ => Color::Green,
     };
-    let deck = deck_file(boss.deck_file.as_deref().unwrap());
-    let boss_deck: Vec<Arc<CardDefinition>> = deck["cards"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .flat_map(|entry| {
-            let name = entry[0].as_str().unwrap();
-            let copies = entry[1].as_u64().unwrap();
-            let card = corpus::card(name).unwrap_or_else(|_| land(stand_in));
-            (0..copies).map(move |_| Arc::clone(&card))
+    let boss_deck: Vec<Arc<CardDefinition>> = crate::common::boss_deck(&plan)
+        .into_iter()
+        .map(|card| {
+            if card.name == "Wastes" {
+                land(stand_in)
+            } else {
+                card
+            }
         })
         .collect();
     let hero = fixture_deck("precon_tramplesaurus_rex").unwrap();
     let decks = vec![hero.cards.clone(), hero.cards.clone(), boss_deck];
     let commanders = vec![hero.commanders.clone(), hero.commanders.clone(), Vec::new()];
     let setup = GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders);
-    let mut setup = plan.apply(content, setup).unwrap();
-    let seat = &mut setup.players[2];
-    for spell in &boss.satchel {
-        let card = corpus::card(&spell.card).unwrap();
-        if spell.reusable {
-            seat.satchel_reusable.push(card);
-        } else {
-            seat.satchel.push(card);
-        }
-    }
+    let setup = plan.apply(content, setup).unwrap();
+    assert_eq!(
+        setup.players[2].satchel.len() + setup.players[2].satchel_reusable.len(),
+        4
+    );
     Engine::new(setup).unwrap()
 }
 

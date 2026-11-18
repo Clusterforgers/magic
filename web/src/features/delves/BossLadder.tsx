@@ -6,7 +6,7 @@ import { CheckIcon, LockIcon, MapPinIcon, SwordsIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { DelveContent, DelveView, Node, Run } from '@/protocol/generated'
 import { BossPortrait } from './CommanderArt'
-import { bossLife, nodeState, openChoices, torchOf, upgradedFrom, votersOf } from './model'
+import { bossLife, nodeState, openChoices, torchOf, votersOf } from './model'
 import type { NodeState } from './model'
 import { ROOM } from './rooms'
 
@@ -76,13 +76,12 @@ function BossStop({
   const name = boss?.name ?? 'A boss'
   const fighting = state === 'current' && typeof view.run.status === 'object'
   const last = node.next.length === 0
-  const from = upgradedFrom(content, node.boss ?? undefined)
   return (
     <li
       data-node={node.id}
       data-state={state}
       data-current={state === 'current' || undefined}
-      aria-label={`${last ? 'Final boss' : 'Boss'}: ${name}${from === null ? '' : `, ${from}`}, ${STATE_WORDS[state]}`}
+      aria-label={`${last ? 'Final boss' : 'Boss'}: ${name}, ${STATE_WORDS[state]}`}
       className="relative z-10 flex justify-center"
     >
       <div
@@ -114,14 +113,9 @@ function BossStop({
             {last ? 'Final boss' : 'Boss'}
           </span>
           <span className="truncate font-semibold">{name}</span>
-          {from === null ? null : (
-            <span data-slot="upgraded-from" className="truncate text-xs text-delve">
-              {from}
-            </span>
-          )}
           <span className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
             {life === undefined ? null : <span>{life} life</span>}
-            {boss && boss.phases.length > 0 ? <span>{boss.phases.length + 1} phases</span> : null}
+            {boss ? <span>2 phases</span> : null}
           </span>
         </span>
         <span className="shrink-0">
