@@ -1,7 +1,7 @@
 //! Goal: the passives and Enrages of the two-colour bosses of generations 5 and 6 do what their words say in real games:
 //! Hollowmere's dead return as Spirits, Korrath's creatures grow when hurt, Sahrra's pride grows when a Cat falls,
-//! Valdric's Vampires feed on the heroes' dead, Ozrith's spells call up Elementals, and each Enrage waits for the heroes'
-//! seventh turn and then grows.
+//! Valdric's Vampires feed on the heroes' dead, Ozrith's spells call up Elementals, Aurenne's attackers strike harder,
+//! and each Enrage waits for the heroes' seventh turn and then grows.
 use std::sync::Arc;
 
 use mtg_campaign::content;
@@ -133,6 +133,8 @@ fn valdrics_vampires_feed_on_the_heroes_dead(
 #[case::the_pride_grows("the_pride_hunts", "Cat", 16, 3)]
 #[case::the_feast_waits("the_crimson_feast", "Vampire", 12, 0)]
 #[case::the_feast_grows("the_crimson_feast", "Vampire", 16, 3)]
+#[case::the_charge_waits("the_last_charge", "Knight", 12, 0)]
+#[case::the_charge_grows("the_last_charge", "Knight", 16, 3)]
 #[case::no_dream_is_stolen_yet("stolen_dreams", "Fallen", 12, 0)]
 #[case::one_dream_is_stolen("stolen_dreams", "Fallen", 14, 1)]
 #[case::the_graveyard_runs_dry("stolen_dreams", "Fallen", 16, 3)]
@@ -145,6 +147,19 @@ fn a_new_enrage_waits_for_the_heroes_seventh_turn_then_grows(
     let mut driver = Driver::from_scenario(table(&[id], &[]))?;
     driver.idle_until(turn, Step::Main1)?;
     assert_eq!(count(&driver, BOSS, name), expected);
+    Ok(())
+}
+
+#[test]
+fn aurennes_attackers_strike_harder() -> Result<(), ScriptError> {
+    let scenario = table(&["aurenne"], &["Fervent Cathar"]).at(2, BOSS, Step::Main1);
+    let mut driver = Driver::from_scenario(scenario)?;
+    assert_eq!(power(&driver, "Brute"), Some(3));
+    driver.idle_until(2, Step::DeclareAttackers)?;
+    driver.attack(&[("Brute", HERO)])?;
+    assert_eq!(power(&driver, "Brute"), Some(4));
+    assert_eq!(power(&driver, "Fervent Cathar"), Some(2), "only attackers");
+    assert_eq!(power(&driver, "Bear"), Some(2));
     Ok(())
 }
 
