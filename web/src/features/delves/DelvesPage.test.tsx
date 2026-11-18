@@ -138,10 +138,12 @@ describe('the page with the leaderboard', () => {
   it('stands after the page content, which keeps its order', async () => {
     await page('signed-in')
     const board = await screen.findByRole('complementary', { name: 'Leaderboard' })
-    const main = document.querySelector<HTMLElement>('[data-slot="delves-main"]')!
-    expect(main.compareDocumentPosition(board) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-    expect(main.contains(board)).toBe(false)
-    expect(within(main).getAllByRole('heading')[0]).toHaveTextContent('Delves')
+    const shell = document.querySelector<HTMLElement>('[data-slot="page"]')!
+    expect(shell.lastElementChild).toBe(document.querySelector('[data-slot="delves-leaderboard"]'))
+    expect(shell.lastElementChild!.contains(board)).toBe(true)
+    expect(within(shell).getAllByRole('heading')[0]).toHaveTextContent('Delves')
+    const rules = screen.getByRole('heading', { name: 'Rules in short' })
+    expect(rules.compareDocumentPosition(board) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 
   it('is not shown to a visitor who is not signed in', async () => {

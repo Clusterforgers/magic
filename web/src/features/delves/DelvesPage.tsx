@@ -242,28 +242,27 @@ export function DelveList({ client }: { client: DelvesApi }) {
 export function DelvesPage({ client = delvesApi }: { client?: DelvesApi }) {
   usePageTitle('Delves')
   const signedIn = useAuth((state) => state.status) === 'signed-in'
-  // The page's own column keeps its width; from 1280 px the leaderboard stands beside it, below that under it.
+  // The page's column stays where it is. The leaderboard follows its content, and from the `aside` breakpoint, where
+  // the right gutter holds it even beside a scrollbar, it stands in that gutter out of the flow.
   return (
-    <PageShell
-      width="wide"
-      className="grid gap-6 sm:py-6 xl:grid-cols-[minmax(0,var(--container-page))_20rem] xl:items-start xl:justify-center"
-    >
-      <div data-slot="delves-main" className="mx-auto grid w-full max-w-page gap-6">
-        <div className="grid gap-1">
-          <h1 className="text-2xl font-semibold tracking-tight">Delves</h1>
-          <p className="text-sm text-muted-foreground">
-            A co-op boss rush: your party fights the Warrens' bosses one after another, life carried between
-            fights, loot between bosses.
-          </p>
-        </div>
-        <SignedInOnly next="/delves">
-          <DelveList client={client} />
-          <NewDelveForm client={client} />
-        </SignedInOnly>
-        <DelvesRules />
+    <PageShell width="page" className="relative grid gap-6 sm:py-6">
+      <div className="grid gap-1">
+        <h1 className="text-2xl font-semibold tracking-tight">Delves</h1>
+        <p className="text-sm text-muted-foreground">
+          A co-op boss rush: your party fights the Warrens' bosses one after another, life carried between
+          fights, loot between bosses.
+        </p>
       </div>
+      <SignedInOnly next="/delves">
+        <DelveList client={client} />
+        <NewDelveForm client={client} />
+      </SignedInOnly>
+      <DelvesRules />
       {signedIn ? (
-        <div className="mx-auto w-full max-w-page">
+        <div
+          data-slot="delves-leaderboard"
+          className="aside:absolute aside:top-6 aside:left-full aside:ml-6 aside:w-64"
+        >
           <DelvesLeaderboard client={client} />
         </div>
       ) : null}
