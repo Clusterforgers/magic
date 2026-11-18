@@ -27,9 +27,21 @@ timers: Timers,
  */
 theme: string, 
 /**
- * The ladder.
+ * The ladder of the floor the party is on.
  */
 map: FloorMap, 
+/**
+ * The floor the party is on, from 1.
+ */
+floor: number, 
+/**
+ * The floors whose final boss fell.
+ */
+floors_cleared: number, 
+/**
+ * Each hero's vote on a cleared floor: `true` to descend, `false` to bank the win.
+ */
+floor_votes: { [key in number]: boolean }, 
 /**
  * The party.
  */

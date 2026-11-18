@@ -26,6 +26,12 @@ pub const RANKS: usize = 4;
 pub const ENRAGE_WRITTEN: u32 = 7;
 /// The heroes' turn the Enrage begins on, by Heat.
 pub const ENRAGE_TURN: [u32; MAX_HEAT as usize + 1] = [9, ENRAGE_WRITTEN, 6];
+/// The earliest heroes' turn an Intensified Enrage begins on.
+pub const ENRAGE_EARLIEST: u32 = 4;
+/// Every heroes' turn an Enrage may begin on: the Heats' and the earlier ones of Intensify.
+pub const ENRAGE_TURNS: std::ops::RangeInclusive<u32> = ENRAGE_EARLIEST..=9;
+/// Life in percent a boss gets for each bracket step a deeper floor would take it beyond [`MAX_BRACKET`].
+pub const OVERFLOW_LIFE: i32 = 10;
 
 /// The boss's life by party size, in percent of its base and the life it gets for each hero after the first.
 const LIFE: [i32; MOST + 1] = [100, 100, 100, 100, 85, 100, 90];
@@ -112,6 +118,13 @@ pub const TIERS: [[Tier; RANKS]; MAX_HEAT as usize + 1] = [
 /// The content generation from which bosses play bracket decks ([`BRACKET_TIERS`]) with their commander card; a run of
 /// an earlier one plays [`TIERS`] and the decks as written.
 pub const BRACKETS_FROM: u32 = 4;
+/// The content generation from which the two-colour bosses after Vex, the later upgraded forms and the uber boss join the
+/// ladder; a run of an earlier generation never meets them, so its ladder stays as it was drawn.
+pub const ROSTER_FROM: u32 = 5;
+/// The lowest Heat at which the uber boss may stand as the final boss.
+pub const UBER_HEAT: u8 = 2;
+/// The chance, one in this many, that a ladder at [`UBER_HEAT`] or above meets the uber boss as its final boss.
+pub const UBER_ODDS: usize = 4;
 /// The highest bracket.
 pub const MAX_BRACKET: u8 = 5;
 /// A boss deck's size by bracket, from bracket 1.
@@ -166,6 +179,9 @@ pub struct Scale {
     pub rank: usize,
     /// Whether the run plays the bracket generation ([`BRACKET_TIERS`]).
     pub bracketed: bool,
+    /// The run's floor, from 1; a deeper floor changes the boss only in the bracket generation (`docs/delves.md`,
+    /// Endless).
+    pub floor: u8,
 }
 
 impl Scale {
@@ -177,7 +193,36 @@ impl Scale {
             heat: heat.min(MAX_HEAT),
             rank,
             bracketed: false,
+            floor: 1,
         }
+    }
+
+    /// This scale on `floor` (at least 1).
+    #[must_use]
+    pub fn on_floor(self, floor: u8) -> Scale {
+        Scale {
+            floor: floor.max(1),
+            ..self
+        }
+    }
+
+    /// Floors below the first that change the boss: 0 on the first floor and before brackets.
+    pub fn deeper(self) -> u8 {
+        if self.bracketed {
+            self.floor.saturating_sub(1)
+        } else {
+            0
+        }
+    }
+
+    /// The bracket the shifted table asks for, before the cap: one more per floor below the first.
+    fn wanted_bracket(self) -> u8 {
+        BRACKETS[usize::from(self.heat)][self.rank.min(RANKS - 1)].saturating_add(self.deeper())
+    }
+
+    /// Bracket steps beyond [`MAX_BRACKET`] a deeper floor asks for; each adds life, a card and a brain level instead.
+    pub fn overflow(self) -> u8 {
+        self.wanted_bracket().saturating_sub(MAX_BRACKET)
     }
 
     /// [`Scale::new`] for a run of content generation `content`: bracketed from [`BRACKETS_FROM`].
@@ -188,14 +233,30 @@ impl Scale {
         }
     }
 
-    /// The tier of this rank and Heat.
+    /// The tier of this rank and Heat. Below the first floor every rank plays the Heat's top row (no early handicap)
+    /// at the shifted bracket, capped at [`MAX_BRACKET`]; each step beyond the cap adds [`OVERFLOW_LIFE`] % life, a card
+    /// and a brain level.
     pub fn tier(self) -> Tier {
         let table = if self.bracketed {
             &BRACKET_TIERS
         } else {
             &TIERS
         };
-        table[usize::from(self.heat)][self.rank.min(RANKS - 1)]
+        let row = &table[usize::from(self.heat)];
+        if self.deeper() == 0 {
+            return row[self.rank.min(RANKS - 1)];
+        }
+        let top = row[RANKS - 1];
+        let over = self.overflow();
+        Tier {
+            bracket: self.wanted_bracket().min(MAX_BRACKET),
+            life: top.life + OVERFLOW_LIFE * i32::from(over),
+            hand: top.hand + i32::from(over),
+            brain: top
+                .brain
+                .saturating_add(i8::try_from(over).unwrap_or(i8::MAX)),
+            ..top
+        }
     }
 
     /// The bracket of the boss's deck: 0 for the deck as written before brackets.
@@ -247,15 +308,65 @@ impl Scale {
         COMBATS[self.heroes]
     }
 
-    /// The heroes' turn the Enrage begins on at this Heat.
+    /// The heroes' turn the Enrage begins on at this Heat; Intensify brings it one turn earlier per floor below the
+    /// first, never before [`ENRAGE_EARLIEST`].
     pub fn enrage_turn(self) -> u32 {
-        ENRAGE_TURN[usize::from(self.heat)]
+        let turn = ENRAGE_TURN[usize::from(self.heat)];
+        if self.deeper() == 0 {
+            return turn;
+        }
+        turn.saturating_sub(u32::from(self.deeper()))
+            .max(ENRAGE_EARLIEST)
     }
 
-    /// The custom cards in the boss's command zone from the start: its passive, its Enrage for the Heat, Escalation,
-    /// by party size Reinforcements, Reserves and Warpath for each extra combat, and its relic when the tier brings it.
+    /// Risky relics the boss brings beyond its own: one per floor below the first.
+    pub fn extra_relics(self) -> usize {
+        usize::from(self.deeper())
+    }
+
+    /// What the floor changes, one line each, for the intro: nothing on the first floor.
+    pub fn intensify(self) -> Vec<String> {
+        let deeper = self.deeper();
+        if deeper == 0 {
+            return Vec::new();
+        }
+        let plural = |n: usize| if n == 1 { "" } else { "s" };
+        let more = match deeper {
+            1 => "once more".to_owned(),
+            2 => "twice more".to_owned(),
+            n => format!("{n} times more"),
+        };
+        let relics = self.extra_relics();
+        let mut lines = vec![
+            format!(
+                "Floor {}: bracket {} and the Heat's top tier from the first fight",
+                self.floor,
+                self.bracket()
+            ),
+            format!(
+                "Intensify: the Enrage begins on the heroes' turn {} and the passive acts {more}",
+                self.enrage_turn()
+            ),
+            format!("{relics} extra risky relic{}", plural(relics)),
+        ];
+        let over = self.overflow();
+        if over > 0 {
+            lines.push(format!(
+                "Beyond bracket {MAX_BRACKET}: +{} % life, +{over} card{} in hand, a stronger brain",
+                OVERFLOW_LIFE * i32::from(over),
+                plural(usize::from(over))
+            ));
+        }
+        lines
+    }
+
+    /// The custom cards in the boss's command zone from the start: its passive (once more per floor below the first,
+    /// Intensify), its Enrage for the Heat, Escalation, by party size Reinforcements, Reserves and Warpath for each
+    /// extra combat, and its relic when the tier brings it.
     pub fn rules(self, boss: &Boss) -> Vec<String> {
-        let mut rules = boss.rules.clone();
+        let mut rules: Vec<String> = (0..=self.deeper())
+            .flat_map(|_| boss.rules.iter().cloned())
+            .collect();
         if !boss.enrage.is_empty() {
             rules.push(enrage_id(&boss.enrage, self.enrage_turn()));
         }

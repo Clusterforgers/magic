@@ -7,4 +7,4 @@ export type Status = "Lobby" | "Map" | { "Fight": {
 /**
  * The game's id.
  */
-game: string | null, } } | "Room" | "Victory" | "Defeat" | "Abandoned";
+game: string | null, } } | "Room" | "FloorCleared" | "Victory" | "Defeat" | "Abandoned";

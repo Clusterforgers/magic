@@ -184,6 +184,7 @@ describe('introAbilities', () => {
       rules: ['skrix', 'swarm_unending', 'escalation', 'ironhide', 'rat_kings_crown'],
       phases: [['nest_stirs', 40] as [string, number]],
       minions: [],
+      intensify: [],
     }
     const abilities = introAbilities(DEV_BOSS_CONTENT, fight)
     expect(abilities.map((one) => one.kind)).toEqual([
@@ -206,6 +207,7 @@ describe('introAbilities', () => {
       phases: [['nest_stirs', 40] as [string, number], ['plague_tide', 20] as [string, number]],
       commander: 'Ashcoat of the Shadow Swarm',
       minions: [],
+      intensify: [],
     }
     const last = introAbilities(DEV_BOSS_CONTENT, fight).at(-1)
     expect(last?.name).toBe('Phase III: Ashcoat of the Shadow Swarm')

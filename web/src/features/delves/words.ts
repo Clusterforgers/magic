@@ -16,6 +16,7 @@ export function statusText(status: string): string {
     map: 'Choosing a path',
     fight: 'Fighting',
     room: 'Taking loot',
+    floor_cleared: 'Floor cleared',
     victory: 'Victory',
     defeat: 'Defeated',
     abandoned: 'Abandoned',

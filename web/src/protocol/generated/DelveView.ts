@@ -48,6 +48,10 @@ deck_problems: Array<DelveDeckProblem>,
  */
 fight?: DelveFightView, 
 /**
+ * On a cleared floor, what descending changes, one line each; empty otherwise.
+ */
+descent: Array<string>, 
+/**
  * The cards the caller may copy at the Mirror Pool or give up for an event's cost while that is their first offer:
  * the nonland cards of their deck (less those given up) and their Satchel, each name once, in name order; left out
  * otherwise.

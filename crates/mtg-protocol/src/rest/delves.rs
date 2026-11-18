@@ -49,6 +49,11 @@ pub enum DelveAction {
         /// The room.
         node: u8,
     },
+    /// On a cleared floor, a vote to descend to the next floor or bank the win.
+    FloorVote {
+        /// Whether to descend.
+        descend: bool,
+    },
     /// An answer to the caller's first offer.
     Pick {
         /// The answer.
@@ -91,6 +96,9 @@ pub struct DelveView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub fight: Option<DelveFightView>,
+    /// On a cleared floor, what descending changes, one line each; empty otherwise.
+    #[serde(default)]
+    pub descent: Vec<String>,
     /// The cards the caller may copy at the Mirror Pool or give up for an event's cost while that is their first offer:
     /// the nonland cards of their deck (less those given up) and their Satchel, each name once, in name order; left out
     /// otherwise.
@@ -114,6 +122,9 @@ pub struct DelveFightView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub commander: Option<String>,
+    /// What the floor changes for it (Intensify), one line each; empty on the first floor.
+    #[serde(default)]
+    pub intensify: Vec<String>,
     /// Its minions: name and starting life.
     pub minions: Vec<(String, i32)>,
 }
@@ -136,7 +147,7 @@ pub struct DelveSummary {
     pub code: String,
     /// The theme's name.
     pub theme: String,
-    /// Where the run is: lobby, map, fight, room, victory, defeat or abandoned.
+    /// Where the run is: lobby, map, fight, room, `floor_cleared`, victory, defeat or abandoned.
     pub status: String,
     /// The heroes' names.
     pub heroes: Vec<String>,

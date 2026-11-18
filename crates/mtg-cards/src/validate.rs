@@ -6377,6 +6377,7 @@ impl Walker<'_> {
             | GameRule::LifeFloor { who, .. }
             | GameRule::RadiationGainsLife(who)
             | GameRule::LifeTotalCantChange(who)
+            | GameRule::CostColorsDrawn(who)
             | GameRule::CantDraw(who)
             | GameRule::DrawFromBottom(who)
             | GameRule::CantSearch(who)

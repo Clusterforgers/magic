@@ -141,6 +141,20 @@ pub(crate) enum Look {
     Hidden,
 }
 
+/// The cost the owner of `object` pays for it now where a rule draws the colors of their costs anew, for a card off the
+/// battlefield and the stack; `None` when it is the printed cost.
+fn cost_now(
+    state: &GameState,
+    object: &GameObject,
+    printed: &mtg_core::mana::ManaCost,
+) -> Option<mtg_core::mana::ManaCost> {
+    if matches!(object.zone(), Zone::Battlefield | Zone::Stack) {
+        return None;
+    }
+    let now = mtg_engine::cost_colors::redrawn(state, object.owner(), printed);
+    (now != *printed).then_some(now)
+}
+
 fn count(len: usize) -> u32 {
     u32::try_from(len).unwrap_or(u32::MAX)
 }
@@ -512,6 +526,11 @@ impl ObjectView {
             zone: object.zone(),
             name,
             mana_cost: card.mana_cost.clone().filter(|_| printed),
+            cost_now: card
+                .mana_cost
+                .as_ref()
+                .filter(|_| printed)
+                .and_then(|cost| cost_now(state, object, cost)),
             supertypes: card
                 .supertypes
                 .iter()
@@ -594,6 +613,7 @@ impl ObjectView {
             zone: object.zone(),
             name: String::new(),
             mana_cost: None,
+            cost_now: None,
             supertypes: Vec::new(),
             types: Vec::new(),
             subtypes: Vec::new(),

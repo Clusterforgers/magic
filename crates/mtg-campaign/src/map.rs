@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::content::Theme;
 use crate::rng::Stream;
-use crate::scale::BRACKETS_FROM;
+use crate::scale::{BRACKETS_FROM, ROSTER_FROM, UBER_HEAT, UBER_ODDS};
 
 /// What a room of the ladder holds.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
@@ -89,28 +89,59 @@ pub const LIEUTENANTS: usize = 3;
 
 /// The ladder of `theme` for `seed`, as a run of the first content generation draws it.
 pub fn generate(theme: &Theme, seed: u64) -> FloorMap {
-    generate_for(theme, seed, 0)
+    generate_for(theme, seed, 0, 0)
 }
 
-/// The ladder of `theme` for `seed` in a run of content generation `content`: only bosses of that generation or
-/// earlier. Before [`BRACKETS_FROM`] it meets every lieutenant and then the final boss; from it, [`LIEUTENANTS`] of
-/// them and then one final boss drawn from the theme's final bosses and the upgraded forms of the lieutenants left off.
-pub fn generate_for(theme: &Theme, seed: u64, content: u32) -> FloorMap {
-    let mut rng = Stream::new(seed, "map", 0, 0);
+/// The ladder of `theme` for `seed` in a run of content generation `content` at `heat`: [`generate_floor`] for the first
+/// floor, with only bosses of that generation or earlier. Before [`BRACKETS_FROM`] it meets every lieutenant and then
+/// the final boss; from it, [`LIEUTENANTS`] of them and then one final boss drawn from the theme's final bosses and the
+/// upgraded forms of the lieutenants left off.
+pub fn generate_for(theme: &Theme, seed: u64, content: u32, heat: u8) -> FloorMap {
+    generate_floor(theme, seed, content, heat, 1, &[])
+}
+
+/// The ladder of `floor` (from 1) in a run of content generation `content` at `heat`: the first floor as
+/// [`generate_for`] draws it; a deeper one drawn by the seed keyed by the floor, its bosses avoiding those of `avoid`
+/// (the floor above, by identity) while enough others are left. Every floor takes the generation's roster: no boss
+/// before its `since`, an uber boss never a lieutenant, and from [`ROSTER_FROM`] at [`UBER_HEAT`] or hotter one ladder
+/// in [`UBER_ODDS`] meets an uber boss as its final boss instead (drawn from a stream of its own so the rest of the
+/// ladder is the same either way), unless the floor above met it.
+pub fn generate_floor(
+    theme: &Theme,
+    seed: u64,
+    content: u32,
+    heat: u8,
+    floor: u8,
+    avoid: &[&str],
+) -> FloorMap {
+    let key = u64::from(floor.saturating_sub(1));
+    let mut rng = Stream::new(seed, "map", key, 0);
+    let identity = |id: &str| {
+        theme
+            .boss(id)
+            .map_or(id.to_owned(), |b| b.identity().to_owned())
+    };
+    let avoided: Vec<String> = avoid.iter().map(|id| identity(id)).collect();
     let lieutenants: Vec<&str> = theme
         .bosses
         .iter()
-        .filter(|b| !b.final_boss && b.since <= content)
+        .filter(|b| !b.final_boss && !b.uber && b.since <= content)
         .map(|b| b.id.as_str())
         .collect();
     let finals = theme
         .bosses
         .iter()
-        .filter(|b| b.final_boss && b.since <= content)
+        .filter(|b| b.final_boss && !b.uber && b.since <= content)
         .map(|b| b.id.as_str());
     let mut order;
     if content >= BRACKETS_FROM {
-        order = rng.pick(&lieutenants, LIEUTENANTS.min(lieutenants.len()));
+        let (new, old): (Vec<&str>, Vec<&str>) = lieutenants
+            .iter()
+            .partition(|id| !avoided.iter().any(|a| a == *id));
+        order = rng.pick(&new, LIEUTENANTS.min(new.len()));
+        if order.len() < LIEUTENANTS && !old.is_empty() {
+            order.extend(rng.pick(&old, (LIEUTENANTS - order.len()).min(old.len())));
+        }
         let upgraded = theme
             .upgraded
             .iter()
@@ -118,7 +149,25 @@ pub fn generate_for(theme: &Theme, seed: u64, content: u32) -> FloorMap {
             .filter(|b| !order.contains(&b.identity()))
             .map(|b| b.id.as_str());
         let candidates: Vec<&str> = finals.chain(upgraded).collect();
-        order.extend(rng.pick(&candidates, 1));
+        let unmet: Vec<&str> = candidates
+            .iter()
+            .copied()
+            .filter(|id| !avoided.contains(&identity(id)))
+            .collect();
+        order.extend(rng.pick(
+            if unmet.is_empty() {
+                &candidates
+            } else {
+                &unmet
+            },
+            1,
+        ));
+        if let Some(uber) = uber_final(theme, seed, content, heat, key)
+            && !avoided.contains(&identity(uber))
+        {
+            order.pop();
+            order.push(uber);
+        }
     } else {
         order = rng.pick(&lieutenants, lieutenants.len());
         order.extend(finals);
@@ -161,6 +210,25 @@ pub fn generate_for(theme: &Theme, seed: u64, content: u32) -> FloorMap {
         row += 1;
     }
     FloorMap { nodes }
+}
+
+/// The uber boss a ladder of `theme` for `seed` meets as its final boss, if it meets one: from [`ROSTER_FROM`] at
+/// [`UBER_HEAT`] or hotter, one ladder in [`UBER_ODDS`]; `key` is the floor's index, so each floor draws its own.
+fn uber_final(theme: &Theme, seed: u64, content: u32, heat: u8, key: u64) -> Option<&str> {
+    if content < ROSTER_FROM || heat < UBER_HEAT {
+        return None;
+    }
+    let ubers: Vec<&str> = theme
+        .bosses
+        .iter()
+        .filter(|b| b.uber && b.since <= content)
+        .map(|b| b.id.as_str())
+        .collect();
+    let mut rng = Stream::new(seed, "uber", key, 0);
+    if ubers.is_empty() || rng.below(UBER_ODDS) != 0 {
+        return None;
+    }
+    rng.pick(&ubers, 1).into_iter().next()
 }
 
 #[cfg(test)]

@@ -161,6 +161,9 @@ pub enum Rule {
     RadiationGainsLife(Vec<PlayerId>),
     /// The players' life totals can't change (CR 119.7, 119.8).
     LifeTotalCantChange(Vec<PlayerId>),
+    /// The colors of the mana symbols in the costs of the players' spells are drawn anew each round within their
+    /// commanders' color identity (`cost_colors`).
+    CostColorsDrawn(Vec<PlayerId>),
     /// The players have the keyword, such as protection from everything.
     PlayersHave {
         /// The players.
@@ -875,6 +878,9 @@ pub(crate) struct RulesInForce {
     life_floors: BTreeMap<PlayerId, Vec<i32>>,
     radiation_gains: BTreeSet<PlayerId>,
     no_life_change: BTreeSet<PlayerId>,
+    /// The players whose costs have their colors drawn anew, one bit for each seat by index (a set this small keeps the
+    /// cached rules small).
+    cost_colors: u64,
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     draw_bottom: BTreeSet<PlayerId>,
@@ -1375,6 +1381,12 @@ impl RulesInForce {
             }
             Rule::RadiationGainsLife(players) => self.radiation_gains.extend(players),
             Rule::LifeTotalCantChange(players) => self.no_life_change.extend(players),
+            Rule::CostColorsDrawn(players) => {
+                self.cost_colors |= players
+                    .iter()
+                    .map(|p| seat_bit(*p))
+                    .fold(0, |all, bit| all | bit);
+            }
             Rule::PlayersHave { who, keyword } => self
                 .player_keywords
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
@@ -1905,6 +1917,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::RadiationGainsLife(who) => Rule::RadiationGainsLife(scope.players(who)?),
         GameRule::LifeTotalCantChange(who) => Rule::LifeTotalCantChange(scope.players(who)?),
+        GameRule::CostColorsDrawn(who) => Rule::CostColorsDrawn(scope.players(who)?),
         GameRule::PlayersHave { who, keyword } => Rule::PlayersHave {
             who: scope.players(who)?,
             keyword: keyword.clone(),
@@ -2226,6 +2239,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::NoLifeLossFromDamage(players)
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
+        | Rule::CostColorsDrawn(players)
         | Rule::CantDraw(players)
         | Rule::DrawFromBottom(players)
         | Rule::CantSearch(players)
@@ -2427,6 +2441,7 @@ static NONE: RulesInForce = RulesInForce {
     life_floors: BTreeMap::new(),
     radiation_gains: BTreeSet::new(),
     no_life_change: BTreeSet::new(),
+    cost_colors: 0,
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     draw_bottom: BTreeSet::new(),
@@ -2822,6 +2837,20 @@ pub fn cant_be_regenerated(state: &GameState, id: ObjectId) -> bool {
 pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
     let rules = state.rules();
     rules.no_life_gain.contains(&player) || rules.no_life_change.contains(&player)
+}
+
+/// Whether the colors of the mana symbols in the costs of `player`'s spells are drawn anew within their commanders' color
+/// identity: the one place a spell's cost reads this rule (`cost_colors`).
+pub fn cost_colors_drawn(state: &GameState, player: PlayerId) -> bool {
+    state.rules().cost_colors & seat_bit(player) != 0
+}
+
+/// The bit of `player` in a set of seats by index; none for a seat past the 64th.
+fn seat_bit(player: PlayerId) -> u64 {
+    u32::try_from(player.index())
+        .ok()
+        .and_then(|at| 1u64.checked_shl(at))
+        .unwrap_or(0)
 }
 
 /// Whether the life total of `player` can't change (CR 119.7, 119.8): the one place a loss or payment of life reads

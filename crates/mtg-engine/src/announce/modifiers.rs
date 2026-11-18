@@ -39,6 +39,20 @@ const MOST_TIMES: i64 = 100;
 
 /// `mana` after every cost modifier that applies to the spell has changed it; an ability costs what it costs.
 pub(super) fn apply(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) -> Option<ManaCost> {
+    let What::Spell(_) = ctx.what else {
+        return mana;
+    };
+    // The colors of the total are drawn last, so an increase or reduction of a color reads the cost as printed.
+    increased_and_reduced(ctx, choices, mana)
+        .map(|cost| crate::cost_colors::redrawn(ctx.state, ctx.player, &cost))
+}
+
+/// `mana` after the increases and reductions that apply to the spell `ctx` announces.
+fn increased_and_reduced(
+    ctx: &Ctx<'_>,
+    choices: &Choices,
+    mana: Option<ManaCost>,
+) -> Option<ManaCost> {
     let What::Spell(spell) = ctx.what else {
         return mana;
     };
@@ -69,6 +83,21 @@ pub(super) fn apply(ctx: &Ctx<'_>, choices: &Choices, mana: Option<ManaCost>) ->
 /// The mana cost `player` pays for `spell` before anything is announced, at least: the printed cost with the
 /// modifiers that need no announcement applied, which the priority decision judges against the mana they have.
 pub(crate) fn cheapest<'a>(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    way: Option<CastWay>,
+    printed: &'a ManaCost,
+) -> Cow<'a, ManaCost> {
+    if crate::rules::cost_colors_drawn(state, player) {
+        let cost = increased_and_reduced_cheapest(state, player, spell, way, printed);
+        return Cow::Owned(crate::cost_colors::redrawn(state, player, &cost));
+    }
+    increased_and_reduced_cheapest(state, player, spell, way, printed)
+}
+
+/// [`cheapest`] before the colors of the cost are drawn.
+fn increased_and_reduced_cheapest<'a>(
     state: &GameState,
     player: PlayerId,
     spell: ObjectId,

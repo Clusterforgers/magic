@@ -19,6 +19,7 @@ mod cant_named;
 mod cast;
 mod combat_quirks;
 mod commanders;
+pub mod cost_colors;
 mod costly_mana;
 mod damage;
 #[cfg(test)]

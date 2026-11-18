@@ -133,6 +133,7 @@ export function runStage(view: DelveView): string {
   if (status === 'Lobby') return 'Gathering the party'
   if (status === 'Map') return 'Choosing a path'
   if (status === 'Room') return 'At camp'
+  if (status === 'FloorCleared') return `Floor ${view.run.floor} cleared`
   if (status === 'Victory') return 'Victory'
   if (status === 'Defeat') return 'Defeated'
   if (status === 'Abandoned') return 'Turned back'
@@ -255,6 +256,20 @@ export function nextStep(view: DelveView): string {
     return 'The boss is behind you. Choose the camp the party rests at before the next boss.'
   if (status === 'Room')
     return 'Take your pick below. When every hero has answered, the party moves on: after a boss it votes for a camp, after a camp it faces the next boss.'
+  if (status === 'FloorCleared')
+    return 'The final boss fell. Bank the win to end the run in victory, or descend to a harder floor.'
   if (status === 'Victory' || status === 'Defeat' || status === 'Abandoned') return ''
   return 'Enter the fight: it starts once every hero is at the table. Afterwards you come straight back here for the loot.'
+}
+
+/** One hero's part in the floor vote: descend, bank, still choosing, or a bot ally that votes after the players. */
+export type FloorBallot = { hero: number; name: string; state: 'descend' | 'bank' | 'pending' | 'follows' }
+
+/** Each hero's floor ballot, in party order. */
+export function floorBallots(run: Run): FloorBallot[] {
+  return run.heroes.map((h, hero) => {
+    const vote = run.floor_votes[hero]
+    if (vote !== undefined) return { hero, name: h.name, state: vote ? 'descend' : 'bank' }
+    return { hero, name: h.name, state: h.bot === null ? 'pending' : 'follows' }
+  })
 }

@@ -226,6 +226,7 @@ export function devView(state: DevState): DelveView {
           rules: ['grim', 'skrix', 'skrix'],
           phases: [['nest', 93]] as Array<[string, number]>,
           minions: [['Brood of Skrix', 25]] as Array<[string, number]>,
+          intensify: [],
         }
       : undefined
   return delveView(

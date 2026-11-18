@@ -212,6 +212,9 @@ export function run(over: Partial<Run> = {}): Run {
         { id: 3, row: 2, lane: 0, kind: 'boss', boss: 'grimgut', next: [] },
       ],
     },
+    floor: 1,
+    floors_cleared: 0,
+    floor_votes: {},
     heroes: [hero()],
     at: null,
     cleared: [],
@@ -238,6 +241,7 @@ export function delveView(over: Partial<DelveView> = {}, runOver: Partial<Run> =
       ['grimgut', 33],
     ],
     deck_problems: [],
+    descent: [],
     ...over,
   }
 }

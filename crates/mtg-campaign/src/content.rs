@@ -173,6 +173,10 @@ pub struct Boss {
     /// Whether it is the theme's final boss, fought last.
     #[serde(default, rename = "final")]
     pub final_boss: bool,
+    /// Whether it is an uber boss, which a hot ladder may meet in place of its final boss (`map::generate_for`); never a
+    /// lieutenant or a final boss otherwise.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub uber: bool,
     /// Its colours, as WUBRG letters.
     pub colors: String,
     /// How its seat is played.
@@ -291,6 +295,9 @@ pub struct BossUpgrade {
     /// What it says as the fight begins.
     #[serde(default)]
     pub line: String,
+    /// The content generation from which the upgraded form stands, at least the boss's own and the bracket generation.
+    #[serde(default)]
+    pub since: u32,
 }
 
 /// The id suffix of a boss's upgraded form.
@@ -321,7 +328,10 @@ impl Boss {
             final_boss: true,
             rules,
             line: upgrade.line.clone(),
-            since: self.since.max(crate::scale::BRACKETS_FROM),
+            since: self
+                .since
+                .max(upgrade.since)
+                .max(crate::scale::BRACKETS_FROM),
             upgrade: None,
             upgrade_of: Some(self.id.clone()),
             ..self.clone()
@@ -666,10 +676,9 @@ impl Content {
             .values()
             .filter(|c| c.kind == CardKind::Enrage)
             .flat_map(|c| {
-                crate::scale::ENRAGE_TURN
-                    .iter()
-                    .filter(move |turn| **turn != c.turn)
-                    .map(move |turn| enrage_at(c, *turn))
+                crate::scale::ENRAGE_TURNS
+                    .filter(move |turn| *turn != c.turn)
+                    .map(move |turn| enrage_at(c, turn))
             })
             .collect::<Result<Vec<_>, _>>()?;
         cards.extend(variants.into_iter().map(|c| (c.id.clone(), c)));
@@ -718,7 +727,7 @@ fn every_turn() -> u32 {
     1
 }
 
-/// The Enrage `card` made to begin on the heroes' turn `turn` (`scale::ENRAGE_TURN`): its id, `turn`, rules text and
+/// The Enrage `card` made to begin on the heroes' turn `turn` (`scale::ENRAGE_TURNS`): its id, `turn`, rules text and
 /// the turn counts its abilities compare with and count beyond.
 fn enrage_at(card: &CustomCard, turn: u32) -> Result<CustomCard, CampaignError> {
     const WORDS: [&str; 13] = [

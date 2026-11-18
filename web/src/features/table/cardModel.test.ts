@@ -9,6 +9,7 @@ import {
   cardLabel,
   colorsInSet,
   combatRoleOf,
+  costNow,
   costPips,
   costText,
   frameOf,
@@ -213,6 +214,15 @@ describe('cardLabel', () => {
 
   it('names a land by its ability and leaves out a cost it does not have', () => {
     expect(cardLabel(forest(), null)).toBe('Forest, Basic Land — Forest, Tap: add green mana')
+  })
+
+  it('names the cost a drawn rule asks now before the printed one', () => {
+    const drawn = card({ name: 'Grizzly Bears', cost_now: [{ Generic: 1 }, { Colored: 'Blue' }] })
+    expect(costNow(drawn)).toEqual([{ Generic: 1 }, { Colored: 'Blue' }])
+    expect(cardLabel(drawn, null)).toBe(
+      'Grizzly Bears, cost 1 generic, blue, printed cost 1 generic, green, Creature — Bear, power 2, toughness 2',
+    )
+    expect(costNow(card({}))).toEqual(card({}).mana_cost)
   })
 
   it('names the keywords after the power and toughness', () => {

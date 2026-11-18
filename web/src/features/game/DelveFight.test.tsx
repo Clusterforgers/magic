@@ -18,6 +18,7 @@ const fight = {
   rules: ['skrix'],
   phases: [['nest', 80]] as Array<[string, number]>,
   minions: [],
+  intensify: [],
 }
 
 function info(result: unknown = null) {

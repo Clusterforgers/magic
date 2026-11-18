@@ -265,6 +265,22 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
               </dd>
             </>
           )}
+          {object.cost_now === undefined ? null : (
+            <>
+              <dt className="font-semibold text-primary">
+                Costs now<span className="sr-only">: </span>
+              </dt>
+              <dd data-slot="preview-cost-now">
+                <span className="sr-only">{costText(object.cost_now)}</span>
+                <ManaPips
+                  pips={costPips(object.cost_now)}
+                  sizeClass="size-4 text-xs"
+                  label="Costs now"
+                  className="[&]:inline-flex"
+                />
+              </dd>
+            </>
+          )}
           <dt className="font-semibold">
             Type<span className="sr-only">: </span>
           </dt>

@@ -9,9 +9,17 @@ export type FoughtFight = {
  */
 game: string, 
 /**
- * The boss's room.
+ * The boss's room on its floor's ladder.
  */
 room: number, 
+/**
+ * The floor it was fought on.
+ */
+floor: number, 
+/**
+ * The boss, by id.
+ */
+boss: string | null, 
 /**
  * Whether the party won.
  */
