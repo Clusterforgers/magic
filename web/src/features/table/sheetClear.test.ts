@@ -1,10 +1,10 @@
-//! Goal: the prompt sheet never covers an opponent's or the boss's cards and the boss's board stays readable: in every layout (a duel, four seats, a grid, focus, the boss with one to six heroes, the phone) and window size the sheet stands no higher above the strip than the band's room, which the split keeps free below the opponents' boards whatever the prompt, the boards keep a row of cards above it, and the boss's cards are at least 60 % of the heroes' where its board is like theirs.
+//! Goal: the prompt band never covers an opponent's or the boss's cards and the boss's board stays readable: in every layout (a duel, four seats, a grid, focus, the boss with one to six heroes, the phone) and window size the band is the strip with the ticker's line (on a phone a second line), whose room the split keeps free below the opponents' boards whatever the prompt, the boards keep a row of cards above a sheet that grows, and the boss's cards are at least 60 % of the heroes' where its board is like theirs.
 import { describe, expect, it } from 'vitest'
 import { BOARD_KEEP_PX, boardCounts, boardFrames, splitRegions } from './boardSplit'
 import { fixtureState, withBoss } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import { DEV_PROMPTS } from './dev/prompts'
-import { planTable } from './layout'
+import { BAND_PHONE_PX, BAND_TICKER_PX, planTable, twoLineBand } from './layout'
 import type { TableMode, Viewport } from './layout'
 import { bossSidesOf } from './selectors'
 
@@ -57,7 +57,10 @@ describe('the prompt sheet over the opponents', () => {
     'covers no card of %s at %#: it stays in the room the boards keep free',
     (_name, seats, mode, boss, permanents, viewport) => {
       const { plan, regions } = tableOf(seats, mode, boss, permanents, viewport)
-      expect(regions.sheetRoom).toBeGreaterThan(0)
+      // One line is the strip with the ticker's line kept above it; a phone's second line too.
+      expect(regions.sheetRoom).toBe(
+        twoLineBand(regions.breakpoint) ? BAND_PHONE_PX - regions.shared : BAND_TICKER_PX,
+      )
       // The sheet's height over the strip is never more than the room kept below the opponents' boards.
       expect(regions.sheet - regions.shared).toBeLessThanOrEqual(regions.sheetRoom + 1e-9)
       // Above that room the opponents' row keeps its chrome and a row of cards, which a sheet of cards leaves too.

@@ -67,6 +67,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Choosing faster: quick selection buttons (all, owned, allied in team modes, none) in prompts that pick several objects, a random precon or own deck in every mode, hidden until the start, and "Always pay automatically" for payments without a real choice (`docs/web.md`, `docs/server.md`).
 - Team tables: a tournament match has no player host, so its seat 0 gets only what every player gets in the lobby (`tournament_match`); at a table of three or more the pods of the seats the game waits on carry a "waiting for" mark in every layout; teams set in the lobby are stored at once and survive a restart, and My games carries each seat's team so a team's win counts for its members; an effect that sets each player's life sets a shared total once.
 - Card preview modifiers: under the rules text the preview lists everything that changes the card with its source and duration, identical sources added together, a line pointing at its source on the board, and no hidden source named (`docs/protocol.md`, `docs/web.md`).
+- Middle bar: a prompt band of one fixed line with the asking card's chip, and the decision's detail (the asking card with its clause, runs of triggers, ordering, paying) in the Stack column or a sheet over the hand (`docs/ui-design.md`, The band and the Stack column).
 
 ## Live game
 
@@ -98,6 +99,11 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
 - [ ] (pm1) The preview's "Modified by" also names cost changes (reductions, taxes, the Unmaker's drawn colours) by source, and a seat pod lists what changes the player by source
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
+- [ ] (mb1) Pay for me previews its payment: `PayOptions.auto_plan` (the `Payment` the game would make) fills the circles on hover before the press
+- [ ] (mb2) An asking source that has left its zone keeps its picture: a last-known face (`AskingView` identity) for the chip and the column's card
+- [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
+- [ ] (mb4) The keyboard walks from the band's answers into the Stack column and back without crossing the boards, and the phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
+- [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 
 - [ ] Playwright games with corpus decks that ask every decision kind
 

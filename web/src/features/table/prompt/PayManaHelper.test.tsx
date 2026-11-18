@@ -1,4 +1,4 @@
-/** Goal: a payment decision addressed to a seat that is not casting (the helper of an assist spell) draws the prompt for that seat, has no Cancel, and Pay automatically or a manual payment goes out as one Answer with the decision id. */
+/** Goal: a payment decision addressed to a seat that is not casting (the helper of an assist spell) draws the prompt for that seat, has no Cancel, and Pay for me or a manual payment goes out as one Answer with the decision id. */
 import { act, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { ObjectId, PayOptions } from '@/protocol/generated'
@@ -45,12 +45,12 @@ function mount(seat: number) {
 }
 
 describe('a payment decision for the helper seat', () => {
-  it('draws the prompt for the helper, without Cancel, and Pay automatically answers it', async () => {
+  it('draws the prompt for the helper, without Cancel, and Pay for me answers it', async () => {
     const { h, send, user, container } = mount(1)
     send(40, 1)
     expect(container.querySelector('[data-decision="PayMana"]')).not.toBeNull()
     expect(container.querySelector('[data-slot="pay-cancel"]')).toBeNull()
-    await user.click(screen.getByRole('button', { name: 'Pay automatically' }))
+    await user.click(screen.getByRole('button', { name: 'Pay for me' }))
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 40, answer: { PayMana: 'Auto' } }])
   })
 

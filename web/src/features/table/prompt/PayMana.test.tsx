@@ -1,4 +1,4 @@
-/** Goal: for many costs and source sets (generic, coloured, colourless, floating mana, several colours on one permanent, too little mana) the PayMana prompt marks exactly the sources that still help as legal, builds the payment from clicks and keys in order, enables Confirm only for a payment the engine would accept and sends it as one Manual answer; Pay automatically and Cancel answer once (Pay automatically is disabled with its reason when the game offers none), a source that cannot finish the payment is not offered, a chosen source can be taken back, and a new decision starts clean. */
+/** Goal: for many costs and source sets (generic, coloured, colourless, floating mana, several colours on one permanent, too little mana) the PayMana prompt marks exactly the sources that still help as legal, builds the payment from clicks and keys in order, enables Confirm only for a payment the engine would accept and sends it as one Manual answer; Pay for me and Cancel answer once (Pay for me is disabled with its reason when the game offers none), a source that cannot finish the payment is not offered, a chosen source can be taken back, and a new decision starts clean. */
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { AUTO_REASON } from './kinds/PayMana'
@@ -76,10 +76,14 @@ function renderPay(given: PayOptions) {
   const confirm = (): HTMLElement => screen.getByRole('button', { name: 'Confirm payment' })
   const text = (): string =>
     must(table.container.querySelector('[data-slot="prompt-text"]')).textContent ?? ''
-  const chips = (): string[] =>
-    [...table.container.querySelectorAll('[data-slot="pay-chip"]')].map(
-      (chip) => chip.getAttribute('aria-label') ?? '',
+  /** What pays, in the order chosen: the filled circles of the column, each piece once. */
+  const chips = (): string[] => {
+    const circles = [...table.container.querySelectorAll<HTMLElement>('button[data-slot="pay-circle"]')]
+    const pieces = new Map(
+      circles.map((circle) => [Number(circle.dataset['spend']), circle.getAttribute('aria-label') ?? '']),
     )
+    return [...pieces.entries()].sort(([a], [b]) => a - b).map(([, label]) => label)
+  }
   /** One step: `3` clicks land 3, `3/U` then picks blue in the chooser, `pool:G` spends floating green. */
   const step = async (what: string): Promise<void> => {
     if (what.startsWith('pool:')) {
@@ -92,6 +96,7 @@ function renderPay(given: PayOptions) {
     const [index, pick] = what.split('/')
     await table.user.click(land(Number(index)))
     if (pick !== undefined) {
+      // The land's row in the column lights and asks the kind.
       await table.user.click(screen.getByRole('button', { name: `Add ${COLOUR[pick]} mana` }))
     }
   }
@@ -546,7 +551,7 @@ describe('taking a choice back', () => {
     await steps(['0', '1', 'pool:G'])
     await user.click(screen.getByRole('button', { name: 'Clear the payment' }))
     expect(chips()).toEqual([])
-    expect(screen.queryByRole('button', { name: 'Undo the last choice' })).toBeNull()
+    expect(screen.getByRole('button', { name: 'Undo the last choice' })).toBeDisabled()
     expect(screen.queryByRole('button', { name: 'Clear the payment' })).toBeNull()
     expect(text()).toMatch(/^Cleared the payment\. Pay 3 generic/)
   })
@@ -575,9 +580,9 @@ describe('floating mana', () => {
     expect(screen.queryByRole('button', { name: /^Spend blue/ })).toBeNull()
   })
 
-  it('says none when the pool is empty', () => {
+  it('takes no line while the pool is empty', () => {
     renderPay(payOptions('{3}', [[0, 'G']]))
-    expect(within(screen.getByRole('group', { name: 'Floating mana' })).getByText('none')).toBeInTheDocument()
+    expect(screen.queryByRole('group', { name: 'Floating mana' })).toBeNull()
   })
 
   it('does not spend mana the cost cannot use', async () => {
@@ -748,8 +753,8 @@ describe('the tax of an attack', () => {
   })
 })
 
-describe('Pay automatically, Cancel and Confirm', () => {
-  it('Pay automatically answers Auto while nothing is chosen', async () => {
+describe('Pay for me, Cancel and Confirm', () => {
+  it('Pay for me answers Auto while nothing is chosen', async () => {
     const { answer, user } = renderPay(
       payOptions('{2}', [
         [0, 'G'],
@@ -757,13 +762,13 @@ describe('Pay automatically, Cancel and Confirm', () => {
       ]),
     )
     expect(screen.queryByRole('button', { name: 'Pay the rest for me' })).toBeNull()
-    await user.click(screen.getByRole('button', { name: 'Pay automatically' }))
+    await user.click(screen.getByRole('button', { name: 'Pay for me' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Auto' }]])
   })
 
-  it('disables Pay automatically with its reason when the game offers none', () => {
+  it('disables Pay for me with its reason when the game offers none', () => {
     renderPay(payOptions('{U}{U}', [[0, 'G']], { auto_available: false }))
-    const auto = screen.getByRole('button', { name: 'Pay automatically' })
+    const auto = screen.getByRole('button', { name: 'Pay for me' })
     expect(auto).toBeDisabled()
     expect(auto).toHaveAccessibleDescription(AUTO_REASON)
     expect(screen.getByText(AUTO_REASON)).toBeVisible()
@@ -771,7 +776,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
 
   it('shows no reason while the game can pay automatically', () => {
     renderPay(payOptions('{U}', [[0, 'U']]))
-    expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeEnabled()
+    expect(screen.getByRole('button', { name: 'Pay for me' })).toBeEnabled()
     expect(screen.queryByText(AUTO_REASON)).toBeNull()
   })
 
@@ -804,7 +809,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
       ),
     )
     await steps(picks)
-    expect(screen.queryByRole('button', { name: 'Pay automatically' })).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Pay for me' })).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: expected } }]])
   })
@@ -830,7 +835,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
     expect(screen.queryByRole('button', { name: 'Pay the rest for me' })).toBeNull()
   })
 
-  it('goes back to Pay automatically when the picks are taken back', async () => {
+  it('goes back to Pay for me when the picks are taken back', async () => {
     const { user, steps, chips } = renderPay(
       payOptions('{2}', [
         [0, 'G'],
@@ -841,7 +846,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
     await user.click(screen.getByRole('button', { name: /^Remove green/ }))
     expect(chips()).toEqual([])
     expect(screen.queryByRole('button', { name: 'Pay the rest for me' })).toBeNull()
-    expect(screen.getByRole('button', { name: 'Pay automatically' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Pay for me' })).toBeInTheDocument()
   })
 
   it('has no Cancel when the options do not allow backing out, and says so in the sentence', () => {
@@ -886,7 +891,7 @@ describe('Pay automatically, Cancel and Confirm', () => {
   })
 
   it.each([
-    ['Pay automatically', [], { PayMana: 'Auto' }],
+    ['Pay for me', [], { PayMana: 'Auto' }],
     ['Pay the rest for me', ['0'], { PayMana: { Complete: payment([], [[0, 0]]) } }],
     [/^Cancel the (spell|ability)$/, [], 'Undo'],
     [
@@ -1048,7 +1053,7 @@ describe('a new decision', () => {
 })
 
 describe('what the player is told', () => {
-  it('shows the cost, the owed mana and the payment as they change', async () => {
+  it('shows what is owed as circles, each captioned with what paid it, and the count in the band', async () => {
     const { steps, container } = renderPay(
       payOptions('{2}{G}', [
         [0, 'G'],
@@ -1056,21 +1061,19 @@ describe('what the player is told', () => {
         [2, 'R'],
       ]),
     )
-    const cost = (): string | null =>
-      container
-        .querySelector('[data-slot="payment"] [role="img"][aria-label^="Mana cost"]')
-        ?.getAttribute('aria-label') ?? null
-    const still = (): string =>
-      container.querySelector('[aria-label^="Mana still owed"]')?.getAttribute('aria-label') ??
-      within(screen.getByRole('group', { name: 'Still owed' })).getByText(/covered/).textContent ??
-      ''
-    expect(cost()).toBe('Mana cost: 2 generic, green')
-    expect(still()).toBe('Mana still owed: 2 generic, green')
+    const captions = (): string[] =>
+      [...container.querySelectorAll('[data-slot="pay-caption"]')].map((caption) => caption.textContent ?? '')
+    const meter = (): string | null =>
+      container.querySelector('[data-slot="pay-meter"]')?.getAttribute('aria-label') ?? null
+    expect(captions()).toEqual(['any', 'any', 'green'])
+    expect(meter()).toBe('0 of 3 paid')
     await steps(['0'])
-    expect(still()).toBe('Mana still owed: 2 generic')
+    expect(captions()).toEqual(['any', 'any', nameOf(0)])
+    expect(meter()).toBe('1 of 3 paid')
     await steps(['1', '2'])
-    expect(still()).toBe('nothing, covered')
-    expect(cost()).toBe('Mana cost: 2 generic, green')
+    expect(captions()).toEqual([nameOf(1), nameOf(2), nameOf(0)])
+    expect(meter()).toBe('3 of 3 paid')
+    expect(within(screen.getByRole('group', { name: 'What is owed' })).getAllByRole('button')).toHaveLength(3)
   })
 
   it('says the same in the one live sentence', async () => {

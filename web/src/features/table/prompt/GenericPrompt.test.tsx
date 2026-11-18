@@ -69,7 +69,7 @@ const ROWS: Row[] = [
         max_life: 0,
       },
     },
-    ['Pay automatically', 'Cancel the spell'],
+    ['Pay for me', 'Cancel the spell'],
     1,
     { PayMana: 'Cancel' },
   ],

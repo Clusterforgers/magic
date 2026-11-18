@@ -621,6 +621,7 @@ impl<S: EventStore> GameActor<S> {
         let seat = decision.player;
         self.seats.broadcast(&ServerMessage::Bank { seat, bank });
         self.tell_away(seat, Some(deadline_ms));
+        let asking = self.asking(&decision);
         self.seats.send(
             seat,
             ServerMessage::Decision {
@@ -628,6 +629,7 @@ impl<S: EventStore> GameActor<S> {
                 decision,
                 deadline_ms: Some(deadline_ms),
                 show_after_ms: None,
+                asking,
             },
         );
     }
@@ -983,6 +985,8 @@ mod tests {
                     ability: 0,
                     when: String::new(),
                     origin: mtg_engine::abilities::AbilitySource::default(),
+                    text: String::new(),
+                    cause: None,
                 })
                 .collect(),
         })

@@ -1,5 +1,5 @@
 import { ChevronDown } from 'lucide-react'
-import { memo, useMemo, useState } from 'react'
+import { memo, useContext, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -14,7 +14,11 @@ import { ManaPips } from './ManaPips'
 import { useSeatNamer } from './names'
 import { SeatDot } from './PodParts'
 import { StackYieldMenu, yieldKeyOf } from './StackYieldMenu'
+import { hasDetail, kindKey, namedSource } from './prompt/detail/asking'
+import { DecisionDetail, Kicker } from './prompt/detail/DecisionDetail'
+import { ownDecision } from './prompt/ownDecision'
 import { objectWords } from './prompt/targetText'
+import { SideContext } from './sideContext'
 import { stackTopFirst } from './selectors'
 import { shownObject } from './stackPreview'
 import { groupStack } from './stackGroups'
@@ -231,7 +235,70 @@ function GroupItems({
  * same make next to each other fold into their first with a count and a button that lists the rest.
  */
 export function StackPanel() {
-  const ids = usePlay(useShallow(stackTopFirst))
+  const side = useContext(SideContext)
+  const deciding = usePlay((state) => hasDetail(ownDecision(state)))
+  // In a column the pending decision's detail takes the tab: what asks, what is chosen, then the rest of the stack.
+  if (deciding && side?.kind === 'column') {
+    return (
+      <section
+        aria-label="Stack"
+        data-deciding=""
+        className="@container grid content-start gap-2 rounded-xl bg-card p-3 ring-1 ring-foreground/10"
+      >
+        <DecisionDetail where="column">
+          <StackRest />
+        </DecisionDetail>
+      </section>
+    )
+  }
+  return <StackList />
+}
+
+/**
+ * What else is on the stack while a decision's detail is up: every item but the asking one, as plain rows; a dashed
+ * note when there is none.
+ */
+export function StackRest() {
+  const asking = usePlay((state) => ownDecision(state)?.asking)
+  const ordering = usePlay((state) => {
+    const own = ownDecision(state)
+    return own !== null && kindKey(own.decision.kind) === 'OrderTriggers'
+  })
+  // The asking spell or ability and the triggers of its run are drawn above, in the decision's own list.
+  const named = usePlay((state) => {
+    const own = ownDecision(state)
+    const id = own === null ? undefined : namedSource(own.decision.kind)
+    return id !== undefined && state.objectsById[id]?.zone === 'Stack' ? id : undefined
+  })
+  const shown = useMemo(() => {
+    const ids = new Set<ObjectId>()
+    if (named !== undefined) ids.add(named)
+    if (asking?.stack !== undefined) ids.add(asking.stack)
+    for (const entry of asking?.run?.entries ?? []) if (entry.object !== undefined) ids.add(entry.object)
+    return ids
+  }, [asking, named])
+  const count = usePlay((state) => (state.view?.stack.cards ?? []).filter((id) => !shown.has(id)).length)
+  return (
+    <div data-slot="stack-rest" className="grid gap-2">
+      <Kicker lead={ordering ? 'Already on the stack, below them' : 'Already on the stack'} />
+      {count === 0 ? (
+        <p className="rounded-lg border border-dashed px-2.5 py-2 text-[0.8125rem] leading-[1.125rem] text-muted-foreground">
+          Nothing else is on the stack.
+        </p>
+      ) : (
+        <StackList without={shown} plain />
+      )}
+    </div>
+  )
+}
+
+/** The items of the stack, top first; `plain` leaves out the frame, the heading and the large top item. */
+function StackList({ without, plain = false }: { without?: ReadonlySet<ObjectId>; plain?: boolean }) {
+  const all = usePlay(useShallow(stackTopFirst))
+  const ids = useMemo(
+    () => (without === undefined ? all : all.filter((id) => !without.has(id))),
+    [all, without],
+  )
   const objectsById = usePlay((state) => state.objectsById)
   const groups = useMemo(() => groupStack(ids, objectsById), [ids, objectsById])
   const [opened, setOpened] = useState<ReadonlySet<string>>(() => new Set())
@@ -247,6 +314,28 @@ export function StackPanel() {
       if (!next.delete(key)) next.add(key)
       return next
     })
+  const list = (
+    <ol
+      role="list"
+      aria-label={plain ? 'The rest of the stack, top first' : 'Stack, top first'}
+      onFocus={roving.onFocus}
+      onKeyDown={roving.onKeyDown}
+      className={plain ? 'grid gap-1.5' : 'grid gap-1.5 @md:grid-cols-2 @3xl:grid-cols-3'}
+    >
+      {groups.map((group, index) => (
+        <GroupItems
+          key={group.key}
+          group={group}
+          top={!plain && index === 0}
+          current={roving.current}
+          entries={entries}
+          open={opened.has(group.key)}
+          onToggle={() => toggle(group.key)}
+        />
+      ))}
+    </ol>
+  )
+  if (plain) return list
   return (
     <section
       aria-label="Stack"
@@ -255,29 +344,7 @@ export function StackPanel() {
       <h2 className="text-sm font-semibold">
         Stack <span className="font-normal text-muted-foreground">({ids.length})</span>
       </h2>
-      {ids.length === 0 ? (
-        <p className="text-sm text-muted-foreground">The stack is empty.</p>
-      ) : (
-        <ol
-          role="list"
-          aria-label="Stack, top first"
-          onFocus={roving.onFocus}
-          onKeyDown={roving.onKeyDown}
-          className="grid gap-1.5 @md:grid-cols-2 @3xl:grid-cols-3"
-        >
-          {groups.map((group, index) => (
-            <GroupItems
-              key={group.key}
-              group={group}
-              top={index === 0}
-              current={roving.current}
-              entries={entries}
-              open={opened.has(group.key)}
-              onToggle={() => toggle(group.key)}
-            />
-          ))}
-        </ol>
-      )}
+      {ids.length === 0 ? <p className="text-sm text-muted-foreground">The stack is empty.</p> : list}
     </section>
   )
 }

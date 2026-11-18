@@ -16,7 +16,7 @@ The rules the web client is built to: principles, design system, a fit-to-viewpo
 | Fitts's law | Pass is the largest target, bottom right; frequent controls 32 px or more, 44 on touch |
 | Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone |
 | Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s |
-| Nothing hidden, nothing jumps | A prompt covers no opponent's or boss's card and moves no board: it lies in a band of fixed height kept free above the strip; text in it never overlaps (a line too long is cut with its whole text in a tooltip) and no board art shows through it |
+| Nothing hidden, nothing jumps | A prompt covers no opponent's or boss's card and moves no board: its band is one line of fixed height in every prompt and between prompts, and what it chooses among is in the Stack column, which never changes size; text in the band never overlaps (a line too long is cut with its whole text in a tooltip) and no board art shows through it |
 | Fair share | Every board stays readable: the boss's cards are at least about 60 % of the heroes' where its board is like theirs |
 
 ### Feel
@@ -100,7 +100,7 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 |---|---|
 | top bar | home, turn badge, step ladder (from 1024 px), menu (layout, theme, card images, hand order, Concede); 44 px |
 | opponents, own | a pod and board per seat; the rows share the room by what their boards hold, not by a fixed ratio |
-| shared | stack chips, ticker, prompt line. A prompt is one band across the whole width, as in Arena: stack chips, status, the sentence on one line, the choices, the primary answer at the right end; choices that do not fit beside the sentence take a line of their own. A band that needs more grows up into a sheet within a band of one height per window (19 dvh, 128 to 200 px; on a phone 20 dvh from 136), whose room the opponents' area keeps free above the strip for every prompt and between prompts: no board moves for a prompt and the sheet covers no card. What the band does not hold scrolls inside it, opaque to its edge, the answers in view. A prompt that lays out cards may grow further over the opponents' boards, always leaving their pods and a row of their cards. Never over your board (its cards are what a prompt asks you to click), the hand or the controls |
+| shared | stack chips, ticker, prompt line. A prompt is one band of fixed height across the whole width: the asking card's chip, the question in the card's words, the answers in a fixed place with the primary one at the right end; two lines in a narrow window. Its detail is in the Stack column ([The band and the Stack column](#the-band-and-the-stack-column)) |
 | hand dock | whole cards in one row lying in a gentle arc (`fanOf`: the ends turned up to 6° and 8 px lower), overlapping in rows only when they do not fit; hover or focus lifts a card upright and opens the preview |
 | controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more |
 | side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 272 to 304 px column that the viewer folds to the 44 px rail from its edge and opens again from the rail (kept per browser); M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
@@ -196,7 +196,28 @@ A whole sequence stays under 1,700 ms. `--fx-slow` stretches all of them. Under 
 - A target that is gone gets no arrow and drops out of the line; an item with none left says "no legal target" on a dashed chip.
 - The spotlight is the card at 1.6 times the hand card's height (168 px to 40 % of the window), centred over the shared strip with a caption: who casts, the name and the targets line. It takes no pointer, shows a card back for a card the viewer may not identify, is replaced by a newer batch with moves, and never stays, so the layout gate measures the table without it. The viewer's own cast stands 0.6 of the time, in lower contrast, captioned "You cast".
 - A mark is a badge with an icon and a short word (`FxMark`) on the card or chip it names, its edge and icon in a token colour (primary: activated, bounced; warning: triggered; success: resolved, drawn; destructive: countered; border-strong: fizzled; turn-them: exiled) and its words in `--foreground` on `--card`; `markTokens.test.ts` holds the contrast.
-- The Stack tab shows the top item as a large picture with its text and one row per target (a gone one struck out), the rest as rows with their target line.
+- The Stack tab shows the top item as a large picture with its text and one row per target (a gone one struck out), the rest as rows with their target line; while this seat decides it shows the decision instead ([The band and the Stack column](#the-band-and-the-stack-column)).
+
+### The band and the Stack column
+
+A decision is answered in two places that never move: the band says what is asked and takes the answer, the Stack column says why and holds what is chosen among.
+
+| Part | What it holds |
+|---|---|
+| Band | one line of 44 px controls over the ticker's line (72 to 88 px), the same in every prompt and between prompts; two lines (112 px) in a narrow window (a phone, a tablet). The asking card's chip (art and name; hover, focus or a press lights the card on the board and shows its preview), the question in the card's words, a short reading (a run's dots and "2 of 3", a payment's symbols), the answers at the right end |
+| Stack column | the side column comes forward on its Stack tab when a decision arrives and gives the tab back afterwards; it never changes size |
+| Sheet | where no column is open (a phone, a rail, a folded column): the same detail in a sheet over the hand, at most 330 px, with a grab handle that folds it; folded from the start when the answer is a press on the table |
+
+What the column shows, top to bottom:
+
+- Asking: "Resolving now · asks you", the asking card as a card frame with an "Asking you" tag, its name, and its rules text with the asked clause marked. The card glows on the board with an "asking" badge and what triggered it carries "just entered".
+- A run of triggers: "<cause> · trigger n of m". Done entries show a tick and what was answered, the asking one is expanded, the next ones are numbered with their effect. A rule for the rest of the game ("Always Yes", "Always No") stands under the asking card, off the band.
+- Ordering: rows with number, picture, name, the effect (not the event) and ▲▼, dragged with a mouse, a "first" tag on the top one, then "Already on the stack, below them". On touch the rows are pressed in order and take numbers. The band holds Default order (Start over on touch) and Confirm order.
+- Paying: one circle for each mana owed, captioned with the source that paid it (a Signet's own {1} after a divider); the sources in groups by what they make ("Makes W", "Makes W or U · you choose", "Makes WU · costs {1}"), one button for each colour of a source that makes several, Untap on a row in use. Board cards still work, and a land of two colours pressed on the board lights its row. The band holds the symbols as a meter, Undo, Pay for me and Confirm.
+- Every other choice (modes, options, cards, piles, divided amounts) is a list one column wide under the asking card; a number and a few options stay in the band.
+- Then what else is on the stack.
+
+Rules: the band's answers never change place between prompts of one kind; No keeps the right end and the focus, the answer the clock gives; nothing in the band wraps to a second line; a source the viewer may not see is named and pointed at nowhere; every motion (the sheet rising, a row's number, the pulse of a pointed-at card) is still under reduced motion.
 
 ### The hand
 

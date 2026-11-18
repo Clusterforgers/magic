@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { Answer, Decision, DecisionId, ObjectId } from '@/protocol/generated'
+import type { Answer, AskingView, Decision, DecisionId, ObjectId } from '@/protocol/generated'
 import type { DecisionName } from '../turnText'
 
 /** The cards a prompt has selected, in the order they were chosen. Empty again whenever the decision changes. */
@@ -20,6 +20,8 @@ export interface PromptApi {
   /** The kind's name, such as `Priority`; the key as sent for a kind this version does not know. */
   name: DecisionName | (string & {})
   decision: Decision
+  /** The spell or ability that asks, when the server named one. */
+  asking?: AskingView
   /**
    * Sends the answer, once: false when the connection refused it, when this decision was already answered, or when
    * the server has moved on to another decision.

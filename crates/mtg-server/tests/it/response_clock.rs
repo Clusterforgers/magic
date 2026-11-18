@@ -465,6 +465,7 @@ async fn a_reconnect_is_sent_the_time_that_is_left() {
             decision: decision.clone(),
             deadline_ms: Some(6_000),
             show_after_ms: None,
+            asking: None,
         }
     );
 

@@ -34,7 +34,7 @@ export const TOUR: readonly TourStep[] = [
   {
     id: 'mana',
     title: 'Mana',
-    text: 'Your untapped mana sources and mana pool are shown beside your name. When a spell needs paying, click lands to tap them or press Pay automatically.',
+    text: 'Your untapped mana sources and mana pool are shown beside your name. When a spell needs paying, click lands to tap them or press Pay for me.',
     targets: [
       '[data-area="own"] [data-slot="pod-top"]',
       '[data-area="own"] [data-slot="mana-slot"]',

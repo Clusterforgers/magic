@@ -165,10 +165,12 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   return (
     <PromptLayout
       text={text}
+      // The cards are in the centre overlay where there is no column: a sheet over the hand keeps out of the way.
+      folded
       choices={
         <>
-          <QuickSelect buttons={quick} onSet={setQuick} />
           <CardChoices
+            quick={<QuickSelect buttons={quick} onSet={setQuick} />}
             cards={from}
             chosen={chosen}
             closed={closed}

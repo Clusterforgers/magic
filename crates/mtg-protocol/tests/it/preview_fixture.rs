@@ -72,6 +72,7 @@ fn render_scene(engine: &Engine, script: Script) -> String {
         decision: decision.clone(),
         deadline_ms: script.deadline_ms,
         show_after_ms: None,
+        asking: None,
     };
     let lines: Vec<String> = script
         .answers

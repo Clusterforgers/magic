@@ -117,6 +117,7 @@ impl Table {
                     decision,
                     deadline_ms,
                     show_after_ms,
+                    ..
                 } => Some(Sent {
                     id: *id,
                     decision: decision.clone(),

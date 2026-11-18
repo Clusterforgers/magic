@@ -1,5 +1,6 @@
 // Goal: the prompt sheet moves no board and covers no card: the opponents' area keeps the band's room free below its boards (one height per window, for every prompt kind and between prompts), the sheet grows up into it, and the table's main area carries how far the sheet stands above the shared strip for the overlays that stop above it; the board rows keep their heights across every prompt kind, and a sheet held at its most scrolls the answers into view.
 import { act } from '@testing-library/react'
+import { BAND_TICKER_PX } from './layout'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderTable, tablePlanOf, TEST_VIEWPORT } from '@/test-utils/tableHarness'
@@ -75,13 +76,13 @@ describe('the room kept for the prompt sheet', () => {
     expect(overhang()).toBe('0px')
   })
 
-  it("moves no board: the opponents' area keeps the band's room free below its boards and the sheet grows into it", () => {
+  it("moves no board: the opponents' area keeps the ticker's line of the band free below its boards and holds no part of the sheet", () => {
     renderTable({ seats: 4 })
     const opponents = must(document.querySelector<HTMLElement>('[data-area="opponents"]'))
     expect(main()).toContainElement(opponents)
     expect(opponents).toHaveClass('pt-2', 'px-2')
     const room = Math.floor(tablePlanOf(TEST_VIEWPORT, 4).regions.sheetRoom)
-    expect(room).toBeGreaterThan(40)
+    expect(room).toBe(BAND_TICKER_PX)
     expect(opponents.style.paddingBottom).toBe(`calc(${room}px + 0.5rem)`)
     // The sheet is not in this area, so it can never be drawn over its cards.
     expect(opponents).not.toContainElement(
