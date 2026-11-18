@@ -76,7 +76,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9d) Crowded tables: three heroes at ten permanents each keep cards above 75 px at 1400 × 900, a six-seat grid shows the opponents' lands whole, and the card preview finds room in windows near 1024 px
 - [ ] (pf10o) The lobby's seats list stands on the first screen at 1400 × 900 beside the deck chooser instead of under the invite panel
 - [ ] (pf10p) On a phone the top bar's Effects button no longer overlaps the element behind it
-- [ ] (pf11f) A card added in the builder travels into its group of the deck list, and a removed one leaves it
 - [ ] (pf12a) An opponent's board drawn from the middle of the table holds its bands' height until the next size step, so a line that empties or a land pile that shortens does not shift the lanes above it
 - [ ] (pf12b) The lane of other permanents, set at the right, grows leftward from its own right edge, so a new artifact leaves the cards already there in place
 - [ ] (pf12c) The hand dock grows or gives back its second row only at a settle point (end of a step), not on every draw

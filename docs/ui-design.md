@@ -31,7 +31,7 @@ The twenty rules of motion and interaction the table, lobby, deck pages and Delv
 | Pose to pose | Every move is three to six keyframes (leave, peak, land, settle) in `fx.css` or `travel.ts`, tweened by the browser |
 | Follow through | A landing card and an entering permanent overshoot about 4 % and settle; a released press springs back past 1 |
 | Slow in, slow out | A card leg eases into the top of its arc and out of it to land (a curve per keyframe in `travel.ts`), entrances ease out, exits ease in; linear only for clocks |
-| Arcs | A card in flight bows off the straight line by 12 % of the way (24 to 96 px), upward, or rightward on an upright way (`arcBow`) |
+| Arcs | A card in flight bows off the straight line by 12 % of the way (24 to 96 px), upward, or rightward on an upright way (`arcBow`); a card added in the builder flies so from its search row into its line (to the Deck switch while the list is out of view), the line beats as it lands, and a line removed or moved away slides out as a ghost while the list closes up at once (`deckTravel`) |
 | Secondary action | The hit flashes and its number floats; an attacker's edge glows; a resolved spell's mark rides on it |
 | Timing | Presses 60 ms in and 220 ms back, card legs 380 ms, attacks 500 ms, hits 550 ms, strikes 1.1 s there and back; a batch's whole sequence under 1.7 s |
 | Exaggeration | A hit flashes white-hot (brightness 1.9) and shakes 5 px; a life total pops to 1.25 with a coloured flash |

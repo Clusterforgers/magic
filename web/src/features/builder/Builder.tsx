@@ -38,6 +38,7 @@ import { judgeCommander } from './commanderCheck'
 import type { FindKind } from './CommanderSlot'
 import { cardsIn, identityOf } from './identity'
 import { DeckPane } from './DeckPane'
+import { lineOf, noteArrival, noteLeaving, searchRowOf } from './deckTravel'
 import type { DeckActions } from './DeckPane'
 import { LeaveDialog } from './LeaveDialog'
 import { SearchPane } from './SearchPane'
@@ -74,6 +75,7 @@ function ViewSwitch({
         type="button"
         variant={shown === 'deck' ? 'default' : 'outline'}
         aria-pressed={shown === 'deck'}
+        data-travel-target="deck"
         onClick={() => onChange('deck')}
       >
         Deck <span className="tabular-nums">{count}</span>
@@ -196,6 +198,7 @@ export function Builder({ view, api, cards, fixMarks, printings }: BuilderProps)
       setAnnouncement(`The deck is at its limit of ${MAX_DECK_CARDS} cards.`)
       return
     }
+    noteArrival(zone, card.oracle_id, card.name, searchRowOf(card.oracle_id))
     setDraft(next)
     const copies = copiesOf(next, card.oracle_id, zone)
     setAnnouncement(`Added ${card.name} to ${ZONE_THE[zone]}: ${copies} ${copies === 1 ? 'copy' : 'copies'}.`)
@@ -279,11 +282,13 @@ export function Builder({ view, api, cards, fixMarks, printings }: BuilderProps)
     save: () => void save(),
     increment: (zone, id) => setDraft((current) => increment(current, zone, id)),
     decrement: (zone, id) => {
-      setDraft((current) => decrement(current, zone, id))
       const line = lineIn(draft, zone, id)
+      if (line?.count === 1) noteLeaving(zone, id)
+      setDraft((current) => decrement(current, zone, id))
       if (line?.count === 1) setAnnouncement(`Removed ${line.card.name} from ${ZONE_THE[zone]}.`)
     },
     remove: (zone, id) => {
+      noteLeaving(zone, id)
       setAnnouncement(`Removed ${nameOf(zone, id)} from ${ZONE_THE[zone]}.`)
       setDraft((current) => removeLine(current, zone, id))
     },
@@ -293,6 +298,11 @@ export function Builder({ view, api, cards, fixMarks, printings }: BuilderProps)
         void chooseCommander(card, zone)
         return
       }
+      // The copies travel from their line into the other zone's; a line moved whole leaves its group.
+      const from = lineIn(draft, zone, id)
+      if (from !== undefined && zone !== to) noteArrival(to, id, from.card.name, lineOf(zone, id))
+      if (from !== undefined && zone !== to && (count === undefined || count >= from.count))
+        noteLeaving(zone, id)
       setAnnouncement(`Moved ${nameOf(zone, id)} to ${ZONE_TO[to]}.`)
       setDraft((current) => moveLine(current, zone, id, to, count))
     },
