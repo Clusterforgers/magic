@@ -46,7 +46,7 @@ describe.each([
   const open = async () => {
     const table = renderTable({ seats: 2, options: { viewport } })
     if (viewport.width < 1024) await table.user.click(opener())
-    else await table.user.click(screen.getByRole('tab', { name: 'Commands' }))
+    await table.user.click(screen.getByRole('tab', { name: 'Commands' }))
     return table
   }
 
@@ -88,7 +88,7 @@ describe.each([
   it('goes away while the card is waited for and returns with the card chosen', async () => {
     const { user } = renderTable({ seats: 2, options: { viewport } })
     if (viewport.width < 1024) await user.click(opener())
-    else await user.click(screen.getByRole('tab', { name: 'Commands' }))
+    await user.click(screen.getByRole('tab', { name: 'Commands' }))
     await user.click(document.querySelector('[data-command="pick"]') as HTMLElement)
     expect(screen.queryByRole('region', { name: 'Commands' })).toBeNull()
     expect(document.querySelector('[data-slot="pick-banner"]')).not.toBeNull()
@@ -135,7 +135,7 @@ describe.each([
       state: (state) => ({ ...state, pending: yesNo(0) }),
     })
     if (viewport.width < 1024) await table.user.click(opener())
-    else await table.user.click(screen.getByRole('tab', { name: 'Commands' }))
+    await table.user.click(screen.getByRole('tab', { name: 'Commands' }))
     return table
   }
 

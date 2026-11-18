@@ -1,4 +1,4 @@
-// Goal: the Commands panel is the first and default tab of a seat's side column and absent for a viewer that is no seat; a command opens in place, shows the change it will make before anything is sent, sends the exact action on Apply or Enter, says it was sent, and closes on Escape with the focus back on its row; an inert command says why and sends nothing; the Mana row opens on a colour of the seat's commander identity.
+// Goal: the Commands panel is the first tab of a seat's side column, one press from the log it opens on and forward by itself when work by hand comes due, and absent for a viewer that is no seat; a command opens in place, shows the change it will make before anything is sent, sends the exact action on Apply or Enter, says it was sent, and closes on Escape with the focus back on its row; an inert command says why and sends nothing; the Mana row opens on a colour of the seat's commander identity.
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { ManualResult } from '@/play/manualLedger'
@@ -38,12 +38,24 @@ function panelTable(
 }
 
 describe('the Commands tab', () => {
-  it('is the first tab of a seat and on show when the table opens', () => {
+  it('is the first tab of a seat, one press away from the log the table opens on', () => {
     renderTable({ seats: 2, options: { viewport: WIDE } })
     const side = screen.getByRole('complementary', { name: 'Commands, log, chat and stack' })
     const tabs = within(side).getAllByRole('tab')
     expect(tabs[0]).toHaveTextContent('Commands')
+    expect(tabs[0]).toHaveAttribute('aria-selected', 'false')
+    expect(within(side).getByRole('tab', { name: /^Log/ })).toHaveAttribute('aria-selected', 'true')
+    expect(within(side).queryByRole('region', { name: 'Commands' })).toBeNull()
+    act(() => tabs[0]?.click())
     expect(tabs[0]).toHaveAttribute('aria-selected', 'true')
+    expect(within(side).getByRole('region', { name: 'Commands' })).toBeInTheDocument()
+  })
+
+  it('comes forward by itself when work by hand comes due', () => {
+    const { update } = renderTable({ seats: 2, options: { viewport: WIDE } })
+    const side = screen.getByRole('complementary', { name: 'Commands, log, chat and stack' })
+    expect(within(side).queryByRole('region', { name: 'Commands' })).toBeNull()
+    update(() => ({ dueLines: [{ card: 'Wild Magic Surge', text: 'Reveal cards until a permanent.' }] }))
     expect(within(side).getByRole('region', { name: 'Commands' })).toBeInTheDocument()
   })
 

@@ -245,7 +245,7 @@ The seat does by hand what the engine does not run from one persistent panel at 
 
 | Size | Where |
 |---|---|
-| L, XL | the first tab of the side column, "Commands", the tab on show when the table opens; the column keeps its width, so the card sizes the layout gate protects do not change |
+| L, XL | the first tab of the side column, "Commands", one press from the Log the column opens on during play; it comes forward by itself when a card is waited for or a by-hand line comes due; the column keeps its width, so the card sizes the layout gate protects do not change |
 | M | the first icon of the rail, opening a 320 px panel over the boards, from under the top bar down to the hand and controls row; the same icon closes it |
 | S, XS | the first tab of the side sheet, a non-modal sheet that hangs from the top bar (the top bar's button reads "Commands, log, chat and stack"); a press on the tab on show keeps it open, Close shuts it |
 
