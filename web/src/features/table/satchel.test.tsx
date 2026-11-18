@@ -1,4 +1,4 @@
-/** Goal: a Delves hero's Satchel shows at two to four seats: every pod with one has a Satchel chip that lists its cards, the tile counts it, your own Satchel waits at the head of the hand dock with its mark and cost in the card's name, castable like the hand in a priority window, and the dock's list is named for what it holds. */
+/** Goal: a Delves hero's Satchel shows at two to four seats and on a boss's side: every pod with one has a Satchel chip that lists its cards, the tile counts it, your own Satchel waits at the head of the hand dock with its mark and cost in the card's name, castable like the hand in a priority window, and the dock's list is named for what it holds. */
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { buildFixture } from '@/features/table/dev/fixture'
@@ -7,6 +7,7 @@ import type { ObjectId, StateView } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { card } from '@/test-utils/cards'
 import { renderTable } from '@/test-utils/tableHarness'
+import { withBoss } from './dev/devGame'
 import { headLabel } from './libraryTop'
 import { chipZones, podCounts, tileName } from './podFigures'
 
@@ -118,5 +119,26 @@ describe('at the table', () => {
     const list = screen.getByRole('list', { name: "Alice's commanders in the command zone and the Satchel" })
     for (const slot of list.querySelectorAll('[data-satchel]'))
       expect(must(slot.querySelector('button'))).toHaveAttribute('data-highlight', 'legal')
+  })
+})
+
+describe('a boss Satchel', () => {
+  it.each([
+    [2, 0],
+    [4, 0],
+    [4, 1],
+  ])('shows on the boss side as a hero’s does, %i heroes and %i minions', async (heroes, minions) => {
+    const fixture = withBoss(buildFixture({ seats: heroes + 1 + minions }), minions)
+    const boss = fixture.view.players.findIndex((player) => player.boss !== undefined)
+    const view = withSatchels(fixture.view, [boss], 4)
+    const table = renderTable({
+      fixture: { ...fixture, view },
+      options: { viewport: { width: 1920, height: 1080 } },
+    })
+    const chip = must(pod(boss).querySelector<HTMLElement>('[data-zone="satchel"]'), 'boss satchel chip')
+    expect(chip.getAttribute('aria-label')).toMatch(/^Satchel 4 cards/)
+    await table.user.click(chip)
+    const dialog = screen.getByRole('dialog')
+    expect(within(dialog).getAllByRole('button', { name: new RegExp(`Loot ${boss}-`) })).toHaveLength(4)
   })
 })

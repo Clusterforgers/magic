@@ -45,6 +45,8 @@ pub(crate) fn setup(
             stickers: Vec::new(),
             emblems: Vec::new(),
             satchel: Vec::new(),
+            satchel_reusable: Vec::new(),
+            opening_lands: None,
             held: Vec::new(),
             spirit: None,
             phases: Vec::new(),
