@@ -49,4 +49,8 @@ house_rules?: HouseRules,
 /**
  * The Delves run the game is a boss fight of (`/delves/{id}`); left out for any other game.
  */
-delve?: string, };
+delve?: string, 
+/**
+ * Whether the game is a tournament match: it has no player host, so seat 0 gets no host controls. Left out when not.
+ */
+tournament_match?: boolean, };

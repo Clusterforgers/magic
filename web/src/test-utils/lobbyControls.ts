@@ -24,6 +24,8 @@ export interface LobbyScene {
   account?: string
   /** The teams of the table, in the roster and the lookup's house rules; none by default. */
   teams?: Teams
+  /** The lookup marks the game as a tournament match, which has no player host. */
+  tournament?: boolean
 }
 
 const NAMES = ['Ana', 'Bo', '']
@@ -43,6 +45,7 @@ export async function openLobby(scene: LobbyScene = {}): Promise<GameHarness> {
       result: null,
       visibility: typeof visibility === 'function' ? visibility() : visibility,
       ...(scene.teams === undefined ? {} : { house_rules: { teams: scene.teams } }),
+      ...(scene.tournament === true ? { tournament_match: true } : {}),
     })
   const h = await renderGame({
     routed: true,

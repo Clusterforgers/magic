@@ -325,6 +325,11 @@ pub(crate) async fn game(
         .describe(id)
         .await
         .ok_or_else(ApiError::not_found)?;
+    // A lookup that cannot ask says no: the host routes still refuse a match's seat 0.
+    let tournament_match = match app.tournaments() {
+        Some(tournaments) => tournaments.is_match_game(id).await.unwrap_or(false),
+        None => false,
+    };
     Ok(Json(GameInfo {
         format: game.format.as_str().to_owned(),
         started: game.started,
@@ -343,6 +348,7 @@ pub(crate) async fn game(
         manual_play: game.manual_play,
         house_rules: Some(game.house_rules).filter(|rules| !rules.is_empty()),
         delve: game.delve,
+        tournament_match,
     }))
 }
 
