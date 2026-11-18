@@ -397,6 +397,15 @@ impl Scenario {
         self
     }
 
+    /// Gives a player a reworked boss's public sheet (`mtg_engine::boss_sheet`).
+    #[must_use]
+    pub fn boss_sheet(mut self, player: usize, sheet: mtg_engine::boss_sheet::BossSheet) -> Self {
+        if let Some(seat) = self.seat(player) {
+            seat.boss_sheet = Some(Arc::new(sheet));
+        }
+        self
+    }
+
     /// Gives a player the Spirit emblem they get on becoming a Spirit (`mtg_engine::spirits`).
     #[must_use]
     pub fn spirit(mut self, player: usize, card: Arc<CardDefinition>) -> Self {

@@ -127,6 +127,26 @@ pub struct DelveFightView {
     pub intensify: Vec<String>,
     /// Its minions: name and starting life.
     pub minions: Vec<(String, i32)>,
+    /// A reworked boss's innate at its level.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub innate: Option<crate::view::InnateView>,
+    /// The fight's encounter modifier.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub modifier: Option<crate::view::BossPartView>,
+    /// A reworked boss's two phases, each with the round it begins at the end of.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<crate::view::RoundPhaseView>>", optional)]
+    pub round_phases: Vec<crate::view::RoundPhaseView>,
+    /// The relics a reworked boss brings, copies included.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<crate::view::BossPartView>>", optional)]
+    pub relics: Vec<crate::view::BossPartView>,
+    /// A reworked boss's Satchel, each card with its reusable mark.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<crate::view::BossSatchelView>>", optional)]
+    pub satchel: Vec<crate::view::BossSatchelView>,
 }
 
 /// A hero's deck that no longer plays, so the next fight waits until they choose another.
