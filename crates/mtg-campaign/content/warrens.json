@@ -2026,6 +2026,38 @@
    }
   },
   {
+   "id": "sivanne_mire",
+   "name": "Sivanne, the Coiled Tide",
+   "since": 6,
+   "colors": "UG",
+   "brain": "Hard",
+   "life": 27,
+   "life_per_hero": 30,
+   "hand": 10,
+   "rules": ["sivanne"],
+   "enrage": "the_tide_swallows",
+   "relic": "shed_scale_amulet",
+   "phases": [["the_coils_tighten", 66], ["the_great_shedding", 33]],
+   "line": "Every coil I shed grows back larger. How many skins have you left?",
+   "commander": "Koma, World-Eater",
+   "art": {"card": "Kaseto, Orochi Archmage", "oracle_id": "198b6c6f-a480-4672-9d87-b0cb5d8ed1c0"},
+   "brackets": {
+    "base": [
+     ["Forest", 9], ["Island", 8],
+     ["Wasteland Viper", 2], ["Coiling Oracle", 2], ["Ice-Fang Coatl", 2], ["Tower Winder", 2], ["Orochi Ranger", 2],
+     ["Kaseto, Orochi Archmage", 1], ["Ohran Viper", 2], ["Champion of Wits", 1], ["Lonis, Genetics Expert", 1],
+     ["Patagia Viper", 2], ["Spire Winder", 1], ["Kashi-Tribe Reaver", 1], ["Constrictor Sage", 1],
+     ["Imoti, Celebrant of Bounty", 1], ["Quandrix Command", 1], ["Eureka Moment", 1]
+    ],
+    "steps": [
+     {"add": [["Forest", 2], ["Island", 2], ["Nessian Asp", 1], ["Broodbirth Viper", 1], ["Kashi-Tribe Warriors", 1], ["Matsu-Tribe Birdstalker", 1], ["Orochi Eggwatcher // Shidako, Broodmistress", 1], ["Gurmag Drowner", 1]]},
+     {"add": [["Forest", 2], ["Island", 2], ["Junk Winder", 1], ["Nessian Asp", 1], ["Patagia Viper", 1], ["Ice-Fang Coatl", 1], ["Ohran Viper", 1], ["Ramunap Hydra", 1]]},
+     {"cut": [["Orochi Ranger", 2], ["Champion of Wits", 1]], "add": [["Nessian Asp", 1], ["Broodbirth Viper", 1], ["Kashi-Tribe Warriors", 1]]},
+     {"cut": [["Tower Winder", 1], ["Wasteland Viper", 1], ["Spire Winder", 1]], "add": [["Matsu-Tribe Birdstalker", 1], ["Junk Winder", 1], ["Coiling Oracle", 1]]}
+    ]
+   }
+  },
+  {
    "id": "unmaker_void",
    "name": "The Unmaker",
    "uber": true,

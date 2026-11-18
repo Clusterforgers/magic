@@ -1,7 +1,8 @@
 //! Goal: the passives and Enrages of the two-colour bosses of generations 5 and 6 do what their words say in real games:
 //! Hollowmere's dead return as Spirits, Korrath's creatures grow when hurt, Sahrra's pride grows when a Cat falls,
 //! Valdric's Vampires feed on the heroes' dead, Ozrith's spells call up Elementals, Aurenne's attackers strike harder,
-//! Vorthana's dead return to her hand, and each Enrage waits for the heroes' seventh turn and then grows.
+//! Vorthana's dead return to her hand, Sivanne's creatures enter larger, and each Enrage waits for the heroes' seventh
+//! turn and then grows.
 use std::sync::Arc;
 
 use mtg_campaign::content;
@@ -188,6 +189,52 @@ fn vorthanas_dead_return_to_her_hand() -> Result<(), ScriptError> {
         named(Zone::Graveyard(boss), "Mountain"),
         1,
         "only creatures"
+    );
+    Ok(())
+}
+
+#[test]
+fn sivannes_creatures_enter_larger() -> Result<(), ScriptError> {
+    let scenario = table(&["sivanne"], &[])
+        .hand(BOSS, [free_creature("Hatchling", 1, 1)])
+        .at(2, BOSS, Step::Main1);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.cast("Hatchling")?;
+    for _ in 0..6 {
+        if driver.state().stack().is_empty() {
+            break;
+        }
+        driver.pass()?;
+    }
+    assert_eq!(power(&driver, "Hatchling"), Some(2));
+    assert_eq!(power(&driver, "Brute"), Some(3), "only as they enter");
+    Ok(())
+}
+
+// The tide returns one hero creature at the boss's 7th upkeep (game turn 14): the Bear, the hero's only creature.
+#[rstest]
+#[case::the_tide_waits(12, 1, 0)]
+#[case::the_tide_swallows(14, 0, 1)]
+fn a_tide_enrage_waits_for_the_heroes_seventh_turn_then_bounces(
+    #[case] turn: u32,
+    #[case] on_battlefield: usize,
+    #[case] in_hand: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = Driver::from_scenario(table(&["the_tide_swallows"], &[]))?;
+    driver.idle_until(turn, Step::Main1)?;
+    assert_eq!(count(&driver, HERO, "Bear"), on_battlefield);
+    let state = driver.state();
+    let held = state
+        .zone(Zone::Hand(PlayerId::from_index(HERO)))
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .filter(|o| o.card().name == "Bear")
+        .count();
+    assert_eq!(held, in_hand);
+    assert_eq!(
+        count(&driver, BOSS, "Brute"),
+        1,
+        "only the heroes' creatures"
     );
     Ok(())
 }
