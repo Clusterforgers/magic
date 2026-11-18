@@ -1,11 +1,9 @@
 /**
- * The dev table's reworked boss (`?boss=0&rework=1|2`): the boss of `withBoss` with the parts of the reworked model in
- * place of its old ones, an innate at level III, this fight's modifier, two copies of a relic, its Satchel of three
+ * The dev table's boss (`?boss=0&rework=1|2`): the boss of `withBoss` with its parts: an innate at level III, this fight's modifier, two copies of a relic, its Satchel of three
  * reusable cards and one once card, and its phases by round. `1` is round 6, Phase 1 three rounds away; `2` is round
  * 10, Phase 1 in force and Phase 2 five rounds away, after two casts of Rat Out.
  */
 import type { BossView, ObjectView, PlayerView } from '@/protocol/generated'
-import { DEV_BOSS_EMBLEMS } from './bossContent'
 import type { Fixture } from './fixture'
 
 /** How far the reworked fight has come: before Phase 1, or with Phase 1 in force. */
@@ -84,18 +82,12 @@ export function devReworkedView(stage: DevRework, first: number): BossView {
 export function withReworkedBoss(moment: Fixture, stage: DevRework): Fixture {
   const boss = moment.view.players.find((player) => player.boss !== undefined)
   if (boss === undefined) return moment
-  const old = new Set<string>(DEV_BOSS_EMBLEMS)
-  const gone = new Set(
-    moment.view.objects
-      .filter((each) => old.has(each.name) && each.zone !== 'Battlefield')
-      .map((each) => each.id),
-  )
   const first = Math.max(0, ...moment.view.objects.map((each) => each.id)) + 1
   const emblems = EMBLEMS.map((name, at) => object(first + at, boss.seat, name, 'Emblem'))
   const satchelFirst = first + emblems.length
   const satchel = SATCHEL.map((card, at) => object(satchelFirst + at, boss.seat, card.name, 'Card'))
   const command = [
-    ...(boss.command.cards ?? []).filter((id) => !gone.has(id)),
+    ...(boss.command.cards ?? []),
     ...emblems.map((each) => each.id),
   ]
   const reworked: PlayerView = {
@@ -106,7 +98,7 @@ export function withReworkedBoss(moment: Fixture, stage: DevRework): Fixture {
     boss: devReworkedView(stage, satchelFirst),
   }
   const players = moment.view.players.map((player) => (player.seat === boss.seat ? reworked : player))
-  const objects = [...moment.view.objects.filter((each) => !gone.has(each.id)), ...emblems, ...satchel]
+  const objects = [...moment.view.objects, ...emblems, ...satchel]
   const turn = { ...moment.view.turn, round: stage === 2 ? 10 : 6 }
   return { ...moment, view: { ...moment.view, players, objects, turn } }
 }

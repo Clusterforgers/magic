@@ -1,4 +1,4 @@
-// Goal: a campaign seat says whether it is a Spirit, which boss phase it is in, its scheme in motion, its Omen and the hero it eyes; every effect the server can name on a player has a short label, a sentence that names the player and a tone, each once per seat; the emblems of a seat's command zone come first and say their rules; and the effects' group name lists the labels.
+// Goal: a campaign seat says whether it is a Spirit, which boss phase by round it is in and the hero it eyes; every effect the server can name on a player has a short label, a sentence that names the player and a tone, each once per seat; the emblems of a seat's command zone come first and say their rules; and the effects' group name lists the labels.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView, PlayerEffect, PlayerView } from '@/protocol/generated'
 import { card } from '@/test-utils/cards'
@@ -104,24 +104,20 @@ describe('emblemFacts and seatEffects', () => {
 })
 
 describe('campaignFacts', () => {
+  const phase = (name: string, round: number, begun: boolean) => ({ name, text: '', round, begun })
   it.each([
-    [0, 'Phase 1 of 3', 'next comes Rage'],
-    [1, 'Phase 2 of 3', 'next comes Storm'],
-    [2, 'Phase 3 of 3', 'last phase'],
-  ])('a boss with %i phases begun is in its next phase', (begun, label, detail) => {
-    const [fact] = campaignFacts(player({ boss: { phases: ['Rage', 'Storm'], begun } }), 'Grimgut')
+    [0, 'Before Phase 1', 'enters Rage at the end of round 8'],
+    [1, 'Phase 1 of 2', 'enters Storm at the end of round 14'],
+    [2, 'Phase 2 of 2', 'last phase'],
+  ])('a boss with %i phases begun says where it stands', (begun, label, detail) => {
+    const round_phases = [phase('Rage', 8, begun >= 1), phase('Storm', 14, begun >= 2)]
+    const [fact] = campaignFacts(player({ boss: { phases: ['Rage', 'Storm'], begun, round_phases } }), 'Grimgut')
     expect(fact?.label).toBe(label)
     expect(fact?.detail).toContain(detail)
   })
 
-  it('a boss with a scheme deck shows the scheme in motion and its Omen, and a seat with schemes but no phases shows no phase', () => {
-    const facts = campaignFacts(
-      player({ boss: { phases: [], begun: 0, scheme: 'Ambush', omen: 'Feast' } }),
-      'Grimgut',
-    )
-    expect(facts.map((f) => f.label)).toEqual(['Scheme: Ambush', 'Omen: Feast'])
-    expect(facts[0]?.detail).toContain('set Ambush in motion')
-    expect(facts[1]?.detail).toContain('sets Feast in motion')
+  it('a seat with no phases by round shows no phase', () => {
+    expect(campaignFacts(player({ boss: { phases: [], begun: 0 } }), 'Grimgut')).toEqual([])
   })
 
   it('a seat of the boss side names the hero it eyes', () => {

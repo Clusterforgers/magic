@@ -1,9 +1,9 @@
-// Goal: the intro of a reworked boss's fight shows its two effects (the innate with its level, the modifier), its two phases with "Phase 1 at round 8", its Satchel with each card's mark and its relics with copies counted, at a desktop and a phone width with nothing wider than one column on a phone; an old boss's intro keeps its own list and none of these parts.
+// Goal: the intro of a reworked boss's fight shows its two effects (the innate with its level, the modifier), its two phases with "Phase 1 at round 8", its Satchel with each card's mark and its relics with copies counted, at a desktop and a phone width with nothing wider than one column on a phone.
 import { render, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { BossIntro } from './BossIntro'
-import { DEV_CONTENT, DEV_REWORKED_FIGHT, devView } from './dev/devDelve'
+import { DEV_CONTENT, devView } from './dev/devDelve'
 
 const WIDTHS = [1400, 390] as const
 const initial = window.innerWidth
@@ -41,11 +41,3 @@ describe.each(WIDTHS)('the intro of a reworked boss at %i px', (width) => {
   })
 })
 
-describe('the intro of an old boss', () => {
-  it('keeps its own list and none of the reworked parts', () => {
-    render(<BossIntro view={devView('fight')} content={DEV_CONTENT} />)
-    expect(screen.queryByRole('region', { name: /^Phases$/ })).toBeNull()
-    expect(screen.queryByRole('region', { name: /^Satchel$/ })).toBeNull()
-    expect(DEV_REWORKED_FIGHT.innate?.level).toBe(3)
-  })
-})

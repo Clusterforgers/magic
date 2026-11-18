@@ -1,13 +1,7 @@
 /** The campaign content the dev table's boss fight reads its rules from, worded as the shipped content is. */
 import type { CustomCardView, DelveContent } from '@/protocol/generated'
 
-const card = (
-  id: string,
-  name: string,
-  kind: CustomCardView['kind'],
-  text: string,
-  turn = 0,
-): CustomCardView => ({
+const card = (id: string, name: string, kind: CustomCardView['kind'], text: string): CustomCardView => ({
   id,
   name,
   kind,
@@ -17,102 +11,49 @@ const card = (
   role: '',
   price: 0,
   rarity: 'Common',
-  turn,
 })
 
-/** The boss's emblems in its command zone at the dev table: its card and Enrage, the rules every boss has, this fight's
- * modifier, its relic and its phase now. */
-export const DEV_BOSS_EMBLEMS = [
-  'Skrix, the Rat Queen',
-  'Enrage — The Swarm Unending',
-  'Escalation',
-  'Reinforcements',
-  'Warpath',
-  'Ironhide',
-  "Rat King's Crown",
-  'The Nest Stirs',
-] as const
-
-/** The dev boss's phases, scheme and Omen (`withBoss`). */
-export const DEV_BOSS_PHASES = ['The Nest Stirs', 'The Queen Wakes'] as const
-export const DEV_BOSS_SCHEME = 'Gnawing Tide'
-export const DEV_BOSS_OMEN = 'All Shall Kneel'
-
-/** The content: one card per ability above, with rules as long as the shipped ones. */
+/** The content: the dev boss's innate, modifier, relic and phases, with rules as long as the shipped ones. */
 export const DEV_BOSS_CONTENT: DelveContent = {
   theme: 'The Warrens',
   text: 'Tunnels under the city.',
   cards: [
     card(
-      'skrix',
-      'Skrix, the Rat Queen',
-      'Boss',
-      'Skrix starts with two extra cards and more life for each hero.\nAt the beginning of your upkeep, create a 1/1 black Rat creature token.',
+      'skrix_brood_iii',
+      'Brood III',
+      'Innate',
+      'At the beginning of your upkeep, create three 1/1 black Rat creature tokens.',
     ),
     card(
-      'escalation',
-      'Escalation',
-      'Boss',
-      'At the beginning of your end step, each opponent loses 1 life for every four turns you have taken.',
+      'deep_pockets',
+      'Deep Pockets',
+      'Encounter',
+      "At the beginning of each player's draw step, that player draws an additional card.",
     ),
+    card('whetstone', 'Whetstone', 'Relic', 'Creatures you control get +1/+0.'),
     card(
-      'swarm_unending',
-      'Enrage — The Swarm Unending',
-      'Enrage',
-      'Once the heroes have had seven turns, at the beginning of your upkeep, create a 1/1 black Rat creature token for each turn they have had beyond six.',
-      7,
-    ),
-    card('ironhide', 'Ironhide', 'Modifier', 'Creatures you control get +0/+2.'),
-    card('rat_kings_crown', "Rat King's Crown", 'BossRelic', 'Rat creatures get +1/+1.'),
-    card(
-      'reinforcements',
-      'Reinforcements',
-      'Boss',
-      'At the beginning of your upkeep, if you have taken two or more turns, draw a card and create a 2/2 black Zombie creature token. (A boss gets Reinforcements against a party of three or more.)',
-    ),
-    card(
-      'warpath',
-      'Warpath',
-      'Boss',
-      "At end of combat on your turn, if it's the first combat phase of the turn and you have taken four or more turns, untap all creatures you control. After this phase, there is an additional combat phase.",
-    ),
-    card(
-      'nest_stirs',
+      'skrix_nest_stirs',
       'The Nest Stirs',
       'Phase',
-      'At the beginning of your upkeep, create a 1/1 black Rat creature token.',
+      'When this phase begins, create a Rat for each creature the heroes control. Rats you control have menace.',
     ),
     card(
-      'queen_wakes',
-      'The Queen Wakes',
+      'skrix_plague_tide',
+      'Plague Tide',
       'Phase',
-      'Creatures you control get +1/+0.\nAt the beginning of your end step, each opponent loses 1 life.',
-    ),
-    card(
-      'gnawing_tide',
-      'Gnawing Tide',
-      'Scheme',
-      'At the beginning of your upkeep, each opponent mills two cards and loses 1 life.',
-    ),
-    card(
-      'all_shall_kneel',
-      'All Shall Kneel',
-      'Scheme',
-      'Until your next scheme, creatures your opponents control enter tapped.',
+      'When this phase begins, double the number of Rats you control. Creature tokens you control get +2/+0.',
     ),
   ],
   bosses: [
     {
       id: 'skrix_nest',
       name: 'Skrix, the Rat Queen',
-      colors: 'B',
+      final_boss: false,
+      colors: 'BG',
       line: 'My children are hungry.',
-      card: 'skrix',
-      phases: [
-        ['nest_stirs', 66],
-        ['queen_wakes', 33],
-      ],
-      life: [26, 30],
+      innate: 'skrix_brood_i',
+      round_phases: ['skrix_nest_stirs', 'skrix_plague_tide'],
+      life: [40, 15],
       art: { card: 'Ashcoat of the Shadow Swarm', oracle_id: '9cc69ea5-42a2-4306-ac6d-cff5adb20bcb' },
     },
   ],

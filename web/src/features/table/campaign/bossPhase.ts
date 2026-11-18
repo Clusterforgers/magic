@@ -24,22 +24,14 @@ export function phaseTitle(name: string): string {
   return at < 0 ? name : name.slice(at + 3)
 }
 
-/** The track of a boss: the opening phase, then one step per phase card, the begun ones done and the newest current. */
+/** The track of a boss: Phase 1 and Phase 2 by round, the begun ones done and the newest begun one current. */
 export function phaseSteps(boss: BossView): PhaseStep[] {
   const byRound = boss.round_phases ?? []
-  // A reworked boss has no opening phase: its track is Phase 1 and Phase 2 by round, the newest begun one current.
-  if (byRound.length > 0)
-    return byRound.map((phase, i) => ({
+  return byRound.map((phase, i) => ({
       label: `Phase ${i + 1}`,
       title: phase.name,
       state: !phase.begun ? 'next' : byRound[i + 1]?.begun === true ? 'done' : 'current',
     }))
-  const names = ['', ...boss.phases]
-  return names.map((name, i) => ({
-    label: `Phase ${roman(i + 1)}`,
-    title: name === '' ? '' : phaseTitle(name),
-    state: i < boss.begun ? 'done' : i === boss.begun ? 'current' : 'next',
-  }))
 }
 
 /** A phase that began in a batch. */
@@ -70,9 +62,7 @@ export function phaseCueBetween(
     const now = player.boss
     const was = before.find((p) => p.seat === player.seat)?.boss
     if (now === undefined || was === undefined || now.begun <= was.begun) continue
-    const byRound = (now.round_phases?.length ?? 0) > 0
-    // A reworked boss numbers its phases from 1 by round; an older boss counts its opening phase as Phase I.
-    const label = byRound ? `Phase ${now.begun}` : `Phase ${roman(now.begun + 1)}`
+    const label = `Phase ${now.begun}`
     const title = phaseTitle(now.phases[now.begun - 1] ?? '')
     const who = name(player.seat)
     cue = {
@@ -84,20 +74,4 @@ export function phaseCueBetween(
     }
   }
   return cue
-}
-
-/** The name of the phase card that caps attackers for a big party; it begins with the boss's last phase. */
-export const BULWARK_NAME = 'Last Bulwark'
-
-/** What the boss's commander card says in a list of its abilities. */
-export const COMMANDER_TEXT =
-  'As its last phase begins, the boss casts this card from its command zone without paying its mana cost.'
-
-/**
- * The label of the boss's commander card, "Phase III: Akroma, Angel of Wrath": the phase it comes with is the boss's
- * last own phase (the Last Bulwark beside it does not count), numbered after the opening phase.
- */
-export function commanderLabel(phases: readonly string[], commander: string): string {
-  const own = phases.filter((name) => name !== BULWARK_NAME).length
-  return `Phase ${roman(own + 1)}: ${commander}`
 }

@@ -225,7 +225,7 @@ export function RunHeader({ view, content }: { view: DelveView; content: DelveCo
           <p className={cn('text-xs font-semibold tracking-wide text-delve uppercase', folds)}>
             {runStage(view)}
           </p>
-          <h1 className="truncate text-2xl font-semibold tracking-tight max-sm:text-lg">{content.theme}</h1>
+          <h1 className="truncate text-2xl font-semibold tracking-tight max-sm:text-lg">{view.theme}</h1>
         </div>
         <div className="ml-auto flex flex-wrap items-center gap-x-4 gap-y-2 text-sm max-sm:shrink-0">
           <span

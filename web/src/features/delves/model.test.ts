@@ -1,4 +1,4 @@
-// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party from the ladder the run lists, words each Heat as its tier, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost, words the loot before a descent apart from a camp, tells the first boss from a later one for the life the party regroups at, and lists a boss's Enrage, modifier and relic in the intro by their content kinds.
+// Goal: the run page marks each room of the ladder cleared, current, next or locked through every stage of a run, names who voted for which camp, gives a boss its life for the party from the ladder the run lists, words each Heat as its tier, tones life bars, words the stage, knows a hero ready once they bring a deck, reads how the last fight was lost, words the loot before a descent apart from a camp, tells the first boss from a later one for the life the party regroups at.
 import { describe, expect, it } from 'vitest'
 import type { Run } from '@/protocol/generated'
 import { hero, run } from './fakeDelves'
@@ -7,7 +7,6 @@ import {
   bossLife,
   heatTier,
   heatWords,
-  introAbilities,
   isReady,
   lastFight,
   lifeShare,
@@ -20,7 +19,6 @@ import {
   votersOf,
 } from './model'
 import { delveView } from './fakeDelves'
-import { DEV_BOSS_CONTENT } from '@/features/table/dev/bossContent'
 
 // The test ladder: boss 0, then the shop 1 or the event 2, then boss 3.
 const states = (over: Partial<Run>) => {
@@ -185,43 +183,4 @@ it.each([
   expect(runStage(view)).toBe(stage)
   expect(nextStep(view)).toContain(step)
   expect(lastFight(view.run)).toBe('won')
-})
-
-describe('introAbilities', () => {
-  it('names each standing card by its content kind and an Enrage by the turn it begins', () => {
-    const fight = {
-      boss: 'Skrix, the Rat Queen',
-      life: 60,
-      rules: ['skrix', 'swarm_unending', 'escalation', 'ironhide', 'rat_kings_crown'],
-      phases: [['nest_stirs', 40] as [string, number]],
-      minions: [],
-      intensify: [],
-    }
-    const abilities = introAbilities(DEV_BOSS_CONTENT, fight)
-    expect(abilities.map((one) => one.kind)).toEqual([
-      'passive',
-      'enrage',
-      'passive',
-      'modifier',
-      'relic',
-      'next-phase',
-    ])
-    expect(abilities[1]?.when).toBe("From the heroes' turn 7")
-    expect(abilities[3]?.text).toBe('Creatures you control get +0/+2.')
-  })
-
-  it('names the commander card with the last phase and the life it comes at', () => {
-    const fight = {
-      boss: 'Skrix, the Rat Queen',
-      life: 60,
-      rules: ['skrix'],
-      phases: [['nest_stirs', 40] as [string, number], ['plague_tide', 20] as [string, number]],
-      commander: 'Ashcoat of the Shadow Swarm',
-      minions: [],
-      intensify: [],
-    }
-    const last = introAbilities(DEV_BOSS_CONTENT, fight).at(-1)
-    expect(last?.name).toBe('Phase III: Ashcoat of the Shadow Swarm')
-    expect(last?.when).toBe('At 20 life')
-  })
 })

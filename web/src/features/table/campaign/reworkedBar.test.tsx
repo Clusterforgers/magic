@@ -5,14 +5,13 @@ import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import { withBoss } from '../dev/devGame'
 import { buildFixture } from '../dev/fixture'
-import { withReworkedBoss } from '../dev/reworkedBoss'
 import type { DevRework } from '../dev/reworkedBoss'
 
 const PHONE = { width: 390, height: 844 }
 const DESKTOP = { width: 1400, height: 900 }
 
 function fight(stage: DevRework, viewport: { width: number; height: number }, mode?: 'grid') {
-  const fixture = withReworkedBoss(withBoss(buildFixture({ seats: 4 }), 0), stage)
+  const fixture = withBoss(buildFixture({ seats: 4 }), 0, stage)
   return renderTable({ fixture, options: { viewport, ...(mode === undefined ? {} : { mode }) } })
 }
 

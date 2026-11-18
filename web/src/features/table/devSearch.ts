@@ -82,7 +82,7 @@ export interface DevSearch {
   boss?: number
   /** `1` with `boss` makes the viewer a fallen hero's Spirit with no permanents, no hand and no commander (`withSpirit`). */
   spirit?: true
-  /** `1` or `2` with `boss` reworks the boss (`withReworkedBoss`): before Phase 1, or with Phase 1 in force. */
+  /** `1` or `2` with `boss`: how far the fight has come (`withReworkedBoss`), before Phase 1 or with Phase 1 in force. */
   rework?: 1 | 2
   /** `1` leaves every battlefield empty (`withBareBoards`), as at the start of a fight, for the opening hands. */
   bare?: true

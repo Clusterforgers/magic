@@ -38,7 +38,6 @@ const relicOf = (rarity: Rarity, role = ''): CustomCardView => ({
   role,
   price: 50,
   rarity,
-  turn: 0,
 })
 
 describe('rarity', () => {
@@ -59,8 +58,8 @@ describe('rarity', () => {
     expect(figure).toHaveClass('border-destructive')
   })
 
-  it('shows no rarity on a boss card', () => {
-    render(<CustomCardFrame card={{ ...relicOf('Rare'), kind: 'Boss', name: 'Skrix' }} />)
+  it('shows no rarity on a boss innate', () => {
+    render(<CustomCardFrame card={{ ...relicOf('Rare'), kind: 'Innate', name: 'Skrix' }} />)
     expect(screen.getByRole('figure', { name: 'Skrix' })).not.toHaveAttribute('data-rarity')
     expect(screen.queryByText('Rare')).toBeNull()
   })
