@@ -314,5 +314,54 @@
       "Island",
       11
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 40,
+      "U": 21
+    },
+    "types": {
+      "Artifact": 10,
+      "Creature": 34,
+      "Enchantment": 4,
+      "Instant": 7,
+      "Land": 41,
+      "Sorcery": 7
+    },
+    "subtypes": {
+      "Arcane": 1,
+      "Beast": 3,
+      "Cat": 1,
+      "Centaur": 1,
+      "Druid": 1,
+      "Elemental": 3,
+      "Elf": 6,
+      "Equipment": 3,
+      "Forest": 14,
+      "Gate": 1,
+      "Giant": 1,
+      "Golem": 1,
+      "Human": 3,
+      "Illusion": 1,
+      "Island": 11,
+      "Merfolk": 3,
+      "Ninja": 1,
+      "Ooze": 1,
+      "Phyrexian": 1,
+      "Rogue": 1,
+      "Shaman": 6,
+      "Shapeshifter": 1,
+      "Snake": 9,
+      "Spider": 1,
+      "Trap": 1,
+      "Treefolk": 1,
+      "Unicorn": 1,
+      "Warrior": 1,
+      "Wizard": 3
+    },
+    "tokens": 8,
+    "counters": 8,
+    "graveyard": 3,
+    "creature_commanders": 0
+  }
 }

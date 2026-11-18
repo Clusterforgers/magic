@@ -240,9 +240,10 @@ fn a_reworked_boss_seat_takes_the_opening_land_rule_and_its_emblems(#[values(1, 
         .unwrap()
         .unwrap();
     let land = || mtg_testkit::cards::land(mtg_core::color::Color::Green);
-    let decks = (0..=heroes)
+    let mut decks: Vec<Vec<_>> = (0..heroes)
         .map(|_| (0..40).map(|_| land()).collect())
         .collect();
+    decks.push(crate::common::boss_deck(&plan));
     let setup = plan
         .apply(content, GameSetup::new(Arc::new(Commander), 4, decks))
         .unwrap();
@@ -302,9 +303,10 @@ fn a_reworked_boss_seat_carries_its_sheet(
         .unwrap();
     let rework = plan.boss.rework.as_deref().unwrap();
     let land = || mtg_testkit::cards::land(mtg_core::color::Color::Green);
-    let decks = (0..=heroes)
+    let mut decks: Vec<Vec<_>> = (0..heroes)
         .map(|_| (0..40).map(|_| land()).collect())
         .collect();
+    decks.push(crate::common::boss_deck(&plan));
     let setup = plan
         .apply(content, GameSetup::new(Arc::new(Commander), 4, decks))
         .unwrap();

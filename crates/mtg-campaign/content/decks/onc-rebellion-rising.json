@@ -326,5 +326,47 @@
       "Mountain",
       11
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 19,
+      "W": 38
+    },
+    "types": {
+      "Artifact": 20,
+      "Creature": 17,
+      "Enchantment": 5,
+      "Instant": 8,
+      "Land": 38,
+      "Planeswalker": 1,
+      "Sorcery": 13
+    },
+    "subtypes": {
+      "Angel": 1,
+      "Archon": 1,
+      "Artificer": 1,
+      "Cat": 1,
+      "Cleric": 1,
+      "Construct": 1,
+      "Elspeth": 1,
+      "Equipment": 7,
+      "Goblin": 2,
+      "Golem": 1,
+      "Human": 8,
+      "Knight": 2,
+      "Mountain": 11,
+      "Myr": 1,
+      "Phoenix": 1,
+      "Plains": 11,
+      "Rebel": 1,
+      "Shaman": 1,
+      "Soldier": 5,
+      "Spirit": 1,
+      "Warrior": 1
+    },
+    "tokens": 27,
+    "counters": 1,
+    "graveyard": 5,
+    "creature_commanders": 0
+  }
 }

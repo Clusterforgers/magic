@@ -343,5 +343,60 @@
       "Swamp",
       10
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 34,
+      "U": 30
+    },
+    "types": {
+      "Artifact": 11,
+      "Creature": 29,
+      "Enchantment": 6,
+      "Instant": 9,
+      "Land": 39,
+      "Sorcery": 8
+    },
+    "subtypes": {
+      "Aura": 1,
+      "Beast": 1,
+      "Bird": 1,
+      "Case": 1,
+      "Cleric": 1,
+      "Clue": 1,
+      "Demon": 2,
+      "Desert": 1,
+      "Detective": 3,
+      "Elemental": 2,
+      "Faerie": 2,
+      "Giant": 1,
+      "Horror": 1,
+      "Human": 2,
+      "Insect": 1,
+      "Island": 13,
+      "Knight": 1,
+      "Nightmare": 2,
+      "Octopus": 1,
+      "Phyrexian": 2,
+      "Pirate": 1,
+      "Rogue": 4,
+      "Salamander": 1,
+      "Shapeshifter": 2,
+      "Sphinx": 3,
+      "Spirit": 2,
+      "Starfish": 1,
+      "Swamp": 12,
+      "Troll": 1,
+      "Vampire": 3,
+      "Vehicle": 1,
+      "Warlock": 1,
+      "Wizard": 1,
+      "Wurm": 1,
+      "Zombie": 2
+    },
+    "tokens": 5,
+    "counters": 2,
+    "graveyard": 16,
+    "creature_commanders": 0
+  }
 }

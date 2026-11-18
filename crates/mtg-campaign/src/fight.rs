@@ -174,6 +174,8 @@ impl FightPlan {
     pub fn boss_decks(&self) -> Vec<Vec<(String, u32)>> {
         let mut boss = self.boss.deck.clone();
         boss.extend(self.boss.commander.iter().map(|name| (name.clone(), 1)));
+        let satchel = self.boss.rework.iter().flat_map(|r| r.satchel.iter());
+        boss.extend(satchel.map(|spell| (spell.card.clone(), 1)));
         std::iter::once(boss)
             .chain(self.minions.iter().map(|m| m.deck.clone()))
             .collect()
@@ -318,12 +320,35 @@ impl FightPlan {
         {
             boss.opening_lands = Some(mtg_engine::opening_lands::OpeningLands::BOSS);
             if let Some(rework) = &self.boss.rework {
+                take_satchel(boss, &rework.satchel)?;
                 boss.boss_sheet = Some(std::sync::Arc::new(rework.sheet(content)?));
             }
         }
         setup.validate_decks = false;
         Ok(setup)
     }
+}
+
+/// Moves the satchel's cards, which [`FightPlan::boss_decks`] put last in the boss's deck, from its library into its
+/// satchel: a reusable card among the reusable ones, a once card among the others.
+fn take_satchel(
+    boss: &mut mtg_engine::PlayerSetup,
+    satchel: &[crate::content::SatchelCard],
+) -> Result<(), CampaignError> {
+    for spell in satchel.iter().rev() {
+        let at = boss
+            .library
+            .iter()
+            .rposition(|card| card.name == spell.card)
+            .ok_or_else(|| CampaignError::Refused(format!("the boss deck lacks {}", spell.card)))?;
+        let card = boss.library.remove(at);
+        if spell.reusable {
+            boss.satchel_reusable.insert(0, card);
+        } else {
+            boss.satchel.insert(0, card);
+        }
+    }
+    Ok(())
 }
 
 /// The ability the boss's last phase gets for its commander card `name`: while the card waits in the boss's command

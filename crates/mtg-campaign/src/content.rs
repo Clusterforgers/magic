@@ -240,9 +240,6 @@ pub struct Boss {
     /// Its satchel: four spells in its command zone, cast like cards in hand.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub satchel: Vec<SatchelCard>,
-    /// What its deck is made of, so it brings only relics the deck can use; none counts as a deck that wants nothing.
-    #[serde(default, skip_serializing_if = "Option::is_none")]
-    pub makeup: Option<crate::relics::DeckMakeup>,
     /// What it says as the fight begins.
     #[serde(default)]
     pub line: String,
@@ -698,6 +695,38 @@ pub struct Content {
     pub themes: Vec<Theme>,
     /// The encounter modifiers both themes roll from ([`crate::modifiers`]).
     pub modifiers: Vec<crate::modifiers::EncounterModifier>,
+    /// The bosses' deck files by file name (`content/decks/`).
+    pub decks: BTreeMap<String, DeckFile>,
+}
+
+/// A boss's deck file: a stored Commander precon as the boss plays it, its face commander shuffled in.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DeckFile {
+    /// The precon's set code.
+    pub code: String,
+    /// The precon's name.
+    pub name: String,
+    /// Its face commanders, which play as ordinary cards of the library.
+    pub commander: Vec<String>,
+    /// The cards played by hand that the file swaps for basic lands.
+    #[serde(default)]
+    pub swaps: Vec<DeckSwap>,
+    /// Its cards and copies, the swaps made: 100 cards.
+    pub cards: Vec<(String, u32)>,
+    /// What the deck is made of, which the boss's relics follow (counted by the `boss_decks` test).
+    #[serde(default)]
+    pub makeup: crate::relics::DeckMakeup,
+}
+
+/// A card of a precon played by hand, swapped for a basic land.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct DeckSwap {
+    /// The card taken out.
+    pub out: String,
+    /// The basic land put in.
+    pub into: String,
 }
 
 impl Content {
@@ -742,7 +771,25 @@ impl Content {
             cards,
             themes,
             modifiers,
+            decks: BTreeMap::new(),
         })
+    }
+
+    /// This content with the deck files of `files` (file name, JSON text).
+    pub fn with_decks(mut self, files: &[(&str, &str)]) -> Result<Content, CampaignError> {
+        for (file, text) in files {
+            let deck: DeckFile = serde_json::from_str(text)
+                .map_err(|e| CampaignError::Content(format!("{file}: {e}")))?;
+            self.decks.insert((*file).to_owned(), deck);
+        }
+        Ok(self)
+    }
+
+    /// The deck file with this name.
+    pub fn deck(&self, file: &str) -> Result<&DeckFile, CampaignError> {
+        self.decks
+            .get(file)
+            .ok_or_else(|| CampaignError::Unknown(format!("deck file {file}")))
     }
 
     /// The custom card with this id.
@@ -862,7 +909,88 @@ pub fn content() -> Result<&'static Content, CampaignError> {
                 &[include_str!("../content/warrens.json")],
                 include_str!("../content/modifiers.json"),
             )
+            .and_then(|content| content.with_decks(DECK_FILES))
         })
         .as_ref()
         .map_err(Clone::clone)
 }
+
+/// The bosses' deck files shipped with the crate.
+const DECK_FILES: &[(&str, &str)] = &[
+    (
+        "blc-squirreled-away.json",
+        include_str!("../content/decks/blc-squirreled-away.json"),
+    ),
+    (
+        "c15-plunder-the-graves.json",
+        include_str!("../content/decks/c15-plunder-the-graves.json"),
+    ),
+    (
+        "c15-seize-control.json",
+        include_str!("../content/decks/c15-seize-control.json"),
+    ),
+    (
+        "c15-swell-the-host.json",
+        include_str!("../content/decks/c15-swell-the-host.json"),
+    ),
+    (
+        "c17-feline-ferocity.json",
+        include_str!("../content/decks/c17-feline-ferocity.json"),
+    ),
+    (
+        "cmm-eldrazi-unbound.json",
+        include_str!("../content/decks/cmm-eldrazi-unbound.json"),
+    ),
+    (
+        "cmr-reap-the-tides.json",
+        include_str!("../content/decks/cmr-reap-the-tides.json"),
+    ),
+    (
+        "fdc-calling-all-angels.json",
+        include_str!("../content/decks/fdc-calling-all-angels.json"),
+    ),
+    (
+        "fdc-tramplesaurus-rex.json",
+        include_str!("../content/decks/fdc-tramplesaurus-rex.json"),
+    ),
+    (
+        "fdc-wretched-ranks.json",
+        include_str!("../content/decks/fdc-wretched-ranks.json"),
+    ),
+    (
+        "lcc-blood-rites.json",
+        include_str!("../content/decks/lcc-blood-rites.json"),
+    ),
+    (
+        "lcc-explorers-of-the-deep.json",
+        include_str!("../content/decks/lcc-explorers-of-the-deep.json"),
+    ),
+    (
+        "lcc-veloci-ramp-tor.json",
+        include_str!("../content/decks/lcc-veloci-ramp-tor.json"),
+    ),
+    (
+        "mkc-revenant-recon.json",
+        include_str!("../content/decks/mkc-revenant-recon.json"),
+    ),
+    (
+        "onc-rebellion-rising.json",
+        include_str!("../content/decks/onc-rebellion-rising.json"),
+    ),
+    (
+        "sld-goblin-storm.json",
+        include_str!("../content/decks/sld-goblin-storm.json"),
+    ),
+    (
+        "voc-spirit-squadron.json",
+        include_str!("../content/decks/voc-spirit-squadron.json"),
+    ),
+    (
+        "woc-fae-dominion.json",
+        include_str!("../content/decks/woc-fae-dominion.json"),
+    ),
+    (
+        "znc-sneak-attack.json",
+        include_str!("../content/decks/znc-sneak-attack.json"),
+    ),
+];

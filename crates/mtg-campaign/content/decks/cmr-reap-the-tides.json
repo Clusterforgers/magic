@@ -294,5 +294,59 @@
       "Woodland Stream",
       1
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 32,
+      "U": 28
+    },
+    "types": {
+      "Artifact": 5,
+      "Creature": 31,
+      "Enchantment": 3,
+      "Instant": 8,
+      "Land": 44,
+      "Sorcery": 10
+    },
+    "subtypes": {
+      "Arcane": 1,
+      "Avatar": 1,
+      "Beast": 1,
+      "Cleric": 1,
+      "Crab": 1,
+      "Dinosaur": 2,
+      "Druid": 2,
+      "Elder": 1,
+      "Eldrazi": 1,
+      "Elemental": 3,
+      "Elephant": 1,
+      "Elf": 2,
+      "Equipment": 1,
+      "Forest": 15,
+      "Fungus": 1,
+      "Gate": 1,
+      "Golem": 1,
+      "Horror": 1,
+      "Human": 3,
+      "Hydra": 1,
+      "Island": 15,
+      "Kraken": 4,
+      "Leviathan": 3,
+      "Moonfolk": 1,
+      "Octopus": 2,
+      "Ooze": 1,
+      "Serpent": 1,
+      "Shaman": 3,
+      "Shark": 1,
+      "Snake": 2,
+      "Sorcerer": 1,
+      "Sphinx": 1,
+      "Treefolk": 1,
+      "Wizard": 2
+    },
+    "tokens": 6,
+    "counters": 5,
+    "graveyard": 2,
+    "creature_commanders": 0
+  }
 }

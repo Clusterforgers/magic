@@ -282,5 +282,37 @@
       "Plains",
       32
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "W": 50
+    },
+    "types": {
+      "Artifact": 13,
+      "Creature": 34,
+      "Enchantment": 5,
+      "Instant": 5,
+      "Land": 38,
+      "Sorcery": 7
+    },
+    "subtypes": {
+      "Advisor": 1,
+      "Angel": 30,
+      "Aura": 1,
+      "Book": 1,
+      "Cleric": 6,
+      "Detective": 2,
+      "Equipment": 1,
+      "Human": 3,
+      "Phyrexian": 1,
+      "Plains": 32,
+      "Shapeshifter": 1,
+      "Soldier": 1,
+      "Warrior": 1
+    },
+    "tokens": 8,
+    "counters": 6,
+    "graveyard": 4,
+    "creature_commanders": 0
+  }
 }

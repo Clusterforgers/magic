@@ -322,5 +322,38 @@
       "Mountain",
       22
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 57
+    },
+    "types": {
+      "Artifact": 7,
+      "Creature": 26,
+      "Enchantment": 5,
+      "Instant": 10,
+      "Kindred": 1,
+      "Land": 36,
+      "Sorcery": 17
+    },
+    "subtypes": {
+      "Ally": 1,
+      "Cave": 1,
+      "Dwarf": 1,
+      "Equipment": 2,
+      "Goblin": 25,
+      "Golem": 1,
+      "Mercenary": 1,
+      "Mountain": 23,
+      "Pirate": 2,
+      "Rogue": 2,
+      "Shaman": 1,
+      "Soldier": 1,
+      "Warrior": 9
+    },
+    "tokens": 19,
+    "counters": 1,
+    "graveyard": 4,
+    "creature_commanders": 0
+  }
 }

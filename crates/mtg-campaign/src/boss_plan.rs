@@ -34,7 +34,14 @@ impl Run {
         let level = Scale::innate_level(depth, self.heat);
         let modifier =
             crate::modifiers::draw(&content.modifiers, &boss.id, self.seed, self.floor, node);
-        let makeup = boss.makeup.clone().unwrap_or_default();
+        let deck = boss
+            .deck_file
+            .as_deref()
+            .map(|file| content.deck(file))
+            .transpose()
+            .ok()
+            .flatten();
+        let makeup = deck.map(|d| d.makeup.clone()).unwrap_or_default();
         let relics = boss_relics::draw(
             content,
             &makeup,
@@ -48,7 +55,7 @@ impl Run {
             life: Scale::boss_life(heroes),
             hand: HAND,
             brain: Brain::Hard,
-            deck: boss.deck.clone(),
+            deck: deck.map_or_else(|| boss.deck.clone(), |d| d.cards.clone()),
             commander: None,
             rules: Vec::new(),
             phases: Vec::new(),

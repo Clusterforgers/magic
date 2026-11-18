@@ -315,5 +315,38 @@
       "Swamp",
       12
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 18,
+      "U": 42
+    },
+    "types": {
+      "Artifact": 9,
+      "Creature": 29,
+      "Enchantment": 2,
+      "Instant": 16,
+      "Land": 40,
+      "Sorcery": 4
+    },
+    "subtypes": {
+      "Faerie": 28,
+      "Horror": 1,
+      "Island": 15,
+      "Knight": 2,
+      "Kraken": 1,
+      "Noble": 1,
+      "Rogue": 10,
+      "Shapeshifter": 1,
+      "Soldier": 1,
+      "Swamp": 13,
+      "Warlock": 2,
+      "Warrior": 1,
+      "Wizard": 7
+    },
+    "tokens": 4,
+    "counters": 1,
+    "graveyard": 4,
+    "creature_commanders": 0
+  }
 }

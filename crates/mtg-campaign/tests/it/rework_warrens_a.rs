@@ -545,32 +545,25 @@ fn fight(boss: &Boss, seed: u64) -> Engine {
         Some('R') => Color::Red,
         _ => Color::Green,
     };
-    let deck = deck_file(boss.deck_file.as_deref().unwrap());
-    let boss_deck: Vec<Arc<CardDefinition>> = deck["cards"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .flat_map(|entry| {
-            let name = entry[0].as_str().unwrap();
-            let copies = entry[1].as_u64().unwrap();
-            let card = corpus::card(name).unwrap_or_else(|_| land(stand_in));
-            (0..copies).map(move |_| Arc::clone(&card))
+    let boss_deck: Vec<Arc<CardDefinition>> = crate::common::boss_deck(&plan)
+        .into_iter()
+        .map(|card| {
+            if card.name == "Wastes" {
+                land(stand_in)
+            } else {
+                card
+            }
         })
         .collect();
     let hero = fixture_deck("precon_tramplesaurus_rex").unwrap();
     let decks = vec![hero.cards.clone(), hero.cards.clone(), boss_deck];
     let commanders = vec![hero.commanders.clone(), hero.commanders.clone(), Vec::new()];
     let setup = GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders);
-    let mut setup = plan.apply(content, setup).unwrap();
-    let seat = &mut setup.players[2];
-    for spell in &boss.satchel {
-        let card = corpus::card(&spell.card).unwrap();
-        if spell.reusable {
-            seat.satchel_reusable.push(card);
-        } else {
-            seat.satchel.push(card);
-        }
-    }
+    let setup = plan.apply(content, setup).unwrap();
+    assert_eq!(
+        setup.players[2].satchel.len() + setup.players[2].satchel_reusable.len(),
+        4
+    );
     Engine::new(setup).unwrap()
 }
 

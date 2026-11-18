@@ -376,6 +376,15 @@ async fn cards_named(
     app: &AppState,
     names: &[String],
 ) -> Result<Vec<(String, Arc<CardDefinition>)>, ApiError> {
+    Ok(cards_read(app, names).await?.0)
+}
+
+/// [`cards_named`] as a live game loads them: each card that runs on a draft (Read or Unverified) with the draft the
+/// game pins, so a resumed fight plays the same rules.
+async fn cards_read(
+    app: &AppState,
+    names: &[String],
+) -> Result<(Vec<(String, Arc<CardDefinition>)>, crate::cards::Reads), ApiError> {
     let source = app.cards().ok_or_else(ApiError::internal)?;
     let index = source.card_index().await.map_err(|error| {
         tracing::error!(%error, "the card index could not be read");
@@ -392,11 +401,11 @@ async fn cards_named(
             }
         })
         .collect();
-    let cards = source.deck(&ids).await.map_err(|error| {
+    let (cards, reads) = source.deck_pinned(&ids).await.map_err(|error| {
         tracing::error!(%error, "Delves cards could not be assembled");
         ApiError::internal()
     })?;
-    Ok(ids.into_iter().zip(cards).collect())
+    Ok((ids.into_iter().zip(cards).collect(), reads))
 }
 
 fn deck_refused(refusal: Refused) -> ApiError {
@@ -417,15 +426,20 @@ async fn boss_side_deck(
         .iter()
         .flat_map(|(card, n)| std::iter::repeat_n(card.clone(), usize::try_from(*n).unwrap_or(0)))
         .collect();
-    let (ids, cards): (Vec<String>, Vec<Arc<CardDefinition>>) =
-        cards_named(app, &names).await?.into_iter().unzip();
+    let (named, mut reads) = cards_read(app, &names).await?;
+    let (ids, cards): (Vec<String>, Vec<Arc<CardDefinition>>) = named.into_iter().unzip();
     let note = SeatDeck {
         name: name.to_owned(),
         format: "commander".to_owned(),
         manual_cards: 0,
         warnings: 0,
     };
-    ChosenDeck::stored(ids, cards, note).map_err(|error| {
+    let source = app.cards().ok_or_else(ApiError::internal)?;
+    let (conjured, more) = source.conjured_for(&cards).await.map_err(ApiError::from)?;
+    reads.extend(more);
+    let deck = ChosenDeck::stored(ids, cards, note)
+        .map(|deck| deck.with_reads(reads).with_conjured(conjured));
+    deck.map_err(|error| {
         tracing::error!(%error, "a boss deck could not be fingerprinted");
         ApiError::internal()
     })

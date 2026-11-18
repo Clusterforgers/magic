@@ -314,5 +314,60 @@
       "Forest",
       12
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 30,
+      "G": 34
+    },
+    "types": {
+      "Artifact": 7,
+      "Creature": 38,
+      "Enchantment": 1,
+      "Instant": 6,
+      "Land": 38,
+      "Sorcery": 10
+    },
+    "subtypes": {
+      "Beast": 2,
+      "Carrier": 1,
+      "Centaur": 1,
+      "Demon": 2,
+      "Dragon": 1,
+      "Elemental": 3,
+      "Elephant": 1,
+      "Elf": 5,
+      "Equipment": 3,
+      "Forest": 12,
+      "Fungus": 1,
+      "Gate": 1,
+      "Goat": 1,
+      "Horror": 1,
+      "Human": 3,
+      "Insect": 1,
+      "Lizard": 1,
+      "Ooze": 1,
+      "Phyrexian": 3,
+      "Plant": 3,
+      "Rogue": 1,
+      "Satyr": 1,
+      "Scout": 2,
+      "Shaman": 5,
+      "Skeleton": 1,
+      "Snake": 2,
+      "Spirit": 1,
+      "Swamp": 13,
+      "Treefolk": 1,
+      "Troll": 1,
+      "Vampire": 3,
+      "Wall": 1,
+      "Warrior": 3,
+      "Wizard": 1,
+      "Zombie": 5
+    },
+    "tokens": 5,
+    "counters": 5,
+    "graveyard": 12,
+    "creature_commanders": 0
+  }
 }

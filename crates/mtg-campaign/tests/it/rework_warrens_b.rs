@@ -777,28 +777,10 @@ fn fight_setup(id: &str, seed: u64) -> GameSetup {
         decks.push(deck.cards.clone());
         commanders.push(deck.commanders.clone());
     }
-    let file = deck_file(boss(id).deck_file.as_deref().unwrap());
-    decks.push(
-        file.cards
-            .iter()
-            .flat_map(|(name, n)| {
-                (0..*n).map(move |_| corpus::card(name).unwrap_or_else(|_| wastes()))
-            })
-            .collect(),
-    );
+    decks.push(crate::common::boss_deck(&plan));
     commanders.push(Vec::new());
     let setup = GameSetup::new(Arc::new(Commander), seed, decks).with_commanders(commanders);
-    let mut setup = plan.apply(content, setup).unwrap();
-    for card in &boss(id).satchel {
-        let spell = corpus::card(&card.card).unwrap();
-        let seat = &mut setup.players[BOSS];
-        if card.reusable {
-            seat.satchel_reusable.push(spell);
-        } else {
-            seat.satchel.push(spell);
-        }
-    }
-    setup
+    plan.apply(content, setup).unwrap()
 }
 
 #[rstest]

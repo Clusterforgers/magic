@@ -354,5 +354,40 @@
       "Mountain",
       4
     ]
-  ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 40,
+      "R": 16,
+      "W": 15
+    },
+    "types": {
+      "Artifact": 4,
+      "Creature": 41,
+      "Enchantment": 4,
+      "Instant": 4,
+      "Land": 39,
+      "Sorcery": 9
+    },
+    "subtypes": {
+      "Avatar": 2,
+      "Beast": 1,
+      "Dinosaur": 35,
+      "Druid": 3,
+      "Egg": 1,
+      "Elder": 3,
+      "Forest": 10,
+      "God": 1,
+      "Human": 5,
+      "Mountain": 5,
+      "Plains": 5,
+      "Plant": 1,
+      "Shaman": 1,
+      "Warrior": 1
+    },
+    "tokens": 3,
+    "counters": 2,
+    "graveyard": 2,
+    "creature_commanders": 0
+  }
 }
