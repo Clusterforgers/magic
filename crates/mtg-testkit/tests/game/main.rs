@@ -32,6 +32,7 @@ mod crowded_turn;
 mod day_night;
 mod day_night_effects;
 mod devour_casualty_offspring;
+mod dl15p_boss_attack_tax;
 mod e14b_turn_up_parts;
 mod e14e_until_next_turn;
 mod e16c_player_counters;
