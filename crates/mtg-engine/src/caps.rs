@@ -414,6 +414,7 @@ const RUNS: &[&str] = &[
     "Effect.ClaimPrize",
     "Trigger.VisitedAttraction",
     "Trigger.Prize",
+    "Trigger.PhaseBegins",
     "Trigger.ClaimedPrize",
     "Trigger.Ventured",
     "Trigger.CompletedDungeon",

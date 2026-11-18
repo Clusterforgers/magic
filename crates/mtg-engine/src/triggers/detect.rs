@@ -265,6 +265,8 @@ enum Happened {
     },
     /// A player visited an Attraction, once for each visited.
     VisitedAttraction { player: PlayerId },
+    /// A campaign phase of a player began, its emblem the new object.
+    PhaseBegan { player: PlayerId, emblem: ObjectId },
     /// A player claimed the prize of an Attraction.
     PrizeClaimed {
         player: PlayerId,
@@ -1395,6 +1397,10 @@ fn about_players_and_permanents(
                     .map(|_| Happened::VisitedAttraction { player: *player }),
             );
         }
+        Event::PhaseBegan { player, emblem } => found.push(Happened::PhaseBegan {
+            player: *player,
+            emblem: *emblem,
+        }),
         Event::PrizeClaimed { player, attraction } => found.push(Happened::PrizeClaimed {
             player: *player,
             attraction: *attraction,
@@ -1914,6 +1920,10 @@ fn matching_player_action(
             (scope.source.id == *attraction
                 && crate::characteristics::controller_of(state, scope.source.id) == Some(*player))
             .then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
+        // A phase's "when this phase begins" ability triggers for the emblem the phase just made.
+        (TriggerPattern::PhaseBegins {}, Happened::PhaseBegan { player, emblem }) => {
+            (scope.source.id == *emblem).then(|| counted(state, vec![Target::Player(*player)], 0))
         }
         // The number rolled is the amount ("if you roll a 6").
         (TriggerPattern::RolledToVisit { who }, Happened::RolledToVisit { player, result }) => {

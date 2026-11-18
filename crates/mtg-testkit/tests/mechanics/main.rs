@@ -219,6 +219,7 @@ mod rmt4_while_controlled;
 mod rmt5_engine;
 mod rmt7_keyword_kinds;
 mod rmt8_mechanics;
+mod round_phases;
 mod runed_crown;
 mod spotlight;
 mod t19b_reminder_duals;

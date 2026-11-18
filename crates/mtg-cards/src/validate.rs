@@ -3134,7 +3134,8 @@ impl<'a> Walker<'a> {
             TriggerPattern::DayNightChanges { .. }
             | TriggerPattern::DoorUnlocked { .. }
             | TriggerPattern::Visit {}
-            | TriggerPattern::Prize {} => {}
+            | TriggerPattern::Prize {}
+            | TriggerPattern::PhaseBegins {} => {}
             TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
             TriggerPattern::DealsToughnessDamage { source, .. } => {
                 self.at("source", |w| w.selector(source));
@@ -3328,6 +3329,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::RolledToVisit { .. }
                 | TriggerPattern::VisitedAttraction { .. }
                 | TriggerPattern::Prize {}
+                | TriggerPattern::PhaseBegins {}
                 | TriggerPattern::ClaimedPrize { .. }
                 | TriggerPattern::OpenedAttraction { .. }
                 | TriggerPattern::CompletedDungeon { .. }
