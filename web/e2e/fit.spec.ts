@@ -749,7 +749,10 @@ test.describe('the development table with 40 permanents a seat', () => {
       await block.click({ trial: true })
       // The band's line is `display: contents` (its parts are cells of the band's grid), so its words are what show: the
       // sentence, or a combat prompt's line in its place.
-      const sentence = page.locator('[data-slot="decision-line"] [data-slot="prompt-text"]').filter({ visible: true }).first()
+      const sentence = page
+        .locator('[data-slot="decision-line"] [data-slot="prompt-text"]')
+        .filter({ visible: true })
+        .first()
       await expect(sentence).toBeVisible()
       const covered = await sentence.evaluate((line) => {
         const box = line.getBoundingClientRect()

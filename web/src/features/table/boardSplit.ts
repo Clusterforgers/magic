@@ -309,7 +309,9 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   }
   const full = liftTo(input.theirFloor)
   const { floor, lifted } =
-    full.lifted >= FLOOR_OWN_CARD_PX || input.theirFloorLeast === undefined ? full : liftTo(input.theirFloorLeast)
+    full.lifted >= FLOOR_OWN_CARD_PX || input.theirFloorLeast === undefined
+      ? full
+      : liftTo(input.theirFloorLeast)
   const card = lifted >= FLOOR_OWN_CARD_PX ? lifted : at(highestRung(rungs, fits))
   const spare = room - ownRow(card)
   let theirs = theirCard(card)
