@@ -599,6 +599,24 @@ impl Content {
             .ok_or_else(|| CampaignError::Unknown(format!("theme {id}")))
     }
 
+    /// The theme a new run of content generation `generation` plays, drawn by its seed among the themes whose final boss
+    /// that generation meets (only the Warrens before the Drowned Spire's generation).
+    pub fn theme_for(&self, seed: u64, generation: u32) -> Result<&Theme, CampaignError> {
+        let open: Vec<&Theme> = self
+            .themes
+            .iter()
+            .filter(|t| {
+                t.bosses
+                    .iter()
+                    .any(|b| b.final_boss && !b.uber && b.since <= generation)
+            })
+            .collect();
+        let at = crate::rng::Stream::new(seed, "theme", 0, 0).below(open.len());
+        open.get(at)
+            .copied()
+            .ok_or_else(|| CampaignError::Unknown(format!("a theme of generation {generation}")))
+    }
+
     /// The relics, in id order.
     pub fn relics(&self) -> Vec<&CustomCard> {
         self.cards
@@ -629,9 +647,13 @@ pub fn content() -> Result<&'static Content, CampaignError> {
                     include_str!("../content/cards.json"),
                     include_str!("../content/encounters.json"),
                     include_str!("../content/rework_warrens_a.json"),
+                    include_str!("../content/rework_spire.json"),
                     include_str!("../content/rework_warrens_b.json"),
                 ],
-                &[include_str!("../content/warrens.json")],
+                &[
+                    include_str!("../content/warrens.json"),
+                    include_str!("../content/spire.json"),
+                ],
                 include_str!("../content/modifiers.json"),
             )
             .and_then(|content| content.with_decks(DECK_FILES))

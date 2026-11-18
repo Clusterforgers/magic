@@ -22,6 +22,7 @@ mod rework_warrens_a;
 mod rework_warrens_b;
 mod runs;
 mod satchel;
+mod spire;
 mod spirits;
 mod tiers;
 mod trades;
