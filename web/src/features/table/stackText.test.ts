@@ -97,7 +97,11 @@ describe('the trigger line', () => {
     ['a die rolled', { players: [0], amount: 5 }, 'on Ana (5)'],
     ['a creature that entered', { objects: ['Grizzly Bears'] }, 'on Grizzly Bears'],
     ['an amount alone', { amount: 3 }, '(3)'],
-    ['damage to a player by a creature', { objects: ['Hill Giant'], players: [1], amount: 3 }, 'on Hill Giant, Bo (3)'],
+    [
+      'damage to a player by a creature',
+      { objects: ['Hill Giant'], players: [1], amount: 3 },
+      'on Hill Giant, Bo (3)',
+    ],
   ])('%s', (_case, trigger, expected) => {
     expect(triggerLine(trigger, seat)).toBe(expected)
   })
