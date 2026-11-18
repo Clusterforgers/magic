@@ -164,7 +164,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (rw2) Drowned Spire innates (no mill; only the Archivist's Phase 1 mills, once)
 - [ ] (rw3) Encounter modifier content: the 23 modifiers of the pool with their `not_with` lists and a check each
 - [ ] (rw4) Satchel bot cues: the boss brain casts its satchel by the cue table (early turns, behind on board, lethal, protect, hand low)
-- [ ] (rw5) Boss view and intro on screen: innate with its level, modifier, relics, satchel and the phase countdown by round
+- [ ] (rw5a) The boss's satchel reaches its game: the fight's recipe carries the reusable and once satchel cards into `satchel_reusable` and `satchel`
 - [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 - [ ] (rw8) Remove the old boss systems (Escalation, Enrage, Intensify, schemes, Omen, minion seats, Lull, Reserves to Last Bulwark, commander card, upgraded and uber bosses, own relics, old modifiers, brackets and tiers, life phases) from campaign, protocol, server, simulator and web, and make generation 8 the newest

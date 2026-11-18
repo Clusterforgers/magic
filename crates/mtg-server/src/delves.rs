@@ -5,6 +5,7 @@
 
 mod board;
 mod hooks;
+mod rework;
 mod store;
 
 pub(crate) use board::leaderboard;
@@ -596,8 +597,9 @@ fn fight_view(run: &Run) -> Option<DelveFightView> {
     if !matches!(run.status, Status::Fight { .. }) {
         return None;
     }
-    let plan = run.fight_plan(campaign().ok()?).ok()??;
-    Some(DelveFightView {
+    let content = campaign().ok()?;
+    let plan = run.fight_plan(content).ok()??;
+    let fight = DelveFightView {
         boss: plan.boss.name.clone(),
         life: plan.boss.life,
         rules: plan.boss.rules.clone(),
@@ -609,6 +611,15 @@ fn fight_view(run: &Run) -> Option<DelveFightView> {
             .iter()
             .map(|minion| (minion.name.clone(), minion.life))
             .collect(),
+        innate: None,
+        modifier: None,
+        round_phases: Vec::new(),
+        relics: Vec::new(),
+        satchel: Vec::new(),
+    };
+    Some(match &plan.boss.rework {
+        Some(rework) => rework::with_rework(fight, rework, content),
+        None => fight,
     })
 }
 

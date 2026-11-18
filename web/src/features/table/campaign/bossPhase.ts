@@ -26,6 +26,14 @@ export function phaseTitle(name: string): string {
 
 /** The track of a boss: the opening phase, then one step per phase card, the begun ones done and the newest current. */
 export function phaseSteps(boss: BossView): PhaseStep[] {
+  const byRound = boss.round_phases ?? []
+  // A reworked boss has no opening phase: its track is Phase 1 and Phase 2 by round, the newest begun one current.
+  if (byRound.length > 0)
+    return byRound.map((phase, i) => ({
+      label: `Phase ${i + 1}`,
+      title: phase.name,
+      state: !phase.begun ? 'next' : byRound[i + 1]?.begun === true ? 'done' : 'current',
+    }))
   const names = ['', ...boss.phases]
   return names.map((name, i) => ({
     label: `Phase ${roman(i + 1)}`,
@@ -62,7 +70,9 @@ export function phaseCueBetween(
     const now = player.boss
     const was = before.find((p) => p.seat === player.seat)?.boss
     if (now === undefined || was === undefined || now.begun <= was.begun) continue
-    const label = `Phase ${roman(now.begun + 1)}`
+    const byRound = (now.round_phases?.length ?? 0) > 0
+    // A reworked boss numbers its phases from 1 by round; an older boss counts its opening phase as Phase I.
+    const label = byRound ? `Phase ${now.begun}` : `Phase ${roman(now.begun + 1)}`
     const title = phaseTitle(now.phases[now.begun - 1] ?? '')
     const who = name(player.seat)
     cue = {

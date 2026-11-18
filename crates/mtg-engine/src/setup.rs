@@ -109,6 +109,8 @@ pub struct PlayerSetup {
     pub satchel_reusable: Vec<Arc<CardDefinition>>,
     /// The land count the seat's opening hand must hold; such a seat takes no mulligan ([`crate::opening_lands`]).
     pub opening_lands: Option<crate::opening_lands::OpeningLands>,
+    /// A reworked boss seat's public sheet, which names its innate, modifier, relics and phases ([`crate::boss_sheet`]).
+    pub boss_sheet: Option<Arc<crate::boss_sheet::BossSheet>>,
     /// Cards the seat starts with in its command zone that nothing lets it cast from there; only an effect casts them (a
     /// Delves boss's commander card, cast by its last phase).
     pub held: Vec<Arc<CardDefinition>>,
@@ -481,6 +483,7 @@ fn starting_player(
     player.scheme_every = setup.scheme_every.max(1);
     player.leader = setup.leader;
     player.held = setup.held.iter().map(|card| card.name.clone()).collect();
+    player.sheet = crate::boss_sheet::SheetSlot(setup.boss_sheet.clone());
     for (kind, count) in &setup.counters {
         if *count > 0 {
             *player.counters.entry(kind.clone()).or_default() += count;

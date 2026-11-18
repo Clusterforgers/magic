@@ -8,6 +8,7 @@
 //! of it come from [`bindings`].
 
 mod apply;
+mod boss_view;
 mod diff;
 mod modifiers;
 
