@@ -1,0 +1,49 @@
+{
+  "oracle_id": "cbdbf18f-0180-4ade-a79e-1e644dd42d6f",
+  "name": "Rip Apart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rip Apart",
+      "oracle_fingerprint": "9040322e0d5c35ec1aef993de12dd260",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

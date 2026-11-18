@@ -1,0 +1,12 @@
+{
+  "oracle_id": "ac641490-ca14-48d7-8cc4-b69ce984befa",
+  "name": "Preordain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Preordain",
+      "oracle_fingerprint": "6a8ca45387333f89c488c09773e6ba22",
+      "abilities": [{ "Spell": { "effects": [{ "Scry": { "count": 2 } }, { "Draw": {} }] } }]
+    }
+  ]
+}

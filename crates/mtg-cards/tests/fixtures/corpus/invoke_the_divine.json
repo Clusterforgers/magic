@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7",
+  "oracle_id": "87bd0fdb-c5b9-46ea-9858-1a870960351f",
+  "multiverse_ids": [
+    503621
+  ],
+  "mtgo_id": 87353,
+  "arena_id": 75052,
+  "tcgplayer_id": 230873,
+  "cardmarket_id": 532422,
+  "name": "Invoke the Divine",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7",
+  "scryfall_uri": "https://scryfall.com/card/khm/16/invoke-the-divine?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:38:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.jpg?1783928284",
+    "normal": "https://cards.scryfall.io/normal/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.jpg?1783928284",
+    "large": "https://cards.scryfall.io/large/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.jpg?1783928284",
+    "png": "https://cards.scryfall.io/png/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.png?1783928284",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.jpg?1783928284",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.jpg?1783928284",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.webp?1783928284",
+    "grid": "https://cards.scryfall.io/grid/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.webp?1783928284",
+    "display": "https://cards.scryfall.io/display/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.webp?1783928284",
+    "art": "https://cards.scryfall.io/art/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.webp?1783928284",
+    "crop": "https://cards.scryfall.io/crop/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.webp?1783928284",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/2/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7.jpg?1783928284"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Destroy target artifact or enchantment. You gain 4 life.",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/7213d9e1-e9c6-45d8-bb7f-336c41e7b6f7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A87bd0fdb-c5b9-46ea-9858-1a870960351f&unique=prints",
+  "collector_number": "16",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "\"Let's see how brave you really are behind all that oak and steel.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Campbell White",
+  "artist_ids": [
+    "d281eab4-463a-4ba8-9039-8943737960a0"
+  ],
+  "illustration_id": "9acb95c0-32de-4f9b-8d7c-532412daa0f1",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 6239,
+  "penny_rank": 3892,
+  "preview": {
+    "source": "Hannah Rutherford",
+    "source_uri": "https://twitter.com/lomadia/status/1351197664898027520",
+    "previewed_at": "2021-01-18"
+  },
+  "prices": {
+    "usd": "0.22",
+    "usd_foil": "0.24",
+    "usd_etched": null,
+    "eur": "0.10",
+    "eur_foil": "0.17",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=503621&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DInvoke%2Bthe%2BDivine",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DInvoke%2Bthe%2BDivine",
+    "edhrec": "https://edhrec.com/route/?cc=Invoke+the+Divine"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F230873%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=532422&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87353?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

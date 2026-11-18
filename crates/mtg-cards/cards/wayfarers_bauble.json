@@ -1,0 +1,27 @@
+{
+  "oracle_id": "31f15274-301b-47c5-ba19-0ced04520878",
+  "name": "Wayfarer's Bauble",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wayfarer's Bauble",
+      "oracle_fingerprint": "bd37634185dc2d426c115de13d952607",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

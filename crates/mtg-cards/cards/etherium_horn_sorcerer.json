@@ -1,0 +1,20 @@
+{
+  "oracle_id": "01afb7a1-6427-4bb6-935a-613e9bda9de3",
+  "name": "Etherium-Horn Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Etherium-Horn Sorcerer",
+      "oracle_fingerprint": "350697a24b70d8c8665c0f140062c949",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{U}{R}",
+            "effects": [{ "Move": { "what": "This", "to": "Hand" } }]
+          }
+        },
+        { "Keyword": "Cascade" }
+      ]
+    }
+  ]
+}

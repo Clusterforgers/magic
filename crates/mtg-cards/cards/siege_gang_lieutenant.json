@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9e9d538b-a9e5-4d59-b7c1-208fe18110e3",
+  "name": "Siege-Gang Lieutenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Siege-Gang Lieutenant",
+      "oracle_fingerprint": "da16d11e10f7d93483406926364c4ddd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": ["Commander", { "OwnedBy": "You" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2,
+                  "as": "tokens"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tokens" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "Sacrifice": { "filter": [{ "Subtype": "Goblin" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

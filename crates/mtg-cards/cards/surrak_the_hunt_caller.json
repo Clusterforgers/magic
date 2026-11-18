@@ -1,0 +1,42 @@
+{
+  "oracle_id": "fa56a5fa-ef96-404c-8fb6-d1f5fcebb52e",
+  "name": "Surrak, the Hunt Caller",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surrak, the Hunt Caller",
+      "oracle_fingerprint": "2ec5cbdd3fd61541c082826382e48477",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Total": {
+                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                    "stat": "Power"
+                  }
+                },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

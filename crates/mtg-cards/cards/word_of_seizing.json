@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b80d2841-03b0-42d3-ac9b-51e793b1dc24",
+  "name": "Word of Seizing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Word of Seizing",
+      "oracle_fingerprint": "d428b1d5ebe7b1b6eedbc5adcb929ea9",
+      "abilities": [
+        { "Keyword": "SplitSecond" },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

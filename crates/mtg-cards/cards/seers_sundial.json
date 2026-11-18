@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9929d7ba-cdc5-4099-a0ee-3a15073336f3",
+  "name": "Seer's Sundial",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seer's Sundial",
+      "oracle_fingerprint": "da7a6184f2d63b418c125acd3cba4acf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Pay": { "cost": "{2}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

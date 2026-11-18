@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a699c663-8131-4045-9265-a83e86609374",
+  "name": "Thran Dynamo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thran Dynamo",
+      "oracle_fingerprint": "9eb4c42de13c64333634c54213822e29",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless", "Colorless"] } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "570b56ff-b25a-43e4-927b-99dba542be5e",
+  "oracle_id": "361b0d7f-1e43-45c5-92c2-92baacaf326f",
+  "multiverse_ids": [
+    650228
+  ],
+  "mtgo_id": 122408,
+  "tcgplayer_id": 535760,
+  "cardmarket_id": 753544,
+  "name": "Pile On",
+  "lang": "en",
+  "released_at": "2024-02-09",
+  "uri": "https://api.scryfall.com/cards/570b56ff-b25a-43e4-927b-99dba542be5e",
+  "scryfall_uri": "https://scryfall.com/card/mkc/134/pile-on?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:23:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.jpg?1783913004",
+    "normal": "https://cards.scryfall.io/normal/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.jpg?1783913004",
+    "large": "https://cards.scryfall.io/large/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.jpg?1783913004",
+    "png": "https://cards.scryfall.io/png/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.png?1783913004",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.jpg?1783913004",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.jpg?1783913004",
+    "thumb": "https://cards.scryfall.io/thumb/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.webp?1783913004",
+    "grid": "https://cards.scryfall.io/grid/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.webp?1783913004",
+    "display": "https://cards.scryfall.io/display/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.webp?1783913004",
+    "art": "https://cards.scryfall.io/art/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.webp?1783913004",
+    "crop": "https://cards.scryfall.io/crop/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.webp?1783913004",
+    "jpeg": "https://cards.scryfall.io/normal/front/5/7/570b56ff-b25a-43e4-927b-99dba542be5e.jpg?1783913004"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4.0,
+  "type_line": "Instant",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nDestroy target creature or planeswalker. Surveil 2. (Look at the top two cards of your library, then put any number of them into your graveyard and the rest on top of your library in any order.)",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Surveil",
+    "Convoke"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set": "mkc",
+  "set_name": "Murders at Karlov Manor Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/286c37ca-ba65-4d3e-8c5d-d1878d88fd95",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amkc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mkc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/570b56ff-b25a-43e4-927b-99dba542be5e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A361b0d7f-1e43-45c5-92c2-92baacaf326f&unique=prints",
+  "collector_number": "134",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Javier Charro",
+  "artist_ids": [
+    "8fd2d5fa-3b94-4e48-9cec-9d148acc8180"
+  ],
+  "illustration_id": "3b44cf24-ffea-4fed-9155-06bae0ae9f26",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5229,
+  "penny_rank": 6771,
+  "prices": {
+    "usd": "0.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.22",
+    "eur_foil": null,
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=650228&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPile%2BOn",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPile%2BOn",
+    "edhrec": "https://edhrec.com/route/?cc=Pile+On"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F535760%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=753544&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/122408?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "53cd9d9f-c1a7-404e-9934-4542415e3431",
+  "name": "Thraben Watcher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thraben Watcher",
+      "oracle_fingerprint": "367cd64a96779a8ee768115801b44bc8",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Not": "Token" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Vigilance" }]
+          }
+        }
+      ]
+    }
+  ]
+}

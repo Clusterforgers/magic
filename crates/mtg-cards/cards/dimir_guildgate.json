@@ -1,0 +1,20 @@
+{
+  "oracle_id": "52d14717-0cbc-4d7e-b546-54ea91580338",
+  "name": "Dimir Guildgate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Guildgate",
+      "oracle_fingerprint": "adcef9247851409ed59f22cffa7ed8fb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

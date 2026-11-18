@@ -1,0 +1,25 @@
+{
+  "oracle_id": "013ca531-1ff7-4efc-a280-4bc3ab574072",
+  "name": "Mocking Sprite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mocking Sprite",
+      "oracle_fingerprint": "47aa7f6ff5e688884efdf7e45f00fcd6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

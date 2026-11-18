@@ -1,0 +1,31 @@
+{
+  "oracle_id": "651dea9c-2375-4e44-8e65-ba8e40f0c0ef",
+  "name": "Furycalm Snarl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Furycalm Snarl",
+      "oracle_fingerprint": "40b626e428b6cf26a60d99da4404cb3a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [
+                { "AnyOf": [{ "Subtype": "Mountain" }, { "Subtype": "Plains" }] },
+                { "In": "Hand" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

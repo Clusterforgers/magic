@@ -1,0 +1,33 @@
+{
+  "oracle_id": "3055381a-fb6b-47a3-8e77-a44768808e27",
+  "name": "Eater of Hope",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Eater of Hope",
+      "oracle_fingerprint": "3eb87cd7388e695843ce6ba03309eeea",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }
+            ],
+            "effects": [{ "Regenerate": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}{B}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"], "count": 2 } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

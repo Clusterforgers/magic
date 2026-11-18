@@ -1,0 +1,25 @@
+{
+  "oracle_id": "9b271430-f53d-42d6-a547-2f286dd9bcb6",
+  "name": "Putrefy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Putrefy",
+      "oracle_fingerprint": "ef9194337b0108d3b0a0f091dd76dba2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 }, "regenerate": false } }]
+          }
+        }
+      ]
+    }
+  ]
+}

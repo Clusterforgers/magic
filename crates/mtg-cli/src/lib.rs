@@ -18,6 +18,7 @@ pub mod coverage_decks;
 pub mod draft_suspects;
 pub mod drafts;
 pub mod error;
+pub mod export_precon;
 pub mod fetch;
 pub mod files;
 pub mod fix_marks;
@@ -134,10 +135,8 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
         Command::Coverage(args) => {
             coverage::report(&connect(cli.database_url).await?, &cache, &args).await
         }
-        Command::Promote(args) => {
-            let db = connect(cli.database_url).await?;
-            Ok(w2a_promote::w2a_promote(&db, &cache, &args).await?.render())
-        }
+        Command::ExportPrecon(args) => export_precon::command(cli.database_url, &args).await,
+        Command::Promote(args) => promote_command(cli.database_url, &cache, &args).await,
         Command::Propose(args) => propose::command(cli.database_url, &cache, &args, progress).await,
         Command::ProposeOrder(args) => order_command(cli.database_url, &cache, &args).await,
         Command::DslReference => Ok(mtg_cards::reference::dsl_reference().trim_end().to_owned()),
@@ -147,6 +146,16 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             w19b_pairs::w19b_export_pairs(&db, &args).await
         }
     }
+}
+
+/// `promote`: the proposals made corpus cards or drafts.
+async fn promote_command(
+    database_url: Option<String>,
+    cache: &Cache,
+    args: &args::PromoteArgs,
+) -> Result<String, CliError> {
+    let db = connect(database_url).await?;
+    Ok(w2a_promote::w2a_promote(&db, cache, args).await?.render())
 }
 
 /// `propose-order`: the order of a paid run.

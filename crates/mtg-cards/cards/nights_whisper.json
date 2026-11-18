@@ -1,0 +1,14 @@
+{
+  "oracle_id": "7ffae8f8-3006-4969-a339-6d30678f87ea",
+  "name": "Night's Whisper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Night's Whisper",
+      "oracle_fingerprint": "c7731acf386b76aed6ba1453567b1d31",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": { "count": 2 } }, { "LoseLife": { "amount": 2 } }] } }
+      ]
+    }
+  ]
+}

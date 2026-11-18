@@ -1,0 +1,29 @@
+{
+  "oracle_id": "e80bd454-8bc5-4921-90cf-6ad28a27a88b",
+  "name": "Grasslands",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grasslands",
+      "oracle_fingerprint": "f41db1670a64db26a38f61cba7a6f101",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "AnyOf": [{ "Subtype": "Forest" }, { "Subtype": "Plains" }] }],
+                  "as": "land"
+                }
+              },
+              { "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": {} } } },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

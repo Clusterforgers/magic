@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6d37ba4b-ff56-4eec-9dc2-2d7f357dc9c9",
+  "name": "Youthful Valkyrie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Youthful Valkyrie",
+      "oracle_fingerprint": "8f81f2592fbcaef0c894f826a59fefd9",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Angel" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

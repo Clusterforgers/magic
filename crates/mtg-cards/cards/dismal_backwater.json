@@ -1,0 +1,26 @@
+{
+  "oracle_id": "865a2194-fca0-446e-aae3-ca475cd66e00",
+  "name": "Dismal Backwater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dismal Backwater",
+      "oracle_fingerprint": "40ce155786d374fbfcba12b09354ce21",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

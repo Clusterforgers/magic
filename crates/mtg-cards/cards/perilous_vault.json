@@ -1,0 +1,19 @@
+{
+  "oracle_id": "7acd7ef5-0e26-436d-962a-1a391f81c2e8",
+  "name": "Perilous Vault",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perilous Vault",
+      "oracle_fingerprint": "7ef48fb4ed899f563995aa15919ff43e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap", "ExileSelf"],
+            "effects": [{ "Exile": { "what": { "Each": [{ "Not": { "Type": "Land" } }] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

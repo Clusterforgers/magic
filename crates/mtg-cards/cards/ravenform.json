@@ -1,0 +1,44 @@
+{
+  "oracle_id": "d3d61a6a-7870-44df-92e5-513dac2c2c3e",
+  "name": "Ravenform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ravenform",
+      "oracle_fingerprint": "60cacc865cce3d8092e2231f686a3005",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Bird",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Bird"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Foretell": "{U}" } }
+      ]
+    }
+  ]
+}

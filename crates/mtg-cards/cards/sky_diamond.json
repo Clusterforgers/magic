@@ -1,0 +1,20 @@
+{
+  "oracle_id": "2224b6e0-c5ff-45d0-84e3-83758c5fc99f",
+  "name": "Sky Diamond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sky Diamond",
+      "oracle_fingerprint": "41d5e5ca38db6b70895be1d98602e297",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "oracle_id": "893fed41-c144-433f-af88-bc7d419b7fb3",
+  "name": "Burnished Hart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Burnished Hart",
+      "oracle_fingerprint": "82ee99626c3a8184b0f02ceed148ba9c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                  "count": { "min": 0, "max": 2 },
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

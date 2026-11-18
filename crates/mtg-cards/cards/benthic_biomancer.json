@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b9000917-4f09-42f4-ae85-fc1ac7571d93",
+  "name": "Benthic Biomancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benthic Biomancer",
+      "oracle_fingerprint": "7f299ba5c1c53f524ca2bbec61557275",
+      "abilities": [
+        { "Activated": { "cost": "{1}{U}", "effects": [{ "Adapt": { "count": 1 } }] } },
+        {
+          "Triggered": {
+            "when": { "Batch": { "CountersPut": { "what": ["This"], "counter": "+1/+1" } } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

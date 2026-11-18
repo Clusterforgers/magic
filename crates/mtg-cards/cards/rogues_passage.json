@@ -1,0 +1,34 @@
+{
+  "oracle_id": "f29dc596-2121-4421-8463-15f6c2e8b9b3",
+  "name": "Rogue's Passage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rogue's Passage",
+      "oracle_fingerprint": "676c36326c266ddbf34fe189f965f8a3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

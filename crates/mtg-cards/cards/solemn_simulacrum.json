@@ -1,0 +1,45 @@
+{
+  "oracle_id": "00c0543c-2a1f-4425-8283-4062d74a1637",
+  "name": "Solemn Simulacrum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Solemn Simulacrum",
+      "oracle_fingerprint": "7852a9aca10c197d07c94d6410e69e7a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }],
+                        "as": "land"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "land" },
+                        "to": { "Battlefield": { "tapped": true } }
+                      }
+                    },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [{ "May": { "effects": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

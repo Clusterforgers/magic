@@ -1,0 +1,131 @@
+{
+  "object": "card",
+  "id": "433821dd-9a38-4ace-b9d2-cd081784e957",
+  "oracle_id": "33bea2f0-c5aa-44b5-8714-5f50f7f2bb05",
+  "multiverse_ids": [
+    430268
+  ],
+  "tcgplayer_id": 131981,
+  "cardmarket_id": 297996,
+  "name": "Blood Bairn",
+  "lang": "en",
+  "released_at": "2017-06-09",
+  "uri": "https://api.scryfall.com/cards/433821dd-9a38-4ace-b9d2-cd081784e957",
+  "scryfall_uri": "https://scryfall.com/card/cma/49/blood-bairn?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:51:31Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.jpg?1783936291",
+    "normal": "https://cards.scryfall.io/normal/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.jpg?1783936291",
+    "large": "https://cards.scryfall.io/large/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.jpg?1783936291",
+    "png": "https://cards.scryfall.io/png/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.png?1783936291",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.jpg?1783936291",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.jpg?1783936291",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.webp?1783936291",
+    "grid": "https://cards.scryfall.io/grid/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.webp?1783936291",
+    "display": "https://cards.scryfall.io/display/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.webp?1783936291",
+    "art": "https://cards.scryfall.io/art/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.webp?1783936291",
+    "crop": "https://cards.scryfall.io/crop/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.webp?1783936291",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/3/433821dd-9a38-4ace-b9d2-cd081784e957.jpg?1783936291"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Vampire",
+  "oracle_text": "Sacrifice another creature: This creature gets +2/+2 until end of turn.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "fd4d8463-0156-4c60-a40e-778762bb90e4",
+  "set": "cma",
+  "set_name": "Commander Anthology",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/fd4d8463-0156-4c60-a40e-778762bb90e4",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/433821dd-9a38-4ace-b9d2-cd081784e957/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A33bea2f0-c5aa-44b5-8714-5f50f7f2bb05&unique=prints",
+  "collector_number": "49",
+  "digital": false,
+  "rarity": "common",
+  "flavor_text": "The travelers were warned to watch out for children on the road.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Ryan Yee",
+  "artist_ids": [
+    "8955dca7-3e37-42b4-83a9-167c78a2178f"
+  ],
+  "illustration_id": "4b532915-f8ed-4a42-bc66-a0bbe904aab0",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 18698,
+  "penny_rank": 13121,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=430268&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBlood%2BBairn",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBlood%2BBairn",
+    "edhrec": "https://edhrec.com/route/?cc=Blood+Bairn"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F131981%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=297996&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Blood+Bairn&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

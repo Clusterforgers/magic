@@ -9,7 +9,23 @@
       "abilities": [
         {
           "Static": {
-            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                {
+                  "AnyOf": [
+                    { "In": "Battlefield" },
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                }
+              ]
+            },
             "mods": ["AddAllCreatureTypes"]
           }
         },

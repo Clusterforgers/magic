@@ -1,0 +1,31 @@
+{
+  "oracle_id": "d473b507-8c33-4118-bc10-b0a268776074",
+  "name": "Choked Estuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Choked Estuary",
+      "oracle_fingerprint": "e73cc60cdc066587f26f5f4b4d23d32e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [
+                { "AnyOf": [{ "Subtype": "Island" }, { "Subtype": "Swamp" }] },
+                { "In": "Hand" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

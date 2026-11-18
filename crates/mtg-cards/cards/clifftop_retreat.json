@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d7faa3c8-46cf-46b2-bfa4-89000307cf18",
+  "name": "Clifftop Retreat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Clifftop Retreat",
+      "oracle_fingerprint": "81d48e369f7c4d1b7d48729b615db74f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Mountain" }, { "Subtype": "Plains" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

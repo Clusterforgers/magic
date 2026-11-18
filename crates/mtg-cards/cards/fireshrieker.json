@@ -1,0 +1,15 @@
+{
+  "oracle_id": "a02e1ca7-23c5-41e3-a744-72fc9e9dd8ba",
+  "name": "Fireshrieker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fireshrieker",
+      "oracle_fingerprint": "20f1e5e8f7f2e6b2d5aa9f102fdcff88",
+      "abilities": [
+        { "Static": { "affected": "Attached", "mods": [{ "AddKeyword": "DoubleStrike" }] } },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

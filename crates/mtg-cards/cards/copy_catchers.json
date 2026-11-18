@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d8e276a8-1234-4b61-84cf-4bf231ea3129",
+  "name": "Copy Catchers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Copy Catchers",
+      "oracle_fingerprint": "1fdfbbfe3edef54b4fb23428aee11538",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Surveilled": { "who": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{U}",
+                  "paid": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

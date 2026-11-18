@@ -1,0 +1,41 @@
+{
+  "oracle_id": "c9db31d7-00cf-4200-a11f-74cc2d9e843e",
+  "name": "Thundering Spineback",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thundering Spineback",
+      "oracle_fingerprint": "8e50f085ccf5741f6abd396a10bd319e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{5}{G}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Dinosaur",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Dinosaur"],
+                      "power": 3,
+                      "toughness": 3,
+                      "abilities": [{ "Keyword": "Trample" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

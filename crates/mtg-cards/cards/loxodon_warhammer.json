@@ -1,0 +1,24 @@
+{
+  "oracle_id": "dba35ac5-7ad3-488a-a006-6b9a1d54eea5",
+  "name": "Loxodon Warhammer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Loxodon Warhammer",
+      "oracle_fingerprint": "77f7b4aff8638a4fafc2883471149b32",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 3, "toughness": 0 } },
+              { "AddKeyword": "Trample" },
+              { "AddKeyword": "Lifelink" }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "oracle_id": "b7cfbfa1-dd38-47ff-9138-fa6b247afc11",
+  "name": "Mystic Retrieval",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mystic Retrieval",
+      "oracle_fingerprint": "d356e528aa01d90a9946a3fa2032c818",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        { "Keyword": { "Flashback": "{2}{R}" } }
+      ]
+    }
+  ]
+}

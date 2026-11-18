@@ -1,0 +1,19 @@
+{
+  "oracle_id": "7a51780a-fa28-4ee0-94c7-4330800ca9cb",
+  "name": "Endless One",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Endless One",
+      "oracle_fingerprint": "c4f475662885c5975da1e7650071729e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "+1/+1", "count": "X" } }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1a362e4d-6c02-4b67-ab63-c6622e505195",
+  "name": "Crossway Troublemakers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crossway Troublemakers",
+      "oracle_fingerprint": "212bfe02be70c95ada6068af3181d4fc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Subtype": "Vampire" }, "Attacking", { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Deathtouch" }, { "AddKeyword": "Lifelink" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Pay": { "cost": [{ "PayLife": 2 }], "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

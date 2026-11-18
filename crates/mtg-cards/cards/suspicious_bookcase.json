@@ -1,0 +1,29 @@
+{
+  "oracle_id": "ca611c90-7753-43dd-af91-81694d004eeb",
+  "name": "Suspicious Bookcase",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suspicious Bookcase",
+      "oracle_fingerprint": "558f2197100eac55f3ee322e7b8e65ca",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

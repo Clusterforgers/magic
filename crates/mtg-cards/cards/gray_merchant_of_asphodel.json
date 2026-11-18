@@ -1,0 +1,22 @@
+{
+  "oracle_id": "38f3b157-0df4-409b-89cc-086e1531cd5b",
+  "name": "Gray Merchant of Asphodel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gray Merchant of Asphodel",
+      "oracle_fingerprint": "70eb07a3dd308f1f4203ef363925a719",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": { "Devotion": ["Black"] } } },
+              { "GainLife": { "amount": "LifeLostThisWay" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

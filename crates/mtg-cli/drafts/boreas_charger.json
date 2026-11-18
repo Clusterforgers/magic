@@ -33,10 +33,24 @@
                 "Let": {
                   "as": "diff",
                   "amount": {
-                    "Difference": [
-                      { "Count": [{ "Type": "Land" }, { "ControlledBy": { "Bound": "opp" } }] },
-                      { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
-                    ]
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Type": "Land" }, { "ControlledBy": { "Bound": "opp" } }]
+                          },
+                          "op": "Gt",
+                          "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                        }
+                      },
+                      "then": {
+                        "Difference": [
+                          { "Count": [{ "Type": "Land" }, { "ControlledBy": { "Bound": "opp" } }] },
+                          { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                        ]
+                      },
+                      "otherwise": 0
+                    }
                   }
                 }
               },

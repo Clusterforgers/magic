@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c26887e1-27f4-4550-921b-53460e43c079",
+  "name": "Undead Augur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undead Augur",
+      "oracle_fingerprint": "2d1d903dccbcb4fa94a93be81fb91f97",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Zombie" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

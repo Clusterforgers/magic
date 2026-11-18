@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f17d0fb8-c157-43b8-be26-f5ba4c6aed14",
+  "name": "Haze of Rage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haze of Rage",
+      "oracle_fingerprint": "8b3b3fa8cd47b760e392775251e42508",
+      "abilities": [
+        { "Keyword": { "Buyback": "{2}" } },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

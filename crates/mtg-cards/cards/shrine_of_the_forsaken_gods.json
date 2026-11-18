@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8ea46945-d5ab-4209-b473-4769e7b8b962",
+  "name": "Shrine of the Forsaken Gods",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shrine of the Forsaken Gods",
+      "oracle_fingerprint": "fffbb58b674c4be1ad1a32ba578d3a79",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "Fixed": ["Colorless", "Colorless"] },
+                  "only": [{ "Spell": { "facts": ["Colorless"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "764e8e6e-0ace-4fc8-8ca5-468a10ae3b73",
+  "name": "Deeproot Elite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deeproot Elite",
+      "oracle_fingerprint": "963eb9dbec5071c3c32f6b4a761e2fd7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Merfolk" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Merfolk" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

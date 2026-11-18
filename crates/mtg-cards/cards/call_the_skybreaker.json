@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a7213bef-0e9c-44e1-97cb-d1da0ef370bf",
+  "name": "Call the Skybreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call the Skybreaker",
+      "oracle_fingerprint": "4a488bf56e04d3cdbdc54615c4844241",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Elemental",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elemental"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Retrace" }
+      ]
+    }
+  ]
+}

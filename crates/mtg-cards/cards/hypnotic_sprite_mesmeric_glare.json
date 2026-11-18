@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1f9efad1-9f51-47aa-a5a7-9c8103435a01",
+  "name": "Hypnotic Sprite // Mesmeric Glare",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hypnotic Sprite",
+      "oracle_fingerprint": "75a4c2fe3b9e4d3cd2bd3d7787c7c138",
+      "abilities": [{ "Keyword": "Flying" }]
+    },
+    {
+      "name": "Mesmeric Glare",
+      "oracle_fingerprint": "e0731183db206b5ca3d86f1d38dd3b51",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": ["Spell", { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }]
+                }
+              }
+            ],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "6c326439-5620-4ec6-a56a-fe9c3d5d2a46",
+  "name": "Talisman of Conviction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talisman of Conviction",
+      "oracle_fingerprint": "5ade3842ebdc4d27b0f7b6f519b00feb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Red", "White"] } } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

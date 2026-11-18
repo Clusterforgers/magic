@@ -1,0 +1,34 @@
+{
+  "oracle_id": "ee723c7c-ec9f-4ffb-8f36-cd7637eb1fae",
+  "name": "Guildless Commons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guildless Commons",
+      "oracle_fingerprint": "786d4d522be53c6dfa981057306edee2",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

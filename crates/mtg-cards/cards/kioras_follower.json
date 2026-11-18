@@ -1,0 +1,20 @@
+{
+  "oracle_id": "22c044ad-77d7-4c93-953d-e2daa9686ff7",
+  "name": "Kiora's Follower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kiora's Follower",
+      "oracle_fingerprint": "c1a798ea0ca119614342cf72651d00ee",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": ["Other"] } }],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

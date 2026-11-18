@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d0d2c45b-b6e3-4999-bdab-976e8f0d6617",
+  "name": "Dragon Fodder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Fodder",
+      "oracle_fingerprint": "b75c20b710694947f47a2c5f8f6907dd",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

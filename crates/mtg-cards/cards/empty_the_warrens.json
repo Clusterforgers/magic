@@ -1,0 +1,35 @@
+{
+  "oracle_id": "3a59c882-8bb8-49ba-862f-125020dd5bec",
+  "name": "Empty the Warrens",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Empty the Warrens",
+      "oracle_fingerprint": "c83b9bd4f2aaa2ea92311caceca27646",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Storm" }
+      ]
+    }
+  ]
+}

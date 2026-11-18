@@ -1,0 +1,37 @@
+{
+  "oracle_id": "0366c2f6-6e78-4526-808c-fa7bace6006e",
+  "name": "Faerie Formation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Formation",
+      "oracle_fingerprint": "93259c0fdb51ff58529e963d54f51e88",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{3}{U}",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              },
+              { "Draw": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

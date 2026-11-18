@@ -1,0 +1,25 @@
+{
+  "oracle_id": "6db442e5-fbcc-4456-a4c5-bea1aee3fc8e",
+  "name": "Radiant Fountain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Radiant Fountain",
+      "oracle_fingerprint": "01244d4d17f9805fdade29fc2a03f243",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "GainLife": { "amount": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

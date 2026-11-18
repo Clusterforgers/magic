@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a79e21fc-89bd-4547-8bef-5510554e1431",
+  "name": "Midnight Haunting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Midnight Haunting",
+      "oracle_fingerprint": "d5f48395699d52aae348736749638a33",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

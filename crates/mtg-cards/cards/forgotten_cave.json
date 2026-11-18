@@ -1,0 +1,21 @@
+{
+  "oracle_id": "394c6de5-7957-4a0b-a6b9-ee0c707cd022",
+  "name": "Forgotten Cave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Forgotten Cave",
+      "oracle_fingerprint": "fe933da042ae08d528e9efb4efa94552",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{R}" } }
+      ]
+    }
+  ]
+}

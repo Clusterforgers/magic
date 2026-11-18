@@ -1,0 +1,22 @@
+{
+  "oracle_id": "592c91fc-6430-4c76-9460-65f047350f67",
+  "name": "Lyra Dawnbringer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lyra Dawnbringer",
+      "oracle_fingerprint": "4955f21f3d3e751736c7eb7603472420",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Lifelink" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Angel" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Lifelink" }]
+          }
+        }
+      ]
+    }
+  ]
+}

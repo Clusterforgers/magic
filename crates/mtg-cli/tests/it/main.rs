@@ -15,6 +15,7 @@ mod d20b_translate;
 mod draft_store;
 mod drafts;
 mod drafts_smoke;
+mod export_precon;
 mod fb27_reported;
 mod fetch_decks;
 mod fetch_printings;

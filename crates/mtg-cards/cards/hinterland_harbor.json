@@ -1,0 +1,39 @@
+{
+  "oracle_id": "fb5a3403-7f0b-406c-8c4f-d693be010ca6",
+  "name": "Hinterland Harbor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hinterland Harbor",
+      "oracle_fingerprint": "5839680853e1873c022322df5ce92a44",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Forest" }, { "Subtype": "Island" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

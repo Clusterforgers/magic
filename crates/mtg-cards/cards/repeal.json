@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b1f2b26c-91b2-4f3c-9f48-6429ec3fde48",
+  "name": "Repeal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Repeal",
+      "oracle_fingerprint": "8e2ed99e3d738004822f9db0b61b6c5a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

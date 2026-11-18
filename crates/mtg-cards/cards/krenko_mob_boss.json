@@ -1,0 +1,35 @@
+{
+  "oracle_id": "68418069-f615-40ef-ae0d-764192acae00",
+  "name": "Krenko, Mob Boss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Krenko, Mob Boss",
+      "oracle_fingerprint": "6b66071f77b4418757500c06cd408bf6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

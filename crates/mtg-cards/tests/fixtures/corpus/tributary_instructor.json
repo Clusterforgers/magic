@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "af57728e-6f64-4df1-bdf8-55137b8d129e",
+  "oracle_id": "1c70b9d8-b04e-48f8-a4e0-12ce077d22f2",
+  "multiverse_ids": [
+    640056
+  ],
+  "mtgo_id": 119198,
+  "tcgplayer_id": 525899,
+  "cardmarket_id": 743473,
+  "name": "Tributary Instructor",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/af57728e-6f64-4df1-bdf8-55137b8d129e",
+  "scryfall_uri": "https://scryfall.com/card/lcc/96/tributary-instructor?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:27Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.jpg?1783913907",
+    "normal": "https://cards.scryfall.io/normal/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.jpg?1783913907",
+    "large": "https://cards.scryfall.io/large/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.jpg?1783913907",
+    "png": "https://cards.scryfall.io/png/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.png?1783913907",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.jpg?1783913907",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.jpg?1783913907",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.webp?1783913907",
+    "grid": "https://cards.scryfall.io/grid/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.webp?1783913907",
+    "display": "https://cards.scryfall.io/display/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.webp?1783913907",
+    "art": "https://cards.scryfall.io/art/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.webp?1783913907",
+    "crop": "https://cards.scryfall.io/crop/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.webp?1783913907",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/f/af57728e-6f64-4df1-bdf8-55137b8d129e.jpg?1783913907"
+  },
+  "mana_cost": "{3}{G}",
+  "cmc": 4.0,
+  "type_line": "Creature — Merfolk Shaman",
+  "oracle_text": "Mentor (Whenever this creature attacks, put a +1/+1 counter on target attacking creature with lesser power.)\nWhenever a creature you control with a +1/+1 counter on it dies, draw a card.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "G"
+  ],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Mentor"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/af57728e-6f64-4df1-bdf8-55137b8d129e/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1c70b9d8-b04e-48f8-a4e0-12ce077d22f2&unique=prints",
+  "collector_number": "96",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Like water between rivers, wisdom must flow freely from one generation to the next.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Christina Kraus",
+  "artist_ids": [
+    "685354c3-302d-486a-b575-cb19bb2c31c9"
+  ],
+  "illustration_id": "de1e119c-9389-4f3f-ae8b-edccb9d286a7",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 8624,
+  "preview": {
+    "source": "Star City Games",
+    "source_uri": "https://www.youtube.com/watch?v=3upC_Mg2YxQ",
+    "previewed_at": "2023-11-01"
+  },
+  "prices": {
+    "usd": "0.23",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.34",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640056&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTributary%2BInstructor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTributary%2BInstructor",
+    "edhrec": "https://edhrec.com/route/?cc=Tributary+Instructor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525899%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743473&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119198?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

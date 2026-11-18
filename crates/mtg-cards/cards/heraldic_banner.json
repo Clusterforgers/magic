@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3525e263-e29a-49bf-a29f-fb3ce43bbd33",
+  "name": "Heraldic Banner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heraldic Banner",
+      "oracle_fingerprint": "7fc2991540d9ae81d83480b5510f0d16",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "ChosenColor"]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "ChosenColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

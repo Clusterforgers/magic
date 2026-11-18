@@ -1,0 +1,25 @@
+{
+  "oracle_id": "086b2564-9114-4ba2-94fd-b490f98f38a7",
+  "name": "Chain Reaction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chain Reaction",
+      "oracle_fingerprint": "d0687a2712c3a5ae483b8f37111e4f22",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }] },
+                  "amount": { "Count": [{ "Type": "Creature" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

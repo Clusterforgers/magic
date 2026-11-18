@@ -1,0 +1,36 @@
+{
+  "oracle_id": "fae37e28-e137-4177-b973-fa8b4dd8f409",
+  "name": "Generous Gift",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Generous Gift",
+      "oracle_fingerprint": "b3b0d82bf123bf7739aabb940f5eac21",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Elephant",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Elephant"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

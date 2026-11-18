@@ -1,0 +1,44 @@
+{
+  "oracle_id": "c442e8b0-a0a4-4839-8049-125b91b15c99",
+  "name": "Heroic Reinforcements",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heroic Reinforcements",
+      "oracle_fingerprint": "99b9ecac9181f033f5cbe666a67dd843",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 1 } },
+                    { "AddKeyword": "Haste" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

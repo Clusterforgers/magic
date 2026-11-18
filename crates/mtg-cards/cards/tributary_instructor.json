@@ -1,0 +1,30 @@
+{
+  "oracle_id": "1c70b9d8-b04e-48f8-a4e0-12ce077d22f2",
+  "name": "Tributary Instructor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tributary Instructor",
+      "oracle_fingerprint": "082d70564cc312f7a0986120ed9661e1",
+      "abilities": [
+        { "Keyword": "Mentor" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "HasCounter": "+1/+1" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

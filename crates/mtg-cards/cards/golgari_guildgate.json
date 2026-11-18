@@ -1,0 +1,20 @@
+{
+  "oracle_id": "fa2da325-6859-45bb-b185-35526b01bcc1",
+  "name": "Golgari Guildgate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Golgari Guildgate",
+      "oracle_fingerprint": "d5624a285148262eae6d49003b3a47cb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

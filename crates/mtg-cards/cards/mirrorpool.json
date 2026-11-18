@@ -1,0 +1,46 @@
+{
+  "oracle_id": "57b86d5c-3269-44bc-a838-3c5439d820d9",
+  "name": "Mirrorpool",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirrorpool",
+      "oracle_fingerprint": "9e57d9d4cff69376898a840bd25d517b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{C}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "CopySpell": { "what": { "Target": 0 }, "new_targets": true } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{C}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

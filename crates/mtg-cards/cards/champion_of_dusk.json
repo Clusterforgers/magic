@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5f7f0a38-fb7e-4ee8-a712-9aa911f17dae",
+  "name": "Champion of Dusk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Champion of Dusk",
+      "oracle_fingerprint": "3f4c5a45189b4f1198586b2d85787fea",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "LoseLife": {
+                  "amount": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

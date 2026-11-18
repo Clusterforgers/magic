@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "0850b41d-3589-40cd-ae22-cc5b4ddee1c4",
+  "oracle_id": "89b24b5f-d837-4274-8877-8ff7dc2708ba",
+  "multiverse_ids": [
+    640489
+  ],
+  "mtgo_id": 118786,
+  "tcgplayer_id": 525855,
+  "cardmarket_id": 743545,
+  "name": "Drana, Liberator of Malakir",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/0850b41d-3589-40cd-ae22-cc5b4ddee1c4",
+  "scryfall_uri": "https://scryfall.com/card/lcc/193/drana-liberator-of-malakir?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:37:54Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.jpg?1783913874",
+    "normal": "https://cards.scryfall.io/normal/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.jpg?1783913874",
+    "large": "https://cards.scryfall.io/large/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.jpg?1783913874",
+    "png": "https://cards.scryfall.io/png/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.png?1783913874",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.jpg?1783913874",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.jpg?1783913874",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.webp?1783913874",
+    "grid": "https://cards.scryfall.io/grid/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.webp?1783913874",
+    "display": "https://cards.scryfall.io/display/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.webp?1783913874",
+    "art": "https://cards.scryfall.io/art/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.webp?1783913874",
+    "crop": "https://cards.scryfall.io/crop/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.webp?1783913874",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/8/0850b41d-3589-40cd-ae22-cc5b4ddee1c4.jpg?1783913874"
+  },
+  "mana_cost": "{1}{B}{B}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Vampire Ally",
+  "oracle_text": "Flying, first strike\nWhenever Drana deals combat damage to a player, put a +1/+1 counter on each attacking creature you control.",
+  "power": "2",
+  "toughness": "3",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Flying",
+    "First strike"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/0850b41d-3589-40cd-ae22-cc5b4ddee1c4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A89b24b5f-d837-4274-8877-8ff7dc2708ba&unique=prints",
+  "collector_number": "193",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"I will not live as a slave. If you would be free, then fight alongside me.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Mike Bierek",
+  "artist_ids": [
+    "e5f52ef5-1a2e-4128-90b0-ccc71cd47ea7"
+  ],
+  "illustration_id": "356998dd-80c5-4c6c-93cb-37da66946d5d",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 1564,
+  "penny_rank": 6474,
+  "prices": {
+    "usd": "1.24",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.72",
+    "eur_foil": null,
+    "tix": "0.07"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640489&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DDrana%252C%2BLiberator%2Bof%2BMalakir",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DDrana%252C%2BLiberator%2Bof%2BMalakir",
+    "edhrec": "https://edhrec.com/route/?cc=Drana%2C+Liberator+of+Malakir"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525855%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743545&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118786?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}
