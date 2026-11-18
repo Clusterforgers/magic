@@ -1,0 +1,31 @@
+{
+  "oracle_id": "33f52df8-4b44-4422-8b0a-37fead9c894b",
+  "name": "Vineglimmer Snarl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vineglimmer Snarl",
+      "oracle_fingerprint": "e9a4e293f2d4a99245093b6e077e494b",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [
+                { "AnyOf": [{ "Subtype": "Forest" }, { "Subtype": "Island" }] },
+                { "In": "Hand" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

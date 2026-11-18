@@ -1,0 +1,19 @@
+{
+  "oracle_id": "cba94732-1f1f-4ffd-9aba-45db990043fa",
+  "name": "Utter End",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Utter End",
+      "oracle_fingerprint": "bd5c68a2dbf06a88d0baf03f111502fb",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Not": { "Type": "Land" } }] } }],
+            "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

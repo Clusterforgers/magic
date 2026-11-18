@@ -1,0 +1,20 @@
+{
+  "oracle_id": "cade8b94-2998-4d23-87bb-9fbdddd19dea",
+  "name": "Elfhame Palace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elfhame Palace",
+      "oracle_fingerprint": "af5d8999bffd95a89d69a361597cb25b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "378a1d57-e2f1-4b84-9692-1564602e9e99",
+  "name": "Dimir Aqueduct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Aqueduct",
+      "oracle_fingerprint": "a21638dffb18273eccd1f5a1378fe1bd",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ef4d5fb3-70a3-433d-a9d3-18b2beb8d79f",
+  "name": "Wall of Blossoms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Blossoms",
+      "oracle_fingerprint": "2e081e6e66865a42547c194d6d9f7832",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

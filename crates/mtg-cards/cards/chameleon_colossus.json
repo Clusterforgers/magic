@@ -1,0 +1,36 @@
+{
+  "oracle_id": "7b8f1458-c638-4907-9363-f7cc22d04605",
+  "name": "Chameleon Colossus",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chameleon Colossus",
+      "oracle_fingerprint": "229e040183f921f306a74e3e094b6895",
+      "abilities": [
+        { "Keyword": "Changeling" },
+        { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+        {
+          "Activated": {
+            "cost": "{2}{G}{G}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "This", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

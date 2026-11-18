@@ -1,0 +1,12 @@
+{
+  "oracle_id": "71a60247-17e5-44bd-9fed-f7d550b09ef3",
+  "name": "Triton Shorestalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Triton Shorestalker",
+      "oracle_fingerprint": "7540809bd7730a0a5bad46af0633452e",
+      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBeBlocked"] } }]
+    }
+  ]
+}

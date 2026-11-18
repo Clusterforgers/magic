@@ -1,0 +1,66 @@
+{
+  "oracle_id": "71766a05-62a5-4839-b9bf-f5dcde710251",
+  "name": "Millicent, Restless Revenant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Millicent, Restless Revenant",
+      "oracle_fingerprint": "82d2c3e836c88cc741d44a90cf2ef896",
+      "abilities": [
+        { "Keyword": { "Affinity": [{ "Subtype": "Spirit" }] } },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Subtype": "Spirit" },
+                      { "Not": "Token" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                },
+                { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+                {
+                  "DealsDamage": {
+                    "source": [
+                      { "Subtype": "Spirit" },
+                      { "Not": "Token" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "to": "EachPlayer",
+                    "combat": true
+                  }
+                }
+              ]
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

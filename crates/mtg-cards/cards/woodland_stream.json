@@ -1,0 +1,20 @@
+{
+  "oracle_id": "e887fb3f-d4c9-4022-8f75-1de6ec94af96",
+  "name": "Woodland Stream",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodland Stream",
+      "oracle_fingerprint": "2ff36e2b877c79c9cccbfe6a05181fec",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

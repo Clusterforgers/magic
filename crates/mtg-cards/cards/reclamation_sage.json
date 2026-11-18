@@ -1,0 +1,26 @@
+{
+  "oracle_id": "032ec6e2-6cc3-4a97-9cc7-3233f5e11904",
+  "name": "Reclamation Sage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reclamation Sage",
+      "oracle_fingerprint": "736999c5ec4d8c28bdb9b4784f54983a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] }]
+                }
+              }
+            ],
+            "effects": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "9c5f4d02-eedb-4c6c-9f13-1b7a45382483",
+  "name": "Supreme Phantom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Supreme Phantom",
+      "oracle_fingerprint": "e257b5b715309504c03c0bbf9d9cb777",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spirit" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

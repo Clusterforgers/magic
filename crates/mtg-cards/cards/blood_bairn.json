@@ -1,0 +1,27 @@
+{
+  "oracle_id": "33bea2f0-c5aa-44b5-8714-5f50f7f2bb05",
+  "name": "Blood Bairn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Bairn",
+      "oracle_fingerprint": "2bf38458985dc36745eaa01a616406b7",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

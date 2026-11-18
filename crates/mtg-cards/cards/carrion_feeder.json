@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a1cc5e37-b09a-4b7f-afd5-77c1c35aa425",
+  "name": "Carrion Feeder",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Carrion Feeder",
+      "oracle_fingerprint": "7ac1ab36fffcae840126eec574d04d36",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

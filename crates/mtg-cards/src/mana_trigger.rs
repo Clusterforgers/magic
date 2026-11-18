@@ -30,7 +30,7 @@ pub struct ManaTrigger<'a> {
 }
 
 /// The shape of `ability` as a triggered mana ability, if it has one: an event of a permanent tapped for mana, no
-/// targets, and one `AddMana` for the player who tapped it, once, with no restriction on spending it.
+/// targets, and one `AddMana` for the player who tapped it, once, with no restriction on spending it; it works from the battlefield, or from the command zone on an emblem.
 pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
     let Ability::Triggered {
         when:
@@ -42,7 +42,7 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
             },
         intervening_if,
         limit: None,
-        from: ZoneKind::Battlefield,
+        from: ZoneKind::Battlefield | ZoneKind::Command,
         targets,
         effects,
     } = ability

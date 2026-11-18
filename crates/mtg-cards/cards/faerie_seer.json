@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b2e65e8b-5f08-4cc2-ab1d-00f8903dbea2",
+  "name": "Faerie Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Seer",
+      "oracle_fingerprint": "3014024ec11789a2cc181ff20a9e7131",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

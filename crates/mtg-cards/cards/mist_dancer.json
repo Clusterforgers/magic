@@ -1,0 +1,21 @@
+{
+  "oracle_id": "bf76ba01-e06f-4451-a4b4-cf548b43eafc",
+  "name": "Mist Dancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mist Dancer",
+      "oracle_fingerprint": "abb75c526f3d2dbbd62c4c8b256226f3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Merfolk" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, { "AddKeyword": "Flying" }]
+          }
+        },
+        { "Keyword": { "Encore": "{5}{U}{U}" } }
+      ]
+    }
+  ]
+}

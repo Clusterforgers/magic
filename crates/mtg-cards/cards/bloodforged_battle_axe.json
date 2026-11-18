@@ -1,0 +1,32 @@
+{
+  "oracle_id": "81a7f559-5edd-47ec-91f7-51e5ee998ed0",
+  "name": "Bloodforged Battle-Axe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bloodforged Battle-Axe",
+      "oracle_fingerprint": "b9f268e465c7f661711ce4f384179970",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": [{ "Is": "Attached" }],
+                "to": "EachPlayer",
+                "combat": true
+              }
+            },
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

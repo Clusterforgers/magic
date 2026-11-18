@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6bd6d259-1af7-4dff-a79c-48a616d2a36e",
+  "name": "Viridescent Bog",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viridescent Bog",
+      "oracle_fingerprint": "acb0a020e21025ccde4321fcb890b29f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

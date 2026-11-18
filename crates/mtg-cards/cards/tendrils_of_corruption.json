@@ -1,0 +1,31 @@
+{
+  "oracle_id": "84ee0da2-d886-4603-9aaa-bc5326a424d7",
+  "name": "Tendrils of Corruption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tendrils of Corruption",
+      "oracle_fingerprint": "2a7a95fdb6b2aefb92c276d484f9305b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

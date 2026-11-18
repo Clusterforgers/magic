@@ -1132,7 +1132,8 @@ impl Run {
                 } else {
                     c.price > 0
                 };
-                !h.relics.contains(&c.id) && (!shop || sold)
+                // From the rework on a relic drops again: owning it never lowers its chance, and copies stack.
+                (self.reworked() || !h.relics.contains(&c.id)) && (!shop || sold)
             })
             .collect();
         // From the filter's generation on, only relics the deck (and its Satchel) can use.
@@ -1619,6 +1620,16 @@ impl Run {
                 upgrades: h.upgrades.clone(),
             })
             .collect();
+        if self.reworked() {
+            let boss = self.reworked_seat(content, boss, node, (heroes.len(), self.defeated()));
+            return Ok(Some(FightPlan {
+                node,
+                heroes,
+                boss,
+                minions: Vec::new(),
+                run: None,
+            }));
+        }
         let scale = self.scale(heroes.len(), rank);
         let life = scale.life(boss);
         let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
@@ -1664,6 +1675,7 @@ impl Run {
                 phases: scale.phases(boss, life),
                 schemes,
                 scheme_every: theme.scheme_every,
+                rework: None,
             },
             minions,
             run: None,

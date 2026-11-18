@@ -1,0 +1,41 @@
+{
+  "oracle_id": "695eea46-1535-48c5-bbb6-0b8379e77bfc",
+  "name": "Arasta of the Endless Web",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arasta of the Endless Web",
+      "oracle_fingerprint": "71e90b9137b32a27cd889a82fbde68db",
+      "abilities": [
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "Opponents"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spider",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spider"],
+                      "power": 1,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Reach" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

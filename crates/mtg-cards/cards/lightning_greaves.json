@@ -1,0 +1,20 @@
+{
+  "oracle_id": "ca204b66-8d0c-431a-8d34-282f7c2d17da",
+  "name": "Lightning Greaves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lightning Greaves",
+      "oracle_fingerprint": "badf1b1153288d704f59239ed8e9ed3e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "AddKeyword": "Haste" }, { "AddKeyword": "Shroud" }]
+          }
+        },
+        { "Keyword": { "Equip": "{0}" } }
+      ]
+    }
+  ]
+}

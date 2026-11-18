@@ -1,0 +1,19 @@
+{
+  "oracle_id": "4503d0fb-842d-49f1-9769-8509ff0f2ce1",
+  "name": "Wistful Selkie",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wistful Selkie",
+      "oracle_fingerprint": "954aa7dc40bb1cfe288d1c50e2bed416",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

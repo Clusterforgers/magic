@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f33ce38a-34ec-4b65-a0fc-160484a02007",
+  "name": "Bonders' Enclave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bonders' Enclave",
+      "oracle_fingerprint": "47119ada03e48bde68161738e2072d84",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

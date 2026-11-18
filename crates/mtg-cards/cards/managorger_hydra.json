@@ -1,0 +1,20 @@
+{
+  "oracle_id": "b3f2265b-dd65-4b74-8b74-35ee0b147617",
+  "name": "Managorger Hydra",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Managorger Hydra",
+      "oracle_fingerprint": "5c2e6baba8079601b87ed1759c057384",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "SpellCast": {} },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

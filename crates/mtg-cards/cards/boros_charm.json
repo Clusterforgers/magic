@@ -1,0 +1,58 @@
+{
+  "oracle_id": "2679d0dd-ba30-4a1c-b6a0-b3ac6c790496",
+  "name": "Boros Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boros Charm",
+      "oracle_fingerprint": "b6175be5d1c01998d57979b0aca1fd98",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Either": ["Player", { "Object": [{ "Type": "Planeswalker" }] }]
+                          }
+                        }
+                      ],
+                      "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 4 } }]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "ControlledBy": "You" }] },
+                            "mods": [{ "AddKeyword": "Indestructible" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "DoubleStrike" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "361b0d7f-1e43-45c5-92c2-92baacaf326f",
+  "name": "Pile On",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pile On",
+      "oracle_fingerprint": "ed0f5cd8223e0c10753ad90c3b23d6b6",
+      "abilities": [
+        { "Keyword": "Convoke" },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "Surveil": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

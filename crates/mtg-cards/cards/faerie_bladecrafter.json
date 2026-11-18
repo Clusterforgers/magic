@@ -1,0 +1,42 @@
+{
+  "oracle_id": "164b064e-de50-468a-b874-b054897a5be9",
+  "name": "Faerie Bladecrafter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Bladecrafter",
+      "oracle_fingerprint": "75200250e249fc51d2cafadabdb43615",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              },
+              { "GainLife": { "amount": { "Stat": { "of": "This", "stat": "Power" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

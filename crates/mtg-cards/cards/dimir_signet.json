@@ -1,0 +1,19 @@
+{
+  "oracle_id": "7d881c57-0bd9-4c57-aa4a-b10808b86143",
+  "name": "Dimir Signet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dimir Signet",
+      "oracle_fingerprint": "0dc995e30fce95de5c99984b457ad408",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7a21ea22-3cd7-4c11-8895-5943c0d93a0d",
+  "name": "Verdant Force",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Verdant Force",
+      "oracle_fingerprint": "2047948beb6d9493ff773ebfdba1a5ed",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Saproling",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Saproling"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

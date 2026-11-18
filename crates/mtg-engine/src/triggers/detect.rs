@@ -265,6 +265,8 @@ enum Happened {
     },
     /// A player visited an Attraction, once for each visited.
     VisitedAttraction { player: PlayerId },
+    /// A campaign phase of a player began, its emblem the new object.
+    PhaseBegan { player: PlayerId, emblem: ObjectId },
     /// A player claimed the prize of an Attraction.
     PrizeClaimed {
         player: PlayerId,
@@ -1395,6 +1397,10 @@ fn about_players_and_permanents(
                     .map(|_| Happened::VisitedAttraction { player: *player }),
             );
         }
+        Event::PhaseBegan { player, emblem } => found.push(Happened::PhaseBegan {
+            player: *player,
+            emblem: *emblem,
+        }),
         Event::PrizeClaimed { player, attraction } => found.push(Happened::PrizeClaimed {
             player: *player,
             attraction: *attraction,
@@ -2155,7 +2161,19 @@ fn matching_event(
             .then(|| cause(state, Vec::new())),
         _ => matching_player_action(pattern, happened, scope)
             .or_else(|| matching_permanents(pattern, happened, scope))
-            .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope)),
+            .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope))
+            .or_else(|| phase_began(pattern, happened, scope)),
+    }
+}
+
+/// A phase's "when this phase begins" ability triggers for the emblem the phase just made.
+fn phase_began(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Option<Cause> {
+    match (pattern, happened) {
+        (TriggerPattern::PhaseBegins {}, Happened::PhaseBegan { player, emblem }) => {
+            (scope.source.id == *emblem)
+                .then(|| counted(scope.state, vec![Target::Player(*player)], 0))
+        }
+        _ => None,
     }
 }
 

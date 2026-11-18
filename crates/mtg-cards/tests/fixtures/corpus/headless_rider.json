@@ -1,0 +1,160 @@
+{
+  "object": "card",
+  "id": "c24018e8-b8f1-44a5-9355-8b79f363569d",
+  "oracle_id": "d4fdacd7-3101-44e2-a880-dde7326137a4",
+  "multiverse_ids": [
+    540966
+  ],
+  "mtgo_id": 94560,
+  "arena_id": 78914,
+  "tcgplayer_id": 253458,
+  "cardmarket_id": 582249,
+  "name": "Headless Rider",
+  "lang": "en",
+  "released_at": "2021-11-19",
+  "uri": "https://api.scryfall.com/cards/c24018e8-b8f1-44a5-9355-8b79f363569d",
+  "scryfall_uri": "https://scryfall.com/card/vow/118/headless-rider?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:40:58Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.jpg?1783924858",
+    "normal": "https://cards.scryfall.io/normal/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.jpg?1783924858",
+    "large": "https://cards.scryfall.io/large/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.jpg?1783924858",
+    "png": "https://cards.scryfall.io/png/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.png?1783924858",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.jpg?1783924858",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.jpg?1783924858",
+    "thumb": "https://cards.scryfall.io/thumb/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.webp?1783924858",
+    "grid": "https://cards.scryfall.io/grid/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.webp?1783924858",
+    "display": "https://cards.scryfall.io/display/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.webp?1783924858",
+    "art": "https://cards.scryfall.io/art/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.webp?1783924858",
+    "crop": "https://cards.scryfall.io/crop/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.webp?1783924858",
+    "jpeg": "https://cards.scryfall.io/normal/front/c/2/c24018e8-b8f1-44a5-9355-8b79f363569d.jpg?1783924858"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3.0,
+  "type_line": "Creature — Zombie",
+  "oracle_text": "Whenever this creature or another nontoken Zombie you control dies, create a 2/2 black Zombie creature token.",
+  "power": "3",
+  "toughness": "1",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "544d7162-b78f-4a70-86e7-83cec7062039",
+      "component": "combo_piece",
+      "name": "Headless Rider",
+      "type_line": "Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/544d7162-b78f-4a70-86e7-83cec7062039"
+    },
+    {
+      "object": "related_card",
+      "id": "c84e21cd-079d-493f-ab8d-e62f16ec1581",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/c84e21cd-079d-493f-ab8d-e62f16ec1581"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set": "vow",
+  "set_name": "Innistrad: Crimson Vow",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/8144b676-569f-4716-8005-bc8f0778f3fa",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Avow&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/vow?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/c24018e8-b8f1-44a5-9355-8b79f363569d/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad4fdacd7-3101-44e2-a880-dde7326137a4&unique=prints",
+  "collector_number": "118",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "He wanders the Moorlands hoping to one day chop off a head worthy of replacing his own.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "E. M. Gist",
+  "artist_ids": [
+    "7a9aaa63-73ae-492c-948e-7531415fdf31"
+  ],
+  "illustration_id": "adeb5352-3132-4ed4-bc5a-10c713128621",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 2672,
+  "penny_rank": 6404,
+  "preview": {
+    "source": "/r/MagicArena",
+    "source_uri": "https://www.reddit.com/r/magicTCG/comments/ql8rl9/vow_headless_rider_rmagicarena_spoiler/",
+    "previewed_at": "2021-11-02"
+  },
+  "prices": {
+    "usd": "2.42",
+    "usd_foil": "2.81",
+    "usd_etched": null,
+    "eur": "2.76",
+    "eur_foil": "4.15",
+    "tix": "0.02"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=540966&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHeadless%2BRider",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHeadless%2BRider",
+    "edhrec": "https://edhrec.com/route/?cc=Headless+Rider"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F253458%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=582249&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/94560?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

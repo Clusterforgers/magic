@@ -1,0 +1,132 @@
+{
+  "object": "card",
+  "id": "3384ee4e-738f-4442-bccd-4f96022b7219",
+  "oracle_id": "c767aa2e-0a95-401f-8e36-d90a87648eab",
+  "multiverse_ids": [
+    500931
+  ],
+  "mtgo_id": 85716,
+  "tcgplayer_id": 227375,
+  "cardmarket_id": 514764,
+  "name": "Simic Charm",
+  "lang": "en",
+  "released_at": "2020-11-20",
+  "uri": "https://api.scryfall.com/cards/3384ee4e-738f-4442-bccd-4f96022b7219",
+  "scryfall_uri": "https://scryfall.com/card/cmr/451/simic-charm?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:44:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.jpg?1783928696",
+    "normal": "https://cards.scryfall.io/normal/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.jpg?1783928696",
+    "large": "https://cards.scryfall.io/large/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.jpg?1783928696",
+    "png": "https://cards.scryfall.io/png/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.png?1783928696",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.jpg?1783928696",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.jpg?1783928696",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.webp?1783928696",
+    "grid": "https://cards.scryfall.io/grid/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.webp?1783928696",
+    "display": "https://cards.scryfall.io/display/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.webp?1783928696",
+    "art": "https://cards.scryfall.io/art/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.webp?1783928696",
+    "crop": "https://cards.scryfall.io/crop/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.webp?1783928696",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/3/3384ee4e-738f-4442-bccd-4f96022b7219.jpg?1783928696"
+  },
+  "mana_cost": "{G}{U}",
+  "cmc": 2.0,
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Target creature gets +3/+3 until end of turn.\n• Permanents you control gain hexproof until end of turn.\n• Return target creature to its owner's hand.",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set": "cmr",
+  "set_name": "Commander Legends",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/39de6fbf-1f11-48d0-8f04-f0407f6a0732",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Acmr&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/cmr?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/3384ee4e-738f-4442-bccd-4f96022b7219/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac767aa2e-0a95-401f-8e36-d90a87648eab&unique=prints",
+  "collector_number": "451",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Zoltan Boros",
+  "artist_ids": [
+    "1885e6cb-c827-4896-994e-3d0a027d602f"
+  ],
+  "illustration_id": "2cd318f5-b297-4c5d-b025-28d7d42d88e4",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 2995,
+  "penny_rank": 4322,
+  "prices": {
+    "usd": "3.28",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.63",
+    "eur_foil": null,
+    "tix": "0.04"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=500931&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DSimic%2BCharm",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DSimic%2BCharm",
+    "edhrec": "https://edhrec.com/route/?cc=Simic+Charm"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F227375%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=514764&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/85716?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

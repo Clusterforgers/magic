@@ -1,0 +1,22 @@
+{
+  "oracle_id": "afb71560-0fc9-4ea5-9d52-d93c17d72519",
+  "name": "Sanctum Seeker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanctum Seeker",
+      "oracle_fingerprint": "0d02fb0b0463dd77f50e4655a19beca5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "5da7eea8-bb9e-47ce-a554-8a1ee058bd7a",
+  "name": "Beast Whisperer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Beast Whisperer",
+      "oracle_fingerprint": "e3f02644e004439e9ac81c526a4972c4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

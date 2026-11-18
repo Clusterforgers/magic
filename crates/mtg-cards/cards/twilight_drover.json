@@ -1,0 +1,44 @@
+{
+  "oracle_id": "b0d60856-80f9-4c64-9768-28a0a690ecb1",
+  "name": "Twilight Drover",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Twilight Drover",
+      "oracle_fingerprint": "5e8dab9d1ece7e27a3eec6bc5af17bf2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": [{ "Type": "Creature" }, "Token"], "from": "Battlefield" }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}" }, { "RemoveCounters": { "counter": "+1/+1" } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

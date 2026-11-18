@@ -1,0 +1,31 @@
+{
+  "oracle_id": "a47d9ea3-95fe-4774-8e72-30e7f56756f4",
+  "name": "Bygone Bishop",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Bygone Bishop",
+      "oracle_fingerprint": "74eba52db833c60097a0b4b4124eb967",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

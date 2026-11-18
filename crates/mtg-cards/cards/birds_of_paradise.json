@@ -1,0 +1,20 @@
+{
+  "oracle_id": "d3a0b660-358c-41bd-9cd2-41fbf3491b1a",
+  "name": "Birds of Paradise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Birds of Paradise",
+      "oracle_fingerprint": "c59d430350b655c6f9bbc5ac2978fc67",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

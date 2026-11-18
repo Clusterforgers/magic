@@ -1,0 +1,45 @@
+{
+  "oracle_id": "5324192b-6687-41e4-8e56-326b21a5dbf3",
+  "name": "Moorland Haunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moorland Haunt",
+      "oracle_fingerprint": "ce70511422780de548735f786e7ffc68",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{W}{U}" },
+              "Tap",
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

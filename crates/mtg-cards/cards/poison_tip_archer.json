@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d0e810bb-5f38-4045-a718-30d423c05659",
+  "name": "Poison-Tip Archer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Poison-Tip Archer",
+      "oracle_fingerprint": "6ba258d125033b23ee44b9478c4891da",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "LoseLife": { "who": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

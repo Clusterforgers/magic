@@ -1,0 +1,36 @@
+{
+  "oracle_id": "255b937f-c9c9-4ae9-815e-17418eba0602",
+  "name": "Shinka, the Bloodsoaked Keep",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shinka, the Bloodsoaked Keep",
+      "oracle_fingerprint": "0d1e9f274ded6020c0d39042b4a7937b",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{R}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "Supertype": "Legendary" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": "FirstStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

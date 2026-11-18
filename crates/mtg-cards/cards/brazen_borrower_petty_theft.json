@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c7b044c3-3cfa-407e-bf20-2875e8e04b7b",
+  "name": "Brazen Borrower // Petty Theft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brazen Borrower",
+      "oracle_fingerprint": "21bef2c12d7eab77c00be8877e1992e4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CanBlockOnly": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Petty Theft",
+      "oracle_fingerprint": "a5b4e812359fb4553931eb3bb4c23d20",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "d9a7e5a6-3e41-4fc6-987a-18fe1b9d67dd",
+  "name": "Elemental Bond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elemental Bond",
+      "oracle_fingerprint": "809b53539009fdb4bc1886e21b9fdd52",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "Power", "op": "Ge", "to": 3 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

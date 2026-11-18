@@ -1,0 +1,20 @@
+{
+  "oracle_id": "75b235d3-595a-4859-be45-9559d8445db5",
+  "name": "Selesnya Guildgate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selesnya Guildgate",
+      "oracle_fingerprint": "af5d8999bffd95a89d69a361597cb25b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

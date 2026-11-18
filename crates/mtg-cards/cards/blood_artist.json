@@ -1,0 +1,34 @@
+{
+  "oracle_id": "310f141c-7f37-4729-aed6-dd9c09db448d",
+  "name": "Blood Artist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood Artist",
+      "oracle_fingerprint": "1af647a916420dc2a89b2ed3ef885935",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other"],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "LoseLife": { "who": { "Target": 0 }, "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

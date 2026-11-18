@@ -1,0 +1,53 @@
+{
+  "oracle_id": "bdb94ccd-1bb5-4bb7-9539-e1b1c97c19c5",
+  "name": "Pashalik Mons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pashalik Mons",
+      "oracle_fingerprint": "a5d28268fe1373feabe1b1c8c2eee4c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Subtype": "Goblin" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{R}" }, { "Sacrifice": { "filter": [{ "Subtype": "Goblin" }] } }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

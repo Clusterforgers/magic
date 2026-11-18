@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9242cd3e-1a71-4700-8182-9c1005616033",
+  "name": "Impact Tremors",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impact Tremors",
+      "oracle_fingerprint": "fe1afca9d9d3d1be5b2addb2bda59c93",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

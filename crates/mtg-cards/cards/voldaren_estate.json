@@ -1,0 +1,48 @@
+{
+  "oracle_id": "fb0c0426-f1a6-4e52-9242-627786d3119a",
+  "name": "Voldaren Estate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voldaren Estate",
+      "oracle_fingerprint": "a1d41e37780b72f42e81d01c895c6e32",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "PayLife": 1 }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "only": [{ "Spell": { "subtypes": ["Vampire"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{5}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": { "Count": [{ "Subtype": "Vampire" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "effects": [{ "CreateToken": { "token": { "Named": "blood" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

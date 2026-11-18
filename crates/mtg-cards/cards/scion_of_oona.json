@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b34601d2-2aeb-4649-9d73-d0895611bd69",
+  "name": "Scion of Oona",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scion of Oona",
+      "oracle_fingerprint": "2cb882afffa980e0c1ec173bfa5125f3",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Faerie" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Faerie" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Shroud" }]
+          }
+        }
+      ]
+    }
+  ]
+}

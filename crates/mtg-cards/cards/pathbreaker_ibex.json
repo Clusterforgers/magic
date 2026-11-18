@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7e52e91b-70e6-4f26-a5d4-b8e33d1debbf",
+  "name": "Pathbreaker Ibex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pathbreaker Ibex",
+      "oracle_fingerprint": "c31d718f7a36fdad35ca6a497d780c5e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Greatest": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "stat": "Power"
+                          }
+                        },
+                        "toughness": {
+                          "Greatest": {
+                            "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                            "stat": "Power"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

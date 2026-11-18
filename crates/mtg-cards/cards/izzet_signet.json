@@ -1,0 +1,19 @@
+{
+  "oracle_id": "2fda4fe7-8b0c-489c-a000-6d358e614e34",
+  "name": "Izzet Signet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Izzet Signet",
+      "oracle_fingerprint": "84eb910b73d5d2f8209f2c6e8a15bd9e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue", "Red"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

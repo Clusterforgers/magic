@@ -1,0 +1,58 @@
+{
+  "oracle_id": "1d9d8028-d946-4245-ae0c-7508023f619a",
+  "name": "The Odd Acorn Gang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Odd Acorn Gang",
+      "oracle_fingerprint": "1184fc650d7813245f253bd0b6984db2",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Menace" },
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Squirrel" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "timing": "Sorcery",
+                    "targets": [{ "what": { "Object": [{ "Subtype": "Squirrel" }] } }],
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": { "Target": 0 },
+                          "mods": [
+                            { "ModifyPT": { "power": 2, "toughness": 2 } },
+                            { "AddKeyword": "Trample" }
+                          ],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Squirrel" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

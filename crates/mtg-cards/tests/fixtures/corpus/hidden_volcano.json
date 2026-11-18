@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "9fa06aed-52c1-48f1-9906-362db12a3cf7",
+  "oracle_id": "a1c7cd7a-0795-4135-b787-effeb981d95b",
+  "multiverse_ids": [
+    637002
+  ],
+  "mtgo_id": 118402,
+  "arena_id": 87443,
+  "tcgplayer_id": 524187,
+  "cardmarket_id": 740889,
+  "name": "Hidden Volcano",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/9fa06aed-52c1-48f1-9906-362db12a3cf7",
+  "scryfall_uri": "https://scryfall.com/card/lci/277/hidden-volcano?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:35:17Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.jpg?1783913717",
+    "normal": "https://cards.scryfall.io/normal/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.jpg?1783913717",
+    "large": "https://cards.scryfall.io/large/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.jpg?1783913717",
+    "png": "https://cards.scryfall.io/png/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.png?1783913717",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.jpg?1783913717",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.jpg?1783913717",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.webp?1783913717",
+    "grid": "https://cards.scryfall.io/grid/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.webp?1783913717",
+    "display": "https://cards.scryfall.io/display/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.webp?1783913717",
+    "art": "https://cards.scryfall.io/art/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.webp?1783913717",
+    "crop": "https://cards.scryfall.io/crop/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.webp?1783913717",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/f/9fa06aed-52c1-48f1-9906-362db12a3cf7.jpg?1783913717"
+  },
+  "mana_cost": "",
+  "cmc": 0.0,
+  "type_line": "Land — Cave",
+  "oracle_text": "This land enters tapped.\n{T}: Add {R}.\n{4}{R}, {T}, Sacrifice this land: Discover 4. Activate only as a sorcery. (Exile cards from the top of your library until you exile a nonland card with mana value 4 or less. Cast it without paying its mana cost or put it into your hand. Put the rest on the bottom in a random order.)",
+  "colors": [],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Discover"
+  ],
+  "produced_mana": [
+    "R"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set": "lci",
+  "set_name": "The Lost Caverns of Ixalan",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/70169a6e-89d1-4a3a-aef7-3152958d55ac",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alci&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lci?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/9fa06aed-52c1-48f1-9906-362db12a3cf7/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Aa1c7cd7a-0795-4135-b787-effeb981d95b&unique=prints",
+  "collector_number": "277",
+  "digital": false,
+  "rarity": "common",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Logan Feliciano",
+  "artist_ids": [
+    "fa8fd324-099a-43f2-9c57-97f64e38a5e9"
+  ],
+  "illustration_id": "b6b5abb5-03b8-4d54-a11a-99a05c212064",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 4072,
+  "penny_rank": 1117,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.youtube.com/watch?v=Szm0yzSUUm0",
+    "previewed_at": "2023-10-24"
+  },
+  "prices": {
+    "usd": "0.21",
+    "usd_foil": "0.41",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.15",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=637002&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DHidden%2BVolcano",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DHidden%2BVolcano",
+    "edhrec": "https://edhrec.com/route/?cc=Hidden+Volcano"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F524187%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=740889&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118402?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

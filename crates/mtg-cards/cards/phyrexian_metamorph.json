@@ -1,0 +1,24 @@
+{
+  "oracle_id": "340bbe8b-e987-4c3e-ab4e-9dee63e57d4f",
+  "name": "Phyrexian Metamorph",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Metamorph",
+      "oracle_fingerprint": "4ca625d17cfbebd66e5840d3e02e1f74",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                "except": [{ "AddType": "Artifact" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

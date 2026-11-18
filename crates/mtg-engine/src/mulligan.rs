@@ -79,6 +79,28 @@ fn deal(state: &GameState, players: &[PlayerId]) -> Vec<Event> {
         let size = rules.dealt_hand_size(player, taken);
         let library = state.zone(Zone::Library(player));
         let mut hand: Vec<ObjectId> = library.iter().rev().take(size).copied().collect();
+        if let Some(range) = state.opening_lands(player) {
+            let top: Vec<ObjectId> = library.iter().rev().copied().collect();
+            if let Some(fixed) = crate::opening_lands::fixed(state, range, &hand, &top) {
+                hand = fixed;
+                let rest: Vec<ObjectId> = library
+                    .iter()
+                    .copied()
+                    .filter(|card| !hand.contains(card))
+                    .collect();
+                let mut order = shuffled(state, shuffles, rest);
+                order.extend(hand.iter().rev());
+                shuffles += 1;
+                events.push(Event::LibraryShuffled { player, order });
+            }
+            // The seat takes no mulligan: its hand is kept as it is dealt.
+            events.push(Event::HandDealt {
+                player,
+                cards: hand,
+            });
+            events.push(Event::MulliganKept { player });
+            continue;
+        }
         if rules.opening_hand_smoothing() && size > 0 && library.len() >= 2 * size {
             let second: Vec<ObjectId> = library
                 .iter()

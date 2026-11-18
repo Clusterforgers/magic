@@ -1,0 +1,39 @@
+{
+  "oracle_id": "881c3dd4-49df-48c3-b514-509990332e25",
+  "name": "Mace of the Valiant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mace of the Valiant",
+      "oracle_fingerprint": "8fd60a79028720c2ff6f5b9ce525840a",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": "charge" } },
+                  "toughness": { "Counters": { "on": "This", "counter": "charge" } }
+                }
+              },
+              { "AddKeyword": "Vigilance" }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

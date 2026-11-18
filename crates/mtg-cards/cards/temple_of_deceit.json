@@ -1,0 +1,26 @@
+{
+  "oracle_id": "33b9b3bd-33ca-46f3-b8bb-a978bc3d1085",
+  "name": "Temple of Deceit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple of Deceit",
+      "oracle_fingerprint": "3127db165eabaf695e798ffd9ea02197",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Blue", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

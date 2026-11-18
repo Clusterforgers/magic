@@ -1,0 +1,25 @@
+{
+  "oracle_id": "ca13dda2-fbb0-4b6b-9126-3c8df04dee2b",
+  "name": "Azorius Locket",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Azorius Locket",
+      "oracle_fingerprint": "99d89857828159b02d876755e08f2d2f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W/U}{W/U}{W/U}{W/U}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

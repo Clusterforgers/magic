@@ -1,0 +1,50 @@
+{
+  "oracle_id": "1f938353-9081-4dc1-b8e7-d18ece038bd4",
+  "name": "Valorous Stance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valorous Stance",
+      "oracle_fingerprint": "ed2e7b26e8d03a067a3d0fbb3fb4c31a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "AddKeyword": "Indestructible" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "Toughness", "op": "Ge", "to": 4 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

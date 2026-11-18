@@ -1,0 +1,20 @@
+{
+  "oracle_id": "edad60c6-80de-4033-af1b-a703ac332983",
+  "name": "Goblin Bombardment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Bombardment",
+      "oracle_fingerprint": "a698d66d1934ef56aefbd3f3d21398fd",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

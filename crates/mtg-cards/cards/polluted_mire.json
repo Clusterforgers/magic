@@ -1,0 +1,21 @@
+{
+  "oracle_id": "9809d975-7ef8-4946-9041-607c4e954b13",
+  "name": "Polluted Mire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Polluted Mire",
+      "oracle_fingerprint": "53b74998883f765dcffb24a671ae74cc",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

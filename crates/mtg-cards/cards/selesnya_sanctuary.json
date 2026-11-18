@@ -1,0 +1,34 @@
+{
+  "oracle_id": "00ef1c55-dea1-4564-bd57-66de86cba4df",
+  "name": "Selesnya Sanctuary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selesnya Sanctuary",
+      "oracle_fingerprint": "1dc55d383978384b263e06f2d009f5d1",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

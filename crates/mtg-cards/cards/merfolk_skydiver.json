@@ -1,0 +1,24 @@
+{
+  "oracle_id": "5d2ccaa4-4815-4987-889f-d08c4d1e7a8e",
+  "name": "Merfolk Skydiver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merfolk Skydiver",
+      "oracle_fingerprint": "48170fb1d73c915c8e358dade15fbe5a",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        },
+        { "Activated": { "cost": "{3}{U}{G}", "effects": [{ "Proliferate": {} }] } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "ce87e5ed-2562-4563-9a5b-bd53c04ec4a5",
+  "name": "Moan of the Unhallowed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Moan of the Unhallowed",
+      "oracle_fingerprint": "68ee9a73f10981fc8e1ca37e60e41604",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{B}{B}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "37688720-03de-4eca-a82d-a0afe8d58adc",
+  "name": "Baleful Strix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Baleful Strix",
+      "oracle_fingerprint": "0e48090e78c0cdb01a3f9f9f5cbdad8b",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

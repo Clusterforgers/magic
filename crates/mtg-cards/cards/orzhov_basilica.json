@@ -1,0 +1,34 @@
+{
+  "oracle_id": "aa00ae0b-7c0f-427e-8102-ce0e2a6af5df",
+  "name": "Orzhov Basilica",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Orzhov Basilica",
+      "oracle_fingerprint": "7c43753f40988d1da3f9559bd511a7e7",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "returned"
+                }
+              },
+              { "Move": { "what": { "Bound": "returned" }, "to": "Hand" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

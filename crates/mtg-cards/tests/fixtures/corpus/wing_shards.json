@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "f8326bd2-83a8-4600-b12a-0bda47168f7b",
+  "oracle_id": "b302bce5-d7ad-46d8-9dbf-8159e8709b4f",
+  "multiverse_ids": [
+    463987
+  ],
+  "mtgo_id": 72448,
+  "tcgplayer_id": 190646,
+  "cardmarket_id": 374397,
+  "name": "Wing Shards",
+  "lang": "en",
+  "released_at": "2019-06-14",
+  "uri": "https://api.scryfall.com/cards/f8326bd2-83a8-4600-b12a-0bda47168f7b",
+  "scryfall_uri": "https://scryfall.com/card/mh1/38/wing-shards?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T08:59:11Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.jpg?1783933151",
+    "normal": "https://cards.scryfall.io/normal/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.jpg?1783933151",
+    "large": "https://cards.scryfall.io/large/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.jpg?1783933151",
+    "png": "https://cards.scryfall.io/png/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.png?1783933151",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.jpg?1783933151",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.jpg?1783933151",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.webp?1783933151",
+    "grid": "https://cards.scryfall.io/grid/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.webp?1783933151",
+    "display": "https://cards.scryfall.io/display/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.webp?1783933151",
+    "art": "https://cards.scryfall.io/art/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.webp?1783933151",
+    "crop": "https://cards.scryfall.io/crop/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.webp?1783933151",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/8/f8326bd2-83a8-4600-b12a-0bda47168f7b.jpg?1783933151"
+  },
+  "mana_cost": "{1}{W}{W}",
+  "cmc": 3.0,
+  "type_line": "Instant",
+  "oracle_text": "Target player sacrifices an attacking creature of their choice.\nStorm (When you cast this spell, copy it for each spell cast before it this turn. You may choose new targets for the copies.)",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Storm"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d7efccd6-55bc-4fb8-9138-e72577510a99",
+  "set": "mh1",
+  "set_name": "Modern Horizons",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/d7efccd6-55bc-4fb8-9138-e72577510a99",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amh1&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mh1?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/f8326bd2-83a8-4600-b12a-0bda47168f7b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab302bce5-d7ad-46d8-9dbf-8159e8709b4f&unique=prints",
+  "collector_number": "38",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Her feathers cut the air, as sharp as they are silent.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Daren Bader",
+  "artist_ids": [
+    "7da1a585-c875-45e4-b322-5da9e8e1f651"
+  ],
+  "illustration_id": "ca205c88-f8ef-49f7-be82-a4db536129bb",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 14564,
+  "penny_rank": 2477,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://www.twitch.tv/videos/427047692",
+    "previewed_at": "2019-05-19"
+  },
+  "prices": {
+    "usd": "0.14",
+    "usd_foil": "0.45",
+    "usd_etched": null,
+    "eur": "0.05",
+    "eur_foil": "0.26",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=463987&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWing%2BShards",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWing%2BShards",
+    "edhrec": "https://edhrec.com/route/?cc=Wing+Shards"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F190646%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=374397&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/72448?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -2,6 +2,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod boss_cards;
+mod boss_decks;
 mod bosses;
 mod brackets;
 mod content;
@@ -14,6 +15,7 @@ mod pair_bosses;
 mod rarity;
 mod relic_cards;
 mod relics;
+mod rework;
 mod runs;
 mod satchel;
 mod spirits;

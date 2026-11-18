@@ -1,0 +1,37 @@
+{
+  "oracle_id": "aebe0ba5-70b2-406b-b53b-03b12a95c2c2",
+  "name": "Crushing Vines",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crushing Vines",
+      "oracle_fingerprint": "9b6c938da2503a96db11fbecca8b0932",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Artifact" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

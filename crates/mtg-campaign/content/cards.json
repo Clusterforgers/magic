@@ -866,6 +866,7 @@
  },
  {
   "id": "phoenix_feather",
+  "team": true,
   "name": "Phoenix Feather",
   "kind": "Relic",
   "type_line": "Relic",

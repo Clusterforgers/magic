@@ -1,0 +1,24 @@
+{
+  "oracle_id": "81f06f84-1580-43c0-89d5-08d34541a519",
+  "name": "Goblin Electromancer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Electromancer",
+      "oracle_fingerprint": "1d7d8890ea83b04ba22cc5da8d6b2648",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        }
+      ]
+    }
+  ]
+}

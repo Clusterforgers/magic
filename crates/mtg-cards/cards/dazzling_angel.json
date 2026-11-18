@@ -1,0 +1,25 @@
+{
+  "oracle_id": "7de464e3-fae3-44cc-8233-776fc727c00a",
+  "name": "Dazzling Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dazzling Angel",
+      "oracle_fingerprint": "bba930700b6bc0a91bdd1670df16f163",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

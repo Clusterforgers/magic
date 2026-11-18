@@ -1,0 +1,12 @@
+{
+  "oracle_id": "7eff84f1-f772-497a-b350-bbc93d0230f7",
+  "name": "Harmonize",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Harmonize",
+      "oracle_fingerprint": "6ea8f033e803a4e83921c0924330565f",
+      "abilities": [{ "Spell": { "effects": [{ "Draw": { "count": 3 } }] } }]
+    }
+  ]
+}

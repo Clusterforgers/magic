@@ -1,0 +1,40 @@
+{
+  "oracle_id": "ea1eb902-a23c-44ff-9169-19baf71de238",
+  "name": "Talrand, Sky Summoner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talrand, Sky Summoner",
+      "oracle_fingerprint": "97e030cc2e2d571a304dc2406e2f6450",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Drake",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Drake"],
+                      "power": 2,
+                      "toughness": 2,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

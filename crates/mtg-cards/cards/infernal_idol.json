@@ -1,0 +1,25 @@
+{
+  "oracle_id": "a0802918-e18a-4716-befb-96ae6667f2f3",
+  "name": "Infernal Idol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infernal Idol",
+      "oracle_fingerprint": "4fde81b9dce5dc5845f0dc0d68497b8f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}{B}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": { "count": 2 } }, { "LoseLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

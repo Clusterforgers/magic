@@ -1,0 +1,19 @@
+{
+  "oracle_id": "3f3b2c10-21f8-4e13-be83-4ef3fa36e123",
+  "name": "Elvish Mystic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elvish Mystic",
+      "oracle_fingerprint": "9231ec8ed88e95d1df0ea928fdee13d6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

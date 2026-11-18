@@ -1,0 +1,31 @@
+{
+  "oracle_id": "56f1a16a-9f41-41fb-b580-c200bca27cd6",
+  "name": "Fortified Village",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fortified Village",
+      "oracle_fingerprint": "a0e3fd6777087298ddb35a3e23384e3f",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [
+                { "AnyOf": [{ "Subtype": "Forest" }, { "Subtype": "Plains" }] },
+                { "In": "Hand" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}
