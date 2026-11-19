@@ -52,4 +52,9 @@ running?: boolean,
  * The commanders the seats lead, in seat order: public in a Commander game, so the list can show their art. Left
  * out for any other format and while no seat has chosen a deck.
  */
-commanders?: Array<LobbyCommander>, };
+commanders?: Array<LobbyCommander>, 
+/**
+ * Whether the signed-in visitor holds a seat of the game: they open it (`GET /ws/{game}`) instead of joining, even
+ * while it is full. Left out while false.
+ */
+seated?: boolean, };

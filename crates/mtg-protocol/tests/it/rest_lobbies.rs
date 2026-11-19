@@ -50,6 +50,7 @@ fn game(host: &str, filled: u32) -> LobbyGame {
         age_secs: 125,
         running: false,
         commanders: Vec::new(),
+        seated: false,
     }
 }
 
@@ -549,6 +550,20 @@ fn a_running_row_says_so_and_a_lobby_row_leaves_it_out() {
     let older: LobbyGame = serde_json::from_value(lobby).unwrap();
     assert!(!older.running, "a row without the flag is a lobby");
     assert!(generated()["LobbyGame.ts"].contains("running?: boolean"));
+}
+
+#[rstest]
+#[case::somebody_elses(false)]
+#[case::the_visitors_own(true)]
+fn a_row_says_whether_the_visitor_sits_in_it_only_when_they_do(#[case] seated: bool) {
+    let row = LobbyGame {
+        seated,
+        ..game("Ann", 4)
+    };
+    let value = serde_json::to_value(&row).unwrap();
+    assert_eq!(value.get("seated").is_some(), seated);
+    assert_eq!(serde_json::from_value::<LobbyGame>(value).unwrap(), row);
+    assert!(generated()["LobbyGame.ts"].contains("seated?: boolean"));
 }
 
 fn commander(seat: u64, name: &str, oracle: Option<&str>) -> LobbyCommander {

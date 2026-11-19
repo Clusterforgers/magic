@@ -1,4 +1,4 @@
-// Goal: a signed-in user sees a Continue link into each game of theirs that is running, named after the other players and opening the bare game page (their session opens the seat); a guest, a user with no running game and a failing listing see nothing, and a guest causes no request.
+// Goal: a signed-in user sees a link into each game of theirs that is running (Continue) or in its lobby however full (Back to your lobby), named after the other players and opening the bare game page (their session opens the seat); a guest, a user with only finished games and a failing listing see nothing, and a guest causes no request.
 import { screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
@@ -23,13 +23,13 @@ async function open(status: AuthStatus, myGames: () => Promise<MyGame[]>) {
   await screen.findByRole('heading', { name: 'No open games' })
 }
 
-const links = () => screen.queryAllByRole('link', { name: /^Continue/ })
+const links = () => screen.queryAllByRole('link', { name: /^(Continue|Back to your lobby)/ })
 
 describe('Continue', () => {
-  it('links each running game, named after the others, to the game page', async () => {
+  it('links each running game and each lobby, named after the others, to the game page', async () => {
     const games = [
       listed({ game: 'g1', status: 'running', others: [{ seat: 1, name: 'Bo', user: null }] }),
-      listed({ game: 'g2', status: 'lobby' }),
+      listed({ game: 'g2', status: 'lobby', others: [{ seat: 1, name: 'Bot', user: null }] }),
       listed({ game: 'g3', status: 'finished' }),
       listed({
         game: 'g4',
@@ -41,16 +41,17 @@ describe('Continue', () => {
       }),
     ]
     await open('signed-in', () => Promise.resolve(games))
-    await waitFor(() => expect(links()).toHaveLength(2))
+    await waitFor(() => expect(links()).toHaveLength(3))
     expect(links().map((link) => [link.textContent, link.getAttribute('href')])).toEqual([
       ['Continue your game with Bo', '/game/g1'],
+      ['Back to your lobby with Bot', '/game/g2'],
       ['Continue your game with Cy and diana', '/game/g4'],
     ])
   })
 
-  it('shows nothing for a user whose games are not running', async () => {
+  it('shows nothing for a user whose games are over', async () => {
     const myGames = vi.fn(() =>
-      Promise.resolve([listed({ status: 'lobby' }), listed({ status: 'finished' })]),
+      Promise.resolve([listed({ status: 'finished' }), listed({ status: 'failed' })]),
     )
     await open('signed-in', myGames)
     await waitFor(() => expect(myGames).toHaveBeenCalledTimes(1))

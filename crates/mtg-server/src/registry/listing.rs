@@ -12,6 +12,7 @@ use crate::handle::{GameHandle, GameStatus};
 use crate::recipe::FormatKind;
 use crate::records::{SeatState, Visibility};
 use crate::throttle::Blocked;
+use crate::user_id::UserId;
 
 /// Most games [`Registry::lobbies`] and [`Registry::running`] each return: the newest.
 pub const MAX_LISTED_LOBBIES: usize = 50;
@@ -46,6 +47,8 @@ pub struct ListedGame {
     pub commanders: Vec<mtg_protocol::rest::LobbyCommander>,
     /// Whether the game runs, so it can be watched and not joined.
     pub running: bool,
+    /// The accounts bound to its seats, so a list can tell a visitor the games they sit in.
+    pub holders: Vec<UserId>,
 }
 
 impl Registry {
@@ -114,6 +117,7 @@ impl Registry {
                     age,
                     running: false,
                     commanders: Vec::new(),
+                    holders: entry.seats.iter().filter_map(|slot| slot.user).collect(),
                 };
                 (
                     entry.created,
