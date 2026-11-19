@@ -165,7 +165,8 @@ impl Scope<'_> {
     /// of the players it names; a card in a graveyard is one that was attached to a host that has left ("Aura cards that
     /// were attached to it").
     fn w6d_attached_to(&self, host: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
-        let in_graveyard = matches!(seen.zone, Zone::Graveyard(_)) && seen.kind == crate::object::ObjectKind::Card;
+        let in_graveyard =
+            matches!(seen.zone, Zone::Graveyard(_)) && seen.kind == crate::object::ObjectKind::Card;
         let Some(card) = seen
             .card
             .filter(|_| seen.zone == Zone::Battlefield || in_graveyard)
@@ -206,9 +207,9 @@ impl Scope<'_> {
         // A host that has left is judged as it last existed (CR 608.2h): "if it was enchanted or equipped" of a creature
         // that died reads what was attached to it then, whatever those objects became since.
         let left = self.candidate.get().filter(|named| {
-            self.state
-                .object(named.id)
-                .is_none_or(|live| live.counter() != named.counter || live.zone() != Zone::Battlefield)
+            self.state.object(named.id).is_none_or(|live| {
+                live.counter() != named.counter || live.zone() != Zone::Battlefield
+            })
         });
         if let Some(named) = left {
             let Some(shot) = self

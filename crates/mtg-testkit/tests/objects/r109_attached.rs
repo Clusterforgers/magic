@@ -298,7 +298,11 @@ fn cass_returns_the_auras_and_moves_the_equipment_of_a_dead_creature(
                 driver.choose_targets(&[host])?;
             }
             DecisionKind::ChooseCards(options) => {
-                let picked = if all { options.from.clone() } else { Vec::new() };
+                let picked = if all {
+                    options.from.clone()
+                } else {
+                    Vec::new()
+                };
                 driver.answer(Answer::ChooseCards(CardsChoice(picked)))?;
             }
             _ => {
