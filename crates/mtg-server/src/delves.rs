@@ -211,7 +211,7 @@ fn deck_makeup(chosen: &ChosenDeck) -> DeckMakeup {
         makeup.add_card(card, true);
     }
     for card in chosen.cards() {
-        makeup.add_card(card, false);
+        makeup.add_library_card(card);
     }
     makeup
 }

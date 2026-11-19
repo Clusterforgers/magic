@@ -103,6 +103,9 @@ pub struct DeckMakeup {
     /// Commanders that are creatures.
     #[serde(default)]
     pub creature_commanders: u32,
+    /// The library's non-land cards by name, a count per copy, which an event's card cost may take; empty if not kept.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub library: BTreeMap<String, u32>,
 }
 
 impl DeckMakeup {
@@ -122,6 +125,14 @@ impl DeckMakeup {
         self.tokens += u32::from(TOKENS.iter().any(|word| rules.contains(word)));
         self.counters += u32::from(rules.contains("\"+1/+1\""));
         self.graveyard += u32::from(GRAVEYARD.iter().any(|word| rules.contains(word)));
+    }
+
+    /// Counts one library card and, unless it is a land, names it for an event's card cost.
+    pub fn add_library_card(&mut self, card: &CardDefinition) {
+        self.add_card(card, false);
+        if !card.types.contains(&CardType::Land) {
+            *self.library.entry(card.name.clone()).or_default() += 1;
+        }
     }
 
     /// Counts one Satchel card from its colours and its type line ("Legendary Creature — Elf Druid").
