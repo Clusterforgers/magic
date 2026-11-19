@@ -35,6 +35,7 @@ import { defenderOutline, useDefender } from './combat/defender'
 import { AttackBadges } from './combat/AttackBadges'
 import { ATTACKED_EDGE, useAttacked } from './combat/attacked'
 import { LifeForecast } from './combat/LifeForecast'
+import { SeatForecast } from './fx/ForecastBadge'
 import { TurnTimeMark } from './TurnTimeMark'
 import { TeamBadge } from '@/components/TeamBadge'
 import { memberNames, teamLabel } from '@/lib/teams'
@@ -164,6 +165,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         </span>
         <span className="flex shrink-0 items-center gap-1">
           <AttackBadges seat={seat} />
+          <SeatForecast seat={seat} />
           <LifeForecast seat={seat} />
           <LifeFx
             seat={seat}
