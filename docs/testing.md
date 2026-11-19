@@ -9,9 +9,11 @@ How the checks run, what they test and how a new worktree gets a warm build.
 | `scripts/check.sh gate` | agents, every commit; the release gate with the key e2e specs | fmt, clippy of the changed crates, `cargo check` of their dependents, the script tests, the tests of the changed crates without the slow list and with one seed slice of the seeded suites, the web checks when `web/` changed |
 | `scripts/check.sh affected` | orchestrator, on `main` after a release | fmt, clippy, the script tests, every test of the changed crates and their dependents (slow list and every seed included), the web checks the diff needs |
 | `scripts/check.sh all` | orchestrator, before a tag | everything, the whole web check included |
-| `scripts/check.sh fast` | commit hook | fmt, clippy, the script tests |
+| `scripts/check.sh fast` | commit hook | fmt, `prettier --list-different` over the staged `web/` files (paths only; a failure names the files and `pnpm --dir web exec prettier --write <files>`; without `web/node_modules` it warns and passes), clippy, the script tests |
 
 The gate is the fast check a release waits for: it aims at 10 to 15 minutes of wall clock for an engine and web change on an idle machine of 8 cores or more. What it leaves out (the slow list, the other seed slices, the dependents' tests) runs in `affected` on `main` after the release, so nothing drops out of the coverage, it only lands later. `check.sh` never runs the Playwright specs (`pnpm e2e`); the release gate runs the key specs beside it.
+
+The script tests (`scripts/tests/*.sh`) depend on no other process, clock or file of the tree: `probe.bash` gives each its own scratch directory for temp files, locks and leases and drops the running check's knobs and lock fds, a held lock stays until the case releases it, units wait for each other instead of sleeping, and `check_select` leaves untracked files out of its diffs.
 
 ## Seed slices
 
