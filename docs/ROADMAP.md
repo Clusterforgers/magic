@@ -99,7 +99,16 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (mb2) An asking source that has left its zone keeps its picture: a last-known face (`AskingView` identity) for the chip and the column's card
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
-- [ ] (mb4) The keyboard walks from the band's answers into the Stack column and back without crossing the boards, and the phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
+- [ ] (dh1) Decision homes: a card's question is answered under its card in the Stack panel, the game's questions and every question without a panel at the bottom right, and the middle strip is one status line (`docs/ui-design.md`, Decisions)
+- [ ] (dh2) The phone answers in one bar under the hand, a payment growing it into a sheet
+- [ ] (dh3) Lists without a panel open a window over the dock; a window carries its answers and V shows the table through it
+- [ ] (dh4) A board choice dims the rest of the table to 0.4, one target answers on the press and "Pay for me" proposes only when pressed
+- [ ] (dh5) Hover or focus on a stack item shows its preview left of the panel and lights its source and targets, in combat too
+- [ ] (dh6) The keys of a decision: A to the answers, Tab through the detail and the lit objects only, Escape and V for a window
+- [ ] (dh7) `ObjectView.forecast`: the engine's forecast of the top stack item and of a previewed target answer, drawn as badges on the cards and pods it changes
+- [ ] (dh8) Combat forecasts are badges on attackers, blockers and the attacked pod, with the total in the dock
+- [ ] (dh9) The Learn course's anchors follow the decision homes (`ask`, `ask.question`, `stack.top`, `side.tab.stack`)
+- [ ] (mb4) The phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
 - [ ] (pf1) `DeckPictures` also lists an opponent's whole deck where its list is public (an unchanged precon, an open-deck house rule), and the tokens a deck can make (`docs/web.md`, Card images)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 

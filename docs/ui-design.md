@@ -16,7 +16,7 @@ The rules the web client is built to: principles, design system, a fit-to-viewpo
 | Fitts's law | Pass is the largest target, bottom right; frequent controls 32 px or more, 44 on touch |
 | Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone |
 | Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s |
-| Nothing hidden, nothing jumps | A prompt covers no opponent's or boss's card and moves no board: its band is one line of fixed height in every prompt and between prompts, and what it chooses among is in the Stack column, which never changes size; text in the band never overlaps (a line too long is cut with its whole text in a tooltip) and no board art shows through it |
+| Nothing hidden, nothing jumps | A decision moves no board: it is answered under the asking card in the Stack panel or at the bottom right ([Decisions](#decisions)), both of fixed size, and the middle strip is one line in every prompt and between prompts; only a window for cards that are not on the table covers boards, and V shows the table through it; a line too long is cut with its whole text in a tooltip |
 | Fair share | Every board stays readable: the boss's cards are at least about 60 % of the heroes' where its board is like theirs |
 
 ### Feel
@@ -27,7 +27,7 @@ The twenty rules of motion and interaction the table, lobby, deck pages and Delv
 |---|---|
 | Squash and stretch | A press squashes a control or card to 0.97; an attacker stretches 4 % along its lunge; a hit card squashes to 0.94 on impact; a Delves vote or shop buy beats the chosen card (0.96, 1.03, settle) on the press, the vote on its way stands marked as the vote, and a vote count or the purse pops as it changes (`beat`, `TickingCount`) |
 | Anticipation | An attacker that taps lies down first and lunges after (`fx-tap-lunge`); every attacker draws back before it lunges, a strike before it lands, a flying card dips to 0.94 as it leaves |
-| Staging | What just happened is the focus: the newest stack chip is raised and rises in, older chips sit at 0.8; an attacked seat flinches and lights; the prompt band glows; nothing else dims below 0.8 |
+| Staging | What just happened is the focus: the newest stack chip is raised and rises in, older chips sit at 0.8; an attacked seat flinches and lights; the place that takes the answer glows; during a board choice of the viewer every card that is not part of it dims to 0.4 ([Decisions](#decisions), The board), and outside one nothing dims below 0.8 |
 | Pose to pose | Every move is three to six keyframes (leave, peak, land, settle) in `fx.css` or `travel.ts`, tweened by the browser |
 | Follow through | A landing card and an entering permanent overshoot about 4 % and settle; a released press springs back past 1 |
 | Slow in, slow out | A card leg eases into the top of its arc and out of it to land (a curve per keyframe in `travel.ts`), entrances ease out, exits ease in; linear only for clocks |
@@ -88,7 +88,7 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 +-----------------------------------------------+ side |
 | opponents: pods and boards                     | tabs |
 +-----------------------------------------------+ Cmds |
-| shared: stack chips, ticker, prompt line       | Log  |
+| shared: stack chips, status, ticker (one line) | Log  |
 +-----------------------------------------------+ Chat |
 | own: pod, lanes: creatures; lands, other      | Stack|
 +-----------------------------------------------+      |
@@ -100,9 +100,9 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 |---|---|
 | top bar | home, turn badge, step ladder (from 1024 px), menu (layout, theme, card images, hand order, Concede); 44 px |
 | opponents, own | a pod and board per seat; the rows share the room by what their boards hold, not by a fixed ratio |
-| shared | stack chips, ticker, prompt line. A prompt is one band of fixed height across the whole width: the asking card's chip, the question in the card's words, the answers in a fixed place with the primary one at the right end; two lines in a narrow window. Its detail is in the Stack column ([The band and the Stack column](#the-band-and-the-stack-column)) |
+| shared | one status line of fixed height (36 px, 28 on a phone): the stack chips, the waiting line and notes, the ticker. It asks nothing and holds no button of a decision ([Decisions](#decisions)) |
 | hand dock | whole cards in one row lying in a gentle arc (`fanOf`: the ends turned up to 6° and 8 px lower; `fanPlace` raises the arc and moves turned cards inwards so it stays inside the dock), overlapping in rows only when they do not fit; hover or focus lifts a card upright and opens the preview |
-| controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more |
+| controls dock | the server's passing line, the stops (one row with a Mine or Theirs switch and Full Control from 1600 px, else a Stops popover), pass buttons; the primary button is bottom right, 44 px or more. A decision answered here puts its chip, question, reading and answers in the same place ([Decisions](#decisions)); on a phone the dock is a bar under the hand |
 | side | Commands, Log, Chat, Stack tabs with unread counts. L, XL a 272 to 304 px column that the viewer folds to the 44 px rail from its edge and opens again from the rail (kept per browser); M a 44 px rail opening a panel over the table; S, XS a sheet from the top bar |
 
 - Lands of a grid and of a phone: every board, yours too, carries a lands chip on its pod ("Lands 7", "Hide lands" while laid out; a desktop grid shows lands by default, a phone folds them). The table menu's "Show lands" switch turns every board and is kept in the browser; a chip turns its own board, and a prompt beyond priority that marks a land lays folded lands out while it waits (priority's mana marks do not). Folded lands give their room to creatures and other permanents; a grid's cards are 0.85 of yours (`GRID_THEIR_SCALE`).
@@ -114,7 +114,7 @@ The table is a `100dvh` grid that never scrolls the page. The opponent is on top
 - Empty boards: every opponents' row keeps at least a quarter of the boards' room with nothing on it and shows "No permanents on the battlefield"; your row is never smaller than theirs.
 - Opening hands (off a phone): the hand, the question and Keep and Mulligan stand in one panel centred over the whole table between the top bar and the hand dock, in every mode, its cards as large as that room allows; it keeps clear of your pod and life, and only the opponents dim.
 - Seats: 2 draws one wide opponent board beside a 168 px pod column; 3 and 4 draw two or three columns of one-line pods; 5 or more, or any column under 280 px, draws a tile strip and one focused board that follows the active seat (Focus mode); the menu overrides the mode. Opponent boards shrink before yours; at a grid your row keeps your creatures at 60 px first, since you play from your board and each opponent's enlarges from its pod; no opponent's cards are drawn wider than yours, and a pod column keeps its corner's pictures only where that holds (else its chips).
-- S (tablet): the same grid, a side sheet, 44 px targets. XS (phone, portrait): top bar, a pod strip (active first), the focused opponent board, your board, the shared line, the hand dock; a tap on a pod focuses it. A phone folds every board's lands into a chip (the focused opponent's at its board's top), draws no card under 64 px (`PHONE_FLOOR_PX`, the board scrolls past it), keeps the strip to two lines (the stack, then the waiting line beside the note) and lays a card prompt's cards out in the choice overlay.
+- S (tablet): the same grid, a side sheet, 44 px targets. XS (phone, portrait): top bar, a pod strip (active first), the focused opponent board, your board, the shared line, the hand dock; a tap on a pod focuses it. A phone folds every board's lands into a chip (the focused opponent's at its board's top), draws no card under 64 px (`PHONE_FLOOR_PX`, the board scrolls past it), keeps the strip to one line, answers in the bar under the hand and lays a card prompt's cards out in a window.
 
 ## Turn and focus
 
@@ -198,28 +198,110 @@ A whole sequence stays under 1,700 ms. `--fx-slow` stretches all of them. Under 
 - A target that is gone gets no arrow and drops out of the line; an item with none left says "no legal target" on a dashed chip.
 - The spotlight is the card at 1.6 times the hand card's height (168 px to 40 % of the window), centred over the shared strip with a caption: who casts, the name and the targets line. It takes no pointer, shows a card back for a card the viewer may not identify, is replaced by a newer batch with moves, and never stays, so the layout gate measures the table without it. The viewer's own cast stands 0.6 of the time, in lower contrast, captioned "You cast".
 - A mark is a badge with an icon and a short word (`FxMark`) on the card or chip it names, its edge and icon in a token colour (primary: activated, bounced; warning: triggered; success: resolved, drawn; destructive: countered; border-strong: fizzled; turn-them: exiled) and its words in `--foreground` on `--card`; `markTokens.test.ts` holds the contrast.
-- The Stack tab shows the top item as a large picture with its text and one row per target (a gone one struck out), the rest as rows with their target line; while this seat decides it shows the decision instead ([The band and the Stack column](#the-band-and-the-stack-column)).
+- The Stack tab shows the top item as a large picture with its text and one row per target (a gone one struck out), the rest as rows with their target line; the top item wears the gold outline of what resolves next and its forecast line, and a question it asks this seat stands under it ([Decisions](#decisions)).
 
-### The band and the Stack column
+### Decisions
 
-A decision is answered in two places that never move: the band says what is asked and takes the answer, the Stack column says why and holds what is chosen among.
+Every decision has one home that holds its question and its answers; who asks and the layout choose it. The board shows what can be chosen and what will happen.
 
-| Part | What it holds |
+| Word | Means |
 |---|---|
-| Band | one line of 44 px controls over the ticker's line (72 to 88 px), the same in every prompt and between prompts; two lines (112 px) in a narrow window (a phone, a tablet). The asking card's chip (art and name; hover, focus or a press lights the card on the board and shows its preview), the question in the card's words, a short reading (a run's dots and "2 of 3", a payment's symbols), the answers at the right end |
-| Stack column | the side column comes forward on its Stack tab when a decision arrives and gives the tab back afterwards; it never changes size |
-| Sheet | where no column is open (a phone, a rail, a folded column): the same detail in a sheet over the hand, at most 330 px, with a grab handle that folds it; folded from the start when the answer is a press on the table |
+| asking item | the spell, ability or permanent that asks; it leads the Stack panel as a card with a gold outline |
+| panel | the Stack tab of the side column |
+| dock | the controls dock at the bottom right, where the pass buttons stand |
+| bar | a phone's dock: one bar of fixed height under the hand |
+| window | a panel over the table for cards that are not on it |
 
-What the column shows, top to bottom:
+#### Home
 
-- Asking: "Resolving now · asks you", the asking card as a card frame with an "Asking you" tag, its name, and its rules text with the asked clause marked. The card glows on the board with an "asking" badge and what triggered it carries "just entered".
-- A run of triggers: "<cause> · trigger n of m". Done entries show a tick and what was answered, the asking one is expanded, the next ones are numbered with their effect. A rule for the rest of the game ("Always Yes", "Always No") stands under the asking card, off the band.
-- Ordering: rows with number, picture, name, the effect (not the event) and ▲▼, dragged with a mouse, a "first" tag on the top one, then "Already on the stack, below them". On touch the rows are pressed in order and take numbers. The band holds Default order (Start over on touch) and Confirm order.
-- Paying: one circle for each mana owed, captioned with the source that paid it (a Signet's own {1} after a divider); the sources in groups by what they make ("Makes W", "Makes W or U · you choose", "Makes WU · costs {1}"), one button for each colour of a source that makes several, Untap on a row in use. Board cards still work, and a land of two colours pressed on the board lights its row. The band holds the symbols as a meter, Undo, Pay for me and Confirm.
-- Every other choice (modes, options, cards, piles, divided amounts) is a list one column wide under the asking card; a number and a few options stay in the band.
-- Then what else is on the stack.
+| Asked by | Kinds | Home |
+|---|---|---|
+| the game | priority, the opening hand, cards to the bottom, discard, attackers, blockers | the dock |
+| a card | every other kind: targets, modes, costs, payment, yes or no, a number, an option, cards, trigger order, divided amounts, damage assignment, scry, replacement, a name, a loop | under the asking item in the panel while the Stack tab shows; else the dock |
 
-Rules: the band's answers never change place between prompts of one kind; No keeps the right end and the focus, the answer the clock gives; nothing in the band wraps to a second line; a source the viewer may not see is named and pointed at nowhere; every motion (the sheet rising, a row's number, the pulse of a pointed-at card) is still under reduced motion.
+| Layout | A card's question | The game's question |
+|---|---|---|
+| L, XL, column open | the panel; the Stack tab comes forward when it arrives and gives the tab back afterwards | dock |
+| L, XL, column folded; M and S (rail or sheet) | dock, led by the asking card's chip; the Stack icon is lit and opens the panel, which then is the home | dock |
+| XS (phone) | bar; a payment grows the bar into a sheet over the hand | bar |
+| Grid, Focus mode, teams, boss, any seat count, both themes | as its width says | as its width says |
+
+- A viewer who turns to another tab mid-decision gets the question in the dock; back on the Stack tab it stands under its card again. Nothing else moves a home.
+- The panel block, top to bottom: a kicker ("Asking you", "Resolving now · asks you", "Paying", "<cause> · trigger 2 of 3"), the asking card with its name, type and rules text with the asked clause marked, the question, one reading line, the detail, the clock, the answers. The answers are the block's fixed foot, 44 px, the primary one last and full width when they wrap; only the detail scrolls. Under the block: "Below it on the stack".
+- The dock form: the asking card's chip (none for the game's questions), a reading line, the question, the answers where the pass buttons stand, the primary one at the right end. The stops fold into their popover while a question other than priority is there.
+- While the panel is the home the dock keeps the stops and one button, "Answer under <card> in the Stack panel", which moves the focus to the answers (A).
+- The bar holds the chip and a Stack chip (opens the stack sheet), the question in at most two lines, the reading and the answers; it keeps its height in every prompt and between prompts. The payment sheet holds the circles, the sources and the answers, at most 330 px, and its handle folds it back to the bar.
+- The middle strip is one status line in every layout: stack chips, the waiting line and notes, the ticker.
+- Priority: the top stack item is outlined in the panel as "Top of the stack · resolves next" with its targets and forecast; the question and Resolve are in the dock.
+- Blockers and attackers: the panel lists each attack with its block and result as information; the total and the answers are in the dock.
+- The opening hand keeps its centred panel with Keep and Mulligan; the dock holds the same two answers.
+
+#### Detail and windows
+
+| Detail | Panel is the home | Dock or bar is the home |
+|---|---|---|
+| yes or no, a number, up to four options, a mana colour | buttons under the question | in the dock or bar |
+| modes, optional costs, trigger order, divided amounts, damage assignment, piles, replacements, a name | a list one column wide under the question | a window anchored over the dock; a sheet on a phone |
+| a payment | circles, then the sources by what they make, with Untap and the colour buttons | the meter and answers in the dock, sources pressed on the board, a colour asked at the card; the full list one press away in the panel; the sheet on a phone |
+| cards on the table (targets, sacrifices) | pressed on the table | pressed on the table |
+| cards not on the table (a graveyard, a library, exile, revealed cards), or more than twelve | a window | a window |
+
+- A window groups cards by owner, dims the ones that cannot be chosen, and carries the question and the answers in its foot; the home keeps the same answers, so View table (V) hides the window without losing them.
+- One target, or up to one, answers on the press; Cancel is the only button and a spell's take-back the way out of a slip. Several targets, every window and every list wait for Confirm.
+- "Pay for me" proposes only when pressed: until then the sources are lit and nothing is laid out. The proposal draws its sources dashed and turned with "pays U", says what it keeps untapped, and Confirm pays it. Undo, "Pay the rest for me", Cancel and the source tools stay as they are.
+- A run of triggers shows done entries with a tick, the asking one expanded and the next ones numbered. A rule for the rest of the game ("Always Yes", "Always No", "Always use this order") stands under the answers.
+- An answer never changes place between prompts of one kind. No keeps the right end and the focus, the answer the clock gives. A source the viewer may not see is named and pointed at nowhere.
+
+#### The board
+
+| Mark | On | Look |
+|---|---|---|
+| legal | what a press can choose: cards, pods, tiles, zone chips | green ring, lifted 3 px; a pod or tile a "Target" tag |
+| chosen | what is chosen | crimson ring and a check |
+| proposed | sources of a payment laid out | dashed primary edge, turned, "pays U" |
+| asking | the asking card, and the top stack item's source at priority | gold glow, "asking" |
+| attacking | attackers | gold edge |
+| the rest | every other card on the table and in the hand, during a board choice | opacity 0.4 and less colour; names stay readable |
+
+- A board choice is a decision of the viewer that is answered by pressing the table: targets, cards on the table, a payment, attackers, blockers, damage. Priority is not one; it dims only the hand's unplayable cards.
+- In Focus mode a tile is the player target and says how many legal targets its board holds ("5 targets on this board"); a press on that count focuses the board.
+- Marks and dimming are the viewer's own; no other seat reads them.
+
+#### Forecast
+
+A card or player an effect is about to change wears a forecast badge: dark, at the top edge, in the fewest words.
+
+| When | On | Says | From |
+|---|---|---|---|
+| an item is on top of the stack (every seat) | each object and player it will change | "+3/+3 → 7/7", "3 damage · dies", "destroyed", "countered", "to hand", "−3 → 37" | the engine's forecast of that item (`ObjectView.forecast`) |
+| the viewer points at a legal target | that target | the same words in its tip: "Click to target · 3 damage, survives" | a preview of that answer |
+| a payment is proposed | its sources | "pays U"; the block notes what stays castable | the proposal |
+| attackers or blockers are being declared | attackers, blockers, the attacked pod | "blocks · dies", "survives", "−4 → 36"; the dock reads the total | the combat forecast |
+
+- The engine works a forecast out on a copy of the game from public objects only; the client never reads it off a card's words. An item whose result hangs on a choice, a hidden card or chance has none and its targets keep the "targeted" mark.
+- The panel's top item repeats the forecast as a line ("Serra Angel becomes 7/7 until end of turn").
+- A forecast is the same for every seat and waits for nothing.
+
+#### Hover and focus
+
+- A stack item in the panel (its picture or row), a stack chip in the strip and the asking chip in the dock, on hover or focus: the large preview stands to the left of the panel (above the chip where there is no panel), the item's source and targets light on the table and its arrows draw. This holds during every decision, combat included. A press pins it on touch.
+- A legal object: it rises, and its tip says what the press does.
+- A panel row that names a card (a source of a payment, a trigger being ordered, a block) lights that card; a pressed land of several colours lights its row.
+
+#### Keys
+
+| Key | Does |
+|---|---|
+| A | moves the focus to the answers in the home |
+| Tab | from the answers through the block's detail, then the lit objects of the table in reading order (opponents, own board, hand), then back; unlit objects are skipped during a board choice |
+| Enter, Space | on a lit object chooses it; Enter with nothing focused presses the primary answer |
+| Escape | closes a preview, then clears a search, then hides a window, then presses Cancel |
+| V | shows the table through a window, and the window again |
+| letters on buttons | press that answer (Y, N, K, M and the others shown) |
+
+Focus starts on the answer the clock would give. Space and Enter keep their meaning at priority ([Priority, stops and information leaks](#priority-stops-and-information-leaks)). The answers and the lit objects are never more than one Tab group apart, so the keyboard does not cross unlit boards.
+
+Every motion (the Stack tab coming forward, the sheet rising, a badge, the pulse of a pointed-at card) is still under reduced motion.
 
 ### The hand
 
