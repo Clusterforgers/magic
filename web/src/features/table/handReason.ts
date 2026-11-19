@@ -1,11 +1,11 @@
 /**
- * Why a card of the viewer's hand cannot be played now (docs/ui-design.md, Playing is legible). Pure: it reads the
+ * Why a card of the viewer's hand, or another card the server names, cannot be played now (docs/ui-design.md, Playing is legible). Pure: it reads the
  * card, the table and the priority offer. The server's reason (`PriorityOptions.unplayable`) wins; for a card it does not
  * name, the timing, the land played and too little mana are read off public state.
  */
-import type { ManaCost, ObjectView, PriorityOptions, StateView, Unplayable } from '@/protocol/generated'
+import type { ManaCost, ObjectView, PriorityOptions, StateView, Unplayable, Why } from '@/protocol/generated'
 import { sharesTurn } from '@/lib/teams'
-import type { CardNote, CardNotes } from './prompt/marks'
+import type { Blocker, CardNote, CardNotes } from './prompt/marks'
 import { manaValue } from './prompt/payment'
 import { whyLine } from './whyWords'
 
@@ -17,10 +17,10 @@ export type HandReason = Unplayable | 'Unknown'
 
 /** The short label on the card's foot and the line of the preview, for each reason. */
 export const REASON_WORDS: Readonly<Record<HandReason, { label: string; line: string }>> = {
-  Timing: { label: 'Sorcery speed', line: 'Only in your main phase with an empty stack' },
-  LandPlayed: { label: 'Land played', line: 'You have played a land this turn' },
+  Timing: { label: 'Sorcery speed', line: 'Sorcery speed: only in your main phase with an empty stack' },
+  LandPlayed: { label: 'Land played', line: 'Land already played this turn' },
   Mana: { label: 'Needs mana', line: 'Not enough mana' },
-  Targets: { label: 'No targets', line: 'Nothing it can target' },
+  Targets: { label: 'No targets', line: 'No legal target' },
   Cost: { label: "Can't pay", line: 'A cost cannot be paid' },
   Restricted: { label: 'Not allowed', line: 'An effect forbids it now' },
   Unknown: { label: 'Not now', line: 'Not playable now' },
@@ -60,8 +60,27 @@ export function manaAtHand(view: StateView, options: PriorityOptions): number {
 }
 
 /**
- * The note of every card in the viewer's hand that cannot be played now: its reason's label drawn on hover and focus,
- * the same words for a screen reader and the reason's line for the card's preview.
+ * What blocks a card when a rule in force does: the object that put it in force (One Voice, Grand Abolisher) or the
+ * split second spell on the stack; empty for any other reason.
+ */
+export function blockerOf(why: Why | undefined): Blocker {
+  if (why === undefined || typeof why === 'string') return {}
+  if ('ForbiddenBy' in why) return { source: why.ForbiddenBy.source, name: why.ForbiddenBy.name }
+  if ('SplitSecond' in why) return { source: why.SplitSecond.spell, name: why.SplitSecond.name }
+  return {}
+}
+
+/** The short label on the card's foot: the name of the rule that blocks it when there is one, else the reason's label. */
+export function reasonLabel(reason: HandReason, why: Why | undefined): string {
+  if (why !== undefined && typeof why !== 'string' && 'SplitSecond' in why) return 'Split second'
+  return blockerOf(why).name ?? REASON_WORDS[reason].label
+}
+
+/**
+ * The note of every card of the viewer's hand that cannot be played now, and of each other card the server says why
+ * of (a commander in the command zone, a flashback card in the graveyard, a card in exile, the top of the library): the
+ * reason's label drawn on hover and focus, the same words for a screen reader, the reason's line for the card's preview
+ * and for a press (`blocked`), with what blocks it.
  */
 export function handNotes(
   view: StateView,
@@ -69,22 +88,23 @@ export function handNotes(
   options: PriorityOptions,
 ): CardNotes {
   const notes = new Map<number, CardNote>()
-  for (const id of view.players[view.viewer]?.hand.cards ?? []) {
+  const hand = view.players[view.viewer]?.hand.cards ?? []
+  const told = new Map((options.unplayable ?? []).map((entry) => [entry.card, entry]))
+  const ids = [...hand, ...[...told.keys()].filter((id) => !hand.includes(id))]
+  for (const id of ids) {
     const object = objectsById[id]
     const reason = object === undefined ? null : unplayableReason(object, view, options)
     if (reason === null || object === undefined) continue
-    const { label, line } = REASON_WORDS[reason]
-    const told = options.unplayable?.find((entry) => entry.card === id)
-    if (told?.why === undefined) {
-      notes.set(id, { hint: label, line, words: label.toLowerCase() })
+    const entry = told.get(id)
+    const label = reasonLabel(reason, entry?.why)
+    const blocked = blockerOf(entry?.why)
+    if (entry?.why === undefined) {
+      const { line } = REASON_WORDS[reason]
+      notes.set(id, { hint: label, line, words: label.toLowerCase(), blocked })
       continue
     }
-    const said = whyLine(
-      { name: object.name, rulesText: object.rules_text, doing: 'cast' },
-      told.reason,
-      told.why,
-    )
-    notes.set(id, { hint: label, line: said, words: `${label.toLowerCase()}: ${said}` })
+    const said = whyLine({ name: object.name, rulesText: object.rules_text, doing: 'cast' }, entry.reason, entry.why)
+    notes.set(id, { hint: label, line: said, words: `${label.toLowerCase()}: ${said}`, blocked })
   }
   return notes
 }

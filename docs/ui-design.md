@@ -226,16 +226,17 @@ Rules: the band's answers never change place between prompts of one kind; No kee
 
 | Reason | Label | Line |
 |---|---|---|
-| `Timing` | Sorcery speed | Only in your main phase with an empty stack |
-| `LandPlayed` | Land played | You have played a land this turn |
+| `Timing` | Sorcery speed | Sorcery speed: only in your main phase with an empty stack |
+| `LandPlayed` | Land played | Land already played this turn |
 | `Mana` | Needs mana | Not enough mana |
-| `Targets` | No targets | Nothing it can target |
+| `Targets` | No targets | No legal target |
 | `Cost` | Can't pay | A cost cannot be paid |
-| `Restricted` | Not allowed | An effect forbids it now |
+| `Restricted` | the rule's name (One Voice), Split second, else Not allowed | An effect forbids it now |
 | (unknown) | Not now | Not playable now |
 
-- The reason is the server's (`PriorityOptions.unplayable`: one entry for each card of the holder's hand and command zone that is not offered; only the holder sees options, so nothing leaks). For a card it does not name, the web reads `Timing` and `LandPlayed` off public state and `Mana` when the mana value exceeds the untapped mana sources plus the pool; anything else is "Not now".
-- With the server's detail (`why`) the preview line is one plain sentence from `whyWords.ts`: what the target must be and where ("Double Major needs a target: a creature spell you control on the stack."), the cost against the mana at hand and the colour nothing makes, the printed timing sentence, the permanent that forbids it, the split second spell, summoning sickness, a tapped source, a spent limit or the additional cost. A target on the stack adds a hint: "Cast a creature first and keep priority (Full Control) to copy it." for the viewer's own spells (the card's verb), "Wait until one is cast, then counter it while it is on the stack." for any spell.
+- The reason is the server's (`PriorityOptions.unplayable`: one entry for each card of the holder's hand and command zone that is not offered, and for each card of another zone the holder may play from (a flashback card, a commander, the library top under Future Sight), which carries the same note; only the holder sees options, so nothing leaks). For a card it does not name, the web reads `Timing` and `LandPlayed` off public state and `Mana` when the mana value exceeds the untapped mana sources plus the pool; anything else is "Not now".
+- With the server's detail (`why`) the preview line is one plain sentence from `whyWords.ts`: what the target must be and where ("Double Major needs a target: a creature spell you control on the stack."), the cost against the mana at hand with any commander tax and the colour nothing makes ("Needs {2}{B}: you have 1 mana available."), a spell limit by its rule ("One Voice: you have cast your spell this turn."), the printed timing sentence, the permanent that forbids it, the split second spell, summoning sickness, a tapped source, a spent limit or the additional cost. A target on the stack adds a hint: "Cast a creature first and keep priority (Full Control) to copy it." for the viewer's own spells (the card's verb), "Wait until one is cast, then counter it while it is on the stack." for any spell.
+- A press (click, tap, Enter) on a card that carries a reason also says its line at the card (`BlockedTell`, `blockedTell.ts`): one calm line above it (below a card near the top), spoken politely, gone after 3.2 s, at a press elsewhere or on Escape; nothing is said over the hand before a press. When a rule blocks it, its object is lit for that time: the permanent or spell on the table (the modifier outline) and the boss chip of that name (a primary ring and tint). A press on a hand card while another seat decides says whom the game waits for ("Waiting for Bo to act or pass: you can play once you have priority.").
 - A permanent of the viewer whose activated abilities are all in `PriorityOptions.inactive` carries the same sentence in its preview and spoken name; the card's chooser lists those abilities disabled, the sentence under each.
 - A play the server refuses (`Error.refusal`) and a play taken back (`AnnouncementRewound.why`) say the same sentence in the notice.
 - A permanent the viewer controls, or a card of its hand, graveyard, exile or command zone, with an ability in `PriorityOptions.abilities` is legal as a hand card is. A click activates it; a card with several plays asks which in a small chooser at the card, in the look of the manual menu. A mana ability is never a play. A card legal for its ability alone (cycling) says why it cannot be cast.

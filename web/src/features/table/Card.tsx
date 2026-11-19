@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { usePlay } from '@/features/game/gameContext'
+import { useGame, usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { cardLabel } from './cardModel'
@@ -29,6 +29,8 @@ import { handMarkWords, revealedPlace } from './revealed'
 import { combatRoleIn } from './selectors'
 import { useLinks } from './useLinks'
 import { usePreviewHandlers } from './usePreviewHandlers'
+import type { PreviewHandlers } from './usePreviewHandlers'
+import { tellBlocked, waitsForOthers } from './blockedTell'
 
 /** Props of a card. */
 export interface CardProps {
@@ -91,7 +93,22 @@ export const Card = memo(function Card({
   const pressable = given !== undefined || toggles
   const promptSelects = given === undefined && (marked === 'legal' || marked === 'selected')
   const onSelect = givenSelect ?? (promptSelects ? marks.select : undefined)
-  const handlers = usePreviewHandlers(id, onSelect === undefined ? undefined : (from) => onSelect(id, from))
+  const shown = usePreviewHandlers(id, onSelect === undefined ? undefined : (from) => onSelect(id, from))
+  const { session } = useGame()
+  // A press on a card that does nothing now says why at the card, then pins its preview as any look does.
+  const handlers: PreviewHandlers =
+    onSelect === undefined
+      ? {
+          ...shown,
+          onClick(event) {
+            const element = event.currentTarget
+            if (note?.blocked !== undefined) tellBlocked(id, element, note.line, note.blocked)
+            else if (note === undefined && waitsForOthers(session.store.getState(), id))
+              tellBlocked(id, element, undefined, {})
+            shown.onClick(event)
+          },
+        }
+      : shown
   const manual = useManualMenu(id)
   const picked = useIsPicked(id)
   const sourceLit = useIsSourceLit(id)

@@ -20,7 +20,8 @@ export const NO_MARKS: CardMarks = new Map()
  * no arrow or ring of its own (an attacker that still needs blockers), `hint` drawn on the card's foot only while it is
  * hovered or focused (why a hand card cannot be played), `line` for the preview of the card (the reason in a sentence,
  * which a touch screen reaches), `usable` for the abilities (`abilityKey`) the preview marks as available now, and `cue`
- * for the card a click flow waits on.
+ * for the card a click flow waits on. `blocked` marks a card that cannot be played now: a press says `line` at the card
+ * and lights the object whose rule blocks it, when there is one.
  */
 export interface CardNote {
   label?: string
@@ -29,6 +30,13 @@ export interface CardNote {
   words: string
   usable?: readonly string[]
   cue?: 'active'
+  blocked?: Blocker
+}
+
+/** What blocks a card: the object whose rule forbids it (a permanent, a spell, an emblem) and its name, when known. */
+export interface Blocker {
+  source?: ObjectId
+  name?: string
 }
 
 /** The note of every card a prompt writes on, such as "Needs 2 more" on a menace attacker. */
@@ -43,6 +51,9 @@ const sameNote = (a: CardNote, b: CardNote): boolean =>
   a.line === b.line &&
   a.words === b.words &&
   a.cue === b.cue &&
+  (a.blocked === undefined) === (b.blocked === undefined) &&
+  a.blocked?.source === b.blocked?.source &&
+  a.blocked?.name === b.blocked?.name &&
   (a.usable ?? []).join() === (b.usable ?? []).join()
 
 /** Every card of `own` dimmed, then the `legal` ones legal and the `selected` ones selected (they may lie outside `own`). */

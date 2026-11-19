@@ -70,7 +70,7 @@ describe('the sentence of the reason', () => {
       }),
     )
     await user.hover(card(spell))
-    expect(reason()).toBe(`${nameOf(spell)} costs {2}{U}; you have 1 mana.`)
+    expect(reason()).toBe(`Needs {2}{U}: you have 1 mana available.`)
   })
 
   it('says why a permanent cannot use its ability', async () => {

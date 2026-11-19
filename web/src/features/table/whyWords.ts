@@ -26,10 +26,10 @@ const MANA_SYMBOL: Readonly<Record<ManaType, string>> = {
 
 /** The line each coarse reason says when the engine gives no detail. */
 const PLAIN: Readonly<Record<Unplayable, string>> = {
-  Timing: 'Only in your main phase with an empty stack.',
-  LandPlayed: 'You have played a land this turn.',
+  Timing: 'Sorcery speed: only in your main phase with an empty stack.',
+  LandPlayed: 'Land already played this turn.',
   Mana: 'Not enough mana.',
-  Targets: 'Nothing it can target.',
+  Targets: 'No legal target.',
   Cost: 'A cost cannot be paid.',
   Restricted: 'An effect forbids it now.',
 }
@@ -79,6 +79,14 @@ export function whyHint(subject: Subject, why: Why | undefined): string | null {
   return `Wait until one is cast, then ${verb} it while it is on the stack.`
 }
 
+/** A rule that lets each player cast `limit` spells a turn, which the viewer has: "One Voice: you have cast your spell this turn." */
+function limitLine(source: string | undefined, limit: number): string {
+  const spent = limit === 1 ? 'you have cast your spell this turn' : `you have cast your ${limit} spells this turn`
+  return source === undefined
+    ? `${spent.charAt(0).toUpperCase()}${spent.slice(1)}: no more are allowed.`
+    : `${source}: ${spent}.`
+}
+
 /** The sentence for one detail, without the hint. */
 function detailLine(subject: Subject, why: Why): string {
   const { name, doing } = subject
@@ -87,7 +95,7 @@ function detailLine(subject: Subject, why: Why): string {
     switch (why) {
       case 'SorcerySpeed':
         return doing === 'cast'
-          ? 'Only in your main phase with an empty stack.'
+          ? PLAIN.Timing
           : 'Activate only as a sorcery: in your main phase with an empty stack.'
       case 'OwnCondition':
         return (
@@ -113,16 +121,17 @@ function detailLine(subject: Subject, why: Why): string {
   }
   if ('Target' in why) return `${name} needs a target: ${why.Target.needs}.`
   if ('Mana' in why) {
-    const { cost, at_hand, missing } = why.Mana
-    const has = at_hand === 1 ? '1 mana' : `${at_hand} mana`
+    const { cost, at_hand, missing, tax } = why.Mana
+    const taxed = tax === undefined || tax === 0 ? '' : ` with {${tax}} commander tax`
     const lacking =
       missing === undefined || missing.length === 0
         ? ''
         : ` Nothing you have makes ${missing.map((kind) => MANA_SYMBOL[kind]).join(' or ')}.`
-    return `${name} costs ${costText(cost)}; you have ${has}.${lacking}`
+    return `Needs ${costText(cost)}${taxed}: you have ${at_hand} mana available.${lacking}`
   }
   if ('ForbiddenBy' in why) {
-    const source = why.ForbiddenBy.name
+    const { name: source, limit } = why.ForbiddenBy
+    if (limit !== undefined) return limitLine(source, limit)
     return source === undefined ? `An effect stops you ${it} now.` : `${source} stops you ${it} now.`
   }
   return `${why.SplitSecond.name} has split second: nothing can be cast or activated until it resolves.`

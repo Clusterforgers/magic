@@ -31,6 +31,7 @@ import { withCrowd } from './crowdScene'
 import { withEquip } from './equip'
 import { withRevealed } from './revealScene'
 import { withPlayerCounters } from './countersScene'
+import { withOneVoice } from './blockedScene'
 import { endedWith, withTeams } from './endScene'
 import type { DevResult, DevTeams } from '../devSearch'
 
@@ -489,7 +490,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const spirited = options.spirit === true && options.boss !== undefined ? withSpirit(bossed) : bossed
   const bared = options.bare === true ? withBareBoards(spirited) : spirited
   const lone = options.alone === true ? withLastStanding(bared) : bared
-  const fixture = options.turn === 'left' ? withActiveLeft(lone) : lone
+  const voiced = name === 'priority-blocked' ? withOneVoice(lone) : lone
+  const fixture = options.turn === 'left' ? withActiveLeft(voiced) : voiced
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))
   if (options.result !== undefined) {
