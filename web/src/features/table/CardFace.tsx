@@ -3,6 +3,7 @@ import { CARD_CORNER } from '@/features/cards/CardImage'
 import { useImageChoice } from '@/features/cards/imageSetting'
 import { imageSizeFor, imageSourceOf, showsBack } from '@/features/cards/images'
 import type { ImageSize } from '@/features/cards/images'
+import { noteDrawnSize } from '@/features/cards/prefetch'
 import { Link as LinkIcon, RotateCw, Unlink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { ObjectView } from '@/protocol/generated'
@@ -142,13 +143,16 @@ export const CardFace = memo(function CardFace(props: CardFaceProps) {
     )
   const source = imageSourceOf(object)
   if (source === null) return <TextFace {...props} />
+  const picture = props.imageSize ?? imageSizeFor(width)
+  // A size the table draws by width is one a prefetch loads (`prefetch.ts`); a preview names its own.
+  if (props.imageSize === undefined) noteDrawnSize(picture)
   return (
     <ImageFace
       source={source}
       box={box}
       turned={turned}
       stacked={stacked}
-      imageSize={props.imageSize ?? imageSizeFor(width)}
+      imageSize={picture}
       object={object}
       role={props.role}
       size={size}

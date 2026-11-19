@@ -580,8 +580,17 @@ impl Running {
         }
         if let Some(result) = self.engine.result() {
             messages.push(ServerMessage::GameOver { result });
+        } else {
+            // Last, so the table and its question come first; a finished game needs no pictures ahead.
+            messages.extend(self.deck_pictures(seat));
         }
         messages
+    }
+
+    /// The pictures `seat` may load ahead ([`mtg_protocol::deck_pictures`]); none when no card has a picture.
+    pub(crate) fn deck_pictures(&self, seat: PlayerId) -> Option<ServerMessage> {
+        let cards = mtg_protocol::deck_pictures(self.engine.setup(), seat);
+        (!cards.is_empty()).then_some(ServerMessage::DeckPictures { cards })
     }
 
     /// Applies `seat`'s answer to the decision `id`, if that decision is pending for that seat.

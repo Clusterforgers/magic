@@ -199,6 +199,7 @@ impl WsBot {
             | ServerMessage::Deciding { .. }
             | ServerMessage::Spectators { .. }
             | ServerMessage::DecksRevealed { .. }
+            | ServerMessage::DeckPictures { .. }
             | ServerMessage::TakeBackOffer { .. }
             | ServerMessage::TakeBackAsked { .. }
             | ServerMessage::TakeBackEnded { .. }

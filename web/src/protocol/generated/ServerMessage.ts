@@ -15,6 +15,7 @@ import type { GameResult } from "./GameResult";
 import type { LobbySeat } from "./LobbySeat";
 import type { LogHost } from "./LogHost";
 import type { LogName } from "./LogName";
+import type { PictureCard } from "./PictureCard";
 import type { PlayerId } from "./PlayerId";
 import type { Refusal } from "./Refusal";
 import type { RevealedDeck } from "./RevealedDeck";
@@ -272,4 +273,8 @@ count: number, } | { "type": "DecksRevealed",
 /**
  * Each seat that drew its deck, in seat order.
  */
-decks: Array<RevealedDeck>, };
+decks: Array<RevealedDeck>, } | { "type": "DeckPictures", 
+/**
+ * The cards, each once: the viewer's own first.
+ */
+cards: Array<PictureCard>, };
