@@ -1,4 +1,5 @@
 //! The Learn course's tables: a scripted Commander game per lesson against a bot, made by one request, never recorded.
+//! A learner has one at a time: starting a lesson ends the one before, and leaving a lesson ends its game.
 //!
 //! Each lesson of [`LESSONS`] names its table, the stops the learner holds, the bot's script and the learner's
 //! script (`docs/tutorial.md`). Every card is a real card of the corpus. No clock hurries either seat; the bot waits
@@ -24,6 +25,7 @@ pub use lessons::{
 };
 
 use crate::api::ApiError;
+use crate::game_id::GameId;
 use crate::server::AppState;
 
 /// Scryfall objects (trimmed) of the lessons' cards, each a printing of a Verified corpus card.
@@ -84,32 +86,55 @@ pub(crate) struct TutorialBody {
     token: String,
 }
 
-/// The body of `POST /api/tutorial`; empty means the first lesson.
+/// A practice game and its learner's seat token: the game a request ends.
+#[derive(Debug, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SeatOf {
+    game: String,
+    token: String,
+}
+
+/// The body of `POST /api/tutorial`; empty means the first lesson. `replaces` is the practice game this one follows,
+/// which ends (how a guest, who has no account, keeps one at a time).
 #[derive(Debug, Default, Deserialize)]
 #[serde(deny_unknown_fields)]
 struct TutorialRequest {
     lesson: Option<String>,
+    replaces: Option<SeatOf>,
 }
 
-/// The lesson `request` asks for: its body's `lesson`, the first lesson without one.
-async fn asked(request: Request) -> Result<&'static Lesson, ApiError> {
+/// The JSON body of `request`, at most [`BODY_LIMIT`] bytes; a blank body is `T::default()`.
+async fn body_of<T: serde::de::DeserializeOwned + Default>(
+    request: Request,
+    what: &str,
+) -> Result<T, ApiError> {
     let bytes = axum::body::to_bytes(request.into_body(), BODY_LIMIT)
         .await
         .map_err(|_| {
             ApiError::invalid(format!("the request body is limited to {BODY_LIMIT} bytes"))
         })?;
-    let body: TutorialRequest = if bytes.iter().all(u8::is_ascii_whitespace) {
-        TutorialRequest::default()
-    } else {
-        serde_json::from_slice(&bytes)
-            .map_err(|error| ApiError::invalid(format!("not a lesson request: {error}")))?
-    };
+    if bytes.iter().all(u8::is_ascii_whitespace) {
+        return Ok(T::default());
+    }
+    serde_json::from_slice(&bytes).map_err(|error| ApiError::invalid(format!("{what}: {error}")))
+}
+
+/// The lesson `body` asks for: its `lesson`, the first lesson without one.
+fn asked(body: &TutorialRequest) -> Result<&'static Lesson, ApiError> {
     let id = body.lesson.as_deref().unwrap_or(FIRST_LESSON);
     lesson(id).ok_or_else(|| ApiError::invalid(format!("there is no lesson {id:?}")))
 }
 
+/// Ends the practice game `seat` names when its token opens it; true when it ended.
+async fn end_seat(app: &AppState, seat: &SeatOf) -> bool {
+    match seat.game.parse::<GameId>() {
+        Ok(game) => app.registry().end_practice(game, &seat.token).await,
+        Err(_) => false,
+    }
+}
+
 /// `POST /api/tutorial`: starts the lesson the body names (`{"lesson": id}`, the first without one) and gives the
-/// learner seat 0, holding the lesson's stops.
+/// learner seat 0, holding the lesson's stops. The game `replaces` names and the account's earlier practice game end.
 pub(crate) async fn start(
     State(app): State<AppState>,
     request: Request,
@@ -118,7 +143,12 @@ pub(crate) async fn start(
         return Err(ApiError::unavailable());
     }
     let user = app.auth().session_user(request.headers()).await?;
-    let lesson = asked(request).await?;
+    let body: TutorialRequest = body_of(request, "not a lesson request").await?;
+    let lesson = asked(&body)?;
+    if let Some(replaces) = &body.replaces {
+        end_seat(&app, replaces).await;
+    }
+    let account = user.as_ref().map(|user| user.id);
     let name = user.map_or_else(|| GUEST_NAME.to_owned(), |user| user.username);
     let setup = (lesson.setup)().map_err(|error| {
         tracing::error!(%error, lesson = lesson.id, "tutorial setup");
@@ -126,7 +156,7 @@ pub(crate) async fn start(
     })?;
     let (created, handle) = app
         .registry()
-        .register_tutorial(setup, vec![name, BOT_NAME.to_owned()])
+        .register_tutorial(setup, vec![name, BOT_NAME.to_owned()], BOT_SEAT, account)
         .await?;
     for &(side, step) in lesson.stops {
         let stop = ClientMessage::SetStop {
@@ -151,4 +181,23 @@ pub(crate) async fn start(
         token: token.expose().to_owned(),
     };
     Ok((StatusCode::CREATED, Json(body)))
+}
+
+/// `POST /api/tutorial/end` with `{game, token}`: the learner left the lesson, so its practice game ends now. 204 when
+/// it ended; 404 when the token opens no seat of a practice game (it ended already, or it is another kind of game).
+pub(crate) async fn end(
+    State(app): State<AppState>,
+    request: Request,
+) -> Result<StatusCode, ApiError> {
+    let seat: Option<SeatOf> = body_of(request, "not a practice seat").await?;
+    let Some(seat) = seat else {
+        return Err(ApiError::invalid(
+            "the body names the game and its seat token",
+        ));
+    };
+    if end_seat(&app, &seat).await {
+        Ok(StatusCode::NO_CONTENT)
+    } else {
+        Err(ApiError::not_found())
+    }
 }

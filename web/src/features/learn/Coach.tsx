@@ -530,7 +530,7 @@ export function Coach({
             >
               <EllipsisIcon aria-hidden="true" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="z-[70]">
+            <DropdownMenuContent align="end" layer="z-[70]">
               <DropdownMenuItem onClick={onLeave}>Leave lesson</DropdownMenuItem>
               <DropdownMenuItem onClick={onRestart}>Restart lesson</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setPlayOn(true)}>Play on without the coach</DropdownMenuItem>

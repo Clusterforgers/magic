@@ -41,7 +41,7 @@ impl Registry {
                     format: entry.format.as_str().to_owned(),
                     visibility: entry.visibility.as_str().to_owned(),
                     started: false,
-                    tutorial: entry.unlisted,
+                    tutorial: entry.practice.is_some(),
                     seats: entry
                         .seats
                         .iter()

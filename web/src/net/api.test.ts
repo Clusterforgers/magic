@@ -323,3 +323,40 @@ describe('the error table', () => {
     expect(new Set(codes).size).toBe(codes.length)
   })
 })
+
+describe('practice games', () => {
+  const started = { game: 'g-2', seat: 0, token: 't-2' }
+
+  it.each([
+    ['without a game to replace', undefined, { lesson: 'mana' }],
+    [
+      'replacing the one before',
+      { game: 'g-1', token: 't-1' },
+      { lesson: 'mana', replaces: { game: 'g-1', token: 't-1' } },
+    ],
+  ])('starts a lesson %s', async (_, replaces, body) => {
+    const fake = fakeFetch(() => jsonResponse(201, started))
+    expect(await createApi({ fetch: fake.fetch }).startTutorial('mana', replaces)).toEqual(started)
+    expect(fake.calls[0]?.url).toBe('/api/tutorial')
+    expect(JSON.parse(String(fake.calls[0]?.init?.body))).toEqual(body)
+  })
+
+  it.each([
+    [204, true],
+    [404, false],
+    [500, false],
+  ])('ends a left lesson with a kept-alive POST, answering %i as %s', async (status, ended) => {
+    const fake = fakeFetch(() => new Response(null, { status }))
+    expect(await createApi({ fetch: fake.fetch }).endTutorial({ game: 'g-1', token: 't-1' })).toBe(ended)
+    const [call] = fake.calls
+    expect(call?.url).toBe('/api/tutorial/end')
+    expect(call?.init?.method).toBe('POST')
+    expect(call?.init?.keepalive).toBe(true)
+    expect(JSON.parse(String(call?.init?.body))).toEqual({ game: 'g-1', token: 't-1' })
+  })
+
+  it('answers false when the server cannot be reached, since the server ends the game after its grace', async () => {
+    const fake = fakeFetch(() => Promise.reject(new TypeError('offline')))
+    expect(await createApi({ fetch: fake.fetch }).endTutorial({ game: 'g-1', token: 't-1' })).toBe(false)
+  })
+})
