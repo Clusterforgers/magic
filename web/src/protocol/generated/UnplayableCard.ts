@@ -4,7 +4,7 @@ import type { Unplayable } from "./Unplayable";
 import type { Why } from "./Why";
 
 /**
- * A card of the holder's hand or command zone that cannot be played now, and why.
+ * A card the holder cannot play now, and why: from their hand, their command zone or another zone a way names.
  */
 export type UnplayableCard = { 
 /**

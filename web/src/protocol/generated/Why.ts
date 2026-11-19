@@ -28,7 +28,11 @@ at_hand: number,
 /**
  * The kinds of mana the cost asks that nothing at hand makes.
  */
-missing?: Array<ManaType>, } } | "SorcerySpeed" | "OwnCondition" | { "ForbiddenBy": { 
+missing?: Array<ManaType>, 
+/**
+ * The commander tax the cost includes (CR 903.8), for a commander cast from the command zone.
+ */
+tax?: number, } } | "SorcerySpeed" | "OwnCondition" | { "ForbiddenBy": { 
 /**
  * The object.
  */
@@ -36,7 +40,12 @@ source?: ObjectId,
 /**
  * Its name.
  */
-name?: string, } } | { "SplitSecond": { 
+name?: string, 
+/**
+ * The spells a player may cast each turn under the rule when it limits their number ("can't cast more than one
+ * spell each turn"), which the player has cast.
+ */
+limit?: number, } } | { "SplitSecond": { 
 /**
  * The spell.
  */
