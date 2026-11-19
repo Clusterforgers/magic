@@ -37,6 +37,11 @@ pub enum ConfigError {
     /// `MTG_BOTS_ALONE_SECS` is not a whole number of seconds from 60 to 604800.
     #[error("MTG_BOTS_ALONE_SECS must be a whole number of seconds from 60 to 604800, got {0:?}")]
     BadBotsAloneSecs(String),
+    /// `MTG_PRACTICE_ALONE_SECS` is not a whole number of seconds from 60 to 604800.
+    #[error(
+        "MTG_PRACTICE_ALONE_SECS must be a whole number of seconds from 60 to 604800, got {0:?}"
+    )]
+    BadPracticeAloneSecs(String),
     /// An `MTG_ALLOWED_ORIGINS` entry is not `http(s)://host[:port]`.
     #[error("MTG_ALLOWED_ORIGINS entry {0:?} is not an origin such as https://host[:port]")]
     BadOrigin(String),
@@ -271,11 +276,14 @@ pub struct Retention {
     /// A started game with bot seats is closed after this long with no person connected, however the bots play on
     /// (`MTG_BOTS_ALONE_SECS`).
     pub bots_alone_after: Duration,
+    /// A practice game (the Learn course) is closed after this long with no learner connected, so a reload resumes it
+    /// and a left lesson ends soon (`MTG_PRACTICE_ALONE_SECS`).
+    pub practice_alone_after: Duration,
 }
 
 impl Retention {
-    /// Reads `MTG_IDLE_CLOSE_SECS` and `MTG_BOTS_ALONE_SECS` through `get`; a blank or missing value leaves the
-    /// default.
+    /// Reads `MTG_IDLE_CLOSE_SECS`, `MTG_BOTS_ALONE_SECS` and `MTG_PRACTICE_ALONE_SECS` through `get`; a blank or
+    /// missing value leaves the default.
     fn apply_env(&mut self, get: &impl Fn(&str) -> Option<String>) -> Result<(), ConfigError> {
         let seconds = |text: &str| {
             text.trim()
@@ -290,6 +298,10 @@ impl Retention {
         if let Some(text) = get("MTG_BOTS_ALONE_SECS") {
             self.bots_alone_after = seconds(&text).ok_or(ConfigError::BadBotsAloneSecs(text))?;
         }
+        if let Some(text) = get("MTG_PRACTICE_ALONE_SECS") {
+            self.practice_alone_after =
+                seconds(&text).ok_or(ConfigError::BadPracticeAloneSecs(text))?;
+        }
         Ok(())
     }
 }
@@ -302,6 +314,7 @@ impl Default for Retention {
             lobby_after: Duration::from_hours(1),
             abandoned_after: Duration::from_hours(1),
             bots_alone_after: Duration::from_mins(15),
+            practice_alone_after: Duration::from_mins(3),
         }
     }
 }
@@ -700,6 +713,26 @@ mod tests {
                 Ok(Duration::from_secs(seconds))
             ),
             None => assert_eq!(loaded, Err(ConfigError::BadBotsAloneSecs(text.to_owned()))),
+        }
+    }
+
+    #[rstest]
+    #[case("", Some(180))]
+    #[case("60", Some(60))]
+    #[case(" 300 ", Some(300))]
+    #[case("59", None)]
+    #[case("3m", None)]
+    fn practice_alone_times(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let loaded = load(&[("MTG_PRACTICE_ALONE_SECS", text)]);
+        match seconds {
+            Some(seconds) => assert_eq!(
+                loaded.map(|c| c.retention.practice_alone_after),
+                Ok(Duration::from_secs(seconds))
+            ),
+            None => assert_eq!(
+                loaded,
+                Err(ConfigError::BadPracticeAloneSecs(text.to_owned()))
+            ),
         }
     }
 

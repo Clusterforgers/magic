@@ -29,7 +29,7 @@ The lessons replace the guided game and the table tour of the Learn page. The ma
 
 ## Scripted table
 
-`POST /api/tutorial` takes `{lesson}` and answers 201 `{game, seat, token}`: a Commander game of two seats that is never recorded or listed (`docs/server.md`, Tutorial table). A lesson is one entry of `tutorial::LESSONS`:
+`POST /api/tutorial` takes `{lesson, replaces?}` and answers 201 `{game, seat, token}`: a Commander game of two seats that is never recorded or listed (`docs/server.md`, Tutorial table). A learner has one at a time: a new lesson replaces the one before, leaving a lesson ends its game, and a game with no learner connected for 3 min ends. A lesson is one entry of `tutorial::LESSONS`:
 
 | Field | Meaning |
 |---|---|
