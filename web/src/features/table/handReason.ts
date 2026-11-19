@@ -103,7 +103,11 @@ export function handNotes(
       notes.set(id, { hint: label, line, words: label.toLowerCase(), blocked })
       continue
     }
-    const said = whyLine({ name: object.name, rulesText: object.rules_text, doing: 'cast' }, entry.reason, entry.why)
+    const said = whyLine(
+      { name: object.name, rulesText: object.rules_text, doing: 'cast' },
+      entry.reason,
+      entry.why,
+    )
     notes.set(id, { hint: label, line: said, words: `${label.toLowerCase()}: ${said}`, blocked })
   }
   return notes

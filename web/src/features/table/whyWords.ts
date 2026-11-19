@@ -81,7 +81,8 @@ export function whyHint(subject: Subject, why: Why | undefined): string | null {
 
 /** A rule that lets each player cast `limit` spells a turn, which the viewer has: "One Voice: you have cast your spell this turn." */
 function limitLine(source: string | undefined, limit: number): string {
-  const spent = limit === 1 ? 'you have cast your spell this turn' : `you have cast your ${limit} spells this turn`
+  const spent =
+    limit === 1 ? 'you have cast your spell this turn' : `you have cast your ${limit} spells this turn`
   return source === undefined
     ? `${spent.charAt(0).toUpperCase()}${spent.slice(1)}: no more are allowed.`
     : `${source}: ${spent}.`

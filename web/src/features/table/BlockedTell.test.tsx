@@ -36,7 +36,8 @@ function blockedScene(seats: number) {
   const kind = must(pending).decision.kind
   if (!('Priority' in kind)) throw new Error('a priority decision')
   const entries = kind.Priority.unplayable ?? []
-  const by = (reason: UnplayableCard['reason']): number => must(entries.find((entry) => entry.reason === reason)).card
+  const by = (reason: UnplayableCard['reason']): number =>
+    must(entries.find((entry) => entry.reason === reason)).card
   return { game, held: by('Restricted'), slow: by('Timing'), dear: by('Mana') }
 }
 
@@ -93,7 +94,8 @@ describe.each([2, 4])('a press on a hand card while another seat decides at %i s
     act(() => {
       game.session.store.setState((state) => ({
         pending: null,
-        view: state.view === null ? null : { ...state.view, priority: { holder: must(other).seat, passed: [] } },
+        view:
+          state.view === null ? null : { ...state.view, priority: { holder: must(other).seat, passed: [] } },
       }))
     })
     const user = table(game)

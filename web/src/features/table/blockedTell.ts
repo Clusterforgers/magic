@@ -73,7 +73,12 @@ export function anchorOf(element: HTMLElement): TellAnchor {
 }
 
 /** Says why the card `card`, pressed at `element`, cannot be played: `line`, or the wait when it is undefined. */
-export function tellBlocked(card: ObjectId, element: HTMLElement, line: string | undefined, blocker: Blocker): void {
+export function tellBlocked(
+  card: ObjectId,
+  element: HTMLElement,
+  line: string | undefined,
+  blocker: Blocker,
+): void {
   useBlockedTell.getState().say({ card, line, element, anchor: anchorOf(element), blocker })
 }
 

@@ -59,7 +59,9 @@ export function withBlocked(
     const [held, dear] = rest
     const emblem = view.objects.find((object) => object.name === ONE_VOICE && object.kind === 'Emblem')
     const unplayable: UnplayableCard[] = [
-      ...(slow === undefined ? [] : [{ card: slow.id, reason: 'Timing' as const, why: 'SorcerySpeed' as const }]),
+      ...(slow === undefined
+        ? []
+        : [{ card: slow.id, reason: 'Timing' as const, why: 'SorcerySpeed' as const }]),
       ...(held === undefined
         ? []
         : [

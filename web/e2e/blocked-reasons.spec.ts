@@ -30,8 +30,14 @@ for (const size of SIZES) {
       await open(page, size.width, size.height)
       await expect(tell(page)).toHaveCount(0)
       const cases: [string, RegExp][] = [
-        ['One Voice: you have cast your spell this turn', /^One Voice: you have cast your spell this turn\.$/],
-        ['Sorcery speed: only in your main phase', /^Sorcery speed: only in your main phase with an empty stack\.$/],
+        [
+          'One Voice: you have cast your spell this turn',
+          /^One Voice: you have cast your spell this turn\.$/,
+        ],
+        [
+          'Sorcery speed: only in your main phase',
+          /^Sorcery speed: only in your main phase with an empty stack\.$/,
+        ],
         ['you have 1 mana available', /^Needs .+: you have 1 mana available\.$/],
       ]
       for (const [words, line] of cases) {

@@ -199,7 +199,9 @@ describe('handNotes', () => {
     const { objectsById } = momentOf(view)
     const options: PriorityOptions = {
       ...NONE,
-      unplayable: [{ card: MY_FOREST, reason: 'Mana', why: { Mana: { cost: generic(4), at_hand: 2, tax: 2 } } }],
+      unplayable: [
+        { card: MY_FOREST, reason: 'Mana', why: { Mana: { cost: generic(4), at_hand: 2, tax: 2 } } },
+      ],
     }
     expect(handNotes(view, objectsById, options).get(MY_FOREST)).toMatchObject({
       hint: REASON_WORDS.Mana.label,
@@ -212,7 +214,13 @@ describe('handNotes', () => {
 describe('reasonLabel and blockerOf', () => {
   it.each<[string, Unplayable, Why | undefined, string, Blocker]>([
     ['a plain reason', 'Mana', undefined, 'Needs mana', {}],
-    ['a named rule', 'Restricted', { ForbiddenBy: { source: 5, name: 'Silence' } }, 'Silence', { source: 5, name: 'Silence' }],
+    [
+      'a named rule',
+      'Restricted',
+      { ForbiddenBy: { source: 5, name: 'Silence' } },
+      'Silence',
+      { source: 5, name: 'Silence' },
+    ],
     ['a nameless rule', 'Restricted', { ForbiddenBy: {} }, 'Not allowed', {}],
     [
       'split second',

@@ -26,7 +26,9 @@ export function BlockedTell() {
   const tell = useBlockedTell((state) => state.tell)
   const hush = useBlockedTell((state) => state.hush)
   const name = useSeatNamer()
-  const waiting = usePlay((state) => (tell === null || tell.line !== undefined ? null : waitingText(waitingOn(state), name)))
+  const waiting = usePlay((state) =>
+    tell === null || tell.line !== undefined ? null : waitingText(waitingOn(state), name),
+  )
   useEffect(() => {
     if (tell === null) return
     const away = (event: PointerEvent): void => {
@@ -47,7 +49,10 @@ export function BlockedTell() {
   const [settled, setSettled] = useState<{ token: number; anchor: TellAnchor } | null>(null)
   useEffect(() => {
     if (tell === null) return
-    const later = setTimeout(() => setSettled({ token: tell.token, anchor: anchorOf(tell.element) }), SETTLE_MS)
+    const later = setTimeout(
+      () => setSettled({ token: tell.token, anchor: anchorOf(tell.element) }),
+      SETTLE_MS,
+    )
     return () => clearTimeout(later)
   }, [tell])
   if (tell === null) return null
@@ -71,7 +76,9 @@ export function BlockedTell() {
       data-card={tell.card}
       className={cn(
         'pointer-events-none fixed z-50 flex justify-center motion-safe:animate-in motion-safe:fade-in-0 motion-safe:zoom-in-95 motion-safe:duration-base',
-        above ? 'items-end motion-safe:slide-in-from-bottom-1' : 'items-start motion-safe:slide-in-from-top-1',
+        above
+          ? 'items-end motion-safe:slide-in-from-bottom-1'
+          : 'items-start motion-safe:slide-in-from-top-1',
       )}
       style={{ left, width, ...place }}
     >
