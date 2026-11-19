@@ -25,7 +25,7 @@ use crate::mana::{
     max_life_payment,
 };
 use crate::mana_ability;
-use crate::mana_takes::{assignment, without_taken};
+use crate::mana_takes::{assignment, r5506_without_announced, without_taken};
 use crate::object::{ObjectRef, PermanentState};
 use crate::parts::{self, Part};
 use crate::price::Price;
@@ -324,6 +324,7 @@ fn payment_events(
         .map(|option| option.source.object)
         .collect();
     let paying = without_taken(&paying, &|id| helped.taps(id) || exiled.contains(&id));
+    let paying = r5506_without_announced(&paying, &announced);
     let mut taken = assignment(&paying.iter().collect::<Vec<_>>())
         .ok_or(IllegalAnswer::NotOffered("permanents to take"))?;
     let mut events = Vec::new();
@@ -372,7 +373,14 @@ fn payment_events(
             }
         }
     }
-    let (later, announced) = r5506_sacrificed_after_mana(announced, &spent.steps);
+    // The permanents the mana abilities tap: their sources and what their costs take.
+    let tapping: Vec<ObjectId> = spent
+        .steps
+        .iter()
+        .map(|step| step.source.object)
+        .chain(taken.iter().flatten().flatten().copied())
+        .collect();
+    let (later, announced) = r5506_sacrificed_after_mana(announced, &tapping);
     events.extend(announced);
     // The creatures and artifacts tapped and the cards exiled to help pay (CR 702.51, CR 702.126, CR 702.66), before the mana.
     for object in payment
@@ -430,13 +438,13 @@ fn payment_events(
     Ok(events)
 }
 
-/// The sacrifices among `announced` of permanents the payment `steps` tap for mana, taken out to follow the mana
-/// activations (CR 601.2g, 601.2h), and the rest of `announced`.
+/// The sacrifices among `announced` of the permanents `tapping` that the payment's mana abilities tap (their sources
+/// and what their costs take), taken out to follow the mana activations (CR 601.2g, 601.2h), and the rest of
+/// `announced`.
 fn r5506_sacrificed_after_mana(
     announced: Vec<Event>,
-    steps: &[crate::spend::Step],
+    tapping: &[ObjectId],
 ) -> (Vec<Event>, Vec<Event>) {
-    let tapping: Vec<ObjectId> = steps.iter().map(|step| step.source.object).collect();
     announced.into_iter().partition(|event| {
         matches!(event, Event::ZoneChanged { object, from: Zone::Battlefield, cause: ZoneCause::Sacrificed, .. }
             if tapping.contains(object))

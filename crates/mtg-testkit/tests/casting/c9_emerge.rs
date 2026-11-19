@@ -1,4 +1,4 @@
-//! Goal: emerge casts a creature from a hand by sacrificing a creature and paying the emerge cost less that creature's mana value, harmonize casts a card from its owner's graveyard for its harmonize cost less the power of a creature its caster may tap and exiles it as it resolves; the generic mana never goes below nothing, a cast without the mana left is not offered, and the log replays to the same state at 2 to 4 seats.
+//! Goal: emerge casts a creature from a hand by sacrificing a creature (one a mana ability of the payment taps too) and paying the emerge cost less that creature's mana value, harmonize casts a card from its owner's graveyard for its harmonize cost less the power of a creature its caster may tap and exiles it as it resolves; the generic mana never goes below nothing, a cast without the mana left is not offered, and the log replays to the same state at 2 to 4 seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -218,6 +218,40 @@ fn harmonize_is_not_offered_without_the_mana_or_outside_the_graveyard(
 ) -> Result<(), ScriptError> {
     let driver = game(seats, hand, graveyard, &[], mana, mountain)?;
     assert!(!castable(&driver, "Wild Ride"));
+    assert_replays(&driver);
+    Ok(())
+}
+
+#[rstest]
+// The Drum taps the Bears for mana before the emerge cost sacrifices them (CR 601.2g, 601.2h): {3}{U}{U} from four
+// Islands and the Drum.
+#[case::a_creature_tapped_for_mana_is_then_sacrificed(&["Grizzly Bears", "Springleaf Drum"], 4, "Grizzly Bears", true)]
+// The Prospector sacrificed for emerge is not there to sacrifice for its own mana: five Islands leave {4}{U}{U} unpaid
+// and the cast is taken back.
+#[case::a_creature_sacrificed_is_not_sacrificed_again(&["Skirk Prospector"], 5, "Skirk Prospector", false)]
+fn a_mana_ability_of_the_payment_uses_the_creature_emerge_sacrifices_only_to_tap_it(
+    #[case] creatures: &[&str],
+    #[case] islands: usize,
+    #[case] sacrificed: &str,
+    #[case] casts: bool,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let mut driver = game(
+        seats,
+        &["Elder Deep-Fiend"],
+        &[],
+        creatures,
+        islands,
+        island,
+    )?;
+    cast(&mut driver, "Elder Deep-Fiend", "Emerge", sacrificed)?;
+    let graveyard = names(driver.state(), Zone::Graveyard(pid(0)));
+    let battlefield = names(driver.state(), Zone::Battlefield);
+    assert_eq!(graveyard.contains(&sacrificed.to_owned()), casts);
+    assert_eq!(battlefield.contains(&sacrificed.to_owned()), !casts);
+    assert_eq!(battlefield.contains(&"Elder Deep-Fiend".to_owned()), casts);
+    let tapped = if casts { islands } else { 0 };
+    assert_eq!(tapped_lands(&driver, "Island"), tapped);
     assert_replays(&driver);
     Ok(())
 }

@@ -216,6 +216,8 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                 })
                 .collect();
             crate::mana_takes::leave(&mut sources, &lost);
+            // A mana ability's cost may tap what the cost sacrifices, never sacrifice or exile it again.
+            crate::mana_takes::r5506_leave_to_other_costs(&mut sources, &[], &sacrificed);
             reserve_energy(&mut sources, price.energy());
             Some(Printed {
                 taken,
