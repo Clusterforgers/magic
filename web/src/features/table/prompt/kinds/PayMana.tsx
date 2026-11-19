@@ -1,4 +1,4 @@
-import { useContext, useEffect, useId, useMemo, useState } from 'react'
+import { useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
@@ -10,12 +10,14 @@ import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { PayColumn, PayMeter } from '../PayColumn'
 import { paySlots } from '../paySlots'
-import { payText, spendWords } from '../payText'
+import { payText, proposalNote, spendWords } from '../payText'
 import {
   allowed,
   completable,
+  completion,
   covers,
   fittingOptions,
+  fromPayment,
   lifeChoices,
   lifeOf,
   MANA_TYPES,
@@ -24,7 +26,7 @@ import {
   toPayment,
   withoutSpend,
 } from '../payment'
-import type { LifeSymbols, Reach, Spend } from '../payment'
+import type { LifeSymbols, Reach, Spend, Whole } from '../payment'
 import { PaymentSummary } from '../PaymentSummary'
 import type { RestrictedEntry } from '../PaymentSummary'
 import { offersOf } from '../offers'
@@ -55,8 +57,9 @@ export const AUTO_REASON = 'The game finds no way to pay this cost with what you
  * are legal; a click adds one (a permanent with several kinds of mana asks which), a click on a chosen one takes it
  * back. Mana that would be wasted is not offered, so a payment is complete when nothing is owed. A Phyrexian symbol
  * has a switch that pays 2 life for it instead of mana (within the life total and what the options allow). Confirm
- * sends the chosen payment; with nothing chosen yet "Pay for me" lets the game choose, and after some picks
- * "Pay the rest for me" keeps them and lets the game pay what is owed; Undo or Escape (only when the options allow
+ * sends the chosen payment; with nothing chosen yet "Pay for me" lays out the game's payment (`options.proposal`) as
+ * picks to confirm or change, and after some picks "Pay the rest for me" adds what is owed the same way; with "Always
+ * pay automatically" on, both pay at once as the game chooses; Undo or Escape (only when the options allow
  * it) gives up on the cast, and the permanents picked stay untapped since nothing is paid until Confirm. A mana
  * ability that does more than add mana (Vexing Puzzlebox's roll, `options.announced`) is a button and a legal card:
  * it is activated at once and the payment is asked again with its mana floating.
@@ -113,6 +116,9 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const spellZone = usePlay((state) => state.objectsById[spell]?.zone)
 
   const [{ spends, life, note }, setChosen] = useState(START)
+  // "Always pay automatically" makes "Pay for me" pay at once; without it the game's payment is proposed for a Confirm.
+  const payAtOnce = usePlay((state) => state.autoChoices.auto_pay === true)
+  const confirmRef = useRef<HTMLButtonElement>(null)
   const autoReasonId = useId()
   const [choosing] = selection.ids
   const fitting = (id: ObjectId, given: readonly Spend[] = spends): ManaOption[] =>
@@ -203,6 +209,30 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const clear = (): void => {
     setChosen({ spends: [], life: [], note: 'Cleared the payment.' })
     selection.clear()
+  }
+  // The game's payment laid out as if picked by hand: the sources read pressed and the circles fill, and Confirm pays it.
+  const propose = (whole: Whole): void => {
+    setChosen({ spends: whole.spends, life: whole.life, note: proposalNote(whole, nameOf) })
+    selection.clear()
+    requestAnimationFrame(() => confirmRef.current?.focus())
+  }
+  const payForMe = (): void => {
+    const whole =
+      payAtOnce || options.proposal === undefined
+        ? undefined
+        : fromPayment(options.proposal, cost, pool, options.sources)
+    if (whole === undefined) answer({ PayMana: 'Auto' })
+    else propose(whole)
+  }
+  const payTheRest = (): void => {
+    const preferred = new Set((options.proposal?.taps ?? []).map((tap) => `${tap.object}:${tap.ability}`))
+    const whole = payAtOnce
+      ? undefined
+      : completion(cost, pool, spends, life, reach, (option) =>
+          preferred.has(`${option.source.object}:${option.source.ability}`),
+        )
+    if (whole === undefined) answer({ PayMana: { Complete: toPayment(spends, life) } })
+    else propose(whole)
   }
   const toggleLife = (index: number): void => {
     setChosen((now) => {
@@ -415,6 +445,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       }
     >
       <Button
+        ref={confirmRef}
         className="h-10 px-4"
         data-slot="pay-confirm"
         aria-label="Confirm payment"
@@ -430,18 +461,13 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           data-slot="pay-auto"
           disabled={!options.auto_available}
           aria-describedby={options.auto_available ? undefined : autoReasonId}
-          onClick={() => answer({ PayMana: 'Auto' })}
+          onClick={payForMe}
         >
           Pay for me
         </Button>
       ) : null}
       {options.auto_available && !nothingChosen && !covered && restCanBePaid ? (
-        <Button
-          className="h-10 px-4"
-          variant="outline"
-          data-slot="pay-rest"
-          onClick={() => answer({ PayMana: { Complete: toPayment(spends, life) } })}
-        >
+        <Button className="h-10 px-4" variant="outline" data-slot="pay-rest" onClick={payTheRest}>
           Pay the rest for me
         </Button>
       ) : null}

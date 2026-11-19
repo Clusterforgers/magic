@@ -2,7 +2,7 @@
 import type { Color, ManaCost, ManaSymbol, ManaType, ObjectId } from '@/protocol/generated'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from '../manaSymbols'
 import { madeOf, manaValue } from './payment'
-import type { Spend } from './payment'
+import type { Spend, Whole } from './payment'
 
 const NAME: Record<ManaType, string> = {
   White: 'white',
@@ -166,4 +166,11 @@ export function payText({
     return `${lead}${still} Nothing left can pay it; remove a choice${cancel ? ' or cancel' : ''}.`
   }
   return auto ? `${lead}${still} Choose more${lifeChoice}, or pay the rest for me.` : `${lead}${still}`
+}
+
+/** The note of a proposed payment ("Pay for me" without "Always pay automatically"): what it uses, then what to do. */
+export function proposalNote(whole: Whole, nameOf: (id: ObjectId) => string): string {
+  const parts = whole.spends.map((spend) => spendWords(spend, nameOf))
+  if (whole.life.length > 0) parts.push(`${whole.life.length * LIFE_PER_SYMBOL} life`)
+  return `The game proposes ${parts.length === 0 ? 'nothing' : andList(parts)}. Confirm to pay, or change it.`
 }

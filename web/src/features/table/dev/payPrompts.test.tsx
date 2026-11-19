@@ -71,6 +71,7 @@ describe('?prompt=pay-hybrid', () => {
   it('is drawn on the table, paid with life and answered', async () => {
     const game = fixtureGame({ seats: 2, prompt: 'pay-hybrid' })
     const answer = vi.spyOn(game.session, 'answer')
+    game.session.store.setState((state) => ({ autoChoices: { ...state.autoChoices, auto_pay: true } }))
     render(
       <GameContext value={game}>
         <TableOptionsContext value={{}}>

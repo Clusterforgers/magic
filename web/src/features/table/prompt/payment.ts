@@ -381,16 +381,57 @@ export function completable(
   life: LifeSymbols,
   reach: Reach,
 ): boolean {
+  return search(cost, pool, spends, life, reach) !== undefined
+}
+
+/** A whole payment: its pieces and the Phyrexian symbols life pays. */
+export interface Whole {
+  spends: readonly Spend[]
+  life: LifeSymbols
+}
+
+/**
+ * A payment that finishes `spends` and `life` as `completable` finds it, the pieces added after the ones chosen; the
+ * sources `prefer` names are tried first (the game's own payment). `undefined` when none is found within the search.
+ */
+export function completion(
+  cost: ManaCost,
+  pool: ManaPool,
+  spends: readonly Spend[],
+  life: LifeSymbols,
+  reach: Reach,
+  prefer: (option: ManaOption) => boolean = () => false,
+): Whole | undefined {
+  const found = search(cost, pool, spends, life, reach, prefer)
+  return found === 'budget' ? undefined : found
+}
+
+/** The search of `completable` and `completion`: a payment found, none, or `budget` when it gave up looking. */
+function search(
+  cost: ManaCost,
+  pool: ManaPool,
+  spends: readonly Spend[],
+  life: LifeSymbols,
+  reach: Reach,
+  prefer: (option: ManaOption) => boolean = () => false,
+): Whole | 'budget' | undefined {
   // The sources that cost mana come last, so the ones that fund them are tried before them.
   const options = reach.sources
     .filter((option) => usableByHand(option, reach.spend))
-    .sort((a, b) => Number(costsMana(a)) - Number(costsMana(b)))
+    .sort((a, b) => Number(costsMana(a)) - Number(costsMana(b)) || Number(prefer(b)) - Number(prefer(a)))
   const extras = reach.extras ?? []
   let budget = SEARCH_BUDGET
+  let found: Whole | 'budget' | undefined
   const walk = (paid: LifeSymbols, now: readonly Spend[], from: number, mana: number, next = 0): boolean => {
     budget -= 1
-    if (budget < 0) return true
-    if (covers(cost, now, paid)) return true
+    if (budget < 0) {
+      found = 'budget'
+      return true
+    }
+    if (covers(cost, now, paid)) {
+      found = { spends: now, life: paid }
+      return true
+    }
     const taken = new Set(now.flatMap((spend) => usedBy(spend) ?? []))
     const used = (option: ManaOption): boolean => taken.has(`o:${option.source.object}`)
     const sinks = options.some((option) => costsMana(option) && !used(option))
@@ -425,7 +466,71 @@ export function completable(
     }
     return false
   }
-  return lifeSupersets(cost, life, reach.maxLife).some((paid) => walk(paid, spends, 0, 0))
+  for (const paid of lifeSupersets(cost, life, reach.maxLife)) {
+    if (walk(paid, spends, 0, 0)) return found
+  }
+  return undefined
+}
+
+/**
+ * The game's payment (`PayOptions.proposal`) as the pieces the prompt shows: the floating mana, the restricted mana
+ * of `pool`, the sources tapped with the kind each makes, convoke, improvise, delve and the Phyrexian symbols life
+ * pays, chosen so the whole covers `cost`. `undefined` when no reading of it does.
+ */
+export function fromPayment(
+  payment: Payment,
+  cost: ManaCost,
+  pool: ManaPool,
+  sources: readonly ManaOption[],
+): Whole | undefined {
+  const fixed: Spend[] = payment.pool.map((mana): Spend => ({ kind: 'pool', mana }))
+  const held = pool.restricted ?? []
+  const usedRestricted = new Set<number>()
+  for (const restricted of payment.restricted ?? []) {
+    const index = held.findIndex(
+      (entry, at) => !usedRestricted.has(at) && JSON.stringify(entry) === JSON.stringify(restricted),
+    )
+    if (index < 0) return undefined
+    usedRestricted.add(index)
+    fixed.push({ kind: 'restricted', index, restricted })
+  }
+  for (const one of payment.convoke ?? [])
+    fixed.push({ kind: 'convoke', creature: one.creature, pays: one.pays })
+  for (const artifact of payment.improvise ?? []) fixed.push({ kind: 'improvise', artifact })
+  for (const card of payment.delve ?? []) fixed.push({ kind: 'delve', card })
+  // Each tap names an ability; which kind of mana it makes is read back from what the cost needs.
+  const ways = payment.taps.map((tap) =>
+    sources.filter((option) => option.source.object === tap.object && option.source.ability === tap.ability),
+  )
+  if (ways.some((options) => options.length === 0)) return undefined
+  const symbols = cost.flatMap((symbol, index) => (canPayLife(symbol) ? [index] : []))
+  const count = Math.round(payment.life / LIFE_PER_SYMBOL)
+  const lives: LifeSymbols[] = []
+  const choose = (from: number, picked: number[]): void => {
+    if (picked.length === count) {
+      lives.push(picked)
+      return
+    }
+    for (let at = from; at < symbols.length; at += 1) choose(at + 1, [...picked, symbols[at] ?? 0])
+  }
+  choose(0, [])
+  let budget = SEARCH_BUDGET
+  const pick = (at: number, now: Spend[], life: LifeSymbols): Whole | undefined => {
+    budget -= 1
+    if (budget < 0) return undefined
+    const options = ways[at]
+    if (options === undefined) return covers(cost, now, life) ? { spends: now, life } : undefined
+    for (const option of options) {
+      const found = pick(at + 1, [...now, { kind: 'tap', option }], life)
+      if (found !== undefined) return found
+    }
+    return undefined
+  }
+  for (const life of lives) {
+    const found = pick(0, fixed, life)
+    if (found !== undefined) return found
+  }
+  return undefined
 }
 
 /**

@@ -17,6 +17,7 @@ import type {
 } from '@/protocol/generated'
 import { madeByOption } from '../manaMade'
 import type { Fixture } from './fixture'
+import { withProposal } from './payProposal'
 
 const COLOURS: readonly ManaType[] = ['White', 'Blue', 'Black', 'Red', 'Green']
 
@@ -238,7 +239,7 @@ const payWith =
       max_life: 0,
       spend: { kind: 'Spell', traits: { types: CREATURE_SPELL, colors: 2 } },
     }
-    return { id: 1, decision: { player: viewer, kind: { PayMana: options } } }
+    return { id: 1, decision: { player: viewer, kind: { PayMana: withProposal(options) } } }
   }
 
 /** One green of the pool lasts to the end of the turn (an Omnath's), so it is marked kept. */

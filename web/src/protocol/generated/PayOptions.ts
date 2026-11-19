@@ -5,6 +5,7 @@ import type { ManaCost } from "./ManaCost";
 import type { ManaOption } from "./ManaOption";
 import type { ManaPool } from "./ManaPool";
 import type { ObjectId } from "./ObjectId";
+import type { Payment } from "./Payment";
 import type { Spend } from "./Spend";
 
 /**
@@ -41,6 +42,16 @@ spend?: Spend,
  * Whether an automatic payment exists (it does whenever the cast was offered, unless only a payment that takes the last life would do).
  */
 auto_available: boolean, 
+/**
+ * The payment the game makes for the player, which "Pay for me" proposes for them to confirm or change; left out
+ * while there is none.
+ */
+proposal?: Payment, 
+/**
+ * The ability being activated, while the payment is for an activation (cycling from a hand); left out for a spell and
+ * for anything else.
+ */
+ability?: AbilityRef, 
 /**
  * Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).
  */

@@ -29,6 +29,7 @@ import { withTopCard, withTopCast } from './topCardScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
 import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
+import { withProposal } from './payProposal'
 import { companionTable, stackAbilityTable } from './previewScenes'
 
 /** Builds the decision the viewer of a fixture faces. */
@@ -371,7 +372,7 @@ const pay: DevPrompt = ({ view }) => {
   if (rock !== undefined) {
     options.sources.push({ source: { object: rock.id, ability: rock.abilities.length }, produces: 'Red' })
   }
-  return { id: 1, decision: { player: viewer, kind: { PayMana: options } } }
+  return { id: 1, decision: { player: viewer, kind: { PayMana: withProposal(options) } } }
 }
 
 /** A cost the viewer cannot pay (two blue, with three sources and none of them blue): no automatic payment. */
@@ -386,7 +387,7 @@ const payShort: DevPrompt = (fixture) => {
     sources: options.sources.filter((option) => option.produces !== 'Blue').slice(0, 3),
     auto_available: false,
   }
-  return { id, decision: { ...decision, kind: { PayMana: short } } }
+  return { id, decision: { ...decision, kind: { PayMana: withProposal(short) } } }
 }
 
 const HYBRID_COST: ManaCost = [
@@ -406,7 +407,7 @@ const payHybrid: DevPrompt = (fixture) => {
   if (!('PayMana' in decision.kind)) return { id, decision }
   const { PayMana: options } = decision.kind
   const mixed: PayOptions = { ...options, cost: HYBRID_COST, life: 20, max_life: 4 }
-  return { id, decision: { ...decision, kind: { PayMana: mixed } } }
+  return { id, decision: { ...decision, kind: { PayMana: withProposal(mixed) } } }
 }
 
 /**
@@ -463,7 +464,7 @@ const payLowLife: DevPrompt = (fixture) => {
   const { id, decision } = payHybrid(fixture)
   if (!('PayMana' in decision.kind)) return { id, decision }
   const low: PayOptions = { ...decision.kind.PayMana, life: 3, max_life: 2 }
-  return { id, decision: { ...decision, kind: { PayMana: low } } }
+  return { id, decision: { ...decision, kind: { PayMana: withProposal(low) } } }
 }
 
 /** The same payment when the cast may not be backed out of: no Undo button, and the sentence does not mention it. */

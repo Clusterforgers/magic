@@ -1,7 +1,8 @@
-/** Goal: the PayMana prompt tells the player in plain words what a cost asks for (hybrid and Phyrexian symbols included), what is still owed, what the last click did and what to do next (choose a source, pay life, confirm, remove a choice or cancel). */
+/** Goal: the PayMana prompt tells the player in plain words what a cost asks for (hybrid and Phyrexian symbols included), what is still owed, what the last click did and what to do next (choose a source, pay life, confirm, remove a choice or cancel), and says what a proposed payment uses. */
 import { describe, expect, it } from 'vitest'
-import { cost } from '@/test-utils/mana'
-import { costWords, manaName, payText } from './payText'
+import { cost, source } from '@/test-utils/mana'
+import type { Spend } from './payment'
+import { costWords, manaName, payText, proposalNote } from './payText'
 import type { PayTextInput } from './payText'
 
 const NOTHING = cost('')
@@ -125,6 +126,29 @@ describe('payText', () => {
     ],
   ])('%s', (_what, given, words) => {
     expect(payText(given)).toBe(words)
+  })
+})
+
+describe('the note of a proposed payment', () => {
+  it.each([
+    [
+      'two lands',
+      {
+        spends: [
+          { kind: 'tap', option: source(1, 'G') },
+          { kind: 'tap', option: source(2, 'U') },
+        ] as Spend[],
+        life: [],
+      },
+      'The game proposes green from Forest and blue from Island. Confirm to pay, or change it.',
+    ],
+    [
+      'floating mana and life',
+      { spends: [{ kind: 'pool', mana: 'Red' }] as Spend[], life: [1] },
+      'The game proposes red from your pool and 2 life. Confirm to pay, or change it.',
+    ],
+  ])('names %s', (_what, whole, words) => {
+    expect(proposalNote(whole, (id) => (id === 1 ? 'Forest' : 'Island'))).toBe(words)
   })
 })
 
