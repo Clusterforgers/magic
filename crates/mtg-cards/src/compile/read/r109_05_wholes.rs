@@ -1,6 +1,7 @@
-//! r109-05 combat damage rules whose wordings no other reader or writer joins: each entry of `r109_05_wholes.json` is an
-//! ability with the words the card prints for it (the card's name as `~`), read when a clause says exactly those words
-//! and written back from the ability, so another recipient, assigner or creature never reads back.
+//! r109-05 rules of combat damage, added combat phases and redirected attackers whose wordings no other reader or writer
+//! joins: each entry of `r109_05_wholes.json` is an ability with the words the card prints for it (the card's name as
+//! `~`), read when a clause says exactly those words and written back from the ability, so another recipient, assigner,
+//! creature or duration never reads back.
 
 use std::sync::LazyLock;
 
@@ -65,6 +66,15 @@ mod tests {
     #[case("you assign", "they assign")]
     #[case("attacking you.", "attacking.")]
     #[case("blocking it.", "blocking you.")]
+    #[case("Only land creatures", "Only creatures")]
+    #[case("their opponents control", "they control")]
+    #[case("any number of target", "one target")]
+    #[case("now attacking that player", "now attacking you")]
+    #[case("untap all lands", "untap all creatures")]
+    #[case("during that combat phase", "this turn")]
+    #[case("attacks that combat if able", "attacks each combat if able")]
+    #[case("can't attack you or planeswalkers", "can't attack planeswalkers")]
+    #[case("Remove all attacking creatures", "Remove all blocking creatures")]
     fn r109_05_a_near_miss_reads_as_nothing(#[case] from: &str, #[case] to: &str) {
         let mut hit = false;
         for (_, text) in R109_05_SHAPES.iter() {

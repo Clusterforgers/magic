@@ -776,14 +776,20 @@ impl RuleEffect {
     /// Whether the rule still applies in `state`: its duration has not ended and an object it names is still the object
     /// it named. A rule that does not stops applying at once; the `RuleExpired` event only removes it.
     pub fn is_active(&self, state: &GameState) -> bool {
-        lasts(
+        !self.ended(state) && crate::effects::r109_in_that_combat(state, &self.duration)
+    }
+
+    /// Whether the rule has ended for good, so housekeeping removes it: its duration has run out or an object it names is
+    /// gone. A rule that waits for its combat phase has not ended.
+    pub fn ended(&self, state: &GameState) -> bool {
+        !(lasts(
             state,
             &self.duration,
             self.turn,
             self.controller,
             self.source,
         ) && !self.spent(state)
-            && (self.duration != Duration::WhileTapped || self.r5509_stays_tapped(state))
+            && (self.duration != Duration::WhileTapped || self.r5509_stays_tapped(state)))
     }
 
     /// Whether every object a prohibition names is still tapped on the battlefield (`Duration::WhileTapped`); a rule

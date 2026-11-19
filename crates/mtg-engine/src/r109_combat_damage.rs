@@ -169,7 +169,7 @@ pub(crate) fn r109_divider(state: &GameState, attacker: &Attacker) -> Option<Pla
 
 /// The damage marked on `id` that counts as lethal: the most one source dealt when lethal damage destroys it only from a
 /// single source, else all of it (`marked`).
-pub(crate) fn r109_lethal_marked(state: &GameState, id: ObjectId, marked: u32) -> u32 {
+pub fn r109_lethal_marked(state: &GameState, id: ObjectId, marked: u32) -> u32 {
     if !has(state, id, &CombatQuirk::R109LethalFromOneSource) {
         return marked;
     }

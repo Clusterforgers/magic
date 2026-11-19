@@ -284,6 +284,8 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
         let (damage, marked) = object
             .permanent()
             .map_or((0, false), |p| (p.damage(), p.deathtouched()));
+        // Lethal damage from one source only, where a rule says so (Ogre Enforcer).
+        let damage = mtg_engine::r109_combat_damage::r109_lethal_marked(state, id, damage);
         let destroyed = i64::from(damage) >= toughness || marked;
         if toughness <= 0 || (destroyed && !is_indestructible(state, id)) {
             return Err(Violation::Bookkeeping(format!(

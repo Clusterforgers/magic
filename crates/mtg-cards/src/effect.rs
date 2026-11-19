@@ -2311,6 +2311,10 @@ pub enum Effect {
         /// Only players are offered ("reselect which player ~ is attacking").
         #[serde(default, skip_serializing_if = "is_false")]
         players: bool,
+        /// No choice is offered: each of them is now attacking this player ("Those creatures are now attacking that
+        /// player.").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r109_to: Option<Ref>,
     },
     /// Binds the players or objects `what` names now under the name, so the steps after it (and a delayed trigger this
     /// resolution sets up) read the same ones however the game changes ("its controller" of a spell about to be countered).

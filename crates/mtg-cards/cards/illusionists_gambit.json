@@ -1,0 +1,43 @@
+{
+  "oracle_id": "333745d9-e930-439b-94d6-3aeea2877f69",
+  "name": "Illusionist's Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusionist's Gambit",
+      "oracle_fingerprint": "6fd68322998969def1b659134a942f42",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": { "All": [{ "Step": "DeclareBlockers" }, { "Not": "YourTurn" }] }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Bind": { "what": { "Each": [{ "Type": "Creature" }, "Attacking"] }, "as": "those" }
+              },
+              { "RemoveFromCombat": { "what": { "Bound": "those" } } },
+              { "Untap": { "what": { "Bound": "those" } } },
+              { "AddPhase": { "phases": ["Combat"] } },
+              {
+                "Rule": {
+                  "rule": { "MustAttack": { "Bound": "those" } },
+                  "duration": { "R109ThatCombat": 0 }
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "those" },
+                  "mods": [{ "CantAttackYou": "Both" }],
+                  "duration": { "R109ThatCombat": 0 }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

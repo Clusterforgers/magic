@@ -1,5 +1,17 @@
 [
  [
+  {"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"AtTrigger":{"Step":"DeclareAttackers"}},"targets":[{"what":"Player"},{"what":{"Object":[{"Type":"Creature"},"Attacking",{"ControlledBy":{"OpponentsOf":{"Target":0}}}]},"bounds":{"min":0,"max":null}}],"effects":[{"Reattack":{"what":{"Target":1},"r109_to":{"Target":0}}}]}},
+  "When ~ enters during the declare attackers step, choose target player and any number of target attacking creatures their opponents control. Those creatures are now attacking that player."
+ ],
+ [
+  {"Triggered":{"when":{"DealsDamage":{"source":["This"],"to":"EachPlayer","combat":true}},"effects":[{"Untap":{"what":{"Each":[{"Type":"Land"},{"ControlledBy":"You"}]}}},{"AddPhase":{"phases":["Combat"]}},{"Continuous":{"affected":{"Each":[{"Type":"Creature"},{"Not":{"Type":"Land"}}]},"mods":["CantAttack"],"duration":{"R109ThatCombat":0}}}]}},
+  "Whenever ~ deals combat damage to a player, untap all lands you control. After this phase, there is an additional combat phase. Only land creatures can attack during that combat phase."
+ ],
+ [
+  {"Spell":{"effects":[{"Bind":{"what":{"Each":[{"Type":"Creature"},"Attacking"]},"as":"those"}},{"RemoveFromCombat":{"what":{"Bound":"those"}}},{"Untap":{"what":{"Bound":"those"}}},{"AddPhase":{"phases":["Combat"]}},{"Rule":{"rule":{"MustAttack":{"Bound":"those"}},"duration":{"R109ThatCombat":0}}},{"Continuous":{"affected":{"Bound":"those"},"mods":[{"CantAttackYou":"Both"}],"duration":{"R109ThatCombat":0}}}]}},
+  "Remove all attacking creatures from combat and untap them. After this phase, there is an additional combat phase. Each of those creatures attacks that combat if able. They can't attack you or planeswalkers you control that combat."
+ ],
+ [
   { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "R109AssignsAmongDefenders" } } } },
   "You may assign ~'s combat damage divided as you choose among defending player and/or any number of creatures they control."
  ],

@@ -111,6 +111,7 @@ mod prepare_cards;
 mod provoke_rampage;
 mod prowl;
 mod pump_animate;
+mod r109_added_combat;
 mod r109_combat_damage;
 mod r1c;
 mod r1fix;

@@ -365,7 +365,7 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
         state
             .rule_effects()
             .iter()
-            .filter(|e| !e.is_active(state))
+            .filter(|e| e.ended(state))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
     expired.extend(

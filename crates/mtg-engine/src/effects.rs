@@ -501,6 +501,23 @@ pub(crate) fn began_turn(state: &GameState, duration: &Duration, controller: Pla
     }
 }
 
+/// The duration an effect begins with: "that combat phase" (`R109ThatCombat(0)`) names the combat phase added last this turn.
+pub(crate) fn r109_mark_duration(state: &GameState, duration: &Duration) -> Duration {
+    match duration {
+        Duration::R109ThatCombat(0) => Duration::R109ThatCombat(state.turn().r109_latest_mark()),
+        other => other.clone(),
+    }
+}
+
+/// Whether an effect of `duration` applies now as far as its combat phase goes: one that lasts during an added combat phase
+/// applies only while that phase is under way; every other duration applies at any time.
+pub(crate) fn r109_in_that_combat(state: &GameState, duration: &Duration) -> bool {
+    match duration {
+        Duration::R109ThatCombat(mark) => *mark != 0 && state.turn().r109_combat_mark() == *mark,
+        _ => true,
+    }
+}
+
 /// Whether an effect of a spell or ability that `controller` controlled, made by `source` in turn `began`, still lasts
 /// in `state` by its duration (CR 611.2): the one rule for the durations of continuous effects and of rules.
 pub(crate) fn lasts(
@@ -548,6 +565,8 @@ pub(crate) fn lasts(
                     && turn.step() >= Step::End)
         }
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
+        // It applies only while its combat phase is under way (`r109_in_that_combat`) and ends with the turn.
+        Duration::R109ThatCombat(_) => turn.number() == began,
         // `UntilItsControllersNextCombatEnds` is begun for the player who controls the creature (`prim/rule.rs`), and the
         // turn before when begun before their attackers are declared (`began_turn`).
         Duration::UntilEndOfCombatOnYourNextTurn | Duration::UntilItsControllersNextCombatEnds => {
@@ -658,6 +677,7 @@ pub(crate) fn ends_with_turn(
     match duration {
         Duration::UntilEndOfTurn
         | Duration::UntilSkippedThisTurn
+        | Duration::R109ThatCombat(_)
         | Duration::UntilEndOfTurnOrRolled(_) => true,
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             turn.number() > began && state.is_active(controller)
@@ -800,6 +820,9 @@ impl ContinuousEffect {
     /// Whether it is the turn the effect applies in: for `DuringItsControllersNextTurn`, the next turn of the player it
     /// was begun for; any turn for the other durations.
     fn in_its_turn(&self, state: &GameState) -> bool {
+        if !r109_in_that_combat(state, &self.duration) {
+            return false;
+        }
         self.duration != Duration::DuringItsControllersNextTurn
             || (state.turn().active() == self.controller && state.turn().number() > self.turn)
     }

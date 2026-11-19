@@ -45,6 +45,9 @@ fn compact(name: &str) -> String {
 #[case("Ogre Enforcer")]
 #[case("Defensive Formation")]
 #[case("Alchemist's Gambit")]
+#[case("Bumi, Unleashed")]
+#[case("Illusionist's Gambit")]
+#[case("Portal Manipulator")]
 fn r109_05_reads_back_whole(#[case] name: &str) {
     let report = report_of(name, &compact(name));
     assert_eq!(
@@ -84,6 +87,20 @@ fn r109_05_reads_back_whole(#[case] name: &str) {
     r#""r109_unpreventable":true,"at_end""#,
     r#""at_end""#
 )]
+#[case::bumi_all_turn("Bumi, Unleashed", r#"{"R109ThatCombat":0}"#, r#""UntilEndOfTurn""#)]
+#[case::bumi_lands_attack("Bumi, Unleashed", r#"{"Not":{"Type":"Land"}}"#, r#"{"Type":"Land"}"#)]
+#[case::gambit_owner(
+    "Illusionist's Gambit",
+    r#""CantAttackYou":"Both""#,
+    r#""CantAttackYou":"Player""#
+)]
+#[case::gambit_no_untap("Illusionist's Gambit", r#"{"Untap":{"what":{"Bound":"those"}}},"#, "")]
+#[case::portal_any_controller(
+    "Portal Manipulator",
+    r#",{"ControlledBy":{"OpponentsOf":{"Target":0}}}"#,
+    ""
+)]
+#[case::portal_choice("Portal Manipulator", r#","r109_to":{"Target":0}"#, "")]
 #[case::no_loss("Alchemist's Gambit", r#","at_end":[{"LoseGame":{}}]"#, "")]
 fn r109_05_a_near_miss_does_not_read_back(
     #[case] name: &str,

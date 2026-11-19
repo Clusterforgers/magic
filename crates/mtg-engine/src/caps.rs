@@ -480,6 +480,7 @@ const RUNS: &[&str] = &[
     "Rule.Duration.UntilItsControllersNextCombatEnds",
     "Duration.WhileSourceTapped",
     "Duration.WhileYouControlSourceTapped",
+    "Duration.R109ThatCombat",
     "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
     "Duration.WhileEnchanted",
@@ -731,6 +732,7 @@ const RUNS: &[&str] = &[
     "Effect.StillResolves",
     "Effect.Rephase",
     "Effect.Reattack",
+    "Effect.Reattack.R109To",
     "Effect.Pay.Counted",
     "Effect.Pay.Took",
     "Effect.Pay.X",
@@ -1666,6 +1668,8 @@ mod tests {
     #[case::r109_unblocked_to_creature("Rule.Combat.R109UnblockedToCreature", true)]
     #[case::r109_defender_assigns("Rule.Combat.R109DefenderAssigns", true)]
     #[case::r109_one_source("Rule.Combat.R109LethalFromOneSource", true)]
+    #[case::r109_that_combat("Duration.R109ThatCombat", true)]
+    #[case::r109_now_attacking("Effect.Reattack.R109To", true)]
     #[case::lifelink("Keyword.Lifelink", true)]
     #[case::indestructible("Keyword.Indestructible", true)]
     #[case::hexproof("Keyword.Hexproof", true)]

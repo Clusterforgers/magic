@@ -12,7 +12,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::keyword::Keyword;
-use mtg_cards::value::CounterKind;
+
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Decision, DecisionKind};
 use mtg_engine::replay;
@@ -314,17 +314,20 @@ fn r109_ogre_enforcer_dies_only_to_one_sources_lethal_damage(
             driver.pass()?;
         }
     }
-    let marked = driver
-        .state()
-        .object(driver.id_of("Ogre Enforcer")?)
-        .and_then(|o| o.permanent())
-        .map(|p| (p.damage(), p.counters_of(&CounterKind::PlusOnePlusOne)));
     let survives = enforcer && !one_bolt;
     assert_eq!(
         alive(&driver, "Ogre Enforcer"),
         survives,
-        "marked {marked:?}"
+        "enforcer {enforcer}, one bolt {one_bolt}"
     );
+    if survives {
+        let marked = driver
+            .state()
+            .object(driver.id_of("Ogre Enforcer")?)
+            .and_then(|o| o.permanent())
+            .map(|p| (p.damage(), p.r109_most_from_one_source()));
+        assert_eq!(marked, Some((4, 2)), "4 damage marked, 2 from each bolt");
+    }
     replays(&scenario, &driver);
     Ok(())
 }

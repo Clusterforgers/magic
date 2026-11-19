@@ -442,6 +442,9 @@ fn begin_turn(
     state.turn.r5500_lone.clear();
     state.turn.r5500_in_lone = false;
     state.turn.r306_steps.clear();
+    state.turn.r109_marks.clear();
+    state.turn.r109_given = 0;
+    state.turn.r109_combat = 0;
     state.turn.r306_seen = 0;
     state.turn.r306_again = 0;
     state.turn.ending = false;
@@ -519,6 +522,10 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                 state.turn.r306_steps.remove(0);
             }
             state.turn.r306_note_step(*step);
+            // A combat phase is marked only when it begins from a marked entry of the phases ahead.
+            if *step == Step::BeginCombat || step.phase() != crate::turn::Phase::Combat {
+                state.turn.r109_combat = 0;
+            }
             // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
             if state.turn.ahead.first() == Some(step) {
                 state.turn.r5500_begin_ahead();

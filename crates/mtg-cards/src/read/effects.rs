@@ -373,7 +373,16 @@ fn permanents(ctx: &Ctx, effect: &Effect) -> Option<String> {
         ),
         Effect::Goad { what } => format!("goad {}", phrase::who(ctx, what)),
         Effect::Regenerate { what } => format!("regenerate {}", phrase::who(ctx, what)),
-        Effect::Reattack { what, players } => format!(
+        Effect::Reattack {
+            what,
+            r109_to: Some(to),
+            ..
+        } => format!(
+            "{} are now attacking {}",
+            phrase::who(ctx, what),
+            phrase::who(ctx, to)
+        ),
+        Effect::Reattack { what, players, .. } => format!(
             "you may reselect which {} {} is attacking",
             if *players {
                 "player"

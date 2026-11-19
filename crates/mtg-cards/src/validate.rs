@@ -4727,8 +4727,19 @@ impl Walker<'_> {
                 what,
                 against: None,
             }
-            | Effect::Reattack { what, .. } => {
+            | Effect::Reattack {
+                what, r109_to: None, ..
+            } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Effect::Reattack {
+                what,
+                r109_to: Some(to),
+                ..
+            } => {
+                w.uses("Effect", "Reattack.R109To");
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("r109_to", |w| w.reference(to, Kind::Player));
             }
             Effect::JoinAttack {
                 what,
@@ -5238,6 +5249,7 @@ impl Walker<'_> {
                 if *duration == Duration::UntilItsControllersNextUntapStep {
                     w.uses("Duration", "UntilItsControllersNextUntapStep");
                 }
+                w.r109_that_combat(duration);
                 if let Duration::WhileMonarch(who) = duration {
                     w.uses("Duration", "WhileMonarch");
                     w.at("duration", |w| w.reference(who, Kind::Player));
@@ -5330,6 +5342,7 @@ impl Walker<'_> {
                 }
             }
             Effect::Rule { rule, duration } => w.at("rule", |w| {
+                w.r109_that_combat(duration);
                 if matches!(
                     duration,
                     Duration::WhileEnchanted
@@ -10016,6 +10029,17 @@ mod printed_keywords {
 }
 
 impl Walker<'_> {
+    /// "During that combat phase" (`Duration::R109ThatCombat`): an engine piece, and a rules file names the phase as 0
+    /// because the engine marks it as the effect begins.
+    fn r109_that_combat(&mut self, duration: &Duration) {
+        if let Duration::R109ThatCombat(mark) = duration {
+            self.uses("Duration", "R109ThatCombat");
+            if *mark != 0 {
+                self.problem("\"during that combat phase\" is written as R109ThatCombat 0");
+            }
+        }
+    }
+
     /// A logged keyword action: one of the actions a step performs, with the parts that action has and no others.
     fn l31a_performed(
         &mut self,

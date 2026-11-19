@@ -324,6 +324,10 @@ pub enum Duration {
     UntilEndOfTurn,
     /// Until the end of combat.
     UntilEndOfCombat,
+    /// During the combat phase that the same resolution added (CR 500.8): "only land creatures can attack during that
+    /// combat phase", "each of those creatures attacks that combat if able". A rules file writes 0; the engine puts the
+    /// mark of that added phase in as the effect begins, and the effect applies only while that phase is under way.
+    R109ThatCombat(u32),
     /// Until the controller's next turn begins.
     UntilYourNextTurn,
     /// Until the controller's next end step begins: the one of this turn when it has not begun yet (CR 513).

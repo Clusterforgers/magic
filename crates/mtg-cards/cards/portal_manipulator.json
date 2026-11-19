@@ -1,20 +1,4 @@
-{
-  "oracle_id": "0dd3127e-de13-4785-b5f2-0af996e9f15f",
-  "name": "Portal Manipulator",
-  "impl_status": "Partial",
-  "faces": [
-    {
-      "name": "Portal Manipulator",
-      "oracle_fingerprint": "f1690c5c74a17aafe201b4dffcf543b4",
-      "abilities": [
-        { "Keyword": "Flash" },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 204 }
-          }
-        }
-      ]
-    }
-  ]
-}
+{"oracle_id":"0dd3127e-de13-4785-b5f2-0af996e9f15f","name":"Portal Manipulator","impl_status":"Full","faces":[{"name":"Portal Manipulator","oracle_fingerprint":"f1690c5c74a17aafe201b4dffcf543b4","abilities":[
+{"Keyword":"Flash"},
+{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"AtTrigger":{"Step":"DeclareAttackers"}},"targets":[{"what":"Player"},{"what":{"Object":[{"Type":"Creature"},"Attacking",{"ControlledBy":{"OpponentsOf":{"Target":0}}}]},"bounds":{"min":0,"max":null}}],"effects":[{"Reattack":{"what":{"Target":1},"r109_to":{"Target":0}}}]}}
+]}]}
