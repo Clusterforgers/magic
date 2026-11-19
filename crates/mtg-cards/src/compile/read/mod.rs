@@ -180,6 +180,8 @@ mod player_keywords;
 mod prepare;
 mod prevention;
 mod pronouns;
+mod r109_entering;
+mod r109_wholes;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -810,6 +812,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
             .iter()
             .any(|written| same_text(written, text))
     {
+        return Some(found);
+    }
+    if let Some(found) = r109_wholes::r109_read(text, kind) {
         return Some(found);
     }
     if let Some(found) = r5521_wholes::r5521_read(text, kind) {

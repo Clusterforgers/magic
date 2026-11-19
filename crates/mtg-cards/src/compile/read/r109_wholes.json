@@ -1,0 +1,14 @@
+[
+ [
+  {"Triggered": {"when": {"ZoneChange": {"what": ["This"], "to": "Battlefield"}}, "effects": [{"If": {"condition": {"CastWith": "Emerge"}, "then": [{"CreateToken": {"token": {"Custom": {"name": "Alien", "colors": ["White"], "types": ["Creature"], "subtypes": ["Alien"], "power": 2, "toughness": 2}}, "count": {"CountedAsCast": {"Stat": {"of": "Paid", "stat": "Toughness"}}}}}], "otherwise": [{"CreateToken": {"token": {"Custom": {"name": "Alien", "colors": ["White"], "types": ["Creature"], "subtypes": ["Alien"], "power": 2, "toughness": 2}}}}]}}]}},
+  "When ~ enters, create a 2/2 white Alien creature token. If ~'s emerge cost was paid, instead create X of those tokens, where X is the sacrificed creature's toughness."
+ ],
+ [
+  {"Triggered": {"when": {"R109WhileCasting": {"inner": {"Sacrificed": {"what": ["This"], "by": "You"}}, "way": "Emerge"}}, "effects": [{"CreateToken": {"token": {"Custom": {"name": "Eldrazi Horror", "colors": [], "types": ["Creature"], "subtypes": ["Eldrazi", "Horror"], "power": 3, "toughness": 2}}}}]}},
+  "When you sacrifice ~ while casting a spell with emerge, create a 3/2 colorless Eldrazi Horror creature token."
+ ],
+ [
+  {"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"AsCopy": {"of": [{"Type": "Creature"}], "r109_embalmed": [{"SetColors": ["White"]}, {"AddSubtype": "Zombie"}]}}}},
+  "You may have ~ enter as a copy of any creature on the battlefield, except if ~ was embalmed, the token has no mana cost, it's white, and it's a Zombie in addition to its other types."
+ ]
+]

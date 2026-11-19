@@ -1,7 +1,7 @@
 {
   "oracle_id": "1e21e57e-3bc9-41a8-9746-57b583a5ad63",
   "name": "Adipose Offspring",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Adipose Offspring",
@@ -9,9 +9,50 @@
       "abilities": [
         { "Keyword": { "Emerge": "{5}{W}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 132, "end": 322 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "If": {
+                  "condition": { "CastWith": "Emerge" },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Alien",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Alien"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        },
+                        "count": {
+                          "CountedAsCast": { "Stat": { "of": "Paid", "stat": "Toughness" } }
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Alien",
+                            "colors": ["White"],
+                            "types": ["Creature"],
+                            "subtypes": ["Alien"],
+                            "power": 2,
+                            "toughness": 2
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

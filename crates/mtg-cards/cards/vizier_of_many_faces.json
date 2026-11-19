@@ -1,16 +1,21 @@
 {
   "oracle_id": "55bceb83-bbba-477f-98ce-6e0a80b91080",
   "name": "Vizier of Many Faces",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vizier of Many Faces",
       "oracle_fingerprint": "c26c331a7d5e3578e03abcd0c422ab8b",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 206 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "r109_embalmed": [{ "SetColors": ["White"] }, { "AddSubtype": "Zombie" }]
+              }
+            }
           }
         },
         { "Keyword": { "Embalm": "{3}{U}{U}" } }

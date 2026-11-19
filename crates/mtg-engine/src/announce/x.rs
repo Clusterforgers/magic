@@ -56,6 +56,8 @@ impl XCost {
                 }
                 // A cleave, madness, foretell or freerunning cost may hold an `{X}` the mana cost lacks.
                 let symbols = u32::from(card.x_in_cost).max(ways::r283_keyword_x(state, *spell));
+                // "As an additional cost to cast this spell, waterbend {X}": each such part is an `{X}` of the spell.
+                let symbols = symbols.saturating_add(required::r109_waterbend_x(card));
                 // A kicker with `{X}` ("Kicker {X}") asks X once the spell is kicked; its X counts no other symbol.
                 if symbols == 0 && super::optional::kicker_x(card) > 0 {
                     return Some(XCost::Mana { symbols: 0 });
@@ -227,9 +229,9 @@ pub(crate) fn payable(
     let Some(rules) = rules else {
         return pays(&cheapest(state, player, id, way, cost));
     };
-    let symbols = state
-        .object(id)
-        .map_or(0, |card| u32::from(card.card().x_in_cost));
+    let symbols = state.object(id).map_or(0, |card| {
+        u32::from(card.card().x_in_cost) + required::r109_waterbend_x(card.card())
+    });
     let color = state
         .object(id)
         .and_then(|card| crate::price::spell_x_color(card.card()));

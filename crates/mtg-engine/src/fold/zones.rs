@@ -451,9 +451,11 @@ fn held_as_cast(state: &GameState, player: PlayerId, spell: ObjectId) -> AsCast 
     if asked.is_empty() && counted.is_empty() {
         return (asked, Vec::new());
     }
-    // The objects the cost took are the spell's own ("the mana value of the returned creature").
+    // The objects the cost took are the spell's own ("the mana value of the returned creature"), read as they last
+    // existed ("the sacrificed creature's toughness").
     let scope = crate::resolve::Scope {
         choices: &object.choices,
+        snapshots: object.choices.cost_shots().iter().collect(),
         ..crate::resolve::Scope::announcing(state, player, object.reference())
     };
     let held = asked

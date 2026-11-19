@@ -20,6 +20,7 @@ Act of Aggression
 Act of Treason
 Adaptive Snapjaw
 Adarkar Unicorn
+Adipose Offspring
 Adorned Pouncer
 Adriana, Captain of the Guard
 Adric, Mathematical Genius
@@ -654,6 +655,7 @@ Disembowel
 Dismal Backwater
 Dismantling Blow
 Dismantling Wave
+Displaced Dinosaurs
 Disrupt Decorum
 Dissension in the Ranks
 Distorting Wake
@@ -946,6 +948,7 @@ Fork
 Fortified Area
 Fortified Village
 Forum of Amity
+Foul Emissary
 Founding of Omashu
 Foundry Inspector
 Fountainport
@@ -2847,6 +2850,7 @@ Vivid Creek
 Vivid Grove
 Vivid Marsh
 Vivid Meadow
+Vizier of Many Faces
 Vizier of the Anointed
 Voice of All
 Voice of the Blessed

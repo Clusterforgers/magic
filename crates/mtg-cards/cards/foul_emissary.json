@@ -1,7 +1,7 @@
 {
   "oracle_id": "034c2b40-6bcc-4bb5-be94-4602496ddcc6",
   "name": "Foul Emissary",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Foul Emissary",
@@ -37,9 +37,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 202, "end": 323 }
+          "Triggered": {
+            "when": {
+              "R109WhileCasting": {
+                "inner": { "Sacrificed": { "what": ["This"], "by": "You" } },
+                "way": "Emerge"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Eldrazi Horror",
+                      "types": ["Creature"],
+                      "subtypes": ["Eldrazi", "Horror"],
+                      "power": 3,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]
