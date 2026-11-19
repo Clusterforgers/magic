@@ -6573,6 +6573,20 @@ impl Walker<'_> {
         }
     }
 
+    /// A next spell put elsewhere as it resolves goes to a hand or exile (`SpellBenefit::R6503Resolves`).
+    fn r109_next_spell_benefit(&mut self, benefit: &crate::modify::SpellBenefit) {
+        let crate::modify::SpellBenefit::R6503Resolves(by) = benefit else {
+            return;
+        };
+        self.uses("SpellBenefit", "R6503Resolves");
+        if !matches!(
+            by,
+            ReplaceBy::MoveTo(crate::refs::ZoneKind::Hand | crate::refs::ZoneKind::Exile)
+        ) {
+            self.problem("a spell as it resolves goes to a hand or exile instead");
+        }
+    }
+
     /// The rules that set an option of the game: who they apply to, what they select and the size they set.
     fn rule_option(&mut self, tag: &str, rule: &GameRule) {
         match rule {
@@ -6596,17 +6610,7 @@ impl Walker<'_> {
             }
             GameRule::NextSpell { what, benefit } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
-                if let crate::modify::SpellBenefit::R6503Resolves(by) = benefit {
-                    self.uses("SpellBenefit", "R6503Resolves");
-                    if !matches!(
-                        by,
-                        crate::trigger::ReplaceBy::MoveTo(
-                            crate::refs::ZoneKind::Hand | crate::refs::ZoneKind::Exile
-                        )
-                    ) {
-                        self.problem("a spell as it resolves goes to a hand or exile instead");
-                    }
-                }
+                self.r109_next_spell_benefit(benefit);
             }
             GameRule::SpellCost {
                 applies_to, mana, ..

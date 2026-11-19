@@ -118,7 +118,10 @@ fn r109_soulfire_returns_only_the_next_instant_from_hand(
         2,
         "{hand:?}"
     );
-    assert!(r109_names(&driver, Zone::Graveyard(pid(0))).is_empty());
+    assert_eq!(
+        r109_names(&driver, Zone::Graveyard(pid(0))),
+        Vec::<String>::new()
+    );
     // The rule is spent: the second Opt goes to the graveyard.
     driver.cast("Opt")?;
     r109_settle(&mut driver, None, &[])?;
@@ -174,7 +177,7 @@ fn r109_cosmic_intervention_returns_the_casters_permanents_at_the_end_step(
     r109_settle(&mut driver, None, &[])?;
     let field = r109_names(&driver, Zone::Battlefield);
     assert!(field.contains(&"Bear 0".to_owned()), "{field:?}");
-    assert!(r109_names(&driver, Zone::Exile).is_empty());
+    assert_eq!(r109_names(&driver, Zone::Exile), Vec::<String>::new());
     replays(&driver, &setup);
     Ok(())
 }

@@ -1394,10 +1394,13 @@ fn ability() -> impl Strategy<Value = Ability> {
                     .prop_map(|(who, caused_own)| ReplaceWhen::LifeGain { who, caused_own }),
                 reference().prop_map(|who| ReplaceWhen::LoseGame { who }),
                 reference().prop_map(|who| ReplaceWhen::Mill { who }),
-                (reference(), 0..3u32).prop_map(|(who, except_draw_step)| ReplaceWhen::Draw {
-                    who,
-                    except_draw_step
-                }),
+                (reference(), 0..3u32, proptest::bool::ANY).prop_map(
+                    |(who, except_draw_step, first)| ReplaceWhen::Draw {
+                        who,
+                        except_draw_step,
+                        first,
+                    }
+                ),
                 selector().prop_map(|what| ReplaceWhen::Enters { what }),
                 (selector(), proptest::bool::ANY).prop_map(|(what, effect)| {
                     ReplaceWhen::Discarded {
