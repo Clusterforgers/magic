@@ -1,4 +1,4 @@
-// Goal: in boss mode a board without permanents is one line (a Spirit's own row, an ally's tile, the boss's pods) and a hand dock with nothing to play is a slim bar, while a board that has permanents keeps its zone; the opening-hand decision floats in the middle of the table over the dimmed boards with the seats' keep status in it; every table off a phone floats the opening-hand decision the same way, the dock keeping its place but not a second copy of the hand, and a phone keeps it in the strip.
+// Goal: in boss mode a board without permanents is one line (a Spirit's own row, an ally's tile) while the boss's empty side keeps its pod and a quiet empty board, and a hand dock with nothing to play is a slim bar, while a board that has permanents keeps its zone; the opening-hand decision floats in the middle of the table over the dimmed boards with the seats' keep status in it; every table off a phone floats the opening-hand decision the same way, the dock keeping its place but not a second copy of the hand, and a phone keeps it in the strip.
 import { screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer } from '@/protocol/generated'
@@ -37,22 +37,21 @@ describe('boss mode with boards that draw nothing', () => {
     expect(rowsOf(container)).not.toMatch(SLIM)
   })
 
-  it("an ally's frame with no permanent is its tile, and the boss's side with none is its pods as lines", () => {
+  it("an ally's frame with no permanent is its tile, and the boss's side with none keeps its pod and a quiet empty board", () => {
     const { container } = renderTable({ fixture: withBareBoards(fight()) })
     const ally = container.querySelector('[data-slot="ally-frame"]')
     expect(ally?.hasAttribute('data-collapsed')).toBe(true)
     expect(ally?.querySelector('[data-battlefield-seat]')).toBeNull()
     expect(ally?.querySelector('[data-slot="seat-tile"], [data-seat-tile], button')).not.toBeNull()
     const boss = container.querySelector('[data-slot="boss-frame"]')
-    expect(boss?.hasAttribute('data-collapsed')).toBe(true)
-    expect(boss?.querySelector('[data-battlefield-seat]')).toBeNull()
-    expect(boss?.querySelector('[data-variant="line"]')).not.toBeNull()
-    expect(container.querySelector('[data-layout="boss"]')?.textContent).not.toContain('No permanents')
+    expect(boss?.querySelector('[data-battlefield-seat]')).not.toBeNull()
+    expect(boss?.querySelector('[data-slot="pod-column"]')).not.toBeNull()
+    expect(boss?.textContent).toContain('No permanents')
   })
 
-  it('a board returns when its seat gets a permanent', () => {
+  it("the boss's board stays in place when its seat gets a permanent", () => {
     const { container, update } = renderTable({ fixture: withBareBoards(fight()) })
-    expect(container.querySelector('[data-slot="boss-frame"] [data-battlefield-seat]')).toBeNull()
+    expect(container.querySelector('[data-slot="boss-frame"] [data-battlefield-seat="2"]')).not.toBeNull()
     const full = fight()
     update((state) => ({
       ...state,

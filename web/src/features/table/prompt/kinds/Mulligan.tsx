@@ -45,7 +45,7 @@ function usePanelRest(panel: RefObject<HTMLElement | null>, host: HTMLElement | 
  * Mulligan: keep the opening hand or take a mulligan. On a phone the hand is a row of cards among the band's choices (`OpeningHand`); the sentence says what a
  * mulligan costs and how many were taken, and a short line left of the answers names the other seats still deciding, in
  * place of the strip's list of every seat (`promptBand.css`). Where the table floats
- * the decision (every table off a phone, `useOpeningOverlay`) it stands in the middle of the table over the dimmed boards: the hand in
+ * the decision (every table off a phone, `useOpeningOverlay`) it stands centred over the whole table (`openingPlace`), the opponents dimmed: the hand in
  * one row of large cards, then the sentence and the buttons, then every seat's progress.
  */
 export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
@@ -96,7 +96,7 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
       data-decision={decision}
       data-opening=""
       ref={panel}
-      className="plaque flex max-h-full max-w-[94%] flex-col items-center gap-3 overflow-y-auto rounded-xl border-2 border-brass p-4 text-center shadow-e3 [&_[data-slot=prompt-actions]]:justify-center [&_[data-slot=prompt-actions]]:bg-transparent"
+      className="plaque flex max-h-full max-w-full flex-col items-center gap-3 overflow-y-auto rounded-xl border-2 border-brass p-4 text-center shadow-e3 [&_[data-slot=prompt-actions]]:justify-center [&_[data-slot=prompt-actions]]:bg-transparent"
     >
       <OpeningHand card={openingCardPx(room, cards.length, rest)} />
       {/*

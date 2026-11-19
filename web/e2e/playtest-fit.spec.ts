@@ -1,6 +1,7 @@
-// Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, a compact tapped land laid out on a phone shows its Tapped chip whole and a tapped attacker or blocker its combat mark beside its stats, a pod of the four-seat table keeps its zone chips inside it, the lobby's Ready bar stays inside the deck column, and a phone's turn badge shows whose turn it is uncut.
+// Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, a compact tapped land laid out on a phone shows its Tapped chip whole and a tapped attacker or blocker its combat mark beside its stats, a pod of the four-seat table keeps its zone chips inside it, the lobby's Ready bar stays inside the deck column, a phone's turn badge shows whose turn it is uncut, and a boss's empty side keeps its pod and a quarter of the room from the opening hands to the first turn, the opening hand centred over the table.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
+import { openingProblems } from './openingFit'
 import { DEV_WEB_URL } from './ports'
 
 interface Size {
@@ -245,5 +246,52 @@ test('a seat pod keeps its zone chips inside the pod on the four-seat table', as
       }),
     )
     expect(outside, label(size)).toEqual([])
+  }
+})
+
+test("the boss's empty side keeps its room and pod at the opening hands and on the first turn, the opening hand centred over the table", async ({
+  page,
+}) => {
+  // The owner's report: a Delves fight against one boss at the opening hands, the boss's empty row a thin strip and the
+  // opening hand squeezed into it (docs/web.md, Boss mode and Opening hands).
+  for (const size of [
+    { width: 2560, height: 1440 },
+    { width: 1920, height: 1080 },
+    { width: 1366, height: 768 },
+    { width: 1024, height: 768 },
+  ]) {
+    const rows: number[] = []
+    for (const stage of ['prompt=mulligan', 'prompt=priority&turn=you']) {
+      await page.setViewportSize(size)
+      await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&boss=0&rework=1&bare=1&${stage}`)
+      await page.waitForSelector('[data-slot="boss-frame"]')
+      await atSize(page, size)
+      const seen = await page.evaluate(() => {
+        const height = (name: string): number =>
+          document.querySelector(`[data-area="${name}"]`)?.getBoundingClientRect().height ?? 0
+        const frame = document.querySelector('[data-slot="boss-frame"]')
+        return {
+          opponents: height('opponents'),
+          own: height('own'),
+          pod: frame?.querySelector('[data-slot="pod-column"]') != null,
+          empty: frame?.textContent?.includes('No permanents') === true,
+        }
+      })
+      expect(seen.pod, `${label(size)} ${stage}: the boss's pod column`).toBe(true)
+      expect(seen.empty, `${label(size)} ${stage}: the quiet empty board`).toBe(true)
+      expect(seen.opponents, `${label(size)} ${stage}: the boss's share`).toBeGreaterThanOrEqual(
+        0.25 * (seen.opponents + seen.own),
+      )
+      expect(seen.opponents).toBeLessThanOrEqual(seen.own)
+      rows.push(Math.round(seen.opponents))
+      if (stage === 'prompt=mulligan') {
+        await expect.poll(() => openingProblems(page, 64), { message: label(size) }).toEqual([])
+      }
+    }
+    // The boss's row stands where it stood from the opening hands to the first turn.
+    expect(
+      Math.abs((rows[0] ?? 0) - (rows[1] ?? 0)),
+      `${label(size)}: the boss's row moves`,
+    ).toBeLessThanOrEqual(8)
   }
 })

@@ -1,6 +1,7 @@
-// Goal: five fit defects of the layout stay fixed at the sizes of the design (1440x900, 1366x768, 1280x720, 1024x768, 390x844): the lobby shows its seats on the first screen and the host's invite link and code whole under them; a hand of ten or more cards ends inside its dock, never under the controls, with its tags whole or an icon; the turn banner lies over neither the step ladder nor the turn badge while it shows; the opening hand is drawn large in its centre panel while the Mulligan prompt waits, with Keep and Mulligan in reach and clear of the sentence; and the table has no text under 12 px, the letters of a mana symbol included.
+// Goal: five fit defects of the layout stay fixed at the sizes of the design (1440x900, 1366x768, 1280x720, 1024x768, 390x844): the lobby shows its seats on the first screen and the host's invite link and code whole under them; a hand of ten or more cards ends inside its dock, never under the controls, with its tags whole or an icon; the turn banner lies over neither the step ladder nor the turn badge while it shows; in every game mode (duel, three to twelve seats, teams, Two-Headed Giant, boss fights of one to four heroes and with minions) and also at 2560x1440 and 1920x1080 the opening hand is drawn large in its panel centred over the table while the Mulligan prompt waits, every card whole, with Keep and Mulligan in reach and clear of the sentence; and the table has no text under 12 px, the letters of a mana symbol included.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
+import { openingProblems, TABLE_MODES } from './openingFit'
 import { DEV_WEB_URL } from './ports'
 
 interface Size {
@@ -209,61 +210,42 @@ test.describe('the turn banner', () => {
 })
 
 test.describe('the opening hand', () => {
-  // Off a phone the decision floats in the centre overlay over the opponents and the strip, its cards 64 to 180 px wide
-  // (docs/web.md, Opening hands); boards are bare before the first turn, as in a real game. A desktop draws them large.
-  const LEAST: Record<string, number> = { '1440x900': 100 }
-  const FLOOR_PX = 64
+  // Off a phone the decision stands centred over the table between the top bar and the dock in every mode, its cards
+  // 64 to 180 px wide (docs/web.md, Opening hands); boards are bare before the first turn, as in a real game. A desktop
+  // draws them large; an opponent's or a boss's empty row never squeezes them.
+  const OPENING_SIZES: readonly Size[] = [{ width: 2560, height: 1440 }, { width: 1920, height: 1080 }, ...SIZES]
+  const LEAST: Record<string, number> = { '2560x1440': 170, '1920x1080': 140, '1440x900': 96 }
 
-  for (const size of SIZES.filter((one) => one.width >= 1024)) {
-    test(`is drawn large while the Mulligan prompt waits at ${label(size)}, Keep and Mulligan in reach`, async ({
+  for (const mode of TABLE_MODES) {
+    test(`${mode.name}: is drawn large and centred while the Mulligan prompt waits, Keep and Mulligan clear of the sentence`, async ({
       page,
     }) => {
-      await page.setViewportSize(size)
-      await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=mulligan&bare=1`)
-      await page.waitForSelector('[data-opening] [data-slot="opening-card"]')
-      await page.waitForTimeout(400)
-      const seen = await page.evaluate(() => {
-        const box = (element: Element | null | undefined) => {
-          const { left, top, right, bottom } = element?.getBoundingClientRect() ?? new DOMRect()
-          return { left, top, right, bottom }
-        }
-        const panel = document.querySelector<HTMLElement>('[data-opening]')
-        const button = (name: string) =>
-          [...(panel?.querySelectorAll('button') ?? [])].find((each) => each.textContent?.trim() === name)
-        const cards = [...document.querySelectorAll('[data-opening] [data-slot="opening-card"]')].map(box)
-        const keep = box(button('Keep'))
-        const hit = document.elementFromPoint((keep.left + keep.right) / 2, (keep.top + keep.bottom) / 2)
-        return {
-          widths: cards.map((card) => card.right - card.left),
-          tops: cards.map((card) => Math.round(card.top)),
-          row: box(panel?.querySelector('[data-slot="opening-hand"]')),
-          sentence: box(panel?.querySelector('[data-slot="prompt-text"]')),
-          panel: box(panel),
-          panelScrolls: panel === null || panel.scrollHeight > panel.clientHeight + 1,
-          dock: box(document.querySelector('[data-region="hand"]')),
-          keep,
-          keepFree: hit !== null && button('Keep')?.contains(hit) === true,
-          mulligan: box(button('Mulligan')),
-          scrolls: document.documentElement.scrollHeight > window.innerHeight,
-        }
-      })
-      expect(Math.min(...seen.widths), `${label(size)}: card widths`).toBeGreaterThanOrEqual(
-        LEAST[label(size)] ?? FLOOR_PX,
-      )
-      // The row holds every card side by side, none above another.
-      expect(new Set(seen.widths.map(Math.round)).size).toBe(1)
-      expect(new Set(seen.tops).size).toBe(1)
-      expect(seen.panelScrolls, `${label(size)}: the panel scrolls`).toBe(false)
-      expect(seen.panel.bottom).toBeLessThanOrEqual(seen.dock.top)
-      expect(seen.keepFree, 'Keep is not covered').toBe(true)
-      for (const each of [seen.keep, seen.mulligan]) {
-        expect(each.top, `${label(size)}: an answer starts under the cards`).toBeGreaterThanOrEqual(seen.row.bottom)
-        expect(each.bottom).toBeLessThanOrEqual(seen.panel.bottom)
-        const across = Math.min(each.right, seen.sentence.right) - Math.max(each.left, seen.sentence.left)
-        const down = Math.min(each.bottom, seen.sentence.bottom) - Math.max(each.top, seen.sentence.top)
-        expect(across > 0.5 && down > 0.5, `${label(size)}: an answer lies over the sentence`).toBe(false)
+      await page.goto(`${DEV_WEB_URL}/dev/table?${mode.query}&prompt=mulligan&bare=1`)
+      await page.waitForSelector('[data-decision="Mulligan"] button')
+      for (const size of OPENING_SIZES) {
+        await page.setViewportSize(size)
+        await expect
+          .poll(() => openingProblems(page, LEAST[label(size)] ?? 64), { message: `${mode.name} at ${label(size)}`, timeout: 5_000 })
+          .toEqual([])
+        const seen = await page.evaluate(() => {
+          const keep = [...document.querySelectorAll('[data-decision="Mulligan"] button')].find(
+            (each) => each.textContent?.trim() === 'Keep',
+          )
+          const box = keep?.getBoundingClientRect()
+          const hit = box === undefined ? null : document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)
+          return {
+            keepFree: keep !== undefined && hit !== null && keep.contains(hit),
+            panelBottom: document.querySelector('[data-opening]')?.getBoundingClientRect().bottom ?? 0,
+            dockTop: document.querySelector('[data-region="hand"]')?.getBoundingClientRect().top ?? 0,
+            scrolls: document.documentElement.scrollHeight > window.innerHeight,
+          }
+        })
+        expect(seen.keepFree, `${mode.name} at ${label(size)}: Keep is covered`).toBe(true)
+        expect(seen.panelBottom, `${mode.name} at ${label(size)}: the panel reaches the dock`).toBeLessThanOrEqual(
+          seen.dockTop + 0.5,
+        )
+        expect(seen.scrolls, 'the page scrolls').toBe(false)
       }
-      expect(seen.scrolls, 'the page scrolls').toBe(false)
     })
   }
 })

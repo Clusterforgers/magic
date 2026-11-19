@@ -2,7 +2,7 @@ import type { CSSProperties, ReactNode, Ref } from 'react'
 import { cn } from '@/lib/utils'
 import { CHOICE_AREAS, gridColumns, gridRows, mainColumns, TABLE_AREAS } from './layout'
 import type { Regions } from './layout'
-import { useOpeningInOverlay } from './prompt/choiceOverlay'
+import { openingPlace, useOpeningInOverlay } from './prompt/choiceOverlay'
 import { usePhase } from './turn/usePhase'
 
 interface TableGridProps {
@@ -80,10 +80,11 @@ export function TableGrid({
 }: TableGridProps) {
   // Read here, so a change of phase redraws the frame alone: the regions are elements made by the table and stay as they were.
   const phase = usePhase()
-  // A choice of cards covers both boards, your board above the strip; the opening hands cover the opponents and the strip
-  // only, so your board, your life and the hand dock stay in view while you decide.
+  // A choice of cards covers both boards, your board above the strip; the opening hand stands over the whole table and
+  // dims the opponents and the strip only, so your board, your life and the hand dock stay in view while you decide.
   const opening = useOpeningInOverlay()
   const swap = choice?.open === true && !opening
+  const place = openingPlace(regions.main.width)
   return (
     <div
       data-slot="table-grid"
@@ -126,18 +127,34 @@ export function TableGrid({
         <Area area="controls" className="relative z-30">
           {controls}
         </Area>
+        {opening ? (
+          // The opponents and the strip dim under the opening hand; your board, your pod and your life stay lit.
+          <div
+            aria-hidden="true"
+            data-slot="opening-scrim"
+            style={{ gridRow: '2 / 4', gridColumn: '1 / -1' }}
+            className="pointer-events-none relative z-25 bg-scrim"
+          />
+        ) : null}
         {choice === undefined ? null : (
-          // Over both boards, which `CHOICE_AREAS` puts next to each other, down to the top of the strip's sheet; at the
-          // opening hands over the opponents and the strip (`TABLE_AREAS`).
+          // Over both boards, which `CHOICE_AREAS` puts next to each other, down to the top of the strip's sheet. The
+          // opening hand stands over the whole table instead, centred and clear of your pod (`openingPlace`): the host
+          // lets presses through to your board around its panel.
           <div
             ref={choice.ref}
             data-slot="choice-host"
+            data-opening-place={opening ? (place.inset > 0 ? 'table' : 'top') : undefined}
             hidden={!choice.open}
-            style={{ gridRow: '2 / 4', gridColumn: '1 / -1' }}
-            // Over the strip at the opening hands, which it covers too.
+            style={{
+              gridRow: opening ? place.rows : '2 / 4',
+              gridColumn: '1 / -1',
+              ...(opening ? { paddingLeft: place.inset || 8, paddingRight: place.inset || 8 } : {}),
+            }}
             className={cn(
-              'relative flex min-h-0 min-w-0 items-center justify-center bg-scrim px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]',
-              opening ? 'z-25' : 'z-15',
+              'relative flex min-h-0 min-w-0 items-center justify-center',
+              opening
+                ? 'pointer-events-none z-25 py-2 *:pointer-events-auto'
+                : 'z-15 bg-scrim px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]',
             )}
           />
         )}

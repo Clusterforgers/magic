@@ -1,4 +1,4 @@
-//! Goal: the board rows split by what each board holds, so the duel board draws large cards and no board scrolls, and the opponents keep their pods and a row of cards under a prompt sheet.
+//! Goal: the board rows split by what each board holds, so the duel board draws large cards and no board scrolls, and the opponents keep their pods and a row of cards under a prompt sheet, but over empty boards never more than your row.
 import { describe, expect, it } from 'vitest'
 import { fixtureState } from './dev/devGame'
 import {
@@ -36,6 +36,22 @@ describe('splitBoards', () => {
     const split = splitBoards({ ...base, room: 400, own, theirs })
     expect(split).toEqual(shareSplit(400))
   })
+
+  it.each([
+    // [room, chrome, opponents]: tall pods (the seats' opening status) over empty boards take at most half.
+    [600, 100, 600 / (1 + 1.15)],
+    [600, 260, 300],
+    [400, 300, 200],
+    [900, 500, 450],
+  ])(
+    'gives the empty opponents of a %i px room with %i px of chrome %f px, never more than yours',
+    (room, chrome, most) => {
+      const split = splitBoards({ ...base, room, theirChrome: chrome, own: NONE, theirs: [NONE, NONE] })
+      expect(split.opponents).toBeCloseTo(most, 6)
+      expect(split.opponents).toBeLessThanOrEqual(split.own)
+      expect(split.opponents).toBeGreaterThanOrEqual(room * MIN_ROW_SHARE)
+    },
+  )
 
   it.each([
     // The opponents' row keeps its chrome and a row of cards, and your row a quarter of the room.

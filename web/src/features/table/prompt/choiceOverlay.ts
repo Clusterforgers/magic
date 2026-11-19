@@ -6,6 +6,7 @@
  */
 import { createContext, useCallback, useContext, useLayoutEffect, useMemo, useState } from 'react'
 import { usePlay } from '@/features/game/gameContext'
+import { POD_COLUMN_PX, ZONE_GAP_PX } from '../layout'
 import type { Viewport } from '../layout'
 import { FILTER_FROM } from './cardsText'
 import type { OverlayRoom } from './overlayLayout'
@@ -49,6 +50,27 @@ function roomOf(box: HTMLElement): { width: number; height: number } | null {
   const height = box.clientHeight - across(style.paddingTop, style.paddingBottom)
   if (!(width > 0 && height > 0)) return null
   return { width: Math.floor(width / 8) * 8, height: Math.floor(height / 8) * 8 }
+}
+
+/** How far your pod column reaches into the table from its left edge: the board's padding, the column and its gap. */
+export const OWN_POD_REACH_PX = 8 + POD_COLUMN_PX + ZONE_GAP_PX
+/**
+ * The least width of the opening panel's room for a row of seven of the least cards (`OPENING_CARD_LEAST_PX`) with the
+ * panel's padding: under it the room leaves out no pod column.
+ */
+export const OPENING_ROOM_LEAST_PX = 600
+
+/**
+ * Where the opening-hand panel stands off a phone: over the whole table between the top bar and the hand dock, kept
+ * clear of your pod column (and so of your life) by the same margin on both sides, so it stays centred. Where that
+ * margin would leave the room under `OPENING_ROOM_LEAST_PX` (a narrow tablet), it stands over the opponents and the
+ * strip only, full width, and your board and pod stay clear below it.
+ */
+export function openingPlace(mainWidth: number): { rows: string; inset: number } {
+  const inset = OWN_POD_REACH_PX
+  return mainWidth - 2 * inset >= OPENING_ROOM_LEAST_PX
+    ? { rows: '2 / 5', inset }
+    : { rows: '2 / 4', inset: 0 }
 }
 
 /** Whether a choice among `count` cards takes the overlay: every choice where `every` (a phone, a table without a side column), a long list anywhere. */
