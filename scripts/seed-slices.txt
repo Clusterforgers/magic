@@ -1,0 +1,59 @@
+# Seeded suites: `scripts/check.sh gate` runs one slice of them (MTG_SEED_SLICE, default (commit mod 4) + 1 of 4),
+# `affected` and `all` run them whole. One line per suite: "<unit> [<test path prefix>]"; a unit alone takes all its
+# tests, and "<unit> !<prefix>" keeps the tests with that prefix whole. A test of a listed suite may take up to 20 s;
+# a longer one belongs on scripts/slow-tests.txt. See docs/testing.md, Seed slices.
+
+# Bot-game campaigns, replays and corpus sweeps; the harness checks always run.
+mtg-testkit::fuzz
+mtg-testkit::fuzz !seed_campaigns::
+mtg-testkit::fuzz !harness_selfcheck::
+mtg-testkit::fuzz !determinism_replay::
+mtg-testkit::fuzz !checkpoint::
+
+mtg-testkit::game house_commander::
+mtg-testkit::game house_rules::
+mtg-testkit::game house_table::
+mtg-testkit::game house_turn::
+mtg-testkit::game tm1_teams::
+mtg-testkit::game manual_anytime::
+mtg-testkit::game entered_this_turn::
+mtg-testkit::game brain_aim::
+mtg-testkit::game brain_clock::
+mtg-testkit::game brain_repeats::
+mtg-testkit::game brain_suite::
+
+mtg-testkit::casting affinity::
+mtg-testkit::casting announce_division::
+mtg-testkit::casting cost_choices::
+mtg-testkit::casting counted_costs::
+mtg-testkit::casting free_loops::
+mtg-testkit::casting mana_limits::
+mtg-testkit::casting mana_takes::
+mtg-testkit::casting mana_wordings::
+mtg-testkit::casting spell_x_costs::
+
+mtg-testkit::mechanics activation_moments::
+mtg-testkit::mechanics divided_resolution::
+mtg-testkit::mechanics object_nth::
+mtg-testkit::mechanics paid_reads::
+
+mtg-testkit::abilities saga_transform::
+mtg-testkit::combat evasion::
+
+# Every seat's view through seeded games.
+mtg-protocol::it active_left_fuzz::
+mtg-protocol::it batch_size::
+mtg-protocol::it combat_forecast::
+mtg-protocol::it hidden_info::
+mtg-protocol::it snapshot_log::
+mtg-protocol::it sync::
+
+# Seeded tables of bots through the server.
+mtg-server::it bot_seats::
+mtg-server::it full_games::
+mtg-server::it many_seat_pace::
+mtg-server::it many_seats::
+mtg-server::it stops::
+mtg-server::it windows::
+mtg-server::it ws_games::
+mtg-server::lib windows::boards::

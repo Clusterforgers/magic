@@ -116,7 +116,10 @@ case "$mode" in
 esac
 [[ "$mode" == all || "$mode" == web ]] && web_sel=full
 [[ -d web ]] || web_sel=none
-if ((gate)); then test_kind="gate-test"; fi
+seed_slice "$mode" "${head_rev:-HEAD}" || exit 2
+seed_slice="$REPLY"
+# A gate pass, and a run of one seed slice, leaves a `gate-test` stamp that `affected` does not accept.
+if ((gate)) || [[ "$seed_slice" != all ]]; then test_kind="gate-test"; fi
 
 # The content of the working tree names what was checked; a diff of two commits checks nothing.
 if [[ -z "$head_rev" ]] && { ((!list)) || [[ -s "$stamp_file" ]]; }; then
@@ -166,6 +169,7 @@ print_plan() {
   echo "tests with Postgres: ${pg_sel[*]:--}"
   echo "web: $web_sel"
   ((!gate)) || echo "slow tests skipped: $(slow_entries | wc -l) entries of $slow_file"
+  echo "seed slice: $seed_slice (suites of $slice_file)"
 }
 
 if ((list)); then
@@ -271,6 +275,7 @@ fi
 tests_start=$SECONDS
 run_units
 secs["tests"]=$((SECONDS - tests_start))
+record_unit_secs
 report_units
 
 for name in "${phases[@]}"; do

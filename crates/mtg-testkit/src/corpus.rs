@@ -23,7 +23,18 @@ pub fn fixture_dir() -> PathBuf {
 }
 
 /// The files of [`fixture_dir`], in file-name order, as the one JSON array of Scryfall objects that the importer streams.
+/// The fixture does not change during a run, so its files are read once per process and each caller gets a copy.
 pub fn scryfall_array() -> Result<String, CorpusError> {
+    static ARRAY: OnceLock<String> = OnceLock::new();
+    if let Some(array) = ARRAY.get() {
+        return Ok(array.clone());
+    }
+    let array = read_scryfall_array()?;
+    Ok(ARRAY.get_or_init(|| array).clone())
+}
+
+/// The files of [`fixture_dir`] as one JSON array, read from the disk.
+fn read_scryfall_array() -> Result<String, CorpusError> {
     let dir = fixture_dir();
     let unreadable =
         |error: std::io::Error| CorpusError::Data(format!("{}: {error}", dir.display()));
@@ -188,7 +199,7 @@ pub fn card(name: &str) -> Result<Arc<CardDefinition>, CorpusError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: the fixture directory loads as one array in file-name order, the corpus holds every card of the rules directory and of the fixture once, finds them by full name or face name in any case, and refuses a name it does not have.
+    //! Goal: the fixture directory loads as one array in file-name order (read once and shared), the corpus holds every card of the rules directory and of the fixture once, finds them by full name or face name in any case, and refuses a name it does not have.
     use super::*;
     use mtg_core::color::Color;
     use rstest::rstest;
@@ -212,6 +223,13 @@ mod tests {
             files.windows(2).all(|pair| pair[0] < pair[1]),
             "the array follows the file names: {files:?}"
         );
+    }
+
+    #[test]
+    fn the_shared_array_is_the_array_on_the_disk() {
+        let shared = scryfall_array().unwrap();
+        assert_eq!(shared, read_scryfall_array().unwrap());
+        assert_eq!(scryfall_array().unwrap(), shared);
     }
 
     #[test]
