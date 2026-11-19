@@ -15,7 +15,7 @@ export function PhaseTag({ phase, yours }: { phase: Phase; yours: boolean }) {
       data-phase-id={phase.id}
       data-themed=""
       className={cn(
-        'inline-flex h-7 shrink-0 items-center gap-1.5 rounded-l-full border-2 border-r-0 border-phase pr-2 pl-2.5 text-sm font-semibold whitespace-nowrap',
+        'inline-flex h-7 shrink-0 items-center gap-1.5 rounded-l-full border-2 border-r-0 border-phase pr-2 pl-2.5 text-sm max-sm:pr-1 max-sm:pl-2 font-semibold whitespace-nowrap',
         yours ? 'bg-phase text-on-phase' : 'bg-phase-soft text-foreground',
       )}
     >

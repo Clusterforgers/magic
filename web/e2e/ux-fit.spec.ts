@@ -1,4 +1,4 @@
-// Goal: five fit defects of the layout stay fixed at the sizes of the design (1440x900, 1366x768, 1280x720, 1024x768, 390x844): the host sees the invite link and code of the lobby without scrolling; a hand of ten or more cards ends inside its dock, never under the controls, with its tags whole or an icon; the turn banner lies over neither the step ladder nor the turn badge while it shows; the opening hand is drawn large while the Mulligan prompt waits, with Keep and Mulligan in reach; and the table has no text under 12 px, the letters of a mana symbol included.
+// Goal: five fit defects of the layout stay fixed at the sizes of the design (1440x900, 1366x768, 1280x720, 1024x768, 390x844): the lobby shows its seats on the first screen and the host's invite link and code whole under them; a hand of ten or more cards ends inside its dock, never under the controls, with its tags whole or an icon; the turn banner lies over neither the step ladder nor the turn badge while it shows; the opening hand is drawn large in its centre panel while the Mulligan prompt waits, with Keep and Mulligan in reach and clear of the sentence; and the table has no text under 12 px, the letters of a mana symbol included.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -19,11 +19,21 @@ const SIZES: readonly Size[] = [
 const label = (size: Size): string => `${size.width}x${size.height}`
 
 test.describe('the invite of the host', () => {
-  test('the link, the code and their Copy buttons are in view without scrolling', async ({ page }) => {
+  // The seats stand on the first screen at 1400 x 900 and the invite under them (docs/web.md, Lobby layout).
+  test('the seats are on the first screen, and the link, the code and their Copy buttons read whole under them', async ({
+    page,
+  }) => {
     await page.goto(`${DEV_WEB_URL}/dev/lobby?seats=4&format=commander&invites=1&account=1`)
     await page.waitForSelector('[data-slot="join-invite"]')
     for (const size of SIZES) {
       await page.setViewportSize(size)
+      await page.evaluate(() => window.scrollTo(0, 0))
+      await page.waitForTimeout(200)
+      if (size.width >= 1400) {
+        const seats = await page.evaluate(() => document.querySelector('[data-slot="lobby-status"]')?.getBoundingClientRect().bottom)
+        expect(seats, `${label(size)}: the seats end on the first screen`).toBeLessThanOrEqual(size.height)
+      }
+      await page.locator('[data-slot="join-invite"]').scrollIntoViewIfNeeded()
       await page.waitForTimeout(200)
       const seen = await page.evaluate(() => {
         const read = (selector: string) => {
@@ -35,7 +45,6 @@ test.describe('the invite of the host', () => {
         }
         return {
           inner: { width: window.innerWidth, height: window.innerHeight },
-          scrolled: window.scrollY,
           things: {
             link: read('[data-slot="invite-link"]'),
             code: read('[data-slot="invite-code"]'),
@@ -44,7 +53,6 @@ test.describe('the invite of the host', () => {
           },
         }
       })
-      expect(seen.scrolled, `${label(size)}: the page has not scrolled`).toBe(0)
       for (const [name, box] of Object.entries(seen.things)) {
         expect(box, `${label(size)}: ${name} is on the page`).not.toBeNull()
         if (box === null) continue
@@ -201,32 +209,37 @@ test.describe('the turn banner', () => {
 })
 
 test.describe('the opening hand', () => {
-  // The fixture hand: 7 cards and two partner commanders share one line, so the width limits the cards (a table with one
-  // commander gives 122 px at 1440x900); a hand dock that does not grow draws them 68 to 78 px wide.
-  const LEAST: Record<string, number> = { '1440x900': 100, '1366x768': 96, '1280x720': 92, '1024x768': 88 }
+  // Off a phone the decision floats in the centre overlay over the opponents and the strip, its cards 64 to 180 px wide
+  // (docs/web.md, Opening hands); boards are bare before the first turn, as in a real game. A desktop draws them large.
+  const LEAST: Record<string, number> = { '1440x900': 100 }
+  const FLOOR_PX = 64
 
   for (const size of SIZES.filter((one) => one.width >= 1024)) {
     test(`is drawn large while the Mulligan prompt waits at ${label(size)}, Keep and Mulligan in reach`, async ({
       page,
     }) => {
       await page.setViewportSize(size)
-      await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=mulligan`)
-      await page.waitForSelector('[data-region="hand"] button[data-object-id]')
+      await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=mulligan&bare=1`)
+      await page.waitForSelector('[data-opening] [data-slot="opening-card"]')
       await page.waitForTimeout(400)
       const seen = await page.evaluate(() => {
         const box = (element: Element | null | undefined) => {
           const { left, top, right, bottom } = element?.getBoundingClientRect() ?? new DOMRect()
           return { left, top, right, bottom }
         }
+        const panel = document.querySelector<HTMLElement>('[data-opening]')
         const button = (name: string) =>
-          [...document.querySelectorAll('button')].find((each) => each.textContent?.trim() === name)
-        const widths = [...document.querySelectorAll('[data-region="hand"] button[data-object-id]')].map(
-          (card) => card.getBoundingClientRect().width,
-        )
+          [...(panel?.querySelectorAll('button') ?? [])].find((each) => each.textContent?.trim() === name)
+        const cards = [...document.querySelectorAll('[data-opening] [data-slot="opening-card"]')].map(box)
         const keep = box(button('Keep'))
         const hit = document.elementFromPoint((keep.left + keep.right) / 2, (keep.top + keep.bottom) / 2)
         return {
-          widths,
+          widths: cards.map((card) => card.right - card.left),
+          tops: cards.map((card) => Math.round(card.top)),
+          row: box(panel?.querySelector('[data-slot="opening-hand"]')),
+          sentence: box(panel?.querySelector('[data-slot="prompt-text"]')),
+          panel: box(panel),
+          panelScrolls: panel === null || panel.scrollHeight > panel.clientHeight + 1,
           dock: box(document.querySelector('[data-region="hand"]')),
           keep,
           keepFree: hit !== null && button('Keep')?.contains(hit) === true,
@@ -235,15 +248,20 @@ test.describe('the opening hand', () => {
         }
       })
       expect(Math.min(...seen.widths), `${label(size)}: card widths`).toBeGreaterThanOrEqual(
-        LEAST[label(size)] ?? 88,
+        LEAST[label(size)] ?? FLOOR_PX,
       )
       // The row holds every card side by side, none above another.
       expect(new Set(seen.widths.map(Math.round)).size).toBe(1)
-      expect(seen.dock.bottom).toBeLessThanOrEqual(size.height + 1)
+      expect(new Set(seen.tops).size).toBe(1)
+      expect(seen.panelScrolls, `${label(size)}: the panel scrolls`).toBe(false)
+      expect(seen.panel.bottom).toBeLessThanOrEqual(seen.dock.top)
       expect(seen.keepFree, 'Keep is not covered').toBe(true)
       for (const each of [seen.keep, seen.mulligan]) {
-        expect(each.top).toBeGreaterThanOrEqual(0)
-        expect(each.bottom).toBeLessThan(seen.dock.top)
+        expect(each.top, `${label(size)}: an answer starts under the cards`).toBeGreaterThanOrEqual(seen.row.bottom)
+        expect(each.bottom).toBeLessThanOrEqual(seen.panel.bottom)
+        const across = Math.min(each.right, seen.sentence.right) - Math.max(each.left, seen.sentence.left)
+        const down = Math.min(each.bottom, seen.sentence.bottom) - Math.max(each.top, seen.sentence.top)
+        expect(across > 0.5 && down > 0.5, `${label(size)}: an answer lies over the sentence`).toBe(false)
       }
       expect(seen.scrolls, 'the page scrolls').toBe(false)
     })

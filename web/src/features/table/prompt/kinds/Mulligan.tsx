@@ -1,3 +1,5 @@
+import { useLayoutEffect, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 import { createPortal } from 'react-dom'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
@@ -11,6 +13,33 @@ import { OpeningHand, openingHandIds } from '../OpeningHand'
 import { openingCardPx } from '../openingCard'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
+
+/**
+ * The height in px the floating panel takes beside its row of cards (padding, sentence, answers, status), in steps of
+ * 8 px; 0 until it is drawn. The cards get only the rest of the room, so the panel never scrolls its answers over the
+ * sentence.
+ */
+function usePanelRest(panel: RefObject<HTMLElement | null>, host: HTMLElement | null): number {
+  const [rest, setRest] = useState(0)
+  useLayoutEffect(() => {
+    const element = panel.current
+    if (element === null || host === null) return undefined
+    const measure = (): void => {
+      const row = element.querySelector<HTMLElement>('[data-slot="opening-hand"]')
+      const style = getComputedStyle(element)
+      const borders = (parseFloat(style.borderTopWidth) || 0) + (parseFloat(style.borderBottomWidth) || 0)
+      const next = Math.ceil((element.scrollHeight + borders - (row?.offsetHeight ?? 0)) / 8) * 8
+      setRest((before) => (before === next ? before : next))
+    }
+    measure()
+    if (typeof ResizeObserver !== 'function') return undefined
+    const observer = new ResizeObserver(measure)
+    observer.observe(element)
+    for (const child of element.children) observer.observe(child)
+    return () => observer.disconnect()
+  }, [panel, host])
+  return rest
+}
 
 /**
  * Mulligan: keep the opening hand or take a mulligan. On a phone the hand is a row of cards among the band's choices (`OpeningHand`); the sentence says what a
@@ -27,6 +56,8 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
   const room = useOverlayRoom()
   const cards = usePlay(useShallow(openingHandIds))
   const floating = host !== null
+  const panel = useRef<HTMLDivElement>(null)
+  const rest = usePanelRest(panel, host)
   const buttons = (
     <>
       <Button className="h-10 px-4" onClick={() => answer({ Mulligan: 'Keep' })}>
@@ -64,10 +95,15 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
       data-slot="choice-overlay"
       data-decision={decision}
       data-opening=""
+      ref={panel}
       className="plaque flex max-h-full max-w-[94%] flex-col items-center gap-3 overflow-y-auto rounded-xl border-2 border-brass p-4 text-center shadow-e3 [&_[data-slot=prompt-actions]]:justify-center [&_[data-slot=prompt-actions]]:bg-transparent"
     >
-      <OpeningHand card={openingCardPx(room, cards.length)} />
-      <div className="flex max-w-[70ch] flex-col items-center gap-2">
+      <OpeningHand card={openingCardPx(room, cards.length, rest)} />
+      {/*
+        The sentence beside the answers, on a width of its own: the cards get the height a line of answers would take,
+        and their size never changes how the sentence wraps (`usePanelRest`).
+      */}
+      <div className="grid w-[80ch] max-w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 text-left [&>[data-slot=prompt-title]]:col-span-2 [&>[data-slot=prompt-title]]:text-center">
         <PromptLayout text={mulliganText(options)}>{buttons}</PromptLayout>
       </div>
       <OpeningStatus floating />

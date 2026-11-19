@@ -10,11 +10,13 @@ const OPENING_GAP_PX = 8
 
 /**
  * The width of a card of `count` in one row in an overlay of this room: the row takes most of the width and the cards
- * at most half the height, between `OPENING_CARD_LEAST_PX` and `OPENING_CARD_MOST_PX`.
+ * at most half the height and what `rest` (the panel's padding, sentence, answers and status in px) leaves them, between
+ * `OPENING_CARD_LEAST_PX` and `OPENING_CARD_MOST_PX`.
  */
-export function openingCardPx(room: { width: number; height: number }, count: number): number {
+export function openingCardPx(room: { width: number; height: number }, count: number, rest = 0): number {
   const cards = Math.max(1, count)
   const across = Math.floor((room.width * OPENING_WIDTH_SHARE - (cards - 1) * OPENING_GAP_PX) / cards)
-  const down = Math.floor((room.height * OPENING_HEIGHT_SHARE * 5) / 7)
+  const tall = Math.min(room.height * OPENING_HEIGHT_SHARE, room.height - rest)
+  const down = Math.floor((tall * 5) / 7)
   return Math.max(OPENING_CARD_LEAST_PX, Math.min(OPENING_CARD_MOST_PX, across, down))
 }
