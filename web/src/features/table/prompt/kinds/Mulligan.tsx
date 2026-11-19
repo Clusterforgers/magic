@@ -14,7 +14,8 @@ import type { PromptComponent } from '../types'
 
 /**
  * Mulligan: keep the opening hand or take a mulligan. On a phone the hand is a row of cards among the band's choices (`OpeningHand`); the sentence says what a
- * mulligan costs and how many were taken, and a line beneath names the other seats still deciding. Where the table floats
+ * mulligan costs and how many were taken, and a short line left of the answers names the other seats still deciding, in
+ * place of the strip's list of every seat (`promptBand.css`). Where the table floats
  * the decision (every table off a phone, `useOpeningOverlay`) it stands in the middle of the table over the dimmed boards: the hand in
  * one row of large cards, then the sentence and the buttons, then every seat's progress.
  */
@@ -40,7 +41,12 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
         Mulligan
       </Button>
       {others.length === 0 || floating ? null : (
-        <p data-slot="mulligan-waiting" className="basis-full text-xs text-muted-foreground">
+        // Beside the answers on their row, cut with an ellipsis where it is long: whole in its tooltip.
+        <p
+          data-slot="mulligan-waiting"
+          title={decidingText(others.map(name))}
+          className="min-w-0 truncate text-sm text-muted-foreground"
+        >
           {decidingText(others.map(name))}
         </p>
       )}

@@ -138,6 +138,13 @@
       grid-area: foot;
       justify-self: end;
     }
+    /*
+     * The opening hands: the status (the list of every seat) would run under Keep and Mulligan in the foot; the line
+     * beside the answers says who is still deciding instead, and each seat's panel keeps its own progress.
+     */
+    & > [data-slot='strip-status']:has(> [data-slot='opening-status']) {
+      display: none;
+    }
     /* A sentence that is not drawn gives the meter its place beside the lead. */
     &:has([data-slot='prompt-sentence'][data-quiet])
       [data-slot='decision-line']
