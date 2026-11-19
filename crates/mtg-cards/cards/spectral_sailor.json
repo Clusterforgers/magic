@@ -1,0 +1,16 @@
+{
+  "oracle_id": "a8fdbcdf-479d-4582-9ad5-9fbd4c740c29",
+  "name": "Spectral Sailor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Sailor",
+      "oracle_fingerprint": "bdcda41a112967b49b3a291e6905d78a",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Flying" },
+        { "Activated": { "cost": "{3}{U}", "effects": [{ "Draw": {} }] } }
+      ]
+    }
+  ]
+}

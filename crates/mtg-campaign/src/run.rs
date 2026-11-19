@@ -11,13 +11,12 @@ use crate::CampaignError;
 use crate::content::{
     Brain, Content, CustomCard, EventOption, MIN_LIFE_CAP, Needs, Outcome, Rarity, Theme,
 };
-use crate::fight::{BossSeat, FightPlan, HAND, HeroSeat, MinionSeat};
+use crate::fight::{FightPlan, HAND, HeroSeat};
 use crate::map::{FloorMap, RoomKind, generate, generate_floor, generate_for};
 use crate::relics::{
     DeckMakeup, FILTER_FROM, RARE_ODDS, RARITY_FROM, TREASURE_RARE_BONUS, offerable,
 };
 use crate::rng::Stream;
-use crate::scale::Scale;
 use crate::upgrade::{CommanderFacts, Upgrade, fitting};
 
 /// The most heroes a party has.
@@ -46,10 +45,13 @@ pub const DRAUGHT: i32 = 15;
 pub const UPGRADE_PRICE: u32 = 50;
 /// The content generation a new run is made with (`RunEvent::Content`); a run stored without one is generation 0. From 2
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
-/// known trade-offs; from 4 bosses play bracket decks with their commander card; from 5 the roster grows by more
-/// two-colour bosses, upgraded forms and the uber boss, and a cleared floor may descend; from 6 a boss stands for every
-/// colour pair; from 7 a descent first gives the final boss's loot.
-pub const CONTENT: u32 = DESCENT_LOOT_FROM;
+/// known trade-offs; from 4 a ladder draws three lieutenants and one final boss; from 5 the roster grows by more
+/// two-colour bosses and a cleared floor may descend; from 6 a boss stands for every colour pair; from 7 a descent
+/// first gives the final boss's loot; from 8 a relic drops again for a hero who owns it. Every run plays the boss of
+/// `docs/delves.md` (Bosses), whatever its generation.
+pub const CONTENT: u32 = RELICS_AGAIN_FROM;
+/// The content generation from which owning a relic never lowers its chance in an offer, and copies stack.
+pub const RELICS_AGAIN_FROM: u32 = 8;
 /// The content generation from which the party may descend to a deeper floor after a floor's final boss.
 pub const ENDLESS_FROM: u32 = 5;
 /// The content generation from which a descent first gives the loot of the final boss that fell.
@@ -617,7 +619,7 @@ impl Run {
                 self.lobby()?;
                 self.content = *version;
                 // The ladder is drawn from the bosses of the run's generation.
-                self.map = generate_for(self.theme(content)?, self.seed, *version, self.heat);
+                self.map = generate_for(self.theme(content)?, self.seed, *version);
             }
             RunEvent::Started => {
                 self.lobby()?;
@@ -820,7 +822,6 @@ impl Run {
             self.theme(content)?,
             self.seed,
             self.content,
-            self.heat,
             self.floor,
             &avoid,
         );
@@ -846,8 +847,7 @@ impl Run {
             return Vec::new();
         }
         let next = self.floor.saturating_add(1);
-        let scale = Scale::of_content(self.heroes.len(), self.heat, 0, self.content).on_floor(next);
-        let deeper = scale.deeper();
+        let depth = self.defeated();
         let hearts = self.hearts.saturating_add(DESCENT_HEARTS).min(HEARTS);
         let loot = (self.content >= DESCENT_LOOT_FROM).then(|| {
             format!(
@@ -857,21 +857,8 @@ impl Run {
         let mut words: Vec<String> = loot.into_iter().collect();
         words.extend([
             format!(
-                "Floor {next}: four new bosses, one bracket stronger per floor (bracket {} from the first fight, at most {})",
-                scale.bracket(),
-                crate::scale::MAX_BRACKET
-            ),
-            "No easy first fights: every boss plays the Heat's top tier".to_owned(),
-            format!(
-                "Intensify: each Enrage {deeper} turn{} earlier, each passive {} more, {} extra risky relic{}",
-                if deeper == 1 { "" } else { "s" },
-                if deeper == 1 {
-                    "once".to_owned()
-                } else {
-                    format!("{deeper} times")
-                },
-                scale.extra_relics(),
-                if scale.extra_relics() == 1 { "" } else { "s" }
+                "Floor {next}: new bosses, their innates at level {} from the first fight and growing, more relics the deeper the party goes",
+                crate::scale::Scale::innate_level(depth, self.heat)
             ),
             format!(
                 "The party keeps its life, relics, Satchels and upgrades, and has {hearts} hearts"
@@ -879,18 +866,6 @@ impl Run {
             "Bank the win to end the run in victory now".to_owned(),
         ]);
         words
-    }
-
-    /// What the party's floor changes for the boss of the room it is in, one line each (`Scale::intensify`): empty on
-    /// the first floor.
-    pub fn intensify(&self) -> Vec<String> {
-        let rank = self.at.map_or(0, |node| self.boss_rank(node));
-        self.scale(self.heroes.len(), rank).intensify()
-    }
-
-    /// The scale of the boss at `rank` on the party's floor.
-    fn scale(&self, heroes: usize, rank: usize) -> Scale {
-        Scale::of_content(heroes, self.heat, rank, self.content).on_floor(self.floor)
     }
 
     fn lobby(&self) -> Result<(), CampaignError> {
@@ -1132,7 +1107,8 @@ impl Run {
                 } else {
                     c.price > 0
                 };
-                !h.relics.contains(&c.id) && (!shop || sold)
+                // From its generation on a relic drops again: owning it never lowers its chance, and copies stack.
+                (self.content >= RELICS_AGAIN_FROM || !h.relics.contains(&c.id)) && (!shop || sold)
             })
             .collect();
         // From the filter's generation on, only relics the deck (and its Satchel) can use.
@@ -1560,37 +1536,22 @@ impl Run {
             .count()
     }
 
-    /// Each boss of the ladder by id with the life it starts its fight with against this party, at its rank and the
-    /// run's Heat.
+    /// Each boss of the ladder by id with the life it starts its fight with against this party.
     pub fn boss_lives(&self, content: &Content) -> Vec<(String, i32)> {
         let Ok(theme) = self.theme(content) else {
             return Vec::new();
         };
-        let heroes = self.heroes.len();
+        let life = crate::scale::Scale::boss_life(self.heroes.len());
         self.map
             .nodes
             .iter()
-            .filter_map(|n| {
-                let boss = theme.boss(n.boss.as_deref()?)?;
-                let scale = self.scale(heroes, self.boss_rank(n.id));
-                Some((boss.id.clone(), scale.life(boss)))
-            })
+            .filter_map(|n| Some((theme.boss(n.boss.as_deref()?)?.id.clone(), life)))
             .collect()
     }
 
-    /// The plan of the fight the party is in, if it is in one.
+    /// The plan of the fight the party is in, if it is in one: the heroes against the boss of its room at the depth of
+    /// the bosses the party defeated.
     pub fn fight_plan(&self, content: &Content) -> Result<Option<FightPlan>, CampaignError> {
-        let rank = self.at.map_or(0, |node| self.boss_rank(node));
-        self.fight_plan_at(content, rank)
-    }
-
-    /// The plan of the fight the party is in, if it is in one, with its boss scaled as the boss at `rank` on the
-    /// ladder (the simulator measures each boss at each rank).
-    pub fn fight_plan_at(
-        &self,
-        content: &Content,
-        rank: usize,
-    ) -> Result<Option<FightPlan>, CampaignError> {
         if !matches!(self.status, Status::Fight { .. }) {
             return Ok(None);
         }
@@ -1619,78 +1580,13 @@ impl Run {
                 upgrades: h.upgrades.clone(),
             })
             .collect();
-        let scale = self.scale(heroes.len(), rank);
-        let life = scale.life(boss);
-        let schemes = Stream::new(self.seed, "schemes", u64::from(node), 0)
-            .pick(&theme.schemes, theme.schemes.len());
-        let mut rules = scale.rules(boss);
-        if scale.tier().modifier {
-            rules.extend(
-                Stream::new(self.seed, "modifier", u64::from(node), 0).pick(&theme.modifiers, 1),
-            );
-        }
-        rules.extend(self.boss_relics(content, boss, node, scale.extra_relics()));
-        let minions = scale
-            .minions(theme, boss)
-            .into_iter()
-            .map(|minion| {
-                let lieutenant = theme
-                    .boss(&minion.deck_of)
-                    .ok_or_else(|| refused(format!("no boss {}", minion.deck_of)))?;
-                Ok(MinionSeat {
-                    minion: minion.id.clone(),
-                    name: minion.name.clone(),
-                    life: scale.minion_life(minion),
-                    hand: HAND,
-                    brain: scale.brain(lieutenant.brain),
-                    deck: scale.deck(lieutenant),
-                    rules: minion.rules.clone(),
-                })
-            })
-            .collect::<Result<Vec<_>, CampaignError>>()?;
+        let boss = self.boss_seat(content, boss, node, (heroes.len(), self.defeated()))?;
         Ok(Some(FightPlan {
             node,
             heroes,
-            boss: BossSeat {
-                boss: boss.id.clone(),
-                name: boss.name.clone(),
-                life,
-                hand: scale.hand(boss),
-                brain: scale.brain(boss.brain),
-                deck: scale.deck(boss),
-                commander: (scale.bracketed && !boss.commander.is_empty())
-                    .then(|| boss.commander.clone()),
-                rules,
-                phases: scale.phases(boss, life),
-                schemes,
-                scheme_every: theme.scheme_every,
-            },
-            minions,
+            boss,
             run: None,
         }))
-    }
-
-    /// The risky relics a boss brings beyond its own on a deeper floor, drawn by the seed keyed by floor and room from
-    /// those of the run's generation that are neither its own relic nor a hero's.
-    fn boss_relics(
-        &self,
-        content: &Content,
-        boss: &crate::Boss,
-        node: u8,
-        count: usize,
-    ) -> Vec<String> {
-        if count == 0 {
-            return Vec::new();
-        }
-        let pool: Vec<String> = content
-            .relics()
-            .into_iter()
-            .filter(|c| c.role == "Risky" && c.since <= self.content && c.id != boss.relic)
-            .filter(|c| !self.heroes.iter().any(|h| h.relics.contains(&c.id)))
-            .map(|c| c.id.clone())
-            .collect();
-        let key = u64::from(self.floor) * 256 + u64::from(node);
-        Stream::new(self.seed, "boss-relics", key, 0).pick(&pool, count)
     }
 
     /// A bot hero's answer to `event`: in an older run the first option it can afford, else the best trade it can make

@@ -1,0 +1,39 @@
+{
+  "oracle_id": "35bba442-1aec-4d33-b502-4c580d61644b",
+  "name": "Fateful Absence",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fateful Absence",
+      "oracle_fingerprint": "f4a2108b444429ef74a8abdf5b76df22",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": { "Named": "clue" }
+                }
+              },
+              {
+                "Performed": {
+                  "action": "Investigated",
+                  "who": { "ControllerOf": { "Target": 0 } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

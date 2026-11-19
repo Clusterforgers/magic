@@ -1,0 +1,45 @@
+{
+  "oracle_id": "8682266c-2b0f-496e-b1c6-1fb338feac24",
+  "name": "Perplexing Test",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Perplexing Test",
+      "oracle_fingerprint": "00422a9560ccf92a8202268bbb2b69d3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Each": [{ "Type": "Creature" }, "Token"] },
+                            "to": "Hand"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Each": [{ "Type": "Creature" }, { "Not": "Token" }] },
+                            "to": "Hand"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "16f75a65-d067-4f79-81b9-833c373cf4d2",
+  "name": "Cryptbreaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cryptbreaker",
+      "oracle_fingerprint": "7572f9808e6d8cfe79fa5f63534473af",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}{B}" }, "Tap", { "Discard": {} }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Zombie" }], "count": 3 } }],
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

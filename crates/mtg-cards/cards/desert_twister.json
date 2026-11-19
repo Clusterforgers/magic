@@ -1,0 +1,19 @@
+{
+  "oracle_id": "6f880348-6dc8-4cf8-9313-9893c41a70a3",
+  "name": "Desert Twister",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Desert Twister",
+      "oracle_fingerprint": "94e9760605d1dbf0015ca518027935e0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

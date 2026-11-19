@@ -1,0 +1,12 @@
+{
+  "oracle_id": "50372c54-359c-4ee6-9e21-1e40ba53652d",
+  "name": "Segovian Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Segovian Angel",
+      "oracle_fingerprint": "771dc95bfdda131d16a82140c13461c4",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Vigilance" }]
+    }
+  ]
+}

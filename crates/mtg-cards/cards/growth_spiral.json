@@ -1,0 +1,35 @@
+{
+  "oracle_id": "34bcc217-dd91-45a0-90d7-a94d02f1f317",
+  "name": "Growth Spiral",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Growth Spiral",
+      "oracle_fingerprint": "7a3cd8f2cb381b97792091cc46f8fc8c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Draw": {} },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

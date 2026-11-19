@@ -1,0 +1,19 @@
+{
+  "oracle_id": "44503105-3e13-408d-a44f-37d503c61d72",
+  "name": "Simic Signet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simic Signet",
+      "oracle_fingerprint": "499bfba7fc39112e8dd5f586669328ee",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

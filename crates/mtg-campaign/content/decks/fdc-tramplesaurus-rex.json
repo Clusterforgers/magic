@@ -1,0 +1,334 @@
+{
+  "code": "FDC",
+  "name": "Tramplesaurus Rex",
+  "commander": [
+    "Ghalta, Primal Hunger"
+  ],
+  "swaps": [],
+  "cards": [
+    [
+      "Ghalta, Primal Hunger",
+      1
+    ],
+    [
+      "Arachnogenesis",
+      1
+    ],
+    [
+      "Arasta of the Endless Web",
+      1
+    ],
+    [
+      "Beast Whisperer",
+      1
+    ],
+    [
+      "Birds of Paradise",
+      1
+    ],
+    [
+      "Carnage Tyrant",
+      1
+    ],
+    [
+      "Curious Altisaur",
+      1
+    ],
+    [
+      "Dungrove Elder",
+      1
+    ],
+    [
+      "Elder Gargaroth",
+      1
+    ],
+    [
+      "Ezuri's Predation",
+      1
+    ],
+    [
+      "Gigantosaurus",
+      1
+    ],
+    [
+      "Hulking Raptor",
+      1
+    ],
+    [
+      "Loot, Exuberant Explorer",
+      1
+    ],
+    [
+      "Managorger Hydra",
+      1
+    ],
+    [
+      "Overwhelming Stampede",
+      1
+    ],
+    [
+      "Pugnacious Hammerskull",
+      1
+    ],
+    [
+      "Regal Imperiosaur",
+      1
+    ],
+    [
+      "Rhonas the Indomitable",
+      1
+    ],
+    [
+      "Ripjaw Raptor",
+      1
+    ],
+    [
+      "Rishkar's Expertise",
+      1
+    ],
+    [
+      "Scavenging Ooze",
+      1
+    ],
+    [
+      "Scrapshooter",
+      1
+    ],
+    [
+      "Shamanic Revelation",
+      1
+    ],
+    [
+      "Steel Leaf Champion",
+      1
+    ],
+    [
+      "Surrak and Goreclaw",
+      1
+    ],
+    [
+      "Surrak, the Hunt Caller",
+      1
+    ],
+    [
+      "Tangleweave Armor",
+      1
+    ],
+    [
+      "Thickest in the Thicket",
+      1
+    ],
+    [
+      "Unnatural Growth",
+      1
+    ],
+    [
+      "Verdant Sun's Avatar",
+      1
+    ],
+    [
+      "Whiptongue Hydra",
+      1
+    ],
+    [
+      "Yeva, Nature's Herald",
+      1
+    ],
+    [
+      "Bonders' Enclave",
+      1
+    ],
+    [
+      "Mosswort Bridge",
+      1
+    ],
+    [
+      "Scavenger Grounds",
+      1
+    ],
+    [
+      "War Room",
+      1
+    ],
+    [
+      "Witch's Clinic",
+      1
+    ],
+    [
+      "Beast Within",
+      1
+    ],
+    [
+      "Bite Down",
+      1
+    ],
+    [
+      "Challenger Troll",
+      1
+    ],
+    [
+      "Clifftop Lookout",
+      1
+    ],
+    [
+      "Collective Resistance",
+      1
+    ],
+    [
+      "Colossal Majesty",
+      1
+    ],
+    [
+      "Elemental Bond",
+      1
+    ],
+    [
+      "Elvish Mystic",
+      1
+    ],
+    [
+      "Fyndhorn Elves",
+      1
+    ],
+    [
+      "Garruk's Packleader",
+      1
+    ],
+    [
+      "Garruk's Uprising",
+      1
+    ],
+    [
+      "Goreclaw, Terror of Qal Sisma",
+      1
+    ],
+    [
+      "Harmonize",
+      1
+    ],
+    [
+      "Ilysian Caryatid",
+      1
+    ],
+    [
+      "Kenrith's Transformation",
+      1
+    ],
+    [
+      "Llanowar Elves",
+      1
+    ],
+    [
+      "Llanowar Tribe",
+      1
+    ],
+    [
+      "Monstrous Onslaught",
+      1
+    ],
+    [
+      "Paradise Druid",
+      1
+    ],
+    [
+      "Ram Through",
+      1
+    ],
+    [
+      "Rishkar, Peema Renegade",
+      1
+    ],
+    [
+      "Tamiyo's Safekeeping",
+      1
+    ],
+    [
+      "Terrian, World Tyrant",
+      1
+    ],
+    [
+      "Thrashing Brontodon",
+      1
+    ],
+    [
+      "Whisperer of the Wilds",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Rhonas's Monument",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Rogue's Passage",
+      1
+    ],
+    [
+      "Tranquil Thicket",
+      1
+    ],
+    [
+      "Forest",
+      32
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 57
+    },
+    "types": {
+      "Artifact": 5,
+      "Creature": 38,
+      "Enchantment": 7,
+      "Instant": 6,
+      "Land": 39,
+      "Sorcery": 6
+    },
+    "subtypes": {
+      "Archer": 1,
+      "Aura": 1,
+      "Avatar": 1,
+      "Bear": 2,
+      "Beast": 3,
+      "Bird": 1,
+      "Desert": 1,
+      "Dinosaur": 11,
+      "Druid": 7,
+      "Elder": 1,
+      "Elf": 9,
+      "Equipment": 2,
+      "Forest": 32,
+      "Frog": 1,
+      "God": 1,
+      "Human": 3,
+      "Hydra": 2,
+      "Knight": 1,
+      "Lizard": 1,
+      "Noble": 1,
+      "Ooze": 2,
+      "Plant": 1,
+      "Raccoon": 1,
+      "Scout": 1,
+      "Shaman": 2,
+      "Spider": 1,
+      "Treefolk": 1,
+      "Troll": 1,
+      "Warrior": 1
+    },
+    "tokens": 4,
+    "counters": 6,
+    "graveyard": 2,
+    "creature_commanders": 0
+  }
+}

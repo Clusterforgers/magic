@@ -1,0 +1,46 @@
+{
+  "oracle_id": "388168b3-ec68-4af2-b88c-6a5ec88c15f6",
+  "name": "Ayara, First of Locthwain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ayara, First of Locthwain",
+      "oracle_fingerprint": "37dbc8b88afa68a87efcf9074eccbd63",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [
+                      { "Type": "Creature" },
+                      { "Color": "Black" },
+                      "Other",
+                      { "ControlledBy": "You" }
+                    ],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Color": "Black" }, "Other"] } }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

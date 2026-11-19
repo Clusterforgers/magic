@@ -1,0 +1,20 @@
+{
+  "oracle_id": "a5478263-47c9-447f-9c7a-c77ce0752947",
+  "name": "Tranquil Expanse",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tranquil Expanse",
+      "oracle_fingerprint": "af5d8999bffd95a89d69a361597cb25b",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

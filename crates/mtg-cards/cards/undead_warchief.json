@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e6af56bf-bd78-4801-8f6e-033cdd68de3d",
+  "name": "Undead Warchief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Undead Warchief",
+      "oracle_fingerprint": "3dd9d491fb3033a9d60fc0788bf376b1",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "Subtype": "Zombie" }, { "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "Subtype": "Zombie" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

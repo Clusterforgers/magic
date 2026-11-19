@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c767aa2e-0a95-401f-8e36-d90a87648eab",
+  "name": "Simic Charm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simic Charm",
+      "oracle_fingerprint": "216cc011c742eea95d70529c034f1111",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "ControlledBy": "You" }] },
+                            "mods": [{ "AddKeyword": "Hexproof" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

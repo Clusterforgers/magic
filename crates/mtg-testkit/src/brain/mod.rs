@@ -18,6 +18,7 @@ pub mod eval;
 pub mod haunt;
 pub mod knobs;
 pub mod priority;
+pub mod satchel;
 pub mod seen;
 pub mod sim;
 pub mod spotlight;
@@ -231,6 +232,17 @@ impl HeuristicBot {
             if play != PriorityAction::Pass {
                 self.played.push(play.clone());
             }
+            return Answer::Priority(play);
+        }
+        if pending
+            && let DecisionKind::Priority(options) = &decision.kind
+            && let Some(play) = satchel::plan(
+                &seen::Seen::new(engine.state(), self.seat),
+                options,
+                &self.held(),
+            )
+        {
+            self.played.push(play.clone());
             return Answer::Priority(play);
         }
         let matters = matches!(

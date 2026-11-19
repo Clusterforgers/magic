@@ -1,6 +1,7 @@
 //! Draws of one batch are sequential (CR 121.6, 614.6): each draw, kept or replaced, sees the libraries as the events
 //! before it leave them, so a draw kept after a replaced one ("reveal until", dredge) takes the card on top then, and a
-//! replacement of a later draw reveals below the cards the earlier draws took.
+//! replacement of a later draw reveals below the cards the earlier draws took; what a replacement of a later draw does
+//! sees the cards the earlier replacements moved, so "instead, each opponent discards a card" twice takes two cards.
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -12,10 +13,22 @@ use crate::zones::Zone;
 impl Pass<'_> {
     /// The state as the events of the slots before `at` leave the libraries, or none when they touch no library.
     pub(super) fn lg1_libraries_before(&self, at: usize) -> Option<GameState> {
+        self.lg1_folded_before(at, touches_library)
+    }
+
+    /// The state as the events of the slots before `at` leave the libraries and the cards they move, or none when
+    /// there are no such events: the effects that replace the draw at `at` happen after the draws and replacements
+    /// before it (CR 121.6).
+    pub(super) fn lg1_before_draw(&self, at: usize) -> Option<GameState> {
+        self.lg1_folded_before(at, |event| touches_library(event) || moves_card(event))
+    }
+
+    /// The state with the events of the slots before `at` that `keep` names applied, or none when it names none.
+    fn lg1_folded_before(&self, at: usize, keep: fn(&Event) -> bool) -> Option<GameState> {
         let events: Vec<&Event> = self.slots[..at]
             .iter()
             .filter_map(|slot| match &slot.item {
-                Item::One(event) if touches_library(event) => Some(event),
+                Item::One(event) if keep(event) => Some(event),
                 _ => None,
             })
             .collect();
@@ -70,6 +83,14 @@ fn lg1_step(state: &mut GameState, event: &Event) -> Event {
     // An event this batch cannot apply here leaves the library as it is; the batch's fold reports it.
     let _ = crate::fold::apply_event(state, &event);
     event
+}
+
+/// Whether the event moves a card from one zone to another, a discard included.
+const fn moves_card(event: &Event) -> bool {
+    matches!(
+        event,
+        Event::ZoneChanged { .. } | Event::CardDiscarded { .. }
+    )
 }
 
 /// Whether the event draws from, takes from, puts into or reorders a library.

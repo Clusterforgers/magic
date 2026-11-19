@@ -1,0 +1,55 @@
+{
+  "oracle_id": "f8f4fc60-725d-46d8-8e8f-e68e00d20589",
+  "name": "Castle Ardenvale",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Castle Ardenvale",
+      "oracle_fingerprint": "c353f7e961a5097389fb7a4f4e9124db",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{W}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

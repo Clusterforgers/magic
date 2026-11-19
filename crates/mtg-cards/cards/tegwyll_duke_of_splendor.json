@@ -1,0 +1,33 @@
+{
+  "oracle_id": "868f0a0a-ca9e-4baf-8295-6b228aa834e5",
+  "name": "Tegwyll, Duke of Splendor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tegwyll, Duke of Splendor",
+      "oracle_fingerprint": "f667006ea2a7232fd81905c0754967bb",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Deathtouch" },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Faerie" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Subtype": "Faerie" }, "Other", { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

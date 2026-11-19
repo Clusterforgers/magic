@@ -1,0 +1,26 @@
+{
+  "oracle_id": "7e26f0b7-20e6-46d5-8130-d98c14d6aa29",
+  "name": "Temple of Mystery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple of Mystery",
+      "oracle_fingerprint": "e1050c387c80eeb173031a9c862d5695",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Green", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

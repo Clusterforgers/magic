@@ -5,7 +5,6 @@
 use crate::endless::{clear_floor, started, vote};
 use mtg_campaign::map::generate_floor;
 use mtg_campaign::run::{CONTENT, DESCENT_LOOT_FROM, ENDLESS_FROM, HEARTS, LOOT_GOLD};
-use mtg_campaign::scale::PAIRS_FROM;
 use mtg_campaign::{Brain, Offer, Run, RunEvent, Status, content};
 use rstest::rstest;
 
@@ -100,10 +99,7 @@ fn a_descent_gives_the_final_boss_loot_first(
     assert_eq!(run.hearts, 2, "one heart back");
     let avoid: Vec<&str> = fought.iter().map(String::as_str).collect();
     let theme = &content.themes[0];
-    assert_eq!(
-        run.map,
-        generate_floor(theme, run.seed, CONTENT, heat, 2, &avoid)
-    );
+    assert_eq!(run.map, generate_floor(theme, run.seed, CONTENT, 2, &avoid));
     assert_eq!(run.at, run.map.choices(None).first().copied());
     for (h, was) in run.heroes.iter().zip(&before.heroes) {
         assert_eq!(
@@ -139,7 +135,7 @@ fn banking_takes_no_loot(#[values(1, 3)] players: usize, #[values(0, 2)] heat: u
 
 #[rstest]
 fn older_endless_runs_descend_straight_to_the_fight(
-    #[values(ENDLESS_FROM, PAIRS_FROM)] version: u32,
+    #[values(ENDLESS_FROM, 6)] version: u32,
     #[values(1, 2)] players: usize,
 ) {
     assert!(version < DESCENT_LOOT_FROM);

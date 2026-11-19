@@ -1,0 +1,23 @@
+{
+  "oracle_id": "d28b7c07-ef65-4187-a15e-2180bdc593d1",
+  "name": "Spectral Shepherd",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spectral Shepherd",
+      "oracle_fingerprint": "fc323da2462e8f15fc7fce66a00cd65f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Spirit" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -164,6 +164,8 @@ pub enum Rule {
     /// The colors of the mana symbols in the costs of the players' spells are drawn anew each round within their
     /// commanders' color identity (`cost_colors`).
     CostColorsDrawn(Vec<PlayerId>),
+    /// The players pay no commander tax.
+    NoCommanderTax(Vec<PlayerId>),
     /// The players have the keyword, such as protection from everything.
     PlayersHave {
         /// The players.
@@ -227,6 +229,24 @@ pub enum Rule {
     PowerUpAgain(Vec<ObjectRef>),
     /// The players flip two coins for each coin they would flip and ignore one (CR 705.3).
     FlipTwoCoins(Vec<PlayerId>),
+    /// The players can't control more than `most` creatures with one name (`GameRule::SameNameLimit`).
+    SameNameLimit {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// The most creatures of one name.
+        most: u32,
+    },
+    /// The cards and tokens the players own flip to be exiled on their way to a graveyard (`GameRule::FlipOrExiled`).
+    FlipOrExiled(Vec<PlayerId>),
+    /// The players flip in their untap steps, and on a loss the permanents stay tapped (`GameRule::FlipOrStayTapped`).
+    FlipOrStayTapped {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// The permanents held down on a loss.
+        held: Vec<ObjectRef>,
+    },
+    /// The players flip as they would gain life, and on a loss gain none (`GameRule::FlipOrNoLifeGain`).
+    FlipOrNoLifeGain(Vec<PlayerId>),
     /// The players' first set of coin flips each turn comes up heads and is won (`GameRule::R6700FirstFlipsHeads`).
     R6700FirstFlipsHeads(Vec<PlayerId>),
     /// The players face each villainous choice an additional time (`GameRule::R6700VillainousAgain`).
@@ -887,6 +907,8 @@ pub(crate) struct RulesInForce {
     /// The players whose costs have their colors drawn anew, one bit for each seat by index (a set this small keeps the
     /// cached rules small).
     cost_colors: u64,
+    /// The players who pay no commander tax, one bit for each seat by index.
+    no_commander_tax: u64,
     player_keywords: Vec<(PlayerId, Keyword)>,
     no_draw: BTreeSet<PlayerId>,
     draw_bottom: BTreeSet<PlayerId>,
@@ -914,6 +936,14 @@ pub(crate) struct RulesInForce {
     power_up_again: Vec<ObjectRef>,
     /// One entry for each rule that doubles a player's coins: a player listed twice flips four.
     flip_two: Vec<PlayerId>,
+    /// The most creatures of one name each player may control, the lowest of the rules that name them.
+    same_name_limit: BTreeMap<PlayerId, u32>,
+    /// The players whose cards and tokens flip to be exiled on their way to a graveyard.
+    flip_exiled: BTreeMap<PlayerId, ObjectRef>,
+    /// The permanents each player's untap step flip holds down on a loss.
+    flip_stay_tapped: BTreeMap<PlayerId, BTreeSet<ObjectId>>,
+    /// The players who flip as they would gain life.
+    flip_no_gain: BTreeMap<PlayerId, ObjectRef>,
     /// The players whose first set of coin flips each turn comes up heads.
     r6700_first_heads: BTreeSet<PlayerId>,
     /// One entry for each rule that makes a player face a villainous choice an additional time.
@@ -1084,6 +1114,24 @@ impl Cast {
         !self.free && self.rather.is_none() && self.instead.is_none() && self.from == Some(zone)
     }
 
+    /// Whether the permission reaches the zone `card` is in for `player`: another player's graveyard only when the
+    /// permission names the cards it covers or their owner ("from an opponent's graveyard"), so "from your graveyard" stays
+    /// at home.
+    fn reaches(&self, player: PlayerId, card: &GameObject) -> bool {
+        match card.zone() {
+            Zone::Graveyard(owner) if owner != player => self.only.is_some() || self.names_owner(),
+            _ => true,
+        }
+    }
+
+    /// Whether the permission's cards are named by their owner (`Pred::OwnedBy`).
+    pub(crate) fn names_owner(&self) -> bool {
+        self.what
+            .0
+            .iter()
+            .any(|pred| matches!(pred, mtg_cards::refs::Pred::OwnedBy(_)))
+    }
+
     /// Whether the permission lets `player` cast the card `card`, which is in its zone now.
     pub(crate) fn covers(&self, state: &GameState, player: PlayerId, card: &GameObject) -> bool {
         (!self.opens_no_zone || r305c_cast_anyway(state, player, card))
@@ -1091,6 +1139,7 @@ impl Cast {
             && self.r5503_open(state)
             && self.when_holds(state)
             && self.who.contains(&player)
+            && self.reaches(player, card)
             && self
                 .only
                 .as_ref()
@@ -1404,6 +1453,12 @@ impl RulesInForce {
                     .map(|p| seat_bit(*p))
                     .fold(0, |all, bit| all | bit);
             }
+            Rule::NoCommanderTax(players) => {
+                self.no_commander_tax |= players
+                    .iter()
+                    .map(|p| seat_bit(*p))
+                    .fold(0, |all, bit| all | bit);
+            }
             Rule::PlayersHave { who, keyword } => self
                 .player_keywords
                 .extend(who.iter().map(|player| (*player, keyword.clone()))),
@@ -1444,6 +1499,32 @@ impl RulesInForce {
             Rule::SkipExtraTurns(players) => self.skip_extra_turns.extend(players),
             Rule::PowerUpAgain(objects) => self.power_up_again.extend(objects),
             Rule::FlipTwoCoins(players) => self.flip_two.extend(players),
+            Rule::SameNameLimit { players, most } => {
+                for player in players {
+                    let limit = self.same_name_limit.entry(*player).or_insert(*most);
+                    *limit = (*limit).min(*most);
+                }
+            }
+            Rule::FlipOrExiled(players) => {
+                if let Some(source) = source {
+                    self.flip_exiled
+                        .extend(players.iter().map(|player| (*player, source)));
+                }
+            }
+            Rule::FlipOrStayTapped { players, held } => {
+                for player in players {
+                    self.flip_stay_tapped
+                        .entry(*player)
+                        .or_default()
+                        .extend(held.iter().map(|object| object.id));
+                }
+            }
+            Rule::FlipOrNoLifeGain(players) => {
+                if let Some(source) = source {
+                    self.flip_no_gain
+                        .extend(players.iter().map(|player| (*player, source)));
+                }
+            }
             Rule::R6700FirstFlipsHeads(players) => self.r6700_first_heads.extend(players),
             Rule::R6700VillainousAgain(players) => self.r6700_villainous_again.extend(players),
             Rule::ExtraDie(players) => self.extra_die.extend(players),
@@ -1938,6 +2019,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::RadiationGainsLife(who) => Rule::RadiationGainsLife(scope.players(who)?),
         GameRule::LifeTotalCantChange(who) => Rule::LifeTotalCantChange(scope.players(who)?),
         GameRule::CostColorsDrawn(who) => Rule::CostColorsDrawn(scope.players(who)?),
+        GameRule::NoCommanderTax(who) => Rule::NoCommanderTax(scope.players(who)?),
         GameRule::PlayersHave { who, keyword } => Rule::PlayersHave {
             who: scope.players(who)?,
             keyword: keyword.clone(),
@@ -1983,6 +2065,16 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             Zone::Battlefield,
         )?),
         GameRule::FlipTwoCoins(who) => Rule::FlipTwoCoins(scope.players(who)?),
+        GameRule::SameNameLimit { who, most } => Rule::SameNameLimit {
+            players: scope.players(who)?,
+            most: *most,
+        },
+        GameRule::FlipOrExiled(who) => Rule::FlipOrExiled(scope.players(who)?),
+        GameRule::FlipOrStayTapped { who, what } => Rule::FlipOrStayTapped {
+            players: scope.players(who)?,
+            held: objects(&mtg_cards::refs::Ref::Each(what.clone()), Zone::Battlefield)?,
+        },
+        GameRule::FlipOrNoLifeGain(who) => Rule::FlipOrNoLifeGain(scope.players(who)?),
         GameRule::R6700FirstFlipsHeads(who) => Rule::R6700FirstFlipsHeads(scope.players(who)?),
         GameRule::R6700VillainousAgain(who) => Rule::R6700VillainousAgain(scope.players(who)?),
         GameRule::ExtraDie(who) => Rule::ExtraDie(scope.players(who)?),
@@ -2264,6 +2356,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RadiationGainsLife(players)
         | Rule::LifeTotalCantChange(players)
         | Rule::CostColorsDrawn(players)
+        | Rule::NoCommanderTax(players)
         | Rule::CantDraw(players)
         | Rule::DrawFromBottom(players)
         | Rule::CantSearch(players)
@@ -2274,6 +2367,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExtraVote(players)
         | Rule::SkipExtraTurns(players)
         | Rule::FlipTwoCoins(players)
+        | Rule::SameNameLimit { players, .. }
+        | Rule::FlipOrExiled(players)
+        | Rule::FlipOrNoLifeGain(players)
+        | Rule::FlipOrStayTapped { players, .. }
         | Rule::R6700FirstFlipsHeads(players)
         | Rule::R6700VillainousAgain(players)
         | Rule::ExtraDie(players)
@@ -2469,6 +2566,7 @@ static NONE: RulesInForce = RulesInForce {
     radiation_gains: BTreeSet::new(),
     no_life_change: BTreeSet::new(),
     cost_colors: 0,
+    no_commander_tax: 0,
     player_keywords: Vec::new(),
     no_draw: BTreeSet::new(),
     draw_bottom: BTreeSet::new(),
@@ -2486,6 +2584,10 @@ static NONE: RulesInForce = RulesInForce {
     skip_extra_turns: BTreeSet::new(),
     power_up_again: Vec::new(),
     flip_two: Vec::new(),
+    same_name_limit: BTreeMap::new(),
+    flip_exiled: BTreeMap::new(),
+    flip_stay_tapped: BTreeMap::new(),
+    flip_no_gain: BTreeMap::new(),
     r6700_first_heads: BTreeSet::new(),
     r6700_villainous_again: Vec::new(),
     extra_die: Vec::new(),
@@ -2873,6 +2975,11 @@ pub fn cant_gain_life(state: &GameState, player: PlayerId) -> bool {
 /// identity: the one place a spell's cost reads this rule (`cost_colors`).
 pub fn cost_colors_drawn(state: &GameState, player: PlayerId) -> bool {
     state.rules().cost_colors & seat_bit(player) != 0
+}
+
+/// Whether `player` pays no commander tax now (CR 903.8).
+pub fn pays_no_commander_tax(state: &GameState, player: PlayerId) -> bool {
+    state.rules().no_commander_tax & seat_bit(player) != 0
 }
 
 /// The bit of `player` in a set of seats by index; none for a seat past the 64th.
@@ -3283,6 +3390,36 @@ pub(crate) fn r6402_roll_changers(state: &GameState, player: PlayerId) -> Vec<R6
         .filter(|changer| changer.player == player)
         .cloned()
         .collect()
+}
+
+/// The most creatures with one name `player` may control, when a rule limits it (Mirror Hall).
+pub fn same_name_limit(state: &GameState, player: PlayerId) -> Option<u32> {
+    state.rules().same_name_limit.get(&player).copied()
+}
+
+/// Whether a card or token `owner` owns flips to be exiled on its way to a graveyard (No Rest): the source of the rule.
+pub(crate) fn flips_or_exiled(state: &GameState, owner: PlayerId) -> Option<ObjectRef> {
+    state.rules().flip_exiled.get(&owner).copied()
+}
+
+/// The permanents `player`'s untap step flip holds down on a loss, when a rule makes them flip (Stone Sleep).
+pub fn flip_stay_tapped(state: &GameState, player: PlayerId) -> Option<&BTreeSet<ObjectId>> {
+    state.rules().flip_stay_tapped.get(&player)
+}
+
+/// Whether any player's cards and tokens flip on their way to a graveyard (No Rest).
+pub(crate) fn flips_or_exiled_any(state: &GameState) -> bool {
+    !state.rules().flip_exiled.is_empty()
+}
+
+/// Whether any player flips as they would gain life (No Mercy).
+pub(crate) fn flips_or_no_life_gain_any(state: &GameState) -> bool {
+    !state.rules().flip_no_gain.is_empty()
+}
+
+/// Whether `player` flips as they would gain life, gaining none on a loss (No Mercy): the source of the rule.
+pub(crate) fn flips_or_no_life_gain(state: &GameState, player: PlayerId) -> Option<ObjectRef> {
+    state.rules().flip_no_gain.get(&player).copied()
 }
 
 /// How many coins `player` flips for one coin they would flip: two for each rule that doubles them, at most 32.

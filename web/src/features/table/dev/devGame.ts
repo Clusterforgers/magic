@@ -16,11 +16,12 @@ import type {
   Step,
   Stop,
 } from '@/protocol/generated'
-import { DEV_BOSS_EMBLEMS, DEV_BOSS_OMEN, DEV_BOSS_PHASES, DEV_BOSS_SCHEME } from './bossContent'
 import { ruleKey } from '../autoSkips'
 import { devPreview } from './devForecast'
 import { withStop } from './devStops'
 import { withRealCards } from './realCards'
+import { withReworkedBoss } from './reworkedBoss'
+import type { DevRework } from './reworkedBoss'
 import type { RealIds } from './realCards'
 import { buildFixture } from './fixture'
 import type { Fixture, FixtureOptions } from './fixture'
@@ -254,6 +255,8 @@ export interface FixtureGameOptions extends FixtureOptions {
   boss?: number
   /** The viewer is a fallen hero's Spirit with no permanents, hand or commander (`withSpirit`), in a boss fight. */
   spirit?: true
+  /** With `boss`, how far the fight has come (`withReworkedBoss`): 1 before Phase 1 (the default), 2 with Phase 1 in force. */
+  rework?: DevRework
   /** No seat has a permanent (`withBareBoards`): the start of a fight. */
   bare?: true
   /** Every opponent but the last out of the game, the last with an empty board. */
@@ -293,53 +296,24 @@ const DEV_TABLE_RULES: HouseRules = {
 }
 
 /**
- * The table as a fight against a boss: the last seat but `minions` is the boss, with two phases, a scheme and an
- * Omen; it and its minions are one team, every other seat the other.
+ * The table as a fight against a boss: the last seat but `minions` is the boss with its parts at `stage`
+ * (`withReworkedBoss`); it and the seats after it are one team, every other seat the other.
  */
-export function withBoss(moment: Fixture, minions: number): Fixture {
+export function withBoss(moment: Fixture, minions: number, stage: DevRework = 1): Fixture {
   const count = moment.view.players.length
   const boss = Math.max(1, count - 1 - Math.max(0, minions))
-  // The boss's rules lie in its command zone as emblems, as the server deals them.
-  const first = Math.max(0, ...moment.view.objects.map((object) => object.id)) + 1
-  const emblems: ObjectView[] = DEV_BOSS_EMBLEMS.map((name, at) => ({
-    id: first + at,
-    owner: boss,
-    controller: boss,
-    zone: { Command: boss },
-    kind: 'Emblem',
-    name,
-    mana_cost: null,
-    supertypes: [],
-    types: [],
-    subtypes: [],
-    colors: [],
-    power: null,
-    toughness: null,
-    abilities: [],
-    permanent: null,
-  }))
   const players = moment.view.players.map((player) =>
     player.seat === boss
       ? {
           ...player,
           life: 120,
-          command: {
-            count: player.command.count + emblems.length,
-            cards: [...(player.command.cards ?? []), ...emblems.map((emblem) => emblem.id)],
-          },
-          boss: {
-            phases: [...DEV_BOSS_PHASES],
-            begun: 1,
-            scheme: DEV_BOSS_SCHEME,
-            omen: DEV_BOSS_OMEN,
-          },
+          boss: { phases: [], begun: 0 },
         }
       : player,
   )
   const seats = players.map((player) => (player.seat >= boss ? 1 : 0))
   const house_rules = { ...moment.view.house_rules, teams: { mode: 'teams' as const, seats } }
-  const objects = [...moment.view.objects, ...emblems]
-  return { ...moment, view: { ...moment.view, players, objects, house_rules } }
+  return withReworkedBoss({ ...moment, view: { ...moment.view, players, house_rules } }, stage)
 }
 
 /** A table at the start of a fight: no seat has a permanent and nothing is attacking. */
@@ -510,8 +484,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
     options.boss === undefined
       ? teamed
       : prompt === undefined && table === undefined
-        ? withBossAttack(withBoss(teamed, options.boss))
-        : withBoss(teamed, options.boss)
+        ? withBossAttack(withBoss(teamed, options.boss, options.rework))
+        : withBoss(teamed, options.boss, options.rework)
   const spirited = options.spirit === true && options.boss !== undefined ? withSpirit(bossed) : bossed
   const bared = options.bare === true ? withBareBoards(spirited) : spirited
   const lone = options.alone === true ? withLastStanding(bared) : bared

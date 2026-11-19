@@ -126,7 +126,7 @@ pub fn fair_attack(seen: &Seen<'_>, attack: &[(mtg_core::ids::ObjectId, AttackTa
 pub const RESTRAINT_TURNS: u32 = 3;
 
 /// Whether the rule at `index` of `card` sweeps: no target, and it destroys, exiles, damages or sacrifices for each.
-fn sweeps(card: &mtg_cards::CardDefinition, index: Option<usize>) -> bool {
+pub(crate) fn sweeps(card: &mtg_cards::CardDefinition, index: Option<usize>) -> bool {
     use mtg_cards::ability::Ability;
     card.rules.iter().enumerate().any(|(at, rule)| {
         if index.is_some_and(|wanted| wanted != at) {

@@ -1,0 +1,50 @@
+{
+  "oracle_id": "02f8ec49-f490-408b-a76e-58e160a5a5a7",
+  "name": "Marsh Flitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marsh Flitter",
+      "oracle_fingerprint": "697551041bf5ead420d4f0c9bf35d8d6",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin Rogue",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin", "Rogue"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Subtype": "Goblin" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 3, "toughness": 3 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -725,17 +725,7 @@ impl PlayerView {
             effects: mtg_engine::rules::player_effects(state, seat),
             spirit: player.is_spirit(),
             eyes: mtg_engine::spotlight::focus(state, seat),
-            boss: match (player.phases(), player.schemes()) {
-                ((0, _), None) => None,
-                ((_, begun), schemes) => Some(crate::view::BossView {
-                    phases: player.phase_names().map(str::to_owned).collect(),
-                    begun: u32::try_from(begun).unwrap_or(u32::MAX),
-                    commander: player.held().next().map(str::to_owned),
-                    scheme: schemes.and_then(|(now, _)| now).map(str::to_owned),
-                    omen: schemes.map(|(_, omen)| omen.to_owned()),
-                    omen_in: mtg_engine::schemes::omen_in(state, seat),
-                }),
-            },
+            boss: crate::boss_view::of(state, player),
             mulligans: player.mulligans(),
             mulligan: player.mulligan_status(),
             hand: zone_view(state, viewer, Zone::Hand(seat)),

@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "bb8fcaa7-3430-4de1-854a-77b7bef59864",
+  "oracle_id": "5d2ccaa4-4815-4987-889f-d08c4d1e7a8e",
+  "multiverse_ids": [
+    640573
+  ],
+  "mtgo_id": 118954,
+  "tcgplayer_id": 525969,
+  "cardmarket_id": 743629,
+  "name": "Merfolk Skydiver",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/bb8fcaa7-3430-4de1-854a-77b7bef59864",
+  "scryfall_uri": "https://scryfall.com/card/lcc/277/merfolk-skydiver?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:37:28Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.jpg?1783913848",
+    "normal": "https://cards.scryfall.io/normal/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.jpg?1783913848",
+    "large": "https://cards.scryfall.io/large/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.jpg?1783913848",
+    "png": "https://cards.scryfall.io/png/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.png?1783913848",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.jpg?1783913848",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.jpg?1783913848",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.webp?1783913848",
+    "grid": "https://cards.scryfall.io/grid/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.webp?1783913848",
+    "display": "https://cards.scryfall.io/display/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.webp?1783913848",
+    "art": "https://cards.scryfall.io/art/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.webp?1783913848",
+    "crop": "https://cards.scryfall.io/crop/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.webp?1783913848",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/b/bb8fcaa7-3430-4de1-854a-77b7bef59864.jpg?1783913848"
+  },
+  "mana_cost": "{G}{U}",
+  "cmc": 2.0,
+  "type_line": "Creature — Merfolk Mutant",
+  "oracle_text": "Flying\nWhen this creature enters, put a +1/+1 counter on target creature you control.\n{3}{G}{U}: Proliferate. (Choose any number of permanents and/or players, then give each another counter of each kind already there.)",
+  "power": "1",
+  "toughness": "1",
+  "colors": [
+    "G",
+    "U"
+  ],
+  "color_identity": [
+    "G",
+    "U"
+  ],
+  "keywords": [
+    "Flying",
+    "Proliferate"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bb8fcaa7-3430-4de1-854a-77b7bef59864/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5d2ccaa4-4815-4987-889f-d08c4d1e7a8e&unique=prints",
+  "collector_number": "277",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Sara Winters",
+  "artist_ids": [
+    "56be33dc-a2da-40e9-a4f7-94077dcea31e"
+  ],
+  "illustration_id": "134bff38-e6e9-4563-910d-3bbefaf3a4ff",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 6793,
+  "penny_rank": 6959,
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.26",
+    "eur_foil": null,
+    "tix": "0.20"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640573&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DMerfolk%2BSkydiver",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DMerfolk%2BSkydiver",
+    "edhrec": "https://edhrec.com/route/?cc=Merfolk+Skydiver"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525969%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743629&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/118954?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

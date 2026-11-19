@@ -1,0 +1,28 @@
+{
+  "oracle_id": "eab71e4e-27c3-4c41-b95f-259c1d14b97a",
+  "name": "Dragon Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon Mage",
+      "oracle_fingerprint": "3d5f23f8dcb7f5f075ce982f17c709a2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Discard": {
+                  "who": "EachPlayer",
+                  "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "EachPlayer" }] }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

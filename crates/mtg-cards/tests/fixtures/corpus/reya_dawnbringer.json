@@ -1,0 +1,141 @@
+{
+  "object": "card",
+  "id": "44b45bdd-829a-4fc1-ad37-17c2bd57fac8",
+  "oracle_id": "08d1a5d1-141d-48e3-ac22-c2529191cb13",
+  "multiverse_ids": [
+    456628
+  ],
+  "mtgo_id": 70137,
+  "mtgo_foil_id": 70138,
+  "tcgplayer_id": 180827,
+  "cardmarket_id": 366867,
+  "name": "Reya Dawnbringer",
+  "lang": "en",
+  "released_at": "2018-12-07",
+  "uri": "https://api.scryfall.com/cards/44b45bdd-829a-4fc1-ad37-17c2bd57fac8",
+  "scryfall_uri": "https://scryfall.com/card/uma/32/reya-dawnbringer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T09:10:57Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.jpg?1783933857",
+    "normal": "https://cards.scryfall.io/normal/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.jpg?1783933857",
+    "large": "https://cards.scryfall.io/large/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.jpg?1783933857",
+    "png": "https://cards.scryfall.io/png/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.png?1783933857",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.jpg?1783933857",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.jpg?1783933857",
+    "thumb": "https://cards.scryfall.io/thumb/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.webp?1783933857",
+    "grid": "https://cards.scryfall.io/grid/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.webp?1783933857",
+    "display": "https://cards.scryfall.io/display/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.webp?1783933857",
+    "art": "https://cards.scryfall.io/art/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.webp?1783933857",
+    "crop": "https://cards.scryfall.io/crop/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.webp?1783933857",
+    "jpeg": "https://cards.scryfall.io/normal/front/4/4/44b45bdd-829a-4fc1-ad37-17c2bd57fac8.jpg?1783933857"
+  },
+  "mana_cost": "{6}{W}{W}{W}",
+  "cmc": 9.0,
+  "type_line": "Legendary Creature — Angel",
+  "oracle_text": "Flying\nAt the beginning of your upkeep, you may return target creature card from your graveyard to the battlefield.",
+  "power": "4",
+  "toughness": "6",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "legal",
+    "predh": "legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "2ec77b94-6d47-4891-a480-5d0b4e5c9372",
+  "set": "uma",
+  "set_name": "Ultimate Masters",
+  "set_type": "masters",
+  "set_uri": "https://api.scryfall.com/sets/2ec77b94-6d47-4891-a480-5d0b4e5c9372",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Auma&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/uma?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/44b45bdd-829a-4fc1-ad37-17c2bd57fac8/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A08d1a5d1-141d-48e3-ac22-c2529191cb13&unique=prints",
+  "collector_number": "32",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"You have not died until I consent.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Matthew D. Wilson",
+  "artist_ids": [
+    "4fbafd13-0cf9-42a1-870d-7f8ea276f140"
+  ],
+  "illustration_id": "d95b0a47-3742-46ed-a761-ed8a81ab3007",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": true,
+  "story_spotlight": false,
+  "edhrec_rank": 3759,
+  "penny_rank": 6822,
+  "prices": {
+    "usd": "4.25",
+    "usd_foil": "6.31",
+    "usd_etched": null,
+    "eur": "2.21",
+    "eur_foil": "4.08",
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=456628&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DReya%2BDawnbringer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DReya%2BDawnbringer",
+    "edhrec": "https://edhrec.com/route/?cc=Reya+Dawnbringer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F180827%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=366867&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/70137?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

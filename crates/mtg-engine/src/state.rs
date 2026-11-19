@@ -440,6 +440,8 @@ pub struct GameState {
     pub(crate) commanders: crate::commanders::Commanders,
     /// The cards set up in each Delves hero's Satchel (`satchel`).
     pub(crate) satchels: crate::satchel::Satchels,
+    /// The seats' opening hand rules (`opening_lands`).
+    pub(crate) opening_rules: crate::opening_lands::OpeningRules,
     /// The companions the seats named, outside the game until their owners bring them in (CR 702.139).
     pub(crate) companions: crate::companions::Companions,
     /// The cards of a library its owner looked at by hand (`ManualAction::LookTop`), known to that seat while each is
@@ -1247,6 +1249,8 @@ impl Hash for GameState {
         self.commanders.hash(state);
         // Likewise a game without Satchels.
         self.satchels.hash(state);
+        // Likewise a game without opening hand rules.
+        self.opening_rules.hash(state);
         // Likewise a game without companions.
         self.companions.hash(state);
     }

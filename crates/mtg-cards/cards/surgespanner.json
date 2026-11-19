@@ -1,0 +1,27 @@
+{
+  "oracle_id": "3f15349a-6ac6-4091-95a3-ae9f593e4650",
+  "name": "Surgespanner",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Surgespanner",
+      "oracle_fingerprint": "576acf23de075226b7d320a7e24250a2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "targets": [{ "what": { "Object": [] } }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{1}{U}",
+                  "paid": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

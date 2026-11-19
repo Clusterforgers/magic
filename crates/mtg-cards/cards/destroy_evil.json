@@ -1,0 +1,42 @@
+{
+  "oracle_id": "b75e667a-1ceb-445a-acf4-ae1fd2dae9e7",
+  "name": "Destroy Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Destroy Evil",
+      "oracle_fingerprint": "374567dca8777151e6f470cd4b3b137a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "Toughness", "op": "Ge", "to": 4 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Enchantment" }] } }],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

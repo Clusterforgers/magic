@@ -1,0 +1,44 @@
+{
+  "oracle_id": "921345ce-2eaf-4b95-b65d-1c27204665ed",
+  "name": "Transmogrifying Wand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transmogrifying Wand",
+      "oracle_fingerprint": "9eeb89085d6c237c6867a2e4d738a643",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 3 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "timing": "Sorcery",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "token": {
+                    "Custom": {
+                      "name": "Ox",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Ox"],
+                      "power": 2,
+                      "toughness": 4
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "oracle_id": "a75445d3-1303-4bb5-89ad-26ea93fecd48",
+  "name": "Evolving Wilds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Evolving Wilds",
+      "oracle_fingerprint": "eb0023ce516ea01cbcfe40c185308321",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "Search": { "filter": [{ "Supertype": "Basic" }, { "Type": "Land" }], "as": "land" }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

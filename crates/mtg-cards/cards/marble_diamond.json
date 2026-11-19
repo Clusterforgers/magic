@@ -1,0 +1,20 @@
+{
+  "oracle_id": "910488bf-66ab-415e-973b-1262b2ab7454",
+  "name": "Marble Diamond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Marble Diamond",
+      "oracle_fingerprint": "e09f394c4a44d0b341f30372fcabdbe6",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

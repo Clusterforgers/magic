@@ -3,11 +3,12 @@
 
 use mtg_cards::value::CounterKind;
 use mtg_core::mana::ManaSymbol;
-use mtg_engine::decision::DecisionKind;
+use mtg_engine::choose::{CardsChoice, ReplacementChoice};
+use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_engine::{GameSetup, replay};
-use mtg_testkit::cards::{creature_costing, free_creature, mountain, swamp};
+use mtg_testkit::cards::{creature_costing, free_creature, island, mountain, study, swamp};
 use mtg_testkit::{Driver, Scenario, ScriptError, corpus, ready};
 use rstest::rstest;
 
@@ -217,5 +218,80 @@ fn the_next_loss_of_the_game_is_replaced_once(
         !driver.state().player(pid(0)).unwrap().is_in_game(),
         "the shield is used up"
     );
+    Ok(())
+}
+
+/// Seat 0 controls Words of Waste, two Mountains and an Island in its first main phase with a draw-two sorcery in hand;
+/// every library has ten cards and every other seat holds `held` cards.
+fn two_shields_table(seats: usize, held: usize) -> Scenario {
+    let library = || (0..10).map(|i| free_creature(&format!("Pad {i}"), 1, 1));
+    (0..seats).fold(
+        Scenario::new(seats)
+            .at(2, 0, Step::Main1)
+            .battlefield(
+                0,
+                vec![
+                    ready(corpus::card("Words of Waste").unwrap()),
+                    ready(mountain()),
+                    ready(mountain()),
+                    ready(island()),
+                ],
+            )
+            .hand(0, vec![study("Study")]),
+        |scenario, seat| {
+            let scenario = scenario.library(seat, library());
+            if seat == 0 {
+                scenario
+            } else {
+                let cards = (0..held).map(|i| free_creature(&format!("Held {seat} {i}"), 1, 1));
+                scenario.hand(seat, cards)
+            }
+        },
+    )
+}
+
+#[rstest]
+fn two_shields_over_one_draw_of_two_each_take_a_card(
+    #[values(1, 2, 3)] held: usize,
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let setup = two_shields_table(seats, held).setup().unwrap();
+    let mut driver = Driver::from_scenario(two_shields_table(seats, held))?;
+    for _ in 0..2 {
+        driver.begin_activation("Words of Waste")?;
+        driver.pay_tapping(&["Mountain"], 0)?;
+        resolve_stack(&mut driver)?;
+    }
+    driver.cast_tapping("Study", &["Island"])?;
+    for _ in 0..40 {
+        if driver.state().zone(Zone::Stack).is_empty() {
+            break;
+        }
+        match &driver.decision()?.kind {
+            DecisionKind::ChooseCards(options) => {
+                let first = options.from[..options.min as usize].to_vec();
+                driver.answer(Answer::ChooseCards(CardsChoice(first)))?;
+            }
+            // The two shields apply to the first draw in either order; the other one replaces the second draw.
+            DecisionKind::ChooseReplacement(_) => {
+                driver.answer(Answer::ChooseReplacement(ReplacementChoice(0)))?;
+            }
+            _ => {
+                driver.pass()?;
+            }
+        }
+    }
+    let state = driver.state();
+    // Both draws are replaced: each opponent discards a card for each, as far as their hand goes.
+    assert_eq!(state.zone(Zone::Hand(pid(0))).len(), 0);
+    assert_eq!(state.zone(Zone::Library(pid(0))).len(), 10);
+    for seat in 1..seats {
+        assert_eq!(state.zone(Zone::Graveyard(pid(seat))).len(), held.min(2));
+        assert_eq!(
+            state.zone(Zone::Hand(pid(seat))).len(),
+            held.saturating_sub(2)
+        );
+    }
+    replays(&driver, &setup);
     Ok(())
 }

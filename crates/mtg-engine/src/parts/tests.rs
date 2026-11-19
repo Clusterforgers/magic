@@ -397,6 +397,10 @@ fn the_parts_of_a_cost_are_paid_with_the_events_the_engine_logs() {
     r#"{"ReturnToHand":{"filter":[{"Type":"Land"}]}}"#,
     "Return a land you control to its owner's hand."
 )]
+#[case::sacrifice_up_to(
+    r#"{"R6702SacrificeUpTo":{"filter":[],"most":3}}"#,
+    "Sacrifice up to 3 permanents."
+)]
 fn a_pick_is_asked_in_the_words_of_a_card(#[case] json: &str, #[case] words: &str) {
     let Part::Pick(pick) = part(json) else {
         panic!("a pick was expected");

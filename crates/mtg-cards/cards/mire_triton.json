@@ -1,0 +1,20 @@
+{
+  "oracle_id": "4fe6f784-0290-4d4a-85ae-0b66522d31e9",
+  "name": "Mire Triton",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mire Triton",
+      "oracle_fingerprint": "21660e7ce76062216fa755b8fc907e29",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Mill": { "count": 2 } }, { "GainLife": { "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

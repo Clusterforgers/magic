@@ -1,12 +1,13 @@
 /** The runs `/dev/delve` shows: one per state of a run, with a fuller party and ladder than the tests use. */
 import { CONTENT, delveView, hero } from '../fakeDelves'
-import type { DelveContent, DelveView, Offer, Resolved } from '@/protocol/generated'
+import type { DelveContent, DelveFightView, DelveView, Offer, Resolved } from '@/protocol/generated'
 
 /** The states `/dev/delve?state=` can show. */
 export const DEV_STATES = [
   'lobby',
   'map',
   'fight',
+  'rework',
   'relics',
   'cards',
   'shop',
@@ -27,6 +28,46 @@ export type DevState = (typeof DEV_STATES)[number]
 /** Reads `?state=`; the lobby when missing or unknown. */
 export const devState = (value: unknown): DevState => DEV_STATES.find((state) => state === value) ?? 'lobby'
 
+/** A boss's fight: its innate at level III, this fight's modifier, two phases by round, its Satchel and two
+ * copies of a relic, worded as the design's Skrix. */
+export const DEV_REWORKED_FIGHT: DelveFightView = {
+  boss: 'Skrix, the Rat Queen',
+  life: 90,
+  innate: {
+    name: 'Brood III',
+    text: 'At the beginning of your upkeep, create three 1/1 black Rat creature tokens.',
+    level: 3,
+  },
+  modifier: {
+    name: 'Deep Pockets',
+    text: "At the beginning of each player's draw step, that player draws an additional card.",
+  },
+  round_phases: [
+    {
+      name: 'The Nest Stirs',
+      text: 'When this phase begins, create a Rat for each creature the heroes control. Rats you control have menace.',
+      round: 8,
+      begun: false,
+    },
+    {
+      name: 'Plague Tide',
+      text: 'When this phase begins, double the number of Rats you control. Creature tokens you control get +2/+0.',
+      round: 14,
+      begun: false,
+    },
+  ],
+  relics: [
+    { name: 'Whetstone', text: 'Creatures you control get +1/+0.' },
+    { name: 'Whetstone', text: 'Creatures you control get +1/+0.' },
+  ],
+  satchel: [
+    { name: 'Rat Out', reusable: true, tax: 0 },
+    { name: 'Feed the Swarm', reusable: true, tax: 0 },
+    { name: 'Village Rites', reusable: true, tax: 0 },
+    { name: 'Second Harvest', reusable: false, tax: 0 },
+  ],
+}
+
 /** The content: the test theme with a third boss and more relics. */
 export const DEV_CONTENT: DelveContent = {
   ...CONTENT,
@@ -42,7 +83,6 @@ export const DEV_CONTENT: DelveContent = {
       role: 'Healer',
       price: 60,
       rarity: 'Common',
-      turn: 0,
     },
     {
       id: 'tithe',
@@ -54,19 +94,6 @@ export const DEV_CONTENT: DelveContent = {
       role: 'Risky',
       price: 0,
       rarity: 'Mythic',
-      turn: 0,
-    },
-    {
-      id: 'grim',
-      name: 'Grimgut, Tunnel King',
-      kind: 'Boss',
-      type_line: 'Boss — Ogre',
-      text: 'Whenever Grimgut attacks, each hero sacrifices a creature.',
-      art: 'grim',
-      role: '',
-      price: 0,
-      rarity: 'Common',
-      turn: 0,
     },
   ],
   bosses: [
@@ -76,9 +103,10 @@ export const DEV_CONTENT: DelveContent = {
       name: 'The Hollow Choir',
       colors: 'UB',
       line: 'Sing with us.',
-      card: null,
-      phases: [],
-      life: [32, 36],
+      final_boss: false,
+      innate: 'brood_i',
+      round_phases: ['nest'],
+      life: [40, 15],
       art: { card: 'Gisa, the Hellraiser', oracle_id: '696363c9-e8a7-4c65-b65c-4a94891ec43d' },
     },
     {
@@ -86,9 +114,10 @@ export const DEV_CONTENT: DelveContent = {
       name: 'Grimgut',
       colors: 'BR',
       line: 'Kneel.',
-      card: 'grim',
-      phases: [['nest', 50]],
-      life: [36, 40],
+      final_boss: true,
+      innate: 'brood_i',
+      round_phases: ['nest'],
+      life: [40, 15],
       art: { card: 'Krenko, Tin Street Kingpin', oracle_id: 'e8065e1d-e937-4b56-8011-78f0d07328a0' },
     },
   ],
@@ -210,10 +239,11 @@ export function devView(state: DevState): DelveView {
   const heroes = party.map((h, i) =>
     i === 0 && offer ? { ...h, offers: [offer], ...(state === 'event' ? { gold: 18 } : {}) } : h,
   )
+  const fighting = state === 'fight' || state === 'rework'
   const status =
     state === 'map'
       ? ('Map' as const)
-      : state === 'fight'
+      : fighting
         ? { Fight: { game: 'g-dev' } }
         : state === 'victory'
           ? ('Victory' as const)
@@ -222,19 +252,14 @@ export function devView(state: DevState): DelveView {
             : ('Room' as const)
   const fight =
     state === 'fight'
-      ? {
-          boss: 'The Hollow Choir',
-          life: 140,
-          rules: ['grim', 'skrix', 'skrix'],
-          phases: [['nest', 93]] as Array<[string, number]>,
-          minions: [['Brood of Skrix', 25]] as Array<[string, number]>,
-          intensify: [],
-        }
-      : undefined
+      ? { ...DEV_REWORKED_FIGHT, boss: 'The Hollow Choir', life: 140 }
+      : state === 'rework'
+        ? DEV_REWORKED_FIGHT
+        : undefined
   return delveView(
     {
       seed: 'EMBER-7Q2K',
-      boss: 'hollow',
+      boss: state === 'rework' ? 'skrix_nest' : 'hollow',
       mirror: ['Lightning Bolt', 'Cultivate', 'Sol Ring', 'Swords to Plowshares', 'Beast Within'],
       boss_lives: [
         ['skrix_nest', 40],
@@ -248,9 +273,8 @@ export function devView(state: DevState): DelveView {
       heat: 1,
       hearts: state === 'defeat' ? 0 : 2,
       heroes,
-      at: state === 'fight' ? 3 : state === 'result' ? 2 : state === 'descent' ? 6 : 0,
-      cleared:
-        state === 'fight' ? [0, 1] : state === 'victory' || state === 'descent' ? [0, 1, 3, 5, 6] : [0],
+      at: fighting ? 3 : state === 'result' ? 2 : state === 'descent' ? 6 : 0,
+      cleared: fighting ? [0, 1] : state === 'victory' || state === 'descent' ? [0, 1, 3, 5, 6] : [0],
       descending: state === 'descent',
       floors_cleared: state === 'descent' ? 1 : 0,
       votes: state === 'map' ? { 1: 1 } : {},

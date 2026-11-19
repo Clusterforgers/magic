@@ -1,0 +1,26 @@
+{
+  "oracle_id": "48d9f488-4ebb-4fdb-a568-6930fc2f5416",
+  "name": "Staff of Nin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Staff of Nin",
+      "oracle_fingerprint": "352e77e5aaa6190981f9e08edab91658",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

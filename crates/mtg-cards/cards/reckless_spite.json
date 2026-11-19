@@ -1,0 +1,24 @@
+{
+  "oracle_id": "a684df3a-5441-4daa-86d1-c47a91b35e6a",
+  "name": "Reckless Spite",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reckless Spite",
+      "oracle_fingerprint": "18a9ff90035e17f44bbeba918e7e0a73",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "Color": "Black" } }] },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }, { "LoseLife": { "amount": 5 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

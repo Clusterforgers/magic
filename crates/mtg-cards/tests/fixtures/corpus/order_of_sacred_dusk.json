@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "32f34099-c6ff-49d2-911a-23ab806c77e9",
+  "oracle_id": "0cb41c3f-5e6a-4c63-80b5-c9ab84b4e4bf",
+  "multiverse_ids": [
+    640057
+  ],
+  "mtgo_id": 119200,
+  "tcgplayer_id": 525718,
+  "cardmarket_id": 743474,
+  "name": "Order of Sacred Dusk",
+  "lang": "en",
+  "released_at": "2023-11-17",
+  "uri": "https://api.scryfall.com/cards/32f34099-c6ff-49d2-911a-23ab806c77e9",
+  "scryfall_uri": "https://scryfall.com/card/lcc/97/order-of-sacred-dusk?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T03:38:26Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.jpg?1783913906",
+    "normal": "https://cards.scryfall.io/normal/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.jpg?1783913906",
+    "large": "https://cards.scryfall.io/large/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.jpg?1783913906",
+    "png": "https://cards.scryfall.io/png/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.png?1783913906",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.jpg?1783913906",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.jpg?1783913906",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.webp?1783913906",
+    "grid": "https://cards.scryfall.io/grid/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.webp?1783913906",
+    "display": "https://cards.scryfall.io/display/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.webp?1783913906",
+    "art": "https://cards.scryfall.io/art/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.webp?1783913906",
+    "crop": "https://cards.scryfall.io/crop/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.webp?1783913906",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/2/32f34099-c6ff-49d2-911a-23ab806c77e9.jpg?1783913906"
+  },
+  "mana_cost": "{6}{W}{B}",
+  "cmc": 8.0,
+  "type_line": "Creature — Vampire Knight",
+  "oracle_text": "Convoke (Your creatures can help cast this spell. Each creature you tap while casting this spell pays for {1} or one mana of that creature's color.)\nFlying, lifelink, haste\nExalted (Whenever a creature you control attacks alone, that creature gets +1/+1 until end of turn.)\nOther Vampires you control have exalted.",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "B",
+    "W"
+  ],
+  "color_identity": [
+    "B",
+    "W"
+  ],
+  "keywords": [
+    "Flying",
+    "Lifelink",
+    "Exalted",
+    "Haste",
+    "Convoke"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set": "lcc",
+  "set_name": "The Lost Caverns of Ixalan Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/d253edc3-5bc7-4cf1-9446-a8540dedffa5",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Alcc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/lcc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/32f34099-c6ff-49d2-911a-23ab806c77e9/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A0cb41c3f-5e6a-4c63-80b5-c9ab84b4e4bf&unique=prints",
+  "collector_number": "97",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Bartek Fedyczak",
+  "artist_ids": [
+    "70b1ba71-4ee1-4087-8a9e-ea919f20ebff"
+  ],
+  "illustration_id": "915ab71e-5520-4c20-b90d-51b95403daf2",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 11712,
+  "preview": {
+    "source": "The Command Zone",
+    "source_uri": "https://www.youtube.com/watch?v=MTbT-2xYfAU",
+    "previewed_at": "2023-11-01"
+  },
+  "prices": {
+    "usd": "0.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.27",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=640057&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOrder%2Bof%2BSacred%2BDusk",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOrder%2Bof%2BSacred%2BDusk",
+    "edhrec": "https://edhrec.com/route/?cc=Order+of+Sacred+Dusk"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F525718%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=743474&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/119200?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

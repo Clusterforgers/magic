@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b87a2d20-4e9f-4256-9d24-80c38515119e",
+  "name": "Molimo, Maro-Sorcerer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Molimo, Maro-Sorcerer",
+      "oracle_fingerprint": "291bedac3cbfce92530e6be6437252ff",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "toughness": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

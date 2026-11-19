@@ -1,0 +1,40 @@
+{
+  "oracle_id": "28778958-a1f9-4fea-b551-c193d1257f18",
+  "name": "Open the Graves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Open the Graves",
+      "oracle_fingerprint": "f630fbed52e2f16e0e713d95ef7bfda4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

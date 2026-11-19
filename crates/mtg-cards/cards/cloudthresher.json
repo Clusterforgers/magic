@@ -1,0 +1,30 @@
+{
+  "oracle_id": "ab0e2aa0-1ddd-4a4c-b7cd-4063caaa8bcd",
+  "name": "Cloudthresher",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloudthresher",
+      "oracle_fingerprint": "39baecd204ff7b4a1d4e8dd74734b7d8",
+      "abilities": [
+        { "Keyword": "Flash" },
+        { "Keyword": "Reach" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "HasKeyword": "Flying" }] },
+                  "amount": 2
+                }
+              },
+              { "DealDamage": { "to": "EachPlayer", "amount": 2 } }
+            ]
+          }
+        },
+        { "Keyword": { "Evoke": "{2}{G}{G}" } }
+      ]
+    }
+  ]
+}

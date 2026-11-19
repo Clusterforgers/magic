@@ -13,7 +13,7 @@ use mtg_cards::did::Action;
 use mtg_cards::mana_trigger::mana_trigger;
 use mtg_cards::refs::{Pred, Ref, Selector, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
-use mtg_cards::value::{CounterKind, DayNight};
+use mtg_cards::value::{CounterKind, DayNight, TallyEvent};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 mod by_hand;
@@ -265,6 +265,8 @@ enum Happened {
     },
     /// A player visited an Attraction, once for each visited.
     VisitedAttraction { player: PlayerId },
+    /// A campaign phase of a player began, its emblem the new object.
+    PhaseBegan { player: PlayerId, emblem: ObjectId },
     /// A player claimed the prize of an Attraction.
     PrizeClaimed {
         player: PlayerId,
@@ -821,6 +823,38 @@ fn w9a_expended(
         from: to.saturating_sub(spent),
         to,
     })
+}
+
+/// Which of the spells `player` cast this turn that `what` selects, as they were cast, the spell `spell` is ("your first
+/// instant or sorcery spell each turn"); none when it is not in the turn's log.
+fn nth_cast_of(
+    scope: &Scope<'_>,
+    player: PlayerId,
+    spell: ObjectId,
+    what: &Selector,
+) -> Option<u32> {
+    let logged = &scope.state.tallies.logged;
+    let mut judge = scope.clone();
+    judge
+        .snapshots
+        .extend(logged.iter().map(|(_, _, shot)| shot));
+    let mut count = 0u32;
+    for (kind, who, shot) in logged {
+        if *kind != TallyEvent::SpellCast || *who != player {
+            continue;
+        }
+        let reference = ObjectRef {
+            id: shot.id,
+            counter: shot.counter,
+        };
+        if judge.selects(what, reference).unwrap_or(false) {
+            count = count.saturating_add(1);
+        }
+        if shot.id == spell {
+            return Some(count);
+        }
+    }
+    None
 }
 
 /// Which time of the turn the event of `player` and kind `kind` is: the count after the batch less the events of that kind
@@ -1395,6 +1429,10 @@ fn about_players_and_permanents(
                     .map(|_| Happened::VisitedAttraction { player: *player }),
             );
         }
+        Event::PhaseBegan { player, emblem } => found.push(Happened::PhaseBegan {
+            player: *player,
+            emblem: *emblem,
+        }),
         Event::PrizeClaimed { player, attraction } => found.push(Happened::PrizeClaimed {
             player: *player,
             attraction: *attraction,
@@ -1962,6 +2000,21 @@ fn matching_event(
     let by = |who: &Ref, player: &PlayerId| scope.players(who).is_ok_and(|p| p.contains(player));
     let picks = |what: &Selector, reference: ObjectRef| scope.selects(what, reference).ok();
     match (pattern, happened) {
+        (
+            TriggerPattern::Nth { event, nth },
+            Happened::Cast {
+                player: caster,
+                spell,
+                ..
+            },
+        ) if matches!(&**event, TriggerPattern::SpellCast { what, .. } if !what.is_empty()) => {
+            let TriggerPattern::SpellCast { what, .. } = &**event else {
+                return None;
+            };
+            (nth_cast_of(scope, *caster, *spell, what) == Some(*nth))
+                .then(|| matching(event, happened, scope))
+                .flatten()
+        }
         (TriggerPattern::Nth { event, nth }, happened) => (happened.nth_for(event) == Some(*nth))
             .then(|| matching(event, happened, scope))
             .flatten(),
@@ -2155,7 +2208,19 @@ fn matching_event(
             .then(|| cause(state, Vec::new())),
         _ => matching_player_action(pattern, happened, scope)
             .or_else(|| matching_permanents(pattern, happened, scope))
-            .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope)),
+            .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope))
+            .or_else(|| phase_began(pattern, happened, scope)),
+    }
+}
+
+/// A phase's "when this phase begins" ability triggers for the emblem the phase just made.
+fn phase_began(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> Option<Cause> {
+    match (pattern, happened) {
+        (TriggerPattern::PhaseBegins {}, Happened::PhaseBegan { player, emblem }) => {
+            (scope.source.id == *emblem)
+                .then(|| counted(scope.state, vec![Target::Player(*player)], 0))
+        }
+        _ => None,
     }
 }
 

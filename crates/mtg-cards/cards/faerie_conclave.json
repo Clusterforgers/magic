@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0c25f6b1-8fb3-4406-9605-0282d2dbbcec",
+  "name": "Faerie Conclave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Faerie Conclave",
+      "oracle_fingerprint": "0db91c278b4ff87243abd9a534f94384",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Blue"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{1}{U}",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "SetPT": { "power": 2, "toughness": 1 } },
+                    { "SetColors": ["Blue"] },
+                    { "SetCreatureTypes": ["Faerie"] },
+                    { "AddType": "Creature" },
+                    { "AddKeyword": "Flying" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

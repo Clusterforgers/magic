@@ -1,8 +1,8 @@
 //! Goal: Delves work end to end on Postgres: a player creates a run and hosts its lobby, a friend joins by its code,
 //! the host adds a bot ally and chooses its deck while each player chooses their own, only the host starts, and the
 //! start leads the party to the first boss, whose fight is a game made at once, and made again at no cost when an admin
-//! ends it unplayed; the content the web draws lists the bosses with their art cards, the events with each option's effects, needs and summary, and the custom cards; a party of four meets the boss with a
-//! minion seat; strangers and unknown runs are refused.
+//! ends it unplayed; the content the web draws lists the bosses with their art cards, the events with each option's effects, needs and summary, and the custom cards; a party of four meets the boss
+//! alone; strangers and unknown runs are refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{net, pg_commander};
@@ -123,6 +123,13 @@ async fn a_party_gathers_and_the_start_makes_the_first_boss_fight(pool: PgPool) 
     let start = act(&server, &id, &host, json!({"kind": "start"})).await;
     assert_eq!(start.status, 200, "{}", start.text());
     let view = start.json();
+    // The run page names the run's own theme and story.
+    let theme = mtg_campaign::content()
+        .unwrap()
+        .theme(view["run"]["theme"].as_str().unwrap())
+        .unwrap();
+    assert_eq!(view["theme"], theme.name.as_str());
+    assert_eq!(view["story"], theme.text.as_str());
     let game = view["run"]["status"]["Fight"]["game"]
         .as_str()
         .unwrap_or_default()
@@ -186,9 +193,9 @@ async fn a_party_gathers_and_the_start_makes_the_first_boss_fight(pool: PgPool) 
     assert_eq!(missing.status, 404);
 }
 
-/// At Heat 2 the first boss fields the party-size table's minion; below it, one fewer (`docs/delves.md`, Difficulty).
+/// A party of four meets the boss alone, the run page naming its theme and story (`docs/delves.md`, Bosses).
 #[sqlx::test(migrations = false)]
-async fn a_party_of_four_meets_the_boss_and_a_minion(pool: PgPool) {
+async fn a_party_of_four_meets_the_boss(pool: PgPool) {
     let server = pg_commander::start(&pool).await;
     let host = register(server.addr, "hostess", PASSWORD).await;
     let created = call(
@@ -248,18 +255,10 @@ async fn a_party_of_four_meets_the_boss_and_a_minion(pool: PgPool) {
         .iter()
         .map(|seat| seat["name"].as_str().unwrap())
         .collect();
-    assert_eq!(
-        names.len(),
-        6,
-        "four heroes, the boss and one minion: {names:?}"
-    );
+    assert_eq!(names.len(), 5, "four heroes and the boss: {names:?}");
     let content = mtg_campaign::content().unwrap();
-    let theme = &content.themes[0];
-    assert!(theme.bosses.iter().any(|b| b.name == names[4]), "{names:?}");
-    assert!(
-        theme.minions.iter().any(|m| m.name == names[5]),
-        "{names:?}"
-    );
+    let bosses = content.themes.iter().flat_map(|t| &t.bosses);
+    assert!(bosses.clone().any(|b| b.name == names[4]), "{names:?}");
 }
 
 #[sqlx::test(migrations = false)]
@@ -268,23 +267,15 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
     let content = call(&server, "GET", "/api/delves/content", None, None).await;
     assert_eq!(content.status, 200);
     let content = content.json();
-    let theme = &mtg_campaign::content().unwrap().themes[0];
-    // Every boss, its upgraded forms too, which a ladder may end with.
-    assert_eq!(
-        content["bosses"].as_array().unwrap().len(),
-        theme.bosses.len() + theme.upgraded.len()
-    );
-    for (wire, boss) in content["bosses"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .zip(theme.bosses.iter().chain(&theme.upgraded))
-    {
+    let themes = &mtg_campaign::content().unwrap().themes;
+    // Every boss of every theme.
+    let bosses: Vec<_> = themes.iter().flat_map(|t| &t.bosses).collect();
+    assert_eq!(content["bosses"].as_array().unwrap().len(), bosses.len());
+    for (wire, boss) in content["bosses"].as_array().unwrap().iter().zip(bosses) {
         assert_eq!(wire["art"]["card"], boss.art.card.as_str(), "{}", boss.id);
-        // An upgraded form names the boss it came from, so the ladder and the intro can say it.
         assert_eq!(
-            wire.get("upgrade_of").and_then(|id| id.as_str()),
-            boss.upgrade_of.as_deref(),
+            wire["innate"],
+            mtg_campaign::innate::innate_id(&boss.innate, 1).as_str(),
             "{}",
             boss.id
         );
@@ -299,7 +290,7 @@ async fn the_content_lists_the_bosses_and_custom_cards(pool: PgPool) {
         .as_array()
         .unwrap()
         .iter()
-        .zip(&theme.events)
+        .zip(themes.iter().flat_map(|t| &t.events))
     {
         let options = wire["options"].as_array().unwrap();
         assert_eq!(options.len(), event.options.len(), "{}", event.id);

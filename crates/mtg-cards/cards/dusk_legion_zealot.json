@@ -1,0 +1,19 @@
+{
+  "oracle_id": "ea2dce18-195e-4681-a687-f9819edaf9fc",
+  "name": "Dusk Legion Zealot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dusk Legion Zealot",
+      "oracle_fingerprint": "bdf839b555c64392c0552feb2cb1c922",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

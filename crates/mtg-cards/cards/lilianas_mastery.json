@@ -1,0 +1,41 @@
+{
+  "oracle_id": "bd104c7e-311e-4b03-98d3-5f20f3a99d26",
+  "name": "Liliana's Mastery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Liliana's Mastery",
+      "oracle_fingerprint": "b2dbf892cb0c4f4ef46985b9ec3f5b06",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Zombie" }, { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

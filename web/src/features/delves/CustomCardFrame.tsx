@@ -1,5 +1,5 @@
 /**
- * A card that is not on Scryfall (a relic, a boss card, a boss phase, a scheme, the Spirit's haunt), drawn as a framed card:
+ * A card that is not on Scryfall (a relic, a boss innate, phase or encounter modifier, the Spirit's haunt), drawn as a framed card:
  * name, an art panel tinted by what the card is for, the type line, the rules text and a relic's role and rarity. A risky relic,
  * whose effect helps the boss too, wears a hazard edge and a "Dangerous" badge.
  */
@@ -23,13 +23,10 @@ import { roleLabel } from './words'
 
 const ART: Record<CardKind, { icon: LucideIcon; tint: string; edge: string }> = {
   Relic: { icon: GemIcon, tint: 'from-relic/25 to-relic/60', edge: 'border-relic' },
-  Boss: { icon: CrownIcon, tint: 'from-delve/25 to-delve/70', edge: 'border-delve' },
   Phase: { icon: FlameIcon, tint: 'from-destructive/20 to-delve/60', edge: 'border-delve' },
   Haunt: { icon: GhostIcon, tint: 'from-turn-them/20 to-turn-them/60', edge: 'border-turn-them' },
-  Scheme: { icon: EyeIcon, tint: 'from-primary/20 to-primary/60', edge: 'border-primary' },
-  Enrage: { icon: FlameIcon, tint: 'from-destructive/25 to-delve/70', edge: 'border-delve' },
-  Modifier: { icon: CrownIcon, tint: 'from-delve/20 to-delve/50', edge: 'border-delve' },
-  BossRelic: { icon: GemIcon, tint: 'from-relic/25 to-delve/60', edge: 'border-delve' },
+  Innate: { icon: CrownIcon, tint: 'from-delve/25 to-delve/70', edge: 'border-delve' },
+  Encounter: { icon: EyeIcon, tint: 'from-primary/20 to-delve/50', edge: 'border-delve' },
 }
 
 /** The badge of a risky relic: a warning icon and "Dangerous", with what makes it so for a screen reader. */

@@ -1,0 +1,367 @@
+{
+  "code": "C15",
+  "name": "Swell the Host",
+  "commander": [
+    "Ezuri, Claw of Progress"
+  ],
+  "swaps": [],
+  "cards": [
+    [
+      "Ezuri, Claw of Progress",
+      1
+    ],
+    [
+      "Experiment One",
+      1
+    ],
+    [
+      "Elvish Visionary",
+      1
+    ],
+    [
+      "Sakura-Tribe Elder",
+      1
+    ],
+    [
+      "Plaxmanta",
+      1
+    ],
+    [
+      "Coiling Oracle",
+      1
+    ],
+    [
+      "Caller of the Claw",
+      1
+    ],
+    [
+      "Loaming Shaman",
+      1
+    ],
+    [
+      "Noble Quarry",
+      1
+    ],
+    [
+      "Skullwinder",
+      1
+    ],
+    [
+      "Viridian Shaman",
+      1
+    ],
+    [
+      "Eternal Witness",
+      1
+    ],
+    [
+      "Ohran Viper",
+      1
+    ],
+    [
+      "Kaseto, Orochi Archmage",
+      1
+    ],
+    [
+      "Lorescale Coatl",
+      1
+    ],
+    [
+      "Trygon Predator",
+      1
+    ],
+    [
+      "Cold-Eyed Selkie",
+      1
+    ],
+    [
+      "Wistful Selkie",
+      1
+    ],
+    [
+      "Solemn Simulacrum",
+      1
+    ],
+    [
+      "Forgotten Ancient",
+      1
+    ],
+    [
+      "Patagia Viper",
+      1
+    ],
+    [
+      "Thelonite Hermit",
+      1
+    ],
+    [
+      "Ninja of the Deep Hours",
+      1
+    ],
+    [
+      "Chameleon Colossus",
+      1
+    ],
+    [
+      "Mystic Snake",
+      1
+    ],
+    [
+      "Stingerfling Spider",
+      1
+    ],
+    [
+      "Broodbirth Viper",
+      1
+    ],
+    [
+      "Illusory Ambusher",
+      1
+    ],
+    [
+      "Mulldrifter",
+      1
+    ],
+    [
+      "Arbor Colossus",
+      1
+    ],
+    [
+      "Great Oak Guardian",
+      1
+    ],
+    [
+      "Bane of Progress",
+      1
+    ],
+    [
+      "Prime Speaker Zegana",
+      1
+    ],
+    [
+      "Caller of the Pack",
+      1
+    ],
+    [
+      "Rampant Growth",
+      1
+    ],
+    [
+      "Kodama's Reach",
+      1
+    ],
+    [
+      "Overrun",
+      1
+    ],
+    [
+      "Desert Twister",
+      1
+    ],
+    [
+      "Verdant Confluence",
+      1
+    ],
+    [
+      "Biomantic Mastery",
+      1
+    ],
+    [
+      "Ezuri's Predation",
+      1
+    ],
+    [
+      "Rapid Hybridization",
+      1
+    ],
+    [
+      "Arachnogenesis",
+      1
+    ],
+    [
+      "Krosan Grip",
+      1
+    ],
+    [
+      "Snakeform",
+      1
+    ],
+    [
+      "Cobra Trap",
+      1
+    ],
+    [
+      "Mirror Match",
+      1
+    ],
+    [
+      "Synthetic Destiny",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Simic Signet",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Thought Vessel",
+      1
+    ],
+    [
+      "Simic Keyrune",
+      1
+    ],
+    [
+      "Sword of Vengeance",
+      1
+    ],
+    [
+      "Bident of Thassa",
+      1
+    ],
+    [
+      "Scytheclaw",
+      1
+    ],
+    [
+      "Orochi Hatchery",
+      1
+    ],
+    [
+      "Beastmaster Ascension",
+      1
+    ],
+    [
+      "Day of the Dragons",
+      1
+    ],
+    [
+      "Command Beacon",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Evolving Wilds",
+      1
+    ],
+    [
+      "High Market",
+      1
+    ],
+    [
+      "Llanowar Reborn",
+      1
+    ],
+    [
+      "Mosswort Bridge",
+      1
+    ],
+    [
+      "Novijen, Heart of Progress",
+      1
+    ],
+    [
+      "Oran-Rief, the Vastwood",
+      1
+    ],
+    [
+      "Reliquary Tower",
+      1
+    ],
+    [
+      "Simic Growth Chamber",
+      1
+    ],
+    [
+      "Simic Guildgate",
+      1
+    ],
+    [
+      "Terramorphic Expanse",
+      1
+    ],
+    [
+      "Thornwood Falls",
+      1
+    ],
+    [
+      "Vivid Creek",
+      1
+    ],
+    [
+      "Vivid Grove",
+      1
+    ],
+    [
+      "Zoetic Cavern",
+      1
+    ],
+    [
+      "Forest",
+      14
+    ],
+    [
+      "Island",
+      11
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 40,
+      "U": 21
+    },
+    "types": {
+      "Artifact": 10,
+      "Creature": 34,
+      "Enchantment": 4,
+      "Instant": 7,
+      "Land": 41,
+      "Sorcery": 7
+    },
+    "subtypes": {
+      "Arcane": 1,
+      "Beast": 3,
+      "Cat": 1,
+      "Centaur": 1,
+      "Druid": 1,
+      "Elemental": 3,
+      "Elf": 6,
+      "Equipment": 3,
+      "Forest": 14,
+      "Gate": 1,
+      "Giant": 1,
+      "Golem": 1,
+      "Human": 3,
+      "Illusion": 1,
+      "Island": 11,
+      "Merfolk": 3,
+      "Ninja": 1,
+      "Ooze": 1,
+      "Phyrexian": 1,
+      "Rogue": 1,
+      "Shaman": 6,
+      "Shapeshifter": 1,
+      "Snake": 9,
+      "Spider": 1,
+      "Trap": 1,
+      "Treefolk": 1,
+      "Unicorn": 1,
+      "Warrior": 1,
+      "Wizard": 3
+    },
+    "tokens": 8,
+    "counters": 8,
+    "graveyard": 3,
+    "creature_commanders": 0
+  }
+}

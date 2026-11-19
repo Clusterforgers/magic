@@ -536,6 +536,7 @@ fn spell_cast(
     note_permission_used(state, player, object, from, choices.way);
     // The tax counts casts from the command zone (CR 903.8).
     state.commanders.cast(object, from);
+    state.satchels.cast(object, from);
     // Read before the spell joins the stack; a spell cast while another resolves is cast off sorcery timing.
     let off_sorcery_timing =
         !crate::priority::sorcery_timing(state, player) || state.resolving().is_some();

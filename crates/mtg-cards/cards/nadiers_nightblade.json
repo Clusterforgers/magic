@@ -1,0 +1,24 @@
+{
+  "oracle_id": "391978f6-0bbc-41e8-9246-f7d0e21c7900",
+  "name": "Nadier's Nightblade",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nadier's Nightblade",
+      "oracle_fingerprint": "727ed68d88d3b3998b95fc3e00b3ea6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": { "what": ["Token", { "ControlledBy": "You" }], "from": "Battlefield" }
+            },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

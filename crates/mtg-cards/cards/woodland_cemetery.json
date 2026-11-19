@@ -1,0 +1,39 @@
+{
+  "oracle_id": "c9fe1383-1331-4a58-a45a-3320250221a9",
+  "name": "Woodland Cemetery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Woodland Cemetery",
+      "oracle_fingerprint": "313bc63074494af27f332aaa391ef150",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": {
+                    "Count": [
+                      { "AnyOf": [{ "Subtype": "Swamp" }, { "Subtype": "Forest" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

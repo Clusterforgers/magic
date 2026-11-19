@@ -1,0 +1,24 @@
+{
+  "oracle_id": "0715e860-3b3b-4331-9718-207973e94fee",
+  "name": "Tatyova, Benthic Druid",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tatyova, Benthic Druid",
+      "oracle_fingerprint": "c923e79654c8808072d9cd85cf4cceb8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "GainLife": { "amount": 1 } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

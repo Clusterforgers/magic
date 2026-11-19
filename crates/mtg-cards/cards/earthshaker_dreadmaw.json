@@ -1,0 +1,28 @@
+{
+  "oracle_id": "454cbc6a-b7f0-445e-842c-5db267917a18",
+  "name": "Earthshaker Dreadmaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Earthshaker Dreadmaw",
+      "oracle_fingerprint": "36392a0b47fa912bd4fcb3138de159d2",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Count": [{ "Subtype": "Dinosaur" }, "Other", { "ControlledBy": "You" }]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

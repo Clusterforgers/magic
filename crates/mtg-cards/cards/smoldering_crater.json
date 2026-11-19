@@ -1,0 +1,21 @@
+{
+  "oracle_id": "be09e83f-6486-4f42-8d2e-416cb95173f9",
+  "name": "Smoldering Crater",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Smoldering Crater",
+      "oracle_fingerprint": "525b445ea580415277ea83b342a6b098",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Red"] } } }]
+          }
+        },
+        { "Keyword": { "Cycling": "{2}" } }
+      ]
+    }
+  ]
+}

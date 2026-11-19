@@ -1,0 +1,12 @@
+{
+  "oracle_id": "e5c48c6d-a7bf-45b3-b48c-dc884d49c5f7",
+  "name": "Simic Sky Swallower",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Simic Sky Swallower",
+      "oracle_fingerprint": "23f9e09a1254030d463f26d862d31d4b",
+      "abilities": [{ "Keyword": "Flying" }, { "Keyword": "Trample" }, { "Keyword": "Shroud" }]
+    }
+  ]
+}

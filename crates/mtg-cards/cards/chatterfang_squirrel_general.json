@@ -1,0 +1,63 @@
+{
+  "oracle_id": "f15b3b76-d38a-48db-bb44-3296183c8641",
+  "name": "Chatterfang, Squirrel General",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chatterfang, Squirrel General",
+      "oracle_fingerprint": "bea2e6f8ce419f72445855fca3042764",
+      "abilities": [
+        { "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } },
+        {
+          "Replacement": {
+            "when": { "TokenCreation": {} },
+            "by": {
+              "Plus": [
+                {
+                  "CreateToken": {
+                    "token": {
+                      "Custom": {
+                        "name": "Squirrel",
+                        "colors": ["Green"],
+                        "types": ["Creature"],
+                        "subtypes": ["Squirrel"],
+                        "power": 1,
+                        "toughness": 1
+                      }
+                    },
+                    "count": "Triggering"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{B}" },
+              { "Sacrifice": { "filter": [{ "Subtype": "Squirrel" }], "count": "X" } }
+            ],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": "X",
+                        "toughness": { "Times": { "by": -1, "of": "X" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

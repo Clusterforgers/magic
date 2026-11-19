@@ -293,7 +293,14 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         return face_down_only(state, player, id);
     }
     let allowed = match zone {
-        Zone::Hand(owner) | Zone::Graveyard(owner) | Zone::Command(owner) => owner == player,
+        Zone::Hand(owner) | Zone::Command(owner) => owner == player,
+        // Another player's graveyard is open only to a permission that names its cards or their owner (`Cast::covers`).
+        Zone::Graveyard(owner) => {
+            owner == player
+                || cast_permissions(state)
+                    .iter()
+                    .any(|permission| permission.covers(state, player, card))
+        }
         // Only the top card of a library may be cast, by a permission.
         Zone::Library(owner) => owner == player && state.zone(zone).last() == Some(&id),
         Zone::Exile => true,
@@ -1563,9 +1570,23 @@ fn why_as_is(
     }
 }
 
-/// The cards `player` may be able to cast, in the zones other than the hand: a graveyard, exile, the top of the library.
+/// The cards `player` may be able to cast, in the zones other than the hand: their graveyard (and the other players'
+/// while a permission names the owner of the graveyard cards it covers), exile, the top of the library.
 pub(crate) fn elsewhere(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
     let mut found: Vec<ObjectId> = state.zone(Zone::Graveyard(player)).to_vec();
+    if cast_permissions(state)
+        .iter()
+        .any(|cast| cast.from == Some(ZoneKind::Graveyard) && cast.names_owner())
+    {
+        for other in state
+            .players()
+            .iter()
+            .map(crate::player::Player::id)
+            .filter(|p| *p != player)
+        {
+            found.extend(state.zone(Zone::Graveyard(other)).iter().copied());
+        }
+    }
     found.extend(state.zone(Zone::Exile).iter().copied());
     found.extend(state.zone(Zone::Library(player)).last().copied());
     found.extend(state.zone(Zone::Command(player)).iter().copied());

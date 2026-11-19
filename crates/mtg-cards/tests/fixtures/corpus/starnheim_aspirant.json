@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "ea007a18-b31a-4881-92c4-86120dc5729b",
+  "oracle_id": "e7b92789-47a9-430a-ad57-be7b6c3d63cb",
+  "multiverse_ids": [
+    506922
+  ],
+  "mtgo_id": 87283,
+  "arena_id": 75348,
+  "tcgplayer_id": 229265,
+  "cardmarket_id": 527565,
+  "name": "Starnheim Aspirant",
+  "lang": "en",
+  "released_at": "2021-02-05",
+  "uri": "https://api.scryfall.com/cards/ea007a18-b31a-4881-92c4-86120dc5729b",
+  "scryfall_uri": "https://scryfall.com/card/khm/380/starnheim-aspirant?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T07:35:23Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.jpg?1783928123",
+    "normal": "https://cards.scryfall.io/normal/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.jpg?1783928123",
+    "large": "https://cards.scryfall.io/large/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.jpg?1783928123",
+    "png": "https://cards.scryfall.io/png/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.png?1783928123",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.jpg?1783928123",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.jpg?1783928123",
+    "thumb": "https://cards.scryfall.io/thumb/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.webp?1783928123",
+    "grid": "https://cards.scryfall.io/grid/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.webp?1783928123",
+    "display": "https://cards.scryfall.io/display/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.webp?1783928123",
+    "art": "https://cards.scryfall.io/art/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.webp?1783928123",
+    "crop": "https://cards.scryfall.io/crop/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.webp?1783928123",
+    "jpeg": "https://cards.scryfall.io/normal/front/e/a/ea007a18-b31a-4881-92c4-86120dc5729b.jpg?1783928123"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3.0,
+  "type_line": "Creature — Human Cleric",
+  "oracle_text": "Angel spells you cast cost {2} less to cast.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "arena",
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set": "khm",
+  "set_name": "Kaldheim",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/43057fad-b1c1-437f-bc48-0045bce6d8c9",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Akhm&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/khm?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ea007a18-b31a-4881-92c4-86120dc5729b/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae7b92789-47a9-430a-ad57-be7b6c3d63cb&unique=prints",
+  "collector_number": "380",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"I do not fear death. I know my soul will rise to Starnheim, where I will feast forever among valkyries and heroes. Can you say the same?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "8a756eef-76a5-48ae-bb99-ea14ea1e1561",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "themepack"
+  ],
+  "edhrec_rank": 2933,
+  "preview": {
+    "source": "Wizards of the Coast",
+    "source_uri": "https://magic.wizards.com/en/articles/archive/card-preview/set-and-theme-booster-additional-cards-kaldheim-2020-12-16",
+    "previewed_at": "2020-12-16"
+  },
+  "prices": {
+    "usd": "6.06",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "4.70",
+    "eur_foil": null,
+    "tix": "0.03"
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=506922&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DStarnheim%2BAspirant",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DStarnheim%2BAspirant",
+    "edhrec": "https://edhrec.com/route/?cc=Starnheim+Aspirant"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F229265%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=527565&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/87283?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

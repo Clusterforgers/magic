@@ -1,0 +1,27 @@
+{
+  "oracle_id": "0e2575be-c596-4c8c-bf07-7941ca065721",
+  "name": "Dreamstone Hedron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dreamstone Hedron",
+      "oracle_fingerprint": "ea933b61d4b7336d7a51ec75cdcda0b4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "Fixed": ["Colorless", "Colorless", "Colorless"] } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", "SacrificeSelf"],
+            "effects": [{ "Draw": { "count": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

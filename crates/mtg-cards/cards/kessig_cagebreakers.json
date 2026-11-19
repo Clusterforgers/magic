@@ -1,0 +1,39 @@
+{
+  "oracle_id": "d7407920-7596-497a-a135-b9343909a0cb",
+  "name": "Kessig Cagebreakers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kessig Cagebreakers",
+      "oracle_fingerprint": "be50bfba7413809442c6284ee29f2de8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Wolf",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Wolf"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": {
+                    "Count": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                  },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

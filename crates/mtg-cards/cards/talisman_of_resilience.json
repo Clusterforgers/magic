@@ -1,0 +1,28 @@
+{
+  "oracle_id": "42b8aa14-10bc-4bd6-88d9-4bb287eadd19",
+  "name": "Talisman of Resilience",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Talisman of Resilience",
+      "oracle_fingerprint": "d63d362d38274797c339cdad0ac16e7a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "OneOf": ["Black", "Green"] } } },
+              { "DealDamage": { "to": "You", "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

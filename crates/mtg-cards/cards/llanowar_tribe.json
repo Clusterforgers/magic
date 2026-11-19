@@ -1,0 +1,19 @@
+{
+  "oracle_id": "cfd0f0e6-1bbf-4450-97d2-c54907abb7e4",
+  "name": "Llanowar Tribe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Llanowar Tribe",
+      "oracle_fingerprint": "5ca021e082b82b1c312bd9ef30287e47",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green", "Green"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

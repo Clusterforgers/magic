@@ -1,0 +1,25 @@
+{
+  "oracle_id": "5f2a3797-28aa-4c7a-ba2b-fd243a1747fd",
+  "name": "Lifecrafter's Bestiary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lifecrafter's Bestiary",
+      "oracle_fingerprint": "29d5d5ce0b277a10982b1fe0cb224b6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "Pay": { "cost": "{G}", "paid": [{ "Draw": {} }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

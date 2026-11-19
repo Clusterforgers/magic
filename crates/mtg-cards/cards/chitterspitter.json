@@ -1,0 +1,60 @@
+{
+  "oracle_id": "4a338863-d599-46e7-9c30-e11b898ae1b0",
+  "name": "Chitterspitter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chitterspitter",
+      "oracle_fingerprint": "ad34373084fc477015d85e14ad6fd5b1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": ["Token"] } }],
+                  "paid": [{ "PutCounters": { "on": "This", "counter": { "Other": "acorn" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Squirrel" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "Counters": { "on": "This", "counter": { "Other": "acorn" } } },
+                  "toughness": { "Counters": { "on": "This", "counter": { "Other": "acorn" } } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{G}" }, "Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Squirrel",
+                      "colors": ["Green"],
+                      "types": ["Creature"],
+                      "subtypes": ["Squirrel"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

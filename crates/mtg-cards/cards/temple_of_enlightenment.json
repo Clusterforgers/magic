@@ -1,0 +1,26 @@
+{
+  "oracle_id": "89f43e27-790b-4ca1-8ba7-0882b31e0783",
+  "name": "Temple of Enlightenment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temple of Enlightenment",
+      "oracle_fingerprint": "234fd24cb393aa546fdc1f1363a50eeb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Scry": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Blue"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

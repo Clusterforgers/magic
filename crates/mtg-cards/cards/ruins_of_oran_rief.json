@@ -1,0 +1,29 @@
+{
+  "oracle_id": "7140f396-1bfa-4b28-ba28-fa15eba74652",
+  "name": "Ruins of Oran-Rief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ruins of Oran-Rief",
+      "oracle_fingerprint": "5ffcb6acceceef89ebfbaa20534c31bb",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Colorless", "EnteredThisTurn"] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

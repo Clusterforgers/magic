@@ -1,0 +1,21 @@
+{
+  "oracle_id": "8c983da8-1436-4c06-af9c-91b72cab48c1",
+  "name": "Counterflux",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Counterflux",
+      "oracle_fingerprint": "9192e066425b03856bf66f15f37ef621",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell", { "Not": { "ControlledBy": "You" } }] } }],
+            "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Overload": "{1}{U}{U}{R}" } }
+      ]
+    }
+  ]
+}

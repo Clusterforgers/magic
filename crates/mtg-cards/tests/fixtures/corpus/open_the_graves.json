@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "130978d1-0b20-4dfa-85f5-3ff2bc2cfda3",
+  "oracle_id": "28778958-a1f9-4fea-b551-c193d1257f18",
+  "multiverse_ids": [
+    539387
+  ],
+  "mtgo_id": 93668,
+  "tcgplayer_id": 248793,
+  "cardmarket_id": 575419,
+  "name": "Open the Graves",
+  "lang": "en",
+  "released_at": "2021-09-24",
+  "uri": "https://api.scryfall.com/cards/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3",
+  "scryfall_uri": "https://scryfall.com/card/mic/126/open-the-graves?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T06:48:56Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.jpg?1783925336",
+    "normal": "https://cards.scryfall.io/normal/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.jpg?1783925336",
+    "large": "https://cards.scryfall.io/large/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.jpg?1783925336",
+    "png": "https://cards.scryfall.io/png/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.png?1783925336",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.jpg?1783925336",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.jpg?1783925336",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.webp?1783925336",
+    "grid": "https://cards.scryfall.io/grid/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.webp?1783925336",
+    "display": "https://cards.scryfall.io/display/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.webp?1783925336",
+    "art": "https://cards.scryfall.io/art/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.webp?1783925336",
+    "crop": "https://cards.scryfall.io/crop/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.webp?1783925336",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/3/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3.jpg?1783925336"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5.0,
+  "type_line": "Enchantment",
+  "oracle_text": "Whenever a nontoken creature you control dies, create a 2/2 black Zombie creature token.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "130978d1-0b20-4dfa-85f5-3ff2bc2cfda3",
+      "component": "combo_piece",
+      "name": "Open the Graves",
+      "type_line": "Enchantment",
+      "uri": "https://api.scryfall.com/cards/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3"
+    },
+    {
+      "object": "related_card",
+      "id": "3d13fb9e-6906-47d3-b22d-c8817b2403b3",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/3d13fb9e-6906-47d3-b22d-c8817b2403b3"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set": "mic",
+  "set_name": "Midnight Hunt Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/7f9a4deb-715e-47d2-afac-3843ef92f39b",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Amic&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mic?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/130978d1-0b20-4dfa-85f5-3ff2bc2cfda3/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A28778958-a1f9-4fea-b551-c193d1257f18&unique=prints",
+  "collector_number": "126",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "It was a night like any other. It would soon become a night no one would ever forget.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Vincent Proce",
+  "artist_ids": [
+    "d82b1138-76d3-49f7-9d8c-bc2e2d3e0b0a"
+  ],
+  "illustration_id": "6dacfc4f-322f-46e3-885f-1283606244eb",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 3722,
+  "penny_rank": 12935,
+  "prices": {
+    "usd": "0.68",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.48",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=539387&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DOpen%2Bthe%2BGraves",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DOpen%2Bthe%2BGraves",
+    "edhrec": "https://edhrec.com/route/?cc=Open+the+Graves"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F248793%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=575419&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/93668?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

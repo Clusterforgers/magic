@@ -1,0 +1,28 @@
+{
+  "oracle_id": "89b24b5f-d837-4274-8877-8ff7dc2708ba",
+  "name": "Drana, Liberator of Malakir",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drana, Liberator of Malakir",
+      "oracle_fingerprint": "46d39c87e89cb09ae13bb1f1101fb073",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

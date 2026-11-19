@@ -1037,6 +1037,9 @@ pub enum GameRule {
     /// identity of their commanders: each color of that identity stands for another one of it, so a cost keeps its mana
     /// value, generic and colorless mana stay as they are, and a card inside the identity stays castable (`cost_colors`).
     CostColorsDrawn(Ref),
+    /// The players pay no commander tax (CR 903.8): their commanders cost no more to cast from the command zone, in mana or
+    /// in life.
+    NoCommanderTax(Ref),
     /// The players have a keyword, such as protection from everything (CR 702.16j), while the rule lasts.
     PlayersHave {
         /// The players.
@@ -1081,6 +1084,28 @@ pub enum GameRule {
     /// A player in the group who would flip a coin flips two instead and ignores one (CR 705.3, Krark's Thumb); each such
     /// rule doubles the coins again.
     FlipTwoCoins(Ref),
+    /// A player in the group can't control more than `most` creatures with the same name: the newest beyond that are
+    /// sacrificed as a state-based action (the Delves modifier Mirror Hall).
+    SameNameLimit {
+        /// The players.
+        who: Ref,
+        /// The most creatures of one name each may control.
+        most: u32,
+    },
+    /// A card or token a player in the group owns that would be put into a graveyard makes its owner flip a coin; on a
+    /// loss it is exiled instead (the Delves modifier No Rest). The flip uses the game's random stream and is logged.
+    FlipOrExiled(Ref),
+    /// A player in the group flips one coin in each of their untap steps; on a loss their permanents `what` matches
+    /// don't untap during that step (the Delves modifier Stone Sleep).
+    FlipOrStayTapped {
+        /// The players.
+        who: Ref,
+        /// The permanents held down on a loss.
+        what: Selector,
+    },
+    /// A player in the group who would gain life flips a coin; on a loss they gain no life (the Delves modifier No
+    /// Mercy).
+    FlipOrNoLifeGain(Ref),
     /// The first time each turn a player in the group flips one or more coins, those coins come up heads and the player
     /// wins those flips (Edgar, King of Figaro); every coin of one instruction is one set (the ruling of Edgar).
     R6700FirstFlipsHeads(Ref),

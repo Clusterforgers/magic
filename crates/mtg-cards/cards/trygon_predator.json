@@ -1,0 +1,30 @@
+{
+  "oracle_id": "c744b5f4-fbcf-48b8-9d60-5e9c6ac297e0",
+  "name": "Trygon Predator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Trygon Predator",
+      "oracle_fingerprint": "8895ca3ee97872e59402c9c8eff93a08",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "ControlledBy": "Triggering" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "May": { "effects": [{ "Destroy": { "what": { "Target": 0 } } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

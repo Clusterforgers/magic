@@ -1,0 +1,52 @@
+{
+  "oracle_id": "94e8b0a9-44a1-4dce-8d44-78681ae638a1",
+  "name": "Fountainport",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fountainport",
+      "oracle_fingerprint": "03ee7db20f983f5b1f385cbfa37990c2",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", { "Sacrifice": { "filter": ["Token"] } }],
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap", { "PayLife": 1 }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Fish",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Fish"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

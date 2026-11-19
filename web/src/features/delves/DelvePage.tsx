@@ -429,8 +429,8 @@ export function DelvePage({
                 played={played}
                 onPlayed={(deck) => setPlayed(notePlayed(deck, new Date()))}
               />
-              <section aria-label={content.theme} className="rounded-xl border bg-delve-stone p-4 text-sm">
-                {content.text}
+              <section aria-label={view.theme} className="rounded-xl border bg-delve-stone p-4 text-sm">
+                {view.story}
               </section>
             </>
           ) : null}

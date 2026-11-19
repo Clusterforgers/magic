@@ -1,0 +1,27 @@
+{
+  "oracle_id": "e0420f2c-d578-421e-ae75-e7dc5f70661a",
+  "name": "Mazirek, Kraul Death Priest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mazirek, Kraul Death Priest",
+      "oracle_fingerprint": "d79df557b426a5610d5a8c47a0334681",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": ["Other"] } },
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

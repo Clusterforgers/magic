@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3644f316-f9a3-46c9-9b1e-747f86cf4ead",
+  "name": "Buried Ruin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Buried Ruin",
+      "oracle_fingerprint": "aa40ba99d82ad68936414a16e886755f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap", "SacrificeSelf"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Type": "Artifact" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

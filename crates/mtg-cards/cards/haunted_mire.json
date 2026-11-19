@@ -1,0 +1,14 @@
+{
+  "oracle_id": "b0b58a03-462c-4964-97c7-42bc777ec23e",
+  "name": "Haunted Mire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Haunted Mire",
+      "oracle_fingerprint": "3631706433e9260f2ba7acfc854c7dc4",
+      "abilities": [
+        { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } }
+      ]
+    }
+  ]
+}

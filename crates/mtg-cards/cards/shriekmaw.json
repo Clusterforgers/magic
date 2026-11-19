@@ -1,0 +1,32 @@
+{
+  "oracle_id": "717bbb9d-0a5b-4979-a24b-9d54aac7657a",
+  "name": "Shriekmaw",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shriekmaw",
+      "oracle_fingerprint": "b41ab2edf72c0be29b683cdaf80789e7",
+      "abilities": [
+        { "Keyword": "Fear" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Type": "Artifact" } },
+                    { "Not": { "Color": "Black" } }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+          }
+        },
+        { "Keyword": { "Evoke": "{1}{B}" } }
+      ]
+    }
+  ]
+}

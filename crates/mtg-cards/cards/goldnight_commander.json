@@ -1,0 +1,32 @@
+{
+  "oracle_id": "3dc51dfc-7a60-41bf-b944-6afad6b06c22",
+  "name": "Goldnight Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldnight Commander",
+      "oracle_fingerprint": "89308ce7bb64b455a0b99103da5538f5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

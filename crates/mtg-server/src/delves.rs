@@ -5,6 +5,7 @@
 
 mod board;
 mod hooks;
+mod rework;
 mod store;
 
 pub(crate) use board::leaderboard;
@@ -49,7 +50,7 @@ use crate::server::AppState;
 use crate::user_id::UserId;
 use store::{DelveStore, Header};
 
-/// The theme every run plays for now.
+/// The theme whose name and story the content endpoint shows.
 const THEME: &str = "warrens";
 /// The most runs a list shows.
 const LIST_LIMIT: i64 = 50;
@@ -375,6 +376,15 @@ async fn cards_named(
     app: &AppState,
     names: &[String],
 ) -> Result<Vec<(String, Arc<CardDefinition>)>, ApiError> {
+    Ok(cards_read(app, names).await?.0)
+}
+
+/// [`cards_named`] as a live game loads them: each card that runs on a draft (Read or Unverified) with the draft the
+/// game pins, so a resumed fight plays the same rules.
+async fn cards_read(
+    app: &AppState,
+    names: &[String],
+) -> Result<(Vec<(String, Arc<CardDefinition>)>, crate::cards::Reads), ApiError> {
     let source = app.cards().ok_or_else(ApiError::internal)?;
     let index = source.card_index().await.map_err(|error| {
         tracing::error!(%error, "the card index could not be read");
@@ -391,11 +401,11 @@ async fn cards_named(
             }
         })
         .collect();
-    let cards = source.deck(&ids).await.map_err(|error| {
+    let (cards, reads) = source.deck_pinned(&ids).await.map_err(|error| {
         tracing::error!(%error, "Delves cards could not be assembled");
         ApiError::internal()
     })?;
-    Ok(ids.into_iter().zip(cards).collect())
+    Ok((ids.into_iter().zip(cards).collect(), reads))
 }
 
 fn deck_refused(refusal: Refused) -> ApiError {
@@ -416,15 +426,20 @@ async fn boss_side_deck(
         .iter()
         .flat_map(|(card, n)| std::iter::repeat_n(card.clone(), usize::try_from(*n).unwrap_or(0)))
         .collect();
-    let (ids, cards): (Vec<String>, Vec<Arc<CardDefinition>>) =
-        cards_named(app, &names).await?.into_iter().unzip();
+    let (found, mut reads) = cards_read(app, &names).await?;
+    let (ids, cards): (Vec<String>, Vec<Arc<CardDefinition>>) = found.into_iter().unzip();
     let note = SeatDeck {
         name: name.to_owned(),
         format: "commander".to_owned(),
         manual_cards: 0,
         warnings: 0,
     };
-    ChosenDeck::stored(ids, cards, note).map_err(|error| {
+    let source = app.cards().ok_or_else(ApiError::internal)?;
+    let (conjured, more) = source.conjured_for(&cards).await.map_err(ApiError::from)?;
+    reads.extend(more);
+    let deck = ChosenDeck::stored(ids, cards, note)
+        .map(|deck| deck.with_reads(reads).with_conjured(conjured));
+    deck.map_err(|error| {
         tracing::error!(%error, "a boss deck could not be fingerprinted");
         ApiError::internal()
     })
@@ -535,18 +550,15 @@ async fn make_fight(
             });
         }
     }
-    // The boss's side: the boss, then its minions, each a bot seat with its deck.
-    let side = std::iter::once((plan.boss.name.as_str(), plan.boss.brain))
-        .chain(plan.minions.iter().map(|m| (m.name.as_str(), m.brain)));
-    for (at, ((name, brain), deck)) in side.zip(plan.boss_decks()).enumerate() {
-        decks.push(Some(boss_side_deck(app, name, &deck).await?));
-        names.push(name.to_owned());
-        accounts.push(None);
-        bots.push(BotSeat {
-            seat: PlayerId::from_index(plan.heroes.len() + at),
-            level: bot_level(brain),
-        });
-    }
+    // The boss: a bot seat with its precon and satchel.
+    let name = plan.boss.name.as_str();
+    decks.push(Some(boss_side_deck(app, name, &plan.boss_deck()).await?));
+    names.push(name.to_owned());
+    accounts.push(None);
+    bots.push(BotSeat {
+        seat: plan.boss_seat(),
+        level: bot_level(plan.boss.brain),
+    });
     let options = GameOptions {
         format: FormatKind::Commander,
         visibility: Visibility::Invite,
@@ -596,23 +608,15 @@ fn fight_view(run: &Run) -> Option<DelveFightView> {
     if !matches!(run.status, Status::Fight { .. }) {
         return None;
     }
-    let plan = run.fight_plan(campaign().ok()?).ok()??;
-    Some(DelveFightView {
-        boss: plan.boss.name.clone(),
-        life: plan.boss.life,
-        rules: plan.boss.rules.clone(),
-        phases: plan.boss.phases.clone(),
-        commander: plan.boss.commander.clone(),
-        intensify: run.intensify(),
-        minions: plan
-            .minions
-            .iter()
-            .map(|minion| (minion.name.clone(), minion.life))
-            .collect(),
-    })
+    let content = campaign().ok()?;
+    let plan = run.fight_plan(content).ok()??;
+    rework::fight_view(&plan, content)
 }
 
 fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> DelveView {
+    let theme = campaign()
+        .ok()
+        .and_then(|content| content.theme(&loaded.run.theme).ok());
     let me = loaded
         .run
         .heroes
@@ -641,6 +645,8 @@ fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> 
         me,
         run: loaded.run.clone(),
         boss,
+        theme: theme.map(|t| t.name.clone()).unwrap_or_default(),
+        story: theme.map(|t| t.text.clone()).unwrap_or_default(),
         boss_lives: campaign().map_or_default(|content| loaded.run.boss_lives(content)),
         deck_problems,
         fight: fight_view(&loaded.run),
@@ -723,31 +729,34 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 role: card.role.clone(),
                 price: card.price,
                 rarity: card.rarity,
-                turn: card.turn,
             })
             .collect(),
-        bosses: theme
-            .bosses
+        bosses: content
+            .themes
             .iter()
-            .chain(&theme.upgraded)
+            .flat_map(|t| &t.bosses)
             .map(|boss| DelveBossView {
                 id: boss.id.clone(),
                 name: boss.name.clone(),
-                upgrade_of: boss.upgrade_of.clone(),
                 colors: boss.colors.clone(),
                 line: boss.line.clone(),
-                card: boss.rules.first().cloned(),
-                phases: boss.phases.clone(),
-                life: (boss.life, boss.life_per_hero),
+                final_boss: boss.final_boss,
+                innate: mtg_campaign::innate::innate_id(&boss.innate, 1),
+                round_phases: boss.round_phases.clone(),
+                life: (
+                    mtg_campaign::Scale::boss_life(1),
+                    mtg_campaign::scale::BOSS_LIFE_PER_HERO,
+                ),
                 art: BossArtView {
                     card: boss.art.card.clone(),
                     oracle_id: boss.art.oracle_id.clone(),
                 },
             })
             .collect(),
-        events: theme
-            .events
+        events: content
+            .themes
             .iter()
+            .flat_map(|t| &t.events)
             .map(|event| DelveEventView {
                 id: event.id.clone(),
                 title: event.title.clone(),
@@ -832,7 +841,7 @@ pub(crate) async fn list(
     Ok(Json(DelveList { delves: out }))
 }
 
-/// `POST /api/delves`: a new run in its lobby, the caller its host and first hero; 201.
+/// `POST /api/delves`: a new run in its lobby, its theme drawn by its seed, the caller its host and first hero; 201.
 pub(crate) async fn create(
     State(app): State<AppState>,
     request: Request,
@@ -857,12 +866,17 @@ pub(crate) async fn create(
         })?,
         None => crate::secret::random_seed().map_err(|_| ApiError::internal())?,
     };
+    let theme = campaign()?
+        .theme_for(seed, mtg_campaign::run::CONTENT)
+        .map_err(|_| ApiError::internal())?
+        .id
+        .clone();
     let code = JoinCode::generate().map_err(|_| ApiError::internal())?;
     let header = Header {
         id: Uuid::new_v4(),
         code: code.expose().to_owned(),
         host: user.id.uuid(),
-        theme: THEME.to_owned(),
+        theme: theme.clone(),
         seed,
         heat: body.heat,
     };
@@ -872,7 +886,7 @@ pub(crate) async fn create(
         .create(&header)
         .await
         .map_err(|e| unavailable(&e))?;
-    let run = Run::new(campaign()?, THEME, seed, body.heat).map_err(|_| ApiError::internal())?;
+    let run = Run::new(campaign()?, &theme, seed, body.heat).map_err(|_| ApiError::internal())?;
     let mut loaded = Loaded {
         header,
         events: Vec::new(),

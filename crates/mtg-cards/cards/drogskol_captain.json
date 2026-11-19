@@ -1,0 +1,27 @@
+{
+  "oracle_id": "c33604ac-636a-43ad-9efe-8d7b3a28bf81",
+  "name": "Drogskol Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drogskol Captain",
+      "oracle_fingerprint": "17c0ccbdc0c5673aff2197ade795abf5",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Spirit" },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }, { "AddKeyword": "Hexproof" }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f82a4e85-526d-4456-b700-7760043a31be",
+  "name": "Viscera Seer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Viscera Seer",
+      "oracle_fingerprint": "060cf6b94836ab88f096a45bf552c14d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [{ "Scry": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "oracle_id": "3beed054-a099-4887-b1bd-39cf9e514e94",
+  "name": "Scurry of Squirrels",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Scurry of Squirrels",
+      "oracle_fingerprint": "ff506a199770a142b5464a8fa017592b",
+      "abilities": [
+        { "Keyword": "Myriad" },
+        { "Keyword": "Myriad" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

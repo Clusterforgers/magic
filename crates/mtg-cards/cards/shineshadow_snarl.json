@@ -1,0 +1,31 @@
+{
+  "oracle_id": "c9fc13d6-bd10-47bc-b2b6-7f67a1f3371e",
+  "name": "Shineshadow Snarl",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shineshadow Snarl",
+      "oracle_fingerprint": "86cbe8dd0a1f25257f270dc6f64fc9ee",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "RevealOrTapped": [
+                { "AnyOf": [{ "Subtype": "Plains" }, { "Subtype": "Swamp" }] },
+                { "In": "Hand" },
+                { "OwnedBy": "You" }
+              ]
+            }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["White", "Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

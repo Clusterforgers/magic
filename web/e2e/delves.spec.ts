@@ -1,4 +1,4 @@
-// Goal: a one-player Delves run with bot allies goes from the lobby through the first boss fight to the loot screen on a real server and database: the player creates a delve, adds two bot allies, every hero takes a precon, Descend leads to the first boss, Enter the fight opens the boss's waiting room, Ready to fight starts the table, the boss's concession (the server's test hook) gives the party the win, the table returns to the run by itself and the run offers the relic pick, then the card pick.
+// Goal: a one-player Delves run with bot allies goes from the lobby through the first boss fight to the loot screen on a real server and database: the player creates a delve, adds two bot allies, every hero takes a precon, Descend leads to the first boss, Enter the fight opens the boss's waiting room, Ready to fight starts the table, the boss's concession (the server's test hook) gives the party the win, the fight's result says so and Continue to the run returns to the run, which offers the relic pick, then the card pick.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import type { PreconListItem } from '../src/protocol/generated'
@@ -65,11 +65,15 @@ test('a hero with two bot allies descends, fights the first boss and reaches the
       })
       .toBe(204)
 
-    // The game page hands the party back to the run, which reads the win and offers the loot.
-    await expect(page).toHaveURL(new RegExp(`/delves/${run}$`), { timeout: 60_000 })
+    // The final table stays under the fight's result; Continue to the run hands the party back to the run, which reads
+    // the win and offers the loot.
+    const result = page.getByRole('dialog', { name: 'The party won the fight' })
+    await expect(result).toBeVisible({ timeout: 30_000 })
+    await result.getByRole('button', { name: 'Continue to the run' }).click()
+    await expect(page).toHaveURL(new RegExp(`/delves/${run}$`))
     const relics = page.getByRole('region', { name: 'Relic pick' })
     await expect(relics).toBeVisible({ timeout: 30_000 })
-    await expect(page.getByText(/falls! Each hero heals 10/)).toBeVisible()
+    await expect(page.getByText(/falls! Each hero heals 15/)).toBeVisible()
     await relics
       .getByRole('button', { name: /^Take (?!none)/ })
       .first()
