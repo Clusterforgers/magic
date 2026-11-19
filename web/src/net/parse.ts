@@ -42,6 +42,7 @@ import type {
   TakeBackOffer,
   TakeBackOutcome,
   TakeBackRefusal,
+  PictureCard,
   RevealedDeck,
   YieldUntil,
 } from '@/protocol/generated'
@@ -90,6 +91,7 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   TakeBackRefused: true,
   EndedByAdmin: true,
   DecksRevealed: true,
+  DeckPictures: true,
 }
 
 const ERROR_CODES: Record<ErrorCode, true> = {
@@ -489,6 +491,13 @@ function isRevealedDeck(value: unknown): value is RevealedDeck {
   return isRecord(value) && isCount(value.seat) && isText(value.name)
 }
 
+/** A card whose pictures may be loaded ahead: its identity (oracle id, printing id when chosen) and a face count. */
+function isPictureCard(value: unknown): value is PictureCard {
+  if (!isRecord(value) || !isRecord(value.identity) || !isCount(value.faces) || value.faces < 1) return false
+  const { oracle_id: oracle, printing_id: printing } = value.identity
+  return isText(oracle) && (printing === undefined || isText(printing))
+}
+
 /** A seat and the name of its decision; a name this page does not know yet reads as a plain decision. */
 function isDeciding(value: unknown): value is DecidingView {
   return isRecord(value) && isCount(value.seat) && isText(value.kind)
@@ -761,6 +770,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'DecksRevealed':
       if (!isListOf(v.decks, isRevealedDeck)) return '"decks" must be a list of decks (seat, name)'
       return { type, decks: v.decks }
+    case 'DeckPictures':
+      if (!isListOf(v.cards, isPictureCard)) return '"cards" must be a list of cards (identity, faces)'
+      return { type, cards: v.cards }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

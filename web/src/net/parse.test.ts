@@ -99,6 +99,13 @@ const samples: Record<string, Record<string, unknown>> = {
   Deciding: { type: 'Deciding', seats: [{ seat: 1, kind: 'ChooseTargets' }] },
   Spectators: { type: 'Spectators', count: 2 },
   DecksRevealed: { type: 'DecksRevealed', decks: [{ seat: 1, name: 'Adaptive Enchantment' }] },
+  DeckPictures: {
+    type: 'DeckPictures',
+    cards: [
+      { identity: { oracle_id: 'o1', printing_id: 'p1' }, faces: 2 },
+      { identity: { oracle_id: 'o2' }, faces: 1 },
+    ],
+  },
   EndedByAdmin: { type: 'EndedByAdmin' },
   TakeBackOffer: { type: 'TakeBackOffer', offer: { player: 0, kind: 'Cast', name: 'Shock', at: 12 } },
   TakeBackAsked: {
@@ -380,6 +387,10 @@ describe('parseFrame checks the fields of each message', () => {
     ['DecksRevealed', 'decks as text', ['decks'], 'Bob'],
     ['DecksRevealed', 'a seat as text', ['decks', '0', 'seat'], '1'],
     ['DecksRevealed', 'a name as a number', ['decks', '0', 'name'], 3],
+    ['DeckPictures', 'cards as text', ['cards'], 'all'],
+    ['DeckPictures', 'no faces', ['cards', '0', 'faces'], 0],
+    ['DeckPictures', 'an oracle id as a number', ['cards', '0', 'identity', 'oracle_id'], 3],
+    ['DeckPictures', 'a printing id as null', ['cards', '0', 'identity', 'printing_id'], null],
     ['TakeBackOffer', 'offer as text', ['offer'], 'Shock'],
     ['TakeBackOffer', 'an unknown kind', ['offer', 'kind'], 'Spell'],
     ['TakeBackOffer', 'a kind that is a prototype name', ['offer', 'kind'], 'toString'],

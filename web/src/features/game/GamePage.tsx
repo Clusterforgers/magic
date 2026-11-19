@@ -20,6 +20,8 @@ import { TutorialCoach } from '@/features/learn/LessonCoach'
 import { tutorialOf } from '@/features/learn/tutorials'
 import { FightEnd } from '@/features/delves/FightEnd'
 import { FightLobby } from '@/features/delves/FightLobby'
+import { useDeckPrefetch } from '@/features/cards/useDeckPrefetch'
+import type { PictureCard } from '@/protocol/generated'
 import { GameTable } from '@/features/table/GameTable'
 import { delvesApi as sharedDelves } from '@/net/delves'
 import type { DelvesApi } from '@/net/delves'
@@ -37,6 +39,8 @@ import { useTurnTitle } from './useTurnTitle'
 
 /** The table options of a tutorial game: its coach, not the table tour, greets the player. */
 const TUTORIAL_TABLE = { tour: false }
+// No pictures to load ahead once the game is over; one constant, so the store's selector stays stable.
+const NO_PICTURES: PictureCard[] = []
 
 /** The parts of `SessionDeps` a caller may replace, such as the socket and the clock in tests. */
 export type SessionOverrides = Omit<SessionDeps, 'game' | 'token' | 'name'>
@@ -184,6 +188,9 @@ function SeatedGame({
   const [session] = useState(() => createSession({ ...deps, game: gameId, token, name, watch }))
   const [tutorial] = useState(() => tutorialOf(gameId))
   useConnected(session)
+  useDeckPrefetch(
+    useStore(session.store, (store) => (store.phase === 'over' ? NO_PICTURES : store.deckPictures)),
+  )
   const state = useStore(session.store, useShallow(screenState))
   const lookup = useGameInfo(api, gameId, {
     poll: state.phase === 'lobby',

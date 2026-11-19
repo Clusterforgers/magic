@@ -18,6 +18,7 @@ mod compression;
 mod concede;
 mod concurrent_games;
 mod deciding;
+mod deck_pictures;
 mod env_seed;
 mod full_games;
 mod game_close;

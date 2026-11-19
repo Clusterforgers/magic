@@ -435,6 +435,23 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
+    /// Tells each connected seat, after the opening batch, the pictures it may load ahead; a seat that joins later is
+    /// told with its snapshot.
+    fn tell_deck_pictures(&mut self) {
+        let Phase::Running(running) = &self.phase else {
+            return;
+        };
+        let told: Vec<_> = self
+            .seats
+            .connected()
+            .into_iter()
+            .filter_map(|seat| running.deck_pictures(seat).map(|message| (seat, message)))
+            .collect();
+        for (seat, message) in told {
+            self.seats.send(seat, message);
+        }
+    }
+
     /// Creates the engine, persists its opening events and shows them from seq 0 like any other batch.
     ///
     /// If anything fails the lobby stays as it was, so a repeated `Ready` retries.
@@ -488,6 +505,7 @@ impl<S: EventStore> GameActor<S> {
                 self.warm_images();
                 self.reveal_decks();
                 self.announce(batches, Vec::new(), if idle { Vec::new() } else { first });
+                self.tell_deck_pictures();
                 if idle {
                     return self.start_up().await;
                 }

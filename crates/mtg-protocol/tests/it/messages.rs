@@ -55,7 +55,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 23;
-const SERVER_VARIANTS: usize = 26;
+const SERVER_VARIANTS: usize = 27;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -148,6 +148,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::TakeBackRefused { .. } => 23,
         ServerMessage::EndedByAdmin { .. } => 24,
         ServerMessage::DecksRevealed { .. } => 25,
+        ServerMessage::DeckPictures { .. } => 26,
     }
 }
 
@@ -883,6 +884,15 @@ fn server_samples() -> Vec<ServerMessage> {
         decks: vec![mtg_protocol::RevealedDeck {
             seat: PlayerId(1),
             name: "Adaptive Enchantment".into(),
+        }],
+    });
+    out.push(ServerMessage::DeckPictures {
+        cards: vec![mtg_protocol::PictureCard {
+            identity: mtg_cards::CardIdentity {
+                oracle_id: "o".into(),
+                printing_id: Some("p".into()),
+            },
+            faces: 2,
         }],
     });
     let offer = TakeBackOffer {

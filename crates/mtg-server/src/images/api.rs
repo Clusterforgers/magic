@@ -20,8 +20,19 @@ use crate::card_api::{colors_of, failed, source};
 use crate::lobbies::tag_matches;
 use crate::server::AppState;
 
-/// How long a browser keeps a picture without asking: a week. The `ETag` settles the rest.
-const CACHE_CONTROL_VALUE: &str = "public, max-age=604800";
+/// How long a browser keeps a card's or a token's picture without asking: a week, since a newer printing may take its
+/// place; `immutable`, so a reload does not ask again either. The `ETag` settles the rest.
+const CACHE_CONTROL_VALUE: &str = "public, max-age=604800, immutable";
+/// How long a browser keeps one printing's picture without asking: a year, since that printing's picture stays.
+const PRINTING_CACHE_CONTROL: &str = "public, max-age=31536000, immutable";
+
+/// The caching rule of a picture of `identity`.
+fn cache_control(identity: &Identity) -> &'static str {
+    match identity {
+        Identity::Printing(_) => PRINTING_CACHE_CONTROL,
+        Identity::Oracle(_) | Identity::Token(_) => CACHE_CONTROL_VALUE,
+    }
+}
 /// Longest token name, type line, power or toughness, in characters.
 const MAX_FACT_CHARS: usize = 200;
 /// The parameters `GET /api/images/token/...` knows.
@@ -158,14 +169,17 @@ async fn serve(
         no_image()
     })?;
     let tag = link.etag();
+    let rule = cache_control(identity);
     if tag_matches(headers, &tag) {
-        return Ok(with_validators(StatusCode::NOT_MODIFIED, &tag, Body::empty()).into_response());
+        return Ok(
+            with_validators(StatusCode::NOT_MODIFIED, &tag, rule, Body::empty()).into_response(),
+        );
     }
     let bytes = images
         .get(&link)
         .await
         .map_err(|error| upstream_error(&error))?;
-    let mut response = with_validators(StatusCode::OK, &tag, Body::from(bytes));
+    let mut response = with_validators(StatusCode::OK, &tag, rule, Body::from(bytes));
     response
         .headers_mut()
         .insert(CONTENT_TYPE, HeaderValue::from_static(link.content_type()));
@@ -173,11 +187,11 @@ async fn serve(
 }
 
 /// An answer that carries the `ETag` and the caching rule, which a 304 repeats.
-fn with_validators(status: StatusCode, tag: &str, body: Body) -> Response {
+fn with_validators(status: StatusCode, tag: &str, rule: &'static str, body: Body) -> Response {
     let mut response = Response::new(body);
     *response.status_mut() = status;
     let headers = response.headers_mut();
-    headers.insert(CACHE_CONTROL, HeaderValue::from_static(CACHE_CONTROL_VALUE));
+    headers.insert(CACHE_CONTROL, HeaderValue::from_static(rule));
     if let Ok(value) = HeaderValue::from_str(tag) {
         headers.insert(ETAG, value);
     }
@@ -287,5 +301,22 @@ mod tests {
     ) {
         let answer = upstream_error(&error);
         assert_eq!((answer.status(), answer.code()), (status, code));
+    }
+}
+
+#[cfg(test)]
+mod cache_tests {
+    //! Goal: every picture is cached as immutable, so a reload asks nothing; one printing's for a year, a card's or a token's for a week, since a newer printing may take its place.
+    use rstest::rstest;
+
+    use super::*;
+
+    #[rstest]
+    #[case::printing(Identity::Printing(PrintingId("p".into())), PRINTING_CACHE_CONTROL)]
+    #[case::oracle(Identity::Oracle(OracleId("o".into())), CACHE_CONTROL_VALUE)]
+    #[case::token(Identity::Token(TokenQuery { name: "Soldier".into(), ..TokenQuery::default() }), CACHE_CONTROL_VALUE)]
+    fn a_picture_is_cached_by_what_it_shows(#[case] identity: Identity, #[case] rule: &str) {
+        assert_eq!(cache_control(&identity), rule);
+        assert!(rule.ends_with(", immutable"), "{rule}");
     }
 }

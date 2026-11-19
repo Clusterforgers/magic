@@ -313,6 +313,7 @@ fn order(messages: &[ServerMessage]) -> Vec<&'static str> {
             ServerMessage::Deciding { .. } => "deciding",
             ServerMessage::Spectators { .. } => "spectators",
             ServerMessage::DecksRevealed { .. } => "decks revealed",
+            ServerMessage::DeckPictures { .. } => "deck pictures",
             ServerMessage::TakeBackOffer { .. }
             | ServerMessage::TakeBackAsked { .. }
             | ServerMessage::TakeBackEnded { .. }

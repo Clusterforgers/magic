@@ -580,8 +580,17 @@ impl Running {
         }
         if let Some(result) = self.engine.result() {
             messages.push(ServerMessage::GameOver { result });
+        } else {
+            // Last, so the table and its question come first; a finished game needs no pictures ahead.
+            messages.extend(self.deck_pictures(seat));
         }
         messages
+    }
+
+    /// The pictures `seat` may load ahead ([`mtg_protocol::deck_pictures`]); none when no card has a picture.
+    pub(crate) fn deck_pictures(&self, seat: PlayerId) -> Option<ServerMessage> {
+        let cards = mtg_protocol::deck_pictures(self.engine.setup(), seat);
+        (!cards.is_empty()).then_some(ServerMessage::DeckPictures { cards })
     }
 
     /// Applies `seat`'s answer to the decision `id`, if that decision is pending for that seat.
@@ -896,7 +905,7 @@ mod tests {
 
     fn held_back(dwell: Dwell) -> Running {
         let mut running = idle_with_a_spell(dwell);
-        assert!(running.settle(false, Halt::Dwell).is_empty());
+        assert_eq!(running.settle(false, Halt::Dwell).len(), 0);
         running
     }
 
@@ -1031,7 +1040,7 @@ mod tests {
         let mut running = held_back(Dwell::DEFAULT);
         let (id, due) = (running.pending.as_ref().unwrap().id, running.due());
         tokio::time::advance(Duration::from_millis(100)).await;
-        assert!(running.settle(true, Halt::Dwell).is_empty());
+        assert_eq!(running.settle(true, Halt::Dwell).len(), 0);
         assert_eq!(running.pending.as_ref().unwrap().id, id);
         assert_eq!(
             running.due(),
@@ -1039,7 +1048,7 @@ mod tests {
             "a concession elsewhere does not move it"
         );
 
-        assert!(running.settle(false, Halt::Dwell).is_empty());
+        assert_eq!(running.settle(false, Halt::Dwell).len(), 0);
         assert_ne!(running.pending.as_ref().unwrap().id, id);
         let wait = running.due().unwrap() - Instant::now();
         let (shortest, longest) = Dwell::DEFAULT.range();
