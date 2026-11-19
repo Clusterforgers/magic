@@ -1,4 +1,4 @@
-// Goal: on the development table (a duel, a grid of six, two teams, Two-Headed Giant and the boss) the prompt band is one line of the same height and place for every decision kind and between decisions, its answers on one row and nothing scrolled, no board, card or column moves from one prompt to the next, and the decision's detail stands in the Stack column at 1400x900 and 1280x720 (the side panel open) and in the sheet over the hand with the panel folded and on a phone, where the band is two lines and a choice of cards stands in the overlay.
+// Goal: on the development table (a duel, a grid of six, two teams, Two-Headed Giant and the boss) the prompt band is one line of the same height and place for every decision kind and between decisions, its answers on one row and nothing scrolled, no board, card or column moves from one prompt to the next, and the decision's detail stands in the Stack column at 1400x900 and 1280x720 (the side panel open) and in the sheet over the hand with the panel folded and on a phone, where the band is two lines and a choice of cards stands in the overlay; there the opening hand keeps its answers on one row with the line of who is still deciding beside them and nothing under them, at 2 to 40 seats.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -239,5 +239,59 @@ test.describe('the prompt band and the Stack column', () => {
     await expect(page.locator('[data-slot="shared-sheet"] [data-slot="card-row"]')).toHaveCount(0)
     await expect(page.locator('[data-slot="prompt-actions"] button').first()).toBeInViewport()
     await expect(page.locator('[data-slot="sheet-grab"]')).toHaveAttribute('aria-expanded', 'false')
+  })
+
+  test('keeps the opening hand on a phone to one row of answers, the line of who is still deciding clear of them', async ({
+    page,
+  }) => {
+    for (const [width, height] of [
+      [390, 844],
+      [360, 740],
+    ] as const) {
+      await page.setViewportSize({ width, height })
+      for (const seats of [2, 4, 12, 40]) {
+        const shown = await show(page, `seats=${seats}`, 'mulligan')
+        const label = `${seats} seats at ${width}x${height}`
+        // The hand may scroll the sheet on a short phone; the answers stay sticky at its foot (`PromptLayout`).
+        expect(new Set(shown.answerTops).size, `${label}: the answers keep one row`).toBe(1)
+        expect(shown.answersOut, `${label}: answers outside the band`).toBe(0)
+        const clash = await page.evaluate(() => {
+          const sheet = document.querySelector('[data-slot="shared-sheet"]')
+          if (sheet === null) return ['no band']
+          const edge = sheet.getBoundingClientRect()
+          const answers = [...sheet.querySelectorAll('[data-slot="prompt-actions"] button')]
+          // Whatever the band draws as words besides the answers: the line of who is still deciding, the status.
+          const words = [
+            ...sheet.querySelectorAll(
+              '[data-slot="mulligan-waiting"], [data-slot="strip-status"] p, [data-slot="strip-status"] li',
+            ),
+          ].filter((element) => element.getBoundingClientRect().width > 0)
+          const meets = (a: DOMRect, b: DOMRect): boolean =>
+            a.left < b.right - 0.5 &&
+            b.left < a.right - 0.5 &&
+            a.top < b.bottom - 0.5 &&
+            b.top < a.bottom - 0.5
+          const problems: string[] = []
+          for (const word of words) {
+            const box = word.getBoundingClientRect()
+            const name = (word.textContent ?? '').slice(0, 30)
+            if (box.left < edge.left - 0.5 || box.right > edge.right + 0.5)
+              problems.push(`"${name}" is cut off`)
+            for (const answer of answers)
+              if (meets(box, answer.getBoundingClientRect()))
+                problems.push(`"${name}" runs under ${answer.textContent}`)
+          }
+          for (const answer of answers) {
+            const box = answer.getBoundingClientRect()
+            const top = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2)
+            if (top === null || !answer.contains(top)) problems.push(`${answer.textContent} is covered`)
+          }
+          return problems
+        })
+        expect(clash, label).toEqual([])
+        if (seats > 2)
+          await expect(page.locator('[data-slot="mulligan-waiting"]'), label).toHaveText(/^Still deciding: /)
+      }
+    }
   })
 })
