@@ -44,7 +44,7 @@ use crate::join_code::JoinCode;
 use crate::recipe::FormatKind;
 use crate::records::Visibility;
 use crate::records::{RecordError, RecordStatus};
-use crate::registry::{AdminEnd, GameOptions};
+use crate::registry::{AdminEnd, GameOptions, Registry};
 use crate::seat_deck::ChosenDeck;
 use crate::server::AppState;
 use crate::user_id::UserId;
@@ -795,6 +795,13 @@ async fn abandon_stale(
         return Ok(false);
     }
     let _turn = delves.turn.lock().await;
+    // A fight whose table is gone may still have a lobby or running record; it ends with the run.
+    if end_fight_game(app, loaded, "The run was left unchanged too long.")
+        .await
+        .is_err()
+    {
+        return Ok(false);
+    }
     let from = loaded.events.len();
     push(loaded, RunEvent::Abandoned)?;
     // A write that raced a member's action is refused by the log's key; the run then shows as it is.
@@ -1101,16 +1108,49 @@ fn floor_vote(hero: u8, descend: bool) -> RunEvent {
     RunEvent::FloorVoted { hero, descend }
 }
 
-/// Ends the table of the fight the party retreats from, so nobody plays on in a game the run has given up.
-async fn end_fight_game(app: &AppState, loaded: &Loaded) -> Result<(), ApiError> {
-    let Status::Fight { game: Some(game) } = &loaded.run.status else {
+/// The game of the fight the run is in; none outside a fight or before its game is made.
+fn fight_game(run: &Run) -> Option<GameId> {
+    match &run.status {
+        Status::Fight { game: Some(game) } => game.parse().ok(),
+        _ => None,
+    }
+}
+
+/// Ends every table of a Delves fight its run no longer waits for: a run that ended (abandoned, won, lost, closed by a
+/// migration) or that moved on to another fight. Run once the stored games are loaded; answers how many it ended.
+pub(crate) async fn close_left_fights(registry: &Registry, delves: &Delves) -> usize {
+    let mut ended = 0;
+    for (game, run) in registry.delve_games() {
+        let Ok(run) = Uuid::parse_str(&run) else {
+            continue;
+        };
+        let Ok(loaded) = load(delves, run).await else {
+            continue;
+        };
+        if fight_game(&loaded.run) == Some(game) {
+            continue;
+        }
+        let reason = Some("The Delves run no longer waits for this fight.".to_owned());
+        match registry.end_by_admin(game, reason).await {
+            Ok(AdminEnd::Ended) => ended += 1,
+            Ok(_) => {}
+            Err(error) => tracing::warn!(%error, %game, "a left Delves fight could not be ended"),
+        }
+    }
+    ended
+}
+
+/// Ends the table of the fight the party leaves (a retreat, or the run ending), so nobody plays on in a game the run
+/// has given up and no seat of it stays listed as anybody's lobby or game.
+async fn end_fight_game(app: &AppState, loaded: &Loaded, reason: &str) -> Result<(), ApiError> {
+    let Some(game) = fight_game(&loaded.run) else {
         return Ok(());
     };
-    let Ok(game) = game.parse::<GameId>() else {
-        return Ok(());
-    };
-    let reason = Some("The host retreated from the fight.".to_owned());
-    match app.registry().end_by_admin(game, reason).await {
+    match app
+        .registry()
+        .end_by_admin(game, Some(reason.to_owned()))
+        .await
+    {
         Ok(AdminEnd::Ended | AdminEnd::NotFound) => Ok(()),
         // A result arrived first; the next read folds it in.
         Ok(AdminEnd::AlreadyOver) => Err(refused("the fight has just ended")),
@@ -1133,10 +1173,14 @@ pub(crate) async fn act(
     let mut loaded = load(delves, id).await?;
     let from = loaded.events.len();
     advance(&app, &mut loaded).await?;
-    let retreat = matches!(action, DelveAction::Retreat);
+    let leaves = match action {
+        DelveAction::Retreat => Some("The host retreated from the fight."),
+        DelveAction::Abandon => Some("The host ended the run."),
+        _ => None,
+    };
     let event = event_of(&app, &headers, &loaded, user.id, action).await?;
-    if retreat {
-        end_fight_game(&app, &loaded).await?;
+    if let Some(reason) = leaves {
+        end_fight_game(&app, &loaded, reason).await?;
     }
     push(&mut loaded, event)?;
     let problems = advance(&app, &mut loaded).await?;

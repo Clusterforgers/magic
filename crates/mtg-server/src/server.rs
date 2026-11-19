@@ -169,6 +169,10 @@ impl Server {
             failed = resumed.failed.len(),
             "stored games loaded"
         );
+        let left = crate::delves::close_left_fights(&registry, &delves).await;
+        if left > 0 {
+            tracing::info!(left, "ended Delves fights their runs no longer wait for");
+        }
         let stores = Stores {
             cards: Some(cards),
             tournaments: Some(tournaments),
