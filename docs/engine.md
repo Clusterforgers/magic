@@ -120,6 +120,11 @@ Seat rules for Delves fights (`docs/delves.md`), each set up in `PlayerSetup`:
 - With `set_rewind_on_cancel` (the server sets it; off by default, so a caller that only appends events never sees a cut), `Answer::Undo` of a cast after mana abilities of the `ManaRun` (a kind's `Cancel` never cuts) rebuilds from the run's start the same way, without a note, when the same judgement finds nothing in the run.
 - A rewind keeps the events it cut, so `restore` of a checkpoint taken before it brings them back; `cut_since(checkpoint)` tells the server where the log was cut.
 
+### Undoing mana
+
+- `mana_undo.rs`, on by default whatever `take_backs` says (CR 605: a mana ability whose mana is unspent and that affected nothing is rewound as a legal action with no hidden information). Each activation of the `ManaRun` is a `ManaTap` (source, its events, the generator's position). `Engine::mana_undo(player)` lists each source of the run once (the server sends it as `PriorityOptions.undo_mana` through `Engine::offered_decision`; `decision()` leaves it empty, so a rebuilt engine, which has no run, asks the same), with a `ManaUndoRefusal` when it cannot be undone: `Triggered` (its activation triggered an ability), `DidMore` (another cost, damage, a draw, a random result), `Spent` (mana left the pool since), `Since` (anything since but more mana abilities). A pass or any other action ends the run, so nothing is offered after it.
+- `PriorityAction::UndoMana(source)` rebuilds the engine from the log without the activation's events, keeps the later activations and logs `ManaUndone {player, source}`, a note; the cut is placed by `cut_since` as a take-back's is, and the state is the one without the activation.
+
 ### Fail-soft resolution
 
 - A card in state `Read`, `Forge` or `Unverified` runs unproven rules ([cards-dsl.md](cards-dsl.md)). When a resolution step of a source whose definition has `read` returns a `ResolveError`, the engine keeps the steps folded, drops the rest and logs `AbilityLeftToTable {source, controller, text}` (no state change), so the table resolves the ability by hand. For other cards the error stays an `EngineError` for the tests, except `Unsupported`, always left to the table.

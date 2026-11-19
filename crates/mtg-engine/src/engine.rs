@@ -244,6 +244,11 @@ impl Engine {
             return self.answer_loop(answer);
         }
         let decision = self.decision.as_ref().ok_or(EngineError::NoDecision)?;
+        if let Answer::Priority(crate::decision::PriorityAction::UndoMana(source)) = answer
+            && matches!(decision.kind, crate::decision::DecisionKind::Priority(_))
+        {
+            return self.undo_mana(decision.player, source);
+        }
         let watched = self
             .loop_how(decision, &answer)
             .map(|how| (how, decision.kind.name(), answer.clone()));
@@ -284,8 +289,9 @@ impl Engine {
             rng,
             events: &events,
         };
-        self.last = take_back::next_last(self.last.take(), &self.state, self.mana_run, &step);
-        self.mana_run = take_back::next_run(self.mana_run, &step);
+        self.last =
+            take_back::next_last(self.last.take(), &self.state, self.mana_run.as_ref(), &step);
+        self.mana_run = take_back::next_run(self.mana_run.take(), &step);
         if let Some((how, kind, answer)) = watched {
             let taken = crate::loops::Taken {
                 player,
@@ -298,13 +304,71 @@ impl Engine {
         Ok(events)
     }
 
+    /// The sources `player` tapped for mana at priority since they last did anything else, each with why its mana
+    /// ability cannot be undone, if it cannot (`mana_undo.rs`); empty unless they hold priority now. It lives in this
+    /// engine only: a rebuilt engine offers nothing, as it offers no take-back.
+    pub fn mana_undo(&self, player: PlayerId) -> Vec<crate::mana_undo::ManaUndo> {
+        let holds = self.decision.as_ref().is_some_and(|decision| {
+            decision.player == player
+                && matches!(decision.kind, crate::decision::DecisionKind::Priority(_))
+        });
+        match self.mana_run.as_ref() {
+            Some(run) if holds && run.player == player && self.held.is_none() => {
+                crate::mana_undo::offers(run, &self.events, &self.state)
+            }
+            _ => Vec::new(),
+        }
+    }
+
+    /// [`decision`](Engine::decision) as it is offered: a priority decision lists in `undo_mana` the mana abilities its
+    /// player may undo ([`mana_undo`](Engine::mana_undo)).
+    pub fn offered_decision(&self) -> Option<Decision> {
+        let mut shown = self.shown.clone()?;
+        if let crate::decision::DecisionKind::Priority(options) = &mut shown.kind
+            && let Some(decision) = self.decision.as_ref()
+        {
+            options.undo_mana = self.mana_undo(decision.player);
+        }
+        Some(shown)
+    }
+
+    /// Undoes `player`'s mana ability of `source` (`PriorityAction::UndoMana`), when [`mana_undo`](Engine::mana_undo)
+    /// offers it with no refusal: the game is rebuilt from the log without its events, the events after it are kept and
+    /// `ManaUndone` is logged. Returns the events after the cut, which [`cut_since`](Engine::cut_since) places.
+    fn undo_mana(&mut self, player: PlayerId, source: ObjectId) -> Result<Vec<Event>, EngineError> {
+        crate::mana_undo::check(&self.mana_undo(player), source)?;
+        let not_offered =
+            || EngineError::from(crate::error::IllegalAnswer::NotOffered("mana to undo"));
+        let run = self.mana_run.clone().ok_or_else(not_offered)?;
+        let index = run
+            .taps
+            .iter()
+            .rposition(|tap| tap.source == source)
+            .ok_or_else(not_offered)?;
+        let tap = run.taps[index];
+        let to = tap.to.min(self.events.len());
+        let from = tap.from.min(to);
+        let kept = [&self.events[..from], &self.events[to..]].concat();
+        let mut rebuilt = Engine::resume(self.setup.clone(), kept)?;
+        rebuilt.commit(vec![Event::ManaUndone { player, source }])?;
+        rebuilt.advance()?;
+        let cut = self.events.split_off(from);
+        rebuilt.dropped = std::mem::take(&mut self.dropped);
+        rebuilt.dropped.push((from, cut));
+        rebuilt.rewind_on_cancel = self.rewind_on_cancel;
+        rebuilt.last = self.last.take();
+        rebuilt.mana_run = Some(crate::mana_undo::without(&run, index));
+        *self = rebuilt;
+        Ok(self.events[from..].to_vec())
+    }
+
     /// Where the mana abilities `player` activated just before the cast they back out of begin, when the log can be cut
     /// back to there: nothing hidden or random came of them.
     fn mana_run_to_undo(&self, player: PlayerId) -> Option<usize> {
         if !self.rewind_on_cancel {
             return None;
         }
-        let run = self.mana_run.filter(|run| run.player == player)?;
+        let run = self.mana_run.as_ref().filter(|run| run.player == player)?;
         let casting = self.pending.as_ref().is_some_and(|pending| {
             pending.player == player && matches!(pending.what, What::Spell(_) | What::Ability(_))
         });
@@ -476,7 +540,7 @@ impl Engine {
             paused: self.paused.clone(),
             held: self.held.clone(),
             last: self.last.clone(),
-            mana_run: self.mana_run,
+            mana_run: self.mana_run.clone(),
             rewinds: self.dropped.len(),
         }
     }

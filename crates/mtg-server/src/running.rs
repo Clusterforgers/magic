@@ -424,7 +424,7 @@ impl Running {
 
     /// [`settle`](Running::settle) outside the opening: the engine's one decision.
     fn settle_one(&mut self, keep_unchanged: bool, halt: Halt) -> Option<Issued> {
-        let Some(decision) = self.engine.decision().cloned() else {
+        let Some(decision) = self.engine.offered_decision() else {
             self.pending = None;
             return None;
         };

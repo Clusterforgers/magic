@@ -80,11 +80,23 @@ pub(crate) struct LastAction {
     pub(crate) rng: u64,
 }
 
-/// A run of mana abilities a player activated at priority: where it begins in the log and the generator's position.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+/// A run of mana abilities a player activated at priority: where it begins in the log, the generator's position there
+/// and each activation, which `mana_undo.rs` may undo.
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) struct ManaRun {
     pub(crate) player: PlayerId,
     pub(crate) from: usize,
+    pub(crate) rng: u64,
+    pub(crate) taps: Vec<ManaTap>,
+}
+
+/// One mana ability of a run: its source, where its events begin and end in the log, and the generator's position
+/// before it.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) struct ManaTap {
+    pub(crate) source: ObjectId,
+    pub(crate) from: usize,
+    pub(crate) to: usize,
     pub(crate) rng: u64,
 }
 
@@ -132,7 +144,7 @@ fn mana_only(events: &[Event], player: PlayerId) -> bool {
 pub(crate) fn next_last(
     last: Option<LastAction>,
     state: &GameState,
-    run: Option<ManaRun>,
+    run: Option<&ManaRun>,
     step: &StepFacts<'_>,
 ) -> Option<LastAction> {
     if let Some((kind, object)) = action_of(step.events, step.player) {
@@ -185,14 +197,29 @@ pub(crate) fn next_run(run: Option<ManaRun>, step: &StepFacts<'_>) -> Option<Man
     if !(step.priority && mana_only(step.events, step.player)) {
         return None;
     }
-    Some(
-        run.filter(|run| run.player == step.player)
-            .unwrap_or(ManaRun {
-                player: step.player,
-                from: step.mark,
-                rng: step.rng,
-            }),
-    )
+    let mut run = run
+        .filter(|run| run.player == step.player)
+        .unwrap_or(ManaRun {
+            player: step.player,
+            from: step.mark,
+            rng: step.rng,
+            taps: Vec::new(),
+        });
+    let source = step.events.iter().find_map(|event| match event {
+        Event::ManaAbilityActivated { player, source, .. } if *player == step.player => {
+            Some(source.id)
+        }
+        _ => None,
+    });
+    if let Some(source) = source {
+        run.taps.push(ManaTap {
+            source,
+            from: step.mark,
+            to: step.mark + step.events.len(),
+            rng: step.rng,
+        });
+    }
+    Some(run)
 }
 
 /// Why the events since an action keep it from being undone for `player`, if anything does; `rng` is the generator's
@@ -294,6 +321,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::StepAdded { .. }
         | Event::NothingToDo { .. }
         | Event::AnnouncementRewound { .. }
+        | Event::ManaUndone { .. }
         | Event::PriorityGranted { .. }
         | Event::PriorityPassed { .. }
         | Event::LandPlayed { .. }

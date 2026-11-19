@@ -251,6 +251,14 @@ pub enum Event {
         /// The card cast or played, or the source of the ability.
         name: String,
     },
+    /// A player undid a mana ability they had just activated at priority, its mana unspent (`mana_undo.rs`): a note
+    /// after the log was cut back to before it; the state is as if it never happened.
+    ManaUndone {
+        /// Who undid it.
+        player: PlayerId,
+        /// The source, untapped again.
+        source: ObjectId,
+    },
     /// A priority round started with this player.
     PriorityGranted {
         /// Who has priority.
@@ -1685,6 +1693,7 @@ impl Event {
             | Event::NothingToDo { .. }
             | Event::AnnouncementRewound { .. }
             | Event::TookBack { .. }
+            | Event::ManaUndone { .. }
             | Event::DayNightChanged { .. }
             | Event::MonarchChanged { .. }
             | Event::CitysBlessingGained { .. }

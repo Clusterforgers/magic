@@ -11,6 +11,7 @@ import { AbilityChooser } from '../AbilityChooser'
 import { abilityPlays, activationNotes, blockedPlays, mergeNotes, playsOf } from '../activations'
 import type { Play } from '../activations'
 import { markCards, NO_NOTES, useCardMarks, useCardNotes } from '../marks'
+import { undoableSources, undoNotes } from '../manaUndo'
 import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { PassControls } from '../PassControls'
@@ -31,7 +32,8 @@ const elementOf = (id: ObjectId, from: HTMLElement | undefined): HTMLElement | n
 /**
  * Priority: lands you may play, spells you may cast, mana abilities you may use and abilities you may activate (on a
  * permanent, or on a card of your graveyard, exile or command zone) are legal, the rest of your hand and battlefield
- * is dimmed. A click plays, casts, taps or activates; a card with an ability (or a mana ability of the hand) and another
+ * is dimmed. A click plays, casts, taps or activates, and a second press on a source tapped for mana just now untaps it
+ * (`PriorityOptions.undo_mana`; one that cannot be says why on its foot); a card with an ability (or a mana ability of the hand) and another
  * play asks which first, and a permanent with several mana abilities and nothing else asks which mana.
  */
 export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
@@ -45,6 +47,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   const objectsById = usePlay((state) => state.objectsById)
   const mana = useMemo(() => manaByPermanent(options.mana_abilities), [options.mana_abilities])
   const abilities = useMemo(() => abilityPlays(options, objectsById, seat), [options, objectsById, seat])
+  const undoable = useMemo(() => undoableSources(options.undo_mana), [options.undo_mana])
   const ownSeat = view?.players.find((player) => player.seat === decision.player)
   const [choosing] = selection.ids
   const choices = choosing === undefined ? undefined : mana.get(choosing)
@@ -56,13 +59,18 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
     () =>
       markCards(
         own,
-        [...options.playable_lands, ...options.castable, ...mana.keys(), ...abilities.keys()],
+        [...options.playable_lands, ...options.castable, ...mana.keys(), ...abilities.keys(), ...undoable],
         choosing === undefined ? [] : [choosing],
       ),
-    [own, options.playable_lands, options.castable, mana, abilities, choosing],
+    [own, options.playable_lands, options.castable, mana, abilities, undoable, choosing],
   )
 
   const act = (id: ObjectId, from?: HTMLElement): void => {
+    // A source tapped for mana just now is pressed again: its mana ability is undone, as a payment's pressed source is.
+    if (undoable.includes(id)) {
+      answer({ Priority: { UndoMana: id } })
+      return
+    }
     // A card of the hand that makes mana and can be cast (a Spirit Guide) asks which, as a card with an ability does.
     const playable = options.castable.includes(id) || options.playable_lands.includes(id)
     if (abilities.has(id) || (playable && mana.has(id))) {
@@ -96,7 +104,11 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   useCardMarks(marks, act)
   const notes = useMemo<CardNotes>(() => {
     const hand = view === null ? NO_NOTES : handNotes(view, objectsById, options)
-    return mergeNotes(new Map([...inactiveNotes(objectsById, options), ...hand]), activationNotes(abilities))
+    const merged = mergeNotes(
+      new Map([...inactiveNotes(objectsById, options), ...hand]),
+      activationNotes(abilities),
+    )
+    return new Map([...merged, ...undoNotes(options.undo_mana, objectsById)])
   }, [view, objectsById, options, abilities])
   useCardNotes(notes)
 

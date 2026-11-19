@@ -405,6 +405,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::NothingToDo { .. }
         | Event::AnnouncementRewound { .. }
         | Event::TookBack { .. }
+        | Event::ManaUndone { .. }
         | Event::LoopDrawn { .. }
         | Event::LoopRepeated(_)
         | Event::LoopStopped { .. }

@@ -232,6 +232,15 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<InactiveAbility>>", optional))]
     pub inactive: Vec<InactiveAbility>,
+    /// The sources the holder tapped for mana since they last did anything else, each with why its activation cannot be
+    /// undone, if it cannot (`mana_undo.rs`); `PriorityAction::UndoMana` undoes one that can. Only
+    /// `Engine::offered_decision` fills it: `Engine::decision` leaves it empty, so a rebuilt engine asks the same.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<crate::mana_undo::ManaUndo>>", optional)
+    )]
+    pub undo_mana: Vec<crate::mana_undo::ManaUndo>,
     /// Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
     /// mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.
     pub can_act: bool,
@@ -939,6 +948,9 @@ pub enum PriorityAction {
     /// Ignore the effects of this source until end of turn (a special action): pay what it names (it must be offered in
     /// `PriorityOptions.ignorable`).
     IgnoreEffect(ObjectId),
+    /// Undo the mana ability this source was activated for, while its mana is unspent and it affected nothing else (it
+    /// must be offered in `PriorityOptions.undo_mana` with no refusal): the log is cut back to before it (`mana_undo.rs`).
+    UndoMana(ObjectId),
     /// Do something by hand for a card the engine does not run: a zone move, counters, life, a token and the like. Legal at
     /// any priority, checked against the state (`manual.rs`).
     Manual(ManualAction),

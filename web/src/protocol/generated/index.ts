@@ -242,6 +242,8 @@ export type { ManaPool } from "./ManaPool";
 export type { ManaSource } from "./ManaSource";
 export type { ManaSymbol } from "./ManaSymbol";
 export type { ManaType } from "./ManaType";
+export type { ManaUndo } from "./ManaUndo";
+export type { ManaUndoRefusal } from "./ManaUndoRefusal";
 export type { ManaWayView } from "./ManaWayView";
 export type { ManualAction } from "./ManualAction";
 export type { ManualClause } from "./ManualClause";
