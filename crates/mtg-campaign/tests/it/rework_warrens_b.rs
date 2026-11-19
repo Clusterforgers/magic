@@ -443,6 +443,7 @@ fn rot_hive_raises_a_creature_card_at_the_end_step(
 
 #[rstest]
 #[case::nontoken_only_at_i(1, (3, 3), (3, 3))]
+#[case::tokens_too_at_ii(2, (3, 3), (4, 4))]
 #[case::four_on_each_at_v(5, (6, 6), (7, 7))]
 fn coiled_growth_adds_counters_as_creatures_enter(
     #[case] level: u8,
