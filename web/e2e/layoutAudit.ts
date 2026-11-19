@@ -39,7 +39,7 @@ export const TEXT_FLOOR = 12
 
 /**
  * What the table scrolls or clips on purpose: the art of a card is a picture of a card, and the strip of opponents, the
- * chips of the stack, a line of the payment and the hand scroll inside their own box where the width is short (docs/ui-design.md, Table
+ * chips of the stack, a line of the payment, the hand and the opening hand scroll inside their own box where the width is short (docs/ui-design.md, Table
  * layout).
  */
 export const TABLE_EXEMPT = [
@@ -48,6 +48,12 @@ export const TABLE_EXEMPT = [
   '[data-slot="stack-chips"] ol',
   '[data-slot="payment"] [data-line]',
   '[data-slot="hand-fan"]',
+  // A cramped seat column keeps one line of chips that scrolls sideways under its corner (`SeatPanel`).
+  '[data-slot="pod-more"]',
+  // A grid's two-line pod keeps its figures to one row that scrolls sideways (`SeatPanel` `oneRow`).
+  '[data-slot="pod-figures"]',
+  // On a phone the opening hand is a row in the band that scrolls past seven cards of 3 rem (`OpeningHand`).
+  '[data-slot="opening-hand"]',
 ]
 
 /** A size as the tables print it: `1280x720`. */
@@ -148,7 +154,8 @@ export function measure(ask: Ask): Look {
     const style = getComputedStyle(element)
     const outer = clipOf(element, style)
     let span = outer
-    if (clipping.has(style.overflowX)) {
+    // A box drawn as its children only (`display: contents`) has no box of its own to clip them to.
+    if (clipping.has(style.overflowX) && style.display !== 'contents') {
       const { left, right } = element.getBoundingClientRect()
       span = { left: Math.max(outer.left, left), right: Math.min(outer.right, right) }
     }

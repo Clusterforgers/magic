@@ -227,6 +227,25 @@ pub struct Hero {
 }
 
 impl Hero {
+    /// Whether a copy of `card` is still in their deck: its library names the card more often than they gave it up. A
+    /// deck whose library names were not kept holds any card; no deck holds none.
+    fn deck_holds(&self, card: &str) -> bool {
+        let Some(deck) = self.deck.as_ref() else {
+            return false;
+        };
+        let Some(library) = deck
+            .makeup
+            .as_ref()
+            .map(|makeup| &makeup.library)
+            .filter(|library| !library.is_empty())
+        else {
+            return true;
+        };
+        let given = self.lost.iter().filter(|lost| *lost == card).count();
+        let copies = library.get(card).copied().unwrap_or(0);
+        usize::try_from(copies).unwrap_or(usize::MAX) > given
+    }
+
     /// Their life cap: the base life plus their relics' bonus, moved by events.
     pub fn max_life(&self, content: &Content) -> i32 {
         LIFE + self.life_cap
@@ -1470,8 +1489,10 @@ impl Run {
                 // A Satchel card goes first; else a copy leaves the deck for the rest of the run.
                 if let Some(at) = h.satchel.iter().position(|c| *c == card) {
                     h.satchel.remove(at);
-                } else {
+                } else if h.deck_holds(&card) {
                     h.lost.push(card.clone());
+                } else {
+                    return Err(refused("that card is not in your deck or Satchel"));
                 }
                 said = format!("gave up the card {card}");
             }

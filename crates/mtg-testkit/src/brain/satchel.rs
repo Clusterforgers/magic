@@ -1,6 +1,5 @@
 //! When a boss's bot casts its Satchel (`mtg_engine::satchel`): each card waits for its cue ([`SatchelCue`]), read from
-//! the campaign content ([`install`]) or, for a card the content gives none, from [`builtin`]; the bot casts a card as
-//! its cue holds and holds it otherwise. A reusable card's tax is weighed against what it costs and against the hand.
+//! the campaign content ([`install`]); the bot casts a card as its cue holds and holds it otherwise. A reusable card's tax is weighed against what it costs and against the hand.
 
 use std::collections::BTreeMap;
 use std::sync::OnceLock;
@@ -25,29 +24,9 @@ pub fn install(cues: BTreeMap<String, SatchelCue>) -> bool {
     INSTALLED.set(cues).is_ok()
 }
 
-/// The cue of the Satchel card named `name`: the content's, else the built-in one.
+/// The cue the content gives the Satchel card named `name`.
 pub fn cue_of(name: &str) -> Option<SatchelCue> {
-    INSTALLED
-        .get()
-        .and_then(|cues| cues.get(name).copied())
-        .or_else(|| builtin(name))
-}
-
-/// The cues of the Drowned Spire's Satchel cards, which its content does not give yet.
-pub fn builtin(name: &str) -> Option<SatchelCue> {
-    use SatchelCue as C;
-    Some(match name {
-        "Entrancing Melody" => C::Eyed { creature: true },
-        "Extract from Darkness" | "Reanimate" => C::Graveyard { creatures: 1 },
-        "Sudden Spoiling" | "Aetherize" => C::Combat,
-        "Memory Plunder" | "Grapple with the Past" => C::HeroesEnd { mana: 0 },
-        "Spelltwine" => C::Mana { mana: 6 },
-        "Rise of the Dark Realms" => C::Mana { mana: 9 },
-        "Octopus Umbra" => C::Board { creatures: 1 },
-        "Sleep" => C::Lethal { reach: 0 },
-        "Crush of Tentacles" => C::BehindOnBoard { power: 1 },
-        _ => return None,
-    })
+    INSTALLED.get().and_then(|cues| cues.get(name).copied())
 }
 
 /// Whether `cue` holds for the seat of `seen` now.

@@ -79,6 +79,19 @@ export const foldsLands = (seats: SeatPlan, fold: boolean, phone = false): boole
 export const crowdFoldsLands = (seats: SeatPlan): boolean =>
   seats.shape === 'columns' && seats.boards.length > seats.columns
 
+/** The least height of a grid's frame that holds a pod wrapped over several lines and a row of the board's cards. */
+export const WRAPPED_POD_FRAME_PX = 260
+
+/**
+ * Whether the pods of a grid of opponents keep to two lines (`SeatPanel`'s `oneRow`): a crowded grid, and any grid
+ * whose frames, `height` px of rows together, are too low for a wrapped pod over a row of cards (a short window).
+ */
+export function gridPodsOneRow(seats: SeatPlan, playing: number, height: number | null): boolean {
+  if (crowdFoldsLands(seats)) return true
+  const rows = Math.ceil(Math.max(1, playing) / Math.max(1, seats.columns))
+  return height !== null && height / rows < WRAPPED_POD_FRAME_PX
+}
+
 /** The most of a prompt sheet's overhang the split keeps free above the strip: two lines of a prompt. */
 export const SHEET_RESERVE_MAX_PX = 64
 

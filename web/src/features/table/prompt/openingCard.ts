@@ -1,8 +1,8 @@
 /** The card width of the floating opening hand (boss mode): one row in the overlay's room. */
 
-/** The widest and narrowest card of the floating opening hand in px. */
+/** The widest and narrowest card of the floating opening hand in px: seven of the narrowest fit a tablet's room in one row. */
 export const OPENING_CARD_MOST_PX = 180
-export const OPENING_CARD_LEAST_PX = 96
+export const OPENING_CARD_LEAST_PX = 64
 /** The share of the overlay's width and height the row may use, and the gap between cards in px. */
 const OPENING_WIDTH_SHARE = 0.88
 const OPENING_HEIGHT_SHARE = 0.5

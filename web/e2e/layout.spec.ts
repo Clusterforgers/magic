@@ -1,4 +1,4 @@
-// Goal: the layout gate. Every page that needs no account (Play, Create, a lobby, an invite link, sign-in, register, the game-over screen) and the development routes that stand for the pages that do (the table, a lobby, the builder, the precons, the cards to check; those of a deck on reads and one with drafts waiting are also screenshotted at 390x844 and 1440x900) keep the layout rules in Chromium at the six sizes of docs/ui-design.md (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768, 390x844) and 1600x1000, 1400x900, 768x1024 and 360x740, down and back up, in the light and the dark theme: the page never scrolls sideways, no element is cut off sideways by the window or a box that clips it, no text is under 12 px, every primary action is in the window and not covered, and a page meant to fit the window never scrolls down. Under a prompt sheet every opponent's battlefield keeps a row in view at the short sizes. Decks, My games and the builder with a real deck need Postgres and are held by accounts.spec.ts.
+// Goal: the layout gate. Every page that needs no account (Play, Create, a lobby, an invite link, sign-in, register, the game-over screen) and the development routes that stand for the pages that do (the table, a lobby, the builder, the precons, the cards to check; those of a deck on reads and one with drafts waiting are also screenshotted at 390x844 and 1440x900) keep the layout rules in Chromium at the six sizes of docs/ui-design.md (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768, 390x844) and 1600x1000, 1400x900, 768x1024 and 360x740, down and back up, in the light and the dark theme: the page never scrolls sideways, no element is cut off sideways by the window or a box that clips it (one drawn as its children only clips nothing), no text is under 12 px, every primary action is in the window and not covered, and a page meant to fit the window never scrolls down. Under a prompt sheet every opponent's battlefield keeps a row in view at the short sizes. Decks, My games and the builder with a real deck need Postgres and are held by accounts.spec.ts.
 import { expect, test } from '@playwright/test'
 import type { APIRequestContext, BrowserContext, Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
@@ -65,8 +65,24 @@ async function signedOut(context: BrowserContext): Promise<void> {
   )
 }
 
-/** The development table at a moment of a game: the hand and your life are always in view, and so is `primary`. */
-function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prompt' | null): Stop {
+/** Folds the decision sheet over the hand where one is open, as its grab handle does. */
+async function foldSheet(page: Page): Promise<void> {
+  const handle = page.locator('[data-slot="sheet-grab"][aria-expanded="true"]')
+  if (await handle.isVisible()) await handle.click()
+}
+
+/**
+ * The development table at a moment of a game: the hand and your life are always in view, and so is `primary`. Where a
+ * decision's detail stands in the sheet over the hand (no side column), the sheet covers them by design
+ * (docs/ui-design.md, Sheet): they are judged with the sheet folded, and a stop with `sheet: 'open'` judges the open
+ * sheet with the answers alone.
+ */
+function tableStop(
+  name: string,
+  query: string,
+  primary: 'pass' | 'keep' | 'prompt' | null,
+  sheet: 'folded' | 'open' = 'folded',
+): Stop {
   const main = '[data-region="controls"] [data-slot="primary-action"]'
   return {
     name,
@@ -75,10 +91,20 @@ function tableStop(name: string, query: string, primary: 'pass' | 'keep' | 'prom
       ...(primary === 'pass' ? { 'pass button': main } : {}),
       ...(primary === 'keep' ? { Keep: '[data-decision="Mulligan"] button' } : {}),
       ...(primary === 'prompt' ? { 'prompt button': '[data-slot="prompt-actions"] button' } : {}),
-      // The first card of the front row lies over no other card and is in view where the line scrolls.
-      hand: '[data-region="hand"] [data-slot="hand-slot"]:not([data-back]) button[data-object-id]',
-      life: '[data-you] [data-slot="life"]',
+      ...(sheet === 'open'
+        ? {}
+        : {
+            // The first card of the front row lies over no other card and is in view where the line scrolls; under a
+            // decision sheet, even folded, the way to it is the sheet's handle. The opening hand is judged where it is
+            // drawn: in the band on a phone, in the centre overlay elsewhere.
+            hand:
+              primary === 'keep'
+                ? '[data-slot="opening-hand"] [data-slot="opening-card"]'
+                : ':root:not(:has([data-slot="decision-sheet"])) [data-region="hand"] [data-slot="hand-slot"]:not([data-back]) button[data-object-id], [data-slot="sheet-grab"]',
+            life: '[data-you] [data-slot="life"]',
+          }),
     },
+    ...(sheet === 'folded' ? { afterResize: foldSheet } : {}),
     exempt: TABLE_EXEMPT,
     async open(page) {
       await page.goto(`${DEV_WEB_URL}/dev/table?${query}`)
@@ -120,8 +146,10 @@ const STOPS: readonly Stop[] = [
   },
   {
     name: 'Create a game',
-    // A form on a phone scrolls; its button is reached by scrolling.
-    fitsFrom: 640,
+    // The form scrolls where its fields pass the window (docs/ui-design.md holds only the table to the window); its
+    // footer sticks to the window's bottom, so Create game is in view at every size without a scroll.
+    fitsFrom: Infinity,
+    pinned: true,
     actions: { 'Create game': 'main form button[type="submit"]' },
     async open(page) {
       await page.goto('/new')
@@ -131,6 +159,7 @@ const STOPS: readonly Stop[] = [
   {
     name: 'Create a game, with Advanced open',
     fitsFrom: Infinity,
+    pinned: true,
     actions: { 'Create game': 'main form button[type="submit"]' },
     async open(page) {
       await page.goto('/new')
@@ -141,6 +170,7 @@ const STOPS: readonly Stop[] = [
   {
     name: 'Create a game, with House rules open',
     fitsFrom: Infinity,
+    pinned: true,
     actions: { 'Create game': 'main form button[type="submit"]' },
     async open(page) {
       await page.goto('/new')
@@ -228,7 +258,19 @@ const STOPS: readonly Stop[] = [
     'seats=4&prompt=commander-return&turn=you',
     'prompt',
   ),
+  tableStop(
+    'The table (dev), 4 seats, returning a commander, the decision sheet open',
+    'seats=4&prompt=commander-return&turn=you',
+    'prompt',
+    'open',
+  ),
   tableStop('The table (dev), 6 seats, paying a cost', 'seats=6&prompt=pay', null),
+  tableStop(
+    'The table (dev), 6 seats, paying a cost, the decision sheet open',
+    'seats=6&prompt=pay',
+    'prompt',
+    'open',
+  ),
   tableStop('The table (dev), 12 seats, in focus mode', 'seats=12&prompt=priority&turn=you', 'pass'),
   tableStop('The table (dev), the Commands panel after a look at the top', 'panel=top', 'pass'),
   tableStop('The table (dev), the Commands panel with a card picked', 'panel=card', 'pass'),
@@ -465,6 +507,7 @@ test.describe('the gate itself', () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.setContent(`<!doctype html><html><body style="margin:0"><main>
       <div style="width:300px;overflow:hidden"><button style="margin-left:250px;width:120px">Clipped</button></div>
+      <div style="display:contents;overflow-x:auto"><button style="width:200px">Drawn as its children</button></div>
       <div style="width:500px;height:10px"></div>
       <p style="font-size:9px">Tiny</p>
       <section data-battlefield-seat="1"><div data-slot="battlefield-zone" style="height:60px">
@@ -527,6 +570,8 @@ test('the game-over screen of a real game keeps the layout rules at every size i
     const rules: Rules = {
       fitsFrom: 0,
       actions: { 'Create another game': 'main a[href="/new"]', 'Back to Play': 'main a[href="/"]' },
+      // The winner's burst is decoration that flies past the window's edge from a phone's gutter.
+      exempt: ['[aria-hidden="true"]:has(> [data-slot="win-piece"])'],
     }
     // The page follows the system's scheme while the choice is the system's, so the scheme is switched in place.
     for (const theme of THEMES) {
