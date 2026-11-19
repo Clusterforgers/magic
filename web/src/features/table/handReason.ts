@@ -13,7 +13,7 @@ import { whyLine } from './whyWords'
 export type { Unplayable }
 
 /** A reason the hand shows: one the server or the guess gives, or `Unknown` when neither knows. */
-export type HandReason = Unplayable | 'Unknown'
+export type HandReason = Unplayable | 'Unknown' | 'Lesson'
 
 /** The short label on the card's foot and the line of the preview, for each reason. */
 export const REASON_WORDS: Readonly<Record<HandReason, { label: string; line: string }>> = {
@@ -24,6 +24,7 @@ export const REASON_WORDS: Readonly<Record<HandReason, { label: string; line: st
   Cost: { label: "Can't pay", line: 'A cost cannot be paid' },
   Restricted: { label: 'Not allowed', line: 'An effect forbids it now' },
   Unknown: { label: 'Not now', line: 'Not playable now' },
+  Lesson: { label: 'Later', line: 'Not in this step of the lesson' },
 }
 
 /** Every card the offer lets the holder play or use now. */
@@ -148,8 +149,9 @@ const costOf = (cost: ManaCost | null): number => (cost === null ? 0 : manaValue
 export function unplayableReason(
   object: ObjectView,
   view: StateView,
-  options: PriorityOptions,
+  options: PriorityOptions & { held?: readonly number[] },
 ): HandReason | null {
+  if (options.held?.includes(object.id) === true) return 'Lesson'
   if (offered(options).has(object.id)) return null
   const told = options.unplayable?.find((entry) => entry.card === object.id)
   if (told !== undefined) return told.reason

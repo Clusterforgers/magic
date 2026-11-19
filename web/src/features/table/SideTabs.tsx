@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import {
   ChevronsRightIcon,
   HandIcon,
@@ -31,6 +32,12 @@ const TABS: ReadonlyArray<{ tab: SideTab; label: string; Icon: LucideIcon }> = [
   { tab: 'chat', label: 'Chat', Icon: MessageSquareIcon },
   { tab: 'stack', label: 'Stack', Icon: LayersIcon },
 ]
+
+/** The coach's anchor of a side tab: Log and Commands carry one. */
+function tabAnchor(tab: SideTab) {
+  if (tab === 'log') return anchor('side.tab.log')
+  return tab === 'commands' ? anchor('side.tab.commands') : {}
+}
 
 /** The side area's name for a seat, which has Commands, and for a viewer that is no seat. */
 export const SEATED_NAME = 'Commands, log, chat and stack'
@@ -115,6 +122,7 @@ function TabbedPanels({ listClassName }: { listClassName?: string }) {
           <TabsTrigger
             key={tab}
             value={tab}
+            {...tabAnchor(tab)}
             className="min-w-0 flex-auto gap-1 px-1"
             onClick={() => side.activate(tab)}
           >
@@ -158,6 +166,7 @@ function Rail() {
               <TabsTrigger
                 key={tab}
                 value={tab}
+                {...tabAnchor(tab)}
                 aria-label={count === 0 ? label : `${label}, ${countLabel(count)} ${COUNT_WORDS[tab]}`}
                 title={label}
                 className="relative size-11"
@@ -248,6 +257,7 @@ export function SideSheetButton({ compact = false }: { compact?: boolean }) {
       className="relative"
       aria-haspopup="dialog"
       aria-expanded={side.open}
+      {...anchor('side.open')}
       aria-label={waiting === 0 ? name : `${name}, ${countLabel(waiting)} new`}
       onClick={() => side.setOpen(!side.open)}
     >

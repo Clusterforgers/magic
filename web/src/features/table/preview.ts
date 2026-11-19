@@ -53,6 +53,16 @@ export interface PreviewStore {
   dismiss(): void
 }
 
+/** Whether a lesson holds the hover preview closed (a button is lit), and who hears when that changes. */
+const hold = { on: false, listeners: new Set<() => void>() }
+
+/** Holds the preview closed while `on` (a lesson step that is no look at a card), so it never covers what the coach lights. */
+export function holdPreview(on: boolean): void {
+  if (hold.on === on) return
+  hold.on = on
+  for (const listener of hold.listeners) listener()
+}
+
 /** A store with nothing shown. */
 export function createPreviewStore(): PreviewStore {
   let target: PreviewTarget | null = null
@@ -62,6 +72,9 @@ export function createPreviewStore(): PreviewStore {
     target = next
     for (const listener of listeners) listener()
   }
+  hold.listeners.add(() => {
+    if (hold.on && target !== null) set(null)
+  })
   return {
     get: () => target,
     subscribe(listener) {
@@ -71,13 +84,14 @@ export function createPreviewStore(): PreviewStore {
       }
     },
     show(id, anchor, shown) {
-      if (target?.pinned === true) return
+      if (target?.pinned === true || hold.on) return
       set({ id, anchor, pinned: false, ...(shown === undefined ? {} : { shown }) })
     },
     hide(id) {
       if (target !== null && !target.pinned && target.id === id) set(null)
     },
     pin(id, anchor, shown) {
+      if (hold.on) return
       set(
         target?.pinned === true && target.id === id
           ? null

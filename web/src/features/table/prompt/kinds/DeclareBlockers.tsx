@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Check, Shield } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
@@ -335,6 +336,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
       <BarButton
         icon={Check}
         label="Confirm blocks"
+        {...anchor('block.confirm')}
         word="Block"
         keepWord
         disabled={!ready}
@@ -344,6 +346,7 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
         variant="outline"
         icon={Shield}
         label="No blocks"
+        {...anchor('block.none')}
         word="No blocks"
         keepWord
         disabled={required.length > 0 || unserved.length > 0}

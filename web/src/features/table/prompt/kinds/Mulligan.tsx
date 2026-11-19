@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { RefObject } from 'react'
 import { createPortal } from 'react-dom'
@@ -60,13 +61,14 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
   const rest = usePanelRest(panel, host)
   const buttons = (
     <>
-      <Button className="h-10 px-4" onClick={() => answer({ Mulligan: 'Keep' })}>
+      <Button className="h-10 px-4" {...anchor('opening.keep')} onClick={() => answer({ Mulligan: 'Keep' })}>
         Keep
       </Button>
       <Button
         variant="outline"
         className="h-10 px-4"
         disabled={!options.can_mulligan}
+        {...anchor('opening.mulligan')}
         onClick={() => answer({ Mulligan: 'Mulligan' })}
       >
         Mulligan

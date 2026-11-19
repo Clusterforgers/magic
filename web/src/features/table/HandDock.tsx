@@ -1,3 +1,4 @@
+import { anchor, coachZone } from '@/features/learn/anchors'
 import { cn } from '@/lib/utils'
 import { memo, useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useGame, usePlay } from '@/features/game/gameContext'
@@ -163,6 +164,8 @@ export const HandDock = memo(function HandDock({
     <section
       aria-label="Your hand"
       data-region="hand"
+      {...anchor('hand')}
+      {...coachZone('hand')}
       data-keep-clear=""
       data-fx-anchor={`${seat}:hand`}
       className="dock flex min-h-0 min-w-0 items-center justify-center px-2 py-1"
@@ -184,6 +187,8 @@ export const HandDock = memo(function HandDock({
           // divider is this box's edge, so it must not follow the fan up into the battlefield.
           <div
             data-slot="hand-command"
+            {...anchor('command')}
+            {...coachZone('command')}
             className="flex h-full min-w-0 shrink-0 items-end border-r border-foreground/15 pr-1"
             style={layouts?.command?.scrolls === true ? { maxWidth: layouts.commandWidth } : undefined}
           >

@@ -4,6 +4,7 @@
  * (the table menu's "Show lands" turns every board). Folded, the board gives the lands' room to its creatures and other
  * permanents.
  */
+import { useSeatAnchor } from '@/features/learn/seatAnchors'
 import { ChevronDownIcon, ChevronRightIcon, MountainIcon } from 'lucide-react'
 import { useContext } from 'react'
 import { useShallow } from 'zustand/react/shallow'
@@ -24,6 +25,7 @@ export function LandSummary({
   owner: string
   density: ChipDensity
 }) {
+  const coach = useSeatAnchor(seat, 'lands-chip')
   const fold = useContext(LandFoldContext)
   const tally = usePlay(
     useShallow((state) => {
@@ -38,6 +40,7 @@ export function LandSummary({
     <button
       type="button"
       data-slot="land-summary"
+      {...coach}
       data-open={fold.open || undefined}
       aria-expanded={fold.open}
       aria-label={`${fold.open ? 'Hide' : 'Show'} ${owner}'s lands: ${words}`}

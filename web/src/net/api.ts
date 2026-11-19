@@ -169,8 +169,8 @@ export interface ApiOptions {
 export interface Api {
   /** `POST /api/games`: makes a game and returns each held seat's token and the join code. */
   createGame(request: CreateGameRequest): Promise<CreatedGame>
-  /** `POST /api/tutorial`: starts a tutorial game against the practice bot and returns the player's seat. */
-  startTutorial(): Promise<CreatedSeat & { game: string }>
+  /** `POST /api/tutorial`: starts lesson `lesson` against the practice bot and returns the player's seat. */
+  startTutorial(lesson: string): Promise<CreatedSeat & { game: string }>
   /** `GET /api/games/{id}`: the public facts about a game, its visibility included; never a token or a code. */
   getGame(id: string): Promise<GameInfo>
   /** `GET /api/demo-decks`: the built-in decks. */
@@ -359,7 +359,13 @@ export function createApi(options: ApiOptions = {}): Api {
         // The session cookie is what binds the creator's seat to their account.
         credentials: 'include',
       }),
-    startTutorial: () => call('/api/tutorial', readTutorial, { method: 'POST', credentials: 'include' }),
+    startTutorial: (lesson) =>
+      call('/api/tutorial', readTutorial, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lesson }),
+        credentials: 'include',
+      }),
     getGame: (id) => call(game(id), readGameInfo),
     listDecks: () => call('/api/demo-decks', readDecks),
     listLobbies: async (previous) => {

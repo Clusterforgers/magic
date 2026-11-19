@@ -1,3 +1,4 @@
+import { useSeatAnchor } from '@/features/learn/seatAnchors'
 import { Crosshair, GhostIcon } from 'lucide-react'
 import { memo, useContext, useRef } from 'react'
 import { BossBarContext } from './campaign/useBossAbilities'
@@ -158,6 +159,8 @@ export const SeatPanel = memo(function SeatPanel({
 }: SeatPanelProps) {
   const owner = useSeatNamer()(seat)
   const player = usePlay((state) => playerOf(state, seat))
+  const coach = useSeatAnchor(seat, 'pod')
+  const graveyardCoach = useSeatAnchor(seat, 'graveyard')
   const exile = usePlay(useShallow((state) => exileOf(state, seat)))
   const commanders = usePlay(useShallow((state) => commandCardsOf(state, seat)))
   const flags = usePlay(
@@ -211,6 +214,7 @@ export const SeatPanel = memo(function SeatPanel({
   // A seat whose client is gone; one that left the game for good is eliminated instead.
   const away = !eliminated && !player.connected
   const marks = {
+    ...coach,
     'aria-label': [
       flags.you ? `${owner} (you)` : owner,
       player.boss ? ', boss' : '',
@@ -365,7 +369,14 @@ export const SeatPanel = memo(function SeatPanel({
                 <CountChip zone="attractions" count={counts.attractions} density="line" />
               ) : null}
               {oneRow ? null : <LandSummary seat={seat} owner={owner} density="line" />}
-              <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" thumbs={!oneRow} />
+              <ZoneButton
+                zone="graveyard"
+                owner={owner}
+                ids={graveyard}
+                density="line"
+                thumbs={!oneRow}
+                coach={graveyardCoach}
+              />
               <ZoneButton zone="exile" owner={owner} ids={exile} density="line" thumbs={!oneRow} />
               {commanders.length > 0 ? (
                 <ZoneButton zone="command" owner={owner} ids={commanders} density="line" thumbs={!oneRow} />
@@ -518,6 +529,7 @@ export const SeatPanel = memo(function SeatPanel({
       </div>
       <SeatCorner
         owner={owner}
+        graveyardCoach={graveyardCoach}
         graveyard={graveyard}
         exile={exile}
         commanders={commanders}

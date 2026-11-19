@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { usePlay } from '@/features/game/gameContext'
@@ -90,6 +91,7 @@ export function PayMeter({ slots }: { slots: readonly PaySlot[] }) {
   return (
     <span
       data-slot="pay-meter"
+      {...anchor('pay.meter')}
       role="img"
       aria-label={`${paidCount(slots)} of ${slots.length} paid`}
       className="inline-flex items-center gap-1"
@@ -280,6 +282,10 @@ export function PayColumn({
 }: PayColumnProps) {
   const objects = usePlay((state) => state.objectsById)
   const groups = groupByMade(sources, nameOf)
+  const coachRow = groups
+    .flatMap((group) => group.rows)
+    .find((row) => row.ids.some((id) => !taken.includes(id)))
+    ?.ids.join('-')
   const paid = paidCount(slots)
   // A piece taken back by its circle leaves the keyboard on the next one; with none left, on the band's answers.
   const root = useRef<HTMLDivElement>(null)
@@ -367,6 +373,7 @@ export function PayColumn({
         )}
       </p>
       {children}
+      {/* The coach lights the Tap of the first row with a source still free (`pay.tap`). */}
       {groups.map((group) => (
         <div key={group.key} data-slot="pay-group" className="grid gap-1.5">
           <GroupLabel gives={group.gives} marks={group.marks} />
@@ -399,6 +406,7 @@ export function PayColumn({
                   onTap={onTap}
                   onSwap={onSwap}
                   onCancelAsk={onCancelAsk}
+                  coach={row.ids.join('-') === coachRow}
                   onUntap={() => {
                     const at = spends.findLastIndex(
                       (spend) => spend.kind === 'tap' && spend.option.source.object === last,
@@ -431,7 +439,10 @@ function SourceRow({
   onSwap,
   onCancelAsk,
   onUntap,
+  coach = false,
 }: {
+  /** Whether this row carries the coach's `pay.tap` anchor. */
+  coach?: boolean
   id: ObjectId
   object: ObjectView | undefined
   name: string
@@ -518,6 +529,7 @@ function SourceRow({
               ) : null}
               <button
                 ref={at === firstUsable ? first : undefined}
+                {...(coach && at === Math.max(firstUsable, 0) ? anchor('pay.tap') : {})}
                 type="button"
                 data-slot="pay-tap"
                 // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
