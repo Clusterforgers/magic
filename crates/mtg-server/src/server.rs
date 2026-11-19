@@ -493,6 +493,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/precons", get(precon_api::list))
         .route("/api/precons/{code}", get(precon_api::get_one))
         .route("/api/tutorial", post(tutorial::start))
+        .route("/api/tutorial/end", post(tutorial::end))
         .merge(game_routes())
         .merge(account_routes())
         .merge(delve_routes())

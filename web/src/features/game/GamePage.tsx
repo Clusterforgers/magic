@@ -296,7 +296,7 @@ function SeatedGame({
         <TableOptionsContext value={TUTORIAL_TABLE}>{screen}</TableOptionsContext>
       )}
       {lesson !== null && 'coach' in session && screen !== null && (state.phase === 'playing' || over) ? (
-        <LessonHost lesson={lesson} game={gameId} session={session} />
+        <LessonHost lesson={lesson} game={gameId} token={token} session={session} />
       ) : null}
     </GameContext>
   )

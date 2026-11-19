@@ -1,6 +1,6 @@
 import { createStore } from 'zustand/vanilla'
 import { fragmentOf, seatLinkPath } from '@/lib/seatLink'
-import type { Api } from '@/net/api'
+import type { Api, PracticeSeat } from '@/net/api'
 import { COURSE, isLessonId } from './course'
 import type { LessonId } from './step'
 
@@ -123,18 +123,57 @@ export function rememberTutorial(game: string, id: TutorialId): void {
   }
 }
 
+/** The `sessionStorage` key of this tab's practice game: the one a new lesson replaces. */
+export const PRACTICE_KEY = 'practice:seat'
+
+/** This tab's practice game, or undefined when it has none or left it. */
+export function practiceSeat(): PracticeSeat | undefined {
+  try {
+    const value: unknown = JSON.parse(window.sessionStorage.getItem(PRACTICE_KEY) ?? 'null')
+    if (typeof value !== 'object' || value === null) return undefined
+    const { game, token } = value as Record<string, unknown>
+    return typeof game === 'string' && typeof token === 'string' ? { game, token } : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function rememberPractice(seat: PracticeSeat | null): void {
+  try {
+    if (seat === null) window.sessionStorage.removeItem(PRACTICE_KEY)
+    else window.sessionStorage.setItem(PRACTICE_KEY, JSON.stringify(seat))
+  } catch {
+    // Storage refused: the server still ends the game a while after the learner left it.
+  }
+}
+
+/**
+ * Ends the practice game `seat` now (the learner left the lesson), so it neither runs on nor shows among the live
+ * games; a failure is left to the server, which ends a game its learner left after a short grace.
+ */
+export async function leaveLesson(api: Pick<Api, 'endTutorial'>, seat: PracticeSeat): Promise<void> {
+  if (practiceSeat()?.game === seat.game) rememberPractice(null)
+  await api.endTutorial(seat)
+}
+
 /** Where a started lesson opens: the game's page with the seat link in the fragment. */
 export interface LessonStart {
   game: string
   hash: string
 }
 
-/** Starts tutorial `id` on a new table (a lesson, or the manual-panel lesson) and says where it opens. */
+/**
+ * Starts tutorial `id` on a new table (a lesson, or the manual-panel lesson) and says where it opens. The tab's earlier
+ * practice game ends with it, so a learner has one at a time.
+ */
 export async function startLesson(
   api: Pick<Api, 'startTutorial'>,
   id: LessonId | 'manual',
 ): Promise<LessonStart> {
-  const seat = await api.startTutorial(isLessonId(id) ? id : MANUAL_TABLE)
+  const table = isLessonId(id) ? id : MANUAL_TABLE
+  const replaces = practiceSeat()
+  const seat = await (replaces === undefined ? api.startTutorial(table) : api.startTutorial(table, replaces))
+  rememberPractice({ game: seat.game, token: seat.token })
   rememberTutorial(seat.game, id)
   return { game: seat.game, hash: fragmentOf(seatLinkPath(seat.game, seat.seat, seat.token)) }
 }

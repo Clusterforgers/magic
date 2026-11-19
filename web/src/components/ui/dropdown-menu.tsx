@@ -16,16 +16,20 @@ function DropdownMenuContent({
   side = "bottom",
   sideOffset = 4,
   className,
+  layer,
   ...props
 }: MenuPrimitive.Popup.Props &
   Pick<
     MenuPrimitive.Positioner.Props,
     "align" | "alignOffset" | "side" | "sideOffset"
-  >) {
+  > & {
+    /** The positioner's stacking class in place of `z-50`, for a menu over a higher layer (the Learn coach). */
+    layer?: string
+  }) {
   return (
     <MenuPrimitive.Portal>
       <MenuPrimitive.Positioner
-        className="isolate z-50"
+        className={cn("isolate", layer ?? "z-50")}
         align={align}
         alignOffset={alignOffset}
         side={side}
