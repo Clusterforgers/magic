@@ -92,7 +92,7 @@ impl Pass<'_> {
         let cause = self.w5d_cause(at, unit);
         // A draw sees the draws and replacements before it (CR 121.6); simultaneous events take apart.
         let taken = if matches!(unit, Unit::Draw { .. }) {
-            self.lg1_libraries_before(at)
+            self.lg1_before_draw(at)
         } else {
             self.taken_by_the_batch(at)
         };
