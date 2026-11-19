@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { BookOpen, Crosshair, Play, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { usePlay } from '@/features/game/gameContext'
@@ -172,6 +173,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
     <div
       role="group"
       aria-label="Card preview"
+      {...anchor('preview')}
       ref={panel}
       data-testid="card-preview"
       data-dock={dock}
@@ -299,7 +301,9 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
               <dt className="font-semibold">
                 Keywords<span className="sr-only">: </span>
               </dt>
-              <dd data-slot="preview-keywords">{keywords}</dd>
+              <dd data-slot="preview-keywords" {...anchor('preview.keywords')}>
+                {keywords}
+              </dd>
             </>
           )}
           {object.lights === undefined || object.lights.length === 0 ? null : (

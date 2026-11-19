@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useId, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
@@ -168,6 +169,7 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
     <section
       aria-label="Commands"
       data-slot="commands-panel"
+      {...anchor('commands')}
       className="grid h-full min-h-0 content-start gap-1 overflow-y-auto overscroll-contain pr-1"
     >
       <PanelClock />

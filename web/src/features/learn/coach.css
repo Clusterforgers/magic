@@ -1,0 +1,129 @@
+/* The Learn coach: the ring round a lit part, the pointer that bobs toward it, the card's shake and its done tick. */
+
+.coach-ring {
+  border: 3px solid var(--coach);
+  box-shadow:
+    0 0 0 2px var(--surface),
+    0 0 18px 2px color-mix(in oklab, var(--coach) 55%, transparent);
+}
+
+.coach-card {
+  border-top: 4px solid var(--coach);
+}
+
+.coach-pill {
+  background: color-mix(in oklab, var(--coach) 16%, var(--surface));
+  color: color-mix(in oklab, var(--coach) 80%, var(--foreground));
+}
+
+.coach-refused {
+  background: color-mix(in oklab, var(--destructive) 12%, var(--surface));
+  color: var(--destructive);
+}
+
+.coach-dot {
+  background: var(--border-strong);
+}
+
+.coach-dot[data-done] {
+  background: var(--coach);
+}
+
+.coach-dot[data-current] {
+  background: var(--coach);
+  width: 0.875rem;
+}
+
+.coach-pointer {
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid var(--coach);
+}
+
+.coach-pointer[data-side='below'] {
+  transform: rotate(180deg);
+}
+
+.coach-card[data-shake] {
+  outline: 2px solid var(--destructive);
+}
+
+.coach-card[data-done] {
+  outline: 2px solid var(--success);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .coach-ring {
+    animation: coach-pulse 700ms var(--ease-out, ease-out) 2;
+  }
+
+  .coach-pointer {
+    animation: coach-bob 1200ms ease-in-out infinite;
+  }
+
+  .coach-pointer[data-side='below'] {
+    animation-name: coach-bob-up;
+  }
+
+  .coach-card {
+    transition:
+      left 220ms ease-out,
+      top 220ms ease-out;
+  }
+
+  .coach-card[data-shake] {
+    outline: none;
+    animation: coach-shake 360ms ease-out 1;
+  }
+}
+
+@keyframes coach-pulse {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes coach-bob {
+  0%,
+  100% {
+    translate: 0 -4px;
+  }
+  50% {
+    translate: 0 2px;
+  }
+}
+
+@keyframes coach-bob-up {
+  0%,
+  100% {
+    translate: 0 4px;
+  }
+  50% {
+    translate: 0 -2px;
+  }
+}
+
+@keyframes coach-shake {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  20% {
+    translate: -6px 0;
+  }
+  40% {
+    translate: 5px 0;
+  }
+  60% {
+    translate: -3px 0;
+  }
+  80% {
+    translate: 2px 0;
+  }
+}

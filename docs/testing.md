@@ -41,6 +41,7 @@ End-to-end suites of the game modes, in `crates/mtg-server/tests/it/` unless nam
 | Bot tables at every level, free-for-all and in teams | `bot_seats.rs`, `pg_bot_seats.rs` |
 | Tournaments: sign-up, pairings, match games, results from played games, corrections, byes, drops, tiebreakers, elimination, team matches | `pg_tournaments.rs`, `src/tournaments/pairing.rs` |
 | Spectators, reconnects, replays, house rules and handicaps, the tutorial | `pg_spectators.rs`, `reconnect.rs`, `ws_games.rs`, `pg_replay.rs`, `house_rules.rs`, `tutorial.rs` |
+| The Learn course: every lesson played by its script with the traces the web lessons are tested on (server); the steps over the traces, the gate and the placement (vitest); every lesson walked by pressing what is lit, at 1920 × 1080, 1366 × 768 and a 390 × 844 phone (Playwright) | `tutorial.rs`; `web/src/features/learn/*.test.ts`; `web/e2e/learn-course.spec.ts`, `web/e2e/learn-anchors.spec.ts` |
 | Browser flows on the accounts server (`E2E_DATABASE_URL`): a tournament, watching and replays, a Delves run from its lobby through the first boss fight to the loot | `web/e2e/tournaments.spec.ts`, `web/e2e/watch-replay.spec.ts`, `web/e2e/delves.spec.ts` |
 
 A test that waits for another piece of work is `#[ignore = "<piece>"]` and runs with `--include-ignored` once it lands.

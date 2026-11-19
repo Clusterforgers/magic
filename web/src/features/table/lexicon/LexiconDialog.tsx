@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useRef } from 'react'
 import { useStore } from 'zustand'
 import { Button } from '@/components/ui/button'
@@ -59,6 +60,8 @@ export function LexiconDialog() {
     <Dialog open={open} onOpenChange={setLexiconOpen} modal={!held}>
       <DialogContent
         data-slot="lexicon"
+        {...anchor('lexicon')}
+        closeProps={anchor('lexicon.close')}
         className="h-[min(85dvh,52rem)] max-w-2xl grid-rows-[auto_auto_auto_minmax(0,1fr)] gap-3 overflow-hidden p-4 sm:p-6"
       >
         <div className="grid gap-1">

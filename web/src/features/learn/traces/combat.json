@@ -1,0 +1,679 @@
+[
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main1"
+        },
+        {
+          "side": "Own",
+          "step": "DeclareAttackers"
+        },
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        },
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 8,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Attack",
+    "cards": ["Grizzly Bears"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": "DeclareAttackers",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main1"
+        },
+        {
+          "side": "Own",
+          "step": "DeclareAttackers"
+        },
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        },
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 8,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 1,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main1"
+        },
+        {
+          "side": "Own",
+          "step": "DeclareAttackers"
+        },
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        },
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 8,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main1"
+        },
+        {
+          "side": "Own",
+          "step": "DeclareAttackers"
+        },
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        },
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 6,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Block",
+    "cards": ["Serra Angel", "Dregscape Zombie"],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": "DeclareBlockers",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main1"
+        },
+        {
+          "side": "Own",
+          "step": "DeclareAttackers"
+        },
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        },
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 6,
+      "turn": 6,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 38,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main1"
+        },
+        {
+          "side": "Own",
+          "step": "DeclareAttackers"
+        },
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 6,
+      "turn": 7,
+      "won": false
+    }
+  },
+  {
+    "act": "Attack",
+    "cards": ["Grizzly Bears", "Serra Angel"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": "DeclareAttackers",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 38,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main1"
+        },
+        {
+          "side": "Own",
+          "step": "DeclareAttackers"
+        },
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 6,
+      "turn": 7,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 2,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 38,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main1"
+        },
+        {
+          "side": "Own",
+          "step": "DeclareAttackers"
+        },
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 6,
+      "turn": 7,
+      "won": false
+    }
+  },
+  {
+    "act": null,
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 25,
+          "name": "Serra Angel"
+        }
+      ],
+      "decision": null,
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        }
+      ],
+      "life": 38,
+      "mine": true,
+      "over": true,
+      "stack": [],
+      "step": "CombatDamage",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [
+        {
+          "id": 48,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 0,
+      "turn": 7,
+      "won": true
+    }
+  }
+]

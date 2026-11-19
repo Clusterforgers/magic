@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useContext, useEffect, useId, useMemo, useRef, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
@@ -461,6 +462,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         ref={confirmRef}
         className="h-10 px-4"
         data-slot="pay-confirm"
+        {...anchor('pay.confirm')}
         aria-label="Confirm payment"
         disabled={!covered}
         onClick={() => answer({ PayMana: { Manual: toPayment(spends, life) } })}
@@ -472,6 +474,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           className="h-10 px-4"
           variant="outline"
           data-slot="pay-auto"
+          {...anchor('pay.auto')}
           disabled={!options.auto_available}
           aria-describedby={options.auto_available ? undefined : autoReasonId}
           onClick={payForMe}

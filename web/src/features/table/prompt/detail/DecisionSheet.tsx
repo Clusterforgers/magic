@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useContext, useId } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { DECISION_LABEL } from '../../turnText'
@@ -42,6 +43,7 @@ export function DecisionSheet({ phone }: { phone: boolean }) {
         <button
           type="button"
           data-slot="sheet-grab"
+          {...anchor('sheet.grab')}
           aria-expanded={!folded}
           aria-controls={body}
           aria-label={folded ? 'Open the stack sheet' : 'Fold the stack sheet'}

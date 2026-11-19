@@ -1,0 +1,725 @@
+[
+  {
+    "act": "Cast",
+    "cards": ["Hero in Training"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "PayMana",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [
+        {
+          "id": 20,
+          "mine": true,
+          "name": "Hero in Training"
+        }
+      ],
+      "step": "Main2",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [
+        {
+          "id": 50,
+          "mine": true,
+          "name": "Hero in Training"
+        }
+      ],
+      "step": "Main2",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareAttackers",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 6,
+      "won": false
+    }
+  },
+  {
+    "act": "Block",
+    "cards": ["Grizzly Bears", "Dregscape Zombie"],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "DeclareBlockers",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 6,
+      "won": false
+    }
+  },
+  {
+    "act": "Cast",
+    "cards": ["Giant Growth"],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 1,
+      "command": [],
+      "creatures": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 6,
+      "won": false
+    }
+  },
+  {
+    "act": "Target",
+    "cards": ["Grizzly Bears"],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 1,
+      "command": [],
+      "creatures": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "ChooseTargets",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 6,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": true,
+      "attacking": 0,
+      "blocking": 1,
+      "command": [],
+      "creatures": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "PayMana",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "DeclareBlockers",
+      "stops": [],
+      "theirCreatures": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 6,
+      "won": false
+    }
+  },
+  {
+    "act": null,
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 20,
+          "name": "Hero in Training"
+        },
+        {
+          "id": 26,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [
+        {
+          "id": 21,
+          "name": "Giant Growth"
+        }
+      ],
+      "hand": [
+        {
+          "id": 18,
+          "name": "Forest"
+        },
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [],
+      "theirCreatures": [],
+      "theirGraveyard": [
+        {
+          "id": 49,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirLife": 40,
+      "turn": 7,
+      "won": false
+    }
+  }
+]

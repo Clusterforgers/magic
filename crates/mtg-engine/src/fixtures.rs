@@ -68,6 +68,7 @@ pub(crate) fn setup(
         },
         validate_decks: false,
         conjurable: Arc::default(),
+        stacked: false,
     }
 }
 

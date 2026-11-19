@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Check, Eraser, Link2, Swords, Unlink, UsersRound, X, Zap } from 'lucide-react'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
@@ -424,6 +425,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
         variant="outline"
         icon={Swords}
         label="Attack with all"
+        {...anchor('attack.all')}
         word="All"
         disabled={legal.length === 0}
         onClick={attackWithAll}
@@ -492,6 +494,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       <BarButton
         icon={Check}
         label="Confirm attack"
+        {...anchor('attack.confirm')}
         word="Attack"
         keepWord
         disabled={declared.length === 0 || brokenJoins(options.joins, declaredIds).length > 0}
@@ -503,6 +506,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
           variant="outline"
           icon={X}
           label="No attack"
+          {...anchor('attack.none')}
           word="No attack"
           keepWord
           onClick={() => answer({ DeclareAttackers: [] })}

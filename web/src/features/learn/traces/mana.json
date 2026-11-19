@@ -1,0 +1,385 @@
+[
+  {
+    "act": "Land",
+    "cards": ["Forest"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 21,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 22,
+          "name": "Llanowar Elves"
+        }
+      ],
+      "lands": [
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Cast",
+    "cards": ["Grizzly Bears"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 21,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 22,
+          "name": "Llanowar Elves"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "PayTap",
+    "cards": ["Forest", "Forest"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "PayMana",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 21,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 22,
+          "name": "Llanowar Elves"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Cast",
+    "cards": ["Llanowar Elves"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 21,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 22,
+          "name": "Llanowar Elves"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 21,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "PayMana",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 22,
+          "name": "Llanowar Elves"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 21,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 22,
+          "name": "Llanowar Elves"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 3,
+      "won": false
+    }
+  },
+  {
+    "act": null,
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 21,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 22,
+          "name": "Llanowar Elves"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [
+        {
+          "id": 46,
+          "name": "Dregscape Zombie"
+        }
+      ],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  }
+]

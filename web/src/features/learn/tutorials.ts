@@ -1,14 +1,21 @@
 import { createStore } from 'zustand/vanilla'
+import { fragmentOf, seatLinkPath } from '@/lib/seatLink'
+import type { Api } from '@/net/api'
+import { COURSE, isLessonId } from './course'
+import type { LessonId } from './step'
 
-/** The tutorials of the Learn page. */
-export type TutorialId = 'game' | 'table' | 'builder' | 'lobby' | 'review' | 'manual' | 'lexicon'
+/** The tutorials of the app beside the course: the manual-panel lesson on a table, and the page tours. */
+export type AppTutorialId = 'manual' | 'builder' | 'lobby' | 'review' | 'lexicon'
 
-/** How a tutorial runs: on the tutorial table (a lesson or the table tour) or as a tour of a page. */
+/** Every tutorial of the Learn page: a lesson of the course or one of the app's. */
+export type TutorialId = LessonId | AppTutorialId
+
+/** How an app tutorial runs: on a lesson table (the manual panel) or as a tour of a page. */
 export type TutorialKind = 'table' | 'page'
 
-/** One entry of the Learn page. */
+/** One app tutorial of the Learn page. */
 export interface Tutorial {
-  id: TutorialId
+  id: AppTutorialId
   title: string
   text: string
   kind: TutorialKind
@@ -16,22 +23,8 @@ export interface Tutorial {
   minutes: number
 }
 
-/** Every tutorial, in the order a new player takes them. */
+/** The app's tutorials under "The app", in the order a new player takes them. */
 export const TUTORIALS: readonly Tutorial[] = [
-  {
-    id: 'game',
-    title: 'Playing a game',
-    text: 'A guided game against a practice bot: lands, casting, priority, attacking, blocking, the stack, your commander and winning.',
-    kind: 'table',
-    minutes: 8,
-  },
-  {
-    id: 'table',
-    title: 'The table',
-    text: 'Where everything is: your hand and battlefield, mana, the middle bar, the pass button, the log and the side panel.',
-    kind: 'table',
-    minutes: 2,
-  },
   {
     id: 'builder',
     title: 'Building a deck',
@@ -69,6 +62,15 @@ export const TUTORIALS: readonly Tutorial[] = [
   },
 ]
 
+/** Every tutorial id in the order of the Learn page. */
+const ALL: readonly TutorialId[] = [
+  ...COURSE.map((lesson) => lesson.id),
+  ...TUTORIALS.map((tutorial) => tutorial.id),
+]
+
+/** The server lesson whose table the manual-panel lesson plays on. */
+export const MANUAL_TABLE: LessonId = 'mana'
+
 /** The `localStorage` key of the tutorials finished in this browser. */
 export const DONE_KEY = 'learn-done'
 
@@ -77,7 +79,7 @@ function load(): readonly TutorialId[] {
     const raw = window.localStorage.getItem(DONE_KEY)
     const parsed: unknown = raw === null ? [] : JSON.parse(raw)
     if (!Array.isArray(parsed)) return []
-    return TUTORIALS.map((tutorial) => tutorial.id).filter((id) => parsed.includes(id))
+    return ALL.filter((id) => parsed.includes(id))
   } catch {
     return []
   }
@@ -90,7 +92,7 @@ export const doneStore = createStore<{ done: readonly TutorialId[] }>(() => ({ d
 export function markDone(id: TutorialId): void {
   const done = doneStore.getState().done
   if (done.includes(id)) return
-  const next = TUTORIALS.map((tutorial) => tutorial.id).filter((each) => each === id || done.includes(each))
+  const next = ALL.filter((each) => each === id || done.includes(each))
   doneStore.setState({ done: next })
   try {
     window.localStorage.setItem(DONE_KEY, JSON.stringify(next))
@@ -106,7 +108,7 @@ export const tutorialKey = (game: string): string => `tutorial:${game}`
 export function tutorialOf(game: string): TutorialId | null {
   try {
     const value = window.sessionStorage.getItem(tutorialKey(game))
-    return TUTORIALS.some((tutorial) => tutorial.id === value) ? (value as TutorialId) : null
+    return ALL.some((id) => id === value) ? (value as TutorialId) : null
   } catch {
     return null
   }
@@ -119,4 +121,20 @@ export function rememberTutorial(game: string, id: TutorialId): void {
   } catch {
     // Storage refused: the game plays without its coach.
   }
+}
+
+/** Where a started lesson opens: the game's page with the seat link in the fragment. */
+export interface LessonStart {
+  game: string
+  hash: string
+}
+
+/** Starts tutorial `id` on a new table (a lesson, or the manual-panel lesson) and says where it opens. */
+export async function startLesson(
+  api: Pick<Api, 'startTutorial'>,
+  id: LessonId | 'manual',
+): Promise<LessonStart> {
+  const seat = await api.startTutorial(isLessonId(id) ? id : MANUAL_TABLE)
+  rememberTutorial(seat.game, id)
+  return { game: seat.game, hash: fragmentOf(seatLinkPath(seat.game, seat.seat, seat.token)) }
 }

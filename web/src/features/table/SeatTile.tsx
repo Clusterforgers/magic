@@ -1,3 +1,4 @@
+import { useSeatAnchor } from '@/features/learn/seatAnchors'
 import { Fragment, memo, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
@@ -59,6 +60,7 @@ interface SeatTileProps {
  * dot beside its name. The chips are not buttons, as a tile has no button of its own inside.
  */
 export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: SeatTileProps) {
+  const coach = useSeatAnchor(seat, 'pod')
   const namer = useSeatNamer()
   const name = namer(seat)
   const button = useRef<HTMLButtonElement>(null)
@@ -93,6 +95,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       data-variant="tile"
       style={seatHueStyle(seat)}
       data-tile-seat={seat}
+      {...coach}
       data-keep-clear="pod"
       data-team={team?.team}
       data-away={away || undefined}

@@ -10,8 +10,12 @@ function Dialog(props: DialogPrimitive.Root.Props) {
 function DialogContent({
   className,
   children,
+  closeProps,
   ...props
-}: DialogPrimitive.Popup.Props) {
+}: DialogPrimitive.Popup.Props & {
+  /** Extra attributes of the close button (a coach anchor). */
+  closeProps?: Record<`data-${string}`, string>
+}) {
   return (
     <DialogPrimitive.Portal>
       <DialogPrimitive.Backdrop
@@ -34,6 +38,7 @@ function DialogContent({
               size="icon-sm"
               aria-label="Close"
               className="absolute top-3 right-3"
+              {...closeProps}
             />
           }
         >

@@ -1,3 +1,4 @@
+import { useSeatAnchor } from '@/features/learn/seatAnchors'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { PlayerId } from '@/protocol/generated'
@@ -12,6 +13,7 @@ import { ZoneButton } from './ZoneButton'
 export function BoardZones({ seat, owner }: { seat: PlayerId; owner: string }) {
   const player = usePlay((state) => playerOf(state, seat))
   const you = usePlay((state) => state.seat === seat)
+  const graveyardCoach = useSeatAnchor(seat, 'graveyard')
   const exile = usePlay(useShallow((state) => exileOf(state, seat)))
   const commanders = usePlay(useShallow((state) => commandCardsOf(state, seat)))
   if (player === undefined) return null
@@ -30,7 +32,7 @@ export function BoardZones({ seat, owner }: { seat: PlayerId; owner: string }) {
     >
       {hand === null ? null : <ZoneButton zone="hand" owner={owner} ids={hand} density="line" />}
       {graveyard.length > 0 ? (
-        <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" />
+        <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" coach={graveyardCoach} />
       ) : null}
       {exile.length > 0 ? <ZoneButton zone="exile" owner={owner} ids={exile} density="line" /> : null}
       {/* Your own commanders are cast from the hand dock; a pod-less board of another seat lists them here. */}

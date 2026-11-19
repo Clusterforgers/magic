@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import {
   Children,
   Fragment,
@@ -43,6 +44,7 @@ function LiveText({
       ref={textRef}
       id={id}
       data-slot="prompt-text"
+      {...anchor('band.question')}
       // The preview covers the sentence only where no place at full size leaves it clear (`fitClear`).
       data-keep-clear="text"
       aria-live="polite"

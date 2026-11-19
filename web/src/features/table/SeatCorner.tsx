@@ -1,3 +1,4 @@
+import type { CoachMark } from '@/features/learn/anchors'
 import { useMemo } from 'react'
 import type { CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
@@ -27,6 +28,8 @@ interface SeatCornerProps {
   commandSlot: boolean
   /** The tax chips of the commanders the corner draws. */
   tax: readonly CommanderChip[]
+  /** The coach's anchor of the graveyard. */
+  graveyardCoach?: CoachMark | undefined
   /** The room under the pod's other blocks in px, and the lane card width beside it; null while they are not measured. */
   height: number | null
   card: number | null
@@ -99,6 +102,7 @@ export function SeatCorner({
   tax,
   height,
   card,
+  graveyardCoach,
 }: SeatCornerProps) {
   const drawn = inDock ? NO_IDS : commanders
   const slots = (drawn.length > 0 || (!inDock && commandSlot) ? 1 : 0) + 2
@@ -124,7 +128,7 @@ export function SeatCorner({
           taxed ? 'flex flex-wrap' : cn('grid', commanders.length > 0 ? 'grid-cols-3' : 'grid-cols-2'),
         )}
       >
-        <ZoneButton zone="graveyard" owner={owner} ids={graveyard} {...sized} />
+        <ZoneButton zone="graveyard" owner={owner} ids={graveyard} coach={graveyardCoach} {...sized} />
         <ZoneButton zone="exile" owner={owner} ids={exile} {...sized} />
         {commanders.length > 0 ? (
           <ZoneButton zone="command" owner={owner} ids={commanders} {...sized} />
@@ -151,7 +155,14 @@ export function SeatCorner({
       ) : !inDock && commandSlot ? (
         <EmptyCommand width={plan.width} height={plan.height} />
       ) : null}
-      <ZonePicture zone="graveyard" owner={owner} ids={graveyard} width={plan.width} height={plan.height} />
+      <ZonePicture
+        zone="graveyard"
+        owner={owner}
+        ids={graveyard}
+        width={plan.width}
+        height={plan.height}
+        coach={graveyardCoach}
+      />
       <ZonePicture zone="exile" owner={owner} ids={exile} width={plan.width} height={plan.height} />
     </div>
   )

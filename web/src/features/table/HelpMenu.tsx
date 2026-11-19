@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { BookOpenIcon, CircleHelpIcon, RouteIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -17,6 +18,7 @@ export function HelpMenu({ compact = false }: { compact?: boolean }) {
         render={
           <Button
             data-slot="help-menu"
+            {...anchor('help.menu')}
             variant="ghost"
             size={compact ? 'icon-sm' : 'icon'}
             title="Help"
@@ -27,7 +29,7 @@ export function HelpMenu({ compact = false }: { compact?: boolean }) {
         <CircleHelpIcon aria-hidden="true" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => showLexicon()}>
+        <DropdownMenuItem {...anchor('help.lexicon')} onClick={() => showLexicon()}>
           <BookOpenIcon aria-hidden="true" />
           Rules lexicon
         </DropdownMenuItem>
