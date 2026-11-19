@@ -76,6 +76,7 @@ mod myriad_teams;
 mod phasing;
 mod planeswalkers;
 mod proliferate;
+mod r109_attached;
 mod r305c_copy_counters;
 mod r306c_attractions;
 mod r371_copy_except;

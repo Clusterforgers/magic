@@ -1,4 +1,4 @@
-// Goal: a signed-in account's pace preferences come from the server and are saved there on every change, never into local storage; an account with none takes the browser's, a failed load keeps the browser's, and signing out returns to local storage.
+// Goal: a signed-in account's pace preferences come from the server and are saved there on every change, never into local storage (Full Control held among them); an account with none takes the browser's, a failed load keeps the browser's, and signing out returns to local storage.
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PrefsApi } from '@/net/prefs'
@@ -9,12 +9,14 @@ import {
   DEFAULT_STOPS,
   DEFAULT_STOPS_KEY,
   END_TURN_KEY,
+  FULL_CONTROL_KEY,
   flowPrefs,
   resetFlowPrefs,
   saveDefaultStops,
   saveAutoChoices,
   saveAutoYields,
   saveEndTurnByHand,
+  saveFullControlHeld,
 } from './flowPrefs'
 import { DEFAULT_HAND_SORT, fullGroups } from './handSort'
 import { usePrefsSync } from './usePrefsSync'
@@ -32,7 +34,13 @@ const held: UserPrefs = {
 const none: UserPrefs = {
   default_stops: [...DEFAULT_STOPS],
   end_turn_by_hand: false,
-  auto_choices: { order_triggers: false, assign_damage: false, smart_stops: false },
+  auto_choices: {
+    order_triggers: false,
+    assign_damage: false,
+    smart_stops: false,
+    skip_triggers: false,
+    auto_pay: false,
+  },
   auto_yields: [],
   hand_sort: DEFAULT_HAND_SORT,
 }
@@ -77,6 +85,7 @@ describe('usePrefsSync', () => {
       autoChoices: none.auto_choices,
       autoYields: [],
       handSort: DEFAULT_HAND_SORT,
+      fullControlHeld: false,
     })
   })
 
@@ -98,6 +107,17 @@ describe('usePrefsSync', () => {
     await waitFor(() => expect(saved).toHaveLength(1))
     expect(saved[0]?.auto_yields).toEqual([])
     expect(window.localStorage.getItem(AUTO_YIELDS_KEY)).toBeNull()
+  })
+
+  it('uses the account Full Control held and saves turning it off to the server, not to storage', async () => {
+    const { api, saved } = fakeApi(() => Promise.resolve({ ...held, full_control_held: true }))
+    renderHook(() => usePrefsSync(true, api))
+    await waitFor(() => expect(flowPrefs().fullControlHeld).toBe(true))
+    act(() => saveFullControlHeld(false))
+    await waitFor(() => expect(saved).toEqual([held]))
+    act(() => saveFullControlHeld(true))
+    await waitFor(() => expect(saved[1]).toEqual({ ...held, full_control_held: true }))
+    expect(window.localStorage.getItem(FULL_CONTROL_KEY)).toBeNull()
   })
 
   it('gives an account with no preferences the ones this browser kept', async () => {

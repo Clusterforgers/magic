@@ -42,6 +42,13 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
                 .find(|shot| shot.reference() == source)
                 .map(|shot| (*shot).clone())
         })
+        // A shield whose spell has left the stack (CR 611.2c) sets the trigger up with the card as it is now, for the
+        // spell it was: "exile it instead. Return it ... at the beginning of the next end step".
+        .or_else(|| {
+            let mut shot = snapshot(state, source.id)?;
+            shot.counter = source.counter;
+            Some(shot)
+        })
         .ok_or_else(gone)?;
     // It reads the X of the spell or ability that sets it up, whatever its source remembers (CR 107.3k).
     snapshot.x = cx.scope.announced_x();

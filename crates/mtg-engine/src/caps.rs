@@ -108,6 +108,7 @@ const RUNS: &[&str] = &[
     "Trigger.Batch",
     "Trigger.Nth",
     "Trigger.Caused",
+    "Trigger.R109WhileCasting",
     "Trigger.Did",
     "Ability.OpeningHand",
     "Ability.OpeningHandWith",
@@ -197,6 +198,7 @@ const RUNS: &[&str] = &[
     "Cost.Changed",
     "Cost.DamageToYou",
     "Cost.OthersGainLife",
+    "Cost.OpponentGainsLife",
     "Cost.GetPoison",
     "Cost.Unattach",
     "Cost.ExileTop",
@@ -480,6 +482,7 @@ const RUNS: &[&str] = &[
     "Rule.Duration.UntilItsControllersNextCombatEnds",
     "Duration.WhileSourceTapped",
     "Duration.WhileYouControlSourceTapped",
+    "Duration.R109ThatCombat",
     "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
     "Duration.WhileEnchanted",
@@ -525,6 +528,10 @@ const RUNS: &[&str] = &[
     "Rule.Combat.AttackIfAnyAttacks",
     "Rule.Combat.MustBeBlockedByOne",
     "Rule.Combat.R6001MustBeBlockedByAtLeast",
+    "Rule.Combat.R109AssignsAmongDefenders",
+    "Rule.Combat.R109UnblockedToCreature",
+    "Rule.Combat.R109DefenderAssigns",
+    "Rule.Combat.R109LethalFromOneSource",
     "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
     "Rule.CantBeRegenerated",
@@ -591,6 +598,7 @@ const RUNS: &[&str] = &[
     "Rule.NoLegendRule",
     "Rule.NoLegendRuleFor",
     "Rule.PayToIgnore",
+    "Rule.PayToIgnoreBy",
     "Rule.UntapDuring",
     "Rule.UntapLimit",
     "Rule.SkipDrawStep",
@@ -603,6 +611,7 @@ const RUNS: &[&str] = &[
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
     "Rule.NextSpell",
+    "SpellBenefit.R6503Resolves",
     "Rule.SpellCost",
     "Rule.DamageCantBePrevented",
     "Rule.GraveyardCardsUntargetable",
@@ -727,6 +736,7 @@ const RUNS: &[&str] = &[
     "Effect.StillResolves",
     "Effect.Rephase",
     "Effect.Reattack",
+    "Effect.Reattack.R109To",
     "Effect.Pay.Counted",
     "Effect.Pay.Took",
     "Effect.Pay.X",
@@ -783,6 +793,7 @@ const RUNS: &[&str] = &[
     "Keyword.DoubleStrike",
     "Keyword.Deathtouch",
     "Keyword.Trample",
+    "Keyword.TrampleOverPlaneswalkers",
     "Keyword.Lifelink",
     "Keyword.Indestructible",
     "Keyword.Hexproof",
@@ -945,6 +956,7 @@ const RUNS: &[&str] = &[
     "Amount.Doors",
     "Condition.StartingPlayer",
     "Condition.Among",
+    "Condition.PaidToIgnoreBy",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
@@ -966,6 +978,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Mill",
     "ReplaceWhen.Draw",
     "ReplaceWhen.Draw.ExceptDrawStep",
+    "ReplaceWhen.Draw.First",
     "ReplaceWhen.Enters",
     "ReplaceWhen.Explores",
     "ReplaceWhen.Connives",
@@ -1002,6 +1015,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Instead",
     "ReplaceBy.Plus",
     "ReplaceBy.InsteadNext",
+    "ReplaceBy.NextBatch",
     "ReplaceBy.RedirectUpTo",
     "ReplaceBy.RedirectCounted",
     "ReplaceBy.Redirect",
@@ -1025,6 +1039,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.RevealOrTapped",
     "ReplaceBy.R6007RevealOrControl",
     "ReplaceBy.R6702MayAttach",
+    "ReplaceBy.R109EntersAttached",
     "ReplaceBy.Instead.PaysLife",
     "ReplaceBy.BeholdOrTapped",
     "ReplaceBy.PayOrGraveyard",
@@ -1405,6 +1420,9 @@ mod tests {
     #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
+    #[case::r109_the_first_draw_of_a_turn("ReplaceWhen.Draw.First", true)]
+    #[case::r109_a_shield_used_up_by_its_next_batch("ReplaceBy.NextBatch", true)]
+    #[case::r109_the_next_spell_put_elsewhere_as_it_resolves("SpellBenefit.R6503Resolves", true)]
     #[case::replacing_entering("ReplaceWhen.Enters", true)]
     #[case::multiplying("ReplaceBy.Multiply", true)]
     #[case::adding("ReplaceBy.Add", true)]
@@ -1656,6 +1674,13 @@ mod tests {
     #[case::double_strike("Keyword.DoubleStrike", true)]
     #[case::deathtouch("Keyword.Deathtouch", true)]
     #[case::trample("Keyword.Trample", true)]
+    #[case::r109_trample_over_planeswalkers("Keyword.TrampleOverPlaneswalkers", true)]
+    #[case::r109_among_defenders("Rule.Combat.R109AssignsAmongDefenders", true)]
+    #[case::r109_unblocked_to_creature("Rule.Combat.R109UnblockedToCreature", true)]
+    #[case::r109_defender_assigns("Rule.Combat.R109DefenderAssigns", true)]
+    #[case::r109_one_source("Rule.Combat.R109LethalFromOneSource", true)]
+    #[case::r109_that_combat("Duration.R109ThatCombat", true)]
+    #[case::r109_now_attacking("Effect.Reattack.R109To", true)]
     #[case::lifelink("Keyword.Lifelink", true)]
     #[case::indestructible("Keyword.Indestructible", true)]
     #[case::hexproof("Keyword.Hexproof", true)]

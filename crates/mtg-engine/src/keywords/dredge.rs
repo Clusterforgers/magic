@@ -24,6 +24,7 @@ impl KeywordRules for Dredge {
             when: ReplaceWhen::Draw {
                 who: Ref::You,
                 except_draw_step: 0,
+                first: false,
             },
             by: ReplaceBy::Dredge(*cards),
             condition: None,
@@ -46,6 +47,7 @@ mod tests {
                 when: ReplaceWhen::Draw {
                     who: Ref::You,
                     except_draw_step: 0,
+                    first: false,
                 },
                 by: ReplaceBy::Dredge(3),
                 condition: None,

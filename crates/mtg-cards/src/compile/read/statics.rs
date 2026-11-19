@@ -42,7 +42,7 @@ use crate::value::{Amount, CastWay, Cmp, Condition, CounterKind};
 type Template = fn(&mut Reader<'_>) -> Option<Ability>;
 
 /// The static shapes, tried in this order.
-const TEMPLATES: [Template; 55] = [
+const TEMPLATES: [Template; 56] = [
     super::r4701_flash::r4701_flash,
     super::r376_nearest::r376_rooms_again,
     super::r376_nearest::r376_nearest,
@@ -62,6 +62,7 @@ const TEMPLATES: [Template; 55] = [
     entering_tapped_if,
     group_enters_tapped,
     group_enters_with,
+    super::r109_entering::r109_group_becomes,
     super::w5d_replaced::w5d_replaced,
     super::w9c_replaced::w9c_replaced,
     life_gain::replacement,
@@ -1499,6 +1500,7 @@ pub fn texts(ability: &Ability) -> Vec<String> {
     group.extend(super::ep32_discard::ep32_discarded_texts(ability));
     group.extend(super::w19a_flash::w19a_flash_texts(ability));
     group.extend(group_enters(ability));
+    super::r109_entering::r109_wordings(ability, &mut group);
     let sentences = match ability {
         _ if !group.is_empty() => group,
         Ability::Replacement {
@@ -1737,9 +1739,10 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 must: false,
                 counters,
                 except_if,
+                r109_embalmed,
             },
             None,
-        ) if counters.is_empty() && except_if.is_empty() => {
+        ) if counters.is_empty() && except_if.is_empty() && r109_embalmed.is_empty() => {
             copies::enters_texts(of, except, *tapped, *until_end_of_turn)
         }
         (
@@ -1751,15 +1754,18 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 must: false,
                 counters,
                 except_if,
+                r109_embalmed,
             },
             None,
-        ) if except_if.is_empty() => super::r305c_copies::r305c_counter_copy_texts(
-            of,
-            except,
-            *tapped,
-            *until_end_of_turn,
-            counters,
-        ),
+        ) if except_if.is_empty() && r109_embalmed.is_empty() => {
+            super::r305c_copies::r305c_counter_copy_texts(
+                of,
+                except,
+                *tapped,
+                *until_end_of_turn,
+                counters,
+            )
+        }
         _ => Vec::new(),
     }
 }

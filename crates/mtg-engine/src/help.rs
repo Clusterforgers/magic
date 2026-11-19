@@ -213,6 +213,16 @@ pub(crate) fn offered(
             chars.types.contains(CardType::Artifact).then_some(artifact)
         });
     }
+    // A spell that must waterbend to be cast: each untapped artifact and creature may pay {1}, as one that improvises does.
+    if state
+        .object(spell)
+        .is_some_and(|card| crate::announce::required::r109_waterbends_to_cast(card.card()))
+    {
+        let waterbenders = waterbend(state, player, &[]).improvise;
+        offer.improvise.extend(waterbenders);
+        offer.improvise.sort_unstable();
+        offer.improvise.dedup();
+    }
     if has(&Keyword::Delve) {
         offer.delve = state
             .zone(Zone::Graveyard(player))

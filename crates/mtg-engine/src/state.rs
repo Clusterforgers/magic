@@ -130,6 +130,8 @@ pub(crate) enum Tally {
     R5500DrawnNth,
     /// A card drawn by the active player in the draw step under way (cleared as each draw step begins).
     C6BlkDrawStepDrawn,
+    /// A time the player would draw a card, the draw kept or replaced (counted for the player).
+    R109WouldDraw,
     /// A spell cast.
     Cast,
     /// An instant or sorcery spell cast (counted for the player).
@@ -1393,6 +1395,7 @@ mod tests {
                 player: PlayerId::from_index(0),
                 skip_untap: false,
                 no_power_up: false,
+                r109_unpreventable: false,
                 r6703_end: None,
             };
             apply_event(&mut game, &added).unwrap();

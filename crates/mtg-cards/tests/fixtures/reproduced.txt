@@ -20,6 +20,7 @@ Act of Aggression
 Act of Treason
 Adaptive Snapjaw
 Adarkar Unicorn
+Adipose Offspring
 Adorned Pouncer
 Adriana, Captain of the Guard
 Adric, Mathematical Genius
@@ -335,9 +336,11 @@ Broodstar
 Bruna, the Fading Light
 Bubble Matrix
 Bucknard's Everfull Purse
+Bumi, Unleashed
 Buried Alive
 Buried Ruin
 Burnished Hart
+Butcher Orgg
 Butcher of Malakir
 Butcher's Cleaver
 Bygone Bishop
@@ -369,6 +372,7 @@ Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
 Casey Jones, Back Alley Brute
+Cass, Hand of Vengeance
 Cast Out
 Castle Ardenvale
 Castle Embereth
@@ -496,6 +500,7 @@ Cordial Vampire
 Cormela, Glamour Thief
 Corpse Hauler
 Coruscation Mage
+Cosmic Intervention
 Counterflux
 Counterspell
 Courser of Kruphix
@@ -536,6 +541,7 @@ Crystalline Giant
 Cuboid Colony
 Culling Ritual
 Cultivate
+Cunning Giant
 Curate
 Curious Altisaur
 Curse of Bounty
@@ -605,6 +611,7 @@ Deepfathom Skulker
 Deeproot Elite
 Deeproot Waters
 Defacing Duskmage // Vandal's Edit
+Defensive Formation
 Defile
 Deification
 Deluxe Dragster
@@ -654,6 +661,7 @@ Disembowel
 Dismal Backwater
 Dismantling Blow
 Dismantling Wave
+Displaced Dinosaurs
 Disrupt Decorum
 Dissension in the Ranks
 Distorting Wake
@@ -946,6 +954,7 @@ Fork
 Fortified Area
 Fortified Village
 Forum of Amity
+Foul Emissary
 Founding of Omashu
 Foundry Inspector
 Fountainport
@@ -1113,6 +1122,7 @@ Grenzo's Cutthroat
 Greymond, Avacyn's Stalwart
 Grief
 Griffin Aerie
+Grifter's Blade
 Grim Backwoods
 Grim Flayer
 Grim Haruspex
@@ -1252,6 +1262,7 @@ Illicit Shipment
 Illuminate History
 Illusion Spinners
 Illusion of Choice
+Illusionist's Gambit
 Illusory Ambusher
 Illustrious Wanderglyph
 Ilysian Caryatid
@@ -1500,6 +1511,7 @@ Lord of the Forsaken
 Lord of the Undead
 Lorescale Coatl
 Loreseeker's Stone
+Lost in Thought
 Lotleth Troll
 Lotus Petal
 Lotus Ring
@@ -1701,6 +1713,7 @@ Myr Superion
 Myriad Landscape
 Mystic Confluence
 Mystic Gate
+Mystic Reflection
 Mystic Retrieval
 Mystic Snake
 Nadier's Nightblade
@@ -1778,6 +1791,7 @@ Obyra, Dreaming Duelist
 Octomancer
 Octopus Umbra
 Odric, Master Tactician
+Ogre Enforcer
 Ogre Slumlord
 Ohran Yeti
 Ojer Axonil, Deepest Might // Temple of Power
@@ -1918,6 +1932,7 @@ Pop Quiz
 Porcuparrot
 Port Town
 Portal Mage
+Portal Manipulator
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
@@ -1972,6 +1987,7 @@ Putrefy
 Putrid Goblin
 Pygmy Kavu
 Pygmy Troll
+Pyramids
 Pyreswipe Hawk
 Qasali Pridemage
 Qasali Slingers
@@ -2038,6 +2054,7 @@ Red Room Recruit
 Redcap Heelslasher
 Redemption Choir
 Redress Fate
+Reed Richards, Smartest Man
 Reflecting Pool
 Reflections of Littjara
 Reforge the Soul
@@ -2444,6 +2461,7 @@ Stormscape Battlemage
 Stormsurge Kraken
 Storrev, Devkarin Lich
 Storvald, Frost Giant Jarl
+Storyweave
 Strangleroot Geist
 Stratus Dancer
 Stratus Walk
@@ -2847,11 +2865,13 @@ Vivid Creek
 Vivid Grove
 Vivid Marsh
 Vivid Meadow
+Vizier of Many Faces
 Vizier of the Anointed
 Voice of All
 Voice of the Blessed
 Voidmage Husher
 Voldaren Estate
+Volrath's Curse
 Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan

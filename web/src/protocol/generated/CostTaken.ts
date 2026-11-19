@@ -2,6 +2,7 @@
 import type { CounterKind } from "./CounterKind";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
+import type { PlayerId } from "./PlayerId";
 import type { Snapshot } from "./Snapshot";
 import type { SpentFrom } from "./SpentFrom";
 
@@ -57,4 +58,9 @@ spliced?: Array<ObjectId>,
  * The life paid in place of Phyrexian symbols to cast the spell (CR 107.4f), 2 for each: a planeswalker with
  * compleated enters with that many fewer loyalty counters (CR 702.150a).
  */
-phyrexian_life?: number, };
+phyrexian_life?: number, 
+/**
+ * The players chosen for the parts of the cost that have a player of the payer's choice do something ("have an
+ * opponent gain 3 life"), in the order the cost prints them.
+ */
+players?: Array<PlayerId>, };

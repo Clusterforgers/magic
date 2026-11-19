@@ -464,3 +464,31 @@ describe('the sentence names whose damage is divided and why', () => {
     expect(damageSentence(...args)).toBe(sentence)
   })
 })
+
+describe('a recipient that takes the damage whole', () => {
+  const boar: DamageRecipient = { ...blocker(7, 3), name: 'Boar', lethal: 0, whole: true }
+  const cub: DamageRecipient = { ...blocker(8, 1), name: 'Cub', lethal: 0, whole: true }
+  const trample: Trample = { to: 'Opponent', recipients: [boar, cub] }
+
+  it.each([
+    [[4, 0], true],
+    [[0, 4], true],
+    [[0, 0], true],
+    [[2, 0], false],
+    [[3, 1], false],
+  ])('judges %j of 4 legal: %s', (amounts, legal) => {
+    expect(judge(4, amounts, trample, [boar, cub]).legal).toBe(legal)
+  })
+
+  it('names the creature that must take all of it', () => {
+    expect(judge(4, [2, 0], trample, [boar, cub])).toEqual({
+      legal: false,
+      status: 'Boar takes all 4 damage or none of it.',
+    })
+  })
+
+  it('leaves a recipient without the mark to any share', () => {
+    const plain = { ...boar, whole: false }
+    expect(judge(4, [2, 0], { ...trample, recipients: [plain, cub] }, [plain, cub]).legal).toBe(true)
+  })
+})

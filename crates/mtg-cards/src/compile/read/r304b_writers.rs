@@ -37,6 +37,10 @@ pub fn r304b_triple_texts(first: &Ability, second: &Ability, third: &Ability) ->
     if !owner.is_empty() {
         return owner;
     }
+    let ignored = super::r109_ignore::r109_ignore_texts(first, second, third);
+    if !ignored.is_empty() {
+        return ignored;
+    }
     let sacrificed = super::ep23_three::ep23_texts(first, second, third);
     if !sacrificed.is_empty() {
         return sacrificed;

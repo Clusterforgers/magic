@@ -9,6 +9,10 @@ export const COMBAT: readonly Entry[] = [
   ['Double strike', 'This creature deals both first-strike and regular combat damage.'],
   ['Deathtouch', 'Any amount of damage this deals to a creature is enough to destroy it.'],
   ['Trample', 'This creature can deal excess combat damage to the player or planeswalker it is attacking.'],
+  [
+    'Trample over planeswalkers',
+    'This creature can deal excess combat damage to the controller of the planeswalker it is attacking.',
+  ],
   ['Lifelink', 'Damage dealt by this source also causes its controller to gain that much life.'],
   ['Vigilance', 'Attacking does not cause this creature to tap.'],
   ['Haste', 'This creature can attack and use {T} abilities as soon as it comes under your control.'],

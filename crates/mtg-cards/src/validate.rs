@@ -1136,6 +1136,7 @@ impl<'a> Walker<'a> {
             | Pred::AttackingBattle
             | Pred::Blocking
             | Pred::Unblocked
+            | Pred::Blocked
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter
             | Pred::ChosenColor
@@ -1786,6 +1787,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
             }
+            Condition::PaidToIgnoreBy(who) => {
+                self.uses("Condition", "PaidToIgnoreBy");
+                self.at("PaidToIgnoreBy", |w| w.reference(who, Kind::Player));
+            }
             Condition::Among(who) => {
                 self.uses("Condition", "Among");
                 self.at("Among", |w| w.reference(who, Kind::Player));
@@ -2039,6 +2044,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
+                    | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
                     | CostItem::XColor(_)
                     | CostItem::Forage => {}
@@ -3238,6 +3244,12 @@ impl<'a> Walker<'a> {
                 }
                 self.at("inner", |w| w.trigger_pattern(inner));
             }
+            TriggerPattern::R109WhileCasting { inner, .. } => {
+                if !matches!(**inner, TriggerPattern::Sacrificed { .. }) {
+                    self.problem("a cast wraps one sacrifice");
+                }
+                self.at("inner", |w| w.trigger_pattern(inner));
+            }
             TriggerPattern::Caused { inner, by, source } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(by) = by {
@@ -3318,6 +3330,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::Batch(_)
                 | TriggerPattern::Caused { .. }
                 | TriggerPattern::R6701WhileActivating { .. }
+                | TriggerPattern::R109WhileCasting { .. }
                 | TriggerPattern::Nth { .. }
                 | TriggerPattern::AnyOf(_)
                 | TriggerPattern::State { .. }
@@ -3579,8 +3592,12 @@ impl Walker<'_> {
             Destination::BattlefieldEnchanting { only } => {
                 self.at("only", |w| w.selector(only));
             }
+            // The changes are continuous effects of the resolving ability, so a static ability they give may give
+            // abilities in turn, as one `Effect::Continuous` gives.
             Destination::R6502BattlefieldAs { becomes } => {
+                let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
                 self.at("becomes", |w| w.mods(becomes));
+                self.r6701_effect_grant = effect_grant;
             }
             _ => {}
         }
@@ -4727,8 +4744,19 @@ impl Walker<'_> {
                 what,
                 against: None,
             }
-            | Effect::Reattack { what, .. } => {
+            | Effect::Reattack {
+                what, r109_to: None, ..
+            } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Effect::Reattack {
+                what,
+                r109_to: Some(to),
+                ..
+            } => {
+                w.uses("Effect", "Reattack.R109To");
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("r109_to", |w| w.reference(to, Kind::Player));
             }
             Effect::JoinAttack {
                 what,
@@ -5238,6 +5266,7 @@ impl Walker<'_> {
                 if *duration == Duration::UntilItsControllersNextUntapStep {
                     w.uses("Duration", "UntilItsControllersNextUntapStep");
                 }
+                w.r109_that_combat(duration);
                 if let Duration::WhileMonarch(who) = duration {
                     w.uses("Duration", "WhileMonarch");
                     w.at("duration", |w| w.reference(who, Kind::Player));
@@ -5330,6 +5359,7 @@ impl Walker<'_> {
                 }
             }
             Effect::Rule { rule, duration } => w.at("rule", |w| {
+                w.r109_that_combat(duration);
                 if matches!(
                     duration,
                     Duration::WhileEnchanted
@@ -6141,6 +6171,9 @@ impl Walker<'_> {
                     matches!(when, ReplaceWhen::Enters { what } if what.0.contains(&Pred::This));
                 w.at("by", |w| w.replace_by(when, by));
                 w.not_next_damage(by);
+                if matches!(by, ReplaceBy::NextBatch(_)) {
+                    w.problem("only a shield is used up by its next batch");
+                }
                 if let Some(condition) = condition {
                     w.at("condition", |w| w.condition(condition));
                 }
@@ -6231,6 +6264,10 @@ impl Walker<'_> {
                     self.problem("`PayToIgnore` costs no {X}");
                 }
             }
+            GameRule::PayToIgnoreBy { payer, cost } => {
+                self.at("payer", |w| w.reference(payer, Kind::Player));
+                self.at("cost", |w| w.cost(cost));
+            }
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));
             }
@@ -6281,6 +6318,11 @@ impl Walker<'_> {
                             "\"must be blocked by N or more creatures\" needs N of 2 or more",
                         );
                     }
+                }
+                if let GameRule::Combat { quirk, .. } = rule
+                    && let Some(key) = crate::modify::r109_quirk_key(quirk)
+                {
+                    self.uses("Rule", key);
                 }
                 self.at(tag, |w| w.reference(who, Kind::Object));
             }
@@ -6570,6 +6612,20 @@ impl Walker<'_> {
         }
     }
 
+    /// A next spell put elsewhere as it resolves goes to a hand or exile (`SpellBenefit::R6503Resolves`).
+    fn r109_next_spell_benefit(&mut self, benefit: &crate::modify::SpellBenefit) {
+        let crate::modify::SpellBenefit::R6503Resolves(by) = benefit else {
+            return;
+        };
+        self.uses("SpellBenefit", "R6503Resolves");
+        if !matches!(
+            by,
+            ReplaceBy::MoveTo(crate::refs::ZoneKind::Hand | crate::refs::ZoneKind::Exile)
+        ) {
+            self.problem("a spell as it resolves goes to a hand or exile instead");
+        }
+    }
+
     /// The rules that set an option of the game: who they apply to, what they select and the size they set.
     fn rule_option(&mut self, tag: &str, rule: &GameRule) {
         match rule {
@@ -6591,8 +6647,9 @@ impl Walker<'_> {
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }
-            GameRule::NextSpell { what, .. } => {
+            GameRule::NextSpell { what, benefit } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
+                self.r109_next_spell_benefit(benefit);
             }
             GameRule::SpellCost {
                 applies_to, mana, ..
@@ -6808,6 +6865,9 @@ impl Walker<'_> {
         self.uses("ReplaceWhen", &tag_of(when));
         if matches!(when, ReplaceWhen::Draw { except_draw_step, .. } if *except_draw_step > 0) {
             self.uses("ReplaceWhen", "Draw.ExceptDrawStep");
+        }
+        if matches!(when, ReplaceWhen::Draw { first: true, .. }) {
+            self.uses("ReplaceWhen", "Draw.First");
         }
         match when {
             ReplaceWhen::R6001DamageBetweenChosen => {}
@@ -7142,8 +7202,8 @@ impl Walker<'_> {
         if !enters {
             self.problem("only an `Enters` event becomes a chosen form");
         }
-        if forms.len() < 2 || forms.iter().any(Vec::is_empty) {
-            self.problem("a choice of forms offers two or more forms, each with a change");
+        if forms.is_empty() || forms.iter().any(Vec::is_empty) {
+            self.problem("a choice of forms offers one form or more, each with a change");
         }
         let mut values = crate::definition::CardDefinition::new("form");
         if forms.iter().flatten().any(|change| !values.except(change)) {
@@ -7348,6 +7408,12 @@ impl Walker<'_> {
                 }
                 self.at("to", |w| w.selector(to));
             }
+            ReplaceBy::R109EntersAttached(to) => {
+                if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {
+                    self.problem("only the Equipment itself enters attached");
+                }
+                self.at("to", |w| w.selector(to));
+            }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
             ReplaceBy::TappedForCounters { count: 0, .. } => {
                 self.problem("entering tapped for no counters is a plain choice");
@@ -7402,6 +7468,12 @@ impl Walker<'_> {
                         w.r6104_entering_copy_exceptions(&entry.except);
                     });
                 }
+            }
+            ReplaceBy::NextBatch(inner) => {
+                if !enters || matches!(**inner, ReplaceBy::NextBatch(_)) {
+                    self.problem("only an `Enters` shield is used up by its next batch, once");
+                }
+                self.at("0", |w| w.replace_by(when, inner));
             }
             _ => {}
         }
@@ -7783,6 +7855,14 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost))
                 // A way to cast the card for a cost that takes objects ("the returned creature").
                 || matches!(a, Ability::AltCast { cost: Some(cost), .. } if picks(cost))
+                // Emerge sacrifices a creature ("the sacrificed creature's toughness").
+                || matches!(
+                    a,
+                    Ability::Keyword(
+                        crate::keyword::Keyword::Emerge(_)
+                            | crate::keyword::Keyword::R6701EmergeFromArtifact(_)
+                    )
+                )
     });
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));
@@ -8021,6 +8101,8 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
         // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
         || (matches!(k, Keyword::Typecycling { .. })
             && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Trample` as well for trample over planeswalkers, a variant of trample (CR 702.19c).
+        || (matches!(k, Keyword::TrampleOverPlaneswalkers) && "Trample".eq_ignore_ascii_case(keyword))
 }
 
 /// Whether the clause holds the keyword (any case) at the end of a word: no letter or digit
@@ -8157,6 +8239,21 @@ mod tests {
             .into_iter()
             .map(|p| format!("{}: {}", p.path, p.message))
             .collect()
+    }
+
+    /// A card returned as an Aura whose given static ability gives abilities in turn is an effect's grant, as an
+    /// `Effect::Continuous` one is; a printed static that does it is still refused.
+    #[rstest]
+    #[case::r109_returned_as_an_aura(
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":"This","to":{"R6502BattlefieldAs":{"becomes":[{"GrantAbility":{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}}]}}}}]}}"#,
+        true
+    )]
+    #[case::r109_a_printed_static(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}}]}}"#,
+        false
+    )]
+    fn r109_a_nested_grant_is_an_effects_own(#[case] json: &str, #[case] valid: bool) {
+        assert_eq!(problems(json).is_empty(), valid, "{:?}", problems(json));
     }
 
     /// A paid optional cost needs a keyword or an ability that gives one: teamwork expands into one, kicker counts apart.
@@ -8602,6 +8699,14 @@ mod tests {
     #[case::a_granted_static_cannot_grant_in_turn(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"This","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}}]}}"#,
         "a static ability that is granted cannot grant abilities in turn"
+    )]
+    #[case::r109_an_equipment_enters_attached_only_as_itself_enters(
+        r#"{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"}]}},"by":{"R109EntersAttached":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#,
+        "only the Equipment itself enters attached"
+    )]
+    #[case::r109_entering_attached_is_no_turning_up(
+        r#"{"Replacement":{"when":{"TurnedFaceUp":{"what":["This"]}},"by":{"R109EntersAttached":[{"Type":"Creature"}]}}}"#,
+        "only the Equipment itself enters attached"
     )]
     #[case::a_granted_static_is_not_characteristic_defining(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"This","mods":[{"SetColors":["Blue"]}],"defining":true}}}]}}"#,
@@ -9908,6 +10013,18 @@ mod printed_keywords {
         &["Enchant", "Flying"],
         &["Flying"]
     )]
+    #[case::trample_over_planeswalkers_lists_trample(
+        "Full",
+        &[(BIRD, "Trample over planeswalkers", r#"{"Keyword":"TrampleOverPlaneswalkers"}"#)],
+        &["Trample"],
+        &[]
+    )]
+    #[case::trample_over_planeswalkers_lists_no_other_keyword(
+        "Full",
+        &[(BIRD, "Trample over planeswalkers", r#"{"Keyword":"TrampleOverPlaneswalkers"}"#)],
+        &["Trample", "Flying"],
+        &["Flying"]
+    )]
     #[case::a_card_without_a_grant_or_a_clause_lacks_the_keyword(
         "Full",
         &[(BIRD, "Haste", r#"{"Keyword":"Haste"}"#)],
@@ -10011,6 +10128,17 @@ mod printed_keywords {
 }
 
 impl Walker<'_> {
+    /// "During that combat phase" (`Duration::R109ThatCombat`): an engine piece, and a rules file names the phase as 0
+    /// because the engine marks it as the effect begins.
+    fn r109_that_combat(&mut self, duration: &Duration) {
+        if let Duration::R109ThatCombat(mark) = duration {
+            self.uses("Duration", "R109ThatCombat");
+            if *mark != 0 {
+                self.problem("\"during that combat phase\" is written as R109ThatCombat 0");
+            }
+        }
+    }
+
     /// A logged keyword action: one of the actions a step performs, with the parts that action has and no others.
     fn l31a_performed(
         &mut self,

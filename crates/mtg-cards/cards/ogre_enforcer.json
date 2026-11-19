@@ -1,0 +1,14 @@
+{
+  "oracle_id": "86cc83d8-4a70-4b97-aa4d-160afd4cd6cb",
+  "name": "Ogre Enforcer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ogre Enforcer",
+      "oracle_fingerprint": "c88a0348ee93860106c7913265f3da36",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "R109LethalFromOneSource" } } } }
+      ]
+    }
+  ]
+}

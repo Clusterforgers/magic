@@ -431,6 +431,7 @@ fn draw_replaced(ability: &Ability) -> Vec<String> {
             ReplaceWhen::Draw {
                 who: Ref::You,
                 except_draw_step: 0,
+                first: false,
             },
         by: ReplaceBy::Instead(steps),
         condition: None,

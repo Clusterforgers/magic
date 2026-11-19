@@ -120,60 +120,62 @@ pub fn process(
         return r4708_reveal::r4708_reveals(state, proposed, events, journal);
     }
     let original = proposed.clone();
-    let left = shields
+    let left: BTreeMap<EffectId, u32> = shields
         .iter()
         .filter_map(|effect| match &effect.rule {
             Rule::PreventDamage(shield) => shield.left.map(|left| (effect.id, left)),
             _ => None,
         })
         .collect();
-    let mut step = Pass {
-        state,
-        sources,
-        shields,
-        left,
-        touched: Vec::new(),
-        spent: BTreeSet::new(),
-        answers: journal.iter(),
-        next_id: state.next_object().get(),
-        slots: slots_of(proposed),
-        draws_changed: false,
-        pulled: Vec::new(),
-        activated: Vec::new(),
-        putter: crate::triggers::cause_of(state, &original, state)
-            .map(|cause| (cause.player, state.resolving().is_some())),
-    };
-    step.activated = step
-        .slots
-        .iter()
-        .filter_map(|slot| match &slot.item {
-            Item::One(Event::AbilityActivated { source, .. }) => Some(source.id),
-            _ => None,
-        })
-        .collect();
-    step.next_id = step
-        .slots
-        .iter()
-        .filter_map(|slot| match &slot.item {
-            Item::Tokens(run) => run.iter().map(|token| token.object.get()).max(),
-            // An ability the batch puts on the stack or another object it makes already holds its id (an activation
-            // whose sacrifice a replacement turns into a token); the ids an event names below the next are old ones.
-            Item::One(event) => event.touched_objects().iter().map(|id| id.get()).max(),
-        })
-        .fold(step.next_id, |all, id| all.max(id + 1));
-    match step.run()? {
-        Run::Ask(decision) => Ok(Processed::Ask {
-            decision,
-            proposed: original,
-        }),
-        Run::Done => {
-            let left: Vec<(PlayerId, Choice)> = step.answers.clone().cloned().collect();
-            let mut events = step.finish();
-            cost_counters::resettle(&original, &mut events);
-            let events = crate::r6500_caps::r6500_capped(state, events);
-            r4708_reveal::r4708_reveals(state, original, events, &left)
+    // A token the batch creates is read as it would exist on the battlefield (CR 614.12, `r109_tokens_enter`); the
+    // step runs again with the view holding the tokens a replacement adds to the batch.
+    let mut more_tokens: Vec<Event> = Vec::new();
+    for _ in 0..r109_tokens_enter::R109_RERUNS {
+        let token_view =
+            r109_tokens_enter::r109_token_view(state, &proposed, &more_tokens, &sources);
+        let (read, r109_tokens) = match &token_view {
+            Some((view, made)) => (view, made.clone()),
+            None => (state, Vec::new()),
+        };
+        let mut step = Pass {
+            state: read,
+            sources: sources.clone(),
+            shields: shields.clone(),
+            left: left.clone(),
+            touched: Vec::new(),
+            spent: BTreeSet::new(),
+            answers: journal.iter(),
+            next_id: state.next_object().get(),
+            slots: slots_of(proposed.clone()),
+            draws_changed: false,
+            pulled: Vec::new(),
+            r109_replaced: Vec::new(),
+            activated: Vec::new(),
+            putter: crate::triggers::cause_of(state, &original, state)
+                .map(|cause| (cause.player, state.resolving().is_some())),
+            r109_tokens,
+        };
+        step.prime();
+        match step.run()? {
+            Run::Ask(decision) => {
+                return Ok(Processed::Ask {
+                    decision,
+                    proposed: original,
+                });
+            }
+            Run::R109Restart(more) => more_tokens.extend(more),
+            Run::Done => {
+                let left: Vec<(PlayerId, Choice)> = step.answers.clone().cloned().collect();
+                let mut events = step.finish();
+                cost_counters::resettle(&original, &mut events);
+                let events = crate::r6500_caps::r6500_capped(state, events);
+                return r4708_reveal::r4708_reveals(state, original, events, &left);
+            }
         }
     }
+    Err(EngineError::Resolution(
+        "the tokens replacement effects add went on without end".into(),
+    ))
 }
 
 /// The source `dealer` and the player who controls what `target` is, when protection of the target from the dealer
@@ -660,6 +662,7 @@ fn enters_face_down(item: &Item) -> bool {
 fn entering(state: &GameState, event: &Event) -> Option<(ObjectId, PlayerId)> {
     match event {
         Event::LandPlayed { player, object, .. } => Some((*object, *player)),
+        Event::TokenCreated(token) => Some((token.object, token.controller)),
         Event::SpellResolved { object } => {
             let spell = state.object(*object)?;
             let types = spell.base_types();
@@ -869,6 +872,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::R6007RevealOrControl { .. }
+        | ReplaceBy::R109EntersAttached(_)
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -897,8 +901,17 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ReplaceBy::InsteadNext(_) => {
             matches!(
                 unit,
-                Unit::Damage { .. } | Unit::Draw { .. } | Unit::Loss { .. }
+                Unit::Damage { .. }
+                    | Unit::Draw { .. }
+                    | Unit::Loss { .. }
+                    | Unit::Move {
+                        destroyed: true,
+                        ..
+                    }
             )
+        }
+        ReplaceBy::NextBatch(inner) => {
+            matches!(unit, Unit::Enter { .. }) && applies_to(inner, unit)
         }
     }
 }
@@ -932,6 +945,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::AsEnters(_)
                 | ReplaceBy::AsEntersWith { .. }
                 | ReplaceBy::ChooseAfter { .. }
+                | ReplaceBy::R109EntersAttached(_)
         )
     )
 }
@@ -981,6 +995,9 @@ struct Candidate {
 enum Run {
     Ask(Decision),
     Done,
+    /// Tokens a replacement added to the batch are entering, and the view the step reads lacks them
+    /// (`r109_tokens_enter`): the step runs again with them in it.
+    R109Restart(Vec<Event>),
 }
 
 /// A question that is asked, or the answer to it.
@@ -1018,15 +1035,41 @@ struct Pass<'a> {
     next_id: u64,
     slots: Vec<Slot>,
     draws_changed: bool,
+    /// The players whose draws a replacement took the place of in this batch, once for each draw.
+    r109_replaced: Vec<PlayerId>,
     /// The commanders put into the command zone in place of being drawn: the draws after them take the cards below.
     pulled: Vec<ObjectId>,
     /// The objects that activated an ability in this batch: what they pay is a cost, not an effect.
     activated: Vec<ObjectId>,
     /// Who puts the counters of the batch, and whether a resolving spell or ability (an effect) does.
     putter: Option<(PlayerId, bool)>,
+    /// The tokens the batch creates, which exist in the view the step reads (`r109_tokens_enter`).
+    r109_tokens: Vec<ObjectId>,
 }
 
 impl Pass<'_> {
+    /// Notes the objects that activated an ability in the batch and the next id the batch has not given.
+    fn prime(&mut self) {
+        self.activated = self
+            .slots
+            .iter()
+            .filter_map(|slot| match &slot.item {
+                Item::One(Event::AbilityActivated { source, .. }) => Some(source.id),
+                _ => None,
+            })
+            .collect();
+        self.next_id = self
+            .slots
+            .iter()
+            .filter_map(|slot| match &slot.item {
+                Item::Tokens(run) => run.iter().map(|token| token.object.get()).max(),
+                // An ability the batch puts on the stack or another object it makes already holds its id (an activation
+                // whose sacrifice a replacement turns into a token); the ids an event names below the next are old ones.
+                Item::One(event) => event.touched_objects().iter().map(|id| id.get()).max(),
+            })
+            .fold(self.next_id, |all, id| all.max(id + 1));
+    }
+
     fn unit(&self, item: &Item) -> Unit {
         let state = self.state;
         let event = match item {
@@ -1224,7 +1267,23 @@ impl Pass<'_> {
         when: &ReplaceWhen,
         unit: &Unit,
     ) -> Result<bool, EngineError> {
-        let scope = Scope::announcing(self.state, controller, object);
+        self.r109_matches_bound((controller, object), &BTreeMap::new(), when, unit)
+    }
+
+    /// Whether the effect replaces this event, its `Ref::Target`s read from the names `bound` holds (a shield that fixed
+    /// the targets of the ability that made it).
+    #[allow(clippy::too_many_lines)]
+    fn r109_matches_bound(
+        &self,
+        (controller, object): (PlayerId, ObjectRef),
+        bound: &crate::resolve::Bindings,
+        when: &ReplaceWhen,
+        unit: &Unit,
+    ) -> Result<bool, EngineError> {
+        let scope = Scope {
+            bindings: bound,
+            ..Scope::announcing(self.state, controller, object)
+        };
         Ok(match (when, unit) {
             (ReplaceWhen::TokenCreation { controller, .. }, Unit::Tokens { controller: made }) => {
                 scope.players(controller)?.contains(made)
@@ -1494,7 +1553,8 @@ impl Pass<'_> {
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
                 || !step.r5517_caused_own(at, when, &unit)
-                || r5515_returns_as_new(step.state, source, &unit)
+                || (r5515_returns_as_new(step.state, source, &unit)
+                    && !step.r109_is_entering_token(source.object.id))
                 || (matches!(by, ReplaceBy::UnderYourControl)
                     && !step.r5517_from_opponent(source.controller, &unit))
             {
@@ -1529,7 +1589,7 @@ impl Pass<'_> {
         // own entering does not apply.
         if let Unit::Enter { object, .. } = &unit
             && let Some(card) = self.state.object(*object)
-            && card.zone() != Zone::Battlefield
+            && (card.zone() != Zone::Battlefield || self.r109_is_entering_token(*object))
             && !enters_face_down(&slot.item)
         {
             let controller = controller_of_object(self.state, card);
@@ -2044,10 +2104,21 @@ impl Pass<'_> {
     fn replaces_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
         let mut found = Vec::new();
         for effect in &self.shields {
-            let (Rule::Replaces { when, by, players }, Some(maker)) = (&effect.rule, effect.source)
+            let (
+                Rule::Replaces {
+                    when,
+                    by,
+                    players,
+                    bound,
+                    ..
+                },
+                Some(maker),
+            ) = (&effect.rule, effect.source)
             else {
                 continue;
             };
+            let bound: crate::resolve::Bindings = bound.iter().cloned().collect();
+            let by = r109_next_batch::r109_inner(by);
             let fixed_out = match unit {
                 Unit::Draw { player } => !players.is_empty() && !players.contains(player),
                 _ => false,
@@ -2058,7 +2129,7 @@ impl Pass<'_> {
                 || fixed_out
                 || !applies_to(by, unit)
                 || (players.is_empty() || !matches!(unit, Unit::Draw { .. }))
-                    && !self.matches_for((effect.controller, maker), when, unit)?
+                    && !self.r109_matches_bound((effect.controller, maker), &bound, when, unit)?
             {
                 continue;
             }
@@ -2320,6 +2391,11 @@ impl Pass<'_> {
             self.w9c_split_tokens(at);
             let candidates = self.candidates(at)?;
             let chosen = if candidates.is_empty() {
+                match self.r109_enter_tokens(at) {
+                    r109_tokens_enter::Split::No => {}
+                    r109_tokens_enter::Split::Done => continue,
+                    r109_tokens_enter::Split::Unseen(more) => return Ok(Run::R109Restart(more)),
+                }
                 at += 1;
                 continue;
             } else {
@@ -2524,6 +2600,11 @@ impl Pass<'_> {
         w13a_moved::w13a_without_counters_on_moved(self.state, &mut events);
         r35_mills::r35_fresh_mills(self.state, &mut events);
         g12a_library::g12a_order_shuffles(self.state, &mut events);
+        events.extend(
+            self.r109_replaced
+                .iter()
+                .map(|player| Event::R109DrawReplaced { player: *player }),
+        );
         events.extend(used);
         events
     }
@@ -2536,7 +2617,11 @@ impl Pass<'_> {
         };
         let mut applied = self.slots[at].applied.clone();
         applied.push(candidate.origin);
+        self.r109_end_with_batch(candidate);
         let unit = self.unit(&self.slots[at].item);
+        if let Unit::Draw { player } = unit {
+            self.r109_replaced.push(player);
+        }
         let by = match &candidate.action {
             Action::Regenerate => {
                 self.regenerate(at, candidate);
@@ -2734,6 +2819,9 @@ impl Pass<'_> {
             ),
             ReplaceBy::BeholdOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
+            }
+            ReplaceBy::R109EntersAttached(to) => {
+                self.r109_enters_attached(at, candidate, to, (object, controller), applied)
             }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
@@ -3507,13 +3595,19 @@ impl Pass<'_> {
                 must,
                 counters,
                 except_if,
+                r109_embalmed,
             } => {
+                let embalmed = (!r109_embalmed.is_empty() && self.r109_embalmed(object))
+                    .then_some(r109_embalmed.as_slice());
+                let bound = self.r109_bound(candidate);
+                let lki = self.r109_lki(candidate);
                 let copy = match self.copies(
-                    candidate.object,
+                    (candidate.object, &bound, &lki),
                     controller,
                     object,
                     (of, *must),
                     (except, except_if),
+                    embalmed,
                 )? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(copy) => copy,
@@ -3698,23 +3792,47 @@ impl Pass<'_> {
     /// since the battlefield is public.
     fn copies(
         &mut self,
-        source: ObjectRef,
+        (source, bound, lki): (
+            ObjectRef,
+            &crate::resolve::Bindings,
+            &[(ObjectRef, Arc<mtg_cards::CardDefinition>)],
+        ),
         controller: PlayerId,
         entering: ObjectId,
         (of, must): (&Selector, bool),
         (except, except_if): (&[Modification], &[mtg_cards::trigger::CopyExceptIf]),
+        embalmed: Option<&[Modification]>,
     ) -> Result<Asked<Option<BecameCopy>>, EngineError> {
-        let scope = Scope::announcing(self.state, controller, source);
+        let scope = Scope {
+            bindings: bound,
+            ..Scope::announcing(self.state, controller, source)
+        };
         let options: Vec<ObjectId> = scope
             .matching(of)?
             .into_iter()
             .filter(|named| {
-                named.id != entering && self.state.object(named.id).is_some_and(may_be_copied)
+                named.id != entering
+                    // A token entering with it is not on the battlefield yet.
+                    && !self.r109_is_entering_token(named.id)
+                    && self.state.object(named.id).is_some_and(may_be_copied)
             })
             .map(|named| named.id)
             .collect();
         if options.is_empty() {
-            return Ok(Asked::Got(None));
+            // A named object that has left is copied as it last existed on the battlefield.
+            return match lki.first() {
+                Some((of, values)) if must => {
+                    let copy = (*of, (**values).clone());
+                    Ok(Asked::Got(Some(Self::r109_copy_of(
+                        &scope,
+                        entering,
+                        copy,
+                        (except, except_if),
+                        embalmed,
+                    )?)))
+                }
+                _ => Ok(Asked::Got(None)),
+            };
         }
         // A copy that must be made of the one object there is asks nothing.
         let only = match options.as_slice() {
@@ -3757,23 +3875,46 @@ impl Pass<'_> {
             return Ok(Asked::Got(None));
         };
         let of = original.reference();
-        let mut values = copiable_values(self.state, of, None)
+        let values = copiable_values(self.state, of, None)
             .ok_or_else(|| Self::invalid(format!("{of:?} cannot be copied")))?;
+        Ok(Asked::Got(Some(Self::r109_copy_of(
+            &scope,
+            entering,
+            (of, values),
+            (except, except_if),
+            embalmed,
+        )?)))
+    }
+
+    /// The copy effect that makes `entering` a copy of `of` with these copiable values and the exceptions that apply to
+    /// it.
+    fn r109_copy_of(
+        scope: &Scope<'_>,
+        entering: ObjectId,
+        (of, mut values): (ObjectRef, mtg_cards::CardDefinition),
+        (except, except_if): (&[Modification], &[mtg_cards::trigger::CopyExceptIf]),
+        embalmed: Option<&[Modification]>,
+    ) -> Result<BecameCopy, EngineError> {
         let mut applying: Vec<&Modification> = except.iter().collect();
         for entry in except_if {
             if scope.selects(&entry.of, of)? {
                 applying.extend(&entry.except);
             }
         }
+        applying.extend(embalmed.into_iter().flatten());
         for modification in applying {
-            let modification = r6104_worked_out(&scope, modification)?;
+            let modification = r6104_worked_out(scope, modification)?;
             if !values.except(&modification) {
                 return Err(Self::invalid(format!(
                     "{modification:?} is no exception of a copy effect"
                 )));
             }
         }
-        Ok(Asked::Got(Some(BecameCopy {
+        // The token its own embalm made has no mana cost (CR 702.128a).
+        if embalmed.is_some() {
+            values.mana_cost = None;
+        }
+        Ok(BecameCopy {
             object: entering,
             of,
             definition: Arc::new(values),
@@ -3781,7 +3922,7 @@ impl Pass<'_> {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
-        })))
+        })
     }
 
     /// Whether the effect that was picked applies: the optional ones ask their player first (the commander rule, dredge).
@@ -3919,9 +4060,15 @@ impl Pass<'_> {
                     matches!(&slot.item, Item::One(Event::ZoneChanged { object: moved, .. }) if *moved == object)
                 })
                 .count();
+            // A token the batch creates already is that permanent in the view the step reads.
+            let on_from = if self.r109_is_entering_token(object) {
+                0
+            } else {
+                u32::try_from(moves).unwrap_or(1).max(1)
+            };
             let on = Target::Object(ObjectRef {
                 id: object,
-                counter: card.counter() + u32::try_from(moves).unwrap_or(1).max(1),
+                counter: card.counter() + on_from,
             });
             let mut inherited = applied.to_vec();
             inherited.dedup();
@@ -4308,6 +4455,7 @@ fn r6104_worked_out(
     })
 }
 
+mod r109_next_batch;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
@@ -4334,6 +4482,7 @@ mod prepared;
 mod dredge;
 mod lg1_draws;
 
+mod r109_enters_attached;
 mod reveal;
 
 mod amplify;
@@ -4351,6 +4500,8 @@ mod w13b_tapped_for_counters;
 mod c6_blk_draw_step;
 
 mod c7_untap_dies;
+#[cfg(test)]
+mod r109_next_batch_tests;
 #[cfg(test)]
 mod r3d_replaces;
 mod r6503_resolves;
@@ -4392,6 +4543,7 @@ mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;
 
+mod r109_tokens_enter;
 mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;

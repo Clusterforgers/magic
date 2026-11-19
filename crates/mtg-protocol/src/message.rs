@@ -677,6 +677,14 @@ pub enum ServerMessage {
         /// Each seat that drew its deck, in seat order.
         decks: Vec<RevealedDeck>,
     },
+    /// The cards whose pictures this client may load before the table shows them ([`crate::deck_pictures`]): its own
+    /// deck whole, and of the other seats only their commanders and companions, never a hidden list.
+    ///
+    /// Sent after the snapshot of each sync (the start, a reconnect, a rewind); left unsent when there is none.
+    DeckPictures {
+        /// The cards, each once: the viewer's own first.
+        cards: Vec<crate::pictures::PictureCard>,
+    },
 }
 
 /// A seat's deck drawn at random, as the start reveals it (see [`ServerMessage::DecksRevealed`]).

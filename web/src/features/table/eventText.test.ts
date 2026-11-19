@@ -319,6 +319,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   LifePaid: [{ LifePaid: { player: 1, amount: 4 } }, 'Bo pays 4 life'],
   CardDrawn: [{ CardDrawn: { player: 0, object: 3 } }, 'Ana draws Forest'],
   DrewFromEmptyLibrary: [{ DrewFromEmptyLibrary: { player: 1 } }, 'Bo tries to draw from an empty library'],
+  R109DrawReplaced: [{ R109DrawReplaced: { player: 1 } }, 'A draw of Bo is replaced'],
   CardDiscarded: [{ CardDiscarded: { player: 0, object: 2 } }, 'Ana discards Hill Giant'],
   Cycled: [{ Cycled: { player: 0, object: 2 } }, 'Ana cycles Hill Giant'],
   AttackersDeclared: [
@@ -1233,6 +1234,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { AddKeyword: 'Flying' }, { UntilEndOfTurnOrRolled: 1 }),
       'Hill Giant gains flying until end of turn, or until any player rolls a 1',
+    ],
+    [
+      effect(objects(2), 'CantAttack', { R109ThatCombat: 1 }),
+      "Hill Giant can't attack during the added combat phase",
     ],
     [
       effect(objects(2), { AddSubtype: 'Aura' }, { UntilPaid: '{W}' }),

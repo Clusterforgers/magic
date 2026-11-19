@@ -18,9 +18,9 @@ export interface SeatPlan {
   deck: string
 }
 
-/** A player in a new context, with the page's uncaught exceptions collected. */
-async function newPlayer(browser: Browser, name: string): Promise<Player> {
-  const context = await browser.newContext()
+/** A player in a new context, or a new page of `context`, with the page's uncaught exceptions collected. */
+async function newPlayer(browser: Browser, name: string, context?: BrowserContext): Promise<Player> {
+  context ??= await browser.newContext()
   const page = await context.newPage()
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
@@ -29,12 +29,17 @@ async function newPlayer(browser: Browser, name: string): Promise<Player> {
 
 /**
  * Creates a game through the form on `/` as the first seat, opens that seat, and has every other seat open its own
- * link in a browser context of its own. Returns the players in seat order, all in the lobby.
+ * link in a browser context of its own. With `hostContext` the first seat plays in that browser (its storage kept from
+ * an earlier game). Returns the players in seat order, all in the lobby.
  */
-export async function createAndJoin(browser: Browser, plans: readonly SeatPlan[]): Promise<Player[]> {
+export async function createAndJoin(
+  browser: Browser,
+  plans: readonly SeatPlan[],
+  hostContext?: BrowserContext,
+): Promise<Player[]> {
   const [host, ...guests] = plans
   if (host === undefined) throw new Error('a game needs at least one seat')
-  const first = await newPlayer(browser, host.name)
+  const first = await newPlayer(browser, host.name, hostContext)
 
   await first.page.goto('/new')
   await first.page.getByRole('radio', { name: /^Normal/ }).check()

@@ -366,6 +366,7 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Attacking => Part::Before("attacking".to_owned()),
         Pred::Blocking => Part::Before("blocking".to_owned()),
         Pred::Unblocked => Part::Before("unblocked".to_owned()),
+        Pred::Blocked => Part::Before("blocked".to_owned()),
         Pred::FaceDown => Part::Before("face-down".to_owned()),
         Pred::ControlledBy(Ref::You) => Part::After("you control".to_owned()),
         Pred::ControlledBy(Ref::Opponents) => Part::After("an opponent controls".to_owned()),
@@ -637,6 +638,9 @@ pub(super) fn condition(ctx: &Ctx, cond: &Condition) -> String {
         }
         Condition::YourTurn => "it is your turn".to_owned(),
         Condition::PaidToIgnore => "you paid to ignore this effect this turn".to_owned(),
+        Condition::PaidToIgnoreBy(players) => {
+            format!("{} paid to ignore this effect this turn", who(ctx, players))
+        }
         Condition::ExtraTurn => "it is an extra turn".to_owned(),
         Condition::Among(players) => format!("you are among {}", who(ctx, players)),
         Condition::IsDay => "it is day".to_owned(),
@@ -670,6 +674,7 @@ pub(super) fn duration(value: &Duration) -> String {
     match value {
         Duration::UntilEndOfTurn => "until end of turn".to_owned(),
         Duration::UntilEndOfCombat => "until end of combat".to_owned(),
+        Duration::R109ThatCombat(_) => "during that added combat phase".to_owned(),
         Duration::UntilYourNextTurn => "until your next turn".to_owned(),
         Duration::UntilYourNextEndStep => "until your next end step".to_owned(),
         Duration::UntilYourNextUpkeep => "until your next upkeep".to_owned(),

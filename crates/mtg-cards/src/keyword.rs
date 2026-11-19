@@ -29,6 +29,8 @@ pub enum Keyword {
     Deathtouch,
     /// Trample.
     Trample,
+    /// CR 702.19c.
+    TrampleOverPlaneswalkers,
     /// Lifelink.
     Lifelink,
     /// Vigilance.
@@ -530,6 +532,7 @@ impl Keyword {
         "Double strike",
         "Deathtouch",
         "Trample",
+        "Trample over planeswalkers",
         "Lifelink",
         "Vigilance",
         "Haste",
@@ -727,6 +730,7 @@ impl Keyword {
             Keyword::DoubleStrike => "Double strike",
             Keyword::Deathtouch => "Deathtouch",
             Keyword::Trample => "Trample",
+            Keyword::TrampleOverPlaneswalkers => "Trample over planeswalkers",
             Keyword::Lifelink => "Lifelink",
             Keyword::Vigilance => "Vigilance",
             Keyword::Haste => "Haste",
@@ -1030,6 +1034,7 @@ mod tests {
             Keyword::DoubleStrike,
             Keyword::Deathtouch,
             Keyword::Trample,
+            Keyword::TrampleOverPlaneswalkers,
             Keyword::Lifelink,
             Keyword::Vigilance,
             Keyword::Haste,

@@ -1693,6 +1693,9 @@ pub enum Effect {
         /// activated.").
         #[serde(default, skip_serializing_if = "is_false")]
         no_power_up: bool,
+        /// Damage can't be prevented then.
+        #[serde(default, skip_serializing_if = "is_false")]
+        r109_unpreventable: bool,
         /// A delayed triggered ability of each of them, at the beginning of its end step ("At the beginning of that
         /// turn's end step, you lose the game."); none when empty.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
@@ -2308,6 +2311,9 @@ pub enum Effect {
         /// Only players are offered ("reselect which player ~ is attacking").
         #[serde(default, skip_serializing_if = "is_false")]
         players: bool,
+        /// Now attacking this player.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r109_to: Option<Ref>,
     },
     /// Binds the players or objects `what` names now under the name, so the steps after it (and a delayed trigger this
     /// resolution sets up) read the same ones however the game changes ("its controller" of a spell about to be countered).

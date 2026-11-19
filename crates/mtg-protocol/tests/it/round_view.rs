@@ -26,6 +26,7 @@ fn begin(state: &mut GameState, regular: &mut PlayerId, extra: Option<PlayerId>)
                 player,
                 skip_untap: false,
                 no_power_up: false,
+                r109_unpreventable: false,
                 r6703_end: None,
             };
             apply_event(state, &added).unwrap();

@@ -22,6 +22,7 @@ mod exiled;
 pub(crate) mod forage;
 mod life;
 pub(crate) mod mill;
+pub(crate) mod r109_opponent_life;
 mod r300_random_shots;
 mod r303c_sacrifice_all;
 mod r5511_card_types;
@@ -139,6 +140,8 @@ pub(crate) enum Part {
     Damage(u32),
     /// Each other player gains this much life.
     OthersGainLife(u32),
+    /// An opponent the payer chooses gains this much life (`CostTaken::players`).
+    OpponentGainsLife(u32),
     /// The payer gets this many poison counters.
     Poison(u32),
     /// The source stops being attached.
@@ -322,6 +325,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
         }
         CostItem::Unattach => (Part::Unattach, false),
         CostItem::OthersGainLife(amount) => (Part::OthersGainLife(*amount), false),
+        CostItem::OpponentGainsLife(amount) => (Part::OpponentGainsLife(*amount), false),
         CostItem::GetPoison(amount) => (Part::Poison(*amount), false),
         CostItem::TapPower { filter, power } => {
             let count = usize::try_from(*power).unwrap_or(usize::MAX);
@@ -619,6 +623,7 @@ impl Part {
                 Part::DiscardRandom(_) => Part::DiscardRandom(x),
                 Part::Damage(_) => Part::Damage(x),
                 Part::OthersGainLife(amount) => Part::OthersGainLife(*amount),
+                Part::OpponentGainsLife(amount) => Part::OpponentGainsLife(*amount),
                 Part::Poison(amount) => Part::Poison(*amount),
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
@@ -729,6 +734,7 @@ impl Part {
             | Part::RevealHand
             | Part::SacrificeAll(_)
             | Part::OthersGainLife(_)
+            | Part::OpponentGainsLife(_)
             | Part::Poison(_)
             | Part::X(_) => return None,
         };
@@ -746,6 +752,7 @@ impl Part {
             Part::DiscardRandom(_) => "Cost.DiscardRandom",
             Part::Damage(_) => "Cost.DamageToYou",
             Part::OthersGainLife(_) => "Cost.OthersGainLife",
+            Part::OpponentGainsLife(_) => "Cost.OpponentGainsLife",
             Part::Poison(_) => "Cost.GetPoison",
             Part::Unattach => "Cost.Unattach",
             Part::DiscardHand => "Cost.Discard",
@@ -796,6 +803,7 @@ impl Part {
             Part::Spend { counter, count } => spend::text(counter, *count),
             Part::Damage(amount) => format!("Take {amount} damage"),
             Part::OthersGainLife(amount) => format!("Each other player gains {amount} life"),
+            Part::OpponentGainsLife(amount) => format!("Have an opponent gain {amount} life"),
             Part::Poison(amount) => format!("Get {amount} poison counters"),
             Part::Unattach => "Unattach this permanent".to_owned(),
             Part::DiscardHand => "Discard your hand".to_owned(),
@@ -858,6 +866,11 @@ impl Part {
             Part::Unattach => unattach::payable(payer).then(Vec::new),
             Part::DiscardHand | Part::RevealHand | Part::OthersGainLife(_) | Part::Poison(_) => {
                 Some(Vec::new())
+            }
+            Part::OpponentGainsLife(_) => {
+                r109_opponent_life::r109_opponents(payer.state, payer.player)
+                    .first()
+                    .map(|_| Vec::new())
             }
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_all(payer, filter),
             Part::ExileTop(amount) => exile_top::payable(payer, *amount).then(Vec::new),
@@ -938,6 +951,8 @@ impl Part {
             Part::DiscardRandom(amount) => random::events(state, player, *amount),
             Part::Damage(amount) => damage::events(state, player, source, *amount),
             Part::OthersGainLife(amount) => r286_others_gain(state, player, *amount),
+            // The opponent is chosen as the cost is paid; its life comes with the choices (`r109_opponent_gains`).
+            Part::OpponentGainsLife(_) => Vec::new(),
             Part::Poison(amount) => r4705_poison(player, *amount),
             Part::Unattach => vec![unattach::event(source)],
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_events(

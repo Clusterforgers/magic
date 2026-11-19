@@ -74,6 +74,10 @@ fn damage_object(
     if creature {
         if !counters {
             perm.damage = perm.damage.saturating_add(amount);
+            if amount > 0 {
+                let from = perm.damage_by.entry(source).or_default();
+                *from = from.saturating_add(amount);
+            }
         }
         perm.deathtouched |= deathtouched;
     }
@@ -219,6 +223,7 @@ fn remove_damage(
         .and_then(|o| o.permanent.as_mut())
         .ok_or_else(|| invalid(format!("{object:?} is not a permanent")))?;
     perm.damage = 0;
+    perm.damage_by.clear();
     perm.deathtouched = false;
     Ok(perm)
 }
@@ -509,6 +514,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             for object in state.objects.values_mut() {
                 if let Some(perm) = &mut object.permanent {
                     perm.damage = 0;
+                    perm.damage_by.clear();
                     perm.deathtouched = false;
                 }
             }

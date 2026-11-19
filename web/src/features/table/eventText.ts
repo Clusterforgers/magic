@@ -308,6 +308,7 @@ function durationWords(
     if ('UntilEndOfTurnOrRolled' in duration)
       return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
     if ('R6700UntilEndOfTheirNextTurn' in duration) return " until the end of that player's next turn"
+    if ('R109ThatCombat' in duration) return ' during the added combat phase'
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
   }
@@ -1444,6 +1445,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('DrewFromEmptyLibrary' in event) {
     return line(`${n.seat(event.DrewFromEmptyLibrary.player)} tries to draw from an empty library`)
   }
+  if ('R109DrawReplaced' in event)
+    return quiet(`A draw of ${n.seat(event.R109DrawReplaced.player)} is replaced`)
   if ('CardDiscarded' in event) {
     return line(`${n.seat(event.CardDiscarded.player)} discards ${n.card(event.CardDiscarded.object)}`)
   }

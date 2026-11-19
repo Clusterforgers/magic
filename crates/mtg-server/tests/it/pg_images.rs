@@ -299,11 +299,12 @@ fn check(path: &str, reply: &net::Reply, expect: &Expect) {
                 "image/jpeg"
             };
             assert_eq!(reply.header("content-type"), Some(kind), "{path}");
-            assert_eq!(
-                reply.header("cache-control"),
-                Some("public, max-age=604800"),
-                "{path}"
-            );
+            let rule = if path.starts_with("/api/images/printing/") {
+                "public, max-age=31536000, immutable"
+            } else {
+                "public, max-age=604800, immutable"
+            };
+            assert_eq!(reply.header("cache-control"), Some(rule), "{path}");
             assert!(
                 reply.header("etag").is_some_and(|tag| tag.starts_with('"')),
                 "{path}"
@@ -582,7 +583,7 @@ async fn a_picture_is_fetched_once_kept_and_validated_by_its_tag(pool: PgPool) {
         assert_eq!(reply.header("etag"), Some(tag.as_str()));
         assert_eq!(
             reply.header("cache-control"),
-            Some("public, max-age=604800")
+            Some("public, max-age=604800, immutable")
         );
     }
     let stale = request(

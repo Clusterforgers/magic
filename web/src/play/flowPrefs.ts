@@ -1,10 +1,18 @@
 /**
- * The viewer's pace preferences, shared by every game: the pinned stops a new game starts with, and whether the seat
- * ends its own turns by hand, and the decisions the server answers for it. A signed-in account keeps them on the server (`attachAccount`); a guest keeps them in
- * `localStorage`. A session applies them at `Welcome` (`welcomeRequests`).
+ * The viewer's pace preferences, shared by every game: the pinned stops a new game starts with, whether the seat ends
+ * its own turns by hand, the decisions the server answers for it, and whether Full Control stays held. A signed-in
+ * account keeps them on the server (`attachAccount`); a guest keeps them in `localStorage`. A session applies them at
+ * `Welcome` (`welcomeRequests`), and again when an account's copy replaces them mid-game (`onPrefsReplaced`).
  */
 import { useSyncExternalStore } from 'react'
-import type { AutoChoices, AutoYield, ClientMessage, HandSort, Stop } from '@/protocol/generated'
+import type {
+  AutoChoices,
+  AutoYield,
+  ClientMessage,
+  FullControlMode,
+  HandSort,
+  Stop,
+} from '@/protocol/generated'
 import { DEFAULT_HAND_SORT, legacyHandSort, readHandSort, sameHandSort } from './handSort'
 import { canHoldStop } from './stops'
 
@@ -16,6 +24,8 @@ export const END_TURN_KEY = 'mtg.endTurnByHand'
 export const AUTO_CHOICES_KEY = 'mtg.autoChoices'
 /** The `localStorage` key of the abilities always yielded to. */
 export const AUTO_YIELDS_KEY = 'mtg.autoYields'
+/** The `localStorage` key of Full Control held: `on` while it carries into every game. */
+export const FULL_CONTROL_KEY = 'mtg.fullControlHeld'
 /** The `localStorage` key of the hand sort. */
 export const HAND_SORT_KEY = 'mtg.handSort'
 /** The `localStorage` key an older page kept the hand sort under ("types", "mana" or "drawn"). */
@@ -37,9 +47,16 @@ export interface FlowPrefs {
   autoYields: readonly AutoYield[]
   /** How the hand dock orders a hand the viewer did not drag, in every game. */
   handSort: HandSort
+  /** Whether Full Control held ("Held until I turn it off") carries into every game until turned off. */
+  fullControlHeld: boolean
 }
 
+/** Every flag of `AutoChoices`, each kept and applied on its own. */
+const AUTO_FLAGS = ['order_triggers', 'assign_damage', 'smart_stops', 'skip_triggers', 'auto_pay'] as const
+
 const listeners = new Set<() => void>()
+/** Told when an account's copy replaces the preferences, so a game already joined catches up with them. */
+const replacedListeners = new Set<() => void>()
 let current: FlowPrefs | null = null
 /** Where the preferences are saved while an account is signed in; none keeps them in `localStorage`. */
 let account: ((prefs: FlowPrefs) => void) | null = null
@@ -107,6 +124,8 @@ function readAuto(): AutoChoices {
     order_triggers: flags.order_triggers === true,
     assign_damage: flags.assign_damage === true,
     smart_stops: flags.smart_stops === true,
+    skip_triggers: flags.skip_triggers === true,
+    auto_pay: flags.auto_pay === true,
   }
 }
 
@@ -149,6 +168,7 @@ function readLocal(): FlowPrefs {
     autoChoices: readAuto(),
     autoYields: readYields(),
     handSort: readSort(),
+    fullControlHeld: readItem(FULL_CONTROL_KEY) === 'on',
   }
 }
 
@@ -163,13 +183,19 @@ function store(next: FlowPrefs): void {
       HAND_SORT_KEY,
       sameHandSort(next.handSort, DEFAULT_HAND_SORT) ? null : JSON.stringify(next.handSort),
     )
+    writeItem(FULL_CONTROL_KEY, next.fullControlHeld ? 'on' : null)
   } else account(next)
   change(next)
 }
 
 /** Whether any decision is left to the server. */
 function hasAuto(auto: AutoChoices): boolean {
-  return auto.order_triggers || auto.assign_damage || auto.smart_stops
+  return AUTO_FLAGS.some((flag) => auto[flag] === true)
+}
+
+/** Whether `a` and `b` leave the same decisions to the server; a flag left out counts as off. */
+function sameAuto(a: AutoChoices, b: AutoChoices): boolean {
+  return AUTO_FLAGS.every((flag) => (a[flag] === true) === (b[flag] === true))
 }
 
 /** Whether `prefs` are what a new account has. */
@@ -179,7 +205,8 @@ function isDefault(prefs: FlowPrefs): boolean {
     !prefs.endTurnByHand &&
     !hasAuto(prefs.autoChoices) &&
     prefs.autoYields.length === 0 &&
-    sameHandSort(prefs.handSort, DEFAULT_HAND_SORT)
+    sameHandSort(prefs.handSort, DEFAULT_HAND_SORT) &&
+    !prefs.fullControlHeld
   )
 }
 
@@ -202,6 +229,15 @@ export function attachAccount(server: FlowPrefs, save: (prefs: FlowPrefs) => voi
     save(local)
     change(local)
   } else change(server)
+  for (const listener of replacedListeners) listener()
+}
+
+/** Calls `listener` whenever an account's copy replaces the preferences in use; returns the unsubscribe. */
+export function onPrefsReplaced(listener: () => void): () => void {
+  replacedListeners.add(listener)
+  return () => {
+    replacedListeners.delete(listener)
+  }
 }
 
 /** Returns the preferences to this browser's storage, as for a guest. */
@@ -242,6 +278,12 @@ function sameYield(a: AutoYield, b: AutoYield | undefined): boolean {
   return b !== undefined && a.name === b.name && a.text === b.text
 }
 
+/** Stores whether Full Control held carries into every game. */
+export function saveFullControlHeld(held: boolean): void {
+  if (flowPrefs().fullControlHeld === held) return
+  store({ ...flowPrefs(), fullControlHeld: held })
+}
+
 /** Stores how the hand dock orders a hand the viewer did not drag. */
 export function saveHandSort(sort: HandSort): void {
   if (sameHandSort(flowPrefs().handSort, sort)) return
@@ -252,6 +294,7 @@ export function saveHandSort(sort: HandSort): void {
 export function resetFlowPrefs(): void {
   current = null
   account = null
+  replacedListeners.clear()
 }
 
 /** Whether the default stops were already given to `game`; the first call for a game also notes that they now are. */
@@ -271,12 +314,16 @@ export interface WelcomeFacts {
   autoChoices: AutoChoices
   /** The yields the server holds for the seat; absent counts as none. */
   autoYields?: readonly AutoYield[]
+  /** The Full Control mode the server holds for the seat; absent counts as off. */
+  fullControl?: FullControlMode
 }
+
+/** What the server holds for a seat that the settings of the preferences compare against. */
+export type HeldSettings = Omit<WelcomeFacts, 'game' | 'stops'>
 
 /**
  * The requests that bring the server in line with the preferences at a `Welcome`: the default stops once per game,
- * the first time this browser joins it and only while the seat holds none, and the end-turn-by-hand choice whenever
- * the server holds the other one, and the auto choices likewise.
+ * the first time this browser joins it and only while the seat holds none, then the settings (`settingRequests`).
  */
 export function welcomeRequests(welcome: WelcomeFacts, prefs: FlowPrefs = flowPrefs()): ClientMessage[] {
   const requests: ClientMessage[] = []
@@ -285,15 +332,28 @@ export function welcomeRequests(welcome: WelcomeFacts, prefs: FlowPrefs = flowPr
     for (const { side, step } of prefs.defaultStops)
       requests.push({ type: 'SetStop', side, step, on: true, keep: true })
   }
-  if (prefs.endTurnByHand !== welcome.endTurnByHand)
+  return [...requests, ...settingRequests(welcome, prefs)]
+}
+
+/**
+ * The requests that bring the seat's settings in line with the preferences: the end-turn-by-hand choice whenever the
+ * server holds the other one, the auto choices likewise, the yields the server lacks, and Full Control held when the
+ * preferences keep it held and the server does not. A held Full Control is never turned off here: only the player
+ * turns it off.
+ */
+export function settingRequests(held: HeldSettings, prefs: FlowPrefs = flowPrefs()): ClientMessage[] {
+  const requests: ClientMessage[] = []
+  if (prefs.endTurnByHand !== held.endTurnByHand)
     requests.push({ type: 'EndTurnByHand', on: prefs.endTurnByHand })
-  const { order_triggers, assign_damage, smart_stops } = prefs.autoChoices
-  if (
-    order_triggers !== welcome.autoChoices.order_triggers ||
-    assign_damage !== welcome.autoChoices.assign_damage ||
-    smart_stops !== welcome.autoChoices.smart_stops
-  )
+  if (!sameAuto(prefs.autoChoices, held.autoChoices))
     requests.push({ type: 'AutoChoices', choices: prefs.autoChoices })
+  if (prefs.fullControlHeld && held.fullControl !== 'Held')
+    requests.push({ type: 'FullControl', mode: 'Held' })
+  return [...requests, ...yieldRequests(held, prefs)]
+}
+
+function yieldRequests(welcome: HeldSettings, prefs: FlowPrefs): ClientMessage[] {
+  const requests: ClientMessage[] = []
   const held = welcome.autoYields ?? []
   if (prefs.autoYields.some((key) => !held.some((other) => sameYield(key, other))))
     requests.push({ type: 'LoadAutoYields', yields: [...prefs.autoYields] })

@@ -71,6 +71,8 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
   if (rules === null) return null
   const running = item.running === undefined ? false : item.running
   if (!isFlag(running)) return null
+  const seated = item.seated === undefined ? false : item.seated
+  if (!isFlag(seated)) return null
   const commanders = readLobbyCommanders(item.commanders)
   if (commanders === null) return null
   return {
@@ -85,6 +87,7 @@ export function readLobbyGame(item: unknown): LobbyGame | null {
     age_secs: age,
     ...(running ? { running } : {}),
     ...(commanders.length > 0 ? { commanders } : {}),
+    ...(seated ? { seated } : {}),
   }
 }
 

@@ -404,6 +404,16 @@ describe('a source whose effect the viewer may pay to ignore is a play on it, wh
     ])
   })
 
+  it('is worded with the words of a price that takes more than mana', () => {
+    const words: Partial<PriorityOptions> = {
+      ignorable: [{ object: 10, cost: [], words: 'Exile three cards from your graveyard' }],
+    }
+    const found = abilityPlays(options([], words), table(placed(10, 'Battlefield', ME)), ME)
+    expect(found.get(10)?.map((play) => play.label)).toEqual([
+      'Exile three cards from your graveyard: ignore its effect this turn',
+    ])
+  })
+
   it('is not offered to a spectator seat', () => {
     expect(abilityPlays(options([], ignoring), table(placed(10, 'Battlefield', ME)), null).size).toBe(0)
   })

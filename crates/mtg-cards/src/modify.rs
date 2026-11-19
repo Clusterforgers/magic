@@ -324,6 +324,8 @@ pub enum Duration {
     UntilEndOfTurn,
     /// Until the end of combat.
     UntilEndOfCombat,
+    /// In that added combat (0).
+    R109ThatCombat(u32),
     /// Until the controller's next turn begins.
     UntilYourNextTurn,
     /// Until the controller's next end step begins: the one of this turn when it has not begun yet (CR 513).
@@ -667,6 +669,25 @@ pub enum CombatQuirk {
     BlockIgnoringShadow,
     /// Tapped to crew or saddle, they count for another amount than their power.
     TapPower(TapPowerAs),
+    /// Divides damage among defender and creatures.
+    R109AssignsAmongDefenders,
+    /// Unblocked: all damage to one creature.
+    R109UnblockedToCreature,
+    /// The defender assigns its damage.
+    R109DefenderAssigns,
+    /// Lethal damage counts per source.
+    R109LethalFromOneSource,
+}
+
+/// The capability key of a combat damage quirk of r109 (`Combat.<variant>`), which an engine without it lacks.
+pub fn r109_quirk_key(quirk: &CombatQuirk) -> Option<&'static str> {
+    Some(match quirk {
+        CombatQuirk::R109AssignsAmongDefenders => "Combat.R109AssignsAmongDefenders",
+        CombatQuirk::R109UnblockedToCreature => "Combat.R109UnblockedToCreature",
+        CombatQuirk::R109DefenderAssigns => "Combat.R109DefenderAssigns",
+        CombatQuirk::R109LethalFromOneSource => "Combat.R109LethalFromOneSource",
+        _ => return None,
+    })
 }
 
 /// What a creature counts for when it is tapped to crew or saddle.
@@ -817,6 +838,9 @@ pub enum SpellBenefit {
     /// spell you cast this turn, you may pay life equal to that spell's mana value"; an amount in it counts the card cast
     /// as `This`.
     Rather(crate::cost::Cost),
+    /// As the spell resolves, the replacement takes the place of its move into a graveyard (CR 608.2n, 614.1a): "put that
+    /// card into your hand instead of into your graveyard as it resolves" (`ReplaceBy::MoveTo`).
+    R6503Resolves(crate::trigger::ReplaceBy),
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
@@ -1243,6 +1267,16 @@ pub enum GameRule {
     /// the other effects of the rule's source until end of turn; those effects leave such a player out with
     /// `Condition::PaidToIgnore` ("Any player may pay {2} for that player to ignore this effect until end of turn.").
     PayToIgnore(ManaCostX),
+    /// The players the reference names may pay the cost, a special action any time they have priority (CR 116.2), for
+    /// that player to ignore the other effects of the rule's source until end of turn; those effects leave such a player
+    /// out with `Condition::PaidToIgnoreBy` ("Its controller may exile three cards from their graveyard for that player
+    /// to ignore this effect until end of turn.").
+    PayToIgnoreBy {
+        /// Who may pay: "its controller", "that creature's controller".
+        payer: Ref,
+        /// What ignoring the effects costs.
+        cost: Cost,
+    },
     /// The permanents the selector picks that the rule's controller controls untap during the untap step of each of the
     /// players (CR 502.3): "untap all creatures you control during each other player's untap step".
     UntapDuring {

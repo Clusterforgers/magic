@@ -55,7 +55,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 
 const CLIENT_VARIANTS: usize = 23;
-const SERVER_VARIANTS: usize = 26;
+const SERVER_VARIANTS: usize = 27;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
@@ -148,6 +148,7 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::TakeBackRefused { .. } => 23,
         ServerMessage::EndedByAdmin { .. } => 24,
         ServerMessage::DecksRevealed { .. } => 25,
+        ServerMessage::DeckPictures { .. } => 26,
     }
 }
 
@@ -357,6 +358,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             excess: None,
             lethal: vec![2],
             unblocked: false,
+            whole: Vec::new(),
         }),
         DecisionKind::AssignDamage(DamageOptions {
             attacker: a,
@@ -365,6 +367,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             excess: Some(DamageTarget::Player(PlayerId(1))),
             lethal: vec![1],
             unblocked: false,
+            whole: Vec::new(),
         }),
         DecisionKind::Discard(DiscardOptions {
             hand: vec![a, b],
@@ -881,6 +884,15 @@ fn server_samples() -> Vec<ServerMessage> {
         decks: vec![mtg_protocol::RevealedDeck {
             seat: PlayerId(1),
             name: "Adaptive Enchantment".into(),
+        }],
+    });
+    out.push(ServerMessage::DeckPictures {
+        cards: vec![mtg_protocol::PictureCard {
+            identity: mtg_cards::CardIdentity {
+                oracle_id: "o".into(),
+                printing_id: Some("p".into()),
+            },
+            faces: 2,
         }],
     });
     let offer = TakeBackOffer {
@@ -1690,6 +1702,7 @@ fn w2f_cost_taken(
         removed: 3,
         spliced: vec![b],
         phyrexian_life: 2,
+        players: vec![PlayerId(2)],
     }
 }
 

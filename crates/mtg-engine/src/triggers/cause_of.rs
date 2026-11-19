@@ -18,6 +18,8 @@ pub(crate) struct CausedBy {
     pub(crate) object: Option<ObjectRef>,
     /// The specific kind of the ability being activated, when the batch pays the costs of an activation.
     pub(crate) activating: Option<mtg_cards::ability::ActivationKind>,
+    /// The alternative cost of the spell being cast, when the batch pays the costs of a cast.
+    pub(crate) r109_casting: Option<mtg_cards::value::CastWay>,
 }
 
 /// The cause of the events: the spell or ability that is resolving; else the spell being cast or the ability being
@@ -40,6 +42,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
             player: object.controller(),
             object: Some(origin),
             activating: None,
+            r109_casting: None,
         });
     }
     for event in events {
@@ -49,9 +52,14 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
                     player: put.controller,
                     object: Some(put.source),
                     activating: r6701_kind_activated(post, put),
+                    r109_casting: None,
                 });
             }
-            Event::SpellCast { player, object, .. } => {
+            Event::SpellCast {
+                player,
+                object,
+                choices,
+            } => {
                 let spell = post
                     .object(*object)
                     .map(crate::object::GameObject::reference);
@@ -59,6 +67,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
                     player: *player,
                     object: spell,
                     activating: None,
+                    r109_casting: choices.way,
                 });
             }
             _ => {}
@@ -75,6 +84,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
                 player,
                 object: Some(object),
                 activating: None,
+                r109_casting: None,
             })
         }
         // CR 714.3b: the turn-based lore counter of a Saga is put by the Saga's controller.
@@ -90,6 +100,7 @@ pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> O
                 player,
                 object: Some(saga),
                 activating: None,
+                r109_casting: None,
             })
         }
         _ => None,

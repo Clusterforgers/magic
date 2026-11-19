@@ -18,6 +18,8 @@ export interface DamageRecipient {
   damage: number
   /** The damage the engine says is lethal to it, when the decision carries it. */
   lethal?: number | undefined
+  /** Whether it takes all of the damage or none of it, as the engine offers it (a creature an unblocked attacker may hit instead). */
+  whole?: boolean | undefined
 }
 
 /** How the attacker's damage may go past its blockers, when it has trample. */
@@ -134,9 +136,21 @@ export function lethalEverywhere(
  *
  * Without `trample` all the power goes to the recipients. With it a split may fall short, and the rest goes to
  * `trample.to` if every recipient has at least its lethal damage.
+ * A recipient marked `whole` takes all of the power or none of it.
  */
-export function judge(power: number, amounts: readonly number[], trample?: Trample): Verdict {
+export function judge(
+  power: number,
+  amounts: readonly number[],
+  trample?: Trample,
+  recipients?: readonly DamageRecipient[],
+): Verdict {
   const assigned = totalOf(amounts)
+  const split = recipients?.find(
+    (recipient, index) => recipient.whole === true && (amounts[index] ?? 0) > 0 && amounts[index] !== power,
+  )
+  if (split !== undefined) {
+    return { legal: false, status: `${split.name} takes all ${power} damage or none of it.` }
+  }
   if (amounts.length === 0) {
     if (trample !== undefined && power > 0)
       return { legal: true, status: `All ${power} goes to ${trample.to}.` }

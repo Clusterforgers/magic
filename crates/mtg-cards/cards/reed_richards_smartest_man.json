@@ -1,7 +1,7 @@
 {
   "oracle_id": "51f55021-04e0-49bf-8f1f-de2a578c95fc",
   "name": "Reed Richards, Smartest Man",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Reed Richards, Smartest Man",
@@ -10,9 +10,9 @@
         { "Keyword": "Reach" },
         { "Rule": { "rule": { "NoMaxHandSize": "You" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 37, "end": 175 }
+          "Replacement": {
+            "when": { "Draw": { "except_draw_step": 1, "first": true } },
+            "by": { "Instead": [{ "Draw": { "count": 4 } }] }
           }
         }
       ]

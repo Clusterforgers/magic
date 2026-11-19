@@ -58,6 +58,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             when: when.clone(),
             by: by.clone(),
             players,
+            bound: super::r370_bound::r370_shield_targets(cx)?,
+            lki: Vec::new(),
         };
         return Ok(begin(cx, rule, duration.clone()));
     }
@@ -261,6 +263,7 @@ fn judged_per_event(kind: &Selector) -> bool {
             | Pred::Attacking
             | Pred::Blocking
             | Pred::Unblocked
+            | Pred::Blocked
             | Pred::HasKeyword(_)
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter

@@ -1,7 +1,7 @@
 {
   "oracle_id": "f9b6b1db-37c6-43d4-b762-6c9770da5964",
   "name": "Cass, Hand of Vengeance",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cass, Hand of Vengeance",
@@ -9,9 +9,57 @@
       "abilities": [
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 298 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "if": { "Matches": { "subject": "Triggering", "selector": [{ "HasAttached": [] }] } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Aura" },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "AttachedTo": "Triggering" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "auras"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "auras" },
+                  "to": { "BattlefieldAttached": { "to": { "Target": 0 } } }
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Equipment" },
+                      { "In": "Battlefield" },
+                      { "AttachedTo": "Triggering" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": null },
+                  "as": "equipment"
+                }
+              },
+              { "Attach": { "what": { "Bound": "equipment" }, "to": { "Target": 0 } } }
+            ]
           }
         }
       ]

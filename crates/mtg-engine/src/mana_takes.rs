@@ -186,6 +186,49 @@ pub(crate) fn leave(sources: &mut Vec<ManaOption>, objects: &[ObjectId]) {
     }
 }
 
+/// Takes out of what the costs of `sources` may take the permanents another cost of the same cast uses: nothing
+/// `tapped` by it, and nothing it `moved` (sacrifices, exiles) to sacrifice or exile again. A permanent another cost
+/// moves may still be tapped by a mana ability's cost first (CR 601.2g, 601.2h); the payment puts the move after it.
+pub(crate) fn r5506_leave_to_other_costs(
+    sources: &mut [ManaOption],
+    tapped: &[ObjectId],
+    moved: &[ObjectId],
+) {
+    for take in sources
+        .iter_mut()
+        .flat_map(|option| option.takes.iter_mut())
+    {
+        let gone: &[ObjectId] = if take.sacrifice || take.exile {
+            moved
+        } else {
+            &[]
+        };
+        take.from
+            .retain(|id| !tapped.contains(id) && !gone.contains(id));
+    }
+}
+
+/// `sources` without what the `announced` events of the same cast tap or move among what their costs may take
+/// ([`r5506_leave_to_other_costs`]).
+pub(crate) fn r5506_without_announced(
+    sources: &[ManaOption],
+    announced: &[crate::events::Event],
+) -> Vec<ManaOption> {
+    use crate::events::Event;
+    let mut tapped = Vec::new();
+    let mut moved = Vec::new();
+    for event in announced {
+        match event {
+            Event::PermanentTapped { object } => tapped.push(*object),
+            Event::ZoneChanged { object, .. } => moved.push(*object),
+            _ => {}
+        }
+    }
+    let mut sources = sources.to_vec();
+    r5506_leave_to_other_costs(&mut sources, &tapped, &moved);
+    sources
+}
+
 /// `sources` without the permanents in `gone` among those their costs may take (they were tapped for convoke).
 pub(crate) fn without_taken(
     sources: &[ManaOption],

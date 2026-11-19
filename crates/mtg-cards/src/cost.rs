@@ -203,6 +203,9 @@ pub enum CostItem {
     DamageToYou(Amount),
     /// Each other player gains this much life ("you may have each other player gain 6 life").
     OthersGainLife(u32),
+    /// An opponent of the payer's choice gains this much life, chosen as the cost is paid ("you may have an opponent gain 3
+    /// life").
+    OpponentGainsLife(u32),
     /// The payer gets this many poison counters ("Ward—Get five poison counters.").
     GetPoison(u32),
     /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d); in an ability an Equipment or Aura

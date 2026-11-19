@@ -1,0 +1,35 @@
+{
+  "oracle_id": "285046f6-b3c4-4eb7-8712-9dffebabc762",
+  "name": "Waterbender's Restoration",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Waterbender's Restoration",
+      "oracle_fingerprint": "b2117f25efd6e2b3f90a624387610c00",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Waterbend": "X" }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

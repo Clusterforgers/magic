@@ -693,14 +693,17 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6602_wholes::r6602_add_wholes(ability, &mut texts);
     super::r6603_wholes::r6603_add_wholes(ability, &mut texts);
     super::r6700_wholes::r6700_add_wholes(ability, &mut texts);
+    super::r109_04_wholes::r109_04_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
+    super::r109_05_wholes::r109_05_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     super::r5506_costs::r5506_wordings(ability, &mut texts);
     super::r5521_wholes::r5521_wordings(ability, &mut texts);
+    super::r109_wholes::r109_wordings(ability, &mut texts);
     super::r6007_wholes::r6007_wordings(ability, &mut texts);
     super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
     // Only a triggered animation is printed on an enchantment; an activated one, on a land, keeps its room.

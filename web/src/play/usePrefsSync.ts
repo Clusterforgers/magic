@@ -25,6 +25,7 @@ export function usePrefsSync(enabled: boolean, api: PrefsApi = prefsApi): void {
             auto_choices: prefs.autoChoices,
             auto_yields: [...prefs.autoYields],
             hand_sort: prefs.handSort,
+            ...(prefs.fullControlHeld ? { full_control_held: true } : {}),
           })
           .catch(() => {
             // The change stays for this page; the next one tries again.
@@ -41,6 +42,7 @@ export function usePrefsSync(enabled: boolean, api: PrefsApi = prefsApi): void {
             autoChoices: loaded.auto_choices,
             autoYields: loaded.auto_yields,
             handSort: readHandSort(loaded.hand_sort) ?? DEFAULT_HAND_SORT,
+            fullControlHeld: loaded.full_control_held === true,
           },
           (prefs) => {
             if (!stale) save(prefs)

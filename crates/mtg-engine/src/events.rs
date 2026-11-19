@@ -156,6 +156,9 @@ pub enum Event {
         /// Whether power-up abilities can't be activated during it.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         no_power_up: bool,
+        /// Whether damage can't be prevented during it.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        r109_unpreventable: bool,
         /// The delayed trigger set up as it begins, for its end step; its id is given then.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
@@ -389,6 +392,12 @@ pub enum Event {
     /// A draw was attempted from an empty library.
     DrewFromEmptyLibrary {
         /// Who tried.
+        player: PlayerId,
+    },
+    /// A replacement effect took the place of a draw of the player (CR 614.1a): the draw counts as a time the player would
+    /// have drawn a card ("the first time you would draw a card each turn").
+    R109DrawReplaced {
+        /// Who would have drawn.
         player: PlayerId,
     },
     /// A player's graveyard was shuffled into their library in place of losing to an empty library; the draws they
@@ -1709,6 +1718,7 @@ impl Event {
             | Event::ManaBurned { .. }
             | Event::LifePaid { .. }
             | Event::DrewFromEmptyLibrary { .. }
+            | Event::R109DrawReplaced { .. }
             | Event::BlockersDeclared { .. }
             | Event::DamageAssigned { .. }
             | Event::CombatEnded

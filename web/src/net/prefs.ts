@@ -71,7 +71,8 @@ function readPrefs(body: unknown): UserPrefs | null {
     !isFlag(body.end_turn_by_hand) ||
     !isAutoChoices(body.auto_choices) ||
     (body.auto_yields !== undefined && !isListOf(body.auto_yields, isAutoYield)) ||
-    (body.hand_sort !== undefined && !isHandSort(body.hand_sort))
+    (body.hand_sort !== undefined && !isHandSort(body.hand_sort)) ||
+    (body.full_control_held !== undefined && !isFlag(body.full_control_held))
   )
     return null
   return {
@@ -81,6 +82,8 @@ function readPrefs(body: unknown): UserPrefs | null {
     auto_yields: body.auto_yields === undefined ? [] : body.auto_yields,
     // An older server sends none: as drawn, every group in the starting order (filled in by the reader of the sort).
     hand_sort: body.hand_sort ?? { by: 'Drawn', groups: [] },
+    // Left out while off, as the server leaves it out; an older server never sends it.
+    ...(body.full_control_held === true ? { full_control_held: true } : {}),
   }
 }
 

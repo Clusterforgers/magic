@@ -116,6 +116,7 @@ fn row(house_rules: Option<HouseRules>) -> LobbyGame {
         age_secs: 5,
         running: false,
         commanders: Vec::new(),
+        seated: false,
     }
 }
 

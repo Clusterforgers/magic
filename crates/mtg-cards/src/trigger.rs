@@ -854,6 +854,14 @@ pub enum TriggerPattern {
         /// The kind of the ability being activated.
         kind: crate::ability::ActivationKind,
     },
+    /// The event, while the trigger's controller is casting a spell for this alternative cost, its costs paid in the same
+    /// batch ("When you sacrifice this creature while casting a spell with emerge", CR 601.2h).
+    R109WhileCasting {
+        /// The event.
+        inner: Box<TriggerPattern>,
+        /// The way the spell is cast.
+        way: crate::value::CastWay,
+    },
     /// The event, when a spell or ability caused it ("whenever you put a -1/-1 counter on a creature", "when a spell or
     /// ability an opponent controls causes you to discard this"): the controller of the spell or ability that is
     /// resolving, being cast or activated when the event happens, or the controller of the source of the damage. Turn
@@ -1023,6 +1031,10 @@ pub enum ReplaceWhen {
         /// one you draw in each of your draw steps"); zero replaces every draw.
         #[serde(default, skip_serializing_if = "crate::spend::is_zero")]
         except_draw_step: u32,
+        /// Only the first card the player would draw each turn, the draws `except_draw_step` spares not counted and a
+        /// replaced draw counted ("the first time you would draw a card each turn", CR 614.1a).
+        #[serde(default, skip_serializing_if = "is_false")]
+        first: bool,
     },
     /// A card matching the selector would enter the battlefield (a land played, a permanent spell resolving, a card
     /// put onto the battlefield); `This` is the card with the ability, in whatever zone it enters from.
@@ -1396,6 +1408,10 @@ pub enum ReplaceBy {
     /// As the Aura is turned face up, its controller may attach it to a permanent the selector names that it could
     /// enchant (CR 708.8, 303.4): "As this Aura is turned face up, you may attach it to a creature." Only `TurnedFaceUp`.
     R6702MayAttach(Selector),
+    /// As the Equipment enters, its controller may choose a permanent the selector names that it could be attached to,
+    /// and it enters attached to that permanent (CR 301.5, 614.12): "As this Equipment enters, choose a creature you
+    /// control it could be attached to. If you do, it enters attached to that creature." Only `Enters` of itself.
+    R109EntersAttached(Selector),
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),
@@ -1445,6 +1461,11 @@ pub enum ReplaceBy {
         /// it's a creature, ... has changeling").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except_if: Vec<CopyExceptIf>,
+        /// Exceptions the copy has, with no mana cost, only when the permanent that enters is the token its card's own
+        /// embalm ability makes ("except if this creature was embalmed, the token has no mana cost, it's white, and it's a
+        /// Zombie in addition to its other types").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r109_embalmed: Vec<Modification>,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {
@@ -1486,7 +1507,8 @@ pub enum ReplaceBy {
     UnderChosenOpponent,
     /// As the permanent enters, it becomes its controller's choice of these forms ("it becomes your choice of a 3/3
     /// creature, a 2/2 creature with flying, or a 1/6 creature with defender"): the changes of the chosen form join its
-    /// copiable values (CR 707.2), so a copy of it has them too. A form holds only changes a copy effect makes.
+    /// copiable values (CR 707.2), so a copy of it has them too. A form holds only changes a copy effect makes; a single
+    /// form is no choice ("it becomes a 7/7 Dinosaur creature in addition to its other types").
     BecomesChoice(Vec<Vec<Modification>>),
     /// As the permanent enters, its controller mills this many cards (CR 701.17): "As this creature enters, mill three
     /// cards for each time it was kicked."
@@ -1528,6 +1550,10 @@ pub enum ReplaceBy {
     /// The controller of the replacement may have these steps happen instead of the event, which then does not happen
     /// ("you may instead return this card to the battlefield"); only a `Learns` uses it.
     MayInstead(Vec<crate::effect::Effect>),
+    /// A shield used up by the first batch of events it changes (CR 614.1a): "the next time one or more creatures enter
+    /// this turn, they enter as copies of the chosen creature". Every event of that batch it covers is changed as the
+    /// inner replacement says, then the shield ends; only an `Effect::Shield` over an `Enters` uses it.
+    NextBatch(Box<ReplaceBy>),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
@@ -1650,6 +1676,27 @@ impl ShieldShape {
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),
             ) => Some(Self::Next),
+            // "The next time target land would be destroyed this turn, remove all damage marked on it instead."
+            (ReplaceWhen::Destroyed { what }, ReplaceBy::InsteadNext(_)) if names_objects(what) => {
+                Some(Self::Next)
+            }
+            // "If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead.
+            // Return it to the battlefield ... at the beginning of the next end step."
+            (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::Instead(_))
+                if !names_objects(what) =>
+            {
+                Some(Self::Class)
+            }
+            // "The next time one or more creatures enter this turn, they enter as copies of the chosen creature."
+            (ReplaceWhen::Enters { what }, ReplaceBy::NextBatch(inner))
+                if !names_objects(what)
+                    && matches!(
+                        **inner,
+                        ReplaceBy::AsCopy { .. } | ReplaceBy::WithCounters { .. }
+                    ) =>
+            {
+                Some(Self::Class)
+            }
             _ => None,
         }
     }

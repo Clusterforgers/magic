@@ -1,7 +1,7 @@
 {
   "oracle_id": "19d258fb-4cda-4cbb-b07a-8b4670488867",
   "name": "Thrasta, Tempest's Roar",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Thrasta, Tempest's Roar",
@@ -17,12 +17,7 @@
         },
         { "Keyword": "Trample" },
         { "Keyword": "Haste" },
-        {
-          "Manual": {
-            "reason": "you apply this keyword by hand",
-            "span": { "start": 86, "end": 212 }
-          }
-        },
+        { "Keyword": "TrampleOverPlaneswalkers" },
         {
           "Static": {
             "affected": "This",

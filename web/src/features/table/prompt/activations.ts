@@ -135,6 +135,15 @@ function endPlay(option: PaidEnd): Play {
 
 /** The line of a source whose effects the holder may ignore until end of turn by paying (a special action): "Any player may pay {2} for that player to ignore this effect until end of turn." */
 function ignorePlay(option: PaidIgnore): Play {
+  // A price that takes more than mana ("Sacrifice a permanent") comes as words.
+  if (option.words) {
+    return {
+      key: `ignore-${option.object}`,
+      label: `${option.words}: ignore its effect this turn`,
+      words: `${option.words} to ignore the effect of this card until end of turn`,
+      action: { IgnoreEffect: option.object },
+    }
+  }
   const cost = costText(option.cost)
   return {
     key: `ignore-${option.object}`,

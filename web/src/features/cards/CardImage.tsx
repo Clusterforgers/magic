@@ -22,6 +22,11 @@ export function knownStatus(src: string, now: number = Date.now(), key: string =
   return failed !== undefined && now - failed < RETRY_AFTER_MS ? 'failed' : 'loading'
 }
 
+/** Notes a picture loaded outside an `<img>` of the page (a prefetch), so its card draws it without the skeleton. */
+export function markLoaded(src: string): void {
+  loaded.add(src)
+}
+
 /** Forgets what the page learned of pictures (tests). */
 export function resetImageMemory(): void {
   loaded.clear()

@@ -27,11 +27,18 @@ export function formatName(key: string): string {
 /** "2 of 4". */
 export const seatsText = (game: LobbyGame): string => `${game.filled} of ${game.total}`
 
-/** Whether every seat is taken. */
-export const isFull = (game: LobbyGame): boolean => game.running !== true && game.filled >= game.total
+/** Whether the visitor holds a seat of the game: they open it, never join it, however many seats are taken. */
+export const isSeated = (game: LobbyGame): boolean => game.seated === true
+
+/** Whether every seat is taken, so the visitor cannot join: never a game they sit in already. */
+export const isFull = (game: LobbyGame): boolean =>
+  game.running !== true && !isSeated(game) && game.filled >= game.total
 
 /** The name of a running game's Watch link: "Watch Bo's game". */
 export const watchLabel = (game: LobbyGame): string => `Watch ${game.host}'s game`
+
+/** The name of the link into a game the visitor sits in: "Open your seat in Bo's game". */
+export const openLabel = (game: LobbyGame): string => `Open your seat in ${game.host}'s game`
 
 /** The name of a row's Join button: "Join Bo's game, 2 of 4 seats". */
 export const joinLabel = (game: LobbyGame): string =>
@@ -60,14 +67,19 @@ export const FILTERS_ABOVE_ROWS = 8
 export const filtersActive = (filters: Filters): boolean =>
   filters.seats !== null || filters.format !== null || filters.hideFull
 
-/** The rows a filter lets through, in their order. */
+/**
+ * The rows a filter lets through: the games the visitor sits in first, whatever the filters say, then the others in
+ * their order.
+ */
 export function filterGames(games: readonly LobbyGame[], filters: Filters): LobbyGame[] {
-  return games.filter(
+  const others = games.filter(
     (game) =>
+      !isSeated(game) &&
       (filters.seats === null || game.total === filters.seats) &&
       (filters.format === null || game.format === filters.format) &&
       !(filters.hideFull && isFull(game)),
   )
+  return [...games.filter(isSeated), ...others]
 }
 
 /** The seat counts present in the rows, smallest first. */

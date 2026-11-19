@@ -4,6 +4,7 @@ import { afterEach } from 'vitest'
 import { toReadClient } from '@/features/reads/useToReadCount'
 import { lexiconStore } from '@/features/table/lexicon/lexiconStore'
 import { tourStore } from '@/features/table/tour/tourStore'
+import { FULL_CONTROL_KEY, resetFlowPrefs } from '@/play/flowPrefs'
 import { scaled } from '@/test-utils/loadFactor'
 
 // Vitest runs without globals, so Testing Library cannot register its own cleanup.
@@ -16,6 +17,16 @@ afterEach(() => toReadClient.clear())
 afterEach(() => {
   tourStore.setState({ step: null })
   lexiconStore.setState({ open: false, query: '', kind: 'all' })
+})
+
+// A held Full Control saved by one test would be asked for at every later Welcome, so each test starts without it.
+afterEach(() => {
+  try {
+    window.localStorage.removeItem(FULL_CONTROL_KEY)
+  } catch {
+    // No storage, nothing kept.
+  }
+  resetFlowPrefs()
 })
 
 // `waitFor` and `findBy*` give up after 1 s by default, which a machine running several test suites can exceed.

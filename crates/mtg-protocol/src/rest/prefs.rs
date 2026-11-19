@@ -41,6 +41,10 @@ pub struct UserPrefs {
     /// How the hand dock orders the hand in every game; "as drawn" when absent.
     #[serde(default)]
     pub hand_sort: HandSort,
+    /// Whether the account's seats start every game in Full Control held, until turned off; left out (false) when off.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub full_control_held: bool,
 }
 
 impl Default for UserPrefs {
@@ -51,6 +55,7 @@ impl Default for UserPrefs {
             auto_choices: AutoChoices::default(),
             auto_yields: Vec::new(),
             hand_sort: HandSort::default(),
+            full_control_held: false,
         }
     }
 }

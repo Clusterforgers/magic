@@ -168,6 +168,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             }
             Pred::Blocking => adjectives.push("blocking".to_owned()),
             Pred::Unblocked => adjectives.push("unblocked".to_owned()),
+            Pred::Blocked => adjectives.push("blocked".to_owned()),
             Pred::ControlledBy(Ref::You) => tail.push("you control".to_owned()),
             Pred::ControlledBy(Ref::Opponents) => tail.push("an opponent controls".to_owned()),
             Pred::OwnedBy(Ref::You) => yours = true,
@@ -1163,6 +1164,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!(
                 "{} while you're activating a {kind:?} ability",
                 clause(inner).0
+            ),
+            false,
+        ),
+        TriggerPattern::R109WhileCasting { inner, way } => (
+            format!(
+                "{} while you're casting a spell with {}",
+                clause(inner).0,
+                format!("{way:?}").to_lowercase()
             ),
             false,
         ),

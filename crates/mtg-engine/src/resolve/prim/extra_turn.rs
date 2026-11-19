@@ -15,6 +15,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         count,
         skip_untap,
         no_power_up,
+        r109_unpreventable,
         at_end,
     } = effect
     else {
@@ -31,6 +32,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     player,
                     skip_untap: *skip_untap,
                     no_power_up: *no_power_up,
+                    r109_unpreventable: *r109_unpreventable,
                     r6703_end: r6703_end.clone(),
                 });
             }

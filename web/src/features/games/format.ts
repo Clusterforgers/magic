@@ -66,6 +66,13 @@ export function continueLabel(game: MyGame): string {
   return others === '' ? 'Continue your game' : `Continue your game with ${others}`
 }
 
+/** What the Play page's link into one of the user's games says: "Continue your game with Bo", "Back to your lobby". */
+export function continueText(game: MyGame): string {
+  const others = othersText(game)
+  const what = game.status === 'lobby' ? 'Back to your lobby' : 'Continue your game'
+  return others === '' ? what : `${what} with ${others}`
+}
+
 /** What a Replay link is called for a screen reader: the visible word, then which game. */
 export function replayLabel(game: MyGame): string {
   const others = othersText(game)

@@ -124,6 +124,8 @@ pub struct ExtraTurn {
     pub skip_untap: bool,
     /// Whether power-up abilities can't be activated during it.
     pub no_power_up: bool,
+    /// Whether damage can't be prevented during it.
+    pub r109_unpreventable: bool,
     /// The delayed trigger set up as it begins, for its end step ("At the beginning of that turn's end step, you lose
     /// the game"); its id is given when it is set up.
     pub r6703_end: Option<Box<crate::triggers::DelayedCreated>>,
@@ -136,6 +138,9 @@ impl Hash for ExtraTurn {
         self.skip_untap.hash(state);
         if self.no_power_up {
             self.no_power_up.hash(state);
+        }
+        if self.r109_unpreventable {
+            self.r109_unpreventable.hash(state);
         }
         if let Some(end) = &self.r6703_end {
             serde_json::to_vec(end).unwrap_or_default().hash(state);
@@ -164,6 +169,8 @@ pub struct TurnState {
     pub(crate) extra: bool,
     /// Whether power-up abilities can't be activated this turn (an extra turn taken with that rule).
     pub(crate) no_power_up: bool,
+    /// Whether damage can't be prevented this turn (an extra turn taken with that rule).
+    pub(crate) r109_unpreventable: bool,
     /// The combat phases begun so far this turn.
     pub(crate) combats: u32,
     /// The phases still to begin when the added ones come after the current phase (CR 500.8), each as the step it
@@ -175,6 +182,12 @@ pub struct TurnState {
     pub(crate) r5500_lone: Vec<bool>,
     /// Whether the current step began on its own from `ahead`, so the phase ends with it.
     pub(crate) r5500_in_lone: bool,
+    /// For each entry of `ahead`, the mark of an added combat phase (0 for any other entry); empty while none is marked.
+    pub(crate) r109_marks: Vec<u32>,
+    /// The marks given to added combat phases this turn: the latest is this number.
+    pub(crate) r109_given: u32,
+    /// The mark of the combat phase under way when it was added by an effect; 0 otherwise.
+    pub(crate) r109_combat: u32,
     /// The steps added right after the current step (an additional upkeep step), the next first; empty while none is.
     pub(crate) r306_steps: Vec<Step>,
     /// The kinds of step begun this turn, one bit each in turn order.
@@ -214,8 +227,16 @@ impl Hash for TurnState {
         if self.r306_again != 0 {
             self.r306_again.hash(state);
         }
+        if self.r109_given != 0 {
+            self.r109_marks.hash(state);
+            self.r109_given.hash(state);
+            self.r109_combat.hash(state);
+        }
         if self.no_power_up {
             self.no_power_up.hash(state);
+        }
+        if self.r109_unpreventable {
+            self.r109_unpreventable.hash(state);
         }
         if self.ending {
             self.ending.hash(state);
@@ -235,9 +256,13 @@ impl TurnState {
             regular: first,
             extra: false,
             no_power_up: false,
+            r109_unpreventable: false,
             combats: 0,
             ahead: Vec::new(),
             r306_steps: Vec::new(),
+            r109_marks: Vec::new(),
+            r109_given: 0,
+            r109_combat: 0,
             r5500_lone: Vec::new(),
             r5500_in_lone: false,
             r306_seen: 0,
@@ -300,6 +325,16 @@ impl TurnState {
         self.r306_seen |= bit;
     }
 
+    /// The mark of the combat phase under way when an effect added it, 0 otherwise (`Duration::R109ThatCombat`).
+    pub const fn r109_combat_mark(&self) -> u32 {
+        self.r109_combat
+    }
+
+    /// The mark given last to a combat phase an effect added this turn; 0 when none was added.
+    pub const fn r109_latest_mark(&self) -> u32 {
+        self.r109_given
+    }
+
     /// The steps added right after the current one, the next first (`Effect::AddStep`).
     pub fn steps_ahead(&self) -> &[Step] {
         &self.r306_steps
@@ -316,6 +351,23 @@ impl TurnState {
         if lone && self.r5500_lone.is_empty() {
             self.r5500_lone = vec![false; self.ahead.len()];
         }
+        // An added combat phase gets a mark that the effects of "that combat phase" name (`Duration::R109ThatCombat`).
+        if !lone && steps.contains(&Step::BeginCombat) && self.r109_marks.is_empty() {
+            self.r109_marks = vec![0; self.ahead.len()];
+        }
+        if !self.r109_marks.is_empty() {
+            self.r109_marks.resize(self.ahead.len(), 0);
+            let mut marks = Vec::with_capacity(steps.len());
+            for step in steps {
+                if !lone && *step == Step::BeginCombat {
+                    self.r109_given += 1;
+                    marks.push(self.r109_given);
+                } else {
+                    marks.push(0);
+                }
+            }
+            self.r109_marks.splice(0..0, marks);
+        }
         self.ahead.splice(0..0, steps.iter().copied());
         if !self.r5500_lone.is_empty() {
             self.r5500_lone.splice(0..0, steps.iter().map(|_| lone));
@@ -324,7 +376,13 @@ impl TurnState {
 
     /// Spends the first entry of the phases ahead as `step` begins from it, noting whether the step is on its own.
     pub(crate) fn r5500_begin_ahead(&mut self) {
-        self.ahead.remove(0);
+        let step = self.ahead.remove(0);
+        if !self.r109_marks.is_empty() {
+            let mark = self.r109_marks.remove(0);
+            if step == Step::BeginCombat {
+                self.r109_combat = mark;
+            }
+        }
         self.r5500_in_lone = !self.r5500_lone.is_empty() && self.r5500_lone.remove(0);
         if !self.r5500_lone.contains(&true) {
             self.r5500_lone.clear();

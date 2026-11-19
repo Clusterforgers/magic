@@ -14,7 +14,9 @@ import {
   commandersBySeat,
   formatName,
   isFull,
+  isSeated,
   joinLabel,
+  openLabel,
   seatsText,
   watchLabel,
 } from './format'
@@ -67,7 +69,9 @@ function Seats({ game, dim }: { game: LobbyGame; dim: boolean }) {
     <span className="inline-flex flex-wrap items-center gap-x-2 gap-y-1">
       <SeatDots game={game} dim={dim} />
       <span className="text-sm tabular-nums">{seatsText(game)}</span>
-      {game.running === true ? (
+      {isSeated(game) ? (
+        <Pill className="h-6">Your seat</Pill>
+      ) : game.running === true ? (
         <Pill className="h-6">Running</Pill>
       ) : isFull(game) ? (
         <Pill id={fullId(game)} className="h-6">
@@ -84,8 +88,9 @@ function Age({ game, fetchedAt, now }: { game: LobbyGame; fetchedAt: number; now
 }
 
 /**
- * The one primary control of a card: Watch for a running game (its page asks a visitor who is not signed in to sign
- * in), else Join; a full game keeps Join in place, disabled and explained, and the card being joined spins.
+ * The one primary control of a card: Open for a game the visitor sits in (a lobby they left, full or not, or their
+ * running game), Watch for a running game (its page asks a visitor who is not signed in to sign in), else Join; a full
+ * game keeps Join in place, disabled and explained, and the card being joined spins.
  */
 function JoinButton({
   game,
@@ -93,6 +98,19 @@ function JoinButton({
   busy,
   onJoin,
 }: Pick<RowsProps, 'joining' | 'busy' | 'onJoin'> & { game: LobbyGame }) {
+  if (isSeated(game)) {
+    return (
+      <Link
+        to="/game/$gameId"
+        params={{ gameId: game.game }}
+        data-open={game.game}
+        aria-label={openLabel(game)}
+        className={buttonVariants()}
+      >
+        Open
+      </Link>
+    )
+  }
   if (game.running === true) {
     return (
       <Link
@@ -223,7 +241,12 @@ function GameCard({
   const dim = stale || isFull(game)
   const seats = commandersBySeat(game)
   return (
-    <li data-game={game.game} data-full={isFull(game) || undefined} className="min-w-0">
+    <li
+      data-game={game.game}
+      data-full={isFull(game) || undefined}
+      data-seated={isSeated(game) || undefined}
+      className="min-w-0"
+    >
       <article
         aria-labelledby={hostId(game)}
         className="plaque flex h-full flex-col overflow-hidden rounded-xl border"

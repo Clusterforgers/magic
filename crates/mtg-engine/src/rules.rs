@@ -16,9 +16,10 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
-use mtg_cards::cost::Cost;
+use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::effect::Place;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::{Attacked, CastRider, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
@@ -370,6 +371,14 @@ pub enum Rule {
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// Any player may pay the mana to ignore the other effects of the rule's source until end of turn (CR 116.2).
     PayToIgnore(ManaCost),
+    /// The players may pay the cost to ignore the other effects of the rule's source until end of turn (CR 116.2).
+    PayToIgnoreBy {
+        /// Who may pay.
+        payers: Vec<PlayerId>,
+        /// What ignoring the effects costs.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        cost: Cost,
+    },
     /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6).
     AbilitiesAsThoughHaste(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
@@ -594,6 +603,16 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[cfg_attr(feature = "ts", ts(optional, as = "Option<Vec<PlayerId>>"))]
         players: Vec<PlayerId>,
+        /// The targets of the ability that made it, by the names `Ref::Target` reads them under, fixed as it began
+        /// (CR 611.2c): "the next time target land would be destroyed", "enter as copies of the chosen creature".
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(skip))]
+        bound: Vec<(String, Vec<Target>)>,
+        /// The copiable values of each bound target as it last existed on the battlefield, kept as it leaves: what a
+        /// permanent entering as a copy of it copies once it is gone (the Mystic Reflection ruling, CR 707.2).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(skip))]
+        lki: Vec<(ObjectRef, std::sync::Arc<mtg_cards::CardDefinition>)>,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
@@ -776,14 +795,20 @@ impl RuleEffect {
     /// Whether the rule still applies in `state`: its duration has not ended and an object it names is still the object
     /// it named. A rule that does not stops applying at once; the `RuleExpired` event only removes it.
     pub fn is_active(&self, state: &GameState) -> bool {
-        lasts(
+        !self.ended(state) && crate::effects::r109_in_that_combat(state, &self.duration)
+    }
+
+    /// Whether the rule has ended for good, so housekeeping removes it: its duration has run out or an object it names is
+    /// gone. A rule that waits for its combat phase has not ended.
+    pub fn ended(&self, state: &GameState) -> bool {
+        !(lasts(
             state,
             &self.duration,
             self.turn,
             self.controller,
             self.source,
         ) && !self.spent(state)
-            && (self.duration != Duration::WhileTapped || self.r5509_stays_tapped(state))
+            && (self.duration != Duration::WhileTapped || self.r5509_stays_tapped(state)))
     }
 
     /// Whether every object a prohibition names is still tapped on the battlefield (`Duration::WhileTapped`); a rule
@@ -1006,7 +1031,7 @@ pub(crate) struct RulesInForce {
     no_legend: BTreeSet<PlayerId>,
     no_legend_for: Vec<NoLegendFor>,
     /// The sources whose effects a player may pay to ignore, with the price (`Rule::PayToIgnore`).
-    pay_to_ignore: Vec<(ObjectRef, ManaCost)>,
+    pay_to_ignore: Vec<Ignorable>,
     /// The creatures whose abilities may be activated as though they had haste, by rule.
     haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
@@ -1299,7 +1324,20 @@ impl RulesInForce {
             }
             Rule::PayToIgnore(cost) => {
                 if let Some(source) = source {
-                    self.pay_to_ignore.push((source, cost.clone()));
+                    self.pay_to_ignore.push(Ignorable {
+                        source,
+                        payers: None,
+                        cost: Cost(vec![CostItem::Mana(ManaCostX::new(0, cost.clone()))]),
+                    });
+                }
+            }
+            Rule::PayToIgnoreBy { payers, cost } => {
+                if let Some(source) = source {
+                    self.pay_to_ignore.push(Ignorable {
+                        source,
+                        payers: Some(payers.clone()),
+                        cost: cost.clone(),
+                    });
                 }
             }
             Rule::UntapDuring { what, whose } => {
@@ -1356,7 +1394,10 @@ impl RulesInForce {
                 }
                 return;
             }
-            SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) | SpellBenefit::Uncounterable => {
+            SpellBenefit::Cost { .. }
+            | SpellBenefit::Keyword(_)
+            | SpellBenefit::Uncounterable
+            | SpellBenefit::R6503Resolves(_) => {
                 return;
             }
         };
@@ -1625,6 +1666,7 @@ impl RulesInForce {
             | Rule::NoLegendRule(_)
             | Rule::NoLegendRuleFor(_)
             | Rule::PayToIgnore(_)
+            | Rule::PayToIgnoreBy { .. }
             | Rule::AbilitiesAsThoughHaste(_)
             | Rule::UntapDuring { .. } => {
                 self.put_option(rule, controller, source);
@@ -2166,6 +2208,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::NoLegendRule(_)
         | GameRule::NoLegendRuleFor(_)
         | GameRule::PayToIgnore(_)
+        | GameRule::PayToIgnoreBy { .. }
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
@@ -2299,6 +2342,10 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
         GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
         GameRule::PayToIgnore(cost) => Rule::PayToIgnore(cost.rest().clone()),
+        GameRule::PayToIgnoreBy { payer, cost } => Rule::PayToIgnoreBy {
+            payers: scope.players(payer)?,
+            cost: cost.clone(),
+        },
         GameRule::AbilitiesAsThoughHaste(what) => Rule::AbilitiesAsThoughHaste(what.clone()),
         GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
             what: what.clone(),
@@ -2405,6 +2452,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
+        Rule::PayToIgnoreBy { payers, .. } => payers.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::LookAtExiled { who, only, .. } | Rule::MayCast { who, only, .. } => {
@@ -2813,10 +2861,15 @@ pub(crate) fn fold_used(state: &mut GameState, id: EffectId, left: u32) -> Resul
 }
 
 /// Ends the `NextSpell` rules the cast of `spell` by `player` spends (the card is judged where it is cast from, as the
-/// announcement judged it), and says whether one of them keeps the spell from being countered.
-pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: ObjectId) -> bool {
+/// announcement judged it), and says whether one of them keeps the spell from being countered and what replaces its
+/// move into a graveyard as it resolves (`SpellBenefit::R6503Resolves`).
+pub(crate) fn spend_next_spells(
+    state: &mut GameState,
+    player: PlayerId,
+    spell: ObjectId,
+) -> (bool, Vec<mtg_cards::trigger::ReplaceBy>) {
     let Some(target) = state.object(spell).map(GameObject::reference) else {
-        return false;
+        return (false, Vec::new());
     };
     let spent: Vec<EffectId> = state
         .rule_effects
@@ -2844,10 +2897,85 @@ pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: 
                 }
             )
     });
+    let resolves = state
+        .rule_effects
+        .iter()
+        .filter(|effect| spent.contains(&effect.id))
+        .filter_map(|effect| match &effect.rule {
+            Rule::NextSpell {
+                benefit: mtg_cards::modify::SpellBenefit::R6503Resolves(by),
+                ..
+            } => Some(by.clone()),
+            _ => None,
+        })
+        .collect();
     state
         .rule_effects
         .retain(|effect| !spent.contains(&effect.id));
-    uncounterable
+    (uncounterable, resolves)
+}
+
+/// Keeps the copiable values of a permanent leaving the battlefield in each shield that names it as what entering
+/// permanents copy (`ReplaceBy::NextBatch` of `AsCopy`), as it last existed there (CR 707.2).
+pub(crate) fn r109_keep_copiable(state: &mut GameState, id: ObjectId) {
+    let Some(left) = state
+        .object(id)
+        .filter(|object| object.zone() == crate::zones::Zone::Battlefield)
+        .map(GameObject::reference)
+    else {
+        return;
+    };
+    let names = |rule: &Rule| match rule {
+        Rule::Replaces {
+            by: ReplaceBy::NextBatch(inner),
+            bound,
+            ..
+        } if matches!(**inner, ReplaceBy::AsCopy { .. }) => bound
+            .iter()
+            .any(|(_, targets)| targets.contains(&Target::Object(left))),
+        _ => false,
+    };
+    if !state.rule_effects.iter().any(|effect| names(&effect.rule)) {
+        return;
+    }
+    let Some(values) = crate::copies::copiable_values(state, left, None) else {
+        return;
+    };
+    let values = std::sync::Arc::new(values);
+    for effect in &mut state.rule_effects {
+        if names(&effect.rule)
+            && let Rule::Replaces { lki, .. } = &mut effect.rule
+        {
+            lki.push((left, values.clone()));
+        }
+    }
+}
+
+/// The spell `spell` on the stack is put elsewhere as it resolves, as a `NextSpell` rule its cast spent said: a shield of
+/// its own that names the spell (`Rule::R6503ResolvesInstead`), and so no other object once it leaves the stack.
+pub(crate) fn r6503_resolves_from_now(
+    state: &mut GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    by: mtg_cards::trigger::ReplaceBy,
+) {
+    let Some(named) = state.object(spell).map(GameObject::reference) else {
+        return;
+    };
+    let effect = RuleEffect {
+        id: EffectId(state.next_effect),
+        rule: Rule::R6503ResolvesInstead {
+            objects: vec![named],
+            by,
+        },
+        duration: Duration::Forever,
+        source: Some(named),
+        controller: player,
+        turn: state.turn().number(),
+    };
+    state.next_effect += 1;
+    state.rule_effects.push(effect);
+    state.possible.replacements = true;
 }
 
 /// The spell `spell` on the stack can't be countered from now on, as a `NextSpell` rule its cast spent said: a rule of its
@@ -3529,6 +3657,10 @@ pub fn own_spells_cant_search(state: &GameState, player: PlayerId) -> bool {
 /// Whether the damage `dealer` would deal can't be prevented: the one place a prevention effect reads this rule. A source
 /// that is gone is read as it is in the state (the damage of a creature that dies in the same step is dealt first).
 pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, combat: bool) -> bool {
+    // An extra turn taken under "During that turn, damage can't be prevented."
+    if state.turn().r109_unpreventable {
+        return true;
+    }
     state.rules().unpreventable.iter().any(|rule| {
         rule.combat.is_none_or(|only| only == combat)
             && (rule.from.is_empty()
@@ -3761,8 +3893,19 @@ pub fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
     })
 }
 
+/// A source whose effects a player may pay to ignore until end of turn (`Rule::PayToIgnore`, `Rule::PayToIgnoreBy`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct Ignorable {
+    /// The source.
+    pub(crate) source: ObjectRef,
+    /// Who may pay; `None` for any player.
+    pub(crate) payers: Option<Vec<PlayerId>>,
+    /// The price.
+    pub(crate) cost: Cost,
+}
+
 /// The sources whose effects a player may pay to ignore until end of turn, with the price (`Rule::PayToIgnore`).
-pub(crate) fn pay_to_ignore(state: &GameState) -> &[(ObjectRef, ManaCost)] {
+pub(crate) fn pay_to_ignore(state: &GameState) -> &[Ignorable] {
     &state.rules().pay_to_ignore
 }
 

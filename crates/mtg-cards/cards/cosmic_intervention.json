@@ -1,16 +1,43 @@
 {
   "oracle_id": "cddccc2a-a76e-48b3-b4dd-dfeab89e1619",
   "name": "Cosmic Intervention",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cosmic Intervention",
       "oracle_fingerprint": "1b567cf33c6ec9597a870e6a7f33a4df",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 0, "end": 200 }
+          "Spell": {
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "ControlledBy": "You" }],
+                      "from": "Battlefield",
+                      "to": "Graveyard"
+                    }
+                  },
+                  "by": {
+                    "Instead": [
+                      { "Exile": { "what": "Triggering", "as": "exiled" } },
+                      {
+                        "DelayedTrigger": {
+                          "when": { "StepBegins": { "step": "End" } },
+                          "effects": [
+                            {
+                              "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Foretell": "{1}{W}" } }

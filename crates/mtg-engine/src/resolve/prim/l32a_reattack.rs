@@ -43,15 +43,62 @@ fn option(state: &GameState, target: Option<AttackTarget>) -> ChoiceOption {
     }
 }
 
+/// "Those creatures are now attacking that player": each attacking creature `what` names that does not attack the first
+/// player `to` names is now attacking that player, with no choice and ignoring the requirements, restrictions and costs
+/// of attacking; a player who is no longer in the game is attacked by nobody.
+fn r109_now_attacking(
+    cx: &Cx<'_>,
+    what: &mtg_cards::refs::Ref,
+    to: &mtg_cards::refs::Ref,
+) -> Result<Run, ResolveError> {
+    let state = cx.state();
+    let Some(player) = cx
+        .scope
+        .players(to)?
+        .into_iter()
+        .find(|player| state.is_alive(*player))
+    else {
+        return Ok(Run::events(Vec::new()));
+    };
+    let target = AttackTarget::Player(player);
+    let mut events = Vec::new();
+    for object in cx.scope.live_objects(what)? {
+        let attacking = state
+            .combat()
+            .attackers()
+            .iter()
+            .find(|a| a.object() == object.id());
+        let Some(attacker) = attacking else {
+            continue;
+        };
+        let moved = Event::AttackRedirected {
+            object: object.id(),
+            target,
+        };
+        if (attacker.attacks_nothing() || attacker.target != target) && !events.contains(&moved) {
+            events.push(moved);
+        }
+    }
+    Ok(Run::events(events))
+}
+
 /// For each attacking creature `what` names, in order, the controller of the effect chooses what it attacks: what it
 /// attacks now (the first option, so the "may" can be declined), or another player, planeswalker or battle its controller
 /// could attack. A creature that ends up attacking something else logs `AttackRedirected`; nothing that triggers on
 /// attacking sees it, and it still counts as having attacked what it was declared to attack.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::Reattack { what, players } = effect else {
+    let Effect::Reattack {
+        what,
+        players,
+        r109_to,
+    } = effect
+    else {
         return Err(wrong_effect("Reattack"));
     };
     let state = cx.state();
+    if let Some(to) = r109_to {
+        return r109_now_attacking(cx, what, to);
+    }
     let combat = state.combat();
     let mut attackers = Vec::new();
     for object in cx.scope.live_objects(what)? {

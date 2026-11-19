@@ -137,7 +137,7 @@ pub(crate) enum Division {
 
 /// What the attacker attacks, as a recipient of damage; nothing once the planeswalker it attacked has left the
 /// battlefield (CR 506.4c).
-fn defender_of(attacker: &Attacker) -> Option<DamageTarget> {
+pub(crate) fn defender_of(attacker: &Attacker) -> Option<DamageTarget> {
     if attacker.attacks_nothing() {
         return None;
     }
@@ -153,7 +153,21 @@ fn defender_of(attacker: &Attacker) -> Option<DamageTarget> {
 /// the only one, as its controller divided it among several, or as the default division has it when the
 /// controller has not divided yet and has a choice to make. Trample (CR 702.19) adds what it attacks as a
 /// recipient of the damage that goes beyond lethal to every blocker, and of all of it when no blocker is left.
+/// A rule or keyword that widens the recipients (`r109_combat_damage`) divides it its own way.
 pub(crate) fn division(
+    state: &GameState,
+    attacker: &Attacker,
+    power: u32,
+    rules: DamageRules,
+) -> Division {
+    if let Some(options) = crate::r109_combat_damage::r109_options(state, attacker, power, rules) {
+        return crate::r109_combat_damage::r109_division(attacker, options);
+    }
+    usual_division(state, attacker, power, rules)
+}
+
+/// The division of `division` under the rules of combat damage alone, without a rule that widens the recipients.
+pub(crate) fn usual_division(
     state: &GameState,
     attacker: &Attacker,
     power: u32,
@@ -213,6 +227,7 @@ pub(crate) fn division(
         unblocked: unblocked
             && defender.is_some()
             && crate::keywords::banding::divides_attacker(state, attacker).is_none(),
+        whole: Vec::new(),
     };
     if has_choice(&options) {
         Division::Choose(options)
@@ -222,7 +237,7 @@ pub(crate) fn division(
 }
 
 /// Whether the attacker's controller has more than one way to divide the damage.
-fn has_choice(options: &DamageOptions) -> bool {
+pub(crate) fn has_choice(options: &DamageOptions) -> bool {
     if options.power == 0 {
         return false;
     }
@@ -273,6 +288,7 @@ pub(crate) fn pending_assignment(
             Division::Choose(options) => {
                 // The defending player divides it for a banding blocker (CR 702.22j).
                 let divider = banding::divides_attacker(state, attacker)
+                    .or_else(|| crate::r109_combat_damage::r109_divider(state, attacker))
                     .or_else(|| controller_of(state, attacker.object()))?;
                 Some((divider, options))
             }
@@ -317,6 +333,7 @@ fn banded_blocker_division(
                 excess: None,
                 lethal,
                 unblocked: false,
+                whole: Vec::new(),
             },
         ))
     })
@@ -337,6 +354,19 @@ pub(crate) fn assignment_answer(
         if !options.blockers.contains(blocker) {
             return Err(IllegalAnswer::NotOffered("blocker"));
         }
+    }
+    // A recipient that takes the damage whole takes all of it or none (CR 510.1a).
+    if assignment
+        .iter()
+        .any(|(to, n)| *n > 0 && *n != options.power && options.whole.contains(to))
+    {
+        return Err(IllegalAnswer::DamageSplit {
+            power: options.power,
+            assigned: assignment
+                .iter()
+                .filter(|(to, _)| options.whole.contains(to))
+                .fold(0u32, |sum, (_, n)| sum.saturating_add(*n)),
+        });
     }
     let assigned = assignment
         .iter()
@@ -553,6 +583,7 @@ mod tests {
             excess: trample.then_some(PLAYER),
             lethal: lethal.to_vec(),
             unblocked: false,
+            whole: Vec::new(),
         }
     }
 

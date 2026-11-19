@@ -50,6 +50,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         (_, other) => other.clone(),
     };
+    let duration = crate::effects::r109_mark_duration(state, &duration);
     let created = Event::RuleCreated {
         effect: Box::new(RuleEffect {
             id: EffectId(state.next_effect),

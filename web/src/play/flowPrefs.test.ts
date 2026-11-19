@@ -1,27 +1,45 @@
-// Goal: the saved pace preferences (default stops, end turn by hand, auto choices, kept yields) survive in storage, start with the own declare attackers and postcombat main pinned, keep a cleared list cleared and only pinned stops, and reach the server at Welcome: the default stops once per game and only to a seat with none, the end-turn choice whenever the server holds the other one.
+// Goal: the saved pace preferences (default stops, end turn by hand, every auto choice, kept yields, Full Control held) survive in storage, start with the own declare attackers and postcombat main pinned, keep a cleared list cleared and only pinned stops, and reach the server at Welcome and when an account's copy replaces them: the default stops once per game and only to a seat with none, each setting whenever the server holds another value, and Full Control held turned on but never off.
 import { beforeEach, describe, expect, it } from 'vitest'
-import type { Stop, StopSide } from '@/protocol/generated'
+import type { AutoChoices, FullControlMode, Stop, StopSide } from '@/protocol/generated'
 import { startSession } from '@/test-utils/harness'
 import {
   APPLIED_LIMIT,
+  AUTO_CHOICES_KEY,
   AUTO_YIELDS_KEY,
   DEFAULT_STOPS,
   DEFAULT_STOPS_KEY,
+  FULL_CONTROL_KEY,
+  attachAccount,
   flowPrefs,
   resetDefaultStops,
   resetFlowPrefs,
+  saveAutoChoices,
   saveAutoYields,
   saveDefaultStops,
   saveEndTurnByHand,
+  saveFullControlHeld,
   welcomeRequests,
 } from './flowPrefs'
+import type { FlowPrefs } from './flowPrefs'
 import { DEFAULT_HAND_SORT } from './handSort'
 import { STOP_STEPS } from './stops'
 
 const SIDES: StopSide[] = ['Own', 'Opponent']
 const pinned = (side: StopSide, step: Stop['step']): Stop => ({ side, step, keep: true })
-const OFF = { order_triggers: false, assign_damage: false, smart_stops: false }
-const BOTH = { order_triggers: true, assign_damage: true, smart_stops: true }
+const OFF = {
+  order_triggers: false,
+  assign_damage: false,
+  smart_stops: false,
+  skip_triggers: false,
+  auto_pay: false,
+}
+const BOTH = {
+  order_triggers: true,
+  assign_damage: true,
+  smart_stops: true,
+  skip_triggers: true,
+  auto_pay: true,
+}
 
 beforeEach(() => {
   window.localStorage.clear()
@@ -81,6 +99,7 @@ describe('welcome requests', () => {
     autoChoices: OFF,
     autoYields: [],
     handSort: DEFAULT_HAND_SORT,
+    fullControlHeld: false,
   }
   const setStops = stops.map(({ side, step }) => ({ type: 'SetStop', side, step, on: true, keep: true }))
 
@@ -125,6 +144,7 @@ describe('welcome requests', () => {
       autoChoices: OFF,
       autoYields: [],
       handSort: DEFAULT_HAND_SORT,
+      fullControlHeld: false,
     }
     expect(welcomeRequests({ game: 'g1', stops: [], endTurnByHand: held, autoChoices: OFF }, none)).toEqual(
       expected,
@@ -149,6 +169,7 @@ describe('welcome requests', () => {
       autoChoices: saved,
       autoYields: [],
       handSort: DEFAULT_HAND_SORT,
+      fullControlHeld: false,
     }
     expect(
       welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false, autoChoices: held }, prefs),
@@ -165,6 +186,7 @@ describe('kept yields', () => {
     autoChoices: OFF,
     autoYields,
     handSort: DEFAULT_HAND_SORT,
+    fullControlHeld: false,
   })
   const welcome = (held: { name: string; text: string }[]) => ({
     game: 'g1',
@@ -224,5 +246,110 @@ describe('in a session', () => {
     expect(h.sentOf('EndTurnByHand')).toEqual([{ type: 'EndTurnByHand', on: true }])
     resetFlowPrefs()
     expect(flowPrefs().endTurnByHand).toBe(true)
+  })
+
+  it.each([
+    ['Held', true],
+    ['NextWindow', false],
+    ['Off', false],
+  ] as const)('setFullControl(%s) saves held %s for later games', (mode, held) => {
+    saveFullControlHeld(!held)
+    const h = startSession()
+    h.join()
+    expect(h.session.setFullControl(mode)).toBe(true)
+    expect(h.sentOf('FullControl').at(-1)).toEqual({ type: 'FullControl', mode })
+    resetFlowPrefs()
+    expect(flowPrefs().fullControlHeld).toBe(held)
+  })
+
+  it('a new game starts held when the last one was left held', () => {
+    saveFullControlHeld(true)
+    const h = startSession()
+    h.join()
+    expect(h.sentOf('FullControl')).toEqual([{ type: 'FullControl', mode: 'Held' }])
+  })
+
+  it('an account loaded after the Welcome brings the seat in line with its preferences', () => {
+    const h = startSession()
+    h.join()
+    const sentBefore = h.sent().length
+    const account: FlowPrefs = {
+      ...flowPrefs(),
+      endTurnByHand: true,
+      autoChoices: { ...OFF, auto_pay: true },
+      fullControlHeld: true,
+    }
+    attachAccount(account, () => {})
+    expect(h.sent().slice(sentBefore)).toEqual([
+      { type: 'EndTurnByHand', on: true },
+      { type: 'AutoChoices', choices: { ...OFF, auto_pay: true } },
+      { type: 'FullControl', mode: 'Held' },
+    ])
+  })
+
+  it('a spectator sends none of the preferences', () => {
+    saveFullControlHeld(true)
+    saveEndTurnByHand(true)
+    const h = startSession({ watch: true })
+    h.join()
+    attachAccount({ ...flowPrefs(), autoChoices: BOTH }, () => {})
+    expect(h.sentTypes()).toEqual(['Join'])
+  })
+})
+
+describe('every auto choice', () => {
+  const FLAGS = ['order_triggers', 'assign_damage', 'smart_stops', 'skip_triggers', 'auto_pay'] as const
+
+  it.each(FLAGS)('keeps %s alone across a reload and sends it when the server holds it off', (flag) => {
+    const saved: AutoChoices = { ...OFF, [flag]: true }
+    saveAutoChoices(saved)
+    resetFlowPrefs()
+    expect(flowPrefs().autoChoices).toEqual(saved)
+    expect(
+      welcomeRequests({
+        game: `g-${flag}`,
+        stops: [pinned('Own', 'Draw')],
+        endTurnByHand: false,
+        autoChoices: OFF,
+      }),
+    ).toEqual([{ type: 'AutoChoices', choices: saved }])
+    saveAutoChoices(OFF)
+    expect(window.localStorage.getItem(AUTO_CHOICES_KEY)).toBeNull()
+  })
+
+  it('counts a flag the server leaves out as off', () => {
+    const prefs: FlowPrefs = { ...flowPrefs(), defaultStops: [], autoChoices: OFF }
+    const held = { order_triggers: false, assign_damage: false, smart_stops: false }
+    expect(
+      welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false, autoChoices: held }, prefs),
+    ).toEqual([])
+  })
+})
+
+describe('Full Control held', () => {
+  it.each([
+    [true, 'Off', [{ type: 'FullControl', mode: 'Held' }]],
+    [true, 'NextWindow', [{ type: 'FullControl', mode: 'Held' }]],
+    [true, 'Held', []],
+    [false, 'Off', []],
+    [false, 'Held', []],
+    [false, undefined, []],
+  ] as const)('saved %s with the server at %s sends %j', (saved, mode, expected) => {
+    const prefs: FlowPrefs = { ...flowPrefs(), defaultStops: [], fullControlHeld: saved }
+    const fullControl: FullControlMode | undefined = mode
+    expect(
+      welcomeRequests({ game: 'g1', stops: [], endTurnByHand: false, autoChoices: OFF, fullControl }, prefs),
+    ).toEqual(expected)
+  })
+
+  it('stays saved across a reload until turned off', () => {
+    saveFullControlHeld(true)
+    resetFlowPrefs()
+    expect(flowPrefs().fullControlHeld).toBe(true)
+    expect(window.localStorage.getItem(FULL_CONTROL_KEY)).toBe('on')
+    saveFullControlHeld(false)
+    resetFlowPrefs()
+    expect(flowPrefs().fullControlHeld).toBe(false)
+    expect(window.localStorage.getItem(FULL_CONTROL_KEY)).toBeNull()
   })
 })

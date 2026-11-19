@@ -1143,12 +1143,13 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             }),
         Just(Effect::EndTurn),
         who().prop_map(|who| Effect::TimeTravel { who }),
-        (who(), amount(), any::<bool>(), any::<bool>()).prop_map(
-            |(who, count, skip_untap, no_power_up)| Effect::ExtraTurn {
+        (who(), amount(), any::<bool>(), any::<bool>(), any::<bool>()).prop_map(
+            |(who, count, skip_untap, no_power_up, r109_unpreventable)| Effect::ExtraTurn {
                 who,
                 count,
                 skip_untap,
                 no_power_up,
+                r109_unpreventable,
                 at_end: Vec::new(),
             }
         ),
@@ -1394,10 +1395,13 @@ fn ability() -> impl Strategy<Value = Ability> {
                     .prop_map(|(who, caused_own)| ReplaceWhen::LifeGain { who, caused_own }),
                 reference().prop_map(|who| ReplaceWhen::LoseGame { who }),
                 reference().prop_map(|who| ReplaceWhen::Mill { who }),
-                (reference(), 0..3u32).prop_map(|(who, except_draw_step)| ReplaceWhen::Draw {
-                    who,
-                    except_draw_step
-                }),
+                (reference(), 0..3u32, proptest::bool::ANY).prop_map(
+                    |(who, except_draw_step, first)| ReplaceWhen::Draw {
+                        who,
+                        except_draw_step,
+                        first,
+                    }
+                ),
                 selector().prop_map(|what| ReplaceWhen::Enters { what }),
                 (selector(), proptest::bool::ANY).prop_map(|(what, effect)| {
                     ReplaceWhen::Discarded {
@@ -1460,6 +1464,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             must: false,
                             counters: Vec::new(),
                             except_if: Vec::new(),
+                            r109_embalmed: Vec::new(),
                         }
                     }),
             ],

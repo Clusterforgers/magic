@@ -25,7 +25,7 @@ use crate::mana::{
     max_life_payment,
 };
 use crate::mana_ability;
-use crate::mana_takes::{assignment, without_taken};
+use crate::mana_takes::{assignment, r5506_without_announced, without_taken};
 use crate::object::{ObjectRef, PermanentState};
 use crate::parts::{self, Part};
 use crate::price::Price;
@@ -100,6 +100,11 @@ pub(crate) fn activation_events(
                     removed = removed.saturating_add(*count);
                 }
             }
+            events.extend(parts::r109_opponent_life::r109_opponent_gains(
+                state,
+                &price.parts,
+                choices,
+            ));
             // The costs that move the source come before the activation, which names the source as it was (CR 113.7a): it is
             // sacrificed from the battlefield, discarded from the hand, or exiled from the zone it is in.
             if cost.0.contains(&CostItem::SacrificeSelf) {
@@ -319,6 +324,7 @@ fn payment_events(
         .map(|option| option.source.object)
         .collect();
     let paying = without_taken(&paying, &|id| helped.taps(id) || exiled.contains(&id));
+    let paying = r5506_without_announced(&paying, &announced);
     let mut taken = assignment(&paying.iter().collect::<Vec<_>>())
         .ok_or(IllegalAnswer::NotOffered("permanents to take"))?;
     let mut events = Vec::new();
@@ -367,7 +373,14 @@ fn payment_events(
             }
         }
     }
-    let (later, announced) = r5506_sacrificed_after_mana(announced, &spent.steps);
+    // The permanents the mana abilities tap: their sources and what their costs take.
+    let tapping: Vec<ObjectId> = spent
+        .steps
+        .iter()
+        .map(|step| step.source.object)
+        .chain(taken.iter().flatten().flatten().copied())
+        .collect();
+    let (later, announced) = r5506_sacrificed_after_mana(announced, &tapping);
     events.extend(announced);
     // The creatures and artifacts tapped and the cards exiled to help pay (CR 702.51, CR 702.126, CR 702.66), before the mana.
     for object in payment
@@ -425,13 +438,13 @@ fn payment_events(
     Ok(events)
 }
 
-/// The sacrifices among `announced` of permanents the payment `steps` tap for mana, taken out to follow the mana
-/// activations (CR 601.2g, 601.2h), and the rest of `announced`.
+/// The sacrifices among `announced` of the permanents `tapping` that the payment's mana abilities tap (their sources
+/// and what their costs take), taken out to follow the mana activations (CR 601.2g, 601.2h), and the rest of
+/// `announced`.
 fn r5506_sacrificed_after_mana(
     announced: Vec<Event>,
-    steps: &[crate::spend::Step],
+    tapping: &[ObjectId],
 ) -> (Vec<Event>, Vec<Event>) {
-    let tapping: Vec<ObjectId> = steps.iter().map(|step| step.source.object).collect();
     announced.into_iter().partition(|event| {
         matches!(event, Event::ZoneChanged { object, from: Zone::Battlefield, cause: ZoneCause::Sacrificed, .. }
             if tapping.contains(object))
@@ -558,6 +571,9 @@ pub(crate) fn spell_events(
         choices.cost_picks(),
         choices.cost_kinds(),
     )?;
+    events.extend(parts::r109_opponent_life::r109_opponent_gains(
+        state, parts, choices,
+    ));
     let mut shots = parts::photographed(state, parts, choices.cost_picks());
     shots.extend(parts::rmt5_top_shots(state, player, parts));
     shots.extend(parts::r300_random_shots(state, player, parts));
@@ -567,6 +583,16 @@ pub(crate) fn spell_events(
         &choices.clone().with_cost_shots(shots),
         granted,
     ));
+    // Paying a spell's waterbend cost is waterbending, however it was paid (Avatar Aang ruling).
+    if state
+        .object(spell)
+        .is_some_and(|card| crate::announce::required::r109_waterbends_to_cast(card.card()))
+    {
+        events.push(Event::Bent {
+            player,
+            element: crate::events::Bending::Water,
+        });
+    }
     Some(events)
 }
 
@@ -659,8 +685,9 @@ fn announcement(
         Some(Pending {
             what: What::Spell(source),
             special: Some(Special::IgnoreEffect),
+            choices,
             ..
-        }) => crate::r6703_ignore::events(state, player, *source).ok_or_else(unexpected),
+        }) => crate::r6703_ignore::events(state, player, *source, choices).ok_or_else(unexpected),
         Some(Pending {
             what: What::Spell(card),
             special: Some(Special::TurnFaceUp),
