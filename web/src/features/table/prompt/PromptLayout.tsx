@@ -176,6 +176,8 @@ export interface PromptLayoutProps {
   meter?: ReactNode
   /** The meter says what the sentence says (a payment's symbols): the sentence is read aloud and not drawn. */
   quiet?: boolean
+  /** What is being done with the asking card, over its name on the chip ("Casting", "Plainscycling"). */
+  doing?: string | undefined
   /** The chip at the band's left for a decision no one card asks (the triggers to order): in place of the asker's. */
   lead?: ReactNode
   /** The answer is a press on the table or in the centre overlay: the decision sheet over the hand starts folded. */
@@ -198,6 +200,7 @@ export function PromptLayout({
   meter,
   quiet = false,
   lead,
+  doing,
   folded = false,
 }: PromptLayoutProps) {
   const { name } = usePrompt()
@@ -239,7 +242,7 @@ export function PromptLayout({
   return (
     <>
       {title}
-      {chip ? <AskerChip /> : (lead ?? null)}
+      {chip ? <AskerChip doing={doing} /> : (lead ?? null)}
       <Sentence
         text={chip ? withoutAsker(text, asker.shown) : text}
         quiet={quiet && side !== null}

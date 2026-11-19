@@ -118,7 +118,15 @@ fn words(abilities: &[ActivatedView]) -> Vec<String> {
 )]
 #[case::cycling_in_hand(
     "Cycler", "Creature — Beast", "{3}{G}", "Cycling {2}", Place::Hand,
-    &[": Cycling {2} <Cycling {2}> (unworded)"]
+    &["{2}, Discard this card: Draw a card. <Cycling {2}>"]
+)]
+#[case::plainscycling_in_hand(
+    "Angel of the Ruins", "Artifact Creature — Angel", "{5}{W}{W}", "Flying\nPlainscycling {2}", Place::Hand,
+    &["{2}, Discard this card: Search your library for a Plains card, reveal it, put it into your hand, then shuffle. <Plainscycling {2}>"]
+)]
+#[case::basic_landcycling_in_hand(
+    "Barrens Cycler", "Creature — Beast", "{3}{G}", "Basic landcycling {1}", Place::Hand,
+    &["{1}, Discard this card: Search your library for a basic land card, reveal it, put it into your hand, then shuffle. <Basic landcycling {1}>"]
 )]
 #[case::unearth_in_graveyard(
     "Unearther", "Creature — Zombie", "{1}{B}", "Unearth {B}", Place::Graveyard,

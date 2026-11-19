@@ -46,10 +46,12 @@ export function ArtDisc({
  * The asking card at the band's left end: its art and its name. Hover, focus or a press lights the card on the board and
  * shows its preview; a click pins the preview. Nothing for a decision no card asks.
  */
-export function AskerChip() {
+export function AskerChip({ doing }: { doing?: string | undefined } = {}) {
   const asker = useAsker()
   if (asker === null || asker.shown === '') return null
-  return <Chip id={asker.object?.id} board={asker.board} object={asker.object} name={asker.shown} />
+  return (
+    <Chip id={asker.object?.id} board={asker.board} object={asker.object} name={asker.shown} doing={doing} />
+  )
 }
 
 /** A chip at the band's left for a decision no one card asks: `object`'s art beside `words` ("Order 4 triggers"). */
@@ -63,10 +65,13 @@ function Chip({
   object,
   name,
   words,
+  doing,
 }: {
   id: number | undefined
   board: number | undefined
   object: ObjectView | undefined
+  /** What is being done with the card, drawn over its name ("Casting", "Plainscycling"). */
+  doing?: string | undefined
   name: string
   /** What the chip says in place of the name. */
   words?: string
@@ -104,14 +109,27 @@ function Chip({
       data-slot="prompt-asker"
       data-asker={board ?? id}
       aria-label={
-        words === undefined ? `${name} asks. Show the card.` : `${words}, from ${name}. Show the card.`
+        doing !== undefined
+          ? `${doing} ${name}. Show the card.`
+          : words === undefined
+            ? `${name} asks. Show the card.`
+            : `${words}, from ${name}. Show the card.`
       }
-      title={name}
+      title={doing === undefined ? name : `${doing} ${name}`}
       className="asker-chip outline-primary focus-visible:outline-2"
       {...both}
     >
       <ArtDisc object={object} name={name} />
-      <span className="truncate">{words ?? name}</span>
+      {doing === undefined ? (
+        <span className="truncate">{words ?? name}</span>
+      ) : (
+        <span className="grid min-w-0">
+          <span data-slot="asker-doing" className="truncate text-xs leading-4 font-semibold text-primary">
+            {doing}
+          </span>
+          <span className="truncate text-[0.8125rem] leading-4">{name}</span>
+        </span>
+      )}
     </button>
   )
 }

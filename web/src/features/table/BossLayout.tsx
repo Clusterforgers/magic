@@ -2,7 +2,7 @@
  * Boss mode of the table, for a co-op fight against a boss: the boss's side across the top (the boss's board wide
  * with its pod, its minions beside it), and the party together at the bottom: the other heroes' boards in a band over
  * your own. The rows share the height by what each draws (`bossSplit.ts`): the heroes' cards come first, the boss's
- * are smaller, a board without permanents is a line, and a hand dock with nothing in it is a slim bar. On a phone both
+ * are smaller, an empty ally or idle own board is a line, and a hand dock with nothing in it is a slim bar. On a phone both
  * sides are tile strips over one board.
  */
 import { useMemo, useState } from 'react'
@@ -50,22 +50,15 @@ function useCapped(grid: GridCard | null, cap: number | null | undefined): GridC
   }, [grid, cap])
 }
 
-/** Whether no board of `seats` holds a permanent. */
-function useBoardsEmpty(seats: readonly PlayerId[]): boolean {
-  return usePlay((state) => seats.every((seat) => isBattlefieldEmpty(state, seat)))
-}
-
 /** The minions' boards, framed, at one card size. */
 function Minions({
   seats,
   size,
   card,
-  collapsed,
 }: {
   seats: readonly PlayerId[]
   size: CardSize
   card: number | null | undefined
-  collapsed: boolean
 }) {
   const grid = useCapped(useGridCard(seats), card)
   return (
@@ -76,7 +69,7 @@ function Minions({
           data-slot="minion-frame"
           className="flex min-h-0 min-w-0 rounded-xl border-2 border-boss/40 p-1"
         >
-          <SeatArea seat={seat} size={size} facing="far" pod="line" collapsed={collapsed} />
+          <SeatArea seat={seat} size={size} facing="far" pod="line" />
         </div>
       ))}
     </GridCardContext>
@@ -86,7 +79,8 @@ function Minions({
 /**
  * The boss's side: its abilities in a row on top, then the boss's board wide with its pod and each minion's board beside
  * it; tiles and one board on a phone. The bar shows the boss's phase, scheme, Omen and rules, so its pod leaves them out.
- * Where no board of the side holds a permanent the side is one line: the bar over the pods.
+ * A side with no permanent keeps its room (`splitBoss`): the boss's pod and its empty board, so its first permanents
+ * move no row.
  */
 export function BossSide(props: BossSideProps) {
   return (
@@ -99,7 +93,6 @@ export function BossSide(props: BossSideProps) {
 function BossSideBody({ plan, size, pod, card, onFocusSeat }: BossSideProps) {
   const [boss, ...minions] = plan.boards
   const { gone, playing } = useGone(minions)
-  const empty = useBoardsEmpty(plan.boards)
   const bossGrid = useCapped(null, card)
   const abilities = boss === undefined ? null : <BossAbilitiesBar seat={boss} />
   if (plan.tiles.length > 0) {
@@ -116,8 +109,6 @@ function BossSideBody({ plan, size, pod, card, onFocusSeat }: BossSideProps) {
       </div>
     )
   }
-  // A side with nothing on its boards keeps its header: the abilities and the pods as lines.
-  const collapsed = empty && pod === 'aside'
   const columns: CSSProperties = {
     gridTemplateColumns:
       playing.length === 0
@@ -132,23 +123,13 @@ function BossSideBody({ plan, size, pod, card, onFocusSeat }: BossSideProps) {
       ))}
       <div className="grid min-h-0 min-w-0 flex-1 gap-2" style={columns}>
         {boss === undefined ? null : (
-          <div
-            data-slot="boss-frame"
-            data-collapsed={collapsed || undefined}
-            className="flex min-h-0 min-w-0 rounded-xl border-2 border-boss/70 p-1"
-          >
+          <div data-slot="boss-frame" className="flex min-h-0 min-w-0 rounded-xl border-2 border-boss/70 p-1">
             <GridCardContext value={bossGrid}>
-              <SeatArea
-                seat={boss}
-                size={size}
-                facing="far"
-                pod={collapsed ? 'line' : pod}
-                collapsed={collapsed}
-              />
+              <SeatArea seat={boss} size={size} facing="far" pod={pod} />
             </GridCardContext>
           </div>
         )}
-        <Minions seats={playing} size={size} card={card} collapsed={collapsed} />
+        <Minions seats={playing} size={size} card={card} />
       </div>
     </div>
   )

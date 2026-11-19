@@ -8,6 +8,8 @@ import { undoWords, useUndoKey } from './undo'
 export interface UndoButtonProps {
   /** The zone of the spell or of the source of the ability being announced. */
   zone: Zone | undefined
+  /** Whether an ability is announced (cycling from a hand) or a spell, whatever the zone; left out, the zone tells. */
+  ability?: boolean | undefined
   onUndo(): void
   ref?: Ref<HTMLButtonElement>
   /** The size classes of the prompt's other buttons. */
@@ -18,9 +20,9 @@ export interface UndoButtonProps {
  * Backs out of the spell or ability being announced, as Arena's Undo does, under the word Cancel: nothing is paid or moved before the last
  * step, so the card stays where it was and no mana is spent. Escape presses it.
  */
-export function UndoButton({ zone, onUndo, ref, className = 'h-10 px-4' }: UndoButtonProps) {
+export function UndoButton({ zone, ability, onUndo, ref, className = 'h-10 px-4' }: UndoButtonProps) {
   useUndoKey(onUndo)
-  const words = undoWords(zone)
+  const words = ability === undefined ? undoWords(zone) : ability ? 'Cancel the ability' : 'Cancel the spell'
   const [verb = words, ...rest] = words.split(' ')
   return (
     <Button

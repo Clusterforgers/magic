@@ -156,10 +156,13 @@ describe('a press on a card of the board pays with it', () => {
     expect(row('Orzhov Signet')).toHaveAttribute('data-used')
   })
 
-  it('still lets the game pay with "Pay for me"', async () => {
+  it('"Pay for me" fills the circles with the game payment, and Confirm sends it', async () => {
     const { user, answer } = open()
     await user.click(screen.getByRole('button', { name: 'Pay for me' }))
-    expect(answer).toHaveBeenCalledWith({ PayMana: 'Auto' })
+    expect(answer).not.toHaveBeenCalled()
+    expect(paid()).toBe('4 of 4 paid')
+    await user.click(screen.getByRole('button', { name: 'Confirm payment' }))
+    expect(answer).toHaveBeenCalledWith({ PayMana: { Manual: expect.anything() } })
   })
 })
 

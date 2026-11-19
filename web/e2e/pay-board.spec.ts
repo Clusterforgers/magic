@@ -1,4 +1,4 @@
-// Goal: a payment takes a mana source pressed on the board at once, the moment the prompt is drawn (a basic land, a land of any colour, a land of two colours, Sol Ring and a Signet), so the card reads pressed, a source of several kinds lights its row and the circles fill; and "Pay for me" still answers; in a duel and at four seats, at 1400x900 and on a phone (390x844, the detail in the sheet).
+// Goal: a payment takes a mana source pressed on the board at once, the moment the prompt is drawn (a basic land, a land of any colour, a land of two colours, Sol Ring and a Signet), so the card reads pressed, a source of several kinds lights its row and the circles fill; "Pay for me" lays out the game's payment for a Confirm, and pays at once with "Always pay automatically" on; in a duel and at four seats, at 1400x900 and on a phone (390x844, the detail in the sheet).
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -73,7 +73,38 @@ for (const [width, height] of [
         await expect(page.locator('[data-slot="pay-source-row"][data-used]')).toHaveCount(2)
       })
 
-      test('still pays with "Pay for me"', async ({ page }) => {
+      test('"Pay for me" lays out the game payment on the board and in the band, and Confirm pays it', async ({
+        page,
+      }) => {
+        await page.getByRole('button', { name: 'Pay for me', exact: true }).click()
+        // Nothing is paid yet: the sources read pressed, the circles fill and the decision waits for Confirm.
+        await expect(meter(page)).toHaveAttribute('aria-label', '4 of 4 paid')
+        await expect(page.locator('[data-slot="pay-note"]').first()).toContainText('The game proposes')
+        await expect(
+          page
+            .locator(`section[aria-label$="'s battlefield"] button[data-object-id][aria-pressed="true"]`)
+            .first(),
+        ).toBeVisible()
+        await expect(page.locator('[data-decision="PayMana"]').first()).toBeAttached()
+        const confirm = page.getByRole('button', { name: 'Confirm payment' })
+        await expect(confirm).toBeFocused()
+        await page.screenshot({ path: `test-results/pay-proposed-${seats}-${width}.png` })
+        await confirm.click()
+        await expect(page.locator('[data-decision]')).toHaveCount(0)
+      })
+
+      test('with "Always pay automatically" on, "Pay for me" pays at once', async ({ page }) => {
+        // The Full Control menu sits in the stops row, or behind the Stops button where the row does not fit; the keys
+        // reach them where a phone's decision sheet lies over them.
+        const stops = page.locator('[data-slot="stops-button"]:visible')
+        if ((await stops.count()) > 0) await stops.first().press('Enter')
+        await page.locator('[data-slot="full-control-menu"]:visible').first().press('Enter')
+        await page.locator('[data-slot="auto-pay"]').press('Enter')
+        await expect(page.locator('[data-slot="auto-pay"]')).toHaveAttribute('aria-checked', 'true')
+        // Escape closes the menu and the Stops popover, not the payment.
+        await page.keyboard.press('Escape')
+        if ((await stops.count()) > 0) await page.keyboard.press('Escape')
+        await expect(page.locator('[data-decision="PayMana"]').first()).toBeAttached()
         await page.getByRole('button', { name: 'Pay for me', exact: true }).click()
         await expect(page.locator('[data-decision]')).toHaveCount(0)
       })

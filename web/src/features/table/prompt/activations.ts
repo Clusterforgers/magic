@@ -17,7 +17,7 @@ import type {
   PriorityAction,
   PriorityOptions,
 } from '@/protocol/generated'
-import { costText } from '../cardModel'
+import { costText, powerToughness, typeLine } from '../cardModel'
 import { whyLine } from '../whyWords'
 import { givesOfOptions } from '../manaMade'
 import { madeWords } from '../ManaMade'
@@ -298,9 +298,20 @@ function manaPlay(option: ManaOption, all: readonly ManaOption[]): Play {
   }
 }
 
+/** What casting a card costs and makes, under its line in a chooser: "{5}{W}{W} · Artifact Creature — Angel 5/7". */
+export function castDetail(object: ObjectView): string | undefined {
+  const cost = object.cost_now ?? object.mana_cost
+  const paid = cost === null || cost.length === 0 ? undefined : costText(cost)
+  const body = powerToughness(object)
+  const what = [typeLine(object), body].filter((part) => part !== null && part !== '').join(' ')
+  const parts = [paid, what].filter((part): part is string => part !== undefined && part !== '')
+  return parts.length === 0 ? undefined : parts.join(' · ')
+}
+
 /**
- * Everything a click on card `id` could do, in the order of the chooser: play the land or cast the spell, activate an
- * ability, tap for mana. A land wins over a spell when the card is offered as both, as a click always played it.
+ * Everything a click on card `id` could do, in the order of the chooser: play the land or cast the spell (its cost and
+ * type under it, when `object` is given), activate an ability, tap for mana. A land wins over a spell when the card is
+ * offered as both, as a click always played it.
  */
 export function playsOf(
   id: ObjectId,
@@ -308,11 +319,21 @@ export function playsOf(
   options: PriorityOptions,
   abilities: Activations,
   mana: readonly ManaOption[],
+  object?: ObjectView,
 ): readonly Play[] {
+  const cast = object === undefined ? undefined : castDetail(object)
   const first: Play[] = options.playable_lands.includes(id)
     ? [{ key: 'land', label: `Play ${name}`, words: `Play ${name}`, action: { PlayLand: id } }]
     : options.castable.includes(id)
-      ? [{ key: 'cast', label: `Cast ${name}`, words: `Cast ${name}`, action: { CastSpell: id } }]
+      ? [
+          {
+            key: 'cast',
+            label: `Cast ${name}`,
+            words: `Cast ${name}`,
+            action: { CastSpell: id },
+            ...(cast === undefined ? {} : { detail: cast }),
+          },
+        ]
       : []
   return [...first, ...(abilities.get(id) ?? []), ...mana.map((option) => manaPlay(option, mana))]
 }
@@ -348,4 +369,16 @@ export function blockedPlays(
         ),
       }
     })
+}
+
+/**
+ * What activating the ability `ref` of `object` is called while it is paid for: the keyword that adds it without its
+ * cost ("Plainscycling", "Equip", "Basic landcycling"), or undefined for an ability no keyword adds.
+ */
+export function keywordDoing(ref: AbilityRef, object: ObjectView | undefined): string | undefined {
+  const worded = object?.activated?.find(
+    (entry) => entry.ability !== undefined && sameAbility(entry.ability, ref),
+  )
+  const keyword = worded?.keyword?.split(/ (?=[{—\d+−X])/)[0]?.trim()
+  return keyword === undefined || keyword === '' ? undefined : keyword
 }

@@ -29,6 +29,8 @@ import { withTopCard, withTopCast } from './topCardScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
 import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
+import { cyclingTable, payCycling, withCycling } from './cyclingScene'
+import { withProposal } from './payProposal'
 import { companionTable, stackAbilityTable } from './previewScenes'
 
 /** Builds the decision the viewer of a fixture faces. */
@@ -371,7 +373,7 @@ const pay: DevPrompt = ({ view }) => {
   if (rock !== undefined) {
     options.sources.push({ source: { object: rock.id, ability: rock.abilities.length }, produces: 'Red' })
   }
-  return { id: 1, decision: { player: viewer, kind: { PayMana: options } } }
+  return { id: 1, decision: { player: viewer, kind: { PayMana: withProposal(options) } } }
 }
 
 /** A cost the viewer cannot pay (two blue, with three sources and none of them blue): no automatic payment. */
@@ -386,7 +388,7 @@ const payShort: DevPrompt = (fixture) => {
     sources: options.sources.filter((option) => option.produces !== 'Blue').slice(0, 3),
     auto_available: false,
   }
-  return { id, decision: { ...decision, kind: { PayMana: short } } }
+  return { id, decision: { ...decision, kind: { PayMana: withProposal(short) } } }
 }
 
 const HYBRID_COST: ManaCost = [
@@ -406,7 +408,7 @@ const payHybrid: DevPrompt = (fixture) => {
   if (!('PayMana' in decision.kind)) return { id, decision }
   const { PayMana: options } = decision.kind
   const mixed: PayOptions = { ...options, cost: HYBRID_COST, life: 20, max_life: 4 }
-  return { id, decision: { ...decision, kind: { PayMana: mixed } } }
+  return { id, decision: { ...decision, kind: { PayMana: withProposal(mixed) } } }
 }
 
 /**
@@ -463,7 +465,7 @@ const payLowLife: DevPrompt = (fixture) => {
   const { id, decision } = payHybrid(fixture)
   if (!('PayMana' in decision.kind)) return { id, decision }
   const low: PayOptions = { ...decision.kind.PayMana, life: 3, max_life: 2 }
-  return { id, decision: { ...decision, kind: { PayMana: low } } }
+  return { id, decision: { ...decision, kind: { PayMana: withProposal(low) } } }
 }
 
 /** The same payment when the cast may not be backed out of: no Undo button, and the sentence does not mention it. */
@@ -500,6 +502,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-abilities': withAbilities(priority),
   // The same with Rooms of the viewer's whose locked doors it may unlock (`dev/roomsScene.ts`).
   'priority-rooms': withRooms(priority),
+  // A hand card that can be cast or typecycled (`dev/cyclingScene.ts`): the chooser names both with their costs.
+  'priority-cycling': withCycling(priority),
   'priority-stack-ability': priority,
   'priority-companion': priority,
   // The same at a Delves boss fight: the last seat a boss in its second phase, another seat a fallen hero's Spirit.
@@ -548,6 +552,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-announced': payAnnounced,
   'pay-sources': paySources,
   'pay-marks': payMarks,
+  'pay-cycling': payCycling,
   'commander-return': commanderReturn,
   ...ASK_PROMPTS,
   ...EFFECT_PROMPTS,
@@ -600,6 +605,8 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-byhand': quietMoment('Main1', true),
   'priority-abilities': abilitiesTable,
   'priority-rooms': roomsTable,
+  'priority-cycling': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
+  'pay-cycling': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
   'priority-stack-ability': stackAbilityTable,
   'priority-companion': companionTable,
   'priority-delve': (fixture) => {
