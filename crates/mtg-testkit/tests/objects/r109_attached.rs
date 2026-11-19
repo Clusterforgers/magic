@@ -1,7 +1,8 @@
 //! Goal: cards that enter attached to a chosen object or player, at 2 to 4 seats: an Equipment that enters attached to a
 //! creature its controller chooses (or none), a creature that returns as an Aura on a Forest whose granted static gives
 //! the Forest mana abilities in turn, a creature that returns transformed as a Curse on an opponent, and an Aura of
-//! opponents that moves to a player who attacks you; each log replays to the live state.
+//! opponents that moves to a player who attacks you, and the Auras and Equipment of a dead creature put onto another
+//! (Cass); each log replays to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_engine::ability_reader::abilities_of;
@@ -12,7 +13,7 @@ use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{burn, forest, free_creature, mountain};
 use mtg_testkit::corpus::card;
-use mtg_testkit::{Driver, Scenario, ScriptError, enchanting, ready};
+use mtg_testkit::{Driver, Scenario, ScriptError, attached_to, enchanting, ready};
 use rstest::rstest;
 
 use crate::common::copying::{replays, settle};
@@ -248,6 +249,73 @@ fn attacking_the_enchanted_player_drains_and_draws(
     assert_eq!(life(&driver, 1), theirs - 2);
     assert_eq!(life(&driver, 0), mine + 2);
     assert_eq!(names(driver.state(), Zone::Hand(pid(0))).len(), hand + 1);
+    replays(&driver, &setup);
+    Ok(())
+}
+
+/// Seat 0 controls Cass, "Mine" (enchanted by a Pacifism and equipped with a Bonesplitter when `attachments`), "Host"
+/// and a Mountain; seat 1 controls a creature.
+fn cass_table(seats: usize, attachments: bool) -> Scenario {
+    let mut mine = vec![
+        ready(card("Cass, Hand of Vengeance").unwrap()),
+        ready(free_creature("Mine", 2, 2)),
+        ready(free_creature("Host", 2, 2)),
+        ready(mountain()),
+    ];
+    if attachments {
+        mine.push(attached_to(ready(card("Pacifism").unwrap()), 0, 1));
+        mine.push(attached_to(ready(card("Bonesplitter").unwrap()), 0, 1));
+    }
+    Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .hand(0, [burn("Bolt", 10)])
+        .battlefield(0, mine)
+        .battlefield(1, [ready(free_creature("Theirs", 2, 2))])
+}
+
+#[rstest]
+#[case::everything_returns(true, true)]
+#[case::nothing_chosen(true, false)]
+#[case::an_unattached_creature_triggers_nothing(false, true)]
+fn cass_returns_the_auras_and_moves_the_equipment_of_a_dead_creature(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] attachments: bool,
+    #[case] all: bool,
+) -> Result<(), ScriptError> {
+    let setup = cass_table(seats, attachments).setup().unwrap();
+    let mut driver = Driver::from_scenario(cass_table(seats, attachments))?;
+    let host = driver.id_of("Host")?;
+    let target = driver.target_named("Mine")?;
+    driver.cast_at("Bolt", &[target])?;
+    let mut triggered = false;
+    for _ in 0..200 {
+        let decision = driver.decision()?.clone();
+        match &decision.kind {
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => break,
+            DecisionKind::ChooseTargets(_) => {
+                triggered = true;
+                let host = driver.target_named("Host")?;
+                driver.choose_targets(&[host])?;
+            }
+            DecisionKind::ChooseCards(options) => {
+                let picked = if all { options.from.clone() } else { Vec::new() };
+                driver.answer(Answer::ChooseCards(CardsChoice(picked)))?;
+            }
+            _ => {
+                driver.answer_passively()?;
+            }
+        }
+    }
+    assert_eq!(triggered, attachments);
+    let state = driver.state();
+    if attachments {
+        let expected = all.then_some(host);
+        assert_eq!(host_of(&driver, "Pacifism"), expected);
+        assert_eq!(host_of(&driver, "Bonesplitter"), expected);
+        assert_eq!(on_battlefield(state, "Pacifism").is_some(), all);
+        // The Bonesplitter stays on the battlefield either way, unattached when it is not chosen.
+        assert!(on_battlefield(state, "Bonesplitter").is_some());
+    }
     replays(&driver, &setup);
     Ok(())
 }

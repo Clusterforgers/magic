@@ -162,9 +162,14 @@ impl Scope<'_> {
     }
 
     /// Whether the object is a permanent on the battlefield attached to one of the objects the reference names, or to one
-    /// of the players it names.
+    /// of the players it names; a card in a graveyard is one that was attached to a host that has left ("Aura cards that
+    /// were attached to it").
     fn w6d_attached_to(&self, host: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
-        let Some(card) = seen.card.filter(|_| seen.zone == Zone::Battlefield) else {
+        let in_graveyard = matches!(seen.zone, Zone::Graveyard(_)) && seen.kind == crate::object::ObjectKind::Card;
+        let Some(card) = seen
+            .card
+            .filter(|_| seen.zone == Zone::Battlefield || in_graveyard)
+        else {
             return Ok(false);
         };
         let named = self.objects(host)?;
@@ -180,8 +185,8 @@ impl Scope<'_> {
                     && shot.attachments.contains(&card.id())
             })
         });
-        if held_as_it_left {
-            return Ok(true);
+        if held_as_it_left || in_graveyard {
+            return Ok(held_as_it_left);
         }
         let Some(attached_to) = self.state.host_of(card.id()) else {
             // An Aura that enchants a player is attached to that player.
@@ -198,6 +203,30 @@ impl Scope<'_> {
         let Some(host) = seen.card.filter(|_| seen.zone == Zone::Battlefield) else {
             return Ok(false);
         };
+        // A host that has left is judged as it last existed (CR 608.2h): "if it was enchanted or equipped" of a creature
+        // that died reads what was attached to it then, whatever those objects became since.
+        let left = self.candidate.get().filter(|named| {
+            self.state
+                .object(named.id)
+                .is_none_or(|live| live.counter() != named.counter || live.zone() != Zone::Battlefield)
+        });
+        if let Some(named) = left {
+            let Some(shot) = self
+                .snapshots
+                .iter()
+                .find(|shot| shot.id == named.id && shot.counter == named.counter)
+            else {
+                return Ok(false);
+            };
+            for id in &shot.attachments {
+                match self.state.object(*id).map(GameObject::reference) {
+                    Some(reference) if self.selects(attached, reference)? => return Ok(true),
+                    None if attached.0.is_empty() => return Ok(true),
+                    _ => {}
+                }
+            }
+            return Ok(false);
+        }
         for id in self.state.attachments_of(host.id()) {
             let Some(reference) = self.state.object(id).map(GameObject::reference) else {
                 continue;

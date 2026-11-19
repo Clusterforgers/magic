@@ -1,10 +1,181 @@
 [
- [
-  {"Triggered": {"when": {"PlayerAttacks": {"at": "You"}}, "effects": [{"May": {"effects": [{"Attach": {"what": "This", "to": "Triggering"}}]}}]}},
-  "Whenever a player attacks you, you may attach this Aura to that player."
- ],
- [
-  {"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"R109EntersAttached": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}},
-  "As this Equipment enters, choose a creature you control it could be attached to. If you do, it enters attached to that creature."
- ]
+  [
+    {
+      "Triggered": {
+        "when": {
+          "PlayerAttacks": {
+            "at": "You"
+          }
+        },
+        "effects": [
+          {
+            "May": {
+              "effects": [
+                {
+                  "Attach": {
+                    "what": "This",
+                    "to": "Triggering"
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "Whenever a player attacks you, you may attach this Aura to that player."
+  ],
+  [
+    {
+      "Replacement": {
+        "when": {
+          "Enters": {
+            "what": [
+              "This"
+            ]
+          }
+        },
+        "by": {
+          "R109EntersAttached": [
+            {
+              "Type": "Creature"
+            },
+            {
+              "ControlledBy": "You"
+            }
+          ]
+        }
+      }
+    },
+    "As this Equipment enters, choose a creature you control it could be attached to. If you do, it enters attached to that creature."
+  ],
+  [
+    {
+      "Triggered": {
+        "when": {
+          "AnyOf": [
+            {
+              "ZoneChange": {
+                "what": [
+                  "This"
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "Type": "Creature"
+                  },
+                  "Other",
+                  {
+                    "ControlledBy": "You"
+                  }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            }
+          ]
+        },
+        "if": {
+          "Matches": {
+            "subject": "Triggering",
+            "selector": [
+              {
+                "HasAttached": []
+              }
+            ]
+          }
+        },
+        "targets": [
+          {
+            "what": {
+              "Object": [
+                {
+                  "Type": "Creature"
+                }
+              ]
+            }
+          }
+        ],
+        "effects": [
+          {
+            "Choose": {
+              "from": {
+                "Each": [
+                  {
+                    "Subtype": "Aura"
+                  },
+                  {
+                    "In": "Graveyard"
+                  },
+                  {
+                    "OwnedBy": "You"
+                  },
+                  {
+                    "AttachedTo": "Triggering"
+                  }
+                ]
+              },
+              "count": {
+                "min": 0,
+                "max": null
+              },
+              "as": "auras"
+            }
+          },
+          {
+            "Move": {
+              "what": {
+                "Bound": "auras"
+              },
+              "to": {
+                "BattlefieldAttached": {
+                  "to": {
+                    "Target": 0
+                  }
+                }
+              }
+            }
+          },
+          {
+            "Choose": {
+              "from": {
+                "Each": [
+                  {
+                    "Subtype": "Equipment"
+                  },
+                  {
+                    "In": "Battlefield"
+                  },
+                  {
+                    "AttachedTo": "Triggering"
+                  }
+                ]
+              },
+              "count": {
+                "min": 0,
+                "max": null
+              },
+              "as": "equipment"
+            }
+          },
+          {
+            "Attach": {
+              "what": {
+                "Bound": "equipment"
+              },
+              "to": {
+                "Target": 0
+              }
+            }
+          }
+        ]
+      }
+    },
+    "Whenever ~ or another creature you control dies, if it was enchanted or equipped, return any number of Aura cards that were attached to it from your graveyard to the battlefield attached to target creature, then attach any number of Equipment that were attached to it to that creature."
+  ]
 ]

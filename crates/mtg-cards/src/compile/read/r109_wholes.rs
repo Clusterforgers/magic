@@ -63,6 +63,9 @@ mod tests {
             ("to that player", "to you"),
             ("a creature you control", "a creature"),
             ("If you do, ", ""),
+            ("enchanted or equipped", "enchanted"),
+            ("from your graveyard", "from a graveyard"),
+            ("any number of Equipment", "an Equipment"),
         ];
         for (_, text) in R109_SHAPES.iter() {
             for (from, to) in swaps {
