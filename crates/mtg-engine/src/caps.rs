@@ -1025,6 +1025,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.RevealOrTapped",
     "ReplaceBy.R6007RevealOrControl",
     "ReplaceBy.R6702MayAttach",
+    "ReplaceBy.R109EntersAttached",
     "ReplaceBy.Instead.PaysLife",
     "ReplaceBy.BeholdOrTapped",
     "ReplaceBy.PayOrGraveyard",

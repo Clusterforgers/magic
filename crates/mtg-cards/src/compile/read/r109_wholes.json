@@ -1,0 +1,10 @@
+[
+ [
+  {"Triggered": {"when": {"PlayerAttacks": {"at": "You"}}, "effects": [{"May": {"effects": [{"Attach": {"what": "This", "to": "Triggering"}}]}}]}},
+  "Whenever a player attacks you, you may attach this Aura to that player."
+ ],
+ [
+  {"Replacement": {"when": {"Enters": {"what": ["This"]}}, "by": {"R109EntersAttached": [{"Type": "Creature"}, {"ControlledBy": "You"}]}}},
+  "As this Equipment enters, choose a creature you control it could be attached to. If you do, it enters attached to that creature."
+ ]
+]

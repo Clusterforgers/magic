@@ -1,7 +1,7 @@
 {
   "oracle_id": "fe8b7835-a9b2-4a8d-964a-471430f1d143",
   "name": "Grifter's Blade",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grifter's Blade",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 134 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "R109EntersAttached": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
           }
         },
         {

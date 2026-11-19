@@ -3579,8 +3579,12 @@ impl Walker<'_> {
             Destination::BattlefieldEnchanting { only } => {
                 self.at("only", |w| w.selector(only));
             }
+            // The changes are continuous effects of the resolving ability, so a static ability they give may give
+            // abilities in turn, as one `Effect::Continuous` gives.
             Destination::R6502BattlefieldAs { becomes } => {
+                let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
                 self.at("becomes", |w| w.mods(becomes));
+                self.r6701_effect_grant = effect_grant;
             }
             _ => {}
         }
@@ -7348,6 +7352,12 @@ impl Walker<'_> {
                 }
                 self.at("to", |w| w.selector(to));
             }
+            ReplaceBy::R109EntersAttached(to) => {
+                if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {
+                    self.problem("only the Equipment itself enters attached");
+                }
+                self.at("to", |w| w.selector(to));
+            }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
             ReplaceBy::TappedForCounters { count: 0, .. } => {
                 self.problem("entering tapped for no counters is a plain choice");
@@ -8159,6 +8169,21 @@ mod tests {
             .collect()
     }
 
+    /// A card returned as an Aura whose given static ability gives abilities in turn is an effect's grant, as an
+    /// `Effect::Continuous` one is; a printed static that does it is still refused.
+    #[rstest]
+    #[case::r109_returned_as_an_aura(
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield","to":"Graveyard"}},"effects":[{"Move":{"what":"This","to":{"R6502BattlefieldAs":{"becomes":[{"GrantAbility":{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}}]}}}}]}}"#,
+        true
+    )]
+    #[case::r109_a_printed_static(
+        r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"Attached","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}}]}}"#,
+        false
+    )]
+    fn r109_a_nested_grant_is_an_effects_own(#[case] json: &str, #[case] valid: bool) {
+        assert_eq!(problems(json).is_empty(), valid, "{:?}", problems(json));
+    }
+
     /// A paid optional cost needs a keyword or an ability that gives one: teamwork expands into one, kicker counts apart.
     #[rstest]
     #[case::teamwork(r#"{"Keyword":{"Macro":{"name":"teamwork","amount":4}}},"#, true)]
@@ -8602,6 +8627,14 @@ mod tests {
     #[case::a_granted_static_cannot_grant_in_turn(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"This","mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Draw":{}}]}}}]}}}]}}"#,
         "a static ability that is granted cannot grant abilities in turn"
+    )]
+    #[case::r109_an_equipment_enters_attached_only_as_itself_enters(
+        r#"{"Replacement":{"when":{"Enters":{"what":[{"Type":"Creature"}]}},"by":{"R109EntersAttached":[{"Type":"Creature"},{"ControlledBy":"You"}]}}}"#,
+        "only the Equipment itself enters attached"
+    )]
+    #[case::r109_entering_attached_is_no_turning_up(
+        r#"{"Replacement":{"when":{"TurnedFaceUp":{"what":["This"]}},"by":{"R109EntersAttached":[{"Type":"Creature"}]}}}"#,
+        "only the Equipment itself enters attached"
     )]
     #[case::a_granted_static_is_not_characteristic_defining(
         r#"{"Static":{"affected":"This","mods":[{"GrantAbility":{"Static":{"affected":"This","mods":[{"SetColors":["Blue"]}],"defining":true}}}]}}"#,

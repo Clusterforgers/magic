@@ -1,7 +1,7 @@
 {
   "oracle_id": "11e3f1d3-9d78-4c00-b965-e14407fd5210",
   "name": "Old-Growth Troll",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Old-Growth Troll",
@@ -9,9 +9,74 @@
       "abilities": [
         { "Keyword": "Trample" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 8, "end": 295 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "R6502BattlefieldAs": {
+                      "becomes": [
+                        { "SetTypes": ["Enchantment"] },
+                        { "AddSubtype": "Aura" },
+                        "LoseAbilities",
+                        {
+                          "AddKeyword": {
+                            "Enchant": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }]
+                          }
+                        },
+                        {
+                          "GrantAbility": {
+                            "Static": {
+                              "affected": "Attached",
+                              "mods": [
+                                {
+                                  "GrantAbility": {
+                                    "Activated": {
+                                      "cost": ["Tap"],
+                                      "effects": [
+                                        { "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } }
+                                      ]
+                                    }
+                                  }
+                                },
+                                {
+                                  "GrantAbility": {
+                                    "Activated": {
+                                      "cost": [{ "Mana": "{1}" }, "Tap", "SacrificeSelf"],
+                                      "effects": [
+                                        {
+                                          "CreateToken": {
+                                            "token": {
+                                              "Custom": {
+                                                "name": "Troll Warrior",
+                                                "colors": ["Green"],
+                                                "types": ["Creature"],
+                                                "subtypes": ["Troll", "Warrior"],
+                                                "power": 4,
+                                                "toughness": 4,
+                                                "abilities": [{ "Keyword": "Trample" }]
+                                              }
+                                            },
+                                            "tapped": true
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]
