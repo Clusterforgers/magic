@@ -219,7 +219,9 @@ pub fn apply_answer(
                     .map(|next| Answer::ChooseCards(CardsChoice(next)))
             }
             (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
-                if cards.len() < options.from.len() && options.total.is_none() =>
+                if cards.len() < options.from.len()
+                    && options.total.is_none()
+                    && takes_all(options) =>
             {
                 Some(Answer::ChooseCards(CardsChoice(options.from.clone())))
             }
@@ -255,6 +257,11 @@ pub fn apply_answer(
 const R5518_ALIKE_SAME_NAME: &str = "cards with the same name";
 /// The refusal of a pick of cards that share no color.
 const R5518_ALIKE_SHARE_COLOR: &str = "cards that share a color";
+
+/// Whether a pick of cards may take every card offered: its upper bound reaches them all.
+fn takes_all(options: &CardsOptions) -> bool {
+    usize::try_from(options.max).is_ok_and(|max| max >= options.from.len())
+}
 
 /// The next set of as many of `from` as `picked`, in the order of `from` (the next combination), `None` after the last:
 /// a pick refused because its cards are not alike tries the sets one after another.
@@ -1225,8 +1232,9 @@ impl RandomBot {
     /// Any cards among those offered, as many as the bounds allow. A cost that takes any number of creatures for their
     /// power (crew) is the one question with room between the bounds that a bot may not answer short, and it cannot
     /// check the power here: it takes every creature offered, as the engine asked only because together they have enough.
+    /// A cost that takes up to fewer than those offered ("sacrifice up to three") is answered within its bounds.
     fn cards(&mut self, options: &CardsOptions) -> Answer {
-        if options.can_cancel && options.max > options.min {
+        if options.can_cancel && options.max > options.min && takes_all(options) {
             return Answer::ChooseCards(CardsChoice(options.from.clone()));
         }
         let spread = usize::try_from(options.max.saturating_sub(options.min)).unwrap_or(0) + 1;
@@ -1393,6 +1401,48 @@ mod tests {
                 let Some(decision) = engine.decision().cloned() else { break };
                 let answer = bot.choose(&decision);
                 prop_assert!(engine.apply(answer).is_ok(), "bot gave an illegal answer to {decision:?}");
+            }
+        }
+    }
+
+    /// A cancelable pick of `offered` cards between `min` and `max`, as a cost asks it.
+    fn cost_pick(offered: u64, min: u32, max: u32) -> CardsOptions {
+        CardsOptions {
+            source: ObjectId(0),
+            from: (1..=offered).map(ObjectId).collect(),
+            min,
+            max,
+            text: String::new(),
+            can_cancel: true,
+            one_per_name: false,
+            total: None,
+            groups: Vec::new(),
+        }
+    }
+
+    #[rstest::rstest]
+    #[case::sacrifice_up_to_three_of_twelve(12, 0, 3, false)]
+    #[case::sacrifice_up_to_three_of_two(2, 0, 3, true)]
+    #[case::crew_takes_every_creature(4, 1, 4, true)]
+    #[case::exactly_two(5, 2, 2, false)]
+    fn a_cost_pick_stays_within_its_bounds(
+        #[case] offered: u64,
+        #[case] min: u32,
+        #[case] max: u32,
+        #[case] all: bool,
+    ) {
+        let options = cost_pick(offered, min, max);
+        for seed in 0..40 {
+            let Answer::ChooseCards(CardsChoice(picked)) = RandomBot::new(seed, 0).cards(&options)
+            else {
+                panic!("a pick of cards was expected");
+            };
+            assert!(
+                (min as usize..=max as usize).contains(&picked.len()),
+                "{picked:?}"
+            );
+            if all {
+                assert_eq!(picked, options.from);
             }
         }
     }

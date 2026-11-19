@@ -1357,6 +1357,9 @@ impl Pick {
     /// What the question asks of the player for the kind of pick, before the set's words.
     fn r5518_kind_text(&self) -> String {
         match self.kind {
+            Kind::Sacrifice if self.up_to => {
+                crate::wording::sacrifice_up_to(&self.filter, self.count)
+            }
             Kind::Sacrifice => crate::wording::sacrifice(&self.filter, self.count),
             Kind::Discard => crate::wording::discard(self.count),
             Kind::Exile => exile::text(&self.filter, self.count),
