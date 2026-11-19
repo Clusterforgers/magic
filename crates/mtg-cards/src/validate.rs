@@ -8101,6 +8101,8 @@ fn lists(k: &Keyword, keyword: &str) -> bool {
         // Scryfall lists `Cycling` as well for a typecycling card (CR 702.29).
         || (matches!(k, Keyword::Typecycling { .. })
             && Keyword::Cycling(Cost::default()).name().eq_ignore_ascii_case(keyword))
+        // Scryfall lists `Trample` as well for trample over planeswalkers, a variant of trample (CR 702.19c).
+        || (matches!(k, Keyword::TrampleOverPlaneswalkers) && "Trample".eq_ignore_ascii_case(keyword))
 }
 
 /// Whether the clause holds the keyword (any case) at the end of a word: no letter or digit
@@ -10009,6 +10011,18 @@ mod printed_keywords {
             r#"{"Keyword":{"Enchant":[{"Type":"Creature"}]}},{"Static":{"affected":"Attached","mods":[{"RemoveKeyword":"Flying"}]}}"#
         )],
         &["Enchant", "Flying"],
+        &["Flying"]
+    )]
+    #[case::trample_over_planeswalkers_lists_trample(
+        "Full",
+        &[(BIRD, "Trample over planeswalkers", r#"{"Keyword":"TrampleOverPlaneswalkers"}"#)],
+        &["Trample"],
+        &[]
+    )]
+    #[case::trample_over_planeswalkers_lists_no_other_keyword(
+        "Full",
+        &[(BIRD, "Trample over planeswalkers", r#"{"Keyword":"TrampleOverPlaneswalkers"}"#)],
+        &["Trample", "Flying"],
         &["Flying"]
     )]
     #[case::a_card_without_a_grant_or_a_clause_lacks_the_keyword(
