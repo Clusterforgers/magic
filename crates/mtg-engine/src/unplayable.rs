@@ -1,6 +1,7 @@
-//! Why the cards of a player's hand and command zone that the priority offer leaves out cannot be played now
-//! (`PriorityOptions.unplayable`, `docs/engine.md`, Priority options). The spells are judged once, and the same judgement decides
-//! `castable`, so the offer runs the rules of a card once.
+//! Why the cards a player could play that the priority offer leaves out cannot be played now (`PriorityOptions.unplayable`,
+//! `docs/engine.md`, Priority options): their hand and command zone, and the cards of other zones a way or a permission
+//! names for them. The spells are judged once, and the same judgement decides `castable`, so the offer runs the rules of
+//! a card once.
 
 use std::collections::{BTreeMap, BTreeSet};
 
@@ -15,7 +16,7 @@ use crate::state::GameState;
 use crate::ways;
 use crate::zones::Zone;
 
-/// The cards of `player`'s hand and command zone in zone order: the cards `unplayable` speaks of.
+/// The cards of `player`'s hand and command zone in zone order: the cards [`judge`] judges.
 fn own_cards(state: &GameState, player: PlayerId) -> impl Iterator<Item = ObjectId> + '_ {
     [Zone::Hand(player), Zone::Command(player)]
         .into_iter()
@@ -34,11 +35,24 @@ pub(crate) fn judge(
 ) -> BTreeMap<ObjectId, Option<Unplayable>> {
     own_cards(state, player)
         .map(|id| {
-            let reason = ways::hindrance_now(state, player, id, pool, sources, life)
-                .or(restricted.then_some(Unplayable::Restricted));
-            (id, reason)
+            (
+                id,
+                reason_now(state, player, id, (pool, sources, life), restricted),
+            )
         })
         .collect()
+}
+
+/// Why `player` cannot cast `id` now, `None` when they can; `restricted` is the last reason looked for.
+fn reason_now(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    (pool, sources, life): (&ManaPool, &[ManaOption], i32),
+    restricted: bool,
+) -> Option<Unplayable> {
+    ways::hindrance_now(state, player, id, pool, sources, life)
+        .or(restricted.then_some(Unplayable::Restricted))
 }
 
 /// The spells `player` can cast now, from the hand, then the other zones of [`ways::elsewhere`]: the judged cards by their
@@ -64,7 +78,7 @@ pub(crate) fn castable(
         .collect()
 }
 
-/// What the offer lists for the cards of a hand and the command zone: the cards in it count as playable now.
+/// What the offer lists for the cards a player could play: the cards in it count as playable now.
 pub(crate) struct Offered<'a> {
     /// `PriorityOptions.playable_lands`.
     pub(crate) lands: &'a [ObjectId],
@@ -76,8 +90,62 @@ pub(crate) struct Offered<'a> {
     pub(crate) special: [&'a [ObjectId]; 3],
 }
 
-/// The cards of `player`'s hand and command zone that `offered` leaves out, in zone order, each with its first reason: a
-/// land waits for the timing and a land play, a spell gives its judgement.
+/// The cards `unplayable` speaks of, in order: `player`'s hand and command zone, then each card of another zone that
+/// `player` sees and has a way to cast or a permission to play (a flashback card in the graveyard, a foretold card in
+/// exile, the top of the library under Future Sight). A card of another zone with no way stays out, so a graveyard full
+/// of spent spells says nothing, and a hidden card is never named.
+fn explained_cards(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
+    let own = [Zone::Hand(player), Zone::Command(player)];
+    let mut cards: Vec<ObjectId> = own
+        .iter()
+        .flat_map(|zone| state.zone(*zone).iter().copied())
+        .collect();
+    let lands = ways::lands_elsewhere(state, player);
+    let others = ways::elsewhere(state, player).into_iter().filter(|id| {
+        state.object(*id).is_some_and(|card| {
+            !own.contains(&card.zone())
+                && seen_by(state, player, *id)
+                && if card.base_types().contains(CardType::Land) {
+                    lands.contains(id)
+                } else {
+                    has_way(state, player, *id)
+                }
+        })
+    });
+    cards.extend(others);
+    let mut seen = BTreeSet::new();
+    cards.retain(|id| seen.insert(*id));
+    cards
+}
+
+/// Whether `player` sees the card `id` of a zone besides their hand: face up, or face down and their own; the top of a
+/// library only under a permission that covers it (Future Sight plays with it revealed).
+fn seen_by(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+    let Some(card) = state.object(id) else {
+        return false;
+    };
+    if card.face_down().is_some() && card.owner() != player {
+        return false;
+    }
+    !matches!(card.zone(), Zone::Library(_))
+        || crate::rules::cast_permissions(state)
+            .iter()
+            .any(|permission| permission.covers(state, player, card))
+}
+
+/// Whether `player` has a way to cast `id` from where it is, whatever the timing and the mana: of any face it may be
+/// cast as.
+fn has_way(state: &GameState, player: PlayerId, id: ObjectId) -> bool {
+    if !crate::faces::is_multi_face(state, id) {
+        return !ways::of(state, player, id).is_empty();
+    }
+    crate::faces::candidates(state, id)
+        .into_iter()
+        .any(|face| !ways::of(&state.with_face(id, face), player, id).is_empty())
+}
+
+/// The cards of [`explained_cards`] that `offered` leaves out, in order, each with its first reason: a land waits for the
+/// timing and a land play, a spell gives its judgement.
 pub(crate) fn unplayable(
     state: &GameState,
     player: PlayerId,
@@ -94,7 +162,8 @@ pub(crate) fn unplayable(
         .chain(offered.special.iter().flat_map(|ids| ids.iter()))
         .copied()
         .collect();
-    own_cards(state, player)
+    explained_cards(state, player)
+        .into_iter()
         .filter(|id| !listed.contains(id))
         .filter_map(|card| {
             let object = state.object(card)?;
@@ -105,7 +174,11 @@ pub(crate) fn unplayable(
             let reason = if land {
                 land_reason(state, player, card)
             } else {
-                judged.get(&card).copied().flatten()
+                // A card of another zone is judged here, once it is known to have a way.
+                judged
+                    .get(&card)
+                    .copied()
+                    .unwrap_or_else(|| reason_now(state, player, card, at_hand, restricted))
             };
             let why = match reason {
                 Some(reason) if land => land_why(state, player, card, reason),

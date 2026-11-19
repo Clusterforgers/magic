@@ -433,12 +433,27 @@ pub(crate) fn forbidden(state: &GameState, doing: Doing) -> bool {
 /// rule forbids it. [`forbidden`] reads it, so a reason named from it never disagrees with the check.
 #[allow(clippy::needless_pass_by_value, clippy::option_option)]
 pub(crate) fn forbidder(state: &GameState, doing: Doing) -> Option<Option<ObjectRef>> {
+    forbidding(state, doing).map(|ban| ban.source)
+}
+
+/// The first prohibition in force that forbids `doing`, whole; [`forbidder`] reads it.
+#[allow(clippy::needless_pass_by_value)]
+pub(crate) fn forbidding(state: &GameState, doing: Doing) -> Option<&Banned> {
     state
         .rules()
         .cants
         .iter()
         .find(|ban| applies(state, ban, doing.clone()))
-        .map(|ban| ban.source)
+}
+
+impl Banned {
+    /// The spells of its filter a player may cast each turn, for a "can't cast more than N spells each turn" ban.
+    pub(crate) const fn cast_limit(&self) -> Option<u32> {
+        match &self.action {
+            Prohibited::Cast { more_than, .. } => *more_than,
+            _ => None,
+        }
+    }
 }
 
 /// Whether a rule in force keeps `attachment` from being attached to `host` (`Prohibited::BeAttachedBy`): read where an

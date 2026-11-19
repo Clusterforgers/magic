@@ -154,7 +154,7 @@ Seat rules for Delves fights (`docs/delves.md`), each set up in `PlayerSetup`:
 
 - `castable` lists cards in hand and, for a way naming another zone, in a graveyard, exile, the library top or the command zone, affordable at their timing; a spell with targets needs enough legal targets for every specification (CR 601.2c). Split second (CR 702.61) empties `castable` and `abilities`; mana abilities, special actions and passing stay.
 - `abilities` lists activated abilities that work from the card's zone, are not taken by the payment planner and could be activated now (`priority::other_abilities`). `Activated.by` names who may activate (controller by default, any player or opponents); the activator controls the ability, and a cost that taps or gives up the permanent is not offered to a non-controller. `Limit::TimesPerTurn(n)` counts uses in `Tallies::limit_uses`.
-- `unplayable` names each hand and command-zone card no list offers, with its first reason (`Unplayable`); `unplayable::judge` judges them once and also fills `castable`. `suspendable` and `foretellable` list the special actions.
+- `unplayable` names each hand and command-zone card no list offers, then each card of a graveyard, exile or the library top that the holder sees and has a way to cast or a permission to play (`unplayable::explained_cards`), with its first reason (`Unplayable`); `unplayable::judge` judges the hand and command zone once and also fills `castable`. `suspendable` and `foretellable` list the special actions.
 - `inactive` names each activated ability of the holder's permanents that `abilities` leaves out, with its reason; `priority::activation` is the one check and gives the first reason that fails (mana abilities, other zones and costs the engine does not pay are never listed).
 - `can_act` is true with a land, spell, suspend, foretell or ability to use; mana abilities alone never count (`priority::can_act`). The server uses it only to pass for a seat that asked ([server.md](server.md)); clocks and yields never read it, so pace never tells what a hand holds. `PlayOptions::auto_pass` in `mtg-testkit` applies the same rule and is the server tests' reference.
 
@@ -165,9 +165,9 @@ Each reason carries a detail (`Why`, `why.rs`) read off the check that decided i
 | `Why` | From |
 |---|---|
 | `Target { needs, zone }` | the first target specification with too few legal targets (`choose::unmet_target`), in the words of `wording::target_need`: "a creature spell you control on the stack" |
-| `Mana { cost, at_hand, missing }` | the total the payment is asked for after increases and reductions, the pool plus one use of each source, and the kinds of mana a one-kind symbol asks that nothing makes |
+| `Mana { cost, at_hand, missing, tax }` | the total the payment is asked for after increases and reductions, the pool plus one use of each source, the kinds of mana a one-kind symbol asks that nothing makes, and the commander tax the total includes |
 | `SorcerySpeed`, `OwnCondition` | the timing of the card or ability, and a `CastOnly` or "Activate only if" that does not hold |
-| `ForbiddenBy { source, name }` | the first prohibition in force (`prohibit::forbidder`, `w17b_cant_cast_by`), named while its source is face up on the battlefield, on the stack or in the command zone |
+| `ForbiddenBy { source, name, limit }` | the first prohibition in force (`prohibit::forbidding`, `w17b_cant_cast_by`), named while its source is face up on the battlefield, on the stack or in the command zone (an emblem: a Delves modifier or relic), and the spells a turn it allows when it limits them (One Voice, Rule of Law) |
 | `SplitSecond` | the spell with split second on the stack |
 | `SummoningSick`, `Tapped`, `LimitSpent`, `OtherCost`, `NoWay` | the source that cannot turn, a spent `Limit` or loyalty activation, a cost besides mana, and a card with no way to be cast from its zone |
 

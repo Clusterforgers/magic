@@ -10,6 +10,7 @@ mod announce_division;
 mod aura_cast_targets;
 mod auto_pay_lands_first;
 mod big_mana_board;
+mod blocked_reasons;
 mod borrowed_mana;
 mod by_hand_due;
 mod c11a_first_spells;

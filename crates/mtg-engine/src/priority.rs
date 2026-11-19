@@ -462,7 +462,7 @@ pub(crate) fn activation(
         if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
             return Hindered(
                 Unplayable::Mana,
-                Some(crate::why::mana(mana.clone(), seat.mana(), &sources)),
+                Some(crate::why::mana(mana.clone(), seat.mana(), &sources, 0)),
             );
         }
     }

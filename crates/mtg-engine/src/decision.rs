@@ -221,7 +221,9 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<FaceOption>>", optional))]
     pub faces: Vec<FaceOption>,
-    /// The cards of the holder's hand and command zone that none of the lists above offers, each with why, in zone order.
+    /// The cards of the holder's hand and command zone that none of the lists above offers, then those of the other zones
+    /// a way to cast or a permission to play names for the holder (a graveyard, exile, the top of their library), each
+    /// with why.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<UnplayableCard>>", optional))]
     pub unplayable: Vec<UnplayableCard>,
@@ -237,7 +239,7 @@ pub struct PriorityOptions {
     pub can_pass: bool,
 }
 
-/// A card of the holder's hand or command zone that cannot be played now, and why.
+/// A card the holder cannot play now, and why: from their hand, their command zone or another zone a way names.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct UnplayableCard {
@@ -306,6 +308,10 @@ pub enum Why {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ManaType>>", optional))]
         missing: Vec<ManaType>,
+        /// The commander tax the cost includes (CR 903.8), for a commander cast from the command zone.
+        #[serde(default, skip_serializing_if = "is_zero")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+        tax: u32,
     },
     /// Only at sorcery speed: its controller's main phase with an empty stack.
     SorcerySpeed,
@@ -322,6 +328,11 @@ pub enum Why {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         name: Option<String>,
+        /// The spells a player may cast each turn under the rule when it limits their number ("can't cast more than one
+        /// spell each turn"), which the player has cast.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        limit: Option<u32>,
     },
     /// A spell with split second is on the stack (CR 702.61a).
     SplitSecond {
