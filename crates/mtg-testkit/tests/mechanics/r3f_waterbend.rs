@@ -158,7 +158,7 @@ fn rite() -> Arc<CardDefinition> {
 }
 
 #[test]
-fn a_waterbend_part_outside_an_ability_is_never_offered() -> Result<(), ScriptError> {
+fn a_spell_with_a_waterbend_part_is_offered_with_its_helpers() -> Result<(), ScriptError> {
     let driver = Driver::from_scenario(
         Scenario::new(2)
             .hand(0, [rite()])
@@ -167,6 +167,10 @@ fn a_waterbend_part_outside_an_ability_is_never_offered() -> Result<(), ScriptEr
     let mtg_engine::decision::DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority was expected");
     };
-    assert!(options.castable.is_empty(), "no helper could be offered");
+    assert_eq!(
+        options.castable.len(),
+        1,
+        "the rite is castable with forests and the relic to pay its waterbend"
+    );
     Ok(())
 }
