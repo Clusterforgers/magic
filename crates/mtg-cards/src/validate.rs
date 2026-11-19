@@ -3244,6 +3244,12 @@ impl<'a> Walker<'a> {
                 }
                 self.at("inner", |w| w.trigger_pattern(inner));
             }
+            TriggerPattern::R109WhileCasting { inner, .. } => {
+                if !matches!(**inner, TriggerPattern::Sacrificed { .. }) {
+                    self.problem("a cast wraps one sacrifice");
+                }
+                self.at("inner", |w| w.trigger_pattern(inner));
+            }
             TriggerPattern::Caused { inner, by, source } => {
                 self.at("source", |w| w.selector(source));
                 if let Some(by) = by {
@@ -3324,6 +3330,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::Batch(_)
                 | TriggerPattern::Caused { .. }
                 | TriggerPattern::R6701WhileActivating { .. }
+                | TriggerPattern::R109WhileCasting { .. }
                 | TriggerPattern::Nth { .. }
                 | TriggerPattern::AnyOf(_)
                 | TriggerPattern::State { .. }
@@ -7152,8 +7159,8 @@ impl Walker<'_> {
         if !enters {
             self.problem("only an `Enters` event becomes a chosen form");
         }
-        if forms.len() < 2 || forms.iter().any(Vec::is_empty) {
-            self.problem("a choice of forms offers two or more forms, each with a change");
+        if forms.is_empty() || forms.iter().any(Vec::is_empty) {
+            self.problem("a choice of forms offers one form or more, each with a change");
         }
         let mut values = crate::definition::CardDefinition::new("form");
         if forms.iter().flatten().any(|change| !values.except(change)) {
@@ -7793,6 +7800,14 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost))
                 // A way to cast the card for a cost that takes objects ("the returned creature").
                 || matches!(a, Ability::AltCast { cost: Some(cost), .. } if picks(cost))
+                // Emerge sacrifices a creature ("the sacrificed creature's toughness").
+                || matches!(
+                    a,
+                    Ability::Keyword(
+                        crate::keyword::Keyword::Emerge(_)
+                            | crate::keyword::Keyword::R6701EmergeFromArtifact(_)
+                    )
+                )
     });
     if !is_uuid(&card.oracle_id) {
         walker.at("oracle_id", |w| w.problem("not a lowercase UUID"));

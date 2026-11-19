@@ -120,60 +120,61 @@ pub fn process(
         return r4708_reveal::r4708_reveals(state, proposed, events, journal);
     }
     let original = proposed.clone();
-    let left = shields
+    let left: BTreeMap<EffectId, u32> = shields
         .iter()
         .filter_map(|effect| match &effect.rule {
             Rule::PreventDamage(shield) => shield.left.map(|left| (effect.id, left)),
             _ => None,
         })
         .collect();
-    let mut step = Pass {
-        state,
-        sources,
-        shields,
-        left,
-        touched: Vec::new(),
-        spent: BTreeSet::new(),
-        answers: journal.iter(),
-        next_id: state.next_object().get(),
-        slots: slots_of(proposed),
-        draws_changed: false,
-        pulled: Vec::new(),
-        activated: Vec::new(),
-        putter: crate::triggers::cause_of(state, &original, state)
-            .map(|cause| (cause.player, state.resolving().is_some())),
-    };
-    step.activated = step
-        .slots
-        .iter()
-        .filter_map(|slot| match &slot.item {
-            Item::One(Event::AbilityActivated { source, .. }) => Some(source.id),
-            _ => None,
-        })
-        .collect();
-    step.next_id = step
-        .slots
-        .iter()
-        .filter_map(|slot| match &slot.item {
-            Item::Tokens(run) => run.iter().map(|token| token.object.get()).max(),
-            // An ability the batch puts on the stack or another object it makes already holds its id (an activation
-            // whose sacrifice a replacement turns into a token); the ids an event names below the next are old ones.
-            Item::One(event) => event.touched_objects().iter().map(|id| id.get()).max(),
-        })
-        .fold(step.next_id, |all, id| all.max(id + 1));
-    match step.run()? {
-        Run::Ask(decision) => Ok(Processed::Ask {
-            decision,
-            proposed: original,
-        }),
-        Run::Done => {
-            let left: Vec<(PlayerId, Choice)> = step.answers.clone().cloned().collect();
-            let mut events = step.finish();
-            cost_counters::resettle(&original, &mut events);
-            let events = crate::r6500_caps::r6500_capped(state, events);
-            r4708_reveal::r4708_reveals(state, original, events, &left)
+    // A token the batch creates is read as it would exist on the battlefield (CR 614.12, `r109_tokens_enter`); the
+    // step runs again with the view holding the tokens a replacement adds to the batch.
+    let mut more_tokens: Vec<Event> = Vec::new();
+    for _ in 0..r109_tokens_enter::R109_RERUNS {
+        let token_view =
+            r109_tokens_enter::r109_token_view(state, &proposed, &more_tokens, &sources);
+        let (read, r109_tokens) = match &token_view {
+            Some((view, made)) => (view, made.clone()),
+            None => (state, Vec::new()),
+        };
+        let mut step = Pass {
+            state: read,
+            sources: sources.clone(),
+            shields: shields.clone(),
+            left: left.clone(),
+            touched: Vec::new(),
+            spent: BTreeSet::new(),
+            answers: journal.iter(),
+            next_id: state.next_object().get(),
+            slots: slots_of(proposed.clone()),
+            draws_changed: false,
+            pulled: Vec::new(),
+            activated: Vec::new(),
+            putter: crate::triggers::cause_of(state, &original, state)
+                .map(|cause| (cause.player, state.resolving().is_some())),
+            r109_tokens,
+        };
+        step.prime();
+        match step.run()? {
+            Run::Ask(decision) => {
+                return Ok(Processed::Ask {
+                    decision,
+                    proposed: original,
+                });
+            }
+            Run::R109Restart(more) => more_tokens.extend(more),
+            Run::Done => {
+                let left: Vec<(PlayerId, Choice)> = step.answers.clone().cloned().collect();
+                let mut events = step.finish();
+                cost_counters::resettle(&original, &mut events);
+                let events = crate::r6500_caps::r6500_capped(state, events);
+                return r4708_reveal::r4708_reveals(state, original, events, &left);
+            }
         }
     }
+    Err(EngineError::Resolution(
+        "the tokens replacement effects add went on without end".into(),
+    ))
 }
 
 /// The source `dealer` and the player who controls what `target` is, when protection of the target from the dealer
@@ -660,6 +661,7 @@ fn enters_face_down(item: &Item) -> bool {
 fn entering(state: &GameState, event: &Event) -> Option<(ObjectId, PlayerId)> {
     match event {
         Event::LandPlayed { player, object, .. } => Some((*object, *player)),
+        Event::TokenCreated(token) => Some((token.object, token.controller)),
         Event::SpellResolved { object } => {
             let spell = state.object(*object)?;
             let types = spell.base_types();
@@ -981,6 +983,9 @@ struct Candidate {
 enum Run {
     Ask(Decision),
     Done,
+    /// Tokens a replacement added to the batch are entering, and the view the step reads lacks them
+    /// (`r109_tokens_enter`): the step runs again with them in it.
+    R109Restart(Vec<Event>),
 }
 
 /// A question that is asked, or the answer to it.
@@ -1024,9 +1029,33 @@ struct Pass<'a> {
     activated: Vec<ObjectId>,
     /// Who puts the counters of the batch, and whether a resolving spell or ability (an effect) does.
     putter: Option<(PlayerId, bool)>,
+    /// The tokens the batch creates, which exist in the view the step reads (`r109_tokens_enter`).
+    r109_tokens: Vec<ObjectId>,
 }
 
 impl Pass<'_> {
+    /// Notes the objects that activated an ability in the batch and the next id the batch has not given.
+    fn prime(&mut self) {
+        self.activated = self
+            .slots
+            .iter()
+            .filter_map(|slot| match &slot.item {
+                Item::One(Event::AbilityActivated { source, .. }) => Some(source.id),
+                _ => None,
+            })
+            .collect();
+        self.next_id = self
+            .slots
+            .iter()
+            .filter_map(|slot| match &slot.item {
+                Item::Tokens(run) => run.iter().map(|token| token.object.get()).max(),
+                // An ability the batch puts on the stack or another object it makes already holds its id (an activation
+                // whose sacrifice a replacement turns into a token); the ids an event names below the next are old ones.
+                Item::One(event) => event.touched_objects().iter().map(|id| id.get()).max(),
+            })
+            .fold(self.next_id, |all, id| all.max(id + 1));
+    }
+
     fn unit(&self, item: &Item) -> Unit {
         let state = self.state;
         let event = match item {
@@ -1494,7 +1523,8 @@ impl Pass<'_> {
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
                 || !step.r5517_caused_own(at, when, &unit)
-                || r5515_returns_as_new(step.state, source, &unit)
+                || (r5515_returns_as_new(step.state, source, &unit)
+                    && !step.r109_is_entering_token(source.object.id))
                 || (matches!(by, ReplaceBy::UnderYourControl)
                     && !step.r5517_from_opponent(source.controller, &unit))
             {
@@ -1529,7 +1559,7 @@ impl Pass<'_> {
         // own entering does not apply.
         if let Unit::Enter { object, .. } = &unit
             && let Some(card) = self.state.object(*object)
-            && card.zone() != Zone::Battlefield
+            && (card.zone() != Zone::Battlefield || self.r109_is_entering_token(*object))
             && !enters_face_down(&slot.item)
         {
             let controller = controller_of_object(self.state, card);
@@ -2320,6 +2350,11 @@ impl Pass<'_> {
             self.w9c_split_tokens(at);
             let candidates = self.candidates(at)?;
             let chosen = if candidates.is_empty() {
+                match self.r109_enter_tokens(at) {
+                    r109_tokens_enter::Split::No => {}
+                    r109_tokens_enter::Split::Done => continue,
+                    r109_tokens_enter::Split::Unseen(more) => return Ok(Run::R109Restart(more)),
+                }
                 at += 1;
                 continue;
             } else {
@@ -3507,13 +3542,17 @@ impl Pass<'_> {
                 must,
                 counters,
                 except_if,
+                r109_embalmed,
             } => {
+                let embalmed = (!r109_embalmed.is_empty() && self.r109_embalmed(object))
+                    .then_some(r109_embalmed.as_slice());
                 let copy = match self.copies(
                     candidate.object,
                     controller,
                     object,
                     (of, *must),
                     (except, except_if),
+                    embalmed,
                 )? {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(copy) => copy,
@@ -3703,13 +3742,17 @@ impl Pass<'_> {
         entering: ObjectId,
         (of, must): (&Selector, bool),
         (except, except_if): (&[Modification], &[mtg_cards::trigger::CopyExceptIf]),
+        embalmed: Option<&[Modification]>,
     ) -> Result<Asked<Option<BecameCopy>>, EngineError> {
         let scope = Scope::announcing(self.state, controller, source);
         let options: Vec<ObjectId> = scope
             .matching(of)?
             .into_iter()
             .filter(|named| {
-                named.id != entering && self.state.object(named.id).is_some_and(may_be_copied)
+                named.id != entering
+                    // A token entering with it is not on the battlefield yet.
+                    && !self.r109_is_entering_token(named.id)
+                    && self.state.object(named.id).is_some_and(may_be_copied)
             })
             .map(|named| named.id)
             .collect();
@@ -3765,6 +3808,7 @@ impl Pass<'_> {
                 applying.extend(&entry.except);
             }
         }
+        applying.extend(embalmed.into_iter().flatten());
         for modification in applying {
             let modification = r6104_worked_out(&scope, modification)?;
             if !values.except(&modification) {
@@ -3772,6 +3816,10 @@ impl Pass<'_> {
                     "{modification:?} is no exception of a copy effect"
                 )));
             }
+        }
+        // The token its own embalm made has no mana cost (CR 702.128a).
+        if embalmed.is_some() {
+            values.mana_cost = None;
         }
         Ok(Asked::Got(Some(BecameCopy {
             object: entering,
@@ -3919,9 +3967,15 @@ impl Pass<'_> {
                     matches!(&slot.item, Item::One(Event::ZoneChanged { object: moved, .. }) if *moved == object)
                 })
                 .count();
+            // A token the batch creates already is that permanent in the view the step reads.
+            let on_from = if self.r109_is_entering_token(object) {
+                0
+            } else {
+                u32::try_from(moves).unwrap_or(1).max(1)
+            };
             let on = Target::Object(ObjectRef {
                 id: object,
-                counter: card.counter() + u32::try_from(moves).unwrap_or(1).max(1),
+                counter: card.counter() + on_from,
             });
             let mut inherited = applied.to_vec();
             inherited.dedup();
@@ -4392,6 +4446,7 @@ mod r6f_redirect;
 mod w13a_moved;
 mod w5d_instead;
 
+mod r109_tokens_enter;
 mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;

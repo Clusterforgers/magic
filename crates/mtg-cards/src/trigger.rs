@@ -854,6 +854,14 @@ pub enum TriggerPattern {
         /// The kind of the ability being activated.
         kind: crate::ability::ActivationKind,
     },
+    /// The event, while the trigger's controller is casting a spell for this alternative cost, its costs paid in the same
+    /// batch ("When you sacrifice this creature while casting a spell with emerge", CR 601.2h).
+    R109WhileCasting {
+        /// The event.
+        inner: Box<TriggerPattern>,
+        /// The way the spell is cast.
+        way: crate::value::CastWay,
+    },
     /// The event, when a spell or ability caused it ("whenever you put a -1/-1 counter on a creature", "when a spell or
     /// ability an opponent controls causes you to discard this"): the controller of the spell or ability that is
     /// resolving, being cast or activated when the event happens, or the controller of the source of the damage. Turn
@@ -1445,6 +1453,11 @@ pub enum ReplaceBy {
         /// it's a creature, ... has changeling").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         except_if: Vec<CopyExceptIf>,
+        /// Exceptions the copy has, with no mana cost, only when the permanent that enters is the token its card's own
+        /// embalm ability makes ("except if this creature was embalmed, the token has no mana cost, it's white, and it's a
+        /// Zombie in addition to its other types").
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r109_embalmed: Vec<Modification>,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {
@@ -1486,7 +1499,8 @@ pub enum ReplaceBy {
     UnderChosenOpponent,
     /// As the permanent enters, it becomes its controller's choice of these forms ("it becomes your choice of a 3/3
     /// creature, a 2/2 creature with flying, or a 1/6 creature with defender"): the changes of the chosen form join its
-    /// copiable values (CR 707.2), so a copy of it has them too. A form holds only changes a copy effect makes.
+    /// copiable values (CR 707.2), so a copy of it has them too. A form holds only changes a copy effect makes; a single
+    /// form is no choice ("it becomes a 7/7 Dinosaur creature in addition to its other types").
     BecomesChoice(Vec<Vec<Modification>>),
     /// As the permanent enters, its controller mills this many cards (CR 701.17): "As this creature enters, mill three
     /// cards for each time it was kicked."

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "bc0daba2-c51c-44b0-a4a3-806f2acd9aa6",
+  "name": "Displaced Dinosaurs",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Displaced Dinosaurs",
+      "oracle_fingerprint": "2433ebb79fe2b2e3a564a73180138217",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "Enters": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Supertype": "Legendary" },
+                      { "Subtype": "Saga" }
+                    ]
+                  },
+                  { "ControlledBy": "You" }
+                ]
+              }
+            },
+            "by": {
+              "BecomesChoice": [
+                [
+                  { "SetPT": { "power": 7, "toughness": 7 } },
+                  { "AddSubtype": "Dinosaur" },
+                  { "AddType": "Creature" }
+                ]
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

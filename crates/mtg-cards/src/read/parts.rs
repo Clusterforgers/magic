@@ -292,6 +292,13 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
                 trigger(ctx, inner)
             )
         }
+        TriggerPattern::R109WhileCasting { inner, way } => {
+            format!(
+                "{} while you're casting a spell with {}",
+                trigger(ctx, inner),
+                format!("{way:?}").to_lowercase()
+            )
+        }
         other => generic::node(ctx, other),
     }
 }

@@ -1460,6 +1460,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             must: false,
                             counters: Vec::new(),
                             except_if: Vec::new(),
+                            r109_embalmed: Vec::new(),
                         }
                     }),
             ],

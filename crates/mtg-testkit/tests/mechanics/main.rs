@@ -112,6 +112,8 @@ mod provoke_rampage;
 mod prowl;
 mod pump_animate;
 mod r109_pay_costs;
+mod r109_token_enters;
+mod r109_waterbend_spells;
 mod r1c;
 mod r1fix;
 mod r1g_taken_names;

@@ -1167,6 +1167,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             ),
             false,
         ),
+        TriggerPattern::R109WhileCasting { inner, way } => (
+            format!(
+                "{} while you're casting a spell with {}",
+                clause(inner).0,
+                format!("{way:?}").to_lowercase()
+            ),
+            false,
+        ),
         TriggerPattern::AnyOf(patterns) => {
             let clauses: Vec<(String, bool)> = patterns.iter().map(clause).collect();
             (

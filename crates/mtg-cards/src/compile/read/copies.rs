@@ -548,6 +548,7 @@ pub fn enters_as_copy(r: &mut Reader<'_>) -> Option<Ability> {
             must: false,
             counters: Vec::new(),
             except_if: Vec::new(),
+            r109_embalmed: Vec::new(),
         },
         condition: None,
         from: ZoneKind::Battlefield,

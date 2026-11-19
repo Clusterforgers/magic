@@ -2028,6 +2028,9 @@ fn matching_event(
                 .then(|| matching(inner, happened, scope))
                 .flatten()
         }
+        (TriggerPattern::R109WhileCasting { inner, way }, happened) => r109_casting(scope, *way)
+            .then(|| matching(inner, happened, scope))
+            .flatten(),
         (
             TriggerPattern::DealsDamage { source, to, combat },
             Happened::Damaged {
@@ -2657,6 +2660,14 @@ pub(crate) fn step_matches(named: mtg_cards::trigger::Step, began: Step) -> bool
             | (Named::End, Step::End)
             | (Named::Cleanup, Step::Cleanup)
     )
+}
+
+/// Whether the events were caused by the trigger's controller casting a spell for the alternative cost `way`, its costs
+/// paid with the cast.
+fn r109_casting(scope: &Scope<'_>, way: mtg_cards::value::CastWay) -> bool {
+    scope
+        .caused
+        .is_some_and(|caused| caused.player == scope.controller && caused.r109_casting == Some(way))
 }
 
 /// Whether the events were caused by the trigger's controller activating an ability of the kind `kind`.

@@ -67,6 +67,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Middle bar: a prompt band of one fixed line with the asking card's chip, and the decision's detail (the asking card with its clause, runs of triggers, ordering, paying) in the Stack column or a sheet over the hand (`docs/ui-design.md`, The band and the Stack column).
 - Delves encounter modifiers: the 23 rules of the pool as emblems with their `not_with` lists, no commander tax for the heroes, and "first instant or sorcery each turn" counting only the spells it names (`docs/delves.md`).
 - Delves boss rework: every boss plays its stored precon (drafts loaded as live games load them), an innate in five levels by depth and Heat, one encounter modifier, two phases by round, a public satchel and relics by depth, with life by party size only; the old boss systems are gone and the rework closed the runs open at the time (`docs/delves.md`).
+- Tokens entering: replacements over how a permanent enters (counters, a form, a token's own copy) apply to each token as it is created, and Coiled Growth gives tokens its counters as they enter (`docs/cards-dsl.md`).
 
 ## Live game
 
@@ -161,7 +162,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
-- [ ] (rw1t) Enters-with-counters replacements apply to entering tokens; Coiled Growth then gives tokens its counters as they enter instead of by trigger
 
 ## M8 Polish and deploy
 

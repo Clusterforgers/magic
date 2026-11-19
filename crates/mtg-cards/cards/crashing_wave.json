@@ -1,0 +1,46 @@
+{
+  "oracle_id": "c8d3936f-4c08-4ffe-83c9-7ed26fb8f9cd",
+  "name": "Crashing Wave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Crashing Wave",
+      "oracle_fingerprint": "bd176478f8ed5d494cb378be87f0a984",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Waterbend": "X" }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": "X" } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            "Tapped",
+                            { "ControlledBy": "Opponents" }
+                          ]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "PutCounters": { "on": { "Bound": "pick" }, "counter": { "Other": "stun" } } }
+                  ],
+                  "most": 1000,
+                  "times": 3
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

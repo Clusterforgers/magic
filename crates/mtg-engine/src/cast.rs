@@ -575,6 +575,16 @@ pub(crate) fn spell_events(
         &choices.clone().with_cost_shots(shots),
         granted,
     ));
+    // Paying a spell's waterbend cost is waterbending, however it was paid (Avatar Aang ruling).
+    if state
+        .object(spell)
+        .is_some_and(|card| crate::announce::required::r109_waterbends_to_cast(card.card()))
+    {
+        events.push(Event::Bent {
+            player,
+            element: crate::events::Bending::Water,
+        });
+    }
     Some(events)
 }
 

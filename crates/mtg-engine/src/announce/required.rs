@@ -11,6 +11,7 @@
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::value::Amount;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
@@ -77,7 +78,12 @@ fn variants_at(
             continue;
         }
         let settled = at.map(|(state, player, id)| crate::price::settled(cost, state, player, id));
-        let options = alternatives(settled.as_ref().unwrap_or(cost));
+        let cost = r109_waterbend_as_mana(settled.as_ref().unwrap_or(cost))?;
+        // "Waterbend {X}" alone is the X of the spell, which `x.rs` announces and adds.
+        if cost.0.is_empty() {
+            continue;
+        }
+        let options = alternatives(&cost);
         let mut next = Vec::new();
         for before in &found {
             for option in &options {
@@ -100,6 +106,62 @@ fn variants_at(
         found = next;
     }
     u8::try_from(found.len()).is_ok().then_some(found)
+}
+
+/// `cost` with a waterbend part as the generic mana it is ("waterbend {5}" is {5}, which artifacts and creatures may help
+/// pay: `help::offered`) and "waterbend {X}" left out, its X being one `{X}` of the spell (`r109_waterbend_x`); `None` for
+/// a waterbend of another amount.
+fn r109_waterbend_as_mana(cost: &Cost) -> Option<Cost> {
+    let mut items = Vec::with_capacity(cost.0.len());
+    for item in &cost.0 {
+        match item {
+            CostItem::Waterbend(Amount::X) => {}
+            CostItem::Waterbend(Amount::Fixed(number)) => {
+                let generic = u32::try_from(*number).ok()?;
+                items.push(CostItem::Mana(mtg_cards::mana::ManaCostX::new(
+                    0,
+                    ManaCost::from_symbols([mtg_core::mana::ManaSymbol::Generic(generic)]),
+                )));
+            }
+            CostItem::Waterbend(_) => return None,
+            other => items.push(other.clone()),
+        }
+    }
+    Some(Cost(items))
+}
+
+/// The required waterbend parts of the card's spell (Avatar): how many are "waterbend {X}", and whether there is any.
+fn r109_waterbends(card: &CardDefinition) -> (u32, bool) {
+    let mut x = 0u32;
+    let mut any = false;
+    for rule in ability_reader::printed_rules(card) {
+        if let Ability::AdditionalCost {
+            cost,
+            required: true,
+            ..
+        } = &**rule
+        {
+            for item in &cost.0 {
+                if let CostItem::Waterbend(amount) = item {
+                    any = true;
+                    if *amount == Amount::X {
+                        x = x.saturating_add(1);
+                    }
+                }
+            }
+        }
+    }
+    (x, any)
+}
+
+/// How many `{X}` a required "waterbend {X}" adds to the spell (X announced with the spell, CR 601.2b).
+pub(crate) fn r109_waterbend_x(card: &CardDefinition) -> u32 {
+    r109_waterbends(card).0
+}
+
+/// Whether the spell must pay a waterbend cost: its caster's artifacts and creatures may then help pay, each {1}.
+pub(crate) fn r109_waterbends_to_cast(card: &CardDefinition) -> bool {
+    r109_waterbends(card).1
 }
 
 /// A cost in words, lower case: its mana, then its parts.
