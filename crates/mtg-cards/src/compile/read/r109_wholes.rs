@@ -1,6 +1,6 @@
-//! Whole abilities of the r109 pack whose wordings no renderer joins (an enters trigger that reads the emerge sacrifice,
-//! a sacrifice while casting a spell with emerge, a spell's waterbend cost): each is read and written whole from one
-//! table of `[ability, wording]` pairs (`r109_wholes.json`), so the reader reads exactly what the writer writes.
+//! Whole abilities of the r109 packs whose wordings no renderer joins (an enters trigger that reads the emerge sacrifice,
+//! a spell's waterbend cost, an attach on an attack, an Aura moved with its attachments): each is read and written whole
+//! from one table of `[ability, wording]` pairs (`r109_wholes.json`), so the reader reads exactly what the writer writes.
 
 use std::sync::LazyLock;
 
@@ -39,6 +39,14 @@ fn r109_kind_fits(ability: &Ability, kind: ClauseKind) -> bool {
     }
 }
 
+/// Reads a clause that is one of the wordings, whatever its kind.
+pub(super) fn r109_whole_read(text: &str) -> Option<Ability> {
+    R109_SHAPES
+        .iter()
+        .find(|(_, wording)| same_text(wording, text))
+        .map(|(shape, _)| shape.clone())
+}
+
 /// Reads a clause that is one of the wordings, whole.
 pub(super) fn r109_read(text: &str, kind: ClauseKind) -> Option<Ability> {
     R109_SHAPES
@@ -59,7 +67,8 @@ pub(super) fn r109_wordings(ability: &Ability, texts: &mut Vec<String>) {
 #[cfg(test)]
 mod tests {
     //! Goal: every entry of the table parses, reads back as its ability from its wording and is written as it, the same
-    //! ability with any one number changed is not written as that wording, and a wording of another kind is not read.
+    //! ability with any one number changed is not written as that wording, a near miss of the words reads as nothing, and
+    //! a wording of another kind is not read.
     #![allow(clippy::unwrap_used)]
     use super::*;
     use crate::compile::read::render::written_variants;
@@ -96,6 +105,29 @@ mod tests {
     fn r109_a_wording_of_another_kind_is_not_read() {
         for (_, text) in R109_SHAPES.iter() {
             assert_eq!(r109_read(text, ClauseKind::Keyword), None, "{text}");
+        }
+    }
+
+    #[test]
+    fn r109_a_near_miss_reads_as_nothing() {
+        let swaps = [
+            ("a player attacks you", "a player attacks an opponent"),
+            ("you may attach", "attach"),
+            ("this Aura", "target Aura"),
+            ("to that player", "to you"),
+            ("a creature you control", "a creature"),
+            ("If you do, ", ""),
+            ("enchanted or equipped", "enchanted"),
+            ("from your graveyard", "from a graveyard"),
+            ("any number of Equipment", "an Equipment"),
+        ];
+        for (_, text) in R109_SHAPES.iter() {
+            for (from, to) in swaps {
+                if text.contains(from) {
+                    let near = text.replacen(from, to, 1);
+                    assert_eq!(r109_whole_read(&near), None, "{near}");
+                }
+            }
         }
     }
 }

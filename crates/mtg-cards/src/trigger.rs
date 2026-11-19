@@ -1404,6 +1404,10 @@ pub enum ReplaceBy {
     /// As the Aura is turned face up, its controller may attach it to a permanent the selector names that it could
     /// enchant (CR 708.8, 303.4): "As this Aura is turned face up, you may attach it to a creature." Only `TurnedFaceUp`.
     R6702MayAttach(Selector),
+    /// As the Equipment enters, its controller may choose a permanent the selector names that it could be attached to,
+    /// and it enters attached to that permanent (CR 301.5, 614.12): "As this Equipment enters, choose a creature you
+    /// control it could be attached to. If you do, it enters attached to that creature." Only `Enters` of itself.
+    R109EntersAttached(Selector),
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),

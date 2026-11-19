@@ -760,6 +760,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if let Some(found) = r6702_wholes::r6702_whole_read(text) {
         return Some(found);
     }
+    if let Some(found) = r109_wholes::r109_whole_read(text) {
+        return Some(found);
+    }
     if let Some(found) = r6703_wholes::r6703_whole_read(text) {
         return Some(found);
     }

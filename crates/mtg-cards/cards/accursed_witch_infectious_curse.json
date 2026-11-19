@@ -1,7 +1,7 @@
 {
   "oracle_id": "80b07882-e144-4815-8b6f-04b3ab343d97",
   "name": "Accursed Witch // Infectious Curse",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Accursed Witch",
@@ -15,9 +15,23 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 76, "end": 189 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "BattlefieldAttached": {
+                      "to": { "Target": 0 },
+                      "transformed": true,
+                      "under": "You"
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

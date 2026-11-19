@@ -1,7 +1,7 @@
 {
   "oracle_id": "d0ecea04-9768-4b09-8718-dd59135251e3",
   "name": "Harold and Bob, First Numens",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Harold and Bob, First Numens",
@@ -10,9 +10,56 @@
         { "Keyword": "Reach" },
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 286 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": { "Matches": { "subject": "This", "selector": [{ "Type": "Creature" }] } },
+            "effects": [
+              {
+                "Move": {
+                  "what": "This",
+                  "to": {
+                    "R6502BattlefieldAs": {
+                      "becomes": [
+                        { "SetTypes": ["Enchantment"] },
+                        { "AddSubtype": "Aura" },
+                        "LoseAbilities",
+                        {
+                          "AddKeyword": {
+                            "Enchant": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }]
+                          }
+                        },
+                        {
+                          "GrantAbility": {
+                            "Static": {
+                              "affected": "Attached",
+                              "mods": [
+                                {
+                                  "GrantAbility": {
+                                    "Activated": {
+                                      "cost": ["Tap"],
+                                      "effects": [
+                                        { "AddMana": { "mana": { "AnyColor": 3 } } },
+                                        {
+                                          "PutCounters": {
+                                            "on": "You",
+                                            "counter": { "Other": "rad" },
+                                            "count": 2
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

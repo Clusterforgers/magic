@@ -871,6 +871,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::TappedForCounters { .. }
         | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::R6007RevealOrControl { .. }
+        | ReplaceBy::R109EntersAttached(_)
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -934,6 +935,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::AsEnters(_)
                 | ReplaceBy::AsEntersWith { .. }
                 | ReplaceBy::ChooseAfter { .. }
+                | ReplaceBy::R109EntersAttached(_)
         )
     )
 }
@@ -2770,6 +2772,9 @@ impl Pass<'_> {
             ReplaceBy::BeholdOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
             }
+            ReplaceBy::R109EntersAttached(to) => {
+                self.r109_enters_attached(at, candidate, to, (object, controller), applied)
+            }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
                 self.e14b_pay_or_graveyard(at, candidate, paid, (object, controller), applied)
@@ -4388,6 +4393,7 @@ mod prepared;
 mod dredge;
 mod lg1_draws;
 
+mod r109_enters_attached;
 mod reveal;
 
 mod amplify;
