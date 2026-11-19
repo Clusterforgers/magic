@@ -31,7 +31,9 @@ test.describe('the invite of the host', () => {
       await page.evaluate(() => window.scrollTo(0, 0))
       await page.waitForTimeout(200)
       if (size.width >= 1400) {
-        const seats = await page.evaluate(() => document.querySelector('[data-slot="lobby-status"]')?.getBoundingClientRect().bottom)
+        const seats = await page.evaluate(
+          () => document.querySelector('[data-slot="lobby-status"]')?.getBoundingClientRect().bottom,
+        )
         expect(seats, `${label(size)}: the seats end on the first screen`).toBeLessThanOrEqual(size.height)
       }
       await page.locator('[data-slot="join-invite"]').scrollIntoViewIfNeeded()
@@ -213,7 +215,11 @@ test.describe('the opening hand', () => {
   // Off a phone the decision stands centred over the table between the top bar and the dock in every mode, its cards
   // 64 to 180 px wide (docs/web.md, Opening hands); boards are bare before the first turn, as in a real game. A desktop
   // draws them large; an opponent's or a boss's empty row never squeezes them.
-  const OPENING_SIZES: readonly Size[] = [{ width: 2560, height: 1440 }, { width: 1920, height: 1080 }, ...SIZES]
+  const OPENING_SIZES: readonly Size[] = [
+    { width: 2560, height: 1440 },
+    { width: 1920, height: 1080 },
+    ...SIZES,
+  ]
   const LEAST: Record<string, number> = { '2560x1440': 170, '1920x1080': 140, '1440x900': 96 }
 
   for (const mode of TABLE_MODES) {
@@ -225,14 +231,20 @@ test.describe('the opening hand', () => {
       for (const size of OPENING_SIZES) {
         await page.setViewportSize(size)
         await expect
-          .poll(() => openingProblems(page, LEAST[label(size)] ?? 64), { message: `${mode.name} at ${label(size)}`, timeout: 5_000 })
+          .poll(() => openingProblems(page, LEAST[label(size)] ?? 64), {
+            message: `${mode.name} at ${label(size)}`,
+            timeout: 5_000,
+          })
           .toEqual([])
         const seen = await page.evaluate(() => {
           const keep = [...document.querySelectorAll('[data-decision="Mulligan"] button')].find(
             (each) => each.textContent?.trim() === 'Keep',
           )
           const box = keep?.getBoundingClientRect()
-          const hit = box === undefined ? null : document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)
+          const hit =
+            box === undefined
+              ? null
+              : document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)
           return {
             keepFree: keep !== undefined && hit !== null && keep.contains(hit),
             panelBottom: document.querySelector('[data-opening]')?.getBoundingClientRect().bottom ?? 0,
@@ -241,9 +253,10 @@ test.describe('the opening hand', () => {
           }
         })
         expect(seen.keepFree, `${mode.name} at ${label(size)}: Keep is covered`).toBe(true)
-        expect(seen.panelBottom, `${mode.name} at ${label(size)}: the panel reaches the dock`).toBeLessThanOrEqual(
-          seen.dockTop + 0.5,
-        )
+        expect(
+          seen.panelBottom,
+          `${mode.name} at ${label(size)}: the panel reaches the dock`,
+        ).toBeLessThanOrEqual(seen.dockTop + 0.5)
         expect(seen.scrolls, 'the page scrolls').toBe(false)
       }
     })
