@@ -124,6 +124,7 @@ mod spell_copy_view;
 mod spell_x_hidden;
 mod split_second_view;
 mod stack_fixture;
+mod stack_forecast_view;
 mod sync;
 mod table_hidden;
 mod target_legality_view;

@@ -19,6 +19,7 @@ use mtg_engine::object::{FaceDown, GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::resolve::targets_legal;
 use mtg_engine::sight::offered_to;
+use mtg_engine::stack_forecast::stack_forecast;
 use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
 
@@ -605,6 +606,10 @@ impl ObjectView {
             trigger: trigger_view(sight, object),
             targets: object.choices().targets.clone(),
             targets_legal: targets_legal(state, id),
+            forecast: (state.stack().last() == Some(&id))
+                .then(|| stack_forecast(state))
+                .flatten()
+                .unwrap_or_default(),
             // Counters and attachments are public facts of a permanent, shown to every seat that sees the permanent.
             counters: counters_view(object),
             // The abilities of a planeswalker on the battlefield are printed on the card every seat can read.
@@ -674,6 +679,7 @@ impl ObjectView {
             trigger: None,
             targets: Vec::new(),
             targets_legal: Vec::new(),
+            forecast: Vec::new(),
             counters: Vec::new(),
             loyalty_abilities: Vec::new(),
             attached_to: None,

@@ -6,6 +6,7 @@ import type { CardType } from "./CardType";
 import type { Color } from "./Color";
 import type { CopyView } from "./CopyView";
 import type { CounterKind } from "./CounterKind";
+import type { ForecastChange } from "./ForecastChange";
 import type { GivesView } from "./GivesView";
 import type { Granter } from "./Granter";
 import type { LoyaltyAbilityView } from "./LoyaltyAbilityView";
@@ -143,6 +144,11 @@ targets?: Array<Array<Target>>,
  * resolves (CR 608.2b), so an item whose targets are all illegal will do nothing. Left out with `targets`.
  */
 targets_legal?: Array<Array<boolean>>, 
+/**
+ * What the top item of the stack would change if it resolved now (`stack_forecast`): public and the same for every
+ * seat. Left out for any other object, and when the result hangs on a choice, a hidden card or chance.
+ */
+forecast?: Array<ForecastChange>, 
 /**
  * The counters on a permanent, by kind and number in a fixed order; left out while there are none. A planeswalker's
  * loyalty is its loyalty counters, public like the rest.
