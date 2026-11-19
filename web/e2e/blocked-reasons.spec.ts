@@ -49,7 +49,11 @@ for (const size of SIZES) {
           const chip = page.locator('[data-slot="boss-ability"]', { hasText: 'One Voice' })
           if (await chip.isVisible()) await expect(chip).toHaveAttribute('data-blocking', 'true')
           const shots = process.env.MTG_SHOT_DIR
-          if (shots !== undefined) await page.screenshot({ path: `${shots}/blocked-${size.name}.png` })
+          if (shots !== undefined) {
+            // The line follows a rising hand card once it has settled.
+            await page.waitForTimeout(400)
+            await page.screenshot({ path: `${shots}/blocked-${size.name}.png` })
+          }
         }
         await page.keyboard.press('Escape')
         await expect(tell(page)).toHaveCount(0)

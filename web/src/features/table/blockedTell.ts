@@ -26,6 +26,8 @@ export interface Tell {
   card: ObjectId
   /** The reason in one line; undefined while the game waits on another seat, which the tell names itself. */
   line?: string
+  /** The pressed card's element, measured again once a lift has settled. */
+  element: HTMLElement
   anchor: TellAnchor
   blocker: Blocker
   /** Tells two presses of one card apart, so the second restarts the line. */
@@ -61,15 +63,18 @@ export const useBlockedTell = create<TellState>()((set, get) => ({
   },
 }))
 
+/** The box of the card `element` on screen: a lifted hand card draws its face above its box, so the higher of the two. */
+export function anchorOf(element: HTMLElement): TellAnchor {
+  const box = element.getBoundingClientRect()
+  const face = element.querySelector('[data-slot="card-face"]')?.getBoundingClientRect()
+  const top = Math.min(box.top, face?.top ?? box.top)
+  const bottom = Math.max(box.bottom, face?.bottom ?? box.bottom)
+  return { left: box.left, top, width: box.width, height: bottom - top }
+}
+
 /** Says why the card `card`, pressed at `element`, cannot be played: `line`, or the wait when it is undefined. */
 export function tellBlocked(card: ObjectId, element: HTMLElement, line: string | undefined, blocker: Blocker): void {
-  const box = element.getBoundingClientRect()
-  useBlockedTell.getState().say({
-    card,
-    line,
-    anchor: { left: box.left, top: box.top, width: box.width, height: box.height },
-    blocker,
-  })
+  useBlockedTell.getState().say({ card, line, element, anchor: anchorOf(element), blocker })
 }
 
 /**
