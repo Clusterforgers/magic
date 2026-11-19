@@ -43,11 +43,15 @@ const payOptions = (text: string, letters: string, over: Partial<PayOptions> = {
   }
 }
 
-function renderPay(given: PayOptions) {
+function renderPay(given: PayOptions, autoPay = false) {
   const answer = vi.fn((_answer: Answer) => true)
   const table = renderTable({
     session: { answer },
-    state: (state) => ({ ...state, pending: { id: 4, decision: { player: 0, kind: { PayMana: given } } } }),
+    state: (state) => ({
+      ...state,
+      autoChoices: { ...state.autoChoices, auto_pay: autoPay },
+      pending: { id: 4, decision: { player: 0, kind: { PayMana: given } } },
+    }),
   })
   const land = (index: number): HTMLElement =>
     must(table.container.querySelector<HTMLElement>(`button[data-object-id="${must(lands[index])}"]`))
@@ -287,20 +291,29 @@ describe('Pay for me and Pay the rest for me with life', () => {
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Auto' }]])
   })
 
-  it('goes away once life is chosen, and Pay the rest for me keeps the life', async () => {
-    const { lifeSwitches, user, answer } = renderPay(payOptions('{1}{B/P}{B/P}', 'G'))
+  it('goes away once life is chosen, and with Always pay automatically Pay the rest for me keeps the life', async () => {
+    const { lifeSwitches, user, answer } = renderPay(payOptions('{1}{B/P}{B/P}', 'G'), true)
     await user.click(must(lifeSwitches()[0]))
     expect(screen.queryByRole('button', { name: 'Pay for me' })).toBeNull()
     await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: { pool: [], taps: [], life: 2 } } }]])
   })
 
-  it('Pay the rest for me keeps the lands and the life together', async () => {
-    const { land, lifeSwitches, user, answer } = renderPay(payOptions('{1}{B/P}{B/P}', 'GB'))
+  it('with Always pay automatically, Pay the rest for me keeps the lands and the life together', async () => {
+    const { land, lifeSwitches, user, answer } = renderPay(payOptions('{1}{B/P}{B/P}', 'GB'), true)
     await user.click(land(1))
     await user.click(must(lifeSwitches()[1]))
     await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
     expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: { pool: [], taps: [tap(1)], life: 2 } } }]])
+  })
+
+  it('Pay the rest for me keeps the life chosen and proposes the rest, life included, for a Confirm', async () => {
+    const { lifeSwitches, user, answer } = renderPay(payOptions('{1}{B/P}{B/P}', 'G'))
+    await user.click(must(lifeSwitches()[0]))
+    await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
+    expect(answer).not.toHaveBeenCalled()
+    await user.click(screen.getByRole('button', { name: 'Confirm payment' }))
+    expect(answer.mock.calls).toEqual([[{ PayMana: { Manual: { pool: [], taps: [tap(0)], life: 4 } } }]])
   })
 
   it('offers no Pay for me when it would take the last life, but still lets life be paid by hand', async () => {

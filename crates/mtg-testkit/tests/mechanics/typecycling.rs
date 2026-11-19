@@ -1,4 +1,4 @@
-//! Goal: typecycling plays as the rules say at two to four seats. It is cycling that searches: the card is cycled from a hand whenever its owner has priority when the cost can be paid (one ability for each typecycling the card prints), the discard is the cost and is logged as a cycling, and on resolution its owner searches the library for a card of the type, which is revealed and put into the hand, and shuffles. Basic landcycling finds basic lands of any type and no nonbasic land, a land type finds that type only, a library with no such card or none at all finds nothing and is shuffled all the same, and the owner may find nothing when cards match.
+//! Goal: typecycling plays as the rules say at two to four seats. It is cycling that searches: the card is cycled from a hand whenever its owner has priority when the cost can be paid (one ability for each typecycling the card prints), the discard is the cost and is logged as a cycling, and on resolution its owner searches the library for a card of the type, which is revealed and put into the hand, and shuffles. Basic landcycling finds basic lands of any type and no nonbasic land, a land type finds that type only, a library with no such card or none at all finds nothing and is shuffled all the same, and the owner may find nothing when cards match. Backing out of the payment (Undo or Cancel) keeps the card in the hand with nothing tapped or discarded; the payment names the ability it pays for and proposes the game's payment, which pays it when confirmed.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -6,7 +6,7 @@ use crate::common;
 use common::{name_of, names, pid};
 use mtg_core::ids::ObjectId;
 use mtg_engine::choose::CardsChoice;
-use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
+use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::zones::Zone;
 use mtg_engine::{Event, replay};
 use mtg_testkit::cards::{forest, island, mountain, wastes};
@@ -206,4 +206,99 @@ fn typecycling_searches_for_a_card_of_the_type_reveals_it_and_shuffles(
     let replayed = replay(&setup, driver.engine().events())?;
     assert_eq!(replayed.state_hash(), driver.state().state_hash());
     Ok(())
+}
+
+/// The ability offered `nth` of the cards called `name`.
+fn offered_ability(driver: &Driver, name: &str, nth: usize) -> mtg_engine::abilities::AbilityRef {
+    let DecisionKind::Priority(options) = &driver.decision().unwrap().kind else {
+        panic!("priority was expected");
+    };
+    options
+        .abilities
+        .iter()
+        .filter(|ability| name_of(driver.state(), ability.object) == name)
+        .nth(nth)
+        .copied()
+        .unwrap()
+}
+
+/// How many permanents are tapped.
+fn tapped(driver: &Driver) -> usize {
+    driver
+        .state()
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter(|id| {
+            driver
+                .state()
+                .object(**id)
+                .and_then(|o| o.permanent())
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
+        })
+        .count()
+}
+
+#[rstest]
+#[case::basic_landcycling_by_undo("Ash Barrens", Answer::Undo)]
+#[case::basic_landcycling_by_cancel("Ash Barrens", Answer::PayMana(PayChoice::Cancel))]
+#[case::a_land_type_by_undo("Chartooth Cougar", Answer::Undo)]
+#[case::a_land_type_by_cancel("Chartooth Cougar", Answer::PayMana(PayChoice::Cancel))]
+fn backing_out_of_the_payment_of_a_typecycling_keeps_the_card_and_pays_nothing(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] cycler: &str,
+    #[case] back: Answer,
+) {
+    let mut driver = table(seats, &[cycler], 2, &["Forest"]);
+    let ability = offered_ability(&driver, cycler, 0);
+    driver
+        .answer(Answer::Priority(PriorityAction::Activate(ability)))
+        .unwrap();
+    let DecisionKind::PayMana(options) = &driver.decision().unwrap().kind else {
+        panic!("the cost is asked");
+    };
+    // The payment names the ability it pays for (CR 602.2b), may be backed out of and proposes the game's payment.
+    assert_eq!(options.ability.as_deref(), Some(&ability));
+    assert!(options.can_cancel);
+    assert_eq!(
+        options.proposal.as_ref().map(|payment| payment.taps.len()),
+        Some(usize::try_from(options.cost.mana_value()).unwrap())
+    );
+    let events = driver.answer(back).unwrap();
+    assert!(
+        !events
+            .iter()
+            .any(|e| matches!(e, Event::CardDiscarded { .. } | Event::Cycled { .. })),
+        "nothing is paid before the payment (CR 727.1)"
+    );
+    assert!(matches!(
+        driver.decision().unwrap().kind,
+        DecisionKind::Priority(_)
+    ));
+    assert_eq!(names(driver.state(), Zone::Hand(pid(0))), [cycler]);
+    assert_eq!(
+        names(driver.state(), Zone::Graveyard(pid(0))),
+        Vec::<String>::new()
+    );
+    assert_eq!(tapped(&driver), 0);
+    assert_eq!(driver.state().stack().len(), 0);
+}
+
+#[rstest]
+#[case::basic_landcycling("Ash Barrens")]
+#[case::a_land_type("Chartooth Cougar")]
+fn the_proposed_payment_confirmed_pays_the_typecycling(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] cycler: &str,
+) {
+    let mut driver = table(seats, &[cycler], 2, &["Forest"]);
+    activate(&mut driver, cycler, 0);
+    let DecisionKind::PayMana(options) = &driver.decision().unwrap().kind else {
+        panic!("the cost is asked");
+    };
+    let proposal = options.proposal.clone().unwrap();
+    let events = driver
+        .answer(Answer::PayMana(PayChoice::Manual(*proposal)))
+        .unwrap();
+    assert!(events.iter().any(|e| matches!(e, Event::Cycled { .. })));
+    assert_eq!(names(driver.state(), Zone::Graveyard(pid(0))), [cycler]);
 }

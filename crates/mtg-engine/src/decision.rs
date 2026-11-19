@@ -453,6 +453,16 @@ pub struct PayOptions {
     pub spend: Box<Spend>,
     /// Whether an automatic payment exists (it does whenever the cast was offered, unless only a payment that takes the last life would do).
     pub auto_available: bool,
+    /// The payment the game makes for the player, which "Pay for me" proposes for them to confirm or change; left out
+    /// while there is none.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Payment>", optional))]
+    pub proposal: Option<Box<Payment>>,
+    /// The ability being activated, while the payment is for an activation (cycling from a hand); left out for a spell and
+    /// for anything else.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<AbilityRef>", optional))]
+    pub ability: Option<Box<AbilityRef>>,
     /// Whether the cast may be backed out of; nothing has been paid yet, so it rolls back (CR 601.2).
     pub can_cancel: bool,
     /// Whether the payment is the tax on an attack being declared (CR 508.1h); cancelling returns to the declaration.

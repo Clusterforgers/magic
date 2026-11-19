@@ -216,10 +216,12 @@ pub(crate) fn payment_decision(
         std::borrow::Cow::Borrowed(_) => None,
     };
     let sources = narrowed.unwrap_or(sources);
+    let proposal = auto_payment_with(&cost, &pool, &sources, help.help(), life, &spend);
     Some(PayOptions {
         spell: object,
-        auto_available: auto_payment_with(&cost, &pool, &sources, help.help(), life, &spend)
-            .is_some(),
+        auto_available: proposal.is_some(),
+        proposal: proposal.map(Box::new),
+        ability: None,
         help: Box::new(help),
         spend: Box::new(spend),
         can_cancel,
@@ -954,6 +956,8 @@ mod tests {
                 &Spend::other(),
             )
             .is_some(),
+            proposal: None,
+            ability: None,
             help: Box::default(),
             spend: Box::new(Spend::other()),
             can_cancel,

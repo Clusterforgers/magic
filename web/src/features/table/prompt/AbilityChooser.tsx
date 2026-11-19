@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import type { CSSProperties, KeyboardEvent } from 'react'
 import { createPortal } from 'react-dom'
 import { usePlay } from '@/features/game/gameContext'
@@ -31,6 +31,7 @@ const items = (panel: HTMLElement): HTMLElement[] => [
  */
 export function AbilityChooser({ target, plays, blocked = [], onPick, onClose }: AbilityChooserProps) {
   const panel = useRef<HTMLDivElement>(null)
+  const idBase = useId()
   const object = usePlay((state) => state.objectsById[target.id])
   const name = roomTitle(object?.name ?? 'the card', useDoors(object))
   useReturnFocus(target)
@@ -100,13 +101,16 @@ export function AbilityChooser({ target, plays, blocked = [], onPick, onClose }:
             role="menuitem"
             tabIndex={-1}
             aria-label={play.words}
+            aria-describedby={play.detail === undefined ? undefined : `${idBase}-${play.key}`}
             data-play={play.key}
             onClick={() => onPick(play)}
             className="flex w-full min-w-0 flex-col rounded-md px-3 py-1.5 text-left text-sm outline-none select-none hover:bg-accent hover:text-accent-foreground focus-visible:bg-accent focus-visible:text-accent-foreground pointer-coarse:min-h-11 pointer-coarse:justify-center"
           >
             <span className="break-words">{play.label}</span>
             {play.detail === undefined ? null : (
-              <span className="text-xs break-words text-muted-foreground">{play.detail}</span>
+              <span id={`${idBase}-${play.key}`} className="text-xs break-words text-muted-foreground">
+                {play.detail}
+              </span>
             )}
           </button>
         ))}

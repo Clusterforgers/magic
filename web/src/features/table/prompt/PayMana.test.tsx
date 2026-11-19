@@ -1,4 +1,4 @@
-/** Goal: for many costs and source sets (generic, coloured, colourless, floating mana, several colours on one permanent, too little mana) the PayMana prompt marks exactly the sources that still help as legal, builds the payment from clicks and keys in order, enables Confirm only for a payment the engine would accept and sends it as one Manual answer; Pay for me and Cancel answer once (Pay for me is disabled with its reason when the game offers none), a source that cannot finish the payment is not offered, a chosen source can be taken back, and a new decision starts clean. */
+/** Goal: for many costs and source sets (generic, coloured, colourless, floating mana, several colours on one permanent, too little mana) the PayMana prompt marks exactly the sources that still help as legal, builds the payment from clicks and keys in order, enables Confirm only for a payment the engine would accept and sends it as one Manual answer; Pay for me lays out the game's payment for a Confirm (or answers at once with Always pay automatically on) and Cancel answers once (Pay for me is disabled with its reason when the game offers none), a source that cannot finish the payment is not offered, a chosen source can be taken back, and a new decision starts clean. */
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { AUTO_REASON } from './kinds/PayMana'
@@ -57,11 +57,15 @@ const payment = (floating: string[], taps: [number, number][]): Payment => ({
 })
 
 /** The table of seat 0 facing the payment `given`, with an `answer` spy that accepts everything. */
-function renderPay(given: PayOptions) {
+function renderPay(given: PayOptions, autoPay = false) {
   const answer = vi.fn((_answer: Answer) => true)
   const table = renderTable({
     session: { answer },
-    state: (state) => ({ ...state, pending: { id: 4, decision: { player: 0, kind: { PayMana: given } } } }),
+    state: (state) => ({
+      ...state,
+      autoChoices: { ...state.autoChoices, auto_pay: autoPay },
+      pending: { id: 4, decision: { player: 0, kind: { PayMana: given } } },
+    }),
   })
   const card = (id: ObjectId): HTMLElement =>
     must(table.container.querySelector<HTMLElement>(`button[data-object-id="${id}"]`))
@@ -766,6 +770,142 @@ describe('Pay for me, Cancel and Confirm', () => {
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Auto' }]])
   })
 
+  it.each([
+    [
+      'generic from two lands',
+      '{2}',
+      [
+        [0, 'G'],
+        [1, 'U'],
+      ] as Sources,
+      payment(
+        [],
+        [
+          [0, 0],
+          [1, 0],
+        ],
+      ),
+    ],
+    [
+      'a land of two colours',
+      '{W}{U}',
+      [
+        [0, 'WU'],
+        [1, 'W'],
+      ] as Sources,
+      payment(
+        [],
+        [
+          [0, 1],
+          [1, 0],
+        ],
+      ),
+    ],
+    ['floating mana and a land', '{1}{G}', [[0, 'G']] as Sources, payment(['R'], [[0, 0]])],
+  ])(
+    'Pay for me lays out the game payment of %s and waits for Confirm',
+    async (_what, text, given, proposal) => {
+      const { answer, user, confirm, land } = renderPay(
+        payOptions(text, given, { proposal, pool: poolOf(proposal.pool.length > 0 ? 'R' : '') }),
+      )
+      await user.click(screen.getByRole('button', { name: 'Pay for me' }))
+      expect(answer).not.toHaveBeenCalled()
+      expect(screen.getByText(/^The game proposes .*Confirm to pay, or change it\.$/)).toBeVisible()
+      for (const tap of proposal.taps) {
+        const index = lands.indexOf(tap.object)
+        expect(land(index)).toHaveAttribute('aria-pressed', 'true')
+      }
+      expect(confirm()).toBeEnabled()
+      await vi.waitFor(() => expect(confirm()).toHaveFocus())
+      await user.click(confirm())
+      expect(answer.mock.calls).toEqual([[{ PayMana: { Manual: proposal } }]])
+    },
+  )
+
+  it('a proposed payment can be changed before it is confirmed', async () => {
+    const proposal = payment([], [[0, 0]])
+    const { answer, user, confirm, land, steps } = renderPay(
+      payOptions(
+        '{1}',
+        [
+          [0, 'G'],
+          [1, 'U'],
+        ],
+        { proposal },
+      ),
+    )
+    await user.click(screen.getByRole('button', { name: 'Pay for me' }))
+    await steps(['0', '1'])
+    expect(land(0)).toHaveAttribute('aria-pressed', 'false')
+    await user.click(confirm())
+    expect(answer.mock.calls).toEqual([[{ PayMana: { Manual: payment([], [[1, 0]]) } }]])
+  })
+
+  it('with Always pay automatically, Pay for me answers Auto at once', async () => {
+    const { answer, user } = renderPay(
+      payOptions(
+        '{2}',
+        [
+          [0, 'G'],
+          [1, 'U'],
+        ],
+        {
+          proposal: payment(
+            [],
+            [
+              [0, 0],
+              [1, 0],
+            ],
+          ),
+        },
+      ),
+      true,
+    )
+    await user.click(screen.getByRole('button', { name: 'Pay for me' }))
+    expect(answer.mock.calls).toEqual([[{ PayMana: 'Auto' }]])
+  })
+
+  it('Pay the rest for me keeps the picks, adds the rest from the game payment and waits for Confirm', async () => {
+    const { answer, user, confirm, steps } = renderPay(
+      payOptions(
+        '{1}{G}',
+        [
+          [0, 'G'],
+          [1, 'U'],
+          [2, 'B'],
+        ],
+        {
+          proposal: payment(
+            [],
+            [
+              [0, 0],
+              [2, 0],
+            ],
+          ),
+        },
+      ),
+    )
+    await steps(['0'])
+    await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
+    expect(answer).not.toHaveBeenCalled()
+    await user.click(confirm())
+    expect(answer.mock.calls).toEqual([
+      [
+        {
+          PayMana: {
+            Manual: payment(
+              [],
+              [
+                [0, 0],
+                [2, 0],
+              ],
+            ),
+          },
+        },
+      ],
+    ])
+  })
+
   it('disables Pay for me with its reason when the game offers none', () => {
     renderPay(payOptions('{U}{U}', [[0, 'G']], { auto_available: false }))
     const auto = screen.getByRole('button', { name: 'Pay for me' })
@@ -795,24 +935,28 @@ describe('Pay for me, Cancel and Confirm', () => {
     ],
     ['a land and floating mana', ['0', 'pool:R'], payment(['R'], [[0, 0]])],
     ['floating mana alone', ['pool:R'], payment(['R'], [])],
-  ])('Pay the rest for me keeps %s and answers Complete', async (_what, picks, expected) => {
-    const { answer, user, steps } = renderPay(
-      payOptions(
-        '{4}{G}',
-        [
-          [0, 'G'],
-          [1, 'U'],
-          [2, 'B'],
-          [3, 'W'],
-        ],
-        { pool: poolOf('R') },
-      ),
-    )
-    await steps(picks)
-    expect(screen.queryByRole('button', { name: 'Pay for me' })).toBeNull()
-    await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
-    expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: expected } }]])
-  })
+  ])(
+    'with Always pay automatically, Pay the rest for me keeps %s and answers Complete',
+    async (_what, picks, expected) => {
+      const { answer, user, steps } = renderPay(
+        payOptions(
+          '{4}{G}',
+          [
+            [0, 'G'],
+            [1, 'U'],
+            [2, 'B'],
+            [3, 'W'],
+          ],
+          { pool: poolOf('R') },
+        ),
+        true,
+      )
+      await steps(picks)
+      expect(screen.queryByRole('button', { name: 'Pay for me' })).toBeNull()
+      await user.click(screen.getByRole('button', { name: 'Pay the rest for me' }))
+      expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: expected } }]])
+    },
+  )
 
   it.each([
     [
@@ -847,6 +991,38 @@ describe('Pay for me, Cancel and Confirm', () => {
     expect(chips()).toEqual([])
     expect(screen.queryByRole('button', { name: 'Pay the rest for me' })).toBeNull()
     expect(screen.getByRole('button', { name: 'Pay for me' })).toBeInTheDocument()
+  })
+
+  it.each([
+    [
+      'an activation',
+      {
+        ability: { object: evangel.id, ability: 0 },
+        spend: { kind: 'Ability', traits: { types: 0, colors: 0 } },
+      } satisfies Partial<PayOptions>,
+      'Cancel the ability',
+      'Pay 2 generic for an ability of Selesnya Evangel.',
+    ],
+    [
+      'a spell',
+      { spend: { kind: 'Spell', traits: { types: 4, colors: 2 } } } satisfies Partial<PayOptions>,
+      'Cancel the spell',
+      'Pay 2 generic for Selesnya Evangel.',
+    ],
+  ])('names what %s pays for and how to back out of it', async (_what, over, cancel, sentence) => {
+    const { answer, user, text } = renderPay(
+      payOptions(
+        '{2}',
+        [
+          [0, 'G'],
+          [1, 'U'],
+        ],
+        over,
+      ),
+    )
+    expect(text()).toContain(sentence)
+    await user.click(screen.getByRole('button', { name: cancel }))
+    expect(answer.mock.calls).toEqual([['Undo']])
   })
 
   it('has no Cancel when the options do not allow backing out, and says so in the sentence', () => {
@@ -915,6 +1091,7 @@ describe('Pay for me, Cancel and Confirm', () => {
         [0, 'G'],
         [1, 'U'],
       ]),
+      true,
     )
     await steps(picks)
     await user.dblClick(screen.getByRole('button', { name }))

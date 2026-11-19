@@ -816,6 +816,8 @@ mod tests {
             announced: Vec::new(),
             auto_available,
             can_cancel,
+            proposal: None,
+            ability: None,
             attack: false,
             block: false,
             life: 20,
@@ -1716,6 +1718,8 @@ mod tests {
                 &Spend::other(),
             )
             .is_some(),
+            proposal: None,
+            ability: None,
             max_life: max_life_payment_of(&cost),
             cost,
             pool: ManaPool::default(),

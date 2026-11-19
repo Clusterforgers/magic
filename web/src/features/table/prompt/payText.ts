@@ -2,7 +2,7 @@
 import type { Color, ManaCost, ManaSymbol, ManaType, ObjectId } from '@/protocol/generated'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from '../manaSymbols'
 import { madeOf, manaValue } from './payment'
-import type { Spend } from './payment'
+import type { Spend, Whole } from './payment'
 
 const NAME: Record<ManaType, string> = {
   White: 'white',
@@ -102,6 +102,8 @@ export interface LifeText {
 /** What `payText` needs to know. */
 export interface PayTextInput {
   spell: string
+  /** The ability being activated, when the payment is for one: its keyword ("Plainscycling"), or "an ability" for one no keyword adds. */
+  ability?: string | undefined
   cost: ManaCost
   owed: ManaCost
   /** How many pieces are in the payment so far, life included. */
@@ -127,6 +129,7 @@ export interface PayTextInput {
 /** The one live sentence of the prompt: the last change, then what is owed and what to do. */
 export function payText({
   spell,
+  ability,
   cost,
   owed,
   chosen,
@@ -140,13 +143,16 @@ export function payText({
   life,
 }: PayTextInput): string {
   const lead = note === '' ? '' : `${note} `
+  // What the payment is for and what Confirm does: "Plainscycling of Angel of the Ruins", "activate Plainscycling of …".
+  const paid = ability === undefined ? spell : `${ability} of ${spell}`
+  const doing = ability === undefined ? `cast ${spell}` : `activate ${paid}`
   const declaring = attack ? 'attack' : block ? 'block' : undefined
   const may = life?.may === true
   const paying = life !== undefined && life.paid > 0 ? `, paying ${life.paid} life (${life.after} left)` : ''
   if (covered) {
     return manaValue(cost) === 0
-      ? `${spell} costs nothing. Confirm to cast it.`
-      : `${lead}The cost is covered${paying}. Confirm to ${declaring ?? `cast ${spell}`}.`
+      ? `${paid} costs nothing. Confirm to ${ability === undefined ? 'cast it' : 'activate it'}.`
+      : `${lead}The cost is covered${paying}. Confirm to ${declaring ?? doing}.`
   }
   const still = `Still to pay: ${costWords(owed)}.`
   const lifeChoice = may ? `, pay ${LIFE_PER_SYMBOL} life for a Phyrexian symbol` : ''
@@ -157,13 +163,20 @@ export function payText({
         declaring !== undefined
           ? ` Add the mana by hand in the Commands panel, or go back to choose other ${declaring}ers.`
           : ' Undo to go back.'
-      return `You cannot pay ${costWords(cost)} for ${declaring !== undefined ? `the ${declaring}` : spell} with the mana you have.${cancel ? back : ''}`
+      return `You cannot pay ${costWords(cost)} for ${declaring !== undefined ? `the ${declaring}` : paid} with the mana you have.${cancel ? back : ''}`
     }
     const automatic = auto ? ', or pay automatically' : ''
-    return `${lead}Pay ${costWords(cost)} for ${declaring !== undefined ? `the ${declaring}` : spell}. Choose a land or other mana source to use its mana${lifeChoice}${automatic}.`
+    return `${lead}Pay ${costWords(cost)} for ${declaring !== undefined ? `the ${declaring}` : paid}. Choose a land or other mana source to use its mana${lifeChoice}${automatic}.`
   }
   if (!canAdd) {
     return `${lead}${still} Nothing left can pay it; remove a choice${cancel ? ' or cancel' : ''}.`
   }
   return auto ? `${lead}${still} Choose more${lifeChoice}, or pay the rest for me.` : `${lead}${still}`
+}
+
+/** The note of a proposed payment ("Pay for me" without "Always pay automatically"): what it uses, then what to do. */
+export function proposalNote(whole: Whole, nameOf: (id: ObjectId) => string): string {
+  const parts = whole.spends.map((spend) => spendWords(spend, nameOf))
+  if (whole.life.length > 0) parts.push(`${whole.life.length * LIFE_PER_SYMBOL} life`)
+  return `The game proposes ${parts.length === 0 ? 'nothing' : andList(parts)}. Confirm to pay, or change it.`
 }
