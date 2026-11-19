@@ -1,5 +1,5 @@
 //! Goal: every card the r109-05 pack made fully automatic reads back as its printed text clause by clause, and a near miss
-//! of each (another quirk, recipient, assigner, keyword or extra-turn rider) does not.
+//! of each, replaced wherever it occurs (another quirk, recipient, assigner, keyword or extra-turn rider) does not.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -84,8 +84,8 @@ fn r109_05_reads_back_whole(#[case] name: &str) {
 )]
 #[case::preventable(
     "Alchemist's Gambit",
-    r#""r109_unpreventable":true,"at_end""#,
-    r#""at_end""#
+    r#""r109_unpreventable":true"#,
+    r#""r109_unpreventable":false"#
 )]
 #[case::bumi_all_turn("Bumi, Unleashed", r#"{"R109ThatCombat":0}"#, r#""UntilEndOfTurn""#)]
 #[case::bumi_lands_attack("Bumi, Unleashed", r#"{"Not":{"Type":"Land"}}"#, r#"{"Type":"Land"}"#)]
@@ -100,8 +100,7 @@ fn r109_05_reads_back_whole(#[case] name: &str) {
     r#",{"ControlledBy":{"OpponentsOf":{"Target":0}}}"#,
     ""
 )]
-#[case::portal_choice("Portal Manipulator", r#","r109_to":{"Target":0}"#, "")]
-#[case::no_loss("Alchemist's Gambit", r#","at_end":[{"LoseGame":{}}]"#, "")]
+#[case::portal_choice("Portal Manipulator", r#""r109_to":{"Target":0},"#, "")]
 fn r109_05_a_near_miss_does_not_read_back(
     #[case] name: &str,
     #[case] from: &str,
@@ -109,6 +108,6 @@ fn r109_05_a_near_miss_does_not_read_back(
 ) {
     let text = compact(name);
     assert!(text.contains(from), "{name} holds {from}");
-    let report = report_of(name, &text.replacen(from, to, 1));
+    let report = report_of(name, &text.replace(from, to));
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");
 }

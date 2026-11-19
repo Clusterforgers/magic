@@ -252,7 +252,7 @@ fn r109_defensive_formation_gives_the_division_to_the_player_attacked(
     driver.attack(&[("Brute", 1)])?;
     let division =
         to_division(&mut driver, &[("Bear", "Brute"), ("Cub", "Brute")])?.expect("a division");
-    let assigner = if formation { 1 } else { 0 };
+    let assigner = usize::from(formation);
     assert_eq!(division.player, seat(assigner));
     driver.assign_damage(&[("Bear", 0), ("Cub", 4)])?;
     driver.pass_until(Step::EndCombat)?;

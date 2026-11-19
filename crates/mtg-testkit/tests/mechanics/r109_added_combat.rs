@@ -19,6 +19,9 @@ use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready, tapped};
 use rstest::rstest;
 
+/// The creatures offered as attackers, each with what it may attack.
+type Offered = Vec<(ObjectId, Vec<AttackTarget>)>;
+
 /// The log of the driver replays to its state.
 fn replays(scenario: &Scenario, driver: &Driver) {
     let setup = scenario.clone().setup().unwrap();
@@ -42,9 +45,7 @@ fn arbor() -> Arc<CardDefinition> {
 
 /// Answers passively up to the next declaration of attackers this turn; `None` when
 /// the turn moves on first.
-fn to_attackers(
-    driver: &mut Driver,
-) -> Result<Option<Vec<(ObjectId, Vec<AttackTarget>)>>, ScriptError> {
+fn to_attackers(driver: &mut Driver) -> Result<Option<Offered>, ScriptError> {
     let turn = driver.state().turn().number();
     for _ in 0..200 {
         if driver.state().turn().number() != turn {
@@ -132,10 +133,11 @@ fn r109_illusionists_gambit_sends_the_attackers_elsewhere(
     driver.attack(&[("Raider", 0)])?;
     for _ in 0..20 {
         let decision = driver.decision()?.clone();
-        if decision.player == seat(0) && driver.state().turn().step() == Step::DeclareBlockers {
-            if let DecisionKind::Priority(_) = decision.kind {
-                break;
-            }
+        if decision.player == seat(0)
+            && driver.state().turn().step() == Step::DeclareBlockers
+            && matches!(decision.kind, DecisionKind::Priority(_))
+        {
+            break;
         }
         driver.answer_passively()?;
     }
@@ -258,7 +260,7 @@ fn r109_portal_manipulator_sends_attackers_at_the_target_player(
             .attackers()
             .iter()
             .find(|a| a.object() == id)
-            .map(|a| a.target())
+            .map(mtg_engine::combat::Attacker::target)
     };
     let expected = if seats > 2 { seat(2) } else { seat(0) };
     assert_eq!(

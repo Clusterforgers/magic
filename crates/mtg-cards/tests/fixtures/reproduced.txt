@@ -1256,6 +1256,7 @@ Illicit Shipment
 Illuminate History
 Illusion Spinners
 Illusion of Choice
+Illusionist's Gambit
 Illusory Ambusher
 Illustrious Wanderglyph
 Ilysian Caryatid
@@ -1923,6 +1924,7 @@ Pop Quiz
 Porcuparrot
 Port Town
 Portal Mage
+Portal Manipulator
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger

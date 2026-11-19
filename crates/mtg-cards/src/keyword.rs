@@ -29,8 +29,7 @@ pub enum Keyword {
     Deathtouch,
     /// Trample.
     Trample,
-    /// Trample over planeswalkers (CR 702.19c): attacking a planeswalker, the damage beyond lethal to its blockers and the
-    /// planeswalker goes to that planeswalker's controller.
+    /// CR 702.19c.
     TrampleOverPlaneswalkers,
     /// Lifelink.
     Lifelink,

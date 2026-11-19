@@ -49,7 +49,7 @@ pub(crate) fn r109_options(
         return None;
     }
     let defending = defending_player(state, attacker.target())?;
-    let attacked = match attacker.target() {
+    let walker_attacked = match attacker.target() {
         AttackTarget::Planeswalker(walker) if !attacker.attacks_nothing() => Some(walker),
         _ => None,
     };
@@ -86,7 +86,7 @@ pub(crate) fn r109_options(
             }
         }
         let mut whole = Vec::new();
-        if let Some(walker) = attacked
+        if let Some(walker) = walker_attacked
             && !recipients.contains(&walker)
         {
             recipients.push(walker);
@@ -101,7 +101,7 @@ pub(crate) fn r109_options(
         ));
     }
     if rules.over_planeswalkers
-        && let Some(walker) = attacked
+        && let Some(walker) = walker_attacked
         && !crate::battle::is_battle(state, walker)
     {
         let controller = controller_of(state, walker)?;

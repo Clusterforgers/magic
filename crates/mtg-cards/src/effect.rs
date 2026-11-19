@@ -1693,7 +1693,7 @@ pub enum Effect {
         /// activated.").
         #[serde(default, skip_serializing_if = "is_false")]
         no_power_up: bool,
-        /// Damage can't be prevented during each of them (CR 614.17): "During that turn, damage can't be prevented."
+        /// Damage can't be prevented then.
         #[serde(default, skip_serializing_if = "is_false")]
         r109_unpreventable: bool,
         /// A delayed triggered ability of each of them, at the beginning of its end step ("At the beginning of that
@@ -2311,8 +2311,7 @@ pub enum Effect {
         /// Only players are offered ("reselect which player ~ is attacking").
         #[serde(default, skip_serializing_if = "is_false")]
         players: bool,
-        /// No choice is offered: each of them is now attacking this player ("Those creatures are now attacking that
-        /// player.").
+        /// Now attacking this player.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         r109_to: Option<Ref>,
     },

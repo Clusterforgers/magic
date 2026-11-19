@@ -324,9 +324,7 @@ pub enum Duration {
     UntilEndOfTurn,
     /// Until the end of combat.
     UntilEndOfCombat,
-    /// During the combat phase that the same resolution added (CR 500.8): "only land creatures can attack during that
-    /// combat phase", "each of those creatures attacks that combat if able". A rules file writes 0; the engine puts the
-    /// mark of that added phase in as the effect begins, and the effect applies only while that phase is under way.
+    /// In that added combat (0).
     R109ThatCombat(u32),
     /// Until the controller's next turn begins.
     UntilYourNextTurn,
@@ -671,16 +669,13 @@ pub enum CombatQuirk {
     BlockIgnoringShadow,
     /// Tapped to crew or saddle, they count for another amount than their power.
     TapPower(TapPowerAs),
-    /// Their controller may have each of them divide its combat damage as they choose among the defending player and any
-    /// number of creatures that player controls, blocked or not (CR 510.1a).
+    /// Divides damage among defender and creatures.
     R109AssignsAmongDefenders,
-    /// While unblocked, their controller may have each of them assign all its combat damage to one creature the
-    /// defending player controls (CR 510.1a).
+    /// Unblocked: all damage to one creature.
     R109UnblockedToCreature,
-    /// The player each of them attacks, rather than its controller, assigns its combat damage (CR 510.1); that player
-    /// divides it among its blockers as they choose.
+    /// The defender assigns its damage.
     R109DefenderAssigns,
-    /// Lethal damage destroys them only when one source has dealt lethal damage marked on them (CR 704.5g).
+    /// Lethal damage counts per source.
     R109LethalFromOneSource,
 }
 

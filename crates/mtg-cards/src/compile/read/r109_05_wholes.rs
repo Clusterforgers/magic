@@ -75,6 +75,7 @@ mod tests {
     #[case("attacks that combat if able", "attacks each combat if able")]
     #[case("can't attack you or planeswalkers", "can't attack planeswalkers")]
     #[case("Remove all attacking creatures", "Remove all blocking creatures")]
+    #[case("declare blockers step on an", "declare attackers step on an")]
     fn r109_05_a_near_miss_reads_as_nothing(#[case] from: &str, #[case] to: &str) {
         let mut hit = false;
         for (_, text) in R109_05_SHAPES.iter() {

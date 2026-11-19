@@ -1,5 +1,9 @@
 [
  [
+  {"CastOnly":{"condition":{"All":[{"Step":"DeclareBlockers"},{"Not":"YourTurn"}]}}},
+  "Cast this spell only during the declare blockers step on an opponent's turn."
+ ],
+ [
   {"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"AtTrigger":{"Step":"DeclareAttackers"}},"targets":[{"what":"Player"},{"what":{"Object":[{"Type":"Creature"},"Attacking",{"ControlledBy":{"OpponentsOf":{"Target":0}}}]},"bounds":{"min":0,"max":null}}],"effects":[{"Reattack":{"what":{"Target":1},"r109_to":{"Target":0}}}]}},
   "When ~ enters during the declare attackers step, choose target player and any number of target attacking creatures their opponents control. Those creatures are now attacking that player."
  ],
