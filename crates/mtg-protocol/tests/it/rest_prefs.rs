@@ -1,4 +1,4 @@
-//! Goal: the account preferences keep their documented wire shape (default stops and the end-turn choice, off and empty by default except the own declare attackers and postcombat main stops, a JSON round trip), and the hand sort reads "as drawn" over every group when absent and keeps its order of groups.
+//! Goal: the account preferences keep their documented wire shape (default stops and the end-turn choice and Full Control held, off and empty by default except the own declare attackers and postcombat main stops, a JSON round trip), and the hand sort reads "as drawn" over every group when absent and keeps its order of groups.
 
 #![allow(clippy::unwrap_used)]
 
@@ -74,4 +74,20 @@ fn a_hand_sort_keeps_its_order_on_the_wire(#[case] by: HandSortBy, #[case] group
     assert_eq!(value["hand_sort"]["by"], json!(format!("{by:?}")));
     let back: UserPrefs = serde_json::from_value(value).unwrap();
     assert_eq!(back.hand_sort.groups, groups);
+}
+
+#[rstest]
+#[case::held(true, Some(json!(true)))]
+#[case::off(false, None)]
+fn full_control_held_is_left_out_while_off(
+    #[case] held: bool,
+    #[case] wire: Option<serde_json::Value>,
+) {
+    let prefs = UserPrefs {
+        full_control_held: held,
+        ..UserPrefs::default()
+    };
+    let value = serde_json::to_value(&prefs).unwrap();
+    assert_eq!(value.get("full_control_held").cloned(), wire);
+    assert_eq!(serde_json::from_value::<UserPrefs>(value).unwrap(), prefs);
 }

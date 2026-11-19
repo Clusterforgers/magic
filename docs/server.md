@@ -272,7 +272,7 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 
 ### Account preferences
 
-`prefs.rs` and `PrefsRepo` (`user_prefs`, deleted with the account) keep the default stops, "End my turn by hand", the always-yield list (`auto_yields`, at most `MAX_AUTO_YIELDS`), the auto choices and the hand sort (`hand_sort`, null for the default) across browsers. Unsaved stops default to the own declare attackers and postcombat main (`default_stops`); a saved empty list stays empty. A sort naming a group twice is refused; missing groups are appended in starting order. `PUT /api/me/prefs` takes at most `MAX_DEFAULT_STOPS` lasting stops at priority steps, one per side and step, else 400 `invalid_request`. 401 `unauthenticated`; 503 `cards_unavailable`; bodies at most 8 KiB.
+`prefs.rs` and `PrefsRepo` (`user_prefs`, deleted with the account) keep the default stops, "End my turn by hand", the always-yield list (`auto_yields`, at most `MAX_AUTO_YIELDS`), the auto choices, the hand sort (`hand_sort`, null for the default) and Full Control held (`full_control_held`, left out while off) across browsers. Unsaved stops default to the own declare attackers and postcombat main (`default_stops`); a saved empty list stays empty. A sort naming a group twice is refused; missing groups are appended in starting order. `PUT /api/me/prefs` takes at most `MAX_DEFAULT_STOPS` lasting stops at priority steps, one per side and step, else 400 `invalid_request`. 401 `unauthenticated`; 503 `cards_unavailable`; bodies at most 8 KiB.
 
 ### Fix marks
 

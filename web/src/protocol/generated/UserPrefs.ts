@@ -27,4 +27,8 @@ auto_yields: Array<AutoYield>,
 /**
  * How the hand dock orders the hand in every game; "as drawn" when absent.
  */
-hand_sort: HandSort, };
+hand_sort: HandSort, 
+/**
+ * Whether the account's seats start every game in Full Control held, until turned off; left out (false) when off.
+ */
+full_control_held?: boolean, };

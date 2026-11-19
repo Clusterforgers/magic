@@ -36,6 +36,13 @@ describe('createPrefsApi', () => {
     expect(await api.load()).toEqual({ ...stored, auto_yields: [] })
   })
 
+  it('reads Full Control held when on and leaves it out when off', async () => {
+    const on = serve(() => jsonResponse(200, { ...stored, full_control_held: true }))
+    expect(await on.api.load()).toEqual({ ...stored, full_control_held: true })
+    const off = serve(() => jsonResponse(200, { ...stored, full_control_held: false }))
+    expect(await off.api.load()).toEqual(stored)
+  })
+
   it('reads a body without hand_sort (an older server) as drawn', async () => {
     const { hand_sort: _, ...older } = stored
     const { api } = serve(() => jsonResponse(200, older))
@@ -61,6 +68,7 @@ describe('createPrefsApi', () => {
     ['auto choices missing', { default_stops: [], end_turn_by_hand: false }],
     ['yields of another kind', { ...stored, auto_yields: [{ name: 3, text: '' }] }],
     ['a hand sort of another kind', { ...stored, hand_sort: { by: 'Groups', groups: [3] } }],
+    ['Full Control held of another kind', { ...stored, full_control_held: 'yes' }],
     [
       'auto choices of another kind',
       { default_stops: [], end_turn_by_hand: false, auto_choices: { order_triggers: 1 } },
