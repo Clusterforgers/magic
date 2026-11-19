@@ -3,7 +3,7 @@ import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
 import { usePlay } from '@/features/game/gameContext'
 import type { AbilityRef, ManaOption, ManaType, ObjectId } from '@/protocol/generated'
-import { abilityKey, abilityLine, spoken } from '../activations'
+import { abilityKey, abilityLine, keywordDoing, spoken } from '../activations'
 import { LIFE_PER_SYMBOL, manaWords } from '../../manaSymbols'
 import { SideContext } from '../../sideContext'
 import { markCards, useCardMarks } from '../marks'
@@ -114,6 +114,17 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const nameOf = (id: ObjectId): string =>
     names[named.indexOf(id)] ?? (id === spell ? 'the spell' : 'a permanent')
   const spellZone = usePlay((state) => state.objectsById[spell]?.zone)
+  // What the payment is for, named in the band: the keyword of the ability activated ("Plainscycling"), or a cast.
+  const activating = options.ability
+  const keyword = usePlay((state) =>
+    activating === undefined ? undefined : keywordDoing(activating, state.objectsById[activating.object]),
+  )
+  const isAbility = activating !== undefined || options.spend?.kind === 'Ability'
+  const doing = isAbility
+    ? (keyword ?? 'Activating')
+    : options.spend?.kind === 'Spell'
+      ? 'Casting'
+      : undefined
 
   const [{ spends, life, note }, setChosen] = useState(START)
   // "Always pay automatically" makes "Pay for me" pay at once; without it the game's payment is proposed for a Confirm.
@@ -327,6 +338,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const hasLife = lifeSwitches.length > 0
   const text = payText({
     spell: nameOf(spell),
+    ability: isAbility ? (keyword ?? 'an ability') : undefined,
     cost,
     owed: owedNow,
     chosen: spends.length + life.length,
@@ -346,10 +358,11 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     <PromptLayout
       text={text}
       quiet
+      doing={doing}
       meter={<PayMeter slots={slots} />}
       choices={
         <PayColumn
-          name={nameOf(spell)}
+          name={keyword === undefined ? nameOf(spell) : `${keyword} of ${nameOf(spell)}`}
           slots={slots}
           spends={spends}
           covered={covered}
@@ -492,7 +505,11 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
             {options.attack === true ? 'Back to attackers' : 'Back to blockers'}
           </Button>
         ) : (
-          <UndoButton zone={spellZone} onUndo={() => void answer('Undo')} />
+          <UndoButton
+            zone={spellZone}
+            ability={isAbility ? true : options.spend?.kind === 'Spell' ? false : undefined}
+            onUndo={() => void answer('Undo')}
+          />
         )
       ) : null}
     </PromptLayout>

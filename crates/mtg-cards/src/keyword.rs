@@ -700,9 +700,10 @@ impl Keyword {
     ];
 
     /// The name a player reads: `name`, except that a macro keyword shows its own table name (`Bushido`), never `Macro`,
-    /// and protection with an exception shows as `Protection`.
+    /// protection with an exception shows as `Protection`, and typecycling as printed (`Plainscycling`).
     pub fn shown_name(&self) -> String {
         match self {
+            Keyword::Typecycling { find, .. } => Self::typecycling_name(find),
             Keyword::ProtectionSparing { .. } => "Protection".to_owned(),
             Keyword::CumulativeUpkeepActs { .. } => "Cumulative upkeep".to_owned(),
             Keyword::CrewOnce(_) => "Crew".to_owned(),
@@ -714,6 +715,29 @@ impl Keyword {
                     .unwrap_or_default()
             }
             other => other.name().to_owned(),
+        }
+    }
+
+    /// The printed name of typecycling that finds what `find` names (CR 702.29e): `Plainscycling`, `Slivercycling`,
+    /// `Landcycling`, `Basic landcycling`; `Typecycling` for any other search.
+    fn typecycling_name(find: &Selector) -> String {
+        use crate::refs::Pred;
+        use mtg_core::card::{CardType, Supertype};
+        let land = |pred: &Pred| matches!(pred, Pred::Type(CardType::Land));
+        let basic = |pred: &Pred| matches!(pred, Pred::Supertype(Supertype::Basic));
+        match find.0.as_slice() {
+            [Pred::Subtype(kind)] => {
+                let mut chars = kind.0.chars();
+                chars.next().map_or_else(
+                    || "Typecycling".to_owned(),
+                    |first| format!("{}{}cycling", first.to_uppercase(), chars.as_str()),
+                )
+            }
+            [one] if land(one) => "Landcycling".to_owned(),
+            [a, b] if (land(a) && basic(b)) || (basic(a) && land(b)) => {
+                "Basic landcycling".to_owned()
+            }
+            _ => "Typecycling".to_owned(),
         }
     }
 
@@ -1015,8 +1039,10 @@ fn r5510_less_generic(mana: &mtg_core::mana::ManaCost, less: u32) -> mtg_core::m
 
 #[cfg(test)]
 mod tests {
-    //! Goal: every keyword has a unique Scryfall name listed in `NAMES`, and keywords serialize as plain words or single-key maps.
+    //! Goal: every keyword has a unique Scryfall name listed in `NAMES`, a player reads each by its printed name (`Plainscycling`, `Basic landcycling`), and keywords serialize as plain words or single-key maps.
     use super::*;
+    use crate::refs::Pred;
+    use mtg_core::card::{CardType, Subtype, Supertype};
     use rstest::rstest;
 
     #[allow(clippy::too_many_lines)]
@@ -1245,9 +1271,25 @@ mod tests {
         ]
     }
 
+    fn typecycling(find: Vec<crate::refs::Pred>) -> Keyword {
+        Keyword::Typecycling {
+            find: Selector(find),
+            cost: Cost::default(),
+        }
+    }
+
     #[rstest::rstest]
     #[case::macro_keyword(Keyword::Macro { name: "bushido".to_owned(), amount: 2 }, "Bushido")]
     #[case::plain(Keyword::FirstStrike, "First strike")]
+    #[case::plainscycling(typecycling(vec![Pred::Subtype(Subtype("Plains".into()))]), "Plainscycling")]
+    #[case::islandcycling(typecycling(vec![Pred::Subtype(Subtype("Island".into()))]), "Islandcycling")]
+    #[case::slivercycling(typecycling(vec![Pred::Subtype(Subtype("Sliver".into()))]), "Slivercycling")]
+    #[case::landcycling(typecycling(vec![Pred::Type(CardType::Land)]), "Landcycling")]
+    #[case::basic_landcycling(
+        typecycling(vec![Pred::Type(CardType::Land), Pred::Supertype(Supertype::Basic)]),
+        "Basic landcycling"
+    )]
+    #[case::other_search(typecycling(Vec::new()), "Typecycling")]
     fn a_player_reads_the_keywords_own_name(#[case] keyword: Keyword, #[case] shown: &str) {
         assert_eq!(keyword.shown_name(), shown);
     }

@@ -993,6 +993,38 @@ describe('Pay for me, Cancel and Confirm', () => {
     expect(screen.getByRole('button', { name: 'Pay for me' })).toBeInTheDocument()
   })
 
+  it.each([
+    [
+      'an activation',
+      {
+        ability: { object: evangel.id, ability: 0 },
+        spend: { kind: 'Ability', traits: { types: 0, colors: 0 } },
+      } satisfies Partial<PayOptions>,
+      'Cancel the ability',
+      'Pay 2 generic for an ability of Selesnya Evangel.',
+    ],
+    [
+      'a spell',
+      { spend: { kind: 'Spell', traits: { types: 4, colors: 2 } } } satisfies Partial<PayOptions>,
+      'Cancel the spell',
+      'Pay 2 generic for Selesnya Evangel.',
+    ],
+  ])('names what %s pays for and how to back out of it', async (_what, over, cancel, sentence) => {
+    const { answer, user, text } = renderPay(
+      payOptions(
+        '{2}',
+        [
+          [0, 'G'],
+          [1, 'U'],
+        ],
+        over,
+      ),
+    )
+    expect(text()).toContain(sentence)
+    await user.click(screen.getByRole('button', { name: cancel }))
+    expect(answer.mock.calls).toEqual([['Undo']])
+  })
+
   it('has no Cancel when the options do not allow backing out, and says so in the sentence', () => {
     const { text } = renderPay(payOptions('{U}{U}', [[0, 'G']], { auto_available: false, can_cancel: false }))
     expect(screen.queryByRole('button', { name: /^Cancel the (spell|ability)$/ })).toBeNull()

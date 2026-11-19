@@ -4,6 +4,9 @@ use mtg_cards::AbilityDef;
 use mtg_cards::ability::{Ability, LoyaltyCost};
 use mtg_cards::compile::{render_ability, render_cost};
 use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::{Pred, Selector};
+use mtg_core::card::{CardType, Supertype};
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType};
 use mtg_engine::abilities::AbilitySource;
@@ -72,32 +75,41 @@ pub fn activated_views(
             _ => continue,
         };
         place += 1;
-        let keyword = match address.source {
+        let adding = match address.source {
             AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => {
                 keyword_adding(state, address)
-                    .map(|keyword| keyword_line(&keyword.shown_name(), &rules))
             }
             AbilitySource::Printed | AbilitySource::Granted(_) => None,
         };
-        let mut view = worded(&rules, name, loyalty).unwrap_or_else(|| ActivatedView {
-            ability: None,
-            cost: match &*rules {
-                Ability::Activated { cost, .. } => render_cost(cost)
-                    .map(|text| named(&text, name))
-                    .unwrap_or_default(),
-                _ => loyalty.map(loyalty_text).unwrap_or_default(),
-            },
-            effect: keyword
-                .clone()
-                .unwrap_or_else(|| format!("Activated ability {place}")),
-            targets: Vec::new(),
-            loyalty,
-            mana: false,
-            announced: false,
-            keyword: None,
-            unworded: true,
-            ways: Vec::new(),
-        });
+        let keyword = adding
+            .as_ref()
+            .map(|keyword| keyword_line(&keyword.shown_name(), &rules));
+        let reminder = || {
+            adding
+                .as_ref()
+                .and_then(|keyword| cycling_words(keyword, &rules))
+        };
+        let mut view = worded(&rules, name, loyalty)
+            .or_else(reminder)
+            .unwrap_or_else(|| ActivatedView {
+                ability: None,
+                cost: match &*rules {
+                    Ability::Activated { cost, .. } => render_cost(cost)
+                        .map(|text| named(&text, name))
+                        .unwrap_or_default(),
+                    _ => loyalty.map(loyalty_text).unwrap_or_default(),
+                },
+                effect: keyword
+                    .clone()
+                    .unwrap_or_else(|| format!("Activated ability {place}")),
+                targets: Vec::new(),
+                loyalty,
+                mana: false,
+                announced: false,
+                keyword: None,
+                unworded: true,
+                ways: Vec::new(),
+            });
         view.ability = Some(address);
         view.mana = rules.is_mana_ability();
         view.announced = mtg_engine::r281_at_priority(&rules);
@@ -125,6 +137,69 @@ fn way_of(option: &ManaOption) -> ManaWayView {
         cost: option.cost.clone(),
         sacrifice: option.sacrifice,
         tapless: option.tapless,
+    }
+}
+
+/// Cycling and typecycling in their reminder words (CR 702.29a, 702.29e), for a hand ability the writer cannot word:
+/// the cost with the discard, and "Draw a card." or the search.
+fn cycling_words(keyword: &Keyword, rules: &Ability) -> Option<ActivatedView> {
+    let Ability::Activated { cost, .. } = rules else {
+        return None;
+    };
+    let effect = match keyword {
+        Keyword::Cycling(_) => "Draw a card.".to_owned(),
+        Keyword::Typecycling { find, .. } => format!(
+            "Search your library for {}, reveal it, put it into your hand, then shuffle.",
+            found_words(find)
+        ),
+        _ => return None,
+    };
+    let rest = Cost(
+        cost.0
+            .iter()
+            .filter(|item| !matches!(item, CostItem::DiscardSelf))
+            .cloned()
+            .collect(),
+    );
+    let paid = if rest.0.is_empty() {
+        String::new()
+    } else {
+        render_cost(&rest)?
+    };
+    let cost = [paid.as_str(), "Discard this card"]
+        .into_iter()
+        .filter(|part| !part.is_empty())
+        .collect::<Vec<_>>()
+        .join(", ");
+    Some(ActivatedView {
+        ability: None,
+        cost,
+        effect,
+        targets: Vec::new(),
+        loyalty: None,
+        mana: false,
+        announced: false,
+        keyword: None,
+        unworded: false,
+        ways: Vec::new(),
+    })
+}
+
+/// The card a typecycling searches for: "a Plains card", "a land card", "a basic land card".
+fn found_words(find: &Selector) -> String {
+    let basic = find
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::Supertype(Supertype::Basic)));
+    let kind = find.0.iter().find_map(|pred| match pred {
+        Pred::Subtype(kind) => Some(kind.0.clone()),
+        Pred::Type(CardType::Land) => Some("land".to_owned()),
+        _ => None,
+    });
+    match (basic, kind) {
+        (true, Some(kind)) => format!("a basic {kind} card"),
+        (false, Some(kind)) => format!("a {kind} card"),
+        (_, None) => "a card of that type".to_owned(),
     }
 }
 

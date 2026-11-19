@@ -29,6 +29,7 @@ import { withTopCard, withTopCast } from './topCardScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
 import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
+import { cyclingTable, payCycling, withCycling } from './cyclingScene'
 import { withProposal } from './payProposal'
 import { companionTable, stackAbilityTable } from './previewScenes'
 
@@ -501,6 +502,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-abilities': withAbilities(priority),
   // The same with Rooms of the viewer's whose locked doors it may unlock (`dev/roomsScene.ts`).
   'priority-rooms': withRooms(priority),
+  // A hand card that can be cast or typecycled (`dev/cyclingScene.ts`): the chooser names both with their costs.
+  'priority-cycling': withCycling(priority),
   'priority-stack-ability': priority,
   'priority-companion': priority,
   // The same at a Delves boss fight: the last seat a boss in its second phase, another seat a fallen hero's Spirit.
@@ -549,6 +552,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-announced': payAnnounced,
   'pay-sources': paySources,
   'pay-marks': payMarks,
+  'pay-cycling': payCycling,
   'commander-return': commanderReturn,
   ...ASK_PROMPTS,
   ...EFFECT_PROMPTS,
@@ -601,6 +605,8 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-byhand': quietMoment('Main1', true),
   'priority-abilities': abilitiesTable,
   'priority-rooms': roomsTable,
+  'priority-cycling': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
+  'pay-cycling': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
   'priority-stack-ability': stackAbilityTable,
   'priority-companion': companionTable,
   'priority-delve': (fixture) => {

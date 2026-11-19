@@ -50,7 +50,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
   const choices = choosing === undefined ? undefined : mana.get(choosing)
   const [asking, setAsking] = useState<MenuTarget | null>(null)
   const playsFor = (id: ObjectId): readonly Play[] =>
-    playsOf(id, objectsById[id]?.name ?? 'the card', options, abilities, mana.get(id) ?? [])
+    playsOf(id, objectsById[id]?.name ?? 'the card', options, abilities, mana.get(id) ?? [], objectsById[id])
 
   const marks = useMemo(
     () =>

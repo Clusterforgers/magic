@@ -1,4 +1,4 @@
-/** Goal: the PayMana prompt tells the player in plain words what a cost asks for (hybrid and Phyrexian symbols included), what is still owed, what the last click did and what to do next (choose a source, pay life, confirm, remove a choice or cancel), and says what a proposed payment uses. */
+/** Goal: the PayMana prompt tells the player in plain words what a cost asks for (hybrid and Phyrexian symbols included), what is still owed, what the last click did and what to do next (choose a source, pay life, confirm, remove a choice or cancel), names the ability a payment is for by its keyword, and says what a proposed payment uses. */
 import { describe, expect, it } from 'vitest'
 import { cost, source } from '@/test-utils/mana'
 import type { Spend } from './payment'
@@ -123,6 +123,46 @@ describe('payText', () => {
       'after a removal that leaves nothing',
       input({ note: 'Cleared the payment.' }),
       'Cleared the payment. Pay 2 generic, 1 white and 1 green for Selesnya Evangel. Choose a land or other mana source to use its mana, or pay automatically.',
+    ],
+  ])('%s', (_what, given, words) => {
+    expect(payText(given)).toBe(words)
+  })
+})
+
+describe('payText for an ability, by its keyword', () => {
+  const plains = {
+    spell: 'Angel of the Ruins',
+    ability: 'Plainscycling',
+    cost: cost('{2}'),
+    owed: cost('{2}'),
+  }
+  it.each([
+    [
+      'before anything is chosen',
+      input(plains),
+      'Pay 2 generic for Plainscycling of Angel of the Ruins. Choose a land or other mana source to use its mana, or pay automatically.',
+    ],
+    [
+      'once the cost is covered',
+      input({ ...plains, covered: true, chosen: 2, owed: [] }),
+      'The cost is covered. Confirm to activate Plainscycling of Angel of the Ruins.',
+    ],
+    [
+      'when it cannot be paid',
+      input({ ...plains, canAdd: false, auto: false }),
+      'You cannot pay 2 generic for Plainscycling of Angel of the Ruins with the mana you have. Undo to go back.',
+    ],
+    [
+      'an ability no keyword adds',
+      input({
+        spell: 'Mind Stone',
+        ability: 'an ability',
+        cost: cost('{1}'),
+        owed: [],
+        covered: true,
+        chosen: 1,
+      }),
+      'The cost is covered. Confirm to activate an ability of Mind Stone.',
     ],
   ])('%s', (_what, given, words) => {
     expect(payText(given)).toBe(words)

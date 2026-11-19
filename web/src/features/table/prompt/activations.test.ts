@@ -1,4 +1,4 @@
-// Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own hand, graveyard, exile and command zone, never an opponent's card or a mana ability the payment taps (an announced one is a play), none for a spectator, and the plays of a card in the order land or spell, ability, mana; and the notes that carry the abilities to the card's name and preview, laid over the hand's reasons; an effect its controller may end by paying is a play on the permanent it changes.
+// Goal: which cards the Priority offer lets the viewer activate an ability of, and how each play is worded: only the viewer's own permanents and cards of its own hand, graveyard, exile and command zone, never an opponent's card or a mana ability the payment taps (an announced one is a play), none for a spectator, and the plays of a card in the order land or spell, ability, mana; a cast names its mana cost and what the card is, an ability its cost and effect, and the activation is called by its keyword; and the notes that carry the abilities to the card's name and preview, laid over the hand's reasons; an effect its controller may end by paying is a play on the permanent it changes.
 import { describe, expect, it } from 'vitest'
 import type {
   AbilityRef,
@@ -15,6 +15,8 @@ import {
   abilityPlays,
   activateWords,
   activationNotes,
+  castDetail,
+  keywordDoing,
   mergeNotes,
   playsOf,
   spoken,
@@ -316,6 +318,75 @@ describe('a hand card with an ability', () => {
   it('offers its cycling alone while it cannot be cast', () => {
     const plays = playsOf(10, 'Cycler', options([ref(10, 0)]), found, [])
     expect(plays.map((play) => play.words)).toEqual(['Activate Cycling 2'])
+  })
+})
+
+describe('a hand card that can be cast or typecycled names each play with its cost and effect', () => {
+  const plainscycling = worded(ref(10, 1), {
+    cost: '{2}, Discard this card',
+    effect: 'Search your library for a Plains card, reveal it, put it into your hand, then shuffle.',
+    keyword: 'Plainscycling {2}',
+  })
+  const angel = placed(10, { Hand: ME }, ME, [plainscycling], {
+    name: 'Angel of the Ruins',
+    mana_cost: [{ Generic: 5 }, { Colored: 'White' }, { Colored: 'White' }],
+    types: ['Artifact', 'Creature'],
+    subtypes: ['Angel'],
+    power: 5,
+    toughness: 7,
+  })
+  const found = abilityPlays(options([ref(10, 1)]), table(angel), ME)
+
+  it('lists the cast with its mana cost and what it is, then the typecycling with its cost and effect', () => {
+    const plays = playsOf(10, angel.name, options([ref(10, 1)], { castable: [10] }), found, [], angel)
+    expect(plays.map((play) => [play.label, play.detail])).toEqual([
+      ['Cast Angel of the Ruins', '{5}{W}{W} · Artifact Creature — Angel 5/7'],
+      [
+        'Plainscycling {2}',
+        '{2}, Discard this card: Search your library for a Plains card, reveal it, put it into your hand, then shuffle.',
+      ],
+    ])
+  })
+
+  it.each([
+    [
+      'a creature',
+      card({ mana_cost: [{ Generic: 1 }, { Colored: 'Green' }] }),
+      '{1}{G} · Creature — Bear 2/2',
+    ],
+    [
+      'a sorcery',
+      card({
+        mana_cost: [{ Colored: 'Red' }],
+        types: ['Sorcery'],
+        subtypes: [],
+        power: null,
+        toughness: null,
+      }),
+      '{R} · Sorcery',
+    ],
+    [
+      'a card with no mana cost',
+      card({ mana_cost: null, types: ['Instant'], subtypes: [], power: null, toughness: null }),
+      'Instant',
+    ],
+    ['a cost reduced now', card({ cost_now: [{ Colored: 'Green' }] }), '{G} · Creature — Bear 2/2'],
+  ])('words the cast of %s', (_what, object, expected) => {
+    expect(castDetail(object)).toBe(expected)
+  })
+
+  it.each([
+    ['Plainscycling {2}', 'Plainscycling'],
+    ['Basic landcycling {1}', 'Basic landcycling'],
+    ['Equip {1}', 'Equip'],
+    ['Crew 3', 'Crew'],
+    ['Cycling {2}', 'Cycling'],
+    [undefined, undefined],
+  ])('calls the activation of the keyword line %s by its keyword', (keyword, expected) => {
+    const object = placed(10, { Hand: ME }, ME, [
+      worded(ref(10, 0), keyword === undefined ? {} : { keyword }),
+    ])
+    expect(keywordDoing(ref(10, 0), object)).toBe(expected)
   })
 })
 

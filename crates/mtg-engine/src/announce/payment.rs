@@ -131,6 +131,9 @@ fn pay(
                 &options.spend,
             ) =>
         {
+            if let What::Ability(ability) = ctx.what {
+                options.ability = Some(Box::new(*ability));
+            }
             options.announced = match (ctx.what, &ctx.granted) {
                 (What::Spell(_), None) => r281_while_paying(ctx.state, ctx.player, None),
                 (What::Ability(ability), None) => {

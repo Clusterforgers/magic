@@ -277,7 +277,9 @@ describe('paying', () => {
     ])
     const band = table.one('[data-slot="strip-row"]')
     expect(within(band).getByRole('img', { name: '0 of 4 paid' })).toBeInTheDocument()
-    expect(within(band).getByRole('button', { name: /^Brago, King Eternal asks/ })).toBeInTheDocument()
+    expect(
+      within(band).getByRole('button', { name: /Brago, King Eternal(?: asks)?\. Show the card/ }),
+    ).toBeInTheDocument()
     expect(within(band).getByRole('button', { name: 'Confirm payment' })).toBeDisabled()
     // The sentence is read aloud and not drawn: the meter says it.
     expect(table.one('[data-slot="prompt-sentence"]')).toHaveClass('sr-only')
