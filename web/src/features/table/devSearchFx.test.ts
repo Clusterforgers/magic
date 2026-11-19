@@ -1,6 +1,16 @@
-// Goal: the dev address opens the Effects bar only for `?bar=1` (or true), takes `?board=` only for a named board (a two-seat table), `?fx=` only for one of the moves the dev table can play, `?slow=` only for a slow-down above 1 and up to 20 and `?preview=` only for a whole number of milliseconds up to 10 000, and shrugs off every other value, so a mistyped address still shows the plain table.
+// Goal: the dev address opens the Effects bar only for `?bar=1` (or true), takes `?board=` only for a named board (a two-seat table), `?fx=` only for one of the moves the dev table can play, `?slow=` only for a slow-down above 1 and up to 20 `?preview=` only for a whole number of milliseconds up to 10 000 and `?side=` only for open, folded or log, and shrugs off every other value, so a mistyped address still shows the plain table.
 import { describe, expect, it } from 'vitest'
 import { DEV_FX, MAX_DEV_PREVIEW_MS, MAX_DEV_SLOW, parseDevSearch } from './devSearch'
+
+describe('?side=', () => {
+  it.each(['open', 'folded', 'log'])('reads %s', (side) => {
+    expect(parseDevSearch({ seats: 2, side }).side).toBe(side)
+  })
+
+  it.each([undefined, '', 'rail', 'Log', 1, true])('leaves out %j', (side) => {
+    expect(parseDevSearch({ seats: 2, side }).side).toBeUndefined()
+  })
+})
 
 describe('?fx=', () => {
   it.each(DEV_FX)('reads %s', (fx) => {

@@ -26,6 +26,7 @@ import { useOpenDevPanel } from '../manual/panel/devPanel'
 import { showLexicon } from '../lexicon/lexiconStore'
 import { tourStore } from '../tour/tourStore'
 import { TOUR } from '../tour/tourSteps'
+import { setSideFolded } from '../sideFold'
 
 /** The oracle ids of the fixture's cards from the server (`?cards=real`), read once; none until they arrive. */
 function useRealIds(
@@ -117,8 +118,14 @@ export function DevTableRoute() {
     result,
     permanents,
     script,
+    side,
   } = useSearch({
     from: '/dev/table',
+  })
+  // The fold is set before the table lays itself out, so its first frame is the one asked for.
+  useState(() => {
+    if (side !== undefined) setSideFolded(side === 'folded')
+    return side
   })
   const real = useRealIds(cards === 'real', seats, hand, states === true)
   const game = useMemo(() => {
@@ -204,8 +211,9 @@ export function DevTableRoute() {
       effectsSlow: slow,
       // A screenshot of the dev table shows the tour only when it asks for it.
       tour: false,
+      ...(side === 'log' ? { sideTab: 'log' as const } : {}),
     }),
-    [mode, focus, fx, newturn, moments, slow],
+    [mode, focus, fx, newturn, moments, slow, side],
   )
   useDevHelp(tour, lexicon)
   useEffect(() => {
