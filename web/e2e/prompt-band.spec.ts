@@ -223,6 +223,8 @@ test.describe('the prompt band and the Stack column', () => {
       expect(new Set(shown.answerTops).size, `${prompt}: the answers keep one row`).toBeLessThanOrEqual(1)
       expect(shown.detail, `${prompt}: the detail is in the sheet`).toBe('sheet')
       expect(shown.sheet?.[3] ?? 0).toBeLessThanOrEqual(331)
+      // A sentence read aloud and not drawn (a payment's) has no button to open it.
+      if (prompt === 'pay') await expect(page.locator('[data-slot="prompt-expand"]')).toHaveCount(0)
     }
     // The handle folds the sheet to one line.
     const handle = page.locator('[data-slot="sheet-grab"]')

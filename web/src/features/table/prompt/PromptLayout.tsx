@@ -109,7 +109,8 @@ function Sentence({
       >
         {text}
       </LiveText>
-      {clamped || open ? (
+      {/* A sentence that is not drawn has nothing to open: a reader hears all of it. */}
+      {(clamped || open) && !quiet ? (
         <button
           type="button"
           data-slot="prompt-expand"

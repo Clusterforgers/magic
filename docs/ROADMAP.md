@@ -100,7 +100,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (mb2) An asking source that has left its zone keeps its picture: a last-known face (`AskingView` identity) for the chip and the column's card
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
 - [ ] (mb4) The keyboard walks from the band's answers into the Stack column and back without crossing the boards, and the phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
-- [ ] (ft5) `layout.spec.ts` passes again under the band (43 of the first 99 failed)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 
 - [ ] Playwright games with corpus decks that ask every decision kind

@@ -10,7 +10,7 @@ import { BoardZones } from './BoardZones'
 import { useDefenderClick } from './combat/defender'
 import { LandFoldContext } from './landFold'
 import { LandsShownContext, landsShownBy, useLandsChoice } from './landPrefs'
-import { crowdFoldsLands } from './boardSplit'
+import { crowdFoldsLands, gridPodsOneRow } from './boardSplit'
 import { LandSummary } from './LandSummary'
 import { BoardZoomContext, useZoomClose } from './boardZoom'
 import type { CardSize } from './cardSize'
@@ -24,6 +24,7 @@ import { SeatPanel } from './SeatPanel'
 import { SeatTile } from './SeatTile'
 import { FOLD_LANDS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 import { useBoardFade } from './useBoardFade'
+import { useBoxHeight } from './useBoxHeight'
 import { useEdgeFade } from './useEdgeFade'
 import { useLeadInView } from './useLeadInView'
 import { useContentBox } from './useZoneFit'
@@ -298,6 +299,9 @@ function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
   const zoom = useMemo(() => ({ zoomed, setZoomed }), [zoomed])
   const row = useRef<HTMLDivElement>(null)
   useZoomClose(zoom, row)
+  // So do the pods of frames too low for a wrapped pod over a row of cards (a short window, `gridPodsOneRow`).
+  const grid = useRef<HTMLDivElement>(null)
+  const oneRow = gridPodsOneRow(plan, playing.length, useBoxHeight(grid))
   return (
     <BoardZoomContext value={zoom}>
       <LandsShownContext value={shown}>
@@ -321,6 +325,7 @@ function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
               </div>
             )}
             <div
+              ref={grid}
               data-layout="grid"
               data-columns={columns}
               hidden={zoomed !== null}
@@ -338,7 +343,7 @@ function OpponentGrid({ plan, size }: { plan: SeatPlan; size: CardSize }) {
                     facing="far"
                     pod="line"
                     foldLands={foldLands}
-                    oneRow={crowded}
+                    oneRow={oneRow}
                   />
                 </div>
               ))}

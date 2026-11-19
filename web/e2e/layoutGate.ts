@@ -10,6 +10,8 @@ import type { Ask, Theme } from './layoutAudit'
 export interface Rules {
   /** From this width on the page fits the window and never scrolls down: 0 for every size, Infinity for none. */
   fitsFrom: number
+  /** The actions stay in the window while the page scrolls (a sticky footer): they are judged where they are, never scrolled to. */
+  pinned?: true
   /** The primary actions of the page: a name for the message and a CSS selector (or `text:Words` of a button or link). */
   actions: Record<string, string>
   /** Regions whose contents are cut off sideways on purpose. */
@@ -57,7 +59,12 @@ export async function holdsAtEverySize(page: Page, rules: Rules, label: string):
   const broken: string[] = []
   for (const size of [...GATE_SIZES, ...GATE_SIZES.toReversed()]) {
     const fits = size.width >= rules.fitsFrom
-    const ask: Ask = { actions: rules.actions, reveal: !fits, exempt: rules.exempt ?? [], floor: TEXT_FLOOR }
+    const ask: Ask = {
+      actions: rules.actions,
+      reveal: !fits && rules.pinned !== true,
+      exempt: rules.exempt ?? [],
+      floor: TEXT_FLOOR,
+    }
     await page.setViewportSize(size)
     await rules.afterResize?.(page)
     const problems = await settle(

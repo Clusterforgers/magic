@@ -1,8 +1,8 @@
-// Goal: a grid of more opponents than one row of frames holds folds their lands until the viewer chooses, keeps each pod to its name line and one row of figures led by the lands chip and the untapped sources, and leaves your board's lands laid out; one row of frames and the other shapes keep their pods and lands as they were.
+// Goal: a grid of more opponents than one row of frames holds folds their lands until the viewer chooses, keeps each pod to its name line and one row of figures led by the lands chip and the untapped sources, and leaves your board's lands laid out; one row of frames keeps its lands and wraps its pods where its frames are high enough for a wrapped pod over a row of cards, else keeps them to two lines; the other shapes keep their pods and lands as they were.
 import { beforeEach, describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
-import { crowdFoldsLands } from './boardSplit'
+import { crowdFoldsLands, gridPodsOneRow, WRAPPED_POD_FRAME_PX } from './boardSplit'
 import { LANDS_KEY } from './landPrefs'
 import { arrangeSeats } from './layout'
 
@@ -24,6 +24,20 @@ describe('a crowded grid', () => {
     [2, 'grid', false],
   ] as const)("of %i seats in %s mode folds the opponents' lands by default: %s", (seats, mode, crowded) => {
     expect(crowdFoldsLands(arrangeSeats({ seatCount: seats, viewer: 0, mode }))).toBe(crowded)
+  })
+
+  it.each([
+    [4, null, false],
+    [4, 400, false],
+    [4, WRAPPED_POD_FRAME_PX, false],
+    [4, WRAPPED_POD_FRAME_PX - 1, true],
+    [4, 229, true],
+    [3, 200, true],
+    [6, 900, true],
+    [6, null, true],
+  ] as const)('of %i seats in frames %s px high keeps its pods to two lines: %s', (seats, height, oneRow) => {
+    const plan = arrangeSeats({ seatCount: seats, viewer: 0, mode: 'grid' })
+    expect(gridPodsOneRow(plan, plan.boards.length, height)).toBe(oneRow)
   })
 
   it.each([5, 6, 8])(
