@@ -16,8 +16,8 @@ import { defaultStopsWords } from './stopModel'
  * end step until it ends the turn), the decisions the server answers for the seat outside Full Control (its triggers in
  * timestamp order, combat damage lethal in order, every mana payment with no real choice), smart stops (a step where a permanent of the seat can act is a
  * window), the sound cues (kept in this browser, `features/sound`), the abilities it always yields to (a click takes one back), and the pinned stops saved as the default of
- * every new game, with a reset. The end-turn setting and the default stops are kept in this browser (or on the account)
- * and applied when a game is joined.
+ * every new game, with a reset. The end-turn setting, the auto choices and the default stops are kept in this browser
+ * (or on the account, `play/flowPrefs`) and applied when a game is joined.
  */
 export function FlowMenuItems() {
   const { session } = useGame()

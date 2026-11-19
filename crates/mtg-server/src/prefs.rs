@@ -1,5 +1,5 @@
 //! The account preference endpoints: a signed-in account reads and replaces its pace preferences (the default
-//! stops and "End my turn by hand"), which the client applies at each `Welcome`. 503 `cards_unavailable` on a
+//! stops, "End my turn by hand", the auto choices and Full Control held), which the client applies at each `Welcome`. 503 `cards_unavailable` on a
 //! server without a database, then 401 `unauthenticated`.
 
 use axum::Json;
@@ -118,6 +118,7 @@ fn read(stored: StoredPrefs) -> UserPrefs {
             .hand_sort
             .and_then(|value| serde_json::from_value(value).ok())
             .unwrap_or_default(),
+        full_control_held: stored.full_control_held,
     }
 }
 
@@ -148,6 +149,7 @@ pub(crate) async fn put(
             .then(|| serde_json::to_value(&prefs.hand_sort))
             .transpose()
             .map_err(|_| ApiError::unavailable())?,
+        full_control_held: prefs.full_control_held,
     };
     s.repo
         .put(s.user, &stored)
@@ -176,6 +178,7 @@ mod tests {
             auto_choices: AutoChoices::default(),
             auto_yields: Vec::new(),
             hand_sort: HandSort::default(),
+            full_control_held: false,
         }
     }
 

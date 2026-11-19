@@ -1,6 +1,7 @@
-// Goal: the table offers Full Control as a toggle that says its state in words and in aria-pressed, asks for Held (or Off) when pressed and for any mode from its menu with the keys printed beside them, shows only what the server holds, cannot be used while the connection is down, answers Control and Control with Shift, and is not drawn once the seat is out or the game is over.
+// Goal: the table offers Full Control as a toggle that says its state in words and in aria-pressed, asks for Held (or Off) when pressed and for any mode from its menu with the keys printed beside them, shows only what the server holds, cannot be used while the connection is down, answers Control and Control with Shift, keeps Held for the next game until it is let go, and is not drawn once the seat is out or the game is over.
 import { act, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+import { flowPrefs } from '@/play/flowPrefs'
 import type { PlayState } from '@/play/store'
 import type { FullControlMode } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
@@ -296,6 +297,19 @@ describe('over a live session', () => {
     expect(must(toggle())).toHaveAccessibleName(
       `Full Control: ${mode === 'NextWindow' ? 'next window' : mode.toLowerCase()}`,
     )
+  })
+
+  it('keeps "Held until I turn it off" for the next game, and the button letting go forgets it', async () => {
+    const { h, user } = mount()
+    await user.click(trigger())
+    await user.click(await screen.findByRole('menuitemradio', { name: /^Held until I turn it off/ }))
+    expect(flowPrefs().fullControlHeld).toBe(true)
+    const next = mount()
+    expect(next.h.sentOf('FullControl')).toEqual([{ type: 'FullControl', mode: 'Held' }])
+    act(() => h.deliver({ type: 'FullControl', mode: 'Held' }))
+    next.unmount()
+    await user.click(must(toggle()))
+    expect(flowPrefs().fullControlHeld).toBe(false)
   })
 
   it('goes back to what the server holds after a reconnect', async () => {

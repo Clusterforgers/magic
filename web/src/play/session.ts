@@ -23,7 +23,15 @@ import { createManualLedger, isManualOf } from './manualLedger'
 import type { ManualReply } from './manualLedger'
 import { previewKey } from './preview'
 import { canHoldStop } from './stops'
-import { saveAutoChoices, saveAutoYields, saveEndTurnByHand, welcomeRequests } from './flowPrefs'
+import {
+  onPrefsReplaced,
+  saveAutoChoices,
+  saveAutoYields,
+  saveEndTurnByHand,
+  saveFullControlHeld,
+  settingRequests,
+  welcomeRequests,
+} from './flowPrefs'
 import { mergeLogNames, rememberDeparted } from './rememberNames'
 import { dueLinesAfter, owesByHand } from './byHand'
 import { appendChat, appendLog, createPlayStore, mergeHistory } from './store'
@@ -74,7 +82,10 @@ export interface Session {
    * cleanup, which the server refuses) and when the socket is not open.
    */
   setStop(side: StopSide, step: Step, on: boolean, keep: boolean): boolean
-  /** Asks the server for a Full Control mode; the store's `fullControl` follows when it says so. False when the socket is not open. */
+  /**
+   * Asks the server for a Full Control mode and stores whether it is held for every later game; the store's
+   * `fullControl` follows when the server says so. False when the socket is not open.
+   */
   setFullControl(mode: FullControlMode): boolean
   /**
    * Asks the server to hold this seat at its own end step until it ends the turn (`on`), or not, and stores the choice
@@ -165,6 +176,11 @@ export function createSession(deps: SessionDeps): Session {
   let answeredAt: number | null = null
   // False once an older server has refused a Preview as a message it does not know.
   let previewsKnown = true
+  // True from a seat's Welcome until the connection drops: the server then holds settings the preferences can correct.
+  let welcomed = false
+  // While connected, an account's preferences that arrive after the Welcome (a page loaded straight into a game)
+  // still reach the seat before the decisions they cover.
+  let stopReplaced: (() => void) | null = null
   const socket = new GameSocket({ ...deps, onEvent })
   const timers = deps.timers ?? browserTimers
   // The clocks of the seats that are away; a snapshot starts them afresh.
@@ -219,6 +235,7 @@ export function createSession(deps: SessionDeps): Session {
     const live = event.status === 'connecting' || event.status === 'open'
     if (!live) {
       // A decision, its id and a pending resync belong to one connection; the next Snapshot starts fresh.
+      welcomed = false
       awaitingSnapshot = false
       lastAnswered = null
       yieldedFor = null
@@ -264,15 +281,18 @@ export function createSession(deps: SessionDeps): Session {
           takeBackRequest: null,
         })
         // A spectator holds no seat, so it has no settings to bring the server up to date with.
-        if (deps.watch !== true)
+        if (deps.watch !== true) {
+          welcomed = true
           for (const request of welcomeRequests({
             game: message.game,
             stops: message.stops,
             endTurnByHand: message.end_turn_by_hand,
             autoChoices: message.auto_choices,
             autoYields: message.auto_yields,
+            fullControl: message.full_control,
           }))
             socket.send(request)
+        }
         return
       case 'Yielding':
         onYielding(message)
@@ -590,14 +610,29 @@ export function createSession(deps: SessionDeps): Session {
     return manuals.settle({ ok: false, reason }) ? 'told' : 'silent'
   }
 
+  /** Brings the seat's settings in line with preferences that replaced the ones its Welcome was answered with. */
+  function onReplaced(): void {
+    if (!welcomed) return
+    const { endTurnByHand, autoChoices, autoYields, fullControl } = getState()
+    for (const request of settingRequests({ endTurnByHand, autoChoices, autoYields, fullControl }))
+      socket.send(request)
+  }
+
   function resyncUnlessWaiting(): void {
     if (!awaitingSnapshot) socket.send({ type: 'Resync' })
   }
 
   return {
     store,
-    connect: () => socket.connect(),
-    disconnect: () => socket.disconnect(),
+    connect() {
+      stopReplaced ??= onPrefsReplaced(onReplaced)
+      socket.connect()
+    },
+    disconnect() {
+      stopReplaced?.()
+      stopReplaced = null
+      socket.disconnect()
+    },
     ready: () => socket.send({ type: 'Ready' }),
     notReady: () => socket.send({ type: 'NotReady' }),
     answer: answerPending,
@@ -618,7 +653,11 @@ export function createSession(deps: SessionDeps): Session {
     concede: () => socket.send({ type: 'Concede' }),
     setStop: (side, step, on, keep) =>
       canHoldStop(step) && socket.send({ type: 'SetStop', side, step, on, keep }),
-    setFullControl: (mode) => socket.send({ type: 'FullControl', mode }),
+    setFullControl(mode) {
+      if (!socket.send({ type: 'FullControl', mode })) return false
+      saveFullControlHeld(mode === 'Held')
+      return true
+    },
     setAutoChoices(choices) {
       if (!socket.send({ type: 'AutoChoices', choices })) return false
       saveAutoChoices(choices)

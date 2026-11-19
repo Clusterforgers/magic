@@ -1,5 +1,5 @@
 //! Account preferences: one row per account with the default stops, the end-turn-by-hand choice, the auto choices
-//! (smart stops among them) and the hand sort.
+//! (smart stops among them), the hand sort and whether Full Control stays held.
 //! Every query names the account, so one account never reads or changes another's row.
 
 use serde_json::{Value, json};
@@ -31,6 +31,8 @@ pub struct StoredPrefs {
     pub auto_yields: Value,
     /// The JSON of the hand sort, as the server wrote it; `None` while the account kept the default.
     pub hand_sort: Option<Value>,
+    /// Whether the account's seats start every game in Full Control held.
+    pub full_control_held: bool,
 }
 
 /// The stops an account that saved none has pinned: its own declare attackers step and its postcombat main phase.
@@ -54,6 +56,7 @@ impl Default for StoredPrefs {
             auto_pay: false,
             auto_yields: Value::Array(Vec::new()),
             hand_sort: None,
+            full_control_held: false,
         }
     }
 }
@@ -72,7 +75,7 @@ impl PrefsRepo {
     /// The preferences of `user`; the defaults when none were saved.
     pub async fn get(&self, user: Uuid) -> Result<StoredPrefs, DbError> {
         let row = sqlx::query!(
-            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_yields, hand_sort FROM user_prefs WHERE user_id = $1",
+            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_yields, hand_sort, full_control_held FROM user_prefs WHERE user_id = $1",
             user
         )
         .fetch_optional(&self.pool)
@@ -87,14 +90,15 @@ impl PrefsRepo {
             auto_pay: row.auto_pay,
             auto_yields: row.auto_yields,
             hand_sort: row.hand_sort,
+            full_control_held: row.full_control_held,
         }))
     }
 
     /// Replaces the preferences of `user`.
     pub async fn put(&self, user: Uuid, prefs: &StoredPrefs) -> Result<(), DbError> {
         sqlx::query!(
-            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_yields, hand_sort)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_yields, hand_sort, full_control_held)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
              ON CONFLICT (user_id) DO UPDATE
              SET default_stops = EXCLUDED.default_stops,
                  end_turn_by_hand = EXCLUDED.end_turn_by_hand,
@@ -105,6 +109,7 @@ impl PrefsRepo {
                  auto_pay = EXCLUDED.auto_pay,
                  auto_yields = EXCLUDED.auto_yields,
                  hand_sort = EXCLUDED.hand_sort,
+                 full_control_held = EXCLUDED.full_control_held,
                  updated_at = now()",
             user,
             prefs.default_stops,
@@ -115,7 +120,8 @@ impl PrefsRepo {
             prefs.auto_skip_triggers,
             prefs.auto_pay,
             prefs.auto_yields,
-            prefs.hand_sort
+            prefs.hand_sort,
+            prefs.full_control_held
         )
         .execute(&self.pool)
         .await?;

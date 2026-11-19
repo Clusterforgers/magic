@@ -80,7 +80,8 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
         "default_stops": [stop("Opponent", "Upkeep", true), stop("Own", "Upkeep", true)],
         "end_turn_by_hand": true,
         "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true, "skip_triggers": true, "auto_pay": true},
-        "hand_sort": {"by": "Groups", "groups": ["Land", "Artifact"]}
+        "hand_sort": {"by": "Groups", "groups": ["Land", "Artifact"]},
+        "full_control_held": true
     });
     let saved = save(&server, &ann, &body).await;
     assert_eq!(saved.status, 200, "{}", saved.text());
@@ -89,7 +90,8 @@ async fn a_new_account_reads_the_defaults_and_a_save_reads_back_per_account(pool
         "end_turn_by_hand": true,
         "auto_yields": [],
         "auto_choices": {"order_triggers": true, "assign_damage": false, "smart_stops": true, "skip_triggers": true, "auto_pay": true},
-        "hand_sort": {"by": "Groups", "groups": ["Land", "Artifact", "Creature", "Enchantment", "Planeswalker", "Battle", "Instant", "Sorcery"]}
+        "hand_sort": {"by": "Groups", "groups": ["Land", "Artifact", "Creature", "Enchantment", "Planeswalker", "Battle", "Instant", "Sorcery"]},
+        "full_control_held": true
     });
     assert_eq!(saved.json(), expected);
     assert_eq!(ann.get(server.addr, ROUTE).await.json(), expected);
