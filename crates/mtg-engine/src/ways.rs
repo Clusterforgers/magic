@@ -1536,10 +1536,17 @@ fn why_as_is(
                     false
                 },
             );
+            // The commander tax is in the asked total unless it is paid in life (CR 903.8).
+            let tax = if crate::r5500_tax_life::r5500_tax_life(state, id).is_some() {
+                0
+            } else {
+                crate::commanders::tax_for(state, id)
+            };
             Some(crate::why::mana(
                 asked.into_inner().unwrap_or(cost),
                 pool,
                 sources,
+                tax,
             ))
         }
         Unplayable::Targets => {
@@ -1552,10 +1559,11 @@ fn why_as_is(
             Why::OtherCost
         }),
         Unplayable::Restricted => {
-            if let Some(source) =
-                crate::prohibit::forbidder(state, crate::prohibit::Doing::Cast { player, card: id })
-            {
-                Some(crate::why::forbidden_by(state, source))
+            if let Some(ban) = crate::prohibit::forbidding(
+                state,
+                crate::prohibit::Doing::Cast { player, card: id },
+            ) {
+                Some(crate::why::forbidden_by_ban(state, ban))
             } else if !w17c_cast_only_holds(state, player, card) {
                 Some(Why::OwnCondition)
             } else if restricted {

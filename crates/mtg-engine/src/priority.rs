@@ -462,7 +462,7 @@ pub(crate) fn activation(
         if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
             return Hindered(
                 Unplayable::Mana,
-                Some(crate::why::mana(mana.clone(), seat.mana(), &sources)),
+                Some(crate::why::mana(mana.clone(), seat.mana(), &sources, 0)),
             );
         }
     }
@@ -785,6 +785,7 @@ fn shortcut_options() -> PriorityOptions {
         faces: Vec::new(),
         unplayable: Vec::new(),
         inactive: Vec::new(),
+        undo_mana: Vec::new(),
         ignorable: Vec::new(),
         can_act: true,
         can_pass: true,
@@ -905,11 +906,13 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         faces,
         unplayable,
         inactive,
+        undo_mana: Vec::new(),
         can_pass: true,
     }
 }
 
 /// Validates a priority action and turns it into events (or a cast in progress).
+#[allow(clippy::too_many_lines)]
 pub(crate) fn answer(
     state: &GameState,
     player: PlayerId,
@@ -993,6 +996,7 @@ pub(crate) fn answer(
             }
             Ok(Outcome::BeginPrepared(object))
         }
+        PriorityAction::UndoMana(_) => Err(IllegalAnswer::NotOffered("mana to undo").into()),
         PriorityAction::Manual(action) => manual::events(state, player, &action)
             .map(Outcome::Events)
             .map_err(|refusal| IllegalAnswer::Manual(refusal).into()),

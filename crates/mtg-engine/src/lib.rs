@@ -143,6 +143,7 @@ pub mod library;
 pub mod loops;
 pub mod loyalty;
 pub mod mana;
+pub mod mana_undo;
 pub mod manual;
 mod manual_control;
 mod manual_effects;

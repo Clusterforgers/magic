@@ -886,6 +886,7 @@ pub(crate) async fn next(
             (alive.len() >= 2).then(|| pairing::elimination(&alive, &rounds))
         }
     };
+    close_unplayed(&app, &tournament).await;
     if let Some(pairings) = pairings {
         // A bracket that lost entrants to drops may need more rounds than planned.
         let planned = planned.max(tournament.round + 1);
@@ -899,6 +900,30 @@ pub(crate) async fn next(
         tournament.status = TournamentStatus::Finished;
     }
     Ok(Json(view(&tournament, user.id)))
+}
+
+/// Ends the lobby of every decided match whose game never started (the organiser set its result), so no seat of it
+/// stays listed as a player's lobby once the round moves on or the tournament is over. A game that started plays on.
+async fn close_unplayed(app: &AppState, tournament: &Tournament) {
+    for played in &tournament.matches {
+        let (Some(game), Some(_)) = (played.game, played.outcome) else {
+            continue;
+        };
+        let started = match app.registry().handle(game) {
+            Some(handle) => handle.status().await.map_or(true, |status| status.started),
+            None => !matches!(
+                app.registry().record_result(game).await,
+                Ok(Some((RecordStatus::Lobby, _)))
+            ),
+        };
+        if started {
+            continue;
+        }
+        let reason = Some("The match has its result.".to_owned());
+        if let Err(error) = app.registry().end_by_admin(game, reason).await {
+            tracing::warn!(%error, %game, "an unplayed match lobby could not be ended");
+        }
+    }
 }
 
 /// `POST /api/tournaments/{id}/games`: makes the games of the round that could not be made before, or were dropped

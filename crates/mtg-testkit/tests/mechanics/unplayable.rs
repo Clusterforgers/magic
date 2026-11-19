@@ -1,4 +1,4 @@
-//! Goal: the priority offer names, for each card of the holder's hand and command zone it leaves out, the first reason in the order of `Unplayable` (timing, land played, mana after cost changes, targets, other costs, restrictions), honours extra land plays, flash and "as though it had flash", and in whole bot games the reasons and the offered plays are disjoint and together cover the hand and the command zone, and no ability is both offered and explained.
+//! Goal: the priority offer names, for each card of the holder's hand and command zone it leaves out, the first reason in the order of `Unplayable` (timing, land played, mana after cost changes, targets, other costs, restrictions), honours extra land plays, flash and "as though it had flash", and in whole bot games the reasons and the offered plays are disjoint and together cover the hand and the command zone (the reasons then name cards of other zones, never a hidden one of another player), and no ability is both offered and explained.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -196,7 +196,8 @@ fn own_cards(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
 }
 
 /// Plays a bot game of `setup` and checks every priority offer on the way: what it offers and what it explains share no
-/// card, and the explained cards are the rest of the holder's hand and command zone, in zone order.
+/// card, and the explained cards are the rest of the holder's hand and command zone, in zone order, then cards of other
+/// zones, none of them face down and another player's.
 fn check_game(setup: GameSetup, seed: u64, players: usize) -> Result<(), String> {
     let mut engine = Engine::new(setup).map_err(|error| error.to_string())?;
     let mut bots: Vec<RandomBot> = (0..players as u64)
@@ -226,7 +227,16 @@ fn check_game(setup: GameSetup, seed: u64, players: usize) -> Result<(), String>
             if explained.iter().any(|id| offered.contains(id)) {
                 return Err(format!("seed {seed} step {step}: offered and explained"));
             }
-            if explained != rest {
+            // The cards of other zones a way names follow the hand and the command zone.
+            let state = engine.state();
+            let elsewhere = explained.get(rest.len()..).unwrap_or_default();
+            let foreign = elsewhere.iter().any(|id| {
+                state.object(*id).is_none_or(|object| {
+                    matches!(object.zone(), Zone::Hand(_) | Zone::Command(_))
+                        || (object.face_down().is_some() && object.owner() != decision.player)
+                })
+            });
+            if explained.get(..rest.len()) != Some(rest.as_slice()) || foreign {
                 return Err(format!(
                     "seed {seed} step {step}: explained {explained:?}, left out {rest:?}"
                 ));

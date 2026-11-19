@@ -10,6 +10,8 @@ import { indexById, withPresence } from '@/play/view'
 import type {
   FullControlMode,
   HouseRules,
+  ManaOption,
+  ObjectId,
   ObjectView,
   PlayerId,
   StateView,
@@ -18,6 +20,7 @@ import type {
 } from '@/protocol/generated'
 import { ruleKey } from '../autoSkips'
 import { devPreview } from './devForecast'
+import { devManaAnswer } from './devMana'
 import { withStop } from './devStops'
 import { withRealCards } from './realCards'
 import { withReworkedBoss } from './reworkedBoss'
@@ -31,6 +34,7 @@ import { withCrowd } from './crowdScene'
 import { withEquip } from './equip'
 import { withRevealed } from './revealScene'
 import { withPlayerCounters } from './countersScene'
+import { withOneVoice } from './blockedScene'
 import { endedWith, withTeams } from './endScene'
 import type { DevResult, DevTeams } from '../devSearch'
 
@@ -101,14 +105,21 @@ export interface FixtureSessionOptions {
 export function fixtureSession(store: PlayStore, options: FixtureSessionOptions = {}): Session {
   // As in the real session, only the newest preview is answered, and only while its decision is the pending one.
   let newest = 0
+  const tapped = new Map<ObjectId, ManaOption>()
   return {
     store,
     connect: () => undefined,
     disconnect: () => undefined,
     ready: () => false,
     notReady: () => false,
-    answer() {
+    answer(given) {
       if (store.getState().pending === null) return false
+      // Tapping for mana, and pressing the source again, play out as the server has them.
+      const mana = devManaAnswer(store.getState(), given, tapped)
+      if (mana !== null) {
+        store.setState(mana)
+        return true
+      }
       store.setState({ pending: null, preview: null, clock: null })
       return true
     },
@@ -489,7 +500,8 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const spirited = options.spirit === true && options.boss !== undefined ? withSpirit(bossed) : bossed
   const bared = options.bare === true ? withBareBoards(spirited) : spirited
   const lone = options.alone === true ? withLastStanding(bared) : bared
-  const fixture = options.turn === 'left' ? withActiveLeft(lone) : lone
+  const voiced = name === 'priority-blocked' ? withOneVoice(lone) : lone
+  const fixture = options.turn === 'left' ? withActiveLeft(voiced) : voiced
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))
   if (options.result !== undefined) {

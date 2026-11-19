@@ -1,9 +1,10 @@
-// Goal: a hand card the priority offer leaves out gets a note with the server's reason when the offer names one, else the reason the table can tell from public state (sorcery speed outside the viewer's main phase or with a spell on the stack, a land after the land of the turn, a spell that costs more than every source and the pool could make) and "not now" otherwise, an offered card gets none, and every reason has a label and a line.
+// Goal: a hand card the priority offer leaves out gets a note with the server's reason when the offer names one, else the reason the table can tell from public state (sorcery speed outside the viewer's main phase or with a spell on the stack, a land after the land of the turn, a spell that costs more than every source and the pool could make) and "not now" otherwise, a card outside the hand the server names gets its note too, a card blocked by a rule is labelled by that rule and keeps its source for the press, an offered card gets none, and every reason has a label and a line.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import { ME, miniView, momentOf, MY_FOREST, MY_HAND_CARD } from '@/test-utils/miniTable'
-import type { ManaCost, ObjectView, PriorityOptions, StateView } from '@/protocol/generated'
-import { handNotes, manaAtHand, REASON_WORDS, unplayableReason } from './handReason'
+import type { ManaCost, ObjectView, PriorityOptions, StateView, Why } from '@/protocol/generated'
+import { blockerOf, handNotes, manaAtHand, REASON_WORDS, reasonLabel, unplayableReason } from './handReason'
+import type { Blocker } from './prompt/marks'
 import type { HandReason, Unplayable } from './handReason'
 
 const NONE: PriorityOptions = {
@@ -127,7 +128,7 @@ describe('unplayableReason with the server reason', () => {
     const view = viewOf(MAIN)
     const { objectsById } = momentOf(view)
     expect([...handNotes(view, objectsById, told('Targets'))]).toEqual([
-      [MY_HAND_CARD, { hint: 'No targets', line: 'Nothing it can target', words: 'no targets' }],
+      [MY_HAND_CARD, { hint: 'No targets', line: 'No legal target', words: 'no targets', blocked: {} }],
     ])
   })
 
@@ -161,10 +162,76 @@ describe('handNotes', () => {
     expect([...handNotes(view, objectsById, NONE)]).toEqual([
       [
         MY_HAND_CARD,
-        { hint: REASON_WORDS.Timing.label, line: REASON_WORDS.Timing.line, words: 'sorcery speed' },
+        {
+          hint: REASON_WORDS.Timing.label,
+          line: REASON_WORDS.Timing.line,
+          words: 'sorcery speed',
+          blocked: {},
+        },
       ],
     ])
     expect(handNotes(view, objectsById, { ...NONE, castable: [MY_HAND_CARD] }).size).toBe(0)
+  })
+
+  it('labels a card by the rule that blocks it and keeps its source for the press', () => {
+    const view = viewOf(MAIN)
+    const { objectsById } = momentOf(view)
+    const options: PriorityOptions = {
+      ...NONE,
+      unplayable: [
+        {
+          card: MY_HAND_CARD,
+          reason: 'Restricted',
+          why: { ForbiddenBy: { source: 77, name: 'One Voice', limit: 1 } },
+        },
+      ],
+    }
+    expect(handNotes(view, objectsById, options).get(MY_HAND_CARD)).toEqual({
+      hint: 'One Voice',
+      line: 'One Voice: you have cast your spell this turn.',
+      words: 'one voice: One Voice: you have cast your spell this turn.',
+      blocked: { source: 77, name: 'One Voice' },
+    })
+  })
+
+  it('notes a card outside the hand the server names (a flashback card, a commander)', () => {
+    const view = viewOf({ ...MAIN, own: false })
+    const { objectsById } = momentOf(view)
+    const options: PriorityOptions = {
+      ...NONE,
+      unplayable: [
+        { card: MY_FOREST, reason: 'Mana', why: { Mana: { cost: generic(4), at_hand: 2, tax: 2 } } },
+      ],
+    }
+    expect(handNotes(view, objectsById, options).get(MY_FOREST)).toMatchObject({
+      hint: REASON_WORDS.Mana.label,
+      line: 'Needs {4} with {2} commander tax: you have 2 mana available.',
+      blocked: {},
+    })
+  })
+})
+
+describe('reasonLabel and blockerOf', () => {
+  it.each<[string, Unplayable, Why | undefined, string, Blocker]>([
+    ['a plain reason', 'Mana', undefined, 'Needs mana', {}],
+    [
+      'a named rule',
+      'Restricted',
+      { ForbiddenBy: { source: 5, name: 'Silence' } },
+      'Silence',
+      { source: 5, name: 'Silence' },
+    ],
+    ['a nameless rule', 'Restricted', { ForbiddenBy: {} }, 'Not allowed', {}],
+    [
+      'split second',
+      'Restricted',
+      { SplitSecond: { spell: 9, name: 'Sudden Shock' } },
+      'Split second',
+      { source: 9, name: 'Sudden Shock' },
+    ],
+  ])('%s', (_name, reason, why, label, blocker) => {
+    expect(reasonLabel(reason, why)).toBe(label)
+    expect(blockerOf(why)).toEqual(blocker)
   })
 })
 

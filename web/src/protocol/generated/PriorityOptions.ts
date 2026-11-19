@@ -3,6 +3,7 @@ import type { AbilityRef } from "./AbilityRef";
 import type { FaceOption } from "./FaceOption";
 import type { InactiveAbility } from "./InactiveAbility";
 import type { ManaOption } from "./ManaOption";
+import type { ManaUndo } from "./ManaUndo";
 import type { ObjectId } from "./ObjectId";
 import type { PaidEnd } from "./PaidEnd";
 import type { PaidIgnore } from "./PaidIgnore";
@@ -72,7 +73,9 @@ companion?: boolean,
  */
 faces?: Array<FaceOption>, 
 /**
- * The cards of the holder's hand and command zone that none of the lists above offers, each with why, in zone order.
+ * The cards of the holder's hand and command zone that none of the lists above offers, then those of the other zones
+ * a way to cast or a permission to play names for the holder (a graveyard, exile, the top of their library), each
+ * with why.
  */
 unplayable?: Array<UnplayableCard>, 
 /**
@@ -80,6 +83,12 @@ unplayable?: Array<UnplayableCard>,
  * Mana abilities and abilities whose costs the engine does not pay are not listed.
  */
 inactive?: Array<InactiveAbility>, 
+/**
+ * The sources the holder tapped for mana since they last did anything else, each with why its activation cannot be
+ * undone, if it cannot (`mana_undo.rs`); `PriorityAction::UndoMana` undoes one that can. Only
+ * `Engine::offered_decision` fills it: `Engine::decision` leaves it empty, so a rebuilt engine asks the same.
+ */
+undo_mana?: Array<ManaUndo>, 
 /**
  * Whether anything useful can be done now: a land to play, a spell to cast or an ability that is not a
  * mana ability. Tapping for mana alone never counts, so a player with only `mana_abilities` has nothing to do.

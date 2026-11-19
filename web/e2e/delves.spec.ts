@@ -1,4 +1,4 @@
-// Goal: a one-player Delves run with bot allies goes from the lobby through the first boss fight to the loot screen on a real server and database: the player creates a delve, adds two bot allies, every hero takes a precon, Descend leads to the first boss, Enter the fight opens the boss's waiting room, Ready to fight starts the table, the boss's concession (the server's test hook) gives the party the win, the fight's result says so and Continue to the run returns to the run, which offers the relic pick, then the card pick.
+// Goal: a one-player Delves run with bot allies goes from the lobby through the first boss fight to the loot screen on a real server and database: the player creates a delve, adds two bot allies, every hero takes a precon, Descend leads to the first boss, Enter the fight opens the boss's waiting room, Ready to fight starts the table, the boss's concession (the server's test hook) gives the party the win, the fight's result says so and Continue to the run returns to the run, which offers the relic pick, then the card pick; a run the host ends with hearts left closes its fight lobby, so Play offers no way back to it.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import type { PreconListItem } from '../src/protocol/generated'
@@ -79,6 +79,50 @@ test('a hero with two bot allies descends, fights the first boss and reaches the
       .first()
       .click()
     await expect(page.getByRole('region', { name: 'Card pick' })).toBeVisible()
+    expect(hero.errors, 'uncaught page errors').toEqual([])
+  } finally {
+    await hero.context.close()
+  }
+})
+
+test('ending a run with hearts left closes its fight lobby, so Play offers no way back to it', async ({
+  browser,
+}) => {
+  test.setTimeout(3 * 60_000)
+  const account = await signUp(browser, 'quitter')
+  const { verified } = await precons(browser)
+  const deck = verified[0]
+  expect(deck, 'the database has no playable Commander precon').toBeDefined()
+  const hero = await sit(browser, account)
+  const { page } = hero
+  try {
+    await page.goto('/delves')
+    await page.getByRole('button', { name: 'Create delve' }).click()
+    await expect(page).toHaveURL(/\/delves\/[0-9a-f-]{36}$/)
+    const run = new URL(page.url()).pathname
+    await page.getByRole('button', { name: 'Add a bot ally' }).click()
+    for (const name of [account.name, 'Ally 1']) await takeDeck(page, name, deck as PreconListItem)
+    await page.getByRole('button', { name: 'Descend' }).click()
+    await expect(page.getByRole('region', { name: 'Boss fight' })).toBeVisible()
+
+    // The fight's table waits in its lobby: Play leads back to it.
+    await page.goto('/')
+    await expect(page.getByRole('link', { name: /^Back to your lobby/ })).toBeVisible()
+
+    // The host ends the run with every heart left.
+    await page.goto(run)
+    await page.getByRole('button', { name: 'End the run' }).click()
+    const confirm = page.getByRole('alertdialog', { name: 'End the run?' })
+    await confirm.getByRole('button', { name: 'End the run' }).click()
+    await expect(page.getByRole('button', { name: 'End the run' })).toHaveCount(0)
+
+    // Play no longer offers the fight, as a link or as a seat in the open games, once both lists have answered.
+    const mine = page.waitForResponse((reply) => reply.url().endsWith('/api/me/games') && reply.ok())
+    const lobbies = page.waitForResponse((reply) => reply.url().includes('/api/lobbies'))
+    await page.goto('/')
+    await Promise.all([mine, lobbies])
+    await expect(page.getByRole('link', { name: /^(Back to your lobby|Continue your game)/ })).toHaveCount(0)
+    await expect(page.getByText('Your seat', { exact: true })).toHaveCount(0)
     expect(hero.errors, 'uncaught page errors').toEqual([])
   } finally {
     await hero.context.close()

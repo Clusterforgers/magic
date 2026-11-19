@@ -342,4 +342,7 @@ pub enum IllegalAnswer {
     /// A manual action the state does not allow.
     #[error("manual action refused: {0}")]
     Manual(#[from] crate::manual::ManualRefusal),
+    /// A mana ability that cannot be undone now.
+    #[error("the mana cannot be undone: {0}")]
+    ManaUndo(#[from] crate::mana_undo::ManaUndoRefusal),
 }

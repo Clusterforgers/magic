@@ -12,6 +12,7 @@ import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/compone
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { usePlay } from '@/features/game/gameContext'
+import { useIsBlockerNamed } from '../blockedTell'
 import { useSeatNamer } from '../names'
 import { playerOf } from '../selectors'
 import { barOrder } from './bossAbilities'
@@ -62,6 +63,8 @@ function AbilityText({ ability, title }: { ability: BossAbility; title: boolean 
 function AbilityChip({ ability, hidden }: { ability: BossAbility; hidden: boolean }) {
   const Icon = ICONS[ability.kind]
   const tone = CHIP[ability.kind]
+  // Its rule is what keeps the card the viewer just pressed from being played.
+  const blocking = useIsBlockerNamed(ability.name)
   return (
     <Popover>
       <PopoverTrigger
@@ -70,9 +73,11 @@ function AbilityChip({ ability, hidden }: { ability: BossAbility; hidden: boolea
         tabIndex={hidden ? -1 : undefined}
         data-slot="boss-ability"
         data-kind={ability.kind}
+        data-blocking={blocking || undefined}
         className={cn(
           'flex h-7 max-w-48 min-w-0 items-center gap-1 rounded-full border px-2 text-left text-xs font-semibold transition-colors outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring',
           tone.chip,
+          blocking ? 'border-primary bg-primary/15 ring-2 ring-primary' : null,
         )}
       >
         <Icon aria-hidden="true" className={cn('size-3.5 shrink-0', tone.icon)} />

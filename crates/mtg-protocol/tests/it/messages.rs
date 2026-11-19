@@ -271,6 +271,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             faces: Vec::new(),
             unplayable: Vec::new(),
             inactive: Vec::new(),
+            undo_mana: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -401,6 +402,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             faces: Vec::new(),
             unplayable: Vec::new(),
             inactive: Vec::new(),
+            undo_mana: Vec::new(),
             can_act: true,
             can_pass: true,
         })),
@@ -2058,6 +2060,7 @@ fn what_a_vanilla_message_never_carried_stays_out_of_it() {
         faces: Vec::new(),
         unplayable: Vec::new(),
         inactive: Vec::new(),
+        undo_mana: Vec::new(),
         can_act: true,
         can_pass: true,
     };

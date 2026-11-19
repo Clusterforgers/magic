@@ -36,7 +36,7 @@ describe('latestRewound', () => {
     [
       'a rewind for targets',
       [passed, rewound(0, 7, 'Targets')],
-      'Imprisoned in the Moon could not be played: nothing it can target',
+      'Imprisoned in the Moon could not be played: no legal target',
     ],
     [
       'a card the viewer cannot see',

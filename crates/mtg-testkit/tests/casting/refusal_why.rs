@@ -181,8 +181,8 @@ fn no_permanents() -> Vec<PresetPermanent> {
 #[case::a_reanimation_with_an_empty_graveyard(Step::Main1, || vec![targeting("Raise", vec![Pred::Type(CardType::Creature), Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)])], no_permanents, "Raise", Unplayable::Targets, Some(target("a creature card in your graveyard", TargetZone::Graveyard)))]
 #[case::a_creature_in_upkeep(Step::Upkeep, || vec![card("Grizzly Bears")], || vec![ready(forest()), ready(forest())], "Grizzly Bears", Unplayable::Timing, Some(Why::SorcerySpeed))]
 #[case::a_land_in_upkeep(Step::Upkeep, || vec![forest()], no_permanents, "Forest", Unplayable::Timing, Some(Why::SorcerySpeed))]
-#[case::one_mana_short(Step::Main1, || vec![card("Grizzly Bears")], || vec![ready(forest())], "Grizzly Bears", Unplayable::Mana, Some(Why::Mana { cost: cost(1, &[Color::Green]), at_hand: 1, missing: Vec::new() }))]
-#[case::the_wrong_colour(Step::Main1, || vec![card("Grizzly Bears")], || vec![ready(island()), ready(island())], "Grizzly Bears", Unplayable::Mana, Some(Why::Mana { cost: cost(1, &[Color::Green]), at_hand: 2, missing: vec![ManaType::Green] }))]
+#[case::one_mana_short(Step::Main1, || vec![card("Grizzly Bears")], || vec![ready(forest())], "Grizzly Bears", Unplayable::Mana, Some(Why::Mana { cost: cost(1, &[Color::Green]), at_hand: 1, missing: Vec::new(), tax: 0 }))]
+#[case::the_wrong_colour(Step::Main1, || vec![card("Grizzly Bears")], || vec![ready(island()), ready(island())], "Grizzly Bears", Unplayable::Mana, Some(Why::Mana { cost: cost(1, &[Color::Green]), at_hand: 2, missing: vec![ManaType::Green], tax: 0 }))]
 #[case::nothing_to_sacrifice(Step::Main1, || vec![card("Altar's Reap")], || vec![ready(swamp()), ready(swamp())], "Altar's Reap", Unplayable::Cost, Some(Why::OtherCost))]
 #[case::cast_only_in_combat(Step::Main1, || vec![combat_trick()], no_permanents, "Combat Trick", Unplayable::Restricted, Some(Why::OwnCondition))]
 fn a_card_says_why_in_detail(
@@ -252,6 +252,7 @@ fn a_permanent_that_forbids_casting_is_named(#[values(2, 3, 4)] players: usize) 
             Some(Why::ForbiddenBy {
                 source: Some(barracuda),
                 name: Some("Tidal Barracuda".to_owned()),
+                limit: None,
             })
         ))
     );
@@ -278,6 +279,7 @@ fn an_effect_with_no_object_forbids_without_a_name(#[values(2, 3, 4)] players: u
             Some(Why::ForbiddenBy {
                 source: None,
                 name: None,
+                limit: None,
             })
         ))
     );
@@ -321,7 +323,7 @@ fn split_second_names_the_spell_for_cards_and_abilities(#[values(2, 3, 4)] playe
 #[case::already_tapped(|| vec![tapped(tapper())], "Tapper", Step::Main1, Unplayable::Cost, Some(Why::Tapped))]
 #[case::sorcery_speed(|| vec![ready(engine_with("Slow", vec![CostItem::Tap], Timing::Sorcery, None, None))], "Slow", Step::Upkeep, Unplayable::Timing, Some(Why::SorcerySpeed))]
 #[case::no_spell_to_target(|| vec![ready(engine_with("Redirector", vec![CostItem::Tap], Timing::Instant, None, Some(Targetable::Object(Selector(vec![Pred::Spell])))))], "Redirector", Step::Main1, Unplayable::Targets, Some(target("a spell on the stack", TargetZone::Stack)))]
-#[case::too_little_mana(|| vec![ready(engine_with("Pricey", vec![CostItem::Mana("{3}{R}".parse().unwrap())], Timing::Instant, None, None)), ready(mountain())], "Pricey", Step::Main1, Unplayable::Mana, Some(Why::Mana { cost: cost(3, &[Color::Red]), at_hand: 1, missing: Vec::new() }))]
+#[case::too_little_mana(|| vec![ready(engine_with("Pricey", vec![CostItem::Mana("{3}{R}".parse().unwrap())], Timing::Instant, None, None)), ready(mountain())], "Pricey", Step::Main1, Unplayable::Mana, Some(Why::Mana { cost: cost(3, &[Color::Red]), at_hand: 1, missing: Vec::new(), tax: 0 }))]
 fn an_ability_says_why_in_detail(
     #[values(2, 3, 4)] players: usize,
     #[case] mine: Permanents,

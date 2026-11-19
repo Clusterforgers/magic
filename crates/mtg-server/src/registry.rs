@@ -1060,6 +1060,14 @@ impl Registry {
         Some((entry.format, entry.house_rules.clone()))
     }
 
+    /// Every live Delves fight with the run it belongs to.
+    pub fn delve_games(&self) -> Vec<(GameId, String)> {
+        self.games()
+            .iter()
+            .filter_map(|(id, entry)| entry.delve.clone().map(|run| (*id, run)))
+            .collect()
+    }
+
     /// The Delves run `id` is a boss fight of; none for any other game or an unknown one.
     pub fn delve_of(&self, id: GameId) -> Option<String> {
         self.games().get(&id).and_then(|entry| entry.delve.clone())

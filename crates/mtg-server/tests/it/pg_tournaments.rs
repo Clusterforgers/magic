@@ -5,7 +5,8 @@
 //! refused what is the organiser's; a match game has no player host, and one dropped without a result (closed,
 //! expired or ended by an admin) is made again when the tournament is read; an entrant dropped mid-game concedes it;
 //! a match played to its end on sockets reports its result by itself, the standings carry the tiebreakers through
-//! draws, drops and corrections, an elimination bracket of three gives a bye, and a 2v2 match is one team game.
+//! draws, drops and corrections, an elimination bracket of three gives a bye, a 2v2 match is one team game, and the
+//! unplayed lobby of a match the organiser decided closes when the tournament moves on.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::{net, pg_commander};
@@ -1087,4 +1088,52 @@ async fn a_team_tournament_seats_both_teams_in_one_team_game(pool: PgPool) {
     finish_game(&pool, &game, GameResult::Team(1)).await;
     let t = view(&server, &id, &org).await;
     assert_eq!(round(&t, 1)[0]["outcome"], "b");
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_match_decided_by_the_organiser_closes_its_unplayed_lobby_when_the_tournament_moves_on(
+    pool: PgPool,
+) {
+    let server = start(&pool).await;
+    let org = register(server.addr, "Org", PASSWORD).await;
+    let (id, invite) = create(
+        &server,
+        &org,
+        json!({"name": "Cup", "format": "commander_1v1", "structure": "elimination"}),
+    )
+    .await;
+    let mut players = Vec::new();
+    for name in ["Pia", "Pbo"] {
+        let player = register(server.addr, name, PASSWORD).await;
+        assert_eq!(join(&server, &invite, &player, json!({})).await.status, 200);
+        players.push(player);
+    }
+    let t = act(&server, &id, "start", &org).await.json();
+    let game = round(&t, 1)[0]["game"].as_str().unwrap().to_owned();
+    let path = format!("/api/tournaments/{id}/matches/1/1");
+    let set = call(
+        &server,
+        "PUT",
+        &path,
+        Some(&org),
+        Some(json!({"outcome": "a"})),
+    )
+    .await;
+    assert_eq!(set.status, 200, "{}", set.text());
+    assert!(server.registry.handle(game.parse().unwrap()).is_some());
+    let t = act(&server, &id, "next", &org).await.json();
+    assert_eq!(t["status"], "finished");
+    assert!(server.registry.handle(game.parse().unwrap()).is_none());
+    for player in &players {
+        let mine = player.get(server.addr, "/api/me/games").await.json();
+        let listed = mine["games"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|g| g["game"] == game.as_str());
+        assert!(
+            !listed,
+            "the decided match's lobby is no longer theirs: {mine}"
+        );
+    }
 }

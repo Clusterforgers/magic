@@ -1,4 +1,4 @@
-//! Goal: a take-back the other seat approves cuts the stored log back to before the action, appends `TookBack` and sends every seat a `rewound` snapshot that identifies no card back in a hand to another seat; a decline, silence past the wait, a refusal by the engine (each sent to the asker alone), a second request and a stray vote change nothing; a cast backed out of after tapping mana for it is rewound the same way.
+//! Goal: a land pressed again after a tap for mana is untapped by a log cut for every seat even without take-backs; a take-back the other seat approves cuts the stored log back to before the action, appends `TookBack` and sends every seat a `rewound` snapshot that identifies no card back in a hand to another seat; a decline, silence past the wait, a refusal by the engine (each sent to the asker alone), a second request and a stray vote change nothing; a cast backed out of after tapping mana for it is rewound the same way.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -313,6 +313,47 @@ async fn a_cast_backed_out_of_untaps_the_mana_tapped_for_it() {
     }
     assert_eq!(table.log().await, before);
     assert_eq!(table.options().castable, vec![spell]);
+}
+
+#[tokio::test]
+async fn a_land_pressed_again_is_untapped_for_every_seat_even_without_take_backs() {
+    let rules = HouseRules {
+        take_backs: Some(false),
+        ..HouseRules::default()
+    };
+    let mut table = Table::new(rules).await;
+    let before = table.log().await;
+    let source = table.options().mana_abilities[0].source;
+    table
+        .answer(Answer::Priority(PriorityAction::ActivateMana(source)))
+        .await;
+    assert_eq!(table.options().undo_mana.len(), 1, "the land is offered");
+    let undone = table
+        .answer(Answer::Priority(PriorityAction::UndoMana(source.object)))
+        .await;
+    for seen in &undone {
+        let Some(ServerMessage::Snapshot { state, .. }) = rewound(seen) else {
+            panic!("every seat gets a rewound snapshot: {seen:?}");
+        };
+        assert!(
+            state.table.players[0].mana.is_empty(),
+            "the pool is empty again"
+        );
+    }
+    let log = table.log().await;
+    assert_eq!(
+        log[..before.len()],
+        before[..],
+        "the tap is cut from the stored log"
+    );
+    assert_eq!(
+        log[before.len()..],
+        [Event::ManaUndone {
+            player: seat(0),
+            source: source.object
+        }]
+    );
+    assert_eq!(table.options().undo_mana, Vec::new());
 }
 
 #[tokio::test(start_paused = true)]

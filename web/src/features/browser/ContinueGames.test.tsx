@@ -1,4 +1,4 @@
-// Goal: a signed-in user sees a link into each game of theirs that is running (Continue) or in its lobby however full (Back to your lobby), named after the other players and opening the bare game page (their session opens the seat); a guest, a user with only finished games and a failing listing see nothing, and a guest causes no request.
+// Goal: a signed-in user sees a link into each game of theirs that is running (Continue) or in its lobby however full (Back to your lobby), named after the other players and opening the bare game page (their session opens the seat); a guest, a user with only finished games and a failing listing see nothing, a guest causes no request, and a lobby that closed since the last listing (an ended Delves run) is never linked while the list reloads or after a failed reload.
 import { screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { AuthContext } from '@/features/auth/context'
@@ -64,6 +64,56 @@ describe('Continue', () => {
     await waitFor(() => expect(myGames).toHaveBeenCalledTimes(1))
     expect(links()).toHaveLength(0)
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
+  it('drops a lobby that closed since the last listing, never showing the stale link meanwhile', async () => {
+    // The first listing has a Delves fight lobby; the run ends and the next listing no longer has it.
+    const fight = listed({
+      game: 'g1',
+      status: 'lobby',
+      others: [{ seat: 1, name: 'Seraphine', user: null }],
+    })
+    let answer: (games: MyGame[]) => void = () => {}
+    const myGames = vi
+      .fn<() => Promise<MyGame[]>>()
+      .mockResolvedValueOnce([fight])
+      .mockImplementationOnce(() => new Promise((resolve) => (answer = resolve)))
+    const store = createAuthStore({
+      api: { ...offlineAccounts, myGames },
+      initial: { status: 'signed-in', user: { id: 'u1', username: 'Ada', is_admin: false } },
+    })
+    await store.getState().loadGames()
+    expect(store.getState().games.games).toHaveLength(1)
+    await renderInRouter(
+      <AuthContext.Provider value={store}>
+        <PlayPage api={fakeLobbies([]).api} />
+      </AuthContext.Provider>,
+    )
+    await screen.findByRole('heading', { name: 'No open games' })
+    await waitFor(() => expect(myGames).toHaveBeenCalledTimes(2))
+    expect(links()).toHaveLength(0)
+    answer([])
+    await waitFor(() => expect(store.getState().games.status).toBe('ready'))
+    expect(links()).toHaveLength(0)
+  })
+
+  it('shows no stale link when a reload fails', async () => {
+    const myGames = vi
+      .fn<() => Promise<MyGame[]>>()
+      .mockResolvedValueOnce([listed({ game: 'g1', status: 'lobby' })])
+      .mockRejectedValueOnce(new Error('down'))
+    const store = createAuthStore({
+      api: { ...offlineAccounts, myGames },
+      initial: { status: 'signed-in', user: { id: 'u1', username: 'Ada', is_admin: false } },
+    })
+    await store.getState().loadGames()
+    await renderInRouter(
+      <AuthContext.Provider value={store}>
+        <PlayPage api={fakeLobbies([]).api} />
+      </AuthContext.Provider>,
+    )
+    await waitFor(() => expect(store.getState().games.status).toBe('failed'))
+    expect(links()).toHaveLength(0)
   })
 
   it.each(['signed-out', 'unavailable'] as const)(

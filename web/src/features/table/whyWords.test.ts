@@ -1,4 +1,4 @@
-// Goal: every detail the engine gives (`Why`) reads as one plain sentence that names the card and what is missing, a target on the stack adds the Full Control hint with the card's own verb, a printed condition is quoted from the rules text, a reason without detail falls back to its plain line, and a refused play becomes the notice.
+// Goal: every detail the engine gives (`Why`) reads as one plain sentence that names the card and what is missing, a target on the stack adds the Full Control hint with the card's own verb, a printed condition is quoted from the rules text, a spell limit (One Voice) names its rule and the spells cast, a commander short of mana names its tax, a reason without detail falls back to its plain line, and a refused play becomes the notice.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView, Unplayable, Why } from '@/protocol/generated'
 import { refusalNotice, whyHint, whyLine } from './whyWords'
@@ -46,21 +46,49 @@ describe('whyLine', () => {
       cast('Grizzly Bears'),
       'Mana',
       { Mana: { cost: [{ Generic: 1 }, { Colored: 'Green' }], at_hand: 1 } },
-      'Grizzly Bears costs {1}{G}; you have 1 mana.',
+      'Needs {1}{G}: you have 1 mana available.',
     ],
     [
       'the wrong colour',
       cast('Grizzly Bears'),
       'Mana',
       { Mana: { cost: [{ Generic: 1 }, { Colored: 'Green' }], at_hand: 2, missing: ['Green'] } },
-      'Grizzly Bears costs {1}{G}; you have 2 mana. Nothing you have makes {G}.',
+      'Needs {1}{G}: you have 2 mana available. Nothing you have makes {G}.',
+    ],
+    [
+      'a commander with its tax',
+      cast('Kenrith'),
+      'Mana',
+      { Mana: { cost: [{ Generic: 6 }, { Colored: 'White' }], at_hand: 5, tax: 2 } },
+      'Needs {6}{W} with {2} commander tax: you have 5 mana available.',
+    ],
+    [
+      'one spell a turn, from the fight’s modifier',
+      cast('Opt'),
+      'Restricted',
+      { ForbiddenBy: { source: 40, name: 'One Voice', limit: 1 } },
+      'One Voice: you have cast your spell this turn.',
+    ],
+    [
+      'two spells a turn',
+      cast('Opt'),
+      'Restricted',
+      { ForbiddenBy: { source: 41, name: 'Fires of Invention', limit: 2 } },
+      'Fires of Invention: you have cast your 2 spells this turn.',
+    ],
+    [
+      'a spell limit with no visible source',
+      cast('Opt'),
+      'Restricted',
+      { ForbiddenBy: { limit: 1 } },
+      'You have cast your spell this turn: no more are allowed.',
     ],
     [
       'sorcery speed',
       cast('Grizzly Bears'),
       'Timing',
       'SorcerySpeed',
-      'Only in your main phase with an empty stack.',
+      'Sorcery speed: only in your main phase with an empty stack.',
     ],
     [
       'a sorcery-speed ability',
