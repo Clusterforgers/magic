@@ -29,6 +29,17 @@ pub(crate) fn target(
 /// The rule found by [`crate::prohibit::forbidder`], named by the object that put it in force while every player can
 /// see that object: a face-up permanent, a spell or ability on the stack, or an object in the command zone.
 pub(crate) fn forbidden_by(state: &GameState, source: Option<ObjectRef>) -> Why {
+    named_ban(state, source, None)
+}
+
+/// [`forbidden_by`] for the prohibition `ban`, with the number of spells it lets a player cast each turn when it limits
+/// them (One Voice, Rule of Law).
+pub(crate) fn forbidden_by_ban(state: &GameState, ban: &crate::prohibit::Banned) -> Why {
+    named_ban(state, ban.source, ban.cast_limit())
+}
+
+/// The rule of `source`, named while every player can see it, and its limit.
+fn named_ban(state: &GameState, source: Option<ObjectRef>, limit: Option<u32>) -> Why {
     let seen = source
         .and_then(|source| state.object(source.id))
         .filter(|object| {
@@ -41,6 +52,7 @@ pub(crate) fn forbidden_by(state: &GameState, source: Option<ObjectRef>) -> Why 
     Why::ForbiddenBy {
         source: seen.map(GameObject::id),
         name: seen.map(|object| object.card().name.clone()),
+        limit,
     }
 }
 
@@ -57,8 +69,8 @@ pub(crate) fn split_second(state: &GameState) -> Option<Why> {
 }
 
 /// `cost` against the mana at hand: the pool and one use of each source, and the kinds of mana the cost asks for by a
-/// symbol of one kind that neither the pool nor any source makes.
-pub(crate) fn mana(cost: ManaCost, pool: &ManaPool, sources: &[ManaOption]) -> Why {
+/// symbol of one kind that neither the pool nor any source makes; `tax` is the commander tax `cost` includes.
+pub(crate) fn mana(cost: ManaCost, pool: &ManaPool, sources: &[ManaOption], tax: u32) -> Why {
     let mut best: BTreeMap<ObjectId, u32> = BTreeMap::new();
     for option in sources {
         let most = best.entry(option.source.object).or_default();
@@ -81,5 +93,6 @@ pub(crate) fn mana(cost: ManaCost, pool: &ManaPool, sources: &[ManaOption]) -> W
         cost,
         at_hand,
         missing,
+        tax,
     }
 }

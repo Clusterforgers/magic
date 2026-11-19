@@ -8,6 +8,7 @@ import type { PlayerId } from '@/protocol/generated'
 import type { CardSize } from './cardSize'
 import { BoardContexts } from './BoardContexts'
 import { CardPreview } from './CardPreview'
+import { BlockedTell } from './BlockedTell'
 import { CombatOverlay } from './combat/CombatOverlay'
 import { CombatProviders } from './combat/CombatProviders'
 import { ControlsDock, ControlsSlotProvider } from './ControlsDock'
@@ -256,6 +257,7 @@ const Table = memo(function Table() {
                   </ControlsSlotProvider>
                 </StopControlsProvider>
                 <CardPreview />
+                <BlockedTell />
                 <TableMoments />
                 <LexiconDialog />
               </ManualMenuProvider>

@@ -72,7 +72,9 @@ companion?: boolean,
  */
 faces?: Array<FaceOption>, 
 /**
- * The cards of the holder's hand and command zone that none of the lists above offers, each with why, in zone order.
+ * The cards of the holder's hand and command zone that none of the lists above offers, then those of the other zones
+ * a way to cast or a permission to play names for the holder (a graveyard, exile, the top of their library), each
+ * with why.
  */
 unplayable?: Array<UnplayableCard>, 
 /**

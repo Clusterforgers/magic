@@ -26,6 +26,7 @@ import type { Fixture } from './fixture'
 import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 import { lookTopMoment } from './lookTopScene'
 import { withTopCard, withTopCast } from './topCardScene'
+import { withBlocked } from './blockedScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
 import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
@@ -510,6 +511,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-delve': priority,
   // The same with a creature on top of the viewer's library that it sees and may cast (`dev/topCardScene.ts`).
   'priority-top': withTopCast(priority),
+  // Three hand spells left out with the server's reasons: One Voice, sorcery speed, too little mana (`dev/blockedScene.ts`).
+  'priority-blocked': withBlocked(priority),
   attack,
   'attack-battle': attack,
   block,
@@ -622,6 +625,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
     return { ...fixture, view: { ...view, players } }
   },
   'priority-top': (fixture) => withTopCard(quietMoment('Main1', true)(fixture)),
+  'priority-blocked': quietMoment('Upkeep', false),
   yield: quietMoment('Upkeep', false, false),
   // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.
   'yield-resolve': (fixture) =>
