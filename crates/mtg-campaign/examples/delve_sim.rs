@@ -470,6 +470,8 @@ fn main() {
     let threads: u64 = args.get(5).map_or(4, |a| a.parse().unwrap());
     let heat: u8 = args.get(6).map_or(0, |a| a.parse().unwrap());
     let content = content().unwrap();
+    // The bosses' bots read their Satchel cues from the content, as the server's do.
+    mtg_testkit::brain::satchel::install(content.satchel_cues());
     let theme = &content.themes[0];
     // `DELVE_SIM_BOSSES` (comma-separated ids) plays only those bosses.
     let only = std::env::var("DELVE_SIM_BOSSES").ok();

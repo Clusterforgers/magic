@@ -1,5 +1,5 @@
-//! Goal: every boss Satchel card has a bot cue (the content's, or the brain's built-in one for the Drowned Spire's),
-//! and a card two bosses carry has one cue.
+//! Goal: every boss Satchel card has a cue in the campaign content, a card two bosses carry has one cue, and the
+//! cues the content gives are the ones a bot brain reads once installed.
 
 use std::collections::BTreeMap;
 
@@ -15,15 +15,9 @@ fn every_boss_satchel_card_has_one_cue() {
     for boss in content.themes.iter().flat_map(|theme| &theme.bosses) {
         for card in &boss.satchel {
             cards += 1;
-            let Some(cue) = card.cue else {
-                assert!(
-                    satchel::builtin(&card.card).is_some(),
-                    "{}: {} has no cue",
-                    boss.name,
-                    card.card
-                );
-                continue;
-            };
+            let cue = card
+                .cue
+                .unwrap_or_else(|| panic!("{}: {} has no cue", boss.name, card.card));
             let first = *seen.entry(card.card.clone()).or_insert(cue);
             assert_eq!(first, cue, "{} has two cues", card.card);
         }
@@ -33,7 +27,7 @@ fn every_boss_satchel_card_has_one_cue() {
 }
 
 #[rstest]
-fn the_spire_satchel_has_built_in_cues(
+fn the_spire_satchel_cues_come_from_the_content(
     #[values(
         "Entrancing Melody",
         "Extract from Darkness",
@@ -50,6 +44,8 @@ fn the_spire_satchel_has_built_in_cues(
     )]
     card: &str,
 ) {
-    assert!(satchel::builtin(card).is_some());
-    assert!(satchel::cue_of(card).is_some());
+    let cues = content::content().unwrap().satchel_cues();
+    satchel::install(cues.clone());
+    assert!(cues.contains_key(card), "{card} has no content cue");
+    assert_eq!(satchel::cue_of(card), cues.get(card).copied());
 }
