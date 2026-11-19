@@ -2940,6 +2940,7 @@ pub(crate) fn r6503_resolves_from_now(
     };
     state.next_effect += 1;
     state.rule_effects.push(effect);
+    state.possible.replacements = true;
 }
 
 /// The spell `spell` on the stack can't be countered from now on, as a `NextSpell` rule its cast spent said: a rule of its

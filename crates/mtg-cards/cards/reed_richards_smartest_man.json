@@ -5,7 +5,7 @@
   "faces": [
     {
       "name": "Reed Richards, Smartest Man",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "fb63aebb7e019aa9b875c92d95596049",
       "abilities": [
         { "Keyword": "Reach" },
         { "Rule": { "rule": { "NoMaxHandSize": "You" } } },

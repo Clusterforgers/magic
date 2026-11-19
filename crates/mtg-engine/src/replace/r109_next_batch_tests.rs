@@ -1,6 +1,7 @@
 //! Goal: a shield used up by its next batch (`ReplaceBy::NextBatch`) changes every entering of the first batch it covers,
 //! two creatures entering together both, and then ends: an entering of a later batch is left alone, and an entering it
-//! does not cover does not use it up.
+//! does not cover does not use it up; a class shield whose spell is gone still exiles a dying permanent instead and sets
+//! up the delayed return.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::modify::Duration;
@@ -43,8 +44,10 @@ fn begin(game: &mut GameState) -> EffectId {
     let effect = RuleEffect {
         id: EffectId(game.next_effect),
         rule: Rule::Replaces {
-            when: serde_json::from_str::<ReplaceWhen>(r#"{"Enters":{"what":[{"Type":"Creature"}]}}"#)
-                .unwrap(),
+            when: serde_json::from_str::<ReplaceWhen>(
+                r#"{"Enters":{"what":[{"Type":"Creature"}]}}"#,
+            )
+            .unwrap(),
             by: serde_json::from_str::<ReplaceBy>(
                 r#"{"NextBatch":{"WithCounters":{"counter":"+1/+1","count":2}}}"#,
             )
@@ -59,7 +62,13 @@ fn begin(game: &mut GameState) -> EffectId {
         turn: 1,
     };
     let made = effect.id;
-    apply_event(game, &Event::RuleCreated { effect: effect.into() }).unwrap();
+    apply_event(
+        game,
+        &Event::RuleCreated {
+            effect: effect.into(),
+        },
+    )
+    .unwrap();
     made
 }
 
@@ -134,4 +143,59 @@ fn an_entering_the_shield_does_not_cover_leaves_it_in_force(#[values(2, 3, 4)] s
     }
     let events = processed(&game, entering(&game, &["Rat"]));
     assert_eq!(countered(&events), 1, "{events:?}");
+}
+
+#[rstest]
+fn a_permanent_of_the_caster_that_would_die_is_exiled_and_returns_later(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let mut game = table(seats);
+    let bear = game.object(id(&game, "Bear")).unwrap();
+    let effect = RuleEffect {
+        id: EffectId(game.next_effect),
+        rule: Rule::Replaces {
+            when: serde_json::from_str::<ReplaceWhen>(
+                r#"{"ZoneChange":{"what":[{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}}"#,
+            )
+            .unwrap(),
+            by: serde_json::from_str::<ReplaceBy>(
+                r#"{"Instead":[{"Exile":{"what":"Triggering","as":"exiled"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Move":{"what":{"Bound":"exiled"},"to":{"Battlefield":{}}}}]}}]}"#,
+            )
+            .unwrap(),
+            players: Vec::new(),
+            bound: Vec::new(),
+            lki: Vec::new(),
+        },
+        duration: Duration::UntilEndOfTurn,
+        source: Some(crate::object::ObjectRef {
+            id: id(&game, "Rat"),
+            counter: 7,
+        }),
+        controller: bear.controller(),
+        turn: 1,
+    };
+    apply_event(
+        &mut game,
+        &Event::RuleCreated {
+            effect: effect.into(),
+        },
+    )
+    .unwrap();
+    let batch = vec![Event::ZoneChanged {
+        object: id(&game, "Bear"),
+        from: Zone::Battlefield,
+        to: Zone::Graveyard(ME),
+        cause: ZoneCause::Buried,
+    }];
+    let events = processed(&game, batch);
+    assert!(
+        events.iter().any(|event| matches!(
+            event,
+            Event::ZoneChanged {
+                to: Zone::Exile,
+                ..
+            }
+        )),
+        "{events:?}"
+    );
 }

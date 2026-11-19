@@ -26,12 +26,14 @@ fn replays(driver: &Driver, setup: &GameSetup) {
 
 /// A free instant: "Draw `count` cards."
 fn r109_drawer(name: &str, count: u32) -> Arc<CardDefinition> {
-    let ability: Ability =
-        serde_json::from_str(&format!(r#"{{"Spell":{{"effects":[{{"Draw":{{"count":{count}}}}}]}}}}"#))
-            .unwrap();
+    let ability: Ability = serde_json::from_str(&format!(
+        r#"{{"Spell":{{"effects":[{{"Draw":{{"count":{count}}}}}]}}}}"#
+    ))
+    .unwrap();
     Arc::new(
         CardDefinition::new(name)
             .with_type(CardType::Instant)
+            .with_mana_cost(mtg_testkit::cards::cost(0, &[]))
             .with_rules(ability),
     )
 }
@@ -82,7 +84,11 @@ fn r109_reed_on_its_controllers_turn(#[values(2, 3, 4)] seats: usize) -> Result<
     let setup = r109_table(seats, 0, Step::Upkeep).setup().unwrap();
     let mut driver = Driver::from_scenario(r109_table(seats, 0, Step::Upkeep))?;
     driver.pass_until(Step::Main1)?;
-    assert_eq!(library(&driver), 19, "the draw step's card is drawn as usual");
+    assert_eq!(
+        library(&driver),
+        19,
+        "the draw step's card is drawn as usual"
+    );
     r109_cast_and_resolve(&mut driver, "Draw Two")?;
     assert_eq!(library(&driver), 14, "four instead of the first, then one");
     r109_cast_and_resolve(&mut driver, "Draw One")?;
@@ -92,9 +98,7 @@ fn r109_reed_on_its_controllers_turn(#[values(2, 3, 4)] seats: usize) -> Result<
 }
 
 #[rstest]
-fn r109_reed_on_another_players_turn(
-    #[values(2, 3, 4)] seats: usize,
-) -> Result<(), ScriptError> {
+fn r109_reed_on_another_players_turn(#[values(2, 3, 4)] seats: usize) -> Result<(), ScriptError> {
     let active = seats - 1;
     let setup = r109_table(seats, active, Step::Main1).setup().unwrap();
     let mut driver = Driver::from_scenario(r109_table(seats, active, Step::Main1))?;

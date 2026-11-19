@@ -9,7 +9,7 @@ use std::sync::Arc;
 use mtg_cards::ability::Ability;
 use mtg_cards::definition::CardDefinition;
 use mtg_core::card::CardType;
-use mtg_engine::characteristics::characteristics;
+use mtg_engine::characteristics::{characteristics, controller_of};
 use mtg_engine::choose::ModeChoice;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice};
 use mtg_engine::turn::Step;
@@ -29,12 +29,15 @@ fn replays(driver: &Driver, setup: &GameSetup) {
 
 /// Seat 0's main phase of turn 2 at a table of `seats`; every library holds ten creatures.
 fn r109_table(seats: usize) -> Scenario {
-    (0..seats).fold(Scenario::new(seats).at(2, 0, Step::Main1), |scenario, seat| {
-        scenario.library(
-            seat,
-            (0..10).map(|i| free_creature(&format!("Pad {seat} {i}"), 1, 1)),
-        )
-    })
+    (0..seats).fold(
+        Scenario::new(seats).at(2, 0, Step::Main1),
+        |scenario, seat| {
+            scenario.library(
+                seat,
+                (0..10).map(|i| free_creature(&format!("Pad {seat} {i}"), 1, 1)),
+            )
+        },
+    )
 }
 
 /// Answers the decisions of the stack until seat 0 holds priority with nothing on it: the mode `mode` when one is asked,
@@ -85,6 +88,7 @@ fn r109_instant(name: &str, spell: &str) -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new(name)
             .with_type(CardType::Instant)
+            .with_mana_cost(mtg_testkit::cards::cost(0, &[]))
             .with_rules(ability),
     )
 }
@@ -95,8 +99,11 @@ fn r109_soulfire_returns_only_the_next_instant_from_hand(
 ) -> Result<(), ScriptError> {
     let scenario = || {
         r109_table(seats)
-            .battlefield(0, [ready(card("Soulfire Grand Master").unwrap())])
-            .battlefield(0, (0..6).map(|_| ready(island())))
+            .battlefield(
+                0,
+                std::iter::once(ready(card("Soulfire Grand Master").unwrap()))
+                    .chain((0..6).map(|_| ready(island()))),
+            )
             .hand(0, [card("Opt").unwrap(), card("Opt").unwrap()])
     };
     let setup = scenario().setup().unwrap();
@@ -106,7 +113,11 @@ fn r109_soulfire_returns_only_the_next_instant_from_hand(
     driver.cast("Opt")?;
     r109_settle(&mut driver, None, &[])?;
     let hand = r109_names(&driver, Zone::Hand(pid(0)));
-    assert_eq!(hand.iter().filter(|name| *name == "Opt").count(), 2, "{hand:?}");
+    assert_eq!(
+        hand.iter().filter(|name| *name == "Opt").count(),
+        2,
+        "{hand:?}"
+    );
     assert!(r109_names(&driver, Zone::Graveyard(pid(0))).is_empty());
     // The rule is spent: the second Opt goes to the graveyard.
     driver.cast("Opt")?;
@@ -129,14 +140,20 @@ fn r109_cosmic_intervention_returns_the_casters_permanents_at_the_end_step(
 ) -> Result<(), ScriptError> {
     let scenario = || {
         (0..seats).fold(
-            r109_table(seats)
-                .battlefield(0, (0..8).map(|_| ready(plains())))
-                .hand(
-                    0,
-                    [card("Cosmic Intervention").unwrap(), card("Wrath of God").unwrap()],
-                ),
+            r109_table(seats).hand(
+                0,
+                [
+                    card("Cosmic Intervention").unwrap(),
+                    card("Wrath of God").unwrap(),
+                ],
+            ),
             |scenario, seat| {
-                scenario.battlefield(seat, [ready(free_creature(&format!("Bear {seat}"), 2, 2))])
+                let lands = if seat == 0 { 8 } else { 0 };
+                scenario.battlefield(
+                    seat,
+                    std::iter::once(ready(free_creature(&format!("Bear {seat}"), 2, 2)))
+                        .chain((0..lands).map(|_| ready(plains()))),
+                )
             },
         )
     };
@@ -168,6 +185,7 @@ fn r109_enchantment_creature(name: &str) -> Arc<CardDefinition> {
         CardDefinition::new(name)
             .with_type(CardType::Enchantment)
             .with_type(CardType::Creature)
+            .with_mana_cost(mtg_testkit::cards::cost(0, &[]))
             .with_power_toughness(1, 1),
     )
 }
@@ -178,8 +196,11 @@ fn r109_storyweave_adds_counters_to_the_next_entering_only(
 ) -> Result<(), ScriptError> {
     let scenario = || {
         r109_table(seats)
-            .battlefield(0, (0..3).map(|_| ready(forest())))
-            .battlefield(0, [ready(card("History of Benalia").unwrap())])
+            .battlefield(
+                0,
+                std::iter::once(ready(card("History of Benalia").unwrap()))
+                    .chain((0..3).map(|_| ready(forest()))),
+            )
             .hand(
                 0,
                 [
@@ -249,14 +270,23 @@ fn r109_mystic_reflection_copies_the_chosen_creature_once(
     }
     driver.cast("Pad A")?;
     r109_settle(&mut driver, None, &[])?;
-    let power = |driver: &Driver, name: &str| {
-        let id = driver.id_of(name).unwrap();
-        characteristics(driver.state(), id).unwrap().power.unwrap()
+    // The powers of seat 0's creatures: a copy takes the copied name, so it is found by what it is.
+    let powers = |driver: &Driver| {
+        let state = driver.state();
+        let mut powers: Vec<i32> = state
+            .zone(Zone::Battlefield)
+            .iter()
+            .filter(|id| controller_of(state, **id) == Some(pid(0)))
+            .filter_map(|id| characteristics(state, *id))
+            .filter_map(|chars| chars.power)
+            .collect();
+        powers.sort_unstable();
+        powers
     };
-    assert_eq!(power(&driver, "Pad A"), 5);
+    assert_eq!(powers(&driver), vec![5]);
     driver.cast("Pad B")?;
     r109_settle(&mut driver, None, &[])?;
-    assert_eq!(power(&driver, "Pad B"), 1);
+    assert_eq!(powers(&driver), vec![1, 5]);
     replays(&driver, &setup);
     Ok(())
 }
@@ -273,8 +303,11 @@ fn r109_pyramids_saves_its_land_from_the_next_destruction(
     };
     let scenario = || {
         r109_table(seats)
-            .battlefield(0, [ready(card("Pyramids").unwrap())])
-            .battlefield(0, (0..2).map(|_| ready(island())))
+            .battlefield(
+                0,
+                std::iter::once(ready(card("Pyramids").unwrap()))
+                    .chain((0..2).map(|_| ready(island()))),
+            )
             .battlefield(seats - 1, [ready(plains())])
             .hand(0, [raze(), raze()])
     };

@@ -1664,7 +1664,9 @@ impl ShieldShape {
             }
             // "If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead.
             // Return it to the battlefield ... at the beginning of the next end step."
-            (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::Instead(_)) if !names_objects(what) => {
+            (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::Instead(_))
+                if !names_objects(what) =>
+            {
                 Some(Self::Class)
             }
             // "The next time one or more creatures enter this turn, they enter as copies of the chosen creature."

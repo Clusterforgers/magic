@@ -30,7 +30,7 @@
                     "NextSpell": {
                       "what": [
                         { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
-                        { "In": "Hand" }
+                        { "CastFrom": "Hand" }
                       ],
                       "benefit": { "R6503Resolves": { "MoveTo": "Hand" } }
                     }

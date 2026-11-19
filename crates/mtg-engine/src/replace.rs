@@ -3748,7 +3748,11 @@ impl Pass<'_> {
     /// since the battlefield is public.
     fn copies(
         &mut self,
-        (source, bound, lki): (ObjectRef, &crate::resolve::Bindings, &[(ObjectRef, Arc<mtg_cards::CardDefinition>)]),
+        (source, bound, lki): (
+            ObjectRef,
+            &crate::resolve::Bindings,
+            &[(ObjectRef, Arc<mtg_cards::CardDefinition>)],
+        ),
         controller: PlayerId,
         entering: ObjectId,
         (of, must): (&Selector, bool),
@@ -3771,7 +3775,12 @@ impl Pass<'_> {
             return match lki.first() {
                 Some((of, values)) if must => {
                     let copy = (*of, (**values).clone());
-                    Ok(Asked::Got(Some(Self::r109_copy_of(&scope, entering, copy, (except, except_if))?)))
+                    Ok(Asked::Got(Some(Self::r109_copy_of(
+                        &scope,
+                        entering,
+                        copy,
+                        (except, except_if),
+                    )?)))
                 }
                 _ => Ok(Asked::Got(None)),
             };
@@ -4384,6 +4393,7 @@ fn r6104_worked_out(
     })
 }
 
+mod r109_next_batch;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
@@ -4397,7 +4407,6 @@ pub(crate) mod r5516_learns;
 mod r5517_life;
 mod r5517_under;
 pub(crate) mod r6700_draws;
-mod r109_next_batch;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
@@ -4429,9 +4438,9 @@ mod c6_blk_draw_step;
 
 mod c7_untap_dies;
 #[cfg(test)]
-mod r3d_replaces;
-#[cfg(test)]
 mod r109_next_batch_tests;
+#[cfg(test)]
+mod r3d_replaces;
 mod r6503_resolves;
 
 mod finality;

@@ -4,8 +4,8 @@
 
 use std::sync::Arc;
 
-use mtg_cards::trigger::ReplaceBy;
 use crate::object::ObjectRef;
+use mtg_cards::trigger::ReplaceBy;
 
 use super::{Candidate, Origin, Pass};
 use crate::resolve::Bindings;
