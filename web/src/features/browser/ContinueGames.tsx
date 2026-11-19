@@ -1,38 +1,42 @@
 import { Link } from '@tanstack/react-router'
-import { PlayIcon } from 'lucide-react'
+import { DoorOpenIcon, PlayIcon } from 'lucide-react'
 import { useEffect } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { buttonVariants } from '@/components/ui/button'
 import { useAuth, useAuthStore } from '@/features/auth/context'
-import { othersText } from '@/features/games/format'
+import { continueText } from '@/features/games/format'
 
 /**
- * "Continue": a link into each running game of the signed-in user, from the My games listing (one request when the
- * page opens). A guest, a user with no running game and a listing that fails show nothing; My games has the errors.
+ * "Continue": a link into each running game and each lobby the signed-in user holds a seat of, from the My games
+ * listing (one request when the page opens), so a lobby left before everybody was ready is found again however full it
+ * is. A guest, a user with no such game and a listing that fails show nothing; My games has the errors.
  */
 export function ContinueGames() {
   const store = useAuthStore()
   const status = useAuth((state) => state.status)
-  const running = useAuth(
-    useShallow((state) => state.games.games.filter((game) => game.status === 'running')),
+  const open = useAuth(
+    useShallow((state) =>
+      state.games.games.filter((game) => game.status === 'running' || game.status === 'lobby'),
+    ),
   )
   useEffect(() => {
     if (status === 'signed-in') void store.getState().loadGames()
   }, [status, store])
-  if (running.length === 0) return null
+  if (open.length === 0) return null
   return (
-    <section aria-label="Your running games" className="flex flex-wrap gap-2">
-      {running.map((game) => {
-        const others = othersText(game)
+    <section aria-label="Your games" className="flex flex-wrap gap-2">
+      {open.map((game) => {
+        const Icon = game.status === 'lobby' ? DoorOpenIcon : PlayIcon
         return (
           <Link
             key={game.game}
             to="/game/$gameId"
             params={{ gameId: game.game }}
+            data-continue={game.status}
             className={buttonVariants({ variant: 'outline' })}
           >
-            <PlayIcon aria-hidden="true" />
-            {others === '' ? 'Continue your game' : `Continue your game with ${others}`}
+            <Icon aria-hidden="true" />
+            {continueText(game)}
           </Link>
         )
       })}

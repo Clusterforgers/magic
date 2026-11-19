@@ -72,6 +72,11 @@ pub struct LobbyGame {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<LobbyCommander>>", optional)]
     pub commanders: Vec<LobbyCommander>,
+    /// Whether the signed-in visitor holds a seat of the game: they open it (`GET /ws/{game}`) instead of joining, even
+    /// while it is full. Left out while false.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub seated: bool,
 }
 
 /// One commander of a listed Commander game.

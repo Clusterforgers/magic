@@ -33,6 +33,7 @@ use crate::registry::{
 };
 use crate::server::AppState;
 use crate::throttle::Blocked;
+use crate::user_id::UserId;
 
 /// Bytes of the SHA-256 of a listing that its `ETag` keeps: 128 bits.
 const TAG_BYTES: usize = 16;
@@ -184,14 +185,17 @@ pub(crate) async fn list(
         })?;
     let mut listed = app.registry().lobbies().await;
     // A session that cannot be read counts as a guest's: the list is still given, without the running games.
-    let signed_in = matches!(
-        app.auth().session_user(request.headers()).await,
-        Ok(Some(_))
-    );
-    if signed_in {
+    let me = app
+        .auth()
+        .session_user(request.headers())
+        .await
+        .ok()
+        .flatten()
+        .map(|user| user.id);
+    if me.is_some() {
         listed.extend(app.registry().running().await);
     }
-    let tag = listing_tag(&listed);
+    let tag = listing_tag(&listed, me);
     let Ok(header) = HeaderValue::from_str(&tag) else {
         return Err(failure(
             StatusCode::INTERNAL_SERVER_ERROR,
@@ -202,7 +206,7 @@ pub(crate) async fn list(
     if tag_matches(request.headers(), &tag) {
         return Ok((StatusCode::NOT_MODIFIED, [(ETAG, header)]).into_response());
     }
-    let games = listed.into_iter().map(view).collect();
+    let games = listed.into_iter().map(|game| view(game, me)).collect();
     Ok((
         [(ETAG, header), (VARY, HeaderValue::from_static("cookie"))],
         Json(LobbyList { games }),
@@ -210,8 +214,9 @@ pub(crate) async fn list(
         .into_response())
 }
 
-/// A listed game as the wire shows it.
-fn view(game: ListedGame) -> LobbyGame {
+/// A listed game as the wire shows it to the visitor `me` (none for a guest).
+fn view(game: ListedGame, me: Option<UserId>) -> LobbyGame {
+    let seated = seated(&game, me);
     let count = |n: usize| u32::try_from(n).unwrap_or(u32::MAX);
     LobbyGame {
         game: game.game.to_string(),
@@ -225,16 +230,24 @@ fn view(game: ListedGame) -> LobbyGame {
         age_secs: game.age.as_secs(),
         running: game.running,
         commanders: game.commanders,
+        seated,
     }
 }
 
-/// The strong validator of a listing: a digest of every row but its age, which changes with every
-/// second. Fields are length-prefixed so that neighbours cannot run into each other.
-fn listing_tag(listed: &[ListedGame]) -> String {
+/// Whether the account `me` holds a seat of `game`; never for a guest.
+fn seated(game: &ListedGame, me: Option<UserId>) -> bool {
+    me.is_some_and(|me| game.holders.contains(&me))
+}
+
+/// The strong validator of a listing as the visitor `me` sees it: a digest of every row but its age,
+/// which changes with every second, and of whether `me` sits in it. Fields are length-prefixed so that
+/// neighbours cannot run into each other.
+fn listing_tag(listed: &[ListedGame], me: Option<UserId>) -> String {
     let mut hash = Sha256::new();
     for game in listed {
         let manual = if game.manual_play { "1" } else { "0" };
         let running = if game.running { "1" } else { "0" };
+        let seated = if seated(game, me) { "1" } else { "0" };
         let filled = game.filled.to_string();
         let total = game.total.to_string();
         let id = game.game.to_string();
@@ -252,6 +265,7 @@ fn listing_tag(listed: &[ListedGame]) -> String {
             &game.created_at,
             running,
             &commanders,
+            seated,
         ];
         for part in parts {
             hash.update(u64::try_from(part.len()).unwrap_or(u64::MAX).to_be_bytes());
@@ -712,12 +726,13 @@ mod tests {
             age: Duration::from_secs(5),
             running: false,
             commanders: Vec::new(),
+            holders: Vec::new(),
         }
     }
 
     #[test]
     fn the_tag_is_a_quoted_128_bit_hex_digest() {
-        let tag = listing_tag(&[game("Ann", 1)]);
+        let tag = listing_tag(&[game("Ann", 1)], None);
         assert_eq!(tag.len(), 34);
         assert!(tag.starts_with('"') && tag.ends_with('"'));
         assert!(
@@ -726,19 +741,23 @@ mod tests {
                 .all(|b| b.is_ascii_hexdigit() && !b.is_ascii_uppercase())
         );
         // The empty list has a tag too.
-        assert_ne!(listing_tag(&[]), tag);
-        assert_eq!(listing_tag(&[]), listing_tag(&[]));
+        assert_ne!(listing_tag(&[], None), tag);
+        assert_eq!(listing_tag(&[], None), listing_tag(&[], None));
     }
 
     #[test]
     fn the_tag_follows_every_field_of_a_row_except_its_age() {
         let base = game("Ann", 1);
-        let tag = listing_tag(std::slice::from_ref(&base));
+        let tag = listing_tag(std::slice::from_ref(&base), None);
         let older = ListedGame {
             age: Duration::from_mins(50),
             ..base.clone()
         };
-        assert_eq!(listing_tag(&[older]), tag, "age must not move the tag");
+        assert_eq!(
+            listing_tag(&[older], None),
+            tag,
+            "age must not move the tag"
+        );
 
         let changes = [
             ListedGame {
@@ -776,7 +795,7 @@ mod tests {
         ];
         for changed in changes {
             assert_ne!(
-                listing_tag(std::slice::from_ref(&changed)),
+                listing_tag(std::slice::from_ref(&changed), None),
                 tag,
                 "{changed:?}"
             );
@@ -784,14 +803,29 @@ mod tests {
     }
 
     #[test]
+    fn the_tag_and_the_row_follow_whether_the_visitor_sits_in_the_game() {
+        let (ann, bo) = (UserId(Uuid::from_u128(1)), UserId(Uuid::from_u128(2)));
+        let row = ListedGame {
+            holders: vec![ann],
+            ..game("Ann", 4)
+        };
+        let rows = std::slice::from_ref(&row);
+        assert_eq!(listing_tag(rows, Some(bo)), listing_tag(rows, None));
+        assert_ne!(listing_tag(rows, Some(ann)), listing_tag(rows, None));
+        assert!(view(row.clone(), Some(ann)).seated);
+        assert!(!view(row.clone(), Some(bo)).seated);
+        assert!(!view(row, None).seated);
+    }
+
+    #[test]
     fn the_tag_follows_the_order_and_the_number_of_rows() {
         let (ann, bo) = (game("Ann", 1), game("Bo", 2));
         let tags = [
-            listing_tag(&[ann.clone(), bo.clone()]),
-            listing_tag(&[bo.clone(), ann.clone()]),
-            listing_tag(std::slice::from_ref(&ann)),
-            listing_tag(&[ann.clone(), ann]),
-            listing_tag(&[bo]),
+            listing_tag(&[ann.clone(), bo.clone()], None),
+            listing_tag(&[bo.clone(), ann.clone()], None),
+            listing_tag(std::slice::from_ref(&ann), None),
+            listing_tag(&[ann.clone(), ann], None),
+            listing_tag(&[bo], None),
         ];
         let distinct: std::collections::HashSet<&String> = tags.iter().collect();
         assert_eq!(distinct.len(), tags.len());
@@ -810,7 +844,7 @@ mod tests {
             created_at: "x".to_owned(),
             ..game("", 1)
         };
-        assert_ne!(listing_tag(&[one]), listing_tag(&[other]));
+        assert_ne!(listing_tag(&[one], None), listing_tag(&[other], None));
     }
 
     #[rstest]

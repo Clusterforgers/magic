@@ -33,6 +33,12 @@ describe('readLobbyGame', () => {
     expect(readLobbyGame({ ...row, running: 'yes' })).toBeNull()
   })
 
+  it("reads the visitor's own seat, a row without the flag as somebody else's, and refuses a flag that is not one", () => {
+    expect(readLobbyGame({ ...row, seated: true })).toEqual({ ...row, seated: true })
+    expect(readLobbyGame({ ...row, seated: false })).toEqual(row)
+    expect(readLobbyGame({ ...row, seated: 1 })).toBeNull()
+  })
+
   it.each<[string, unknown, unknown]>([
     ['left out', undefined, undefined],
     ['empty', [], undefined],

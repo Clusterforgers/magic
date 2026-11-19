@@ -86,6 +86,7 @@ mod pg_images;
 mod pg_join_codes;
 mod pg_join_http;
 mod pg_lobby;
+mod pg_lobby_rejoin;
 mod pg_lobby_teams;
 mod pg_manual_play;
 mod pg_migrations;
