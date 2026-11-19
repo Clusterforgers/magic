@@ -21,6 +21,9 @@ function only(value: Record<string, unknown>): string | null {
 
 const isPair = (value: unknown): boolean => Array.isArray(value) && value.length === 2 && value.every(isInt)
 
+const isCountPair = (value: unknown): boolean =>
+  Array.isArray(value) && value.length === 2 && value.every(isCount)
+
 const isCounterKind = (value: unknown): boolean =>
   isText(value) || (isRecord(value) && only(value) === 'Other' && isText(value.Other))
 
@@ -40,15 +43,15 @@ function isChange(value: unknown): boolean {
     case 'Damage':
       return isCount(body.amount)
     case 'Stats':
-      return isPair(body.from) && isPair(body.to)
+      return isPair(body.power) && isPair(body.toughness)
     case 'Counters':
-      return isCounterKind(body.kind) && isCount(body.from) && isCount(body.to)
+      return isCounterKind(body.kind) && isCountPair(body.count)
     case 'Control':
-      return isCount(body.to)
+      return isCount(body.controller)
     case 'Leaves':
       return isText(body.fate) && FATES.includes(body.fate)
     case 'Life':
-      return isInt(body.from) && isInt(body.to)
+      return isInt(body.life) && isInt(body.life_after)
     default:
       return false
   }

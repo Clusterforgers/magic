@@ -141,15 +141,15 @@ fn words(driver: &Driver, lines: &[ForecastChange]) -> Vec<String> {
             };
             let what = match &line.change {
                 Change::Damage { amount } => format!("{amount} damage"),
-                Change::Stats { from, to } => {
-                    format!("{}/{} -> {}/{}", from.0, from.1, to.0, to.1)
+                Change::Stats { power, toughness } => {
+                    format!("{}/{} -> {}/{}", power.0, toughness.0, power.1, toughness.1)
                 }
-                Change::Counters { kind, from, to } => format!("{kind:?} {from} -> {to}"),
+                Change::Counters { kind, count } => format!("{kind:?} {} -> {}", count.0, count.1),
                 Change::Tapped => "tapped".to_owned(),
                 Change::Untapped => "untapped".to_owned(),
-                Change::Control { to } => format!("to P{}", to.index()),
+                Change::Control { controller } => format!("to P{}", controller.index()),
                 Change::Leaves { fate } => format!("{fate:?}"),
-                Change::Life { from, to } => format!("life {from} -> {to}"),
+                Change::Life { life, life_after } => format!("life {life} -> {life_after}"),
             };
             format!("{who}: {what}")
         })
@@ -162,11 +162,15 @@ fn agrees(driver: &mut Driver, lines: &[ForecastChange]) {
     let state = driver.state();
     for line in lines {
         match (line.subject, &line.change) {
-            (Forecasted::Player(player), Change::Life { to, .. }) => {
-                assert_eq!(state.player(player).unwrap().life(), *to, "{line:?}");
+            (Forecasted::Player(player), Change::Life { life_after, .. }) => {
+                assert_eq!(
+                    state.player(player).unwrap().life(),
+                    *life_after,
+                    "{line:?}"
+                );
             }
-            (Forecasted::Player(player), Change::Counters { kind, to, .. }) => {
-                assert_eq!(state.player(player).unwrap().counters_of(kind), *to);
+            (Forecasted::Player(player), Change::Counters { kind, count }) => {
+                assert_eq!(state.player(player).unwrap().counters_of(kind), count.1);
             }
             (Forecasted::Object(object), Change::Leaves { .. }) => {
                 assert!(
@@ -182,17 +186,20 @@ fn agrees(driver: &mut Driver, lines: &[ForecastChange]) {
                 };
                 match change {
                     Change::Damage { amount } => assert_eq!(permanent.damage(), *amount),
-                    Change::Stats { to, .. } => {
+                    Change::Stats { power, toughness } => {
                         let chars = characteristics(state, object).unwrap();
-                        assert_eq!((chars.power.unwrap(), chars.toughness.unwrap()), *to);
+                        assert_eq!(
+                            (chars.power.unwrap(), chars.toughness.unwrap()),
+                            (power.1, toughness.1)
+                        );
                     }
-                    Change::Counters { kind, to, .. } => {
-                        assert_eq!(permanent.counters_of(kind), *to);
+                    Change::Counters { kind, count } => {
+                        assert_eq!(permanent.counters_of(kind), count.1);
                     }
                     Change::Tapped => assert!(permanent.tapped()),
                     Change::Untapped => assert!(!permanent.tapped()),
-                    Change::Control { to } => {
-                        assert_eq!(controller_of(state, object), Some(*to));
+                    Change::Control { controller } => {
+                        assert_eq!(controller_of(state, object), Some(*controller));
                     }
                     _ => panic!("{line:?} is no line of an object"),
                 }

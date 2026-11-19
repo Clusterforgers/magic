@@ -62,7 +62,7 @@ export const forecastStackTable = (fixture: Fixture): Fixture => {
       rules_text: 'Target creature gets +3/+3 until end of turn.',
       targets: [[{ Object: { id: target.id, counter: 0 } }]],
       targets_legal: [[true]],
-      forecast: [{ subject: { Object: target.id }, change: { Stats: { from: [4, 4], to: [7, 7] } } }],
+      forecast: [{ subject: { Object: target.id }, change: { Stats: { power: [4, 7], toughness: [4, 7] } } }],
     }
   })
   return withView(fixture, { objects })

@@ -5,9 +5,9 @@ import { changeWords, forecastWords, signed } from './forecastWords'
 
 describe('one change', () => {
   it.each<[string, Change, string]>([
-    ['a pump', { Stats: { from: [4, 4], to: [7, 7] } }, '+3/+3 → 7/7'],
-    ['a shrink', { Stats: { from: [3, 3], to: [1, 1] } }, '−2/−2 → 1/1'],
-    ['a power-only change', { Stats: { from: [2, 2], to: [4, 2] } }, '+2/+0 → 4/2'],
+    ['a pump', { Stats: { power: [4, 7], toughness: [4, 7] } }, '+3/+3 → 7/7'],
+    ['a shrink', { Stats: { power: [3, 1], toughness: [3, 1] } }, '−2/−2 → 1/1'],
+    ['a power-only change', { Stats: { power: [2, 4], toughness: [2, 2] } }, '+2/+0 → 4/2'],
     ['damage', { Damage: { amount: 3 } }, '3 damage'],
     ['destroyed', { Leaves: { fate: 'Destroyed' } }, 'destroyed'],
     ['a death', { Leaves: { fate: 'Dies' } }, 'dies'],
@@ -19,18 +19,18 @@ describe('one change', () => {
     ['countered', { Leaves: { fate: 'Countered' } }, 'countered'],
     ['tapped', 'Tapped', 'tapped'],
     ['untapped', 'Untapped', 'untapped'],
-    ['two counters', { Counters: { kind: '+1/+1', from: 0, to: 2 } }, '+2 +1/+1 counters'],
-    ['one loyalty counter off', { Counters: { kind: 'loyalty', from: 4, to: 3 } }, '−1 loyalty counter'],
-    ['a named counter', { Counters: { kind: { Other: 'lore' }, from: 1, to: 2 } }, '+1 lore counter'],
-    ['life lost', { Life: { from: 40, to: 37 } }, '−3 → 37'],
-    ['life gained', { Life: { from: 20, to: 24 } }, '+4 → 24'],
-    ['life to zero', { Life: { from: 3, to: 0 } }, '−3 → 0'],
+    ['two counters', { Counters: { kind: '+1/+1', count: [0, 2] } }, '+2 +1/+1 counters'],
+    ['one loyalty counter off', { Counters: { kind: 'loyalty', count: [4, 3] } }, '−1 loyalty counter'],
+    ['a named counter', { Counters: { kind: { Other: 'lore' }, count: [1, 2] } }, '+1 lore counter'],
+    ['life lost', { Life: { life: 40, life_after: 37 } }, '−3 → 37'],
+    ['life gained', { Life: { life: 20, life_after: 24 } }, '+4 → 24'],
+    ['life to zero', { Life: { life: 3, life_after: 0 } }, '−3 → 0'],
   ])('%s reads "%s"', (_what, change, words) => {
     expect(changeWords(change)).toBe(words)
   })
 
   it('names the new controller when it can', () => {
-    const change: Change = { Control: { to: 1 } }
+    const change: Change = { Control: { controller: 1 } }
     expect(changeWords(change)).toBe('changes control')
     expect(changeWords(change, (seat) => `Seat ${seat + 1}`)).toBe('to Seat 2')
   })

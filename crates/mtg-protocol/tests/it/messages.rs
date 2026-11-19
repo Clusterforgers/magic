@@ -848,8 +848,8 @@ fn server_samples() -> Vec<ServerMessage> {
             changes: vec![ForecastChange {
                 subject: Forecasted::Object(ObjectId(3)),
                 change: Change::Stats {
-                    from: (4, 4),
-                    to: (7, 7),
+                    power: (4, 7),
+                    toughness: (4, 7),
                 },
             }],
         },

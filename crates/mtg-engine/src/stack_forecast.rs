@@ -70,21 +70,19 @@ pub enum Change {
         /// How much.
         amount: u32,
     },
-    /// A creature's power and toughness, before and after.
+    /// A creature's power and toughness, each as (now, after).
     Stats {
-        /// Power and toughness now.
-        from: (i32, i32),
-        /// Power and toughness after.
-        to: (i32, i32),
+        /// Power now and after.
+        power: (i32, i32),
+        /// Toughness now and after.
+        toughness: (i32, i32),
     },
-    /// The counters of one kind, before and after.
+    /// The counters of one kind, as (now, after).
     Counters {
         /// The kind.
         kind: CounterKind,
-        /// How many now.
-        from: u32,
-        /// How many after.
-        to: u32,
+        /// How many now and after.
+        count: (u32, u32),
     },
     /// The permanent becomes tapped.
     Tapped,
@@ -93,7 +91,7 @@ pub enum Change {
     /// Another player gains control of the permanent.
     Control {
         /// The new controller.
-        to: PlayerId,
+        controller: PlayerId,
     },
     /// The permanent or spell leaves its zone.
     Leaves {
@@ -103,9 +101,9 @@ pub enum Change {
     /// A player's life total, before and after.
     Life {
         /// Life now.
-        from: i32,
+        life: i32,
         /// Life after.
-        to: i32,
+        life_after: i32,
     },
 }
 
@@ -287,12 +285,15 @@ fn changes(state: &GameState, run: &Resolution, top: ObjectId) -> Vec<ForecastCh
         };
         if later.life() != player.life() {
             push(Change::Life {
-                from: player.life(),
-                to: later.life(),
+                life: player.life(),
+                life_after: later.life(),
             });
         }
         for (kind, from, to) in counter_changes(player.counters(), later.counters()) {
-            push(Change::Counters { kind, from, to });
+            push(Change::Counters {
+                kind,
+                count: (from, to),
+            });
         }
     }
     let damage = damage_by_object(&run.events);
@@ -331,16 +332,19 @@ fn changes(state: &GameState, run: &Resolution, top: ObjectId) -> Vec<ForecastCh
             push(stats);
         }
         for (kind, from, to) in counter_changes(was.counters(), will.counters()) {
-            push(Change::Counters { kind, from, to });
+            push(Change::Counters {
+                kind,
+                count: (from, to),
+            });
         }
         match (was.tapped(), will.tapped()) {
             (false, true) => push(Change::Tapped),
             (true, false) => push(Change::Untapped),
             _ => {}
         }
-        let to = controller_of_object(&run.after, later);
-        if to != controller_of_object(state, now) {
-            push(Change::Control { to });
+        let controller = controller_of_object(&run.after, later);
+        if controller != controller_of_object(state, now) {
+            push(Change::Control { controller });
         }
     }
     lines
@@ -353,7 +357,10 @@ fn stats(state: &GameState, after: &GameState, id: ObjectId) -> Option<Change> {
         Some((chars.power?, chars.toughness?))
     };
     let (from, to) = (pt(state)?, pt(after)?);
-    (from != to).then_some(Change::Stats { from, to })
+    (from != to).then_some(Change::Stats {
+        power: (from.0, to.0),
+        toughness: (from.1, to.1),
+    })
 }
 
 /// The kinds whose count differs, with the counts before and after, in the kinds' order.

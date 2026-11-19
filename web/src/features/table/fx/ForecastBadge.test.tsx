@@ -16,7 +16,7 @@ function scene(seats: number): { fixture: Fixture; target: ObjectId; seat: numbe
   const line = must(spell.forecast?.[0])
   if (!('Object' in line.subject)) throw new Error('the scene pumps a creature')
   const seat = (view.viewer + 1) % view.players.length
-  const life: ForecastChange = { subject: { Player: seat }, change: { Life: { from: 20, to: 17 } } }
+  const life: ForecastChange = { subject: { Player: seat }, change: { Life: { life: 20, life_after: 17 } } }
   const objects = view.objects.map((object) =>
     object.id === top ? { ...object, forecast: [...(object.forecast ?? []), life] } : object,
   )

@@ -30,21 +30,21 @@ export function changeWords(change: Change, controllerName?: (seat: number) => s
   if (change === 'Untapped') return 'untapped'
   if ('Damage' in change) return `${change.Damage.amount} damage`
   if ('Stats' in change) {
-    const { from, to } = change.Stats
-    return `${signed(to[0] - from[0])}/${signed(to[1] - from[1])} → ${to[0]}/${to[1]}`
+    const { power, toughness } = change.Stats
+    return `${signed(power[1] - power[0])}/${signed(toughness[1] - toughness[0])} → ${power[1]}/${toughness[1]}`
   }
   if ('Counters' in change) {
-    const { kind, from, to } = change.Counters
+    const [from, to] = change.Counters.count
     const many = Math.abs(to - from) === 1 ? 'counter' : 'counters'
-    return `${signed(to - from)} ${counterName(kind)} ${many}`
+    return `${signed(to - from)} ${counterName(change.Counters.kind)} ${many}`
   }
   if ('Control' in change) {
-    const name = controllerName?.(change.Control.to)
+    const name = controllerName?.(change.Control.controller)
     return name === undefined ? 'changes control' : `to ${name}`
   }
   if ('Leaves' in change) return FATE[change.Leaves.fate]
-  const { from, to } = change.Life
-  return `${signed(to - from)} → ${to}`
+  const { life, life_after } = change.Life
+  return `${signed(life_after - life)} → ${life_after}`
 }
 
 /** Every change of one card or seat, joined: "3 damage · dies"; null when there is none. */

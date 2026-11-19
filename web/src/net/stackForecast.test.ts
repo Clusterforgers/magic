@@ -10,14 +10,14 @@ const line = (change: unknown, subject: unknown = { Object: 3 }) => ({ subject, 
 describe('a forecast line', () => {
   it.each([
     ['damage', { Damage: { amount: 3 } }],
-    ['stats', { Stats: { from: [4, 4], to: [7, -1] } }],
-    ['counters', { Counters: { kind: '+1/+1', from: 0, to: 2 } }],
-    ['named counters', { Counters: { kind: { Other: 'lore' }, from: 0, to: 1 } }],
+    ['stats', { Stats: { power: [4, 7], toughness: [4, -1] } }],
+    ['counters', { Counters: { kind: '+1/+1', count: [0, 2] } }],
+    ['named counters', { Counters: { kind: { Other: 'lore' }, count: [0, 1] } }],
     ['tapped', 'Tapped'],
     ['untapped', 'Untapped'],
-    ['control', { Control: { to: 1 } }],
+    ['control', { Control: { controller: 1 } }],
     ['a fate', { Leaves: { fate: 'Countered' } }],
-    ['life', { Life: { from: 2, to: -3 } }],
+    ['life', { Life: { life: 2, life_after: -3 } }],
   ])('passes %s', (_what, change) => {
     expect(isForecastChange(line(change))).toBe(true)
     expect(isForecastChange(line(change, { Player: 0 }))).toBe(true)
@@ -27,7 +27,7 @@ describe('a forecast line', () => {
     ['an unknown change', line({ Melts: {} })],
     ['an unknown fate', line({ Leaves: { fate: 'Melted' } })],
     ['negative damage', line({ Damage: { amount: -1 } })],
-    ['stats that are no pair', line({ Stats: { from: [4], to: [7, 7] } })],
+    ['stats that are no pair', line({ Stats: { power: [4], toughness: [4, 7] } })],
     ['a change with two keys', line({ Damage: { amount: 1 }, Life: { from: 1, to: 0 } })],
     ['a subject of another kind', line('Tapped', { Planeswalker: 3 })],
     ['a subject without an id', line('Tapped', { Object: 'x' })],

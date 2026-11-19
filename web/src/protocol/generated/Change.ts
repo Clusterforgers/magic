@@ -12,29 +12,25 @@ export type Change = { "Damage": {
  */
 amount: number, } } | { "Stats": { 
 /**
- * Power and toughness now.
+ * Power now and after.
  */
-from: [number, number], 
+power: [number, number], 
 /**
- * Power and toughness after.
+ * Toughness now and after.
  */
-to: [number, number], } } | { "Counters": { 
+toughness: [number, number], } } | { "Counters": { 
 /**
  * The kind.
  */
 kind: CounterKind, 
 /**
- * How many now.
+ * How many now and after.
  */
-from: number, 
-/**
- * How many after.
- */
-to: number, } } | "Tapped" | "Untapped" | { "Control": { 
+count: [number, number], } } | "Tapped" | "Untapped" | { "Control": { 
 /**
  * The new controller.
  */
-to: PlayerId, } } | { "Leaves": { 
+controller: PlayerId, } } | { "Leaves": { 
 /**
  * How and where to.
  */
@@ -42,8 +38,8 @@ fate: Fate, } } | { "Life": {
 /**
  * Life now.
  */
-from: number, 
+life: number, 
 /**
  * Life after.
  */
-to: number, } };
+life_after: number, } };
