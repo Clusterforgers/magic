@@ -453,6 +453,9 @@ pub enum Pred {
     Blocking,
     /// Is an attacking creature that no creature was declared to block, once its defending player has declared blockers (CR 509.1h).
     Unblocked,
+    /// Is an attacking creature that is blocked (CR 509.1h): a creature blocked it, and it stays blocked when its blockers
+    /// leave combat.
+    Blocked,
     /// Is controlled by the player.
     ControlledBy(Ref),
     /// Is owned by the player.

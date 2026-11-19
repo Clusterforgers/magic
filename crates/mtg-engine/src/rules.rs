@@ -16,9 +16,10 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::sync::OnceLock;
 
 use mtg_cards::ability::Ability;
-use mtg_cards::cost::Cost;
+use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::effect::Place;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::mana::ManaCostX;
 use mtg_cards::modify::{Attacked, CastRider, GameRule, ManaChange, Prohibited, SpendAs};
 use mtg_cards::refs::{Ref, Selector, ZoneKind};
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen, TriggerPattern};
@@ -370,6 +371,14 @@ pub enum Rule {
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// Any player may pay the mana to ignore the other effects of the rule's source until end of turn (CR 116.2).
     PayToIgnore(ManaCost),
+    /// The players may pay the cost to ignore the other effects of the rule's source until end of turn (CR 116.2).
+    PayToIgnoreBy {
+        /// Who may pay.
+        payers: Vec<PlayerId>,
+        /// What ignoring the effects costs.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        cost: Cost,
+    },
     /// The controller may activate abilities of the creatures the selector picks as though they had haste (CR 302.6).
     AbilitiesAsThoughHaste(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The permanents the selector picks that the rule's controller controls untap during the untap steps of the players
@@ -1006,7 +1015,7 @@ pub(crate) struct RulesInForce {
     no_legend: BTreeSet<PlayerId>,
     no_legend_for: Vec<NoLegendFor>,
     /// The sources whose effects a player may pay to ignore, with the price (`Rule::PayToIgnore`).
-    pay_to_ignore: Vec<(ObjectRef, ManaCost)>,
+    pay_to_ignore: Vec<Ignorable>,
     /// The creatures whose abilities may be activated as though they had haste, by rule.
     haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
@@ -1299,7 +1308,20 @@ impl RulesInForce {
             }
             Rule::PayToIgnore(cost) => {
                 if let Some(source) = source {
-                    self.pay_to_ignore.push((source, cost.clone()));
+                    self.pay_to_ignore.push(Ignorable {
+                        source,
+                        payers: None,
+                        cost: Cost(vec![CostItem::Mana(ManaCostX::new(0, cost.clone()))]),
+                    });
+                }
+            }
+            Rule::PayToIgnoreBy { payers, cost } => {
+                if let Some(source) = source {
+                    self.pay_to_ignore.push(Ignorable {
+                        source,
+                        payers: Some(payers.clone()),
+                        cost: cost.clone(),
+                    });
                 }
             }
             Rule::UntapDuring { what, whose } => {
@@ -1625,6 +1647,7 @@ impl RulesInForce {
             | Rule::NoLegendRule(_)
             | Rule::NoLegendRuleFor(_)
             | Rule::PayToIgnore(_)
+            | Rule::PayToIgnoreBy { .. }
             | Rule::AbilitiesAsThoughHaste(_)
             | Rule::UntapDuring { .. } => {
                 self.put_option(rule, controller, source);
@@ -2166,6 +2189,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::NoLegendRule(_)
         | GameRule::NoLegendRuleFor(_)
         | GameRule::PayToIgnore(_)
+        | GameRule::PayToIgnoreBy { .. }
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
@@ -2299,6 +2323,10 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
         GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
         GameRule::PayToIgnore(cost) => Rule::PayToIgnore(cost.rest().clone()),
+        GameRule::PayToIgnoreBy { payer, cost } => Rule::PayToIgnoreBy {
+            payers: scope.players(payer)?,
+            cost: cost.clone(),
+        },
         GameRule::AbilitiesAsThoughHaste(what) => Rule::AbilitiesAsThoughHaste(what.clone()),
         GameRule::UntapDuring { what, whose } => Rule::UntapDuring {
             what: what.clone(),
@@ -2405,6 +2433,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
+        Rule::PayToIgnoreBy { payers, .. } => payers.is_empty(),
         Rule::AttackLimitAt { at, .. } => at.is_empty(),
         Rule::AdditionalLandPlays(plays) => plays.iter().all(|(_, count)| *count == 0),
         Rule::LookAtExiled { who, only, .. } | Rule::MayCast { who, only, .. } => {
@@ -3761,8 +3790,19 @@ pub fn no_legend_rule_for(state: &GameState, id: ObjectId) -> bool {
     })
 }
 
+/// A source whose effects a player may pay to ignore until end of turn (`Rule::PayToIgnore`, `Rule::PayToIgnoreBy`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct Ignorable {
+    /// The source.
+    pub(crate) source: ObjectRef,
+    /// Who may pay; `None` for any player.
+    pub(crate) payers: Option<Vec<PlayerId>>,
+    /// The price.
+    pub(crate) cost: Cost,
+}
+
 /// The sources whose effects a player may pay to ignore until end of turn, with the price (`Rule::PayToIgnore`).
-pub(crate) fn pay_to_ignore(state: &GameState) -> &[(ObjectRef, ManaCost)] {
+pub(crate) fn pay_to_ignore(state: &GameState) -> &[Ignorable] {
     &state.rules().pay_to_ignore
 }
 

@@ -1500,6 +1500,7 @@ Lord of the Forsaken
 Lord of the Undead
 Lorescale Coatl
 Loreseeker's Stone
+Lost in Thought
 Lotleth Troll
 Lotus Petal
 Lotus Ring
@@ -2852,6 +2853,7 @@ Voice of All
 Voice of the Blessed
 Voidmage Husher
 Voldaren Estate
+Volrath's Curse
 Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan

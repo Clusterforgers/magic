@@ -845,6 +845,7 @@ fn item_text(item: &CostItem) -> Option<String> {
                 taken_text(&said, &Amount::one())?
             )
         }
+        CostItem::OpponentGainsLife(amount) => format!("An opponent gains {amount} life"),
         other => return dk27_among_item(other),
     })
 }

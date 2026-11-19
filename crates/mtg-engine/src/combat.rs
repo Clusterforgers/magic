@@ -216,6 +216,11 @@ impl CombatState {
         })
     }
 
+    /// Whether `id` is an attacking creature that is blocked (CR 509.1h), whether or not its blockers are still there.
+    pub(crate) fn is_blocked(&self, id: ObjectId) -> bool {
+        self.attackers.iter().any(|a| a.object == id && a.blocked)
+    }
+
     /// The band the attacker `id` is in (CR 702.22c).
     pub fn band_of(&self, id: ObjectId) -> Option<&[ObjectId]> {
         self.bands

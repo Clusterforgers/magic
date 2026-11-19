@@ -1,7 +1,7 @@
 {
   "oracle_id": "820ba630-c543-491c-8c77-ada69b01c79d",
   "name": "Lost in Thought",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lost in Thought",
@@ -9,9 +9,36 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 221 }
+          "Static": {
+            "affected": "Attached",
+            "mods": ["CantAttack", "CantBlock"],
+            "condition": { "Not": { "PaidToIgnoreBy": { "ControllerOf": "Attached" } } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": {
+                  "ActivateKind": {
+                    "kind": "Every",
+                    "sources": [{ "Type": "Creature" }, { "Is": "Attached" }]
+                  }
+                }
+              }
+            },
+            "condition": { "Not": { "PaidToIgnoreBy": { "ControllerOf": "Attached" } } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "PayToIgnoreBy": {
+                "payer": { "ControllerOf": "Attached" },
+                "cost": [{ "ExileFromGraveyard": { "filter": [], "count": 3 } }]
+              }
+            }
           }
         }
       ]

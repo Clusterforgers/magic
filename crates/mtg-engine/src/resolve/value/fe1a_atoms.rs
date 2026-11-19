@@ -91,6 +91,7 @@ impl Scope<'_> {
                 .iter()
                 .any(|a| a.blockers().contains(&reference.id)),
             Pred::Unblocked => self.state.combat().is_unblocked(self.state, reference.id),
+            Pred::Blocked => self.state.combat().is_blocked(reference.id),
             Pred::TopOfLibrary => self.fe1a_library_end(reference, seen, true),
             Pred::BottomOfLibrary => self.fe1a_library_end(reference, seen, false),
             Pred::TopOfGraveyard => {

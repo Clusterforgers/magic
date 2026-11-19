@@ -261,6 +261,7 @@ fn judged_per_event(kind: &Selector) -> bool {
             | Pred::Attacking
             | Pred::Blocking
             | Pred::Unblocked
+            | Pred::Blocked
             | Pred::HasKeyword(_)
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter

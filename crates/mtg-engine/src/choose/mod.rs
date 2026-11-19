@@ -225,6 +225,11 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "is_zero_u32")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
     pub phyrexian_life: u32,
+    /// The players chosen for the parts of the cost that have a player of the payer's choice do something ("have an
+    /// opponent gain 3 life"), in the order the cost prints them.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PlayerId>>", optional))]
+    pub players: Vec<PlayerId>,
 }
 
 /// Whether a number of counters is 0, so serialization can leave it out.
@@ -334,6 +339,7 @@ impl Choices {
         if let Some(taken) = self.cost_taken.as_deref_mut() {
             taken.picks.clear();
             taken.kinds.clear();
+            taken.players.clear();
         }
     }
 
@@ -348,6 +354,21 @@ impl Choices {
             .get_or_insert_with(Box::default)
             .kinds
             .push(kind);
+    }
+
+    /// The players chosen for the parts of the cost that name one (`CostTaken::players`).
+    pub fn cost_players(&self) -> &[PlayerId] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.players)
+    }
+
+    /// Adds the player chosen for the next part of the cost that names one.
+    pub(crate) fn r109_player_for_cost(&mut self, player: PlayerId) {
+        self.cost_taken
+            .get_or_insert_with(Box::default)
+            .players
+            .push(player);
     }
 
     /// Adds the objects picked for the next part of the cost that takes some.
