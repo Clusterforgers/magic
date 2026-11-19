@@ -1690,6 +1690,7 @@ fn w2f_cost_taken(
         removed: 3,
         spliced: vec![b],
         phyrexian_life: 2,
+        players: vec![PlayerId(2)],
     }
 }
 

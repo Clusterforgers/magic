@@ -100,6 +100,11 @@ pub(crate) fn activation_events(
                     removed = removed.saturating_add(*count);
                 }
             }
+            events.extend(parts::r109_opponent_life::r109_opponent_gains(
+                state,
+                &price.parts,
+                choices,
+            ));
             // The costs that move the source come before the activation, which names the source as it was (CR 113.7a): it is
             // sacrificed from the battlefield, discarded from the hand, or exiled from the zone it is in.
             if cost.0.contains(&CostItem::SacrificeSelf) {
@@ -558,6 +563,9 @@ pub(crate) fn spell_events(
         choices.cost_picks(),
         choices.cost_kinds(),
     )?;
+    events.extend(parts::r109_opponent_life::r109_opponent_gains(
+        state, parts, choices,
+    ));
     let mut shots = parts::photographed(state, parts, choices.cost_picks());
     shots.extend(parts::rmt5_top_shots(state, player, parts));
     shots.extend(parts::r300_random_shots(state, player, parts));
@@ -659,8 +667,9 @@ fn announcement(
         Some(Pending {
             what: What::Spell(source),
             special: Some(Special::IgnoreEffect),
+            choices,
             ..
-        }) => crate::r6703_ignore::events(state, player, *source).ok_or_else(unexpected),
+        }) => crate::r6703_ignore::events(state, player, *source, choices).ok_or_else(unexpected),
         Some(Pending {
             what: What::Spell(card),
             special: Some(Special::TurnFaceUp),

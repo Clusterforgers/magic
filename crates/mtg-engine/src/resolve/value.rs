@@ -2371,6 +2371,7 @@ impl<'a> Scope<'a> {
             | Pred::AttackingPlayerOrPlaneswalker(_)
             | Pred::Blocking
             | Pred::Unblocked
+            | Pred::Blocked
             | Pred::WasCast { .. }
             | Pred::CastWith(_)
             | Pred::TopOfLibrary
@@ -3870,6 +3871,13 @@ impl<'a> Scope<'a> {
                 .r6703_ignored
                 .iter()
                 .any(|(player, source)| *player == self.controller && *source == self.source),
+            Condition::PaidToIgnoreBy(who) => {
+                let payers = self.players(who)?;
+                self.state
+                    .r6703_ignored
+                    .iter()
+                    .any(|(player, source)| payers.contains(player) && *source == self.source)
+            }
             Condition::Among(who) => self.among(who)?,
             Condition::StartingPlayer(who) => self.started(who)?,
             Condition::Step(named) => {

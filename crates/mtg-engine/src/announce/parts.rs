@@ -13,7 +13,7 @@ use mtg_cards::ability::Ability;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Ctx, Needs, Next, What, Work, x};
-use crate::choose::{CardsOptions, Choices};
+use crate::choose::{CardsOptions, ChoiceOption, Choices, OptionOptions};
 use crate::decision::DecisionKind;
 use crate::error::IllegalAnswer;
 use crate::parts::{Part, Payer};
@@ -109,7 +109,43 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             groups,
         })));
     }
+    if let Some(next) = r109_opponent(ctx, work, &price) {
+        return Some(next);
+    }
     super::w2f_counter_kinds::w2f_run(ctx, work, &price)
+}
+
+/// Settles the opponent of each part that has one gain life ("have an opponent gain 3 life"), or asks the payer for the
+/// next one with `ChooseOption`; `None` once each has its opponent. A lone opponent is taken without asking.
+fn r109_opponent(ctx: &Ctx<'_>, work: &mut Work<'_>, price: &Price) -> Option<Next> {
+    let wanted = price
+        .parts
+        .iter()
+        .filter(|part| matches!(part, Part::OpponentGainsLife(_)))
+        .count();
+    while work.choices.cost_players().len() < wanted {
+        let opponents = crate::parts::r109_opponent_life::r109_opponents(ctx.state, ctx.player);
+        let index = match (opponents.len(), work.done.w2f_kind_picked.take()) {
+            (0, _) => return Some(Next::Drop),
+            (1, _) => 0,
+            (_, Some(index)) => usize::from(index),
+            (_, None) => {
+                return Some(
+                    ctx.ask(DecisionKind::ChooseOption(OptionOptions {
+                        source: ctx.source,
+                        options: opponents
+                            .iter()
+                            .map(|player| ChoiceOption::Player(*player))
+                            .collect(),
+                        text: "Choose an opponent to gain life.".to_owned(),
+                        can_cancel: ctx.can_cancel(),
+                    })),
+                );
+            }
+        };
+        work.choices.r109_player_for_cost(*opponents.get(index)?);
+    }
+    None
 }
 
 /// The most X the counted parts of the cost allow, `None` when no part is counted: each part can take as much as the

@@ -1980,6 +1980,9 @@ pub enum Condition {
     /// "You" paid this turn to ignore the effects of the source (`GameRule::PayToIgnore`); inside a `PlayersWhere`, the
     /// player tested did.
     PaidToIgnore,
+    /// A player the reference names paid this turn to ignore the effects of the source (`GameRule::PayToIgnoreBy`):
+    /// "enchanted creature can't attack" holds until the creature's controller pays.
+    PaidToIgnoreBy(Ref),
     /// A player the reference names is the monarch (CR 724): any of them when it names several, so `EachPlayer` is "there is a
     /// monarch" and its `Not` "there is no monarch".
     Monarch(Ref),

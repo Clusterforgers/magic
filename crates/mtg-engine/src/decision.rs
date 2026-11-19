@@ -397,8 +397,12 @@ pub struct PaidEnd {
 pub struct PaidIgnore {
     /// The source.
     pub object: ObjectId,
-    /// What ignoring it costs.
+    /// The mana ignoring it costs.
     pub cost: ManaCost,
+    /// The whole cost as words when it takes more than mana ("Sacrifice a permanent").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub words: Option<String>,
 }
 
 /// A face of a card with several faces that a player can cast or play now.

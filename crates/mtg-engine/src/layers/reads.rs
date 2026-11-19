@@ -359,6 +359,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AttackingBattle
         | Pred::Blocking
         | Pred::Unblocked
+        | Pred::Blocked
         | Pred::In(_)
         | Pred::CastFrom(_)
         | Pred::HasCounter(_)
@@ -634,6 +635,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
             .or(reads_of_selector(selector))
             .or(reads_of_amount(right)),
         Condition::YourTurn | Condition::PaidToIgnore => Traits::CONTROL,
+        Condition::PaidToIgnoreBy(who) => reads_of_ref(who).or(Traits::CONTROL),
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
         Condition::AttackedThisTurnBy { player, .. } => reads_of_ref(player),
         Condition::Exploited { by, what } => reads_of_ref(by).or(reads_of_ref(what)),

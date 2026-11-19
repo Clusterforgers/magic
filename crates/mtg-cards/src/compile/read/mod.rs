@@ -180,6 +180,7 @@ mod player_keywords;
 mod prepare;
 mod prevention;
 mod pronouns;
+mod r109_ignore;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -583,7 +584,9 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, x_free);
     reader.subtypes.clone_from(&own.subtypes);
-    let found = if let Some(found) = r4705_reads::r4705_pair_read(text) {
+    let found = if let Some(found) = r109_ignore::r109_ignore_read(text, x_free, own) {
+        found
+    } else if let Some(found) = r4705_reads::r4705_pair_read(text) {
         found
     } else if let Some(found) = r406_actions::r406_pair_read(text) {
         found
@@ -599,7 +602,9 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         found
     };
     if let [first, second, third] = found.as_slice() {
-        return r371_owner::r371_three_texts(first, second, third)
+        let mut written = r371_owner::r371_three_texts(first, second, third);
+        written.extend(r109_ignore::r109_ignore_texts(first, second, third));
+        return written
             .iter()
             .any(|written| same_text(written, text))
             .then_some(found);

@@ -488,7 +488,8 @@ fn not_cast_from_hand(ability: &Ability) -> Vec<String> {
         .collect()
 }
 
-/// "If you control a Forest, rather than pay this spell's mana cost, you may have each other player gain 6 life."
+/// "If you control a Forest, rather than pay this spell's mana cost, you may have each other player gain 6 life." (or "an
+/// opponent gain 3 life").
 fn others_gain_instead(ability: &Ability) -> Vec<String> {
     let Ability::FreeCast {
         condition,
@@ -497,10 +498,15 @@ fn others_gain_instead(ability: &Ability) -> Vec<String> {
     else {
         return Vec::new();
     };
-    let [crate::cost::CostItem::OthersGainLife(amount)] = cost.0.as_slice() else {
-        return Vec::new();
+    let tail = match cost.0.as_slice() {
+        [crate::cost::CostItem::OthersGainLife(amount)] => {
+            format!("you may have each other player gain {amount} life.")
+        }
+        [crate::cost::CostItem::OpponentGainsLife(amount)] => {
+            format!("you may have an opponent gain {amount} life.")
+        }
+        _ => return Vec::new(),
     };
-    let tail = format!("you may have each other player gain {amount} life.");
     match condition {
         None => vec![format!("Rather than pay this spell's mana cost, {tail}")],
         Some(condition) => said(condition)

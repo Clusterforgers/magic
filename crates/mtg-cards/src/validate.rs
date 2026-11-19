@@ -1136,6 +1136,7 @@ impl<'a> Walker<'a> {
             | Pred::AttackingBattle
             | Pred::Blocking
             | Pred::Unblocked
+            | Pred::Blocked
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter
             | Pred::ChosenColor
@@ -1786,6 +1787,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "StartingPlayer");
                 self.at("StartingPlayer", |w| w.reference(who, Kind::Player));
             }
+            Condition::PaidToIgnoreBy(who) => {
+                self.uses("Condition", "PaidToIgnoreBy");
+                self.at("PaidToIgnoreBy", |w| w.reference(who, Kind::Player));
+            }
             Condition::Among(who) => {
                 self.uses("Condition", "Among");
                 self.at("Among", |w| w.reference(who, Kind::Player));
@@ -2039,6 +2044,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
                     | CostItem::OthersGainLife(_)
+                    | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
                     | CostItem::XColor(_)
                     | CostItem::Forage => {}
@@ -6230,6 +6236,10 @@ impl Walker<'_> {
                 if cost.has_x() {
                     self.problem("`PayToIgnore` costs no {X}");
                 }
+            }
+            GameRule::PayToIgnoreBy { payer, cost } => {
+                self.at("payer", |w| w.reference(payer, Kind::Player));
+                self.at("cost", |w| w.cost(cost));
             }
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));

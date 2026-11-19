@@ -1243,6 +1243,16 @@ pub enum GameRule {
     /// the other effects of the rule's source until end of turn; those effects leave such a player out with
     /// `Condition::PaidToIgnore` ("Any player may pay {2} for that player to ignore this effect until end of turn.").
     PayToIgnore(ManaCostX),
+    /// The players the reference names may pay the cost, a special action any time they have priority (CR 116.2), for
+    /// that player to ignore the other effects of the rule's source until end of turn; those effects leave such a player
+    /// out with `Condition::PaidToIgnoreBy` ("Its controller may exile three cards from their graveyard for that player
+    /// to ignore this effect until end of turn.").
+    PayToIgnoreBy {
+        /// Who may pay: "its controller", "that creature's controller".
+        payer: Ref,
+        /// What ignoring the effects costs.
+        cost: Cost,
+    },
     /// The permanents the selector picks that the rule's controller controls untap during the untap step of each of the
     /// players (CR 502.3): "untap all creatures you control during each other player's untap step".
     UntapDuring {

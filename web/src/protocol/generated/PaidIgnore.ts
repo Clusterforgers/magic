@@ -11,6 +11,10 @@ export type PaidIgnore = {
  */
 object: ObjectId, 
 /**
- * What ignoring it costs.
+ * The mana ignoring it costs.
  */
-cost: ManaCost, };
+cost: ManaCost, 
+/**
+ * The whole cost as words when it takes more than mana ("Sacrifice a permanent").
+ */
+words?: string, };
