@@ -1,3 +1,4 @@
+import type { CoachMark } from '@/features/learn/anchors'
 import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import { usePlay } from '@/features/game/gameContext'
@@ -20,6 +21,8 @@ interface ZonePictureProps {
   /** The picture's box in px. */
   width: number
   height: number
+  /** The coach's anchor of the picture, if any. */
+  coach?: CoachMark | undefined
 }
 
 const NONE: readonly ObjectId[] = []
@@ -30,7 +33,7 @@ const boxStyle = (width: number, height: number): CSSProperties =>
   ({ '--card-w': `${width}px`, '--card-h': `${height}px` }) as CSSProperties
 
 /** An empty zone: a faint outline with the zone's icon and name, and no picture. */
-function EmptyZone({ zone, width, height }: Omit<ZonePictureProps, 'owner' | 'ids'>) {
+function EmptyZone({ zone, width, height, coach }: Omit<ZonePictureProps, 'owner' | 'ids'>) {
   const Icon = ZONE_ICON[zone]
   const label = zoneLabel(zone, 0)
   return (
@@ -41,6 +44,7 @@ function EmptyZone({ zone, width, height }: Omit<ZonePictureProps, 'owner' | 'id
       title={label}
       data-zone={zone}
       data-empty="true"
+      {...coach}
       style={boxStyle(width, height)}
       className={cn(
         BOX,
@@ -56,7 +60,7 @@ function EmptyZone({ zone, width, height }: Omit<ZonePictureProps, 'owner' | 'id
 }
 
 /** A zone with cards: the picture of the top one with the zone's icon and the count in its corner. */
-function FilledZone({ zone, owner, ids, width, height }: ZonePictureProps) {
+function FilledZone({ zone, owner, ids, width, height, coach }: ZonePictureProps) {
   const [open, setOpen] = useState(false)
   const topId = ids.at(-1) ?? 0
   const name = usePlay((state) => state.objectsById[topId]?.name)
@@ -73,6 +77,7 @@ function FilledZone({ zone, owner, ids, width, height }: ZonePictureProps) {
         data-zone={zone}
         data-legal={legal > 0 ? legal : undefined}
         data-top={topId}
+        {...coach}
         style={boxStyle(width, height)}
         {...handlers}
         className={cn(

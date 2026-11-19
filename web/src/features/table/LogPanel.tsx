@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { memo, useLayoutEffect, useMemo, useRef } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
@@ -99,6 +100,7 @@ export function LogPanel() {
       ref={scroller}
       role="log"
       aria-label="Game log"
+      {...anchor('log')}
       aria-live="off"
       tabIndex={0}
       onScroll={(event) => {

@@ -31,6 +31,7 @@ pub fn bot_config() -> ServerConfig {
             hash_cost: HashCost::cheapest(),
             ..AuthConfig::default()
         },
+        tutorial_beat: Duration::ZERO,
         ..ServerConfig::default()
     }
 }

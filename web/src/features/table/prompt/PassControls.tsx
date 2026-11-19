@@ -1,3 +1,5 @@
+import { usePassHeld } from '@/features/learn/useLessonHold'
+import { anchor } from '@/features/learn/anchors'
 import { EllipsisVertical } from 'lucide-react'
 import { useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
@@ -42,6 +44,9 @@ export function topYieldable(state: PlayState): ObjectView | undefined {
 // A touch screen has no keys to press, so the caps give their room to the label there.
 const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-xs leading-4 font-normal pointer-coarse:hidden'
 
+/** End turn carries one anchor, in the dock or in the menu where the dock is narrow. */
+const END_TURN = anchor('pass.end-turn')
+
 /**
  * The ways to pass priority, for a Priority prompt: a primary button that passes once and says what that does now
  * ("Next: Combat", "Resolve Lightning Bolt", "Continue"), "End turn" beside it to pass until the turn ends, and a small
@@ -56,6 +61,8 @@ const KEY_CAP = 'ml-1 inline-block rounded border px-1 text-xs leading-4 font-no
  */
 export function PassControls({ canPass }: { canPass: boolean }) {
   const { session } = useGame()
+  // A lesson holds passing back while its step asks for something else: the button looks off and a press says why.
+  const held = usePassHeld()
   const { answer } = usePrompt()
   const situation = usePlay(useShallow(passSituation))
   const stacked = usePlay((state) => (state.view?.stack.count ?? 0) > 0)
@@ -96,6 +103,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
       {endTurnInDock ? (
         <Button
           data-slot="secondary-action"
+          {...END_TURN}
           variant="outline"
           className={cn('h-11', padding)}
           disabled={!free}
@@ -116,6 +124,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
         <DropdownMenu>
           <DropdownMenuTrigger
             data-slot="more-passing"
+            {...anchor('pass.more')}
             aria-label="More ways to pass"
             disabled={!free}
             render={<Button variant="outline" size="icon" className="size-11" />}
@@ -126,6 +135,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
             {compact && !last ? (
               <DropdownMenuItem
                 data-yield="EndOfTurn"
+                {...END_TURN}
                 aria-description={YIELD_WORDS.EndOfTurn.description}
                 onClick={() => yieldTo('EndOfTurn')}
               >
@@ -171,10 +181,17 @@ export function PassControls({ canPass }: { canPass: boolean }) {
       {label === null ? null : (
         <Button
           data-slot="primary-action"
+          {...anchor('pass.primary')}
           data-label={label}
-          className={cn('action-glow h-11 min-w-0 font-semibold max-sm:basis-full', padding)}
+          data-held={held || undefined}
+          aria-disabled={held || undefined}
+          className={cn(
+            'action-glow h-11 min-w-0 font-semibold max-sm:basis-full',
+            padding,
+            held && 'opacity-50 saturate-50',
+          )}
           disabled={!free}
-          title={yieldKey ? 'Space' : 'Space or Enter'}
+          title={held ? 'Not in this step of the lesson' : yieldKey ? 'Space' : 'Space or Enter'}
           aria-keyshortcuts={yieldKey ? 'Space' : 'Space Enter'}
           aria-description={primaryDescription(situation)}
           onClick={pass}

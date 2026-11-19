@@ -1,4 +1,5 @@
 /** The opening hand drawn large in the prompt while its keep or mulligan is decided, as Arena shows it. */
+import { anchor } from '@/features/learn/anchors'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
@@ -36,6 +37,7 @@ function OpeningCard({ id }: { id: ObjectId }) {
  * reader and the keyboard, so the row is `aria-hidden` apart from its preview on hover.
  */
 export function OpeningHand({ card }: { card?: number } = {}) {
+  const coach = anchor('opening.hand')
   const ids = usePlay(useShallow(openingHandIds))
   if (ids.length === 0) return null
   if (card !== undefined) {
@@ -44,6 +46,8 @@ export function OpeningHand({ card }: { card?: number } = {}) {
       <ul
         aria-hidden="true"
         data-slot="opening-hand"
+        {...coach}
+        {...coach}
         data-large=""
         style={{ '--card-w': `${card}px`, '--card-h': `${Math.round((card * 7) / 5)}px` } as CSSProperties}
         className="flex basis-full justify-center gap-2"
@@ -58,6 +62,7 @@ export function OpeningHand({ card }: { card?: number } = {}) {
     <ul
       aria-hidden="true"
       data-slot="opening-hand"
+      {...coach}
       className="flex basis-full justify-center-safe gap-2 overflow-x-auto [container-type:inline-size] [--card-h:calc(var(--card-w)*7/5)] [--card-w:max(3rem,min(7rem,11dvh,calc((100cqw_-_3rem)/7)))]"
     >
       {ids.map((id) => (

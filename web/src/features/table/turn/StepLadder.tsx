@@ -1,3 +1,5 @@
+import { anchor } from '@/features/learn/anchors'
+import type { StopAnchor } from '@/features/learn/anchors'
 import { Pin } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import type { FocusEvent, KeyboardEvent } from 'react'
@@ -83,13 +85,15 @@ interface StopMarkProps extends MarkProps {
   tabbable: boolean
   /** The ladder has room to space its marks 44 px apart under a coarse pointer (the popovers, not the top bar). */
   roomy: boolean
+  /** Whether the mark carries the coach's `stops.step.<Step>` anchor (not in the zoomed copy). */
+  coach: boolean
 }
 
 /**
  * A step's mark that is also its stop: a press toggles the stop on the side the ladder shows. A held stop is an
  * outline round the mark and a dot under it (a pin for a lasting one); the current step is the mark's fill.
  */
-function StopMark({ step, state, className, controls, hold, tabbable, roomy }: StopMarkProps) {
+function StopMark({ step, state, className, controls, hold, tabbable, roomy, coach }: StopMarkProps) {
   const { showing, keep, online } = controls
   const description = stopDescription(showing, hold, keep)
   return (
@@ -110,6 +114,7 @@ function StopMark({ step, state, className, controls, hold, tabbable, roomy }: S
         type="button"
         data-slot="stop"
         data-side={showing}
+        {...(coach ? anchor(`stops.step.${step}` as StopAnchor) : {})}
         data-step={step}
         data-keep={hold === 'off' ? undefined : hold}
         data-current={state === 'current' || undefined}
@@ -214,6 +219,7 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' | 'zoom'
         ? { role: 'group', 'aria-label': rowName(showing, controls.turn === showing) }
         : { 'aria-hidden': true })}
       data-slot="step-ladder"
+      {...(place === 'zoom' ? {} : anchor('turn.ladder'))}
       data-place={place}
       data-side={yours ? 'you' : 'them'}
       data-stops-side={interactive ? showing : undefined}
@@ -258,6 +264,7 @@ export function StepLadder({ place = 'bar' }: { place?: 'bar' | 'panel' | 'zoom'
                     hold={stopState(stops, showing, name)}
                     tabbable={name === tab}
                     roomy={place !== 'bar'}
+                    coach={place !== 'zoom'}
                   />
                 ) : (
                   <PlainMark key={name} {...mark} hold={zooms ? stopState(stops, showing, name) : 'off'} />

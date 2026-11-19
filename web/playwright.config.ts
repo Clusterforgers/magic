@@ -85,6 +85,8 @@ export default defineConfig({
         DATABASE_URL: '',
         MTG_DWELL_MS: NO_DWELL,
         MTG_SEED: GAME_SEED,
+        // The practice bot answers at once, so a lesson's walk waits on no beat.
+        MTG_TUTORIAL_BEAT_MS: '0',
         ...(ACTIVE_SECS === undefined
           ? {}
           : { MTG_ACTIVE_SECS: ACTIVE_SECS, MTG_EXTENSION_SECS: EXTENSION_SECS }),

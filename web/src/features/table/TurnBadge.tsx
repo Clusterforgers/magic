@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useShallow } from 'zustand/react/shallow'
 import { Pill } from '@/components/Pill'
 import { usePlay } from '@/features/game/gameContext'
@@ -43,7 +44,7 @@ export function TurnBadge() {
   const yours = usePlay(isYourTurn)
   const phase = usePhase()
   return (
-    <div data-slot="turn-badge" className="flex h-7 min-w-0 items-center">
+    <div data-slot="turn-badge" {...anchor('turn.badge')} className="flex h-7 min-w-0 items-center">
       {phase === null ? null : <PhaseTag phase={phase} yours={yours} />}
       <h2
         data-slot="banner"

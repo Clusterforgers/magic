@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { setImageChoice, useImageChoice } from '@/features/cards/imageSetting'
 import type { ImageChoice } from '@/features/cards/imageSetting'
 import { MenuIcon } from 'lucide-react'
@@ -82,7 +83,14 @@ export function TableMenu({
   return (
     <Popover open={open} onOpenChange={onOpenChange}>
       <PopoverTrigger
-        render={<Button variant="ghost" size={compact ? 'icon-sm' : 'icon'} aria-label="Table menu" />}
+        render={
+          <Button
+            variant="ghost"
+            size={compact ? 'icon-sm' : 'icon'}
+            aria-label="Table menu"
+            {...anchor('table.menu')}
+          />
+        }
       >
         <MenuIcon aria-hidden="true" />
       </PopoverTrigger>

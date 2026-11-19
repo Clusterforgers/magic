@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import {
   closestCenter,
   pointerWithin,
@@ -441,6 +442,7 @@ function TaxPill({ tax }: { tax: number }) {
     <span
       aria-hidden="true"
       data-slot="hand-commander-tax"
+      {...anchor('command.tax')}
       className="pointer-events-none absolute top-1/2 left-1/2 flex -translate-1/2 items-center gap-0.5 rounded-full bg-background/90 px-1 py-px text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
     >
       <Crown className="size-3 shrink-0 text-primary" />

@@ -3,6 +3,7 @@
  * of the type groups, moved up and down with buttons. Both are the account's and hold in every game; dragging a card
  * in the dock still makes a custom order for the game, which picking a sort here drops.
  */
+import { anchor } from '@/features/learn/anchors'
 import { ArrowDown, ArrowUp } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useGame } from '@/features/game/gameContext'
@@ -18,7 +19,7 @@ export function HandOrderMenu() {
   const hand = useHandMode(useGame().game)
   const groups = [...hand.groups]
   return (
-    <div className="grid gap-2">
+    <div {...anchor('hand.menu')} className="grid gap-2">
       <div className="inline-flex w-fit flex-wrap gap-0.5 rounded-lg bg-muted p-0.5">
         {HAND_SORTS.map(({ value, label }) => (
           <Button

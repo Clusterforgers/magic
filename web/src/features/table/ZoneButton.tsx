@@ -1,3 +1,4 @@
+import type { CoachMark } from '@/features/learn/anchors'
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
@@ -94,6 +95,8 @@ interface ZoneButtonProps {
   marks?: readonly BossSatchelView[]
   /** Draws the top card (the commanders) as a small picture beside the figures: the one-line pod's. */
   thumbs?: boolean
+  /** The coach's anchor of the button, if any. */
+  coach?: CoachMark | undefined
 }
 
 const NONE: readonly ObjectId[] = []
@@ -141,6 +144,7 @@ export function ZoneButton({
   className,
   thumbs = false,
   marks,
+  coach,
 }: ZoneButtonProps) {
   const [open, setOpen] = useState(false)
   const Icon = ZONE_ICON[zone]
@@ -159,6 +163,7 @@ export function ZoneButton({
         data-zone={zone}
         data-legal={legal > 0 ? legal : undefined}
         onClick={() => setOpen(true)}
+        {...coach}
         className={cn(
           'min-w-0 text-xs',
           line ? 'gap-0.5 px-0.5' : 'gap-1 px-1.5',

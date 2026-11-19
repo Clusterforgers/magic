@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { Button } from '@/components/ui/button'
 import type { StopSide } from '@/protocol/generated'
 import { SIDE_WORD, sideName, sideTitle } from './stopModel'
@@ -27,6 +28,7 @@ export function StopSideSwitch({ shown, turn, counts, onPick }: StopSideSwitchPr
         <Button
           key={side}
           data-side={side}
+          {...(side === 'Opponent' ? anchor('stops.side.theirs') : {})}
           data-turn={turn === side || undefined}
           size="sm"
           variant={shown === side ? 'default' : 'ghost'}

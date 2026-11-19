@@ -1,3 +1,4 @@
+import { anchor, coachZone } from '@/features/learn/anchors'
 import { Zap } from 'lucide-react'
 import { memo, useContext, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, RefObject } from 'react'
@@ -201,7 +202,12 @@ export function StackChips() {
   if (items.length === 0) return null
   const folded = groups.filter((group) => !shown.has(group.ids[0] ?? 0)).flatMap((group) => group.ids)
   return (
-    <div data-slot="stack-chips" className="flex min-w-0 shrink items-center gap-2">
+    <div
+      data-slot="stack-chips"
+      {...anchor('stack')}
+      {...coachZone('stack')}
+      className="flex min-w-0 shrink items-center gap-2"
+    >
       <span data-slot="stack-label" className="text-xs font-medium text-muted-foreground max-sm:sr-only">
         Stack
       </span>
