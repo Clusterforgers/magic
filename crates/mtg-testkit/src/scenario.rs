@@ -482,6 +482,7 @@ impl Scenario {
             },
             validate_decks: false,
             conjurable: Arc::default(),
+            stacked: false,
         })
     }
 

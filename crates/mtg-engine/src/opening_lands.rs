@@ -25,29 +25,48 @@ impl OpeningLands {
     pub const BOSS: OpeningLands = OpeningLands { least: 2, most: 4 };
 }
 
-/// The opening hand rules of the seats that have one, fixed when the game is set up.
+/// The opening hand rules of the seats that have one, and whether the opening is stacked, fixed when the game is set up.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
-pub(crate) struct OpeningRules(BTreeMap<PlayerId, OpeningLands>);
+pub(crate) struct OpeningRules {
+    lands: BTreeMap<PlayerId, OpeningLands>,
+    /// The opening deals each library in its given order and seat 0 plays first ([`crate::setup::GameSetup::stacked`]).
+    stacked: bool,
+}
 
 impl Hash for OpeningRules {
     fn hash<H: Hasher>(&self, state: &mut H) {
-        if !self.0.is_empty() {
-            self.0.hash(state);
+        if !self.lands.is_empty() {
+            self.lands.hash(state);
+        }
+        // Likewise a game whose opening is not stacked.
+        if self.stacked {
+            self.stacked.hash(state);
         }
     }
 }
 
 impl OpeningRules {
-    /// The rules of a game set up with these seats' ranges.
-    pub(crate) fn of(seats: impl IntoIterator<Item = (PlayerId, OpeningLands)>) -> OpeningRules {
-        OpeningRules(seats.into_iter().collect())
+    /// The rules of a game set up with these seats' ranges, its opening `stacked` or not.
+    pub(crate) fn of(
+        seats: impl IntoIterator<Item = (PlayerId, OpeningLands)>,
+        stacked: bool,
+    ) -> OpeningRules {
+        OpeningRules {
+            lands: seats.into_iter().collect(),
+            stacked,
+        }
     }
 }
 
 impl GameState {
     /// The land count `player`'s opening hand must hold, when the seat has the rule; such a seat takes no mulligan.
     pub fn opening_lands(&self, player: PlayerId) -> Option<OpeningLands> {
-        self.opening_rules.0.get(&player).copied()
+        self.opening_rules.lands.get(&player).copied()
+    }
+
+    /// Whether the opening deals each library in its given order with seat 0 first.
+    pub(crate) fn stacked(&self) -> bool {
+        self.opening_rules.stacked
     }
 }
 

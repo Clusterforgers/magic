@@ -33,13 +33,20 @@ pub(crate) fn shuffled(state: &GameState, offset: u64, mut cards: Vec<ObjectId>)
 /// Events that pick the first player, shuffle every library and open the mulligan phase.
 pub(crate) fn pregame(state: &GameState) -> Vec<Event> {
     let seats = state.players().len();
-    let first = state.turn_lead(crate::restart::starting_player(state).unwrap_or_else(|| {
-        PlayerId::from_index(GameRng::substream(state.seed, state.rng_index).index(seats))
-    }));
+    let first = if state.stacked() {
+        PlayerId(0)
+    } else {
+        state.turn_lead(crate::restart::starting_player(state).unwrap_or_else(|| {
+            PlayerId::from_index(GameRng::substream(state.seed, state.rng_index).index(seats))
+        }))
+    };
     let mut events = vec![Event::FirstPlayerChosen { player: first }];
     // A companion is revealed before the libraries are shuffled, the first player's first (CR 702.139a).
     events.extend(crate::companions::reveals(state, first));
     for (offset, seat) in (1u64..).zip(0..seats) {
+        if state.stacked() {
+            break;
+        }
         let player = PlayerId::from_index(seat);
         let order = shuffled(state, offset, state.zone(Zone::Library(player)).to_vec());
         events.push(Event::LibraryShuffled { player, order });
@@ -101,7 +108,11 @@ fn deal(state: &GameState, players: &[PlayerId]) -> Vec<Event> {
             events.push(Event::MulliganKept { player });
             continue;
         }
-        if rules.opening_hand_smoothing() && size > 0 && library.len() >= 2 * size {
+        if rules.opening_hand_smoothing()
+            && !state.stacked()
+            && size > 0
+            && library.len() >= 2 * size
+        {
             let second: Vec<ObjectId> = library
                 .iter()
                 .rev()
