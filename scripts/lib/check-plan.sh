@@ -11,6 +11,10 @@ declare -A crate_dir=() crate_deps=()
 all_crates=()
 slow_file="scripts/slow-tests.txt"
 slow_limit=5
+slice_file="scripts/seed-slices.txt"
+gate_slices=4
+# A seeded suite on the slice list may hold tests up to this many seconds; the gate runs a quarter of them.
+slice_limit=20
 
 # --- Crate graph -------------------------------------------------------------------------------------------------
 
@@ -129,7 +133,7 @@ key_paths() {
       for dep in $(closure "$name"); do echo "${crate_dir[$dep]}"; done
       [[ -z "${extra_inputs[$name]:-}" ]] || echo "${extra_inputs[$name]}"
       [[ "$pg_crates" != *" $name "* ]] || printf '%s\n' .sqlx docker-compose.yml
-      [[ "$kind" != gate-test ]] || echo "$slow_file"
+      [[ "$kind" != gate-test ]] || printf '%s\n' "$slow_file" "$slice_file"
       ;;
   esac
 }
@@ -167,6 +171,81 @@ slow_skip_args() {
   slow_entries | awk '{ print "--skip"; print $0 }'
 }
 
+# --- Seed slices -------------------------------------------------------------------------------------------------
+
+# seed_slice <mode> [commit]: sets REPLY to the seed slice of the run, "k/n" (1 <= k <= n) or "all". MTG_SEED_SLICE
+# names it; else the gate takes slice (commit mod gate_slices) + 1 of the commit (default HEAD), so successive commits
+# cover every slice and a rerun on one commit runs the same tests, and every other mode runs all. Fails on a bad value.
+seed_slice() {
+  local spec="${MTG_SEED_SLICE:-}" rev="${2:-HEAD}" sha k n
+  if [[ -z "$spec" ]]; then
+    if [[ "$1" != gate ]]; then
+      REPLY=all
+      return 0
+    fi
+    sha=$(git rev-parse --verify --quiet "$rev^{commit}" 2>/dev/null || echo 0)
+    spec="$((16#${sha:0:7} % gate_slices + 1))/$gate_slices"
+  fi
+  if [[ "$spec" == all ]]; then
+    REPLY=all
+    return 0
+  fi
+  if [[ ! "$spec" =~ ^([0-9]+)/([0-9]+)$ ]]; then
+    echo "MTG_SEED_SLICE must be all or k/n with 1 <= k <= n, not: $spec" >&2
+    return 1
+  fi
+  k=$((10#${BASH_REMATCH[1]})) n=$((10#${BASH_REMATCH[2]}))
+  if ((k < 1 || k > n)); then
+    echo "MTG_SEED_SLICE must be all or k/n with 1 <= k <= n, not: $spec" >&2
+    return 1
+  fi
+  REPLY="$k/$n"
+}
+
+# slice_entries: the lines "<unit> [<test path prefix>|!<test path prefix>]" of the slice list, without comments and
+# blank lines. A unit alone slices all its tests, a prefix the tests that start with it, and `!` keeps those whole.
+slice_entries() {
+  [[ -f "$slice_file" ]] || return 0
+  sed -e 's/#.*//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' "$slice_file" | grep -v '^$' || true
+}
+
+# sliced_unit <unit>: the unit has tests on the slice list.
+sliced_unit() {
+  slice_entries | awk -v u="$1" '$1 == u { found = 1 } END { exit !found }'
+}
+
+# slice_tests <unit> <k/n> <skip substrings, one per line>: of the test names on stdin, those this slice runs: a name
+# a skip substring matches is left out, and a name the slice list gives the unit is kept when a hash of the name
+# falls in slice k of n. Each case of a table hashes on its own, so a slice holds about 1/n of every listed suite.
+slice_tests() {
+  local k="${2%/*}" n="${2#*/}"
+  awk -v unit="$1" -v k="$k" -v n="$n" -v skips="$3" -v entries="$(slice_entries)" '
+    BEGIN {
+      ns = split(skips, s, "\n")
+      ne = split(entries, line, "\n")
+      np = nx = 0
+      for (i = 1; i <= ne; i++) {
+        m = split(line[i], w, /[[:space:]]+/)
+        if (w[1] != unit) continue
+        if (m > 1 && substr(w[2], 1, 1) == "!") x[++nx] = substr(w[2], 2)
+        else p[++np] = (m > 1 ? w[2] : "")
+      }
+      for (c = 32; c < 127; c++) ord[sprintf("%c", c)] = c
+    }
+    {
+      for (i = 1; i <= ns; i++) if (s[i] != "" && index($0, s[i])) next
+      sliced = 0
+      for (i = 1; i <= np; i++) if (index($0, p[i]) == 1) sliced = 1
+      for (i = 1; i <= nx; i++) if (index($0, x[i]) == 1) sliced = 0
+      if (sliced) {
+        h = 0
+        for (j = 1; j <= length($0); j++) h = (h * 31 + ord[substr($0, j, 1)]) % 1000003
+        if (h % n != k - 1) next
+      }
+      print
+    }'
+}
+
 # --- Thread budget -----------------------------------------------------------------------------------------------
 
 # thread_share <cores> <checks running>: the threads one check may use at once, at least 4.
@@ -180,5 +259,13 @@ thread_share() {
 # three or more wait (the biggest binary comes first and takes the most), between 2 and 12.
 unit_threads() {
   local t=$(($1 / ($2 < 3 ? ($2 > 0 ? $2 : 1) : 3)))
+  echo $((t < 2 ? 2 : t > 12 ? 12 : t))
+}
+
+# expected_threads <free threads> <seconds of the binary> <seconds of every binary waiting>: the test threads of a
+# binary whose last run is known, its share of the waiting work (rounded up), between 2 and 12. The binary that took
+# longest takes the most, so it does not run on a few threads after the others are done.
+expected_threads() {
+  local t=$((($1 * $2 + $3 - 1) / ($3 > 0 ? $3 : 1)))
   echo $((t < 2 ? 2 : t > 12 ? 12 : t))
 }
