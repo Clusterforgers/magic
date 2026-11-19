@@ -68,7 +68,11 @@ describe('Continue', () => {
 
   it('drops a lobby that closed since the last listing, never showing the stale link meanwhile', async () => {
     // The first listing has a Delves fight lobby; the run ends and the next listing no longer has it.
-    const fight = listed({ game: 'g1', status: 'lobby', others: [{ seat: 1, name: 'Seraphine', user: null }] })
+    const fight = listed({
+      game: 'g1',
+      status: 'lobby',
+      others: [{ seat: 1, name: 'Seraphine', user: null }],
+    })
     let answer: (games: MyGame[]) => void = () => {}
     const myGames = vi
       .fn<() => Promise<MyGame[]>>()

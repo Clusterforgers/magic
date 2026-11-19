@@ -85,7 +85,9 @@ test('a hero with two bot allies descends, fights the first boss and reaches the
   }
 })
 
-test('ending a run with hearts left closes its fight lobby, so Play offers no way back to it', async ({ browser }) => {
+test('ending a run with hearts left closes its fight lobby, so Play offers no way back to it', async ({
+  browser,
+}) => {
   test.setTimeout(3 * 60_000)
   const account = await signUp(browser, 'quitter')
   const { verified } = await precons(browser)
