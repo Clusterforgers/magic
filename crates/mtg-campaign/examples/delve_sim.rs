@@ -1,9 +1,12 @@
 //! Plays Delves fights and runs with bot parties to tune the bosses: `cargo run --release -p mtg-campaign --example
-//! delve_sim -- <mode> [games] [heroes] [hero level] [first seed] [threads] [heat]`, a mode `fights` (each boss against a
-//! fresh party) or `runs` (whole runs, life carried and loot taken), a level `easy`, `normal`, `hard` or `veryhard`.
-//! The heroes play the four fixture Commander decks in turn; every game is untimed, so a result replays with its seed.
-//! Each fight reports its turns, the boss side's share of them and an estimate of its minutes at a human pace.
-//! A run plays the newest content generation (`DELVE_SIM_CONTENT` sets another); `DELVE_SIM_BOSSES` picks the bosses.
+//! delve_sim -- <mode> [games] [heroes] [hero level] [first seed] [threads] [heat] [depth] [modifier]`, a mode
+//! `fights` (each boss against a fresh party) or `runs` (whole runs, life carried and loot taken), a level `easy`,
+//! `normal`, `hard` or `veryhard`. The heroes play the four fixture Commander decks in turn;
+//! every game is untimed, so a result replays with its seed.
+//! The depth is the bosses defeated before the fight; the modifier is `rolled`, `none` or a modifier's id. Each boss
+//! gets one `key=value` line: wins, the round each fight ended in, the share that reached each phase, turns, minutes.
+//! A run plays the newest content generation (`DELVE_SIM_CONTENT` sets another); `DELVE_SIM_THEME` picks the theme
+//! (`warrens` by default) and `DELVE_SIM_BOSSES` the bosses.
 #![allow(
     clippy::unwrap_used,
     clippy::expect_used,
@@ -11,12 +14,13 @@
     clippy::pedantic
 )]
 
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::time::Instant;
 
+use mtg_campaign::sim::{FightLength, Lengths};
 use mtg_campaign::{Brain, FightPlan, HeroDeck, Run, RunEvent, Status, content};
 use mtg_cards::CardDefinition;
 use mtg_core::ids::PlayerId;
@@ -27,7 +31,11 @@ use mtg_testkit::corpus;
 use mtg_testkit::fixture_decks::{FixtureDeck, fixture_deck};
 use mtg_testkit::harness::{PlayOptions, play_brains};
 
-/// A deck card by name: a basic land from the testkit, anything else from the corpus.
+/// The deck cards the corpus lacks (drafts of the read tier), played as Wastes.
+static MISSING: Mutex<BTreeSet<String>> = Mutex::new(BTreeSet::new());
+
+/// A deck card by name: a basic land from the testkit, anything else from the corpus; a card the corpus lacks stands
+/// in as Wastes and is listed in [`MISSING`].
 fn card(name: &str) -> Arc<CardDefinition> {
     use mtg_core::color::Color;
     let basic = [
@@ -39,7 +47,10 @@ fn card(name: &str) -> Arc<CardDefinition> {
     ];
     match basic.iter().find(|(basic, _)| *basic == name) {
         Some((_, color)) => mtg_testkit::cards::land(*color),
-        None => corpus::card(name).unwrap(),
+        None => corpus::card(name).unwrap_or_else(|_| {
+            MISSING.lock().unwrap().insert(name.to_owned());
+            mtg_testkit::cards::wastes()
+        }),
     }
 }
 
@@ -93,6 +104,10 @@ struct Fought {
     first_half: Option<u32>,
     /// The round in which a hero first fell, if one did.
     first_fall: Option<u32>,
+    /// The round the fight ended in and the boss phases it reached; none when it failed.
+    length: Option<FightLength>,
+    /// The boss's modifier, if it had one.
+    modifier: Option<String>,
 }
 
 /// What the log shows about the heroes' life: the round each hero first fell to half life or below, and first fell.
@@ -258,7 +273,9 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 );
             }
             let mut pressure = Vec::new();
+            let mut round = 0;
             if let Ok(engine) = state {
+                round = engine.turn().round();
                 for at in 0..plan.heroes.len() {
                     let player = engine.player(PlayerId::from_index(at)).unwrap();
                     lives.push(player.life());
@@ -298,6 +315,7 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 .count() as u64;
             let (first_half, first_fall) =
                 life_marks(&setup_of(plan, cards, seed), &outcome.events, party);
+            let length = Some(FightLength::of(round, &outcome.events, party));
             Fought {
                 won,
                 lives,
@@ -311,6 +329,8 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 pressure,
                 first_half,
                 first_fall,
+                length,
+                modifier: plan.boss.modifier.clone(),
             }
         }
         Err(failure) => {
@@ -328,6 +348,8 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 pressure: Vec::new(),
                 first_half: None,
                 first_fall: None,
+                length: None,
+                modifier: plan.boss.modifier.clone(),
             }
         }
     }
@@ -350,6 +372,10 @@ struct Tally {
     halves: Vec<u32>,
     /// The round a hero first fell, per fight in which one did.
     first_falls: Vec<u32>,
+    /// The round each fight ended in and the phases it reached.
+    lengths: Lengths,
+    /// The modifiers the boss fought with.
+    modifiers: BTreeSet<String>,
 }
 
 impl Tally {
@@ -369,6 +395,11 @@ impl Tally {
         }
         self.halves.extend(fought.first_half);
         self.first_falls.extend(fought.first_fall);
+        if let Some(length) = fought.length {
+            self.lengths.add(length);
+        }
+        self.modifiers
+            .insert(fought.modifier.clone().unwrap_or_else(|| "none".into()));
     }
 
     fn merge(&mut self, other: &Tally) {
@@ -383,6 +414,8 @@ impl Tally {
         self.max_shares.extend(&other.max_shares);
         self.halves.extend(&other.halves);
         self.first_falls.extend(&other.first_falls);
+        self.lengths.merge(&other.lengths);
+        self.modifiers.extend(other.modifiers.iter().cloned());
     }
 
     /// The spotlight's measures: the mean largest share of pressure on one hero, the round a hero first fell to half
@@ -404,32 +437,32 @@ impl Tally {
         )
     }
 
+    /// The tally as `key=value` fields after the boss's own: fights, wins, the rounds and phases, turns and minutes.
     fn line(&self) -> String {
         let n = self.n.max(1) as f64;
         let hero_turns = (self.turns - self.boss_turns) as f64 / n;
         let boss_turns = self.boss_turns as f64 / n;
+        let modifiers: Vec<&str> = self.modifiers.iter().map(String::as_str).collect();
         format!(
-            "{}/{} won ({:.0}%), {:.1} turns ({:.1} boss side), ~{:.0} min, {} falls, {} rises, {} haunts{}",
-            self.won,
+            "modifier={} n={} won={} win={:.0}% {} turns={:.1} boss_turns={:.1} min={:.0} falls={} rises={} haunts={} failed={}",
+            modifiers.join("+"),
             self.n,
+            self.won,
             100.0 * self.won as f64 / n,
+            self.lengths.fields(),
             self.turns as f64 / n,
             boss_turns,
             hero_turns * HERO_TURN_MINUTES + boss_turns * BOSS_TURN_MINUTES,
             self.falls,
             self.rises,
             self.haunts,
-            if self.failed > 0 {
-                format!(", {} FAILED", self.failed)
-            } else {
-                String::new()
-            }
+            self.failed,
         )
     }
 }
 
-/// A run in its lobby with `heroes` bot heroes on the precons; the first hero counts as the player.
-fn lobby(seed: u64, heroes: usize, heat: u8) -> (Run, Vec<RunEvent>) {
+/// A run of `theme` in its lobby with `heroes` bot heroes on the precons; the first hero counts as the player.
+fn lobby(theme: &str, seed: u64, heroes: usize, heat: u8) -> (Run, Vec<RunEvent>) {
     let content = content().unwrap();
     // `DELVE_SIM_CONTENT` plays a run of that content generation; a new run's by default.
     let version = std::env::var("DELVE_SIM_CONTENT")
@@ -455,7 +488,7 @@ fn lobby(seed: u64, heroes: usize, heat: u8) -> (Run, Vec<RunEvent>) {
     }
     events.push(RunEvent::Started);
     (
-        Run::replay(content, "warrens", seed, heat, &events).unwrap(),
+        Run::replay(content, theme, seed, heat, &events).unwrap(),
         events,
     )
 }
@@ -469,10 +502,27 @@ fn main() {
     let first: u64 = args.get(4).map_or(1, |a| a.parse().unwrap());
     let threads: u64 = args.get(5).map_or(4, |a| a.parse().unwrap());
     let heat: u8 = args.get(6).map_or(0, |a| a.parse().unwrap());
+    let depth: u32 = args.get(7).map_or(0, |a| a.parse().unwrap());
+    // The modifier every fight has: `rolled` (the run's draw), `none` or a modifier's id.
+    let modifier = args.get(8).cloned().unwrap_or_else(|| "rolled".into());
     let content = content().unwrap();
     // The bosses' bots read their Satchel cues from the content, as the server's do.
     mtg_testkit::brain::satchel::install(content.satchel_cues());
-    let theme = &content.themes[0];
+    // `DELVE_SIM_THEME` plays that theme's bosses; the Warrens by default.
+    let theme = content
+        .theme(&std::env::var("DELVE_SIM_THEME").unwrap_or_else(|_| "warrens".into()))
+        .unwrap();
+    let modifier: Option<Option<String>> = match modifier.as_str() {
+        "rolled" => None,
+        "none" => Some(None),
+        id => {
+            assert!(
+                content.modifiers.iter().any(|m| m.id == id),
+                "unknown modifier {id}"
+            );
+            Some(Some(id.to_owned()))
+        }
+    };
     // `DELVE_SIM_BOSSES` (comma-separated ids) plays only those bosses.
     let only = std::env::var("DELVE_SIM_BOSSES").ok();
     let bosses: Vec<String> = theme
@@ -502,7 +552,7 @@ fn main() {
                         // Each boss in turn against a fresh party.
                         // The boss follows the seed, so one game from any seed meets the same boss as in a longer series.
                         let boss = &bosses[usize::try_from(seed - 1).unwrap() % bosses.len()];
-                        let (mut run, _) = lobby(seed, heroes, heat);
+                        let (mut run, _) = lobby(&theme.id, seed, heroes, heat);
                         // A boss off this seed's ladder takes the place of the boss of its rank (the final one for a
                         // final boss, else the first).
                         let node = match run.map.nodes.iter().find(|n| n.boss.as_deref() == Some(boss)) {
@@ -523,15 +573,18 @@ fn main() {
                         run.at = Some(node);
                         run.status = Status::Fight { game: None };
                         let mut plan = run.fight_plan(content).unwrap().unwrap();
-                        // `DELVE_SIM_DEPTH` meets the boss at that depth (bosses defeated before it).
-                        if let Ok(depth) = std::env::var("DELVE_SIM_DEPTH") {
-                            let spec = theme.boss(boss).unwrap();
-                            plan.boss = run
-                                .boss_seat(content, spec, node, (heroes, depth.parse().unwrap()))
-                                .unwrap();
+                        // The boss meets the party at `depth` (bosses defeated before it).
+                        let spec = theme.boss(boss).unwrap();
+                        plan.boss = run
+                            .boss_seat(content, spec, node, (heroes, depth))
+                            .unwrap();
+                        if let Some(modifier) = &modifier {
+                            plan.boss.modifier.clone_from(modifier);
                         }
                         let t = Instant::now();
                         let fought = fight(&plan, &vec![Vec::new(); heroes], seed, hero_level);
+                        // `DELVE_SIM_SEEDS` prints a line per fight.
+                        if std::env::var_os("DELVE_SIM_SEEDS").is_some() {
                         println!(
                             "seed {seed} {boss}: {} in {} turns ({} boss side, {:.0}s), pressure {:?}, half {:?}, fall {:?}{}",
                             if fought.won { "win" } else { "loss" },
@@ -543,6 +596,7 @@ fn main() {
                             fought.first_fall,
                             if fought.failed { " FAILED" } else { "" }
                         );
+                        }
                         fights
                             .lock()
                             .unwrap()
@@ -550,7 +604,7 @@ fn main() {
                             .or_default()
                             .add(&fought);
                     } else {
-                        let (mut run, _) = lobby(seed, heroes, heat);
+                        let (mut run, _) = lobby(&theme.id, seed, heroes, heat);
                         let mut fights_played = 0u64;
                         while !run.is_over() && fights_played < 12 {
                             match run.status.clone() {
@@ -624,18 +678,30 @@ fn main() {
             });
         }
     });
-    println!(
-        "\n{heroes} heroes ({hero_level:?}), Heat {heat}, {:.0}s",
+    // The fields every summary line starts with after the boss.
+    let head = format!(
+        "theme={} heroes={heroes} level={hero_level:?} heat={heat} depth={} secs={:.0}",
+        theme.id,
+        if mode == "fights" {
+            depth.to_string()
+        } else {
+            "run".into()
+        },
         started.elapsed().as_secs_f64()
     );
     let table = fights.lock().unwrap();
     let mut all = Tally::default();
     for (boss, tally) in table.iter() {
-        println!("{boss:>16}: {}", tally.line());
+        println!("boss={boss} {head} {}", tally.line());
         all.merge(tally);
     }
-    println!("{:>16}: {}", "all", all.line());
-    println!("{:>16}: {}", "spotlight", all.spotlight_line());
+    println!("boss=all {head} {}", all.line());
+    println!("spotlight {}", all.spotlight_line());
+    let missing = MISSING.lock().unwrap();
+    if !missing.is_empty() {
+        let names: Vec<&str> = missing.iter().map(String::as_str).collect();
+        println!("missing n={} as Wastes: {}", names.len(), names.join("; "));
+    }
     let runs = runs.lock().unwrap();
     if !runs.is_empty() {
         let victories = runs.iter().filter(|(_, v)| *v).count();

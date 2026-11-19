@@ -19,6 +19,7 @@ mod rework_warrens_b;
 mod runs;
 mod satchel;
 mod satchel_cues;
+mod sim_lengths;
 mod spire;
 mod spirits;
 mod trades;

@@ -12,6 +12,7 @@ pub mod relics;
 pub mod rng;
 pub mod run;
 pub mod scale;
+pub mod sim;
 pub mod upgrade;
 
 pub use content::{
