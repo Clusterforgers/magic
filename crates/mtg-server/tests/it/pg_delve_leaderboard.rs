@@ -41,7 +41,8 @@ async fn started(server: &TestServer, host: &Browser, heat: u8) -> String {
     id
 }
 
-/// Wins the fight the run is in, then answers offers and votes until the next fight's game is made.
+/// Wins the fight the run is in, then answers offers and votes until the next fight's game is made; an event's card
+/// cost gives up the first Satchel card.
 async fn win(server: &TestServer, pool: &PgPool, id: &str, host: &Browser) {
     let event = json!({"FightEnded": {"won": true, "lives": [30, 30], "spirits": []}});
     sqlx::query(
@@ -68,6 +69,8 @@ async fn win(server: &TestServer, pool: &PgPool, id: &str, host: &Browser) {
                 json!("Rest")
             } else if offer.get("Shop").is_some() || offer == "Duplicate" {
                 json!("Skip")
+            } else if offer == "Discard" {
+                json!({"Discard": run["heroes"][0]["satchel"][0]})
             } else {
                 json!({"Take": 0})
             };
