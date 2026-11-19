@@ -1,0 +1,10 @@
+Drought	CostModifier extra non-mana part: an increase that adds CostItem::Sacrifice of a Swamp per black symbol, counted from the mana cost of the spell (announce::modifiers) and from the activation cost of the ability (price of Ability::Activated, activation_kind), paid with the other parts (CR 601.2f, 602.2b)	none
+Brutal Suppression	The same CostModifier sacrifice part ("Sacrifice a land") applied to the activations of the abilities of the objects `applies_to` selects (nontoken Rebels), mana abilities included (CR 605.3a)	none
+Snowfall	Mana-production trigger adding {U} restricted to cumulative upkeep costs (a Spend restriction kind `CumulativeUpkeep` read by the upkeep payment of Keyword::CumulativeUpkeep), with the Island-is-snow branch adding {U}{U} or {U}	Replacement of produced mana conditioned on the tapped land's snow supertype
+Balduvian Fallen	TriggerPattern::CumulativeUpkeepPaid (an event logged by the cumulative upkeep payment) with Amount::ManaSpent filtered by color over that payment's mana	none
+Bounty of the Hunt	DelayedTrigger at the next cleanup step that removes, per target, as many counters as were actually put on it by the division (counters put this way, after replacements such as doublers), carried from the setting effect into the delayed trigger (CR 603.7c)	TriggerPattern StepBegins Cleanup for a delayed trigger (CR 514.3a: triggers in cleanup give priority)
+Shambling Swarm	Same per-target "counters put this way" record carried into a DelayedTrigger at the beginning of the next end step, for -1/-1 counters of a dies trigger's division	none
+Wicker Picker	Sticker kicker granted to creature spells: an optional cost giving {TK} and a sticker placement (un33c)	not started for time
+Clandestine Chameleon	Modification granting the abilities of ability stickers on other permanents you own and on cards in your graveyard (un33c)	not started for time
+Last Voyage of the _____	Amount: name stickers on this permanent with N or fewer letters (un33c)	not started for time
+Pin Collection	Ability sticker placement on an Equipment without paying its ticket cost and "has all abilities of ability stickers" (un33c)	not started for time
