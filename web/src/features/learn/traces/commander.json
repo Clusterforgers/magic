@@ -1,0 +1,409 @@
+[
+  {
+    "act": "Cast",
+    "cards": ["Giada, Font of Hope"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [
+        {
+          "id": 24,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Plains"
+        },
+        {
+          "id": 21,
+          "name": "Plains"
+        },
+        {
+          "id": 22,
+          "name": "Plains"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [
+        {
+          "id": 24,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [],
+      "decision": "PayMana",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Plains"
+        },
+        {
+          "id": 21,
+          "name": "Plains"
+        },
+        {
+          "id": 22,
+          "name": "Plains"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Plains"
+        },
+        {
+          "id": 21,
+          "name": "Plains"
+        },
+        {
+          "id": 22,
+          "name": "Plains"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Choose",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "YesNo",
+      "graveyard": [
+        {
+          "id": 24,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "hand": [],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Plains"
+        },
+        {
+          "id": 21,
+          "name": "Plains"
+        },
+        {
+          "id": 22,
+          "name": "Plains"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [
+        {
+          "id": 45,
+          "name": "Doom Blade"
+        }
+      ],
+      "theirLife": 40,
+      "turn": 6,
+      "won": false
+    },
+    "yes": true
+  },
+  {
+    "act": "Cast",
+    "cards": ["Giada, Font of Hope"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [
+        {
+          "id": 24,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Serra Angel"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Plains"
+        },
+        {
+          "id": 21,
+          "name": "Plains"
+        },
+        {
+          "id": 22,
+          "name": "Plains"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [
+        {
+          "id": 45,
+          "name": "Doom Blade"
+        }
+      ],
+      "theirLife": 40,
+      "turn": 7,
+      "won": false
+    }
+  },
+  {
+    "act": "PayAuto",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [
+        {
+          "id": 24,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "creatures": [],
+      "decision": "PayMana",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Serra Angel"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Plains"
+        },
+        {
+          "id": 21,
+          "name": "Plains"
+        },
+        {
+          "id": 22,
+          "name": "Plains"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [
+        {
+          "id": 45,
+          "name": "Doom Blade"
+        }
+      ],
+      "theirLife": 40,
+      "turn": 7,
+      "won": false
+    }
+  },
+  {
+    "act": null,
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 24,
+          "name": "Giada, Font of Hope"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Serra Angel"
+        }
+      ],
+      "lands": [
+        {
+          "id": 20,
+          "name": "Plains"
+        },
+        {
+          "id": 21,
+          "name": "Plains"
+        },
+        {
+          "id": 22,
+          "name": "Plains"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "stops": [
+        {
+          "side": "Own",
+          "step": "Main2"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [
+        {
+          "id": 45,
+          "name": "Doom Blade"
+        }
+      ],
+      "theirLife": 40,
+      "turn": 7,
+      "won": false
+    }
+  }
+]
