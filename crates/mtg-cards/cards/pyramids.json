@@ -1,0 +1,51 @@
+{
+  "oracle_id": "da2f0d16-3cb4-492d-8535-52a31dbae95e",
+  "name": "Pyramids",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pyramids",
+      "oracle_fingerprint": "44a31f3667a9ffcb6621baccae3f1f7c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{2}",
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Subtype": "Aura" },
+                              { "AttachedTo": { "Each": [{ "Type": "Land" }] } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Land" }] } }],
+                      "effects": [
+                        {
+                          "Shield": {
+                            "when": { "Destroyed": { "what": [{ "Is": { "Target": 0 } }] } },
+                            "by": { "InsteadNext": [{ "RemoveDamage": { "what": "Triggering" } }] },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

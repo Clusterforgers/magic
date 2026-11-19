@@ -13,6 +13,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             ReplaceWhen::Draw {
                 who: Ref::You,
                 except_draw_step: 0,
+                first: false,
             },
         by: ReplaceBy::Instead(effects),
         condition: None,

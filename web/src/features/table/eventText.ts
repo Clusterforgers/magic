@@ -1444,6 +1444,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('DrewFromEmptyLibrary' in event) {
     return line(`${n.seat(event.DrewFromEmptyLibrary.player)} tries to draw from an empty library`)
   }
+  if ('R109DrawReplaced' in event) return quiet(`A draw of ${n.seat(event.R109DrawReplaced.player)} is replaced`)
   if ('CardDiscarded' in event) {
     return line(`${n.seat(event.CardDiscarded.player)} discards ${n.card(event.CardDiscarded.object)}`)
   }

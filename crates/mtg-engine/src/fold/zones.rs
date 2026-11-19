@@ -56,6 +56,9 @@ pub(super) fn move_object(
         return Err(invalid(format!("zone {to:?} does not exist")));
     }
     let (was_creature, w14b_phyrexian) = w14b_dying_kind(state, id, to);
+    if to != Zone::Battlefield {
+        crate::rules::r109_keep_copiable(state, id);
+    }
     keep_left_spell(state, id);
     tally_nonland_leaving(state, id, to);
     log_death(state, id, to);
@@ -532,7 +535,7 @@ fn spell_cast(
         )));
     }
     expect_in(state, object, from)?;
-    let uncounterable = crate::rules::spend_next_spells(state, player, object);
+    let (uncounterable, resolves) = crate::rules::spend_next_spells(state, player, object);
     // Read before the tally below closes a permission that works once each turn.
     let riders = crate::rules::r401_cast_riders(state, player, object, from, choices.way);
     note_permission_used(state, player, object, from, choices.way);
@@ -546,6 +549,9 @@ fn spell_cast(
     set_controller(state, object, player);
     if uncounterable {
         crate::rules::uncounterable_from_now(state, player, object);
+    }
+    for by in resolves {
+        crate::rules::r6503_resolves_from_now(state, player, object, by);
     }
     let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
         spell.card().is_type(CardType::Instant) || spell.card().is_type(CardType::Sorcery)
@@ -758,6 +764,7 @@ fn card_drawn(
     }
     move_object(state, object, Zone::Hand(player), Placement::Top)?;
     state.tally(player, Tally::Drawn);
+    state.tally(player, Tally::R109WouldDraw);
     if let Some(reference) = state.object(object).map(GameObject::reference) {
         state.tally_object(reference, None, Tally::Dk26Drawn);
         let nth = state.tallied(player, Tally::Drawn);

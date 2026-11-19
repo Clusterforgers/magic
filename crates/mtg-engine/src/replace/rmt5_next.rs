@@ -12,7 +12,9 @@ pub(super) fn is_next(rule: &Rule) -> bool {
     matches!(
         rule,
         Rule::Replaces {
-            when: ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
+            when: ReplaceWhen::Draw { .. }
+                | ReplaceWhen::LoseGame { .. }
+                | ReplaceWhen::Destroyed { .. },
             by: ReplaceBy::InsteadNext(_),
             ..
         }

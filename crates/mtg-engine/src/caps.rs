@@ -606,6 +606,7 @@ const RUNS: &[&str] = &[
     "Rule.AdditionalLandPlays",
     "Rule.TriggerAgain",
     "Rule.NextSpell",
+    "SpellBenefit.R6503Resolves",
     "Rule.SpellCost",
     "Rule.DamageCantBePrevented",
     "Rule.GraveyardCardsUntargetable",
@@ -970,6 +971,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Mill",
     "ReplaceWhen.Draw",
     "ReplaceWhen.Draw.ExceptDrawStep",
+    "ReplaceWhen.Draw.First",
     "ReplaceWhen.Enters",
     "ReplaceWhen.Explores",
     "ReplaceWhen.Connives",
@@ -1006,6 +1008,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Instead",
     "ReplaceBy.Plus",
     "ReplaceBy.InsteadNext",
+    "ReplaceBy.NextBatch",
     "ReplaceBy.RedirectUpTo",
     "ReplaceBy.RedirectCounted",
     "ReplaceBy.Redirect",
@@ -1410,6 +1413,9 @@ mod tests {
     #[case::r4708_more_cards_to_surveil("ReplaceBy.MayAddAmount", true)]
     #[case::replacing_mills("ReplaceWhen.Mill", true)]
     #[case::replacing_draws("ReplaceWhen.Draw", true)]
+    #[case::r109_the_first_draw_of_a_turn("ReplaceWhen.Draw.First", true)]
+    #[case::r109_a_shield_used_up_by_its_next_batch("ReplaceBy.NextBatch", true)]
+    #[case::r109_the_next_spell_put_elsewhere_as_it_resolves("SpellBenefit.R6503Resolves", true)]
     #[case::replacing_entering("ReplaceWhen.Enters", true)]
     #[case::multiplying("ReplaceBy.Multiply", true)]
     #[case::adding("ReplaceBy.Add", true)]

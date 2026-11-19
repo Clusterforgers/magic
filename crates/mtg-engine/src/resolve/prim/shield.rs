@@ -58,6 +58,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             when: when.clone(),
             by: by.clone(),
             players,
+            bound: super::r370_bound::r370_shield_targets(cx)?,
+            lki: Vec::new(),
         };
         return Ok(begin(cx, rule, duration.clone()));
     }

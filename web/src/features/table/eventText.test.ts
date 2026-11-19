@@ -319,6 +319,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   LifePaid: [{ LifePaid: { player: 1, amount: 4 } }, 'Bo pays 4 life'],
   CardDrawn: [{ CardDrawn: { player: 0, object: 3 } }, 'Ana draws Forest'],
   DrewFromEmptyLibrary: [{ DrewFromEmptyLibrary: { player: 1 } }, 'Bo tries to draw from an empty library'],
+  R109DrawReplaced: [{ R109DrawReplaced: { player: 1 } }, 'A draw of Bo is replaced'],
   CardDiscarded: [{ CardDiscarded: { player: 0, object: 2 } }, 'Ana discards Hill Giant'],
   Cycled: [{ Cycled: { player: 0, object: 2 } }, 'Ana cycles Hill Giant'],
   AttackersDeclared: [

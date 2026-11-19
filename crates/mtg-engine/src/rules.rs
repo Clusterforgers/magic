@@ -603,6 +603,16 @@ pub enum Rule {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[cfg_attr(feature = "ts", ts(optional, as = "Option<Vec<PlayerId>>"))]
         players: Vec<PlayerId>,
+        /// The targets of the ability that made it, by the names `Ref::Target` reads them under, fixed as it began
+        /// (CR 611.2c): "the next time target land would be destroyed", "enter as copies of the chosen creature".
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(skip))]
+        bound: Vec<(String, Vec<Target>)>,
+        /// The copiable values of each bound target as it last existed on the battlefield, kept as it leaves: what a
+        /// permanent entering as a copy of it copies once it is gone (the Mystic Reflection ruling, CR 707.2).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(skip))]
+        lki: Vec<(ObjectRef, std::sync::Arc<mtg_cards::CardDefinition>)>,
     },
     /// Cards in graveyards can't be the targets of spells or abilities (CR 115.4).
     GraveyardCardsUntargetable,
@@ -1378,7 +1388,10 @@ impl RulesInForce {
                 }
                 return;
             }
-            SpellBenefit::Cost { .. } | SpellBenefit::Keyword(_) | SpellBenefit::Uncounterable => {
+            SpellBenefit::Cost { .. }
+            | SpellBenefit::Keyword(_)
+            | SpellBenefit::Uncounterable
+            | SpellBenefit::R6503Resolves(_) => {
                 return;
             }
         };
@@ -2842,10 +2855,15 @@ pub(crate) fn fold_used(state: &mut GameState, id: EffectId, left: u32) -> Resul
 }
 
 /// Ends the `NextSpell` rules the cast of `spell` by `player` spends (the card is judged where it is cast from, as the
-/// announcement judged it), and says whether one of them keeps the spell from being countered.
-pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: ObjectId) -> bool {
+/// announcement judged it), and says whether one of them keeps the spell from being countered and what replaces its
+/// move into a graveyard as it resolves (`SpellBenefit::R6503Resolves`).
+pub(crate) fn spend_next_spells(
+    state: &mut GameState,
+    player: PlayerId,
+    spell: ObjectId,
+) -> (bool, Vec<mtg_cards::trigger::ReplaceBy>) {
     let Some(target) = state.object(spell).map(GameObject::reference) else {
-        return false;
+        return (false, Vec::new());
     };
     let spent: Vec<EffectId> = state
         .rule_effects
@@ -2873,10 +2891,85 @@ pub(crate) fn spend_next_spells(state: &mut GameState, player: PlayerId, spell: 
                 }
             )
     });
+    let resolves = state
+        .rule_effects
+        .iter()
+        .filter(|effect| spent.contains(&effect.id))
+        .filter_map(|effect| match &effect.rule {
+            Rule::NextSpell {
+                benefit: mtg_cards::modify::SpellBenefit::R6503Resolves(by),
+                ..
+            } => Some(by.clone()),
+            _ => None,
+        })
+        .collect();
     state
         .rule_effects
         .retain(|effect| !spent.contains(&effect.id));
-    uncounterable
+    (uncounterable, resolves)
+}
+
+/// Keeps the copiable values of a permanent leaving the battlefield in each shield that names it as what entering
+/// permanents copy (`ReplaceBy::NextBatch` of `AsCopy`), as it last existed there (CR 707.2).
+pub(crate) fn r109_keep_copiable(state: &mut GameState, id: ObjectId) {
+    let Some(left) = state
+        .object(id)
+        .filter(|object| object.zone() == crate::zones::Zone::Battlefield)
+        .map(GameObject::reference)
+    else {
+        return;
+    };
+    let names = |rule: &Rule| match rule {
+        Rule::Replaces {
+            by: ReplaceBy::NextBatch(inner),
+            bound,
+            ..
+        } if matches!(**inner, ReplaceBy::AsCopy { .. }) => bound
+            .iter()
+            .any(|(_, targets)| targets.contains(&Target::Object(left))),
+        _ => false,
+    };
+    if !state.rule_effects.iter().any(|effect| names(&effect.rule)) {
+        return;
+    }
+    let Some(values) = crate::copies::copiable_values(state, left, None) else {
+        return;
+    };
+    let values = std::sync::Arc::new(values);
+    for effect in &mut state.rule_effects {
+        if names(&effect.rule)
+            && let Rule::Replaces { lki, .. } = &mut effect.rule
+        {
+            lki.push((left, values.clone()));
+        }
+    }
+}
+
+/// The spell `spell` on the stack is put elsewhere as it resolves, as a `NextSpell` rule its cast spent said: a shield of
+/// its own that names the spell (`Rule::R6503ResolvesInstead`), and so no other object once it leaves the stack.
+pub(crate) fn r6503_resolves_from_now(
+    state: &mut GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    by: mtg_cards::trigger::ReplaceBy,
+) {
+    let Some(named) = state.object(spell).map(GameObject::reference) else {
+        return;
+    };
+    let effect = RuleEffect {
+        id: EffectId(state.next_effect),
+        rule: Rule::R6503ResolvesInstead {
+            objects: vec![named],
+            by,
+        },
+        duration: Duration::Forever,
+        source: Some(named),
+        controller: player,
+        turn: state.turn().number(),
+    };
+    state.next_effect += 1;
+    state.rule_effects.push(effect);
+    state.possible.replacements = true;
 }
 
 /// The spell `spell` on the stack can't be countered from now on, as a `NextSpell` rule its cast spent said: a rule of its

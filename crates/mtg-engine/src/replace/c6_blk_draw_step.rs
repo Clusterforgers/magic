@@ -20,6 +20,7 @@ impl Pass<'_> {
     ) -> Result<bool, EngineError> {
         Ok(self.matches(source, when, unit)?
             && !self.c6_blk_spared_draw(at, when, unit)
+            && !self.r109_not_first_draw(at, when, unit)
             && self.w9c_kind_matches(at, when))
     }
 
@@ -52,5 +53,47 @@ impl Pass<'_> {
             .unwrap_or(u32::MAX)
             .saturating_add(drawn)
             < *except_draw_step
+    }
+
+    /// Whether the draw at slot `at` comes after a time the player would draw a card this turn, so a `first` draw
+    /// replacement leaves it alone: the draws and replaced draws of the turn and of this batch before it count, those
+    /// `except_draw_step` spares do not.
+    fn r109_not_first_draw(&self, at: usize, when: &ReplaceWhen, unit: &Unit) -> bool {
+        let ReplaceWhen::Draw {
+            except_draw_step,
+            first: true,
+            ..
+        } = when
+        else {
+            return false;
+        };
+        let Unit::Draw { player } = unit else {
+            return false;
+        };
+        let earlier = self.slots[..at]
+            .iter()
+            .filter(|slot| {
+                matches!(&slot.item, Item::One(Event::CardDrawn { player: who, .. } | Event::DrewFromEmptyLibrary { player: who }) if who == player)
+            })
+            .count();
+        let earlier = u32::try_from(earlier).unwrap_or(u32::MAX);
+        let replaced = self
+            .r109_replaced
+            .iter()
+            .filter(|who| *who == player)
+            .count();
+        let replaced = u32::try_from(replaced).unwrap_or(u32::MAX);
+        let in_draw_step = self.state.turn.step == Step::Draw && self.state.is_active(*player);
+        let step_drawn = self
+            .state
+            .tallied(*player, Tally::C6BlkDrawStepDrawn)
+            .saturating_add(if in_draw_step { earlier } else { 0 });
+        let spared = step_drawn.min(*except_draw_step);
+        self.state
+            .tallied(*player, Tally::R109WouldDraw)
+            .saturating_add(earlier)
+            .saturating_add(replaced)
+            .saturating_sub(spared)
+            > 0
     }
 }

@@ -382,6 +382,10 @@ object: ObjectId, } } | { "DrewFromEmptyLibrary": {
 /**
  * Who tried.
  */
+player: PlayerId, } } | { "R109DrawReplaced": { 
+/**
+ * Who would have drawn.
+ */
 player: PlayerId, } } | { "LibraryRefilled": { 
 /**
  * Owner of the library.

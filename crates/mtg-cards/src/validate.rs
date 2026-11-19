@@ -6158,6 +6158,9 @@ impl Walker<'_> {
                     matches!(when, ReplaceWhen::Enters { what } if what.0.contains(&Pred::This));
                 w.at("by", |w| w.replace_by(when, by));
                 w.not_next_damage(by);
+                if matches!(by, ReplaceBy::NextBatch(_)) {
+                    w.problem("only a shield is used up by its next batch");
+                }
                 if let Some(condition) = condition {
                     w.at("condition", |w| w.condition(condition));
                 }
@@ -6591,6 +6594,20 @@ impl Walker<'_> {
         }
     }
 
+    /// A next spell put elsewhere as it resolves goes to a hand or exile (`SpellBenefit::R6503Resolves`).
+    fn r109_next_spell_benefit(&mut self, benefit: &crate::modify::SpellBenefit) {
+        let crate::modify::SpellBenefit::R6503Resolves(by) = benefit else {
+            return;
+        };
+        self.uses("SpellBenefit", "R6503Resolves");
+        if !matches!(
+            by,
+            ReplaceBy::MoveTo(crate::refs::ZoneKind::Hand | crate::refs::ZoneKind::Exile)
+        ) {
+            self.problem("a spell as it resolves goes to a hand or exile instead");
+        }
+    }
+
     /// The rules that set an option of the game: who they apply to, what they select and the size they set.
     fn rule_option(&mut self, tag: &str, rule: &GameRule) {
         match rule {
@@ -6612,8 +6629,9 @@ impl Walker<'_> {
             GameRule::NoLegendRuleFor(what) | GameRule::AbilitiesAsThoughHaste(what) => {
                 self.at(tag, |w| w.selector(what));
             }
-            GameRule::NextSpell { what, .. } => {
+            GameRule::NextSpell { what, benefit } => {
                 self.at(tag, |w| w.at("what", |w| w.selector(what)));
+                self.r109_next_spell_benefit(benefit);
             }
             GameRule::SpellCost {
                 applies_to, mana, ..
@@ -6829,6 +6847,9 @@ impl Walker<'_> {
         self.uses("ReplaceWhen", &tag_of(when));
         if matches!(when, ReplaceWhen::Draw { except_draw_step, .. } if *except_draw_step > 0) {
             self.uses("ReplaceWhen", "Draw.ExceptDrawStep");
+        }
+        if matches!(when, ReplaceWhen::Draw { first: true, .. }) {
+            self.uses("ReplaceWhen", "Draw.First");
         }
         match when {
             ReplaceWhen::R6001DamageBetweenChosen => {}
@@ -7429,6 +7450,12 @@ impl Walker<'_> {
                         w.r6104_entering_copy_exceptions(&entry.except);
                     });
                 }
+            }
+            ReplaceBy::NextBatch(inner) => {
+                if !enters || matches!(**inner, ReplaceBy::NextBatch(_)) {
+                    self.problem("only an `Enters` shield is used up by its next batch, once");
+                }
+                self.at("0", |w| w.replace_by(when, inner));
             }
             _ => {}
         }

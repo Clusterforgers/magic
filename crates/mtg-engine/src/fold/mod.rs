@@ -730,7 +730,9 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::DrewFromEmptyLibrary { player } => {
             let seat = player_mut(state, *player)?;
             seat.failed_draws = seat.failed_draws.saturating_add(1);
+            state.tally(*player, Tally::R109WouldDraw);
         }
+        Event::R109DrawReplaced { player } => state.tally(*player, Tally::R109WouldDraw),
         Event::EffectCreated { effect } => create_effect(state, effect)?,
         Event::EffectExpired { id } => {
             let before = state.effects.len();

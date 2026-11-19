@@ -48,6 +48,7 @@ pub(super) fn sentences(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<String> {
         ReplaceWhen::Draw {
             who: Ref::You,
             except_draw_step,
+            first: false,
         } => draw(*except_draw_step, by),
         ReplaceWhen::Mill { who } => mill(who, by),
         ReplaceWhen::ZoneChange { what, from, to } => zone_change(what, *from, *to, by),
