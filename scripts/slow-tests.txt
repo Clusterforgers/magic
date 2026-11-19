@@ -1,6 +1,7 @@
-# Tests that take over 5 seconds: `scripts/check.sh gate` skips them, `affected` and `all` run them.
+# Tests that take over 5 seconds (about 10 s while other checks load the machine): `scripts/check.sh gate` skips them,
+# `affected` and `all` run them. A test of a seeded suite on scripts/seed-slices.txt may take up to 20 s instead.
 # One name per line, a substring of the test path (libtest `--skip`); a case table is listed by its function.
-# `#` starts a comment. The gate warns about a test over 5 s that is not listed here.
+# `#` starts a comment. The gate warns about a test over the limit that is not listed here.
 # The gate prints the names to add; measure with RUSTC_BOOTSTRAP=1 and `-Z unstable-options --report-time` on a test binary.
 
 # mtg-cards::it
@@ -25,9 +26,25 @@ read_tier::approved_drafts_never_turn_a_verified_compiled_row_into_anything_else
 roundtrip::abilities_round_trip
 roundtrip::amounts_selectors_and_conditions_round_trip
 roundtrip::effects_round_trip
+read_tier::approved_drafts_of_the_corpus_change_no_record_of_a_rules_file
+player_words::the_reasons_of_every_corpus_card_are_plain_words
+partial::the_clauses_and_the_reminder_text_cover_all_the_text_of_every_card
+compile_corpus::every_ability_the_compiler_reads_is_in_the_hand_written_file
+compile::live_cards_carry_the_fingerprint_of_every_face
+compile::every_corpus_card_earns_the_status_its_clauses_say
+compile::clauses_lie_inside_the_text_and_never_overlap
+ce29_saga_sheet::each_chapter_line_shows_its_own_chapters
+proposal_merge::the_merge_of_the_compiler_and_the_rest_of_the_hand_written_file_is_the_hand_written_file
 
 # mtg-cards::lib
 compile::read::tests::activated::every_ordered_run_of_cost_parts_with_every_effect_and_restriction_writes_back
+compile::read::tests::counters::every_counter_kind_count_and_place_writes_back
+compile::read::tests::w20_attached::w20_the_pack_reads_back_as_printed::case_02_rotisserie
+compile::read::tests::w20_attached::w20_the_pack_reads_back_as_printed::case_09_another_counter
+compile::read::tests::w20_attached::w20_the_pack_reads_back_as_printed::case_11_this_turn_only_for_ever
+compile::read::tests::w20_attached::w20_the_pack_reads_back_as_printed::case_12_without_the_sacrifice
+compile::read::tests::written_memo_bounds::an_ability_written_twice_gives_the_same_wordings
+reference::w3a_schema::tests::every_hand_written_rules_file_fits_the_schema
 
 # mtg-protocol::it
 card_grants_games_hidden::no_hidden_object_reaches_any_viewer_in_games_of_the_card_grants
@@ -48,6 +65,32 @@ manual_view::no_hidden_object_reaches_any_viewer_in_games_with_manual_actions
 morph_view::no_face_down_card_reaches_a_seat_that_may_not_look_at_it
 snapshot_log::every_event_has_a_view_for_every_seat_and_some_are_hidden
 sync::folding_batches_reproduces_the_true_view_in_games_of_spells_and_abilities
+hidden_info::a_teammates_hand_reaches_its_team_alone::case_2_two_headed_giant
+
+# mtg-server::it
+bot_seats::a_table_of_bots_plays_to_the_end::case_6_hard_three
+bot_seats::a_team_table_of_bots_plays_to_a_team_result::case_2_two_v_two_hard
+bot_seats::seeded_tables_of_bots_always_finish::case_06_hard_four::
+bot_seats::seeded_tables_of_bots_always_finish::case_08_very_hard_three::
+bot_seats::seeded_tables_of_bots_always_finish::case_09_very_hard_teams::
+bot_seats::seeded_tables_of_bots_always_finish::case_10_easy_five::
+bot_seats::seeded_tables_of_bots_always_finish::case_11_easy_six::
+bot_seats::seeded_tables_of_bots_always_finish::case_12_normal_six::
+bot_seats::seeded_tables_of_bots_always_finish::case_14_hard_two_headed_giant::
+concurrent_games::thirty_games_run_side_by_side_and_each_matches_its_reference
+pg_bot_seats::bot_seats_are_played_again_after_a_restart
+pg_card_decks::a_stored_card_adapts_to_what_its_import_record_gives
+pg_conjure::a_conjured_name_resolves_from_the_database_and_bots_conjure_in_replayable_games
+pg_conjure::a_name_the_database_lacks_conjures_nothing_and_the_game_goes_on
+pg_delve_party_turn::a_party_of_four_shares_its_turn_against_the_boss
+pg_forge_tier::an_ability_left_to_the_table_records_the_servers_wrong_and_the_next_game_plays_by_hand
+pg_forge_tier::the_support_of_a_card_follows_the_source_of_its_draft_and_the_verdicts
+pg_game::bots_play_full_games_on_the_postgres_store
+pg_resume::a_game_picks_up_after_a_restart_and_ends_as_if_nothing_had_happened
+
+# mtg-server::lib
+precons::index_tests::a_verdict_serves_the_held_index_and_decides_again_only_its_card
+precons::index_tests::the_runtime_serves_while_the_index_is_built_and_one_build_serves_all
 
 # mtg-testkit::it
 brain_matches::a_team_never_harms_itself_and_normal_teams_win
@@ -263,6 +306,19 @@ alt_cast::bot_games_with_the_table_cards_keep_every_invariant_and_use_each_way
 pg_ffa_games::
 pg_team_games::
 hidden_aura_fuzz::aura_spells_always_carry_their_target
+team_sickness_fuzz::a_permanent_is_held_back_until_a_turn_of_its_controller_begins
+concurrent_opening::a_color_chosen_before_the_hands_keeps_any_order_the_same
+manual_fuzz::a_rebuilt_engine_is_in_the_state_of_the_original_and_asks_what_it_asks::players_1_2
+manual_fuzz::seeded_games_with_manual_cards_and_manual_actions_finish_and_keep_every_invariant::players_3_4
+smoke::the_watchdog_panics_with_its_report_unless_asked_otherwise
+smoke::the_watchdog_ends_a_runaway_game_as_a_failure_when_asked_to
+smoke::a_card_that_loops_fails_as_a_stuck_game
+party_fuzz::a_rebuilt_engine_asks_what_the_original_asks_about_players::players_1_2
+triggers_fuzz::a_seeded_trigger_game_is_the_same_game_every_time
+house_commander::five_seats_under_the_default_rules_play_to_their_end
+house_commander::five_seats_of_long_non_singleton_decks_in_any_colour_play_to_their_end
+corpus::tests::every_card_file_and_fixture_record_is_there_once
+unplayable::the_reasons_and_the_offer_cover_the_command_zone
 
 # mtg-campaign::it
 rework_warrens_a::a_level_five_fight_never_loops

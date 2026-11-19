@@ -2,6 +2,7 @@
 
 use std::collections::BTreeMap;
 use std::path::{Path, PathBuf};
+use std::sync::OnceLock;
 
 use mtg_cards::card::{Card, ImplStatus, TokenFile};
 use mtg_cards::compile::compile;
@@ -139,8 +140,18 @@ impl Corpus {
             .collect()
     }
 
-    /// The imported record of each fixture file with the file's name, in file-name order.
+    /// The imported record of each fixture file with the file's name, in file-name order. The repository's fixture
+    /// does not change during a run, so its 11 000 files are read once per process and shared.
     pub fn records_with_files(&self) -> Vec<(String, CardRecord)> {
+        static REPO: OnceLock<Vec<(String, CardRecord)>> = OnceLock::new();
+        if self.fixture == super::fixture_dir() {
+            return REPO.get_or_init(|| self.read_records()).clone();
+        }
+        self.read_records()
+    }
+
+    /// The imported record of each fixture file with the file's name, read from the files.
+    fn read_records(&self) -> Vec<(String, CardRecord)> {
         self.fixture_texts()
             .into_iter()
             .map(|(file, text)| {
@@ -191,7 +202,12 @@ impl Corpus {
 
     /// The imported cards of the fixture.
     pub fn printed(&self) -> Vec<PrintedCard> {
-        self.records().iter().map(super::printed_of).collect()
+        static REPO: OnceLock<Vec<PrintedCard>> = OnceLock::new();
+        let read = || self.records().iter().map(super::printed_of).collect();
+        if self.fixture == super::fixture_dir() {
+            return REPO.get_or_init(read).clone();
+        }
+        read()
     }
 
     /// Every file of the directory (the tokens too) with its text and the canonical text it should have; with
@@ -241,12 +257,18 @@ impl Corpus {
 
     /// The library of the directory, validated; a file the loader refuses stops the test with the commands that mend it.
     pub fn library(&self) -> Library {
+        static REPO: OnceLock<Library> = OnceLock::new();
+        let load = || {
+            Library::load_dir(&self.dir).unwrap_or_else(|errors| {
+                panic!("{errors}\n(a missing or stale fingerprint: run `{UPDATE}`; see {ADDING})")
+            })
+        };
         if self.dir == super::cards_dir() {
             update_repo_once();
+            // The repository's files change only in `update_repo_once`, so one load serves the run.
+            return REPO.get_or_init(load).clone();
         }
-        Library::load_dir(&self.dir).unwrap_or_else(|errors| {
-            panic!("{errors}\n(a missing or stale fingerprint: run `{UPDATE}`; see {ADDING})")
-        })
+        load()
     }
 
     /// Every card file without exactly one fixture record, and every fixture record without exactly one card file.

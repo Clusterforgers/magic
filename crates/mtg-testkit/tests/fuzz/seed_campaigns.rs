@@ -1,4 +1,4 @@
-//! Goal: a campaign played on every core covers each seed exactly once whatever the range, stops after a failure, and reports the lowest failing seed's own panic, as a sequential loop would.
+//! Goal: a campaign played on every core covers each seed exactly once whatever the range, stops after a failure, and reports the lowest failing seed's own panic, as a sequential loop would; `MTG_FUZZ_SEED` narrows it to one seed, and a failure names the command that replays it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -9,7 +9,7 @@ use std::time::Duration;
 
 use rstest::rstest;
 
-use crate::common::seeds::for_each_seed;
+use crate::common::seeds::{campaign_seeds, for_each_seed, rerun_hint};
 
 #[rstest]
 #[case::empty(0..0)]
@@ -64,4 +64,30 @@ fn a_failure_stops_the_campaign_long_before_its_last_seed() {
     }));
     assert!(outcome.is_err());
     assert!(played.load(Ordering::Relaxed) < 100_000);
+}
+
+#[rstest]
+#[case::the_campaign(0..40, None, 0, 0..40)]
+#[case::shifted(0..40, None, 1000, 1000..1040)]
+#[case::one_seed_inside(0..40, Some(17), 0, 17..18)]
+#[case::one_seed_outside(0..40, Some(91), 0, 91..92)]
+#[case::one_seed_ignores_the_shift(0..40, Some(3), 500, 3..4)]
+fn the_seeds_of_a_campaign_follow_the_environment(
+    #[case] seeds: std::ops::Range<u64>,
+    #[case] only: Option<u64>,
+    #[case] from: u64,
+    #[case] wanted: std::ops::Range<u64>,
+) {
+    assert_eq!(campaign_seeds(seeds, only, from), wanted);
+}
+
+#[rstest]
+#[case(0)]
+#[case(17)]
+#[case(u64::MAX)]
+fn a_failing_seed_names_the_command_that_replays_it(#[case] seed: u64) {
+    let hint = rerun_hint(seed);
+    assert!(hint.starts_with(&format!("seed {seed} failed;")), "{hint}");
+    assert!(hint.contains("cargo test -p mtg-testkit --test"), "{hint}");
+    assert!(hint.contains(&format!("MTG_FUZZ_SEED={seed} ")), "{hint}");
 }

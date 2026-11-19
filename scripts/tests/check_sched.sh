@@ -57,6 +57,11 @@ thr() { echo "echo \$RUST_TEST_THREADS >$scratch/thr.$1; sleep 0.3"; }
 MTG_TEST_THREADS=24 sched 'unset RUST_TEST_THREADS; for i in 1 2 3 4 5 6 7; do unit u$i tests "$(thr u$i)"; done'
 check "budget: threads taper" "$(cat "$scratch"/thr.u{1,2,3,4,5,6,7} | tr '\n' ' ')" "8 5 3 2 2 2 2 "
 
+# With the seconds of their last runs known, each binary takes its share of the waiting work.
+MTG_TEST_THREADS=24 sched 'unset RUST_TEST_THREADS; for i in 1 2 3; do unit u$i tests "$(thr u$i)"; done
+  u_expect=([u1]=600 [u2]=300 [u3]=100)'
+check "budget: threads follow the last seconds" "$(cat "$scratch"/thr.u{1,2,3} | tr '\n' ' ')" "12 9 3 "
+
 : >"$scratch/events"
 sched 'for i in 1 2 3; do unit p$i pg "$(work p$i 0.3)"; done'
 check "postgres units run one at a time" "$(peak)" 1
@@ -67,12 +72,15 @@ pg_start() { echo "srv$BASHPID postgres://fake/$BASHPID"; }
 pg_stop() { echo "$1" >>"$scratch/stopped"; }
 : >"$scratch/events"
 : >"$scratch/stopped"
-flock "$pg_lock" sleep 3 &
+# The lock is held for 6 s: a run that waited for it takes 5 s or more, one that did not about 1 s even under load.
+flock "$pg_lock" sleep 6 &
+holder=$!
 sleep 0.3
 pg_mode=own sched 'for i in 1 2 3; do unit p$i pg "$(work p$i 0.5); echo \$DATABASE_URL >'"$scratch"'/url.p$i"; done'
-kill %1 2>/dev/null || true
+pkill -P "$holder" 2>/dev/null || true
+kill "$holder" 2>/dev/null || true
 check "own servers: side by side" "$(peak)" 3
-check "own servers: no lock wait" "$((elapsed < 2 ? 1 : 0))" 1
+check "own servers: no lock wait" "$((elapsed < 4 ? 1 : 0))" 1
 check "own servers: one URL each" "$(sort -u "$scratch"/url.p? | grep -c '^postgres://fake/')" 3
 check "own servers: all stopped" "$(sort -u "$scratch/stopped" | wc -l)" 3
 pg_start() { return 1; }

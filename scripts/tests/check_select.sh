@@ -34,6 +34,7 @@ case_diff "Cargo.lock" "$all_other" "$all_pg" full -- Cargo.lock
 case_diff "check.sh" "$all_other" "$all_pg" full -- scripts/check.sh
 case_diff "check lib" "$all_other" "$all_pg" full -- scripts/lib/check-plan.sh
 case_diff "slow list" - - none -- scripts/slow-tests.txt
+case_diff "seed slices" - - none -- scripts/seed-slices.txt
 case_diff "mtg-db" - "$all_pg" none -- crates/mtg-db/src/lib.rs
 case_diff "migration" - "$all_pg" none -- crates/mtg-db/migrations/9999_probe.sql
 case_diff ".sqlx" - "$all_pg" none -- .sqlx/query-probe.json
