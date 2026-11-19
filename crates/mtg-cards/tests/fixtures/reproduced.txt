@@ -336,9 +336,11 @@ Broodstar
 Bruna, the Fading Light
 Bubble Matrix
 Bucknard's Everfull Purse
+Bumi, Unleashed
 Buried Alive
 Buried Ruin
 Burnished Hart
+Butcher Orgg
 Butcher of Malakir
 Butcher's Cleaver
 Bygone Bishop
@@ -539,6 +541,7 @@ Crystalline Giant
 Cuboid Colony
 Culling Ritual
 Cultivate
+Cunning Giant
 Curate
 Curious Altisaur
 Curse of Bounty
@@ -608,6 +611,7 @@ Deepfathom Skulker
 Deeproot Elite
 Deeproot Waters
 Defacing Duskmage // Vandal's Edit
+Defensive Formation
 Defile
 Deification
 Deluxe Dragster
@@ -1258,6 +1262,7 @@ Illicit Shipment
 Illuminate History
 Illusion Spinners
 Illusion of Choice
+Illusionist's Gambit
 Illusory Ambusher
 Illustrious Wanderglyph
 Ilysian Caryatid
@@ -1786,6 +1791,7 @@ Obyra, Dreaming Duelist
 Octomancer
 Octopus Umbra
 Odric, Master Tactician
+Ogre Enforcer
 Ogre Slumlord
 Ohran Yeti
 Ojer Axonil, Deepest Might // Temple of Power
@@ -1926,6 +1932,7 @@ Pop Quiz
 Porcuparrot
 Port Town
 Portal Mage
+Portal Manipulator
 Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger

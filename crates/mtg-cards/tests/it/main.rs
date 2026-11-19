@@ -46,6 +46,7 @@ mod proposal_merge;
 mod proposal_names;
 mod proposal_repair;
 mod r109_04_cards;
+mod r109_05_cards;
 mod r280_cards;
 mod r280_writers;
 mod r282_cards;

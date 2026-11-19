@@ -1395,6 +1395,7 @@ mod tests {
                 player: PlayerId::from_index(0),
                 skip_untap: false,
                 no_power_up: false,
+                r109_unpreventable: false,
                 r6703_end: None,
             };
             apply_event(&mut game, &added).unwrap();

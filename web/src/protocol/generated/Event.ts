@@ -147,6 +147,10 @@ skip_untap?: boolean,
  */
 no_power_up?: boolean, 
 /**
+ * Whether damage can't be prevented during it.
+ */
+r109_unpreventable?: boolean, 
+/**
  * The delayed trigger set up as it begins, for its end step; its id is given then.
  */
 r6703_end?: DelayedCreated, } } | { "ExtraTurnSkipped": { 

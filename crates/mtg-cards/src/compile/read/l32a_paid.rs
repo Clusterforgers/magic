@@ -248,6 +248,7 @@ fn reattack_steps(text: &str) -> Option<(Vec<TargetSpec>, Effect)> {
             Effect::Reattack {
                 what: Ref::Each(attacking_creature()),
                 players,
+                r109_to: None,
             },
         ));
     }
@@ -262,6 +263,7 @@ fn reattack_steps(text: &str) -> Option<(Vec<TargetSpec>, Effect)> {
         Effect::Reattack {
             what: Ref::Target(0),
             players,
+            r109_to: None,
         },
     ))
 }
@@ -322,7 +324,14 @@ pub(super) fn l32a_reattack_wordings(
     else {
         return;
     };
-    let [Effect::Reattack { what, players }] = effects.as_slice() else {
+    let [
+        Effect::Reattack {
+            what,
+            players,
+            r109_to: None,
+        },
+    ] = effects.as_slice()
+    else {
         return;
     };
     if *condition != during_attackers() {

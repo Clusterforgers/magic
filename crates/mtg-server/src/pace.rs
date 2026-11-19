@@ -851,6 +851,7 @@ mod tests {
             excess: trample.then_some(DamageTarget::Player(PlayerId(0))),
             lethal: lethal.to_vec(),
             unblocked: false,
+            whole: Vec::new(),
         })
     }
 

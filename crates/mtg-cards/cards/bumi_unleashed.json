@@ -1,7 +1,7 @@
 {
   "oracle_id": "1fef13d8-5da2-46a6-91ed-7a31bd46e538",
   "name": "Bumi, Unleashed",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bumi, Unleashed",
@@ -57,9 +57,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 39, "end": 226 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Untap": { "what": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] } } },
+              { "AddPhase": { "phases": ["Combat"] } },
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Land" } }] },
+                  "mods": ["CantAttack"],
+                  "duration": { "R109ThatCombat": 0 }
+                }
+              }
+            ]
           }
         }
       ]

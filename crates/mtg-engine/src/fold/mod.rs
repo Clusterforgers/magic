@@ -417,6 +417,7 @@ fn begin_turn(
         state.r379_turn_ended(ending, before);
     }
     state.turn.no_power_up = false;
+    state.turn.r109_unpreventable = false;
     state.r6703_ignored.clear();
     let mut at_end = None;
     if extra {
@@ -424,6 +425,7 @@ fn begin_turn(
             return Err(invalid(format!("{active:?} has no extra turn to take")));
         };
         state.turn.no_power_up = taken.no_power_up;
+        state.turn.r109_unpreventable = taken.r109_unpreventable;
         at_end = taken.r6703_end;
     } else {
         state.turn.regular = active;
@@ -440,6 +442,9 @@ fn begin_turn(
     state.turn.r5500_lone.clear();
     state.turn.r5500_in_lone = false;
     state.turn.r306_steps.clear();
+    state.turn.r109_marks.clear();
+    state.turn.r109_given = 0;
+    state.turn.r109_combat = 0;
     state.turn.r306_seen = 0;
     state.turn.r306_again = 0;
     state.turn.ending = false;
@@ -488,11 +493,13 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             player,
             skip_untap,
             no_power_up,
+            r109_unpreventable,
             r6703_end,
         } => state.extra_turns.push(ExtraTurn {
             player: *player,
             skip_untap: *skip_untap,
             no_power_up: *no_power_up,
+            r109_unpreventable: *r109_unpreventable,
             r6703_end: r6703_end.clone(),
         }),
         Event::PlayerControlGained {
@@ -515,6 +522,10 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                 state.turn.r306_steps.remove(0);
             }
             state.turn.r306_note_step(*step);
+            // A combat phase is marked only when it begins from a marked entry of the phases ahead.
+            if *step == Step::BeginCombat || step.phase() != crate::turn::Phase::Combat {
+                state.turn.r109_combat = 0;
+            }
             // A phase added after the current one begins as its entry says, and the entry is spent (CR 500.8).
             if state.turn.ahead.first() == Some(step) {
                 state.turn.r5500_begin_ahead();

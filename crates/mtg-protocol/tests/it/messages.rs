@@ -357,6 +357,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             excess: None,
             lethal: vec![2],
             unblocked: false,
+            whole: Vec::new(),
         }),
         DecisionKind::AssignDamage(DamageOptions {
             attacker: a,
@@ -365,6 +366,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             excess: Some(DamageTarget::Player(PlayerId(1))),
             lethal: vec![1],
             unblocked: false,
+            whole: Vec::new(),
         }),
         DecisionKind::Discard(DiscardOptions {
             hand: vec![a, b],

@@ -23,6 +23,7 @@ pub(super) fn extra_turns(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
         count: Amount::Fixed(i32::try_from(count).ok()?),
         skip_untap: false,
         no_power_up: false,
+        r109_unpreventable: false,
         at_end: Vec::new(),
     })
 }
@@ -49,6 +50,17 @@ pub fn extra_turn(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         && let Effect::ExtraTurn { no_power_up, .. } = &mut effect
     {
         *no_power_up = true;
+    }
+    let unpreventable = r.attempt(|r| {
+        r.punct('.').then_some(())?;
+        r.need("during that turn, damage can't be prevented")
+    });
+    if unpreventable.is_some()
+        && let Effect::ExtraTurn {
+            r109_unpreventable, ..
+        } = &mut effect
+    {
+        *r109_unpreventable = true;
     }
     let loses = r.attempt(|r| {
         r.punct('.').then_some(())?;
@@ -140,6 +152,7 @@ pub fn effect_text(effect: &Effect, subject: Option<&str>) -> Option<String> {
             count: Amount::Fixed(count),
             skip_untap,
             no_power_up,
+            r109_unpreventable,
             at_end,
         } => {
             let turns = turns_text(*count)?;
@@ -150,6 +163,10 @@ pub fn effect_text(effect: &Effect, subject: Option<&str>) -> Option<String> {
             if *no_power_up {
                 skip += (*who == Ref::You && *count == 1)
                     .then_some(". During that turn, power-up abilities can't be activated")?;
+            }
+            if *r109_unpreventable {
+                skip += (*who == Ref::You && *count == 1)
+                    .then_some(". During that turn, damage can't be prevented")?;
             }
             if !at_end.is_empty() {
                 (*who == Ref::You

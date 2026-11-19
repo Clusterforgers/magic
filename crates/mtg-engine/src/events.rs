@@ -156,6 +156,9 @@ pub enum Event {
         /// Whether power-up abilities can't be activated during it.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         no_power_up: bool,
+        /// Whether damage can't be prevented during it.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        r109_unpreventable: bool,
         /// The delayed trigger set up as it begins, for its end step; its id is given then.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]

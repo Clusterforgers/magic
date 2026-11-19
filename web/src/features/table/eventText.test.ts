@@ -1236,6 +1236,10 @@ describe('events with more than one shape', () => {
       'Hill Giant gains flying until end of turn, or until any player rolls a 1',
     ],
     [
+      effect(objects(2), 'CantAttack', { R109ThatCombat: 1 }),
+      "Hill Giant can't attack during the added combat phase",
+    ],
+    [
       effect(objects(2), { AddSubtype: 'Aura' }, { UntilPaid: '{W}' }),
       'Hill Giant becomes Aura too until its controller pays {W} to end it',
     ],

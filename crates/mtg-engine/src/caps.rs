@@ -482,6 +482,7 @@ const RUNS: &[&str] = &[
     "Rule.Duration.UntilItsControllersNextCombatEnds",
     "Duration.WhileSourceTapped",
     "Duration.WhileYouControlSourceTapped",
+    "Duration.R109ThatCombat",
     "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
     "Duration.WhileEnchanted",
@@ -527,6 +528,10 @@ const RUNS: &[&str] = &[
     "Rule.Combat.AttackIfAnyAttacks",
     "Rule.Combat.MustBeBlockedByOne",
     "Rule.Combat.R6001MustBeBlockedByAtLeast",
+    "Rule.Combat.R109AssignsAmongDefenders",
+    "Rule.Combat.R109UnblockedToCreature",
+    "Rule.Combat.R109DefenderAssigns",
+    "Rule.Combat.R109LethalFromOneSource",
     "Rule.IgnoreHexproof",
     "Rule.CantBeCountered",
     "Rule.CantBeRegenerated",
@@ -731,6 +736,7 @@ const RUNS: &[&str] = &[
     "Effect.StillResolves",
     "Effect.Rephase",
     "Effect.Reattack",
+    "Effect.Reattack.R109To",
     "Effect.Pay.Counted",
     "Effect.Pay.Took",
     "Effect.Pay.X",
@@ -787,6 +793,7 @@ const RUNS: &[&str] = &[
     "Keyword.DoubleStrike",
     "Keyword.Deathtouch",
     "Keyword.Trample",
+    "Keyword.TrampleOverPlaneswalkers",
     "Keyword.Lifelink",
     "Keyword.Indestructible",
     "Keyword.Hexproof",
@@ -1667,6 +1674,13 @@ mod tests {
     #[case::double_strike("Keyword.DoubleStrike", true)]
     #[case::deathtouch("Keyword.Deathtouch", true)]
     #[case::trample("Keyword.Trample", true)]
+    #[case::r109_trample_over_planeswalkers("Keyword.TrampleOverPlaneswalkers", true)]
+    #[case::r109_among_defenders("Rule.Combat.R109AssignsAmongDefenders", true)]
+    #[case::r109_unblocked_to_creature("Rule.Combat.R109UnblockedToCreature", true)]
+    #[case::r109_defender_assigns("Rule.Combat.R109DefenderAssigns", true)]
+    #[case::r109_one_source("Rule.Combat.R109LethalFromOneSource", true)]
+    #[case::r109_that_combat("Duration.R109ThatCombat", true)]
+    #[case::r109_now_attacking("Effect.Reattack.R109To", true)]
     #[case::lifelink("Keyword.Lifelink", true)]
     #[case::indestructible("Keyword.Indestructible", true)]
     #[case::hexproof("Keyword.Hexproof", true)]

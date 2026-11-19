@@ -192,6 +192,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         };
         modifications.push(modification);
     }
+    let marked = crate::effects::r109_mark_duration(state, duration);
+    let duration = &marked;
     let anchor = anchor(cx, duration)?;
     let mut made = 0u64;
     for (player, objects) in l294_turn_holders(cx, duration, &named) {

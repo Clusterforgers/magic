@@ -735,6 +735,7 @@ mod tests {
             excess: trample.then_some(mtg_engine::combat::DamageTarget::Player(PlayerId(1))),
             lethal,
             unblocked: false,
+            whole: Vec::new(),
         };
         let shares: Vec<u32> = assign_lethal(&options)
             .into_iter()

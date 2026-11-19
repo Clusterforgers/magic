@@ -324,6 +324,8 @@ pub enum Duration {
     UntilEndOfTurn,
     /// Until the end of combat.
     UntilEndOfCombat,
+    /// In that added combat (0).
+    R109ThatCombat(u32),
     /// Until the controller's next turn begins.
     UntilYourNextTurn,
     /// Until the controller's next end step begins: the one of this turn when it has not begun yet (CR 513).
@@ -667,6 +669,25 @@ pub enum CombatQuirk {
     BlockIgnoringShadow,
     /// Tapped to crew or saddle, they count for another amount than their power.
     TapPower(TapPowerAs),
+    /// Divides damage among defender and creatures.
+    R109AssignsAmongDefenders,
+    /// Unblocked: all damage to one creature.
+    R109UnblockedToCreature,
+    /// The defender assigns its damage.
+    R109DefenderAssigns,
+    /// Lethal damage counts per source.
+    R109LethalFromOneSource,
+}
+
+/// The capability key of a combat damage quirk of r109 (`Combat.<variant>`), which an engine without it lacks.
+pub fn r109_quirk_key(quirk: &CombatQuirk) -> Option<&'static str> {
+    Some(match quirk {
+        CombatQuirk::R109AssignsAmongDefenders => "Combat.R109AssignsAmongDefenders",
+        CombatQuirk::R109UnblockedToCreature => "Combat.R109UnblockedToCreature",
+        CombatQuirk::R109DefenderAssigns => "Combat.R109DefenderAssigns",
+        CombatQuirk::R109LethalFromOneSource => "Combat.R109LethalFromOneSource",
+        _ => return None,
+    })
 }
 
 /// What a creature counts for when it is tapped to crew or saddle.

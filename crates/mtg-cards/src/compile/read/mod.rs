@@ -181,6 +181,7 @@ mod prepare;
 mod prevention;
 mod pronouns;
 mod r109_04_wholes;
+mod r109_05_wholes;
 mod r109_entering;
 mod r109_ignore;
 mod r109_wholes;
@@ -768,6 +769,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6703_wholes::r6703_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r109_05_wholes::r109_05_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6103_wholes::r6103_whole_read(text) {

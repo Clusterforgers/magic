@@ -113,6 +113,8 @@ mod prowl;
 mod pump_animate;
 mod r109_04_draws;
 mod r109_04_next_time;
+mod r109_added_combat;
+mod r109_combat_damage;
 mod r109_pay_costs;
 mod r109_token_enters;
 mod r109_waterbend_spells;

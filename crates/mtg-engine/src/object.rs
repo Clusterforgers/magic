@@ -222,6 +222,8 @@ pub struct PermanentState {
     /// The designations it has been given, which it keeps while it stays on the battlefield.
     pub(crate) designations: Designations,
     pub(crate) damage: u32,
+    /// The damage marked on it from each source, which a creature destroyed only by one source's lethal damage reads.
+    pub(crate) damage_by: BTreeMap<ObjectId, u32>,
     pub(crate) deathtouched: bool,
     pub(crate) summoning_sick: bool,
     /// The player whose turn began with it new to them: it had not been under their control since their previous turn
@@ -286,6 +288,7 @@ impl PermanentState {
             designations: Designations::default(),
             damage: 0,
             deathtouched: false,
+            damage_by: BTreeMap::new(),
             summoning_sick: true,
             new_to: None,
             counters: BTreeMap::new(),
@@ -417,6 +420,11 @@ impl PermanentState {
     /// Damage marked on the permanent this turn (tracked apart from toughness).
     pub const fn damage(&self) -> u32 {
         self.damage
+    }
+
+    /// The most damage one source has marked on the permanent.
+    pub fn r109_most_from_one_source(&self) -> u32 {
+        self.damage_by.values().copied().max().unwrap_or(0)
     }
 
     /// Whether a source with deathtouch dealt it damage this turn (CR 704.5h).

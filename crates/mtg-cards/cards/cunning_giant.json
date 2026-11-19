@@ -1,0 +1,14 @@
+{
+  "oracle_id": "4f94ce97-5b2d-42fb-ac8e-c64075fe1af2",
+  "name": "Cunning Giant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cunning Giant",
+      "oracle_fingerprint": "3058adcaae3d07d766be772985984bc8",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "R109UnblockedToCreature" } } } }
+      ]
+    }
+  ]
+}

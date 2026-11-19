@@ -901,6 +901,18 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::BlockAsThoughReach(_) => {
             format!("{who} can block some creatures with flying as though they had reach")
         }
+        CombatQuirk::R109AssignsAmongDefenders => format!(
+            "you may divide the combat damage of {who} among defending player and any creatures they control"
+        ),
+        CombatQuirk::R109UnblockedToCreature => format!(
+            "if {who} are unblocked, you may have them assign their combat damage to a creature defending player controls"
+        ),
+        CombatQuirk::R109DefenderAssigns => format!(
+            "the player {who} attack assigns their combat damage and divides it among their blockers"
+        ),
+        CombatQuirk::R109LethalFromOneSource => format!(
+            "{who} are destroyed by lethal damage only when one source dealt lethal damage marked on them"
+        ),
     }
 }
 

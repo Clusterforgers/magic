@@ -154,6 +154,7 @@ mod sunburst;
 pub(crate) mod suspend;
 mod toxic;
 mod trample;
+mod trample_over_planeswalkers;
 mod transmute;
 mod typecycling;
 mod umbra_armor;
@@ -194,6 +195,8 @@ pub struct DamageRules {
     pub deathtouch: bool,
     /// Assigns the rest of its damage to the player or planeswalker it attacks.
     pub trample: bool,
+    /// Attacking a planeswalker, assigns the rest beyond lethal to it to its controller (CR 702.19c).
+    pub over_planeswalkers: bool,
     /// Its controller gains that much life.
     pub lifelink: bool,
     /// Damage it deals to a creature is dealt as -1/-1 counters (wither, CR 702.80).
@@ -213,6 +216,7 @@ impl DamageRules {
             double_strike: self.double_strike || other.double_strike,
             deathtouch: self.deathtouch || other.deathtouch,
             trample: self.trample || other.trample,
+            over_planeswalkers: self.over_planeswalkers || other.over_planeswalkers,
             lifelink: self.lifelink || other.lifelink,
             wither: self.wither || other.wither,
             infect: self.infect || other.infect,
@@ -425,6 +429,7 @@ pub fn rules(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::DoubleStrike => &double_strike::DoubleStrike,
         Keyword::Deathtouch => &deathtouch::Deathtouch,
         Keyword::Trample => &trample::Trample,
+        Keyword::TrampleOverPlaneswalkers => &trample_over_planeswalkers::TrampleOverPlaneswalkers,
         Keyword::Lifelink => &lifelink::Lifelink,
         Keyword::Vigilance => &vigilance::Vigilance,
         Keyword::Haste => &haste::Haste,
@@ -877,6 +882,7 @@ mod tests {
             Keyword::DoubleStrike,
             Keyword::Deathtouch,
             Keyword::Trample,
+            Keyword::TrampleOverPlaneswalkers,
             Keyword::Lifelink,
             Keyword::Vigilance,
             Keyword::Haste,
@@ -1101,6 +1107,7 @@ mod tests {
         "Keyword.DoubleStrike",
         "Keyword.Deathtouch",
         "Keyword.Trample",
+        "Keyword.TrampleOverPlaneswalkers",
         "Keyword.Lifelink",
         "Keyword.Vigilance",
         "Keyword.Haste",
@@ -1364,6 +1371,7 @@ mod tests {
     #[case::double_strike(Keyword::DoubleStrike, Hooks { damage: damage(|d| d.double_strike = true), ..Hooks::none() })]
     #[case::deathtouch(Keyword::Deathtouch, Hooks { damage: damage(|d| d.deathtouch = true), ..Hooks::none() })]
     #[case::trample(Keyword::Trample, Hooks { damage: damage(|d| d.trample = true), ..Hooks::none() })]
+    #[case::trample_over_planeswalkers(Keyword::TrampleOverPlaneswalkers, Hooks { damage: damage(|d| { d.trample = true; d.over_planeswalkers = true; }), ..Hooks::none() })]
     #[case::lifelink(Keyword::Lifelink, Hooks { damage: damage(|d| d.lifelink = true), ..Hooks::none() })]
     #[case::prowess(Keyword::Prowess, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::battle_cry(Keyword::BattleCry, Hooks { abilities: 1, ..Hooks::none() })]

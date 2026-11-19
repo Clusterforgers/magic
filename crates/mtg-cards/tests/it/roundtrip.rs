@@ -1143,12 +1143,13 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
             }),
         Just(Effect::EndTurn),
         who().prop_map(|who| Effect::TimeTravel { who }),
-        (who(), amount(), any::<bool>(), any::<bool>()).prop_map(
-            |(who, count, skip_untap, no_power_up)| Effect::ExtraTurn {
+        (who(), amount(), any::<bool>(), any::<bool>(), any::<bool>()).prop_map(
+            |(who, count, skip_untap, no_power_up, r109_unpreventable)| Effect::ExtraTurn {
                 who,
                 count,
                 skip_untap,
                 no_power_up,
+                r109_unpreventable,
                 at_end: Vec::new(),
             }
         ),

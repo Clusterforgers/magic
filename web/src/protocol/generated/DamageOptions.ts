@@ -35,4 +35,9 @@ lethal?: Array<number>,
  * Whether the attacker's controller may instead assign all of the damage to the player or planeswalker attacked as
  * though the attacker were not blocked (CR 510.1c): answered by giving no damage to any blocker.
  */
-unblocked?: boolean, };
+unblocked?: boolean, 
+/**
+ * Offered objects that take all of the damage or none of it: a creature an unblocked attacker may assign its damage
+ * to instead (CR 510.1a), or the planeswalker attacked beside the players and creatures of a wider division.
+ */
+whole?: Array<ObjectId>, };

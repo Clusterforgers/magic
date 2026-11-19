@@ -674,6 +674,7 @@ pub(super) fn duration(value: &Duration) -> String {
     match value {
         Duration::UntilEndOfTurn => "until end of turn".to_owned(),
         Duration::UntilEndOfCombat => "until end of combat".to_owned(),
+        Duration::R109ThatCombat(_) => "during that added combat phase".to_owned(),
         Duration::UntilYourNextTurn => "until your next turn".to_owned(),
         Duration::UntilYourNextEndStep => "until your next end step".to_owned(),
         Duration::UntilYourNextUpkeep => "until your next upkeep".to_owned(),

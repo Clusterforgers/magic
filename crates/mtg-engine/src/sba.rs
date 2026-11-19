@@ -192,6 +192,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
         }
         let toughness = chars.toughness.unwrap_or(0);
         let damage = object.permanent().map_or(0, PermanentState::damage);
+        let damage = crate::r109_combat_damage::r109_lethal_marked(state, id, damage);
         let deathtouched = object.permanent().is_some_and(PermanentState::deathtouched);
         let lethal_at = if crate::w17b_statics::r377_lethal_by_power(state, id) {
             chars.power.unwrap_or(0)
@@ -364,7 +365,7 @@ pub(crate) fn housekeeping(state: &GameState) -> Vec<Event> {
         state
             .rule_effects()
             .iter()
-            .filter(|e| !e.is_active(state))
+            .filter(|e| e.ended(state))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
     expired.extend(
