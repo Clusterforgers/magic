@@ -817,6 +817,9 @@ pub enum SpellBenefit {
     /// spell you cast this turn, you may pay life equal to that spell's mana value"; an amount in it counts the card cast
     /// as `This`.
     Rather(crate::cost::Cost),
+    /// As the spell resolves, the replacement takes the place of its move into a graveyard (CR 608.2n, 614.1a): "put that
+    /// card into your hand instead of into your graveyard as it resolves" (`ReplaceBy::MoveTo`).
+    R6503Resolves(crate::trigger::ReplaceBy),
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and

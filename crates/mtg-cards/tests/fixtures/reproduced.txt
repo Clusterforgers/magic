@@ -496,6 +496,7 @@ Cordial Vampire
 Cormela, Glamour Thief
 Corpse Hauler
 Coruscation Mage
+Cosmic Intervention
 Counterflux
 Counterspell
 Courser of Kruphix
@@ -1701,6 +1702,7 @@ Myr Superion
 Myriad Landscape
 Mystic Confluence
 Mystic Gate
+Mystic Reflection
 Mystic Retrieval
 Mystic Snake
 Nadier's Nightblade
@@ -1972,6 +1974,7 @@ Putrefy
 Putrid Goblin
 Pygmy Kavu
 Pygmy Troll
+Pyramids
 Pyreswipe Hawk
 Qasali Pridemage
 Qasali Slingers
@@ -2444,6 +2447,7 @@ Stormscape Battlemage
 Stormsurge Kraken
 Storrev, Devkarin Lich
 Storvald, Frost Giant Jarl
+Storyweave
 Strangleroot Geist
 Stratus Dancer
 Stratus Walk

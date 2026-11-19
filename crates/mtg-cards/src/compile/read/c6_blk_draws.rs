@@ -28,6 +28,7 @@ pub(super) fn c6_blk_draw_replacement(r: &mut Reader<'_>) -> Option<Ability> {
         when: ReplaceWhen::Draw {
             who: Ref::You,
             except_draw_step,
+            first: false,
         },
         by: ReplaceBy::Multiply(2),
         condition: None,

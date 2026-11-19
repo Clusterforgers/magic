@@ -1023,6 +1023,10 @@ pub enum ReplaceWhen {
         /// one you draw in each of your draw steps"); zero replaces every draw.
         #[serde(default, skip_serializing_if = "crate::spend::is_zero")]
         except_draw_step: u32,
+        /// Only the first card the player would draw each turn, the draws `except_draw_step` spares not counted and a
+        /// replaced draw counted ("the first time you would draw a card each turn", CR 614.1a).
+        #[serde(default, skip_serializing_if = "is_false")]
+        first: bool,
     },
     /// A card matching the selector would enter the battlefield (a land played, a permanent spell resolving, a card
     /// put onto the battlefield); `This` is the card with the ability, in whatever zone it enters from.
@@ -1528,6 +1532,10 @@ pub enum ReplaceBy {
     /// The controller of the replacement may have these steps happen instead of the event, which then does not happen
     /// ("you may instead return this card to the battlefield"); only a `Learns` uses it.
     MayInstead(Vec<crate::effect::Effect>),
+    /// A shield used up by the first batch of events it changes (CR 614.1a): "the next time one or more creatures enter
+    /// this turn, they enter as copies of the chosen creature". Every event of that batch it covers is changed as the
+    /// inner replacement says, then the shield ends; only an `Effect::Shield` over an `Enters` uses it.
+    NextBatch(Box<ReplaceBy>),
 }
 
 /// The kinds of shield (`Effect::Shield`) the engine plays; the validator and the engine both read a shield by it.
@@ -1650,6 +1658,25 @@ impl ShieldShape {
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),
             ) => Some(Self::Next),
+            // "The next time target land would be destroyed this turn, remove all damage marked on it instead."
+            (ReplaceWhen::Destroyed { what }, ReplaceBy::InsteadNext(_)) if names_objects(what) => {
+                Some(Self::Next)
+            }
+            // "If a permanent you control would be put into a graveyard from the battlefield this turn, exile it instead.
+            // Return it to the battlefield ... at the beginning of the next end step."
+            (ReplaceWhen::ZoneChange { what, .. }, ReplaceBy::Instead(_)) if !names_objects(what) => {
+                Some(Self::Class)
+            }
+            // "The next time one or more creatures enter this turn, they enter as copies of the chosen creature."
+            (ReplaceWhen::Enters { what }, ReplaceBy::NextBatch(inner))
+                if !names_objects(what)
+                    && matches!(
+                        **inner,
+                        ReplaceBy::AsCopy { .. } | ReplaceBy::WithCounters { .. }
+                    ) =>
+            {
+                Some(Self::Class)
+            }
             _ => None,
         }
     }

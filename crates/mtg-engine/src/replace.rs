@@ -139,6 +139,7 @@ pub fn process(
         slots: slots_of(proposed),
         draws_changed: false,
         pulled: Vec::new(),
+        r109_replaced: Vec::new(),
         activated: Vec::new(),
         putter: crate::triggers::cause_of(state, &original, state)
             .map(|cause| (cause.player, state.resolving().is_some())),
@@ -897,8 +898,17 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         ReplaceBy::InsteadNext(_) => {
             matches!(
                 unit,
-                Unit::Damage { .. } | Unit::Draw { .. } | Unit::Loss { .. }
+                Unit::Damage { .. }
+                    | Unit::Draw { .. }
+                    | Unit::Loss { .. }
+                    | Unit::Move {
+                        destroyed: true,
+                        ..
+                    }
             )
+        }
+        ReplaceBy::NextBatch(inner) => {
+            matches!(unit, Unit::Enter { .. }) && applies_to(inner, unit)
         }
     }
 }
@@ -1018,6 +1028,8 @@ struct Pass<'a> {
     next_id: u64,
     slots: Vec<Slot>,
     draws_changed: bool,
+    /// The players whose draws a replacement took the place of in this batch, once for each draw.
+    r109_replaced: Vec<PlayerId>,
     /// The commanders put into the command zone in place of being drawn: the draws after them take the cards below.
     pulled: Vec<ObjectId>,
     /// The objects that activated an ability in this batch: what they pay is a cost, not an effect.
@@ -1224,7 +1236,23 @@ impl Pass<'_> {
         when: &ReplaceWhen,
         unit: &Unit,
     ) -> Result<bool, EngineError> {
-        let scope = Scope::announcing(self.state, controller, object);
+        self.r109_matches_bound((controller, object), &BTreeMap::new(), when, unit)
+    }
+
+    /// Whether the effect replaces this event, its `Ref::Target`s read from the names `bound` holds (a shield that fixed
+    /// the targets of the ability that made it).
+    #[allow(clippy::too_many_lines)]
+    fn r109_matches_bound(
+        &self,
+        (controller, object): (PlayerId, ObjectRef),
+        bound: &crate::resolve::Bindings,
+        when: &ReplaceWhen,
+        unit: &Unit,
+    ) -> Result<bool, EngineError> {
+        let scope = Scope {
+            bindings: bound,
+            ..Scope::announcing(self.state, controller, object)
+        };
         Ok(match (when, unit) {
             (ReplaceWhen::TokenCreation { controller, .. }, Unit::Tokens { controller: made }) => {
                 scope.players(controller)?.contains(made)
@@ -2044,10 +2072,21 @@ impl Pass<'_> {
     fn replaces_candidates(&self, slot: &Slot, unit: &Unit) -> Result<Vec<Candidate>, EngineError> {
         let mut found = Vec::new();
         for effect in &self.shields {
-            let (Rule::Replaces { when, by, players }, Some(maker)) = (&effect.rule, effect.source)
+            let (
+                Rule::Replaces {
+                    when,
+                    by,
+                    players,
+                    bound,
+                    ..
+                },
+                Some(maker),
+            ) = (&effect.rule, effect.source)
             else {
                 continue;
             };
+            let bound: crate::resolve::Bindings = bound.iter().cloned().collect();
+            let by = r109_next_batch::r109_inner(by);
             let fixed_out = match unit {
                 Unit::Draw { player } => !players.is_empty() && !players.contains(player),
                 _ => false,
@@ -2058,7 +2097,7 @@ impl Pass<'_> {
                 || fixed_out
                 || !applies_to(by, unit)
                 || (players.is_empty() || !matches!(unit, Unit::Draw { .. }))
-                    && !self.matches_for((effect.controller, maker), when, unit)?
+                    && !self.r109_matches_bound((effect.controller, maker), &bound, when, unit)?
             {
                 continue;
             }
@@ -2524,6 +2563,11 @@ impl Pass<'_> {
         w13a_moved::w13a_without_counters_on_moved(self.state, &mut events);
         r35_mills::r35_fresh_mills(self.state, &mut events);
         g12a_library::g12a_order_shuffles(self.state, &mut events);
+        events.extend(
+            self.r109_replaced
+                .iter()
+                .map(|player| Event::R109DrawReplaced { player: *player }),
+        );
         events.extend(used);
         events
     }
@@ -2536,7 +2580,11 @@ impl Pass<'_> {
         };
         let mut applied = self.slots[at].applied.clone();
         applied.push(candidate.origin);
+        self.r109_end_with_batch(candidate);
         let unit = self.unit(&self.slots[at].item);
+        if let Unit::Draw { player } = unit {
+            self.r109_replaced.push(player);
+        }
         let by = match &candidate.action {
             Action::Regenerate => {
                 self.regenerate(at, candidate);
@@ -3508,8 +3556,10 @@ impl Pass<'_> {
                 counters,
                 except_if,
             } => {
+                let bound = self.r109_bound(candidate);
+                let lki = self.r109_lki(candidate);
                 let copy = match self.copies(
-                    candidate.object,
+                    (candidate.object, &bound, &lki),
                     controller,
                     object,
                     (of, *must),
@@ -3698,13 +3748,16 @@ impl Pass<'_> {
     /// since the battlefield is public.
     fn copies(
         &mut self,
-        source: ObjectRef,
+        (source, bound, lki): (ObjectRef, &crate::resolve::Bindings, &[(ObjectRef, Arc<mtg_cards::CardDefinition>)]),
         controller: PlayerId,
         entering: ObjectId,
         (of, must): (&Selector, bool),
         (except, except_if): (&[Modification], &[mtg_cards::trigger::CopyExceptIf]),
     ) -> Result<Asked<Option<BecameCopy>>, EngineError> {
-        let scope = Scope::announcing(self.state, controller, source);
+        let scope = Scope {
+            bindings: bound,
+            ..Scope::announcing(self.state, controller, source)
+        };
         let options: Vec<ObjectId> = scope
             .matching(of)?
             .into_iter()
@@ -3714,7 +3767,14 @@ impl Pass<'_> {
             .map(|named| named.id)
             .collect();
         if options.is_empty() {
-            return Ok(Asked::Got(None));
+            // A named object that has left is copied as it last existed on the battlefield.
+            return match lki.first() {
+                Some((of, values)) if must => {
+                    let copy = (*of, (**values).clone());
+                    Ok(Asked::Got(Some(Self::r109_copy_of(&scope, entering, copy, (except, except_if))?)))
+                }
+                _ => Ok(Asked::Got(None)),
+            };
         }
         // A copy that must be made of the one object there is asks nothing.
         let only = match options.as_slice() {
@@ -3757,8 +3817,24 @@ impl Pass<'_> {
             return Ok(Asked::Got(None));
         };
         let of = original.reference();
-        let mut values = copiable_values(self.state, of, None)
+        let values = copiable_values(self.state, of, None)
             .ok_or_else(|| Self::invalid(format!("{of:?} cannot be copied")))?;
+        Ok(Asked::Got(Some(Self::r109_copy_of(
+            &scope,
+            entering,
+            (of, values),
+            (except, except_if),
+        )?)))
+    }
+
+    /// The copy effect that makes `entering` a copy of `of` with these copiable values and the exceptions that apply to
+    /// it.
+    fn r109_copy_of(
+        scope: &Scope<'_>,
+        entering: ObjectId,
+        (of, mut values): (ObjectRef, mtg_cards::CardDefinition),
+        (except, except_if): (&[Modification], &[mtg_cards::trigger::CopyExceptIf]),
+    ) -> Result<BecameCopy, EngineError> {
         let mut applying: Vec<&Modification> = except.iter().collect();
         for entry in except_if {
             if scope.selects(&entry.of, of)? {
@@ -3766,14 +3842,14 @@ impl Pass<'_> {
             }
         }
         for modification in applying {
-            let modification = r6104_worked_out(&scope, modification)?;
+            let modification = r6104_worked_out(scope, modification)?;
             if !values.except(&modification) {
                 return Err(Self::invalid(format!(
                     "{modification:?} is no exception of a copy effect"
                 )));
             }
         }
-        Ok(Asked::Got(Some(BecameCopy {
+        Ok(BecameCopy {
             object: entering,
             of,
             definition: Arc::new(values),
@@ -3781,7 +3857,7 @@ impl Pass<'_> {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
-        })))
+        })
     }
 
     /// Whether the effect that was picked applies: the optional ones ask their player first (the commander rule, dredge).
@@ -4321,6 +4397,7 @@ pub(crate) mod r5516_learns;
 mod r5517_life;
 mod r5517_under;
 pub(crate) mod r6700_draws;
+mod r109_next_batch;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;
@@ -4353,6 +4430,8 @@ mod c6_blk_draw_step;
 mod c7_untap_dies;
 #[cfg(test)]
 mod r3d_replaces;
+#[cfg(test)]
+mod r109_next_batch_tests;
 mod r6503_resolves;
 
 mod finality;

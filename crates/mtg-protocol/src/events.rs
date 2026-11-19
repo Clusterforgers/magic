@@ -425,6 +425,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CardConjured(_)
         | Event::Sought { .. }
         | Event::DrewFromEmptyLibrary { .. }
+        | Event::R109DrawReplaced { .. }
         | Event::CardDiscarded { .. }
         | Event::Cycled { .. }
         | Event::AttackersDeclared { .. }

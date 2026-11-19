@@ -1,0 +1,66 @@
+{
+  "oracle_id": "94389047-4976-4be2-aaca-25dcdc538abe",
+  "name": "Storyweave",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storyweave",
+      "oracle_fingerprint": "09f1bd291e6663ae684400bfe77c526c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "Subtype": "Saga" }, { "ControlledBy": "You" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Target": 0 },
+                            "counter": { "Other": "lore" },
+                            "count": 2
+                          }
+                        },
+                        {
+                          "Shield": {
+                            "when": {
+                              "Enters": {
+                                "what": [
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Creature" },
+                                  { "ControlledBy": "You" }
+                                ]
+                              }
+                            },
+                            "by": {
+                              "NextBatch": { "WithCounters": { "counter": "+1/+1", "count": 2 } }
+                            },
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

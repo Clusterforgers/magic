@@ -391,6 +391,12 @@ pub enum Event {
         /// Who tried.
         player: PlayerId,
     },
+    /// A replacement effect took the place of a draw of the player (CR 614.1a): the draw counts as a time the player would
+    /// have drawn a card ("the first time you would draw a card each turn").
+    R109DrawReplaced {
+        /// Who would have drawn.
+        player: PlayerId,
+    },
     /// A player's graveyard was shuffled into their library in place of losing to an empty library; the draws they
     /// could not make follow.
     LibraryRefilled {
@@ -1709,6 +1715,7 @@ impl Event {
             | Event::ManaBurned { .. }
             | Event::LifePaid { .. }
             | Event::DrewFromEmptyLibrary { .. }
+            | Event::R109DrawReplaced { .. }
             | Event::BlockersDeclared { .. }
             | Event::DamageAssigned { .. }
             | Event::CombatEnded

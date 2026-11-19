@@ -26,6 +26,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             ReplaceWhen::Draw {
                 who: Ref::Opponents,
                 except_draw_step,
+                first: false,
             },
         by: ReplaceBy::Instead(effects),
         condition: None,

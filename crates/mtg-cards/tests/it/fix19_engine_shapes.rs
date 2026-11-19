@@ -61,6 +61,36 @@ fn uses(effect: &str) -> Vec<String> {
     Some(ShieldShape::Class)
 )]
 #[case::named_entry(r#"{"Enters":{"what":[{"Is":"This"}]}}"#, r#""Tapped""#, None)]
+#[case::next_entries_as_copies(
+    r#"{"Enters":{"what":[{"Type":"Creature"}]}}"#,
+    r#"{"NextBatch":{"AsCopy":{"of":[{"Is":{"Target":0}}],"must":true}}}"#,
+    Some(ShieldShape::Class)
+)]
+#[case::next_entries_with_counters(
+    r#"{"Enters":{"what":[{"Type":"Creature"}]}}"#,
+    r#"{"NextBatch":{"WithCounters":{"counter":"+1/+1","count":2}}}"#,
+    Some(ShieldShape::Class)
+)]
+#[case::next_entries_tapped_is_no_shape(
+    r#"{"Enters":{"what":[{"Type":"Creature"}]}}"#,
+    r#"{"NextBatch":"Tapped"}"#,
+    None
+)]
+#[case::next_destruction(
+    r#"{"Destroyed":{"what":[{"Is":{"Target":0}}]}}"#,
+    r#"{"InsteadNext":[{"RemoveDamage":{"what":"Triggering"}}]}"#,
+    Some(ShieldShape::Next)
+)]
+#[case::next_destruction_of_a_kind_is_no_shape(
+    r#"{"Destroyed":{"what":[{"Type":"Land"}]}}"#,
+    r#"{"InsteadNext":[{"RemoveDamage":{"what":"Triggering"}}]}"#,
+    None
+)]
+#[case::deaths_replaced_by_steps(
+    r#"{"ZoneChange":{"what":[{"ControlledBy":"You"}],"from":"Battlefield","to":"Graveyard"}}"#,
+    r#"{"Instead":[{"Exile":{"what":"Triggering"}}]}"#,
+    Some(ShieldShape::Class)
+)]
 #[case::damage(
     r#"{"Damage":{"to":"You"}}"#,
     r#""Prevent""#,

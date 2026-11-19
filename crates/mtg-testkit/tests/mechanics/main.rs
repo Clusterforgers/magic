@@ -200,6 +200,8 @@ mod r6600_cards;
 mod r6602_pack;
 mod r6700_pack;
 mod r6703_bending;
+mod r109_04_draws;
+mod r109_04_next_time;
 mod r6703_desertion;
 mod r6703_noncombat_shots;
 mod r6703_pay_to_ignore;
