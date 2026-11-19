@@ -1,4 +1,4 @@
-//! Goal: `ObjectView.forecast` rides on the top stack item only, is the same for every seat and a spectator at two to four seats, is left out of the JSON elsewhere, and never moves with a card nobody may see: games that differ in one hidden card give the same views.
+//! Goal: `ObjectView.forecast` rides on the top stack item only, is the same for every seat and a spectator at two to four seats, is worked out once per state however many seats see it, is left out of the JSON elsewhere, and never moves with a card nobody may see: games that differ in one hidden card give the same views.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -6,7 +6,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_core::ids::PlayerId;
 use mtg_engine::stack_forecast::{Change, Fate, ForecastChange, Forecasted};
-use mtg_protocol::{ObjectView, StateView, spectator_viewer};
+use mtg_protocol::{ObjectView, StateView, forecasts_worked_out, project_events, spectator_viewer};
 use mtg_testkit::cards::{bear, burn, giant, island, mountain, study};
 use mtg_testkit::{Driver, Scenario, ready};
 use rstest::rstest;
@@ -94,5 +94,43 @@ fn a_hidden_card_moves_no_view(
     for (a, b) in seen.iter().zip(views(&other)) {
         assert_eq!(forecast_of(a, top), forecast_of(&b, top));
         assert_eq!(!forecast_of(a, top).is_empty(), forecast);
+    }
+}
+
+#[rstest]
+fn one_batch_works_the_forecast_out_once_for_every_seat(#[values(6, 8)] seats: usize) {
+    let mut driver = table(seats, burn("Bolt", 3), island());
+    let at = driver.target_named("Grizzly Bears").unwrap();
+    driver.cast_at("Bolt", &[at]).unwrap();
+    let before = driver.state().clone();
+    let start = forecasts_worked_out();
+    let first = views(&driver);
+    assert_eq!(
+        forecasts_worked_out() - start,
+        1,
+        "the views of one state share one forecast"
+    );
+    let events = driver.pass().unwrap();
+    assert!(!driver.state().stack().is_empty(), "the spell still waits");
+    let mut viewers: Vec<PlayerId> = (0..seats).map(PlayerId::from_index).collect();
+    viewers.push(spectator_viewer(driver.state()));
+    let start = forecasts_worked_out();
+    let batches = project_events(&before, &events, &viewers, 1).unwrap();
+    assert_eq!(batches.len(), viewers.len());
+    assert_eq!(
+        forecasts_worked_out() - start,
+        1,
+        "a batch of {} views works it out once",
+        viewers.len()
+    );
+    let top = *driver.state().stack().last().unwrap();
+    let after = views(&driver);
+    assert_eq!(
+        forecasts_worked_out() - start,
+        1,
+        "the state after the batch is remembered"
+    );
+    for (was, now) in first.iter().zip(&after) {
+        assert_eq!(forecast_of(was, top), forecast_of(now, top));
     }
 }

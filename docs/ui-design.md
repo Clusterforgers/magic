@@ -269,7 +269,7 @@ Every decision has one home that holds its question and its answers; who asks an
 
 #### Forecast
 
-A card or player an effect is about to change wears a forecast badge: dark, at the top edge, in the fewest words.
+A card or player an effect is about to change wears a forecast badge: dark, across the middle of the card where it never covers the name, in the fewest words.
 
 | When | On | Says | From |
 |---|---|---|---|

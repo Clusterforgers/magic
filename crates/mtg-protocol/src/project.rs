@@ -1,5 +1,6 @@
 //! Building a viewer's [`StateView`] from the full game state, and the visibility rule it rests on.
 
+use crate::forecast_cache::top_forecast;
 use mtg_cards::ability::Ability;
 use mtg_cards::compile::{protection_quality_word, render_ability};
 use mtg_cards::keyword::Keyword;
@@ -19,7 +20,6 @@ use mtg_engine::object::{FaceDown, GameObject, ObjectKind};
 use mtg_engine::player::{Player, PlayerStatus};
 use mtg_engine::resolve::targets_legal;
 use mtg_engine::sight::offered_to;
-use mtg_engine::stack_forecast::stack_forecast;
 use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
 
@@ -606,10 +606,11 @@ impl ObjectView {
             trigger: trigger_view(sight, object),
             targets: object.choices().targets.clone(),
             targets_legal: targets_legal(state, id),
-            forecast: (state.stack().last() == Some(&id))
-                .then(|| stack_forecast(state))
-                .flatten()
-                .unwrap_or_default(),
+            forecast: if state.stack().last() == Some(&id) {
+                top_forecast(state)
+            } else {
+                Vec::new()
+            },
             // Counters and attachments are public facts of a permanent, shown to every seat that sees the permanent.
             counters: counters_view(object),
             // The abilities of a planeswalker on the battlefield are printed on the card every seat can read.
