@@ -6,6 +6,7 @@ mod boss_switch;
 mod common;
 mod content;
 mod descent_loot;
+mod discard_cost;
 mod endless;
 mod events;
 mod modifiers;
