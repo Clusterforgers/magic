@@ -17,18 +17,32 @@
    "satchel": [
     {
      "card": "Entrancing Melody",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
     },
     {
      "card": "Extract from Darkness",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 1
+     }
     },
     {
      "card": "Sudden Spoiling",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
     },
     {
-     "card": "Aetherize"
+     "card": "Aetherize",
+     "cue": {
+      "when": "combat"
+     }
     }
    ],
    "line": "Come closer. The water is warm.",
@@ -51,18 +65,34 @@
    "satchel": [
     {
      "card": "Memory Plunder",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
     },
     {
      "card": "Reanimate",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 1
+     }
     },
     {
      "card": "Spelltwine",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "mana",
+      "mana": 6
+     }
     },
     {
-     "card": "Rise of the Dark Realms"
+     "card": "Rise of the Dark Realms",
+     "cue": {
+      "when": "mana",
+      "mana": 9
+     }
     }
    ],
    "line": "Every word you forget, I keep.",
@@ -86,18 +116,34 @@
    "satchel": [
     {
      "card": "Grapple with the Past",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
     },
     {
      "card": "Octopus Umbra",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "board",
+      "creatures": 1
+     }
     },
     {
      "card": "Sleep",
-     "reusable": true
+     "reusable": true,
+     "cue": {
+      "when": "lethal",
+      "reach": 0
+     }
     },
     {
-     "card": "Crush of Tentacles"
+     "card": "Crush of Tentacles",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 1
+     }
     }
    ],
    "line": "The deep rises to meet you.",

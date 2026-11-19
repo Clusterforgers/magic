@@ -162,8 +162,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
-- [ ] (rw4a) The Spire satchel cues move from `brain::satchel::builtin` into `spire.json`, and the simulator installs the content cues (`brain::satchel::install`)
-- [ ] (rw6) Simulator: `delve_sim` takes a depth, names a modifier and reports the round each fight ended in and the share that reached each phase
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 - [ ] (rw1t) Enters-with-counters replacements apply to entering tokens; Coiled Growth then gives tokens its counters as they enter instead of by trigger
 
