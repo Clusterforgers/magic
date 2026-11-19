@@ -1,0 +1,23 @@
+{
+  "oracle_id": "9386f4d3-aa72-4849-8921-83740762dc0e",
+  "name": "Defensive Formation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Defensive Formation",
+      "oracle_fingerprint": "1bb66cf57d67dbf4e868badf7716d109",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Combat": {
+                "who": { "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+                "quirk": "R109DefenderAssigns"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

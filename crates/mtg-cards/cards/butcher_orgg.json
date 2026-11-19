@@ -1,0 +1,16 @@
+{
+  "oracle_id": "6656d47a-9490-46ee-a6ed-7cbcab7539c8",
+  "name": "Butcher Orgg",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Butcher Orgg",
+      "oracle_fingerprint": "748c0a6355d388855be09da1c970497b",
+      "abilities": [
+        {
+          "Rule": { "rule": { "Combat": { "who": "This", "quirk": "R109AssignsAmongDefenders" } } }
+        }
+      ]
+    }
+  ]
+}

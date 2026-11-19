@@ -124,6 +124,8 @@ pub struct ExtraTurn {
     pub skip_untap: bool,
     /// Whether power-up abilities can't be activated during it.
     pub no_power_up: bool,
+    /// Whether damage can't be prevented during it.
+    pub r109_unpreventable: bool,
     /// The delayed trigger set up as it begins, for its end step ("At the beginning of that turn's end step, you lose
     /// the game"); its id is given when it is set up.
     pub r6703_end: Option<Box<crate::triggers::DelayedCreated>>,
@@ -136,6 +138,9 @@ impl Hash for ExtraTurn {
         self.skip_untap.hash(state);
         if self.no_power_up {
             self.no_power_up.hash(state);
+        }
+        if self.r109_unpreventable {
+            self.r109_unpreventable.hash(state);
         }
         if let Some(end) = &self.r6703_end {
             serde_json::to_vec(end).unwrap_or_default().hash(state);
@@ -164,6 +169,8 @@ pub struct TurnState {
     pub(crate) extra: bool,
     /// Whether power-up abilities can't be activated this turn (an extra turn taken with that rule).
     pub(crate) no_power_up: bool,
+    /// Whether damage can't be prevented this turn (an extra turn taken with that rule).
+    pub(crate) r109_unpreventable: bool,
     /// The combat phases begun so far this turn.
     pub(crate) combats: u32,
     /// The phases still to begin when the added ones come after the current phase (CR 500.8), each as the step it
@@ -217,6 +224,9 @@ impl Hash for TurnState {
         if self.no_power_up {
             self.no_power_up.hash(state);
         }
+        if self.r109_unpreventable {
+            self.r109_unpreventable.hash(state);
+        }
         if self.ending {
             self.ending.hash(state);
         }
@@ -235,6 +245,7 @@ impl TurnState {
             regular: first,
             extra: false,
             no_power_up: false,
+            r109_unpreventable: false,
             combats: 0,
             ahead: Vec::new(),
             r306_steps: Vec::new(),

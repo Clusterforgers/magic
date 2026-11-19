@@ -180,6 +180,7 @@ mod player_keywords;
 mod prepare;
 mod prevention;
 mod pronouns;
+mod r109_05_wholes;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -754,6 +755,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r6703_wholes::r6703_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r109_05_wholes::r109_05_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6103_wholes::r6103_whole_read(text) {

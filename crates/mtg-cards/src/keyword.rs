@@ -29,6 +29,9 @@ pub enum Keyword {
     Deathtouch,
     /// Trample.
     Trample,
+    /// Trample over planeswalkers (CR 702.19c): attacking a planeswalker, the damage beyond lethal to its blockers and the
+    /// planeswalker goes to that planeswalker's controller.
+    TrampleOverPlaneswalkers,
     /// Lifelink.
     Lifelink,
     /// Vigilance.
@@ -530,6 +533,7 @@ impl Keyword {
         "Double strike",
         "Deathtouch",
         "Trample",
+        "Trample over planeswalkers",
         "Lifelink",
         "Vigilance",
         "Haste",
@@ -727,6 +731,7 @@ impl Keyword {
             Keyword::DoubleStrike => "Double strike",
             Keyword::Deathtouch => "Deathtouch",
             Keyword::Trample => "Trample",
+            Keyword::TrampleOverPlaneswalkers => "Trample over planeswalkers",
             Keyword::Lifelink => "Lifelink",
             Keyword::Vigilance => "Vigilance",
             Keyword::Haste => "Haste",
@@ -1030,6 +1035,7 @@ mod tests {
             Keyword::DoubleStrike,
             Keyword::Deathtouch,
             Keyword::Trample,
+            Keyword::TrampleOverPlaneswalkers,
             Keyword::Lifelink,
             Keyword::Vigilance,
             Keyword::Haste,

@@ -338,6 +338,7 @@ Bucknard's Everfull Purse
 Buried Alive
 Buried Ruin
 Burnished Hart
+Butcher Orgg
 Butcher of Malakir
 Butcher's Cleaver
 Bygone Bishop
@@ -536,6 +537,7 @@ Crystalline Giant
 Cuboid Colony
 Culling Ritual
 Cultivate
+Cunning Giant
 Curate
 Curious Altisaur
 Curse of Bounty
@@ -605,6 +607,7 @@ Deepfathom Skulker
 Deeproot Elite
 Deeproot Waters
 Defacing Duskmage // Vandal's Edit
+Defensive Formation
 Defile
 Deification
 Deluxe Dragster
@@ -1778,6 +1781,7 @@ Obyra, Dreaming Duelist
 Octomancer
 Octopus Umbra
 Odric, Master Tactician
+Ogre Enforcer
 Ogre Slumlord
 Ohran Yeti
 Ojer Axonil, Deepest Might // Temple of Power

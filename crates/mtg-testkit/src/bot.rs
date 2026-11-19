@@ -1325,6 +1325,23 @@ impl RandomBot {
     /// leave a random part of the rest for the player or planeswalker attacked.
     fn divide(&mut self, options: &DamageOptions) -> Vec<(ObjectId, u32)> {
         let mut shares: Vec<(ObjectId, u32)> = options.blockers.iter().map(|b| (*b, 0)).collect();
+        // A recipient that takes the damage whole gets all of it, or nothing goes to the offered objects at all.
+        if !options.whole.is_empty() {
+            let pick = self.rng.index(options.whole.len() + 1);
+            if let Some(whole) = options.whole.get(pick)
+                && let Some(share) = shares.iter_mut().find(|(b, _)| b == whole)
+            {
+                share.1 = options.power;
+                return shares;
+            }
+            if options.excess.is_some() || options.unblocked {
+                return shares;
+            }
+            if let Some(first) = shares.iter_mut().find(|(b, _)| options.whole.contains(b)) {
+                first.1 = options.power;
+            }
+            return shares;
+        }
         let needed: u32 = options.lethal.iter().sum();
         let past_the_blockers = options.excess.is_some() && needed <= options.power;
         let mut to_spread = options.power;

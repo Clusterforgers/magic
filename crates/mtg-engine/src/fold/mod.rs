@@ -417,6 +417,7 @@ fn begin_turn(
         state.r379_turn_ended(ending, before);
     }
     state.turn.no_power_up = false;
+    state.turn.r109_unpreventable = false;
     state.r6703_ignored.clear();
     let mut at_end = None;
     if extra {
@@ -424,6 +425,7 @@ fn begin_turn(
             return Err(invalid(format!("{active:?} has no extra turn to take")));
         };
         state.turn.no_power_up = taken.no_power_up;
+        state.turn.r109_unpreventable = taken.r109_unpreventable;
         at_end = taken.r6703_end;
     } else {
         state.turn.regular = active;
@@ -488,11 +490,13 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             player,
             skip_untap,
             no_power_up,
+            r109_unpreventable,
             r6703_end,
         } => state.extra_turns.push(ExtraTurn {
             player: *player,
             skip_untap: *skip_untap,
             no_power_up: *no_power_up,
+            r109_unpreventable: *r109_unpreventable,
             r6703_end: r6703_end.clone(),
         }),
         Event::PlayerControlGained {

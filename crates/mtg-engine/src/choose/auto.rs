@@ -72,6 +72,7 @@ mod tests {
             excess: trample.then_some(DamageTarget::Player(PlayerId::from_index(1))),
             lethal,
             unblocked: false,
+            whole: Vec::new(),
         };
         let answer = damage_in_order(&options);
         let shares = answer

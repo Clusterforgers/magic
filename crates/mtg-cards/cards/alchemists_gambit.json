@@ -1,0 +1,36 @@
+{
+  "oracle_id": "271d8db6-8606-46d7-9812-75aa22fcfd8e",
+  "name": "Alchemist's Gambit",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alchemist's Gambit",
+      "oracle_fingerprint": "a483a33743ad1e815d0b2690983732ed",
+      "abilities": [
+        {
+          "Keyword": {
+            "Cleave": {
+              "cost": "{4}{U}{U}{R}",
+              "spell": {
+                "Spell": {
+                  "effects": [
+                    { "ExtraTurn": { "r109_unpreventable": true } },
+                    { "Exile": { "what": "This" } }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              { "ExtraTurn": { "r109_unpreventable": true, "at_end": [{ "LoseGame": {} }] } },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

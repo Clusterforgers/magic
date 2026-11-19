@@ -3529,6 +3529,10 @@ pub fn own_spells_cant_search(state: &GameState, player: PlayerId) -> bool {
 /// Whether the damage `dealer` would deal can't be prevented: the one place a prevention effect reads this rule. A source
 /// that is gone is read as it is in the state (the damage of a creature that dies in the same step is dealt first).
 pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, combat: bool) -> bool {
+    // An extra turn taken under "During that turn, damage can't be prevented."
+    if state.turn().r109_unpreventable {
+        return true;
+    }
     state.rules().unpreventable.iter().any(|rule| {
         rule.combat.is_none_or(|only| only == combat)
             && (rule.from.is_empty()

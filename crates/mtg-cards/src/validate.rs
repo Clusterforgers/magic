@@ -6282,6 +6282,11 @@ impl Walker<'_> {
                         );
                     }
                 }
+                if let GameRule::Combat { quirk, .. } = rule
+                    && let Some(key) = crate::modify::r109_quirk_key(quirk)
+                {
+                    self.uses("Rule", key);
+                }
                 self.at(tag, |w| w.reference(who, Kind::Object));
             }
             GameRule::MustBlockAttacker { .. } | GameRule::IgnoreHexproof { .. } => {

@@ -667,6 +667,28 @@ pub enum CombatQuirk {
     BlockIgnoringShadow,
     /// Tapped to crew or saddle, they count for another amount than their power.
     TapPower(TapPowerAs),
+    /// Their controller may have each of them divide its combat damage as they choose among the defending player and any
+    /// number of creatures that player controls, blocked or not (CR 510.1a).
+    R109AssignsAmongDefenders,
+    /// While unblocked, their controller may have each of them assign all its combat damage to one creature the
+    /// defending player controls (CR 510.1a).
+    R109UnblockedToCreature,
+    /// The player each of them attacks, rather than its controller, assigns its combat damage (CR 510.1); that player
+    /// divides it among its blockers as they choose.
+    R109DefenderAssigns,
+    /// Lethal damage destroys them only when one source has dealt lethal damage marked on them (CR 704.5g).
+    R109LethalFromOneSource,
+}
+
+/// The capability key of a combat damage quirk of r109 (`Combat.<variant>`), which an engine without it lacks.
+pub fn r109_quirk_key(quirk: &CombatQuirk) -> Option<&'static str> {
+    Some(match quirk {
+        CombatQuirk::R109AssignsAmongDefenders => "Combat.R109AssignsAmongDefenders",
+        CombatQuirk::R109UnblockedToCreature => "Combat.R109UnblockedToCreature",
+        CombatQuirk::R109DefenderAssigns => "Combat.R109DefenderAssigns",
+        CombatQuirk::R109LethalFromOneSource => "Combat.R109LethalFromOneSource",
+        _ => return None,
+    })
 }
 
 /// What a creature counts for when it is tapped to crew or saddle.

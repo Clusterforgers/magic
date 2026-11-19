@@ -1693,6 +1693,9 @@ pub enum Effect {
         /// activated.").
         #[serde(default, skip_serializing_if = "is_false")]
         no_power_up: bool,
+        /// Damage can't be prevented during each of them (CR 614.17): "During that turn, damage can't be prevented."
+        #[serde(default, skip_serializing_if = "is_false")]
+        r109_unpreventable: bool,
         /// A delayed triggered ability of each of them, at the beginning of its end step ("At the beginning of that
         /// turn's end step, you lose the game."); none when empty.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]

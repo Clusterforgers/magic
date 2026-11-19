@@ -137,7 +137,7 @@ function Row({
  * blocker's among the band it blocks, and the sentence says so.
  */
 export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options }) => {
-  const { attacker, power, blockers, excess, lethal, unblocked } = options
+  const { attacker, power, blockers, excess, lethal, unblocked, whole } = options
   const { answer, selection } = usePrompt()
   const statusId = useId()
   const formId = useId()
@@ -170,8 +170,9 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
         toughness: objects[index]?.toughness ?? null,
         damage: objects[index]?.permanent?.damage ?? 0,
         lethal: lethal?.[index],
+        whole: whole?.includes(id) ?? false,
       })),
-    [blockers, objects, lethal],
+    [blockers, objects, lethal, whole],
   )
   const defender =
     excess === undefined
@@ -191,7 +192,7 @@ export const AssignDamagePrompt: PromptComponent<'AssignDamage'> = ({ options })
   // Until the player changes a number, the split follows the default for the creatures as they are now.
   const [edited, setEdited] = useState<readonly number[] | null>(null)
   const amounts = edited !== null && edited.length === recipients.length ? edited : defaults
-  const verdict = judge(power, amounts, trample)
+  const verdict = judge(power, amounts, trample, recipients)
 
   const change = (index: number) => (wanted: number) => setEdited(setAmount(amounts, index, wanted, power))
 

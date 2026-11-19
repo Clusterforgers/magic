@@ -851,6 +851,11 @@ pub struct DamageOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub unblocked: bool,
+    /// Offered objects that take all of the damage or none of it: a creature an unblocked attacker may assign its damage
+    /// to instead (CR 510.1a), or the planeswalker attacked beside the players and creatures of a wider division.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub whole: Vec<ObjectId>,
 }
 
 /// Options for the cleanup discard.

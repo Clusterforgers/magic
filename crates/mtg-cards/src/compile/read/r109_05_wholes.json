@@ -1,0 +1,27 @@
+[
+ [
+  { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "R109AssignsAmongDefenders" } } } },
+  "You may assign ~'s combat damage divided as you choose among defending player and/or any number of creatures they control."
+ ],
+ [
+  { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "R109UnblockedToCreature" } } } },
+  "If ~ is unblocked, you may have it assign its combat damage to a creature defending player controls."
+ ],
+ [
+  { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "R109LethalFromOneSource" } } } },
+  "~ can't be destroyed by lethal damage unless lethal damage dealt by a single source is marked on it."
+ ],
+ [
+  {
+   "Rule": {
+    "rule": {
+     "Combat": {
+      "who": { "Each": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+      "quirk": "R109DefenderAssigns"
+     }
+    }
+   }
+  },
+  "Rather than the attacking player, you assign the combat damage of each creature attacking you. You can divide that creature's combat damage as you choose among any of the creatures blocking it."
+ ]
+]

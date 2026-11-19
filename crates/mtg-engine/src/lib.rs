@@ -235,6 +235,7 @@ pub mod w17b_statics;
 pub mod w6b_emblems;
 pub mod zones;
 
+mod r109_combat_damage;
 #[cfg(test)]
 mod w9c_saturation;
 

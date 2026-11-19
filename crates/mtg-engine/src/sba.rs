@@ -192,6 +192,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
         }
         let toughness = chars.toughness.unwrap_or(0);
         let damage = object.permanent().map_or(0, PermanentState::damage);
+        let damage = crate::r109_combat_damage::r109_lethal_marked(state, id, damage);
         let deathtouched = object.permanent().is_some_and(PermanentState::deathtouched);
         let lethal_at = if crate::w17b_statics::r377_lethal_by_power(state, id) {
             chars.power.unwrap_or(0)

@@ -115,6 +115,7 @@ pub(crate) fn given(kind: GiftKind) -> Vec<Effect> {
                 count: Amount::one(),
                 skip_untap: false,
                 no_power_up: false,
+                r109_unpreventable: false,
                 at_end: Vec::new(),
             },
         },
