@@ -41,6 +41,11 @@ case_diff ".sqlx" - "$all_pg" none -- .sqlx/query-probe.json
 case_diff "web and mtg-cli" - "mtg-cli" changed -- web/src/lib/flash.ts crates/mtg-cli/src/main.rs
 
 # A stamp for the content of the working tree skips those crates: the diff runs from a probe base back to the tree.
+# A diff against the working tree also lists its untracked files, so these cases leave them out (every one is ignored):
+# what is tracked, changed or not, is in the probe base already, and the cases do not depend on the tree they run in.
+printf '*\n' >"$scratch/ignore-untracked"
+n=${GIT_CONFIG_COUNT:-0}
+export GIT_CONFIG_COUNT=$((n + 1)) "GIT_CONFIG_KEY_$n=core.excludesFile" "GIT_CONFIG_VALUE_$n=$scratch/ignore-untracked"
 # shellcheck source=../lib/check-plan.sh
 source scripts/lib/check-plan.sh
 load_graph

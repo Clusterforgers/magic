@@ -5,7 +5,6 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."
 # shellcheck source=probe.bash
 source scripts/tests/probe.bash
-export TMPDIR="$scratch"
 # shellcheck source=../lib/check-plan.sh
 source scripts/lib/check-plan.sh
 # shellcheck source=../lib/check-run.sh
@@ -134,15 +133,14 @@ done
 lease_dir="$scratch/leases"
 mkdir -p "$lease_dir"
 touch "$lease_dir/run.dead"
-flock "$lease_dir/run.live" sleep 4 &
-sleep 0.3
+hold_lock "$lease_dir/run.live"
 check "leases: one live check" "$(running_checks)" 1
 check "leases: a dead one is removed" "$([[ -e "$lease_dir/run.dead" ]] && echo kept || echo removed)" removed
 check "leases: this check counts" "$(
   take_lease
   running_checks
 )" 2
-kill %1 2>/dev/null || true
+release_lock
 
 # --- Units from cargo's artifacts ----------------------------------------------------------------------------------
 
