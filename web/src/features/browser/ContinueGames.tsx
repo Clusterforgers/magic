@@ -14,9 +14,13 @@ import { continueText } from '@/features/games/format'
 export function ContinueGames() {
   const store = useAuthStore()
   const status = useAuth((state) => state.status)
+  // Only a listing that has just answered counts: one still loading or failed may name a lobby that has since
+  // closed (a Delves run or a tournament that ended), and a link back into it would open nothing.
   const open = useAuth(
     useShallow((state) =>
-      state.games.games.filter((game) => game.status === 'running' || game.status === 'lobby'),
+      state.games.status === 'ready'
+        ? state.games.games.filter((game) => game.status === 'running' || game.status === 'lobby')
+        : [],
     ),
   )
   useEffect(() => {
