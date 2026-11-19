@@ -57,7 +57,7 @@ export function TurnBadge() {
           data-themed={phase === null ? undefined : ''}
           title={badgeTitle({ ...input, party: partySeats(input.party) })}
           className={cn(
-            'h-7 max-w-full shrink truncate px-3 text-sm',
+            'h-7 max-w-full shrink truncate px-3 text-sm max-sm:px-2',
             phase !== null && ON_PHASE[yours ? 'you' : 'them'],
           )}
         >

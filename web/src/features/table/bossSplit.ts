@@ -20,14 +20,14 @@ export const BOSS_FAIR_SHARE = 0.66
 /** The party's row of boards is shown from this height in px; under it the heroes are a strip of tiles. */
 export const ALLY_ROW_MIN_PX = 120
 
-/** The height of the boss's side when no board of it has a permanent: the abilities, the boss's pod as a line and the frame. */
-export const BOSS_LINE_PX = 120
 /** The height of the party's row when no ally has a permanent: the tiles in their frames. */
 export const ALLY_LINE_PX = 68
 /** The height of your row when you have no permanent and no card to play: your pod as a line. */
 export const OWN_LINE_PX = 72
 /** What an empty board of yours that still has a hand keeps room for: a few lands, as on any early turn. */
 export const OWN_READY_COUNTS: LaneCounts = { lands: 3, creatures: 1, other: 0 }
+/** What the boss's board keeps room for while its side has no permanent: as yours with a hand, so its first ones move no row. */
+export const BOSS_READY_COUNTS: LaneCounts = OWN_READY_COUNTS
 /** The least height of a pod column beside a board that has permanents, in px. */
 export const POD_MIN_PX = 104
 
@@ -92,8 +92,9 @@ export function allyShares(allies: readonly LaneCounts[]): number[] {
  * Splits `room` between the boss's side, the allies' row and your board so that every board draws as large a card as
  * the room holds: the heroes' cards are the largest rung of the ladder at which the heroes' rows fit with the boss's row
  * at `BOSS_CARD_FLOOR_PX` cards; the boss then takes what is left, up to `BOSS_SCALE` of the heroes' card and
- * `BOSS_SIDE_MOST` of the room. A board without permanents takes one
- * line (`BOSS_LINE_PX`, `ALLY_LINE_PX`, `OWN_LINE_PX`); a hand that will fill an empty board keeps your row. What is
+ * `BOSS_SIDE_MOST` of the room. The boss's side without permanents keeps the room of `BOSS_READY_COUNTS`; an ally's
+ * board or yours without permanents takes one line (`ALLY_LINE_PX`, `OWN_LINE_PX`), and a hand that will fill an empty
+ * board of yours keeps your row. What is
  * left goes to the allies' row and yours in proportion to what they need. Without a fit at the floor the boss takes
  * what it needs there up to its cap, your row what it needs there, and the allies the rest: a strip of tiles where low.
  */
@@ -113,10 +114,12 @@ export function splitBoss(input: BossSplitInput, limits: LaneLimits = LANE_LIMIT
   const ownBoard: BossBoard = ownShows ? input.own : { ...input.own, counts: OWN_READY_COUNTS }
   const gap = input.allies.length === 0 ? 0 : finite(input.gap)
   const bossCard = (card: number): number => Math.floor(card * BOSS_SCALE)
+  // The boss's board keeps at least the room of a few permanents, empty too, so its first ones move no row.
+  const first = input.boss[0]
+  const bossBoards =
+    first === undefined ? input.boss : [...input.boss, { ...first, counts: BOSS_READY_COUNTS }]
   const bossRow = (card: number): number =>
-    bossShows
-      ? Math.min(cap, Math.max(finite(input.bossFloor), finite(input.bossChrome) + need(input.boss, card)))
-      : Math.min(cap, BOSS_LINE_PX)
+    Math.min(cap, Math.max(finite(input.bossFloor), finite(input.bossChrome) + need(bossBoards, card)))
   const allyRow = (card: number): number =>
     input.allies.length === 0
       ? 0

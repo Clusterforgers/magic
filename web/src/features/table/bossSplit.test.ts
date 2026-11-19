@@ -1,11 +1,10 @@
-// Goal: the boss-mode split shares the table's height by what each board draws: the rows add up to the room, a board with more permanents gets more, the boss's side stays under its cap and its cards under the heroes', a board without permanents is one line, a hand that will fill an empty board keeps your row, and a room too small for boards leaves the allies a strip of tiles; the hand dock of a seat with nothing to play is a slim bar in boss mode only.
+// Goal: the boss-mode split shares the table's height by what each board draws: the rows add up to the room, a board with more permanents gets more, the boss's side stays under its cap and its cards under the heroes', the boss's side without permanents keeps the room of its first ones, an ally's or an idle own board without permanents is one line, a hand that will fill an empty board keeps your row, and a room too small for boards leaves the allies a strip of tiles; the hand dock of a seat with nothing to play is a slim bar in boss mode only.
 import { describe, expect, it } from 'vitest'
 import {
   ALLY_LINE_PX,
   ALLY_MIN_SHARE,
   ALLY_ROW_MIN_PX,
   BOSS_FAIR_SHARE,
-  BOSS_LINE_PX,
   BOSS_SCALE,
   BOSS_SIDE_MOST,
   OWN_LINE_PX,
@@ -131,9 +130,29 @@ describe('splitBoss', () => {
     },
   )
 
-  it('takes one line for a board without permanents and gives the rest to the boards that draw some', () => {
+  it.each([
+    // [room, allies]
+    [480, []],
+    [650, []],
+    [650, [0]],
+    [800, [0, 0]],
+    [1100, [0, 0, 0]],
+    [1500, []],
+  ])(
+    "keeps the boss's empty side the room of its first permanents in a room of %i px beside allies %j",
+    (room, allies) => {
+      const bare = splitBoss(input({ room, boss: 0, allies, own: 0, ready: true }))
+      const first = splitBoss(input({ room, boss: 1, allies, own: 0, ready: true }))
+      // A minimum share of the table from the start, under its cap and never more than the party's.
+      expect(bare.opponents).toBeGreaterThanOrEqual(Math.min(room * BOSS_SIDE_MOST, 196))
+      expect(bare.opponents).toBeLessThanOrEqual(bare.own)
+      // Its first permanent moves no row.
+      expect(first.opponents).toBeCloseTo(bare.opponents, 5)
+    },
+  )
+
+  it("takes one line for an ally's or an idle own board without permanents and gives the rest to the boards that draw some", () => {
     const bare = splitBoss(input({ boss: 0, allies: [0, 0], own: 0, ready: false }))
-    expect(bare.opponents).toBe(BOSS_LINE_PX)
     expect(bare.band).toBe(ALLY_LINE_PX)
     expect(bare.own - bare.band - 8).toBeGreaterThanOrEqual(OWN_LINE_PX)
     // A Spirit's empty row is a line; the ally that plays takes the room instead.

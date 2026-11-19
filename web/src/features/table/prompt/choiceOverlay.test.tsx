@@ -1,4 +1,4 @@
-// Goal: a choice of cards takes the centre overlay where `wantsOverlay` says so (every choice on a phone, a long list anywhere): its cards leave the shared strip for an overlay over both boards drawn whole, the strip moves under it and keeps the sentence and the buttons, and an answer closes it; a wide window keeps a short list in the strip.
+// Goal: a choice of cards takes the centre overlay where `wantsOverlay` says so (every choice on a phone, a long list anywhere): its cards leave the shared strip for an overlay over both boards drawn whole, the strip moves under it and keeps the sentence and the buttons, and an answer closes it; a wide window keeps a short list in the strip; the opening hand stands over the whole table clear of your pod where the main area holds its least row beside the pod margins, else over the opponents and the strip.
 import { act, render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -9,7 +9,8 @@ import { GameTable } from '../GameTable'
 import { TableOptionsContext } from '../tableOptions'
 import { fixtureGame } from '../dev/devGame'
 import { must } from '@/test-utils/batches'
-import { wantsOverlay } from './choiceOverlay'
+import { OPENING_ROOM_LEAST_PX, OWN_POD_REACH_PX, openingPlace, wantsOverlay } from './choiceOverlay'
+import { OPENING_CARD_LEAST_PX, OPENING_PANEL_PAD_PX } from './openingCard'
 import { FILTER_FROM } from './cardsText'
 
 const PHONE: Viewport = { width: 390, height: 844 }
@@ -42,6 +43,30 @@ describe('wantsOverlay', () => {
     [40, false, true],
   ])('a choice of %i cards on a phone (%s) takes the overlay: %s', (count, phone, wants) => {
     expect(wantsOverlay(count, phone)).toBe(wants)
+  })
+})
+
+describe('openingPlace', () => {
+  it.each([
+    // [main width, over the whole table]
+    [600, false],
+    [736, false],
+    [960, false],
+    [1000, true],
+    [1094, true],
+    [1600, true],
+    [2256, true],
+  ])('a main area %i px wide centres the opening hand over the whole table: %s', (width, whole) => {
+    const place = openingPlace(width)
+    expect(place.rows).toBe(whole ? '2 / 5' : '2 / 4')
+    // Over the whole table the panel keeps clear of your pod column on both sides, and its room holds seven least cards.
+    expect(place.inset).toBe(whole ? OWN_POD_REACH_PX : 0)
+    expect(width - 2 * place.inset).toBeGreaterThanOrEqual(whole ? OPENING_ROOM_LEAST_PX : 0)
+  })
+
+  it('leaves room for seven of the least cards in the least room', () => {
+    const row = 7 * OPENING_CARD_LEAST_PX + 6 * 8 + OPENING_PANEL_PAD_PX
+    expect(row).toBeLessThanOrEqual(OPENING_ROOM_LEAST_PX - 2 * 8)
   })
 })
 

@@ -1,6 +1,11 @@
-/** Goal: the floating opening hand keeps its cards in one row inside the overlay's room at every room a table off a phone gives it, from a narrow tablet to a wide desktop, for hands of up to seven cards, within the least and most card width. */
+/** Goal: the floating opening hand keeps its cards in one row inside the overlay's room, leaving the panel's sentence, answers and status their height, at every room a table off a phone gives it, from a narrow tablet to a wide desktop, for hands of up to seven cards, within the least and most card width. */
 import { describe, expect, it } from 'vitest'
-import { OPENING_CARD_LEAST_PX, OPENING_CARD_MOST_PX, openingCardPx } from './openingCard'
+import {
+  OPENING_CARD_LEAST_PX,
+  OPENING_CARD_MOST_PX,
+  OPENING_PANEL_PAD_PX,
+  openingCardPx,
+} from './openingCard'
 
 const GAP_PX = 8
 
@@ -19,7 +24,17 @@ describe('openingCardPx', () => {
       const card = openingCardPx(room, count)
       expect(card).toBeGreaterThanOrEqual(OPENING_CARD_LEAST_PX)
       expect(card).toBeLessThanOrEqual(OPENING_CARD_MOST_PX)
-      expect(count * card + (count - 1) * GAP_PX).toBeLessThanOrEqual(room.width * 0.9)
+      expect(count * card + (count - 1) * GAP_PX).toBeLessThanOrEqual(room.width - OPENING_PANEL_PAD_PX)
+    },
+  )
+
+  it.each(ROOMS.flatMap((room) => [120, 160, 200].map((rest) => [room, rest] as const)))(
+    'leaves the panel in %j the %i px of its sentence, answers and status',
+    (room, rest) => {
+      const card = openingCardPx(room, 7, rest)
+      const tall = Math.round((card * 7) / 5)
+      if (card > OPENING_CARD_LEAST_PX) expect(tall + rest).toBeLessThanOrEqual(room.height)
+      expect(card).toBeLessThanOrEqual(openingCardPx(room, 7))
     },
   )
 

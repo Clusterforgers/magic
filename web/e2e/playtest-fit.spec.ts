@@ -1,6 +1,7 @@
-// Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, a compact tapped land shows its Tapped chip whole on a phone and a tapped attacker or blocker its combat mark beside its stats, a pod of the four-seat table keeps its zone chips inside it, the lobby's Ready bar stays inside the deck column, and a phone's turn badge shows whose turn it is uncut.
+// Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, a compact tapped land laid out on a phone shows its Tapped chip whole and a tapped attacker or blocker its combat mark beside its stats, a pod of the four-seat table keeps its zone chips inside it, the lobby's Ready bar stays inside the deck column, a phone's turn badge shows whose turn it is uncut, and a boss's empty side keeps its pod and a quarter of the room from the opening hands to the first turn, the opening hand centred over the table.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
+import { openingProblems } from './openingFit'
 import { DEV_WEB_URL } from './ports'
 
 interface Size {
@@ -19,9 +20,28 @@ const SIZES: readonly Size[] = [
 
 const label = (size: Size): string => `${size.width}x${size.height}`
 
+/** Where every card and its marks stand, as one string. */
+const placeOfCards = (page: Page): Promise<string> =>
+  page.evaluate(() =>
+    [...document.querySelectorAll('[data-object-id], [data-slot="card-face"] *')]
+      .map((element) => {
+        const { left, top, width, height } = element.getBoundingClientRect()
+        return `${Math.round(left)},${Math.round(top)},${Math.round(width)},${Math.round(height)}`
+      })
+      .join(';'),
+  )
+
+/** Sets the window's size and waits until the cards stand still: the table lays itself out again over several frames. */
 async function atSize(page: Page, size: Size): Promise<void> {
   await page.setViewportSize(size)
   await page.waitForTimeout(250)
+  let before = await placeOfCards(page)
+  for (let tries = 0; tries < 30; tries += 1) {
+    await page.waitForTimeout(150)
+    const now = await placeOfCards(page)
+    if (now === before) return
+    before = now
+  }
 }
 
 test.describe('the duel table', () => {
@@ -98,6 +118,8 @@ test.describe('the duel table', () => {
   })
 
   test('a phone shows the whole of whose turn it is', async ({ page }) => {
+    // The route's Effects button stands in the bar's tool slot, which is empty and hidden in a game: the bar is judged as a game draws it.
+    await page.addStyleTag({ content: '[data-slot="bar-tools"] { display: none !important; }' })
     await atSize(page, { width: 390, height: 844 })
     // The words up to the turn number ("Bo's turn · Round 5") end inside the pill; the step after them may be cut.
     const room = await page.evaluate(() => {
@@ -139,6 +161,8 @@ test('the Ready bar stays inside the deck column of the lobby', async ({ page })
 })
 
 test('a compact tapped land on a phone shows its Tapped chip whole', async ({ page }) => {
+  // A phone folds lands into the pods' chips until the viewer's "Show lands" lays them out (docs/web.md, Lands fold).
+  await page.addInitScript(() => localStorage.setItem('mtg.lands', 'show'))
   await page.goto(`${DEV_WEB_URL}/dev/table?board=duel`)
   await page.waitForSelector('[data-slot="mana-strip"]')
   await atSize(page, { width: 390, height: 844 })
@@ -222,5 +246,52 @@ test('a seat pod keeps its zone chips inside the pod on the four-seat table', as
       }),
     )
     expect(outside, label(size)).toEqual([])
+  }
+})
+
+test("the boss's empty side keeps its room and pod at the opening hands and on the first turn, the opening hand centred over the table", async ({
+  page,
+}) => {
+  // The owner's report: a Delves fight against one boss at the opening hands, the boss's empty row a thin strip and the
+  // opening hand squeezed into it (docs/web.md, Boss mode and Opening hands).
+  for (const size of [
+    { width: 2560, height: 1440 },
+    { width: 1920, height: 1080 },
+    { width: 1366, height: 768 },
+    { width: 1024, height: 768 },
+  ]) {
+    const rows: number[] = []
+    for (const stage of ['prompt=mulligan', 'prompt=priority&turn=you']) {
+      await page.setViewportSize(size)
+      await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&boss=0&rework=1&bare=1&${stage}`)
+      await page.waitForSelector('[data-slot="boss-frame"]')
+      await atSize(page, size)
+      const seen = await page.evaluate(() => {
+        const height = (name: string): number =>
+          document.querySelector(`[data-area="${name}"]`)?.getBoundingClientRect().height ?? 0
+        const frame = document.querySelector('[data-slot="boss-frame"]')
+        return {
+          opponents: height('opponents'),
+          own: height('own'),
+          pod: frame?.querySelector('[data-slot="pod-column"]') != null,
+          empty: frame?.textContent?.includes('No permanents') === true,
+        }
+      })
+      expect(seen.pod, `${label(size)} ${stage}: the boss's pod column`).toBe(true)
+      expect(seen.empty, `${label(size)} ${stage}: the quiet empty board`).toBe(true)
+      expect(seen.opponents, `${label(size)} ${stage}: the boss's share`).toBeGreaterThanOrEqual(
+        0.25 * (seen.opponents + seen.own),
+      )
+      expect(seen.opponents).toBeLessThanOrEqual(seen.own)
+      rows.push(Math.round(seen.opponents))
+      if (stage === 'prompt=mulligan') {
+        await expect.poll(() => openingProblems(page, 64), { message: label(size) }).toEqual([])
+      }
+    }
+    // The boss's row stands where it stood from the opening hands to the first turn.
+    expect(
+      Math.abs((rows[0] ?? 0) - (rows[1] ?? 0)),
+      `${label(size)}: the boss's row moves`,
+    ).toBeLessThanOrEqual(8)
   }
 })

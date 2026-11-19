@@ -302,7 +302,9 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
     // which in a crowd holds your creatures at `ownCrowd`.
     const ownLeast = empty === 0 ? least : Math.max(least, ownRow(Math.max(at(0), crowd)))
     const crowded = empty === 0 ? 0 : Math.min(room - ownLeast, theirRow(at(0)))
-    const keep = Math.max(crowded, Math.min(room - least, finite(input.theirChrome) + BOARD_KEEP_PX))
+    // With every board empty, tall pods (the seats' opening status) never lift the opponents' row over yours.
+    const most = empty === 0 ? room / 2 : room - least
+    const keep = Math.max(crowded, Math.min(room - least, most, finite(input.theirChrome) + BOARD_KEEP_PX))
     if (crowd > 0 && empty > 0) {
       const opponents = Math.max(keep, Math.min(share.opponents, room - ownLeast))
       return { ...share, opponents, own: room - opponents }
