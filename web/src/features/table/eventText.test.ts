@@ -308,6 +308,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { ManaAbilityActivated: { player: 0, source: { id: 3, counter: 0 } } },
     'Ana activates a mana ability of Forest',
   ],
+  ManaUndone: [{ ManaUndone: { player: 0, source: 3 } }, 'Ana untaps Forest and takes its mana back'],
   ManaAdded: [{ ManaAdded: { player: 0, mana: 'Green', source: 3 } }, 'Ana adds {G} from Forest'],
   ManaSpent: [{ ManaSpent: { player: 0, mana: ['Green', 'Red', 'Colorless'] } }, 'Ana spends {G}{R}{C}'],
   ManaPoolEmptied: [{ ManaPoolEmptied: { player: 0 } }, "Ana's mana pool empties"],

@@ -1420,6 +1420,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, source } = event.ManaAbilityActivated
     return quiet(`${n.seat(player)} activates a mana ability of ${n.card(source.id)}`)
   }
+  if ('ManaUndone' in event) {
+    const { player, source } = event.ManaUndone
+    return quiet(`${n.seat(player)} untaps ${n.card(source)} and takes its mana back`)
+  }
   if ('ManaAdded' in event) {
     const { player, mana, source } = event.ManaAdded
     const from = source === null ? '' : ` from ${n.card(source)}`

@@ -242,7 +242,15 @@ kind: TakeBackKind,
 /**
  * The card cast or played, or the source of the ability.
  */
-name: string, } } | { "PriorityGranted": { 
+name: string, } } | { "ManaUndone": { 
+/**
+ * Who undid it.
+ */
+player: PlayerId, 
+/**
+ * The source, untapped again.
+ */
+source: ObjectId, } } | { "PriorityGranted": { 
 /**
  * Who has priority.
  */

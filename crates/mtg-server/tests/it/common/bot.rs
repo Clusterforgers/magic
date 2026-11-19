@@ -221,7 +221,11 @@ impl Bot {
         }
         let answer = match self.held.take() {
             Some((held, answer)) => {
-                assert_eq!(held, decision, "the game moved on while an answer was held");
+                assert_eq!(
+                    without_undo(held),
+                    without_undo(decision.clone()),
+                    "the game moved on while an answer was held"
+                );
                 answer
             }
             None => self.brain.choose(&decision),
@@ -326,4 +330,12 @@ pub async fn drive(bots: &mut [Bot], handle: &GameHandle, limit: usize) -> Optio
             return over;
         }
     }
+}
+
+/// `decision` without the mana abilities it offers to undo: a resumed game forgets them, as it forgets take-backs.
+fn without_undo(mut decision: Decision) -> Decision {
+    if let DecisionKind::Priority(options) = &mut decision.kind {
+        options.undo_mana.clear();
+    }
+    decision
 }

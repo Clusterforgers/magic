@@ -654,6 +654,7 @@ mod tests {
                 faces: Vec::new(),
                 unplayable: Vec::new(),
                 inactive: Vec::new(),
+                undo_mana: Vec::new(),
                 can_act: true,
                 can_pass: true,
             })),

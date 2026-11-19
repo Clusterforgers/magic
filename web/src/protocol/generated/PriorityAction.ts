@@ -8,4 +8,4 @@ import type { ObjectId } from "./ObjectId";
 /**
  * What a player does with priority.
  */
-export type PriorityAction = "Pass" | { "PlayLand": ObjectId } | { "PlayLandFace": [ObjectId, number] } | { "CastSpell": ObjectId } | { "ActivateMana": ManaSource } | { "Activate": AbilityRef } | { "Suspend": ObjectId } | { "Foretell": ObjectId } | { "Plot": ObjectId } | { "TurnFaceUp": ObjectId } | { "CastPrepared": ObjectId } | "BringCompanion" | { "UnlockDoor": [ObjectId, number] } | { "EndEffect": EffectId } | { "IgnoreEffect": ObjectId } | { "Manual": ManualAction };
+export type PriorityAction = "Pass" | { "PlayLand": ObjectId } | { "PlayLandFace": [ObjectId, number] } | { "CastSpell": ObjectId } | { "ActivateMana": ManaSource } | { "Activate": AbilityRef } | { "Suspend": ObjectId } | { "Foretell": ObjectId } | { "Plot": ObjectId } | { "TurnFaceUp": ObjectId } | { "CastPrepared": ObjectId } | "BringCompanion" | { "UnlockDoor": [ObjectId, number] } | { "EndEffect": EffectId } | { "IgnoreEffect": ObjectId } | { "UndoMana": ObjectId } | { "Manual": ManualAction };
