@@ -895,6 +895,13 @@ pub enum Event {
         /// What it chose.
         chosen: Chosen,
     },
+    /// A permanent keeps a value its ability chose as its own choice, public ("II — Choose a card name.").
+    R111ChoiceKept {
+        /// The permanent.
+        object: ObjectId,
+        /// What it keeps.
+        chosen: Chosen,
+    },
     /// A permanent's controller chose a value secretly, which the permanent keeps (CR 706, "secretly choose an
     /// opponent"); only that player sees what it is until a cost reveals it.
     R110ChoseSecretly {
@@ -1837,6 +1844,7 @@ impl Event {
             | Event::AttachedToPlayer { object, .. }
             | Event::ChosenAsAttached { object, .. }
             | Event::R110ChoseSecretly { object, .. }
+            | Event::R111ChoiceKept { object, .. }
             | Event::R110ChoiceRevealed { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }

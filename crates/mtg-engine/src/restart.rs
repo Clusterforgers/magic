@@ -97,6 +97,7 @@ pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
     state.tallies = Tallies::default();
     state.day_night = None;
     state.seat_turns.clear();
+    state.r111 = Box::default();
     state.last_turn_of = None;
     state.monarch = None;
     state.citys_blessing.clear();

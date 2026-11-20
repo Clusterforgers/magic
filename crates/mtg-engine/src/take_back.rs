@@ -380,6 +380,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Attached { .. }
         | Event::ChosenAsAttached { .. }
         | Event::R110ChoseSecretly { .. }
+        | Event::R111ChoiceKept { .. }
         | Event::R110ChoiceRevealed { .. }
         | Event::AttachedToPlayer { .. }
         | Event::JoinedAttack { .. }

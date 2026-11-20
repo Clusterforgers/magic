@@ -140,6 +140,7 @@ mod prepare;
 mod proliferate;
 mod put_counters;
 mod r110_secret;
+mod r111_keep;
 mod r281_lock_door;
 mod r281_pay_one_of;
 mod r376_choose_words;
@@ -377,6 +378,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::R110MoveEachKindMissing { .. } => r110_moves::run_each_kind(cx, effect),
         Effect::R110MoveOneOrMore { .. } => r110_moves::run_one_or_more(cx, effect),
         Effect::R110ChooseSecretly(_) => r110_secret::run(cx, effect),
+        Effect::R111KeepChosen(_) => r111_keep::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
@@ -466,6 +468,7 @@ mod tests {
         {"R6702Distribute":{"among":"This","counter":{"Other":"stun"},"count":3}},
         {"R6702CountersPerVote":{"tally":"votes","counter":{"Other":"stun"}}},
         {"R110ChooseSecretly":"Opponent"},
+        {"R111KeepChosen":"name"},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
@@ -660,6 +663,7 @@ mod tests {
         "Effect.R6702Distribute",
         "Effect.R6702CountersPerVote",
         "Effect.R110ChooseSecretly",
+        "Effect.R111KeepChosen",
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",

@@ -225,6 +225,15 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             };
             covers(who, player, object) && picks(state, ban, by, source)
         }
+        (
+            Prohibited::R111CastOrPlay(cards),
+            Doing::PlayLandCard { player, card } | Doing::Cast { player, card },
+        ) => {
+            covers(who, Some(player), None)
+                && state
+                    .object(card)
+                    .is_some_and(|o| picks(state, ban, cards, o.reference()))
+        }
         (Prohibited::PlayLands(lands), Doing::PlayLandCard { player, card }) => {
             covers(who, Some(player), None)
                 && state
@@ -309,6 +318,22 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                 object,
                 defender,
                 ..
+            },
+        ) => {
+            covers(who, Some(player), Some(object))
+                && !state.object(object).is_some_and(|o| {
+                    Scope::announcing(state, defender, o.reference())
+                        .holds(unless)
+                        .unwrap_or(false)
+                })
+        }
+        (
+            Prohibited::R111AttackPlayer { unless },
+            Doing::Attack {
+                player,
+                object,
+                defender,
+                walker: None,
             },
         ) => {
             covers(who, Some(player), Some(object))

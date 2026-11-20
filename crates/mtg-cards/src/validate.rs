@@ -631,6 +631,11 @@ impl<'a> Walker<'a> {
             ValueKind::CreatureTypeExcept(left_out) if left_out.is_empty() => {
                 self.problem("a creature type other than none is any creature type");
             }
+            ValueKind::R111SpellDamage { caster, filter } => {
+                self.uses("ValueKind", "R111SpellDamage");
+                self.at("caster", |w| w.reference(caster, Kind::Player));
+                self.at("filter", |w| w.selector(filter));
+            }
             _ => {}
         }
     }
@@ -667,10 +672,21 @@ impl<'a> Walker<'a> {
         if matches!(r, Ref::R110Seat(_)) {
             self.problem("a seat is fixed by the engine and never named in a card file");
         }
+        if let Ref::R111BlockedController { of, by } = r {
+            self.uses("Ref", "R111BlockedController");
+            self.at("of", |w| w.reference(of, Kind::Object));
+            self.at("by", |w| w.reference(by, Kind::Object));
+        }
+        if let Ref::R111LastDamagedYou(by) = r {
+            self.uses("Ref", "R111LastDamagedYou");
+            self.at("R111LastDamagedYou", |w| w.selector(by));
+        }
         match r {
             Ref::R110Seat(_)
             | Ref::R4700OtherChosen
             | Ref::You
+            | Ref::R111LastDamagedYou(_)
+            | Ref::R111BlockedController { .. }
             | Ref::Opponents
             | Ref::EachPlayer
             | Ref::AttachedPlayer
@@ -1838,6 +1854,15 @@ impl<'a> Walker<'a> {
             | Condition::FastestPlayer(_)
             | Condition::CompletedNamedDungeon { .. } => self.r5521_condition(condition),
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
+            Condition::R111CastOrPutLastTurn => self.uses("Condition", "R111CastOrPutLastTurn"),
+            Condition::R111AttackedLastCombat(by) => {
+                self.uses("Condition", "R111AttackedLastCombat");
+                self.at("by", |w| w.reference(by, Kind::Object));
+            }
+            Condition::R111DamagedThisTurnBy(by) => {
+                self.uses("Condition", "R111DamagedThisTurnBy");
+                self.at("by", |w| w.selector(by));
+            }
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
             Condition::TriggeringSticker(_) => self.uses("Condition", "TriggeringSticker"),
@@ -3840,6 +3865,8 @@ impl Walker<'_> {
     fn kind_of(&self, r: &Ref) -> Kind {
         match r {
             Ref::R110Seat(_)
+            | Ref::R111LastDamagedYou(_)
+            | Ref::R111BlockedController { .. }
             | Ref::R4700OtherChosen
             | Ref::You
             | Ref::Opponents
@@ -5344,6 +5371,7 @@ impl Walker<'_> {
                     w.problem(R5502_COMBAT_ONLY);
                 }
             }
+            Effect::R111KeepChosen(name) => w.chosen_as(name),
             Effect::R110ChooseSecretly(secret) => {
                 if matches!(secret, crate::effect::R110Secret::CreatureType(types) if types.len() < 2) {
                     w.problem("a secret choice of creature types offers two or more");
@@ -6561,6 +6589,7 @@ impl Walker<'_> {
             | GameRule::LoyaltyTwice(who)
             | GameRule::R6600LoyaltyOnceMore(who)
             | GameRule::BoastTwice(who)
+            | GameRule::R111RevealDraws(who)
             | GameRule::LoyaltyAnyTime(who)
             | GameRule::LoyaltyCostsMore { who, .. } => {
                 self.at(tag, |w| w.reference(who, Kind::Player));
@@ -6809,8 +6838,11 @@ impl Walker<'_> {
                     self.at("unless", |w| w.condition(unless));
                 }
             }
-            Prohibited::Attack { unless } => {
+            Prohibited::Attack { unless } | Prohibited::R111AttackPlayer { unless } => {
                 self.at("unless", |w| w.condition(unless));
+            }
+            Prohibited::R111CastOrPlay(cards) => {
+                self.at("R111CastOrPlay", |w| w.selector(cards));
             }
             Prohibited::AttackPlaneswalkers(walkers) => {
                 self.at("AttackPlaneswalkers", |w| w.selector(walkers));

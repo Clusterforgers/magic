@@ -810,6 +810,15 @@ pub enum Prohibited {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         but_mana_abilities: bool,
     },
+    /// Attack a player, not the planeswalkers they control (CR 508.1b), unless the condition holds for that player ("you" in
+    /// it is that player): "creatures can't attack a player unless that player cast a spell ... during their last turn".
+    R111AttackPlayer {
+        /// The attack is open while this holds for the defending player.
+        unless: Condition,
+    },
+    /// Cast the spells and play the lands whose cards the selector picks (CR 601, 305.1): "spells with the chosen names
+    /// can't be cast and lands with the chosen names can't be played".
+    R111CastOrPlay(Selector),
 }
 
 /// What the next spell of a `GameRule::NextSpell` gets.
@@ -1227,6 +1236,8 @@ pub enum GameRule {
     /// Creatures the players control can boast twice during each of their turns rather than once (CR 702.142c): a boast
     /// ability is an activated ability limited to once each turn that works only if its source attacked this turn.
     BoastTwice(Ref),
+    /// The players reveal each card they draw as they draw it ("the chosen player reveals each card they draw").
+    R111RevealDraws(Ref),
     /// The players may activate loyalty abilities of planeswalkers they control on any player's turn any time they could
     /// cast an instant (Teferi's Talent's emblem).
     LoyaltyAnyTime(Ref),

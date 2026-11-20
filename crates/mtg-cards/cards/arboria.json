@@ -1,0 +1,23 @@
+{
+  "oracle_id": "acb3e93c-a1d3-458f-b8c3-c426cd359fa4",
+  "name": "Arboria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arboria",
+      "oracle_fingerprint": "728569ea5ac5cb7960d10e80ea7cd8e6",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "EachPlayer",
+                "action": { "R111AttackPlayer": { "unless": "R111CastOrPutLastTurn" } }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -270,6 +270,8 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Spotlit
         | Ref::Chosen
         | Ref::R110Seat(_)
+        | Ref::R111LastDamagedYou(_)
+        | Ref::R111BlockedController { .. }
         | Ref::R4700OtherChosen
         | Ref::Promised
         | Ref::Defending
@@ -665,6 +667,8 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::AfterCombat
         | Condition::TriggeringSticker(_)
         | Condition::NeitherDayNorNight
+        | Condition::R111CastOrPutLastTurn
+        | Condition::R111DamagedThisTurnBy(_)
         | Condition::ChosenWord { .. }
         | Condition::EnteredAs(_)
         | Condition::Performed
@@ -685,6 +689,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::Searched { who, .. }
         | Condition::VotedAs { with: who, .. }
         | Condition::CombatDamagedSinceLastTurn(who)
+        | Condition::R111AttackedLastCombat(who)
         | Condition::AttackedThisCombat(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
     }

@@ -4248,6 +4248,12 @@ impl Pass<'_> {
         }
         if matches!(
             kind,
+            EntersChoice::R111OpponentAndName | EntersChoice::R111NamesWithOpponent
+        ) {
+            return self.r111_chooses(source, controller, kind);
+        }
+        if matches!(
+            kind,
             EntersChoice::Colors(_)
                 | EntersChoice::ColorAndCreatureType
                 | EntersChoice::Players(_)
@@ -4387,6 +4393,8 @@ impl Pass<'_> {
             | EntersChoice::Number { .. }
             | EntersChoice::Colors(_)
             | EntersChoice::Players(_)
+            | EntersChoice::R111OpponentAndName
+            | EntersChoice::R111NamesWithOpponent
             | EntersChoice::R6001Abilities(_)
             | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
@@ -4426,6 +4434,9 @@ fn two_land_types(label: &str) -> Option<Chosen> {
 /// The question of a choice made as a permanent enters, in words.
 fn entering_question(kind: EntersChoice) -> String {
     match kind {
+        EntersChoice::R111OpponentAndName | EntersChoice::R111NamesWithOpponent => {
+            "Choose a card name other than a basic land card name.".to_owned()
+        }
         EntersChoice::Color => "Choose a color.".to_owned(),
         EntersChoice::ColorOtherThan(other) => {
             format!(
@@ -4580,6 +4591,7 @@ mod face_down_enters;
 #[cfg(test)]
 mod ep21_plus;
 mod ep28_under;
+mod r111_names;
 mod r4702_names;
 mod r6f_redirect;
 mod w13a_moved;

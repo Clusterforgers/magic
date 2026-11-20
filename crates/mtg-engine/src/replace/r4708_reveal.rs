@@ -2,6 +2,7 @@
 //! card drawn that is its player's first this turn is revealed as it is drawn when a rule of theirs says so. An optional
 //! reveal asks its player to choose the card or none, one question for each source that offers it; a `Revealed` and a `FirstDrawRevealed` naming
 //! the sources follow the draw in the same batch.
+//! A player a `GameRule::R111RevealDraws` names reveals every card they draw, first or not, with a `Revealed` after it.
 
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -29,7 +30,7 @@ pub(super) fn r4708_reveals(
             )))
         })
     };
-    if !state.r4708_any_first_draw_reveals() {
+    if !state.r4708_any_first_draw_reveals() && state.rules().r111_reveal_draws.is_empty() {
         unasked(&mut answers)?;
         return Ok(Processed::Events(events));
     }
@@ -41,6 +42,13 @@ pub(super) fn r4708_reveals(
             continue;
         };
         out.push(event);
+        let always = state.rules().r111_reveal_draws.contains(&player);
+        let reveal = |out: &mut Vec<Event>| {
+            out.push(Event::Revealed(Revealed {
+                player,
+                cards: vec![object],
+            }));
+        };
         let earlier = if let Some((_, count)) = drawn.iter_mut().find(|(who, _)| *who == player) {
             *count += 1;
             *count - 1
@@ -49,6 +57,9 @@ pub(super) fn r4708_reveals(
             0
         };
         if state.tallied(player, Tally::Drawn) + earlier != 0 {
+            if always {
+                reveal(&mut out);
+            }
             continue;
         }
         let mut sources: Vec<ObjectId> = Vec::new();
@@ -93,12 +104,12 @@ pub(super) fn r4708_reveals(
             }
         }
         if sources.is_empty() {
+            if always {
+                reveal(&mut out);
+            }
             continue;
         }
-        out.push(Event::Revealed(Revealed {
-            player,
-            cards: vec![object],
-        }));
+        reveal(&mut out);
         out.push(Event::FirstDrawRevealed {
             player,
             card: object,

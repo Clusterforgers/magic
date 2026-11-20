@@ -1166,6 +1166,12 @@ pub enum EntersChoice {
     ColorAndCreatureType,
     /// This many different players ("choose two players").
     Players(u32),
+    /// An opponent and a card name other than a basic land card name, chosen together ("choose an opponent and a card name
+    /// other than a basic land card name").
+    R111OpponentAndName,
+    /// A card name other than a basic land card name named by the controller and one by an opponent the controller chooses
+    /// ("you and an opponent each choose a card name other than a basic land card name").
+    R111NamesWithOpponent,
     /// This many different abilities from among first strike, vigilance, and lifelink ("choose two abilities from among
     /// first strike, vigilance, and lifelink"), read by `Modification::R6001AddChosenAbilities`.
     R6001Abilities(u32),

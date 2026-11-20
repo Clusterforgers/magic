@@ -27,6 +27,10 @@ noncreature?: boolean,
  */
 nonbasic_land?: boolean, 
 /**
+ * The card must not be a basic land ("a card name other than a basic land card name"); the client leaves those out.
+ */
+r111_not_basic_land?: boolean, 
+/**
  * The names of the cards the chooser looked at just before naming ("look at an opponent's hand, then choose any
  * card name"), in the order they were looked at; the look is logged as the permanent enters.
  */

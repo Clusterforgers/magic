@@ -94,6 +94,7 @@ Aquastrand Spider
 Arasta of the Endless Web
 Arbor Colossus
 Arboreal Grazer
+Arboria
 Arcade Cabinet
 Arcane Heist
 Arcane Signet
@@ -162,6 +163,7 @@ Azusa, Lost but Seeking
 Baaallerina
 Baba Lysaga, Night Witch
 Back in Town
+Backdraft
 Bad Moon
 Baird, Steward of Argive
 Balduvian Conjurer
@@ -292,6 +294,7 @@ Bonecaller Cleric
 Bonehoard
 Bonesplitter
 Bontu's Monument
+Booby Trap
 Book of Mazarbul
 Boompile
 Boon Reflection
@@ -1789,6 +1792,7 @@ Notion Rain
 Nourishing Shoal
 Novijen, Heart of Progress
 Nuka-Nuke Launcher
+Null Chamber
 Nykthos Paragon
 Nylea's Colossus
 Nylea's Huntmaster
@@ -1910,6 +1914,7 @@ Phantom Nantuko
 Phantom Nishoba
 Photon, Mighty Marvel
 Phyrexian Arena
+Phyrexian Grimoire
 Phyrexian Metamorph
 Phyrexian Plaguelord
 Phyrexian Prowler
@@ -2504,6 +2509,7 @@ Sudden Death
 Sudden Edict
 Sudden Shock
 Sudden Spoiling
+Suffocation
 Sulfur Elemental
 Sultai Devotee
 Sultai Soothsayer
@@ -2622,6 +2628,7 @@ Termagant Swarm
 Terminus
 Terramorphic Expanse
 Terrasymbiosis
+Territorial Hellkite
 Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle
