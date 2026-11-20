@@ -14,6 +14,10 @@ use crate::events::Event;
 pub const MAX_NAME_LEN: usize = 160;
 
 /// What the player names.
+#[allow(
+    clippy::struct_excessive_bools,
+    reason = "each kind of name is one optional wire flag"
+)]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct NameOptions {

@@ -179,7 +179,7 @@ fn r111_territorial_hellkite_attacks_someone_new(#[values(2, 3, 4)] seats: usize
         .state()
         .object(hellkite)
         .and_then(|object| object.permanent())
-        .is_some_and(|permanent| permanent.tapped());
+        .is_some_and(mtg_engine::object::PermanentState::tapped);
     if seats == 2 {
         assert!(
             second.is_empty(),

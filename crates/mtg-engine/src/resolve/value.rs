@@ -3554,8 +3554,9 @@ impl<'a> Scope<'a> {
     /// The players the source chose as it entered who are still in the game.
     fn chosen_players(&self) -> Vec<PlayerId> {
         let chosen: &[PlayerId] = match self.entered_choice() {
-            Some(Chosen::Player(player)) => std::slice::from_ref(player),
-            Some(Chosen::R111PlayerAndName(player, _)) => std::slice::from_ref(player),
+            Some(Chosen::Player(player) | Chosen::R111PlayerAndName(player, _)) => {
+                std::slice::from_ref(player)
+            }
             Some(Chosen::Players(players)) => players,
             _ => &[],
         };

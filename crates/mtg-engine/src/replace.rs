@@ -4248,16 +4248,12 @@ impl Pass<'_> {
         }
         if matches!(
             kind,
-            EntersChoice::R111OpponentAndName | EntersChoice::R111NamesWithOpponent
-        ) {
-            return self.r111_chooses(source, controller, kind);
-        }
-        if matches!(
-            kind,
             EntersChoice::Colors(_)
                 | EntersChoice::ColorAndCreatureType
                 | EntersChoice::Players(_)
                 | EntersChoice::R6001Abilities(_)
+                | EntersChoice::R111OpponentAndName
+                | EntersChoice::R111NamesWithOpponent
         ) {
             return self.r4700_chooses(source, controller, kind);
         }

@@ -108,7 +108,11 @@ impl Scope<'_> {
             let Some(object) = target.object() else {
                 continue;
             };
-            let Some(controller) = self.state.object(object.id).map(|o| o.controller()) else {
+            let Some(controller) = self
+                .state
+                .object(object.id)
+                .map(crate::object::GameObject::controller)
+            else {
                 continue;
             };
             if self

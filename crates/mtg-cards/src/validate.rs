@@ -1854,15 +1854,9 @@ impl<'a> Walker<'a> {
             | Condition::FastestPlayer(_)
             | Condition::CompletedNamedDungeon { .. } => self.r5521_condition(condition),
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
-            Condition::R111CastOrPutLastTurn => self.uses("Condition", "R111CastOrPutLastTurn"),
-            Condition::R111AttackedLastCombat(by) => {
-                self.uses("Condition", "R111AttackedLastCombat");
-                self.at("by", |w| w.reference(by, Kind::Object));
-            }
-            Condition::R111DamagedThisTurnBy(by) => {
-                self.uses("Condition", "R111DamagedThisTurnBy");
-                self.at("by", |w| w.selector(by));
-            }
+            Condition::R111CastOrPutLastTurn
+            | Condition::R111AttackedLastCombat(_)
+            | Condition::R111DamagedThisTurnBy(_) => self.r111_condition(condition),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
             Condition::TriggeringSticker(_) => self.uses("Condition", "TriggeringSticker"),
@@ -1883,6 +1877,22 @@ impl<'a> Walker<'a> {
     }
 
     /// A condition on what creatures did earlier: damage dealt this game, an exploit, an attack this turn.
+    /// The r111-03 facts of a player's last turn, a creature's last combat and the damage dealt to "you" this turn.
+    fn r111_condition(&mut self, condition: &Condition) {
+        match condition {
+            Condition::R111CastOrPutLastTurn => self.uses("Condition", "R111CastOrPutLastTurn"),
+            Condition::R111AttackedLastCombat(by) => {
+                self.uses("Condition", "R111AttackedLastCombat");
+                self.at("by", |w| w.reference(by, Kind::Object));
+            }
+            Condition::R111DamagedThisTurnBy(by) => {
+                self.uses("Condition", "R111DamagedThisTurnBy");
+                self.at("by", |w| w.selector(by));
+            }
+            _ => {}
+        }
+    }
+
     fn history_condition(&mut self, condition: &Condition) {
         match condition {
             Condition::DamagedThisGameBy { by, .. } => {

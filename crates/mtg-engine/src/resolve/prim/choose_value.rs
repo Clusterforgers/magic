@@ -337,7 +337,6 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
         ValueKind::CardType => values::card_types(),
         ValueKind::LandType => values::land_types(),
         ValueKind::BasicLandType => values::basic_land_types(),
-        ValueKind::R111SpellDamage { .. } => Vec::new(),
         ValueKind::NonbasicLandType => {
             let basics = values::basic_land_types();
             values::land_types()
@@ -366,7 +365,10 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
             .map(ChoiceOption::Color)
             .chain(basic_land_types())
             .collect(),
-        ValueKind::CardName(_) | ValueKind::Number(..) | ValueKind::LikeChosen(_) => Vec::new(),
+        ValueKind::CardName(_)
+        | ValueKind::Number(..)
+        | ValueKind::LikeChosen(_)
+        | ValueKind::R111SpellDamage { .. } => Vec::new(),
     }
 }
 

@@ -54,12 +54,12 @@ fn trick(name: &str) -> Arc<CardDefinition> {
 /// Answers until the stack is empty: the opponent `seat` when an opponent is asked for, the names in `names` in turn when
 /// a name is asked for, everything else passively. Returns the players asked to name, in order.
 fn resolve(driver: &mut Driver, seat: usize, names: &[&str]) -> Vec<usize> {
-    let mut namers = Vec::new();
-    let mut names = names.iter();
+    let mut askers = Vec::new();
+    let mut to_name = names.iter();
     for _ in 0..300 {
         let decision = driver.decision().unwrap().clone();
         match &decision.kind {
-            DecisionKind::Priority(_) if driver.state().stack().is_empty() => return namers,
+            DecisionKind::Priority(_) if driver.state().stack().is_empty() => return askers,
             DecisionKind::ChooseOption(options) if options.text == "Choose an opponent." => {
                 let at = options
                     .options
@@ -72,8 +72,8 @@ fn resolve(driver: &mut Driver, seat: usize, names: &[&str]) -> Vec<usize> {
             }
             DecisionKind::ChooseName(options) => {
                 assert!(options.r111_not_basic_land || !options.text.contains("basic"));
-                namers.push(decision.player.index());
-                let name = names.next().unwrap();
+                askers.push(decision.player.index());
+                let name = to_name.next().unwrap();
                 driver
                     .answer(Answer::ChooseName(NameChoice((*name).to_owned())))
                     .unwrap();
@@ -102,8 +102,8 @@ fn r111_booby_trap_catches_the_named_draw(#[values(2, 3, 4)] seats: usize) {
     );
     let mut driver = Driver::from_scenario(scenario.clone()).unwrap();
     driver.cast("Booby Trap").unwrap();
-    let namers = resolve(&mut driver, victim, &["Bait"]);
-    assert_eq!(namers, vec![0]);
+    let askers = resolve(&mut driver, victim, &["Bait"]);
+    assert_eq!(askers, vec![0]);
     let trap = on_battlefield(driver.state(), "Booby Trap").unwrap();
     let chosen = driver
         .state()
@@ -192,9 +192,9 @@ fn r111_null_chamber_bans_both_names(#[values(2, 3, 4)] seats: usize) {
     );
     let mut driver = Driver::from_scenario(scenario.clone()).unwrap();
     driver.cast("Null Chamber").unwrap();
-    let namers = resolve(&mut driver, opponent, &["Mine", "Theirs"]);
+    let askers = resolve(&mut driver, opponent, &["Mine", "Theirs"]);
     assert_eq!(
-        namers,
+        askers,
         vec![0, opponent],
         "you, then the opponent you chose"
     );
@@ -232,8 +232,8 @@ fn r111_medomai_draws_for_the_first_named_spell(#[values(2, 3)] seats: usize) {
     resolve(&mut driver, 1, &[]);
     let rounds = u32::try_from(seats).unwrap();
     driver.idle_until(rounds + 1, Step::Main1).unwrap();
-    let namers = resolve(&mut driver, 1, &["Omen"]);
-    assert_eq!(namers, vec![0]);
+    let askers = resolve(&mut driver, 1, &["Omen"]);
+    assert_eq!(askers, vec![0]);
     let saga = on_battlefield(driver.state(), "Medomai's Prophecy").unwrap();
     let chosen = driver
         .state()
