@@ -17,6 +17,7 @@ use mtg_engine::spend::Restricted;
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{forest, mountain};
 use mtg_testkit::corpus::card;
+use mtg_testkit::invariants::{InvariantChecker, Violation};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -182,5 +183,68 @@ fn restricted_mana_is_not_offered_to_a_spell_it_does_not_allow() -> Result<(), S
     let mut driver = table(spell(&[Instant], "{1}", 0), &["Mishra's Workshop"])?;
     driver.tap_for_mana("Mishra's Workshop")?;
     assert!(!castable(&driver)?);
+    Ok(())
+}
+
+#[rstest]
+#[case::two_seats(2)]
+#[case::three_seats(3)]
+#[case::four_seats(4)]
+fn restricted_mana_pays_a_mana_ability_while_a_spell_it_does_not_allow_waits(
+    #[case] seats: usize,
+) -> Result<(), ScriptError> {
+    // Mana only for abilities pays the {2} of a mana ability activated over an instant: the spending is the ability's,
+    // not the instant's, and the checker the driver runs agrees.
+    let permanents = ["Pit Automaton", "Pyramid of the Pantheon"]
+        .map(|name| ready(card(name).unwrap()))
+        .into_iter()
+        .chain([ready(mountain())]);
+    let scenario = Scenario::new(seats)
+        .hand(0, [spell(&[Instant], "{R}", 0)])
+        .battlefield(0, permanents);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.tap_for_mana("Pit Automaton")?;
+    driver.cast_tapping(SPELL, &["Mountain"])?;
+    let events = driver.tap_for_mana("Pyramid of the Pantheon")?;
+    let spent = events
+        .iter()
+        .any(|e| matches!(e, Event::ManaSpent { restricted, .. } if restricted.len() == 2));
+    assert!(spent, "the mana for abilities pays the Pyramid: {events:?}");
+    let pool = driver.state().player(pid(0)).unwrap().mana().clone();
+    assert_eq!(pool.restricted(), []);
+    assert_eq!(pool.total(), 1);
+    Ok(())
+}
+
+#[rstest]
+#[case::two_seats(2)]
+#[case::three_seats(3)]
+#[case::four_seats(4)]
+fn the_checker_catches_mana_for_abilities_spent_on_a_spell(
+    #[case] seats: usize,
+) -> Result<(), ScriptError> {
+    // The same table, with the log forged so the mana for abilities also pays the instant: no mana ability follows the
+    // spending, so it is the instant's, which the restriction forbids.
+    let permanents = [ready(card("Pit Automaton").unwrap()), ready(mountain())];
+    let scenario = Scenario::new(seats)
+        .hand(0, [spell(&[Instant], "{R}", 0)])
+        .battlefield(0, permanents);
+    let mut driver = Driver::from_scenario(scenario)?;
+    driver.tap_for_mana("Pit Automaton")?;
+    driver.cast_tapping(SPELL, &["Mountain"])?;
+    let mut log = driver.engine().events().to_vec();
+    let unit = driver.state().player(pid(0)).unwrap().mana().restricted()[0].clone();
+    log.push(Event::ManaSpent {
+        player: pid(0),
+        mana: vec![ManaType::Colorless],
+        restricted: vec![unit],
+    });
+    let mut checker = InvariantChecker::new(driver.engine().setup())?;
+    let found = checker.observe(driver.state(), &log);
+    let said = format!("was spent on {SPELL}");
+    assert!(
+        matches!(&found, Err(Violation::Mana(m)) if m.ends_with(&said)),
+        "{found:?}"
+    );
     Ok(())
 }
