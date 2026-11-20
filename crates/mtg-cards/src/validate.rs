@@ -5401,7 +5401,6 @@ impl Walker<'_> {
                 }
             }
             Effect::R111KeepChosen(name) => w.chosen_as(name),
-            Effect::R112NoteManaSpent => {}
             Effect::R110ChooseSecretly(secret) => {
                 if matches!(secret, crate::effect::R110Secret::CreatureType(types) if types.len() < 2) {
                     w.problem("a secret choice of creature types offers two or more");
@@ -5579,6 +5578,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::R112NoteManaSpent
             | Effect::R110RemovePutThisWay { .. }
             | Effect::R110AddCombatAfterFirst
             | Effect::AuraSwap

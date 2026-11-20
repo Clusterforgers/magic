@@ -13,7 +13,10 @@ use crate::state::GameState;
 /// How the mana cost of `spell` that `player` casts may be paid under the `NextSpell` rules in force: any type over any
 /// color over as printed.
 pub(crate) fn r112_next_spend_as(state: &GameState, player: PlayerId, spell: ObjectId) -> SpendAs {
-    let Some(target) = state.object(spell).map(crate::object::GameObject::reference) else {
+    let Some(target) = state
+        .object(spell)
+        .map(crate::object::GameObject::reference)
+    else {
         return SpendAs::Normal;
     };
     let mut found = SpendAs::Normal;

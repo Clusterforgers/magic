@@ -462,9 +462,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Colorless
         | Pred::ChosenColor
         | Pred::R112SharesColorWithSpent
-        | Pred::OutsideCommanderIdentity => {
-            Traits::COLORS
-        }
+        | Pred::OutsideCommanderIdentity => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
         Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
         // What a permanent could produce is read from its mana abilities.

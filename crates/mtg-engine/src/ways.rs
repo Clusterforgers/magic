@@ -467,7 +467,9 @@ fn ep24_rule_costs(
         });
         // A next-spell rule lets any mana pay the mana cost itself, not a cost paid in its place.
         let cost = match way.alternative {
-            None => cost.map(|cost| crate::r112_next_spend::r112_mana_cost(state, player, id, cost)),
+            None => {
+                cost.map(|cost| crate::r112_next_spend::r112_mana_cost(state, player, id, cost))
+            }
             Some(_) => cost,
         };
         let cost = cost.map(|cost| crate::rules::ep24_life_for_mana(state, player, cost));

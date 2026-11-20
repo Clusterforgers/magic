@@ -12,6 +12,9 @@ use crate::object::ObjectRef;
 use crate::state::GameState;
 use crate::zones::Zone;
 
+/// The slot of a source's memory that holds the mana it noted, one number per mana (`ManaType::index`).
+pub(crate) const R112_NOTED_SLOT: &str = "r112 noted mana";
+
 /// What each source remembers: the things by slot, each object as the object it was when remembered (CR 400.7).
 pub type Memory = BTreeMap<(ObjectRef, String), Vec<Held>>;
 
@@ -108,8 +111,9 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
                     .map(crate::object::GameObject::reference)
             });
             if let Some(writer) = writer {
-                for ((owner, _), held) in &mut state.memory {
-                    if *owner == writer {
+                for ((owner, slot), held) in &mut state.memory {
+                    // A note of spent mana stays until the next note replaces it (`r112_note`).
+                    if *owner == writer && slot != R112_NOTED_SLOT {
                         held.retain(|one| !matches!(one, Held::Number(_)));
                     }
                 }

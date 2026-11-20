@@ -124,7 +124,10 @@ mod tests {
             ("You may", "Each player may"),
             ("Treasures", "Clues"),
             ("a single graveyard", "your graveyard"),
-            ("that shares a color with", "that doesn't share a color with"),
+            (
+                "that shares a color with",
+                "that doesn't share a color with",
+            ),
             ("X {W}", "X {U}"),
             ("other creatures", "creatures"),
             ("colored mana on X", "white mana on X"),

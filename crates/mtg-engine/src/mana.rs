@@ -1785,10 +1785,16 @@ pub fn complete_payment_with(
                     .iter()
                     .filter(|unit| crate::r112_not_generic::r112_is_not_generic(&unit.only))
                     .all(|unit| c.paid.restricted.contains(unit));
-            if !keeps || tapped.iter().any(|id| c.paid.taps.iter().any(|t| t.object == *id)) {
+            if !keeps
+                || tapped
+                    .iter()
+                    .any(|id| c.paid.taps.iter().any(|t| t.object == *id))
+            {
                 continue;
             }
-            match complete_snow(&c.cost, &c.pool, &c.sources, help, tapped, life, spend, &rest) {
+            match complete_snow(
+                &c.cost, &c.pool, &c.sources, help, tapped, life, spend, &rest,
+            ) {
                 Ok(done) => return Ok(c.join(done)),
                 Err(error) => refusal = error,
             }

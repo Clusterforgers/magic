@@ -930,6 +930,29 @@ impl Part {
                 let power = u32::try_from(pick.count).unwrap_or(u32::MAX);
                 tap::enough(payer.state, pick.candidates(payer), power, spare)
             }
+            // Cards of one graveyard: the first owner who has enough of them.
+            Part::Pick(pick) if pick.alike == Some(mtg_cards::cost::Alike::R112SameOwner) => {
+                let found = pick.candidates(payer);
+                found.iter().find_map(|first| {
+                    let owner = payer
+                        .state
+                        .object(*first)
+                        .map(crate::object::GameObject::owner)?;
+                    let same: Vec<ObjectId> = found
+                        .iter()
+                        .copied()
+                        .filter(|id| {
+                            payer
+                                .state
+                                .object(*id)
+                                .map(crate::object::GameObject::owner)
+                                == Some(owner)
+                        })
+                        .take(pick.count)
+                        .collect();
+                    (same.len() >= pick.count).then_some(same)
+                })
+            }
             Part::Pick(pick) => {
                 let mut found = pick.candidates(payer);
                 found.sort_by_key(|id| spare.contains(id));

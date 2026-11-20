@@ -130,7 +130,12 @@ pub(crate) fn r112_strip(payment: &Payment, sources: &[ManaOption]) -> Payment {
             .filter(|unit| !r112_is_not_generic(&unit.only))
             .cloned()
             .collect(),
-        taps: payment.taps.iter().filter(|tap| !adds(tap)).copied().collect(),
+        taps: payment
+            .taps
+            .iter()
+            .filter(|tap| !adds(tap))
+            .copied()
+            .collect(),
         ..payment.clone()
     }
 }
@@ -179,7 +184,11 @@ pub(crate) fn r112_choices(
             .collect();
         let mut units: Vec<(ManaType, Option<usize>)> = places
             .iter()
-            .filter_map(|at| pool.restricted().get(*at).map(|unit| (unit.mana, Some(*at))))
+            .filter_map(|at| {
+                pool.restricted()
+                    .get(*at)
+                    .map(|unit| (unit.mana, Some(*at)))
+            })
             .collect();
         let mut owners = Vec::new();
         for (index, option) in chosen.iter().enumerate() {

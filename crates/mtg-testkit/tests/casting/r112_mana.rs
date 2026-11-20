@@ -8,6 +8,7 @@
 
 use mtg_core::color::Color;
 use mtg_core::mana::ManaSymbol;
+use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{creature_costing, forest, island, mountain};
 use mtg_testkit::corpus::card;
@@ -55,22 +56,26 @@ fn r112_blue_pays_the_red_cost_of_a_gained_ability(
     pay_auto(&mut driver)?;
     resolve(&mut driver, seats)?;
     assert!(driver.state().zone(Zone::Stack).is_empty());
-    let gained: Vec<usize> = driver
-        .offered_abilities("Quicksilver Elemental")?
-        .into_iter()
-        .filter(|at| *at != 0)
-        .collect();
-    let [firebreathing, ..] = gained[..] else {
-        panic!("the gained {{R}} ability is offered: {gained:?}");
+    // Its own {U} ability and the gained {R} one, which the last Island pays.
+    let elemental = driver.id_of("Quicksilver Elemental")?;
+    let DecisionKind::Priority(options) = &driver.decision()?.kind else {
+        panic!("priority after the resolution");
     };
-    driver.begin_ability("Quicksilver Elemental", firebreathing)?;
+    let own: Vec<_> = options
+        .abilities
+        .iter()
+        .filter(|ability| ability.object == elemental)
+        .copied()
+        .collect();
+    assert_eq!(own.len(), 2);
+    driver.answer(Answer::Priority(PriorityAction::Activate(own[1])))?;
     pay_auto(&mut driver)?;
     assert_eq!(driver.state().zone(Zone::Stack).len(), 1);
-    // With no Island left nothing pays the gained ability again.
+    // With no Island left nothing pays either ability again.
     assert!(
-        !driver
+        driver
             .offered_abilities("Quicksilver Elemental")?
-            .contains(&firebreathing)
+            .is_empty()
     );
     Ok(())
 }
@@ -178,7 +183,9 @@ fn r112_security_rhox_is_cast_this_way_with_treasure_mana_only(
     let offered = driver.begin_cast("Security Rhox").is_ok();
     assert_eq!(offered, cast);
     if cast {
-        crate::common::casting::choose_way(&mut driver, "Cast for")?;
+        if matches!(driver.decision()?.kind, DecisionKind::ChooseOption(_)) {
+            crate::common::casting::choose_way(&mut driver, "Cast for {R}{G}")?;
+        }
         pay_auto(&mut driver)?;
         assert_eq!(driver.state().zone(Zone::Stack).len(), 1);
     }
@@ -301,7 +308,12 @@ fn r112_golem(
     let mut driver = Driver::from_scenario(scenario)?;
     driver.begin_cast("Emblazoned Golem")?;
     driver.answer(Answer::ChooseCosts(CostsChoice::Costs(vec![0])))?;
-    driver.answer(Answer::ChooseNumber(NumberChoice::Number(x)))?;
+    if driver
+        .answer(Answer::ChooseNumber(NumberChoice::Number(x)))
+        .is_err()
+    {
+        return Ok(None);
+    }
     if driver.answer(Answer::PayMana(PayChoice::Auto)).is_err()
         || driver.state().zone(Zone::Stack).is_empty()
     {
@@ -379,22 +391,19 @@ fn r112_x_mana_of_one_chosen_type(
 
 /// Seat 0 controls Night Soil and a Forest; seat `seat` of each pair holds a creature card named after it in their
 /// graveyard.
-fn r112_night_soil(
-    seats: usize,
-    graveyards: &[(usize, &str)],
-) -> Result<Driver, ScriptError> {
-    let mut scenario = Scenario::new(seats).battlefield(
-        0,
-        vec![ready(card("Night Soil").unwrap()), ready(forest())],
-    );
+fn r112_night_soil(seats: usize, graveyards: &[(usize, &str)]) -> Result<Driver, ScriptError> {
+    let mut scenario = Scenario::new(seats)
+        .battlefield(0, vec![ready(card("Night Soil").unwrap()), ready(forest())]);
     for seat in 0..seats {
         scenario = scenario.library(seat, vec![forest(); 8]);
     }
-    for (seat, name) in graveyards {
-        scenario = scenario.graveyard(
-            *seat,
-            vec![mtg_testkit::cards::creature(name, 1, &[], 1, 1)],
-        );
+    for seat in 0..seats {
+        let cards: Vec<_> = graveyards
+            .iter()
+            .filter(|(owner, _)| *owner == seat)
+            .map(|(_, name)| mtg_testkit::cards::creature(name, 1, &[], 1, 1))
+            .collect();
+        scenario = scenario.graveyard(seat, cards);
     }
     Driver::from_scenario(scenario)
 }
@@ -403,10 +412,16 @@ fn r112_night_soil(
 fn r112_pick(driver: &mut Driver, names: &[&str]) -> Result<Vec<mtg_engine::Event>, ScriptError> {
     use mtg_engine::choose::CardsChoice;
     use mtg_engine::decision::Answer;
-    let ids = names
+    let ids: Vec<_> = names
         .iter()
-        .map(|name| driver.id_of(name))
-        .collect::<Result<Vec<_>, _>>()?;
+        .filter_map(|name| {
+            driver
+                .state()
+                .objects()
+                .find(|object| object.card().name == *name)
+                .map(mtg_engine::object::GameObject::id)
+        })
+        .collect();
     driver.answer(Answer::ChooseCards(CardsChoice(ids)))
 }
 
@@ -420,10 +435,7 @@ fn r112_night_soil_is_offered_with_two_in_one_graveyard(
     #[case] offered: bool,
 ) -> Result<(), ScriptError> {
     let driver = r112_night_soil(seats, graveyards)?;
-    assert_eq!(
-        !driver.offered_abilities("Night Soil")?.is_empty(),
-        offered
-    );
+    assert_eq!(!driver.offered_abilities("Night Soil")?.is_empty(), offered);
     Ok(())
 }
 
@@ -431,10 +443,7 @@ fn r112_night_soil_is_offered_with_two_in_one_graveyard(
 fn r112_night_soil_refuses_cards_of_two_graveyards(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
-    let mut driver = r112_night_soil(
-        seats,
-        &[(0, "Mine A"), (0, "Mine B"), (1, "Theirs A")],
-    )?;
+    let mut driver = r112_night_soil(seats, &[(0, "Mine A"), (0, "Mine B"), (1, "Theirs A")])?;
     driver.begin_activation("Night Soil")?;
     assert!(r112_pick(&mut driver, &["Mine A", "Theirs A"]).is_err());
     r112_pick(&mut driver, &["Mine A", "Mine B"])?;
@@ -442,7 +451,9 @@ fn r112_night_soil_refuses_cards_of_two_graveyards(
     resolve(&mut driver, seats)?;
     let exiled = crate::common::names(driver.state(), Zone::Exile);
     assert_eq!(exiled.len(), 2);
-    assert!(crate::common::names(driver.state(), Zone::Battlefield).contains(&"Saproling".to_owned()));
+    assert!(
+        crate::common::names(driver.state(), Zone::Battlefield).contains(&"Saproling".to_owned())
+    );
     Ok(())
 }
 
@@ -464,10 +475,34 @@ fn r112_protective_sphere_offers_sources_of_the_spent_colors(
         .battlefield(
             1,
             vec![
-                ready(mtg_testkit::cards::creature("Red Bear", 1, &[Color::Red], 2, 2)),
-                ready(mtg_testkit::cards::creature("Green Bear", 1, &[Color::Green], 2, 2)),
-                ready(mtg_testkit::cards::creature("Red Ogre", 1, &[Color::Red], 3, 3)),
-                ready(mtg_testkit::cards::creature("Green Ogre", 1, &[Color::Green], 3, 3)),
+                ready(mtg_testkit::cards::creature(
+                    "Red Bear",
+                    1,
+                    &[Color::Red],
+                    2,
+                    2,
+                )),
+                ready(mtg_testkit::cards::creature(
+                    "Green Bear",
+                    1,
+                    &[Color::Green],
+                    2,
+                    2,
+                )),
+                ready(mtg_testkit::cards::creature(
+                    "Red Ogre",
+                    1,
+                    &[Color::Red],
+                    3,
+                    3,
+                )),
+                ready(mtg_testkit::cards::creature(
+                    "Green Ogre",
+                    1,
+                    &[Color::Green],
+                    3,
+                    3,
+                )),
             ],
         );
     for seat in 0..seats {

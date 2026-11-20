@@ -2010,6 +2010,7 @@ Propeller Pioneer
 Prosperous Bandit
 Prosperous Innkeeper
 Protean Hulk
+Protective Sphere
 Proven Combatant
 Psychic Impetus
 Psychic Puppetry
@@ -2262,6 +2263,7 @@ Second Harvest
 Secret Rendezvous
 Secret of Bloodbending
 Secure Detention
+Security Rhox
 Seedglaive Mentor
 Seeds of Renewal
 Seedship Agrarian

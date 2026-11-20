@@ -61,21 +61,45 @@ fn r112_01_reads_back_whole(#[case] name: &str) {
 #[rstest]
 #[case::red("Quicksilver Elemental", r#""mana":"Blue""#, r#""mana":"Red""#)]
 #[case::everything("Quicksilver Elemental", r#","r112_own_abilities":true"#, "")]
-#[case::generic("Jegantha, the Wellspring", r#"["R112NotGeneric"]"#, r#"["CostWithX"]"#)]
+#[case::generic(
+    "Jegantha, the Wellspring",
+    r#"["R112NotGeneric"]"#,
+    r#"["CostWithX"]"#
+)]
 #[case::clues("Security Rhox", r#""Treasure""#, r#""Clue""#)]
 #[case::flashback("Security Rhox", r#""way":"Free""#, r#""way":"Flashback""#)]
 #[case::any_color("North Star", r#""AnyType""#, r#""AnyColor""#)]
 #[case::five("North Star", r#""{4}""#, r#""{5}""#)]
-#[case::all_noted("Jeweled Amulet", r#"{"R112Noted":{}}"#, r#"{"R112Noted":{"amount":true}}"#)]
+#[case::all_noted(
+    "Jeweled Amulet",
+    r#"{"R112Noted":{}}"#,
+    r#"{"R112Noted":{"amount":true}}"#
+)]
 #[case::some_counters("Jeweled Amulet", r#""op":"Eq""#, r#""op":"Ge""#)]
 #[case::no_note("Jeweled Amulet", r#","R112NoteManaSpent""#, "")]
-#[case::white_x("Emblazoned Golem", r#"["R112XOneEachColor"]"#, r#"[{"XColor":"White"}]"#)]
+#[case::white_x(
+    "Emblazoned Golem",
+    r#"["R112XOneEachColor"]"#,
+    r#"[{"XColor":"White"}]"#
+)]
 #[case::two_counters("Emblazoned Golem", r#""count":"X""#, r#""count":2"#)]
-#[case::any_graveyards("Night Soil", r#"{"R112ExileFromOneGraveyard":{"count":2,"filter":[{"Type":"Creature"}]}}"#, r#"{"ExileFromGraveyard":{"any_player":true,"count":2,"filter":[{"Type":"Creature"}]}}"#)]
+#[case::any_graveyards(
+    "Night Soil",
+    r#"{"R112ExileFromOneGraveyard":{"count":2,"filter":[{"Type":"Creature"}]}}"#,
+    r#"{"ExileFromGraveyard":{"any_player":true,"count":2,"filter":[{"Type":"Creature"}]}}"#
+)]
 #[case::any_source("Protective Sphere", r#","R112SharesColorWithSpent""#, "")]
 #[case::next_only("Protective Sphere", r#""by":"Prevent""#, r#""by":"PreventNext""#)]
-#[case::blue("Brigid, Clachan's Heart // Brigid, Doun's Mind", r#"["Green","White"]"#, r#"["Green","Blue"]"#)]
-#[case::all_creatures("Brigid, Clachan's Heart // Brigid, Doun's Mind", r#"},"Other",{"#, r#"},{"#)]
+#[case::blue(
+    "Brigid, Clachan's Heart // Brigid, Doun's Mind",
+    r#"["Green","White"]"#,
+    r#"["Green","Blue"]"#
+)]
+#[case::all_creatures(
+    "Brigid, Clachan's Heart // Brigid, Doun's Mind",
+    r#"},"Other",{"#,
+    r#"},{"#
+)]
 fn r112_01_a_near_miss_does_not_read_back(
     #[case] name: &str,
     #[case] from: &str,

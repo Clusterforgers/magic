@@ -10,8 +10,7 @@ use crate::events::Event;
 use crate::memory::{Held, Remembered};
 use crate::resolve::{Cx, ResolveError, Run};
 
-/// The slot of the source's memory that holds the noted mana, one number per mana (`ManaType::index`).
-pub(crate) const R112_NOTED_SLOT: &str = "r112 noted mana";
+use crate::memory::R112_NOTED_SLOT;
 
 /// Replaces the source's note with the mana the activation spent.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {

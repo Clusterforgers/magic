@@ -194,9 +194,15 @@ fn announced<'a>(
 fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
     match ctx.what {
         What::Spell(spell) => {
-            let cost = ctx.state.object(*spell)?.card().mana_cost.clone().map(|cost| {
-                crate::r112_next_spend::r112_mana_cost(ctx.state, ctx.player, *spell, cost)
-            });
+            let cost = ctx
+                .state
+                .object(*spell)?
+                .card()
+                .mana_cost
+                .clone()
+                .map(|cost| {
+                    crate::r112_next_spend::r112_mana_cost(ctx.state, ctx.player, *spell, cost)
+                });
             let all = mana_options(ctx.state, ctx.player);
             let mut sources = crate::mana_takes::for_card(ctx.state, &all, *spell).into_owned();
             // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian
@@ -313,15 +319,28 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
         seat.life()
             .saturating_sub(i32::try_from(total.life).unwrap_or(i32::MAX)),
     );
+    // A rule of the card may limit the mana of the way it is cast ("to cast it this way").
+    let (pool, sources) = match ctx.what {
+        What::Spell(spell) => (
+            crate::r4705_spend_from::r4705_pool(
+                ctx.state,
+                *spell,
+                total.spend.r112_way,
+                seat.mana(),
+            )
+            .unwrap_or_else(|| seat.mana().clone()),
+            crate::mana_takes::r112_for_card_way(
+                ctx.state,
+                &total.sources,
+                *spell,
+                total.spend.r112_way,
+            )
+            .into_owned(),
+        ),
+        _ => (seat.mana().clone(), total.sources.clone()),
+    };
     let alone = |cost: &ManaCost| {
-        can_afford_with(
-            cost,
-            seat.mana(),
-            &total.sources,
-            total.help.help(),
-            life,
-            &total.spend,
-        )
+        can_afford_with(cost, &pool, &sources, total.help.help(), life, &total.spend)
     };
     total.mana.as_ref().is_none_or(|cost| {
         alone(cost)

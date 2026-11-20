@@ -564,7 +564,10 @@ fn a_card_cast_face_down_is_a_plain_creature_spell_for_the_mana_restrictions(
         spend
             .clone()
             .cast_as(Some(mtg_cards::value::CastWay::FaceDown)),
-        face_down
+        Spend {
+            r112_way: Some(mtg_cards::value::CastWay::FaceDown),
+            ..face_down
+        }
     );
     assert_eq!(spend.clone().cast_as(None), spend);
 }
