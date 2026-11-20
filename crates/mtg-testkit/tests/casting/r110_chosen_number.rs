@@ -55,7 +55,7 @@ fn r110_the_chosen_number_divides_the_damage(
         .state()
         .object(wall)
         .and_then(|object| object.permanent())
-        .map(|permanent| permanent.damage());
+        .map(mtg_engine::object::PermanentState::damage);
     assert_eq!(damage, Some(chosen));
     let life = driver.state().player(pid(last)).unwrap().life();
     assert_eq!(i64::from(before) - i64::from(life), i64::from(5 - chosen));

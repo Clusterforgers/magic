@@ -7864,9 +7864,11 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
         _ => false,
     });
-    walker.counts_x = card.abilities().any(
-        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
-    );
+    walker.counts_x = card.abilities().any(|(_, a)| {
+        matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()
+            // "choose a number between 0 and 5": the number is announced as the X.
+            || cost.0.iter().any(|item| matches!(item, CostItem::R110ChooseNumber { .. })))
+    });
     // An optional cost names what it took once paid ("If you revealed a Dragon card or chose a Dragon ...").
     walker.pays_objects = card.abilities().any(|(_, a)| {
         matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost))
@@ -8625,6 +8627,7 @@ mod tests {
     #[case::a_payment_of_x_in_an_effect(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{X}"}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.Pay", "Effect.Pay.X", "Trigger.StepBegins"])]
     #[case::w6c_the_x_a_payment_announces(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"}],"effects":[{"Pay":{"cost":"{X}{R}","paid":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.X", "Trigger.Attacks"])]
     #[case::w6c_life_that_counts_x_in_a_payment(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"X"}]}}]}}"#, &["Ability.Triggered", "Cost.PayLife", "Effect.Pay", "Effect.Pay.X.Life", "Trigger.StepBegins"])]
+    #[case::r110_a_number_chosen_as_a_cost(r#"{"AdditionalCost":{"cost":[{"R110ChooseNumber":{"least":0,"most":5}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.R110ChooseNumber"])]
     #[case::w6c_the_x_of_the_cycling_cost(r#"{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.Cycled"])]
     #[case::w6c_the_x_of_a_monstrosity(r#"{"Triggered":{"when":{"BecomesMonstrous":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":"X"}}],"effects":[{"Tap":{"what":{"Target":0}}}]}}"#, &["Ability.Triggered", "Effect.Tap", "Trigger.BecomesMonstrous"])]
     #[case::w6c_the_x_of_another_cards_cycling(r#"{"Triggered":{"when":{"Cycled":{"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.Cycled"])]
