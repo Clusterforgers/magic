@@ -750,6 +750,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::CopiesSpell { .. }
         | ReplaceWhen::Learns { .. }
         | ReplaceWhen::R6603DrawsSeveral { .. }
+        | ReplaceWhen::R111DrawBy { .. }
         | ReplaceWhen::R6700Draws { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
@@ -1424,6 +1425,10 @@ impl Pass<'_> {
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
+            }
+            (ReplaceWhen::R111DrawBy { who, kind, what }, Unit::Draw { player }) => {
+                scope.players(who)?.contains(player)
+                    && r111_draw_cause::r111_drawn_by(self.state, &scope, *kind, what)?
             }
             (ReplaceWhen::R6603DrawsSeveral { who, at_least }, Unit::Draw { player }) => {
                 self.r6603_draws_of(*player).len() >= *at_least as usize
@@ -4587,6 +4592,7 @@ mod w5d_instead;
 
 mod r109_tokens_enter;
 mod r110_may_prevent;
+mod r111_draw_cause;
 mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;

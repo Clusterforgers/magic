@@ -58,6 +58,7 @@ mod prevent_half;
 mod prevention;
 mod prohibitions;
 mod protection;
+mod r111_draw_cause;
 mod r111_graveyard_order;
 mod r111_trigger_on_trigger;
 mod r300_random_discard;

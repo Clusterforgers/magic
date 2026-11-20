@@ -7000,6 +7000,7 @@ impl Walker<'_> {
             | ReplaceWhen::CopiesSpell { who }
             | ReplaceWhen::Learns { who }
             | ReplaceWhen::R6700Draws { who }
+            | ReplaceWhen::R111DrawBy { who, .. }
             | ReplaceWhen::Draw { who, .. }
             | ReplaceWhen::R6603DrawsSeveral { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
@@ -7059,7 +7060,10 @@ impl Walker<'_> {
         }
         let saved = (self.scope.in_trigger, self.scope.dealer);
         self.scope.in_trigger = true;
-        self.scope.dealer = matches!(when, ReplaceWhen::Damage { .. });
+        self.scope.dealer = matches!(
+            when,
+            ReplaceWhen::Damage { .. } | ReplaceWhen::R111DrawBy { .. }
+        );
         self.effect_list("Instead", effects, false);
         (self.scope.in_trigger, self.scope.dealer) = saved;
     }

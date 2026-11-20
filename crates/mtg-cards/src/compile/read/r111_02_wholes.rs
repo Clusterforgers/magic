@@ -119,6 +119,14 @@ mod tests {
             ("an emblem you own", "an emblem"),
             ("four or more", "three or more"),
             ("an additional time", "two additional times"),
+            (
+                "a cycling ability of another nonland card",
+                "a cycling ability of another card",
+            ),
+            (
+                "shares a card type with the cycled card",
+                "shares a color with the cycled card",
+            ),
         ];
         for (_, text) in R111_02_SHAPES.iter() {
             for (from, to) in swaps {

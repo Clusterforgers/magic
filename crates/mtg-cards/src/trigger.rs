@@ -1035,6 +1035,19 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would draw a card because an activated ability of this kind resolves whose source, as it was, the selector
+    /// matches ("If a cycling ability of another nonland card would cause you to draw a card", CR 614.11); `Ref::Dealer`
+    /// of the steps is that source.
+    R111DrawBy {
+        /// Who would draw.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The kind of the ability.
+        kind: crate::ability::ActivationKind,
+        /// The source of the ability, as it was.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// A player would draw a card.
     Draw {
         /// Who would draw.

@@ -14,6 +14,7 @@ use crate::counters::CountersChanged;
 use crate::decision::Decision;
 use crate::events::Event;
 use crate::resolve::{Inline, w5d_run_instead};
+use crate::snapshot::Snapshot;
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -31,6 +32,10 @@ impl Pass<'_> {
     /// What the effects of a replacement read of the event at `at`: who or what it is about, how much and its source.
     pub(super) fn w5d_cause(&self, at: usize, unit: &Unit) -> Cause {
         let object = |id| self.reference(id).map(Target::Object);
+        let drawn_by = matches!(unit, Unit::Draw { .. })
+            .then(|| super::r111_draw_cause::r111_draw_cause(self.state))
+            .flatten()
+            .map(|(_, shot)| shot);
         let (subject, source) = match unit {
             Unit::Tokens { controller } => (Some(Target::Player(*controller)), None),
             Unit::Damage { source, target, .. } => (
@@ -41,10 +46,14 @@ impl Pass<'_> {
                 self.reference(*source),
             ),
             Unit::Counters { on, .. } => (Some(*on), None),
-            Unit::Life { player }
-            | Unit::Draw { player }
-            | Unit::Loss { player }
-            | Unit::LifeLoss { player } => (Some(Target::Player(*player)), None),
+            // A draw's source is the spell or ability that causes it (CR 614.11).
+            Unit::Draw { player } => (
+                Some(Target::Player(*player)),
+                drawn_by.as_ref().map(Snapshot::reference),
+            ),
+            Unit::Life { player } | Unit::Loss { player } | Unit::LifeLoss { player } => {
+                (Some(Target::Player(*player)), None)
+            }
             Unit::Move { object: id, .. }
             | Unit::Enter { object: id, .. }
             | Unit::Attach { object: id }
@@ -65,7 +74,7 @@ impl Pass<'_> {
         Cause {
             dealers: Vec::new(),
             subjects: subject.into_iter().collect(),
-            snapshots: Vec::new(),
+            snapshots: drawn_by.into_iter().collect(),
             amount,
             source,
             against: None,
