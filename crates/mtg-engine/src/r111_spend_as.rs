@@ -31,6 +31,16 @@ const fn bit(mana: ManaType) -> u8 {
 
 /// The table the rules in play give `player`, or `None` when every symbol is paid by its own type only.
 pub(crate) fn r111_pays(state: &GameState, player: PlayerId) -> Option<R111Pays> {
+    r112_pays_for(state, player, None)
+}
+
+/// The table the rules in play give `player` paying the activation cost of an ability of `ability_of`: a rule that
+/// holds only for its source's abilities (`r112_own_abilities`, CR 609.4b) counts when that source is the holder.
+pub(crate) fn r112_pays_for(
+    state: &GameState,
+    player: PlayerId,
+    ability_of: Option<mtg_core::ids::ObjectId>,
+) -> Option<R111Pays> {
     let mut rules = Vec::new();
     for id in state.zone(Zone::Battlefield).iter().copied() {
         let Some(holder) = state.object(id) else {
@@ -44,6 +54,7 @@ pub(crate) fn r111_pays(state: &GameState, player: PlayerId) -> Option<R111Pays>
                         mana,
                         as_color,
                         others_colorless,
+                        r112_own_abilities,
                     },
                 condition,
                 ..
@@ -51,6 +62,9 @@ pub(crate) fn r111_pays(state: &GameState, player: PlayerId) -> Option<R111Pays>
             else {
                 continue;
             };
+            if *r112_own_abilities && ability_of != Some(id) {
+                continue;
+            }
             let scope = Scope::announcing(
                 state,
                 controller_of_object(state, holder),

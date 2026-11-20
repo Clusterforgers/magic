@@ -387,6 +387,9 @@ fn equip_abilities(r: &mut Reader<'_>) -> Option<SpendOn> {
 pub(super) fn only(r: &mut Reader<'_>) -> Option<Vec<SpendOn>> {
     r.attempt(|r| {
         r.punct('.').then_some(())?;
+        if r.words("this mana can't be spent to pay generic mana costs") {
+            return Some(vec![SpendOn::R112NotGeneric]);
+        }
         if r.words("this mana can't be spent to cast spells from your hand") {
             return Some(vec![
                 SpendOn::Spell(not_from_hand()),
@@ -651,6 +654,9 @@ pub(super) fn text(only: &[SpendOn]) -> Option<String> {
         return None;
     }
     Some(match only {
+        [SpendOn::R112NotGeneric] => {
+            "This mana can't be spent to pay generic mana costs".to_owned()
+        }
         [SpendOn::Enters(bonus)] => enters_text(bonus)?,
         [SpendOn::CostWithX] => "Spend this mana only on costs that contain {X}".to_owned(),
         [SpendOn::CumulativeUpkeep] => {

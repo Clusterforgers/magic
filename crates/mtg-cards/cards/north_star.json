@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9109437a-da80-463f-a92a-77d693d05d91",
+  "name": "North Star",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "North Star",
+      "oracle_fingerprint": "b07f13b7e62f84d540e50a93f19d6eb0",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "benefit": { "R112SpendAs": "AnyType" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

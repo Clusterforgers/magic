@@ -35,6 +35,12 @@ pub(super) fn r5518_alike(state: &GameState, cards: &[ObjectId], alike: Alike) -
                 .iter()
                 .all(|id| r5518_colors(state, *id).contains(color))
         }),
+        Alike::R112SameOwner => {
+            let mut owners = cards.iter().map(|id| r112_owner(state, *id));
+            owners
+                .next()
+                .is_none_or(|first| first.is_some() && owners.all(|owner| owner == first))
+        }
     }
 }
 
@@ -65,6 +71,15 @@ pub(super) fn r5518_has_set(
                 .count()
                 >= count
         }),
+        Alike::R112SameOwner => candidates.iter().any(|first| {
+            let owner = r112_owner(state, *first);
+            owner.is_some()
+                && candidates
+                    .iter()
+                    .filter(|id| r112_owner(state, **id) == owner)
+                    .count()
+                    >= count
+        }),
     }
 }
 
@@ -73,5 +88,11 @@ pub(super) const fn r5518_words(alike: Alike) -> &'static str {
     match alike {
         Alike::SameName => " with the same name",
         Alike::ShareColor => " that share a color",
+        Alike::R112SameOwner => " from a single graveyard",
     }
+}
+
+/// The owner of a card, none for one that is gone: the graveyard it lies in.
+fn r112_owner(state: &GameState, id: ObjectId) -> Option<mtg_core::ids::PlayerId> {
+    state.object(id).map(crate::object::GameObject::owner)
 }

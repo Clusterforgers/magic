@@ -856,6 +856,10 @@ pub enum SpellBenefit {
     /// As the spell resolves, the replacement takes the place of its move into a graveyard (CR 608.2n, 614.1a): "put that
     /// card into your hand instead of into your graveyard as it resolves" (`ReplaceBy::MoveTo`).
     R6503Resolves(crate::trigger::ReplaceBy),
+    /// Mana may be spent as though it were mana of any color or type to pay its mana cost only, not its additional or
+    /// optional costs (CR 609.4b): "For one spell this turn, you may spend mana as though it were mana of any type to
+    /// pay that spell's mana cost."
+    R112SpendAs(SpendAs),
 }
 
 /// A change to the rules of the game rather than to an object. `Effect::Rule` makes it for a duration and
@@ -1384,6 +1388,14 @@ pub enum GameRule {
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),
+    /// `SpendOnlyFrom` for one way of casting the card only: "You may pay {R}{G} rather than pay this spell's mana cost.
+    /// Spend only mana produced by Treasures to cast it this way."
+    R112SpendOnlyFromWay {
+        /// The sources the mana must come from.
+        from: crate::spend::SpendFilter,
+        /// The way of casting it holds for.
+        way: crate::value::CastWay,
+    },
     /// The next spell the rule's controller casts that `what` selects gets the benefit, and the rule ends with that cast
     /// ("the next creature spell you cast this turn costs {1} less"); with the duration `UntilEndOfTurn` it also ends with
     /// the turn. `what` names the cards, not the stack object (no `Spell`).
@@ -1604,6 +1616,10 @@ pub enum GameRule {
         /// it pays `{C}`.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         others_colorless: bool,
+        /// Only to pay the activation costs of the abilities of the rule's source ("to pay the activation costs of ~'s
+        /// abilities"); every payment when false.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        r112_own_abilities: bool,
     },
 }
 

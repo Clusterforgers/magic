@@ -109,6 +109,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::TapPermanents { .. } => "Cost.TapPermanents",
         CostItem::TapPower { .. } => "Cost.TapPower",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard",
+        CostItem::R112ExileFromOneGraveyard { .. } => "Cost.R112ExileFromOneGraveyard",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand",
         CostItem::ExilePermanents { .. } => "Cost.ExilePermanents",
         CostItem::ExileSpell { .. } => "Cost.ExileSpell",
@@ -119,6 +120,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Changed { .. } => "Cost.Changed",
         CostItem::XAtLeast(_) => "Cost.XAtLeast",
         CostItem::XColor(_) => "Cost.XColor",
+        CostItem::R112XOneEachColor => "Cost.R112XOneEachColor",
         CostItem::ChosenColorOnly => "Cost.ChosenColorOnly",
         CostItem::XAtMost(_) => "Cost.XAtMost",
         CostItem::XIs(_) => "Cost.XIs",
@@ -262,7 +264,8 @@ impl Price {
                 | CostItem::XIs(_)
                 | CostItem::R110ChooseNumber { .. }
                 | CostItem::R110Choose(_)
-                | CostItem::ChosenColorOnly => {}
+                | CostItem::ChosenColorOnly
+                | CostItem::R112XOneEachColor => {}
                 CostItem::XColor(color) => x_color = Some(*color),
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(Amount::X) => {

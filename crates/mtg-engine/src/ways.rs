@@ -465,6 +465,11 @@ fn ep24_rule_costs(
             SpendAs::AnyColor => cost.paid_by_any_color(),
             SpendAs::Normal => cost,
         });
+        // A next-spell rule lets any mana pay the mana cost itself, not a cost paid in its place.
+        let cost = match way.alternative {
+            None => cost.map(|cost| crate::r112_next_spend::r112_mana_cost(state, player, id, cost)),
+            Some(_) => cost,
+        };
         let cost = cost.map(|cost| crate::rules::ep24_life_for_mana(state, player, cost));
         let cost = cost.map(|cost| crate::rules::r284_life_for_one(state, player, Some(id), cost));
         if cost != way.cost(printed) {
@@ -1452,14 +1457,9 @@ pub(crate) fn hindrance_as_is(
         return Some(Unplayable::Restricted);
     }
     let printed_spend = Spend::for_spell(state, id, player, card.card().x_in_cost > 0);
-    let sources = &for_card(state, sources, id);
+    let all_sources = sources;
     let no_pool = ManaPool::default();
-    let only_from = crate::r4705_spend_from::r4705_pool(state, id, pool);
-    let pool = if crate::r400_no_mana::r400_no_mana(state, id) {
-        &no_pool
-    } else {
-        only_from.as_ref().unwrap_or(pool)
-    };
+    let no_mana = crate::r400_no_mana::r400_no_mana(state, id);
     let base = help::offered(state, player, id, &[]);
     let timing = sorcery_timing(state, player);
     // The checks of one way, cheapest first within the order of `Unplayable`.
@@ -1467,6 +1467,15 @@ pub(crate) fn hindrance_as_is(
         if !(way.instant || timing) {
             return Some(Unplayable::Timing);
         }
+        // A rule of the card may limit the mana of one way of casting it ("to cast it this way").
+        let sources =
+            &crate::mana_takes::r112_for_card_way(state, all_sources, id, way.alternative);
+        let only_from = crate::r4705_spend_from::r4705_pool(state, id, way.alternative, pool);
+        let pool = if no_mana {
+            &no_pool
+        } else {
+            only_from.as_ref().unwrap_or(pool)
+        };
         let help = help_in(state, player, id, &base, &way.parts);
         // A bestowed spell is an Aura spell and a face-down one a plain creature spell, whose mana restrictions read it so.
         let spend = printed_spend.clone().cast_as(way.alternative);

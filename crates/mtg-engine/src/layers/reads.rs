@@ -458,7 +458,11 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesSubtype(who) | Pred::SharesCreatureTypeWithEach(who) => {
             Traits::SUBTYPES.or(reads_of_ref(who))
         }
-        Pred::Color(_) | Pred::Colorless | Pred::ChosenColor | Pred::OutsideCommanderIdentity => {
+        Pred::Color(_)
+        | Pred::Colorless
+        | Pred::ChosenColor
+        | Pred::R112SharesColorWithSpent
+        | Pred::OutsideCommanderIdentity => {
             Traits::COLORS
         }
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),

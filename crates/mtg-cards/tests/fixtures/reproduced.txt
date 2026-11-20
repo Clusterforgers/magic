@@ -1370,7 +1370,9 @@ Jasmine Boreal of the Seven
 Jaspera Sentinel
 Jazal Goldmane
 Jedit Ojanen of Efrava
+Jegantha, the Wellspring
 Jeska's Will
+Jeweled Amulet
 Jinnie Fay, Jetmir's Second
 Jirina Kudro
 Jo Grant
@@ -1777,6 +1779,7 @@ Nick Valentine, Private Eye
 Night Clubber
 Night Market Guard
 Night Shift of the Living Dead
+Night Soil
 Night's Whisper
 Nighthawk Scavenger
 Nightmare
@@ -1793,6 +1796,7 @@ Nirkana Revenant
 Nori, Teller of Tales
 Norn's Annex
 Norn's Choirmaster
+North Star
 Norwood Riders
 Nostalgic Dreams
 Not Dead After All
@@ -2028,6 +2032,7 @@ Quarry Hauler
 Quest for the Goblin Lord
 Questing Beast
 Quick Fixer
+Quicksilver Elemental
 Quietus Spike
 Quinjet Technician
 Rabble Rousing

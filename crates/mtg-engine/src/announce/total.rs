@@ -128,12 +128,28 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         sources: printed.sources,
         life: printed.life,
         help,
-        spend: crate::r281_kicked_spend::r281_kicked(
-            ctx.state,
-            ctx.what,
-            choices,
-            spend(ctx, choices.way),
-        ),
+        spend: Spend {
+            r112_x_one_each: match ctx.what {
+                What::Spell(spell) if r112_x_one_each(ctx.state, *spell) => choices.x.unwrap_or(0),
+                _ => 0,
+            },
+            ..crate::r281_kicked_spend::r281_kicked(
+                ctx.state,
+                ctx.what,
+                choices,
+                spend(ctx, choices.way),
+            )
+        },
+    })
+}
+
+/// Whether the card `spell` pays its X one mana of each of that many colors (`CostItem::R112XOneEachColor`).
+fn r112_x_one_each(state: &crate::state::GameState, spell: mtg_core::ids::ObjectId) -> bool {
+    state.object(spell).is_some_and(|card| {
+        crate::ability_reader::printed_rules(card.card()).any(|rule| {
+            matches!(&**rule, Ability::AdditionalCost { cost, required: true, .. }
+                if cost.0.contains(&mtg_cards::cost::CostItem::R112XOneEachColor))
+        })
     })
 }
 
@@ -178,7 +194,9 @@ fn announced<'a>(
 fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
     match ctx.what {
         What::Spell(spell) => {
-            let cost = ctx.state.object(*spell)?.card().mana_cost.clone();
+            let cost = ctx.state.object(*spell)?.card().mana_cost.clone().map(|cost| {
+                crate::r112_next_spend::r112_mana_cost(ctx.state, ctx.player, *spell, cost)
+            });
             let all = mana_options(ctx.state, ctx.player);
             let mut sources = crate::mana_takes::for_card(ctx.state, &all, *spell).into_owned();
             // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian

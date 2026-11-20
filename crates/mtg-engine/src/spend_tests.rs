@@ -25,6 +25,8 @@ fn spell_of(types: &[CardType], has_x: bool) -> Spend {
         },
         has_x,
         r111_pays: None,
+        r112_way: None,
+        r112_x_one_each: 0,
     }
 }
 
@@ -34,6 +36,8 @@ fn ability(has_x: bool) -> Spend {
         traits: SpendTraits::default(),
         has_x,
         r111_pays: None,
+        r112_way: None,
+        r112_x_one_each: 0,
     }
 }
 
