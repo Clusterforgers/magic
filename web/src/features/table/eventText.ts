@@ -1405,7 +1405,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('SpellCast' in event) {
     const { player, object, choices } = event.SpellCast
-    return line(`${n.seat(player)} casts ${n.card(object)}${targetingWords(choices?.targets?.flat(), n)}`)
+    const chose = choices?.r110_chosen === undefined ? '' : chosenWords(choices.r110_chosen, n)
+    return line(
+      `${n.seat(player)} casts ${n.card(object)}${chose}${targetingWords(choices?.targets?.flat(), n)}`,
+    )
   }
   if ('SpellResolved' in event) return line(`${n.card(event.SpellResolved.object)} resolves`)
   if ('PermanentTapped' in event) return quiet(`${n.card(event.PermanentTapped.object)} becomes tapped`)

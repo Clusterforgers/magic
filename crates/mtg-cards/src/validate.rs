@@ -2068,6 +2068,12 @@ impl<'a> Walker<'a> {
                         }
                         w.uses("Cost", "R110ChooseNumber");
                     }
+                    CostItem::R110Choose(kind) => {
+                        if *kind != crate::trigger::EntersChoice::CreatureType {
+                            w.problem("only a creature type is chosen as a spell is cast");
+                        }
+                        w.uses("Cost", "R110Choose");
+                    }
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
                             w.problem("an X of at least 0 is any X");

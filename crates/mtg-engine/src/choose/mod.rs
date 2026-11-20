@@ -167,6 +167,11 @@ pub struct Choices {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub cost_taken: Option<Box<CostTaken>>,
+    /// The value the caster chose as an additional cost while casting the spell ("choose a creature type", CR 601.2b): the
+    /// spell and the permanent it becomes read it as the value their source chose.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub r110_chosen: Option<crate::object::Chosen>,
 }
 
 /// What the cost of an ability or a spell took (CR 601.2h, 608.2h).

@@ -866,6 +866,12 @@ describe('describeEvent', () => {
     )
   })
 
+  it('says the value a spell chose as it was cast', () => {
+    expect(
+      say({ SpellCast: { player: 0, object: 99, choices: { r110_chosen: { CreatureType: 'Elf' } } } }),
+    ).toBe('Ana casts a card, choosing Elf')
+  })
+
   it('names an object it does not know "a card" rather than print an id', () => {
     expect(say({ SpellCast: { player: 0, object: 99 } })).toBe('Ana casts a card')
     expect(say({ DamageDealt: { source: 99, target: { Object: 98 }, amount: 1 } })).toBe(

@@ -76,6 +76,7 @@ fn variants_at(
                     | CostItem::XAtMost(_)
                     | CostItem::XIs(_)
                     | CostItem::R110ChooseNumber { .. }
+                    | CostItem::R110Choose(_)
             )
         }) {
             continue;

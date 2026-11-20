@@ -117,6 +117,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 - `PayOptions.proposal` is the `Payment` the game would make (`auto_payment`, present while `auto_available`): "Pay for me" lays it out for the player to confirm as a `Manual` answer or change. `PayOptions.ability` names the ability being activated (cycling from a hand), so the band says what is paid for.
 - Mana that may be spent only on some things, and mana that stays past the step, are public facts of the pool and the events; payment help (convoke, improvise, delve) is offered beside the mana sources and its taps are public events. The rules are in [engine.md](engine.md), Payment.
 - Life pays Phyrexian symbols: `PayOptions.life` is the payer's life and `max_life` the most this payment may take; the cast's events start with one public `LifePaid` before `SpellCast`.
+- A value chosen as an additional cost while casting ("choose a creature type") is asked as a `ChooseOption` during the announcement and travels in `Choices.r110_chosen` (absent when none): the event line of `SpellCast` names it ("casts Caller of the Hunt, choosing Elf"), and the permanent the spell becomes keeps it as its chosen value.
 
 ## Pace of play
 

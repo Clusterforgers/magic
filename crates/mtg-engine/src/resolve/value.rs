@@ -101,6 +101,7 @@ static NO_CHOICES: Choices = Choices {
     face: None,
     spent: None,
     cost_taken: None,
+    r110_chosen: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();
 
@@ -2418,10 +2419,12 @@ impl<'a> Scope<'a> {
         if let Some(chosen) = self.entering {
             return Some(chosen);
         }
-        self.state
-            .object(self.source.id)
-            .and_then(|object| object.permanent())
-            .and_then(|permanent| permanent.chosen())
+        let object = self.state.object(self.source.id)?;
+        match object.permanent() {
+            Some(permanent) => permanent.chosen(),
+            // A spell reads what its caster chose as an additional cost (`CostItem::R110Choose`).
+            None => object.choices().r110_chosen.as_ref(),
+        }
     }
 
     /// The printed name of the card, none for a face-down card (it has no name).
