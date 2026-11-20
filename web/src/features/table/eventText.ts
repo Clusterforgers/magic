@@ -1162,6 +1162,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { object } = event.TargetsChanged
     return line(`The targets of ${n.card(n.ability?.(object.id) ?? object.id)} change`)
   }
+  if ('R112UntapTypeChosen' in event) {
+    const { player, kind } = event.R112UntapTypeChosen
+    return line(`${n.seat(player)} untaps only ${kind.toLowerCase()}s this step`)
+  }
   if ('R112XChanged' in event) {
     const { object, x } = event.R112XChanged
     return line(`The value of X of ${n.card(object.id)} becomes ${x}`)

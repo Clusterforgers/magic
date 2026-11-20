@@ -255,7 +255,7 @@ what: unknown,
 /**
  * The players whose untap steps untap them.
  */
-whose: Array<PlayerId>, } } | { "UntapLimit": { 
+whose: Array<PlayerId>, } } | { "R112UntapChosenType": Array<PlayerId> } | { "UntapLimit": { 
 /**
  * The players whose untap steps are limited.
  */

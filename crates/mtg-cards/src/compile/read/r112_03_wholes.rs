@@ -118,6 +118,7 @@ mod tests {
             ),
             ("contains {X}", "contains {1}"),
             ("double the value of X", "double X"),
+            ("artifact, creature, or land", "creature or land"),
             ("instant or sorcery spell", "creature spell"),
         ];
         for (_, text) in R112_03_SHAPES.iter() {

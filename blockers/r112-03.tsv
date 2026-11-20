@@ -48,6 +48,5 @@ Chromatic Armor	counter-scaled prevention of damage from sources of a chosen col
 Serum Powder	A mulligan-time special action: exile the hand and draw that many while the card is in hand (mulligan decision option, CR 103.5)	none
 Circling Vultures	A special action "discard this card any time you could cast an instant" (PriorityAction for a card in hand, CR 116.2)	none
 Guardian Angel	A special action that runs effects (a pay-to-do sibling of GameRule::PayToIgnore: r6703_ignore offer/events, PriorityOptions.ignorable with a kind, web listing beyond battlefield sources) whose source is the resolved spell in a graveyard	a rule that fixes Target(0), an object or a player, as it begins (resolve/prim/rule.rs fix for players)
-Storage Matrix	An untap-step question of a card type (ChooseOption among artifact, creature, land) asked of the active player before the untap events in steps.rs untap_events while the source is untapped, then the untap set limited to that type (a GameRule beside UntapLimit)	none
 Bewitching Leechcraft	An untap-step replacement on a granted ability: remove a +1/+1 counter instead, and untap only if one was removed	none
 Fasting	An optional skip of the draw step with a life gain (replacement of beginning a step, CR 614.10b, asked as the step would begin)	none

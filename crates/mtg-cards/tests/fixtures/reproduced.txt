@@ -2488,6 +2488,7 @@ Stolen Identity
 Stonecoil Serpent
 Stonewood Invocation
 Stonybrook Banneret
+Storage Matrix
 Storm Fleet Swashbuckler
 Storm King's Thunder
 Storm of Forms

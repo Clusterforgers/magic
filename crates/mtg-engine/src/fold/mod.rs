@@ -328,6 +328,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.r6703_ignored.push((*player, *source));
             Ok(())
         }
+        Event::R112UntapTypeChosen { player, kind } => {
+            state.r112_untap_types.push((*player, *kind));
+            Ok(())
+        }
         Event::Investigated { player } => {
             state.tally(*player, crate::state::Tally::L31aInvestigated);
             Ok(())
@@ -453,6 +457,7 @@ fn begin_turn(
     state.turn.no_power_up = false;
     state.turn.r109_unpreventable = false;
     state.r6703_ignored.clear();
+    state.r112_untap_types.clear();
     let mut at_end = None;
     if extra {
         let Some(taken) = state.extra_turns.pop().filter(|turn| turn.player == active) else {

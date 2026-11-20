@@ -419,6 +419,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Investigated { .. }
         | Event::Bent { .. }
         | Event::IgnoredEffect { .. }
+        | Event::R112UntapTypeChosen { .. }
         | Event::GiftGiven { .. }
         | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }

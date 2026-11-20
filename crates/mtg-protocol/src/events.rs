@@ -523,6 +523,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Investigated { .. }
         | Event::Bent { .. }
         | Event::IgnoredEffect { .. }
+        | Event::R112UntapTypeChosen { .. }
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }

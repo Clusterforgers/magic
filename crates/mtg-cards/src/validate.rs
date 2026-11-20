@@ -6741,7 +6741,8 @@ impl Walker<'_> {
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. }
-            | GameRule::UntapLimit { .. } => self.rule_option(&tag, rule),
+            | GameRule::UntapLimit { .. }
+            | GameRule::R112UntapChosenType(_) => self.rule_option(&tag, rule),
         }
     }
 
@@ -6846,6 +6847,9 @@ impl Walker<'_> {
                 w.at("what", |w| w.selector(what));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
             }),
+            GameRule::R112UntapChosenType(who) => {
+                self.at(tag, |w| w.reference(who, Kind::Player));
+            }
             GameRule::UntapLimit { who, what, .. } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.selector(what));

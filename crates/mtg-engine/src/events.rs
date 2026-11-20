@@ -1110,6 +1110,13 @@ pub enum Event {
         /// The element.
         element: Bending,
     },
+    /// A player chose the card type they untap during their untap step (`GameRule::R112UntapChosenType`, CR 502.3).
+    R112UntapTypeChosen {
+        /// Who chose.
+        player: PlayerId,
+        /// Artifact, creature or land.
+        kind: mtg_core::card::CardType,
+    },
     /// A player paid to ignore the effects of a source until end of turn (`GameRule::PayToIgnore`, a special action).
     IgnoredEffect {
         /// Who paid.
@@ -1749,6 +1756,7 @@ impl Event {
             | Event::Investigated { .. }
             | Event::Bent { .. }
             | Event::IgnoredEffect { .. }
+            | Event::R112UntapTypeChosen { .. }
             | Event::Discovered { .. }
             | Event::DreadManifested { .. }
             | Event::GiftGiven { .. }
