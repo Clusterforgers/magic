@@ -103,6 +103,13 @@ fn named_objects(
     let keywords_only = mods
         .iter()
         .all(|wanted| matches!(wanted, Wanted::AddKeyword(_)));
+    // An exiled card gains an ability that works from exile ("If you do, it gains 'Whenever a land you control enters,
+    // if ~ is exiled, ...'"): it keeps it while it stays there.
+    let r112_works_in_exile = mods.iter().all(|wanted| {
+        matches!(wanted, Wanted::GrantAbility(granted)
+            if matches!(&**granted, mtg_cards::ability::Ability::Triggered { from: mtg_cards::refs::ZoneKind::Exile, .. }
+                | mtg_cards::ability::Ability::CostModifier { .. }))
+    });
     Ok(cx
         .scope
         .live_objects(affected)?
@@ -110,6 +117,7 @@ fn named_objects(
         .filter(|object| {
             matches!(object.zone(), Zone::Battlefield | Zone::Stack)
                 || (keywords_only && matches!(object.zone(), Zone::Graveyard(_)))
+                || (r112_works_in_exile && object.zone() == Zone::Exile)
         })
         .map(GameObject::reference)
         .collect())
@@ -627,7 +635,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             by: scope.controller,
         },
         Wanted::CantBeBlockedBy(blockers) => Modification::CantBeBlockedBy {
-            by: blockers.clone(),
+            by: super::r112_piles::r112_fix_bound(scope, blockers),
             controller: scope.controller,
             source: scope.source,
         },

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "8e93ea21-5e3f-448e-a175-96c8438c328e",
+  "name": "The Toymaker's Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Toymaker's Trap",
+      "oracle_fingerprint": "432012e77038f2ce8f40b0688fda5a09",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              {
+                "R112GuessNumber": {
+                  "min": 1,
+                  "max": 5,
+                  "guesser": "Opponents",
+                  "as": "number",
+                  "guess_as": "guess",
+                  "guesser_as": "guesser"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "ChosenAs": "guess" },
+                            "op": "Ne",
+                            "right": { "ChosenAs": "number" }
+                          }
+                        },
+                        "then": [
+                          {
+                            "LoseLife": {
+                              "who": { "Bound": "guesser" },
+                              "amount": { "ChosenAs": "guess" }
+                            }
+                          },
+                          { "Draw": {} }
+                        ],
+                        "otherwise": [{ "Sacrifice": { "filter": ["This"] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

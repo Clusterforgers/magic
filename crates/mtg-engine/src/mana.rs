@@ -1237,6 +1237,23 @@ pub fn can_afford_with(
     life: i32,
     spend: &Spend,
 ) -> bool {
+    if crate::r112_not_generic::r112_present(pool, sources, spend) {
+        return crate::r112_not_generic::r112_choices(cost, pool, sources, spend)
+            .iter()
+            .any(|c| can_afford_snow(&c.cost, &c.pool, &c.sources, help, life, spend));
+    }
+    can_afford_snow(cost, pool, sources, help, life, spend)
+}
+
+/// [`can_afford_with`] once mana that pays no generic cost is set aside.
+fn can_afford_snow(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    life: i32,
+    spend: &Spend,
+) -> bool {
     let snow = cost.snow();
     if snow == 0 {
         return can_afford_plain(cost, pool, sources, help, life, spend);
@@ -1259,7 +1276,7 @@ fn can_afford_plain(
     let floating = pool.floating(spend);
     let sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     within_energy(&sources, &[]).iter().any(|sources| {
-        crate::r111_spend_as::r111_resolutions(cost, spend.r111_pays.as_ref())
+        crate::r112_x_colors::r112_resolutions(cost, spend)
             .iter()
             .any(|r| {
                 can_pay_life(life, r.life)
@@ -1358,6 +1375,27 @@ pub fn auto_payment_with(
     life: i32,
     spend: &Spend,
 ) -> Option<Payment> {
+    if crate::r112_not_generic::r112_present(pool, sources, spend) {
+        let mut best = None;
+        for c in crate::r112_not_generic::r112_choices(cost, pool, sources, spend) {
+            if let Some(payment) = auto_snow(&c.cost, &c.pool, &c.sources, help, life, spend) {
+                keep_better(&mut best, c.join(payment), sources);
+            }
+        }
+        return best;
+    }
+    auto_snow(cost, pool, sources, help, life, spend)
+}
+
+/// [`auto_payment_with`] once mana that pays no generic cost is set aside.
+fn auto_snow(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    life: i32,
+    spend: &Spend,
+) -> Option<Payment> {
     let snow = cost.snow();
     if snow == 0 {
         return auto_plain(cost, pool, sources, help, life, spend);
@@ -1385,7 +1423,7 @@ fn auto_plain(
     let usable_sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     let mut best = None;
     for sources in within_energy(&usable_sources, &[]) {
-        for resolution in crate::r111_spend_as::r111_resolutions(cost, spend.r111_pays.as_ref()) {
+        for resolution in crate::r112_x_colors::r112_resolutions(cost, spend) {
             if resolution.life > 0 && i64::from(life) <= i64::from(resolution.life) {
                 continue;
             }
@@ -1538,6 +1576,41 @@ pub fn check_payment_with(
     spend: &Spend,
     payment: &Payment,
 ) -> Result<Spent, PaymentError> {
+    if let Some(split) =
+        crate::r112_not_generic::r112_split(cost, pool, sources, tapped, spend, payment)?
+    {
+        let got = check_snow(
+            &split.cost,
+            &split.pool,
+            &split.sources,
+            help,
+            tapped,
+            life,
+            spend,
+            &split.payment,
+        )?;
+        return Ok(split.join(got));
+    }
+    // A payment that names no such mana is read without it, so the plain code never spends it on generic mana.
+    if crate::r112_not_generic::r112_present(pool, sources, spend) {
+        let (pool, sources) = crate::r112_not_generic::r112_without(pool, sources, spend);
+        return check_snow(cost, &pool, &sources, help, tapped, life, spend, payment);
+    }
+    check_snow(cost, pool, sources, help, tapped, life, spend, payment)
+}
+
+/// [`check_payment_with`] for a payment that names no mana that pays no generic cost.
+#[allow(clippy::too_many_arguments)]
+fn check_snow(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    payment: &Payment,
+) -> Result<Spent, PaymentError> {
     let snow = cost.snow();
     let cost = &cost.snow_as_generic();
     mana_repeat::forged(payment)?;
@@ -1606,7 +1679,7 @@ fn check_expanded(
         return Err(PaymentError::NotEnoughEnergy { paid, have });
     }
     let mut refusal = None;
-    for resolution in crate::r111_spend_as::r111_resolutions(cost, spend.r111_pays.as_ref()) {
+    for resolution in crate::r112_x_colors::r112_resolutions(cost, spend) {
         if resolution.life != payment.life {
             continue;
         }
@@ -1697,6 +1770,52 @@ pub fn complete_payment_with(
     spend: &Spend,
     partial: &Payment,
 ) -> Result<Payment, PaymentError> {
+    if crate::r112_not_generic::r112_present(pool, sources, spend) {
+        // Each way to set such mana aside that keeps what the partial payment names of it.
+        let rest = crate::r112_not_generic::r112_strip(partial, sources);
+        let mut refusal = PaymentError::CannotComplete;
+        for c in crate::r112_not_generic::r112_choices(cost, pool, sources, spend) {
+            let keeps = partial
+                .taps
+                .iter()
+                .filter(|tap| !rest.taps.contains(tap))
+                .all(|tap| c.paid.taps.contains(tap))
+                && partial
+                    .restricted
+                    .iter()
+                    .filter(|unit| crate::r112_not_generic::r112_is_not_generic(&unit.only))
+                    .all(|unit| c.paid.restricted.contains(unit));
+            if !keeps
+                || tapped
+                    .iter()
+                    .any(|id| c.paid.taps.iter().any(|t| t.object == *id))
+            {
+                continue;
+            }
+            match complete_snow(
+                &c.cost, &c.pool, &c.sources, help, tapped, life, spend, &rest,
+            ) {
+                Ok(done) => return Ok(c.join(done)),
+                Err(error) => refusal = error,
+            }
+        }
+        return Err(refusal);
+    }
+    complete_snow(cost, pool, sources, help, tapped, life, spend, partial)
+}
+
+/// [`complete_payment_with`] once mana that pays no generic cost is set aside.
+#[allow(clippy::too_many_arguments)]
+fn complete_snow(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    partial: &Payment,
+) -> Result<Payment, PaymentError> {
     let snow = cost.snow();
     if snow == 0 {
         return complete_plain(cost, pool, sources, help, tapped, life, spend, partial);
@@ -1764,7 +1883,7 @@ fn complete_expanded(
     let lists = within_energy(&usable_sources, &partial.taps);
     let mut best = None;
     let mut refusal: Option<PaymentError> = None;
-    for resolution in crate::r111_spend_as::r111_resolutions(cost, spend.r111_pays.as_ref()) {
+    for resolution in crate::r112_x_colors::r112_resolutions(cost, spend) {
         if !may_pay_life(resolution.life, partial.life, life) {
             continue;
         }

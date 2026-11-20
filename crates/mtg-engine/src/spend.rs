@@ -62,6 +62,19 @@ pub struct Spend {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(type = "Array<number>", optional))]
     pub r111_pays: Option<crate::r111_spend_as::R111Pays>,
+    /// The way the spell is cast, which a rule of the card may limit the mana of ("to cast it this way").
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub r112_way: Option<mtg_cards::value::CastWay>,
+    /// How much of the generic mana is an X paid one mana of each of that many colors (`r112_x_colors`).
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub r112_x_one_each: u32,
+}
+
+#[allow(clippy::trivially_copy_pass_by_ref)]
+const fn is_zero(value: &u32) -> bool {
+    *value == 0
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -129,6 +142,8 @@ impl Spend {
             traits,
             has_x,
             r111_pays: crate::r111_spend_as::r111_pays(state, caster),
+            r112_way: None,
+            r112_x_one_each: 0,
         }
     }
 
@@ -156,7 +171,8 @@ impl Spend {
     /// The payment for the spell as cast the way `way` says: a bestowed card is an Aura spell, a card cast face down a
     /// creature spell that is nothing else.
     #[must_use]
-    pub fn cast_as(self, way: Option<mtg_cards::value::CastWay>) -> Self {
+    pub fn cast_as(mut self, way: Option<mtg_cards::value::CastWay>) -> Self {
+        self.r112_way = way;
         match way {
             Some(mtg_cards::value::CastWay::Bestow) => self.bestowed(),
             Some(mtg_cards::value::CastWay::FaceDown) => self.face_down(),
@@ -180,11 +196,14 @@ impl Spend {
             traits,
             has_x,
             r111_pays: state.object(source).and_then(|object| {
-                crate::r111_spend_as::r111_pays(
+                crate::r111_spend_as::r112_pays_for(
                     state,
                     crate::characteristics::controller_of_object(state, object),
+                    Some(source),
                 )
             }),
+            r112_way: None,
+            r112_x_one_each: 0,
         }
     }
 
@@ -225,6 +244,7 @@ impl Spend {
                 SpendOn::When(_)
                 | SpendOn::Uncounterable(_)
                 | SpendOn::Snow
+                | SpendOn::R112NotGeneric
                 | SpendOn::Enters(_) => false,
             })
     }

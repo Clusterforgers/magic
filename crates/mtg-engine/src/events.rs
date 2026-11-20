@@ -330,6 +330,11 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         tapped: bool,
+        /// It phases out until this player rolls this number or less while rolling to visit their Attractions (Ferris
+        /// Wheel), and phases in then and not in an untap step.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        r112_visit: Option<(PlayerId, u32)>,
     },
     /// A permanent phased in (CR 702.26): it exists again, as the same object, with everything it had.
     PermanentPhasedIn {
@@ -895,6 +900,12 @@ pub enum Event {
         /// What it chose.
         chosen: Chosen,
     },
+    /// A resolving spell or ability made players guess or group cards or permanents into piles (The Celestial Toymaker's
+    /// count of them this turn).
+    R112Grouped {
+        /// The spell or ability.
+        object: ObjectId,
+    },
     /// A permanent keeps a value its ability chose as its own choice, public ("II — Choose a card name.").
     R111ChoiceKept {
         /// The permanent.
@@ -1109,6 +1120,13 @@ pub enum Event {
         player: PlayerId,
         /// The element.
         element: Bending,
+    },
+    /// A player chose the card type they untap during their untap step (`GameRule::R112UntapChosenType`, CR 502.3).
+    R112UntapTypeChosen {
+        /// Who chose.
+        player: PlayerId,
+        /// Artifact, creature or land.
+        kind: mtg_core::card::CardType,
     },
     /// A player paid to ignore the effects of a source until end of turn (`GameRule::PayToIgnore`, a special action).
     IgnoredEffect {
@@ -1555,6 +1573,13 @@ pub enum Event {
         /// The object the card became, in the hand.
         object: ObjectId,
     },
+    /// The value of X of a spell on the stack changed ("double the value of X", CR 107.3): its choices hold the new X.
+    R112XChanged {
+        /// The spell.
+        object: ObjectRef,
+        /// The new value of X.
+        x: u32,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -1742,6 +1767,7 @@ impl Event {
             | Event::Investigated { .. }
             | Event::Bent { .. }
             | Event::IgnoredEffect { .. }
+            | Event::R112UntapTypeChosen { .. }
             | Event::Discovered { .. }
             | Event::DreadManifested { .. }
             | Event::GiftGiven { .. }
@@ -1838,6 +1864,7 @@ impl Event {
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
             Event::TargetsChanged(change) => vec![change.object.id],
+            Event::R112XChanged { object, .. } => vec![object.id],
             Event::Remembered(change) => vec![change.source.id],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
@@ -1853,6 +1880,7 @@ impl Event {
             | Event::ChosenAsAttached { object, .. }
             | Event::R110ChoseSecretly { object, .. }
             | Event::R111ChoiceKept { object, .. }
+            | Event::R112Grouped { object }
             | Event::R110ChoiceRevealed { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }

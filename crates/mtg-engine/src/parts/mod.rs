@@ -598,6 +598,14 @@ impl Part {
                 };
                 pick(kind, filter, count, item)?
             }
+            // "from a single graveyard": a pick from any graveyard whose cards share their owner.
+            CostItem::R112ExileFromOneGraveyard { filter, count } => {
+                let (mut part, x) = pick(Kind::ExileAny, filter, count, item)?;
+                if let Part::Pick(picked) = &mut part {
+                    picked.alike = Some(mtg_cards::cost::Alike::R112SameOwner);
+                }
+                (part, x)
+            }
             CostItem::ExileFromHand { filter, count } => {
                 pick(Kind::ExileHand, filter, count, item)?
             }
@@ -921,6 +929,29 @@ impl Part {
             Part::Pick(pick) if pick.kind == Kind::TapPower => {
                 let power = u32::try_from(pick.count).unwrap_or(u32::MAX);
                 tap::enough(payer.state, pick.candidates(payer), power, spare)
+            }
+            // Cards of one graveyard: the first owner who has enough of them.
+            Part::Pick(pick) if pick.alike == Some(mtg_cards::cost::Alike::R112SameOwner) => {
+                let found = pick.candidates(payer);
+                found.iter().find_map(|first| {
+                    let owner = payer
+                        .state
+                        .object(*first)
+                        .map(crate::object::GameObject::owner)?;
+                    let same: Vec<ObjectId> = found
+                        .iter()
+                        .copied()
+                        .filter(|id| {
+                            payer
+                                .state
+                                .object(*id)
+                                .map(crate::object::GameObject::owner)
+                                == Some(owner)
+                        })
+                        .take(pick.count)
+                        .collect();
+                    (same.len() >= pick.count).then_some(same)
+                })
             }
             Part::Pick(pick) => {
                 let mut found = pick.candidates(payer);
@@ -1342,6 +1373,7 @@ impl Pick {
             return Some(IllegalAnswer::WrongPick(match alike {
                 Alike::SameName => "cards with the same name",
                 Alike::ShareColor => "cards that share a color",
+                Alike::R112SameOwner => "cards from a single graveyard",
             }));
         }
         if self.r4709_rule().is_some() {

@@ -514,6 +514,9 @@ pub enum Pred {
     OriginallyPrintedIn(crate::r4707_first_sets::FirstSet),
     /// Is the colour the controller of the source chose as the source entered the battlefield.
     ChosenColor,
+    /// Shares a color with the mana spent to pay the activation cost of the ability resolving ("a source of your choice
+    /// that shares a color with the mana spent on this activation cost"); colorless mana shares none.
+    R112SharesColorWithSpent,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
     ChosenSubtype,
     /// Has the land type at this place among the basic land types the controller of the source chose as it entered
@@ -723,6 +726,9 @@ pub enum Pred {
     Kicked,
     /// Is a spell, or a permanent that entered as a spell, cast with an additional cost paid (bargain, casualty, gift; CR 601.2b).
     AdditionalCostPaid,
+    /// Is a modal spell (CR 700.2): its spell ability chooses modes as it is cast ("a modal spell"); a modal double-faced
+    /// card is not one for that.
+    R112Modal,
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.
@@ -814,6 +820,10 @@ pub enum Targetable {
         /// What may be chosen.
         what: Box<Targetable>,
     },
+    /// "Target creature of an opponent's choice": what the inner kind allows, chosen by an opponent the controller picks
+    /// as the spell or ability is announced, though the controller's spell or ability targets it (the Volcanic Offering
+    /// rulings: the opponent is chosen as the spell is cast, and may be the same for several specifications).
+    R112OpponentChooses(Box<Targetable>),
     /// "Any target chosen at random": what the inner kind allows, picked by the game's random source among the legal
     /// targets as the spell or ability is announced, not by a player (CR 115.7 rulings).
     AtRandom(Box<Targetable>),

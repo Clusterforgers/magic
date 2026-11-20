@@ -261,6 +261,22 @@ pub enum Produce {
     /// the mana added has no restriction ("Double the amount of each type of unspent mana you have", Doubling Cube
     /// rulings; the type of mana is its color or colorless).
     R6501UnspentDoubled,
+    /// This many mana of one type chosen when added from at least two ("Add X {G} or X {W}, where X is ..."); the
+    /// count is counted when the mana is added.
+    R112OneOfCount {
+        /// The types to choose from.
+        among: Vec<ManaType>,
+        /// How many mana of the chosen type.
+        count: Amount,
+    },
+    /// The mana the source last noted (`Effect::R112NoteManaSpent`): one mana of its last noted type ("Add one mana of
+    /// this artifact's last noted type"), or with `amount` the noted type and amount ("Add this artifact's last noted
+    /// type and amount of mana"); nothing while it noted none.
+    R112Noted {
+        /// All the noted mana, not one of its type.
+        #[serde(default, skip_serializing_if = "is_false")]
+        amount: bool,
+    },
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,
@@ -481,6 +497,9 @@ pub enum ValueKind {
     ColorOrBasicLandType,
     /// A word of the kind of the one chosen under this name, other than it: the word a text change writes ("with another").
     LikeChosen(String),
+    /// A creature type the source has not noted (`Effect::R112NoteChosen`): "a creature type that hasn't been noted for
+    /// this Saga".
+    R112CreatureTypeNotNoted,
     /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
     Letter,
     /// One of the spells the player `caster` names cast this turn that the selector matches as cast ("one of those sorcery
@@ -1136,6 +1155,10 @@ pub enum Effect {
         /// "Tap that creature as it phases in this way": each phases in tapped.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         tapped: bool,
+        /// "Until you roll a 3 or less while rolling to visit your Attractions": each phases in when the controller rolls
+        /// this number or less to visit (CR 701.52), and not in an untap step.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r112_visit_roll: Option<u32>,
         /// How long the permanents phased out this way can't phase in ("Until the end of your next turn, they can't phase
         /// in", "It can't phase in for as long as you control this Saga"): a `Cant` rule of `PhaseIn` over exactly them.
         #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1685,6 +1708,12 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The value of X of each spell named that is still on the stack doubles ("double the value of X", CR 107.3): the
+    /// spell and the permanent it becomes read the new X.
+    R112DoubleX {
+        /// The spells.
+        what: Ref,
+    },
     /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
     Learn {
         /// Who learns.
@@ -1835,6 +1864,29 @@ pub enum Effect {
         /// The name of the other pile.
         rest_as: String,
     },
+    /// Each player `who` names separates the objects of `what` they control (own, off the battlefield) into the piles
+    /// `piles` names, in turn order from the controller (CR 700.3); piles can be empty. Each pile is bound under its name
+    /// (a label: "a \"left\" pile and a \"right\" pile"). The piles named in `face_down` are face down: a chooser sees only
+    /// how many cards they hold. With `pick`, one pile of each separator is chosen, at random or by the player it names,
+    /// and the chosen piles are bound to `chosen_as`.
+    R112Piles {
+        /// Who separates.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The objects.
+        what: Ref,
+        /// The piles, each bound under its name.
+        piles: Vec<String>,
+        /// The piles that are face down.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        face_down: Vec<String>,
+        /// How a pile of each separator is chosen; no pile is when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        pick: Option<R112PilePick>,
+        /// The name the chosen piles are bound to.
+        #[serde(default, rename = "as", skip_serializing_if = "Option::is_none")]
+        chosen_as: Option<String>,
+    },
     /// Does `effects` once for each player or object `over` names, in the order it lists them, with `bind` naming the one
     /// the pass is for (CR 608.2c: "for each player", "each opponent ... that player"). The list is fixed when the effect
     /// begins; a name bound inside `effects` is bound anew in each pass.
@@ -1979,6 +2031,9 @@ pub enum Effect {
         /// The numbers are chosen face down and revealed together.
         #[serde(default, skip_serializing_if = "is_false")]
         secret: bool,
+        /// The greatest number allowed ("secretly choose 1, 2, or 3"); no greatest when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        max: Option<Amount>,
         /// The name the highest number is remembered under.
         #[serde(rename = "as")]
         bind: String,
@@ -1986,6 +2041,46 @@ pub enum Effect {
         highest: String,
         /// The name the players who chose the lowest number are bound to.
         lowest: String,
+    },
+    /// The controller secretly chooses a number from `min` to `max` that this source has not chosen before (the source
+    /// remembers each number it chose in the slot `as`), a player `guesser` names guesses a number in the same range, and
+    /// the number is revealed (CR 706-style secret choice): the number is remembered under `as` and the guess under
+    /// `guess_as` (`Amount::ChosenAs`), the guesser is bound to `guesser_as`. With every number chosen before nothing is
+    /// chosen, nothing is bound and a following "if you do" fails ("secretly choose a number between 1 and 5 that hasn't
+    /// been chosen. If you do, an opponent guesses which number you chose").
+    R112GuessNumber {
+        /// The least number.
+        min: u32,
+        /// The greatest number.
+        max: u32,
+        /// Who guesses; the controller chooses one when it names several.
+        guesser: Ref,
+        /// The name the number is remembered under, and the slot of the source's memory that holds the numbers it chose.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the guess is remembered under.
+        guess_as: String,
+        /// The name the guesser is bound to.
+        guesser_as: String,
+    },
+    /// The source rolls `dice` dice with `sides` sides (CR 706) and stores the results on itself: its memory slot `slot`
+    /// holds them in place of what it held ("roll five six-sided dice and store those results on it");
+    /// `Amount::Remembered` and `Amount::R112MostAlike` read them.
+    R112RollStore {
+        /// How many faces each die has.
+        sides: u32,
+        /// How many dice.
+        dice: u32,
+        /// The memory slot of the source.
+        slot: String,
+    },
+    /// The controller may reroll any number of the results stored on the source in `slot` (`R112RollStore`), each asked
+    /// in turn; each rerolled die is rolled again with `sides` sides and its new result replaces the old one (CR 706.6).
+    R112RerollStored {
+        /// How many faces each die has.
+        sides: u32,
+        /// The memory slot of the source.
+        slot: String,
     },
     /// The players `who` names bid life: the controller opens with a bid (`start`, or any number from 0), then in turn
     /// order each other player may top the high bid, and the bidding ends when the high bid stands. The high bid is
@@ -2254,6 +2349,12 @@ pub enum Effect {
     /// The source keeps the value the resolution chose under this name as its own choice, public, for its later abilities
     /// ("II — Choose a card name." of a Saga whose chapter III reads "the chosen name"); nothing once it has left.
     R111KeepChosen(String),
+    /// The source notes the type and amount of the mana spent to pay this activation cost, in place of what it noted
+    /// before ("Note the type of mana spent to pay this activation cost"); `Produce::R112Noted` reads it.
+    R112NoteManaSpent,
+    /// The source notes the word the resolution chose under this name ("Note a creature type that hasn't been noted for
+    /// this Saga"): the notes stay with the permanent until it leaves (`ValueKind::R112CreatureTypeNotNoted` reads them).
+    R112NoteChosen(String),
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.
@@ -2447,6 +2548,15 @@ pub enum Effect {
         /// The modes, in printed order.
         modes: Vec<Mode>,
     },
+}
+
+/// How `Effect::R112Piles` chooses a pile of each separator.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+pub enum R112PilePick {
+    /// One pile chosen at random ("chooses one of their piles at random").
+    Random,
+    /// The first player the reference names chooses ("Defending player chooses one of those piles").
+    By(Ref),
 }
 
 /// The name the card found by exiling until a card matches is bound to.

@@ -39,6 +39,8 @@ export interface DockNeedInput {
   commanders: number
   /** The tallest the dock may grow, in px. */
   most: number
+  /** A decision picks among the hand's cards: the head keeps one card's width and scrolls (`dockLayouts`). */
+  pick?: boolean
 }
 
 /**
@@ -46,9 +48,10 @@ export interface DockNeedInput {
  * without scrolling: 0 while one row of them fits the width, and 0 when the rows it needs would be taller than `most`
  * (the hand then scrolls in one row). It reads the width only, so a dock that grows to it does not change it.
  */
-export function handDockNeed({ width, count, commanders, most }: DockNeedInput): number {
+export function handDockNeed({ width, count, commanders, most, pick = false }: DockNeedInput): number {
   const cardHeight = Math.round(HAND_FLOOR_PX * CARD_ASPECT)
-  const head = commanders > 0 ? commanders * (HAND_FLOOR_PX + HAND_GAP_PX) + COMMAND_GAP_PX : 0
+  const shown = pick && count > 0 ? Math.min(1, commanders) : commanders
+  const head = shown > 0 ? shown * (HAND_FLOOR_PX + HAND_GAP_PX) + COMMAND_GAP_PX : 0
   const room = width - head
   const cards = Math.max(1, count)
   for (let rows = 1; rows <= HAND_MAX_ROWS && rows <= cards; rows += 1) {
@@ -182,6 +185,8 @@ export function handLayout({ width, height, count, coarse = false, cap }: HandIn
 /** What `dockLayouts` needs: a hand line's room, with `commanders` waiting at its head. */
 export interface DockInput extends HandInput {
   commanders: number
+  /** A decision picks among the hand's cards: the hand takes the room it needs first, the head what is left. */
+  pick?: boolean
 }
 
 /** The layouts of a dock's hand and of its commanders, and the width the commanders' list may take. */
@@ -198,8 +203,9 @@ export interface DockLayouts {
  * but never so much that a hand of one card or more loses its last whole card; the commanders then scroll in what is
  * left, at least one of them in view.
  */
-export function dockLayouts({ commanders, ...input }: DockInput): DockLayouts {
+export function dockLayouts({ commanders, pick = false, ...input }: DockInput): DockLayouts {
   if (commanders <= 0) return { hand: handLayout(input) }
+  if (pick && input.count > 0) return pickLayouts(commanders, input)
   const all = handLayout({ ...input, count: input.count + commanders })
   const card = all.box.width + all.gap
   const head = commanders * card + COMMAND_GAP_PX
@@ -209,6 +215,34 @@ export function dockLayouts({ commanders, ...input }: DockInput): DockLayouts {
   const most = Math.max(card + COMMAND_GAP_PX, input.width - keep)
   const commandWidth = Math.min(head, most)
   const hand = handLayout({ ...input, width: Math.max(0, input.width - commandWidth) })
+  const command: HandLayout = {
+    ...hand,
+    rows: 1,
+    perRow: commanders,
+    scrolls: commandWidth < head,
+    overlap: 0,
+  }
+  return { hand, command, commandWidth }
+}
+
+/**
+ * The line while a decision picks among the hand's cards (bottoming, a discard), where the shared line does not hold
+ * both whole: the hand is laid out first, beside one card of the head, and the head (commanders, the Satchel, the top
+ * card) takes what the hand leaves and scrolls in it, so every card on offer stays in view.
+ */
+function pickLayouts(commanders: number, input: HandInput): DockLayouts {
+  const shared = dockLayouts({ ...input, commanders })
+  if (shared.command?.scrolls !== true && !shared.hand.scrolls) return shared
+  // The head keeps one card and its divider: first at the narrowest card, then at the hand's card where that is wider.
+  const handBeside = (card: number): HandLayout =>
+    handLayout({ ...input, width: Math.max(0, input.width - (card + HAND_GAP_PX + COMMAND_GAP_PX)) })
+  const first = handBeside(Math.min(HAND_FLOOR_PX, handCardWidth(input.height, input.cap)))
+  const hand = first.scrolls ? first : handBeside(first.box.width)
+  const room = Math.max(0, input.width - (hand.box.width + HAND_GAP_PX + COMMAND_GAP_PX))
+  const row = hand.scrolls ? room : hand.perRow * hand.box.width + (hand.perRow - 1) * hand.gap
+  const card = hand.box.width + hand.gap
+  const head = commanders * card + COMMAND_GAP_PX
+  const commandWidth = Math.min(head, Math.max(card + COMMAND_GAP_PX, input.width - row))
   const command: HandLayout = {
     ...hand,
     rows: 1,

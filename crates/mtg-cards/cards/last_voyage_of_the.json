@@ -1,0 +1,71 @@
+{
+  "oracle_id": "54ddf766-b528-488d-9b98-8a101bdb5de9",
+  "name": "Last Voyage of the _____",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Last Voyage of the _____",
+      "oracle_fingerprint": "a11785f54912813af6df69364dc019f6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "May": { "effects": [{ "PutSticker": { "on": ["This"], "kind": "Name" } }] } },
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "AddSubtype": "Aura" },
+                    { "AddKeyword": { "Enchant": [{ "Type": "Creature" }] } }
+                  ],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "In": "Graveyard" }]
+                  },
+                  "as": "picked"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "picked" },
+                  "to": { "Battlefield": {} },
+                  "as": "returned"
+                }
+              },
+              { "Attach": { "what": "This", "to": { "Bound": "returned" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "NameStickers": { "on": "This", "words": { "LettersAtMost": 7 } } }
+                    }
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Is": "Attached" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

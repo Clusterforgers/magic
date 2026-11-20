@@ -227,6 +227,12 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             Ok(())
         }
+        Event::R112Grouped { object } => {
+            if let Some(grouping) = state.object(*object).map(crate::object::GameObject::reference) {
+                state.tally_object(grouping, None, crate::state::Tally::R112Grouped);
+            }
+            Ok(())
+        }
         Event::R111ChoiceKept { object, chosen } => {
             if let Some(permanent) = state
                 .objects
@@ -269,6 +275,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::TargetsChanged(change) => crate::retargeted::fold(state, change),
+        Event::R112XChanged { object, x } => crate::retargeted::r112_fold_x(state, *object, *x),
         Event::Remembered(change) => {
             crate::memory::fold(state, change);
             Ok(())
@@ -325,6 +332,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::IgnoredEffect { player, source } => {
             state.r6703_ignored.push((*player, *source));
+            Ok(())
+        }
+        Event::R112UntapTypeChosen { player, kind } => {
+            state.r112_untap_types.push((*player, *kind));
             Ok(())
         }
         Event::Investigated { player } => {
@@ -452,6 +463,7 @@ fn begin_turn(
     state.turn.no_power_up = false;
     state.turn.r109_unpreventable = false;
     state.r6703_ignored.clear();
+    state.r112_untap_types.clear();
     let mut at_end = None;
     if extra {
         let Some(taken) = state.extra_turns.pop().filter(|turn| turn.player == active) else {
@@ -814,8 +826,22 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     Ok(())
 }
 
+/// Whether the change gives a triggered ability that works outside the battlefield, itself or through a keyword.
+fn r112_triggers_elsewhere(modification: &crate::effects::Modification) -> bool {
+    use mtg_cards::ability::Ability;
+    let elsewhere = |ability: &Ability| matches!(ability, Ability::Triggered { from, .. } if *from != mtg_cards::refs::ZoneKind::Battlefield);
+    match modification {
+        crate::effects::Modification::AddKeyword(keyword) => crate::keywords::rules(keyword)
+            .adds_abilities(keyword)
+            .iter()
+            .any(elsewhere),
+        crate::effects::Modification::GrantAbility(granted) => elsewhere(granted),
+        _ => false,
+    }
+}
+
 /// Registers a continuous effect, noting what an ability it grants can do to the game.
-fn create_effect(
+pub(crate) fn create_effect(
     state: &mut GameState,
     effect: &crate::effects::ContinuousEffect,
 ) -> Result<(), EngineError> {
@@ -853,6 +879,13 @@ fn create_effect(
         &effect.modification,
         Modification::AddKeyword(mtg_cards::keyword::Keyword::Suspend { .. })
     ) {
+        state.possible.elsewhere = true;
+        state.triggers_possible = true;
+        state.statics_possible = true;
+    }
+    // A keyword or ability given to a card or spell off the battlefield that triggers from there (cascade on a spell, a
+    // granted trigger of an exiled card) is watched there.
+    if r112_triggers_elsewhere(&effect.modification) {
         state.possible.elsewhere = true;
         state.triggers_possible = true;
         state.statics_possible = true;

@@ -392,6 +392,9 @@ pub enum Rule {
         /// The players whose untap steps untap them.
         whose: Vec<PlayerId>,
     },
+    /// The players choose artifact, creature or land during their untap steps and untap only permanents of that type
+    /// (CR 502.3).
+    R112UntapChosenType(Vec<PlayerId>),
     /// The players can't untap more than `count` of their permanents the selector picks during their untap steps (CR
     /// 502.3).
     UntapLimit {
@@ -522,6 +525,16 @@ pub enum Rule {
         /// What the spell gets; a cost change counts its times (`per`) as a fixed number.
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         benefit: mtg_cards::modify::SpellBenefit,
+    },
+    /// Each spell its controller casts that `what` picks, judged as it is cast, gains the keyword until it leaves the stack
+    /// (`r112_spells_gain`).
+    R112SpellsGain {
+        /// The cards cast.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The keyword gained.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        keyword: mtg_cards::keyword::Keyword,
     },
     /// The spells `applies_to` selects cost `mana` more or less to cast (CR 601.2f); "you" is the rule's controller.
     SpellCost {
@@ -1040,6 +1053,8 @@ pub(crate) struct RulesInForce {
     haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
     untap_limits: Vec<crate::rmt4_untap_limit::UntapLimit>,
+    /// The players who choose the card type they untap during their untap steps (`Rule::R112UntapChosenType`).
+    r112_untap_chosen: Vec<(PlayerId, ObjectId)>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
@@ -1401,7 +1416,8 @@ impl RulesInForce {
             SpellBenefit::Cost { .. }
             | SpellBenefit::Keyword(_)
             | SpellBenefit::Uncounterable
-            | SpellBenefit::R6503Resolves(_) => {
+            | SpellBenefit::R6503Resolves(_)
+            | SpellBenefit::R112SpendAs(_) => {
                 return;
             }
         };
@@ -1688,6 +1704,12 @@ impl RulesInForce {
                     .map(|id| (id, counter.clone(), *most)),
             ),
             Rule::R6500ZeroLoyaltyStays(players) => self.r6500_zero_loyalty.extend(players),
+            Rule::R112UntapChosenType(players) => {
+                if let Some(source) = source {
+                    self.r112_untap_chosen
+                        .extend(players.iter().map(|player| (*player, source.id)));
+                }
+            }
             Rule::UntapLimit { who, what, count } => {
                 if let Some(source) = source {
                     self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
@@ -1824,6 +1846,7 @@ impl RulesInForce {
             | Rule::R6600AdaptsFresh(_)
             | Rule::Planar
             | Rule::SpellCost { .. }
+            | Rule::R112SpellsGain { .. }
             | Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
@@ -2192,6 +2215,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             limit: permission.limit,
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
+        GameRule::R112SpellsGain { what, keyword } => Rule::R112SpellsGain {
+            what: what.clone(),
+            keyword: keyword.clone(),
+        },
         GameRule::SpellCost {
             applies_to,
             change,
@@ -2217,6 +2244,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
+        GameRule::R112UntapChosenType(who) => Rule::R112UntapChosenType(scope.players(who)?),
         GameRule::UntapLimit { who, what, count } => Rule::UntapLimit {
             who: scope.players(who)?,
             what: what.clone(),
@@ -2326,6 +2354,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             return Err(ResolveError::Unsupported("Rule.R111CastWayFrom"));
         }
         GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
+        GameRule::R112SpendOnlyFromWay { .. } => {
+            return Err(ResolveError::Unsupported("Rule.R112SpendOnlyFromWay"));
+        }
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }
@@ -2484,10 +2515,12 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::BlockLimitEach { who, .. }
         | Rule::LookAtFaceDown { who, .. }
         | Rule::UntapLimit { who, .. }
+        | Rule::R112UntapChosenType(who)
         | Rule::PlayersHave { who, .. }
         | Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
         Rule::TriggerAgain { .. }
+        | Rule::R112SpellsGain { .. }
         | Rule::NextSpell { .. }
         | Rule::SpellCost { .. }
         | Rule::DamageCantBePrevented { .. }
@@ -2700,6 +2733,7 @@ static NONE: RulesInForce = RulesInForce {
     haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
     untap_limits: Vec::new(),
+    r112_untap_chosen: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
@@ -2849,6 +2883,13 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
     }
     if changes_costs(effect) {
         state.possible.costs = true;
+    }
+    // A keyword the spells gain as they are cast may trigger on that cast (cascade): its triggers are watched on the
+    // stack from now on.
+    if matches!(effect.rule, Rule::R112SpellsGain { .. }) {
+        state.possible.elsewhere = true;
+        state.triggers_possible = true;
+        state.statics_possible = true;
     }
     state.rule_effects.push(effect.clone());
     Ok(())
@@ -3934,6 +3975,12 @@ pub(crate) fn pay_to_ignore(state: &GameState) -> &[Ignorable] {
 }
 
 /// The untap limits in force (CR 502.3).
+/// The players who choose the card type they untap during their untap steps, with the source of the rule
+/// (`Rule::R112UntapChosenType`).
+pub(crate) fn r112_untap_chosen(state: &GameState) -> &[(PlayerId, ObjectId)] {
+    &state.rules().r112_untap_chosen
+}
+
 pub(crate) fn untap_limits(state: &GameState) -> &[crate::rmt4_untap_limit::UntapLimit] {
     &state.rules().untap_limits
 }

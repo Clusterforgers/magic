@@ -105,6 +105,7 @@ fn their_phase_out() -> Effect {
         duration: None,
         tapped: false,
         held: None,
+        r112_visit_roll: None,
     }
 }
 

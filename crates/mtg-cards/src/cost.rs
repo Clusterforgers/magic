@@ -295,6 +295,18 @@ pub enum CostItem {
     /// "Spend only black mana on X." (CR 107.3): the mana paid for the X announced for the cost is of this color; pays
     /// nothing itself.
     XColor(mtg_core::color::Color),
+    /// "Spend only colored mana on X. No more than one mana of each color may be spent this way." (CR 107.3): the X
+    /// announced is paid one mana of each of X different colors; pays nothing itself.
+    R112XOneEachColor,
+    /// Exile cards that match from one graveyard, any player's ("Exile two creature cards from a single graveyard"): every
+    /// card picked has the same owner.
+    R112ExileFromOneGraveyard {
+        /// Which cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
     /// "Spend only mana of the chosen color to activate this ability.": every mana of the cost is paid with mana of the
     /// color the source chose, after the cost modifiers apply; pays nothing itself.
     ChosenColorOnly,
@@ -358,6 +370,8 @@ pub enum Alike {
     SameName,
     /// They all have one color in common.
     ShareColor,
+    /// They all lie in one graveyard: they have the same owner.
+    R112SameOwner,
 }
 
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.
@@ -386,6 +400,7 @@ impl CostItem {
             | CostItem::Discard { count, .. }
             | CostItem::TapPermanents { count, .. }
             | CostItem::ExileFromGraveyard { count, .. }
+            | CostItem::R112ExileFromOneGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
             | CostItem::AlikeFromHand { count, .. }
@@ -427,6 +442,7 @@ impl Cost {
             | CostItem::Discard { count, .. }
             | CostItem::TapPermanents { count, .. }
             | CostItem::ExileFromGraveyard { count, .. }
+            | CostItem::R112ExileFromOneGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
             | CostItem::AlikeFromHand { count, .. }

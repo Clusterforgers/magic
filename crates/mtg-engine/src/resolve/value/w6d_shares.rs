@@ -9,8 +9,8 @@ use mtg_core::mana::ManaSymbol;
 
 use super::{ResolveError, Scope, Seen};
 use crate::characteristics::{goaded_by, goaders};
-use crate::object::GameObject;
 use crate::object::ObjectRef;
+use crate::object::{GameObject, ObjectKind};
 
 /// Every card type, in the order of the comprehensive rules.
 const W6D_TYPES: [CardType; 9] = [
@@ -116,6 +116,10 @@ impl Scope<'_> {
 
     /// Whether the object has {X} in its mana cost: a face-down one has no mana cost (CR 708.2a).
     fn w6d_x_in_cost(seen: &Seen<'_>) -> bool {
+        // An activated ability on the stack has {X} in its activation cost when a mana part of it does (CR 107.3).
+        if let Some(ability) = seen.card.filter(|card| card.kind() == ObjectKind::Ability) {
+            return crate::r6104_activation_facts::r112_x_in_activation_cost(ability);
+        }
         seen.card
             .filter(|card| card.face_down().is_none())
             .is_some_and(|card| card.card().x_in_cost > 0)

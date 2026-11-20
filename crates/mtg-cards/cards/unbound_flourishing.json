@@ -1,0 +1,91 @@
+{
+  "oracle_id": "4db030f5-d7c4-4aa0-ae2e-12943e2683d7",
+  "name": "Unbound Flourishing",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unbound Flourishing",
+      "oracle_fingerprint": "c551de74e7e72ba1ad200d22bf1e606a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  "XInCost"
+                ],
+                "by": "You"
+              }
+            },
+            "effects": [{ "R112DoubleX": { "what": "Triggering" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                    "by": "You"
+                  }
+                },
+                { "Did": { "action": "Activated", "who": "You" } }
+              ]
+            },
+            "if": {
+              "AtTrigger": {
+                "Any": [
+                  {
+                    "Compare": {
+                      "left": { "CountOf": { "of": "Triggering", "filter": ["Spell", "XInCost"] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": "Dealer",
+                          "filter": [{ "Ability": "Activated" }, "XInCost"]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "CountOf": { "of": "Triggering", "filter": ["Spell"] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "CopySpell": { "what": "Triggering", "new_targets": true } }],
+                  "otherwise": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

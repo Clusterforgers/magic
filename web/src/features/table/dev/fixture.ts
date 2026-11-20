@@ -66,6 +66,8 @@ export interface FixtureOptions {
   active?: PlayerId
   /** Cards in the viewer's hand, 0 to 24; 7 by default. */
   hand?: number
+  /** Cards in the viewer's Delves Satchel, 0 to 24; none by default. */
+  satchel?: number
   /**
    * `duel`: an early Commander board of 12 permanents for the viewer (a planeswalker and a commander among them) and
    * 10 for every other seat; `heavy` (the default): 40 a seat.
@@ -186,6 +188,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
   const pick = <T>(list: NonEmpty<T>, index: number): T => list[index % list.length] ?? list[0]
 
   const cards: SeatCards[] = []
+  const satchelIds: ObjectId[] = []
   for (let seat = 0; seat < seats; seat += 1) {
     const mine: SeatCards = { lands: [], creatures: [], others: [], graveyard: [], hand: [], command: [] }
     const { landCount, creatureCount, otherCount } = countsOf(seat)
@@ -252,6 +255,11 @@ export function buildFixture(options: FixtureOptions): Fixture {
       }
       hand.length = wanted
       for (const template of hand) mine.hand.push(add(template, seat, { Hand: seat }).id)
+      const satchel = Math.min(24, Math.max(0, Math.floor(options.satchel ?? 0)))
+      for (let at = 0; at < satchel; at += 1) {
+        const template = pick(at % 2 === 0 ? INSTANTS : CREATURES, at * 5 + 2)
+        satchelIds.push(add(template, seat, { Command: seat }).id)
+      }
     }
     cards.push(mine)
   }
@@ -312,6 +320,7 @@ export function buildFixture(options: FixtureOptions): Fixture {
     mulligans: 0,
     mulligan: 'Kept',
     hand: seat === viewer ? zoneView(mine.hand) : hidden(5 + (seat % 3)),
+    ...(seat === viewer && satchelIds.length > 0 ? { satchel: satchelIds } : {}),
     library: hidden(48 - seat),
     graveyard: zoneView(mine.graveyard),
     command: zoneView(

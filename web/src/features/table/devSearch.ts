@@ -79,6 +79,8 @@ export interface DevSearch {
   away?: number
   /** Cards in the viewer's hand (0 to 24), to look at a large hand; 7 when missing. */
   hand?: number
+  /** Cards in the viewer's Delves Satchel (0 to 24), at the head of the hand dock; none when missing. */
+  satchel?: number
   /** The step the turn is in, such as `main2` or `declareattackers`, to look at the theme of its phase; the fixture's own when missing. */
   step?: Step
   /** `1` gives the table house rules that differ from its format's own, to look at the list in the top bar. */
@@ -158,7 +160,7 @@ const whole = (value: unknown): number | undefined =>
 
 const isDevFx = (value: unknown): value is DevFx => DEV_FX.some((name) => name === value)
 
-/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&spirit=&rework=&bare=&alone=&states=&cards=&menu=&teams=&result=&permanents=&script=`, ignoring whatever does not make sense. The router has already parsed numbers. */
+/** Reads `?seats=&boss=&board=&mode=&focus=&prompt=&turn=&step=&hand=&satchel=&fx=&newturn=&bar=&slow=&preview=&stops=&fc=&rules=&spirit=&rework=&bare=&alone=&states=&cards=&menu=&teams=&result=&permanents=&script=`, ignoring whatever does not make sense. The router has already parsed numbers. */
 export function parseDevSearch(search: Record<string, unknown>): DevSearch {
   const seats = whole(search.seats)
   const focus = whole(search.focus)
@@ -195,6 +197,13 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
       search.hand >= 0 &&
       search.hand <= 24
         ? search.hand
+        : undefined,
+    satchel:
+      typeof search.satchel === 'number' &&
+      Number.isInteger(search.satchel) &&
+      search.satchel >= 0 &&
+      search.satchel <= 24
+        ? search.satchel
         : undefined,
     menu: menuOf(search.menu),
     panel: panelOf(search.panel),

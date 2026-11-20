@@ -490,12 +490,14 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
         | Event::TargetsChanged(_)
+        | Event::R112XChanged { .. }
         | Event::CopyEnded { .. }
         | Event::Entered { .. }
         | Event::Attached { .. }
         | Event::ChosenAsAttached { .. }
         | Event::R110ChoiceRevealed { .. }
         | Event::R111ChoiceKept { .. }
+        | Event::R112Grouped { .. }
         | Event::AttachedToPlayer { .. }
         | Event::Unattached { .. }
         | Event::Paired { .. }
@@ -522,6 +524,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Investigated { .. }
         | Event::Bent { .. }
         | Event::IgnoredEffect { .. }
+        | Event::R112UntapTypeChosen { .. }
         | Event::Discovered { .. }
         | Event::DreadManifested { .. }
         | Event::GiftGiven { .. }

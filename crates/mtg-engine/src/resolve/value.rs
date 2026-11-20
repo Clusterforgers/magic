@@ -1247,6 +1247,7 @@ impl<'a> Scope<'a> {
         while let Targetable::Together { what: inner, .. }
         | Targetable::Another { what: inner, .. }
         | Targetable::ChosenBy { what: inner, .. }
+        | Targetable::R112OpponentChooses(inner)
         | Targetable::AtRandom(inner) = what
         {
             what = inner;
@@ -1262,6 +1263,7 @@ impl<'a> Scope<'a> {
             Targetable::Together { .. }
             | Targetable::Another { .. }
             | Targetable::ChosenBy { .. }
+            | Targetable::R112OpponentChooses(_)
             | Targetable::AtRandom(_) => {
                 Err(ResolveError::Unsupported("overload of a nested target"))
             }
@@ -2228,6 +2230,12 @@ impl<'a> Scope<'a> {
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Dungeon => state.r376_is_dungeon(reference.id),
+            Pred::R112Modal => {
+                seen.zone == Zone::Stack
+                    && seen.kind != ObjectKind::Ability
+                    && crate::resolve::spell_ability(state, reference.id)
+                        .is_some_and(|(_, rules)| crate::choose::modal_of(&rules).is_some())
+            }
             Pred::Emblem => state
                 .object(reference.id)
                 .is_some_and(|object| object.kind() == crate::object::ObjectKind::Emblem),
@@ -2348,6 +2356,11 @@ impl<'a> Scope<'a> {
             | Pred::NthChosenLandType(_)
             | Pred::ChosenName
             | Pred::ChosenAs(_) => self.chosen_pred(pred, seen),
+            Pred::R112SharesColorWithSpent => self
+                .mana_spent()
+                .iter()
+                .filter_map(|mana| mana.color())
+                .any(|color| seen.chars.colors.contains(color)),
             Pred::R6600OnlyControllersColor(name) => {
                 matches!(self.chosen_value(&crate::resolve::r6600_player_value(name, seen.controller)), Some(Chosen::Color(color))
                     if seen.chars.colors == mtg_core::color::ColorSet::default().with(*color))
@@ -2536,6 +2549,10 @@ impl<'a> Scope<'a> {
             | StatKind::R374ColorSet
             | StatKind::R6018PermanentTypes
             | StatKind::Subtypes => None,
+            StatKind::R112ModesChosen => seen
+                .card
+                .filter(|card| seen.zone == Zone::Stack && card.kind() != ObjectKind::Ability)
+                .map(|card| i64::try_from(card.choices().modes.len()).unwrap_or(i64::MAX)),
             StatKind::R6104LifePaid => seen
                 .card
                 .filter(|_| seen.zone == Zone::Stack)
@@ -2575,6 +2592,28 @@ impl<'a> Scope<'a> {
             Amount::Fixed(n) => i64::from(*n),
             // A noted number is 0 without a draft (Lurking Automaton, Garbage Fire rulings).
             Amount::Drafted(_) => 0,
+            Amount::R112GroupedThisTurn => {
+                i64::try_from(self.state.r112_grouped()).unwrap_or(i64::MAX)
+            }
+            Amount::R112NumberChosen { name, by } => match self.players(by)?.first() {
+                Some(player) => match self.chosen_value(&format!("{name}.{}", player.index())) {
+                    Some(Chosen::Number(number)) => i64::from(*number),
+                    _ => 0,
+                },
+                None => 0,
+            },
+            Amount::R112MostAlike { on, slot } => match self.objects(on)?.first() {
+                Some(source) => {
+                    let numbers = crate::memory::recall_numbers(
+                        self.state,
+                        *source,
+                        &crate::memory::r112_lasting(slot),
+                    );
+                    let alike = |number: &i64| numbers.iter().filter(|n| *n == number).count();
+                    i64::try_from(numbers.iter().map(alike).max().unwrap_or(0)).unwrap_or(i64::MAX)
+                }
+                None => 0,
+            },
             Amount::X => i64::from(self.x_value()),
             Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,
@@ -3613,6 +3652,16 @@ impl<'a> Scope<'a> {
             .and_then(|source| source.counted_as_cast(inner))
     }
 
+    /// Whether an ability of the source's own card is resolving: the source is cast by it ("you may cast it. It costs {4}
+    /// less to cast this way.").
+    fn r112_cast_by_own_ability(&self) -> bool {
+        self.state
+            .resolving()
+            .and_then(|resolving| self.state.object(resolving.object))
+            .and_then(GameObject::ability)
+            .is_some_and(|ability| ability.source().id == self.source.id)
+    }
+
     /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is
     /// or came from was cast for while that is still the object named.
     fn cast_way(&self) -> Option<CastWay> {
@@ -3873,6 +3922,7 @@ impl<'a> Scope<'a> {
                 self.payments(OptionalKind::Additional) + self.payments(OptionalKind::Gift) > 0
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
+            Condition::R112CastByOwnAbility => self.r112_cast_by_own_ability(),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::AsCast(inner) => self.held_as_cast(inner),

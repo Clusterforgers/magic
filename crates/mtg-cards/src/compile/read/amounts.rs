@@ -132,6 +132,7 @@ pub const fn stat_name(stat: StatKind) -> Option<&'static str> {
         | StatKind::R6018PermanentTypes
         | StatKind::R6104LifePaid
         | StatKind::R6500StationValue
+        | StatKind::R112ModesChosen
         | StatKind::CreatureType
         | StatKind::BasePower
         | StatKind::BaseToughness

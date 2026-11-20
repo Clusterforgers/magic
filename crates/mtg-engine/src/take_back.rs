@@ -382,6 +382,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::ChosenAsAttached { .. }
         | Event::R110ChoseSecretly { .. }
         | Event::R111ChoiceKept { .. }
+        | Event::R112Grouped { .. }
         | Event::R110ChoiceRevealed { .. }
         | Event::AttachedToPlayer { .. }
         | Event::JoinedAttack { .. }
@@ -403,6 +404,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
         | Event::TargetsChanged(_)
+        | Event::R112XChanged { .. }
         | Event::Remembered { .. }
         | Event::CopyEnded { .. }
         | Event::MonarchChanged { .. }
@@ -418,6 +420,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Investigated { .. }
         | Event::Bent { .. }
         | Event::IgnoredEffect { .. }
+        | Event::R112UntapTypeChosen { .. }
         | Event::GiftGiven { .. }
         | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }

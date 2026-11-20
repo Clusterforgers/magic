@@ -57,6 +57,7 @@ fn stat_word(stat: StatKind) -> &'static str {
         StatKind::R6018PermanentTypes => "permanent types",
         StatKind::R6104LifePaid => "life paid to activate it",
         StatKind::R6500StationValue => "power it stations with",
+        StatKind::R112ModesChosen => "number of times a mode was chosen",
     }
 }
 
@@ -314,7 +315,9 @@ fn kind_of(what: &Targetable) -> (String, String) {
             let (head, tail) = kind_of(what);
             (format!("other {head}"), tail)
         }
-        Targetable::ChosenBy { what, .. } | Targetable::AtRandom(what) => kind_of(what),
+        Targetable::ChosenBy { what, .. }
+        | Targetable::R112OpponentChooses(what)
+        | Targetable::AtRandom(what) => kind_of(what),
         Targetable::Either(kinds) => (
             kinds
                 .iter()
@@ -361,6 +364,7 @@ pub(crate) fn target_zone(what: &Targetable) -> TargetZone {
         Targetable::Together { what, .. }
         | Targetable::Another { what, .. }
         | Targetable::ChosenBy { what, .. }
+        | Targetable::R112OpponentChooses(what)
         | Targetable::AtRandom(what) => target_zone(what),
         Targetable::Either(kinds) => kinds
             .iter()

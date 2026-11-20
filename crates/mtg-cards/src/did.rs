@@ -175,6 +175,9 @@ pub enum Action {
     Firebent,
     /// A player airbent: the steps of an airbend were done, even those that were impossible (Avatar Aang ruling).
     Airbent,
+    /// A player lost control of a permanent (CR 613.1b): another player gained control of it, or it left the battlefield (the
+    /// Khârn the Betrayer ruling); the player is the one who controlled it, `what` the permanent, judged as it was before.
+    R112LostControl,
 }
 
 impl Action {
@@ -321,6 +324,10 @@ impl Action {
                 "doesn't pay a cumulative upkeep",
             ),
             Action::PaidEcho => ("pay an echo cost", "pays an echo cost"),
+            Action::R112LostControl => (
+                "lose control of a permanent",
+                "loses control of a permanent",
+            ),
             Action::ControlTakenByOpponent => (
                 "have an opponent gain control of a permanent from you",
                 "has an opponent gain control of a permanent from them",
@@ -373,6 +380,7 @@ impl Action {
                 | Action::ExploitedNontoken
                 | Action::ExploitedNonHuman
                 | Action::LostGame
+                | Action::R112LostControl
         )
     }
 }

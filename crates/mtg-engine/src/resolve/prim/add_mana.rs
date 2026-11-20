@@ -201,6 +201,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             (types, 1)
         }
         Produce::OneOf(types) => (types.clone(), 1),
+        Produce::R112OneOfCount { among, count } => {
+            let each = u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
+            if each == 0 {
+                return Ok(Run::events(events));
+            }
+            (among.clone(), each)
+        }
         Produce::AnyColorAmong(among) => (colors_among(&cx.scope, among), 1),
         // Each type counts the restricted mana of that type too; what is added may be spent on anything.
         Produce::R6501UnspentDoubled => {
@@ -235,6 +242,27 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         // A game has no draft, so no color was chosen and no mana is added (Paliano, the High City ruling).
         Produce::DraftedColors => (Vec::new(), 1),
+        // The mana the source last noted: one of its first type, or all of it.
+        Produce::R112Noted { amount } => {
+            let noted = super::r112_note::r112_noted(state, cx.scope.source);
+            let added: Vec<ManaType> = if *amount {
+                noted
+            } else {
+                noted.into_iter().take(1).collect()
+            };
+            for player in &players {
+                for _ in 0..times {
+                    events.extend(added.iter().map(|&mana| Event::ManaAdded {
+                        player: *player,
+                        mana,
+                        source,
+                        only: only.clone(),
+                        lasts: *lasts,
+                    }));
+                }
+            }
+            return Ok(Run::events(events));
+        }
         Produce::OneOfLists(lists) => {
             let added = Added {
                 players: &players,
@@ -305,7 +333,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(Run::events(events));
     }
     let options: Vec<ChoiceOption> = match mana {
-        Produce::OneOf(_) => kinds
+        Produce::OneOf(_) | Produce::R112OneOfCount { .. } => kinds
             .iter()
             .map(|kind| ChoiceOption::Label(format!("{{{}}}", kind.symbol())))
             .collect(),
@@ -330,7 +358,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .map(|player| OptionChooser {
             player,
             options: options.clone(),
-            text: if matches!(mana, Produce::OneOf(_) | Produce::OrChosenColor(_)) {
+            text: if matches!(
+                mana,
+                Produce::OneOf(_) | Produce::OrChosenColor(_) | Produce::R112OneOfCount { .. }
+            ) {
                 "Choose a type of mana.".into()
             } else {
                 "Choose a color of mana.".into()

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2037c4bf-bf0d-46ab-8b4b-61d9a50c431e",
+  "name": "Protective Sphere",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Protective Sphere",
+      "oracle_fingerprint": "d04cf5223689055eba91d0f4f2fa8b62",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, { "PayLife": 1 }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "AnyOf": [{ "In": "Battlefield" }, { "In": "Stack" }, { "In": "Command" }] },
+                      "R112SharesColorWithSpent"
+                    ]
+                  },
+                  "as": "source"
+                }
+              },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "You", "source": [{ "Is": { "Bound": "source" } }] } },
+                  "by": "Prevent",
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

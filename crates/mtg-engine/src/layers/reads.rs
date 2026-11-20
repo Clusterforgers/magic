@@ -400,6 +400,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::TopCreatureOfGraveyard
         | Pred::R4700TopOfGraveyard { .. }
         | Pred::Kicked
+        | Pred::R112Modal
         | Pred::AdditionalCostPaid
         | Pred::Suspended
         | Pred::Foretold
@@ -458,9 +459,11 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::SharesSubtype(who) | Pred::SharesCreatureTypeWithEach(who) => {
             Traits::SUBTYPES.or(reads_of_ref(who))
         }
-        Pred::Color(_) | Pred::Colorless | Pred::ChosenColor | Pred::OutsideCommanderIdentity => {
-            Traits::COLORS
-        }
+        Pred::Color(_)
+        | Pred::Colorless
+        | Pred::ChosenColor
+        | Pred::R112SharesColorWithSpent
+        | Pred::OutsideCommanderIdentity => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
         Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
         // What a permanent could produce is read from its mana abilities.
@@ -503,7 +506,8 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         | StatKind::Kicks
         | StatKind::Name
         | StatKind::CounterKinds
-        | StatKind::R374ManaCost => Traits::NONE,
+        | StatKind::R374ManaCost
+        | StatKind::R112ModesChosen => Traits::NONE,
     }
 }
 
@@ -528,6 +532,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
         | Amount::R6702FlipStakes
+        | Amount::R112GroupedThisTurn
         | Amount::DamageDealtThisWay
         | Amount::Destroyed(_)
         | Amount::Exiled(_)
@@ -615,7 +620,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .or(reads_of_amount(then))
             .or(reads_of_amount(otherwise)),
         Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
-        Amount::Remembered { on, .. } => reads_of_ref(on),
+        Amount::Remembered { on, .. } | Amount::R112MostAlike { on, .. } => reads_of_ref(on),
+        Amount::R112NumberChosen { by, .. } => reads_of_ref(by),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::R6702CardTypesOf(of) => reads_of_ref(of).or(Traits::TYPES),
         Amount::Largest { who, of } | Amount::Smallest { who, of } => {
@@ -658,6 +664,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)
+        | Condition::R112CastByOwnAbility
         | Condition::CastOffSorceryTiming
         | Condition::AsCast(_)
         | Condition::R401OnCast(_)

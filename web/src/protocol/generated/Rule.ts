@@ -255,7 +255,7 @@ what: unknown,
 /**
  * The players whose untap steps untap them.
  */
-whose: Array<PlayerId>, } } | { "UntapLimit": { 
+whose: Array<PlayerId>, } } | { "R112UntapChosenType": Array<PlayerId> } | { "UntapLimit": { 
 /**
  * The players whose untap steps are limited.
  */
@@ -387,7 +387,15 @@ what: unknown,
 /**
  * What the spell gets; a cost change counts its times (`per`) as a fixed number.
  */
-benefit: unknown, } } | { "SpellCost": { 
+benefit: unknown, } } | { "R112SpellsGain": { 
+/**
+ * The cards cast.
+ */
+what: unknown, 
+/**
+ * The keyword gained.
+ */
+keyword: unknown, } } | { "SpellCost": { 
 /**
  * The spells, judged as they are cast.
  */

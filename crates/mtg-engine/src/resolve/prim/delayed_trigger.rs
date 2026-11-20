@@ -111,6 +111,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         mut bindings,
     } = origin(cx)?;
     let when = name_targets(cx, when, &mut bindings)?;
+    let when = r112_fix_chosen(cx, &when)?;
     let state = cx.state();
     // "That combat" is the combat phase added last, fixed as the trigger is set up.
     let when = match when {
@@ -248,4 +249,65 @@ fn fix_stats(cx: &Cx<'_>, tree: &mut serde_json::Value) -> Result<(), ResolveErr
             .try_for_each(|field| fix_stats(cx, field)),
         _ => Ok(()),
     }
+}
+
+/// The event pattern with each value the resolution chose under a name (`Pred::ChosenAs`) written in as the
+/// characteristic it is: "a creature spell of that type" keeps the type noted now (CR 603.7c).
+fn r112_fix_chosen(cx: &Cx<'_>, when: &TriggerPattern) -> Result<TriggerPattern, ResolveError> {
+    let bad = |error: serde_json::Error| ResolveError::Invalid(format!("delayed event: {error}"));
+    let mut tree = serde_json::to_value(when).map_err(bad)?;
+    if !r112_names_chosen(&tree) {
+        return Ok(when.clone());
+    }
+    r112_write_chosen(cx, &mut tree).map_err(bad)?;
+    serde_json::from_value(tree).map_err(bad)
+}
+
+fn r112_names_chosen(tree: &serde_json::Value) -> bool {
+    match tree {
+        serde_json::Value::Object(fields) => {
+            fields.contains_key("ChosenAs") || fields.values().any(r112_names_chosen)
+        }
+        serde_json::Value::Array(items) => items.iter().any(r112_names_chosen),
+        _ => false,
+    }
+}
+
+fn r112_write_chosen(cx: &Cx<'_>, tree: &mut serde_json::Value) -> Result<(), serde_json::Error> {
+    use crate::object::Chosen;
+    use mtg_cards::refs::Pred;
+    match tree {
+        serde_json::Value::Object(fields) => {
+            let named = (fields.len() == 1)
+                .then(|| fields.get("ChosenAs").and_then(serde_json::Value::as_str))
+                .flatten()
+                .map(str::to_owned);
+            if let Some(name) = named {
+                let fixed = match cx.scope.chosen_value(&name) {
+                    Some(
+                        Chosen::CreatureType(subtype)
+                        | Chosen::LandType(subtype)
+                        | Chosen::R6700PlaneswalkerType(subtype),
+                    ) => Some(Pred::Subtype(subtype.clone())),
+                    Some(Chosen::Color(color)) => Some(Pred::Color(*color)),
+                    Some(Chosen::CardType(kind)) => Some(Pred::Type(*kind)),
+                    _ => None,
+                };
+                if let Some(fixed) = fixed {
+                    *tree = serde_json::to_value(fixed)?;
+                }
+                return Ok(());
+            }
+            for value in fields.values_mut() {
+                r112_write_chosen(cx, value)?;
+            }
+        }
+        serde_json::Value::Array(items) => {
+            for item in items {
+                r112_write_chosen(cx, item)?;
+            }
+        }
+        _ => {}
+    }
+    Ok(())
 }

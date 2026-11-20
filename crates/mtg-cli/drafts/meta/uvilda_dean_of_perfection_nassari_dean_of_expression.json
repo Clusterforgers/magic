@@ -6,8 +6,10 @@
       "face": 0,
       "tag": "A",
       "text": "You may exile an instant or sorcery card from your hand and put three refine counters on it. It gains \"At the beginning of your upkeep, if this card is exiled, remove a refine counter from it\" and \"When the last refine counter is removed from this card, if it's exiled, you may cast it. It costs {4} less to cast this way.\"",
-      "abilities": [],
-      "gap": "key:PutCounter.TgtZone"
+      "abilities": [
+        0
+      ],
+      "gap": null
     },
     {
       "face": 1,
@@ -36,7 +38,7 @@
           "start": 0,
           "end": 328
         },
-        "mark": "ByHand"
+        "mark": "Auto"
       },
       {
         "face": 1,

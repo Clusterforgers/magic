@@ -12,11 +12,23 @@ use crate::object::ObjectRef;
 use crate::state::GameState;
 use crate::zones::Zone;
 
+/// The slot of a source's memory that holds the mana it noted, one number per mana (`ManaType::index`).
+pub(crate) const R112_NOTED_SLOT: &str = "r112 noted mana";
+
 /// What each source remembers: the things by slot, each object as the object it was when remembered (CR 400.7).
 pub type Memory = BTreeMap<(ObjectRef, String), Vec<Held>>;
 
+/// The prefix of a slot whose numbers outlast the resolution that wrote them: the numbers a permanent keeps for as long as
+/// it stays (die results stored on it, the numbers it chose before); a card file cannot name such a slot.
+pub const R112_LASTING: &str = "~kept:";
+
+/// The lasting slot of a name (`R112_LASTING`).
+pub(crate) fn r112_lasting(slot: &str) -> String {
+    format!("{R112_LASTING}{slot}")
+}
+
 /// One thing a source remembers.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Held {
     /// An object, as the incarnation it was.
@@ -25,6 +37,8 @@ pub enum Held {
     Player(PlayerId),
     /// A number.
     Number(i64),
+    /// A word noted (`Effect::R112NoteChosen`): a creature type.
+    R112Word(String),
 }
 
 /// A source remembered objects, or forgot a slot.
@@ -61,7 +75,7 @@ pub(crate) fn fold(state: &mut GameState, change: &Remembered) {
     for value in &change.values {
         // A number may repeat (two remembered 3s sum to 6); an object or a player is held once.
         if matches!(value, Held::Number(_)) || !held.contains(value) {
-            held.push(*value);
+            held.push(value.clone());
         }
     }
     if held.is_empty() {
@@ -108,8 +122,12 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
                     .map(crate::object::GameObject::reference)
             });
             if let Some(writer) = writer {
-                for ((owner, _), held) in &mut state.memory {
-                    if *owner == writer {
+                for ((owner, slot), held) in &mut state.memory {
+                    // A note of spent mana stays until the next note replaces it (`r112_note`).
+                    if *owner == writer
+                        && slot != R112_NOTED_SLOT
+                        && !slot.starts_with(R112_LASTING)
+                    {
                         held.retain(|one| !matches!(one, Held::Number(_)));
                     }
                 }
@@ -301,6 +319,24 @@ pub(crate) fn recall_numbers(state: &GameState, source: ObjectRef, slot: &str) -
         .collect()
 }
 
+/// The slot of the words a source noted (`Effect::R112NoteChosen`).
+pub(crate) const R112_NOTED_WORDS_SLOT: &str = "~noted";
+
+/// The words the source has noted, in the order it noted them.
+pub(crate) fn r112_noted_words(state: &GameState, source: ObjectRef) -> Vec<String> {
+    state
+        .memory
+        .get(&(source, R112_NOTED_WORDS_SLOT.to_owned()))
+        .map(|held| {
+            held.iter()
+                .filter_map(|one| match one {
+                    Held::R112Word(word) => Some(word.clone()),
+                    _ => None,
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
 #[cfg(test)]
 mod tests {
     //! Goal: a source remembers objects by slot through events, in the order remembered and without repeats; what a source remembers ends when the source or a remembered object changes zones; a permanent remembers what its effects exile, and the memory is part of the hashed state so a replay of the events rebuilds it.

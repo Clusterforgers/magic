@@ -79,7 +79,9 @@ export function filterHolds(filter: SpendFilter, traits: SpendTraits): boolean {
 
 // A rider ("When", "Uncounterable", "Enters") marks the mana and limits nothing.
 const restricts = (on: SpendOn): boolean =>
-  on !== 'Snow' && (typeof on === 'string' || !('When' in on || 'Uncounterable' in on || 'Enters' in on))
+  on !== 'Snow' &&
+  on !== 'R112NotGeneric' &&
+  (typeof on === 'string' || !('When' in on || 'Uncounterable' in on || 'Enters' in on))
 
 /**
  * True when mana restricted to `only` may be spent on `spend` (a payment for neither a spell nor an ability when
@@ -91,7 +93,7 @@ export function spendAllows(spend: PaySpend | undefined, only: readonly SpendOn[
   const kind = spend?.kind ?? 'Other'
   const traits = spend?.traits
   return uses.some((on) => {
-    if (on === 'Snow') return false
+    if (on === 'Snow' || on === 'R112NotGeneric') return false
     if (on === 'CostWithX') return kind !== 'Other' && spend?.has_x === true
     // A special action and a cumulative upkeep cost are paid as costs that are neither a spell's nor an ability's.
     if (on === 'OtherCosts')
@@ -114,6 +116,7 @@ const SPECIAL_WORDS: Record<SpecialAction, string> = {
 /** A use in words, for a button: "creature spells", "abilities", "costs with {X}". */
 export function useWords(on: SpendOn): string {
   if (on === 'Snow') return 'anything'
+  if (on === 'R112NotGeneric') return 'colored symbols'
   if (on === 'CostWithX') return 'costs with {X}'
   if (on === 'OtherCosts') return 'other costs'
   if (on === 'CumulativeUpkeep') return 'cumulative upkeep costs'

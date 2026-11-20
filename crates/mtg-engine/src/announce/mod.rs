@@ -377,6 +377,11 @@ pub(crate) struct Done {
     /// The value the player picked for a choice made as an additional cost (`r110_cast_choice`), by position in the
     /// options, which may be more than a `u8` holds.
     pub(crate) r110_picked: Option<usize>,
+    /// The opponents the controller picked, in order, to choose the targets of the specifications "of an opponent's
+    /// choice" (`targets::r112_chooser`).
+    pub(crate) r112_choosers: Vec<PlayerId>,
+    /// The opponent picked by position among those offered, waiting to be recorded.
+    pub(crate) r112_picked: Option<usize>,
     /// The life the cost modifiers add to the spell's cost, worked out with its total cost and paid with its other parts.
     pub(crate) modifier_life: u32,
     /// The Flagbearer pick of a target specification of several targets (`r5509_flagbearer`).
@@ -576,6 +581,7 @@ impl Pending {
                 Phase::Parts
             }
             Answered::Cards(_) => Phase::Parts,
+            Answered::Way(_) if self.done.asked == Some(Phase::Targets) => Phase::Targets,
             Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
             // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
@@ -620,6 +626,7 @@ impl Pending {
                 self.done.w2f_kind_picked = u8::try_from(pick).ok();
                 self.done.r110_picked = Some(pick);
             }
+            Answered::Way(pick) if wanted == Phase::Targets => self.done.r112_picked = Some(pick),
             Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Cards(cards) => self.choices.pick_for_cost(cards),
             Answered::Targets(targets) => {

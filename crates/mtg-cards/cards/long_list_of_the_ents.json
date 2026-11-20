@@ -1,0 +1,139 @@
+{
+  "oracle_id": "01376449-5cd2-4079-8aaa-5128634ef20b",
+  "name": "Long List of the Ents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Long List of the Ents",
+      "oracle_fingerprint": "4bccd338596634c487227d68a60e0f1a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "ChooseValue": { "kind": "R112CreatureTypeNotNoted", "as": "noted" } },
+              { "R112NoteChosen": "noted" },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "Type": "Creature" }, { "ChosenAs": "noted" }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "ChooseValue": { "kind": "R112CreatureTypeNotNoted", "as": "noted" } },
+              { "R112NoteChosen": "noted" },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "Type": "Creature" }, { "ChosenAs": "noted" }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "ChooseValue": { "kind": "R112CreatureTypeNotNoted", "as": "noted" } },
+              { "R112NoteChosen": "noted" },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "Type": "Creature" }, { "ChosenAs": "noted" }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              { "ChooseValue": { "kind": "R112CreatureTypeNotNoted", "as": "noted" } },
+              { "R112NoteChosen": "noted" },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "Type": "Creature" }, { "ChosenAs": "noted" }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 5 } },
+            "effects": [
+              { "ChooseValue": { "kind": "R112CreatureTypeNotNoted", "as": "noted" } },
+              { "R112NoteChosen": "noted" },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "Type": "Creature" }, { "ChosenAs": "noted" }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 6 } },
+            "effects": [
+              { "ChooseValue": { "kind": "R112CreatureTypeNotNoted", "as": "noted" } },
+              { "R112NoteChosen": "noted" },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "SpellCast": {
+                      "what": [{ "Type": "Creature" }, { "ChosenAs": "noted" }],
+                      "by": "You"
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

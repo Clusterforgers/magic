@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d9590455-974f-4b7c-a1ec-fd52e3ba0618",
+  "name": "Centaur of Attention",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Centaur of Attention",
+      "oracle_fingerprint": "39e2b06157725cf30d2033b3d6478904",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "R112RollStore": { "sides": 6, "dice": 5, "slot": "stored" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "R112RerollStored": { "sides": 6, "slot": "stored" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": { "R112MostAlike": { "on": "This", "slot": "stored" } },
+                  "toughness": { "R112MostAlike": { "on": "This", "slot": "stored" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

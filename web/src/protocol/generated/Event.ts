@@ -8,6 +8,7 @@ import type { Bending } from "./Bending";
 import type { ByHandDue } from "./ByHandDue";
 import type { CardConjured } from "./CardConjured";
 import type { CardCopy } from "./CardCopy";
+import type { CardType } from "./CardType";
 import type { CardsFound } from "./CardsFound";
 import type { Cause } from "./Cause";
 import type { Choice } from "./Choice";
@@ -319,7 +320,12 @@ until?: ObjectRef,
 /**
  * It phases in tapped ("Tap that creature as it phases in this way").
  */
-tapped?: boolean, } } | { "PermanentPhasedIn": { 
+tapped?: boolean, 
+/**
+ * It phases out until this player rolls this number or less while rolling to visit their Attractions (Ferris
+ * Wheel), and phases in then and not in an untap step.
+ */
+r112_visit?: [PlayerId, number], } } | { "PermanentPhasedIn": { 
 /**
  * The permanent.
  */
@@ -870,7 +876,11 @@ object: ObjectId,
 /**
  * What it chose.
  */
-chosen: Chosen, } } | { "R111ChoiceKept": { 
+chosen: Chosen, } } | { "R112Grouped": { 
+/**
+ * The spell or ability.
+ */
+object: ObjectId, } } | { "R111ChoiceKept": { 
 /**
  * The permanent.
  */
@@ -1062,7 +1072,15 @@ player: PlayerId,
 /**
  * The element.
  */
-element: Bending, } } | { "IgnoredEffect": { 
+element: Bending, } } | { "R112UntapTypeChosen": { 
+/**
+ * Who chose.
+ */
+player: PlayerId, 
+/**
+ * Artifact, creature or land.
+ */
+kind: CardType, } } | { "IgnoredEffect": { 
 /**
  * Who paid.
  */
@@ -1567,4 +1585,12 @@ player: PlayerId,
 /**
  * The object the card became, in the hand.
  */
-object: ObjectId, } };
+object: ObjectId, } } | { "R112XChanged": { 
+/**
+ * The spell.
+ */
+object: ObjectRef, 
+/**
+ * The new value of X.
+ */
+x: number, } };

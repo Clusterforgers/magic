@@ -5,7 +5,7 @@ import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ObjectId, ObjectView, PlayerId, PlayerView } from '@/protocol/generated'
 import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
-import { dockLayouts, handDockNeed, settleKey, settleNeed } from './handFit'
+import { dockLayouts, HAND_GAP_PX, handDockNeed, settleKey, settleNeed } from './handFit'
 import type { SettledNeed } from './handFit'
 import { HAND_GROW_VAR } from './layout'
 import { headLabel, seenTop, TOP_WORDS } from './libraryTop'
@@ -17,6 +17,7 @@ import { useCoarsePointer } from './useCoarsePointer'
 import { useHandOrder } from './useHandOrder'
 import { useContentBox } from './useZoneFit'
 import { useOpeningInOverlay } from './prompt/choiceOverlay'
+import { usePickAmong } from './prompt/marks'
 
 /** Room kept round the line, so the focus ring of the first and last card is not cut by the line's scrolling. */
 const PAD_PX = 4
@@ -124,6 +125,7 @@ export const HandDock = memo(function HandDock({
   const zone = useRef<HTMLDivElement>(null)
   const room = useContentBox(zone)
   const coarse = useCoarsePointer()
+  const pick = usePickAmong(cards ?? NO_CARDS)
   // The opening hand floating in the centre overlay is the one copy to read: the dock keeps its place but not its cards.
   const floating = useOpeningInOverlay()
   const layouts = useMemo(() => {
@@ -131,15 +133,24 @@ export const HandDock = memo(function HandDock({
     const width = room.width - 2 * PAD_PX
     const height = room.height - 2 * PAD_PX
     // The commanders take one card's width each, and a divider, at the head of the dock; the hand fits the rest.
-    return dockLayouts({ width, height, count: cards.length, commanders: waiting.size, coarse })
-  }, [room, cards, waiting, coarse])
+    // A decision that picks among the hand's cards gives the hand its room first, so every card on offer shows.
+    return dockLayouts({ width, height, count: cards.length, commanders: waiting.size, coarse, pick })
+  }, [room, cards, waiting, coarse, pick])
   const lineWidth = room === null ? 0 : room.width - 2 * PAD_PX
   const fresh =
     room === null || cards === null || coarse || growMost <= 0
       ? 0
-      : handDockNeed({ width: lineWidth, count: cards.length, commanders: waiting.size, most: growMost })
-  // The dock takes or gives back a row at a settle point (a new step), never on each draw within one.
-  const step = usePlay((state) => settleKey(state.view?.turn.number ?? 0, state.view?.turn.step ?? ''))
+      : handDockNeed({
+          width: lineWidth,
+          count: cards.length,
+          commanders: waiting.size,
+          most: growMost,
+          pick,
+        })
+  // The dock takes or gives back a row at a settle point (a new step, or a pick among the hand that comes or goes),
+  // never on each draw within one.
+  const turnStep = usePlay((state) => settleKey(state.view?.turn.number ?? 0, state.view?.turn.step ?? ''))
+  const step = pick ? `${turnStep}:pick` : turnStep
   const known = room !== null && cards !== null
   const settled = useRef<SettledNeed | null>(null)
   const kept = useMemo(
@@ -190,7 +201,12 @@ export const HandDock = memo(function HandDock({
             {...anchor('command')}
             {...coachZone('command')}
             className="flex h-full min-w-0 shrink-0 items-end border-r border-foreground/15 pr-1"
-            style={layouts?.command?.scrolls === true ? { maxWidth: layouts.commandWidth } : undefined}
+            // The width counts the gap after the box (`COMMAND_GAP_PX`), which the line draws between the two.
+            style={
+              layouts?.command?.scrolls === true && layouts.commandWidth !== undefined
+                ? { maxWidth: layouts.commandWidth - HAND_GAP_PX }
+                : undefined
+            }
           >
             <HandFan
               ids={[...waiting.keys()]}
@@ -199,6 +215,7 @@ export const HandDock = memo(function HandDock({
               cost
               layout={layouts?.command}
               commanders={waiting}
+              grabs={pick}
             />
           </div>
         )}
@@ -207,7 +224,15 @@ export const HandDock = memo(function HandDock({
         ) : cards.length === 0 ? (
           <p className="self-center text-sm text-muted-foreground">Your hand is empty.</p>
         ) : (
-          <HandFan ids={ordered} label={`${owner}'s hand`} size={size} cost layout={layout} onMove={onMove} />
+          <HandFan
+            ids={ordered}
+            label={`${owner}'s hand`}
+            size={size}
+            cost
+            layout={layout}
+            onMove={onMove}
+            grabs={pick}
+          />
         )}
       </div>
     </section>

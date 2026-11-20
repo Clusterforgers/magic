@@ -285,6 +285,7 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
         Targetable::Together { what, .. }
         | Targetable::Another { what, .. }
         | Targetable::ChosenBy { what, .. }
+        | Targetable::R112OpponentChooses(what)
         | Targetable::AtRandom(what) => kind_of_targetable(what),
         Targetable::AnyTarget | Targetable::Either(_) => Kind::Either,
     }
@@ -912,6 +913,7 @@ impl<'a> Walker<'a> {
                 self.at("group", |w| w.selector(group));
             }
             Pred::Kicked => self.uses("Pred", "Kicked"),
+            Pred::R112Modal => self.uses("Pred", "R112Modal"),
             Pred::AdditionalCostPaid => self.uses("Pred", "AdditionalCostPaid"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
             Pred::Foretold => self.uses("Pred", "Foretold"),
@@ -1092,6 +1094,7 @@ impl<'a> Walker<'a> {
             | Pred::LeastAmong { .. }
             | Pred::HasKeywordNamed(_)
             | Pred::Kicked
+            | Pred::R112Modal
             | Pred::AdditionalCostPaid
             | Pred::CounterCount { .. }
             | Pred::Foretold
@@ -1165,6 +1168,7 @@ impl<'a> Walker<'a> {
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter
             | Pred::ChosenColor
+            | Pred::R112SharesColorWithSpent
             | Pred::CanEnchantSource
             | Pred::XInCost
             | Pred::PhyrexianInCost
@@ -1453,6 +1457,7 @@ impl<'a> Walker<'a> {
             StatKind::R6018PermanentTypes => "R6018PermanentTypes",
             StatKind::R6104LifePaid => "R6104LifePaid",
             StatKind::R6500StationValue => "R6500StationValue",
+            StatKind::R112ModesChosen => "R112ModesChosen",
             _ => return,
         };
         self.uses("Stat", name);
@@ -1477,6 +1482,16 @@ impl<'a> Walker<'a> {
             Amount::R374AtMost(inner, _) => {
                 self.uses("Amount", "R374AtMost");
                 self.at("0", |w| w.amount(inner));
+            }
+            Amount::R112NumberChosen { name, by } => {
+                self.uses("Amount", "R112NumberChosen");
+                self.at("as", |w| w.chosen_as(name));
+                self.at("by", |w| w.reference(by, Kind::Player));
+            }
+            Amount::R112GroupedThisTurn => self.uses("Amount", "R112GroupedThisTurn"),
+            Amount::R112MostAlike { on, .. } => {
+                self.uses("Amount", "R112MostAlike");
+                self.at("on", |w| w.reference(on, Kind::Object));
             }
             Amount::CountedAsCast(inner) => {
                 self.uses("Amount", "CountedAsCast");
@@ -1800,15 +1815,22 @@ impl<'a> Walker<'a> {
                 self.at("subject", |w| w.reference(subject, Kind::Object));
                 self.at("selector", |w| w.selector(selector));
             }
+            _ => self.leaf_condition(condition),
+        }
+    }
+
+    /// The conditions that name no condition inside them: each notes its use and checks the references it holds.
+    fn leaf_condition(&mut self, condition: &Condition) {
+        match condition {
             Condition::Kicked | Condition::KickedWith(_) | Condition::AdditionalCostPaid => {
                 self.paid_condition(condition);
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
+            Condition::R112CastByOwnAbility => self.uses("Condition", "R112CastByOwnAbility"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
-            Condition::YourTurn | Condition::PaidToIgnore => {}
             Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
             Condition::StartingPlayer(who) => {
                 self.uses("Condition", "StartingPlayer");
@@ -1877,6 +1899,15 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "Searched");
                 self.at("Searched", |w| w.reference(who, Kind::Player));
             }
+            Condition::YourTurn
+            | Condition::PaidToIgnore
+            | Condition::Not(_)
+            | Condition::All(_)
+            | Condition::Any(_)
+            | Condition::Compare { .. }
+            | Condition::AtTrigger(_)
+            | Condition::Matches { .. }
+            | Condition::CountOf { .. } => {}
         }
     }
 
@@ -2036,6 +2067,7 @@ impl<'a> Walker<'a> {
                     CostItem::Sacrifice { filter, count }
                     | CostItem::TapPermanents { filter, count }
                     | CostItem::ExileFromGraveyard { filter, count, .. }
+                    | CostItem::R112ExileFromOneGraveyard { filter, count }
                     | CostItem::ExileFromHand { filter, count }
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
@@ -2095,6 +2127,7 @@ impl<'a> Walker<'a> {
                     | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
                     | CostItem::XColor(_)
+                    | CostItem::R112XOneEachColor
                     | CostItem::Forage => {}
                     CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),
                     CostItem::XAtMost(most) => {
@@ -3638,6 +3671,10 @@ impl Walker<'_> {
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("what", |w| w.targetable(what));
             }
+            Targetable::R112OpponentChooses(what) => {
+                self.uses("Target", "R112OpponentChooses");
+                self.at("what", |w| w.targetable(what));
+            }
             Targetable::AtRandom(what) => {
                 self.uses("Target", "AtRandom");
                 self.at("what", |w| w.targetable(what));
@@ -3674,7 +3711,10 @@ impl Walker<'_> {
                 r110_counters,
             } => {
                 let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
-                self.at("becomes", |w| w.mods(becomes));
+                // Counters alone are a return "with X +1/+1 counters on it" that changes nothing else.
+                if !becomes.is_empty() || r110_counters.is_empty() {
+                    self.at("becomes", |w| w.mods(becomes));
+                }
                 self.r6701_effect_grant = effect_grant;
                 if !r110_counters.is_empty() {
                     self.uses("Effect", "Move.R110AsWithCounters");
@@ -4122,6 +4162,8 @@ impl Walker<'_> {
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
                             | Effect::R110MoveOneOrMore { .. }
+                            // A guess binds "if you do" when a number was left to choose.
+                            | Effect::R112GuessNumber { .. }
                             // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
                             | Effect::ExchangeControl { .. }
                             | Effect::PayAnyTimes { .. }
@@ -4232,6 +4274,8 @@ impl Walker<'_> {
             | Produce::Devotion
             | Produce::DraftedColors
             | Produce::R6501UnspentDoubled
+            | Produce::R112Noted { .. }
+            | Produce::R112OneOfCount { .. }
             | Produce::OfTapped => {}
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
@@ -4546,6 +4590,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::R112DoubleX { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Counter { what, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
@@ -4596,6 +4641,61 @@ impl Walker<'_> {
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
             Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
+            Effect::R112GuessNumber {
+                min,
+                max,
+                guesser,
+                bind,
+                guess_as,
+                guesser_as,
+            } => {
+                if min > max {
+                    w.problem(format!("the minimum {min} is above the maximum {max}"));
+                }
+                w.at("guesser", |w| w.reference(guesser, Kind::Player));
+                w.at("as", |w| w.bind_kept(bind, Kind::Value));
+                w.at("guess_as", |w| w.bind_kept(guess_as, Kind::Value));
+                w.at("guesser_as", |w| w.bind_kept(guesser_as, Kind::Player));
+            }
+            Effect::R112RollStore { sides, dice, .. } => {
+                if *sides < 2 || *dice == 0 {
+                    w.problem("a stored roll rolls one or more dice of two or more sides");
+                }
+            }
+            Effect::R112RerollStored { sides, .. } => {
+                if *sides < 2 {
+                    w.problem("a reroll rolls dice of two or more sides");
+                }
+            }
+            Effect::R112Piles {
+                who,
+                what,
+                piles,
+                face_down,
+                pick,
+                chosen_as,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if piles.len() < 2 {
+                    w.problem("objects are separated into two or more piles");
+                }
+                if face_down.iter().any(|pile| !piles.contains(pile)) {
+                    w.problem("a face-down pile is one of the piles");
+                }
+                if pick.is_some() != chosen_as.is_some() {
+                    w.problem("a pile is chosen exactly when the chosen piles have a name");
+                }
+                if let Some(crate::effect::R112PilePick::By(chooser)) = pick {
+                    w.at("pick", |w| w.reference(chooser, Kind::Player));
+                }
+                for pile in piles {
+                    w.at("piles", |w| w.bind_kept(pile, Kind::Object));
+                }
+                if let Some(name) = chosen_as {
+                    w.at("as", |w| w.bind_kept(name, Kind::Object));
+                }
+            }
             Effect::RememberValue { value, per, .. } => {
                 w.at("value", |w| w.amount(value));
                 if let Some(per) = per {
@@ -5170,6 +5270,7 @@ impl Walker<'_> {
             Effect::ChooseNumbers {
                 who,
                 min,
+                max,
                 bind,
                 highest,
                 lowest,
@@ -5177,6 +5278,9 @@ impl Walker<'_> {
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("min", |w| w.amount(min));
+                if let Some(max) = max {
+                    w.at("max", |w| w.amount(max));
+                }
                 if bind == highest || bind == lowest || highest == lowest {
                     w.problem("the highest number and the players of each end have names of their own");
                 }
@@ -5395,7 +5499,7 @@ impl Walker<'_> {
                     w.problem(R5502_COMBAT_ONLY);
                 }
             }
-            Effect::R111KeepChosen(name) => w.chosen_as(name),
+            Effect::R111KeepChosen(name) | Effect::R112NoteChosen(name) => w.chosen_as(name),
             Effect::R110ChooseSecretly(secret) => {
                 if matches!(secret, crate::effect::R110Secret::CreatureType(types) if types.len() < 2) {
                     w.problem("a secret choice of creature types offers two or more");
@@ -5545,7 +5649,12 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
-                if matches!(rule, GameRule::CantSpendMana | GameRule::SpendOnlyFrom(_)) {
+                if matches!(
+                    rule,
+                    GameRule::CantSpendMana
+                        | GameRule::SpendOnlyFrom(_)
+                        | GameRule::R112SpendOnlyFromWay { .. }
+                ) {
                     w.problem("a spell is cast without mana by a static ability of its own, not by an effect");
                 }
                 if matches!(rule, GameRule::CantBeCopied) {
@@ -5568,6 +5677,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::R112NoteManaSpent
             | Effect::R110RemovePutThisWay { .. }
             | Effect::R110AddCombatAfterFirst
             | Effect::AuraSwap
@@ -6668,10 +6778,12 @@ impl Walker<'_> {
             | GameRule::CantSpendMana
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
-            | GameRule::SpendOnlyFrom(_) => {}
+            | GameRule::SpendOnlyFrom(_)
+            | GameRule::R112SpendOnlyFromWay { .. } => {}
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }
+            GameRule::R112SpellsGain { what, .. } => self.selector(what),
             GameRule::R6018PlotLess(less) => {
                 if *less == 0 {
                     self.at(tag, |w| {
@@ -6732,7 +6844,8 @@ impl Walker<'_> {
             | GameRule::MayCastRather { .. }
             | GameRule::ManaProduced { .. }
             | GameRule::UntapDuring { .. }
-            | GameRule::UntapLimit { .. } => self.rule_option(&tag, rule),
+            | GameRule::UntapLimit { .. }
+            | GameRule::R112UntapChosenType(_) => self.rule_option(&tag, rule),
         }
     }
 
@@ -6837,6 +6950,9 @@ impl Walker<'_> {
                 w.at("what", |w| w.selector(what));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
             }),
+            GameRule::R112UntapChosenType(who) => {
+                self.at(tag, |w| w.reference(who, Kind::Player));
+            }
             GameRule::UntapLimit { who, what, .. } => self.at(tag, |w| {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.selector(what));
@@ -6977,6 +7093,7 @@ impl Walker<'_> {
                     | GameRule::CantSpendMana
                     | GameRule::TaxAsLife(_)
                     | GameRule::SpendOnlyFrom(_)
+                    | GameRule::R112SpendOnlyFromWay { .. }
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),

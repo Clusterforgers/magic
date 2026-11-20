@@ -263,6 +263,8 @@ pub(crate) enum Tally {
     LandsPlayed,
     /// Mana spent to cast spells, by the amount (counted for the player; expend, CR 701.59).
     W9aSpellMana,
+    /// Players made to guess or to group into piles (counted for the spell or ability that did).
+    R112Grouped,
 }
 
 /// The events counted in the turn so far.
@@ -361,6 +363,8 @@ pub struct GameState {
     pub(crate) next_delayed: u64,
     /// The players who paid this turn to ignore the effects of a source (`GameRule::PayToIgnore`), with the source.
     pub(crate) r6703_ignored: Vec<(PlayerId, ObjectRef)>,
+    /// The card type each player chose to untap this turn (`Rule::R112UntapChosenType`).
+    pub(crate) r112_untap_types: Vec<(PlayerId, mtg_core::card::CardType)>,
     /// The countered spell a replacement just put onto the battlefield, whose countering ends next (Desertion).
     pub(crate) r6703_countered_in: Option<ObjectId>,
     pub(crate) limits_spent: BTreeSet<(ObjectRef, AbilitySource, usize)>,
@@ -791,6 +795,15 @@ impl GameState {
         }
     }
 
+    /// How many spells and abilities made players guess or group cards or permanents into piles this turn.
+    pub(crate) fn r112_grouped(&self) -> usize {
+        self.tallies
+            .objects
+            .keys()
+            .filter(|(_, by, kind)| by.is_none() && *kind == Tally::R112Grouped)
+            .count()
+    }
+
     /// How many events of the kind the player has had this turn.
     pub(crate) fn tallied(&self, player: PlayerId, kind: Tally) -> u32 {
         let counted = self.tallies.players.get(&(player, kind));
@@ -1086,6 +1099,9 @@ impl Hash for GameState {
         // A game where nobody paid to ignore an effect hashes as it did before the rule existed.
         if !self.r6703_ignored.is_empty() {
             self.r6703_ignored.hash(state);
+        }
+        if !self.r112_untap_types.is_empty() {
+            self.r112_untap_types.hash(state);
         }
         if self.r6703_countered_in.is_some() {
             self.r6703_countered_in.hash(state);

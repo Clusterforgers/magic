@@ -78,6 +78,8 @@ pub enum StatKind {
     /// The number it stations permanents with (CR 702.184a): its power, or its toughness while a rule says it stations
     /// using its toughness (`CombatQuirk::R6500StationsByToughness`).
     R6500StationValue,
+    /// How many times a mode was chosen for it, while it is a spell (CR 700.2): a mode chosen twice counts twice.
+    R112ModesChosen,
 }
 
 /// A comparison between two numbers.
@@ -1020,6 +1022,25 @@ pub enum Amount {
     CountedAsCast(Box<Amount>),
     /// A number a booster draft noted for cards of this name; 0 in a game without a draft.
     Drafted(crate::r4711_noted::DraftNote),
+    /// The number the first player `by` names chose in the resolution's `ChooseNumbers` remembered under the name; 0
+    /// when they chose none ("each player loses life equal to the number of items they revealed").
+    R112NumberChosen {
+        /// The name of the `ChooseNumbers`.
+        name: String,
+        /// The player.
+        by: Ref,
+    },
+    /// The greatest count of equal numbers stored on the first object `on` names in the memory slot (`Effect::R112RollStore`):
+    /// "the greatest number of stored results on it of the same value"; 0 when none is stored.
+    R112MostAlike {
+        /// The object.
+        on: Ref,
+        /// The memory slot.
+        slot: String,
+    },
+    /// How many spells and abilities caused one or more players to guess or to group cards or permanents into a pile this
+    /// turn (`Effect::SeparatePiles`, `R112Piles`, `R112GuessNumber`).
+    R112GroupedThisTurn,
 }
 
 impl Amount {
@@ -1272,6 +1293,15 @@ enum Tagged {
     R374AtMost(Box<Amount>, u32),
     CountedAsCast(Box<Amount>),
     Drafted(crate::r4711_noted::DraftNote),
+    R112NumberChosen {
+        name: String,
+        by: Ref,
+    },
+    R112MostAlike {
+        on: Ref,
+        slot: String,
+    },
+    R112GroupedThisTurn,
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -1493,6 +1523,15 @@ enum TaggedRef<'a> {
     R374AtMost(&'a Amount, u32),
     CountedAsCast(&'a Amount),
     Drafted(crate::r4711_noted::DraftNote),
+    R112NumberChosen {
+        name: &'a String,
+        by: &'a Ref,
+    },
+    R112MostAlike {
+        on: &'a Ref,
+        slot: &'a String,
+    },
+    R112GroupedThisTurn,
 }
 
 impl From<Tagged> for Amount {
@@ -1622,6 +1661,9 @@ impl From<Tagged> for Amount {
             Tagged::R374AtMost(inner, most) => Amount::R374AtMost(inner, most),
             Tagged::CountedAsCast(inner) => Amount::CountedAsCast(inner),
             Tagged::Drafted(note) => Amount::Drafted(note),
+            Tagged::R112NumberChosen { name, by } => Amount::R112NumberChosen { name, by },
+            Tagged::R112MostAlike { on, slot } => Amount::R112MostAlike { on, slot },
+            Tagged::R112GroupedThisTurn => Amount::R112GroupedThisTurn,
         }
     }
 }
@@ -1850,6 +1892,13 @@ impl Serialize for Amount {
             }
             Amount::CountedAsCast(inner) => TaggedRef::CountedAsCast(inner).serialize(serializer),
             Amount::Drafted(note) => TaggedRef::Drafted(*note).serialize(serializer),
+            Amount::R112NumberChosen { name, by } => {
+                TaggedRef::R112NumberChosen { name, by }.serialize(serializer)
+            }
+            Amount::R112MostAlike { on, slot } => {
+                TaggedRef::R112MostAlike { on, slot }.serialize(serializer)
+            }
+            Amount::R112GroupedThisTurn => TaggedRef::R112GroupedThisTurn.serialize(serializer),
         }
     }
 }
@@ -1950,6 +1999,9 @@ pub enum Condition {
     AdditionalCostPaid,
     /// The spell was cast for this alternative cost; a permanent and its abilities read the spell it came from.
     CastWith(CastWay),
+    /// The spell is cast by the resolution of an ability of its own card ("It costs {4} less to cast this way." of a card
+    /// that gains "you may cast it"): the cost modifier of a granted cast.
+    R112CastByOwnAbility,
     /// The spell was cast at a time its caster couldn't have cast a sorcery (CR 307.1): another turn, a step that is no
     /// main phase or a stack that held more; a permanent and its abilities read the spell it came from.
     CastOffSorceryTiming,

@@ -1119,6 +1119,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { object, chosen } = event.ChosenAsAttached
     return line(`${n.card(object)} becomes attached${chosenWords(chosen, n)}`)
   }
+  if ('R112Grouped' in event) {
+    return line(`${n.card(event.R112Grouped.object)} made players guess or group into piles`)
+  }
   if ('R111ChoiceKept' in event) {
     const { object, chosen } = event.R111ChoiceKept
     return line(`${n.card(object)} keeps its choice${chosenWords(chosen, n)}`)
@@ -1161,6 +1164,14 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('TargetsChanged' in event) {
     const { object } = event.TargetsChanged
     return line(`The targets of ${n.card(n.ability?.(object.id) ?? object.id)} change`)
+  }
+  if ('R112UntapTypeChosen' in event) {
+    const { player, kind } = event.R112UntapTypeChosen
+    return line(`${n.seat(player)} untaps only ${kind.toLowerCase()}s this step`)
+  }
+  if ('R112XChanged' in event) {
+    const { object, x } = event.R112XChanged
+    return line(`The value of X of ${n.card(object.id)} becomes ${x}`)
   }
   if ('CopyEnded' in event) return line(`${n.card(event.CopyEnded.object)} stops being a copy`)
   if ('CardCopied' in event) {

@@ -1,0 +1,29 @@
+Boreal Outrider	Snow facts per color of the mana spent on a spell ("{S} of any of that spell's colors", CR 106.3): spent_from keeps snow per source, not per color of each unit	fixture to add
+Vazi, Keen Negotiator	Trigger "casts a spell or activates an ability" that includes mana abilities (Did Activated skips them; a mana ability that costs mana can be paid with Treasure mana), read with the ability's own spent mana (choices.spent of an activation is kept, `r300c_activation_spent`)	none
+Soul Burn	X paid only with black and/or red mana (an X of hybrid {B/R} symbols, like `CostItem::XColor` with two colors), an Amount "black mana spent on X" (min(X, black spent minus the black symbols outside X)), and a life gain capped by that, by the player's life or the planeswalker's loyalty before the damage, or by the creature's toughness	fixture to add
+C.A.M.P.	Trigger "whenever fortified land is tapped for mana" (TappedForMana of the fortified land) with the produced mana's colors read by a condition	Junk token, fixture
+Tyvar the Bellicose	Granted trigger "whenever a mana ability of this creature resolves" with the amount it produced, once each turn (TriggerPattern over ManaAdded by an ability of the object)	fixture to add
+Drain Power	A target player activates a mana ability of each land they control (a forced activation the target chooses among), then the unspent mana of their pool moves to yours with its restrictions (CR 106.12)	fixture to add
+Piracy	Tapping lands you don't control for mana until end of turn: their mana abilities offered to another player, the mana restricted to spells	fixture to add
+Pygmy Hippo	The forced mana activation of Drain Power plus a delayed mana add equal to the mana lost at the next main phase	fixture to add
+Heirloom Epic	Convoke-like payment of an activated ability's mana by tapping creatures (help::Offered for an ability, CR 702.51 analogue)	fixture to add
+The Book of Vile Darkness	Exile of named artifacts as a cost and a token with the triggered abilities of the exiled cards	fixture to add
+Urgent Necropsy	Collect evidence X where X is the total mana value of the chosen targets	none
+Light Up the Night	RemoveCountersAmong counted by X in a flashback cost (Price::announced refuses Counted parts outside activations; caps Cost.XAtLeast.Elsewhere)	none
+Back from the Brink	A cost that exiles a creature card from your graveyard and pays its mana cost (CostItem::ManaCostOf Ref::Paid in an activation)	fixture to add
+Bullseye, Death Dealer	Cost.OneOf inside an activation cost (sacrifice an artifact or discard a nonland card): Price::announced has no Part for a choice between costs	none
+Primitive Justice	Two additional costs paid any number of times, each counted for its own extra targets	fixture to add
+Agent Maria Hill	Teamwork cost and the trigger "becomes tapped to pay a teamwork cost"	fixture to add
+Captain America, First Avenger	Unattach an Equipment as a cost read for divided damage, and an attach of up to one target Equipment at the beginning of combat	fixture to add
+Yavimaya Bloomsage // Channel	A permission for a turn to pay 1 life for {C} any time you could activate a mana ability (a rule mana source from Effect::Rule)	fixture to add
+Cryptic Spires	Colors circled as the deck is made (a pregame choice)	none
+Tazri, Stalwart Survivor	Granted mana ability limited to the creature's colors, usable only if it has another activated ability, with mana spent only on creature abilities	none
+Benthic Explorers	Cost "untap a tapped land an opponent controls" and mana of any type that land could produce (CR 106.7), Produce::ProducedBy of the paid land	fixture to add
+Chorus of the Conclave	An optional additional cost of any amount of mana given to creature spells, read as counters by the entering creature	none
+Nameless Race	Pay any amount of life as it enters (capped by a count), kept on the permanent and read by its characteristic-defining power and toughness	none
+Jötun Grunt	Cumulative upkeep putting cards from a single graveyard of any player on the bottom of their owner's library (Kind::ToLibrary from any graveyard with the one-owner set)	fixture to add
+Eye of Ojer Taq // Apex Observatory	Craft with two that share a card type, a type chosen from them, and a next-spell-free permission of that type	none
+Ranar the Ever-Watchful	TriggerPattern Batch over two kinds of zone change at once (cards exiled from your hand, or permanents your spell or ability exiles), once per event batch	none
+Eluge, the Shoreless Sea	Colored cost reduction "{U} (or {1}) less" per counted land for the first instant or sorcery each turn (CR 601.2f)	flood counter island effect
+Professor Hojo	CostModifier with a targeting filter and a first-this-turn tally of activations that targeted a creature you control	fixture to add
+Ice Cauldron	Exile a nonland card from hand with a may-cast permission while it stays exiled, and mana restricted to the last card exiled with the source (SpendOn of a remembered card); the noted type and amount is built (Produce::R112Noted with amount)	fixture to add

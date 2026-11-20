@@ -7,6 +7,7 @@ import type { ObjectId, ObjectView, PlayerId } from '@/protocol/generated'
 import { useSeatNamer } from '../names'
 import { SEAT_LIFE, SeatDot, seatHueStyle } from '../PodParts'
 import { useEdgeFade } from '../useEdgeFade'
+import { useWheelSideways } from '../useWheelSideways'
 import { rovingTarget } from '../useRoving'
 import { CardSearchField } from './CardSearchField'
 import { FILTER_FROM, matchesFilter } from './cardsText'
@@ -172,6 +173,7 @@ export function CardChoices({
   const root = useRef<HTMLDivElement>(null)
   const row = useRef<HTMLDivElement>(null)
   useEdgeFade(row)
+  useWheelSideways(row)
   const { restore } = useRestingPreview(chosen, root)
 
   const onFocus = (event: FocusEvent<HTMLElement>): void => {

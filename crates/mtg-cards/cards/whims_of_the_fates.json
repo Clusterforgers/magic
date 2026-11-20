@@ -1,0 +1,35 @@
+{
+  "oracle_id": "7d359434-eb1b-478e-a745-10e2c564d89f",
+  "name": "Whims of the Fates",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whims of the Fates",
+      "oracle_fingerprint": "f68d4bfb47505ca6c21ffe08b8e07a9a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "R112Piles": {
+                  "who": "EachPlayer",
+                  "what": { "Each": [] },
+                  "piles": ["first", "second", "third"],
+                  "pick": "Random",
+                  "as": "chosen"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [{ "Is": { "Bound": "chosen" } }],
+                  "count": { "Count": [{ "Is": { "Bound": "chosen" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

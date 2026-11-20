@@ -215,13 +215,14 @@ pub(crate) fn payment_decision(
     let pool = if crate::r400_no_mana::r400_no_mana(state, object) {
         crate::mana::ManaPool::default()
     } else {
-        crate::r4705_spend_from::r4705_pool(state, object, seat.mana())
+        crate::r4705_spend_from::r4705_pool(state, object, spend.r112_way, seat.mana())
             .unwrap_or_else(|| seat.mana().clone())
     };
-    let narrowed = match crate::mana_takes::for_card(state, &sources, object) {
-        std::borrow::Cow::Owned(narrowed) => Some(narrowed),
-        std::borrow::Cow::Borrowed(_) => None,
-    };
+    let narrowed =
+        match crate::mana_takes::r112_for_card_way(state, &sources, object, spend.r112_way) {
+            std::borrow::Cow::Owned(narrowed) => Some(narrowed),
+            std::borrow::Cow::Borrowed(_) => None,
+        };
     let sources = narrowed.unwrap_or(sources);
     let proposal = crate::mana::propose(&cost, &pool, &sources, help.help(), life, &spend);
     Some(PayOptions {

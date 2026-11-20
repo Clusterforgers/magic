@@ -253,6 +253,16 @@ pub(crate) fn for_card<'a>(
     sources: &'a [ManaOption],
     id: ObjectId,
 ) -> Cow<'a, [ManaOption]> {
+    r112_for_card_way(state, sources, id, None)
+}
+
+/// [`for_card`] for the card cast the way `way` names, whose rule may narrow the sources of that way only.
+pub(crate) fn r112_for_card_way<'a>(
+    state: &GameState,
+    sources: &'a [ManaOption],
+    id: ObjectId,
+    way: Option<mtg_cards::value::CastWay>,
+) -> Cow<'a, [ManaOption]> {
     if crate::r400_no_mana::r400_no_mana(state, id) {
         return Cow::Owned(Vec::new());
     }
@@ -269,11 +279,11 @@ pub(crate) fn for_card<'a>(
     if in_hand && sources.iter().any(mentioned) {
         let mut sources = without_taken(sources, &|other| other == id);
         sources.retain(|option| option.source.object != id);
-        crate::r4705_spend_from::r4705_sources(state, id, &mut sources);
+        crate::r4705_spend_from::r4705_sources(state, id, way, &mut sources);
         Cow::Owned(sources)
-    } else if crate::r4705_spend_from::r4705_spend_from(state, id).is_some() {
+    } else if crate::r4705_spend_from::r4705_spend_from(state, id, way).is_some() {
         let mut sources = sources.to_vec();
-        crate::r4705_spend_from::r4705_sources(state, id, &mut sources);
+        crate::r4705_spend_from::r4705_sources(state, id, way, &mut sources);
         Cow::Owned(sources)
     } else {
         Cow::Borrowed(sources)
