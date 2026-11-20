@@ -1,5 +1,6 @@
 /** The opening hand drawn large in the prompt while its keep or mulligan is decided, as Arena shows it. */
 import { anchor } from '@/features/learn/anchors'
+import { useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
@@ -7,6 +8,7 @@ import type { PlayState } from '@/play/store'
 import type { ObjectId } from '@/protocol/generated'
 import { CardFace } from '../CardFace'
 import { usePreviewHandlers } from '../usePreviewHandlers'
+import { useWheelSideways } from '../useWheelSideways'
 
 const NONE: readonly ObjectId[] = []
 
@@ -58,8 +60,16 @@ export function OpeningHand({ card }: { card?: number } = {}) {
       </ul>
     )
   }
+  return <OpeningRow ids={ids} coach={coach} />
+}
+
+/** The opening hand in the band: one row that scrolls where it is wider than the band, a wheel moving it sideways. */
+function OpeningRow({ ids, coach }: { ids: readonly ObjectId[]; coach: ReturnType<typeof anchor> }) {
+  const row = useRef<HTMLUListElement>(null)
+  useWheelSideways(row)
   return (
     <ul
+      ref={row}
       aria-hidden="true"
       data-slot="opening-hand"
       {...coach}

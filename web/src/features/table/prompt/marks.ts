@@ -226,6 +226,27 @@ export function useCardNotes(notes: CardNotes): void {
   useLayoutEffect(() => () => store.clearNotes(), [store])
 }
 
+/** True while the prompt picks among `ids`: its marked cards are toggles and one of `ids` is on offer or chosen. */
+export function usePickAmong(ids: readonly ObjectId[]): boolean {
+  const store = useMarksStore()
+  const subscribe = useCallback(
+    (listener: () => void) => {
+      const stops = ids.map((id) => store.subscribe(id, listener))
+      return () => stops.forEach((stop) => stop())
+    },
+    [store, ids],
+  )
+  return useSyncExternalStore(
+    subscribe,
+    () =>
+      store.toggles() &&
+      ids.some((id) => {
+        const mark = store.markOf(id)
+        return mark === 'legal' || mark === 'selected'
+      }),
+  )
+}
+
 /**
  * How many of `ids` the prompt marks legal for a click that acts at once (a play or an ability, not a pick among
  * choices): a zone's chip says so without the list being opened. Every pick counts none.
