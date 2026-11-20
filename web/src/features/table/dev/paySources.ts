@@ -2,7 +2,8 @@
  * The payments of the dev table with every kind of mana source: `?prompt=pay-sources` (a Sol Ring, a Signet, a
  * Treasure, a Command Tower, a bounce land and the fixture's basic lands) and `?prompt=pay-marks` (sources whose chips
  * carry marks: restricted mana, life, energy, another permanent tapped, and green mana kept in the pool to the end of
- * the turn).
+ * the turn), and `?prompt=pay-lotus` (paying {1} with a Gilded Lotus of three mana in each colour, a Command Tower and
+ * Sol Ring: rows of many options of several pips, and an overpayment whose extra mana floats; `pay-lotus-six` pays {6}).
  */
 import type { PendingDecision } from '@/play/store'
 import type {
@@ -133,6 +134,19 @@ const MARKED: readonly Source[] = [
   },
 ]
 
+/** The sources of `pay-lotus`: five options of three pips beside five of one pip, and Sol Ring. */
+const LOTUS: readonly Source[] = [
+  {
+    name: 'Gilded Lotus',
+    types: ['Artifact'],
+    subtypes: [],
+    cost: '{T}',
+    effect: 'Add three mana of any one color.',
+    options: (object) => anyColour(object, { count: 3 }),
+  },
+  ...ADDED.filter((source) => source.name === 'Command Tower' || source.name === 'Sol Ring'),
+]
+
 const FRESH = { tapped: false, damage: 0, summoning_sick: false }
 
 const ownBattlefield = (view: Fixture['view']): ObjectView[] =>
@@ -202,7 +216,7 @@ const CREATURE_SPELL = 1 << 2
 
 /** Paying for Selesnya Evangel with `list` and two basic lands: every option of every untapped one of them. */
 const payWith =
-  (list: readonly Source[], pool?: (held: ManaPool) => ManaPool) =>
+  (list: readonly Source[], pool?: (held: ManaPool) => ManaPool, price?: ManaCost) =>
   (fixture: Fixture): PendingDecision => {
     const { view } = fixture
     const viewer = view.viewer
@@ -227,7 +241,7 @@ const payWith =
     const held = view.players[viewer]?.mana ?? { counts: [0, 0, 0, 0, 0, 0] }
     const options: PayOptions = {
       spell: spell?.id ?? 0,
-      cost: spell?.mana_cost ?? [{ Generic: 2 }, { Colored: 'White' }, { Colored: 'Green' }],
+      cost: price ?? spell?.mana_cost ?? [{ Generic: 2 }, { Colored: 'White' }, { Colored: 'Green' }],
       pool: pool === undefined ? held : pool(held),
       sources: sources.filter((option) => {
         const object = view.objects.find((other) => other.id === option.source.object)
@@ -257,3 +271,9 @@ export const paySources = payWith(ADDED)
 export const payMarksTable = tableWith(MARKED)
 /** Paying for Selesnya Evangel with the marked sources, and green kept in the pool. */
 export const payMarks = payWith(MARKED, keptGreen)
+/** The table of `pay-lotus`. */
+export const payLotusTable = tableWith(LOTUS)
+/** Paying {1} with Gilded Lotus, a Command Tower, Sol Ring and two basic lands. */
+export const payLotus = payWith(LOTUS, undefined, [{ Generic: 1 }])
+/** Paying {6} with the sources of `pay-lotus`: the Lotus fits without floating mana. */
+export const payLotusSix = payWith(LOTUS, undefined, [{ Generic: 6 }])

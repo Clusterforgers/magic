@@ -1,4 +1,4 @@
-/** Goal: the payment in the Stack column groups the mana sources by what a tap gives (Sol Ring two colourless, a Signet with its cost, a Treasure and a Command Tower of any colour, a bounce land both mana) with their marks (restricted mana, life, energy, another permanent), equal permanents share a row with a count, a row has a button for each kind its source makes, a row in use says what it pays and offers Untap and its other kinds, the circles count what is paid, and floating mana the pool keeps says so. */
+/** Goal: the payment in the Stack column groups the mana sources by what a tap gives (Sol Ring two colourless, a Signet with its cost, a Treasure and a Command Tower of any colour, a bounce land both mana) with their marks (restricted mana, life, energy, another permanent), equal permanents share a row with a count, a row has a button for each kind its source makes, a row in use says what it pays and offers Untap and its other kinds, the circles count what is paid, floating mana the pool keeps says so, and a source of many options of several pips (a Gilded Lotus) keeps its name whole beside buttons that wrap and is offered when its surplus would float. */
 import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -190,6 +190,60 @@ describe('the marks of ?prompt=pay-marks', () => {
         name: /^Spend green from your pool/,
       }),
     ).toHaveAccessibleName(/kept: 1 until end of turn$/)
+  })
+})
+
+describe('a source of many options of several pips, ?prompt=pay-lotus', () => {
+  const COLOURS = ['white', 'blue', 'black', 'red', 'green']
+
+  it.each(['pay-lotus', 'pay-lotus-six'])(
+    '%s: the name stands whole beside a wrapping line of five buttons of three pips each',
+    (prompt) => {
+      open(prompt)
+      const lotus = row('Gilded Lotus')
+      const name = must(lotus.querySelector('[data-slot="row-name"]'))
+      expect(name).toHaveTextContent('Gilded Lotus')
+      expect(name).not.toHaveClass('truncate')
+      const options = must(lotus.querySelector<HTMLElement>('[data-slot="pay-row-options"]'))
+      // The buttons wrap onto lines of their own under the name where they do not fit beside it.
+      expect(options).toHaveClass('flex-wrap')
+      expect(must(lotus.querySelector('[data-slot="pay-row-body"]'))).toHaveClass('flex-wrap')
+      const buttons = within(options).getAllByRole('button')
+      expect(buttons.map((button) => button.getAttribute('aria-label'))).toEqual(
+        COLOURS.map((colour) => `Tap Gilded Lotus for 3 ${colour}`),
+      )
+      for (const button of buttons) {
+        const pips = within(button).getByRole('img')
+        expect(pips).toHaveClass('flex-nowrap')
+        expect(pips.children).toHaveLength(3)
+      }
+    },
+  )
+
+  it.each<[string, string]>([
+    ['pay-lotus', '1 of 1 paid'],
+    ['pay-lotus-six', '3 of 6 paid'],
+  ])(
+    '%s: every colour of the Lotus is offered, its surplus floating, and a press pays',
+    async (prompt, after) => {
+      const { user } = open(prompt)
+      const lotus = row('Gilded Lotus')
+      expect(lotus).not.toHaveAttribute('data-off')
+      for (const button of within(lotus).getAllByRole('button')) {
+        expect(button).toHaveAttribute('aria-disabled', 'false')
+      }
+      await user.click(tap(/^Tap Gilded Lotus for 3 blue/))
+      expect(row('Gilded Lotus')).toHaveAttribute('data-used')
+      expect(paid()).toBe(after)
+    },
+  )
+
+  it('pays {1} with the Lotus alone and sends its one tap', async () => {
+    const { user, answer } = open('pay-lotus')
+    await user.click(tap(/^Tap Gilded Lotus for 3 red/))
+    await user.click(screen.getByRole('button', { name: 'Confirm payment' }))
+    const [sent] = answer.mock.calls[0] as [Answer]
+    expect(sent).toMatchObject({ PayMana: { Manual: { taps: [expect.anything()] } } })
   })
 })
 

@@ -497,6 +497,8 @@ const SOURCES = {
   mountain: (id: number): ManaOption => source(id, 'R'),
   forest: (id: number): ManaOption => source(id, 'G'),
   solRing: (id: number): ManaOption => ({ ...source(id, 'C'), count: 2 }),
+  /** Gilded Lotus for green: {T}: add {G}{G}{G}. */
+  lotus: (id: number): ManaOption => ({ ...source(id, 'G'), count: 3 }),
   /** Orzhov Signet: {1}, {T}: add {W}{B}. */
   signet: (id: number): ManaOption => ({ ...source(id, 'W'), also: ['Black'], cost: cost('{1}') }),
   /** Mystic Gate's {W/U}, {T}: add {W}{W}. */
@@ -530,7 +532,12 @@ const only = <T>(value: T | undefined): T => {
 describe('sources that make several mana or cost mana', () => {
   it.each<[string, string, SourceName[], LifeSymbols, boolean]>([
     ['Sol Ring pays two generic', '{2}', ['solRing'], [], true],
-    ['Sol Ring overpays one generic', '{1}', ['solRing'], [], false],
+    ['Sol Ring overpays one generic, the other floats', '{1}', ['solRing'], [], true],
+    ['a Gilded Lotus pays one generic, two float', '{1}', ['lotus'], [], true],
+    ['a Gilded Lotus pays a colour and generic', '{1}{G}', ['lotus'], [], true],
+    ['a Gilded Lotus and a land it makes spare', '{1}', ['lotus', 'forest'], [], false],
+    ['a Gilded Lotus and Sol Ring for four', '{4}', ['lotus', 'solRing'], [], true],
+    ['a Gilded Lotus and Sol Ring for three: the ring is spare', '{3}', ['lotus', 'solRing'], [], false],
     ['Sol Ring and a land pay three', '{3}', ['solRing', 'forest'], [], true],
     ['Sol Ring and two lands overpay three', '{3}', ['solRing', 'forest', 'plains'], [], false],
     ['a Signet paid by a land', '{W}{B}', ['plains', 'signet'], [], true],
@@ -543,7 +550,8 @@ describe('sources that make several mana or cost mana', () => {
     ['a filter land turns red into black', '{B}{B}', ['mountain', 'cairns'], [], true],
     ['a bounceland pays two colours', '{W}{B}', ['basilica'], [], true],
     ['a bounceland pays a colour and generic', '{1}{W}', ['basilica'], [], true],
-    ['a bounceland overpays one colour', '{W}', ['basilica'], [], false],
+    ['a bounceland overpays one colour, black floats', '{W}', ['basilica'], [], true],
+    ['a bounceland of the wrong colours', '{G}', ['basilica'], [], false],
     ['a Treasure pays its colour', '{B}', ['treasure'], [], true],
     ['hybrid from a Signet', '{W/B}{W/B}', ['swamp', 'signet'], [], true],
     ['hybrid from a filter land', '{W/U}{W/U}', ['island', 'gate'], [], true],
@@ -559,7 +567,11 @@ describe('sources that make several mana or cost mana', () => {
   it.each<[string, string, SourceName[], SourceName[], SourceName, boolean]>([
     ['a Signet before the mana that pays it', '{W}{B}', [], ['plains', 'signet'], 'signet', false],
     ['a Signet after its land', '{W}{B}', ['plains'], ['plains', 'signet'], 'signet', true],
-    ['Sol Ring for one generic', '{1}', [], ['solRing', 'forest'], 'solRing', false],
+    ['Sol Ring for one generic, the other floats', '{1}', [], ['solRing', 'forest'], 'solRing', true],
+    ['a Gilded Lotus for one generic', '{1}', [], ['lotus', 'forest'], 'lotus', true],
+    ['a land after a Gilded Lotus paid one', '{1}', ['lotus'], ['lotus', 'forest'], 'forest', false],
+    ['a Gilded Lotus after a land paid one', '{1}', ['forest'], ['lotus', 'forest'], 'lotus', false],
+    ['a Gilded Lotus toward six', '{6}', [], ['lotus', 'solRing', 'forest'], 'lotus', true],
     ['Sol Ring for two generic', '{2}', [], ['solRing', 'forest'], 'solRing', true],
     ['a land after Sol Ring paid two', '{2}', ['solRing'], ['solRing', 'forest'], 'forest', false],
     ['restricted mana is not offered by hand', '{3}', [], ['workshop'], 'workshop', false],

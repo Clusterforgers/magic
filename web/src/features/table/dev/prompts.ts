@@ -28,7 +28,15 @@ import { lookTopMoment } from './lookTopScene'
 import { withTopCard, withTopCast } from './topCardScene'
 import { withBlocked } from './blockedScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
-import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySources'
+import {
+  payLotus,
+  payLotusSix,
+  payLotusTable,
+  payMarks,
+  payMarksTable,
+  paySources,
+  paySourcesTable,
+} from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
 import { cyclingTable, payCycling, withCycling } from './cyclingScene'
 import { withProposal } from './payProposal'
@@ -556,6 +564,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-announced': payAnnounced,
   'pay-sources': paySources,
   'pay-marks': payMarks,
+  'pay-lotus': payLotus,
+  'pay-lotus-six': payLotusSix,
   'pay-cycling': payCycling,
   'commander-return': commanderReturn,
   ...ASK_PROMPTS,
@@ -599,6 +609,8 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'pay-low-life': hybridTable,
   'pay-sources': paySourcesTable,
   'pay-marks': payMarksTable,
+  'pay-lotus': payLotusTable,
+  'pay-lotus-six': payLotusTable,
   mulligan: openingTable('Deciding'),
   'mulligan-free': openingTable('Deciding'),
   bottom: openingTable({ Bottoming: 2 }),
