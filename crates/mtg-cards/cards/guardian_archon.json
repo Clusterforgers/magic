@@ -1,7 +1,7 @@
 {
   "oracle_id": "c7748659-0206-448f-8567-83565cb0b51a",
   "name": "Guardian Archon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Guardian Archon",
@@ -9,12 +9,36 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 60 } }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "R110SecretOpponent" }
+          }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 61, "end": 209 }
+          "Activated": {
+            "cost": ["R110RevealChosen"],
+            "limit": "OncePerGame",
+            "targets": [{ "what": { "Object": [{ "ControlledBy": "You" }] } }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "PlayersHave": {
+                      "who": "You",
+                      "keyword": { "Protection": [{ "ControlledBy": "Chosen" }] }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "AddKeyword": { "Protection": [{ "ControlledBy": "Chosen" }] } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

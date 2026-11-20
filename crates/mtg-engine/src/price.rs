@@ -80,6 +80,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::OpponentGainsLife(_) => "Cost.OpponentGainsLife",
         CostItem::GetPoison(_) => "Cost.GetPoison",
         CostItem::Unattach => "Cost.Unattach",
+        CostItem::R110RevealChosen => "Cost.R110RevealChosen",
         CostItem::ExileTop(_) => "Cost.ExileTop",
         CostItem::CollectEvidence(_) => "Cost.CollectEvidence",
         CostItem::R6702CollectEvidenceX => "Cost.R6702CollectEvidenceX",

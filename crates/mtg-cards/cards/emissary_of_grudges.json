@@ -1,7 +1,7 @@
 {
   "oracle_id": "b415684e-40f0-43c1-b8d5-1a90b75c5a47",
   "name": "Emissary of Grudges",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Emissary of Grudges",
@@ -10,15 +10,45 @@
         { "Keyword": "Flying" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 67 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "R110SecretOpponent" }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 68, "end": 253 }
+          "Activated": {
+            "cost": ["R110RevealChosen"],
+            "limit": "OncePerGame",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": ["Spell", { "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [
+                        { "ControlledBy": "Chosen" },
+                        {
+                          "AnyOf": [
+                            { "TargetsPlayer": "You" },
+                            { "Targeting": [{ "ControlledBy": "You" }] }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "then": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "Choose" } }]
+                }
+              }
+            ]
           }
         }
       ]

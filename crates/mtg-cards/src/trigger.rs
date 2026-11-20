@@ -1133,6 +1133,9 @@ pub enum EntersChoice {
     Player,
     /// An opponent of the permanent's controller.
     Opponent,
+    /// An opponent of the permanent's controller, chosen secretly (CR 607.2l, 706): the other players learn it only when a
+    /// cost reveals it ("As this creature enters, secretly choose an opponent.").
+    R110SecretOpponent,
     /// A chapter number of the Saga, which it enters with as many lore counters (read ahead, CR 702.155).
     Chapter,
     /// A card name (CR 201.3): any card of the game.

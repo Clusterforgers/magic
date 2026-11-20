@@ -890,6 +890,21 @@ pub enum Event {
         /// What it chose.
         chosen: Chosen,
     },
+    /// A permanent's controller chose a value secretly, which the permanent keeps (CR 706, "secretly choose an
+    /// opponent"); only that player sees what it is until a cost reveals it.
+    R110ChoseSecretly {
+        /// The permanent.
+        object: ObjectId,
+        /// What was chosen.
+        chosen: Chosen,
+    },
+    /// A permanent's secret choice was revealed to every player ("Reveal the player you chose").
+    R110ChoiceRevealed {
+        /// The permanent.
+        object: ObjectId,
+        /// The choice revealed.
+        chosen: Chosen,
+    },
     /// An Aura became attached to a player (CR 303.4); it takes a new timestamp (CR 613.7a).
     AttachedToPlayer {
         /// The Aura.
@@ -1816,6 +1831,8 @@ impl Event {
             | Event::AttackRedirected { object, .. }
             | Event::AttachedToPlayer { object, .. }
             | Event::ChosenAsAttached { object, .. }
+            | Event::R110ChoseSecretly { object, .. }
+            | Event::R110ChoiceRevealed { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }
             | Event::Prepared { object }

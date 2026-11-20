@@ -3456,6 +3456,29 @@ impl Pass<'_> {
         }
     }
 
+    /// Keeps a secret choice off the public `Entered` event: the permanent enters with no choice and a
+    /// `R110ChoseSecretly` right after it, which only its controller sees, gives it the value (CR 706).
+    fn r110_remember_secretly(
+        &mut self,
+        at: usize,
+        object: ObjectId,
+        controller: PlayerId,
+        chosen: Option<Chosen>,
+    ) {
+        let Some(chosen) = chosen else {
+            return;
+        };
+        let entered = self.entered_at(at, object, controller);
+        self.slots.insert(
+            entered + 1,
+            Slot {
+                item: Item::One(Event::R110ChoseSecretly { object, chosen }),
+                applied: Vec::new(),
+                frozen: true,
+            },
+        );
+    }
+
     /// Sets the lore counters the Saga `object` enters with to `count`.
     fn w2b_lore_to(&mut self, object: ObjectId, count: i32) {
         for slot in &mut self.slots {
@@ -3572,7 +3595,11 @@ impl Pass<'_> {
                     Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
                     Asked::Got(chosen) => chosen,
                 };
-                self.w2b_remember(at, object, controller, chosen);
+                if matches!(by, ReplaceBy::Choose(EntersChoice::R110SecretOpponent)) {
+                    self.r110_remember_secretly(at, object, controller, chosen);
+                } else {
+                    self.w2b_remember(at, object, controller, chosen);
+                }
             }
             ReplaceBy::UnderChosenOpponent => {
                 if let Asked::Ask(decision) = self.ep28_under(at, source, object, controller)? {
@@ -4238,7 +4265,7 @@ impl Pass<'_> {
                         }),
                     }));
                 }
-                Some((who, Choice::Option(index)))
+                Some((who, Choice::Option(index) | Choice::Vote(index)))
                     if *who == controller && *index < options.len() =>
                 {
                     Some(*index)
@@ -4368,6 +4395,13 @@ impl Pass<'_> {
                 .filter(|player| self.state.is_opponent(controller, *player))
                 .map(ChoiceOption::Player)
                 .collect(),
+            EntersChoice::R110SecretOpponent => self
+                .state
+                .turn_order_from(controller)
+                .into_iter()
+                .filter(|player| self.state.is_opponent(controller, *player))
+                .map(ChoiceOption::SecretPlayer)
+                .collect(),
         }
     }
 }
@@ -4401,6 +4435,7 @@ fn entering_question(kind: EntersChoice) -> String {
         }
         EntersChoice::Player => "Choose a player.".to_owned(),
         EntersChoice::Opponent => "Choose an opponent.".to_owned(),
+        EntersChoice::R110SecretOpponent => "Secretly choose an opponent.".to_owned(),
         EntersChoice::Chapter => "Choose a chapter to start with.".to_owned(),
         EntersChoice::CardName
         | EntersChoice::NonlandCardName

@@ -24,6 +24,16 @@ pub enum R6401Pick {
     ByEach,
 }
 
+/// What `Effect::R110ChooseSecretly` chooses.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum R110Secret {
+    /// An opponent of the controller.
+    Opponent,
+    /// One of these creature types.
+    CreatureType(Vec<Subtype>),
+}
+
 /// The most passes any `RepeatWhile` makes, whatever it writes: a loop that never ends cannot hang a game.
 pub const MOST_PASSES: u32 = 1000;
 
@@ -2190,6 +2200,10 @@ pub enum Effect {
         /// The kind of counter.
         counter: CounterKind,
     },
+    /// The controller secretly chooses a value the source keeps (CR 706): an opponent, or one of the creature types
+    /// listed ("secretly choose an opponent", "secretly choose Human, Merfolk, or Goblin"). The other players learn it
+    /// when `CostItem::R110RevealChosen` is paid; `Ref::Chosen` and `Pred::ChosenSubtype` read it.
+    R110ChooseSecretly(R110Secret),
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.

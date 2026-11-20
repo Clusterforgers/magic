@@ -794,6 +794,7 @@ Elvish Visionary
 Embiggen
 Emergency Eject
 Emeria Angel
+Emissary of Grudges
 Emmara Tandris
 Emperor Mihail II
 Empowered Autogenerator
@@ -1137,6 +1138,7 @@ Gruul Cluestone
 Gruul Ragebeast
 Gryffwing Cavalry
 Guard Gomazoa
+Guardian Archon
 Guardian Augmenter
 Guardian Gladewalker
 Guidelight Matrix
@@ -2420,6 +2422,7 @@ Sram, Senior Edificer
 Staff of Nin
 Staggering Insight
 Staggershock
+Stalking Leonin
 Stalwart Pathlighter
 Star Whale
 Starforged Sword

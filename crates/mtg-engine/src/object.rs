@@ -216,6 +216,8 @@ impl Hash for PhasedState {
 }
 
 /// State that only exists while an object is on the battlefield.
+// Each flag is an independent fact of the permanent (tapped, a secret choice, ...), not a state machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PermanentState {
     pub(crate) tapped: bool,
@@ -239,6 +241,8 @@ pub struct PermanentState {
     pub(crate) timestamp: u64,
     pub(crate) observed: Option<PlayerId>,
     pub(crate) chosen: Option<Chosen>,
+    /// Whether `chosen` was chosen secretly and is not yet revealed (CR 706): the other players do not see it.
+    pub(crate) r110_secret: bool,
     /// The optional costs paid as the spell was cast, by index, a repeatable cost once for each payment.
     pub(crate) paid: Vec<usize>,
     /// The alternative cost the spell was cast for.
@@ -298,6 +302,7 @@ impl PermanentState {
             timestamp,
             observed: None,
             chosen: None,
+            r110_secret: false,
             paid,
             way,
             x,
@@ -356,6 +361,11 @@ impl PermanentState {
     /// What its controller chose as it entered, if it asked for a choice.
     pub const fn chosen(&self) -> Option<&Chosen> {
         self.chosen.as_ref()
+    }
+
+    /// Whether its choice was made secretly and is not yet revealed.
+    pub const fn r110_secret(&self) -> bool {
+        self.r110_secret
     }
 
     /// Whether the permanent is tapped.

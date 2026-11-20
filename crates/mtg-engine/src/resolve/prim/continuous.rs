@@ -5,7 +5,7 @@ use std::sync::Arc;
 use mtg_cards::effect::Effect;
 use mtg_cards::keyword::Keyword;
 use mtg_cards::modify::Modification as Wanted;
-use mtg_cards::refs::{Pred, Selector as PickSelector};
+use mtg_cards::refs::{Pred, Ref, Selector as PickSelector};
 use mtg_cards::value::Amount;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
@@ -290,6 +290,12 @@ fn entered(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveEr
     }
 }
 
+/// The seat of a chosen player as a fixed reference ("protection from the chosen player" stays from that player once
+/// the source has gone).
+pub(super) fn r110_seat_of(player: mtg_core::ids::PlayerId) -> Option<u8> {
+    u8::try_from(player.index()).ok()
+}
+
 /// The keyword with the colour, creature type or land type the source chose as it entered written into a protection
 /// quality or a landwalk: the holder of a granted keyword (an Aura's host, a creature of a lord) made no choice, so "the
 /// chosen color" is fixed by the source that grants it.
@@ -306,6 +312,11 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
             | Chosen::R6700PlaneswalkerType(subtype),
         ) => Pred::Subtype(subtype.clone()),
         (Pred::ChosenSubtype, Chosen::CardType(kind)) => Pred::Type(*kind),
+        (Pred::ControlledBy(Ref::Chosen), Chosen::Player(player)) => r110_seat_of(*player)
+            .map_or_else(
+                || pred.clone(),
+                |seat| Pred::ControlledBy(Ref::R110Seat(seat)),
+            ),
         _ => pred.clone(),
     };
     match (keyword, chosen) {
