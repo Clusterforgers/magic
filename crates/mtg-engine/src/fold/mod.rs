@@ -269,6 +269,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::TargetsChanged(change) => crate::retargeted::fold(state, change),
+        Event::R112XChanged { object, x } => crate::retargeted::r112_fold_x(state, *object, *x),
         Event::Remembered(change) => {
             crate::memory::fold(state, change);
             Ok(())

@@ -254,6 +254,9 @@ fn targetable(ctx: &Ctx, what: &Targetable, plural: bool) -> String {
             who(ctx, chooser)
         ),
         Targetable::AtRandom(what) => format!("{} chosen at random", targetable(ctx, what, plural)),
+        Targetable::R112OpponentChooses(what) => {
+            format!("{} of an opponent's choice", targetable(ctx, what, plural))
+        }
         Targetable::PlayerAmong(among) => noun(&format!("player among {}", who(ctx, among))),
     }
 }
@@ -369,6 +372,7 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Spell => Part::Kind("spell".to_owned()),
         Pred::Dungeon => Part::Kind("dungeon".to_owned()),
         Pred::Emblem => Part::Kind("emblem".to_owned()),
+        Pred::R112Modal => Part::Before("modal".to_owned()),
         Pred::Ability(kind) => Part::Kind(format!("{} ability", lower(kind))),
         Pred::Tapped => Part::Before("tapped".to_owned()),
         Pred::Untapped => Part::Before("untapped".to_owned()),
@@ -499,6 +503,7 @@ fn stat_text(stat: StatKind) -> &'static str {
         StatKind::R6018PermanentTypes => "permanent types",
         StatKind::R6104LifePaid => "life paid to activate it",
         StatKind::R6500StationValue => "power it stations with",
+        StatKind::R112ModesChosen => "number of times a mode was chosen",
     }
 }
 

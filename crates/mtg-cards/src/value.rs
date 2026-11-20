@@ -78,6 +78,8 @@ pub enum StatKind {
     /// The number it stations permanents with (CR 702.184a): its power, or its toughness while a rule says it stations
     /// using its toughness (`CombatQuirk::R6500StationsByToughness`).
     R6500StationValue,
+    /// How many times a mode was chosen for it, while it is a spell (CR 700.2): a mode chosen twice counts twice.
+    R112ModesChosen,
 }
 
 /// A comparison between two numbers.

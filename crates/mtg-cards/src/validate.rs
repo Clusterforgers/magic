@@ -285,6 +285,7 @@ fn kind_of_targetable(what: &Targetable) -> Kind {
         Targetable::Together { what, .. }
         | Targetable::Another { what, .. }
         | Targetable::ChosenBy { what, .. }
+        | Targetable::R112OpponentChooses(what)
         | Targetable::AtRandom(what) => kind_of_targetable(what),
         Targetable::AnyTarget | Targetable::Either(_) => Kind::Either,
     }
@@ -912,6 +913,7 @@ impl<'a> Walker<'a> {
                 self.at("group", |w| w.selector(group));
             }
             Pred::Kicked => self.uses("Pred", "Kicked"),
+            Pred::R112Modal => self.uses("Pred", "R112Modal"),
             Pred::AdditionalCostPaid => self.uses("Pred", "AdditionalCostPaid"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
             Pred::Foretold => self.uses("Pred", "Foretold"),
@@ -1092,6 +1094,7 @@ impl<'a> Walker<'a> {
             | Pred::LeastAmong { .. }
             | Pred::HasKeywordNamed(_)
             | Pred::Kicked
+            | Pred::R112Modal
             | Pred::AdditionalCostPaid
             | Pred::CounterCount { .. }
             | Pred::Foretold
@@ -1453,6 +1456,7 @@ impl<'a> Walker<'a> {
             StatKind::R6018PermanentTypes => "R6018PermanentTypes",
             StatKind::R6104LifePaid => "R6104LifePaid",
             StatKind::R6500StationValue => "R6500StationValue",
+            StatKind::R112ModesChosen => "R112ModesChosen",
             _ => return,
         };
         self.uses("Stat", name);
@@ -3638,6 +3642,10 @@ impl Walker<'_> {
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("what", |w| w.targetable(what));
             }
+            Targetable::R112OpponentChooses(what) => {
+                self.uses("Target", "R112OpponentChooses");
+                self.at("what", |w| w.targetable(what));
+            }
             Targetable::AtRandom(what) => {
                 self.uses("Target", "AtRandom");
                 self.at("what", |w| w.targetable(what));
@@ -4546,6 +4554,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_moved(name));
                 }
             }
+            Effect::R112DoubleX { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Counter { what, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {

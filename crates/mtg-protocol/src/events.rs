@@ -490,6 +490,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
         | Event::TargetsChanged(_)
+        | Event::R112XChanged { .. }
         | Event::CopyEnded { .. }
         | Event::Entered { .. }
         | Event::Attached { .. }

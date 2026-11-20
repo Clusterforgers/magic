@@ -113,6 +113,7 @@ mod moved_as;
 mod one_of;
 mod pair;
 mod r111_order_graveyard;
+mod r112_double_x;
 mod r301b_exchange_toughness;
 mod r372_gain_suspend;
 mod r404_look_face_down;
@@ -353,6 +354,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Fabricate { .. } => fabricate::run(cx, effect),
         Effect::Learn { .. } => learn::run(cx, effect),
         Effect::R111OrderGraveyard { .. } => r111_order_graveyard::run(cx, effect),
+        Effect::R112DoubleX { .. } => r112_double_x::run(cx, effect),
         Effect::Performed { .. } => l31a_performed::run(cx, effect),
         Effect::Crewed { .. } => crewed::run(cx, effect),
         Effect::Explore { .. } => explore::run(cx, effect),

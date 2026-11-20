@@ -1,7 +1,7 @@
 {
   "oracle_id": "3246eff5-8739-469f-a401-e5de927dd6bb",
   "name": "Khârn the Betrayer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Khârn the Betrayer",
@@ -10,15 +10,26 @@
         { "Rule": { "rule": { "MustAttack": "This" } } },
         { "Rule": { "rule": { "MustBlock": "This" } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 70, "end": 152 }
+          "Triggered": {
+            "when": { "Did": { "action": "R112LostControl", "who": "You", "what": ["This"] } },
+            "effects": [{ "Draw": { "count": 2 } }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 153, "end": 287 }
+          "Replacement": {
+            "when": { "Damage": { "to": "This" } },
+            "by": {
+              "PreventAnd": [
+                { "Choose": { "from": "Opponents", "as": "opponent" } },
+                {
+                  "Continuous": {
+                    "affected": "This",
+                    "mods": [{ "SetController": { "Bound": "opponent" } }],
+                    "duration": "Forever"
+                  }
+                }
+              ]
+            }
           }
         }
       ]

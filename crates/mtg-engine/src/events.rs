@@ -1555,6 +1555,13 @@ pub enum Event {
         /// The object the card became, in the hand.
         object: ObjectId,
     },
+    /// The value of X of a spell on the stack changed ("double the value of X", CR 107.3): its choices hold the new X.
+    R112XChanged {
+        /// The spell.
+        object: ObjectRef,
+        /// The new value of X.
+        x: u32,
+    },
 }
 
 /// How the resolution of a spell or ability ended.
@@ -1838,6 +1845,7 @@ impl Event {
             Event::CardCopied(copy) => vec![copy.object],
             Event::AbilityCopied(copy) => vec![copy.object],
             Event::TargetsChanged(change) => vec![change.object.id],
+            Event::R112XChanged { object, .. } => vec![object.id],
             Event::Remembered(change) => vec![change.source.id],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }

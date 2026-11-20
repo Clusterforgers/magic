@@ -1567,4 +1567,12 @@ player: PlayerId,
 /**
  * The object the card became, in the hand.
  */
-object: ObjectId, } };
+object: ObjectId, } } | { "R112XChanged": { 
+/**
+ * The spell.
+ */
+object: ObjectRef, 
+/**
+ * The new value of X.
+ */
+x: number, } };

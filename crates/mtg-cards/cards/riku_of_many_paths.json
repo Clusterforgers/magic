@@ -1,0 +1,78 @@
+{
+  "oracle_id": "1cfe6e3a-f8c9-4105-ad03-0faf1fcc4626",
+  "name": "Riku of Many Paths",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Riku of Many Paths",
+      "oracle_fingerprint": "5d5abf1d9b2ffdadcb7fc5136cadcd8e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["R112Modal"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": {
+                    "min": 0,
+                    "max": { "Stat": { "of": "Triggering", "stat": "R112ModesChosen" } }
+                  },
+                  "modes": [
+                    {
+                      "effects": [
+                        { "ExileTop": { "as": "impulse" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "impulse" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfYourNextTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+                        {
+                          "Continuous": {
+                            "affected": "This",
+                            "mods": [{ "AddKeyword": "Trample" }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Bird",
+                                "colors": ["Blue"],
+                                "types": ["Creature"],
+                                "subtypes": ["Bird"],
+                                "power": 1,
+                                "toughness": 1,
+                                "abilities": [{ "Keyword": "Flying" }]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

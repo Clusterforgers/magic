@@ -43,3 +43,18 @@ pub(crate) fn fold(state: &mut GameState, change: &TargetsChanged) -> Result<(),
     }
     Ok(())
 }
+
+/// Folds `Event::R112XChanged`: the spell keeps its place on the stack and its X is the new value.
+pub(crate) fn r112_fold_x(
+    state: &mut GameState,
+    spell: ObjectRef,
+    x: u32,
+) -> Result<(), EngineError> {
+    let object = state
+        .objects
+        .get_mut(&spell.id)
+        .filter(|object| object.counter() == spell.counter && object.zone() == Zone::Stack)
+        .ok_or_else(|| invalid(format!("{spell:?} is not on the stack")))?;
+    object.choices.x = Some(x);
+    Ok(())
+}

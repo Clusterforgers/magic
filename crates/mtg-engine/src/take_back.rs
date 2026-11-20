@@ -403,6 +403,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
         | Event::TargetsChanged(_)
+        | Event::R112XChanged { .. }
         | Event::Remembered { .. }
         | Event::CopyEnded { .. }
         | Event::MonarchChanged { .. }

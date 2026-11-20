@@ -270,6 +270,27 @@ fn announcing(state: &GameState, source: ObjectId, controller: PlayerId) -> Scop
     Scope::announcing(state, controller, origin)
 }
 
+/// The scope the bounds of a modal ability are read in: a triggered one also reads the event it triggered on ("where X
+/// is the number of times you chose a mode for that spell").
+fn r112_bounds_scope<'a>(
+    state: &'a GameState,
+    source: ObjectId,
+    controller: PlayerId,
+    cause: Option<&'a Cause>,
+) -> Scope<'a> {
+    let origin = state.object(source).map_or(
+        ObjectRef {
+            id: source,
+            counter: 0,
+        },
+        GameObject::reference,
+    );
+    match cause {
+        Some(cause) => Scope::triggered(state, controller, origin, cause),
+        None => Scope::announcing(state, controller, origin),
+    }
+}
+
 /// Whether the condition that lets every mode be chosen holds as the ability is announced ("If you control a commander
 /// as you cast this spell, you may choose both instead").
 fn all_may_be_chosen(
@@ -318,7 +339,7 @@ pub(crate) fn mode_options(
     let min = match &modal.choose.min {
         Amount::Fixed(n) => u32::try_from(*n).unwrap_or(0),
         // A fewest that depends on the game ("choose both instead") is read as the ability is announced.
-        other => announcing(state, source, controller)
+        other => r112_bounds_scope(state, source, controller, cause)
             .amount(other)
             .map_or(0, |n| u32::try_from(n).unwrap_or(0)),
     };
@@ -332,7 +353,9 @@ pub(crate) fn mode_options(
         Some(_) if all_may_be_chosen(state, source, controller, modal.all_if) => available,
         Some(Amount::Fixed(n)) => u32::try_from(*n).unwrap_or(0),
         Some(other) => {
-            let amount = announcing(state, source, controller).amount(other).ok()?;
+            let amount = r112_bounds_scope(state, source, controller, cause)
+                .amount(other)
+                .ok()?;
             u32::try_from(amount).unwrap_or(0)
         }
     };
