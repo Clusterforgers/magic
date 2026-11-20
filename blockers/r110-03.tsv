@@ -49,5 +49,4 @@ Arboria	No fixture or rules file; per player last-turn facts (cast a spell, put 
 Backdraft	No fixture or rules file; the damage dealt this turn by each sorcery spell, per spell and caster (a keyed turn tally), and a choice among those spells	none
 Glyph of Reincarnation	No fixture or rules file; the creatures blocked by a Wall this turn with their controller when blocked (a keyed turn log), read by a destroy and a return per creature that died	none
 Suffocation	No fixture or rules file; the last red instant or sorcery spell that dealt damage to you this turn and its controller (turn log of damage by spell source), read by a cast condition and the damage recipient	none
-Vodalian War Machine	The permanents tapped to pay the costs of the source's abilities this turn (memory of cost-tapped objects per source), read by a dies trigger	none
 Territorial Hellkite	The opponents the source attacked during its controller's last combat (a per-object attack history across turns), a random choice excluding them, and a must-attack of the chosen player	none
