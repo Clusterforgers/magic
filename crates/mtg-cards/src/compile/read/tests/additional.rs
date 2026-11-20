@@ -106,6 +106,7 @@ fn a_required_additional_cost_reads_and_writes_back(#[case] text: &str, #[case] 
     "As an additional cost to cast this spell, discard a card and sacrifice a creature."
 )]
 #[case::mana_alone("As an additional cost to cast this spell, pay {2}.")]
+#[case::waterbend_a_number("As an additional cost to cast this spell, waterbend {3}.")]
 #[case::any_number(
     "As an additional cost to cast this spell, you may sacrifice any number of Spirits."
 )]
@@ -215,6 +216,10 @@ fn a_reveal_from_the_hand_as_an_additional_cost_reads_and_writes_back(
     "As an additional cost to cast this spell, exile X creature cards from your graveyard.",
     must(vec![CostItem::ExileFromGraveyard { filter: kind(CardType::Creature), any_player: false, count: Amount::X }])
 )]
+#[case::waterbend(
+    "As an additional cost to cast this spell, waterbend {X}.",
+    must(vec![CostItem::Waterbend(Amount::X)])
+)]
 fn a_required_additional_cost_that_counts_x_reads_and_writes_back(
     #[case] text: &str,
     #[case] expected: Ability,
@@ -231,6 +236,7 @@ fn a_required_additional_cost_that_counts_x_reads_and_writes_back(
 #[case::mana_and_life("As an additional cost to cast this spell, pay {X} and 2 life.")]
 #[case::x_with_a_number("As an additional cost to cast this spell, pay X plus 2 life.")]
 #[case::half_of_it("As an additional cost to cast this spell, pay half X life.")]
+#[case::optional_waterbend("As an additional cost to cast this spell, you may waterbend {X}.")]
 fn an_x_in_the_additional_cost_that_the_caster_does_not_announce_stays_with_the_table(
     #[case] text: &str,
 ) {

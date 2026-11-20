@@ -8154,7 +8154,13 @@ pub(crate) fn check_printed(
                 matches!(ability, Ability::Keyword(Keyword::Kicker(cost)) if cost.has_x())
             })
         });
-        if !printed.faces[face].mana_cost.contains("{X}") && !kicker_x {
+        // "As an additional cost to cast this spell, waterbend {X}": the caster announces X for that cost (CR 601.2b).
+        let additional_x = card.faces.get(face).is_some_and(|face| {
+            face.abilities.iter().any(|ability| {
+                matches!(ability, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x())
+            })
+        });
+        if !printed.faces[face].mana_cost.contains("{X}") && !kicker_x && !additional_x {
             walker.path = vec![path];
             walker.problem("uses X but the imported mana cost has none");
         }

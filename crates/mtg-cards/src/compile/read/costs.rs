@@ -132,6 +132,10 @@ fn worded(r: &mut Reader<'_>) -> Option<CostItem> {
     if r.word("put") {
         return r.attempt(blight).or_else(|| put_on_source(r));
     }
+    // "waterbend {X}" (Avatar): X announced with the cost (CR 601.2b); fixed waterbend costs read whole elsewhere.
+    if r.word("waterbend") {
+        return (r.symbol()? == "X").then_some(CostItem::Waterbend(Amount::X));
+    }
     r.need("sacrifice")?;
     if r.source() {
         return Some(CostItem::SacrificeSelf);
