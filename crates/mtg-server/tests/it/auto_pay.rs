@@ -1,4 +1,4 @@
-//! Goal: "Always pay automatically" pays a seat's mana cost at once with no payment prompt, only with the setting on and out of Full Control; the cast it paid is a step like any other, so a take-back asked right after it undoes the cast and the payment together and no payment question is left behind to race it.
+//! Goal: "Always pay for me" pays a seat's mana cost at once with no payment prompt, only with the setting on and out of Full Control; the cast it paid is a step like any other, so a take-back asked right after it undoes the cast and the payment together and no payment question is left behind to race it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;

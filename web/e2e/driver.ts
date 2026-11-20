@@ -308,7 +308,7 @@ async function payFor(page: Page, label: string, id: string, done: string): Prom
       () => false,
     )
   if (moved) return done
-  // "Pay for me" lays the game's payment out for a Confirm when "Always pay automatically" is off.
+  // "Pay for me" lays the game's payment out for a Confirm when "Always pay for me" is off.
   const confirm = button(page, 'Confirm payment')
   if ((await confirm.count()) > 0 && (await confirm.isEnabled())) {
     await confirm.click()

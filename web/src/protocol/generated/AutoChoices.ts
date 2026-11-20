@@ -25,8 +25,7 @@ smart_stops: boolean,
  */
 skip_triggers?: boolean, 
 /**
- * "Always pay automatically": a mana payment the automatic payment makes with no real choice (no hybrid or
- * Phyrexian symbol, no creature or card to help pay, no mana ability that does more than add mana) is paid at
- * once, out of Full Control; left out (false) when off.
+ * "Always pay for me": a mana payment plain mana makes (the pool and mana abilities that add mana and do nothing
+ * else; no life, help, sacrifice or paid ability) is paid at once, out of Full Control; left out (false) when off.
  */
 auto_pay?: boolean, };

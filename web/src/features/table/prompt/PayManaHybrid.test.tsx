@@ -291,7 +291,7 @@ describe('Pay for me and Pay the rest for me with life', () => {
     expect(answer.mock.calls).toEqual([[{ PayMana: 'Auto' }]])
   })
 
-  it('goes away once life is chosen, and with Always pay automatically Pay the rest for me keeps the life', async () => {
+  it('goes away once life is chosen, and with Always pay for me Pay the rest for me keeps the life', async () => {
     const { lifeSwitches, user, answer } = renderPay(payOptions('{1}{B/P}{B/P}', 'G'), true)
     await user.click(must(lifeSwitches()[0]))
     expect(screen.queryByRole('button', { name: 'Pay for me' })).toBeNull()
@@ -299,7 +299,7 @@ describe('Pay for me and Pay the rest for me with life', () => {
     expect(answer.mock.calls).toEqual([[{ PayMana: { Complete: { pool: [], taps: [], life: 2 } } }]])
   })
 
-  it('with Always pay automatically, Pay the rest for me keeps the lands and the life together', async () => {
+  it('with Always pay for me, Pay the rest for me keeps the lands and the life together', async () => {
     const { land, lifeSwitches, user, answer } = renderPay(payOptions('{1}{B/P}{B/P}', 'GB'), true)
     await user.click(land(1))
     await user.click(must(lifeSwitches()[1]))

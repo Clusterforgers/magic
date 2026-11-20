@@ -1,4 +1,4 @@
-/** Goal: for many costs and source sets (generic, coloured, colourless, floating mana, several colours on one permanent, too little mana) the PayMana prompt marks exactly the sources that still help as legal, builds the payment from clicks and keys in order, enables Confirm only for a payment the engine would accept and sends it as one Manual answer; Pay for me lays out the game's payment for a Confirm (or answers at once with Always pay automatically on) and Cancel answers once (Pay for me is disabled with its reason when the game offers none), a source that cannot finish the payment is not offered, a chosen source can be taken back, and a new decision starts clean. */
+/** Goal: for many costs and source sets (generic, coloured, colourless, floating mana, several colours on one permanent, too little mana) the PayMana prompt marks exactly the sources that still help as legal, builds the payment from clicks and keys in order, enables Confirm only for a payment the engine would accept and sends it as one Manual answer; Pay for me lays out the game's payment for a Confirm (or answers at once with Always pay for me on) and Cancel answers once (Pay for me is disabled with its reason when the game offers none), a source that cannot finish the payment is not offered, a chosen source can be taken back, and a new decision starts clean. */
 import { act, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import { AUTO_REASON } from './kinds/PayMana'
@@ -841,7 +841,7 @@ describe('Pay for me, Cancel and Confirm', () => {
     expect(answer.mock.calls).toEqual([[{ PayMana: { Manual: payment([], [[1, 0]]) } }]])
   })
 
-  it('with Always pay automatically, Pay for me answers Auto at once', async () => {
+  it('with Always pay for me, Pay for me answers Auto at once', async () => {
     const { answer, user } = renderPay(
       payOptions(
         '{2}',
@@ -936,7 +936,7 @@ describe('Pay for me, Cancel and Confirm', () => {
     ['a land and floating mana', ['0', 'pool:R'], payment(['R'], [[0, 0]])],
     ['floating mana alone', ['pool:R'], payment(['R'], [])],
   ])(
-    'with Always pay automatically, Pay the rest for me keeps %s and answers Complete',
+    'with Always pay for me, Pay the rest for me keeps %s and answers Complete',
     async (_what, picks, expected) => {
       const { answer, user, steps } = renderPay(
         payOptions(

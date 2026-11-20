@@ -50,6 +50,9 @@ mod mana_kinds;
 mod mana_lands_first_tests;
 #[cfg(test)]
 mod mana_lasts_tests;
+mod mana_plain;
+#[cfg(test)]
+mod mana_plain_tests;
 mod mana_plan;
 mod mana_repeat;
 #[cfg(test)]

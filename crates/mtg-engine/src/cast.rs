@@ -21,8 +21,7 @@ use crate::events::{Event, ZoneCause};
 use crate::help::Offered;
 use crate::loyalty;
 use crate::mana::{
-    ManaOption, Payment, auto_payment_with, check_payment_with, complete_payment_with,
-    max_life_payment,
+    ManaOption, Payment, check_payment_with, complete_payment_with, max_life_payment,
 };
 use crate::mana_ability;
 use crate::mana_takes::{assignment, r5506_without_announced, without_taken};
@@ -224,11 +223,12 @@ pub(crate) fn payment_decision(
         std::borrow::Cow::Borrowed(_) => None,
     };
     let sources = narrowed.unwrap_or(sources);
-    let proposal = auto_payment_with(&cost, &pool, &sources, help.help(), life, &spend);
+    let proposal = crate::mana::propose(&cost, &pool, &sources, help.help(), life, &spend);
     Some(PayOptions {
         spell: object,
-        auto_available: proposal.is_some(),
-        proposal: proposal.map(Box::new),
+        auto_available: proposal.payment.is_some(),
+        proposal: proposal.payment.map(Box::new),
+        asked: proposal.asked.map(Box::new),
         ability: None,
         help: Box::new(help),
         spend: Box::new(spend),
@@ -891,7 +891,7 @@ fn pay_with(
             &partial,
         )
         .map_err(IllegalAnswer::from)?,
-        PayChoice::Auto => auto_payment_with(
+        PayChoice::Auto => crate::mana::propose(
             &options.cost,
             &options.pool,
             &options.sources,
@@ -899,6 +899,7 @@ fn pay_with(
             options.life,
             &options.spend,
         )
+        .payment
         .ok_or(IllegalAnswer::NotOffered("automatic payment"))?,
     };
     let events = payment_events(
@@ -965,6 +966,7 @@ mod tests {
             )
             .is_some(),
             proposal: None,
+            asked: None,
             ability: None,
             help: Box::default(),
             spend: Box::new(Spend::other()),

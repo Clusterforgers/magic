@@ -15,7 +15,7 @@ use crate::choose::{
 };
 use crate::combat::{AttackTarget, DamageTarget};
 use crate::help::{Help, Offered};
-use crate::mana::{ManaOption, ManaPool, ManaSource, Payment};
+use crate::mana::{AskedWhy, ManaOption, ManaPool, ManaSource, Payment};
 use crate::manual::ManualAction;
 use crate::spend::Spend;
 
@@ -478,6 +478,11 @@ pub struct PayOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Payment>", optional))]
     pub proposal: Option<Box<Payment>>,
+    /// Why the game's payment needs more than plain mana (a Treasure, life, convoke), so "Always pay for me" asks;
+    /// left out while plain mana pays.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<AskedWhy>", optional))]
+    pub asked: Option<Box<AskedWhy>>,
     /// The ability being activated, while the payment is for an activation (cycling from a hand); left out for a spell and
     /// for anything else.
     #[serde(default, skip_serializing_if = "Option::is_none")]
