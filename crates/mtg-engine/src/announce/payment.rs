@@ -93,7 +93,9 @@ pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
                 None => spend,
             }
         }
-        What::Trigger(_) | What::Attack(..) | What::Block(_) => Spend::other(),
+        What::Trigger(_) | What::Attack(..) | What::Block(_) => {
+            Spend::other().r111_by(ctx.state, ctx.player)
+        }
     }
 }
 

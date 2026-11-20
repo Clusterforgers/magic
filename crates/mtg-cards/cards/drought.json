@@ -1,7 +1,7 @@
 {
   "oracle_id": "ecba74bd-850e-4cbe-9b1c-b0d4d6f27d1c",
   "name": "Drought",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Drought",
@@ -27,9 +27,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 185, "end": 309 }
+          "Rule": {
+            "rule": {
+              "R110SacrificeTax": {
+                "abilities": [],
+                "sacrifice": [{ "Subtype": "Swamp" }],
+                "per_symbol": "Black"
+              }
+            }
           }
         }
       ]

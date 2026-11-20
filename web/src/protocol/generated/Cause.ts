@@ -42,4 +42,9 @@ dealers?: Array<ObjectRef>,
  * The counters a putting of counters put, by kind and number, in the order put ("the same number and kind of
  * counters"); empty for any other event.
  */
-counters?: Array<[CounterKind, number]>, };
+counters?: Array<[CounterKind, number]>, 
+/**
+ * What the payment a reflexive trigger follows took ("When you discard a card this way, ... the mana value of the
+ * discarded card"), which `Ref::Paid` reads as its targets are chosen; empty for any other trigger.
+ */
+r111_paid?: Array<Target>, };

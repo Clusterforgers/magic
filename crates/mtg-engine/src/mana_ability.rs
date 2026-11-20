@@ -242,8 +242,12 @@ fn rule_mana(
         } else {
             Vec::new()
         };
+        // The sacrifices the rules in play add to the cost come after the printed parts (`r110_sacrifice_tax`).
+        let taxed = crate::r110_sacrifice_tax::r111_mana_tax(state, id, Some(&shape.mana));
+        let picks: Vec<&mtg_cards::cost::CostItem> =
+            shape.picks.iter().copied().chain(&taxed).collect();
         let (takes, counted_takes): (Vec<Take>, Vec<bool>) =
-            takes_of(state, player, id, &barred, &shape.picks)
+            takes_of(state, player, id, &barred, &picks)
                 .into_iter()
                 .unzip();
         if takes
@@ -533,6 +537,8 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             let tax =
                 crate::activation_kind::mana_modified(state, id, mtg_core::mana::ManaCost::ZERO);
             let life = crate::activation_kind::r5514_mana_life(state, id);
+            // A printed mana ability's cost holds no mana symbol; a tax that counts none takes nothing.
+            let taxed = crate::r110_sacrifice_tax::r111_mana_tax(state, id, None);
             for (ability, def) in chars.abilities.iter().enumerate() {
                 let AbilityDef::Mana(mana) = def;
                 let mut option = ManaOption::new(
@@ -543,6 +549,20 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
                     mana.produces,
                 );
                 option.only.extend(crate::spend::snow_rider(state, id));
+                if !taxed.is_empty() {
+                    option.takes =
+                        takes_of(state, player, id, &[id], &taxed.iter().collect::<Vec<_>>())
+                            .into_iter()
+                            .map(|(take, _)| take)
+                            .collect();
+                    if option
+                        .takes
+                        .iter()
+                        .any(|take| take.from.len() < take.count as usize)
+                    {
+                        continue;
+                    }
+                }
                 option.cost = tax.clone();
                 option.life = option.life.saturating_add(life);
                 found.push(option);
@@ -691,6 +711,18 @@ pub(crate) fn activation(
         for (part, objects) in picks.zip(taken) {
             events.extend(part.at(x).events(state, player, id, objects));
         }
+    }
+    // The sacrifices the rules in play add are taken after the printed parts (`rule_mana`, `options`).
+    let mana = shape.as_ref().map(|shape| &shape.mana);
+    let printed_picks = shape.as_ref().map_or(0, |shape| {
+        takes_of(state, player, id, &[], &shape.picks).len()
+    });
+    let taxed = crate::r110_sacrifice_tax::r111_mana_tax(state, id, mana);
+    let parts = taxed
+        .iter()
+        .filter_map(|item| Part::read(item).ok().flatten());
+    for (part, objects) in parts.zip(taken.iter().skip(printed_picks)) {
+        events.extend(part.events(state, player, id, objects));
     }
     // The life cost modifiers add to every mana ability of the source ("cost an additional 1 life to activate").
     let added = crate::activation_kind::r5514_mana_life(state, id);

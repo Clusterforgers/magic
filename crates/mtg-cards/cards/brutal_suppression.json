@@ -1,0 +1,23 @@
+{
+  "oracle_id": "b4971aa3-32d1-4bc7-8133-ed67763d2dc6",
+  "name": "Brutal Suppression",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brutal Suppression",
+      "oracle_fingerprint": "4e37a8e2e41875ce469b02ef1315bbe3",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R110SacrificeTax": {
+                "abilities": [{ "Subtype": "Rebel" }, { "Not": "Token" }],
+                "sacrifice": [{ "Type": "Land" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

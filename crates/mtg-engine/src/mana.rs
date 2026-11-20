@@ -1259,15 +1259,17 @@ fn can_afford_plain(
     let floating = pool.floating(spend);
     let sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     within_energy(&sources, &[]).iter().any(|sources| {
-        cost.resolutions().iter().any(|r| {
-            can_pay_life(life, r.life)
-                && help::variants(&r.cost, help, &Used::default(), &[], sources)
-                    .iter()
-                    .any(|v| {
-                        let sources = help::without_tapped(sources, &v.used, &Used::default());
-                        plain_can_afford(&v.cost, &floating, &sources)
-                    })
-        })
+        crate::r111_spend_as::r111_resolutions(cost, spend.r111_pays.as_ref())
+            .iter()
+            .any(|r| {
+                can_pay_life(life, r.life)
+                    && help::variants(&r.cost, help, &Used::default(), &[], sources)
+                        .iter()
+                        .any(|v| {
+                            let sources = help::without_tapped(sources, &v.used, &Used::default());
+                            plain_can_afford(&v.cost, &floating, &sources)
+                        })
+            })
     })
 }
 
@@ -1383,7 +1385,7 @@ fn auto_plain(
     let usable_sources = usable(&mana_repeat::expand(sources, cost), spend, life);
     let mut best = None;
     for sources in within_energy(&usable_sources, &[]) {
-        for resolution in cost.resolutions() {
+        for resolution in crate::r111_spend_as::r111_resolutions(cost, spend.r111_pays.as_ref()) {
             if resolution.life > 0 && i64::from(life) <= i64::from(resolution.life) {
                 continue;
             }
@@ -1604,7 +1606,7 @@ fn check_expanded(
         return Err(PaymentError::NotEnoughEnergy { paid, have });
     }
     let mut refusal = None;
-    for resolution in cost.resolutions() {
+    for resolution in crate::r111_spend_as::r111_resolutions(cost, spend.r111_pays.as_ref()) {
         if resolution.life != payment.life {
             continue;
         }
@@ -1762,7 +1764,7 @@ fn complete_expanded(
     let lists = within_energy(&usable_sources, &partial.taps);
     let mut best = None;
     let mut refusal: Option<PaymentError> = None;
-    for resolution in cost.resolutions() {
+    for resolution in crate::r111_spend_as::r111_resolutions(cost, spend.r111_pays.as_ref()) {
         if !may_pay_life(resolution.life, partial.life, life) {
             continue;
         }

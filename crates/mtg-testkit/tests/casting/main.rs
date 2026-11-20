@@ -148,6 +148,7 @@ mod r110_foretell;
 mod r110_kicked_discard;
 mod r110_sacrifice_tax;
 mod r110_transfigure;
+mod r111_spend_as;
 mod r1a_spend;
 mod r281_cards;
 mod r281_kicked_spend;

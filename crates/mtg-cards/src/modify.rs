@@ -1549,7 +1549,7 @@ pub enum GameRule {
         /// The spells that pay it, judged as they are cast; no spell when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         spells: Option<Selector>,
-        /// The objects whose activated abilities other than mana abilities pay it; no ability when absent.
+        /// The objects whose activated abilities, mana abilities included, pay it; no ability when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         abilities: Option<Selector>,
         /// What each sacrifice takes.
@@ -1558,6 +1558,22 @@ pub enum GameRule {
         /// or Phyrexian symbol of the color counts); once when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         per_symbol: Option<Color>,
+    },
+    /// The players may spend mana of one color as though it were mana of another color or of any color (CR 609.4b),
+    /// whatever they pay: "You may spend white mana as though it were red mana.", "You may spend white mana as though it
+    /// were mana of any color. You may spend other mana only as though it were colorless mana."
+    R111SpendColorAs {
+        /// The players.
+        who: Ref,
+        /// The color of the mana.
+        mana: Color,
+        /// The color it may be spent as; any color when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        as_color: Option<Color>,
+        /// Mana of every other type may be spent only as though it were colorless mana: it pays no colored symbol, and
+        /// it pays `{C}`.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        others_colorless: bool,
     },
 }
 

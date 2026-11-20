@@ -1,0 +1,18 @@
+{
+  "oracle_id": "eea64b1f-d6a9-4f72-8612-efab4b124b63",
+  "name": "Sunglasses of Urza",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sunglasses of Urza",
+      "oracle_fingerprint": "a858f11910b05a8580a1efce945f7411",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "R111SpendColorAs": { "who": "You", "mana": "White", "as_color": "Red" } }
+          }
+        }
+      ]
+    }
+  ]
+}

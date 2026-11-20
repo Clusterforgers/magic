@@ -205,7 +205,13 @@ pub(crate) fn can_bring(
         .is_some_and(|slot| slot.stage == CompanionStage::Revealed)
         && state.is_alive(player)
         && sorcery_timing(state, player)
-        && can_afford(&action_cost(), pool, sources, life, &Spend::other())
+        && can_afford(
+            &action_cost(),
+            pool,
+            sources,
+            life,
+            &Spend::other().r111_by(state, player),
+        )
 }
 
 /// The id of the companion `player` can still bring into the game, or none.

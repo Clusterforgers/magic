@@ -57,6 +57,11 @@ pub struct Spend {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub has_x: bool,
+    /// Which mana pays each colored symbol and `{C}` when a rule lets mana be spent as though it were another type
+    /// (`r111_spend_as`); each pays its own type when absent.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(type = "Array<number>", optional))]
+    pub r111_pays: Option<crate::r111_spend_as::R111Pays>,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
@@ -123,6 +128,7 @@ impl Spend {
             kind: SpendKind::Spell,
             traits,
             has_x,
+            r111_pays: crate::r111_spend_as::r111_pays(state, caster),
         }
     }
 
@@ -173,6 +179,12 @@ impl Spend {
             kind: SpendKind::Ability,
             traits,
             has_x,
+            r111_pays: state.object(source).and_then(|object| {
+                crate::r111_spend_as::r111_pays(
+                    state,
+                    crate::characteristics::controller_of_object(state, object),
+                )
+            }),
         }
     }
 
@@ -215,6 +227,13 @@ impl Spend {
                 | SpendOn::Snow
                 | SpendOn::Enters(_) => false,
             })
+    }
+
+    /// The payment made by `player`, with the mana the rules let them spend as though it were another type.
+    #[must_use]
+    pub fn r111_by(mut self, state: &GameState, player: PlayerId) -> Self {
+        self.r111_pays = crate::r111_spend_as::r111_pays(state, player);
+        self
     }
 
     /// Whether the payment is for neither a spell nor an ability, so serializing can leave it out.

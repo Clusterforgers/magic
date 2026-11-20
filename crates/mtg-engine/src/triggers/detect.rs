@@ -1584,6 +1584,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         source: None,
         against: None,
         counters: Vec::new(),
+        r111_paid: Vec::new(),
     }
 }
 

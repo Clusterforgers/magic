@@ -71,7 +71,7 @@ pub(crate) fn endable(
             pool,
             &for_card(state, sources, object),
             life,
-            &Spend::other(),
+            &Spend::other().r111_by(state, player),
         ) {
             found.push(PaidEnd {
                 effect: effect.id,
