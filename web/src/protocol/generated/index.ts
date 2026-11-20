@@ -14,6 +14,7 @@ export type { AdminGameList } from "./AdminGameList";
 export type { AdminGameSeat } from "./AdminGameSeat";
 export type { AimWhy } from "./AimWhy";
 export type { Answer } from "./Answer";
+export type { AskedWhy } from "./AskedWhy";
 export type { AskingCause } from "./AskingCause";
 export type { AskingView } from "./AskingView";
 export type { AttackOptions } from "./AttackOptions";

@@ -21,6 +21,7 @@ use serde::{Deserialize, Serialize};
 use crate::error::PaymentError;
 use crate::help::{self, Convoked, Help, Used};
 use crate::mana_cost::{self, Forced};
+pub use crate::mana_plain::{AskedWhy, Proposal, is_plain, plain_payment, propose};
 use crate::mana_plan::{Needs, complete_with, covers_cost, plan, rest_after, spent_of};
 use crate::mana_repeat;
 use crate::mana_snow;

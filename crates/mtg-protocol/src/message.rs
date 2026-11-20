@@ -152,9 +152,8 @@ pub struct AutoChoices {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub skip_triggers: bool,
-    /// "Always pay automatically": a mana payment the automatic payment makes with no real choice (no hybrid or
-    /// Phyrexian symbol, no creature or card to help pay, no mana ability that does more than add mana) is paid at
-    /// once, out of Full Control; left out (false) when off.
+    /// "Always pay for me": a mana payment plain mana makes (the pool and mana abilities that add mana and do nothing
+    /// else; no life, help, sacrifice or paid ability) is paid at once, out of Full Control; left out (false) when off.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub auto_pay: bool,
