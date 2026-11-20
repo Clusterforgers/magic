@@ -253,9 +253,13 @@ describe('a pick among the hand beside the Satchel', () => {
     },
   )
 
-  it('lets a line that scrolls take the pointer, so its scrollbar drags, and one that fits pass it to the table', () => {
+  it('lets a line that scrolls take the pointer for its scrollbar while a pick among the hand is open, and passes it to the table otherwise', () => {
     room.width = 665
     room.height = 152
+    const { unmount } = facing('priority')
+    expect(head()).toHaveAttribute('data-scrolls', 'true')
+    expect(head()).toHaveClass('pointer-events-none')
+    unmount()
     facing('bottom')
     expect(head()).toHaveClass('pointer-events-auto')
     expect(hand()).toHaveClass('pointer-events-none')

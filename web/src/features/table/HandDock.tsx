@@ -215,6 +215,7 @@ export const HandDock = memo(function HandDock({
               cost
               layout={layouts?.command}
               commanders={waiting}
+              grabs={pick}
             />
           </div>
         )}
@@ -223,7 +224,15 @@ export const HandDock = memo(function HandDock({
         ) : cards.length === 0 ? (
           <p className="self-center text-sm text-muted-foreground">Your hand is empty.</p>
         ) : (
-          <HandFan ids={ordered} label={`${owner}'s hand`} size={size} cost layout={layout} onMove={onMove} />
+          <HandFan
+            ids={ordered}
+            label={`${owner}'s hand`}
+            size={size}
+            cost
+            layout={layout}
+            onMove={onMove}
+            grabs={pick}
+          />
         )}
       </div>
     </section>

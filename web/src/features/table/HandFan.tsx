@@ -52,6 +52,9 @@ interface HandFanProps {
   commanders?: ReadonlyMap<ObjectId, HandCommander>
   /** Lets the viewer reorder the cards by drag and drop and by Alt with an arrow key, Home or End. */
   onMove?: ((from: number, to: number) => void) | undefined
+  /** A line that scrolls takes the pointer, so its scrollbar drags: while a decision picks among the hand, where the table
+   * under the room above the cards is not what is clicked. */
+  grabs?: boolean
 }
 
 /** A card at the head of the hand: the tax on its cast, the words its spoken name gets and, for the top card of the
@@ -103,11 +106,20 @@ function offPageElement(): HTMLElement {
  * place (a mouse after a few pixels, a finger after a short hold, so a click still plays it and a swipe still scrolls)
  * or moves the focused card with Alt and an arrow key.
  */
-export function HandFan({ ids, label, size, cost = false, layout, commanders, onMove }: HandFanProps) {
+export function HandFan({
+  ids,
+  label,
+  size,
+  cost = false,
+  layout,
+  commanders,
+  onMove,
+  grabs = false,
+}: HandFanProps) {
   const roving = useRoving(ids)
   const leaving = usePlay(leavingCard)
   const list = useRef<HTMLUListElement>(null)
-  // A line that scrolls: a wheel moves it sideways, and its own box takes the pointer so its scrollbar drags.
+  // A line that scrolls: a wheel moves it sideways, and while `grabs` its own box takes the pointer so its scrollbar drags.
   useWheelSideways(list)
   const refocus = useRef<ObjectId | null>(null)
   const [dragging, setDragging] = useState<ObjectId | null>(null)
@@ -171,8 +183,9 @@ export function HandFan({ ids, label, size, cost = false, layout, commanders, on
         layout === undefined ? 'gap-1.5 pt-1' : 'gap-x-(--card-gap) pt-(--hand-lift)',
         rows > 1 && 'flex-wrap content-start justify-center',
         // The empty room above the cards lets presses through to the table; a scrollbar takes them only from a box
-        // that takes the pointer, so a line that scrolls does.
-        layout?.scrolls === true ? 'pointer-events-auto pb-3' : 'pointer-events-none',
+        // that takes the pointer, so a line that scrolls does when `grabs` (it would cover the table under it otherwise).
+        layout?.scrolls === true && 'pb-3',
+        layout?.scrolls === true && grabs ? 'pointer-events-auto' : 'pointer-events-none',
       )}
     >
       {ids.map((id, index) => {
