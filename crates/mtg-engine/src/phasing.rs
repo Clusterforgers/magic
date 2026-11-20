@@ -56,6 +56,8 @@ pub struct W11bHold {
     pub until: Option<ObjectRef>,
     /// They phase in tapped.
     pub tapped: bool,
+    /// They phase in when this player rolls this number or less to visit their Attractions (`Event::RolledToVisit`).
+    pub r112_visit: Option<(PlayerId, u32)>,
 }
 
 /// `out_events` with a hold: the permanents named stay out until `hold.until` leaves the battlefield; what is attached
@@ -88,6 +90,7 @@ pub fn w11b_out_events(state: &GameState, named: &[ObjectId], hold: W11bHold) ->
                 indirect,
                 until: hold.until,
                 tapped: hold.tapped,
+                r112_visit: hold.r112_visit,
             });
             for attached in attached_in(state, Zone::Battlefield, id).into_iter().rev() {
                 // One named too phases out on its own and comes back on its own.
@@ -125,8 +128,9 @@ pub fn in_events(state: &GameState, player: PlayerId) -> Vec<Event> {
     let mut events = Vec::new();
     for id in phased {
         // One held until a permanent leaves phases in then, not in an untap step.
-        let Some(own) = phasing(*id).filter(|own| own.controller == player && own.until.is_none())
-        else {
+        let Some(own) = phasing(*id).filter(|own| {
+            own.controller == player && own.until.is_none() && own.r112_visit.is_none()
+        }) else {
             continue;
         };
         if own.indirect && hosts_waiting(*id) || held(state, *id) {
@@ -179,6 +183,25 @@ pub(crate) fn w11b_releases(state: &GameState) -> Vec<Event> {
                 .and_then(PermanentState::phasing)
                 .and_then(|own| own.until)
                 .is_some_and(|by| !crate::exile_return::holds(state, by))
+                && !held(state, **id)
+        })
+        .flat_map(|id| w11b_with_attachments(state, *id))
+        .collect()
+}
+
+/// The events that phase in every permanent held out until `player` rolls `result` or less to visit their Attractions
+/// (Ferris Wheel), with what phased out with it, as that roll is made.
+pub(crate) fn r112_visit_releases(state: &GameState, player: PlayerId, result: u32) -> Vec<Event> {
+    state
+        .zone(Zone::PhasedOut)
+        .iter()
+        .filter(|id| {
+            state
+                .object(**id)
+                .and_then(GameObject::permanent)
+                .and_then(PermanentState::phasing)
+                .and_then(|own| own.r112_visit)
+                .is_some_and(|(roller, most)| roller == player && result <= most)
                 && !held(state, **id)
         })
         .flat_map(|id| w11b_with_attachments(state, *id))
@@ -243,6 +266,7 @@ pub(crate) fn w11b_fold_out_event(state: &mut GameState, event: &Event) -> Resul
         indirect,
         until,
         tapped,
+        r112_visit,
     } = event
     else {
         return Ok(());
@@ -252,6 +276,7 @@ pub(crate) fn w11b_fold_out_event(state: &mut GameState, event: &Event) -> Resul
         indirect: *indirect,
         until: *until,
         tapped: *tapped,
+        r112_visit: *r112_visit,
     };
     fold_out(state, *object, phasing)
 }
@@ -473,6 +498,7 @@ mod tests {
                 indirect: false,
                 until: None,
                 tapped: false,
+                r112_visit: None,
             }]
         );
         let mut game = game;
@@ -484,6 +510,7 @@ mod tests {
             indirect: false,
             until: None,
             tapped: false,
+            r112_visit: None,
         };
         assert!(apply_event(&mut game, &again).is_err(), "it is out already");
         assert_eq!(out_events(&game, &[bear]), Vec::<Event>::new());

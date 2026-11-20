@@ -1020,6 +1020,25 @@ pub enum Amount {
     CountedAsCast(Box<Amount>),
     /// A number a booster draft noted for cards of this name; 0 in a game without a draft.
     Drafted(crate::r4711_noted::DraftNote),
+    /// The number the first player `by` names chose in the resolution's `ChooseNumbers` remembered under the name; 0
+    /// when they chose none ("each player loses life equal to the number of items they revealed").
+    R112NumberChosen {
+        /// The name of the `ChooseNumbers`.
+        name: String,
+        /// The player.
+        by: Ref,
+    },
+    /// The greatest count of equal numbers stored on the first object `on` names in the memory slot (`Effect::R112RollStore`):
+    /// "the greatest number of stored results on it of the same value"; 0 when none is stored.
+    R112MostAlike {
+        /// The object.
+        on: Ref,
+        /// The memory slot.
+        slot: String,
+    },
+    /// How many spells and abilities caused one or more players to guess or to group cards or permanents into a pile this
+    /// turn (`Effect::SeparatePiles`, `R112Piles`, `R112GuessNumber`).
+    R112GroupedThisTurn,
 }
 
 impl Amount {
@@ -1272,6 +1291,16 @@ enum Tagged {
     R374AtMost(Box<Amount>, u32),
     CountedAsCast(Box<Amount>),
     Drafted(crate::r4711_noted::DraftNote),
+    R112NumberChosen {
+        #[serde(rename = "as")]
+        name: String,
+        by: Ref,
+    },
+    R112MostAlike {
+        on: Ref,
+        slot: String,
+    },
+    R112GroupedThisTurn,
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -1493,6 +1522,16 @@ enum TaggedRef<'a> {
     R374AtMost(&'a Amount, u32),
     CountedAsCast(&'a Amount),
     Drafted(crate::r4711_noted::DraftNote),
+    R112NumberChosen {
+        #[serde(rename = "as")]
+        name: &'a String,
+        by: &'a Ref,
+    },
+    R112MostAlike {
+        on: &'a Ref,
+        slot: &'a String,
+    },
+    R112GroupedThisTurn,
 }
 
 impl From<Tagged> for Amount {
@@ -1622,6 +1661,9 @@ impl From<Tagged> for Amount {
             Tagged::R374AtMost(inner, most) => Amount::R374AtMost(inner, most),
             Tagged::CountedAsCast(inner) => Amount::CountedAsCast(inner),
             Tagged::Drafted(note) => Amount::Drafted(note),
+            Tagged::R112NumberChosen { name, by } => Amount::R112NumberChosen { name, by },
+            Tagged::R112MostAlike { on, slot } => Amount::R112MostAlike { on, slot },
+            Tagged::R112GroupedThisTurn => Amount::R112GroupedThisTurn,
         }
     }
 }
@@ -1850,6 +1892,13 @@ impl Serialize for Amount {
             }
             Amount::CountedAsCast(inner) => TaggedRef::CountedAsCast(inner).serialize(serializer),
             Amount::Drafted(note) => TaggedRef::Drafted(*note).serialize(serializer),
+            Amount::R112NumberChosen { name, by } => {
+                TaggedRef::R112NumberChosen { name, by }.serialize(serializer)
+            }
+            Amount::R112MostAlike { on, slot } => {
+                TaggedRef::R112MostAlike { on, slot }.serialize(serializer)
+            }
+            Amount::R112GroupedThisTurn => TaggedRef::R112GroupedThisTurn.serialize(serializer),
         }
     }
 }

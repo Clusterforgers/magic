@@ -627,7 +627,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             by: scope.controller,
         },
         Wanted::CantBeBlockedBy(blockers) => Modification::CantBeBlockedBy {
-            by: blockers.clone(),
+            by: super::r112_piles::r112_fix_bound(scope, blockers),
             controller: scope.controller,
             source: scope.source,
         },

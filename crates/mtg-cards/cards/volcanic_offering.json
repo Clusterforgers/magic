@@ -1,0 +1,73 @@
+{
+  "oracle_id": "05e0a10d-532a-451c-a54e-27e64969fe0e",
+  "name": "Volcanic Offering",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volcanic Offering",
+      "oracle_fingerprint": "97156a15a2cd149d2a9bf5fd93dc10ae",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Land" },
+                    { "Not": { "Supertype": "Basic" } },
+                    { "Not": { "ControlledBy": "You" } }
+                  ]
+                }
+              },
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Opponents",
+                    "what": {
+                      "Object": [
+                        { "Type": "Land" },
+                        { "Not": { "Supertype": "Basic" } },
+                        { "Not": { "ControlledBy": "You" } }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }] }
+              },
+              {
+                "what": {
+                  "ChosenBy": {
+                    "who": "Opponents",
+                    "what": {
+                      "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Together": {
+                  "effects": [
+                    { "Destroy": { "what": { "Target": 0 } } },
+                    { "Destroy": { "what": { "Target": 1 } } }
+                  ]
+                }
+              },
+              {
+                "Together": {
+                  "effects": [
+                    { "DealDamage": { "to": { "Target": 2 }, "amount": 7 } },
+                    { "DealDamage": { "to": { "Target": 3 }, "amount": 7 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

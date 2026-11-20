@@ -496,6 +496,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ChosenAsAttached { .. }
         | Event::R110ChoiceRevealed { .. }
         | Event::R111ChoiceKept { .. }
+        | Event::R112Grouped { .. }
         | Event::AttachedToPlayer { .. }
         | Event::Unattached { .. }
         | Event::Paired { .. }

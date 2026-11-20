@@ -263,6 +263,8 @@ pub(crate) enum Tally {
     LandsPlayed,
     /// Mana spent to cast spells, by the amount (counted for the player; expend, CR 701.59).
     W9aSpellMana,
+    /// Players made to guess or to group into piles (counted for the spell or ability that did).
+    R112Grouped,
 }
 
 /// The events counted in the turn so far.
@@ -789,6 +791,15 @@ impl GameState {
         if let Some(shot) = crate::snapshot::snapshot(self, id) {
             self.tallies.logged.push((event, player, shot));
         }
+    }
+
+    /// How many spells and abilities made players guess or group cards or permanents into piles this turn.
+    pub(crate) fn r112_grouped(&self) -> usize {
+        self.tallies
+            .objects
+            .keys()
+            .filter(|(_, by, kind)| by.is_none() && *kind == Tally::R112Grouped)
+            .count()
     }
 
     /// How many events of the kind the player has had this turn.

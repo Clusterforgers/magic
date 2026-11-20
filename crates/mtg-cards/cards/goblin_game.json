@@ -1,0 +1,58 @@
+{
+  "oracle_id": "4a10c945-ad8b-47b6-8cbd-7b4e2612a9b0",
+  "name": "Goblin Game",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goblin Game",
+      "oracle_fingerprint": "aa993ebf7aff77f3bce962448cadf2f3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseNumbers": {
+                  "min": 1,
+                  "secret": true,
+                  "as": "items",
+                  "highest": "most",
+                  "lowest": "fewest"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "revealer",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "revealer" },
+                        "amount": {
+                          "R112NumberChosen": { "as": "items", "by": { "Bound": "revealer" } }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "fewest" },
+                  "as": "loser",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "loser" },
+                        "amount": { "Half": { "of": { "Life": { "Bound": "loser" } }, "up": true } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

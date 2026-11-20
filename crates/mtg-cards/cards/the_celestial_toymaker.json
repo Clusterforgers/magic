@@ -1,0 +1,46 @@
+{
+  "oracle_id": "388fe92a-0bc0-4c0a-a7c6-910c5e71e342",
+  "name": "The Celestial Toymaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Celestial Toymaker",
+      "oracle_fingerprint": "f47781aa8e059f0ade7f9264d57c14a4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "LookAtTop": { "count": 3, "as": "top" } },
+              {
+                "R112Piles": {
+                  "what": { "Bound": "top" },
+                  "piles": ["face_down", "face_up"],
+                  "face_down": ["face_down"],
+                  "pick": { "By": "Defending" },
+                  "as": "chosen"
+                }
+              },
+              { "Move": { "what": { "Bound": "chosen" }, "to": "Hand" } },
+              { "ExileHidden": { "what": { "Bound": "face_down" }, "held": true } },
+              { "Exile": { "what": { "Bound": "face_up" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Times": { "by": 2, "of": "R112GroupedThisTurn" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

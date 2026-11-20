@@ -319,7 +319,12 @@ until?: ObjectRef,
 /**
  * It phases in tapped ("Tap that creature as it phases in this way").
  */
-tapped?: boolean, } } | { "PermanentPhasedIn": { 
+tapped?: boolean, 
+/**
+ * It phases out until this player rolls this number or less while rolling to visit their Attractions (Ferris
+ * Wheel), and phases in then and not in an untap step.
+ */
+r112_visit?: [PlayerId, number], } } | { "PermanentPhasedIn": { 
 /**
  * The permanent.
  */
@@ -870,7 +875,11 @@ object: ObjectId,
 /**
  * What it chose.
  */
-chosen: Chosen, } } | { "R111ChoiceKept": { 
+chosen: Chosen, } } | { "R112Grouped": { 
+/**
+ * The spell or ability.
+ */
+object: ObjectId, } } | { "R111ChoiceKept": { 
 /**
  * The permanent.
  */

@@ -24,6 +24,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         duration,
         tapped,
         held,
+        r112_visit_roll,
     } = effect
     else {
         return Err(wrong_effect("PhaseOut"));
@@ -42,6 +43,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let hold = crate::phasing::W11bHold {
         until,
         tapped: *tapped,
+        r112_visit: r112_visit_roll.map(|most| (cx.scope.controller, most)),
     };
     let named: Vec<_> = cx
         .scope

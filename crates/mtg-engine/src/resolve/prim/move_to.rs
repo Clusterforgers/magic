@@ -864,6 +864,7 @@ mod tests {
                 indirect: false,
                 until: None,
                 tapped: false,
+                r112_visit: None,
             },
         )
         .unwrap();

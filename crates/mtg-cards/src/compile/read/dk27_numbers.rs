@@ -40,6 +40,7 @@ fn effects() -> Vec<Effect> {
             who: Ref::EachPlayer,
             min: Amount::zero(),
             secret: true,
+            max: None,
             bind: NUMBER.to_owned(),
             highest: HIGHEST.to_owned(),
             lowest: LOWEST.to_owned(),

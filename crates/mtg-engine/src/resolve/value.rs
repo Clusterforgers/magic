@@ -2580,6 +2580,28 @@ impl<'a> Scope<'a> {
             Amount::Fixed(n) => i64::from(*n),
             // A noted number is 0 without a draft (Lurking Automaton, Garbage Fire rulings).
             Amount::Drafted(_) => 0,
+            Amount::R112GroupedThisTurn => {
+                i64::try_from(self.state.r112_grouped()).unwrap_or(i64::MAX)
+            }
+            Amount::R112NumberChosen { name, by } => match self.players(by)?.first() {
+                Some(player) => match self.chosen_value(&format!("{name}.{}", player.index())) {
+                    Some(Chosen::Number(number)) => i64::from(*number),
+                    _ => 0,
+                },
+                None => 0,
+            },
+            Amount::R112MostAlike { on, slot } => match self.objects(on)?.first() {
+                Some(source) => {
+                    let numbers = crate::memory::recall_numbers(
+                        self.state,
+                        *source,
+                        &crate::memory::r112_lasting(slot),
+                    );
+                    let alike = |number: &i64| numbers.iter().filter(|n| *n == number).count();
+                    i64::try_from(numbers.iter().map(alike).max().unwrap_or(0)).unwrap_or(i64::MAX)
+                }
+                None => 0,
+            },
             Amount::X => i64::from(self.x_value()),
             Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,

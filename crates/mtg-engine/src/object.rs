@@ -205,6 +205,8 @@ pub struct Phasing {
     pub until: Option<ObjectRef>,
     /// It phases in tapped.
     pub tapped: bool,
+    /// It phases in when this player rolls this number or less to visit their Attractions, and not in an untap step.
+    pub r112_visit: Option<(PlayerId, u32)>,
 }
 
 /// Whether a permanent is phased out. A phased-in permanent adds nothing to the hash of the game.
