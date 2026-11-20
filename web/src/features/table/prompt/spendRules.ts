@@ -79,7 +79,9 @@ export function filterHolds(filter: SpendFilter, traits: SpendTraits): boolean {
 
 // A rider ("When", "Uncounterable", "Enters") marks the mana and limits nothing.
 const restricts = (on: SpendOn): boolean =>
-  on !== 'Snow' && on !== 'R112NotGeneric' && (typeof on === 'string' || !('When' in on || 'Uncounterable' in on || 'Enters' in on))
+  on !== 'Snow' &&
+  on !== 'R112NotGeneric' &&
+  (typeof on === 'string' || !('When' in on || 'Uncounterable' in on || 'Enters' in on))
 
 /**
  * True when mana restricted to `only` may be spent on `spend` (a payment for neither a spell nor an ability when
