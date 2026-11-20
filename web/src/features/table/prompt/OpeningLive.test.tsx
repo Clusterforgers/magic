@@ -53,7 +53,7 @@ describe('Mulligan', () => {
     send(decision(21, mulligan()))
     expect(container.querySelector('[data-decision="Mulligan"]')).not.toBeNull()
     expect(text()).toContain('Keep this hand of 7 cards')
-    await user.dblClick(screen.getByRole('button', { name: 'Keep' }))
+    await user.dblClick(must(screen.getAllByRole('button', { name: 'Keep' })[0]))
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 21, answer: { Mulligan: 'Keep' } }])
     expect(container.querySelector('[data-decision]')).toBeNull()
   })
@@ -61,7 +61,7 @@ describe('Mulligan', () => {
   it('sends one Answer for Enter twice on Mulligan, and shows the new count when asked again', async () => {
     const { h, send, user, text } = mount()
     send(decision(22, mulligan()))
-    act(() => screen.getByRole('button', { name: 'Mulligan' }).focus())
+    act(() => must(screen.getAllByRole('button', { name: 'Mulligan' })[0]).focus())
     await user.keyboard('{Enter}{Enter}')
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 22, answer: { Mulligan: 'Mulligan' } }])
     send(decision(23, mulligan(1)))

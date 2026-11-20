@@ -1,6 +1,7 @@
 import { useContext, useEffect, useRef } from 'react'
 import type { RefObject } from 'react'
 import { SideContext } from '../sideContext'
+import { HomeSlotsContext } from './useDecisionHome'
 
 /** What takes letters and digits for itself: fields, editable text, widgets that read typing, menus and dialogs. */
 const TAKES_TEXT = [
@@ -61,11 +62,13 @@ export function useDefaultFocus(target: RefObject<HTMLElement | null>): void {
   // What a prompt chooses among is drawn in the Stack column a frame after the prompt (`PromptLayout`): a target
   // that is not in the page yet takes the focus once the column holds it.
   const host = useContext(SideContext)?.detail ?? null
+  // The answers are drawn into the decision's home once its element is in the page (`useDecisionHome`).
+  const element = useContext(HomeSlotsContext)
   const done = useRef(false)
   useEffect(() => {
     if (done.current || target.current === null) return
     done.current = true
     if (isTyping(document.activeElement)) return
     target.current.focus({ preventScroll: true })
-  }, [target, host])
+  }, [target, host, element])
 }

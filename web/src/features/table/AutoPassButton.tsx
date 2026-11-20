@@ -32,7 +32,8 @@ export function AutoPassButton({ object, compact = false }: { object: ObjectView
       aria-pressed={held}
       aria-label={label}
       title={held ? 'Stop auto-passing this trigger' : 'Auto-pass this trigger for the rest of the game'}
-      className={cn(!compact && 'w-fit gap-1.5 text-xs')}
+      // Compact in the strip's one line: no taller than a stack chip.
+      className={cn(!compact && 'w-fit gap-1.5 text-xs', compact && 'size-7 max-sm:size-6')}
       onClick={(event) => {
         event.stopPropagation()
         if (held) session.clearAutoYield(key)

@@ -234,7 +234,7 @@ Every decision has one home that holds its question and its answers; who asks an
 - The middle strip is one status line in every layout: stack chips, the waiting line and notes, the ticker.
 - Priority: the top stack item is outlined in the panel as "Top of the stack · resolves next" with its targets and forecast; the question and Resolve are in the dock.
 - Blockers and attackers: the panel lists each attack with its block and result as information; the total and the answers are in the dock.
-- The opening hand keeps its centred panel with Keep and Mulligan; the dock holds the same two answers.
+- The opening hand keeps its centred panel with Keep and Mulligan, the one set of its answers; on a phone the hand dock shows the hand and the bar holds the answers.
 
 #### Detail and windows
 
@@ -246,7 +246,7 @@ Every decision has one home that holds its question and its answers; who asks an
 | cards on the table (targets, sacrifices) | pressed on the table | pressed on the table |
 | cards not on the table (a graveyard, a library, exile, revealed cards), or more than twelve | a window | a window |
 
-- A window groups cards by owner, dims the ones that cannot be chosen, and carries the question and the answers in its foot; the home keeps the same answers, so View table (V) hides the window without losing them.
+- A window groups cards by owner, dims the ones that cannot be chosen, and carries the question in its foot; the answers stay in the home, one set, so View table (V) hides the window without losing them.
 - One target, or up to one, answers on the press; Cancel is the only button and a spell's take-back the way out of a slip. Several targets, every window and every list wait for Confirm.
 - "Pay for me" proposes only when pressed: until then the sources are lit and nothing is laid out. The proposal draws its sources dashed and turned with "pays U", says what it keeps untapped, and Confirm pays it. Undo, "Pay the rest for me", Cancel and the source tools stay as they are.
 - A run of triggers shows done entries with a tick, the asking one expanded and the next ones numbered. A rule for the rest of the game ("Always Yes", "Always No", "Always use this order") stands under the answers.

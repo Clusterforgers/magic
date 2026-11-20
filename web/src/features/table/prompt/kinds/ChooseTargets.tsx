@@ -28,6 +28,10 @@ import { PlayerFace } from '../PlayerFace'
 import { QuickSelect } from '../QuickSelect'
 import { useAllies } from '../useAllies'
 import { QUICK_ROW_REM } from '../cardPrompts'
+import { answersOnPress, WINDOW_FROM } from '../home'
+import { useDrawnCards } from '../drawnCards'
+import { useTargetTips } from '../targetTip'
+import { usePublishDefenders } from '../../combat/defender'
 import { quickButtons } from '../quickSelect'
 import { useObjects } from '../useCombatNames'
 
@@ -43,14 +47,17 @@ import { useObjects } from '../useCombatNames'
  * target that would go over it is neither marked nor taken.
  */
 export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options }) => {
-  const { answer } = usePrompt()
+  const { answer, id: decisionId } = usePrompt()
   const own = useOwnCardIds()
   const seatName = useSeatNamer()
   const me = usePlay((state) => state.seat)
   const { min, max } = options
+  // One target, or up to one, answers on the press: no Confirm (`answersOnPress`).
+  const onPress = answersOnPress(options)
   const triggered = options.triggered === true
 
   const offered = useMemo(() => distinctTargets(options.legal), [options.legal])
+  useTargetTips(decisionId, offered)
   const objectIds = useMemo(
     () => offered.flatMap((target) => ('Object' in target ? [target.Object.id] : [])),
     [offered],
@@ -80,6 +87,13 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
     return words
   }, [offered, objectIds, byId, seatName, me])
   const labelOf = (target: Target): string => labels.get(targetKey(target)) ?? 'a target'
+  // Targets on the table are pressed there; only the ones it does not draw (a graveyard, the stack, exile) are pictures here.
+  const drawn = useDrawnCards(objectIds)
+  // More than twelve are chosen in a window wherever they are (`detailPlace`).
+  const offTable = useMemo(
+    () => (objectIds.length > WINDOW_FROM ? objectIds : objectIds.filter((id) => !drawn.has(id))),
+    [objectIds, drawn],
+  )
   const players = useMemo(() => offered.filter((target) => 'Player' in target), [offered])
   const cardLabels = useMemo(
     () =>
@@ -111,6 +125,32 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
       if (!fits(target, current)) return current
       return current.length < max ? [...current, target] : current
     })
+  // The press of a target answers when it is the only one to choose; otherwise it is added to the choice.
+  const choose = (target: Target): void => {
+    if (onPress) answer({ ChooseTargets: { Targets: [target] } })
+    else pick(target)
+  }
+  // A player target is pressed on its pod or tile too, which wear the legal mark and a "Target" tag (`promptBand.css`).
+  const playerSeats = useMemo(
+    () => players.flatMap((target) => ('Player' in target ? [target.Player] : [])),
+    [players],
+  )
+  const lastPlayer = chosen.findLast((target) => 'Player' in target)
+  usePublishDefenders(
+    playerSeats,
+    lastPlayer !== undefined && 'Player' in lastPlayer ? lastPlayer.Player : null,
+    (seat) => choose({ Player: seat }),
+  )
+  // A Focus tile says how many legal targets its board holds that the table does not draw.
+  const tileCounts = useMemo(() => {
+    const counts = new Map<number, number>()
+    for (const id of objectIds) {
+      const seat = byId.get(id)?.controller
+      if (seat === undefined || drawn.has(id) || byId.get(id)?.zone !== 'Battlefield') continue
+      counts.set(seat, (counts.get(seat) ?? 0) + 1)
+    }
+    return counts
+  }, [objectIds, byId, drawn])
 
   const chosenIds = useMemo(
     () => chosen.flatMap((target) => ('Object' in target ? [target.Object.id] : [])),
@@ -129,7 +169,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
   )
   const onCard = (id: ObjectId): void => {
     const target = offered.find((candidate) => 'Object' in candidate && candidate.Object.id === id)
-    if (target !== undefined) pick(target)
+    if (target !== undefined) choose(target)
   }
   useCardMarks(marks, onCard, { toggles: true })
 
@@ -169,9 +209,19 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
       folded
       choices={
         <>
+          {tileCounts.size === 0 ? null : (
+            <style data-slot="tile-target-counts">
+              {[...tileCounts]
+                .map(
+                  ([seat, count]) =>
+                    `[data-seat-tile='${seat}']::after{content:'${count} ${count === 1 ? 'target' : 'targets'} on this board'}`,
+                )
+                .join('')}
+            </style>
+          )}
           <CardChoices
             quick={<QuickSelect buttons={quick} onSet={setChosen} />}
-            cards={objectIds}
+            cards={offTable}
             chosen={chosenIds}
             closed={closed}
             labels={cardLabels}
@@ -200,7 +250,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
                         variant="outline"
                         aria-pressed={picked}
                         disabled={(closed || !fits(target, chosen)) && !picked}
-                        onClick={() => pick(target)}
+                        onClick={() => choose(target)}
                         className={picked ? CHOSEN_BUTTON : undefined}
                       >
                         {picked ? <Check aria-hidden="true" strokeWidth={3} /> : null}
@@ -237,22 +287,38 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
         </>
       }
     >
-      <Button
-        className="h-10 px-4"
-        disabled={chosen.length < min}
-        {...anchor('targets.confirm')}
-        onClick={() => answer({ ChooseTargets: { Targets: [...chosen] } })}
-      >
-        Confirm targets
-      </Button>
-      <Button
-        variant="outline"
-        className="h-10 px-4"
-        disabled={chosen.length === 0}
-        onClick={() => setChosen((current) => current.slice(0, -1))}
-      >
-        Undo
-      </Button>
+      {onPress ? (
+        // One target answers on its press; "up to one" may still choose none.
+        min === 0 ? (
+          <Button
+            variant="outline"
+            className="h-10 px-4"
+            data-slot="no-target"
+            onClick={() => answer({ ChooseTargets: { Targets: [] } })}
+          >
+            No target
+          </Button>
+        ) : null
+      ) : (
+        <>
+          <Button
+            {...anchor('targets.confirm')}
+            className="h-10 px-4"
+            disabled={chosen.length < min}
+            onClick={() => answer({ ChooseTargets: { Targets: [...chosen] } })}
+          >
+            Confirm targets
+          </Button>
+          <Button
+            variant="outline"
+            className="h-10 px-4"
+            disabled={chosen.length === 0}
+            onClick={() => setChosen((current) => current.slice(0, -1))}
+          >
+            Undo
+          </Button>
+        </>
+      )}
       {options.can_cancel ? <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} /> : null}
     </PromptLayout>
   )

@@ -106,8 +106,10 @@ export function resolve(target: Target, lookup: CardLookup, doc: Document = docu
     if (found.length > 1) return { kind: 'many', count: found.length }
     const [element] = found
     if (element !== undefined) return { kind: 'found', element, via: id === target ? null : id }
-    const opener = ANCHORS[id].opener
-    if (opener === undefined || !isAnchor(opener) || seen.has(opener)) return { kind: 'none' }
+    // Of several openers the first drawn (`side.tab.stack` off a phone, `sheet.grab` on one), else the first.
+    const openers = [ANCHORS[id].opener ?? []].flat().filter((each): each is AnchorId => isAnchor(each))
+    const opener = openers.find((each) => anchored(each, doc).length > 0) ?? openers[0]
+    if (opener === undefined || seen.has(opener)) return { kind: 'none' }
     seen.add(opener)
     id = opener
   }

@@ -1,10 +1,10 @@
-//! Goal: the prompt band never covers an opponent's or the boss's cards and the boss's board stays readable: in every layout (a duel, four seats, a grid, focus, the boss with one to six heroes, the phone) and window size the band is the strip with the ticker's line (on a phone a second line), whose room the split keeps free below the opponents' boards whatever the prompt, the boards keep a row of cards above a sheet that grows, and the boss's cards are at least 60 % of the heroes' where its board is like theirs.
+//! Goal: the strip between the boards is one status line in every layout (a duel, four seats, a grid, focus, the boss with one to six heroes, the phone) and window size, the same for every prompt kind, so no prompt moves a board; the opponents keep their chrome and a row of cards, and the boss stays at least 60 percent of a hero's size.
 import { describe, expect, it } from 'vitest'
 import { BOARD_KEEP_PX, boardCounts, boardFrames, splitRegions } from './boardSplit'
 import { fixtureState, withBoss } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import { DEV_PROMPTS } from './dev/prompts'
-import { BAND_PHONE_PX, BAND_TICKER_PX, planTable, twoLineBand } from './layout'
+import { planTable, STRIP_PHONE_PX, STRIP_PX } from './layout'
 import type { TableMode, Viewport } from './layout'
 import { bossSidesOf } from './selectors'
 
@@ -52,37 +52,27 @@ function tableOf(
   return { plan, regions }
 }
 
-describe('the prompt sheet over the opponents', () => {
+describe('the strip between the boards', () => {
   it.each(TABLES.flatMap((table) => SIZES.map((size) => [...table, size] as const)))(
-    'covers no card of %s at %#: it stays in the room the boards keep free',
+    'is one line of %s at %#, and the opponents keep their chrome and a row of cards',
     (_name, seats, mode, boss, permanents, viewport) => {
       const { plan, regions } = tableOf(seats, mode, boss, permanents, viewport)
-      // One line is the strip with the ticker's line kept above it; a phone's second line too.
-      expect(regions.sheetRoom).toBe(
-        twoLineBand(regions.breakpoint) ? BAND_PHONE_PX - regions.shared : BAND_TICKER_PX,
-      )
-      // The sheet's height over the strip is never more than the room kept below the opponents' boards.
-      expect(regions.sheet - regions.shared).toBeLessThanOrEqual(regions.sheetRoom + 1e-9)
-      // Above that room the opponents' row keeps its chrome and a row of cards, which a sheet of cards leaves too.
-      expect(regions.sheetWide).toBeGreaterThanOrEqual(regions.sheet)
+      expect(regions.shared).toBe(regions.phone ? STRIP_PHONE_PX : STRIP_PX)
       if (!regions.phone && plan.seats.shape !== 'boss') {
         const chrome = boardFrames(regions, plan.seats).theirs.chrome
-        expect(regions.opponents - regions.sheetRoom).toBeGreaterThanOrEqual(chrome + BOARD_KEEP_PX - 1e-9)
-        expect(regions.opponents - (regions.sheetWide - regions.shared)).toBeGreaterThanOrEqual(
-          Math.min(regions.opponents, chrome + BOARD_KEEP_PX) - 1e-9,
-        )
+        expect(regions.opponents).toBeGreaterThanOrEqual(chrome + BOARD_KEEP_PX - 1e-9)
       }
     },
   )
 
-  it.each(SIZES)('keeps one band at %o for every prompt kind, so no prompt moves a board', (viewport) => {
+  it.each(SIZES)('keeps its rows at %o for every prompt kind, so no prompt moves a board', (viewport) => {
     const fixture = buildFixture({ seats: 4, permanents: 20 })
     const plan = planTable({ viewport, seatCount: 4, viewer: 0 })
     const rows = new Set<string>()
     for (const name of ['priority', 'pay', 'scry', 'targets', 'mode-two', 'x', 'cards']) {
       const state = fixtureState(fixture, DEV_PROMPTS[name]?.(fixture) ?? null)
       const split = splitRegions(plan.regions, plan.seats, boardCounts(state, plan.seats))
-      rows.add(`${split.opponents}|${split.own}|${split.sheet}`)
+      rows.add(`${split.opponents}|${split.own}|${split.shared}`)
     }
     expect(rows.size).toBe(1)
   })

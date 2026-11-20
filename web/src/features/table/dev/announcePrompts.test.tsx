@@ -64,7 +64,7 @@ describe('drawn and answered on the dev table', () => {
     const game = table(2, prompt)
     const user = userEvent.setup()
     expect(document.querySelector(`[data-decision="${name}"]`)).not.toBeNull()
-    await user.click(screen.getByRole('button', { name: button }))
+    await user.click(must(screen.getAllByRole('button', { name: button })[0]))
     expect(document.querySelector('[data-decision]')).toBeNull()
     expect(game.session.store.getState().pending).toBeNull()
   })
@@ -75,7 +75,7 @@ describe('drawn and answered on the dev table', () => {
     await user.click(screen.getByRole('button', { name: 'Gift a card to player 2' }))
     await user.click(screen.getByRole('button', { name: 'Gift a card to player 3' }))
     expect(document.querySelector('[data-slot="costs-problem"]')).not.toBeNull()
-    await user.click(screen.getByRole('button', { name: 'Confirm costs' }))
+    await user.click(must(screen.getAllByRole('button', { name: 'Confirm costs' })[0]))
     expect(game.session.store.getState().pending).toBeNull()
   })
 

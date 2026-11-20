@@ -8,6 +8,7 @@ import { TableOptionsContext } from '@/features/table/tableOptions'
 import { parseMessage } from '@/net/parse'
 import type { PayOptions } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
+import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { costText } from '../cardModel'
 import { fixtureGame } from './devGame'
 
@@ -74,7 +75,7 @@ describe('?prompt=pay-hybrid', () => {
     game.session.store.setState((state) => ({ autoChoices: { ...state.autoChoices, auto_pay: true } }))
     render(
       <GameContext value={game}>
-        <TableOptionsContext value={{}}>
+        <TableOptionsContext value={{ viewport: TEST_VIEWPORT }}>
           <GameTable />
         </TableOptionsContext>
       </GameContext>,
@@ -104,7 +105,7 @@ describe('?prompt=pay-low-life', () => {
     const game = fixtureGame({ seats: 2, prompt: 'pay-low-life' })
     render(
       <GameContext value={game}>
-        <TableOptionsContext value={{}}>
+        <TableOptionsContext value={{ viewport: TEST_VIEWPORT }}>
           <GameTable />
         </TableOptionsContext>
       </GameContext>,

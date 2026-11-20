@@ -301,7 +301,7 @@ export const SeatPanel = memo(function SeatPanel({
         data-variant="line"
         style={seatHueStyle(seat)}
         className={cn(
-          '@container plaque flex min-w-0 flex-col gap-1 rounded-xl px-2 py-1 text-card-foreground',
+          '@container relative plaque flex min-w-0 flex-col gap-1 rounded-xl px-2 py-1 text-card-foreground',
           ring,
           eliminated && 'border-l-4 border-destructive',
           player.boss ? 'border-2 border-boss' : SEAT_EDGE,

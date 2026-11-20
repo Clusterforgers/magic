@@ -1,6 +1,5 @@
-// Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, 56 to 88 px shared strip, 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding), in focus mode the strip of tiles leads with the seat whose turn it is, and the hand dock grows for a large or an opening hand from a 640 px window and keeps its size on a phone.
+// Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, a 36 px shared strip (28 on a phone, with its 164 px decision bar), 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding), in focus mode the strip of tiles leads with the seat whose turn it is, and the hand dock grows for a large or an opening hand from a 640 px window and keeps its size on a phone.
 import { describe, expect, it } from 'vitest'
-import { must } from '@/test-utils/batches'
 import { handRowPx } from './handFit'
 import {
   activeFirst,
@@ -9,6 +8,7 @@ import {
   chooseMode,
   clampedHeight,
   CONTROLS_MAX_PX,
+  controlsWidth,
   DOCK_FULL_MIN_MAIN_PX,
   dockForm,
   gridColumns,
@@ -17,15 +17,15 @@ import {
   HAND_CLAMP,
   HAND_GROW_VH,
   HAND_PHONE_CLAMP,
-  BAND_MIN_PHONE_PX,
   handGrowMost,
   mainColumns,
   MIN_COLUMN_PX,
   planTable,
   regionSizes,
-  SHARED_CLAMP,
+  STRIP_PHONE_PX,
+  STRIP_PX,
+  DECISION_BAR_PX,
   STOPS_ROW_MIN_WIDTH_PX,
-  withoutBand,
 } from './layout'
 import type { Breakpoint, TableMode, Viewport } from './layout'
 
@@ -64,20 +64,26 @@ describe('breakpointOf', () => {
 describe('regionSizes', () => {
   it.each(SIZES)('adds the rows up to the height of a %s window', (_name, viewport) => {
     const regions = regionSizes(viewport)
-    const total = regions.topBar + regions.opponents + regions.shared + regions.own + regions.hand
+    const total =
+      regions.topBar +
+      regions.opponents +
+      regions.shared +
+      regions.own +
+      regions.hand +
+      (regions.phone ? DECISION_BAR_PX : 0)
     expect(total).toBeCloseTo(viewport.height, 6)
     expect(regions.main.width + regions.sideWidth).toBe(viewport.width)
   })
 
   it.each([
-    ['1920x1080', 'xl', 'column', 304, 44, 72, 172.8],
-    ['1440x900', 'l', 'column', 272, 44, 63, 144],
-    ['1366x768', 'l', 'column', 272, 44, 56, 122.88],
-    ['1280x720', 'l', 'column', 272, 44, 56, 115.2],
-    ['1024x768', 'm', 'rail', 44, 44, 56, 122.88],
-    ['390x844', 'xs', 'sheet', 0, 44, 59.08, 135.04],
-    ['768x1024', 's', 'sheet', 0, 44, 71.68, 163.84],
-    ['844x390', 's', 'sheet', 0, 32, 56, 104],
+    ['1920x1080', 'xl', 'column', 304, 44, 36, 172.8],
+    ['1440x900', 'l', 'column', 272, 44, 36, 144],
+    ['1366x768', 'l', 'column', 272, 44, 36, 122.88],
+    ['1280x720', 'l', 'column', 272, 44, 36, 115.2],
+    ['1024x768', 'm', 'rail', 44, 44, 36, 122.88],
+    ['390x844', 'xs', 'sheet', 0, 44, 28, 135.04],
+    ['768x1024', 's', 'sheet', 0, 44, 36, 163.84],
+    ['844x390', 's', 'sheet', 0, 32, 36, 104],
   ])(
     'sizes a %s window: %s, side %s %i px, bar %i, shared %f, hand %f',
     (name, breakpoint, side, sideWidth, bar, shared, hand) => {
@@ -103,53 +109,18 @@ describe('regionSizes', () => {
       for (let height = 400; height <= 1440; height += 40) {
         const regions = regionSizes({ width, height })
         const where = `${width}x${height}`
-        expect(regions.shared, where).toBeGreaterThanOrEqual(SHARED_CLAMP.min)
-        expect(regions.shared, where).toBeLessThanOrEqual(SHARED_CLAMP.max)
+        expect(regions.shared, where).toBe(regions.phone ? STRIP_PHONE_PX : STRIP_PX)
         const hand = regions.phone ? HAND_PHONE_CLAMP : HAND_CLAMP
         expect(regions.hand, where).toBeGreaterThanOrEqual(hand.min)
         expect(regions.hand, where).toBeLessThanOrEqual(hand.max)
         expect(regions.opponents, where).toBeGreaterThan(0)
         expect(regions.own, where).toBeGreaterThan(regions.opponents)
-        expect(regions.topBar + regions.opponents + regions.shared + regions.own + regions.hand).toBeCloseTo(
-          height,
-          6,
-        )
-        // A long prompt grows to 40 % of the height, up over the opponents and no further than the top bar.
-        expect(regions.sheet, where).toBeLessThanOrEqual(height * 0.4 + 1e-9)
-        expect(regions.sheet, where).toBeLessThanOrEqual(regions.shared + regions.opponents + 1e-9)
-        if (regions.phone) {
-          expect(regions.sheet, where).toBeLessThanOrEqual(
-            Math.max(BAND_MIN_PHONE_PX, regions.shared + Math.max(0, regions.opponents - 120)) + 1e-9,
-          )
-        }
+        const bar = regions.phone ? DECISION_BAR_PX : 0
+        expect(
+          regions.topBar + regions.opponents + regions.shared + regions.own + regions.hand + bar,
+        ).toBeCloseTo(height, 6)
       }
     }
-  })
-
-  it.each([
-    // The band: the strip (7 % of the height between 56 and 72 px) and the ticker's 16 px; two lines in a narrow window.
-    ['1920x1080', 88],
-    ['1280x720', 72],
-    ['390x844', 112],
-    ['844x390', 112],
-  ])(
-    'holds the sheet of a %s window to the band of %f px, a narrow one keeping its second line free above the strip',
-    (name, band) => {
-      const viewport = must(SIZES.find(([label]) => label === name)?.[1])
-      const regions = regionSizes(viewport)
-      expect(regions.sheet).toBeCloseTo(band, 6)
-      expect(regions.sheetWide).toBeGreaterThanOrEqual(regions.sheet)
-      expect(regions.sheetRoom).toBeCloseTo(band - regions.shared, 6)
-    },
-  )
-
-  it('keeps one band per window: a spectator, who answers no prompt, keeps one line of it', () => {
-    const wide = regionSizes({ width: 1881, height: 1047 })
-    expect(withoutBand(wide).sheetRoom).toBe(wide.sheetRoom)
-    const phone = regionSizes({ width: 390, height: 844 })
-    expect(phone.sheetRoom).toBeGreaterThan(40)
-    expect(withoutBand(phone).sheetRoom).toBe(16)
-    expect(withoutBand(phone).sheet).toBe(phone.shared + 16)
   })
 
   it('draws a column of 272 to 304 px from L, a rail of 44 px at M and a sheet below', () => {
@@ -192,7 +163,7 @@ describe('regionSizes', () => {
     [Number.POSITIVE_INFINITY, 900],
   ])('never throws and never goes negative for a window of %s by %s', (width, height) => {
     const regions = regionSizes({ width, height })
-    for (const value of [regions.opponents, regions.own, regions.shared, regions.hand, regions.sheet]) {
+    for (const value of [regions.opponents, regions.own, regions.shared, regions.hand]) {
       expect(Number.isFinite(value)).toBe(true)
       expect(value).toBeGreaterThanOrEqual(0)
     }
@@ -209,20 +180,23 @@ function readClamp(css: string): { min: number; vh: number; max: number } {
 describe('the CSS templates', () => {
   it('writes the rows the design names for a wide window', () => {
     expect(gridRows({ phone: false, landscape: false })).toBe(
-      '44px minmax(0, 1fr) clamp(56px, 7dvh, 72px) minmax(0, 1.15fr) max(clamp(104px, 16dvh, 200px), var(--hand-grow, 0px))',
+      '44px minmax(0, 1fr) 36px minmax(0, 1.15fr) max(clamp(104px, 16dvh, 200px), var(--hand-grow, 0px))',
     )
   })
 
-  it('writes a 32 px bar for a phone on its side and a 104 to 140 px hand dock for a phone upright', () => {
+  it('writes a 32 px bar for a phone on its side, and for a phone upright a 104 to 140 px hand dock over the decision bar', () => {
     expect(gridRows({ phone: false, landscape: true })).toMatch(/^32px /)
-    expect(gridRows({ phone: true, landscape: false })).toMatch(/clamp\(104px, 16dvh, 140px\)$/)
+    expect(gridRows({ phone: true, landscape: false })).toMatch(
+      new RegExp(`clamp\\(104px, 16dvh, 140px\\) ${DECISION_BAR_PX}px$`),
+    )
   })
 
   it.each(SIZES)('gives the sizes regionSizes does at %s', (_name, viewport) => {
     const regions = regionSizes(viewport)
-    expect(gridRows(regions)).toMatch(new RegExp(`^${regions.topBar}px `))
-    const [shared, hand] = gridRows(regions).match(/clamp\([^)]*\)/g) ?? []
-    expect(clampedHeight(readClamp(shared ?? ''), viewport.height)).toBeCloseTo(regions.shared, 9)
+    expect(gridRows(regions)).toMatch(
+      new RegExp(`^${regions.topBar}px minmax\\(0, [0-9.]+fr\\) ${regions.shared}px `),
+    )
+    const [hand] = gridRows(regions).match(/clamp\([^)]*\)/g) ?? []
     expect(clampedHeight(readClamp(hand ?? ''), viewport.height)).toBeCloseTo(regions.hand, 9)
   })
 
@@ -383,11 +357,18 @@ describe('planTable', () => {
     },
   )
 
-  it('makes the controls dock wider while it holds the ladder row, and a column on a phone', () => {
-    expect(mainColumns({ phone: false }, false)).toBe('minmax(0, 1fr) fit-content(480px)')
-    expect(mainColumns({ phone: false }, true)).toBe('minmax(0, 1fr) fit-content(760px)')
-    expect(mainColumns({ phone: true }, false)).toBe('minmax(0, 1fr) fit-content(160px)')
-    expect(mainColumns({ phone: true }, true)).toBe('minmax(0, 1fr) fit-content(160px)')
+  it('holds the controls dock at one width, wider while it holds the ladder row, and puts a phone dock under the hand', () => {
+    const main = (width: number) => ({ width, height: 900 })
+    // Below the full form's room the short dock; above it as wide as the hand's row leaves, up to the widest.
+    expect(mainColumns({ phone: false, main: main(DOCK_FULL_MIN_MAIN_PX - 1) })).toBe('minmax(0, 1fr) 288px')
+    expect(controlsWidth({ phone: false, main: main(DOCK_FULL_MIN_MAIN_PX) })).toBe(CONTROLS_MAX_PX)
+    expect(controlsWidth({ phone: false, main: main(4000) }, true)).toBe(760)
+    expect(controlsWidth({ phone: false, main: main(4000) }, false)).toBe(CONTROLS_MAX_PX)
+    expect(mainColumns({ phone: true, main: main(390) })).toBe('minmax(0, 1fr) 0px')
+    // One width whatever the dock holds: the column never depends on its content.
+    for (let width = 600; width <= 2600; width += 100) {
+      expect(mainColumns({ phone: false, main: main(width) })).toMatch(/^minmax\(0, 1fr\) \d+px$/)
+    }
   })
 
   it.each([

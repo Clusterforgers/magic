@@ -5,6 +5,10 @@ import type { ObjectView } from '@/protocol/generated'
 import { usePreviewHandlers } from '../../usePreviewHandlers'
 import { lightHandlers } from './boardBadges'
 import { useAsker } from './useAsker'
+import { anchor } from '@/features/learn/anchors'
+
+/** The coach's anchor of the asking card: its chip in the dock or bar, its entry in the Stack panel; one is drawn. */
+export const ASK_CARD = anchor('ask.card')
 
 /** A card's art in a disc; the first letter of its name where it has no picture. */
 export function ArtDisc({
@@ -107,6 +111,7 @@ function Chip({
     <button
       type="button"
       data-slot="prompt-asker"
+      {...ASK_CARD}
       data-asker={board ?? id}
       aria-label={
         doing !== undefined

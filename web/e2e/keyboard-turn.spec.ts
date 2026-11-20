@@ -1,4 +1,4 @@
-// Goal: a whole turn on the development table can be walked with the keyboard alone at a desktop and a phone size: Tab visits the bar, the boards, the hand and the passing controls in reading order and wraps without a trap, the step ladder is one tab stop that arrows move through and Enter sets a stop, H opens a card's by-hand list and Escape returns focus to that card even when the window is resized in between, and the by-hand mark and the "Not now" hint of a card that cannot be played keep WCAG AA contrast (4.5:1 for text, 3:1 for the mark's fill) in the light and the dark theme.
+// Goal: a whole turn on the development table can be walked with the keyboard alone at a desktop and a phone size: Tab visits the bar, the boards, the hand and the passing controls in reading order and wraps without a trap, the step ladder is one tab stop that arrows move through and Enter sets a stop, H opens a card's by-hand list and Escape returns focus to that card even when the window is resized in between, the by-hand mark and the "Not now" hint of a card that cannot be played keep WCAG AA contrast (4.5:1 for text, 3:1 for the mark's fill) in the light and the dark theme, and a target, a payment and a "you may" are answered by keyboard alone in their home at both sizes (A to the answers, Tab to the lit cards, Enter).
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { expectTheme, themedContext } from './layoutGate'
@@ -313,5 +313,63 @@ for (const theme of ['light', 'dark'] as const satisfies readonly Theme[]) {
     } finally {
       await context.close()
     }
+  })
+}
+
+/** Waits until the decision of the dev table is gone: it was answered. */
+async function answered(page: Page): Promise<void> {
+  await expect(page.locator('[data-decision]')).toHaveCount(0)
+}
+
+/** Tabs until a lit card of the table has the focus; false when 40 presses did not reach one. */
+async function tabToLit(page: Page): Promise<boolean> {
+  for (let step = 0; step < 40; step += 1) {
+    await page.keyboard.press('Tab')
+    const lit = await page.evaluate(
+      () =>
+        document.activeElement?.closest('[data-area]') !== null &&
+        document.activeElement?.getAttribute('data-highlight') === 'legal',
+    )
+    if (lit) return true
+  }
+  return false
+}
+
+for (const [label, size] of [
+  ['desktop', DESKTOP],
+  ['phone', PHONE],
+] as const) {
+  test(`answers a target, a payment and a "you may" by keyboard alone in their home at ${label} size`, async ({
+    page,
+  }) => {
+    await page.setViewportSize(size)
+    // Two targets: Tab from the home's last control reaches a lit card, Enter chooses it; A and Enter confirm.
+    await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=targets-two`)
+    await page.locator('[data-coach="ask"]').waitFor()
+    for (const _pick of [1, 2]) {
+      await page.keyboard.press('a')
+      expect(await tabToLit(page), 'Tab reaches a lit card').toBe(true)
+      await page.keyboard.press('Enter')
+    }
+    await page.keyboard.press('a')
+    await page.keyboard.press('Enter')
+    await answered(page)
+
+    // A payment: "Pay for me" lays it out and Confirm, focused, pays it.
+    await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=pay-sources`)
+    await page.locator('[data-coach="ask"]').waitFor()
+    await page.getByRole('button', { name: 'Pay for me' }).focus()
+    await page.keyboard.press('Enter')
+    await expect(page.getByRole('button', { name: /^Confirm payment/ })).toBeFocused()
+    await page.keyboard.press('Enter')
+    await answered(page)
+
+    // A "you may": A reaches its answers, Y says yes.
+    await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=ask-may`)
+    await page.locator('[data-coach="ask"]').waitFor()
+    await page.keyboard.press('a')
+    await expect(page.locator('[data-coach="ask.primary"]')).toBeFocused()
+    await page.keyboard.press('y')
+    await answered(page)
   })
 }

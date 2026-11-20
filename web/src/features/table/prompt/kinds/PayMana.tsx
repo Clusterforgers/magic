@@ -38,6 +38,8 @@ import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
 import type { PromptComponent } from '../types'
 import { UndoButton } from '../UndoButton'
+import { publishBadges } from '../detail/boardBadges'
+import { paysWords } from '../payText'
 
 const focusCard = (id: ObjectId): void =>
   document.querySelector<HTMLElement>(`button[data-object-id="${id}"]`)?.focus()
@@ -128,6 +130,27 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       : undefined
 
   const [{ spends, life, note }, setChosen] = useState(START)
+  // The payment "Pay for me" laid out, while it stands as laid out: its sources draw dashed and turned with "pays U".
+  const [laidOut, setLaidOut] = useState<readonly Spend[] | null>(null)
+  const proposed = laidOut !== null && laidOut === spends
+  useEffect(() => {
+    publishBadges(
+      proposed
+        ? spends.flatMap((spend) =>
+            spend.kind === 'tap'
+              ? [
+                  {
+                    id: spend.option.source.object,
+                    label: paysWords(spend.option),
+                    tone: 'proposed' as const,
+                  },
+                ]
+              : [],
+          )
+        : [],
+    )
+  }, [proposed, spends])
+  useEffect(() => () => publishBadges([]), [])
   // "Always pay automatically" makes "Pay for me" pay at once; without it the game's payment is proposed for a Confirm.
   const payAtOnce = usePlay((state) => state.autoChoices.auto_pay === true)
   const confirmRef = useRef<HTMLButtonElement>(null)
@@ -225,6 +248,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   // The game's payment laid out as if picked by hand: the sources read pressed and the circles fill, and Confirm pays it.
   const propose = (whole: Whole): void => {
     setChosen({ spends: whole.spends, life: whole.life, note: proposalNote(whole, nameOf) })
+    setLaidOut(whole.spends)
     selection.clear()
     requestAnimationFrame(() => confirmRef.current?.focus())
   }

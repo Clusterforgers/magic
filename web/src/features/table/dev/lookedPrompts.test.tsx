@@ -61,7 +61,7 @@ describe.each(PROMPTS)('?prompt=%s', (prompt, name, count) => {
     if (name === 'ChooseReplacement') await user.keyboard('1')
     else
       await user.click(
-        screen.getByRole('button', { name: name === 'OrderCards' ? 'Confirm order' : 'Confirm' }),
+        must(screen.getAllByRole('button', { name: name === 'OrderCards' ? 'Confirm order' : 'Confirm' })[0]),
       )
     expect(document.querySelector('[data-decision]')).toBeNull()
     expect(game.session.store.getState().pending).toBeNull()

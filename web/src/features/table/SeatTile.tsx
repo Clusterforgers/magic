@@ -136,6 +136,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         (waiting === null ? '' : `, w${waiting.slice(1)}`)
       }
       data-defender={defender.state}
+      data-seat-tile={seat}
       data-attacked={attacked || undefined}
       onClick={() => {
         // While an attack is aimed the tile is a defender too: the click attacks the seat and shows its board.

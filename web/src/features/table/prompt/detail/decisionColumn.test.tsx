@@ -1,4 +1,4 @@
-// Goal: in every game mode and window the band of a decision is the asking card's chip, the question and the answers, and its detail is in the Stack tab of a column or in the sheet over the hand: the asking card with the asked clause marked, the run it is one of with what was answered, the triggers to order as rows that move or are pressed in order, a payment as circles captioned with their sources over rows grouped by what they make; the column gives its tab back afterwards, and a source the view does not hold is named and not pointed at.
+// Goal: in every game mode and window a card's question has one home, under the asking card in the Stack panel of a column, in the dock on a rail and in the bar on a phone, and the strip asks nothing; the panel holds the asking card with the asked clause marked, the run it is one of with what was answered, the triggers to order as rows that move or are pressed in order, a payment as circles captioned with their sources over rows grouped by what they make (on a phone in the sheet the bar grows into); the column gives its tab back afterwards, and a source the view does not hold is named and not pointed at.
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -9,7 +9,6 @@ import { ASK_PROMPTS } from '../../dev/askScene'
 import { fixtureGame } from '../../dev/devGame'
 import type { FixtureGameOptions } from '../../dev/devGame'
 import { GameTable } from '../../GameTable'
-import { BAND_PHONE_PX, BAND_TICKER_PX, regionSizes, SHARED_CLAMP, clampedHeight } from '../../layout'
 import { DETAIL_HOLD_MS } from '../../sideState'
 import { TableOptionsContext } from '../../tableOptions'
 import { forgetOutcomes } from './runMemory'
@@ -28,11 +27,11 @@ const MODES: Array<[string, Partial<FixtureGameOptions>]> = [
   ['Two-Headed Giant', { seats: 4, permanents: 16, teams: 'two_headed_giant' }],
   ['a boss fight', { seats: 4, permanents: 16, boss: 1 }],
 ]
-const WINDOWS: Array<[string, Viewport, 'column' | 'sheet']> = [
-  ['1400x900', DESKTOP, 'column'],
-  ['1280x720', LAPTOP, 'column'],
-  ['a rail at 1100', RAIL, 'sheet'],
-  ['a phone', PHONE, 'sheet'],
+const WINDOWS: Array<[string, Viewport, 'panel' | 'dock' | 'bar']> = [
+  ['1400x900', DESKTOP, 'panel'],
+  ['1280x720', LAPTOP, 'panel'],
+  ['a rail at 1100', RAIL, 'dock'],
+  ['a phone', PHONE, 'bar'],
 ]
 
 /** The table of the dev prompt `prompt`, every answer going to a spy that accepts it and clears the decision. */
@@ -78,13 +77,12 @@ afterEach(() => vi.unstubAllGlobals())
 
 describe('a "you may" in every mode and window', () => {
   describe.each(MODES)('%s', (_mode, options) => {
-    it.each(WINDOWS)('at %s', (_window, viewport, where) => {
+    it.each(WINDOWS)('at %s', (_window, viewport, home) => {
       const table = owe('ask-may', options, viewport)
-      // The band: the chip, the question without the name the chip shows, Yes and No, and nothing else to read.
-      const band = table.one('[data-slot="strip-row"]')
-      expect(band).toHaveAttribute('data-detail')
-      const chip = within(band).getByRole('button', { name: /^Mentor of the Meek asks/ })
-      expect(chip).toHaveTextContent('Mentor of the Meek')
+      // One home holds the question, Yes and No; the strip between the boards asks nothing.
+      const [line, ...others] = table.all('[data-slot="decision-line"]')
+      expect(others).toHaveLength(0)
+      expect(line).toHaveAttribute('data-home', home)
       expect(table.one('[data-slot="prompt-text"]')).toHaveTextContent('Pay {1}?')
       const actions = table.one('[data-slot="prompt-actions"]')
       expect(
@@ -92,14 +90,19 @@ describe('a "you may" in every mode and window', () => {
           .getAllByRole('button')
           .map((button) => button.getAttribute('aria-label')),
       ).toEqual(['No', 'Yes'])
-      expect(table.one('[data-slot="strip-stack"]')).not.toBeVisible()
-      expect(table.one('[data-slot="strip-status"]')).not.toBeVisible()
-      expect(band.querySelector('[data-slot="prompt-choices"]')).toBeNull()
-      // The detail: once, where this window keeps it.
+      expect(table.one('[data-region="shared"]').querySelector('[data-slot="prompt-actions"]')).toBeNull()
+      expect(table.all('[data-slot="decision-sheet"]')).toHaveLength(0)
+      // Off the panel the asking card's chip leads the question; in the panel the card stands above it.
+      if (home !== 'panel') {
+        const chip = within(must(line)).getByRole('button', { name: /^Mentor of the Meek asks/ })
+        expect(chip).toHaveTextContent('Mentor of the Meek')
+        expect(table.all('[data-slot="decision-detail"]')).toHaveLength(0)
+        return
+      }
       const [detail, ...more] = table.all('[data-slot="decision-detail"]')
       expect(more).toHaveLength(0)
-      expect(detail).toHaveAttribute('data-where', where)
-      expect(table.all('[data-slot="decision-sheet"]')).toHaveLength(where === 'sheet' ? 1 : 0)
+      expect(detail).toHaveAttribute('data-where', 'column')
+      expect(must(detail).contains(must(line))).toBe(true)
       const entry = within(must(detail))
       expect(entry.getByText('Resolving now')).toBeInTheDocument()
       expect(entry.getByText('Asking you')).toBeInTheDocument()
@@ -147,22 +150,25 @@ describe('the Stack column', () => {
     expect(document.querySelector('[data-slot="decision-detail"]')).toBeNull()
   })
 
-  it('never changes size: the band is the strip over the ticker`s line, a phone`s two lines', () => {
-    for (const viewport of [DESKTOP, LAPTOP, RAIL]) {
-      const regions = regionSizes(viewport)
-      expect(regions.sheet).toBe(clampedHeight(SHARED_CLAMP, viewport.height) + BAND_TICKER_PX)
-      expect(regions.sheetRoom).toBe(BAND_TICKER_PX)
-    }
-    const phone = regionSizes(PHONE)
-    expect(phone.sheet).toBe(BAND_PHONE_PX)
-    expect(phone.sheetRoom).toBe(BAND_PHONE_PX - phone.shared)
+  it('gives a card`s question to the dock while another tab is on show, and takes it back on the Stack tab', async () => {
+    const table = owe('ask-may')
+    expect(table.one('[data-slot="decision-line"]')).toHaveAttribute('data-home', 'panel')
+    await table.user.click(screen.getByRole('tab', { name: /^Log/ }))
+    expect(table.one('[data-slot="decision-line"]')).toHaveAttribute('data-home', 'dock')
+    expect(table.one('[data-slot="decision-dock"]').contains(table.one('[data-slot="decision-line"]'))).toBe(
+      true,
+    )
+    await table.user.click(screen.getByRole('tab', { name: /^Stack/ }))
+    expect(table.one('[data-slot="decision-line"]')).toHaveAttribute('data-home', 'panel')
+    expect(table.all('[data-slot="answer-jump"]')).toHaveLength(1)
   })
 })
 
 describe('a run of triggers', () => {
-  it.each(WINDOWS)('names its place, what is done and what comes at %s', (_window, viewport) => {
+  it.each(WINDOWS)('names its place, what is done and what comes at %s', (_window, viewport, home) => {
     const table = owe('ask-chain', {}, viewport)
     expect(table.one('[data-slot="run-dots"]')).toHaveAccessibleName('Trigger 2 of 3')
+    if (home !== 'panel') return
     const detail = table.one('[data-slot="decision-detail"]')
     expect(detail.querySelector('[data-slot="detail-kicker"]')).toHaveTextContent(
       'Brago, King Eternal · trigger 2 of 3',
@@ -192,7 +198,7 @@ describe('a run of triggers', () => {
     const table = owe('ask-may')
     const always = table.one('[data-slot="always-answer"]')
     expect(always.closest('[data-slot="decision-detail"]')).not.toBeNull()
-    expect(always.closest('[data-slot="strip-row"]')).toBeNull()
+    expect(always.closest('[data-slot="prompt-actions"]')).toBeNull()
   })
 })
 
@@ -213,9 +219,9 @@ describe('ordering triggers', () => {
     expect(rows[1]).not.toHaveTextContent('first')
     expect(rows[3]).toHaveTextContent('Draw a card.')
     expect(rows[3]).not.toHaveTextContent('Whenever')
-    expect(table.one('[data-slot="decision-detail"]')).toHaveTextContent('Already on the stack, below them')
-    const band = table.one('[data-slot="strip-row"]')
-    expect(within(band).getByRole('button', { name: /^Order 4 triggers, from Brago/ })).toBeInTheDocument()
+    expect(table.one('[data-slot="decision-detail"]')).toHaveTextContent('Below them on the stack')
+    const band = table.one('[data-slot="decision-line"]')
+    expect(table.one('[data-slot="decision-detail"]')).toHaveTextContent('Order 4 triggers')
     await table.user.click(screen.getByRole('button', { name: /^Move Welcoming Vampire.* up$/ }))
     await table.user.click(screen.getByRole('button', { name: /^Move Welcoming Vampire.* up$/ }))
     expect(names(table)[1]).toBe('Welcoming Vampire')
@@ -241,7 +247,7 @@ describe('ordering triggers', () => {
   it('on a touch screen takes them in the order pressed, the last by itself', async () => {
     coarse()
     const table = owe('ask-order', {}, PHONE)
-    const band = table.one('[data-slot="strip-row"]')
+    const band = table.one('[data-slot="decision-line"]')
     const confirm = within(band).getByRole('button', { name: 'Confirm order' })
     expect(confirm).toBeDisabled()
     expect(table.one('[data-slot="trigger-order"]')).toHaveAttribute('data-mode', 'press')
@@ -264,26 +270,26 @@ describe('paying', () => {
   const captions = (table: ReturnType<typeof owe>): string[] =>
     table.all('[data-slot="pay-caption"]').map((caption) => caption.textContent ?? '')
 
-  it.each(WINDOWS)('draws the circles, the groups and the meter at %s', (_window, viewport) => {
-    const table = owe('ask-pay', {}, viewport)
-    expect(captions(table)).toEqual(['any', 'any', 'white', 'blue'])
-    expect(
-      table.all('[data-slot="pay-group-label"]').map((label) => label.getAttribute('aria-label')),
-    ).toEqual([
-      'Makes white',
-      'Makes blue',
-      'Makes white or blue, you choose',
-      'Makes white and blue, costs 1 generic',
-    ])
-    const band = table.one('[data-slot="strip-row"]')
-    expect(within(band).getByRole('img', { name: '0 of 4 paid' })).toBeInTheDocument()
-    expect(
-      within(band).getByRole('button', { name: /Brago, King Eternal(?: asks)?\. Show the card/ }),
-    ).toBeInTheDocument()
-    expect(within(band).getByRole('button', { name: 'Confirm payment' })).toBeDisabled()
-    // The sentence is read aloud and not drawn: the meter says it.
-    expect(table.one('[data-slot="prompt-sentence"]')).toHaveClass('sr-only')
-  })
+  it.each(WINDOWS.filter(([, , home]) => home !== 'dock'))(
+    'draws the circles, the groups and the meter at %s',
+    (_window, viewport) => {
+      const table = owe('ask-pay', {}, viewport)
+      expect(captions(table)).toEqual(['any', 'any', 'white', 'blue'])
+      expect(
+        table.all('[data-slot="pay-group-label"]').map((label) => label.getAttribute('aria-label')),
+      ).toEqual([
+        'Makes white',
+        'Makes blue',
+        'Makes white or blue, you choose',
+        'Makes white and blue, costs 1 generic',
+      ])
+      const band = table.one('[data-slot="decision-line"]')
+      expect(within(band).getByRole('img', { name: '0 of 4 paid' })).toBeInTheDocument()
+      expect(within(band).getByRole('button', { name: 'Confirm payment' })).toBeDisabled()
+      // The sentence is read aloud and not drawn: the meter says it.
+      expect(table.one('[data-slot="prompt-sentence"]')).toHaveClass('sr-only')
+    },
+  )
 
   it('captions each circle with the source that paid it, a Signet`s own cost after the divider', async () => {
     const table = owe('ask-pay')
@@ -308,7 +314,7 @@ describe('paying', () => {
     expect(table.one('[data-slot="pay-slot"][data-extra]')).toHaveTextContent('for Azorius Signet')
     await tap(/^Tap Island for blue/)
     expect(captions(table).at(-1)).toBe('Island')
-    const band = table.one('[data-slot="strip-row"]')
+    const band = table.one('[data-slot="decision-line"]')
     expect(within(band).getByRole('img', { name: '5 of 5 paid' })).toBeInTheDocument()
     await table.user.click(within(band).getByRole('button', { name: 'Confirm payment' }))
     expect(table.answer).toHaveBeenCalledTimes(1)
@@ -351,43 +357,36 @@ describe('paying', () => {
   })
 })
 
-describe('the sheet over the hand', () => {
-  it('is open for a question and folds by its handle', async () => {
-    const table = owe('ask-may', {}, PHONE)
+describe("a phone's payment sheet", () => {
+  it('grows the bar into a sheet for a payment, named, that folds by its handle', async () => {
+    const table = owe('ask-pay', {}, PHONE)
     const handle = table.one('[data-slot="sheet-grab"]')
     expect(handle).toHaveAttribute('aria-expanded', 'true')
-    expect(handle).toHaveTextContent('Stack · Mentor of the Meek asks you')
+    expect(handle).toHaveTextContent('Stack · Pay for Brago, King Eternal')
+    expect(table.one('[data-slot="decision-sheet"]').querySelector('[data-slot="pay-slot"]')).not.toBeNull()
     await table.user.click(handle)
     expect(handle).toHaveAttribute('aria-expanded', 'false')
     expect(table.one('[data-slot="decision-detail"]')).not.toBeVisible()
   })
 
-  it.each([
-    ['targets', false],
-    ['ask-order', true],
-    ['ask-pay', true],
-  ])('starts open for %s: %s', (prompt, open) => {
+  it.each(['ask-may', 'targets', 'ask-order', 'x'])('is not there for %s: the bar answers it', (prompt) => {
     const table = owe(prompt, {}, PHONE)
-    expect(table.one('[data-slot="sheet-grab"]')).toHaveAttribute('aria-expanded', String(open))
+    expect(table.all('[data-slot="decision-sheet"]')).toHaveLength(0)
+    expect(table.one('[data-slot="decision-line"]')).toHaveAttribute('data-home', 'bar')
   })
 
-  it('names a payment', () => {
-    const table = owe('ask-pay', {}, PHONE)
-    expect(table.one('[data-slot="sheet-grab"]')).toHaveTextContent('Stack · Pay for Brago, King Eternal')
-  })
-
-  it('holds short choices too, which a wide band keeps', () => {
+  it('holds short choices in the home: the bar on a phone, the panel on a desktop', () => {
     const phone = owe('x', {}, PHONE)
-    expect(phone.one('[data-slot="prompt-choices"]').closest('[data-slot="decision-sheet"]')).not.toBeNull()
+    expect(phone.one('[data-slot="prompt-choices"]').closest('[data-home="bar"]')).not.toBeNull()
     phone.unmount()
     const desk = owe('x')
-    expect(desk.one('[data-slot="prompt-choices"]').closest('[data-slot="strip-row"]')).not.toBeNull()
+    expect(desk.one('[data-slot="prompt-choices"]').closest('[data-home="panel"]')).not.toBeNull()
   })
 })
 
 describe('what the table lights', () => {
   it('glows the asking card and badges what entered', () => {
-    const table = owe('ask-may')
+    const table = owe('ask-may', {}, RAIL)
     const chip = table.one('[data-slot="prompt-asker"]')
     const marks = table.one('[data-slot="ask-marks"]').textContent ?? ''
     expect(marks).toContain(`button[data-object-id='${chip.getAttribute('data-asker')}'][data-size]`)
@@ -403,11 +402,13 @@ describe('what the table lights', () => {
   })
 
   it('names a source the view no longer holds and points at nothing', () => {
-    const table = owe('ask-departed')
+    const table = owe('ask-departed', {}, RAIL)
     const chip = table.one('[data-slot="prompt-asker"]')
     expect(chip).toHaveTextContent('Mentor of the Meek')
     const marks = table.one('[data-slot="ask-marks"]').textContent ?? ''
     expect(marks).not.toContain("content:'asking'")
-    expect(table.one('[data-slot="ask-entry"]')).toHaveTextContent('Mentor of the Meek')
+    table.unmount()
+    const panel = owe('ask-departed')
+    expect(panel.one('[data-slot="ask-entry"]')).toHaveTextContent('Mentor of the Meek')
   })
 })

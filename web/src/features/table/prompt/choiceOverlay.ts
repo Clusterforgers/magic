@@ -10,6 +10,17 @@ import { POD_COLUMN_PX, ZONE_GAP_PX } from '../layout'
 import type { Viewport } from '../layout'
 import { FILTER_FROM } from './cardsText'
 import type { OverlayRoom } from './overlayLayout'
+import { useDecisionHome } from './useDecisionHome'
+
+/** The overlay's element as the window of a list whose home has no room for it, held open while `on`; null otherwise. */
+export function useWindowHost(on: boolean): HTMLElement | null {
+  const overlay = useContext(ChoiceOverlayContext)
+  const host = on && overlay !== null ? overlay.host : null
+  const claim = overlay?.claim
+  const used = host !== null
+  useLayoutEffect(() => (used && claim !== undefined ? claim() : undefined), [used, claim])
+  return host
+}
 
 /** What a card prompt reads to lay its cards out in the overlay. */
 export interface ChoiceOverlay {
@@ -81,7 +92,10 @@ export function wantsOverlay(count: number, every: boolean): boolean {
 /** The overlay's element for a choice among `count` cards, held open while the caller is mounted; null to draw in place. */
 export function useChoiceOverlay(count: number): HTMLElement | null {
   const overlay = useContext(ChoiceOverlayContext)
-  const host = overlay !== null && wantsOverlay(count, overlay.every) ? overlay.host : null
+  // Cards are laid out under the question only where the Stack panel is the home; any other home opens the window.
+  const { home } = useDecisionHome()
+  const every = overlay?.every === true || (home !== null && home !== 'panel')
+  const host = overlay !== null && wantsOverlay(count, every) ? overlay.host : null
   const claim = overlay?.claim
   const used = host !== null
   useLayoutEffect(() => (used && claim !== undefined ? claim() : undefined), [used, claim])

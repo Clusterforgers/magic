@@ -18,8 +18,8 @@ export const TURN: Lesson = {
       id: 'skips',
       kind: 'read',
       title: 'Skipping',
-      text: 'The game passes for you wherever you cannot act, and this bar says what it skipped.',
-      lit: ['band'],
+      text: 'The game passes for you wherever you cannot act; the line between the boards says what it skipped.',
+      lit: ['stack'],
     },
     {
       id: 'stop',
@@ -52,7 +52,7 @@ export const TURN: Lesson = {
       kind: 'read',
       title: 'Your stop',
       text: 'The game waits here because of your stop: the last moment to cast an instant before your own turn.',
-      lit: ['band'],
+      lit: ['ask'],
     },
     {
       id: 'pass',

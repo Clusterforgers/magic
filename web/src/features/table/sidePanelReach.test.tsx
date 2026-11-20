@@ -1,4 +1,4 @@
-// Goal: an open rail panel or side sheet is drawn into an overlay of the main area that spans the rows from the opponents down (to the shared strip for a sheet with room, else to your board) and never the top bar or the hand and controls row, so the pass control and the hand stay pressable with it open; while a prompt waits in the shared strip (any decision of this seat but Priority) the overlay stops above the prompt sheet and returns to its rows once the decision is answered; the sheet leaves the page live, and "Pick a card" takes the panel away and brings it back with the card chosen.
+// Goal: an open rail panel or side sheet is drawn into an overlay of the main area that spans the rows from the opponents down (to the shared strip for a sheet with room, else to your board) and never the top bar or the hand and controls row, so the pass control and the hand stay pressable with it open; while a decision of this seat but Priority waits the overlay stops above the strip and returns to its rows once the decision is answered; the sheet leaves the page live, and "Pick a card" takes the panel away and brings it back with the card chosen.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -14,10 +14,10 @@ const SIZES: ReadonlyArray<[string, Viewport, string]> = [
   ['1100x800 rail', { width: 1100, height: 800 }, '2 / 5'],
   ['768x1024 tablet sheet', { width: 768, height: 1024 }, '2 / 4'],
   ['640x768 sheet', { width: 640, height: 768 }, '2 / 4'],
-  ['640x700 short sheet', { width: 640, height: 700 }, '2 / 4'],
+  ['640x700 short sheet', { width: 640, height: 700 }, '2 / 5'],
   ['390x844 phone sheet', { width: 390, height: 844 }, '2 / 4'],
   ['360x740 small phone sheet', { width: 360, height: 740 }, '2 / 4'],
-  ['390x640 short phone sheet', { width: 390, height: 640 }, '2 / 5'],
+  ['390x640 short phone sheet', { width: 390, height: 640 }, '2 / 4'],
   ['844x390 phone on its side', { width: 844, height: 390 }, '2 / 5'],
 ]
 
@@ -144,12 +144,11 @@ describe.each([
     await open()
     expect(overlay().style.gridRow).toBe('2 / 3')
     expect(overlay().dataset.lowered).toBe('true')
-    expect(overlay().style.marginBottom).toBe('var(--sheet-overhang, 0px)')
     expect(overlay().style.minHeight).toBe(`${SIDE_DECISION_MIN_PX}px`)
     expect(within(overlay()).getByRole('region', { name: 'Commands' })).toBeInTheDocument()
     const prompt = screen.getByRole('button', { name: 'Yes' })
     expect(overlay().contains(prompt)).toBe(false)
-    expect(document.querySelector('[data-region="shared"]')?.contains(prompt)).toBe(true)
+    expect(document.querySelector('[data-region="controls"]')?.contains(prompt)).toBe(true)
   })
 
   it('returns to its full rows once the decision is answered', async () => {
@@ -158,7 +157,6 @@ describe.each([
     expect(overlay().dataset.lowered).toBeUndefined()
     expect(overlay().style.gridRow).toBe(sidePanelRows(regionSizes(viewport)))
     expect(overlay().style.minHeight).toBe('')
-    expect(overlay().style.marginBottom).toBe('')
   })
 })
 

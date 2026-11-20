@@ -50,8 +50,9 @@ function renderMulligan(given: MulliganOptions, { status = [], lost = [], own = 
     must(table.container.querySelector('[data-slot="prompt-text"]')).textContent ?? ''
   const waiting = (): string | null =>
     table.container.querySelector('[data-slot="mulligan-waiting"]')?.textContent ?? null
-  const keep = (): HTMLElement => screen.getByRole('button', { name: 'Keep' })
-  const mulligan = (): HTMLElement => screen.getByRole('button', { name: 'Mulligan' })
+  // The home's answers come first; a window over the boards repeats them.
+  const keep = (): HTMLElement => must(screen.getAllByRole('button', { name: 'Keep' })[0])
+  const mulligan = (): HTMLElement => must(screen.getAllByRole('button', { name: 'Mulligan' })[0])
   return { ...table, answer, card, text, waiting, keep, mulligan }
 }
 
@@ -283,7 +284,7 @@ describe('Keep and Mulligan', () => {
     ['Mulligan', 'Mulligan'],
   ] as const)('%s answers Mulligan: %s by click', async (label, choice) => {
     const { answer, user } = renderMulligan(options())
-    await user.click(screen.getByRole('button', { name: label }))
+    await user.click(must(screen.getAllByRole('button', { name: label })[0]))
     expect(answer.mock.calls).toEqual([[{ Mulligan: choice }]])
   })
 
@@ -296,7 +297,7 @@ describe('Keep and Mulligan', () => {
     const { answer, user, keep } = renderMulligan(options())
     act(() => keep().focus())
     if (label === 'Mulligan') await user.keyboard('{Tab}')
-    expect(screen.getByRole('button', { name: label })).toHaveFocus()
+    expect(must(screen.getAllByRole('button', { name: label })[0])).toHaveFocus()
     await user.keyboard(keys)
     expect(answer.mock.calls).toEqual([[{ Mulligan: choice }]])
   })
@@ -351,17 +352,14 @@ describe('a new decision', () => {
 })
 
 describe('the opening hand drawn large', () => {
-  it('shows every card of the hand in order among the choices of the strip, the buttons among its answers, hidden from a screen reader', () => {
+  it('leaves the hand to the hand dock on a phone, nothing drawn twice, and the buttons to the bar', () => {
     const { container, mulligan } = renderMulligan(options())
-    const row = must(container.querySelector('[data-slot="opening-hand"]'))
-    expect(row).toHaveAttribute('aria-hidden', 'true')
-    expect(row.querySelectorAll('[data-slot="opening-card"]')).toHaveLength(hand.length)
-    expect(row.closest('[data-region="shared"]')).not.toBeNull()
-    // The answers are sticky in the sheet, so a sheet that scrolls keeps Keep and Mulligan in view.
-    expect(row.closest('[data-slot="prompt-choices"]')).not.toBeNull()
-    expect(mulligan().closest('[data-slot="prompt-actions"]')).toHaveClass('sticky')
-    // One row that scrolls when the band is narrower than seven cards, never a second row under the answers.
-    expect(row).toHaveClass('overflow-x-auto', 'justify-center-safe')
-    expect(row).not.toHaveClass('flex-wrap')
+    expect(container.querySelector('[data-slot="opening-hand"]')).toBeNull()
+    expect(container.querySelector('[data-slot="decision-window"]')).toBeNull()
+    // The hand's own list: the commanders that wait before it are a list of their own.
+    expect(
+      container.querySelectorAll('[data-region="hand"] ul[aria-label$="\'s hand"] button[data-object-id]'),
+    ).toHaveLength(hand.length)
+    expect(mulligan().closest('[data-home="bar"]')).not.toBeNull()
   })
 })

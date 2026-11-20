@@ -45,7 +45,7 @@ describe('a scry of four cards', () => {
     send(decision(41, { Scry: { source, cards: [a, b, c, d], text: SCRY } }))
     // The band asks; the piles are in the Stack column.
     expect(prompt('Scry')).not.toBeNull()
-    expect(document.querySelector('[data-slot="decision-choices"] [data-slot="scry-piles"]')).not.toBeNull()
+    expect(document.querySelector('[data-slot="decision-panel"] [data-slot="scry-piles"]')).not.toBeNull()
     await press(b, 'cross')
     await press(d, 'cross')
     await press(d, 'up')

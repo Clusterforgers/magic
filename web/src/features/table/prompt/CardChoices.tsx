@@ -123,6 +123,7 @@ export function CardChoices({
   const fit = useMemo(() => stripCardWidth(total), [total])
   const host = useChoiceOverlay(total)
   const name = useContext(PromptContext)?.name
+  const decisionId = useContext(PromptContext)?.id
   const [filter, setFilter] = useState('')
   const filtering = total > FILTER_FROM || (search && total > 1)
   const views = useMemo(
@@ -322,6 +323,7 @@ export function CardChoices({
     <div
       data-slot="choice-overlay"
       data-decision={name}
+      data-decision-id={decisionId}
       className={cn(
         'plaque flex min-h-0 w-fit min-w-[min(100%,22rem)] flex-col gap-2 rounded-xl border-2 border-brass p-3 shadow-e3',
         room.phone ? 'max-h-full max-w-full' : 'max-h-[80%] max-w-[80%]',
