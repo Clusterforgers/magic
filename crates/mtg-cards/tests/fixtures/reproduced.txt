@@ -6,6 +6,7 @@ Abominable Treefolk
 Abomination, World Ravager
 Aboroth
 Absolver Thrull
+Abuelo's Awakening
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
@@ -359,6 +360,7 @@ Caldera Hellion
 Call the Skybreaker
 Call the Spirit Dragons
 Caller of the Claw
+Caller of the Hunt
 Caller of the Pack
 Canoptek Tomb Sentinel
 Canopy Vista
@@ -875,6 +877,7 @@ Eyeblight Massacre
 Eyetwitch
 Ezzaroot Channeler
 Fabrication Foundry
+Face Yourself
 Faceless One
 Faerie Bladecrafter
 Faerie Conclave
@@ -1137,6 +1140,7 @@ Grim Backwoods
 Grim Flayer
 Grim Haruspex
 Grim Initiate
+Grime Gorger
 Grisly Salvage
 Grothama, All-Devouring
 Ground Seal
@@ -1500,6 +1504,7 @@ Liliana's Mastery
 Liliana's Reaver
 Liliana's Standard Bearer
 Lion Sash
+Liquid Fire
 Liquimetal Torque
 Lita, Little Orphan Amphibian
 Lithoform Engine

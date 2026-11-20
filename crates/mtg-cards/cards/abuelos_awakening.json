@@ -1,0 +1,47 @@
+{
+  "oracle_id": "2b22cf44-7b03-4919-9812-6796bf193484",
+  "name": "Abuelo's Awakening",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Abuelo's Awakening",
+      "oracle_fingerprint": "1e067bb400a24f54e85113feb3093742",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Enchantment" }] },
+                    { "Not": { "Subtype": "Aura" } },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": {
+                    "R6502BattlefieldAs": {
+                      "becomes": [
+                        { "AddType": "Creature" },
+                        { "AddSubtype": "Spirit" },
+                        { "SetPT": { "power": 1, "toughness": 1 } },
+                        { "AddKeyword": "Flying" }
+                      ],
+                      "r110_counters": [["+1/+1", "X"]]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

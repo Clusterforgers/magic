@@ -201,6 +201,10 @@ pub enum Destination {
     R6502BattlefieldAs {
         /// What it is as it enters.
         becomes: Vec<Modification>,
+        /// Counters it enters with, each kind with its number, counted as it moves ("with X additional +1/+1 counters on
+        /// it", CR 122.6).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r110_counters: Vec<(CounterKind, Amount)>,
     },
     /// The battlefield under its owner's control, where an Aura enters attached only to a permanent the selector matches
     /// among those it may enchant, chosen by its controller, and stays where it was when there is none ("Only creatures

@@ -2424,19 +2424,24 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
-    /// What the source of the scope chose as it entered, if it is on the battlefield and asked for a choice.
+    /// What the source of the scope chose: as it entered, as a cost while a spell, or in its last known information.
     pub(crate) fn entered_choice(&self) -> Option<&'a Chosen> {
         if let Some(chosen) = self.entering {
             return Some(chosen);
         }
-        self.state
-            .object(self.source.id)
-            .and_then(|object| object.permanent())
-            .and_then(|permanent| permanent.chosen())
-            .or_else(|| {
-                self.snapshot_of(self.source)
-                    .and_then(|shot| shot.chosen.as_ref())
-            })
+        let object = self.state.object(self.source.id);
+        let held = match object {
+            Some(object) => match object.permanent() {
+                Some(permanent) => permanent.chosen(),
+                // A spell reads what its caster chose as an additional cost (`CostItem::R110Choose`).
+                None => object.choices().r110_chosen(),
+            },
+            None => None,
+        };
+        held.or_else(|| {
+            self.snapshot_of(self.source)
+                .and_then(|shot| shot.chosen.as_ref())
+        })
     }
 
     /// The printed name of the card, none for a face-down card (it has no name).

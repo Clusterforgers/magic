@@ -129,6 +129,12 @@ pub(super) fn move_object(
     } else {
         None
     };
+    // "As an additional cost to cast this spell, choose a creature type": the permanent remembers the value.
+    let r110_chosen = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.r110_chosen().cloned()
+    } else {
+        None
+    };
     // A modal double-faced card that resolves from the stack is the face it was cast as.
     let face = if from == Zone::Stack && to == Zone::Battlefield {
         object.choices.face
@@ -172,6 +178,7 @@ pub(super) fn move_object(
             PermanentState::entering(timestamp, paid, way, x, face, spent, spent_from);
         permanent.convoked = convoked;
         permanent.delved = delved;
+        permanent.chosen = r110_chosen;
         permanent.r6702_crafted = r6702_crafted;
         permanent.doors = crate::dk1c5_rooms::Doors::entering(&object.def, face);
         object.permanent = Some(permanent);
@@ -862,7 +869,10 @@ fn enter(
         )));
     };
     permanent.tapped = tapped;
-    permanent.chosen = chosen.cloned();
+    // A value chosen as the spell was cast stays unless a choice made as it enters replaces it.
+    if chosen.is_some() || permanent.chosen.is_none() {
+        permanent.chosen = chosen.cloned();
+    }
     object.controller = controller;
     Ok(())
 }

@@ -230,6 +230,11 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PlayerId>>", optional))]
     pub players: Vec<PlayerId>,
+    /// The value the caster chose as an additional cost while casting the spell ("choose a creature type", CR 601.2b):
+    /// the spell, its copies and the permanent it becomes read it as the value their source chose.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub r110_chosen: Option<crate::object::Chosen>,
 }
 
 /// Whether a number of counters is 0, so serialization can leave it out.
@@ -361,6 +366,18 @@ impl Choices {
         self.cost_taken
             .as_deref()
             .map_or(&[], |taken| &taken.players)
+    }
+
+    /// The value the caster chose as an additional cost while casting the spell (`CostTaken::r110_chosen`).
+    pub fn r110_chosen(&self) -> Option<&crate::object::Chosen> {
+        self.cost_taken.as_deref()?.r110_chosen.as_ref()
+    }
+
+    /// Keeps the value the caster chose as an additional cost.
+    pub(crate) fn r110_set_chosen(&mut self, chosen: Option<crate::object::Chosen>) {
+        if chosen.is_some() || self.cost_taken.is_some() {
+            self.cost_taken.get_or_insert_with(Box::default).r110_chosen = chosen;
+        }
     }
 
     /// Adds the player chosen for the next part of the cost that names one.

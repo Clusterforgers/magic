@@ -36,6 +36,14 @@ pub(crate) enum XCost {
     Loyalty,
     /// The amount of a part of an ability's cost (life, counters, energy, objects picked): X of them are paid.
     Parts,
+    /// A number the caster chooses as an additional cost, from `least` to `most` (`CostItem::R110ChooseNumber`); it pays
+    /// nothing.
+    R110Chosen {
+        /// The least number.
+        least: u32,
+        /// The greatest number.
+        most: u32,
+    },
 }
 
 impl XCost {
@@ -50,6 +58,12 @@ impl XCost {
         let symbols = match what {
             What::Spell(spell) => {
                 let card = state.object(*spell)?.card();
+                // "As an additional cost to cast this spell, choose a number between 0 and 5.": the number is the X.
+                if card.x_in_cost == 0
+                    && let Some((least, most)) = super::r110_chosen_number::r110_range(card)
+                {
+                    return Some(XCost::R110Chosen { least, most });
+                }
                 // "As an additional cost to cast this spell, pay X life.": the cost counts the X it asks for.
                 if card.x_in_cost == 0 && required::counts_x(card) {
                     return Some(XCost::Parts);
@@ -108,6 +122,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     // Discard X cards.").
     if work.choices.way.is_some_and(CastWay::replaces_cost)
         && ctx.needs.x != Some(XCost::Parts)
+        && !matches!(ctx.needs.x, Some(XCost::R110Chosen { .. }))
         && alternative_symbols(ctx, work.choices.way) == Some(0)
         && super::optional::chosen_x(ctx, work.choices) == 0
         && parts::most(ctx, work.choices).is_none()
@@ -172,7 +187,12 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         min: offer.min,
         max: Some(offer.max),
         except: offer.except,
-        text: "Choose a value for X.".to_owned(),
+        text: match ctx.needs.x {
+            Some(XCost::R110Chosen { least, most }) => {
+                format!("Choose a number between {least} and {most}.")
+            }
+            _ => "Choose a value for X.".to_owned(),
+        },
         can_cancel: ctx.can_cancel(),
         cost: at_zero(ctx, work.choices),
         per_x: per_x(ctx, work.choices),
@@ -308,6 +328,9 @@ struct Offer {
 /// "X can't be 0", and so may a kicker with `{X}` the spell is kicked for.
 fn least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     // An X the text defines is its own floor and cap (`largest`): no player chooses it (CR 107.3c).
+    if let Some(XCost::R110Chosen { least, .. }) = ctx.needs.x {
+        return least;
+    }
     let fixed = super::r5523_x_cap::r6503_fixed_x(ctx).unwrap_or(0);
     fixed.max(least_x_chosen(ctx, choices))
 }
@@ -441,6 +464,7 @@ fn largest(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
                 super::r5523_x_cap::r6503_fixed_x(ctx).map_or(payable, |fixed| fixed.min(payable));
             Some(parts::most(ctx, choices).map_or(payable, |most| most.min(payable)))
         }
+        XCost::R110Chosen { most, .. } => Some(*most),
         // "Blight X. X can't be greater than ...": the cap holds for an X that only parts of the cost count.
         XCost::Parts => {
             let most = parts::most(ctx, choices)?;

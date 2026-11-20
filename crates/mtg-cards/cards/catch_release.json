@@ -1,7 +1,7 @@
 {
   "oracle_id": "a7df5dc0-2564-4288-bc53-59affd896f79",
   "name": "Catch // Release",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Catch",
@@ -37,9 +37,91 @@
       "oracle_fingerprint": "99e0eee28b63338409b2ca5cc063587f",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you resolve this spell effect by hand",
-            "span": { "start": 0, "end": 107 }
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": { "Each": [{ "ControlledBy": "Chooser" }, { "Type": "Artifact" }] },
+                  "as": "artifact"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "artifact" } } }
+                    ]
+                  },
+                  "as": "creature"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } }
+                    ]
+                  },
+                  "as": "enchantment"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } }
+                    ]
+                  },
+                  "as": "land"
+                }
+              },
+              {
+                "Choose": {
+                  "who": "EachPlayer",
+                  "from": {
+                    "Each": [
+                      { "ControlledBy": "Chooser" },
+                      { "Type": "Planeswalker" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } },
+                      { "Not": { "Is": { "Bound": "land" } } }
+                    ]
+                  },
+                  "as": "planeswalker"
+                }
+              },
+              {
+                "Sacrifice": {
+                  "who": "EachPlayer",
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "Is": { "Bound": "artifact" } },
+                        { "Is": { "Bound": "creature" } },
+                        { "Is": { "Bound": "enchantment" } },
+                        { "Is": { "Bound": "land" } },
+                        { "Is": { "Bound": "planeswalker" } }
+                      ]
+                    }
+                  ],
+                  "count": 5
+                }
+              }
+            ]
           }
         },
         { "Keyword": "Fuse" }

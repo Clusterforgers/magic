@@ -1746,6 +1746,9 @@ fn w2f_cost_taken(
         spliced: vec![b],
         phyrexian_life: 2,
         players: vec![PlayerId(2)],
+        r110_chosen: Some(mtg_engine::object::Chosen::CreatureType(
+            mtg_core::card::Subtype("Elf".into()),
+        )),
     }
 }
 

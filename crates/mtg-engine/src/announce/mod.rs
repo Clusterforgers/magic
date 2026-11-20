@@ -34,6 +34,8 @@ mod payment;
 pub(crate) mod plot;
 mod price;
 mod r109_ignore;
+mod r110_cast_choice;
+mod r110_chosen_number;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
@@ -372,6 +374,9 @@ pub(crate) struct Done {
     /// The kind of counter the player picked for the next permanent of a cost that removes a counter of any kind, by
     /// position in the options.
     pub(crate) w2f_kind_picked: Option<u8>,
+    /// The value the player picked for a choice made as an additional cost (`r110_cast_choice`), by position in the
+    /// options, which may be more than a `u8` holds.
+    pub(crate) r110_picked: Option<usize>,
     /// The life the cost modifiers add to the spell's cost, worked out with its total cost and paid with its other parts.
     pub(crate) modifier_life: u32,
     /// The Flagbearer pick of a target specification of several targets (`r5509_flagbearer`).
@@ -613,6 +618,7 @@ impl Pending {
             }
             Answered::Way(pick) if wanted == Phase::Parts => {
                 self.done.w2f_kind_picked = u8::try_from(pick).ok();
+                self.done.r110_picked = Some(pick);
             }
             Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Cards(cards) => self.choices.pick_for_cost(cards),

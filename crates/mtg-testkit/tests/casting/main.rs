@@ -142,6 +142,8 @@ mod plot;
 mod promise_of_loyalty;
 mod pump_spells;
 mod r109_emerge_reads;
+mod r110_cast_choice;
+mod r110_chosen_number;
 mod r110_foretell;
 mod r110_kicked_discard;
 mod r110_sacrifice_tax;
