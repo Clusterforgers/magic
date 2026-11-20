@@ -9534,7 +9534,7 @@ mod tests {
     )]
     #[case::a_spell_given_flying(
         r#"{"Static":{"affected":{"Each":["Spell"]},"mods":[{"AddKeyword":"Flying"}]}}"#,
-        "faces[0].abilities[0].Static.mods: a spell is given only convoke, improvise, delve or affinity by a static ability"
+        "faces[0].abilities[0].Static.mods: a spell is given only convoke, improvise, delve, affinity or blitz by a static ability"
     )]
     #[case::a_permission_cost_with_no_part(
         r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","additional":[]}},"duration":"UntilEndOfTurn"}}]}}"#,
