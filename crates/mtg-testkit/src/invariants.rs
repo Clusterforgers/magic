@@ -738,6 +738,15 @@ fn check_bookkeeping(state: &GameState) -> Result<(), Violation> {
     Ok(())
 }
 
+/// Restricted mana spent whose purpose the next events tell: a mana ability activated right after, or the spell under it.
+#[derive(Debug, Clone)]
+struct UnsettledSpend {
+    player: PlayerId,
+    units: Vec<Restricted>,
+    /// The spell on top of the stack as the mana was spent, and what paying for it is.
+    spell: Option<(Spend, String)>,
+}
+
 /// Follows a game event by event on a shadow copy and cross-checks it against the live engine.
 #[derive(Debug)]
 pub struct InvariantChecker {
@@ -752,6 +761,8 @@ pub struct InvariantChecker {
     expected_restricted: Vec<Vec<Restricted>>,
     /// The mana without a restriction that outlasts the step, by the history of what was added and spent.
     expected_kept: Vec<Vec<(ManaType, ManaLasts)>>,
+    /// Restricted mana just spent, checked once the log shows what it paid for.
+    unsettled_spend: Option<UnsettledSpend>,
     expected_damage: BTreeMap<ObjectId, u32>,
     /// Whether the object the current damage event hits was a creature as the damage was dealt (CR 120.3e).
     damaged_creature: bool,
@@ -828,6 +839,7 @@ impl InvariantChecker {
             expected_pool: vec![[0; 6]; shadow.players().len()],
             expected_restricted: vec![Vec::new(); shadow.players().len()],
             expected_kept: vec![Vec::new(); shadow.players().len()],
+            unsettled_spend: None,
             expected_damage,
             damaged_creature: false,
             expected_object_counters,
@@ -869,6 +881,7 @@ impl InvariantChecker {
             self.observe_event(event)?;
             self.events_seen += 1;
         }
+        self.settle_spend(None)?;
         self.since_full += 1;
         if self.since_full < self.full_every {
             return Ok(());
@@ -1160,6 +1173,7 @@ impl InvariantChecker {
     // One arm for each kind of event the histories follow.
     #[allow(clippy::too_many_lines)]
     fn account(&mut self, event: &Event) -> Result<(), Violation> {
+        self.settle_spend(Some(event))?;
         match event {
             Event::ManaAdded {
                 player,
@@ -1188,7 +1202,13 @@ impl InvariantChecker {
                 for m in mana {
                     self.adjust_pool(*player, *m, -1)?;
                 }
-                self.check_restrictions_honoured(restricted)?;
+                if !restricted.is_empty() {
+                    self.unsettled_spend = Some(UnsettledSpend {
+                        player: *player,
+                        units: restricted.clone(),
+                        spell: self.spell_paid_for(),
+                    });
+                }
                 for unit in restricted {
                     let held = self.held_restricted(*player)?;
                     let Some(at) = held.iter().position(|h| h == unit) else {
@@ -1742,29 +1762,68 @@ impl InvariantChecker {
             .ok_or_else(|| Violation::Mana(format!("unknown {player:?}")))
     }
 
-    /// Restricted mana spent for a spell is mana its restriction allows: the spell is the top of the stack once its cast
-    /// events have folded, which come before the mana it is paid with is spent.
-    fn check_restrictions_honoured(&self, units: &[Restricted]) -> Result<(), Violation> {
-        let top = self
+    /// The spell on top of the stack and what paying for it is: its cast events fold before the mana it is paid with is
+    /// spent.
+    fn spell_paid_for(&self) -> Option<(Spend, String)> {
+        let spell = self
             .shadow
             .zone(Zone::Stack)
             .last()
-            .and_then(|id| self.shadow.object(*id));
-        let Some(spell) = top.filter(|o| o.kind() == ObjectKind::Card) else {
-            return Ok(());
-        };
+            .and_then(|id| self.shadow.object(*id))
+            .filter(|o| o.kind() == ObjectKind::Card)?;
         let spend = Spend::for_spell(
             &self.shadow,
             spell.id(),
             spell.controller(),
             spell.card().x_in_cost > 0,
         );
+        Some((spend, spell.card().name.clone()))
+    }
+
+    /// Restricted mana is spent only on what its restriction allows (CR 106.6). What the last spending paid for shows
+    /// once `next` (or the end of the batch, `None`) is seen: a mana ability its player activates right after (its cost
+    /// is paid before it adds mana, and it uses no stack, CR 605.3b), or else the spell on the stack as it was spent.
+    fn settle_spend(&mut self, next: Option<&Event>) -> Result<(), Violation> {
+        let Some(pending) = self.unsettled_spend.as_ref() else {
+            return Ok(());
+        };
+        let (spend, on) = match next {
+            Some(Event::ManaAbilityActivated { player, source, .. })
+                if *player == pending.player =>
+            {
+                let name = self
+                    .shadow
+                    .object(source.id)
+                    .map_or_else(String::new, |o| o.card().name.clone());
+                (
+                    Spend::for_ability(&self.shadow, source.id, false),
+                    format!("a mana ability of {name}"),
+                )
+            }
+            None
+            | Some(
+                Event::ManaSpent { .. }
+                | Event::SpellCast { .. }
+                | Event::AbilityPutOnStack(_)
+                | Event::PriorityPassed { .. },
+            ) => {
+                let Some(spell) = pending.spell.clone() else {
+                    self.unsettled_spend = None;
+                    return Ok(());
+                };
+                spell
+            }
+            Some(_) => return Ok(()),
+        };
+        let units = self
+            .unsettled_spend
+            .take()
+            .map(|p| p.units)
+            .unwrap_or_default();
         match units.iter().find(|unit| !spend.allows(&unit.only)) {
             Some(unit) => Err(Violation::Mana(format!(
-                "{:?} mana restricted to {:?} was spent on {}",
-                unit.mana,
-                unit.only,
-                spell.card().name
+                "{:?} mana restricted to {:?} was spent on {on}",
+                unit.mana, unit.only
             ))),
             None => Ok(()),
         }
