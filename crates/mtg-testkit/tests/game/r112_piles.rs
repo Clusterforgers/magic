@@ -340,7 +340,7 @@ fn r112_centaur_of_attention_counts_its_most_common_result(
             stored[at] = *result;
         }
     } else {
-        assert!(rerolled.is_empty());
+        assert_eq!(rerolled, Vec::<u32>::new());
     }
     let x = i32::try_from(most(&stored)).unwrap();
     assert_eq!(pt(&driver), (3 + x, 3 + x));

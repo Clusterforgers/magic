@@ -72,19 +72,15 @@ type Walked = Vec<(Vec<Vec<ObjectId>>, Option<usize>)>;
 fn walk(
     cx: &Cx<'_>,
     groups: &[(PlayerId, Vec<ObjectId>)],
-    effect: (
-        &[String],
-        &[String],
-        Option<(&R112PilePick, Option<PlayerId>)>,
-    ),
+    (piles, face_down): (&[String], &[String]),
+    chooser: Option<PlayerId>,
 ) -> Result<Walked, Stop> {
-    let (piles, face_down, pick) = effect;
     let mut questions = Questions::new(cx);
     let mut walked = Vec::with_capacity(groups.len());
     for (separator, ids) in groups {
         walked.push((separate(&mut questions, *separator, ids, piles)?, None));
     }
-    if let Some((R112PilePick::By(_), Some(chooser))) = pick {
+    if let Some(chooser) = chooser {
         for (separated, picked) in &mut walked {
             let options = piles
                 .iter()
@@ -155,11 +151,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             .find(|player| state.is_alive(*player)),
         _ => None,
     };
-    let mut walked = match walk(
-        cx,
-        &groups,
-        (piles, face_down, pick.as_ref().map(|pick| (pick, chooser))),
-    ) {
+    let mut walked = match walk(cx, &groups, (piles, face_down), chooser) {
         Ok(walked) => walked,
         Err(stop) => return Stop::settle(Err(stop)),
     };
