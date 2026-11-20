@@ -547,6 +547,7 @@ fn spell_cast(
     }
     expect_in(state, object, from)?;
     let (uncounterable, resolves) = crate::rules::spend_next_spells(state, player, object);
+    let r112_gained = crate::r112_spells_gain::r112_gained_as_cast(state, player, object);
     // Read before the tally below closes a permission that works once each turn.
     let riders = crate::rules::r401_cast_riders(state, player, object, from, choices.way);
     note_permission_used(state, player, object, from, choices.way);
@@ -556,8 +557,7 @@ fn spell_cast(
     // Read before the spell joins the stack; a spell cast while another resolves is cast off sorcery timing.
     let off_sorcery_timing =
         !crate::priority::sorcery_timing(state, player) || state.resolving().is_some();
-    move_object(state, object, Zone::Stack, Placement::Top)?;
-    set_controller(state, object, player);
+    r112_to_stack(state, player, object, r112_gained)?;
     if uncounterable {
         crate::rules::uncounterable_from_now(state, player, object);
     }
@@ -1067,4 +1067,19 @@ fn leave_game(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> {
         state.ceased.insert(id, object);
     }
     player_mut(state, owner).map(|_| ())
+}
+
+/// Puts the spell cast on the stack under its caster, with the keywords it gains as it is cast (`r112_spells_gain`).
+fn r112_to_stack(
+    state: &mut GameState,
+    player: PlayerId,
+    object: ObjectId,
+    gained: Vec<(
+        mtg_cards::keyword::Keyword,
+        Option<crate::object::ObjectRef>,
+    )>,
+) -> Result<(), EngineError> {
+    move_object(state, object, Zone::Stack, Placement::Top)?;
+    set_controller(state, object, player);
+    crate::r112_spells_gain::r112_give(state, player, object, gained)
 }

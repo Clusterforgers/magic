@@ -814,8 +814,22 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     Ok(())
 }
 
+/// Whether the change gives a triggered ability that works outside the battlefield, itself or through a keyword.
+fn r112_triggers_elsewhere(modification: &crate::effects::Modification) -> bool {
+    use mtg_cards::ability::Ability;
+    let elsewhere = |ability: &Ability| matches!(ability, Ability::Triggered { from, .. } if *from != mtg_cards::refs::ZoneKind::Battlefield);
+    match modification {
+        crate::effects::Modification::AddKeyword(keyword) => crate::keywords::rules(keyword)
+            .adds_abilities(keyword)
+            .iter()
+            .any(elsewhere),
+        crate::effects::Modification::GrantAbility(granted) => elsewhere(granted),
+        _ => false,
+    }
+}
+
 /// Registers a continuous effect, noting what an ability it grants can do to the game.
-fn create_effect(
+pub(crate) fn create_effect(
     state: &mut GameState,
     effect: &crate::effects::ContinuousEffect,
 ) -> Result<(), EngineError> {
@@ -853,6 +867,13 @@ fn create_effect(
         &effect.modification,
         Modification::AddKeyword(mtg_cards::keyword::Keyword::Suspend { .. })
     ) {
+        state.possible.elsewhere = true;
+        state.triggers_possible = true;
+        state.statics_possible = true;
+    }
+    // A keyword or ability given to a card or spell off the battlefield that triggers from there (cascade on a spell, a
+    // granted trigger of an exiled card) is watched there.
+    if r112_triggers_elsewhere(&effect.modification) {
         state.possible.elsewhere = true;
         state.triggers_possible = true;
         state.statics_possible = true;

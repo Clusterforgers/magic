@@ -16,7 +16,7 @@ use crate::zones::Zone;
 pub type Memory = BTreeMap<(ObjectRef, String), Vec<Held>>;
 
 /// One thing a source remembers.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum Held {
     /// An object, as the incarnation it was.
@@ -25,6 +25,8 @@ pub enum Held {
     Player(PlayerId),
     /// A number.
     Number(i64),
+    /// A word noted (`Effect::R112NoteChosen`): a creature type.
+    R112Word(String),
 }
 
 /// A source remembered objects, or forgot a slot.
@@ -61,7 +63,7 @@ pub(crate) fn fold(state: &mut GameState, change: &Remembered) {
     for value in &change.values {
         // A number may repeat (two remembered 3s sum to 6); an object or a player is held once.
         if matches!(value, Held::Number(_)) || !held.contains(value) {
-            held.push(*value);
+            held.push(value.clone());
         }
     }
     if held.is_empty() {
@@ -301,6 +303,24 @@ pub(crate) fn recall_numbers(state: &GameState, source: ObjectRef, slot: &str) -
         .collect()
 }
 
+/// The slot of the words a source noted (`Effect::R112NoteChosen`).
+pub(crate) const R112_NOTED_SLOT: &str = "~noted";
+
+/// The words the source has noted, in the order it noted them.
+pub(crate) fn r112_noted(state: &GameState, source: ObjectRef) -> Vec<String> {
+    state
+        .memory
+        .get(&(source, R112_NOTED_SLOT.to_owned()))
+        .map(|held| {
+            held.iter()
+                .filter_map(|one| match one {
+                    Held::R112Word(word) => Some(word.clone()),
+                    _ => None,
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
 #[cfg(test)]
 mod tests {
     //! Goal: a source remembers objects by slot through events, in the order remembered and without repeats; what a source remembers ends when the source or a remembered object changes zones; a permanent remembers what its effects exile, and the memory is part of the hashed state so a replay of the events rebuilds it.

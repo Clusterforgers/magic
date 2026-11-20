@@ -67,6 +67,15 @@ fn choice(
     }
     let options = match kind {
         ValueKind::LikeChosen(name) => like_chosen(cx.scope.chosen_value(name)),
+        ValueKind::R112CreatureTypeNotNoted => {
+            let noted = crate::memory::r112_noted(cx.state(), cx.scope.source);
+            values::creature_types()
+                .into_iter()
+                .filter(
+                    |option| !matches!(option, ChoiceOption::Label(name) if noted.contains(name)),
+                )
+                .collect()
+        }
         _ => options(kind),
     };
     let chooser = OptionChooser {
@@ -97,6 +106,7 @@ fn r6600_by_options(kind: &ValueKind) -> bool {
     !matches!(
         kind,
         ValueKind::Number(..)
+            | ValueKind::R112CreatureTypeNotNoted
             | ValueKind::CardName(_)
             | ValueKind::Colors
             | ValueKind::LikeChosen(_)
@@ -368,6 +378,7 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
         ValueKind::CardName(_)
         | ValueKind::Number(..)
         | ValueKind::LikeChosen(_)
+        | ValueKind::R112CreatureTypeNotNoted
         | ValueKind::R111SpellDamage { .. } => Vec::new(),
     }
 }
@@ -408,6 +419,9 @@ fn question(kind: &ValueKind) -> String {
     match kind {
         ValueKind::Color | ValueKind::Colors => "Choose a color.".to_owned(),
         ValueKind::CreatureType => "Choose a creature type.".to_owned(),
+        ValueKind::R112CreatureTypeNotNoted => {
+            "Note a creature type that hasn't been noted.".to_owned()
+        }
         ValueKind::CreatureTypeExcept(left_out) => {
             format!(
                 "Choose a creature type other than {}.",
@@ -462,9 +476,12 @@ fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Opti
             ChoiceOption::Label(name),
         ) => Some(Chosen::LandType(Subtype(name.clone()))),
         (ValueKind::Color, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
-        (ValueKind::CreatureType | ValueKind::CreatureTypeExcept(_), ChoiceOption::Label(name)) => {
-            Some(Chosen::CreatureType(Subtype(name.clone())))
-        }
+        (
+            ValueKind::CreatureType
+            | ValueKind::CreatureTypeExcept(_)
+            | ValueKind::R112CreatureTypeNotNoted,
+            ChoiceOption::Label(name),
+        ) => Some(Chosen::CreatureType(Subtype(name.clone()))),
         (ValueKind::CardType | ValueKind::CardTypeOf(_), ChoiceOption::Label(name)) => {
             values::CARD_TYPES
                 .into_iter()

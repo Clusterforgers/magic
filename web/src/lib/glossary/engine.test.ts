@@ -151,7 +151,7 @@ const ORDINARY_EFFECTS =
   R6400Block AuraSwap Meld R6401PassControl R6501RedistributeLife R6602CreateAttached
   R6701RemoveAmong R6701TurnFaceDownHorror R6701ControlCombat R6702Distribute R6702CountersPerVote
   PayAnyTimes StillResolves Bind Let R110RemovePutThisWay R110MoveEachKindMissing R110MoveOneOrMore R110ChooseSecretly R111KeepChosen
-  R110AddCombatAfterFirst R111OrderGraveyard`)
+  R110AddCombatAfterFirst R111OrderGraveyard R112NoteChosen`)
 
 /** The `CostItem` variants that are keyword actions or the words of one, by lexicon term. */
 const COSTS: Record<string, string> = {
