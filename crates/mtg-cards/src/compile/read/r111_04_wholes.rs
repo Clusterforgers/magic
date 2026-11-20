@@ -76,6 +76,10 @@ mod tests {
             ("mana value 4 or greater", "mana value 3 or greater"),
             ("pay cost {1} less", "pay cost {2} less"),
             ("three time counters", "two time counters"),
+            (
+                "your next end step, sacrifice those",
+                "the next end step, sacrifice those",
+            ),
             ("during an opponent's turn", "during your turn"),
         ];
         for (_, text) in R111_04_SHAPES.iter() {

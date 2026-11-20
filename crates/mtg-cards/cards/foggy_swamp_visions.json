@@ -1,0 +1,56 @@
+{
+  "oracle_id": "16af0a22-833e-47c6-ac27-002702194595",
+  "name": "Foggy Swamp Visions",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Foggy Swamp Visions",
+      "oracle_fingerprint": "d8b7f81d19c4a553c08910c5752697f1",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "Waterbend": "X" }], "required": true } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] },
+                "bounds": { "min": "X", "max": "X" }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": {
+                        "Each": [
+                          { "In": "Exile" },
+                          { "Is": { "Bound": "exiled" } },
+                          { "Type": "Creature" }
+                        ]
+                      }
+                    }
+                  },
+                  "as": "copies"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [
+                    {
+                      "Sacrifice": {
+                        "filter": [{ "Is": { "Bound": "copies" } }],
+                        "count": { "Count": [{ "Is": { "Bound": "copies" } }] }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

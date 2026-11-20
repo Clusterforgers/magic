@@ -148,6 +148,7 @@ mod r110_foretell;
 mod r110_kicked_discard;
 mod r110_sacrifice_tax;
 mod r110_transfigure;
+mod r111_foggy;
 mod r111_gandalf;
 mod r111_henzie;
 mod r111_lent;
