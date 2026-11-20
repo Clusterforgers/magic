@@ -694,7 +694,7 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached | Ref::Granter | Ref::Convoked => {
+            Ref::This | Ref::Attached | Ref::Granter | Ref::Convoked | Ref::R111Object(_) => {
                 self.expect(Kind::Object, want);
             }
             Ref::PlayersWhere { who, test } => {
@@ -711,9 +711,7 @@ impl<'a> Walker<'a> {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
             }
-            Ref::Delved | Ref::R6702CraftedWith | Ref::R111Object(_) => {
-                self.expect(Kind::Object, want);
-            }
+            Ref::Delved | Ref::R6702CraftedWith => self.expect(Kind::Object, want),
             Ref::LastExiledWith { on, filter } => {
                 self.reference(on, Kind::Object);
                 self.at("filter", |w| w.selector(filter));

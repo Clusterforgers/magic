@@ -7,72 +7,29 @@
       "name": "God-Eternal Kefnet",
       "oracle_fingerprint": "20e46da62c4756d94c78cc2e0eb5a399",
       "abilities": [
-        {
-          "Keyword": "Flying"
-        },
-        {
-          "Rule": {
-            "rule": {
-              "RevealFirstDraw": {
-                "may": true
-              }
-            }
-          }
-        },
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "RevealFirstDraw": { "may": true } } } },
         {
           "Triggered": {
             "when": {
               "FirstDrawRevealed": {
-                "what": [
-                  {
-                    "AnyOf": [
-                      {
-                        "Type": "Instant"
-                      },
-                      {
-                        "Type": "Sorcery"
-                      }
-                    ]
-                  }
-                ]
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
               }
             },
             "effects": [
-              {
-                "CopyCard": {
-                  "what": "Triggering",
-                  "as": "copy"
-                }
-              },
+              { "CopyCard": { "what": "Triggering", "as": "copy" } },
               {
                 "Rule": {
                   "rule": {
                     "NextSpell": {
-                      "what": [
-                        {
-                          "SameCard": {
-                            "Bound": "copy"
-                          }
-                        }
-                      ],
-                      "benefit": {
-                        "Cost": {
-                          "change": "Reduce",
-                          "mana": "{2}"
-                        }
-                      }
+                      "what": [{ "SameCard": { "Bound": "copy" } }],
+                      "benefit": { "Cost": { "change": "Reduce", "mana": "{2}" } }
                     }
                   },
                   "duration": "UntilEndOfTurn"
                 }
               },
-              {
-                "CastFromZone": {
-                  "what": {
-                    "Bound": "copy"
-                  }
-                }
-              }
+              { "CastFromZone": { "what": { "Bound": "copy" } } }
             ]
           }
         },
@@ -80,42 +37,15 @@
           "Triggered": {
             "when": {
               "AnyOf": [
-                {
-                  "ZoneChange": {
-                    "what": [
-                      "This"
-                    ],
-                    "from": "Battlefield",
-                    "to": "Graveyard"
-                  }
-                },
-                {
-                  "ZoneChange": {
-                    "what": [
-                      "This"
-                    ],
-                    "from": "Battlefield",
-                    "to": "Exile"
-                  }
-                }
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Exile" } }
               ]
             },
             "effects": [
               {
                 "May": {
                   "effects": [
-                    {
-                      "Move": {
-                        "what": "This",
-                        "to": {
-                          "Library": {
-                            "place": {
-                              "Below": 2
-                            }
-                          }
-                        }
-                      }
-                    }
+                    { "Move": { "what": "This", "to": { "Library": { "place": { "Below": 2 } } } } }
                   ]
                 }
               }

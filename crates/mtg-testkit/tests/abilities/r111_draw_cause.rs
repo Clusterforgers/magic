@@ -70,7 +70,7 @@ fn cycling_a_nonland_card_exiles_until_a_shared_card_type(
     assert_eq!(names(driver.state(), Zone::Hand(pid(0))), ["Grizzly Bears"]);
     let library = names(driver.state(), Zone::Library(pid(0)));
     assert_eq!(library, ["Forest", "Forest", "Forest"]);
-    assert!(driver.state().zone(Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile).len(), 0);
     replays(&driver, &setup);
     Ok(())
 }
