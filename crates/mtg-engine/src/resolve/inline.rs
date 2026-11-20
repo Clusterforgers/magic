@@ -183,6 +183,12 @@ fn drive(
                 if !made.is_empty() && tree::effect_at(effects, &[], &position).is_some() {
                     after = folded(after.as_ref().unwrap_or_else(|| base.state()), &made);
                 }
+                // The run keeps the counters it puts and removes, as a resolution's fold does ("removed this way").
+                for event in &made {
+                    if let Event::CountersChanged(changed) = event {
+                        super::prim::r110_remove_put::r110_note(&mut resolving, changed);
+                    }
+                }
                 events.extend(made);
                 crate::fold::step_done(&mut resolving, &position, &bound, &snapshots)
                     .map_err(ResolveError::Invalid)?;

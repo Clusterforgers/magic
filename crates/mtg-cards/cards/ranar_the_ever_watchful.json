@@ -10,9 +10,21 @@
         { "Keyword": "Flying" },
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 18, "end": 78 }
+          "FreeActivation": {
+            "kind": "R110Foretell",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": { "KindActivated": "R110Foretell" },
+                    "who": "You",
+                    "filter": []
+                  }
+                },
+                "op": "Lt",
+                "right": 1
+              }
+            }
           }
         },
         {

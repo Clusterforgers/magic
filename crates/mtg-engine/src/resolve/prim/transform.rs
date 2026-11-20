@@ -22,7 +22,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     for object in cx.scope.live_objects(what)? {
         if object.zone() == Zone::Battlefield
-            && object.whole_card().layout == Layout::Transform
+            && turns_over(object)
             && !turned_since_stacked(cx, object)
         {
             events.push(Event::Transformed {
@@ -32,6 +32,22 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
     }
     Ok(Run::events(events))
+}
+
+/// Whether the permanent `object` can be turned over: a transforming double-faced card, or a modal double-faced card
+/// whose other face has a permanent type (CR 701.28c, 712.10).
+fn turns_over(object: &GameObject) -> bool {
+    let card = object.whole_card();
+    match card.layout {
+        Layout::Transform => true,
+        Layout::ModalDfc => {
+            let other = usize::from(turned_over(object.face()).unwrap_or(0));
+            card.faces
+                .get(other)
+                .is_some_and(|face| face.types.iter().any(|kind| kind.is_permanent_type()))
+        }
+        _ => false,
+    }
 }
 
 /// Whether `object` is the source of the ability that resolves and has been turned over since the ability was put on the
@@ -54,7 +70,7 @@ fn turned_since_stacked(cx: &Cx<'_>, object: &GameObject) -> bool {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a transform turns each transforming double-faced permanent it names to its other face, all together and in the order the reference lists them, and passes over permanents of any other kind (a card with one face, a modal double-faced card, a token), cards in other zones, players and objects that changed zones; it keeps the object, its counters and its tapped state, binds nothing and goes on to the next effect; the source of an ability that has transformed since the ability went on the stack is not turned over again; and it refuses another effect by name.
+    //! Goal: a transform turns each transforming double-faced permanent it names to its other face, all together and in the order the reference lists them, and turns a modal double-faced permanent whose other face has a permanent type (CR 712.10) and passes over permanents of any other kind (a card with one face, a modal double-faced card whose other face is a sorcery, a token), cards in other zones, players and objects that changed zones; it keeps the object, its counters and its tapped state, binds nothing and goes on to the next effect; the source of an ability that has transformed since the ability went on the stack is not turned over again; and it refuses another effect by name.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -83,7 +99,20 @@ mod tests {
         Arc::new(front.clone().with_faces(layout, vec![front, back]))
     }
 
-    /// Seat 0 controls the Source and two transforming cards, a modal double-faced card and a plain Wolf; seat 1 a
+    /// A modal double-faced creature card whose back face is a sorcery.
+    fn sorcery_backed(name: &str) -> Arc<CardDefinition> {
+        let front = CardDefinition::new(format!("{name} Front"))
+            .with_type(CardType::Creature)
+            .with_power_toughness(1, 1);
+        let back = CardDefinition::new(format!("{name} Back")).with_type(CardType::Sorcery);
+        Arc::new(
+            front
+                .clone()
+                .with_faces(Layout::ModalDfc, vec![front, back]),
+        )
+    }
+
+    /// Seat 0 controls the Source and two transforming cards, two modal double-faced cards and a plain Wolf; seat 1 a
     /// transforming card.
     fn game() -> GameState {
         let game = setup(
@@ -94,6 +123,7 @@ mod tests {
                     two_faced("Moth", Layout::Transform),
                     two_faced("Egg", Layout::Transform),
                     two_faced("Modal", Layout::ModalDfc),
+                    sorcery_backed("Hex"),
                     creature("Wolf", 2, 2),
                 ],
                 vec![two_faced("Foe", Layout::Transform)],
@@ -147,13 +177,20 @@ mod tests {
     #[case::a_name(r#"{"Transform":{"what":{"Each":[{"Named":"Moth Front"}]}}}"#, &["Moth Front"])]
     #[case::every_permanent_you_control(
         r#"{"Transform":{"what":{"Each":[{"ControlledBy":"You"}]}}}"#,
-        &["Moth Front", "Egg Front"]
+        &["Moth Front", "Egg Front", "Modal Front"]
     )]
     #[case::of_one_opponent(
         r#"{"Transform":{"what":{"Each":[{"ControlledBy":"Opponents"}]}}}"#,
         &["Foe Front"]
     )]
-    #[case::a_modal_card(r#"{"Transform":{"what":{"Each":[{"Named":"Modal Front"}]}}}"#, &[])]
+    #[case::a_modal_card(
+        r#"{"Transform":{"what":{"Each":[{"Named":"Modal Front"}]}}}"#,
+        &["Modal Front"]
+    )]
+    #[case::a_modal_card_with_a_sorcery_back(
+        r#"{"Transform":{"what":{"Each":[{"Named":"Hex Front"}]}}}"#,
+        &[]
+    )]
     #[case::a_card_with_one_face(r#"{"Transform":{"what":{"Each":[{"Named":"Wolf"}]}}}"#, &[])]
     #[case::the_source_itself(r#"{"Transform":{"what":"This"}}"#, &[])]
     #[case::a_player(r#"{"Transform":{"what":"You"}}"#, &[])]

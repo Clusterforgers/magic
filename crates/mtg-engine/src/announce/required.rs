@@ -72,7 +72,11 @@ fn variants_at(
         if cost.0.iter().all(|item| {
             matches!(
                 item,
-                CostItem::XColor(_) | CostItem::XAtMost(_) | CostItem::XIs(_)
+                CostItem::XColor(_)
+                    | CostItem::XAtMost(_)
+                    | CostItem::XIs(_)
+                    | CostItem::R110ChooseNumber { .. }
+                    | CostItem::R110Choose(_)
             )
         }) {
             continue;

@@ -89,9 +89,21 @@ fn at_instant_speed(
 }
 
 /// Whether a permanent `player` controls has a `FreeActivation` of the kind whose condition holds for them.
-fn applies(state: &GameState, player: PlayerId, kind: ActivationKind) -> bool {
+pub(crate) fn applies(state: &GameState, player: PlayerId, kind: ActivationKind) -> bool {
     held(state, player, |ability| match ability {
         Ability::FreeActivation {
+            kind: wanted,
+            condition,
+        } => (*wanted == kind).then_some(condition.as_ref()),
+        _ => None,
+    })
+}
+
+/// Whether a permanent `player` controls has an `InstantActivation` of the kind whose condition holds for them: a special
+/// action of the kind (foretelling) is open to them any time they have priority.
+pub(crate) fn r110_instant(state: &GameState, player: PlayerId, kind: ActivationKind) -> bool {
+    held(state, player, |ability| match ability {
+        Ability::InstantActivation {
             kind: wanted,
             condition,
         } => (*wanted == kind).then_some(condition.as_ref()),

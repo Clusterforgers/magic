@@ -227,6 +227,27 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             Ok(())
         }
+        Event::R110ChoseSecretly { object, chosen } => {
+            if let Some(permanent) = state
+                .objects
+                .get_mut(object)
+                .and_then(|object| object.permanent.as_mut())
+            {
+                permanent.chosen = Some(chosen.clone());
+                permanent.r110_secret = true;
+            }
+            Ok(())
+        }
+        Event::R110ChoiceRevealed { object, .. } => {
+            if let Some(permanent) = state
+                .objects
+                .get_mut(object)
+                .and_then(|object| object.permanent.as_mut())
+            {
+                permanent.r110_secret = false;
+            }
+            Ok(())
+        }
         Event::Paired { object, with } => crate::soulbond::fold_paired(state, *object, *with),
         Event::Unpaired { object, with } => crate::soulbond::fold_unpaired(state, *object, *with),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),
@@ -513,7 +534,17 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                 return Err(invalid(format!("{player:?} has no extra turn to skip")));
             }
         }
-        Event::PhasesAdded { steps, lone } => add_phases(state, steps, *lone)?,
+        Event::PhasesAdded {
+            steps,
+            lone,
+            r110_after_first_combat,
+        } => {
+            if *r110_after_first_combat {
+                crate::r110_after_first_combat::r110_add_after_first_combat(state, steps);
+            } else {
+                add_phases(state, steps, *lone)?;
+            }
+        }
         Event::StepAdded { step } => state.turn.r306_steps.insert(0, *step),
         Event::StepBegan { step } => {
             // A step added after the one that ends begins next, and its entry is spent.
@@ -1237,16 +1268,20 @@ fn turn_face_up(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> 
     Ok(())
 }
 
-/// A transforming double-faced permanent is turned to `face` (CR 701.28); its counters, attachments and the rest of what it
+/// A transforming or modal double-faced permanent is turned to `face` (CR 701.28); its counters, attachments and the rest of what it
 /// remembers stay, since it is the same object.
 fn set_face(state: &mut GameState, id: ObjectId, face: Option<u8>) -> Result<(), EngineError> {
     let object = state
         .objects
         .get_mut(&id)
         .ok_or_else(|| invalid(format!("{id:?} does not exist")))?;
-    if object.def.layout != mtg_cards::definition::Layout::Transform {
+    // A modal double-faced permanent turns over too (CR 712.10); the effect checks that its other face is a permanent.
+    if !matches!(
+        object.def.layout,
+        mtg_cards::definition::Layout::Transform | mtg_cards::definition::Layout::ModalDfc
+    ) {
         return Err(invalid(format!(
-            "{id:?} is not a transforming double-faced card"
+            "{id:?} is not a transforming or modal double-faced card"
         )));
     }
     let permanent = object

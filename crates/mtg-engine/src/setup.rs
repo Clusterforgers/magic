@@ -450,6 +450,7 @@ fn preset_state(
         chosen: preset
             .protector
             .map(|seat| Chosen::Player(PlayerId::from_index(seat))),
+        r110_secret: false,
         paid: Vec::new(),
         way: None,
         x: None,

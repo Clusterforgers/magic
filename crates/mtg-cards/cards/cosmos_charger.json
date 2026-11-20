@@ -1,7 +1,7 @@
 {
   "oracle_id": "603e518c-8f12-432c-ae03-790db5be77bf",
   "name": "Cosmos Charger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cosmos Charger",
@@ -10,11 +10,14 @@
         { "Keyword": "Flash" },
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 13, "end": 98 }
+          "CostModifier": {
+            "applies_to": [{ "In": "Hand" }, { "OwnedBy": "You" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "activating": "R110Foretell"
           }
         },
+        { "InstantActivation": { "kind": "R110Foretell" } },
         { "Keyword": { "Foretell": "{2}{U}" } }
       ]
     }

@@ -81,7 +81,10 @@ pub(crate) fn is_kind(wanted: ActivationKind, own: Option<ActivationKind>) -> bo
     let special = |kind: ActivationKind| {
         matches!(
             kind,
-            ActivationKind::Unlock | ActivationKind::Morph | ActivationKind::Buyback
+            ActivationKind::Unlock
+                | ActivationKind::Morph
+                | ActivationKind::Buyback
+                | ActivationKind::R110Foretell
         )
     };
     if own.is_some_and(special) || special(wanted) {
@@ -238,6 +241,18 @@ pub(crate) fn r402_unlock_modified(state: &GameState, room: ObjectId, mana: Mana
 /// costs in play applied ("All morph costs cost {2} more").
 pub(crate) fn r402_morph_modified(state: &GameState, id: ObjectId, mana: ManaCost) -> ManaCost {
     modified_as(state, id, Some(ActivationKind::Morph), mana, Some(&[]))
+}
+
+/// The mana of foretelling the card `id` with the changes of foretelling costs in play applied ("Foretelling cards from
+/// your hand costs {1} less").
+pub(crate) fn r110_foretell_modified(state: &GameState, id: ObjectId, mana: ManaCost) -> ManaCost {
+    modified_as(
+        state,
+        id,
+        Some(ActivationKind::R110Foretell),
+        mana,
+        Some(&[]),
+    )
 }
 
 /// The mana of the buyback cost of the spell `spell` with the changes of buyback costs in play applied ("Buyback costs

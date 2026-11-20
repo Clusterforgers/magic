@@ -1,3 +1,4 @@
+A Killer Among Us
 Abandoned Sarcophagus
 Abbot of Keral Keep
 Aberrant
@@ -5,6 +6,7 @@ Abominable Treefolk
 Abomination, World Ravager
 Aboroth
 Absolver Thrull
+Abuelo's Awakening
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
@@ -197,6 +199,7 @@ Battle Screech
 Battle Sliver
 Battlefield Forge
 Battlefield Thaumaturge
+Battletide Alchemist
 Baxter Building
 Baxter, Fly in the Ointment
 Beamsaw Prospector
@@ -279,6 +282,7 @@ Body Double
 Bog Witch
 Bog Wraith
 Boggart Ram-Gang
+Bohn, Beguiling Balladeer
 Boiling Earth
 Bojuka Bog
 Bola Slinger
@@ -300,6 +304,7 @@ Boros Garrison
 Boros Signet
 Bosh, Iron Golem
 Bounty of Skemfar
+Bounty of the Hunt
 Boxing Ring
 Braids, Arisen Nightmare
 Brain Freeze
@@ -355,6 +360,7 @@ Caldera Hellion
 Call the Skybreaker
 Call the Spirit Dragons
 Caller of the Claw
+Caller of the Hunt
 Caller of the Pack
 Canoptek Tomb Sentinel
 Canopy Vista
@@ -501,6 +507,7 @@ Cormela, Glamour Thief
 Corpse Hauler
 Coruscation Mage
 Cosmic Intervention
+Cosmos Charger
 Counterflux
 Counterspell
 Courser of Kruphix
@@ -699,12 +706,14 @@ Dragonmaster Outcast
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Dralnu's Pet
 Dralnu, Lich Lord
 Dramatist's Puppet
 Drana, Liberator of Malakir
 Dread Fugue
 Dreadship Reef
 Dream Chisel
+Dream Devourer
 Dream Eater
 Dream's Grip
 Dreamstone Hedron
@@ -794,6 +803,7 @@ Elvish Visionary
 Embiggen
 Emergency Eject
 Emeria Angel
+Emissary of Grudges
 Emmara Tandris
 Emperor Mihail II
 Empowered Autogenerator
@@ -867,6 +877,7 @@ Eyeblight Massacre
 Eyetwitch
 Ezzaroot Channeler
 Fabrication Foundry
+Face Yourself
 Faceless One
 Faerie Bladecrafter
 Faerie Conclave
@@ -937,6 +948,7 @@ Flayer of Loyalties
 Fleecemane Lion
 Fleetfeather Cockatrice
 Fleshbag Marauder
+Fleshwrither
 Flooded Grove
 Flooded Strand
 Flooded Woodlands
@@ -1081,6 +1093,7 @@ Goblin War Buggy
 Goblin Warchief
 Goblin-town Flunkies
 Godtracker of Jund
+Goldberry, River-Daughter
 Golden Ratio
 Golden-Scale Aeronaut
 Goldlust Triad
@@ -1127,6 +1140,7 @@ Grim Backwoods
 Grim Flayer
 Grim Haruspex
 Grim Initiate
+Grime Gorger
 Grisly Salvage
 Grothama, All-Devouring
 Ground Seal
@@ -1137,6 +1151,7 @@ Gruul Cluestone
 Gruul Ragebeast
 Gryffwing Cavalry
 Guard Gomazoa
+Guardian Archon
 Guardian Augmenter
 Guardian Gladewalker
 Guidelight Matrix
@@ -1268,6 +1283,7 @@ Illustrious Wanderglyph
 Ilysian Caryatid
 Imi Statue
 Immoral Bargain
+Impact Resonance
 Impact Tremors
 Imperial Hellkite
 Imperiosaur
@@ -1488,6 +1504,7 @@ Liliana's Mastery
 Liliana's Reaver
 Liliana's Standard Bearer
 Lion Sash
+Liquid Fire
 Liquimetal Torque
 Lita, Little Orphan Amphibian
 Lithoform Engine
@@ -1540,6 +1557,7 @@ Mage Hunter
 Magewright's Stone
 Magical Hack
 Magistrate's Scepter
+Magma Pummeler
 Magmatic Galleon
 Magmatic Insight
 Magnetic Web
@@ -1881,6 +1899,7 @@ Persist
 Personal Sanctuary
 Pestermite
 Pestilent Syphoner
+Peter Parker // Amazing Spider-Man
 Peter Parker's Camera
 Petrified Wood-Kin
 Petrify
@@ -2079,6 +2098,7 @@ Reprocess
 Repulse
 Rescue Retriever
 Rescue Skiff
+Research // Development
 Reset
 Reshape
 Resplendent Angel
@@ -2253,6 +2273,7 @@ Shah of Naar Isle
 Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
+Shambling Swarm
 Shapesharer
 Sharding Sphinx
 Shardmage's Rescue
@@ -2420,6 +2441,7 @@ Sram, Senior Edificer
 Staff of Nin
 Staggering Insight
 Staggershock
+Stalking Leonin
 Stalwart Pathlighter
 Star Whale
 Starforged Sword
@@ -2521,6 +2543,7 @@ Sweet-Gum Recluse
 Swift Kick
 Swiftfoot Boots
 Swiftwater Cliffs
+Swinging Ship
 Switcheroo
 Sword of Body and Mind
 Sword of Vengeance

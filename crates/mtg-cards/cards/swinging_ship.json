@@ -1,0 +1,32 @@
+{
+  "oracle_id": "65215f0d-d664-44ac-8c27-c4b5a1a01c11",
+  "name": "Swinging Ship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swinging Ship",
+      "oracle_fingerprint": "f92326d50b8a330412d3ce63ca595499",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "effects": [
+              "R110AddCombatAfterFirst",
+              {
+                "DelayedTrigger": {
+                  "when": { "R110ThatCombatBegins": 0 },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Untap": { "what": { "Each": [{ "Type": "Creature" }, "AttackedThisTurn"] } }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

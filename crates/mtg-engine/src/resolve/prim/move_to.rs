@@ -216,9 +216,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
-        Destination::R6502BattlefieldAs { becomes } => {
+        Destination::R6502BattlefieldAs {
+            becomes,
+            r110_counters,
+        } => {
             let becomes = super::r6502_enters_as::lowered(cx, becomes)?;
+            // "with X additional +1/+1 counters on it": the counters are counted as the cards move (CR 122.6).
+            let mut counters = Vec::new();
+            for (kind, count) in r110_counters {
+                let count = u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
+                counters.push((kind.clone(), count));
+            }
             let entry = Entry {
+                counters: &counters,
                 becomes: &becomes,
                 ..Entry::plain()
             };

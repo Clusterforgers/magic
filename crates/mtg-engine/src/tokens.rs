@@ -111,6 +111,7 @@ pub(crate) fn fold(state: &mut GameState, event: &TokenCreated) -> Result<(), En
         timestamp: state.next_timestamp,
         observed: None,
         chosen: None,
+        r110_secret: false,
         paid: Vec::new(),
         way: None,
         x: None,

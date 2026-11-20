@@ -49,6 +49,7 @@ const RUNS: &[&str] = &[
     "Trigger.Sacrificed",
     "Trigger.Milled",
     "Trigger.StepBegins",
+    "Trigger.R110ThatCombatBegins",
     "Trigger.BecomesTarget",
     "Trigger.PlayerBecomesTarget",
     "Trigger.AnyOf",
@@ -453,6 +454,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.R6100AtLeast",
     "ReplaceBy.MayAddAmount",
     "ReplaceBy.PreventAmount",
+    "ReplaceBy.R110MayPreventAmount",
     "ReplaceBy.PreventAtMost",
     "Effect.CreateToken",
     "Effect.CreateToken.Copy",
@@ -476,6 +478,13 @@ const RUNS: &[&str] = &[
     "Effect.R6602CreateAttached",
     "Effect.R6702Distribute",
     "Effect.R6702CountersPerVote",
+    "Effect.R110RemovePutThisWay",
+    "Effect.R110AddCombatAfterFirst",
+    "Effect.R110MoveEachKindMissing",
+    "Effect.R110MoveOneOrMore",
+    "Effect.R110ChooseSecretly",
+    "Cost.R110RevealChosen",
+    "Cost.R110ControllerDraws",
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Rule.Duration.UntilTheirNextTurn",
@@ -923,6 +932,8 @@ const RUNS: &[&str] = &[
     "Amount.Tally",
     "Amount.SourcesDealtDamage",
     "Amount.MostDamageBySource",
+    "Amount.R110MostDamageToOne",
+    "Amount.R110RemovedThisWay",
     "Amount.DamageToFromPlayers",
     "Rule.SpendManaAs.AbilitiesOnly",
     "Amount.Drafted",
@@ -1138,6 +1149,7 @@ const RUNS: &[&str] = &[
     "Keyword.Encore",
     "Keyword.Scavenge",
     "Keyword.Transmute",
+    "Keyword.R110Transfigure",
     "Keyword.Awaken",
     "Keyword.Assist",
     "Keyword.Craft",
@@ -1200,6 +1212,7 @@ const RUNS: &[&str] = &[
     "Rule.UpToInDeck",
     "Rule.Draft",
     "Rule.CantBeCopied",
+    "Rule.R110SacrificeTax",
     "Rule.KeepsDamage",
     "Rule.Flagbearers",
     "Rule.CountsAsNamed",
@@ -1261,6 +1274,9 @@ const RUNS: &[&str] = &[
     "Pred.HasName",
     "Pred.Kicked",
     "Pred.AdditionalCostPaid",
+    "Cost.R110ChooseNumber",
+    "Effect.Move.R110AsWithCounters",
+    "Cost.R110Choose",
 ];
 
 /// The capabilities of this engine.
@@ -2044,6 +2060,9 @@ mod tests {
     #[case::faces(FACES, true)]
     #[case::the_prepared_cast(PREPARE, true)]
     #[case::variable_stats(VARIABLE_STATS, true)]
+    #[case::r110_a_number_chosen_as_a_cost("Cost.R110ChooseNumber", true)]
+    #[case::r110_a_value_chosen_as_a_cost("Cost.R110Choose", true)]
+    #[case::r110_put_as_an_object_with_counted_counters("Effect.Move.R110AsWithCounters", true)]
     fn the_engine_runs_what_it_runs_today(#[case] name: &str, #[case] runs: bool) {
         assert_eq!(caps().runs(name), runs);
     }

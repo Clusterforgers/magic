@@ -80,6 +80,8 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::OpponentGainsLife(_) => "Cost.OpponentGainsLife",
         CostItem::GetPoison(_) => "Cost.GetPoison",
         CostItem::Unattach => "Cost.Unattach",
+        CostItem::R110RevealChosen => "Cost.R110RevealChosen",
+        CostItem::R110ControllerDraws(_) => "Cost.R110ControllerDraws",
         CostItem::ExileTop(_) => "Cost.ExileTop",
         CostItem::CollectEvidence(_) => "Cost.CollectEvidence",
         CostItem::R6702CollectEvidenceX => "Cost.R6702CollectEvidenceX",
@@ -120,6 +122,8 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::ChosenColorOnly => "Cost.ChosenColorOnly",
         CostItem::XAtMost(_) => "Cost.XAtMost",
         CostItem::XIs(_) => "Cost.XIs",
+        CostItem::R110ChooseNumber { .. } => "Cost.R110ChooseNumber",
+        CostItem::R110Choose(_) => "Cost.R110Choose",
     }
 }
 
@@ -256,6 +260,8 @@ impl Price {
                 CostItem::XAtLeast(_)
                 | CostItem::XAtMost(_)
                 | CostItem::XIs(_)
+                | CostItem::R110ChooseNumber { .. }
+                | CostItem::R110Choose(_)
                 | CostItem::ChosenColorOnly => {}
                 CostItem::XColor(color) => x_color = Some(*color),
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),

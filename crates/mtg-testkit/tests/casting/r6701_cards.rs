@@ -217,14 +217,14 @@ fn r6701_spider_man(seats: usize, hand: Vec<Arc<CardDefinition>>) -> Result<Driv
         std::iter::once(ready(card("Peter Parker // Amazing Spider-Man")))
             .chain(std::iter::once(tapped(card("Grizzly Bears"))))
             .chain(lands(2, forest))
-            .chain(lands(2, plains))
+            .chain(lands(3, plains))
             .chain(lands(2, island))
             .chain(lands(1, mountain))
             .collect();
     let mut driver = r6701_table(seats, hand, permanents, vec![], vec![])?;
     driver.begin_activation("Peter Parker")?;
     r6701_play(&mut driver, "", &[])?;
-    let parker = driver.id_of("Peter Parker")?;
+    let parker = driver.id_of("Amazing Spider-Man")?;
     assert!(
         driver
             .state()
@@ -236,18 +236,14 @@ fn r6701_spider_man(seats: usize, hand: Vec<Arc<CardDefinition>>) -> Result<Driv
 }
 
 #[rstest]
-#[ignore = "the transform of Peter Parker by its activated ability in this setup"]
 fn r6701_web_slinging_casts_a_legendary_colored_spell(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let mut driver = r6701_spider_man(seats, vec![card("Sliver Queen")])?;
-    // {W}{U}{B}{R}{G} is out of reach; web-slinging {G}{W}{U} returns the tapped Bears.
+    // {W}{U}{B}{R}{G} is out of reach (no black source): web-slinging {G}{W}{U}, which returns the tapped Bears, is the
+    // one way, so none is asked.
     let ways = r6701_ways(&mut driver, "Sliver Queen")?;
-    assert!(
-        ways.iter().any(|way| way.contains("Web-slinging")),
-        "{ways:?}"
-    );
-    choose_way(&mut driver, "Web-slinging")?;
+    assert_eq!(ways, Vec::<String>::new());
     r6701_play(&mut driver, "Web-slinging", &["Grizzly Bears"])?;
     assert!(r6701_names(&driver, Zone::Battlefield).contains(&"Sliver Queen".to_owned()));
     assert!(r6701_names(&driver, Zone::Hand(PlayerId(0))).contains(&"Grizzly Bears".to_owned()));
@@ -256,7 +252,6 @@ fn r6701_web_slinging_casts_a_legendary_colored_spell(
 }
 
 #[rstest]
-#[ignore = "the transform of Peter Parker by its activated ability in this setup"]
 fn r6701_web_slinging_skips_a_colorless_legend(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {

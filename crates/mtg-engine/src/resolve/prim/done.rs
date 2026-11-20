@@ -141,6 +141,10 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::R6401PassControl { .. }
         | Effect::R6702Distribute { .. }
         | Effect::R6702CountersPerVote { .. }
+        | Effect::R110RemovePutThisWay { .. }
+        | Effect::R110AddCombatAfterFirst
+        | Effect::R110MoveEachKindMissing { .. }
+        | Effect::R110MoveOneOrMore { .. }
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
@@ -166,7 +170,7 @@ fn reports(effect: &Effect) -> Reports {
         }
         #[rustfmt::skip]
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseWithin { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
-        | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
+        | Effect::R110ChooseSecretly(_) | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::ChooseWords { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }

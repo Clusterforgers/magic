@@ -81,6 +81,14 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { ChosenAsAttached: { object: 3, chosen: { Color: 'Red' } } },
     'Forest becomes attached, choosing red',
   ],
+  R110ChoseSecretly: [
+    { R110ChoseSecretly: { object: 3, chosen: { Player: 1 } } },
+    'For Forest, you secretly chose Bo',
+  ],
+  R110ChoiceRevealed: [
+    { R110ChoiceRevealed: { object: 3, chosen: { Player: 1 } } },
+    'Forest reveals its secret choice: Bo',
+  ],
   AttachedToPlayer: [{ AttachedToPlayer: { object: 3, player: 1 } }, 'Forest enchants Bo'],
   Unattached: [{ Unattached: { object: 3 } }, 'Forest becomes unattached'],
   Paired: [{ Paired: { object: 3, with: 1 } }, 'Forest is paired with Grizzly Bears'],
@@ -864,6 +872,18 @@ describe('describeEvent', () => {
     expect(say({ PhasesAdded: { steps: ['Upkeep', 'Upkeep'], lone: true } })).toBe(
       '2 additional upkeep step(s) follow this phase',
     )
+  })
+
+  it('says the value a spell chose as it was cast', () => {
+    expect(
+      say({
+        SpellCast: {
+          player: 0,
+          object: 99,
+          choices: { cost_taken: { r110_chosen: { CreatureType: 'Elf' } } },
+        },
+      }),
+    ).toBe('Ana casts a card, choosing Elf')
   })
 
   it('names an object it does not know "a card" rather than print an id', () => {

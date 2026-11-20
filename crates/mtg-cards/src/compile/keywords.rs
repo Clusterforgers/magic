@@ -181,6 +181,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("emerge", Params::Cost),
     ("harmonize", Params::Cost),
     ("transmute", Params::Cost),
+    ("transfigure", Params::Cost),
     ("level up", Params::Cost),
     ("embalm", Params::Cost),
     ("sunburst", Params::None),
@@ -471,6 +472,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "eternalize" => spell_cost(rest).map(Keyword::Eternalize),
         "scavenge" => spell_cost(rest).map(Keyword::Scavenge),
         "transmute" => spell_cost(rest).map(Keyword::Transmute),
+        "transfigure" => spell_cost(rest).map(Keyword::R110Transfigure),
         "awaken" => awaken(rest),
         "craft" => craft(rest),
         "prototype" => prototype(rest),
@@ -1701,6 +1703,7 @@ mod tests {
     #[case::scavenge("Scavenge {3}{G}", Keyword::Scavenge(mana("{3}{G}")))]
     #[case::scavenge_free("Scavenge {0}", Keyword::Scavenge(mana("{0}")))]
     #[case::transmute("Transmute {1}{U}{U}", Keyword::Transmute(mana("{1}{U}{U}")))]
+    #[case::r110_transfigure("Transfigure {1}{B}{B}", Keyword::R110Transfigure(mana("{1}{B}{B}")))]
     #[case::awaken("Awaken 3\u{2014}{4}{U}", Keyword::Awaken { count: 3, cost: mana("{4}{U}") })]
     #[case::prototype("Prototype {1}{U}{U} \u{2014} 2/1", Keyword::Prototype { cost: mana("{1}{U}{U}"), power: 2, toughness: 1 })]
     #[case::awaken_big("Awaken 6\u{2014}{6}{U}{U}{U}", Keyword::Awaken { count: 6, cost: mana("{6}{U}{U}{U}") })]
@@ -2218,6 +2221,7 @@ mod tests {
             "Eternalize {1}",
             "Scavenge {1}",
             "Transmute {1}{U}{U}",
+            "Transfigure {1}{B}{B}",
             "Awaken 3\u{2014}{4}{U}",
             "Prototype {1}{U}{U} \u{2014} 2/1",
             "Assist",

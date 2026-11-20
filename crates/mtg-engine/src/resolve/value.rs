@@ -1408,11 +1408,22 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// The player of a seat fixed by an effect, while still in the game.
+    fn r110_seat(&self, seat: u8) -> Vec<Target> {
+        let player = PlayerId::from_index(usize::from(seat));
+        if self.state.is_alive(player) {
+            vec![Target::Player(player)]
+        } else {
+            Vec::new()
+        }
+    }
+
     /// The players and objects a reference names, in the order the rules process them.
     pub fn refs(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
         let state = self.state;
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
+            Ref::R110Seat(seat) => self.r110_seat(*seat),
             Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
             Ref::EachPlayer | Ref::R6501PlayersFromYou => self.r6501_turn_order(reference),
             Ref::This => vec![Target::Object(self.source)],
@@ -2413,15 +2424,24 @@ impl<'a> Scope<'a> {
         Ok(false)
     }
 
-    /// What the source of the scope chose as it entered, if it is on the battlefield and asked for a choice.
+    /// What the source of the scope chose: as it entered, as a cost while a spell, or in its last known information.
     pub(crate) fn entered_choice(&self) -> Option<&'a Chosen> {
         if let Some(chosen) = self.entering {
             return Some(chosen);
         }
-        self.state
-            .object(self.source.id)
-            .and_then(|object| object.permanent())
-            .and_then(|permanent| permanent.chosen())
+        let object = self.state.object(self.source.id);
+        let held = match object {
+            Some(object) => match object.permanent() {
+                Some(permanent) => permanent.chosen(),
+                // A spell reads what its caster chose as an additional cost (`CostItem::R110Choose`).
+                None => object.choices().r110_chosen(),
+            },
+            None => None,
+        };
+        held.or_else(|| {
+            self.snapshot_of(self.source)
+                .and_then(|shot| shot.chosen.as_ref())
+        })
     }
 
     /// The printed name of the card, none for a face-down card (it has no name).
@@ -2789,6 +2809,8 @@ impl<'a> Scope<'a> {
             Amount::MostDamageBySource(who) => {
                 self.r6008_most_damage_by_source(&self.players(who)?)
             }
+            Amount::R110MostDamageToOne => self.r110_most_damage_to_one(),
+            Amount::R110RemovedThisWay(counter) => self.r110_removed_this_way(counter)?,
             Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
             Amount::CastSameNameThisGame(who) => {
                 let name = self
@@ -2907,6 +2929,19 @@ impl<'a> Scope<'a> {
                     .map(|(_, value)| *value)
             })
             .unwrap_or(0)
+    }
+
+    /// The counters of the kind removed this way: by the scope's own run, and by the run that set up its trigger.
+    fn r110_removed_this_way(&self, counter: &CounterKind) -> Result<i64, ResolveError> {
+        let none = Vec::new();
+        let own = self.own_run().map_or(&none, |run| &run.r110_removed);
+        let found = super::prim::r110_remove_put::r110_this_way(
+            own,
+            self.bindings,
+            super::prim::r110_remove_put::R110_REMOVED,
+            counter,
+        )?;
+        Ok(found.iter().map(|(_, count)| i64::from(*count)).sum())
     }
 
     /// The run of the scope's own effects: the steps run inline, else the state's resolution when it is the resolution

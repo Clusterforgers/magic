@@ -93,6 +93,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
         by,
         ReplaceBy::PreventUpTo(_)
             | ReplaceBy::PreventAmount(_)
+            | ReplaceBy::R110MayPreventAmount(_)
             | ReplaceBy::PreventAtMost(_)
             | ReplaceBy::PreventCounted(_)
             | ReplaceBy::PreventCountedAnd { .. }
@@ -663,8 +664,12 @@ impl<'a> Walker<'a> {
         if *r == Ref::R4700OtherChosen {
             self.uses("Ref", "R4700OtherChosen");
         }
+        if matches!(r, Ref::R110Seat(_)) {
+            self.problem("a seat is fixed by the engine and never named in a card file");
+        }
         match r {
-            Ref::R4700OtherChosen
+            Ref::R110Seat(_)
+            | Ref::R4700OtherChosen
             | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
@@ -1443,6 +1448,8 @@ impl<'a> Walker<'a> {
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
             Amount::MostDamageBySource(who) => self.player_amount("MostDamageBySource", who),
+            Amount::R110MostDamageToOne => self.uses("Amount", "R110MostDamageToOne"),
+            Amount::R110RemovedThisWay(_) => self.uses("Amount", "R110RemovedThisWay"),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -2038,6 +2045,8 @@ impl<'a> Walker<'a> {
                     | CostItem::SacrificeSelf
                     | CostItem::ExileSelf
                     | CostItem::DiscardSelf
+                    | CostItem::R110RevealChosen
+                    | CostItem::R110ControllerDraws(_)
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
                     | CostItem::R6702CollectEvidenceX
@@ -2061,6 +2070,18 @@ impl<'a> Walker<'a> {
                     CostItem::XIs(amount) => {
                         w.uses("Cost", "XIs");
                         w.at("XIs", |w| w.amount(amount));
+                    }
+                    CostItem::R110ChooseNumber { least, most } => {
+                        if least > most {
+                            w.problem("the least number chosen is greater than the greatest");
+                        }
+                        w.uses("Cost", "R110ChooseNumber");
+                    }
+                    CostItem::R110Choose(kind) => {
+                        if *kind != crate::trigger::EntersChoice::CreatureType {
+                            w.problem("only a creature type is chosen as a spell is cast");
+                        }
+                        w.uses("Cost", "R110Choose");
                     }
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
@@ -2683,6 +2704,7 @@ impl<'a> Walker<'a> {
             | Keyword::Eternalize(cost)
             | Keyword::Scavenge(cost)
             | Keyword::Transmute(cost)
+            | Keyword::R110Transfigure(cost)
             | Keyword::Ninjutsu(cost)
             | Keyword::CommanderNinjutsu(cost)
             | Keyword::LevelUp(cost)
@@ -3133,6 +3155,11 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
+            TriggerPattern::R110ThatCombatBegins(mark) => {
+                if *mark != 0 {
+                    self.problem("\"that combat\" is written as R110ThatCombatBegins 0");
+                }
+            }
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
@@ -3335,6 +3362,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::AnyOf(_)
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
+                | TriggerPattern::R110ThatCombatBegins(_)
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
@@ -3594,10 +3622,21 @@ impl Walker<'_> {
             }
             // The changes are continuous effects of the resolving ability, so a static ability they give may give
             // abilities in turn, as one `Effect::Continuous` gives.
-            Destination::R6502BattlefieldAs { becomes } => {
+            Destination::R6502BattlefieldAs {
+                becomes,
+                r110_counters,
+            } => {
                 let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
                 self.at("becomes", |w| w.mods(becomes));
                 self.r6701_effect_grant = effect_grant;
+                if !r110_counters.is_empty() {
+                    self.uses("Effect", "Move.R110AsWithCounters");
+                    self.at("r110_counters", |w| {
+                        for (_, count) in r110_counters {
+                            w.amount(count);
+                        }
+                    });
+                }
             }
             _ => {}
         }
@@ -3800,7 +3839,8 @@ impl Walker<'_> {
     /// What a reference names: a player, an object, or either when it is a name or a target of either kind.
     fn kind_of(&self, r: &Ref) -> Kind {
         match r {
-            Ref::R4700OtherChosen
+            Ref::R110Seat(_)
+            | Ref::R4700OtherChosen
             | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
@@ -4031,6 +4071,7 @@ impl Walker<'_> {
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
+                            | Effect::R110MoveOneOrMore { .. }
                             // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
                             | Effect::ExchangeControl { .. }
                             | Effect::PayAnyTimes { .. }
@@ -5139,6 +5180,10 @@ impl Walker<'_> {
                 w.at("to", |w| w.reference(to, Kind::Object));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::R110MoveEachKindMissing { from, to } | Effect::R110MoveOneOrMore { from, to } => {
+                w.at("from", |w| w.reference(from, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Object));
+            }
             Effect::R6602CreateAttached { who, token, to } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
@@ -5297,6 +5342,11 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::UntilItsControllersNextCombatEnds {
                     w.problem(R5502_COMBAT_ONLY);
+                }
+            }
+            Effect::R110ChooseSecretly(secret) => {
+                if matches!(secret, crate::effect::R110Secret::CreatureType(types) if types.len() < 2) {
+                    w.problem("a secret choice of creature types offers two or more");
                 }
             }
             Effect::R6401PassControl { what, .. } => {
@@ -5466,6 +5516,8 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::R110RemovePutThisWay { .. }
+            | Effect::R110AddCombatAfterFirst
             | Effect::AuraSwap
             | Effect::R6501RedistributeLife
             | Effect::StillResolves
@@ -6259,6 +6311,20 @@ impl Walker<'_> {
             GameRule::DamageCantBePrevented { source, .. } => {
                 self.at(tag, |w| w.at("source", |w| w.selector(source)));
             }
+            GameRule::R110SacrificeTax {
+                spells,
+                abilities,
+                sacrifice,
+                ..
+            } => self.at(tag, |w| {
+                if let Some(spells) = spells {
+                    w.at("spells", |w| w.selector(spells));
+                }
+                if let Some(abilities) = abilities {
+                    w.at("abilities", |w| w.selector(abilities));
+                }
+                w.at("sacrifice", |w| w.selector(sacrifice));
+            }),
             GameRule::PayToIgnore(cost) => {
                 if cost.has_x() {
                     self.problem("`PayToIgnore` costs no {X}");
@@ -7286,6 +7352,7 @@ impl Walker<'_> {
             ReplaceBy::AddAmount(amount)
             | ReplaceBy::R6100AtLeast(amount)
             | ReplaceBy::PreventAmount(amount)
+            | ReplaceBy::R110MayPreventAmount(amount)
             | ReplaceBy::MayAddAmount(amount) => {
                 self.at("amount", |w| w.amount(amount));
             }
@@ -7847,14 +7914,18 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         Ability::Keyword(keyword) => keyword.has_additional_cost(),
         _ => false,
     });
-    walker.counts_x = card.abilities().any(
-        |(_, a)| matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()),
-    );
+    walker.counts_x = card.abilities().any(|(_, a)| {
+        matches!(a, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x()
+            // "choose a number between 0 and 5": the number is announced as the X.
+            || cost.0.iter().any(|item| matches!(item, CostItem::R110ChooseNumber { .. })))
+    });
     // An optional cost names what it took once paid ("If you revealed a Dragon card or chose a Dragon ...").
     walker.pays_objects = card.abilities().any(|(_, a)| {
         matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost))
                 // A way to cast the card for a cost that takes objects ("the returned creature").
                 || matches!(a, Ability::AltCast { cost: Some(cost), .. } if picks(cost))
+                // A kicker that discards names the discarded card ("the discarded card's mana value").
+                || matches!(a, Ability::Keyword(crate::keyword::Keyword::Kicker(cost)) if picks(cost))
                 // Emerge sacrifices a creature ("the sacrificed creature's toughness").
                 || matches!(
                     a,
@@ -8608,6 +8679,7 @@ mod tests {
     #[case::a_payment_of_x_in_an_effect(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":"{X}"}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.Pay", "Effect.Pay.X", "Trigger.StepBegins"])]
     #[case::w6c_the_x_a_payment_announces(r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"targets":[{"what":"AnyTarget"}],"effects":[{"Pay":{"cost":"{X}{R}","paid":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}]}}"#, &["Ability.Triggered", "Cost.Mana", "Effect.DealDamage", "Effect.Pay", "Effect.Pay.X", "Trigger.Attacks"])]
     #[case::w6c_life_that_counts_x_in_a_payment(r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":[{"PayLife":"X"}]}}]}}"#, &["Ability.Triggered", "Cost.PayLife", "Effect.Pay", "Effect.Pay.X.Life", "Trigger.StepBegins"])]
+    #[case::r110_a_number_chosen_as_a_cost(r#"{"AdditionalCost":{"cost":[{"R110ChooseNumber":{"least":0,"most":5}}],"required":true}}"#, &["Ability.AdditionalCost", "Cost.R110ChooseNumber"])]
     #[case::w6c_the_x_of_the_cycling_cost(r#"{"Triggered":{"when":{"Cycled":{"what":["This"],"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Effect.Draw", "Trigger.Cycled"])]
     #[case::w6c_the_x_of_a_monstrosity(r#"{"Triggered":{"when":{"BecomesMonstrous":{"what":["This"]}},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":"X"}}],"effects":[{"Tap":{"what":{"Target":0}}}]}}"#, &["Ability.Triggered", "Effect.Tap", "Trigger.BecomesMonstrous"])]
     #[case::w6c_the_x_of_another_cards_cycling(r#"{"Triggered":{"when":{"Cycled":{"by":"You"}},"effects":[{"Draw":{"count":"X"}}]}}"#, &["Ability.Triggered", "Amount.X.Elsewhere", "Effect.Draw", "Trigger.Cycled"])]
@@ -9343,6 +9415,14 @@ mod tests {
     #[case::a_vote_on_names_that_binds_a_winner(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["a","b"]},"as":"won"}}]}}"#,
         "faces[0].abilities[0].Spell.effects[0].Vote: a vote on named choices binds the choices, not a winner"
+    )]
+    #[case::r110_a_secret_choice_of_one_creature_type(
+        r#"{"Spell":{"effects":[{"R110ChooseSecretly":{"CreatureType":["Human"]}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].R110ChooseSecretly: a secret choice of creature types offers two or more"
+    )]
+    #[case::r110_a_seat_in_a_card_file(
+        r#"{"Spell":{"effects":[{"Draw":{"who":{"R110Seat":1}}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Draw.who: a seat is fixed by the engine and never named in a card file"
     )]
     #[case::a_vote_on_objects_with_no_winner_named(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}}}}]}}"#,

@@ -211,6 +211,12 @@ pub enum CostItem {
     /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d); in an ability an Equipment or Aura
     /// gives the permanent it is attached to, that Equipment or Aura ("{T}, Unattach Shuriken: ...").
     Unattach,
+    /// The payer has the source's controller draw this many cards ("unless any opponent has you draw a card"): always
+    /// payable, the draws are the controller's.
+    R110ControllerDraws(u32),
+    /// Reveal the value the source chose secretly ("Reveal the player you chose", "Reveal the creature type you chose"):
+    /// payable while the source holds a secret choice; the choice is public from then on.
+    R110RevealChosen,
     /// Exile the top cards of the payer's library face up.
     ExileTop(Amount),
     /// Collect evidence (CR 701.59): exile cards from the payer's graveyard with total mana value at least that much.
@@ -300,6 +306,19 @@ pub enum CostItem {
     /// (CR 107.3c, 601.2b): no player chooses it ("X is the number of pin counters on this artifact"); pays nothing
     /// itself. A spell holds it as a required `AdditionalCost`.
     XIs(crate::value::Amount),
+    /// "As an additional cost to cast this spell, choose a creature type." (CR 601.2b): the caster chooses the value as the
+    /// spell is announced; it pays nothing itself. The spell and the permanent it becomes read it as the value the source
+    /// chose (`Pred::ChosenSubtype`). Only a spell holds it, as a required `AdditionalCost`.
+    R110Choose(crate::trigger::EntersChoice),
+    /// "As an additional cost to cast this spell, choose a number between 0 and 5." (CR 601.2b): the caster announces the
+    /// number as the X of the spell, from `least` to `most`; it pays nothing itself. Only a spell with no `{X}` holds it, as a
+    /// required `AdditionalCost`, and reads it as `Amount::X` ("where X is the chosen number").
+    R110ChooseNumber {
+        /// The least number.
+        least: u32,
+        /// The greatest number.
+        most: u32,
+    },
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.

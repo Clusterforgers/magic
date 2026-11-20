@@ -106,6 +106,7 @@ pub(super) fn move_object(
         object.face_down = None;
     }
     (object.adventure, object.plotted) = (None, None);
+    object.r110_foretell_cost = None;
     object.exiled_until = None;
     object.exiled_from_hand = None;
     object.encoded_on = None;
@@ -125,6 +126,12 @@ pub(super) fn move_object(
     };
     let x = if from == Zone::Stack && to == Zone::Battlefield {
         object.choices.x
+    } else {
+        None
+    };
+    // "As an additional cost to cast this spell, choose a creature type": the permanent remembers the value.
+    let r110_chosen = if from == Zone::Stack && to == Zone::Battlefield {
+        object.choices.r110_chosen().cloned()
     } else {
         None
     };
@@ -171,6 +178,7 @@ pub(super) fn move_object(
             PermanentState::entering(timestamp, paid, way, x, face, spent, spent_from);
         permanent.convoked = convoked;
         permanent.delved = delved;
+        permanent.chosen = r110_chosen;
         permanent.r6702_crafted = r6702_crafted;
         permanent.doors = crate::dk1c5_rooms::Doors::entering(&object.def, face);
         object.permanent = Some(permanent);
@@ -687,7 +695,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let before = state.objects.get(object).map(|o| o.controller);
             log_sacrifice(state, (*cause, *from), before, *object);
             super::r285_ruin::log_ruin(state, *cause, *from, *object);
+            let r110_kept = crate::r110_foretell::r110_kept_cost(state, *cause, *object);
             move_object(state, *object, *to, Placement::Top)?;
+            crate::r110_foretell::r110_keep(state, *object, r110_kept);
             if *cause == ZoneCause::Discarded
                 && let Zone::Hand(player) = *from
             {
@@ -859,7 +869,10 @@ fn enter(
         )));
     };
     permanent.tapped = tapped;
-    permanent.chosen = chosen.cloned();
+    // A value chosen as the spell was cast stays unless a choice made as it enters replaces it.
+    if chosen.is_some() || permanent.chosen.is_none() {
+        permanent.chosen = chosen.cloned();
+    }
     object.controller = controller;
     Ok(())
 }

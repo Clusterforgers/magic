@@ -450,6 +450,7 @@ fn no_phase_is_added_after_the_ending_phase_in_a_log() {
         events.push(Event::PhasesAdded {
             steps: vec![Step::BeginCombat],
             lone: false,
+            r110_after_first_combat: false,
         });
         assert_eq!(replay(&setup(step), &events).is_ok(), folds, "{step:?}");
     }

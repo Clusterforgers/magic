@@ -86,6 +86,12 @@ const SCALAR_KEYS: &[&str] = &[
     "Minus",
     "types",
     "colors",
+    // A color set a continuous effect sets or adds (`Modification::SetColors`, `AddColors`): five bits, 31 for all five.
+    "SetColors",
+    "AddColors",
+    // The player a `by` names as a bare number (`Goaded`, `PlayerControlGained`, `Manifested`); an object under `by` is an
+    // `ObjectRef`, whose id sits under `id`.
+    "by",
     "position",
     "modes",
     "x",

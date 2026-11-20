@@ -1,0 +1,88 @@
+{
+  "oracle_id": "79d577a8-53c0-4220-bc0e-70764d72d5fd",
+  "name": "A Killer Among Us",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "A Killer Among Us",
+      "oracle_fingerprint": "5ef5ef34c13bf900693c9539ef5bec85",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Merfolk",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Merfolk"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Goblin",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Goblin"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              },
+              { "R110ChooseSecretly": { "CreatureType": ["Human", "Merfolk", "Goblin"] } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["SacrificeSelf", "R110RevealChosen"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Token"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": { "Target": 0 }, "selector": ["ChosenSubtype"] }
+                  },
+                  "then": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 3 } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Deathtouch" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

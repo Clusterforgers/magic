@@ -1,0 +1,12 @@
+{
+  "oracle_id": "49815e6d-b9c5-4e45-949e-34d34b3543e8",
+  "name": "Fleshwrither",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleshwrither",
+      "oracle_fingerprint": "5734e38fb96b07d4143d0f8b69ce0c25",
+      "abilities": [{ "Keyword": { "R110Transfigure": "{1}{B}{B}" } }]
+    }
+  ]
+}

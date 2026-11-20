@@ -308,6 +308,11 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         *player == viewer || before.ruleset().open_hands() || before.sees_team_hand(viewer, *player)
     };
     match event {
+        // A secret choice a permanent keeps is told to its controller alone until a cost reveals it (CR 706).
+        Event::R110ChoseSecretly { object, .. } => {
+            let chooser = before.object(*object).map(GameObject::controller)?;
+            (chooser != viewer).then_some(HiddenEvent::ChoiceMade { player: chooser })
+        }
         // A pick among cards of a hand or a library names them only to a seat that sees them.
         Event::ChosenAtRandom { cards } if cards.iter().any(|card| !knows(before, *card, viewer)) => {
             Some(HiddenEvent::PickedAtRandom {
@@ -487,6 +492,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Entered { .. }
         | Event::Attached { .. }
         | Event::ChosenAsAttached { .. }
+        | Event::R110ChoiceRevealed { .. }
         | Event::AttachedToPlayer { .. }
         | Event::Unattached { .. }
         | Event::Paired { .. }
@@ -1121,6 +1127,29 @@ mod tests {
     /// What `viewer` is told of `event`: `Err` with the hidden form, `Ok` when it is the event as logged.
     fn told(state: &GameState, event: &Event, viewer: PlayerId) -> Result<(), HiddenEvent> {
         redact(state, event, viewer).map_or(Ok(()), Err)
+    }
+
+    /// A secret choice a permanent keeps is told to its controller only, others learn that a choice was made; its
+    /// reveal is told to everyone.
+    #[test]
+    fn r110_a_secret_choice_is_told_to_its_controller_only() {
+        let t = table();
+        let chosen = mtg_engine::object::Chosen::Player(OTHER);
+        let secret = Event::R110ChoseSecretly {
+            object: t.creature,
+            chosen: chosen.clone(),
+        };
+        assert_eq!(told(&t.state, &secret, OWNER), Ok(()));
+        assert_eq!(
+            told(&t.state, &secret, OTHER),
+            Err(HiddenEvent::ChoiceMade { player: OWNER })
+        );
+        let revealed = Event::R110ChoiceRevealed {
+            object: t.creature,
+            chosen,
+        };
+        assert_eq!(told(&t.state, &revealed, OTHER), Ok(()));
+        assert_eq!(told(&t.state, &revealed, OWNER), Ok(()));
     }
 
     /// A look at a hand is told in full to the one who looked and to the owner of the hand; a bystander learns how many.

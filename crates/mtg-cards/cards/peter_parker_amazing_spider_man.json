@@ -1,7 +1,7 @@
 {
   "oracle_id": "f1b7488c-c675-42e9-818a-24a50347ec2c",
   "name": "Peter Parker // Amazing Spider-Man",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Peter Parker",
@@ -45,9 +45,32 @@
         { "Keyword": "Vigilance" },
         { "Keyword": "Reach" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 219 }
+          "Static": {
+            "affected": {
+              "Each": [
+                "Spell",
+                { "Supertype": "Legendary" },
+                { "ControlledBy": "You" },
+                { "Not": "Colorless" }
+              ]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "AltCast": {
+                    "way": "WebSlinging",
+                    "cost": [
+                      { "Mana": "{W}{U}{G}" },
+                      {
+                        "ReturnToHand": {
+                          "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Tapped"]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

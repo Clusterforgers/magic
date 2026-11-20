@@ -38,6 +38,18 @@ pub(super) fn w2f_pick(
     count: u32,
     up_to: bool,
 ) -> Result<Run, ResolveError> {
+    w2f_pick_least(cx, holders, counter, (count, up_to), false)
+}
+
+/// `w2f_pick` where, with `least_one`, "Stop" is offered only once a counter of the holder has been taken ("one or
+/// more counters").
+pub(super) fn w2f_pick_least(
+    cx: &Cx<'_>,
+    holders: Vec<Target>,
+    counter: Option<&CounterKind>,
+    (count, up_to): (u32, bool),
+    least_one: bool,
+) -> Result<Run, ResolveError> {
     let mut answers = cx.journal().iter();
     let player = cx.scope.controller;
     let mut events = Vec::new();
@@ -56,12 +68,13 @@ pub(super) fn w2f_pick(
             if kinds.is_empty() {
                 break;
             }
-            let offered = kinds.len() + usize::from(up_to);
+            let stoppable = up_to && !(least_one && taken.is_empty());
+            let offered = kinds.len() + usize::from(stoppable);
             let index = if offered == 1 {
                 0
             } else {
                 match answers.next() {
-                    None => return Ok(Run::Ask(w2f_question(cx, holder, &kinds, up_to))),
+                    None => return Ok(Run::Ask(w2f_question(cx, holder, &kinds, stoppable))),
                     Some((who, Choice::Option(index))) if *who == player && *index < offered => {
                         *index
                     }

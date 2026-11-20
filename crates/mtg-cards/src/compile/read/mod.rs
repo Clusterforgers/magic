@@ -185,6 +185,10 @@ mod r109_05_wholes;
 mod r109_entering;
 mod r109_ignore;
 mod r109_wholes;
+mod r110_01_wholes;
+mod r110_02_wholes;
+mod r110_03_wholes;
+mod r110_04_wholes;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -592,6 +596,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         found
     } else if let Some(found) = r4705_reads::r4705_pair_read(text) {
         found
+    } else if let Some(found) = r110_01_wholes::r110_01_pair_read(text) {
+        found
     } else if let Some(found) = r406_actions::r406_pair_read(text) {
         found
     } else if let Some(found) = dk27_pairs::dk27_any_number_less(text) {
@@ -759,7 +765,13 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if let Some(found) = r6700_wholes::r6700_whole_read(text) {
         return Some(found);
     }
+    if let Some(found) = r110_04_wholes::r110_04_whole_read(text) {
+        return Some(found);
+    }
     if let Some(found) = r109_04_wholes::r109_04_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r110_02_wholes::r110_02_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6702_wholes::r6702_whole_read(text) {
@@ -772,6 +784,12 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r109_05_wholes::r109_05_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r110_01_wholes::r110_01_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r110_03_wholes::r110_03_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r6103_wholes::r6103_whole_read(text) {
@@ -831,6 +849,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r109_wholes::r109_read(text, kind) {
+        return Some(found);
+    }
+    if let Some(found) = r110_03_wholes::r110_03_read(text, kind) {
         return Some(found);
     }
     if let Some(found) = r5521_wholes::r5521_read(text, kind) {

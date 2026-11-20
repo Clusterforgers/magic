@@ -1105,6 +1105,18 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { object, chosen } = event.ChosenAsAttached
     return line(`${n.card(object)} becomes attached${chosenWords(chosen, n)}`)
   }
+  if ('R110ChoseSecretly' in event) {
+    const { object, chosen } = event.R110ChoseSecretly
+    return line(
+      `For ${n.card(object)}, you secretly chose${chosenWords(chosen, n).replace(', choosing', '')}`,
+    )
+  }
+  if ('R110ChoiceRevealed' in event) {
+    const { object, chosen } = event.R110ChoiceRevealed
+    return line(
+      `${n.card(object)} reveals its secret choice${chosenWords(chosen, n).replace(', choosing', ':')}`,
+    )
+  }
   if ('Attached' in event) {
     return line(`${n.card(event.Attached.object)} becomes attached to ${n.card(event.Attached.to)}`)
   }
@@ -1405,7 +1417,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('SpellCast' in event) {
     const { player, object, choices } = event.SpellCast
-    return line(`${n.seat(player)} casts ${n.card(object)}${targetingWords(choices?.targets?.flat(), n)}`)
+    const castChoice = choices?.cost_taken?.r110_chosen
+    const chose = castChoice === undefined ? '' : chosenWords(castChoice, n)
+    return line(
+      `${n.seat(player)} casts ${n.card(object)}${chose}${targetingWords(choices?.targets?.flat(), n)}`,
+    )
   }
   if ('SpellResolved' in event) return line(`${n.card(event.SpellResolved.object)} resolves`)
   if ('PermanentTapped' in event) return quiet(`${n.card(event.PermanentTapped.object)} becomes tapped`)

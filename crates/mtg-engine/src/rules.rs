@@ -2292,6 +2292,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::AttackAsThoughHasteAt(who) => Rule::AttackAsThoughHasteAt(scope.players(who)?),
         // A copy effect reads it from the spell's card (`copy_spell`); it is no rule of the game.
         GameRule::CantBeCopied => return Err(ResolveError::Unsupported("Rule.CantBeCopied")),
+        // Read off the battlefield as costs are totalled (`r110_sacrifice_tax`), never lowered.
+        GameRule::R110SacrificeTax { .. } => {
+            return Err(ResolveError::Unsupported("Rule.R110SacrificeTax"));
+        }
         // The cleanup step reads it from the permanent (`r5516_damage`); it is no rule of the game.
         GameRule::KeepsDamage => return Err(ResolveError::Unsupported("Rule.KeepsDamage")),
         // The announcement reads it from the permanents as targets are chosen (`announce::r5509_flagbearer`).

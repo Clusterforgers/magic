@@ -216,6 +216,8 @@ impl Hash for PhasedState {
 }
 
 /// State that only exists while an object is on the battlefield.
+// Each flag is an independent fact of the permanent (tapped, a secret choice, ...), not a state machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct PermanentState {
     pub(crate) tapped: bool,
@@ -239,6 +241,8 @@ pub struct PermanentState {
     pub(crate) timestamp: u64,
     pub(crate) observed: Option<PlayerId>,
     pub(crate) chosen: Option<Chosen>,
+    /// Whether `chosen` was chosen secretly and is not yet revealed (CR 706): the other players do not see it.
+    pub(crate) r110_secret: bool,
     /// The optional costs paid as the spell was cast, by index, a repeatable cost once for each payment.
     pub(crate) paid: Vec<usize>,
     /// The alternative cost the spell was cast for.
@@ -298,6 +302,7 @@ impl PermanentState {
             timestamp,
             observed: None,
             chosen: None,
+            r110_secret: false,
             paid,
             way,
             x,
@@ -356,6 +361,11 @@ impl PermanentState {
     /// What its controller chose as it entered, if it asked for a choice.
     pub const fn chosen(&self) -> Option<&Chosen> {
         self.chosen.as_ref()
+    }
+
+    /// Whether its choice was made secretly and is not yet revealed.
+    pub const fn r110_secret(&self) -> bool {
+        self.r110_secret
     }
 
     /// Whether the permanent is tapped.
@@ -495,6 +505,9 @@ pub struct GameObject {
     pub(crate) adventure: Option<PlayerId>,
     /// The number of the turn the card was plotted in (CR 702.170), while it lies face up in exile; a zone change clears it.
     pub(crate) plotted: Option<u32>,
+    /// The foretell cost the card had as it was foretold, while it lies foretold in exile: a cost a static ability gave
+    /// it in its owner's hand stays its foretell cost (CR 702.143a); a zone change clears it.
+    pub(crate) r110_foretell_cost: Option<mtg_cards::cost::Cost>,
     /// The permanent a card in exile waits for: it returns to the battlefield once that permanent has left it
     /// (CR 610.3); a zone change clears it.
     pub(crate) exiled_until: Option<ObjectRef>,
@@ -579,6 +592,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             plotted: None,
+            r110_foretell_cost: None,
             exiled_until: None,
             exiled_from_hand: None,
             encoded_on: None,
@@ -622,6 +636,7 @@ impl GameObject {
             face_down: None,
             adventure: None,
             plotted: None,
+            r110_foretell_cost: None,
             exiled_until: None,
             exiled_from_hand: None,
             encoded_on: None,
@@ -953,6 +968,11 @@ impl GameObject {
         self.plotted
     }
 
+    /// The foretell cost the card kept as it was foretold, while it lies foretold in exile (CR 702.143a).
+    pub const fn r110_foretell_cost(&self) -> Option<&mtg_cards::cost::Cost> {
+        self.r110_foretell_cost.as_ref()
+    }
+
     /// The printed card types of the face in use (no effects applied); a bestowed Aura is no creature (CR 702.103b).
     pub fn base_types(&self) -> CardTypes {
         let printed = if let Some(copy) = self.copy_effect() {
@@ -1023,6 +1043,7 @@ impl PartialEq for GameObject {
             && self.face_down == other.face_down
             && self.adventure == other.adventure
             && self.plotted == other.plotted
+            && self.r110_foretell_cost == other.r110_foretell_cost
             && self.exiled_until == other.exiled_until
             && self.exiled_from_hand == other.exiled_from_hand
             && self.encoded_on == other.encoded_on
@@ -1060,6 +1081,10 @@ impl Hash for GameObject {
         self.plotted.hash(state);
         if let Some(until) = self.exiled_until {
             until.hash(state);
+        }
+        // Left out while it is off, so the hash of a game that foretells no card stays what it was.
+        if let Some(cost) = &self.r110_foretell_cost {
+            stable_hash(cost).hash(state);
         }
         // Left out while it is off, so the hash of a game that exiles nothing from a hand stays what it was.
         if let Some(hand) = self.exiled_from_hand {

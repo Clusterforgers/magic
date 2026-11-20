@@ -473,6 +473,9 @@ pub enum TurnTally {
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum TallyEvent {
+    /// A permanent was tapped to pay the cost of an activated ability (the object is the tapped permanent, the other the
+    /// source of the ability): "Merfolk tapped this turn to pay for its abilities".
+    R110TappedForCost,
     /// A token was created (the object is the token, as it entered).
     TokenCreated,
     /// A spell was cast (the object is the spell, as it was cast).
@@ -723,6 +726,10 @@ pub enum Amount {
     /// How many counters of the kind the cost of the resolving ability removed from its source ("for each charge counter removed this
     /// way" after "Remove all charge counters from ~"); zero outside such an ability.
     RemovedThisWay(CounterKind),
+    /// How many counters of the kind the steps before it removed, from anything, in the resolution or the replacement it
+    /// belongs to, and in the one that set up its delayed or reflexive trigger ("when one or more counters are removed
+    /// this way, it deals that much damage"); zero when none was removed.
+    R110RemovedThisWay(CounterKind),
     /// The number a `Let` of the resolving spell or ability fixed under the name; zero before it ran.
     Bound(String),
     /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
@@ -805,6 +812,9 @@ pub enum Amount {
     /// The most damage one source dealt this turn while one of the players the reference names controlled it, all its
     /// damage added up ("if a source you controlled dealt 5 or more damage this turn"); 0 when none dealt any.
     MostDamageBySource(Ref),
+    /// The most damage one source dealt to one permanent or player this turn, its hits of that recipient added up ("the
+    /// greatest amount of damage dealt by a source to a permanent or player this turn"); 0 when none was dealt.
+    R110MostDamageToOne,
     /// The events of the kind this turn whose object the filter selects, counted for the players the reference names
     /// ("the second creature token you created this turn").
     Tally {
@@ -1120,6 +1130,7 @@ enum Tagged {
     R6500DevouredMatching(Selector),
     Devoured,
     RemovedThisWay(CounterKind),
+    R110RemovedThisWay(CounterKind),
     Bound(String),
     CastWith(CastWay),
     ColorsSpent,
@@ -1157,6 +1168,7 @@ enum Tagged {
     Triggering,
     SourcesDealtDamage(Ref),
     MostDamageBySource(Ref),
+    R110MostDamageToOne,
     Tally {
         event: TallyEvent,
         who: Ref,
@@ -1339,6 +1351,7 @@ enum TaggedRef<'a> {
     R6500DevouredMatching(&'a Selector),
     Devoured,
     RemovedThisWay(&'a CounterKind),
+    R110RemovedThisWay(&'a CounterKind),
     Bound(&'a str),
     CastWith(CastWay),
     ColorsSpent,
@@ -1376,6 +1389,7 @@ enum TaggedRef<'a> {
     Triggering,
     SourcesDealtDamage(&'a Ref),
     MostDamageBySource(&'a Ref),
+    R110MostDamageToOne,
     Tally {
         event: TallyEvent,
         who: &'a Ref,
@@ -1528,6 +1542,7 @@ impl From<Tagged> for Amount {
             Tagged::R6500DevouredMatching(filter) => Amount::R6500DevouredMatching(filter),
             Tagged::Devoured => Amount::Devoured,
             Tagged::RemovedThisWay(counter) => Amount::RemovedThisWay(counter),
+            Tagged::R110RemovedThisWay(counter) => Amount::R110RemovedThisWay(counter),
             Tagged::Bound(name) => Amount::Bound(name),
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
@@ -1544,6 +1559,7 @@ impl From<Tagged> for Amount {
             Tagged::Party(who) => Amount::Party(who),
             Tagged::CardsAbove { filter, directly } => Amount::CardsAbove { filter, directly },
             Tagged::Triggering => Amount::Triggering,
+            Tagged::R110MostDamageToOne => Amount::R110MostDamageToOne,
             Tagged::DieResult(which) => Amount::DieResult(which),
             Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
             Tagged::Remembered { on, slot, per } => Amount::Remembered { on, slot, per },
@@ -1682,6 +1698,9 @@ impl Serialize for Amount {
             Amount::RemovedThisWay(counter) => {
                 TaggedRef::RemovedThisWay(counter).serialize(serializer)
             }
+            Amount::R110RemovedThisWay(counter) => {
+                TaggedRef::R110RemovedThisWay(counter).serialize(serializer)
+            }
             Amount::Bound(name) => TaggedRef::Bound(name).serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
             Amount::ColorsSpent => TaggedRef::ColorsSpent.serialize(serializer),
@@ -1708,6 +1727,7 @@ impl Serialize for Amount {
             }
             .serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
+            Amount::R110MostDamageToOne => TaggedRef::R110MostDamageToOne.serialize(serializer),
             Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),
             Amount::Tally { event, who, filter } => TaggedRef::Tally {
                 event: *event,

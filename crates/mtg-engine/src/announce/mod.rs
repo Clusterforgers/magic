@@ -34,6 +34,8 @@ mod payment;
 pub(crate) mod plot;
 mod price;
 mod r109_ignore;
+mod r110_cast_choice;
+mod r110_chosen_number;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
@@ -213,6 +215,9 @@ pub(crate) struct Needs {
     pub(crate) modes: Option<price::ModeCosts>,
     /// The cards of the caster's hand that may be spliced onto the spell.
     pub(crate) splice: Vec<crate::keywords::splice::Spliceable>,
+    /// The sacrifices the rules in play add to the cost of a spell (`r110_sacrifice_tax`); an ability's are parts of
+    /// its `price`.
+    pub(crate) r110_sacrifices: Vec<Part>,
 }
 
 /// What a resolution lets a player cast (CR 608.2g): the spell goes on the stack as part of the resolution, with no
@@ -231,6 +236,45 @@ pub(crate) struct Granted {
     pub(crate) spend_as: mtg_cards::modify::SpendAs,
 }
 
+/// The price of `what` with the sacrifices the rules in play add to its cost (`r110_sacrifice_tax`, CR 601.2f, 602.2b),
+/// and those of a spell apart: an ability pays them as parts of its price.
+fn r110_taxed(
+    price: Option<Box<Price>>,
+    (state, player): (&GameState, PlayerId),
+    what: &What,
+    rules: Option<&Ability>,
+) -> (Option<Box<Price>>, Vec<Part>) {
+    use crate::r110_sacrifice_tax::{R110Taxed, r110_parts};
+    match (what, rules) {
+        (What::Spell(spell), _) => (price, r110_parts(state, R110Taxed::Spell(*spell))),
+        (What::Ability(address), Some(activated @ Ability::Activated { cost, .. })) => {
+            let taxed = crate::r110_sacrifice_tax::r110_ability_parts(state, address.object, cost);
+            if taxed.is_empty() {
+                return (price, Vec::new());
+            }
+            // An ability whose cost took nothing before takes the sacrifices now: its whole price, as `parts::read` reads it.
+            let price = price.or_else(|| {
+                let cost = crate::free_activation::cost(state, player, (*address, activated), cost);
+                Price::announced_in(
+                    &cost,
+                    state,
+                    player,
+                    address.object,
+                    address.source.granter(),
+                )
+                .ok()
+                .map(Box::new)
+            });
+            let price = price.map(|mut price| {
+                price.parts.extend(taxed);
+                price
+            });
+            (price, Vec::new())
+        }
+        _ => (price, Vec::new()),
+    }
+}
+
 impl Needs {
     /// What `what` asks for; its rules are `rules`.
     fn of(
@@ -240,17 +284,24 @@ impl Needs {
         rules: Option<&Ability>,
         granted: Option<Granted>,
     ) -> Self {
+        let (price, r110_sacrifices) = r110_taxed(
+            parts::read(state, player, what, rules),
+            (state, player),
+            what,
+            rules,
+        );
         Needs {
             ways: alternative::read(state, player, what, granted),
             optional: optional::read(state, what),
             x: XCost::of(state, player, what, rules),
-            price: parts::read(state, player, what, rules),
+            price,
             modes: if matches!(what, What::Spell(_)) {
                 price::ModeCosts::of(rules)
             } else {
                 None
             },
             splice: splice::read(state, player, what),
+            r110_sacrifices,
         }
     }
 
@@ -274,6 +325,7 @@ impl Needs {
             .unwrap_or_default();
         parts.extend(optional::parts_paid(&self.optional, choices));
         parts.extend(splice::parts_paid(&self.splice, choices));
+        parts.extend(self.r110_sacrifices.iter().cloned());
         if let Some(costs) = &self.modes {
             parts.extend(costs.parts(&choices.modes));
         }
@@ -322,6 +374,9 @@ pub(crate) struct Done {
     /// The kind of counter the player picked for the next permanent of a cost that removes a counter of any kind, by
     /// position in the options.
     pub(crate) w2f_kind_picked: Option<u8>,
+    /// The value the player picked for a choice made as an additional cost (`r110_cast_choice`), by position in the
+    /// options, which may be more than a `u8` holds.
+    pub(crate) r110_picked: Option<usize>,
     /// The life the cost modifiers add to the spell's cost, worked out with its total cost and paid with its other parts.
     pub(crate) modifier_life: u32,
     /// The Flagbearer pick of a target specification of several targets (`r5509_flagbearer`).
@@ -563,6 +618,7 @@ impl Pending {
             }
             Answered::Way(pick) if wanted == Phase::Parts => {
                 self.done.w2f_kind_picked = u8::try_from(pick).ok();
+                self.done.r110_picked = Some(pick);
             }
             Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Cards(cards) => self.choices.pick_for_cost(cards),

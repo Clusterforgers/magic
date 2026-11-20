@@ -1,7 +1,7 @@
 {
   "oracle_id": "7271c442-2bd1-4d78-a049-b28bd5ee6876",
   "name": "Grime Gorger",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Grime Gorger",
@@ -9,9 +9,188 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 180 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Artifact" }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "artifact"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Battle" },
+                      { "Not": { "Is": { "Bound": "artifact" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "battle"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Creature" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "battle" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "creature"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Enchantment" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "battle" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "enchantment"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Instant" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "battle" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "instant"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Kindred" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "battle" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } },
+                      { "Not": { "Is": { "Bound": "instant" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kindred"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Land" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "battle" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } },
+                      { "Not": { "Is": { "Bound": "instant" } } },
+                      { "Not": { "Is": { "Bound": "kindred" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "land"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Planeswalker" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "battle" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } },
+                      { "Not": { "Is": { "Bound": "instant" } } },
+                      { "Not": { "Is": { "Bound": "kindred" } } },
+                      { "Not": { "Is": { "Bound": "land" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "planeswalker"
+                }
+              },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "Defending" },
+                      { "Type": "Sorcery" },
+                      { "Not": { "Is": { "Bound": "artifact" } } },
+                      { "Not": { "Is": { "Bound": "battle" } } },
+                      { "Not": { "Is": { "Bound": "creature" } } },
+                      { "Not": { "Is": { "Bound": "enchantment" } } },
+                      { "Not": { "Is": { "Bound": "instant" } } },
+                      { "Not": { "Is": { "Bound": "kindred" } } },
+                      { "Not": { "Is": { "Bound": "land" } } },
+                      { "Not": { "Is": { "Bound": "planeswalker" } } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "sorcery"
+                }
+              },
+              {
+                "Exile": {
+                  "what": {
+                    "Union": [
+                      { "Bound": "artifact" },
+                      { "Bound": "battle" },
+                      { "Bound": "creature" },
+                      { "Bound": "enchantment" },
+                      { "Bound": "instant" },
+                      { "Bound": "kindred" },
+                      { "Bound": "land" },
+                      { "Bound": "planeswalker" },
+                      { "Bound": "sorcery" }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] }
+                }
+              }
+            ]
           }
         }
       ]

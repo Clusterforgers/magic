@@ -24,6 +24,16 @@ pub enum R6401Pick {
     ByEach,
 }
 
+/// What `Effect::R110ChooseSecretly` chooses.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum R110Secret {
+    /// An opponent of the controller.
+    Opponent,
+    /// One of these creature types.
+    CreatureType(Vec<Subtype>),
+}
+
 /// The most passes any `RepeatWhile` makes, whatever it writes: a loop that never ends cannot hang a game.
 pub const MOST_PASSES: u32 = 1000;
 
@@ -191,6 +201,10 @@ pub enum Destination {
     R6502BattlefieldAs {
         /// What it is as it enters.
         becomes: Vec<Modification>,
+        /// Counters it enters with, each kind with its number, counted as it moves ("with X additional +1/+1 counters on
+        /// it", CR 122.6).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r110_counters: Vec<(CounterKind, Amount)>,
     },
     /// The battlefield under its owner's control, where an Aura enters attached only to a permanent the selector matches
     /// among those it may enchant, chosen by its controller, and stays where it was when there is none ("Only creatures
@@ -2190,6 +2204,38 @@ pub enum Effect {
         /// The kind of counter.
         counter: CounterKind,
     },
+    /// A combat phase is added after the first combat phase of the turn (CR 500.8, 505.1a: "After the first combat phase
+    /// this turn, there's an additional combat phase"); nothing once that phase has ended. A delayed trigger set up after
+    /// it names the added phase as `R110ThatCombatBegins(0)`.
+    R110AddCombatAfterFirst,
+    /// For each counter of the kind put on an object by the steps before it, one is removed from that object ("For each
+    /// +1/+1 counter you put on a creature this way, remove a +1/+1 counter from that creature"); in a delayed trigger it
+    /// reads the counters the resolution that set the trigger up put (CR 603.7c), each object as the very object it was.
+    R110RemovePutThisWay {
+        /// The kind of counter.
+        counter: CounterKind,
+    },
+    /// One counter of each kind the object `to` names lacks is moved onto it from the object `from` names (CR 122.5:
+    /// "Move a counter of each kind not on ~ from another target permanent you control onto ~").
+    R110MoveEachKindMissing {
+        /// The object they leave.
+        from: crate::refs::Ref,
+        /// The object they go onto.
+        to: crate::refs::Ref,
+    },
+    /// The controller moves one or more counters of any kinds from the object `from` names onto the object `to` names,
+    /// one at a time, at least one when there is one (CR 122.5: "Move one or more counters from ~ onto another target
+    /// permanent you control"); a following `If Performed` reads whether any moved.
+    R110MoveOneOrMore {
+        /// The object they leave.
+        from: crate::refs::Ref,
+        /// The object they go onto.
+        to: crate::refs::Ref,
+    },
+    /// The controller secretly chooses a value the source keeps (CR 706): an opponent, or one of the creature types
+    /// listed ("secretly choose an opponent", "secretly choose Human, Merfolk, or Goblin"). The other players learn it
+    /// when `CostItem::R110RevealChosen` is paid; `Ref::Chosen` and `Pred::ChosenSubtype` read it.
+    R110ChooseSecretly(R110Secret),
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.

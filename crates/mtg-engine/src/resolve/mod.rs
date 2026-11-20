@@ -125,6 +125,10 @@ pub struct Resolving {
     pub(crate) searched: Vec<(PlayerId, Zone)>,
     /// The values the resolution has chosen so far, by name, which `ChosenAs` reads.
     pub(crate) chosen: std::collections::BTreeMap<String, crate::object::Chosen>,
+    /// The counters the resolution has put so far, by object and kind, which "each counter put this way" reads.
+    pub(crate) r110_put: prim::r110_remove_put::R110Counted,
+    /// The counters the resolution has removed so far, by object and kind, which "the counters removed this way" reads.
+    pub(crate) r110_removed: prim::r110_remove_put::R110Counted,
 }
 
 impl Resolving {
@@ -148,6 +152,8 @@ impl Resolving {
             lets: Vec::new(),
             searched: Vec::new(),
             chosen: std::collections::BTreeMap::new(),
+            r110_put: Vec::new(),
+            r110_removed: Vec::new(),
         }
     }
 
