@@ -48,6 +48,16 @@ pub(crate) fn r112_next_spend_as(state: &GameState, player: PlayerId, spell: Obj
     found
 }
 
+/// The printed mana cost of `spell`, if it has one, as `player` may pay it under those rules.
+pub(crate) fn r112_printed(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    printed: Option<ManaCost>,
+) -> Option<ManaCost> {
+    printed.map(|cost| r112_mana_cost(state, player, spell, cost))
+}
+
 /// The mana cost `cost` of `spell` as `player` may pay it under those rules.
 pub(crate) fn r112_mana_cost(
     state: &GameState,

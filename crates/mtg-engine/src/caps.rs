@@ -110,6 +110,7 @@ const RUNS: &[&str] = &[
     "Trigger.Nth",
     "Trigger.Caused",
     "Trigger.R109WhileCasting",
+    "Trigger.R6701WhileActivating",
     "Trigger.R111AbilityTriggered",
     "Trigger.Did",
     "Ability.OpeningHand",

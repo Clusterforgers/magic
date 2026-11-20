@@ -123,6 +123,7 @@ mod tests {
             ("this creature's abilities", "creatures' abilities"),
             ("You may", "Each player may"),
             ("Treasures", "Clues"),
+            ("a craft ability", "a boast ability"),
             ("a single graveyard", "your graveyard"),
             (
                 "that shares a color with",

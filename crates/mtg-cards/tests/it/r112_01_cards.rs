@@ -47,6 +47,7 @@ fn compact(name: &str) -> String {
 #[case("Emblazoned Golem")]
 #[case("Night Soil")]
 #[case("Protective Sphere")]
+#[case("Market Gnome")]
 #[case("Brigid, Clachan's Heart // Brigid, Doun's Mind")]
 fn r112_01_reads_back_whole(#[case] name: &str) {
     let report = report_of(name, &compact(name));
@@ -90,6 +91,11 @@ fn r112_01_reads_back_whole(#[case] name: &str) {
 )]
 #[case::any_source("Protective Sphere", r#","R112SharesColorWithSpent""#, "")]
 #[case::next_only("Protective Sphere", r#""by":"Prevent""#, r#""by":"PreventNext""#)]
+#[case::to_graveyard(
+    "Market Gnome",
+    r#""R6701WhileActivating":{"inner":{"ZoneChange":{"from":"Battlefield","to":"Exile""#,
+    r#""R6701WhileActivating":{"inner":{"ZoneChange":{"from":"Battlefield","to":"Graveyard""#
+)]
 #[case::blue(
     "Brigid, Clachan's Heart // Brigid, Doun's Mind",
     r#"["Green","White"]"#,
@@ -98,7 +104,7 @@ fn r112_01_reads_back_whole(#[case] name: &str) {
 #[case::all_creatures(
     "Brigid, Clachan's Heart // Brigid, Doun's Mind",
     r#"},"Other",{"#,
-    r#"},{"#
+    "},{"
 )]
 fn r112_01_a_near_miss_does_not_read_back(
     #[case] name: &str,

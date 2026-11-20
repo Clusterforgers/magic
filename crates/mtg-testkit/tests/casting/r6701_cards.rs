@@ -405,7 +405,6 @@ fn r6701_a_granted_static_grants_its_ability(
 #[case::crafted(true)]
 // Exiled by Swords to Plowshares: no craft, no draw (Swords gives the life of its power).
 #[case::exiled_otherwise(false)]
-#[ignore = "TriggerPattern::R6701WhileActivating sees no craft activation as the cause of the material exile"]
 fn r6701_market_gnome_exiled_while_crafting(
     #[values(2, 3, 4)] seats: usize,
     #[case] crafted: bool,

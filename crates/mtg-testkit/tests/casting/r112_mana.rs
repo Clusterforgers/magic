@@ -3,7 +3,9 @@
 //! can't pay generic costs (Jegantha, CR 106.6) pays only colored symbols of its types, from a source or floating.
 //! Security Rhox is cast for {R}{G} with mana from Treasures only, and for its mana cost with any mana. North Star lets
 //! any mana pay the next spell's mana cost once. Jeweled Amulet notes the type of the mana its cost spent and adds one
-//! mana of that type later.
+//! mana of that type later. Emblazoned Golem's X is paid one mana of each of X colors; X mana of one chosen type counts
+//! the other creatures; Night Soil exiles two cards of one graveyard only; Protective Sphere offers only sources sharing
+//! a color with the mana it spent.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_core::color::Color;
@@ -49,13 +51,16 @@ fn r112_blue_pays_the_red_cost_of_a_gained_ability(
 ) -> Result<(), ScriptError> {
     let mut driver = quicksilver(seats, 2)?;
     // The Cougar's own {R} ability is not paid by an Island.
-    assert!(driver.offered_abilities("Chartooth Cougar")?.is_empty());
+    assert_eq!(
+        driver.offered_abilities("Chartooth Cougar")?,
+        [] as [usize; 0]
+    );
     driver.begin_activation("Quicksilver Elemental")?;
     let cougar = driver.target_named("Chartooth Cougar")?;
     driver.choose_targets(&[cougar])?;
     pay_auto(&mut driver)?;
     resolve(&mut driver, seats)?;
-    assert!(driver.state().zone(Zone::Stack).is_empty());
+    assert_eq!(driver.state().zone(Zone::Stack), []);
     // Its own {U} ability and the gained {R} one, which the last Island pays.
     let elemental = driver.id_of("Quicksilver Elemental")?;
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
@@ -72,10 +77,9 @@ fn r112_blue_pays_the_red_cost_of_a_gained_ability(
     pay_auto(&mut driver)?;
     assert_eq!(driver.state().zone(Zone::Stack).len(), 1);
     // With no Island left nothing pays either ability again.
-    assert!(
-        driver
-            .offered_abilities("Quicksilver Elemental")?
-            .is_empty()
+    assert_eq!(
+        driver.offered_abilities("Quicksilver Elemental")?,
+        [] as [usize; 0]
     );
     Ok(())
 }
@@ -239,7 +243,7 @@ fn r112_north_star_lets_any_mana_pay_the_next_mana_cost(
     driver.begin_activation("North Star")?;
     pay_auto(&mut driver)?;
     resolve(&mut driver, seats)?;
-    assert!(driver.state().zone(Zone::Stack).is_empty());
+    assert_eq!(driver.state().zone(Zone::Stack), []);
     driver.cast("Blue One")?;
     assert_eq!(driver.state().zone(Zone::Stack).len(), 1);
     resolve(&mut driver, seats)?;
@@ -277,15 +281,18 @@ fn r112_jeweled_amulet_adds_the_type_its_cost_spent(
     driver.begin_ability("Jeweled Amulet", 0)?;
     pay_auto(&mut driver)?;
     resolve(&mut driver, seats)?;
-    assert!(driver.state().zone(Zone::Stack).is_empty());
+    assert_eq!(driver.state().zone(Zone::Stack), []);
     // With a charge counter on it the first ability is not offered; the tapped Amulet offers neither.
-    assert!(driver.offered_abilities("Jeweled Amulet")?.is_empty());
+    assert_eq!(
+        driver.offered_abilities("Jeweled Amulet")?,
+        [] as [usize; 0]
+    );
     // Seat 0's next turn: the Amulet untapped, its note kept.
     let next = u32::try_from(seats).unwrap() + 1;
     driver.idle_until(next, mtg_engine::turn::Step::Main1)?;
     assert_eq!(driver.offered_abilities("Jeweled Amulet")?, vec![1]);
     driver.begin_ability("Jeweled Amulet", 1)?;
-    assert!(driver.state().zone(Zone::Stack).is_empty());
+    assert_eq!(driver.state().zone(Zone::Stack), []);
     assert_eq!(floating(&driver, kind), 1);
     Ok(())
 }
