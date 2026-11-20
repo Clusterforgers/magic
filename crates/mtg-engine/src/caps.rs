@@ -1261,6 +1261,8 @@ const RUNS: &[&str] = &[
     "Pred.HasName",
     "Pred.Kicked",
     "Pred.AdditionalCostPaid",
+    "Cost.R110ChooseNumber",
+    "Effect.Move.R110AsWithCounters",
 ];
 
 /// The capabilities of this engine.
@@ -2044,6 +2046,8 @@ mod tests {
     #[case::faces(FACES, true)]
     #[case::the_prepared_cast(PREPARE, true)]
     #[case::variable_stats(VARIABLE_STATS, true)]
+    #[case::r110_a_number_chosen_as_a_cost("Cost.R110ChooseNumber", true)]
+    #[case::r110_put_as_an_object_with_counted_counters("Effect.Move.R110AsWithCounters", true)]
     fn the_engine_runs_what_it_runs_today(#[case] name: &str, #[case] runs: bool) {
         assert_eq!(caps().runs(name), runs);
     }

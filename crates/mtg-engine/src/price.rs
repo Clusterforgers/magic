@@ -120,6 +120,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::ChosenColorOnly => "Cost.ChosenColorOnly",
         CostItem::XAtMost(_) => "Cost.XAtMost",
         CostItem::XIs(_) => "Cost.XIs",
+        CostItem::R110ChooseNumber { .. } => "Cost.R110ChooseNumber",
     }
 }
 
@@ -256,6 +257,7 @@ impl Price {
                 CostItem::XAtLeast(_)
                 | CostItem::XAtMost(_)
                 | CostItem::XIs(_)
+                | CostItem::R110ChooseNumber { .. }
                 | CostItem::ChosenColorOnly => {}
                 CostItem::XColor(color) => x_color = Some(*color),
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),

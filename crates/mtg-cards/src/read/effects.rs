@@ -326,8 +326,23 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
             "put {what} onto the battlefield; an Aura may enchant only {} this way",
             phrase::selectors(ctx, only)
         ),
-        Destination::R6502BattlefieldAs { .. } => {
-            format!("put {what} onto the battlefield, as it enters and while it stays:")
+        Destination::R6502BattlefieldAs { r110_counters, .. } => {
+            let with: Vec<String> = r110_counters
+                .iter()
+                .map(|(kind, count)| {
+                    format!(
+                        "{} {} counters",
+                        phrase::amount(ctx, count),
+                        phrase::counter_text(kind)
+                    )
+                })
+                .collect();
+            let with = if with.is_empty() {
+                String::new()
+            } else {
+                format!(" with {}", with.join(", "))
+            };
+            format!("put {what} onto the battlefield{with}, as it enters and while it stays:")
         }
     }
 }
@@ -646,7 +661,7 @@ fn block(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool {
     match effect {
         Effect::Move {
             what,
-            to: to @ Destination::R6502BattlefieldAs { becomes },
+            to: to @ Destination::R6502BattlefieldAs { becomes, .. },
             ..
         } => {
             out.push(Step::new(depth, moved(ctx, what, to)));

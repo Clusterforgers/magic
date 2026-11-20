@@ -5,6 +5,7 @@ Abominable Treefolk
 Abomination, World Ravager
 Aboroth
 Absolver Thrull
+Abuelo's Awakening
 Abundant Growth
 Abzan Advantage
 Abzan Battle Priest
@@ -867,6 +868,7 @@ Eyeblight Massacre
 Eyetwitch
 Ezzaroot Channeler
 Fabrication Foundry
+Face Yourself
 Faceless One
 Faerie Bladecrafter
 Faerie Conclave
@@ -1488,6 +1490,7 @@ Liliana's Mastery
 Liliana's Reaver
 Liliana's Standard Bearer
 Lion Sash
+Liquid Fire
 Liquimetal Torque
 Lita, Little Orphan Amphibian
 Lithoform Engine

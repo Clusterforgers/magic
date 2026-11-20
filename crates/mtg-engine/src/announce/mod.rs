@@ -34,6 +34,7 @@ mod payment;
 pub(crate) mod plot;
 mod price;
 mod r109_ignore;
+mod r110_chosen_number;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;

@@ -142,6 +142,7 @@ mod plot;
 mod promise_of_loyalty;
 mod pump_spells;
 mod r109_emerge_reads;
+mod r110_chosen_number;
 mod r1a_spend;
 mod r281_cards;
 mod r281_kicked_spend;

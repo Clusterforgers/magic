@@ -2062,6 +2062,12 @@ impl<'a> Walker<'a> {
                         w.uses("Cost", "XIs");
                         w.at("XIs", |w| w.amount(amount));
                     }
+                    CostItem::R110ChooseNumber { least, most } => {
+                        if least > most {
+                            w.problem("the least number chosen is greater than the greatest");
+                        }
+                        w.uses("Cost", "R110ChooseNumber");
+                    }
                     CostItem::XAtLeast(least) => {
                         if *least == 0 {
                             w.problem("an X of at least 0 is any X");
@@ -3594,10 +3600,21 @@ impl Walker<'_> {
             }
             // The changes are continuous effects of the resolving ability, so a static ability they give may give
             // abilities in turn, as one `Effect::Continuous` gives.
-            Destination::R6502BattlefieldAs { becomes } => {
+            Destination::R6502BattlefieldAs {
+                becomes,
+                r110_counters,
+            } => {
                 let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
                 self.at("becomes", |w| w.mods(becomes));
                 self.r6701_effect_grant = effect_grant;
+                if !r110_counters.is_empty() {
+                    self.uses("Effect", "Move.R110AsWithCounters");
+                    self.at("r110_counters", |w| {
+                        for (_, count) in r110_counters {
+                            w.amount(count);
+                        }
+                    });
+                }
             }
             _ => {}
         }

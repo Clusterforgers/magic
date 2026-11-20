@@ -300,6 +300,15 @@ pub enum CostItem {
     /// (CR 107.3c, 601.2b): no player chooses it ("X is the number of pin counters on this artifact"); pays nothing
     /// itself. A spell holds it as a required `AdditionalCost`.
     XIs(crate::value::Amount),
+    /// "As an additional cost to cast this spell, choose a number between 0 and 5." (CR 601.2b): the caster announces the
+    /// number as the X of the spell, from `least` to `most`; it pays nothing itself. Only a spell with no `{X}` holds it, as a
+    /// required `AdditionalCost`, and reads it as `Amount::X` ("where X is the chosen number").
+    R110ChooseNumber {
+        /// The least number.
+        least: u32,
+        /// The greatest number.
+        most: u32,
+    },
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.
