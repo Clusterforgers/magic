@@ -181,6 +181,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("emerge", Params::Cost),
     ("harmonize", Params::Cost),
     ("transmute", Params::Cost),
+    ("transfigure", Params::Cost),
     ("level up", Params::Cost),
     ("embalm", Params::Cost),
     ("sunburst", Params::None),
