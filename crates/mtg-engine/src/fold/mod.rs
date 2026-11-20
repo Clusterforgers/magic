@@ -1237,16 +1237,20 @@ fn turn_face_up(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> 
     Ok(())
 }
 
-/// A transforming double-faced permanent is turned to `face` (CR 701.28); its counters, attachments and the rest of what it
+/// A transforming or modal double-faced permanent is turned to `face` (CR 701.28); its counters, attachments and the rest of what it
 /// remembers stay, since it is the same object.
 fn set_face(state: &mut GameState, id: ObjectId, face: Option<u8>) -> Result<(), EngineError> {
     let object = state
         .objects
         .get_mut(&id)
         .ok_or_else(|| invalid(format!("{id:?} does not exist")))?;
-    if object.def.layout != mtg_cards::definition::Layout::Transform {
+    // A modal double-faced permanent turns over too (CR 712.10); the effect checks that its other face is a permanent.
+    if !matches!(
+        object.def.layout,
+        mtg_cards::definition::Layout::Transform | mtg_cards::definition::Layout::ModalDfc
+    ) {
         return Err(invalid(format!(
-            "{id:?} is not a transforming double-faced card"
+            "{id:?} is not a transforming or modal double-faced card"
         )));
     }
     let permanent = object

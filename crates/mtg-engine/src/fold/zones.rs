@@ -106,6 +106,7 @@ pub(super) fn move_object(
         object.face_down = None;
     }
     (object.adventure, object.plotted) = (None, None);
+    object.r110_foretell_cost = None;
     object.exiled_until = None;
     object.exiled_from_hand = None;
     object.encoded_on = None;
@@ -687,7 +688,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             let before = state.objects.get(object).map(|o| o.controller);
             log_sacrifice(state, (*cause, *from), before, *object);
             super::r285_ruin::log_ruin(state, *cause, *from, *object);
+            let r110_kept = crate::r110_foretell::r110_kept_cost(state, *cause, *object);
             move_object(state, *object, *to, Placement::Top)?;
+            crate::r110_foretell::r110_keep(state, *object, r110_kept);
             if *cause == ZoneCause::Discarded
                 && let Zone::Hand(player) = *from
             {

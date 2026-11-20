@@ -1200,6 +1200,7 @@ const RUNS: &[&str] = &[
     "Rule.UpToInDeck",
     "Rule.Draft",
     "Rule.CantBeCopied",
+    "Rule.R110SacrificeTax",
     "Rule.KeepsDamage",
     "Rule.Flagbearers",
     "Rule.CountsAsNamed",

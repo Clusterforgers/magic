@@ -14,7 +14,8 @@ pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId) -> Next 
     let Some(cost) = ways::foretell_action_cost(state, card) else {
         return Next::Drop;
     };
-    if events(state, card).is_none() || !state.is_active(player) {
+    if events(state, card).is_none() || !crate::r110_foretell::r110_may_foretell_now(state, player)
+    {
         return Next::Drop;
     }
     let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::Foretell);

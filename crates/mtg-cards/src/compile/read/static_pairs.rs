@@ -84,6 +84,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !whole_pair.is_empty() {
         return whole_pair;
     }
+    let whole_pair = super::r110_01_wholes::r110_01_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
     let r406 = super::r406_actions::r406_pair_texts(first, second);
     if !r406.is_empty() {
         return r406;

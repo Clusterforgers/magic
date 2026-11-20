@@ -6259,6 +6259,20 @@ impl Walker<'_> {
             GameRule::DamageCantBePrevented { source, .. } => {
                 self.at(tag, |w| w.at("source", |w| w.selector(source)));
             }
+            GameRule::R110SacrificeTax {
+                spells,
+                abilities,
+                sacrifice,
+                ..
+            } => self.at(tag, |w| {
+                if let Some(spells) = spells {
+                    w.at("spells", |w| w.selector(spells));
+                }
+                if let Some(abilities) = abilities {
+                    w.at("abilities", |w| w.selector(abilities));
+                }
+                w.at("sacrifice", |w| w.selector(sacrifice));
+            }),
             GameRule::PayToIgnore(cost) => {
                 if cost.has_x() {
                     self.problem("`PayToIgnore` costs no {X}");
@@ -7855,6 +7869,8 @@ fn walk<'a>(card: &Card, tokens: &'a BTreeSet<String>) -> Walker<'a> {
         matches!(a, Ability::AdditionalCost { cost, .. } if picks(cost))
                 // A way to cast the card for a cost that takes objects ("the returned creature").
                 || matches!(a, Ability::AltCast { cost: Some(cost), .. } if picks(cost))
+                // A kicker that discards names the discarded card ("the discarded card's mana value").
+                || matches!(a, Ability::Keyword(crate::keyword::Keyword::Kicker(cost)) if picks(cost))
                 // Emerge sacrifices a creature ("the sacrificed creature's toughness").
                 || matches!(
                     a,

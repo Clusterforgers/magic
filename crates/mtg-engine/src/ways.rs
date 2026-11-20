@@ -25,7 +25,7 @@ use crate::decision::{Unplayable, Why};
 use crate::face_down;
 use crate::faces;
 use crate::help;
-use crate::keywords::{self, aftermath, foretell, keywords_of};
+use crate::keywords::{self, aftermath, keywords_of};
 use crate::mana::{ManaOption, ManaPool, can_afford, can_afford_with};
 use crate::mana_takes::for_card;
 use crate::merged;
@@ -130,8 +130,10 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
     if !matches!(way, CastWay::Miracle | CastWay::Cleave) && !R283_X_WAYS.contains(&way) {
         return 0;
     }
+    let kept = crate::r110_foretell::r110_kept_keyword(state, id);
     keywords_of(state, id)
         .into_iter()
+        .chain(kept.as_ref())
         .find_map(|keyword| match (way, keyword) {
             (CastWay::Miracle, Keyword::Miracle(cost))
             | (CastWay::Cleave, Keyword::Cleave { cost, .. })
@@ -389,6 +391,13 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         {
             ways.push(way);
         }
+    }
+    // A card foretold with a foretell cost it was only given is cast for the cost it kept (CR 702.143a).
+    if let Some(kept) = crate::r110_foretell::r110_kept_keyword(state, id)
+        && let Some(way) = keyword_way(state, player, id, &kept, instant)
+        && !ways.iter().any(|w| w.alternative == way.alternative)
+    {
+        ways.push(way);
     }
     ways.extend(r5510_given_emerge(state, player, id, instant));
     r282_ways(state, player, id, instant, &mut ways);
@@ -1091,12 +1100,14 @@ pub(crate) fn can_suspend(
         )
 }
 
-/// The mana the special action of foretell costs for the card `id` (CR 702.143a), when it has the keyword.
+/// The mana the special action of foretell costs its owner for the card `id` (CR 702.143a), when it has the keyword: {2}
+/// with the changes of foretelling costs in play.
 pub(crate) fn foretell_action_cost(state: &GameState, id: ObjectId) -> Option<ManaCost> {
+    let owner = state.object(id)?.owner();
     keywords_of(state, id)
         .into_iter()
         .any(|keyword| matches!(keyword, Keyword::Foretell(_)))
-        .then(foretell::action_cost)
+        .then(|| crate::r110_foretell::r110_action_cost(state, owner, id))
 }
 
 /// Whether `player` can foretell the card `id` now: it is in their hand, it is their turn, and they can pay {2} with the
@@ -1118,7 +1129,7 @@ pub(crate) fn can_foretell(
     };
     card.kind() == ObjectKind::Card
         && card.zone() == Zone::Hand(player)
-        && state.is_active(player)
+        && crate::r110_foretell::r110_may_foretell_now(state, player)
         && can_afford(
             &cost,
             pool,

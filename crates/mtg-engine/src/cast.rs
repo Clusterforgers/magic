@@ -80,6 +80,14 @@ pub(crate) fn activation_events(
             )
             .ok()?
             .at(choices.x.unwrap_or(0));
+            let mut price = price;
+            price
+                .parts
+                .extend(crate::r110_sacrifice_tax::r110_ability_parts(
+                    state,
+                    ability.object,
+                    cost,
+                ));
             shots = parts::photographed(state, &price.parts, choices.cost_picks());
             shots.extend(parts::rmt5_top_shots(state, player, &price.parts));
             shots.extend(parts::r300_random_shots(state, player, &price.parts));

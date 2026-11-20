@@ -1,0 +1,40 @@
+{
+  "oracle_id": "0ff7440b-b831-40a9-81c4-99d77bf93b8d",
+  "name": "Dream Devourer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dream Devourer",
+      "oracle_fingerprint": "7aa931168ed5670698ce0dadad17eeeb",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Not": { "Type": "Land" } },
+                { "In": "Hand" },
+                { "OwnedBy": "You" },
+                { "Not": { "HasKeywordNamed": "Foretell" } }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Foretell": [{ "OwnManaCostLess": 2 }] } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Did": { "action": "Foretold", "who": "You" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
