@@ -1,7 +1,7 @@
 {
   "oracle_id": "60fc89a1-cc6f-4a32-84c3-09abf7a4a1df",
   "name": "Brigid, Clachan's Heart // Brigid, Doun's Mind",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Brigid, Clachan's Heart",
@@ -46,7 +46,23 @@
       "oracle_fingerprint": "a7aca6f6ec5a937a2498095ba3eb90a1",
       "abilities": [
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 78 } }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "R112OneOfCount": {
+                      "among": ["Green", "White"],
+                      "count": {
+                        "Count": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
         },
         {
           "Triggered": {

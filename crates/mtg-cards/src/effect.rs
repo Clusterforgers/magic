@@ -261,6 +261,22 @@ pub enum Produce {
     /// the mana added has no restriction ("Double the amount of each type of unspent mana you have", Doubling Cube
     /// rulings; the type of mana is its color or colorless).
     R6501UnspentDoubled,
+    /// This many mana of one type chosen when added from at least two ("Add X {G} or X {W}, where X is ..."); the
+    /// count is counted when the mana is added.
+    R112OneOfCount {
+        /// The types to choose from.
+        among: Vec<ManaType>,
+        /// How many mana of the chosen type.
+        count: Amount,
+    },
+    /// The mana the source last noted (`Effect::R112NoteManaSpent`): one mana of its last noted type ("Add one mana of
+    /// this artifact's last noted type"), or with `amount` the noted type and amount ("Add this artifact's last noted
+    /// type and amount of mana"); nothing while it noted none.
+    R112Noted {
+        /// All the noted mana, not one of its type.
+        #[serde(default, skip_serializing_if = "is_false")]
+        amount: bool,
+    },
     /// Mana of one color chosen when added, as many as the controller's devotion to that color (CR 700.5): "Choose a
     /// color. Add an amount of mana of that color equal to your devotion to that color."
     Devotion,
@@ -2254,6 +2270,9 @@ pub enum Effect {
     /// The source keeps the value the resolution chose under this name as its own choice, public, for its later abilities
     /// ("II — Choose a card name." of a Saga whose chapter III reads "the chosen name"); nothing once it has left.
     R111KeepChosen(String),
+    /// The source notes the type and amount of the mana spent to pay this activation cost, in place of what it noted
+    /// before ("Note the type of mana spent to pay this activation cost"); `Produce::R112Noted` reads it.
+    R112NoteManaSpent,
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.

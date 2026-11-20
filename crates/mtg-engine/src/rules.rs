@@ -1401,7 +1401,8 @@ impl RulesInForce {
             SpellBenefit::Cost { .. }
             | SpellBenefit::Keyword(_)
             | SpellBenefit::Uncounterable
-            | SpellBenefit::R6503Resolves(_) => {
+            | SpellBenefit::R6503Resolves(_)
+            | SpellBenefit::R112SpendAs(_) => {
                 return;
             }
         };
@@ -2326,6 +2327,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             return Err(ResolveError::Unsupported("Rule.R111CastWayFrom"));
         }
         GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
+        GameRule::R112SpendOnlyFromWay { .. } => {
+            return Err(ResolveError::Unsupported("Rule.R112SpendOnlyFromWay"));
+        }
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }
         | GameRule::CantCastSpells { .. }

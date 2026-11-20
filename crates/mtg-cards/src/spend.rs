@@ -391,6 +391,9 @@ pub enum SpendOn {
     Enters(Box<EntersBonus>),
     /// Paying for a special action of the kind ("to turn permanents face up", "unlock a door").
     Special(SpecialAction),
+    /// Not a restriction of what is paid for: the mana pays no generic mana cost ("This mana can't be spent to pay generic
+    /// mana costs", CR 106.6), only colored symbols and the colored half of a hybrid or Phyrexian one.
+    R112NotGeneric,
 }
 
 /// What a permanent spell gets when mana with the rider is spent to cast it: additional +1/+1 counters as it enters
@@ -456,7 +459,11 @@ impl SpendOn {
     pub const fn restricts(&self) -> bool {
         !matches!(
             self,
-            SpendOn::When(_) | SpendOn::Uncounterable(_) | SpendOn::Snow | SpendOn::Enters(_)
+            SpendOn::When(_)
+                | SpendOn::Uncounterable(_)
+                | SpendOn::Snow
+                | SpendOn::Enters(_)
+                | SpendOn::R112NotGeneric
         )
     }
 
@@ -503,6 +510,7 @@ impl SpendOn {
             SpendOn::When(rider) => rider.entry(chosen, rider.source)?,
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
             SpendOn::Snow => SpendOn::Snow,
+            SpendOn::R112NotGeneric => SpendOn::R112NotGeneric,
             SpendOn::Special(action) => SpendOn::Special(*action),
             SpendOn::Enters(bonus) => SpendOn::Enters(Box::new(EntersBonus {
                 spell: bonus.spell.resolved(chosen)?,

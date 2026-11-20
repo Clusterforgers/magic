@@ -1,7 +1,7 @@
 {
   "oracle_id": "c88e3aff-c539-4e8b-8ee1-a43b3d0962b4",
   "name": "Quicksilver Elemental",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Quicksilver Elemental",
@@ -23,9 +23,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 173, "end": 290 }
+          "Rule": {
+            "rule": {
+              "R111SpendColorAs": { "who": "You", "mana": "Blue", "r112_own_abilities": true }
+            }
           }
         }
       ]

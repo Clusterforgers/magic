@@ -1,0 +1,35 @@
+{
+  "oracle_id": "e2ad4b4d-d5fe-4a64-9b40-296c8fc8bcce",
+  "name": "Jeweled Amulet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jeweled Amulet",
+      "oracle_fingerprint": "253efc5a27c179eb7c0672820426bb8d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "charge" } },
+              "R112NoteManaSpent"
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [{ "AddMana": { "mana": { "R112Noted": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1165,6 +1165,7 @@ impl<'a> Walker<'a> {
             | Pred::HasCounter(_)
             | Pred::HasAnyCounter
             | Pred::ChosenColor
+            | Pred::R112SharesColorWithSpent
             | Pred::CanEnchantSource
             | Pred::XInCost
             | Pred::PhyrexianInCost
@@ -2036,6 +2037,7 @@ impl<'a> Walker<'a> {
                     CostItem::Sacrifice { filter, count }
                     | CostItem::TapPermanents { filter, count }
                     | CostItem::ExileFromGraveyard { filter, count, .. }
+                    | CostItem::R112ExileFromOneGraveyard { filter, count }
                     | CostItem::ExileFromHand { filter, count }
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
@@ -2095,6 +2097,7 @@ impl<'a> Walker<'a> {
                     | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
                     | CostItem::XColor(_)
+                    | CostItem::R112XOneEachColor
                     | CostItem::Forage => {}
                     CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),
                     CostItem::XAtMost(most) => {
@@ -4232,6 +4235,8 @@ impl Walker<'_> {
             | Produce::Devotion
             | Produce::DraftedColors
             | Produce::R6501UnspentDoubled
+            | Produce::R112Noted { .. }
+            | Produce::R112OneOfCount { .. }
             | Produce::OfTapped => {}
         }
         // Mana the engine adds without a choice is a primitive of its own; a choice of mana is not.
@@ -5545,7 +5550,12 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::Draft(_)) {
                     w.problem("a card follows a draft rule by a static ability, not by an effect");
                 }
-                if matches!(rule, GameRule::CantSpendMana | GameRule::SpendOnlyFrom(_)) {
+                if matches!(
+                    rule,
+                    GameRule::CantSpendMana
+                        | GameRule::SpendOnlyFrom(_)
+                        | GameRule::R112SpendOnlyFromWay { .. }
+                ) {
                     w.problem("a spell is cast without mana by a static ability of its own, not by an effect");
                 }
                 if matches!(rule, GameRule::CantBeCopied) {
@@ -5568,6 +5578,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::R112NoteManaSpent
             | Effect::R110RemovePutThisWay { .. }
             | Effect::R110AddCombatAfterFirst
             | Effect::AuraSwap
@@ -6668,7 +6679,8 @@ impl Walker<'_> {
             | GameRule::CantSpendMana
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
-            | GameRule::SpendOnlyFrom(_) => {}
+            | GameRule::SpendOnlyFrom(_)
+            | GameRule::R112SpendOnlyFromWay { .. } => {}
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }
@@ -6977,6 +6989,7 @@ impl Walker<'_> {
                     | GameRule::CantSpendMana
                     | GameRule::TaxAsLife(_)
                     | GameRule::SpendOnlyFrom(_)
+                    | GameRule::R112SpendOnlyFromWay { .. }
             ) => self.at("from", |w| {
                 w.problem("a deck rule holds outside the game: write the rule without `from`");
             }),

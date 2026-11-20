@@ -514,6 +514,9 @@ pub enum Pred {
     OriginallyPrintedIn(crate::r4707_first_sets::FirstSet),
     /// Is the colour the controller of the source chose as the source entered the battlefield.
     ChosenColor,
+    /// Shares a color with the mana spent to pay the activation cost of the ability resolving ("a source of your choice
+    /// that shares a color with the mana spent on this activation cost"); colorless mana shares none.
+    R112SharesColorWithSpent,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
     ChosenSubtype,
     /// Has the land type at this place among the basic land types the controller of the source chose as it entered

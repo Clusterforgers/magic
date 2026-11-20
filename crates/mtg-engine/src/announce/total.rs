@@ -128,12 +128,28 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
         sources: printed.sources,
         life: printed.life,
         help,
-        spend: crate::r281_kicked_spend::r281_kicked(
-            ctx.state,
-            ctx.what,
-            choices,
-            spend(ctx, choices.way),
-        ),
+        spend: Spend {
+            r112_x_one_each: match ctx.what {
+                What::Spell(spell) if r112_x_one_each(ctx.state, *spell) => choices.x.unwrap_or(0),
+                _ => 0,
+            },
+            ..crate::r281_kicked_spend::r281_kicked(
+                ctx.state,
+                ctx.what,
+                choices,
+                spend(ctx, choices.way),
+            )
+        },
+    })
+}
+
+/// Whether the card `spell` pays its X one mana of each of that many colors (`CostItem::R112XOneEachColor`).
+fn r112_x_one_each(state: &crate::state::GameState, spell: mtg_core::ids::ObjectId) -> bool {
+    state.object(spell).is_some_and(|card| {
+        crate::ability_reader::printed_rules(card.card()).any(|rule| {
+            matches!(&**rule, Ability::AdditionalCost { cost, required: true, .. }
+                if cost.0.contains(&mtg_cards::cost::CostItem::R112XOneEachColor))
+        })
     })
 }
 
@@ -178,7 +194,9 @@ fn announced<'a>(
 fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
     match ctx.what {
         What::Spell(spell) => {
-            let cost = ctx.state.object(*spell)?.card().mana_cost.clone();
+            let mana_cost = ctx.state.object(*spell)?.card().mana_cost.clone();
+            let cost =
+                crate::r112_next_spend::r112_printed(ctx.state, ctx.player, *spell, mana_cost);
             let all = mana_options(ctx.state, ctx.player);
             let mut sources = crate::mana_takes::for_card(ctx.state, &all, *spell).into_owned();
             // The parts of the way it is cast and of its optional costs: the life they pay is not there for Phyrexian
@@ -295,15 +313,28 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
         seat.life()
             .saturating_sub(i32::try_from(total.life).unwrap_or(i32::MAX)),
     );
+    // A rule of the card may limit the mana of the way it is cast ("to cast it this way").
+    let (pool, sources) = match ctx.what {
+        What::Spell(spell) => (
+            crate::r4705_spend_from::r4705_pool(
+                ctx.state,
+                *spell,
+                total.spend.r112_way,
+                seat.mana(),
+            )
+            .unwrap_or_else(|| seat.mana().clone()),
+            crate::mana_takes::r112_for_card_way(
+                ctx.state,
+                &total.sources,
+                *spell,
+                total.spend.r112_way,
+            )
+            .into_owned(),
+        ),
+        _ => (seat.mana().clone(), total.sources.clone()),
+    };
     let alone = |cost: &ManaCost| {
-        can_afford_with(
-            cost,
-            seat.mana(),
-            &total.sources,
-            total.help.help(),
-            life,
-            &total.spend,
-        )
+        can_afford_with(cost, &pool, &sources, total.help.help(), life, &total.spend)
     };
     total.mana.as_ref().is_none_or(|cost| {
         alone(cost)

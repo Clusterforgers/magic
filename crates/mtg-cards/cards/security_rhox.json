@@ -1,0 +1,21 @@
+{
+  "oracle_id": "dffc6785-31b0-487c-b9a0-980bca39753d",
+  "name": "Security Rhox",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Security Rhox",
+      "oracle_fingerprint": "76e3f2b73aada9078cbcb8ed17cddd6a",
+      "abilities": [
+        { "FreeCast": { "cost": "{R}{G}" } },
+        {
+          "Rule": {
+            "rule": {
+              "R112SpendOnlyFromWay": { "from": { "subtypes": ["Treasure"] }, "way": "Free" }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -25,6 +25,8 @@ fn spell_of(types: &[CardType], has_x: bool) -> Spend {
         },
         has_x,
         r111_pays: None,
+        r112_way: None,
+        r112_x_one_each: 0,
     }
 }
 
@@ -34,6 +36,8 @@ fn ability(has_x: bool) -> Spend {
         traits: SpendTraits::default(),
         has_x,
         r111_pays: None,
+        r112_way: None,
+        r112_x_one_each: 0,
     }
 }
 
@@ -560,7 +564,10 @@ fn a_card_cast_face_down_is_a_plain_creature_spell_for_the_mana_restrictions(
         spend
             .clone()
             .cast_as(Some(mtg_cards::value::CastWay::FaceDown)),
-        face_down
+        Spend {
+            r112_way: Some(mtg_cards::value::CastWay::FaceDown),
+            ..face_down
+        }
     );
     assert_eq!(spend.clone().cast_as(None), spend);
 }
