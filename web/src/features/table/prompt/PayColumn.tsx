@@ -216,11 +216,18 @@ function GroupLabel({ gives, marks }: { gives: Gives; marks: readonly SourceMark
 }
 
 const HALF =
-  'inline-flex h-8 min-w-10 items-center justify-center gap-1 rounded-md border border-border-strong bg-surface px-1.5 text-xs font-semibold pointer-coarse:h-10 pointer-coarse:min-w-11 outline-offset-2 outline-primary hover:border-turn-you hover:bg-accent focus-visible:outline-2 aria-disabled:pointer-events-none aria-disabled:opacity-35'
+  'inline-flex h-8 min-w-10 shrink-0 items-center justify-center gap-1 rounded-md border border-border-strong bg-surface px-1.5 text-xs font-semibold pointer-coarse:h-10 pointer-coarse:min-w-11 outline-offset-2 outline-primary hover:border-turn-you hover:bg-accent focus-visible:outline-2 aria-disabled:pointer-events-none aria-disabled:opacity-35'
 
-/** The pips of what one option makes. */
-function MadePips({ option }: { option: ManaOption }) {
-  return <ManaPips pips={costPips(madeCost(madeByOption(option)))} sizeClass="size-5 text-xs" label="Mana" />
+/** The pips of what one option makes, on one line; `small` where a row holds many options. */
+function MadePips({ option, small = false }: { option: ManaOption; small?: boolean }) {
+  return (
+    <ManaPips
+      pips={costPips(madeCost(madeByOption(option)))}
+      sizeClass={small ? SMALL : 'size-5 text-xs'}
+      label="Mana"
+      className="flex-nowrap"
+    />
+  )
 }
 
 /** Props of `PayColumn`. */
@@ -490,104 +497,114 @@ function SourceRow({
       data-used={(used && usedCount === count) || undefined}
       data-lit={asking || undefined}
       data-off={(!used && fits.length === 0) || undefined}
-      className="detail-row min-h-[2.625rem] grid-cols-[auto_minmax(0,1fr)_auto] py-1 pr-1"
+      className="detail-row min-h-[2.625rem] grid-cols-[auto_minmax(0,1fr)] py-1 pr-1"
       {...lightHandlers(id)}
     >
       <ArtDisc object={object} name={name} className="size-7 rounded-md" />
-      <span className="grid min-w-0">
-        <span className="truncate text-[0.8125rem] leading-[1.125rem] font-semibold">
-          {name}
-          {many ? (
-            <span data-slot="row-count" className="ml-1 font-normal text-muted-foreground tabular-nums">
-              {used ? `${usedCount}/${count}` : `×${count}`}
+      {/* The name keeps a readable width; buttons that do not fit beside it wrap onto lines of their own under it. */}
+      <span data-slot="pay-row-body" className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+        <span className="grid min-w-0 flex-[1_1_6.5rem]">
+          <span
+            data-slot="row-name"
+            title={name}
+            className="line-clamp-2 text-[0.8125rem] leading-[1.125rem] font-semibold break-words"
+          >
+            {name}
+            {many ? (
+              <span data-slot="row-count" className="ml-1 font-normal text-muted-foreground tabular-nums">
+                {used ? `${usedCount}/${count}` : `×${count}`}
+              </span>
+            ) : null}
+          </span>
+          {used ? (
+            <span className="flex items-center gap-1 text-xs leading-4 font-semibold text-success">
+              ✓ paying
+              <ManaPips pips={costPips(madeCost(paying))} sizeClass="size-3.5 text-xs" label="Mana" />
+            </span>
+          ) : fits.length === 0 && options.length > 0 ? (
+            // Why the row is off: its own cost is paid from mana made before it, or nothing owed takes its mana.
+            <span data-slot="row-why" className="truncate text-xs leading-4 text-muted-foreground">
+              {options.some((option) => (option.cost?.length ?? 0) > 0)
+                ? 'Tap another source for its cost first'
+                : 'Not needed for what is owed'}
             </span>
           ) : null}
         </span>
-        {used ? (
-          <span className="flex items-center gap-1 text-xs leading-4 font-semibold text-success">
-            ✓ paying
-            <ManaPips pips={costPips(madeCost(paying))} sizeClass="size-3.5 text-xs" label="Mana" />
-          </span>
-        ) : fits.length === 0 && options.length > 0 ? (
-          // Why the row is off: its own cost is paid from mana made before it, or nothing owed takes its mana.
-          <span data-slot="row-why" className="truncate text-xs leading-4 text-muted-foreground">
-            {options.some((option) => (option.cost?.length ?? 0) > 0)
-              ? 'Tap another source for its cost first'
-              : 'Not needed for what is owed'}
-          </span>
-        ) : null}
-      </span>
-      <span className="flex items-center gap-1">
-        {options.map((option, at) => {
-          const made = madeNames(madeByOption(option))
-          return (
-            <span key={optionKey(option)} className="flex items-center gap-1">
-              {at > 0 && options.length <= 3 ? (
-                <span aria-hidden="true" className="text-xs text-muted-foreground">
-                  or
-                </span>
-              ) : null}
-              <button
-                ref={at === firstUsable ? first : undefined}
-                {...(coach && at === Math.max(firstUsable, 0) ? anchor('pay.tap') : {})}
-                type="button"
-                data-slot="pay-tap"
-                // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
-                aria-disabled={!usable(option)}
-                aria-label={
-                  asking
-                    ? `Add ${made} mana`
-                    : `Tap ${whose} for ${made}${many ? `, ${usedCount} of ${count} used` : ''}`
-                }
-                title={`Tap for ${made}`}
-                className={cn(HALF, options.length > 3 && 'min-w-8 px-1')}
-                onClick={() => {
-                  if (usable(option)) onTap(option)
-                }}
-              >
-                {several ? <MadePips option={option} /> : 'Tap'}
-              </button>
-            </span>
-          )
-        })}
-        {asking ? (
-          <button
-            type="button"
-            data-slot="pay-ask-cancel"
-            aria-label="Cancel"
-            title="Cancel"
-            className={cn(HALF, 'min-w-8 px-1 pointer-coarse:min-w-11')}
-            onClick={onCancelAsk}
-          >
-            <span aria-hidden="true">×</span>
-          </button>
-        ) : null}
-        {used ? (
-          <>
-            {swaps.map((option) => (
-              <button
-                key={optionKey(option)}
-                type="button"
-                data-slot="pay-switch"
-                aria-label={`Switch ${name} to ${madeNames(madeByOption(option))}`}
-                title={`Switch to ${madeNames(madeByOption(option))}`}
-                className={HALF}
-                onClick={() => onSwap(option)}
-              >
-                <MadePips option={option} />
-              </button>
-            ))}
+        <span
+          data-slot="pay-row-options"
+          className="ml-auto flex max-w-full min-w-0 flex-wrap items-center gap-1"
+        >
+          {options.map((option, at) => {
+            const made = madeNames(madeByOption(option))
+            return (
+              <span key={optionKey(option)} className="flex shrink-0 items-center gap-1">
+                {at > 0 && options.length <= 3 ? (
+                  <span aria-hidden="true" className="text-xs text-muted-foreground">
+                    or
+                  </span>
+                ) : null}
+                <button
+                  ref={at === firstUsable ? first : undefined}
+                  {...(coach && at === Math.max(firstUsable, 0) ? anchor('pay.tap') : {})}
+                  type="button"
+                  data-slot="pay-tap"
+                  // Not `disabled`: a button that goes dead under the keyboard would drop its focus.
+                  aria-disabled={!usable(option)}
+                  aria-label={
+                    asking
+                      ? `Add ${made} mana`
+                      : `Tap ${whose} for ${made}${many ? `, ${usedCount} of ${count} used` : ''}`
+                  }
+                  title={`Tap for ${made}`}
+                  className={cn(HALF, options.length > 3 && 'min-w-8 px-1')}
+                  onClick={() => {
+                    if (usable(option)) onTap(option)
+                  }}
+                >
+                  {several ? <MadePips option={option} small={options.length > 3} /> : 'Tap'}
+                </button>
+              </span>
+            )
+          })}
+          {asking ? (
             <button
               type="button"
-              data-slot="pay-untap"
-              aria-label={`Untap ${whose}`}
-              className={HALF}
-              onClick={onUntap}
+              data-slot="pay-ask-cancel"
+              aria-label="Cancel"
+              title="Cancel"
+              className={cn(HALF, 'min-w-8 px-1 pointer-coarse:min-w-11')}
+              onClick={onCancelAsk}
             >
-              Untap
+              <span aria-hidden="true">×</span>
             </button>
-          </>
-        ) : null}
+          ) : null}
+          {used ? (
+            <>
+              {swaps.map((option) => (
+                <button
+                  key={optionKey(option)}
+                  type="button"
+                  data-slot="pay-switch"
+                  aria-label={`Switch ${name} to ${madeNames(madeByOption(option))}`}
+                  title={`Switch to ${madeNames(madeByOption(option))}`}
+                  className={cn(HALF, swaps.length > 2 && 'min-w-8 px-1')}
+                  onClick={() => onSwap(option)}
+                >
+                  <MadePips option={option} small={swaps.length > 2} />
+                </button>
+              ))}
+              <button
+                type="button"
+                data-slot="pay-untap"
+                aria-label={`Untap ${whose}`}
+                className={HALF}
+                onClick={onUntap}
+              >
+                Untap
+              </button>
+            </>
+          ) : null}
+        </span>
       </span>
     </li>
   )

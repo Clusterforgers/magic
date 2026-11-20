@@ -283,12 +283,35 @@ interface Candidate {
   placement: Placement
 }
 
-/** The resolutions, for each way the payment funds its sources, in which no mana of the payment goes to waste. */
+/**
+ * The resolutions, for each way the payment funds its sources, in which no mana of the payment goes to waste. A piece
+ * that makes several mana (Sol Ring, a Gilded Lotus) may make more than the cost takes: the surplus floats (CR 106.4)
+ * as long as no piece is spare, so that no piece could be left out with the rest still paying (`mana_plan::rest_after`).
+ */
 function candidates(cost: ManaCost, spends: readonly Spend[], life: LifeSymbols): Candidate[] {
+  const all = placements(cost, spends, life)
+  const tight = all.filter((candidate) => candidate.placement.waste === 0)
+  if (tight.length === all.length || !spends.some((spend) => madeOf(spend).length > 1)) return tight
+  return spare(cost, spends, life) ? tight : all
+}
+
+/** Every resolution against every way the payment funds its sources, mana with no place included. */
+function placements(cost: ManaCost, spends: readonly Spend[], life: LifeSymbols): Candidate[] {
   const ways = resolutions(cost, life)
-  return netMana(spends)
-    .flatMap((have) => ways.map((units) => ({ units, placement: place(cost, units, have) })))
-    .filter((candidate) => candidate.placement.waste === 0)
+  return netMana(spends).flatMap((have) =>
+    ways.map((units) => ({ units, placement: place(cost, units, have) })),
+  )
+}
+
+/** True when some piece of the payment could be left out and the rest would still pay the cost, surplus floating. */
+function spare(cost: ManaCost, spends: readonly Spend[], life: LifeSymbols): boolean {
+  return spends.some((_, at) =>
+    placements(
+      cost,
+      spends.filter((__, other) => other !== at),
+      life,
+    ).some(({ placement }) => placement.owed.length === 0 && placement.genericOwed === 0),
+  )
 }
 
 const owedValue = ({ placement }: Candidate): number => placement.owed.length + placement.genericOwed
@@ -321,16 +344,13 @@ export function owed(cost: ManaCost, spends: readonly Spend[], life: LifeSymbols
 /** True when `spends` and `life` are a payment the engine accepts: nothing owed, nothing over, exactly the life paid. */
 export function covers(cost: ManaCost, spends: readonly Spend[], life: LifeSymbols = []): boolean {
   if (!exact(cost, spends, life)) return false
-  // With a source that costs mana the engine also refuses a part that could be left out (`mana_cost::spent`).
-  if (!spends.some((spend) => spend.kind === 'tap' && costsMana(spend.option))) return true
-  return spends.every(
-    (_, at) =>
-      !exact(
-        cost,
-        spends.filter((__, other) => other !== at),
-        life,
-      ),
-  )
+  // With a source that costs mana or makes several the engine also refuses a part that could be left out (`spent_of`).
+  if (
+    !spends.some((spend) => (spend.kind === 'tap' && costsMana(spend.option)) || madeOf(spend).length > 1)
+  ) {
+    return true
+  }
+  return !spare(cost, spends, life)
 }
 
 /** True when some way of reading the payment meets the cost with nothing owed and nothing over. */

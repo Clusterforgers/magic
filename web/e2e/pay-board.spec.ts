@@ -1,4 +1,4 @@
-// Goal: a payment takes a mana source pressed on the board at once, the moment the prompt is drawn (a basic land, a land of any colour, a land of two colours, Sol Ring and a Signet), so the card reads pressed, a source of several kinds lights its row and the circles fill; "Pay for me" lays out the game's payment for a Confirm, and pays at once with "Always pay automatically" on; in a duel and at four seats, at 1400x900 and on a phone (390x844, the detail in the sheet).
+// Goal: a payment takes a mana source pressed on the board at once, the moment the prompt is drawn (a basic land, a land of any colour, a land of two colours, Sol Ring and a Signet), so the card reads pressed, a source of several kinds lights its row and the circles fill; "Pay for me" lays out the game's payment for a Confirm, and pays at once with "Always pay automatically" on; in a duel and at four seats, at 1400x900 and on a phone (390x844, the detail in the sheet); a Gilded Lotus of five three-pip options is offered when it overpays and keeps its name and buttons inside its row at 1366 and 390.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -108,6 +108,43 @@ for (const [width, height] of [
         await page.getByRole('button', { name: 'Pay for me', exact: true }).click()
         await expect(page.locator('[data-decision]')).toHaveCount(0)
       })
+    })
+  }
+}
+
+// A source of many options of several pips (a Gilded Lotus) keeps its name and buttons inside its row, overpaying or not.
+for (const [width, height] of [
+  [1366, 768],
+  [390, 844],
+] as const) {
+  for (const prompt of ['pay-lotus', 'pay-lotus-six']) {
+    test(`every pay row holds its children, ${prompt} at ${width}x${height}`, async ({ page }) => {
+      await page.setViewportSize({ width, height })
+      await page.goto(`${DEV_WEB_URL}/dev/table?seats=2&prompt=${prompt}`)
+      const lotus = page.locator('[data-slot="pay-source-row"]', { hasText: 'Gilded Lotus' })
+      await expect(lotus).toBeAttached()
+      await expect(lotus.locator('[data-slot="row-name"]')).toHaveText('Gilded Lotus')
+      // Overpaying is offered: the surplus of a source of several mana floats.
+      await expect(lotus.locator('[data-slot="pay-tap"][aria-disabled="false"]')).toHaveCount(5)
+      const spills = await page.locator('[data-slot="pay-source-row"]').evaluateAll((rows) =>
+        rows.flatMap((row) => {
+          const box = row.getBoundingClientRect()
+          const out = [...row.querySelectorAll('*')].filter((child) => {
+            const inner = child.getBoundingClientRect()
+            if (inner.width === 0 && inner.height === 0) return false
+            return (
+              inner.left < box.left - 0.5 ||
+              inner.right > box.right + 0.5 ||
+              inner.top < box.top - 0.5 ||
+              inner.bottom > box.bottom + 0.5
+            )
+          })
+          const name = row.querySelector('[data-slot="row-name"]')
+          const squeezed = name !== null && name.getBoundingClientRect().width < 48
+          return out.length > 0 || squeezed ? [`${row.textContent ?? ''}: ${out.length} out`] : []
+        }),
+      )
+      expect(spills).toEqual([])
     })
   }
 }
