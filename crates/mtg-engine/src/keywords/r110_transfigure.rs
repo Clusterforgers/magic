@@ -117,6 +117,9 @@ mod tests {
 
     #[test]
     fn r110_another_keyword_adds_nothing() {
-        assert!(R110Transfigure.adds_abilities(&Keyword::Flying).is_empty());
+        assert_eq!(
+            R110Transfigure.adds_abilities(&Keyword::Flying),
+            Vec::<Ability>::new()
+        );
     }
 }
