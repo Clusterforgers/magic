@@ -1,17 +1,36 @@
 {
   "oracle_id": "41d11144-32fc-4e45-a8db-3edb9dc0ce80",
   "name": "God-Eternal Kefnet",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "God-Eternal Kefnet",
       "oracle_fingerprint": "20e46da62c4756d94c78cc2e0eb5a399",
       "abilities": [
         { "Keyword": "Flying" },
+        { "Rule": { "rule": { "RevealFirstDraw": { "may": true } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 204 }
+          "Triggered": {
+            "when": {
+              "FirstDrawRevealed": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }]
+              }
+            },
+            "effects": [
+              { "CopyCard": { "what": "Triggering", "as": "copy" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "SameCard": { "Bound": "copy" } }],
+                      "benefit": { "Cost": { "change": "Reduce", "mana": "{2}" } }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "copy" } } }
+            ]
           }
         },
         {

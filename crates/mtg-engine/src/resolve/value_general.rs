@@ -130,6 +130,8 @@ fn the_triggering_spell_has_its_targets(#[case] targets: Vec<Target>, #[case] ex
         against: None,
         counters: Vec::new(),
         r111_paid: Vec::new(),
+        event: None,
+        ability: None,
     };
     let scope = Scope::triggered(&game, PlayerId(0), spell, &cause);
     assert_eq!(scope.amount(&Amount::TriggeringTargets), Ok(expected));

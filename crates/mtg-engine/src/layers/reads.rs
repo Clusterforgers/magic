@@ -278,6 +278,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::R110Seat(_)
         | Ref::R111LastDamagedYou(_)
         | Ref::R111BlockedController { .. }
+        | Ref::R111Object(_)
         | Ref::R4700OtherChosen
         | Ref::Promised
         | Ref::Defending
@@ -336,6 +337,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Commander
         | Pred::Spell
         | Pred::Dungeon
+        | Pred::Emblem
         | Pred::Ability(_)
         | Pred::Tapped
         | Pred::Untapped

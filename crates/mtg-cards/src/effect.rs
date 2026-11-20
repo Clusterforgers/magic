@@ -1678,6 +1678,13 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<Ref>,
     },
+    /// The player puts the cards of their graveyard in any order they choose (CR 404.2): "reorder your graveyard as you
+    /// choose".
+    R111OrderGraveyard {
+        /// Whose graveyard.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
     Learn {
         /// Who learns.

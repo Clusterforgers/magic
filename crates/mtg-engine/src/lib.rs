@@ -249,6 +249,7 @@ mod r110_after_first_combat;
 mod r110_cost_taps;
 mod r111_lent;
 mod r111_plot_top;
+mod r111_triggering;
 mod r111_way_riders;
 #[cfg(test)]
 mod w9c_saturation;

@@ -1,7 +1,7 @@
 {
   "oracle_id": "1b841e8f-9484-4737-bd37-dfa11bd06883",
   "name": "Aragorn, Company Leader",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aragorn, Company Leader",
@@ -58,9 +58,29 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 196, "end": 324 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": { "Batch": { "CountersPut": { "what": ["This"] } } },
+                "by": "You"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              {
+                "PutCountersOf": {
+                  "on": { "Target": 0 },
+                  "of": "Triggering",
+                  "each": 1,
+                  "put": true
+                }
+              }
+            ]
           }
         }
       ]

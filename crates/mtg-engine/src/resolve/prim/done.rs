@@ -117,6 +117,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Bolster { .. }
         | Effect::Fabricate { .. }
         | Effect::Learn { .. }
+        | Effect::R111OrderGraveyard { .. }
         | Effect::Crewed { .. }
         | Effect::Explore { .. }
         | Effect::Connive { .. }

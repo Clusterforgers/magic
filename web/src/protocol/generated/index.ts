@@ -325,6 +325,7 @@ export type { PriorityAction } from "./PriorityAction";
 export type { PriorityOptions } from "./PriorityOptions";
 export type { PriorityView } from "./PriorityView";
 export type { PutOnStack } from "./PutOnStack";
+export type { R111CauseEvent } from "./R111CauseEvent";
 export type { Rarity } from "./Rarity";
 export type { ReadBody } from "./ReadBody";
 export type { ReadCard } from "./ReadCard";

@@ -65,6 +65,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::R111BlockedController { .. } => {
             "the player who controlled it when it became blocked".to_owned()
         }
+        Ref::R111Object(id) => format!("the object {}", id.0),
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::AttackedThisTurn => "each opponent you attacked this turn".to_owned(),
@@ -367,6 +368,7 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Commander => Part::Before("commander".to_owned()),
         Pred::Spell => Part::Kind("spell".to_owned()),
         Pred::Dungeon => Part::Kind("dungeon".to_owned()),
+        Pred::Emblem => Part::Kind("emblem".to_owned()),
         Pred::Ability(kind) => Part::Kind(format!("{} ability", lower(kind))),
         Pred::Tapped => Part::Before("tapped".to_owned()),
         Pred::Untapped => Part::Before("untapped".to_owned()),

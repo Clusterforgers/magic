@@ -669,6 +669,9 @@ impl<'a> Walker<'a> {
         if *r == Ref::R4700OtherChosen {
             self.uses("Ref", "R4700OtherChosen");
         }
+        if matches!(r, Ref::R111Object(_)) {
+            self.problem("an object is fixed by the engine and never named in a card file");
+        }
         if matches!(r, Ref::R110Seat(_)) {
             self.problem("a seat is fixed by the engine and never named in a card file");
         }
@@ -707,7 +710,7 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached | Ref::Granter | Ref::Convoked => {
+            Ref::This | Ref::Attached | Ref::Granter | Ref::Convoked | Ref::R111Object(_) => {
                 self.expect(Kind::Object, want);
             }
             Ref::PlayersWhere { who, test } => {
@@ -1125,6 +1128,7 @@ impl<'a> Walker<'a> {
             | Pred::Commander
             | Pred::Spell
             | Pred::Dungeon
+            | Pred::Emblem
             | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
@@ -3301,6 +3305,12 @@ impl<'a> Walker<'a> {
             TriggerPattern::AnyOf(patterns) => self.any_of(patterns),
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
+            TriggerPattern::R111AbilityTriggered { cause, .. } => {
+                if matches!(**cause, TriggerPattern::R111AbilityTriggered { .. }) {
+                    self.problem("an ability triggering is caused by another event");
+                }
+                self.at("cause", |w| w.trigger_pattern(cause));
+            }
             TriggerPattern::R6701WhileActivating { inner, .. } => {
                 if !matches!(**inner, TriggerPattern::ZoneChange { .. }) {
                     self.problem("an activation wraps one zone change");
@@ -3393,6 +3403,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::Batch(_)
                 | TriggerPattern::Caused { .. }
                 | TriggerPattern::R6701WhileActivating { .. }
+                | TriggerPattern::R111AbilityTriggered { .. }
                 | TriggerPattern::R109WhileCasting { .. }
                 | TriggerPattern::Nth { .. }
                 | TriggerPattern::AnyOf(_)
@@ -3920,6 +3931,7 @@ impl Walker<'_> {
             | Ref::Arrived { .. }
             | Ref::Departed(_)
             | Ref::SourceOf(_)
+            | Ref::R111Object(_)
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope
@@ -4864,6 +4876,7 @@ impl Walker<'_> {
             | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
+            | Effect::R111OrderGraveyard { who }
             | Effect::Exploit { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -7039,6 +7052,7 @@ impl Walker<'_> {
             | ReplaceWhen::CopiesSpell { who }
             | ReplaceWhen::Learns { who }
             | ReplaceWhen::R6700Draws { who }
+            | ReplaceWhen::R111DrawBy { who, .. }
             | ReplaceWhen::Draw { who, .. }
             | ReplaceWhen::R6603DrawsSeveral { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
@@ -7098,7 +7112,10 @@ impl Walker<'_> {
         }
         let saved = (self.scope.in_trigger, self.scope.dealer);
         self.scope.in_trigger = true;
-        self.scope.dealer = matches!(when, ReplaceWhen::Damage { .. });
+        self.scope.dealer = matches!(
+            when,
+            ReplaceWhen::Damage { .. } | ReplaceWhen::R111DrawBy { .. }
+        );
         self.effect_list("Instead", effects, false);
         (self.scope.in_trigger, self.scope.dealer) = saved;
     }

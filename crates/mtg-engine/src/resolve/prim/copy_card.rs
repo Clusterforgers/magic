@@ -1,4 +1,4 @@
-//! `Effect::CopyCard`: a card in exile is copied into a token card the player may cast (CR 707.12).
+//! `Effect::CopyCard`: a card in exile or a hand is copied into a token card the player may cast (CR 707.12).
 
 use std::sync::Arc;
 
@@ -12,7 +12,8 @@ use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
-/// Each card the effect names that still lies face up in exile is copied once, and the copies are bound as the objects
+/// Each card the effect names that still lies face up in exile or in a hand is copied once, and the copies are bound as
+/// the objects
 /// they become: token cards in exile, owned by the player `who` names (the controller by default). The copy is not
 /// cast; the step that follows (`CastFromZone`) asks whether to cast it, and a copy that is not cast ceases to exist at
 /// the next state-based check (CR 704.5e). A card that left exile, a card that lies face down (its owner may look at it,
@@ -35,7 +36,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .live_objects(what)?
         .into_iter()
         .filter(|card| {
-            card.zone() == Zone::Exile
+            // A card revealed from a hand is copied as well (CR 707.12, God-Eternal Kefnet).
+            matches!(card.zone(), Zone::Exile | Zone::Hand(_))
                 && card.kind() == ObjectKind::Card
                 && card.face_down().is_none()
         })
@@ -105,14 +107,19 @@ mod tests {
     }
 
     fn copied(game: &GameState) -> (Vec<Event>, Vec<(String, Vec<Target>)>) {
+        copied_in(game, "Exile")
+    }
+
+    fn copied_in(game: &GameState, zone: &str) -> (Vec<Event>, Vec<(String, Vec<Target>)>) {
         let source = game.object(game.zone(Zone::Battlefield)[0]).unwrap();
         let resolving = Resolving::begin(source.id());
         let cx = Cx {
             scope: Scope::announcing(game, ME, source.reference()),
             resolving: &resolving,
         };
-        let json = r#"{"CopyCard":{"what":{"Each":[{"In":"Exile"}]},"as":"copy"}}"#;
-        let effect: Effect = serde_json::from_str(json).unwrap();
+        let json =
+            format!(r#"{{"CopyCard":{{"what":{{"Each":[{{"In":"{zone}"}}]}},"as":"copy"}}}}"#);
+        let effect: Effect = serde_json::from_str(&json).unwrap();
         let Run::Done {
             events,
             bound,
@@ -142,6 +149,13 @@ mod tests {
         assert_eq!(bound.len(), 1);
         assert_eq!(bound[0].0, "copy");
         assert_eq!(bound[0].1.len(), copies);
+    }
+
+    #[test]
+    fn a_card_in_a_hand_is_copied() {
+        let game = game();
+        let (events, bound) = copied_in(&game, "Hand");
+        assert_eq!((events.len(), bound[0].1.len()), (1, 1));
     }
 
     #[test]

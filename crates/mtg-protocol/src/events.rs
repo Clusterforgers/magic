@@ -389,7 +389,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::AbilityLeftToTable(_)
         | Event::TriggerRemoved { .. }
         | Event::DelayedTriggerCreated(_) => redact_triggers(before, event, viewer),
-        Event::HandDealt { .. }
+        // A graveyard is a public zone (CR 404.2): its new order is told to every seat.
+        Event::R111GraveyardOrdered { .. }
+        | Event::HandDealt { .. }
         | Event::CardsBottomed { .. }
         | Event::CardDrawn { .. }
         | Event::FirstPlayerChosen { .. }
@@ -1590,6 +1592,8 @@ mod tests {
                 amount: 0,
                 source: None,
                 against: None,
+                event: None,
+                ability: None,
             },
             snapshot: snapshot(&t.state, t.creature).unwrap(),
             delayed: None,

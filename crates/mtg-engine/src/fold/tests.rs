@@ -386,6 +386,8 @@ fn cause() -> Cause {
         against: None,
         counters: Vec::new(),
         r111_paid: Vec::new(),
+        event: None,
+        ability: None,
     }
 }
 

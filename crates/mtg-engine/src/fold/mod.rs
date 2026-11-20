@@ -1092,6 +1092,14 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             crate::w11a_exert::w11a_fold_ended(state, *object, *player)
         }
         Event::Ventured(ventured) => crate::w11d_dungeon::w11d_fold_ventured(state, ventured),
+        Event::R111GraveyardOrdered { player, order } => {
+            let zone = Zone::Graveyard(*player);
+            if !opening::same_cards(state.zones.get(zone), order) {
+                return Err(invalid("a reordered graveyard changed its cards"));
+            }
+            state.zones.set(zone, order.clone());
+            Ok(())
+        }
         Event::AttractionDeckShuffled { player, order } => {
             state.rng_index += 1;
             crate::un33_attractions::fold_shuffled(state, *player, order)

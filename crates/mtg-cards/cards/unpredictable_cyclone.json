@@ -1,16 +1,52 @@
 {
   "oracle_id": "5b67a944-ab0b-4155-8bc0-becb1b38b3bb",
   "name": "Unpredictable Cyclone",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Unpredictable Cyclone",
       "oracle_fingerprint": "ce98065ab85f16fb2caf3136063b4b7e",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 349 }
+          "Replacement": {
+            "when": {
+              "R111DrawBy": { "kind": "Cycling", "what": ["Other", { "Not": { "Type": "Land" } }] }
+            },
+            "by": {
+              "Instead": [
+                {
+                  "ExileUntil": {
+                    "filter": [
+                      {
+                        "SharesTypeOf": {
+                          "with": "Dealer",
+                          "types": [
+                            "Artifact",
+                            "Battle",
+                            "Creature",
+                            "Enchantment",
+                            "Instant",
+                            "Kindred",
+                            "Land",
+                            "Planeswalker",
+                            "Sorcery"
+                          ]
+                        }
+                      }
+                    ],
+                    "as": "found",
+                    "exiled_as": "exiled"
+                  }
+                },
+                { "CastFromZone": { "what": { "Bound": "found" }, "free": true } },
+                {
+                  "Move": {
+                    "what": { "Bound": "exiled" },
+                    "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                  }
+                }
+              ]
+            }
           }
         },
         { "Keyword": { "Cycling": "{2}" } }

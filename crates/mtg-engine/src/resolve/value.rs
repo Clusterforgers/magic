@@ -1418,6 +1418,15 @@ impl<'a> Scope<'a> {
         }
     }
 
+    /// The object an effect applies to, marking that it was read; an error where there is none.
+    fn affected_ref(&self) -> Result<Vec<Target>, ResolveError> {
+        let (object, read) = self
+            .affected
+            .ok_or_else(|| ResolveError::Invalid("there is no affected object here".into()))?;
+        read.set(true);
+        Ok(vec![Target::Object(object)])
+    }
+
     /// The players and objects a reference names, in the order the rules process them.
     pub fn refs(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
         let state = self.state;
@@ -1426,16 +1435,11 @@ impl<'a> Scope<'a> {
             Ref::R110Seat(seat) => self.r110_seat(*seat),
             Ref::R111LastDamagedYou(by) => self.r111_last_damaged_you(by)?,
             Ref::R111BlockedController { of, by } => self.r111_blocked_controller(of, by)?,
+            Ref::R111Object(id) => crate::r111_triggering::r111_object(state, *id),
             Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
             Ref::EachPlayer | Ref::R6501PlayersFromYou => self.r6501_turn_order(reference),
             Ref::This => vec![Target::Object(self.source)],
-            Ref::Affected => {
-                let (object, read) = self.affected.ok_or_else(|| {
-                    ResolveError::Invalid("there is no affected object here".into())
-                })?;
-                read.set(true);
-                vec![Target::Object(object)]
-            }
+            Ref::Affected => self.affected_ref()?,
             // Nobody outside the candidates of a choice made by each player.
             Ref::Chooser => self.chooser.get().map(Target::Player).into_iter().collect(),
             Ref::Asker => vec![Target::Player(self.asker.unwrap_or(self.controller))],
@@ -1452,7 +1456,7 @@ impl<'a> Scope<'a> {
             Ref::Target(index) => self.chosen(usize::from(*index)),
             Ref::Triggering => self
                 .cause
-                .map(|cause| cause.subjects.clone())
+                .map(|cause| crate::r111_triggering::r111_subjects(state, cause))
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
             Ref::TriggeringFirst => self
                 .cause
@@ -2224,6 +2228,9 @@ impl<'a> Scope<'a> {
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Dungeon => state.r376_is_dungeon(reference.id),
+            Pred::Emblem => state
+                .object(reference.id)
+                .is_some_and(|object| object.kind() == crate::object::ObjectKind::Emblem),
             Pred::Ability(kind) => is_ability(seen, *kind),
             Pred::AbilityFrom(sources) => self.r302_ability_from(sources, seen)?,
             Pred::SourceOf(named) => self.r302_source_of(named, reference)?,
@@ -4657,6 +4664,8 @@ mod tests {
             against: None,
             counters: Vec::new(),
             r111_paid: Vec::new(),
+            event: None,
+            ability: None,
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();

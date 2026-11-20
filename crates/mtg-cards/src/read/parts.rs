@@ -286,6 +286,11 @@ pub(super) fn trigger(ctx: &Ctx, when: &TriggerPattern) -> String {
             format!("{} for the {nth}th time each turn", trigger(ctx, event))
         }
         TriggerPattern::Caused { inner, by, source } => caused(ctx, inner, by.as_ref(), source),
+        TriggerPattern::R111AbilityTriggered { cause, of_it } => format!(
+            "{} causes a triggered ability{} to trigger",
+            trigger(ctx, cause),
+            if *of_it { " of it" } else { "" }
+        ),
         TriggerPattern::R6701WhileActivating { inner, kind } => {
             format!(
                 "{} while you're activating a {kind:?} ability",
