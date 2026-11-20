@@ -123,6 +123,22 @@ fn table_answer(
     }
 }
 
+/// The answer to a choice among options: the untap step's choice of a card type (`r112_untap_type`), else a question
+/// of the announcement or the resolution.
+fn option_or_untap(
+    state: &GameState,
+    player: mtg_core::ids::PlayerId,
+    options: &choose::OptionOptions,
+    choice: choose::OptionChoice,
+    announcing: bool,
+) -> Result<Outcome, EngineError> {
+    if !announcing && crate::r112_untap_type::r112_asks(state) {
+        crate::r112_untap_type::r112_answer(state, player, choice).map(Outcome::Events)
+    } else {
+        choose::option_answer(player, options, choice, announcing)
+    }
+}
+
 /// Backs out of the announcement under way when the question asked of it allows it (`DecisionKind::can_undo`).
 fn undo(announcing: bool, kind: &DecisionKind) -> Result<Outcome, EngineError> {
     if announcing && kind.can_undo() {
@@ -276,7 +292,7 @@ pub(crate) fn handle(
             crate::r404_commander_color::answer(player, options, choice)
         }
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice)) => {
-            choose::option_answer(player, options, choice, pending.is_some())
+            option_or_untap(state, player, options, choice, pending.is_some())
         }
         (DecisionKind::ChooseCosts(options), Answer::ChooseCosts(choice)) => {
             choose::costs_answer(player, options, choice)

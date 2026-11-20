@@ -392,6 +392,9 @@ pub enum Rule {
         /// The players whose untap steps untap them.
         whose: Vec<PlayerId>,
     },
+    /// The players choose artifact, creature or land during their untap steps and untap only permanents of that type
+    /// (CR 502.3).
+    R112UntapChosenType(Vec<PlayerId>),
     /// The players can't untap more than `count` of their permanents the selector picks during their untap steps (CR
     /// 502.3).
     UntapLimit {
@@ -1040,6 +1043,8 @@ pub(crate) struct RulesInForce {
     haste_for_abilities: Vec<NoLegendFor>,
     untap_during: Vec<UntapDuring>,
     untap_limits: Vec<crate::rmt4_untap_limit::UntapLimit>,
+    /// The players who choose the card type they untap during their untap steps (`Rule::R112UntapChosenType`).
+    r112_untap_chosen: Vec<(PlayerId, ObjectId)>,
     unpreventable: Vec<Unpreventable>,
     casts: Vec<Cast>,
     taxes: Vec<Taxing>,
@@ -1689,6 +1694,12 @@ impl RulesInForce {
                     .map(|id| (id, counter.clone(), *most)),
             ),
             Rule::R6500ZeroLoyaltyStays(players) => self.r6500_zero_loyalty.extend(players),
+            Rule::R112UntapChosenType(players) => {
+                if let Some(source) = source {
+                    self.r112_untap_chosen
+                        .extend(players.iter().map(|player| (*player, source.id)));
+                }
+            }
             Rule::UntapLimit { who, what, count } => {
                 if let Some(source) = source {
                     self.untap_limits.push(crate::rmt4_untap_limit::UntapLimit {
@@ -2218,6 +2229,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
+        GameRule::R112UntapChosenType(who) => Rule::R112UntapChosenType(scope.players(who)?),
         GameRule::UntapLimit { who, what, count } => Rule::UntapLimit {
             who: scope.players(who)?,
             what: what.clone(),
@@ -2488,6 +2500,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::BlockLimitEach { who, .. }
         | Rule::LookAtFaceDown { who, .. }
         | Rule::UntapLimit { who, .. }
+        | Rule::R112UntapChosenType(who)
         | Rule::PlayersHave { who, .. }
         | Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
@@ -2704,6 +2717,7 @@ static NONE: RulesInForce = RulesInForce {
     haste_for_abilities: Vec::new(),
     untap_during: Vec::new(),
     untap_limits: Vec::new(),
+    r112_untap_chosen: Vec::new(),
     unpreventable: Vec::new(),
     casts: Vec::new(),
     taxes: Vec::new(),
@@ -3938,6 +3952,12 @@ pub(crate) fn pay_to_ignore(state: &GameState) -> &[Ignorable] {
 }
 
 /// The untap limits in force (CR 502.3).
+/// The players who choose the card type they untap during their untap steps, with the source of the rule
+/// (`Rule::R112UntapChosenType`).
+pub(crate) fn r112_untap_chosen(state: &GameState) -> &[(PlayerId, ObjectId)] {
+    &state.rules().r112_untap_chosen
+}
+
 pub(crate) fn untap_limits(state: &GameState) -> &[crate::rmt4_untap_limit::UntapLimit] {
     &state.rules().untap_limits
 }

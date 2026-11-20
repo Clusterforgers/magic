@@ -6,7 +6,7 @@
 //! Celestial Toymaker hands its controller the pile the defending player chose and costs each opponent 2 life at the
 //! end step for each spell or ability that grouped cards into piles this turn; Raging River lets only fliers and the
 //! pile with the chosen label block each attacker; Ferris Wheel holds a creature out until a visit roll of 3 or less and
-//! never takes it again; Volcanic Offering has an opponent choose its second land and creature. Each log replays.
+//! never takes it again. Each log replays.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_engine::characteristics::characteristics;
@@ -599,60 +599,5 @@ fn r112_ferris_wheel_holds_a_creature_out_until_a_low_visit_roll(
         "{offered:?}"
     );
     assert!(back.is_some(), "a low roll came: {rolls:?}");
-    replays(&scenario, &driver);
-}
-
-#[rstest]
-fn r112_volcanic_offering_lets_an_opponent_pick_the_second_targets(#[values(2, 3)] seats: usize) {
-    use mtg_engine::choose::TargetChoice;
-    let land = |name: &str| {
-        ready(std::sync::Arc::new(
-            mtg_cards::CardDefinition::new(name).with_type(mtg_core::card::CardType::Land),
-        ))
-    };
-    let scenario = Scenario::new(seats)
-        .hand(0, [card("Volcanic Offering").unwrap()])
-        .battlefield(0, lands(5, mountain))
-        .battlefield(
-            1,
-            [
-                land("Mine A"),
-                land("Theirs A"),
-                ready(free_creature("Beast A", 7, 7)),
-                ready(free_creature("Beast B", 7, 7)),
-            ],
-        );
-    let mut driver = Driver::from_scenario(scenario.clone()).unwrap();
-    driver.begin_cast("Volcanic Offering").unwrap();
-    let mut choosers = Vec::new();
-    let mut chosen = Vec::new();
-    for _ in 0..8 {
-        let decision = driver.decision().unwrap().clone();
-        let DecisionKind::ChooseTargets(options) = &decision.kind else {
-            break;
-        };
-        choosers.push(decision.player.index());
-        // Each picks a target not chosen yet.
-        let target = *options.legal.iter().find(|t| !chosen.contains(*t)).unwrap();
-        chosen.push(target);
-        driver
-            .answer(Answer::ChooseTargets(TargetChoice::Targets(vec![target])))
-            .unwrap();
-    }
-    assert_eq!(
-        choosers,
-        vec![0, 1, 0, 1],
-        "the opponent picks the second land and the second creature"
-    );
-    if driver.decision().unwrap().kind.name() == "pay-mana" {
-        pay(&mut driver).unwrap();
-    }
-    settle(&mut driver, |_, _| None);
-    for name in ["Mine A", "Theirs A", "Beast A", "Beast B"] {
-        assert!(
-            on_battlefield(driver.state(), name).is_none(),
-            "{name} is gone"
-        );
-    }
     replays(&scenario, &driver);
 }

@@ -1247,6 +1247,7 @@ impl<'a> Scope<'a> {
         while let Targetable::Together { what: inner, .. }
         | Targetable::Another { what: inner, .. }
         | Targetable::ChosenBy { what: inner, .. }
+        | Targetable::R112OpponentChooses(inner)
         | Targetable::AtRandom(inner) = what
         {
             what = inner;
@@ -1262,6 +1263,7 @@ impl<'a> Scope<'a> {
             Targetable::Together { .. }
             | Targetable::Another { .. }
             | Targetable::ChosenBy { .. }
+            | Targetable::R112OpponentChooses(_)
             | Targetable::AtRandom(_) => {
                 Err(ResolveError::Unsupported("overload of a nested target"))
             }
@@ -2228,6 +2230,12 @@ impl<'a> Scope<'a> {
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Dungeon => state.r376_is_dungeon(reference.id),
+            Pred::R112Modal => {
+                seen.zone == Zone::Stack
+                    && seen.kind != ObjectKind::Ability
+                    && crate::resolve::spell_ability(state, reference.id)
+                        .is_some_and(|(_, rules)| crate::choose::modal_of(&rules).is_some())
+            }
             Pred::Emblem => state
                 .object(reference.id)
                 .is_some_and(|object| object.kind() == crate::object::ObjectKind::Emblem),
@@ -2541,6 +2549,10 @@ impl<'a> Scope<'a> {
             | StatKind::R374ColorSet
             | StatKind::R6018PermanentTypes
             | StatKind::Subtypes => None,
+            StatKind::R112ModesChosen => seen
+                .card
+                .filter(|card| seen.zone == Zone::Stack && card.kind() != ObjectKind::Ability)
+                .map(|card| i64::try_from(card.choices().modes.len()).unwrap_or(i64::MAX)),
             StatKind::R6104LifePaid => seen
                 .card
                 .filter(|_| seen.zone == Zone::Stack)

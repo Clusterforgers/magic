@@ -99,6 +99,9 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
 /// limit would hold back a permanent, the question lists those permanents too and the answer is the ones that untap
 /// (`rmt4_untap_limit`).
 fn untap_step(state: &GameState) -> Progress {
+    if let Some(question) = crate::r112_untap_type::r112_question(state, &state.active_players()) {
+        return Progress::Decide(question);
+    }
     let (events, asked) = untap_events(state, &[]);
     match (state.active_player(), asked.from.first()) {
         (Some(player), Some(&source)) => Progress::Decide(Decision {
@@ -183,6 +186,7 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
                 && (controller_of(state, **id).is_some_and(|c| actives.contains(&c))
                     || during.contains(*id))
                 && !crate::characteristics::doesnt_untap(state, **id)
+                && crate::r112_untap_type::r112_allows(state, **id, &actives)
                 && state
                     .object(**id)
                     .and_then(GameObject::permanent)

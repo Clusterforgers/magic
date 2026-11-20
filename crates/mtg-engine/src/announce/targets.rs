@@ -10,7 +10,8 @@ use mtg_core::ids::PlayerId;
 use super::{Ctx, Next, What, Work, r5509_flagbearer, total};
 use crate::attach;
 use crate::choose::{
-    Choices, Target, announced_specs, asks, options_for, spec_bases, without_earlier,
+    ChoiceOption, Choices, OptionOptions, Target, announced_specs, asks, options_for, spec_bases,
+    without_earlier,
 };
 use crate::decision::{Decision, DecisionKind};
 use crate::object::{GameObject, ObjectRef};
@@ -115,6 +116,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     while work.choices.targets.len() < specs.len() {
         let index = work.choices.targets.len();
         let base = bases.get(index).copied().unwrap_or(0).min(index);
+        if let Some(next) = r112_pick_chooser(ctx, work, &specs, index) {
+            return Some(next);
+        }
         let Some(mut options) = options_for(
             ctx.state,
             ctx.source,
@@ -136,7 +140,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         e14c_other_players(ctx, &work.choices.targets[..index], &mut options.legal);
         payable_targets(ctx, work.choices, specs.len(), &mut options.legal);
         if !matches!(specs[index].what, Targetable::AtRandom(_))
-            && chooser(ctx, &specs[index]) == ctx.player
+            && chooser(ctx, &specs, index, work.done) == ctx.player
         {
             r5509_flagbearer::r5509_narrow(
                 ctx,
@@ -162,7 +166,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             continue;
         }
         options.triggered = ctx.triggered.is_some();
-        let chooser = chooser(ctx, &specs[index]);
+        let chooser = chooser(ctx, &specs, index, work.done);
         if chooser != ctx.player {
             // Another player chooses: backing out of the controller's spell or ability is not theirs to do.
             options.can_cancel = false;
@@ -194,8 +198,15 @@ fn pick(ctx: &Ctx<'_>, work: &mut Work<'_>, mut legal: Vec<crate::choose::Target
 
 /// Who chooses the targets of `spec`: for "target creature of their choice" the first player it names, in turn order
 /// from the controller, who is still in the game; else the controller (CR 601.2c).
-fn chooser(ctx: &Ctx<'_>, spec: &TargetSpec) -> PlayerId {
-    let Targetable::ChosenBy { who, .. } = &spec.what else {
+fn chooser(ctx: &Ctx<'_>, specs: &[TargetSpec], index: usize, done: &super::Done) -> PlayerId {
+    if matches!(specs[index].what, Targetable::R112OpponentChooses(_)) {
+        return done
+            .r112_choosers
+            .get(r112_rank(specs, index))
+            .copied()
+            .unwrap_or(ctx.player);
+    }
+    let Targetable::ChosenBy { who, .. } = &specs[index].what else {
         return ctx.player;
     };
     let origin = ctx.state.object(ctx.source).map_or(
@@ -215,4 +226,53 @@ fn chooser(ctx: &Ctx<'_>, spec: &TargetSpec) -> PlayerId {
         .into_iter()
         .find(|seat| named.contains(seat))
         .unwrap_or(ctx.player)
+}
+
+/// How many specifications "of an opponent's choice" come before the one at `index`.
+fn r112_rank(specs: &[TargetSpec], index: usize) -> usize {
+    specs[..index]
+        .iter()
+        .filter(|spec| matches!(spec.what, Targetable::R112OpponentChooses(_)))
+        .count()
+}
+
+/// For a specification "of an opponent's choice", the opponent who chooses its targets, picked by the controller as the
+/// spell or ability is announced (the Volcanic Offering rulings): settled alone when one opponent is in the game, else
+/// asked with `ChooseOption`. Nobody is asked when the specification has its chooser or is of another kind; with no
+/// opponent left the controller chooses.
+fn r112_pick_chooser(
+    ctx: &Ctx<'_>,
+    work: &mut Work<'_>,
+    specs: &[TargetSpec],
+    index: usize,
+) -> Option<Next> {
+    if !matches!(specs[index].what, Targetable::R112OpponentChooses(_))
+        || work.done.r112_choosers.len() > r112_rank(specs, index)
+    {
+        return None;
+    }
+    let opponents: Vec<PlayerId> = ctx
+        .state
+        .turn_order_from(ctx.player)
+        .into_iter()
+        .filter(|seat| ctx.state.is_alive(*seat) && ctx.state.is_opponent(ctx.player, *seat))
+        .collect();
+    if let Some(pick) = work.done.r112_picked.take() {
+        work.done
+            .r112_choosers
+            .push(opponents.get(pick).copied().unwrap_or(ctx.player));
+        return None;
+    }
+    if opponents.len() < 2 {
+        work.done
+            .r112_choosers
+            .push(opponents.first().copied().unwrap_or(ctx.player));
+        return None;
+    }
+    Some(ctx.ask(DecisionKind::ChooseOption(OptionOptions {
+        source: ctx.source,
+        options: opponents.into_iter().map(ChoiceOption::Player).collect(),
+        text: "Choose the opponent who chooses this target.".to_owned(),
+        can_cancel: ctx.can_cancel(),
+    })))
 }

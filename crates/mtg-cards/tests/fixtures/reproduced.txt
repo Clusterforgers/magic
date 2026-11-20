@@ -2152,6 +2152,7 @@ Rienne, Angel of Rebirth
 Rift Bolt
 Righteous Avengers
 Righteous Confluence
+Riku of Many Paths
 Riku of Two Reflections
 Rime Tender
 Rimewind Cryomancer
@@ -2498,6 +2499,7 @@ Stolen Identity
 Stonecoil Serpent
 Stonewood Invocation
 Stonybrook Banneret
+Storage Matrix
 Storm Fleet Swashbuckler
 Storm King's Thunder
 Storm of Forms
@@ -2835,6 +2837,7 @@ Umbral Collar Zealot
 Unable to Scream
 Unblinking Bleb
 Unblinking Observer
+Unbound Flourishing
 Unbreakable Bond
 Unclaimed Territory
 Undead Augur

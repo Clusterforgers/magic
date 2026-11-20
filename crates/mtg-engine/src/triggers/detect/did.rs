@@ -479,18 +479,21 @@ pub(super) fn controller_changes(
     pre.objects()
         .filter(|object| object.zone() == Zone::Battlefield)
         .filter_map(|object| {
-            let now = post.object(object.id())?;
-            if now.zone() != Zone::Battlefield {
-                return None;
+            let before = controller_of(pre, object.id())?;
+            // A permanent that left the battlefield is out of its controller's control too (the Khârn the Betrayer ruling).
+            let lost = || did(Action::R112LostControl, Some(before), Some(object.id()));
+            let stayed = post.object(object.id()).is_some_and(|now| {
+                now.zone() == Zone::Battlefield && now.counter() == object.counter()
+            });
+            if !stayed {
+                return Some(vec![lost()]);
             }
             let after = controller_of(post, object.id())?;
-            let before = controller_of(pre, object.id())?;
             (before != after).then(|| {
-                let mut found = vec![did(
-                    Action::ChangedController,
-                    Some(after),
-                    Some(object.id()),
-                )];
+                let mut found = vec![
+                    did(Action::ChangedController, Some(after), Some(object.id())),
+                    lost(),
+                ];
                 if post.is_opponent(before, after) {
                     found.push(did(
                         Action::ControlTakenByOpponent,

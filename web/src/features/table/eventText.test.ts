@@ -139,6 +139,14 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { TargetsChanged: { object: { id: 5, counter: 0 }, controller: 0, added: [] } },
     'The targets of Serra Angel change',
   ],
+  R112UntapTypeChosen: [
+    { R112UntapTypeChosen: { player: 0, kind: 'Creature' } },
+    'Ana untaps only creatures this step',
+  ],
+  R112XChanged: [
+    { R112XChanged: { object: { id: 5, counter: 0 }, x: 4 } },
+    'The value of X of Serra Angel becomes 4',
+  ],
   CopyEnded: [{ CopyEnded: { object: 3 } }, 'Forest stops being a copy'],
   CardCopied: [{ CardCopied: { object: 9, of: { id: 5, counter: 0 }, owner: 0 } }, 'Ana copies Serra Angel'],
   CopyCeased: [{ CopyCeased: { object: 3 } }, 'Forest ceases to exist'],

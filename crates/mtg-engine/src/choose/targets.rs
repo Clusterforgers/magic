@@ -118,6 +118,9 @@ fn without_x(what: &Targetable) -> Targetable {
             what: Box::new(without_x(what)),
         },
         Targetable::AtRandom(what) => Targetable::AtRandom(Box::new(without_x(what))),
+        Targetable::R112OpponentChooses(what) => {
+            Targetable::R112OpponentChooses(Box::new(without_x(what)))
+        }
         other => other.clone(),
     }
 }
@@ -245,6 +248,7 @@ fn candidates(scope: &Scope<'_>, what: &Targetable) -> Result<Vec<Target>, Resol
             .collect(),
         Targetable::Together { what, .. }
         | Targetable::ChosenBy { what, .. }
+        | Targetable::R112OpponentChooses(what)
         | Targetable::AtRandom(what) => candidates(scope, what)?,
         Targetable::Another { what, earlier } => {
             let mut taken = Vec::new();
@@ -659,6 +663,9 @@ fn without_earlier_reads(what: &Targetable) -> Targetable {
             what: Box::new(without_earlier_reads(what)),
         },
         Targetable::AtRandom(what) => Targetable::AtRandom(Box::new(without_earlier_reads(what))),
+        Targetable::R112OpponentChooses(what) => {
+            Targetable::R112OpponentChooses(Box::new(without_earlier_reads(what)))
+        }
         other => other.clone(),
     }
 }

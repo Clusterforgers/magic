@@ -275,6 +275,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::TargetsChanged(change) => crate::retargeted::fold(state, change),
+        Event::R112XChanged { object, x } => crate::retargeted::r112_fold_x(state, *object, *x),
         Event::Remembered(change) => {
             crate::memory::fold(state, change);
             Ok(())
@@ -331,6 +332,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         }
         Event::IgnoredEffect { player, source } => {
             state.r6703_ignored.push((*player, *source));
+            Ok(())
+        }
+        Event::R112UntapTypeChosen { player, kind } => {
+            state.r112_untap_types.push((*player, *kind));
             Ok(())
         }
         Event::Investigated { player } => {
@@ -458,6 +463,7 @@ fn begin_turn(
     state.turn.no_power_up = false;
     state.turn.r109_unpreventable = false;
     state.r6703_ignored.clear();
+    state.r112_untap_types.clear();
     let mut at_end = None;
     if extra {
         let Some(taken) = state.extra_turns.pop().filter(|turn| turn.player == active) else {

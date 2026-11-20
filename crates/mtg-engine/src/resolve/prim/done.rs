@@ -118,6 +118,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Fabricate { .. }
         | Effect::Learn { .. }
         | Effect::R111OrderGraveyard { .. }
+        | Effect::R112DoubleX { .. }
         | Effect::Crewed { .. }
         | Effect::Explore { .. }
         | Effect::Connive { .. }

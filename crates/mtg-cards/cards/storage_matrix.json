@@ -1,0 +1,19 @@
+{
+  "oracle_id": "03136fe1-17e2-4b1c-860a-dc6373c8fdb5",
+  "name": "Storage Matrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storage Matrix",
+      "oracle_fingerprint": "acc58e77f03b70203d7a30b989047583",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "R112UntapChosenType": "EachPlayer" },
+            "condition": { "Matches": { "subject": "This", "selector": ["Untapped"] } }
+          }
+        }
+      ]
+    }
+  ]
+}

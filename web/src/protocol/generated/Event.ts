@@ -8,6 +8,7 @@ import type { Bending } from "./Bending";
 import type { ByHandDue } from "./ByHandDue";
 import type { CardConjured } from "./CardConjured";
 import type { CardCopy } from "./CardCopy";
+import type { CardType } from "./CardType";
 import type { CardsFound } from "./CardsFound";
 import type { Cause } from "./Cause";
 import type { Choice } from "./Choice";
@@ -1071,7 +1072,15 @@ player: PlayerId,
 /**
  * The element.
  */
-element: Bending, } } | { "IgnoredEffect": { 
+element: Bending, } } | { "R112UntapTypeChosen": { 
+/**
+ * Who chose.
+ */
+player: PlayerId, 
+/**
+ * Artifact, creature or land.
+ */
+kind: CardType, } } | { "IgnoredEffect": { 
 /**
  * Who paid.
  */
@@ -1576,4 +1585,12 @@ player: PlayerId,
 /**
  * The object the card became, in the hand.
  */
-object: ObjectId, } };
+object: ObjectId, } } | { "R112XChanged": { 
+/**
+ * The spell.
+ */
+object: ObjectRef, 
+/**
+ * The new value of X.
+ */
+x: number, } };

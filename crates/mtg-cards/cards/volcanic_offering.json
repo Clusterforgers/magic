@@ -21,15 +21,12 @@
               },
               {
                 "what": {
-                  "ChosenBy": {
-                    "who": "Opponents",
-                    "what": {
-                      "Object": [
-                        { "Type": "Land" },
-                        { "Not": { "Supertype": "Basic" } },
-                        { "Not": { "ControlledBy": "You" } }
-                      ]
-                    }
+                  "R112OpponentChooses": {
+                    "Object": [
+                      { "Type": "Land" },
+                      { "Not": { "Supertype": "Basic" } },
+                      { "Not": { "ControlledBy": "You" } }
+                    ]
                   }
                 }
               },
@@ -38,32 +35,17 @@
               },
               {
                 "what": {
-                  "ChosenBy": {
-                    "who": "Opponents",
-                    "what": {
-                      "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
-                    }
+                  "R112OpponentChooses": {
+                    "Object": [{ "Type": "Creature" }, { "Not": { "ControlledBy": "You" } }]
                   }
                 }
               }
             ],
             "effects": [
-              {
-                "Together": {
-                  "effects": [
-                    { "Destroy": { "what": { "Target": 0 } } },
-                    { "Destroy": { "what": { "Target": 1 } } }
-                  ]
-                }
-              },
-              {
-                "Together": {
-                  "effects": [
-                    { "DealDamage": { "to": { "Target": 2 }, "amount": 7 } },
-                    { "DealDamage": { "to": { "Target": 3 }, "amount": 7 } }
-                  ]
-                }
-              }
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Destroy": { "what": { "Target": 1 } } },
+              { "DealDamage": { "to": { "Target": 2 }, "amount": 7 } },
+              { "DealDamage": { "to": { "Target": 3 }, "amount": 7 } }
             ]
           }
         }

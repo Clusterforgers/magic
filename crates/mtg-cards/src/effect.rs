@@ -1705,6 +1705,12 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The value of X of each spell named that is still on the stack doubles ("double the value of X", CR 107.3): the
+    /// spell and the permanent it becomes read the new X.
+    R112DoubleX {
+        /// The spells.
+        what: Ref,
+    },
     /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
     Learn {
         /// Who learns.

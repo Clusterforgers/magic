@@ -1316,6 +1316,9 @@ pub enum GameRule {
         /// The most of them that untap.
         count: u32,
     },
+    /// During each of their untap steps the players choose artifact, creature or land, and can untap only permanents of
+    /// the chosen type that step (CR 502.3): "each player chooses artifact, creature, or land during their untap step".
+    R112UntapChosenType(Ref),
     /// The players skip their draw steps (CR 614.10): the step does not begin on their turns.
     SkipDrawStep(Ref),
     /// During their own turns, as long as they haven't activated an exhaust ability this turn, the players may activate

@@ -156,6 +156,7 @@ mod r111_plot_top;
 mod r111_spend_as;
 mod r111_way_riders;
 mod r112_mana;
+mod r112_spell_facts;
 mod r1a_spend;
 mod r281_cards;
 mod r281_kicked_spend;

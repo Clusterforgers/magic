@@ -54,3 +54,13 @@ pub(crate) fn r6104_life_paid(ability: &GameObject) -> Option<i64> {
     }
     Some(life)
 }
+
+/// Whether the activation cost of the activated ability on the stack holds an `{X}` mana symbol ("that ability's
+/// activation cost contains {X}", CR 107.3).
+pub(crate) fn r112_x_in_activation_cost(ability: &GameObject) -> bool {
+    r6104_activated_cost(ability).is_some_and(|(cost, _)| {
+        cost.0
+            .iter()
+            .any(|item| matches!(item, CostItem::Mana(mana) if mana.has_x()))
+    })
+}

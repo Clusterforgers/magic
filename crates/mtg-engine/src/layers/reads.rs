@@ -400,6 +400,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::TopCreatureOfGraveyard
         | Pred::R4700TopOfGraveyard { .. }
         | Pred::Kicked
+        | Pred::R112Modal
         | Pred::AdditionalCostPaid
         | Pred::Suspended
         | Pred::Foretold
@@ -505,7 +506,8 @@ fn reads_of_stat(stat: StatKind) -> Traits {
         | StatKind::Kicks
         | StatKind::Name
         | StatKind::CounterKinds
-        | StatKind::R374ManaCost => Traits::NONE,
+        | StatKind::R374ManaCost
+        | StatKind::R112ModesChosen => Traits::NONE,
     }
 }
 
