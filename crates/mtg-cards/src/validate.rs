@@ -2043,6 +2043,7 @@ impl<'a> Walker<'a> {
                     | CostItem::ExileSelf
                     | CostItem::DiscardSelf
                     | CostItem::R110RevealChosen
+                    | CostItem::R110ControllerDraws(_)
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
                     | CostItem::R6702CollectEvidenceX

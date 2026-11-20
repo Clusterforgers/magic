@@ -2082,6 +2082,7 @@ Reprocess
 Repulse
 Rescue Retriever
 Rescue Skiff
+Research // Development
 Reset
 Reshape
 Resplendent Angel

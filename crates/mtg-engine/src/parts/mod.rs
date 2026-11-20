@@ -149,6 +149,8 @@ pub(crate) enum Part {
     Unattach,
     /// The source reveals the value it chose secretly.
     R110RevealChosen,
+    /// The source's controller draws this many cards, which the payer has them do.
+    R110ControllerDraws(u32),
     /// The payer discards every card in their hand ("Discard your hand"): nothing to choose, an empty hand pays it.
     DiscardHand,
     /// The payer reveals every card in their hand ("reveal your hand"): nothing to choose, an empty hand pays it.
@@ -328,6 +330,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
         }
         CostItem::Unattach => (Part::Unattach, false),
         CostItem::R110RevealChosen => (Part::R110RevealChosen, false),
+        CostItem::R110ControllerDraws(count) => (Part::R110ControllerDraws(*count), false),
         CostItem::OthersGainLife(amount) => (Part::OthersGainLife(*amount), false),
         CostItem::OpponentGainsLife(amount) => (Part::OpponentGainsLife(*amount), false),
         CostItem::GetPoison(amount) => (Part::Poison(*amount), false),
@@ -632,6 +635,7 @@ impl Part {
                 Part::ExileTop(_) => Part::ExileTop(x),
                 Part::Unattach => Part::Unattach,
                 Part::R110RevealChosen => Part::R110RevealChosen,
+                Part::R110ControllerDraws(count) => Part::R110ControllerDraws(*count),
                 Part::DiscardHand => Part::DiscardHand,
                 Part::RevealHand => Part::RevealHand,
                 Part::SacrificeAll(filter) => Part::SacrificeAll(filter.clone()),
@@ -736,6 +740,7 @@ impl Part {
             Part::Exert
             | Part::Unattach
             | Part::R110RevealChosen
+            | Part::R110ControllerDraws(_)
             | Part::DiscardHand
             | Part::RevealHand
             | Part::SacrificeAll(_)
@@ -762,6 +767,7 @@ impl Part {
             Part::Poison(_) => "Cost.GetPoison",
             Part::Unattach => "Cost.Unattach",
             Part::R110RevealChosen => "Cost.R110RevealChosen",
+            Part::R110ControllerDraws(_) => "Cost.R110ControllerDraws",
             Part::DiscardHand => "Cost.Discard",
             Part::RevealHand => "Cost.RevealFromHand",
             Part::SacrificeAll(_) => "Cost.Sacrifice",
@@ -814,6 +820,8 @@ impl Part {
             Part::Poison(amount) => format!("Get {amount} poison counters"),
             Part::Unattach => "Unattach this permanent".to_owned(),
             Part::R110RevealChosen => "Reveal the choice you made secretly".to_owned(),
+            Part::R110ControllerDraws(1) => "Have its controller draw a card".to_owned(),
+            Part::R110ControllerDraws(count) => format!("Have its controller draw {count} cards"),
             Part::DiscardHand => "Discard your hand".to_owned(),
             Part::RevealHand => "Reveal your hand".to_owned(),
             Part::SacrificeAll(_) => "Sacrifice all of them you control".to_owned(),
@@ -873,6 +881,7 @@ impl Part {
             Part::Damage(_) => payer.state.object(payer.source).is_some().then(Vec::new),
             Part::Unattach => unattach::payable(payer).then(Vec::new),
             Part::R110RevealChosen => r110_reveal_chosen::payable(payer).then(Vec::new),
+            Part::R110ControllerDraws(_) => Some(Vec::new()),
             Part::DiscardHand | Part::RevealHand | Part::OthersGainLife(_) | Part::Poison(_) => {
                 Some(Vec::new())
             }
@@ -965,6 +974,10 @@ impl Part {
             Part::Poison(amount) => r4705_poison(player, *amount),
             Part::Unattach => vec![unattach::event(source)],
             Part::R110RevealChosen => r110_reveal_chosen::events(state, source),
+            Part::R110ControllerDraws(count) => state
+                .object(source)
+                .map(|object| draw::events(state, object.controller(), *count))
+                .unwrap_or_default(),
             Part::SacrificeAll(filter) => r303c_sacrifice_all::r303c_events(
                 &r303c_sacrifice_all::r303c_payer(state, player, source),
                 filter,

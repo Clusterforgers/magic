@@ -478,6 +478,7 @@ const RUNS: &[&str] = &[
     "Effect.R6702CountersPerVote",
     "Effect.R110ChooseSecretly",
     "Cost.R110RevealChosen",
+    "Cost.R110ControllerDraws",
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Rule.Duration.UntilTheirNextTurn",
