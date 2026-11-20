@@ -28,7 +28,7 @@
                       "LoseLife": {
                         "who": { "Bound": "revealer" },
                         "amount": {
-                          "R112NumberChosen": { "as": "items", "by": { "Bound": "revealer" } }
+                          "R112NumberChosen": { "name": "items", "by": { "Bound": "revealer" } }
                         }
                       }
                     }

@@ -1294,7 +1294,6 @@ enum Tagged {
     CountedAsCast(Box<Amount>),
     Drafted(crate::r4711_noted::DraftNote),
     R112NumberChosen {
-        #[serde(rename = "as")]
         name: String,
         by: Ref,
     },
@@ -1525,7 +1524,6 @@ enum TaggedRef<'a> {
     CountedAsCast(&'a Amount),
     Drafted(crate::r4711_noted::DraftNote),
     R112NumberChosen {
-        #[serde(rename = "as")]
         name: &'a String,
         by: &'a Ref,
     },

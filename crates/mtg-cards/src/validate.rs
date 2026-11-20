@@ -1792,7 +1792,6 @@ impl<'a> Walker<'a> {
         }
     }
 
-    #[allow(clippy::too_many_lines)] // one arm for each kind of condition
     fn condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Not(inner) => self.at("Not", |w| w.condition(inner)),
@@ -1816,6 +1815,13 @@ impl<'a> Walker<'a> {
                 self.at("subject", |w| w.reference(subject, Kind::Object));
                 self.at("selector", |w| w.selector(selector));
             }
+            _ => self.leaf_condition(condition),
+        }
+    }
+
+    /// The conditions that name no condition inside them: each notes its use and checks the references it holds.
+    fn leaf_condition(&mut self, condition: &Condition) {
+        match condition {
             Condition::Kicked | Condition::KickedWith(_) | Condition::AdditionalCostPaid => {
                 self.paid_condition(condition);
             }
@@ -1825,7 +1831,6 @@ impl<'a> Walker<'a> {
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
             Condition::ManaSpent(_) => self.uses("Condition", "ManaSpent"),
-            Condition::YourTurn | Condition::PaidToIgnore => {}
             Condition::ExtraTurn => self.uses("Condition", "ExtraTurn"),
             Condition::StartingPlayer(who) => {
                 self.uses("Condition", "StartingPlayer");
@@ -1894,6 +1899,15 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "Searched");
                 self.at("Searched", |w| w.reference(who, Kind::Player));
             }
+            Condition::YourTurn
+            | Condition::PaidToIgnore
+            | Condition::Not(_)
+            | Condition::All(_)
+            | Condition::Any(_)
+            | Condition::Compare { .. }
+            | Condition::AtTrigger(_)
+            | Condition::Matches { .. }
+            | Condition::CountOf { .. } => {}
         }
     }
 

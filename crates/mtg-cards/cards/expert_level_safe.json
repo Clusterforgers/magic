@@ -38,9 +38,9 @@
                 "If": {
                   "condition": {
                     "Compare": {
-                      "left": { "R112NumberChosen": { "as": "choice", "by": "You" } },
+                      "left": { "R112NumberChosen": { "name": "choice", "by": "You" } },
                       "op": "Eq",
-                      "right": { "R112NumberChosen": { "as": "choice", "by": { "Target": 0 } } }
+                      "right": { "R112NumberChosen": { "name": "choice", "by": { "Target": 0 } } }
                     }
                   },
                   "then": [
