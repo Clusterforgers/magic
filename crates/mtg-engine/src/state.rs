@@ -300,6 +300,8 @@ pub(crate) struct Tallies {
     pub(crate) combat_from: usize,
     /// The cards put into a graveyard this combat and the creatures that could attack this turn (`r5522_history`).
     pub(crate) r5522: Box<crate::r5522_history::R5522Turn>,
+    /// The players who put a nontoken permanent onto the battlefield this turn (`r111_history`).
+    pub(crate) r111: Box<crate::r111_history::R111Turn>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).
@@ -414,6 +416,8 @@ pub struct GameState {
     pub(crate) cast_names: BTreeMap<(PlayerId, String), u32>,
     /// The cards each player cycled by name, the damage dealt to players and the lands untapped as the turn began (`r5522_history`).
     pub(crate) r5522: Box<crate::r5522_history::R5522Game>,
+    /// What each player did during their latest turn and attacked in their latest combat (`r111_history`).
+    pub(crate) r111: Box<crate::r111_history::R111Game>,
     /// How many turns each player has begun this game (`rmt8_turns`).
     pub(crate) rmt8_turns: BTreeMap<PlayerId, u32>,
     /// Each player's life total as the current turn began (`rmt8_turns`).
@@ -1184,6 +1188,9 @@ impl Hash for GameState {
         if !self.tallies.r5522.is_empty() {
             self.tallies.r5522.hash(state);
         }
+        if !self.tallies.r111.is_empty() {
+            self.tallies.r111.hash(state);
+        }
         if !self.tallies.logged.is_empty() {
             self.tallies.logged.hash(state);
         }
@@ -1203,6 +1210,9 @@ impl Hash for GameState {
         // Likewise a game where no card was cycled and no player was dealt damage.
         if !self.r5522.is_empty() {
             self.r5522.hash(state);
+        }
+        if !self.r111.is_empty() {
+            self.r111.hash(state);
         }
         self.rmt8_turns.hash(state);
         self.rmt8_lives.hash(state);

@@ -18,7 +18,8 @@ pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId) -> Next 
     {
         return Next::Drop;
     }
-    let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::Foretell);
+    let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::Foretell)
+        .r111_by(state, player);
     suspend::pay_for(state, player, card, (cost, spend), || events(state, card))
 }
 

@@ -389,7 +389,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::AbilityLeftToTable(_)
         | Event::TriggerRemoved { .. }
         | Event::DelayedTriggerCreated(_) => redact_triggers(before, event, viewer),
-        Event::HandDealt { .. }
+        // A graveyard is a public zone (CR 404.2): its new order is told to every seat.
+        Event::R111GraveyardOrdered { .. }
+        | Event::HandDealt { .. }
         | Event::CardsBottomed { .. }
         | Event::CardDrawn { .. }
         | Event::FirstPlayerChosen { .. }
@@ -493,6 +495,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Attached { .. }
         | Event::ChosenAsAttached { .. }
         | Event::R110ChoiceRevealed { .. }
+        | Event::R111ChoiceKept { .. }
         | Event::AttachedToPlayer { .. }
         | Event::Unattached { .. }
         | Event::Paired { .. }
@@ -1583,11 +1586,14 @@ mod tests {
             cause: Cause {
                 dealers: Vec::new(),
                 counters: Vec::new(),
+                r111_paid: Vec::new(),
                 subjects: vec![Target::Object(reference)],
                 snapshots: vec![snapshot(&t.state, subject).unwrap()],
                 amount: 0,
                 source: None,
                 against: None,
+                event: None,
+                ability: None,
             },
             snapshot: snapshot(&t.state, t.creature).unwrap(),
             delayed: None,

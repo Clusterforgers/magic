@@ -32,6 +32,31 @@ pub(crate) enum R110Taxed<'a> {
 /// The sacrifices the rules in play add to the cost of `taxed`, as parts of the cost: one part for each
 /// rule that applies, of as many permanents as its count says.
 pub(crate) fn r110_parts(state: &GameState, taxed: R110Taxed<'_>) -> Vec<Part> {
+    r111_taxes(state, taxed)
+        .iter()
+        .flat_map(|(filter, count)| r110_sacrifices(filter, *count))
+        .collect()
+}
+
+/// The sacrifices the rules in play add to a mana ability of `source` whose activation cost holds `mana`, as the cost
+/// items a mana ability takes (CR 605.3a: a mana ability pays its whole cost as it is activated).
+pub(crate) fn r111_mana_tax(
+    state: &GameState,
+    source: ObjectId,
+    mana: Option<&ManaCost>,
+) -> Vec<CostItem> {
+    r111_taxes(state, R110Taxed::Ability(source, mana))
+        .into_iter()
+        .filter(|(_, count)| *count > 0)
+        .map(|(filter, count)| CostItem::Sacrifice {
+            filter,
+            count: Amount::Fixed(i32::try_from(count).unwrap_or(i32::MAX)),
+        })
+        .collect()
+}
+
+/// What each rule that applies to `taxed` sacrifices and how many times.
+fn r111_taxes(state: &GameState, taxed: R110Taxed<'_>) -> Vec<(Selector, u32)> {
     let (object, printed) = match taxed {
         R110Taxed::Spell(spell) => (
             spell,
@@ -81,7 +106,7 @@ pub(crate) fn r110_parts(state: &GameState, taxed: R110Taxed<'_>) -> Vec<Part> {
                 continue;
             }
             let count = per_symbol.map_or(1, |color| r110_symbols(printed.as_ref(), color));
-            parts.extend(r110_sacrifices(sacrifice, count));
+            parts.push((sacrifice.clone(), count));
         }
     }
     parts

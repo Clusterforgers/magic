@@ -112,6 +112,7 @@ mod move_counters;
 mod moved_as;
 mod one_of;
 mod pair;
+mod r111_order_graveyard;
 mod r301b_exchange_toughness;
 mod r372_gain_suspend;
 mod r404_look_face_down;
@@ -140,6 +141,7 @@ mod prepare;
 mod proliferate;
 mod put_counters;
 mod r110_secret;
+mod r111_keep;
 mod r281_lock_door;
 mod r281_pay_one_of;
 mod r376_choose_words;
@@ -350,6 +352,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Bolster { .. } => bolster::run(cx, effect),
         Effect::Fabricate { .. } => fabricate::run(cx, effect),
         Effect::Learn { .. } => learn::run(cx, effect),
+        Effect::R111OrderGraveyard { .. } => r111_order_graveyard::run(cx, effect),
         Effect::Performed { .. } => l31a_performed::run(cx, effect),
         Effect::Crewed { .. } => crewed::run(cx, effect),
         Effect::Explore { .. } => explore::run(cx, effect),
@@ -377,6 +380,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::R110MoveEachKindMissing { .. } => r110_moves::run_each_kind(cx, effect),
         Effect::R110MoveOneOrMore { .. } => r110_moves::run_one_or_more(cx, effect),
         Effect::R110ChooseSecretly(_) => r110_secret::run(cx, effect),
+        Effect::R111KeepChosen(_) => r111_keep::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
@@ -466,6 +470,7 @@ mod tests {
         {"R6702Distribute":{"among":"This","counter":{"Other":"stun"},"count":3}},
         {"R6702CountersPerVote":{"tally":"votes","counter":{"Other":"stun"}}},
         {"R110ChooseSecretly":"Opponent"},
+        {"R111KeepChosen":"name"},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
@@ -500,7 +505,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 154, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 155, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -660,6 +665,7 @@ mod tests {
         "Effect.R6702Distribute",
         "Effect.R6702CountersPerVote",
         "Effect.R110ChooseSecretly",
+        "Effect.R111KeepChosen",
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",

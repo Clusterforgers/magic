@@ -125,7 +125,8 @@ pub(super) fn next(
         });
     }
     let paid = choices.clone();
-    let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp);
+    let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp)
+        .r111_by(state, player);
     let mana = up.mana.with(ManaSymbol::Generic(
         up.x.saturating_mul(choices.x.unwrap_or(0)),
     ));

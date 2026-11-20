@@ -1,7 +1,7 @@
 {
   "oracle_id": "b967870d-9773-4ad5-bf06-c3be5465dab9",
   "name": "Strict Proctor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Strict Proctor",
@@ -9,9 +9,21 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 128 }
+          "Triggered": {
+            "when": {
+              "R111AbilityTriggered": {
+                "cause": { "ZoneChange": { "what": [], "to": "Battlefield" } }
+              }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "cost": "{2}",
+                  "unpaid": [{ "Counter": { "what": "Triggering" } }]
+                }
+              }
+            ]
           }
         }
       ]

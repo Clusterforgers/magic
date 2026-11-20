@@ -2115,6 +2115,16 @@ pub enum Condition {
         /// The dungeon's name.
         dungeon: String,
     },
+    /// "You" (the player tested) cast a spell or put a nontoken permanent onto the battlefield during your latest turn (a
+    /// land played, a permanent spell resolved, or an effect you controlled put it there); false before your first turn ended.
+    R111CastOrPutLastTurn,
+    /// "You" (the player tested) were attacked by the object the reference names during its controller's latest combat
+    /// phase, as the object it is now (one that left and came back is another): "an opponent that ~ didn't attack during
+    /// your last combat" is its negation.
+    R111AttackedLastCombat(Ref),
+    /// "You" (the player tested) were dealt damage this turn by a source the selector matches as it was when it dealt it
+    /// ("if you were dealt damage this turn by a red instant or sorcery spell").
+    R111DamagedThisTurnBy(Selector),
 }
 
 #[cfg(test)]

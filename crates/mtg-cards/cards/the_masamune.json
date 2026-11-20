@@ -1,7 +1,7 @@
 {
   "oracle_id": "89eb4c39-35ae-405b-8af4-779880cb11c9",
   "name": "The Masamune",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Masamune",
@@ -21,9 +21,31 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 92, "end": 254 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Rule": {
+                    "rule": {
+                      "TriggerAgain": {
+                        "cause": {
+                          "ZoneChange": {
+                            "what": [{ "Type": "Creature" }],
+                            "from": "Battlefield",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "source": [
+                          { "AnyOf": ["This", "Emblem"] },
+                          { "AnyOf": ["This", { "OwnedBy": "You" }] }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
           }
         },
         { "Keyword": { "Equip": "{2}" } }

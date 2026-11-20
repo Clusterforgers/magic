@@ -14,11 +14,12 @@ import { useDefaultFocus } from '../usePromptKeys'
 /** How long typing pauses before the catalog is searched. */
 const SEARCH_DELAY_MS = 250
 
-/** What the card lets be named: no land ("nonland"), no creature ("noncreature"), only a land that is not basic. */
+/** What the card lets be named: no land ("nonland"), no creature ("noncreature"), only a land that is not basic, or no basic land. */
 export interface NameKinds {
   nonland?: boolean
   noncreature?: boolean
   nonbasic_land?: boolean
+  r111_not_basic_land?: boolean
 }
 
 /** The hits that may be named under the kinds the card says. */
@@ -28,6 +29,7 @@ export function nameable(hits: CardHit[], kinds: NameKinds): CardHit[] {
     if (kinds.nonland === true && land) return false
     if (kinds.noncreature === true && /\bCreature\b/.test(hit.type_line)) return false
     if (kinds.nonbasic_land === true && (!land || /\bBasic\b/.test(hit.type_line))) return false
+    if (kinds.r111_not_basic_land === true && land && /\bBasic\b/.test(hit.type_line)) return false
     return true
   })
 }
@@ -50,6 +52,7 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
   const nonland = options.nonland === true
   const noncreature = options.noncreature === true
   const nonbasicLand = options.nonbasic_land === true
+  const notBasicLand = options.r111_not_basic_land === true
   // The hand looked at just before naming ("look at an opponent's hand, then choose any card name"), each name once.
   const looked = useMemo(() => [...new Set(options.looked ?? [])], [options.looked])
 
@@ -64,7 +67,14 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
       api.search({ text, perPage: 24 }, controller.signal).then(
         (page) => {
           setFailed(false)
-          setHits(nameable(page.cards, { nonland, noncreature, nonbasic_land: nonbasicLand }).slice(0, 8))
+          setHits(
+            nameable(page.cards, {
+              nonland,
+              noncreature,
+              nonbasic_land: nonbasicLand,
+              r111_not_basic_land: notBasicLand,
+            }).slice(0, 8),
+          )
         },
         () => {
           if (!controller.signal.aborted) setFailed(true)
@@ -75,7 +85,7 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
       clearTimeout(timer)
       controller.abort()
     }
-  }, [api, typed, nonland, noncreature, nonbasicLand])
+  }, [api, typed, nonland, noncreature, nonbasicLand, notBasicLand])
 
   const name = (card: string): void => void answer({ ChooseName: card })
   const submit = (event: FormEvent): void => {

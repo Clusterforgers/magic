@@ -37,6 +37,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Bo chooses blue for Forest',
   ],
   LibraryShuffled: [{ LibraryShuffled: { player: 0, order: [] } }, 'Ana shuffles their library'],
+  R111GraveyardOrdered: [
+    { R111GraveyardOrdered: { player: 1, order: [3, 4] } },
+    'Bo reorders their graveyard',
+  ],
   AttractionDeckShuffled: [
     { AttractionDeckShuffled: { player: 0, order: [3, 4] } },
     'Ana shuffles their Attraction deck',
@@ -80,6 +84,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ChosenAsAttached: [
     { ChosenAsAttached: { object: 3, chosen: { Color: 'Red' } } },
     'Forest becomes attached, choosing red',
+  ],
+  R111ChoiceKept: [
+    { R111ChoiceKept: { object: 3, chosen: { Name: 'Lightning Bolt' } } },
+    'Forest keeps its choice, choosing Lightning Bolt',
   ],
   R110ChoseSecretly: [
     { R110ChoseSecretly: { object: 3, chosen: { Player: 1 } } },
@@ -815,6 +823,24 @@ function effect(
 const say = (event: Event): string => describeEvent({ Public: event }, names).text
 
 describe('describeEvent', () => {
+  it('names the ability whose triggering made a trigger trigger', () => {
+    const event: Event = {
+      AbilityTriggered: {
+        source: { id: 6, counter: 0 },
+        ability: 1,
+        controller: 0,
+        cause: {
+          subjects: [{ Object: { id: 5, counter: 0 } }],
+          snapshots: [],
+          event: { Moved: { object: 5, to: 'Battlefield' } },
+          ability: { object: 5, ability: 0 },
+        },
+        snapshot: snapshotOf(6),
+      },
+    }
+    expect(say(event)).toBe('An ability of Jace Beleren triggers on an ability of Serra Angel triggering')
+  })
+
   it('names the attacker a token enters blocking', () => {
     const event: Event = { TokenCreated: { object: 93, controller: 1, name: 'Cat Soldier', blocking: 1 } }
     expect(say(event)).toBe('Bo creates a Cat Soldier token blocking Grizzly Bears')

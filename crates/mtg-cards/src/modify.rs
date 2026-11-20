@@ -163,9 +163,14 @@ pub enum Modification {
     LockKeyword(Keyword),
     /// Gives the object an activated or a triggered ability (layer 6); a keyword is `AddKeyword`.
     GrantAbility(Arc<Ability>),
-    /// The object has the activated abilities printed on the cards the reference names, wherever they are (layer 6): "has all
-    /// activated abilities of all creature cards in graveyards". A card that leaves its zone is a new object and gives none.
+    /// The object has the activated abilities of the objects the reference names (layer 6, CR 613.1f): a permanent's as it has
+    /// them now (granted ones and its land types' mana abilities included), a card's elsewhere as printed: "has all activated
+    /// abilities of all creature cards in graveyards". A card that leaves its zone is a new object and gives none.
     GainAbilitiesOf(Ref),
+    /// The object has the activated abilities of the objects the reference names that are no mana abilities (layer 6, CR
+    /// 605.1a), as `GainAbilitiesOf` gives them: "has all activated abilities of lands your opponents control except mana
+    /// abilities".
+    R111GainNonManaAbilitiesOf(Ref),
     /// The object has the activated and triggered abilities printed on the cards the reference names, wherever they are
     /// (layer 6): "~ has all activated and triggered abilities of the last chosen card".
     R6702GainActivatedAndTriggeredOf(Ref),
@@ -284,6 +289,7 @@ impl Modification {
             | Modification::RemoveKeywordKind(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
+            | Modification::R111GainNonManaAbilitiesOf(_)
             | Modification::R6702GainActivatedAndTriggeredOf(_)
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
@@ -810,6 +816,15 @@ pub enum Prohibited {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         but_mana_abilities: bool,
     },
+    /// Attack a player, not the planeswalkers they control (CR 508.1b), unless the condition holds for that player ("you" in
+    /// it is that player): "creatures can't attack a player unless that player cast a spell ... during their last turn".
+    R111AttackPlayer {
+        /// The attack is open while this holds for the defending player.
+        unless: Condition,
+    },
+    /// Cast the spells and play the lands whose cards the selector picks (CR 601, 305.1): "spells with the chosen names
+    /// can't be cast and lands with the chosen names can't be played".
+    R111CastOrPlay(Selector),
 }
 
 /// What the next spell of a `GameRule::NextSpell` gets.
@@ -1227,6 +1242,8 @@ pub enum GameRule {
     /// Creatures the players control can boast twice during each of their turns rather than once (CR 702.142c): a boast
     /// ability is an activated ability limited to once each turn that works only if its source attacked this turn.
     BoastTwice(Ref),
+    /// The players reveal each card they draw as they draw it ("the chosen player reveals each card they draw").
+    R111RevealDraws(Ref),
     /// The players may activate loyalty abilities of planeswalkers they control on any player's turn any time they could
     /// cast an instant (Teferi's Talent's emblem).
     LoyaltyAnyTime(Ref),
@@ -1351,6 +1368,19 @@ pub enum GameRule {
     /// "Plotting cards from your hand costs {2} less.": the plot costs of the cards in its controller's hand cost this
     /// much generic mana less (CR 702.170a).
     R6018PlotLess(u32),
+    /// "You may plot nonland cards from the top of your library.": its controller may plot the top card of their library
+    /// that the selector picks as they plot a card from their hand (CR 702.170a), when it has plot.
+    R111PlotFromLibraryTop(Selector),
+    /// "You may cast creature spells from your graveyard using their sneak abilities.": its controller may cast the cards
+    /// of `from` they own that `what` picks for an alternative cost of `way` they have, which otherwise works from a hand.
+    R111CastWayFrom {
+        /// The way of casting.
+        way: crate::value::CastWay,
+        /// The zone the cards are cast from.
+        from: ZoneKind,
+        /// The cards.
+        what: Selector,
+    },
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),
@@ -1549,7 +1579,7 @@ pub enum GameRule {
         /// The spells that pay it, judged as they are cast; no spell when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         spells: Option<Selector>,
-        /// The objects whose activated abilities other than mana abilities pay it; no ability when absent.
+        /// The objects whose activated abilities, mana abilities included, pay it; no ability when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         abilities: Option<Selector>,
         /// What each sacrifice takes.
@@ -1558,6 +1588,22 @@ pub enum GameRule {
         /// or Phyrexian symbol of the color counts); once when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         per_symbol: Option<Color>,
+    },
+    /// The players may spend mana of one color as though it were mana of another color or of any color (CR 609.4b),
+    /// whatever they pay: "You may spend white mana as though it were red mana.", "You may spend white mana as though it
+    /// were mana of any color. You may spend other mana only as though it were colorless mana."
+    R111SpendColorAs {
+        /// The players.
+        who: Ref,
+        /// The color of the mana.
+        mana: Color,
+        /// The color it may be spent as; any color when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        as_color: Option<Color>,
+        /// Mana of every other type may be spent only as though it were colorless mana: it pays no colored symbol, and
+        /// it pays `{C}`.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        others_colorless: bool,
     },
 }
 

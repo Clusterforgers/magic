@@ -849,6 +849,16 @@ pub enum TriggerPattern {
         /// Which time in the turn it must be, from one.
         nth: u32,
     },
+    /// A triggered ability triggers because of an event `cause` describes (CR 603.2): "whenever a permanent entering causes
+    /// a triggered ability to trigger"; with `of_it`, only an ability of the object the event is about ("a triggered
+    /// ability of that creature"). `Ref::Triggering` is that ability once it is on the stack.
+    R111AbilityTriggered {
+        /// The event that makes the ability trigger.
+        cause: Box<TriggerPattern>,
+        /// Only an ability of the object the event is about.
+        #[serde(default, skip_serializing_if = "is_false")]
+        of_it: bool,
+    },
     /// The event, while the trigger's controller is activating an ability of the kind, its costs paid in the same batch
     /// ("When this creature is exiled from the battlefield while you're activating a craft ability", CR 602.2).
     R6701WhileActivating {
@@ -1025,6 +1035,19 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player would draw a card because an activated ability of this kind resolves whose source, as it was, the selector
+    /// matches ("If a cycling ability of another nonland card would cause you to draw a card", CR 614.11); `Ref::Dealer`
+    /// of the steps is that source.
+    R111DrawBy {
+        /// Who would draw.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The kind of the ability.
+        kind: crate::ability::ActivationKind,
+        /// The source of the ability, as it was.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+    },
     /// A player would draw a card.
     Draw {
         /// Who would draw.
@@ -1166,6 +1189,12 @@ pub enum EntersChoice {
     ColorAndCreatureType,
     /// This many different players ("choose two players").
     Players(u32),
+    /// An opponent and a card name other than a basic land card name, chosen together ("choose an opponent and a card name
+    /// other than a basic land card name").
+    R111OpponentAndName,
+    /// A card name other than a basic land card name named by the controller and one by an opponent the controller chooses
+    /// ("you and an opponent each choose a card name other than a basic land card name").
+    R111NamesWithOpponent,
     /// This many different abilities from among first strike, vigilance, and lifelink ("choose two abilities from among
     /// first strike, vigilance, and lifelink"), read by `Modification::R6001AddChosenAbilities`.
     R6001Abilities(u32),

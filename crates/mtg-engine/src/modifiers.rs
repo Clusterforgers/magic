@@ -143,7 +143,7 @@ fn origin_of(
             ModifierSource::Object(source),
             None,
         ),
-        Grant::Borrowed { donor, .. } => {
+        Grant::Borrowed { donor, .. } | Grant::R111Lent { donor, .. } => {
             (Origin::Borrowed(donor), ModifierSource::Object(donor), None)
         }
         Grant::Ring { player, level } => (

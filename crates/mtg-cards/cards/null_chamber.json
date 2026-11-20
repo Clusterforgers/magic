@@ -1,0 +1,26 @@
+{
+  "oracle_id": "cb75aca6-dfc7-460d-b90c-80b7988f39a8",
+  "name": "Null Chamber",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Null Chamber",
+      "oracle_fingerprint": "d33e2a8c677510d787074b2b26e33941",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "R111NamesWithOpponent" }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": { "who": "EachPlayer", "action": { "R111CastOrPlay": ["ChosenName"] } }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

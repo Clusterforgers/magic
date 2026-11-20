@@ -1,0 +1,46 @@
+{
+  "oracle_id": "57aeb106-dc4f-4069-b596-f997263dc0cf",
+  "name": "Suffocation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Suffocation",
+      "oracle_fingerprint": "0903e2cd99d2c67956c566e3574408cf",
+      "abilities": [
+        {
+          "CastOnly": {
+            "condition": {
+              "R111DamagedThisTurnBy": [
+                { "Color": "Red" },
+                { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+              ]
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": {
+                    "R111LastDamagedYou": [
+                      { "Color": "Red" },
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                    ]
+                  },
+                  "amount": 4
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep" } },
+                  "effects": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

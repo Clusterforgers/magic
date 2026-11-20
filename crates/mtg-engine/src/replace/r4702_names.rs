@@ -62,6 +62,7 @@ impl Pass<'_> {
                         nonland,
                         noncreature,
                         nonbasic_land,
+                        r111_not_basic_land: false,
                         looked,
                     }),
                 }));

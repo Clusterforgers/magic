@@ -895,6 +895,13 @@ pub enum Event {
         /// What it chose.
         chosen: Chosen,
     },
+    /// A permanent keeps a value its ability chose as its own choice, public ("II — Choose a card name.").
+    R111ChoiceKept {
+        /// The permanent.
+        object: ObjectId,
+        /// What it keeps.
+        chosen: Chosen,
+    },
     /// A permanent's controller chose a value secretly, which the permanent keeps (CR 706, "secretly choose an
     /// opponent"); only that player sees what it is until a cost reveals it.
     R110ChoseSecretly {
@@ -1189,6 +1196,13 @@ pub enum Event {
         from: u32,
         /// The result after it.
         to: u32,
+    },
+    /// A player put the cards of their graveyard in an order they chose (CR 404.2).
+    R111GraveyardOrdered {
+        /// Whose graveyard.
+        player: PlayerId,
+        /// Its cards in the new order, bottom to top.
+        order: Vec<ObjectId>,
     },
     /// A player's Attraction deck was shuffled (CR 103.3a): its cards in the new order, top card last.
     AttractionDeckShuffled {
@@ -1679,6 +1693,7 @@ impl Event {
     #[allow(clippy::too_many_lines)]
     pub fn touched_objects(&self) -> Vec<ObjectId> {
         match self {
+            Event::R111GraveyardOrdered { order, .. } => order.clone(),
             Event::LibraryShuffled { .. }
             | Event::AttackersChosen { .. }
             | Event::AttackChoicesRefused { .. }
@@ -1837,6 +1852,7 @@ impl Event {
             | Event::AttachedToPlayer { object, .. }
             | Event::ChosenAsAttached { object, .. }
             | Event::R110ChoseSecretly { object, .. }
+            | Event::R111ChoiceKept { object, .. }
             | Event::R110ChoiceRevealed { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }

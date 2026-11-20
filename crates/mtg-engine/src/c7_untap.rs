@@ -25,7 +25,10 @@ pub(crate) fn c7_untap_spent(state: &GameState, active: PlayerId) -> Vec<Event> 
         .filter(|applied| matches!(applied.modification, Modification::DoesntUntap))
         .filter_map(|applied| match applied.origin {
             Grant::Effect(id) | Grant::R6701Nested { effect: id, .. } => Some(id),
-            Grant::Static { .. } | Grant::Borrowed { .. } | Grant::Ring { .. } => None,
+            Grant::Static { .. }
+            | Grant::Borrowed { .. }
+            | Grant::R111Lent { .. }
+            | Grant::Ring { .. } => None,
         })
         .filter(|id| {
             state

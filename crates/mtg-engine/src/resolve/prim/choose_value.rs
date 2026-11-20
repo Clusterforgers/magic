@@ -62,6 +62,9 @@ fn choice(
     if *kind == ValueKind::Colors {
         return colors(cx, player);
     }
+    if let ValueKind::R111SpellDamage { caster, filter } = kind {
+        return r111_spell_damage(cx, player, caster, filter);
+    }
     let options = match kind {
         ValueKind::LikeChosen(name) => like_chosen(cx.scope.chosen_value(name)),
         _ => options(kind),
@@ -97,6 +100,7 @@ fn r6600_by_options(kind: &ValueKind) -> bool {
             | ValueKind::CardName(_)
             | ValueKind::Colors
             | ValueKind::LikeChosen(_)
+            | ValueKind::R111SpellDamage { .. }
     )
 }
 
@@ -211,6 +215,7 @@ fn name(
                 ),
                 noncreature: false,
                 nonbasic_land: false,
+                r111_not_basic_land: false,
                 looked: Vec::new(),
             }),
         })),
@@ -285,6 +290,40 @@ fn colors(cx: &Cx<'_>, player: PlayerId) -> Result<Result<Option<Chosen>, Decisi
     Ok(Ok(Some(Chosen::Colors(chosen))))
 }
 
+/// One of the spells the players `caster` names cast this turn that the filter matches, picked by `player` and kept as
+/// the damage it dealt this turn; a single spell is not asked about, and none binds nothing.
+fn r111_spell_damage(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    caster: &mtg_cards::refs::Ref,
+    filter: &Selector,
+) -> Result<Result<Option<Chosen>, Decision>, ResolveError> {
+    let spells = cx.scope.r111_spell_damages(caster, filter)?;
+    let options: Vec<ChoiceOption> = spells
+        .iter()
+        .map(|(shot, damage)| {
+            let name = cx
+                .state()
+                .source_object(shot.id)
+                .map(|object| object.card().name.clone())
+                .unwrap_or_default();
+            ChoiceOption::Label(format!("{name} ({damage} damage)"))
+        })
+        .collect();
+    let chooser = OptionChooser {
+        player,
+        text: "Choose one of those spells.".to_owned(),
+        options,
+    };
+    Ok(match pick_options(cx, &[chooser])? {
+        Optioned::Ask(decision) => Err(decision),
+        Optioned::Done(taken) => Ok(taken
+            .first()
+            .and_then(|(_, index)| spells.get(*index))
+            .map(|(_, damage)| Chosen::Number(*damage))),
+    })
+}
+
 /// What the player chooses between.
 fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
     match kind {
@@ -326,7 +365,10 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
             .map(ChoiceOption::Color)
             .chain(basic_land_types())
             .collect(),
-        ValueKind::CardName(_) | ValueKind::Number(..) | ValueKind::LikeChosen(_) => Vec::new(),
+        ValueKind::CardName(_)
+        | ValueKind::Number(..)
+        | ValueKind::LikeChosen(_)
+        | ValueKind::R111SpellDamage { .. } => Vec::new(),
     }
 }
 
@@ -392,6 +434,7 @@ fn question(kind: &ValueKind) -> String {
         ValueKind::Options(words) => format!("Choose {}.", words.join(" or ")),
         ValueKind::Letter => "Choose a letter.".to_owned(),
         ValueKind::Number(..) => "Choose a number.".to_owned(),
+        ValueKind::R111SpellDamage { .. } => "Choose one of those spells.".to_owned(),
     }
 }
 

@@ -695,11 +695,13 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r6700_wholes::r6700_add_wholes(ability, &mut texts);
     super::r109_04_wholes::r109_04_add_wholes(ability, &mut texts);
     super::r110_04_wholes::r110_04_add_wholes(ability, &mut texts);
+    super::r111_04_wholes::r111_04_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
     super::r109_05_wholes::r109_05_add_wholes(ability, &mut texts);
     super::r110_01_wholes::r110_01_add_wholes(ability, &mut texts);
+    super::r111_01_wholes::r111_01_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -708,6 +710,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5521_wholes::r5521_wordings(ability, &mut texts);
     super::r109_wholes::r109_wordings(ability, &mut texts);
     super::r110_03_wholes::r110_03_wordings(ability, &mut texts);
+    super::r111_03_wholes::r111_03_wordings(ability, &mut texts);
+    super::r111_02_wholes::r111_02_wordings(ability, &mut texts);
     super::r6007_wholes::r6007_wordings(ability, &mut texts);
     super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
     // Only a triggered animation is printed on an enchantment; an activated one, on a land, keeps its room.

@@ -17,4 +17,9 @@ traits: SpendTraits,
 /**
  * The cost paid has {X} in it.
  */
-has_x?: boolean, };
+has_x?: boolean, 
+/**
+ * Which mana pays each colored symbol and `{C}` when a rule lets mana be spent as though it were another type
+ * (`r111_spend_as`); each pays its own type when absent.
+ */
+r111_pays?: Array<number>, };

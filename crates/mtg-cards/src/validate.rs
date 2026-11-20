@@ -631,6 +631,11 @@ impl<'a> Walker<'a> {
             ValueKind::CreatureTypeExcept(left_out) if left_out.is_empty() => {
                 self.problem("a creature type other than none is any creature type");
             }
+            ValueKind::R111SpellDamage { caster, filter } => {
+                self.uses("ValueKind", "R111SpellDamage");
+                self.at("caster", |w| w.reference(caster, Kind::Player));
+                self.at("filter", |w| w.selector(filter));
+            }
             _ => {}
         }
     }
@@ -664,13 +669,27 @@ impl<'a> Walker<'a> {
         if *r == Ref::R4700OtherChosen {
             self.uses("Ref", "R4700OtherChosen");
         }
+        if matches!(r, Ref::R111Object(_)) {
+            self.problem("an object is fixed by the engine and never named in a card file");
+        }
         if matches!(r, Ref::R110Seat(_)) {
             self.problem("a seat is fixed by the engine and never named in a card file");
+        }
+        if let Ref::R111BlockedController { of, by } = r {
+            self.uses("Ref", "R111BlockedController");
+            self.at("of", |w| w.reference(of, Kind::Object));
+            self.at("by", |w| w.reference(by, Kind::Object));
+        }
+        if let Ref::R111LastDamagedYou(by) = r {
+            self.uses("Ref", "R111LastDamagedYou");
+            self.at("R111LastDamagedYou", |w| w.selector(by));
         }
         match r {
             Ref::R110Seat(_)
             | Ref::R4700OtherChosen
             | Ref::You
+            | Ref::R111LastDamagedYou(_)
+            | Ref::R111BlockedController { .. }
             | Ref::Opponents
             | Ref::EachPlayer
             | Ref::AttachedPlayer
@@ -691,7 +710,7 @@ impl<'a> Walker<'a> {
             | Ref::Defending => {
                 self.expect(Kind::Player, want);
             }
-            Ref::This | Ref::Attached | Ref::Granter | Ref::Convoked => {
+            Ref::This | Ref::Attached | Ref::Granter | Ref::Convoked | Ref::R111Object(_) => {
                 self.expect(Kind::Object, want);
             }
             Ref::PlayersWhere { who, test } => {
@@ -1109,6 +1128,7 @@ impl<'a> Walker<'a> {
             | Pred::Commander
             | Pred::Spell
             | Pred::Dungeon
+            | Pred::Emblem
             | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
@@ -1838,6 +1858,9 @@ impl<'a> Walker<'a> {
             | Condition::FastestPlayer(_)
             | Condition::CompletedNamedDungeon { .. } => self.r5521_condition(condition),
             Condition::AttackedThisCombat(who) => self.player_condition("AttackedThisCombat", who),
+            Condition::R111CastOrPutLastTurn
+            | Condition::R111AttackedLastCombat(_)
+            | Condition::R111DamagedThisTurnBy(_) => self.r111_condition(condition),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
             Condition::TriggeringSticker(_) => self.uses("Condition", "TriggeringSticker"),
@@ -1858,6 +1881,22 @@ impl<'a> Walker<'a> {
     }
 
     /// A condition on what creatures did earlier: damage dealt this game, an exploit, an attack this turn.
+    /// The r111-03 facts of a player's last turn, a creature's last combat and the damage dealt to "you" this turn.
+    fn r111_condition(&mut self, condition: &Condition) {
+        match condition {
+            Condition::R111CastOrPutLastTurn => self.uses("Condition", "R111CastOrPutLastTurn"),
+            Condition::R111AttackedLastCombat(by) => {
+                self.uses("Condition", "R111AttackedLastCombat");
+                self.at("by", |w| w.reference(by, Kind::Object));
+            }
+            Condition::R111DamagedThisTurnBy(by) => {
+                self.uses("Condition", "R111DamagedThisTurnBy");
+                self.at("by", |w| w.selector(by));
+            }
+            _ => {}
+        }
+    }
+
     fn history_condition(&mut self, condition: &Condition) {
         match condition {
             Condition::DamagedThisGameBy { by, .. } => {
@@ -2881,6 +2920,7 @@ impl<'a> Walker<'a> {
                 self.reference(who, Kind::Player);
             }
             Modification::GainAbilitiesOf(from)
+            | Modification::R111GainNonManaAbilitiesOf(from)
             | Modification::R6702GainActivatedAndTriggeredOf(from)
             | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
@@ -3265,6 +3305,12 @@ impl<'a> Walker<'a> {
             TriggerPattern::AnyOf(patterns) => self.any_of(patterns),
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
+            TriggerPattern::R111AbilityTriggered { cause, .. } => {
+                if matches!(**cause, TriggerPattern::R111AbilityTriggered { .. }) {
+                    self.problem("an ability triggering is caused by another event");
+                }
+                self.at("cause", |w| w.trigger_pattern(cause));
+            }
             TriggerPattern::R6701WhileActivating { inner, .. } => {
                 if !matches!(**inner, TriggerPattern::ZoneChange { .. }) {
                     self.problem("an activation wraps one zone change");
@@ -3357,6 +3403,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::Batch(_)
                 | TriggerPattern::Caused { .. }
                 | TriggerPattern::R6701WhileActivating { .. }
+                | TriggerPattern::R111AbilityTriggered { .. }
                 | TriggerPattern::R109WhileCasting { .. }
                 | TriggerPattern::Nth { .. }
                 | TriggerPattern::AnyOf(_)
@@ -3840,6 +3887,8 @@ impl Walker<'_> {
     fn kind_of(&self, r: &Ref) -> Kind {
         match r {
             Ref::R110Seat(_)
+            | Ref::R111LastDamagedYou(_)
+            | Ref::R111BlockedController { .. }
             | Ref::R4700OtherChosen
             | Ref::You
             | Ref::Opponents
@@ -3882,6 +3931,7 @@ impl Walker<'_> {
             | Ref::Arrived { .. }
             | Ref::Departed(_)
             | Ref::SourceOf(_)
+            | Ref::R111Object(_)
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope
@@ -4826,6 +4876,7 @@ impl Walker<'_> {
             | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
+            | Effect::R111OrderGraveyard { who }
             | Effect::Exploit { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -5344,6 +5395,7 @@ impl Walker<'_> {
                     w.problem(R5502_COMBAT_ONLY);
                 }
             }
+            Effect::R111KeepChosen(name) => w.chosen_as(name),
             Effect::R110ChooseSecretly(secret) => {
                 if matches!(secret, crate::effect::R110Secret::CreatureType(types) if types.len() < 2) {
                     w.problem("a secret choice of creature types offers two or more");
@@ -5954,7 +6006,7 @@ impl Walker<'_> {
             });
         }
         self.scope.in_static = true;
-        self.r6701_spell_grant = names_spells(affected);
+        self.r6701_spell_grant = names_spells(affected) || r111_names_cards_elsewhere(affected);
         self.at("mods", |w| w.mods(mods));
         self.r6701_spell_grant = false;
         if names_spells(affected) {
@@ -5995,7 +6047,7 @@ impl Walker<'_> {
     }
 
     /// A static ability that names spells ("Artifact spells you cast have convoke") gives only the keywords that help
-    /// pay for a spell, since the engine reads no other keyword a spell is given.
+    /// pay for a spell or an alternative cost (blitz, `ways`), since the engine reads no other keyword a spell is given.
     fn spell_keywords(&mut self, mods: &[Modification]) {
         self.uses("Ability", "Static.SpellKeywords");
         let helps = |m: &Modification| {
@@ -6004,12 +6056,13 @@ impl Walker<'_> {
                 Modification::AddKeyword(
                     Keyword::Convoke | Keyword::Improvise | Keyword::Delve | Keyword::Affinity(_)
                 )
-            ) || matches!(m, Modification::GrantAbility(granted) if matches!(**granted, Ability::AltCast { .. }))
+            ) || matches!(m, Modification::AddKeyword(Keyword::Blitz(_)))
+                || matches!(m, Modification::GrantAbility(granted) if matches!(**granted, Ability::AltCast { .. }))
         };
         if !mods.iter().all(helps) {
             self.at("mods", |w| {
                 w.problem(
-                    "a spell is given only convoke, improvise, delve or affinity by a static ability",
+                    "a spell is given only convoke, improvise, delve, affinity or blitz by a static ability",
                 );
             });
         }
@@ -6543,6 +6596,7 @@ impl Walker<'_> {
             | GameRule::UnspentManaBecomes { who, .. }
             | GameRule::DrawLimit { who, .. }
             | GameRule::PayLifeForMana { who, .. }
+            | GameRule::R111SpendColorAs { who, .. }
             | GameRule::OpponentsCantMakeSacrifice(who)
             | GameRule::OpponentsCantMakeDiscardOrSacrifice(who)
             | GameRule::SpendManaAs {
@@ -6561,6 +6615,7 @@ impl Walker<'_> {
             | GameRule::LoyaltyTwice(who)
             | GameRule::R6600LoyaltyOnceMore(who)
             | GameRule::BoastTwice(who)
+            | GameRule::R111RevealDraws(who)
             | GameRule::LoyaltyAnyTime(who)
             | GameRule::LoyaltyCostsMore { who, .. } => {
                 self.at(tag, |w| w.reference(who, Kind::Player));
@@ -6614,6 +6669,9 @@ impl Walker<'_> {
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_) => {}
+            GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
+                self.selector(what);
+            }
             GameRule::R6018PlotLess(less) => {
                 if *less == 0 {
                     self.at(tag, |w| {
@@ -6809,8 +6867,11 @@ impl Walker<'_> {
                     self.at("unless", |w| w.condition(unless));
                 }
             }
-            Prohibited::Attack { unless } => {
+            Prohibited::Attack { unless } | Prohibited::R111AttackPlayer { unless } => {
                 self.at("unless", |w| w.condition(unless));
+            }
+            Prohibited::R111CastOrPlay(cards) => {
+                self.at("R111CastOrPlay", |w| w.selector(cards));
             }
             Prohibited::AttackPlaneswalkers(walkers) => {
                 self.at("AttackPlaneswalkers", |w| w.selector(walkers));
@@ -6991,6 +7052,7 @@ impl Walker<'_> {
             | ReplaceWhen::CopiesSpell { who }
             | ReplaceWhen::Learns { who }
             | ReplaceWhen::R6700Draws { who }
+            | ReplaceWhen::R111DrawBy { who, .. }
             | ReplaceWhen::Draw { who, .. }
             | ReplaceWhen::R6603DrawsSeveral { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
@@ -7050,7 +7112,10 @@ impl Walker<'_> {
         }
         let saved = (self.scope.in_trigger, self.scope.dealer);
         self.scope.in_trigger = true;
-        self.scope.dealer = matches!(when, ReplaceWhen::Damage { .. });
+        self.scope.dealer = matches!(
+            when,
+            ReplaceWhen::Damage { .. } | ReplaceWhen::R111DrawBy { .. }
+        );
         self.effect_list("Instead", effects, false);
         (self.scope.in_trigger, self.scope.dealer) = saved;
     }
@@ -7657,6 +7722,13 @@ fn casts_another_spell(when: &TriggerPattern) -> bool {
 /// Whether a static ability affects spells being cast: its selector holds the spell predicate.
 fn names_spells(affected: &Ref) -> bool {
     matches!(affected, Ref::Each(selector) if selector.0.contains(&Pred::Spell))
+}
+
+/// Whether a static ability names cards in a hand, a library, a graveyard or exile, which an alternative cost given to
+/// them works from ("Artifact cards ... in your hand have warp {2}{R}").
+fn r111_names_cards_elsewhere(affected: &Ref) -> bool {
+    matches!(affected, Ref::Each(selector) if selector.0.iter().any(|pred| matches!(pred,
+        Pred::In(ZoneKind::Hand | ZoneKind::Library | ZoneKind::Graveyard | ZoneKind::Exile))))
 }
 
 /// Whether a static ability gives keywords a player can have (hexproof, shroud, protection) to players, and nothing else.
@@ -9462,7 +9534,7 @@ mod tests {
     )]
     #[case::a_spell_given_flying(
         r#"{"Static":{"affected":{"Each":["Spell"]},"mods":[{"AddKeyword":"Flying"}]}}"#,
-        "faces[0].abilities[0].Static.mods: a spell is given only convoke, improvise, delve or affinity by a static ability"
+        "faces[0].abilities[0].Static.mods: a spell is given only convoke, improvise, delve, affinity or blitz by a static ability"
     )]
     #[case::a_permission_cost_with_no_part(
         r#"{"Spell":{"effects":[{"Rule":{"rule":{"MayCast":{"from":"Exile","additional":[]}},"duration":"UntilEndOfTurn"}}]}}"#,

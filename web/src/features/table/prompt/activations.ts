@@ -87,6 +87,8 @@ function usable(object: ObjectView, seat: PlayerId): boolean {
     if ('Hand' in zone) return zone.Hand === seat
     if ('Graveyard' in zone) return zone.Graveyard === seat
     if ('Command' in zone) return zone.Command === seat
+    // The top card of your own library, which a permission lets you plot (Fblthp, Lost on the Range).
+    if ('Library' in zone) return zone.Library === seat
   }
   return false
 }

@@ -341,20 +341,47 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
     }
 }
 
-/// The activated abilities printed on the cards `from` names now (and the mana ability of a basic land), each with the card it is printed on: what a static ability
-/// that gives the abilities of other cards gives while the layers are worked out.
-fn borrowed(scope: &Scope<'_>, from: &mtg_cards::refs::Ref) -> Result<Vec<Borrowed>, ResolveError> {
+/// The activated abilities the objects `from` names have now (`r111_lent`): a permanent's as the layers have made it so
+/// far (granted ones and its land types' mana abilities included), a card elsewhere as printed (and the mana ability of a
+/// basic land). `with_mana` false leaves the mana abilities out.
+fn borrowed(
+    scope: &Scope<'_>,
+    from: &mtg_cards::refs::Ref,
+    with_mana: bool,
+) -> Result<Vec<Borrowed>, ResolveError> {
     let mut found = Vec::new();
     for donor in scope.objects(from)? {
         let Some(object) = scope.state.object(donor.id) else {
             continue;
         };
-        for (index, body) in crate::ability_reader::lendable(object.card()) {
-            found.push(Borrowed {
-                donor: donor.id,
-                index,
-                body,
-            });
+        match scope.layered.map(|view| view.get(donor.id)) {
+            Some(Some(held)) => {
+                let abilities: Vec<_> = held
+                    .abilities
+                    .iter()
+                    .map(|held| (held.address, Arc::clone(&held.body)))
+                    .collect();
+                found.extend(crate::r111_lent::lent(
+                    donor.id,
+                    object.card(),
+                    &abilities,
+                    &held.chars.abilities,
+                    with_mana,
+                ));
+            }
+            Some(None) => {
+                for (index, body) in crate::ability_reader::lendable(object.card()) {
+                    if with_mana || !body.is_mana_ability() {
+                        found.push(Borrowed {
+                            donor: donor.id,
+                            index,
+                            body,
+                            r111_current: false,
+                        });
+                    }
+                }
+            }
+            None => found.extend(crate::r111_lent::lent_now(scope.state, donor.id, with_mana)),
         }
     }
     Ok(found)
@@ -366,7 +393,7 @@ fn r6702_borrowed_with_triggers(
     scope: &Scope<'_>,
     from: &mtg_cards::refs::Ref,
 ) -> Result<Vec<Borrowed>, ResolveError> {
-    let mut found = borrowed(scope, from)?;
+    let mut found = borrowed(scope, from, true)?;
     for donor in scope.objects(from)? {
         let Some(object) = scope.state.object(donor.id) else {
             continue;
@@ -376,6 +403,7 @@ fn r6702_borrowed_with_triggers(
                 donor: donor.id,
                 index,
                 body,
+                r111_current: false,
             });
         }
     }
@@ -545,7 +573,10 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::LoseAbilities => Modification::LoseAbilities,
         Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
-        Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from)?),
+        Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from, true)?),
+        Wanted::R111GainNonManaAbilitiesOf(from) => {
+            Modification::GainAbilities(borrowed(scope, from, false)?)
+        }
         Wanted::R6702GainActivatedAndTriggeredOf(from) => {
             Modification::GainAbilities(r6702_borrowed_with_triggers(scope, from)?)
         }

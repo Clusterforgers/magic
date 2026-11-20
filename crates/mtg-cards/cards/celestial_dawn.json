@@ -1,7 +1,7 @@
 {
   "oracle_id": "b4d27fad-9a94-4760-80a6-6a2948109864",
   "name": "Celestial Dawn",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Celestial Dawn",
@@ -36,9 +36,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 170, "end": 295 }
+          "Rule": {
+            "rule": {
+              "R111SpendColorAs": { "who": "You", "mana": "White", "others_colorless": true }
+            }
           }
         }
       ]

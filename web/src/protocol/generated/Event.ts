@@ -870,6 +870,14 @@ object: ObjectId,
 /**
  * What it chose.
  */
+chosen: Chosen, } } | { "R111ChoiceKept": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * What it keeps.
+ */
 chosen: Chosen, } } | { "R110ChoseSecretly": { 
 /**
  * The permanent.
@@ -1158,7 +1166,15 @@ from: number,
 /**
  * The result after it.
  */
-to: number, } } | { "AttractionDeckShuffled": { 
+to: number, } } | { "R111GraveyardOrdered": { 
+/**
+ * Whose graveyard.
+ */
+player: PlayerId, 
+/**
+ * Its cards in the new order, bottom to top.
+ */
+order: Array<ObjectId>, } } | { "AttractionDeckShuffled": { 
 /**
  * Whose deck.
  */

@@ -1,0 +1,7 @@
+[
+ [{"Rule":{"rule":{"R111SpendColorAs":{"who":"You","mana":"White","as_color":"Red"}}}},"You may spend white mana as though it were red mana."]
+,[{"Rule":{"rule":{"R111SpendColorAs":{"who":"You","mana":"White","others_colorless":true}}}},"You may spend white mana as though it were mana of any color. You may spend other mana only as though it were colorless mana."]
+,[{"Rule":{"rule":{"R110SacrificeTax":{"abilities":[],"sacrifice":[{"Subtype":"Swamp"}],"per_symbol":"Black"}}}},"Activated abilities cost an additional \"Sacrifice a Swamp\" to activate for each black mana symbol in their activation costs."]
+,[{"Rule":{"rule":{"R110SacrificeTax":{"abilities":[{"Subtype":"Rebel"},{"Not":"Token"}],"sacrifice":[{"Type":"Land"}]}}}},"Activated abilities of nontoken Rebels cost an additional \"Sacrifice a land\" to activate."]
+,[{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[{"Pay":{"cost":[{"Discard":{}}],"unpaid":[{"Sacrifice":{"filter":["This"]}}],"paid":[{"Reflexive":{"targets":[{"what":{"Object":[{"Not":{"Type":"Land"}},{"ControlledBy":"Opponents"},{"Compare":{"stat":"ManaValue","op":"Le","to":{"Stat":{"of":"Paid","stat":"ManaValue"}}}}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}}]}},"At the beginning of your upkeep, sacrifice this creature unless you discard a card. When you discard a card this way, destroy target nonland permanent an opponent controls with mana value less than or equal to the mana value of the discarded card."]
+]

@@ -313,6 +313,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::OpeningCardsPlayed { .. }
         | Event::TookBack { .. } => Some(R::MovedOn),
         Event::ZoneChanged { .. }
+        | Event::R111GraveyardOrdered { .. }
         | Event::ExtraTurnAdded { .. }
         | Event::ExtraTurnSkipped { .. }
         | Event::SpellControlGained { .. }
@@ -380,6 +381,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Attached { .. }
         | Event::ChosenAsAttached { .. }
         | Event::R110ChoseSecretly { .. }
+        | Event::R111ChoiceKept { .. }
         | Event::R110ChoiceRevealed { .. }
         | Event::AttachedToPlayer { .. }
         | Event::JoinedAttack { .. }

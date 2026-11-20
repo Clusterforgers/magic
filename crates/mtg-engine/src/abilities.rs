@@ -31,6 +31,15 @@ pub enum Grant {
         /// The ability's index among the rules of that card.
         ability: usize,
     },
+    /// The ability at place `nth` among the activated abilities the permanent `donor` has now (granted ones and the mana
+    /// abilities of its land types included, `r111_lent`), which an object has because an effect says it has the
+    /// abilities of that permanent and the ability is not printed on its card (CR 613.1f).
+    R111Lent {
+        /// The permanent that has the ability.
+        donor: ObjectId,
+        /// The ability's place among the activated abilities the donor has.
+        nth: usize,
+    },
     /// The modification `index` of the static ability `rule` printed on the card of `source`, where `rule` is the
     /// static's index among the rules of that card.
     Static {
@@ -76,6 +85,9 @@ pub enum AbilitySource {
     /// Added by a keyword an effect gave the object: the grant names the effect or the static ability that gave
     /// the keyword, and the address's index is the ability's place among those the keyword adds.
     GrantedKeyword(Grant),
+    /// Given by the way the object's spell was cast to a permanent whose card does not print that way (warp, sneak;
+    /// `r111_way_riders`): the address's index is the ability's place among the riders of the way.
+    R111WayRider,
 }
 
 impl AbilitySource {
@@ -154,6 +166,15 @@ impl AbilityRef {
         }
     }
 
+    /// The address of the rider at `index` that the way `object` was cast gives it (`r111_way_riders`).
+    pub const fn r111_rider(object: ObjectId, index: usize) -> Self {
+        AbilityRef {
+            object,
+            ability: index,
+            source: AbilitySource::R111WayRider,
+        }
+    }
+
     /// The address of the ability at `index` among those the keyword `source` names adds to `object`.
     pub const fn keyword(object: ObjectId, source: AbilitySource, index: usize) -> Self {
         AbilityRef {
@@ -199,6 +220,48 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(CounterKind, u32)>>", optional))]
     pub counters: Vec<(CounterKind, u32)>,
+    /// What the payment a reflexive trigger follows took ("When you discard a card this way, ... the mana value of the
+    /// discarded card"), which `Ref::Paid` reads as its targets are chosen; empty for any other trigger.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Target>>", optional))]
+    pub r111_paid: Vec<Target>,
+    /// The event that made the ability trigger, kept so "whenever ... causes a triggered ability to trigger" can read it
+    /// (CR 603.2); for an ability that triggered on another one triggering, the event that made that one trigger.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub event: Option<R111CauseEvent>,
+    /// The triggered ability whose triggering made this one trigger (`Ref::Triggering` names it on the stack); none for
+    /// any other event.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub ability: Option<AbilityRef>,
+}
+
+/// The event a triggered ability triggered on, as `Cause::event` keeps it: an object entering or moving between zones, a
+/// token created, a creature declared as an attacker (CR 603.2).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum R111CauseEvent {
+    /// An object moved to a zone; `object` is its new object. The zone it left is not kept (it is read before the move
+    /// for some events), so a pattern that names it does not match a kept move.
+    Moved {
+        /// The object as it is in the zone it went to.
+        object: ObjectId,
+        /// The zone it went to.
+        to: crate::zones::Zone,
+    },
+    /// A token was created: it entered the battlefield from no zone.
+    Created {
+        /// The token.
+        object: ObjectId,
+    },
+    /// A creature was declared as an attacker.
+    Attacked {
+        /// The attacking creature.
+        attacker: ObjectId,
+        /// What it attacks.
+        at: crate::combat::AttackTarget,
+    },
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]

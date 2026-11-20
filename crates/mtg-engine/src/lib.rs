@@ -172,6 +172,8 @@ pub mod priority;
 pub mod prohibit;
 mod r110_foretell;
 mod r110_sacrifice_tax;
+mod r111_history;
+pub mod r111_spend_as;
 mod r281_kicked_spend;
 mod r281_mana_at_priority;
 pub mod r286_joins;
@@ -245,6 +247,10 @@ pub mod zones;
 pub mod r109_combat_damage;
 mod r110_after_first_combat;
 mod r110_cost_taps;
+mod r111_lent;
+mod r111_plot_top;
+mod r111_triggering;
+mod r111_way_riders;
 #[cfg(test)]
 mod w9c_saturation;
 

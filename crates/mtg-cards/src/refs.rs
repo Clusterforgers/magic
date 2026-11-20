@@ -111,6 +111,21 @@ pub enum Ref {
     /// The player in this seat (0 is the first): written by the engine as a resolution fixes "the chosen player" into a
     /// keyword it grants ("gain protection from the chosen player"), never by a card file.
     R110Seat(u8),
+    /// The controller of the last source the selector matches, as it was then, that dealt damage to "you" this turn ("the
+    /// controller of the last red instant or sorcery spell that dealt damage to you this turn"); nobody when none did.
+    R111LastDamagedYou(Selector),
+    /// The player who controlled the creature `of` names the last time it became blocked this turn by the creature `by` names,
+    /// read from the turn's log of blocks ("the player who controlled that creature the last time it became blocked by that
+    /// Wall"); a creature that has changed zones since is matched as the card it became.
+    R111BlockedController {
+        /// The blocked creature.
+        of: Box<Ref>,
+        /// The blocker.
+        by: Box<Ref>,
+    },
+    /// The object with this id, in whatever zone it is now: written by the engine as a rule a resolution begins fixes the
+    /// object a name holds (`SameCard`, CR 611.2c), never by a card file.
+    R111Object(mtg_core::ids::ObjectId),
     /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
     Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it
@@ -302,6 +317,8 @@ pub enum Pred {
     SharesCreatureTypeWithEach(Ref),
     /// Is a dungeon a player is in (CR 309): the object in a command zone that holds a venture marker.
     Dungeon,
+    /// Is an emblem (CR 114): an object in a command zone with only abilities.
+    Emblem,
     /// Has the same name as one of the objects the reference names ("with the same name as that creature"); a nameless
     /// object (a face-down one) shares no name.
     SharesName(Ref),

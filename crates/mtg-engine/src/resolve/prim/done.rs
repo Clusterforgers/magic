@@ -117,6 +117,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Bolster { .. }
         | Effect::Fabricate { .. }
         | Effect::Learn { .. }
+        | Effect::R111OrderGraveyard { .. }
         | Effect::Crewed { .. }
         | Effect::Explore { .. }
         | Effect::Connive { .. }
@@ -170,7 +171,7 @@ fn reports(effect: &Effect) -> Reports {
         }
         #[rustfmt::skip]
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseWithin { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
-        | Effect::R110ChooseSecretly(_) | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
+        | Effect::R110ChooseSecretly(_) | Effect::R111KeepChosen(_) | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::ChooseWords { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }

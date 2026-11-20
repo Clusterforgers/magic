@@ -94,6 +94,7 @@ Aquastrand Spider
 Arasta of the Endless Web
 Arbor Colossus
 Arboreal Grazer
+Arboria
 Arcade Cabinet
 Arcane Heist
 Arcane Signet
@@ -109,6 +110,7 @@ Archon of Cruelty
 Archway Commons
 Arcum's Weathervane
 Argentum Armor
+Argentum Masticore
 Argoth, Sanctum of Nature
 Armguard Familiar
 Army of the Damned
@@ -162,6 +164,7 @@ Azusa, Lost but Seeking
 Baaallerina
 Baba Lysaga, Night Witch
 Back in Town
+Backdraft
 Bad Moon
 Baird, Steward of Argive
 Balduvian Conjurer
@@ -292,6 +295,7 @@ Bonecaller Cleric
 Bonehoard
 Bonesplitter
 Bontu's Monument
+Booby Trap
 Book of Mazarbul
 Boompile
 Boon Reflection
@@ -339,6 +343,7 @@ Broodhatch Nantuko
 Brooding Saurian
 Broodstar
 Bruna, the Fading Light
+Brutal Suppression
 Bubble Matrix
 Bucknard's Everfull Purse
 Bumi, Unleashed
@@ -730,6 +735,7 @@ Dromoka's Command
 Dromoka's Gift
 Dromoka, the Eternal
 Drop Tower
+Drought
 Drove of Elves
 Drover of the Mighty
 Drownyard Temple
@@ -908,6 +914,7 @@ Fatal Lore
 Fateful Absence
 Fathom Mage
 Favorable Winds
+Fblthp, Lost on the Range
 Fear of Failed Tests
 Fearless Skald
 Fearsome Goblin Pair
@@ -966,6 +973,7 @@ Fork
 Fortified Area
 Fortified Village
 Forum of Amity
+Fossil Find
 Foul Emissary
 Founding of Omashu
 Foundry Inspector
@@ -1211,6 +1219,7 @@ Helm of Chatzuk
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
 Henry Wu, InGen Geneticist
+Henzie "Toolbox" Torre
 Herald of Anguish
 Herald of Eternal Dawn
 Herald of Hoofbeats
@@ -1776,6 +1785,7 @@ Nihil Spellbomb
 Niko Defies Destiny
 Nils, Discipline Enforcer
 Ninja Pizza
+Ninja Teen
 Ninja of the Deep Hours
 Ninja of the New Moon
 Nirkana Revenant
@@ -1789,6 +1799,7 @@ Notion Rain
 Nourishing Shoal
 Novijen, Heart of Progress
 Nuka-Nuke Launcher
+Null Chamber
 Nykthos Paragon
 Nylea's Colossus
 Nylea's Huntmaster
@@ -1910,6 +1921,7 @@ Phantom Nantuko
 Phantom Nishoba
 Photon, Mighty Marvel
 Phyrexian Arena
+Phyrexian Grimoire
 Phyrexian Metamorph
 Phyrexian Plaguelord
 Phyrexian Prowler
@@ -2488,6 +2500,7 @@ Strangleroot Geist
 Stratus Dancer
 Stratus Walk
 Strength Bobblehead
+Strict Proctor
 Strionic Resonator
 Strixhaven Stadium
 Stroke of Genius
@@ -2504,6 +2517,7 @@ Sudden Death
 Sudden Edict
 Sudden Shock
 Sudden Spoiling
+Suffocation
 Sulfur Elemental
 Sultai Devotee
 Sultai Soothsayer
@@ -2512,6 +2526,7 @@ Summon: G.F. Ifrit
 Sunblast Angel
 Sundering Growth
 Sunfall
+Sunglasses of Urza
 Sunhome Stalwart
 Sunken Hollow
 Sunken Ruins
@@ -2576,6 +2591,7 @@ Tamiyo's Safekeeping
 Tandem Lookout
 Tangle Tumbler
 Tangleweave Armor
+Tannuk, Steadfast Second
 Tanuki Transplanter
 Tapestry Warden
 Tariff
@@ -2622,6 +2638,7 @@ Termagant Swarm
 Terminus
 Terramorphic Expanse
 Terrasymbiosis
+Territorial Hellkite
 Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle
@@ -2814,6 +2831,7 @@ Unite the Coalition
 Universal Automaton
 Universal Surveillance
 Unmask
+Unpredictable Cyclone
 Unsettled Mariner
 Unstable Molecule Suit
 Unstable Obelisk

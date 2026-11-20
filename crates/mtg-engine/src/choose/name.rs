@@ -14,6 +14,10 @@ use crate::events::Event;
 pub const MAX_NAME_LEN: usize = 160;
 
 /// What the player names.
+#[allow(
+    clippy::struct_excessive_bools,
+    reason = "each kind of name is one optional wire flag"
+)]
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct NameOptions {
@@ -36,6 +40,10 @@ pub struct NameOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub nonbasic_land: bool,
+    /// The card must not be a basic land ("a card name other than a basic land card name"); the client leaves those out.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub r111_not_basic_land: bool,
     /// The names of the cards the chooser looked at just before naming ("look at an opponent's hand, then choose any
     /// card name"), in the order they were looked at; the look is logged as the permanent enters.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

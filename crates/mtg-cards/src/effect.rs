@@ -483,6 +483,14 @@ pub enum ValueKind {
     LikeChosen(String),
     /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
     Letter,
+    /// One of the spells the player `caster` names cast this turn that the selector matches as cast ("one of those sorcery
+    /// spells"), remembered as the damage it dealt this turn after prevention.
+    R111SpellDamage {
+        /// The player whose spells are offered.
+        caster: Ref,
+        /// The spells offered, as they were cast.
+        filter: Selector,
+    },
 }
 
 /// One instruction of a spell or ability. Optional fields have defaults: `who` is the
@@ -1670,6 +1678,13 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         to: Option<Ref>,
     },
+    /// The player puts the cards of their graveyard in any order they choose (CR 404.2): "reorder your graveyard as you
+    /// choose".
+    R111OrderGraveyard {
+        /// Whose graveyard.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
     /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
     Learn {
         /// Who learns.
@@ -2236,6 +2251,9 @@ pub enum Effect {
     /// listed ("secretly choose an opponent", "secretly choose Human, Merfolk, or Goblin"). The other players learn it
     /// when `CostItem::R110RevealChosen` is paid; `Ref::Chosen` and `Pred::ChosenSubtype` read it.
     R110ChooseSecretly(R110Secret),
+    /// The source keeps the value the resolution chose under this name as its own choice, public, for its later abilities
+    /// ("II — Choose a card name." of a Saga whose chapter III reads "the chosen name"); nothing once it has left.
+    R111KeepChosen(String),
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.

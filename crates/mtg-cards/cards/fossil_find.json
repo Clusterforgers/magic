@@ -1,0 +1,27 @@
+{
+  "oracle_id": "97b97728-bfe6-483a-a323-c758f41ff9dc",
+  "name": "Fossil Find",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fossil Find",
+      "oracle_fingerprint": "4edd07a0d9882a02f3602c1e761e8d7c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "R111OrderGraveyard": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

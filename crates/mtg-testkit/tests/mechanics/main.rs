@@ -125,6 +125,7 @@ mod r110_04_counter_moves;
 mod r110_04_damage;
 mod r110_04_extra_combat;
 mod r110_04_put_this_way;
+mod r111_masticore;
 mod r1c;
 mod r1fix;
 mod r1g_taken_names;

@@ -1,7 +1,7 @@
 {
   "oracle_id": "e2ea1901-68ac-4afc-adc2-ac6bc7465311",
   "name": "Medomai's Prophecy",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Medomai's Prophecy",
@@ -14,15 +14,45 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 100, "end": 124 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              { "R111KeepChosen": "name" }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 125, "end": 219 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "SpellCast": { "what": ["ChosenName"], "by": "You" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Tally": {
+                                "event": "SpellCast",
+                                "who": "You",
+                                "filter": ["ChosenName"]
+                              }
+                            },
+                            "op": "Eq",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "Draw": { "count": 2 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

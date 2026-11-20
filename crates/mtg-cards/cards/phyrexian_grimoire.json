@@ -1,0 +1,37 @@
+{
+  "oracle_id": "090052a8-9e5b-4024-881f-5f8b65db7aa7",
+  "name": "Phyrexian Grimoire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Phyrexian Grimoire",
+      "oracle_fingerprint": "b8c9daf01cd1dc1a5cb69094b430168a",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" },
+                      { "R4700TopOfGraveyard": { "among": [], "count": 2 } }
+                    ]
+                  },
+                  "as": "chosen",
+                  "rest_as": "other"
+                }
+              },
+              { "Exile": { "what": { "Bound": "chosen" } } },
+              { "Move": { "what": { "Bound": "other" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -750,6 +750,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::CopiesSpell { .. }
         | ReplaceWhen::Learns { .. }
         | ReplaceWhen::R6603DrawsSeveral { .. }
+        | ReplaceWhen::R111DrawBy { .. }
         | ReplaceWhen::R6700Draws { .. }
         | ReplaceWhen::Draw { .. } => false,
     }
@@ -1424,6 +1425,10 @@ impl Pass<'_> {
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
                 scope.players(who)?.contains(player)
+            }
+            (ReplaceWhen::R111DrawBy { who, kind, what }, Unit::Draw { player }) => {
+                scope.players(who)?.contains(player)
+                    && r111_draw_cause::r111_drawn_by(self.state, &scope, *kind, what)?
             }
             (ReplaceWhen::R6603DrawsSeveral { who, at_least }, Unit::Draw { player }) => {
                 self.r6603_draws_of(*player).len() >= *at_least as usize
@@ -4252,6 +4257,8 @@ impl Pass<'_> {
                 | EntersChoice::ColorAndCreatureType
                 | EntersChoice::Players(_)
                 | EntersChoice::R6001Abilities(_)
+                | EntersChoice::R111OpponentAndName
+                | EntersChoice::R111NamesWithOpponent
         ) {
             return self.r4700_chooses(source, controller, kind);
         }
@@ -4387,6 +4394,8 @@ impl Pass<'_> {
             | EntersChoice::Number { .. }
             | EntersChoice::Colors(_)
             | EntersChoice::Players(_)
+            | EntersChoice::R111OpponentAndName
+            | EntersChoice::R111NamesWithOpponent
             | EntersChoice::R6001Abilities(_)
             | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
@@ -4426,6 +4435,9 @@ fn two_land_types(label: &str) -> Option<Chosen> {
 /// The question of a choice made as a permanent enters, in words.
 fn entering_question(kind: EntersChoice) -> String {
     match kind {
+        EntersChoice::R111OpponentAndName | EntersChoice::R111NamesWithOpponent => {
+            "Choose a card name other than a basic land card name.".to_owned()
+        }
         EntersChoice::Color => "Choose a color.".to_owned(),
         EntersChoice::ColorOtherThan(other) => {
             format!(
@@ -4580,6 +4592,7 @@ mod face_down_enters;
 #[cfg(test)]
 mod ep21_plus;
 mod ep28_under;
+mod r111_names;
 mod r4702_names;
 mod r6f_redirect;
 mod w13a_moved;
@@ -4587,6 +4600,7 @@ mod w5d_instead;
 
 mod r109_tokens_enter;
 mod r110_may_prevent;
+mod r111_draw_cause;
 mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;

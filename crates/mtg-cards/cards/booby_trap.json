@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3e46381a-7850-4e50-9213-e1a180299977",
+  "name": "Booby Trap",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Booby Trap",
+      "oracle_fingerprint": "91ba6d28c9650689e0819926cf098e11",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "R111OpponentAndName" }
+          }
+        },
+        { "Rule": { "rule": { "R111RevealDraws": "Chosen" } } },
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "Chosen", "what": ["ChosenName"] } },
+            "effects": [
+              { "Sacrifice": { "filter": ["This"] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "DealDamage": { "to": "TriggeringPlayer", "amount": 10 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

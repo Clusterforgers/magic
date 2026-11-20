@@ -79,7 +79,9 @@ pub fn activated_views(
             AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => {
                 keyword_adding(state, address)
             }
-            AbilitySource::Printed | AbilitySource::Granted(_) => None,
+            AbilitySource::Printed | AbilitySource::Granted(_) | AbilitySource::R111WayRider => {
+                None
+            }
         };
         let keyword = adding
             .as_ref()

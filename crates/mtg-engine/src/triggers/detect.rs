@@ -19,6 +19,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 mod by_hand;
 mod did;
 mod l293_discards;
+mod r111_on_trigger;
 mod r288_final_chapter;
 mod r403_excess;
 
@@ -46,6 +47,13 @@ use crate::zones::Zone;
 /// One thing that happened, as the patterns of triggered abilities see it.
 #[derive(Debug, Clone, PartialEq, Eq)]
 enum Happened {
+    /// A triggered ability triggered on the event it keeps (CR 603.2).
+    R111AbilityTriggered {
+        /// The ability.
+        ability: AbilityRef,
+        /// What it triggered on.
+        event: crate::abilities::R111CauseEvent,
+    },
     /// A spell or ability was put onto the stack under the player's control.
     R5503Stacked { object: ObjectId, player: PlayerId },
     /// An object moved between zones.
@@ -622,6 +630,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         found.extend(dk1c5_happened(pre, post, look.earlier, event));
         found.extend(dk26_unattached(pre, event));
         found.extend(r288_final_chapter::r288_happened(pre, event, post));
+        found.extend(r111_on_trigger::r111_happened(event));
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
@@ -1584,6 +1593,9 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         source: None,
         against: None,
         counters: Vec::new(),
+        r111_paid: Vec::new(),
+        event: None,
+        ability: None,
     }
 }
 
@@ -2030,6 +2042,9 @@ fn matching_event(
             caused_by(scope, by.as_ref(), source)
                 .then(|| matching(inner, happened, scope))
                 .flatten()
+        }
+        (TriggerPattern::R111AbilityTriggered { .. }, happened) => {
+            r111_on_trigger::r111_matching(pattern, happened, scope)
         }
         (TriggerPattern::R6701WhileActivating { inner, kind }, happened) => {
             r6701_activating(scope, *kind)
@@ -3023,6 +3038,10 @@ fn object_triggers(
             let Some(shot) = &shot else {
                 continue;
             };
+            let mut cause = cause;
+            if cause.event.is_none() {
+                cause.event = r111_on_trigger::r111_event(happened);
+            }
             let trigger = Triggered {
                 source,
                 ability: address.ability,
@@ -3153,7 +3172,7 @@ fn repeats(
 fn again_watches(state: &GameState, from: Option<&Selector>, watcher: ObjectRef) -> bool {
     fn names_elsewhere(preds: &[Pred]) -> bool {
         preds.iter().any(|pred| match pred {
-            Pred::Spell | Pred::In(_) => true,
+            Pred::Spell | Pred::In(_) | Pred::Emblem => true,
             Pred::AnyOf(inner) => names_elsewhere(inner),
             _ => false,
         })

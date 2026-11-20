@@ -77,6 +77,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             cause: Cause {
                 snapshots: cx.resolving.snapshots().to_vec(),
                 amount: times_before(cx).max(sticker_vowels_before(cx)),
+                r111_paid: cx
+                    .resolving
+                    .bindings()
+                    .get(crate::resolve::R5520_PAID)
+                    .cloned()
+                    .unwrap_or_default(),
                 ..Cause::default()
             },
             snapshot,

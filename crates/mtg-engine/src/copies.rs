@@ -380,7 +380,8 @@ pub(crate) fn fold_spell(state: &mut GameState, copy: &SpellCopy) -> Result<(), 
     Ok(())
 }
 
-/// Folds the event: the copy is a new token card on top of the exile zone, a copy of a card that lies there (CR 707.12).
+/// Folds the event: the copy is a new token card on top of the exile zone, a copy of a card that lies there or in a hand
+/// (CR 707.12).
 pub(crate) fn fold_card(state: &mut GameState, copy: &CardCopy) -> Result<(), EngineError> {
     let id = copy.object;
     if state.objects.contains_key(&id) || state.ceased.contains_key(&id) {
@@ -394,12 +395,13 @@ pub(crate) fn fold_card(state: &mut GameState, copy: &CardCopy) -> Result<(), En
     }
     let copied = state.objects.get(&copy.of.id).is_some_and(|card| {
         card.counter() == copy.of.counter
-            && ((card.zone() == Zone::Exile && card.kind() == ObjectKind::Card)
+            && ((matches!(card.zone(), Zone::Exile | Zone::Hand(_))
+                && card.kind() == ObjectKind::Card)
                 || card.permanent().is_some_and(PermanentState::prepared))
     });
     if !copied {
         return Err(invalid(format!(
-            "{:?} is not a card in exile or a prepared permanent",
+            "{:?} is not a card in exile or a hand or a prepared permanent",
             copy.of
         )));
     }
