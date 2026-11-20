@@ -121,6 +121,7 @@ mod protection;
 mod provided;
 mod prowess;
 mod prowl;
+mod r110_transfigure;
 pub(crate) mod r282_compleated;
 mod r282_cumulative_acts;
 pub(crate) mod r282_more_than_meets;
@@ -563,6 +564,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Typecycling { .. } => &typecycling::Typecycling,
         Keyword::Scavenge(_) => &scavenge::Scavenge,
         Keyword::Transmute(_) => &transmute::Transmute,
+        Keyword::R110Transfigure(_) => &r110_transfigure::R110Transfigure,
         Keyword::Awaken { .. } => &awaken::Awaken,
         Keyword::Gravestorm => &gravestorm::Gravestorm,
         Keyword::Sunburst => &sunburst::Sunburst,
@@ -1035,6 +1037,7 @@ mod tests {
             Keyword::CrewOnce(1),
             Keyword::Scavenge(cost()),
             Keyword::Transmute(cost()),
+            Keyword::R110Transfigure(cost()),
             Keyword::Awaken {
                 count: 3,
                 cost: cost(),
@@ -1248,6 +1251,7 @@ mod tests {
         "Keyword.Encore",
         "Keyword.Scavenge",
         "Keyword.Transmute",
+        "Keyword.R110Transfigure",
         "Keyword.Awaken",
         "Keyword.Assist",
         "Keyword.Craft",

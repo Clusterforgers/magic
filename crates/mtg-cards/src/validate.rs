@@ -2683,6 +2683,7 @@ impl<'a> Walker<'a> {
             | Keyword::Eternalize(cost)
             | Keyword::Scavenge(cost)
             | Keyword::Transmute(cost)
+            | Keyword::R110Transfigure(cost)
             | Keyword::Ninjutsu(cost)
             | Keyword::CommanderNinjutsu(cost)
             | Keyword::LevelUp(cost)

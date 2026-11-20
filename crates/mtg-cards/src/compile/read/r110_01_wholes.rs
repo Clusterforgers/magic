@@ -86,7 +86,10 @@ mod tests {
                 }
                 [first, second] => {
                     assert_eq!(r110_01_pair_read(text).as_ref(), Some(shape), "{text}");
-                    assert_eq!(r110_01_pair_texts(first, second), std::slice::from_ref(text));
+                    assert_eq!(
+                        r110_01_pair_texts(first, second),
+                        std::slice::from_ref(text)
+                    );
                     assert!(r110_01_pair_texts(second, first).is_empty(), "{text}");
                 }
                 _ => panic!("an entry holds one or two abilities: {text}"),
