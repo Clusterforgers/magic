@@ -473,6 +473,9 @@ pub enum TurnTally {
 /// A kind of event the game logs for the turn with the object it was about, which `Amount::Tally` filters and counts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum TallyEvent {
+    /// A permanent was tapped to pay the cost of an activated ability (the object is the tapped permanent, the other the
+    /// source of the ability): "Merfolk tapped this turn to pay for its abilities".
+    R110TappedForCost,
     /// A token was created (the object is the token, as it entered).
     TokenCreated,
     /// A spell was cast (the object is the spell, as it was cast).

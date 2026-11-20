@@ -238,6 +238,7 @@ pub mod w6b_emblems;
 pub mod zones;
 
 pub mod r109_combat_damage;
+mod r110_cost_taps;
 #[cfg(test)]
 mod w9c_saturation;
 

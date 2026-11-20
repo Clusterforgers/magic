@@ -77,6 +77,7 @@ mod phasing;
 mod planeswalkers;
 mod proliferate;
 mod r109_attached;
+mod r110_cost_taps;
 mod r110_named_search;
 mod r110_opponent_draws;
 mod r110_secret;

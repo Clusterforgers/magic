@@ -249,6 +249,7 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
                 1,
             );
         }
+        crate::r110_cost_taps::r110_record_cost_taps(state, put, &rules);
         (rules, Bindings::new())
     };
     c11d_keep_modes(state, put, &rules);

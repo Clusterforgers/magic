@@ -1,7 +1,7 @@
 {
   "oracle_id": "f72511b0-9993-4998-b646-65a855cb8170",
   "name": "Vodalian War Machine",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vodalian War Machine",
@@ -36,9 +36,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 227, "end": 314 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [
+                      { "Subtype": "Merfolk" },
+                      { "DidThisTurn": { "event": "R110TappedForCost", "to": "This" } }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]
