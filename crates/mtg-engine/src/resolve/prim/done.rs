@@ -142,6 +142,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::R6702Distribute { .. }
         | Effect::R6702CountersPerVote { .. }
         | Effect::R110RemovePutThisWay { .. }
+        | Effect::R110MoveEachKindMissing { .. }
+        | Effect::R110MoveOneOrMore { .. }
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }

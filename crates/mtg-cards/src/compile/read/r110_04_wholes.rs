@@ -87,6 +87,10 @@ mod tests {
                 "a -1/-1 counter on it, prevent",
             ),
             ("number of Clerics", "number of Wizards"),
+            ("a counter of each kind not on", "a counter of each kind on"),
+            ("one or more counters", "a counter"),
+            ("If you do, draw a card", "Draw a card"),
+            ("permanent you control onto", "creature you control onto"),
             ("damage to a player", "damage to a creature"),
         ];
         for (_, text) in R110_04_SHAPES.iter() {

@@ -150,7 +150,7 @@ const ORDINARY_EFFECTS =
   SeparatePiles RepeatEach ChooseWords ChooseNumbers BidLife Either OneOf ChangeTargets Rule Reattack If Together May Pay
   R6400Block AuraSwap Meld R6401PassControl R6501RedistributeLife R6602CreateAttached
   R6701RemoveAmong R6701TurnFaceDownHorror R6701ControlCombat R6702Distribute R6702CountersPerVote
-  PayAnyTimes StillResolves Bind Let R110RemovePutThisWay`)
+  PayAnyTimes StillResolves Bind Let R110RemovePutThisWay R110MoveEachKindMissing R110MoveOneOrMore`)
 
 /** The `CostItem` variants that are keyword actions or the words of one, by lexicon term. */
 const COSTS: Record<string, string> = {

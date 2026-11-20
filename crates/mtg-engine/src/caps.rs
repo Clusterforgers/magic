@@ -478,6 +478,8 @@ const RUNS: &[&str] = &[
     "Effect.R6702Distribute",
     "Effect.R6702CountersPerVote",
     "Effect.R110RemovePutThisWay",
+    "Effect.R110MoveEachKindMissing",
+    "Effect.R110MoveOneOrMore",
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
     "Rule.Duration.UntilTheirNextTurn",

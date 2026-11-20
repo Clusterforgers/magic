@@ -4034,6 +4034,7 @@ impl Walker<'_> {
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
+                            | Effect::R110MoveOneOrMore { .. }
                             // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
                             | Effect::ExchangeControl { .. }
                             | Effect::PayAnyTimes { .. }
@@ -5141,6 +5142,10 @@ impl Walker<'_> {
                 w.at("from", |w| w.reference(from, Kind::Object));
                 w.at("to", |w| w.reference(to, Kind::Object));
                 w.at("count", |w| w.amount(count));
+            }
+            Effect::R110MoveEachKindMissing { from, to } | Effect::R110MoveOneOrMore { from, to } => {
+                w.at("from", |w| w.reference(from, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Object));
             }
             Effect::R6602CreateAttached { who, token, to } => {
                 w.at("who", |w| w.reference(who, Kind::Player));

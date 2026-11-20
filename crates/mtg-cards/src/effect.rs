@@ -2197,6 +2197,23 @@ pub enum Effect {
         /// The kind of counter.
         counter: CounterKind,
     },
+    /// One counter of each kind the object `to` names lacks is moved onto it from the object `from` names (CR 122.5:
+    /// "Move a counter of each kind not on ~ from another target permanent you control onto ~").
+    R110MoveEachKindMissing {
+        /// The object they leave.
+        from: crate::refs::Ref,
+        /// The object they go onto.
+        to: crate::refs::Ref,
+    },
+    /// The controller moves one or more counters of any kinds from the object `from` names onto the object `to` names,
+    /// one at a time, at least one when there is one (CR 122.5: "Move one or more counters from ~ onto another target
+    /// permanent you control"); a following `If Performed` reads whether any moved.
+    R110MoveOneOrMore {
+        /// The object they leave.
+        from: crate::refs::Ref,
+        /// The object they go onto.
+        to: crate::refs::Ref,
+    },
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.

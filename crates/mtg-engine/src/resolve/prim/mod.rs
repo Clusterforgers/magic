@@ -33,6 +33,7 @@ mod crewed;
 mod join_attack;
 mod l31a_performed;
 mod let_amount;
+mod r110_moves;
 pub(crate) mod r110_remove_put;
 mod r282_plot;
 mod r306_add_step;
@@ -371,6 +372,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::R6702Distribute { .. } => r6702_distribute::run(cx, effect),
         Effect::R6702CountersPerVote { .. } => r6702_per_vote::run(cx, effect),
         Effect::R110RemovePutThisWay { .. } => r110_remove_put::run(cx, effect),
+        Effect::R110MoveEachKindMissing { .. } => r110_moves::run_each_kind(cx, effect),
+        Effect::R110MoveOneOrMore { .. } => r110_moves::run_one_or_more(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
