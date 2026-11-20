@@ -7,47 +7,15 @@
       "name": "Argentum Masticore",
       "oracle_fingerprint": "bb4f7ab2fd581cdd10b9018790ecd963",
       "abilities": [
-        {
-          "Keyword": "FirstStrike"
-        },
-        {
-          "Keyword": {
-            "Protection": [
-              {
-                "Compare": {
-                  "stat": "Colors",
-                  "op": "Ge",
-                  "to": 2
-                }
-              }
-            ]
-          }
-        },
+        { "Keyword": "FirstStrike" },
+        { "Keyword": { "Protection": [{ "Compare": { "stat": "Colors", "op": "Ge", "to": 2 } }] } },
         {
           "Triggered": {
-            "when": {
-              "StepBegins": {
-                "step": "Upkeep",
-                "whose": "You"
-              }
-            },
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
             "effects": [
               {
                 "Pay": {
-                  "cost": [
-                    {
-                      "Discard": {}
-                    }
-                  ],
-                  "unpaid": [
-                    {
-                      "Sacrifice": {
-                        "filter": [
-                          "This"
-                        ]
-                      }
-                    }
-                  ],
+                  "cost": [{ "Discard": {} }],
                   "paid": [
                     {
                       "Reflexive": {
@@ -55,42 +23,24 @@
                           {
                             "what": {
                               "Object": [
-                                {
-                                  "Not": {
-                                    "Type": "Land"
-                                  }
-                                },
-                                {
-                                  "ControlledBy": "Opponents"
-                                },
+                                { "Not": { "Type": "Land" } },
+                                { "ControlledBy": "Opponents" },
                                 {
                                   "Compare": {
                                     "stat": "ManaValue",
                                     "op": "Le",
-                                    "to": {
-                                      "Stat": {
-                                        "of": "Paid",
-                                        "stat": "ManaValue"
-                                      }
-                                    }
+                                    "to": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
                                   }
                                 }
                               ]
                             }
                           }
                         ],
-                        "effects": [
-                          {
-                            "Destroy": {
-                              "what": {
-                                "Target": 0
-                              }
-                            }
-                          }
-                        ]
+                        "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
                       }
                     }
-                  ]
+                  ],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
                 }
               }
             ]

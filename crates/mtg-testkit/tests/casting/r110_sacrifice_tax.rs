@@ -158,8 +158,9 @@ fn a_spell_whose_caster_lacks_the_swamps_is_not_cast() -> Result<(), ScriptError
 }
 
 #[rstest]
-#[case::per_black_symbol(Some(Color::Black), 2)]
-#[case::once(None, 1)]
+// Drought, in play too, adds one Swamp for each of the two black symbols of Pump Rig's cost.
+#[case::per_black_symbol(Some(Color::Black), 4)]
+#[case::once(None, 3)]
 fn an_activated_ability_of_a_named_object_sacrifices_lands(
     #[values(2, 4)] seats: usize,
     #[case] per_symbol: Option<Color>,
@@ -168,7 +169,7 @@ fn an_activated_ability_of_a_named_object_sacrifices_lands(
     let mut driver = game(
         seats,
         Vec::new(),
-        4,
+        6,
         vec![pump_rig(), rig_taxer(per_symbol)],
     )?;
     driver.begin_activation("Pump Rig")?;
