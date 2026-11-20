@@ -82,7 +82,12 @@ describe('which cards are offered an ability', () => {
     ['a card in an opponent command zone', placed(10, { Command: THEM }, THEM), ME, false],
     ['a card in your hand', placed(10, { Hand: ME }, ME), ME, true],
     ['a card in an opponent hand', placed(10, { Hand: THEM }, THEM), ME, false],
-    ['a card in your library', placed(10, { Library: ME }, ME), ME, false],
+    [
+      'a card in your library, which the offer names only when you may plot it',
+      placed(10, { Library: ME }, ME),
+      ME,
+      true,
+    ],
     ['an object on the stack', placed(10, 'Stack', ME), ME, false],
     ['your permanent, seen by a spectator', placed(10, 'Battlefield', ME), null, false],
     ['a card the table does not know', placed(11, 'Battlefield', ME), ME, false],
@@ -441,6 +446,7 @@ describe('special actions are offered as plays', () => {
     ['suspend', { suspendable: [10] }, { Hand: ME }, { Suspend: 10 }],
     ['foretell', { foretellable: [10] }, { Hand: ME }, { Foretell: 10 }],
     ['plot', { plottable: [10] }, { Hand: ME }, { Plot: 10 }],
+    ['plot from the top of the library', { plottable: [10] }, { Library: ME }, { Plot: 10 }],
     ['turn face up', { turnable: [10] }, 'Battlefield', { TurnFaceUp: 10 }],
     [
       'cast prepared',

@@ -400,6 +400,14 @@ fn listed(state: &GameState, player: PlayerId, id: ObjectId) -> Vec<Way> {
         ways.push(way);
     }
     ways.extend(r5510_given_emerge(state, player, id, instant));
+    // An alternative cost a static ability gives the spell as it is cast ("Each creature spell you cast ... has blitz").
+    for keyword in crate::spell_keywords::given_to_spell(state, player, id) {
+        if let Some(way) = keyword_way(state, player, id, &keyword, instant)
+            && !ways.iter().any(|w| w.alternative == way.alternative)
+        {
+            ways.push(way);
+        }
+    }
     r282_ways(state, player, id, instant, &mut ways);
     // The back face of a card with disturb is cast from its graveyard (CR 702.146a).
     ways.extend(keywords::disturb::way(state, id, instant));
@@ -477,7 +485,16 @@ fn alt_cast_ways(
     let zone = zone_kind(card.zone());
     let scope = Scope::announcing(state, player, card.reference());
     let mut found: Vec<Way> = Vec::new();
-    let given = crate::spell_keywords::r6701_alt_casts_given(state, player, card.id());
+    let mut given = crate::spell_keywords::r6701_alt_casts_given(state, player, card.id());
+    // The alternative costs a static ability gives the card where it is ("Artifact cards ... in your hand have warp").
+    given.extend(
+        ability_reader::abilities_of(state, card.id())
+            .into_iter()
+            .filter(|(address, _)| {
+                matches!(address.source, crate::abilities::AbilitySource::Granted(_))
+            })
+            .map(|(_, body)| body),
+    );
     for rule in ability_reader::printed_rules(card.card()).chain(given.iter()) {
         let Ability::AltCast {
             way,
@@ -489,7 +506,9 @@ fn alt_cast_ways(
         else {
             continue;
         };
-        let here = *from == zone && (zone == ZoneKind::Hand || card.owner() == player);
+        let here = (*from == zone && (zone == ZoneKind::Hand || card.owner() == player))
+            || (*from == ZoneKind::Hand
+                && crate::r111_way_riders::r111_cast_from(state, player, card, *way, zone));
         let open = condition
             .as_ref()
             .is_none_or(|held| scope.holds(held).unwrap_or(false));
@@ -1161,6 +1180,7 @@ pub(crate) fn plottable(
 ) -> Vec<ObjectId> {
     hand.iter()
         .copied()
+        .chain(crate::r111_plot_top::r111_plottable_top(state, player))
         .filter(|id| can_plot(state, player, *id, pool, sources, life))
         .collect()
 }
@@ -1182,7 +1202,8 @@ pub(crate) fn can_plot(
         return false;
     };
     card.kind() == ObjectKind::Card
-        && card.zone() == Zone::Hand(player)
+        && (card.zone() == Zone::Hand(player)
+            || crate::r111_plot_top::r111_may_plot_from_top(state, player, id))
         && sorcery_timing(state, player)
         && can_afford(
             &cost,

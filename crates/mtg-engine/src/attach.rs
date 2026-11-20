@@ -214,7 +214,7 @@ fn spares(state: &GameState, keyword: &Keyword, attachment: ObjectId, host: Obje
                         .find(|effect| effect.id == id)
                         .and_then(|effect| effect.source)
                         .map(|source| source.id),
-                    Grant::Borrowed { .. } | Grant::Ring { .. } => None,
+                    Grant::Borrowed { .. } | Grant::R111Lent { .. } | Grant::Ring { .. } => None,
                 })
                 .collect()
         })

@@ -1,7 +1,7 @@
 {
   "oracle_id": "93a476c0-c77e-43b0-8695-ada40368a002",
   "name": "Sharkey, Tyrant of the Shire",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sharkey, Tyrant of the Shire",
@@ -18,9 +18,15 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 102, "end": 192 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "R111GainNonManaAbilitiesOf": {
+                  "Each": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ]
           }
         },
         {

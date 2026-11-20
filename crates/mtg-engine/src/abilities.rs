@@ -31,6 +31,15 @@ pub enum Grant {
         /// The ability's index among the rules of that card.
         ability: usize,
     },
+    /// The ability at place `nth` among the activated abilities the permanent `donor` has now (granted ones and the mana
+    /// abilities of its land types included, `r111_lent`), which an object has because an effect says it has the
+    /// abilities of that permanent and the ability is not printed on its card (CR 613.1f).
+    R111Lent {
+        /// The permanent that has the ability.
+        donor: ObjectId,
+        /// The ability's place among the activated abilities the donor has.
+        nth: usize,
+    },
     /// The modification `index` of the static ability `rule` printed on the card of `source`, where `rule` is the
     /// static's index among the rules of that card.
     Static {
@@ -76,6 +85,9 @@ pub enum AbilitySource {
     /// Added by a keyword an effect gave the object: the grant names the effect or the static ability that gave
     /// the keyword, and the address's index is the ability's place among those the keyword adds.
     GrantedKeyword(Grant),
+    /// Given by the way the object's spell was cast to a permanent whose card does not print that way (warp, sneak;
+    /// `r111_way_riders`): the address's index is the ability's place among the riders of the way.
+    R111WayRider,
 }
 
 impl AbilitySource {
@@ -151,6 +163,15 @@ impl AbilityRef {
             object,
             ability: 0,
             source: AbilitySource::Granted(grant),
+        }
+    }
+
+    /// The address of the rider at `index` that the way `object` was cast gives it (`r111_way_riders`).
+    pub const fn r111_rider(object: ObjectId, index: usize) -> Self {
+        AbilityRef {
+            object,
+            ability: index,
+            source: AbilitySource::R111WayRider,
         }
     }
 

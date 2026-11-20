@@ -2881,6 +2881,7 @@ impl<'a> Walker<'a> {
                 self.reference(who, Kind::Player);
             }
             Modification::GainAbilitiesOf(from)
+            | Modification::R111GainNonManaAbilitiesOf(from)
             | Modification::R6702GainActivatedAndTriggeredOf(from)
             | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
@@ -5954,7 +5955,7 @@ impl Walker<'_> {
             });
         }
         self.scope.in_static = true;
-        self.r6701_spell_grant = names_spells(affected);
+        self.r6701_spell_grant = names_spells(affected) || r111_names_cards_elsewhere(affected);
         self.at("mods", |w| w.mods(mods));
         self.r6701_spell_grant = false;
         if names_spells(affected) {
@@ -5995,7 +5996,7 @@ impl Walker<'_> {
     }
 
     /// A static ability that names spells ("Artifact spells you cast have convoke") gives only the keywords that help
-    /// pay for a spell, since the engine reads no other keyword a spell is given.
+    /// pay for a spell or an alternative cost (blitz, `ways`), since the engine reads no other keyword a spell is given.
     fn spell_keywords(&mut self, mods: &[Modification]) {
         self.uses("Ability", "Static.SpellKeywords");
         let helps = |m: &Modification| {
@@ -6004,12 +6005,13 @@ impl Walker<'_> {
                 Modification::AddKeyword(
                     Keyword::Convoke | Keyword::Improvise | Keyword::Delve | Keyword::Affinity(_)
                 )
-            ) || matches!(m, Modification::GrantAbility(granted) if matches!(**granted, Ability::AltCast { .. }))
+            ) || matches!(m, Modification::AddKeyword(Keyword::Blitz(_)))
+                || matches!(m, Modification::GrantAbility(granted) if matches!(**granted, Ability::AltCast { .. }))
         };
         if !mods.iter().all(helps) {
             self.at("mods", |w| {
                 w.problem(
-                    "a spell is given only convoke, improvise, delve or affinity by a static ability",
+                    "a spell is given only convoke, improvise, delve, affinity or blitz by a static ability",
                 );
             });
         }
@@ -6614,6 +6616,9 @@ impl Walker<'_> {
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_) => {}
+            GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
+                self.selector(what);
+            }
             GameRule::R6018PlotLess(less) => {
                 if *less == 0 {
                     self.at(tag, |w| {
@@ -7657,6 +7662,13 @@ fn casts_another_spell(when: &TriggerPattern) -> bool {
 /// Whether a static ability affects spells being cast: its selector holds the spell predicate.
 fn names_spells(affected: &Ref) -> bool {
     matches!(affected, Ref::Each(selector) if selector.0.contains(&Pred::Spell))
+}
+
+/// Whether a static ability names cards in a hand, a library, a graveyard or exile, which an alternative cost given to
+/// them works from ("Artifact cards ... in your hand have warp {2}{R}").
+fn r111_names_cards_elsewhere(affected: &Ref) -> bool {
+    matches!(affected, Ref::Each(selector) if selector.0.iter().any(|pred| matches!(pred,
+        Pred::In(ZoneKind::Hand | ZoneKind::Library | ZoneKind::Graveyard | ZoneKind::Exile))))
 }
 
 /// Whether a static ability gives keywords a player can have (hexproof, shroud, protection) to players, and nothing else.

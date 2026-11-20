@@ -1,0 +1,34 @@
+{
+  "oracle_id": "5320f5a6-8066-47d4-aa0a-4c879f39d413",
+  "name": "Henzie \"Toolbox\" Torre",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Henzie \"Toolbox\" Torre",
+      "oracle_fingerprint": "fd8ac2eb63a4dec69adf167095bf6b17",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                "Spell",
+                { "Type": "Creature" },
+                { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 4 } },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Blitz": ["OwnManaCost"] } }]
+          }
+        },
+        {
+          "CostModifier": {
+            "applies_to": ["Spell", { "ControlledBy": "You" }, { "CastWith": "Blitz" }],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": { "CommanderCasts": "You" }
+          }
+        }
+      ]
+    }
+  ]
+}

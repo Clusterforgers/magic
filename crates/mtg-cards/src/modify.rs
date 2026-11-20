@@ -163,9 +163,14 @@ pub enum Modification {
     LockKeyword(Keyword),
     /// Gives the object an activated or a triggered ability (layer 6); a keyword is `AddKeyword`.
     GrantAbility(Arc<Ability>),
-    /// The object has the activated abilities printed on the cards the reference names, wherever they are (layer 6): "has all
-    /// activated abilities of all creature cards in graveyards". A card that leaves its zone is a new object and gives none.
+    /// The object has the activated abilities of the objects the reference names (layer 6, CR 613.1f): a permanent's as it has
+    /// them now (granted ones and its land types' mana abilities included), a card's elsewhere as printed: "has all activated
+    /// abilities of all creature cards in graveyards". A card that leaves its zone is a new object and gives none.
     GainAbilitiesOf(Ref),
+    /// The object has the activated abilities of the objects the reference names that are no mana abilities (layer 6, CR
+    /// 605.1a), as `GainAbilitiesOf` gives them: "has all activated abilities of lands your opponents control except mana
+    /// abilities".
+    R111GainNonManaAbilitiesOf(Ref),
     /// The object has the activated and triggered abilities printed on the cards the reference names, wherever they are
     /// (layer 6): "~ has all activated and triggered abilities of the last chosen card".
     R6702GainActivatedAndTriggeredOf(Ref),
@@ -284,6 +289,7 @@ impl Modification {
             | Modification::RemoveKeywordKind(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
+            | Modification::R111GainNonManaAbilitiesOf(_)
             | Modification::R6702GainActivatedAndTriggeredOf(_)
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
@@ -1351,6 +1357,19 @@ pub enum GameRule {
     /// "Plotting cards from your hand costs {2} less.": the plot costs of the cards in its controller's hand cost this
     /// much generic mana less (CR 702.170a).
     R6018PlotLess(u32),
+    /// "You may plot nonland cards from the top of your library.": its controller may plot the top card of their library
+    /// that the selector picks as they plot a card from their hand (CR 702.170a), when it has plot.
+    R111PlotFromLibraryTop(Selector),
+    /// "You may cast creature spells from your graveyard using their sneak abilities.": its controller may cast the cards
+    /// of `from` they own that `what` picks for an alternative cost of `way` they have, which otherwise works from a hand.
+    R111CastWayFrom {
+        /// The way of casting.
+        way: crate::value::CastWay,
+        /// The zone the cards are cast from.
+        from: ZoneKind,
+        /// The cards.
+        what: Selector,
+    },
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),

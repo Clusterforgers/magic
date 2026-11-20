@@ -948,7 +948,8 @@ impl Keyword {
 
     /// The keyword with the `OwnManaCost` part of its cost read as `mana`, the mana cost of the card it is on, and the
     /// `OwnManaValue` part as generic mana of its mana value; the keywords a
-    /// static ability gives with "equal to its mana cost" (escape, replicate, scavenge, encore, emerge, flashback).
+    /// static ability gives with "equal to its mana cost" (escape, replicate, scavenge, encore, emerge, flashback, blitz,
+    /// plot).
     #[must_use]
     pub fn with_own_mana_cost(self, mana: &mtg_core::mana::ManaCost) -> Keyword {
         self.with_own_mana_cost_x(mana, 0)
@@ -966,7 +967,9 @@ impl Keyword {
         | Keyword::Emerge(cost)
         | Keyword::Miracle(cost)
         | Keyword::Foretell(cost)
-        | Keyword::Flashback(cost) = &mut self
+        | Keyword::Flashback(cost)
+        | Keyword::Blitz(cost)
+        | Keyword::Plot(cost) = &mut self
         {
             for item in &mut cost.0 {
                 match item {

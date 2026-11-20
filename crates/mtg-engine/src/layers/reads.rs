@@ -31,6 +31,8 @@ impl Traits {
     pub(crate) const GOADED: Traits = Traits(1 << 8);
     /// The supertypes effects gave it (CR 205.4).
     pub(crate) const SUPERTYPES: Traits = Traits(1 << 9);
+    /// The activated abilities it has, which an object that has "all activated abilities of" it reads (CR 613.1f).
+    pub(crate) const ACTIVATED: Traits = Traits(1 << 10);
 
     /// Both sets together.
     pub(crate) const fn or(self, other: Traits) -> Traits {
@@ -55,18 +57,21 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
         // The land loses its abilities with its land types; a text change rewrites the rules, the keywords and the
         // subtypes.
-        Modification::SetLandTypes(_) | Modification::ChangeText { .. } => {
-            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
-        }
+        Modification::SetLandTypes(_) | Modification::ChangeText { .. } => Traits::SUBTYPES
+            .or(Traits::KEYWORDS)
+            .or(Traits::RULES)
+            .or(Traits::ACTIVATED),
         Modification::SetColors(_) | Modification::AddColors(_) => Traits::COLORS,
         Modification::AddKeyword(_)
         | Modification::AddKeywords(_)
         | Modification::RemoveKeyword(_)
         | Modification::RemoveKeywordKind(_)
-        | Modification::LockKeyword(_) => Traits::KEYWORDS,
+        | Modification::LockKeyword(_) => Traits::KEYWORDS.or(Traits::ACTIVATED),
         Modification::LoseAbilities
         | Modification::LoseAbilitiesExceptMana
-        | Modification::LoseAbility(_) => Traits::KEYWORDS.or(Traits::RULES),
+        | Modification::LoseAbility(_) => Traits::KEYWORDS.or(Traits::RULES).or(Traits::ACTIVATED),
+        // What an object gains are activated abilities another object that has its abilities reads.
+        Modification::GrantAbility(_) | Modification::GainAbilities(_) => Traits::ACTIVATED,
         Modification::SetController(_) => Traits::CONTROL,
         Modification::SetPowerToughness { .. }
         | Modification::SetPower(_)
@@ -77,9 +82,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         // A name read by no other effect of the engine's: words added to it change nothing another effect reads.
         Modification::AddNameWords(_)
         | Modification::SetName(_)
-        | Modification::GrantAbility(_)
         | Modification::GrantText(_)
-        | Modification::GainAbilities(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
         | Modification::R6601CantAttackPlayers { .. }
@@ -118,9 +121,10 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypesNthChosen(_)
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
-        | Wanted::ChangeTextChosenTo { .. } => {
-            Traits::SUBTYPES.or(Traits::KEYWORDS).or(Traits::RULES)
-        }
+        | Wanted::ChangeTextChosenTo { .. } => Traits::SUBTYPES
+            .or(Traits::KEYWORDS)
+            .or(Traits::RULES)
+            .or(Traits::ACTIVATED),
         Wanted::SetColors(_)
         | Wanted::AddColors(_)
         | Wanted::SetColorsChosen(_)
@@ -135,21 +139,22 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
         | Wanted::RemoveKeywordKind(_)
-        | Wanted::LockKeyword(_) => Traits::KEYWORDS,
+        | Wanted::LockKeyword(_) => Traits::KEYWORDS.or(Traits::ACTIVATED),
         Wanted::LoseAbilities
         | Wanted::LoseAbilitiesExceptMana
         | Wanted::LoseThisAbility
-        | Wanted::LosePrinted(_) => Traits::KEYWORDS.or(Traits::RULES),
+        | Wanted::LosePrinted(_) => Traits::KEYWORDS.or(Traits::RULES).or(Traits::ACTIVATED),
+        Wanted::GrantAbility(_)
+        | Wanted::GainAbilitiesOf(_)
+        | Wanted::R111GainNonManaAbilitiesOf(_)
+        | Wanted::R6702GainActivatedAndTriggeredOf(_) => Traits::ACTIVATED,
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
         | Wanted::SetPower(_)
         | Wanted::SetToughness(_)
         | Wanted::ModifyPT { .. }
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
-        Wanted::GrantAbility(_)
-        | Wanted::GainAbilitiesOf(_)
-        | Wanted::R6702GainActivatedAndTriggeredOf(_)
-        | Wanted::SetName(_)
+        Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
@@ -186,7 +191,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::R6601KeywordX { count: value, .. } => reads_of_amount(value),
         Wanted::SetController(who)
         | Wanted::GainAbilitiesOf(who)
-        | Wanted::R6702GainActivatedAndTriggeredOf(who) => reads_of_ref(who),
+        | Wanted::R111GainNonManaAbilitiesOf(who)
+        | Wanted::R6702GainActivatedAndTriggeredOf(who) => reads_of_ref(who).or(Traits::ACTIVATED),
         // The keywords of the other objects are read.
         Wanted::KeywordsOf { from, .. } => Traits::KEYWORDS.or(reads_of_ref(from)),
         // The creature types of the other object are read.

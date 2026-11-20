@@ -17,7 +17,15 @@ donor: ObjectId,
 /**
  * The ability's index among the rules of that card.
  */
-ability: number, } } | { "Static": { 
+ability: number, } } | { "R111Lent": { 
+/**
+ * The permanent that has the ability.
+ */
+donor: ObjectId, 
+/**
+ * The ability's place among the activated abilities the donor has.
+ */
+nth: number, } } | { "Static": { 
 /**
  * The object with the static ability.
  */
