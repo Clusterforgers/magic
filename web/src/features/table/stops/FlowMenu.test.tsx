@@ -1,4 +1,4 @@
-// Goal: the Full Control menu ends with the pace settings: "End my turn by hand" shows what the server holds and asks for the other value, the auto choices (always pay automatically among them) show what the server holds and ask for the one toggled, the abilities the seat always yields to are listed and a click takes one back, and the pinned stops are saved as the default of new games or reset, with the count in words.
+// Goal: the Full Control menu ends with the pace settings: "End my turn by hand" shows what the server holds and asks for the other value, the auto choices ("Always pay for me" among them) show what the server holds and ask for the one toggled, the abilities the seat always yields to are listed and a click takes one back, and the pinned stops are saved as the default of new games or reset, with the count in words.
 import { screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flowPrefs, resetDefaultStops, resetFlowPrefs, saveDefaultStops } from '@/play/flowPrefs'
@@ -44,17 +44,17 @@ describe('auto choices', () => {
     'Order my triggers by timestamp': 'order_triggers',
     'Assign combat damage for me': 'assign_damage',
     'Stop where my permanents can act': 'smart_stops',
-    'Always pay automatically': 'auto_pay',
+    'Always pay for me': 'auto_pay',
   } as const
   it.each([
     ['Order my triggers by timestamp', none, { ...none, order_triggers: true }],
     ['Assign combat damage for me', none, { ...none, assign_damage: true }],
     ['Stop where my permanents can act', none, { ...none, smart_stops: true }],
-    ['Always pay automatically', none, { ...none, auto_pay: true }],
+    ['Always pay for me', none, { ...none, auto_pay: true }],
     ['Order my triggers by timestamp', all, { ...all, order_triggers: false }],
     ['Assign combat damage for me', all, { ...all, assign_damage: false }],
     ['Stop where my permanents can act', all, { ...all, smart_stops: false }],
-    ['Always pay automatically', all, { ...all, auto_pay: false }],
+    ['Always pay for me', all, { ...all, auto_pay: false }],
   ] as const)('%s from %o asks for %o', async (name, held, asked) => {
     const setAutoChoices = vi.fn((_choices: AutoChoices) => true)
     const { user } = renderTable({

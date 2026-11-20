@@ -1,4 +1,4 @@
-// Goal: a payment takes a mana source pressed on the board at once, the moment the prompt is drawn (a basic land, a land of any colour, a land of two colours, Sol Ring and a Signet), so the card reads pressed, a source of several kinds lights its row and the circles fill; "Pay for me" lays out the game's payment for a Confirm, and pays at once with "Always pay automatically" on; in a duel and at four seats, at 1400x900 and on a phone (390x844, the detail in the sheet).
+// Goal: a payment takes a mana source pressed on the board at once, the moment the prompt is drawn (a basic land, a land of any colour, a land of two colours, Sol Ring and a Signet), so the card reads pressed, a source of several kinds lights its row and the circles fill; "Pay for me" lays out the game's payment for a Confirm, and pays at once with "Always pay for me" on; in a duel and at four seats, at 1400x900 and on a phone (390x844, the detail in the sheet).
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -93,7 +93,7 @@ for (const [width, height] of [
         await expect(page.locator('[data-decision]')).toHaveCount(0)
       })
 
-      test('with "Always pay automatically" on, "Pay for me" pays at once', async ({ page }) => {
+      test('with "Always pay for me" on, "Pay for me" pays at once', async ({ page }) => {
         // The Full Control menu sits in the stops row, or behind the Stops button where the row does not fit; the keys
         // reach them where a phone's decision sheet lies over them.
         const stops = page.locator('[data-slot="stops-button"]:visible')
