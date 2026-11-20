@@ -1109,6 +1109,7 @@ impl<'a> Walker<'a> {
             | Pred::Commander
             | Pred::Spell
             | Pred::Dungeon
+            | Pred::Emblem
             | Pred::Ability(_)
             | Pred::Tapped
             | Pred::Untapped
@@ -3265,6 +3266,12 @@ impl<'a> Walker<'a> {
             TriggerPattern::AnyOf(patterns) => self.any_of(patterns),
             TriggerPattern::Batch(inner) => self.batch(inner),
             TriggerPattern::Nth { event, nth } => self.nth(event, *nth),
+            TriggerPattern::R111AbilityTriggered { cause, .. } => {
+                if matches!(**cause, TriggerPattern::R111AbilityTriggered { .. }) {
+                    self.problem("an ability triggering is caused by another event");
+                }
+                self.at("cause", |w| w.trigger_pattern(cause));
+            }
             TriggerPattern::R6701WhileActivating { inner, .. } => {
                 if !matches!(**inner, TriggerPattern::ZoneChange { .. }) {
                     self.problem("an activation wraps one zone change");
@@ -3357,6 +3364,7 @@ impl<'a> Walker<'a> {
             TriggerPattern::Batch(_)
                 | TriggerPattern::Caused { .. }
                 | TriggerPattern::R6701WhileActivating { .. }
+                | TriggerPattern::R111AbilityTriggered { .. }
                 | TriggerPattern::R109WhileCasting { .. }
                 | TriggerPattern::Nth { .. }
                 | TriggerPattern::AnyOf(_)
@@ -4826,6 +4834,7 @@ impl Walker<'_> {
             | Effect::UnlockDoor { who }
             | Effect::TimeTravel { who }
             | Effect::Learn { who }
+            | Effect::R111OrderGraveyard { who }
             | Effect::Exploit { who } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }

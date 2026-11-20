@@ -1190,6 +1190,13 @@ pub enum Event {
         /// The result after it.
         to: u32,
     },
+    /// A player put the cards of their graveyard in an order they chose (CR 404.2).
+    R111GraveyardOrdered {
+        /// Whose graveyard.
+        player: PlayerId,
+        /// Its cards in the new order, bottom to top.
+        order: Vec<ObjectId>,
+    },
     /// A player's Attraction deck was shuffled (CR 103.3a): its cards in the new order, top card last.
     AttractionDeckShuffled {
         /// Whose deck.
@@ -1679,6 +1686,7 @@ impl Event {
     #[allow(clippy::too_many_lines)]
     pub fn touched_objects(&self) -> Vec<ObjectId> {
         match self {
+            Event::R111GraveyardOrdered { order, .. } => order.clone(),
             Event::LibraryShuffled { .. }
             | Event::AttackersChosen { .. }
             | Event::AttackChoicesRefused { .. }

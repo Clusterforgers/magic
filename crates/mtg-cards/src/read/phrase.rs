@@ -361,6 +361,7 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Commander => Part::Before("commander".to_owned()),
         Pred::Spell => Part::Kind("spell".to_owned()),
         Pred::Dungeon => Part::Kind("dungeon".to_owned()),
+        Pred::Emblem => Part::Kind("emblem".to_owned()),
         Pred::Ability(kind) => Part::Kind(format!("{} ability", lower(kind))),
         Pred::Tapped => Part::Before("tapped".to_owned()),
         Pred::Untapped => Part::Before("untapped".to_owned()),

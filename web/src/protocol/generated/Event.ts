@@ -1158,7 +1158,15 @@ from: number,
 /**
  * The result after it.
  */
-to: number, } } | { "AttractionDeckShuffled": { 
+to: number, } } | { "R111GraveyardOrdered": { 
+/**
+ * Whose graveyard.
+ */
+player: PlayerId, 
+/**
+ * Its cards in the new order, bottom to top.
+ */
+order: Array<ObjectId>, } } | { "AttractionDeckShuffled": { 
 /**
  * Whose deck.
  */

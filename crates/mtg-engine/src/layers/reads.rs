@@ -328,6 +328,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Commander
         | Pred::Spell
         | Pred::Dungeon
+        | Pred::Emblem
         | Pred::Ability(_)
         | Pred::Tapped
         | Pred::Untapped

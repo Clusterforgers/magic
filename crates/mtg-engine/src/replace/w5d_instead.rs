@@ -77,6 +77,8 @@ impl Pass<'_> {
                 }
                 _ => Vec::new(),
             },
+            event: None,
+            ability: None,
         }
     }
 

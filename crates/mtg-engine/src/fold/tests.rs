@@ -385,6 +385,8 @@ fn cause() -> Cause {
         source: None,
         against: None,
         counters: Vec::new(),
+        event: None,
+        ability: None,
     }
 }
 

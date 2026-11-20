@@ -1163,6 +1163,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{}, caused by a spell or ability", clause(inner).0),
             false,
         ),
+        TriggerPattern::R111AbilityTriggered { cause, of_it } => (
+            format!(
+                "{} causes a triggered ability{} to trigger",
+                clause(cause).0,
+                if *of_it { " of it" } else { "" }
+            ),
+            false,
+        ),
         TriggerPattern::R6701WhileActivating { inner, kind } => (
             format!(
                 "{} while you're activating a {kind:?} ability",

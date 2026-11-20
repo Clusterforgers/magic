@@ -199,6 +199,44 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(CounterKind, u32)>>", optional))]
     pub counters: Vec<(CounterKind, u32)>,
+    /// The event that made the ability trigger, kept so "whenever ... causes a triggered ability to trigger" can read it
+    /// (CR 603.2); for an ability that triggered on another one triggering, the event that made that one trigger.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub event: Option<R111CauseEvent>,
+    /// The triggered ability whose triggering made this one trigger (`Ref::Triggering` names it on the stack); none for
+    /// any other event.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub ability: Option<AbilityRef>,
+}
+
+/// The event a triggered ability triggered on, as `Cause::event` keeps it: an object entering or moving between zones, a
+/// token created, a creature declared as an attacker (CR 603.2).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum R111CauseEvent {
+    /// An object moved from one zone to another; `object` is its new object.
+    Moved {
+        /// The object as it is in the zone it went to.
+        object: ObjectId,
+        /// The zone it left.
+        from: crate::zones::Zone,
+        /// The zone it went to.
+        to: crate::zones::Zone,
+    },
+    /// A token was created: it entered the battlefield from no zone.
+    Created {
+        /// The token.
+        object: ObjectId,
+    },
+    /// A creature was declared as an attacker.
+    Attacked {
+        /// The attacking creature.
+        attacker: ObjectId,
+        /// What it attacks.
+        at: crate::combat::AttackTarget,
+    },
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]

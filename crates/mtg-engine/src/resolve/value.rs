@@ -1450,7 +1450,7 @@ impl<'a> Scope<'a> {
             Ref::Target(index) => self.chosen(usize::from(*index)),
             Ref::Triggering => self
                 .cause
-                .map(|cause| cause.subjects.clone())
+                .map(|cause| crate::r111_triggering::r111_subjects(state, cause))
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
             Ref::TriggeringFirst => self
                 .cause
@@ -2222,6 +2222,9 @@ impl<'a> Scope<'a> {
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Dungeon => state.r376_is_dungeon(reference.id),
+            Pred::Emblem => state
+                .object(reference.id)
+                .is_some_and(|object| object.kind() == crate::object::ObjectKind::Emblem),
             Pred::Ability(kind) => is_ability(seen, *kind),
             Pred::AbilityFrom(sources) => self.r302_ability_from(sources, seen)?,
             Pred::SourceOf(named) => self.r302_source_of(named, reference)?,
@@ -4641,6 +4644,8 @@ mod tests {
             source: None,
             against: None,
             counters: Vec::new(),
+            event: None,
+            ability: None,
         };
         let mut scope = scope(&game);
         let triggering: Ref = serde_json::from_str(r#""Triggering""#).unwrap();

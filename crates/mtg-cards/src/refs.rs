@@ -302,6 +302,8 @@ pub enum Pred {
     SharesCreatureTypeWithEach(Ref),
     /// Is a dungeon a player is in (CR 309): the object in a command zone that holds a venture marker.
     Dungeon,
+    /// Is an emblem (CR 114): an object in a command zone with only abilities.
+    Emblem,
     /// Has the same name as one of the objects the reference names ("with the same name as that creature"); a nameless
     /// object (a face-down one) shares no name.
     SharesName(Ref),

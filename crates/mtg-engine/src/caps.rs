@@ -110,6 +110,7 @@ const RUNS: &[&str] = &[
     "Trigger.Nth",
     "Trigger.Caused",
     "Trigger.R109WhileCasting",
+    "Trigger.R111AbilityTriggered",
     "Trigger.Did",
     "Ability.OpeningHand",
     "Ability.OpeningHandWith",
@@ -399,6 +400,7 @@ const RUNS: &[&str] = &[
     "Effect.Bolster",
     "Effect.Fabricate",
     "Effect.Learn",
+    "Effect.R111OrderGraveyard",
     "Effect.Performed",
     "Effect.Crewed",
     "Effect.BecomeMonarch",
@@ -2023,6 +2025,8 @@ mod tests {
     #[case::pairing("Effect.Pair", true)]
     #[case::emerge("Keyword.Emerge", true)]
     #[case::r6701_emerge_from_artifact("Keyword.R6701EmergeFromArtifact", true)]
+    #[case::r111_ability_triggered("Trigger.R111AbilityTriggered", true)]
+    #[case::r111_order_graveyard("Effect.R111OrderGraveyard", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
     #[case::read_ahead("Keyword.ReadAhead", true)]
     #[case::recover("Keyword.Recover", true)]

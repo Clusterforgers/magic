@@ -966,6 +966,7 @@ Fork
 Fortified Area
 Fortified Village
 Forum of Amity
+Fossil Find
 Foul Emissary
 Founding of Omashu
 Foundry Inspector
@@ -2488,6 +2489,7 @@ Strangleroot Geist
 Stratus Dancer
 Stratus Walk
 Strength Bobblehead
+Strict Proctor
 Strionic Resonator
 Strixhaven Stadium
 Stroke of Genius

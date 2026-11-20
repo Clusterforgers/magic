@@ -1800,6 +1800,8 @@ fn pipeline_events() -> Vec<Event> {
                 amount: 0,
                 source: None,
                 against: None,
+                event: None,
+                ability: None,
             }),
             delayed: Some(DelayedId(2)),
         })),

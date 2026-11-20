@@ -849,6 +849,16 @@ pub enum TriggerPattern {
         /// Which time in the turn it must be, from one.
         nth: u32,
     },
+    /// A triggered ability triggers because of an event `cause` describes (CR 603.2): "whenever a permanent entering causes
+    /// a triggered ability to trigger"; with `of_it`, only an ability of the object the event is about ("a triggered
+    /// ability of that creature"). `Ref::Triggering` is that ability once it is on the stack.
+    R111AbilityTriggered {
+        /// The event that makes the ability trigger.
+        cause: Box<TriggerPattern>,
+        /// Only an ability of the object the event is about.
+        #[serde(default, skip_serializing_if = "is_false")]
+        of_it: bool,
+    },
     /// The event, while the trigger's controller is activating an ability of the kind, its costs paid in the same batch
     /// ("When this creature is exiled from the battlefield while you're activating a craft ability", CR 602.2).
     R6701WhileActivating {

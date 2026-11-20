@@ -538,6 +538,8 @@ mod tests {
                 source: None,
                 against: None,
                 counters: Vec::new(),
+                event: None,
+                ability: None,
             },
             snapshot: snapshot(state, object.id()).unwrap(),
             delayed: None,

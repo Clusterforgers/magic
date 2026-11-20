@@ -849,6 +849,11 @@ function byResolving(
   return bounced ? `${stackName(n, resolving, true)} returns ${name} to ${zoneWord(to, n)}` : null
 }
 
+/** The ability whose triggering made a trigger trigger, " on an ability of Soul Warden triggering" (CR 603.2). */
+function r111TriggeringWords(cause: Cause, n: EventNames): string {
+  return cause.ability === undefined ? '' : ` on an ability of ${n.card(cause.ability.object)} triggering`
+}
+
 /** The damage a trigger came from, " on 4 damage to Bo": triggers of several sources that dealt damage read apart. */
 function damageWords(cause: Cause, n: EventNames): string {
   if (cause.source === undefined) return ''
@@ -893,7 +898,9 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     if (boss !== undefined) return line(`${boss}: ${n.card(id)} triggers`)
     // A copy of a creature and the creature itself trigger on their own damage, so the line names which one and whom it hurt.
     const copy = n.copy?.(id) === true ? ' (token copy)' : ''
-    return line(`An ability of ${n.card(id)}${copy} triggers${damageWords(cause, n)}`)
+    return line(
+      `An ability of ${n.card(id)}${copy} triggers${damageWords(cause, n)}${r111TriggeringWords(cause, n)}`,
+    )
   }
   if ('TriggersOrdered' in event) {
     return quiet(`${n.seat(event.TriggersOrdered.player)} puts their triggered abilities in order`)
@@ -1054,6 +1061,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
     return quiet(`${n.seat(event.AttractionDeckShuffled.player)} shuffles their Attraction deck`)
+  if ('R111GraveyardOrdered' in event)
+    return line(`${n.seat(event.R111GraveyardOrdered.player)} reorders their graveyard`)
   if ('HandDealt' in event) {
     return line(`${n.seat(event.HandDealt.player)} is dealt ${cards(event.HandDealt.cards.length)}`)
   }
