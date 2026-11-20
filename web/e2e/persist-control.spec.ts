@@ -16,7 +16,7 @@ const TOGGLED = [
   'Order my triggers by timestamp',
   'Assign combat damage for me',
   'Stop where my permanents can act',
-  'Always pay automatically',
+  'Always pay for me',
 ] as const
 
 async function startGame(players: Player[]): Promise<void> {

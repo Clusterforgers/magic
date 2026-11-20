@@ -98,7 +98,7 @@ describe('a payment decision from the server', () => {
     expect(h.sentOf('Answer')).toEqual([{ type: 'Answer', decision: 22, answer: expected }])
   })
 
-  it('with Always pay automatically, Pay the rest for me sends the picks as one Complete answer once, even on a double click', async () => {
+  it('with Always pay for me, Pay the rest for me sends the picks as one Complete answer once, even on a double click', async () => {
     const { h, card, send, user, button } = mount()
     act(() =>
       h.session.store.setState((state) => ({ autoChoices: { ...state.autoChoices, auto_pay: true } })),

@@ -71,7 +71,7 @@ export function FlowMenuItems() {
         disabled={!online}
         onCheckedChange={(on) => session.setAutoChoices({ ...auto, auto_pay: on })}
       >
-        Always pay automatically
+        Always pay for me
       </DropdownMenuCheckboxItem>
       <DropdownMenuCheckboxItem data-slot="sounds" checked={sounds} onCheckedChange={setSoundsOn}>
         Play sounds

@@ -2,6 +2,7 @@
 
 mod auto_pass;
 mod auto_pay;
+mod auto_pay_plain;
 mod auto_skips;
 mod auto_yields;
 mod bot_fallbacks;

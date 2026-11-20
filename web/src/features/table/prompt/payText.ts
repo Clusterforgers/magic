@@ -1,6 +1,14 @@
 /** The PayMana prompt in plain words: what a cost asks for and what to do next. */
-import type { Color, ManaCost, ManaOption, ManaSymbol, ManaType, ObjectId } from '@/protocol/generated'
-import { LIFE_PER_SYMBOL, shapeOf, symbolText } from '../manaSymbols'
+import type {
+  AskedWhy,
+  Color,
+  ManaCost,
+  ManaOption,
+  ManaSymbol,
+  ManaType,
+  ObjectId,
+} from '@/protocol/generated'
+import { LIFE_PER_SYMBOL, manaWords, shapeOf, symbolText } from '../manaSymbols'
 import { madeOf, manaValue } from './payment'
 import type { Spend, Whole } from './payment'
 
@@ -174,7 +182,7 @@ export function payText({
   return auto ? `${lead}${still} Choose more${lifeChoice}, or pay the rest for me.` : `${lead}${still}`
 }
 
-/** The note of a proposed payment ("Pay for me" without "Always pay automatically"): what it uses, then what to do. */
+/** The note of a proposed payment ("Pay for me" without "Always pay for me"): what it uses, then what to do. */
 export function proposalNote(whole: Whole, nameOf: (id: ObjectId) => string): string {
   const parts = whole.spends.map((spend) => spendWords(spend, nameOf))
   if (whole.life.length > 0) parts.push(`${whole.life.length * LIFE_PER_SYMBOL} life`)
@@ -194,4 +202,33 @@ const LETTER: Record<ManaType, string> = {
 /** The badge of a source a proposed payment taps: "pays U", "pays GG" for two. */
 export function paysWords(option: ManaOption): string {
   return `pays ${LETTER[option.produces].repeat(Math.max(1, option.count ?? 1))}`
+}
+
+/** The names of `ids` joined in words: "Treasure", "Treasure and Gold". */
+function namesOf(ids: readonly ObjectId[], nameOf: (id: ObjectId) => string): string {
+  const names = ids.map(nameOf)
+  const last = names.pop() ?? ''
+  return names.length === 0 ? last : `${names.join(', ')} and ${last}`
+}
+
+/** Why "Always pay for me" asked about this payment, in one short line; empty when no automatic payment exists at all. */
+export function askedText(why: AskedWhy, nameOf: (id: ObjectId) => string): string {
+  if (why === 'NoPayment') return ''
+  if (why === 'Convoke' || why === 'Improvise' || why === 'Delve') {
+    return `Asked: the rest needs ${why.toLowerCase()}.`
+  }
+  if ('Life' in why) return `Asked: paying {${symbolText(why.Life)}} needs life or ${manaWords(why.Life)}.`
+  const [ids, words] =
+    'GivesUp' in why
+      ? [why.GivesUp, 'sacrificed or exiled']
+      : 'PaysLife' in why
+        ? [why.PaysLife, 'pays life']
+        : 'Energy' in why
+          ? [why.Energy, 'pays energy']
+          : 'PaidAbility' in why
+            ? [why.PaidAbility, 'costs mana of its own']
+            : 'Takes' in why
+              ? [why.Takes, 'takes other permanents']
+              : [why.DoesMore, 'does more than add mana']
+  return `Asked: only ${namesOf(ids, nameOf)} can pay the rest (${words}).`
 }

@@ -11,7 +11,7 @@ import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { PayColumn, PayMeter } from '../PayColumn'
 import { paySlots } from '../paySlots'
-import { payText, proposalNote, spendWords } from '../payText'
+import { askedText, payText, proposalNote, spendWords } from '../payText'
 import {
   allowed,
   completable,
@@ -62,7 +62,7 @@ export const AUTO_REASON = 'The game finds no way to pay this cost with what you
  * has a switch that pays 2 life for it instead of mana (within the life total and what the options allow). Confirm
  * sends the chosen payment; with nothing chosen yet "Pay for me" lays out the game's payment (`options.proposal`) as
  * picks to confirm or change, and after some picks "Pay the rest for me" adds what is owed the same way; with "Always
- * pay automatically" on, both pay at once as the game chooses; Undo or Escape (only when the options allow
+ * pay for me" on, both pay at once as the game chooses; Undo or Escape (only when the options allow
  * it) gives up on the cast, and the permanents picked stay untapped since nothing is paid until Confirm. A mana
  * ability that does more than add mana (Vexing Puzzlebox's roll, `options.announced`) is a button and a legal card:
  * it is activated at once and the payment is asked again with its mana floating.
@@ -151,7 +151,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
     )
   }, [proposed, spends])
   useEffect(() => () => publishBadges([]), [])
-  // "Always pay automatically" makes "Pay for me" pay at once; without it the game's payment is proposed for a Confirm.
+  // "Always pay for me" makes "Pay for me" pay at once; without it the game's payment is proposed for a Confirm.
   const payAtOnce = usePlay((state) => state.autoChoices.auto_pay === true)
   const confirmRef = useRef<HTMLButtonElement>(null)
   const autoReasonId = useId()
@@ -378,6 +378,8 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   })
   const nothingChosen = spends.length === 0 && life.length === 0
   const restCanBePaid = completable(cost, pool, spends, life, reach)
+  // Why "Always pay for me" left this payment to the player.
+  const asked = options.asked === undefined ? '' : askedText(options.asked, nameOf)
   const slots = paySlots(cost, spends, life)
   return (
     <PromptLayout
@@ -407,6 +409,11 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
           {nothingChosen && !options.auto_available ? (
             <p id={autoReasonId} data-slot="pay-auto-reason" className="text-muted-foreground text-sm">
               {AUTO_REASON}
+            </p>
+          ) : null}
+          {nothingChosen && payAtOnce && asked !== '' ? (
+            <p data-slot="pay-asked" className="text-muted-foreground text-sm">
+              {asked}
             </p>
           ) : null}
           <PaymentSummary
