@@ -1130,6 +1130,7 @@ Grim Backwoods
 Grim Flayer
 Grim Haruspex
 Grim Initiate
+Grime Gorger
 Grisly Salvage
 Grothama, All-Devouring
 Ground Seal

@@ -120,6 +120,7 @@ mod r109_token_enters;
 mod r109_waterbend_spells;
 mod r110_02_enters_as;
 mod r110_02_token_copies;
+mod r110_02_type_slots;
 mod r1c;
 mod r1fix;
 mod r1g_taken_names;
