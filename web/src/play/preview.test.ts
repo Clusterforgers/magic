@@ -102,6 +102,15 @@ describe('the reply', () => {
     expect(h.state().preview).toEqual({ decision: 12, key: previewKey(BLOCK), forecast: null })
   })
 
+  it('keeps the stack forecast lines of a target answer beside a null combat forecast', () => {
+    const h = facing(12)
+    const aim: Answer = { ChooseTargets: { Targets: [{ Object: { id: 30, counter: 0 } }] } }
+    const changes = [{ subject: { Object: 30 }, change: { Damage: { amount: 3 } } }]
+    h.session.preview(12, aim)
+    h.deliver({ ...forecast(12, null), changes })
+    expect(h.state().preview).toEqual({ decision: 12, key: previewKey(aim), forecast: null, changes })
+  })
+
   it('tells answers apart by their key, order of choice included', () => {
     const swapped: Answer = {
       DeclareBlockers: [

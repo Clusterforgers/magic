@@ -30,7 +30,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 - Foundations: workspace, lint rules, CI, `CLAUDE.md`, local Postgres and the React stack.
 - Card data: Scryfall and MTGJSON import, deck-list parsers and exporters, the schema with card search and precons, and `mtg-cli` (fetch, ingest, migrate, compile, coverage, fix-marks, promote).
-- Engine: zones, turns, priority, stack, combat with forecast, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch, the initiative and speed, Attractions and tickets, banding, splice, coin flips with Krark's Thumb, bots, `mtg-testkit` (`docs/engine.md`).
+- Engine: zones, turns, priority, stack, combat with forecast, the stack forecast of the top item and of a target answer, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch, the initiative and speed, Attractions and tickets, banding, splice, coin flips with Krark's Thumb, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log, spectators (`docs/protocol.md`, `docs/server.md`).
 - Game flow: auto-pass, response clocks, yields, stops (own declare attackers and postcombat main pinned by default), Resolve and End turn as separate buttons, Full Control, the timer bank, the by-hand window, the answer to a one-option question, payment checks that count a hand card once, auto choices (trigger order, damage), smart stops, per-ability yields, trigger auto-skips, a clockless opening, the turn time tally per seat, Cancel of a cast or activation at every step (mana tapped for it untapped), take-backs with the table's approval (a house rule, off in tournaments) and leak tests (`docs/ui-design.md`).
@@ -105,7 +105,7 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dh4) A board choice dims the rest of the table to 0.4, one target answers on the press and "Pay for me" proposes only when pressed
 - [ ] (dh5) Hover or focus on a stack item shows its preview left of the panel and lights its source and targets, in combat too
 - [ ] (dh6) The keys of a decision: A to the answers, Tab through the detail and the lit objects only, Escape and V for a window
-- [ ] (dh7) `ObjectView.forecast`: the engine's forecast of the top stack item and of a previewed target answer, drawn as badges on the cards and pods it changes
+- [ ] (dh7b) The panel's top item repeats its forecast as a line, and a hovered or focused legal target asks a preview and says it in its tip
 - [ ] (dh8) Combat forecasts are badges on attackers, blockers and the attacked pod, with the total in the dock
 - [ ] (dh9) The Learn course's anchors follow the decision homes (`ask`, `ask.question`, `stack.top`, `side.tab.stack`)
 - [ ] (mb4) The phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)

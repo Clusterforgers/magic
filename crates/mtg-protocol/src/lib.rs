@@ -10,6 +10,7 @@
 mod apply;
 mod boss_view;
 mod diff;
+mod forecast_cache;
 mod modifiers;
 
 pub mod asking;
@@ -29,6 +30,7 @@ pub use events::{
     EventBatch, EventView, HiddenEvent, LogHost, LogName, LogWindow, SNAPSHOT_LOG, SNAPSHOT_NAMES,
     project_events, project_log, project_window,
 };
+pub use forecast_cache::forecasts_worked_out;
 pub use message::{
     AutoChoices, AutoSkip, AutoYield, ClientMessage, DecidingView, DecisionId, DecisionName,
     ErrorCode, FullControlMode, LobbySeat, MAX_AUTO_SKIPS, MAX_ORDER_TRIGGERS, PROTOCOL_VERSION,

@@ -12,6 +12,7 @@ import { CostNowMark } from './CostNowMark'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookWords } from './combat/forecastText'
 import { ForecastMarks } from './combat/ForecastMarks'
+import { CardForecast } from './fx/ForecastBadge'
 import { FxFloat } from './fx/FxFloat'
 import { FxMark } from './fx/FxMark'
 import { useCardFx } from './fx/hooks'
@@ -180,6 +181,7 @@ export const Card = memo(function Card({
       {outlook === null ? null : (
         <ForecastMarks outlook={outlook} tapped={tapped} compact={size === 'compact'} />
       )}
+      <CardForecast id={id} />
       {fx.map((entry) =>
         entry.kind === 'damaged' ? <FxFloat key={entry.token} kind="damaged" amount={entry.amount} /> : null,
       )}

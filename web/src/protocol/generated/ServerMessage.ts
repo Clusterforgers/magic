@@ -10,6 +10,7 @@ import type { DecisionId } from "./DecisionId";
 import type { ErrorCode } from "./ErrorCode";
 import type { EventBatch } from "./EventBatch";
 import type { EventView } from "./EventView";
+import type { ForecastChange } from "./ForecastChange";
 import type { FullControlMode } from "./FullControlMode";
 import type { GameResult } from "./GameResult";
 import type { LobbySeat } from "./LobbySeat";
@@ -121,10 +122,15 @@ asking?: AskingView, } | { "type": "Forecast",
  */
 decision: DecisionId, 
 /**
- * The engine's forecast, or null when there is none to give: the decision is not pending for this seat, the
- * answer is not a legal attack or block, or this seat is previewing faster than the server allows.
+ * The engine's combat forecast, or null when there is none to give: the decision is not pending for this seat,
+ * the answer is not a legal attack or block, or this seat is previewing faster than the server allows.
  */
-forecast: CombatForecast | null, } | { "type": "Events" } & EventBatch | { "type": "Snapshot", 
+forecast: CombatForecast | null, 
+/**
+ * For a `ChooseTargets` answer of a spell, its stack forecast with those targets (the lines of
+ * `ObjectView.forecast`); left out when there is none.
+ */
+changes?: Array<ForecastChange>, } | { "type": "Events" } & EventBatch | { "type": "Snapshot", 
 /**
  * Number of log events the snapshot already includes; the next batch starts here.
  */

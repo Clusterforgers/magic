@@ -218,6 +218,7 @@ pub mod spirits;
 pub mod spotlight;
 pub mod spotlight_aim;
 pub mod stack;
+pub mod stack_forecast;
 pub mod state;
 pub mod take_back;
 pub mod text_change;

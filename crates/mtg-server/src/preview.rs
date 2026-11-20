@@ -1,4 +1,5 @@
-//! Previews: a seat asks what combat damage would do if it gave an answer, and is told without the game moving.
+//! Previews: a seat asks what combat damage, or the spell it is casting, would do if it gave an answer, and is told
+//! without the game moving.
 //!
 //! A preview is advice, so it never fails loudly. Every `Preview` gets exactly one `Forecast` to the seat that sent
 //! it, with no forecast when the decision is not that seat's pending one (stale, foreign, answered, or not yet
@@ -49,16 +50,22 @@ impl PreviewLimits {
 impl<S: EventStore> GameActor<S> {
     /// Answers `seat`'s preview of `answer` to `decision` with one `Forecast`.
     pub(crate) fn preview(&mut self, seat: PlayerId, decision: DecisionId, answer: &Answer) {
-        let forecast = if self.previews.allow(seat, Instant::now()) {
+        let (forecast, changes) = if self.previews.allow(seat, Instant::now()) {
             match &self.phase {
                 Phase::Running(running) => running.preview(seat, decision, answer),
-                Phase::Lobby { .. } => None,
+                Phase::Lobby { .. } => (None, Vec::new()),
             }
         } else {
-            None
+            (None, Vec::new())
         };
-        self.seats
-            .send(seat, ServerMessage::Forecast { decision, forecast });
+        self.seats.send(
+            seat,
+            ServerMessage::Forecast {
+                decision,
+                forecast,
+                changes,
+            },
+        );
     }
 }
 

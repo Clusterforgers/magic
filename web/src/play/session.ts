@@ -559,7 +559,15 @@ export function createSession(deps: SessionDeps): Session {
     if (request === undefined || asked.length > 0) return
     const { pending } = getState()
     if (pending === null || pending.id !== message.decision || request.decision !== message.decision) return
-    setState({ preview: { decision: message.decision, key: request.key, forecast: message.forecast } })
+    const { changes } = message
+    setState({
+      preview: {
+        decision: message.decision,
+        key: request.key,
+        forecast: message.forecast,
+        ...(changes === undefined || changes.length === 0 ? {} : { changes }),
+      },
+    })
   }
 
   function onError(message: Of<'Error'>): void {

@@ -16,6 +16,7 @@ import type { DefenderState } from './combat/defender'
 import { AttackBadges } from './combat/AttackBadges'
 import { ATTACKED_EDGE, useAttacked } from './combat/attacked'
 import { LifeForecast } from './combat/LifeForecast'
+import { SeatForecast } from './fx/ForecastBadge'
 import { LifeFx } from './fx/LifeFx'
 import { LiveManaPool } from './LiveManaPool'
 import { UntappedSources } from './UntappedSources'
@@ -311,6 +312,7 @@ export const SeatPanel = memo(function SeatPanel({
             </div>
             <div className="flex shrink-0 items-center gap-1.5">
               <AttackBadges seat={seat} />
+              <SeatForecast seat={seat} />
               <LifeForecast seat={seat} />
               <Life
                 seat={seat}
@@ -479,6 +481,7 @@ export const SeatPanel = memo(function SeatPanel({
               {timers}
             </div>
             <div className="flex items-center gap-1.5 justify-self-end">
+              <SeatForecast seat={seat} />
               <LifeForecast seat={seat} />
               <Life
                 seat={seat}
