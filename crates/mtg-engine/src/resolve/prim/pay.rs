@@ -443,7 +443,13 @@ pub(super) fn can_pay(cx: &Cx<'_>, player: PlayerId, price: &Price) -> bool {
             let life = seat
                 .life()
                 .saturating_sub(i32::try_from(price.life()).unwrap_or(i32::MAX));
-            can_afford(mana, seat.mana(), &sources, life, &r5512_spend(cx))
+            can_afford(
+                mana,
+                seat.mana(),
+                &sources,
+                life,
+                &r5512_spend(cx).r111_by(state, player),
+            )
         })
     })
 }
@@ -607,7 +613,7 @@ fn payment(
         mana,
         sources,
         Offered::default(),
-        r5512_spend(cx),
+        r5512_spend(cx).r111_by(state, player),
         false,
         price.life(),
     )

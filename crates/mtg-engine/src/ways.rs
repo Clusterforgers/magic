@@ -1096,7 +1096,7 @@ pub(crate) fn can_suspend(
             pool,
             &for_card(state, sources, id),
             life,
-            &Spend::other(),
+            &Spend::other().r111_by(state, player),
         )
 }
 
@@ -1135,7 +1135,7 @@ pub(crate) fn can_foretell(
             pool,
             &for_card(state, sources, id),
             life,
-            &Spend::special(mtg_cards::spend::SpecialAction::Foretell),
+            &Spend::special(mtg_cards::spend::SpecialAction::Foretell).r111_by(state, player),
         )
 }
 
@@ -1189,7 +1189,7 @@ pub(crate) fn can_plot(
             pool,
             &for_card(state, sources, id),
             life,
-            &Spend::other(),
+            &Spend::other().r111_by(state, player),
         )
 }
 
@@ -1218,7 +1218,7 @@ pub(crate) fn can_turn_up(
             pool,
             &for_card(state, sources, id),
             life,
-            &Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp),
+            &Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp).r111_by(state, player),
         )
 }
 

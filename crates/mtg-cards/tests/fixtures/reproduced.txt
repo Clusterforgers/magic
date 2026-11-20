@@ -109,6 +109,7 @@ Archon of Cruelty
 Archway Commons
 Arcum's Weathervane
 Argentum Armor
+Argentum Masticore
 Argoth, Sanctum of Nature
 Armguard Familiar
 Army of the Damned
@@ -339,6 +340,7 @@ Broodhatch Nantuko
 Brooding Saurian
 Broodstar
 Bruna, the Fading Light
+Brutal Suppression
 Bubble Matrix
 Bucknard's Everfull Purse
 Bumi, Unleashed
@@ -730,6 +732,7 @@ Dromoka's Command
 Dromoka's Gift
 Dromoka, the Eternal
 Drop Tower
+Drought
 Drove of Elves
 Drover of the Mighty
 Drownyard Temple
@@ -2512,6 +2515,7 @@ Summon: G.F. Ifrit
 Sunblast Angel
 Sundering Growth
 Sunfall
+Sunglasses of Urza
 Sunhome Stalwart
 Sunken Hollow
 Sunken Ruins

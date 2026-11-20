@@ -1213,6 +1213,7 @@ const RUNS: &[&str] = &[
     "Rule.Draft",
     "Rule.CantBeCopied",
     "Rule.R110SacrificeTax",
+    "Rule.R111SpendColorAs",
     "Rule.KeepsDamage",
     "Rule.Flagbearers",
     "Rule.CountsAsNamed",

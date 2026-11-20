@@ -2296,6 +2296,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::R110SacrificeTax { .. } => {
             return Err(ResolveError::Unsupported("Rule.R110SacrificeTax"));
         }
+        // Read off the battlefield as a payment is made (`r111_spend_as`), never lowered.
+        GameRule::R111SpendColorAs { .. } => {
+            return Err(ResolveError::Unsupported("Rule.R111SpendColorAs"));
+        }
         // The cleanup step reads it from the permanent (`r5516_damage`); it is no rule of the game.
         GameRule::KeepsDamage => return Err(ResolveError::Unsupported("Rule.KeepsDamage")),
         // The announcement reads it from the permanents as targets are chosen (`announce::r5509_flagbearer`).

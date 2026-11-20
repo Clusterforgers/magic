@@ -258,7 +258,7 @@ fn payment(
         owed,
         mana_options(state, player),
         Offered::default(),
-        Spend::other(),
+        Spend::other().r111_by(state, player),
         true,
         0,
     )?;

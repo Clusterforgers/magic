@@ -6543,6 +6543,7 @@ impl Walker<'_> {
             | GameRule::UnspentManaBecomes { who, .. }
             | GameRule::DrawLimit { who, .. }
             | GameRule::PayLifeForMana { who, .. }
+            | GameRule::R111SpendColorAs { who, .. }
             | GameRule::OpponentsCantMakeSacrifice(who)
             | GameRule::OpponentsCantMakeDiscardOrSacrifice(who)
             | GameRule::SpendManaAs {

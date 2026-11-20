@@ -109,7 +109,7 @@ pub(crate) fn ignorable(
                 pool,
                 &for_card(state, sources, source),
                 life,
-                &Spend::other(),
+                &Spend::other().r111_by(state, player),
             )
         {
             found.push(PaidIgnore {

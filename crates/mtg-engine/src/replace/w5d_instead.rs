@@ -77,6 +77,7 @@ impl Pass<'_> {
                 }
                 _ => Vec::new(),
             },
+            r111_paid: Vec::new(),
         }
     }
 

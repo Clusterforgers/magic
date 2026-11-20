@@ -199,6 +199,11 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(CounterKind, u32)>>", optional))]
     pub counters: Vec<(CounterKind, u32)>,
+    /// What the payment a reflexive trigger follows took ("When you discard a card this way, ... the mana value of the
+    /// discarded card"), which `Ref::Paid` reads as its targets are chosen; empty for any other trigger.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Target>>", optional))]
+    pub r111_paid: Vec<Target>,
 }
 
 #[allow(clippy::trivially_copy_pass_by_ref)]
