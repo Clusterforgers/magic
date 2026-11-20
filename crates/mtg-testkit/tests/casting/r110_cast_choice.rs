@@ -47,8 +47,13 @@ fn r110_the_type_chosen_as_it_is_cast_sets_its_size(
     driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
     let spell = *driver.state().stack().last().unwrap();
     assert_eq!(
-        driver.state().object(spell).unwrap().choices().r110_chosen,
-        Some(Chosen::CreatureType(mtg_core::card::Subtype(
+        driver
+            .state()
+            .object(spell)
+            .unwrap()
+            .choices()
+            .r110_chosen(),
+        Some(&Chosen::CreatureType(mtg_core::card::Subtype(
             kind.to_owned()
         )))
     );

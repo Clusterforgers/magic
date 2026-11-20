@@ -1405,7 +1405,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('SpellCast' in event) {
     const { player, object, choices } = event.SpellCast
-    const chose = choices?.r110_chosen === undefined ? '' : chosenWords(choices.r110_chosen, n)
+    const castChoice = choices?.cost_taken?.r110_chosen
+    const chose = castChoice === undefined ? '' : chosenWords(castChoice, n)
     return line(
       `${n.seat(player)} casts ${n.card(object)}${chose}${targetingWords(choices?.targets?.flat(), n)}`,
     )

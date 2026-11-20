@@ -101,7 +101,6 @@ static NO_CHOICES: Choices = Choices {
     face: None,
     spent: None,
     cost_taken: None,
-    r110_chosen: None,
 };
 static NO_BINDINGS: Bindings = BTreeMap::new();
 
@@ -2423,7 +2422,7 @@ impl<'a> Scope<'a> {
         match object.permanent() {
             Some(permanent) => permanent.chosen(),
             // A spell reads what its caster chose as an additional cost (`CostItem::R110Choose`).
-            None => object.choices().r110_chosen.as_ref(),
+            None => object.choices().r110_chosen(),
         }
     }
 

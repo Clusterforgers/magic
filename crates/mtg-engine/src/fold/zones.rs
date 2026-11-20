@@ -130,7 +130,7 @@ pub(super) fn move_object(
     };
     // "As an additional cost to cast this spell, choose a creature type": the permanent remembers the value.
     let r110_chosen = if from == Zone::Stack && to == Zone::Battlefield {
-        object.choices.r110_chosen.take()
+        object.choices.r110_chosen().cloned()
     } else {
         None
     };

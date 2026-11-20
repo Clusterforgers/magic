@@ -183,7 +183,13 @@
                   "as": "exiled"
                 }
               },
-              { "PutCounters": { "on": "This", "counter": "+1/+1", "count": { "Count": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] } } }
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] }
+                }
+              }
             ]
           }
         }

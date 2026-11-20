@@ -1,6 +1,6 @@
 //! "As an additional cost to cast this spell, choose a creature type." (`CostItem::R110Choose`, CR 601.2b): the caster
 //! chooses the value as the spell is announced, with the parts of its costs, and the spell keeps it in
-//! `Choices.r110_chosen`; the spell and the permanent it becomes read it as the value their source chose.
+//! `CostTaken.r110_chosen`; the spell and the permanent it becomes read it as the value their source chose.
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
@@ -51,7 +51,7 @@ pub(super) fn r110_run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let What::Spell(spell) = ctx.what else {
         return None;
     };
-    if work.choices.r110_chosen.is_some() {
+    if work.choices.r110_chosen().is_some() {
         return None;
     }
     let kind = r110_kind(ctx.state.object(*spell)?.card())?;
@@ -62,7 +62,8 @@ pub(super) fn r110_run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     // The answer is the one to this question: the picks of later questions of the parts start unset.
     work.done.w2f_kind_picked = None;
     if let Some(index) = work.done.r110_picked.take() {
-        work.choices.r110_chosen = chosen(kind, offered.get(index)?);
+        work.choices
+            .r110_set_chosen(chosen(kind, offered.get(index)?));
         return None;
     }
     Some(ctx.ask(DecisionKind::ChooseOption(OptionOptions {
