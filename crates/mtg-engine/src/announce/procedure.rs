@@ -103,6 +103,7 @@ fn needs(kicked: bool, x: u32) -> Needs {
         price: None,
         modes: None,
         splice: Vec::new(),
+        r110_sacrifices: Vec::new(),
     }
 }
 

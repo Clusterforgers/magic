@@ -1541,6 +1541,24 @@ pub enum GameRule {
         /// The type the mana becomes.
         into: ManaType,
     },
+    /// Spells or activated abilities cost an additional "Sacrifice a <permanent>" (CR 601.2f, 602.2b), paid by their
+    /// caster or activator with the other parts of the cost: "Spells cost an additional "Sacrifice a Swamp" to cast for
+    /// each black mana symbol in their mana costs.", "Activated abilities of nontoken Rebels cost an additional "Sacrifice
+    /// a land" to activate."
+    R110SacrificeTax {
+        /// The spells that pay it, judged as they are cast; no spell when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        spells: Option<Selector>,
+        /// The objects whose activated abilities other than mana abilities pay it; no ability when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        abilities: Option<Selector>,
+        /// What each sacrifice takes.
+        sacrifice: Selector,
+        /// Once for each mana symbol of this color in the spell's mana cost or the ability's activation cost (a hybrid
+        /// or Phyrexian symbol of the color counts); once when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        per_symbol: Option<Color>,
+    },
 }
 
 /// A rule of a booster draft; each variant is one printed sentence.

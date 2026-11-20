@@ -349,6 +349,9 @@ pub enum Keyword {
     Scavenge(Cost),
     /// Transmute with its cost (CR 702.53): from a hand at sorcery speed the card is discarded to search the library for a card with the same mana value.
     Transmute(Cost),
+    /// Transfigure with its cost (CR 702.71): at sorcery speed the permanent is sacrificed to search the library for a creature
+    /// card with the same mana value, put onto the battlefield.
+    R110Transfigure(Cost),
     /// Awaken N with its cost (CR 702.113): the spell may be cast from a hand for the cost, and then also puts N +1/+1 counters on target land its caster controls, which becomes a 0/0 Elemental creature with haste.
     Awaken {
         /// The +1/+1 counters put on the land.
@@ -664,6 +667,7 @@ impl Keyword {
         "Crew once",
         "Scavenge",
         "Transmute",
+        "Transfigure",
         "Awaken",
         "Prototype",
         "Assist",
@@ -894,6 +898,7 @@ impl Keyword {
             Keyword::CrewOnce(_) => "Crew once",
             Keyword::Scavenge(_) => "Scavenge",
             Keyword::Transmute(_) => "Transmute",
+            Keyword::R110Transfigure(_) => "Transfigure",
             Keyword::Awaken { .. } => "Awaken",
             Keyword::Prototype { .. } => "Prototype",
             Keyword::Assist => "Assist",
@@ -1213,6 +1218,7 @@ mod tests {
             Keyword::CrewOnce(1),
             Keyword::Scavenge(Cost::default()),
             Keyword::Transmute(Cost::default()),
+            Keyword::R110Transfigure(Cost::default()),
             Keyword::Awaken {
                 count: 3,
                 cost: Cost::default(),

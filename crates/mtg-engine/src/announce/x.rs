@@ -648,6 +648,7 @@ mod tests {
             price: None,
             modes: None,
             splice: Vec::new(),
+            r110_sacrifices: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {
@@ -714,6 +715,7 @@ mod tests {
             price: None,
             modes: None,
             splice: Vec::new(),
+            r110_sacrifices: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         assert!(matches!(announce(&game, &mut pending), Next::Drop));
@@ -767,6 +769,7 @@ mod tests {
             price: None,
             modes: None,
             splice: Vec::new(),
+            r110_sacrifices: Vec::new(),
         };
         let mut pending = Pending::needing(SEAT, What::Spell(card), needs);
         match announce(&game, &mut pending) {

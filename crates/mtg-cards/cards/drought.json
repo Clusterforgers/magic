@@ -16,9 +16,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 83, "end": 184 }
+          "Rule": {
+            "rule": {
+              "R110SacrificeTax": {
+                "spells": [],
+                "sacrifice": [{ "Subtype": "Swamp" }],
+                "per_symbol": "Black"
+              }
+            }
           }
         },
         {

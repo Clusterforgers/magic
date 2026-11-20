@@ -1,0 +1,54 @@
+Drought	GameRule::R110SacrificeTax for activated abilities is built and tested for abilities announced on the stack, but mana abilities (paid in mana_ability.rs, never announced) do not take the sacrifices yet: the tax parts must join the takes of a mana ability (takes_of / ManaShape picks) for filter lands like Graven Cairns ({B/R}, {T}); then the activated-abilities clause can run	none
+Brutal Suppression	Same as Drought: GameRule::R110SacrificeTax { abilities: [Subtype Rebel, Not Token], sacrifice: [Type Land] } runs for announced abilities; mana abilities of a taxed Rebel (The Rebellious Intelligence) must pay it in mana_ability.rs; fixture and rules file to add then	none
+Ranar the Ever-Watchful	TriggerPattern Batch over two kinds of zone change at once ("one or more cards are put into exile from your hand or a spell or ability you control exiles one or more permanents from the battlefield", once per event batch): Batch(AnyOf[ZoneChange from Hand to Exile of cards you own, Caused{by You, ZoneChange from Battlefield to Exile}]) with detection that batches across both patterns	the foretell {0} static is built (FreeActivation R110Foretell)
+Sunglasses of Urza	SpendAs one color as another in the payment solver (mana.rs): white pays a red symbol, including the red half of {R/G}, {2/R} and {R/G/P}-style symbols that no single ManaSymbol rewrite can express (CR 609.4b)	none
+Celestial Dawn	The same per-color spending in the payment solver (white as any color, other colored mana only for generic, CR 609.4b), and colors of nonland cards in every zone and of spells (layer 5 outside the battlefield)	Lands you control are Plains is read
+Jegantha, the Wellspring	SpendOn restriction on the symbol paid: mana that can't pay generic symbols ({2/W}'s generic half included), honoured per symbol in mana::plain_can_afford, auto_payment and check_expanded	none
+Security Rhox	An AltCast whose spend restriction holds for that cast only ("Spend only mana produced by Treasures to cast it this way"): a SpendFilter on the alternative way, read by the payment	none
+North Star	A next-spell permission to spend mana as though of any type for one spell this turn (a counted rule consumed by the cast)	none
+Emblazoned Golem	Spend restriction on the X of a kicker {X}: only colored mana, at most one of each color, in the payment solver	enters with X counters if kicked
+Tannuk, Steadfast Second	Granting warp to cards in a hand: ways::alt_cast_ways reads only printed AltCasts and spells' given ones; a static AddKeyword/GrantAbility of AltCast Warp to hand cards plus the end-step exile and cast-from-exile permission keyed on CastWay::Warp for a permanent whose card does not print the warp trigger (CR 702.185)	none
+Fblthp, Lost on the Range	Static grant of Keyword::Plot with cost OwnManaCost to the top card of the library and the plot special action from Zone::Library (CR 702.170a)	none
+Ninja Teen	Keyword::Sneak granted to creature cards in a graveyard with a permission to cast them from the graveyard only by sneak (CR 702.190)	level up exists
+Henzie "Toolbox" Torre	A blitz cost given to creature spells of mana value 4+ (cast-time grant with cost = mana cost) keeping blitz's haste, dies-draw and sacrifice, and a CostModifier of blitz costs per commander cast from the command zone	none
+Yidris, Maelstrom Wielder	A rule giving cascade to spells cast from your hand this turn, present on the stack object when SpellCast triggers are detected	none
+Professor Hojo	CostModifier with a targeting filter and a first-this-turn tally of activations that targeted a creature you control, and a once-each-turn batch trigger for becoming the target of an activated ability	none
+Eluge, the Shoreless Sea	Colored cost reduction "{U} (or {1}) less" per counted land for the first instant or sorcery each turn (CR 601.2f)	flood counter island effect
+Gandalf of the Secret Fire	Granting suspend to a card exiled with time counters as a spell resolves (CR 702.62)	r65-03 exile shield
+The Face of Boe	An activated ability that casts a spell with suspend from the hand for its suspend cost	none
+Drain Power	A target player activates a mana ability of each land they control, then the unspent mana of their pool moves to yours (restrictions kept, CR 106.12)	none
+Piracy	Tapping lands you don't control for mana until end of turn with the mana restricted to spells	none
+Pygmy Hippo	The forced mana activation of Drain Power plus a delayed mana add equal to the mana lost at the next main phase	none
+Boreal Outrider	Snow facts per color of the mana spent on a spell ("{S} of any of that spell's colors", CR 106.3)	none
+Vazi, Keen Negotiator	A condition on an opponent's spell or ability: mana from a Treasure was spent on it, and a count of Treasures you created this turn	none
+Soul Burn	Mana spent on X by color (black part of X) capping the life gained, and "spend only black and/or red mana on X"	none
+Protective Sphere	Colors of the mana spent on an activation cost read by a prevention shield of a chosen source	none
+C.A.M.P.	Trigger "whenever fortified land is tapped for mana" with the produced mana's colors	Junk token
+Tyvar the Bellicose	Granted trigger "whenever a mana ability of this creature resolves" with the amount it produced, once each turn	none
+Argentum Masticore	Sacrifice unless you discard, with a reflexive trigger reading the discarded card's mana value	none
+Heirloom Epic	Convoke-like payment of an activated ability's mana by tapping creatures (CR 702.51 analogue)	none
+The Book of Vile Darkness	Exile of named artifacts as a cost and a token with the triggered abilities of the exiled cards	none
+Urgent Necropsy	Collect evidence X where X is the total mana value of the chosen targets	none
+Light Up the Night	RemoveCountersAmong counted by X in a flashback cost (Price::announced refuses Counted parts outside activations)	none
+Back from the Brink	A cost that exiles a creature card from your graveyard and pays its mana cost (CostItem::ManaCostOf Ref::Paid in an activation)	none
+Bullseye, Death Dealer	Cost.OneOf inside an activation cost (sacrifice an artifact or discard a nonland card)	none
+Primitive Justice	Two additional costs paid any number of times, each counted for its own extra targets	none
+Agent Maria Hill	Teamwork cost and the trigger "becomes tapped to pay a teamwork cost"	none
+Captain America, First Avenger	Unattach an Equipment as a cost read for divided damage, and an attach of up to one target Equipment at the beginning of combat	none
+Aradesh, the Founder	Condition "it enlisted a creature this combat" on an attacker	none
+Magnigoth Treefolk	Landwalk of each basic land type among lands you control: one clause read as five conditional statics (a reader for a list of more than three abilities)	none
+Space Beleren	Sectors (sculptor keyword) assigned to creatures and blocking limited by sector	none
+Volatile Stormdrake	HexproofFrom a kind of stack object: the targeting check must see whether the source is an activated or triggered ability (CR 702.11d), and exchange of control with an energy unless-payment	none
+Minamo's Meddling	Tracking the cards spliced onto a spell for a discard by name	none
+Ob Nixilis, the Adversary	Casualty X whose copy is not legendary and has starting loyalty X (CR 702.153, 707.9b)	none
+Yavimaya Bloomsage // Channel	A permission for a turn to pay 1 life for {C} any time you could activate a mana ability	none
+Cryptic Spires	Colors circled as the deck is made (a pregame choice)	none
+Tazri, Stalwart Survivor	Granted mana ability limited to the creature's colors, usable only if it has another activated ability, with mana spent only on creature abilities	none
+Benthic Explorers	Cost "untap a tapped land an opponent controls" and mana of any type that land could produce (CR 106.7)	none
+Brigid, Clachan's Heart // Brigid, Doun's Mind	Produce of X mana of one type chosen from two ("Add X {G} or X {W}"), through add_mana, assemble ManaProduced, validate and the writers	Kithkin trigger reader
+Chorus of the Conclave	An optional additional cost of any amount of mana given to creature spells, read as counters by the entering creature	none
+Nameless Race	Pay any amount of life as it enters, capped by a count, read by its characteristic-defining power and toughness	none
+Night Soil	A cost choice "all from a single graveyard" through the cost picker, the protocol and the web	none
+Jötun Grunt	Cumulative upkeep putting cards from a single graveyard of any player on the bottom of their owner's library	none
+Market Gnome	R6701WhileActivating must see the craft activation as the cause of its materials' exile (one batch with the activation)	none
+Eye of Ojer Taq // Apex Observatory	Craft with two that share a card type, a type chosen from them, and a next-spell-free permission of that type	none

@@ -158,6 +158,9 @@ pub enum ActivationKind {
     Buyback,
     /// A craft ability (CR 702.167): "while you're activating a craft ability".
     R6701Craft,
+    /// Foretelling a card (CR 702.143a): a special action, not an ability, whose cost only a modifier of this kind changes
+    /// ("Foretelling cards from your hand costs {1} less") and whose timing only an `InstantActivation` of it opens.
+    R110Foretell,
 }
 
 /// Whether a count is zero, so serialization can leave it out.

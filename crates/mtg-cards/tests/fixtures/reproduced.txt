@@ -279,6 +279,7 @@ Body Double
 Bog Witch
 Bog Wraith
 Boggart Ram-Gang
+Bohn, Beguiling Balladeer
 Boiling Earth
 Bojuka Bog
 Bola Slinger
@@ -501,6 +502,7 @@ Cormela, Glamour Thief
 Corpse Hauler
 Coruscation Mage
 Cosmic Intervention
+Cosmos Charger
 Counterflux
 Counterspell
 Courser of Kruphix
@@ -699,12 +701,14 @@ Dragonmaster Outcast
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Dralnu's Pet
 Dralnu, Lich Lord
 Dramatist's Puppet
 Drana, Liberator of Malakir
 Dread Fugue
 Dreadship Reef
 Dream Chisel
+Dream Devourer
 Dream Eater
 Dream's Grip
 Dreamstone Hedron
@@ -937,6 +941,7 @@ Flayer of Loyalties
 Fleecemane Lion
 Fleetfeather Cockatrice
 Fleshbag Marauder
+Fleshwrither
 Flooded Grove
 Flooded Strand
 Flooded Woodlands
@@ -1881,6 +1886,7 @@ Persist
 Personal Sanctuary
 Pestermite
 Pestilent Syphoner
+Peter Parker // Amazing Spider-Man
 Peter Parker's Camera
 Petrified Wood-Kin
 Petrify

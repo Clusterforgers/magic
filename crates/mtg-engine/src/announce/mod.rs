@@ -213,6 +213,9 @@ pub(crate) struct Needs {
     pub(crate) modes: Option<price::ModeCosts>,
     /// The cards of the caster's hand that may be spliced onto the spell.
     pub(crate) splice: Vec<crate::keywords::splice::Spliceable>,
+    /// The sacrifices the rules in play add to the cost of a spell (`r110_sacrifice_tax`); an ability's are parts of
+    /// its `price`.
+    pub(crate) r110_sacrifices: Vec<Part>,
 }
 
 /// What a resolution lets a player cast (CR 608.2g): the spell goes on the stack as part of the resolution, with no
@@ -231,6 +234,45 @@ pub(crate) struct Granted {
     pub(crate) spend_as: mtg_cards::modify::SpendAs,
 }
 
+/// The price of `what` with the sacrifices the rules in play add to its cost (`r110_sacrifice_tax`, CR 601.2f, 602.2b),
+/// and those of a spell apart: an ability pays them as parts of its price.
+fn r110_taxed(
+    price: Option<Box<Price>>,
+    (state, player): (&GameState, PlayerId),
+    what: &What,
+    rules: Option<&Ability>,
+) -> (Option<Box<Price>>, Vec<Part>) {
+    use crate::r110_sacrifice_tax::{R110Taxed, r110_parts};
+    match (what, rules) {
+        (What::Spell(spell), _) => (price, r110_parts(state, R110Taxed::Spell(*spell))),
+        (What::Ability(address), Some(activated @ Ability::Activated { cost, .. })) => {
+            let taxed = crate::r110_sacrifice_tax::r110_ability_parts(state, address.object, cost);
+            if taxed.is_empty() {
+                return (price, Vec::new());
+            }
+            // An ability whose cost took nothing before takes the sacrifices now: its whole price, as `parts::read` reads it.
+            let price = price.or_else(|| {
+                let cost = crate::free_activation::cost(state, player, (*address, activated), cost);
+                Price::announced_in(
+                    &cost,
+                    state,
+                    player,
+                    address.object,
+                    address.source.granter(),
+                )
+                .ok()
+                .map(Box::new)
+            });
+            let price = price.map(|mut price| {
+                price.parts.extend(taxed);
+                price
+            });
+            (price, Vec::new())
+        }
+        _ => (price, Vec::new()),
+    }
+}
+
 impl Needs {
     /// What `what` asks for; its rules are `rules`.
     fn of(
@@ -240,17 +282,24 @@ impl Needs {
         rules: Option<&Ability>,
         granted: Option<Granted>,
     ) -> Self {
+        let (price, r110_sacrifices) = r110_taxed(
+            parts::read(state, player, what, rules),
+            (state, player),
+            what,
+            rules,
+        );
         Needs {
             ways: alternative::read(state, player, what, granted),
             optional: optional::read(state, what),
             x: XCost::of(state, player, what, rules),
-            price: parts::read(state, player, what, rules),
+            price,
             modes: if matches!(what, What::Spell(_)) {
                 price::ModeCosts::of(rules)
             } else {
                 None
             },
             splice: splice::read(state, player, what),
+            r110_sacrifices,
         }
     }
 
@@ -274,6 +323,7 @@ impl Needs {
             .unwrap_or_default();
         parts.extend(optional::parts_paid(&self.optional, choices));
         parts.extend(splice::parts_paid(&self.splice, choices));
+        parts.extend(self.r110_sacrifices.iter().cloned());
         if let Some(costs) = &self.modes {
             parts.extend(costs.parts(&choices.modes));
         }
