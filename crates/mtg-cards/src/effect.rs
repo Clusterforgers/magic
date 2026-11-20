@@ -497,6 +497,9 @@ pub enum ValueKind {
     ColorOrBasicLandType,
     /// A word of the kind of the one chosen under this name, other than it: the word a text change writes ("with another").
     LikeChosen(String),
+    /// A creature type the source has not noted (`Effect::R112NoteChosen`): "a creature type that hasn't been noted for
+    /// this Saga".
+    R112CreatureTypeNotNoted,
     /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
     Letter,
     /// One of the spells the player `caster` names cast this turn that the selector matches as cast ("one of those sorcery
@@ -2349,6 +2352,9 @@ pub enum Effect {
     /// The source notes the type and amount of the mana spent to pay this activation cost, in place of what it noted
     /// before ("Note the type of mana spent to pay this activation cost"); `Produce::R112Noted` reads it.
     R112NoteManaSpent,
+    /// The source notes the word the resolution chose under this name ("Note a creature type that hasn't been noted for
+    /// this Saga"): the notes stay with the permanent until it leaves (`ValueKind::R112CreatureTypeNotNoted` reads them).
+    R112NoteChosen(String),
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.

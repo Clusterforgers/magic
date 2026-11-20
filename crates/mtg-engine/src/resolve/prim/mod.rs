@@ -146,6 +146,7 @@ mod r111_keep;
 mod r112_dice;
 mod r112_guess;
 mod r112_note;
+mod r112_note_chosen;
 mod r112_piles;
 mod r281_lock_door;
 mod r281_pay_one_of;
@@ -388,6 +389,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::R110ChooseSecretly(_) => r110_secret::run(cx, effect),
         Effect::R111KeepChosen(_) => r111_keep::run(cx, effect),
         Effect::R112NoteManaSpent => r112_note::run(cx, effect),
+        Effect::R112NoteChosen(_) => r112_note_chosen::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
@@ -483,6 +485,7 @@ mod tests {
         {"R110ChooseSecretly":"Opponent"},
         {"R111KeepChosen":"name"}, "R112NoteManaSpent",
         {"R112GuessNumber":{"min":1,"max":5,"guesser":"Opponents","as":"number","guess_as":"guess","guesser_as":"guesser"}}, {"R112Piles":{"what":"This","piles":["left","right"]}}, {"R112RollStore":{"sides":6,"dice":5,"slot":"stored"}}, {"R112RerollStored":{"sides":6,"slot":"stored"}},
+        {"R112NoteChosen":"name"},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
@@ -517,7 +520,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 160, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 161, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -683,6 +686,7 @@ mod tests {
         "Effect.R112Piles",
         "Effect.R112RollStore",
         "Effect.R112RerollStored",
+        "Effect.R112NoteChosen",
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",

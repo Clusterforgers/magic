@@ -1792,6 +1792,7 @@ impl<'a> Walker<'a> {
         }
     }
 
+    #[allow(clippy::too_many_lines)] // one arm for each kind of condition
     fn condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Not(inner) => self.at("Not", |w| w.condition(inner)),
@@ -1819,6 +1820,7 @@ impl<'a> Walker<'a> {
                 self.paid_condition(condition);
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
+            Condition::R112CastByOwnAbility => self.uses("Condition", "R112CastByOwnAbility"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
@@ -3695,7 +3697,10 @@ impl Walker<'_> {
                 r110_counters,
             } => {
                 let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
-                self.at("becomes", |w| w.mods(becomes));
+                // Counters alone are a return "with X +1/+1 counters on it" that changes nothing else.
+                if !becomes.is_empty() || r110_counters.is_empty() {
+                    self.at("becomes", |w| w.mods(becomes));
+                }
                 self.r6701_effect_grant = effect_grant;
                 if !r110_counters.is_empty() {
                     self.uses("Effect", "Move.R110AsWithCounters");
@@ -5480,7 +5485,7 @@ impl Walker<'_> {
                     w.problem(R5502_COMBAT_ONLY);
                 }
             }
-            Effect::R111KeepChosen(name) => w.chosen_as(name),
+            Effect::R111KeepChosen(name) | Effect::R112NoteChosen(name) => w.chosen_as(name),
             Effect::R110ChooseSecretly(secret) => {
                 if matches!(secret, crate::effect::R110Secret::CreatureType(types) if types.len() < 2) {
                     w.problem("a secret choice of creature types offers two or more");
@@ -6764,6 +6769,7 @@ impl Walker<'_> {
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }
+            GameRule::R112SpellsGain { what, .. } => self.selector(what),
             GameRule::R6018PlotLess(less) => {
                 if *less == 0 {
                     self.at(tag, |w| {

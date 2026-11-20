@@ -5,4 +5,4 @@ import type { PlayerId } from "./PlayerId";
 /**
  * One thing a source remembers.
  */
-export type Held = { "Object": ObjectRef } | { "Player": PlayerId } | { "Number": number };
+export type Held = { "Object": ObjectRef } | { "Player": PlayerId } | { "Number": number } | { "R112Word": string };

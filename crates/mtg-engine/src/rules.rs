@@ -526,6 +526,16 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         benefit: mtg_cards::modify::SpellBenefit,
     },
+    /// Each spell its controller casts that `what` picks, judged as it is cast, gains the keyword until it leaves the stack
+    /// (`r112_spells_gain`).
+    R112SpellsGain {
+        /// The cards cast.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        what: Selector,
+        /// The keyword gained.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        keyword: mtg_cards::keyword::Keyword,
+    },
     /// The spells `applies_to` selects cost `mana` more or less to cast (CR 601.2f); "you" is the rule's controller.
     SpellCost {
         /// The spells, judged as they are cast.
@@ -1836,6 +1846,7 @@ impl RulesInForce {
             | Rule::R6600AdaptsFresh(_)
             | Rule::Planar
             | Rule::SpellCost { .. }
+            | Rule::R112SpellsGain { .. }
             | Rule::PreventDamage(_)
             | Rule::Regenerate(_)
             | Rule::DiesInstead { .. }
@@ -2204,6 +2215,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             limit: permission.limit,
         },
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
+        GameRule::R112SpellsGain { what, keyword } => Rule::R112SpellsGain {
+            what: what.clone(),
+            keyword: keyword.clone(),
+        },
         GameRule::SpellCost {
             applies_to,
             change,
@@ -2505,6 +2520,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ManaProduced { who, .. } => who.is_empty(),
         Rule::Cant { who, .. } => who.is_empty(),
         Rule::TriggerAgain { .. }
+        | Rule::R112SpellsGain { .. }
         | Rule::NextSpell { .. }
         | Rule::SpellCost { .. }
         | Rule::DamageCantBePrevented { .. }
@@ -2867,6 +2883,13 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
     }
     if changes_costs(effect) {
         state.possible.costs = true;
+    }
+    // A keyword the spells gain as they are cast may trigger on that cast (cascade): its triggers are watched on the
+    // stack from now on.
+    if matches!(effect.rule, Rule::R112SpellsGain { .. }) {
+        state.possible.elsewhere = true;
+        state.triggers_possible = true;
+        state.statics_possible = true;
     }
     state.rule_effects.push(effect.clone());
     Ok(())

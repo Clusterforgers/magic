@@ -387,7 +387,15 @@ what: unknown,
 /**
  * What the spell gets; a cost change counts its times (`per`) as a fixed number.
  */
-benefit: unknown, } } | { "SpellCost": { 
+benefit: unknown, } } | { "R112SpellsGain": { 
+/**
+ * The cards cast.
+ */
+what: unknown, 
+/**
+ * The keyword gained.
+ */
+keyword: unknown, } } | { "SpellCost": { 
 /**
  * The spells, judged as they are cast.
  */

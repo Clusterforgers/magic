@@ -1388,6 +1388,16 @@ pub enum GameRule {
         /// The cards.
         what: Selector,
     },
+    /// "As you cast spells from your hand this turn, they gain cascade.": each spell its controller casts that `what` picks
+    /// (judged as it is cast, where it is cast from) gains the keyword as it is cast, until it leaves the stack (CR 611.2c
+    /// fixes the spell as it is cast, so the gained keyword triggers on its cast).
+    R112SpellsGain {
+        /// The cards cast.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        what: Selector,
+        /// The keyword gained.
+        keyword: crate::keyword::Keyword,
+    },
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),

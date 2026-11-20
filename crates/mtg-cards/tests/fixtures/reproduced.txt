@@ -1475,6 +1475,7 @@ Landslide
 Lantern Flare
 Laquatus's Disdain
 Lash Out
+Last Voyage of the _____
 Last-Ditch Effort
 Lat-Nam Adept
 Latchkey Faerie
@@ -1534,6 +1535,7 @@ Llanowar Wastes
 Locket of Yesterdays
 Loki's Scepter
 Loki, the Deceiver
+Long List of the Ents
 Loot, Exuberant Explorer
 Looter il-Kor
 Loran of the Third Path
@@ -3047,6 +3049,7 @@ Yavimaya Elder
 Ydwen Efreet
 Yenna, Redtooth Regent
 Yidaro, Wandering Monster
+Yidris, Maelstrom Wielder
 Yisan, the Wanderer Bard
 You Cannot Pass!
 Young Wolf

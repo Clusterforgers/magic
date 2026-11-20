@@ -8,9 +8,86 @@
       "oracle_fingerprint": "1aca48da50a15a63f4ef622508238f9f",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 310 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "May": { "effects": [{ "Exile": { "what": "This", "as": "exiled" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "In": "Exile" }, { "Is": { "Bound": "exiled" } }] },
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "ZoneChange": {
+                                    "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                    "to": "Battlefield"
+                                  }
+                                },
+                                "if": {
+                                  "Matches": { "subject": "This", "selector": [{ "In": "Exile" }] }
+                                },
+                                "from": "Exile",
+                                "effects": [
+                                  {
+                                    "May": {
+                                      "effects": [
+                                        {
+                                          "PutCounters": {
+                                            "on": "This",
+                                            "counter": { "Other": "voyage" }
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  },
+                                  {
+                                    "If": {
+                                      "condition": { "Not": "Performed" },
+                                      "then": [
+                                        {
+                                          "Let": {
+                                            "as": "voyages",
+                                            "amount": {
+                                              "Counters": {
+                                                "on": "This",
+                                                "counter": { "Other": "voyage" }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        {
+                                          "Move": {
+                                            "what": "This",
+                                            "to": {
+                                              "R6502BattlefieldAs": {
+                                                "becomes": [],
+                                                "r110_counters": [["+1/+1", { "Bound": "voyages" }]]
+                                              }
+                                            }
+                                          }
+                                        },
+                                        { "Draw": { "count": { "Bound": "voyages" } } }
+                                      ]
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

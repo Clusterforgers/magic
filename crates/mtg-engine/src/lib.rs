@@ -254,6 +254,7 @@ mod r111_lent;
 mod r111_plot_top;
 mod r111_triggering;
 mod r111_way_riders;
+mod r112_spells_gain;
 mod r112_untap_type;
 #[cfg(test)]
 mod w9c_saturation;
