@@ -15,9 +15,7 @@ use crate::resolve::Scope;
 /// trigger" names; none for the rest.
 pub(super) const fn r111_event(happened: &Happened) -> Option<R111CauseEvent> {
     match *happened {
-        Happened::Moved {
-            object, from, to, ..
-        } => Some(R111CauseEvent::Moved { object, from, to }),
+        Happened::Moved { object, to, .. } => Some(R111CauseEvent::Moved { object, to }),
         Happened::Created { object, .. } => Some(R111CauseEvent::Created { object }),
         Happened::Attacked { attacker, at, .. } => Some(R111CauseEvent::Attacked { attacker, at }),
         _ => None,
@@ -47,9 +45,9 @@ pub(super) fn r111_happened(event: &Event) -> Option<Happened> {
 /// The event a kept one stands for, to be judged again by a pattern.
 const fn r111_replayed(event: R111CauseEvent) -> Happened {
     match event {
-        R111CauseEvent::Moved { object, from, to } => Happened::Moved {
+        R111CauseEvent::Moved { object, to } => Happened::Moved {
             object,
-            from,
+            from: to,
             to,
             cause: None,
         },

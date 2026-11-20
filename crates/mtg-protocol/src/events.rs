@@ -308,8 +308,6 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         *player == viewer || before.ruleset().open_hands() || before.sees_team_hand(viewer, *player)
     };
     match event {
-        // A graveyard is a public zone (CR 404.2): its new order is told to every seat.
-        Event::R111GraveyardOrdered { .. } => None,
         // A secret choice a permanent keeps is told to its controller alone until a cost reveals it (CR 706).
         Event::R110ChoseSecretly { object, .. } => {
             let chooser = before.object(*object).map(GameObject::controller)?;
@@ -391,7 +389,9 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::AbilityLeftToTable(_)
         | Event::TriggerRemoved { .. }
         | Event::DelayedTriggerCreated(_) => redact_triggers(before, event, viewer),
-        Event::HandDealt { .. }
+        // A graveyard is a public zone (CR 404.2): its new order is told to every seat.
+        Event::R111GraveyardOrdered { .. }
+        | Event::HandDealt { .. }
         | Event::CardsBottomed { .. }
         | Event::CardDrawn { .. }
         | Event::FirstPlayerChosen { .. }

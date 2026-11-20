@@ -828,7 +828,7 @@ describe('describeEvent', () => {
         cause: {
           subjects: [{ Object: { id: 5, counter: 0 } }],
           snapshots: [],
-          event: { Moved: { object: 5, from: 'Stack', to: 'Battlefield' } },
+          event: { Moved: { object: 5, to: 'Battlefield' } },
           ability: { object: 5, ability: 0 },
         },
         snapshot: snapshotOf(6),

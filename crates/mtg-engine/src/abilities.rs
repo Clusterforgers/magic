@@ -216,12 +216,11 @@ pub struct Cause {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub enum R111CauseEvent {
-    /// An object moved from one zone to another; `object` is its new object.
+    /// An object moved to a zone; `object` is its new object. The zone it left is not kept (it is read before the move
+    /// for some events), so a pattern that names it does not match a kept move.
     Moved {
         /// The object as it is in the zone it went to.
         object: ObjectId,
-        /// The zone it left.
-        from: crate::zones::Zone,
         /// The zone it went to.
         to: crate::zones::Zone,
     },

@@ -13,10 +13,6 @@ export type R111CauseEvent = { "Moved": {
  */
 object: ObjectId, 
 /**
- * The zone it left.
- */
-from: Zone, 
-/**
  * The zone it went to.
  */
 to: Zone, } } | { "Created": { 

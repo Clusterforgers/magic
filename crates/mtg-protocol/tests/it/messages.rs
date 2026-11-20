@@ -1793,15 +1793,9 @@ fn pipeline_events() -> Vec<Event> {
             controller: player,
             choices,
             cause: Some(Cause {
-                dealers: Vec::new(),
-                counters: Vec::new(),
                 subjects: vec![target],
                 snapshots: vec![shot.clone()],
-                amount: 0,
-                source: None,
-                against: None,
-                event: None,
-                ability: None,
+                ..Cause::default()
             }),
             delayed: Some(DelayedId(2)),
         })),
