@@ -122,6 +122,19 @@ pub(super) fn fix(scope: &Scope<'_>, value: &mut Value) -> bool {
                 *value = written;
                 return true;
             }
+            // "That copy costs {2} less to cast": the object a name holds now, fixed as the rule begins (CR 611.2c).
+            if fields.len() == 1
+                && let Some(named) = fields.get("SameCard")
+                && let Ok(named) = serde_json::from_value::<mtg_cards::refs::Ref>(named.clone())
+                && !matches!(named, mtg_cards::refs::Ref::R111Object(_))
+                && let Ok([object]) = scope.objects(&named).as_deref()
+            {
+                fields.insert(
+                    "SameCard".to_owned(),
+                    serde_json::json!({ "R111Object": object.id }),
+                );
+                return true;
+            }
             let mut any = false;
             for inner in fields.values_mut() {
                 any |= fix(scope, inner);

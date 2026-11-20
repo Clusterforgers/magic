@@ -1424,6 +1424,11 @@ impl<'a> Scope<'a> {
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
             Ref::R110Seat(seat) => self.r110_seat(*seat),
+            Ref::R111Object(id) => state
+                .object(*id)
+                .map(|object| Target::Object(object.reference()))
+                .into_iter()
+                .collect(),
             Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
             Ref::EachPlayer | Ref::R6501PlayersFromYou => self.r6501_turn_order(reference),
             Ref::This => vec![Target::Object(self.source)],

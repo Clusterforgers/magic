@@ -664,6 +664,9 @@ impl<'a> Walker<'a> {
         if *r == Ref::R4700OtherChosen {
             self.uses("Ref", "R4700OtherChosen");
         }
+        if matches!(r, Ref::R111Object(_)) {
+            self.problem("an object is fixed by the engine and never named in a card file");
+        }
         if matches!(r, Ref::R110Seat(_)) {
             self.problem("a seat is fixed by the engine and never named in a card file");
         }
@@ -708,7 +711,9 @@ impl<'a> Walker<'a> {
                 self.reference(on, Kind::Object);
                 self.expect(Kind::Either, want);
             }
-            Ref::Delved | Ref::R6702CraftedWith => self.expect(Kind::Object, want),
+            Ref::Delved | Ref::R6702CraftedWith | Ref::R111Object(_) => {
+                self.expect(Kind::Object, want);
+            }
             Ref::LastExiledWith { on, filter } => {
                 self.reference(on, Kind::Object);
                 self.at("filter", |w| w.selector(filter));
@@ -3890,6 +3895,7 @@ impl Walker<'_> {
             | Ref::Arrived { .. }
             | Ref::Departed(_)
             | Ref::SourceOf(_)
+            | Ref::R111Object(_)
             | Ref::Each(_) => Kind::Object,
             Ref::Target(index) => self
                 .scope

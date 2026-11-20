@@ -59,6 +59,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Promised => "the promised object".to_owned(),
         Ref::R4700OtherChosen => "the other chosen player".to_owned(),
         Ref::R110Seat(seat) => format!("the player in seat {seat}"),
+        Ref::R111Object(id) => format!("the object {}", id.0),
         Ref::Defending => "the defending player".to_owned(),
         Ref::Attacked => "the attacked player".to_owned(),
         Ref::AttackedThisTurn => "each opponent you attacked this turn".to_owned(),

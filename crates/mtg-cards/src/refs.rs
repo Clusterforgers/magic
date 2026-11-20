@@ -111,6 +111,9 @@ pub enum Ref {
     /// The player in this seat (0 is the first): written by the engine as a resolution fixes "the chosen player" into a
     /// keyword it grants ("gain protection from the chosen player"), never by a card file.
     R110Seat(u8),
+    /// The object with this id, in whatever zone it is now: written by the engine as a rule a resolution begins fixes the
+    /// object a name holds (`SameCard`, CR 611.2c), never by a card file.
+    R111Object(mtg_core::ids::ObjectId),
     /// The opponent the gift was promised to as the spell the ability reads was cast (CR 702.174); nobody when none was promised or they have left the game.
     Promised,
     /// The defending player of the attacking creature that triggered the ability, else of the source: whoever it
