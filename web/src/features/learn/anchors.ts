@@ -4,8 +4,8 @@ import type { Step } from '@/protocol/generated'
 export interface AnchorInfo {
   /** The words a text uses for it when the element has none of its own. */
   label: string
-  /** The anchor that shows this one when it is hidden (a folded sheet, a closed menu), if any. */
-  opener?: string
+  /** The anchor that shows this one when it is hidden (a folded sheet, a closed menu), if any; of several the first drawn. */
+  opener?: string | readonly string[]
 }
 
 /** The steps a stop can be set at, as the stops bar names them. */
@@ -41,9 +41,12 @@ const FIXED = {
   'opp.graveyard': { label: "the opponent's graveyard" },
   'turn.badge': { label: 'the turn badge' },
   'turn.ladder': { label: 'the steps of the turn', opener: 'turn.badge' },
-  band: { label: 'the prompt bar' },
-  'band.question': { label: 'the question' },
+  ask: { label: 'the question and its answers' },
+  'ask.card': { label: 'the asking card' },
+  'ask.primary': { label: 'the answer' },
+  'ask.question': { label: 'the question' },
   stack: { label: 'the stack' },
+  'stack.top': { label: 'the top of the stack' },
   'pass.primary': { label: 'the primary button' },
   'pass.end-turn': { label: 'End turn', opener: 'pass.more' },
   'pass.more': { label: 'More' },
@@ -51,10 +54,10 @@ const FIXED = {
   'hand.menu': { label: 'the order of your hand', opener: 'table.menu' },
   command: { label: 'the command zone' },
   'command.tax': { label: 'the commander tax' },
-  'pay.tap': { label: 'Tap', opener: 'sheet.grab' },
-  'pay.auto': { label: 'Pay for me', opener: 'sheet.grab' },
-  'pay.confirm': { label: 'Confirm', opener: 'sheet.grab' },
-  'pay.meter': { label: 'the cost', opener: 'sheet.grab' },
+  'pay.tap': { label: 'Tap', opener: ['side.tab.stack', 'sheet.grab'] },
+  'pay.auto': { label: 'Pay for me' },
+  'pay.confirm': { label: 'Confirm' },
+  'pay.meter': { label: 'the cost' },
   'sheet.grab': { label: 'the payment' },
   'attack.all': { label: 'Attack with all' },
   'attack.confirm': { label: 'Attack' },
@@ -69,6 +72,7 @@ const FIXED = {
   'side.open': { label: 'the side panel' },
   'side.tab.log': { label: 'Log', opener: 'side.open' },
   'side.tab.commands': { label: 'Commands', opener: 'side.open' },
+  'side.tab.stack': { label: 'Stack', opener: 'side.open' },
   log: { label: 'the log', opener: 'side.tab.log' },
   commands: { label: 'the Commands panel', opener: 'side.tab.commands' },
   'help.menu': { label: 'Help' },

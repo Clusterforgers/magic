@@ -44,7 +44,7 @@ interface ChipProps {
 }
 
 /** The width of a spell's picture on its chip, in px; the height follows the card's shape. */
-export const CHIP_ART_PX = 24
+export const CHIP_ART_PX = 16
 const CHIP_ART = {
   '--card-w': `${CHIP_ART_PX}px`,
   '--card-h': `${Math.round((CHIP_ART_PX * 7) / 5)}px`,
@@ -86,7 +86,7 @@ const Chip = memo(function Chip({ group, top, tabbable, hidden, aims, aria, empt
         tabIndex={tabbable && !hidden ? 0 : -1}
         {...(hidden ? {} : handlers)}
         className={cn(
-          'relative hit-area flex h-10 items-center gap-1.5 rounded-lg border bg-background pr-2 pl-1 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2',
+          'relative hit-area flex h-7 items-center gap-1.5 rounded-md border bg-background pr-2 pl-1 text-sm font-medium outline-offset-2 outline-primary focus-visible:outline-2 max-sm:h-6',
           // Staging: the newest item is the focus, raised and ringed; the ones under it step back a little.
           top
             ? 'fx-stage-top max-w-[min(18rem,100%)] border-primary'
@@ -218,7 +218,7 @@ export function StackChips() {
         onFocus={roving.onFocus}
         onKeyDown={roving.onKeyDown}
         // The top chip keeps its dot and picture whole however narrow the strip; its name is what gives way.
-        className="flex min-w-16 items-center gap-1.5 overflow-hidden p-1"
+        className="flex min-w-16 items-center gap-1.5 overflow-hidden px-1"
       >
         {items.map((item, index) => {
           if (typeof item !== 'number') return <StackGhostChip key={`ghost:${item.token}`} ghost={item} />
@@ -249,7 +249,7 @@ export function StackChips() {
           onClick={() => {
             if (side !== null && !(side.open && side.tab === 'stack')) side.activate('stack')
           }}
-          className="relative hit-area h-8 shrink-0 rounded-lg border border-dashed px-2 text-sm font-medium text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2"
+          className="relative hit-area h-7 shrink-0 rounded-md border border-dashed px-2 text-sm font-medium max-sm:h-6 text-muted-foreground outline-offset-2 outline-primary hover:text-foreground focus-visible:outline-2"
         >
           +{folded.length}
           <span data-slot="stack-more-word"> more</span>

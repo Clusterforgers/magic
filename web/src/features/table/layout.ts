@@ -217,8 +217,9 @@ export interface HeightClamp {
 /** The top bar in px, and on a phone held on its side. */
 export const TOP_BAR_PX = 44
 export const TOP_BAR_LANDSCAPE_PX = 32
-/** The shared strip between the opponents and the own board. */
-export const SHARED_CLAMP: HeightClamp = { min: 56, vh: 7, max: 72 }
+/** The shared strip between the opponents and the own board: one status line, a phone's lower. */
+export const STRIP_PX = 36
+export const STRIP_PHONE_PX = 28
 /** The hand dock; a phone held upright gets the lower one. */
 export const HAND_CLAMP: HeightClamp = { min: 104, vh: 16, max: 200 }
 export const HAND_PHONE_CLAMP: HeightClamp = { min: 104, vh: 16, max: 140 }
@@ -233,38 +234,6 @@ export const HAND_GROW_VH = 23
 export const HAND_GROW_VAR = '--hand-grow'
 /** The own board is this many times as tall as the opponents' area (`minmax(0, 1.15fr)` against `minmax(0, 1fr)`). */
 export const OWN_SHARE = 1.15
-/** The tallest a long prompt grows, in percent of the window height. */
-export const SHEET_MAX_VH = 40
-/** What a phone's prompt sheet leaves of the opponents' area: the tile strip and a row of their board, in px. */
-export const SHEET_KEEP_PX = 120
-/** A phone's band is two lines over the ticker: the asking card and the question, then the answers. */
-export const BAND_PHONE_PX = 112
-/**
- * The least a prompt sheet that grows (a decision with no column or sheet for its choices) may grow to, whatever the
- * boards leave: a sentence line and a row of 40 px answers, a phone's two lines, so an empty board above never
- * squeezes the prompt.
- */
-export const BAND_MIN_PX = 96
-export const BAND_MIN_PHONE_PX = BAND_PHONE_PX
-/** The line under the band's row that says what the last batch did (`TurnTicker`), in px. */
-export const BAND_TICKER_PX = 16
-/**
- * The prompt band's height in a window of this height: one line of 44 px controls over the ticker's line, the shared
- * strip with `BAND_TICKER_PX` kept above it (`Regions.sheetRoom`), in every prompt and between prompts, so no board
- * moves for a prompt and the band lies over no card. A phone's is two lines over the ticker. What a prompt chooses
- * among is drawn in the Stack column or the decision sheet, never in the band.
- */
-export function bandHeight(height: number, twoLines: boolean): number {
-  return twoLines ? BAND_PHONE_PX : clampedHeight(SHARED_CLAMP, height) + BAND_TICKER_PX
-}
-
-/**
- * Whether the band is two lines: a narrow window (XS and S), whose band beside a pod column is under the 40 rem at
- * which `promptBand.css` lays it out in one.
- */
-export function twoLineBand(breakpoint: Breakpoint): boolean {
-  return breakpoint === 'xs' || breakpoint === 's'
-}
 /** The side column takes this share of the window width between its bounds; M gets a rail of `RAIL_PX`. */
 export const SIDE_SHARE = 0.18
 export const SIDE_MIN_PX = 272
@@ -300,23 +269,6 @@ export interface Regions {
   hand: number
   opponents: number
   own: number
-  /**
-   * The most a prompt sheet grows to: the band (`bandHeight`), into the room the opponents' area keeps free above the
-   * strip (`sheetRoom`), so it covers no card; less where the split leaves the opponents too little. Never down over
-   * your board (the cards a prompt asks you to click are yours), the hand dock or the controls.
-   */
-  sheet: number
-  /**
-   * The most a sheet that lays out cards grows to (`CARD_PROMPTS`): up to 40 % of the height over the opponents'
-   * boards, whose cards it draws again itself, leaving their pods and `BOARD_KEEP_PX` of their boards once split (on a
-   * phone `SHEET_KEEP_PX`); at least `sheet`. An overlay: no board moves for it.
-   */
-  sheetWide: number
-  /**
-   * The room the opponents' area keeps free above the strip for the prompt sheet, in px: the band (`bandHeight`) less
-   * the strip, for every prompt kind and between prompts alike; 0 for a spectator (`withoutBand`).
-   */
-  sheetRoom: number
   /** In boss mode, how the party's room is split (`splitBoss`); left out elsewhere. */
   party?: PartyRows
   /** The hand dock is the slim bar (`HAND_SLIM_PX`): the seat has nothing to play from it. */
@@ -333,34 +285,6 @@ export interface PartyRows {
 
 const finite = (value: number): number => (Number.isFinite(value) ? Math.max(0, value) : 0)
 const clampTo = (value: number, min: number, max: number): number => Math.min(max, Math.max(min, value))
-
-/**
- * The most a prompt sheet grows to in a window of this height, over a strip and an opponents' area of these heights:
- * it leaves `keep` px of the area, on a phone at least `SHEET_KEEP_PX`, and is never under `BAND_MIN_PX`
- * (`BAND_MIN_PHONE_PX` on a phone) below 40 % of the height and the top bar.
- */
-export function sheetMost(
-  height: number,
-  shared: number,
-  opponents: number,
-  phone: boolean,
-  keep = 0,
-): number {
-  const room = Math.max(0, opponents - (phone ? Math.max(SHEET_KEEP_PX, keep) : keep))
-  const floor = phone ? BAND_MIN_PHONE_PX : BAND_MIN_PX
-  // The floor still ends at the top bar.
-  return Math.min(
-    (height * SHEET_MAX_VH) / 100,
-    shared + Math.max(0, opponents),
-    Math.max(floor, shared + room),
-  )
-}
-
-/** `regions` with one line for the band: a spectator answers no prompt, so the boards keep a second line's room. */
-export function withoutBand(regions: Regions): Regions {
-  const sheetRoom = Math.min(regions.sheetRoom, BAND_TICKER_PX)
-  return { ...regions, sheetRoom, sheet: regions.shared + sheetRoom }
-}
 
 /** The px a `HeightClamp` gives in a window of this height. */
 export function clampedHeight(range: HeightClamp, height: number): number {
@@ -379,16 +303,12 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
   const sideWidth =
     side === 'column' ? clampTo(width * SIDE_SHARE, SIDE_MIN_PX, SIDE_MAX_PX) : side === 'rail' ? RAIL_PX : 0
   const topBar = landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
-  const shared = clampedHeight(SHARED_CLAMP, height)
+  const shared = phone ? STRIP_PHONE_PX : STRIP_PX
   const slim = handSlim && !phone
   const hand = slim ? HAND_SLIM_PX : clampedHeight(phone ? HAND_PHONE_CLAMP : HAND_CLAMP, height)
-  const rest = Math.max(0, height - topBar - shared - hand)
+  const rest = Math.max(0, height - topBar - shared - hand - (phone ? DECISION_BAR_PX : 0))
   const opponents = rest / (1 + OWN_SHARE)
   const own = rest - opponents
-  // The room is counted first, so it is a whole number of px whatever the strip's height.
-  const sheetRoom = twoLineBand(breakpoint) ? Math.max(0, BAND_PHONE_PX - shared) : BAND_TICKER_PX
-  // The band is one height whatever the boards leave it: nothing in it depends on the prompt.
-  const sheet = shared + sheetRoom
   return {
     breakpoint,
     phone,
@@ -402,9 +322,6 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
     hand,
     opponents,
     own,
-    sheet,
-    sheetWide: Math.max(sheet, sheetMost(height, shared, opponents, phone)),
-    sheetRoom,
     ...(slim ? { handSlim: true } : {}),
   }
 }
@@ -429,16 +346,32 @@ export function gridRows(
       : `max(${clampCss(HAND_CLAMP)}, var(${HAND_GROW_VAR}, 0px))`
   const weighted = (regions.opponents ?? 0) > 0 && (regions.own ?? 0) > 0
   const [theirs, own] = weighted ? [weight(regions.opponents), weight(regions.own)] : [1, OWN_SHARE]
-  const strip = clampCss(SHARED_CLAMP)
+  const strip = `${regions.phone ? STRIP_PHONE_PX : STRIP_PX}px`
   const board = `minmax(0, ${own}fr)`
-  return `${bar}px minmax(0, ${theirs}fr) ${choice ? `${board} ${strip}` : `${strip} ${board}`} ${hand}`
+  const rows = `${bar}px minmax(0, ${theirs}fr) ${choice ? `${board} ${strip}` : `${strip} ${board}`} ${hand}`
+  return regions.phone ? `${rows} ${DECISION_BAR_PX}px` : rows
 }
+
+/** A phone's decision bar under the hand, in px: one height in every prompt and between prompts. */
+export const DECISION_BAR_PX = 164
 
 /** The table's named areas, top to bottom: bar, opponents, shared strip, your board, the hand beside the controls. */
 export const TABLE_AREAS = '"bar bar" "opponents opponents" "shared shared" "own own" "hand controls"'
 
 /** The areas while a choice overlay is open: your board above the strip, so the overlay covers both boards in one piece. */
 export const CHOICE_AREAS = '"bar bar" "opponents opponents" "own own" "shared shared" "hand controls"'
+
+/** A phone's areas: the hand across the window and the decision bar (the controls) under it. */
+export const PHONE_AREAS =
+  '"bar bar" "opponents opponents" "shared shared" "own own" "hand hand" "controls controls"'
+export const PHONE_CHOICE_AREAS =
+  '"bar bar" "opponents opponents" "own own" "shared shared" "hand hand" "controls controls"'
+
+/** The `grid-template-areas` of the main area for a phone or not, a choice overlay open or not. */
+export function tableAreas(phone: boolean, choice: boolean): string {
+  if (phone) return choice ? PHONE_CHOICE_AREAS : PHONE_AREAS
+  return choice ? CHOICE_AREAS : TABLE_AREAS
+}
 
 /** The tallest the hand dock grows for its rows in a window of these regions, in px; 0 on a phone, whose dock keeps its size. */
 export function handGrowMost(regions: Pick<Regions, 'phone' | 'main'>): number {
@@ -449,16 +382,29 @@ const weight = (px: number | undefined): number => Math.round((px ?? 0) * 100) /
 
 /**
  * The widest the controls dock gets, in px: the pass buttons in one row; with the stop ladder and Full Control in a
- * row of their own above them; a phone's is a column for the pass button.
+ * row of their own above them.
  */
 export const CONTROLS_MAX_PX = 480
 export const CONTROLS_STOPS_MAX_PX = 760
-export const CONTROLS_MAX_PHONE_PX = 160
 
-/** The `grid-template-columns` of the main area: the controls dock is as wide as its content up to its limit and the hand dock has the rest. */
-export function mainColumns(regions: Pick<Regions, 'phone'>, stopsRow = false): string {
-  const widest = regions.phone ? CONTROLS_MAX_PHONE_PX : stopsRow ? CONTROLS_STOPS_MAX_PX : CONTROLS_MAX_PX
-  return `minmax(0, 1fr) fit-content(${widest}px)`
+/** The controls dock where the hand would not keep its row beside the full dock: its short form, in px. */
+export const CONTROLS_SHORT_PX = 288
+
+/**
+ * The width of the controls dock in px: one width in every prompt and between prompts, so the hand beside it never
+ * moves for a question. The short form where the main area is under `DOCK_FULL_MIN_MAIN_PX`, else as wide as the hand's
+ * row leaves up to its widest; 0 on a phone, whose dock is the bar under the hand.
+ */
+export function controlsWidth(regions: Pick<Regions, 'phone' | 'main'>, stopsRow = false): number {
+  if (regions.phone) return 0
+  if (regions.main.width < DOCK_FULL_MIN_MAIN_PX) return CONTROLS_SHORT_PX
+  const room = regions.main.width - handRowPx(DOCK_HAND_CARDS, DOCK_HAND_COMMANDERS)
+  return Math.floor(Math.min(stopsRow ? CONTROLS_STOPS_MAX_PX : CONTROLS_MAX_PX, room))
+}
+
+/** The `grid-template-columns` of the main area: the hand dock, then the controls dock (`controlsWidth`). */
+export function mainColumns(regions: Pick<Regions, 'phone' | 'main'>, stopsRow = false): string {
+  return `minmax(0, 1fr) ${controlsWidth(regions, stopsRow)}px`
 }
 
 /** The cards of the hand the controls dock leaves one row for: an opening hand, with a pair of partners to cast beside it. */
@@ -501,11 +447,14 @@ export const SIDE_DECISION_MIN_PX = 144
  * overhang, so the prompt and the cards it asks you to click stay in view and pressable.
  */
 export function sidePanelRows(
-  regions: Pick<Regions, 'side' | 'opponents' | 'shared'>,
+  regions: Pick<Regions, 'side' | 'opponents' | 'shared'> & Partial<Pick<Regions, 'phone'>>,
   decisionInStrip = false,
 ): string {
   if (decisionInStrip) return '2 / 3'
-  const aboveOwn = regions.side === 'sheet' && regions.opponents + regions.shared >= SIDE_PANEL_MIN_PX
+  // A phone keeps your board, and the life in its pod line, clear of the sheet: its decision bar holds the answers.
+  const aboveOwn =
+    regions.side === 'sheet' &&
+    (regions.phone === true || regions.opponents + regions.shared >= SIDE_PANEL_MIN_PX)
   return aboveOwn ? '2 / 4' : '2 / 5'
 }
 

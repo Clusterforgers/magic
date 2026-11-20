@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ChatLine } from '@/play/store'
@@ -9,6 +9,7 @@ import { ownDecision } from './prompt/ownDecision'
 import { SideContext } from './sideContext'
 import type { SideState } from './sideContext'
 import { unreadChat } from './sideCounts'
+import { TableOptionsContext } from './tableOptions'
 import type { SideTab } from './sideCounts'
 
 /** How long the Stack tab stays forward after a decision is answered, in ms: the next question of a run arrives within it. */
@@ -71,6 +72,11 @@ export function SideProvider({
       setSheetFolded(null)
     }
   }
+  // A start tab (the dev table's `?side=log`) is chosen after a decision has brought the Stack tab forward.
+  const start = useContext(TableOptionsContext).sideTab
+  useEffect(() => {
+    if (start !== undefined) setTab(start)
+  }, [start])
   const [detail, setDetail] = useState<HTMLElement | null>(null)
   const [sheetStart, setSheetStart] = useState(false)
   const [panel, setPanel] = useState(false)

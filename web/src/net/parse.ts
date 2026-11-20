@@ -48,6 +48,7 @@ import type {
 } from '@/protocol/generated'
 import { isCount, isFlag, isInt, isListOf, isRecord, isText } from './check'
 import { isTeams, readHouseRules } from './houseRules'
+import { isOptionalForecast } from './stackForecast'
 
 /** Frames longer than this many characters are dropped unread; the biggest real message is a snapshot of about 50 KB. */
 export const MAX_FRAME_CHARS = 1_048_576
@@ -424,6 +425,7 @@ function isObjectView(value: unknown): value is ObjectView {
     Array.isArray(value.abilities) &&
     hasKeywordNames(value) &&
     hasPermanentLinks(value) &&
+    isOptionalForecast(value.forecast) &&
     isObjectKindInfo(value) &&
     (value.permanent === null ||
       (isRecord(value.permanent) &&
@@ -656,7 +658,13 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (v.forecast !== null && !isCombatForecast(v.forecast)) {
         return '"forecast" must be null or a combat forecast'
       }
-      return { type, decision: v.decision, forecast: v.forecast }
+      if (!isOptionalForecast(v.changes)) return '"changes" must be a list of forecast lines'
+      return {
+        type,
+        decision: v.decision,
+        forecast: v.forecast,
+        ...(v.changes === undefined ? {} : { changes: v.changes }),
+      }
     case 'Events':
       if (!isCount(v.from_seq)) return '"from_seq" must be a whole number'
       if (!isListOf(v.events, isEventView)) return '"events" must be a list of Public or Hidden events'

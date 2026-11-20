@@ -1,17 +1,22 @@
-/** Goal: for every kind of target decision (one target, up to some, a range, players, objects the table draws and objects it does not, 2 to 12 seats) the legal cards are marked and the rest of the viewer dimmed; a click on a card or a button of the list chooses a target and again takes it back, one target switches while a full choice of several closes the rest; Confirm waits for the minimum and sends the targets in the order chosen, once; Undo and Remove take targets back; Cancel takes a spell back and a triggered ability has none; and the sentence names the source and the words of the specification. */
+/** Goal: for every kind of target decision (one target, up to some, a range, players, objects the table draws and objects it does not, 2 to 12 seats) the legal cards are marked and the rest of the viewer dimmed; a click on a card or a button of the list chooses a target and again takes it back, one target or up to one answers on the press with no Confirm, while a full choice of several closes the rest and Confirm waits for the minimum and sends the targets in the order chosen, once; Undo and Remove take targets back; Cancel takes a spell back and a triggered ability has none; and the sentence names the source and the words of the specification. */
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { Fixture } from '@/features/table/dev/fixture'
 import type { ObjectId, ObjectView, Target, TargetOptions } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { creaturesOf, fixtureOf, ownOf, renderDecision } from '@/test-utils/combatTable'
+import { drawnOnTable } from './drawnCards'
 import { possessive } from './targetText'
 
 /** What a screen reader calls a button: its label, else its text. */
 const nameOf = (button: HTMLElement): string => button.getAttribute('aria-label') ?? button.textContent ?? ''
 /** A button that cannot be pressed now: disabled, or a card whose choice is full. */
 const isClosed = (button: HTMLElement): boolean =>
-  button.matches(':disabled') || button.getAttribute('aria-disabled') === 'true'
+  button.matches(':disabled') ||
+  button.getAttribute('aria-disabled') === 'true' ||
+  // A card of the table that is no longer offered loses its legal mark.
+  (button.hasAttribute('data-object-id') && button.getAttribute('data-highlight') !== 'legal')
+
 const objects = (ids: readonly ObjectId[]): Target[] => ids.map((id) => ({ Object: { id, counter: 0 } }))
 const players = (seats: number): Target[] => Array.from({ length: seats }, (_, seat) => ({ Player: seat }))
 
@@ -85,7 +90,9 @@ function mount(
   const group = (): HTMLElement => screen.getByRole('group', { name: 'Legal targets' })
   /** The buttons of the legal targets in the order the engine gave them, each once: a player is a button, an object its card. */
   const listed = (): HTMLElement[] => {
-    const buttons = within(group()).getAllByRole('button')
+    // Objects on the table are pressed there; the group holds the players and the cards the table does not draw.
+    const shown = screen.queryByRole('group', { name: 'Legal targets' })
+    const buttons = shown === null ? [] : within(shown).queryAllByRole('button')
     const players = buttons.filter((button) => !button.hasAttribute('data-candidate'))
     const cards = new Map(
       buttons
@@ -98,7 +105,12 @@ function mount(
       const key = JSON.stringify(target)
       if (seen.has(key)) return []
       seen.add(key)
-      const button = 'Object' in target ? cards.get(target.Object.id) : players[next++]
+      const button =
+        'Object' in target
+          ? drawnOnTable(target.Object.id)
+            ? table.card(target.Object.id)
+            : cards.get(target.Object.id)
+          : players[next++]
       return button === undefined ? [] : [button]
     })
   }
@@ -111,7 +123,7 @@ function mount(
   /** Chooses the target at `index` of the legal list as a person would: its card when the table draws one. */
   const choose = async (index: number): Promise<void> => {
     const target = must(options.legal[index])
-    if ('Object' in target && table.hasCard(target.Object.id))
+    if ('Object' in target && drawnOnTable(target.Object.id))
       await table.user.click(table.card(target.Object.id))
     else await table.user.click(must(listed()[index]))
   }
@@ -142,7 +154,30 @@ describe('what is marked', () => {
 })
 
 describe('choosing', () => {
-  it.each(SPECS)(
+  it.each([
+    [1, 1, true],
+    [0, 1, true],
+    [1, 2, false],
+    [0, 2, false],
+    [2, 2, false],
+  ])('targets %i to %i answer on the press: %s', async (min, max, press) => {
+    const legal = objects(creaturesOf(fixtureOf(2), 1).slice(0, 3))
+    const { choose, answer } = mount({ seats: 2, legal, min, max })
+    expect(screen.queryByRole('button', { name: 'Confirm targets' }) === null).toBe(press)
+    expect(screen.queryByRole('button', { name: 'No target' }) !== null).toBe(press && min === 0)
+    await choose(1)
+    if (press) expect(answer).toHaveBeenCalledWith({ ChooseTargets: { Targets: [legal[1]] } })
+    else expect(answer).not.toHaveBeenCalled()
+  })
+
+  it('sends no target for up to one when "No target" is pressed', async () => {
+    const legal = objects(creaturesOf(fixtureOf(2), 1).slice(0, 2))
+    const { answer, user } = mount({ seats: 2, legal, min: 0, max: 1 })
+    await user.click(screen.getByRole('button', { name: 'No target' }))
+    expect(answer).toHaveBeenCalledWith({ ChooseTargets: { Targets: [] } })
+  })
+
+  it.each(SPECS.filter((spec) => spec.max > 1))(
     'with $name each choice marks, lists and counts, and Confirm sends them once in order',
     async (spec) => {
       const table = withSpec(spec)
@@ -190,20 +225,13 @@ describe('choosing', () => {
   )
 
   it.each(SPECS.filter((spec) => spec.max === 1))(
-    'with $name a click on another target changes the choice, and the same target again takes it back',
+    'with $name a press sends that target once, and a second press sends nothing more',
     async (spec) => {
-      const { listed, chosen, choose, confirm, answer, user } = withSpec(spec)
-      await choose(0)
+      const { options, choose, answer } = withSpec(spec)
       await choose(1)
-      expect(listed()[0]).toHaveAttribute('aria-pressed', 'false')
-      expect(listed()[1]).toHaveAttribute('aria-pressed', 'true')
-      expect(chosen()).toHaveLength(1)
-      await choose(1)
-      expect(chosen()).toHaveLength(0)
-      expect(confirm()).toBeDisabled()
       await choose(0)
-      await user.click(confirm())
       expect(answer).toHaveBeenCalledTimes(1)
+      expect(answer).toHaveBeenCalledWith({ ChooseTargets: { Targets: [options.legal[1]] } })
     },
   )
 
@@ -259,7 +287,7 @@ describe('choosing', () => {
   })
 
   it('sends a double click on Confirm as one answer', async () => {
-    const { confirm, choose, answer, user } = withSpec(must(SPECS[0]))
+    const { confirm, choose, answer, user } = withSpec(must(SPECS[2]))
     await choose(0)
     await user.dblClick(confirm())
     expect(answer).toHaveBeenCalledTimes(1)
@@ -328,12 +356,11 @@ describe('what a button says of its target', () => {
       min: 1,
       max: 1,
     })
-    const object = must(fixture.view.objects.find((o) => o.id === creature))
-    expect(listed().map(nameOf)).toEqual([
-      'Alice (you)',
-      'Cy',
-      `${object.name} ${object.power}/${object.toughness} (Bo)`,
-    ])
+    const [you, cy, card] = listed()
+    expect([you, cy].map((button) => nameOf(must(button)))).toEqual(['Alice (you)', 'Cy'])
+    // A creature on the table is pressed there, its own card; no picture repeats it.
+    expect(card).toHaveAttribute('data-object-id', String(creature))
+    expect(card?.hasAttribute('data-candidate')).toBe(false)
   })
 
   it('says where a card is that the table does not draw it in: on the stack, in a graveyard, in exile', async () => {
@@ -343,7 +370,7 @@ describe('what a button says of its target', () => {
       fixture.view.objects.find((o) => typeof o.zone === 'object' && 'Graveyard' in o.zone && o.owner === 1),
     )
     const exiled = must(fixture.view.objects.find((o) => o.zone === 'Exile'))
-    const { listed, hasCard, answer, user, confirm } = mount({
+    const { listed, hasCard, answer, user } = mount({
       seats: 2,
       legal: objects([spell.id, card.id, exiled.id]),
       min: 1,
@@ -357,23 +384,22 @@ describe('what a button says of its target', () => {
     ])
     expect(hasCard(card.id)).toBe(false)
     await user.click(must(listed()[1]))
-    await user.click(confirm())
     expect(answer).toHaveBeenCalledWith({ ChooseTargets: { Targets: objects([card.id]) } })
   })
 
-  it('numbers objects that share a name, so two buttons never read alike', () => {
+  it('leaves objects that share a name to their own cards on the table, each pressed in its place', () => {
     const fixture = fixtureOf(2)
     const byName = new Map<string, ObjectId[]>()
     for (const object of fixture.view.objects) {
       if (object.zone !== 'Battlefield' || object.controller !== 1) continue
       byName.set(object.name, [...(byName.get(object.name) ?? []), object.id])
     }
-    const [name, ids] = must([...byName].find(([, list]) => list.length >= 3))
+    const [, ids] = must([...byName].find(([, list]) => list.length >= 3))
     const { listed } = mount({ seats: 2, legal: objects(ids.slice(0, 3)), min: 1, max: 1 })
-    const [first, second, third] = listed().map(nameOf)
-    expect(first).toMatch(new RegExp(`^${name} 1`))
-    expect(second).toMatch(new RegExp(`^${name} 2`))
-    expect(third).toMatch(new RegExp(`^${name} 3`))
+    expect(listed().map((button) => Number(button.getAttribute('data-object-id')))).toEqual(ids.slice(0, 3))
+    expect(
+      screen.queryByRole('group', { name: 'Legal targets' })?.querySelector('[data-candidate]') ?? null,
+    ).toBeNull()
   })
 
   it('lists a target once when the engine lists it twice', () => {

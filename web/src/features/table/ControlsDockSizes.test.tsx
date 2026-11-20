@@ -8,7 +8,8 @@ import { renderTable } from '@/test-utils/tableHarness'
 
 const ROW = ['stop-ladder', 'full-control', 'secondary-action', 'more-passing', 'primary-action']
 const BUTTON = ['stops-button', 'auto-skip', 'secondary-action', 'more-passing', 'primary-action']
-const PHONE = ['stops-button', 'auto-skip', 'more-passing', 'primary-action']
+// A phone's bar adds the Stack chip that opens the stack sheet.
+const PHONE = ['stops-button', 'auto-skip', 'bar-stack', 'more-passing', 'primary-action']
 
 /** Window widths with the controls each shows, in the order of reading. 1599 is one pixel short of the row. */
 const SIZES: ReadonlyArray<[number, number, string[]]> = [

@@ -1,5 +1,5 @@
 /** The PayMana prompt in plain words: what a cost asks for and what to do next. */
-import type { Color, ManaCost, ManaSymbol, ManaType, ObjectId } from '@/protocol/generated'
+import type { Color, ManaCost, ManaOption, ManaSymbol, ManaType, ObjectId } from '@/protocol/generated'
 import { LIFE_PER_SYMBOL, shapeOf, symbolText } from '../manaSymbols'
 import { madeOf, manaValue } from './payment'
 import type { Spend, Whole } from './payment'
@@ -179,4 +179,19 @@ export function proposalNote(whole: Whole, nameOf: (id: ObjectId) => string): st
   const parts = whole.spends.map((spend) => spendWords(spend, nameOf))
   if (whole.life.length > 0) parts.push(`${whole.life.length * LIFE_PER_SYMBOL} life`)
   return `The game proposes ${parts.length === 0 ? 'nothing' : andList(parts)}. Confirm to pay, or change it.`
+}
+
+/** The letter of each kind of mana, as a cost writes it. */
+const LETTER: Record<ManaType, string> = {
+  White: 'W',
+  Blue: 'U',
+  Black: 'B',
+  Red: 'R',
+  Green: 'G',
+  Colorless: 'C',
+}
+
+/** The badge of a source a proposed payment taps: "pays U", "pays GG" for two. */
+export function paysWords(option: ManaOption): string {
+  return `pays ${LETTER[option.produces].repeat(Math.max(1, option.count ?? 1))}`
 }

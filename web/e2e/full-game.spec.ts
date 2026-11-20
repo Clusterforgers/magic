@@ -8,9 +8,9 @@ const MAX_DECISIONS = 2_500
 /** Time with no decision answered by either seat before the run is called stuck. */
 const STALL_MS = 30_000
 /** The stops the server sets for every seat: its own declare attackers and postcombat main, as the banner names them. */
-const DEFAULT_STOP = /^Your turn · \d+ · (Declare attackers|Postcombat main)$/
+const DEFAULT_STOP = /^Your turn · Round \d+ · (Declare attackers|Postcombat main)$/
 /** The stop Bo sets: the end step of Ada's turns. */
-const BO_STOP = /^Ada's turn · \d+ · End step$/
+const BO_STOP = /^Ada's turn · Round \d+ · End step$/
 
 const standings = (page: Page) => page.getByRole('list', { name: 'How each seat finished' })
 

@@ -49,9 +49,15 @@ describe.each(TARGETS)('?prompt=%s', (prompt) => {
     )
     const user = userEvent.setup()
     expect(document.querySelector('[data-decision="ChooseTargets"]')).not.toBeNull()
+    // The first legal target: a player or a picture in the prompt, else a card pressed on the table.
     const group = screen.getByRole('group', { name: 'Legal targets' })
-    if (prompt !== 'targets-two') await user.click(must(within(group).getAllByRole('button')[0]))
-    await user.click(screen.getByRole('button', { name: 'Confirm targets' }))
+    const first =
+      within(group).queryAllByRole('button')[0] ??
+      document.querySelector<HTMLElement>('[data-area] button[data-highlight="legal"]')
+    if (prompt !== 'targets-two') await user.click(must(first))
+    // One target answers on its press; several wait for Confirm.
+    const confirm = screen.queryByRole('button', { name: 'Confirm targets' })
+    if (confirm !== null) await user.click(confirm)
     expect(document.querySelector('[data-decision]')).toBeNull()
     expect(game.session.store.getState().pending).toBeNull()
   })
@@ -188,7 +194,7 @@ describe.each(ORDERS)('?prompt=%s', (prompt) => {
     )
     const user = userEvent.setup()
     expect(document.querySelector('[data-decision="OrderTriggers"]')).not.toBeNull()
-    await user.click(screen.getByRole('button', { name: 'Confirm order' }))
+    await user.click(must(screen.getAllByRole('button', { name: 'Confirm order' })[0]))
     expect(document.querySelector('[data-decision]')).toBeNull()
     expect(game.session.store.getState().pending).toBeNull()
   })

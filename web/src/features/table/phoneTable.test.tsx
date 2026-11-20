@@ -1,4 +1,4 @@
-// Goal: a phone held upright keeps its table to the essentials: the combat answers keep their words, the controls dock shows the auto-skip switch without its label (the switch keeps its name), the pod drops the untapped sources the lands already show, the hand dock is 104 to 140 px, the boards fold their lands into chips and draw no card under the phone floor, the strip keeps to two lines, and a row of choice cards never widens the sheet past the screen.
+// Goal: a phone held upright keeps its table to the essentials: the combat answers keep their words, the controls dock shows the auto-skip switch without its label (the switch keeps its name), the pod drops the untapped sources the lands already show, the hand dock is 104 to 140 px, the boards fold their lands into chips and draw no card under the phone floor, the strip is one line, the decision stands in the bar under the hand, and a row of choice cards never widens its box past the screen.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
@@ -50,10 +50,10 @@ describe('the phone table', () => {
     expect(container.querySelector('[data-lane="lands"]')).toBeNull()
   })
 
-  it('keeps the strip to two lines without a prompt: the stack, then the waiting line beside the note', () => {
-    const strip = read('SharedStrip.tsx')
-    expect(strip).toContain('max-sm:has-data-[slot=stack-chips]:basis-full')
-    expect(strip).toContain('max-sm:grow max-sm:basis-0')
+  it('keeps the strip one line and answers in the bar under the hand', () => {
+    expect(read('layout.ts')).toContain('export const STRIP_PHONE_PX = 28')
+    expect(read('ControlsDock.tsx')).toContain("data-slot={phone ? 'decision-bar' : 'decision-dock'}")
+    expect(read('layout.ts')).toContain('"hand hand" "controls controls"')
   })
 
   it('keeps a row of choice cards inside the sheet', () => {

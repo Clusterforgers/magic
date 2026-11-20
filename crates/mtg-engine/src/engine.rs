@@ -1,6 +1,7 @@
 //! The public driver: advance until a player must decide, then validate and apply answers.
 
 mod loop_run;
+mod preview_targets;
 
 use mtg_core::ids::{EffectId, ObjectId, PlayerId};
 

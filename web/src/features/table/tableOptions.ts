@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 import type { PlayerId } from '@/protocol/generated'
 import type { TableMode, Viewport } from './layout'
+import type { SideTab } from './sideCounts'
 
 /** Where the table starts. `GameTable` takes no props, so a page that wants a start state provides it here. */
 export interface TableOptions {
@@ -29,6 +30,8 @@ export interface TableOptions {
   foldLands?: boolean
   /** Show a badge on the defender's pod or tile for each seat that attacks it, besides the lines (`combat/AttackBadges`); on everywhere but under vitest when left out. */
   attackBadges?: boolean
+  /** The side tab to show once the table is up, after a decision has brought the Stack tab forward (the dev table's `?side=log`). */
+  sideTab?: SideTab
 }
 
 /** Whether the pods carry attack badges when `TableOptions.attackBadges` is left out. */

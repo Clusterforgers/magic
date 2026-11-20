@@ -8,6 +8,7 @@ use mtg_engine::decision::Refusal;
 use mtg_engine::error::IllegalAnswer;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
+use mtg_engine::stack_forecast::ForecastChange;
 use mtg_engine::state::Stage;
 use mtg_engine::{Answer, Checkpoint, Decision, Engine, EngineError, Event, GameState, replay};
 use mtg_protocol::{
@@ -648,21 +649,30 @@ impl Running {
     }
 
     /// The forecast of `answer` to the decision `id`, only if that decision is pending for `seat` right now and the
-    /// engine can preview the answer; nothing is logged and the engine is not changed.
+    /// engine can preview the answer: the combat forecast of an attack or block, the stack forecast of a spell's targets;
+    /// nothing is logged and the engine is not changed.
     pub(crate) fn preview(
         &self,
         seat: PlayerId,
         id: DecisionId,
         answer: &Answer,
-    ) -> Option<CombatForecast> {
+    ) -> (Option<CombatForecast>, Vec<ForecastChange>) {
         let current = self
             .pending
             .as_ref()
             .is_some_and(|p| p.id == id && p.decision.player == seat && !p.hidden);
         if !current {
-            return None;
+            return (None, Vec::new());
         }
-        self.engine.preview_forecast(seat, answer).ok()
+        if matches!(answer, Answer::ChooseTargets(_)) {
+            return (
+                None,
+                self.engine
+                    .preview_targets(seat, answer)
+                    .unwrap_or_default(),
+            );
+        }
+        (self.engine.preview_forecast(seat, answer).ok(), Vec::new())
     }
 
     /// Answers the pending decision for its seat with the safe default: a pass, or no blocks.
@@ -994,6 +1004,7 @@ mod tests {
             assert!(
                 running
                     .preview(SEATS[0], id, &Answer::DeclareBlockers(Vec::new()))
+                    .0
                     .is_none()
             );
         }
@@ -1132,5 +1143,56 @@ mod tests {
             (0..8).map(|_| running.waits.wait()).collect::<Vec<_>>()
         };
         assert_ne!(draw(), draw());
+    }
+
+    #[test]
+    fn a_target_answer_is_previewed_as_the_stack_forecast_and_only_for_the_pending_decision() {
+        use mtg_engine::choose::{Target, TargetChoice};
+        use mtg_engine::stack_forecast::{Change, Fate};
+        use mtg_testkit::cards::{burn, mountain};
+        let setup = Scenario::new(2)
+            .hand(0, [burn("Bolt", 3)])
+            .battlefield(0, [mtg_testkit::ready(mountain())])
+            .battlefield(1, [mtg_testkit::ready(free_creature("Bear", 2, 2))])
+            .setup()
+            .unwrap();
+        let mut engine = Engine::new(setup).unwrap();
+        let Some(Decision {
+            kind: DecisionKind::Priority(options),
+            ..
+        }) = engine.decision().cloned()
+        else {
+            panic!("seat 0 holds priority");
+        };
+        engine
+            .apply(Answer::Priority(PriorityAction::CastSpell(
+                options.castable[0],
+            )))
+            .unwrap();
+        let bear = engine
+            .state()
+            .objects()
+            .find(|o| o.card().name == "Bear")
+            .unwrap()
+            .reference();
+        let mut running = Running::new(engine, Pace::MANUAL);
+        running.settle(false, Halt::Ask);
+        let id = running.pending.as_ref().unwrap().id;
+        let answer = Answer::ChooseTargets(TargetChoice::Targets(vec![Target::Object(bear)]));
+        let (combat, changes) = running.preview(SEATS[0], id, &answer);
+        assert_eq!(combat, None);
+        let said: Vec<&Change> = changes.iter().map(|line| &line.change).collect();
+        assert_eq!(
+            said,
+            [
+                &Change::Damage { amount: 3 },
+                &Change::Leaves { fate: Fate::Dies }
+            ]
+        );
+        assert_eq!(running.preview(SEATS[1], id, &answer), (None, Vec::new()));
+        assert_eq!(
+            running.preview(SEATS[0], DecisionId(id.0 + 1), &answer),
+            (None, Vec::new())
+        );
     }
 }

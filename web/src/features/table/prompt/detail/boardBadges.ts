@@ -6,8 +6,8 @@
 import { useSyncExternalStore } from 'react'
 import type { ObjectId } from '@/protocol/generated'
 
-/** How a badge looks: the asker's gold, the cause's green, a placed number's rose, a done tick. */
-export type BadgeTone = 'ask' | 'cause' | 'placed' | 'done'
+/** How a badge looks: the asker's gold, the cause's green, a placed number's rose, a done tick, a proposed source's dashed primary. */
+export type BadgeTone = 'ask' | 'cause' | 'placed' | 'done' | 'proposed'
 
 /** One card's badge: a short word or number over its top edge. */
 export interface BoardBadge {

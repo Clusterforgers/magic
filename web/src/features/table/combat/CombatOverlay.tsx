@@ -132,6 +132,15 @@ function BundleLabels({ drawn }: { drawn: readonly DrawnLine[] }) {
   )
 }
 
+/** The box of your life figure relative to `origin`, or null without one. */
+function lifeRect(origin: HTMLElement | null): Rect | null {
+  const life = document.querySelector('[data-you] [data-slot="life"]')
+  if (origin === null || life === null) return null
+  const at = origin.getBoundingClientRect()
+  const box = life.getBoundingClientRect()
+  return { x: box.left - at.left, y: box.top - at.top, width: box.width, height: box.height }
+}
+
 /** The lines that run above the strip: they start at a chip in it. */
 const above = (kind: LineSpec['kind']): boolean => kind === 'target' || kind === 'effect'
 
@@ -140,7 +149,8 @@ function Lines({ lines }: { lines: readonly LineSpec[] }) {
   const provider = useContext(RectProviderContext)
   const anchors = useMemo(() => anchorsOf(lines), [lines])
   const rects = useAnchorRects(origin, anchors, provider)
-  const drawn = useMemo(() => shapesOf(lines, rects), [lines, rects])
+  // Your life figure stays clear of the lines: one that would run over it bows to its other side (`shapesOf`).
+  const drawn = useMemo(() => shapesOf(lines, rects, lifeRect(origin.current)), [lines, rects])
   const combat = useMemo(() => drawn.filter(({ line }) => !above(line.kind)), [drawn])
   const targets = useMemo(() => drawn.filter(({ line }) => above(line.kind)), [drawn])
   const cards = usePlay(laysOutCards)

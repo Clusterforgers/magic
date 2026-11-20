@@ -26,7 +26,12 @@ export function BarButton({
   return (
     <Button size="sm" aria-label={label} title={label} className={cn('gap-1.5 px-2.5', className)} {...props}>
       <Icon aria-hidden="true" className="size-4" />
-      <span aria-hidden="true" className={keepWord ? undefined : 'max-sm:hidden'}>
+      <span
+        aria-hidden="true"
+        data-slot="bar-word"
+        data-keep={keepWord || undefined}
+        className={keepWord ? undefined : 'max-sm:hidden'}
+      >
         {word}
       </span>
     </Button>

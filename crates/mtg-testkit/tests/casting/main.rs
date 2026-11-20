@@ -262,6 +262,7 @@ mod spender_restrictions;
 mod spent_from;
 mod splice;
 mod split_second;
+mod stack_forecast;
 mod suspend;
 mod t20c_pay_cards;
 mod tapped_for_mana;

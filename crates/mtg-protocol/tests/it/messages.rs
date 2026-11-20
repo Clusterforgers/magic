@@ -34,6 +34,7 @@ use mtg_engine::manual::{ManualAction, ManualZone};
 use mtg_engine::object::{Chosen, ObjectRef};
 use mtg_engine::snapshot::snapshot;
 use mtg_engine::spend::Spend;
+use mtg_engine::stack_forecast::{Change, Fate, ForecastChange, Forecasted};
 use mtg_engine::state::GameResult;
 use mtg_engine::take_back::{TakeBackKind, TakeBackOffer, TakeBackRefusal};
 use mtg_engine::tokens::TokenCreated;
@@ -834,10 +835,23 @@ fn server_samples() -> Vec<ServerMessage> {
         ServerMessage::Forecast {
             decision: DecisionId(41),
             forecast: Some(sample_forecast()),
+            changes: Vec::new(),
         },
         ServerMessage::Forecast {
             decision: DecisionId(41),
             forecast: None,
+            changes: Vec::new(),
+        },
+        ServerMessage::Forecast {
+            decision: DecisionId(41),
+            forecast: None,
+            changes: vec![ForecastChange {
+                subject: Forecasted::Object(ObjectId(3)),
+                change: Change::Stats {
+                    power: (4, 7),
+                    toughness: (4, 7),
+                },
+            }],
         },
     ];
     // A welcome states the yield the seat holds, and so does every change of it.
@@ -1290,8 +1304,27 @@ fn client_wire_shape_is_flat_and_tagged(
 )]
 #[case(ServerMessage::EndedByAdmin { reason: None }, json!({"type": "EndedByAdmin"}))]
 #[case(
-    ServerMessage::Forecast { decision: DecisionId(7), forecast: None },
+    ServerMessage::Forecast { decision: DecisionId(7), forecast: None, changes: Vec::new() },
     json!({"type": "Forecast", "decision": 7, "forecast": null})
+)]
+#[case(
+    ServerMessage::Forecast {
+        decision: DecisionId(7),
+        forecast: None,
+        changes: vec![
+            ForecastChange { subject: Forecasted::Object(ObjectId(3)), change: Change::Damage { amount: 3 } },
+            ForecastChange {
+                subject: Forecasted::Object(ObjectId(3)),
+                change: Change::Leaves { fate: Fate::Dies },
+            },
+            ForecastChange { subject: Forecasted::Player(PlayerId(1)), change: Change::Tapped },
+        ],
+    },
+    json!({"type": "Forecast", "decision": 7, "forecast": null, "changes": [
+        {"subject": {"Object": 3}, "change": {"Damage": {"amount": 3}}},
+        {"subject": {"Object": 3}, "change": {"Leaves": {"fate": "Dies"}}},
+        {"subject": {"Player": 1}, "change": "Tapped"},
+    ]})
 )]
 #[case(
     ServerMessage::Forecast {
@@ -1302,6 +1335,7 @@ fn client_wire_shape_is_flat_and_tagged(
             players: Vec::new(),
             depends_on_choice: false,
         }),
+        changes: Vec::new(),
     },
     json!({"type": "Forecast", "decision": 7, "forecast": {
         "attackers": [],
@@ -1318,6 +1352,7 @@ fn client_wire_shape_is_flat_and_tagged(
             players: Vec::new(),
             depends_on_choice: true,
         }),
+        changes: Vec::new(),
     },
     json!({"type": "Forecast", "decision": 7, "forecast": {
         "attackers": [],

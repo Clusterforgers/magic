@@ -1,4 +1,4 @@
-// Goal: at a desktop, a laptop and a phone with touch, at every step of every lesson each lit part is one element inside the window that is on top at its centre (and at its corners, for a control), the ring lies on it, and the coach card is inside the window, shows its whole text and covers no lit part, the prompt band, the primary button, an open decision sheet or the card preview.
+// Goal: at a desktop, a laptop and a phone with touch, at every step of every lesson each lit part is one element inside the window that is on top at its centre (and at its corners, for a control), the ring lies on it, and the coach card is inside the window, shows its whole text and covers no lit part, the decision's home, the primary button, an open decision sheet or the card preview.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { LAYOUTS, LESSONS, coachState, settle, startLesson, walkLesson } from './learnWalker'
@@ -41,7 +41,7 @@ async function measure(page: Page) {
     }
     const card = document.querySelector<HTMLElement>('[data-slot="coach-card"]')
     const clear = [
-      '[data-coach="band"]',
+      '[data-coach="ask"]',
       '[data-coach="pass.primary"]',
       '[data-slot="decision-sheet"]',
       '[data-coach="preview"]',
@@ -60,7 +60,7 @@ async function measure(page: Page) {
       lit: lit.map((element) => {
         const b = box(element)
         const inset = 4
-        // A control must be whole under the finger; a region (a board, a pod, the band) only at its centre, as a hand fan's
+        // A control must be whole under the finger; a region (a board, a pod, the home) only at its centre, as a hand fan's
         // lifted cards may overlap a board's edge.
         const control =
           element.matches('button, [role="button"], [role="menuitem"], a, input') &&

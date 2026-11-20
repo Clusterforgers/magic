@@ -7,7 +7,7 @@ import { useSide } from '../../sideContext'
 import { StackRest } from '../../StackPanel'
 import { ChoiceOverlayContext } from '../choiceOverlay'
 import { ownDecision } from '../ownDecision'
-import { hasDetail, kindKey, sheetTitle } from './asking'
+import { kindKey, sheetTitle } from './asking'
 import { DecisionDetail } from './DecisionDetail'
 import { useAsker } from './useAsker'
 
@@ -22,7 +22,8 @@ export function DecisionSheet({ phone }: { phone: boolean }) {
   const overlay = useContext(ChoiceOverlayContext)
   const asker = useAsker()
   const body = useId()
-  if (side.kind === 'column' || pending === null || !hasDetail(pending)) return null
+  // Only a phone's payment grows its bar into this sheet; every other decision stands in its home (`home.ts`).
+  if (!phone || pending === null || kindKey(pending.decision.kind) !== 'PayMana') return null
   const forced = overlay?.open === true
   const folded = forced || (side.sheetFolded ?? side.sheetStart)
   const kind = kindKey(pending.decision.kind)

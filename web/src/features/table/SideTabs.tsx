@@ -36,6 +36,7 @@ const TABS: ReadonlyArray<{ tab: SideTab; label: string; Icon: LucideIcon }> = [
 /** The coach's anchor of a side tab: Log and Commands carry one. */
 function tabAnchor(tab: SideTab) {
   if (tab === 'log') return anchor('side.tab.log')
+  if (tab === 'stack') return anchor('side.tab.stack')
   return tab === 'commands' ? anchor('side.tab.commands') : {}
 }
 
@@ -289,7 +290,6 @@ export function SidePanelMount({ rows, lowered = false }: { rows: string; lowere
     ? {
         gridRow: rows,
         gridColumn: '1 / -1',
-        marginBottom: 'var(--sheet-overhang, 0px)',
         minHeight: SIDE_DECISION_MIN_PX,
       }
     : { gridRow: rows, gridColumn: '1 / -1' }

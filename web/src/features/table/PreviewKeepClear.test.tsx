@@ -1,4 +1,4 @@
-// Goal: the table's card preview keeps its full size and moves off the elements marked `data-keep-clear` (the strip while it holds a decision, its sentence and answers, the hand dock, the controls) to the side they leave free; each mark carries its rank, the answers measured button by button with the primary one marked, and the strip is marked only while a decision is owed.
+// Goal: the table's card preview keeps its full size and moves off the elements marked `data-keep-clear` (the decision's home, its sentence and answers, the hand dock, the controls) to the side they leave free; each mark carries its rank, the answers measured button by button with the primary one marked, and the strip is marked only while a decision is owed.
 import { screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { DEV_PROMPTS } from '@/features/table/dev/prompts'
@@ -95,10 +95,10 @@ describe('the measured boxes', () => {
   })
 })
 
-describe('the strip mark', () => {
-  const sheet = () => must(document.querySelector('[data-slot="shared-sheet"]'))
+describe('the home mark', () => {
+  const sheet = () => must(document.querySelector('[data-slot="decision-line"]'))
 
-  it('is on the strip while the seat owes a decision', () => {
+  it('is on the home while the seat owes a decision', () => {
     const fixture = buildFixture({ seats: 2 })
     const pending = must(DEV_PROMPTS['priority'])(fixture)
     renderTable({ fixture, state: (state) => ({ ...state, pending }) })
@@ -119,13 +119,14 @@ describe('the strip mark', () => {
     'discard',
     'divide',
   ])(
-    'marks the strip soft, the sentence of a %s prompt text and its buttons answers, so a preview covers them last',
+    'marks the home soft, the sentence of a %s prompt text and its buttons answers, so a preview covers them last',
     (prompt) => {
       const fixture = buildFixture({ seats: 2 })
       const pending = must(DEV_PROMPTS[prompt])(fixture)
       renderTable({ fixture, state: (state) => ({ ...state, pending }) })
-      expect(sheet()).toHaveAttribute('data-keep-clear', 'soft')
-      // A floating mulligan holds its sentence and buttons in the overlay over the table, not in the strip.
+      // A floating opening hand holds its sentence and buttons in the panel over the table, not in a home.
+      const home = document.querySelector('[data-slot="decision-line"]')
+      if (prompt !== 'mulligan') expect(home).toHaveAttribute('data-keep-clear', 'soft')
       const sentences = [...document.querySelectorAll('[data-slot="prompt-text"]')]
       const answers = [...document.querySelectorAll('[data-slot="prompt-actions"]')]
       expect(sentences.length + answers.length).toBeGreaterThan(0)
@@ -134,9 +135,9 @@ describe('the strip mark', () => {
     },
   )
 
-  it('is not on the strip while nothing is owed', () => {
+  it('is nowhere while nothing is owed', () => {
     renderTable({ seats: 2, state: (state) => ({ ...state, pending: null }) })
-    expect(sheet()).not.toHaveAttribute('data-keep-clear')
+    expect(document.querySelector('[data-slot="decision-line"]')).toBeNull()
   })
 
   it('is on the hand dock and the controls', () => {

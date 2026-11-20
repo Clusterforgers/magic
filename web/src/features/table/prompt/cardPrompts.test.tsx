@@ -1,13 +1,9 @@
-// Goal: a prompt that lays out cards takes the strip's whole width and larger cards in a sheet that may grow past the band over the opponents' boards, always leaving their pods and a row of their cards and never covering your board; a player offered as a target shows their seat's face.
-import { readFileSync } from 'node:fs'
-import { join } from 'node:path'
+// Goal: the prompts that lay out cards are named, a row of cards fits its room and a whole card follows the window height; a player offered as a target shows their seat's face.
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { initialPlayState } from '@/play/store'
 import { decisionFor } from '@/test-utils/decisions'
 import { renderTable } from '@/test-utils/tableHarness'
-import { regionSizes, SHEET_KEEP_PX } from '../layout'
-import { BOARD_KEEP_PX, withSplit } from '../boardSplit'
 import {
   BAND_HEAD_REM,
   CARD_PROMPTS,
@@ -42,23 +38,7 @@ describe('laysOutCards', () => {
   })
 })
 
-describe('the wide sheet', () => {
-  it("reaches over the opponents' boards past the band, leaving their pods and a row of their cards", () => {
-    const regions = regionSizes({ width: 1400, height: 900 })
-    const keep = 120 + BOARD_KEEP_PX
-    const split = withSplit(regions, { opponents: 420, own: 300, ownCard: 0, theirCard: 0 }, keep)
-    expect(split.sheet).toBeLessThanOrEqual(regions.shared + regions.sheetRoom)
-    expect(split.sheetWide).toBeGreaterThan(split.sheet)
-    expect(split.sheetWide).toBeLessThanOrEqual(regions.main.height * 0.4)
-    expect(420 - (split.sheetWide - regions.shared)).toBeGreaterThanOrEqual(keep - 1e-9)
-    expect(SHEET_KEEP_PX).toBeGreaterThan(0)
-  })
-
-  it("gives the opening hand, which no column holds, the strip's whole width below the band's line", () => {
-    const band = readFileSync(join(import.meta.dirname, 'promptBand.css'), 'utf8')
-    expect(band).toContain("'choices choices choices choices choices choices choices'")
-  })
-
+describe('a prompt card', () => {
   it('draws a whole card up to 7 rem wide, following the window height', () => {
     expect(PROMPT_CARD_BOX.normal).toContain('min(7rem,11dvh,calc((var(--choice-room,20rem)_-_2rem)*5/7))')
     // In the band's row of cards the row's own fit wins (`stripCardWidth`).

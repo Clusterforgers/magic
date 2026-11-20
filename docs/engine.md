@@ -4,7 +4,7 @@ Design notes for `mtg-engine` (the rules engine) and `mtg-testkit` (scenarios, b
 
 ## Shape
 
-- `Engine` offers `new`, `resume`, `apply`, `concede`, `decision`, `decisions`, `apply_for`, `state`, `events`, `state_hash`, `add_continuous_effect`, `add_continuous_effect_from`, `add_rule`, `add_rule_from`, `checkpoint`, `restore` and `preview_forecast`; `replay(setup, events)` rebuilds a state from a log.
+- `Engine` offers `new`, `resume`, `apply`, `concede`, `decision`, `decisions`, `apply_for`, `state`, `events`, `state_hash`, `add_continuous_effect`, `add_continuous_effect_from`, `add_rule`, `add_rule_from`, `checkpoint`, `restore`, `preview_forecast` and `preview_targets`; `replay(setup, events)` rebuilds a state from a log.
 - One `Event` enum and one `apply_event` fold: the state is the fold of the events. Characteristics are derived from base values plus continuous effects (layers) and never mutated directly.
 - A game has two or more seats: a seat is a `PlayerId(u64)` index, turn order and priority run seat by seat in APNAP order, commander damage is keyed by (commander, victim), and no set of players is a fixed-width mask, so memory is the only ceiling (`tests/game/many_seats.rs` plays 8 to 24 seats).
 - Each `Decision` kind carries its legal options and has an `Answer` of the same name; options, answer and check live in `choose/<kind>.rs`. The kinds: Mulligan, BottomCards, Priority, PayMana, DeclareAttackers, DeclareBlockers, AssignDamage, Discard, and the questions of spells and abilities (ChooseTargets, ChooseMode, ChooseNumber, DivideAmount, ChooseCards, OrderCards, Scry, YesNo, ChooseOption, ChooseCosts, OrderTriggers, ChooseReplacement), and Loop ([Loops](#loops)).
@@ -451,6 +451,14 @@ The turn sequence is the fixed run of steps (`turn.rs`, `steps.rs`) with two que
 - The answer goes through `answers::handle` (the validation and events of `apply`); the events pass the replacement step, fold onto a clone and `pending_combat_forecast` reads it.
 - `PreviewError`: `Illegal`, `NotYourDecision`, `NotPreviewable`, `NoDecision`, `NoCombat`, `Engine` (the copy refused the events, a bug).
 - It takes `&self`: nothing is logged, no random number drawn, the hash unchanged.
+
+### Stack forecast
+
+`stack_forecast::stack_forecast(&GameState) -> Option<Vec<ForecastChange>>` says what the top item of the stack would change if it resolved now: a list of `{ subject: Player | Object, change }` with `Damage`, `Stats` (power and toughness before and after), `Counters`, `Tapped`, `Untapped`, `Control`, `Leaves { fate }` (destroyed, dies, sacrificed, exiled, hand, library, graveyard, countered) and `Life`, players by seat first, then permanents and stack objects by id.
+
+- It resolves the item on a copy with the real code (`resolve_top`, `resolve::next`, the replacement step, the fold) and settles state-based actions, then compares the copy with the state.
+- None while something resolves, when nothing public changes, and when the result is not the public state's alone: a question of the resolution or of the replacement step, a random number drawn, a card drawn, looked at, revealed or searched, a card leaving a hand or library, a library reordered, a face-down card turned up.
+- `Engine::preview_targets(seat, &answer)` (`engine/preview_targets.rs`) is the same list for a `ChooseTargets` answer of a spell being cast: the answer goes through `apply` on a copy of the engine and the spell is put on that copy's stack with its announced choices, unpaid.
 
 ## Verification
 

@@ -1,8 +1,12 @@
 import type { CSSProperties, ReactNode, Ref } from 'react'
+import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import { CHOICE_AREAS, gridColumns, gridRows, mainColumns, TABLE_AREAS } from './layout'
+import { gridColumns, gridRows, mainColumns, tableAreas } from './layout'
 import type { Regions } from './layout'
 import { openingPlace, useOpeningInOverlay } from './prompt/choiceOverlay'
+import { kindKey } from './prompt/detail/asking'
+import { isBoardChoice } from './prompt/home'
+import { ownDecision } from './prompt/ownDecision'
 import { usePhase } from './turn/usePhase'
 
 interface TableGridProps {
@@ -80,6 +84,11 @@ export function TableGrid({
 }: TableGridProps) {
   // Read here, so a change of phase redraws the frame alone: the regions are elements made by the table and stay as they were.
   const phase = usePhase()
+  const boardChoice = usePlay((state) => {
+    const own = ownDecision(state)
+    const kind = own === null ? '' : kindKey(own.decision.kind)
+    return isBoardChoice(kind) ? kind : null
+  })
   // A choice of cards covers both boards, your board above the strip; the opening hand stands over the whole table and
   // dims the opponents and the strip only, so your board, your life and the hand dock stay in view while you decide.
   const opening = useOpeningInOverlay()
@@ -90,6 +99,8 @@ export function TableGrid({
       data-slot="table-grid"
       // The phase of the turn, for the stylesheet to theme the bar, the strip and the ground (`turn/phase.css`).
       data-phase={phase?.id}
+      // A decision answered by pressing the table dims everything outside it (`promptBand.css`, `isBoardChoice`).
+      data-board-choice={boardChoice ?? undefined}
       data-breakpoint={regions.breakpoint}
       data-side={regions.side}
       style={{ gridTemplateColumns: gridColumns(regions.side) } as CSSProperties}
@@ -101,18 +112,13 @@ export function TableGrid({
           {
             gridTemplateRows: gridRows(regions, swap),
             gridTemplateColumns: mainColumns(regions, stopsRow),
-            gridTemplateAreas: swap ? CHOICE_AREAS : TABLE_AREAS,
+            gridTemplateAreas: tableAreas(regions.phone, swap),
           } as CSSProperties
         }
         className="felt grid min-h-0 min-w-0"
       >
         <Area area="bar">{bar}</Area>
-        {/* The prompt sheet grows up into the band's room this area keeps free below its boards for every prompt and between them, so it covers no card and moves no board. */}
-        <Area
-          area="opponents"
-          className="px-2 pt-2"
-          style={{ paddingBottom: `calc(0.5rem + ${Math.floor(regions.sheetRoom)}px)` }}
-        >
+        <Area area="opponents" className="p-2">
           {opponents}
         </Area>
         <Area area="shared" className="px-2">
@@ -154,7 +160,7 @@ export function TableGrid({
               'relative flex min-h-0 min-w-0 items-center justify-center',
               opening
                 ? 'pointer-events-none z-25 py-2 *:pointer-events-auto'
-                : 'z-15 bg-scrim px-2 pt-2 pb-[calc(0.125rem+var(--sheet-overhang,0px))]',
+                : 'z-15 bg-scrim px-2 pt-2 pb-0.5',
             )}
           />
         )}

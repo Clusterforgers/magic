@@ -65,8 +65,14 @@ async function addMana(player: Player, kind: string, count: number): Promise<voi
 async function cast(player: Player, name: string, target?: string): Promise<void> {
   await handCard(player, name).click()
   if (target !== undefined) {
-    await player.page.locator('[data-decision] button', { hasText: target }).click()
-    await player.page.getByRole('button', { name: 'Confirm targets' }).click()
+    // A player in the prompt, or a card pressed on the table where it wears the legal mark.
+    await player.page
+      .locator('[data-decision] button, [data-area] button[data-highlight="legal"]', { hasText: target })
+      .first()
+      .click()
+    // One target answers on its press; several wait for Confirm.
+    const confirm = player.page.getByRole('button', { name: 'Confirm targets' })
+    if ((await confirm.count()) > 0) await confirm.click()
   }
   await player.page.getByRole('button', { name: 'Pay for me' }).click()
   await expect(sentence(player)).toContainText(`Responding to your ${name}`)

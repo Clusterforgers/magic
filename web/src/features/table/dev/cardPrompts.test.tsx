@@ -51,12 +51,12 @@ describe.each(CARDS.flatMap((prompt) => [prompt, `${prompt}-clock`]))('?prompt=%
     const user = userEvent.setup()
     expect(document.querySelector(`[data-decision="${name}"]`)).not.toBeNull()
     if (ordering) {
-      await user.click(screen.getByRole('button', { name: 'Confirm order' }))
+      await user.click(must(screen.getAllByRole('button', { name: 'Confirm order' })[0]))
     } else {
       const group = screen.getByRole('group', { name: 'Cards to choose from' })
       const wanted = prompt.startsWith('cards-many') ? 0 : prompt.startsWith('cards-battlefield') ? 1 : 2
       for (const card of within(group).getAllByRole('button').slice(0, wanted)) await user.click(card)
-      await user.click(screen.getByRole('button', { name: 'Confirm' }))
+      await user.click(must(screen.getAllByRole('button', { name: 'Confirm' })[0]))
     }
     expect(document.querySelector('[data-decision]')).toBeNull()
     expect(game.session.store.getState().pending).toBeNull()

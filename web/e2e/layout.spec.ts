@@ -96,10 +96,10 @@ function tableStop(
         : {
             // The first card of the front row lies over no other card and is in view where the line scrolls; under a
             // decision sheet, even folded, the way to it is the sheet's handle. The opening hand is judged where it is
-            // drawn: in the band on a phone, in the centre overlay elsewhere.
+            // drawn: in the centre overlay off a phone, in the hand dock on one.
             hand:
               primary === 'keep'
-                ? '[data-slot="opening-hand"] [data-slot="opening-card"]'
+                ? '[data-slot="opening-hand"] [data-slot="opening-card"], :root:not(:has([data-slot="opening-hand"])) [data-region="hand"] [data-slot="hand-slot"]:not([data-back]) button[data-object-id]'
                 : ':root:not(:has([data-slot="decision-sheet"])) [data-region="hand"] [data-slot="hand-slot"]:not([data-back]) button[data-object-id], [data-slot="sheet-grab"]',
             life: '[data-you] [data-slot="life"]',
           }),

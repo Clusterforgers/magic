@@ -32,7 +32,7 @@ import { payMarks, payMarksTable, paySources, paySourcesTable } from './paySourc
 import { roomsTable, withRooms } from './roomsScene'
 import { cyclingTable, payCycling, withCycling } from './cyclingScene'
 import { withProposal } from './payProposal'
-import { companionTable, stackAbilityTable } from './previewScenes'
+import { companionTable, forecastStackTable, stackAbilityTable } from './previewScenes'
 
 /** Builds the decision the viewer of a fixture faces. */
 export type DevPrompt = (fixture: Fixture) => PendingDecision
@@ -506,6 +506,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   // A hand card that can be cast or typecycled (`dev/cyclingScene.ts`): the chooser names both with their costs.
   'priority-cycling': withCycling(priority),
   'priority-stack-ability': priority,
+  'priority-forecast': priority,
   'priority-companion': priority,
   // The same at a Delves boss fight: the last seat a boss in its second phase, another seat a fallen hero's Spirit.
   'priority-delve': priority,
@@ -611,6 +612,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-cycling': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
   'pay-cycling': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
   'priority-stack-ability': stackAbilityTable,
+  'priority-forecast': forecastStackTable,
   'priority-companion': companionTable,
   'priority-delve': (fixture) => {
     const { view } = fixture

@@ -13,6 +13,7 @@ import { usePrompt } from '../PromptContext'
 import { OpeningHand, openingHandIds } from '../OpeningHand'
 import { openingCardPx } from '../openingCard'
 import { PromptLayout } from '../PromptLayout'
+import { useDecisionHome } from '../useDecisionHome'
 import type { PromptComponent } from '../types'
 
 /**
@@ -50,10 +51,11 @@ function usePanelRest(panel: RefObject<HTMLElement | null>, host: HTMLElement | 
  * one row of large cards, then the sentence and the buttons, then every seat's progress.
  */
 export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
-  const { answer, name: decision } = usePrompt()
+  const { answer, name: decision, id } = usePrompt()
   const name = useSeatNamer()
   const others = usePlay(useShallow(othersDeciding))
   const host = useOpeningOverlay()
+  const { home } = useDecisionHome()
   const room = useOverlayRoom()
   const cards = usePlay(useShallow(openingHandIds))
   const floating = host !== null
@@ -87,29 +89,38 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
   )
   if (host === null) {
     return (
-      <PromptLayout text={mulliganText(options)} choices={<OpeningHand />}>
+      // A phone's hand dock shows the hand being judged: the bar holds the question and the answers alone.
+      <PromptLayout text={mulliganText(options)} choices={home === 'bar' ? undefined : <OpeningHand />}>
         {buttons}
       </PromptLayout>
     )
   }
-  return createPortal(
-    <div
-      data-slot="choice-overlay"
-      data-decision={decision}
-      data-opening=""
-      ref={panel}
-      className="plaque flex max-h-full max-w-full flex-col items-center gap-3 overflow-y-auto rounded-xl border-2 border-brass p-4 text-center shadow-e3 [&_[data-slot=prompt-actions]]:justify-center [&_[data-slot=prompt-actions]]:bg-transparent"
-    >
-      <OpeningHand card={openingCardPx(room, cards.length, rest)} />
-      {/*
+  // The centred panel holds the hand and its answers, one set: the dock keeps its pass controls.
+  return (
+    <>
+      {createPortal(
+        <div
+          data-slot="choice-overlay"
+          data-decision={decision}
+          data-decision-id={id}
+          data-opening=""
+          ref={panel}
+          className="plaque flex max-h-full max-w-full flex-col items-center gap-3 overflow-y-auto rounded-xl border-2 border-brass p-4 text-center shadow-e3 [&_[data-slot=prompt-actions]]:justify-center [&_[data-slot=prompt-actions]]:bg-transparent"
+        >
+          <OpeningHand card={openingCardPx(room, cards.length, rest)} />
+          {/*
         The sentence beside the answers, on a width of its own: the cards get the height a line of answers would take,
         and their size never changes how the sentence wraps (`usePanelRest`).
       */}
-      <div className="grid w-[80ch] max-w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 text-left [&>[data-slot=prompt-title]]:col-span-2 [&>[data-slot=prompt-title]]:text-center">
-        <PromptLayout text={mulliganText(options)}>{buttons}</PromptLayout>
-      </div>
-      <OpeningStatus floating />
-    </div>,
-    host,
+          <div className="grid w-[80ch] max-w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 text-left [&>[data-slot=prompt-title]]:col-span-2 [&>[data-slot=prompt-title]]:text-center">
+            <PromptLayout here text={mulliganText(options)}>
+              {buttons}
+            </PromptLayout>
+          </div>
+          <OpeningStatus floating />
+        </div>,
+        host,
+      )}
+    </>
   )
 }
