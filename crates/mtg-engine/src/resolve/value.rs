@@ -2433,6 +2433,10 @@ impl<'a> Scope<'a> {
             .object(self.source.id)
             .and_then(|object| object.permanent())
             .and_then(|permanent| permanent.chosen())
+            .or_else(|| {
+                self.snapshot_of(self.source)
+                    .and_then(|shot| shot.chosen.as_ref())
+            })
     }
 
     /// The printed name of the card, none for a face-down card (it has no name).

@@ -6,6 +6,7 @@
 
 use mtg_cards::keyword::Keyword;
 use mtg_cards::refs::{Pred, Ref, Selector};
+use mtg_core::card::Subtype;
 use mtg_engine::choose::{ChoiceOption, OptionChoice};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::events::Event;
@@ -13,7 +14,7 @@ use mtg_engine::keywords::keywords_of;
 use mtg_engine::object::Chosen;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{free_creature, mountain, plains};
+use mtg_testkit::cards::{forest, free_creature, mountain, plains};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
@@ -21,9 +22,12 @@ use rstest::rstest;
 use crate::common::copying::replays;
 use crate::common::{names, on_battlefield, pid};
 
-/// Answers the questions until the stack is empty: the secret choice by the seat `pick`, everything else passively.
+/// Answers the questions until the stack is empty: the secret choice of `want`, everything else passively.
 /// Returns the options the secret choice offered, if it was asked.
-fn resolve_all(driver: &mut Driver, pick: usize) -> Result<Option<Vec<ChoiceOption>>, ScriptError> {
+fn resolve_all(
+    driver: &mut Driver,
+    want: &ChoiceOption,
+) -> Result<Option<Vec<ChoiceOption>>, ScriptError> {
     let mut asked = None;
     for _ in 0..200 {
         let decision = driver.decision()?.clone();
@@ -33,7 +37,7 @@ fn resolve_all(driver: &mut Driver, pick: usize) -> Result<Option<Vec<ChoiceOpti
                 let at = options
                     .options
                     .iter()
-                    .position(|option| *option == ChoiceOption::SecretPlayer(pid(pick)))
+                    .position(|option| option == want)
                     .unwrap();
                 asked = Some(options.options.clone());
                 driver.answer(Answer::ChooseOption(OptionChoice(at)))?;
@@ -93,7 +97,7 @@ fn stalking_leonin_exiles_only_an_attacker_of_the_chosen_player(
     let setup = table(seats, "Stalking Leonin").setup().unwrap();
     let mut driver = Driver::from_scenario(table(seats, "Stalking Leonin"))?;
     driver.cast("Stalking Leonin")?;
-    let asked = resolve_all(&mut driver, pick)?;
+    let asked = resolve_all(&mut driver, &ChoiceOption::SecretPlayer(pid(pick)))?;
     // Only a choice among two or more opponents is a question, and it offers each opponent face down.
     assert_eq!(
         asked.map(|options| options.len()),
@@ -120,7 +124,7 @@ fn stalking_leonin_exiles_only_an_attacker_of_the_chosen_player(
     driver.begin_activation("Stalking Leonin")?;
     let raider = driver.target_named("Raider 1")?;
     driver.choose_targets(&[raider])?;
-    resolve_all(&mut driver, pick)?;
+    resolve_all(&mut driver, &ChoiceOption::SecretPlayer(pid(pick)))?;
     let exiled = names(driver.state(), Zone::Exile).contains(&"Raider 1".to_owned());
     assert_eq!(exiled, pick == 1);
     assert_eq!(
@@ -155,7 +159,7 @@ fn emissary_of_grudges_chooses_secretly_as_it_enters(
     let setup = table(seats, "Emissary of Grudges").setup().unwrap();
     let mut driver = Driver::from_scenario(table(seats, "Emissary of Grudges"))?;
     driver.cast("Emissary of Grudges")?;
-    let asked = resolve_all(&mut driver, pick)?;
+    let asked = resolve_all(&mut driver, &ChoiceOption::SecretPlayer(pid(pick)))?;
     assert_eq!(
         asked.map(|options| options.len()),
         (seats > 2).then_some(seats - 1)
@@ -189,11 +193,11 @@ fn guardian_archon_fixes_the_chosen_player_into_the_protection(
     let setup = table(seats, "Guardian Archon").setup().unwrap();
     let mut driver = Driver::from_scenario(table(seats, "Guardian Archon"))?;
     driver.cast("Guardian Archon")?;
-    resolve_all(&mut driver, pick)?;
+    resolve_all(&mut driver, &ChoiceOption::SecretPlayer(pid(pick)))?;
     driver.begin_activation("Guardian Archon")?;
     let archon = driver.target_named("Guardian Archon")?;
     driver.choose_targets(&[archon])?;
-    resolve_all(&mut driver, pick)?;
+    resolve_all(&mut driver, &ChoiceOption::SecretPlayer(pid(pick)))?;
     let seat = u8::try_from(pick).unwrap();
     let id = driver.id_of("Guardian Archon")?;
     let keywords = keywords_of(driver.state(), id);
@@ -211,6 +215,66 @@ fn guardian_archon_fixes_the_chosen_player_into_the_protection(
     assert_eq!(
         driver.offered_abilities("Guardian Archon")?,
         Vec::<usize>::new()
+    );
+    replays(&driver, &setup);
+    Ok(())
+}
+
+#[rstest]
+#[case::the_chosen_type("Human", true)]
+#[case::another_type("Goblin", false)]
+fn a_killer_among_us_reads_the_type_after_it_is_sacrificed(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] pick: &str,
+    #[case] grown: bool,
+) -> Result<(), ScriptError> {
+    let scenario = || {
+        Scenario::new(seats)
+            .at(1, 0, Step::Main1)
+            .hand(0, [card("A Killer Among Us").unwrap()])
+            .battlefield(0, (0..5).map(|_| ready(forest())).collect::<Vec<_>>())
+    };
+    let setup = scenario().setup().unwrap();
+    let mut driver = Driver::from_scenario(scenario())?;
+    driver.cast("A Killer Among Us")?;
+    let want = ChoiceOption::Secret(pick.to_owned());
+    resolve_all(&mut driver, &want)?;
+    assert_eq!(
+        kept(&driver, "A Killer Among Us"),
+        Some((Chosen::CreatureType(Subtype(pick.to_owned())), true))
+    );
+    // Seat 0's next turn: the Human token attacks and the enchantment is sacrificed to reveal the type.
+    let next = u32::try_from(seats).unwrap() + 1;
+    driver.idle_until(next, Step::BeginCombat)?;
+    while matches!(driver.decision()?.kind, DecisionKind::Priority(_)) {
+        driver.pass()?;
+    }
+    driver.attack(&[("Human", 1)])?;
+    while driver.decision()?.player != pid(0) {
+        driver.pass()?;
+    }
+    driver.begin_activation("A Killer Among Us")?;
+    let human = driver.target_named("Human")?;
+    driver.choose_targets(&[human])?;
+    resolve_all(&mut driver, &want)?;
+    assert_eq!(on_battlefield(driver.state(), "A Killer Among Us"), None);
+    let id = driver.id_of("Human")?;
+    let counters: u32 = driver
+        .state()
+        .object(id)
+        .and_then(|object| object.permanent())
+        .map_or(0, |permanent| permanent.counters().map(|(_, n)| n).sum());
+    assert_eq!(counters, if grown { 3 } else { 0 });
+    assert_eq!(
+        keywords_of(driver.state(), id).contains(&&Keyword::Deathtouch),
+        grown
+    );
+    assert!(
+        driver
+            .engine()
+            .events()
+            .iter()
+            .any(|event| matches!(event, Event::R110ChoiceRevealed { .. }))
     );
     replays(&driver, &setup);
     Ok(())
