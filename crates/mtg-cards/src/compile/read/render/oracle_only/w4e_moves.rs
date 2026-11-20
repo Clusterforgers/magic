@@ -175,6 +175,7 @@ fn phased(targets: &[TargetSpec], effects: &[Effect]) -> Option<String> {
             duration: None,
             tapped: false,
             held: None,
+            r112_visit_roll: None,
         },
     ] = effects
     else {

@@ -142,6 +142,9 @@ mod proliferate;
 mod put_counters;
 mod r110_secret;
 mod r111_keep;
+mod r112_dice;
+mod r112_guess;
+mod r112_piles;
 mod r281_lock_door;
 mod r281_pay_one_of;
 mod r376_choose_words;
@@ -415,6 +418,10 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Vote { .. } => vote::run(cx, effect),
         Effect::ChooseNumbers { .. } => dk27_numbers::run(cx, effect),
         Effect::ChooseWords { .. } => r376_choose_words::run(cx, effect),
+        Effect::R112GuessNumber { .. } => r112_guess::run(cx, effect),
+        Effect::R112Piles { .. } => r112_piles::run(cx, effect),
+        Effect::R112RollStore { .. } => r112_dice::run_store(cx, effect),
+        Effect::R112RerollStored { .. } => r112_dice::run_reroll(cx, effect),
         Effect::BidLife { .. } => dk27_bid::run(cx, effect),
         Effect::Planechase { .. } => c10_vp_planechase::run(cx, effect),
         Effect::VillainousChoice { .. } => w2d_villainous::run(cx, effect),
@@ -471,6 +478,7 @@ mod tests {
         {"R6702CountersPerVote":{"tally":"votes","counter":{"Other":"stun"}}},
         {"R110ChooseSecretly":"Opponent"},
         {"R111KeepChosen":"name"},
+        {"R112GuessNumber":{"min":1,"max":5,"guesser":"Opponents","as":"number","guess_as":"guess","guesser_as":"guesser"}}, {"R112Piles":{"what":"This","piles":["left","right"]}}, {"R112RollStore":{"sides":6,"dice":5,"slot":"stored"}}, {"R112RerollStored":{"sides":6,"slot":"stored"}},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
@@ -505,7 +513,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 155, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 159, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -666,6 +674,10 @@ mod tests {
         "Effect.R6702CountersPerVote",
         "Effect.R110ChooseSecretly",
         "Effect.R111KeepChosen",
+        "Effect.R112GuessNumber",
+        "Effect.R112Piles",
+        "Effect.R112RollStore",
+        "Effect.R112RerollStored",
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",

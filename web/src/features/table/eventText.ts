@@ -1119,6 +1119,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { object, chosen } = event.ChosenAsAttached
     return line(`${n.card(object)} becomes attached${chosenWords(chosen, n)}`)
   }
+  if ('R112Grouped' in event) {
+    return line(`${n.card(event.R112Grouped.object)} made players guess or group into piles`)
+  }
   if ('R111ChoiceKept' in event) {
     const { object, chosen } = event.R111ChoiceKept
     return line(`${n.card(object)} keeps its choice${chosenWords(chosen, n)}`)

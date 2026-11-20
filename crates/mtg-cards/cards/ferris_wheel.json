@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9a41a4ad-944f-4326-b53b-1176f98bcce4",
+  "name": "Ferris Wheel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ferris Wheel",
+      "oracle_fingerprint": "d5c0b0db9ff330be489292e1677597bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Visit": {} },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Not": { "Is": { "Remembered": { "on": "This", "slot": "wheeled" } } } }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Remember": { "what": { "Target": 0 }, "slot": "wheeled" } },
+              { "PhaseOut": { "what": { "Target": 0 }, "r112_visit_roll": 3 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

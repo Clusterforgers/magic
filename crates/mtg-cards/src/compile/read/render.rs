@@ -711,6 +711,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r109_wholes::r109_wordings(ability, &mut texts);
     super::r110_03_wholes::r110_03_wordings(ability, &mut texts);
     super::r111_03_wholes::r111_03_wordings(ability, &mut texts);
+    super::r112_02_wholes::r112_02_wordings(ability, &mut texts);
     super::r111_02_wholes::r111_02_wordings(ability, &mut texts);
     super::r6007_wholes::r6007_wordings(ability, &mut texts);
     super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
@@ -3548,6 +3549,7 @@ impl Writer<'_> {
                 duration,
                 tapped,
                 held: None,
+                r112_visit_roll: None,
             } => self.w7e_phase_out_text(what, duration.clone(), *tapped)?,
             Effect::Attach {
                 what: Ref::This,

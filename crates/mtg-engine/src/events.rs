@@ -330,6 +330,11 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
         tapped: bool,
+        /// It phases out until this player rolls this number or less while rolling to visit their Attractions (Ferris
+        /// Wheel), and phases in then and not in an untap step.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        r112_visit: Option<(PlayerId, u32)>,
     },
     /// A permanent phased in (CR 702.26): it exists again, as the same object, with everything it had.
     PermanentPhasedIn {
@@ -894,6 +899,12 @@ pub enum Event {
         object: ObjectId,
         /// What it chose.
         chosen: Chosen,
+    },
+    /// A resolving spell or ability made players guess or group cards or permanents into piles (The Celestial Toymaker's
+    /// count of them this turn).
+    R112Grouped {
+        /// The spell or ability.
+        object: ObjectId,
     },
     /// A permanent keeps a value its ability chose as its own choice, public ("II — Choose a card name.").
     R111ChoiceKept {
@@ -1853,6 +1864,7 @@ impl Event {
             | Event::ChosenAsAttached { object, .. }
             | Event::R110ChoseSecretly { object, .. }
             | Event::R111ChoiceKept { object, .. }
+            | Event::R112Grouped { object }
             | Event::R110ChoiceRevealed { object, .. }
             | Event::Transformed { object, .. }
             | Event::Flipped { object }

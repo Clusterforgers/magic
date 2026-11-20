@@ -1478,6 +1478,16 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "R374AtMost");
                 self.at("0", |w| w.amount(inner));
             }
+            Amount::R112NumberChosen { name, by } => {
+                self.uses("Amount", "R112NumberChosen");
+                self.at("as", |w| w.chosen_as(name));
+                self.at("by", |w| w.reference(by, Kind::Player));
+            }
+            Amount::R112GroupedThisTurn => self.uses("Amount", "R112GroupedThisTurn"),
+            Amount::R112MostAlike { on, .. } => {
+                self.uses("Amount", "R112MostAlike");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
             Amount::CountedAsCast(inner) => {
                 self.uses("Amount", "CountedAsCast");
                 self.at("inner", |w| w.amount(inner));
@@ -4122,6 +4132,8 @@ impl Walker<'_> {
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
                             | Effect::R110MoveOneOrMore { .. }
+                            // A guess binds "if you do" when a number was left to choose.
+                            | Effect::R112GuessNumber { .. }
                             // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
                             | Effect::ExchangeControl { .. }
                             | Effect::PayAnyTimes { .. }
@@ -4596,6 +4608,61 @@ impl Walker<'_> {
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
             Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
+            Effect::R112GuessNumber {
+                min,
+                max,
+                guesser,
+                bind,
+                guess_as,
+                guesser_as,
+            } => {
+                if min > max {
+                    w.problem(format!("the minimum {min} is above the maximum {max}"));
+                }
+                w.at("guesser", |w| w.reference(guesser, Kind::Player));
+                w.at("as", |w| w.bind_kept(bind, Kind::Value));
+                w.at("guess_as", |w| w.bind_kept(guess_as, Kind::Value));
+                w.at("guesser_as", |w| w.bind_kept(guesser_as, Kind::Player));
+            }
+            Effect::R112RollStore { sides, dice, .. } => {
+                if *sides < 2 || *dice == 0 {
+                    w.problem("a stored roll rolls one or more dice of two or more sides");
+                }
+            }
+            Effect::R112RerollStored { sides, .. } => {
+                if *sides < 2 {
+                    w.problem("a reroll rolls dice of two or more sides");
+                }
+            }
+            Effect::R112Piles {
+                who,
+                what,
+                piles,
+                face_down,
+                pick,
+                chosen_as,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+                if piles.len() < 2 {
+                    w.problem("objects are separated into two or more piles");
+                }
+                if face_down.iter().any(|pile| !piles.contains(pile)) {
+                    w.problem("a face-down pile is one of the piles");
+                }
+                if pick.is_some() != chosen_as.is_some() {
+                    w.problem("a pile is chosen exactly when the chosen piles have a name");
+                }
+                if let Some(crate::effect::R112PilePick::By(chooser)) = pick {
+                    w.at("pick", |w| w.reference(chooser, Kind::Player));
+                }
+                for pile in piles {
+                    w.at("piles", |w| w.bind_kept(pile, Kind::Object));
+                }
+                if let Some(name) = chosen_as {
+                    w.at("as", |w| w.bind_kept(name, Kind::Object));
+                }
+            }
             Effect::RememberValue { value, per, .. } => {
                 w.at("value", |w| w.amount(value));
                 if let Some(per) = per {
@@ -5170,6 +5237,7 @@ impl Walker<'_> {
             Effect::ChooseNumbers {
                 who,
                 min,
+                max,
                 bind,
                 highest,
                 lowest,
@@ -5177,6 +5245,9 @@ impl Walker<'_> {
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("min", |w| w.amount(min));
+                if let Some(max) = max {
+                    w.at("max", |w| w.amount(max));
+                }
                 if bind == highest || bind == lowest || highest == lowest {
                     w.problem("the highest number and the players of each end have names of their own");
                 }

@@ -227,6 +227,12 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             Ok(())
         }
+        Event::R112Grouped { object } => {
+            if let Some(grouping) = state.object(*object).map(crate::object::GameObject::reference) {
+                state.tally_object(grouping, None, crate::state::Tally::R112Grouped);
+            }
+            Ok(())
+        }
         Event::R111ChoiceKept { object, chosen } => {
             if let Some(permanent) = state
                 .objects

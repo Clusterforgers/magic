@@ -15,6 +15,15 @@ use crate::zones::Zone;
 /// What each source remembers: the things by slot, each object as the object it was when remembered (CR 400.7).
 pub type Memory = BTreeMap<(ObjectRef, String), Vec<Held>>;
 
+/// The prefix of a slot whose numbers outlast the resolution that wrote them: the numbers a permanent keeps for as long as
+/// it stays (die results stored on it, the numbers it chose before); a card file cannot name such a slot.
+pub const R112_LASTING: &str = "~kept:";
+
+/// The lasting slot of a name (`R112_LASTING`).
+pub(crate) fn r112_lasting(slot: &str) -> String {
+    format!("{R112_LASTING}{slot}")
+}
+
 /// One thing a source remembers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -108,8 +117,8 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
                     .map(crate::object::GameObject::reference)
             });
             if let Some(writer) = writer {
-                for ((owner, _), held) in &mut state.memory {
-                    if *owner == writer {
+                for ((owner, slot), held) in &mut state.memory {
+                    if *owner == writer && !slot.starts_with(R112_LASTING) {
                         held.retain(|one| !matches!(one, Held::Number(_)));
                     }
                 }

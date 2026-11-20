@@ -1,7 +1,7 @@
 {
   "oracle_id": "cf9129a3-25fe-4787-b41c-0b6968ba5aee",
   "name": "Expert-Level Safe",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Expert-Level Safe",
@@ -14,9 +14,48 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 78, "end": 332 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ChooseNumbers": {
+                  "who": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": { "Any": [{ "Among": "You" }, { "Among": { "Target": 0 } }] }
+                    }
+                  },
+                  "min": 1,
+                  "secret": true,
+                  "max": 3,
+                  "as": "choice",
+                  "highest": "higher",
+                  "lowest": "lower"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "R112NumberChosen": { "as": "choice", "by": "You" } },
+                      "op": "Eq",
+                      "right": { "R112NumberChosen": { "as": "choice", "by": { "Target": 0 } } }
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                        "to": "Hand"
+                      }
+                    },
+                    { "Sacrifice": { "filter": ["This"] } }
+                  ],
+                  "otherwise": [{ "ExileTop": { "as": "more", "sealed": true } }]
+                }
+              }
+            ]
           }
         }
       ]

@@ -164,17 +164,20 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RemoveDamage { .. }
         | Effect::Balance { .. }
         | Effect::Planechase { .. }
-        | Effect::Reattack { .. } => Reports::Events,
+        | Effect::Reattack { .. }
+        | Effect::R112RollStore { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,
-        Effect::May { .. } | Effect::CastFromZone { .. } | Effect::PayAnyTimes { .. } => {
-            Reports::Itself
-        }
+        Effect::May { .. }
+        | Effect::CastFromZone { .. }
+        | Effect::PayAnyTimes { .. }
+        | Effect::R112GuessNumber { .. } => Reports::Itself,
         #[rustfmt::skip]
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseWithin { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::R110ChooseSecretly(_) | Effect::R111KeepChosen(_) | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::ChooseWords { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
+        | Effect::R112Piles { .. } | Effect::R112RerollStored { .. }
         | Effect::Either { .. }
         | Effect::OneOf { .. }
         | Effect::Performed { .. }

@@ -146,6 +146,7 @@ pub(crate) fn roll_events(state: &GameState, player: PlayerId) -> Vec<Event> {
         result,
         visited: visited(state, player, result),
     });
+    events.extend(crate::phasing::r112_visit_releases(state, player, result));
     events
 }
 

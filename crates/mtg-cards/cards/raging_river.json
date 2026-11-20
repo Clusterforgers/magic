@@ -1,0 +1,91 @@
+{
+  "oracle_id": "a2310312-6e1e-4e34-a351-9aef499a810f",
+  "name": "Raging River",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Raging River",
+      "oracle_fingerprint": "cf4d3a6fd90d6e8b0431cf83077abd02",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "R112Piles": {
+                  "who": "Attacked",
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "HasKeyword": "Flying" } }]
+                  },
+                  "piles": ["left", "right"]
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
+                  },
+                  "as": "attacker",
+                  "effects": [
+                    { "ChooseValue": { "kind": { "Options": ["left", "right"] }, "as": "label" } },
+                    {
+                      "If": {
+                        "condition": { "ChosenWord": { "name": "label", "word": "left" } },
+                        "then": [
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "attacker" },
+                              "mods": [
+                                {
+                                  "CantBeBlockedBy": [
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "HasKeyword": "Flying" },
+                                          { "Is": { "Bound": "left" } }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "duration": "UntilEndOfCombat"
+                            }
+                          }
+                        ],
+                        "otherwise": [
+                          {
+                            "Continuous": {
+                              "affected": { "Bound": "attacker" },
+                              "mods": [
+                                {
+                                  "CantBeBlockedBy": [
+                                    {
+                                      "Not": {
+                                        "AnyOf": [
+                                          { "HasKeyword": "Flying" },
+                                          { "Is": { "Bound": "right" } }
+                                        ]
+                                      }
+                                    }
+                                  ]
+                                }
+                              ],
+                              "duration": "UntilEndOfCombat"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

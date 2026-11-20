@@ -14,7 +14,7 @@ use crate::resolve::{CHOSEN_VALUE, Cx, Next, ResolveError, Run};
 fn chosen(
     cx: &Cx<'_>,
     players: &[PlayerId],
-    min: u32,
+    (min, max): (u32, Option<u32>),
     secret: bool,
 ) -> Result<Result<Vec<u32>, Decision>, ResolveError> {
     let journal = cx.journal();
@@ -22,7 +22,7 @@ fn chosen(
     for (at, player) in players.iter().enumerate() {
         match journal.get(at) {
             Some((who, Choice::Number(number) | Choice::SecretNumber(number)))
-                if who == player && *number >= min =>
+                if who == player && *number >= min && max.is_none_or(|max| *number <= max) =>
             {
                 numbers.push(*number);
             }
@@ -32,17 +32,21 @@ fn chosen(
                 )));
             }
             None => {
+                let range = match max {
+                    Some(max) => format!("from {min} to {max}"),
+                    None => format!("{min} or greater"),
+                };
                 let text = if secret {
-                    format!("Secretly choose a number {min} or greater.")
+                    format!("Secretly choose a number {range}.")
                 } else {
-                    format!("Choose a number {min} or greater.")
+                    format!("Choose a number {range}.")
                 };
                 return Ok(Err(Decision {
                     player: *player,
                     kind: DecisionKind::ChooseNumber(NumberOptions {
                         source: cx.scope.source.id,
                         min,
-                        max: None,
+                        max,
                         except: Vec::new(),
                         text,
                         can_cancel: false,
@@ -74,6 +78,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         who,
         min,
         secret,
+        max,
         bind,
         highest,
         lowest,
@@ -89,7 +94,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .filter(|player| named.contains(player) && cx.state().is_alive(*player))
         .collect();
     let min = u32::try_from(cx.scope.amount(min)?.max(0)).unwrap_or(u32::MAX);
-    let numbers = match chosen(cx, &players, min, *secret)? {
+    let max = match max {
+        Some(max) => {
+            Some(u32::try_from(cx.scope.amount(max)?.max(i64::from(min))).unwrap_or(u32::MAX))
+        }
+        None => None,
+    };
+    let numbers = match chosen(cx, &players, (min, max), *secret)? {
         Ok(numbers) => numbers,
         Err(decision) => return Ok(Run::Ask(decision)),
     };

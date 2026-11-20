@@ -91,17 +91,23 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let objects = cx.scope.objects(what)?;
     let people = (player_of(cx, who)?, player_of(cx, chooser)?);
+    let mut events = Vec::new();
     let piles = match people {
         (Some(separator), Some(chooser)) if !objects.is_empty() => {
             match walk(cx, (separator, chooser), &objects) {
-                Ok(piles) => piles,
+                Ok(piles) => {
+                    events.push(crate::events::Event::R112Grouped {
+                        object: cx.resolving.object,
+                    });
+                    piles
+                }
                 Err(stop) => return Stop::settle(Err(stop)),
             }
         }
         _ => (Vec::new(), Vec::new()),
     };
     Ok(Run::Done {
-        events: Vec::new(),
+        events,
         bound: vec![(chosen_as.clone(), piles.0), (rest_as.clone(), piles.1)],
         snapshots: Vec::new(),
         next: Next::Sibling,

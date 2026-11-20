@@ -528,6 +528,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
         | Amount::R6702FlipStakes
+        | Amount::R112GroupedThisTurn
         | Amount::DamageDealtThisWay
         | Amount::Destroyed(_)
         | Amount::Exiled(_)
@@ -615,7 +616,8 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .or(reads_of_amount(then))
             .or(reads_of_amount(otherwise)),
         Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
-        Amount::Remembered { on, .. } => reads_of_ref(on),
+        Amount::Remembered { on, .. } | Amount::R112MostAlike { on, .. } => reads_of_ref(on),
+        Amount::R112NumberChosen { by, .. } => reads_of_ref(by),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::R6702CardTypesOf(of) => reads_of_ref(of).or(Traits::TYPES),
         Amount::Largest { who, of } | Amount::Smallest { who, of } => {

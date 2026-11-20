@@ -403,6 +403,7 @@ Celestial Colonnade
 Celestial Crusader
 Cemetery Reaper
 Cemetery Tampering
+Centaur of Attention
 Cerebral Confiscation
 Ceremonial Groundbreaker
 Chain Reaction
@@ -1092,6 +1093,7 @@ Goblin Chieftain
 Goblin Cratermaker
 Goblin Dark-Dwellers
 Goblin Electromancer
+Goblin Game
 Goblin Glasswright // Craft with Pride
 Goblin Lackey
 Goblin Matron
@@ -2040,6 +2042,7 @@ Rafter Demon
 Rage-Scarred Berserker
 Raging Goblinoids
 Raging Regisaur
+Raging River
 Raging Swordtooth
 Rain of Gore
 Rain of Thorns
@@ -2649,6 +2652,7 @@ Teyo, Geometric Tactician
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Birth of Meletis
+The Celestial Toymaker
 The Celestus
 The Chain Veil
 The Cruelty of Gix
@@ -2675,6 +2679,7 @@ The Spear of Bashenga
 The Squadron Sinister
 The Thing, Ben Grimm
 The Torment of Gollum
+The Toymaker's Trap
 The Underworld Cookbook
 The Valeyard
 The War Doctor
@@ -2912,6 +2917,7 @@ Vizier of the Anointed
 Voice of All
 Voice of the Blessed
 Voidmage Husher
+Volcanic Offering
 Voldaren Estate
 Volrath's Curse
 Volshe Tideturner
@@ -2959,6 +2965,7 @@ Weigh Down
 Weirding Wood
 Well Rested
 Whim of Volrath
+Whims of the Fates
 Whiptongue Hydra
 Whir of Invention
 Whirler Rogue
