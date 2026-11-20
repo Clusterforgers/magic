@@ -178,6 +178,40 @@ fn a_state_with_a_creature_that_should_have_died_is_not_settled(
     Ok(())
 }
 
+/// Where lethal damage is measured by power (Zilortha, CR 704.5g), a creature with damage short of its power is settled
+/// whatever its toughness; damage at its power, or any damage at power 0, is not; the creature of a player without the
+/// rule keeps its toughness.
+#[rstest]
+fn a_state_judges_lethal_damage_by_power_where_a_rule_says_so(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(
+        (0, 7, 3, 4, true),
+        (0, 7, 3, 7, false),
+        (0, 0, 2, 0, true),
+        (0, 0, 2, 1, false),
+        (1, 7, 3, 4, false)
+    )]
+    case: (usize, i32, i32, u32, bool),
+) -> Result<(), String> {
+    let (zilortha_seat, power, toughness, marked, settled) = case;
+    let zilortha = ready(
+        mtg_testkit::corpus::card("Zilortha, Strength Incarnate").map_err(|e| e.to_string())?,
+    );
+    let subject = damaged(keyworded("Subject", power, toughness, &[]), marked);
+    let scenario = if zilortha_seat == 0 {
+        Scenario::new(seats).battlefield(0, [zilortha, subject])
+    } else {
+        Scenario::new(seats)
+            .battlefield(0, [subject])
+            .battlefield(zilortha_seat, [zilortha])
+    };
+    let setup = scenario.setup().map_err(|e| e.to_string())?;
+    let state = GameState::from_setup(&setup).map_err(|e| e.to_string())?;
+    let result = check_settled(&state);
+    assert_eq!(result.is_ok(), settled, "{case:?}: {result:?}");
+    Ok(())
+}
+
 #[rstest]
 #[case::an_equipment_on_a_creature(false, 1, true)]
 #[case::a_creature_equipment_on_a_creature(true, 1, false)]

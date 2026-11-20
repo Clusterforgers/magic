@@ -286,10 +286,16 @@ pub fn check_settled(state: &GameState) -> Result<(), Violation> {
             .map_or((0, false), |p| (p.damage(), p.deathtouched()));
         // Lethal damage from one source only, where a rule says so (Ogre Enforcer).
         let damage = mtg_engine::r109_combat_damage::r109_lethal_marked(state, id, damage);
-        let destroyed = i64::from(damage) >= toughness || marked;
+        // Lethal damage is measured against power where a rule says so (Zilortha, CR 704.5g); some must be marked.
+        let (measure, lethal_at) = if mtg_engine::w17b_statics::r377_lethal_by_power(state, id) {
+            ("power", i64::from(chars.power.unwrap_or(0)))
+        } else {
+            ("toughness", toughness)
+        };
+        let destroyed = (damage > 0 && i64::from(damage) >= lethal_at) || marked;
         if toughness <= 0 || (destroyed && !is_indestructible(state, id)) {
             return Err(Violation::Bookkeeping(format!(
-                "{id:?} should have died: toughness {toughness}, damage {damage}, deathtouch mark {marked}"
+                "{id:?} should have died: toughness {toughness}, damage {damage} against {measure} {lethal_at}, deathtouch mark {marked}"
             )));
         }
     }

@@ -221,7 +221,7 @@ pub(crate) fn r377_devotion_bonus(state: &GameState, player: PlayerId) -> u32 {
 }
 
 /// Whether lethal damage to the creature `id` is determined by its power rather than its toughness (CR 704.5g).
-pub(crate) fn r377_lethal_by_power(state: &GameState, id: ObjectId) -> bool {
+pub fn r377_lethal_by_power(state: &GameState, id: ObjectId) -> bool {
     let rules = &state.rules().w17b;
     !rules.lethal_power.is_empty()
         && state
