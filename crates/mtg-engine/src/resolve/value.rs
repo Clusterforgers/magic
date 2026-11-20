@@ -2790,6 +2790,7 @@ impl<'a> Scope<'a> {
                 self.r6008_most_damage_by_source(&self.players(who)?)
             }
             Amount::R110MostDamageToOne => self.r110_most_damage_to_one(),
+            Amount::R110RemovedThisWay(counter) => self.r110_removed_this_way(counter)?,
             Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
             Amount::CastSameNameThisGame(who) => {
                 let name = self
@@ -2908,6 +2909,19 @@ impl<'a> Scope<'a> {
                     .map(|(_, value)| *value)
             })
             .unwrap_or(0)
+    }
+
+    /// The counters of the kind removed this way: by the scope's own run, and by the run that set up its trigger.
+    fn r110_removed_this_way(&self, counter: &CounterKind) -> Result<i64, ResolveError> {
+        let none = Vec::new();
+        let own = self.own_run().map_or(&none, |run| &run.r110_removed);
+        let found = super::prim::r110_remove_put::r110_this_way(
+            own,
+            self.bindings,
+            super::prim::r110_remove_put::R110_REMOVED,
+            counter,
+        )?;
+        Ok(found.iter().map(|(_, count)| i64::from(*count)).sum())
     }
 
     /// The run of the scope's own effects: the steps run inline, else the state's resolution when it is the resolution

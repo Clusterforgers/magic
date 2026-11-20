@@ -1543,6 +1543,7 @@ Mage Hunter
 Magewright's Stone
 Magical Hack
 Magistrate's Scepter
+Magma Pummeler
 Magmatic Galleon
 Magmatic Insight
 Magnetic Web

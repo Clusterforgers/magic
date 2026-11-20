@@ -1,12 +1,15 @@
 //! Goal: damage amounts read from the turn and preventions asked at each event, at tables of two to four seats: Impact
 //! Resonance divides the most damage one source dealt to one permanent or player this turn (several sources never
 //! add up, none makes it zero and the spell is cast with no target), and Battletide Alchemist's controller chooses at
-//! each damage to a player whether to prevent as much of it as they control Clerics; the logs replay to the live state.
+//! each damage to a player whether to prevent as much of it as they control Clerics, and Magma Pummeler prevents damage
+//! while it has a +1/+1 counter, removes as many as it can and deals the number removed to a target; the logs replay to
+//! the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_engine::choose::{DivideChoice, Target, YesNoChoice};
 use mtg_engine::decision::{DecisionKind, PayChoice};
@@ -14,6 +17,7 @@ use mtg_engine::turn::Step;
 use mtg_engine::{Answer, GameSetup, replay};
 use mtg_testkit::cards::{burn, free_creature, mountain};
 use mtg_testkit::corpus::card;
+use mtg_testkit::scenario::with_counters;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
@@ -144,6 +148,63 @@ fn r110_battletide_alchemist_may_prevent_as_much_as_its_clerics(
     assert_eq!(
         life(&driver, victim),
         before - 3 + i32::try_from(prevented).unwrap()
+    );
+    replays(&driver, &setup);
+    Ok(())
+}
+
+/// Seat 0 controls Magma Pummeler with `counters` +1/+1 counters and holds a burn spell of `damage` with a Mountain.
+fn pummeler_table(seats: usize, counters: u32, damage: i32) -> Scenario {
+    let pummeler = with_counters(
+        ready(card("Magma Pummeler").unwrap()),
+        CounterKind::PlusOnePlusOne,
+        counters,
+    );
+    Scenario::new(seats)
+        .at(2, 0, Step::Main1)
+        .hand(0, [burn("Blast", damage)])
+        .battlefield(0, [pummeler, ready(mountain())])
+}
+
+#[rstest]
+fn r110_magma_pummeler_turns_counters_into_damage(
+    #[values(2, 3, 4)] seats: usize,
+    #[values((3, 2), (2, 5), (1, 1))] case: (u32, i32),
+) -> Result<(), ScriptError> {
+    let (counters, damage) = case;
+    let setup = pummeler_table(seats, counters, damage).setup().unwrap();
+    let mut driver = Driver::from_scenario(pummeler_table(seats, counters, damage))?;
+    let pummeler = driver.target_named("Magma Pummeler")?;
+    let foe = driver.target_player(seats - 1);
+    let before = life(&driver, seats - 1);
+    driver.cast_at("Blast", &[pummeler])?;
+    // The reflexive trigger goes on the stack once the spell has resolved; its target is the last seat.
+    let mut aimed = false;
+    for _ in 0..200 {
+        let idle = driver.state().stack().is_empty() && driver.state().resolving().is_none();
+        if idle && aimed {
+            break;
+        }
+        if matches!(driver.decision()?.kind, DecisionKind::ChooseTargets(_)) {
+            driver.choose_targets(&[foe])?;
+            aimed = true;
+        } else {
+            driver.answer_passively()?;
+        }
+    }
+    let removed = counters.min(u32::try_from(damage).unwrap());
+    if removed < counters {
+        let id = driver.id_of("Magma Pummeler")?;
+        let held = driver.state().object(id).unwrap().permanent().unwrap();
+        assert_eq!(held.damage(), 0, "the damage is prevented");
+        assert_eq!(
+            held.counters_of(&CounterKind::PlusOnePlusOne),
+            counters - removed
+        );
+    }
+    assert_eq!(
+        life(&driver, seats - 1),
+        before - i32::try_from(removed).unwrap()
     );
     replays(&driver, &setup);
     Ok(())

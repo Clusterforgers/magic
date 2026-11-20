@@ -926,6 +926,7 @@ const RUNS: &[&str] = &[
     "Amount.SourcesDealtDamage",
     "Amount.MostDamageBySource",
     "Amount.R110MostDamageToOne",
+    "Amount.R110RemovedThisWay",
     "Amount.DamageToFromPlayers",
     "Rule.SpendManaAs.AbilitiesOnly",
     "Amount.Drafted",

@@ -723,6 +723,10 @@ pub enum Amount {
     /// How many counters of the kind the cost of the resolving ability removed from its source ("for each charge counter removed this
     /// way" after "Remove all charge counters from ~"); zero outside such an ability.
     RemovedThisWay(CounterKind),
+    /// How many counters of the kind the steps before it removed, from anything, in the resolution or the replacement it
+    /// belongs to, and in the one that set up its delayed or reflexive trigger ("when one or more counters are removed
+    /// this way, it deals that much damage"); zero when none was removed.
+    R110RemovedThisWay(CounterKind),
     /// The number a `Let` of the resolving spell or ability fixed under the name; zero before it ran.
     Bound(String),
     /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
@@ -1123,6 +1127,7 @@ enum Tagged {
     R6500DevouredMatching(Selector),
     Devoured,
     RemovedThisWay(CounterKind),
+    R110RemovedThisWay(CounterKind),
     Bound(String),
     CastWith(CastWay),
     ColorsSpent,
@@ -1343,6 +1348,7 @@ enum TaggedRef<'a> {
     R6500DevouredMatching(&'a Selector),
     Devoured,
     RemovedThisWay(&'a CounterKind),
+    R110RemovedThisWay(&'a CounterKind),
     Bound(&'a str),
     CastWith(CastWay),
     ColorsSpent,
@@ -1533,6 +1539,7 @@ impl From<Tagged> for Amount {
             Tagged::R6500DevouredMatching(filter) => Amount::R6500DevouredMatching(filter),
             Tagged::Devoured => Amount::Devoured,
             Tagged::RemovedThisWay(counter) => Amount::RemovedThisWay(counter),
+            Tagged::R110RemovedThisWay(counter) => Amount::R110RemovedThisWay(counter),
             Tagged::Bound(name) => Amount::Bound(name),
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
@@ -1687,6 +1694,9 @@ impl Serialize for Amount {
             Amount::Devoured => TaggedRef::Devoured.serialize(serializer),
             Amount::RemovedThisWay(counter) => {
                 TaggedRef::RemovedThisWay(counter).serialize(serializer)
+            }
+            Amount::R110RemovedThisWay(counter) => {
+                TaggedRef::R110RemovedThisWay(counter).serialize(serializer)
             }
             Amount::Bound(name) => TaggedRef::Bound(name).serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),

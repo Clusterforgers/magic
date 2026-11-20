@@ -1445,6 +1445,7 @@ impl<'a> Walker<'a> {
             Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
             Amount::MostDamageBySource(who) => self.player_amount("MostDamageBySource", who),
             Amount::R110MostDamageToOne => self.uses("Amount", "R110MostDamageToOne"),
+            Amount::R110RemovedThisWay(_) => self.uses("Amount", "R110RemovedThisWay"),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));

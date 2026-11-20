@@ -78,6 +78,14 @@ mod tests {
                 "any number of targets, where",
             ),
             ("you may prevent X", "prevent X"),
+            (
+                "that much damage to any target",
+                "that much damage to target creature",
+            ),
+            (
+                "a +1/+1 counter on it, prevent",
+                "a -1/-1 counter on it, prevent",
+            ),
             ("number of Clerics", "number of Wizards"),
             ("damage to a player", "damage to a creature"),
         ];

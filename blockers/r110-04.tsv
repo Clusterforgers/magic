@@ -53,7 +53,6 @@ Firestorm Phoenix	A permanent card revealed in its owner's hand with 'can't play
 Prowl, Stoic Strategist // Prowl, Pursuit Vehicle	Convert as an effect and a trigger on a player playing a card exiled with this (exiled-with link plus play event)	More Than Meets the Eye
 Soundwave, Sonic Spy // Soundwave, Superior Captain	Convert as an effect and a batch trigger of creature tokens dealing combat damage with exile of a card of mana value equal to the damage	More Than Meets the Eye
 Psychic Battle	Trigger on a player choosing one or more targets, a reveal by every player and a change of target by the highest mana value (CR 115.7)	none
-Magma Pummeler	ReplaceBy::PreventAnd (condition: a +1/+1 counter on This) whose steps read the number of counters actually removed: RemoveCounters of Triggering removes only what it has (CR 615.1, 122.8), and the Reflexive DealDamage needs that number (an Amount for the lesser of Triggering and Counters on This, or a removed-this-way count of the replacement step)	none
 Power Leak	Enchanted player's upkeep pays any amount of mana prevent that much damage (a variable payment reducing damage)	none
 Chromatic Armor	counter-scaled prevention of damage from sources of a chosen color ("prevent X of that damage, where X is the number of sleight counters", color chosen on each activation and remembered on the Aura)	none
 Strict Proctor	TriggerPattern on a triggered ability triggering whose trigger event is a permanent entering (CR 603.6a), with Ref to that ability on the stack for Counter unless pays {2}	none

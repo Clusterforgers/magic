@@ -79,15 +79,10 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
                     );
                 }
             }
+            if let Some(resolving) = state.resolving.as_mut() {
+                crate::resolve::prim::r110_remove_put::r110_note(resolving, event);
+            }
             if event.delta > 0 {
-                if let Some(resolving) = state.resolving.as_mut() {
-                    crate::resolve::prim::r110_remove_put::r110_note_put(
-                        &mut resolving.r110_put,
-                        named,
-                        &event.counter,
-                        event.delta.unsigned_abs(),
-                    );
-                }
                 state.tally_object(named, None, Tally::Countered);
                 let by = state.resolving_controller();
                 state.record(
