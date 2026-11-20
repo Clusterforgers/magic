@@ -914,6 +914,7 @@ Fatal Lore
 Fateful Absence
 Fathom Mage
 Favorable Winds
+Fblthp, Lost on the Range
 Fear of Failed Tests
 Fearless Skald
 Fearsome Goblin Pair
@@ -1217,6 +1218,7 @@ Helm of Chatzuk
 Helm of the Host
 Hengegate Pathway // Mistgate Pathway
 Henry Wu, InGen Geneticist
+Henzie "Toolbox" Torre
 Herald of Anguish
 Herald of Eternal Dawn
 Herald of Hoofbeats
@@ -1782,6 +1784,7 @@ Nihil Spellbomb
 Niko Defies Destiny
 Nils, Discipline Enforcer
 Ninja Pizza
+Ninja Teen
 Ninja of the Deep Hours
 Ninja of the New Moon
 Nirkana Revenant
@@ -2586,6 +2589,7 @@ Tamiyo's Safekeeping
 Tandem Lookout
 Tangle Tumbler
 Tangleweave Armor
+Tannuk, Steadfast Second
 Tanuki Transplanter
 Tapestry Warden
 Tariff

@@ -2317,6 +2317,14 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::TaxAsLife(_) => return Err(ResolveError::Unsupported("Rule.TaxAsLife")),
         // A plot reads it from the permanents (`r6018_plot_less`); it is no rule of the game.
         GameRule::R6018PlotLess(_) => return Err(ResolveError::Unsupported("Rule.R6018PlotLess")),
+        // A plot reads it from the permanents (`r111_plot_top`); it is no rule of the game.
+        GameRule::R111PlotFromLibraryTop(_) => {
+            return Err(ResolveError::Unsupported("Rule.R111PlotFromLibraryTop"));
+        }
+        // The ways of casting read it from the permanents (`r111_way_riders`); it is no rule of the game.
+        GameRule::R111CastWayFrom { .. } => {
+            return Err(ResolveError::Unsupported("Rule.R111CastWayFrom"));
+        }
         GameRule::SpendOnlyFrom(_) => return Err(ResolveError::Unsupported("Rule.SpendOnlyFrom")),
         GameRule::GraveyardCardsUntargetable
         | GameRule::CantLoseGame { .. }

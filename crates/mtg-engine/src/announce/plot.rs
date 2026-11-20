@@ -21,13 +21,15 @@ pub(super) fn next(state: &GameState, player: PlayerId, card: ObjectId) -> Next 
     suspend::pay(state, player, card, cost, || events(state, card))
 }
 
-/// The events of plotting `card`: it moves from the hand to exile, face up, and is marked as plotted. They come between
-/// the life and the mana of the payment.
+/// The events of plotting `card`: it moves from the hand (or the top of the library, `r111_plot_top`) to exile, face
+/// up, and is marked as plotted. They come between the life and the mana of the payment.
 pub(crate) fn events(state: &GameState, card: ObjectId) -> Option<Vec<Event>> {
     let object = state.object(card)?;
-    let Zone::Hand(_) = object.zone() else {
+    let from_top = matches!(object.zone(), Zone::Library(player)
+        if crate::r111_plot_top::r111_may_plot_from_top(state, player, card));
+    if !matches!(object.zone(), Zone::Hand(_)) && !from_top {
         return None;
-    };
+    }
     Some(vec![Event::ZoneChanged {
         object: card,
         from: object.zone(),

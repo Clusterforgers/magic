@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 34] = [
+const MODIFICATIONS: [&str; 35] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -198,6 +198,7 @@ const MODIFICATIONS: [&str; 34] = [
     r#"{"RemoveKeywordKind":"Landwalk"}"#,
     r#"{"BlocksAdditionalPer":2}"#,
     r#""R6700KeepsLastLoyalty""#,
+    r#"{"R111GainNonManaAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
 ];
 
 /// CR 613.1e, 105.3: adding a colour keeps the colours the object has; a later setting replaces them all.
@@ -296,6 +297,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::LockKeyword(_)
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::GainAbilitiesOf(_)
+            | mtg_cards::modify::Modification::R111GainNonManaAbilitiesOf(_)
             | mtg_cards::modify::Modification::R6702GainActivatedAndTriggeredOf(_)
             // It counts its number for each object as layer 6 applies (`r6601_ulamog` tests it).
             | mtg_cards::modify::Modification::R6601KeywordX { .. }

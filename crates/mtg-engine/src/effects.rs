@@ -95,7 +95,7 @@ impl Selector {
     }
 }
 
-/// An activated ability printed on a card, which another object has (`Modification::GainAbilities`).
+/// An activated ability of another object, which an object has (`Modification::GainAbilities`).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct Borrowed {
@@ -106,6 +106,10 @@ pub struct Borrowed {
     /// The ability.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub body: Arc<Ability>,
+    /// Whether the ability is one the donor has but its card does not print: `index` is then its place among the activated
+    /// abilities the donor has (`Grant::R111Lent`).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub r111_current: bool,
 }
 
 /// What an effect changes.

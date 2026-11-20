@@ -64,6 +64,12 @@ pub(crate) fn lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
     rules.chain(mana).collect()
 }
 
+/// The plain mana abilities printed on a card (a basic land's own), which a permanent that has its abilities lends
+/// after its rules (`r111_lent`).
+pub(crate) fn r111_printed_mana(card: &CardDefinition) -> &[AbilityDef] {
+    &card.abilities
+}
+
 /// The triggered abilities printed on a card, each with its index among its rules, which a permanent that gains the
 /// activated and triggered abilities of the card has after the activated ones (`Modification::R6702GainActivatedAndTriggeredOf`).
 pub(crate) fn r6702_lendable_triggers(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
@@ -84,7 +90,7 @@ pub(crate) fn r6702_crafts(ability: &crate::abilities::AbilityObject, source: Ob
 }
 
 /// "{T}: Add {X}" as a rules ability.
-fn tap_for_mana(produces: ManaType) -> Arc<Ability> {
+pub(crate) fn tap_for_mana(produces: ManaType) -> Arc<Ability> {
     Arc::new(Ability::Activated {
         cost: Cost(vec![CostItem::Tap]),
         timing: Timing::default(),
@@ -371,7 +377,15 @@ pub(crate) fn definition_has_cost_modifier(definition: &CardDefinition) -> bool 
 pub(crate) fn definition_has_replacement(definition: &CardDefinition) -> bool {
     definition.rules.iter().any(|rules| match &**rules {
         Ability::Replacement { .. } => true,
-        Ability::Static { mods, .. } => mods.iter().any(grants_replacement_by),
+        Ability::AltCast { .. } => crate::r111_way_riders::r111_rides(rules, |rider| {
+            matches!(rider, Ability::Replacement { .. })
+        }),
+        Ability::Static { mods, .. } => {
+            mods.iter().any(grants_replacement_by)
+                || crate::r111_way_riders::r111_rides(rules, |rider| {
+                    matches!(rider, Ability::Replacement { .. })
+                })
+        }
         Ability::Triggered { effects, .. }
         | Ability::Activated { effects, .. }
         | Ability::Spell { effects, .. }
@@ -535,6 +549,7 @@ pub(crate) fn printed_and_provided(object: &GameObject) -> Vec<(AbilityRef, Arc<
             ));
         }
     }
+    found.extend(crate::r111_way_riders::r111_riders(object));
     found
 }
 
@@ -601,9 +616,27 @@ fn read(state: &GameState, address: AbilityRef, shot: Option<&Snapshot>) -> Opti
             .get(address.ability)
             .cloned(),
         AbilitySource::Granted(_) if address.ability != 0 => None,
+        AbilitySource::Granted(grant @ Grant::R111Lent { .. }) => {
+            crate::r111_lent::r111_read(state, address.object, grant)
+        }
         AbilitySource::Granted(grant) => granted_ability(state, grant),
         AbilitySource::PrintedKeyword(_) | AbilitySource::GrantedKeyword(_) => {
             provided_at(&keyword_added(state, address, shot)?, address.ability)
+        }
+        AbilitySource::R111WayRider => {
+            // A permanent that has left reads the way it was cast as it last was.
+            let object = holder(state, address.object)?;
+            let way = match shot
+                .filter(|shot| shot.id == address.object && shot.counter != object.counter())
+            {
+                Some(shot) => shot.way,
+                None => object.cast_way(),
+            };
+            crate::r111_way_riders::r111_rider_at(
+                card_of(state, address.object, shot)?,
+                way,
+                address.ability,
+            )
         }
     }
 }
@@ -660,7 +693,7 @@ fn keyword_added(
             }
         }
         AbilitySource::GrantedKeyword(grant) => granted_keyword(state, grant, address.object, shot),
-        AbilitySource::Printed | AbilitySource::Granted(_) => None,
+        AbilitySource::Printed | AbilitySource::Granted(_) | AbilitySource::R111WayRider => None,
     }
 }
 
@@ -719,6 +752,8 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
             .into_iter()
             .find_map(|(index, body)| (index == ability).then_some(body)),
         Grant::Ring { player, level } => crate::ring::ability_given(state, player, level),
+        // Read with its holder (`r111_lent::r111_read`).
+        Grant::R111Lent { .. } => None,
     }
 }
 
@@ -770,7 +805,7 @@ fn granted_keyword(
             WantedModification::AddKeyword(keyword) => Some(keyword),
             _ => None,
         },
-        Grant::Borrowed { .. } | Grant::Ring { .. } => None,
+        Grant::Borrowed { .. } | Grant::R111Lent { .. } | Grant::Ring { .. } => None,
     }
 }
 

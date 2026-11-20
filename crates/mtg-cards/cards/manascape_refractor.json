@@ -1,7 +1,7 @@
 {
   "oracle_id": "ae3517db-bb96-4c29-91dc-5bd68683dced",
   "name": "Manascape Refractor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Manascape Refractor",
@@ -9,15 +9,20 @@
       "abilities": [
         { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 29, "end": 103 }
+          "Static": {
+            "affected": "This",
+            "mods": [{ "GainAbilitiesOf": { "Each": [{ "Type": "Land" }] } }]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 104, "end": 216 }
+          "Rule": {
+            "rule": {
+              "SpendManaAs": {
+                "who": "You",
+                "spend_as": "AnyColor",
+                "abilities": [{ "Is": "This" }]
+              }
+            }
           }
         }
       ]

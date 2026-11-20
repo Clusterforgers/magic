@@ -2,7 +2,7 @@
 import type { ObjectId } from "./ObjectId";
 
 /**
- * An activated ability printed on a card, which another object has (`Modification::GainAbilities`).
+ * An activated ability of another object, which an object has (`Modification::GainAbilities`).
  */
 export type Borrowed = { 
 /**
@@ -16,4 +16,9 @@ index: number,
 /**
  * The ability.
  */
-body: unknown, };
+body: unknown, 
+/**
+ * Whether the ability is one the donor has but its card does not print: `index` is then its place among the activated
+ * abilities the donor has (`Grant::R111Lent`).
+ */
+r111_current?: boolean, };

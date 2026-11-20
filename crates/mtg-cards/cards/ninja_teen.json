@@ -1,7 +1,7 @@
 {
   "oracle_id": "2c5044ff-a303-4276-8e23-7caac30a275b",
   "name": "Ninja Teen",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ninja Teen",
@@ -34,9 +34,55 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 204, "end": 346 }
+          "Activated": {
+            "cost": "{B}",
+            "timing": "Sorcery",
+            "condition": { "Level": { "of": "This", "op": "Eq", "level": 2 } },
+            "effects": [{ "BecomeLevel": { "level": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+            },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "AltCast": {
+                    "way": "Sneak",
+                    "cost": [
+                      { "Mana": "{3}{B}" },
+                      {
+                        "ReturnToHand": {
+                          "filter": [
+                            "Attacking",
+                            "Unblocked",
+                            { "Type": "Creature" },
+                            { "ControlledBy": "You" }
+                          ]
+                        }
+                      }
+                    ],
+                    "condition": { "Step": "DeclareBlockers" },
+                    "flash": true
+                  }
+                }
+              }
+            ],
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 3 } }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "R111CastWayFrom": {
+                "way": "Sneak",
+                "from": "Graveyard",
+                "what": [{ "Type": "Creature" }]
+              }
+            },
+            "condition": { "Level": { "of": "This", "op": "Ge", "level": 3 } }
           }
         }
       ]

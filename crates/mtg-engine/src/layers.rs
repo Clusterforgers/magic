@@ -207,11 +207,24 @@ impl Held {
         let suspected = object
             .permanent()
             .is_some_and(crate::object::PermanentState::suspected);
+        abilities.extend(crate::r111_way_riders::r111_riders(object).into_iter().map(
+            |(address, body)| HeldAbility {
+                address,
+                body,
+                since: 0,
+                keyword: None,
+            },
+        ));
         if suspected && !keywords.contains(&Keyword::Menace) {
             keywords.push(Keyword::Menace);
         }
         if crate::r372_suspend::cast_hasty(object) && !keywords.contains(&Keyword::Haste) {
             keywords.push(Keyword::Haste);
+        }
+        for keyword in crate::r111_way_riders::r111_rider_keywords(object) {
+            if !keywords.contains(&keyword) {
+                keywords.push(keyword);
+            }
         }
         let chars = base(object);
         Held {
@@ -338,9 +351,16 @@ impl Held {
             self.abilities.push(HeldAbility {
                 address: AbilityRef::granted(
                     self.id,
-                    Grant::Borrowed {
-                        donor: ability.donor,
-                        ability: ability.index,
+                    if ability.r111_current {
+                        Grant::R111Lent {
+                            donor: ability.donor,
+                            nth: ability.index,
+                        }
+                    } else {
+                        Grant::Borrowed {
+                            donor: ability.donor,
+                            ability: ability.index,
+                        }
                     },
                 ),
                 body: Arc::clone(&ability.body),
@@ -827,6 +847,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::LoseThisAbility
         | Wanted::LosePrinted(_)
         | Wanted::GainAbilitiesOf(_)
+        | Wanted::R111GainNonManaAbilitiesOf(_)
         | Wanted::R6702GainActivatedAndTriggeredOf(_)
         | Wanted::LoseAbilities
         | Wanted::LoseAbilitiesExceptMana => Layer::Ability,
@@ -1045,11 +1066,18 @@ fn compute_with(state: &GameState, registered: &[&ContinuousEffect]) -> Layers {
             .iter()
             .filter_map(|id| state.object(*id))
             .any(crate::r372_suspend::cast_hasty);
+    // A permanent cast for a way its card does not print has the keywords of the way's riders (`r111_way_riders`).
+    let riders_in_play = state
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .any(|object| !crate::r111_way_riders::r111_rider_keywords(object).is_empty());
     if registered.is_empty()
         && !statics_in_play
         && !counters_in_play
         && !suspected_in_play
         && !hasty_in_play
+        && !riders_in_play
     {
         return Layers {
             held: BTreeMap::new(),
@@ -1334,6 +1362,8 @@ impl<'a> Pass<'a> {
                     rule,
                     index,
                 },
+                // The riders of a way of casting hold no static ability.
+                AbilitySource::R111WayRider => continue,
             };
             found.push(Cand {
                 key,

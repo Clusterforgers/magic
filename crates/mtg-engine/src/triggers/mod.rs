@@ -148,7 +148,10 @@ pub(crate) fn triggers_something(ability: &Ability) -> bool {
     match ability {
         Ability::Triggered { .. } => true,
         Ability::Keyword(keyword) => keyword_triggers(keyword),
-        Ability::Static { mods, .. } => grants_trigger(mods),
+        Ability::Static { mods, .. } => {
+            grants_trigger(mods) || crate::r111_way_riders::r111_rides(ability, triggers_something)
+        }
+        Ability::AltCast { .. } => crate::r111_way_riders::r111_rides(ability, triggers_something),
         other => effects_trigger(other.effects()),
     }
 }
