@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { ChevronDown, Gamepad2 } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
@@ -57,6 +58,7 @@ export function FullControlToggle({ autoSkip = false }: { autoSkip?: boolean }) 
       role="group"
       aria-label="Full Control"
       data-slot="full-control"
+      {...anchor('fullcontrol')}
       data-mode={mode}
       className="inline-flex items-center gap-0.5"
     >

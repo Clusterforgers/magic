@@ -1,0 +1,284 @@
+[
+  {
+    "act": "Keep",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "Mulligan",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        },
+        {
+          "id": 21,
+          "name": "Llanowar Elves"
+        },
+        {
+          "id": 22,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Forest"
+        },
+        {
+          "id": 26,
+          "name": "Forest"
+        }
+      ],
+      "lands": [],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Untap",
+      "stops": [],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 0,
+      "won": false
+    }
+  },
+  {
+    "act": "Land",
+    "cards": ["Forest"],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        },
+        {
+          "id": 21,
+          "name": "Llanowar Elves"
+        },
+        {
+          "id": 22,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Forest"
+        },
+        {
+          "id": 26,
+          "name": "Forest"
+        }
+      ],
+      "lands": [],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 1,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        },
+        {
+          "id": 21,
+          "name": "Llanowar Elves"
+        },
+        {
+          "id": 22,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 26,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 1,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        },
+        {
+          "id": 21,
+          "name": "Llanowar Elves"
+        },
+        {
+          "id": 22,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 26,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main2",
+      "stops": [],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 1,
+      "won": false
+    }
+  },
+  {
+    "act": null,
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        },
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        },
+        {
+          "id": 21,
+          "name": "Llanowar Elves"
+        },
+        {
+          "id": 22,
+          "name": "Grizzly Bears"
+        },
+        {
+          "id": 23,
+          "name": "Plains"
+        },
+        {
+          "id": 24,
+          "name": "Forest"
+        },
+        {
+          "id": 25,
+          "name": "Forest"
+        }
+      ],
+      "lands": [
+        {
+          "id": 26,
+          "name": "Forest"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 3,
+      "won": false
+    }
+  }
+]

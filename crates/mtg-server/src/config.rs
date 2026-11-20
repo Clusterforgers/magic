@@ -37,6 +37,11 @@ pub enum ConfigError {
     /// `MTG_BOTS_ALONE_SECS` is not a whole number of seconds from 60 to 604800.
     #[error("MTG_BOTS_ALONE_SECS must be a whole number of seconds from 60 to 604800, got {0:?}")]
     BadBotsAloneSecs(String),
+    /// `MTG_PRACTICE_ALONE_SECS` is not a whole number of seconds from 60 to 604800.
+    #[error(
+        "MTG_PRACTICE_ALONE_SECS must be a whole number of seconds from 60 to 604800, got {0:?}"
+    )]
+    BadPracticeAloneSecs(String),
     /// An `MTG_ALLOWED_ORIGINS` entry is not `http(s)://host[:port]`.
     #[error("MTG_ALLOWED_ORIGINS entry {0:?} is not an origin such as https://host[:port]")]
     BadOrigin(String),
@@ -96,11 +101,20 @@ pub enum ConfigError {
     /// `MTG_SEED` is not a whole number from 0 to 18446744073709551615.
     #[error("MTG_SEED must be a whole number from 0 to 18446744073709551615, got {0:?}")]
     BadSeed(String),
+    /// `MTG_TUTORIAL_BEAT_MS` is not a number of milliseconds.
+    #[error(
+        "MTG_TUTORIAL_BEAT_MS must be a whole number of milliseconds, 0 for no wait, at most 5000, got {0:?}"
+    )]
+    BadTutorialBeatMs(String),
     /// `MTG_TEST_HOOKS` is not `1`, `0`, `true` or `false`.
     #[error("MTG_TEST_HOOKS must be 1 or 0, got {0:?}")]
     BadTestHooks(String),
 }
 
+/// How long the Learn course's bot waits before each answer when `MTG_TUTORIAL_BEAT_MS` is unset.
+pub const TUTORIAL_BEAT: Duration = Duration::from_millis(700);
+/// The longest beat `MTG_TUTORIAL_BEAT_MS` accepts, in milliseconds.
+const MAX_TUTORIAL_BEAT_MS: u64 = 5_000;
 /// Most reverse proxies `MTG_TRUSTED_PROXIES` may name.
 const MAX_TRUSTED_PROXIES: usize = 16;
 
@@ -262,11 +276,14 @@ pub struct Retention {
     /// A started game with bot seats is closed after this long with no person connected, however the bots play on
     /// (`MTG_BOTS_ALONE_SECS`).
     pub bots_alone_after: Duration,
+    /// A practice game (the Learn course) is closed after this long with no learner connected, so a reload resumes it
+    /// and a left lesson ends soon (`MTG_PRACTICE_ALONE_SECS`).
+    pub practice_alone_after: Duration,
 }
 
 impl Retention {
-    /// Reads `MTG_IDLE_CLOSE_SECS` and `MTG_BOTS_ALONE_SECS` through `get`; a blank or missing value leaves the
-    /// default.
+    /// Reads `MTG_IDLE_CLOSE_SECS`, `MTG_BOTS_ALONE_SECS` and `MTG_PRACTICE_ALONE_SECS` through `get`; a blank or
+    /// missing value leaves the default.
     fn apply_env(&mut self, get: &impl Fn(&str) -> Option<String>) -> Result<(), ConfigError> {
         let seconds = |text: &str| {
             text.trim()
@@ -281,6 +298,10 @@ impl Retention {
         if let Some(text) = get("MTG_BOTS_ALONE_SECS") {
             self.bots_alone_after = seconds(&text).ok_or(ConfigError::BadBotsAloneSecs(text))?;
         }
+        if let Some(text) = get("MTG_PRACTICE_ALONE_SECS") {
+            self.practice_alone_after =
+                seconds(&text).ok_or(ConfigError::BadPracticeAloneSecs(text))?;
+        }
         Ok(())
     }
 }
@@ -293,6 +314,7 @@ impl Default for Retention {
             lobby_after: Duration::from_hours(1),
             abandoned_after: Duration::from_hours(1),
             bots_alone_after: Duration::from_mins(15),
+            practice_alone_after: Duration::from_mins(3),
         }
     }
 }
@@ -326,6 +348,8 @@ pub struct ServerConfig {
     pub bot_thinkers: usize,
     /// Whether the hooks that browser tests use to end a fight early are served (`MTG_TEST_HOOKS=1`); never for production.
     pub test_hooks: bool,
+    /// How long the Learn course's bot waits before each answer (`MTG_TUTORIAL_BEAT_MS`, 700 by default).
+    pub tutorial_beat: Duration,
 }
 
 impl Default for ServerConfig {
@@ -344,6 +368,7 @@ impl Default for ServerConfig {
             bot_delay: crate::bots::BOT_DELAY,
             bot_thinkers: crate::bots::Thinkers::for_machine(),
             test_hooks: false,
+            tutorial_beat: TUTORIAL_BEAT,
         }
     }
 }
@@ -366,7 +391,7 @@ impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_BOT_THINKERS`, `MTG_IDLE_CLOSE_SECS`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
     /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_ADMIN_USERNAME`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_SEED`,
-    /// `MTG_TEST_HOOKS`, `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
+    /// `MTG_TEST_HOOKS`, `MTG_TUTORIAL_BEAT_MS`, `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -441,6 +466,15 @@ impl ServerConfig {
         }
         if let Some(text) = get("MTG_TEST_HOOKS") {
             config.test_hooks = switch(&text).ok_or(ConfigError::BadTestHooks(text))?;
+        }
+        if let Some(text) = get("MTG_TUTORIAL_BEAT_MS") {
+            config.tutorial_beat = text
+                .trim()
+                .parse::<u64>()
+                .ok()
+                .filter(|ms| *ms <= MAX_TUTORIAL_BEAT_MS)
+                .map(Duration::from_millis)
+                .ok_or(ConfigError::BadTutorialBeatMs(text))?;
         }
         if let Some(text) = get("MTG_TRUSTED_PROXIES") {
             config.auth.trusted_proxies = match text.trim().parse::<usize>() {
@@ -679,6 +713,26 @@ mod tests {
                 Ok(Duration::from_secs(seconds))
             ),
             None => assert_eq!(loaded, Err(ConfigError::BadBotsAloneSecs(text.to_owned()))),
+        }
+    }
+
+    #[rstest]
+    #[case("", Some(180))]
+    #[case("60", Some(60))]
+    #[case(" 300 ", Some(300))]
+    #[case("59", None)]
+    #[case("3m", None)]
+    fn practice_alone_times(#[case] text: &str, #[case] seconds: Option<u64>) {
+        let loaded = load(&[("MTG_PRACTICE_ALONE_SECS", text)]);
+        match seconds {
+            Some(seconds) => assert_eq!(
+                loaded.map(|c| c.retention.practice_alone_after),
+                Ok(Duration::from_secs(seconds))
+            ),
+            None => assert_eq!(
+                loaded,
+                Err(ConfigError::BadPracticeAloneSecs(text.to_owned()))
+            ),
         }
     }
 
@@ -1165,5 +1219,21 @@ mod tests {
             load(&[("MTG_DWELL_MS", text)]),
             Err(ConfigError::BadDwellMs(text.to_owned()))
         );
+    }
+
+    #[rstest]
+    #[case::unset("", Some(TUTORIAL_BEAT))]
+    #[case::off("0", Some(Duration::ZERO))]
+    #[case::set(" 250 ", Some(Duration::from_millis(250)))]
+    #[case::the_most("5000", Some(Duration::from_millis(5_000)))]
+    #[case::too_long("5001", None)]
+    #[case::a_range("100-400", None)]
+    #[case::words("slow", None)]
+    fn tutorial_beat_setting(#[case] text: &str, #[case] expected: Option<Duration>) {
+        let loaded = load(&[("MTG_TUTORIAL_BEAT_MS", text)]);
+        match expected {
+            Some(beat) => assert_eq!(loaded.unwrap().tutorial_beat, beat),
+            None => assert_eq!(loaded, Err(ConfigError::BadTutorialBeatMs(text.to_owned()))),
+        }
     }
 }

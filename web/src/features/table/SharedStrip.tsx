@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useRef } from 'react'
 import type { CSSProperties } from 'react'
 import { usePlay } from '@/features/game/gameContext'
@@ -144,6 +145,7 @@ export function SharedStrip({
       <div
         ref={sheet}
         data-slot="shared-sheet"
+        {...anchor('band')}
         data-fx-anchor="stack"
         // The card preview keeps off the strip while it holds a decision where it can; the strip ranks below the sentence and
         // the buttons (`PromptLayout`), which it covers last.

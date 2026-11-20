@@ -1,0 +1,102 @@
+import { count } from '../facts'
+import type { Lesson } from '../step'
+
+/** Lesson 1: the opening hand, the seat, the land drop, the band and passing. */
+export const SEAT: Lesson = {
+  id: 'seat',
+  title: 'Your seat',
+  text: 'Your opening hand, your life and the opponent, the turn, playing a land and passing.',
+  minutes: 2,
+  steps: [
+    {
+      id: 'welcome',
+      kind: 'read',
+      title: 'Welcome',
+      text: 'This is a practice table: nothing here counts, and each step shows where to press.',
+    },
+    {
+      id: 'hand',
+      kind: 'read',
+      title: 'Your opening hand',
+      text: 'Seven cards. Lands make mana; the others are spells. Two to four lands is a hand to keep.',
+      lit: ['opening.hand'],
+    },
+    {
+      id: 'keep',
+      kind: 'do',
+      title: 'Keep the hand',
+      text: 'Four lands and three spells. Press {@opening.keep}.',
+      presses: ['opening.keep'],
+      allow: { kind: 'keep' },
+      done: (facts) => facts.decision !== 'Mulligan' && facts.turn >= 1,
+    },
+    {
+      id: 'you',
+      kind: 'read',
+      title: 'This is you',
+      text: 'Your name, your life and how many cards you hold. In Commander you start at 40 life.',
+      lit: ['own.pod'],
+    },
+    {
+      id: 'them',
+      kind: 'read',
+      title: 'Your opponent',
+      text: 'Your opponent sits across the table. Bring their life to 0 and you win.',
+      lit: ['opp.pod'],
+    },
+    {
+      id: 'turn',
+      kind: 'read',
+      title: 'Whose turn',
+      text: 'The top bar says whose turn it is and which step. It is your turn, in your main phase.',
+      lit: ['turn.badge'],
+    },
+    {
+      id: 'land',
+      kind: 'do',
+      title: 'Play a land',
+      text: 'Choose a Forest in your hand to play it. You may play one land each turn.',
+      presses: ['hand:Forest'],
+      allow: { kind: 'land', name: 'Forest' },
+      done: (facts) => count(facts.lands, 'Forest') >= 1,
+    },
+    {
+      id: 'board',
+      kind: 'read',
+      title: 'Your battlefield',
+      text: 'The Forest is on your battlefield. Cards here stay in play until something removes them.',
+      lit: ['own.board'],
+    },
+    {
+      id: 'band',
+      kind: 'read',
+      title: 'The prompt bar',
+      text: 'This bar says what the game asks of you. Read here first when unsure.',
+      lit: ['band'],
+    },
+    {
+      id: 'pass',
+      kind: 'do',
+      title: 'Pass',
+      text: 'You have nothing more to do. Press {@pass.primary}; the game skips the steps where nothing can happen.',
+      presses: ['pass.primary'],
+      allow: { kind: 'pass' },
+      done: (facts) => facts.turn >= 2,
+    },
+    {
+      id: 'bot',
+      kind: 'watch',
+      title: "The bot's turn",
+      text: 'The bot takes its turn and plays a land.',
+      lit: ['opp.board'],
+      done: (facts) => facts.turn >= 3 && facts.mine && facts.decision !== null,
+    },
+    {
+      id: 'end',
+      kind: 'read',
+      title: 'A new turn',
+      text: 'You drew a card. That is the table.',
+      lit: ['hand'],
+    },
+  ],
+}

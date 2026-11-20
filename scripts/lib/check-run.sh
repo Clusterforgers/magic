@@ -93,6 +93,9 @@ pg_stop_all() {
 
 # A unit is one process: a test binary or the web checks. Its words and environment are one entry per line.
 declare -A u_kind=() u_dir=() u_cmd=() u_env=() u_need=() u_lock=() u_log=() u_start=() unit_secs=() running=()
+# unit_rerun <unit>: the cargo command that runs one of its tests; unit_sliced <unit>: it ran a seed slice;
+# u_expect <unit>: the seconds of its last passing run, when known.
+declare -A unit_rerun=() unit_sliced=() u_expect=()
 queue=()
 used=0 lock_held=0 tick_pid="" run_dir="" pg_fd_open=0
 
@@ -150,14 +153,23 @@ launch_unit() {
 
 # start_ready: start the queued units that fit the thread share (a unit that needs the Postgres lock waits for it).
 start_ready() {
-  local share free left name need rest=() blocked=0
+  local share free left name need rest=() blocked=0 secs_left=0 expect
   share=$(current_share)
   left=${#queue[@]}
+  for name in "${queue[@]}"; do secs_left=$((secs_left + ${u_expect[$name]:-0})); done
   for name in "${queue[@]}"; do
     free=$((share - used))
     need="${u_need[$name]}"
-    [[ "$need" != auto ]] || need="${RUST_TEST_THREADS:-$(unit_threads "$free" "$left")}"
+    expect="${u_expect[$name]:-0}"
+    if [[ "$need" == auto && -n "${RUST_TEST_THREADS:-}" ]]; then
+      need="$RUST_TEST_THREADS"
+    elif [[ "$need" == auto ]] && ((expect > 0)); then
+      need=$(expected_threads "$free" "$expect" "$secs_left")
+    elif [[ "$need" == auto ]]; then
+      need=$(unit_threads "$free" "$left")
+    fi
     left=$((left - 1))
+    secs_left=$((secs_left - expect))
     if ((${#running[@]} > 0 && need > free)); then
       rest+=("$name")
       continue
@@ -244,6 +256,13 @@ unit_failed() {
   if [[ -n "$(failed_tests "$log")" ]]; then
     echo "failed tests:"
     failed_tests "$log" | first 50 | sed "s/^/  $name: /"
+    if [[ -n "${unit_rerun[$name]:-}" ]]; then
+      echo "rerun one (seeds are fixed, so it is the same run):"
+      failed_tests "$log" | first 5 | sed "s|^|  ${unit_rerun[$name]} --exact |"
+    fi
+  fi
+  if [[ -n "${unit_sliced[$name]:-}" ]]; then
+    echo "this run tested seed slice $seed_slice: MTG_SEED_SLICE=$seed_slice scripts/check.sh gate reruns the same tests"
   fi
   exit 1
 }
@@ -280,11 +299,12 @@ run_units() {
   done
 }
 
-# slow_warnings <label> <log>: tests of a libtest log that took over the limit and match no slow-list entry.
+# slow_warnings <label> <log> [limit]: tests of a libtest log that took over the limit (default slow_limit) and match
+# no slow-list entry.
 slow_warnings() {
   local entries
   entries=$(slow_entries)
-  awk -v label="$1" -v limit="$slow_limit" -v entries="$entries" '
+  awk -v label="$1" -v limit="${3:-$slow_limit}" -v entries="$entries" '
     BEGIN { n = split(entries, e, "\n") }
     /^test .* \.\.\. ok <[0-9.]+s>$/ {
       t = $NF; gsub(/[<>s]/, "", t)
@@ -303,11 +323,17 @@ report_units() {
   local name warn=""
   ((${#unit_secs[@]} > 0)) || return 0
   for name in "${!unit_secs[@]}"; do
-    [[ "${u_kind[$name]}" == web ]] || warn+=$(slow_warnings "$name" "${u_log[$name]}")$'\n'
+    [[ "${u_kind[$name]}" == web ]] && continue
+    if [[ -n "${unit_sliced[$name]:-}" ]]; then
+      warn+=$(slow_warnings "$name" "${u_log[$name]}" "$slice_limit")$'\n'
+    else
+      warn+=$(slow_warnings "$name" "${u_log[$name]}")$'\n'
+    fi
   done
   warn=$(printf '%s' "$warn" | sed '/^$/d' | awk '{ print $NF, $0 }' | sort -rn | first 20 | cut -d' ' -f2-)
   if [[ -n "$warn" ]]; then
-    echo "warning: tests over ${slow_limit}s that $slow_file does not name (add them or make them faster):"
+    echo "warning: tests over ${slow_limit}s (${slice_limit}s in a sliced binary) that $slow_file does not name" \
+      "(add them or make them faster):"
     echo "$warn"
   fi
   slowest_tests

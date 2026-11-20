@@ -1,3 +1,4 @@
+import { useSeatAnchor } from '@/features/learn/seatAnchors'
 import type { ReactNode } from 'react'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
@@ -19,8 +20,9 @@ interface LifeFxProps {
  */
 export function LifeFx({ seat, as: Tag = 'span', className, children }: LifeFxProps) {
   const entries = useSeatFx(seat)
+  const coach = useSeatAnchor(seat, 'life')
   return (
-    <Tag data-slot="life" data-fx={fxAttr(entries)} className={cn('relative', className)}>
+    <Tag data-slot="life" {...coach} data-fx={fxAttr(entries)} className={cn('relative', className)}>
       {children}
       {entries.map((entry) =>
         entry.kind === 'damaged' || entry.kind === 'healed' ? (

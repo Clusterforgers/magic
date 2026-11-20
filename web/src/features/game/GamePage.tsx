@@ -16,8 +16,11 @@ import { browserTimers } from '@/net/timers'
 import { createSession } from '@/play/session'
 import type { Session, SessionDeps } from '@/play/session'
 import type { PlayState } from '@/play/store'
-import { TutorialCoach } from '@/features/learn/LessonCoach'
 import { tutorialOf } from '@/features/learn/tutorials'
+import { isLessonId } from '@/features/learn/course'
+import { LessonHost } from '@/features/learn/LessonHost'
+import { lessonSession } from '@/features/learn/lessonSession'
+import type { LessonSession } from '@/features/learn/lessonSession'
 import { FightEnd } from '@/features/delves/FightEnd'
 import { FightLobby } from '@/features/delves/FightLobby'
 import { useDeckPrefetch } from '@/features/cards/useDeckPrefetch'
@@ -185,8 +188,15 @@ function SeatedGame({
   delves,
   deps,
 }: SeatedGameProps) {
-  const [session] = useState(() => createSession({ ...deps, game: gameId, token, name, watch }))
   const [tutorial] = useState(() => tutorialOf(gameId))
+  // A lesson's game sends no saved preferences and runs behind the lesson's gate (`docs/tutorial.md`, Gate).
+  const [lesson] = useState(() =>
+    tutorial !== null && (isLessonId(tutorial) || tutorial === 'manual') && !watch ? tutorial : null,
+  )
+  const [session] = useState<Session | LessonSession>(() => {
+    const plain = createSession({ ...deps, game: gameId, token, name, watch, savedPrefs: lesson === null })
+    return lesson === null ? plain : lessonSession(plain)
+  })
   useConnected(session)
   useDeckPrefetch(
     useStore(session.store, (store) => (store.phase === 'over' ? NO_PICTURES : store.deckPictures)),
@@ -213,6 +223,10 @@ function SeatedGame({
   const delve = lookup.game?.delve ?? null
   if (over && delve !== null && !watch) {
     screen = <FightEnd delve={delve} />
+    title = 'Game over'
+  } else if (over && lesson !== null) {
+    // A lesson ends on its final table under the coach's last card.
+    screen = <GameTable />
     title = 'Game over'
   } else if (over) {
     // The result closes for a look at the final table and its log, and comes back from the strip above them.
@@ -281,8 +295,8 @@ function SeatedGame({
         // A tutorial table runs its own coach, so the table tour does not start by itself over it.
         <TableOptionsContext value={TUTORIAL_TABLE}>{screen}</TableOptionsContext>
       )}
-      {tutorial !== null && screen !== null && (state.phase === 'playing' || over) ? (
-        <TutorialCoach tutorial={tutorial} />
+      {lesson !== null && 'coach' in session && screen !== null && (state.phase === 'playing' || over) ? (
+        <LessonHost lesson={lesson} game={gameId} token={token} session={session} />
       ) : null}
     </GameContext>
   )

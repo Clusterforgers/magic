@@ -17,6 +17,7 @@ mod cause;
 mod claims;
 mod departure;
 mod listing;
+mod practice;
 mod replays;
 mod resume;
 mod watching;
@@ -64,6 +65,7 @@ pub use admin::AdminEnd;
 pub use claims::{ClaimError, Entrance, HOST, SeatClaim, Seated, TableError};
 pub use departure::Departure;
 pub use listing::{ListedGame, MAX_LISTED_LOBBIES};
+use practice::Practice;
 pub use replays::ReplayRefusal;
 pub use resume::ResumeReport;
 
@@ -312,8 +314,9 @@ struct Entry {
     /// Dropped with the entry, which tells every socket of the game to close; a game closed by its
     /// host says so first.
     alive: watch::Sender<Removal>,
-    /// Never in the game browser, even running: a tutorial, one player against a bot.
-    unlisted: bool,
+    /// A Learn course game (`practice.rs`): never in the game browser, one per learner, ended soon after its learner
+    /// left.
+    practice: Option<Practice>,
     /// The Delves run the game is a boss fight of.
     delve: Option<String>,
 }
@@ -339,7 +342,7 @@ impl Entry {
             last_action: Instant::now(),
             bots: parts.bots,
             alive,
-            unlisted: false,
+            practice: None,
         }
     }
 
@@ -362,10 +365,15 @@ impl Entry {
             self.last_connected = now;
         }
         // Bots answer on their own, so their moves never count as a person using the table: a game with bot and person
-        // seats ends once no person has been connected for a while.
+        // seats ends once no person has been connected for a while, a practice game after a short grace.
+        let alone = if self.practice.is_some() {
+            rules.practice_alone_after
+        } else {
+            rules.bots_alone_after
+        };
         if !self.bots.is_empty()
             && self.bots.len() < self.seats.len()
-            && age(self.last_connected) >= rules.bots_alone_after
+            && age(self.last_connected) >= alone
         {
             return false;
         }
@@ -654,34 +662,6 @@ impl Registry {
         self.admit(setup, names, None, None, GameOptions::default(), None)
             .await
             .map(|(created, _)| created)
-    }
-
-    /// Registers a tutorial game (`crate::tutorial`): a Commander game that is never recorded, invite only, with every
-    /// seat held and no response clock. Returns its tokens and its handle, for the bot that plays a seat.
-    pub async fn register_tutorial(
-        &self,
-        setup: GameSetup,
-        names: Vec<String>,
-    ) -> Result<(Created, GameHandle), CreateError> {
-        let pace = Pace {
-            response: None,
-            blocks: None,
-            think: None,
-            active: None,
-            extension: None,
-            relaxed: None,
-            ..self.shared.game.pace
-        };
-        let options = GameOptions {
-            format: FormatKind::Commander,
-            pace: Some(pace),
-            ..GameOptions::default()
-        };
-        let (created, handle) = self.admit(setup, names, None, None, options, None).await?;
-        if let Some(entry) = self.games().get_mut(&created.id) {
-            entry.unlisted = true;
-        }
-        Ok((created, handle))
     }
 
     /// Gives a validated setup its tokens, records it when it has a recipe and starts its actor.

@@ -2,12 +2,16 @@ import { Link } from '@tanstack/react-router'
 import { ChevronRightIcon, GraduationCapIcon } from 'lucide-react'
 import { useStore } from 'zustand'
 import { buttonVariants } from '@/components/ui/button'
-import { doneStore, TUTORIALS } from './tutorials'
+import { COURSE } from './course'
+import { doneStore } from './tutorials'
 
 /** The Play page's way to the tutorials: what they are, how many are done here, and a link to `/learn`. */
 export function LearnCard() {
-  const done = useStore(doneStore, (state) => state.done.length)
-  const all = done === TUTORIALS.length
+  const done = useStore(
+    doneStore,
+    (state) => COURSE.filter((lesson) => state.done.includes(lesson.id)).length,
+  )
+  const all = done === COURSE.length
   return (
     <section
       data-slot="learn-card"
@@ -20,8 +24,10 @@ export function LearnCard() {
           {done === 0 ? 'New here? Learn to play' : 'Learn'}
         </h2>
         <p className="text-sm text-muted-foreground">
-          A guided game against a practice bot, the table, decks, lobbies and more.{' '}
-          <span className="tabular-nums">{all ? 'All done.' : `${done} of ${TUTORIALS.length} done.`}</span>
+          Seven short lessons at a practice table, then decks, lobbies and more.{' '}
+          <span className="tabular-nums">
+            {all ? 'All done.' : `${done} of ${COURSE.length} lessons done.`}
+          </span>
         </p>
       </div>
       <Link

@@ -44,7 +44,8 @@ import { refusalNotice } from '@/features/table/whyWords'
 export const MAX_CHAT_CHARS = 500
 
 /** What a session needs: which game and seat to join, and optionally fakes for sockets and timers in tests. */
-export type SessionDeps = Omit<GameSocketOptions, 'onEvent'>
+/** What a session connects with; `savedPrefs: false` (a lesson) sends none of the saved table preferences. */
+export type SessionDeps = Omit<GameSocketOptions, 'onEvent'> & { savedPrefs?: boolean }
 
 /** A seat's connection and live state. An action returns true when its message went out or was queued under the rate limit. */
 export interface Session {
@@ -283,6 +284,7 @@ export function createSession(deps: SessionDeps): Session {
         // A spectator holds no seat, so it has no settings to bring the server up to date with.
         if (deps.watch !== true) {
           welcomed = true
+          if (deps.savedPrefs === false) return
           for (const request of welcomeRequests({
             game: message.game,
             stops: message.stops,
@@ -641,7 +643,7 @@ export function createSession(deps: SessionDeps): Session {
   return {
     store,
     connect() {
-      stopReplaced ??= onPrefsReplaced(onReplaced)
+      if (deps.savedPrefs !== false) stopReplaced ??= onPrefsReplaced(onReplaced)
       socket.connect()
     },
     disconnect() {

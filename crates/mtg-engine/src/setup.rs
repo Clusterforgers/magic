@@ -160,6 +160,8 @@ pub struct GameSetup {
     pub validate_decks: bool,
     /// The cards an effect may conjure, by name; a name missing here conjures nothing.
     pub conjurable: Arc<BTreeMap<String, Arc<CardDefinition>>>,
+    /// Whether the opening deals each library in its given order and seat 0 plays first; a mulligan still shuffles.
+    pub stacked: bool,
 }
 
 impl GameSetup {
@@ -183,6 +185,7 @@ impl GameSetup {
             start: Start::Mulligan,
             validate_decks: true,
             conjurable: Arc::default(),
+            stacked: false,
         }
     }
 
@@ -728,6 +731,7 @@ impl GameState {
                     .filter_map(|(seat, player)| {
                         Some((PlayerId::from_index(seat), player.opening_lands?))
                     }),
+                setup.stacked,
             ),
             companions,
             looked_by_hand: Vec::new(),

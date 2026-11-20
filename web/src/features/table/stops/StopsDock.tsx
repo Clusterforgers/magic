@@ -1,3 +1,5 @@
+import { useMediaQuery } from '@/hooks/useMediaQuery'
+import { anchor } from '@/features/learn/anchors'
 import { Gamepad2 } from 'lucide-react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
@@ -12,7 +14,8 @@ import { StopsBar } from './StopsBar'
  * The stops in the controls dock: the ladder and Full Control in one line when the dock has the room (`row`), else one
  * "Stops" button that opens the same content as a popover above it. Never both. The popover stays in the page while
  * shut, so the Keep toggle and the picked side keep their state and the Control keys go on working. The "Auto-skip
- * triggers" switch stays in sight either way: beside Full Control in the row, beside the Stops button otherwise.
+ * triggers" switch stays in sight beside Full Control in the row and beside the Stops button on a wider dock; a phone's dock
+ * has no room for it beside the Stops button and the primary button, so there it is in the popover with Full Control.
  */
 export function StopsDock({ row }: { row: boolean }) {
   const { shown, count, mode } = usePlay(
@@ -22,6 +25,7 @@ export function StopsDock({ row }: { row: boolean }) {
       mode: state.fullControl,
     })),
   )
+  const phone = useMediaQuery('(max-width: 639px)', false)
   if (!shown) return null
   if (row) return <StopsBar layout="row" />
   return (
@@ -31,6 +35,7 @@ export function StopsDock({ row }: { row: boolean }) {
           render={
             <Button
               data-slot="stops-button"
+              {...anchor('stops.open')}
               variant="outline"
               size="sm"
               aria-label={stopsButtonName(count, mode)}
@@ -53,9 +58,14 @@ export function StopsDock({ row }: { row: boolean }) {
         >
           <PopoverTitle className="sr-only">Stops and Full Control</PopoverTitle>
           <StopsBar layout="panel" />
+          {phone ? (
+            <div className="mt-2 flex justify-end">
+              <AutoSkipToggle />
+            </div>
+          ) : null}
         </PopoverContent>
       </Popover>
-      <AutoSkipToggle />
+      {phone ? null : <AutoSkipToggle />}
     </>
   )
 }

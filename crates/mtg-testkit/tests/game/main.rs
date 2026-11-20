@@ -110,6 +110,7 @@ mod ring;
 mod rmt7_lose_printed;
 mod rmt7_turn_rules;
 mod satchel_cues;
+mod stacked_opening;
 mod tc34_player_control;
 mod tm1_teams;
 mod tm38_team_turns;

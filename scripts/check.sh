@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Usage: scripts/check.sh [fast|rust|web|all|affected [BASE]|gate [BASE]] [--force] [--list]   (default: all)
-#   fast: fmt + clippy + script tests   rust: fast + cargo tests   web: web checks only   all: everything
+#   fast: fmt + prettier of the staged web files + clippy + script tests   rust: fast + cargo tests   web: web checks only   all: everything
 #   affected: fast, then only the tests a diff against BASE (default: the merge-base with origin/main) can break
 #     (the orchestrator, once per batch; slow tests included).
 #   gate: for agents, every commit: fmt, clippy and tests of the crates the diff changes, `cargo check` of the crates
@@ -23,6 +23,8 @@ source scripts/lib/check-plan.sh
 source scripts/lib/check-run.sh
 # shellcheck source=lib/check-units.sh
 source scripts/lib/check-units.sh
+# shellcheck source=lib/check-web.sh
+source scripts/lib/check-web.sh
 
 mode=all force=0 list=0 revs=()
 for arg in "$@"; do
@@ -40,7 +42,7 @@ if [[ "$mode" != affected && "$mode" != gate ]] && ((${#revs[@]} || list)); then
 fi
 [[ "$mode" != gate ]] || gate=1
 
-phases=("fmt" "clippy" "check" "script tests" "test build" "tests" "lock wait" "web")
+phases=("fmt" "web format" "clippy" "check" "script tests" "test build" "tests" "lock wait" "web")
 declare -A secs=()
 trap 'kill_units; pg_stop_all; [[ -z "$run_dir" ]] || rm -rf "$run_dir"; rm -f "$lease_dir/run.$$"' EXIT
 trap 'exit 130' INT TERM
@@ -116,7 +118,10 @@ case "$mode" in
 esac
 [[ "$mode" == all || "$mode" == web ]] && web_sel=full
 [[ -d web ]] || web_sel=none
-if ((gate)); then test_kind="gate-test"; fi
+seed_slice "$mode" "${head_rev:-HEAD}" || exit 2
+seed_slice="$REPLY"
+# A gate pass, and a run of one seed slice, leaves a `gate-test` stamp that `affected` does not accept.
+if ((gate)) || [[ "$seed_slice" != all ]]; then test_kind="gate-test"; fi
 
 # The content of the working tree names what was checked; a diff of two commits checks nothing.
 if [[ -z "$head_rev" ]] && { ((!list)) || [[ -s "$stamp_file" ]]; }; then
@@ -166,6 +171,7 @@ print_plan() {
   echo "tests with Postgres: ${pg_sel[*]:--}"
   echo "web: $web_sel"
   ((!gate)) || echo "slow tests skipped: $(slow_entries | wc -l) entries of $slow_file"
+  echo "seed slice: $seed_slice (suites of $slice_file)"
 }
 
 if ((list)); then
@@ -243,6 +249,8 @@ fi
 
 if [[ "$mode" != web ]]; then
   phase "fmt" cargo fmt --all --check
+  # The web unit, when it runs, checks every web file; otherwise the staged ones are checked here.
+  [[ "$web_sel" != none ]] || phase "web format" staged_web_format
   reap_done
   lint_crates clippy "${clippy_sel[@]}"
   reap_done
@@ -271,6 +279,7 @@ fi
 tests_start=$SECONDS
 run_units
 secs["tests"]=$((SECONDS - tests_start))
+record_unit_secs
 report_units
 
 for name in "${phases[@]}"; do

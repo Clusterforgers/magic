@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { useMemo, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { useGame, usePlay } from '@/features/game/gameContext'
@@ -177,6 +178,7 @@ function CommanderReturn({ source, text }: { source: ObjectView; text: string })
         ref={yes}
         className="h-10 min-w-24 px-4"
         aria-label="Return to the command zone"
+        {...anchor('commander.return')}
         aria-keyshortcuts="Y"
         onClick={say(true)}
       >

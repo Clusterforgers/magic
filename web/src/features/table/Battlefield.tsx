@@ -1,3 +1,5 @@
+import { useSeatAnchor } from '@/features/learn/seatAnchors'
+import { coachZone } from '@/features/learn/anchors'
 import { memo, useCallback, useContext, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties } from 'react'
 import { usePlay } from '@/features/game/gameContext'
@@ -102,6 +104,7 @@ const Lane = memo(
     lift,
   }: LaneProps) {
     const ghosts = useGhosts(seat, lane)
+    const lands = useSeatAnchor(seat, 'lands')
     const ids = useMemo(() => visibleIds(entries), [entries])
     const box = useMemo<CardBox | undefined>(
       () => (width === undefined || height === undefined ? undefined : { width, height }),
@@ -119,6 +122,7 @@ const Lane = memo(
     return (
       <div
         data-lane={lane}
+        {...(lane === 'lands' ? lands : {})}
         style={span === undefined ? undefined : ({ width: span } as CSSProperties)}
         // The tint lies around the lane as an outline, so it takes none of the room the fit counts.
         className={cn('shrink-0 rounded-md bg-lane outline-4 outline-lane', lane === 'other' && 'ml-auto')}
@@ -174,6 +178,8 @@ interface BattlefieldProps {
  * fit even at the smallest card scrolls inside, with the edge fade and a count of the boxes below.
  */
 export const Battlefield = memo(function Battlefield({ seat, size, facing, onCardWidth }: BattlefieldProps) {
+  const coach = useSeatAnchor(seat, 'board')
+  const own = usePlay((state) => state.seat === seat)
   const owner = useSeatNamer()(seat)
   const grouped = useContext(TableOptionsContext).stacks ?? STACKS_BY_DEFAULT
   const stacks = usePlay(useStable((state) => battlefieldStacks(state, seat, grouped)))
@@ -299,6 +305,8 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   return (
     <section
       aria-label={`${owner}'s battlefield`}
+      {...coach}
+      {...coachZone(own ? 'board' : 'opp')}
       data-battlefield-seat={seat}
       data-board-shape={fit?.shape}
       // Clips its zone, which cannot be shorter than its padding: a board squeezed to no room (a tall prompt sheet

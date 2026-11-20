@@ -63,10 +63,10 @@ describe('done marks', () => {
 
   it('keep the order of the tutorials and are stored', () => {
     markDone('lexicon')
-    markDone('game')
-    markDone('game')
-    expect(doneStore.getState().done).toEqual(['game', 'lexicon'])
-    expect(JSON.parse(window.localStorage.getItem(DONE_KEY) ?? '[]')).toEqual(['game', 'lexicon'])
+    markDone('seat')
+    markDone('seat')
+    expect(doneStore.getState().done).toEqual(['seat', 'lexicon'])
+    expect(JSON.parse(window.localStorage.getItem(DONE_KEY) ?? '[]')).toEqual(['seat', 'lexicon'])
   })
 
   it('name the tutorial a game of this tab plays, and nothing for another game', () => {

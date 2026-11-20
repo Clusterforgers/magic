@@ -1,3 +1,4 @@
+import { anchor } from '@/features/learn/anchors'
 import { Check } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Button } from '@/components/ui/button'
@@ -239,6 +240,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
       <Button
         className="h-10 px-4"
         disabled={chosen.length < min}
+        {...anchor('targets.confirm')}
         onClick={() => answer({ ChooseTargets: { Targets: [...chosen] } })}
       >
         Confirm targets

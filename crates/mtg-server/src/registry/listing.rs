@@ -93,7 +93,7 @@ impl Registry {
         let mut candidates: Vec<(Instant, GameHandle, Visibility, ListedGame)> = self
             .games()
             .iter()
-            .filter(|(_, entry)| !entry.unlisted)
+            .filter(|(_, entry)| entry.practice.is_none())
             .map(|(id, entry)| {
                 let age = now.saturating_duration_since(entry.created);
                 let listed = ListedGame {

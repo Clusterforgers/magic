@@ -1,0 +1,237 @@
+[
+  {
+    "act": "SetStop",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 25,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    },
+    "stop": {
+      "side": "Opponent",
+      "step": "End"
+    }
+  },
+  {
+    "act": "EndTurn",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 25,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Opponent",
+          "step": "End"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 5,
+      "won": false
+    }
+  },
+  {
+    "act": "Pass",
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 25,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": false,
+      "over": false,
+      "stack": [],
+      "step": "End",
+      "stops": [
+        {
+          "side": "Opponent",
+          "step": "End"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 6,
+      "won": false
+    }
+  },
+  {
+    "act": null,
+    "cards": [],
+    "facts": {
+      "attacked": false,
+      "attacking": 0,
+      "blocking": 0,
+      "command": [],
+      "creatures": [
+        {
+          "id": 25,
+          "name": "Grizzly Bears"
+        }
+      ],
+      "decision": "Priority",
+      "graveyard": [],
+      "hand": [
+        {
+          "id": 19,
+          "name": "Forest"
+        },
+        {
+          "id": 20,
+          "name": "Giant Growth"
+        }
+      ],
+      "lands": [
+        {
+          "id": 21,
+          "name": "Forest"
+        },
+        {
+          "id": 22,
+          "name": "Forest"
+        },
+        {
+          "id": 23,
+          "name": "Forest"
+        },
+        {
+          "id": 24,
+          "name": "Plains"
+        }
+      ],
+      "life": 40,
+      "mine": true,
+      "over": false,
+      "stack": [],
+      "step": "Main1",
+      "stops": [
+        {
+          "side": "Opponent",
+          "step": "End"
+        }
+      ],
+      "theirCreatures": [],
+      "theirGraveyard": [],
+      "theirLife": 40,
+      "turn": 7,
+      "won": false
+    }
+  }
+]

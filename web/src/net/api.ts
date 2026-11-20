@@ -169,8 +169,13 @@ export interface ApiOptions {
 export interface Api {
   /** `POST /api/games`: makes a game and returns each held seat's token and the join code. */
   createGame(request: CreateGameRequest): Promise<CreatedGame>
-  /** `POST /api/tutorial`: starts a tutorial game against the practice bot and returns the player's seat. */
-  startTutorial(): Promise<CreatedSeat & { game: string }>
+  /**
+   * `POST /api/tutorial`: starts lesson `lesson` against the practice bot and returns the player's seat; the practice
+   * game `replaces` names ends.
+   */
+  startTutorial(lesson: string, replaces?: PracticeSeat): Promise<CreatedSeat & { game: string }>
+  /** `POST /api/tutorial/end`: ends the practice game the learner left; resolves whether the server ended it. */
+  endTutorial(seat: PracticeSeat): Promise<boolean>
   /** `GET /api/games/{id}`: the public facts about a game, its visibility included; never a token or a code. */
   getGame(id: string): Promise<GameInfo>
   /** `GET /api/demo-decks`: the built-in decks. */
@@ -302,6 +307,12 @@ const change = (method: string, as: SeatCredential, body?: unknown): RequestInit
   ...(body === undefined ? {} : { body: JSON.stringify(body) }),
 })
 
+/** A practice game and the learner's seat token, which is what may end it. */
+export interface PracticeSeat {
+  game: string
+  token: string
+}
+
 /** Builds the client; call it once, or use the shared `api`. */
 export function createApi(options: ApiOptions = {}): Api {
   const base = options.baseUrl ?? ''
@@ -359,7 +370,28 @@ export function createApi(options: ApiOptions = {}): Api {
         // The session cookie is what binds the creator's seat to their account.
         credentials: 'include',
       }),
-    startTutorial: () => call('/api/tutorial', readTutorial, { method: 'POST', credentials: 'include' }),
+    startTutorial: (lesson, replaces) =>
+      call('/api/tutorial', readTutorial, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(replaces === undefined ? { lesson } : { lesson, replaces }),
+        credentials: 'include',
+      }),
+    endTutorial: async (seat) => {
+      const send: Fetch = options.fetch ?? ((url, request) => globalThis.fetch(url, request))
+      try {
+        // keepalive: the page may be on its way to another one.
+        const response = await send(`${base}/api/tutorial/end`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(seat),
+          keepalive: true,
+        })
+        return response.status === 204
+      } catch {
+        return false
+      }
+    },
     getGame: (id) => call(game(id), readGameInfo),
     listDecks: () => call('/api/demo-decks', readDecks),
     listLobbies: async (previous) => {
