@@ -227,6 +227,27 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             Ok(())
         }
+        Event::R110ChoseSecretly { object, chosen } => {
+            if let Some(permanent) = state
+                .objects
+                .get_mut(object)
+                .and_then(|object| object.permanent.as_mut())
+            {
+                permanent.chosen = Some(chosen.clone());
+                permanent.r110_secret = true;
+            }
+            Ok(())
+        }
+        Event::R110ChoiceRevealed { object, .. } => {
+            if let Some(permanent) = state
+                .objects
+                .get_mut(object)
+                .and_then(|object| object.permanent.as_mut())
+            {
+                permanent.r110_secret = false;
+            }
+            Ok(())
+        }
         Event::Paired { object, with } => crate::soulbond::fold_paired(state, *object, *with),
         Event::Unpaired { object, with } => crate::soulbond::fold_unpaired(state, *object, *with),
         Event::TokenCreated(token) => crate::tokens::fold(state, token),

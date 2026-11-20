@@ -14,9 +14,24 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 95, "end": 252 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ChooseValue": { "kind": { "CardName": [] }, "as": "name" } },
+              {
+                "Search": {
+                  "of": { "Target": 0 },
+                  "zone": "Graveyard",
+                  "also": ["Hand", "Library"],
+                  "filter": [{ "ChosenAs": "name" }],
+                  "count": { "min": 0, "max": 4 },
+                  "as": "found"
+                }
+              },
+              { "Exile": { "what": { "Bound": "found" } } },
+              { "Shuffle": { "who": { "Target": 0 } } }
+            ]
           }
         },
         {

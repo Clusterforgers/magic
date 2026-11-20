@@ -211,6 +211,12 @@ pub enum CostItem {
     /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d); in an ability an Equipment or Aura
     /// gives the permanent it is attached to, that Equipment or Aura ("{T}, Unattach Shuriken: ...").
     Unattach,
+    /// The payer has the source's controller draw this many cards ("unless any opponent has you draw a card"): always
+    /// payable, the draws are the controller's.
+    R110ControllerDraws(u32),
+    /// Reveal the value the source chose secretly ("Reveal the player you chose", "Reveal the creature type you chose"):
+    /// payable while the source holds a secret choice; the choice is public from then on.
+    R110RevealChosen,
     /// Exile the top cards of the payer's library face up.
     ExileTop(Amount),
     /// Collect evidence (CR 701.59): exile cards from the payer's graveyard with total mana value at least that much.

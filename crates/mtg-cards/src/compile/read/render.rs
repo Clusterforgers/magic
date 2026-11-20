@@ -706,6 +706,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r5506_costs::r5506_wordings(ability, &mut texts);
     super::r5521_wholes::r5521_wordings(ability, &mut texts);
     super::r109_wholes::r109_wordings(ability, &mut texts);
+    super::r110_03_wholes::r110_03_wordings(ability, &mut texts);
     super::r6007_wholes::r6007_wordings(ability, &mut texts);
     super::r5523_drafted::r5523_wordings(ability, written_variants, &mut texts);
     // Only a triggered animation is printed on an enchantment; an activated one, on a land, keeps its room.

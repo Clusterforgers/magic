@@ -269,6 +269,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Monarch
         | Ref::Spotlit
         | Ref::Chosen
+        | Ref::R110Seat(_)
         | Ref::R4700OtherChosen
         | Ref::Promised
         | Ref::Defending

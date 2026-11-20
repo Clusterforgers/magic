@@ -241,6 +241,7 @@ pub mod zones;
 
 pub mod r109_combat_damage;
 mod r110_after_first_combat;
+mod r110_cost_taps;
 #[cfg(test)]
 mod w9c_saturation;
 

@@ -664,8 +664,12 @@ impl<'a> Walker<'a> {
         if *r == Ref::R4700OtherChosen {
             self.uses("Ref", "R4700OtherChosen");
         }
+        if matches!(r, Ref::R110Seat(_)) {
+            self.problem("a seat is fixed by the engine and never named in a card file");
+        }
         match r {
-            Ref::R4700OtherChosen
+            Ref::R110Seat(_)
+            | Ref::R4700OtherChosen
             | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
@@ -2041,6 +2045,8 @@ impl<'a> Walker<'a> {
                     | CostItem::SacrificeSelf
                     | CostItem::ExileSelf
                     | CostItem::DiscardSelf
+                    | CostItem::R110RevealChosen
+                    | CostItem::R110ControllerDraws(_)
                     | CostItem::Unattach
                     | CostItem::CollectEvidence(_)
                     | CostItem::R6702CollectEvidenceX
@@ -3810,7 +3816,8 @@ impl Walker<'_> {
     /// What a reference names: a player, an object, or either when it is a name or a target of either kind.
     fn kind_of(&self, r: &Ref) -> Kind {
         match r {
-            Ref::R4700OtherChosen
+            Ref::R110Seat(_)
+            | Ref::R4700OtherChosen
             | Ref::You
             | Ref::Opponents
             | Ref::EachPlayer
@@ -5312,6 +5319,11 @@ impl Walker<'_> {
                 }
                 if *duration == Duration::UntilItsControllersNextCombatEnds {
                     w.problem(R5502_COMBAT_ONLY);
+                }
+            }
+            Effect::R110ChooseSecretly(secret) => {
+                if matches!(secret, crate::effect::R110Secret::CreatureType(types) if types.len() < 2) {
+                    w.problem("a secret choice of creature types offers two or more");
                 }
             }
             Effect::R6401PassControl { what, .. } => {
@@ -9377,6 +9389,14 @@ mod tests {
     #[case::a_vote_on_names_that_binds_a_winner(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Named":["a","b"]},"as":"won"}}]}}"#,
         "faces[0].abilities[0].Spell.effects[0].Vote: a vote on named choices binds the choices, not a winner"
+    )]
+    #[case::r110_a_secret_choice_of_one_creature_type(
+        r#"{"Spell":{"effects":[{"R110ChooseSecretly":{"CreatureType":["Human"]}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].R110ChooseSecretly: a secret choice of creature types offers two or more"
+    )]
+    #[case::r110_a_seat_in_a_card_file(
+        r#"{"Spell":{"effects":[{"Draw":{"who":{"R110Seat":1}}}]}}"#,
+        "faces[0].abilities[0].Spell.effects[0].Draw.who: a seat is fixed by the engine and never named in a card file"
     )]
     #[case::a_vote_on_objects_with_no_winner_named(
         r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[]}}}}]}}"#,

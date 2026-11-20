@@ -379,6 +379,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::Entered { .. }
         | Event::Attached { .. }
         | Event::ChosenAsAttached { .. }
+        | Event::R110ChoseSecretly { .. }
+        | Event::R110ChoiceRevealed { .. }
         | Event::AttachedToPlayer { .. }
         | Event::JoinedAttack { .. }
         | Event::AttackRedirected { .. }

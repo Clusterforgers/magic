@@ -1105,6 +1105,18 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { object, chosen } = event.ChosenAsAttached
     return line(`${n.card(object)} becomes attached${chosenWords(chosen, n)}`)
   }
+  if ('R110ChoseSecretly' in event) {
+    const { object, chosen } = event.R110ChoseSecretly
+    return line(
+      `For ${n.card(object)}, you secretly chose${chosenWords(chosen, n).replace(', choosing', '')}`,
+    )
+  }
+  if ('R110ChoiceRevealed' in event) {
+    const { object, chosen } = event.R110ChoiceRevealed
+    return line(
+      `${n.card(object)} reveals its secret choice${chosenWords(chosen, n).replace(', choosing', ':')}`,
+    )
+  }
   if ('Attached' in event) {
     return line(`${n.card(event.Attached.object)} becomes attached to ${n.card(event.Attached.to)}`)
   }

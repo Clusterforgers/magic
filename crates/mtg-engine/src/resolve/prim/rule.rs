@@ -102,6 +102,18 @@ fn fixed_choices(scope: &Scope<'_>, rule: &GameRule) -> GameRule {
 pub(super) fn fix(scope: &Scope<'_>, value: &mut Value) -> bool {
     match value {
         Value::Object(fields) => {
+            // "Protection from the chosen player": the player the source chose, fixed as the rule begins.
+            if fields.len() == 1
+                && fields.get("ControlledBy").and_then(Value::as_str) == Some("Chosen")
+                && let Some(Chosen::Player(player)) = scope.entered_choice()
+                && let Some(seat) = super::continuous::r110_seat_of(*player)
+            {
+                fields.insert(
+                    "ControlledBy".to_owned(),
+                    serde_json::json!({ "R110Seat": seat }),
+                );
+                return true;
+            }
             if fields.len() == 1
                 && let Some(name) = fields.get("ChosenAs").and_then(Value::as_str)
                 && let Some(pred) = scope.chosen_value(name).and_then(as_pred)

@@ -1,0 +1,111 @@
+{
+  "oracle_id": "fa38394b-6ac4-460c-ae3a-54d50037715b",
+  "name": "Research // Development",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Research",
+      "oracle_fingerprint": "cd2b7111fc55bbf43c868a9ae9f81fba",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "zone": "Outside",
+                  "filter": [{ "OwnedBy": "You" }],
+                  "count": { "min": 0, "max": 4 },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Development",
+      "oracle_fingerprint": "d449faf2f447eb863f3c80e08b60eeb0",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": [{ "R110ControllerDraws": 1 }],
+                  "unpaid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 3,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": [{ "R110ControllerDraws": 1 }],
+                  "unpaid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 3,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "Pay": {
+                  "who": "Opponents",
+                  "cost": [{ "R110ControllerDraws": 1 }],
+                  "unpaid": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Elemental",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Elemental"],
+                            "power": 3,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

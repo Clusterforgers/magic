@@ -870,6 +870,22 @@ object: ObjectId,
 /**
  * What it chose.
  */
+chosen: Chosen, } } | { "R110ChoseSecretly": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * What was chosen.
+ */
+chosen: Chosen, } } | { "R110ChoiceRevealed": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * The choice revealed.
+ */
 chosen: Chosen, } } | { "AttachedToPlayer": { 
 /**
  * The Aura.

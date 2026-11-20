@@ -343,7 +343,6 @@ fn a_bonus_or_a_keyword_reads_as_the_hand_written_files_say(
 )]
 #[case::pay_no_life("As this land enters, you may pay 0 life. If you don't, it enters tapped.")]
 #[case::choose_two("As this creature enters, choose a color and a creature type.")]
-#[case::choose_a_player_in_secret("As this creature enters, secretly choose an opponent.")]
 #[case::unless_one_opponent("This land enters tapped unless you have one opponent.")]
 #[case::unless_a_player_has_exactly_this_life(
     "This land enters tapped unless a player has 13 life."

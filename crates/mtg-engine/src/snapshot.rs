@@ -106,6 +106,11 @@ pub struct Snapshot {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(skip))]
     pub suspected: bool,
+    /// What it chose as it entered or since (a chosen type, player, color or name), which "the chosen ..." reads after
+    /// it has left (CR 608.2h, 113.7a); absent when it chose nothing.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub chosen: Option<crate::object::Chosen>,
 }
 
 impl Snapshot {
@@ -170,6 +175,10 @@ pub fn snapshot(state: &GameState, id: ObjectId) -> Option<Snapshot> {
         suspected: object
             .permanent()
             .is_some_and(crate::object::PermanentState::suspected),
+        chosen: object
+            .permanent()
+            .and_then(crate::object::PermanentState::chosen)
+            .cloned(),
     })
 }
 

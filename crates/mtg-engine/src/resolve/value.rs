@@ -1408,11 +1408,22 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// The player of a seat fixed by an effect, while still in the game.
+    fn r110_seat(&self, seat: u8) -> Vec<Target> {
+        let player = PlayerId::from_index(usize::from(seat));
+        if self.state.is_alive(player) {
+            vec![Target::Player(player)]
+        } else {
+            Vec::new()
+        }
+    }
+
     /// The players and objects a reference names, in the order the rules process them.
     pub fn refs(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
         let state = self.state;
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
+            Ref::R110Seat(seat) => self.r110_seat(*seat),
             Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
             Ref::EachPlayer | Ref::R6501PlayersFromYou => self.r6501_turn_order(reference),
             Ref::This => vec![Target::Object(self.source)],
@@ -2422,6 +2433,10 @@ impl<'a> Scope<'a> {
             .object(self.source.id)
             .and_then(|object| object.permanent())
             .and_then(|permanent| permanent.chosen())
+            .or_else(|| {
+                self.snapshot_of(self.source)
+                    .and_then(|shot| shot.chosen.as_ref())
+            })
     }
 
     /// The printed name of the card, none for a face-down card (it has no name).

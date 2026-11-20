@@ -1,3 +1,4 @@
+A Killer Among Us
 Abandoned Sarcophagus
 Abbot of Keral Keep
 Aberrant
@@ -800,6 +801,7 @@ Elvish Visionary
 Embiggen
 Emergency Eject
 Emeria Angel
+Emissary of Grudges
 Emmara Tandris
 Emperor Mihail II
 Empowered Autogenerator
@@ -1145,6 +1147,7 @@ Gruul Cluestone
 Gruul Ragebeast
 Gryffwing Cavalry
 Guard Gomazoa
+Guardian Archon
 Guardian Augmenter
 Guardian Gladewalker
 Guidelight Matrix
@@ -2090,6 +2093,7 @@ Reprocess
 Repulse
 Rescue Retriever
 Rescue Skiff
+Research // Development
 Reset
 Reshape
 Resplendent Angel
@@ -2432,6 +2436,7 @@ Sram, Senior Edificer
 Staff of Nin
 Staggering Insight
 Staggershock
+Stalking Leonin
 Stalwart Pathlighter
 Star Whale
 Starforged Sword

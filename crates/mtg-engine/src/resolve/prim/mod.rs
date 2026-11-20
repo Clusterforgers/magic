@@ -139,6 +139,7 @@ mod phase_out;
 mod prepare;
 mod proliferate;
 mod put_counters;
+mod r110_secret;
 mod r281_lock_door;
 mod r281_pay_one_of;
 mod r376_choose_words;
@@ -375,6 +376,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::R110AddCombatAfterFirst => Ok(crate::r110_after_first_combat::r110_run(cx)),
         Effect::R110MoveEachKindMissing { .. } => r110_moves::run_each_kind(cx, effect),
         Effect::R110MoveOneOrMore { .. } => r110_moves::run_one_or_more(cx, effect),
+        Effect::R110ChooseSecretly(_) => r110_secret::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
@@ -463,6 +465,7 @@ mod tests {
         {"R6401PassControl":{"side":"Left","what":[],"pick":"All"}},
         {"R6702Distribute":{"among":"This","counter":{"Other":"stun"},"count":3}},
         {"R6702CountersPerVote":{"tally":"votes","counter":{"Other":"stun"}}},
+        {"R110ChooseSecretly":"Opponent"},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"BecomeBlocked":{"what":"This"}},
@@ -497,7 +500,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 153, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 154, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -656,6 +659,7 @@ mod tests {
         "Effect.R6401PassControl",
         "Effect.R6702Distribute",
         "Effect.R6702CountersPerVote",
+        "Effect.R110ChooseSecretly",
         "Effect.Rule",
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",

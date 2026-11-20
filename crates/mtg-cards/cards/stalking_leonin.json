@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6ec98a34-5c04-423c-98e5-8cf3047135c1",
+  "name": "Stalking Leonin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stalking Leonin",
+      "oracle_fingerprint": "3f8131f055e72f1cc1c33cabf0a3af1d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "R110ChooseSecretly": "Opponent" }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["R110RevealChosen"],
+            "limit": "OncePerGame",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] } }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "ControlledBy": "Chosen" }]
+                    }
+                  },
+                  "then": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
