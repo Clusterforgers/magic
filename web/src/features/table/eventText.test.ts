@@ -81,6 +81,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { ChosenAsAttached: { object: 3, chosen: { Color: 'Red' } } },
     'Forest becomes attached, choosing red',
   ],
+  R111ChoiceKept: [
+    { R111ChoiceKept: { object: 3, chosen: { Name: 'Lightning Bolt' } } },
+    'Forest keeps its choice, choosing Lightning Bolt',
+  ],
   R110ChoseSecretly: [
     { R110ChoseSecretly: { object: 3, chosen: { Player: 1 } } },
     'For Forest, you secretly chose Bo',

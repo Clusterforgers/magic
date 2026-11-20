@@ -1424,6 +1424,8 @@ impl<'a> Scope<'a> {
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
             Ref::R110Seat(seat) => self.r110_seat(*seat),
+            Ref::R111LastDamagedYou(by) => self.r111_last_damaged_you(by)?,
+            Ref::R111BlockedController { of, by } => self.r111_blocked_controller(of, by)?,
             Ref::Opponents | Ref::Teammates => self.r4710_side(reference),
             Ref::EachPlayer | Ref::R6501PlayersFromYou => self.r6501_turn_order(reference),
             Ref::This => vec![Target::Object(self.source)],
@@ -2994,10 +2996,12 @@ impl<'a> Scope<'a> {
                 _ => false,
             },
             Pred::ChosenName => {
-                matches!(self.entered_choice(), Some(Chosen::Name(_)))
-                    && self
-                        .entered_choice()
-                        .is_some_and(|chosen| Self::is_chosen(seen, chosen))
+                matches!(
+                    self.entered_choice(),
+                    Some(Chosen::Name(_) | Chosen::R111PlayerAndName(..) | Chosen::R111Names(_))
+                ) && self
+                    .entered_choice()
+                    .is_some_and(|chosen| Self::is_chosen(seen, chosen))
             }
             Pred::ChosenAs(name) => self
                 .chosen_value(name)
@@ -3043,6 +3047,12 @@ impl<'a> Scope<'a> {
             Chosen::Name(name) => seen
                 .card
                 .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name),
+            Chosen::R111PlayerAndName(_, name) => seen
+                .card
+                .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name),
+            Chosen::R111Names(names) => seen
+                .card
+                .is_some_and(|c| names.contains(&seen.chars.name_for(&c.card().name))),
             Chosen::Player(_)
             | Chosen::Players(_)
             | Chosen::Chapter(_)
@@ -3544,7 +3554,9 @@ impl<'a> Scope<'a> {
     /// The players the source chose as it entered who are still in the game.
     fn chosen_players(&self) -> Vec<PlayerId> {
         let chosen: &[PlayerId] = match self.entered_choice() {
-            Some(Chosen::Player(player)) => std::slice::from_ref(player),
+            Some(Chosen::Player(player) | Chosen::R111PlayerAndName(player, _)) => {
+                std::slice::from_ref(player)
+            }
             Some(Chosen::Players(players)) => players,
             _ => &[],
         };
@@ -3870,6 +3882,9 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|player| self.state.r379_since.hurt_since(*player)),
             Condition::AttackedYouLastTurn(who) => self.r305b_attacked_you(who)?,
+            Condition::R111CastOrPutLastTurn => self.r111_cast_or_put_last_turn(),
+            Condition::R111AttackedLastCombat(by) => self.r111_attacked_last_combat(by)?,
+            Condition::R111DamagedThisTurnBy(by) => self.r111_damaged_this_turn_by(by)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
             | Condition::Monarch(who)

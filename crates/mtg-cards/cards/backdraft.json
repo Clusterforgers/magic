@@ -1,0 +1,59 @@
+{
+  "oracle_id": "80734bb0-5032-4355-9304-49f4a4557aba",
+  "name": "Backdraft",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Backdraft",
+      "oracle_fingerprint": "98d203af824adb75440315c94747f0df",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "PlayersWhere": {
+                      "who": "EachPlayer",
+                      "test": {
+                        "Compare": {
+                          "left": {
+                            "Tally": {
+                              "event": "SpellCast",
+                              "who": "You",
+                              "filter": [{ "Type": "Sorcery" }]
+                            }
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    }
+                  },
+                  "as": "caster"
+                }
+              },
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "R111SpellDamage": {
+                      "caster": { "Bound": "caster" },
+                      "filter": [{ "Type": "Sorcery" }]
+                    }
+                  },
+                  "as": "spell"
+                }
+              },
+              {
+                "DealDamage": {
+                  "to": { "Bound": "caster" },
+                  "amount": { "Half": { "of": { "ChosenAs": "spell" }, "up": false } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "93d9a1c6-9f6f-487f-a46c-bfd80946ccdf",
+  "name": "Glyph of Reincarnation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glyph of Reincarnation",
+      "oracle_fingerprint": "ac8ccf608c12f3c7ecf89f600bc3f5d3",
+      "abilities": [
+        { "CastOnly": { "condition": "AfterCombat" } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Subtype": "Wall" }] } }],
+            "effects": [
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "BlockedThisTurnBy": { "Target": 0 } }]
+                  },
+                  "regenerate": false,
+                  "as": "died"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Is": { "Bound": "died" } }, { "In": "Graveyard" }] },
+                  "as": "dead",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            {
+                              "OwnedBy": {
+                                "R111BlockedController": {
+                                  "of": { "Bound": "dead" },
+                                  "by": { "Target": 0 }
+                                }
+                              }
+                            }
+                          ]
+                        },
+                        "as": "pick"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "pick" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

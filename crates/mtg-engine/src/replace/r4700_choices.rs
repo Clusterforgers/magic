@@ -104,6 +104,9 @@ impl Pass<'_> {
                 Ok(Asked::Got(Some(Chosen::Players(chosen))))
             }
             EntersChoice::R6001Abilities(count) => self.r6001_abilities(source, controller, count),
+            EntersChoice::R111OpponentAndName | EntersChoice::R111NamesWithOpponent => {
+                self.r111_chooses(source, controller, kind)
+            }
             _ => Ok(Asked::Got(None)),
         }
     }

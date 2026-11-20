@@ -1,7 +1,7 @@
 {
   "oracle_id": "1c772df4-bd88-4f7e-853c-5dd06f4cf70e",
   "name": "Territorial Hellkite",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Territorial Hellkite",
@@ -10,9 +10,39 @@
         { "Keyword": "Flying" },
         { "Keyword": "Haste" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 14, "end": 257 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "ChooseAtRandom": {
+                  "from": {
+                    "PlayersWhere": {
+                      "who": "Opponents",
+                      "test": { "Not": { "R111AttackedLastCombat": "This" } }
+                    }
+                  },
+                  "as": "foe"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "Players": { "Bound": "foe" } }, "op": "Eq", "right": 0 }
+                  },
+                  "then": [{ "Tap": { "what": "This" } }],
+                  "otherwise": [
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MustAttackPlayers": { "who": "This", "players": { "Bound": "foe" } }
+                        },
+                        "duration": "UntilEndOfCombat"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

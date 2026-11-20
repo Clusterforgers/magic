@@ -227,6 +227,17 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             }
             Ok(())
         }
+        Event::R111ChoiceKept { object, chosen } => {
+            if let Some(permanent) = state
+                .objects
+                .get_mut(object)
+                .and_then(|object| object.permanent.as_mut())
+            {
+                permanent.chosen = Some(chosen.clone());
+                permanent.r110_secret = false;
+            }
+            Ok(())
+        }
         Event::R110ChoseSecretly { object, chosen } => {
             if let Some(permanent) = state
                 .objects
@@ -435,6 +446,7 @@ fn begin_turn(
     if before != 0 {
         let ending = state.turn.active;
         state.summarize_turn(ending);
+        crate::r111_history::r111_turn_ended(state, ending);
         state.r379_turn_ended(ending, before);
     }
     state.turn.no_power_up = false;
@@ -569,6 +581,7 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::player_control::r6701_step_began(state, *step);
             if *step == Step::BeginCombat {
                 state.turn.combats += 1;
+                crate::r111_history::r111_combat_began(state);
                 state.begin_combat_log();
             }
             // "Each of your draw steps" counts the draws of each draw step afresh, an added one included.

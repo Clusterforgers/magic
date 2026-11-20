@@ -172,6 +172,7 @@ pub mod priority;
 pub mod prohibit;
 mod r110_foretell;
 mod r110_sacrifice_tax;
+mod r111_history;
 pub mod r111_spend_as;
 mod r281_kicked_spend;
 mod r281_mana_at_priority;

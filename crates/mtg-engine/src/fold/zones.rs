@@ -240,6 +240,9 @@ fn w21a_tally_graveyards(
         let controller = state.object(card.id).map(GameObject::controller);
         if let Some(controller) = controller {
             state.log_event(TallyEvent::Entered, controller, card.id);
+            if is_card {
+                crate::r111_history::r111_note_put(state, controller);
+            }
             if state
                 .object(card.id)
                 .is_some_and(|object| object.face_down().is_some())

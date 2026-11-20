@@ -356,6 +356,8 @@ pub enum Rule {
     },
     /// Creatures the players control can boast twice during each of their turns (CR 702.142c).
     BoastTwice(Vec<PlayerId>),
+    /// The players reveal each card they draw as they draw it.
+    R111RevealDraws(Vec<PlayerId>),
     /// The players may activate loyalty abilities of planeswalkers they control whenever they could cast an instant.
     LoyaltyAnyTime(Vec<PlayerId>),
     /// Each player's loyalty abilities cost this many more loyalty counters to activate.
@@ -1012,6 +1014,8 @@ pub(crate) struct RulesInForce {
     reveal_first_draw: Vec<(PlayerId, Option<ObjectRef>, bool, bool)>,
     /// The players whose creatures can boast twice during each of their turns.
     pub(crate) boast_twice: BTreeSet<PlayerId>,
+    /// The players who reveal each card they draw.
+    pub(crate) r111_reveal_draws: BTreeSet<PlayerId>,
     /// The players who may activate loyalty abilities whenever they could cast an instant.
     loyalty_any_time: BTreeSet<PlayerId>,
     /// The loyalty counters each player's loyalty abilities cost in addition.
@@ -1654,6 +1658,7 @@ impl RulesInForce {
                     .push((controller, source, *may, *your_turns));
             }
             Rule::BoastTwice(players) => self.boast_twice.extend(players),
+            Rule::R111RevealDraws(players) => self.r111_reveal_draws.extend(players),
             Rule::LoyaltyAnyTime(players) => self.loyalty_any_time.extend(players),
             Rule::LoyaltyCostsMore(more) => {
                 for (player, plus) in more {
@@ -2242,6 +2247,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             your_turns: *your_turns,
         },
         GameRule::BoastTwice(who) => Rule::BoastTwice(scope.players(who)?),
+        GameRule::R111RevealDraws(who) => Rule::R111RevealDraws(scope.players(who)?),
         GameRule::LoyaltyAnyTime(who) => Rule::LoyaltyAnyTime(scope.players(who)?),
         GameRule::LoyaltyCostsMore { who, plus } => Rule::LoyaltyCostsMore(
             scope
@@ -2452,6 +2458,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::R6600LoyaltyOnceMore(players)
         | Rule::EchoRather { players, .. }
         | Rule::BoastTwice(players)
+        | Rule::R111RevealDraws(players)
         | Rule::LoyaltyAnyTime(players)
         | Rule::AttackAsThoughHasteAt(players) => players.is_empty(),
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
@@ -2667,6 +2674,7 @@ static NONE: RulesInForce = RulesInForce {
     echo_rather: Vec::new(),
     reveal_first_draw: Vec::new(),
     boast_twice: BTreeSet::new(),
+    r111_reveal_draws: BTreeSet::new(),
     loyalty_any_time: BTreeSet::new(),
     loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),

@@ -93,6 +93,11 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
   }
   if ('Players' in chosen) return `, choosing ${joinWords(chosen.Players.map((seat) => n.seat(seat)))}`
   if ('R6700PlaneswalkerType' in chosen) return `, choosing ${chosen.R6700PlaneswalkerType}`
+  if ('R111PlayerAndName' in chosen) {
+    const [seat, name] = chosen.R111PlayerAndName
+    return `, choosing ${n.seat(seat)} and ${name}`
+  }
+  if ('R111Names' in chosen) return `, choosing ${joinWords(chosen.R111Names)}`
   return `, choosing ${chosen.CreatureType}`
 }
 
@@ -1104,6 +1109,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('ChosenAsAttached' in event) {
     const { object, chosen } = event.ChosenAsAttached
     return line(`${n.card(object)} becomes attached${chosenWords(chosen, n)}`)
+  }
+  if ('R111ChoiceKept' in event) {
+    const { object, chosen } = event.R111ChoiceKept
+    return line(`${n.card(object)} keeps its choice${chosenWords(chosen, n)}`)
   }
   if ('R110ChoseSecretly' in event) {
     const { object, chosen } = event.R110ChoseSecretly

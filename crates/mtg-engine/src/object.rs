@@ -92,6 +92,10 @@ pub enum Chosen {
     /// Several of the words a choice offered, in the order they were chosen ("choose two abilities from among first
     /// strike, vigilance, and lifelink").
     Words(Vec<String>),
+    /// A player and a card name chosen together ("choose an opponent and a card name").
+    R111PlayerAndName(PlayerId, String),
+    /// Several card names, in the order they were named ("you and an opponent each choose a card name").
+    R111Names(Vec<String>),
     /// The chapter a Saga with read ahead entered at (CR 702.155): lower chapters don't trigger.
     Chapter(u32),
 }

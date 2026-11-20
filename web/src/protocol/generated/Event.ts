@@ -870,6 +870,14 @@ object: ObjectId,
 /**
  * What it chose.
  */
+chosen: Chosen, } } | { "R111ChoiceKept": { 
+/**
+ * The permanent.
+ */
+object: ObjectId, 
+/**
+ * What it keeps.
+ */
 chosen: Chosen, } } | { "R110ChoseSecretly": { 
 /**
  * The permanent.
