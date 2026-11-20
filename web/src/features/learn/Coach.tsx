@@ -103,7 +103,7 @@ interface Look {
 }
 
 const CLEAR = [
-  '[data-coach="band"]',
+  '[data-coach="ask"]',
   '[data-coach="pass.primary"]',
   '[data-slot="decision-sheet"]',
   '[data-slot="decision-detail"]',
@@ -130,12 +130,14 @@ function look(targets: readonly Target[], lookup: CardLookup): Look {
   const width = window.innerWidth
   const height = window.innerHeight
   const bar = document.querySelector('[data-region="bar"]')
-  const hand = document.querySelector('[data-region="hand"]')
+  // On a phone the card may lie over the hand, never over the decision bar under it (its answers are kept clear).
+  const below =
+    document.querySelector('[data-region="controls"]') ?? document.querySelector('[data-region="hand"]')
   const phone =
     width < PHONE_W
       ? {
           top: bar === null ? 0 : bar.getBoundingClientRect().bottom,
-          bottom: hand === null ? height : hand.getBoundingClientRect().top,
+          bottom: below === null ? height : below.getBoundingClientRect().top,
         }
       : undefined
   return {

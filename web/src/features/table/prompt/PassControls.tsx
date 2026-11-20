@@ -186,7 +186,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
           data-held={held || undefined}
           aria-disabled={held || undefined}
           className={cn(
-            'action-glow h-11 min-w-0 font-semibold max-sm:basis-full',
+            'action-glow h-11 min-w-0 font-semibold max-sm:flex-1',
             padding,
             held && 'opacity-50 saturate-50',
           )}

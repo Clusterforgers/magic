@@ -139,16 +139,18 @@ describe('the opening hands in boss mode', () => {
 
   it('answers Keep from the overlay', async () => {
     const { answer, user } = mulligan(false)
-    await user.click(screen.getByRole('button', { name: 'Keep' }))
+    await user.click(must(screen.getAllByRole('button', { name: 'Keep' })[0]))
     expect(answer).toHaveBeenCalledWith({ Mulligan: 'Keep' })
   })
 
   it.each([true, false])(
-    'keeps it in the strip on a phone, the hand in one row, the dock as it is (boss %s)',
+    'keeps the hand in the hand dock on a phone, its answers in the bar, the dock as it is (boss %s)',
     (boss) => {
       const { container } = mulligan(boss, { width: 390, height: 844 })
       expect(container.querySelector('[data-opening]')).toBeNull()
-      expect(container.querySelector('[data-slot="shared-sheet"] [data-slot="opening-hand"]')).not.toBeNull()
+      // The hand dock shows the hand being judged; nothing draws it again over the boards.
+      expect(container.querySelector('[data-slot="opening-hand"]')).toBeNull()
+      expect(container.querySelector('[data-home="bar"] [data-slot="prompt-actions"]')).not.toBeNull()
       expect(container.querySelector('[data-region="hand"] [data-floating]')).toBeNull()
     },
   )

@@ -81,6 +81,7 @@ fn render_scene(engine: &Engine, script: Script) -> String {
             let reply = ServerMessage::Forecast {
                 decision: script.id,
                 forecast: engine.preview_forecast(script.seat, &answer).ok(),
+                changes: Vec::new(),
             };
             let preview = ClientMessage::Preview {
                 decision: script.id,
@@ -298,7 +299,10 @@ fn the_fixture_holds_replies_of_every_kind_in_the_wire_shape() {
                 panic!("{name}: {} previews", exchange.label);
             };
             assert_eq!(decision, id, "{name}: {}", exchange.label);
-            let ServerMessage::Forecast { decision, forecast } = &exchange.reply else {
+            let ServerMessage::Forecast {
+                decision, forecast, ..
+            } = &exchange.reply
+            else {
                 panic!("{name}: {} is answered with a forecast", exchange.label);
             };
             assert_eq!(decision, id, "{name}: {}", exchange.label);

@@ -1,192 +1,265 @@
-/* The prompt band of the shared strip (SharedStrip.tsx, prompt/PromptHost.tsx, prompt/PromptLayout.tsx) and the decision detail of the Stack column (prompt/detail/); imported by the app stylesheet. */
-
-/* The strip's sheet: the band's columns follow its width. */
-@utility band-room {
-  container: band / inline-size;
-}
+/* The decision homes (prompt/home.ts, prompt/PromptLayout.tsx: the Stack panel's block, the controls dock, a phone's bar) and the decision detail (prompt/detail/); imported by the app stylesheet. */
 
 /*
- * The strip's row while this seat decides: one line of fixed height across the strip. The prompt's wrappers
- * (`strip-prompt`, the decision line) are `display: contents`, so its parts are the grid's cells: the lead (the asking
- * card's chip, or the stack chips of a decision nothing asks), the status, the sentence, the meter (a run's dots, a
- * payment's symbols), short choices, the clock and the answers, which keep the right end in every prompt. What a
- * prompt chooses among is drawn in the Stack column or the decision sheet (`prompt/detail`), never here.
- * `promptBand.ts` holds the same names and widths for the tests.
+ * A decision in its home (`decision-line`): the asking chip (dock and bar), the question, one reading line, short
+ * choices, the clock and the answers. The panel's block stacks them under the asking card, the answers its fixed foot;
+ * the dock and the bar put the chip and the reading on one line, the question under it and the answers at the foot,
+ * the primary one at the right end.
  */
-@utility strip-band {
+@utility decision-home {
+  position: relative;
   display: grid;
-  align-items: center;
-  align-content: safe center;
-  column-gap: 0.75rem;
-  row-gap: 0.25rem;
-  grid-template-columns: fit-content(16rem) fit-content(12rem) minmax(4rem, 1fr) auto auto auto auto;
-  grid-template-areas: 'lead status text meter choices clock actions';
+  min-width: 0;
+  container: home / inline-size;
+  gap: 0.375rem;
+  align-content: end;
+  grid-template-columns: minmax(0, 1fr);
 
-  /* Choices with no column or sheet to hold them (the opening hand on a phone) take a line of their own; the sheet grows for it. */
-  &:has([data-slot='decision-line'] > [data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
-    grid-template-areas:
-      'lead status text meter meter clock actions'
-      'choices choices choices choices choices choices choices';
+  & > [data-slot='prompt-sentence'] [data-slot='prompt-text'] {
+    font-size: 1rem;
+    line-height: 1.25rem;
+    font-weight: 600;
   }
-
-  /* A sentence that is read aloud and not drawn (a payment's) gives its place to the meter, beside the lead. */
-  &:has([data-slot='prompt-sentence'][data-quiet]) {
-    grid-template-columns: fit-content(16rem) fit-content(12rem) minmax(0, 1fr) auto auto auto;
-    grid-template-areas: 'lead status meter choices clock actions';
+  & > [data-slot='prompt-meter'] {
+    font-size: 0.8125rem;
+    line-height: 1.125rem;
+    color: var(--muted-foreground);
   }
-
-  /* A phone: two lines. The lead and the sentence, then the meter, short choices, the clock and the answers. */
-  @container band (width < 40rem) {
-    & {
-      /*
-       * The lead takes half the first line at most. The second line is one cell, the foot: the meter (or the status,
-       * or short choices) from its left and the answers from its right, so the answers have the band's whole width.
-       */
-      grid-template-columns: fit-content(50%) minmax(0, 1fr) auto;
-      grid-template-areas:
-        'lead text clock'
-        'foot foot foot';
-      column-gap: 0.5rem;
-    }
-    &:has([data-slot='decision-line'] > [data-slot='prompt-choices']:not([data-inline]):not(:empty)) {
-      grid-template-areas:
-        'lead text clock'
-        'choices choices choices'
-        'foot foot foot';
-    }
-    /* The two lines hold for a sentence that is not drawn too: its meter takes the sentence's cell (below). */
-    &:has([data-slot='prompt-sentence'][data-quiet]) {
-      grid-template-columns: fit-content(50%) minmax(0, 1fr) auto;
-      grid-template-areas:
-        'lead text clock'
-        'foot foot foot';
-    }
-  }
-
-  & > [data-slot='strip-stack'],
-  & [data-slot='decision-line'] > [data-slot='prompt-asker'] {
-    grid-area: lead;
-  }
-  & > [data-slot='strip-status'] {
-    grid-area: status;
-  }
-  & [data-slot='decision-line'] > [data-slot='prompt-sentence'] {
-    grid-area: text;
-  }
-  & [data-slot='decision-line'] > [data-slot='prompt-meter'] {
-    grid-area: meter;
+  & > [data-slot='prompt-actions'] {
     min-width: 0;
   }
-  & [data-slot='decision-line'] > [data-slot='prompt-choices'] {
+
+  /* The dock: the chip leads, the question under it, the answers at the foot from the right end. */
+  &[data-home='dock'],
+  &[data-home='bar'] {
+    padding-block: 0;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      'chip reading clock stops'
+      'question question question question'
+      'choices choices choices choices'
+      'answers answers answers answers';
+    column-gap: 0.5rem;
+  }
+  &[data-home='dock'] > *,
+  &[data-home='bar'] > * {
+    grid-column: 1 / -1;
+  }
+  &[data-home='dock'] > [data-slot='prompt-asker'],
+  &[data-home='bar'] > [data-slot='prompt-asker'] {
+    grid-area: chip;
+    justify-self: start;
+    /* The reading beside it (a payment's symbols) keeps the rest of the line. */
+    max-width: min(16rem, 60cqi);
+    height: 2rem;
+  }
+  &[data-home='dock'] > [data-slot='prompt-meter'],
+  &[data-home='bar'] > [data-slot='prompt-meter'] {
+    grid-area: reading;
+  }
+  &[data-home='dock'] > [data-slot='response-clock'],
+  &[data-home='bar'] > [data-slot='response-clock'] {
+    grid-area: clock;
+    align-self: center;
+  }
+  &[data-home='dock'] > [data-slot='prompt-sentence'],
+  &[data-home='bar'] > [data-slot='prompt-sentence'] {
+    grid-area: question;
+  }
+  &[data-home='dock'] > [data-slot='prompt-choices'],
+  &[data-home='bar'] > [data-slot='prompt-choices'] {
     grid-area: choices;
   }
-  & [data-slot='decision-line'] > [data-slot='prompt-choices'][data-inline] {
-    flex-wrap: nowrap;
-    min-width: 0;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  & [data-slot='decision-line'] > [data-slot='response-clock'] {
-    grid-area: clock;
-  }
-  & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
-    grid-area: actions;
-    /* One row: answers past the band's width scroll, the primary one (first, at the right end) stays in view. */
-    flex-wrap: nowrap;
-    min-width: 0;
-    max-width: 100%;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  /* A combat prompt is one row of its own: its sentence and buttons take the sentence's place up to the clock. */
-  & [data-slot='decision-line'] > [data-slot='combat-bar'] {
-    grid-column: text-start / clock-start;
-    grid-row: text-start / text-end;
+  &[data-home='dock'] > [data-slot='prompt-actions'],
+  &[data-home='bar'] > [data-slot='prompt-actions'] {
+    grid-area: answers;
   }
 
-  /* A band under 64 rem keeps the lead's room for the top chip: the "Stack" word goes to a reader and "+2 more" is "+2". */
-  @container band (width < 64rem) {
-    & [data-slot='stack-label'] {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      clip-path: inset(50%);
-      white-space: nowrap;
-    }
-    & [data-slot='stack-more-word'] {
-      display: none;
-    }
+  /* A phone's bar: the chip and the Stack chip, the question, the reading, the answers sharing the width. */
+  &[data-home='bar'] {
+    height: 100%;
+    padding-block: 0;
+    gap: 0.25rem 0.5rem;
+    grid-template-rows: auto auto auto 1fr auto;
+    grid-template-areas:
+      'chip clock stops stack'
+      'question question question question'
+      'reading reading reading reading'
+      'choices choices choices choices'
+      'answers answers answers answers';
   }
-  /* Under 56 rem the answers' key hints give their room to the answers' one row; the keys still work and each button names its key. */
-  @container band (width < 56rem) {
+  &[data-home='bar'] > [data-slot='bar-stack'] {
+    grid-area: stack;
+    justify-self: end;
+  }
+  /* The stops folded to their button while a question other than priority is here (`ControlsDock` hides their row). */
+  & > [data-slot='home-stops'] {
+    grid-area: stops;
+    justify-self: end;
+  }
+  &[data-home='bar'] > [data-slot='prompt-sentence'] [data-slot='prompt-text'] {
+    font-size: 1rem;
+    line-height: 1.25rem;
+  }
+  &[data-home='bar'] > [data-slot='prompt-choices'] {
+    min-height: 0;
+    overflow: hidden;
+  }
+  &[data-home='bar'] > [data-slot='prompt-actions'] {
+    flex-wrap: nowrap;
+  }
+  &[data-home='bar'] > [data-slot='prompt-actions'] > button {
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 2.75rem;
+    overflow: hidden;
+  }
+  &[data-home='bar'] [data-slot='prompt-actions'] [data-slot='key-hint'],
+  &[data-home='bar'] [data-slot='prompt-actions'] [data-slot='undo-rest'] {
+    display: none;
+  }
+  &[data-home='dock'] > [data-slot='prompt-actions'],
+  &[data-home='bar'] > [data-slot='prompt-actions'] {
+    justify-content: flex-start;
+  }
+
+  /* The panel's block: the answers stand last, 44 px, the primary at the right and alone on a full row when they wrap. */
+  &[data-home='panel'] {
+    align-content: start;
+    gap: 0.5rem;
+    padding-top: 0.25rem;
+  }
+  &[data-home='panel'] > [data-slot='prompt-actions'] {
+    position: sticky;
+    bottom: 0;
+    z-index: 1;
+    flex-wrap: wrap-reverse;
+    padding-block: 0.375rem 0.125rem;
+    background: var(--card);
+  }
+  &[data-home='panel'] > [data-slot='prompt-actions'] > button {
+    min-height: 2.75rem;
+  }
+  &[data-home='panel'] > [data-slot='prompt-actions'] > button:first-child {
+    flex-grow: 1;
+  }
+
+  /* The combat prompts: the sentence and the buttons on one row where it fits. */
+  & > [data-slot='combat-bar'] [data-slot='prompt-actions'] {
+    justify-content: flex-start;
+  }
+
+  /* A narrow home leaves out the answers' key hints and the rest of "Cancel the spell"; the keys still work. */
+  @container home (width < 22rem) {
     & [data-slot='prompt-actions'] [data-slot='key-hint'],
     & [data-slot='prompt-actions'] [data-slot='undo-rest'] {
       display: none;
     }
-  }
-
-  /* On a phone the second line is the foot, and the answers are smaller, so three or four keep to it. */
-  @container band (width < 40rem) {
-    & > [data-slot='strip-status'],
-    & [data-slot='decision-line'] > [data-slot='prompt-meter'],
-    & [data-slot='decision-line'] > [data-slot='prompt-choices'][data-inline] {
-      grid-area: foot;
-      justify-self: start;
-    }
-    & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
-      grid-area: foot;
-      justify-self: end;
-    }
-    /*
-     * The opening hands: the status (the list of every seat) would run under Keep and Mulligan in the foot; the line
-     * beside the answers says who is still deciding instead, and each seat's panel keeps its own progress.
-     */
-    & > [data-slot='strip-status']:has(> [data-slot='opening-status']) {
+    /* The combat bar's buttons keep their icons and names; only the answer keeps its word to the eye. */
+    & [data-slot='bar-word']:not([data-keep]) {
       display: none;
     }
-    /* A sentence that is not drawn gives the meter its place beside the lead. */
-    &:has([data-slot='prompt-sentence'][data-quiet])
-      [data-slot='decision-line']
-      > [data-slot='prompt-meter'] {
-      grid-area: text;
-      justify-self: end;
-    }
-    & [data-slot='decision-line'] > [data-slot='prompt-actions'] {
-      gap: 0.25rem;
-    }
-    & [data-slot='decision-line'] > [data-slot='prompt-actions'] button {
-      height: 2.5rem;
-      min-width: 2.75rem;
-      padding-inline: 0.625rem;
-    }
-    & [data-slot='decision-line'] > [data-slot='combat-bar'] {
-      grid-column: 1 / -1;
-      grid-row: auto;
+    & > [data-slot='prompt-sentence'] [data-slot='prompt-text'] {
+      font-size: 0.875rem;
+      line-height: 1.125rem;
     }
   }
 }
 
 /*
- * The sentence is the question in the card's words: one line of the band, two where it is long, the rest cut with an
- * ellipsis and opened by the button beside it (`PromptLayout`'s `Sentence`).
+ * The question in the card's words: two lines at most, the rest cut with an ellipsis and opened by the button beside
+ * it (`PromptLayout`'s `Sentence`); the panel shows it whole.
  */
-.strip-band [data-slot='prompt-sentence'] .prompt-sentence-clamp {
+.decision-home:not([data-home='panel']) [data-slot='prompt-sentence'] .prompt-sentence-clamp {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   line-clamp: 2;
   overflow: hidden;
 }
-.strip-band [data-slot='prompt-sentence'] [data-slot='prompt-text'] {
-  font-size: 1rem;
-  line-height: 1.25rem;
-  font-weight: 600;
+
+/* Priority in the dock: its sentence is one short line over the pass controls, so the stops above keep their room. */
+.decision-home[data-home='dock'][data-decision='Priority'] {
+  row-gap: 0;
 }
-@container band (width < 40rem) {
-  .strip-band [data-slot='prompt-sentence'] [data-slot='prompt-text'] {
+.decision-home[data-home='dock'][data-decision='Priority'] [data-slot='prompt-sentence'] {
+  & .prompt-sentence-clamp {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+  }
+  & [data-slot='prompt-text'] {
     font-size: 0.875rem;
     line-height: 1.125rem;
+  }
+}
+
+/* The top item of the stack: the gold outline of what resolves next. */
+@utility detail-entry-top {
+  border: 1.5px solid var(--turn-you);
+  background: color-mix(in oklch, var(--turn-you) 6%, var(--card));
+}
+
+/* The window of a list or of cards a home has no room for: its own width for a list one column wide. */
+[data-slot='decision-window'] {
+  container-type: inline-size;
+}
+/* View table (V): the scrim goes and the table takes presses; the window keeps its foot to come back. */
+[data-slot='choice-host']:has(> [data-slot='decision-window'][data-peek]) {
+  background: transparent;
+  pointer-events: none;
+  & > [data-slot='decision-window'] {
+    pointer-events: auto;
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+  }
+}
+
+/*
+ * A player target (`ChooseTargets`): its pod or tile wears the legal ring and a "Target" tag at its lower right; a
+ * Focus tile says how many targets its board holds (`tile-target-counts`), which a press on it shows.
+ */
+[data-board-choice='ChooseTargets'] :is([data-seat], [data-seat-tile])[data-defender] {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+  &::before {
+    content: 'Target';
+    position: absolute;
+    right: 0.375rem;
+    bottom: 0.125rem;
+    z-index: 4;
+    padding: 0 0.5rem;
+    border-radius: 999px;
+    background: var(--primary);
+    color: var(--primary-foreground);
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 700;
+    pointer-events: none;
+  }
+}
+[data-board-choice='ChooseTargets'] :is([data-seat], [data-seat-tile])[data-defender='chosen'] {
+  outline: 3px solid var(--selected);
+}
+[data-board-choice='ChooseTargets'] [data-seat-tile]::after {
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--primary);
+  font-weight: 600;
+}
+
+/*
+ * A board choice (`isBoardChoice`: targets, cards on the table, a payment, attackers, blockers, damage) dims every card
+ * of the table and the hand outside the choice to 0.4 and less colour. The name row is left at full strength on the
+ * face's own ground, so a name keeps the contrast of its tokens (AA, `dimContrast.test.ts`). The viewer's own marks:
+ * nothing of it reaches another seat.
+ */
+[data-board-choice]
+  :is([data-area='opponents'], [data-area='own'], [data-area='hand'])
+  button[data-object-id]:not([data-highlight='legal'], [data-highlight='selected']) {
+  filter: saturate(0.5);
+  & [data-slot='card-face'] > :not(:has([data-name])) {
+    opacity: 0.4;
   }
 }
 
@@ -473,7 +546,7 @@
  * nothing is wider than its box. A prompt's cards stand three to a row, the picture a prompt draws beside its modes is
  * left out (the asking card stands above), and a list keeps no height of its own: the column scrolls.
  */
-[data-slot='decision-choices'] {
+:is([data-slot='decision-choices'], [data-slot='decision-panel'], [data-slot='decision-window']) {
   /* The heights the prompts take from the band's sheet do not bind here. */
   --sheet-max: 100rem;
   & [data-slot='prompt-choices'] > * {

@@ -11,7 +11,7 @@ export function StackGhostChip({ ghost }: { ghost: Ghost }) {
   const fx = useCardFx(ghost.object.id)
   return (
     <li aria-hidden="true" data-stack-ghost={ghost.object.id} className="shrink-0">
-      <span className="relative flex h-8 max-w-48 items-center gap-1.5 rounded-lg border bg-background px-2 text-sm font-medium">
+      <span className="relative flex h-7 max-w-48 items-center gap-1.5 rounded-md border bg-background px-2 text-sm font-medium max-sm:h-6">
         <span className="truncate">{ghost.object.name}</span>
         {fx.map((entry) =>
           isMarkFx(entry.kind) ? <FxMark key={entry.token} kind={entry.kind} inline /> : null,

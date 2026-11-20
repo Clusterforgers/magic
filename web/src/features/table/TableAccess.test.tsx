@@ -102,14 +102,16 @@ describe('regions and the rest of the page', () => {
 })
 
 describe('turn badge and decision line', () => {
-  it('prints the turn in the top bar, and the decision this seat faces in the strip, which leaves out its own priority', () => {
+  it('prints the turn in the top bar, and the decision this seat faces in its home, the strip leaving out its own priority', () => {
     renderTable({ seats: 4 })
     expect(document.querySelector('[data-slot="banner"]')).toHaveTextContent(
       "Bo's turn · Round 2 · Declare blockers",
     )
     const strip = screen.getByRole('region', { name: 'Turn and priority' })
     expect(strip).not.toHaveTextContent('has priority')
-    expect(strip).toHaveTextContent('Your decision: Priority')
+    expect(must(document.querySelector('[data-slot="decision-line"]'))).toHaveTextContent(
+      'Your decision: Priority',
+    )
   })
 
   it('says who the game waits for once this seat has answered', () => {

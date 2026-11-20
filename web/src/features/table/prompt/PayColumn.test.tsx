@@ -8,6 +8,7 @@ import { TableOptionsContext } from '@/features/table/tableOptions'
 import type { Answer, ManaOption } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { source } from '@/test-utils/mana'
+import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { fixtureGame } from '../dev/devGame'
 import { groupByMade, groupWords } from './PayColumn'
 
@@ -16,7 +17,7 @@ function open(name = 'pay-sources') {
   const answer = vi.spyOn(game.session, 'answer')
   render(
     <GameContext value={game}>
-      <TableOptionsContext value={{}}>
+      <TableOptionsContext value={{ viewport: TEST_VIEWPORT }}>
         <GameTable />
       </TableOptionsContext>
     </GameContext>,

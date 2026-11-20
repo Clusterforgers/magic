@@ -1,7 +1,7 @@
 import { count } from '../facts'
 import type { Lesson } from '../step'
 
-/** Lesson 1: the opening hand, the seat, the land drop, the band and passing. */
+/** Lesson 1: the opening hand, the seat, the land drop, the question and passing. */
 export const SEAT: Lesson = {
   id: 'seat',
   title: 'Your seat',
@@ -68,11 +68,11 @@ export const SEAT: Lesson = {
       lit: ['own.board'],
     },
     {
-      id: 'band',
+      id: 'ask',
       kind: 'read',
-      title: 'The prompt bar',
-      text: 'This bar says what the game asks of you. Read here first when unsure.',
-      lit: ['band'],
+      title: 'The question',
+      text: 'The game asks you here, with the answers under the question. Read here first when unsure.',
+      lit: ['ask'],
     },
     {
       id: 'pass',

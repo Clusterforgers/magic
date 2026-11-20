@@ -132,12 +132,10 @@ describe('a target decision from the server', () => {
     expect(card(m2)).toHaveAttribute('data-highlight', 'legal')
     expect(card(m3)).toHaveAttribute('data-highlight', 'legal')
     expect(screen.queryByRole('list', { name: 'Your targets' })).toBeNull()
-    const group = screen.getByRole('group', { name: 'Legal targets' })
-    expect(within(group).queryAllByRole('button', { pressed: true })).toEqual([])
+    // The new targets are on the table, pressed there: no picture repeats them, and nothing is chosen.
+    expect(document.querySelectorAll('[data-candidate]')).toHaveLength(0)
+    expect(document.querySelectorAll('[data-highlight="selected"]')).toHaveLength(0)
     expect(confirm()).toBeDisabled()
-    expect(within(screen.getByRole('group', { name: 'Legal targets' })).getAllByRole('button')).toHaveLength(
-      2,
-    )
   })
 
   it('can be answered again when the server repeats it after a new snapshot', async () => {

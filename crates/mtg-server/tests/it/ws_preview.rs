@@ -52,7 +52,9 @@ fn duel() -> GameSetup {
 async fn forecast_of(client: &mut WsClient) -> (DecisionId, Option<CombatForecast>) {
     loop {
         match client.message().await {
-            ServerMessage::Forecast { decision, forecast } => return (decision, forecast),
+            ServerMessage::Forecast {
+                decision, forecast, ..
+            } => return (decision, forecast),
             ServerMessage::Error { code, message, .. } => {
                 panic!("a preview must never be an error: {code:?} {message}")
             }

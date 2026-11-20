@@ -1,10 +1,10 @@
-// Goal: a choice of cards takes the centre overlay where `wantsOverlay` says so (every choice on a phone, a long list anywhere): its cards leave the shared strip for an overlay over both boards drawn whole, the strip moves under it and keeps the sentence and the buttons, and an answer closes it; a wide window keeps a short list in the strip; the opening hand stands over the whole table clear of your pod where the main area holds its least row beside the pod margins, else over the opponents and the strip.
+// Goal: a choice of cards takes the centre overlay where `wantsOverlay` says so (every choice on a phone or wherever the dock is the home, a long list anywhere): its cards leave the home for an overlay over both boards drawn whole, the home keeps the sentence and the buttons, and an answer closes it; a wide window keeps a short list in the Stack panel; the opening hand stands over the whole table clear of your pod where the main area holds its least row beside the pod margins, else over the opponents and the strip.
 import { act, render, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { GameContext } from '@/features/game/gameContext'
 import type { Viewport } from '../layout'
-import { CHOICE_AREAS, TABLE_AREAS } from '../layout'
+import { CHOICE_AREAS, PHONE_AREAS, PHONE_CHOICE_AREAS, TABLE_AREAS } from '../layout'
 import { GameTable } from '../GameTable'
 import { TableOptionsContext } from '../tableOptions'
 import { fixtureGame } from '../dev/devGame'
@@ -27,7 +27,8 @@ function table(prompt: string, viewport: Viewport) {
   )
   const main = must(view.container.querySelector<HTMLElement>('[data-slot="table-main"]'))
   const host = must(view.container.querySelector<HTMLElement>('[data-slot="choice-host"]'))
-  const strip = must(view.container.querySelector<HTMLElement>('[data-region="shared"]'))
+  // The decision's home: the dock or the bar while the overlay holds the cards, the Stack panel otherwise.
+  const strip = must(view.container.querySelector<HTMLElement>('[data-slot="decision-line"]'))
   return { game, main, host, strip, ...view }
 }
 
@@ -80,7 +81,7 @@ describe.each(['cards', 'cards-battlefield'])('?prompt=%s on a phone', (prompt) 
     expect(strip.querySelector('[data-slot="card-choices"]')).toBeNull()
     expect(strip.querySelector('[data-slot="prompt-text"]')).not.toBeNull()
     expect(within(strip).getByRole('button', { name: /Confirm/ })).toBeInTheDocument()
-    expect(main.style.gridTemplateAreas).toBe(CHOICE_AREAS)
+    expect(main.style.gridTemplateAreas).toBe(PHONE_CHOICE_AREAS)
   })
 })
 
@@ -97,7 +98,7 @@ describe('the overlay closes', () => {
     await act(async () => {})
     expect(host.hidden).toBe(true)
     expect(host.childElementCount).toBe(0)
-    expect(main.style.gridTemplateAreas).toBe(TABLE_AREAS)
+    expect(main.style.gridTemplateAreas).toBe(PHONE_AREAS)
   })
 })
 
@@ -243,11 +244,10 @@ describe('the panel lays out for the room the table measures', () => {
 })
 
 describe('a wide window', () => {
-  it('keeps a short choice of cards in the Stack column, the band its one line', () => {
+  it('keeps a short choice of cards under the asking card in the Stack panel', () => {
     const { host, strip, main } = table('cards', WIDE)
     expect(host.hidden).toBe(true)
-    expect(strip.querySelector('[data-slot="card-choices"]')).toBeNull()
-    expect(document.querySelector('[data-slot="decision-choices"] [data-slot="card-choices"]')).not.toBeNull()
+    expect(strip.querySelector('[data-slot="card-choices"]')).not.toBeNull()
     expect(main.style.gridTemplateAreas).toBe(TABLE_AREAS)
   })
 })

@@ -123,11 +123,11 @@ describe('the line as part of the strip', () => {
     expect(ticker()).toHaveClass('truncate')
   })
 
-  it('sits in the strip’s sheet, below what the strip holds', () => {
+  it('is the last cell of the strip line, after what the strip holds', () => {
     renderCueTable()
     const sheet = document.querySelector('[data-slot="shared-sheet"]')
     expect(sheet?.contains(ticker())).toBe(true)
-    expect(sheet?.lastElementChild?.lastElementChild).toBe(ticker())
+    expect(sheet?.querySelector('[data-slot="strip-row"]')?.lastElementChild?.contains(ticker())).toBe(true)
   })
 
   it('is for the eye: not a live region, hidden from a screen reader, and nothing in it can be pressed', () => {

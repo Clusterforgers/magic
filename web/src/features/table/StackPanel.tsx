@@ -1,9 +1,11 @@
+import { anchor } from '@/features/learn/anchors'
 import { ChevronDown } from 'lucide-react'
-import { memo, useContext, useMemo, useState } from 'react'
+import { memo, useMemo, useState } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { ObjectId } from '@/protocol/generated'
+import type { Change, ObjectId } from '@/protocol/generated'
+import { forecastWords } from './fx/forecastWords'
 import { CardFace } from './CardFace'
 import { targetName } from './eventText'
 import { cardLabel, costPips, typeLine } from './cardModel'
@@ -18,7 +20,7 @@ import { hasDetail, kindKey, namedSource } from './prompt/detail/asking'
 import { DecisionDetail, Kicker } from './prompt/detail/DecisionDetail'
 import { ownDecision } from './prompt/ownDecision'
 import { objectWords } from './prompt/targetText'
-import { SideContext } from './sideContext'
+import { useDecisionHome } from './prompt/useDecisionHome'
 import { stackTopFirst } from './selectors'
 import { shownObject } from './stackPreview'
 import { groupStack } from './stackGroups'
@@ -59,6 +61,41 @@ function TargetList({ entry }: { entry: StackEntry }) {
           </li>
         )
       })}
+    </ul>
+  )
+}
+
+/**
+ * The engine's forecast of the top item as lines: what it does to each card and seat it changes ("Serra Angel:
+ * +3/+3 → 7/7"). Nothing while it has none (its result hangs on a choice, a hidden card or chance).
+ */
+function ForecastLine({ id }: { id: ObjectId }) {
+  const names = useSeatNamer()
+  const lines = usePlay(
+    useShallow((state) => {
+      const forecast = state.objectsById[id]?.forecast ?? []
+      const subjects = new Map<string, { name: string; changes: Change[] }>()
+      for (const line of forecast) {
+        const key = JSON.stringify(line.subject)
+        const name =
+          'Object' in line.subject
+            ? (state.objectsById[line.subject.Object]?.name ?? 'A card')
+            : names(line.subject.Player)
+        const entry = subjects.get(key) ?? { name, changes: [] }
+        entry.changes.push(line.change)
+        subjects.set(key, entry)
+      }
+      return [...subjects.values()].map(
+        ({ name, changes }) => `${name}: ${forecastWords(changes, names) ?? ''}`,
+      )
+    }),
+  )
+  if (lines.length === 0) return null
+  return (
+    <ul data-slot="stack-forecast" aria-label="What it will do" className="grid gap-0.5 text-xs font-medium">
+      {lines.map((line) => (
+        <li key={line}>{line}</li>
+      ))}
     </ul>
   )
 }
@@ -154,8 +191,13 @@ const StackItem = memo(function StackItem({
   return (
     <li
       data-slot="stack-top"
-      className="grid gap-2 @sm:grid-cols-[auto_1fr] @sm:items-start @md:col-span-full"
+      {...anchor('stack.top')}
+      // What resolves next wears the gold outline of the asking card; the question at priority is the dock's.
+      className="detail-entry-top grid gap-2 rounded-xl p-2 @sm:grid-cols-[auto_1fr] @sm:items-start @md:col-span-full"
     >
+      <p data-slot="stack-top-kicker" className="detail-kicker @sm:col-span-full">
+        <b>Top of the stack</b> · resolves next
+      </p>
       <span
         aria-hidden="true"
         className="relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center justify-self-center rounded-lg ring-1 ring-border-strong [--card-h:9.8rem] [--card-w:7rem]"
@@ -165,6 +207,7 @@ const StackItem = memo(function StackItem({
       <div className="grid min-w-0 content-start gap-2">
         {row}
         {entry === undefined ? null : <TargetList entry={entry} />}
+        <ForecastLine id={id} />
         {empty ? (
           <p data-slot="no-target" className="text-xs text-destructive">
             {NO_LEGAL_TARGET} left: it does nothing when it resolves.
@@ -236,10 +279,10 @@ function GroupItems({
  * same make next to each other fold into their first with a count and a button that lists the rest.
  */
 export function StackPanel() {
-  const side = useContext(SideContext)
   const deciding = usePlay((state) => hasDetail(ownDecision(state)))
-  // In a column the pending decision's detail takes the tab: what asks, what is chosen, then the rest of the stack.
-  if (deciding && side?.kind === 'column') {
+  const { home } = useDecisionHome()
+  // Where the panel is the home the pending decision takes the tab: what asks, its question and answers, then the rest.
+  if (deciding && home === 'panel') {
     return (
       <section
         aria-label="Stack"
@@ -281,7 +324,7 @@ export function StackRest() {
   const count = usePlay((state) => (state.view?.stack.cards ?? []).filter((id) => !shown.has(id)).length)
   return (
     <div data-slot="stack-rest" className="grid gap-2">
-      <Kicker lead={ordering ? 'Already on the stack, below them' : 'Already on the stack'} />
+      <Kicker lead={ordering ? 'Below them on the stack' : 'Below it on the stack'} />
       {count === 0 ? (
         <p className="rounded-lg border border-dashed px-2.5 py-2 text-[0.8125rem] leading-[1.125rem] text-muted-foreground">
           Nothing else is on the stack.

@@ -12,7 +12,7 @@ interface Run {
 }
 
 /**
- * One line under the strip's content that says what the batch that just arrived did: the steps it skipped, the viewer's
+ * The strip's last cell, one line that says what the batch that just arrived did: the steps it skipped, the viewer's
  * own reason for a skip and the newest line worth reading, three lines at most, each for 3 s. A newer batch replaces
  * what is left of an older one at once, so the line is never behind the game; nothing in it can be pressed and nothing
  * waits for it. Its row keeps its height when empty, so the strip does not move as lines come and go.

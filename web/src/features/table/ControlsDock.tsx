@@ -1,7 +1,15 @@
 import { createContext, useContext, useLayoutEffect, useRef, useState } from 'react'
 import type { ReactNode, RefObject } from 'react'
 import { createPortal } from 'react-dom'
+import { ArrowUpRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
+import { useAsker } from './prompt/detail/useAsker'
+import { focusAnswers } from './prompt/homeKeys'
+import { KeyHint } from './prompt/KeyHint'
+import { ownDecision } from './prompt/ownDecision'
+import { HomeSlotsContext, useDecisionHome } from './prompt/useDecisionHome'
 import { DockFormContext } from './dockLayout'
 import type { DockForm } from './dockLayout'
 import { StopsDock } from './stops/StopsDock'
@@ -48,10 +56,24 @@ export function InControlsDock({ children }: { children: ReactNode }) {
  */
 export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
   const setSlot = useContext(SetSlotContext)
+  const homes = useContext(HomeSlotsContext)
   const dock = useRef<HTMLElement>(null)
   const upper = useRef<HTMLDivElement>(null)
   useEdgeFade(upper)
   const tight = useDockFit(dock, upper)
+  const { home } = useDecisionHome()
+  // A question other than priority answered here takes the stops' row: they fold into their button meanwhile.
+  const asking = usePlay((state) => {
+    const own = ownDecision(state)
+    // The opening hand answers in its centred panel off a phone: the dock keeps its stops then.
+    return (
+      own !== null &&
+      !('Priority' in own.decision.kind) &&
+      !('Mulligan' in own.decision.kind && homes?.phone !== true)
+    )
+  })
+  const folded = asking && home !== 'panel'
+  const phone = homes?.phone === true
   return (
     <section
       ref={dock}
@@ -59,33 +81,72 @@ export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
       data-region="controls"
       data-keep-clear="answers"
       data-tight={tight || undefined}
-      // On a phone the dock is one wrapping line: the Stops button and the menu of passing, then the primary button alone.
-      className="flex min-h-0 min-w-0 flex-col items-end justify-end gap-1.5 overflow-hidden dock border-l px-2 py-1.5 max-sm:flex-row max-sm:flex-wrap max-sm:content-end max-sm:justify-end"
+      data-phone={phone || undefined}
+      // On a phone the dock is the decision bar under the hand: the take-backs and stops on a line, the decision, the
+      // pass controls; one height in every prompt and between prompts.
+      className={cn(
+        'flex min-h-0 min-w-0 flex-col gap-1 overflow-hidden dock',
+        phone
+          ? 'items-stretch justify-end border-t px-2.5 py-1.5'
+          : 'items-end justify-end border-l px-2 py-1.5',
+      )}
     >
       <div
         ref={upper}
         data-slot="dock-upper"
+        hidden={phone && asking}
         className={cn(
-          'fade-scroll flex min-h-0 max-w-full shrink gap-1.5 empty:hidden max-sm:contents',
-          tight ? 'flex-row flex-wrap content-end items-center justify-end' : 'flex-col items-end',
+          'fade-scroll flex min-h-0 max-w-full shrink gap-1.5 empty:hidden',
+          tight || phone ? 'flex-row flex-wrap content-end items-center justify-end' : 'flex-col items-end',
         )}
       >
-        <div data-slot="take-back-slot" className="max-w-full empty:hidden max-sm:basis-full">
+        <div data-slot="take-back-slot" className="max-w-full empty:hidden">
           <TakeBackControls />
         </div>
-        <div data-slot="yield-slot" className="max-w-full empty:hidden max-sm:basis-full">
+        <div data-slot="yield-slot" className="max-w-full empty:hidden">
           <YieldIndicator />
         </div>
+        {/* A question answered here takes the stops' row: its home holds their folded button meanwhile. */}
         <div data-slot="stops-slot" className="max-w-full empty:hidden">
-          <StopsDock row={stopsRow && !tight} />
+          {folded ? null : <StopsDock row={stopsRow && !tight} />}
         </div>
       </div>
+      {home === 'panel' ? <AnswerJump /> : null}
+      <div
+        ref={homes === null ? undefined : phone ? homes.setBar : homes.setDock}
+        data-slot={phone ? 'decision-bar' : 'decision-dock'}
+        className={cn('w-full min-w-0 empty:hidden', phone ? 'min-h-0 flex-1 overflow-hidden' : 'shrink-0')}
+      />
       <div
         ref={setSlot}
         data-slot="pass-slot"
-        className="flex w-full shrink-0 flex-wrap items-center justify-end gap-2 empty:hidden max-sm:contents"
+        className={cn(
+          'flex w-full shrink-0 items-center justify-end gap-2 empty:hidden',
+          phone ? 'flex-nowrap' : 'flex-wrap',
+        )}
       />
     </section>
+  )
+}
+
+/** While the Stack panel is the home, the dock says where to answer and takes the focus there (A). */
+function AnswerJump() {
+  const asker = useAsker()
+  const name = asker === null || asker.shown === '' ? 'the asking card' : asker.shown
+  return (
+    <Button
+      variant="outline"
+      data-slot="answer-jump"
+      aria-keyshortcuts="A"
+      onClick={() => void focusAnswers()}
+      className="h-auto min-h-11 w-full min-w-0 shrink-0 justify-end gap-1 py-1 font-normal whitespace-normal"
+    >
+      <span className="min-w-0 text-right leading-4 line-clamp-2">
+        Answer under {name} in the Stack panel
+      </span>
+      <KeyHint>A</KeyHint>
+      <ArrowUpRight aria-hidden="true" className="size-4 shrink-0" />
+    </Button>
   )
 }
 

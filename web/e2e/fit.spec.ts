@@ -402,6 +402,10 @@ test.describe('the development table with 40 permanents a seat', () => {
           message: `${width}x${height}: the opponent's corner`,
         })
         .toMatchObject({ corner: true, scrolls: false, pictures: 3 })
+      // Your row settles with the opponents': both are read once neither moves.
+      await expect
+        .poll(async () => (await read()).you, { message: `${width}x${height}: your pod settles` })
+        .toMatchObject({ scrolls: false })
       const { opponent, you } = await read()
       // The commander, the graveyard and the exile of the opponent; the graveyard and the exile of yours.
       expect(opponent, `${width}x${height}: the opponent's pod`).toMatchObject({

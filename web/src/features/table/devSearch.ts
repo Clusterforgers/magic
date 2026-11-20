@@ -42,8 +42,13 @@ export const MAX_DEV_PREVIEW_MS = 10_000
 /** The most cards `shown` makes the dev reveal show. */
 export const MAX_DEV_SHOWN = 12
 
+/** How `?side=` sets the side column. */
+export type DevSide = 'open' | 'folded' | 'log'
+
 /** The address parameters of `/dev/table`. */
 export interface DevSearch {
+  /** The side column for a decision's home: `open`, `folded` to its rail, or open on its Log tab (`log`). */
+  side?: DevSide
   /** How many seats the fixture table has, 2 or more; 4 when missing or wrong. */
   seats: number
   /** `duel`: two seats with 12 and 10 permanents of an early Commander game; `heavy`: two seats with 40 each. */
@@ -205,6 +210,8 @@ export function parseDevSearch(search: Record<string, unknown>): DevSearch {
         ? search.permanents
         : undefined,
     result: DEV_RESULTS.find((result) => result === search.result),
+    side:
+      search.side === 'open' || search.side === 'folded' || search.side === 'log' ? search.side : undefined,
     boss: boss === undefined || boss > 2 ? undefined : boss,
     rules: search.rules === true || search.rules === 1 || search.rules === '1' ? true : undefined,
     spirit: search.spirit === true || search.spirit === 1 || search.spirit === '1' ? true : undefined,

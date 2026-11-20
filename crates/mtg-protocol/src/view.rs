@@ -22,6 +22,7 @@ use mtg_engine::mana::ManaPool;
 use mtg_engine::object::ObjectKind;
 use mtg_engine::player::{LossReason, MulliganStatus};
 use mtg_engine::rules::PlayerEffect;
+use mtg_engine::stack_forecast::ForecastChange;
 use mtg_engine::state::{GameResult, Stage};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
@@ -391,6 +392,11 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<Vec<bool>>>", optional)]
     pub targets_legal: Vec<Vec<bool>>,
+    /// What the top item of the stack would change if it resolved now (`stack_forecast`): public and the same for every
+    /// seat. Left out for any other object, and when the result hangs on a choice, a hidden card or chance.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<ForecastChange>>", optional)]
+    pub forecast: Vec<ForecastChange>,
     /// The counters on a permanent, by kind and number in a fixed order; left out while there are none. A planeswalker's
     /// loyalty is its loyalty counters, public like the rest.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

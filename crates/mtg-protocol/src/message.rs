@@ -7,6 +7,7 @@ use mtg_core::teams::Teams;
 use mtg_engine::decision::Refusal;
 use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
+use mtg_engine::stack_forecast::ForecastChange;
 use mtg_engine::state::GameResult;
 use mtg_engine::take_back::{TakeBackOffer, TakeBackRefusal};
 use mtg_engine::turn::Step;
@@ -253,7 +254,8 @@ pub enum ClientMessage {
         /// The chosen answer, built from the decision's options.
         answer: Answer,
     },
-    /// Asks what combat damage would do if `answer` were given to the pending decision `decision`, without giving it.
+    /// Asks what combat damage would do if `answer` were given to the pending decision `decision`, or what the spell being
+    /// cast would change with the targets of a `ChooseTargets` answer, without giving it.
     ///
     /// Advisory: the server replies with exactly one [`ServerMessage::Forecast`], never an error, and logs nothing.
     Preview {
@@ -471,13 +473,19 @@ pub enum ServerMessage {
         #[ts(optional)]
         asking: Option<Box<crate::asking::AskingView>>,
     },
-    /// The reply to [`ClientMessage::Preview`]: what combat damage would do for the answer tried.
+    /// The reply to [`ClientMessage::Preview`]: what combat damage would do for the attack or block tried, or what the
+    /// spell being cast would change with the targets tried.
     Forecast {
         /// The decision the preview named, echoed.
         decision: DecisionId,
-        /// The engine's forecast, or null when there is none to give: the decision is not pending for this seat, the
-        /// answer is not a legal attack or block, or this seat is previewing faster than the server allows.
+        /// The engine's combat forecast, or null when there is none to give: the decision is not pending for this seat,
+        /// the answer is not a legal attack or block, or this seat is previewing faster than the server allows.
         forecast: Option<CombatForecast>,
+        /// For a `ChooseTargets` answer of a spell, its stack forecast with those targets (the lines of
+        /// `ObjectView.forecast`); left out when there is none.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[ts(as = "Option<Vec<ForecastChange>>", optional)]
+        changes: Vec<ForecastChange>,
     },
     /// New events, projected for this client.
     Events(EventBatch),

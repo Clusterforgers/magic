@@ -253,7 +253,7 @@ describe('splitBoss', () => {
         allies: plan.seats.allies.map((seat) => seatCounts(state, seat)),
         ownReady: true,
       }
-      const { split, shares } = bossSplitOf(regions, plan.seats, counts, regions.sheetRoom, regions.sheetRoom)
+      const { split, shares } = bossSplitOf(regions, plan.seats, counts, 0, 0)
       expect(split.heroCard).toBeGreaterThanOrEqual(least)
       expect(split.bossCard).toBeGreaterThanOrEqual(Math.floor(split.heroCard * 0.6))
       // Each ally's frame: its border and padding, the tile and its gap, the board's padding, then the lanes.

@@ -1,4 +1,4 @@
-//! Goal: the board rows split by what each board holds, so the duel board draws large cards and no board scrolls, and the opponents keep their pods and a row of cards under a prompt sheet, but over empty boards never more than your row.
+//! Goal: the board rows split by what each board holds, so the duel board draws large cards and no board scrolls, and the opponents keep their pods and a row of cards, but over empty boards never more than your row.
 import { describe, expect, it } from 'vitest'
 import { fixtureState } from './dev/devGame'
 import {
@@ -13,13 +13,12 @@ import {
   splitRegions,
   THEIR_SCALE,
   theirChromeOf,
-  withSplit,
 } from './boardSplit'
 import { POD_CRAMPED_PX } from './cornerFit'
 import { buildFixture } from './dev/fixture'
 import { LANE_LIMITS, laneHeight } from './laneFit'
 import type { LaneCounts } from './laneFit'
-import { planTable, regionSizes, SHEET_KEEP_PX } from './layout'
+import { planTable } from './layout'
 import { battlefieldStacks, layoutSeat } from './rowStacks'
 import { headOf } from './useTheirHead'
 
@@ -125,7 +124,7 @@ describe('splitBoards', () => {
   })
 })
 
-// The band's room above the strip is kept in every case (`Regions.sheetRoom`); a smaller reserve changes nothing.
+// The strip is one line; a reserve asked for is kept above it.
 const VIEWPORTS = [
   [1920, 1080, 160, 130, 0],
   [1920, 1080, 160, 130, 40],
@@ -143,8 +142,8 @@ function cardsAt(width: number, height: number, seats: number, board: 'duel' | '
   const frames = boardFrames(table.regions, table.seats)
   const stacksOf = (seat: number) => battlefieldStacks(state, seat)
   const regions = splitRegions(table.regions, table.seats, boardCounts(state, table.seats), reserve)
-  // The band's room is kept above the strip whatever the prompt (`Regions.sheetRoom`).
-  const kept = Math.max(reserve, table.regions.sheetRoom)
+  // A reserve asked for is kept above the strip.
+  const kept = reserve
   const theirFrame = { ...frames.theirs, chrome: frames.theirs.chrome + kept }
   const fit = (
     seat: number,
@@ -199,55 +198,9 @@ describe('your creatures against the opponents', () => {
   )
 })
 
-describe('the prompt sheet of a split table', () => {
-  it.each([
-    [360, 740, true],
-    [390, 844, true],
-    [1400, 900, false],
-  ])(
-    'on %ix%i leaves a phone the tile strip and a row of the opponents (phone: %s)',
-    (width, height, phone) => {
-      const regions = withSplit(regionSizes({ width, height }), {
-        opponents: 250,
-        own: 300,
-        ownCard: 100,
-        theirCard: 80,
-      })
-      expect(regions.phone).toBe(phone)
-      const room = phone ? 250 - SHEET_KEEP_PX : 250
-      // No higher than the band, whose room the split keeps free of cards.
-      const band = regions.shared + regions.sheetRoom
-      expect(regions.sheet).toBeCloseTo(Math.min(band, height * 0.4, regions.shared + room), 6)
-    },
-  )
-
-  it.each([
-    [1280, 720, 192],
-    [1366, 768, 160],
-    [1024, 768, 72],
-  ])(
-    'on %ix%i leaves the opponents their pods and a row of cards (%i px of chrome)',
-    (width, height, chrome) => {
-      const regions = withSplit(
-        regionSizes({ width, height }),
-        { opponents: 320, own: 200, ownCard: 60, theirCard: 48 },
-        chrome + BOARD_KEEP_PX,
-      )
-      expect(regions.sheet).toBeCloseTo(
-        Math.min(
-          regions.shared + regions.sheetRoom,
-          height * 0.4,
-          regions.shared + 320 - chrome - BOARD_KEEP_PX,
-        ),
-        6,
-      )
-    },
-  )
-})
-
-describe("a phone's sheet and the boss's head", () => {
+describe("a phone's boss head", () => {
   // The boss fight on a phone (`/dev/table?seats=4&boss=0&bare=1&prompt=mulligan`): the abilities bar and the boss's
-  // pod reach 190 px down the opponents' area, and the opening hand's sheet wants 224 px over the strip.
+  // pod reach 190 px down the opponents' area.
   const viewport = { width: 390, height: 844 }
   const table = planTable({
     viewport,
@@ -258,37 +211,20 @@ describe("a phone's sheet and the boss's head", () => {
   const state = fixtureState(buildFixture({ seats: 4 }))
   const counts = { ...boardCounts(state, table.seats), allies: [] as LaneCounts[] }
 
-  it.each([
-    ['a sheet of answers', 'sheet'],
-    ['a sheet of cards', 'sheetWide'],
-  ] as const)("leaves the boss's bar and pod clear of %s, with the sheet's room kept", (_name, key) => {
-    const head = 190
-    const overhang = 224
-    const regions = splitRegions(table.regions, table.seats, counts, 64, head, overhang)
-    const kept = theirChromeOf(boardFrames(table.regions, table.seats).theirs.chrome, head)
-    expect(kept).toBeGreaterThan(SHEET_KEEP_PX)
-    const over = regions[key] - regions.shared
-    expect(regions.opponents - over).toBeGreaterThanOrEqual(kept - 1e-9)
-    // The band keeps the room it had where the head was no taller than the usual keep; a sheet that grows gives way to the head.
-    const low = splitRegions(table.regions, table.seats, counts, 64, 0, overhang)
-    if (key === 'sheet') expect(over).toBeGreaterThanOrEqual(low[key] - low.shared - 1e-9)
+  it("leaves the boss's bar and pod their room, and your row its least share", () => {
+    const regions = splitRegions(table.regions, table.seats, counts, 0, 190, 0)
+    const kept = theirChromeOf(boardFrames(table.regions, table.seats).theirs.chrome, 190)
+    expect(regions.opponents).toBeGreaterThanOrEqual(Math.min(kept, regions.opponents + regions.own))
     expect(regions.own).toBeGreaterThanOrEqual((regions.opponents + regions.own) * MIN_ROW_SHARE - 1e-9)
   })
 
-  it('leaves a phone of tiles as it was: its head is under the usual keep', () => {
+  it('moves no row of a phone for a decision: the strip is one line in every prompt', () => {
     const plain = planTable({ viewport, seatCount: 4, viewer: 0 })
     const flat = boardCounts(state, plain.seats)
-    const without = splitRegions(plain.regions, plain.seats, flat, 64, 0, 0)
-    const withSheet = splitRegions(plain.regions, plain.seats, flat, 64, 0, 224)
-    expect(withSheet.opponents).toBe(without.opponents)
-    expect(withSheet.sheetWide).toBe(without.sheetWide)
-  })
-
-  it("moves no row of the boss's phone table for a sheet: the band's room is kept with or without one", () => {
-    const without = splitRegions(table.regions, table.seats, counts, 0, 190, 0)
-    const withSheet = splitRegions(table.regions, table.seats, counts, 0, 190, 224)
-    expect(withSheet.opponents).toBe(without.opponents)
-    expect(without.sheet - without.shared).toBeLessThanOrEqual(without.sheetRoom + 1e-9)
+    const without = splitRegions(plain.regions, plain.seats, flat, 0, 0, 0)
+    const again = splitRegions(plain.regions, plain.seats, flat, 0, 0, 0)
+    expect(again.opponents).toBe(without.opponents)
+    expect(again.shared).toBe(without.shared)
   })
 })
 
@@ -305,18 +241,12 @@ describe('the chrome of the opponents row', () => {
     expect(theirChromeOf(estimate, head)).toBe(chrome)
   })
 
-  it('makes the opponents row of a short window keep their pods and a row of cards under a long prompt', () => {
+  it('makes the opponents row of a short window keep their pods and a row of cards', () => {
     const viewport = { width: 1280, height: 720 }
     const table = planTable({ viewport, seatCount: 4, viewer: 0 })
     const state = fixtureState(buildFixture({ seats: 4 }))
     const regions = splitRegions(table.regions, table.seats, boardCounts(state, table.seats), 64, 174)
     expect(regions.opponents).toBeGreaterThanOrEqual(192 + BOARD_KEEP_PX)
-    expect(regions.opponents - (regions.sheetWide - regions.shared)).toBeGreaterThanOrEqual(
-      192 + BOARD_KEEP_PX - 1e-9,
-    )
-    // The band is one line; a sheet that grows (a decision with no column for its choices) still has room.
-    expect(regions.sheet).toBe(regions.shared + regions.sheetRoom)
-    expect(regions.sheetWide).toBeGreaterThan(regions.shared + 32)
   })
 })
 

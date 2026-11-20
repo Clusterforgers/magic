@@ -273,9 +273,11 @@ export const isPlayable = (card: Card): boolean => !/, not castable/.test(card.l
 
 const named = (card: Card): string => card.label.split(',')[0] ?? card.label
 const prompt = (page: Page): Locator => page.locator('[data-decision]')
-const button = (page: Page, name: string): Locator => prompt(page).getByRole('button', { name, exact: true })
+// A window over the table repeats the home's answers after it: the first is the home's.
+const button = (page: Page, name: string): Locator =>
+  prompt(page).getByRole('button', { name, exact: true }).first()
 /** The prompt's Cancel ("Cancel the spell", "Cancel the ability"): backs out of the spell or ability being announced. */
-const undo = (page: Page): Locator => prompt(page).locator('[data-slot="undo"]')
+const undo = (page: Page): Locator => prompt(page).locator('[data-slot="undo"]').first()
 /**
  * The Priority prompt's primary button: its words depend on the moment ("Next: Combat", "Continue"...), its slot does
  * not. The prompt draws it in the controls dock at the bottom right of the table, away from the prompt's own line.
@@ -306,6 +308,12 @@ async function payFor(page: Page, label: string, id: string, done: string): Prom
       () => false,
     )
   if (moved) return done
+  // "Pay for me" lays the game's payment out for a Confirm when "Always pay automatically" is off.
+  const confirm = button(page, 'Confirm payment')
+  if ((await confirm.count()) > 0 && (await confirm.isEnabled())) {
+    await confirm.click()
+    return done
+  }
   await undo(page).click()
   return 'cancels casting, the server refused the payment'
 }
@@ -529,10 +537,14 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
   // with the prompt's words, which is the finding.
   async ChooseTargets({ player }) {
     const { page } = player
-    // Every legal target is offered in the "Legal targets" group: a player as a button, an object as its card picture.
-    const legal = prompt(page)
-      .getByRole('group', { name: 'Legal targets' })
-      .locator('button:not([disabled]):not([aria-disabled="true"])')
+    // A player and a card the table does not draw are buttons of the "Legal targets" group; a card on the table is
+    // pressed there, where it wears the legal mark.
+    const legal = page.locator(
+      [
+        '[data-decision] [role="group"][aria-label="Legal targets"] button:not([disabled]):not([aria-disabled="true"])',
+        ':is([data-area="opponents"], [data-area="own"], [data-area="hand"]) button[data-object-id][data-highlight="legal"]',
+      ].join(', '),
+    )
     const confirm = button(page, 'Confirm targets')
     const count = await legal.count()
     if (count === 0) {
@@ -544,7 +556,10 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       const target = legal.nth(index)
       // A card picture is named by its label, a player's button by its words.
       names.push(((await target.getAttribute('aria-label')) ?? (await target.textContent()) ?? '').trim())
+      // One target, or up to one, answers on its press: there is no Confirm to wait for.
+      const onPress = (await confirm.count()) === 0
       await target.click()
+      if (onPress) return `targets ${names.join(', ')}`
       if (await confirm.isEnabled()) break
     }
     await confirm.click()

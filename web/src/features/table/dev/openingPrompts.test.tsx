@@ -40,7 +40,8 @@ describe.each(NAMES)('?prompt=%s', (prompt) => {
     )
     const user = userEvent.setup()
     expect(document.querySelector(`[data-decision="${KIND[prompt]}"]`)).not.toBeNull()
-    if (KIND[prompt] === 'Mulligan') await user.click(screen.getByRole('button', { name: 'Keep' }))
+    if (KIND[prompt] === 'Mulligan')
+      await user.click(must(screen.getAllByRole('button', { name: 'Keep' })[0]))
     else {
       const [first, second] = [...document.querySelectorAll<HTMLElement>('[data-highlight="legal"]')]
       await user.click(must(first))

@@ -52,7 +52,8 @@ describe('targets the table does not draw', () => {
         spec: 0,
         legal,
         min: 1,
-        max: 1,
+        // Room for two: one target would answer on its press, before a preview could show.
+        max: 2,
         can_cancel: true,
         wording: 'target card',
       },

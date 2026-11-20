@@ -48,7 +48,7 @@ describe('the anchor registry', () => {
   it.each(Object.entries(ANCHORS).filter(([, info]) => info.opener !== undefined))(
     "%s's opener is an anchor",
     (_, info) => {
-      expect(isAnchor(info.opener ?? '')).toBe(true)
+      for (const opener of [info.opener ?? ''].flat()) expect(isAnchor(opener)).toBe(true)
     },
   )
 
@@ -73,7 +73,7 @@ describe('the dev table', () => {
     'own.board',
     'opp.board',
     'turn.badge',
-    'band',
+    'ask',
     'hand',
   ]
 

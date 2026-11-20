@@ -1,4 +1,4 @@
-/** Goal: the host puts the prompt of this seat's decision in the centre strip and nothing else there, and `usePrompt` gives a prompt its decision, a once-only answer that cannot reach a newer decision, and a selection that starts empty for every decision id. */
+/** Goal: the host draws the prompt of this seat's decision in its home and the strip keeps its waiting line otherwise, and `usePrompt` gives a prompt its decision, a once-only answer that cannot reach a newer decision, and a selection that starts empty for every decision id. */
 import { act } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Answer, ObjectId } from '@/protocol/generated'
@@ -13,18 +13,21 @@ vi.mock('./registry', async (importOriginal) => {
   const original = await importOriginal<typeof import('./registry')>()
   const { usePrompt } = await import('./PromptContext')
   const { createElement, useEffect } = await import('react')
+  const { PromptLayout } = await import('./PromptLayout')
   function Probe() {
     const api = usePrompt()
     useEffect(() => {
       probe.api = api
     })
-    return createElement('p', { 'data-slot': 'probe' }, [...api.selection.ids].join(','))
+    return createElement(PromptLayout, {
+      text: createElement('span', { 'data-slot': 'probe' }, [...api.selection.ids].join(',')),
+    })
   }
   return { PROMPTS: { ...original.PROMPTS, Mulligan: Probe } }
 })
 
 const decisionLine = (container: HTMLElement): HTMLElement =>
-  must(container.querySelector<HTMLElement>('[data-slot="decision-line"]'))
+  must(container.querySelector<HTMLElement>('[data-slot="waiting-line"]'))
 const mulligan = (id: number) => ({ id, decision: decisionFor('Mulligan') })
 
 beforeEach(() => {

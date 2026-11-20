@@ -9,15 +9,9 @@ import { ownDecision } from './ownDecision'
 import { PromptContext } from './PromptContext'
 import type { PromptApi, Selection } from './PromptContext'
 import { UnsupportedPrompt } from './PromptLayout'
-import { clockKind } from './clockText'
 import { PROMPTS } from './registry'
-import { QuickCast } from './QuickCast'
-import { ResponseClock } from './ResponseClock'
 
 const NOTHING: ReadonlySet<ObjectId> = new Set()
-
-/** The decisions that fit one row: a sentence, a few buttons and the clock as a line on the edge. */
-const COMPACT: ReadonlySet<string> = new Set(['DeclareAttackers', 'DeclareBlockers'])
 
 /**
  * The name of a decision kind: the key it came with, which is a kind of `PROMPTS` unless the server is newer than this
@@ -72,35 +66,24 @@ function PromptScope({ pending }: { pending: PendingDecision }) {
   )
 
   const name = kindName(decision.kind)
-  const compact = COMPACT.has(name)
   const api = useMemo<PromptApi>(
     () => ({ id, name, decision, answer, selection, ...(asking === undefined ? {} : { asking }) }),
     [id, name, decision, answer, selection, asking],
   )
+  // The prompt draws its parts into the decision's home (`PromptLayout`), so its state lives here whichever home it is in.
   return (
     <PromptContext value={api}>
-      <div
-        data-slot="decision-line"
-        data-decision={name}
-        data-decision-id={id}
-        data-compact={compact || undefined}
-        // No box of its own: the sentence, the choices, the clock and the answers are cells of the strip's band
-        // (`strip-band`, `promptBand.css`), and the clock's bar runs along the sheet's bottom edge.
-        className="contents"
-      >
-        <PromptFor kind={decision.kind} />
-        <ResponseClock id={id} kind={clockKind(decision.kind)} compact />
-      </div>
+      <PromptFor kind={decision.kind} />
     </PromptContext>
   )
 }
 
 /**
- * Fills the decision line of the centre strip with the prompt for the decision this seat must answer, and draws
- * the quick cast of an instant in hand when there is none. The prompt is keyed by decision id: a new decision remounts it with an empty selection.
+ * The prompt for the decision this seat must answer, mounted once by the table; it draws in the decision's home. The
+ * prompt is keyed by decision id: a new decision remounts it with an empty selection.
  */
 export function PromptHost() {
   const pending = usePlay(ownDecision)
-  if (pending === null) return <QuickCast />
+  if (pending === null) return null
   return <PromptScope key={pending.id} pending={pending} />
 }

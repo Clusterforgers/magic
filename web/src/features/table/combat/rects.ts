@@ -245,7 +245,7 @@ export function bundled(
  * (`bundled`). Lines that would be drawn on top of each other (several attackers of a seat that is not drawn, all
  * standing in as its tile) are drawn once.
  */
-export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[] {
+export function shapesOf(lines: readonly LineSpec[], rects: RectMap, avoid: Rect | null = null): DrawnLine[] {
   const seen = new Set<string>()
   const drawn: DrawnLine[] = []
   for (const { line, from, count, members } of bundled(lines, rects)) {
@@ -260,9 +260,20 @@ export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[
             // the other side of its travel: both bow the same way on the screen, clear of the pod column at the left.
             { bow: -0.1, head: 10 }
     // A bundle whose box around the attackers reaches over its target starts from the first attacker that clears it.
-    const shape =
-      connect(from, to, curve) ??
-      (members ?? []).reduce<Shape | null>((found, member) => found ?? connect(member, to, curve), null)
+    const drawOf = (options: typeof curve): Shape | null =>
+      connect(from, to, options) ??
+      (members ?? []).reduce<Shape | null>((found, member) => found ?? connect(member, to, options), null)
+    let shape = drawOf(curve)
+    // A line over the box to keep clear (your life) bows the other way, and further, where that clears it.
+    if (shape !== null && avoid !== null && crosses(shape, avoid)) {
+      for (const bow of [-curve.bow, -2.5 * curve.bow, 2.5 * curve.bow]) {
+        const other = drawOf({ ...curve, bow })
+        if (other !== null && !crosses(other, avoid)) {
+          shape = other
+          break
+        }
+      }
+    }
     if (shape === null) continue
     const same = `${shape.d}|${line.kind}|${line.pending}|${line.outcome ?? ''}`
     if (seen.has(same)) continue
@@ -270,6 +281,19 @@ export function shapesOf(lines: readonly LineSpec[], rects: RectMap): DrawnLine[
     drawn.push(count === undefined ? { line, shape } : { line, shape, count })
   }
   return drawn
+}
+
+/** Whether the curve of `shape` (its control point found back from its middle) runs through `box`. */
+export function crosses(shape: Shape, box: Rect): boolean {
+  const { start, end, mid } = shape
+  const control = { x: 2 * mid.x - (start.x + end.x) / 2, y: 2 * mid.y - (start.y + end.y) / 2 }
+  for (let step = 0; step <= 40; step += 1) {
+    const t = step / 40
+    const x = (1 - t) * (1 - t) * start.x + 2 * (1 - t) * t * control.x + t * t * end.x
+    const y = (1 - t) * (1 - t) * start.y + 2 * (1 - t) * t * control.y + t * t * end.y
+    if (x >= box.x && x <= box.x + box.width && y >= box.y && y <= box.y + box.height) return true
+  }
+  return false
 }
 
 /** Where to ask for a frame; the page's by default, a fake in a test. */
