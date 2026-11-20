@@ -805,6 +805,9 @@ pub enum Amount {
     /// The most damage one source dealt this turn while one of the players the reference names controlled it, all its
     /// damage added up ("if a source you controlled dealt 5 or more damage this turn"); 0 when none dealt any.
     MostDamageBySource(Ref),
+    /// The most damage one source dealt to one permanent or player this turn, its hits of that recipient added up ("the
+    /// greatest amount of damage dealt by a source to a permanent or player this turn"); 0 when none was dealt.
+    R110MostDamageToOne,
     /// The events of the kind this turn whose object the filter selects, counted for the players the reference names
     /// ("the second creature token you created this turn").
     Tally {
@@ -1157,6 +1160,7 @@ enum Tagged {
     Triggering,
     SourcesDealtDamage(Ref),
     MostDamageBySource(Ref),
+    R110MostDamageToOne,
     Tally {
         event: TallyEvent,
         who: Ref,
@@ -1376,6 +1380,7 @@ enum TaggedRef<'a> {
     Triggering,
     SourcesDealtDamage(&'a Ref),
     MostDamageBySource(&'a Ref),
+    R110MostDamageToOne,
     Tally {
         event: TallyEvent,
         who: &'a Ref,
@@ -1544,6 +1549,7 @@ impl From<Tagged> for Amount {
             Tagged::Party(who) => Amount::Party(who),
             Tagged::CardsAbove { filter, directly } => Amount::CardsAbove { filter, directly },
             Tagged::Triggering => Amount::Triggering,
+            Tagged::R110MostDamageToOne => Amount::R110MostDamageToOne,
             Tagged::DieResult(which) => Amount::DieResult(which),
             Tagged::Tally { event, who, filter } => Amount::Tally { event, who, filter },
             Tagged::Remembered { on, slot, per } => Amount::Remembered { on, slot, per },
@@ -1708,6 +1714,7 @@ impl Serialize for Amount {
             }
             .serialize(serializer),
             Amount::Triggering => TaggedRef::Triggering.serialize(serializer),
+            Amount::R110MostDamageToOne => TaggedRef::R110MostDamageToOne.serialize(serializer),
             Amount::DieResult(which) => TaggedRef::DieResult(*which).serialize(serializer),
             Amount::Tally { event, who, filter } => TaggedRef::Tally {
                 event: *event,

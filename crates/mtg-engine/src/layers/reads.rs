@@ -545,6 +545,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Chosen
         | Amount::ChosenAs(_)
         | Amount::Triggering
+        | Amount::R110MostDamageToOne
         | Amount::Drafted(_) => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),

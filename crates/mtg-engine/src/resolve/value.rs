@@ -2789,6 +2789,7 @@ impl<'a> Scope<'a> {
             Amount::MostDamageBySource(who) => {
                 self.r6008_most_damage_by_source(&self.players(who)?)
             }
+            Amount::R110MostDamageToOne => self.r110_most_damage_to_one(),
             Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
             Amount::CastSameNameThisGame(who) => {
                 let name = self

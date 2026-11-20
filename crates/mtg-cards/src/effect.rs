@@ -2190,6 +2190,13 @@ pub enum Effect {
         /// The kind of counter.
         counter: CounterKind,
     },
+    /// For each counter of the kind put on an object by the steps before it, one is removed from that object ("For each
+    /// +1/+1 counter you put on a creature this way, remove a +1/+1 counter from that creature"); in a delayed trigger it
+    /// reads the counters the resolution that set the trigger up put (CR 603.7c), each object as the very object it was.
+    R110RemovePutThisWay {
+        /// The kind of counter.
+        counter: CounterKind,
+    },
     /// Changes a rule of the game for a while.
     Rule {
         /// The rule.

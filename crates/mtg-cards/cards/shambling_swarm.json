@@ -1,0 +1,34 @@
+{
+  "oracle_id": "7807122e-917f-4a79-876e-d1c10f7a38ed",
+  "name": "Shambling Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shambling Swarm",
+      "oracle_fingerprint": "0e4b43a7849591c2aeab4aca0c3abd21",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 3 },
+                "divide": 3
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "-1/-1", "count": "Divided" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "R110RemovePutThisWay": { "counter": "-1/-1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

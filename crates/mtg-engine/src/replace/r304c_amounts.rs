@@ -30,6 +30,13 @@ impl Pass<'_> {
                 0 => None,
                 most => Some(ReplaceBy::PreventUpTo(most)),
             },
+            // The number is fixed now; whether it applies is asked as it is applied (`r110_may_prevent`).
+            ReplaceBy::R110MayPreventAmount(amount) => match worked(amount)? {
+                0 => None,
+                most => Some(ReplaceBy::R110MayPreventAmount(
+                    mtg_cards::value::Amount::Fixed(i32::try_from(most).unwrap_or(i32::MAX)),
+                )),
+            },
             ReplaceBy::R6100AtLeast(least) => match &self.slots[at].item {
                 Item::One(Event::DamageDealt { amount, .. }) if *amount > 0 => {
                     match worked(least)?.checked_sub(*amount) {

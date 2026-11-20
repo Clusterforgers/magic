@@ -1,0 +1,25 @@
+{
+  "oracle_id": "94846856-fe68-4ada-8c34-a54de568e803",
+  "name": "Impact Resonance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impact Resonance",
+      "oracle_fingerprint": "78da0521f3f5c708258a6235c64b34d2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": null },
+                "divide": "R110MostDamageToOne"
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

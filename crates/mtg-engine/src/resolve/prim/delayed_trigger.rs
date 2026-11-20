@@ -70,6 +70,8 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
         .filter(|(name, _)| !name.starts_with("?performed"))
         .map(|(name, targets)| (name.clone(), targets.clone()))
         .collect();
+    // The counters the steps before put, so "for each counter put this way, remove one" reads them later (CR 603.7c).
+    bindings.extend(super::r110_remove_put::r110_carried(&cx.resolving.r110_put));
     // The numbers `Let` kept travel as names too, so the trigger reads them as the setup fixed them.
     if let Some(resolving) = state.resolving.as_ref() {
         bindings.extend(

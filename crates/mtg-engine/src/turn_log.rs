@@ -238,6 +238,35 @@ impl Scope<'_> {
         most
     }
 
+    /// The most damage one source dealt to one permanent or player this turn, its hits of that recipient added up; a
+    /// source or recipient that is not public counts on its own.
+    pub(crate) fn r110_most_damage_to_one(&self) -> i64 {
+        let mut totals: Vec<((ObjectRef, Target), i64)> = Vec::new();
+        let mut most = 0i64;
+        for record in &self.state.tallies.records {
+            if record.event != TallyEvent::Damaged {
+                continue;
+            }
+            let amount = i64::from(record.amount);
+            let total = match (record.subject, record.other) {
+                (Some(source), Some(hit)) => {
+                    if let Some((_, total)) =
+                        totals.iter_mut().find(|(pair, _)| *pair == (source, hit))
+                    {
+                        *total += amount;
+                        *total
+                    } else {
+                        totals.push(((source, hit), amount));
+                        amount
+                    }
+                }
+                _ => amount,
+            };
+            most = most.max(total);
+        }
+        most
+    }
+
     /// The damage dealt this turn to the players and objects named, as the objects were when it was dealt.
     pub(crate) fn g10c_damage_to(&self, to: &[Target]) -> i64 {
         self.state

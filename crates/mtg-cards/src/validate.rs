@@ -93,6 +93,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
         by,
         ReplaceBy::PreventUpTo(_)
             | ReplaceBy::PreventAmount(_)
+            | ReplaceBy::R110MayPreventAmount(_)
             | ReplaceBy::PreventAtMost(_)
             | ReplaceBy::PreventCounted(_)
             | ReplaceBy::PreventCountedAnd { .. }
@@ -1443,6 +1444,7 @@ impl<'a> Walker<'a> {
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
             Amount::MostDamageBySource(who) => self.player_amount("MostDamageBySource", who),
+            Amount::R110MostDamageToOne => self.uses("Amount", "R110MostDamageToOne"),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -5466,6 +5468,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::R110RemovePutThisWay { .. }
             | Effect::AuraSwap
             | Effect::R6501RedistributeLife
             | Effect::StillResolves
@@ -7286,6 +7289,7 @@ impl Walker<'_> {
             ReplaceBy::AddAmount(amount)
             | ReplaceBy::R6100AtLeast(amount)
             | ReplaceBy::PreventAmount(amount)
+            | ReplaceBy::R110MayPreventAmount(amount)
             | ReplaceBy::MayAddAmount(amount) => {
                 self.at("amount", |w| w.amount(amount));
             }

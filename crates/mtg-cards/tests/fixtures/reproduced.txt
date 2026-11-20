@@ -197,6 +197,7 @@ Battle Screech
 Battle Sliver
 Battlefield Forge
 Battlefield Thaumaturge
+Battletide Alchemist
 Baxter Building
 Baxter, Fly in the Ointment
 Beamsaw Prospector
@@ -300,6 +301,7 @@ Boros Garrison
 Boros Signet
 Bosh, Iron Golem
 Bounty of Skemfar
+Bounty of the Hunt
 Boxing Ring
 Braids, Arisen Nightmare
 Brain Freeze
@@ -1268,6 +1270,7 @@ Illustrious Wanderglyph
 Ilysian Caryatid
 Imi Statue
 Immoral Bargain
+Impact Resonance
 Impact Tremors
 Imperial Hellkite
 Imperiosaur
@@ -2253,6 +2256,7 @@ Shah of Naar Isle
 Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
+Shambling Swarm
 Shapesharer
 Sharding Sphinx
 Shardmage's Rescue

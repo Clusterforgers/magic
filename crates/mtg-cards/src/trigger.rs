@@ -1537,6 +1537,9 @@ pub enum ReplaceBy {
     /// Up to an amount worked out as the event happens of the damage is prevented ("prevent X of that damage, where X
     /// is the number of creatures you control"); only a static ability uses it.
     PreventAmount(Amount),
+    /// `PreventAmount` that the replacement's controller may apply or not, asked at each event (CR 615.1): "you may
+    /// prevent X of that damage, where X is the number of Clerics you control"; only a static ability uses it.
+    R110MayPreventAmount(Amount),
     /// All of the damage is prevented when it is this much or less ("If a source would deal 3 or less damage to ~,
     /// prevent that damage"); only a static ability uses it.
     PreventAtMost(u32),

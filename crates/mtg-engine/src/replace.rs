@@ -792,6 +792,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::PreventAllButNext(_)
         | ReplaceBy::Cap(_)
         | ReplaceBy::PreventAmount(_)
+        | ReplaceBy::R110MayPreventAmount(_)
         | ReplaceBy::PreventAtMost(_)
         | ReplaceBy::RedirectUpTo { .. }
         | ReplaceBy::RedirectCounted { .. }
@@ -967,6 +968,7 @@ impl Action {
                 ReplaceBy::Prevent
                     | ReplaceBy::PreventUpTo(_)
                     | ReplaceBy::PreventAmount(_)
+                    | ReplaceBy::R110MayPreventAmount(_)
                     | ReplaceBy::PreventAtMost(_)
                     | ReplaceBy::PreventHalf
                     | ReplaceBy::PreventRemovingCounter(_)
@@ -2652,6 +2654,11 @@ impl Pass<'_> {
             }
             (ReplaceBy::PreventByCounters(kind), Unit::Damage { .. }) => {
                 self.r5507_prevent_by_counters(at, candidate, kind, applied);
+            }
+            (ReplaceBy::R110MayPreventAmount(most), Unit::Damage { .. }) => {
+                if let Some(decision) = self.r110_may_prevent(at, candidate, most, applied)? {
+                    return Ok(Applied::Ask(decision));
+                }
             }
             (ReplaceBy::PreventRemovingCounter(kind), Unit::Damage { .. }) => {
                 self.prevent(at, candidate, &ReplaceBy::Prevent, applied.clone());
@@ -4544,6 +4551,7 @@ mod w13a_moved;
 mod w5d_instead;
 
 mod r109_tokens_enter;
+mod r110_may_prevent;
 mod r283_prevent;
 mod r304c_amounts;
 mod r4703_loss;

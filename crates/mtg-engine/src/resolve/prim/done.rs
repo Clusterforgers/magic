@@ -141,6 +141,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::R6401PassControl { .. }
         | Effect::R6702Distribute { .. }
         | Effect::R6702CountersPerVote { .. }
+        | Effect::R110RemovePutThisWay { .. }
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
