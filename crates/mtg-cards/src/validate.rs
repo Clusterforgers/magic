@@ -1777,6 +1777,7 @@ impl<'a> Walker<'a> {
         }
     }
 
+    #[allow(clippy::too_many_lines)] // one arm for each kind of condition
     fn condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Not(inner) => self.at("Not", |w| w.condition(inner)),
@@ -1804,6 +1805,7 @@ impl<'a> Walker<'a> {
                 self.paid_condition(condition);
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
+            Condition::R112CastByOwnAbility => self.uses("Condition", "R112CastByOwnAbility"),
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),

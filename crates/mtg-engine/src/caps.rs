@@ -983,6 +983,7 @@ const RUNS: &[&str] = &[
     "Condition.StartingPlayer",
     "Condition.Among",
     "Condition.PaidToIgnoreBy",
+    "Condition.R112CastByOwnAbility",
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",

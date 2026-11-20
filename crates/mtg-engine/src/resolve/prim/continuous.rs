@@ -107,7 +107,8 @@ fn named_objects(
     // if ~ is exiled, ...'"): it keeps it while it stays there.
     let r112_works_in_exile = mods.iter().all(|wanted| {
         matches!(wanted, Wanted::GrantAbility(granted)
-            if matches!(&**granted, mtg_cards::ability::Ability::Triggered { from: mtg_cards::refs::ZoneKind::Exile, .. }))
+            if matches!(&**granted, mtg_cards::ability::Ability::Triggered { from: mtg_cards::refs::ZoneKind::Exile, .. }
+                | mtg_cards::ability::Ability::CostModifier { .. }))
     });
     Ok(cx
         .scope

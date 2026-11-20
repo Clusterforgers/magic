@@ -3613,6 +3613,16 @@ impl<'a> Scope<'a> {
             .and_then(|source| source.counted_as_cast(inner))
     }
 
+    /// Whether an ability of the source's own card is resolving: the source is cast by it ("you may cast it. It costs {4}
+    /// less to cast this way.").
+    fn r112_cast_by_own_ability(&self) -> bool {
+        self.state
+            .resolving()
+            .and_then(|resolving| self.state.object(resolving.object))
+            .and_then(GameObject::ability)
+            .is_some_and(|ability| ability.source().id == self.source.id)
+    }
+
     /// The alternative cost the spell was cast for: what the spell or ability announced, else what the spell its source is
     /// or came from was cast for while that is still the object named.
     fn cast_way(&self) -> Option<CastWay> {
@@ -3873,6 +3883,7 @@ impl<'a> Scope<'a> {
                 self.payments(OptionalKind::Additional) + self.payments(OptionalKind::Gift) > 0
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
+            Condition::R112CastByOwnAbility => self.r112_cast_by_own_ability(),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::AsCast(inner) => self.held_as_cast(inner),

@@ -1950,6 +1950,9 @@ pub enum Condition {
     AdditionalCostPaid,
     /// The spell was cast for this alternative cost; a permanent and its abilities read the spell it came from.
     CastWith(CastWay),
+    /// The spell is cast by the resolution of an ability of its own card ("It costs {4} less to cast this way." of a card
+    /// that gains "you may cast it"): the cost modifier of a granted cast.
+    R112CastByOwnAbility,
     /// The spell was cast at a time its caster couldn't have cast a sorcery (CR 307.1): another turn, a step that is no
     /// main phase or a stack that held more; a permanent and its abilities read the spell it came from.
     CastOffSorceryTiming,

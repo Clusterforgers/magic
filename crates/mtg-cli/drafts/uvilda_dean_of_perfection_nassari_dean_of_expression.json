@@ -1,16 +1,123 @@
 {
   "oracle_id": "63c4915f-5ad9-468f-95c5-d44f1b71631e",
   "name": "Uvilda, Dean of Perfection // Nassari, Dean of Expression",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Uvilda, Dean of Perfection",
       "oracle_fingerprint": "6dabdf35dc99c6e121580ae25a8f4ffb",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 328 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "In": "Exile" }, { "Is": { "Bound": "exiled" } }] },
+                        "counter": { "Other": "refine" },
+                        "count": 3
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": { "Each": [{ "In": "Exile" }, { "Is": { "Bound": "exiled" } }] },
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                                "if": {
+                                  "Matches": { "subject": "This", "selector": [{ "In": "Exile" }] }
+                                },
+                                "from": "Exile",
+                                "effects": [
+                                  {
+                                    "RemoveCounters": {
+                                      "from": "This",
+                                      "counter": { "Other": "refine" }
+                                    }
+                                  }
+                                ]
+                              }
+                            }
+                          },
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "CountersRemoved": {
+                                    "what": ["This"],
+                                    "counter": { "Other": "refine" }
+                                  }
+                                },
+                                "if": {
+                                  "All": [
+                                    {
+                                      "Compare": {
+                                        "left": {
+                                          "Counters": {
+                                            "on": "This",
+                                            "counter": { "Other": "refine" }
+                                          }
+                                        },
+                                        "op": "Eq",
+                                        "right": 0
+                                      }
+                                    },
+                                    {
+                                      "Matches": {
+                                        "subject": "This",
+                                        "selector": [{ "In": "Exile" }]
+                                      }
+                                    }
+                                  ]
+                                },
+                                "from": "Exile",
+                                "effects": [{ "CastFromZone": { "what": "This" } }]
+                              }
+                            }
+                          },
+                          {
+                            "GrantAbility": {
+                              "CostModifier": {
+                                "applies_to": ["This"],
+                                "change": "Reduce",
+                                "mana": "{4}",
+                                "condition": "R112CastByOwnAbility"
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

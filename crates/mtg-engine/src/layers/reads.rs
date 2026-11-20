@@ -658,6 +658,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::KickedWith(_)
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)
+        | Condition::R112CastByOwnAbility
         | Condition::CastOffSorceryTiming
         | Condition::AsCast(_)
         | Condition::R401OnCast(_)

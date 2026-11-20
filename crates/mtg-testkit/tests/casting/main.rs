@@ -157,6 +157,7 @@ mod r111_spend_as;
 mod r111_way_riders;
 mod r112_04_exiled_grant;
 mod r112_04_notes;
+mod r112_04_refine;
 mod r112_04_spells_gain;
 mod r112_04_voyage;
 mod r1a_spend;
