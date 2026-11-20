@@ -92,6 +92,7 @@ mod prepared_view;
 mod presence_view;
 mod preview_fixture;
 mod projection;
+mod r110_color_sets;
 mod random_mode_view;
 mod random_pick_view;
 mod read_view;
