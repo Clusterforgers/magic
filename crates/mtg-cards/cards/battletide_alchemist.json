@@ -1,0 +1,23 @@
+{
+  "oracle_id": "4867cc47-de84-4958-b1de-4a0a5050210e",
+  "name": "Battletide Alchemist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battletide Alchemist",
+      "oracle_fingerprint": "08ca97fc3830fea304d9acbfc0bbb648",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Damage": { "to": "EachPlayer" } },
+            "by": {
+              "R110MayPreventAmount": {
+                "Count": [{ "Subtype": "Cleric" }, { "ControlledBy": "You" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

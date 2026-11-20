@@ -1,0 +1,30 @@
+{
+  "oracle_id": "fca3545a-2956-49f9-8465-1c8937deb294",
+  "name": "Goldberry, River-Daughter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Goldberry, River-Daughter",
+      "oracle_fingerprint": "ea09edbcf4724e9b8efc740f75285317",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [{ "what": { "Object": ["Other", { "ControlledBy": "You" }] } }],
+            "effects": [{ "R110MoveEachKindMissing": { "from": { "Target": 0 }, "to": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "Tap"],
+            "targets": [{ "what": { "Object": ["Other", { "ControlledBy": "You" }] } }],
+            "effects": [
+              { "R110MoveOneOrMore": { "from": "This", "to": { "Target": 0 } } },
+              { "If": { "condition": "Performed", "then": [{ "Draw": {} }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

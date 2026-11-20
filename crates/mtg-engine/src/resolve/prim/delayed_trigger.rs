@@ -70,6 +70,8 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
         .filter(|(name, _)| !name.starts_with("?performed"))
         .map(|(name, targets)| (name.clone(), targets.clone()))
         .collect();
+    // The counters the steps before put, so "for each counter put this way, remove one" reads them later (CR 603.7c).
+    bindings.extend(super::r110_remove_put::r110_carried(cx.resolving));
     // The numbers `Let` kept travel as names too, so the trigger reads them as the setup fixed them.
     if let Some(resolving) = state.resolving.as_ref() {
         bindings.extend(
@@ -110,6 +112,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     } = origin(cx)?;
     let when = name_targets(cx, when, &mut bindings)?;
     let state = cx.state();
+    // "That combat" is the combat phase added last, fixed as the trigger is set up.
+    let when = match when {
+        TriggerPattern::R110ThatCombatBegins(0) => {
+            TriggerPattern::R110ThatCombatBegins(state.turn().r109_latest_mark())
+        }
+        other => other,
+    };
     Ok(Run::events(vec![Event::DelayedTriggerCreated(Box::new(
         DelayedCreated {
             id: DelayedId(state.next_delayed),

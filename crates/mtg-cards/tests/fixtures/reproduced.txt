@@ -197,6 +197,7 @@ Battle Screech
 Battle Sliver
 Battlefield Forge
 Battlefield Thaumaturge
+Battletide Alchemist
 Baxter Building
 Baxter, Fly in the Ointment
 Beamsaw Prospector
@@ -301,6 +302,7 @@ Boros Garrison
 Boros Signet
 Bosh, Iron Golem
 Bounty of Skemfar
+Bounty of the Hunt
 Boxing Ring
 Braids, Arisen Nightmare
 Brain Freeze
@@ -1086,6 +1088,7 @@ Goblin War Buggy
 Goblin Warchief
 Goblin-town Flunkies
 Godtracker of Jund
+Goldberry, River-Daughter
 Golden Ratio
 Golden-Scale Aeronaut
 Goldlust Triad
@@ -1273,6 +1276,7 @@ Illustrious Wanderglyph
 Ilysian Caryatid
 Imi Statue
 Immoral Bargain
+Impact Resonance
 Impact Tremors
 Imperial Hellkite
 Imperiosaur
@@ -1545,6 +1549,7 @@ Mage Hunter
 Magewright's Stone
 Magical Hack
 Magistrate's Scepter
+Magma Pummeler
 Magmatic Galleon
 Magmatic Insight
 Magnetic Web
@@ -2259,6 +2264,7 @@ Shah of Naar Isle
 Shaman of the Great Hunt
 Shamanic Revelation
 Shambling Shell
+Shambling Swarm
 Shapesharer
 Sharding Sphinx
 Shardmage's Rescue
@@ -2527,6 +2533,7 @@ Sweet-Gum Recluse
 Swift Kick
 Swiftfoot Boots
 Swiftwater Cliffs
+Swinging Ship
 Switcheroo
 Sword of Body and Mind
 Sword of Vengeance

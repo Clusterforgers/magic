@@ -29,5 +29,6 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::events(vec![Event::PhasesAdded {
         steps: phases.iter().map(|phase| first_step(*phase)).collect(),
         lone: false,
+        r110_after_first_combat: false,
     }]))
 }

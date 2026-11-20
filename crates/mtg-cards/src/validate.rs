@@ -93,6 +93,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
         by,
         ReplaceBy::PreventUpTo(_)
             | ReplaceBy::PreventAmount(_)
+            | ReplaceBy::R110MayPreventAmount(_)
             | ReplaceBy::PreventAtMost(_)
             | ReplaceBy::PreventCounted(_)
             | ReplaceBy::PreventCountedAnd { .. }
@@ -1443,6 +1444,8 @@ impl<'a> Walker<'a> {
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
             Amount::MostDamageBySource(who) => self.player_amount("MostDamageBySource", who),
+            Amount::R110MostDamageToOne => self.uses("Amount", "R110MostDamageToOne"),
+            Amount::R110RemovedThisWay(_) => self.uses("Amount", "R110RemovedThisWay"),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -3134,6 +3137,11 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
+            TriggerPattern::R110ThatCombatBegins(mark) => {
+                if *mark != 0 {
+                    self.problem("\"that combat\" is written as R110ThatCombatBegins 0");
+                }
+            }
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
@@ -3336,6 +3344,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::AnyOf(_)
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
+                | TriggerPattern::R110ThatCombatBegins(_)
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
@@ -4032,6 +4041,7 @@ impl Walker<'_> {
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
+                            | Effect::R110MoveOneOrMore { .. }
                             // An exchange happens whole or not at all, and a payment any number of times binds whether it paid.
                             | Effect::ExchangeControl { .. }
                             | Effect::PayAnyTimes { .. }
@@ -5140,6 +5150,10 @@ impl Walker<'_> {
                 w.at("to", |w| w.reference(to, Kind::Object));
                 w.at("count", |w| w.amount(count));
             }
+            Effect::R110MoveEachKindMissing { from, to } | Effect::R110MoveOneOrMore { from, to } => {
+                w.at("from", |w| w.reference(from, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Object));
+            }
             Effect::R6602CreateAttached { who, token, to } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
@@ -5467,6 +5481,8 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::R110RemovePutThisWay { .. }
+            | Effect::R110AddCombatAfterFirst
             | Effect::AuraSwap
             | Effect::R6501RedistributeLife
             | Effect::StillResolves
@@ -7301,6 +7317,7 @@ impl Walker<'_> {
             ReplaceBy::AddAmount(amount)
             | ReplaceBy::R6100AtLeast(amount)
             | ReplaceBy::PreventAmount(amount)
+            | ReplaceBy::R110MayPreventAmount(amount)
             | ReplaceBy::MayAddAmount(amount) => {
                 self.at("amount", |w| w.amount(amount));
             }
