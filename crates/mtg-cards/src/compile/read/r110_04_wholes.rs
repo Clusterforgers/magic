@@ -87,6 +87,15 @@ mod tests {
                 "a -1/-1 counter on it, prevent",
             ),
             ("number of Clerics", "number of Wizards"),
+            (
+                "After the first combat phase",
+                "After the second combat phase",
+            ),
+            (
+                "At the beginning of that combat",
+                "At the beginning of each combat",
+            ),
+            ("creatures that attacked this turn", "creatures you control"),
             ("a counter of each kind not on", "a counter of each kind on"),
             ("one or more counters", "a counter"),
             ("If you do, draw a card", "Draw a card"),

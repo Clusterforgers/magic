@@ -633,6 +633,9 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (who, s) = who(by);
             (format!("{who} mill{s} {}", subject(what)), false)
         }
+        TriggerPattern::R110ThatCombatBegins(_) => {
+            ("the beginning of that combat".to_owned(), false)
+        }
         TriggerPattern::StepBegins { step, whose } => {
             let owner = match whose {
                 Ref::You => "your",

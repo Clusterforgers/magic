@@ -198,7 +198,12 @@ steps: Array<Step>,
  * Each entry is a step on its own, not a phase: it is followed by what comes after it, not by the rest of its
  * phase ("additional upkeep steps after this phase").
  */
-lone?: boolean, } } | { "StepAdded": { 
+lone?: boolean, 
+/**
+ * The phases come after the first combat phase of the turn, which is still to begin or under way, instead of
+ * after the current phase ("After the first combat phase this turn, there's an additional combat phase").
+ */
+r110_after_first_combat?: boolean, } } | { "StepAdded": { 
 /**
  * The step added.
  */

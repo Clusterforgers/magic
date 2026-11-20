@@ -2190,6 +2190,10 @@ pub enum Effect {
         /// The kind of counter.
         counter: CounterKind,
     },
+    /// A combat phase is added after the first combat phase of the turn (CR 500.8, 505.1a: "After the first combat phase
+    /// this turn, there's an additional combat phase"); nothing once that phase has ended. A delayed trigger set up after
+    /// it names the added phase as `R110ThatCombatBegins(0)`.
+    R110AddCombatAfterFirst,
     /// For each counter of the kind put on an object by the steps before it, one is removed from that object ("For each
     /// +1/+1 counter you put on a creature this way, remove a +1/+1 counter from that creature"); in a delayed trigger it
     /// reads the counters the resolution that set the trigger up put (CR 603.7c), each object as the very object it was.

@@ -120,6 +120,7 @@ mod r109_token_enters;
 mod r109_waterbend_spells;
 mod r110_04_counter_moves;
 mod r110_04_damage;
+mod r110_04_extra_combat;
 mod r110_04_put_this_way;
 mod r1c;
 mod r1fix;

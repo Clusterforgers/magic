@@ -209,6 +209,11 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
         lone: bool,
+        /// The phases come after the first combat phase of the turn, which is still to begin or under way, instead of
+        /// after the current phase ("After the first combat phase this turn, there's an additional combat phase").
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
+        r110_after_first_combat: bool,
     },
     /// A step was added right after the current one, before any step added earlier (`Effect::AddStep`).
     StepAdded {

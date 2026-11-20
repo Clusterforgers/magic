@@ -3136,6 +3136,11 @@ impl<'a> Walker<'a> {
                 self.at("what", |w| w.selector(what));
                 self.at("by", |w| w.reference(by, Kind::Player));
             }
+            TriggerPattern::R110ThatCombatBegins(mark) => {
+                if *mark != 0 {
+                    self.problem("\"that combat\" is written as R110ThatCombatBegins 0");
+                }
+            }
             TriggerPattern::StepBegins { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
@@ -3338,6 +3343,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::AnyOf(_)
                 | TriggerPattern::State { .. }
                 | TriggerPattern::StepBegins { .. }
+                | TriggerPattern::R110ThatCombatBegins(_)
                 | TriggerPattern::BecomesMonarch { .. }
                 | TriggerPattern::TakesInitiative { .. }
                 | TriggerPattern::Ventured { .. }
@@ -5475,6 +5481,7 @@ impl Walker<'_> {
             }),
             Effect::EndTurn
             | Effect::R110RemovePutThisWay { .. }
+            | Effect::R110AddCombatAfterFirst
             | Effect::AuraSwap
             | Effect::R6501RedistributeLife
             | Effect::StillResolves

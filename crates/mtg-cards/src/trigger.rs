@@ -793,6 +793,9 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// The combat phase an effect added begins ("At the beginning of that combat"): written 0 in a delayed trigger, which
+    /// names the combat phase added last as it is set up (`Effect::R110AddCombatAfterFirst`, `Effect::AddPhase`).
+    R110ThatCombatBegins(u32),
     /// A step begins ("at the beginning of ...").
     StepBegins {
         /// The step.

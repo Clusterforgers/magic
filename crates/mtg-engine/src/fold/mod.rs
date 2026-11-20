@@ -513,7 +513,17 @@ fn apply_turn(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                 return Err(invalid(format!("{player:?} has no extra turn to skip")));
             }
         }
-        Event::PhasesAdded { steps, lone } => add_phases(state, steps, *lone)?,
+        Event::PhasesAdded {
+            steps,
+            lone,
+            r110_after_first_combat,
+        } => {
+            if *r110_after_first_combat {
+                crate::r110_after_first_combat::r110_add_after_first_combat(state, steps);
+            } else {
+                add_phases(state, steps, *lone)?;
+            }
+        }
         Event::StepAdded { step } => state.turn.r306_steps.insert(0, *step),
         Event::StepBegan { step } => {
             // A step added after the one that ends begins next, and its entry is spent.

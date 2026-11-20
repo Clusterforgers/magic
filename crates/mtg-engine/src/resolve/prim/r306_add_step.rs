@@ -52,6 +52,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(Run::events(vec![Event::PhasesAdded {
             steps: vec![step; count],
             lone: true,
+            r110_after_first_combat: false,
         }]));
     }
     Ok(Run::events(vec![Event::StepAdded { step }; count]))

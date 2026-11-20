@@ -1782,6 +1782,14 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 .then(|| cause(state, subjects))
         }
         (
+            TriggerPattern::R110ThatCombatBegins(mark),
+            Happened::Step {
+                step: Step::BeginCombat,
+                active,
+            },
+        ) => (*mark != 0 && state.turn().r109_combat_mark() == *mark)
+            .then(|| cause(state, vec![Target::Player(*active)])),
+        (
             TriggerPattern::StepBegins { step, whose },
             Happened::Step {
                 step: began,
