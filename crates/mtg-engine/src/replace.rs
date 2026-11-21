@@ -875,6 +875,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::R109EntersAttached(_)
+        | ReplaceBy::R612MayExchangeTextBoxes(_)
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -893,7 +894,11 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::AsEnters(_) => matches!(unit, Unit::Enter { .. } | Unit::Transform { .. }),
-        ReplaceBy::Choose(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
+        ReplaceBy::R6603AttachToPlayer => matches!(unit, Unit::Transform { .. }),
+        ReplaceBy::Choose(_) => matches!(
+            unit,
+            Unit::Enter { .. } | Unit::Attach { .. } | Unit::Transform { .. }
+        ),
         ReplaceBy::Instead(_) => !matches!(
             unit,
             Unit::Other | Unit::Attach { .. } | Unit::Transform { .. }
@@ -948,6 +953,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::AsEntersWith { .. }
                 | ReplaceBy::ChooseAfter { .. }
                 | ReplaceBy::R109EntersAttached(_)
+                | ReplaceBy::R612MayExchangeTextBoxes(_)
         )
     )
 }
@@ -2783,8 +2789,12 @@ impl Pass<'_> {
                 self.r5517_under_you(at, candidate.controller, &unit);
                 self.slots[at].applied = applied;
             }
-            (ReplaceBy::Choose(kind), Unit::Attach { object }) => {
+            // "As this creature transforms into ~, choose an opponent" is kept as a choice made as it is attached is.
+            (ReplaceBy::Choose(kind), Unit::Attach { object } | Unit::Transform { object, .. }) => {
                 return self.r5501_choose_as_attached(at, candidate, *kind, *object, applied);
+            }
+            (ReplaceBy::R6603AttachToPlayer, Unit::Transform { object, .. }) => {
+                return self.r6603_attach_to_player(at, candidate, *object, applied);
             }
             (ReplaceBy::AsEnters(effects), Unit::Transform { .. }) => {
                 return Ok(self.r304_as_enters(at, candidate, effects, &unit, applied));
@@ -2834,6 +2844,9 @@ impl Pass<'_> {
             }
             ReplaceBy::R109EntersAttached(to) => {
                 self.r109_enters_attached(at, candidate, to, (object, controller), applied)
+            }
+            ReplaceBy::R612MayExchangeTextBoxes(with) => {
+                self.r612_may_exchange(at, candidate, with, (object, controller), applied)
             }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
@@ -4537,6 +4550,7 @@ mod dredge;
 mod lg1_draws;
 
 mod r109_enters_attached;
+mod r113_text_boxes;
 mod reveal;
 
 mod amplify;

@@ -6,10 +6,15 @@
 use mtg_cards::ability::Ability;
 use mtg_cards::trigger::ReplaceWhen;
 
-use super::{Pass, Source, Unit};
+use mtg_cards::trigger::EntersChoice;
+use mtg_core::ids::ObjectId;
+
+use super::{Applied, Asked, Candidate, Item, Origin, Pass, Slot, Source, Unit};
 use crate::ability_reader::abilities_of;
 use crate::characteristics::controller_of_object;
+use crate::error::EngineError;
 use crate::events::Event;
+use crate::object::Chosen;
 use crate::state::GameState;
 
 /// Whether `event` turns a permanent over to a face that prints an "as this transforms" replacement, which the step must
@@ -73,5 +78,39 @@ impl Pass<'_> {
                 copied: false,
             })
             .collect()
+    }
+}
+
+impl Pass<'_> {
+    /// "As this permanent transforms into ~, attach it to a player." (`ReplaceBy::R6603AttachToPlayer`, CR 303.4f): its
+    /// controller chooses a player, and the Aura it turns into is attached to that player right after it turns over, in
+    /// the same batch, so it is never an Aura attached to nothing.
+    pub(super) fn r6603_attach_to_player(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        object: ObjectId,
+        applied: Vec<Origin>,
+    ) -> Result<Applied, EngineError> {
+        let chosen = match self.chooses(
+            candidate.object.id,
+            candidate.controller,
+            EntersChoice::Player,
+        )? {
+            Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+            Asked::Got(chosen) => chosen,
+        };
+        self.slots[at].applied = applied;
+        if let Some(Chosen::Player(player)) = chosen {
+            self.slots.insert(
+                at + 1,
+                Slot {
+                    item: Item::One(Event::AttachedToPlayer { object, player }),
+                    applied: Vec::new(),
+                    frozen: false,
+                },
+            );
+        }
+        Ok(Applied::Done)
     }
 }

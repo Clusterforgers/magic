@@ -57,7 +57,10 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
         // The land loses its abilities with its land types; a text change rewrites the rules, the keywords and the
         // subtypes.
-        Modification::SetLandTypes(_) | Modification::ChangeText { .. } => Traits::SUBTYPES
+        Modification::SetLandTypes(_)
+        | Modification::ChangeText { .. }
+        | Modification::R612ExchangeTextBoxes
+        | Modification::R612TextBoxOf(_) => Traits::SUBTYPES
             .or(Traits::KEYWORDS)
             .or(Traits::RULES)
             .or(Traits::ACTIVATED),
@@ -121,7 +124,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypesNthChosen(_)
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
-        | Wanted::ChangeTextChosenTo { .. } => Traits::SUBTYPES
+        | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::R612ExchangeTextBoxes => Traits::SUBTYPES
             .or(Traits::KEYWORDS)
             .or(Traits::RULES)
             .or(Traits::ACTIVATED),
@@ -219,6 +223,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
         | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::R612ExchangeTextBoxes
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor

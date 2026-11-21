@@ -1,16 +1,16 @@
 {
   "oracle_id": "4b96c22a-0d5b-44fd-b326-5f3ffcc3917b",
   "name": "Deadpool, Trading Card",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Deadpool, Trading Card",
       "oracle_fingerprint": "d0b96efb55cdfab6d9ae29e8e00c1246",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 73 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "R612MayExchangeTextBoxes": [{ "Type": "Creature" }, "Other"] }
           }
         },
         {

@@ -3024,6 +3024,7 @@ impl<'a> Walker<'a> {
             | Modification::AddLandTypeChosen(_)
             | Modification::ChangeTextChosen { .. }
             | Modification::ChangeTextChosenTo { .. }
+            | Modification::R612ExchangeTextBoxes
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
@@ -6134,6 +6135,7 @@ impl Walker<'_> {
                     | Modification::AddLandTypeChosen(_)
                     | Modification::ChangeTextChosen { .. }
                     | Modification::ChangeTextChosenTo { .. }
+                    | Modification::R612ExchangeTextBoxes
             )
         }) {
             self.at("mods", |w| {
@@ -7502,9 +7504,14 @@ impl Walker<'_> {
             self.problem("a draw of several cards is replaced only by steps instead, and only from two cards on");
         }
         if matches!(when, ReplaceWhen::R6603Transforms { .. })
-            && !matches!(by, ReplaceBy::AsEnters(_))
+            && !matches!(
+                by,
+                ReplaceBy::AsEnters(_) | ReplaceBy::Choose(_) | ReplaceBy::R6603AttachToPlayer
+            )
         {
-            self.problem("a permanent that transforms has only effects as it turns over");
+            self.problem(
+                "a permanent that transforms has only effects or a choice as it turns over",
+            );
         }
         let enters = matches!(
             when,
@@ -7662,6 +7669,20 @@ impl Walker<'_> {
                     self.problem("only the Equipment itself enters attached");
                 }
                 self.at("to", |w| w.selector(to));
+            }
+            ReplaceBy::R612MayExchangeTextBoxes(with) => {
+                if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {
+                    self.problem("only the permanent itself exchanges its text box as it enters");
+                }
+                self.at("with", |w| w.selector(with));
+            }
+            ReplaceBy::R6603AttachToPlayer => {
+                if !matches!(when, ReplaceWhen::R6603Transforms { what } if *what == Selector::this())
+                {
+                    self.problem(
+                        "only the permanent itself is attached to a player as it transforms",
+                    );
+                }
             }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
             ReplaceBy::TappedForCounters { count: 0, .. } => {

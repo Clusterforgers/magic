@@ -748,9 +748,15 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
             _ => None,
         },
         // The ability is printed on the donor, and it is only an ability of the object while the donor is the same object.
-        Grant::Borrowed { donor, ability } => lendable(card_of(state, donor, None)?)
-            .into_iter()
-            .find_map(|(index, body)| (index == ability).then_some(body)),
+        // A text box taken from the donor (`Modification::R612TextBoxOf`) lends every ability of its rules.
+        Grant::Borrowed { donor, ability } => {
+            let card = card_of(state, donor, None)?;
+            card.rules.get(ability).cloned().or_else(|| {
+                lendable(card)
+                    .into_iter()
+                    .find_map(|(index, body)| (index == ability).then_some(body))
+            })
+        }
         Grant::Ring { player, level } => crate::ring::ability_given(state, player, level),
         // Read with its holder (`r111_lent::r111_read`).
         Grant::R111Lent { .. } => None,
@@ -805,7 +811,16 @@ fn granted_keyword(
             WantedModification::AddKeyword(keyword) => Some(keyword),
             _ => None,
         },
-        Grant::Borrowed { .. } | Grant::R111Lent { .. } | Grant::Ring { .. } => None,
+        // A keyword of a text box taken from another object (`Modification::R612TextBoxOf`).
+        Grant::Borrowed { donor, ability } => match card_of(state, donor, None)?
+            .rules
+            .get(ability)
+            .map(|rules| &**rules)
+        {
+            Some(Ability::Keyword(keyword)) => Some(keyword.clone()),
+            _ => None,
+        },
+        Grant::R111Lent { .. } | Grant::Ring { .. } => None,
     }
 }
 

@@ -547,6 +547,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             from: chosen_word(scope, from)?,
             to: crate::text_change::TextWord::Subtype(mtg_core::card::Subtype(to.clone())),
         },
+        Wanted::R612ExchangeTextBoxes => Modification::R612ExchangeTextBoxes,
         Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
         | Wanted::AddChosenColor

@@ -95,6 +95,19 @@ impl Selector {
     }
 }
 
+/// The text box an object takes from another (`Modification::R612TextBoxOf`).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct R612TextBox {
+    /// The object whose text box it is.
+    pub donor: ObjectId,
+    /// The abilities its rules text holds, each with its index among the rules of the donor's card; a keyword among them
+    /// is given as a keyword.
+    pub given: Vec<Borrowed>,
+    /// Its plain mana abilities.
+    pub mana: Vec<mtg_cards::definition::AbilityDef>,
+}
+
 /// An activated ability of another object, which an object has (`Modification::GainAbilities`).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -187,6 +200,13 @@ pub enum Modification {
         /// The word written.
         to: crate::text_change::TextWord,
     },
+    /// The two objects the effect changes exchange their text boxes (layer 3, CR 612.1): each takes the rules text the
+    /// other's copiable values give it, worked out as the layer applies (`R612TextBoxOf`); with any other number of
+    /// objects it changes nothing.
+    R612ExchangeTextBoxes,
+    /// The object's text box is the one the donor's copiable values give (layer 3, CR 612.1): its own printed abilities,
+    /// keywords and plain mana abilities give way to the donor's. Worked out from `R612ExchangeTextBoxes` by the layers.
+    R612TextBoxOf(R612TextBox),
     /// Sets power and toughness (layer 7b).
     SetPowerToughness {
         /// New power.
@@ -308,6 +328,8 @@ impl Modification {
         Some(match self {
             Modification::SetController(_) => Layer::Control,
             Modification::ChangeText { .. }
+            | Modification::R612ExchangeTextBoxes
+            | Modification::R612TextBoxOf(_)
             | Modification::AddNameWords(_)
             | Modification::SetName(_) => Layer::Text,
             Modification::AddType(_)
@@ -356,6 +378,7 @@ impl Modification {
         })
     }
 
+    #[allow(clippy::too_many_lines)]
     pub(crate) fn apply(&self, chars: &mut Characteristics) {
         match self {
             Modification::AddNameWords(words) => chars.name_words.push(words.clone()),
@@ -419,6 +442,7 @@ impl Modification {
                     .fold(chars.colors, mtg_core::color::ColorSet::with);
             }
             Modification::LoseAbilities => chars.abilities.clear(),
+            Modification::R612TextBoxOf(text) => chars.abilities.clone_from(&text.mana),
             Modification::SetPowerToughness { power, toughness } => {
                 chars.power = Some(*power);
                 chars.toughness = Some(*toughness);
@@ -435,6 +459,7 @@ impl Modification {
             // restrictions the same way.
             // The controller is walked with the characteristics (`characteristics::walk`).
             Modification::SetController(_)
+            | Modification::R612ExchangeTextBoxes
             | Modification::AddKeyword(_)
             | Modification::AddKeywords(_)
             | Modification::RemoveKeyword(_)

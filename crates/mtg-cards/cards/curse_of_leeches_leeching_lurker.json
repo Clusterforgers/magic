@@ -1,7 +1,7 @@
 {
   "oracle_id": "44eb0caa-ba16-49e4-915c-bd5e1ce770e6",
   "name": "Curse of Leeches // Leeching Lurker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Curse of Leeches",
@@ -9,9 +9,9 @@
       "abilities": [
         { "Keyword": { "EnchantPlayer": {} } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 15, "end": 89 }
+          "Replacement": {
+            "when": { "R6603Transforms": { "what": ["This"] } },
+            "by": "R6603AttachToPlayer"
           }
         },
         {

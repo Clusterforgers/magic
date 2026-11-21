@@ -186,6 +186,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantBeTurnedFaceUp: "can't be turned face up",
       BlockedByAll: "can't be blocked unless all creatures defending player controls block it",
       AddAllCreatureTypes: `${becomes} every creature type`,
+      R612ExchangeTextBoxes: `${group ? 'exchange their text boxes' : 'exchanges its text box'}`,
     }[modification]
   }
   if ('CantBeBlockedBy' in modification) return "can't be blocked by some creatures"
@@ -238,6 +239,8 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `${loses} ${word} and can't have or gain it`
   }
   if ('GrantAbility' in modification || 'GainAbilities' in modification) return `${gains} an ability`
+  if ('R612TextBoxOf' in modification)
+    return `${group ? 'have' : 'has'} the text box of ${n.card(modification.R612TextBoxOf.donor)}`
   if ('GrantText' in modification) return `${gains} “${modification.GrantText}”`
   if ('AddNameWords' in modification)
     return `${group ? 'have' : 'has'} “${modification.AddNameWords}” added to the name`
