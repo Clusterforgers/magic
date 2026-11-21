@@ -712,6 +712,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r112_04_wholes::r112_04_add_wholes(ability, &mut texts);
     super::r113_04_wholes::r113_04_add_wholes(ability, &mut texts);
     super::r114_04_wholes::r114_04_add_wholes(ability, &mut texts);
+    super::r115_04_wholes::r115_04_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
@@ -2521,6 +2522,23 @@ impl Writer<'_> {
             _ => false,
         }
     }
+    /// A `PutCountersOf` its controller puts (no `by`), in the words of `l292_counters_of`.
+    fn r115_counters_of(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::PutCountersOf {
+            on,
+            of,
+            each,
+            one_kind,
+            per_kind,
+            by: None,
+            ..
+        } = effect
+        else {
+            return None;
+        };
+        self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)
+    }
+
     /// "put the same number and kind of counters on ~": the counters the triggering event put (`PutCountersOf.put`).
     fn r4706_same_counters(&mut self, effect: &Effect, on: &Ref) -> Option<String> {
         let Effect::PutCountersOf {
@@ -2528,6 +2546,7 @@ impl Writer<'_> {
             each: None,
             one_kind: false,
             per_kind: None,
+            by: None,
             ..
         } = effect
         else {
@@ -2709,14 +2728,7 @@ impl Writer<'_> {
                     }
                 }
             }
-            Effect::PutCountersOf {
-                on,
-                of,
-                each,
-                one_kind,
-                per_kind,
-                ..
-            } => self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)?,
+            Effect::PutCountersOf { .. } => self.r115_counters_of(effect)?,
             Effect::MoveCounters {
                 from,
                 to,

@@ -52,6 +52,7 @@ fn ballot(name: &str, secret: bool) -> Arc<CardDefinition> {
                         secret,
                         bind: None,
                         tally: None,
+                        up_to: false,
                     },
                     Effect::Draw {
                         bind: None,

@@ -1204,6 +1204,13 @@ pub enum Event {
         /// The player it was given to.
         to: PlayerId,
     },
+    /// The counters the `CountersChanged` events after it in its batch put are put by this player, not by the controller of
+    /// the resolving spell or ability (CR 122.6, "they put the same number and kind of counters"): replacement effects and
+    /// triggers that care who puts counters see this player.
+    R115CountersPutBy {
+        /// Who puts the counters.
+        player: PlayerId,
+    },
     /// A player foraged (CR 701.61): the Food sacrificed or the cards exiled are the moves that come before it.
     Foraged {
         /// Who foraged.
@@ -1793,6 +1800,7 @@ impl Event {
             | Event::R6401Mentored { .. }
             | Event::UpkeepSettled { .. }
             | Event::Foraged { .. }
+            | Event::R115CountersPutBy { .. }
             | Event::DieRolled { .. }
             | Event::R6402DieChanged { .. }
             | Event::CoinFlipped { .. }

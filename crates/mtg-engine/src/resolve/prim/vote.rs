@@ -13,8 +13,8 @@ use crate::resolve::{Cx, Next, ResolveError, Run};
 
 /// The ballots of a vote, the controller first, in turn order; a player who has left the game does not vote. A player
 /// who gets additional votes casts them right after the first, and one who may vote an additional time (CR 701.38d)
-/// casts a last ballot they may leave blank (`true`).
-fn voters(cx: &Cx<'_>) -> Vec<(PlayerId, bool)> {
+/// casts a last ballot they may leave blank (`true`); with `blank` every ballot may be left blank ("votes for up to one").
+fn voters(cx: &Cx<'_>, blank: bool) -> Vec<(PlayerId, bool)> {
     let state = cx.state();
     state
         .turn_order_from(cx.scope.controller)
@@ -22,7 +22,7 @@ fn voters(cx: &Cx<'_>) -> Vec<(PlayerId, bool)> {
         .flat_map(|player| {
             let extra = crate::rules::ep33_extra_votes(state, player);
             let again = crate::rules::w17c_votes_again(state, player);
-            std::iter::repeat_n((player, false), 1 + extra).chain(again.then_some((player, true)))
+            std::iter::repeat_n((player, blank), 1 + extra).chain(again.then_some((player, true)))
         })
         .collect()
 }
@@ -59,6 +59,14 @@ fn r6400_pick(cx: &Cx<'_>, mut choosers: Vec<OptionChooser>) -> Result<Optioned,
 /// The option of an additional ballot that casts no vote.
 const W17C_NO_VOTE: &str = "No additional vote";
 
+/// The blank ballot of a vote for up to one (`Vote.up_to`).
+const R115_NO_VOTE: &str = "No vote";
+
+/// The words of a blank ballot.
+const fn r115_blank(up_to: bool) -> &'static str {
+    if up_to { R115_NO_VOTE } else { W17C_NO_VOTE }
+}
+
 /// How a name is shown in the question and in the options: the words of the card.
 fn shown(name: &str) -> String {
     name.replace('_', " ")
@@ -71,7 +79,7 @@ fn w17c_choosers(
     blank: &ChoiceOption,
     text: &str,
 ) -> Vec<OptionChooser> {
-    voters(cx)
+    voters(cx, false)
         .into_iter()
         .map(|(player, again)| OptionChooser {
             player,
@@ -184,10 +192,11 @@ fn r376_player_votes(
     players: &[PlayerId],
     another: bool,
     secret: bool,
+    blank: bool,
 ) -> Result<Result<Vec<(PlayerId, Target)>, Run>, ResolveError> {
     let mut ballots: Vec<Vec<PlayerId>> = Vec::new();
     let mut choosers: Vec<OptionChooser> = Vec::new();
-    for (voter, again) in voters(cx) {
+    for (voter, again) in voters(cx, blank) {
         let open: Vec<PlayerId> = players
             .iter()
             .copied()
@@ -208,9 +217,9 @@ fn r376_player_votes(
             .collect();
         if again {
             options.push(if secret {
-                ChoiceOption::Secret(W17C_NO_VOTE.to_owned())
+                ChoiceOption::Secret(r115_blank(blank).to_owned())
             } else {
-                ChoiceOption::Label(W17C_NO_VOTE.to_owned())
+                ChoiceOption::Label(r115_blank(blank).to_owned())
             });
         }
         ballots.push(open);
@@ -245,15 +254,16 @@ fn r6702_secret_object_votes(
     cx: &Cx<'_>,
     objects: &[ObjectId],
     candidates: &[Target],
+    blank: bool,
 ) -> Result<Result<Vec<(PlayerId, Target)>, Run>, ResolveError> {
     let mut choosers: Vec<OptionChooser> = Vec::new();
-    for (voter, again) in voters(cx) {
+    for (voter, again) in voters(cx, blank) {
         let mut options: Vec<ChoiceOption> = objects
             .iter()
             .map(|id| ChoiceOption::SecretObject(*id))
             .collect();
         if again {
-            options.push(ChoiceOption::Secret(W17C_NO_VOTE.to_owned()));
+            options.push(ChoiceOption::Secret(r115_blank(blank).to_owned()));
         }
         choosers.push(OptionChooser {
             player: voter,
@@ -296,6 +306,7 @@ fn of(
     secret: bool,
     bind: Option<&str>,
     tally: Option<&str>,
+    blank: bool,
 ) -> Result<Run, ResolveError> {
     let candidates = cx.scope.refs(of)?;
     let players: Vec<PlayerId> = candidates.iter().filter_map(|t| t.player()).collect();
@@ -309,16 +320,16 @@ fn of(
             "a vote is on players or on objects, not both".into(),
         ));
     }
-    let seats = voters(cx);
+    let seats = voters(cx, blank);
     let votes: Vec<(PlayerId, Target)> = if candidates.is_empty() {
         Vec::new()
     } else if secret && !objects.is_empty() {
-        match r6702_secret_object_votes(cx, &objects, &candidates)? {
+        match r6702_secret_object_votes(cx, &objects, &candidates, blank)? {
             Ok(votes) => votes,
             Err(ask) => return Ok(ask),
         }
     } else if objects.is_empty() {
-        match r376_player_votes(cx, &players, false, secret)? {
+        match r376_player_votes(cx, &players, false, secret, blank)? {
             Ok(votes) => votes,
             Err(ask) => return Ok(ask),
         }
@@ -365,6 +376,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         secret,
         bind,
         tally,
+        up_to,
     } = effect
     else {
         return Err(wrong_effect("Vote"));
@@ -377,10 +389,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let (bind, tally) = (bind.as_deref(), tally.as_deref());
     match options {
         VoteFor::Named(names) => named(cx, names, *secret),
-        VoteFor::Of(reference) => of(cx, reference, *secret, bind, tally),
+        VoteFor::Of(reference) => of(cx, reference, *secret, bind, tally, *up_to),
         VoteFor::AnotherPlayer => {
             let players = cx.state().turn_order_from(cx.scope.controller);
-            match r376_player_votes(cx, &players, true, *secret)? {
+            match r376_player_votes(cx, &players, true, *secret, *up_to)? {
                 Ok(votes) => {
                     let candidates: Vec<Target> =
                         players.iter().copied().map(Target::Player).collect();
@@ -509,6 +521,36 @@ mod tests {
             .collect();
         assert_eq!(options.options, both);
         assert_eq!(decision.player, PlayerId(0));
+    }
+
+    #[rstest]
+    fn r115_a_vote_for_up_to_one_offers_a_blank_ballot_to_the_first_voter(
+        #[values(2, 3, 4)] seats: usize,
+        #[values(true, false)] secret: bool,
+        #[values(true, false)] up_to: bool,
+    ) {
+        let json = format!(
+            r#"{{"Vote":{{"options":{{"Of":{{"Each":[{{"Type":"Creature"}}]}}}},"secret":{secret},"as":"most","up_to":{up_to}}}}}"#
+        );
+        let game = state(
+            vec![vec![]; seats],
+            std::iter::once(vec![creature("Source", 1, 1), creature("Bear", 2, 2)])
+                .chain(std::iter::repeat_n(vec![], seats - 1))
+                .collect(),
+        );
+        let Run::Ask(decision) = play(&game, 0, &json).unwrap() else {
+            panic!("a vote asks the first voter");
+        };
+        assert_eq!(decision.player, PlayerId(0));
+        let blank = match decision.kind {
+            DecisionKind::ChooseOption(options) => options
+                .options
+                .iter()
+                .any(|option| matches!(option, ChoiceOption::Secret(word) if word == R115_NO_VOTE)),
+            DecisionKind::ChooseCards(cards) => cards.min == 0,
+            other => panic!("a vote on objects asks for one of them: {other:?}"),
+        };
+        assert_eq!(blank, up_to, "only a vote for up to one may be left blank");
     }
 
     #[rstest]

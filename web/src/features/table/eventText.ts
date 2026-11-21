@@ -98,6 +98,10 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
     return `, choosing ${n.seat(seat)} and ${name}`
   }
   if ('R111Names' in chosen) return `, choosing ${joinWords(chosen.R111Names)}`
+  if ('R115ColorAndPlayer' in chosen) {
+    const [color, seat] = chosen.R115ColorAndPlayer
+    return `, choosing ${color.toLowerCase()} and ${n.seat(seat)}`
+  }
   return `, choosing ${chosen.CreatureType}`
 }
 
@@ -1234,6 +1238,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.seat(player)} ${paid ? 'pays' : "doesn't pay"} the ${cost} of ${n.card(object)}`)
   }
   if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
+  if ('R115CountersPutBy' in event) {
+    return quiet(`${n.seat(event.R115CountersPutBy.player)} puts the counters that follow`)
+  }
   if ('DieRolled' in event) {
     const { player, sides, result, natural } = event.DieRolled
     const shown = natural === undefined ? '' : ` (rolled ${natural})`

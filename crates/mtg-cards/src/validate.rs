@@ -674,6 +674,9 @@ impl<'a> Walker<'a> {
         if *r == Ref::R4700OtherChosen {
             self.uses("Ref", "R4700OtherChosen");
         }
+        if *r == Ref::R115Causer {
+            self.uses("Ref", "R115Causer");
+        }
         if matches!(r, Ref::R111Object(_)) {
             self.problem("an object is fixed by the engine and never named in a card file");
         }
@@ -691,6 +694,7 @@ impl<'a> Walker<'a> {
         }
         match r {
             Ref::R110Seat(_)
+            | Ref::R115Causer
             | Ref::R4700OtherChosen
             | Ref::You
             | Ref::R111LastDamagedYou(_)
@@ -1933,6 +1937,10 @@ impl<'a> Walker<'a> {
             Condition::R111CastOrPutLastTurn
             | Condition::R111AttackedLastCombat(_)
             | Condition::R111DamagedThisTurnBy(_) => self.r111_condition(condition),
+            Condition::R115MostCommonColor(among) => {
+                self.uses("Condition", "R115MostCommonColor");
+                self.at("R115MostCommonColor", |w| w.selector(among));
+            }
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
             Condition::TriggeringSticker(_) => self.uses("Condition", "TriggeringSticker"),
@@ -4000,6 +4008,7 @@ impl Walker<'_> {
             Ref::R110Seat(_)
             | Ref::R111LastDamagedYou(_)
             | Ref::R111BlockedController { .. }
+            | Ref::R115Causer
             | Ref::R4700OtherChosen
             | Ref::You
             | Ref::Opponents
@@ -5320,7 +5329,16 @@ impl Walker<'_> {
                 secret,
                 bind,
                 tally,
-            } => w.vote(options, *secret, bind.as_deref(), tally.as_deref()),
+                up_to,
+            } => {
+                if *up_to {
+                    w.uses("Effect", "Vote.R115UpTo");
+                    if matches!(options, VoteFor::Named(_)) {
+                        w.problem("only a vote on players or objects may be left blank");
+                    }
+                }
+                w.vote(options, *secret, bind.as_deref(), tally.as_deref());
+            }
             Effect::BidLife {
                 who,
                 start,
@@ -5386,8 +5404,13 @@ impl Walker<'_> {
                 put,
                 per_kind,
                 absent_only,
+                by,
                 ..
             } => {
+                if let Some(by) = by {
+                    w.uses("Effect", "PutCountersOf.R115By");
+                    w.at("by", |w| w.reference(by, Kind::Player));
+                }
                 if *put && *of != Ref::Triggering {
                     w.problem("the counters a triggering event put are read from `Triggering`");
                 }

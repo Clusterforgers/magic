@@ -1,0 +1,42 @@
+{
+  "oracle_id": "72eaaa73-3263-46e9-aa86-5862d3aed20a",
+  "name": "Call to Arms",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Call to Arms",
+      "oracle_fingerprint": "5a235885714975a6140246a46ac04f67",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "R115ColorAndOpponent" }
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "Color": "White" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+            "condition": {
+              "R115MostCommonColor": [{ "Not": "Token" }, { "ControlledBy": "Chosen" }]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "State": {
+                "condition": {
+                  "Not": {
+                    "R115MostCommonColor": [{ "Not": "Token" }, { "ControlledBy": "Chosen" }]
+                  }
+                }
+              }
+            },
+            "effects": [{ "Sacrifice": { "filter": ["This"] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
