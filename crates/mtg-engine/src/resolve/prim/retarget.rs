@@ -116,17 +116,14 @@ fn ask_to_change(
     }
 }
 
-/// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
-/// is the one the new targets must be legal for: the controller of the object.
-#[allow(clippy::too_many_lines)]
-pub(super) fn ask(
+/// The targets of `original` that `way` lets change, each with its position, wording and legal new targets. The first
+/// player is the one choosing and the second is the one the new targets must be legal for.
+fn changeable_targets(
     cx: &Cx<'_>,
     (player, judged): (PlayerId, PlayerId),
-    answers: &mut Iter<'_, (PlayerId, Choice)>,
-    (original, picked): (Original<'_>, u64),
-    mut copy: Choices,
+    original: Original<'_>,
     way: Way,
-) -> Result<Retargeted, ResolveError> {
+) -> Vec<(usize, String, Vec<Target>)> {
     let random = matches!(way, Way::Random | Way::R113RandomNotYours);
     let state = cx.state();
     let specs = announced_specs(original.ability, &original.choices.modes);
@@ -181,6 +178,21 @@ pub(super) fn ask(
             changeable.push((at, wording::spec(spec), legal));
         }
     }
+    changeable
+}
+
+/// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
+/// is the one the new targets must be legal for: the controller of the object.
+pub(super) fn ask(
+    cx: &Cx<'_>,
+    (player, judged): (PlayerId, PlayerId),
+    answers: &mut Iter<'_, (PlayerId, Choice)>,
+    (original, picked): (Original<'_>, u64),
+    mut copy: Choices,
+    way: Way,
+) -> Result<Retargeted, ResolveError> {
+    let random = matches!(way, Way::Random | Way::R113RandomNotYours);
+    let changeable = changeable_targets(cx, (player, judged), original, way);
     if changeable.is_empty() {
         return Ok(Retargeted::Done(copy));
     }
