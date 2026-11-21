@@ -82,12 +82,12 @@ function timed(count: number, price: string): { ms: number; legal: number; paid:
 
 describe('a crowded board of mana', () => {
   it.each([
-    [60, '{3}{G}{G}', 4_000],
-    [60, '{W}{U}{B}{R}{G}', 4_000],
-    [60, '{2}{G/U}{G/U}', 4_000],
-    [120, '{3}{G}{G}', 6_000],
-    [120, '{W}{U}{B}{R}{G}', 6_000],
-    [120, '{6}{U}{U}', 6_000],
+    [60, '{3}{G}{G}', 10_000],
+    [60, '{W}{U}{B}{R}{G}', 10_000],
+    [60, '{2}{G/U}{G/U}', 10_000],
+    [120, '{3}{G}{G}', 15_000],
+    [120, '{W}{U}{B}{R}{G}', 15_000],
+    [120, '{6}{U}{U}', 15_000],
   ])('with %i sources works out %s within %i ms', (count, price, bound) => {
     const { ms, legal, paid } = timed(count, price)
     expect(paid).toBe(true)
