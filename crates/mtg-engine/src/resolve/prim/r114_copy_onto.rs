@@ -16,9 +16,9 @@ use crate::copies::SpellCopy;
 use crate::decision::{Decision, DecisionKind};
 use crate::events::Event;
 use crate::object::ObjectRef;
-use crate::state::GameState;
 use crate::r114_sole_target::{r114_sole_target, r114_spell_seen};
 use crate::resolve::{Cx, ResolveError, Run};
+use crate::state::GameState;
 use crate::zones::Zone;
 
 /// Each spell `what` names, on the stack or as it last was there, whose targets are all one player or object, gets one
