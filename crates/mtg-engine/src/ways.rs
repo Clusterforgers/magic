@@ -1503,9 +1503,14 @@ pub(crate) fn hindrance_as_is(
         if !announceable_in(state, player, id, way.alternative) {
             return Some(Unplayable::Targets);
         }
-        // "X can't be 0": a part that counts X takes at least the least X the way allows.
+        // "X can't be 0": a part that counts X takes at least the least X the way allows; a way with no least X is judged
+        // by its parts as they are (a Shoal's pick sets its own X).
         let least = r115_way_least_x(state, id, way.alternative);
-        let parts: Vec<Part> = way.parts.iter().map(|part| part.at(least)).collect();
+        let parts: std::borrow::Cow<'_, [Part]> = if least == 0 {
+            std::borrow::Cow::Borrowed(&way.parts)
+        } else {
+            way.parts.iter().map(|part| part.at(least)).collect()
+        };
         (cost.is_none() || !parts_payable(state, player, id, &parts)).then_some(Unplayable::Cost)
     };
     let mut nearest = None;
