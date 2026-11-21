@@ -75,6 +75,18 @@ export const MulliganPrompt: PromptComponent<'Mulligan'> = ({ options }) => {
       >
         Mulligan
       </Button>
+      {(options.r115_powders ?? []).slice(0, 1).map((powder) => (
+        // Serum Powder: the whole hand is exiled and as many drawn, and the same question is asked of the new hand.
+        <Button
+          key={powder}
+          variant="outline"
+          className="h-10 px-4"
+          title="Exile all the cards from your hand, then draw that many"
+          onClick={() => answer({ Mulligan: { R115ExileHand: powder } })}
+        >
+          Exile hand and draw
+        </Button>
+      ))}
       {others.length === 0 || floating ? null : (
         // Beside the answers on their row, cut with an ellipsis where it is long: whole in its tooltip.
         <p

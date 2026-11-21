@@ -27,7 +27,8 @@ pub fn cost(r: &mut Reader<'_>) -> Option<Cost> {
 }
 
 fn items(r: &mut Reader<'_>) -> Option<Vec<CostItem>> {
-    let mut items = vec![item(r)?];
+    let first = item(r)?;
+    let mut items = vec![r115_or(r, first)];
     loop {
         if let Some(CostItem::Sacrifice { count, .. }) = items.last()
             && *count == Amount::one()
@@ -35,7 +36,10 @@ fn items(r: &mut Reader<'_>) -> Option<Vec<CostItem>> {
         {
             items.push(next);
         } else if r.punct(',') {
-            items.push(item(r)?);
+            items.push({
+                let next = item(r)?;
+                r115_or(r, next)
+            });
         } else {
             return Some(items);
         }
@@ -1174,4 +1178,23 @@ pub(super) fn r4701_tap(r: &mut Reader<'_>) -> Option<CostItem> {
         .all(|pred| is_cost_filter(pred) || matches!(pred, Pred::HasKeyword(_)))
         .then_some(())?;
     Some(CostItem::TapPermanents { filter, count })
+}
+
+/// "Sacrifice an artifact or discard a nonland card" in the cost of an activated ability: `first` and the parts after
+/// "or" are the alternatives the player chooses between as they activate it (CR 602.2b, `CostItem::OneOf`); `first` alone
+/// without an "or".
+fn r115_or(r: &mut Reader<'_>, first: CostItem) -> CostItem {
+    let mut rest = Vec::new();
+    while let Some(next) = r.attempt(|r| {
+        r.word("or").then_some(())?;
+        alternative(r)
+    }) {
+        rest.push(next);
+    }
+    if rest.is_empty() {
+        return first;
+    }
+    let mut costs = vec![Cost(vec![first])];
+    costs.extend(rest);
+    CostItem::OneOf(costs)
 }

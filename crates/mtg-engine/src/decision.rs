@@ -152,6 +152,11 @@ pub struct MulliganOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub scry_if_mulligan: Option<usize>,
+    /// The cards in the hand that let it be exiled and as many drawn instead (Serum Powder, CR 103.5); left out when none
+    /// is there.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub r115_powders: Vec<ObjectId>,
 }
 
 /// Options for choosing cards to bottom.
@@ -939,6 +944,9 @@ pub enum MulliganChoice {
     Keep,
     /// Shuffle it away and draw a new one.
     Mulligan,
+    /// Exile the whole hand and draw that many cards, by the ability of this card in it (Serum Powder, CR 103.5): the same
+    /// decision is asked of the new hand, and no mulligan is taken.
+    R115ExileHand(ObjectId),
 }
 
 /// What a player does with priority.

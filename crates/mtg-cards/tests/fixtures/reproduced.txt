@@ -2090,6 +2090,7 @@ Rampaging War Mammoth
 Rampant Growth
 Ramses Overdark
 Ramunap Excavator
+Ranar the Ever-Watchful
 Rancor
 Ranging Raptors
 Ransom Note
@@ -2314,6 +2315,7 @@ Serpent of the Pass
 Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
+Serum Powder
 Servant of the Conduit
 Setessan Champion
 Shabraz, the Skyshark

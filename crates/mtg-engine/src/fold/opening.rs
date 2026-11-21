@@ -80,6 +80,25 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             player_mut(state, *player)?.mulligan = MulliganStatus::Deciding;
         }
+        Event::R115HandExiled {
+            player,
+            exiled,
+            drawn,
+        } => {
+            expect_status(state, *player, MulliganStatus::Deciding)?;
+            for card in exiled {
+                if !state.zones.get(Zone::Hand(*player)).contains(card) {
+                    return Err(invalid("an exiled card is not in the hand"));
+                }
+                super::zones::move_object(state, *card, Zone::Exile, Placement::Top)?;
+            }
+            for card in drawn {
+                if state.zones.get(Zone::Library(*player)).last() != Some(card) {
+                    return Err(invalid("a drawn card is not on top of the library"));
+                }
+                super::zones::move_object(state, *card, Zone::Hand(*player), Placement::Top)?;
+            }
+        }
         Event::MulliganDeclared { player } => {
             expect_status(state, *player, MulliganStatus::Deciding)?;
             player_mut(state, *player)?.mulligan = MulliganStatus::Mulliganing;

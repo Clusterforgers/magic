@@ -37,6 +37,7 @@ mod r109_ignore;
 mod r110_cast_choice;
 mod r110_chosen_number;
 mod r114_sticker_kick;
+mod r115_cost_choice;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
@@ -389,6 +390,10 @@ pub(crate) struct Done {
     pub(crate) modifier_life: u32,
     /// The Flagbearer pick of a target specification of several targets (`r5509_flagbearer`).
     pub(crate) r5509_split: r5509_flagbearer::R5509Split,
+    /// The variant of an activated ability's cost with alternatives is settled (`r115_cost_choice`).
+    pub(crate) r115_cost: bool,
+    /// The variant the player picked among those offered, by position in the options.
+    pub(crate) r115_picked: Option<usize>,
     /// The step whose decision the player has been asked.
     asked: Option<Phase>,
     /// Why the announcement was taken back: the step that could not be met.
@@ -552,7 +557,13 @@ impl Pending {
         } else {
             state
         };
-        let held = rules_of(state, &self.what, self.choices.spliced(), self.choices.way);
+        let held = rules_of(
+            state,
+            &self.what,
+            self.choices.spliced(),
+            self.choices.way,
+            self.choices.cost_variant(),
+        );
         let ctx = Ctx {
             state,
             player: self.player,
@@ -613,6 +624,11 @@ impl Pending {
             Answered::Modes(modes) => {
                 self.choices.modes = modes;
                 self.done.modes = true;
+            }
+            Answered::Way(pick)
+                if wanted == Phase::Face && matches!(self.what, What::Ability(_)) =>
+            {
+                self.done.r115_picked = Some(pick);
             }
             Answered::Way(pick) if wanted == Phase::Face => self.done.face_picked = Some(pick),
             Answered::Way(pick) if wanted == Phase::Assist => self.done.assist_pick = Some(pick),
@@ -772,13 +788,15 @@ fn source_of(what: &What) -> ObjectId {
     }
 }
 
-/// The rules of the spell or ability being announced: read without its bracketed words when it is cast for its cleave
+/// The rules of the spell or ability being announced: an activated ability with the `variant` of its cost chosen
+/// (`r115_cost_choice`), a spell read without its bracketed words when it is cast for its cleave
 /// cost, with the effects of the cards `spliced` onto a spell.
 fn rules_of(
     state: &GameState,
     what: &What,
     spliced: &[ObjectId],
     way: Option<CastWay>,
+    variant: u8,
 ) -> Option<Arc<Ability>> {
     let object = state.object(source_of(what));
     match what {
@@ -788,7 +806,9 @@ fn rules_of(
                     .or_else(|| spell_ability(state, *spell).map(|(_, rules)| rules))
             })
             .map(|rules| crate::keywords::splice::with_spliced(state, rules, spliced)),
-        What::Ability(address) => object.and_then(|_| ability_reader::ability(state, *address)),
+        What::Ability(address) => object
+            .and_then(|_| ability_reader::ability(state, *address))
+            .map(|rules| crate::r115_cost_choice::r115_as_chosen(rules, variant)),
         What::Trigger(waiting) => Some(Arc::clone(&waiting.rules)),
         What::Attack(..) | What::Block(_) => None,
     }
@@ -841,6 +861,12 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         };
     }
     let what: &What = what;
+    // The alternative of a cost with a choice is settled before the steps that read the cost.
+    if let What::Ability(address) = what
+        && let Some(next) = r115_cost_choice::run(state, *player, *address, choices, done)
+    {
+        return next;
+    }
     // The card is the face it is cast as from the first question on.
     let faced;
     let state = match what {
@@ -853,7 +879,13 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         }
         _ => state,
     };
-    let held = rules_of(state, what, choices.spliced(), choices.way);
+    let held = rules_of(
+        state,
+        what,
+        choices.spliced(),
+        choices.way,
+        choices.cost_variant(),
+    );
     let needs: &Needs = needs
         .get_or_insert_with(|| Needs::of(state, *player, what, held.as_deref(), granted.clone()));
     let ctx = Ctx {

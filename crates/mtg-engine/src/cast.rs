@@ -62,7 +62,10 @@ pub(crate) fn activation_events(
     choices: &Choices,
 ) -> Option<Vec<Event>> {
     let source = state.object(ability.object)?;
-    let rules = ability_reader::ability(state, ability)?;
+    let rules = crate::r115_cost_choice::r115_as_chosen(
+        ability_reader::ability(state, ability)?,
+        choices.cost_variant(),
+    );
     let mut before = snapshot(state, ability.object)?;
     let mut events = Vec::new();
     let mut shots = Vec::new();

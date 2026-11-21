@@ -622,6 +622,7 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::CastOnly { .. }
             | Ability::CantTargetAsCast { .. }
             | Ability::OpeningHand
+            | Ability::R115MulliganExile
             | Ability::OpeningHandWith { .. }
             | Ability::FreeActivation { .. }
             | Ability::InstantActivation { .. }

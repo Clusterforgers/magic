@@ -119,6 +119,16 @@ pub enum Event {
         /// Who kept.
         player: PlayerId,
     },
+    /// The player exiled their whole hand and drew as many cards from the top of their library by the ability of a card
+    /// in it (Serum Powder, CR 103.5); they decide about the new hand as about the one before.
+    R115HandExiled {
+        /// Who exiled.
+        player: PlayerId,
+        /// The cards of the hand exiled.
+        exiled: Vec<ObjectId>,
+        /// The cards drawn, in draw order.
+        drawn: Vec<ObjectId>,
+    },
     /// Cards were put on the bottom of the library after keeping.
     CardsBottomed {
         /// Whose cards.
@@ -1854,6 +1864,7 @@ impl Event {
                 .collect(),
             Event::LibraryRefilled { order: cards, .. }
             | Event::HandDealt { cards, .. }
+            | Event::R115HandExiled { drawn: cards, .. }
             | Event::CardsBottomed { cards, .. }
             | Event::OpeningCardsPlayed { cards, .. }
             | Event::LibraryInserted { cards, .. }

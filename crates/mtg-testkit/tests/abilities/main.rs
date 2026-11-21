@@ -80,6 +80,8 @@ mod r114_shared_fate;
 mod r114_spent_copy;
 mod r114_tyvar;
 mod r114_walker_copies;
+mod r115_cost_choice;
+mod r115_exiled_together;
 mod r300_random_discard;
 mod r300c_activations;
 mod r301_target_costs;

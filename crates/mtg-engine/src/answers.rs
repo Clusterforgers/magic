@@ -220,7 +220,7 @@ pub(crate) fn handle(
     let player = decision.player;
     match (&decision.kind, answer) {
         (DecisionKind::Mulligan(options), Answer::Mulligan(choice)) => {
-            mulligan_answer(player, options, choice)
+            mulligan_answer(state, player, options, choice)
         }
         (DecisionKind::BottomCards(options), Answer::BottomCards(cards)) => {
             bottom_answer(player, options, cards)

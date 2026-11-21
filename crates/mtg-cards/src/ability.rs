@@ -537,6 +537,10 @@ pub enum Ability {
         /// The objects the caster can't choose.
         what: crate::refs::Selector,
     },
+    /// "Any time you could mulligan and this card is in your hand, you may exile all the cards from your hand, then draw
+    /// that many cards." (CR 103.5): offered with each keep-or-mulligan decision while the card is in its owner's hand;
+    /// the decision is asked again of the new hand, and no mulligan is taken.
+    R115MulliganExile,
     /// "If this card is in your opening hand, you may begin the game with it on the battlefield." (CR 103.6): the card
     /// is asked about once its owner has kept a hand.
     OpeningHand,

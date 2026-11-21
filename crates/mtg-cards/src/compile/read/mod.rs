@@ -206,6 +206,7 @@ mod r114_01_wholes;
 mod r114_02_wholes;
 mod r114_03_wholes;
 mod r114_04_wholes;
+mod r115_01_wholes;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -642,6 +643,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         found
     } else if let Some(found) = r114_01_wholes::r114_01_pair_read(text) {
         found
+    } else if let Some(found) = r115_01_wholes::r115_01_pair_read(text) {
+        found
     } else if let Some(found) = r112_01_wholes::r112_01_pair_read(text) {
         found
     } else if let Some(found) = r113_04_wholes::r113_04_pair_read(text) {
@@ -860,6 +863,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r114_01_wholes::r114_01_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r115_01_wholes::r115_01_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r112_01_wholes::r112_01_whole_read(text) {

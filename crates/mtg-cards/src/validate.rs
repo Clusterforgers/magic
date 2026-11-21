@@ -472,6 +472,8 @@ struct Walker<'a> {
     x_now: bool,
     /// Whether the walk is in an alternative cost of a spell, whose parts read the X the caster announces.
     r379_alt_x: bool,
+    /// Walking the cost of a way whose least X the announcement reads (`ways::r115_way_least_x`): "X can't be 0" there.
+    r115_least_way: bool,
     /// Whether a choice between costs is walked as the required additional cost of a spell, the one place the engine asks it.
     choosing: bool,
     /// Whether the cost walked is what a spell's caster pays in place of its mana cost, which pays all of a kind with
@@ -537,6 +539,7 @@ impl<'a> Walker<'a> {
             r301_alt_x: false,
             x_now: false,
             r379_alt_x: false,
+            r115_least_way: false,
             choosing: false,
             r400_alternative: false,
             r281_paying: false,
@@ -2222,7 +2225,9 @@ impl<'a> Walker<'a> {
                         }
                         // The least X is announced for an activated ability, and where an effect asks the payment and
                         // announces its X ("you may pay one or more {E}").
-                        if !w.activated_cost && (!w.r306_paying || !w.x_free) {
+                        if w.r115_least_way {
+                            w.uses("Cost", "XAtLeast.Way");
+                        } else if !w.activated_cost && (!w.r306_paying || !w.x_free) {
                             w.uses("Cost", "XAtLeast.Elsewhere");
                         }
                     }
@@ -2231,13 +2236,16 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// A choice between costs: the caster pays one, which only a required additional cost of a spell asks. Each cost is a
+    /// A choice between costs: the caster pays one, which a required additional cost of a spell and the cost of an
+    /// activated ability ask (`r115_cost_choice`), and a payment an effect asks. Each cost is a
     /// plain cost of at least one part.
     fn alternatives(&mut self, costs: &[Cost]) {
         let tag = if self.choosing {
             "OneOf"
         } else if self.r281_paying {
             "OneOf.Pay"
+        } else if self.activated_cost {
+            "OneOf.Activated"
         } else {
             "OneOf.Elsewhere"
         };
@@ -2882,7 +2890,21 @@ impl<'a> Walker<'a> {
             | Keyword::Splice { cost, .. } => {
                 let held = self.r379_alt_x;
                 self.r379_alt_x = r379_replaces_cost(keyword);
+                let least_held = std::mem::replace(
+                    &mut self.r115_least_way,
+                    matches!(
+                        keyword,
+                        Keyword::Flashback(_)
+                            | Keyword::Escape(_)
+                            | Keyword::Evoke(_)
+                            | Keyword::Dash(_)
+                            | Keyword::Blitz(_)
+                            | Keyword::Spectacle(_)
+                            | Keyword::Mayhem(_)
+                    ),
+                );
                 self.at("cost", |w| w.cost(cost));
+                self.r115_least_way = least_held;
                 self.r379_alt_x = held;
                 // A cost paid in place of the mana cost pays its counted parts at the X announced for the cast.
                 let x_paid = r379_replaces_cost(keyword);
@@ -2893,7 +2915,9 @@ impl<'a> Walker<'a> {
             Keyword::Flashback(cost) => {
                 let held = self.x_now;
                 self.x_now |= cost.0.iter().any(amount_is_x) && !has_x_mana(cost);
+                let least_held = std::mem::replace(&mut self.r115_least_way, true);
                 self.at("cost", |w| w.cost(cost));
+                self.r115_least_way = least_held;
                 self.x_now = held;
                 self.parts_a_spell_cost_does_not_pay("Keyword", "Flashback.Cost", cost, false);
             }
@@ -3577,9 +3601,15 @@ fn c6_gap_batch_of_moves(members: &[TriggerPattern]) -> bool {
 
 /// Moves into exile from different zones, the battlefield among them ("cards are put into exile from graveyards and/or
 /// the battlefield"): the engine joins what leaves the battlefield and what leaves other zones into one trigger.
+/// A move may be one a spell or ability of some player causes ("or a spell or ability you control exiles one or more
+/// permanents from the battlefield", `Caused`).
 fn r307c_exiled_together(members: &[TriggerPattern]) -> bool {
     let mut froms = Vec::new();
     for member in members {
+        let member = match member {
+            TriggerPattern::Caused { inner, .. } => &**inner,
+            other => other,
+        };
         let TriggerPattern::ZoneChange {
             from: Some(from),
             to: Some(ZoneKind::Exile),
@@ -6551,6 +6581,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.selector(what));
             }
             Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
+            Ability::R115MulliganExile => w.uses("Ability", "R115MulliganExile"),
             Ability::Sticker(sticker) => w.sticker(sticker),
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
@@ -9028,6 +9059,7 @@ mod tests {
     #[case::a_condition_on_a_search_of_the_library(r#"{"Spell":{"effects":[{"Search":{"filter":[],"as":"card"}},{"If":{"condition":{"Searched":{"zone":"Library"}},"then":[{"Shuffle":{}}]}}]}}"#, &["Ability.Spell", "Condition.Searched", "Effect.If", "Effect.Search", "Effect.Shuffle"])]
     #[case::an_exile_with_another_duration(r#"{"Spell":{"effects":[{"Exile":{"what":"This","duration":"UntilYourNextTurn"}}]}}"#, &["Ability.Spell", "Effect.Exile", "Exile.Duration.UntilYourNextTurn"])]
     #[case::mana_spent_to_cast(r#"{"Spell":{"effects":[{"If":{"condition":{"ManaSpent":"Red"},"then":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Condition.ManaSpent", "Effect.Draw", "Effect.If"])]
+    #[case::r115_a_choice_of_costs_in_an_activation(r#"{"Activated":{"cost":[{"Mana":"{3}"},"Tap",{"OneOf":[[{"Sacrifice":{"filter":[{"Type":"Artifact"}]}}],[{"Discard":{"filter":[{"Not":{"Type":"Land"}}]}}]]}],"effects":[{"Draw":{}}]}}"#, &["Ability.Activated", "Cost.Discard", "Cost.Mana", "Cost.OneOf.Activated", "Cost.Sacrifice", "Cost.Tap", "Effect.Draw"])]
     #[case::r281_a_payment_of_one_of_two_costs(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"OneOf":[[{"Sacrifice":{"filter":[{"Type":"Creature"}]}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.OneOf.Pay", "Cost.PayLife", "Cost.Sacrifice", "Effect.Draw", "Effect.Pay"])]
     #[case::r281_one_of_two_costs_paid_twice_is_elsewhere(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","times":2,"cost":[{"OneOf":[[{"Discard":{}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Cost.OneOf.Elsewhere", "Cost.PayLife", "Effect.Draw", "Effect.Pay"])]
     #[case::r281_one_of_two_costs_beside_another_part_is_elsewhere(r#"{"Spell":{"effects":[{"Pay":{"who":"Opponents","cost":[{"Mana":"{1}"},{"OneOf":[[{"Discard":{}}],[{"PayLife":3}]]}],"unpaid":[{"Draw":{}}]}}]}}"#, &["Ability.Spell", "Cost.Discard", "Cost.Mana", "Cost.OneOf.Elsewhere", "Cost.PayLife", "Effect.Draw", "Effect.Pay"])]
@@ -9097,6 +9129,20 @@ mod tests {
         let ability: Ability = serde_json::from_str(json).unwrap();
         let expected: BTreeSet<String> = expected.iter().map(|name| (*name).to_owned()).collect();
         assert_eq!(used_primitives(&ability), expected);
+    }
+
+    #[rstest]
+    #[case::r115_flashback(r#"{"Keyword":{"Flashback":[{"Mana":"{3}{R}"},{"RemoveCountersAmong":{"counter":"loyalty","count":"X","from":[{"Type":"Planeswalker"},{"ControlledBy":"You"}]}},{"XAtLeast":1}]}}"#, true)]
+    #[case::r115_escape(r#"{"Keyword":{"Escape":[{"Mana":"{1}{R}"},{"XAtLeast":1}]}}"#, true)]
+    #[case::r115_an_additional_cost(
+        r#"{"AdditionalCost":{"cost":[{"XAtLeast":1}],"required":true}}"#,
+        false
+    )]
+    fn r115_a_least_x_of_a_way_is_read_there(#[case] json: &str, #[case] way: bool) {
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        let used = used_primitives(&ability);
+        assert_eq!(used.contains("Cost.XAtLeast.Way"), way, "{used:?}");
+        assert_eq!(used.contains("Cost.XAtLeast.Elsewhere"), !way, "{used:?}");
     }
 
     const ALL_MINE: &str = r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#;
