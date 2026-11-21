@@ -21,32 +21,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             what,
             slot,
             per: Some(per),
-        } => {
-            if !here {
-                return Ok(Run::events(Vec::new()));
-            }
-            let objects: Vec<_> = cx
-                .scope
-                .live_objects(what)?
-                .into_iter()
-                .map(crate::object::GameObject::reference)
-                .collect();
-            let events = cx
-                .scope
-                .players(per)?
-                .into_iter()
-                .map(|player| {
-                    Event::Remembered(Box::new(Remembered {
-                        source,
-                        slot: crate::memory::player_slot(slot, player),
-                        objects: objects.clone(),
-                        values: Vec::new(),
-                        replace: false,
-                    }))
-                })
-                .collect();
-            return Ok(Run::events(events));
-        }
+        } if here => return r114_remember_per(cx, what, slot, per),
+        Effect::Remember { per: Some(_), .. } => return Ok(Run::events(Vec::new())),
         Effect::Remember {
             what,
             slot,
@@ -119,6 +95,36 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     } else {
         Vec::new()
     };
+    Ok(Run::events(events))
+}
+
+/// `Remember` with `per`: the objects `what` names join the slot kept for each player `per` names (`memory::player_slot`).
+fn r114_remember_per(
+    cx: &Cx<'_>,
+    what: &mtg_cards::refs::Ref,
+    slot: &str,
+    per: &mtg_cards::refs::Ref,
+) -> Result<Run, ResolveError> {
+    let objects: Vec<_> = cx
+        .scope
+        .live_objects(what)?
+        .into_iter()
+        .map(crate::object::GameObject::reference)
+        .collect();
+    let events = cx
+        .scope
+        .players(per)?
+        .into_iter()
+        .map(|player| {
+            Event::Remembered(Box::new(Remembered {
+                source: cx.scope.source,
+                slot: crate::memory::player_slot(slot, player),
+                objects: objects.clone(),
+                values: Vec::new(),
+                replace: false,
+            }))
+        })
+        .collect();
     Ok(Run::events(events))
 }
 

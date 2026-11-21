@@ -95,7 +95,10 @@ fn r114_each_player_plays_the_cards_they_exiled(
     let mut driver = Driver::from_scenario(scenario)?;
     draw_with(&mut driver, "Study A", victim)?;
     let fate = format!("Fate {victim}");
-    assert!(names(driver.state(), Zone::Hand(pid(0))).is_empty());
+    assert_eq!(
+        names(driver.state(), Zone::Hand(pid(0))),
+        Vec::<String>::new()
+    );
     let taken = exiled(&driver, &fate);
     assert!(driver.state().object(taken).unwrap().face_down().is_some());
     // Seat 1 draws on seat 0's turn and exiles seat 0's top card (its only opponent at two seats, chosen otherwise).

@@ -102,7 +102,7 @@ fn r114_each_payment_prevents_one_more_to_the_same_target(
     // Seat 1 is not offered the caster's payments.
     driver.pass()?;
     assert_eq!(driver.decision()?.player, pid(1));
-    assert!(payable(&driver).is_empty());
+    assert_eq!(payable(&driver), Vec::new());
     while driver.decision()?.player != pid(0) {
         driver.pass()?;
     }

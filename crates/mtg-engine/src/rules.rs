@@ -1887,8 +1887,9 @@ impl RulesInForce {
             )),
             // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
             // where it resolves (`spend_rider::entering`), from the rule changes themselves.
-            // The adapt reads its rule from the rule changes themselves.
+            // The adapt reads its rule from the rule changes themselves, a payment to do something its rule effect (`r114_pay_to_do`).
             Rule::EntersWith { .. }
+            | Rule::R114PayToDo { .. }
             | Rule::R6600AdaptsFresh(_)
             | Rule::Planar
             | Rule::SpellCost { .. }
@@ -1899,8 +1900,6 @@ impl RulesInForce {
             | Rule::R6503ResolvesInstead { .. }
             | Rule::Replaces { .. } => {}
             Rule::DamageAsWither => self.damage_as_wither = true,
-            // Read from the rule effects themselves (`r114_pay_to_do`), keyed by their ids.
-            Rule::R114PayToDo { .. } => {}
             Rule::ManaBurn => self.mana_burn = true,
             Rule::AttackAsThoughHasteAt(players) => {
                 self.haste_at

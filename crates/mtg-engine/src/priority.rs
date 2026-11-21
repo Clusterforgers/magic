@@ -814,6 +814,33 @@ pub(crate) fn priority_decision_options(state: &GameState, player: PlayerId) -> 
     }
 }
 
+/// The special actions paid for at priority: the doors `player` may unlock, the effects they may end, the sources they
+/// may ignore and the rules they may pay to do (CR 116.2), and whether any is offered.
+type PaidSpecials = (
+    Vec<crate::decision::FaceOption>,
+    Vec<crate::decision::PaidEnd>,
+    Vec<crate::decision::PaidIgnore>,
+    Vec<crate::decision::R114PaidDo>,
+    bool,
+);
+
+/// The [`PaidSpecials`] of `player` with the mana they could make.
+fn paid_specials(
+    state: &GameState,
+    player: PlayerId,
+    (pool, all_mana, life): (&ManaPool, &[ManaOption], i32),
+) -> PaidSpecials {
+    let unlockable = crate::dk1c5_rooms::dk1c5_unlockable(state, player, pool, all_mana, life);
+    let endable = crate::e15g_paid::endable(state, player, pool, all_mana, life);
+    let ignorable = crate::r6703_ignore::ignorable(state, player, pool, all_mana, life);
+    let payable = crate::r114_pay_to_do::payable(state, player, pool, all_mana, life);
+    let open = !(unlockable.is_empty()
+        && endable.is_empty()
+        && ignorable.is_empty()
+        && payable.is_empty());
+    (unlockable, endable, ignorable, payable, open)
+}
+
 /// Everything `player` may do while holding priority.
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
@@ -861,10 +888,8 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .copied()
         .filter(|id| ways::can_turn_up(state, player, *id, &pool, &all_mana, life))
         .collect();
-    let unlockable = crate::dk1c5_rooms::dk1c5_unlockable(state, player, &pool, &all_mana, life);
-    let endable = crate::e15g_paid::endable(state, player, &pool, &all_mana, life);
-    let ignorable = crate::r6703_ignore::ignorable(state, player, &pool, &all_mana, life);
-    let r114_payable = crate::r114_pay_to_do::payable(state, player, &pool, &all_mana, life);
+    let (unlockable, endable, ignorable, r114_payable, paid_open) =
+        paid_specials(state, player, (&pool, &all_mana, life));
     let (abilities, inactive) = silence(state, silenced, abilities_now(state, player));
     let mut faces = face_options(
         state,
@@ -900,10 +925,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             ]
             .concat(),
         ) || !faces.is_empty()
-            || !unlockable.is_empty()
-            || !endable.is_empty()
-            || !ignorable.is_empty()
-            || !r114_payable.is_empty()
+            || paid_open
             || companion,
         playable_lands,
         castable,
