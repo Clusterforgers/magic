@@ -107,50 +107,16 @@ pub(super) fn next(
     if settled == choices.cost_picks().len()
         && let Some(hosts) = r6702_hosts(state, player, card, choices)
     {
-        if hosts.is_empty() {
-            choices.pick_for_cost(Vec::new());
-            return next(state, player, card, choices, done);
-        }
-        done.asked = Some(Phase::Parts);
-        return Next::Ask(Decision {
-            player,
-            kind: DecisionKind::ChooseCards(CardsOptions {
-                one_per_name: false,
-                source: card,
-                from: hosts,
-                min: 0,
-                max: 1,
-                text: "You may choose a permanent to attach it to.".to_owned(),
-                can_cancel: false,
-                total: None,
-                groups: Vec::new(),
-            }),
-        });
+        let text = "You may choose a permanent to attach it to.";
+        return optional_pick(state, (player, card), choices, done, (hosts, text));
     }
     // "As this creature enters or is turned face up, you may choose another creature" (CR 708.8): asked last.
     let attach = usize::from(r6702_may_attach(state, card).is_some());
     if choices.cost_picks().len() == settled + attach
         && let Some((options, _)) = r115_copy_options(state, player, card)
     {
-        if options.is_empty() {
-            choices.pick_for_cost(Vec::new());
-            return next(state, player, card, choices, done);
-        }
-        done.asked = Some(Phase::Parts);
-        return Next::Ask(Decision {
-            player,
-            kind: DecisionKind::ChooseCards(CardsOptions {
-                one_per_name: false,
-                source: card,
-                from: options,
-                min: 0,
-                max: 1,
-                text: "You may choose another creature to copy.".to_owned(),
-                can_cancel: false,
-                total: None,
-                groups: Vec::new(),
-            }),
-        });
+        let text = "You may choose another creature to copy.";
+        return optional_pick(state, (player, card), choices, done, (options, text));
     }
     let paid = choices.clone();
     let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp)
@@ -160,6 +126,35 @@ pub(super) fn next(
     ));
     suspend::pay_for(state, player, card, (mana, spend), || {
         events(state, player, card, &paid)
+    })
+}
+
+/// A pick of at most one of `options` after the parts of the cost, skipped as an empty pick when there is none.
+fn optional_pick(
+    state: &GameState,
+    (player, card): (PlayerId, ObjectId),
+    choices: &mut Choices,
+    done: &mut Done,
+    (options, text): (Vec<ObjectId>, &str),
+) -> Next {
+    if options.is_empty() {
+        choices.pick_for_cost(Vec::new());
+        return next(state, player, card, choices, done);
+    }
+    done.asked = Some(Phase::Parts);
+    Next::Ask(Decision {
+        player,
+        kind: DecisionKind::ChooseCards(CardsOptions {
+            one_per_name: false,
+            source: card,
+            from: options,
+            min: 0,
+            max: 1,
+            text: text.to_owned(),
+            can_cancel: false,
+            total: None,
+            groups: Vec::new(),
+        }),
     })
 }
 

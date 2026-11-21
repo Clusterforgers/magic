@@ -333,8 +333,28 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
             op: *op,
             right: right.clone(),
         }),
-        _ => turn_texts(condition),
+        _ => r115_attack_power_text(condition)
+            .map_or_else(|| turn_texts(condition), |text| vec![text]),
     }
+}
+
+/// "you attacked with creatures with total power 6 or greater this combat" (pack tactics), written back.
+fn r115_attack_power_text(condition: &Condition) -> Option<String> {
+    let Condition::Compare {
+        left:
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::R115AttackPower,
+            },
+        op: Cmp::Ge,
+        right: Amount::Fixed(number),
+    } = condition
+    else {
+        return None;
+    };
+    (*number >= 0).then(|| {
+        format!("you attacked with creatures with total power {number} or greater this combat")
+    })
 }
 
 /// `texts` of a condition that is no fact of last turn.
@@ -379,15 +399,6 @@ fn turn_texts(condition: &Condition) -> Vec<String> {
         ) if number > 1 => {
             counted(&|n| format!("you attacked with {n} or more creatures this turn"))
         }
-        (
-            Amount::Tallied {
-                who: Ref::You,
-                what: TurnTally::R115AttackPower,
-            },
-            Cmp::Ge,
-        ) => vec![format!(
-            "you attacked with creatures with total power {number} or greater this combat"
-        )],
         (
             Amount::Tallied {
                 who: Ref::You,
