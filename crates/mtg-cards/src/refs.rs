@@ -627,6 +627,9 @@ pub enum Pred {
         /// The fewest mana from such sources.
         least: u32,
     },
+    /// A spell on the stack for which mana from a snow source of one of the spell's colors was spent ("if {S} of any of
+    /// that spell's colors was spent to cast it", CR 106.3).
+    R113SnowOfOwnColor,
     /// A spell on the stack cast using mana made by one of the permanents the reference names, as that object ("using mana
     /// produced by ~"); mana a permanent made before it last changed zones is another object's.
     ManaFrom(Ref),

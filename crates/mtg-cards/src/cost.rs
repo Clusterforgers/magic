@@ -295,12 +295,24 @@ pub enum CostItem {
     /// "Spend only black mana on X." (CR 107.3): the mana paid for the X announced for the cost is of this color; pays
     /// nothing itself.
     XColor(mtg_core::color::Color),
+    /// "Spend only black and/or red mana on X." (CR 107.3): each mana paid for the X announced for the cost is of one of
+    /// the two colors, as for a hybrid symbol; pays nothing itself.
+    R113XHybrid(mtg_core::color::Color, mtg_core::color::Color),
     /// "Spend only colored mana on X. No more than one mana of each color may be spent this way." (CR 107.3): the X
     /// announced is paid one mana of each of X different colors; pays nothing itself.
     R112XOneEachColor,
     /// Exile cards that match from one graveyard, any player's ("Exile two creature cards from a single graveyard"): every
     /// card picked has the same owner.
     R112ExileFromOneGraveyard {
+        /// Which cards may be chosen.
+        filter: Selector,
+        /// How many.
+        #[serde(default = "Amount::one", skip_serializing_if = "Amount::is_one")]
+        count: Amount,
+    },
+    /// Put cards that match from one graveyard, any player's, on the bottom of their owner's library ("Put two cards from a
+    /// single graveyard on the bottom of their owner's library"): every card picked has the same owner.
+    R113BottomFromOneGraveyard {
         /// Which cards may be chosen.
         filter: Selector,
         /// How many.
@@ -401,6 +413,7 @@ impl CostItem {
             | CostItem::TapPermanents { count, .. }
             | CostItem::ExileFromGraveyard { count, .. }
             | CostItem::R112ExileFromOneGraveyard { count, .. }
+            | CostItem::R113BottomFromOneGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
             | CostItem::AlikeFromHand { count, .. }
@@ -443,6 +456,7 @@ impl Cost {
             | CostItem::TapPermanents { count, .. }
             | CostItem::ExileFromGraveyard { count, .. }
             | CostItem::R112ExileFromOneGraveyard { count, .. }
+            | CostItem::R113BottomFromOneGraveyard { count, .. }
             | CostItem::ExileFromHand { count, .. }
             | CostItem::RevealFromHand { count, .. }
             | CostItem::AlikeFromHand { count, .. }

@@ -197,6 +197,7 @@ mod r112_01_wholes;
 mod r112_02_wholes;
 mod r112_03_wholes;
 mod r112_04_wholes;
+mod r113_01_wholes;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -516,10 +517,30 @@ pub fn by_hand_event(text: &str, names: &[String]) -> Option<crate::trigger::Tri
 /// The cost a keyword of a spell prints in words ("Sacrifice a creature", "{1}{U}, Pay 3 life"), when all of the text
 /// reads as the parts of one cost.
 pub fn cost_in_words(text: &str) -> Option<Cost> {
+    if let Some(cost) = r113_bottom_cost(text) {
+        return Some(cost);
+    }
     let tokens = tokenize(text);
     let mut reader = Reader::new(&tokens, false);
     let cost = costs::cost(&mut reader)?;
     reader.end().then_some(cost)
+}
+
+/// "Put two cards from a single graveyard on the bottom of their owner's library" (`CostItem::R113BottomFromOneGraveyard`).
+fn r113_bottom_cost(text: &str) -> Option<Cost> {
+    let cards = text
+        .strip_prefix("Put ")?
+        .strip_suffix(" from a single graveyard on the bottom of their owner's library")?;
+    let count = (1..=9).find_map(|number| {
+        let amount = crate::value::Amount::Fixed(number);
+        (amounts::cards_text(&amount)? == cards).then_some(amount)
+    })?;
+    Some(Cost(vec![
+        crate::cost::CostItem::R113BottomFromOneGraveyard {
+            filter: Selector::default(),
+            count,
+        },
+    ]))
 }
 
 /// What an Aura may enchant, from the words after "Enchant": the objects a phrase names ("creature you control",
@@ -605,6 +626,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     } else if let Some(found) = r4705_reads::r4705_pair_read(text) {
         found
     } else if let Some(found) = r110_01_wholes::r110_01_pair_read(text) {
+        found
+    } else if let Some(found) = r113_01_wholes::r113_01_pair_read(text) {
         found
     } else if let Some(found) = r112_01_wholes::r112_01_pair_read(text) {
         found
@@ -805,6 +828,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r110_01_wholes::r110_01_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r113_01_wholes::r113_01_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r112_01_wholes::r112_01_whole_read(text) {

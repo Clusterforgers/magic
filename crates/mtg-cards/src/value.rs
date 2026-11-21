@@ -2002,6 +2002,15 @@ pub enum Condition {
     /// The spell is cast by the resolution of an ability of its own card ("It costs {4} less to cast this way." of a card
     /// that gains "you may cast it"): the cost modifier of a granted cast.
     R112CastByOwnAbility,
+    /// At least `least` mana from sources of the kind was spent to cast the spell or activate the ability, mana abilities
+    /// included, that the trigger event is about ("if mana from a Treasure was spent to cast it or activate it", CR 601.2h,
+    /// 602.2b); kept by the trigger, so it holds on resolution after that spell or ability is gone.
+    R113SpentFromTriggering {
+        /// The kind of source.
+        from: crate::spend::SpendFilter,
+        /// The fewest mana from such sources.
+        least: u32,
+    },
     /// The spell was cast at a time its caster couldn't have cast a sorcery (CR 307.1): another turn, a step that is no
     /// main phase or a stack that held more; a permanent and its abilities read the spell it came from.
     CastOffSorceryTiming,

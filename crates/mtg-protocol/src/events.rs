@@ -1590,6 +1590,7 @@ mod tests {
                 dealers: Vec::new(),
                 counters: Vec::new(),
                 r111_paid: Vec::new(),
+                r113_spent_from: Vec::new(),
                 subjects: vec![Target::Object(reference)],
                 snapshots: vec![snapshot(&t.state, subject).unwrap()],
                 amount: 0,

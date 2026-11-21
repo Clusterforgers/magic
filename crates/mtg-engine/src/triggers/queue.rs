@@ -539,6 +539,7 @@ mod tests {
                 against: None,
                 counters: Vec::new(),
                 r111_paid: Vec::new(),
+                r113_spent_from: Vec::new(),
                 event: None,
                 ability: None,
             },

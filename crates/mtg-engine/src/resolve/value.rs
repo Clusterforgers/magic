@@ -2389,6 +2389,7 @@ impl<'a> Scope<'a> {
             | Pred::RingBearer
             | Pred::FaceDown
             | Pred::SpentFrom { .. }
+            | Pred::R113SnowOfOwnColor
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn
             | Pred::GravedThisCombat
@@ -3923,6 +3924,15 @@ impl<'a> Scope<'a> {
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::R112CastByOwnAbility => self.r112_cast_by_own_ability(),
+            Condition::R113SpentFromTriggering { from, least } => self.cause.is_some_and(|cause| {
+                let spent: u32 = cause
+                    .r113_spent_from
+                    .iter()
+                    .filter(|source| from.holds(&source.traits))
+                    .map(|source| source.count)
+                    .sum();
+                spent >= *least
+            }),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::AsCast(inner) => self.held_as_cast(inner),
@@ -4714,6 +4724,7 @@ mod tests {
             against: None,
             counters: Vec::new(),
             r111_paid: Vec::new(),
+            r113_spent_from: Vec::new(),
             event: None,
             ability: None,
         };

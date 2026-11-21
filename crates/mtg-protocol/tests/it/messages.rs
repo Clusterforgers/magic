@@ -1742,6 +1742,7 @@ fn w2f_cost_taken(
         sources: vec![mtg_cards::spend::SpentFrom {
             traits: mtg_cards::spend::SpendTraits::default(),
             count: 2,
+            r113_mana: Vec::new(),
         }],
         convoked: vec![mtg_engine::object::ObjectRef { id: a, counter: 1 }],
         delved: vec![mtg_engine::object::ObjectRef { id: b, counter: 2 }],

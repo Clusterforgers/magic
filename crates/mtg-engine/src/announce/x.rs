@@ -8,7 +8,6 @@
 use mtg_cards::ability::{Ability, LoyaltyCost};
 use mtg_cards::cost::CostItem;
 use mtg_cards::value::{Amount, CastWay, CounterKind};
-use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaCost;
 
@@ -423,7 +422,7 @@ fn alternative_symbols(ctx: &Ctx<'_>, way: Option<CastWay>) -> Option<u32> {
 
 /// The color "Spend only black mana on X" asks of the mana paid for X, if any: a part of the cost of an activated
 /// ability, or of the required additional costs of a spell.
-fn x_color(ctx: &Ctx<'_>) -> Option<Color> {
+fn x_color(ctx: &Ctx<'_>) -> Option<mtg_core::mana::ManaSymbol> {
     match (ctx.what, ctx.ability) {
         (What::Spell(spell), _) => crate::price::spell_x_color(ctx.state.object(*spell)?.card()),
         (What::Ability(_), Some(Ability::Activated { cost, .. })) => crate::price::x_color_of(cost),

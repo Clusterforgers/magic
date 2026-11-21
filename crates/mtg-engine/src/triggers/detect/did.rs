@@ -21,6 +21,7 @@ use crate::zones::Zone;
 
 const fn did(action: Action, player: Option<PlayerId>, object: Option<ObjectId>) -> Happened {
     Happened::Did {
+        r113_spent: Vec::new(),
         action,
         player,
         object,
@@ -32,6 +33,7 @@ const fn did(action: Action, player: Option<PlayerId>, object: Option<ObjectId>)
 /// A clash of `player`, its amount 1 when they won and 0 when they lost.
 const fn clashed(player: PlayerId, won: bool) -> Happened {
     Happened::Did {
+        r113_spent: Vec::new(),
         action: Action::Clashed,
         player: Some(player),
         object: None,
@@ -143,8 +145,17 @@ pub(super) fn did_happened(
         Event::Enlisted { object, player, .. } => {
             found.push(did(Action::Enlisted, Some(*player), Some(*object)));
         }
-        Event::ManaAbilityActivated { player, source, .. } => {
-            found.push(did(Action::ActivatedAny, Some(*player), Some(source.id)));
+        Event::ManaAbilityActivated {
+            player,
+            source,
+            r113_spent_from,
+            ..
+        } => {
+            let mut activated = did(Action::ActivatedAny, Some(*player), Some(source.id));
+            if let Happened::Did { r113_spent, .. } = &mut activated {
+                r113_spent.clone_from(r113_spent_from);
+            }
+            found.push(activated);
         }
         Event::AbilityTriggered(triggered) => found.push(did(
             Action::AbilityTriggered,
@@ -166,6 +177,7 @@ pub(super) fn did_happened(
                 let amount = crate::un34_stickers::kind_code(kind);
                 for action in std::iter::once(Action::PutSticker).chain(Action::sticker_put(kind)) {
                     found.push(Happened::Did {
+                        r113_spent: Vec::new(),
                         action,
                         player: Some(*player),
                         object: Some(*object),
@@ -185,6 +197,7 @@ pub(super) fn did_happened(
         Event::Regenerated { object } => found.push(of(Action::Regenerated, *object)),
         Event::Scried(scried) => {
             found.push(Happened::Did {
+                r113_spent: Vec::new(),
                 action: Action::Scried,
                 player: Some(scried.player),
                 object: None,
@@ -193,6 +206,7 @@ pub(super) fn did_happened(
             });
             if !scried.bottom.is_empty() {
                 found.push(Happened::Did {
+                    r113_spent: Vec::new(),
                     action: Action::R6103ScriedToBottom,
                     player: Some(scried.player),
                     object: None,
@@ -224,6 +238,7 @@ pub(super) fn did_happened(
         }
         Event::Clashed { player, won, .. } => found.push(clashed(*player, *won)),
         Event::VotesFinished { .. } => found.push(Happened::Did {
+            r113_spent: Vec::new(),
             action: Action::FinishedVoting,
             player: None,
             object: None,
@@ -235,6 +250,7 @@ pub(super) fn did_happened(
             value,
             card,
         } => found.push(Happened::Did {
+            r113_spent: Vec::new(),
             action: Action::Discovered,
             player: Some(*player),
             object: *card,
@@ -292,6 +308,7 @@ pub(super) fn did_happened(
             Some(*object),
         )),
         Event::LifePaid { player, amount } => found.push(Happened::Did {
+            r113_spent: Vec::new(),
             action: Action::PaidLife,
             player: Some(*player),
             object: None,
@@ -358,6 +375,7 @@ fn from_found(fresh: &[Happened], of: &dyn Fn(Action, ObjectId) -> Happened) -> 
             Happened::Created { object, .. } => found.push(of(Action::TokenCreated, *object)),
             // The amount of an investigation is which time of the turn it is, which "for the first time" reads.
             Happened::Investigated { player, nth } => found.push(Happened::Did {
+                r113_spent: Vec::new(),
                 action: Action::Investigated,
                 player: Some(*player),
                 object: None,
@@ -424,6 +442,7 @@ pub(super) fn matching_did(
             object,
             ability,
             amount,
+            r113_spent,
         },
     ) = (pattern, happened)
     else {
@@ -451,6 +470,8 @@ pub(super) fn matching_did(
     let mut cause = counted(state, subjects, *amount);
     // "Copy that ability": the ability activated did it (`Ref::Dealer`), as the spell or ability that targets does.
     cause.source = *ability;
+    // "If mana from a Treasure was spent to activate it": the sources of the activation's mana.
+    cause.r113_spent_from.clone_from(r113_spent);
     Some(cause)
 }
 
@@ -543,6 +564,7 @@ fn activated(
         .as_deref()
         .is_some_and(without_tap)
         .then(|| Happened::Did {
+            r113_spent: Vec::new(),
             action: Action::ActivatedWithoutTap,
             player: Some(player),
             object: Some(source),
@@ -582,6 +604,11 @@ fn activated(
         ability_reader::keyword_adding(pre, address),
         Some(mtg_cards::keyword::Keyword::Eternalize(_) | mtg_cards::keyword::Keyword::Embalm(_))
     );
+    // The mana the activation spent, which the ability on the stack keeps (CR 601.2h, 602.2b).
+    let spent: Vec<mtg_cards::spend::SpentFrom> = on_stack
+        .and_then(|id| post.object(id))
+        .map(|object| object.choices.spent_from().to_vec())
+        .unwrap_or_default();
     [Action::Activated, Action::ActivatedAny]
         .into_iter()
         .chain(kinds)
@@ -589,6 +616,7 @@ fn activated(
         .chain(sacrificing.then_some(Action::R6104ActivatedSacrificing))
         .chain(loyalty.then_some(Action::ActivatedLoyalty))
         .map(|action| Happened::Did {
+            r113_spent: spent.clone(),
             action,
             player: Some(player),
             object: Some(source),
@@ -622,6 +650,7 @@ fn r5510_non_human(
         .power
         .unwrap_or(0);
     Some(Happened::Did {
+        r113_spent: Vec::new(),
         action: Action::ExploitedNonHuman,
         player: Some(player),
         object: Some(object),

@@ -1,0 +1,20 @@
+{
+  "oracle_id": "19ef24b7-25f5-4ae2-b892-3e15ed62d299",
+  "name": "Boreal Outrider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boreal Outrider",
+      "oracle_fingerprint": "7eed6f414933b23fdefc7262af16d689",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "if": { "Matches": { "subject": "Triggering", "selector": ["R113SnowOfOwnColor"] } },
+            "effects": [{ "SpellEntersWith": { "spell": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

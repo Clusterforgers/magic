@@ -386,6 +386,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::ChosenName
         | Pred::FaceDown
         | Pred::SpentFrom { .. }
+        | Pred::R113SnowOfOwnColor
         | Pred::GravedThisTurn
         | Pred::GravedThisCombat
         | Pred::R6500StartedTurnUntapped
@@ -665,6 +666,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)
         | Condition::R112CastByOwnAbility
+        | Condition::R113SpentFromTriggering { .. }
         | Condition::CastOffSorceryTiming
         | Condition::AsCast(_)
         | Condition::R401OnCast(_)
