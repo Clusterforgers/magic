@@ -150,6 +150,8 @@ mod r112_note;
 mod r112_note_chosen;
 mod r112_piles;
 mod r114_store;
+mod r115_blocks;
+mod r115_skip_step;
 mod r281_lock_door;
 mod r281_pay_one_of;
 mod r376_choose_words;
@@ -159,6 +161,8 @@ mod r5509_face_down_pile;
 mod r5509_foretold;
 mod r6102_random_counter;
 mod r6400_block;
+/// The engine's step for the step a card names.
+pub(crate) use r306_add_step::engine_step as r115_engine_step;
 pub(crate) mod r6402_change_roll;
 pub(crate) mod r6502_enters_as;
 mod r6701_remove_among;
@@ -398,6 +402,10 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
         Effect::R6400Block { .. } => r6400_block::run(cx, effect),
+        Effect::R115ExchangeBlocks { .. } => r115_blocks::run_exchange_blocks(cx, effect),
+        Effect::R115ExchangeBlockers { .. } => r115_blocks::run_exchange_blockers(cx, effect),
+        Effect::R115JoinBlock { .. } => r115_blocks::run_join_block(cx, effect),
+        Effect::R115SkipStep { .. } => r115_skip_step::run(cx, effect),
         Effect::BecomeBlocked { .. } => rmt1_become_blocked::run(cx, effect),
         Effect::PutBeneathTop { .. } => rmt1_beneath::run(cx, effect),
         Effect::LoseUnspentMana { .. } => rmt1_unspent::run(cx, effect),
@@ -493,6 +501,7 @@ mod tests {
         {"R112NoteChosen":"name"},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
+        {"R115ExchangeBlocks":{"what":"This"}}, {"R115ExchangeBlockers":{"what":"This"}}, {"R115JoinBlock":{"what":"This","blocking":"This"}}, {"R115SkipStep":{"step":"Draw"}},
         {"BecomeBlocked":{"what":"This"}},
         {"PutBeneathTop":{"what":"This","below":2}},
         {"LoseUnspentMana":{}},
@@ -525,7 +534,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 164, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 168, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -699,6 +708,10 @@ mod tests {
         "Effect.Regenerate",
         "Effect.RemoveFromCombat",
         "Effect.R6400Block",
+        "Effect.R115ExchangeBlocks",
+        "Effect.R115ExchangeBlockers",
+        "Effect.R115JoinBlock",
+        "Effect.R115SkipStep",
         "Effect.BecomeBlocked",
         "Effect.PutBeneathTop",
         "Effect.LoseUnspentMana",

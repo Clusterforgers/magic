@@ -1,7 +1,7 @@
 {
   "oracle_id": "a5d803bc-7fd4-4570-8cd6-cb138727a66e",
   "name": "Bewitching Leechcraft",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bewitching Leechcraft",
@@ -15,9 +15,28 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 64, "end": 233 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Replacement": {
+                    "when": { "R115UntapStep": { "what": ["This"] } },
+                    "by": {
+                      "Instead": [
+                        { "RemoveCounters": { "from": "This", "counter": "+1/+1" } },
+                        {
+                          "If": {
+                            "condition": "Performed",
+                            "then": [{ "Untap": { "what": "This" } }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

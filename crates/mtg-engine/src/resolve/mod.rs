@@ -9,6 +9,7 @@
 mod inline;
 mod left;
 pub(crate) mod prim;
+pub(crate) mod r115_continued;
 mod r285_attacked;
 mod r300b_value;
 #[cfg(test)]
@@ -130,6 +131,9 @@ pub struct Resolving {
     pub(crate) r110_put: prim::r110_remove_put::R110Counted,
     /// The counters the resolution has removed so far, by object and kind, which "the counters removed this way" reads.
     pub(crate) r110_removed: prim::r110_remove_put::R110Counted,
+    /// The steps of replacement effects that reached a spell cast in the middle of the resolution, which run before its
+    /// next effect (CR 608.2g).
+    pub(crate) r115_continued: Vec<r115_continued::R115Continuation>,
 }
 
 impl Resolving {
@@ -155,6 +159,7 @@ impl Resolving {
             chosen: std::collections::BTreeMap::new(),
             r110_put: Vec::new(),
             r110_removed: Vec::new(),
+            r115_continued: Vec::new(),
         }
     }
 
@@ -324,6 +329,7 @@ fn rules_of(state: &GameState, object: &GameObject) -> Option<Arc<Ability>> {
 pub(crate) fn together_at(state: &GameState, position: &[usize]) -> bool {
     let Some(object) = state
         .resolving()
+        .filter(|resolving| !resolving.r115_continuing())
         .and_then(|resolving| state.object(resolving.object))
     else {
         return false;
@@ -522,6 +528,10 @@ fn step_with(
             object: object.id(),
             outcome: ResolutionOutcome::Countered,
         }]));
+    }
+    // The steps of a replacement that reached a cast in the middle of the resolution run before its next effect.
+    if let Some(progress) = r115_continued::r115_step(state, resolving, &run) {
+        return progress.map_err(Into::into);
     }
     let Some(rules) = rules_of(state, object) else {
         return Ok(Progress::Done(finish(state, object)));

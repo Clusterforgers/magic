@@ -381,6 +381,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::Remembered(_)
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. } => redact_effects(before, event, viewer),
+        Event::R115Continued { .. } => r115_redact_continued(before, event, viewer),
         // A card moved by hand is named unless it goes between places the viewer cannot see into, as `ZoneChanged` does.
         Event::ManualAction { player, action } => redact_manual(before, *player, action, viewer),
         // A triggered ability can be about a card that only some seats can see.
@@ -449,6 +450,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::RemovedFromCombat { .. }
         | Event::R6400Unblocked { .. }
         | Event::R6400Blocks { .. }
+        | Event::R115BlockMoved { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
@@ -618,6 +620,35 @@ fn redact_manual(
     let from_known = identified_in(before, *object, moved.zone(), viewer);
     let goes_unseen = !zone_is_visible_in(before, to.zone(moved.owner()), viewer);
     (!from_known && goes_unseen).then_some(HiddenEvent::ManualMove { player, to: *to })
+}
+
+/// The hidden form of the steps of a replacement that go on as part of the resolution: a step, when a card they bound or
+/// an object they moved away is not open to the viewer.
+fn r115_redact_continued(
+    before: &GameState,
+    event: &Event,
+    viewer: PlayerId,
+) -> Option<HiddenEvent> {
+    let Event::R115Continued {
+        position,
+        bound,
+        snapshots,
+        ..
+    } = event
+    else {
+        return None;
+    };
+    let unseen = !bound
+        .iter()
+        .flat_map(|(_, targets)| targets)
+        .filter_map(|target| target.object())
+        .all(|object| knows(before, object.id, viewer))
+        || !snapshots
+            .iter()
+            .all(|shot| snapshot_known(before, shot, viewer));
+    unseen.then(|| HiddenEvent::StepDone {
+        position: position.clone(),
+    })
 }
 
 /// The hidden form of an event of the effect pipeline that may name cards or learn a player something private.

@@ -1,7 +1,7 @@
 {
   "oracle_id": "591bbf84-259d-4885-8b5f-b29c04222d41",
   "name": "Guile",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Guile",
@@ -9,9 +9,14 @@
       "abilities": [
         { "Static": { "affected": "This", "mods": [{ "MinBlockers": 3 }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 204 }
+          "Replacement": {
+            "when": { "R115CounteredBy": { "what": ["Spell"] } },
+            "by": {
+              "Instead": [
+                { "Exile": { "what": "Triggering", "as": "exiled" } },
+                { "CastFromZone": { "what": { "Bound": "exiled" }, "free": true, "play": true } }
+              ]
+            }
           }
         },
         {

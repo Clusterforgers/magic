@@ -81,8 +81,30 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             snapshots,
         } => {
             spend_when_done(state, bound);
-            step_done(resolving_mut(state)?, position, bound, snapshots).map_err(invalid)
+            let resolving = resolving_mut(state)?;
+            if crate::resolve::r115_continued::r115_step_done(resolving, position, bound, snapshots)
+                .map_err(invalid)?
+            {
+                return Ok(());
+            }
+            step_done(resolving, position, bound, snapshots).map_err(invalid)
         }
+        Event::R115Continued {
+            source,
+            controller,
+            effects,
+            position,
+            bound,
+            snapshots,
+        } => crate::resolve::r115_continued::r115_hang(
+            resolving_mut(state)?,
+            (*source, *controller),
+            effects,
+            position,
+            bound,
+            snapshots,
+        )
+        .map_err(invalid),
         Event::ResolutionEnded { object, outcome } => end(state, *object, *outcome),
         other => Err(invalid(format!("not a resolution event: {other:?}"))),
     }

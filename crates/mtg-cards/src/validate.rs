@@ -5795,6 +5795,7 @@ impl Walker<'_> {
             | Effect::Rephase
             | Effect::AddStep { .. }
             | Effect::Forget { .. }
+            | Effect::R115SkipStep { .. }
             | Effect::DrawGame {}
             | Effect::Crewed { .. }
             | Effect::BecomeDayNight { .. }
@@ -5805,10 +5806,16 @@ impl Walker<'_> {
                 }
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
-            Effect::RemoveFromCombat { what, .. } | Effect::R6400Block { what, .. } => {
+            Effect::RemoveFromCombat { what, .. } | Effect::R6400Block { what, .. }
+            | Effect::R115ExchangeBlocks { what }
+            | Effect::R115ExchangeBlockers { what } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::BecomeBlocked { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::R115JoinBlock { what, blocking } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("blocking", |w| w.reference(blocking, Kind::Object));
+            }
             Effect::LoseUnspentMana { who } => w.at("who", |w| w.reference(who, Kind::Player)),
             Effect::PutBeneathTop { what, below } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -7286,9 +7293,17 @@ impl Walker<'_> {
             | ReplaceWhen::Connives { what }
             | ReplaceWhen::Enters { what }
             | ReplaceWhen::R6105Uncycled { what }
+            | ReplaceWhen::R115UntapStep { what }
             | ReplaceWhen::R6603Transforms { what }
             | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
+            }
+            ReplaceWhen::R115BeginStep { whose, .. } => {
+                self.at("whose", |w| w.reference(whose, Kind::Player));
+            }
+            ReplaceWhen::R115CounteredBy { what, by } => {
+                self.at("what", |w| w.selector(what));
+                self.at("by", |w| w.reference(by, Kind::Player));
             }
             ReplaceWhen::Discarded { what, by, .. } => {
                 self.at("what", |w| w.selector(what));
@@ -7324,6 +7339,7 @@ impl Walker<'_> {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             ReplaceWhen::LifeLoss { who }
+            | ReplaceWhen::R115LifePay { who }
             | ReplaceWhen::LoseGame { who }
             | ReplaceWhen::Mill { who }
             | ReplaceWhen::Proliferates { who }
@@ -7388,6 +7404,15 @@ impl Walker<'_> {
             self.problem("needs at least one effect");
         }
         for shape in w5d_skipped(effects) {
+            // A draw a resolving ability causes and a countering are replaced in the middle of a resolution, which the cast joins
+            // (CR 608.2g); any other event may happen with nothing resolving.
+            let shape = match (shape, when) {
+                (
+                    "Instead.Casts",
+                    ReplaceWhen::R111DrawBy { .. } | ReplaceWhen::R115CounteredBy { .. },
+                ) => "Instead.R115CastsResolving",
+                (shape, _) => shape,
+            };
             self.uses("ReplaceBy", shape);
         }
         let saved = (self.scope.in_trigger, self.scope.dealer);

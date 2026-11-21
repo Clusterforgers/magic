@@ -611,6 +611,12 @@ enum Unit {
     Draw { player: PlayerId },
     /// A player would lose the game.
     Loss { player: PlayerId },
+    /// A step would begin.
+    R115StepBegins { step: crate::turn::Step },
+    /// A permanent would untap during its controller's untap step.
+    R115Untap { object: ObjectId },
+    /// A player would pay this much life.
+    R115LifePay { player: PlayerId, amount: u32 },
     /// An object would move to another zone than the battlefield.
     Move {
         object: ObjectId,
@@ -728,10 +734,12 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::ZoneChange { what, .. }
         | ReplaceWhen::Destroyed { what }
         | ReplaceWhen::Countered { what }
+        | ReplaceWhen::R115CounteredBy { what, .. }
         | ReplaceWhen::R6503Resolves { what }
         | ReplaceWhen::TurnedFaceUp { what }
         | ReplaceWhen::Discarded { what, .. }
         | ReplaceWhen::R6105Uncycled { what }
+        | ReplaceWhen::R115UntapStep { what }
         | ReplaceWhen::R6603Transforms { what }
         | ReplaceWhen::BecomesAttached { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
@@ -742,6 +750,8 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
         | ReplaceWhen::LifeLoss { .. }
+        | ReplaceWhen::R115BeginStep { .. }
+        | ReplaceWhen::R115LifePay { .. }
         | ReplaceWhen::LoseGame { .. }
         | ReplaceWhen::Explores { .. }
         | ReplaceWhen::Connives { .. }
@@ -1175,6 +1185,19 @@ impl Pass<'_> {
                 face: *face,
             },
             Event::PlayerLost { player, .. } => Unit::Loss { player: *player },
+            Event::PermanentUntapped { object }
+                if self.state.turn().step() == crate::turn::Step::Untap
+                    && self.state.object(*object).is_some_and(|untapping| {
+                        controller_of_object(self.state, untapping) == self.state.turn().active()
+                    }) =>
+            {
+                Unit::R115Untap { object: *object }
+            }
+            Event::StepBegan { step } => Unit::R115StepBegins { step: *step },
+            Event::LifePaid { player, amount } => Unit::R115LifePay {
+                player: *player,
+                amount: *amount,
+            },
             Event::CardDrawn { player, .. } | Event::DrewFromEmptyLibrary { player } => {
                 Unit::Draw { player: *player }
             }
@@ -1466,6 +1489,18 @@ impl Pass<'_> {
                     ..
                 },
             ) => scope.players(who)?.contains(player),
+            (ReplaceWhen::R115BeginStep { step, whose }, Unit::R115StepBegins { step: began }) => {
+                crate::resolve::prim::r115_engine_step(*step) == *began
+                    && self.state.active_player().is_some_and(|active| {
+                        scope
+                            .players(whose)
+                            .is_ok_and(|named| named.contains(&active))
+                    })
+            }
+            (ReplaceWhen::R115LifePay { who }, Unit::R115LifePay { player, amount }) => {
+                scope.players(who)?.contains(player)
+                    && self.state.zone(Zone::Library(*player)).len() >= *amount as usize
+            }
             (ReplaceWhen::LifeGain { who, .. }, Unit::Life { player })
             | (ReplaceWhen::LoseGame { who }, Unit::Loss { player })
             | (ReplaceWhen::Draw { who, .. }, Unit::Draw { player }) => {
@@ -1501,6 +1536,23 @@ impl Pass<'_> {
                 cause_fits && effect_fits && scope.selects(what, reference)?
             }
             (
+                ReplaceWhen::R115CounteredBy { what, by },
+                Unit::Move {
+                    object,
+                    countered: true,
+                    ..
+                },
+            ) => {
+                let Some(reference) = self.reference(*object) else {
+                    return Ok(false);
+                };
+                let countering = match self.putter {
+                    Some((player, true)) => scope.players(by)?.contains(&player),
+                    _ => false,
+                };
+                countering && scope.selects(what, reference)?
+            }
+            (
                 ReplaceWhen::Destroyed { what },
                 Unit::Move {
                     object,
@@ -1528,6 +1580,7 @@ impl Pass<'_> {
             )
             | (ReplaceWhen::BecomesAttached { what }, Unit::Attach { object })
             | (ReplaceWhen::R6603Transforms { what }, Unit::Transform { object, .. })
+            | (ReplaceWhen::R115UntapStep { what }, Unit::R115Untap { object })
             | (ReplaceWhen::Enters { what }, Unit::Enter { object, .. }) => {
                 let Some(reference) = self.reference(*object) else {
                     return Ok(false);
@@ -2307,7 +2360,8 @@ impl Pass<'_> {
             Unit::Life { player }
             | Unit::Draw { player }
             | Unit::Loss { player }
-            | Unit::LifeLoss { player } => *player,
+            | Unit::LifeLoss { player }
+            | Unit::R115LifePay { player, .. } => *player,
             Unit::Damage { target, .. } => match target {
                 DamageTarget::Player(player) => *player,
                 DamageTarget::Object(object) => controller_of(*object),
@@ -2318,8 +2372,9 @@ impl Pass<'_> {
             },
             Unit::Move { object, .. }
             | Unit::Attach { object }
+            | Unit::R115Untap { object }
             | Unit::Transform { object, .. } => controller_of(*object),
-            Unit::Other => self.state.active_or_next(),
+            Unit::Other | Unit::R115StepBegins { .. } => self.state.active_or_next(),
         }
     }
 
