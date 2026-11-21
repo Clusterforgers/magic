@@ -45,6 +45,7 @@ mod l294_mana_activations;
 mod l294_turn_window;
 mod layers;
 mod lg1_abundance_draws;
+mod lg1_replaced_draw_discards;
 mod life_floor_triggers;
 mod lords;
 mod loyalty_counter_replacements;
