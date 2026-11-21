@@ -158,7 +158,9 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(_)
         | Wanted::ModifyPT { .. }
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
-        Wanted::SetName(_)
+        // A static copy is no part of the layers: housekeeping begins and ends it (`r707_static_copies`).
+        Wanted::R707CopyOf { .. }
+        | Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
@@ -204,7 +206,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
         }
-        Wanted::SwitchPT
+        Wanted::R707CopyOf { .. }
+        | Wanted::SwitchPT
         | Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)

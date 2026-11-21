@@ -603,6 +603,7 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
                 next_turn_of: None,
                 attached_by: None,
                 r6104_tapped: None,
+                r707_static: None,
             }),
     );
     events.extend(pool_emptying(state, ManaLasts::Turn));

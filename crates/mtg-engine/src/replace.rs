@@ -3648,6 +3648,7 @@ impl Pass<'_> {
                 counters,
                 except_if,
                 r109_embalmed,
+                r707_when_you_do,
             } => {
                 let embalmed = (!r109_embalmed.is_empty() && self.r109_embalmed(object))
                     .then_some(r109_embalmed.as_slice());
@@ -3672,6 +3673,13 @@ impl Pass<'_> {
                     }
                     let copied = copy.of;
                     self.begin_copy(at, copy, &applied);
+                    self.r707_when_you_do(
+                        at + 1,
+                        candidate,
+                        (object, controller),
+                        copied,
+                        r707_when_you_do,
+                    );
                     self.r305c_copy_counters(at, candidate, object, copied, counters, &applied)?;
                 }
             }
@@ -3974,6 +3982,7 @@ impl Pass<'_> {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
+            r707_static: None,
         })
     }
 
@@ -4550,6 +4559,7 @@ mod dredge;
 mod lg1_draws;
 
 mod r109_enters_attached;
+mod r113_copy_reflexive;
 mod r113_text_boxes;
 mod reveal;
 

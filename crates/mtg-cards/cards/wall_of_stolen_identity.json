@@ -1,0 +1,34 @@
+{
+  "oracle_id": "92c58354-e106-402f-8348-6c7cdb67c6df",
+  "name": "Wall of Stolen Identity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wall of Stolen Identity",
+      "oracle_fingerprint": "dc5a3d7873ab7228cf881ec712b56e98",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [{ "AddSubtype": "Wall" }, { "AddKeyword": "Defender" }],
+                "r707_when_you_do": [
+                  { "Tap": { "what": { "Bound": "copied" } } },
+                  {
+                    "Continuous": {
+                      "affected": { "Bound": "copied" },
+                      "mods": ["DoesntUntap"],
+                      "duration": "WhileYouControlSource"
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

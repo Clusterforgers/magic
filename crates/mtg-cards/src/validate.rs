@@ -2958,6 +2958,14 @@ impl<'a> Walker<'a> {
             | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
+            Modification::R707CopyOf { of, except } => {
+                self.uses("Copy", "Static");
+                if !self.scope.in_static {
+                    self.problem("a copy effect of a resolving ability is `BecomeCopy`; `R707CopyOf` is a static ability's");
+                }
+                self.reference(of, Kind::Object);
+                self.r6104_entering_copy_exceptions(except);
+            }
             Modification::KeywordsOf { from, keywords } => {
                 self.reference(from, Kind::Object);
                 if keywords.is_empty() {
@@ -7718,10 +7726,20 @@ impl Walker<'_> {
                 except,
                 counters,
                 except_if,
+                r707_when_you_do,
                 ..
             } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
+                }
+                if !r707_when_you_do.is_empty() {
+                    self.uses("Copy", "WhenYouDo");
+                    self.effect_list_with(
+                        "r707_when_you_do",
+                        r707_when_you_do,
+                        true,
+                        Some(("copied", Kind::Object)),
+                    );
                 }
                 self.at("of", |w| w.selector(of));
                 self.r6104_entering_copy_exceptions(except);

@@ -581,7 +581,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
         Wanted::LoseAbilities => Modification::LoseAbilities,
         Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
-        Wanted::LoseThisAbility | Wanted::LosePrinted(_) => return Err(not_resolving()),
+        Wanted::LoseThisAbility | Wanted::LosePrinted(_) | Wanted::R707CopyOf { .. } => {
+            return Err(not_resolving());
+        }
         Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from, true)?),
         Wanted::R111GainNonManaAbilitiesOf(from) => {
             Modification::GainAbilities(borrowed(scope, from, false)?)

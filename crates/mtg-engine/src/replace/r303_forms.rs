@@ -91,6 +91,7 @@ impl Pass<'_> {
                 until_next_turn_of: None,
                 attached_by: None,
                 r6104_while_tapped: None,
+                r707_static: None,
             },
             applied,
         );

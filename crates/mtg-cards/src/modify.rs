@@ -122,6 +122,17 @@ pub enum Modification {
         /// The creature type written.
         to: String,
     },
+    /// The object is a copy of the first object `of` names (layer 1, CR 707.2, 613.2a), with the exceptions in its copiable
+    /// values (CR 707.9b): "Enchanted creature is a copy of the chosen creature", "this creature has the full text of that
+    /// card". Only a static ability has it; it is read from the card's own rules, works out again whenever what `of`
+    /// names changes, and ends once it names nothing.
+    R707CopyOf {
+        /// The object copied.
+        of: Ref,
+        /// Changes the copy has.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        except: Vec<Modification>,
+    },
     /// The two objects the effect changes exchange their text boxes (layer 3, CR 612.1, 613.1c): each has the rules text
     /// the other's copiable values give it, keywords and abilities, and keeps its name, types and other characteristics
     /// ("exchange the text boxes of those creatures"). Only an effect of a spell or ability has it; with any other number
@@ -257,7 +268,8 @@ impl Modification {
             Modification::AddSupertype(_)
             | Modification::SetName(_)
             | Modification::ThisAbility
-            | Modification::SetLoyalty(_) => Some("1"),
+            | Modification::SetLoyalty(_)
+            | Modification::R707CopyOf { .. } => Some("1"),
             Modification::SetController(_) => Some("2"),
             Modification::ChangeTextChosen { .. }
             | Modification::ChangeTextChosenTo { .. }

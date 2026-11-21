@@ -1740,9 +1740,14 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 counters,
                 except_if,
                 r109_embalmed,
+                r707_when_you_do,
             },
             None,
-        ) if counters.is_empty() && except_if.is_empty() && r109_embalmed.is_empty() => {
+        ) if r707_when_you_do.is_empty()
+            && counters.is_empty()
+            && except_if.is_empty()
+            && r109_embalmed.is_empty() =>
+        {
             copies::enters_texts(of, except, *tapped, *until_end_of_turn)
         }
         (
@@ -1755,9 +1760,10 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 counters,
                 except_if,
                 r109_embalmed,
+                r707_when_you_do,
             },
             None,
-        ) if except_if.is_empty() && r109_embalmed.is_empty() => {
+        ) if r707_when_you_do.is_empty() && except_if.is_empty() && r109_embalmed.is_empty() => {
             super::r305c_copies::r305c_counter_copy_texts(
                 of,
                 except,

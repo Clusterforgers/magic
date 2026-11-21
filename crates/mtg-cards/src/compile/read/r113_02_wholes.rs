@@ -124,6 +124,17 @@ mod tests {
             ("the chosen player loses", "a player loses"),
             ("you win the game", "you lose the game"),
             ("attach it to a player", "attach it to a creature"),
+            ("tap the copied creature", "untap the copied creature"),
+            ("is a creature card", "is a land card"),
+            ("has the text", "loses the text"),
+            (
+                "for as long as you control this creature",
+                "until end of turn",
+            ),
+            (
+                "Wall in addition to its other types and has defender",
+                "Wall in addition to its other types",
+            ),
         ];
         for (_, text) in R113_02_SHAPES.iter() {
             for (from, to) in swaps {

@@ -916,7 +916,9 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::BlockedByAll
         | Wanted::BlocksAdditional(_)
         | Wanted::BlocksAdditionalPer(_)
-        | Wanted::Goaded => return None,
+        | Wanted::Goaded
+        // A static copy is begun and ended in housekeeping (`copies::r707_static_copies`), not by the layers.
+        | Wanted::R707CopyOf { .. } => return None,
     })
 }
 
@@ -1383,6 +1385,10 @@ impl<'a> Pass<'a> {
             return;
         }
         for (index, wanted) in mods.iter().enumerate() {
+            // A static copy is begun and ended in housekeeping (`copies::r707_static_copies`).
+            if matches!(wanted, Wanted::R707CopyOf { .. }) {
+                continue;
+            }
             let key = Key::Static(ability.address, index);
             if layer_of(wanted, *defining) != layer || self.done.contains(&key) {
                 continue;

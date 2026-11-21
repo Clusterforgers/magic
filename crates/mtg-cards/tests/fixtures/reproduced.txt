@@ -2934,6 +2934,7 @@ Voidmage Husher
 Volcanic Offering
 Voldaren Estate
 Volrath's Curse
+Volrath's Shapeshifter
 Volshe Tideturner
 Volunteer Reserves
 Vona, Butcher of Magan
@@ -2953,6 +2954,7 @@ Wakanda Forever!
 Walking Ballista
 Wall of Blossoms
 Wall of Shields
+Wall of Stolen Identity
 Wanderbrine Preacher
 Wandering Eye
 Wandertale Mentor

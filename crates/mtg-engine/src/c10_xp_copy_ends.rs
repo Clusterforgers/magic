@@ -22,6 +22,7 @@ pub(crate) fn c10_xp_copies_ending(state: &GameState, active: PlayerId) -> Vec<E
                     next_turn_of: Some(player),
                     attached_by: None,
                     r6104_tapped: None,
+                    r707_static: None,
                 });
             }
         }

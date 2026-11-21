@@ -1509,6 +1509,10 @@ pub enum ReplaceBy {
         /// Zombie in addition to its other types").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         r109_embalmed: Vec<Modification>,
+        /// The steps of a reflexive trigger ("When you do, ...", CR 603.12) that triggers once the permanent entered as a
+        /// copy, with the copied object bound as `copied`: "When you do, tap the copied creature".
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r707_when_you_do: Vec<crate::effect::Effect>,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

@@ -181,6 +181,10 @@ impl Hash for CopyEffect {
                     2u8.hash(state);
                     by.hash(state);
                 }
+                C10XpCopyEnds::R707Static(by) => {
+                    3u8.hash(state);
+                    by.hash(state);
+                }
                 C10XpCopyEnds::Cleanup => {}
             }
         }
@@ -198,6 +202,8 @@ pub enum C10XpCopyEnds {
     Unattached(ObjectRef),
     /// Once this object is no longer tapped on the battlefield ("for as long as that creature remains tapped").
     R6104Untapped(ObjectRef),
+    /// Once the static ability of this permanent no longer makes it (`R707CopyOf`, CR 707.2, 613.2a).
+    R707Static(ObjectRef),
 }
 
 /// A permanent became a copy of another object (CR 707.2): its copiable values are now those of the copy effect, with a
@@ -231,6 +237,10 @@ pub struct BecameCopy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub r6104_while_tapped: Option<ObjectRef>,
+    /// The copy is the one the static ability of this permanent makes (`R707CopyOf`), begun and ended in housekeeping.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub r707_static: Option<ObjectRef>,
 }
 
 /// A spell was copied (CR 707.10): the copy is a spell on the stack above the original, controlled by the player who
@@ -324,6 +334,7 @@ pub(crate) fn fold(state: &mut GameState, event: &BecameCopy) -> Result<(), Engi
         event.until_next_turn_of,
         event.attached_by.or(event.r6104_while_tapped),
     ) {
+        _ if event.r707_static.is_some() => event.r707_static.map(C10XpCopyEnds::R707Static),
         (_, _, Some(by)) if event.attached_by.is_none() => Some(C10XpCopyEnds::R6104Untapped(by)),
         (_, _, Some(by)) => Some(C10XpCopyEnds::Unattached(by)),
         (_, Some(player), None) => Some(C10XpCopyEnds::NextTurnOf(player)),
@@ -490,11 +501,13 @@ pub(crate) fn fold_ended(state: &mut GameState, ended: &Event) -> Result<(), Eng
         next_turn_of,
         attached_by,
         r6104_tapped,
+        r707_static,
     } = ended
     else {
         return Err(invalid("not the end of a copy"));
     };
     let ends = match (attached_by, r6104_tapped, next_turn_of) {
+        _ if let Some(by) = r707_static => C10XpCopyEnds::R707Static(by),
         (Some(by), _, _) => C10XpCopyEnds::Unattached(by),
         (None, Some(by), _) => C10XpCopyEnds::R6104Untapped(by),
         (None, None, Some(player)) => C10XpCopyEnds::NextTurnOf(player),
@@ -538,6 +551,7 @@ pub(crate) fn r370_unattached_copies(state: &GameState) -> Vec<Event> {
                     next_turn_of: None,
                     attached_by: Some(by),
                     r6104_tapped: None,
+                    r707_static: None,
                 });
             }
         }
@@ -565,6 +579,7 @@ pub(crate) fn r6104_untapped_copies(state: &GameState) -> Vec<Event> {
                     next_turn_of: None,
                     attached_by: None,
                     r6104_tapped: Some(by),
+                    r707_static: None,
                 });
             }
         }
@@ -678,6 +693,9 @@ pub(crate) fn copiable_values(
     })
 }
 
+mod r707_static;
+pub(crate) use r707_static::r707_static_copies;
+
 #[cfg(test)]
 mod prototype_tests;
 
@@ -737,6 +755,7 @@ mod tests {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
+            r707_static: None,
         });
         apply_event(game, &event).unwrap();
     }
@@ -895,6 +914,7 @@ mod tests {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
+            r707_static: None,
         });
         assert!(apply_event(&mut game, &late).is_err());
     }
@@ -930,6 +950,7 @@ mod tests {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
+            r707_static: None,
         });
         apply_event(game, &event).unwrap();
     }
@@ -945,6 +966,7 @@ mod tests {
             until_next_turn_of: Some(PlayerId(0)),
             attached_by: None,
             r6104_while_tapped: None,
+            r707_static: None,
         });
         apply_event(game, &event).unwrap();
     }
@@ -964,6 +986,7 @@ mod tests {
             next_turn_of,
             attached_by: None,
             r6104_tapped: None,
+            r707_static: None,
         };
         let (first, second) = if cleanup_first {
             (None, Some(PlayerId(0)))
@@ -1015,6 +1038,7 @@ mod tests {
             next_turn_of: None,
             attached_by: None,
             r6104_tapped: None,
+            r707_static: None,
         };
         if !ends {
             // A lasting copy made over the temporary ones replaced them: there is nothing to end.
@@ -1093,6 +1117,7 @@ mod tests {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
+            r707_static: None,
         });
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(copy.id).unwrap().card().name, "Butterfly");
@@ -1143,6 +1168,7 @@ mod tests {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
+            r707_static: None,
         });
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(copy.id).unwrap().card().name, "Nightrat");
