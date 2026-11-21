@@ -1,0 +1,60 @@
+{
+  "oracle_id": "5bc3c4e2-087d-4255-a576-0b17ed1e8c3f",
+  "name": "Elite Arcanist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elite Arcanist",
+      "oracle_fingerprint": "2984606d7fd635c3077af12b0778a60e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Instant" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}" },
+              "Tap",
+              {
+                "XIs": {
+                  "Stat": {
+                    "of": { "LastExiledWith": { "on": "This", "filter": [] } },
+                    "stat": "ManaValue"
+                  }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CopyCard": {
+                  "what": { "LastExiledWith": { "on": "This", "filter": [] } },
+                  "as": "copy"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -163,6 +163,7 @@ Azure Fleet Admiral
 Azusa, Lost but Seeking
 Baaallerina
 Baba Lysaga, Night Witch
+Back from the Brink
 Back in Town
 Backdraft
 Bad Moon
@@ -807,6 +808,7 @@ Elfhame Druid
 Elfhame Palace
 Eligeth, Crossroads Augur
 Eliminate the Competition
+Elite Arcanist
 Elspeth's Nightmare
 Elven Ambush
 Elvish Aberration
@@ -1285,6 +1287,7 @@ Huntmaster Liger
 Hydra Broodmaster
 Hypnotic Sprite // Mesmeric Glare
 Icatian Infantry
+Ice Cauldron
 Ice-Fang Coatl
 Icefeather Aven
 Ichor Elixir
@@ -2839,6 +2842,7 @@ Two-Headed Giant of Foriys
 Tyranid Prime
 Tyrant Guard
 Tyrant's Familiar
+Tyvar the Bellicose
 Ukkima, Stalking Shadow
 Uktabi Efreet
 Ulamog's Crusher

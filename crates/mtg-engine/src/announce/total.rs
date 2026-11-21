@@ -188,6 +188,22 @@ fn announced<'a>(
     (!choices.targets.is_empty()).then_some(targeted)
 }
 
+/// The cost of the activation with the picks of its parts made (`free_activation::r114_cost_with_picks`).
+fn r114_cost<'a>(
+    ctx: &Ctx<'_>,
+    choices: &Choices,
+    ability: (crate::abilities::AbilityRef, &Ability),
+    cost: &'a mtg_cards::cost::Cost,
+) -> std::borrow::Cow<'a, mtg_cards::cost::Cost> {
+    crate::free_activation::r114_cost_with_picks(
+        ctx.state,
+        ctx.player,
+        ability,
+        cost,
+        choices.cost_picks(),
+    )
+}
+
 /// The cost as the card prints it and the sources that may pay its mana: the mana cost of a spell, the cost of an
 /// activated ability (never paid from its own source when that is tapped or lost for it), nothing for a loyalty cost
 /// (counters, paid with the events) or a triggered ability.
@@ -245,13 +261,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
         What::Ability(ability) => match ctx.ability? {
             rules @ Ability::Activated { cost, .. } => {
                 let x = choices.x.unwrap_or(0);
-                let cost = crate::free_activation::r114_cost_with_picks(
-                    ctx.state,
-                    ctx.player,
-                    (*ability, rules),
-                    cost,
-                    choices.cost_picks(),
-                );
+                let cost = r114_cost(ctx, choices, (*ability, rules), cost);
                 let price = Price::announced_in(
                     &cost,
                     ctx.state,
