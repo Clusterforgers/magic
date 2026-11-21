@@ -1,0 +1,33 @@
+{
+  "oracle_id": "af1779f8-790e-4606-a02d-9eb4589d58cf",
+  "name": "Vedalken Squirrel-Whacker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vedalken Squirrel-Whacker",
+      "oracle_fingerprint": "13a655ebcaa5a1ffa958bae0b0d8ba70",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "AsEnters": [{ "R112RollStore": { "sides": 6, "dice": 2, "slot": "base" } }] }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": { "R113Stored": { "on": "This", "slot": "base", "index": 0 } },
+                  "toughness": { "R113Stored": { "on": "This", "slot": "base", "index": 1 } }
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "R113ExchangeRoll": { "who": "You", "sides": 6, "slot": "base" } } } }
+      ]
+    }
+  ]
+}

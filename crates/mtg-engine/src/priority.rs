@@ -14,7 +14,7 @@ use crate::abilities::AbilityRef;
 use crate::ability_reader::{abilities_of, provided_here, working_here};
 use crate::announce::some_x_has_targets;
 use crate::answers::Outcome;
-use crate::characteristics::{characteristics, controller_of_object};
+use crate::characteristics::{characteristics, controller_of, controller_of_object};
 use crate::choose::announceable;
 use crate::decision::{
     FaceOption, InactiveAbility, PriorityAction, PriorityOptions, Refusal, Unplayable, Why,
@@ -638,6 +638,9 @@ pub(crate) fn abilities_now(
                 Activators::Anyone => true,
                 Activators::Opponents => state.is_opponent(controller, player),
                 Activators::Owner => object.owner() == player,
+                Activators::R113AttachedController => state
+                    .host_of(id)
+                    .is_some_and(|host| controller_of(state, host) == Some(player)),
             };
             if !allowed {
                 continue;

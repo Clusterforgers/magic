@@ -395,13 +395,15 @@ pub(crate) fn fold_card(state: &mut GameState, copy: &CardCopy) -> Result<(), En
     }
     let copied = state.objects.get(&copy.of.id).is_some_and(|card| {
         card.counter() == copy.of.counter
-            && ((matches!(card.zone(), Zone::Exile | Zone::Hand(_))
-                && card.kind() == ObjectKind::Card)
+            && ((matches!(
+                card.zone(),
+                Zone::Exile | Zone::Hand(_) | Zone::Graveyard(_)
+            ) && card.kind() == ObjectKind::Card)
                 || card.permanent().is_some_and(PermanentState::prepared))
     });
     if !copied {
         return Err(invalid(format!(
-            "{:?} is not a card in exile or a hand or a prepared permanent",
+            "{:?} is not a card in exile, a hand or a graveyard or a prepared permanent",
             copy.of
         )));
     }

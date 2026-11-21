@@ -53,8 +53,9 @@ fn opening(effects: &[Value], targets: &Value) -> Option<(Vec<String>, usize)> {
     }
 }
 
-/// The permission of a rule step: the zone it casts from, what it casts and how long it lasts.
-fn permission<'a>(rule: &'a Value, from: &str) -> Option<(&'a Value, &'a str)> {
+/// The permission of a rule step: the zone it casts from, what it casts, how long it lasts and whether its mana is spent
+/// as though it were mana of any color.
+fn permission<'a>(rule: &'a Value, from: &str) -> Option<(&'a Value, &'a str, bool)> {
     let step = rule.get("Rule")?;
     let cast = step.get("rule")?.get("MayCast")?.as_object()?;
     let duration = step.get("duration")?.as_str()?;
@@ -69,15 +70,20 @@ fn permission<'a>(rule: &'a Value, from: &str) -> Option<(&'a Value, &'a str)> {
         },
         _ => return None,
     };
+    let any_color = match cast.get("spend_as") {
+        None => false,
+        Some(spend) if spend == "AnyColor" => true,
+        Some(_) => return None,
+    };
     let known = cast
         .keys()
-        .all(|key| ["from", "only", "what"].contains(&key.as_str()));
-    known.then_some((cast_what, duration))
+        .all(|key| ["from", "only", "what", "spend_as"].contains(&key.as_str()));
+    known.then_some((cast_what, duration, any_color))
 }
 
 /// "exile the top seven cards of your library. Until end of turn, you may cast spells from among them".
 fn exiled(exile: &Value, rule: &Value) -> Option<Vec<String>> {
-    let (what, duration) = permission(rule, "Exile")?;
+    let (what, duration, any_color) = permission(rule, "Exile")?;
     if *what != json!({"Bound": exile.get("as")?}) {
         return None;
     }
@@ -87,11 +93,13 @@ fn exiled(exile: &Value, rule: &Value) -> Option<Vec<String>> {
     {
         "You" => "your library",
         "Triggering" => "that player's library",
+        "Opponents" => "each opponent's library",
         _ => return None,
     };
+    let each = library.starts_with("each");
     let count = exile.get("count").cloned().unwrap_or(json!(1));
     let (top, one) = if count == json!(1) {
-        (format!("exile the top card of {library}"), true)
+        (format!("exile the top card of {library}"), !each)
     } else if count == json!("Triggering") {
         (
             format!("exile that many cards from the top of {library}"),
@@ -117,13 +125,26 @@ fn exiled(exile: &Value, rule: &Value) -> Option<Vec<String>> {
         }
         _ => return None,
     };
-    Some(casts.iter().map(|cast| format!("{top}. {cast}")).collect())
+    // "Those spells" follows only a plural opening, which names the spells it casts.
+    let spend = match (any_color, one) {
+        (false, _) => "",
+        (true, false) => {
+            ", and you may spend mana as though it were mana of any color to cast those spells"
+        }
+        (true, true) => return None,
+    };
+    Some(
+        casts
+            .iter()
+            .map(|cast| format!("{top}. {cast}{spend}"))
+            .collect(),
+    )
 }
 
 /// "you may cast target Zombie creature card from your graveyard this turn".
 fn from_graveyard(rule: &Value, targets: &Value) -> Option<Vec<String>> {
-    let (what, duration) = permission(rule, "Graveyard")?;
-    if *what != json!({"Target": 0}) || duration != "UntilEndOfTurn" {
+    let (what, duration, any_color) = permission(rule, "Graveyard")?;
+    if *what != json!({"Target": 0}) || duration != "UntilEndOfTurn" || any_color {
         return None;
     }
     if targets.as_array().map(Vec::len) != Some(1) {

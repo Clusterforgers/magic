@@ -494,6 +494,9 @@ pub enum Pred {
     /// Has the keyword at any value of its parameter ("with toxic", "with cycling"); the name is Scryfall's spelling
     /// (`Keyword::NAMES`).
     HasKeywordNamed(String),
+    /// Has an alternative cost of the way ("exiled card with warp", CR 702.185): a cast ability (`Ability::AltCast`) of
+    /// that way among its abilities.
+    R113HasWay(crate::value::CastWay),
     /// Has at least one counter of the kind on it.
     HasCounter(CounterKind),
     /// Has at least one counter of any kind on it (CR 122.1).

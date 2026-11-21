@@ -44,6 +44,9 @@ pub enum Activators {
     Opponents,
     /// Its owner, whoever controls it ("Only this creature's owner may activate this ability").
     Owner,
+    /// The controller of the permanent it is attached to ("Only the controller of the enchanted creature may activate
+    /// this ability"); nobody while it is attached to nothing.
+    R113AttachedController,
 }
 
 impl Activators {

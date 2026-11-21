@@ -1,0 +1,60 @@
+{
+  "oracle_id": "f20a5297-31ba-4bbd-810e-be23175a116f",
+  "name": "Casey & Raph, Hotheads",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Casey & Raph, Hotheads",
+      "oracle_fingerprint": "38bcf1753fc249af1dfd4534962289b4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 1, "max": 2 },
+                  "different_players": true,
+                  "modes": [
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "ExileTop": { "who": { "Target": 0 }, "as": "exiled" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "who": { "Target": 0 },
+                                "from": "Exile",
+                                "free": true,
+                                "only": { "Bound": "exiled" },
+                                "play": true
+                              }
+                            },
+                            "duration": "R113UntilTheirNextEndStep"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "who": { "Target": 0 },
+                            "token": { "Named": "treasure" },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

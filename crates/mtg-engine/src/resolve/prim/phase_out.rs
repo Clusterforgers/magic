@@ -59,6 +59,25 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::events(events))
 }
 
+/// `Effect::R113PhaseIn`: each permanent the effect names that is phased out, still as the object it named, phases in
+/// with what phased out with it (CR 702.26), unless a rule keeps it out; a name that repeats is passed over.
+pub(super) fn r113_run_in(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    let Effect::R113PhaseIn { what } = effect else {
+        return Err(wrong_effect("R113PhaseIn"));
+    };
+    let state = cx.state();
+    let events = cx
+        .scope
+        .live_objects(what)?
+        .into_iter()
+        .filter(|object| {
+            object.zone() == Zone::PhasedOut && !crate::phasing::held(state, object.id())
+        })
+        .flat_map(|object| crate::phasing::w11b_with_attachments(state, object.id()))
+        .collect();
+    Ok(Run::events(events))
+}
+
 /// The rule that the permanents the effect itself phased out (not what went with them) can't phase in while `held`
 /// lasts; none when nothing phased out.
 fn held_rule(cx: &Cx<'_>, events: &[Event], held: &Duration) -> Option<Event> {

@@ -1041,6 +1041,36 @@ pub enum Amount {
     /// How many spells and abilities caused one or more players to guess or to group cards or permanents into a pile this
     /// turn (`Effect::SeparatePiles`, `R112Piles`, `R112GuessNumber`).
     R112GroupedThisTurn,
+    /// The number stored at a place of the memory slot of the first object `on` names (`Effect::R112RollStore`), counted
+    /// from 0: "the first result"; 0 when nothing is stored there.
+    R113Stored {
+        /// The object.
+        on: Ref,
+        /// The memory slot.
+        slot: String,
+        /// The place of the number, from 0.
+        index: u32,
+    },
+    /// How many of the objects `of` names have a value of the stat that another of them has too: "for each of those cards
+    /// that has the same mana value as another card revealed this way".
+    R113SharesWithAnother {
+        /// The objects.
+        of: Ref,
+        /// The stat compared.
+        stat: StatKind,
+    },
+    /// The greatest number the first object `on` names noted this turn (`GameRule::R113NoteExiledManaValue`): "the greatest
+    /// number noted for it this turn"; 0 when it noted none.
+    R113GreatestNoted {
+        /// The object.
+        on: Ref,
+    },
+    /// How many words the first object `on` names has noted (`Effect::R112NoteChosen`): "for each creature type noted for
+    /// target permanent you control named Volo's Journal"; 0 when it noted none.
+    R113NotedWords {
+        /// The object.
+        on: Ref,
+    },
 }
 
 impl Amount {
@@ -1302,6 +1332,21 @@ enum Tagged {
         slot: String,
     },
     R112GroupedThisTurn,
+    R113Stored {
+        on: Ref,
+        slot: String,
+        index: u32,
+    },
+    R113SharesWithAnother {
+        of: Ref,
+        stat: StatKind,
+    },
+    R113GreatestNoted {
+        on: Ref,
+    },
+    R113NotedWords {
+        on: Ref,
+    },
 }
 
 /// The tagged forms of [`Amount`] by reference, written by serde.
@@ -1532,6 +1577,21 @@ enum TaggedRef<'a> {
         slot: &'a String,
     },
     R112GroupedThisTurn,
+    R113Stored {
+        on: &'a Ref,
+        slot: &'a String,
+        index: &'a u32,
+    },
+    R113SharesWithAnother {
+        of: &'a Ref,
+        stat: &'a StatKind,
+    },
+    R113GreatestNoted {
+        on: &'a Ref,
+    },
+    R113NotedWords {
+        on: &'a Ref,
+    },
 }
 
 impl From<Tagged> for Amount {
@@ -1664,6 +1724,12 @@ impl From<Tagged> for Amount {
             Tagged::R112NumberChosen { name, by } => Amount::R112NumberChosen { name, by },
             Tagged::R112MostAlike { on, slot } => Amount::R112MostAlike { on, slot },
             Tagged::R112GroupedThisTurn => Amount::R112GroupedThisTurn,
+            Tagged::R113Stored { on, slot, index } => Amount::R113Stored { on, slot, index },
+            Tagged::R113SharesWithAnother { of, stat } => {
+                Amount::R113SharesWithAnother { of, stat }
+            }
+            Tagged::R113GreatestNoted { on } => Amount::R113GreatestNoted { on },
+            Tagged::R113NotedWords { on } => Amount::R113NotedWords { on },
         }
     }
 }
@@ -1899,6 +1965,16 @@ impl Serialize for Amount {
                 TaggedRef::R112MostAlike { on, slot }.serialize(serializer)
             }
             Amount::R112GroupedThisTurn => TaggedRef::R112GroupedThisTurn.serialize(serializer),
+            Amount::R113Stored { on, slot, index } => {
+                TaggedRef::R113Stored { on, slot, index }.serialize(serializer)
+            }
+            Amount::R113SharesWithAnother { of, stat } => {
+                TaggedRef::R113SharesWithAnother { of, stat }.serialize(serializer)
+            }
+            Amount::R113GreatestNoted { on } => {
+                TaggedRef::R113GreatestNoted { on }.serialize(serializer)
+            }
+            Amount::R113NotedWords { on } => TaggedRef::R113NotedWords { on }.serialize(serializer),
         }
     }
 }

@@ -502,6 +502,7 @@ const RUNS: &[&str] = &[
     "Ref.R111LastDamagedYou",
     "Ref.R111BlockedController",
     "ValueKind.R111SpellDamage",
+    "ValueKind.R113CreatureTypeOfNotNoted",
     "Rule.Cant.R111AttackPlayer",
     "Rule.Cant.R111CastOrPlay",
     "Rule.R111RevealDraws",
@@ -509,7 +510,9 @@ const RUNS: &[&str] = &[
     "Cost.R110ControllerDraws",
     "Duration.WhileYouControlSource",
     "Rule.Duration.WhileYouControlSource",
+    "Rule.Duration.WhileSourceTapped",
     "Rule.Duration.UntilTheirNextTurn",
+    "Rule.Duration.R113UntilTheirNextEndStep",
     "Rule.Duration.UntilItsControllersNextCombatEnds",
     "Duration.WhileSourceTapped",
     "Duration.WhileYouControlSourceTapped",
@@ -598,6 +601,8 @@ const RUNS: &[&str] = &[
     "Rule.R6700FirstFlipsHeads",
     "Rule.R6700VillainousAgain",
     "Rule.R6402ChangeRoll",
+    "Rule.R113ExchangeRoll",
+    "Rule.R113NoteExiledManaValue",
     "Rule.ExtraDie",
     "Rule.ExtraPlanarDie",
     "Rule.PlaneswalkLookTwo",
@@ -808,8 +813,13 @@ const RUNS: &[&str] = &[
     "Effect.R112Piles",
     "Effect.R112RollStore",
     "Effect.R112RerollStored",
+    "Effect.R113PhaseIn",
     "Amount.R112NumberChosen",
     "Amount.R112MostAlike",
+    "Amount.R113Stored",
+    "Amount.R113SharesWithAnother",
+    "Amount.R113GreatestNoted",
+    "Amount.R113NotedWords",
     "Amount.R112GroupedThisTurn",
     "Choose.DifferentColorSets",
     "Effect.BidLife",
@@ -1307,6 +1317,7 @@ const RUNS: &[&str] = &[
     "Pred.GreatestAmong",
     "Pred.LeastAmong",
     "Pred.HasKeywordNamed",
+    "Pred.R113HasWay",
     "Pred.CounterCount",
     "Pred.Suspended",
     "Pred.Foretold",
@@ -1536,6 +1547,10 @@ mod tests {
     )]
     #[case::r5502_a_rule_until_its_controllers_next_combat(
         "Rule.Duration.UntilItsControllersNextCombatEnds",
+        true
+    )]
+    #[case::r113_a_rule_for_as_long_as_the_source_is_tapped(
+        "Rule.Duration.WhileSourceTapped",
         true
     )]
     #[case::a_rule_for_as_long_as_you_control_the_source(

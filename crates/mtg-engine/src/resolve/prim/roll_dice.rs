@@ -145,7 +145,7 @@ fn r5507_roll_many(
     let (rolled, events) = match player {
         Some(player) => {
             let natural = rolls(state, player, sides, dice);
-            match super::r6402_change_roll::r6402_change(cx, player, &natural)? {
+            match super::r6402_change_roll::r6402_change(cx, player, sides, &natural)? {
                 Ok(changed) => {
                     let mut events = changed.events.clone();
                     events.extend(changed.rolled(player, sides, &natural));
@@ -222,7 +222,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     };
     let mut natural = rolls(state, player, *sides, dice);
     // The player may change results first (`r6402_change_roll`); a choice of one result is asked after.
-    let changed = match super::r6402_change_roll::r6402_change(cx, player, &natural)? {
+    let changed = match super::r6402_change_roll::r6402_change(cx, player, *sides, &natural)? {
         Ok(changed) => changed,
         Err(ask) => return Ok(ask),
     };

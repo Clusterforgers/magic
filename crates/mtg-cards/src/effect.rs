@@ -500,6 +500,9 @@ pub enum ValueKind {
     /// A creature type the source has not noted (`Effect::R112NoteChosen`): "a creature type that hasn't been noted for
     /// this Saga".
     R112CreatureTypeNotNoted,
+    /// One of the creature types of the first object the reference names that the source has not noted
+    /// (`Effect::R112NoteChosen`): "note one of its creature types that hasn't been noted for Volo's Journal".
+    R113CreatureTypeOfNotNoted(crate::refs::Ref),
     /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
     Letter,
     /// One of the spells the player `caster` names cast this turn that the selector matches as cast ("one of those sorcery
@@ -1163,6 +1166,12 @@ pub enum Effect {
         /// in", "It can't phase in for as long as you control this Saga"): a `Cant` rule of `PhaseIn` over exactly them.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         held: Option<Duration>,
+    },
+    /// Phased-out permanents phase in, each with what phased out with it (CR 702.26): "When The Pandorica becomes untapped
+    /// or leaves the battlefield, that permanent phases in." One a rule keeps from phasing in stays out.
+    R113PhaseIn {
+        /// What phases in.
+        what: Ref,
     },
     /// Attaches Auras, Equipment or Fortifications to an object, or Auras that enchant players to a player (CR 701.3).
     Attach {

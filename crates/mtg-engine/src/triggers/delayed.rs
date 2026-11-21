@@ -237,6 +237,7 @@ impl Delayed {
             | Duration::UntilSkippedThisTurn
             | Duration::TheirNextTurn
             | Duration::UntilTheirNextTurn
+            | Duration::R113UntilTheirNextEndStep
             | Duration::UntilCastFromExile
             | Duration::UntilCreatureSpellCast
             | Duration::UntilEndOfTurnOrRolled(_) => true,
