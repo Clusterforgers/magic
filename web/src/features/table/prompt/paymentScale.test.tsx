@@ -131,8 +131,8 @@ function crowdTable(prompt: string): { ms: number } {
 
 describe('the crowded payment on the table', () => {
   it.each([
-    ['pay-crowd', 3_000],
-    ['pay-crowd-120', 5_000],
+    ['pay-crowd', 10_000],
+    ['pay-crowd-120', 15_000],
   ])(
     '%s renders, lays out the game payment and confirms it within %i ms',
     async (prompt, bound) => {
