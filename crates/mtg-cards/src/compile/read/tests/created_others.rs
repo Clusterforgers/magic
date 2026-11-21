@@ -3,7 +3,8 @@ use super::*;
 
 const SOLDIERS: &str = r#"{"CreateToken":{"token":{"Custom":{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],"power":1,"toughness":1}},"count":"X","as":"tokens"}}"#;
 
-const OTHERS: &str = r#"{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"Is":{"Bound":"tokens"}}}]}}}"#;
+const OTHERS: &str =
+    r#"{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"Is":{"Bound":"tokens"}}}]}}}"#;
 
 #[rstest]
 #[case::martial_coup(
@@ -42,8 +43,14 @@ fn other_without_a_creation_stays_other_than_the_source() {
 }
 
 #[rstest]
-#[case::no_x_announced("Create a 1/1 white Soldier creature token. If X is 5 or more, destroy all other creatures.", false)]
-#[case::no_bound("Create X 1/1 white Soldier creature tokens. If X is 5, destroy all other creatures.", true)]
+#[case::no_x_announced(
+    "Create a 1/1 white Soldier creature token. If X is 5 or more, destroy all other creatures.",
+    false
+)]
+#[case::no_bound(
+    "Create X 1/1 white Soldier creature tokens. If X is 5, destroy all other creatures.",
+    true
+)]
 fn near_misses_stay_with_the_table(#[case] text: &str, #[case] x_free: bool) {
     assert_eq!(clause(text, ClauseKind::Spell, x_free), None, "{text}");
 }

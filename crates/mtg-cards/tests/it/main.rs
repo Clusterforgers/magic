@@ -157,4 +157,3 @@ mod roundtrip;
 mod transform_cards;
 mod us38_mana_cost;
 mod vocabulary;
-mod zz_scratch;

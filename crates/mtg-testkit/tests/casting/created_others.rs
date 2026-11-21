@@ -16,7 +16,11 @@ use mtg_testkit::{Driver, ScriptError};
 use rstest::rstest;
 
 /// Casts `spell` from seat 0 announcing `x` and resolves it; returns the driver and the setup it started from.
-fn cast_with_x(spell: &str, seats: usize, x: u32) -> Result<(Driver, mtg_engine::GameSetup), ScriptError> {
+fn cast_with_x(
+    spell: &str,
+    seats: usize,
+    x: u32,
+) -> Result<(Driver, mtg_engine::GameSetup), ScriptError> {
     let lands: Vec<_> = (0..x + 2).map(|_| plains()).collect();
     let scenario = table(seats, &[spell], &lands, &[]);
     let setup = scenario.clone().setup()?;

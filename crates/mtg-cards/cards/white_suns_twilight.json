@@ -33,7 +33,18 @@
               {
                 "If": {
                   "condition": { "Compare": { "left": "X", "op": "Ge", "right": 5 } },
-                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "tokens" } } }] } } }]
+                  "then": [
+                    {
+                      "Destroy": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "Not": { "Is": { "Bound": "tokens" } } }
+                          ]
+                        }
+                      }
+                    }
+                  ]
                 }
               }
             ]

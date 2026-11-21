@@ -34,7 +34,9 @@ fn swap(value: &mut Value, from: &Value, to: &Value) -> bool {
             }
             found
         }
-        Value::Object(map) => map.values_mut().fold(false, |found, item| swap(item, from, to) | found),
+        Value::Object(map) => map
+            .values_mut()
+            .fold(false, |found, item| swap(item, from, to) | found),
         _ => false,
     }
 }
@@ -107,5 +109,6 @@ pub(super) fn other_after_creation(ability: &Ability) -> bool {
     let Some(at) = last_creation(effects) else {
         return false;
     };
-    serde_json::to_value(&effects[at + 1..]).is_ok_and(|mut after| swap(&mut after, &other(), &other()))
+    serde_json::to_value(&effects[at + 1..])
+        .is_ok_and(|mut after| swap(&mut after, &other(), &other()))
 }
