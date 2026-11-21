@@ -1017,6 +1017,7 @@ pub(crate) fn answer(
             let all = mana_options(state, player);
             let mut events = crate::costly_mana::cost_events(state, player, option, &all)?;
             events.extend(mana_ability::logged_activation(state, player, option, &[])?);
+            crate::cast::record_sources(state, &mut events);
             mana_ability::r5g_distinct(state, &mut events);
             Ok(Outcome::Events(events))
         }

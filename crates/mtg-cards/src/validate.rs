@@ -929,6 +929,7 @@ impl<'a> Walker<'a> {
             Pred::RingBearer => self.uses("Pred", "RingBearer"),
             Pred::FaceDown => self.uses("Pred", "FaceDown"),
             Pred::SpentFrom { .. } => self.uses("Pred", "SpentFrom"),
+            Pred::R113SnowOfOwnColor => self.uses("Pred", "R113SnowOfOwnColor"),
             Pred::ManaFrom(r) => {
                 self.uses("Pred", "ManaFrom");
                 self.reference(r, Kind::Object);
@@ -1065,6 +1066,7 @@ impl<'a> Walker<'a> {
             | Pred::FaceDown
             | Pred::TargetsPlayer(_)
             | Pred::SpentFrom { .. }
+            | Pred::R113SnowOfOwnColor
             | Pred::ManaFrom(_)
             | Pred::GravedThisTurn
             | Pred::GravedThisCombat
@@ -1827,6 +1829,9 @@ impl<'a> Walker<'a> {
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::R112CastByOwnAbility => self.uses("Condition", "R112CastByOwnAbility"),
+            Condition::R113SpentFromTriggering { .. } => {
+                self.uses("Condition", "R113SpentFromTriggering");
+            }
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
@@ -2068,6 +2073,7 @@ impl<'a> Walker<'a> {
                     | CostItem::TapPermanents { filter, count }
                     | CostItem::ExileFromGraveyard { filter, count, .. }
                     | CostItem::R112ExileFromOneGraveyard { filter, count }
+                    | CostItem::R113BottomFromOneGraveyard { filter, count }
                     | CostItem::ExileFromHand { filter, count }
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
@@ -2127,6 +2133,7 @@ impl<'a> Walker<'a> {
                     | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
                     | CostItem::XColor(_)
+                    | CostItem::R113XHybrid(..)
                     | CostItem::R112XOneEachColor
                     | CostItem::Forage => {}
                     CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),

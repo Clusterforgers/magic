@@ -302,6 +302,7 @@ Boon Reflection
 Boon Satyr
 Boon-Bringer Valkyrie
 Borderland Behemoth
+Boreal Outrider
 Boromir, Gondor's Hope
 Boros Charm
 Boros Garrison
@@ -1391,6 +1392,7 @@ Jungle Shrine
 Junk Winder
 Jwar Isle Refuge
 Jyoti, Moag Ancient
+Jötun Grunt
 Kaervek's Torch
 Kalemne's Captain
 Kalemne, Disciple of Iroas
@@ -2405,6 +2407,7 @@ Solstice Zealot
 Soltari Foot Soldier
 Songs of the Damned
 Soraya the Falconer
+Soul Burn
 Soul Immolation
 Soul Manipulation
 Soul Shepherd
@@ -2887,6 +2890,7 @@ Vastwood Hydra
 Vastwood Surge
 Vault 75: Middle School
 Vault of the Archangel
+Vazi, Keen Negotiator
 Vedalken Engineer
 Vengeful Dead
 Vengeful Vampire

@@ -1,0 +1,189 @@
+{
+  "oracle_id": "063b0f5d-af27-4681-87b9-b553f6887061",
+  "name": "Soul Burn",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Burn",
+      "oracle_fingerprint": "f5f4309155e28c2048bf178a0127bdb1",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "R113XHybrid": ["Black", "Red"] }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [
+              {
+                "Let": {
+                  "as": "room",
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "CountOf": {
+                          "subject": { "Target": 0 },
+                          "selector": [{ "Type": "Creature" }],
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": {
+                        "When": {
+                          "condition": {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Type": "Planeswalker" }],
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": {
+                            "When": {
+                              "condition": {
+                                "Compare": {
+                                  "left": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
+                                  "op": "Le",
+                                  "right": {
+                                    "Counters": { "on": { "Target": 0 }, "counter": "loyalty" }
+                                  }
+                                }
+                              },
+                              "then": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } },
+                              "otherwise": {
+                                "Counters": { "on": { "Target": 0 }, "counter": "loyalty" }
+                              }
+                            }
+                          },
+                          "otherwise": { "Stat": { "of": { "Target": 0 }, "stat": "Toughness" } }
+                        }
+                      },
+                      "otherwise": {
+                        "When": {
+                          "condition": {
+                            "CountOf": {
+                              "subject": { "Target": 0 },
+                              "selector": [{ "Type": "Planeswalker" }],
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          },
+                          "then": { "Counters": { "on": { "Target": 0 }, "counter": "loyalty" } },
+                          "otherwise": {
+                            "When": {
+                              "condition": {
+                                "CountOf": {
+                                  "subject": { "Target": 0 },
+                                  "selector": [{ "Type": "Battle" }],
+                                  "op": "Ge",
+                                  "right": 1
+                                }
+                              },
+                              "then": "X",
+                              "otherwise": { "Life": { "Target": 0 } }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              { "DealDamage": { "to": { "Target": 0 }, "amount": "X" } },
+              {
+                "GainLife": {
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": "DamageDealtThisWay",
+                          "op": "Le",
+                          "right": {
+                            "When": {
+                              "condition": {
+                                "Compare": {
+                                  "left": {
+                                    "When": {
+                                      "condition": {
+                                        "Compare": {
+                                          "left": "X",
+                                          "op": "Le",
+                                          "right": {
+                                            "Sum": [{ "ManaSpent": { "of": "Black" } }, -1]
+                                          }
+                                        }
+                                      },
+                                      "then": "X",
+                                      "otherwise": {
+                                        "Sum": [{ "ManaSpent": { "of": "Black" } }, -1]
+                                      }
+                                    }
+                                  },
+                                  "op": "Le",
+                                  "right": { "Bound": "room" }
+                                }
+                              },
+                              "then": {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": "X",
+                                      "op": "Le",
+                                      "right": { "Sum": [{ "ManaSpent": { "of": "Black" } }, -1] }
+                                    }
+                                  },
+                                  "then": "X",
+                                  "otherwise": { "Sum": [{ "ManaSpent": { "of": "Black" } }, -1] }
+                                }
+                              },
+                              "otherwise": { "Bound": "room" }
+                            }
+                          }
+                        }
+                      },
+                      "then": "DamageDealtThisWay",
+                      "otherwise": {
+                        "When": {
+                          "condition": {
+                            "Compare": {
+                              "left": {
+                                "When": {
+                                  "condition": {
+                                    "Compare": {
+                                      "left": "X",
+                                      "op": "Le",
+                                      "right": { "Sum": [{ "ManaSpent": { "of": "Black" } }, -1] }
+                                    }
+                                  },
+                                  "then": "X",
+                                  "otherwise": { "Sum": [{ "ManaSpent": { "of": "Black" } }, -1] }
+                                }
+                              },
+                              "op": "Le",
+                              "right": { "Bound": "room" }
+                            }
+                          },
+                          "then": {
+                            "When": {
+                              "condition": {
+                                "Compare": {
+                                  "left": "X",
+                                  "op": "Le",
+                                  "right": { "Sum": [{ "ManaSpent": { "of": "Black" } }, -1] }
+                                }
+                              },
+                              "then": "X",
+                              "otherwise": { "Sum": [{ "ManaSpent": { "of": "Black" } }, -1] }
+                            }
+                          },
+                          "otherwise": { "Bound": "room" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

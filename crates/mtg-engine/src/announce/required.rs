@@ -73,6 +73,7 @@ fn variants_at(
             matches!(
                 item,
                 CostItem::XColor(_)
+                    | CostItem::R113XHybrid(..)
                     | CostItem::R112XOneEachColor
                     | CostItem::XAtMost(_)
                     | CostItem::XIs(_)

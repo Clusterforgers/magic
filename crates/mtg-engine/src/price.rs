@@ -3,7 +3,6 @@
 
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::value::Amount;
-use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol};
 
@@ -40,8 +39,9 @@ pub(crate) struct Price {
     pub(crate) mana: Option<ManaCost>,
     /// How many `{X}` the mana parts hold; each costs X generic mana once X is announced.
     pub(crate) x: u32,
-    /// "Spend only black mana on X": the mana each `{X}` costs is of this color instead of generic.
-    pub(crate) x_color: Option<Color>,
+    /// "Spend only black mana on X": the symbol each mana of an `{X}` becomes instead of generic (a color, or the hybrid
+    /// of two colors for "black and/or red").
+    pub(crate) x_color: Option<ManaSymbol>,
     /// How much of the mana is a waterbend cost: artifacts and creatures tapped may pay for it, each {1} (Avatar).
     pub(crate) waterbend: u32,
     /// How many `{X}` are waterbend costs ("Waterbend {X}").
@@ -110,6 +110,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::TapPower { .. } => "Cost.TapPower",
         CostItem::ExileFromGraveyard { .. } => "Cost.ExileFromGraveyard",
         CostItem::R112ExileFromOneGraveyard { .. } => "Cost.R112ExileFromOneGraveyard",
+        CostItem::R113BottomFromOneGraveyard { .. } => "Cost.R113BottomFromOneGraveyard",
         CostItem::ReturnToHand { .. } => "Cost.ReturnToHand",
         CostItem::ExilePermanents { .. } => "Cost.ExilePermanents",
         CostItem::ExileSpell { .. } => "Cost.ExileSpell",
@@ -120,6 +121,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Changed { .. } => "Cost.Changed",
         CostItem::XAtLeast(_) => "Cost.XAtLeast",
         CostItem::XColor(_) => "Cost.XColor",
+        CostItem::R113XHybrid(..) => "Cost.R113XHybrid",
         CostItem::R112XOneEachColor => "Cost.R112XOneEachColor",
         CostItem::ChosenColorOnly => "Cost.ChosenColorOnly",
         CostItem::XAtMost(_) => "Cost.XAtMost",
@@ -266,7 +268,10 @@ impl Price {
                 | CostItem::R110Choose(_)
                 | CostItem::ChosenColorOnly
                 | CostItem::R112XOneEachColor => {}
-                CostItem::XColor(color) => x_color = Some(*color),
+                CostItem::XColor(color) => x_color = Some(ManaSymbol::Colored(*color)),
+                CostItem::R113XHybrid(one, other) => {
+                    x_color = Some(ManaSymbol::Hybrid(*one, *other));
+                }
                 CostItem::Waterbend(_) if !waterbend_ok => return Err(unpaid(item)),
                 CostItem::Waterbend(Amount::X) => {
                     mana = true;
@@ -466,10 +471,10 @@ impl Price {
 }
 
 /// `mana` with `amount` more mana paid for X (CR 107.3): generic, or of `color` for "Spend only black mana on X".
-pub(crate) fn with_x(mana: ManaCost, amount: u32, color: Option<Color>) -> ManaCost {
+pub(crate) fn with_x(mana: ManaCost, amount: u32, color: Option<ManaSymbol>) -> ManaCost {
     match color {
         None => mana.with(ManaSymbol::Generic(amount)),
-        Some(color) => (0..amount).fold(mana, |mana, _| mana.with(ManaSymbol::Colored(color))),
+        Some(symbol) => (0..amount).fold(mana, |mana, _| mana.with(symbol)),
     }
 }
 
@@ -514,16 +519,17 @@ pub(crate) fn chosen_color_only(
 }
 
 /// The color "Spend only black mana on X" asks of the mana paid for X in `cost`, if any.
-pub(crate) fn x_color_of(cost: &Cost) -> Option<Color> {
+pub(crate) fn x_color_of(cost: &Cost) -> Option<ManaSymbol> {
     cost.0.iter().find_map(|item| match item {
-        CostItem::XColor(color) => Some(*color),
+        CostItem::XColor(color) => Some(ManaSymbol::Colored(*color)),
+        CostItem::R113XHybrid(one, other) => Some(ManaSymbol::Hybrid(*one, *other)),
         _ => None,
     })
 }
 
 /// The color a spell's "Spend only black mana on X" asks of the mana paid for its X: a part of its required additional
 /// costs, which pays nothing itself.
-pub(crate) fn spell_x_color(card: &mtg_cards::CardDefinition) -> Option<Color> {
+pub(crate) fn spell_x_color(card: &mtg_cards::CardDefinition) -> Option<ManaSymbol> {
     crate::ability_reader::printed_rules(card).find_map(|rule| match &**rule {
         mtg_cards::ability::Ability::AdditionalCost {
             cost,

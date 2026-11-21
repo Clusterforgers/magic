@@ -1,0 +1,18 @@
+{
+  "oracle_id": "43fbfeec-bcaf-48b8-befe-b7346fec5a3a",
+  "name": "Jötun Grunt",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jötun Grunt",
+      "oracle_fingerprint": "62645e8904eab3090987f7261621e544",
+      "abilities": [
+        {
+          "Keyword": {
+            "CumulativeUpkeep": [{ "R113BottomFromOneGraveyard": { "filter": [], "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

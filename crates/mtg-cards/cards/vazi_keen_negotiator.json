@@ -1,7 +1,7 @@
 {
   "oracle_id": "7446c013-63b0-402b-b8b9-dd25ccc553df",
   "name": "Vazi, Keen Negotiator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vazi, Keen Negotiator",
@@ -30,9 +30,21 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 118, "end": 296 }
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "by": "Opponents" } },
+                { "Did": { "action": "ActivatedAny", "who": "Opponents" } }
+              ]
+            },
+            "if": {
+              "R113SpentFromTriggering": { "from": { "subtypes": ["Treasure"] }, "least": 1 }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "Draw": {} }
+            ]
           }
         }
       ]

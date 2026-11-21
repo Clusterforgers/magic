@@ -145,6 +145,7 @@ fn treasure(count: u32) -> SpentFrom {
             ..SpendTraits::default()
         },
         count,
+        r113_mana: Vec::new(),
     }
 }
 
