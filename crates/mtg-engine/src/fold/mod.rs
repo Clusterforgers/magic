@@ -120,6 +120,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::LibraryRefilled { .. }
         | Event::MulliganPhaseBegan
         | Event::HandDealt { .. }
+        | Event::R115HandExiled { .. }
         | Event::MulliganDeclared { .. }
         | Event::MulliganTaken { .. }
         | Event::MulliganKept { .. }

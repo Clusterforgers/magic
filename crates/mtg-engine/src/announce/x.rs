@@ -337,7 +337,9 @@ fn least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
 /// The least X the cost lets the player choose.
 fn least_x_chosen(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     let Some(Ability::Activated { cost, .. }) = ctx.ability else {
-        return super::optional::chosen_least_x(ctx, choices);
+        // "If you cast this spell this way, X can't be 0." sets the least X of a way (`ways::r115_way_least_x`).
+        let way = ways::r115_way_least_x(ctx.state, ctx.source, choices.way);
+        return super::optional::chosen_least_x(ctx, choices).max(way);
     };
     least_of(cost)
 }

@@ -40,4 +40,9 @@ scry_if_keep?: number,
 /**
  * Cards scried after keeping the hand one more mulligan draws; left out when none are.
  */
-scry_if_mulligan?: number, };
+scry_if_mulligan?: number, 
+/**
+ * The cards in the hand that let it be exiled and as many drawn instead (Serum Powder, CR 103.5); left out when none
+ * is there.
+ */
+r115_powders?: Array<ObjectId>, };

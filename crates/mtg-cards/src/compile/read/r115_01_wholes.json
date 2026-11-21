@@ -1,0 +1,4 @@
+[
+ ["R115MulliganExile","Any time you could mulligan and this card is in your hand, you may exile all the cards from your hand, then draw that many cards."]
+,[{"Triggered":{"when":{"Batch":{"AnyOf":[{"ZoneChange":{"what":[{"OwnedBy":"You"}],"from":"Hand","to":"Exile"}},{"Caused":{"inner":{"ZoneChange":{"what":[],"from":"Battlefield","to":"Exile"}},"by":"You"}}]}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Spirit","colors":["White"],"types":["Creature"],"subtypes":["Spirit"],"power":1,"toughness":1,"abilities":[{"Keyword":"Flying"}]}}}}]}},"Whenever one or more cards are put into exile from your hand or a spell or ability you control exiles one or more permanents from the battlefield, create a 1/1 white Spirit creature token with flying."]
+]

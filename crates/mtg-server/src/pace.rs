@@ -786,6 +786,7 @@ mod tests {
             hand_if_mulligan: None,
             scry_if_keep: None,
             scry_if_mulligan: None,
+            r115_powders: Vec::new(),
         })
     }
 

@@ -182,6 +182,7 @@ pub mod r112_x_colors;
 mod r114_enlist;
 mod r114_pay_to_do;
 pub(crate) mod r114_sole_target;
+mod r115_cost_choice;
 mod r281_kicked_spend;
 mod r281_mana_at_priority;
 pub mod r286_joins;

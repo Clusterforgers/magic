@@ -106,7 +106,19 @@ library_order: Array<ObjectId>, } } | { "MulliganKept": {
 /**
  * Who kept.
  */
-player: PlayerId, } } | { "CardsBottomed": { 
+player: PlayerId, } } | { "R115HandExiled": { 
+/**
+ * Who exiled.
+ */
+player: PlayerId, 
+/**
+ * The cards of the hand exiled.
+ */
+exiled: Array<ObjectId>, 
+/**
+ * The cards drawn, in draw order.
+ */
+drawn: Array<ObjectId>, } } | { "CardsBottomed": { 
 /**
  * Whose cards.
  */

@@ -1,7 +1,7 @@
 {
   "oracle_id": "c73a9939-0742-4919-94d6-c3b537697f17",
   "name": "Ranar the Ever-Watchful",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ranar the Ever-Watchful",
@@ -28,9 +28,41 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 79, "end": 279 }
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "AnyOf": [
+                  {
+                    "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Hand", "to": "Exile" }
+                  },
+                  {
+                    "Caused": {
+                      "inner": {
+                        "ZoneChange": { "what": [], "from": "Battlefield", "to": "Exile" }
+                      },
+                      "by": "You"
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Spirit",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Spirit"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

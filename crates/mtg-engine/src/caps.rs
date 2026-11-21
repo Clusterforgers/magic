@@ -336,6 +336,9 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.Instead",
     "Ability.ManaAbility.Complex",
     "Cost.OneOf.Pay",
+    "Cost.OneOf.Activated",
+    "Cost.XAtLeast.Way",
+    "Ability.R115MulliganExile",
     "Ability.ManaAbility.Other",
     "Ability.ManaAbility.From",
     "Effect.PutCounters",
@@ -893,6 +896,7 @@ const RUNS: &[&str] = &[
     "Keyword.Flashback.Cost.Discard.X",
     "Keyword.Flashback.Cost.Sacrifice.X",
     "Keyword.Flashback.Cost.ExileFromGraveyard.X",
+    "Keyword.Flashback.Cost.RemoveCountersAmong.X",
     "Keyword.Evoke",
     "Keyword.Overload",
     "Keyword.Cycling",
@@ -1855,6 +1859,13 @@ mod tests {
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::paying_one_of_several_costs("Cost.OneOf.Pay", true)]
+    #[case::r115_choosing_between_costs_of_an_activation("Cost.OneOf.Activated", true)]
+    #[case::r115_a_least_x_of_a_way("Cost.XAtLeast.Way", true)]
+    #[case::r115_counters_among_by_x_in_a_flashback_cost(
+        "Keyword.Flashback.Cost.RemoveCountersAmong.X",
+        true
+    )]
+    #[case::r115_exiling_the_hand_at_a_mulligan("Ability.R115MulliganExile", true)]
     #[case::choosing_between_costs_elsewhere("Cost.OneOf.Elsewhere", false)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]

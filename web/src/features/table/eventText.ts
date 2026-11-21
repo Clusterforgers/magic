@@ -1080,6 +1080,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('MulliganDeclared' in event) return line(`${n.seat(event.MulliganDeclared.player)} decides to mulligan`)
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
+  if ('R115HandExiled' in event) {
+    const { player, exiled } = event.R115HandExiled
+    return line(`${n.seat(player)} exiles their hand and draws ${cards(exiled.length)}`)
+  }
   if ('OpeningCardsPlayed' in event) {
     const { player, cards: begun } = event.OpeningCardsPlayed
     const names = begun.map((id) => n.card(id)).join(', ')
@@ -1646,6 +1650,10 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)
   }
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
+  if ('R115HandExiled' in event) {
+    const { player, exiled } = event.R115HandExiled
+    return line(`${n.seat(player)} exiles their hand and draws ${cards(exiled.length)}`)
+  }
   if ('CardsBottomed' in event) {
     const { player, count } = event.CardsBottomed
     return line(`${n.seat(player)} puts ${cards(count)} on the bottom of their library`)

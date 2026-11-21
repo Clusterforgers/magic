@@ -68,6 +68,16 @@ pub enum HiddenEvent {
         /// Cards the library holds now.
         count: u32,
     },
+    /// A player exiled their hand at a mulligan and drew as many cards (Serum Powder): the exiled cards are public, the
+    /// drawn ones are not.
+    R115HandExiled {
+        /// Who exiled.
+        player: PlayerId,
+        /// The cards exiled, face up.
+        exiled: Vec<ObjectId>,
+        /// Cards drawn.
+        count: u32,
+    },
     /// A player shuffled their hand into their library to mulligan.
     MulliganTaken {
         /// Who mulliganed.
@@ -330,6 +340,15 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
             count: count(order.len()),
         }),
         Event::MulliganTaken { player, .. } => Some(HiddenEvent::MulliganTaken { player: *player }),
+        Event::R115HandExiled {
+            player,
+            exiled,
+            drawn,
+        } if !own(player) => Some(HiddenEvent::R115HandExiled {
+            player: *player,
+            exiled: exiled.clone(),
+            count: count(drawn.len()),
+        }),
         Event::HandDealt { player, cards } if !own(player) => Some(HiddenEvent::HandDealt {
             player: *player,
             count: count(cards.len()),
@@ -391,6 +410,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::DelayedTriggerCreated(_) => redact_triggers(before, event, viewer),
         // A graveyard is a public zone (CR 404.2): its new order is told to every seat.
         Event::R111GraveyardOrdered { .. }
+        | Event::R115HandExiled { .. }
         | Event::HandDealt { .. }
         | Event::CardsBottomed { .. }
         | Event::CardDrawn { .. }

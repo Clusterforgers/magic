@@ -251,6 +251,7 @@ fn decision_kinds() -> Vec<DecisionKind> {
             hand_if_mulligan: Some(6),
             scry_if_keep: Some(1),
             scry_if_mulligan: Some(1),
+            r115_powders: Vec::new(),
         }),
         DecisionKind::BottomCards(BottomOptions {
             hand: vec![a, b],
@@ -1384,6 +1385,7 @@ fn mulligan_options_carry_the_bottom_counts_by_name() {
         hand_if_mulligan: None,
         scry_if_keep: None,
         scry_if_mulligan: None,
+        r115_powders: Vec::new(),
     };
     assert_eq!(
         serde_json::to_value(DecisionKind::Mulligan(options)).unwrap(),
@@ -1410,6 +1412,7 @@ fn mulligan_options_name_the_size_of_the_next_hand_and_the_scries_when_they_are_
         hand_if_mulligan: Some(5),
         scry_if_keep: Some(1),
         scry_if_mulligan: Some(1),
+        r115_powders: Vec::new(),
     };
     let wire = json!({"Mulligan": {
         "hand": [3],

@@ -85,10 +85,14 @@ const some = (...choices: GenericChoice[]): GenericOffer => ({ choices, unlisted
  */
 export function genericChoices(kind: DecisionKind, words: GenericWords): GenericOffer {
   if ('Mulligan' in kind) {
+    const powder = kind.Mulligan.r115_powders?.[0]
     const { can_mulligan: can } = kind.Mulligan
     return some(
       pick('keep', 'Keep this hand', { Mulligan: 'Keep' }),
       ...(can ? [pick('mulligan', 'Take a mulligan', { Mulligan: 'Mulligan' })] : []),
+      ...(powder === undefined
+        ? []
+        : [pick('powder', 'Exile the hand and draw that many', { Mulligan: { R115ExileHand: powder } })]),
     )
   }
   if ('BottomCards' in kind) {

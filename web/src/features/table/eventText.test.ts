@@ -51,6 +51,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   MulliganPhaseBegan: ['MulliganPhaseBegan', 'The mulligan phase begins'],
   HandDealt: [{ HandDealt: { player: 0, cards: [1, 2, 3, 4, 5, 6, 3] } }, 'Ana is dealt 7 cards'],
+  R115HandExiled: [
+    { R115HandExiled: { player: 0, exiled: [1, 2, 3], drawn: [4, 5, 6] } },
+    'Ana exiles their hand and draws 3 cards',
+  ],
   MulliganDeclared: [{ MulliganDeclared: { player: 1 } }, 'Bo decides to mulligan'],
   MulliganTaken: [{ MulliganTaken: { player: 1, library_order: [] } }, 'Bo takes a mulligan'],
   MulliganKept: [{ MulliganKept: { player: 0 } }, 'Ana keeps their hand'],
@@ -735,6 +739,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   LoopOffered: [{ LoopOffered: { player: 1 } }, 'Bo is asked how many times to repeat the loop'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
+  R115HandExiled: [
+    { R115HandExiled: { player: 1, exiled: [1, 2], count: 2 } },
+    'Bo exiles their hand and draws 2 cards',
+  ],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
   AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],
   LibraryRefilled: [

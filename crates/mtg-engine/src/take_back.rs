@@ -269,6 +269,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::TurnedFaceUp { .. }
         | Event::CompanionRevealed { .. }
         | Event::HandDealt { .. }
+        | Event::R115HandExiled { .. }
         | Event::CardsBottomed { .. }
         | Event::LibraryBottomed { .. }
         | Event::LibraryInserted { .. }
