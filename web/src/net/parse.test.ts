@@ -567,7 +567,7 @@ describe('parseFrame checks the fields of each message', () => {
     expect(view).toMatchObject({ ok: true, message: { table: { house_rules: rules } } })
   })
 
-  it.each([null, 'Resolve', 'EndOfTurn', 'MyTurn'])(
+  it.each([null, 'Resolve', 'EndOfTurn', 'MyTurn', 'MyTurnThrough'])(
     'accepts %s as the yield of a Welcome and of a Yielding, and hands it on unchanged',
     (yielding) => {
       const welcome = { ...samples.Welcome, yielding }
@@ -586,7 +586,7 @@ describe('parseFrame checks the fields of each message', () => {
   it('names the yield field in the reason', () => {
     const frame = parseFrame(wire({ type: 'Yielding', until: 'Soon' }))
     expect(!frame.ok && frame.error.detail).toMatch(
-      /Yielding: "until" must be Resolve, EndOfTurn, MyTurn or null/,
+      /Yielding: "until" must be Resolve, EndOfTurn, MyTurn, MyTurnThrough or null/,
     )
   })
 

@@ -186,6 +186,7 @@ describe('/dev/table with the controls of the Priority prompt', () => {
     ['yield', 'Passing until the end of turn'],
     ['yield-resolve', 'Passing until the stack is empty'],
     ['yield-turn', 'Passing until your next turn'],
+    ['pass-turn', 'Passing until your turn; you are asked only real choices'],
   ])(
     '?prompt=%s starts passing: "%s", no decision and nothing to press but Stop passing',
     async (prompt, words) => {

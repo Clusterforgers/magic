@@ -10,9 +10,11 @@
 //! passed for, and stopped, at the same moments. The rules:
 //! - `Resolve` stops when the stack is empty.
 //! - `EndOfTurn` stops when a turn other than the one it was asked in has begun.
-//! - `MyTurn` stops when such a turn is the seat's own.
-//! - Any yield stops when another seat has put an object on the stack that the seat has not passed on.
-//! - Any yield stops at a window where the seat holds a stop (see [`crate::windows`]), except in the step of the window
+//! - `MyTurn` and `MyTurnThrough` stop when such a turn is the seat's own (its team's, where a team shares one);
+//!   `MyTurnThrough` ends as that turn begins ([`Yields::drop_reached`]), before any decision in it.
+//! - Any yield but `MyTurnThrough` stops when another seat has put an object on the stack that the seat has not passed
+//!   on.
+//! - Any yield but `MyTurnThrough` stops at a window where the seat holds a stop (see [`crate::windows`]), except in the step of the window
 //!   it was asked at: the seat has seen that one.
 
 use std::collections::BTreeSet;
@@ -53,10 +55,18 @@ impl Active {
         let reached = match self.until {
             YieldUntil::Resolve => state.stack().is_empty(),
             YieldUntil::EndOfTurn => turn.number() != self.turn,
-            YieldUntil::MyTurn => turn.number() != self.turn && state.is_active(seat),
+            YieldUntil::MyTurn | YieldUntil::MyTurnThrough => self.own_turn_begun(state, seat),
         };
+        if self.until == YieldUntil::MyTurnThrough {
+            return reached;
+        }
         let seen_here = turn.number() == self.turn && self.here == Some(turn.step());
         reached || (stopped && !seen_here) || self.opponent_added(state, seat)
+    }
+
+    /// Whether a turn of `seat`'s own other than the one it asked in has begun.
+    fn own_turn_begun(&self, state: &GameState, seat: PlayerId) -> bool {
+        state.turn().number() != self.turn && state.is_active(seat)
     }
 
     /// Whether the stack holds an object of another seat that the seat has not passed on yet.
@@ -146,6 +156,24 @@ impl Yields {
                 *slot = None;
             }
         }
+    }
+
+    /// Ends each `MyTurnThrough` yield whose seat's own next turn has begun, so it is off from that turn's untap step.
+    pub(crate) fn drop_reached(&mut self, state: &GameState) {
+        for (seat, slot) in self.seats.iter_mut().enumerate() {
+            let reached = slot.as_ref().is_some_and(|active| {
+                active.until == YieldUntil::MyTurnThrough
+                    && active.own_turn_begun(state, PlayerId::from_index(seat))
+            });
+            if reached {
+                *slot = None;
+            }
+        }
+    }
+
+    /// Ends `seat`'s yield if it is a `MyTurnThrough` one, which the seat's own action ends; false otherwise.
+    pub(crate) fn cancel_through(&mut self, seat: PlayerId) -> bool {
+        self.get(seat) == Some(YieldUntil::MyTurnThrough) && self.cancel(seat)
     }
 
     /// Takes `new` as the yields and returns each seat whose yield differs from before, with what it is now.
@@ -397,6 +425,104 @@ mod tests {
                 "{until:?} instant {seat_holds_an_instant} passed_on_it {passed_on_it}"
             );
         }
+    }
+
+    #[rstest]
+    #[case::an_opponents_new_spell(true, false)]
+    #[case::a_stop_at_the_window(false, true)]
+    #[case::both(true, true)]
+    fn through_passes_over_what_ends_every_other_yield(
+        #[case] opponent_casts: bool,
+        #[case] stop_here: bool,
+    ) {
+        let mut engine = duel(1, true);
+        let mut yields = Yields::new(2);
+        yields.start(ME, YieldUntil::MyTurnThrough, engine.state());
+        if opponent_casts {
+            cast(&mut engine);
+        }
+        pass(&mut engine);
+        assert_eq!(engine.decision().map(|d| d.player), Some(ME));
+        assert!(yields.passes(ME, engine.state(), stop_here));
+        assert_eq!(yields.get(ME), Some(YieldUntil::MyTurnThrough));
+    }
+
+    #[rstest]
+    #[case::two_seats(2, 1)]
+    #[case::three_seats(3, 2)]
+    #[case::four_seats(4, 3)]
+    #[case::four_seats_second(4, 1)]
+    fn through_passes_every_window_of_the_other_turns_and_ends_as_the_seats_own_turn_begins(
+        #[case] seats: usize,
+        #[case] me: usize,
+    ) {
+        let me = PlayerId::from_index(me);
+        let setup = Scenario::new(seats)
+            .at(1, 0, mtg_engine::turn::Step::Main1)
+            .setup()
+            .unwrap();
+        let mut engine = Engine::new(setup).unwrap();
+        let mut yields = Yields::new(seats);
+        yields.start(me, YieldUntil::MyTurnThrough, engine.state());
+        let windows = run_to(&mut engine, &mut yields, me, |state| state.is_active(me));
+        assert!(
+            windows >= 3 * me.index(),
+            "{windows} windows of seat {me:?}"
+        );
+        assert_eq!(
+            engine.state().turn().number(),
+            u32::try_from(me.index()).unwrap() + 1
+        );
+        assert_eq!(yields.get(me), Some(YieldUntil::MyTurnThrough));
+        yields.drop_reached(engine.state());
+        assert_eq!(yields.get(me), None, "off from the seat's own turn on");
+    }
+
+    #[test]
+    fn through_in_two_headed_giant_ends_with_the_teams_turn_and_drop_reached_touches_no_other_yield()
+     {
+        let teams = mtg_core::teams::Teams {
+            mode: mtg_core::teams::TeamMode::TwoHeadedGiant,
+            seats: vec![0, 0, 1, 1],
+        };
+        let setup = Scenario::new(4)
+            .house_rules(mtg_core::house::HouseRules {
+                teams: Some(teams),
+                ..mtg_core::house::HouseRules::default()
+            })
+            .at(1, 2, mtg_engine::turn::Step::Main1)
+            .setup()
+            .unwrap();
+        let mut engine = Engine::new(setup).unwrap();
+        let mut yields = Yields::new(4);
+        yields.start(ME, YieldUntil::MyTurnThrough, engine.state());
+        yields.start(PlayerId(3), YieldUntil::MyTurn, engine.state());
+        yields.drop_reached(engine.state());
+        assert_eq!(yields.get(ME), Some(YieldUntil::MyTurnThrough));
+        run_to(&mut engine, &mut yields, ME, |state| state.is_active(ME));
+        assert_eq!(engine.state().turn().active(), FOE, "the team's turn");
+        yields.drop_reached(engine.state());
+        assert_eq!(yields.get(ME), None);
+        assert_eq!(
+            yields.get(PlayerId(3)),
+            Some(YieldUntil::MyTurn),
+            "lazy as before"
+        );
+    }
+
+    #[rstest]
+    #[case::through(YieldUntil::MyTurnThrough, true)]
+    #[case::my_turn(YieldUntil::MyTurn, false)]
+    #[case::end_of_turn(YieldUntil::EndOfTurn, false)]
+    fn the_seats_own_action_ends_only_a_through_yield(
+        #[case] until: YieldUntil,
+        #[case] ends: bool,
+    ) {
+        let engine = table(0);
+        let mut yields = Yields::new(2);
+        yields.start(ME, until, engine.state());
+        assert_eq!(yields.cancel_through(ME), ends);
+        assert_eq!(yields.get(ME).is_none(), ends);
     }
 
     #[test]

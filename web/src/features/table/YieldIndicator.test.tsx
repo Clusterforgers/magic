@@ -11,6 +11,7 @@ const YIELDS: [YieldUntil, string][] = [
   ['Resolve', 'Passing until the stack is empty'],
   ['EndOfTurn', 'Passing until the end of turn'],
   ['MyTurn', 'Passing until your next turn'],
+  ['MyTurnThrough', 'Passing until your turn; you are asked only real choices'],
 ]
 
 /** A table whose seat is passing (or not), with no decision unless `pending` gives one. */

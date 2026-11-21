@@ -41,6 +41,7 @@ mod net;
 mod open_seats;
 mod opening_together;
 mod pace_leak;
+mod pass_turn;
 mod pay_leak;
 mod pg_account_settings;
 mod pg_accounts;

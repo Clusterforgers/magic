@@ -170,6 +170,7 @@ impl<S: EventStore> GameActor<S> {
                     running.stamp(&mut batch.table);
                 }
                 yields.drop_finished(running.engine.state());
+                yields.drop_reached(running.engine.state());
                 stops.drop_finished(running.engine.state());
                 let mut notices: Vec<(PlayerId, ServerMessage)> = self
                     .yields
