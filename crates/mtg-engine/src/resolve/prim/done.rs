@@ -134,6 +134,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::WinGame { .. }
         | Effect::ChangeTargets { .. }
         | Effect::CopySpell { .. }
+        | Effect::R114CopySpellOnto { .. }
         | Effect::CopyAbility { .. }
         | Effect::CopyCard { .. }
         | Effect::BecomeCopy { .. }

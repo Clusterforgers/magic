@@ -177,6 +177,7 @@ pub mod r111_spend_as;
 mod r112_next_spend;
 pub(crate) mod r112_not_generic;
 pub mod r112_x_colors;
+pub(crate) mod r114_sole_target;
 mod r281_kicked_spend;
 mod r281_mana_at_priority;
 pub mod r286_joins;

@@ -306,6 +306,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Paid
         | Ref::Convoked
         | Ref::Delved
+        | Ref::R114ChosenObject
         | Ref::R6702CraftedWith
         | Ref::R6602FromYou => Traits::NONE,
         Ref::Remembered { on, .. } => reads_of_ref(on),
@@ -436,6 +437,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
         | Pred::R113CopyOf(who)
+        | Pred::R114CouldTarget(who)
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::ProtectedBy(who)
@@ -485,6 +487,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         Pred::Not(inner) => reads_of_pred(inner),
         Pred::Targeting(inner)
         | Pred::R6104TargetsOnly(inner)
+        | Pred::R114TargetsOnlyOne(inner)
         | Pred::HasAttached(inner)
         | Pred::FromSource(inner)
         | Pred::AbilityFrom(inner) => reads_of_selector(inner),

@@ -1,7 +1,7 @@
 {
   "oracle_id": "a968524a-3d2d-4c0c-8f66-bfbfb9ff3c36",
   "name": "Dynaheir, Invoker Adept",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Dynaheir, Invoker Adept",
@@ -16,9 +16,18 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 101, "end": 281 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "Did": { "action": "Activated", "who": "You" } },
+                  "this_turn": true,
+                  "effects": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }],
+                  "intervening_if": { "R113SpentFromTriggering": { "from": {}, "least": 4 } }
+                }
+              }
+            ]
           }
         }
       ]

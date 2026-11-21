@@ -1,7 +1,7 @@
 {
   "oracle_id": "9b0b217d-cc9d-4187-89cb-f13160ed2983",
   "name": "The Rise of Sozin // Fire Lord Sozin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "The Rise of Sozin",
@@ -57,9 +57,46 @@
         { "Keyword": "Menace" },
         { "Keyword": { "Macro": { "name": "firebending", "amount": 3 } } },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 108, "end": 337 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": "{X}",
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [
+                          {
+                            "what": {
+                              "Together": {
+                                "what": {
+                                  "Object": [
+                                    { "Type": "Creature" },
+                                    { "In": "Graveyard" },
+                                    { "OwnedBy": "Triggering" }
+                                  ]
+                                },
+                                "rule": { "TotalManaValueAtMost": "X" }
+                              }
+                            },
+                            "bounds": { "min": 0, "max": null }
+                          }
+                        ],
+                        "effects": [
+                          {
+                            "Move": {
+                              "what": { "Target": 0 },
+                              "to": { "Battlefield": { "under": "You" } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

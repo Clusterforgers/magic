@@ -105,6 +105,9 @@ pub enum Ref {
     Spotlit,
     /// The player the source chose as it entered ("the chosen player"); nobody before the choice, for a source that chose no player or once that player has left the game.
     Chosen,
+    /// The object the source chose as it entered (`ReplaceBy::R114ChooseObject`: "the chosen creature"), as the object it
+    /// was then, still named once it has left the battlefield; nothing before the choice.
+    R114ChosenObject,
     /// The players the source chose as it entered other than the player the trigger event is about ("the other chosen
     /// player"); nobody once they have left the game.
     R4700OtherChosen,
@@ -715,6 +718,14 @@ pub enum Pred {
     /// Is a spell or ability on the stack whose every target is an object the selector names, with at least one target
     /// ("that targets only this creature": the same creature in several places counts).
     R6104TargetsOnly(Selector),
+    /// Is a spell or ability on the stack whose targets are all one object the selector names, in one place or several
+    /// ("that targets only a single nonland permanent an opponent controls": several targets that are the same permanent
+    /// count, two different ones do not).
+    R114TargetsOnlyOne(Selector),
+    /// Could be the target of the spell the reference names in place of its one target, in each place that target holds,
+    /// judged for the spell's controller (CR 115.7, 707.10c: "nonland permanents that spell could target"); a spell that has
+    /// left the stack is judged as it last was, and one with no target or with two different ones could target nothing.
+    R114CouldTarget(Ref),
     /// Is a copy on the stack of one of the spells or abilities the reference names (CR 707.10: "the spell and the copy").
     R113CopyOf(Ref),
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).

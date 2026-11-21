@@ -888,6 +888,7 @@ Explore
 Exquisite Blood
 Exquisite Huntmaster
 Exterminate!
+Exterminator Magmarch
 Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
@@ -1505,6 +1506,7 @@ Legion Warboss
 Legolas Greenleaf
 Leonardo, the Balance
 Leonin Arbiter
+Leori, Sparktouched Hunter
 Letter of Acceptance
 Leviathan
 Levitation
@@ -1664,6 +1666,7 @@ Meria's Outrider
 Merrow Reejerey
 Mesmeric Orb
 Metalwork Colossus
+Metamorphic Alteration
 Meteor Golem
 Methods of the Mighty
 Metropolis Reformer
@@ -3086,6 +3089,7 @@ Zellix, Sanity Flayer
 Zendikar Farguide
 Zendikar Resurgent
 Zetalpa, Primal Dawn
+Zevlor, Elturel Exile
 Zhang Fei, Fierce Warrior
 Zilortha, Strength Incarnate
 Zimone, Quandrix Prodigy

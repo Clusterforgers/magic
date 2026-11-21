@@ -486,6 +486,8 @@ pub enum ValueKind {
     BasicLandType,
     /// A land type other than the basic ones (CR 205.3i): "choose a nonbasic land type".
     NonbasicLandType,
+    /// A planeswalker type (CR 205.3j): "choose a planeswalker type".
+    R114PlaneswalkerType,
     /// The name of a card of the game that the selector matches (CR 201.3); an empty selector is any card.
     CardName(Selector),
     /// A whole number from the first amount to the second, read when the choice is made.
@@ -1169,6 +1171,17 @@ pub enum Effect {
         /// in", "It can't phase in for as long as you control this Saga"): a `Cant` rule of `PhaseIn` over exactly them.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         held: Option<Duration>,
+    },
+    /// One copy of each spell `what` names whose targets are all one player or object, made as `CopySpell` makes it, whose
+    /// target is one of the players and objects `onto` names that the spell could target in each place of that one target
+    /// (CR 707.10c): the controller of the effect chooses among them, and makes no copy when none could be (Exterminator
+    /// Magmarch: "choose one of those permanents. Copy that spell. The copy targets the chosen permanent"; Zevlor). A spell
+    /// that has left the stack is copied as it last was.
+    R114CopySpellOnto {
+        /// The spells copied.
+        what: Ref,
+        /// The players and objects the copy may target.
+        onto: Ref,
     },
     /// Phased-out permanents phase in, each with what phased out with it (CR 702.26): "When The Pandorica becomes untapped
     /// or leaves the battlefield, that permanent phases in." One a rule keeps from phasing in stays out.

@@ -1,0 +1,17 @@
+The Mimeoplasm	ReplaceBy::AsCopy over two cards exiled as it enters (an exile cost of the replacement binding both) with +1/+1 counters equal to the power of the card not copied	COPY-ENTERS
+Vesuvan Shapeshifter	`ReplaceBy::AsCopy` as the creature is turned face up: turning face up is not a replacement unit (resolve/prim/turn_up.rs and announce/turn_up.rs handle `R6702MayAttach` inline, so the special action needs a ChooseCards step), plus a copy end on turning face down (a `C10XpCopyEnds` variant) and the granted upkeep "you may turn this creature face down"	COPY-ENTERS
+Ludevic, Necrogenius // Olag, Ludevic's Hubris	ReplaceBy::AsCopy over ReplaceWhen::R6603Transforms (copy of a card ExiledWith across the transform, name and type exceptions) with +1/+1 counters equal to the exiled count	DERIVED-COPY, TRANSFORM-AS
+Valki, God of Lies // Tibalt, Cosmic Impostor	Effect::BecomeCopy of a card ExiledWith this, chosen with mana value X; back face emblem "you may play cards exiled with Tibalt" needs ExiledWith across faces into the emblem	DERIVED-COPY
+Niko, Light of Hope	Effect::BecomeCopy over a selector of permanents ("Shards you control") of a just-exiled card until the next end step (copy of last known information of an exiled object)	DERIVED-COPY
+Magar of the Magic Strings	Destination::BattlefieldFaceDown with set P/T and granted abilities, a noted name on the permanent and a copy of the noted card cast free	FACE-DOWN
+Illusionary Mask	Casting a creature card face down as a 2/2 from an activated ability whose {X} mana must be able to pay the card's cost, and a replacement turning it face up before it deals, is dealt damage or becomes tapped	FACE-DOWN
+The Face of Boe	An activated ability that casts a spell with suspend from the hand for its suspend cost	KW-GRANT
+Esper Origins // Summon: Esper Maduin	A resolving spell moving itself (Ref::This of the spell) to exile and then onto the battlefield transformed with a finality counter, only if cast from a graveyard	MOVE-BECOMES
+Aradesh, the Founder	Enlist as the as-attacks choice of CR 702.154a (a DeclareAttackers option) instead of the attack trigger of macros.rs, with a per-combat record of who enlisted for "it enlisted a creature this combat"	OO-kw
+Magnigoth Treefolk	Landwalk of each basic land type among lands you control: one clause read as five conditional statics (a reader for a list of more than three abilities)	OO-kw
+Space Beleren	Sectors assigned to creatures and blocking limited by sector	OO-kw
+Volatile Stormdrake	HexproofFrom a kind of stack object (activated or triggered ability, CR 702.11d) and exchange of control with an energy unless-payment	OO-kw
+Minamo's Meddling	Tracking the cards spliced onto a spell for a discard by name	OO-kw
+Ob Nixilis, the Adversary	Casualty X whose copy is not legendary and has starting loyalty X (CR 702.153, 707.9b): an X read from the sacrificed creature's power into the copy's exceptions (`Keyword::Casualty` holds a fixed number; keywords/casualty.rs builds a fixed CopySpell)	OO-kw
+Swirl the Mists	A static ChangeText of every color word to the chosen color over spells and permanents: the text change must reach spells on the stack (a resolving spell reads its rules from its card, not from the layers); no corpus fixture yet	TEXT-CHANGE
+Terra, Magical Adept // Esper Terra	PutCounters "up to three" (a chosen count 0..3) on a bound token conditioned on it being a Saga, read as three chapter abilities from "I, II, III —"	TOKEN-COPY

@@ -370,6 +370,7 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
         ValueKind::CardType => values::card_types(),
         ValueKind::LandType => values::land_types(),
         ValueKind::BasicLandType => values::basic_land_types(),
+        ValueKind::R114PlaneswalkerType => values::r6700_planeswalker_types(),
         ValueKind::NonbasicLandType => {
             let basics = values::basic_land_types();
             values::land_types()
@@ -466,6 +467,7 @@ fn question(kind: &ValueKind) -> String {
         ),
         ValueKind::LandType => "Choose a land type.".to_owned(),
         ValueKind::BasicLandType => "Choose a basic land type.".to_owned(),
+        ValueKind::R114PlaneswalkerType => "Choose a planeswalker type.".to_owned(),
         ValueKind::NonbasicLandType => "Choose a nonbasic land type.".to_owned(),
         ValueKind::ColorOrBasicLandType => {
             "Choose a color word or a basic land type to replace.".to_owned()
@@ -502,6 +504,9 @@ fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Opti
             | ValueKind::ColorOrBasicLandType,
             ChoiceOption::Label(name),
         ) => Some(Chosen::LandType(Subtype(name.clone()))),
+        (ValueKind::R114PlaneswalkerType, ChoiceOption::Label(name)) => {
+            Some(Chosen::R6700PlaneswalkerType(Subtype(name.clone())))
+        }
         (ValueKind::Color, ChoiceOption::Color(color)) => Some(Chosen::Color(*color)),
         (
             ValueKind::CreatureType
