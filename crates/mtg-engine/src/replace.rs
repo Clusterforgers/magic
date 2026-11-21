@@ -154,6 +154,7 @@ pub fn process(
             putter: crate::triggers::cause_of(state, &original, state)
                 .map(|cause| (cause.player, state.resolving().is_some())),
             r109_tokens,
+            r114_settled: Vec::new(),
         };
         step.prime();
         match step.run()? {
@@ -876,6 +877,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::R109EntersAttached(_)
         | ReplaceBy::R612MayExchangeTextBoxes(_)
+        | ReplaceBy::R114ChooseObject(_)
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -954,6 +956,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::ChooseAfter { .. }
                 | ReplaceBy::R109EntersAttached(_)
                 | ReplaceBy::R612MayExchangeTextBoxes(_)
+                | ReplaceBy::R114ChooseObject(_)
         )
     )
 }
@@ -1081,6 +1084,9 @@ struct Pass<'a> {
     putter: Option<(PlayerId, bool)>,
     /// The tokens the batch creates, which exist in the view the step reads (`r109_tokens_enter`).
     r109_tokens: Vec<ObjectId>,
+    /// The events the passes over the draws inside a replacement's steps made, which this pass leaves as they are
+    /// (`r114_inner_draws`).
+    r114_settled: Vec<Event>,
 }
 
 impl Pass<'_> {
@@ -2881,6 +2887,9 @@ impl Pass<'_> {
             ReplaceBy::R612MayExchangeTextBoxes(with) => {
                 self.r612_may_exchange(at, candidate, with, (object, controller), applied)
             }
+            ReplaceBy::R114ChooseObject(what) => {
+                self.r114_choose_object(at, candidate, what, (object, controller), applied)
+            }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
                 self.e14b_pay_or_graveyard(at, candidate, paid, (object, controller), applied)
@@ -4592,10 +4601,12 @@ mod prepared;
 
 mod dredge;
 mod lg1_draws;
+mod r114_inner_draws;
 
 mod r109_enters_attached;
 mod r113_copy_reflexive;
 mod r113_text_boxes;
+pub(crate) mod r114_choose_object;
 mod reveal;
 
 mod amplify;

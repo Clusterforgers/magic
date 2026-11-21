@@ -733,6 +733,10 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Either, want);
             }
             Ref::Delved | Ref::R6702CraftedWith => self.expect(Kind::Object, want),
+            Ref::R114ChosenObject => {
+                self.uses("Ref", "R114ChosenObject");
+                self.expect(Kind::Object, want);
+            }
             Ref::LastExiledWith { on, filter } => {
                 self.reference(on, Kind::Object);
                 self.at("filter", |w| w.selector(filter));
@@ -900,6 +904,14 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "R113CopyOf");
                 self.reference(who, Kind::Object);
             }
+            Pred::R114CouldTarget(who) => {
+                self.uses("Pred", "R114CouldTarget");
+                self.reference(who, Kind::Object);
+            }
+            Pred::R114TargetsOnlyOne(inner) => {
+                self.uses("Pred", "R114TargetsOnlyOne");
+                self.selector(inner);
+            }
             Pred::FromSource(source) => {
                 self.uses("Pred", "FromSource");
                 self.at("source", |w| w.selector(source));
@@ -991,6 +1003,8 @@ impl<'a> Walker<'a> {
             | Pred::SharesSubtype(r)
             | Pred::SharesCreatureTypeWithEach(r)
             | Pred::ExiledWith(r)
+            | Pred::R114ExiledByThem(r)
+            | Pred::R114EnlistedBy(r)
             | Pred::EncodedWith(r)
             | Pred::HauntedBy(r)
             | Pred::Crewed(r)
@@ -1101,6 +1115,8 @@ impl<'a> Walker<'a> {
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
             | Pred::R113CopyOf(_)
+            | Pred::R114CouldTarget(_)
+            | Pred::R114TargetsOnlyOne(_)
             | Pred::FromSource(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
@@ -1164,6 +1180,7 @@ impl<'a> Walker<'a> {
             | Pred::Paired
             | Pred::EnteredThisTurn
             | Pred::SummoningSick
+            | Pred::R114Enlisted
             | Pred::MilledThisTurn
             | Pred::DrawnThisTurn
             | Pred::LastDrawnThisTurn
@@ -2178,6 +2195,15 @@ impl<'a> Walker<'a> {
                         w.uses("Cost", "XIs");
                         w.at("XIs", |w| w.amount(amount));
                     }
+                    CostItem::R114RollDie(sides) => {
+                        if *sides < 2 {
+                            w.problem("a die has at least two sides");
+                        }
+                        if cost.has_x() {
+                            w.problem("a die rolled as a cost is the X of a cost with no {X}");
+                        }
+                        w.uses("Cost", "R114RollDie");
+                    }
                     CostItem::R110ChooseNumber { least, most } => {
                         if least > most {
                             w.problem("the least number chosen is greater than the greatest");
@@ -2990,6 +3016,7 @@ impl<'a> Walker<'a> {
             Modification::GainAbilitiesOf(from)
             | Modification::R111GainNonManaAbilitiesOf(from)
             | Modification::R6702GainActivatedAndTriggeredOf(from)
+            | Modification::R114StickerAbilitiesOf(from)
             | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
@@ -4004,6 +4031,7 @@ impl Walker<'_> {
             Ref::Affected
             | Ref::LastExiledWith { .. }
             | Ref::Delved
+            | Ref::R114ChosenObject
             | Ref::R6702CraftedWith
             | Ref::Candidate
             | Ref::This
@@ -4585,6 +4613,10 @@ impl Walker<'_> {
             Effect::R113PhaseIn { what } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
             }
+            Effect::R114CopySpellOnto { what, onto } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("onto", |w| w.reference(onto, Kind::Either));
+            }
             Effect::PhaseOut {
                 what, duration, held, ..
             } => {
@@ -4687,7 +4719,12 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
-            Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
+            Effect::Remember { what, per, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Either));
+                if let Some(per) = per {
+                    w.at("per", |w| w.reference(per, Kind::Player));
+                }
+            }
             Effect::R112GuessNumber {
                 min,
                 max,
@@ -4743,6 +4780,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_kept(name, Kind::Object));
                 }
             }
+            Effect::R114StoreValue { value, .. } => w.at("value", |w| w.amount(value)),
             Effect::RememberValue { value, per, .. } => {
                 w.at("value", |w| w.amount(value));
                 if let Some(per) = per {
@@ -6282,7 +6320,13 @@ impl Walker<'_> {
             .collect();
         let outer = std::mem::replace(&mut self.ep29_removes, removes);
         // The X a part of the cost counts is the one the ability announces.
-        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
+        // A die rolled as a cost sets the X (`CostItem::R114RollDie`).
+        self.x_free = cost.has_x()
+            || cost.0.iter().any(r6602_discard_by_x)
+            || cost
+                .0
+                .iter()
+                .any(|item| matches!(item, CostItem::R114RollDie(_)));
         self.x_now = self.x_free;
         self.activated_cost = true;
         self.at("cost", |w| w.cost(cost));
@@ -6293,7 +6337,12 @@ impl Walker<'_> {
             self.scope = Scope::new(&[], false);
             self.at("condition", |w| w.condition(condition));
         }
-        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
+        self.x_free = cost.has_x()
+            || cost.0.iter().any(r6602_discard_by_x)
+            || cost
+                .0
+                .iter()
+                .any(|item| matches!(item, CostItem::R114RollDie(_)));
         // An `{X}` of the mana and a part that counts X are asked as the ability is announced.
         if has_x_mana(cost) {
             self.uses("Cost", "Mana.X");
@@ -6577,6 +6626,12 @@ impl Walker<'_> {
                 self.at("payer", |w| w.reference(payer, Kind::Player));
                 self.at("cost", |w| w.cost(cost));
             }
+            GameRule::R114PayToDo { cost, effects } => {
+                if cost.has_x() {
+                    self.problem("`R114PayToDo` costs no {X}");
+                }
+                self.effect_list("effects", effects, false);
+            }
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));
             }
@@ -6825,6 +6880,14 @@ impl Walker<'_> {
                 if matches!(pay, crate::modify::R6402RollPay::Life(0)) {
                     w.problem("a change of a die's result paid with life pays at least 1");
                 }
+            }),
+            GameRule::R114StickerKicker { who, spells, cost } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("spells", |w| w.selector(spells));
+                if cost.0.is_empty() || cost.has_x() {
+                    w.problem("sticker kicker costs a fixed amount");
+                }
+                w.at("cost", |w| w.cost(cost));
             }),
             GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
@@ -7767,6 +7830,12 @@ impl Walker<'_> {
                     self.problem("only the Equipment itself enters attached");
                 }
                 self.at("to", |w| w.selector(to));
+            }
+            ReplaceBy::R114ChooseObject(what) => {
+                if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {
+                    self.problem("only the permanent itself chooses an object as it enters");
+                }
+                self.at("what", |w| w.selector(what));
             }
             ReplaceBy::R612MayExchangeTextBoxes(with) => {
                 if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {

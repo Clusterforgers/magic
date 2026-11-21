@@ -7,6 +7,7 @@ import type { ManaUndo } from "./ManaUndo";
 import type { ObjectId } from "./ObjectId";
 import type { PaidEnd } from "./PaidEnd";
 import type { PaidIgnore } from "./PaidIgnore";
+import type { R114PaidDo } from "./R114PaidDo";
 import type { UnplayableCard } from "./UnplayableCard";
 
 /**
@@ -60,6 +61,11 @@ endable?: Array<PaidEnd>,
  * the stack): "Any player may pay {2} for that player to ignore this effect until end of turn."
  */
 ignorable?: Array<PaidIgnore>, 
+/**
+ * The rule effects whose holder can pay now to do what they say (a special action that does not use the stack, CR
+ * 116.2): "Until end of turn, you may pay {1} any time you could cast an instant. If you do, ..." (`r114_pay_to_do`).
+ */
+r114_payable?: Array<R114PaidDo>, 
 /**
  * Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
  * timing, once a game.

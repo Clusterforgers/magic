@@ -44,7 +44,10 @@ pub(crate) fn ticket() -> CounterKind {
 
 /// One sticker of a sheet a seat plays with: the sheet (an index into the sheets the seat brought) and the sticker
 /// (an index among the stickers of that sheet).
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(
+    Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, serde::Serialize, serde::Deserialize,
+)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
 pub struct StickerAt {
     /// The seat whose sheet it is.
     pub player: PlayerId,
@@ -106,6 +109,44 @@ pub(crate) fn has_sticker(
     kind: Option<StickerKind>,
 ) -> bool {
     stickers_of_kind(state, reference, kind) > 0
+}
+
+/// The ability stickers on the objects, each with its ability, in the order named and put on; none on an object a
+/// reference no longer names (`Modification::R114StickerAbilitiesOf`).
+pub(crate) fn r114_ability_stickers_on(
+    state: &GameState,
+    objects: &[ObjectRef],
+) -> Vec<crate::effects::R114StickerGiven> {
+    let mut found: Vec<crate::effects::R114StickerGiven> = Vec::new();
+    for reference in objects {
+        if state
+            .object(reference.id)
+            .is_none_or(|object| object.counter() != reference.counter)
+        {
+            continue;
+        }
+        for at in state.stickers_on(reference.id) {
+            if let Some(Sticker::Ability { ability, .. }) = state.sticker(*at)
+                && !found.iter().any(|given| given.at == *at)
+            {
+                found.push(crate::effects::R114StickerGiven {
+                    at: *at,
+                    body: Arc::new((**ability).clone()),
+                });
+            }
+        }
+    }
+    found
+}
+
+/// The object the sticker is on, if it has been put on one.
+pub(crate) fn r114_sticker_holder(state: &GameState, at: StickerAt) -> Option<ObjectId> {
+    state
+        .un34
+        .on
+        .iter()
+        .find(|(_, stickers)| stickers.contains(&at))
+        .map(|(id, _)| *id)
 }
 
 /// How many stickers are on the object, of the kind when one is given; none on an object the reference no longer names.
@@ -246,12 +287,8 @@ pub fn name_with(words: &[String], printed: &str) -> String {
     parts.join(" ")
 }
 
-/// The stickers the player can put on now: unused stickers of the sheets they play with whose ticket cost they can
-/// pay.
-pub(crate) fn affordable(state: &GameState, player: PlayerId) -> Vec<(StickerAt, &Sticker)> {
-    let tickets = state
-        .player(player)
-        .map_or(0, |seat| seat.counters_of(&ticket()));
+/// The unused stickers of the sheets the player plays with, whatever their ticket cost.
+pub(crate) fn r114_unused(state: &GameState, player: PlayerId) -> Vec<(StickerAt, &Sticker)> {
     state
         .sticker_sheets(player)
         .into_iter()
@@ -267,7 +304,7 @@ pub(crate) fn affordable(state: &GameState, player: PlayerId) -> Vec<(StickerAt,
                 )
             })
         })
-        .filter(|(at, sticker)| !state.sticker_used(*at) && sticker.tickets() <= tickets)
+        .filter(|(at, _)| !state.sticker_used(*at))
         .collect()
 }
 
@@ -277,7 +314,15 @@ pub fn sticker_text(sticker: &Sticker) -> String {
     let what = match sticker {
         Sticker::Name { words, .. } => format!("\u{201c}{words}\u{201d}"),
         Sticker::Ability { ability, .. } => {
-            mtg_cards::compile::render_ability(ability).unwrap_or_else(|| "an ability".to_owned())
+            // A keyword has no sentence of its own: it is written as the keyword ("Flying").
+            mtg_cards::compile::render_ability(ability)
+                .or_else(|| match &**ability {
+                    Ability::Keyword(keyword) => {
+                        mtg_cards::compile::keyword_text(keyword).map(|text| capitalized(&text))
+                    }
+                    _ => None,
+                })
+                .unwrap_or_else(|| "an ability".to_owned())
         }
         Sticker::PowerToughness {
             power, toughness, ..
@@ -291,6 +336,14 @@ pub fn sticker_text(sticker: &Sticker) -> String {
             "{TK}".repeat(usize::try_from(count).unwrap_or(0))
         ),
     }
+}
+
+/// The words with their first letter in capitals ("Flying").
+fn capitalized(text: &str) -> String {
+    let mut chars = text.chars();
+    chars.next().map_or_else(String::new, |first| {
+        first.to_uppercase().chain(chars).collect()
+    })
 }
 
 /// The change a sticker makes to the permanent it is on; an art sticker makes none.
@@ -310,14 +363,15 @@ fn modification(sticker: &Sticker) -> Option<Modification> {
     }
 }
 
-/// The events of putting the sticker `at` on `on`: the tickets paid and the sticker put on.
-pub(crate) fn put_events(state: &GameState, at: StickerAt, on: ObjectRef) -> Vec<Event> {
+/// The events of putting the sticker `at` on `on`: the tickets paid, unless it is put on without paying them, and the
+/// sticker put on.
+pub(crate) fn put_events(state: &GameState, at: StickerAt, on: ObjectRef, pay: bool) -> Vec<Event> {
     let Some(sticker) = state.sticker(at) else {
         return Vec::new();
     };
     let mut events = Vec::new();
     let tickets = sticker.tickets();
-    if tickets > 0 {
+    if pay && tickets > 0 {
         events.push(Event::CountersChanged(crate::counters::CountersChanged {
             on: crate::choose::Target::Player(at.player),
             counter: ticket(),
@@ -414,14 +468,20 @@ pub(crate) fn fold_left(state: &mut GameState, object: ObjectId) {
     }
 }
 
-/// The continuous effects of the stickers on permanents (CR 123): one per sticker that changes something, on that
-/// permanent as it is now, timestamped when the sticker was put on or the permanent entered, whichever is later.
+/// The continuous effects of the stickers on permanents and spells (CR 123): one per sticker that changes something, on
+/// that object as it is now, timestamped when the sticker was put on or the permanent entered, whichever is later.
 pub(crate) fn effects(state: &GameState) -> Vec<ContinuousEffect> {
     let mut found = Vec::new();
     for (id, stickers) in &state.un34.on {
         let Some(object) = state
             .object(*id)
-            .filter(|object| object.zone() == crate::zones::Zone::Battlefield)
+            // A spell has its stickers too: one put on as it was cast is seen by what triggers on the cast.
+            .filter(|object| {
+                matches!(
+                    object.zone(),
+                    crate::zones::Zone::Battlefield | crate::zones::Zone::Stack
+                )
+            })
         else {
             continue;
         };

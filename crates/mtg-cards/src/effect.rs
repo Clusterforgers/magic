@@ -486,6 +486,8 @@ pub enum ValueKind {
     BasicLandType,
     /// A land type other than the basic ones (CR 205.3i): "choose a nonbasic land type".
     NonbasicLandType,
+    /// A planeswalker type (CR 205.3j): "choose a planeswalker type".
+    R114PlaneswalkerType,
     /// The name of a card of the game that the selector matches (CR 201.3); an empty selector is any card.
     CardName(Selector),
     /// A whole number from the first amount to the second, read when the choice is made.
@@ -898,6 +900,10 @@ pub enum Effect {
         what: Ref,
         /// The name of the memory.
         slot: String,
+        /// The player the objects are kept for, each apart ("cards they exiled with ~": `Pred::R114ExiledByThem`); None keeps
+        /// them for everyone.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        per: Option<Ref>,
     },
     /// The source forgets everything it remembers in `slot` (Forge: Clear Remembered).
     Forget {
@@ -1170,6 +1176,17 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         held: Option<Duration>,
     },
+    /// One copy of each spell `what` names whose targets are all one player or object, made as `CopySpell` makes it, whose
+    /// target is one of the players and objects `onto` names that the spell could target in each place of that one target
+    /// (CR 707.10c): the controller of the effect chooses among them, and makes no copy when none could be (Exterminator
+    /// Magmarch: "choose one of those permanents. Copy that spell. The copy targets the chosen permanent"; Zevlor). A spell
+    /// that has left the stack is copied as it last was.
+    R114CopySpellOnto {
+        /// The spells copied.
+        what: Ref,
+        /// The players and objects the copy may target.
+        onto: Ref,
+    },
     /// Phased-out permanents phase in, each with what phased out with it (CR 702.26): "When The Pandorica becomes untapped
     /// or leaves the battlefield, that permanent phases in." One a rule keeps from phasing in stays out.
     R113PhaseIn {
@@ -1344,6 +1361,10 @@ pub enum Effect {
         /// sticker that must be put when 0.
         #[serde(default, skip_serializing_if = "crate::effect::is_zero_u32")]
         up_to: u32,
+        /// Only a sticker whose ticket cost is this or less, put on without paying its tickets ("an ability sticker with
+        /// ticket cost X or less on it without paying that sticker's ticket cost"); a paid sticker when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r114_free_at_most: Option<Amount>,
     },
     /// "Choose creatures you control one at a time until each creature you control has been chosen. Each of those
     /// creatures gets +1/+1 until end of turn for each creature chosen before it." (Parade!): the controller orders the
@@ -2091,6 +2112,15 @@ pub enum Effect {
     R112RerollStored {
         /// How many faces each die has.
         sides: u32,
+        /// The memory slot of the source.
+        slot: String,
+    },
+    /// The source stores the number on itself: its memory slot `slot` holds it in place of what it held, for as long as
+    /// the source stays, and the permanent a card becomes as it enters keeps it ("pay any amount of life" as it enters,
+    /// read by "equal to the life paid as it entered", CR 614.12); `Amount::R113Stored` reads it.
+    R114StoreValue {
+        /// The number stored.
+        value: Amount,
         /// The memory slot of the source.
         slot: String,
     },

@@ -506,6 +506,22 @@ impl Held {
                 keyword: None,
             }),
             Modification::GainAbilities(borrowed) => self.gain_borrowed(borrowed, stamp),
+            Modification::R114StickerAbilities(given) => {
+                for sticker in given {
+                    let origin = Grant::R114Sticker(sticker.at);
+                    match &*sticker.body {
+                        Ability::Keyword(keyword) => {
+                            self.change(&Modification::AddKeyword(keyword.clone()), origin, stamp);
+                        }
+                        _ => self.abilities.push(HeldAbility {
+                            address: AbilityRef::granted(self.id, origin),
+                            body: Arc::clone(&sticker.body),
+                            since: stamp,
+                            keyword: None,
+                        }),
+                    }
+                }
+            }
             Modification::R612TextBoxOf(text) => self.r612_take_text_box(text, stamp),
             Modification::ChangeText { from, to } => {
                 self.retype_printed(from, to);
@@ -891,6 +907,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::GainAbilitiesOf(_)
         | Wanted::R111GainNonManaAbilitiesOf(_)
         | Wanted::R6702GainActivatedAndTriggeredOf(_)
+        | Wanted::R114StickerAbilitiesOf(_)
         | Wanted::LoseAbilities
         | Wanted::LoseAbilitiesExceptMana => Layer::Ability,
         Wanted::SetPT { .. } | Wanted::SetPower(_) | Wanted::SetToughness(_) if defining => {

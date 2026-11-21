@@ -10,7 +10,7 @@ use crate::choose::{ChoiceOption, Questions, Stop};
 use crate::events::Event;
 use crate::object::{GameObject, ObjectRef};
 use crate::resolve::{Cx, LET, Next, ResolveError, Run};
-use crate::un34_stickers::{StickerAt, VOWELS, affordable, put_events, sticker_text};
+use crate::un34_stickers::{StickerAt, VOWELS, put_events, r114_unused, sticker_text};
 use crate::zones::Zone;
 use mtg_cards::ability::StickerKind;
 
@@ -22,7 +22,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             on,
             kind,
             up_to,
-        } => (who, Some((on, *kind, *up_to))),
+            r114_free_at_most,
+        } => (who, Some((on, *kind, *up_to, r114_free_at_most.as_ref()))),
         Effect::ClaimPrize { who } => (who, None),
         _ => return Err(wrong_effect("PutSticker")),
     };
@@ -36,7 +37,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Ok(Run::events(Vec::new()));
     };
     match put {
-        Some((on, kind, up_to)) => Stop::settle(put_stickers(cx, player, on, kind, up_to)),
+        Some((on, kind, up_to, free)) => {
+            let free = free
+                .map(|most| cx.scope.amount(most))
+                .transpose()?
+                .map(|most| u32::try_from(most.max(0)).unwrap_or(u32::MAX));
+            Stop::settle(put_stickers(cx, player, on, kind, up_to, free))
+        }
         None => Ok(Run::events(vec![Event::PrizeClaimed {
             player,
             attraction: cx.scope.source.id,
@@ -54,6 +61,7 @@ fn put_stickers(
     on: &Selector,
     kind: Option<StickerKind>,
     up_to: u32,
+    free: Option<u32>,
 ) -> Result<Run, Stop> {
     let state = cx.state();
     let objects: Vec<ObjectRef> = cx
@@ -69,12 +77,15 @@ fn put_stickers(
     let mut spent = 0u32;
     let mut vowels = 0u32;
     for round in 0..up_to.max(1) {
-        let stickers: Vec<_> = affordable(state, player)
+        let stickers: Vec<_> = r114_unused(state, player)
             .into_iter()
             .filter(|(at, sticker)| {
                 !taken.contains(at)
                     && kind.is_none_or(|kind| sticker.kind() == kind)
-                    && sticker.tickets() + spent <= tickets(state, player)
+                    && match free {
+                        Some(most) => sticker.tickets() <= most,
+                        None => sticker.tickets() + spent <= tickets(state, player),
+                    }
             })
             .collect();
         if objects.is_empty() || stickers.is_empty() {
@@ -120,9 +131,11 @@ fn put_stickers(
         if sticker.kind() == StickerKind::Name {
             vowels = sticker.unique_vowels();
         }
-        spent += sticker.tickets();
+        if free.is_none() {
+            spent += sticker.tickets();
+        }
         taken.push(*at);
-        events.extend(put_events(state, *at, chosen));
+        events.extend(put_events(state, *at, chosen, free.is_none()));
     }
     questions.end()?;
     Ok(Run::Done {

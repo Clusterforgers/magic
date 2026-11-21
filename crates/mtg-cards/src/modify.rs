@@ -190,6 +190,9 @@ pub enum Modification {
     /// The object has the activated and triggered abilities printed on the cards the reference names, wherever they are
     /// (layer 6): "~ has all activated and triggered abilities of the last chosen card".
     R6702GainActivatedAndTriggeredOf(Ref),
+    /// The object has the abilities of the ability stickers on the objects the reference names, in any zone (layer 6, CR
+    /// 123): "has all abilities of ability stickers on this Equipment".
+    R114StickerAbilitiesOf(Ref),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
     /// The object loses all its abilities except mana abilities (layer 6, CR 605): "lose all abilities except mana
@@ -308,6 +311,7 @@ impl Modification {
             | Modification::GainAbilitiesOf(_)
             | Modification::R111GainNonManaAbilitiesOf(_)
             | Modification::R6702GainActivatedAndTriggeredOf(_)
+            | Modification::R114StickerAbilitiesOf(_)
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
             | Modification::LoseAbilities
@@ -1209,6 +1213,18 @@ pub enum GameRule {
         /// The memory slot of the permanent.
         slot: String,
     },
+    /// "Creature spells you cast have sticker kicker {1}." (CR 123, the Wicker Picker rulings): as a player in the group
+    /// casts a spell of `spells`, they may pay `cost` in addition, once for each such rule; for each payment they get a
+    /// ticket and may put a sticker on the spell just before it becomes cast. A spell paid for it counts as kicked for
+    /// other objects, never for its own kicker.
+    R114StickerKicker {
+        /// Who casts the spells.
+        who: Ref,
+        /// The spells.
+        spells: Selector,
+        /// The sticker kicker cost.
+        cost: crate::cost::Cost,
+    },
     /// "Note the mana value of each card as it's put into exile.": the permanent notes the number for itself as each card
     /// goes to exile, with no stack; `Amount::R113GreatestNoted` reads the notes of this turn.
     R113NoteExiledManaValue,
@@ -1327,6 +1343,17 @@ pub enum GameRule {
     /// the other effects of the rule's source until end of turn; those effects leave such a player out with
     /// `Condition::PaidToIgnore` ("Any player may pay {2} for that player to ignore this effect until end of turn.").
     PayToIgnore(ManaCostX),
+    /// The rule's controller may pay the mana any time they could cast an instant, a special action that does not use the
+    /// stack (CR 116.2), as often as they like while the rule lasts; each payment does the effects at once, `Target(0)` in
+    /// them the object or player that the spell beginning the rule targeted, fixed as it began (CR 611.2c): "Until end of
+    /// turn, you may pay {1} any time you could cast an instant. If you do, prevent the next 1 damage that would be dealt
+    /// to that permanent or player this turn."
+    R114PayToDo {
+        /// What each payment costs.
+        cost: ManaCostX,
+        /// What each payment does.
+        effects: Vec<crate::effect::Effect>,
+    },
     /// The players the reference names may pay the cost, a special action any time they have priority (CR 116.2), for
     /// that player to ignore the other effects of the rule's source until end of turn; those effects leave such a player
     /// out with `Condition::PaidToIgnoreBy` ("Its controller may exile three cards from their graveyard for that player

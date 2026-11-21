@@ -34,4 +34,10 @@ exert?: boolean,
  * It has banding or "bands with other" (CR 702.22c): the declaration may put it in a band with other attackers through
  * `Answer::DeclareExerting`. Left out while it has neither.
  */
-banding?: boolean, };
+banding?: boolean, 
+/**
+ * The creatures it may enlist as it attacks (CR 702.154a): untapped creatures its controller controls that have haste or
+ * have been under their control since the turn began; the declaration names one with `Answer::DeclareExerting`, and
+ * none that attacks. Left out while it has no enlist.
+ */
+r114_enlist?: Array<ObjectId>, };

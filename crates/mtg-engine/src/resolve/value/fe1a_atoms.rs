@@ -108,10 +108,8 @@ impl Scope<'_> {
             Pred::TargetedBy(named) => self.fe1a_targeted_by(named, reference)?,
             Pred::R113CopyOf(named) => self.r113_copy_of(named, reference)?,
             Pred::SingleTarget => {
-                seen.zone == Zone::Stack
-                    && seen
-                        .card
-                        .is_some_and(|card| card.choices().targets.iter().flatten().count() == 1)
+                self.r114_stack_choices(reference, seen)
+                    .is_some_and(|choices| choices.targets.iter().flatten().count() == 1)
             }
             Pred::Kicked => Self::fe1a_cast_object(seen).is_some_and(|card| {
                 payments(card.card(), card.paid_costs(), OptionalKind::Kicker) > 0

@@ -35,6 +35,7 @@ mod r402_cast;
 pub(crate) mod r5520_atoms;
 mod r5523_attacked;
 pub(crate) use r5520_atoms::{R5520_PAID, r5520_took};
+mod r114_targets;
 mod r6003_total;
 mod soulbond;
 mod w21a_atoms;
@@ -138,6 +139,8 @@ pub struct Scope<'a> {
     pub(crate) chooser: std::cell::Cell<Option<PlayerId>>,
     /// The player whose ability asks the `PlayersWhere` test being worked out (`Ref::Asker`).
     pub(crate) asker: Option<PlayerId>,
+    /// The player a cast permission or a look is worked out for (`Pred::R114ExiledByThem`); the controller when absent.
+    pub(crate) r114_permitted: Option<PlayerId>,
     /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
     pub(crate) caused: Option<crate::triggers::CausedBy>,
     /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
@@ -384,6 +387,18 @@ pub(crate) const fn zone_kind(zone: Zone) -> ZoneKind {
 }
 
 impl<'a> Scope<'a> {
+    /// The scope a rule of `controller` and `source` judges a card in for `player`, who would cast it or look at it.
+    pub(crate) fn r114_permitted(
+        state: &'a GameState,
+        (controller, source): (PlayerId, ObjectRef),
+        player: PlayerId,
+    ) -> Self {
+        Scope {
+            r114_permitted: Some(player),
+            ..Scope::announcing(state, controller, source)
+        }
+    }
+
     /// A scope for choosing targets: nothing is announced or bound yet.
     pub fn announcing(state: &'a GameState, controller: PlayerId, source: ObjectRef) -> Self {
         Scope {
@@ -405,6 +420,7 @@ impl<'a> Scope<'a> {
             candidate: std::cell::Cell::new(None),
             chooser: std::cell::Cell::new(None),
             asker: None,
+            r114_permitted: None,
             caused: None,
             granter: None,
             granter_player: None,
@@ -776,11 +792,16 @@ impl<'a> Scope<'a> {
     /// cast reads what it announced, and before anything is announced a target is found where some object in play
     /// matches; a spell or ability on the stack reads its own targets.
     /// Whether the spell or ability on the stack has a target and every one of its targets is an object `inner` names.
-    fn r6104_targets_only(&self, inner: &Selector, seen: &Seen<'_>) -> Result<bool, ResolveError> {
-        let Some(card) = seen.card.filter(|_| seen.zone == Zone::Stack) else {
+    fn r6104_targets_only(
+        &self,
+        inner: &Selector,
+        reference: ObjectRef,
+        seen: &Seen<'a>,
+    ) -> Result<bool, ResolveError> {
+        let Some(choices) = self.r114_stack_choices(reference, seen) else {
             return Ok(false);
         };
-        let targets: Vec<Target> = card.choices().targets.iter().flatten().copied().collect();
+        let targets: Vec<Target> = choices.targets.iter().flatten().copied().collect();
         if targets.is_empty() {
             return Ok(false);
         }
@@ -799,21 +820,21 @@ impl<'a> Scope<'a> {
         &self,
         inner: &Selector,
         reference: ObjectRef,
-        seen: &Seen<'_>,
+        seen: &Seen<'a>,
     ) -> Result<bool, ResolveError> {
-        if seen.zone != Zone::Stack {
+        let casting = self.casting.is_some_and(|(cast, _)| cast == reference.id);
+        if seen.zone != Zone::Stack && self.r114_stack_choices(reference, seen).is_none() {
             return Ok(false);
         }
-        let casting = self.casting.is_some_and(|(cast, _)| cast == reference.id);
         let chosen: Vec<ObjectRef> = match self.cast_targets {
             Some(CastTargets {
                 judging: Some(specs),
                 ..
             }) if casting => return self.judged_target(inner, reference, specs),
             Some(CastTargets { choices, .. }) if casting => choices.targeted_objects(),
-            _ => seen
-                .card
-                .map_or_else(Vec::new, |card| card.choices().targeted_objects()),
+            _ => self
+                .r114_stack_choices(reference, seen)
+                .map_or_else(Vec::new, Choices::targeted_objects),
         };
         for target in chosen {
             if self.selects(inner, target)? {
@@ -1508,6 +1529,7 @@ impl<'a> Scope<'a> {
             Ref::Paid => self.paid(),
             Ref::Convoked => self.convoked(),
             Ref::Delved => self.r5511_delved(),
+            Ref::R114ChosenObject => self.r114_chosen_object(),
             Ref::R6702CraftedWith => self.r6702_crafted_with(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::LastExiledWith { on, filter } => self.r5511_last_exiled(on, filter)?,
@@ -2042,6 +2064,24 @@ impl<'a> Scope<'a> {
         }))
     }
 
+    /// Whether the object is a card in exile that the player the scope works a permission or a look out for exiled with one
+    /// of the permanents the reference names: their `exiled` memory kept for that player holds it (CR 607.2a).
+    fn r114_exiled_by_them(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        let in_exile = self
+            .state
+            .object(reference.id)
+            .is_some_and(|card| card.counter() == reference.counter && card.zone() == Zone::Exile);
+        if !in_exile {
+            return Ok(false);
+        }
+        let player = self.r114_permitted.unwrap_or(self.controller);
+        let slot = crate::memory::player_slot(mtg_cards::refs::EXILED_SLOT, player);
+        Ok(self
+            .objects(named)?
+            .into_iter()
+            .any(|source| crate::memory::recall(self.state, source, &slot).contains(&reference)))
+    }
+
     /// Whether the object is a creature that one of the cards the reference names is encoded on (cipher).
     fn encoded_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
         let current = self
@@ -2194,6 +2234,7 @@ impl<'a> Scope<'a> {
             | Pred::AttachedTo(_) => self.w6d_pred(pred, reference, seen)?,
             Pred::Paired | Pred::PairedWith(_) => self.soulbond_pred(pred, reference)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
+            Pred::R114ExiledByThem(named) => self.r114_exiled_by_them(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
             Pred::HauntedBy(named) => self
                 .objects(named)?
@@ -2275,6 +2316,25 @@ impl<'a> Scope<'a> {
             Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::SummoningSick => crate::keywords::summoning_sick(state, reference.id),
+            Pred::R114Enlisted => state
+                .combat
+                .r114_enlisted
+                .iter()
+                .any(|(enlisting, _)| *enlisting == reference.id),
+            Pred::R114EnlistedBy(named) => {
+                let by: Vec<_> = self
+                    .objects(named)?
+                    .into_iter()
+                    .map(|object| object.id)
+                    .collect();
+                state
+                    .combat
+                    .r114_enlisted
+                    .iter()
+                    .any(|(enlisting, enlisted)| {
+                        *enlisted == reference.id && by.contains(enlisting)
+                    })
+            }
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
             Pred::DrawnThisTurn => state.object_tallied(reference, None, Tally::Dk26Drawn) > 0,
             Pred::LastDrawnThisTurn => {
@@ -2321,7 +2381,11 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
-            Pred::R6104TargetsOnly(inner) => self.r6104_targets_only(inner, seen)?,
+            Pred::R6104TargetsOnly(inner) => self.r6104_targets_only(inner, reference, seen)?,
+            Pred::R114TargetsOnlyOne(inner) => {
+                self.r114_targets_only_one(inner, reference, seen)?
+            }
+            Pred::R114CouldTarget(spell) => self.r114_could_target(spell, reference)?,
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::ProtectedBy(who) => {
@@ -3673,9 +3737,19 @@ impl<'a> Scope<'a> {
 
     /// How many times the optional costs of `kind` were paid (`paid_costs`), read against the costs the card prints.
     fn payments(&self, kind: OptionalKind) -> usize {
-        self.state
-            .object(self.source.id)
-            .map_or(0, |source| payments(source.card(), self.paid_costs(), kind))
+        let Some(source) = self.state.object(self.source.id) else {
+            return 0;
+        };
+        // A sticker kicker is no cost of the spell's own: its "if this spell was kicked" does not read it.
+        let mut stickers = self.choices.r114_sticker_kicks();
+        stickers.extend(source.choices().r114_sticker_kicks());
+        let own: Vec<usize> = self
+            .paid_costs()
+            .iter()
+            .copied()
+            .filter(|index| !stickers.contains(index))
+            .collect();
+        payments(source.card(), &own, kind)
     }
 
     /// Whether the spell the source is, or the permanent it became, was cast off sorcery timing, while it is still the
@@ -3952,9 +4026,11 @@ impl<'a> Scope<'a> {
             Condition::Compare { left, op, right } => {
                 op.holds(self.amount(left)?, self.amount(right)?)
             }
+            // No object has the characteristics: "if it's a creature card" of a card never drawn is false (CR 614.6).
             Condition::Matches { subject, selector } => {
-                self.count_of(subject, selector)?
-                    == i64::try_from(self.objects(subject)?.len()).unwrap_or(i64::MAX)
+                let named = self.objects(subject)?.len();
+                named > 0
+                    && self.count_of(subject, selector)? == i64::try_from(named).unwrap_or(i64::MAX)
             }
             Condition::AtTrigger(inner) => self.holds(inner)?,
             Condition::DamagedThisGameBy { by, combat } => {

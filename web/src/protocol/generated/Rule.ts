@@ -183,7 +183,23 @@ by: number,
 /**
  * Only once each turn for the permanent.
  */
-once: boolean, } } | { "R113NoteExiled": { 
+once: boolean, } } | { "R114StickerKicker": { 
+/**
+ * Who casts the spells.
+ */
+players: Array<PlayerId>, 
+/**
+ * The permanent with the rule.
+ */
+source: ObjectRef, 
+/**
+ * The spells.
+ */
+spells: unknown, 
+/**
+ * The sticker kicker cost.
+ */
+cost: unknown, } } | { "R113NoteExiled": { 
 /**
  * The permanent with the rule, whose memory holds the notes.
  */
@@ -259,7 +275,19 @@ may: boolean,
 /**
  * Whether it works only on the controller's turns.
  */
-your_turns: boolean, } } | { "BoastTwice": Array<PlayerId> } | { "R111RevealDraws": Array<PlayerId> } | { "LoyaltyAnyTime": Array<PlayerId> } | { "LoyaltyCostsMore": Array<[PlayerId, number]> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "PayToIgnore": ManaCost } | { "PayToIgnoreBy": { 
+your_turns: boolean, } } | { "BoastTwice": Array<PlayerId> } | { "R111RevealDraws": Array<PlayerId> } | { "LoyaltyAnyTime": Array<PlayerId> } | { "LoyaltyCostsMore": Array<[PlayerId, number]> } | { "MaxHandSize": Array<[PlayerId, number]> } | { "HandSizeChange": Array<[PlayerId, number]> } | { "NoLegendRule": Array<PlayerId> } | { "NoLegendRuleFor": unknown } | { "PayToIgnore": ManaCost } | { "R114PayToDo": { 
+/**
+ * What each payment costs.
+ */
+cost: ManaCost, 
+/**
+ * What each payment does, with `Target(0)` read as `fixed`.
+ */
+effects: unknown, 
+/**
+ * The object or player the spell that began the rule targeted, as it was then (CR 611.2c).
+ */
+fixed: Array<Target>, } } | { "PayToIgnoreBy": { 
 /**
  * Who may pay.
  */

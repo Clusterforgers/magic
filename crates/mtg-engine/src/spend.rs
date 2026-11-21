@@ -124,6 +124,7 @@ impl Spend {
                     .is_some_and(|(zone, _)| zone == mtg_cards::refs::ZoneKind::Exile),
                 _ => false,
             };
+            traits.r114_card = r114_cast_card(object);
             traits.not_from_hand = match object.zone() {
                 Zone::Hand(_) => false,
                 Zone::Stack => !object.cast_from_hand(),
@@ -240,6 +241,11 @@ impl Spend {
                 ),
                 SpendOn::CumulativeUpkeep => self.kind == SpendKind::CumulativeUpkeep,
                 SpendOn::Special(action) => self.kind == SpendKind::Special(*action),
+                SpendOn::R114LastExiled { card } => {
+                    self.kind == SpendKind::Spell
+                        && card.is_some()
+                        && self.traits.r114_card == *card
+                }
                 // A rider limits nothing, so it neither allows nor refuses a payment.
                 SpendOn::When(_)
                 | SpendOn::Uncounterable(_)
@@ -388,4 +394,54 @@ pub struct Spent {
 pub(crate) fn snow_rider(state: &GameState, source: ObjectId) -> Option<SpendOn> {
     crate::characteristics::has_supertype(state, source, mtg_core::card::Supertype::Snow)
         .then_some(SpendOn::Snow)
+}
+
+/// The card a spell is cast as, as it was in exile (`SpendOn::R114LastExiled`): the card itself while it is announced
+/// from exile, and the incarnation before the stack once it is there; none for a spell cast from anywhere else.
+fn r114_cast_card(object: &crate::object::GameObject) -> Option<(ObjectId, u32)> {
+    match object.zone() {
+        Zone::Exile => Some((object.id, object.counter())),
+        Zone::Stack
+            if object
+                .cast_record()
+                .is_some_and(|(zone, _)| zone == mtg_cards::refs::ZoneKind::Exile) =>
+        {
+            Some((object.id, object.counter().saturating_sub(1)))
+        }
+        _ => None,
+    }
+}
+
+/// The uses with the card the mana's source exiled last fixed in them (`SpendOn::R114LastExiled`); `None` when the
+/// source holds no card still in exile, so the mana could pay for nothing.
+pub(crate) fn r114_fix_exiled(
+    state: &GameState,
+    source: Option<ObjectId>,
+    only: Vec<SpendOn>,
+) -> Option<Vec<SpendOn>> {
+    if !only
+        .iter()
+        .any(|on| matches!(on, SpendOn::R114LastExiled { card: None }))
+    {
+        return Some(only);
+    }
+    let source = state.object(source?)?.reference();
+    let card = crate::memory::recall(state, source, mtg_cards::refs::EXILED_SLOT)
+        .into_iter()
+        .rev()
+        .find(|card| {
+            state.object(card.id).is_some_and(|object| {
+                object.zone() == Zone::Exile && object.counter() == card.counter
+            })
+        })?;
+    Some(
+        only.into_iter()
+            .map(|on| match on {
+                SpendOn::R114LastExiled { card: None } => SpendOn::R114LastExiled {
+                    card: Some((card.id, card.counter)),
+                },
+                other => other,
+            })
+            .collect(),
+    )
 }

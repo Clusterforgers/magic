@@ -43,6 +43,34 @@ pub(crate) fn cost<'a>(
     keyworded_cost(state, player, (address, rules), cost)
 }
 
+/// [`cost`] once the parts that pick objects have their picks: "Exile a creature card from your graveyard and pay its
+/// mana cost" (`ManaCostOf(Paid)`) costs the mana cost of the card picked (CR 601.2f, 602.2b), which the total reads.
+pub(crate) fn r114_cost_with_picks<'a>(
+    state: &GameState,
+    player: PlayerId,
+    (address, rules): (AbilityRef, &Ability),
+    cost: &'a Cost,
+    picks: &[Vec<mtg_core::ids::ObjectId>],
+) -> Cow<'a, Cost> {
+    let paid = mtg_cards::cost::CostItem::ManaCostOf(mtg_cards::refs::Ref::Paid);
+    if !cost.0.contains(&paid) {
+        return self::cost(state, player, (address, rules), cost);
+    }
+    let mana = picks
+        .iter()
+        .flatten()
+        .find_map(|id| state.object(*id))
+        .and_then(|object| object.mana_cost().cloned())
+        .unwrap_or(mtg_core::mana::ManaCost::ZERO);
+    let mut read = cost.clone();
+    for item in &mut read.0 {
+        if *item == paid {
+            *item = mtg_cards::cost::CostItem::Mana(ManaCostX::new(0, mana.clone()));
+        }
+    }
+    Cow::Owned(self::cost(state, player, (address, rules), &read).into_owned())
+}
+
 /// The cost with each `ManaCostOf` part read as the mana cost of the first object it names, seen from the ability's
 /// object; an object with no mana cost costs nothing (CR 202.1b).
 fn r113_mana_cost_of(

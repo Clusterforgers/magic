@@ -230,30 +230,6 @@ fn provoke_leaves_the_other_creatures_free_when_the_provoked_one_blocks_alone(
     Ok(())
 }
 
-fn enlist_hook<'a>(
-    pick: &'a str,
-    offered: &'a RefCell<Vec<String>>,
-) -> impl Fn(&Driver, &Decision) -> Option<Answer> + 'a {
-    move |driver, decision| match &decision.kind {
-        DecisionKind::ChooseCards(options) if decision.player == pid(0) => {
-            let name = |id: &mtg_core::ids::ObjectId| {
-                driver.state().object(*id).unwrap().card().name.clone()
-            };
-            let mut names: Vec<String> = options.from.iter().map(name).collect();
-            names.sort();
-            *offered.borrow_mut() = names;
-            let chosen = options.from.iter().find(|id| name(id) == pick)?;
-            Some(Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
-                *chosen,
-            ])))
-        }
-        DecisionKind::YesNo(_) if decision.player == pid(0) => {
-            Some(Answer::YesNo(YesNoChoice(true)))
-        }
-        _ => None,
-    }
-}
-
 fn enlist_cards() -> Vec<mtg_engine::PresetPermanent> {
     let enlister = keyworded("Enlister", 2, 9, &[macro_keyword("enlist", 0)]);
     let another: Arc<CardDefinition> =
@@ -278,14 +254,32 @@ fn enlist_taps_a_free_creature_and_adds_its_power(
         enlist_cards(),
         vec![ready(free_creature("Wall", 0, 9))],
     ))?;
-    let offered = RefCell::new(Vec::new());
-    let hook = enlist_hook(pick, &offered);
-    play(&mut driver, &["Enlister"], &[], &hook, Step::EndCombat)?;
-    assert_eq!(
-        *offered.borrow(),
-        ["Big Helper", "Helper"],
-        "untapped, not attacking, no enlist, not sick"
-    );
+    driver.pass_until(Step::DeclareAttackers)?;
+    let DecisionKind::DeclareAttackers(options) = &driver.decision()?.kind else {
+        panic!("seat 0 declares attackers");
+    };
+    let enlister = driver.id_of("Enlister")?;
+    let option = options
+        .attackers
+        .iter()
+        .find(|o| o.object == enlister)
+        .unwrap();
+    let mut offered: Vec<String> = option
+        .r114_enlist
+        .iter()
+        .map(|id| driver.state().object(*id).unwrap().card().name.clone())
+        .collect();
+    offered.sort();
+    // Untapped creatures free of summoning sickness, an enlisting one too (CR 702.154a); one that attacks is refused with
+    // the declaration.
+    assert_eq!(offered, ["Big Helper", "Helper", "Other Enlister"]);
+    crate::macro_keywords::r114_play_enlisting(
+        &mut driver,
+        &["Enlister"],
+        &[("Enlister", pick)],
+        &|_, _| None,
+        Step::EndCombat,
+    )?;
     let power = if pick == "Helper" { 3 } else { 5 };
     assert_eq!(size(&driver, "Enlister"), (2 + power, 9));
     let tapped_ids = |name: &str| {

@@ -919,8 +919,16 @@ fn match_needs_on_lands(
 /// Whether the plain `cost` can be paid exactly from the pool plus the given sources, tapping each permanent once.
 fn plain_can_afford(cost: &ManaCost, pool: &Floating, sources: &[ManaOption]) -> bool {
     if !sources.iter().all(ManaOption::is_simple) {
-        return planned_auto(cost, pool, sources).is_some();
+        // What the sources of one mana each pay, all of them do: a match answers that at once on a crowded board.
+        let simple: Vec<ManaOption> = sources.iter().filter(|o| o.is_simple()).cloned().collect();
+        return simple_can_afford(cost, pool, &simple)
+            || planned_auto(cost, pool, sources).is_some();
     }
+    simple_can_afford(cost, pool, sources)
+}
+
+/// [`plain_can_afford`] when every source adds one mana and keeps its source: a match of the colored needs to permanents.
+fn simple_can_afford(cost: &ManaCost, pool: &Floating, sources: &[ManaOption]) -> bool {
     let groups = by_permanent(sources);
     let mut needs = Vec::new();
     for mana in ManaType::ALL {
@@ -934,6 +942,23 @@ fn plain_can_afford(cost: &ManaCost, pool: &Floating, sources: &[ManaOption]) ->
 /// The payment of the plain `cost` when some source adds several mana or is sacrificed: floating mana first, then the
 /// sources [`plan`] chooses.
 fn planned_auto(cost: &ManaCost, pool: &Floating, sources: &[ManaOption]) -> Option<Payment> {
+    // No payment makes more than every permanent's largest use and all its uses that do not tap, before the mana
+    // their own costs take.
+    let mut most: BTreeMap<ObjectId, usize> = BTreeMap::new();
+    let mut tapless = 0;
+    for option in sources {
+        if option.tapless {
+            tapless += option.made().len();
+        } else {
+            let slot = most.entry(option.source.object).or_default();
+            *slot = (*slot).max(option.made().len());
+        }
+    }
+    let made: usize = tapless + most.values().sum::<usize>();
+    let supply = u64::from(pool.total()) + made as u64;
+    if supply < u64::from(cost.mana_value()) {
+        return None;
+    }
     solving(
         &[],
         sources,

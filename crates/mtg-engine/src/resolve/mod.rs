@@ -37,7 +37,8 @@ use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 pub(crate) use inline::{
-    Inline, r304_run_then_count, r370_run_instead_bound, run_inline, w5d_run_instead,
+    Inline, R114Replaced, r114_run_bound, r304_run_then_count, r370_run_instead_bound, run_inline,
+    w5d_run_instead,
 };
 pub use left::LeftToTable;
 pub(crate) use prim::{first_step_done, lower};
@@ -381,6 +382,7 @@ fn scope_of<'a>(
         candidate: std::cell::Cell::new(None),
         chooser: std::cell::Cell::new(None),
         asker: None,
+        r114_permitted: None,
         caused: None,
         granter: ability.and_then(|a| a.origin().granter()),
         granter_player: ability.and_then(|a| effect_controller(state, a.origin())),

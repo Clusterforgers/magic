@@ -268,6 +268,20 @@ pub enum Rule {
         /// Only once each turn for the permanent.
         once: bool,
     },
+    /// The players may pay `cost` in addition as they cast a spell of `spells`, for a ticket and a sticker on the spell
+    /// (`GameRule::R114StickerKicker`).
+    R114StickerKicker {
+        /// Who casts the spells.
+        players: Vec<PlayerId>,
+        /// The permanent with the rule.
+        source: ObjectRef,
+        /// The spells.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spells: mtg_cards::refs::Selector,
+        /// The sticker kicker cost.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        cost: mtg_cards::cost::Cost,
+    },
     /// The permanent notes the mana value of each card put into exile (`GameRule::R113NoteExiledManaValue`).
     R113NoteExiled {
         /// The permanent with the rule, whose memory holds the notes.
@@ -390,6 +404,17 @@ pub enum Rule {
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// Any player may pay the mana to ignore the other effects of the rule's source until end of turn (CR 116.2).
     PayToIgnore(ManaCost),
+    /// The rule's controller may pay the mana any time they could cast an instant, a special action (CR 116.2), and each
+    /// payment does the effects at once (`r114_pay_to_do`).
+    R114PayToDo {
+        /// What each payment costs.
+        cost: ManaCost,
+        /// What each payment does, with `Target(0)` read as `fixed`.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        effects: Vec<mtg_cards::effect::Effect>,
+        /// The object or player the spell that began the rule targeted, as it was then (CR 611.2c).
+        fixed: Vec<crate::choose::Target>,
+    },
     /// The players may pay the cost to ignore the other effects of the rule's source until end of turn (CR 116.2).
     PayToIgnoreBy {
         /// Who may pay.
@@ -1013,6 +1038,8 @@ pub(crate) struct RulesInForce {
     r113_exchange_roll: Vec<R113RollExchanger>,
     /// The permanents that note the mana value of each card put into exile, in timestamp order.
     r113_note_exiled: Vec<ObjectRef>,
+    /// The sticker kickers each player's spells may be paid for, one for each rule, in timestamp order.
+    r114_sticker_kickers: Vec<R114Kicker>,
     /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
     keep_mana: Vec<(PlayerId, Option<ManaType>)>,
     /// The players whose lost mana becomes another type, in timestamp order.
@@ -1213,7 +1240,7 @@ impl Cast {
                 .from
                 .is_none_or(|zone| crate::resolve::zone_kind(card.zone()) == zone)
             && (self.what.is_empty()
-                || Scope::announcing(state, self.controller, self.source)
+                || Scope::r114_permitted(state, (self.controller, self.source), player)
                     .selects(&self.what, card.reference())
                     .unwrap_or(false))
     }
@@ -1626,6 +1653,19 @@ impl RulesInForce {
                     once: *once,
                 })),
             Rule::R113NoteExiled { source } => self.r113_note_exiled.push(*source),
+            Rule::R114StickerKicker {
+                players,
+                source,
+                spells,
+                cost,
+            } => self
+                .r114_sticker_kickers
+                .extend(players.iter().map(|player| R114Kicker {
+                    player: *player,
+                    source: *source,
+                    spells: spells.clone(),
+                    cost: cost.clone(),
+                })),
             Rule::R113ExchangeRoll {
                 players,
                 source,
@@ -1876,8 +1916,9 @@ impl RulesInForce {
             )),
             // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
             // where it resolves (`spend_rider::entering`), from the rule changes themselves.
-            // The adapt reads its rule from the rule changes themselves.
+            // The adapt reads its rule from the rule changes themselves, a payment to do something its rule effect (`r114_pay_to_do`).
             Rule::EntersWith { .. }
+            | Rule::R114PayToDo { .. }
             | Rule::R6600AdaptsFresh(_)
             | Rule::Planar
             | Rule::SpellCost { .. }
@@ -2190,6 +2231,12 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             by: *by,
             once: *once,
         },
+        GameRule::R114StickerKicker { who, spells, cost } => Rule::R114StickerKicker {
+            players: scope.players(who)?,
+            source: scope.source,
+            spells: spells.clone(),
+            cost: cost.clone(),
+        },
         GameRule::R113NoteExiledManaValue => Rule::R113NoteExiled {
             source: scope.source,
         },
@@ -2284,6 +2331,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::NoLegendRule(_)
         | GameRule::NoLegendRuleFor(_)
         | GameRule::PayToIgnore(_)
+        | GameRule::R114PayToDo { .. }
         | GameRule::PayToIgnoreBy { .. }
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
@@ -2439,6 +2487,11 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
         GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
         GameRule::PayToIgnore(cost) => Rule::PayToIgnore(cost.rest().clone()),
+        GameRule::R114PayToDo { cost, effects } => Rule::R114PayToDo {
+            cost: cost.rest().clone(),
+            effects: effects.clone(),
+            fixed: scope.refs(&Ref::Target(0)).unwrap_or_default(),
+        },
         GameRule::PayToIgnoreBy { payer, cost } => Rule::PayToIgnoreBy {
             payers: scope.players(payer)?,
             cost: cost.clone(),
@@ -2520,6 +2573,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExtraDie(players)
         | Rule::R6402ChangeRoll { players, .. }
         | Rule::R113ExchangeRoll { players, .. }
+        | Rule::R114StickerKicker { players, .. }
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
@@ -2575,6 +2629,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
         | Rule::PayToIgnore(_)
+        | Rule::R114PayToDo { .. }
         | Rule::AbilitiesAsThoughHaste(_)
         | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
@@ -2744,6 +2799,7 @@ static NONE: RulesInForce = RulesInForce {
     r6402_change_roll: Vec::new(),
     r113_exchange_roll: Vec::new(),
     r113_note_exiled: Vec::new(),
+    r114_sticker_kickers: Vec::new(),
     keep_mana: Vec::new(),
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
@@ -3646,6 +3702,30 @@ pub(crate) struct R113RollExchanger {
     pub(crate) slot: String,
 }
 
+/// A sticker kicker a player's spells may be paid for (`Rule::R114StickerKicker`), one for each rule.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct R114Kicker {
+    /// Who casts the spells.
+    pub(crate) player: PlayerId,
+    /// The permanent with the rule.
+    pub(crate) source: ObjectRef,
+    /// The spells.
+    pub(crate) spells: mtg_cards::refs::Selector,
+    /// The sticker kicker cost.
+    pub(crate) cost: mtg_cards::cost::Cost,
+}
+
+/// The sticker kickers of `player`'s spells, in timestamp order.
+pub(crate) fn r114_sticker_kickers(state: &GameState, player: PlayerId) -> Vec<R114Kicker> {
+    state
+        .rules()
+        .r114_sticker_kickers
+        .iter()
+        .filter(|kicker| kicker.player == player)
+        .cloned()
+        .collect()
+}
+
 /// The permanents that note the mana value of each card put into exile (`Rule::R113NoteExiled`), in timestamp order.
 pub(crate) fn r113_noters(state: &GameState) -> Vec<ObjectRef> {
     state.rules().r113_note_exiled.clone()
@@ -3833,7 +3913,7 @@ pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject
                 .as_ref()
                 .is_none_or(|only| only.contains(&card.reference()))
             && (look.what.is_empty()
-                || Scope::announcing(state, look.controller, look.source)
+                || Scope::r114_permitted(state, (look.controller, look.source), viewer)
                     .selects(&look.what, card.reference())
                     .unwrap_or(false))
     })

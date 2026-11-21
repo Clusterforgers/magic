@@ -337,6 +337,7 @@ mod tests {
                 candidate: std::cell::Cell::new(None),
                 chooser: std::cell::Cell::new(None),
                 asker: None,
+                r114_permitted: None,
                 caused: None,
                 granter: None,
                 granter_player: None,

@@ -3,7 +3,8 @@
  * Treasure, a Command Tower, a bounce land and the fixture's basic lands) and `?prompt=pay-marks` (sources whose chips
  * carry marks: restricted mana, life, energy, another permanent tapped, and green mana kept in the pool to the end of
  * the turn), and `?prompt=pay-lotus` (paying {1} with a Gilded Lotus of three mana in each colour, a Command Tower and
- * Sol Ring: rows of many options of several pips, and an overpayment whose extra mana floats; `pay-lotus-six` pays {6}).
+ * Sol Ring: rows of many options of several pips, and an overpayment whose extra mana floats; `pay-lotus-six` pays {6}),
+ * and `?prompt=pay-crowd` (60 more sources of every kind) and `pay-crowd-120`, a crowded board that must stay quick.
  */
 import type { PendingDecision } from '@/play/store'
 import type {
@@ -147,6 +148,67 @@ const LOTUS: readonly Source[] = [
   ...ADDED.filter((source) => source.name === 'Command Tower' || source.name === 'Sol Ring'),
 ]
 
+const land = (name: string, produces: ManaType): Source => ({
+  name,
+  types: ['Land'],
+  subtypes: [],
+  cost: '{T}',
+  effect: `Add one ${produces.toLowerCase()} mana.`,
+  options: (object) => [one(object, 0, produces)],
+})
+
+/** The kinds of source of a crowded board, in the order they repeat. */
+const CROWD_KINDS: readonly Source[] = [
+  land('Plains', 'White'),
+  land('Island', 'Blue'),
+  land('Swamp', 'Black'),
+  land('Mountain', 'Red'),
+  land('Forest', 'Green'),
+  {
+    name: 'Breeding Pool',
+    types: ['Land'],
+    subtypes: [],
+    cost: '{T}',
+    effect: 'Add {G} or {U}.',
+    options: (object) => [one(object, 0, 'Green'), one(object, 1, 'Blue')],
+  },
+  ...ADDED,
+  {
+    name: 'Mystic Gate',
+    types: ['Land'],
+    subtypes: [],
+    cost: '{W/U}, {T}',
+    effect: 'Add {W}{W}, {W}{U}, or {U}{U}.',
+    options: (object) =>
+      (
+        [
+          ['White', 'White'],
+          ['White', 'Blue'],
+          ['Blue', 'Blue'],
+        ] as const
+      ).map(([first, second], ability) => ({
+        ...one(object, ability, first),
+        also: [second],
+        cost: [{ Hybrid: ['White', 'Blue'] }],
+      })),
+  },
+  {
+    name: 'Cabal Coffers',
+    types: ['Land'],
+    subtypes: [],
+    cost: '{2}, {T}',
+    effect: 'Add {B} for each Swamp you control.',
+    options: (object) => [{ ...one(object, 0, 'Black'), count: 4, cost: [{ Generic: 2 }] }],
+  },
+  ...MARKED.filter((source) => source.name === 'Ancient Ziggurat'),
+  land('Forest', 'Green'),
+  land('Plains', 'White'),
+]
+
+/** `count` sources of a crowded board: basic and dual lands, rocks, Treasures, filter lands, Cabal Coffers, creature-only mana. */
+const crowdOf = (count: number): Source[] =>
+  Array.from({ length: count }, (_, at) => CROWD_KINDS[at % CROWD_KINDS.length] ?? land('Forest', 'Green'))
+
 const FRESH = { tapped: false, damage: 0, summoning_sick: false }
 
 const ownBattlefield = (view: Fixture['view']): ObjectView[] =>
@@ -157,9 +219,12 @@ const creaturesOf = (view: Fixture['view']): ObjectId[] =>
     .filter((object) => object.types.includes('Creature') && object.permanent?.tapped === false)
     .map((object) => object.id)
 
-/** The moment: the viewer's permanents are untapped and `list` is on their battlefield (the fixture's own Sol Ring kept). */
+/**
+ * The moment: the viewer's permanents are untapped and `list` is on their battlefield (the fixture's own Sol Ring kept,
+ * unless `all` adds every listed source).
+ */
 const tableWith =
-  (list: readonly Source[]) =>
+  (list: readonly Source[], all = false) =>
   (fixture: Fixture): Fixture => {
     const { view } = fixture
     const own = new Set(ownBattlefield(view).map((object) => object.id))
@@ -172,7 +237,7 @@ const tableWith =
     const creatures = creaturesOf({ ...view, objects })
     let next = Math.max(...view.objects.map((object) => object.id)) + 1
     const added = list
-      .filter((source) => !had.has(source.name))
+      .filter((source) => all || !had.has(source.name))
       .map((source): ObjectView => {
         const id = next
         next += 1
@@ -277,3 +342,11 @@ export const payLotusTable = tableWith(LOTUS)
 export const payLotus = payWith(LOTUS, undefined, [{ Generic: 1 }])
 /** Paying {6} with the sources of `pay-lotus`: the Lotus fits without floating mana. */
 export const payLotusSix = payWith(LOTUS, undefined, [{ Generic: 6 }])
+/** The table of `pay-crowd`: 60 more mana sources of every kind. */
+export const payCrowdTable = tableWith(crowdOf(60), true)
+/** The table of `pay-crowd-120`: 120 more mana sources. */
+export const payCrowdHugeTable = tableWith(crowdOf(120), true)
+/** Paying for Selesnya Evangel with the 60 sources of `pay-crowd` and the fixture's lands of their names. */
+export const payCrowd = payWith(crowdOf(60))
+/** Paying for Selesnya Evangel with the 120 sources of `pay-crowd-120`. */
+export const payCrowdHuge = payWith(crowdOf(120))

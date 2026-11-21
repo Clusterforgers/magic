@@ -1,7 +1,7 @@
 //! Goal: a draw that two replacements change, Breathstealer's Crypt ("draw it, reveal it, discard a creature card unless
 //! 3 life is paid") and Zur's Weirding ("reveal it instead; another player may pay 2 life to put it into the graveyard"),
 //! in either order and with either payment, at 2 to 4 seats: a card Zur's Weirding puts into the graveyard never reaches
-//! the hand and is not discarded (CR 616.1, 701.9a), a card drawn is discarded only as the Crypt says, and the log replays
+//! the hand, is not discarded and costs no life (CR 614.6, 616.1, 701.9a), a card drawn is discarded only as the Crypt says, and the log replays
 //! to the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
@@ -123,9 +123,9 @@ fn lg1_a_card_kept_from_the_hand_is_not_discarded(
     );
     let life = |seat: usize| driver.state().player(pid(seat)).unwrap().life();
     assert_eq!(life(1), if weirding_pays { 18 } else { 20 });
-    if !weirding_pays {
-        assert_eq!(life(0), if crypt_pays { 17 } else { 20 });
-    }
+    // The Crypt asks for 3 life only for a card that was drawn: one Zur's Weirding put into the graveyard first is not
+    // (CR 614.6, cards-backlog lg1b).
+    assert_eq!(life(0), if kept { 17 } else { 20 });
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
     Ok(())

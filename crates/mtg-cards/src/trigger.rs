@@ -1455,6 +1455,10 @@ pub enum ReplaceBy {
     /// text boxes for good (CR 612.1, 614.1c): "As Deadpool enters, you may exchange his text box and another creature's."
     /// Only `Enters` of itself.
     R612MayExchangeTextBoxes(Selector),
+    /// As the permanent enters, its controller chooses a permanent on the battlefield the selector names, which the
+    /// permanent remembers as the object it was then (`Ref::R114ChosenObject`, CR 614.1c): "As this Aura enters, choose a
+    /// creature." Only `Enters` of itself.
+    R114ChooseObject(Selector),
     /// As the permanent transforms into this face, an Aura with enchant player, its controller attaches it to a player of
     /// their choice (CR 303.4f, 701.28, 614.1c): "As this permanent transforms into ~, attach it to a player." Only
     /// `R6603Transforms` of itself.

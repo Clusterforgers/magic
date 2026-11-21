@@ -31,8 +31,8 @@
                         "what": {
                           "Each": [
                             { "Type": "Creature" },
-                            { "OwnedBy": "You" },
-                            { "In": "Graveyard" }
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" }
                           ]
                         },
                         "to": { "Battlefield": {} }

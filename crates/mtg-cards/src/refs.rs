@@ -105,6 +105,9 @@ pub enum Ref {
     Spotlit,
     /// The player the source chose as it entered ("the chosen player"); nobody before the choice, for a source that chose no player or once that player has left the game.
     Chosen,
+    /// The object the source chose as it entered (`ReplaceBy::R114ChooseObject`: "the chosen creature"), as the object it
+    /// was then, still named once it has left the battlefield; nothing before the choice.
+    R114ChosenObject,
     /// The players the source chose as it entered other than the player the trigger event is about ("the other chosen
     /// player"); nobody once they have left the game.
     R4700OtherChosen,
@@ -360,6 +363,10 @@ pub enum Pred {
     /// Is a card exiled by one of the permanents the reference names, which has not left since: face down by hideaway
     /// (CR 702.75a), or by any effect of that permanent (CR 607.2a), read from its `exiled` memory.
     ExiledWith(Ref),
+    /// Is a card in exile that the player a cast permission or a look is worked out for exiled with one of the permanents the
+    /// reference names (CR 607.2a), as its `exiled` memory kept for that player holds it (`Effect::Remember` with `per`): "cards
+    /// they exiled with ~"; outside a permission or a look, the player is the controller.
+    R114ExiledByThem(Ref),
     /// Is a creature on the battlefield that one of the cards the reference names is encoded on, which has not left since (cipher, CR 702.99).
     EncodedWith(Ref),
     /// Is the creature one of the cards the reference names haunts (CR 702.55b): the card lies in exile, exiled haunting
@@ -373,6 +380,11 @@ pub enum Pred {
     EnteredThisTurn,
     /// Is a permanent that summoning sickness holds back from attacking and from {T} abilities (CR 302.6).
     SummoningSick,
+    /// Is a creature that enlisted a creature this combat (CR 702.154a): "if it enlisted a creature this combat".
+    R114Enlisted,
+    /// Is a creature that one of the creatures the reference names enlisted this combat (CR 702.154a): "add its power to
+    /// this creature's".
+    R114EnlistedBy(Ref),
     /// Is a card in a graveyard that a mill put there this turn ("a land card in a graveyard that was milled this turn").
     MilledThisTurn,
     /// Is a card its owner drew this turn, still in the hand ("cards in your hand drawn this turn").
@@ -715,6 +727,14 @@ pub enum Pred {
     /// Is a spell or ability on the stack whose every target is an object the selector names, with at least one target
     /// ("that targets only this creature": the same creature in several places counts).
     R6104TargetsOnly(Selector),
+    /// Is a spell or ability on the stack whose targets are all one object the selector names, in one place or several
+    /// ("that targets only a single nonland permanent an opponent controls": several targets that are the same permanent
+    /// count, two different ones do not).
+    R114TargetsOnlyOne(Selector),
+    /// Could be the target of the spell the reference names in place of its one target, in each place that target holds,
+    /// judged for the spell's controller (CR 115.7, 707.10c: "nonland permanents that spell could target"); a spell that has
+    /// left the stack is judged as it last was, and one with no target or with two different ones could target nothing.
+    R114CouldTarget(Ref),
     /// Is a copy on the stack of one of the spells or abilities the reference names (CR 707.10: "the spell and the copy").
     R113CopyOf(Ref),
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).

@@ -343,6 +343,9 @@ pub enum CostItem {
         /// The greatest number.
         most: u32,
     },
+    /// "Roll a d8" as a cost (CR 706, 602.2h): the payer rolls one die of that many sides as the costs are paid, and the
+    /// result is the X of the ability ("Monstrosity X, where X is the result"). Only an ability with no `{X}` holds it.
+    R114RollDie(u32),
     /// Forage (Bloomburrow): exile three cards from the payer's graveyard or sacrifice a Food they control.
     Forage,
     /// Craft materials (CR 702.167): exile permanents the payer controls and/or cards in their graveyard that match, other than the source.

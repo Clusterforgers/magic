@@ -700,6 +700,18 @@ impl Engine {
         self.finish(checkpoint, result)
     }
 
+    /// Begins the special action `special` of `player` for `object`: its payment is decided next.
+    #[allow(clippy::unnecessary_wraps)] // an arm of `run` each, which answers with a result
+    fn special(
+        &mut self,
+        player: PlayerId,
+        object: ObjectId,
+        special: Special,
+    ) -> Result<(), EngineError> {
+        self.pending = Some(Pending::special(player, object, special));
+        Ok(())
+    }
+
     fn run(&mut self, outcome: Outcome, player: PlayerId) -> Result<(), EngineError> {
         match outcome {
             Outcome::Events(events) if self.held.is_some() => self.answer_held(events),
@@ -754,14 +766,13 @@ impl Engine {
                 self.pending = Some(Pending::special(player, card, Special::Unlock(door)));
                 Ok(())
             }
-            Outcome::BeginEndEffect(object, effect) => {
-                self.pending = Some(Pending::special(player, object, Special::EndEffect(effect)));
-                Ok(())
+            Outcome::BeginEndEffect(object, id) => {
+                self.special(player, object, Special::EndEffect(id))
             }
-            Outcome::BeginIgnore(object) => {
-                self.pending = Some(Pending::special(player, object, Special::IgnoreEffect));
-                Ok(())
+            Outcome::R114BeginPayToDo(object, id) => {
+                self.special(player, object, Special::R114PayToDo(id))
             }
+            Outcome::BeginIgnore(object) => self.special(player, object, Special::IgnoreEffect),
             Outcome::BeginPrepared(permanent) => {
                 let (event, copy) = prepared::copy_of(&self.state, player, permanent)
                     .ok_or_else(|| EngineError::InvalidEvent("no prepared spell to cast".into()))?;

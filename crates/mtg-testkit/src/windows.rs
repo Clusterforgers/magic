@@ -198,6 +198,7 @@ mod tests {
                 turnable: Vec::new(),
                 unlockable: Vec::new(),
                 endable: Vec::new(),
+                r114_payable: Vec::new(),
                 ignorable: Vec::new(),
                 faces: Vec::new(),
                 unplayable: Vec::new(),

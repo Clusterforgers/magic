@@ -19,6 +19,11 @@ types: CardTypes,
  */
 made_by?: [ObjectId, number], 
 /**
+ * The card cast and how many times it had changed zones, as it was in the zone it is cast from, for a spell cast
+ * from exile (`SpendOn::R114LastExiled`); none otherwise.
+ */
+r114_card?: [ObjectId, number], 
+/**
  * Its supertypes.
  */
 supertypes?: Array<Supertype>, 

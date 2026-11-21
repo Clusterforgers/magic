@@ -125,11 +125,31 @@ function splits(total: number, ways: number): number[][] {
   return found
 }
 
+/** The most answers each of the caches below holds before it starts again. */
+const CACHE_SIZE = 20_000
+
+/** `make()` for `key`, kept in `cache`: a payment search asks the same question many times. */
+function cached<T>(cache: Map<string, T>, key: string, make: () => T): T {
+  const had = cache.get(key)
+  if (had !== undefined) return had
+  if (cache.size >= CACHE_SIZE) cache.clear()
+  const made = make()
+  cache.set(key, made)
+  return made
+}
+
+const RESOLUTIONS = new Map<string, Unit[][]>()
+
 /**
  * Every way to make the cost's choices when `life` names the symbols that life pays: the units each leaves to pay
  * with mana. Equal symbols sit side by side in a cost, so their copies are split among the ways, not permuted.
  */
 export function resolutions(cost: ManaCost, life: LifeSymbols = []): Unit[][] {
+  return cached(RESOLUTIONS, `${JSON.stringify(cost)}|${life.join()}`, () => resolutionsOf(cost, life))
+}
+
+/** [`resolutions`] worked out. */
+function resolutionsOf(cost: ManaCost, life: LifeSymbols): Unit[][] {
   const paid = new Set(life)
   const groups: { symbol: ManaSymbol; origins: number[] }[] = []
   cost.forEach((symbol, index) => {
@@ -213,6 +233,19 @@ const sourceKey = (option: ManaOption): string => `${option.source.object}:${opt
  * first, the ones that cost mana in any order. Empty when no order pays them all.
  */
 export function netMana(spends: readonly Spend[]): Counts[] {
+  const plain = spends.filter((spend) => spend.kind !== 'tap' || !costsMana(spend.option))
+  const costly = spends.flatMap((spend) =>
+    spend.kind === 'tap' && costsMana(spend.option)
+      ? [`${madeBy(spend.option).join()}/${JSON.stringify(spend.option.cost)}`]
+      : [],
+  )
+  return cached(NET_MANA, `${tally(plain).join()}|${costly.sort().join(';')}`, () => netManaOf(spends))
+}
+
+const NET_MANA = new Map<string, Counts[]>()
+
+/** [`netMana`] worked out. */
+function netManaOf(spends: readonly Spend[]): Counts[] {
   const costly = spends.flatMap((spend) =>
     spend.kind === 'tap' && costsMana(spend.option) ? [spend.option] : [],
   )
@@ -360,8 +393,17 @@ function exact(cost: ManaCost, spends: readonly Spend[], life: LifeSymbols): boo
   )
 }
 
-/** The most payments `completable` looks at before it gives the benefit of the doubt. */
-const SEARCH_BUDGET = 4_000
+/** The most sources that cost mana a search adds to a payment. */
+const CHAIN = 4
+
+/** The most payments `completable` looks at, after the greedy payment, before it gives the benefit of the doubt. */
+const SEARCH_BUDGET = 60
+
+/** The most payments `completion` looks at in its order before it takes the greedy payment instead. */
+const COMPLETION_BUDGET = 400
+
+/** The most payments `fromPayment` reads through. */
+const READ_BUDGET = 4_000
 
 /** True when the source may be used by hand: its mana has no restriction, or the restriction allows `spend`. */
 export function usableByHand(option: ManaOption, spend?: PaySpend): boolean {
@@ -392,7 +434,8 @@ function lifeSupersets(cost: ManaCost, life: LifeSymbols, maxLife: number): Life
  * True when more of the floating mana, the sources of `reach` not used yet and life for more Phyrexian symbols (within
  * `maxLife`) can finish the payment so the engine accepts it. Each permanent is used once; additions are tried in one
  * order (a set, not a sequence), and a payment with waste goes on only while a source that costs mana could still
- * take the extra mana.
+ * take the extra mana. Permanents with the same options are one choice, a payment stops growing once it has more
+ * pieces than mana to use, and the answers are kept for the decision (`reach`), so a crowded board stays quick.
  */
 export function completable(
   cost: ManaCost,
@@ -401,7 +444,128 @@ export function completable(
   life: LifeSymbols,
   reach: Reach,
 ): boolean {
-  return search(cost, pool, spends, life, reach) !== undefined
+  const known = knowledgeOf(reach)
+  const key = `${JSON.stringify(cost)}#${JSON.stringify(pool)}#${life.join()}#${spends
+    .map((spend) => pieceKey(spend, known))
+    .sort()
+    .join(';')}`
+  const cached = known.completable.get(key)
+  if (cached !== undefined) return cached
+  const found =
+    greedy(cost, pool, spends, life, reach, known) !== undefined ||
+    search(cost, pool, spends, life, reach, () => false, SEARCH_BUDGET) !== undefined
+  known.completable.set(key, found)
+  return found
+}
+
+/**
+ * The payment made by adding, one at a time, the piece that leaves the least owed (the floating mana and one source
+ * of each kind weighed at each step, the ones `prefer` names first among equals), when it finishes; `undefined` when
+ * it stops short. Most payments that can be finished are finished this way at once; otherwise `search` decides.
+ */
+function greedy(
+  cost: ManaCost,
+  pool: ManaPool,
+  spends: readonly Spend[],
+  life: LifeSymbols,
+  reach: Reach,
+  known: Knowledge,
+  prefer: (option: ManaOption) => boolean = () => false,
+): Spend[] | undefined {
+  const options = reach.sources
+    .filter((option) => usableByHand(option, reach.spend))
+    .sort((a, b) => Number(prefer(b)) - Number(prefer(a)))
+  let now = [...spends]
+  for (;;) {
+    if (covers(cost, now, life)) return now
+    const here = closest(cost, now, life)
+    if (here === undefined) return undefined
+    const taken = new Set(now.flatMap((spend) => usedBy(spend) ?? []))
+    const pieces: Spend[] = MANA_TYPES.flatMap((mana): Spend[] =>
+      poolLeft(pool, now, mana) > 0 ? [{ kind: 'pool', mana }] : [],
+    )
+    const kinds = new Set<string>()
+    for (const option of options) {
+      const kind = `${kindOf(option, known)}${prefer(option) ? '+' : ''}`
+      if (taken.has(`o:${option.source.object}`) || kinds.has(kind)) continue
+      kinds.add(kind)
+      if (canFund(now, option)) pieces.push({ kind: 'tap', option })
+    }
+    let best: { next: Spend[]; owes: number } | undefined
+    for (const piece of pieces) {
+      const next = [...now, piece]
+      const after = closest(cost, next, life)
+      if (after === undefined) continue
+      const owes = owedValue(after)
+      if (best === undefined || owes < best.owes) best = { next, owes }
+    }
+    if (best === undefined || best.owes >= owedValue(here)) return undefined
+    now = best.next
+  }
+}
+
+/** What the searches of one decision share: each permanent's kind and the answers `completable` gave. */
+interface Knowledge {
+  /** The kind of each permanent of the sources: every option it has, without its object. */
+  kinds: Map<ObjectId, string>
+  completable: Map<string, boolean>
+}
+
+const KNOWLEDGE = new WeakMap<Reach, Knowledge>()
+
+/** The kinds of the permanents of `reach`, worked out once per decision. */
+function knowledgeOf(reach: Reach): Knowledge {
+  const had = KNOWLEDGE.get(reach)
+  if (had !== undefined) return had
+  const parts = new Map<ObjectId, string[]>()
+  for (const option of reach.sources) {
+    const { source, ...rest } = option
+    const list = parts.get(source.object) ?? []
+    list.push(`${source.ability}:${JSON.stringify(rest)}`)
+    parts.set(source.object, list)
+  }
+  const known: Knowledge = {
+    kinds: new Map([...parts].map(([object, list]) => [object, list.join('|')])),
+    completable: new Map(),
+  }
+  KNOWLEDGE.set(reach, known)
+  return known
+}
+
+/**
+ * What a source stands for in a search: permanents with the same options are alike, so a payment with one of them
+ * finishes exactly when it does with the other.
+ */
+function kindOf(option: ManaOption, known: Knowledge): string {
+  return `${known.kinds.get(option.source.object) ?? `#${option.source.object}`}>${option.source.ability}`
+}
+
+/** A piece of the payment as `completable` remembers it: a tap by the kind of its permanent, the rest by what it uses. */
+function pieceKey(spend: Spend, known: Knowledge): string {
+  if (spend.kind === 'tap') return `t:${kindOf(spend.option, known)}`
+  if (spend.kind === 'pool') return `p:${spend.mana}`
+  if (spend.kind === 'convoke') return `c:${spend.creature}:${spend.pays ?? ''}`
+  return usedBy(spend) ?? spend.kind
+}
+
+/** The most mana a source's own cost takes ({W/U} takes one, {2} two). */
+function costTakes(option: ManaOption): number {
+  if (!costsMana(option)) return 0
+  const had = TAKES.get(option)
+  if (had !== undefined) return had
+  const takes = Math.max(
+    0,
+    ...asksOf(option.cost ?? []).map((ask) => ask.typed.reduce((a, b) => a + b, 0) + ask.any),
+  )
+  TAKES.set(option, takes)
+  return takes
+}
+
+const TAKES = new WeakMap<ManaOption, number>()
+
+/** The most units a resolution of the cost leaves to pay with mana when `life` pays its symbols. */
+function mostUnits(cost: ManaCost, life: LifeSymbols): number {
+  return Math.max(0, ...resolutions(cost, life).map((units) => units.length))
 }
 
 /** A whole payment: its pieces and the Phyrexian symbols life pays. */
@@ -422,8 +586,11 @@ export function completion(
   reach: Reach,
   prefer: (option: ManaOption) => boolean = () => false,
 ): Whole | undefined {
-  const found = search(cost, pool, spends, life, reach, prefer)
-  return found === 'budget' ? undefined : found
+  const found = search(cost, pool, spends, life, reach, prefer, COMPLETION_BUDGET)
+  // On a crowded board the search in order may give up: the greedy payment finishes it instead.
+  if (found !== 'budget') return found
+  const quick = greedy(cost, pool, spends, life, reach, knowledgeOf(reach), prefer)
+  return quick === undefined ? undefined : { spends: quick, life }
 }
 
 /** The search of `completable` and `completion`: a payment found, none, or `budget` when it gave up looking. */
@@ -433,28 +600,48 @@ function search(
   spends: readonly Spend[],
   life: LifeSymbols,
   reach: Reach,
-  prefer: (option: ManaOption) => boolean = () => false,
+  prefer: (option: ManaOption) => boolean,
+  nodes: number,
 ): Whole | 'budget' | undefined {
   // The sources that cost mana come last, so the ones that fund them are tried before them.
   const options = reach.sources
     .filter((option) => usableByHand(option, reach.spend))
     .sort((a, b) => Number(costsMana(a)) - Number(costsMana(b)) || Number(prefer(b)) - Number(prefer(a)))
   const extras = reach.extras ?? []
-  let budget = SEARCH_BUDGET
+  const known = knowledgeOf(reach)
+  // How far a source that costs mana can lower the count of pieces against what they pay: one less than its cost.
+  const drops = new Map<ObjectId, number>()
+  for (const option of options) {
+    const drop = costTakes(option) - 1
+    if (drop > 0) drops.set(option.source.object, Math.max(drop, drops.get(option.source.object) ?? 0))
+  }
+  const allDrops = [...drops.values()].reduce((sum, drop) => sum + drop, 0)
+  let budget = nodes
   let found: Whole | 'budget' | undefined
+  let most = 0
   const walk = (paid: LifeSymbols, now: readonly Spend[], from: number, mana: number, next = 0): boolean => {
     budget -= 1
     if (budget < 0) {
       found = 'budget'
       return true
     }
+    const taken = new Set(now.flatMap((spend) => usedBy(spend) ?? []))
+    // Each piece of an accepted payment puts at least one of its mana to use, on the cost or on a source's own cost
+    // (else it could be left out), so more pieces than that use can never be finished, whatever joins them.
+    const fed = now.reduce((sum, spend) => sum + (spend.kind === 'tap' ? costTakes(spend.option) : 0), 0)
+    const usedDrops = [...drops].reduce(
+      (sum, [object, drop]) => sum + (taken.has(`o:${object}`) ? drop : 0),
+      0,
+    )
+    if (now.length - fed - (allDrops - usedDrops) > most) return false
     if (covers(cost, now, paid)) {
       found = { spends: now, life: paid }
       return true
     }
-    const taken = new Set(now.flatMap((spend) => usedBy(spend) ?? []))
     const used = (option: ManaOption): boolean => taken.has(`o:${option.source.object}`)
-    const sinks = options.some((option) => costsMana(option) && !used(option))
+    // As the game's own payment (`mana_cost::CHAIN`), a search adds sources that cost mana only up to a few in all.
+    const chained = now.filter((spend) => spend.kind === 'tap' && costsMana(spend.option)).length < CHAIN
+    const sinks = chained && options.some((option) => costsMana(option) && !used(option))
     if (!sinks && candidates(cost, now, paid).length === 0) return false
     for (let kind = mana; kind < MANA_TYPES.length; kind += 1) {
       const type = MANA_TYPES[kind]
@@ -462,9 +649,14 @@ function search(
         if (walk(paid, [...now, { kind: 'pool', mana: type }], 0, kind)) return true
       }
     }
+    // Of permanents alike only the first one left is tried: a payment the next one finishes, the first finishes too.
+    const tried = new Set<string>()
     for (let at = from; at < options.length; at += 1) {
       const option = options[at]
-      if (option === undefined || used(option) || !canFund(now, option)) continue
+      if (option === undefined || used(option) || (!chained && costsMana(option))) continue
+      const kind = `${kindOf(option, known)}${prefer(option) ? '+' : ''}`
+      if (tried.has(kind) || !canFund(now, option)) continue
+      tried.add(kind)
       if (walk(paid, [...now, { kind: 'tap', option }], at + 1, MANA_TYPES.length)) return true
     }
     // Cards that pay alike (delve, improvise) are tried as the first one left, so their order never multiplies the search.
@@ -487,6 +679,7 @@ function search(
     return false
   }
   for (const paid of lifeSupersets(cost, life, reach.maxLife)) {
+    most = mostUnits(cost, paid)
     if (walk(paid, spends, 0, 0)) return found
   }
   return undefined
@@ -534,7 +727,7 @@ export function fromPayment(
     for (let at = from; at < symbols.length; at += 1) choose(at + 1, [...picked, symbols[at] ?? 0])
   }
   choose(0, [])
-  let budget = SEARCH_BUDGET
+  let budget = READ_BUDGET
   const pick = (at: number, now: Spend[], life: LifeSymbols): Whole | undefined => {
     budget -= 1
     if (budget < 0) return undefined
@@ -623,9 +816,10 @@ export function allowed(
     if (!canFund(spends, spend.option)) return false
   }
   const next = [...spends, spend]
-  return reach === undefined
-    ? candidates(cost, next, life).length > 0
-    : completable(cost, pool, next, life, reach)
+  if (reach === undefined) return candidates(cost, next, life).length > 0
+  // A payment that covers the cost is finished: more joins it only while the whole still covers it.
+  if (covers(cost, spends, life)) return covers(cost, next, life)
+  return completable(cost, pool, next, life, reach)
 }
 
 /** What tells two abilities of one permanent apart for a payment: the mana they make and what they cost. */

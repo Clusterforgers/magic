@@ -171,6 +171,10 @@ pub(crate) fn made(
     events.extend(attack_events(state, player, attackers));
     events.extend(crate::keywords::banding::band_events(player, &extras.bands));
     events.extend(crate::w11a_exert::w11a_exert_events(player, &extras.exert));
+    events.extend(crate::r114_enlist::r114_enlist_events(
+        player,
+        &extras.r114_enlist,
+    ));
     for (paying, own) in shares(state, player, attackers) {
         let life = life_total(state, &own);
         if life > 0 {

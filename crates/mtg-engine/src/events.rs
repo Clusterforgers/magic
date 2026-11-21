@@ -464,6 +464,9 @@ pub enum Event {
         /// The bands they form.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         bands: Vec<Vec<ObjectId>>,
+        /// The creatures their attackers enlist, each (attacker, creature tapped) (CR 702.154a).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r114_enlist: Vec<(ObjectId, ObjectId)>,
     },
     /// The attacks a team chose break a rule together, so each of its players chooses again.
     AttackChoicesRefused {
@@ -706,6 +709,10 @@ pub enum Event {
             ts(optional, as = "Option<Vec<mtg_cards::spend::SpentFrom>>")
         )]
         r113_spent_from: Vec<mtg_cards::spend::SpentFrom>,
+        /// How many mana the source produced with it ("the amount of mana this creature produced").
+        #[serde(default, skip_serializing_if = "is_zero")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<u32>"))]
+        r114_made: u32,
     },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),

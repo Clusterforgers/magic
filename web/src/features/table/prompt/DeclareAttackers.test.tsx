@@ -483,6 +483,59 @@ describe('exerting an attacker', () => {
   })
 })
 
+describe('enlisting a creature', () => {
+  const [a, b, c] = creaturesOf(fixtureOf(2), 0) as [ObjectId, ObjectId, ObjectId]
+  const options: AttackOptions = {
+    attackers: [
+      { object: a, defenders: [{ Player: 1 }], r114_enlist: [b, c] },
+      { object: b, defenders: [{ Player: 1 }] },
+    ],
+  }
+
+  it('offers a button only for an attacker in the attack that has enlist', async () => {
+    const { card, user } = attack(options)
+    expect(screen.queryByRole('button', { name: /^Enlist / })).toBeNull()
+    await user.click(card(a))
+    expect(screen.getAllByRole('button', { name: /^Enlist / })).toHaveLength(1)
+  })
+
+  it.each([
+    ['nothing', 0, null],
+    ['the first creature', 1, 'b'],
+    ['the next creature', 2, 'c'],
+    ['nothing again after the last', 3, null],
+  ])('answers %s after %i clicks', async (_, clicks, tapped) => {
+    const { card, user, button, answer } = attack(options)
+    await user.click(card(a))
+    for (let i = 0; i < clicks; i += 1) {
+      await user.click(screen.getByRole('button', { name: /Enlist|enlists/ }))
+    }
+    await user.click(button('Confirm attack'))
+    const attackers = [[a, { Player: 1 }]]
+    const enlisted = tapped === 'b' ? b : c
+    expect(answer.mock.calls).toEqual([
+      [
+        tapped === null
+          ? { DeclareAttackers: attackers }
+          : { DeclareExerting: { attackers, r114_enlist: [[a, enlisted]] } },
+      ],
+    ])
+  })
+
+  it('never enlists a creature that attacks', async () => {
+    const { card, user, button, answer } = attack(options)
+    await user.click(card(a))
+    await user.click(card(b))
+    await user.click(screen.getByRole('button', { name: /Enlist|enlists/ }))
+    await user.click(button('Confirm attack'))
+    const attackers = [
+      [a, { Player: 1 }],
+      [b, { Player: 1 }],
+    ]
+    expect(answer.mock.calls).toEqual([[{ DeclareExerting: { attackers, r114_enlist: [[a, c]] } }]])
+  })
+})
+
 describe('forming a band', () => {
   const [a, b, c] = creaturesOf(fixtureOf(2), 0) as [ObjectId, ObjectId, ObjectId]
   const options: AttackOptions = {

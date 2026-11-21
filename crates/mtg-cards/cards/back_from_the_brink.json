@@ -1,0 +1,23 @@
+{
+  "oracle_id": "704aaf92-590f-46d3-8b39-4ab84e1c766d",
+  "name": "Back from the Brink",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Back from the Brink",
+      "oracle_fingerprint": "38dcc6de171d310e44baf431612eff35",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }] } },
+              { "ManaCostOf": "Paid" }
+            ],
+            "timing": "Sorcery",
+            "effects": [{ "CreateToken": { "token": { "CopyOf": { "of": "Paid" } } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

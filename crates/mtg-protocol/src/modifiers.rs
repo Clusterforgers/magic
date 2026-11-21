@@ -241,6 +241,9 @@ fn add(phrase: &mut Phrase, modification: &Modification, host: &str) {
             |text| format!("Gains \u{201c}{}\u{201d}", named(&text, host)),
         ),
         Modification::GainAbilities(_) => "Gains the abilities of other cards".to_owned(),
+        Modification::R114StickerAbilities(_) => {
+            "Has the abilities of ability stickers on other objects".to_owned()
+        }
         Modification::GrantText(text) => text.clone(),
         Modification::LoseAbilities => "Loses all abilities".to_owned(),
         Modification::LoseAbilitiesExceptMana => {

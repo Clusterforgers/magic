@@ -599,6 +599,7 @@ impl Driver {
             attackers,
             exert: Vec::new(),
             bands,
+            r114_enlist: Vec::new(),
         })
     }
 
@@ -620,6 +621,29 @@ impl Driver {
             attackers,
             exert,
             bands: Vec::new(),
+            r114_enlist: Vec::new(),
+        })
+    }
+
+    /// The deciding player attacks as [`Driver::attack`] does, each attacker named in `enlist` tapping the creature named
+    /// beside it as it attacks (CR 702.154a).
+    pub fn r114_attack_enlisting(
+        &mut self,
+        attacks: &[(&str, usize)],
+        enlist: &[(&str, &str)],
+    ) -> Result<Vec<Event>, ScriptError> {
+        let attackers = self.w11a_attackers(attacks)?;
+        let mut pairs = Vec::new();
+        for (attacker, tapped) in enlist {
+            let named = attackers.iter().map(|(object, _)| *object);
+            let attacker = self.find(named, attacker, "attackers")?;
+            pairs.push((attacker, self.id_of(tapped)?));
+        }
+        self.answer(Answer::DeclareExerting {
+            attackers,
+            exert: Vec::new(),
+            bands: Vec::new(),
+            r114_enlist: pairs,
         })
     }
 

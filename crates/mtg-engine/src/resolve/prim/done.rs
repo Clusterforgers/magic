@@ -134,6 +134,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::WinGame { .. }
         | Effect::ChangeTargets { .. }
         | Effect::CopySpell { .. }
+        | Effect::R114CopySpellOnto { .. }
         | Effect::CopyAbility { .. }
         | Effect::CopyCard { .. }
         | Effect::BecomeCopy { .. }
@@ -167,7 +168,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Balance { .. }
         | Effect::Planechase { .. }
         | Effect::Reattack { .. }
-        | Effect::R112RollStore { .. } => Reports::Events,
+        | Effect::R112RollStore { .. }
+        | Effect::R114StoreValue { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,
         Effect::May { .. }
         | Effect::CastFromZone { .. }

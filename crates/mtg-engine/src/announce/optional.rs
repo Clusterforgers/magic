@@ -291,6 +291,25 @@ pub(super) fn read(state: &GameState, what: &What) -> Vec<Optional> {
             }));
         }
     }
+    // Each sticker kicker the caster's spells have is a cost of its own, paid at most once (the Wicker Picker rulings).
+    let caster = object.controller();
+    for kicker in crate::rules::r114_sticker_kickers(state, caster) {
+        let scope = crate::resolve::Scope {
+            casting: Some((*spell, caster)),
+            ..crate::resolve::Scope::announcing(state, caster, kicker.source)
+        };
+        if scope
+            .selects(&kicker.spells, object.reference())
+            .unwrap_or(false)
+        {
+            costs.push(read_cost(Printed {
+                kind: OptionalKind::R114StickerKicker,
+                name: "Sticker kicker",
+                cost: kicker.cost,
+                repeatable: false,
+            }));
+        }
+    }
     costs
 }
 

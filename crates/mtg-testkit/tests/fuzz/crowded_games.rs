@@ -34,6 +34,7 @@ fn crowd(seats: usize, size: u64, mana: u32) -> Decision {
             life: Vec::new(),
             exert: false,
             banding: false,
+            r114_enlist: Vec::new(),
         })
         .collect();
     let options = AttackOptions {

@@ -250,8 +250,21 @@ pub fn variants(ability: &Ability) -> Vec<String> {
 }
 
 /// [`variants`] before the wordings every copy exception has twice.
-#[allow(clippy::too_many_lines)]
 fn plain_variants(ability: &Ability) -> Vec<String> {
+    // A spell's "other" after a creation spares the tokens it created: the twin with `Other` words it, and a spell
+    // whose `Other` means the spell itself has no wording.
+    if let Some(twin) = super::created_other::created_other_twin(ability) {
+        return unchecked_variants(&twin);
+    }
+    if super::created_other::other_after_creation(ability) {
+        return Vec::new();
+    }
+    unchecked_variants(ability)
+}
+
+/// [`plain_variants`] without the check of "other" after a creation.
+#[allow(clippy::too_many_lines)]
+fn unchecked_variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::r402_copy_riders::r402_rider_variants(ability, variants) {
         return texts;
     }
@@ -698,6 +711,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r111_04_wholes::r111_04_add_wholes(ability, &mut texts);
     super::r112_04_wholes::r112_04_add_wholes(ability, &mut texts);
     super::r113_04_wholes::r113_04_add_wholes(ability, &mut texts);
+    super::r114_04_wholes::r114_04_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
@@ -706,6 +720,8 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r111_01_wholes::r111_01_add_wholes(ability, &mut texts);
     super::r112_01_wholes::r112_01_add_wholes(ability, &mut texts);
     super::r113_01_wholes::r113_01_add_wholes(ability, &mut texts);
+    super::r114_01_wholes::r114_01_add_wholes(ability, &mut texts);
+    super::r114_03_wholes::r114_03_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -717,6 +733,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r111_03_wholes::r111_03_wordings(ability, &mut texts);
     super::r112_02_wholes::r112_02_wordings(ability, &mut texts);
     super::r113_02_wholes::r113_02_wordings(ability, &mut texts);
+    super::r114_02_wholes::r114_02_wordings(ability, &mut texts);
     super::r111_02_wholes::r111_02_wordings(ability, &mut texts);
     super::r112_03_wholes::r112_03_wordings(ability, &mut texts);
     super::r113_03_wholes::r113_03_wordings(ability, &mut texts);
@@ -3621,7 +3638,14 @@ impl Writer<'_> {
                 on,
                 kind,
                 up_to,
-            } => super::un34_stickers::un34_put_text(who, on, *kind, *up_to)?,
+                r114_free_at_most,
+            } => super::un34_stickers::un34_put_text(
+                who,
+                on,
+                *kind,
+                *up_to,
+                r114_free_at_most.as_ref(),
+            )?,
             Effect::ChooseValue {
                 who: Ref::You,
                 kind: crate::effect::ValueKind::Letter,

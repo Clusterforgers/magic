@@ -1232,6 +1232,16 @@ describe('events with more than one shape', () => {
       'Hill Giant is named Hollow One until end of turn',
     ],
     [
+      effect(
+        objects(2),
+        {
+          R114StickerAbilities: [{ at: { player: 0, sheet: 0, sticker: 1 }, body: { Keyword: 'Flying' } }],
+        },
+        'UntilEndOfTurn',
+      ),
+      'Hill Giant has the abilities of ability stickers on other objects until end of turn',
+    ],
+    [
       effect(objects(2), 'CantBeBlockedUnlessAttackingOwner', 'UntilEndOfTurn'),
       "Hill Giant can't be blocked unless it's attacking its owner or a permanent its owner controls until end of turn",
     ],

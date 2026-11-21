@@ -1,0 +1,67 @@
+{
+  "oracle_id": "2b7e4e70-53b1-4d4f-bdcc-56c2e15f367a",
+  "name": "Ice Cauldron",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ice Cauldron",
+      "oracle_fingerprint": "c86756e9068ad83b11c8e55ced7156c3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Eq",
+                "right": 0
+              }
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Not": { "Type": "Land" } },
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "exiled" } } },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              },
+              { "PutCounters": { "on": "This", "counter": "charge" } },
+              "R112NoteManaSpent"
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": { "counter": "charge" } }],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "R112Noted": { "amount": true } },
+                  "only": [{ "R114LastExiled": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

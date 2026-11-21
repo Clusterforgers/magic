@@ -293,7 +293,7 @@ fn a_changed_object_count_place_or_step_does_not_read(#[case] json: &str, #[case
 }
 
 /// "Create X 1/1 white Soldier creature tokens. If X is 5 or more, destroy all other creatures."
-const MARTIAL_COUP: &str = r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],"power":1,"toughness":1}},"count":"X"}},{"If":{"condition":{"Compare":{"left":"X","op":"Ge","right":5}},"then":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},"Other"]}}}]}}]}}"#;
+const MARTIAL_COUP: &str = r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Soldier","colors":["White"],"types":["Creature"],"subtypes":["Soldier"],"power":1,"toughness":1}},"count":"X","as":"tokens"}},{"If":{"condition":{"Compare":{"left":"X","op":"Ge","right":5}},"then":[{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"Not":{"Is":{"Bound":"tokens"}}}]}}}]}}]}}"#;
 
 /// "Return target creature card from your graveyard to the battlefield. If it's an Elf, create two 1/1 green Elf Warrior creature tokens."
 const RETURN_UPON_THE_TIDE: &str = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"Battlefield":{}}}},{"If":{"condition":{"Matches":{"subject":{"Target":0},"selector":[{"Subtype":"Elf"}]}},"then":[{"CreateToken":{"token":{"Custom":{"name":"Elf Warrior","colors":["Green"],"types":["Creature"],"subtypes":["Elf","Warrior"],"power":1,"toughness":1}},"count":2}}]}}]}}"#;

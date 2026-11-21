@@ -1,0 +1,56 @@
+{
+  "oracle_id": "e23bf5fe-e494-473e-8502-606106ee1820",
+  "name": "Shared Fate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Shared Fate",
+      "oracle_fingerprint": "86c5c94adf70b8788fc1cb5db6f56384",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": { "who": "EachPlayer" } },
+            "by": {
+              "Instead": [
+                {
+                  "Choose": {
+                    "who": "Triggering",
+                    "from": { "OpponentsOf": "Triggering" },
+                    "as": "opponent"
+                  }
+                },
+                { "ExileTop": { "who": { "Bound": "opponent" }, "as": "exiled", "sealed": true } },
+                {
+                  "Remember": {
+                    "what": { "Bound": "exiled" },
+                    "slot": "exiled",
+                    "per": "Triggering"
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "LookAtExiled": { "who": "EachPlayer", "what": [{ "R114ExiledByThem": "This" }] }
+            }
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "who": "EachPlayer",
+                "what": [{ "R114ExiledByThem": "This" }],
+                "from": "Exile",
+                "play": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -289,6 +289,7 @@ pub fn w11a_declaration(attackers: Attack, exert: Vec<ObjectId>) -> Answer {
             attackers,
             exert,
             bands: Vec::new(),
+            r114_enlist: Vec::new(),
         }
     }
 }

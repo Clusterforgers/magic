@@ -1,7 +1,7 @@
 {
   "oracle_id": "ff94e2d5-8ba1-4f6c-916d-58235a60743e",
   "name": "Leori, Sparktouched Hunter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Leori, Sparktouched Hunter",
@@ -10,9 +10,25 @@
         { "Keyword": "Flying" },
         { "Keyword": "Vigilance" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 18, "end": 239 }
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ChooseValue": { "kind": "R114PlaneswalkerType", "as": "type" } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Did": {
+                      "action": "Activated",
+                      "who": "You",
+                      "what": [{ "Type": "Planeswalker" }, { "ChosenAs": "type" }]
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "CopyAbility": { "what": "Dealer", "new_targets": true } }]
+                }
+              }
+            ]
           }
         }
       ]

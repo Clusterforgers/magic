@@ -113,9 +113,13 @@ pub(super) fn move_object(
     object.haunting = None;
     object.monarch_wait = None;
     object.forget_cast(from, to);
-    // What the spell paid for stays with the permanent it becomes, for its abilities to read.
+    // What the spell paid for stays with the permanent it becomes, for its abilities to read; a sticker kicker is no cost
+    // of its own (the Wicker Picker rulings).
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
-        std::mem::take(&mut object.choices.optional_costs)
+        let stickers = object.choices.r114_sticker_kicks();
+        let mut paid = std::mem::take(&mut object.choices.optional_costs);
+        paid.retain(|index| !stickers.contains(index));
+        paid
     } else {
         Vec::new()
     };

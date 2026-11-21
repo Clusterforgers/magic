@@ -1,22 +1,35 @@
 {
   "oracle_id": "69fedfbb-5d88-4fe0-81e1-1e97a56c6aca",
   "name": "Pin Collection",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Pin Collection",
       "oracle_fingerprint": "04b0aa2b6b438b7bf3a568c086995bde",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 134 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "PutSticker": { "on": ["This"], "kind": "Ability", "r114_free_at_most": "X" }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 135, "end": 224 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": 1, "toughness": 1 } },
+              { "R114StickerAbilitiesOf": "This" }
+            ]
           }
         },
         { "Keyword": { "Equip": "{2}" } }
