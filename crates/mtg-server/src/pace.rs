@@ -670,6 +670,14 @@ impl<S: EventStore> GameActor<S> {
         }
     }
 
+    /// Ends `seat`'s `MyTurnThrough` yield, if it holds one: the seat acts by itself, so it plays on by hand.
+    pub(crate) fn end_through_yield(&mut self, seat: PlayerId) {
+        let mut yields = self.yields.clone();
+        if yields.cancel_through(seat) {
+            self.commit_yields(yields);
+        }
+    }
+
     /// Takes `yields` as the seats' yields and tells each seat whose yield changed.
     pub(crate) fn commit_yields(&mut self, yields: Yields) {
         for (seat, until) in self.yields.replace(yields) {

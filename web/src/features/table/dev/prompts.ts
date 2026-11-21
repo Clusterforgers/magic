@@ -645,6 +645,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'yield-resolve': (fixture) =>
     withView(fixture, { priority: { holder: fixture.view.turn.active, passed: [] } }),
   'yield-turn': quietMoment('Upkeep', false, false),
+  'pass-turn': quietMoment('Upkeep', false, false),
   'commander-return': commanderReturnTable,
   ...ASK_TABLES,
   ...EFFECT_MOMENTS,
@@ -660,4 +661,5 @@ export const DEV_YIELDS: Record<string, YieldUntil> = {
   yield: 'EndOfTurn',
   'yield-resolve': 'Resolve',
   'yield-turn': 'MyTurn',
+  'pass-turn': 'MyTurnThrough',
 }

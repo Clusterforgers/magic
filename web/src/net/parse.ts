@@ -159,11 +159,16 @@ function refusalOf(value: unknown): Refusal | undefined {
   return refusal
 }
 
-const YIELD_UNTIL: Record<YieldUntil, true> = { Resolve: true, EndOfTurn: true, MyTurn: true }
+const YIELD_UNTIL: Record<YieldUntil, true> = {
+  Resolve: true,
+  EndOfTurn: true,
+  MyTurn: true,
+  MyTurnThrough: true,
+}
 
 const isYieldUntil = (value: unknown): value is YieldUntil =>
   isText(value) && Object.hasOwn(YIELD_UNTIL, value)
-// The server states the yield it holds as one of the three words, or null for none; an absent field is not none.
+// The server states the yield it holds as one of the four words, or null for none; an absent field is not none.
 const isYielding = (value: unknown): value is YieldUntil | null => value === null || isYieldUntil(value)
 
 const STOP_SIDES: Record<StopSide, true> = { Own: true, Opponent: true }
@@ -591,7 +596,8 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isCount(v.player)) return '"player" must be a seat number'
       if (!isCount(v.seats)) return '"seats" must be a whole number'
       if (!isFlag(v.auto_pass)) return '"auto_pass" must be true or false'
-      if (!isYielding(v.yielding)) return '"yielding" must be Resolve, EndOfTurn, MyTurn or null'
+      if (!isYielding(v.yielding))
+        return '"yielding" must be Resolve, EndOfTurn, MyTurn, MyTurnThrough or null'
       if (!isStopList(v.stops))
         return '"stops" must be a list of stops (side, step, keep), each side and step once'
       if (!isFullControl(v.full_control)) return '"full_control" must be Off, NextWindow or Held'
@@ -712,7 +718,7 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       if (!isGameResult(v.result)) return '"result" must be Draw, a Winner or a Team'
       return { type, result: v.result }
     case 'Yielding':
-      if (!isYielding(v.until)) return '"until" must be Resolve, EndOfTurn, MyTurn or null'
+      if (!isYielding(v.until)) return '"until" must be Resolve, EndOfTurn, MyTurn, MyTurnThrough or null'
       return { type, until: v.until }
     case 'Stops':
       if (!isStopList(v.stops))

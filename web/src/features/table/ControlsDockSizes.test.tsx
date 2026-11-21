@@ -1,4 +1,4 @@
-// Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1600 up and behind one Stops button below, "Auto-skip triggers" in sight at every width (in the Full Control group of the row, beside the Stops button below), the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen (whole, with key hints, from a 1150 px main area; short without them below it), every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
+// Goal: at every window width the controls dock holds at most five controls, with the stop ladder and Full Control as one row from 1600 up and behind one Stops button below, "Auto-skip triggers" and "Pass until my turn" in sight at every width (in the Full Control group of the row, beside the Stops button below), the primary pass button last and 44 px high in the corner, its words naming what passing does for the prompt on screen (whole, with key hints, from a 1150 px main area; short without them below it), every control reachable by Tab in the order of reading, and Space, Enter and Control meaning what they always meant.
 import { act, screen, waitFor } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, FullControlMode, Step, YieldUntil } from '@/protocol/generated'
@@ -296,6 +296,7 @@ describe('the keyboard', () => {
       'full-control-menu',
       'auto-skip-switch',
       'auto-skip-list-button',
+      'pass-turn-switch',
       'secondary-action',
       'more-passing',
       'primary-action',
@@ -309,6 +310,7 @@ describe('the keyboard', () => {
       'stops-button',
       'auto-skip-switch',
       'auto-skip-list-button',
+      'pass-turn-switch',
       'secondary-action',
       'more-passing',
       'primary-action',

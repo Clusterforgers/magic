@@ -3,4 +3,4 @@
 /**
  * How long a seat asks the server to pass priority for it (see [`ClientMessage::Yield`]).
  */
-export type YieldUntil = "Resolve" | "EndOfTurn" | "MyTurn";
+export type YieldUntil = "Resolve" | "EndOfTurn" | "MyTurn" | "MyTurnThrough";

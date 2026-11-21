@@ -530,7 +530,10 @@ impl<S: EventStore> GameActor<S> {
             }
             ClientMessage::Preview { decision, answer } => self.preview(seat, decision, &answer),
             ClientMessage::Concede => return self.concede(seat).await,
-            ClientMessage::Manual { action } => return self.manual(seat, action).await,
+            ClientMessage::Manual { action } => {
+                self.end_through_yield(seat);
+                return self.manual(seat, action).await;
+            }
             ClientMessage::AutoPass { enabled } => return self.set_auto_pass(seat, enabled).await,
             ClientMessage::Yield { until } => return self.set_yield(seat, until).await,
             ClientMessage::CancelYield => self.cancel_yield(seat),
@@ -562,7 +565,10 @@ impl<S: EventStore> GameActor<S> {
             ClientMessage::CancelAutoSkip { rule } => {
                 return self.cancel_auto_skip(seat, rule).await;
             }
-            ClientMessage::TakeBack => return self.ask_take_back(seat).await,
+            ClientMessage::TakeBack => {
+                self.end_through_yield(seat);
+                return self.ask_take_back(seat).await;
+            }
             ClientMessage::TakeBackVote { approve } => {
                 return self.vote_take_back(seat, approve).await;
             }
