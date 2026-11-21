@@ -956,6 +956,12 @@ fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
     ))
 }
 
+/// A cost with no choice in it: an "or" between the parts of an additional cost is read only by `alternatives`, so an
+/// optional choice and a choice of an X stay with the table.
+fn single_cost(r: &mut Reader<'_>) -> Option<Cost> {
+    cost(r).filter(|cost| !cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_))))
+}
+
 /// "As an additional cost to cast this spell, you may sacrifice an artifact.": a cost the caster may pay as the spell is
 /// announced; without "you may" ("..., discard a card.") the caster must pay it.
 pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
@@ -975,9 +981,9 @@ pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
         Some(cost) => cost,
         None if required => match r.attempt(alternatives) {
             Some(choice) => choice,
-            None => cost(r)?,
+            None => single_cost(r)?,
         },
-        None => cost(r)?,
+        None => single_cost(r)?,
     };
     // The caster announces the X of a required cost that counts it ("Pay X life", "sacrifice X creatures"); an `{X}` of
     // mana and the X of an optional cost are left.
