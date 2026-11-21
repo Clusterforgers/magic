@@ -120,6 +120,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     attached_by,
                     r6104_while_tapped: (*duration == Duration::WhileTapped).then_some(original),
                     r707_static: None,
+                    r115_until_face_down: false,
                 }));
             }
         }

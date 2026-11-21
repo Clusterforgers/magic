@@ -1,16 +1,23 @@
 {
   "oracle_id": "086a911f-9ed4-4260-ae46-58c9333b95f5",
   "name": "Werewolf Pack Leader",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Werewolf Pack Leader",
       "oracle_fingerprint": "8256fb8833dce706c8a6d7138fc37d68",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 133 }
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "R115AttackPower" } },
+                "op": "Ge",
+                "right": 6
+              }
+            },
+            "effects": [{ "Draw": {} }]
           }
         },
         {
@@ -23,7 +30,7 @@
                   "mods": [
                     { "SetPT": { "power": 5, "toughness": 3 } },
                     { "AddKeyword": "Trample" },
-                    { "AddSubtype": "Werewolf" }
+                    { "SetCreatureTypes": ["Werewolf"] }
                   ],
                   "duration": "UntilEndOfTurn"
                 }

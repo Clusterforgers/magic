@@ -185,6 +185,7 @@ impl Hash for CopyEffect {
                     3u8.hash(state);
                     by.hash(state);
                 }
+                C10XpCopyEnds::R115FaceDown => 4u8.hash(state),
                 C10XpCopyEnds::Cleanup => {}
             }
         }
@@ -204,6 +205,8 @@ pub enum C10XpCopyEnds {
     R6104Untapped(ObjectRef),
     /// Once the static ability of this permanent no longer makes it (`R707CopyOf`, CR 707.2, 613.2a).
     R707Static(ObjectRef),
+    /// As the permanent is turned face down ("until this creature is turned face down").
+    R115FaceDown,
 }
 
 /// A permanent became a copy of another object (CR 707.2): its copiable values are now those of the copy effect, with a
@@ -241,6 +244,10 @@ pub struct BecameCopy {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub r707_static: Option<ObjectRef>,
+    /// The copy ends once the permanent is turned face down ("until this creature is turned face down").
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub r115_until_face_down: bool,
 }
 
 /// A spell was copied (CR 707.10): the copy is a spell on the stack above the original, controlled by the player who
@@ -335,6 +342,7 @@ pub(crate) fn fold(state: &mut GameState, event: &BecameCopy) -> Result<(), Engi
         event.attached_by.or(event.r6104_while_tapped),
     ) {
         _ if event.r707_static.is_some() => event.r707_static.map(C10XpCopyEnds::R707Static),
+        _ if event.r115_until_face_down => Some(C10XpCopyEnds::R115FaceDown),
         (_, _, Some(by)) if event.attached_by.is_none() => Some(C10XpCopyEnds::R6104Untapped(by)),
         (_, _, Some(by)) => Some(C10XpCopyEnds::Unattached(by)),
         (_, Some(player), None) => Some(C10XpCopyEnds::NextTurnOf(player)),
@@ -494,6 +502,17 @@ fn on_the_stack(state: &GameState, reference: ObjectRef, ability: bool) -> bool 
             && object.zone() == Zone::Stack
             && (object.kind() == ObjectKind::Ability) == ability
     })
+}
+
+/// Ends the copy effects of `permanent` that last until it is turned face down, as it is (CR 708.8); the others stay.
+pub(crate) fn r115_end_face_down(permanent: &mut crate::object::PermanentState) {
+    if let Some(copy) = permanent.copy.take() {
+        permanent.copy = if copy.c10_xp_ends_at(C10XpCopyEnds::R115FaceDown) {
+            copy.without(C10XpCopyEnds::R115FaceDown)
+        } else {
+            Some(copy)
+        };
+    }
 }
 
 /// Folds the event: a temporary copy effect ends, and the permanent is a copy of what it was a copy of before, if anything.
@@ -758,6 +777,7 @@ mod tests {
             attached_by: None,
             r6104_while_tapped: None,
             r707_static: None,
+            r115_until_face_down: false,
         });
         apply_event(game, &event).unwrap();
     }
@@ -917,6 +937,7 @@ mod tests {
             attached_by: None,
             r6104_while_tapped: None,
             r707_static: None,
+            r115_until_face_down: false,
         });
         assert!(apply_event(&mut game, &late).is_err());
     }
@@ -953,6 +974,7 @@ mod tests {
             attached_by: None,
             r6104_while_tapped: None,
             r707_static: None,
+            r115_until_face_down: false,
         });
         apply_event(game, &event).unwrap();
     }
@@ -969,6 +991,7 @@ mod tests {
             attached_by: None,
             r6104_while_tapped: None,
             r707_static: None,
+            r115_until_face_down: false,
         });
         apply_event(game, &event).unwrap();
     }
@@ -1120,6 +1143,7 @@ mod tests {
             attached_by: None,
             r6104_while_tapped: None,
             r707_static: None,
+            r115_until_face_down: false,
         });
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(copy.id).unwrap().card().name, "Butterfly");
@@ -1171,6 +1195,7 @@ mod tests {
             attached_by: None,
             r6104_while_tapped: None,
             r707_static: None,
+            r115_until_face_down: false,
         });
         apply_event(&mut game, &event).unwrap();
         assert_eq!(game.object(copy.id).unwrap().card().name, "Nightrat");

@@ -462,6 +462,10 @@ pub enum TurnTally {
     /// The dice the players rolled this turn whose result was this number, each die once (CR 706.2: the result after
     /// any modification): "as long as you've rolled a 6 this turn". Added up over the players.
     R6402Rolled(u32),
+    /// The total power of the creatures the players attacked with this combat, each as it was declared an attacker (CR
+    /// 508.1; pack tactics: "if you attacked with creatures with total power 6 or greater this combat"). Added up over
+    /// the players; zero before attackers are declared.
+    R115AttackPower,
     /// The times the players waterbent this turn (`Action::Waterbent`). Added up over the players.
     Waterbent,
     /// The times the players earthbent this turn (`Action::Earthbent`). Added up over the players.

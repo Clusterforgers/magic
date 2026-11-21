@@ -1568,6 +1568,7 @@ impl<'a> Walker<'a> {
                         | TurnTally::DamageDealtTo
                         | TurnTally::DungeonsCompleted
                         | TurnTally::SpellsCastThisGame
+                        | TurnTally::R115AttackPower
                 ) {
                     self.problem("last turn is kept for the counts of players only");
                 }
@@ -7886,10 +7887,14 @@ impl Walker<'_> {
                 counters,
                 except_if,
                 r707_when_you_do,
+                r115_turned_up,
                 ..
             } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
+                }
+                if *r115_turned_up {
+                    self.uses("Copy", "Duration.R115UntilFaceDown");
                 }
                 if !r707_when_you_do.is_empty() {
                     self.uses("Copy", "WhenYouDo");

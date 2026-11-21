@@ -290,6 +290,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 let controller = crate::characteristics::controller_of(state, *attacker);
                 if let Some(controller) = controller {
                     state.tally(controller, Tally::Attackers);
+                    crate::combat::r115_note_attack_power(state, controller, *attacker);
                 }
                 let against = match at {
                     crate::combat::AttackTarget::Player(player) => Target::Player(*player),

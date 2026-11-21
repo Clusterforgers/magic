@@ -4,15 +4,18 @@
 //! the payment turn the permanent face up, and a megamorph gets its +1/+1 counter (CR 702.37b).
 
 use mtg_cards::ability::Ability;
+use mtg_cards::modify::Modification;
 use mtg_cards::refs::Selector;
 use mtg_cards::trigger::{ReplaceBy, ReplaceWhen};
 use mtg_cards::value::CounterKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaSymbol;
+use std::sync::Arc;
 
 use super::{Done, Next, Phase, suspend};
 use crate::characteristics::controller_of;
 use crate::choose::{CardsOptions, Choices, NumberOptions, Target};
+use crate::copies::{BecameCopy, copiable_values, may_be_copied};
 use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::events::Event;
@@ -124,6 +127,31 @@ pub(super) fn next(
             }),
         });
     }
+    // "As this creature enters or is turned face up, you may choose another creature" (CR 708.8): asked last.
+    let attach = usize::from(r6702_may_attach(state, card).is_some());
+    if choices.cost_picks().len() == settled + attach
+        && let Some((options, _)) = r115_copy_options(state, player, card)
+    {
+        if options.is_empty() {
+            choices.pick_for_cost(Vec::new());
+            return next(state, player, card, choices, done);
+        }
+        done.asked = Some(Phase::Parts);
+        return Next::Ask(Decision {
+            player,
+            kind: DecisionKind::ChooseCards(CardsOptions {
+                one_per_name: false,
+                source: card,
+                from: options,
+                min: 0,
+                max: 1,
+                text: "You may choose another creature to copy.".to_owned(),
+                can_cancel: false,
+                total: None,
+                groups: Vec::new(),
+            }),
+        });
+    }
     let paid = choices.clone();
     let spend = crate::spend::Spend::special(mtg_cards::spend::SpecialAction::TurnFaceUp)
         .r111_by(state, player);
@@ -185,13 +213,82 @@ pub(crate) fn events(
         }));
     }
     events.extend(turned_up_counters(state, card));
-    if let Some(&host) = picks.next().and_then(|picked| picked.first()) {
+    if r6702_may_attach(state, card).is_some()
+        && let Some(&host) = picks.next().and_then(|picked| picked.first())
+    {
         events.push(Event::Attached {
             object: card,
             to: host,
         });
     }
+    if let Some(&copied) = picks.next().and_then(|picked| picked.first()) {
+        events.push(r115_turned_up_copy(state, player, card, copied)?);
+    }
     Some(events)
+}
+
+/// The creatures `card` may become a copy of as it is turned face up, with the exceptions of that copy: what its face-up
+/// card's "As this creature enters or is turned face up, you may choose another creature" names (`ReplaceBy::AsCopy` with
+/// `r115_turned_up`), judged as the turn begins. `None` when the card has no such ability.
+pub(crate) fn r115_copy_options(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+) -> Option<(Vec<ObjectId>, Vec<Modification>)> {
+    let object = state.object(card)?;
+    let (of, except) =
+        crate::ability_reader::printed_rules(&object.def).find_map(|rules| match &**rules {
+            Ability::Replacement {
+                by:
+                    ReplaceBy::AsCopy {
+                        of,
+                        except,
+                        r115_turned_up: true,
+                        ..
+                    },
+                ..
+            } => Some((of.clone(), except.clone())),
+            _ => None,
+        })?;
+    let scope = crate::resolve::Scope::announcing(state, player, object.reference());
+    let options = scope
+        .matching(&of)
+        .unwrap_or_default()
+        .into_iter()
+        .map(|named| named.id)
+        .filter(|&id| id != card && state.object(id).is_some_and(may_be_copied))
+        .collect();
+    Some((options, except))
+}
+
+/// `card` becomes a copy of `copied` with the exceptions of its turned-up copy ability, until it is turned face down.
+pub(crate) fn r115_turned_up_copy(
+    state: &GameState,
+    player: PlayerId,
+    card: ObjectId,
+    copied: ObjectId,
+) -> Option<Event> {
+    let (options, except) = r115_copy_options(state, player, card)?;
+    if !options.contains(&copied) {
+        return None;
+    }
+    let of = state.object(copied)?.reference();
+    let mut values = copiable_values(state, of, None)?;
+    except
+        .iter()
+        .all(|modification| values.except(modification))
+        .then_some(())?;
+    Some(Event::BecameCopy(BecameCopy {
+        object: card,
+        of,
+        definition: Arc::new(values),
+        until_end_of_turn: false,
+        until_next_turn_of: None,
+        attached_by: None,
+        r6104_while_tapped: None,
+        r707_static: None,
+        r115_until_face_down: true,
+    }))
 }
 
 /// The "you may attach it to" selector of the face-up card (`ReplaceBy::R6702MayAttach`), if it has one.

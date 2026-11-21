@@ -209,6 +209,17 @@ fn this_turn(r: &mut Reader<'_>) -> Option<Condition> {
             number,
         );
     }
+    if r.words("you attacked with creatures with total power") {
+        let number = r.number()?;
+        r.need("or greater this combat")?;
+        return at_least(
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::R115AttackPower,
+            },
+            number,
+        );
+    }
     if r.words("you attacked with") {
         let number = quantity(r).filter(|number| *number > 1)?;
         r.need("or more creatures this turn")?;
@@ -368,6 +379,15 @@ fn turn_texts(condition: &Condition) -> Vec<String> {
         ) if number > 1 => {
             counted(&|n| format!("you attacked with {n} or more creatures this turn"))
         }
+        (
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::R115AttackPower,
+            },
+            Cmp::Ge,
+        ) => vec![format!(
+            "you attacked with creatures with total power {number} or greater this combat"
+        )],
         (
             Amount::Tallied {
                 who: Ref::You,
