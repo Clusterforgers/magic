@@ -133,6 +133,7 @@ const WHACKER: &str = "Vedalken Squirrel-Whacker";
 #[case("Volo, Itinerant Scholar")]
 #[case("Casey & Raph, Hotheads")]
 #[case("Soundwave, Sonic Spy // Soundwave, Superior Captain")]
+#[case("Zabaz, the Glimmerwasp")]
 fn r113_the_engine_runs_every_card_of_the_pack(#[case] name: &str) {
     let record = mtg_testkit::corpus::corpus()
         .unwrap()
@@ -188,7 +189,7 @@ fn r113_the_whacker_enters_with_its_rolls_and_exchanges_a_later_one(
     assert_eq!(r113_stats(&driver, WHACKER), (power, toughness));
     // An eight-sided roll is not exchanged.
     driver.cast("Roll Eight")?;
-    assert!(r113_settle(&mut driver, &|_| 1)?.is_empty());
+    assert_eq!(r113_settle(&mut driver, &|_| 1)?.len(), 0);
     let from = driver.engine().events().len();
     driver.cast("Roll")?;
     let asked = r113_settle(&mut driver, &|_| pick)?;
@@ -418,7 +419,7 @@ fn r113_only_the_enchanted_creatures_controller_activates_the_aura(
     );
     driver.pass()?;
     assert_eq!(driver.decision()?.player, pid(1));
-    assert!(!driver.offered_abilities("Merseine")?.is_empty());
+    assert_ne!(driver.offered_abilities("Merseine")?.len(), 0);
     driver.begin_activation("Merseine")?;
     r113_settle(&mut driver, &|_| 0)?;
     let counters = driver
@@ -611,6 +612,72 @@ fn r113_answer(decision: &mtg_engine::decision::Decision) -> Answer {
         DecisionKind::PayMana(_) => Answer::PayMana(PayChoice::Auto),
         _ => Driver::passive_answer(decision),
     }
+}
+
+#[rstest]
+fn r113_a_modular_trigger_puts_one_more_counter_and_a_spell_does_not(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    let modular: Ability =
+        serde_json::from_str(r#"{"Keyword":{"Macro":{"name":"modular","amount":2}}}"#).unwrap();
+    let worker = Arc::new(
+        CardDefinition::new("Worker")
+            .with_type(CardType::Artifact)
+            .with_type(CardType::Creature)
+            .with_power_toughness(0, 0)
+            .with_mana_cost(cost(1, &[]))
+            .with_rules(modular),
+    );
+    let zabaz = "Zabaz, the Glimmerwasp";
+    let plus = CounterKind::PlusOnePlusOne;
+    let table = || {
+        Scenario::new(seats)
+            .battlefield(
+                0,
+                [
+                    with_counters(ready(card(zabaz).unwrap()), plus.clone(), 1),
+                    with_counters(ready(Arc::clone(&worker)), plus.clone(), 2),
+                ],
+            )
+            .hand(
+                0,
+                vec![
+                    spell(
+                        "Kill",
+                        CardType::Instant,
+                        r#"{"Destroy":{"what":{"Each":[{"Named":"Worker"}]}}}"#,
+                    ),
+                    spell(
+                        "Grow",
+                        CardType::Instant,
+                        r#"{"PutCounters":{"on":{"Each":[{"Named":"Zabaz, the Glimmerwasp"}]},"counter":"+1/+1"}}"#,
+                    ),
+                ],
+            )
+    };
+    let counters = |driver: &Driver| {
+        driver
+            .state()
+            .object(r113_id(driver, zabaz))
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .counters_of(&CounterKind::PlusOnePlusOne)
+    };
+    let mut driver = Driver::from_scenario(table())?;
+    driver.cast("Kill")?;
+    r113_settle(&mut driver, &|_| 0)?;
+    assert_eq!(
+        counters(&driver),
+        1 + 2 + 1,
+        "the modular trigger puts one more"
+    );
+    driver.cast("Grow")?;
+    r113_settle(&mut driver, &|_| 0)?;
+    assert_eq!(counters(&driver), 5, "a spell puts only its own");
+    let replayed = replay(&table().setup().unwrap(), driver.engine().events()).unwrap();
+    assert_eq!(replayed.state_hash(), driver.state().state_hash());
+    Ok(())
 }
 
 #[rstest]

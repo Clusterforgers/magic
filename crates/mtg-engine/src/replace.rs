@@ -1016,6 +1016,33 @@ enum Applied {
 }
 
 /// Who puts some counters and whether an effect does (`Pass::putting`).
+/// Whether the resolving object is a triggered ability that a keyword printed on its source's card adds, the keyword
+/// named by its table name ("a modular triggered ability").
+fn r113_resolving_keyword_trigger(state: &GameState, name: &str) -> bool {
+    let Some(ability) = state
+        .resolving()
+        .and_then(|resolving| state.object(resolving.object))
+        .and_then(GameObject::ability)
+    else {
+        return false;
+    };
+    let crate::abilities::AbilitySource::PrintedKeyword(at) = ability.origin() else {
+        return false;
+    };
+    matches!(
+        ability.rules(),
+        mtg_cards::ability::Ability::Triggered { .. }
+    ) && state
+        .object(ability.source().id)
+        .and_then(|source| crate::ability_reader::printed_rules(source.card()).nth(at))
+        .is_some_and(|rule| {
+            matches!(&**rule, mtg_cards::ability::Ability::Keyword(keyword)
+                    if keyword.name() == name
+                        || (matches!(keyword, mtg_cards::keyword::Keyword::Macro { .. })
+                            && keyword.shown_name() == name))
+        })
+}
+
 struct Putting {
     /// The player who puts them; none when no spell or ability, and no entering permanent, is behind them.
     player: Option<PlayerId>,
@@ -1391,12 +1418,18 @@ impl Pass<'_> {
                     counter,
                     by,
                     effect,
+                    r113_keyword,
                 },
                 Unit::Counters {
                     on: put,
                     counter: kind,
                 },
             ) => {
+                if let Some(keyword) = r113_keyword
+                    && !r113_resolving_keyword_trigger(self.state, keyword)
+                {
+                    return Ok(false);
+                }
                 let putting = self.putting(*put);
                 let putter_fits = match (by, putting.player) {
                     (None, _) => true,

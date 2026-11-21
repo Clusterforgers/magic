@@ -180,9 +180,6 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
                 tail.push(format!("with {}", keyword.shown_name().to_lowercase()));
             }
             Pred::HasKeywordNamed(name) => tail.push(format!("with {}", name.to_lowercase())),
-            Pred::R113HasWay(way) => {
-                tail.push(format!("with {}", format!("{way:?}").to_lowercase()))
-            }
             Pred::HasCounter(kind) => tail.push(format!("with a {} counter on it", kind.name())),
             Pred::WithSticker(kind) => tail.push(format!(
                 "with {} {} sticker on it",

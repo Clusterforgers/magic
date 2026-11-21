@@ -997,6 +997,10 @@ pub enum ReplaceWhen {
         /// or a turn action ("If an effect would put").
         #[serde(default, skip_serializing_if = "is_false")]
         effect: bool,
+        /// Only counters a triggered ability of the keyword printed on its source puts, by the keyword's table name ("If a
+        /// modular triggered ability would put one or more +1/+1 counters").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r113_keyword: Option<String>,
     },
     /// A player would gain life.
     LifeGain {

@@ -6769,7 +6769,6 @@ impl Walker<'_> {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
-            GameRule::R113NoteExiledManaValue => {}
             GameRule::R113ExchangeRoll { who, sides, .. } => self.at(tag, |w| {
                 w.reference(who, Kind::Player);
                 if *sides < 2 {
@@ -6824,7 +6823,8 @@ impl Walker<'_> {
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_)
-            | GameRule::R112SpendOnlyFromWay { .. } => {}
+            | GameRule::R112SpendOnlyFromWay { .. }
+            | GameRule::R113NoteExiledManaValue => {}
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }
@@ -7191,7 +7191,20 @@ impl Walker<'_> {
                     self.at("by", |w| w.reference(by, Kind::Player));
                 }
             }
-            ReplaceWhen::CountersPut { on, by, .. } => {
+            ReplaceWhen::CountersPut {
+                on,
+                by,
+                r113_keyword,
+                ..
+            } => {
+                if let Some(keyword) = r113_keyword {
+                    self.uses("CountersPut", "R113Keyword");
+                    if !Keyword::NAMES.contains(&keyword.as_str())
+                        && !crate::macros::is_keyword(&keyword.to_lowercase())
+                    {
+                        self.problem(format!("`{keyword}` is not a keyword"));
+                    }
+                }
                 if let Some(by) = by {
                     self.at("by", |w| w.reference(by, Kind::Player));
                 }

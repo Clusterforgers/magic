@@ -51,6 +51,7 @@ fn compact(name: &str) -> String {
 #[case("Volo, Itinerant Scholar")]
 #[case("Casey & Raph, Hotheads")]
 #[case("Soundwave, Sonic Spy // Soundwave, Superior Captain")]
+#[case("Zabaz, the Glimmerwasp")]
 fn r113_04_reads_back_whole(#[case] name: &str) {
     let report = report_of(name, &compact(name));
     assert_eq!(
@@ -137,6 +138,8 @@ fn r113_04_reads_back_whole(#[case] name: &str) {
     r#"{"Compare":{"op":"Eq","stat":"ManaValue","to":"Triggering"}},"#,
     ""
 )]
+#[case::any_trigger("Zabaz, the Glimmerwasp", r#","r113_keyword":"Modular""#, "")]
+#[case::riot("Zabaz, the Glimmerwasp", r#""Modular""#, r#""Riot""#)]
 #[case::any_journal("Volo, Itinerant Scholar", r#",{"Named":"Volo's Journal"}"#, "")]
 fn r113_04_a_near_miss_does_not_read_back(
     #[case] name: &str,

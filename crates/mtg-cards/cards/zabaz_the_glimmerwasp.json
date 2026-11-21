@@ -1,7 +1,7 @@
 {
   "oracle_id": "549dc9f3-1fda-4ad3-87bc-8a990800380b",
   "name": "Zabaz, the Glimmerwasp",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Zabaz, the Glimmerwasp",
@@ -9,9 +9,15 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "modular", "amount": 1 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 10, "end": 161 }
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "counter": "+1/+1",
+                "r113_keyword": "Modular"
+              }
+            },
+            "by": { "Add": 1 }
           }
         },
         {

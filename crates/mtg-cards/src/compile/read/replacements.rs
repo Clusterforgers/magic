@@ -43,8 +43,11 @@ pub(super) fn sentences(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<String> {
             counter,
             by: None,
             effect: false,
+            r113_keyword: None,
         } => counters(on.as_ref(), counter.as_ref(), by),
-        ReplaceWhen::CountersPut { .. } => super::ep24_counters::ep24_counter_texts(when, by),
+        ReplaceWhen::CountersPut {
+            r113_keyword: None, ..
+        } => super::ep24_counters::ep24_counter_texts(when, by),
         ReplaceWhen::Draw {
             who: Ref::You,
             except_draw_step,

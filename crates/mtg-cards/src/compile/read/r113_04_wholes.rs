@@ -154,6 +154,7 @@ mod tests {
     #[case("Each mode must target a different player. ", "")]
     #[case("creature tokens you control", "creatures you control")]
     #[case("an odd mana value", "an odd power")]
+    #[case("a modular triggered ability", "a riot triggered ability")]
     #[case("that player's next end step", "your next end step")]
     #[case("for each creature type noted", "for each card type noted")]
     #[case("same mana value", "same power")]

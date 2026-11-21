@@ -148,7 +148,12 @@ mod tests {
     ) {
         let mut game = game();
         sent(&mut game, to, cause);
-        let (events, bound) = copied(&game);
+        let zone = match to {
+            Zone::Graveyard(_) => "Graveyard",
+            Zone::Library(_) => "Library",
+            _ => "Exile",
+        };
+        let (events, bound) = copied_in(&game, zone);
         assert_eq!(events.len(), copies);
         assert_eq!(bound.len(), 1);
         assert_eq!(bound[0].0, "copy");

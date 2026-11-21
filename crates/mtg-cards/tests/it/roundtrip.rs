@@ -1390,6 +1390,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                         counter,
                         by: None,
                         effect: false,
+                        r113_keyword: None,
                     }),
                 (reference(), any::<bool>())
                     .prop_map(|(who, caused_own)| ReplaceWhen::LifeGain { who, caused_own }),

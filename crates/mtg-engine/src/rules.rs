@@ -2489,7 +2489,6 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
             creatures, players, ..
         } => creatures.is_empty() && players.is_empty(),
         Rule::MustBlockAttacker { blockers, .. } => blockers.is_empty(),
-        Rule::R113NoteExiled { .. } => false,
         Rule::Combat { creatures, .. } => creatures.is_empty(),
         Rule::IgnoreHexproof {
             by, what, players, ..
@@ -2582,7 +2581,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ManaBurn
         | Rule::RevealFirstDraw { .. }
         | Rule::UntapRemovesCounters(_)
-        | Rule::R6400ChoosesVotes(_) => false,
+        | Rule::R6400ChoosesVotes(_)
+        | Rule::R113NoteExiled { .. } => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {

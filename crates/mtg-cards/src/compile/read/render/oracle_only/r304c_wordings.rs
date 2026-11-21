@@ -325,6 +325,7 @@ fn counters_changed(ability: &Ability) -> Vec<String> {
                 counter,
                 by: putter,
                 effect: false,
+                r113_keyword: None,
             },
         by,
         condition: None,
