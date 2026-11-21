@@ -1,0 +1,6 @@
+[
+  [{"Static":{"affected":"This","mods":[{"R114StickerAbilitiesOf":{"Each":["Other",{"OwnedBy":"You"},{"AnyOf":[{"In":"Battlefield"},{"In":"Graveyard"}]}]}}]}},"~ has all abilities of ability stickers on other permanents you own and cards in your graveyard."],
+  [{"Static":{"affected":"Attached","mods":[{"ModifyPT":{"power":1,"toughness":1}},{"R114StickerAbilitiesOf":"This"}]}},"Equipped creature gets +1/+1 and has all abilities of ability stickers on this Equipment."],
+  [{"Rule":{"rule":{"R114StickerKicker":{"who":"You","spells":[{"Type":"Creature"}],"cost":"{1}"}}}},"Creature spells you cast have sticker kicker {1}."],
+  [{"Activated":{"cost":[{"Mana":"{6}"},{"R114RollDie":8}],"effects":[{"Monstrosity":{"count":"X"}}]}},"{6}, Roll a d8: Monstrosity X, where X is the result."]
+]

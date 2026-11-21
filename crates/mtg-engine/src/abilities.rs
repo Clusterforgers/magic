@@ -66,6 +66,9 @@ pub enum Grant {
         /// The Ring level that gives it.
         level: u8,
     },
+    /// An ability sticker (CR 123) on another object, whose ability an object has because a static ability says it
+    /// has the abilities of the ability stickers on that object (`Modification::R114StickerAbilitiesOf`).
+    R114Sticker(crate::un34_stickers::StickerAt),
 }
 
 /// Where an ability of an object comes from, which with the object and an index names it (`ability_reader`).

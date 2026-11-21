@@ -125,6 +125,17 @@ pub struct Borrowed {
     pub r111_current: bool,
 }
 
+/// The ability of an ability sticker on another object, which an object has (`Modification::R114StickerAbilities`).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct R114StickerGiven {
+    /// The sticker.
+    pub at: crate::un34_stickers::StickerAt,
+    /// Its ability.
+    #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+    pub body: Arc<Ability>,
+}
+
 /// What an effect changes.
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -183,6 +194,10 @@ pub enum Modification {
     /// were worked out, each with its ability and its place among the rules of its card; `ability_reader` lists each under an
     /// address of its own.
     GainAbilities(Vec<Borrowed>),
+    /// Gives the abilities of these ability stickers, which are on other objects (layer 6, CR 123): the stickers the static
+    /// ability found on the objects it names when the layers were worked out; `ability_reader` lists each under the
+    /// sticker as its address.
+    R114StickerAbilities(Vec<R114StickerGiven>),
     /// Takes away every ability the object has so far (layer 6): the printed ones, the plain mana abilities and
     /// those granted earlier. What is granted after it still counts.
     LoseAbilities,
@@ -351,6 +366,7 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::LoseAbility(_)
             | Modification::GainAbilities(_)
+            | Modification::R114StickerAbilities(_)
             | Modification::LoseAbilities
             | Modification::LoseAbilitiesExceptMana => Layer::Ability,
             Modification::SetPowerToughness { .. }
@@ -441,6 +457,7 @@ impl Modification {
             | Modification::LoseAbility(_)
             | Modification::GrantAbility(_)
             | Modification::GainAbilities(_)
+            | Modification::R114StickerAbilities(_)
             | Modification::CantAttack
             | Modification::CantAttackYou { .. }
             | Modification::R6601CantAttackPlayers { .. }

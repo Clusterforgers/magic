@@ -2,6 +2,7 @@
 import type { EffectId } from "./EffectId";
 import type { ObjectId } from "./ObjectId";
 import type { PlayerId } from "./PlayerId";
+import type { StickerAt } from "./StickerAt";
 
 /**
  * What gives an object an ability it does not print: a continuous effect, or one modification of a static ability.
@@ -53,4 +54,4 @@ player: PlayerId,
 /**
  * The Ring level that gives it.
  */
-level: number, } };
+level: number, } } | { "R114Sticker": StickerAt };

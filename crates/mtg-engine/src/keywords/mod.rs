@@ -289,6 +289,9 @@ pub enum OptionalKind {
     Additional,
     /// Gift: the caster promises an opponent a gift, read as `Condition::AdditionalCostPaid` and `Ref::Promised`; the cost is offered once for each opponent.
     Gift,
+    /// Sticker kicker, which a static ability gives the spell (`Rule::R114StickerKicker`): a ticket and a sticker on the
+    /// spell as it is cast; it counts as a kick for other objects (`Pred::Kicked`).
+    R114StickerKicker,
 }
 
 /// A cost a keyword lets the caster pay in addition: kicker, multikicker, buyback and entwine.

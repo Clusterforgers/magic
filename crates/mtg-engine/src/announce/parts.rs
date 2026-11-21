@@ -60,6 +60,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     if let Some(next) = super::r110_cast_choice::r110_run(ctx, work) {
         return Some(next);
     }
+    if let Some(next) = super::r114_sticker_kick::r114_run(ctx, work) {
+        return Some(next);
+    }
     let price = price_of(ctx, work.choices)?;
     if work.choices.cost_picks().is_empty()
         && price.claimed(ctx.state, ctx.player, ctx.source).is_none()

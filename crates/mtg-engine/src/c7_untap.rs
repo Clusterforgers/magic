@@ -28,7 +28,8 @@ pub(crate) fn c7_untap_spent(state: &GameState, active: PlayerId) -> Vec<Event> 
             Grant::Static { .. }
             | Grant::Borrowed { .. }
             | Grant::R111Lent { .. }
-            | Grant::Ring { .. } => None,
+            | Grant::Ring { .. }
+            | Grant::R114Sticker(_) => None,
         })
         .filter(|id| {
             state

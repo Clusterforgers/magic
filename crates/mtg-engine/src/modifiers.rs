@@ -146,6 +146,10 @@ fn origin_of(
         Grant::Borrowed { donor, .. } | Grant::R111Lent { donor, .. } => {
             (Origin::Borrowed(donor), ModifierSource::Object(donor), None)
         }
+        Grant::R114Sticker(at) => {
+            let donor = crate::un34_stickers::r114_sticker_holder(state, at)?;
+            (Origin::Borrowed(donor), ModifierSource::Object(donor), None)
+        }
         Grant::Ring { player, level } => (
             Origin::Ring(player, level),
             ModifierSource::Ring { player, level },

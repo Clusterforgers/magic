@@ -698,6 +698,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r111_04_wholes::r111_04_add_wholes(ability, &mut texts);
     super::r112_04_wholes::r112_04_add_wholes(ability, &mut texts);
     super::r113_04_wholes::r113_04_add_wholes(ability, &mut texts);
+    super::r114_04_wholes::r114_04_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
@@ -3621,7 +3622,14 @@ impl Writer<'_> {
                 on,
                 kind,
                 up_to,
-            } => super::un34_stickers::un34_put_text(who, on, *kind, *up_to)?,
+                r114_free_at_most,
+            } => super::un34_stickers::un34_put_text(
+                who,
+                on,
+                *kind,
+                *up_to,
+                r114_free_at_most.as_ref(),
+            )?,
             Effect::ChooseValue {
                 who: Ref::You,
                 kind: crate::effect::ValueKind::Letter,

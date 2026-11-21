@@ -127,6 +127,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::XAtMost(_) => "Cost.XAtMost",
         CostItem::XIs(_) => "Cost.XIs",
         CostItem::R110ChooseNumber { .. } => "Cost.R110ChooseNumber",
+        CostItem::R114RollDie(_) => "Cost.R114RollDie",
         CostItem::R110Choose(_) => "Cost.R110Choose",
     }
 }
@@ -264,6 +265,8 @@ impl Price {
                 CostItem::XAtLeast(_)
                 | CostItem::XAtMost(_)
                 | CostItem::XIs(_)
+                // A die rolled as a cost is rolled as the activation is logged (`cast::r114_cost_roll`).
+                | CostItem::R114RollDie(_)
                 | CostItem::R110ChooseNumber { .. }
                 | CostItem::R110Choose(_)
                 | CostItem::ChosenColorOnly

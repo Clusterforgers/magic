@@ -235,6 +235,23 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub r110_chosen: Option<crate::object::Chosen>,
+    /// The sticker kickers paid (`Rule::R114StickerKicker`): each with its index among the optional costs and the
+    /// sticker its caster chose to put on the spell, none when they put none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<R114StickerKick>>", optional))]
+    pub r114_stickers: Vec<R114StickerKick>,
+}
+
+/// A sticker kicker paid as a spell was cast: the optional cost and the sticker chosen for the spell.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct R114StickerKick {
+    /// The index among the optional costs.
+    pub cost: usize,
+    /// The sticker put on the spell, if any.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub sticker: Option<crate::un34_stickers::StickerAt>,
 }
 
 /// Whether a number of counters is 0, so serialization can leave it out.
@@ -378,6 +395,28 @@ impl Choices {
         if chosen.is_some() || self.cost_taken.is_some() {
             self.cost_taken.get_or_insert_with(Box::default).r110_chosen = chosen;
         }
+    }
+
+    /// The indices among the optional costs of the sticker kickers paid.
+    pub fn r114_sticker_kicks(&self) -> Vec<usize> {
+        self.cost_taken.as_deref().map_or_else(Vec::new, |taken| {
+            taken.r114_stickers.iter().map(|kick| kick.cost).collect()
+        })
+    }
+
+    /// The sticker kickers paid, with the stickers chosen.
+    pub fn r114_stickers(&self) -> &[R114StickerKick] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.r114_stickers)
+    }
+
+    /// Keeps a sticker kicker paid and the sticker chosen for it.
+    pub(crate) fn r114_add_kick(&mut self, kick: R114StickerKick) {
+        self.cost_taken
+            .get_or_insert_with(Box::default)
+            .r114_stickers
+            .push(kick);
     }
 
     /// Adds the player chosen for the next part of the cost that names one.

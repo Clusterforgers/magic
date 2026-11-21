@@ -2178,6 +2178,15 @@ impl<'a> Walker<'a> {
                         w.uses("Cost", "XIs");
                         w.at("XIs", |w| w.amount(amount));
                     }
+                    CostItem::R114RollDie(sides) => {
+                        if *sides < 2 {
+                            w.problem("a die has at least two sides");
+                        }
+                        if cost.has_x() {
+                            w.problem("a die rolled as a cost is the X of a cost with no {X}");
+                        }
+                        w.uses("Cost", "R114RollDie");
+                    }
                     CostItem::R110ChooseNumber { least, most } => {
                         if least > most {
                             w.problem("the least number chosen is greater than the greatest");
@@ -2990,6 +2999,7 @@ impl<'a> Walker<'a> {
             Modification::GainAbilitiesOf(from)
             | Modification::R111GainNonManaAbilitiesOf(from)
             | Modification::R6702GainActivatedAndTriggeredOf(from)
+            | Modification::R114StickerAbilitiesOf(from)
             | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
@@ -6282,7 +6292,13 @@ impl Walker<'_> {
             .collect();
         let outer = std::mem::replace(&mut self.ep29_removes, removes);
         // The X a part of the cost counts is the one the ability announces.
-        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
+        // A die rolled as a cost sets the X (`CostItem::R114RollDie`).
+        self.x_free = cost.has_x()
+            || cost.0.iter().any(r6602_discard_by_x)
+            || cost
+                .0
+                .iter()
+                .any(|item| matches!(item, CostItem::R114RollDie(_)));
         self.x_now = self.x_free;
         self.activated_cost = true;
         self.at("cost", |w| w.cost(cost));
@@ -6293,7 +6309,12 @@ impl Walker<'_> {
             self.scope = Scope::new(&[], false);
             self.at("condition", |w| w.condition(condition));
         }
-        self.x_free = cost.has_x() || cost.0.iter().any(r6602_discard_by_x);
+        self.x_free = cost.has_x()
+            || cost.0.iter().any(r6602_discard_by_x)
+            || cost
+                .0
+                .iter()
+                .any(|item| matches!(item, CostItem::R114RollDie(_)));
         // An `{X}` of the mana and a part that counts X are asked as the ability is announced.
         if has_x_mana(cost) {
             self.uses("Cost", "Mana.X");
@@ -6825,6 +6846,14 @@ impl Walker<'_> {
                 if matches!(pay, crate::modify::R6402RollPay::Life(0)) {
                     w.problem("a change of a die's result paid with life pays at least 1");
                 }
+            }),
+            GameRule::R114StickerKicker { who, spells, cost } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("spells", |w| w.selector(spells));
+                if cost.0.is_empty() || cost.has_x() {
+                    w.problem("sticker kicker costs a fixed amount");
+                }
+                w.at("cost", |w| w.cost(cost));
             }),
             GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),

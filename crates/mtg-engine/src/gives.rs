@@ -161,6 +161,7 @@ impl Gives {
             | Modification::LockKeyword(_) => GivenRule::LoseKeyword,
             Modification::GrantAbility(_)
             | Modification::GainAbilities(_)
+            | Modification::R114StickerAbilities(_)
             | Modification::GrantText(_) => GivenRule::GainAbility,
             Modification::SetController(_) => GivenRule::SetController,
             Modification::SwitchPowerToughness => GivenRule::SwitchPowerToughness,
@@ -272,7 +273,10 @@ fn given_to_host(rule: &GameRule) -> Option<GivenRule> {
 fn from(state: &GameState, applied: &Applied, id: ObjectId) -> bool {
     match applied.origin {
         Grant::Static { source, .. } => source == id,
-        Grant::Borrowed { .. } | Grant::R111Lent { .. } | Grant::Ring { .. } => false,
+        Grant::Borrowed { .. }
+        | Grant::R111Lent { .. }
+        | Grant::Ring { .. }
+        | Grant::R114Sticker(_) => false,
         Grant::Effect(effect) | Grant::R6701Nested { effect, .. } => state
             .effects()
             .iter()

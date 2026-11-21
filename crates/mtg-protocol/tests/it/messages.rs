@@ -1753,6 +1753,14 @@ fn w2f_cost_taken(
         r110_chosen: Some(mtg_engine::object::Chosen::CreatureType(
             mtg_core::card::Subtype("Elf".into()),
         )),
+        r114_stickers: vec![mtg_engine::choose::R114StickerKick {
+            cost: 1,
+            sticker: Some(mtg_engine::un34_stickers::StickerAt {
+                player: PlayerId(0),
+                sheet: 2,
+                sticker: 3,
+            }),
+        }],
     }
 }
 

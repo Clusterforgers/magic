@@ -268,6 +268,20 @@ pub enum Rule {
         /// Only once each turn for the permanent.
         once: bool,
     },
+    /// The players may pay `cost` in addition as they cast a spell of `spells`, for a ticket and a sticker on the spell
+    /// (`GameRule::R114StickerKicker`).
+    R114StickerKicker {
+        /// Who casts the spells.
+        players: Vec<PlayerId>,
+        /// The permanent with the rule.
+        source: ObjectRef,
+        /// The spells.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spells: mtg_cards::refs::Selector,
+        /// The sticker kicker cost.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        cost: mtg_cards::cost::Cost,
+    },
     /// The permanent notes the mana value of each card put into exile (`GameRule::R113NoteExiledManaValue`).
     R113NoteExiled {
         /// The permanent with the rule, whose memory holds the notes.
@@ -1013,6 +1027,8 @@ pub(crate) struct RulesInForce {
     r113_exchange_roll: Vec<R113RollExchanger>,
     /// The permanents that note the mana value of each card put into exile, in timestamp order.
     r113_note_exiled: Vec<ObjectRef>,
+    /// The sticker kickers each player's spells may be paid for, one for each rule, in timestamp order.
+    r114_sticker_kickers: Vec<R114Kicker>,
     /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
     keep_mana: Vec<(PlayerId, Option<ManaType>)>,
     /// The players whose lost mana becomes another type, in timestamp order.
@@ -1626,6 +1642,19 @@ impl RulesInForce {
                     once: *once,
                 })),
             Rule::R113NoteExiled { source } => self.r113_note_exiled.push(*source),
+            Rule::R114StickerKicker {
+                players,
+                source,
+                spells,
+                cost,
+            } => self
+                .r114_sticker_kickers
+                .extend(players.iter().map(|player| R114Kicker {
+                    player: *player,
+                    source: *source,
+                    spells: spells.clone(),
+                    cost: cost.clone(),
+                })),
             Rule::R113ExchangeRoll {
                 players,
                 source,
@@ -2190,6 +2219,12 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             by: *by,
             once: *once,
         },
+        GameRule::R114StickerKicker { who, spells, cost } => Rule::R114StickerKicker {
+            players: scope.players(who)?,
+            source: scope.source,
+            spells: spells.clone(),
+            cost: cost.clone(),
+        },
         GameRule::R113NoteExiledManaValue => Rule::R113NoteExiled {
             source: scope.source,
         },
@@ -2520,6 +2555,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExtraDie(players)
         | Rule::R6402ChangeRoll { players, .. }
         | Rule::R113ExchangeRoll { players, .. }
+        | Rule::R114StickerKicker { players, .. }
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
@@ -2744,6 +2780,7 @@ static NONE: RulesInForce = RulesInForce {
     r6402_change_roll: Vec::new(),
     r113_exchange_roll: Vec::new(),
     r113_note_exiled: Vec::new(),
+    r114_sticker_kickers: Vec::new(),
     keep_mana: Vec::new(),
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
@@ -3644,6 +3681,30 @@ pub(crate) struct R113RollExchanger {
     pub(crate) sides: u32,
     /// The memory slot.
     pub(crate) slot: String,
+}
+
+/// A sticker kicker a player's spells may be paid for (`Rule::R114StickerKicker`), one for each rule.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct R114Kicker {
+    /// Who casts the spells.
+    pub(crate) player: PlayerId,
+    /// The permanent with the rule.
+    pub(crate) source: ObjectRef,
+    /// The spells.
+    pub(crate) spells: mtg_cards::refs::Selector,
+    /// The sticker kicker cost.
+    pub(crate) cost: mtg_cards::cost::Cost,
+}
+
+/// The sticker kickers of `player`'s spells, in timestamp order.
+pub(crate) fn r114_sticker_kickers(state: &GameState, player: PlayerId) -> Vec<R114Kicker> {
+    state
+        .rules()
+        .r114_sticker_kickers
+        .iter()
+        .filter(|kicker| kicker.player == player)
+        .cloned()
+        .collect()
 }
 
 /// The permanents that note the mana value of each card put into exile (`Rule::R113NoteExiled`), in timestamp order.

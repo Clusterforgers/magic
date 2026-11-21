@@ -591,6 +591,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::R6702GainActivatedAndTriggeredOf(from) => {
             Modification::GainAbilities(r6702_borrowed_with_triggers(scope, from)?)
         }
+        Wanted::R114StickerAbilitiesOf(from) => Modification::R114StickerAbilities(
+            crate::un34_stickers::r114_ability_stickers_on(scope.state, &scope.objects(from)?),
+        ),
         // Each listed keyword one of the objects has, with its variant ("hexproof from white" for hexproof).
         Wanted::KeywordsOf { from, keywords } => {
             let mut given: Vec<Keyword> = Vec::new();
