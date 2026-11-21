@@ -1472,6 +1472,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             except_if: Vec::new(),
                             r109_embalmed: Vec::new(),
                             r707_when_you_do: Vec::new(),
+                            r115_turned_up: false,
                         }
                     }),
             ],

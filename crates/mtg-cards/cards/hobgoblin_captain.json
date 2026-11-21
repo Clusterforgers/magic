@@ -11,14 +11,10 @@
           "Triggered": {
             "when": { "Attacks": { "what": ["This"] } },
             "if": {
-              "AtTrigger": {
-                "Compare": {
-                  "left": {
-                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
-                  },
-                  "op": "Ge",
-                  "right": 6
-                }
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "R115AttackPower" } },
+                "op": "Ge",
+                "right": 6
               }
             },
             "effects": [

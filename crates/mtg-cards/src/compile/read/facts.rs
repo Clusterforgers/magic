@@ -209,6 +209,17 @@ fn this_turn(r: &mut Reader<'_>) -> Option<Condition> {
             number,
         );
     }
+    if r.words("you attacked with creatures with total power") {
+        let number = r.number()?;
+        r.need("or greater this combat")?;
+        return at_least(
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::R115AttackPower,
+            },
+            number,
+        );
+    }
     if r.words("you attacked with") {
         let number = quantity(r).filter(|number| *number > 1)?;
         r.need("or more creatures this turn")?;
@@ -322,8 +333,28 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
             op: *op,
             right: right.clone(),
         }),
-        _ => turn_texts(condition),
+        _ => r115_attack_power_text(condition)
+            .map_or_else(|| turn_texts(condition), |text| vec![text]),
     }
+}
+
+/// "you attacked with creatures with total power 6 or greater this combat" (pack tactics), written back.
+fn r115_attack_power_text(condition: &Condition) -> Option<String> {
+    let Condition::Compare {
+        left:
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::R115AttackPower,
+            },
+        op: Cmp::Ge,
+        right: Amount::Fixed(number),
+    } = condition
+    else {
+        return None;
+    };
+    (*number >= 0).then(|| {
+        format!("you attacked with creatures with total power {number} or greater this combat")
+    })
 }
 
 /// `texts` of a condition that is no fact of last turn.

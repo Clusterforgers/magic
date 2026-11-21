@@ -46,7 +46,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     r6702_attach(cx, events)
 }
 
-/// "As this Aura is turned face up, you may attach it to a creature" (`ReplaceBy::R6702MayAttach`, CR 708.8): each
+/// "As this Aura is turned face up, you may attach it to a creature" (`ReplaceBy::R6702MayAttach`, CR 708.8) and "as this
+/// creature is turned face up, you may choose another creature" to copy (`ReplaceBy::AsCopy` turned up): each
 /// controller of such an Aura the effect turns up chooses at most one permanent it could enchant face up, judged with
 /// every permanent of the effect turned up, and the Aura is attached as it turns.
 fn r6702_attach(cx: &Cx<'_>, mut events: Vec<Event>) -> Result<Run, ResolveError> {
@@ -61,7 +62,18 @@ fn r6702_attach(cx: &Cx<'_>, mut events: Vec<Event>) -> Result<Run, ResolveError
             _ => None,
         })
         .collect();
-    if auras.is_empty() {
+    // "As this creature enters or is turned face up, you may choose another creature" (CR 708.8).
+    let copiers: Vec<(ObjectId, PlayerId, Vec<ObjectId>)> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::TurnedFaceUp { object, player, .. } => {
+                crate::announce::turn_up::r115_copy_options(state, *player, *object)
+                    .map(|(options, _)| (*object, *player, options))
+            }
+            _ => None,
+        })
+        .collect();
+    if auras.is_empty() && copiers.is_empty() {
         return Ok(Run::events(events));
     }
     let mut after = state.clone();
@@ -80,17 +92,35 @@ fn r6702_attach(cx: &Cx<'_>, mut events: Vec<Event>) -> Result<Run, ResolveError
             max: 1,
             text: "You may choose a permanent to attach it to.".to_owned(),
         })
+        .chain(copiers.iter().map(|(_, player, options)| Selection {
+            one_per_name: false,
+            groups: Vec::new(),
+            player: *player,
+            from: options.clone(),
+            min: 0,
+            max: 1,
+            text: "You may choose another creature to copy.".to_owned(),
+        }))
         .collect();
     let taken = match pick_selections(cx, &selections)? {
         Picked::Ask(decision) => return Ok(Run::Ask(decision)),
         Picked::Done(taken) => taken,
     };
-    for ((aura, _, _), (_, hosts)) in auras.iter().zip(taken) {
+    let (attached, copied) = taken.split_at(auras.len().min(taken.len()));
+    for ((aura, _, _), (_, hosts)) in auras.iter().zip(attached) {
         if let Some(&host) = hosts.first() {
             events.push(Event::Attached {
                 object: *aura,
                 to: host,
             });
+        }
+    }
+    for ((card, player, _), (_, chosen)) in copiers.iter().zip(copied) {
+        if let Some(&of) = chosen.first()
+            && let Some(copy) =
+                crate::announce::turn_up::r115_turned_up_copy(state, *player, *card, of)
+        {
+            events.push(copy);
         }
     }
     Ok(Run::events(events))

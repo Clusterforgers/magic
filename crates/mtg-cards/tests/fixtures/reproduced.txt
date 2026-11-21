@@ -198,6 +198,7 @@ Baton of Courage
 Baton of Morale
 Battering Krasis
 Batterskull
+Battle Cry Goblin
 Battle Frenzy
 Battle Hymn
 Battle Screech
@@ -1100,6 +1101,7 @@ Gluttonous Troll
 Glyph of Delusion
 Gnarled Professor
 Gnarlwood Dryad
+Gnoll Hunter
 Go for the Throat
 Goblin Archaeologist
 Goblin Bombardment
@@ -1268,6 +1270,7 @@ Highspire Artisan
 Hinterland Harbor
 History of Benalia
 Hoarder's Greed
+Hobgoblin Captain
 Hogaak, Arisen Necropolis
 Holdout Settlement
 Hollow Warrior
@@ -1349,6 +1352,7 @@ Into the North
 Into the Roil
 Into the Time Vortex
 Intrepid Adversary
+Intrepid Outlander
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
@@ -2933,6 +2937,7 @@ Veronica, Dissident Scribe
 Verrak, Warped Sengir
 Vestige of Emrakul
 Vesuva
+Vesuvan Shapeshifter
 Veteran Motorist
 Veteran's Powerblade
 Viashino Weaponsmith
@@ -3016,6 +3021,7 @@ Wei Scout
 Weigh Down
 Weirding Wood
 Well Rested
+Werewolf Pack Leader
 Whim of Volrath
 Whims of the Fates
 Whiptongue Hydra

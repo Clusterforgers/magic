@@ -91,6 +91,7 @@ mod r111_history;
 mod r111_names;
 mod r112_piles;
 mod r115_serum_powder;
+mod r115_vesuvan;
 mod r2a_adventure;
 mod r301_control_tapped;
 mod r301b_control_tapped;

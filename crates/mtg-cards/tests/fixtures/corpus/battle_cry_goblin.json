@@ -1,0 +1,152 @@
+{
+  "object": "card",
+  "id": "ba41ec1b-e631-4882-b897-df26e26ada04",
+  "oracle_id": "e74c4001-d958-4d2b-b57d-c3601f01580c",
+  "multiverse_ids": [
+    681531
+  ],
+  "arena_id": 92917,
+  "tcgplayer_id": 590117,
+  "cardmarket_id": 795548,
+  "name": "Battle Cry Goblin",
+  "lang": "en",
+  "released_at": "2024-11-15",
+  "uri": "https://api.scryfall.com/cards/ba41ec1b-e631-4882-b897-df26e26ada04",
+  "scryfall_uri": "https://scryfall.com/card/j25/127/battle-cry-goblin?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-07-13T02:13:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.jpg?1783908830",
+    "normal": "https://cards.scryfall.io/normal/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.jpg?1783908830",
+    "large": "https://cards.scryfall.io/large/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.jpg?1783908830",
+    "png": "https://cards.scryfall.io/png/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.png?1783908830",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.jpg?1783908830",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.jpg?1783908830",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.webp?1783908830",
+    "grid": "https://cards.scryfall.io/grid/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.webp?1783908830",
+    "display": "https://cards.scryfall.io/display/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.webp?1783908830",
+    "art": "https://cards.scryfall.io/art/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.webp?1783908830",
+    "crop": "https://cards.scryfall.io/crop/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.webp?1783908830",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/a/ba41ec1b-e631-4882-b897-df26e26ada04.jpg?1783908830"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Creature — Goblin",
+  "oracle_text": "{1}{R}: Goblins you control get +1/+0 and gain haste until end of turn.\nPack tactics — Whenever this creature attacks, if you attacked with creatures with total power 6 or greater this combat, create a 1/1 red Goblin creature token that's tapped and attacking.",
+  "power": "2",
+  "toughness": "2",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Pack tactics"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "70f8a1de-cd4c-4afa-bf03-0245d375d42e",
+      "component": "token",
+      "name": "Goblin",
+      "type_line": "Token Creature — Goblin",
+      "uri": "https://api.scryfall.com/cards/70f8a1de-cd4c-4afa-bf03-0245d375d42e"
+    },
+    {
+      "object": "related_card",
+      "id": "ba41ec1b-e631-4882-b897-df26e26ada04",
+      "component": "combo_piece",
+      "name": "Battle Cry Goblin",
+      "type_line": "Creature — Goblin",
+      "uri": "https://api.scryfall.com/cards/ba41ec1b-e631-4882-b897-df26e26ada04"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": false,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": true,
+  "variation": false,
+  "set_id": "9201567c-bab5-4720-aac9-260e6741f115",
+  "set": "j25",
+  "set_name": "Foundations Jumpstart",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/9201567c-bab5-4720-aac9-260e6741f115",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Aj25&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/j25?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ba41ec1b-e631-4882-b897-df26e26ada04/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae74c4001-d958-4d2b-b57d-c3601f01580c&unique=prints",
+  "collector_number": "127",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "David Szabo",
+  "artist_ids": [
+    "4b065a8b-3d15-45cf-bd6f-f3736df6292b"
+  ],
+  "illustration_id": "a7c02d0f-2eeb-4897-a10b-43be776d9ce4",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 5186,
+  "penny_rank": 1749,
+  "prices": {
+    "usd": "0.34",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.46",
+    "eur_foil": null,
+    "tix": null
+  },
+  "related_uris": {
+    "gatherer": "https://gatherer.wizards.com/Pages/Card/Details.aspx?multiverseid=681531&printed=false",
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBattle%2BCry%2BGoblin",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBattle%2BCry%2BGoblin",
+    "edhrec": "https://edhrec.com/route/?cc=Battle+Cry+Goblin"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F590117%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=795548&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Battle+Cry+Goblin&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

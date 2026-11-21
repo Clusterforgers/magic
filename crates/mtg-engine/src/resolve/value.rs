@@ -525,6 +525,7 @@ impl<'a> Scope<'a> {
                     | TurnTally::DamageDealtTo
                     | TurnTally::CountersPut
                     | TurnTally::UntappedLandsAsTurnBegan
+                    | TurnTally::R115AttackPower
             )
         {
             return Err(ResolveError::Unsupported("Amount.TalliedLastTurn.Kind"));
@@ -568,6 +569,12 @@ impl<'a> Scope<'a> {
                             .copied()
                             .unwrap_or(0)
                     })
+                    .sum();
+                return Ok(i64::from(total));
+            }
+            TurnTally::R115AttackPower => {
+                let total: u32 = (self.players(who)?.into_iter())
+                    .map(|player| self.state.combat.r115_attack_power(player))
                     .sum();
                 return Ok(i64::from(total));
             }

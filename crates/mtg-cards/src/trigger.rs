@@ -1521,6 +1521,11 @@ pub enum ReplaceBy {
         /// copy, with the copied object bound as `copied`: "When you do, tap the copied creature".
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         r707_when_you_do: Vec<crate::effect::Effect>,
+        /// The copy is also chosen as the permanent is turned face up, and it lasts until the permanent is turned face
+        /// down ("As this creature enters or is turned face up, ... until this creature is turned face down, it becomes a
+        /// copy", CR 708.8).
+        #[serde(default, skip_serializing_if = "is_false")]
+        r115_turned_up: bool,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

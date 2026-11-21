@@ -3693,6 +3693,7 @@ impl Pass<'_> {
                 except_if,
                 r109_embalmed,
                 r707_when_you_do,
+                r115_turned_up,
             } => {
                 let embalmed = (!r109_embalmed.is_empty() && self.r109_embalmed(object))
                     .then_some(r109_embalmed.as_slice());
@@ -3711,6 +3712,7 @@ impl Pass<'_> {
                 };
                 if let Some(mut copy) = copy {
                     copy.until_end_of_turn = *until_end_of_turn;
+                    copy.r115_until_face_down = *r115_turned_up;
                     // "Enter tapped as a copy": only the copy is tapped.
                     if *enters_tapped {
                         tapped(self, at);
@@ -4027,6 +4029,7 @@ impl Pass<'_> {
             attached_by: None,
             r6104_while_tapped: None,
             r707_static: None,
+            r115_until_face_down: false,
         })
     }
 

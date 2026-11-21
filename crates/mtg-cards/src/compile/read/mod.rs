@@ -207,6 +207,7 @@ mod r114_02_wholes;
 mod r114_03_wholes;
 mod r114_04_wholes;
 mod r115_01_wholes;
+mod r115_02_wholes;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -889,6 +890,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if let Some(found) = r114_02_wholes::r114_02_whole_read(text) {
         return Some(found);
     }
+    if let Some(found) = r115_02_wholes::r115_02_whole_read(text) {
+        return Some(found);
+    }
     if let Some(found) = r112_03_wholes::r112_03_whole_read(text) {
         return Some(found);
     }
@@ -970,6 +974,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r114_02_wholes::r114_02_read(text, kind) {
+        return Some(found);
+    }
+    if let Some(found) = r115_02_wholes::r115_02_read(text, kind) {
         return Some(found);
     }
     if let Some(found) = r112_03_wholes::r112_03_read(text, kind) {

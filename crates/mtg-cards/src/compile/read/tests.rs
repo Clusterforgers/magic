@@ -1264,6 +1264,7 @@ mod g10d_writers;
 mod g11a_writers;
 mod g12a_writers;
 mod g13d_writers;
+mod r115_pack_tactics;
 mod r376_seats;
 mod r376_secret;
 mod r5508_readers;
