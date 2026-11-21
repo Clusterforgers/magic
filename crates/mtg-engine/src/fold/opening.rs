@@ -29,7 +29,6 @@ fn expect_status(
     }
 }
 
-#[allow(clippy::too_many_lines)]
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::FirstPlayerChosen { player } => {
@@ -85,21 +84,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             player,
             exiled,
             drawn,
-        } => {
-            expect_status(state, *player, MulliganStatus::Deciding)?;
-            for card in exiled {
-                if !state.zones.get(Zone::Hand(*player)).contains(card) {
-                    return Err(invalid("an exiled card is not in the hand"));
-                }
-                super::zones::move_object(state, *card, Zone::Exile, Placement::Top)?;
-            }
-            for card in drawn {
-                if state.zones.get(Zone::Library(*player)).last() != Some(card) {
-                    return Err(invalid("a drawn card is not on top of the library"));
-                }
-                super::zones::move_object(state, *card, Zone::Hand(*player), Placement::Top)?;
-            }
-        }
+        } => r115_hand_exiled(state, *player, exiled, drawn)?,
         Event::MulliganDeclared { player } => {
             expect_status(state, *player, MulliganStatus::Deciding)?;
             player_mut(state, *player)?.mulligan = MulliganStatus::Mulliganing;
@@ -214,6 +199,30 @@ pub(super) fn scried(state: &mut GameState, player: PlayerId) -> Result<(), Engi
         expect_status(state, player, MulliganStatus::Scrying)?;
         let settled = settled(state, player);
         player_mut(state, player)?.mulligan = settled;
+    }
+    Ok(())
+}
+
+/// Folds `R115HandExiled`: the hand of a deciding `player` goes to exile and `drawn` comes off the top of their library
+/// into the hand (Serum Powder, CR 103.5).
+fn r115_hand_exiled(
+    state: &mut GameState,
+    player: PlayerId,
+    exiled: &[ObjectId],
+    drawn: &[ObjectId],
+) -> Result<(), EngineError> {
+    expect_status(state, player, MulliganStatus::Deciding)?;
+    for card in exiled {
+        if !state.zones.get(Zone::Hand(player)).contains(card) {
+            return Err(invalid("an exiled card is not in the hand"));
+        }
+        super::zones::move_object(state, *card, Zone::Exile, Placement::Top)?;
+    }
+    for card in drawn {
+        if state.zones.get(Zone::Library(player)).last() != Some(card) {
+            return Err(invalid("a drawn card is not on top of the library"));
+        }
+        super::zones::move_object(state, *card, Zone::Hand(player), Placement::Top)?;
     }
     Ok(())
 }

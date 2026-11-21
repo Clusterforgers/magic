@@ -581,10 +581,9 @@ impl Pending {
         }
     }
 
-    /// Takes the answer to the decision the announcement waits for.
-    #[allow(clippy::too_many_lines)]
-    pub(crate) fn accept(&mut self, answered: Answered) -> Result<(), EngineError> {
-        let wanted = match answered {
+    /// The step whose question `answered` answers, judged by the step asked.
+    fn answered_step(&self, answered: &Answered) -> Phase {
+        match answered {
             Answered::Modes(_) => Phase::Modes,
             Answered::Way(_) if self.done.asked == Some(Phase::Face) => Phase::Face,
             Answered::Way(_) | Answered::Number(_) | Answered::Assisted(_)
@@ -613,7 +612,12 @@ impl Pending {
             Answered::Costs(_) => Phase::Optional,
             Answered::Division(_) => Phase::Division,
             Answered::Assisted(_) => Phase::Assist,
-        };
+        }
+    }
+
+    /// Takes the answer to the decision the announcement waits for.
+    pub(crate) fn accept(&mut self, answered: Answered) -> Result<(), EngineError> {
+        let wanted = self.answered_step(&answered);
         let costs_again = matches!(answered, Answered::Costs(_)) && self.done.repeated.is_some();
         if self.done.asked != Some(wanted) || costs_again {
             return Err(EngineError::InvalidEvent(
@@ -815,13 +819,34 @@ fn rules_of(
     }
 }
 
+/// The next decision of the special action `special` that `player` takes with `card`, or the events that complete it:
+/// only the payment of its cost is asked.
+fn special_next(
+    state: &GameState,
+    (player, card): (PlayerId, ObjectId),
+    special: Special,
+    choices: &mut Choices,
+    done: &mut Done,
+) -> Next {
+    match special {
+        Special::Suspend => suspend::next(state, player, card, choices, done),
+        Special::Foretell => foretell::next(state, player, card),
+        Special::Plot => plot::next(state, player, card),
+        Special::TurnFaceUp => turn_up::next(state, player, card, choices, done),
+        Special::Companion => companion::next(state, player, card),
+        Special::Unlock(door) => dk1c5_unlock::next(state, player, card, door),
+        Special::EndEffect(effect) => e15g_paid_end::next(state, player, effect),
+        Special::R114PayToDo(effect) => e15g_paid_end::r114_next(state, player, effect),
+        Special::IgnoreEffect => r109_ignore::next(state, player, card, choices, done),
+    }
+}
+
 /// The next decision of a pending cast or activation, or the events that complete it.
 ///
 /// The steps of [`Phase::ORDER`] run in turn, each passing over what it has no question for. A step that cannot be
 /// met (a mode or target specification with nothing to offer, a cost that cannot be paid) rewinds the announcement:
 /// a cast or activation is dropped with no event, and a triggered ability that cannot be given what it needs is
 /// removed (CR 603.3d).
-#[allow(clippy::too_many_lines)]
 pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     let Pending {
         player,
@@ -850,17 +875,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     if let Some(special) = special
         && let What::Spell(card) = what
     {
-        return match special {
-            Special::Suspend => suspend::next(state, *player, *card, choices, done),
-            Special::Foretell => foretell::next(state, *player, *card),
-            Special::Plot => plot::next(state, *player, *card),
-            Special::TurnFaceUp => turn_up::next(state, *player, *card, choices, done),
-            Special::Companion => companion::next(state, *player, *card),
-            Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),
-            Special::EndEffect(effect) => e15g_paid_end::next(state, *player, *effect),
-            Special::R114PayToDo(effect) => e15g_paid_end::r114_next(state, *player, *effect),
-            Special::IgnoreEffect => r109_ignore::next(state, *player, *card, choices, done),
-        };
+        return special_next(state, (*player, *card), *special, choices, done);
     }
     let what: &What = what;
     // The alternative of a cost with a choice is settled before the steps that read the cost.
