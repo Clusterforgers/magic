@@ -132,6 +132,7 @@ const WHACKER: &str = "Vedalken Squirrel-Whacker";
 #[case("Bell Borca, Spectral Sergeant")]
 #[case("Volo, Itinerant Scholar")]
 #[case("Casey & Raph, Hotheads")]
+#[case("Soundwave, Sonic Spy // Soundwave, Superior Captain")]
 fn r113_the_engine_runs_every_card_of_the_pack(#[case] name: &str) {
     let record = mtg_testkit::corpus::corpus()
         .unwrap()

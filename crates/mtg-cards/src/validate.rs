@@ -1010,6 +1010,7 @@ impl<'a> Walker<'a> {
             Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
             }
+            Pred::R113Parity { .. } => self.uses("Pred", "R113Parity"),
             Pred::TotalAtMost { most, .. } => {
                 self.uses("Pred", "TotalAtMost");
                 self.at("most", |w| w.amount(most));

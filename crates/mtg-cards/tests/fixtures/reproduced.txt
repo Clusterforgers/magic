@@ -384,6 +384,7 @@ Carrion Feeder
 Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
+Casey & Raph, Hotheads
 Casey Jones, Back Alley Brute
 Cass, Hand of Vengeance
 Cast Out
@@ -2938,6 +2939,7 @@ Voice of the Blessed
 Voidmage Husher
 Volcanic Offering
 Voldaren Estate
+Volo, Itinerant Scholar
 Volrath's Curse
 Volshe Tideturner
 Volunteer Reserves

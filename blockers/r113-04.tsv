@@ -15,7 +15,6 @@ Vault 11: Voter's Dilemma	Secret votes for up to one creature (Effect::Vote over
 Ertai's Meddling	Exiling a spell with delay counters and putting it back on the stack as a copy of the original spell when the last is removed (CR 702 delay, spell state kept in exile)	OO-misc
 Spy Kit	A characteristic: the equipped creature has all names of nonlegendary creature cards (CR 201.2 name set, a name predicate matching any such name)	OO-misc
 Lightning Storm	Activated abilities of a spell on the stack that any player may activate (CR 113.6) and a change of target as their effect	OO-misc
-Casey & Raph, Hotheads	A duration "until that player's next end step" for a rule begun for a target player (Duration naming a player other than the controller), with Modal.different_players already in place	OO-misc
 Grimoire Thief	Cards exiled face down with the source, turned face up by an effect, and countering spells with the same names as those cards	OO-misc
 Tawnos's Coffin	Linked exile that notes the counters of the exiled creature and its attached Auras and returns them with the noted counters and attached (CR 607)	OO-misc
 Guardian Beast	A conditional static with three rule changes for noncreature artifacts (can't be enchanted without removing Auras, indestructible, others can't gain control)	OO-misc
@@ -27,7 +26,6 @@ Torrent of Lava	Abilities granted to creatures while a spell is on the stack, pr
 Steamflogger Boss	Contraptions: a ReplaceWhen for a Rigger assembling a Contraption (no Contraption deck in the engine)	OO-misc
 Caller of the Untamed	A pre-game reveal and exile of a drafted card; no draft happens, so it stays inert	OO-misc
 Prowl, Stoic Strategist // Prowl, Pursuit Vehicle	Convert as an effect, a trigger on a player playing a card exiled with this, and "the second time this ability has resolved this turn"	OO-trigger
-Soundwave, Sonic Spy // Soundwave, Superior Captain	Convert as an effect and a batch trigger of creature tokens dealing combat damage with the total damage as the mana value read	OO-trigger
 Psychic Battle	A trigger on a player choosing targets, a reveal by every player and a change of target by the highest mana value (CR 115.7)	OO-trigger
 Camouflage	A replacement of the declare blockers step: piles per attacker assigned at random, each creature blocking its pile's attacker if able (CR 509)	PILES
 Wicker Picker	Sticker kicker given to creature spells: the ticket and the sticker put on the spell happen as the cast completes, which needs decisions inside casting (or a ruling that it is a cast trigger); a design decision for the owner	STICKERS

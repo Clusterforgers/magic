@@ -1318,6 +1318,7 @@ const RUNS: &[&str] = &[
     "Pred.LeastAmong",
     "Pred.HasKeywordNamed",
     "Pred.R113HasWay",
+    "Pred.R113Parity",
     "Pred.CounterCount",
     "Pred.Suspended",
     "Pred.Foretold",

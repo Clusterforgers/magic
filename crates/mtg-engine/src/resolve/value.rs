@@ -2373,6 +2373,9 @@ impl<'a> Scope<'a> {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
+            Pred::R113Parity { stat, odd } => {
+                Self::stat(seen, *stat).is_some_and(|value| (value % 2 != 0) == *odd)
+            }
             Pred::Test { left, op, right } => {
                 // The amounts read the object judged as `Ref::Candidate`.
                 let before = self.candidate.replace(Some(reference));

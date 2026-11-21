@@ -542,6 +542,13 @@ pub enum Pred {
         /// The amount compared with.
         to: Amount,
     },
+    /// The characteristic is an odd number, or an even one ("a spell with an odd mana value"); 0 is even.
+    R113Parity {
+        /// The characteristic.
+        stat: StatKind,
+        /// Odd rather than even.
+        odd: bool,
+    },
     /// The objects chosen together have a total of the stat at most the amount ("with total mana value 6 or less"): alone
     /// it holds of an object whose stat is at most the amount, and a search or choice takes no set above it.
     TotalAtMost {

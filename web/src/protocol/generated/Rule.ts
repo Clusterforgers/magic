@@ -183,7 +183,27 @@ by: number,
 /**
  * Only once each turn for the permanent.
  */
-once: boolean, } } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+once: boolean, } } | { "R113NoteExiled": { 
+/**
+ * The permanent with the rule, whose memory holds the notes.
+ */
+source: ObjectRef, } } | { "R113ExchangeRoll": { 
+/**
+ * Whose rolls.
+ */
+players: Array<PlayerId>, 
+/**
+ * The permanent with the rule, whose memory holds the numbers.
+ */
+source: ObjectRef, 
+/**
+ * How many faces the dice have.
+ */
+sides: number, 
+/**
+ * The memory slot.
+ */
+slot: string, } } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
 /**
  * The players.
  */
