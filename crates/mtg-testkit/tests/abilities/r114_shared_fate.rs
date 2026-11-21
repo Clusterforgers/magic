@@ -82,10 +82,7 @@ fn r114_each_player_plays_the_cards_they_exiled(
         .at(3, 0, Step::Main1)
         .battlefield(
             0,
-            [
-                ready(card("Shared Fate").unwrap()),
-                ready(study("Study A")),
-            ],
+            [ready(card("Shared Fate").unwrap()), ready(study("Study A"))],
         )
         .battlefield(1, [ready(study("Study B"))])
         .library(0, [free_creature("Mine", 1, 1), plains()]);
@@ -108,7 +105,11 @@ fn r114_each_player_plays_the_cards_they_exiled(
     let mine = exiled(&driver, "Mine");
     let state = driver.state();
     for seat in 0..seats {
-        assert_eq!(state.may_look_at(pid(seat), taken), seat == 0, "seat {seat}");
+        assert_eq!(
+            state.may_look_at(pid(seat), taken),
+            seat == 0,
+            "seat {seat}"
+        );
         assert_eq!(state.may_look_at(pid(seat), mine), seat == 1, "seat {seat}");
     }
     while driver.decision()?.player != pid(0) {

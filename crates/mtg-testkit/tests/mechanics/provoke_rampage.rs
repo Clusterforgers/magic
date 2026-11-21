@@ -259,7 +259,11 @@ fn enlist_taps_a_free_creature_and_adds_its_power(
         panic!("seat 0 declares attackers");
     };
     let enlister = driver.id_of("Enlister")?;
-    let option = options.attackers.iter().find(|o| o.object == enlister).unwrap();
+    let option = options
+        .attackers
+        .iter()
+        .find(|o| o.object == enlister)
+        .unwrap();
     let mut offered: Vec<String> = option
         .r114_enlist
         .iter()

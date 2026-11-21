@@ -91,6 +91,7 @@ Animate Dead
 Ant-Man, Elusive Avenger
 Apex Altisaur
 Aquastrand Spider
+Aradesh, the Founder
 Arasta of the Endless Web
 Arbor Colossus
 Arboreal Grazer
@@ -1169,6 +1170,7 @@ Gruul Cluestone
 Gruul Ragebeast
 Gryffwing Cavalry
 Guard Gomazoa
+Guardian Angel
 Guardian Archon
 Guardian Augmenter
 Guardian Gladewalker

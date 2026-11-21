@@ -152,6 +152,9 @@ mod tests {
             .map(|n| (id(*n), AttackTarget::Player(PlayerId(1))))
             .collect();
         let enlist: Vec<_> = enlist.iter().map(|(a, b)| (id(*a), id(*b))).collect();
-        assert_eq!(r114_check_enlist(&options(), &attackers, &enlist).is_ok(), ok);
+        assert_eq!(
+            r114_check_enlist(&options(), &attackers, &enlist).is_ok(),
+            ok
+        );
     }
 }

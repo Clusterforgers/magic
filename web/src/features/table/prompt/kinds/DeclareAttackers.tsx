@@ -332,9 +332,7 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   })
   const nextEnlist = (object: ObjectId): void =>
     setEnlistedBy((current) => {
-      const taken = new Set(
-        [...current].filter(([other]) => other !== object).map(([, tapped]) => tapped),
-      )
+      const taken = new Set([...current].filter(([other]) => other !== object).map(([, tapped]) => tapped))
       const open = (offered.get(object)?.r114_enlist ?? []).filter(
         (id) => !declaredIds.includes(id) && !taken.has(id),
       )

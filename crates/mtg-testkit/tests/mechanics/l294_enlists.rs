@@ -47,11 +47,7 @@ fn an_enlist_is_an_event_of_the_enlisting_creature(
     }
     let mut driver = Driver::from_scenario(scenario)?;
     let before = life(&driver, 0);
-    let enlisting: &[(&str, &str)] = if enlist {
-        &[(attacker, "Helper")]
-    } else {
-        &[]
-    };
+    let enlisting: &[(&str, &str)] = if enlist { &[(attacker, "Helper")] } else { &[] };
     r114_play_enlisting(
         &mut driver,
         &[attacker],

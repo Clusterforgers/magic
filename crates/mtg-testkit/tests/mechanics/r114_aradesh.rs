@@ -33,19 +33,37 @@ fn r114_a_creature_that_enlisted_gains_double_strike(
         )
         .library(0, [plains(), plains()]);
     for seat in 1..seats {
-        scenario = scenario.battlefield(seat, vec![ready(free_creature(&format!("Wall {seat}"), 0, 9))]);
+        scenario = scenario.battlefield(
+            seat,
+            vec![ready(free_creature(&format!("Wall {seat}"), 0, 9))],
+        );
     }
     let mut driver = Driver::from_scenario(scenario)?;
     let enlisting: &[(&str, &str)] = if enlist { &[("Brute", "Helper")] } else { &[] };
-    r114_play_enlisting(&mut driver, &["Brute"], enlisting, &|_, _| None, Step::EndCombat)?;
+    r114_play_enlisting(
+        &mut driver,
+        &["Brute"],
+        enlisting,
+        &|_, _| None,
+        Step::EndCombat,
+    )?;
     let brute = driver.id_of("Brute")?;
     let double = mtg_engine::keywords::keywords_of(driver.state(), brute)
         .into_iter()
         .any(|keyword| *keyword == Keyword::DoubleStrike);
     assert_eq!(double, enlist);
-    assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), usize::from(enlist));
+    assert_eq!(
+        driver.state().zone(Zone::Hand(pid(0))).len(),
+        usize::from(enlist)
+    );
     let helper = driver.id_of("Helper")?;
-    let tapped = driver.state().object(helper).unwrap().permanent().unwrap().tapped();
+    let tapped = driver
+        .state()
+        .object(helper)
+        .unwrap()
+        .permanent()
+        .unwrap()
+        .tapped();
     assert_eq!(tapped, enlist);
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());

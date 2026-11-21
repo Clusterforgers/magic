@@ -2315,12 +2315,18 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|(enlisting, _)| *enlisting == reference.id),
             Pred::R114EnlistedBy(named) => {
-                let by: Vec<_> = self.objects(named)?.into_iter().map(|object| object.id).collect();
+                let by: Vec<_> = self
+                    .objects(named)?
+                    .into_iter()
+                    .map(|object| object.id)
+                    .collect();
                 state
                     .combat
                     .r114_enlisted
                     .iter()
-                    .any(|(enlisting, enlisted)| *enlisted == reference.id && by.contains(enlisting))
+                    .any(|(enlisting, enlisted)| {
+                        *enlisted == reference.id && by.contains(enlisting)
+                    })
             }
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
             Pred::DrawnThisTurn => state.object_tallied(reference, None, Tally::Dk26Drawn) > 0,

@@ -88,11 +88,16 @@ fn r114_each_payment_prevents_one_more_to_the_same_target(
     for paid in 0..payments {
         let offers = payable(&driver);
         assert_eq!(offers.len(), 1, "offered again after {paid} payments");
-        driver.answer(Answer::Priority(PriorityAction::R114PayToDo(offers[0].effect)))?;
+        driver.answer(Answer::Priority(PriorityAction::R114PayToDo(
+            offers[0].effect,
+        )))?;
         if matches!(driver.decision()?.kind, DecisionKind::PayMana(_)) {
             driver.answer(Answer::PayMana(PayChoice::Auto))?;
         }
-        assert!(driver.state().stack().is_empty(), "a special action uses no stack");
+        assert!(
+            driver.state().stack().is_empty(),
+            "a special action uses no stack"
+        );
     }
     // Seat 1 is not offered the caster's payments.
     driver.pass()?;

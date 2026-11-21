@@ -183,7 +183,10 @@ export function abilityPlays(
   const ignores = options.ignorable ?? []
   const payments = options.r114_payable ?? []
   const special = specialActions(options)
-  if (seat === null || abilities.length + doors.length + ends.length + ignores.length + payments.length + special.length === 0)
+  if (
+    seat === null ||
+    abilities.length + doors.length + ends.length + ignores.length + payments.length + special.length === 0
+  )
     return NONE
   const found = new Map<ObjectId, Play[]>()
   const add = (id: ObjectId, play: Play): void => {

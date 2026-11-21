@@ -8,7 +8,34 @@
       "oracle_fingerprint": "6a0ee6dec9de43e9fd1374f775c202f9",
       "abilities": [
         { "Keyword": { "Macro": { "name": "enlist", "amount": 0 } } },
-        {"Triggered":{"when":{"Attacks":{"what":[{"Type":"Creature"},{"ControlledBy":"You"}]}},"intervening_if":{"Matches":{"subject":"Triggering","selector":["R114Enlisted"]}},"effects":[{"Continuous":{"affected":"Triggering","mods":[{"AddKeyword":"DoubleStrike"}],"duration":"UntilEndOfTurn"}},{"If":{"condition":{"CountOf":{"subject":"Triggering","selector":[{"Compare":{"stat":"Power","op":"Ge","to":4}}],"op":"Ge","right":1}},"then":[{"Draw":{}}]}}]}}
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "if": { "Matches": { "subject": "Triggering", "selector": ["R114Enlisted"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
       ]
     }
   ]
