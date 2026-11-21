@@ -556,7 +556,9 @@ pub(crate) fn lasts(
         // `UntilEndOfTurnOrRolled` ends with the cleanup step or a roll after its own timestamp (`lasts_by`).
         | Duration::UntilEndOfTurnOrRolled(_)
         // Only a delayed trigger lasts until the end of a named player's next turn (`triggers/delayed.rs`).
-        | Duration::R6700UntilEndOfTheirNextTurn(_) => true,
+        | Duration::R6700UntilEndOfTheirNextTurn(_)
+        // The condition of `R113While` is read by the housekeeping (`ContinuousEffect::ended`), outside the layers.
+        | Duration::R113While(_) => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).
         Duration::UntilEndOfYourNextTurn | Duration::DuringItsControllersNextTurn => {
             state.is_alive(controller)
@@ -810,15 +812,43 @@ impl ContinuousEffect {
     /// Whether the effect still applies in `state`: its duration has not ended and an object it names is still the
     /// object it named. An effect that does not stops applying at once; the `EffectExpired` event only removes it.
     pub fn is_active(&self, state: &GameState) -> bool {
-        !self.ended(state) && self.in_its_turn(state)
+        !self.run_out(state) && self.in_its_turn(state)
     }
 
-    /// Whether the effect has ended for good, so housekeeping removes it: its duration has run out or an object it names
-    /// is gone. An effect that waits for its turn has not ended.
+    /// Whether the effect has ended for good, so housekeeping removes it: its duration has run out, an object it names
+    /// is gone, or the condition it lasts while no longer holds (`Duration::R113While`). An effect that waits for its
+    /// turn has not ended.
     pub fn ended(&self, state: &GameState) -> bool {
+        self.run_out(state) || self.r113_condition_failed(state)
+    }
+
+    /// [`ended`](Self::ended) without reading the condition of `Duration::R113While`: the layers ask this while they
+    /// derive the characteristics the condition reads, so the housekeeping that follows each batch ends it instead.
+    fn run_out(&self, state: &GameState) -> bool {
         !(self.lasts_by(state, &self.duration)
             && !self.spent(state)
             && !self.gives_control_to_a_player_who_left(state))
+    }
+
+    /// Whether the condition of a `Duration::R113While` effect fails for one of the objects it names (CR 611.2b), read
+    /// with that object as `Affected`; a condition that cannot be read fails.
+    fn r113_condition_failed(&self, state: &GameState) -> bool {
+        let Duration::R113While(condition) = &self.duration else {
+            return false;
+        };
+        let Some(source) = self.source else {
+            return true;
+        };
+        let named: &[ObjectRef] = match &self.selector {
+            Selector::Objects(named) => named,
+            Selector::AllCreatures | Selector::CreaturesControlledBy(_) => &[],
+        };
+        named.iter().any(|object| {
+            let flag = std::cell::Cell::new(false);
+            let mut scope = crate::resolve::Scope::announcing(state, self.controller, source);
+            scope.affected = Some((*object, &flag));
+            !scope.holds(condition).unwrap_or(false)
+        })
     }
 
     /// Whether it is the turn the effect applies in: for `DuringItsControllersNextTurn`, the next turn of the player it

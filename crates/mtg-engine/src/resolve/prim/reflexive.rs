@@ -63,6 +63,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         effects,
         targets: targets.clone(),
         bindings,
+        intervening_if: None,
         kept: None,
         origin: from,
     };

@@ -1304,6 +1304,10 @@ describe('events with more than one shape', () => {
       'Hill Giant loses one of its abilities until its controller pays {1} to end it',
     ],
     [
+      effect(objects(2), { SetController: 1 }, { R113While: { All: [] } }),
+      'Hill Giant changes controller for as long as its condition holds',
+    ],
+    [
       effect(objects(2), { SetController: 1 }, 'NextUntapStep'),
       "Hill Giant changes controller through its controller's next untap step",
     ],

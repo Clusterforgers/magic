@@ -279,6 +279,8 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - An attachment that becomes unattached (unattached, moved or leaving) triggers `TriggerPattern::Unattached`, with the permanent it left as the triggering object, judged before the batch.
 - An Aura whose enchant restriction names a graveyard (`Enchant [Creature, In Graveyard]`, Animate Dead) targets a card there and resolves attached to it (`fold_attached`, `host_of` and `legal_host` accept that host for such an Aura only). On the battlefield the rest of its restriction applies; its own trigger returns the card (`Ref::Attached`) and attaches it, and a move to another creature is not refused.
 - An Aura spell announces the one target it enchants (`attach::cast_target`, CR 303.4a), wherever it is cast from: a card cast from face down in exile (Gonti) turns face up as it is cast and targets like any other; only an Aura cast face down targets nothing (CR 708.2a). An Aura with nothing to target is not castable.
+- A delayed trigger may carry an intervening "if" (`Effect::DelayedTrigger.intervening_if`, CR 603.4): `detect::delayed` checks it as the event happens, the resolution checks it again, and its `Target` references are bound as it is set up, as its event's are.
+- The cleanup step ends damage and "until end of turn" effects in a batch of their own before the next turn begins (`steps::wear_off`, CR 514.2), so a "this turn" delayed trigger still sees what their ending does (a lost control) and its trigger gets a round of priority (CR 514.3a).
 
 ## Combat and keywords
 
@@ -324,6 +326,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - Speed (CR 702.179, `speed.rs`): start your engines! gives speed 1 with the state-based actions; an opponent's life loss on the active player's turn marks the once-per-turn rise, given at the next state-based check without the stack; speed stays after the permanent leaves.
 - Layer 7c: number counters change power and toughness, keyword counters grant the keyword. +1/+1 and -1/-1 counters annihilate in pairs (CR 704.5q).
 - Modifiers (`modifiers.rs`): what changes an object now is read off the record of the layers (`Held::applied`) by origin (one static ability, one resolution's effects with their duration, the Ring), with the copy effect and the counters that change power and toughness or give a keyword; it changes nothing and runs no rule a second time, so an ended effect or a failed condition leaves nothing.
+- `Duration::R113While(condition)` (CR 611.2b) lasts while the condition holds with each object of the effect as `Affected`; the layers treat it as lasting and the housekeeping after each batch ends it the first time the condition fails (`ContinuousEffect::ended`), so a condition may read derived power.
 
 ## Control of players and spells
 
@@ -331,6 +334,7 @@ The rules of the data are in [cards-dsl.md](cards-dsl.md) (Triggers, replacement
 - The engine asks the controlled player's decisions as before (`Engine::decision_owned`); `Engine::decision` shows each to its answerer (`player_control::answerer`), so routing by `Decision.player` is unchanged. `ControlSearches` (Opposition Agent) hands over a choice among the player's own library.
 - The controller sees what the controlled player sees (CR 722.3): hand, face-down cards, cards shown and offered (`sight.rs`, `zone_is_visible_in`).
 - Spell control (CR 110.2): a `Continuous` `SetController` naming a stack object logs `SpellControlGained`, so it resolves for the new controller and a permanent spell enters under them; `ChangeTargets` asks the new controller.
+- `NewTargets::R113RandomNotYours` (Chef's Kiss) reselects a single target at random among the legal targets other than the effect's controller and their permanents; each object reselected in one step draws its own substream of the generator. `Pred::R113CopyOf` names the copies of a spell on the stack.
 - `ExileFound` (Opposition Agent) exiles each card a search finds as it is logged (`search.rs`) and gives its controller `MayCast` from exile with `play` and `spend_as: AnyColor`; the step that would have moved the cards finds nothing.
 - Cleave (CR 702.148): `keywords/cleave.rs`; the rule is in [cards-dsl.md](cards-dsl.md) (Keywords).
 - An `{X}` only a cleave, madness, foretell or freerunning cost holds is announced for that cast and is 0 otherwise (CR 107.3b, `ways::r283_keyword_x`).

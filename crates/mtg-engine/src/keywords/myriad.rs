@@ -49,6 +49,7 @@ impl KeywordRules for Myriad {
                             bind: Some(COPIES.to_owned()),
                         },
                         Effect::DelayedTrigger {
+                            intervening_if: None,
                             until: None,
                             when: TriggerPattern::StepBegins {
                                 step: Step::EndCombat,

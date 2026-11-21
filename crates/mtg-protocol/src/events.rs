@@ -1725,6 +1725,7 @@ mod tests {
                 targets: Vec::new(),
                 effects: Vec::new(),
                 bindings: vec![("card".to_owned(), vec![Target::Object(reference)])],
+                intervening_if: None,
                 kept: None,
                 origin: mtg_engine::abilities::AbilitySource::default(),
             }))

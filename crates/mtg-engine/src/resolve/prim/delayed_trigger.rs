@@ -93,6 +93,7 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
 /// next event its pattern describes (`docs/cards-dsl.md`, Triggers, replacement and layers).
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::DelayedTrigger {
+        intervening_if,
         when,
         once,
         this_turn,
@@ -111,6 +112,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         mut bindings,
     } = origin(cx)?;
     let when = name_targets(cx, when, &mut bindings)?;
+    // Its "if" names the targets of this resolution as they are now, as its event does.
+    let intervening_if = intervening_if
+        .as_ref()
+        .map(|condition| name_targets(cx, condition, &mut bindings))
+        .transpose()?;
     let when = r112_fix_chosen(cx, &when)?;
     let state = cx.state();
     // "That combat" is the combat phase added last, fixed as the trigger is set up.
@@ -138,6 +144,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 effects.clone()
             },
             targets: targets.clone(),
+            intervening_if,
             bindings,
             kept: kept(cx, effects),
             origin: from,
@@ -172,18 +179,21 @@ fn kept(cx: &Cx<'_>, effects: &[Effect]) -> Option<Box<KeptSpell>> {
     }))
 }
 
-/// The event pattern with each `Target` it names replaced by a bound name that holds the targets as chosen now: the delayed
+/// The event pattern (or condition) with each `Target` it names replaced by a bound name that holds the targets as chosen now: the delayed
 /// ability has no targets of its own, and "when that creature dies" must keep the creature the spell chose.
-fn name_targets(
+fn name_targets<T: serde::Serialize + serde::de::DeserializeOwned>(
     cx: &Cx<'_>,
-    when: &TriggerPattern,
+    when: &T,
     bindings: &mut Vec<(String, Vec<Target>)>,
-) -> Result<TriggerPattern, ResolveError> {
+) -> Result<T, ResolveError> {
     let bad = |error: serde_json::Error| ResolveError::Invalid(format!("delayed event: {error}"));
     let mut tree = serde_json::to_value(when).map_err(bad)?;
     let mut named = Vec::new();
     rename_targets(&mut tree, &mut named);
     for index in named {
+        if bindings.iter().any(|(name, _)| *name == target_name(index)) {
+            continue;
+        }
         let chosen = cx.scope.refs(&Ref::Target(index))?;
         bindings.push((target_name(index), chosen));
     }

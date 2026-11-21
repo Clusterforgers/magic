@@ -119,7 +119,7 @@ mod tests {
             enters.as_slice(),
             [
                 Effect::Choose { .. },
-                Effect::DelayedTrigger { until: None,
+                Effect::DelayedTrigger { intervening_if: None, until: None,
                     when: TriggerPattern::StepBegins {
                         step: Step::End,
                         ..
