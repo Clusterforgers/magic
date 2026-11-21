@@ -282,6 +282,7 @@ Bloodline Necromancer
 Bloodline Pretender
 Bloom Hulk
 Blossoming Sands
+Blot Out the Sky
 Blue, Loyal Raptor
 Blustersquall
 Body Count
@@ -948,6 +949,7 @@ Fiery Confluence
 Fiery Fall
 Fiery Temper
 Fight Rigging
+Finale of Eternity
 Finch Formation
 Fire-Lit Thicket
 Fireshrieker
@@ -1624,6 +1626,7 @@ Market Gnome
 Maro
 Marrow Chomper
 Marsh Flitter
+Martial Coup
 Martyr of Dusk
 Marvo, Deep Operative
 Marwyn, the Nurturer
@@ -2198,6 +2201,7 @@ Rob the Archives
 Rocksteady, Mutant Marauder
 Rogue Refiner
 Rogue's Passage
+Roku's Mastery
 Root Sliver
 Rootborn Defenses
 Rootcast Apprenticeship
@@ -2553,6 +2557,7 @@ Sublime Epiphany
 Sublime Exhalation
 Submerged Boneyard
 Subterranean Schooner
+Subterranean Tremors
 Sudden Death
 Sudden Edict
 Sudden Shock

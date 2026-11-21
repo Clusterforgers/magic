@@ -86,6 +86,9 @@ fn condition(r: &mut Reader<'_>) -> Option<Condition> {
     if let Some(paid) = r.attempt(|r| triggers::cost_paid(r, true)) {
         return Some(paid);
     }
+    if let Some(announced) = r.attempt(announced) {
+        return Some(announced);
+    }
     r.need("there are")?;
     let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
     let op = if r.words("or more") {
@@ -106,6 +109,24 @@ fn condition(r: &mut Reader<'_>) -> Option<Condition> {
             on: Ref::This,
             counter,
         },
+        op,
+        right: Amount::Fixed(i32::try_from(number).ok()?),
+    })
+}
+
+/// "X is 5 or more", "X is five or less": the X the spell or ability announced against a number (Martial Coup).
+fn announced(r: &mut Reader<'_>) -> Option<Condition> {
+    (r.x_free && r.word("x")).then_some(())?;
+    r.need("is")?;
+    let number = super::facts::quantity(r)?;
+    let op = if r.words("or more") {
+        Cmp::Ge
+    } else {
+        r.need("or less")?;
+        Cmp::Le
+    };
+    Some(Condition::Compare {
+        left: Amount::X,
         op,
         right: Amount::Fixed(i32::try_from(number).ok()?),
     })
