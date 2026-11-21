@@ -1117,6 +1117,10 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), { AddKeyword: { Ward: '{2}' } }, 'Forever'), 'Hill Giant gains ward'],
     [
+      effect(objects(2, 3), 'R612ExchangeTextBoxes', 'Forever'),
+      'Hill Giant and Forest exchange their text boxes',
+    ],
+    [
       effect(objects(2), { AddKeywords: ['Flying', 'Trample'] }, 'Forever'),
       'Hill Giant gains flying and trample',
     ],

@@ -1447,6 +1447,14 @@ pub enum ReplaceBy {
     /// and it enters attached to that permanent (CR 301.5, 614.12): "As this Equipment enters, choose a creature you
     /// control it could be attached to. If you do, it enters attached to that creature." Only `Enters` of itself.
     R109EntersAttached(Selector),
+    /// As the permanent enters, its controller may choose another permanent the selector names, and the two exchange their
+    /// text boxes for good (CR 612.1, 614.1c): "As Deadpool enters, you may exchange his text box and another creature's."
+    /// Only `Enters` of itself.
+    R612MayExchangeTextBoxes(Selector),
+    /// As the permanent transforms into this face, an Aura with enchant player, its controller attaches it to a player of
+    /// their choice (CR 303.4f, 701.28, 614.1c): "As this permanent transforms into ~, attach it to a player." Only
+    /// `R6603Transforms` of itself.
+    R6603AttachToPlayer,
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),
@@ -1501,6 +1509,10 @@ pub enum ReplaceBy {
         /// Zombie in addition to its other types").
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         r109_embalmed: Vec<Modification>,
+        /// The steps of a reflexive trigger ("When you do, ...", CR 603.12) that triggers once the permanent entered as a
+        /// copy, with the copied object bound as `copied`: "When you do, tap the copied creature".
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r707_when_you_do: Vec<crate::effect::Effect>,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

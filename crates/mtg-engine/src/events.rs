@@ -1056,6 +1056,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         r6104_tapped: Option<ObjectRef>,
+        /// The permanent whose static ability made the copy ("enchanted creature is a copy of ...", `R707CopyOf`).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        r707_static: Option<ObjectRef>,
     },
     /// A player became the monarch (CR 724).
     MonarchChanged {

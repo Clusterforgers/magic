@@ -174,7 +174,9 @@ impl Gives {
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => GivenRule::ChangeTypes,
             Modification::SetColors(_) | Modification::AddColors(_) => GivenRule::SetColors,
-            Modification::ChangeText { .. } => GivenRule::ChangeText,
+            Modification::ChangeText { .. }
+            | Modification::R612ExchangeTextBoxes
+            | Modification::R612TextBoxOf(_) => GivenRule::ChangeText,
             Modification::Goaded { .. } => GivenRule::Goaded,
         };
         self.rule(rule);

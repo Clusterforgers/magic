@@ -249,6 +249,8 @@ fn add(phrase: &mut Phrase, modification: &Modification, host: &str) {
         Modification::LoseAbility(_) => "Loses an ability".to_owned(),
         Modification::SetController(_) => "Control changed".to_owned(),
         Modification::ChangeText { from, to } => format!("Text changed: {from:?} to {to:?}"),
+        Modification::R612ExchangeTextBoxes => "Text box exchanged".to_owned(),
+        Modification::R612TextBoxOf(_) => "Has the text box of another creature".to_owned(),
         Modification::AddType(card_type) => format!("Is also {card_type:?}"),
         Modification::RemoveType(card_type) => format!("Is not {card_type:?}"),
         Modification::SetTypes(types) => {

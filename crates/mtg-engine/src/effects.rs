@@ -95,6 +95,19 @@ impl Selector {
     }
 }
 
+/// The text box an object takes from another (`Modification::R612TextBoxOf`).
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct R612TextBox {
+    /// The object whose text box it is.
+    pub donor: ObjectId,
+    /// The abilities its rules text holds, each with its index among the rules of the donor's card; a keyword among them
+    /// is given as a keyword.
+    pub given: Vec<Borrowed>,
+    /// Its plain mana abilities.
+    pub mana: Vec<mtg_cards::definition::AbilityDef>,
+}
+
 /// An activated ability of another object, which an object has (`Modification::GainAbilities`).
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -187,6 +200,13 @@ pub enum Modification {
         /// The word written.
         to: crate::text_change::TextWord,
     },
+    /// The two objects the effect changes exchange their text boxes (layer 3, CR 612.1): each takes the rules text the
+    /// other's copiable values give it, worked out as the layer applies (`R612TextBoxOf`); with any other number of
+    /// objects it changes nothing.
+    R612ExchangeTextBoxes,
+    /// The object's text box is the one the donor's copiable values give (layer 3, CR 612.1): its own printed abilities,
+    /// keywords and plain mana abilities give way to the donor's. Worked out from `R612ExchangeTextBoxes` by the layers.
+    R612TextBoxOf(R612TextBox),
     /// Sets power and toughness (layer 7b).
     SetPowerToughness {
         /// New power.
@@ -308,6 +328,8 @@ impl Modification {
         Some(match self {
             Modification::SetController(_) => Layer::Control,
             Modification::ChangeText { .. }
+            | Modification::R612ExchangeTextBoxes
+            | Modification::R612TextBoxOf(_)
             | Modification::AddNameWords(_)
             | Modification::SetName(_) => Layer::Text,
             Modification::AddType(_)
@@ -362,15 +384,7 @@ impl Modification {
             Modification::SetName(name) => chars.set_name(name),
             Modification::AddType(ty) => chars.types = chars.types.with(*ty),
             Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
-            Modification::SetTypes(types) => {
-                chars.types = *types;
-                // A creature type needs the type it is a type of (CR 205.3d): the printed ones stop counting too.
-                if !types.contains(CardType::Creature) && !types.contains(CardType::Kindred) {
-                    chars.subtypes.retain(|subtype| !subtype.is_creature_type());
-                    chars.all_creature_types = false;
-                    chars.creature_types_set = true;
-                }
-            }
+            Modification::SetTypes(types) => set_types(chars, *types),
             Modification::AddSupertype(supertype) => {
                 if !chars.supertypes.contains(supertype) {
                     chars.supertypes.push(*supertype);
@@ -387,27 +401,8 @@ impl Modification {
                     chars.subtypes.push(subtype.clone());
                 }
             }
-            Modification::SetCreatureTypes(types) => {
-                chars.subtypes.retain(|subtype| !subtype.is_creature_type());
-                chars.all_creature_types = false;
-                chars.creature_types_set = true;
-                for subtype in types {
-                    if !chars.subtypes.contains(subtype) {
-                        chars.subtypes.push(subtype.clone());
-                    }
-                }
-            }
-            Modification::SetLandTypes(types) => {
-                chars.subtypes.retain(|subtype| !is_land_type(subtype));
-                chars.land_types_set = true;
-                for subtype in types {
-                    if !chars.subtypes.contains(subtype) {
-                        chars.subtypes.push(subtype.clone());
-                    }
-                }
-                // The intrinsic mana abilities of the new types come back once the layer is through (`land_types::sync`).
-                chars.abilities.clear();
-            }
+            Modification::SetCreatureTypes(types) => set_creature_types(chars, types),
+            Modification::SetLandTypes(types) => set_land_types(chars, types),
             Modification::AddAllCreatureTypes => chars.all_creature_types = true,
             Modification::ChangeText { from, to } => {
                 crate::text_change::subtypes(&mut chars.subtypes, from, to);
@@ -419,6 +414,7 @@ impl Modification {
                     .fold(chars.colors, mtg_core::color::ColorSet::with);
             }
             Modification::LoseAbilities => chars.abilities.clear(),
+            Modification::R612TextBoxOf(text) => chars.abilities.clone_from(&text.mana),
             Modification::SetPowerToughness { power, toughness } => {
                 chars.power = Some(*power);
                 chars.toughness = Some(*toughness);
@@ -435,6 +431,7 @@ impl Modification {
             // restrictions the same way.
             // The controller is walked with the characteristics (`characteristics::walk`).
             Modification::SetController(_)
+            | Modification::R612ExchangeTextBoxes
             | Modification::AddKeyword(_)
             | Modification::AddKeywords(_)
             | Modification::RemoveKeyword(_)
@@ -479,6 +476,42 @@ const CARD_TYPES: [CardType; 9] = [
     CardType::Planeswalker,
     CardType::Sorcery,
 ];
+
+/// Makes `types` the card types (layer 4); a creature type needs the type it is a type of (CR 205.3d), so the printed
+/// ones stop counting too.
+fn set_types(chars: &mut Characteristics, types: CardTypes) {
+    chars.types = types;
+    if !types.contains(CardType::Creature) && !types.contains(CardType::Kindred) {
+        chars.subtypes.retain(|subtype| !subtype.is_creature_type());
+        chars.all_creature_types = false;
+        chars.creature_types_set = true;
+    }
+}
+
+/// Makes `types` the only creature types (layer 4).
+fn set_creature_types(chars: &mut Characteristics, types: &[Subtype]) {
+    chars.subtypes.retain(|subtype| !subtype.is_creature_type());
+    chars.all_creature_types = false;
+    chars.creature_types_set = true;
+    for subtype in types {
+        if !chars.subtypes.contains(subtype) {
+            chars.subtypes.push(subtype.clone());
+        }
+    }
+}
+
+/// Makes `types` the only land types (layer 4); the intrinsic mana abilities of the new types come back once the layer
+/// is through (`land_types::sync`).
+fn set_land_types(chars: &mut Characteristics, types: &[Subtype]) {
+    chars.subtypes.retain(|subtype| !is_land_type(subtype));
+    chars.land_types_set = true;
+    for subtype in types {
+        if !chars.subtypes.contains(subtype) {
+            chars.subtypes.push(subtype.clone());
+        }
+    }
+    chars.abilities.clear();
+}
 
 /// `types` without `ty`.
 pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {

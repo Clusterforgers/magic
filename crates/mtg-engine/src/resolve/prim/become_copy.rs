@@ -119,6 +119,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     until_next_turn_of,
                     attached_by,
                     r6104_while_tapped: (*duration == Duration::WhileTapped).then_some(original),
+                    r707_static: None,
                 }));
             }
         }

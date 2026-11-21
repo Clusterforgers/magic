@@ -57,7 +57,10 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
         // The land loses its abilities with its land types; a text change rewrites the rules, the keywords and the
         // subtypes.
-        Modification::SetLandTypes(_) | Modification::ChangeText { .. } => Traits::SUBTYPES
+        Modification::SetLandTypes(_)
+        | Modification::ChangeText { .. }
+        | Modification::R612ExchangeTextBoxes
+        | Modification::R612TextBoxOf(_) => Traits::SUBTYPES
             .or(Traits::KEYWORDS)
             .or(Traits::RULES)
             .or(Traits::ACTIVATED),
@@ -121,7 +124,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypesNthChosen(_)
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
-        | Wanted::ChangeTextChosenTo { .. } => Traits::SUBTYPES
+        | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::R612ExchangeTextBoxes => Traits::SUBTYPES
             .or(Traits::KEYWORDS)
             .or(Traits::RULES)
             .or(Traits::ACTIVATED),
@@ -154,7 +158,9 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(_)
         | Wanted::ModifyPT { .. }
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
-        Wanted::SetName(_)
+        // A static copy is no part of the layers: housekeeping begins and ends it (`r707_static_copies`).
+        Wanted::R707CopyOf { .. }
+        | Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
@@ -200,7 +206,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
         }
-        Wanted::SwitchPT
+        Wanted::R707CopyOf { .. }
+        | Wanted::SwitchPT
         | Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)
@@ -219,6 +226,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
         | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::R612ExchangeTextBoxes
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
