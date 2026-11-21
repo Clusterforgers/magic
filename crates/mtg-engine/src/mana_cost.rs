@@ -13,6 +13,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType};
 
 use crate::error::PaymentError;
@@ -477,6 +478,8 @@ struct Planner<'a> {
     forced: &'a Forced<'a>,
     /// The groups that matter to more than one stage: sources that cost mana or add restricted mana.
     special: Vec<usize>,
+    /// By place in `special`, the bit of the special group before it that is alike, which a plan uses first.
+    twins: Vec<u64>,
     /// How many options there are, for the weight of a plan.
     all: u32,
 }
@@ -488,6 +491,24 @@ impl Planner<'_> {
             .iter()
             .position(|g| *g == group)
             .map(|n| 1u64 << n)
+    }
+
+    /// Whether a plan of `mask` may use the special group of `bit`: the one alike before it is used already. Permanents
+    /// alike are used in turn, so the plans do not multiply with which of them is used.
+    fn in_turn(&self, mask: u64, bit: u64) -> bool {
+        let place = bit.trailing_zeros() as usize;
+        self.twins
+            .get(place)
+            .is_none_or(|twin| mask & twin == *twin)
+    }
+
+    /// The bits of the special groups that have an option of `class`.
+    fn bits_of(&self, class: Class) -> u64 {
+        self.special
+            .iter()
+            .enumerate()
+            .filter(|(_, g)| self.groups[**g].iter().any(|o| class_of(o) == class))
+            .fold(0, |bits, (at, _)| bits | (1u64 << at))
     }
 
     /// The group that has `source`.
@@ -551,6 +572,9 @@ impl Planner<'_> {
                 if class == Class::Plain && bit.is_some_and(|bit| mask & bit != 0) {
                     continue;
                 }
+                if class == Class::Restricted && bit.is_some_and(|bit| !self.in_turn(*mask, bit)) {
+                    continue;
+                }
                 for option in group {
                     if class_of(option) != class
                         || self.pinned(at).is_some_and(|tap| option.source != *tap)
@@ -590,7 +614,7 @@ impl Planner<'_> {
                     let Some(bit) = self.bit_of(group) else {
                         continue;
                     };
-                    if mask & bit != 0 {
+                    if mask & bit != 0 || !self.in_turn(*mask, bit) {
                         continue;
                     }
                     for option in &self.groups[group] {
@@ -680,10 +704,12 @@ fn plan(
         .map(|(at, _)| at)
         .take(64)
         .collect();
+    let twins = twins_of(groups, &special, forced);
     let planner = Planner {
         groups,
         forced,
         special,
+        twins,
         all: u32::try_from(groups.iter().map(Vec::len).sum::<usize>()).unwrap_or(u32::MAX),
     };
 
@@ -698,6 +724,11 @@ fn plan(
         },
     );
     best = planner.free_stage(best, Class::Restricted);
+    // A group that adds restricted mana only is not used again by a later stage: plans that differ in it are one.
+    best = merged(
+        best,
+        planner.bits_of(Class::Costly) | planner.bits_of(Class::Plain),
+    );
 
     let mut must_mask = 0u64;
     let mut forced_costly = 0;
@@ -716,6 +747,7 @@ fn plan(
 
     // Floating mana without a restriction, then the sources that cost nothing.
     let forced_pool = counts(forced.pool);
+    let plain_bits = planner.bits_of(Class::Plain);
     let mut stage = Plans::new();
     for ((mask, needs, left), plan) in best {
         let Some(((needs, left), used)) =
@@ -723,7 +755,9 @@ fn plan(
         else {
             continue;
         };
-        let key = (mask, needs, left);
+        // From here on a plan only needs to know which used groups could still be used for plain mana: plans that
+        // differ in the rest are one, so a crowded board of Signets and filter lands does not multiply them.
+        let key = (mask & plain_bits, needs, left);
         if stage.get(&key).is_none_or(|kept| plan.weight < kept.weight) {
             stage.insert(key, Plan { pool: used, ..plan });
         }
@@ -850,6 +884,10 @@ fn exhaustive(
         payment: Payment,
         best: Option<Found>,
         budget: usize,
+        /// The most units a way to pay the cost asks.
+        most: usize,
+        /// By candidate, how far the permanents from it on can lower the pieces against what they pay.
+        drops: Vec<usize>,
     }
     impl Walk<'_> {
         fn visit(&mut self, from: usize) {
@@ -857,6 +895,17 @@ fn exhaustive(
                 return;
             }
             self.budget -= 1;
+            // Each part of a payment with nothing to spare puts at least one of its mana to use, on the cost or on a
+            // source's own cost, so a payment of more parts than that can never be one, whatever joins it.
+            let parts =
+                self.payment.pool.len() + self.payment.restricted.len() + self.payment.taps.len();
+            let fed: usize = taps_of(&self.payment, self.sources)
+                .iter()
+                .map(|o| o.cost.mana_value() as usize)
+                .sum();
+            if parts.saturating_sub(fed + self.drops.get(from).copied().unwrap_or(0)) > self.most {
+                return;
+            }
             if is_covered(self.cost, &self.payment, self.sources) {
                 // Anything added to a payment that covers the cost is a part to spare.
                 if spent(self.cost, &self.payment, self.sources).is_ok() {
@@ -874,7 +923,16 @@ fn exhaustive(
                 }
                 return;
             }
+            // Of permanents alike only the first one left is tried: a payment the next one makes, the first makes too.
+            let mut tried: Vec<Vec<ManaOption>> = Vec::new();
             for at in from..self.candidates.len() {
+                if let Candidate::Permanent(options) = &self.candidates[at] {
+                    let kind = alike(options);
+                    if tried.contains(&kind) {
+                        continue;
+                    }
+                    tried.push(kind);
+                }
                 match &self.candidates[at] {
                     Candidate::Pool(mana, available) => {
                         let (mana, available) = (*mana, *available);
@@ -901,6 +959,37 @@ fn exhaustive(
             }
         }
     }
+    let candidates = candidates_of(pool, groups, forced);
+    let mut walk = Walk {
+        most: asks(cost)
+            .iter()
+            .map(|ask| (total(&ask.typed) + ask.any) as usize)
+            .max()
+            .unwrap_or(0),
+        drops: drops_of(&candidates),
+        cost,
+        sources,
+        candidates,
+        payment: Payment {
+            pool: forced.pool.to_vec(),
+            restricted: forced.restricted.to_vec(),
+            taps: forced.taps.to_vec(),
+            ..Payment::default()
+        },
+        best: None,
+        budget: SEARCH_BUDGET,
+    };
+    walk.visit(0);
+    walk.best.map(|(_, payment)| payment)
+}
+
+/// What [`exhaustive`] may add to the parts in `forced`: the floating mana of each type, the restricted units not
+/// given, and each permanent not tapped yet.
+fn candidates_of<'a>(
+    pool: &'a Floating,
+    groups: &'a [Vec<ManaOption>],
+    forced: &Forced<'_>,
+) -> Vec<Candidate<'a>> {
     let free = pool.free_counts();
     let mut candidates: Vec<Candidate<'_>> = Vec::new();
     for mana in ManaType::ALL {
@@ -927,21 +1016,78 @@ fn exhaustive(
             })
             .map(|group| Candidate::Permanent(group)),
     );
-    let mut walk = Walk {
-        cost,
-        sources,
-        candidates,
-        payment: Payment {
-            pool: forced.pool.to_vec(),
-            restricted: forced.restricted.to_vec(),
-            taps: forced.taps.to_vec(),
-            ..Payment::default()
-        },
-        best: None,
-        budget: SEARCH_BUDGET,
+    candidates
+}
+
+/// By candidate of [`exhaustive`], how far the permanents from it on can lower the parts of a payment against the mana
+/// they put to use: one less than the most a source's own cost takes, for each.
+fn drops_of(candidates: &[Candidate<'_>]) -> Vec<usize> {
+    let mut drops = vec![0; candidates.len() + 1];
+    for at in (0..candidates.len()).rev() {
+        let drop = match &candidates[at] {
+            Candidate::Permanent(options) => options
+                .iter()
+                .map(|o| (o.cost.mana_value() as usize).saturating_sub(1))
+                .max()
+                .unwrap_or(0),
+            _ => 0,
+        };
+        drops[at] = drops[at + 1] + drop;
+    }
+    drops
+}
+
+/// `plans` with only the bits of `keep` left in their masks, the lighter of two plans that become one kept.
+fn merged(plans: Plans, keep: u64) -> Plans {
+    let mut kept = Plans::new();
+    for ((mask, needs, left), plan) in plans {
+        let key = (mask & keep, needs, left);
+        if kept.get(&key).is_none_or(|held| plan.weight < held.weight) {
+            kept.insert(key, plan);
+        }
+    }
+    kept
+}
+
+/// By place in `special`, the bit of the last special group before it with the same options (0 for none); a group a
+/// source of `forced` pins is alike no other.
+fn twins_of(groups: &[Vec<ManaOption>], special: &[usize], forced: &Forced<'_>) -> Vec<u64> {
+    let pinned = |group: &[ManaOption]| {
+        group
+            .iter()
+            .any(|o| forced.taps.iter().any(|tap| tap.object == o.source.object))
     };
-    walk.visit(0);
-    walk.best.map(|(_, payment)| payment)
+    let kinds: Vec<Option<Vec<ManaOption>>> = special
+        .iter()
+        .map(|&g| (!pinned(&groups[g])).then(|| alike(&groups[g])))
+        .collect();
+    kinds
+        .iter()
+        .enumerate()
+        .map(|(at, kind)| {
+            kind.as_ref()
+                .and_then(|kind| {
+                    (0..at)
+                        .rev()
+                        .find(|&before| kinds[before].as_ref() == Some(kind))
+                })
+                .map_or(0, |before| 1u64 << before)
+        })
+        .collect()
+}
+
+/// What tells a permanent's options apart in a payment: everything but the object, so permanents alike pay alike.
+fn alike(options: &[ManaOption]) -> Vec<ManaOption> {
+    options
+        .iter()
+        .map(|o| ManaOption {
+            source: ManaSource {
+                object: ObjectId(0),
+                ability: o.source.ability,
+            },
+            ..o.clone()
+        })
+        .collect()
 }
 
 /// Whether the parts of `payment` have an order that covers the plain `cost`.

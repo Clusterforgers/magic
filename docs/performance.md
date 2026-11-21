@@ -50,3 +50,20 @@ How bot thinking shares the server with requests, sockets and the database.
 | A game whose person left, bots playing | never closed | closed after 15 min |
 
 In memory and with small boards the requests stay fast either way: the stall came from crowded boards and slow `COMMIT`s, which the clock adherence and the published status address.
+
+## Paying on a crowded board
+
+How long the pay step takes with many mana sources: `mana_scale_tests.rs` (engine, 60 and 120 sources of every kind) and `paymentScale.test.tsx` and `e2e/pay-crowd.spec.ts` (client, `?prompt=pay-crowd` and `pay-crowd-120`) hold the bounds.
+
+- Causes found: the client asked for every source whether the payment could still be finished, each a depth-first search of up to 4,000 payments that tried permanents alike one by one and, with a source that costs mana on the board, never stopped a branch for waste; the engine's affordability check, run for every card in hand at each priority, planned with a mask over every source that costs mana or adds restricted mana, so the plans multiplied with Signets, filter lands, Cabal Coffers, snow and creature-only lands.
+- Fixes: permanents alike are one choice in every search; a payment stops growing once it has more parts than mana to put to use; the client tries the greedy payment first, keeps its answers for the decision, caches the mana a payment leaves, adds at most four sources that cost mana (as the engine does) and gives the benefit of the doubt after 60 payments; a payment that covers the cost offers only what keeps it covered; the engine answers affordability from the sources of one mana first, drops from the plans' masks what no later stage reads, and refuses at once a cost above everything the sources make.
+
+| Measure | Before | After |
+| --- | --- | --- |
+| Engine `can_afford`, 40 sources, {3}{G}{G} (release) | 13.6 s | 49 µs |
+| Engine `can_afford`, 60 sources, {3}{G}{G} (release) | 1,442 s | 47 µs |
+| Engine `can_afford`, 120 sources, worst cost ({90}{B}, most rocks needed) | did not finish | 0.68 s |
+| Client: sources that fit, empty payment, 10 sources | 19 s | 10 ms |
+| Client: the same, 20 to 120 sources | over 14 min | 9 to 14 ms |
+| Client: the whole prompt's checks for one state, 60 sources | over 25 min | under 0.85 s |
+| Browser: `pay-crowd` pay step opens (2 and 4 seats, 1400 and 390 wide) | not measured | under 1 s |
