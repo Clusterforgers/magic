@@ -37,7 +37,7 @@ use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 pub(crate) use inline::{
-    Inline, r304_run_then_count, r370_run_instead_bound, run_inline, w5d_run_instead,
+    Inline, R114Replaced, r304_run_then_count, r370_run_instead_bound, run_inline, w5d_run_instead,
 };
 pub use left::LeftToTable;
 pub(crate) use prim::{first_step_done, lower};

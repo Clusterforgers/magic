@@ -30,6 +30,19 @@ pub(crate) enum Inline {
 /// The answers given so far to the questions of effects run inline, in the order they were asked.
 pub(crate) type Answers<'a> = &'a mut dyn FnMut() -> Option<(PlayerId, Choice)>;
 
+/// What the other replacement effects made of the events of one step of an inline run.
+pub(crate) enum R114Replaced {
+    /// The events that happen in place of the step's.
+    Events(Vec<Event>),
+    /// A player has to answer first.
+    Ask(Decision),
+}
+
+/// Passes the draws one step of a replacement's run makes through the other replacement effects, in the state the steps
+/// before it leave: "draw a card, then reveal it" reveals only a card that was drawn (CR 614.6, 121.6).
+pub(crate) type R114Replace<'a> =
+    &'a mut dyn FnMut(&GameState, Vec<Event>) -> Result<R114Replaced, ResolveError>;
+
 /// The events of `effects` run now for `player` as the controller of `source`, each as the effect proposes it.
 ///
 /// An effect that needs an answer is an error: a mana ability asks nobody anything (CR 605.3b).
@@ -44,7 +57,7 @@ pub(crate) fn run_inline(
         player,
         source: source.reference(),
     };
-    match drive(&base, source.id, effects, &mut || None, (None, &[]))?.0 {
+    match drive(&base, source.id, effects, &mut || None, (None, &[]), None)?.0 {
         Inline::Events(events) => Ok(events),
         Inline::Declined => Ok(Vec::new()),
         Inline::Ask(_) => Err(ResolveError::Invalid(
@@ -58,6 +71,7 @@ pub(crate) fn run_inline(
 ///
 /// A question is asked of the player the effect names, the controller of the replacement by default (CR 614.1, 616):
 /// `answer` gives the answers so far in order, and the first question left without one comes back as `Inline::Ask`.
+/// `replace` passes the draws of a step through the other replacement effects before the steps after it run (CR 614.6).
 pub(crate) fn w5d_run_instead(
     state: &GameState,
     player: PlayerId,
@@ -65,6 +79,7 @@ pub(crate) fn w5d_run_instead(
     cause: &Cause,
     effects: &[Effect],
     answer: Answers<'_>,
+    replace: Option<R114Replace<'_>>,
 ) -> Result<Inline, ResolveError> {
     let base = Base::Instead {
         state,
@@ -72,7 +87,7 @@ pub(crate) fn w5d_run_instead(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer, (None, &[])).map(|(ran, _)| ran)
+    drive(&base, source.id, effects, answer, (None, &[]), replace).map(|(ran, _)| ran)
 }
 
 /// `w5d_run_instead` with names bound before the first step: the targets a damage shield fixed as it began.
@@ -90,7 +105,7 @@ pub(crate) fn r370_run_instead_bound(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer, (None, bound)).map(|(ran, _)| ran)
+    drive(&base, source.id, effects, answer, (None, bound), None).map(|(ran, _)| ran)
 }
 
 /// [`w5d_run_instead`] that also works out `count` once the effects have run, in the scope their steps leave (the names
@@ -109,7 +124,7 @@ pub(crate) fn r304_run_then_count(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer, (Some(count), &[]))
+    drive(&base, source.id, effects, answer, (Some(count), &[]), None)
 }
 
 /// Runs the effect tree from its first effect to its end: a question takes the next answer and runs the step again, and
@@ -127,6 +142,7 @@ fn drive(
         Option<&mtg_cards::value::Amount>,
         &[(String, Vec<crate::choose::Target>)],
     ),
+    mut replace: Option<R114Replace<'_>>,
 ) -> Result<(Inline, i64), ResolveError> {
     let mut resolving = Resolving::begin(object);
     resolving.bindings.extend(bound.iter().cloned());
@@ -153,7 +169,7 @@ fn drive(
             }
             Run::Done {
                 events: made,
-                bound,
+                mut bound,
                 snapshots,
                 next,
             } => {
@@ -163,6 +179,18 @@ fn drive(
                             .into(),
                     ));
                 }
+                let made = match replace.as_mut() {
+                    Some(replace) if r114_draws(effect, &made) => {
+                        match replace(after.as_ref().unwrap_or_else(|| base.state()), made)? {
+                            R114Replaced::Events(replaced) => {
+                                r114_rebind(&mut bound, &replaced);
+                                replaced
+                            }
+                            R114Replaced::Ask(decision) => return Ok((Inline::Ask(decision), 0)),
+                        }
+                    }
+                    _ => made,
+                };
                 if resolving.position == START
                     && next == Next::Sibling
                     && matches!(effects, [Effect::May { .. }])
@@ -304,5 +332,34 @@ fn still_there(event: Event, moved: &std::collections::BTreeSet<ObjectId>) -> Op
             })
         }
         other => Some(other),
+    }
+}
+
+/// Whether the step is a draw whose events the other replacement effects see before the steps after it run.
+fn r114_draws(effect: &Effect, events: &[Event]) -> bool {
+    matches!(effect, Effect::Draw { .. })
+        && events.iter().any(|event| {
+            matches!(
+                event,
+                Event::CardDrawn { .. } | Event::DrewFromEmptyLibrary { .. }
+            )
+        })
+}
+
+/// The names a draw step bound keep only the cards that were drawn once the other replacement effects had their way: a card
+/// a replacement put elsewhere was never drawn, so "reveal it" finds nothing (CR 614.6).
+fn r114_rebind(bound: &mut [(String, Vec<crate::choose::Target>)], events: &[Event]) {
+    let drawn: Vec<ObjectId> = events
+        .iter()
+        .filter_map(|event| match event {
+            Event::CardDrawn { object, .. } => Some(*object),
+            _ => None,
+        })
+        .collect();
+    for (_, targets) in bound.iter_mut() {
+        targets.retain(|target| match target {
+            crate::choose::Target::Object(object) => drawn.contains(&object.id),
+            crate::choose::Target::Player(_) => true,
+        });
     }
 }

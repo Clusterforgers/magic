@@ -3952,9 +3952,11 @@ impl<'a> Scope<'a> {
             Condition::Compare { left, op, right } => {
                 op.holds(self.amount(left)?, self.amount(right)?)
             }
+            // No object has the characteristics: "if it's a creature card" of a card never drawn is false (CR 614.6).
             Condition::Matches { subject, selector } => {
-                self.count_of(subject, selector)?
-                    == i64::try_from(self.objects(subject)?.len()).unwrap_or(i64::MAX)
+                let named = self.objects(subject)?.len();
+                named > 0
+                    && self.count_of(subject, selector)? == i64::try_from(named).unwrap_or(i64::MAX)
             }
             Condition::AtTrigger(inner) => self.holds(inner)?,
             Condition::DamagedThisGameBy { by, combat } => {
