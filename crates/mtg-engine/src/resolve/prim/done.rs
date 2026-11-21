@@ -167,7 +167,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Balance { .. }
         | Effect::Planechase { .. }
         | Effect::Reattack { .. }
-        | Effect::R112RollStore { .. } => Reports::Events,
+        | Effect::R112RollStore { .. }
+        | Effect::R114StoreValue { .. } => Reports::Events,
         Effect::Pay { .. } => Reports::Paid,
         Effect::May { .. }
         | Effect::CastFromZone { .. }

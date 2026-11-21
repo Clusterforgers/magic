@@ -92,6 +92,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     // Mana that may be spent only on the chosen type or color is none while none is chosen.
     let Some(only) = mtg_cards::spend::resolve_uses(only, chosen_type)
         .and_then(|only| mtg_cards::spend::resolve_color(&only, chosen_color))
+        .and_then(|only| crate::spend::r114_fix_exiled(state, source, only))
     else {
         return Ok(Run::events(Vec::new()));
     };

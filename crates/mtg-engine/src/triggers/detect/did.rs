@@ -149,6 +149,7 @@ pub(super) fn did_happened(
             player,
             source,
             r113_spent_from,
+            r114_made,
             ..
         } => {
             let mut activated = did(Action::ActivatedAny, Some(*player), Some(source.id));
@@ -156,6 +157,16 @@ pub(super) fn did_happened(
                 r113_spent.clone_from(r113_spent_from);
             }
             found.push(activated);
+            // A mana ability resolves as it is activated (CR 605.3a), with the mana its source made.
+            let mut resolved = did(
+                Action::R114ManaAbilityResolved,
+                Some(*player),
+                Some(source.id),
+            );
+            if let Happened::Did { amount, .. } = &mut resolved {
+                *amount = *r114_made;
+            }
+            found.push(resolved);
         }
         Event::AbilityTriggered(triggered) => found.push(did(
             Action::AbilityTriggered,

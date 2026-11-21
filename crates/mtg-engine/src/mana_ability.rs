@@ -411,6 +411,7 @@ fn rule_mana(
         };
         let Some(only) = mtg_cards::spend::resolve_uses(shape.only, chosen)
             .and_then(|only| mtg_cards::spend::resolve_color(&only, chosen_color))
+            .and_then(|only| crate::spend::r114_fix_exiled(state, Some(id), only))
         else {
             continue;
         };
@@ -649,11 +650,16 @@ pub(crate) fn logged_activation(
     let tapped = events
         .iter()
         .any(|event| matches!(event, Event::PermanentTapped { object } if *object == source.id));
+    let made = events
+        .iter()
+        .filter(|event| matches!(event, Event::ManaAdded { source: Some(from), .. } if *from == source.id))
+        .count();
     events.push(Event::ManaAbilityActivated {
         player,
         source,
         tapped,
         r113_spent_from: Vec::new(),
+        r114_made: u32::try_from(made).unwrap_or(u32::MAX),
     });
     Ok(events)
 }

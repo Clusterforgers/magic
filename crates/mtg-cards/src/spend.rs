@@ -173,6 +173,11 @@ pub struct SpendTraits {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub made_by: Option<(ObjectId, u32)>,
+    /// The card cast and how many times it had changed zones, as it was in the zone it is cast from, for a spell cast
+    /// from exile (`SpendOn::R114LastExiled`); none otherwise.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub r114_card: Option<(ObjectId, u32)>,
     /// Its supertypes.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Supertype>>", optional))]
@@ -402,6 +407,15 @@ pub enum SpendOn {
     /// Not a restriction of what is paid for: the mana pays no generic mana cost ("This mana can't be spent to pay generic
     /// mana costs", CR 106.6), only colored symbols and the colored half of a hybrid or Phyrexian one.
     R112NotGeneric,
+    /// Casting the card the source of the mana exiled last, while it stays exiled ("Spend this mana only to cast the last
+    /// card exiled with this artifact", CR 607.2a): the engine fixes that card as the mana is added, so a card exiled
+    /// later does not change what the mana pays for; mana added while the source holds no exiled card pays for nothing.
+    R114LastExiled {
+        /// The card as it is in exile, filled in as the mana is added; a card file leaves it out.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        card: Option<(ObjectId, u32)>,
+    },
 }
 
 /// What a permanent spell gets when mana with the rider is spent to cast it: additional +1/+1 counters as it enters
@@ -519,6 +533,7 @@ impl SpendOn {
             SpendOn::Uncounterable(filter) => SpendOn::Uncounterable(filter.resolved(chosen)?),
             SpendOn::Snow => SpendOn::Snow,
             SpendOn::R112NotGeneric => SpendOn::R112NotGeneric,
+            SpendOn::R114LastExiled { card } => SpendOn::R114LastExiled { card: *card },
             SpendOn::Special(action) => SpendOn::Special(*action),
             SpendOn::Enters(bonus) => SpendOn::Enters(Box::new(EntersBonus {
                 spell: bonus.spell.resolved(chosen)?,

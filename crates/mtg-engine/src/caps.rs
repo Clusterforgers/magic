@@ -821,6 +821,7 @@ const RUNS: &[&str] = &[
     "Effect.R112Piles",
     "Effect.R112RollStore",
     "Effect.R112RerollStored",
+    "Effect.R114StoreValue",
     "Effect.R113PhaseIn",
     "Amount.R112NumberChosen",
     "Amount.R112MostAlike",

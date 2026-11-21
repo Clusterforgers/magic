@@ -163,6 +163,8 @@ mod r112_04_voyage;
 mod r112_mana;
 mod r112_spell_facts;
 mod r113_mana;
+mod r114_ice_cauldron;
+mod r114_life_paid;
 mod r1a_spend;
 mod r281_cards;
 mod r281_kicked_spend;
