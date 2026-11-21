@@ -93,7 +93,8 @@ fn sentences(r: &mut Reader<'_>, restricted: bool) -> Option<Vec<Effect>> {
 
 /// The sentences of an instant or sorcery, in order; every one must be read.
 pub fn spell(r: &mut Reader<'_>) -> Option<Ability> {
-    let effects = sentences(r, false)?;
+    let mut effects = sentences(r, false)?;
+    super::created_other::created_other(&mut effects);
     Some(Ability::Spell {
         targets: std::mem::take(&mut r.targets),
         effects,

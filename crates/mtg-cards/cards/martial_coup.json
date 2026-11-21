@@ -22,13 +22,14 @@
                       "toughness": 1
                     }
                   },
-                  "count": "X"
+                  "count": "X",
+                  "as": "tokens"
                 }
               },
               {
                 "If": {
                   "condition": { "Compare": { "left": "X", "op": "Ge", "right": 5 } },
-                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, "Other"] } } }]
+                  "then": [{ "Destroy": { "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "tokens" } } }] } } }]
                 }
               }
             ]

@@ -72,6 +72,7 @@ mod cost_conditions;
 mod costs;
 mod counters;
 mod create;
+mod created_other;
 mod d14_wordings;
 mod damage;
 mod day_night;

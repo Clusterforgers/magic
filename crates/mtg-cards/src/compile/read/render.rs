@@ -250,8 +250,21 @@ pub fn variants(ability: &Ability) -> Vec<String> {
 }
 
 /// [`variants`] before the wordings every copy exception has twice.
-#[allow(clippy::too_many_lines)]
 fn plain_variants(ability: &Ability) -> Vec<String> {
+    // A spell's "other" after a creation spares the tokens it created: the twin with `Other` words it, and a spell
+    // whose `Other` means the spell itself has no wording.
+    if let Some(twin) = super::created_other::created_other_twin(ability) {
+        return unchecked_variants(&twin);
+    }
+    if super::created_other::other_after_creation(ability) {
+        return Vec::new();
+    }
+    unchecked_variants(ability)
+}
+
+/// [`plain_variants`] without the check of "other" after a creation.
+#[allow(clippy::too_many_lines)]
+fn unchecked_variants(ability: &Ability) -> Vec<String> {
     if let Some(texts) = super::r402_copy_riders::r402_rider_variants(ability, variants) {
         return texts;
     }
