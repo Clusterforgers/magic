@@ -395,6 +395,101 @@ fn has_keyword_named_holds_at_any_value_of_the_parameter(
 }
 
 #[rstest]
+#[case::odd(true, &["One", "Three"])]
+#[case::even(false, &["Zero", "Two"])]
+fn r113_parity_holds_for_an_odd_or_even_mana_value(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] odd: bool,
+    #[case] holders: &[&str],
+) {
+    let costing = |label: &str, generic: u32| {
+        Arc::new(
+            CardDefinition::new(label)
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_mana_cost(mtg_core::mana::ManaCost::from_symbols([
+                    mtg_core::mana::ManaSymbol::Generic(generic),
+                ])),
+        )
+    };
+    let game = state(
+        (0..seats).map(|_| Vec::new()).collect(),
+        (0..seats)
+            .map(|s| {
+                if s == 0 {
+                    vec![
+                        costing("Zero", 0),
+                        costing("One", 1),
+                        costing("Two", 2),
+                        costing("Three", 3),
+                        creature("Guest 0", 2, 2),
+                    ]
+                } else {
+                    vec![creature(&format!("Guest {s}"), 2, 2)]
+                }
+            })
+            .collect(),
+    );
+    let pred = Pred::R113Parity {
+        stat: StatKind::ManaValue,
+        odd,
+    };
+    for label in ["Zero", "One", "Two", "Three"] {
+        assert_eq!(
+            holds(&game, pred.clone(), label),
+            holders.contains(&label),
+            "{label}"
+        );
+    }
+}
+
+#[rstest]
+#[case::warp(mtg_cards::value::CastWay::Warp, &["Warper"])]
+#[case::another_way(mtg_cards::value::CastWay::Flashback, &["Flasher"])]
+fn r113_has_way_holds_for_a_card_with_that_alternative_cost(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] way: mtg_cards::value::CastWay,
+    #[case] holders: &[&str],
+) {
+    let with_way = |label: &str, way: &str| {
+        let ability: Ability = serde_json::from_str(&format!(
+            r#"{{"AltCast":{{"way":"{way}","cost":"{{1}}"}}}}"#
+        ))
+        .unwrap();
+        Arc::new(
+            CardDefinition::new(label)
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(ability),
+        )
+    };
+    let game = state(
+        (0..seats).map(|_| Vec::new()).collect(),
+        (0..seats)
+            .map(|s| {
+                if s == 0 {
+                    vec![
+                        with_way("Warper", "Warp"),
+                        with_way("Flasher", "Flashback"),
+                        creature("Plain", 1, 1),
+                        creature("Guest 0", 2, 2),
+                    ]
+                } else {
+                    vec![creature(&format!("Guest {s}"), 2, 2)]
+                }
+            })
+            .collect(),
+    );
+    for label in ["Warper", "Flasher", "Plain"] {
+        assert_eq!(
+            holds(&game, Pred::R113HasWay(way), label),
+            holders.contains(&label),
+            "{label}"
+        );
+    }
+}
+
+#[rstest]
 #[case::with_time_counters(3, true)]
 #[case::without_counters(0, false)]
 fn suspended_is_a_card_in_exile_with_time_counters_and_suspend(

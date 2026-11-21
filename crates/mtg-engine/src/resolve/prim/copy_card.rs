@@ -1,4 +1,4 @@
-//! `Effect::CopyCard`: a card in exile or a hand is copied into a token card the player may cast (CR 707.12).
+//! `Effect::CopyCard`: a card in exile, a hand or a graveyard is copied into a token card the player may cast (CR 707.12).
 
 use std::sync::Arc;
 
@@ -12,7 +12,7 @@ use crate::object::{ObjectKind, ObjectRef};
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::zones::Zone;
 
-/// Each card the effect names that still lies face up in exile or in a hand is copied once, and the copies are bound as
+/// Each card the effect names that still lies face up in exile, a hand or a graveyard is copied once, and the copies are bound as
 /// the objects
 /// they become: token cards in exile, owned by the player `who` names (the controller by default). The copy is not
 /// cast; the step that follows (`CastFromZone`) asks whether to cast it, and a copy that is not cast ceases to exist at
@@ -36,9 +36,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .live_objects(what)?
         .into_iter()
         .filter(|card| {
-            // A card revealed from a hand is copied as well (CR 707.12, God-Eternal Kefnet).
-            matches!(card.zone(), Zone::Exile | Zone::Hand(_))
-                && card.kind() == ObjectKind::Card
+            // A card revealed from a hand (God-Eternal Kefnet) or lying in a graveyard (Spellweaver Volute) is copied as
+            // well (CR 707.12).
+            matches!(
+                card.zone(),
+                Zone::Exile | Zone::Hand(_) | Zone::Graveyard(_)
+            ) && card.kind() == ObjectKind::Card
                 && card.face_down().is_none()
         })
         .collect();
@@ -68,7 +71,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: copying makes one token card in exile for each face-up card of exile the effect names and binds the copies as new objects, passes over what lies elsewhere or face down, and the fold makes a castable copy of the card that ceases to exist when it is anywhere but on the stack.
+    //! Goal: copying makes one token card in exile for each face-up card of exile, a hand or a graveyard the effect names and binds the copies as new objects, passes over what lies elsewhere or face down, and the fold makes a castable copy of the card that ceases to exist when it is anywhere but on the stack.
     use std::sync::Arc;
 
     use mtg_cards::CardDefinition;
@@ -136,15 +139,21 @@ mod tests {
     #[rstest]
     #[case::a_face_up_card_in_exile(Zone::Exile, ZoneCause::Exiled, 1)]
     #[case::a_card_face_down_in_exile(Zone::Exile, ZoneCause::Foretold, 0)]
-    #[case::a_card_in_a_graveyard(Zone::Graveyard(ME), ZoneCause::Moved, 0)]
-    fn only_a_face_up_card_in_exile_is_copied(
+    #[case::a_card_in_a_graveyard(Zone::Graveyard(ME), ZoneCause::Moved, 1)]
+    #[case::a_card_in_a_library(Zone::Library(ME), ZoneCause::Moved, 0)]
+    fn only_a_face_up_card_outside_the_library_is_copied(
         #[case] to: Zone,
         #[case] cause: ZoneCause,
         #[case] copies: usize,
     ) {
         let mut game = game();
         sent(&mut game, to, cause);
-        let (events, bound) = copied(&game);
+        let zone = match to {
+            Zone::Graveyard(_) => "Graveyard",
+            Zone::Library(_) => "Library",
+            _ => "Exile",
+        };
+        let (events, bound) = copied_in(&game, zone);
         assert_eq!(events.len(), copies);
         assert_eq!(bound.len(), 1);
         assert_eq!(bound[0].0, "copy");

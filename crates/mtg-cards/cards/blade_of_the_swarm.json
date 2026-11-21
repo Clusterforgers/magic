@@ -1,0 +1,44 @@
+{
+  "oracle_id": "33042d12-f08b-4b3e-b106-c424ef868c13",
+  "name": "Blade of the Swarm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blade of the Swarm",
+      "oracle_fingerprint": "7ff0ff70059c3ca38fb420efb19c528a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        { "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "In": "Exile" }, { "R113HasWay": "Warp" }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": "Bottom" } }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

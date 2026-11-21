@@ -76,8 +76,30 @@ fn choice(
                 )
                 .collect()
         }
+        ValueKind::R113CreatureTypeOfNotNoted(of) => {
+            let noted = crate::memory::r112_noted_words(cx.state(), cx.scope.source);
+            // Its creature types as the game sees them now; a changeling has every one (CR 702.73).
+            let (types, every) = cx
+                .scope
+                .objects(of)?
+                .first()
+                .map_or((Vec::new(), false), |object| {
+                    crate::characteristics::creature_types(cx.state(), object.id)
+                });
+            values::creature_types()
+                .into_iter()
+                .filter(|option| {
+                    matches!(option, ChoiceOption::Label(name)
+                        if (every || types.iter().any(|kind| kind.0 == *name)) && !noted.contains(name))
+                })
+                .collect()
+        }
         _ => options(kind),
     };
+    // A spell whose creature types are all noted leaves nothing to note.
+    if options.is_empty() && matches!(kind, ValueKind::R113CreatureTypeOfNotNoted(_)) {
+        return Ok(Ok(None));
+    }
     let chooser = OptionChooser {
         player,
         text: question(kind),
@@ -107,6 +129,7 @@ fn r6600_by_options(kind: &ValueKind) -> bool {
         kind,
         ValueKind::Number(..)
             | ValueKind::R112CreatureTypeNotNoted
+            | ValueKind::R113CreatureTypeOfNotNoted(_)
             | ValueKind::CardName(_)
             | ValueKind::Colors
             | ValueKind::LikeChosen(_)
@@ -379,6 +402,7 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
         | ValueKind::Number(..)
         | ValueKind::LikeChosen(_)
         | ValueKind::R112CreatureTypeNotNoted
+        | ValueKind::R113CreatureTypeOfNotNoted(_)
         | ValueKind::R111SpellDamage { .. } => Vec::new(),
     }
 }
@@ -421,6 +445,9 @@ fn question(kind: &ValueKind) -> String {
         ValueKind::CreatureType => "Choose a creature type.".to_owned(),
         ValueKind::R112CreatureTypeNotNoted => {
             "Note a creature type that hasn't been noted.".to_owned()
+        }
+        ValueKind::R113CreatureTypeOfNotNoted(_) => {
+            "Note one of its creature types that hasn't been noted.".to_owned()
         }
         ValueKind::CreatureTypeExcept(left_out) => {
             format!(
@@ -479,7 +506,8 @@ fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Opti
         (
             ValueKind::CreatureType
             | ValueKind::CreatureTypeExcept(_)
-            | ValueKind::R112CreatureTypeNotNoted,
+            | ValueKind::R112CreatureTypeNotNoted
+            | ValueKind::R113CreatureTypeOfNotNoted(_),
             ChoiceOption::Label(name),
         ) => Some(Chosen::CreatureType(Subtype(name.clone()))),
         (ValueKind::CardType | ValueKind::CardTypeOf(_), ChoiceOption::Label(name)) => {

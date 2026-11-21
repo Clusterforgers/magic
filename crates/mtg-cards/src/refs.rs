@@ -494,6 +494,9 @@ pub enum Pred {
     /// Has the keyword at any value of its parameter ("with toxic", "with cycling"); the name is Scryfall's spelling
     /// (`Keyword::NAMES`).
     HasKeywordNamed(String),
+    /// Has an alternative cost of the way ("exiled card with warp", CR 702.185): a cast ability (`Ability::AltCast`) of
+    /// that way among its abilities.
+    R113HasWay(crate::value::CastWay),
     /// Has at least one counter of the kind on it.
     HasCounter(CounterKind),
     /// Has at least one counter of any kind on it (CR 122.1).
@@ -538,6 +541,13 @@ pub enum Pred {
         op: Cmp,
         /// The amount compared with.
         to: Amount,
+    },
+    /// The characteristic is an odd number, or an even one ("a spell with an odd mana value"); 0 is even.
+    R113Parity {
+        /// The characteristic.
+        stat: StatKind,
+        /// Odd rather than even.
+        odd: bool,
     },
     /// The objects chosen together have a total of the stat at most the amount ("with total mana value 6 or less"): alone
     /// it holds of an object whose stat is at most the amount, and a search or choice takes no set above it.

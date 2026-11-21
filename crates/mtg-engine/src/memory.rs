@@ -90,13 +90,26 @@ pub(crate) fn fold(state: &mut GameState, change: &Remembered) {
 pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
     if let Event::SpellResolved { object } = event {
         carry_exiled_with_cost(state, *object);
+        // A permanent spell enters as it resolves (no `ZoneChanged` is logged).
+        r113_carry_kept(state, *object);
+    }
+    if let Event::ZoneChanged {
+        object,
+        to: Zone::Exile,
+        ..
+    } = event
+    {
+        r113_note_exiled(state, *object);
     }
     if state.memory.is_empty() {
         return;
     }
     match event {
-        Event::ZoneChanged { object, .. } => {
+        Event::ZoneChanged { object, to, .. } => {
             let id = *object;
+            if *to == Zone::Battlefield {
+                r113_carry_kept(state, id);
+            }
             for held in state.memory.values_mut() {
                 held.retain(|named| !matches!(named, Held::Object(object) if object.id == id));
             }
@@ -156,6 +169,64 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
         _ => return,
     }
     state.memory.retain(|_, held| !held.is_empty());
+}
+
+/// The numbers stored as a permanent enters (`ReplaceBy::AsEnters`, CR 614.12: "As this creature enters, roll a
+/// six-sided die twice") are the entering object's, so its lasting slots go with it to the permanent it becomes.
+fn r113_carry_kept(state: &mut GameState, id: mtg_core::ids::ObjectId) {
+    let Some(entering) = state.object(id).map(crate::object::GameObject::reference) else {
+        return;
+    };
+    let arriving = ObjectRef {
+        id,
+        counter: entering.counter + 1,
+    };
+    let kept: Vec<String> = state
+        .memory
+        .keys()
+        .filter(|(source, slot)| *source == entering && slot.starts_with(R112_LASTING))
+        .map(|(_, slot)| slot.clone())
+        .collect();
+    for slot in kept {
+        if let Some(held) = state.memory.remove(&(entering, slot.clone())) {
+            state.memory.insert((arriving, slot), held);
+        }
+    }
+}
+
+/// The lasting slot of the mana values a permanent noted in `turn` (`Rule::R113NoteExiled`).
+pub(crate) fn r113_noted_slot(turn: u32) -> String {
+    r112_lasting(&format!("r113 noted in turn {turn}"))
+}
+
+/// "Note the mana value of each card as it's put into exile.": each permanent with the rule notes the mana value of the
+/// card `id` as it goes, as it was before (no stack, no trigger); the notes of an earlier turn are dropped. A token is no
+/// card and is not noted.
+fn r113_note_exiled(state: &mut GameState, id: mtg_core::ids::ObjectId) {
+    let Some(card) = state
+        .object(id)
+        .filter(|card| card.kind() == crate::object::ObjectKind::Card)
+    else {
+        return;
+    };
+    let value = i64::from(card.mana_value());
+    let noters = crate::rules::r113_noters(state);
+    if noters.is_empty() {
+        return;
+    }
+    let turn = state.turn().number();
+    let slot = r113_noted_slot(turn);
+    let prefix = r112_lasting("r113 noted in turn ");
+    for noter in noters {
+        state.memory.retain(|(source, kept), _| {
+            *source != noter || !kept.starts_with(&prefix) || *kept == slot
+        });
+        state
+            .memory
+            .entry((noter, slot.clone()))
+            .or_default()
+            .push(Held::Number(value));
+    }
 }
 
 /// A permanent spell that exiled cards as it was cast (an additional cost) remembers them as exiled with it once it resolves

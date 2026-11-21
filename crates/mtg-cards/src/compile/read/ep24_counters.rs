@@ -15,6 +15,7 @@ pub(super) fn ep24_counter_texts(when: &ReplaceWhen, by: &ReplaceBy) -> Vec<Stri
         counter: None,
         by: putter,
         effect,
+        r113_keyword: None,
     } = when
     else {
         return Vec::new();

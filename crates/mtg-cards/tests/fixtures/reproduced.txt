@@ -219,6 +219,7 @@ Behold the Multiverse
 Beledros Witherbloom
 Belfry Spirit
 Belisarius Cawl
+Bell Borca, Spectral Sergeant
 Bellowing Aegisaur
 Benthic Biomancer
 Bespoke Battlewagon
@@ -244,6 +245,7 @@ Black Knight
 Black Market Connections
 Blackblade Reforged
 Blade of Selves
+Blade of the Swarm
 Bladed Bracers
 Blasphemous Act
 Blast Zone
@@ -383,6 +385,7 @@ Carrion Feeder
 Carrion Grub
 Cascade Bluffs
 Cascading Cataracts
+Casey & Raph, Hotheads
 Casey Jones, Back Alley Brute
 Cass, Hand of Vengeance
 Cast Out
@@ -514,6 +517,7 @@ Cordial Vampire
 Cormela, Glamour Thief
 Corpse Hauler
 Coruscation Mage
+Cosima, God of the Voyage // The Omenkeel
 Cosmic Intervention
 Cosmos Charger
 Counterflux
@@ -2437,6 +2441,7 @@ Spectral Steel
 Speedway Fanatic
 Spellbreaker Behemoth
 Spelltwine
+Spellweaver Volute
 Sphere of Safety
 Sphinx of Jwar Isle
 Sphinx of Magosi
@@ -2891,10 +2896,12 @@ Vanquish the Horde
 Vanquisher's Banner
 Vastwood Hydra
 Vastwood Surge
+Vault 21: House Gambit
 Vault 75: Middle School
 Vault of the Archangel
 Vazi, Keen Negotiator
 Vedalken Engineer
+Vedalken Squirrel-Whacker
 Vengeful Dead
 Vengeful Vampire
 Venomous Vines
@@ -2939,6 +2946,7 @@ Voice of the Blessed
 Voidmage Husher
 Volcanic Offering
 Voldaren Estate
+Volo, Itinerant Scholar
 Volrath's Curse
 Volrath's Shapeshifter
 Volshe Tideturner
@@ -3064,6 +3072,7 @@ You Cannot Pass!
 Young Wolf
 Youthful Valkyrie
 Yurlok of Scorch Thrash
+Zabaz, the Glimmerwasp
 Zack Fair
 Zanikev Locust
 Zealous Conscripts

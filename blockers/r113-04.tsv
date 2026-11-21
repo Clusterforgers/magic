@@ -1,0 +1,32 @@
+Paleontologist's Pick-Axe // Dinosaur Headdress	A choice made as an Equipment becomes attached (a replacement on Event::Attached asking among the exiled cards the craft used, CR 702.167 linked exile) kept per attachment, and "equipped creature is a copy of the last chosen card" (layer 1 copy of a card in exile, re-derived on each attach)	ATTACH-CHOICE
+Psychic Paper	The same attach-time choice (a creature card name and a creature type, chosen as it becomes attached) and layer 3/4 Modification::SetName and SetCreatureTypes from the source's last chosen values	ATTACH-CHOICE
+Myra the Magnificent	A delayed trigger bound to one Attraction's presence (TriggerPattern visit of that Attraction, ends when it leaves) whose effect copies the card exiled by the activation; a choice of an Attraction without a midway counter	ATTRACTIONS
+Takklemaggot	A dies trigger whose choice is made by the dead creature's controller (Effect::Choose with who ControllerOf(Triggering) by last-known information) among creatures the Aura card could enchant, then the Aura card returning as a non-Aura enchantment that loses enchant and gains an upkeep trigger naming that player	AURA-ATT
+Bold Plagiarist	The acting player of PutCounters set to another player ("they put the same number and kind of counters"): a `by` on PutCounters so replacement and trigger putter checks (CR 122.6) see the opponent	COUNTER-EVENTS
+Snowfall	An optional mana-trigger bonus conditional on the tapped Island being snow with a spend restriction to cumulative upkeep payments (mana_trigger takes no May or If)	CU
+Balduvian Fallen	The mana spent on a cumulative upkeep payment kept with Event::UpkeepSettled and an Amount counting its mana of given colors for the PaidCumulativeUpkeep trigger	CU
+Clay Golem	CostItem::RollDie(sides) paid while activating (CR 706, 602.2b) binding the ability's X for Monstrosity X	DICE
+Monitor Monitor	A special action once each turn (pay {1}) that rerolls dice the player rolled, replacing logged results before their readers (CR 706.6)	DICE
+Bamboozling Beeble	A one-shot shield on a player's next roll: one die more, and the shield's controller (not the roller) chooses the result to ignore, asked inside the roll (r6402_change path)	DICE
+Ice Cauldron	The type and amount of mana spent on an activation kept on the source, a mana ability adding that noted mana, and a spend restriction to the last card exiled with it (no fixture)	NOTES
+Garth One-Eye	Creating a card from a fixed list of names outside the game (conjure by Oracle name) with a once-per-name memory, and a cast permission for the copy	OO-misc
+Vault 11: Voter's Dilemma	Secret votes for up to one creature (Effect::Vote over objects with secrecy and abstention) with destroy of each tied for most votes and a draw for each player when none got votes	OO-misc
+Ertai's Meddling	Exiling a spell with delay counters and putting it back on the stack as a copy of the original spell when the last is removed (CR 702 delay, spell state kept in exile)	OO-misc
+Spy Kit	A characteristic: the equipped creature has all names of nonlegendary creature cards (CR 201.2 name set, a name predicate matching any such name)	OO-misc
+Lightning Storm	Activated abilities of a spell on the stack that any player may activate (CR 113.6) and a change of target as their effect	OO-misc
+Grimoire Thief	Cards exiled face down with the source, turned face up by an effect, and countering spells with the same names as those cards	OO-misc
+Tawnos's Coffin	Linked exile that notes the counters of the exiled creature and its attached Auras and returns them with the noted counters and attached (CR 607)	OO-misc
+Guardian Beast	A conditional static with three rule changes for noncreature artifacts (can't be enchanted without removing Auras, indestructible, others can't gain control)	OO-misc
+Frankenstein's Monster	An as-enters replacement exiling X chosen creature cards from the graveyard, else to the graveyard instead, with a counter kind chosen per exiled card	OO-misc
+Cyclopean Tomb	A land type granted while a counter remains and a delayed trigger for the rest of the game that removes the counters put by this artifact (objects linked across zones)	OO-misc
+Call to Arms	Condition: the chosen color is the most common color among nontoken permanents a chosen player controls and not tied	OO-misc
+Reflecting Mirror	Changing the target of a spell with a single target when that target is you to another player (CR 115.7a) with X twice the spell's mana value	OO-misc
+Torrent of Lava	Abilities granted to creatures while a spell is on the stack, preventing damage from that spell	OO-misc
+Steamflogger Boss	Contraptions: a ReplaceWhen for a Rigger assembling a Contraption (no Contraption deck in the engine)	OO-misc
+Caller of the Untamed	A pre-game reveal and exile of a drafted card; no draft happens, so it stays inert	OO-misc
+Prowl, Stoic Strategist // Prowl, Pursuit Vehicle	Convert as an effect, a trigger on a player playing a card exiled with this, and "the second time this ability has resolved this turn"	OO-trigger
+Psychic Battle	A trigger on a player choosing targets, a reveal by every player and a change of target by the highest mana value (CR 115.7)	OO-trigger
+Camouflage	A replacement of the declare blockers step: piles per attacker assigned at random, each creature blocking its pile's attacker if able (CR 509)	PILES
+Wicker Picker	Sticker kicker given to creature spells: the ticket and the sticker put on the spell happen as the cast completes, which needs decisions inside casting (or a ruling that it is a cast trigger); a design decision for the owner	STICKERS
+Clandestine Chameleon	A layer 6 modification "has all abilities of ability stickers on" objects a selector names in any zone (sticker abilities are granted only to their own permanent today, un34_stickers::effects)	STICKERS
+Pin Collection	The same layer 6 modification over this Equipment, and PutSticker of an ability sticker with ticket cost X or less without paying its tickets	STICKERS

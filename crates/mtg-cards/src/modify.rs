@@ -427,6 +427,9 @@ pub enum Duration {
     /// Until the next turn of the one player the rule names ("Until that player's next turn, they gain protection from
     /// everything"): it lasts as `UntilYourNextTurn` does for that player; only a rule lasts this way.
     UntilTheirNextTurn,
+    /// Until the next end step of the one player a permission names ("Until that player's next end step, they may play
+    /// that card"): it lasts as `UntilYourNextEndStep` does for that player; only a rule lasts this way.
+    R113UntilTheirNextEndStep,
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
@@ -1194,6 +1197,21 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         once: bool,
     },
+    /// A player in the group who would roll one or more dice of `sides` faces rolls them and may exchange one result with
+    /// one of the numbers the permanent stored in `slot` (`Effect::R112RollStore`; CR 614.1a, 706): "If you would roll one
+    /// or more six-sided dice, instead roll them and you may exchange one result with this creature's base power or base
+    /// toughness." The result becomes the stored number and the stored number the result.
+    R113ExchangeRoll {
+        /// Whose rolls.
+        who: Ref,
+        /// How many faces the dice have.
+        sides: u32,
+        /// The memory slot of the permanent.
+        slot: String,
+    },
+    /// "Note the mana value of each card as it's put into exile.": the permanent notes the number for itself as each card
+    /// goes to exile, with no stack; `Amount::R113GreatestNoted` reads the notes of this turn.
+    R113NoteExiledManaValue,
     /// A player in the group who would roll one or more planar dice rolls that many plus one instead and ignores one
     /// (CR 901.9): "If you would roll one or more planar dice, instead roll that many planar dice plus one and ignore
     /// one." No game the engine plays has a planar deck, so it never applies (the rulings of Fractured Powerstone).

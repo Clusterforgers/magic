@@ -475,10 +475,11 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::R112SharesColorWithSpent
         | Pred::OutsideCommanderIdentity => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
-        Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
+        Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) | Pred::R113HasWay(_) => Traits::KEYWORDS,
         // What a permanent could produce is read from its mana abilities.
         Pred::HasAbility(_) | Pred::CouldProduce(_) => Traits::KEYWORDS.or(Traits::RULES),
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
+        Pred::R113Parity { stat, .. } => reads_of_stat(*stat),
         Pred::TotalAtMost { stat, most } => reads_of_stat(*stat).or(reads_of_amount(most)),
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
@@ -630,7 +631,12 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .or(reads_of_amount(then))
             .or(reads_of_amount(otherwise)),
         Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
-        Amount::Remembered { on, .. } | Amount::R112MostAlike { on, .. } => reads_of_ref(on),
+        Amount::Remembered { on, .. }
+        | Amount::R112MostAlike { on, .. }
+        | Amount::R113Stored { on, .. }
+        | Amount::R113SharesWithAnother { of: on, .. }
+        | Amount::R113GreatestNoted { on }
+        | Amount::R113NotedWords { on } => reads_of_ref(on),
         Amount::R112NumberChosen { by, .. } => reads_of_ref(by),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::R6702CardTypesOf(of) => reads_of_ref(of).or(Traits::TYPES),

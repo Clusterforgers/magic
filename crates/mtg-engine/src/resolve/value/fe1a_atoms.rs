@@ -133,6 +133,13 @@ impl Scope<'_> {
                         .any(|keyword| named_keyword(keyword, name))
                 }),
             },
+            Pred::R113HasWay(way) => seen.card.is_some_and(|card| {
+                crate::ability_reader::abilities_of(self.state, card.id())
+                    .iter()
+                    .any(|(_, ability)| {
+                        matches!(&**ability, mtg_cards::ability::Ability::AltCast { way: found, .. } if found == way)
+                    })
+            }),
             Pred::LeastAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, true)?,
             Pred::Suspended => {
                 seen.zone == Zone::Exile

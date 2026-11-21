@@ -228,6 +228,10 @@ pub(super) fn w21a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
     if let Some(named) = super::r5520_atoms::r5520_keyword_named(r) {
         return Some(named);
     }
+    // "with warp": a card with an alternative cost of that way (`Ability::AltCast`).
+    if r.words("with warp") {
+        return Some(Pred::R113HasWay(crate::value::CastWay::Warp));
+    }
     if r.words("of the chosen color") {
         return Some(Pred::ChosenColor);
     }
@@ -364,6 +368,7 @@ pub(super) fn w21a_suffix_text(pred: &Pred, form: Form) -> Option<String> {
         }
         Pred::ChosenColor => "of the chosen color".to_owned(),
         Pred::ChosenName => "with the chosen name".to_owned(),
+        Pred::R113HasWay(crate::value::CastWay::Warp) => "with warp".to_owned(),
         Pred::GravedThisTurn => W21A_GRAVED.to_owned(),
         Pred::ArrivedFrom(ZoneKind::Battlefield) => W21A_ARRIVED.to_owned(),
         Pred::TargetsPlayer(Ref::You) => "that targets you".to_owned(),

@@ -51,6 +51,7 @@ mod r110_01_cards;
 mod r111_01_cards;
 mod r111_03_cards;
 mod r112_01_cards;
+mod r113_04_cards;
 mod r280_cards;
 mod r280_writers;
 mod r282_cards;

@@ -24,8 +24,57 @@ use crate::state::GameState;
 use crate::zones::Zone;
 
 /// The cost `player` pays to activate the ability `rules` at `address`, whose printed cost is `cost`: the cost its keyword
-/// prints replaced by {0} while a `FreeActivation` of its kind that `player` controls applies; else the printed cost.
+/// prints replaced by {0} while a `FreeActivation` of its kind that `player` controls applies; else the printed cost. The
+/// mana cost of another object it names ("Pay enchanted creature's mana cost") is that object's mana cost now.
 pub(crate) fn cost<'a>(
+    state: &GameState,
+    player: PlayerId,
+    (address, rules): (AbilityRef, &Ability),
+    cost: &'a Cost,
+) -> Cow<'a, Cost> {
+    if cost
+        .0
+        .iter()
+        .any(|item| matches!(item, mtg_cards::cost::CostItem::ManaCostOf(_)))
+    {
+        let read = r113_mana_cost_of(state, player, address, cost);
+        return Cow::Owned(keyworded_cost(state, player, (address, rules), &read).into_owned());
+    }
+    keyworded_cost(state, player, (address, rules), cost)
+}
+
+/// The cost with each `ManaCostOf` part read as the mana cost of the first object it names, seen from the ability's
+/// object; an object with no mana cost costs nothing (CR 202.1b).
+fn r113_mana_cost_of(
+    state: &GameState,
+    player: PlayerId,
+    address: AbilityRef,
+    cost: &Cost,
+) -> Cost {
+    let mut read = cost.clone();
+    let Some(source) = state
+        .object(address.object)
+        .map(crate::object::GameObject::reference)
+    else {
+        return read;
+    };
+    let scope = Scope::announcing(state, player, source);
+    for item in &mut read.0 {
+        if let mtg_cards::cost::CostItem::ManaCostOf(of) = item {
+            let mana = scope
+                .objects(of)
+                .ok()
+                .and_then(|named| named.into_iter().find_map(|one| state.object(one.id)))
+                .and_then(|object| object.mana_cost().cloned())
+                .unwrap_or(mtg_core::mana::ManaCost::ZERO);
+            *item = mtg_cards::cost::CostItem::Mana(ManaCostX::new(0, mana));
+        }
+    }
+    read
+}
+
+/// [`cost`] once each part naming another object is read.
+fn keyworded_cost<'a>(
     state: &GameState,
     player: PlayerId,
     (address, rules): (AbilityRef, &Ability),

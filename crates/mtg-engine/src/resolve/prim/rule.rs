@@ -29,6 +29,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             return Ok(Run::events(Vec::new()));
         };
         (&Duration::UntilYourNextTurn, player)
+    } else if *duration == Duration::R113UntilTheirNextEndStep {
+        // "Until that player's next end step, they may play that card": as long as theirs until their next end step.
+        let who = mtg_cards::r5514_players::r113_permitted_player(rule).ok_or(
+            ResolveError::Unsupported("Rule.Duration.R113UntilTheirNextEndStep"),
+        )?;
+        let Some(player) = cx.scope.players(who)?.first().copied() else {
+            return Ok(Run::events(Vec::new()));
+        };
+        (&Duration::UntilYourNextEndStep, player)
     } else {
         (duration, cx.controller())
     };

@@ -44,12 +44,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
 /// The attach events of [`run`].
 fn attached(cx: &Cx<'_>, what: &Ref, to: &Ref) -> Result<Vec<Event>, ResolveError> {
     let state = cx.state();
-    let Some(host) = cx
+    // A card in a graveyard is a host for an Aura that enchants one there (CR 303.4, Spellweaver Volute).
+    let graveyard_host = cx
         .scope
-        .live_objects(to)?
+        .live_objects(what)?
         .into_iter()
-        .find(|object| object.zone() == Zone::Battlefield)
-    else {
+        .any(|object| crate::attach::dk27_enchants_graveyard(state, object.id()));
+    let Some(host) = cx.scope.live_objects(to)?.into_iter().find(|object| {
+        object.zone() == Zone::Battlefield
+            || (graveyard_host && matches!(object.zone(), Zone::Graveyard(_)))
+    }) else {
         // A player named instead of a permanent: only an Aura that enchants players may go there.
         let Some(player) = cx.scope.players(to)?.first().copied() else {
             return Ok(Vec::new());

@@ -135,7 +135,6 @@
                 "Rule": {
                   "rule": {
                     "MayCast": {
-                      "what": [{ "Not": { "Type": "Land" } }],
                       "from": "Exile",
                       "only": { "Bound": "exiled" },
                       "spend_as": "AnyColor"

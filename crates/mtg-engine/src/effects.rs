@@ -597,7 +597,8 @@ pub(crate) fn lasts(
             state.is_alive(controller)
         }
         // Begun before the end step of its controller's own turn, it carries the turn before (`began_turn`), so that end step ends it.
-        Duration::UntilYourNextEndStep => {
+        // A rule until that player's next end step is begun for that player as this (`resolve/prim/rule.rs`).
+        Duration::UntilYourNextEndStep | Duration::R113UntilTheirNextEndStep => {
             state.is_alive(controller)
                 && !(turn.number() > began
                     && state.is_active(controller)

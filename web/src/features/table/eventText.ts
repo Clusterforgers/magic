@@ -353,6 +353,7 @@ function durationWords(
     UntilSkippedThisTurn: ' until the step or combat it skips this turn',
     TheirNextTurn: " during that player's next turn",
     UntilTheirNextTurn: " until that player's next turn",
+    R113UntilTheirNextEndStep: " until that player's next end step",
     UntilCastFromExile:
       source === null
         ? ' until its source is cast from exile'
