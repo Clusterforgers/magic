@@ -641,6 +641,7 @@ const RUNS: &[&str] = &[
     "Rule.NoLegendRuleFor",
     "Rule.PayToIgnore",
     "Rule.PayToIgnoreBy",
+    "Rule.R114PayToDo",
     "Rule.UntapDuring",
     "Rule.UntapLimit",
     "Rule.R112UntapChosenType",

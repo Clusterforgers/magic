@@ -140,6 +140,14 @@ fn e15g_special_answer(
             }
             Ok(Outcome::BeginIgnore(object))
         }
+        PriorityAction::R114PayToDo(effect) => {
+            let offered = options
+                .r114_payable
+                .iter()
+                .find(|option| option.effect == effect)
+                .ok_or(IllegalAnswer::NotOffered("pay to do"))?;
+            Ok(Outcome::R114BeginPayToDo(offered.object, effect))
+        }
         _ => Err(IllegalAnswer::NotOffered("special action").into()),
     }
 }
@@ -784,6 +792,7 @@ fn shortcut_options() -> PriorityOptions {
         turnable: Vec::new(),
         unlockable: Vec::new(),
         endable: Vec::new(),
+        r114_payable: Vec::new(),
         companion: false,
         faces: Vec::new(),
         unplayable: Vec::new(),
@@ -855,6 +864,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     let unlockable = crate::dk1c5_rooms::dk1c5_unlockable(state, player, &pool, &all_mana, life);
     let endable = crate::e15g_paid::endable(state, player, &pool, &all_mana, life);
     let ignorable = crate::r6703_ignore::ignorable(state, player, &pool, &all_mana, life);
+    let r114_payable = crate::r114_pay_to_do::payable(state, player, &pool, &all_mana, life);
     let (abilities, inactive) = silence(state, silenced, abilities_now(state, player));
     let mut faces = face_options(
         state,
@@ -893,6 +903,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
             || !unlockable.is_empty()
             || !endable.is_empty()
             || !ignorable.is_empty()
+            || !r114_payable.is_empty()
             || companion,
         playable_lands,
         castable,
@@ -905,6 +916,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         unlockable,
         endable,
         ignorable,
+        r114_payable,
         companion,
         faces,
         unplayable,
@@ -987,7 +999,8 @@ pub(crate) fn answer(
         }
         special @ (PriorityAction::UnlockDoor(..)
         | PriorityAction::EndEffect(_)
-        | PriorityAction::IgnoreEffect(_)) => e15g_special_answer(options, &special),
+        | PriorityAction::IgnoreEffect(_)
+        | PriorityAction::R114PayToDo(_)) => e15g_special_answer(options, &special),
         PriorityAction::CastPrepared(object) => {
             let offered = options.faces.iter().any(|option| {
                 option.card == object && option.face == prepared::SPELL_FACE && !option.land

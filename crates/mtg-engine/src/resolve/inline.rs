@@ -66,6 +66,30 @@ pub(crate) fn run_inline(
     }
 }
 
+/// The events of `effects` run now for `player` as the controller of `source`, with names bound before the first step: what
+/// a special action does ("If you do, prevent the next 1 damage that would be dealt to that permanent or player"). An effect
+/// that needs an answer is an error.
+pub(crate) fn r114_run_bound(
+    state: &GameState,
+    player: PlayerId,
+    source: ObjectRef,
+    effects: &[Effect],
+    bound: &[(String, Vec<crate::choose::Target>)],
+) -> Result<Vec<Event>, ResolveError> {
+    let base = Base::Mana {
+        state,
+        player,
+        source,
+    };
+    match drive(&base, source.id, effects, &mut || None, (None, bound), None)?.0 {
+        Inline::Events(events) => Ok(events),
+        Inline::Declined => Ok(Vec::new()),
+        Inline::Ask(_) => Err(ResolveError::Invalid(
+            "a special action's effects asked a question".into(),
+        )),
+    }
+}
+
 /// The events of `effects` that a replacement effect of `source` runs in place of the event `cause` describes: the
 /// effects read its player or object (`Triggering`), its amount and the source of its damage (`Dealer`).
 ///

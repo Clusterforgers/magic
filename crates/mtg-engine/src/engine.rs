@@ -758,6 +758,10 @@ impl Engine {
                 self.pending = Some(Pending::special(player, object, Special::EndEffect(effect)));
                 Ok(())
             }
+            Outcome::R114BeginPayToDo(object, effect) => {
+                self.pending = Some(Pending::special(player, object, Special::R114PayToDo(effect)));
+                Ok(())
+            }
             Outcome::BeginIgnore(object) => {
                 self.pending = Some(Pending::special(player, object, Special::IgnoreEffect));
                 Ok(())

@@ -464,6 +464,9 @@ pub enum Event {
         /// The bands they form.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         bands: Vec<Vec<ObjectId>>,
+        /// The creatures their attackers enlist, each (attacker, creature tapped) (CR 702.154a).
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r114_enlist: Vec<(ObjectId, ObjectId)>,
     },
     /// The attacks a team chose break a rule together, so each of its players chooses again.
     AttackChoicesRefused {

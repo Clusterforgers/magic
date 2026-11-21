@@ -313,6 +313,39 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
       if (!next.delete(object)) next.add(object)
       return next
     })
+  // The declared attackers with enlist (CR 702.154a), each with a button that steps through the creatures it may tap as it
+  // attacks: none, then each creature not attacking and not enlisted by another attacker.
+  const [enlistedBy, setEnlistedBy] = useState<ReadonlyMap<ObjectId, ObjectId>>(new Map())
+  const enlisters = useMemo(
+    () => declaredIds.filter((object) => (offered.get(object)?.r114_enlist ?? []).length > 0),
+    [declaredIds, offered],
+  )
+  const enlisterCreatures = useObjects(enlisters)
+  const enlistCandidates = useMemo(
+    () => [...new Set(enlisters.flatMap((object) => offered.get(object)?.r114_enlist ?? []))],
+    [enlisters, offered],
+  )
+  const enlistCreatures = useObjects(enlistCandidates)
+  const enlisting: [ObjectId, ObjectId][] = enlisters.flatMap((object): [ObjectId, ObjectId][] => {
+    const tapped = enlistedBy.get(object)
+    return tapped !== undefined && !declaredIds.includes(tapped) ? [[object, tapped]] : []
+  })
+  const nextEnlist = (object: ObjectId): void =>
+    setEnlistedBy((current) => {
+      const taken = new Set(
+        [...current].filter(([other]) => other !== object).map(([, tapped]) => tapped),
+      )
+      const open = (offered.get(object)?.r114_enlist ?? []).filter(
+        (id) => !declaredIds.includes(id) && !taken.has(id),
+      )
+      const now = current.get(object)
+      const at = now === undefined ? -1 : open.indexOf(now)
+      const next = new Map(current)
+      const following = open[at + 1]
+      if (following === undefined) next.delete(object)
+      else next.set(object, following)
+      return next
+    })
   // A band may form once two attackers are declared and one of them has banding or "bands with other" (CR 702.22c).
   const mayBand =
     declaredIds.length > 1 && declaredIds.some((object) => offered.get(object)?.banding === true)
@@ -338,11 +371,12 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
     if (declared.length === 0 || brokenJoins(options.joins, declaredIds).length > 0) return
     const attackers = declared.map(({ object, target }): [ObjectId, AttackTarget] => [object, target])
     answer(
-      exerting.length > 0 || bands.length > 0
+      exerting.length > 0 || bands.length > 0 || enlisting.length > 0
         ? {
             DeclareExerting: {
               attackers,
               ...(exerting.length > 0 ? { exert: exerting } : {}),
+              ...(enlisting.length > 0 ? { r114_enlist: enlisting } : {}),
               ...(bands.length > 0 ? { bands: bands.map((band) => [...band]) } : {}),
             },
           }
@@ -488,6 +522,29 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
             word={on ? 'Exerting' : 'Exert'}
             aria-pressed={on}
             onClick={() => toggleExert(object)}
+          />
+        )
+      })}
+      {enlisters.map((object, index) => {
+        const name = enlisterCreatures[index]?.name ?? 'creature'
+        const tapped = enlisting.find(([attacker]) => attacker === object)?.[1]
+        const tappedName =
+          tapped === undefined
+            ? undefined
+            : (enlistCreatures[enlistCandidates.indexOf(tapped)]?.name ?? 'creature')
+        return (
+          <BarButton
+            key={`enlist-${object}`}
+            variant={tapped === undefined ? 'outline' : 'secondary'}
+            icon={UsersRound}
+            label={
+              tappedName === undefined
+                ? `Enlist a creature with ${name}`
+                : `${name} enlists ${tappedName}; choose the next`
+            }
+            word={tappedName === undefined ? 'Enlist' : `Enlist ${tappedName}`}
+            aria-pressed={tapped !== undefined}
+            onClick={() => nextEnlist(object)}
           />
         )
       })}

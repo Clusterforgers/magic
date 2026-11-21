@@ -1,14 +1,13 @@
-//! Goal: "Whenever this creature enlists a creature" (`Did { Enlisted }`) triggers once when the creature's enlist taps another creature, never when its controller declines, and another enlisting creature does not set it off; at tables of two to four seats.
+//! Goal: "Whenever this creature enlists a creature" (`Did { Enlisted }`) triggers once when the creature enlists another
+//! as it attacks, never when its controller enlists nothing, and another enlisting creature does not set it off; at
+//! tables of two to four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
 
-use crate::common::pid;
-use crate::macro_keywords::{life, macro_keyword, play, size};
+use crate::macro_keywords::{life, macro_keyword, r114_play_enlisting, size};
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
-use mtg_engine::choose::{CardsChoice, YesNoChoice};
-use mtg_engine::decision::{Answer, Decision, DecisionKind};
 use mtg_engine::turn::Step;
 use mtg_testkit::cards::{free_creature, keyworded};
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -48,20 +47,18 @@ fn an_enlist_is_an_event_of_the_enlisting_creature(
     }
     let mut driver = Driver::from_scenario(scenario)?;
     let before = life(&driver, 0);
-    let hook = move |driver: &Driver, decision: &Decision| match &decision.kind {
-        DecisionKind::ChooseCards(options) if decision.player == pid(0) => {
-            let helper = options
-                .from
-                .iter()
-                .find(|id| driver.state().object(**id).unwrap().card().name == "Helper")?;
-            Some(Answer::ChooseCards(CardsChoice(vec![*helper])))
-        }
-        DecisionKind::YesNo(_) if decision.player == pid(0) => {
-            Some(Answer::YesNo(YesNoChoice(enlist)))
-        }
-        _ => None,
+    let enlisting: &[(&str, &str)] = if enlist {
+        &[(attacker, "Helper")]
+    } else {
+        &[]
     };
-    play(&mut driver, &[attacker], &[], &hook, Step::EndCombat)?;
+    r114_play_enlisting(
+        &mut driver,
+        &[attacker],
+        enlisting,
+        &|_, _| None,
+        Step::EndCombat,
+    )?;
     assert_eq!(life(&driver, 0) - before, gained);
     assert_eq!(size(&driver, attacker).0, 2 + added);
     Ok(())

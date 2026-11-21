@@ -419,6 +419,8 @@ pub(crate) enum Special {
     EndEffect(mtg_core::ids::EffectId),
     /// Paying to ignore the effects of the card until end of turn (`GameRule::PayToIgnore`).
     IgnoreEffect,
+    /// Paying to do what this rule effect says (`GameRule::R114PayToDo`): the card is the one whose spell began it.
+    R114PayToDo(mtg_core::ids::EffectId),
 }
 
 /// A cast or activation that has begun and is not paid for yet.
@@ -830,6 +832,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             Special::Companion => companion::next(state, *player, *card),
             Special::Unlock(door) => dk1c5_unlock::next(state, *player, *card, *door),
             Special::EndEffect(effect) => e15g_paid_end::next(state, *player, *effect),
+            Special::R114PayToDo(effect) => e15g_paid_end::r114_next(state, *player, *effect),
             Special::IgnoreEffect => r109_ignore::next(state, *player, *card, choices, done),
         };
     }

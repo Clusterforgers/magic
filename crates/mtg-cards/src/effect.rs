@@ -898,6 +898,10 @@ pub enum Effect {
         what: Ref,
         /// The name of the memory.
         slot: String,
+        /// The player the objects are kept for, each apart ("cards they exiled with ~": `Pred::R114ExiledByThem`); None keeps
+        /// them for everyone.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        per: Option<Ref>,
     },
     /// The source forgets everything it remembers in `slot` (Forge: Clear Remembered).
     Forget {

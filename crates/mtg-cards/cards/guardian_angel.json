@@ -1,0 +1,14 @@
+{
+  "oracle_id": "1a91ca69-e890-41dc-866b-3aabf10c9a9c",
+  "name": "Guardian Angel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guardian Angel",
+      "oracle_fingerprint": "",
+      "abilities": [
+        {"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventCounted":"X"},"duration":"UntilEndOfTurn"}},{"Rule":{"rule":{"R114PayToDo":{"cost":"{1}","effects":[{"Shield":{"when":{"Damage":{"to":{"Target":0}}},"by":{"PreventUpTo":1},"duration":"UntilEndOfTurn"}}]}},"duration":"UntilEndOfTurn"}}]}}
+      ]
+    }
+  ]
+}

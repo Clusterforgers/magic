@@ -236,6 +236,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             attackers,
             exert,
             bands,
+            r114_enlist,
         } => {
             if state.combat.attackers_declared
                 || state
@@ -253,6 +254,7 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                     player: *player,
                     attackers: attackers.clone(),
                     exert: exert.clone(),
+                    r114_enlist: r114_enlist.clone(),
                     bands: bands.clone(),
                 });
         }

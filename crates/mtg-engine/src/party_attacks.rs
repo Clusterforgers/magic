@@ -27,6 +27,8 @@ pub(crate) struct AttackPick {
     pub(crate) exert: Vec<ObjectId>,
     /// The bands they form.
     pub(crate) bands: Vec<Vec<ObjectId>>,
+    /// The creatures their attackers enlist.
+    pub(crate) r114_enlist: Vec<(ObjectId, ObjectId)>,
 }
 
 /// Whether the players of the active team each choose their own attacks: teams that share their turns, with more than
@@ -130,6 +132,7 @@ pub(crate) fn answer(
 ) -> Result<Outcome, EngineError> {
     check_attackers(options, &attackers)?;
     crate::w11a_exert::w11a_check_exert(options, &attackers, &extras.exert)?;
+    crate::r114_enlist::r114_check_enlist(options, &attackers, &extras.r114_enlist)?;
     crate::keywords::banding::check_bands(state, &attackers, &extras.bands)?;
     crate::attack_tax::check_pick(state, player, &attackers)?;
     let note = crate::spotlight_aim::shifted(state, player, options, &attackers);
@@ -139,6 +142,7 @@ pub(crate) fn answer(
             attackers,
             exert: extras.exert,
             bands: extras.bands,
+            r114_enlist: extras.r114_enlist,
         };
         return Ok(Outcome::Events(note.into_iter().chain([chosen]).collect()));
     }
@@ -148,9 +152,13 @@ pub(crate) fn answer(
     for pick in &state.combat.attack_picks {
         extras_all.exert.extend(pick.exert.iter().copied());
         extras_all.bands.extend(pick.bands.iter().cloned());
+        extras_all
+            .r114_enlist
+            .extend(pick.r114_enlist.iter().copied());
     }
     extras_all.exert.extend(extras.exert);
     extras_all.bands.extend(extras.bands);
+    extras_all.r114_enlist.extend(extras.r114_enlist);
     declare(state, all, extras_all).map(|outcome| crate::spotlight_aim::noted(outcome, note))
 }
 
@@ -167,6 +175,10 @@ fn declare(
         .map_err(EngineError::from)
         .and_then(|()| {
             crate::w11a_exert::w11a_check_exert(&options, &attackers, &extras.exert)
+                .map_err(EngineError::from)
+        })
+        .and_then(|()| {
+            crate::r114_enlist::r114_check_enlist(&options, &attackers, &extras.r114_enlist)
                 .map_err(EngineError::from)
         });
     // What the team's whole declaration costs is refused to the team like a rule it breaks.

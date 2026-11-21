@@ -694,6 +694,10 @@ fn announcement(
             ..
         }) => crate::e15g_paid::events(state, player, *effect).ok_or_else(unexpected),
         Some(Pending {
+            special: Some(Special::R114PayToDo(effect)),
+            ..
+        }) => crate::r114_pay_to_do::events(state, player, *effect).ok_or_else(unexpected),
+        Some(Pending {
             what: What::Spell(source),
             special: Some(Special::IgnoreEffect),
             choices,

@@ -19,3 +19,17 @@ pub(super) fn next(state: &GameState, player: PlayerId, effect: EffectId) -> Nex
         events(state, player, effect)
     })
 }
+
+/// The payment decision of paying to do what the rule effect `effect` says, or nothing when `player` cannot now
+/// (`r114_pay_to_do`).
+pub(super) fn r114_next(state: &GameState, player: PlayerId, effect: EffectId) -> Next {
+    let Some((object, cost)) = crate::r114_pay_to_do::offer(state, effect) else {
+        return Next::Drop;
+    };
+    if crate::r114_pay_to_do::events(state, player, effect).is_none() {
+        return Next::Drop;
+    }
+    suspend::pay(state, player, object, cost, || {
+        crate::r114_pay_to_do::events(state, player, effect)
+    })
+}

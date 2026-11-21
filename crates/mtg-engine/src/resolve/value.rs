@@ -138,6 +138,8 @@ pub struct Scope<'a> {
     pub(crate) chooser: std::cell::Cell<Option<PlayerId>>,
     /// The player whose ability asks the `PlayersWhere` test being worked out (`Ref::Asker`).
     pub(crate) asker: Option<PlayerId>,
+    /// The player a cast permission or a look is worked out for (`Pred::R114ExiledByThem`); the controller when absent.
+    pub(crate) r114_permitted: Option<PlayerId>,
     /// The spell or ability that caused the events a trigger is being matched against (`TriggerPattern::Caused`).
     pub(crate) caused: Option<crate::triggers::CausedBy>,
     /// The permanent whose static ability gave the running ability to its source (`Ref::Granter`).
@@ -384,6 +386,18 @@ pub(crate) const fn zone_kind(zone: Zone) -> ZoneKind {
 }
 
 impl<'a> Scope<'a> {
+    /// The scope a rule of `controller` and `source` judges a card in for `player`, who would cast it or look at it.
+    pub(crate) fn r114_permitted(
+        state: &'a GameState,
+        (controller, source): (PlayerId, ObjectRef),
+        player: PlayerId,
+    ) -> Self {
+        Scope {
+            r114_permitted: Some(player),
+            ..Scope::announcing(state, controller, source)
+        }
+    }
+
     /// A scope for choosing targets: nothing is announced or bound yet.
     pub fn announcing(state: &'a GameState, controller: PlayerId, source: ObjectRef) -> Self {
         Scope {
@@ -405,6 +419,7 @@ impl<'a> Scope<'a> {
             candidate: std::cell::Cell::new(None),
             chooser: std::cell::Cell::new(None),
             asker: None,
+            r114_permitted: None,
             caused: None,
             granter: None,
             granter_player: None,
@@ -2042,6 +2057,24 @@ impl<'a> Scope<'a> {
         }))
     }
 
+    /// Whether the object is a card in exile that the player the scope works a permission or a look out for exiled with one
+    /// of the permanents the reference names: their `exiled` memory kept for that player holds it (CR 607.2a).
+    fn r114_exiled_by_them(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        let in_exile = self
+            .state
+            .object(reference.id)
+            .is_some_and(|card| card.counter() == reference.counter && card.zone() == Zone::Exile);
+        if !in_exile {
+            return Ok(false);
+        }
+        let player = self.r114_permitted.unwrap_or(self.controller);
+        let slot = crate::memory::player_slot(mtg_cards::refs::EXILED_SLOT, player);
+        Ok(self
+            .objects(named)?
+            .into_iter()
+            .any(|source| crate::memory::recall(self.state, source, &slot).contains(&reference)))
+    }
+
     /// Whether the object is a creature that one of the cards the reference names is encoded on (cipher).
     fn encoded_with(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
         let current = self
@@ -2194,6 +2227,7 @@ impl<'a> Scope<'a> {
             | Pred::AttachedTo(_) => self.w6d_pred(pred, reference, seen)?,
             Pred::Paired | Pred::PairedWith(_) => self.soulbond_pred(pred, reference)?,
             Pred::ExiledWith(named) => self.exiled_with(named, reference)?,
+            Pred::R114ExiledByThem(named) => self.r114_exiled_by_them(named, reference)?,
             Pred::EncodedWith(named) => self.encoded_with(named, reference)?,
             Pred::HauntedBy(named) => self
                 .objects(named)?
@@ -2275,6 +2309,19 @@ impl<'a> Scope<'a> {
             Pred::Transformed => double_faced(seen, true),
             Pred::EnteredThisTurn => state.object_tallied(reference, None, Tally::Entered) > 0,
             Pred::SummoningSick => crate::keywords::summoning_sick(state, reference.id),
+            Pred::R114Enlisted => state
+                .combat
+                .r114_enlisted
+                .iter()
+                .any(|(enlisting, _)| *enlisting == reference.id),
+            Pred::R114EnlistedBy(named) => {
+                let by: Vec<_> = self.objects(named)?.into_iter().map(|object| object.id).collect();
+                state
+                    .combat
+                    .r114_enlisted
+                    .iter()
+                    .any(|(enlisting, enlisted)| *enlisted == reference.id && by.contains(enlisting))
+            }
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
             Pred::DrawnThisTurn => state.object_tallied(reference, None, Tally::Dk26Drawn) > 0,
             Pred::LastDrawnThisTurn => {

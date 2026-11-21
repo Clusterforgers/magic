@@ -197,6 +197,8 @@ mod r5522_history;
 mod r6001_blocked_by_many;
 mod r6018_plot_less;
 mod r6100_history;
+mod r114_enlist;
+mod r114_pay_to_do;
 mod r6703_ignore;
 mod redeal;
 pub mod replace;

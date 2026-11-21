@@ -515,3 +515,22 @@ describe('an effect the viewer may end by paying is a play on the permanent it c
     expect(abilityPlays(options([], ending), table(object), seat).size).toBe(0)
   })
 })
+
+describe('a rule the viewer may pay to do is a play on the card whose spell began it', () => {
+  const paying: Partial<PriorityOptions> = {
+    r114_payable: [{ effect: 9, object: 10, cost: [{ Generic: 1 }] }],
+  }
+
+  it.each([
+    ['in the graveyard', placed(10, { Graveyard: ME }, ME)],
+    ['on the battlefield', placed(10, 'Battlefield', ME)],
+  ])('is worded with its price and answers with the rule effect %s', (_name, object) => {
+    const found = abilityPlays(options([], paying), table(object), ME)
+    expect(found.get(10)?.map((play) => play.action)).toEqual([{ R114PayToDo: 9 }])
+    expect(found.get(10)?.[0]?.label).toMatch(/^Pay \{1\}: /)
+  })
+
+  it('is not offered to a spectator seat', () => {
+    expect(abilityPlays(options([], paying), table(placed(10, { Graveyard: ME }, ME)), null).size).toBe(0)
+  })
+})

@@ -17,7 +17,41 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .object(source.id)
         .is_some_and(|object| object.counter() == source.counter);
     let change = match effect {
-        Effect::Remember { what, slot } => Remembered {
+        Effect::Remember {
+            what,
+            slot,
+            per: Some(per),
+        } => {
+            if !here {
+                return Ok(Run::events(Vec::new()));
+            }
+            let objects: Vec<_> = cx
+                .scope
+                .live_objects(what)?
+                .into_iter()
+                .map(crate::object::GameObject::reference)
+                .collect();
+            let events = cx
+                .scope
+                .players(per)?
+                .into_iter()
+                .map(|player| {
+                    Event::Remembered(Box::new(Remembered {
+                        source,
+                        slot: crate::memory::player_slot(slot, player),
+                        objects: objects.clone(),
+                        values: Vec::new(),
+                        replace: false,
+                    }))
+                })
+                .collect();
+            return Ok(Run::events(events));
+        }
+        Effect::Remember {
+            what,
+            slot,
+            per: None,
+        } => Remembered {
             source,
             slot: slot.clone(),
             objects: cx

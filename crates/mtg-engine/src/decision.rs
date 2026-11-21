@@ -209,6 +209,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<PaidIgnore>>", optional))]
     pub ignorable: Vec<PaidIgnore>,
+    /// The rule effects whose holder can pay now to do what they say (a special action that does not use the stack, CR
+    /// 116.2): "Until end of turn, you may pay {1} any time you could cast an instant. If you do, ..." (`r114_pay_to_do`).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<R114PaidDo>>", optional))]
+    pub r114_payable: Vec<R114PaidDo>,
     /// Whether the holder can put their companion into their hand now: a special action (CR 702.139) for {3} at sorcery
     /// timing, once a game.
     #[serde(default, skip_serializing_if = "is_false")]
@@ -411,6 +416,18 @@ pub struct PaidEnd {
     pub cost: ManaCost,
 }
 
+/// A rule effect whose holder may pay to do what it says, as often as they like while it lasts (CR 116.2).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct R114PaidDo {
+    /// The rule effect.
+    pub effect: EffectId,
+    /// The card whose spell began it.
+    pub object: ObjectId,
+    /// What each payment costs.
+    pub cost: ManaCost,
+}
+
 /// A source whose effects a player may ignore until end of turn by paying (`GameRule::PayToIgnore`, CR 116.2).
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -554,6 +571,12 @@ pub struct AttackerOption {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub banding: bool,
+    /// The creatures it may enlist as it attacks (CR 702.154a): untapped creatures its controller controls that have haste or
+    /// have been under their control since the turn began; the declaration names one with `Answer::DeclareExerting`, and
+    /// none that attacks. Left out while it has no enlist.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub r114_enlist: Vec<ObjectId>,
 }
 
 impl AttackerOption {
@@ -566,6 +589,7 @@ impl AttackerOption {
             life: Vec::new(),
             exert: false,
             banding: false,
+            r114_enlist: Vec::new(),
         }
     }
 
@@ -953,6 +977,9 @@ pub enum PriorityAction {
     /// Ignore the effects of this source until end of turn (a special action): pay what it names (it must be offered in
     /// `PriorityOptions.ignorable`).
     IgnoreEffect(ObjectId),
+    /// Pay to do what this rule effect says (a special action, CR 116.2): it must be offered in
+    /// `PriorityOptions.r114_payable`.
+    R114PayToDo(EffectId),
     /// Undo the mana ability this source was activated for, while its mana is unspent and it affected nothing else (it
     /// must be offered in `PriorityOptions.undo_mana` with no refusal): the log is cut back to before it (`mana_undo.rs`).
     UndoMana(ObjectId),
@@ -1005,6 +1032,11 @@ pub enum Answer {
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Vec<ObjectId>>>", optional))]
         bands: Vec<Vec<ObjectId>>,
+        /// The creatures attackers enlist as they attack (CR 702.154a), each (attacker, creature tapped) offered with
+        /// `AttackerOption::r114_enlist`.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<(ObjectId, ObjectId)>>", optional))]
+        r114_enlist: Vec<(ObjectId, ObjectId)>,
     },
     /// Pairs of (blocker, attacker blocked); empty means no blocks.
     DeclareBlockers(Vec<(ObjectId, ObjectId)>),

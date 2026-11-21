@@ -54,6 +54,7 @@ export function priorityText(
     (options.unlockable?.length ?? 0) > 0 ? 'unlock a door' : null,
     (options.endable?.length ?? 0) > 0 ? 'pay to end an effect' : null,
     (options.ignorable?.length ?? 0) > 0 ? 'pay to ignore an effect' : null,
+    (options.r114_payable?.length ?? 0) > 0 ? 'pay for an effect' : null,
     options.companion === true ? 'bring your companion to hand' : null,
     options.mana_abilities.length > 0 ? 'tap for mana' : null,
   ].filter((what) => what !== null)

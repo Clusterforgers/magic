@@ -13,6 +13,7 @@ import type {
   ObjectView,
   PaidEnd,
   PaidIgnore,
+  R114PaidDo,
   PlayerId,
   PriorityAction,
   PriorityOptions,
@@ -155,6 +156,17 @@ function ignorePlay(option: PaidIgnore): Play {
   }
 }
 
+/** The line of a rule its holder may pay to do again and again (a special action, CR 116.2): "Until end of turn, you may pay {1} any time you could cast an instant. If you do, ..." */
+function r114PayPlay(option: R114PaidDo, name: string): Play {
+  const cost = costText(option.cost)
+  return {
+    key: `pay-to-do-${option.effect}`,
+    label: `Pay ${cost}: ${name}'s effect`,
+    words: `Pay ${cost} for the effect of ${name}`,
+    action: { R114PayToDo: option.effect },
+  }
+}
+
 /**
  * The cards of `seat` with something to do besides casting or playing them: each ability in `options.abilities` whose
  * card the seat may use it from, and each locked door of a Room of the seat that it may unlock now. A mana ability the
@@ -169,8 +181,9 @@ export function abilityPlays(
   const doors = options.unlockable ?? []
   const ends = options.endable ?? []
   const ignores = options.ignorable ?? []
+  const payments = options.r114_payable ?? []
   const special = specialActions(options)
-  if (seat === null || abilities.length + doors.length + ends.length + ignores.length + special.length === 0)
+  if (seat === null || abilities.length + doors.length + ends.length + ignores.length + payments.length + special.length === 0)
     return NONE
   const found = new Map<ObjectId, Play[]>()
   const add = (id: ObjectId, play: Play): void => {
@@ -207,6 +220,11 @@ export function abilityPlays(
   for (const option of ignores) {
     const object = objectsById[option.object]
     if (object !== undefined && object.zone === 'Battlefield') add(option.object, ignorePlay(option))
+  }
+  // The card whose spell began the rule lies wherever it went, most often in its owner's graveyard.
+  for (const option of payments) {
+    const object = objectsById[option.object]
+    if (object !== undefined) add(option.object, r114PayPlay(option, object.name))
   }
   for (const [id, verb, action] of special) {
     const object = objectsById[id]
