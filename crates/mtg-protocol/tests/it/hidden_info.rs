@@ -30,6 +30,8 @@ const COUNT_KEYS: &[&str] = &["top", "bottom", "graveyard"];
 /// Flags such as a seat's `connected` (presence) are public and never checked: a bool names no object.
 /// Keys whose numbers are counters or seat numbers, never object ids.
 const SCALAR_KEYS: &[&str] = &[
+    // The amount of mana a mana ability made.
+    "r114_made",
     "PayLife",
     // The number of a keyword a card shows ("Toxic 1").
     "Toxic",
