@@ -582,6 +582,7 @@ impl Pending {
     }
 
     /// Takes the answer to the decision the announcement waits for.
+    #[allow(clippy::too_many_lines)]
     pub(crate) fn accept(&mut self, answered: Answered) -> Result<(), EngineError> {
         let wanted = match answered {
             Answered::Modes(_) => Phase::Modes,
@@ -820,6 +821,7 @@ fn rules_of(
 /// met (a mode or target specification with nothing to offer, a cost that cannot be paid) rewinds the announcement:
 /// a cast or activation is dropped with no event, and a triggered ability that cannot be given what it needs is
 /// removed (CR 603.3d).
+#[allow(clippy::too_many_lines)]
 pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
     let Pending {
         player,

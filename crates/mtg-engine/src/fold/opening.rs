@@ -29,6 +29,7 @@ fn expect_status(
     }
 }
 
+#[allow(clippy::too_many_lines)]
 pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
     match event {
         Event::FirstPlayerChosen { player } => {

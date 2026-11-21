@@ -2792,6 +2792,7 @@ Tireless Tracker
 Tishana, Voice of Thunder
 Titania, Nature's Force
 Titania, Proud Pummeler
+Titania, Rugged Rumbler
 Titans' Nest
 Titans' Vanguard
 Tithe Drinker

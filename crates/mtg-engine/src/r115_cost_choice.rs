@@ -143,7 +143,7 @@ mod tests {
             for (variant, chosen) in all.iter().enumerate() {
                 let parts = r115_chosen_parts(&printed, variant);
                 assert!(parts.0.iter().all(|item| chosen.0.contains(item)));
-                assert!(!parts.0.is_empty());
+                assert_ne!(parts, Cost(Vec::new()));
             }
         }
     }
