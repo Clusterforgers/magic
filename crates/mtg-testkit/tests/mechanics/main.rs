@@ -95,6 +95,7 @@ mod l294_enlists;
 mod l31a_keyword_actions;
 mod l31b_any_amount;
 mod l31d_any_number;
+mod left_for_a_new_object;
 mod lifted_gates;
 mod loops;
 mod macro_combat;
