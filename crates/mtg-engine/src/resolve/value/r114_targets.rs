@@ -6,7 +6,7 @@ use mtg_cards::refs::{Ref, Selector};
 
 use super::{ResolveError, Scope, Seen};
 use crate::choose::{Choices, Target};
-use crate::object::ObjectRef;
+use crate::object::{GameObject, ObjectRef};
 use crate::zones::Zone;
 
 impl<'a> Scope<'a> {
@@ -16,18 +16,20 @@ impl<'a> Scope<'a> {
         reference: ObjectRef,
         seen: &Seen<'a>,
     ) -> Option<&'a Choices> {
-        if seen.zone == Zone::Stack
-            && let Some(card) = seen.card.filter(|card| card.zone() == Zone::Stack)
-        {
+        let on_stack = seen.card.filter(|_| seen.zone == Zone::Stack);
+        if let Some(card) = on_stack.filter(|card| card.zone() == Zone::Stack) {
             return Some(card.choices());
         }
-        self.state
+        let kept = self
+            .state
             .tallies
             .left_spells
             .iter()
             .rev()
             .find(|kept| kept.of == reference)
-            .map(|kept| &kept.choices)
+            .map(|kept| &kept.choices);
+        // A spell being announced is read as on the stack while its card is still where it was cast from.
+        kept.or_else(|| on_stack.map(GameObject::choices))
     }
 
     /// Whether every target of the spell is one object the selector names, in one place or several.
