@@ -27,6 +27,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         NewTargets::AnotherPlayer => Way::AnotherPlayer,
         NewTargets::Choose | NewTargets::One => Way::Choose,
         NewTargets::Random => Way::Random,
+        NewTargets::R113RandomNotYours => Way::R113RandomNotYours,
     };
     // "To ~" with nothing left to name changes nothing.
     let onto = match (to, onto) {
@@ -46,6 +47,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .collect();
     let mut answers = cx.journal().iter();
     let mut events = Vec::new();
+    let mut picks = 0;
     for object in &objects {
         let spell_rules = (object.kind() != ObjectKind::Ability)
             .then(|| crate::resolve::spell_ability(state, object.id()))
@@ -72,7 +74,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 cx,
                 (chooser, controller),
                 &mut answers,
-                original,
+                (original, picks),
                 object.choices().clone(),
                 way,
             )?,
@@ -81,8 +83,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
             Retargeted::Done(choices) => choices,
         };
-        if way == Way::Random {
-            // The pick spends a substream of the generator whether or not the target changes.
+        if matches!(way, Way::Random | Way::R113RandomNotYours) {
+            // The pick spends a substream of the generator whether or not the target changes; the next object picks
+            // with the next substream.
+            picks += 1;
             events.push(r5503_random_pick(&choices));
         }
         if choices.targets != object.choices().targets {

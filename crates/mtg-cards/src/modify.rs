@@ -440,6 +440,10 @@ pub enum Duration {
     /// ("until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell"):
     /// it ends with the first turn of theirs that ends after the turn it began in. Only a delayed trigger lasts this way.
     R6700UntilEndOfTheirNextTurn(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Ref),
+    /// For as long as the condition holds (CR 611.2b: "for as long as this creature remains tapped and that creature's
+    /// power remains less than or equal to this creature's power"), read with each object of the effect as `Affected`:
+    /// it ends the first time the condition fails and does not come back. Only a continuous effect lasts this way.
+    R113While(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<Condition>),
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay

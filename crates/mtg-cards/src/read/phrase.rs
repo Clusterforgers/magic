@@ -723,6 +723,7 @@ pub(super) fn duration(value: &Duration) -> String {
         Duration::R6700UntilEndOfTheirNextTurn(_) => {
             "until the end of that player's next turn".to_owned()
         }
+        Duration::R113While(_) => "for as long as its condition holds".to_owned(),
         Duration::WhileHasCounter(counter) => {
             format!("while it has a {} counter", counter_text(counter))
         }

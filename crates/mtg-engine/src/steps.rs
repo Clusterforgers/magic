@@ -562,6 +562,12 @@ fn cleanup(state: &GameState) -> Progress {
             });
         }
     }
+    // CR 514.2: damage wears off and "until end of turn" effects end in a batch of their own, so what triggers on their
+    // ending (a lost control) triggers while the turn and its "this turn" delayed triggers last (CR 514.3a).
+    let worn = wear_off(state);
+    if !worn.is_empty() {
+        return Progress::Events(worn);
+    }
     // CR 514.3a: an ability that triggered during cleanup gets a round of priority, then cleanup begins again.
     if !state.stack().is_empty() {
         return Progress::Events(vec![grant(state)]);
@@ -569,11 +575,29 @@ fn cleanup(state: &GameState) -> Progress {
     Progress::Events(end_turn(state))
 }
 
-/// Ends the turn: damage wears off (but on a permanent that keeps it, `r5516_damage`), "until end of turn" effects end,
-/// and the next player's turn begins.
+/// Ends the turn: what is left to wear off ends (`wear_off`), and the next player's turn begins.
 ///
 /// The next turn goes to the next player in turn order after the active player, who may have left the game.
 pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
+    let mut events = wear_off(state);
+    events.extend(crate::r377_skips::r377_their_turn_over(state));
+    events.extend(pool_emptying(state, ManaLasts::Turn));
+    if turn_limit_reached(state) {
+        // The turn is wound down first, so the result reads the life totals after the mana burn.
+        return if events.is_empty() {
+            vec![Event::GameEnded {
+                result: highest_life(state),
+            }]
+        } else {
+            events
+        };
+    }
+    next_turn_events(state, events)
+}
+
+/// What wears off in the cleanup step (CR 514.2): marked damage (but on a permanent that keeps it, `r5516_damage`),
+/// "until end of turn" effects and rules, and "until end of turn" copy effects.
+fn wear_off(state: &GameState) -> Vec<Event> {
     let mut events = crate::r5516_damage::r5516_cleared(state);
     events.extend(
         state
@@ -589,7 +613,6 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
             .filter(|e| ends_with_turn(state, &e.duration, e.turn, e.controller))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
-    events.extend(crate::r377_skips::r377_their_turn_over(state));
     // "Until end of turn" copy effects end with the other effects of the turn (CR 514.2).
     events.extend(
         state
@@ -606,17 +629,11 @@ pub(crate) fn end_turn(state: &GameState) -> Vec<Event> {
                 r707_static: None,
             }),
     );
-    events.extend(pool_emptying(state, ManaLasts::Turn));
-    if turn_limit_reached(state) {
-        // The turn is wound down first, so the result reads the life totals after the mana burn.
-        return if events.is_empty() {
-            vec![Event::GameEnded {
-                result: highest_life(state),
-            }]
-        } else {
-            events
-        };
-    }
+    events
+}
+
+/// The events that begin the next turn after `events`.
+fn next_turn_events(state: &GameState, mut events: Vec<Event>) -> Vec<Event> {
     let (passed, spent, active, extra) = next_turn(state);
     events.extend(passed);
     events.push(Event::TurnBegan {

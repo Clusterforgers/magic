@@ -568,6 +568,7 @@ fn draw_counted_then_lose(ability: &Ability) -> Vec<String> {
 fn delayed_this_turn(effects: &[Effect]) -> Vec<String> {
     let [
         Effect::DelayedTrigger {
+            intervening_if: None,
             when,
             once: false,
             this_turn: false,

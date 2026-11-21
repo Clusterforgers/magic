@@ -386,6 +386,7 @@ fn target_deals_damage(
     };
     let [
         Effect::DelayedTrigger {
+            intervening_if: None,
             when: TriggerPattern::Batch(inner),
             once: false,
             this_turn: true,

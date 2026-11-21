@@ -38,6 +38,7 @@ fn steps() -> [Effect; 2] {
             duration: Duration::Forever,
         },
         Effect::DelayedTrigger {
+            intervening_if: None,
             when: TriggerPattern::StepBegins {
                 step: Step::Upkeep,
                 whose: Ref::You,

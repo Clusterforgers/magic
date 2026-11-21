@@ -892,6 +892,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "TargetedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::R113CopyOf(who) => {
+                self.uses("Pred", "R113CopyOf");
+                self.reference(who, Kind::Object);
+            }
             Pred::FromSource(source) => {
                 self.uses("Pred", "FromSource");
                 self.at("source", |w| w.selector(source));
@@ -1090,6 +1094,7 @@ impl<'a> Walker<'a> {
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::R113CopyOf(_)
             | Pred::FromSource(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
@@ -5415,6 +5420,9 @@ impl Walker<'_> {
                 if *to == NewTargets::Random {
                     w.uses("NewTargets", "Random");
                 }
+                if *to == NewTargets::R113RandomNotYours {
+                    w.uses("NewTargets", "R113RandomNotYours");
+                }
                 match (to, onto) {
                     (NewTargets::One, Some(onto)) => {
                         w.at("onto", |w| w.reference(onto, Kind::Object));
@@ -5487,6 +5495,13 @@ impl Walker<'_> {
                     w.uses("Duration", "WhileMonarch");
                     w.at("duration", |w| w.reference(who, Kind::Player));
                 }
+                if let Duration::R113While(condition) = duration {
+                    w.uses("Duration", "R113While");
+                    // The condition reads each object of the effect as `Affected`, as the changes of a static ability do.
+                    let in_static = std::mem::replace(&mut w.scope.in_static, true);
+                    w.at("duration", |w| w.condition(condition));
+                    w.scope.in_static = in_static;
+                }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
@@ -5537,6 +5552,7 @@ impl Walker<'_> {
                     Duration::WhileEnchanted
                         | Duration::WhileTapped
                         | Duration::WhileMonarch(_)
+                        | Duration::R113While(_)
                         | Duration::UntilItsControllersNextUntapStep
                 ) {
                     w.uses("Exchange", &format!("Duration.{}", tag_of(duration)));
@@ -5587,6 +5603,7 @@ impl Walker<'_> {
                     Duration::WhileEnchanted
                         | Duration::WhileTapped
                         | Duration::WhileMonarch(_)
+                        | Duration::R113While(_)
                         | Duration::UntilItsControllersNextUntapStep
                 ) {
                     w.uses("Rule", &format!("Duration.{}", tag_of(duration)));
@@ -5779,9 +5796,17 @@ impl Walker<'_> {
                 w.body_checks(targets, effects, true);
                 w.scope = saved;
             }
-            Effect::DelayedTrigger { when, effects, .. } => {
+            Effect::DelayedTrigger {
+                when,
+                effects,
+                intervening_if,
+                ..
+            } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
+                if let Some(condition) = intervening_if {
+                    w.at("intervening_if", |w| w.condition(condition));
+                }
                 // A delayed trigger on a block or on damage names the one who did it, as any triggered ability does.
                 let dealer = std::mem::replace(&mut w.scope.dealer, true);
                 // The trigger it leaves behind remembers the X of the spell or ability that sets it up; one on another

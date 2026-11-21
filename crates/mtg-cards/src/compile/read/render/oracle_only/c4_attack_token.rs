@@ -24,6 +24,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             ..
         },
         Effect::DelayedTrigger {
+            intervening_if: None,
             until: None,
             when:
                 TriggerPattern::StepBegins {

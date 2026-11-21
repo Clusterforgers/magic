@@ -3250,6 +3250,14 @@ fn delayed(
         };
         // A batch pattern finds one cause for each group of the events together ("whenever that creature deals damage").
         for cause in causes(pattern, happened, &scope) {
+            // CR 603.4: its "if" is checked as the event happens.
+            if let Some(condition) = waiting.intervening_if() {
+                let mut judged = Scope::triggered(state, controller, source, &cause);
+                judged.bindings = &waiting.bindings;
+                if !judged.holds(condition).unwrap_or(false) {
+                    continue;
+                }
+            }
             if waiting.once {
                 if used.delayed.contains(&waiting.id()) {
                     break;
@@ -4200,6 +4208,7 @@ mod tests {
             effects: gain(),
             targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],
+            intervening_if: None,
             kept: None,
             origin: AbilitySource::default(),
         }))

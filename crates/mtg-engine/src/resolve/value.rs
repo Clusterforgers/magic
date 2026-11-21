@@ -2420,6 +2420,7 @@ impl<'a> Scope<'a> {
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
+            | Pred::R113CopyOf(_)
             | Pred::GreatestAmong { .. }
             | Pred::LeastAmong { .. }
             | Pred::HasKeywordNamed(_)

@@ -425,6 +425,7 @@ Charred Graverobber
 Chartooth Cougar
 Chatterfang, Squirrel General
 Chatterstorm
+Chef's Kiss
 Chemister's Insight
 Chicken Troupe
 Chief Engineer
@@ -2502,6 +2503,7 @@ Stocking the Pantry
 Stoic Angel
 Stoke the Flames
 Stolen Identity
+Stolen Uniform
 Stonecoil Serpent
 Stonewood Invocation
 Stonybrook Banneret

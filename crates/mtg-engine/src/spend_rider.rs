@@ -150,6 +150,7 @@ fn delayed(
         effects: rider.effects.clone(),
         targets: Vec::new(),
         bindings: vec![(SPELL.to_owned(), vec![Target::Object(spell)])],
+        intervening_if: None,
         kept: None,
         origin: crate::abilities::AbilitySource::default(),
     })

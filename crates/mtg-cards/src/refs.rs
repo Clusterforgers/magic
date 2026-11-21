@@ -705,6 +705,8 @@ pub enum Pred {
     /// Is a spell or ability on the stack whose every target is an object the selector names, with at least one target
     /// ("that targets only this creature": the same creature in several places counts).
     R6104TargetsOnly(Selector),
+    /// Is a copy on the stack of one of the spells or abilities the reference names (CR 707.10: "the spell and the copy").
+    R113CopyOf(Ref),
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
     GreatestAmong {
         /// The characteristic compared.

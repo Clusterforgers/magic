@@ -65,6 +65,7 @@ mod r111_kefnet;
 mod r111_trigger_on_trigger;
 mod r112_control;
 mod r112_untap_type;
+mod r113_control;
 mod r113_copy_reflexive;
 mod r113_curse;
 mod r113_one_graveyard;

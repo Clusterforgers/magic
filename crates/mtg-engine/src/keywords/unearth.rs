@@ -84,6 +84,7 @@ fn activation(cost: &Cost) -> Ability {
                         duration: Duration::Forever,
                     },
                     Effect::DelayedTrigger {
+                        intervening_if: None,
                         until: None,
                         when: TriggerPattern::StepBegins {
                             step: Step::End,

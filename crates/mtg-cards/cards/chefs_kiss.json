@@ -1,0 +1,45 @@
+{
+  "oracle_id": "3d177c04-9aa3-44b8-bbe4-df5de23a4ce6",
+  "name": "Chef's Kiss",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chef's Kiss",
+      "oracle_fingerprint": "97db3f4d274193cb1a1a87e7c8de6074",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    "SingleTarget",
+                    { "AnyOf": [{ "R6104TargetsOnly": [] }, { "TargetsPlayer": "EachPlayer" }] }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "Forever"
+                }
+              },
+              { "CopySpell": { "what": { "Target": 0 } } },
+              { "ChangeTargets": { "what": { "Target": 0 }, "to": "R113RandomNotYours" } },
+              {
+                "ChangeTargets": {
+                  "what": { "Each": ["Spell", { "R113CopyOf": { "Target": 0 } }] },
+                  "to": "R113RandomNotYours"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

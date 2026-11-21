@@ -39,6 +39,7 @@ impl Writer<'_> {
         returned(now, exiled, false)?;
         let [
             Effect::DelayedTrigger {
+                intervening_if: None,
                 until: None,
                 when:
                     TriggerPattern::StepBegins {

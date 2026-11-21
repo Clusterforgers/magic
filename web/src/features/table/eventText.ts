@@ -316,6 +316,7 @@ function durationWords(
     if ('UntilEndOfTurnOrRolled' in duration)
       return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
     if ('R6700UntilEndOfTheirNextTurn' in duration) return " until the end of that player's next turn"
+    if ('R113While' in duration) return ' for as long as its condition holds'
     if ('R109ThatCombat' in duration) return ' during the added combat phase'
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`

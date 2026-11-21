@@ -1,7 +1,7 @@
 {
   "oracle_id": "cce84cf1-5574-43b0-9d75-72e6451403a7",
   "name": "Old Man of the Sea",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Old Man of the Sea",
@@ -9,9 +9,46 @@
       "abilities": [
         { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 280 }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    {
+                      "Compare": {
+                        "stat": "Power",
+                        "op": "Le",
+                        "to": { "Stat": { "of": "This", "stat": "Power" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": {
+                    "R113While": {
+                      "All": [
+                        { "Matches": { "subject": "This", "selector": ["Tapped"] } },
+                        {
+                          "Compare": {
+                            "left": { "Stat": { "of": "Affected", "stat": "Power" } },
+                            "op": "Le",
+                            "right": { "Stat": { "of": "This", "stat": "Power" } }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       ]

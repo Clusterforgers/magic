@@ -62,6 +62,7 @@ impl Pass<'_> {
             until: None,
             effects: effects.to_vec(),
             targets: Vec::new(),
+            intervening_if: None,
             bindings: vec![(COPIED.to_owned(), vec![Target::Object(copied)])],
             kept: None,
             origin,

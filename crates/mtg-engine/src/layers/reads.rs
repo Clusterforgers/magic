@@ -435,6 +435,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
+        | Pred::R113CopyOf(who)
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::ProtectedBy(who)

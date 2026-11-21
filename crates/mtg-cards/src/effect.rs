@@ -88,6 +88,9 @@ pub enum NewTargets {
     /// "Reselect its target at random": the only target becomes a target chosen at random from among all its legal
     /// targets, the current one included (CR 115.7d).
     Random,
+    /// "Reselect the targets at random ... The new targets can't be you or a permanent you control": as `Random`, among
+    /// the legal targets other than the effect's controller and the permanents they control; with none, the target stays.
+    R113RandomNotYours,
 }
 
 /// A phase an effect adds to the turn (CR 500.8).
@@ -2393,6 +2396,10 @@ pub enum Effect {
         targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
+        /// An intervening "if" ("when you lose control of that Equipment this turn, if it's attached to a creature you
+        /// control, ..."; CR 603.4): checked as it would trigger and as it resolves.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        intervening_if: Option<Condition>,
     },
     /// A reflexive triggered ability ("when you do", CR 603.12): when the step before it was carried out, a trigger with
     /// its own `targets` goes on the stack the next time a player would receive priority and runs `effects`; with no

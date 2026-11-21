@@ -20,6 +20,7 @@ pub fn w2g_next_cast(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let effects = copy_spells::copy(r);
     (r.cast_spell, r.cast_itself) = outer;
     Some(vec![Effect::DelayedTrigger {
+        intervening_if: None,
         until: None,
         when: TriggerPattern::SpellCast { what, by: Ref::You },
         once: true,
@@ -32,6 +33,7 @@ pub fn w2g_next_cast(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// The words of [`w2g_next_cast`] without the first capital and the period, from the copy's own words.
 pub(super) fn w2g_next_cast_text(effect: &Effect) -> Option<String> {
     let Effect::DelayedTrigger {
+        intervening_if: None,
         until: None,
         when: when @ TriggerPattern::SpellCast { by: Ref::You, .. },
         once: true,
