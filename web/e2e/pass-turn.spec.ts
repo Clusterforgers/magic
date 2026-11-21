@@ -23,7 +23,11 @@ test('Pass until my turn passes through the other turn and turns itself off at t
     await Promise.all(
       players.map(({ page }) => page.getByRole('button', { name: 'Keep', exact: true }).click()),
     )
-    await expect(yourTurn(ada.page).or(yourTurn(bo.page))).toBeVisible()
+    await expect
+      .poll(async () => (await yourTurn(ada.page).count()) + (await yourTurn(bo.page).count()), {
+        timeout: 30_000,
+      })
+      .toBe(1)
     const activeFirst = (await yourTurn(ada.page).count()) > 0
     const [active, waiting] = activeFirst ? [ada, bo] : [bo, ada]
 
