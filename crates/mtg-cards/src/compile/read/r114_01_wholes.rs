@@ -123,6 +123,19 @@ mod tests {
             ("your opponents control", "you control"),
             ("power and toughness", "power"),
             ("as it entered", "this turn"),
+            ("nonland card", "land card"),
+            ("a charge counter", "a time counter"),
+            ("the last card exiled", "the first card exiled"),
+            ("type and amount of mana spent", "type of mana spent"),
+            ("Elves", "Goblins"),
+            ("deathtouch", "lifelink"),
+            ("only once each turn", "only twice each turn"),
+            ("this creature produced", "this creature spent"),
+            (
+                "a creature card from your graveyard",
+                "an artifact card from your graveyard",
+            ),
+            (" Activate only as a sorcery.", ""),
         ];
         for (_, text) in R114_01_SHAPES.iter() {
             for (from, to) in swaps {

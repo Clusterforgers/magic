@@ -697,7 +697,11 @@ tapped?: boolean,
  * The sources of the mana spent on its cost, for one that costs mana ("if mana from a Treasure was spent to
  * activate it"); empty otherwise.
  */
-r113_spent_from?: Array<SpentFrom>, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
+r113_spent_from?: Array<SpentFrom>, 
+/**
+ * How many mana the source produced with it ("the amount of mana this creature produced").
+ */
+r114_made?: number, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
 /**
  * Who ordered them.
  */

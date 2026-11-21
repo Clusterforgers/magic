@@ -13,6 +13,9 @@ pub enum Action {
     ActivatedLoyalty,
     /// Any ability was activated, a mana ability (CR 605.3b) included; `what` is its source.
     ActivatedAny,
+    /// A mana ability was activated and resolved (CR 605.3a, 605.3b); `what` is its source, and `Amount::Triggering` is
+    /// how many mana its source produced with it ("whenever a mana ability of this creature resolves").
+    R114ManaAbilityResolved,
     /// A triggered ability triggered; `what` is its source.
     AbilityTriggered,
     /// A land was played (CR 305.1), never one put onto the battlefield by an effect; `what` is the land.
@@ -233,6 +236,9 @@ impl Action {
                 ("activate a loyalty ability", "activates a loyalty ability")
             }
             Action::ActivatedAny => ("activate an ability", "activates an ability"),
+            Action::R114ManaAbilityResolved => {
+                ("resolve a mana ability", "resolves a mana ability")
+            }
             Action::AbilityTriggered => ("trigger an ability", "triggers an ability"),
             Action::PlayedLand => ("play a land", "plays a land"),
             Action::Transformed => ("transform a permanent", "transforms a permanent"),

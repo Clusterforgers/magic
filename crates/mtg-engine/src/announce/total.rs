@@ -245,8 +245,13 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
         What::Ability(ability) => match ctx.ability? {
             rules @ Ability::Activated { cost, .. } => {
                 let x = choices.x.unwrap_or(0);
-                let cost =
-                    crate::free_activation::cost(ctx.state, ctx.player, (*ability, rules), cost);
+                let cost = crate::free_activation::r114_cost_with_picks(
+                    ctx.state,
+                    ctx.player,
+                    (*ability, rules),
+                    cost,
+                    choices.cost_picks(),
+                );
                 let price = Price::announced_in(
                     &cost,
                     ctx.state,

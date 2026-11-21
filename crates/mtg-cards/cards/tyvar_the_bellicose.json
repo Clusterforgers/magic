@@ -1,0 +1,47 @@
+{
+  "oracle_id": "a21d321b-2172-4577-a05b-399a019e3448",
+  "name": "Tyvar the Bellicose",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tyvar the Bellicose",
+      "oracle_fingerprint": "f80896ce86ebb5501722dba5502346b0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": { "Attacks": { "what": [{ "Subtype": "Elf" }, { "ControlledBy": "You" }] } }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Did": { "action": "R114ManaAbilityResolved", "what": ["This"] } },
+                    "limit": "OncePerTurn",
+                    "effects": [
+                      { "PutCounters": { "on": "This", "counter": "+1/+1", "count": "Triggering" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

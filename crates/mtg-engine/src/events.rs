@@ -706,6 +706,10 @@ pub enum Event {
             ts(optional, as = "Option<Vec<mtg_cards::spend::SpentFrom>>")
         )]
         r113_spent_from: Vec<mtg_cards::spend::SpentFrom>,
+        /// How many mana the source produced with it ("the amount of mana this creature produced").
+        #[serde(default, skip_serializing_if = "is_zero")]
+        #[cfg_attr(feature = "ts", ts(optional, as = "Option<u32>"))]
+        r114_made: u32,
     },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),
