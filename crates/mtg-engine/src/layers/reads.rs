@@ -69,7 +69,9 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::AddKeywords(_)
         | Modification::RemoveKeyword(_)
         | Modification::RemoveKeywordKind(_)
-        | Modification::LockKeyword(_) => Traits::KEYWORDS.or(Traits::ACTIVATED),
+        | Modification::LockKeyword(_)
+        // A sticker's ability may be a keyword.
+        | Modification::R114StickerAbilities(_) => Traits::KEYWORDS.or(Traits::ACTIVATED),
         Modification::LoseAbilities
         | Modification::LoseAbilitiesExceptMana
         | Modification::LoseAbility(_) => Traits::KEYWORDS.or(Traits::RULES).or(Traits::ACTIVATED),
@@ -143,7 +145,9 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddProtectionFromChosenCardType
         | Wanted::RemoveKeyword(_)
         | Wanted::RemoveKeywordKind(_)
-        | Wanted::LockKeyword(_) => Traits::KEYWORDS.or(Traits::ACTIVATED),
+        | Wanted::LockKeyword(_)
+        // A sticker's ability may be a keyword.
+        | Wanted::R114StickerAbilitiesOf(_) => Traits::KEYWORDS.or(Traits::ACTIVATED),
         Wanted::LoseAbilities
         | Wanted::LoseAbilitiesExceptMana
         | Wanted::LoseThisAbility
@@ -199,6 +203,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::GainAbilitiesOf(who)
         | Wanted::R111GainNonManaAbilitiesOf(who)
         | Wanted::R6702GainActivatedAndTriggeredOf(who) => reads_of_ref(who).or(Traits::ACTIVATED),
+        // Only which objects the reference names is read: the stickers on them are no characteristic.
+        Wanted::R114StickerAbilitiesOf(who) => reads_of_ref(who),
         // The keywords of the other objects are read.
         Wanted::KeywordsOf { from, .. } => Traits::KEYWORDS.or(reads_of_ref(from)),
         // The creature types of the other object are read.

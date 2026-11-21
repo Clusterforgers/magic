@@ -6,6 +6,7 @@ import type { CardTypes } from "./CardTypes";
 import type { ColorSet } from "./ColorSet";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
+import type { R114StickerGiven } from "./R114StickerGiven";
 import type { R612TextBox } from "./R612TextBox";
 import type { Subtype } from "./Subtype";
 import type { Supertype } from "./Supertype";
@@ -14,7 +15,7 @@ import type { TextWord } from "./TextWord";
 /**
  * What an effect changes.
  */
-export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSupertype": Supertype } | { "RemoveSupertype": Supertype } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddNameWords": string } | { "SetName": string } | { "GrantText": string } | { "AddColors": ColorSet } | { "AddKeyword": unknown } | { "AddKeywords": unknown } | { "RemoveKeyword": unknown } | { "RemoveKeywordKind": "Landwalk" | "Protection" | "Ward" | "BandsWithOther" } | { "LockKeyword": unknown } | { "GrantAbility": unknown } | { "GainAbilities": Array<Borrowed> } | "LoseAbilities" | "LoseAbilitiesExceptMana" | { "LoseAbility": AbilityRef } | { "SetController": PlayerId } | { "ChangeText": { 
+export type Modification = { "AddType": CardType } | { "RemoveType": CardType } | { "SetTypes": CardTypes } | { "AddSupertype": Supertype } | { "RemoveSupertype": Supertype } | { "AddSubtype": Subtype } | { "SetCreatureTypes": Array<Subtype> } | { "SetLandTypes": Array<Subtype> } | "AddAllCreatureTypes" | { "SetColors": ColorSet } | { "AddNameWords": string } | { "SetName": string } | { "GrantText": string } | { "AddColors": ColorSet } | { "AddKeyword": unknown } | { "AddKeywords": unknown } | { "RemoveKeyword": unknown } | { "RemoveKeywordKind": "Landwalk" | "Protection" | "Ward" | "BandsWithOther" } | { "LockKeyword": unknown } | { "GrantAbility": unknown } | { "GainAbilities": Array<Borrowed> } | { "R114StickerAbilities": Array<R114StickerGiven> } | "LoseAbilities" | "LoseAbilitiesExceptMana" | { "LoseAbility": AbilityRef } | { "SetController": PlayerId } | { "ChangeText": { 
 /**
  * The word replaced.
  */

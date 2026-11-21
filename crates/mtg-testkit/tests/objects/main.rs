@@ -81,6 +81,8 @@ mod r110_cost_taps;
 mod r110_named_search;
 mod r110_opponent_draws;
 mod r110_secret;
+mod r114_04_sticker_kicker;
+mod r114_04_stickers;
 mod r305c_copy_counters;
 mod r306c_attractions;
 mod r371_copy_except;

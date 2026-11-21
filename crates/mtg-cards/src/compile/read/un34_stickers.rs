@@ -64,6 +64,7 @@ pub(super) fn un34_put_sticker(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             on,
             kind,
             up_to,
+            r114_free_at_most: None,
         }]);
     }
     r.need("put")?;
@@ -74,6 +75,20 @@ pub(super) fn un34_put_sticker(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         0
     };
     let kind = kind(r);
+    if up_to == 0 && r.words("sticker with ticket cost") {
+        // "an ability sticker with ticket cost X or less on it without paying that sticker's ticket cost".
+        let most = r114_ticket_cost(r.take_word()?)?;
+        r.need("or less on")?;
+        let on = on(r)?;
+        r.need("without paying that sticker's ticket cost")?;
+        return Some(vec![Effect::PutSticker {
+            who: Ref::You,
+            on,
+            kind,
+            up_to,
+            r114_free_at_most: Some(most),
+        }]);
+    }
     r.need(if up_to == 0 {
         "sticker on"
     } else {
@@ -85,7 +100,25 @@ pub(super) fn un34_put_sticker(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         on,
         kind,
         up_to,
+        r114_free_at_most: None,
     }])
+}
+
+/// A ticket cost: "X" or a number.
+fn r114_ticket_cost(word: &str) -> Option<crate::value::Amount> {
+    match word {
+        "X" => Some(crate::value::Amount::X),
+        digits => digits.parse().ok().map(crate::value::Amount::Fixed),
+    }
+}
+
+/// The words of a ticket cost [`r114_ticket_cost`] reads.
+fn r114_ticket_cost_text(most: &crate::value::Amount) -> Option<String> {
+    match most {
+        crate::value::Amount::X => Some("X".to_owned()),
+        crate::value::Amount::Fixed(number) if *number >= 0 => Some(number.to_string()),
+        _ => None,
+    }
 }
 
 /// What `un34_put_sticker` read, written back for "you".
@@ -94,9 +127,19 @@ pub(super) fn un34_put_text(
     on: &Selector,
     kind: Option<StickerKind>,
     up_to: u32,
+    free_at_most: Option<&crate::value::Amount>,
 ) -> Option<String> {
     if *who != Ref::You {
         return None;
+    }
+    if let Some(most) = free_at_most {
+        let article = kind.map_or("a", StickerKind::article);
+        let word = kind.map_or(String::new(), |kind| format!("{} ", kind.word()));
+        let on = (up_to == 0 && on.0 == [Pred::This]).then_some("it")?;
+        return Some(format!(
+            "put {article} {word}sticker with ticket cost {} or less on {on} without paying that sticker's ticket cost",
+            r114_ticket_cost_text(most)?
+        ));
     }
     let word = kind.map_or(String::new(), |kind| format!("{} ", kind.word()));
     if on.0 == [Pred::This] {

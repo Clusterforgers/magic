@@ -607,6 +607,7 @@ const RUNS: &[&str] = &[
     "Rule.R6700FirstFlipsHeads",
     "Rule.R6700VillainousAgain",
     "Rule.R6402ChangeRoll",
+    "Rule.R114StickerKicker",
     "Rule.R113ExchangeRoll",
     "Rule.R113NoteExiledManaValue",
     "Rule.ExtraDie",
@@ -750,6 +751,7 @@ const RUNS: &[&str] = &[
     "Mod.GrantAbility",
     "Mod.GainAbilitiesOf",
     "Mod.R6702GainActivatedAndTriggeredOf",
+    "Mod.R114StickerAbilitiesOf",
     "Mod.R111GainNonManaAbilitiesOf",
     "Mod.LoseAbilities",
     "Mod.LoseAbilitiesExceptMana",
@@ -1347,6 +1349,7 @@ const RUNS: &[&str] = &[
     "Pred.Kicked",
     "Pred.AdditionalCostPaid",
     "Cost.R110ChooseNumber",
+    "Cost.R114RollDie",
     "Effect.Move.R110AsWithCounters",
     "Cost.R110Choose",
 ];

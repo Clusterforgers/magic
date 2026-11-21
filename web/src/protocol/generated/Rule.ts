@@ -183,7 +183,23 @@ by: number,
 /**
  * Only once each turn for the permanent.
  */
-once: boolean, } } | { "R113NoteExiled": { 
+once: boolean, } } | { "R114StickerKicker": { 
+/**
+ * Who casts the spells.
+ */
+players: Array<PlayerId>, 
+/**
+ * The permanent with the rule.
+ */
+source: ObjectRef, 
+/**
+ * The spells.
+ */
+spells: unknown, 
+/**
+ * The sticker kicker cost.
+ */
+cost: unknown, } } | { "R113NoteExiled": { 
 /**
  * The permanent with the rule, whose memory holds the notes.
  */

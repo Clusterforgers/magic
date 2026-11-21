@@ -204,6 +204,7 @@ mod r113_04_wholes;
 mod r114_01_wholes;
 mod r114_02_wholes;
 mod r114_03_wholes;
+mod r114_04_wholes;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -477,6 +478,7 @@ pub use r4708_reveal::r4708_reveal_group_texts;
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };
+pub use selectors::keyword_text;
 pub use static_pairs::texts as static_pair_texts;
 pub use stations::block as station_block;
 pub use target_phrases::target_phrases;
@@ -642,6 +644,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     } else if let Some(found) = r112_01_wholes::r112_01_pair_read(text) {
         found
     } else if let Some(found) = r113_04_wholes::r113_04_pair_read(text) {
+        found
+    } else if let Some(found) = r114_04_wholes::r114_04_pair_read(text) {
         found
     } else if let Some(found) = r111_01_wholes::r111_01_pair_read(text) {
         found
@@ -816,6 +820,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r113_04_wholes::r113_04_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r114_04_wholes::r114_04_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r112_04_wholes::r112_04_whole_read(text) {

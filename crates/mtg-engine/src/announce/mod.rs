@@ -36,6 +36,7 @@ mod price;
 mod r109_ignore;
 mod r110_cast_choice;
 mod r110_chosen_number;
+mod r114_sticker_kick;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
@@ -377,6 +378,8 @@ pub(crate) struct Done {
     /// The value the player picked for a choice made as an additional cost (`r110_cast_choice`), by position in the
     /// options, which may be more than a `u8` holds.
     pub(crate) r110_picked: Option<usize>,
+    /// The sticker the player picked for the next sticker kicker paid (`r114_sticker_kick`), by position in the options.
+    pub(crate) r114_picked: Option<usize>,
     /// The opponents the controller picked, in order, to choose the targets of the specifications "of an opponent's
     /// choice" (`targets::r112_chooser`).
     pub(crate) r112_choosers: Vec<PlayerId>,
@@ -627,6 +630,7 @@ impl Pending {
             Answered::Way(pick) if wanted == Phase::Parts => {
                 self.done.w2f_kind_picked = u8::try_from(pick).ok();
                 self.done.r110_picked = Some(pick);
+                self.done.r114_picked = Some(pick);
             }
             Answered::Way(pick) if wanted == Phase::Targets => self.done.r112_picked = Some(pick),
             Answered::Way(pick) => self.done.way_picked = Some(pick),

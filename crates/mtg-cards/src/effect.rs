@@ -1361,6 +1361,10 @@ pub enum Effect {
         /// sticker that must be put when 0.
         #[serde(default, skip_serializing_if = "crate::effect::is_zero_u32")]
         up_to: u32,
+        /// Only a sticker whose ticket cost is this or less, put on without paying its tickets ("an ability sticker with
+        /// ticket cost X or less on it without paying that sticker's ticket cost"); a paid sticker when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r114_free_at_most: Option<Amount>,
     },
     /// "Choose creatures you control one at a time until each creature you control has been chosen. Each of those
     /// creatures gets +1/+1 until end of turn for each creature chosen before it." (Parade!): the controller orders the

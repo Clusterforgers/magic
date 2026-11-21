@@ -191,6 +191,7 @@ const COSTS: Record<string, string> = {
   Waterbend: 'Waterbend',
   Forage: 'Forage',
   Craft: 'Craft',
+  R114RollDie: 'Roll a die',
 }
 
 const ORDINARY_COSTS =

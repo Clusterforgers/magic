@@ -190,6 +190,9 @@ pub enum Modification {
     /// The object has the activated and triggered abilities printed on the cards the reference names, wherever they are
     /// (layer 6): "~ has all activated and triggered abilities of the last chosen card".
     R6702GainActivatedAndTriggeredOf(Ref),
+    /// The object has the abilities of the ability stickers on the objects the reference names, in any zone (layer 6, CR
+    /// 123): "has all abilities of ability stickers on this Equipment".
+    R114StickerAbilitiesOf(Ref),
     /// The object loses all its abilities (layer 6); abilities granted after it still count.
     LoseAbilities,
     /// The object loses all its abilities except mana abilities (layer 6, CR 605): "lose all abilities except mana
@@ -308,6 +311,7 @@ impl Modification {
             | Modification::GainAbilitiesOf(_)
             | Modification::R111GainNonManaAbilitiesOf(_)
             | Modification::R6702GainActivatedAndTriggeredOf(_)
+            | Modification::R114StickerAbilitiesOf(_)
             | Modification::LoseThisAbility
             | Modification::LosePrinted(_)
             | Modification::LoseAbilities
@@ -1208,6 +1212,18 @@ pub enum GameRule {
         sides: u32,
         /// The memory slot of the permanent.
         slot: String,
+    },
+    /// "Creature spells you cast have sticker kicker {1}." (CR 123, the Wicker Picker rulings): as a player in the group
+    /// casts a spell of `spells`, they may pay `cost` in addition, once for each such rule; for each payment they get a
+    /// ticket and may put a sticker on the spell just before it becomes cast. A spell paid for it counts as kicked for
+    /// other objects, never for its own kicker.
+    R114StickerKicker {
+        /// Who casts the spells.
+        who: Ref,
+        /// The spells.
+        spells: Selector,
+        /// The sticker kicker cost.
+        cost: crate::cost::Cost,
     },
     /// "Note the mana value of each card as it's put into exile.": the permanent notes the number for itself as each card
     /// goes to exile, with no stack; `Amount::R113GreatestNoted` reads the notes of this turn.

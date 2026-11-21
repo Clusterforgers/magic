@@ -764,6 +764,12 @@ fn granted_ability(state: &GameState, grant: Grant) -> Option<Arc<Ability>> {
         Grant::Ring { player, level } => crate::ring::ability_given(state, player, level),
         // Read with its holder (`r111_lent::r111_read`).
         Grant::R111Lent { .. } => None,
+        Grant::R114Sticker(at) => match state.sticker(at) {
+            Some(mtg_cards::ability::Sticker::Ability { ability, .. }) => {
+                Some(Arc::new((**ability).clone()))
+            }
+            _ => None,
+        },
     }
 }
 
@@ -825,6 +831,14 @@ fn granted_keyword(
             _ => None,
         },
         Grant::R111Lent { .. } | Grant::Ring { .. } => None,
+        // A sticker that is a keyword gives it.
+        Grant::R114Sticker(at) => match state.sticker(at) {
+            Some(mtg_cards::ability::Sticker::Ability { ability, .. }) => match &**ability {
+                Ability::Keyword(keyword) => Some(keyword.clone()),
+                _ => None,
+            },
+            _ => None,
+        },
     }
 }
 

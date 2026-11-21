@@ -4,6 +4,7 @@ import type { CounterKind } from "./CounterKind";
 import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
+import type { R114StickerKick } from "./R114StickerKick";
 import type { Snapshot } from "./Snapshot";
 import type { SpentFrom } from "./SpentFrom";
 
@@ -69,4 +70,9 @@ players?: Array<PlayerId>,
  * The value the caster chose as an additional cost while casting the spell ("choose a creature type", CR 601.2b):
  * the spell, its copies and the permanent it becomes read it as the value their source chose.
  */
-r110_chosen?: Chosen, };
+r110_chosen?: Chosen, 
+/**
+ * The sticker kickers paid (`Rule::R114StickerKicker`): each with its index among the optional costs and the
+ * sticker its caster chose to put on the spell, none when they put none.
+ */
+r114_stickers?: Array<R114StickerKick>, };

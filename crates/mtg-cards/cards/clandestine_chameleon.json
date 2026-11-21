@@ -1,7 +1,7 @@
 {
   "oracle_id": "886e00ab-c694-4839-b3fb-7a72048db4b2",
   "name": "Clandestine Chameleon",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Clandestine Chameleon",
@@ -25,9 +25,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 112, "end": 228 }
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "R114StickerAbilitiesOf": {
+                  "Each": [
+                    "Other",
+                    { "OwnedBy": "You" },
+                    { "AnyOf": [{ "In": "Battlefield" }, { "In": "Graveyard" }] }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

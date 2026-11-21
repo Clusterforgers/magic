@@ -580,6 +580,7 @@ pub fn un34_stickerer(name: &str) -> Arc<CardDefinition> {
                     ]),
                     kind: None,
                     up_to: 0,
+                    r114_free_at_most: None,
                 }],
             }),
     )

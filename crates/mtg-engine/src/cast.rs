@@ -67,6 +67,8 @@ pub(crate) fn activation_events(
     let mut events = Vec::new();
     let mut shots = Vec::new();
     let mut removed = 0u32;
+    // The result of a die rolled as a cost, the X of the ability (`CostItem::R114RollDie`).
+    let mut rolled_x = None;
     match &*rules {
         Ability::Activated { cost, .. } => {
             let cost = &*crate::free_activation::cost(state, player, (ability, &rules), cost);
@@ -112,6 +114,10 @@ pub(crate) fn activation_events(
                 &price.parts,
                 choices,
             ));
+            if let Some((rolled, result)) = r114_cost_roll(state, player, cost) {
+                events.extend(rolled);
+                rolled_x = Some(result);
+            }
             // The costs that move the source come before the activation, which names the source as it was (CR 113.7a): it is
             // sacrificed from the battlefield, discarded from the hand, or exiled from the zone it is in.
             if cost.0.contains(&CostItem::SacrificeSelf) {
@@ -169,10 +175,12 @@ pub(crate) fn activation_events(
         ability: ability.ability,
         origin: ability.source,
         controller: player,
-        choices: choices
-            .clone()
-            .with_cost_shots(shots)
-            .with_counters_removed(removed),
+        choices: Choices {
+            x: rolled_x.or(choices.x),
+            ..choices.clone()
+        }
+        .with_cost_shots(shots)
+        .with_counters_removed(removed),
         cause: None,
         delayed: None,
     })));
@@ -189,6 +197,31 @@ pub(crate) fn activation_events(
         });
     }
     Some(events)
+}
+
+/// The die a cost rolls as it is paid (`CostItem::R114RollDie`, CR 706, 602.2h): the roll from the game's random stream,
+/// logged with the payment, and its result, which is the ability's X. None for a cost that rolls nothing.
+fn r114_cost_roll(
+    state: &GameState,
+    player: PlayerId,
+    cost: &mtg_cards::cost::Cost,
+) -> Option<(Vec<Event>, u32)> {
+    let sides = cost.0.iter().find_map(|item| match item {
+        CostItem::R114RollDie(sides) => Some(*sides),
+        _ => None,
+    })?;
+    let rolled = crate::resolve::prim::roll_dice::rolls(state, player, sides, 1);
+    let result = rolled.last().copied()?;
+    let events = rolled
+        .iter()
+        .map(|result| Event::DieRolled {
+            player,
+            sides,
+            result: *result,
+            natural: None,
+        })
+        .collect();
+    Some((events, result))
 }
 
 /// The payment decision for `cost`, which `player` pays with `sources` for `object`: the spell cast, the source of
@@ -588,6 +621,7 @@ pub(crate) fn spell_events(
     let mut shots = parts::photographed(state, parts, choices.cost_picks());
     shots.extend(parts::rmt5_top_shots(state, player, parts));
     shots.extend(parts::r300_random_shots(state, player, parts));
+    events.extend(r114_sticker_kicks(state, player, spell, choices));
     events.extend(spell_cast(
         player,
         spell,
@@ -605,6 +639,34 @@ pub(crate) fn spell_events(
         });
     }
     Some(events)
+}
+
+/// The events of the sticker kickers the spell was paid for, just before it becomes cast (the Wicker Picker rulings):
+/// for each, the caster gets a ticket, then the sticker chosen for it, if any, is put on the spell for its tickets.
+fn r114_sticker_kicks(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    choices: &Choices,
+) -> Vec<Event> {
+    let Some(on) = state
+        .object(spell)
+        .map(crate::object::GameObject::reference)
+    else {
+        return Vec::new();
+    };
+    let mut events = Vec::new();
+    for kick in choices.r114_stickers() {
+        events.push(Event::CountersChanged(crate::counters::CountersChanged {
+            on: crate::choose::Target::Player(player),
+            counter: crate::un34_stickers::ticket(),
+            delta: 1,
+        }));
+        if let Some(at) = kick.sticker {
+            events.extend(crate::un34_stickers::put_events(state, at, on, true));
+        }
+    }
+    events
 }
 
 /// `events` of a cast with the `Unprepared` of the permanent first when the spell is a copy of its spell face: the

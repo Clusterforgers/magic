@@ -3737,9 +3737,19 @@ impl<'a> Scope<'a> {
 
     /// How many times the optional costs of `kind` were paid (`paid_costs`), read against the costs the card prints.
     fn payments(&self, kind: OptionalKind) -> usize {
-        self.state
-            .object(self.source.id)
-            .map_or(0, |source| payments(source.card(), self.paid_costs(), kind))
+        let Some(source) = self.state.object(self.source.id) else {
+            return 0;
+        };
+        // A sticker kicker is no cost of the spell's own: its "if this spell was kicked" does not read it.
+        let mut stickers = self.choices.r114_sticker_kicks();
+        stickers.extend(source.choices().r114_sticker_kicks());
+        let own: Vec<usize> = self
+            .paid_costs()
+            .iter()
+            .copied()
+            .filter(|index| !stickers.contains(index))
+            .collect();
+        payments(source.card(), &own, kind)
     }
 
     /// Whether the spell the source is, or the permanent it became, was cast off sorcery timing, while it is still the

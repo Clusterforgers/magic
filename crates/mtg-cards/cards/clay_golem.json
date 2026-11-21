@@ -1,16 +1,16 @@
 {
   "oracle_id": "8773c2ea-ef41-4403-bb52-07f0d70d9bbe",
   "name": "Clay Golem",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Clay Golem",
       "oracle_fingerprint": "bf35b24dc7857d16b7e137357c10dadd",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 142 }
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, { "R114RollDie": 8 }],
+            "effects": [{ "Monstrosity": { "count": "X" } }]
           }
         },
         {

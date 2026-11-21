@@ -239,6 +239,8 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `${loses} ${word} and can't have or gain it`
   }
   if ('GrantAbility' in modification || 'GainAbilities' in modification) return `${gains} an ability`
+  if ('R114StickerAbilities' in modification)
+    return `${group ? 'have' : 'has'} the abilities of ability stickers on other objects`
   if ('R612TextBoxOf' in modification)
     return `${group ? 'have' : 'has'} the text box of ${n.card(modification.R612TextBoxOf.donor)}`
   if ('GrantText' in modification) return `${gains} “${modification.GrantText}”`

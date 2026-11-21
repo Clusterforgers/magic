@@ -453,8 +453,10 @@ Circuits Act
 Citadel Gate
 Citanul Hierophants
 Clan Defiance
+Clandestine Chameleon
 Clandestine Meddler
 Clash of Titans
+Clay Golem
 Cleansing Nova
 Clever Concealment
 Clever Lumimancer
@@ -3018,6 +3020,7 @@ Whispering Snitch
 White Auracite
 Whiteout
 Wibbly-wobbly, Timey-wimey
+Wicker Picker
 Wickerbough Elder
 Wickersmith's Tools
 Wild Growth

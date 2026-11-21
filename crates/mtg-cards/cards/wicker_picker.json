@@ -1,0 +1,24 @@
+{
+  "oracle_id": "15a71d11-da00-4c1a-bf64-ec3f627ed6a3",
+  "name": "Wicker Picker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wicker Picker",
+      "oracle_fingerprint": "515bd3cdf3cee659ef6b5fe26f4e21bb",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R114StickerKicker": {
+                "who": "You",
+                "spells": [{ "Type": "Creature" }],
+                "cost": "{1}"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
