@@ -110,7 +110,13 @@ pub(crate) fn forget_object(state: &mut GameState, event: &Event) {
             if *to == Zone::Battlefield {
                 r113_carry_kept(state, id);
             }
-            for held in state.memory.values_mut() {
+            let chosen = crate::replace::r114_choose_object::r114_chosen_slot();
+            // The object chosen as a permanent entered stays named as it was (its copy outlives it).
+            for (_, held) in state
+                .memory
+                .iter_mut()
+                .filter(|((_, slot), _)| *slot != chosen)
+            {
                 held.retain(|named| !matches!(named, Held::Object(object) if object.id == id));
             }
             let forgotten = state.object(id).and_then(|left| {

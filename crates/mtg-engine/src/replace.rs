@@ -876,6 +876,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::R109EntersAttached(_)
         | ReplaceBy::R612MayExchangeTextBoxes(_)
+        | ReplaceBy::R114ChooseObject(_)
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -954,6 +955,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::ChooseAfter { .. }
                 | ReplaceBy::R109EntersAttached(_)
                 | ReplaceBy::R612MayExchangeTextBoxes(_)
+                | ReplaceBy::R114ChooseObject(_)
         )
     )
 }
@@ -2881,6 +2883,9 @@ impl Pass<'_> {
             ReplaceBy::R612MayExchangeTextBoxes(with) => {
                 self.r612_may_exchange(at, candidate, with, (object, controller), applied)
             }
+            ReplaceBy::R114ChooseObject(what) => {
+                self.r114_choose_object(at, candidate, what, (object, controller), applied)
+            }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
                 self.e14b_pay_or_graveyard(at, candidate, paid, (object, controller), applied)
@@ -4596,6 +4601,7 @@ mod lg1_draws;
 mod r109_enters_attached;
 mod r113_copy_reflexive;
 mod r113_text_boxes;
+pub(crate) mod r114_choose_object;
 mod reveal;
 
 mod amplify;

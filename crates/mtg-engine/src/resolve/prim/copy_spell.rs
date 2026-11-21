@@ -180,7 +180,7 @@ fn left_spell<'a>(cx: &'a Cx<'_>, what: &Ref) -> Result<Option<&'a KeptSpell>, R
 }
 
 /// Whether the spell says "This spell can't be copied." (CR 707.10): no effect makes a copy of it.
-fn r302_uncopyable(definition: &mtg_cards::CardDefinition) -> bool {
+pub(super) fn r302_uncopyable(definition: &mtg_cards::CardDefinition) -> bool {
     crate::ability_reader::printed_rules(definition).any(|rule| {
         matches!(
             &**rule,
@@ -287,62 +287,28 @@ pub(super) fn each_target_choices(
     ability: &mtg_cards::ability::Ability,
     selector: &mtg_cards::refs::Selector,
 ) -> Result<Vec<crate::choose::Choices>, ResolveError> {
-    use crate::choose::{Target, announced_specs, legal_from, spec_bases};
+    use crate::choose::Target;
+    use crate::r114_sole_target::{SpellSeen, r114_sole_target};
     let state = cx.state();
-    let original = spell.choices();
-    let mut named = original.targets.iter().flatten();
-    let Some(only) = named.next().copied() else {
+    let seen = SpellSeen {
+        origin: spell.reference(),
+        ability,
+        choices: spell.choices(),
+        judge: crate::characteristics::controller_of(state, spell.id()).unwrap_or(player),
+    };
+    let Some(sole) = r114_sole_target(state, &seen) else {
         return Ok(Vec::new());
     };
-    if named.any(|other| *other != only) {
-        return Ok(Vec::new());
-    }
-    let judge = crate::characteristics::controller_of(state, spell.id()).unwrap_or(player);
-    let specs = announced_specs(ability, &original.modes);
-    let bases = spec_bases(ability, &original.modes);
-    let places: Vec<usize> = (0..original.targets.len())
-        .filter(|at| original.targets[*at].contains(&only))
-        .collect();
-    let mut legal_everywhere: Option<Vec<Target>> = None;
-    for at in &places {
-        let Some(spec) = specs.get(*at) else {
-            return Ok(Vec::new());
-        };
-        let legal = legal_from(
-            state,
-            spec,
-            spell.reference(),
-            &[],
-            judge,
-            None,
-            original.x,
-            original.modes_chooser(),
-            &original.targets[bases.get(*at).copied().unwrap_or(0).min(*at)..*at],
-        );
-        legal_everywhere = Some(match legal_everywhere {
-            None => legal,
-            Some(kept) => kept.into_iter().filter(|t| legal.contains(t)).collect(),
-        });
-    }
     let mut found = Vec::new();
-    for target in legal_everywhere.unwrap_or_default() {
+    for target in &sole.legal {
         let wanted = match target {
-            Target::Object(object) => cx.scope.selects(selector, object)?,
+            Target::Object(object) => cx.scope.selects(selector, *object)?,
             Target::Player(_) => players,
         };
-        if target == only || !wanted {
+        if *target == sole.only || !wanted {
             continue;
         }
-        let mut choices = original.clone();
-        choices.forget_cost_picks();
-        for at in &places {
-            for slot in &mut choices.targets[*at] {
-                if *slot == only {
-                    *slot = target;
-                }
-            }
-        }
-        found.push(choices);
+        found.push(sole.retargeted(spell.choices(), *target));
     }
     Ok(found)
 }

@@ -1,7 +1,7 @@
 {
   "oracle_id": "2518a4f2-607f-41bb-9389-2009138d6b09",
   "name": "Metamorphic Alteration",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Metamorphic Alteration",
@@ -9,15 +9,15 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 56 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "R114ChooseObject": [{ "Type": "Creature" }] }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 57, "end": 109 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "R707CopyOf": { "of": "R114ChosenObject" } }]
           }
         }
       ]

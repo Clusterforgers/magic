@@ -733,6 +733,10 @@ impl<'a> Walker<'a> {
                 self.expect(Kind::Either, want);
             }
             Ref::Delved | Ref::R6702CraftedWith => self.expect(Kind::Object, want),
+            Ref::R114ChosenObject => {
+                self.uses("Ref", "R114ChosenObject");
+                self.expect(Kind::Object, want);
+            }
             Ref::LastExiledWith { on, filter } => {
                 self.reference(on, Kind::Object);
                 self.at("filter", |w| w.selector(filter));
@@ -899,6 +903,14 @@ impl<'a> Walker<'a> {
             Pred::R113CopyOf(who) => {
                 self.uses("Pred", "R113CopyOf");
                 self.reference(who, Kind::Object);
+            }
+            Pred::R114CouldTarget(who) => {
+                self.uses("Pred", "R114CouldTarget");
+                self.reference(who, Kind::Object);
+            }
+            Pred::R114TargetsOnlyOne(inner) => {
+                self.uses("Pred", "R114TargetsOnlyOne");
+                self.selector(inner);
             }
             Pred::FromSource(source) => {
                 self.uses("Pred", "FromSource");
@@ -1101,6 +1113,8 @@ impl<'a> Walker<'a> {
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
             | Pred::R113CopyOf(_)
+            | Pred::R114CouldTarget(_)
+            | Pred::R114TargetsOnlyOne(_)
             | Pred::FromSource(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
@@ -4004,6 +4018,7 @@ impl Walker<'_> {
             Ref::Affected
             | Ref::LastExiledWith { .. }
             | Ref::Delved
+            | Ref::R114ChosenObject
             | Ref::R6702CraftedWith
             | Ref::Candidate
             | Ref::This
@@ -4584,6 +4599,10 @@ impl Walker<'_> {
             }
             Effect::R113PhaseIn { what } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Effect::R114CopySpellOnto { what, onto } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("onto", |w| w.reference(onto, Kind::Either));
             }
             Effect::PhaseOut {
                 what, duration, held, ..
@@ -7767,6 +7786,12 @@ impl Walker<'_> {
                     self.problem("only the Equipment itself enters attached");
                 }
                 self.at("to", |w| w.selector(to));
+            }
+            ReplaceBy::R114ChooseObject(what) => {
+                if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {
+                    self.problem("only the permanent itself chooses an object as it enters");
+                }
+                self.at("what", |w| w.selector(what));
             }
             ReplaceBy::R612MayExchangeTextBoxes(with) => {
                 if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {

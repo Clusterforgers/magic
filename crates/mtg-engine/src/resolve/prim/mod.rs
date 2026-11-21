@@ -35,6 +35,7 @@ mod l31a_performed;
 mod let_amount;
 mod r110_moves;
 pub(crate) mod r110_remove_put;
+mod r114_copy_onto;
 mod r282_plot;
 mod r306_add_step;
 mod r370_balance;
@@ -299,6 +300,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::TapOrUntap { .. } => w5d_tap_or_untap::run(cx, effect),
         Effect::PhaseOut { .. } => phase_out::run(cx, effect),
         Effect::R113PhaseIn { .. } => phase_out::r113_run_in(cx, effect),
+        Effect::R114CopySpellOnto { .. } => r114_copy_onto::run(cx, effect),
         Effect::Rephase => rephase::run(cx, effect),
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
@@ -485,7 +487,7 @@ mod tests {
         {"R6702CountersPerVote":{"tally":"votes","counter":{"Other":"stun"}}},
         {"R110ChooseSecretly":"Opponent"},
         {"R111KeepChosen":"name"}, "R112NoteManaSpent",
-        {"R112GuessNumber":{"min":1,"max":5,"guesser":"Opponents","as":"number","guess_as":"guess","guesser_as":"guesser"}}, {"R112Piles":{"what":"This","piles":["left","right"]}}, {"R112RollStore":{"sides":6,"dice":5,"slot":"stored"}}, {"R112RerollStored":{"sides":6,"slot":"stored"}}, {"R113PhaseIn":{"what":"This"}},
+        {"R112GuessNumber":{"min":1,"max":5,"guesser":"Opponents","as":"number","guess_as":"guess","guesser_as":"guesser"}}, {"R112Piles":{"what":"This","piles":["left","right"]}}, {"R112RollStore":{"sides":6,"dice":5,"slot":"stored"}}, {"R112RerollStored":{"sides":6,"slot":"stored"}}, {"R113PhaseIn":{"what":"This"}}, {"R114CopySpellOnto":{"what":"This","onto":"This"}},
         {"R112NoteChosen":"name"},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
         {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
@@ -688,6 +690,7 @@ mod tests {
         "Effect.R112RollStore",
         "Effect.R112RerollStored",
         "Effect.R113PhaseIn",
+        "Effect.R114CopySpellOnto",
         "Effect.R112NoteChosen",
         "Effect.Rule",
         "Effect.Regenerate",

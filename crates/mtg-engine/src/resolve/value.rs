@@ -35,6 +35,7 @@ mod r402_cast;
 pub(crate) mod r5520_atoms;
 mod r5523_attacked;
 pub(crate) use r5520_atoms::{R5520_PAID, r5520_took};
+mod r114_targets;
 mod r6003_total;
 mod soulbond;
 mod w21a_atoms;
@@ -776,11 +777,16 @@ impl<'a> Scope<'a> {
     /// cast reads what it announced, and before anything is announced a target is found where some object in play
     /// matches; a spell or ability on the stack reads its own targets.
     /// Whether the spell or ability on the stack has a target and every one of its targets is an object `inner` names.
-    fn r6104_targets_only(&self, inner: &Selector, seen: &Seen<'_>) -> Result<bool, ResolveError> {
-        let Some(card) = seen.card.filter(|_| seen.zone == Zone::Stack) else {
+    fn r6104_targets_only(
+        &self,
+        inner: &Selector,
+        reference: ObjectRef,
+        seen: &Seen<'a>,
+    ) -> Result<bool, ResolveError> {
+        let Some(choices) = self.r114_stack_choices(reference, seen) else {
             return Ok(false);
         };
-        let targets: Vec<Target> = card.choices().targets.iter().flatten().copied().collect();
+        let targets: Vec<Target> = choices.targets.iter().flatten().copied().collect();
         if targets.is_empty() {
             return Ok(false);
         }
@@ -799,21 +805,21 @@ impl<'a> Scope<'a> {
         &self,
         inner: &Selector,
         reference: ObjectRef,
-        seen: &Seen<'_>,
+        seen: &Seen<'a>,
     ) -> Result<bool, ResolveError> {
-        if seen.zone != Zone::Stack {
+        let casting = self.casting.is_some_and(|(cast, _)| cast == reference.id);
+        if seen.zone != Zone::Stack && self.r114_stack_choices(reference, seen).is_none() {
             return Ok(false);
         }
-        let casting = self.casting.is_some_and(|(cast, _)| cast == reference.id);
         let chosen: Vec<ObjectRef> = match self.cast_targets {
             Some(CastTargets {
                 judging: Some(specs),
                 ..
             }) if casting => return self.judged_target(inner, reference, specs),
             Some(CastTargets { choices, .. }) if casting => choices.targeted_objects(),
-            _ => seen
-                .card
-                .map_or_else(Vec::new, |card| card.choices().targeted_objects()),
+            _ => self
+                .r114_stack_choices(reference, seen)
+                .map_or_else(Vec::new, Choices::targeted_objects),
         };
         for target in chosen {
             if self.selects(inner, target)? {
@@ -1508,6 +1514,7 @@ impl<'a> Scope<'a> {
             Ref::Paid => self.paid(),
             Ref::Convoked => self.convoked(),
             Ref::Delved => self.r5511_delved(),
+            Ref::R114ChosenObject => self.r114_chosen_object(),
             Ref::R6702CraftedWith => self.r6702_crafted_with(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::LastExiledWith { on, filter } => self.r5511_last_exiled(on, filter)?,
@@ -2321,7 +2328,11 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|card| card.id == reference.id),
             Pred::Targeting(inner) => self.targets_match(inner, reference, seen)?,
-            Pred::R6104TargetsOnly(inner) => self.r6104_targets_only(inner, seen)?,
+            Pred::R6104TargetsOnly(inner) => self.r6104_targets_only(inner, reference, seen)?,
+            Pred::R114TargetsOnlyOne(inner) => {
+                self.r114_targets_only_one(inner, reference, seen)?
+            }
+            Pred::R114CouldTarget(spell) => self.r114_could_target(spell, reference)?,
             Pred::ControlledBy(who) => self.players(who)?.contains(&seen.controller),
             Pred::OwnedBy(who) => self.players(who)?.contains(&seen.owner),
             Pred::ProtectedBy(who) => {
