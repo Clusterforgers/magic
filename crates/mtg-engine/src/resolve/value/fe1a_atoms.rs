@@ -106,6 +106,7 @@ impl Scope<'_> {
             Pred::CastBefore(named) => self.r4703_cast_before(named, reference)?,
             Pred::Blocks(named) => self.fe1a_blocked(named, reference, true)?,
             Pred::TargetedBy(named) => self.fe1a_targeted_by(named, reference)?,
+            Pred::R113CopyOf(named) => self.r113_copy_of(named, reference)?,
             Pred::SingleTarget => {
                 seen.zone == Zone::Stack
                     && seen
@@ -132,6 +133,13 @@ impl Scope<'_> {
                         .any(|keyword| named_keyword(keyword, name))
                 }),
             },
+            Pred::R113HasWay(way) => seen.card.is_some_and(|card| {
+                crate::ability_reader::abilities_of(self.state, card.id())
+                    .iter()
+                    .any(|(_, ability)| {
+                        matches!(&**ability, mtg_cards::ability::Ability::AltCast { way: found, .. } if found == way)
+                    })
+            }),
             Pred::LeastAmong { stat, group } => self.fe1a_greatest(*stat, group, seen, true)?,
             Pred::Suspended => {
                 seen.zone == Zone::Exile
@@ -338,6 +346,22 @@ impl Scope<'_> {
                 .filter(|object| object.counter() == source.counter && object.zone() == Zone::Stack)
                 .is_some_and(|object| object.choices().targeted_objects().contains(&reference))
         }))
+    }
+
+    /// Whether the object is a copy on the stack of one of the spells or abilities `named` names (CR 707.10).
+    fn r113_copy_of(&self, named: &Ref, reference: ObjectRef) -> Result<bool, ResolveError> {
+        let Some(of) = self
+            .state
+            .object(reference.id)
+            .filter(|object| object.zone() == Zone::Stack)
+            .and_then(crate::object::GameObject::copied_from)
+        else {
+            return Ok(false);
+        };
+        Ok(self
+            .objects(named)?
+            .iter()
+            .any(|original| original.id == of.id))
     }
 
     /// Whether no object the group selector matches has more (or, with `least`, less) of the characteristic than the object.

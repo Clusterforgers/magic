@@ -27,6 +27,7 @@ fn season(by: Option<Ref>, effect: bool, change: ReplaceBy) -> Arc<CardDefinitio
                     counter: None,
                     by,
                     effect,
+                    r113_keyword: None,
                 },
                 by: change,
                 condition: None,

@@ -27,6 +27,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                 counter: None,
                 by: None,
                 effect: false,
+                r113_keyword: None,
             },
         by: ReplaceBy::Add(1),
         condition: None,

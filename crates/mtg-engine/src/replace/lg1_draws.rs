@@ -56,14 +56,23 @@ impl Pass<'_> {
     }
 }
 
-/// Names the top card in each draw as the events before it leave the library, in order.
-pub(super) fn lg1_sequential_draws(state: &GameState, events: &mut [Event]) {
+/// Names the top card in each draw as the events before it leave the library, in order, and drops the discard of a card
+/// that is not in the hand by then: when a replacement of a draw ("instead draw it, reveal it ... discard it") has its
+/// draw replaced in turn ("instead reveal it ... put it into the graveyard"), the card never reaches the hand, and only a
+/// card in the hand can be discarded (CR 701.9a).
+pub(super) fn lg1_sequential_draws(state: &GameState, events: &mut Vec<Event>) {
     let mut state = state.clone();
-    for event in events.iter_mut() {
-        if touches_library(event) {
+    events.retain_mut(|event| {
+        if let Event::CardDiscarded { player, object } = event
+            && !state.zone(Zone::Hand(*player)).contains(object)
+        {
+            return false;
+        }
+        if touches_library(event) || moves_card(event) {
             *event = lg1_step(&mut state, event);
         }
-    }
+        true
+    });
 }
 
 /// Applies a library event to `state`; a draw takes the card on top now. The event as applied.

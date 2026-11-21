@@ -1,0 +1,38 @@
+{
+  "oracle_id": "3d92e5ce-9d30-4203-9f84-6c36117440cf",
+  "name": "Spellweaver Volute",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spellweaver Volute",
+      "oracle_fingerprint": "fd64cc23f716836608d5f1b47defba34",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Instant" }, { "In": "Graveyard" }] } },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Sorcery" }], "by": "You" } },
+            "effects": [
+              { "CopyCard": { "what": "Attached", "as": "copy" } },
+              { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "Exile": { "what": "Attached" } },
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "Type": "Instant" }, { "In": "Graveyard" }] },
+                        "as": "next"
+                      }
+                    },
+                    { "Attach": { "what": "This", "to": { "Bound": "next" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

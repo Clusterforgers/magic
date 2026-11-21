@@ -2373,6 +2373,9 @@ impl<'a> Scope<'a> {
                 Some(value) => op.holds(value, self.amount(to)?),
                 None => false,
             },
+            Pred::R113Parity { stat, odd } => {
+                Self::stat(seen, *stat).is_some_and(|value| (value % 2 != 0) == *odd)
+            }
             Pred::Test { left, op, right } => {
                 // The amounts read the object judged as `Ref::Candidate`.
                 let before = self.candidate.replace(Some(reference));
@@ -2389,6 +2392,7 @@ impl<'a> Scope<'a> {
             | Pred::RingBearer
             | Pred::FaceDown
             | Pred::SpentFrom { .. }
+            | Pred::R113SnowOfOwnColor
             | Pred::TargetsPlayer(_)
             | Pred::GravedThisTurn
             | Pred::GravedThisCombat
@@ -2419,9 +2423,11 @@ impl<'a> Scope<'a> {
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
             | Pred::SingleTarget
+            | Pred::R113CopyOf(_)
             | Pred::GreatestAmong { .. }
             | Pred::LeastAmong { .. }
             | Pred::HasKeywordNamed(_)
+            | Pred::R113HasWay(_)
             | Pred::Kicked
             | Pred::AdditionalCostPaid
             | Pred::Suspended => self.fe1a_pred(pred, reference, seen)?,
@@ -2602,6 +2608,17 @@ impl<'a> Scope<'a> {
                 },
                 None => 0,
             },
+            Amount::R113Stored { on, slot, index } => match self.objects(on)?.first() {
+                Some(source) => crate::memory::recall_numbers(
+                    self.state,
+                    *source,
+                    &crate::memory::r112_lasting(slot),
+                )
+                .get(usize::try_from(*index).unwrap_or(usize::MAX))
+                .copied()
+                .unwrap_or(0),
+                None => 0,
+            },
             Amount::R112MostAlike { on, slot } => match self.objects(on)?.first() {
                 Some(source) => {
                     let numbers = crate::memory::recall_numbers(
@@ -2631,6 +2648,42 @@ impl<'a> Scope<'a> {
                 stat: StatKind::R6500StationValue,
             } => self.r6500_station_value(of)?,
             Amount::R374AtMost(inner, most) => self.r374_at_most(inner, *most)?,
+            Amount::R113NotedWords { on } => match self.objects(on)?.first() {
+                Some(source) => {
+                    i64::try_from(crate::memory::r112_noted_words(self.state, *source).len())
+                        .unwrap_or(i64::MAX)
+                }
+                None => 0,
+            },
+            Amount::R113GreatestNoted { on } => match self.objects(on)?.first() {
+                Some(source) => crate::memory::recall_numbers(
+                    self.state,
+                    *source,
+                    &crate::memory::r113_noted_slot(self.state.turn().number()),
+                )
+                .into_iter()
+                .max()
+                .unwrap_or(0),
+                None => 0,
+            },
+            Amount::R113SharesWithAnother { of, stat } => {
+                let values: Vec<Option<i64>> = self
+                    .objects(of)?
+                    .iter()
+                    .map(|object| {
+                        self.seen(self.as_it_left(*object))
+                            .and_then(|seen| Self::stat(&seen, *stat))
+                    })
+                    .collect();
+                let shared = values.iter().enumerate().filter(|(at, value)| {
+                    value.is_some()
+                        && values
+                            .iter()
+                            .enumerate()
+                            .any(|(other, seen)| other != *at && seen == *value)
+                });
+                i64::try_from(shared.count()).unwrap_or(i64::MAX)
+            }
             Amount::Stat { of, stat } => self
                 .objects(of)?
                 .iter()
@@ -3923,6 +3976,15 @@ impl<'a> Scope<'a> {
             }
             Condition::CastWith(way) => self.cast_way() == Some(*way),
             Condition::R112CastByOwnAbility => self.r112_cast_by_own_ability(),
+            Condition::R113SpentFromTriggering { from, least } => self.cause.is_some_and(|cause| {
+                let spent: u32 = cause
+                    .r113_spent_from
+                    .iter()
+                    .filter(|source| from.holds(&source.traits))
+                    .map(|source| source.count)
+                    .sum();
+                spent >= *least
+            }),
             Condition::CastOffSorceryTiming => self.off_sorcery_timing(),
             Condition::ManaSpent(mana) => self.mana_spent().contains(mana),
             Condition::AsCast(inner) => self.held_as_cast(inner),
@@ -4714,6 +4776,7 @@ mod tests {
             against: None,
             counters: Vec::new(),
             r111_paid: Vec::new(),
+            r113_spent_from: Vec::new(),
             event: None,
             ability: None,
         };

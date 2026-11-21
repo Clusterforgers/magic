@@ -1250,6 +1250,7 @@ fn effect() -> impl Strategy<Value = Effect> {
             (bound_name(), amount()).prop_map(|(bind, amount)| Effect::Let { bind, amount }),
             (trigger_pattern(), any::<bool>(), list()).prop_map(|(when, once, effects)| {
                 Effect::DelayedTrigger {
+                    intervening_if: None,
                     until: None,
                     when,
                     once,
@@ -1390,6 +1391,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                         counter,
                         by: None,
                         effect: false,
+                        r113_keyword: None,
                     }),
                 (reference(), any::<bool>())
                     .prop_map(|(who, caused_own)| ReplaceWhen::LifeGain { who, caused_own }),
@@ -1465,6 +1467,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             counters: Vec::new(),
                             except_if: Vec::new(),
                             r109_embalmed: Vec::new(),
+                            r707_when_you_do: Vec::new(),
                         }
                     }),
             ],

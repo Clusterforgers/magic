@@ -4,6 +4,7 @@ import type { CounterKind } from "./CounterKind";
 import type { ObjectRef } from "./ObjectRef";
 import type { R111CauseEvent } from "./R111CauseEvent";
 import type { Snapshot } from "./Snapshot";
+import type { SpentFrom } from "./SpentFrom";
 import type { Target } from "./Target";
 
 /**
@@ -50,6 +51,12 @@ counters?: Array<[CounterKind, number]>,
  * discarded card"), which `Ref::Paid` reads as its targets are chosen; empty for any other trigger.
  */
 r111_paid?: Array<Target>, 
+/**
+ * The sources of the mana spent to cast the spell or activate the ability the event is about ("if mana from a
+ * Treasure was spent to cast it or activate it"), kept from the event as a mana ability leaves nothing on the stack;
+ * empty for any other trigger.
+ */
+r113_spent_from?: Array<SpentFrom>, 
 /**
  * The event that made the ability trigger, kept so "whenever ... causes a triggered ability to trigger" can read it
  * (CR 603.2); for an ability that triggered on another one triggering, the event that made that one trigger.

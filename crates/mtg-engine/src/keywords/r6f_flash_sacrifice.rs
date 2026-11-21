@@ -52,6 +52,7 @@ impl KeywordRules for FlashSacrifice {
                     differ: None,
                 },
                 Effect::DelayedTrigger {
+                    intervening_if: None,
                     until: None,
                     when: TriggerPattern::StepBegins {
                         step: Step::Cleanup,

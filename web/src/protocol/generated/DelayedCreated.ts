@@ -56,6 +56,10 @@ targets?: unknown,
  */
 effects: unknown, 
 /**
+ * Its intervening "if" (CR 603.4), checked as it would trigger and as it resolves.
+ */
+intervening_if?: unknown, 
+/**
  * The names the resolution had bound when it set the trigger up, which the delayed ability reads as they were.
  */
 bindings: Array<[string, Array<Target>]>, 

@@ -9,6 +9,7 @@ use crate::trigger::{Step, TriggerPattern};
 /// The upkeep line of a pact, or `None` for any other step.
 fn r408_pact_line(effect: &Effect) -> Option<String> {
     let Effect::DelayedTrigger {
+        intervening_if: None,
         when:
             TriggerPattern::StepBegins {
                 step: Step::Upkeep,

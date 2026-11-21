@@ -285,6 +285,10 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::AddLandTypeChosen(_)
             | mtg_cards::modify::Modification::ChangeTextChosen { .. }
             | mtg_cards::modify::Modification::ChangeTextChosenTo { .. }
+            // Only an effect has it, and it needs exactly two objects, so it is not a row of the table (`r113_text_boxes`).
+            | mtg_cards::modify::Modification::R612ExchangeTextBoxes
+            // A static copy is housekeeping's, not the layers' (`copies::r707_static_copies`).
+            | mtg_cards::modify::Modification::R707CopyOf { .. }
             // Only a static ability has these, and they read what its source chose as it entered (`g9b_chosen`).
             | mtg_cards::modify::Modification::AddChosenSubtype
             | mtg_cards::modify::Modification::SetChosenColor

@@ -494,6 +494,9 @@ pub enum Pred {
     /// Has the keyword at any value of its parameter ("with toxic", "with cycling"); the name is Scryfall's spelling
     /// (`Keyword::NAMES`).
     HasKeywordNamed(String),
+    /// Has an alternative cost of the way ("exiled card with warp", CR 702.185): a cast ability (`Ability::AltCast`) of
+    /// that way among its abilities.
+    R113HasWay(crate::value::CastWay),
     /// Has at least one counter of the kind on it.
     HasCounter(CounterKind),
     /// Has at least one counter of any kind on it (CR 122.1).
@@ -538,6 +541,13 @@ pub enum Pred {
         op: Cmp,
         /// The amount compared with.
         to: Amount,
+    },
+    /// The characteristic is an odd number, or an even one ("a spell with an odd mana value"); 0 is even.
+    R113Parity {
+        /// The characteristic.
+        stat: StatKind,
+        /// Odd rather than even.
+        odd: bool,
     },
     /// The objects chosen together have a total of the stat at most the amount ("with total mana value 6 or less"): alone
     /// it holds of an object whose stat is at most the amount, and a search or choice takes no set above it.
@@ -627,6 +637,9 @@ pub enum Pred {
         /// The fewest mana from such sources.
         least: u32,
     },
+    /// A spell on the stack for which mana from a snow source of one of the spell's colors was spent ("if {S} of any of
+    /// that spell's colors was spent to cast it", CR 106.3).
+    R113SnowOfOwnColor,
     /// A spell on the stack cast using mana made by one of the permanents the reference names, as that object ("using mana
     /// produced by ~"); mana a permanent made before it last changed zones is another object's.
     ManaFrom(Ref),
@@ -702,6 +715,8 @@ pub enum Pred {
     /// Is a spell or ability on the stack whose every target is an object the selector names, with at least one target
     /// ("that targets only this creature": the same creature in several places counts).
     R6104TargetsOnly(Selector),
+    /// Is a copy on the stack of one of the spells or abilities the reference names (CR 707.10: "the spell and the copy").
+    R113CopyOf(Ref),
     /// Has the greatest value of the characteristic among the objects the group selector matches (a tie counts for each).
     GreatestAmong {
         /// The characteristic compared.

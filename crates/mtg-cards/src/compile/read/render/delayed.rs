@@ -20,6 +20,7 @@ impl Writer<'_> {
                 duration: None,
             },
             Effect::DelayedTrigger {
+                intervening_if: None,
                 until: None,
                 when:
                     TriggerPattern::StepBegins {
@@ -95,6 +96,7 @@ impl Writer<'_> {
                 differ: None,
             },
             Effect::DelayedTrigger {
+                intervening_if: None,
                 until: None,
                 when:
                     TriggerPattern::StepBegins {

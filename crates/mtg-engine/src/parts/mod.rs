@@ -95,6 +95,9 @@ pub(crate) enum Kind {
     Blight(u32),
     /// A permanent the payer controls is chosen, or a card in their hand is revealed; then exiled when the flag is set.
     Behold(bool),
+    /// Cards of any graveyard go to the bottom of their owner's library ("from a single graveyard" with the same-owner
+    /// rule of the pick).
+    R113BottomAny,
     /// Cards of a zone of the payer go on top of their library, or at the bottom of it when the flag is set.
     ToLibrary(ZoneKind, bool),
     /// One Food the payer controls is sacrificed, or three cards of their graveyard are exiled.
@@ -606,6 +609,13 @@ impl Part {
                 }
                 (part, x)
             }
+            CostItem::R113BottomFromOneGraveyard { filter, count } => {
+                let (mut part, x) = pick(Kind::R113BottomAny, filter, count, item)?;
+                if let Part::Pick(picked) = &mut part {
+                    picked.alike = Some(mtg_cards::cost::Alike::R112SameOwner);
+                }
+                (part, x)
+            }
             CostItem::ExileFromHand { filter, count } => {
                 pick(Kind::ExileHand, filter, count, item)?
             }
@@ -795,6 +805,7 @@ impl Part {
                 Kind::Blight(_) => "Cost.Blight",
                 Kind::Behold(_) => "Cost.Behold",
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
+                Kind::R113BottomAny => "Cost.R113BottomFromOneGraveyard",
                 Kind::Forage => "Cost.Forage",
                 Kind::Craft => "Cost.Craft",
                 Kind::ExiledToGraveyard => "Cost.ExiledToGraveyard",
@@ -1199,7 +1210,7 @@ impl Pick {
             Kind::ExileSpell => r5512_exile_spell::candidates(payer, &self.filter),
             Kind::Untap => untap::candidates(payer, &self.filter),
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
-            Kind::ExileAny => exile::candidates_any(payer, &self.filter),
+            Kind::ExileAny | Kind::R113BottomAny => exile::candidates_any(payer, &self.filter),
             Kind::Behold(_) => behold::candidates(payer, &self.filter),
             Kind::ToLibrary(from, _) => to_library::candidates(payer, from, &self.filter),
             Kind::Forage => forage::candidates(payer),
@@ -1451,6 +1462,7 @@ impl Pick {
             Kind::ToLibrary(from, bottom) => {
                 to_library::text(from, &self.filter, self.count, bottom)
             }
+            Kind::R113BottomAny => to_library::r113_text_any(&self.filter, self.count),
             Kind::Forage => forage::text(),
             Kind::Craft => exile::craft_text(&self.filter, self.count),
             Kind::ExiledToGraveyard => exiled::text(self.count),
@@ -1467,6 +1479,7 @@ impl Pick {
     ) -> Vec<Event> {
         match self.kind {
             Kind::ToLibrary(from, bottom) => to_library::events(state, from, bottom, object),
+            Kind::R113BottomAny => to_library::events(state, ZoneKind::Graveyard, true, object),
             Kind::Blight(count) => blight::events(state, object, count),
             Kind::Behold(true) => behold::exile_events(state, player, object),
             _ => self
@@ -1503,7 +1516,7 @@ impl Pick {
             Kind::Behold(_) => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
             Kind::ExiledToGraveyard => exiled::event(state, object),
-            Kind::Blight(_) | Kind::ToLibrary(..) => None,
+            Kind::Blight(_) | Kind::ToLibrary(..) | Kind::R113BottomAny => None,
         }
     }
 }

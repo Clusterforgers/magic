@@ -7,6 +7,7 @@ use mtg_cards::ability::Ability;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::abilities::Cause;
+use crate::characteristics::controller_of;
 use crate::choose::{
     Choice, Choices, Target, TargetOptions, YesNoOptions, announced_specs, legal_from, spec_bases,
 };
@@ -14,6 +15,7 @@ use crate::decision::{Decision, DecisionKind};
 use crate::object::ObjectRef;
 use crate::resolve::{Cx, ResolveError};
 use crate::wording;
+use crate::zones::Zone;
 
 /// What the original spell or ability is, for the questions and the legal targets of its copy.
 #[derive(Clone, Copy)]
@@ -60,7 +62,7 @@ pub(super) fn retarget(
     } else {
         Way::Keep
     };
-    ask(cx, (player, player), answers, original, copy, way)
+    ask(cx, (player, player), answers, (original, 0), copy, way)
 }
 
 /// How the targets of an object change.
@@ -78,6 +80,8 @@ pub(super) enum Way {
     AnotherPlayer,
     /// The only target becomes a legal target picked at random, the current one included (CR 115.7d).
     Random,
+    /// As `Random`, among the legal targets other than the chooser and the permanents they control.
+    R113RandomNotYours,
 }
 
 /// The question whether to choose new targets: `Some` ends the change (the question, or the copy kept as it is), `None`
@@ -112,16 +116,15 @@ fn ask_to_change(
     }
 }
 
-/// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
-/// is the one the new targets must be legal for: the controller of the object.
-pub(super) fn ask(
+/// The targets of `original` that `way` lets change, each with its position, wording and legal new targets. The first
+/// player is the one choosing and the second is the one the new targets must be legal for.
+fn changeable_targets(
     cx: &Cx<'_>,
     (player, judged): (PlayerId, PlayerId),
-    answers: &mut Iter<'_, (PlayerId, Choice)>,
     original: Original<'_>,
-    mut copy: Choices,
     way: Way,
-) -> Result<Retargeted, ResolveError> {
+) -> Vec<(usize, String, Vec<Target>)> {
+    let random = matches!(way, Way::Random | Way::R113RandomNotYours);
     let state = cx.state();
     let specs = announced_specs(original.ability, &original.choices.modes);
     let bases = spec_bases(original.ability, &original.choices.modes);
@@ -132,7 +135,7 @@ pub(super) fn ask(
             continue;
         };
         let another = matches!(way, Way::Another | Way::AnotherPlayer);
-        if way == Way::Keep || ((another || way == Way::Random) && !single) {
+        if way == Way::Keep || ((another || random) && !single) {
             break;
         }
         let mut legal = legal_from(
@@ -146,7 +149,18 @@ pub(super) fn ask(
             original.choices.modes_chooser(),
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
         );
-        if another || way == Way::Random {
+        if another || random {
+            if way == Way::R113RandomNotYours {
+                legal.retain(|target| match target {
+                    Target::Player(chosen) => *chosen != player,
+                    Target::Object(object) => {
+                        state
+                            .object(object.id)
+                            .is_none_or(|now| now.zone() != Zone::Battlefield)
+                            || controller_of(state, object.id) != Some(player)
+                    }
+                });
+            }
             if another {
                 legal.retain(|target| {
                     !kept.contains(target)
@@ -164,12 +178,30 @@ pub(super) fn ask(
             changeable.push((at, wording::spec(spec), legal));
         }
     }
+    changeable
+}
+
+/// The questions of `way` for `original`, whose new choices start as `copy`. The first player answers them and the second
+/// is the one the new targets must be legal for: the controller of the object.
+pub(super) fn ask(
+    cx: &Cx<'_>,
+    (player, judged): (PlayerId, PlayerId),
+    answers: &mut Iter<'_, (PlayerId, Choice)>,
+    (original, picked): (Original<'_>, u64),
+    mut copy: Choices,
+    way: Way,
+) -> Result<Retargeted, ResolveError> {
+    let random = matches!(way, Way::Random | Way::R113RandomNotYours);
+    let changeable = changeable_targets(cx, (player, judged), original, way);
     if changeable.is_empty() {
         return Ok(Retargeted::Done(copy));
     }
-    if way == Way::Random {
+    if random {
         return Ok(Retargeted::Done(r5503_random(
-            cx, original, copy, changeable,
+            cx,
+            (original, picked),
+            copy,
+            changeable,
         )));
     }
     if !matches!(way, Way::Another | Way::AnotherPlayer)
@@ -214,12 +246,12 @@ pub(super) fn ask(
 /// The choices with each changeable target replaced by one of its legal targets picked with the game's generator.
 fn r5503_random(
     cx: &Cx<'_>,
-    original: Original<'_>,
+    (original, picked): (Original<'_>, u64),
     mut copy: Choices,
     changeable: Vec<(usize, String, Vec<Target>)>,
 ) -> Choices {
     let state = cx.state();
-    let mut rng = crate::rng::GameRng::substream(state.seed, state.rng_index);
+    let mut rng = crate::rng::GameRng::substream(state.seed, state.rng_index + picked);
     for (at, _, legal) in changeable {
         if let Some(picked) = legal.get(rng.index(legal.len())) {
             copy.targets[at] = vec![*picked];

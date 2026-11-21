@@ -77,6 +77,7 @@ pub(super) fn at_next_end_step(way: CastWay, name: &str, effect: Effect) -> Abil
                 differ: None,
             },
             Effect::DelayedTrigger {
+                intervening_if: None,
                 until: None,
                 when: TriggerPattern::StepBegins {
                     step: Step::End,

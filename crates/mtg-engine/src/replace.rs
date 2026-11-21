@@ -875,6 +875,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::R109EntersAttached(_)
+        | ReplaceBy::R612MayExchangeTextBoxes(_)
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -893,7 +894,11 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::AsEnters(_) => matches!(unit, Unit::Enter { .. } | Unit::Transform { .. }),
-        ReplaceBy::Choose(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
+        ReplaceBy::R6603AttachToPlayer => matches!(unit, Unit::Transform { .. }),
+        ReplaceBy::Choose(_) => matches!(
+            unit,
+            Unit::Enter { .. } | Unit::Attach { .. } | Unit::Transform { .. }
+        ),
         ReplaceBy::Instead(_) => !matches!(
             unit,
             Unit::Other | Unit::Attach { .. } | Unit::Transform { .. }
@@ -948,6 +953,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::AsEntersWith { .. }
                 | ReplaceBy::ChooseAfter { .. }
                 | ReplaceBy::R109EntersAttached(_)
+                | ReplaceBy::R612MayExchangeTextBoxes(_)
         )
     )
 }
@@ -1016,6 +1022,33 @@ enum Applied {
 }
 
 /// Who puts some counters and whether an effect does (`Pass::putting`).
+/// Whether the resolving object is a triggered ability that a keyword printed on its source's card adds, the keyword
+/// named by its table name ("a modular triggered ability").
+fn r113_resolving_keyword_trigger(state: &GameState, name: &str) -> bool {
+    let Some(ability) = state
+        .resolving()
+        .and_then(|resolving| state.object(resolving.object))
+        .and_then(GameObject::ability)
+    else {
+        return false;
+    };
+    let crate::abilities::AbilitySource::PrintedKeyword(at) = ability.origin() else {
+        return false;
+    };
+    matches!(
+        ability.rules(),
+        mtg_cards::ability::Ability::Triggered { .. }
+    ) && state
+        .object(ability.source().id)
+        .and_then(|source| crate::ability_reader::printed_rules(source.card()).nth(at))
+        .is_some_and(|rule| {
+            matches!(&**rule, mtg_cards::ability::Ability::Keyword(keyword)
+                    if keyword.name() == name
+                        || (matches!(keyword, mtg_cards::keyword::Keyword::Macro { .. })
+                            && keyword.shown_name() == name))
+        })
+}
+
 struct Putting {
     /// The player who puts them; none when no spell or ability, and no entering permanent, is behind them.
     player: Option<PlayerId>,
@@ -1391,12 +1424,18 @@ impl Pass<'_> {
                     counter,
                     by,
                     effect,
+                    r113_keyword,
                 },
                 Unit::Counters {
                     on: put,
                     counter: kind,
                 },
             ) => {
+                if let Some(keyword) = r113_keyword
+                    && !r113_resolving_keyword_trigger(self.state, keyword)
+                {
+                    return Ok(false);
+                }
                 let putting = self.putting(*put);
                 let putter_fits = match (by, putting.player) {
                     (None, _) => true,
@@ -2783,8 +2822,12 @@ impl Pass<'_> {
                 self.r5517_under_you(at, candidate.controller, &unit);
                 self.slots[at].applied = applied;
             }
-            (ReplaceBy::Choose(kind), Unit::Attach { object }) => {
+            // "As this creature transforms into ~, choose an opponent" is kept as a choice made as it is attached is.
+            (ReplaceBy::Choose(kind), Unit::Attach { object } | Unit::Transform { object, .. }) => {
                 return self.r5501_choose_as_attached(at, candidate, *kind, *object, applied);
+            }
+            (ReplaceBy::R6603AttachToPlayer, Unit::Transform { object, .. }) => {
+                return self.r6603_attach_to_player(at, candidate, *object, applied);
             }
             (ReplaceBy::AsEnters(effects), Unit::Transform { .. }) => {
                 return Ok(self.r304_as_enters(at, candidate, effects, &unit, applied));
@@ -2834,6 +2877,9 @@ impl Pass<'_> {
             }
             ReplaceBy::R109EntersAttached(to) => {
                 self.r109_enters_attached(at, candidate, to, (object, controller), applied)
+            }
+            ReplaceBy::R612MayExchangeTextBoxes(with) => {
+                self.r612_may_exchange(at, candidate, with, (object, controller), applied)
             }
             ReplaceBy::PayOrGraveyard { cost, optional } => {
                 let paid = (cost, *optional);
@@ -3272,6 +3318,7 @@ impl Pass<'_> {
                 }],
                 targets: Vec::new(),
                 bindings: Vec::new(),
+                intervening_if: None,
                 kept: None,
                 origin: crate::abilities::AbilitySource::default(),
             },
@@ -3318,6 +3365,7 @@ impl Pass<'_> {
                 effects: paradigm_effects(),
                 targets: Vec::new(),
                 bindings: Vec::new(),
+                intervening_if: None,
                 kept: None,
                 origin: crate::abilities::AbilitySource::default(),
             },
@@ -3635,6 +3683,7 @@ impl Pass<'_> {
                 counters,
                 except_if,
                 r109_embalmed,
+                r707_when_you_do,
             } => {
                 let embalmed = (!r109_embalmed.is_empty() && self.r109_embalmed(object))
                     .then_some(r109_embalmed.as_slice());
@@ -3659,6 +3708,13 @@ impl Pass<'_> {
                     }
                     let copied = copy.of;
                     self.begin_copy(at, copy, &applied);
+                    self.r707_when_you_do(
+                        at + 1,
+                        candidate,
+                        (object, controller),
+                        copied,
+                        r707_when_you_do,
+                    );
                     self.r305c_copy_counters(at, candidate, object, copied, counters, &applied)?;
                 }
             }
@@ -3961,6 +4017,7 @@ impl Pass<'_> {
             until_next_turn_of: None,
             attached_by: None,
             r6104_while_tapped: None,
+            r707_static: None,
         })
     }
 
@@ -4537,6 +4594,8 @@ mod dredge;
 mod lg1_draws;
 
 mod r109_enters_attached;
+mod r113_copy_reflexive;
+mod r113_text_boxes;
 mod reveal;
 
 mod amplify;

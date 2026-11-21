@@ -1117,6 +1117,10 @@ describe('events with more than one shape', () => {
     ],
     [effect(objects(2), { AddKeyword: { Ward: '{2}' } }, 'Forever'), 'Hill Giant gains ward'],
     [
+      effect(objects(2, 3), 'R612ExchangeTextBoxes', 'Forever'),
+      'Hill Giant and Forest exchange their text boxes',
+    ],
+    [
       effect(objects(2), { AddKeywords: ['Flying', 'Trample'] }, 'Forever'),
       'Hill Giant gains flying and trample',
     ],
@@ -1302,6 +1306,10 @@ describe('events with more than one shape', () => {
     [
       effect(objects(2), { LoseAbility: { object: 2, ability: 0 } }, { UntilPaid: '{1}' }),
       'Hill Giant loses one of its abilities until its controller pays {1} to end it',
+    ],
+    [
+      effect(objects(2), { SetController: 1 }, { R113While: { All: [] } }),
+      'Hill Giant changes controller for as long as its condition holds',
     ],
     [
       effect(objects(2), { SetController: 1 }, 'NextUntapStep'),

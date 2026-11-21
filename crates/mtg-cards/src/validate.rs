@@ -632,6 +632,10 @@ impl<'a> Walker<'a> {
             ValueKind::CreatureTypeExcept(left_out) if left_out.is_empty() => {
                 self.problem("a creature type other than none is any creature type");
             }
+            ValueKind::R113CreatureTypeOfNotNoted(of) => {
+                self.uses("ValueKind", "R113CreatureTypeOfNotNoted");
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
             ValueKind::R111SpellDamage { caster, filter } => {
                 self.uses("ValueKind", "R111SpellDamage");
                 self.at("caster", |w| w.reference(caster, Kind::Player));
@@ -892,6 +896,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "TargetedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::R113CopyOf(who) => {
+                self.uses("Pred", "R113CopyOf");
+                self.reference(who, Kind::Object);
+            }
             Pred::FromSource(source) => {
                 self.uses("Pred", "FromSource");
                 self.at("source", |w| w.selector(source));
@@ -913,6 +921,7 @@ impl<'a> Walker<'a> {
                 self.at("group", |w| w.selector(group));
             }
             Pred::Kicked => self.uses("Pred", "Kicked"),
+            Pred::R113HasWay(_) => self.uses("Pred", "R113HasWay"),
             Pred::R112Modal => self.uses("Pred", "R112Modal"),
             Pred::AdditionalCostPaid => self.uses("Pred", "AdditionalCostPaid"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
@@ -929,6 +938,7 @@ impl<'a> Walker<'a> {
             Pred::RingBearer => self.uses("Pred", "RingBearer"),
             Pred::FaceDown => self.uses("Pred", "FaceDown"),
             Pred::SpentFrom { .. } => self.uses("Pred", "SpentFrom"),
+            Pred::R113SnowOfOwnColor => self.uses("Pred", "R113SnowOfOwnColor"),
             Pred::ManaFrom(r) => {
                 self.uses("Pred", "ManaFrom");
                 self.reference(r, Kind::Object);
@@ -1005,6 +1015,7 @@ impl<'a> Walker<'a> {
             Pred::Compare { to, .. } => {
                 self.at("to", |w| w.amount(to));
             }
+            Pred::R113Parity { .. } => self.uses("Pred", "R113Parity"),
             Pred::TotalAtMost { most, .. } => {
                 self.uses("Pred", "TotalAtMost");
                 self.at("most", |w| w.amount(most));
@@ -1065,6 +1076,7 @@ impl<'a> Walker<'a> {
             | Pred::FaceDown
             | Pred::TargetsPlayer(_)
             | Pred::SpentFrom { .. }
+            | Pred::R113SnowOfOwnColor
             | Pred::ManaFrom(_)
             | Pred::GravedThisTurn
             | Pred::GravedThisCombat
@@ -1088,11 +1100,13 @@ impl<'a> Walker<'a> {
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::R113CopyOf(_)
             | Pred::FromSource(_)
             | Pred::SingleTarget
             | Pred::GreatestAmong { .. }
             | Pred::LeastAmong { .. }
             | Pred::HasKeywordNamed(_)
+            | Pred::R113HasWay(_)
             | Pred::Kicked
             | Pred::R112Modal
             | Pred::AdditionalCostPaid
@@ -1493,6 +1507,22 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "R112MostAlike");
                 self.at("on", |w| w.reference(on, Kind::Object));
             }
+            Amount::R113Stored { on, .. } => {
+                self.uses("Amount", "R113Stored");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::R113GreatestNoted { on } => {
+                self.uses("Amount", "R113GreatestNoted");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::R113NotedWords { on } => {
+                self.uses("Amount", "R113NotedWords");
+                self.at("on", |w| w.reference(on, Kind::Object));
+            }
+            Amount::R113SharesWithAnother { of, .. } => {
+                self.uses("Amount", "R113SharesWithAnother");
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
             Amount::CountedAsCast(inner) => {
                 self.uses("Amount", "CountedAsCast");
                 self.at("inner", |w| w.amount(inner));
@@ -1827,6 +1857,9 @@ impl<'a> Walker<'a> {
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
             Condition::R112CastByOwnAbility => self.uses("Condition", "R112CastByOwnAbility"),
+            Condition::R113SpentFromTriggering { .. } => {
+                self.uses("Condition", "R113SpentFromTriggering");
+            }
             Condition::CastOffSorceryTiming => self.uses("Condition", "CastOffSorceryTiming"),
             Condition::AsCast(inner) => self.as_cast(inner),
             Condition::R401OnCast(_) | Condition::R401Targets(_) => self.r401_on_cast(condition),
@@ -2068,6 +2101,7 @@ impl<'a> Walker<'a> {
                     | CostItem::TapPermanents { filter, count }
                     | CostItem::ExileFromGraveyard { filter, count, .. }
                     | CostItem::R112ExileFromOneGraveyard { filter, count }
+                    | CostItem::R113BottomFromOneGraveyard { filter, count }
                     | CostItem::ExileFromHand { filter, count }
                     | CostItem::UntapPermanents { filter, count }
                     | CostItem::RevealFromHand { filter, count }
@@ -2127,6 +2161,7 @@ impl<'a> Walker<'a> {
                     | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
                     | CostItem::XColor(_)
+                    | CostItem::R113XHybrid(..)
                     | CostItem::R112XOneEachColor
                     | CostItem::Forage => {}
                     CostItem::ChosenColorOnly => w.uses("Cost", "ChosenColorOnly"),
@@ -2958,6 +2993,14 @@ impl<'a> Walker<'a> {
             | Modification::SetCreatureTypesOf(from) => {
                 self.reference(from, Kind::Object);
             }
+            Modification::R707CopyOf { of, except } => {
+                self.uses("Copy", "Static");
+                if !self.scope.in_static {
+                    self.problem("a copy effect of a resolving ability is `BecomeCopy`; `R707CopyOf` is a static ability's");
+                }
+                self.reference(of, Kind::Object);
+                self.r6104_entering_copy_exceptions(except);
+            }
             Modification::KeywordsOf { from, keywords } => {
                 self.reference(from, Kind::Object);
                 if keywords.is_empty() {
@@ -3024,6 +3067,7 @@ impl<'a> Walker<'a> {
             | Modification::AddLandTypeChosen(_)
             | Modification::ChangeTextChosen { .. }
             | Modification::ChangeTextChosenTo { .. }
+            | Modification::R612ExchangeTextBoxes
             | Modification::SetColorsChosen(_)
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
@@ -4538,6 +4582,9 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind(name, Kind::Object));
                 }
             }
+            Effect::R113PhaseIn { what } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::PhaseOut {
                 what, duration, held, ..
             } => {
@@ -5399,6 +5446,9 @@ impl Walker<'_> {
                 if *to == NewTargets::Random {
                     w.uses("NewTargets", "Random");
                 }
+                if *to == NewTargets::R113RandomNotYours {
+                    w.uses("NewTargets", "R113RandomNotYours");
+                }
                 match (to, onto) {
                     (NewTargets::One, Some(onto)) => {
                         w.at("onto", |w| w.reference(onto, Kind::Object));
@@ -5471,6 +5521,13 @@ impl Walker<'_> {
                     w.uses("Duration", "WhileMonarch");
                     w.at("duration", |w| w.reference(who, Kind::Player));
                 }
+                if let Duration::R113While(condition) = duration {
+                    w.uses("Duration", "R113While");
+                    // The condition reads each object of the effect as `Affected`, as the changes of a static ability do.
+                    let in_static = std::mem::replace(&mut w.scope.in_static, true);
+                    w.at("duration", |w| w.condition(condition));
+                    w.scope.in_static = in_static;
+                }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
@@ -5492,7 +5549,10 @@ impl Walker<'_> {
                 if *duration == Duration::DuringItsControllersNextTurn {
                     w.uses("Duration", "DuringItsControllersNextTurn");
                 }
-                if *duration == Duration::UntilTheirNextTurn {
+                if matches!(
+                    duration,
+                    Duration::UntilTheirNextTurn | Duration::R113UntilTheirNextEndStep
+                ) {
                     w.problem(R5514_THEIR_TURN_ONE_PLAYER);
                 }
                 if *duration == Duration::UntilItsControllersNextCombatEnds {
@@ -5521,6 +5581,7 @@ impl Walker<'_> {
                     Duration::WhileEnchanted
                         | Duration::WhileTapped
                         | Duration::WhileMonarch(_)
+                        | Duration::R113While(_)
                         | Duration::UntilItsControllersNextUntapStep
                 ) {
                     w.uses("Exchange", &format!("Duration.{}", tag_of(duration)));
@@ -5531,7 +5592,10 @@ impl Walker<'_> {
                 if matches!(duration, Duration::UntilPaid(_)) {
                     w.problem(E15G_PAID_ONLY);
                 }
-                if *duration == Duration::UntilTheirNextTurn {
+                if matches!(
+                    duration,
+                    Duration::UntilTheirNextTurn | Duration::R113UntilTheirNextEndStep
+                ) {
                     w.problem(R5514_THEIR_TURN_ONE_PLAYER);
                 }
                 w.at("what", |w| {
@@ -5571,6 +5635,7 @@ impl Walker<'_> {
                     Duration::WhileEnchanted
                         | Duration::WhileTapped
                         | Duration::WhileMonarch(_)
+                        | Duration::R113While(_)
                         | Duration::UntilItsControllersNextUntapStep
                 ) {
                     w.uses("Rule", &format!("Duration.{}", tag_of(duration)));
@@ -5584,6 +5649,12 @@ impl Walker<'_> {
                 if *duration == Duration::UntilTheirNextTurn {
                     w.uses("Rule", "Duration.UntilTheirNextTurn");
                     if crate::r5514_players::r5514_rule_player(rule).is_none() {
+                        w.problem(R5514_THEIR_TURN_ONE_PLAYER);
+                    }
+                }
+                if *duration == Duration::R113UntilTheirNextEndStep {
+                    w.uses("Rule", "Duration.R113UntilTheirNextEndStep");
+                    if crate::r5514_players::r113_permitted_player(rule).is_none() {
                         w.problem(R5514_THEIR_TURN_ONE_PLAYER);
                     }
                 }
@@ -5763,9 +5834,17 @@ impl Walker<'_> {
                 w.body_checks(targets, effects, true);
                 w.scope = saved;
             }
-            Effect::DelayedTrigger { when, effects, .. } => {
+            Effect::DelayedTrigger {
+                when,
+                effects,
+                intervening_if,
+                ..
+            } => {
                 w.at("when", |w| w.trigger_pattern(when));
                 let saved = std::mem::replace(&mut w.scope.in_trigger, true);
+                if let Some(condition) = intervening_if {
+                    w.at("intervening_if", |w| w.condition(condition));
+                }
                 // A delayed trigger on a block or on damage names the one who did it, as any triggered ability does.
                 let dealer = std::mem::replace(&mut w.scope.dealer, true);
                 // The trigger it leaves behind remembers the X of the spell or ability that sets it up; one on another
@@ -6134,6 +6213,7 @@ impl Walker<'_> {
                     | Modification::AddLandTypeChosen(_)
                     | Modification::ChangeTextChosen { .. }
                     | Modification::ChangeTextChosenTo { .. }
+                    | Modification::R612ExchangeTextBoxes
             )
         }) {
             self.at("mods", |w| {
@@ -6731,6 +6811,12 @@ impl Walker<'_> {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
             GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
+            GameRule::R113ExchangeRoll { who, sides, .. } => self.at(tag, |w| {
+                w.reference(who, Kind::Player);
+                if *sides < 2 {
+                    w.problem("an exchange of a die's result names dice of two or more faces");
+                }
+            }),
             GameRule::R6402ChangeRoll { who, pay, by, .. } => self.at(tag, |w| {
                 w.reference(who, Kind::Player);
                 if *by == 0 {
@@ -6779,7 +6865,8 @@ impl Walker<'_> {
             | GameRule::Flagbearers
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_)
-            | GameRule::R112SpendOnlyFromWay { .. } => {}
+            | GameRule::R112SpendOnlyFromWay { .. }
+            | GameRule::R113NoteExiledManaValue => {}
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }
@@ -7146,7 +7233,20 @@ impl Walker<'_> {
                     self.at("by", |w| w.reference(by, Kind::Player));
                 }
             }
-            ReplaceWhen::CountersPut { on, by, .. } => {
+            ReplaceWhen::CountersPut {
+                on,
+                by,
+                r113_keyword,
+                ..
+            } => {
+                if let Some(keyword) = r113_keyword {
+                    self.uses("CountersPut", "R113Keyword");
+                    if !Keyword::NAMES.contains(&keyword.as_str())
+                        && !crate::macros::is_keyword(&keyword.to_lowercase())
+                    {
+                        self.problem(format!("`{keyword}` is not a keyword"));
+                    }
+                }
                 if let Some(by) = by {
                     self.at("by", |w| w.reference(by, Kind::Player));
                 }
@@ -7502,9 +7602,14 @@ impl Walker<'_> {
             self.problem("a draw of several cards is replaced only by steps instead, and only from two cards on");
         }
         if matches!(when, ReplaceWhen::R6603Transforms { .. })
-            && !matches!(by, ReplaceBy::AsEnters(_))
+            && !matches!(
+                by,
+                ReplaceBy::AsEnters(_) | ReplaceBy::Choose(_) | ReplaceBy::R6603AttachToPlayer
+            )
         {
-            self.problem("a permanent that transforms has only effects as it turns over");
+            self.problem(
+                "a permanent that transforms has only effects or a choice as it turns over",
+            );
         }
         let enters = matches!(
             when,
@@ -7663,6 +7768,20 @@ impl Walker<'_> {
                 }
                 self.at("to", |w| w.selector(to));
             }
+            ReplaceBy::R612MayExchangeTextBoxes(with) => {
+                if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {
+                    self.problem("only the permanent itself exchanges its text box as it enters");
+                }
+                self.at("with", |w| w.selector(with));
+            }
+            ReplaceBy::R6603AttachToPlayer => {
+                if !matches!(when, ReplaceWhen::R6603Transforms { what } if *what == Selector::this())
+                {
+                    self.problem(
+                        "only the permanent itself is attached to a player as it transforms",
+                    );
+                }
+            }
             ReplaceBy::PayLifeOrTapped(0) => self.problem("paying no life is entering untapped"),
             ReplaceBy::TappedForCounters { count: 0, .. } => {
                 self.problem("entering tapped for no counters is a plain choice");
@@ -7697,10 +7816,20 @@ impl Walker<'_> {
                 except,
                 counters,
                 except_if,
+                r707_when_you_do,
                 ..
             } => {
                 if !enters {
                     self.problem("only an `Enters` event is entered as a copy");
+                }
+                if !r707_when_you_do.is_empty() {
+                    self.uses("Copy", "WhenYouDo");
+                    self.effect_list_with(
+                        "r707_when_you_do",
+                        r707_when_you_do,
+                        true,
+                        Some(("copied", Kind::Object)),
+                    );
                 }
                 self.at("of", |w| w.selector(of));
                 self.r6104_entering_copy_exceptions(except);

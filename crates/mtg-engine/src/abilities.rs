@@ -225,6 +225,15 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Target>>", optional))]
     pub r111_paid: Vec<Target>,
+    /// The sources of the mana spent to cast the spell or activate the ability the event is about ("if mana from a
+    /// Treasure was spent to cast it or activate it"), kept from the event as a mana ability leaves nothing on the stack;
+    /// empty for any other trigger.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_cards::spend::SpentFrom>>", optional)
+    )]
+    pub r113_spent_from: Vec<mtg_cards::spend::SpentFrom>,
     /// The event that made the ability trigger, kept so "whenever ... causes a triggered ability to trigger" can read it
     /// (CR 603.2); for an ability that triggered on another one triggering, the event that made that one trigger.
     #[serde(default, skip_serializing_if = "Option::is_none")]

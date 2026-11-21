@@ -802,6 +802,7 @@ fn repeated(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool 
             list(ctx, effects, depth + 1, out);
         }
         Effect::DelayedTrigger {
+            intervening_if: None,
             when,
             effects,
             once,

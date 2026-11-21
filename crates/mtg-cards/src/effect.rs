@@ -88,6 +88,9 @@ pub enum NewTargets {
     /// "Reselect its target at random": the only target becomes a target chosen at random from among all its legal
     /// targets, the current one included (CR 115.7d).
     Random,
+    /// "Reselect the targets at random ... The new targets can't be you or a permanent you control": as `Random`, among
+    /// the legal targets other than the effect's controller and the permanents they control; with none, the target stays.
+    R113RandomNotYours,
 }
 
 /// A phase an effect adds to the turn (CR 500.8).
@@ -500,6 +503,9 @@ pub enum ValueKind {
     /// A creature type the source has not noted (`Effect::R112NoteChosen`): "a creature type that hasn't been noted for
     /// this Saga".
     R112CreatureTypeNotNoted,
+    /// One of the creature types of the first object the reference names that the source has not noted
+    /// (`Effect::R112NoteChosen`): "note one of its creature types that hasn't been noted for Volo's Journal".
+    R113CreatureTypeOfNotNoted(crate::refs::Ref),
     /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
     Letter,
     /// One of the spells the player `caster` names cast this turn that the selector matches as cast ("one of those sorcery
@@ -1163,6 +1169,12 @@ pub enum Effect {
         /// in", "It can't phase in for as long as you control this Saga"): a `Cant` rule of `PhaseIn` over exactly them.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         held: Option<Duration>,
+    },
+    /// Phased-out permanents phase in, each with what phased out with it (CR 702.26): "When The Pandorica becomes untapped
+    /// or leaves the battlefield, that permanent phases in." One a rule keeps from phasing in stays out.
+    R113PhaseIn {
+        /// What phases in.
+        what: Ref,
     },
     /// Attaches Auras, Equipment or Fortifications to an object, or Auras that enchant players to a player (CR 701.3).
     Attach {
@@ -2393,6 +2405,10 @@ pub enum Effect {
         targets: Vec<TargetSpec>,
         /// What it does.
         effects: Vec<Effect>,
+        /// An intervening "if" ("when you lose control of that Equipment this turn, if it's attached to a creature you
+        /// control, ..."; CR 603.4): checked as it would trigger and as it resolves.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        intervening_if: Option<Condition>,
     },
     /// A reflexive triggered ability ("when you do", CR 603.12): when the step before it was carried out, a trigger with
     /// its own `targets` goes on the stack the next time a player would receive priority and runs `effects`; with no

@@ -698,6 +698,14 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         #[cfg_attr(feature = "ts", ts(optional, as = "Option<bool>"))]
         tapped: bool,
+        /// The sources of the mana spent on its cost, for one that costs mana ("if mana from a Treasure was spent to
+        /// activate it"); empty otherwise.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(
+            feature = "ts",
+            ts(optional, as = "Option<Vec<mtg_cards::spend::SpentFrom>>")
+        )]
+        r113_spent_from: Vec<mtg_cards::spend::SpentFrom>,
     },
     /// A triggered ability triggered and waits to be put on the stack.
     AbilityTriggered(Box<Triggered>),
@@ -1048,6 +1056,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         r6104_tapped: Option<ObjectRef>,
+        /// The permanent whose static ability made the copy ("enchanted creature is a copy of ...", `R707CopyOf`).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        r707_static: Option<ObjectRef>,
     },
     /// A player became the monarch (CR 724).
     MonarchChanged {

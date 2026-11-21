@@ -361,6 +361,7 @@ pub fn delaying(when: TriggerPattern, once: bool, effects: Vec<Effect>) -> Abili
         from: ZoneKind::Battlefield,
         targets: Vec::new(),
         effects: vec![Effect::DelayedTrigger {
+            intervening_if: None,
             until: None,
             when,
             once,

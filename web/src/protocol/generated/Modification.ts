@@ -6,6 +6,7 @@ import type { CardTypes } from "./CardTypes";
 import type { ColorSet } from "./ColorSet";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
+import type { R612TextBox } from "./R612TextBox";
 import type { Subtype } from "./Subtype";
 import type { Supertype } from "./Supertype";
 import type { TextWord } from "./TextWord";
@@ -21,7 +22,7 @@ from: TextWord,
 /**
  * The word written.
  */
-to: TextWord, } } | { "SetPowerToughness": { 
+to: TextWord, } } | "R612ExchangeTextBoxes" | { "R612TextBoxOf": R612TextBox } | { "SetPowerToughness": { 
 /**
  * New power.
  */

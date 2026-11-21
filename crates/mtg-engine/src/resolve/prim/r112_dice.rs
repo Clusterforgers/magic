@@ -32,7 +32,7 @@ pub(super) fn run_store(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveErro
     };
     let player = cx.scope.controller;
     let natural = rolls(cx.state(), player, *sides, *dice);
-    let changed = match super::r6402_change_roll::r6402_change(cx, player, &natural)? {
+    let changed = match super::r6402_change_roll::r6402_change(cx, player, *sides, &natural)? {
         Ok(changed) => changed,
         Err(ask) => return Ok(ask),
     };

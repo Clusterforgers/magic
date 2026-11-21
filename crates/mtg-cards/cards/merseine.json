@@ -1,7 +1,7 @@
 {
   "oracle_id": "b6b6e085-eef8-486d-9d66-1b7f1ee7d0dc",
   "name": "Merseine",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Merseine",
@@ -28,9 +28,10 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 171, "end": 316 }
+          "Activated": {
+            "cost": [{ "ManaCostOf": "Attached" }],
+            "by": "R113AttachedController",
+            "effects": [{ "RemoveCounters": { "from": "This", "counter": { "Other": "net" } } }]
           }
         }
       ]

@@ -716,6 +716,10 @@ fn item_text(item: &CostItem) -> Option<String> {
         }
         CostItem::PayEnergy(Amount::X) => "Pay X {E}".to_owned(),
         CostItem::Mill(count) => format!("Mill {}", cards_text(count)?),
+        CostItem::R113BottomFromOneGraveyard { filter, count } if filter.is_empty() => format!(
+            "Put {} from a single graveyard on the bottom of their owner's library",
+            cards_text(count)?
+        ),
         CostItem::DiscardRandom(count) => format!("Discard {} at random", cards_text(count)?),
         CostItem::Exert => "Exert ~".to_owned(),
         CostItem::Forage => "Forage".to_owned(),

@@ -150,6 +150,14 @@ pub struct SpentFrom {
     pub traits: SpendTraits,
     /// How many of its mana were spent.
     pub count: u32,
+    /// The type of each of its mana spent, in the order spent ("{S} of any of that spell's colors", CR 106.3); empty
+    /// when not kept.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_core::mana::ManaType>>", optional)
+    )]
+    pub r113_mana: Vec<mtg_core::mana::ManaType>,
 }
 
 /// What a spell or an ability source is, as far as a restriction reads it.

@@ -679,6 +679,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             player,
             source,
             tapped: true,
+            ..
         } => crate::r6401_history::r6401_note_tapped_for_mana(state, *player, source.id),
         Event::R6402DieChanged { source, .. } => {
             state.tally_object(*source, None, Tally::R6402Changed);

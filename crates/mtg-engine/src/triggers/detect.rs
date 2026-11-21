@@ -357,6 +357,8 @@ enum Happened {
         ability: Option<ObjectRef>,
         /// How much it was: the cards a scry looked at; zero for the rest.
         amount: u32,
+        /// The sources of the mana spent on a mana ability's cost (an ability on the stack keeps its own).
+        r113_spent: Vec<mtg_cards::spend::SpentFrom>,
     },
     /// A permanent was dealt excess damage by the damage of the batch together (CR 120.10).
     DealtExcess {
@@ -1594,6 +1596,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         against: None,
         counters: Vec::new(),
         r111_paid: Vec::new(),
+        r113_spent_from: Vec::new(),
         event: None,
         ability: None,
     }
@@ -1753,8 +1756,17 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
         (TriggerPattern::SpellCast { what, by }, Happened::Cast { player, spell, .. }) => {
             let reference = object(*spell)?;
             let subjects = vec![Target::Player(*player), Target::Object(reference)];
-            (scope.players(by).ok()?.contains(player) && scope.selects(what, reference).ok()?)
-                .then(|| counted(state, subjects, happened.amount()))
+            (scope.players(by).ok()?.contains(player) && scope.selects(what, reference).ok()?).then(
+                || {
+                    let mut cause = counted(state, subjects, happened.amount());
+                    // "If mana from a Treasure was spent to cast it" stays readable after the spell resolves.
+                    cause.r113_spent_from = state
+                        .object(reference.id)
+                        .map(|spell| spell.mana_spent_from().to_vec())
+                        .unwrap_or_default();
+                    cause
+                },
+            )
         }
         (
             TriggerPattern::Sacrificed { what, by },
@@ -3238,6 +3250,14 @@ fn delayed(
         };
         // A batch pattern finds one cause for each group of the events together ("whenever that creature deals damage").
         for cause in causes(pattern, happened, &scope) {
+            // CR 603.4: its "if" is checked as the event happens.
+            if let Some(condition) = waiting.intervening_if() {
+                let mut judged = Scope::triggered(state, controller, source, &cause);
+                judged.bindings = &waiting.bindings;
+                if !judged.holds(condition).unwrap_or(false) {
+                    continue;
+                }
+            }
             if waiting.once {
                 if used.delayed.contains(&waiting.id()) {
                     break;
@@ -4188,6 +4208,7 @@ mod tests {
             effects: gain(),
             targets: Vec::new(),
             bindings: vec![("kept".to_owned(), vec![Target::Player(FOE)])],
+            intervening_if: None,
             kept: None,
             origin: AbilitySource::default(),
         }))

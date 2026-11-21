@@ -370,6 +370,45 @@ impl Held {
         }
     }
 
+    /// Takes the text box of another object (CR 612.1): the abilities and keywords of its own rules text go, and those of
+    /// the donor's take their place, each kept under the donor and its index there; the plain mana abilities follow in
+    /// `Modification::apply`.
+    fn r612_take_text_box(&mut self, text: &crate::effects::R612TextBox, stamp: u64) {
+        let own: Vec<Keyword> = self
+            .abilities
+            .iter()
+            .filter(|held| held.address.source == AbilitySource::Printed)
+            .filter_map(|held| match &*held.body {
+                Ability::Keyword(keyword) => Some(keyword.clone()),
+                _ => None,
+            })
+            .collect();
+        self.abilities.retain(|held| {
+            !matches!(
+                held.address.source,
+                AbilitySource::Printed | AbilitySource::PrintedKeyword(_)
+            )
+        });
+        self.keywords.retain(|keyword| !own.contains(keyword));
+        for rules in &text.given {
+            let origin = Grant::Borrowed {
+                donor: text.donor,
+                ability: rules.index,
+            };
+            match &*rules.body {
+                Ability::Keyword(keyword) => {
+                    self.change(&Modification::AddKeyword(keyword.clone()), origin, stamp);
+                }
+                _ => self.abilities.push(HeldAbility {
+                    address: AbilityRef::granted(self.id, origin),
+                    body: Arc::clone(&rules.body),
+                    since: stamp,
+                    keyword: None,
+                }),
+            }
+        }
+    }
+
     /// Makes the change `modification` says, as the effect `origin` with the timestamp `stamp` gives it.
     #[allow(clippy::too_many_lines)]
     fn change(&mut self, modification: &Modification, origin: Grant, stamp: u64) {
@@ -467,6 +506,7 @@ impl Held {
                 keyword: None,
             }),
             Modification::GainAbilities(borrowed) => self.gain_borrowed(borrowed, stamp),
+            Modification::R612TextBoxOf(text) => self.r612_take_text_box(text, stamp),
             Modification::ChangeText { from, to } => {
                 self.retype_printed(from, to);
                 for held in &mut self.abilities {
@@ -479,8 +519,9 @@ impl Held {
                     *keyword = crate::text_change::keyword(keyword, from, to);
                 }
             }
-            // Given one at a time above.
+            // Given one at a time above; an exchange is worked out into `R612TextBoxOf` for each object (`Pass::apply`).
             Modification::AddKeywords(_)
+            | Modification::R612ExchangeTextBoxes
             | Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -809,6 +850,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::SetController(_) => Layer::Control,
         Wanted::ChangeTextChosen { .. }
         | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::R612ExchangeTextBoxes
         | Wanted::SetName(_) => Layer::Text,
         Wanted::AddType(_)
         | Wanted::RemoveType(_)
@@ -874,7 +916,9 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::BlockedByAll
         | Wanted::BlocksAdditional(_)
         | Wanted::BlocksAdditionalPer(_)
-        | Wanted::Goaded => return None,
+        | Wanted::Goaded
+        // A static copy is begun and ended in housekeeping (`copies::r707_static_copies`), not by the layers.
+        | Wanted::R707CopyOf { .. } => return None,
     })
 }
 
@@ -1341,6 +1385,10 @@ impl<'a> Pass<'a> {
             return;
         }
         for (index, wanted) in mods.iter().enumerate() {
+            // A static copy is begun and ended in housekeeping (`copies::r707_static_copies`).
+            if matches!(wanted, Wanted::R707CopyOf { .. }) {
+                continue;
+            }
             let key = Key::Static(ability.address, index);
             if layer_of(wanted, *defining) != layer || self.done.contains(&key) {
                 continue;
@@ -1593,9 +1641,15 @@ impl<'a> Pass<'a> {
                     modification: foot.modification.clone(),
                 });
         }
+        let exchanged = self.r612_text_boxes(&foot);
         for id in &foot.set {
+            if matches!(foot.modification, Modification::R612ExchangeTextBoxes)
+                && !exchanged.contains_key(id)
+            {
+                continue;
+            }
             if let Some(held) = self.held.get_mut(id) {
-                let change = foot.change_for(*id);
+                let change = exchanged.get(id).unwrap_or_else(|| foot.change_for(*id));
                 held.change(change, cand.origin, cand.timestamp);
                 held.applied.push(Applied {
                     origin: cand.origin,
@@ -1608,6 +1662,38 @@ impl<'a> Pass<'a> {
         matches!(&foot.modification, Modification::GrantAbility(granted)
             if matches!(&**granted, Ability::Static { .. }))
             && !foot.set.is_empty()
+    }
+
+    /// The text box each of the two objects of an exchange takes from the other (CR 612.1), read from their copiable values
+    /// as they are now; none unless the effect changes exactly two objects.
+    fn r612_text_boxes(&self, foot: &Foot) -> BTreeMap<ObjectId, Modification> {
+        let mut taken = BTreeMap::new();
+        if !matches!(foot.modification, Modification::R612ExchangeTextBoxes) {
+            return taken;
+        }
+        let &[first, second] = foot.set.iter().copied().collect::<Vec<_>>().as_slice() else {
+            return taken;
+        };
+        for (taker, donor) in [(first, second), (second, first)] {
+            let Some(object) = self.state.object(donor) else {
+                return BTreeMap::new();
+            };
+            let rules = printed(object)
+                .map(|(address, body)| crate::effects::Borrowed {
+                    donor,
+                    index: address.ability,
+                    body: Arc::clone(body),
+                    r111_current: false,
+                })
+                .collect();
+            let text = crate::effects::R612TextBox {
+                donor,
+                given: rules,
+                mana: base(object).abilities,
+            };
+            taken.insert(taker, Modification::R612TextBoxOf(text));
+        }
+        taken
     }
 
     /// A keyword a static ability gives to a player or takes from them (layer 6).

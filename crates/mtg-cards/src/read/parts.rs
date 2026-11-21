@@ -614,6 +614,7 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
         Modification::ChangeTextChosenTo { from, to } => {
             format!("has every instance of the word chosen as {from} replaced by {to}")
         }
+        Modification::R612ExchangeTextBoxes => "exchange their text boxes".to_owned(),
         Modification::SetController(player) => {
             format!("is controlled by {}", phrase::who(ctx, player))
         }

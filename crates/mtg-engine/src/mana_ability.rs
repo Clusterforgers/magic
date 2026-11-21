@@ -653,6 +653,7 @@ pub(crate) fn logged_activation(
         player,
         source,
         tapped,
+        r113_spent_from: Vec::new(),
     });
     Ok(events)
 }

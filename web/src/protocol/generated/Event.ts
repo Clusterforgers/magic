@@ -53,6 +53,7 @@ import type { Scried } from "./Scried";
 import type { Snapshot } from "./Snapshot";
 import type { SpellCopy } from "./SpellCopy";
 import type { SpendOn } from "./SpendOn";
+import type { SpentFrom } from "./SpentFrom";
 import type { Step } from "./Step";
 import type { Surveilled } from "./Surveilled";
 import type { TakeBackKind } from "./TakeBackKind";
@@ -691,7 +692,12 @@ source: ObjectRef,
 /**
  * The source was tapped to pay its cost ("tapped a land for mana").
  */
-tapped?: boolean, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
+tapped?: boolean, 
+/**
+ * The sources of the mana spent on its cost, for one that costs mana ("if mana from a Treasure was spent to
+ * activate it"); empty otherwise.
+ */
+r113_spent_from?: Array<SpentFrom>, } } | { "AbilityTriggered": Triggered } | { "TriggersOrdered": { 
 /**
  * Who ordered them.
  */
@@ -1004,7 +1010,11 @@ attached_by?: ObjectRef,
 /**
  * The object whose staying tapped kept the copy going ("for as long as that creature remains tapped").
  */
-r6104_tapped?: ObjectRef, } } | { "MonarchChanged": { 
+r6104_tapped?: ObjectRef, 
+/**
+ * The permanent whose static ability made the copy ("enchanted creature is a copy of ...", `R707CopyOf`).
+ */
+r707_static?: ObjectRef, } } | { "MonarchChanged": { 
 /**
  * The new monarch.
  */

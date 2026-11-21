@@ -152,7 +152,7 @@ const ORDINARY_EFFECTS =
   R6701RemoveAmong R6701TurnFaceDownHorror R6701ControlCombat R6702Distribute R6702CountersPerVote
   PayAnyTimes StillResolves Bind Let R110RemovePutThisWay R110MoveEachKindMissing R110MoveOneOrMore R110ChooseSecretly R111KeepChosen R112NoteManaSpent
   R110AddCombatAfterFirst R111OrderGraveyard R112DoubleX R112NoteChosen
-  R112GuessNumber R112Piles R112RollStore R112RerollStored`)
+  R112GuessNumber R112Piles R112RollStore R112RerollStored R113PhaseIn`)
 
 /** The `CostItem` variants that are keyword actions or the words of one, by lexicon term. */
 const COSTS: Record<string, string> = {
@@ -195,7 +195,7 @@ const COSTS: Record<string, string> = {
 
 const ORDINARY_COSTS =
   names(`Mana PayLife Draw ManaCostOf OwnManaCost OwnManaValue OwnManaCostLess ReturnToHand AlikeFromHand
-  DamageToYou OthersGainLife OpponentGainsLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor R112XOneEachColor R112ExileFromOneGraveyard ChosenColorOnly XAtMost XIs OneOf Changed R6702ExileTotalX ExileTotalValue R110ControllerDraws R110RevealChosen R110Choose R110ChooseNumber`)
+  DamageToYou OthersGainLife OpponentGainsLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor R113XHybrid R112XOneEachColor R112ExileFromOneGraveyard R113BottomFromOneGraveyard ChosenColorOnly XAtMost XIs OneOf Changed R6702ExileTotalX ExileTotalValue R110ControllerDraws R110RevealChosen R110Choose R110ChooseNumber`)
 
 /** The `TriggerPattern` variants that name a keyword action, designation or rules term, by lexicon term. */
 const TRIGGERS: Record<string, string> = {

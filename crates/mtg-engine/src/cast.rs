@@ -768,10 +768,51 @@ fn announcement(
     }
 }
 
+/// The sources of one spending of `mana` from `pool`, its `restricted` units among them: mana with a rider (snow mana,
+/// CR 106.3) keeps its source only when it was added in the same batch (`ridden`).
+fn spent_sources(
+    pool: &mut crate::mana::ManaPool,
+    ridden: &mut Vec<(crate::spend::Restricted, mtg_cards::spend::SpendTraits)>,
+    mana: &[mtg_core::mana::ManaType],
+    restricted: &[crate::spend::Restricted],
+) -> Vec<mtg_cards::spend::SpentFrom> {
+    let mut plain = mana.to_vec();
+    let mut found = Vec::new();
+    for unit in restricted {
+        if let Some(at) = plain.iter().position(|m| *m == unit.mana) {
+            plain.remove(at);
+        }
+        pool.spend_restricted(unit);
+        if let Some(at) = ridden.iter().position(|(held, _)| held == unit) {
+            found.push((unit.mana, Some(ridden.remove(at).1)));
+        }
+    }
+    found.extend(plain.into_iter().map(|m| (m, pool.spend_noting(m))));
+    let mut these: Vec<mtg_cards::spend::SpentFrom> = Vec::new();
+    for (m, traits) in found {
+        let Some(traits) = traits else {
+            continue;
+        };
+        match these.iter_mut().find(|known| known.traits == traits) {
+            Some(known) => {
+                known.count += 1;
+                known.r113_mana.push(m);
+            }
+            None => these.push(mtg_cards::spend::SpentFrom {
+                traits,
+                count: 1,
+                r113_mana: vec![m],
+            }),
+        }
+    }
+    these
+}
+
 /// Gives the spell the payment casts the sources of the mana it spends (CR 601.2h): what each was as it made the mana, and
 /// how much of its mana was spent. The payment is played out on a copy of the pool, which keeps the source of mana added
-/// before the cast; only the last spending is the spell's, the earlier ones pay for mana abilities.
-fn record_sources(state: &GameState, events: &mut [Event]) {
+/// before the cast; only the last spending is the spell's, the earlier ones pay for mana abilities, and each mana ability
+/// that costs mana keeps the sources of the spending just before it (`Event::ManaAbilityActivated::r113_spent_from`).
+pub(crate) fn record_sources(state: &GameState, events: &mut [Event]) {
     let Some((last, player)) =
         events
             .iter()
@@ -788,7 +829,11 @@ fn record_sources(state: &GameState, events: &mut [Event]) {
         return;
     };
     let mut from: Vec<mtg_cards::spend::SpentFrom> = Vec::new();
-    for (at, event) in events.iter().enumerate() {
+    // The sources of the latest spending not yet claimed by a mana ability.
+    let mut open: Option<Vec<mtg_cards::spend::SpentFrom>> = None;
+    let mut restricted_from: Vec<(crate::spend::Restricted, mtg_cards::spend::SpendTraits)> =
+        Vec::new();
+    for (at, event) in events.iter_mut().enumerate() {
         match event {
             Event::ManaAdded {
                 player: to,
@@ -798,6 +843,16 @@ fn record_sources(state: &GameState, events: &mut [Event]) {
                 lasts,
             } if *to == player => {
                 let kind = source.map(|id| crate::spend::source_kind(state, id));
+                if let (false, Some(kind)) = (only.is_empty(), kind.clone()) {
+                    restricted_from.push((
+                        crate::spend::Restricted {
+                            mana: *mana,
+                            only: only.clone(),
+                            lasts: *lasts,
+                        },
+                        kind,
+                    ));
+                }
                 pool.add_from(*mana, only.clone(), *lasts, kind);
             }
             Event::ManaSpent {
@@ -805,24 +860,19 @@ fn record_sources(state: &GameState, events: &mut [Event]) {
                 mana,
                 restricted,
             } if *by == player => {
-                let mut plain = mana.clone();
-                for unit in restricted {
-                    if let Some(at) = plain.iter().position(|m| *m == unit.mana) {
-                        plain.remove(at);
-                    }
-                    pool.spend_restricted(unit);
+                let these = spent_sources(&mut pool, &mut restricted_from, mana, restricted);
+                if at == last {
+                    from.clone_from(&these);
                 }
-                for m in plain {
-                    let Some(traits) = pool.spend_noting(m) else {
-                        continue;
-                    };
-                    if at != last {
-                        continue;
-                    }
-                    match from.iter_mut().find(|known| known.traits == traits) {
-                        Some(known) => known.count += 1,
-                        None => from.push(mtg_cards::spend::SpentFrom { traits, count: 1 }),
-                    }
+                open = Some(these);
+            }
+            Event::ManaAbilityActivated {
+                player: by,
+                r113_spent_from,
+                ..
+            } if *by == player => {
+                if let Some(these) = open.take() {
+                    *r113_spent_from = these;
                 }
             }
             _ => {}

@@ -51,6 +51,7 @@ fn r6703_end_trigger(
         return Ok(None);
     }
     let delayed = Effect::DelayedTrigger {
+        intervening_if: None,
         when: mtg_cards::trigger::TriggerPattern::StepBegins {
             step: mtg_cards::trigger::Step::End,
             whose: mtg_cards::refs::Ref::EachPlayer,

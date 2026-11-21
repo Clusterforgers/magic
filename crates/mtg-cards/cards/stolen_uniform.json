@@ -1,0 +1,56 @@
+{
+  "oracle_id": "17c0cf45-a031-40e8-a37f-eda98a8f785b",
+  "name": "Stolen Uniform",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stolen Uniform",
+      "oracle_fingerprint": "0f8b4645d5fae3ec2b89263c95558db6",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Subtype": "Equipment" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 1 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Attach": { "what": { "Target": 1 }, "to": { "Target": 0 } } },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "Did": {
+                      "action": "R112LostControl",
+                      "who": "You",
+                      "what": [{ "Is": { "Target": 1 } }]
+                    }
+                  },
+                  "this_turn": true,
+                  "effects": [{ "Unattach": { "what": "Triggering" } }],
+                  "intervening_if": {
+                    "Matches": {
+                      "subject": "Triggering",
+                      "selector": [
+                        {
+                          "AttachedTo": {
+                            "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

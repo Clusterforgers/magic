@@ -49,7 +49,7 @@ fn l31d_x_color_reads_and_writes_back(
     "{X}, {T}: You gain X life. Spend only colored mana on X.",
     ClauseKind::Activated
 )]
-#[case::two_colors("Spend only black and/or red mana on X.", ClauseKind::Static)]
+#[case::two_colors("Spend only black and/or green mana on X.", ClauseKind::Static)]
 #[case::on_y("Spend only black mana on Y.", ClauseKind::Static)]
 fn l31d_x_color_near_misses_stay_with_the_table(#[case] text: &str, #[case] kind: ClauseKind) {
     let read = clause(text, kind, false);

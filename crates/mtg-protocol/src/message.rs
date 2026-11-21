@@ -96,6 +96,8 @@ pub enum YieldUntil {
     EndOfTurn,
     /// Until the seat's own next turn begins.
     MyTurn,
+    /// Until the seat's own next turn begins, through every object and stop: only a decision with a real choice is asked.
+    MyTurnThrough,
 }
 
 /// Whose turns a stop applies to (see [`ClientMessage::SetStop`]).

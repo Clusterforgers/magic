@@ -34,4 +34,8 @@ attached_by?: ObjectRef,
  * The copy ends once this object is no longer tapped on the battlefield ("for as long as that creature remains
  * tapped").
  */
-r6104_while_tapped?: ObjectRef, };
+r6104_while_tapped?: ObjectRef, 
+/**
+ * The copy is the one the static ability of this permanent makes (`R707CopyOf`), begun and ended in housekeeping.
+ */
+r707_static?: ObjectRef, };

@@ -309,7 +309,7 @@ At each priority decision the actor asks the seat, passes for it at once or pass
 | # | Condition | Verdict |
 |---|---|---|
 | 1 | Full Control (`NextWindow`, `Held`) | Ask at every window |
-| 2 | A running yield (a stop of the seat ends it, except in the step it was asked at) | Pass at once |
+| 2 | A running yield (a stop of the seat ends it, except in the step it was asked at and under `MyTurnThrough`) | Pass at once |
 | 3 | A stop of the seat for this side and step, or a by-hand window | Ask, whether it can act or not |
 | 4 | A default window and the seat can act | Ask |
 | 5 | A default window and the seat cannot act | `Dwell`; pass at once in its own main phase with an empty stack |
@@ -332,7 +332,7 @@ With "Always pay for me" (`AutoChoices.auto_pay`, `pace::auto_paid`) a seat out 
 - Turning Full Control on ends a running yield and `Yield` is refused while it is on; turning it off at a priority decision the windows then pass for passes at once.
 - `AutoChoices.skip_triggers` passes a seat at a priority decision with a triggered ability on top of the stack (`auto_yields::passes_for`, beside the per-ability yields), from the stack alone. Setting the choices at such a decision passes at once (`take_stops_passing`), as a new yield does.
 - `AutoSkip` and `CancelAutoSkip` set and take back a seat's rules for its own triggers (`auto_skips.rs`), held in `Stops` and never stored. `Running::auto_answer` applies them after the engine's sole answer and before `AutoChoices`, outside Full Control, from the next question on.
-- `Yield` and `CancelYield` set and end a per-seat yield (`Yields`), never stored. Its end rules ([protocol.md](protocol.md), Yields) live in `Active::ends_at` and read the table alone, never `can_act`. If a started yield ends at once the decision is issued again with a new id, so a client that dropped its prompt always gets one.
+- `Yield` and `CancelYield` set and end a per-seat yield (`Yields`), never stored. Its end rules ([protocol.md](protocol.md), Yields) live in `Active::ends_at` and read the table alone, never `can_act`. If a started yield ends at once the decision is issued again with a new id, so a client that dropped its prompt always gets one. `MyTurnThrough` ends as the seat's own turn begins (`Yields::drop_reached`, after each committed step) and when the seat sends `Manual` or `TakeBack` (`end_through_yield`).
 
 ### Passes and saves
 

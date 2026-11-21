@@ -163,6 +163,7 @@ pub fn token_copy(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     effects.extend(gains);
     if let Some((verb, step)) = delay {
         effects.push(Effect::DelayedTrigger {
+            intervening_if: None,
             until: None,
             when: TriggerPattern::StepBegins {
                 step,
@@ -460,6 +461,7 @@ fn populate_later(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             duration: Duration::Forever,
         },
         Effect::DelayedTrigger {
+            intervening_if: None,
             until: None,
             when: TriggerPattern::StepBegins {
                 step: Step::End,
@@ -549,6 +551,7 @@ pub fn enters_as_copy(r: &mut Reader<'_>) -> Option<Ability> {
             counters: Vec::new(),
             except_if: Vec::new(),
             r109_embalmed: Vec::new(),
+            r707_when_you_do: Vec::new(),
         },
         condition: None,
         from: ZoneKind::Battlefield,
@@ -1289,6 +1292,7 @@ pub(super) fn delay_text(created: &Effect, delayed: &Effect, plural: bool) -> Op
         return None;
     };
     let Effect::DelayedTrigger {
+        intervening_if: None,
         until: None,
         when:
             TriggerPattern::StepBegins {

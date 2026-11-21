@@ -61,6 +61,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Untap { .. }
         | Effect::TapOrUntap { .. }
         | Effect::PhaseOut { .. }
+        | Effect::R113PhaseIn { .. }
         | Effect::Rephase
         | Effect::Attach { .. }
         | Effect::Unattach { .. }

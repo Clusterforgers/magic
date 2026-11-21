@@ -57,7 +57,10 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
         // The land loses its abilities with its land types; a text change rewrites the rules, the keywords and the
         // subtypes.
-        Modification::SetLandTypes(_) | Modification::ChangeText { .. } => Traits::SUBTYPES
+        Modification::SetLandTypes(_)
+        | Modification::ChangeText { .. }
+        | Modification::R612ExchangeTextBoxes
+        | Modification::R612TextBoxOf(_) => Traits::SUBTYPES
             .or(Traits::KEYWORDS)
             .or(Traits::RULES)
             .or(Traits::ACTIVATED),
@@ -121,7 +124,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetLandTypesNthChosen(_)
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
-        | Wanted::ChangeTextChosenTo { .. } => Traits::SUBTYPES
+        | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::R612ExchangeTextBoxes => Traits::SUBTYPES
             .or(Traits::KEYWORDS)
             .or(Traits::RULES)
             .or(Traits::ACTIVATED),
@@ -154,7 +158,9 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::SetToughness(_)
         | Wanted::ModifyPT { .. }
         | Wanted::SwitchPT => Traits::POWER.or(Traits::TOUGHNESS),
-        Wanted::SetName(_)
+        // A static copy is no part of the layers: housekeeping begins and ends it (`r707_static_copies`).
+        Wanted::R707CopyOf { .. }
+        | Wanted::SetName(_)
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
@@ -200,7 +206,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::CantBeBlockedBy(blockers) | Wanted::CanBlockOnly(blockers) => {
             reads_of_selector(blockers)
         }
-        Wanted::SwitchPT
+        Wanted::R707CopyOf { .. }
+        | Wanted::SwitchPT
         | Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)
@@ -219,6 +226,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
         | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::R612ExchangeTextBoxes
         | Wanted::SetColorsChosen(_)
         | Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
@@ -386,6 +394,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::ChosenName
         | Pred::FaceDown
         | Pred::SpentFrom { .. }
+        | Pred::R113SnowOfOwnColor
         | Pred::GravedThisTurn
         | Pred::GravedThisCombat
         | Pred::R6500StartedTurnUntapped
@@ -426,6 +435,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
+        | Pred::R113CopyOf(who)
         | Pred::TargetsPlayer(who)
         | Pred::OwnedBy(who)
         | Pred::ProtectedBy(who)
@@ -465,10 +475,11 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::R112SharesColorWithSpent
         | Pred::OutsideCommanderIdentity => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
-        Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) => Traits::KEYWORDS,
+        Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) | Pred::R113HasWay(_) => Traits::KEYWORDS,
         // What a permanent could produce is read from its mana abilities.
         Pred::HasAbility(_) | Pred::CouldProduce(_) => Traits::KEYWORDS.or(Traits::RULES),
         Pred::Compare { stat, to, .. } => reads_of_stat(*stat).or(reads_of_amount(to)),
+        Pred::R113Parity { stat, .. } => reads_of_stat(*stat),
         Pred::TotalAtMost { stat, most } => reads_of_stat(*stat).or(reads_of_amount(most)),
         Pred::Test { left, right, .. } => reads_of_amount(left).or(reads_of_amount(right)),
         Pred::Not(inner) => reads_of_pred(inner),
@@ -620,7 +631,12 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
             .or(reads_of_amount(then))
             .or(reads_of_amount(otherwise)),
         Amount::Tally { who, filter, .. } => reads_of_ref(who).or(reads_of_selector(filter)),
-        Amount::Remembered { on, .. } | Amount::R112MostAlike { on, .. } => reads_of_ref(on),
+        Amount::Remembered { on, .. }
+        | Amount::R112MostAlike { on, .. }
+        | Amount::R113Stored { on, .. }
+        | Amount::R113SharesWithAnother { of: on, .. }
+        | Amount::R113GreatestNoted { on }
+        | Amount::R113NotedWords { on } => reads_of_ref(on),
         Amount::R112NumberChosen { by, .. } => reads_of_ref(by),
         Amount::CardTypes(of) => reads_of_selector(of).or(Traits::TYPES),
         Amount::R6702CardTypesOf(of) => reads_of_ref(of).or(Traits::TYPES),
@@ -665,6 +681,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::AdditionalCostPaid
         | Condition::CastWith(_)
         | Condition::R112CastByOwnAbility
+        | Condition::R113SpentFromTriggering { .. }
         | Condition::CastOffSorceryTiming
         | Condition::AsCast(_)
         | Condition::R401OnCast(_)

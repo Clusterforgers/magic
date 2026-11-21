@@ -268,6 +268,23 @@ pub enum Rule {
         /// Only once each turn for the permanent.
         once: bool,
     },
+    /// The permanent notes the mana value of each card put into exile (`GameRule::R113NoteExiledManaValue`).
+    R113NoteExiled {
+        /// The permanent with the rule, whose memory holds the notes.
+        source: ObjectRef,
+    },
+    /// The players who roll dice of `sides` faces may exchange one result with a number the permanent stored in `slot`
+    /// (`GameRule::R113ExchangeRoll`).
+    R113ExchangeRoll {
+        /// Whose rolls.
+        players: Vec<PlayerId>,
+        /// The permanent with the rule, whose memory holds the numbers.
+        source: ObjectRef,
+        /// How many faces the dice have.
+        sides: u32,
+        /// The memory slot.
+        slot: String,
+    },
     /// A rule about planar dice or planeswalking (Ichor Elixir, Susan Foreman): no game the engine plays has a planar
     /// deck, so it changes nothing.
     Planar,
@@ -992,6 +1009,10 @@ pub(crate) struct RulesInForce {
     extra_die: Vec<PlayerId>,
     /// The rules that let a player change a result after they roll, in timestamp order.
     r6402_change_roll: Vec<R6402RollChanger>,
+    /// The rules that let a player exchange a result with a number a permanent stored, in timestamp order.
+    r113_exchange_roll: Vec<R113RollExchanger>,
+    /// The permanents that note the mana value of each card put into exile, in timestamp order.
+    r113_note_exiled: Vec<ObjectRef>,
     /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
     keep_mana: Vec<(PlayerId, Option<ManaType>)>,
     /// The players whose lost mana becomes another type, in timestamp order.
@@ -1604,6 +1625,20 @@ impl RulesInForce {
                     by: *by,
                     once: *once,
                 })),
+            Rule::R113NoteExiled { source } => self.r113_note_exiled.push(*source),
+            Rule::R113ExchangeRoll {
+                players,
+                source,
+                sides,
+                slot,
+            } => self
+                .r113_exchange_roll
+                .extend(players.iter().map(|player| R113RollExchanger {
+                    player: *player,
+                    source: *source,
+                    sides: *sides,
+                    slot: slot.clone(),
+                })),
             Rule::KeepUnspentMana(players, mana) => {
                 self.keep_mana.extend(players.iter().map(|p| (*p, *mana)));
             }
@@ -2155,6 +2190,15 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             by: *by,
             once: *once,
         },
+        GameRule::R113NoteExiledManaValue => Rule::R113NoteExiled {
+            source: scope.source,
+        },
+        GameRule::R113ExchangeRoll { who, sides, slot } => Rule::R113ExchangeRoll {
+            players: scope.players(who)?,
+            source: scope.source,
+            sides: *sides,
+            slot: slot.clone(),
+        },
         GameRule::ExtraPlanarDie(_) | GameRule::PlaneswalkLookTwo(_) => Rule::Planar,
         GameRule::KeepUnspentMana { who, mana } => {
             Rule::KeepUnspentMana(scope.players(who)?, *mana)
@@ -2475,6 +2519,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::R6700VillainousAgain(players)
         | Rule::ExtraDie(players)
         | Rule::R6402ChangeRoll { players, .. }
+        | Rule::R113ExchangeRoll { players, .. }
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
@@ -2536,7 +2581,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ManaBurn
         | Rule::RevealFirstDraw { .. }
         | Rule::UntapRemovesCounters(_)
-        | Rule::R6400ChoosesVotes(_) => false,
+        | Rule::R6400ChoosesVotes(_)
+        | Rule::R113NoteExiled { .. } => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
@@ -2696,6 +2742,8 @@ static NONE: RulesInForce = RulesInForce {
     r6700_villainous_again: Vec::new(),
     extra_die: Vec::new(),
     r6402_change_roll: Vec::new(),
+    r113_exchange_roll: Vec::new(),
+    r113_note_exiled: Vec::new(),
     keep_mana: Vec::new(),
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
@@ -3581,6 +3629,39 @@ pub(crate) fn r6402_roll_changers(state: &GameState, player: PlayerId) -> Vec<R6
         .r6402_change_roll
         .iter()
         .filter(|changer| changer.player == player)
+        .cloned()
+        .collect()
+}
+
+/// A rule that lets one player exchange a result of a roll with a number a permanent stored (`Rule::R113ExchangeRoll`).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct R113RollExchanger {
+    /// Whose rolls.
+    pub(crate) player: PlayerId,
+    /// The permanent with the rule, whose memory holds the numbers.
+    pub(crate) source: ObjectRef,
+    /// How many faces the dice have.
+    pub(crate) sides: u32,
+    /// The memory slot.
+    pub(crate) slot: String,
+}
+
+/// The permanents that note the mana value of each card put into exile (`Rule::R113NoteExiled`), in timestamp order.
+pub(crate) fn r113_noters(state: &GameState) -> Vec<ObjectRef> {
+    state.rules().r113_note_exiled.clone()
+}
+
+/// The rules that let `player` exchange a result of a roll of dice with `sides` faces, in timestamp order.
+pub(crate) fn r113_roll_exchangers(
+    state: &GameState,
+    player: PlayerId,
+    sides: u32,
+) -> Vec<R113RollExchanger> {
+    state
+        .rules()
+        .r113_exchange_roll
+        .iter()
+        .filter(|exchanger| exchanger.player == player && exchanger.sides == sides)
         .cloned()
         .collect()
 }

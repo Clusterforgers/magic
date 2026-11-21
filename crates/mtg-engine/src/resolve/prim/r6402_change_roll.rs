@@ -2,6 +2,9 @@
 //! CR 706.2): once a player has rolled, each rule that lets them change a result asks them, in timestamp order, whether
 //! to pay its cost and which die of the roll to change by how much; the changed number is the result, the number the die
 //! showed its natural result.
+//! A rule that lets them exchange a result with a number its permanent stored (`Rule::R113ExchangeRoll`, "If you would
+//! roll one or more six-sided dice, instead roll them and you may exchange one result with this creature's base power or
+//! base toughness") is asked first, as it replaces the roll.
 
 use mtg_cards::modify::R6402RollPay;
 use mtg_core::ids::PlayerId;
@@ -123,6 +126,7 @@ fn r6402_paid(player: PlayerId, changer: &R6402RollChanger) -> Event {
 pub(crate) fn r6402_change(
     cx: &Cx<'_>,
     player: PlayerId,
+    sides: u32,
     rolled: &[u32],
 ) -> Result<Result<R6402Changed, Run>, ResolveError> {
     let state = cx.state();
@@ -133,6 +137,11 @@ pub(crate) fn r6402_change(
     };
     if rolled.is_empty() {
         return Ok(Ok(changed));
+    }
+    // The roll is replaced by one that lets them exchange (CR 614.1a), so the exchanges come before any change made
+    // after it.
+    if let Err(ask) = r113_exchange(cx, player, sides, &mut changed)? {
+        return Ok(Err(ask));
     }
     let mut spent = 0;
     for changer in crate::rules::r6402_roll_changers(state, player) {
@@ -183,6 +192,122 @@ pub(crate) fn r6402_change(
         changed.results[die] = to;
     }
     Ok(Ok(changed))
+}
+
+/// The exchanges a rule offers: none first, then each die with each stored number.
+fn r113_offers(results: &[u32], stored: &[i64]) -> Vec<Option<(usize, usize)>> {
+    let mut offers = vec![None];
+    for die in 0..results.len() {
+        for place in 0..stored.len() {
+            offers.push(Some((die, place)));
+        }
+    }
+    offers
+}
+
+/// The options of an exchange question, in the order of `r113_offers`.
+fn r113_options(
+    results: &[u32],
+    stored: &[i64],
+    offers: &[Option<(usize, usize)>],
+) -> Vec<ChoiceOption> {
+    offers
+        .iter()
+        .map(|offer| {
+            ChoiceOption::Label(match offer {
+                None => "Exchange nothing".to_owned(),
+                Some((die, place)) => format!(
+                    "Exchange die {} ({}) with stored number {} ({})",
+                    die + 1,
+                    results[*die],
+                    place + 1,
+                    stored[*place]
+                ),
+            })
+        })
+        .collect()
+}
+
+/// Asks `player` of each rule that lets them exchange a result of a roll of dice with `sides` faces with a number its
+/// permanent stored (`Rule::R113ExchangeRoll`) which exchange to make; the die takes the stored number and the memory the
+/// result. The answers continue the step's journal after those `changed` used.
+fn r113_exchange(
+    cx: &Cx<'_>,
+    player: PlayerId,
+    sides: u32,
+    changed: &mut R6402Changed,
+) -> Result<Result<(), Run>, ResolveError> {
+    let state = cx.state();
+    for exchanger in crate::rules::r113_roll_exchangers(state, player, sides) {
+        let slot = crate::memory::r112_lasting(&exchanger.slot);
+        let mut stored = crate::memory::recall_numbers(state, exchanger.source, &slot);
+        // An earlier exchange of this roll changed the memory too.
+        for event in &changed.events {
+            if let Event::Remembered(change) = event
+                && change.source == exchanger.source
+                && change.slot == slot
+            {
+                stored = change
+                    .values
+                    .iter()
+                    .filter_map(|held| match held {
+                        crate::memory::Held::Number(number) => Some(*number),
+                        _ => None,
+                    })
+                    .collect();
+            }
+        }
+        if stored.is_empty() {
+            continue;
+        }
+        let offers = r113_offers(&changed.results, &stored);
+        let index = match cx.journal().get(changed.asked) {
+            None => {
+                return Ok(Err(Run::Ask(Decision {
+                    player,
+                    kind: DecisionKind::ChooseOption(OptionOptions {
+                        source: exchanger.source.id,
+                        options: r113_options(&changed.results, &stored, &offers),
+                        text: "You may exchange one result with a stored number".to_owned(),
+                        can_cancel: false,
+                    }),
+                })));
+            }
+            Some((who, Choice::Option(index))) if *who == player && *index < offers.len() => *index,
+            Some(other) => {
+                return Err(ResolveError::Invalid(format!(
+                    "{other:?} is no answer to the exchange of a die's result of {player:?}"
+                )));
+            }
+        };
+        changed.asked += 1;
+        let Some(Some((die, place))) = offers.get(index).copied() else {
+            continue;
+        };
+        let result = changed.results[die];
+        let to = u32::try_from(stored[place].max(0)).unwrap_or(0);
+        stored[place] = i64::from(result);
+        changed.events.push(Event::R6402DieChanged {
+            player,
+            source: exchanger.source,
+            from: result,
+            to,
+        });
+        changed
+            .events
+            .push(Event::Remembered(Box::new(crate::memory::Remembered {
+                source: exchanger.source,
+                slot,
+                objects: Vec::new(),
+                values: stored
+                    .into_iter()
+                    .map(crate::memory::Held::Number)
+                    .collect(),
+                replace: true,
+            })));
+        changed.results[die] = to;
+    }
+    Ok(Ok(()))
 }
 
 #[cfg(test)]

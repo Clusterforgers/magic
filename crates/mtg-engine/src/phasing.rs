@@ -142,12 +142,12 @@ pub fn in_events(state: &GameState, player: PlayerId) -> Vec<Event> {
 }
 
 /// Whether a rule in force keeps the phased-out permanent `id` from phasing in ("they can't phase in", CR 702.26).
-fn held(state: &GameState, id: ObjectId) -> bool {
+pub(crate) fn held(state: &GameState, id: ObjectId) -> bool {
     crate::prohibit::forbidden(state, crate::prohibit::Doing::PhaseIn { object: id })
 }
 
 /// The events that phase in `id` and, after it, what phased out with it.
-fn w11b_with_attachments(state: &GameState, id: ObjectId) -> Vec<Event> {
+pub(crate) fn w11b_with_attachments(state: &GameState, id: ObjectId) -> Vec<Event> {
     let indirect = |id: ObjectId| {
         state
             .object(id)

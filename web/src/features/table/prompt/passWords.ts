@@ -122,6 +122,11 @@ export const YIELD_WORDS: Record<YieldUntil, YieldWords> = {
     description:
       'Passes priority until your next turn begins. You are asked again if an opponent adds to the stack.',
   },
+  MyTurnThrough: {
+    action: 'Pass until my turn',
+    passing: 'Passing until your turn; you are asked only real choices',
+    description: 'Pass until my turn — only asks when you have a real choice',
+  },
 }
 
 /** What the controls read off the play state: the step, whose turn it is and the stack; wrap in `useShallow`. */

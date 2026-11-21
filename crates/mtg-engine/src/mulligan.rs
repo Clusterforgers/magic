@@ -288,6 +288,7 @@ fn revealed_trigger(
         effects: effects.clone(),
         targets: Vec::new(),
         bindings: Vec::new(),
+        intervening_if: None,
         kept: None,
         origin: crate::abilities::AbilitySource::default(),
     })

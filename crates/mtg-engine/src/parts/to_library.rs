@@ -79,3 +79,13 @@ pub(super) fn events(
     }
     events
 }
+
+/// "Put 2 cards from a single graveyard on the bottom of their owner's library."
+pub(super) fn r113_text_any(filter: &Selector, count: usize) -> String {
+    let taken = crate::wording::exile_from_graveyard(filter, count);
+    let what = taken
+        .trim_end_matches('.')
+        .replacen("Exile", "Put", 1)
+        .replace("your graveyard", "a single graveyard");
+    format!("{what} on the bottom of their owner's library.")
+}

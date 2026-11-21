@@ -170,15 +170,25 @@ describe('what a screen reader is told', () => {
     )
   })
 
-  it.each(Object.entries(YIELD_WORDS) as [YieldUntil, (typeof YIELD_WORDS)[YieldUntil]][])(
-    '%s has an action, a line for the table and a description',
-    (_until, words) => {
-      expect(words.action).not.toMatch(/priority/i)
-      expect(words.passing).toMatch(/^Passing until /)
-      expect(words.description).toMatch(/^Passes priority/)
-      expect(words.description).toMatch(/asked again if an opponent adds to/)
-    },
-  )
+  // `MyTurnThrough` skips opponents' stack objects and asks only real choices, so it is not asked again for them.
+  it.each(
+    Object.entries(YIELD_WORDS).filter(([until]) => until !== 'MyTurnThrough') as [
+      YieldUntil,
+      (typeof YIELD_WORDS)[YieldUntil],
+    ][],
+  )('%s has an action, a line for the table and a description', (_until, words) => {
+    expect(words.action).not.toMatch(/priority/i)
+    expect(words.passing).toMatch(/^Passing until /)
+    expect(words.description).toMatch(/^Passes priority/)
+    expect(words.description).toMatch(/asked again if an opponent adds to/)
+  })
+
+  it('words the pass until my turn yield as one that asks only real choices', () => {
+    const words = YIELD_WORDS.MyTurnThrough
+    expect(words.action).not.toMatch(/priority/i)
+    expect(words.passing).toMatch(/^Passing until your turn/)
+    expect(words.description).toMatch(/only asks when you have a real choice/)
+  })
 
   it('words the three yields as the table, the menu and the indicator show them', () => {
     expect(YIELD_WORDS.Resolve.action).toBe('Resolve everything on the stack')

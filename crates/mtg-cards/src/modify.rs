@@ -122,6 +122,22 @@ pub enum Modification {
         /// The creature type written.
         to: String,
     },
+    /// The object is a copy of the first object `of` names (layer 1, CR 707.2, 613.2a), with the exceptions in its copiable
+    /// values (CR 707.9b): "Enchanted creature is a copy of the chosen creature", "this creature has the full text of that
+    /// card". Only a static ability has it; it is read from the card's own rules, works out again whenever what `of`
+    /// names changes, and ends once it names nothing.
+    R707CopyOf {
+        /// The object copied.
+        of: Ref,
+        /// Changes the copy has.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        except: Vec<Modification>,
+    },
+    /// The two objects the effect changes exchange their text boxes (layer 3, CR 612.1, 613.1c): each has the rules text
+    /// the other's copiable values give it, keywords and abilities, and keeps its name, types and other characteristics
+    /// ("exchange the text boxes of those creatures"). Only an effect of a spell or ability has it; with any other number
+    /// of objects on the battlefield it changes nothing.
+    R612ExchangeTextBoxes,
     /// Adds the creature type the source chose as it entered (layer 4): "is the chosen type in addition to its
     /// other types". Only a static ability has it; with no type chosen it changes nothing.
     AddChosenSubtype,
@@ -252,11 +268,12 @@ impl Modification {
             Modification::AddSupertype(_)
             | Modification::SetName(_)
             | Modification::ThisAbility
-            | Modification::SetLoyalty(_) => Some("1"),
+            | Modification::SetLoyalty(_)
+            | Modification::R707CopyOf { .. } => Some("1"),
             Modification::SetController(_) => Some("2"),
-            Modification::ChangeTextChosen { .. } | Modification::ChangeTextChosenTo { .. } => {
-                Some("3")
-            }
+            Modification::ChangeTextChosen { .. }
+            | Modification::ChangeTextChosenTo { .. }
+            | Modification::R612ExchangeTextBoxes => Some("3"),
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)
@@ -410,6 +427,9 @@ pub enum Duration {
     /// Until the next turn of the one player the rule names ("Until that player's next turn, they gain protection from
     /// everything"): it lasts as `UntilYourNextTurn` does for that player; only a rule lasts this way.
     UntilTheirNextTurn,
+    /// Until the next end step of the one player a permission names ("Until that player's next end step, they may play
+    /// that card"): it lasts as `UntilYourNextEndStep` does for that player; only a rule lasts this way.
+    R113UntilTheirNextEndStep,
     /// Until the card the source became when its ability exiled it is cast from exile ("until this card is cast from
     /// exile"); it lasts for good once that card leaves exile another way.
     UntilCastFromExile,
@@ -423,6 +443,10 @@ pub enum Duration {
     /// ("until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell"):
     /// it ends with the first turn of theirs that ends after the turn it began in. Only a delayed trigger lasts this way.
     R6700UntilEndOfTheirNextTurn(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Ref),
+    /// For as long as the condition holds (CR 611.2b: "for as long as this creature remains tapped and that creature's
+    /// power remains less than or equal to this creature's power"), read with each object of the effect as `Affected`:
+    /// it ends the first time the condition fails and does not come back. Only a continuous effect lasts this way.
+    R113While(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<Condition>),
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay
@@ -1173,6 +1197,21 @@ pub enum GameRule {
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         once: bool,
     },
+    /// A player in the group who would roll one or more dice of `sides` faces rolls them and may exchange one result with
+    /// one of the numbers the permanent stored in `slot` (`Effect::R112RollStore`; CR 614.1a, 706): "If you would roll one
+    /// or more six-sided dice, instead roll them and you may exchange one result with this creature's base power or base
+    /// toughness." The result becomes the stored number and the stored number the result.
+    R113ExchangeRoll {
+        /// Whose rolls.
+        who: Ref,
+        /// How many faces the dice have.
+        sides: u32,
+        /// The memory slot of the permanent.
+        slot: String,
+    },
+    /// "Note the mana value of each card as it's put into exile.": the permanent notes the number for itself as each card
+    /// goes to exile, with no stack; `Amount::R113GreatestNoted` reads the notes of this turn.
+    R113NoteExiledManaValue,
     /// A player in the group who would roll one or more planar dice rolls that many plus one instead and ignores one
     /// (CR 901.9): "If you would roll one or more planar dice, instead roll that many planar dice plus one and ignore
     /// one." No game the engine plays has a planar deck, so it never applies (the rulings of Fractured Powerstone).

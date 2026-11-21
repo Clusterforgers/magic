@@ -8,6 +8,7 @@ use mtg_cards::effect::Effect;
 use mtg_cards::modify::Duration;
 use mtg_cards::refs::{TargetSpec, ZoneKind};
 use mtg_cards::trigger::TriggerPattern;
+use mtg_cards::value::Condition;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
@@ -60,6 +61,10 @@ pub struct DelayedCreated {
     /// What it does.
     #[cfg_attr(feature = "ts", ts(type = "unknown"))]
     pub effects: Vec<Effect>,
+    /// Its intervening "if" (CR 603.4), checked as it would trigger and as it resolves.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(type = "unknown", optional))]
+    pub intervening_if: Option<Condition>,
     /// The names the resolution had bound when it set the trigger up, which the delayed ability reads as they were.
     pub bindings: Vec<(String, Vec<Target>)>,
     /// The spell that set it up, as it resolved, when the ability copies it after it has left the stack (epic).
@@ -138,6 +143,14 @@ impl Delayed {
     pub fn pattern(&self) -> Option<&TriggerPattern> {
         match &*self.rules {
             Ability::Triggered { when, .. } => Some(when),
+            _ => None,
+        }
+    }
+
+    /// Its intervening "if", if it has one (CR 603.4).
+    pub fn intervening_if(&self) -> Option<&Condition> {
+        match &*self.rules {
+            Ability::Triggered { intervening_if, .. } => intervening_if.as_ref(),
             _ => None,
         }
     }
@@ -229,6 +242,7 @@ impl Delayed {
             | Duration::WhileEnchanted
             | Duration::WhileTapped
             | Duration::WhileMonarch(_)
+            | Duration::R113While(_)
             | Duration::UntilItsControllersNextUntapStep
             | Duration::NextUntapStep
             | Duration::UntilPaid(_)
@@ -237,6 +251,7 @@ impl Delayed {
             | Duration::UntilSkippedThisTurn
             | Duration::TheirNextTurn
             | Duration::UntilTheirNextTurn
+            | Duration::R113UntilTheirNextEndStep
             | Duration::UntilCastFromExile
             | Duration::UntilCreatureSpellCast
             | Duration::UntilEndOfTurnOrRolled(_) => true,
@@ -265,7 +280,7 @@ pub(crate) fn fold_created(
         ability: created.ability,
         rules: Arc::new(Ability::Triggered {
             when: created.when.clone(),
-            intervening_if: None,
+            intervening_if: created.intervening_if.clone(),
             limit: None,
             from: ZoneKind::Battlefield,
             targets: created.targets.clone(),
@@ -342,6 +357,7 @@ mod tests {
             }],
             targets: Vec::new(),
             bindings,
+            intervening_if: None,
             kept: None,
             origin: crate::abilities::AbilitySource::default(),
         }

@@ -11,3 +11,12 @@ pub fn r5514_rule_player(rule: &GameRule) -> Option<&Ref> {
         _ => None,
     }
 }
+
+/// The player reference of a permission that can last until that player's next end step
+/// (`Duration::R113UntilTheirNextEndStep`): "they may play that card"; none for any other rule.
+pub fn r113_permitted_player(rule: &GameRule) -> Option<&Ref> {
+    match rule {
+        GameRule::MayCast(permission) => Some(&permission.who),
+        _ => None,
+    }
+}

@@ -1089,6 +1089,7 @@ fn itself_to_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             differ: None,
         },
         Effect::DelayedTrigger {
+            intervening_if: None,
             until: None,
             when: TriggerPattern::StepBegins {
                 step: Step::End,

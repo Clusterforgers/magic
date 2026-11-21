@@ -143,6 +143,7 @@ pub(super) fn rmt3_spell_enters_text(effect: &Effect) -> Option<String> {
 /// delayed trigger of the turn on the controller's next cast whose one step is the counters of that spell.
 pub(super) fn rmt3_next_cast_text(effect: &Effect) -> Option<String> {
     let Effect::DelayedTrigger {
+        intervening_if: None,
         until: None,
         when: when @ TriggerPattern::SpellCast { by: Ref::You, .. },
         once: true,

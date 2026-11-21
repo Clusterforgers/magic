@@ -10,6 +10,24 @@ use crate::object::{GameObject, ObjectRef};
 use crate::state::Tally;
 use crate::zones::Zone;
 
+/// Whether `seen` is a spell paid with mana from a snow source of one of its own colors (CR 106.3).
+fn r113_snow_of_own_color(seen: &Seen<'_>) -> bool {
+    seen.zone == Zone::Stack
+        && seen.card.is_some_and(|card| {
+            card.mana_spent_from()
+                .iter()
+                .filter(|source| {
+                    source
+                        .traits
+                        .supertypes
+                        .contains(&mtg_core::card::Supertype::Snow)
+                })
+                .flat_map(|source| &source.r113_mana)
+                .filter_map(|mana| mana.color())
+                .any(|color| seen.chars.colors.contains(color))
+        })
+}
+
 impl Scope<'_> {
     /// Whether a predicate of this module holds for the object; false for any other predicate.
     pub(super) fn w21a_pred(
@@ -93,6 +111,7 @@ impl Scope<'_> {
                         spent >= *least
                     })
             }
+            Pred::R113SnowOfOwnColor => r113_snow_of_own_color(seen),
             Pred::ArrivedThisTurn => [
                 ZoneKind::Battlefield,
                 ZoneKind::Hand,
