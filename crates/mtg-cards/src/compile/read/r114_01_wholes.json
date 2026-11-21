@@ -1,0 +1,5 @@
+[
+ [{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsEnters":[{"Pay":{"cost":[{"PayLife":"X"},{"XAtMost":{"Sum":[{"Count":[{"Color":"White"},{"Not":"Token"},{"ControlledBy":"Opponents"}]},{"Count":[{"Color":"White"},{"In":"Graveyard"},{"OwnedBy":"Opponents"}]}]}}],"paid":[{"R114StoreValue":{"value":"X","slot":"life"}}]}}]}}},"As this creature enters, pay any amount of life. The amount you pay can't be more than the total number of white nontoken permanents your opponents control plus the total number of white cards in their graveyards."]
+,[{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"AsEnters":[{"Pay":{"cost":[{"PayLife":"X"}],"paid":[{"R114StoreValue":{"value":"X","slot":"life"}}]}}]}}},"As this creature enters, pay any amount of life."]
+,[{"Static":{"affected":"This","mods":[{"SetPT":{"power":{"R113Stored":{"on":"This","slot":"life","index":0}},"toughness":{"R113Stored":{"on":"This","slot":"life","index":0}}}}],"defining":true}},"~'s power and toughness are each equal to the life paid as it entered."]
+]

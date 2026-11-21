@@ -2094,6 +2094,15 @@ pub enum Effect {
         /// The memory slot of the source.
         slot: String,
     },
+    /// The source stores the number on itself: its memory slot `slot` holds it in place of what it held, for as long as
+    /// the source stays, and the permanent a card becomes as it enters keeps it ("pay any amount of life" as it enters,
+    /// read by "equal to the life paid as it entered", CR 614.12); `Amount::R113Stored` reads it.
+    R114StoreValue {
+        /// The number stored.
+        value: Amount,
+        /// The memory slot of the source.
+        slot: String,
+    },
     /// The players `who` names bid life: the controller opens with a bid (`start`, or any number from 0), then in turn
     /// order each other player may top the high bid, and the bidding ends when the high bid stands. The high bid is
     /// remembered under `bind` (`Amount::ChosenAs`) and the high bidder is bound to `winner`; bidding loses no life by

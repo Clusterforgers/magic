@@ -4743,6 +4743,7 @@ impl Walker<'_> {
                     w.at("as", |w| w.bind_kept(name, Kind::Object));
                 }
             }
+            Effect::R114StoreValue { value, .. } => w.at("value", |w| w.amount(value)),
             Effect::RememberValue { value, per, .. } => {
                 w.at("value", |w| w.amount(value));
                 if let Some(per) = per {

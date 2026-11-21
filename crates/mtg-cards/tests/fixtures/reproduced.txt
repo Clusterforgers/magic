@@ -1682,6 +1682,7 @@ Mindless Conscription
 Mindlink Mech
 Mindlock Orb
 Mindslaver
+Minion of the Wastes
 Ministrant of Obligation
 Minotaur de Force
 Minthara, Merciless Soul
@@ -1763,6 +1764,7 @@ Nadier's Nightblade
 Nahiri's Binding
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
+Nameless Race
 Nanogene Conversion
 Nantuko Husk
 Nantuko Vigilante
