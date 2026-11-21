@@ -656,6 +656,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
+        | Event::R115CountersPutBy { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::VotesFinished { ballots } => state.r379_votes.push(ballots.clone()),

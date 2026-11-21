@@ -1178,7 +1178,11 @@ player: PlayerId,
 /**
  * The player it was given to.
  */
-to: PlayerId, } } | { "Foraged": { 
+to: PlayerId, } } | { "R115CountersPutBy": { 
+/**
+ * Who puts the counters.
+ */
+player: PlayerId, } } | { "Foraged": { 
 /**
  * Who foraged.
  */

@@ -25,6 +25,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         per_kind,
         put,
         absent_only,
+        by,
     } = effect
     else {
         return Err(wrong_effect("PutCountersOf"));
@@ -103,6 +104,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 }));
             }
         }
+    }
+    // "They put ...": the counters are that player's to put (CR 122.6), which the batch names before them.
+    if let Some(by) = by
+        && !events.is_empty()
+        && let Some(player) = cx.scope.players(by)?.first().copied()
+        && player != cx.scope.controller
+    {
+        events.insert(0, Event::R115CountersPutBy { player });
     }
     Ok(Run::events(events))
 }

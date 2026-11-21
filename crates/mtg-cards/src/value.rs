@@ -2266,6 +2266,11 @@ pub enum Condition {
     /// "You" (the player tested) were dealt damage this turn by a source the selector matches as it was when it dealt it
     /// ("if you were dealt damage this turn by a red instant or sorcery spell").
     R111DamagedThisTurnBy(Selector),
+    /// The colour the source chose as it entered is the most common colour among the objects the selector matches and is
+    /// not tied for most common (CR 105.1: each object counts once for each of its colours): "the chosen color is the most
+    /// common color among nontoken permanents the chosen player controls but isn't tied for most common". False for a source
+    /// that chose no colour.
+    R115MostCommonColor(Selector),
 }
 
 #[cfg(test)]

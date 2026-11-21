@@ -551,6 +551,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
+        | Event::R115CountersPutBy { .. }
         | Event::DieRolled { .. }
         | Event::R6402DieChanged { .. }
         | Event::RolledToVisit { .. }
@@ -1618,6 +1619,7 @@ mod tests {
                 against: None,
                 event: None,
                 ability: None,
+                r115_causer: None,
             },
             snapshot: snapshot(&t.state, t.creature).unwrap(),
             delayed: None,

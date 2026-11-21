@@ -103,12 +103,54 @@ impl Pass<'_> {
                 }
                 Ok(Asked::Got(Some(Chosen::Players(chosen))))
             }
+            EntersChoice::R115ColorAndOpponent => self.r115_color_and_opponent(source, controller),
             EntersChoice::R6001Abilities(count) => self.r6001_abilities(source, controller, count),
             EntersChoice::R111OpponentAndName | EntersChoice::R111NamesWithOpponent => {
                 self.r111_chooses(source, controller, kind)
             }
             _ => Ok(Asked::Got(None)),
         }
+    }
+
+    /// A colour, then an opponent of `controller` ("choose a color and an opponent"), remembered together.
+    fn r115_color_and_opponent(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        let colors = Color::ALL
+            .iter()
+            .copied()
+            .map(ChoiceOption::Color)
+            .collect();
+        let color =
+            match self.r4700_pick(source, controller, colors, "Choose a color.".to_owned())? {
+                Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+                Asked::Got(at) => at.and_then(|at| Color::ALL.get(at).copied()),
+            };
+        let opponents: Vec<PlayerId> = self
+            .state
+            .turn_order_from(controller)
+            .into_iter()
+            .filter(|player| self.state.is_opponent(controller, *player))
+            .collect();
+        let options = opponents
+            .iter()
+            .copied()
+            .map(ChoiceOption::Player)
+            .collect();
+        let opponent = match self.r4700_pick(
+            source,
+            controller,
+            options,
+            "Choose an opponent.".to_owned(),
+        )? {
+            Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+            Asked::Got(at) => at.and_then(|at| opponents.get(at).copied()),
+        };
+        Ok(Asked::Got(color.zip(opponent).map(|(color, player)| {
+            Chosen::R115ColorAndPlayer(color, player)
+        })))
     }
 
     /// The different abilities from among first strike, vigilance, and lifelink `controller` chooses, `count` of them.

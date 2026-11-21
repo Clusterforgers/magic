@@ -2,6 +2,7 @@
 import type { AbilityRef } from "./AbilityRef";
 import type { CounterKind } from "./CounterKind";
 import type { ObjectRef } from "./ObjectRef";
+import type { PlayerId } from "./PlayerId";
 import type { R111CauseEvent } from "./R111CauseEvent";
 import type { Snapshot } from "./Snapshot";
 import type { SpentFrom } from "./SpentFrom";
@@ -66,4 +67,9 @@ event?: R111CauseEvent,
  * The triggered ability whose triggering made this one trigger (`Ref::Triggering` names it on the stack); none for
  * any other event.
  */
-ability?: AbilityRef, };
+ability?: AbilityRef, 
+/**
+ * The player whose spell or ability caused the event (`TriggerPattern::Caused`, `Ref::R115Causer`: "whenever an opponent
+ * puts ..., they put ..."); none for a trigger whose pattern names no cause.
+ */
+r115_causer?: PlayerId, };

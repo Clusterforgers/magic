@@ -1,7 +1,7 @@
 {
   "oracle_id": "85277284-1eba-4f87-bf7b-abf1dcbb7691",
   "name": "Bold Plagiarist",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bold Plagiarist",
@@ -9,9 +9,30 @@
       "abilities": [
         { "Keyword": "Flash" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 6, "end": 144 }
+          "Triggered": {
+            "when": {
+              "Caused": {
+                "inner": {
+                  "Batch": {
+                    "CountersPut": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "R115Causer" }],
+                      "each": true
+                    }
+                  }
+                },
+                "by": "Opponents"
+              }
+            },
+            "effects": [
+              {
+                "PutCountersOf": {
+                  "on": "This",
+                  "of": "Triggering",
+                  "put": true,
+                  "by": "R115Causer"
+                }
+              }
+            ]
           }
         }
       ]

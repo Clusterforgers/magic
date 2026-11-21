@@ -427,6 +427,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::UpkeepSettled { .. }
         | Event::CommanderColorChosen { .. }
         | Event::Foraged { .. }
+        | Event::R115CountersPutBy { .. }
         | Event::PrizeClaimed { .. }
         | Event::StickerPut { .. }
         | Event::Proliferated { .. }

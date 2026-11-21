@@ -76,13 +76,25 @@ const NEAREST_UNTIL_NEXT_TURN: Whole = Whole {
 };
 
 /// The texts, tried in this order.
-const WHOLES: [Whole; 6] = [
+/// Vault 11: Voter's Dilemma: a secret vote for up to one creature (`Vote.up_to`); a draw for each player when no creature
+/// got votes, else each creature with the most votes or tied for most votes is destroyed.
+const R115_VOTERS_DILEMMA: Whole = Whole {
+    sentences: &[
+        "each player secretly votes for up to one creature, then those votes are revealed",
+        "if no creature got votes, each player draws a card",
+        "otherwise, destroy each creature with the most votes or tied for most votes",
+    ],
+    rules: r#"[{"Vote":{"options":{"Of":{"Each":[{"Type":"Creature"}]}},"secret":true,"as":"most","up_to":true}},{"If":{"condition":{"CountOf":{"subject":{"Bound":"most"},"selector":[],"op":"Eq","right":0}},"then":[{"Draw":{"who":"EachPlayer"}}],"otherwise":[{"Destroy":{"what":{"Bound":"most"}}}]}}]"#,
+};
+
+const WHOLES: [Whole; 7] = [
     HIGHEST_NUMBER,
     VOTES_DRAW,
     VOTES_DAMAGE,
     SILENCE_OR_SNITCH,
     SHARED_TYPE,
     NEAREST_UNTIL_NEXT_TURN,
+    R115_VOTERS_DILEMMA,
 ];
 
 /// The effects of a text.

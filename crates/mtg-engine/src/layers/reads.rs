@@ -293,6 +293,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::R111LastDamagedYou(_)
         | Ref::R111BlockedController { .. }
         | Ref::R111Object(_)
+        | Ref::R115Causer
         | Ref::R4700OtherChosen
         | Ref::Promised
         | Ref::Defending
@@ -736,6 +737,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::R111AttackedLastCombat(who)
         | Condition::AttackedThisCombat(who) => reads_of_ref(who),
         Condition::Level { of, .. } => reads_of_ref(of),
+        Condition::R115MostCommonColor(among) => reads_of_selector(among).or(Traits::COLORS),
     }
 }
 

@@ -4328,6 +4328,7 @@ impl Pass<'_> {
                 | EntersChoice::R6001Abilities(_)
                 | EntersChoice::R111OpponentAndName
                 | EntersChoice::R111NamesWithOpponent
+                | EntersChoice::R115ColorAndOpponent
         ) {
             return self.r4700_chooses(source, controller, kind);
         }
@@ -4466,6 +4467,7 @@ impl Pass<'_> {
             | EntersChoice::R111OpponentAndName
             | EntersChoice::R111NamesWithOpponent
             | EntersChoice::R6001Abilities(_)
+            | EntersChoice::R115ColorAndOpponent
             | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
                 .state
@@ -4536,6 +4538,7 @@ fn entering_question(kind: EntersChoice) -> String {
         | EntersChoice::Colors(_)
         | EntersChoice::Players(_)
         | EntersChoice::R6001Abilities(_)
+        | EntersChoice::R115ColorAndOpponent
         | EntersChoice::ColorAndCreatureType => String::new(),
     }
 }

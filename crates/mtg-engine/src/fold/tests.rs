@@ -175,7 +175,7 @@ fn an_ability_that_resolved_has_ceased_to_exist_and_the_active_player_gets_prior
     assert!(game.resolving().is_none());
     let priority = game.priority().unwrap();
     assert_eq!(priority.holder(), PlayerId(0));
-    assert!(priority.passed().is_empty());
+    assert_eq!(priority.passed().len(), 0);
     // The id is not used again.
     assert!(game.next_object() > id);
 }
@@ -378,6 +378,7 @@ fn token(id: u64, controller: PlayerId, attacking: Option<AttackTarget>) -> Toke
 
 fn cause() -> Cause {
     Cause {
+        r115_causer: None,
         dealers: Vec::new(),
         subjects: vec![Target::Player(PlayerId(1))],
         snapshots: Vec::new(),

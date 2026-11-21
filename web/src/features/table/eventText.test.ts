@@ -172,6 +172,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Bo doesn't pay the cumulative upkeep of Forest",
   ],
   Foraged: [{ Foraged: { player: 1 } }, 'Bo forages'],
+  R115CountersPutBy: [{ R115CountersPutBy: { player: 1 } }, 'Bo puts the counters that follow'],
   DieRolled: [
     { DieRolled: { player: 1, sides: 20, result: 14, natural: 13 } },
     'Bo rolls a d20: 14 (rolled 13)',
@@ -1600,6 +1601,12 @@ describe('the choice a permanent enters with', () => {
         Entered: { object: 3, tapped: false, controller: 0, chosen: { ColorAndType: ['Blue', 'Merfolk'] } },
       },
       "Forest enters under Ana's control, choosing blue and Merfolk",
+    ],
+    [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { R115ColorAndPlayer: ['Red', 1] } },
+      },
+      "Forest enters under Ana's control, choosing red and Bo",
     ],
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Players: [0, 1] } } },

@@ -247,6 +247,11 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub ability: Option<AbilityRef>,
+    /// The player whose spell or ability caused the event (`TriggerPattern::Caused`, `Ref::R115Causer`: "whenever an opponent
+    /// puts ..., they put ..."); none for a trigger whose pattern names no cause.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub r115_causer: Option<PlayerId>,
 }
 
 /// The event a triggered ability triggered on, as `Cause::event` keeps it: an object entering or moving between zones, a

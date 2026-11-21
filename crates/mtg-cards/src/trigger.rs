@@ -1199,6 +1199,9 @@ pub enum EntersChoice {
     /// A card name other than a basic land card name named by the controller and one by an opponent the controller chooses
     /// ("you and an opponent each choose a card name other than a basic land card name").
     R111NamesWithOpponent,
+    /// A colour and an opponent of the permanent's controller, chosen together ("choose a color and an opponent"): the
+    /// colour is the chosen colour and the opponent the chosen player.
+    R115ColorAndOpponent,
     /// This many different abilities from among first strike, vigilance, and lifelink ("choose two abilities from among
     /// first strike, vigilance, and lifelink"), read by `Modification::R6001AddChosenAbilities`.
     R6001Abilities(u32),

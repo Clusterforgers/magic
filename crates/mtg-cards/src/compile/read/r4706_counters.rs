@@ -126,5 +126,6 @@ pub(super) fn r4706_same_counters(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         per_kind: None,
         put: true,
         absent_only: false,
+        by: None,
     }])
 }

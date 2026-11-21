@@ -80,6 +80,8 @@ mod r114_shared_fate;
 mod r114_spent_copy;
 mod r114_tyvar;
 mod r114_walker_copies;
+mod r115_04_bold_plagiarist;
+mod r115_04_vault_11;
 mod r115_cost_choice;
 mod r115_exiled_together;
 mod r300_random_discard;

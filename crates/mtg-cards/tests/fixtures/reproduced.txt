@@ -295,6 +295,7 @@ Bohn, Beguiling Balladeer
 Boiling Earth
 Bojuka Bog
 Bola Slinger
+Bold Plagiarist
 Bonders' Enclave
 Bone Shredder
 Bonecaller Cleric
@@ -371,6 +372,7 @@ Caldaia Strongarm
 Caldera Hellion
 Call the Skybreaker
 Call the Spirit Dragons
+Call to Arms
 Caller of the Claw
 Caller of the Hunt
 Caller of the Pack
@@ -2812,6 +2814,7 @@ Tomik, Distinguished Advokist
 Topiary Lecturer
 Topography Tracker
 Toralf, God of Fury // Toralf's Hammer
+Torrent of Lava
 Torrent of Stone
 Torrential Gearhulk
 Toski, Bearer of Secrets
@@ -2922,6 +2925,7 @@ Vanquish the Horde
 Vanquisher's Banner
 Vastwood Hydra
 Vastwood Surge
+Vault 11: Voter's Dilemma
 Vault 21: House Gambit
 Vault 75: Middle School
 Vault of the Archangel
