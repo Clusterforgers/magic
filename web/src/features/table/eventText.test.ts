@@ -112,6 +112,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   AttackersBlocked: [{ AttackersBlocked: { attackers: [3] } }, 'Forest becomes blocked'],
   R6400Unblocked: [{ R6400Unblocked: { attacker: 3 } }, 'Forest becomes unblocked'],
   R6400Blocks: [{ R6400Blocks: { blocker: 3, attacker: 1 } }, 'Forest blocks Grizzly Bears'],
+  R115BlockMoved: [{ R115BlockMoved: { blocker: 3, to: 1 } }, 'Forest is blocking Grizzly Bears'],
   ManualAction: [
     { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },
     'Ana moves Forest to the graveyard (by hand)',
@@ -497,6 +498,19 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana chooses Grizzly Bears and Hill Giant',
   ],
   StepDone: [{ StepDone: { position: [1], bound: [], snapshots: [] } }, 'A step of the resolution is done'],
+  R115Continued: [
+    {
+      R115Continued: {
+        source: { id: 3, counter: 0 },
+        controller: 0,
+        effects: [],
+        position: [1],
+        bound: [],
+        snapshots: [],
+      },
+    },
+    'A replacement goes on as part of the resolution',
+  ],
   Remembered: [
     {
       Remembered: {

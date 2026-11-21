@@ -462,6 +462,41 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             }
             target.blocked = false;
         }
+        Event::R115BlockMoved { blocker, from, to } => {
+            if !on_battlefield(state, *blocker) {
+                return Err(invalid(format!(
+                    "blocker {blocker:?} is not on the battlefield"
+                )));
+            }
+            if !state.combat.attackers.iter().any(|a| a.object == *to) {
+                return Err(invalid(format!("{to:?} is not attacking")));
+            }
+            if let Some(from) = from {
+                let old = state
+                    .combat
+                    .attackers
+                    .iter_mut()
+                    .find(|a| a.object == *from)
+                    .filter(|a| a.blockers.contains(blocker))
+                    .ok_or_else(|| invalid(format!("{blocker:?} is not blocking {from:?}")))?;
+                old.blockers.retain(|b| b != blocker);
+                if let Some(assignment) = &mut old.assignment {
+                    assignment.retain(|(b, _)| b != blocker);
+                }
+                for (by, shares) in &mut state.combat.blocker_assignments {
+                    if by == blocker {
+                        shares.retain(|(attacker, _)| attacker != from);
+                    }
+                }
+            }
+            if let Some(target) = state.combat.attackers.iter_mut().find(|a| a.object == *to) {
+                if !target.blockers.contains(blocker) {
+                    target.blockers.push(*blocker);
+                }
+                target.blocked = true;
+            }
+            state.combat.r6400_blocked_by.push((*to, *blocker));
+        }
         Event::R6400Blocks { blocker, attacker } => {
             if !on_battlefield(state, *blocker) {
                 return Err(invalid(format!(

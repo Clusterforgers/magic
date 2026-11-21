@@ -153,6 +153,10 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
         | Effect::R6400Block { .. }
+        | Effect::R115ExchangeBlocks { .. }
+        | Effect::R115ExchangeBlockers { .. }
+        | Effect::R115JoinBlock { .. }
+        | Effect::R115SkipStep { .. }
         | Effect::BecomeBlocked { .. }
         | Effect::PutBeneathTop { .. }
         | Effect::LoseUnspentMana { .. }

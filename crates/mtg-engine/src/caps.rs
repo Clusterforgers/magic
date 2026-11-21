@@ -545,6 +545,10 @@ const RUNS: &[&str] = &[
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
     "Effect.R6400Block",
+    "Effect.R115ExchangeBlocks",
+    "Effect.R115ExchangeBlockers",
+    "Effect.R115JoinBlock",
+    "Effect.R115SkipStep",
     "Effect.BecomeBlocked",
     "Effect.PutBeneathTop",
     "Effect.LoseUnspentMana",
@@ -1054,6 +1058,10 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
     "ReplaceWhen.LifeLoss",
+    "ReplaceWhen.R115LifePay",
+    "ReplaceWhen.R115UntapStep",
+    "ReplaceWhen.R115CounteredBy",
+    "ReplaceWhen.R115BeginStep",
     "ReplaceWhen.LoseGame",
     "ReplaceWhen.Mill",
     "ReplaceWhen.Draw",
@@ -1125,6 +1133,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.R114ChooseObject",
     "ReplaceBy.R6603AttachToPlayer",
     "ReplaceBy.Instead.PaysLife",
+    "ReplaceBy.Instead.R115CastsResolving",
     "ReplaceBy.BeholdOrTapped",
     "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
@@ -1491,6 +1500,10 @@ mod tests {
     #[case::replacement_effects("Ability.Replacement", true)]
     #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
     #[case::replacing_damage("ReplaceWhen.Damage", true)]
+    #[case::replacing_paid_life("ReplaceWhen.R115LifePay", true)]
+    #[case::replacing_an_untap_in_the_untap_step("ReplaceWhen.R115UntapStep", true)]
+    #[case::replacing_a_countering_by_its_controller("ReplaceWhen.R115CounteredBy", true)]
+    #[case::replacing_a_step_beginning("ReplaceWhen.R115BeginStep", true)]
     #[case::replacing_zone_changes("ReplaceWhen.ZoneChange", true)]
     #[case::replacing_discards("ReplaceWhen.Discarded", true)]
     #[case::replacing_counters_put("ReplaceWhen.CountersPut", true)]
@@ -1542,6 +1555,10 @@ mod tests {
     #[case::modes_in_place_of_an_event("ReplaceBy.Instead.Modal", false)]
     #[case::waiting_in_place_of_an_event("ReplaceBy.Instead.Waits", false)]
     #[case::casting_in_place_of_an_event("ReplaceBy.Instead.Casts", false)]
+    #[case::casting_in_place_of_a_draw_a_resolution_causes(
+        "ReplaceBy.Instead.R115CastsResolving",
+        true
+    )]
     #[case::paying_in_place_of_an_event("ReplaceBy.Instead.Pays", false)]
     #[case::paying_life_in_place_of_an_event("ReplaceBy.Instead.PaysLife", true)]
     #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
@@ -1667,6 +1684,10 @@ mod tests {
     #[case::regenerating("Effect.Regenerate", true)]
     #[case::leaving_combat("Effect.RemoveFromCombat", true)]
     #[case::r6400_blocking_by_choice("Effect.R6400Block", true)]
+    #[case::r115_trading_blocks("Effect.R115ExchangeBlocks", true)]
+    #[case::r115_trading_blockers("Effect.R115ExchangeBlockers", true)]
+    #[case::r115_entering_blocking("Effect.R115JoinBlock", true)]
+    #[case::r115_skipping_a_step("Effect.R115SkipStep", true)]
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]

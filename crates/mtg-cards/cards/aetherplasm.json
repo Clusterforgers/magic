@@ -1,0 +1,55 @@
+{
+  "oracle_id": "0cd99210-8d34-4112-8e41-7e8c5d2a95b9",
+  "name": "Aetherplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Aetherplasm",
+      "oracle_fingerprint": "a1f0af661948c11a192267b93800a6e7",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "BecomesBlocked": { "what": [{ "Type": "Creature" }], "by": ["This"] } },
+            "effects": [
+              { "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "May": {
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": {
+                                "Each": [
+                                  { "In": "Hand" },
+                                  { "OwnedBy": "You" },
+                                  { "Type": "Creature" }
+                                ]
+                              },
+                              "as": "creature"
+                            }
+                          },
+                          {
+                            "Move": { "what": { "Bound": "creature" }, "to": { "Battlefield": {} } }
+                          },
+                          {
+                            "R115JoinBlock": {
+                              "what": { "Bound": "creature" },
+                              "blocking": "Triggering"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

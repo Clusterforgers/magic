@@ -8,7 +8,7 @@ use crate::resolve::{Cx, ResolveError, Run};
 use crate::turn::{Phase, Step};
 
 /// The engine's step for the step a card names (the two enums list the same thirteen steps).
-const fn engine_step(step: mtg_cards::trigger::Step) -> Step {
+pub(crate) const fn engine_step(step: mtg_cards::trigger::Step) -> Step {
     use mtg_cards::trigger::Step as Named;
     match step {
         Named::Untap => Step::Untap,

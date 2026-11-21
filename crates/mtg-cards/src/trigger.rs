@@ -966,6 +966,16 @@ pub enum ReplaceWhen {
         /// The spell that would be countered.
         what: Selector,
     },
+    /// A spell or ability the players control would counter a spell matching the selector (CR 701.6): "If a spell or
+    /// ability you control would counter a spell, instead ...". Only a resolving spell or ability counters, so a cast in
+    /// its place goes on as part of that resolution (CR 608.2g).
+    R115CounteredBy {
+        /// The spell that would be countered.
+        what: Selector,
+        /// Who controls the spell or ability that counters it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        by: Ref,
+    },
     /// A spell matching the selector would be put into a graveyard as it resolves (CR 608.2n): the move of a resolved
     /// instant or sorcery, not of one that is countered or fizzles ("instead of putting it into your graveyard as it
     /// resolves").
@@ -1017,6 +1027,29 @@ pub enum ReplaceWhen {
         /// Who would lose it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+    },
+    /// A player would pay life while their library has at least that many cards in it (CR 119.4, 614.1): "If you would
+    /// pay life while your library has at least that many cards in it, exile that many cards from the top of your library
+    /// instead." `Amount::Triggering` is the life; a player still pays only life they have.
+    R115LifePay {
+        /// Who would pay it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A permanent would untap during its controller's untap step (CR 502.3, 614.1): "If this creature would untap during
+    /// your untap step, remove a +1/+1 counter from it instead. If you do, untap it."
+    R115UntapStep {
+        /// The permanent.
+        what: Selector,
+    },
+    /// A step would begin on a player's turn (CR 614.10b): "If you would begin your draw step, you may skip that step
+    /// instead." Its `Instead` effects skip the step with `Effect::R115SkipStep`.
+    R115BeginStep {
+        /// The step.
+        step: Step,
+        /// Whose turn it is.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        whose: Ref,
     },
     /// A player would lose the game; only `Instead`.
     LoseGame {

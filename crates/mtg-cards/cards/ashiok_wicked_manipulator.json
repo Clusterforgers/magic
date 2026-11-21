@@ -1,16 +1,16 @@
 {
   "oracle_id": "67d66678-a8e6-4f80-bade-1f1daf4b0610",
   "name": "Ashiok, Wicked Manipulator",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Ashiok, Wicked Manipulator",
       "oracle_fingerprint": "c87fe28f5adf698a195d243ad2360d2d",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 0, "end": 136 }
+          "Replacement": {
+            "when": { "R115LifePay": {} },
+            "by": { "Instead": [{ "ExileTop": { "count": "Triggering", "as": "exiled" } }] }
           }
         },
         {
@@ -35,9 +35,42 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this loyalty ability by hand",
-            "span": { "start": 236, "end": 409 }
+          "Loyalty": {
+            "cost": { "Minus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Nightmare",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Nightmare"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Triggered": {
+                            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+                            "if": {
+                              "Compare": {
+                                "left": {
+                                  "Tallied": { "who": "EachPlayer", "what": "CardsExiled" }
+                                },
+                                "op": "Ge",
+                                "right": 1
+                              }
+                            },
+                            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
           }
         },
         {

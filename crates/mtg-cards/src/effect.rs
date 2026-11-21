@@ -764,6 +764,36 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         optional: bool,
     },
+    /// Two blocking creatures trade what they block (CR 506.4, 509.1h): "If each of those creatures could block all
+    /// creatures that the other is blocking, remove both of them from combat. Each one then blocks all creatures the other
+    /// was blocking." The check reads evasion, protection, tapped creatures and how many creatures each may block; the new
+    /// blocks are no declaration, so the blockers' "blocks" abilities trigger and their attackers stay blocked.
+    R115ExchangeBlocks {
+        /// The two blocking creatures; anything but two blocking creatures does nothing.
+        what: Ref,
+    },
+    /// Two blocked attackers trade their blockers (CR 509.1h): "If each of those creatures could be blocked by all
+    /// creatures that the other is blocked by, each creature that's blocking exactly one of those attacking creatures stops
+    /// blocking it and is blocking the other attacking creature." Nothing triggers on the change.
+    R115ExchangeBlockers {
+        /// The two attacking creatures; anything but two attacking creatures does nothing.
+        what: Ref,
+    },
+    /// Puts creatures that just entered the battlefield into combat blocking an attacking creature (CR 509.1h): "you may
+    /// put a creature card from your hand onto the battlefield blocking that creature". They were never declared as
+    /// blockers, so nothing triggers on their block; the attacker is blocked from then on.
+    R115JoinBlock {
+        /// The creatures that block.
+        what: Ref,
+        /// The attacking creature they block; nothing joins once it no longer attacks.
+        blocking: Ref,
+    },
+    /// The step a `ReplaceWhen::R115BeginStep` replacement is about is skipped (CR 614.10b): the step after it begins in
+    /// its place ("you may skip that step instead").
+    R115SkipStep {
+        /// The step that is skipped.
+        step: crate::trigger::Step,
+    },
     /// The players lose all unspent mana (CR 106.4), whatever it lasts for: "that player loses all unspent mana".
     LoseUnspentMana {
         /// Whose mana pools empty.

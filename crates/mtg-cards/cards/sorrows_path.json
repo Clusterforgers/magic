@@ -1,16 +1,33 @@
 {
   "oracle_id": "5419eae0-3c12-4748-9cf8-d927752e527e",
   "name": "Sorrow's Path",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Sorrow's Path",
       "oracle_fingerprint": "f91409adcb5b3281292d99ea9b7d5744",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 247 }
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Together": {
+                    "what": {
+                      "Object": [
+                        { "Type": "Creature" },
+                        "Blocking",
+                        { "ControlledBy": "Opponents" }
+                      ]
+                    },
+                    "rule": "SameController"
+                  }
+                },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [{ "R115ExchangeBlocks": { "what": { "Target": 0 } } }]
           }
         },
         {

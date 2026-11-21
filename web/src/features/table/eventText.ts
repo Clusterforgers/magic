@@ -817,6 +817,7 @@ const PIPELINE = [
   'ResolutionBegan',
   'ChoiceMade',
   'StepDone',
+  'R115Continued',
   'Remembered',
   'ResolutionEnded',
   'AbilityLeftToTable',
@@ -946,6 +947,7 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
         : 'A source remembers objects',
     )
   if ('StepDone' in event) return quiet('A step of the resolution is done')
+  if ('R115Continued' in event) return quiet('A replacement goes on as part of the resolution')
   if ('ResolutionEnded' in event) {
     const { object, outcome } = event.ResolutionEnded
     if (outcome === 'Fizzled') return line(`${stackName(n, object, true)} does nothing: its targets are gone`)
@@ -1404,6 +1406,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('R6400Blocks' in event) {
     const { blocker, attacker } = event.R6400Blocks
     return line(`${n.card(blocker)} blocks ${n.card(attacker)}`)
+  }
+  if ('R115BlockMoved' in event) {
+    const { blocker, from, to } = event.R115BlockMoved
+    return from === undefined
+      ? line(`${n.card(blocker)} is blocking ${n.card(to)}`)
+      : line(`${n.card(blocker)} stops blocking ${n.card(from)} and is blocking ${n.card(to)}`)
   }
   if ('AttackersBlocked' in event) {
     const { attackers } = event.AttackersBlocked

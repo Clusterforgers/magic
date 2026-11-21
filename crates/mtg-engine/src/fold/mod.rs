@@ -174,6 +174,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::RemovedFromCombat { .. }
         | Event::R6400Unblocked { .. }
         | Event::R6400Blocks { .. }
+        | Event::R115BlockMoved { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
@@ -187,6 +188,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::ResolutionBegan { .. }
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. }
+        | Event::R115Continued { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         // A note for the table: the game state does not change.
         // A prevention changes nothing of its own; triggers read it.

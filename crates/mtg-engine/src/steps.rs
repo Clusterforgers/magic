@@ -420,6 +420,11 @@ fn priority_round(state: &GameState) -> Progress {
     }
 }
 
+/// The step that begins after `step` when `step` itself is skipped (CR 614.10b).
+pub(crate) fn r115_step_after(state: &GameState, step: Step) -> Step {
+    next_step(state, step)
+}
+
 /// The step after `step`: a skipped step does not begin at all (CR 614.10), so nothing triggers at its start.
 fn next_step(state: &GameState, step: Step) -> Step {
     let mut next = following_step(state, step);

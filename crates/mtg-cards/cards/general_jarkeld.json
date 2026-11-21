@@ -1,0 +1,26 @@
+{
+  "oracle_id": "64df77f6-4f7e-442a-971c-8ad3f7d1c979",
+  "name": "General Jarkeld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "General Jarkeld",
+      "oracle_fingerprint": "4a7b5cab97f93cddcd96790d954040c3",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "condition": { "Step": "DeclareBlockers" },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking", "Blocked"] },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [{ "R115ExchangeBlockers": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

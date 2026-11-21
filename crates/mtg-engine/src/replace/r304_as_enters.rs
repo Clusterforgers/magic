@@ -64,7 +64,7 @@ impl Pass<'_> {
         ) {
             Ok((Inline::Events(events), number)) => (events, number),
             Ok((Inline::Ask(decision), _)) => return Applied::Ask(decision),
-            Ok((Inline::Declined, _)) | Err(_) => (Vec::new(), 0),
+            Ok((Inline::Declined | Inline::R115Continue { .. }, _)) | Err(_) => (Vec::new(), 0),
         };
         let events = self.w9c_fresh_tokens(events);
         let mut entering = self.slots[at].clone();

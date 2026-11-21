@@ -33,6 +33,7 @@ Aeromunculus
 Aesi, Tyrant of Gyre Strait
 Aether Gale
 Aether Hub
+Aetherplasm
 Aethersnatch
 Agate Instigator
 Agatha's Soul Cauldron
@@ -226,6 +227,7 @@ Bell Borca, Spectral Sergeant
 Bellowing Aegisaur
 Benthic Biomancer
 Bespoke Battlewagon
+Bewitching Leechcraft
 Big Mother Mouser
 Big Winner
 Bighorner Rancher
@@ -1045,6 +1047,7 @@ Gearshift Ace
 Gemhide Sliver
 Gempalm Sorcerer
 Gemrazer
+General Jarkeld
 General Kreat, the Boltbringer
 General's Enforcer
 Generous Ent
@@ -1188,6 +1191,7 @@ Guardian Gladewalker
 Guidelight Matrix
 Guiding Voice
 Guildless Commons
+Guile
 Gurmag Angler
 Gurmag Drowner
 Gwaihir, Greatest of the Eagles

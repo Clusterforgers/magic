@@ -292,6 +292,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         Event::SpellResolved { .. }
         | Event::ResolutionBegan { .. }
         | Event::StepDone { .. }
+        | Event::R115Continued { .. }
         | Event::ResolutionEnded { .. }
         | Event::ConditionsFailed { .. }
         | Event::StepBegan { .. }
@@ -351,6 +352,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::RemovedFromCombat { .. }
         | Event::R6400Unblocked { .. }
         | Event::R6400Blocks { .. }
+        | Event::R115BlockMoved { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }

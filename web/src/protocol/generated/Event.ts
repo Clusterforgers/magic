@@ -567,7 +567,19 @@ blocker: ObjectId,
 /**
  * The attacker it blocks.
  */
-attacker: ObjectId, } } | { "AttackersBlocked": { 
+attacker: ObjectId, } } | { "R115BlockMoved": { 
+/**
+ * The blocker.
+ */
+blocker: ObjectId, 
+/**
+ * The attacker it stops blocking, if any.
+ */
+from?: ObjectId, 
+/**
+ * The attacker it blocks.
+ */
+to: ObjectId, } } | { "AttackersBlocked": { 
 /**
  * The attackers, each not blocked before.
  */
@@ -773,6 +785,30 @@ position: Array<number>,
 bound: Array<[string, Array<Target>]>, 
 /**
  * Objects the step moved away, as they were.
+ */
+snapshots: Array<Snapshot>, } } | { "R115Continued": { 
+/**
+ * The object with the replacement effect.
+ */
+source: ObjectRef, 
+/**
+ * Who controls the replacement effect.
+ */
+controller: PlayerId, 
+/**
+ * The effects of the replacement.
+ */
+effects: unknown, 
+/**
+ * Where the steps go on: the cast.
+ */
+position: Array<number>, 
+/**
+ * Names the steps before it bound, with what they stand for.
+ */
+bound: Array<[string, Array<Target>]>, 
+/**
+ * Objects the steps before it moved away, as they were.
  */
 snapshots: Array<Snapshot>, } } | { "ConditionsFailed": { 
 /**
