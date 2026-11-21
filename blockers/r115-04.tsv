@@ -1,0 +1,20 @@
+Myra the Magnificent	A delayed trigger bound to one Attraction's presence (TriggerPattern visit of that Attraction, ends when it leaves) whose effect copies the card exiled by the activation; a choice of an Attraction without a midway counter	ATTRACTIONS
+Takklemaggot	A dies trigger whose choice is made by the dead creature's controller (Effect::Choose with who ControllerOf(Triggering) by last-known information) among creatures the Aura card could enchant, then the Aura card returning as a non-Aura enchantment that loses enchant and gains an upkeep trigger naming that player	AURA-ATT
+Monitor Monitor	A special action once each turn (pay {1}) that rerolls dice the player rolled, replacing logged results before their readers (CR 706.6)	DICE
+Bamboozling Beeble	A one-shot shield on a player's next roll: one die more, and the shield's controller (not the roller) chooses the result to ignore, asked inside the roll (r6402_change path)	DICE
+Clay Golem	CostItem::R114RollDie is rolled inside cast::activation_events (a pure function, no decision), so GameRule::R6402ChangeRoll and R113ExchangeRoll cannot ask there: the cost roll must move into the announce Payment phase as a step that can ask (r6402_change over an announce Ctx)	DICE
+Garth One-Eye	Creating a card from a fixed list of names outside the game (conjure by Oracle name) with a once-per-name memory, and a cast permission for the copy	OO-misc
+Ertai's Meddling	Exiling a spell with delay counters and putting it back on the stack as a copy of the original spell when the last is removed (CR 702 delay, spell state kept in exile)	OO-misc
+Spy Kit	A characteristic: the equipped creature has all names of nonlegendary creature cards (CR 201.2 name set, a name predicate matching any such name)	OO-misc
+Lightning Storm	Counters on a spell on the stack (counters::fold keeps counters on permanents and players only; CR 122.1 allows any object) read by Amount::Counters of This; the ability itself is Activated with by: any player and from: Stack plus ChangeTargets(Choose) of This	OO-misc
+Grimoire Thief	Cards exiled face down with the source, turned face up by an effect, and countering spells with the same names as those cards	OO-misc
+Tawnos's Coffin	Linked exile that notes the counters of the exiled creature and its attached Auras and returns them with the noted counters and attached (CR 607)	OO-misc
+Guardian Beast	Three rules for noncreature artifacts you control while untapped: can't be enchanted (Aura targets and attach legality, Auras already attached stay, CR 303.4), indestructible, and other players can't gain control (control-change effects of others skip them)	OO-misc
+Frankenstein's Monster	An as-enters replacement exiling X chosen creature cards from the graveyard, else to the graveyard instead, with a counter kind chosen per exiled card	OO-misc
+Cyclopean Tomb	A land type granted while a counter remains and a delayed trigger for the rest of the game that removes the counters put by this artifact (objects linked across zones)	OO-misc
+Reflecting Mirror	An X the text defines from the target (CostItem::XIs of Stat ManaValue of Target(0), CR 601.2f): announce::x runs before Targets and Scope::announcing has no targets, so a target-read XIs must be fixed in the Total phase; plus Condition "its single target is you" for ChangeTargets AnotherPlayer	OO-misc
+Steamflogger Boss	Contraptions: a ReplaceWhen for a Rigger assembling a Contraption (no Contraption deck in the engine)	OO-misc
+Caller of the Untamed	A pre-game reveal and exile of a drafted card; no draft happens, so it stays inert	OO-misc
+Prowl, Stoic Strategist // Prowl, Pursuit Vehicle	Convert as an effect, a trigger on a player playing a card exiled with this, and "the second time this ability has resolved this turn"	OO-trigger
+Psychic Battle	A trigger on a player choosing targets, a reveal by every player and a change of target by the highest mana value (CR 115.7)	OO-trigger
+Camouflage	A replacement of the declare blockers step: piles per attacker assigned at random, each creature blocking its pile's attacker if able (CR 509)	PILES

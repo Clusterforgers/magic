@@ -109,6 +109,9 @@ pub(crate) fn turn_face_down(
     } else {
         crate::object::FaceDown::Morph
     });
+    if let Some(permanent) = object.permanent.as_mut() {
+        crate::copies::r115_end_face_down(permanent);
+    }
     Ok(())
 }
 

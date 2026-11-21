@@ -119,6 +119,16 @@ pub enum Event {
         /// Who kept.
         player: PlayerId,
     },
+    /// The player exiled their whole hand and drew as many cards from the top of their library by the ability of a card
+    /// in it (Serum Powder, CR 103.5); they decide about the new hand as about the one before.
+    R115HandExiled {
+        /// Who exiled.
+        player: PlayerId,
+        /// The cards of the hand exiled.
+        exiled: Vec<ObjectId>,
+        /// The cards drawn, in draw order.
+        drawn: Vec<ObjectId>,
+    },
     /// Cards were put on the bottom of the library after keeping.
     CardsBottomed {
         /// Whose cards.
@@ -554,6 +564,18 @@ pub enum Event {
         /// The attacker it blocks.
         attacker: ObjectId,
     },
+    /// A creature began to block an attacking creature without blocking (CR 509.1h): put onto the battlefield blocking it,
+    /// or moved there from the attacker it was blocking. Nothing triggers on it, and the attacker is blocked from then on.
+    R115BlockMoved {
+        /// The blocker.
+        blocker: ObjectId,
+        /// The attacker it stops blocking, if any.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        from: Option<ObjectId>,
+        /// The attacker it blocks.
+        to: ObjectId,
+    },
     /// Attacking creatures became blocked by an effect, with no creature blocking them (CR 509.1h).
     AttackersBlocked {
         /// The attackers, each not blocked before.
@@ -768,6 +790,23 @@ pub enum Event {
         /// Names the step bound, with what they stand for.
         bound: Vec<(String, Vec<Target>)>,
         /// Objects the step moved away, as they were.
+        snapshots: Vec<Snapshot>,
+    },
+    /// A replacement effect run in the middle of the resolution reached a spell cast (CR 608.2g): the cast and the steps
+    /// after it go on as part of the resolving spell or ability once its step is done, before its next effect.
+    R115Continued {
+        /// The object with the replacement effect.
+        source: ObjectRef,
+        /// Who controls the replacement effect.
+        controller: PlayerId,
+        /// The effects of the replacement.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        effects: Vec<mtg_cards::effect::Effect>,
+        /// Where the steps go on: the cast.
+        position: Vec<usize>,
+        /// Names the steps before it bound, with what they stand for.
+        bound: Vec<(String, Vec<Target>)>,
+        /// Objects the steps before it moved away, as they were.
         snapshots: Vec<Snapshot>,
     },
     /// A triggered ability whose effects all hang on conditions found every one of them false as it began to resolve, so
@@ -1203,6 +1242,13 @@ pub enum Event {
         player: PlayerId,
         /// The player it was given to.
         to: PlayerId,
+    },
+    /// The counters the `CountersChanged` events after it in its batch put are put by this player, not by the controller of
+    /// the resolving spell or ability (CR 122.6, "they put the same number and kind of counters"): replacement effects and
+    /// triggers that care who puts counters see this player.
+    R115CountersPutBy {
+        /// Who puts the counters.
+        player: PlayerId,
     },
     /// A player foraged (CR 701.61): the Food sacrificed or the cards exiled are the moves that come before it.
     Foraged {
@@ -1793,6 +1839,7 @@ impl Event {
             | Event::R6401Mentored { .. }
             | Event::UpkeepSettled { .. }
             | Event::Foraged { .. }
+            | Event::R115CountersPutBy { .. }
             | Event::DieRolled { .. }
             | Event::R6402DieChanged { .. }
             | Event::CoinFlipped { .. }
@@ -1827,6 +1874,7 @@ impl Event {
             | Event::ResolutionBegan { .. }
             | Event::ChoiceMade { .. }
             | Event::StepDone { .. }
+            | Event::R115Continued { .. }
             | Event::ResolutionEnded { .. }
             | Event::ConditionsFailed { .. }
             | Event::AbilityLeftToTable(_)
@@ -1854,11 +1902,15 @@ impl Event {
                 .collect(),
             Event::LibraryRefilled { order: cards, .. }
             | Event::HandDealt { cards, .. }
+            | Event::R115HandExiled { drawn: cards, .. }
             | Event::CardsBottomed { cards, .. }
             | Event::OpeningCardsPlayed { cards, .. }
             | Event::LibraryInserted { cards, .. }
             | Event::LibraryBottomed { cards, .. } => cards.clone(),
             Event::R6400Blocks { blocker, attacker } => vec![*blocker, *attacker],
+            Event::R115BlockMoved { blocker, from, to } => {
+                [*blocker, *to].into_iter().chain(*from).collect()
+            }
             Event::AttackersBlocked { attackers } | Event::BandFormed { attackers, .. } => {
                 attackers.clone()
             }

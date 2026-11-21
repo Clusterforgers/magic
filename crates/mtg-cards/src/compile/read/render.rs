@@ -712,6 +712,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r112_04_wholes::r112_04_add_wholes(ability, &mut texts);
     super::r113_04_wholes::r113_04_add_wholes(ability, &mut texts);
     super::r114_04_wholes::r114_04_add_wholes(ability, &mut texts);
+    super::r115_04_wholes::r115_04_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
@@ -721,7 +722,9 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r112_01_wholes::r112_01_add_wholes(ability, &mut texts);
     super::r113_01_wholes::r113_01_add_wholes(ability, &mut texts);
     super::r114_01_wholes::r114_01_add_wholes(ability, &mut texts);
+    super::r115_01_wholes::r115_01_add_wholes(ability, &mut texts);
     super::r114_03_wholes::r114_03_add_wholes(ability, &mut texts);
+    super::r115_03_wholes::r115_03_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -734,6 +737,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r112_02_wholes::r112_02_wordings(ability, &mut texts);
     super::r113_02_wholes::r113_02_wordings(ability, &mut texts);
     super::r114_02_wholes::r114_02_wordings(ability, &mut texts);
+    super::r115_02_wholes::r115_02_wordings(ability, &mut texts);
     super::r111_02_wholes::r111_02_wordings(ability, &mut texts);
     super::r112_03_wholes::r112_03_wordings(ability, &mut texts);
     super::r113_03_wholes::r113_03_wordings(ability, &mut texts);
@@ -2521,6 +2525,23 @@ impl Writer<'_> {
             _ => false,
         }
     }
+    /// A `PutCountersOf` its controller puts (no `by`), in the words of `l292_counters_of`.
+    fn r115_counters_of(&mut self, effect: &Effect) -> Option<String> {
+        let Effect::PutCountersOf {
+            on,
+            of,
+            each,
+            one_kind,
+            per_kind,
+            by: None,
+            ..
+        } = effect
+        else {
+            return None;
+        };
+        self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)
+    }
+
     /// "put the same number and kind of counters on ~": the counters the triggering event put (`PutCountersOf.put`).
     fn r4706_same_counters(&mut self, effect: &Effect, on: &Ref) -> Option<String> {
         let Effect::PutCountersOf {
@@ -2528,6 +2549,7 @@ impl Writer<'_> {
             each: None,
             one_kind: false,
             per_kind: None,
+            by: None,
             ..
         } = effect
         else {
@@ -2709,14 +2731,7 @@ impl Writer<'_> {
                     }
                 }
             }
-            Effect::PutCountersOf {
-                on,
-                of,
-                each,
-                one_kind,
-                per_kind,
-                ..
-            } => self.l292_counters_of(on, of, each.as_ref(), *one_kind, *per_kind)?,
+            Effect::PutCountersOf { .. } => self.r115_counters_of(effect)?,
             Effect::MoveCounters {
                 from,
                 to,

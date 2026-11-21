@@ -209,6 +209,7 @@ impl Writer<'_> {
                 secret,
                 bind: None,
                 tally: None,
+                up_to: false,
             } => self.vote(names, *secret, &effects[1..]),
             Effect::RepeatEach {
                 over,

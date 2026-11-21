@@ -33,6 +33,7 @@ Aeromunculus
 Aesi, Tyrant of Gyre Strait
 Aether Gale
 Aether Hub
+Aetherplasm
 Aethersnatch
 Agate Instigator
 Agatha's Soul Cauldron
@@ -198,6 +199,7 @@ Baton of Courage
 Baton of Morale
 Battering Krasis
 Batterskull
+Battle Cry Goblin
 Battle Frenzy
 Battle Hymn
 Battle Screech
@@ -225,6 +227,7 @@ Bell Borca, Spectral Sergeant
 Bellowing Aegisaur
 Benthic Biomancer
 Bespoke Battlewagon
+Bewitching Leechcraft
 Big Mother Mouser
 Big Winner
 Bighorner Rancher
@@ -294,6 +297,7 @@ Bohn, Beguiling Balladeer
 Boiling Earth
 Bojuka Bog
 Bola Slinger
+Bold Plagiarist
 Bonders' Enclave
 Bone Shredder
 Bonecaller Cleric
@@ -370,6 +374,7 @@ Caldaia Strongarm
 Caldera Hellion
 Call the Skybreaker
 Call the Spirit Dragons
+Call to Arms
 Caller of the Claw
 Caller of the Hunt
 Caller of the Pack
@@ -1042,6 +1047,7 @@ Gearshift Ace
 Gemhide Sliver
 Gempalm Sorcerer
 Gemrazer
+General Jarkeld
 General Kreat, the Boltbringer
 General's Enforcer
 Generous Ent
@@ -1100,6 +1106,7 @@ Gluttonous Troll
 Glyph of Delusion
 Gnarled Professor
 Gnarlwood Dryad
+Gnoll Hunter
 Go for the Throat
 Goblin Archaeologist
 Goblin Bombardment
@@ -1184,6 +1191,7 @@ Guardian Gladewalker
 Guidelight Matrix
 Guiding Voice
 Guildless Commons
+Guile
 Gurmag Angler
 Gurmag Drowner
 Gwaihir, Greatest of the Eagles
@@ -1268,6 +1276,7 @@ Highspire Artisan
 Hinterland Harbor
 History of Benalia
 Hoarder's Greed
+Hobgoblin Captain
 Hogaak, Arisen Necropolis
 Holdout Settlement
 Hollow Warrior
@@ -1349,6 +1358,7 @@ Into the North
 Into the Roil
 Into the Time Vortex
 Intrepid Adversary
+Intrepid Outlander
 Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
@@ -2090,6 +2100,7 @@ Rampaging War Mammoth
 Rampant Growth
 Ramses Overdark
 Ramunap Excavator
+Ranar the Ever-Watchful
 Rancor
 Ranging Raptors
 Ransom Note
@@ -2314,6 +2325,7 @@ Serpent of the Pass
 Serpent-Blade Assailant
 Serra Angel
 Serra Avatar
+Serum Powder
 Servant of the Conduit
 Setessan Champion
 Shabraz, the Skyshark
@@ -2790,6 +2802,7 @@ Tireless Tracker
 Tishana, Voice of Thunder
 Titania, Nature's Force
 Titania, Proud Pummeler
+Titania, Rugged Rumbler
 Titans' Nest
 Titans' Vanguard
 Tithe Drinker
@@ -2805,6 +2818,7 @@ Tomik, Distinguished Advokist
 Topiary Lecturer
 Topography Tracker
 Toralf, God of Fury // Toralf's Hammer
+Torrent of Lava
 Torrent of Stone
 Torrential Gearhulk
 Toski, Bearer of Secrets
@@ -2915,6 +2929,7 @@ Vanquish the Horde
 Vanquisher's Banner
 Vastwood Hydra
 Vastwood Surge
+Vault 11: Voter's Dilemma
 Vault 21: House Gambit
 Vault 75: Middle School
 Vault of the Archangel
@@ -2930,6 +2945,7 @@ Veronica, Dissident Scribe
 Verrak, Warped Sengir
 Vestige of Emrakul
 Vesuva
+Vesuvan Shapeshifter
 Veteran Motorist
 Veteran's Powerblade
 Viashino Weaponsmith
@@ -3013,6 +3029,7 @@ Wei Scout
 Weigh Down
 Weirding Wood
 Well Rested
+Werewolf Pack Leader
 Whim of Volrath
 Whims of the Fates
 Whiptongue Hydra

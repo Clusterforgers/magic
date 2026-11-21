@@ -27,7 +27,8 @@ pub fn cost(r: &mut Reader<'_>) -> Option<Cost> {
 }
 
 fn items(r: &mut Reader<'_>) -> Option<Vec<CostItem>> {
-    let mut items = vec![item(r)?];
+    let first = item(r)?;
+    let mut items = vec![r115_or(r, first)];
     loop {
         if let Some(CostItem::Sacrifice { count, .. }) = items.last()
             && *count == Amount::one()
@@ -35,7 +36,10 @@ fn items(r: &mut Reader<'_>) -> Option<Vec<CostItem>> {
         {
             items.push(next);
         } else if r.punct(',') {
-            items.push(item(r)?);
+            items.push({
+                let next = item(r)?;
+                r115_or(r, next)
+            });
         } else {
             return Some(items);
         }
@@ -952,6 +956,12 @@ fn sacrifice_text(filter: &Selector, count: &Amount) -> Option<String> {
     ))
 }
 
+/// A cost with no choice in it: an "or" between the parts of an additional cost is read only by `alternatives`, so an
+/// optional choice and a choice of an X stay with the table.
+fn single_cost(r: &mut Reader<'_>) -> Option<Cost> {
+    cost(r).filter(|cost| !cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_))))
+}
+
 /// "As an additional cost to cast this spell, you may sacrifice an artifact.": a cost the caster may pay as the spell is
 /// announced; without "you may" ("..., discard a card.") the caster must pay it.
 pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
@@ -971,9 +981,9 @@ pub(super) fn additional(r: &mut Reader<'_>) -> Option<Ability> {
         Some(cost) => cost,
         None if required => match r.attempt(alternatives) {
             Some(choice) => choice,
-            None => cost(r)?,
+            None => single_cost(r)?,
         },
-        None => cost(r)?,
+        None => single_cost(r)?,
     };
     // The caster announces the X of a required cost that counts it ("Pay X life", "sacrifice X creatures"); an `{X}` of
     // mana and the X of an optional cost are left.
@@ -1174,4 +1184,23 @@ pub(super) fn r4701_tap(r: &mut Reader<'_>) -> Option<CostItem> {
         .all(|pred| is_cost_filter(pred) || matches!(pred, Pred::HasKeyword(_)))
         .then_some(())?;
     Some(CostItem::TapPermanents { filter, count })
+}
+
+/// "Sacrifice an artifact or discard a nonland card" in the cost of an activated ability: `first` and the parts after
+/// "or" are the alternatives the player chooses between as they activate it (CR 602.2b, `CostItem::OneOf`); `first` alone
+/// without an "or".
+fn r115_or(r: &mut Reader<'_>, first: CostItem) -> CostItem {
+    let mut rest = Vec::new();
+    while let Some(next) = r.attempt(|r| {
+        r.word("or").then_some(())?;
+        alternative(r)
+    }) {
+        rest.push(next);
+    }
+    if rest.is_empty() {
+        return first;
+    }
+    let mut costs = vec![Cost(vec![first])];
+    costs.extend(rest);
+    CostItem::OneOf(costs)
 }

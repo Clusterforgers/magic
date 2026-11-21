@@ -624,6 +624,9 @@ fn modification(ctx: &Ctx, change: &Modification) -> String {
 
 /// What a replacement effect waits for.
 pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
+    if let Some(text) = r115_replace_when(ctx, when) {
+        return text;
+    }
     match when {
         ReplaceWhen::TokenCreation { controller, what } => format!(
             "{} would be created under {} control",
@@ -982,6 +985,37 @@ fn r6008_into_library(by: &ReplaceBy) -> String {
             crate::effect::Place::Shuffled => "shuffled in".to_owned(),
         }
     )
+}
+
+/// The events of the r115 replacements: a step beginning, an untap in the untap step, a countering by a player's spell
+/// or ability and life paid while the library holds enough cards.
+fn r115_replace_when(ctx: &Ctx, when: &ReplaceWhen) -> Option<String> {
+    Some(match when {
+        ReplaceWhen::R115UntapStep { what } => format!(
+            "{} would untap during your untap step",
+            phrase::selector(ctx, what)
+        ),
+        ReplaceWhen::R115BeginStep { step, whose } => format!(
+            "{} would begin {}",
+            phrase::who(ctx, whose),
+            step_text(ctx, *step, whose)
+        ),
+        ReplaceWhen::R115CounteredBy { what, by } => format!(
+            "a spell or ability {} control would counter {}",
+            phrase::who(ctx, by),
+            phrase::selector(ctx, what)
+        ),
+        ReplaceWhen::R115LifePay { who } => format!(
+            "{} would pay life while {} library has at least that many cards in it",
+            phrase::who(ctx, who),
+            if matches!(who, Ref::You) {
+                "your"
+            } else {
+                "their"
+            }
+        ),
+        _ => return None,
+    })
 }
 
 #[cfg(test)]

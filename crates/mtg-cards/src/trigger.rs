@@ -966,6 +966,16 @@ pub enum ReplaceWhen {
         /// The spell that would be countered.
         what: Selector,
     },
+    /// A spell or ability the players control would counter a spell matching the selector (CR 701.6): "If a spell or
+    /// ability you control would counter a spell, instead ...". Only a resolving spell or ability counters, so a cast in
+    /// its place goes on as part of that resolution (CR 608.2g).
+    R115CounteredBy {
+        /// The spell that would be countered.
+        what: Selector,
+        /// Who controls the spell or ability that counters it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        by: Ref,
+    },
     /// A spell matching the selector would be put into a graveyard as it resolves (CR 608.2n): the move of a resolved
     /// instant or sorcery, not of one that is countered or fizzles ("instead of putting it into your graveyard as it
     /// resolves").
@@ -1017,6 +1027,29 @@ pub enum ReplaceWhen {
         /// Who would lose it.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
+    },
+    /// A player would pay life while their library has at least that many cards in it (CR 119.4, 614.1): "If you would
+    /// pay life while your library has at least that many cards in it, exile that many cards from the top of your library
+    /// instead." `Amount::Triggering` is the life; a player still pays only life they have.
+    R115LifePay {
+        /// Who would pay it.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+    },
+    /// A permanent would untap during its controller's untap step (CR 502.3, 614.1): "If this creature would untap during
+    /// your untap step, remove a +1/+1 counter from it instead. If you do, untap it."
+    R115UntapStep {
+        /// The permanent.
+        what: Selector,
+    },
+    /// A step would begin on a player's turn (CR 614.10b): "If you would begin your draw step, you may skip that step
+    /// instead." Its `Instead` effects skip the step with `Effect::R115SkipStep`.
+    R115BeginStep {
+        /// The step.
+        step: Step,
+        /// Whose turn it is.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        whose: Ref,
     },
     /// A player would lose the game; only `Instead`.
     LoseGame {
@@ -1199,6 +1232,9 @@ pub enum EntersChoice {
     /// A card name other than a basic land card name named by the controller and one by an opponent the controller chooses
     /// ("you and an opponent each choose a card name other than a basic land card name").
     R111NamesWithOpponent,
+    /// A colour and an opponent of the permanent's controller, chosen together ("choose a color and an opponent"): the
+    /// colour is the chosen colour and the opponent the chosen player.
+    R115ColorAndOpponent,
     /// This many different abilities from among first strike, vigilance, and lifelink ("choose two abilities from among
     /// first strike, vigilance, and lifelink"), read by `Modification::R6001AddChosenAbilities`.
     R6001Abilities(u32),
@@ -1521,6 +1557,11 @@ pub enum ReplaceBy {
         /// copy, with the copied object bound as `copied`: "When you do, tap the copied creature".
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         r707_when_you_do: Vec<crate::effect::Effect>,
+        /// The copy is also chosen as the permanent is turned face up, and it lasts until the permanent is turned face
+        /// down ("As this creature enters or is turned face up, ... until this creature is turned face down, it becomes a
+        /// copy", CR 708.8).
+        #[serde(default, skip_serializing_if = "is_false")]
+        r115_turned_up: bool,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

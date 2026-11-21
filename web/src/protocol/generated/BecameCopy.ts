@@ -38,4 +38,8 @@ r6104_while_tapped?: ObjectRef,
 /**
  * The copy is the one the static ability of this permanent makes (`R707CopyOf`), begun and ended in housekeeping.
  */
-r707_static?: ObjectRef, };
+r707_static?: ObjectRef, 
+/**
+ * The copy ends once the permanent is turned face down ("until this creature is turned face down").
+ */
+r115_until_face_down?: boolean, };

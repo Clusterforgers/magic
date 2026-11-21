@@ -64,7 +64,7 @@ impl Pass<'_> {
             ) {
                 Ok(Inline::Events(events)) => events,
                 Ok(Inline::Ask(decision)) => return Some(decision),
-                Ok(Inline::Declined) | Err(_) => Vec::new(),
+                Ok(Inline::Declined | Inline::R115Continue { .. }) | Err(_) => Vec::new(),
             }
         };
         let events = self.w9c_fresh_tokens(events);

@@ -25,6 +25,18 @@ pub(crate) enum Inline {
     Declined,
     /// A player has to answer first; the answers so far were used in order.
     Ask(Decision),
+    /// The effects reached a spell cast (CR 608.2g): the events of the steps before it, and the cast and the steps after it
+    /// to go on as part of the resolution, from `position` with the names and objects the steps before it bound and moved.
+    R115Continue {
+        /// The events of the steps before the cast.
+        events: Vec<Event>,
+        /// Where the steps go on.
+        position: Vec<usize>,
+        /// Names the steps before it bound.
+        bound: Vec<(String, Vec<crate::choose::Target>)>,
+        /// Objects the steps before it moved away, as they were.
+        snapshots: Vec<crate::snapshot::Snapshot>,
+    },
 }
 
 /// The answers given so far to the questions of effects run inline, in the order they were asked.
@@ -57,10 +69,20 @@ pub(crate) fn run_inline(
         player,
         source: source.reference(),
     };
-    match drive(&base, source.id, effects, &mut || None, (None, &[]), None)?.0 {
+    match drive(
+        &base,
+        source.id,
+        effects,
+        &mut || None,
+        (None, &[]),
+        None,
+        false,
+    )?
+    .0
+    {
         Inline::Events(events) => Ok(events),
         Inline::Declined => Ok(Vec::new()),
-        Inline::Ask(_) => Err(ResolveError::Invalid(
+        Inline::Ask(_) | Inline::R115Continue { .. } => Err(ResolveError::Invalid(
             "an effect run in the middle of something else asked a question".into(),
         )),
     }
@@ -81,10 +103,20 @@ pub(crate) fn r114_run_bound(
         player,
         source,
     };
-    match drive(&base, source.id, effects, &mut || None, (None, bound), None)?.0 {
+    match drive(
+        &base,
+        source.id,
+        effects,
+        &mut || None,
+        (None, bound),
+        None,
+        false,
+    )?
+    .0
+    {
         Inline::Events(events) => Ok(events),
         Inline::Declined => Ok(Vec::new()),
-        Inline::Ask(_) => Err(ResolveError::Invalid(
+        Inline::Ask(_) | Inline::R115Continue { .. } => Err(ResolveError::Invalid(
             "a special action's effects asked a question".into(),
         )),
     }
@@ -111,7 +143,16 @@ pub(crate) fn w5d_run_instead(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer, (None, &[]), replace).map(|(ran, _)| ran)
+    drive(
+        &base,
+        source.id,
+        effects,
+        answer,
+        (None, &[]),
+        replace,
+        true,
+    )
+    .map(|(ran, _)| ran)
 }
 
 /// `w5d_run_instead` with names bound before the first step: the targets a damage shield fixed as it began.
@@ -129,7 +170,16 @@ pub(crate) fn r370_run_instead_bound(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer, (None, bound), None).map(|(ran, _)| ran)
+    drive(
+        &base,
+        source.id,
+        effects,
+        answer,
+        (None, bound),
+        None,
+        false,
+    )
+    .map(|(ran, _)| ran)
 }
 
 /// [`w5d_run_instead`] that also works out `count` once the effects have run, in the scope their steps leave (the names
@@ -148,7 +198,15 @@ pub(crate) fn r304_run_then_count(
         source,
         cause,
     };
-    drive(&base, source.id, effects, answer, (Some(count), &[]), None)
+    drive(
+        &base,
+        source.id,
+        effects,
+        answer,
+        (Some(count), &[]),
+        None,
+        false,
+    )
 }
 
 /// Runs the effect tree from its first effect to its end: a question takes the next answer and runs the step again, and
@@ -167,6 +225,7 @@ fn drive(
         &[(String, Vec<crate::choose::Target>)],
     ),
     mut replace: Option<R114Replace<'_>>,
+    continues: bool,
 ) -> Result<(Inline, i64), ResolveError> {
     let mut resolving = Resolving::begin(object);
     resolving.bindings.extend(bound.iter().cloned());
@@ -179,6 +238,22 @@ fn drive(
         if steps > 10_000 {
             return Err(ResolveError::Invalid(
                 "effects run in the middle of an event went on without end".into(),
+            ));
+        }
+        // A cast goes on as part of the resolution the replaced event is in, with the names bound so far (CR 608.2g).
+        if continues && matches!(effect, Effect::CastFromZone { .. }) {
+            return Ok((
+                Inline::R115Continue {
+                    events,
+                    position: resolving.position.clone(),
+                    bound: resolving
+                        .bindings
+                        .iter()
+                        .map(|(name, targets)| (name.clone(), targets.clone()))
+                        .collect(),
+                    snapshots: resolving.snapshots.clone(),
+                },
+                0,
             ));
         }
         match step(base, after.as_ref(), &resolving, effect)? {

@@ -308,6 +308,18 @@ pub(crate) fn activation(
     if !matches!(rules, Ability::Activated { .. } | Ability::Loyalty { .. }) {
         return Never;
     }
+    // A cost with alternatives can be paid when one of its variants can (`r115_cost_choice`, CR 602.2b).
+    if let Some(variants) = crate::r115_cost_choice::r115_ability_variants(rules) {
+        let mut first = Never;
+        for variant in &variants {
+            match activation(state, player, object, address, variant) {
+                Ready => return Ready,
+                hindered @ Hindered(..) if first == Never => first = hindered,
+                _ => {}
+            }
+        }
+        return first;
+    }
     if let Some(source) = crate::prohibit::forbidder(
         state,
         crate::prohibit::Doing::Activate {

@@ -269,6 +269,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::TurnedFaceUp { .. }
         | Event::CompanionRevealed { .. }
         | Event::HandDealt { .. }
+        | Event::R115HandExiled { .. }
         | Event::CardsBottomed { .. }
         | Event::LibraryBottomed { .. }
         | Event::LibraryInserted { .. }
@@ -291,6 +292,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         Event::SpellResolved { .. }
         | Event::ResolutionBegan { .. }
         | Event::StepDone { .. }
+        | Event::R115Continued { .. }
         | Event::ResolutionEnded { .. }
         | Event::ConditionsFailed { .. }
         | Event::StepBegan { .. }
@@ -350,6 +352,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::RemovedFromCombat { .. }
         | Event::R6400Unblocked { .. }
         | Event::R6400Blocks { .. }
+        | Event::R115BlockMoved { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
@@ -426,6 +429,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::UpkeepSettled { .. }
         | Event::CommanderColorChosen { .. }
         | Event::Foraged { .. }
+        | Event::R115CountersPutBy { .. }
         | Event::PrizeClaimed { .. }
         | Event::StickerPut { .. }
         | Event::Proliferated { .. }

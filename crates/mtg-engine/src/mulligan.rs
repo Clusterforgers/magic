@@ -464,11 +464,14 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
         }
         MulliganStatus::Deciding => {
             let taken = state.player(player).map_or(0, Player::mulligans);
-            DecisionKind::Mulligan(state.ruleset().mulligan_options(
-                player,
-                state.zone(Zone::Hand(player)).to_vec(),
-                taken,
-            ))
+            DecisionKind::Mulligan(MulliganOptions {
+                r115_powders: r115_powders(state, player),
+                ..state.ruleset().mulligan_options(
+                    player,
+                    state.zone(Zone::Hand(player)).to_vec(),
+                    taken,
+                )
+            })
         }
         MulliganStatus::NeedsHand | MulliganStatus::Mulliganing | MulliganStatus::Kept => {
             return None;
@@ -556,6 +559,7 @@ pub(crate) fn next(state: &GameState) -> Progress {
 
 /// Turns a keep-or-mulligan choice into an event.
 pub(crate) fn mulligan_answer(
+    state: &GameState,
     player: PlayerId,
     options: &MulliganOptions,
     choice: MulliganChoice,
@@ -566,6 +570,24 @@ pub(crate) fn mulligan_answer(
             Ok(Outcome::Events(vec![Event::MulliganDeclared { player }]))
         }
         MulliganChoice::Mulligan => Err(IllegalAnswer::NotOffered("mulligan").into()),
+        MulliganChoice::R115ExileHand(card) if options.r115_powders.contains(&card) => {
+            let exiled = state.zone(Zone::Hand(player)).to_vec();
+            let drawn = state
+                .zone(Zone::Library(player))
+                .iter()
+                .rev()
+                .take(exiled.len())
+                .copied()
+                .collect();
+            Ok(Outcome::Events(vec![Event::R115HandExiled {
+                player,
+                exiled,
+                drawn,
+            }]))
+        }
+        MulliganChoice::R115ExileHand(_) => {
+            Err(IllegalAnswer::NotOffered("exiling the hand").into())
+        }
     }
 }
 
@@ -603,4 +625,18 @@ pub(crate) fn check_card_choice(
         }
     }
     Ok(())
+}
+
+/// The cards in the hand of `player` whose ability lets them exile the hand and draw as many (Serum Powder, CR 103.5).
+fn r115_powders(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
+    state
+        .zone(Zone::Hand(player))
+        .iter()
+        .copied()
+        .filter(|id| {
+            crate::ability_reader::abilities_of(state, *id)
+                .iter()
+                .any(|(_, ability)| matches!(**ability, Ability::R115MulliganExile))
+        })
+        .collect()
 }

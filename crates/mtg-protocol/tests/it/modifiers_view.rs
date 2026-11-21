@@ -192,6 +192,7 @@ fn a_copy_effect_names_what_it_copies(#[values(2, 3)] seats: usize) {
         attached_by: None,
         r6104_while_tapped: None,
         r707_static: None,
+        r115_until_face_down: false,
     });
     apply_event(&mut state, &copy).unwrap();
     for viewer in 0..seats {

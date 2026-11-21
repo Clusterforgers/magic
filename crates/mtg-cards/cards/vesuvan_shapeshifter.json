@@ -1,16 +1,33 @@
 {
   "oracle_id": "ec577886-fb25-455b-9c3d-5fd610959436",
   "name": "Vesuvan Shapeshifter",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vesuvan Shapeshifter",
       "oracle_fingerprint": "661d2e761a3c243b1ee6508882275c02",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 272 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, "Other"],
+                "except": [
+                  {
+                    "GrantAbility": {
+                      "Triggered": {
+                        "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                        "effects": [
+                          { "May": { "effects": [{ "TurnFaceDown": { "what": "This" } }] } }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "r115_turned_up": true
+              }
+            }
           }
         },
         { "Keyword": { "Morph": "{1}{U}" } }

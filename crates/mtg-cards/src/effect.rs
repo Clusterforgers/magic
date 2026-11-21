@@ -764,6 +764,36 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         optional: bool,
     },
+    /// Two blocking creatures trade what they block (CR 506.4, 509.1h): "If each of those creatures could block all
+    /// creatures that the other is blocking, remove both of them from combat. Each one then blocks all creatures the other
+    /// was blocking." The check reads evasion, protection, tapped creatures and how many creatures each may block; the new
+    /// blocks are no declaration, so the blockers' "blocks" abilities trigger and their attackers stay blocked.
+    R115ExchangeBlocks {
+        /// The two blocking creatures; anything but two blocking creatures does nothing.
+        what: Ref,
+    },
+    /// Two blocked attackers trade their blockers (CR 509.1h): "If each of those creatures could be blocked by all
+    /// creatures that the other is blocked by, each creature that's blocking exactly one of those attacking creatures stops
+    /// blocking it and is blocking the other attacking creature." Nothing triggers on the change.
+    R115ExchangeBlockers {
+        /// The two attacking creatures; anything but two attacking creatures does nothing.
+        what: Ref,
+    },
+    /// Puts creatures that just entered the battlefield into combat blocking an attacking creature (CR 509.1h): "you may
+    /// put a creature card from your hand onto the battlefield blocking that creature". They were never declared as
+    /// blockers, so nothing triggers on their block; the attacker is blocked from then on.
+    R115JoinBlock {
+        /// The creatures that block.
+        what: Ref,
+        /// The attacking creature they block; nothing joins once it no longer attacks.
+        blocking: Ref,
+    },
+    /// The step a `ReplaceWhen::R115BeginStep` replacement is about is skipped (CR 614.10b): the step after it begins in
+    /// its place ("you may skip that step instead").
+    R115SkipStep {
+        /// The step that is skipped.
+        step: crate::trigger::Step,
+    },
     /// The players lose all unspent mana (CR 106.4), whatever it lasts for: "that player loses all unspent mana".
     LoseUnspentMana {
         /// Whose mana pools empty.
@@ -1127,6 +1157,10 @@ pub enum Effect {
         /// on it").
         #[serde(default, skip_serializing_if = "is_false")]
         absent_only: bool,
+        /// The player who puts the counters, when not the controller of the effect ("they put the same number and kind of
+        /// counters on this creature", CR 122.6): replacement effects and triggers that care who puts counters see them.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        by: Option<Ref>,
     },
     /// Puts one counter on `on` of a kind chosen at random among `among` that it holds none of ("choose a kind of counter
     /// at random that this creature doesn't have on it from among ..."); nothing when it holds every one.
@@ -2025,6 +2059,10 @@ pub enum Effect {
         /// received").
         #[serde(default, skip_serializing_if = "Option::is_none")]
         tally: Option<String>,
+        /// Every ballot on players or objects may be left blank ("each player secretly votes for up to one creature", CR
+        /// 701.38): a player who leaves it blank casts no vote.
+        #[serde(default, skip_serializing_if = "is_false")]
+        up_to: bool,
     },
     /// Each player `who` names chooses one of the words, the controller first and the others in turn order; secret
     /// choices are made face down and revealed together ("each opponent secretly chooses silence or snitch"). Each word
@@ -2969,7 +3007,7 @@ mod tests {
         r#"{"SeparatePiles":{"what":"This","chooser":"Opponents","as":"a","rest_as":"b"}}"#
     )]
     #[case::vote_on_two_names(
-        Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None, tally: None },
+        Effect::Vote { options: VoteFor::Named(vec!["time".to_owned(), "knowledge".to_owned()]), secret: true, bind: None, tally: None, up_to: false },
         r#"{"Vote":{"options":{"Named":["time","knowledge"]},"secret":true}}"#
     )]
     #[case::c10_vp_chaos_ensues(
@@ -2993,7 +3031,7 @@ mod tests {
         r#"{"ChooseValue":{"kind":"Color","as":"c"}}"#
     )]
     #[case::vote_on_objects(
-        Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()), tally: None },
+        Effect::Vote { options: VoteFor::Of(Ref::Each(Selector(vec![Pred::In(ZoneKind::Battlefield)]))), secret: false, bind: Some("top".to_owned()), tally: None, up_to: false },
         r#"{"Vote":{"options":{"Of":{"Each":[{"In":"Battlefield"}]}},"as":"top"}}"#
     )]
     #[case::w2d_villainous_choice(

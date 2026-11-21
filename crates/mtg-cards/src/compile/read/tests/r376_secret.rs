@@ -56,7 +56,12 @@ const DILEMMA: &str = "Each opponent secretly chooses silence or snitch, then th
 
 const DILEMMA_RULES: &str = r#"{"Spell":{"effects":[{"ChooseWords":{"who":"Opponents","words":["silence","snitch"],"secret":true}},{"If":{"condition":{"Compare":{"left":{"Players":{"Bound":"silence"}},"op":"Eq","right":{"Players":"Opponents"}}},"then":[{"DealDamage":{"to":"Opponents","amount":4}}],"otherwise":[{"If":{"condition":{"Compare":{"left":{"Players":{"Bound":"snitch"}},"op":"Eq","right":{"Players":"Opponents"}}},"then":[{"DealDamage":{"to":"Opponents","amount":8}}],"otherwise":[{"DealDamage":{"to":{"Bound":"silence"},"amount":12}}]}}]}}]}}"#;
 
+const R115_VAULT: &str = "Each player secretly votes for up to one creature, then those votes are revealed. If no creature got votes, each player draws a card. Otherwise, destroy each creature with the most votes or tied for most votes.";
+
+const R115_VAULT_RULES: &str = r#"{"Spell":{"effects":[{"Vote":{"options":{"Of":{"Each":[{"Type":"Creature"}]}},"secret":true,"as":"most","up_to":true}},{"If":{"condition":{"CountOf":{"subject":{"Bound":"most"},"selector":[],"op":"Eq","right":0}},"then":[{"Draw":{"who":"EachPlayer"}}],"otherwise":[{"Destroy":{"what":{"Bound":"most"}}}]}}]}}"#;
+
 #[rstest]
+#[case::r115_vault_11(R115_VAULT, ClauseKind::Spell, R115_VAULT_RULES)]
 #[case::cirdan(CIRDAN, ClauseKind::Triggered, CIRDAN_RULES)]
 #[case::mob_verdict(MOB, ClauseKind::Spell, MOB_RULES)]
 #[case::prisoners_dilemma(DILEMMA, ClauseKind::Spell, DILEMMA_RULES)]
@@ -79,6 +84,10 @@ fn the_secret_votes_and_choices_read_and_write_back(
 #[case::dilemma_open(DILEMMA, "secretly chooses", "chooses")]
 #[case::dilemma_snitches_hit(DILEMMA, "who chose silence.", "who chose snitch.")]
 #[case::dilemma_nine(DILEMMA, "deals 8 damage", "deals 9 damage")]
+#[case::r115_vault_one(R115_VAULT, "for up to one creature", "for a creature")]
+#[case::r115_vault_open(R115_VAULT, "secretly votes", "votes")]
+#[case::r115_vault_two_cards(R115_VAULT, "draws a card", "draws two cards")]
+#[case::r115_vault_exile(R115_VAULT, "destroy each creature", "exile each creature")]
 fn a_near_miss_of_a_text_is_read_as_something_else(
     #[case] text: &str,
     #[case] from: &str,
@@ -92,7 +101,7 @@ fn a_near_miss_of_a_text_is_read_as_something_else(
     let changed = text.replace(from, to);
     assert_ne!(changed, text);
     let read = clause(&changed, kind, false);
-    for json in [CIRDAN_RULES, MOB_RULES, DILEMMA_RULES] {
+    for json in [CIRDAN_RULES, MOB_RULES, DILEMMA_RULES, R115_VAULT_RULES] {
         assert_ne!(read, Some(ability(json)), "{changed}");
     }
 }
@@ -120,6 +129,9 @@ fn a_near_miss_of_a_text_is_read_as_something_else(
     DILEMMA
 )]
 #[case::dilemma_nine(DILEMMA_RULES, r#""amount":8"#, r#""amount":9"#, DILEMMA)]
+#[case::r115_vault_all_ballots(R115_VAULT_RULES, r#","up_to":true"#, "", R115_VAULT)]
+#[case::r115_vault_open(R115_VAULT_RULES, r#""secret":true,"#, "", R115_VAULT)]
+#[case::r115_vault_some(R115_VAULT_RULES, r#""right":0"#, r#""right":1"#, R115_VAULT)]
 fn a_near_miss_of_the_rules_is_not_written_as_its_text(
     #[case] json: &str,
     #[case] from: &str,

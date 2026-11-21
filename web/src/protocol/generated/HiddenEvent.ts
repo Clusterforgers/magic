@@ -49,6 +49,18 @@ player: PlayerId,
 /**
  * Cards the library holds now.
  */
+count: number, } } | { "R115HandExiled": { 
+/**
+ * Who exiled.
+ */
+player: PlayerId, 
+/**
+ * The cards exiled, face up.
+ */
+exiled: Array<ObjectId>, 
+/**
+ * Cards drawn.
+ */
 count: number, } } | { "MulliganTaken": { 
 /**
  * Who mulliganed.

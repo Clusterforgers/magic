@@ -336,6 +336,9 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.Instead",
     "Ability.ManaAbility.Complex",
     "Cost.OneOf.Pay",
+    "Cost.OneOf.Activated",
+    "Cost.XAtLeast.Way",
+    "Ability.R115MulliganExile",
     "Ability.ManaAbility.Other",
     "Ability.ManaAbility.From",
     "Effect.PutCounters",
@@ -480,6 +483,7 @@ const RUNS: &[&str] = &[
     "Copy.Duration.UntilYourNextTurn",
     "Copy.Duration.WhileSourceAttached",
     "Copy.Duration.WhileTapped",
+    "Copy.Duration.R115UntilFaceDown",
     "Copy.WhenYouDo",
     "Copy.Static",
     "Copy.Except.ThisAbility",
@@ -502,6 +506,8 @@ const RUNS: &[&str] = &[
     "Effect.R112NoteManaSpent",
     "Effect.R112NoteChosen",
     "Condition.R111CastOrPutLastTurn",
+    "Condition.R115MostCommonColor",
+    "Ref.R115Causer",
     "Condition.R111AttackedLastCombat",
     "Condition.R111DamagedThisTurnBy",
     "Ref.R111LastDamagedYou",
@@ -539,6 +545,10 @@ const RUNS: &[&str] = &[
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
     "Effect.R6400Block",
+    "Effect.R115ExchangeBlocks",
+    "Effect.R115ExchangeBlockers",
+    "Effect.R115JoinBlock",
+    "Effect.R115SkipStep",
     "Effect.BecomeBlocked",
     "Effect.PutBeneathTop",
     "Effect.LoseUnspentMana",
@@ -817,6 +827,8 @@ const RUNS: &[&str] = &[
     "Effect.Modal.OnceEver",
     "Effect.Modal.AllIf",
     "Effect.Vote",
+    "Effect.Vote.R115UpTo",
+    "Effect.PutCountersOf.R115By",
     "Effect.ChooseNumbers",
     "Effect.ChooseWords",
     "Effect.ChooseWords.About",
@@ -893,6 +905,7 @@ const RUNS: &[&str] = &[
     "Keyword.Flashback.Cost.Discard.X",
     "Keyword.Flashback.Cost.Sacrifice.X",
     "Keyword.Flashback.Cost.ExileFromGraveyard.X",
+    "Keyword.Flashback.Cost.RemoveCountersAmong.X",
     "Keyword.Evoke",
     "Keyword.Overload",
     "Keyword.Cycling",
@@ -1045,6 +1058,10 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.CountersPut",
     "ReplaceWhen.LifeGain",
     "ReplaceWhen.LifeLoss",
+    "ReplaceWhen.R115LifePay",
+    "ReplaceWhen.R115UntapStep",
+    "ReplaceWhen.R115CounteredBy",
+    "ReplaceWhen.R115BeginStep",
     "ReplaceWhen.LoseGame",
     "ReplaceWhen.Mill",
     "ReplaceWhen.Draw",
@@ -1101,6 +1118,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.MayWithCounters",
     "ReplaceBy.Choose",
     "ReplaceBy.Choose.NoncreatureNonlandCardName",
+    "ReplaceBy.Choose.R115ColorAndOpponent",
     "ReplaceBy.Choose.NonbasicLandCardName",
     "ReplaceBy.Choose.RevealedNonlandName",
     "ReplaceBy.Choose.R6001Abilities",
@@ -1115,6 +1133,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.R114ChooseObject",
     "ReplaceBy.R6603AttachToPlayer",
     "ReplaceBy.Instead.PaysLife",
+    "ReplaceBy.Instead.R115CastsResolving",
     "ReplaceBy.BeholdOrTapped",
     "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
@@ -1481,6 +1500,10 @@ mod tests {
     #[case::replacement_effects("Ability.Replacement", true)]
     #[case::replacing_token_creation("ReplaceWhen.TokenCreation", true)]
     #[case::replacing_damage("ReplaceWhen.Damage", true)]
+    #[case::replacing_paid_life("ReplaceWhen.R115LifePay", true)]
+    #[case::replacing_an_untap_in_the_untap_step("ReplaceWhen.R115UntapStep", true)]
+    #[case::replacing_a_countering_by_its_controller("ReplaceWhen.R115CounteredBy", true)]
+    #[case::replacing_a_step_beginning("ReplaceWhen.R115BeginStep", true)]
     #[case::replacing_zone_changes("ReplaceWhen.ZoneChange", true)]
     #[case::replacing_discards("ReplaceWhen.Discarded", true)]
     #[case::replacing_counters_put("ReplaceWhen.CountersPut", true)]
@@ -1532,6 +1555,10 @@ mod tests {
     #[case::modes_in_place_of_an_event("ReplaceBy.Instead.Modal", false)]
     #[case::waiting_in_place_of_an_event("ReplaceBy.Instead.Waits", false)]
     #[case::casting_in_place_of_an_event("ReplaceBy.Instead.Casts", false)]
+    #[case::casting_in_place_of_a_draw_a_resolution_causes(
+        "ReplaceBy.Instead.R115CastsResolving",
+        true
+    )]
     #[case::paying_in_place_of_an_event("ReplaceBy.Instead.Pays", false)]
     #[case::paying_life_in_place_of_an_event("ReplaceBy.Instead.PaysLife", true)]
     #[case::tapping_or_untapping("Effect.TapOrUntap", true)]
@@ -1657,6 +1684,10 @@ mod tests {
     #[case::regenerating("Effect.Regenerate", true)]
     #[case::leaving_combat("Effect.RemoveFromCombat", true)]
     #[case::r6400_blocking_by_choice("Effect.R6400Block", true)]
+    #[case::r115_trading_blocks("Effect.R115ExchangeBlocks", true)]
+    #[case::r115_trading_blockers("Effect.R115ExchangeBlockers", true)]
+    #[case::r115_entering_blocking("Effect.R115JoinBlock", true)]
+    #[case::r115_skipping_a_step("Effect.R115SkipStep", true)]
     #[case::shields("Effect.Shield", true)]
     #[case::preventing("ReplaceBy.Prevent", true)]
     #[case::preventing_in_part("ReplaceBy.PreventUpTo", true)]
@@ -1855,6 +1886,13 @@ mod tests {
     #[case::a_choice_of_mana("Effect.AddMana.OneOf", true)]
     #[case::a_choice_of_lists_of_mana("Effect.AddMana.OneOfLists", true)]
     #[case::paying_one_of_several_costs("Cost.OneOf.Pay", true)]
+    #[case::r115_choosing_between_costs_of_an_activation("Cost.OneOf.Activated", true)]
+    #[case::r115_a_least_x_of_a_way("Cost.XAtLeast.Way", true)]
+    #[case::r115_counters_among_by_x_in_a_flashback_cost(
+        "Keyword.Flashback.Cost.RemoveCountersAmong.X",
+        true
+    )]
+    #[case::r115_exiling_the_hand_at_a_mulligan("Ability.R115MulliganExile", true)]
     #[case::choosing_between_costs_elsewhere("Cost.OneOf.Elsewhere", false)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]

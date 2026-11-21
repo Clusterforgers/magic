@@ -51,6 +51,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   MulliganPhaseBegan: ['MulliganPhaseBegan', 'The mulligan phase begins'],
   HandDealt: [{ HandDealt: { player: 0, cards: [1, 2, 3, 4, 5, 6, 3] } }, 'Ana is dealt 7 cards'],
+  R115HandExiled: [
+    { R115HandExiled: { player: 0, exiled: [1, 2, 3], drawn: [4, 5, 6] } },
+    'Ana exiles their hand and draws 3 cards',
+  ],
   MulliganDeclared: [{ MulliganDeclared: { player: 1 } }, 'Bo decides to mulligan'],
   MulliganTaken: [{ MulliganTaken: { player: 1, library_order: [] } }, 'Bo takes a mulligan'],
   MulliganKept: [{ MulliganKept: { player: 0 } }, 'Ana keeps their hand'],
@@ -108,6 +112,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   AttackersBlocked: [{ AttackersBlocked: { attackers: [3] } }, 'Forest becomes blocked'],
   R6400Unblocked: [{ R6400Unblocked: { attacker: 3 } }, 'Forest becomes unblocked'],
   R6400Blocks: [{ R6400Blocks: { blocker: 3, attacker: 1 } }, 'Forest blocks Grizzly Bears'],
+  R115BlockMoved: [{ R115BlockMoved: { blocker: 3, to: 1 } }, 'Forest is blocking Grizzly Bears'],
   ManualAction: [
     { ManualAction: { player: 0, action: { Move: { object: 3, to: 'Graveyard' } } } },
     'Ana moves Forest to the graveyard (by hand)',
@@ -168,6 +173,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     "Bo doesn't pay the cumulative upkeep of Forest",
   ],
   Foraged: [{ Foraged: { player: 1 } }, 'Bo forages'],
+  R115CountersPutBy: [{ R115CountersPutBy: { player: 1 } }, 'Bo puts the counters that follow'],
   DieRolled: [
     { DieRolled: { player: 1, sides: 20, result: 14, natural: 13 } },
     'Bo rolls a d20: 14 (rolled 13)',
@@ -492,6 +498,19 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     'Ana chooses Grizzly Bears and Hill Giant',
   ],
   StepDone: [{ StepDone: { position: [1], bound: [], snapshots: [] } }, 'A step of the resolution is done'],
+  R115Continued: [
+    {
+      R115Continued: {
+        source: { id: 3, counter: 0 },
+        controller: 0,
+        effects: [],
+        position: [1],
+        bound: [],
+        snapshots: [],
+      },
+    },
+    'A replacement goes on as part of the resolution',
+  ],
   Remembered: [
     {
       Remembered: {
@@ -735,6 +754,10 @@ const HIDDEN: Record<VariantName<HiddenEvent>, [HiddenEvent, string]> = {
   AnnouncementRewound: [{ AnnouncementRewound: { player: 1 } }, 'Bo could not finish a play'],
   LoopOffered: [{ LoopOffered: { player: 1 } }, 'Bo is asked how many times to repeat the loop'],
   HandDealt: [{ HandDealt: { player: 1, count: 7 } }, 'Bo is dealt 7 cards'],
+  R115HandExiled: [
+    { R115HandExiled: { player: 1, exiled: [1, 2], count: 2 } },
+    'Bo exiles their hand and draws 2 cards',
+  ],
   LibraryShuffled: [{ LibraryShuffled: { player: 1 } }, 'Bo shuffles their library'],
   AttractionDeckShuffled: [{ AttractionDeckShuffled: { player: 1 } }, 'Bo shuffles their Attraction deck'],
   LibraryRefilled: [
@@ -1592,6 +1615,12 @@ describe('the choice a permanent enters with', () => {
         Entered: { object: 3, tapped: false, controller: 0, chosen: { ColorAndType: ['Blue', 'Merfolk'] } },
       },
       "Forest enters under Ana's control, choosing blue and Merfolk",
+    ],
+    [
+      {
+        Entered: { object: 3, tapped: false, controller: 0, chosen: { R115ColorAndPlayer: ['Red', 1] } },
+      },
+      "Forest enters under Ana's control, choosing red and Bo",
     ],
     [
       { Entered: { object: 3, tapped: false, controller: 0, chosen: { Players: [0, 1] } } },

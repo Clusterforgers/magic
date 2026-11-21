@@ -98,6 +98,10 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
     return `, choosing ${n.seat(seat)} and ${name}`
   }
   if ('R111Names' in chosen) return `, choosing ${joinWords(chosen.R111Names)}`
+  if ('R115ColorAndPlayer' in chosen) {
+    const [color, seat] = chosen.R115ColorAndPlayer
+    return `, choosing ${color.toLowerCase()} and ${n.seat(seat)}`
+  }
   return `, choosing ${chosen.CreatureType}`
 }
 
@@ -813,6 +817,7 @@ const PIPELINE = [
   'ResolutionBegan',
   'ChoiceMade',
   'StepDone',
+  'R115Continued',
   'Remembered',
   'ResolutionEnded',
   'AbilityLeftToTable',
@@ -942,6 +947,7 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
         : 'A source remembers objects',
     )
   if ('StepDone' in event) return quiet('A step of the resolution is done')
+  if ('R115Continued' in event) return quiet('A replacement goes on as part of the resolution')
   if ('ResolutionEnded' in event) {
     const { object, outcome } = event.ResolutionEnded
     if (outcome === 'Fizzled') return line(`${stackName(n, object, true)} does nothing: its targets are gone`)
@@ -1080,6 +1086,10 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   }
   if ('MulliganDeclared' in event) return line(`${n.seat(event.MulliganDeclared.player)} decides to mulligan`)
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
+  if ('R115HandExiled' in event) {
+    const { player, exiled } = event.R115HandExiled
+    return line(`${n.seat(player)} exiles their hand and draws ${cards(exiled.length)}`)
+  }
   if ('OpeningCardsPlayed' in event) {
     const { player, cards: begun } = event.OpeningCardsPlayed
     const names = begun.map((id) => n.card(id)).join(', ')
@@ -1234,6 +1244,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.seat(player)} ${paid ? 'pays' : "doesn't pay"} the ${cost} of ${n.card(object)}`)
   }
   if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
+  if ('R115CountersPutBy' in event) {
+    return quiet(`${n.seat(event.R115CountersPutBy.player)} puts the counters that follow`)
+  }
   if ('DieRolled' in event) {
     const { player, sides, result, natural } = event.DieRolled
     const shown = natural === undefined ? '' : ` (rolled ${natural})`
@@ -1393,6 +1406,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('R6400Blocks' in event) {
     const { blocker, attacker } = event.R6400Blocks
     return line(`${n.card(blocker)} blocks ${n.card(attacker)}`)
+  }
+  if ('R115BlockMoved' in event) {
+    const { blocker, from, to } = event.R115BlockMoved
+    return from === undefined
+      ? line(`${n.card(blocker)} is blocking ${n.card(to)}`)
+      : line(`${n.card(blocker)} stops blocking ${n.card(from)} and is blocking ${n.card(to)}`)
   }
   if ('AttackersBlocked' in event) {
     const { attackers } = event.AttackersBlocked
@@ -1646,6 +1665,10 @@ function describeHidden(event: HiddenEvent, n: EventNames): LogLine {
     return quiet(`${n.seat(event.LibraryRefilled.player)} shuffles their graveyard into their library`)
   }
   if ('MulliganTaken' in event) return line(`${n.seat(event.MulliganTaken.player)} takes a mulligan`)
+  if ('R115HandExiled' in event) {
+    const { player, exiled } = event.R115HandExiled
+    return line(`${n.seat(player)} exiles their hand and draws ${cards(exiled.length)}`)
+  }
   if ('CardsBottomed' in event) {
     const { player, count } = event.CardsBottomed
     return line(`${n.seat(player)} puts ${cards(count)} on the bottom of their library`)

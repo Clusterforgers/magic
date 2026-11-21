@@ -120,6 +120,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::LibraryRefilled { .. }
         | Event::MulliganPhaseBegan
         | Event::HandDealt { .. }
+        | Event::R115HandExiled { .. }
         | Event::MulliganDeclared { .. }
         | Event::MulliganTaken { .. }
         | Event::MulliganKept { .. }
@@ -173,6 +174,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::RemovedFromCombat { .. }
         | Event::R6400Unblocked { .. }
         | Event::R6400Blocks { .. }
+        | Event::R115BlockMoved { .. }
         | Event::AttackersBlocked { .. }
         | Event::Regenerated { .. }
         | Event::DamageRemoved { .. }
@@ -186,6 +188,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::ResolutionBegan { .. }
         | Event::ChoiceMade { .. }
         | Event::StepDone { .. }
+        | Event::R115Continued { .. }
         | Event::ResolutionEnded { .. } => resolution::apply(state, event),
         // A note for the table: the game state does not change.
         // A prevention changes nothing of its own; triggers read it.
@@ -655,6 +658,7 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::Foraged { .. }
+        | Event::R115CountersPutBy { .. }
         | Event::Clashed { .. }
         | Event::Proliferated { .. } => {}
         Event::VotesFinished { ballots } => state.r379_votes.push(ballots.clone()),

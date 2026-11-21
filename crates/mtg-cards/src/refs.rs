@@ -111,6 +111,9 @@ pub enum Ref {
     /// The players the source chose as it entered other than the player the trigger event is about ("the other chosen
     /// player"); nobody once they have left the game.
     R4700OtherChosen,
+    /// The player whose spell or ability caused the event a `TriggerPattern::Caused` matched ("whenever an opponent puts one
+    /// or more counters on a creature they control, they put ..."): as the pattern is matched and as the trigger resolves.
+    R115Causer,
     /// The player in this seat (0 is the first): written by the engine as a resolution fixes "the chosen player" into a
     /// keyword it grants ("gain protection from the chosen player"), never by a card file.
     R110Seat(u8),

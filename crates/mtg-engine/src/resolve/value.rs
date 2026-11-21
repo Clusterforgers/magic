@@ -36,6 +36,7 @@ pub(crate) mod r5520_atoms;
 mod r5523_attacked;
 pub(crate) use r5520_atoms::{R5520_PAID, r5520_took};
 mod r114_targets;
+mod r115_colors;
 mod r6003_total;
 mod soulbond;
 mod w21a_atoms;
@@ -525,6 +526,7 @@ impl<'a> Scope<'a> {
                     | TurnTally::DamageDealtTo
                     | TurnTally::CountersPut
                     | TurnTally::UntappedLandsAsTurnBegan
+                    | TurnTally::R115AttackPower
             )
         {
             return Err(ResolveError::Unsupported("Amount.TalliedLastTurn.Kind"));
@@ -568,6 +570,12 @@ impl<'a> Scope<'a> {
                             .copied()
                             .unwrap_or(0)
                     })
+                    .sum();
+                return Ok(i64::from(total));
+            }
+            TurnTally::R115AttackPower => {
+                let total: u32 = (self.players(who)?.into_iter())
+                    .map(|player| self.state.combat.r115_attack_power(player))
                     .sum();
                 return Ok(i64::from(total));
             }
@@ -1506,6 +1514,7 @@ impl<'a> Scope<'a> {
             Ref::Promised => self.promised().map(Target::Player).into_iter().collect(),
             Ref::Chosen => self.r4700_chosen_targets(false)?,
             Ref::R4700OtherChosen => self.r4700_chosen_targets(true)?,
+            Ref::R115Causer => self.r115_causer(),
             Ref::Defending => self.defending().into_iter().map(Target::Player).collect(),
             Ref::Attacked => self
                 .attacked_opponents()
@@ -1811,11 +1820,12 @@ impl<'a> Scope<'a> {
             .then_some(host)
     }
 
-    /// The permanent whose static ability gave the running ability, while it is on the battlefield.
+    /// The permanent whose static ability gave the running ability, while it is on the battlefield, or the spell that gave
+    /// it while it is on the stack ("As long as Torrent of Lava is on the stack, each creature has ...").
     fn granter_on_battlefield(&self) -> Vec<Target> {
         self.granter
             .and_then(|id| self.state.object(id))
-            .filter(|object| object.zone() == Zone::Battlefield)
+            .filter(|object| matches!(object.zone(), Zone::Battlefield | Zone::Stack))
             .map(|object| Target::Object(object.reference()))
             .into_iter()
             .collect()
@@ -3137,7 +3147,7 @@ impl<'a> Scope<'a> {
     fn chosen_pred(&self, pred: &Pred, seen: &Seen<'_>) -> bool {
         match pred {
             Pred::ChosenColor => {
-                matches!(self.entered_choice(), Some(Chosen::Color(color)) if seen.chars.colors.contains(*color))
+                matches!(self.entered_choice(), Some(Chosen::Color(color) | Chosen::R115ColorAndPlayer(color, _)) if seen.chars.colors.contains(*color))
             }
             Pred::ChosenSubtype => {
                 matches!(
@@ -3194,7 +3204,9 @@ impl<'a> Scope<'a> {
                     .is_some_and(|c| seen.chars.has_subtype(&c.card().subtypes, subtype))
         };
         match chosen {
-            Chosen::Color(color) => seen.chars.colors.contains(*color),
+            Chosen::Color(color) | Chosen::R115ColorAndPlayer(color, _) => {
+                seen.chars.colors.contains(*color)
+            }
             // A colour and a type chosen together: an object of either has what was chosen.
             Chosen::ColorAndType(color, subtype) => {
                 seen.chars.colors.contains(*color) || has_subtype(subtype)
@@ -3717,9 +3729,11 @@ impl<'a> Scope<'a> {
     /// The players the source chose as it entered who are still in the game.
     fn chosen_players(&self) -> Vec<PlayerId> {
         let chosen: &[PlayerId] = match self.entered_choice() {
-            Some(Chosen::Player(player) | Chosen::R111PlayerAndName(player, _)) => {
-                std::slice::from_ref(player)
-            }
+            Some(
+                Chosen::Player(player)
+                | Chosen::R111PlayerAndName(player, _)
+                | Chosen::R115ColorAndPlayer(_, player),
+            ) => std::slice::from_ref(player),
             Some(Chosen::Players(players)) => players,
             _ => &[],
         };
@@ -4080,6 +4094,7 @@ impl<'a> Scope<'a> {
             Condition::R111CastOrPutLastTurn => self.r111_cast_or_put_last_turn(),
             Condition::R111AttackedLastCombat(by) => self.r111_attacked_last_combat(by)?,
             Condition::R111DamagedThisTurnBy(by) => self.r111_damaged_this_turn_by(by)?,
+            Condition::R115MostCommonColor(among) => self.r115_most_common_color(among)?,
             Condition::CompletedDungeon(who)
             | Condition::Initiative(who)
             | Condition::Monarch(who)
@@ -4844,6 +4859,7 @@ mod tests {
     fn the_cause_of_a_trigger_is_what_triggering_names() {
         let game = game();
         let cause = crate::abilities::Cause {
+            r115_causer: None,
             dealers: Vec::new(),
             subjects: vec![Target::Player(PlayerId(1))],
             snapshots: Vec::new(),

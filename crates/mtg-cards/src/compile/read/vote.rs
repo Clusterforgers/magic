@@ -45,6 +45,7 @@ pub fn named(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         secret,
         bind: None,
         tally: None,
+        up_to: false,
     }];
     if let Some(outcome) = r.attempt(|r| outcome(r, &first, &second)) {
         effects.push(outcome);

@@ -1741,6 +1741,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 except_if,
                 r109_embalmed,
                 r707_when_you_do,
+                r115_turned_up: false,
             },
             None,
         ) if r707_when_you_do.is_empty()
@@ -1761,6 +1762,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
                 except_if,
                 r109_embalmed,
                 r707_when_you_do,
+                r115_turned_up: false,
             },
             None,
         ) if r707_when_you_do.is_empty() && except_if.is_empty() && r109_embalmed.is_empty() => {

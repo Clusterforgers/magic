@@ -1,7 +1,7 @@
 {
   "oracle_id": "0d787c6b-ab82-42c5-b840-8f3a09af30ac",
   "name": "Fasting",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Fasting",
@@ -28,9 +28,20 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 151, "end": 245 }
+          "Replacement": {
+            "when": { "R115BeginStep": { "step": "Draw" } },
+            "by": {
+              "Instead": [
+                {
+                  "May": {
+                    "effects": [
+                      { "R115SkipStep": { "step": "Draw" } },
+                      { "GainLife": { "amount": 2 } }
+                    ]
+                  }
+                }
+              ]
+            }
           }
         },
         {

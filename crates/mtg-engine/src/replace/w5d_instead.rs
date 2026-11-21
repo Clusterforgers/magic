@@ -51,13 +51,18 @@ impl Pass<'_> {
                 Some(Target::Player(*player)),
                 drawn_by.as_ref().map(Snapshot::reference),
             ),
-            Unit::Life { player } | Unit::Loss { player } | Unit::LifeLoss { player } => {
-                (Some(Target::Player(*player)), None)
-            }
+            Unit::Life { player }
+            | Unit::Loss { player }
+            | Unit::LifeLoss { player }
+            | Unit::R115LifePay { player, .. } => (Some(Target::Player(*player)), None),
             Unit::Move { object: id, .. }
             | Unit::Enter { object: id, .. }
             | Unit::Attach { object: id }
+            | Unit::R115Untap { object: id }
             | Unit::Transform { object: id, .. } => (object(*id), None),
+            Unit::R115StepBegins { .. } => {
+                (Some(Target::Player(self.state.active_or_next())), None)
+            }
             Unit::Other => (None, None),
         };
         let amount = match &self.slots[at].item {
@@ -69,9 +74,11 @@ impl Pass<'_> {
                 delta.unsigned_abs()
             }
             Item::One(Event::CardDrawn { .. } | Event::DrewFromEmptyLibrary { .. }) => 1,
+            Item::One(Event::LifePaid { amount, .. }) => *amount,
             Item::One(_) => 0,
         };
         Cause {
+            r115_causer: None,
             dealers: Vec::new(),
             subjects: subject.into_iter().collect(),
             snapshots: drawn_by.into_iter().collect(),
@@ -153,8 +160,26 @@ impl Pass<'_> {
                 }
                 Ran::Events(events)
             }
+            // The cast and the steps after it go on as part of the resolution the event is in (CR 608.2g); with nothing
+            // resolving, nothing can hold them.
+            Ok(Inline::R115Continue {
+                mut events,
+                position,
+                bound,
+                snapshots,
+            }) if self.state.resolving().is_some() => {
+                events.push(Event::R115Continued {
+                    source: candidate.object,
+                    controller: candidate.controller,
+                    effects: effects.to_vec(),
+                    position,
+                    bound,
+                    snapshots,
+                });
+                Ran::Events(events)
+            }
             Ok(Inline::Ask(decision)) => Ran::Ask(decision),
-            Ok(Inline::Declined) | Err(_) => Ran::Kept,
+            Ok(Inline::Declined | Inline::R115Continue { .. }) | Err(_) => Ran::Kept,
         }
     }
 

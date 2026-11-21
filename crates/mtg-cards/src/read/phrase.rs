@@ -58,6 +58,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::Chosen => "the chosen object".to_owned(),
         Ref::Promised => "the promised object".to_owned(),
         Ref::R4700OtherChosen => "the other chosen player".to_owned(),
+        Ref::R115Causer => "that player".to_owned(),
         Ref::R110Seat(seat) => format!("the player in seat {seat}"),
         Ref::R111LastDamagedYou(_) => {
             "the controller of the last source that dealt damage to you this turn".to_owned()

@@ -1,7 +1,7 @@
 {
   "oracle_id": "10db57b4-f895-4514-b610-2252ba676353",
   "name": "Bullseye, Death Dealer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bullseye, Death Dealer",
@@ -35,9 +35,19 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 131, "end": 228 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              {
+                "OneOf": [
+                  [{ "Sacrifice": { "filter": [{ "Type": "Artifact" }] } }],
+                  [{ "Discard": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+                ]
+              }
+            ],
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
           }
         }
       ]

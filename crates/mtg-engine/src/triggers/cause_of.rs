@@ -28,6 +28,20 @@ pub(crate) struct CausedBy {
 ///
 /// `pre` is the state before the batch (the state after when nothing looks back) and `post` the state after.
 pub(crate) fn cause_of(pre: &GameState, events: &[Event], post: &GameState) -> Option<CausedBy> {
+    let cause = cause_of_batch(pre, events, post)?;
+    // "They put the same number and kind of counters": the counters of the batch are that player's (CR 122.6).
+    let putter = events.iter().find_map(|event| match event {
+        Event::R115CountersPutBy { player } => Some(*player),
+        _ => None,
+    });
+    Some(match putter {
+        Some(player) => CausedBy { player, ..cause },
+        None => cause,
+    })
+}
+
+/// The cause of the events before a putter named for the counters of the batch (`Event::R115CountersPutBy`).
+fn cause_of_batch(pre: &GameState, events: &[Event], post: &GameState) -> Option<CausedBy> {
     let resolving = post.resolving().or_else(|| pre.resolving());
     if let Some(running) = resolving
         && let Some(object) = post

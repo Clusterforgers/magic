@@ -114,8 +114,8 @@
   "textless": false,
   "booster": true,
   "story_spotlight": false,
-  "edhrec_rank": 19837,
-  "penny_rank": 13247,
+  "edhrec_rank": 19992,
+  "penny_rank": 13265,
   "preview": {
     "source": "Olivia Gobert-Hicks",
     "source_uri": "https://twitter.com/goberthicks/status/1410030436756033544",
@@ -123,10 +123,10 @@
   },
   "prices": {
     "usd": "0.14",
-    "usd_foil": "0.21",
+    "usd_foil": "0.26",
     "usd_etched": null,
-    "eur": "0.09",
-    "eur_foil": "0.16",
+    "eur": "0.05",
+    "eur_foil": "0.19",
     "tix": "0.03"
   },
   "related_uris": {

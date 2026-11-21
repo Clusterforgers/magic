@@ -1503,8 +1503,15 @@ pub(crate) fn hindrance_as_is(
         if !announceable_in(state, player, id, way.alternative) {
             return Some(Unplayable::Targets);
         }
-        (cost.is_none() || !parts_payable(state, player, id, &way.parts))
-            .then_some(Unplayable::Cost)
+        // "X can't be 0": a part that counts X takes at least the least X the way allows; a way with no least X is judged
+        // by its parts as they are (a Shoal's pick sets its own X).
+        let least = r115_way_least_x(state, id, way.alternative);
+        let parts: std::borrow::Cow<'_, [Part]> = if least == 0 {
+            std::borrow::Cow::Borrowed(&way.parts)
+        } else {
+            way.parts.iter().map(|part| part.at(least)).collect()
+        };
+        (cost.is_none() || !parts_payable(state, player, id, &parts)).then_some(Unplayable::Cost)
     };
     let mut nearest = None;
     for way in &of(state, player, id) {
@@ -1677,4 +1684,29 @@ fn w17c_cast_only_holds(state: &GameState, player: PlayerId, card: &GameObject) 
         Ability::CastOnly { condition } => scope.holds(condition).unwrap_or(false),
         _ => true,
     })
+}
+
+/// The least X the keyword cost of the way `way` lets the caster of the card `id` announce ("Flashback—{3}{R}, Remove X
+/// loyalty counters from among planeswalkers you control. If you cast this spell this way, X can't be 0.", CR 107.3,
+/// 601.2b); 0 for the mana cost and a way whose cost sets no least X.
+pub(crate) fn r115_way_least_x(state: &GameState, id: ObjectId, way: Option<CastWay>) -> u32 {
+    let Some(way) = way else {
+        return 0;
+    };
+    keywords_of(state, id)
+        .iter()
+        .find_map(|keyword| {
+            let (own, cost) = match keyword {
+                Keyword::Flashback(cost) => (CastWay::Flashback, cost),
+                Keyword::Escape(cost) => (CastWay::Escape, cost),
+                Keyword::Evoke(cost) => (CastWay::Evoke, cost),
+                Keyword::Dash(cost) => (CastWay::Dash, cost),
+                Keyword::Blitz(cost) => (CastWay::Blitz, cost),
+                Keyword::Spectacle(cost) => (CastWay::Spectacle, cost),
+                Keyword::Mayhem(cost) => (CastWay::Mayhem, cost),
+                _ => return None,
+            };
+            (own == way).then(|| announce::least_of(cost))
+        })
+        .unwrap_or(0)
 }

@@ -96,6 +96,7 @@ impl<'a> RuleSet<'a> {
             hand_if_mulligan: Some(self.dealt_hand_size(seat, next)),
             scry_if_keep: scry(taken),
             scry_if_mulligan: scry(next),
+            r115_powders: Vec::new(),
         }
     }
 

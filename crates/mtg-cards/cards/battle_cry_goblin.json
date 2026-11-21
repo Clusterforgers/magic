@@ -13,13 +13,7 @@
             "effects": [
               {
                 "Continuous": {
-                  "affected": {
-                    "Each": [
-                      { "Type": "Creature" },
-                      { "Subtype": "Goblin" },
-                      { "ControlledBy": "You" }
-                    ]
-                  },
+                  "affected": { "Each": [{ "Subtype": "Goblin" }, { "ControlledBy": "You" }] },
                   "mods": [
                     { "ModifyPT": { "power": 1, "toughness": 0 } },
                     { "AddKeyword": "Haste" }
@@ -34,14 +28,10 @@
           "Triggered": {
             "when": { "Attacks": { "what": ["This"] } },
             "if": {
-              "AtTrigger": {
-                "Compare": {
-                  "left": {
-                    "Total": { "of": [{ "Type": "Creature" }, "Attacking"], "stat": "Power" }
-                  },
-                  "op": "Ge",
-                  "right": 6
-                }
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "R115AttackPower" } },
+                "op": "Ge",
+                "right": 6
               }
             },
             "effects": [

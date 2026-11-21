@@ -1588,6 +1588,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         .filter_map(|object| snapshot(state, object.id))
         .collect();
     Cause {
+        r115_causer: None,
         dealers: Vec::new(),
         subjects,
         snapshots,
@@ -2054,6 +2055,7 @@ fn matching_event(
             caused_by(scope, by.as_ref(), source)
                 .then(|| matching(inner, happened, scope))
                 .flatten()
+                .map(|cause| r115_with_causer(cause, scope))
         }
         (TriggerPattern::R111AbilityTriggered { .. }, happened) => {
             r111_on_trigger::r111_matching(pattern, happened, scope)
@@ -2714,6 +2716,14 @@ fn r6701_activating(scope: &Scope<'_>, kind: mtg_cards::ability::ActivationKind)
 
 /// Whether the spell or ability that caused the events is controlled by one of the players `by` names and is one of the
 /// objects `source` selects; no cause is no match.
+/// The cause with the player of the spell or ability that caused it kept (`Ref::R115Causer` as the trigger resolves).
+fn r115_with_causer(cause: Cause, scope: &Scope<'_>) -> Cause {
+    Cause {
+        r115_causer: scope.caused.map(|caused| caused.player),
+        ..cause
+    }
+}
+
 fn caused_by(scope: &Scope<'_>, by: Option<&Ref>, source: &Selector) -> bool {
     let Some(caused) = scope.caused else {
         return false;
@@ -2749,6 +2759,9 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
         (TriggerPattern::Caused { inner, by, source }, happened) => {
             if caused_by(scope, by.as_ref(), source) {
                 causes(inner, happened, scope)
+                    .into_iter()
+                    .map(|cause| r115_with_causer(cause, scope))
+                    .collect()
             } else {
                 Vec::new()
             }

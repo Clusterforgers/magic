@@ -1,7 +1,7 @@
 {
   "oracle_id": "e2c00aff-696c-4b20-acd4-95b71b5f8b10",
   "name": "Vault 11: Voter's Dilemma",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Vault 11: Voter's Dilemma",
@@ -37,9 +37,61 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 165, "end": 385 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Vote": {
+                  "options": { "Of": { "Each": [{ "Type": "Creature" }] } },
+                  "secret": true,
+                  "as": "most",
+                  "up_to": true
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "most" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": { "who": "EachPlayer" } }],
+                  "otherwise": [{ "Destroy": { "what": { "Bound": "most" } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Vote": {
+                  "options": { "Of": { "Each": [{ "Type": "Creature" }] } },
+                  "secret": true,
+                  "as": "most",
+                  "up_to": true
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "most" },
+                      "selector": [],
+                      "op": "Eq",
+                      "right": 0
+                    }
+                  },
+                  "then": [{ "Draw": { "who": "EachPlayer" } }],
+                  "otherwise": [{ "Destroy": { "what": { "Bound": "most" } } }]
+                }
+              }
+            ]
           }
         }
       ]

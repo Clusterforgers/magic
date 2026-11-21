@@ -171,12 +171,35 @@ pub struct CombatState {
     pub(crate) r6400_blocked_by: Vec<(ObjectId, ObjectId)>,
     /// Every (creature, creature it enlisted) of this combat (CR 702.154a), which "it enlisted a creature this combat" reads.
     pub(crate) r114_enlisted: Vec<(ObjectId, ObjectId)>,
+    /// The total power each player attacked with this combat, each attacker as it was declared (CR 508.1; pack tactics).
+    pub(crate) r115_attack_power: Vec<(PlayerId, u32)>,
+}
+
+/// Adds the power `attacker` has as it is declared to the total `player` attacked with this combat; a negative power adds
+/// nothing.
+pub(crate) fn r115_note_attack_power(state: &mut GameState, player: PlayerId, attacker: ObjectId) {
+    let power = characteristics(state, attacker)
+        .and_then(|found| found.power)
+        .map_or(0, |power| u32::try_from(power).unwrap_or(0));
+    let totals = &mut state.combat.r115_attack_power;
+    match totals.iter_mut().find(|(who, _)| *who == player) {
+        Some((_, total)) => *total += power,
+        None => totals.push((player, power)),
+    }
 }
 
 impl CombatState {
     /// Declared attackers.
     pub fn attackers(&self) -> &[Attacker] {
         &self.attackers
+    }
+
+    /// The total power `player` attacked with this combat, each attacker as it was declared.
+    pub fn r115_attack_power(&self, player: PlayerId) -> u32 {
+        self.r115_attack_power
+            .iter()
+            .find(|(who, _)| *who == player)
+            .map_or(0, |(_, total)| *total)
     }
 
     /// Whether the declare-attackers choice has been made this turn.
