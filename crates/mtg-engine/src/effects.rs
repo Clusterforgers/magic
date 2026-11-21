@@ -378,22 +378,13 @@ impl Modification {
         })
     }
 
-    #[allow(clippy::too_many_lines)]
     pub(crate) fn apply(&self, chars: &mut Characteristics) {
         match self {
             Modification::AddNameWords(words) => chars.name_words.push(words.clone()),
             Modification::SetName(name) => chars.set_name(name),
             Modification::AddType(ty) => chars.types = chars.types.with(*ty),
             Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
-            Modification::SetTypes(types) => {
-                chars.types = *types;
-                // A creature type needs the type it is a type of (CR 205.3d): the printed ones stop counting too.
-                if !types.contains(CardType::Creature) && !types.contains(CardType::Kindred) {
-                    chars.subtypes.retain(|subtype| !subtype.is_creature_type());
-                    chars.all_creature_types = false;
-                    chars.creature_types_set = true;
-                }
-            }
+            Modification::SetTypes(types) => set_types(chars, *types),
             Modification::AddSupertype(supertype) => {
                 if !chars.supertypes.contains(supertype) {
                     chars.supertypes.push(*supertype);
@@ -410,27 +401,8 @@ impl Modification {
                     chars.subtypes.push(subtype.clone());
                 }
             }
-            Modification::SetCreatureTypes(types) => {
-                chars.subtypes.retain(|subtype| !subtype.is_creature_type());
-                chars.all_creature_types = false;
-                chars.creature_types_set = true;
-                for subtype in types {
-                    if !chars.subtypes.contains(subtype) {
-                        chars.subtypes.push(subtype.clone());
-                    }
-                }
-            }
-            Modification::SetLandTypes(types) => {
-                chars.subtypes.retain(|subtype| !is_land_type(subtype));
-                chars.land_types_set = true;
-                for subtype in types {
-                    if !chars.subtypes.contains(subtype) {
-                        chars.subtypes.push(subtype.clone());
-                    }
-                }
-                // The intrinsic mana abilities of the new types come back once the layer is through (`land_types::sync`).
-                chars.abilities.clear();
-            }
+            Modification::SetCreatureTypes(types) => set_creature_types(chars, types),
+            Modification::SetLandTypes(types) => set_land_types(chars, types),
             Modification::AddAllCreatureTypes => chars.all_creature_types = true,
             Modification::ChangeText { from, to } => {
                 crate::text_change::subtypes(&mut chars.subtypes, from, to);
@@ -504,6 +476,42 @@ const CARD_TYPES: [CardType; 9] = [
     CardType::Planeswalker,
     CardType::Sorcery,
 ];
+
+/// Makes `types` the card types (layer 4); a creature type needs the type it is a type of (CR 205.3d), so the printed
+/// ones stop counting too.
+fn set_types(chars: &mut Characteristics, types: CardTypes) {
+    chars.types = types;
+    if !types.contains(CardType::Creature) && !types.contains(CardType::Kindred) {
+        chars.subtypes.retain(|subtype| !subtype.is_creature_type());
+        chars.all_creature_types = false;
+        chars.creature_types_set = true;
+    }
+}
+
+/// Makes `types` the only creature types (layer 4).
+fn set_creature_types(chars: &mut Characteristics, types: &[Subtype]) {
+    chars.subtypes.retain(|subtype| !subtype.is_creature_type());
+    chars.all_creature_types = false;
+    chars.creature_types_set = true;
+    for subtype in types {
+        if !chars.subtypes.contains(subtype) {
+            chars.subtypes.push(subtype.clone());
+        }
+    }
+}
+
+/// Makes `types` the only land types (layer 4); the intrinsic mana abilities of the new types come back once the layer
+/// is through (`land_types::sync`).
+fn set_land_types(chars: &mut Characteristics, types: &[Subtype]) {
+    chars.subtypes.retain(|subtype| !is_land_type(subtype));
+    chars.land_types_set = true;
+    for subtype in types {
+        if !chars.subtypes.contains(subtype) {
+            chars.subtypes.push(subtype.clone());
+        }
+    }
+    chars.abilities.clear();
+}
 
 /// `types` without `ty`.
 pub(crate) fn without(types: CardTypes, ty: CardType) -> CardTypes {
