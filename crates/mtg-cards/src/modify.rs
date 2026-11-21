@@ -1327,6 +1327,17 @@ pub enum GameRule {
     /// the other effects of the rule's source until end of turn; those effects leave such a player out with
     /// `Condition::PaidToIgnore` ("Any player may pay {2} for that player to ignore this effect until end of turn.").
     PayToIgnore(ManaCostX),
+    /// The rule's controller may pay the mana any time they could cast an instant, a special action that does not use the
+    /// stack (CR 116.2), as often as they like while the rule lasts; each payment does the effects at once, `Target(0)` in
+    /// them the object or player that the spell beginning the rule targeted, fixed as it began (CR 611.2c): "Until end of
+    /// turn, you may pay {1} any time you could cast an instant. If you do, prevent the next 1 damage that would be dealt
+    /// to that permanent or player this turn."
+    R114PayToDo {
+        /// What each payment costs.
+        cost: ManaCostX,
+        /// What each payment does.
+        effects: Vec<crate::effect::Effect>,
+    },
     /// The players the reference names may pay the cost, a special action any time they have priority (CR 116.2), for
     /// that player to ignore the other effects of the rule's source until end of turn; those effects leave such a player
     /// out with `Condition::PaidToIgnoreBy` ("Its controller may exile three cards from their graveyard for that player

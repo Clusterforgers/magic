@@ -462,7 +462,11 @@ exert?: Array<ObjectId>,
 /**
  * The bands they form.
  */
-bands?: Array<Array<ObjectId>>, } } | { "AttackChoicesRefused": { 
+bands?: Array<Array<ObjectId>>, 
+/**
+ * The creatures their attackers enlist, each (attacker, creature tapped) (CR 702.154a).
+ */
+r114_enlist?: Array<[ObjectId, ObjectId]>, } } | { "AttackChoicesRefused": { 
 /**
  * Why the team's declaration is illegal.
  */

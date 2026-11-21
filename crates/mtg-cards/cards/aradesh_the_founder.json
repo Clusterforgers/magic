@@ -1,7 +1,7 @@
 {
   "oracle_id": "32620b26-10b9-47a7-bfa7-ca590ab5fa50",
   "name": "Aradesh, the Founder",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Aradesh, the Founder",
@@ -9,9 +9,31 @@
       "abilities": [
         { "Keyword": { "Macro": { "name": "enlist", "amount": 0 } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 176, "end": 376 }
+          "Triggered": {
+            "when": { "Attacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "if": { "Matches": { "subject": "Triggering", "selector": ["R114Enlisted"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "AddKeyword": "DoubleStrike" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": "Triggering",
+                      "selector": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
           }
         }
       ]

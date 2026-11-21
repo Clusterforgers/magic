@@ -50,6 +50,8 @@ pub(crate) enum Outcome {
     BeginEndEffect(ObjectId, mtg_core::ids::EffectId),
     /// Start paying to ignore the effects of this source until end of turn: the payment is decided next.
     BeginIgnore(ObjectId),
+    /// Start paying to do what this rule effect says: the payment is decided next; the object is the card that began it.
+    R114BeginPayToDo(ObjectId, mtg_core::ids::EffectId),
     /// Start casting a copy of the spell face of this prepared permanent: the copy is made and its announcement and payment are decided next.
     BeginPrepared(ObjectId),
     /// These are the modes, in the order they are printed, of the cast or activation in progress.
@@ -90,7 +92,15 @@ fn w11a_declare(
             attackers,
             exert,
             bands,
-        } => (attackers, crate::combat::AttackExtras { exert, bands }),
+            r114_enlist,
+        } => (
+            attackers,
+            crate::combat::AttackExtras {
+                exert,
+                bands,
+                r114_enlist,
+            },
+        ),
         Answer::DeclareAttackers(attackers) => (attackers, crate::combat::AttackExtras::default()),
         _ => return Err(IllegalAnswer::NotOffered("attack").into()),
     };
@@ -99,6 +109,7 @@ fn w11a_declare(
     }
     check_attackers(options, &attackers)?;
     crate::w11a_exert::w11a_check_exert(options, &attackers, &extras.exert)?;
+    crate::r114_enlist::r114_check_enlist(options, &attackers, &extras.r114_enlist)?;
     crate::keywords::banding::check_bands(state, &attackers, &extras.bands)?;
     let note = crate::spotlight_aim::shifted(state, player, options, &attackers);
     let outcome = attack_tax::declare(state, player, attackers, extras)?;

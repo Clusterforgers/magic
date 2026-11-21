@@ -1003,6 +1003,8 @@ impl<'a> Walker<'a> {
             | Pred::SharesSubtype(r)
             | Pred::SharesCreatureTypeWithEach(r)
             | Pred::ExiledWith(r)
+            | Pred::R114ExiledByThem(r)
+            | Pred::R114EnlistedBy(r)
             | Pred::EncodedWith(r)
             | Pred::HauntedBy(r)
             | Pred::Crewed(r)
@@ -1178,6 +1180,7 @@ impl<'a> Walker<'a> {
             | Pred::Paired
             | Pred::EnteredThisTurn
             | Pred::SummoningSick
+            | Pred::R114Enlisted
             | Pred::MilledThisTurn
             | Pred::DrawnThisTurn
             | Pred::LastDrawnThisTurn
@@ -4706,7 +4709,12 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("with", |w| w.reference(with, Kind::Object));
             }
-            Effect::Remember { what, .. } => w.at("what", |w| w.reference(what, Kind::Either)),
+            Effect::Remember { what, per, .. } => {
+                w.at("what", |w| w.reference(what, Kind::Either));
+                if let Some(per) = per {
+                    w.at("per", |w| w.reference(per, Kind::Player));
+                }
+            }
             Effect::R112GuessNumber {
                 min,
                 max,
@@ -6596,6 +6604,12 @@ impl Walker<'_> {
             GameRule::PayToIgnoreBy { payer, cost } => {
                 self.at("payer", |w| w.reference(payer, Kind::Player));
                 self.at("cost", |w| w.cost(cost));
+            }
+            GameRule::R114PayToDo { cost, effects } => {
+                if cost.has_x() {
+                    self.problem("`R114PayToDo` costs no {X}");
+                }
+                self.effect_list("effects", effects, false);
             }
             GameRule::PowerUpAgain(which) => {
                 self.at(tag, |w| w.selector(which));

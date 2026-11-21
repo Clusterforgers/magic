@@ -390,6 +390,17 @@ pub enum Rule {
     NoLegendRuleFor(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// Any player may pay the mana to ignore the other effects of the rule's source until end of turn (CR 116.2).
     PayToIgnore(ManaCost),
+    /// The rule's controller may pay the mana any time they could cast an instant, a special action (CR 116.2), and each
+    /// payment does the effects at once (`r114_pay_to_do`).
+    R114PayToDo {
+        /// What each payment costs.
+        cost: ManaCost,
+        /// What each payment does, with `Target(0)` read as `fixed`.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        effects: Vec<mtg_cards::effect::Effect>,
+        /// The object or player the spell that began the rule targeted, as it was then (CR 611.2c).
+        fixed: Vec<crate::choose::Target>,
+    },
     /// The players may pay the cost to ignore the other effects of the rule's source until end of turn (CR 116.2).
     PayToIgnoreBy {
         /// Who may pay.
@@ -1213,7 +1224,7 @@ impl Cast {
                 .from
                 .is_none_or(|zone| crate::resolve::zone_kind(card.zone()) == zone)
             && (self.what.is_empty()
-                || Scope::announcing(state, self.controller, self.source)
+                || Scope::r114_permitted(state, (self.controller, self.source), player)
                     .selects(&self.what, card.reference())
                     .unwrap_or(false))
     }
@@ -1876,8 +1887,9 @@ impl RulesInForce {
             )),
             // Shields are read by the replacement step, spell costs by the cost step and the bonuses of a spell's mana
             // where it resolves (`spend_rider::entering`), from the rule changes themselves.
-            // The adapt reads its rule from the rule changes themselves.
+            // The adapt reads its rule from the rule changes themselves, a payment to do something its rule effect (`r114_pay_to_do`).
             Rule::EntersWith { .. }
+            | Rule::R114PayToDo { .. }
             | Rule::R6600AdaptsFresh(_)
             | Rule::Planar
             | Rule::SpellCost { .. }
@@ -2284,6 +2296,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::NoLegendRule(_)
         | GameRule::NoLegendRuleFor(_)
         | GameRule::PayToIgnore(_)
+        | GameRule::R114PayToDo { .. }
         | GameRule::PayToIgnoreBy { .. }
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
@@ -2439,6 +2452,11 @@ fn lower_option(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, ResolveErr
         GameRule::NoLegendRule(who) => Rule::NoLegendRule(scope.players(who)?),
         GameRule::NoLegendRuleFor(what) => Rule::NoLegendRuleFor(what.clone()),
         GameRule::PayToIgnore(cost) => Rule::PayToIgnore(cost.rest().clone()),
+        GameRule::R114PayToDo { cost, effects } => Rule::R114PayToDo {
+            cost: cost.rest().clone(),
+            effects: effects.clone(),
+            fixed: scope.refs(&Ref::Target(0)).unwrap_or_default(),
+        },
         GameRule::PayToIgnoreBy { payer, cost } => Rule::PayToIgnoreBy {
             payers: scope.players(payer)?,
             cost: cost.clone(),
@@ -2575,6 +2593,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::BlockLimit(_)
         | Rule::NoLegendRuleFor(_)
         | Rule::PayToIgnore(_)
+        | Rule::R114PayToDo { .. }
         | Rule::AbilitiesAsThoughHaste(_)
         | Rule::ReverseTurnOrder
         | Rule::DamageAsWither
@@ -3833,7 +3852,7 @@ pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject
                 .as_ref()
                 .is_none_or(|only| only.contains(&card.reference()))
             && (look.what.is_empty()
-                || Scope::announcing(state, look.controller, look.source)
+                || Scope::r114_permitted(state, (look.controller, look.source), viewer)
                     .selects(&look.what, card.reference())
                     .unwrap_or(false))
     })

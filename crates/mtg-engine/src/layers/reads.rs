@@ -364,6 +364,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Paired
         | Pred::EnteredThisTurn
         | Pred::SummoningSick
+        | Pred::R114Enlisted
         | Pred::MilledThisTurn
         | Pred::DrawnThisTurn
         | Pred::LastDrawnThisTurn
@@ -445,6 +446,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::AttackingPlaneswalkerOf(who)
         | Pred::AttackingPlayerOrPlaneswalker(who)
         | Pred::ExiledWith(who)
+        | Pred::R114ExiledByThem(who)
+        | Pred::R114EnlistedBy(who)
         | Pred::EncodedWith(who)
         | Pred::HauntedBy(who)
         | Pred::Crewed(who)

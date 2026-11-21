@@ -108,10 +108,10 @@ pub const KEYWORDS: &[Entry] = &[
     },
     Entry {
         name: "enlist",
-        template: r#"[{"Triggered":{"when":{"Attacks":{"what":["This"]}},"effects":[{"May":{"effects":[
-             {"Choose":{"from":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"},"Untapped",{"Not":"Attacking"},{"Not":{"HasKeyword":{"Macro":{"name":"enlist","amount":0}}}},{"Not":"SummoningSick"}]},"as":"enlisted"}},
-             {"Enlist":{"what":{"Bound":"enlisted"}}},
-             {"Reflexive":{"effects":[{"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Stat":{"of":{"Bound":"enlisted"},"stat":"Power"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]}}]}}]"#,
+        // The creature is chosen and tapped as the attack is declared (CR 702.154a, the engine's declaration); "when you do"
+        // is the trigger on that enlisting.
+        template: r#"[{"Triggered":{"when":{"Did":{"action":"Enlisted","what":["This"]}},"effects":[
+             {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":{"Stat":{"of":{"Each":[{"R114EnlistedBy":"This"}]},"stat":"Power"}},"toughness":0}}],"duration":"UntilEndOfTurn"}}]}}]"#,
     },
     Entry {
         name: "absorb",

@@ -363,6 +363,10 @@ pub enum Pred {
     /// Is a card exiled by one of the permanents the reference names, which has not left since: face down by hideaway
     /// (CR 702.75a), or by any effect of that permanent (CR 607.2a), read from its `exiled` memory.
     ExiledWith(Ref),
+    /// Is a card in exile that the player a cast permission or a look is worked out for exiled with one of the permanents the
+    /// reference names (CR 607.2a), as its `exiled` memory kept for that player holds it (`Effect::Remember` with `per`): "cards
+    /// they exiled with ~"; outside a permission or a look, the player is the controller.
+    R114ExiledByThem(Ref),
     /// Is a creature on the battlefield that one of the cards the reference names is encoded on, which has not left since (cipher, CR 702.99).
     EncodedWith(Ref),
     /// Is the creature one of the cards the reference names haunts (CR 702.55b): the card lies in exile, exiled haunting
@@ -376,6 +380,11 @@ pub enum Pred {
     EnteredThisTurn,
     /// Is a permanent that summoning sickness holds back from attacking and from {T} abilities (CR 302.6).
     SummoningSick,
+    /// Is a creature that enlisted a creature this combat (CR 702.154a): "if it enlisted a creature this combat".
+    R114Enlisted,
+    /// Is a creature that one of the creatures the reference names enlisted this combat (CR 702.154a): "add its power to
+    /// this creature's".
+    R114EnlistedBy(Ref),
     /// Is a card in a graveyard that a mill put there this turn ("a land card in a graveyard that was milled this turn").
     MilledThisTurn,
     /// Is a card its owner drew this turn, still in the hand ("cards in your hand drawn this turn").

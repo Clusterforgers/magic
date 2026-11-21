@@ -97,6 +97,8 @@ pub(crate) struct AttackExtras {
     pub(crate) exert: Vec<ObjectId>,
     /// The bands, each of two or more attackers.
     pub(crate) bands: Vec<Vec<ObjectId>>,
+    /// The creatures attackers enlist, each (attacker, creature tapped).
+    pub(crate) r114_enlist: Vec<(ObjectId, ObjectId)>,
 }
 
 /// An attacking creature and its blockers.
@@ -167,6 +169,8 @@ pub struct CombatState {
     pub(crate) attack_refusals: Vec<String>,
     /// Every (attacker, blocker) pair that blocked this combat, those that left combat included.
     pub(crate) r6400_blocked_by: Vec<(ObjectId, ObjectId)>,
+    /// Every (creature, creature it enlisted) of this combat (CR 702.154a), which "it enlisted a creature this combat" reads.
+    pub(crate) r114_enlisted: Vec<(ObjectId, ObjectId)>,
 }
 
 impl CombatState {
@@ -514,6 +518,7 @@ pub(crate) fn attack_options(state: &GameState, player: PlayerId) -> AttackOptio
             Some(AttackerOption {
                 exert: crate::w11a_exert::w11a_may_exert(state, object),
                 banding: crate::keywords::banding::may_band(state, object),
+                r114_enlist: crate::r114_enlist::r114_may_enlist(state, player, object),
                 ..AttackerOption::free(object, defenders)
             })
         })

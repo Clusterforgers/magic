@@ -154,6 +154,7 @@ pub fn process(
             putter: crate::triggers::cause_of(state, &original, state)
                 .map(|cause| (cause.player, state.resolving().is_some())),
             r109_tokens,
+            r114_settled: Vec::new(),
         };
         step.prime();
         match step.run()? {
@@ -1083,6 +1084,9 @@ struct Pass<'a> {
     putter: Option<(PlayerId, bool)>,
     /// The tokens the batch creates, which exist in the view the step reads (`r109_tokens_enter`).
     r109_tokens: Vec<ObjectId>,
+    /// The events the passes over the draws inside a replacement's steps made, which this pass leaves as they are
+    /// (`r114_inner_draws`).
+    r114_settled: Vec<Event>,
 }
 
 impl Pass<'_> {
@@ -4597,6 +4601,7 @@ mod prepared;
 
 mod dredge;
 mod lg1_draws;
+mod r114_inner_draws;
 
 mod r109_enters_attached;
 mod r113_copy_reflexive;

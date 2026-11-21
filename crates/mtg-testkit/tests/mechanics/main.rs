@@ -128,6 +128,7 @@ mod r110_04_extra_combat;
 mod r110_04_put_this_way;
 mod r111_masticore;
 mod r113_04_cards;
+mod r114_aradesh;
 mod r1c;
 mod r1fix;
 mod r1g_taken_names;

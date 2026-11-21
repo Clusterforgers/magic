@@ -110,15 +110,32 @@ impl Pass<'_> {
             self.taken_by_the_batch(at)
         };
         let state = taken.as_ref().unwrap_or(self.state);
-        let answers = &mut self.answers;
-        match w5d_run_instead(
+        let mut applied = self.slots[at].applied.clone();
+        if !applied.contains(&candidate.origin) {
+            applied.push(candidate.origin);
+        }
+        let answers = std::cell::RefCell::new(self.answers.clone());
+        let settled = std::cell::RefCell::new(Vec::new());
+        let replaced = std::cell::RefCell::new(Vec::new());
+        let inner = super::r114_inner_draws::Inner {
+            answers: &answers,
+            applied,
+            settled: &settled,
+            replaced: &replaced,
+        };
+        let ran = w5d_run_instead(
             state,
             candidate.controller,
             candidate.object,
             &cause,
             effects,
-            &mut || answers.next().cloned(),
-        ) {
+            &mut || answers.borrow_mut().next().cloned(),
+            Some(&mut |now: &GameState, events: Vec<Event>| self.r114_inner(now, events, &inner)),
+        );
+        self.answers = answers.into_inner();
+        self.r114_settled = settled.into_inner();
+        self.r109_replaced.extend(replaced.into_inner());
+        match ran {
             Ok(Inline::Events(mut events)) => {
                 // A permanent remembers what the shield its ability made exiled, as any effect of it (CR 607.2a).
                 if matches!(candidate.origin, Origin::Shield(_))
@@ -230,7 +247,9 @@ impl Pass<'_> {
                 slot
             })
             .collect();
+        let count = slots.len();
         self.slots.splice(at..=at, slots);
+        self.r114_freeze_settled(at, count);
         if let Unit::Enter { object, .. } = unit {
             self.drop_stray_entered(*object);
         }

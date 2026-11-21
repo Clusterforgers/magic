@@ -76,6 +76,31 @@ pub(crate) fn play(
     driver.pass_until(Step::DeclareAttackers)?;
     let aimed: Vec<(&str, usize)> = attacks.iter().map(|name| (*name, 1)).collect();
     driver.attack(&aimed)?;
+    play_on(driver, blocks, hook, until)
+}
+
+/// Seat 0 attacks seat 1 with `attacks`, each attacker of `enlist` enlisting the creature beside it as it attacks (CR
+/// 702.154a); the game goes on as [`play`] has it.
+pub(crate) fn r114_play_enlisting(
+    driver: &mut Driver,
+    attacks: &[&str],
+    enlist: &[(&str, &str)],
+    hook: Hook<'_>,
+    until: Step,
+) -> Result<(), ScriptError> {
+    driver.pass_until(Step::DeclareAttackers)?;
+    let aimed: Vec<(&str, usize)> = attacks.iter().map(|name| (*name, 1)).collect();
+    driver.r114_attack_enlisting(&aimed, enlist)?;
+    play_on(driver, &[], hook, until)
+}
+
+/// The rest of [`play`] once the attack is declared.
+fn play_on(
+    driver: &mut Driver,
+    blocks: &[(&str, &str)],
+    hook: Hook<'_>,
+    until: Step,
+) -> Result<(), ScriptError> {
     for _ in 0..80 {
         let decision = driver.decision()?.clone();
         if let Some(answer) = hook(driver, &decision) {
