@@ -28,4 +28,9 @@ skip_triggers?: boolean,
  * "Always pay for me": a mana payment plain mana makes (the pool and mana abilities that add mana and do nothing
  * else; no life, help, sacrifice or paid ability) is paid at once, out of Full Control; left out (false) when off.
  */
-auto_pay?: boolean, };
+auto_pay?: boolean, 
+/**
+ * With `auto_pay`, every payment the game's automatic payment makes is paid at once too (life, a sacrifice,
+ * convoke, a paid ability), except one that would take the seat's last life; left out (false) when off.
+ */
+auto_pay_all?: boolean, };

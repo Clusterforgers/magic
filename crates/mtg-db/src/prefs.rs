@@ -27,6 +27,8 @@ pub struct StoredPrefs {
     pub auto_skip_triggers: bool,
     /// Whether the account's seats pay every mana cost the automatic payment can make at once.
     pub auto_pay: bool,
+    /// Whether those seats also pay at once with life, sacrifices and other costs, never with their last life.
+    pub auto_pay_all: bool,
     /// A JSON array of the abilities the account's seats always yield to, as the server wrote it.
     pub auto_yields: Value,
     /// The JSON of the hand sort, as the server wrote it; `None` while the account kept the default.
@@ -54,6 +56,7 @@ impl Default for StoredPrefs {
             auto_smart_stops: false,
             auto_skip_triggers: false,
             auto_pay: false,
+            auto_pay_all: false,
             auto_yields: Value::Array(Vec::new()),
             hand_sort: None,
             full_control_held: false,
@@ -75,7 +78,7 @@ impl PrefsRepo {
     /// The preferences of `user`; the defaults when none were saved.
     pub async fn get(&self, user: Uuid) -> Result<StoredPrefs, DbError> {
         let row = sqlx::query!(
-            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_yields, hand_sort, full_control_held FROM user_prefs WHERE user_id = $1",
+            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held FROM user_prefs WHERE user_id = $1",
             user
         )
         .fetch_optional(&self.pool)
@@ -88,6 +91,7 @@ impl PrefsRepo {
             auto_smart_stops: row.auto_smart_stops,
             auto_skip_triggers: row.auto_skip_triggers,
             auto_pay: row.auto_pay,
+            auto_pay_all: row.auto_pay_all,
             auto_yields: row.auto_yields,
             hand_sort: row.hand_sort,
             full_control_held: row.full_control_held,
@@ -97,8 +101,8 @@ impl PrefsRepo {
     /// Replaces the preferences of `user`.
     pub async fn put(&self, user: Uuid, prefs: &StoredPrefs) -> Result<(), DbError> {
         sqlx::query!(
-            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_yields, hand_sort, full_control_held)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
              ON CONFLICT (user_id) DO UPDATE
              SET default_stops = EXCLUDED.default_stops,
                  end_turn_by_hand = EXCLUDED.end_turn_by_hand,
@@ -107,6 +111,7 @@ impl PrefsRepo {
                  auto_smart_stops = EXCLUDED.auto_smart_stops,
                  auto_skip_triggers = EXCLUDED.auto_skip_triggers,
                  auto_pay = EXCLUDED.auto_pay,
+                 auto_pay_all = EXCLUDED.auto_pay_all,
                  auto_yields = EXCLUDED.auto_yields,
                  hand_sort = EXCLUDED.hand_sort,
                  full_control_held = EXCLUDED.full_control_held,
@@ -119,6 +124,7 @@ impl PrefsRepo {
             prefs.auto_smart_stops,
             prefs.auto_skip_triggers,
             prefs.auto_pay,
+            prefs.auto_pay_all,
             prefs.auto_yields,
             prefs.hand_sort,
             prefs.full_control_held

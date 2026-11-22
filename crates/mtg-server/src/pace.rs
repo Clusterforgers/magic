@@ -498,9 +498,39 @@ pub(crate) fn chosen_answer(decision: &Decision, choices: AutoChoices) -> Option
         DecisionKind::AssignDamage(options) if choices.assign_damage => {
             damage_in_order(options).map(Answer::AssignDamage)
         }
-        DecisionKind::PayMana(options) if choices.auto_pay => auto_paid(options),
+        DecisionKind::PayMana(options) if choices.auto_pay => auto_paid(options).or_else(|| {
+            if choices.auto_pay_all {
+                paid_anyway(options)
+            } else {
+                None
+            }
+        }),
         _ => None,
     }
+}
+
+/// `Auto` for "…even with life, sacrifices and other costs" (`AutoChoices::auto_pay_all`): whatever the game's
+/// automatic payment uses ([`mtg_engine::mana::propose`], the payment `Auto` makes), unless it would take the payer's
+/// last life. The life counted is the Phyrexian life, the life the sources pay and one for each source that does more
+/// than add mana (a painland's damage).
+pub(crate) fn paid_anyway(options: &PayOptions) -> Option<Answer> {
+    let payment = mtg_engine::mana::propose(
+        &options.cost,
+        &options.pool,
+        &options.sources,
+        options.help(),
+        options.life,
+        &options.spend,
+    )
+    .payment?;
+    let sources: i64 = payment
+        .taps
+        .iter()
+        .filter_map(|tap| options.sources.iter().find(|o| o.source == *tap))
+        .map(|o| i64::from(o.life) + i64::from(o.extra))
+        .sum();
+    let taken = i64::from(payment.life) + sources;
+    (taken < i64::from(options.life)).then_some(Answer::PayMana(PayChoice::Auto))
 }
 
 /// `Auto` whenever plain mana pays ([`mtg_engine::mana::plain_payment`]): the pool and mana abilities that add mana
@@ -729,7 +759,7 @@ mod tests {
         AttackOptions, AttackerOption, BlockOptions, BottomOptions, DiscardOptions,
         MulliganOptions, PriorityOptions,
     };
-    use mtg_engine::mana::ManaPool;
+    use mtg_engine::mana::{AskedWhy, ManaPool};
     use mtg_engine::object::ObjectRef;
     use mtg_engine::spend::Spend;
     use rstest::rstest;
@@ -1646,6 +1676,7 @@ mod tests {
             smart_stops: false,
             skip_triggers: false,
             auto_pay: false,
+            auto_pay_all: false,
         }
     }
 
@@ -1793,6 +1824,92 @@ mod tests {
     ) {
         let expected = paid.then_some(Answer::PayMana(PayChoice::Auto));
         assert_eq!(chosen_answer(&decision(OTHER, kind), paying(on)), expected);
+    }
+
+    /// `kind` with the payer at `life`.
+    fn at_life(mut kind: DecisionKind, life: i32) -> DecisionKind {
+        if let DecisionKind::PayMana(options) = &mut kind {
+            options.life = life;
+        }
+        kind
+    }
+
+    /// The payment of `cost` with a Forest and a source of the kind `second`, the payer at `life`, and why plain mana
+    /// does not pay it.
+    fn asked(cost: &str, second: Source, delve: bool, life: i32) -> (DecisionKind, AskedWhy) {
+        let kind = at_life(paid_with(cost, second, delve), life);
+        let DecisionKind::PayMana(options) = &kind else {
+            unreachable!("paid_with builds a payment")
+        };
+        let why = mtg_engine::mana::propose(
+            &options.cost,
+            &options.pool,
+            &options.sources,
+            options.help(),
+            options.life,
+            &options.spend,
+        )
+        .asked
+        .unwrap_or(AskedWhy::NoPayment);
+        (kind, why)
+    }
+
+    #[rstest]
+    #[case::phyrexian_life(asked("{B/P}", Source::Plain, false, 20), "Life", true)]
+    #[case::phyrexian_life_down_to_one(asked("{B/P}", Source::Plain, false, 3), "Life", true)]
+    #[case::phyrexian_life_never_the_last(
+        asked("{B/P}", Source::Plain, false, 2),
+        "NoPayment",
+        false
+    )]
+    #[case::a_treasure(asked("{R}", Source::Treasure, false, 20), "GivesUp", true)]
+    #[case::a_life_land(asked("{R}", Source::LifeLand, false, 20), "PaysLife", true)]
+    #[case::a_life_land_never_the_last_life(
+        asked("{R}", Source::LifeLand, false, 1),
+        "NoPayment",
+        false
+    )]
+    #[case::a_painland(asked("{R}", Source::Painland, false, 20), "DoesMore", true)]
+    #[case::a_painland_never_the_last_life(
+        asked("{R}", Source::Painland, false, 1),
+        "DoesMore",
+        false
+    )]
+    #[case::a_paid_ability(asked("{R}", Source::Filter, false, 20), "PaidAbility", true)]
+    #[case::delve(asked("{3}", Source::Plain, true, 20), "Delve", true)]
+    #[case::life_and_a_life_land_together(
+        asked("{B/P}{R}", Source::LifeLand, false, 4),
+        "Life",
+        true
+    )]
+    #[case::life_and_a_life_land_never_the_last_together(
+        asked("{B/P}{R}", Source::LifeLand, false, 3),
+        "Life",
+        false
+    )]
+    #[case::no_payment_at_all(asked("{3}", Source::Plain, false, 20), "NoPayment", false)]
+    fn even_with_other_costs_pays_what_the_game_would_unless_it_takes_the_last_life(
+        #[case] asked: (DecisionKind, AskedWhy),
+        #[case] reason: &str,
+        #[case] paid_when_on: bool,
+        #[values(false, true)] all: bool,
+    ) {
+        let (kind, why) = asked;
+        assert!(format!("{why:?}").starts_with(reason), "asked: {why:?}");
+        let choices = AutoChoices {
+            auto_pay: true,
+            auto_pay_all: all,
+            ..AutoChoices::default()
+        };
+        let pending = decision(OTHER, kind);
+        let expected = (all && paid_when_on).then_some(Answer::PayMana(PayChoice::Auto));
+        assert_eq!(chosen_answer(&pending, choices), expected, "asked: {why:?}");
+        // Without "Always pay for me" the second switch pays nothing.
+        let alone = AutoChoices {
+            auto_pay: false,
+            ..choices
+        };
+        assert_eq!(chosen_answer(&pending, alone), None, "asked: {why:?}");
     }
 
     #[test]
