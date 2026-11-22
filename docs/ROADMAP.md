@@ -29,7 +29,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Done
 
 - Foundations: workspace, lint rules, CI, `CLAUDE.md`, local Postgres and the React stack.
-- Card data: Scryfall and MTGJSON import, deck-list parsers and exporters, the schema with card search and precons, and `mtg-cli` (fetch, ingest, migrate, compile, coverage, fix-marks, promote).
+- Card data: Scryfall and MTGJSON import, deck-list parsers and exporters, the schema with card search and precons, `mtg-cli` (fetch, ingest, migrate, compile, coverage, fix-marks, promote) and the daily refresh with its Card support page (`docs/deploy.md`, Card data).
 - Engine: zones, turns, priority, stack, combat with forecast, the stack forecast of the top item and of a target answer, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch, the initiative and speed, Attractions and tickets, banding, splice, coin flips with Krark's Thumb, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log, spectators (`docs/protocol.md`, `docs/server.md`).

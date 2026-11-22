@@ -283,6 +283,15 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 - A note is trimmed; an empty one is none. It holds at most 280 characters (`MAX_FIX_NOTE_CHARS`; the table checks the same limit) and no control character but a line break, else 400 `invalid_request`.
 - No endpoint shows another account's mark. `FixMarkRepo::ranked(limit)` counts accounts per card, most marked first, ties by the newest mark and then name; `mtg-cli fix-marks` adds the support state and prints it ([data-sources.md](data-sources.md)), and `check-rules --gaps --marks` weighs gaps by the marks of the cards they free.
 
+### Card support
+
+`card_support.rs` and `mtg-db`'s `CardFeedRepo` (`card_refresh_runs`, `coverage_snapshots`). Both routes need a signed-in account: 503 `cards_unavailable` without a database, then 401 `unauthenticated`.
+
+- `GET /api/card-support` answers `CardSupport`: the newest snapshot (counts per state, popularity buckets, how many cards are missing), the trend over the newest `MAX_SUPPORT_HISTORY` (120) snapshots oldest first, the newest refresh run (`last_check`) and the feed, newest first, at most `MAX_FEED_EVENTS` (40).
+- The feed is built from the rows: a refresh run gives `new_precons` per set code and `new_cards` at its start, or `check_failed`; a first load is no news. A snapshot gives `now_automatic` when cards play automatically that did not in the snapshot before, or when its release differs from the one before. An event names at most `MAX_FEED_NAMES` (30) cards; its count is whole.
+- `GET /api/card-support/missing` answers `MissingCards`: the newest snapshot's cards that do not play automatically, the most played first, each with its state, its first blocker in plain words and as the coverage report labels it, and its rank.
+- The rows are written by `mtg-cli refresh` and `mtg-cli coverage --all --snapshot` ([data-sources.md](data-sources.md)). A snapshot is stored only when it differs from the newest; only the newest two keep their missing cards.
+
 ### Reads
 
 A draft is a stored reading of a card's Oracle text that runs when it is trusted ([cards-dsl.md](cards-dsl.md)). `mtg-db`'s `DraftRepo` (`card_drafts`) and `ReadRepo` (`card_reads`) hold drafts and verdicts; `reads.rs` serves them to a reader and `mtg-cli reads` prints them.

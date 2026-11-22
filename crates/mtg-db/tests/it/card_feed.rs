@@ -159,7 +159,7 @@ async fn only_the_newest_two_snapshots_keep_their_missing_cards(pool: PgPool) {
 async fn newly_supported_names_are_capped_and_counted(pool: PgPool) {
     let feed = common::db(pool).card_feed();
     let mut new = snapshot("v1", 90, &[]);
-    new.newly_supported = (0..MAX_LISTED + 1).map(|n| format!("Card {n}")).collect();
+    new.newly_supported = (0..=MAX_LISTED).map(|n| format!("Card {n}")).collect();
     new.newly_supported_count = u32::try_from(MAX_LISTED + 1).unwrap();
     feed.store_snapshot(&new).await.unwrap();
     let stored = feed.snapshots(1).await.unwrap().remove(0);
@@ -173,8 +173,8 @@ async fn newly_supported_names_are_capped_and_counted(pool: PgPool) {
 async fn nothing_is_stored_before_the_first_snapshot(pool: PgPool) {
     let feed = common::db(pool).card_feed();
     assert_eq!(feed.latest_missing().await.unwrap(), None);
-    assert!(feed.snapshots(5).await.unwrap().is_empty());
-    assert!(feed.refreshes(5).await.unwrap().is_empty());
+    assert_eq!(feed.snapshots(5).await.unwrap().len(), 0);
+    assert_eq!(feed.refreshes(5).await.unwrap().len(), 0);
 }
 
 #[sqlx::test]
@@ -183,7 +183,7 @@ async fn the_diff_helpers_read_cards_precons_and_games(pool: PgPool) {
     let feed = db.card_feed();
     let cards = feed.deck_cards().await.unwrap();
     assert!(cards.iter().any(|(_, name)| name == "Lightning Bolt"));
-    assert!(feed.precon_names().await.unwrap().is_empty());
+    assert_eq!(feed.precon_names().await.unwrap().len(), 0);
     assert_eq!(feed.set_name("NOPE").await.unwrap(), None);
     assert_eq!(feed.running_games().await.unwrap(), None, "no game table");
     sqlx::query("CREATE TABLE games (status text NOT NULL)")

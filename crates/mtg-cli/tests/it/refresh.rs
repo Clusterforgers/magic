@@ -141,7 +141,7 @@ async fn a_running_game_defers_loading(pool: PgPool) {
     assert!(text.contains("1 game(s) running"), "{text}");
     let run_row = db.card_feed().refreshes(1).await.unwrap().remove(0);
     assert_eq!(run_row.status, RefreshStatus::Deferred);
-    assert!(run_row.report.new_precons.is_empty());
+    assert_eq!(run_row.report.new_precons.len(), 0);
     let stored: i64 = sqlx::query_scalar("SELECT count(*) FROM precon_decks")
         .fetch_one(&pool)
         .await

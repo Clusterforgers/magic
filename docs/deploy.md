@@ -5,7 +5,7 @@ How the game runs on the k3s cluster and how a release reaches it.
 ## Parts
 
 - `deploy/server.Dockerfile` builds `mtg-server` and `mtg-cli` into one Debian slim image (user 10001); `deploy/web.Dockerfile` builds the client and serves it with nginx (`deploy/nginx.conf`: the build's `.gz` twins sent as they are, `/assets` cached for a year, every other path is the client). Both are `linux/amd64`.
-- The Helm chart `apps/magic` of `k3s-cluster-manifests` runs them in the namespace `magic`, pinned to `queen`: a Postgres StatefulSet, the server (one replica, `Recreate`, an init container runs `mtg-cli migrate`), the web, one Ingress on `magic.hivemindcloud.dk` (`/api`, `/ws` and `/healthz` to the server, everything else to the web), a post-sync Job that runs `mtg-cli compile --all`, and a suspended CronJob `magic-ingest` for the card data. The cluster side (secret, DNS, ingest) is in that repo's `docs/magic.md`.
+- The Helm chart `apps/magic` of `k3s-cluster-manifests` runs them in the namespace `magic`, pinned to `queen`: a Postgres StatefulSet, the server (one replica, `Recreate`, an init container runs `mtg-cli migrate`), the web, one Ingress on `magic.hivemindcloud.dk` (`/api`, `/ws` and `/healthz` to the server, everything else to the web), a post-sync Job that runs `mtg-cli compile --all`, and the daily CronJob `magic-ingest` for the card data (Card data, below). The cluster side (secret, DNS, ingest) is in that repo's `docs/magic.md`.
 - The server runs behind the nginx ingress: `MTG_TRUSTED_PROXIES=1`, `MTG_COOKIE_SECURE=1`, `MTG_ALLOWED_ORIGINS=https://<host>`. `server.registration` in the chart's `values.yaml` sets `MTG_REGISTRATION` and `server.admins` sets `MTG_ADMIN_USERNAMES` (see Accounts); the picture cache is a volume of `server.imageCacheMiB`. `MTG_SEED` stays unset.
 - Games live in memory with their event log in Postgres; a restart resumes them. A release that changes a card's rules or the engine's reading of it fails the stored games that use it at the next boot, so releases go between games.
 
@@ -52,7 +52,75 @@ A CronJob dumps the database every night onto its own volume next to the databas
 
 ## Card data
 
-The card tables are filled by the CronJob `magic-ingest` (`fetch scryfall --printings`, `fetch decks`, `ingest`, `compile --all`), started by hand after the first install and whenever Scryfall's data should refresh. Pictures load from the Scryfall CDN as games ask for them and stay in the cache volume.
+The card tables are filled by the CronJob `magic-ingest`, which runs `mtg-cli refresh` every day at 04:00 Copenhagen time: it fetches Scryfall and MTGJSON, loads and compiles what changed, takes a coverage snapshot and records the run for the Card support page ([data-sources.md](data-sources.md), `refresh`). The cache is a volume of its own, so a day with no upstream change downloads only Scryfall's listing and MTGJSON's index and loads nothing. While a game runs the job loads nothing and records the run as deferred, since a server restart after a rules change fails a stored game (as for releases); the next run loads it. The post-sync compile Job also stores a snapshot, so each release shows in the feed with the cards it made automatic. Pictures load from the Scryfall CDN as games ask for them and stay in the picture volume.
+
+The chart's `templates/jobs.yaml` for this:
+
+```yaml
+# magic-compile: the container's command compiles, then stores a snapshot for the Card support page.
+            - |
+              out=$(mtg-cli compile --all 2>&1) && { echo "$out"; mtg-cli coverage --all --snapshot || true; exit 0; }
+              echo "$out"
+              case "$out" in *"no cards are stored"*) exit 0 ;; esac
+              exit 1
+# magic-compile: one more env entry.
+            - name: MTG_RELEASE
+              value: {{ .Values.tag | quote }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: magic-card-cache
+spec:
+  accessModes: [ReadWriteOnce]
+  storageClassName: {{ .Values.persistence.storageClass }}
+  resources:
+    requests:
+      storage: 4Gi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: magic-ingest
+spec:
+  schedule: "0 4 * * *"
+  timeZone: Europe/Copenhagen
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      backoffLimit: 0
+      template:
+        spec:
+          restartPolicy: Never
+          nodeSelector:
+            {{- toYaml .Values.nodeSelector | nindent 12 }}
+          {{- include "magic.podSecurity" . | nindent 10 }}
+          containers:
+            - name: ingest
+              image: {{ include "magic.serverImage" . }}
+              command: [mtg-cli, refresh]
+              env:
+                {{- include "magic.databaseEnv" . | nindent 16 }}
+                - name: MTG_CACHE_DIR
+                  value: /cache
+                - name: MTG_RELEASE
+                  value: {{ .Values.tag | quote }}
+              resources:
+                requests: {cpu: 200m, memory: 512Mi}
+                limits: {memory: 4Gi}
+              volumeMounts:
+                - name: cache
+                  mountPath: /cache
+          volumes:
+            - name: cache
+              persistentVolumeClaim:
+                claimName: magic-card-cache
+```
+
+`suspend: true` goes; a refresh by hand stays `kubectl -n magic create job --from=cronjob/magic-ingest ingest-$(date +%F)`, and a one-off Job running `mtg-cli refresh --force` loads even when nothing changed. The first run on the new volume downloads every file once (about 600 MB); since the inputs equal the stored ones, ingest skips them.
 
 ## Operations
 

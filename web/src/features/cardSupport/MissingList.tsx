@@ -79,7 +79,7 @@ export function MissingList({ cards }: { cards: readonly MissingCardView[] }) {
           })}
         </div>
       </div>
-      <p role="status" className="text-sm text-muted-foreground">
+      <p role="status" className="text-sm text-muted-foreground empty:hidden">
         {found.length === cards.length
           ? null
           : `${count(found.length)} of ${count(cards.length)} cards match.`}

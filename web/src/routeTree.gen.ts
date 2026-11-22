@@ -35,6 +35,7 @@ import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
 import { Route as DevPreconsRouteImport } from './routes/dev.precons'
 import { Route as DevReadRouteImport } from './routes/dev.read'
 import { Route as DevReadBulkRouteImport } from './routes/dev.read-bulk'
+import { Route as DevSupportRouteImport } from './routes/dev.support'
 import { Route as DevTableRouteImport } from './routes/dev.table'
 import { Route as DevUnvalidatedRouteImport } from './routes/dev.unvalidated'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
@@ -176,6 +177,11 @@ const DevReadBulkRoute = DevReadBulkRouteImport.update({
   path: '/dev/read-bulk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevSupportRoute = DevSupportRouteImport.update({
+  id: '/dev/support',
+  path: '/dev/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevTableRoute = DevTableRouteImport.update({
   id: '/dev/table',
   path: '/dev/table',
@@ -254,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -292,6 +299,7 @@ export interface FileRoutesByTo {
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -331,6 +339,7 @@ export interface FileRoutesById {
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -371,6 +380,7 @@ export interface FileRouteTypes {
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -409,6 +419,7 @@ export interface FileRouteTypes {
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -447,6 +458,7 @@ export interface FileRouteTypes {
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -486,6 +498,7 @@ export interface RootRouteChildren {
   DevPreconsRoute: typeof DevPreconsRoute
   DevReadRoute: typeof DevReadRoute
   DevReadBulkRoute: typeof DevReadBulkRoute
+  DevSupportRoute: typeof DevSupportRoute
   DevTableRoute: typeof DevTableRoute
   DevUnvalidatedRoute: typeof DevUnvalidatedRoute
   GameGameIdRoute: typeof GameGameIdRoute
@@ -682,6 +695,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevReadBulkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev/support': {
+      id: '/dev/support'
+      path: '/dev/support'
+      fullPath: '/dev/support'
+      preLoaderRoute: typeof DevSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/table': {
       id: '/dev/table'
       path: '/dev/table'
@@ -782,6 +802,7 @@ const rootRouteChildren: RootRouteChildren = {
   DevPreconsRoute: DevPreconsRoute,
   DevReadRoute: DevReadRoute,
   DevReadBulkRoute: DevReadBulkRoute,
+  DevSupportRoute: DevSupportRoute,
   DevTableRoute: DevTableRoute,
   DevUnvalidatedRoute: DevUnvalidatedRoute,
   GameGameIdRoute: GameGameIdRoute,
