@@ -71,7 +71,12 @@ async fn table(responses: usize, level: StackStops, dwell: Dwell) -> (GameHandle
     };
     send(&handle, &clients[FOE], held).await;
     let choices = holding(level);
-    send(&handle, &clients[ME], ClientMessage::AutoChoices { choices }).await;
+    send(
+        &handle,
+        &clients[ME],
+        ClientMessage::AutoChoices { choices },
+    )
+    .await;
     for client in &clients {
         send(&handle, client, ClientMessage::Ready).await;
     }
@@ -138,17 +143,62 @@ async fn plays(handle: &GameHandle, client: &mut Client, play: Play) {
 /// Each row: what seat 0 puts on the stack, seat 1's level and Full Control mode, and whether seat 1, which holds a
 /// response, is asked there.
 #[rstest]
-#[case::all_asks_at_an_ability_aimed_at_me(Play::PingAt(ME), StackStops::All, FullControlMode::Off, true)]
-#[case::all_asks_at_an_ability_aimed_elsewhere(Play::PingAt(FOE), StackStops::All, FullControlMode::Off, true)]
+#[case::all_asks_at_an_ability_aimed_at_me(
+    Play::PingAt(ME),
+    StackStops::All,
+    FullControlMode::Off,
+    true
+)]
+#[case::all_asks_at_an_ability_aimed_elsewhere(
+    Play::PingAt(FOE),
+    StackStops::All,
+    FullControlMode::Off,
+    true
+)]
 #[case::all_asks_at_a_spell(Play::Zap, StackStops::All, FullControlMode::Off, true)]
-#[case::opponents_asks_at_an_ability_aimed_at_me(Play::PingAt(ME), StackStops::Opponents, FullControlMode::Off, true)]
-#[case::opponents_asks_at_an_ability_aimed_elsewhere(Play::PingAt(FOE), StackStops::Opponents, FullControlMode::Off, true)]
+#[case::opponents_asks_at_an_ability_aimed_at_me(
+    Play::PingAt(ME),
+    StackStops::Opponents,
+    FullControlMode::Off,
+    true
+)]
+#[case::opponents_asks_at_an_ability_aimed_elsewhere(
+    Play::PingAt(FOE),
+    StackStops::Opponents,
+    FullControlMode::Off,
+    true
+)]
 #[case::opponents_asks_at_a_spell(Play::Zap, StackStops::Opponents, FullControlMode::Off, true)]
-#[case::aimed_asks_at_an_ability_aimed_at_me(Play::PingAt(ME), StackStops::Aimed, FullControlMode::Off, true)]
-#[case::aimed_passes_an_ability_aimed_elsewhere(Play::PingAt(FOE), StackStops::Aimed, FullControlMode::Off, false)]
-#[case::aimed_passes_a_spell_without_targets(Play::Zap, StackStops::Aimed, FullControlMode::Off, false)]
-#[case::full_control_asks_at_an_ability_aimed_elsewhere(Play::PingAt(FOE), StackStops::Aimed, FullControlMode::Held, true)]
-#[case::the_next_window_asks_at_a_spell(Play::Zap, StackStops::Aimed, FullControlMode::NextWindow, true)]
+#[case::aimed_asks_at_an_ability_aimed_at_me(
+    Play::PingAt(ME),
+    StackStops::Aimed,
+    FullControlMode::Off,
+    true
+)]
+#[case::aimed_passes_an_ability_aimed_elsewhere(
+    Play::PingAt(FOE),
+    StackStops::Aimed,
+    FullControlMode::Off,
+    false
+)]
+#[case::aimed_passes_a_spell_without_targets(
+    Play::Zap,
+    StackStops::Aimed,
+    FullControlMode::Off,
+    false
+)]
+#[case::full_control_asks_at_an_ability_aimed_elsewhere(
+    Play::PingAt(FOE),
+    StackStops::Aimed,
+    FullControlMode::Held,
+    true
+)]
+#[case::the_next_window_asks_at_a_spell(
+    Play::Zap,
+    StackStops::Aimed,
+    FullControlMode::NextWindow,
+    true
+)]
 #[tokio::test(start_paused = true)]
 async fn a_level_asks_the_seat_exactly_at_an_opponents_objects_it_keeps(
     #[case] play: Play,
@@ -228,7 +278,12 @@ async fn a_level_set_at_a_decision_it_leaves_out_passes_at_once_and_is_told() {
     assert_eq!(waiting(&handle).await, Some(PlayerId::from_index(ME)));
     clients[ME].drain();
     let choices = holding(StackStops::Aimed);
-    send(&handle, &clients[ME], ClientMessage::AutoChoices { choices }).await;
+    send(
+        &handle,
+        &clients[ME],
+        ClientMessage::AutoChoices { choices },
+    )
+    .await;
     let told = clients[ME]
         .until(|message| match message {
             ServerMessage::AutoChoices { choices } => Some(*choices),

@@ -51,8 +51,7 @@ const END_TURN = anchor('pass.end-turn')
  * The ways to pass priority, for a Priority prompt: a primary button that passes once and says what that does now
  * ("Next: Combat", "Resolve Lightning Bolt", "Continue"), "End turn" beside it to pass until the turn ends, and a small
  * menu with "Resolve everything on the stack", "Always yield to <ability>" (over an ability every player can read) and
- * "Pass until my next turn". Over two or more objects a dock in its full form also draws "Resolve all", the menu's
- * first yield as one press. Resolve and End turn are never one button: in the last window of the viewer's turn the
+ * "Pass until my next turn". Resolve and End turn are never one button: in the last window of the viewer's turn the
  * primary button is not drawn and "End turn" alone moves on, so a Resolve pressed twice never ends the turn. The
  * yields are the server's: it passes for the seat and says so, and the prompt goes with its first pass. With nothing
  * holding the keyboard Space passes once and Enter ends the turn (the "End turn" button); under Full Control, which the
@@ -66,8 +65,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
   const held = usePassHeld()
   const { answer } = usePrompt()
   const situation = usePlay(useShallow(passSituation))
-  const stackCount = usePlay((state) => state.view?.stack.count ?? 0)
-  const stacked = stackCount > 0
+  const stacked = usePlay((state) => (state.view?.stack.count ?? 0) > 0)
   // The server refuses a yield while Full Control is on, so there is nothing to offer then.
   const canYield = usePlay((state) => state.fullControl === 'Off')
   // One request per prompt: the server answers it with a new decision or a notice, and either replaces this prompt.
@@ -95,8 +93,6 @@ export function PassControls({ canPass }: { canPass: boolean }) {
   const compact = form === 'compact'
   const full = form === 'full'
   const endTurnInDock = endTurnShown(situation, !canYield) && (!compact || last)
-  // Several objects wait on the stack: one press passes until it is empty, where the dock has the room for the button.
-  const resolveAllInDock = canYield && full && stackCount >= 2
   usePrimaryKey({ space: pass, enter: endTurn }, free)
 
   const label = primaryLabel(situation, form)
@@ -122,18 +118,6 @@ export function PassControls({ canPass }: { canPass: boolean }) {
               Enter
             </kbd>
           ) : null}
-        </Button>
-      ) : null}
-      {resolveAllInDock ? (
-        <Button
-          data-slot="resolve-all"
-          variant="outline"
-          className={cn('h-11', padding)}
-          disabled={!free}
-          aria-description={YIELD_WORDS.Resolve.description}
-          onClick={() => yieldTo('Resolve')}
-        >
-          Resolve all
         </Button>
       ) : null}
       {canYield ? (

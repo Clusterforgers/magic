@@ -44,7 +44,10 @@ fn asks_at(level: StackStops, state: &GameState, seat: PlayerId, top: ObjectId) 
         StackStops::Opponents => theirs,
         StackStops::Aimed => {
             let aimed = object.choices().targets.iter().flatten();
-            theirs && aimed.into_iter().any(|target| is_ours(state, seat, *target))
+            theirs
+                && aimed
+                    .into_iter()
+                    .any(|target| is_ours(state, seat, *target))
         }
     }
 }
@@ -238,7 +241,10 @@ mod tests {
 
         let mut owing = holding(level);
         let resolved = ObjectId(9_999);
-        owing.resolved(&[(resolved, me)], &[Event::SpellResolved { object: resolved }]);
+        owing.resolved(
+            &[(resolved, me)],
+            &[Event::SpellResolved { object: resolved }],
+        );
         assert!(owing.by_hand(me));
         assert!(!passes_for(&decision, &owing, state));
 
@@ -258,6 +264,10 @@ mod tests {
             ..AutoChoices::default()
         };
         stops.set_auto_choices(PlayerId::from_index(MATE), choices);
-        assert!(!passes_for(&priority(&driver, true), &stops, driver.state()));
+        assert!(!passes_for(
+            &priority(&driver, true),
+            &stops,
+            driver.state()
+        ));
     }
 }
