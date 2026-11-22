@@ -187,8 +187,24 @@ async fn a_seats_own_spell_on_top_asks_it_only_at_all(
         answer: cast,
     };
     send(&handle, &clients[ME], message).await;
-    let on = PlayerId::from_index(if asked { ME } else { FOE });
-    assert_eq!(waiting(&handle).await, Some(on));
+    // The cast may ask for its payment; the question after it is priority over the seat's own spell, or none.
+    let mut asked_again = false;
+    while waiting(&handle).await == Some(PlayerId::from_index(ME)) {
+        let (id, decision) = clients[ME].decision().await;
+        if matches!(decision.kind, DecisionKind::Priority(_)) {
+            asked_again = true;
+            break;
+        }
+        let pay = ClientMessage::Answer {
+            decision: id,
+            answer: Answer::PayMana(PayChoice::Auto),
+        };
+        send(&handle, &clients[ME], pay).await;
+    }
+    assert_eq!(asked_again, asked);
+    if !asked {
+        assert_eq!(waiting(&handle).await, Some(PlayerId::from_index(FOE)));
+    }
 }
 
 /// The pass for an object the level leaves out comes at once whatever the seat holds, with the dwell on: a seat with a

@@ -11,7 +11,11 @@ import { STACK_STOPS_WORDS } from './stackStops'
 const OFF: AutoChoices = { order_triggers: false, assign_damage: false, smart_stops: false }
 const LEVELS: StackStops[] = ['All', 'Opponents', 'Aimed']
 
-function renderMenu(auto: AutoChoices, change: (state: PlayState) => PlayState = (state) => state, width = 1600) {
+function renderMenu(
+  auto: AutoChoices,
+  change: (state: PlayState) => PlayState = (state) => state,
+  width = 1600,
+) {
   const setAutoChoices = vi.fn((_choices: AutoChoices) => true)
   const table = renderTable({
     options: { viewport: { width, height: 900 } },
@@ -60,7 +64,10 @@ describe('the stack stops button', () => {
   })
 
   it('says it is off while Full Control is on', () => {
-    const { button } = renderMenu(withStackStops(OFF, 'Aimed'), (state) => ({ ...state, fullControl: 'Held' }))
+    const { button } = renderMenu(withStackStops(OFF, 'Aimed'), (state) => ({
+      ...state,
+      fullControl: 'Held',
+    }))
     expect(button()).toHaveAttribute('title', expect.stringContaining('Off while Full Control is on.'))
   })
 })

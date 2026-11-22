@@ -128,7 +128,9 @@ function readAuto(): AutoChoices {
     skip_triggers: flags.skip_triggers === true,
     auto_pay: flags.auto_pay === true,
     // Left out unless a level other than the first was stored.
-    ...(isStackStops(flags.stack_stops) && flags.stack_stops !== 'All' ? { stack_stops: flags.stack_stops } : {}),
+    ...(isStackStops(flags.stack_stops) && flags.stack_stops !== 'All'
+      ? { stack_stops: flags.stack_stops }
+      : {}),
   }
 }
 
@@ -199,7 +201,8 @@ function hasAuto(auto: AutoChoices): boolean {
 /** Whether `a` and `b` leave the same decisions to the server; a flag left out counts as off. */
 function sameAuto(a: AutoChoices, b: AutoChoices): boolean {
   return (
-    AUTO_FLAGS.every((flag) => (a[flag] === true) === (b[flag] === true)) && stackStopsOf(a) === stackStopsOf(b)
+    AUTO_FLAGS.every((flag) => (a[flag] === true) === (b[flag] === true)) &&
+    stackStopsOf(a) === stackStopsOf(b)
   )
 }
 

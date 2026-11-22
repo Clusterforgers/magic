@@ -49,7 +49,9 @@ describe('Resolve all in the dock', () => {
     const phone = renderDock(390, 3)
     expect(phone.button()).toBeNull()
     await phone.user.click(screen.getAllByRole('button', { name: 'More ways to pass' }).at(-1) as HTMLElement)
-    expect(await screen.findByRole('menuitem', { name: 'Resolve everything on the stack' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('menuitem', { name: 'Resolve everything on the stack' }),
+    ).toBeInTheDocument()
   })
 
   it.each([
