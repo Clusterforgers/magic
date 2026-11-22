@@ -10,7 +10,7 @@ import { focusAnswers } from './prompt/homeKeys'
 import { KeyHint } from './prompt/KeyHint'
 import { ownDecision } from './prompt/ownDecision'
 import { HomeSlotsContext, useDecisionHome } from './prompt/useDecisionHome'
-import { DockFormContext } from './dockLayout'
+import { DockFormContext, useDockForm } from './dockLayout'
 import type { DockForm } from './dockLayout'
 import { StopsDock } from './stops/StopsDock'
 import { TakeBackControls } from './TakeBackControls'
@@ -60,8 +60,10 @@ export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
   const dock = useRef<HTMLElement>(null)
   const upper = useRef<HTMLDivElement>(null)
   useEdgeFade(upper)
-  const tight = useDockFit(dock, upper)
+  const phone = homes?.phone === true
+  const { tight, least: upperLeast } = useDockFit(dock, upper, phone)
   const { home } = useDecisionHome()
+  const form = useDockForm()
   // A question other than priority answered here takes the stops' row: they fold into their button meanwhile.
   const asking = usePlay((state) => {
     const own = ownDecision(state)
@@ -73,44 +75,37 @@ export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
     )
   })
   const folded = asking && home !== 'panel'
-  const phone = homes?.phone === true
-  return (
-    <section
-      ref={dock}
-      aria-label="Pass controls"
-      data-region="controls"
-      data-keep-clear="answers"
-      data-tight={tight || undefined}
-      data-phone={phone || undefined}
-      // On a phone the dock is the decision bar under the hand: the take-backs and stops on a line, the decision, the
-      // pass controls; one height in every prompt and between prompts.
+  const upperZone = (
+    <div
+      ref={upper}
+      data-slot="dock-upper"
+      hidden={phone && asking}
       className={cn(
-        'flex min-h-0 min-w-0 flex-col gap-1 overflow-hidden dock',
-        phone
-          ? 'items-stretch justify-end border-t px-2.5 py-1.5'
-          : 'items-end justify-end border-l px-2 py-1.5',
+        'fade-scroll flex min-h-0 max-w-full shrink gap-1.5 empty:hidden',
+        tight || phone ? 'flex-row flex-wrap content-end items-center justify-end' : 'flex-col items-end',
+        // Off a phone it stands at the foot of the room the decision and the pass controls leave.
+        !phone && 'absolute right-0 bottom-0 max-h-full',
       )}
     >
-      <div
-        ref={upper}
-        data-slot="dock-upper"
-        hidden={phone && asking}
-        className={cn(
-          'fade-scroll flex min-h-0 max-w-full shrink gap-1.5 empty:hidden',
-          tight || phone ? 'flex-row flex-wrap content-end items-center justify-end' : 'flex-col items-end',
-        )}
-      >
-        <div data-slot="take-back-slot" className="max-w-full empty:hidden">
-          <TakeBackControls />
-        </div>
-        <div data-slot="yield-slot" className="max-w-full empty:hidden">
-          <YieldIndicator />
-        </div>
-        {/* A question answered here takes the stops' row: its home holds their folded button meanwhile. */}
-        <div data-slot="stops-slot" className="max-w-full empty:hidden">
-          {folded ? null : <StopsDock row={stopsRow && !tight} />}
-        </div>
+      <div data-slot="take-back-slot" className="max-w-full empty:hidden">
+        <TakeBackControls />
       </div>
+      <div data-slot="yield-slot" className="max-w-full empty:hidden">
+        <YieldIndicator />
+      </div>
+      {/* A question answered here takes the stops' row: its home holds their folded button meanwhile. */}
+      <div
+        data-slot="stops-slot"
+        className="flex max-w-full flex-wrap items-center justify-end gap-x-1.5 empty:hidden"
+      >
+        {folded ? null : (
+          <StopsDock row={stopsRow && !tight} tuck={tight && form === 'short' ? 'skip' : undefined} />
+        )}
+      </div>
+    </div>
+  )
+  const lower = (
+    <>
       {home === 'panel' ? <AnswerJump /> : null}
       <div
         ref={homes === null ? undefined : phone ? homes.setBar : homes.setDock}
@@ -125,6 +120,49 @@ export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
           phone ? 'flex-nowrap' : 'flex-wrap',
         )}
       />
+    </>
+  )
+  // On a phone the dock is the decision bar under the hand: the take-backs and stops on a line, the decision, the
+  // pass controls; one height in every prompt and between prompts.
+  if (phone)
+    return (
+      <section
+        ref={dock}
+        aria-label="Pass controls"
+        data-region="controls"
+        data-keep-clear="answers"
+        data-tight={tight || undefined}
+        data-phone
+        className="flex min-h-0 min-w-0 flex-col items-stretch justify-end gap-1 overflow-hidden border-t px-2.5 py-1.5 dock"
+      >
+        {upperZone}
+        {lower}
+      </section>
+    )
+  return (
+    // The cell keeps the hand row's height in every prompt. Its body is at least that high and grows upwards over the
+    // corner of your board when the decision and the pass controls need more, so a short window cuts nothing off.
+    <section
+      ref={dock}
+      aria-label="Pass controls"
+      data-region="controls"
+      data-keep-clear="answers"
+      data-tight={tight || undefined}
+      className="relative min-h-0 min-w-0"
+    >
+      <div
+        data-slot="dock-body"
+        className="absolute inset-x-0 bottom-0 flex max-h-[70dvh] min-h-full flex-col items-end justify-end gap-1 overflow-hidden border-l px-2 py-1.5 dock"
+      >
+        <div
+          data-slot="dock-upper-room"
+          style={{ minHeight: upperLeast }}
+          className="relative min-h-0 w-full flex-[1_1_0]"
+        >
+          {upperZone}
+        </div>
+        {lower}
+      </div>
     </section>
   )
 }
@@ -150,12 +188,21 @@ function AnswerJump() {
   )
 }
 
+/** The most the folded controls above the pass controls hold the dock's body open, in px: two rows of them. */
+const UPPER_MOST_PX = 76
+
 /**
- * True while the controls above the pass controls do not fit the dock's height in their full form: then they fold
+ * `tight` while the controls above the pass controls do not fit the dock's height in their full form: then they fold
  * (`ControlsDock`). It unfolds again when the dock grows past the height it folded at, or what it holds changes.
+ * `least` is the room the folded controls keep in the dock's body, so they push it up before they scroll.
  */
-function useDockFit(dock: RefObject<HTMLElement | null>, upper: RefObject<HTMLElement | null>): boolean {
+function useDockFit(
+  dock: RefObject<HTMLElement | null>,
+  upper: RefObject<HTMLElement | null>,
+  phone: boolean,
+): { tight: boolean; least: number } {
   const [tightAt, setTightAt] = useState<number | null>(null)
+  const [least, setLeast] = useState(0)
   useLayoutEffect(() => {
     const box = dock.current
     const zone = upper.current
@@ -165,6 +212,7 @@ function useDockFit(dock: RefObject<HTMLElement | null>, upper: RefObject<HTMLEl
         if (held !== null) return box.clientHeight > held + 1 ? null : held
         return zone.scrollHeight > zone.clientHeight + 1 ? box.clientHeight : null
       })
+      setLeast(Math.min(zone.scrollHeight, UPPER_MOST_PX))
     }
     measure()
     const sizes = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null
@@ -179,6 +227,8 @@ function useDockFit(dock: RefObject<HTMLElement | null>, upper: RefObject<HTMLEl
       sizes?.disconnect()
       content?.disconnect()
     }
-  }, [dock, upper])
-  return tightAt !== null
+    // A phone's dock is another element: the watch moves with it.
+  }, [dock, upper, phone])
+  const tight = tightAt !== null
+  return { tight, least: tight ? least : 0 }
 }

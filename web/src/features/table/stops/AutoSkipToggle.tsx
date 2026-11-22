@@ -17,9 +17,9 @@ import { PassTurnToggle } from './PassTurnToggle'
  * button that opens the per-card list: the triggers it auto-passes and its rules for its own triggers, each with a
  * remove button. The switch moves the moment it is pressed and keeps that value until the server's next auto choices
  * arrive, which then decide it; the list shows what the server holds. Full Control sets them all aside while on. The
- * "Pass until my turn" switch (`PassTurnToggle`) follows in the same group.
+ * "Pass until my turn" switch (`PassTurnToggle`) follows in the same group unless the caller draws it itself (`passTurn`).
  */
-export function AutoSkipToggle() {
+export function AutoSkipToggle({ passTurn = true }: { passTurn?: boolean }) {
   const { session } = useGame()
   const { shown, auto, online, paused, yields, skips } = usePlay(
     useShallow((state) => ({
@@ -116,7 +116,7 @@ export function AutoSkipToggle() {
           )}
         </PopoverContent>
       </Popover>
-      <PassTurnToggle />
+      {passTurn ? <PassTurnToggle /> : null}
     </div>
   )
 }

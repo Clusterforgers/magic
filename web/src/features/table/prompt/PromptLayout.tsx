@@ -34,6 +34,7 @@ import { clockKind } from './clockText'
 import { askedByCard } from './home'
 import type { Home } from './home'
 import { ResponseClock } from './ResponseClock'
+import { useDockForm } from '../dockLayout'
 import { StopsDock } from '../stops/StopsDock'
 import { useDecisionHome } from './useDecisionHome'
 
@@ -349,6 +350,7 @@ export function PromptLayout({
 }: PromptLayoutProps) {
   const { id, name, decision } = usePrompt()
   const { home: found, element } = useDecisionHome()
+  const dockForm = useDockForm()
   const home = here ? null : found
   const side = useContext(SideContext)
   const at = choicesAt(name, home, inline, folded)
@@ -380,7 +382,8 @@ export function PromptLayout({
   const stops =
     (home === 'dock' || home === 'bar') && name !== 'Priority' ? (
       <div data-slot="home-stops">
-        <StopsDock row={false} />
+        {/* A short dock has one line for them: the switches wait in the button's popover. */}
+        <StopsDock row={false} tuck={dockForm === 'full' ? undefined : 'all'} />
       </div>
     ) : null
   const body = compact ? (
