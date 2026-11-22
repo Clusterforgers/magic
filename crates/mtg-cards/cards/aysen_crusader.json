@@ -15,24 +15,24 @@
                 "SetPT": {
                   "power": {
                     "Sum": [
+                      2,
                       {
                         "Count": [
                           { "AnyOf": [{ "Subtype": "Soldier" }, { "Subtype": "Warrior" }] },
                           { "ControlledBy": "You" }
                         ]
-                      },
-                      2
+                      }
                     ]
                   },
                   "toughness": {
                     "Sum": [
+                      2,
                       {
                         "Count": [
                           { "AnyOf": [{ "Subtype": "Soldier" }, { "Subtype": "Warrior" }] },
                           { "ControlledBy": "You" }
                         ]
-                      },
-                      2
+                      }
                     ]
                   }
                 }

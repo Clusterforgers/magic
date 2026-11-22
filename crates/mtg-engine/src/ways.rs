@@ -702,6 +702,7 @@ fn keyword_way(
     let (way, name, cost, from_here) = match keyword {
         Keyword::Flashback(cost) => (CastWay::Flashback, "Flashback", cost, in_graveyard),
         Keyword::Escape(cost) => (CastWay::Escape, "Escape", cost, in_graveyard),
+        Keyword::R116BeamMeUp(cost) => (CastWay::R116BeamMeUp, "Beam me up", cost, in_graveyard),
         Keyword::JumpStart if in_graveyard => {
             return discard_way(state, id, CastWay::JumpStart, instant);
         }
@@ -784,6 +785,14 @@ fn keyword_way(
     if !from_here {
         return None;
     }
+    // Beam me up adds the return of a creature to its cost.
+    let beamed;
+    let cost = if way == CastWay::R116BeamMeUp {
+        beamed = keywords::r116_beam_me_up::r116_beam_cost(cost);
+        &beamed
+    } else {
+        cost
+    };
     // Overload and foretell are paid with mana alone.
     let (mana, parts) = if way == CastWay::Flashback {
         // A flashback part may count the X the spell announces ("Discard X cards"): it takes the spell's X.
@@ -799,6 +808,7 @@ fn keyword_way(
             | CastWay::Spectacle
             | CastWay::Mayhem
             | CastWay::Mutate
+            | CastWay::R116BeamMeUp
             | CastWay::Prototype
     ) {
         // A part that counts X is paid at the X of the mana cost, announced for the cast (Conflagrate's flashback).

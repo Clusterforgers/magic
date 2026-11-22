@@ -102,6 +102,14 @@ fn state(r: &mut Reader<'_>, it: Option<&Ref>) -> Option<Condition> {
         it.cloned()?
     } else {
         let subject = subject(r, it)?;
+        // "if this Spacecraft isn't a creature": what a Spacecraft is until it is stationed (CR 721).
+        if subject == Ref::This && r.word("isn't") {
+            let pred = r116_card_type(r)?;
+            return Some(Condition::Matches {
+                subject,
+                selector: Selector(vec![Pred::Not(Box::new(pred))]),
+            });
+        }
         r.need("is")?;
         subject
     };
@@ -119,6 +127,63 @@ fn state(r: &mut Reader<'_>, it: Option<&Ref>) -> Option<Condition> {
         subject,
         selector: Selector(vec![pred]),
     })
+}
+
+/// "a creature", "an artifact": a card type the permanent has.
+fn r116_card_type(r: &mut Reader<'_>) -> Option<Pred> {
+    (r.word("a") || r.word("an")).then_some(())?;
+    let card_type = super::selectors::card_type(r.take_word()?)?;
+    Some(Pred::Type(card_type))
+}
+
+/// "~ isn't a creature": a card type the permanent itself lacks, as a trigger's "if" says it.
+pub(super) fn r116_this_kind(r: &mut Reader<'_>) -> Option<Condition> {
+    r.attempt(|r| {
+        r.source().then_some(())?;
+        r.word("isn't").then_some(())?;
+        let pred = Pred::Not(Box::new(r116_card_type(r)?));
+        Some(Condition::Matches {
+            subject: Ref::This,
+            selector: Selector(vec![pred]),
+        })
+    })
+}
+
+/// The words of a condition [`r116_this_kind`] reads.
+pub(super) fn r116_this_kind_text(condition: &Condition) -> Option<String> {
+    let Condition::Matches {
+        subject: Ref::This,
+        selector,
+    } = condition
+    else {
+        return None;
+    };
+    let [pred] = selector.0.as_slice() else {
+        return None;
+    };
+    if !matches!(pred, Pred::Not(_)) {
+        return None;
+    }
+    let (verb, kind) = r116_card_type_text(pred)?;
+    Some(format!("~ {verb} {kind}"))
+}
+
+/// The words of a card type the permanent is ("a creature") or isn't ("isn't a creature").
+fn r116_card_type_text(pred: &Pred) -> Option<(&'static str, String)> {
+    let (verb, kind) = match pred {
+        Pred::Not(inner) => ("isn't", &**inner),
+        other => ("is", other),
+    };
+    let Pred::Type(card_type) = kind else {
+        return None;
+    };
+    let name = super::selectors::type_name(*card_type);
+    let article = if name.starts_with(['a', 'e', 'i', 'o', 'u']) {
+        "an"
+    } else {
+        "a"
+    };
+    Some((verb, format!("{article} {name}")))
 }
 
 /// Whether the counters have a block of their own that writes the condition (`stations.rs`, `levels.rs`).
@@ -391,6 +456,15 @@ fn state_texts(condition: &Condition) -> Vec<String> {
     let [pred] = selector.0.as_slice() else {
         return Vec::new();
     };
+    if *subject == Ref::This
+        && matches!(pred, Pred::Not(_))
+        && let Some((verb, kind)) = r116_card_type_text(pred)
+    {
+        return subject_texts(subject, verb)
+            .into_iter()
+            .map(|start| format!("{start} {kind}"))
+            .collect();
+    }
     let name = match pred {
         Pred::Color(shade) => color_name(*shade).to_owned(),
         Pred::FaceDown => "face down".to_owned(),

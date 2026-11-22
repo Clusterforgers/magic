@@ -109,6 +109,10 @@ fn near_misses_are_left_to_the_table(#[case] text: &str) {
     "Modified creatures you control have haste. (Equipment, Auras you control, and counters are modifications.)",
     false
 )]
+#[case::the_assimilate_reminder(
+    "Assimilate target creature card from a graveyard. (Put it onto the battlefield under your control with a +1/+1 counter. It's a Borg artifact creature and loses all other creature types.)",
+    false
+)]
 #[case::a_counter_the_clause_puts(
     "Put a shield counter on target creature. (If it would be dealt damage or destroyed, remove a shield counter instead.)",
     true

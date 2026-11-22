@@ -185,6 +185,9 @@ pub enum CastWay {
     Alternative,
     /// Offering (CR 702.48).
     Offering,
+    /// Beam me up: from a graveyard for its beam me up cost and the return of a creature its caster controls to its owner's
+    /// hand; exiled when it leaves the stack.
+    R116BeamMeUp,
 }
 
 impl CastWay {
@@ -200,7 +203,11 @@ impl CastWay {
     pub const fn exiles_the_spell(self) -> bool {
         matches!(
             self,
-            CastWay::Flashback | CastWay::JumpStart | CastWay::Harmonize | CastWay::Disturb
+            CastWay::Flashback
+                | CastWay::JumpStart
+                | CastWay::Harmonize
+                | CastWay::Disturb
+                | CastWay::R116BeamMeUp
         )
     }
 }
@@ -399,6 +406,9 @@ pub enum TurnTally {
     /// The crimes the player committed this turn (CR 700.13): each spell they cast and each ability they put on the stack
     /// that targets an opponent, something an opponent controls or a card in an opponent's graveyard, once.
     Crimes,
+    /// The dilemmas the player faced this turn: each spell or ability they chose one or more modes for as it was cast,
+    /// activated or put on the stack, once.
+    R116Dilemmas,
     /// The dungeons the player has completed this game (CR 309.7), each completion once; not reset by the turn.
     DungeonsCompleted,
     /// The spells the player has cast this game; not reset by the turn ("the first spell you've cast this game").
@@ -2317,6 +2327,7 @@ mod tests {
     #[case::disturb(CastWay::Disturb, true)]
     #[case::emerge(CastWay::Emerge, true)]
     #[case::harmonize(CastWay::Harmonize, true)]
+    #[case::r116_beam_me_up(CastWay::R116BeamMeUp, true)]
     #[case::r301_offering_adds_to_the_cost(CastWay::Offering, false)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]

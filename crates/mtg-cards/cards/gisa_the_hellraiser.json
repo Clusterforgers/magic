@@ -12,7 +12,7 @@
           "Static": {
             "affected": {
               "Each": [
-                { "AnyOf": [{ "Subtype": "Zombie" }, { "Subtype": "Skeleton" }] },
+                { "AnyOf": [{ "Subtype": "Skeleton" }, { "Subtype": "Zombie" }] },
                 { "ControlledBy": "You" }
               ]
             },

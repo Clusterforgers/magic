@@ -2909,6 +2909,7 @@ impl<'a> Walker<'a> {
             | Keyword::Emerge(cost)
             | Keyword::R6701EmergeFromArtifact(cost)
             | Keyword::Harmonize(cost)
+            | Keyword::R116BeamMeUp(cost)
             | Keyword::Freerunning(cost)
             | Keyword::Spectacle(cost)
             | Keyword::Splice { cost, .. } => {
@@ -3393,6 +3394,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Bolstered { who }
             | TriggerPattern::Expend { who, .. }
             | TriggerPattern::W11cCrime { who }
+            | TriggerPattern::R116Dilemma { who }
             | TriggerPattern::PlayerCountersPut { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -3596,6 +3598,7 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Bolstered { .. }
                 | TriggerPattern::Expend { .. }
                 | TriggerPattern::W11cCrime { .. }
+                | TriggerPattern::R116Dilemma { .. }
                 | TriggerPattern::Surveilled { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
@@ -5861,7 +5864,10 @@ impl Walker<'_> {
                 if matches!(rule, GameRule::CountsAsNamed(_)) {
                     w.problem("a card counts as another name by a static ability of its own, not by an effect");
                 }
-                if matches!(rule, GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_)) {
+                if matches!(
+                    rule,
+                    GameRule::AnyNumberInDeck | GameRule::UpToInDeck(_) | GameRule::R116Rulebreaker(_)
+                ) {
                     w.problem("a deck holds more than one of a card by a static ability, not by an effect");
                 }
                 if matches!(rule, GameRule::CountersRemain) {
@@ -5889,6 +5895,7 @@ impl Walker<'_> {
                 }
             }
             Effect::Regenerate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::R116Assimilate { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::RemoveFromCombat { what, .. } | Effect::R6400Block { what, .. }
             | Effect::R115ExchangeBlocks { what }
             | Effect::R115ExchangeBlockers { what } => {
@@ -7048,6 +7055,13 @@ impl Walker<'_> {
                     self.at(tag, |w| w.problem("a card counts as a card with a name"));
                 }
             }
+            GameRule::R116Rulebreaker(text) => {
+                if text.trim().is_empty() || text.ends_with('.') {
+                    self.at(tag, |w| {
+                        w.problem("a deck allowance is the sentence without its final period");
+                    });
+                }
+            }
             GameRule::UpToInDeck(most) => {
                 if *most < 2 {
                     self.at(tag, |w| w.problem("a deck rule allows at least two copies"));
@@ -7333,6 +7347,7 @@ impl Walker<'_> {
                 rule,
                 GameRule::AnyNumberInDeck
                     | GameRule::UpToInDeck(_)
+                    | GameRule::R116Rulebreaker(_)
                     | GameRule::Draft(_)
                     | GameRule::CantBeCopied
                     | GameRule::CantSpendMana
@@ -8245,6 +8260,7 @@ const fn r379_replaces_cost(keyword: &Keyword) -> bool {
             | Keyword::Emerge(_)
             | Keyword::R6701EmergeFromArtifact(_)
             | Keyword::Harmonize(_)
+            | Keyword::R116BeamMeUp(_)
             | Keyword::Freerunning(_)
             | Keyword::Bestow(_)
             | Keyword::MoreThanMeetsTheEye(_)

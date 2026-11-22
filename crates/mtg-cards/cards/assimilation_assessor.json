@@ -1,0 +1,42 @@
+{
+  "oracle_id": "48848570-00c4-4a89-a84c-e3df47a8b0d2",
+  "name": "Assimilation Assessor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assimilation Assessor",
+      "oracle_fingerprint": "a07e140832a9c2ba4864fc07ea36d529",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [{ "Type": "Creature" }, { "In": "Exile" }, { "ExiledWith": "This" }]
+                  },
+                  "as": "assimilated"
+                }
+              },
+              { "R116Assimilate": { "what": { "Bound": "assimilated" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

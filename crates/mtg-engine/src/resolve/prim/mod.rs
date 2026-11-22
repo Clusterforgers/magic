@@ -163,6 +163,7 @@ mod r6102_random_counter;
 mod r6400_block;
 /// The engine's step for the step a card names.
 pub(crate) use r306_add_step::engine_step as r115_engine_step;
+mod r116_assimilate;
 pub(crate) mod r6402_change_roll;
 pub(crate) mod r6502_enters_as;
 mod r6701_remove_among;
@@ -400,6 +401,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::R112NoteChosen(_) => r112_note_chosen::run(cx, effect),
         Effect::Rule { .. } => rule::run(cx, effect),
         Effect::Regenerate { .. } => regenerate::run(cx, effect),
+        Effect::R116Assimilate { .. } => r116_assimilate::run(cx, effect),
         Effect::RemoveFromCombat { .. } => remove_from_combat::run(cx, effect),
         Effect::R6400Block { .. } => r6400_block::run(cx, effect),
         Effect::R115ExchangeBlocks { .. } => r115_blocks::run_exchange_blocks(cx, effect),
@@ -500,7 +502,7 @@ mod tests {
         {"R112GuessNumber":{"min":1,"max":5,"guesser":"Opponents","as":"number","guess_as":"guess","guesser_as":"guesser"}}, {"R112Piles":{"what":"This","piles":["left","right"]}}, {"R112RollStore":{"sides":6,"dice":5,"slot":"stored"}}, {"R112RerollStored":{"sides":6,"slot":"stored"}}, {"R114StoreValue":{"value":2,"slot":"stored"}}, {"R113PhaseIn":{"what":"This"}}, {"R114CopySpellOnto":{"what":"This","onto":"This"}},
         {"R112NoteChosen":"name"},
         {"Rule":{"rule":{"CantGainLife":"EachPlayer"},"duration":"UntilEndOfTurn"}},
-        {"Regenerate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
+        {"Regenerate":{"what":"This"}}, {"R116Assimilate":{"what":"This"}}, {"RemoveFromCombat":{"what":"This"}}, {"R6400Block":{"what":"This"}},
         {"R115ExchangeBlocks":{"what":"This"}}, {"R115ExchangeBlockers":{"what":"This"}}, {"R115JoinBlock":{"what":"This","blocking":"This"}}, {"R115SkipStep":{"step":"Draw"}},
         {"BecomeBlocked":{"what":"This"}},
         {"PutBeneathTop":{"what":"This","below":2}},
@@ -534,7 +536,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 168, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 169, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -706,6 +708,7 @@ mod tests {
         "Effect.R112NoteChosen",
         "Effect.Rule",
         "Effect.Regenerate",
+        "Effect.R116Assimilate",
         "Effect.RemoveFromCombat",
         "Effect.R6400Block",
         "Effect.R115ExchangeBlocks",

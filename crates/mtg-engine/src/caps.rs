@@ -106,6 +106,7 @@ const RUNS: &[&str] = &[
     "Trigger.Bolstered",
     "Trigger.Expend",
     "Trigger.W11cCrime",
+    "Trigger.R116Dilemma",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
     "Trigger.ResolvedToGraveyard",
@@ -417,6 +418,7 @@ const RUNS: &[&str] = &[
     "Effect.Fabricate",
     "Effect.Learn",
     "Effect.R111OrderGraveyard",
+    "Effect.R116Assimilate",
     "Effect.R112DoubleX",
     "Effect.Performed",
     "Effect.Crewed",
@@ -1262,6 +1264,7 @@ const RUNS: &[&str] = &[
     "Keyword.R6701EmergeFromArtifact",
     "Keyword.Offering",
     "Keyword.Harmonize",
+    "Keyword.R116BeamMeUp",
     "Keyword.ReadAhead",
     "Keyword.Recover",
     "Keyword.Ripple",
@@ -1295,6 +1298,7 @@ const RUNS: &[&str] = &[
     "Rule.CanBeCommander",
     "Rule.AnyNumberInDeck",
     "Rule.UpToInDeck",
+    "Rule.R116Rulebreaker",
     "Rule.Draft",
     "Rule.CantBeCopied",
     "Rule.R110SacrificeTax",
@@ -1965,6 +1969,7 @@ mod tests {
     #[case::bolstering_triggers("Trigger.Bolstered", true)]
     #[case::expend_triggers("Trigger.Expend", true)]
     #[case::w11c_crime_triggers("Trigger.W11cCrime", true)]
+    #[case::r116_dilemma_triggers("Trigger.R116Dilemma", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::resolved_to_graveyard("Trigger.ResolvedToGraveyard", true)]
@@ -2009,6 +2014,7 @@ mod tests {
     #[case::commander_eligibility("Rule.CanBeCommander", true)]
     #[case::r5g_any_number_in_a_deck("Rule.AnyNumberInDeck", true)]
     #[case::fb27_up_to_in_a_deck("Rule.UpToInDeck", true)]
+    #[case::r116_rulebreaker("Rule.R116Rulebreaker", true)]
     #[case::w17b_untargetable_graveyards("Rule.GraveyardCardsUntargetable", true)]
     #[case::w17b_cant_lose("Rule.CantLoseGame", true)]
     #[case::w17b_cant_cast("Rule.CantCastSpells", true)]
@@ -2144,8 +2150,10 @@ mod tests {
     #[case::r6701_emerge_from_artifact("Keyword.R6701EmergeFromArtifact", true)]
     #[case::r111_ability_triggered("Trigger.R111AbilityTriggered", true)]
     #[case::r111_order_graveyard("Effect.R111OrderGraveyard", true)]
+    #[case::r116_assimilate("Effect.R116Assimilate", true)]
     #[case::r111_draw_by("ReplaceWhen.R111DrawBy", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
+    #[case::r116_beam_me_up("Keyword.R116BeamMeUp", true)]
     #[case::read_ahead("Keyword.ReadAhead", true)]
     #[case::recover("Keyword.Recover", true)]
     #[case::ripple("Keyword.Ripple", true)]

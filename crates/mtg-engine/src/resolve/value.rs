@@ -37,6 +37,7 @@ mod r5523_attacked;
 pub(crate) use r5520_atoms::{R5520_PAID, r5520_took};
 mod r114_targets;
 mod r115_colors;
+mod r116_counts;
 mod r6003_total;
 mod soulbond;
 mod w21a_atoms;
@@ -552,6 +553,7 @@ impl<'a> Scope<'a> {
             TurnTally::Sacrificed => Tally::Sacrificed,
             TurnTally::Descended => Tally::Descended,
             TurnTally::Crimes => Tally::G10cCrimes,
+            TurnTally::R116Dilemmas => Tally::R116Dilemmas,
             TurnTally::CardsGraved => Tally::G10cCardsGraved,
             TurnTally::CreatureCardsGraved => Tally::G10cCreatureCardsGraved,
             TurnTally::DungeonsCompleted => {
@@ -3574,6 +3576,9 @@ impl<'a> Scope<'a> {
                 }
             }
             return Ok(i64::try_from(subtypes.len()).unwrap_or(i64::MAX));
+        }
+        if stat == StatKind::CreatureType {
+            return self.r116_creature_types_among(of);
         }
         if stat == StatKind::Name {
             let mut names = BTreeSet::new();

@@ -9,16 +9,14 @@
       "abilities": [
         {
           "Triggered": {
-            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
             "effects": [
               {
                 "Continuous": {
                   "affected": {
-                    "Each": [
-                      { "Type": "Creature" },
-                      { "ControlledBy": "You" },
-                      { "HasCounter": { "Other": "x" } }
-                    ]
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
                   },
                   "mods": [{ "AddKeyword": "DoubleStrike" }],
                   "duration": "UntilEndOfTurn"

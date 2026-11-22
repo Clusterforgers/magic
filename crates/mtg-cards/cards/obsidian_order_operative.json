@@ -1,0 +1,22 @@
+{
+  "oracle_id": "7145e1b7-b991-4651-b21d-0620cb017090",
+  "name": "Obsidian Order Operative",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Obsidian Order Operative",
+      "oracle_fingerprint": "b7325776dd5d5fe1781b791c86a59aa1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "R116Dilemma": { "who": "You" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 1 } },
+              { "GainLife": { "amount": 1 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

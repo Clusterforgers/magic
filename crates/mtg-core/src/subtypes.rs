@@ -511,6 +511,7 @@ pub const KNOWN_SUBTYPES: &[&str] = &[
     "Robot",
     "Rogue",
     "Role",
+    "Romulan",
     "Room",
     "Rowan",
     "Rukh",

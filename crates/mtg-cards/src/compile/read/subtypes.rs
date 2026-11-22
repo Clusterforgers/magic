@@ -2,7 +2,7 @@
 
 /// The words after the dash of the type lines of creatures, artifacts, enchantments, lands and
 /// spells in the Oracle data, sorted (a two-word type such as "Time Lord" is two entries).
-const SUBTYPES: [&str; 456] = [
+const SUBTYPES: [&str; 457] = [
     "Adventure",
     "Advisor",
     "Aenar",
@@ -335,6 +335,7 @@ const SUBTYPES: [&str; 456] = [
     "Robot",
     "Rogue",
     "Role",
+    "Romulan",
     "Room",
     "Rune",
     "Sable",
@@ -499,7 +500,7 @@ const IRREGULAR_PLURALS: [(&str, &str); 12] = [
 ];
 
 /// The subtypes written the same in the plural.
-const SAME_PLURAL: [&str; 19] = [
+const SAME_PLURAL: [&str; 20] = [
     "Aetherborn",
     "Aurochs",
     "Dauthi",
@@ -517,6 +518,7 @@ const SAME_PLURAL: [&str; 19] = [
     "Samurai",
     "Sheep",
     "Soltari",
+    "Spacecraft",
     "Thalakos",
     "Treefolk",
 ];
@@ -586,6 +588,8 @@ mod tests {
     #[case("Vehicle")]
     #[case("Merfolk")]
     #[case("Spirit")]
+    #[case("Romulan")]
+    #[case("Borg")]
     fn the_types_the_readers_use_are_subtypes(#[case] word: &str) {
         assert!(is_subtype(word));
     }
@@ -613,6 +617,8 @@ mod tests {
     #[case("Aetherborn", "Aetherborn")]
     #[case("Equipment", "Equipment")]
     #[case("Armadillo", "Armadillos")]
+    #[case("Spacecraft", "Spacecraft")]
+    #[case("Klingon", "Klingons")]
     fn plurals_are_written_as_rules_text_writes_them(#[case] one: &str, #[case] many: &str) {
         assert_eq!(plural_subtype(one), many);
         assert_eq!(singular_subtype(many, is_subtype).as_deref(), Some(one));

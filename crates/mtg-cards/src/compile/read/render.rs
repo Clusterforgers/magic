@@ -641,6 +641,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     let mut texts = super::written_memo::or_last_resort(ability, texts, written_variants);
     super::wf27_writers::wf27_last_wordings(ability, &mut texts);
     super::r285_writers::r285_wordings(ability, &mut texts);
+    super::r116_05_mana::r116_chosen_color_wordings(ability, &mut texts);
     super::r406_actions::r406_wordings(ability, &mut texts);
     super::r4708_actions::r4708_wordings(ability, &mut texts);
     super::r5507_prevent::r5507_wordings(ability, &mut texts);
@@ -700,6 +701,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r114_04_wholes::r114_04_add_wholes(ability, &mut texts);
     super::r115_04_wholes::r115_04_add_wholes(ability, &mut texts);
     super::r116_04_wholes::r116_04_add_wholes(ability, &mut texts);
+    super::r116_01_wholes::r116_01_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
@@ -1680,13 +1682,9 @@ fn written(
             start += used;
             continue;
         }
-        // A choice of cards and the move of what was chosen are one sentence, which no joint splits.
-        if let [
-            choose @ (Effect::Choose { .. } | Effect::ChooseAtRandom { .. }),
-            moved @ Effect::Move { .. },
-            ..,
-        ] = &effects[start..]
-            && let Some(text) = chosen_move_text(choose, moved)
+        // A choice of cards and the move (or the assimilate) of what was chosen are one sentence, which no joint splits.
+        if let [choose, done, ..] = &effects[start..]
+            && let Some(text) = chosen_pair_text(choose, done)
         {
             unsplit(mask, start, 2)?;
             sentences.push(text);
@@ -1719,6 +1717,19 @@ fn written(
         start = end;
     }
     (targets.is_empty() || writer.named).then_some(sentences)
+}
+
+/// A choice of cards and what is done to the chosen ones, as one sentence: a move or an assimilate.
+fn chosen_pair_text(choose: &Effect, done: &Effect) -> Option<String> {
+    match (choose, done) {
+        (Effect::Choose { .. }, Effect::R116Assimilate { .. }) => {
+            super::r116_05_assimilate::r116_assimilate_chosen_text(choose, done)
+        }
+        (Effect::Choose { .. } | Effect::ChooseAtRandom { .. }, Effect::Move { .. }) => {
+            chosen_move_text(choose, done)
+        }
+        _ => None,
+    }
 }
 
 /// A choice of cards and the move of what was chosen as one sentence.
@@ -2052,6 +2063,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveFromCombat { .. }
                 | Effect::Regenerate { .. }
                 | Effect::Counter { .. }
+                | Effect::R116Assimilate { .. }
                 | Effect::Move { .. }
                 | Effect::CreateToken { who: Ref::You, .. }
                 | Effect::PutCounters { .. }
@@ -2114,6 +2126,17 @@ fn add_text(
     if let Some(text) = e14g_counted_mana(mana) {
         return (times.is_one() && only.is_empty() && lasts.is_step() && also.is_empty())
             .then_some(text);
+    }
+    if let Produce::AnyColor(count) = mana
+        && let Some(text) = super::r116_05_mana::r116_chosen_color_text(count)
+    {
+        if !times.is_one() || !lasts.is_step() || !also.is_empty() {
+            return None;
+        }
+        if only.is_empty() {
+            return Some(text);
+        }
+        return Some(format!("{text}. {}", spend::text(only)?));
     }
     // "Add {G}. If you control four or more creatures, add {G}{G} instead."
     if let Produce::Instead {
@@ -3047,6 +3070,7 @@ impl Writer<'_> {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
             Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
+            Effect::R116Assimilate { what } => format!("assimilate {}", self.object(what)?),
             Effect::Counter { what, bind: None } => format!("counter {}", self.object(what)?),
             _ => return None,
         })
@@ -3181,6 +3205,7 @@ impl Writer<'_> {
             | Effect::Fight { .. }
             | Effect::Regenerate { .. }
             | Effect::Unattach { .. }
+            | Effect::R116Assimilate { .. }
             | Effect::Counter { .. } => self.on_objects(effect)?,
             Effect::Continuous {
                 affected,

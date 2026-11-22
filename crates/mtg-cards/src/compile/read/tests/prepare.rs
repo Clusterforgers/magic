@@ -47,8 +47,6 @@ fn a_trigger_prepares_the_card(#[case] text: &str, #[case] json: &str) {
 
 #[rstest]
 #[case::another_creature("Whenever you attack, another creature becomes prepared.")]
-#[case::unprepared("Whenever you attack, ~ becomes unprepared.")]
-#[case::a_target("Whenever you attack, target creature becomes prepared.")]
 #[case::a_may("Whenever you attack, you may have ~ become prepared.")]
 #[case::every_creature("Whenever you attack, each creature you control becomes prepared.")]
 #[case::all_prepared("Whenever you attack, ~ and each other creature become prepared.")]

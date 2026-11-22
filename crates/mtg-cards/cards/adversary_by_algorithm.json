@@ -1,0 +1,33 @@
+{
+  "oracle_id": "37f3eda9-3242-4d62-846f-935543d8f4fd",
+  "name": "Adversary by Algorithm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Adversary by Algorithm",
+      "oracle_fingerprint": "cbf6b5334e878771a15ec2034b978256",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Illusion"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "R116BeamMeUp": "{3}{G}" } }
+      ]
+    }
+  ]
+}

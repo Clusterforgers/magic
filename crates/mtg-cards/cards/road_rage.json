@@ -22,13 +22,13 @@
                   "to": { "Target": 0 },
                   "amount": {
                     "Sum": [
+                      2,
                       {
                         "Count": [
                           { "AnyOf": [{ "Subtype": "Mount" }, { "Subtype": "Vehicle" }] },
                           { "ControlledBy": "You" }
                         ]
-                      },
-                      2
+                      }
                     ]
                   }
                 }

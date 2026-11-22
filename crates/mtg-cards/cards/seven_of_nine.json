@@ -1,0 +1,16 @@
+{
+  "oracle_id": "3c037865-d38c-48da-aee9-308975e12638",
+  "name": "Seven of Nine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seven of Nine",
+      "oracle_fingerprint": "1d8c0c8378f5145e2d119e67cf334c50",
+      "abilities": [
+        {
+          "Triggered": { "when": { "R116Dilemma": { "who": "You" } }, "effects": [{ "Draw": {} }] }
+        }
+      ]
+    }
+  ]
+}

@@ -12,7 +12,9 @@
         { "Keyword": "Trample" },
         {
           "Triggered": {
-            "when": { "PlayerAttacks": { "by": "You", "at": "Opponents" } },
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
             "effects": [
               {
                 "Continuous": {

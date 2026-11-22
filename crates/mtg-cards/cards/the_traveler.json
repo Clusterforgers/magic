@@ -1,0 +1,34 @@
+{
+  "oracle_id": "b61718eb-dc6a-4199-b7c7-42eccf4158e8",
+  "name": "The Traveler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Traveler",
+      "oracle_fingerprint": "2ffb3d6b232f838d4cdcf1ff7802168b",
+      "abilities": [
+        { "Keyword": "Reach" },
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  },
+                  "toughness": 3
+                }
+              }
+            ],
+            "defining": true
+          }
+        }
+      ]
+    }
+  ]
+}

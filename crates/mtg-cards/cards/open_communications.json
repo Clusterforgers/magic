@@ -1,0 +1,15 @@
+{
+  "oracle_id": "b08c5b86-4f84-46a3-877f-bbf71ec17adb",
+  "name": "Open Communications",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Open Communications",
+      "oracle_fingerprint": "21ad67b0e48dbc1cf0798ad10a61603f",
+      "abilities": [
+        { "Spell": { "effects": [{ "Draw": {} }] } },
+        { "Keyword": { "R116BeamMeUp": "{2}{U}" } }
+      ]
+    }
+  ]
+}

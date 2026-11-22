@@ -737,6 +737,13 @@ pub enum Effect {
         #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
         bind: Option<String>,
     },
+    /// Assimilates the objects (the Star Trek keyword action): a card is put onto the battlefield under the controller's
+    /// control with a +1/+1 counter, a permanent changes control to them for good and gets a +1/+1 counter; either becomes
+    /// a Borg artifact creature that loses all other creature types, for good.
+    R116Assimilate {
+        /// What is assimilated.
+        what: Ref,
+    },
     /// Regenerates permanents (CR 701.19): until end of turn, the next time each would be destroyed it is tapped,
     /// loses its damage and leaves combat instead.
     Regenerate {

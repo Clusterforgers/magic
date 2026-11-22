@@ -1,0 +1,27 @@
+{
+  "oracle_id": "66fc3c1e-acea-46eb-8af8-b0740f006add",
+  "name": "The Beacon of Kahless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Beacon of Kahless",
+      "oracle_fingerprint": "ab5984e8d587ad1ca305d14f63f3d1e1",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "AddMana": { "mana": { "AnyColor": { "Players": "AttackedThisTurn" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

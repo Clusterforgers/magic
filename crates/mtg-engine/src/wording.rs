@@ -849,6 +849,10 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} commit{s} a crime"), false)
         }
+        TriggerPattern::R116Dilemma { who: by } => {
+            let (name, s) = who(by);
+            (format!("{name} face{s} a dilemma"), false)
+        }
         TriggerPattern::Expend { who: by, n } => {
             let (name, s) = who(by);
             (format!("{name} expend{s} {n}"), false)
@@ -2179,6 +2183,18 @@ mod tests {
     #[case::w11c_you_commit_a_crime(
         r#"{"W11cCrime":{"who":"You"}}"#,
         "Whenever you commit a crime"
+    )]
+    #[case::r116_you_face_a_dilemma(
+        r#"{"R116Dilemma":{"who":"You"}}"#,
+        "Whenever you face a dilemma"
+    )]
+    #[case::r116_you_face_a_dilemma(
+        r#"{"R116Dilemma":{"who":"You"}}"#,
+        "Whenever you face a dilemma"
+    )]
+    #[case::r116_an_opponent_faces_a_dilemma(
+        r#"{"R116Dilemma":{"who":"Opponents"}}"#,
+        "Whenever an opponent faces a dilemma"
     )]
     #[case::w11c_an_opponent_commits_a_crime(
         r#"{"W11cCrime":{"who":"Opponents"}}"#,

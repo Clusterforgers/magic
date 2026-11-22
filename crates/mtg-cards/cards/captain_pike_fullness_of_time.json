@@ -1,0 +1,43 @@
+{
+  "oracle_id": "745633e6-8635-4d99-8a4e-edc5d500bb3d",
+  "name": "Captain Pike, Fullness of Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Pike, Fullness of Time",
+      "oracle_fingerprint": "00ea126254070c41b3ebd7f9f17f9720",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "SetPT": {
+                  "power": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  },
+                  "toughness": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ],
+            "defining": true
+          }
+        },
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": { "MayCast": { "what": [{ "Type": "Land" }], "from": "Library", "play": true } }
+          }
+        }
+      ]
+    }
+  ]
+}

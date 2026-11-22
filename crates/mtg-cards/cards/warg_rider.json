@@ -12,9 +12,9 @@
           "Static": {
             "affected": {
               "Each": [
-                { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
-                { "ControlledBy": "You" },
-                "Other"
+                { "AnyOf": [{ "Subtype": "Orc" }, { "Subtype": "Goblin" }] },
+                "Other",
+                { "ControlledBy": "You" }
               ]
             },
             "mods": [{ "AddKeyword": "Menace" }]

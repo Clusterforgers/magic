@@ -35,6 +35,20 @@ pub(super) fn w2c_distinct(r: &mut Reader<'_>, plural: bool) -> Option<Amount> {
                 stat: StatKind::BasicLandTypes,
             });
         }
+        // "differently named lands you control" (Strange new worlds) and "creature types among non-Borg creatures you
+        // control" (Federation).
+        if plural && r.words("differently named") {
+            return Some(Amount::Distinct {
+                of: defining::counted(r)?,
+                stat: StatKind::Name,
+            });
+        }
+        if plural && r.words("creature types among") {
+            return Some(Amount::Distinct {
+                of: defining::counted(r)?,
+                stat: StatKind::CreatureType,
+            });
+        }
         if r.words(if plural {
             "kinds of counters among"
         } else {
@@ -75,6 +89,15 @@ pub(super) fn w2c_distinct_text(amount: &Amount, plural: bool) -> Option<String>
         let name = if plural { "types" } else { "type" };
         return Some(format!(
             "basic land {name} among {}",
+            defining::counted_text(of)?
+        ));
+    }
+    if plural && *stat == StatKind::Name {
+        return Some(format!("differently named {}", defining::counted_text(of)?));
+    }
+    if plural && *stat == StatKind::CreatureType {
+        return Some(format!(
+            "creature types among {}",
             defining::counted_text(of)?
         ));
     }
