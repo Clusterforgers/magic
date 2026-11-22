@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "ffbf8948-e427-466d-8216-18025fb2bb6a",
+  "oracle_id": "bb203cf5-1545-43c7-8278-3720616c22f4",
+  "multiverse_ids": [],
+  "resource_id": "B0F930C6289236A821BC36DD2088005845050A55D7814781DC87740F7D7AC988",
+  "mtgo_id": 156898,
+  "tcgplayer_id": 726002,
+  "cardmarket_id": 919467,
+  "name": "Battle of Wolf 359",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/ffbf8948-e427-466d-8216-18025fb2bb6a",
+  "scryfall_uri": "https://scryfall.com/card/trc/57/battle-of-wolf-359?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-11-10T08:39:22Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.jpg?1794299962",
+    "normal": "https://cards.scryfall.io/normal/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.jpg?1794299962",
+    "large": "https://cards.scryfall.io/large/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.jpg?1794299962",
+    "png": "https://cards.scryfall.io/png/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.png?1794299962",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.jpg?1794299962",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.jpg?1794299962",
+    "thumb": "https://cards.scryfall.io/thumb/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.webp?1794299962",
+    "grid": "https://cards.scryfall.io/grid/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.webp?1794299962",
+    "display": "https://cards.scryfall.io/display/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.webp?1794299962",
+    "art": "https://cards.scryfall.io/art/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.webp?1794299962",
+    "crop": "https://cards.scryfall.io/crop/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.webp?1794299962",
+    "jpeg": "https://cards.scryfall.io/normal/front/f/f/ffbf8948-e427-466d-8216-18025fb2bb6a.jpg?1794299962"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5,
+  "type_line": "Sorcery",
+  "oracle_text": "All nonartifact creatures get -X/-X until end of turn, where X is the number of artifact creatures you control.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/ffbf8948-e427-466d-8216-18025fb2bb6a/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abb203cf5-1545-43c7-8278-3720616c22f4&unique=prints",
+  "collector_number": "57",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "With Picard's tactical knowledge guiding the Collective, the battle lasted only minutes. In the end, the Federation lost thirty-nine ships and eleven thousand souls.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Henry Peters",
+  "artist_ids": [
+    "2ffd9e06-94af-44f5-bec6-06f781941a6c"
+  ],
+  "illustration_id": "2e7f6f66-d9a2-4876-b0ef-e43fcaaaa616",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 19859,
+  "preview": {
+    "source": "Commander At Home",
+    "source_uri": "https://www.youtube.com/watch?v=2VJq4uR-r4s",
+    "previewed_at": "2026-10-26"
+  },
+  "prices": {
+    "usd": "0.73",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.62",
+    "eur_foil": null,
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DBattle%2Bof%2BWolf%2B359",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DBattle%2Bof%2BWolf%2B359",
+    "edhrec": "https://edhrec.com/route/?cc=Battle+of+Wolf+359"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726002%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919467&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156898?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

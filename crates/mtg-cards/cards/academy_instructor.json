@@ -1,0 +1,49 @@
+{
+  "oracle_id": "8802b7f0-1ed1-4872-9939-182afb8441ca",
+  "name": "Academy Instructor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Academy Instructor",
+      "oracle_fingerprint": "306cb1ecae4d98b57c57e5a81121a0b3",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              {
+                "ModifyPT": {
+                  "power": {
+                    "Count": [{ "Subtype": "Officer" }, "Token", { "ControlledBy": "You" }]
+                  },
+                  "toughness": 0
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Officer",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Officer"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

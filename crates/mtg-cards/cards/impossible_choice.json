@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e277ed07-2113-4465-a45c-a64490814c1d",
+  "name": "Impossible Choice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Impossible Choice",
+      "oracle_fingerprint": "d9f3817d02926fb9225519eddcf285b3",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Surgical Separation",
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        { "Destroy": { "what": { "Target": 0 } } },
+                        {
+                          "CreateToken": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "token": {
+                              "Custom": {
+                                "name": "Officer",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Officer"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Remain Fused",
+                      "effects": [
+                        { "Draw": { "count": 2 } },
+                        { "LoseLife": { "who": "EachPlayer", "amount": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

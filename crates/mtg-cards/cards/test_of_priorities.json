@@ -1,0 +1,53 @@
+{
+  "oracle_id": "cd24de4f-ce88-4fbb-9e8d-93ea7c260b4c",
+  "name": "Test of Priorities",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Test of Priorities",
+      "oracle_fingerprint": "d1840ccd56fd2f11d30aa533e78ad4cf",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Power to Engines",
+                      "effects": [{ "Surveil": { "count": 2 } }, { "Draw": {} }]
+                    },
+                    {
+                      "label": "Power to Life Support",
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                        }
+                      ],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+                        {
+                          "DelayedTrigger": {
+                            "when": { "StepBegins": { "step": "End" } },
+                            "effects": [
+                              {
+                                "Move": {
+                                  "what": { "Bound": "exiled" },
+                                  "to": { "Battlefield": {} }
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

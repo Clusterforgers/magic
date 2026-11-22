@@ -1,0 +1,32 @@
+{
+  "oracle_id": "46ba09a7-42e4-42cd-911c-71d0ade01180",
+  "name": "Locutus, the One Who Speaks",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Locutus, the One Who Speaks",
+      "oracle_fingerprint": "54cd0c99f8990855c3c95e3d9af144d0",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{W}{B}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
