@@ -166,6 +166,7 @@ mod r6001_feud;
 mod r6001_greymond;
 mod r6007_cards;
 mod r6013_pack;
+mod r603_carried_triggering;
 mod r6101_text_change;
 mod r6104_activation_copies;
 mod r6104_agrus_kos;
