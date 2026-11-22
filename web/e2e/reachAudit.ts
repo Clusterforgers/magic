@@ -7,6 +7,8 @@ export interface Screen {
   width: number
   height: number
   scale?: number
+  /** A phone, either way up: the table has a layout of its own there. */
+  phone?: true
   /** One of the few screens every stop of the gate is held to; the stops that crowd most are held to all of them. */
   core?: true
 }
@@ -38,8 +40,8 @@ export const SCREENS: readonly Screen[] = [
   { name: 'wide low window 1600x500', width: 1600, height: 500 },
   { name: 'tablet on its side 1024x768', width: 1024, height: 768, core: true },
   { name: 'tablet 768x1024', width: 768, height: 1024 },
-  { name: 'phone 390x844', width: 390, height: 844, core: true },
-  { name: 'phone on its side 844x390', width: 844, height: 390 },
+  { name: 'phone 390x844', width: 390, height: 844, core: true, phone: true },
+  { name: 'phone on its side 844x390', width: 844, height: 390, phone: true },
 ]
 
 /** What `reach` is asked. */
