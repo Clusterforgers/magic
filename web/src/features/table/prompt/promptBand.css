@@ -33,8 +33,7 @@
   &[data-home='dock'],
   &[data-home='bar'] {
     padding-block: 0;
-    /* The chip gives way first (its name ends in an ellipsis): the reading beside it, a cost in symbols, stays whole. */
-    grid-template-columns: minmax(0, auto) minmax(min-content, 1fr) auto auto;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
     grid-template-areas:
       'chip reading clock stops'
       'question question question question'
@@ -51,9 +50,23 @@
     grid-area: chip;
     justify-self: start;
     /* The reading beside it (a payment's symbols) keeps the rest of the line. */
+    max-width: min(16rem, 60cqi);
+    height: 2rem;
+  }
+  /*
+   * The dock's first line: the chip gives way first (its name ends in an ellipsis) and the reading beside it, a cost in
+   * symbols, stays whole; the room left over lies before the clock. Only that room is flexible, with no least width, so
+   * the parts that take the whole width (the question, the choices, the answers) widen no column.
+   */
+  &[data-home='dock'] {
+    grid-template-columns: minmax(0, auto) auto minmax(0, 1fr) auto;
+  }
+  &[data-home='dock'] > [data-slot='prompt-asker'] {
     min-width: min(4.5rem, 100%);
     max-width: min(16rem, 60cqi, 100%);
-    height: 2rem;
+  }
+  &[data-home='dock'] > [data-slot='response-clock'] {
+    justify-self: end;
   }
   &[data-home='dock'] > [data-slot='prompt-meter'],
   &[data-home='bar'] > [data-slot='prompt-meter'] {
