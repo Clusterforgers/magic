@@ -10,7 +10,7 @@ import { focusAnswers } from './prompt/homeKeys'
 import { KeyHint } from './prompt/KeyHint'
 import { ownDecision } from './prompt/ownDecision'
 import { HomeSlotsContext, useDecisionHome } from './prompt/useDecisionHome'
-import { DockFormContext, useDockForm } from './dockLayout'
+import { DockFormContext, DockWideContext, useDockForm } from './dockLayout'
 import type { DockForm } from './dockLayout'
 import { StopsDock } from './stops/StopsDock'
 import { TakeBackControls } from './TakeBackControls'
@@ -23,14 +23,24 @@ const SetSlotContext = createContext<(element: HTMLElement | null) => void>(() =
 
 /**
  * Lets the pass controls of a prompt draw inside the controls dock, wherever the prompt itself sits. `form` says how
- * much the dock writes (`DockForm`).
+ * much the dock writes (`DockForm`) and `wide` that it is at its widest (`DockWideContext`).
  */
-export function ControlsSlotProvider({ children, form = 'full' }: { children: ReactNode; form?: DockForm }) {
+export function ControlsSlotProvider({
+  children,
+  form = 'full',
+  wide = true,
+}: {
+  children: ReactNode
+  form?: DockForm
+  wide?: boolean
+}) {
   const [slot, setSlot] = useState<HTMLElement | null>(null)
   return (
     <SetSlotContext value={setSlot}>
       <SlotContext value={slot}>
-        <DockFormContext value={form}>{children}</DockFormContext>
+        <DockFormContext value={form}>
+          <DockWideContext value={wide}>{children}</DockWideContext>
+        </DockFormContext>
       </SlotContext>
     </SetSlotContext>
   )
@@ -148,6 +158,7 @@ export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
       data-region="controls"
       data-keep-clear="answers"
       data-tight={tight || undefined}
+      data-dock-form={form}
       className="relative min-h-0 min-w-0"
     >
       <div

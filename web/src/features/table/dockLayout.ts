@@ -16,6 +16,14 @@ export function useDockForm(): DockForm {
   return useContext(DockFormContext)
 }
 
+/** Whether the dock is at its widest, with the stops in a row of their own (`planTable().stopsRow`); true where there is no table around. */
+export const DockWideContext = createContext(true)
+
+/** True in the widest dock (`DockWideContext`): a question's line has room for the stops' switches beside their button. */
+export function useDockWide(): boolean {
+  return useContext(DockWideContext)
+}
+
 /** True in the dock of a phone: the pass controls leave "End turn" to their menu, so the primary button keeps the corner. */
 export function useCompactDock(): boolean {
   return useDockForm() === 'compact'

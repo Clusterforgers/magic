@@ -29,9 +29,20 @@ export function OpeningStatus({ floating = false }: { floating?: boolean } = {})
     <section
       aria-label="Opening hand decisions"
       data-slot="opening-status"
-      className={floating ? 'text-center' : 'basis-full'}
+      // The strip is one line high: there the list keeps to a line that scrolls sideways in the room the stack's chips
+      // leave (it asks for none of its own); the pods say the same.
+      className={
+        floating
+          ? 'text-center'
+          : 'min-w-32 flex-1 overflow-x-auto [contain:inline-size] [scrollbar-width:none]'
+      }
     >
-      <ul className={cn('flex flex-wrap gap-x-5 gap-y-1 text-sm', floating && 'justify-center')}>
+      <ul
+        className={cn(
+          'flex gap-x-5 gap-y-1 text-sm',
+          floating ? 'flex-wrap justify-center' : 'w-max flex-nowrap whitespace-nowrap',
+        )}
+      >
         {players.map((player) => {
           const kind = kindOf(player.mulligan)
           return (
@@ -39,7 +50,7 @@ export function OpeningStatus({ floating = false }: { floating?: boolean } = {})
               key={player.seat}
               data-seat-status={player.seat}
               data-status={kind}
-              className="min-w-0 [overflow-wrap:anywhere]"
+              className={floating ? 'min-w-0 [overflow-wrap:anywhere]' : 'shrink-0'}
             >
               <span className="font-medium">{player.seat === me ? 'You' : name(player.seat)}:</span>{' '}
               <span className={cn(kind === 'choosing' ? 'text-foreground' : 'text-muted-foreground')}>

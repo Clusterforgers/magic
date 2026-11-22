@@ -7,36 +7,38 @@ export interface Screen {
   width: number
   height: number
   scale?: number
+  /** One of the few screens every stop of the gate is held to; the stops that crowd most are held to all of them. */
+  core?: true
 }
 
 /** The screens of the reach gate: laptops and desktops first (short, zoomed, high-DPI, under browser bars, ultrawide), then a tablet and a phone each way up. */
 export const SCREENS: readonly Screen[] = [
-  { name: 'short laptop 1280x600', width: 1280, height: 600 },
+  { name: 'short laptop 1280x600', width: 1280, height: 600, core: true },
   { name: 'laptop 1280x720', width: 1280, height: 720 },
   { name: 'laptop 1280x720 under browser bars', width: 1280, height: 580 },
-  { name: 'laptop 1366x768', width: 1366, height: 768 },
-  { name: 'laptop 1366x768 under browser bars', width: 1366, height: 630 },
+  { name: 'laptop 1366x768', width: 1366, height: 768, core: true },
+  { name: 'laptop 1366x768 under browser bars', width: 1366, height: 630, core: true },
   { name: 'laptop 1440x900', width: 1440, height: 900 },
   { name: 'laptop 1536x864', width: 1536, height: 864 },
   { name: 'laptop 1536x864 under browser bars', width: 1536, height: 730 },
   { name: 'laptop 1600x900', width: 1600, height: 900 },
   { name: '16:10 laptop 1280x800', width: 1280, height: 800 },
   { name: '3:2 laptop 1500x1000', width: 1500, height: 1000 },
-  { name: 'desktop 1920x1080', width: 1920, height: 1080 },
+  { name: 'desktop 1920x1080', width: 1920, height: 1080, core: true },
   { name: 'desktop 1920x1080 under browser bars', width: 1920, height: 940 },
-  { name: '1920x1080 at 125 %', width: 1536, height: 864, scale: 1.25 },
+  { name: '1920x1080 at 125 %', width: 1536, height: 864, scale: 1.25, core: true },
   { name: '1920x1080 at 150 %', width: 1280, height: 720, scale: 1.5 },
-  { name: '1920x1080 at 175 %', width: 1097, height: 617, scale: 1.75 },
+  { name: '1920x1080 at 175 %', width: 1097, height: 617, scale: 1.75, core: true },
   { name: '1920x1080 at 175 % under browser bars', width: 1097, height: 540, scale: 1.75 },
-  { name: '1920x1080 at 200 %', width: 960, height: 540, scale: 2 },
+  { name: '1920x1080 at 200 %', width: 960, height: 540, scale: 2, core: true },
   { name: '1366x768 at 125 %', width: 1093, height: 614, scale: 1.25 },
   { name: 'high-DPI laptop 1440x900 at 2', width: 1440, height: 900, scale: 2 },
-  { name: 'ultrawide 2560x1080', width: 2560, height: 1080 },
+  { name: 'ultrawide 2560x1080', width: 2560, height: 1080, core: true },
   { name: 'ultrawide 3440x1440', width: 3440, height: 1440 },
   { name: 'wide low window 1600x500', width: 1600, height: 500 },
-  { name: 'tablet on its side 1024x768', width: 1024, height: 768 },
+  { name: 'tablet on its side 1024x768', width: 1024, height: 768, core: true },
   { name: 'tablet 768x1024', width: 768, height: 1024 },
-  { name: 'phone 390x844', width: 390, height: 844 },
+  { name: 'phone 390x844', width: 390, height: 844, core: true },
   { name: 'phone on its side 844x390', width: 844, height: 390 },
 ]
 
@@ -73,6 +75,15 @@ export function reach(ask: ReachAsk): Reach {
   const root = document.documentElement
   const inner = { width: root.clientWidth, height: root.clientHeight }
   const scroll = { width: root.scrollWidth, height: root.scrollHeight }
+  const styles = new Map<Element, CSSStyleDeclaration>()
+  const styleOf = (element: Element): CSSStyleDeclaration => {
+    let style = styles.get(element)
+    if (style === undefined) {
+      style = getComputedStyle(element)
+      styles.set(element, style)
+    }
+    return style
+  }
   const named = (element: Element): string => {
     const tag = element.tagName.toLowerCase()
     const slot = element.getAttribute('data-slot')
@@ -108,6 +119,13 @@ export function reach(ask: ReachAsk): Reach {
     '[role="combobox"]',
     '[tabindex]:not([tabindex="-1"])',
   ].join(',')
+  /** What is pressed or typed in, as opposed to a box that takes the keyboard for its contents. */
+  const PRESSED =
+    'button, a[href], input, select, textarea, summary, [role="button"], [role="link"], [role="tab"]'
+  /** A box clipped to a pixel: its words are for a screen reader alone. */
+  const readerOnly = (element: Element, style: CSSStyleDeclaration): boolean =>
+    style.position === 'absolute' &&
+    (style.clipPath !== 'none' || (element.clientWidth <= 1 && element.clientHeight <= 1))
   const exempt = ask.exempt.join(',')
   const overlays = (ask.overlays ?? []).join(',')
   const scrolling = new Set(['auto', 'scroll'])
@@ -117,7 +135,7 @@ export function reach(ask: ReachAsk): Reach {
     if (style.position === 'fixed') return null
     if (style.position !== 'absolute') return element.parentElement
     let up = element.parentElement
-    while (up !== null && getComputedStyle(up).position === 'static') up = up.parentElement
+    while (up !== null && styleOf(up).position === 'static') up = up.parentElement
     return up
   }
   interface Span {
@@ -136,12 +154,13 @@ export function reach(ask: ReachAsk): Reach {
     const start = Math.min(Math.max(span.start, box.start), Math.max(box.start, box.end - size))
     return { start, end: start + size }
   }
-  const cut =(span: Span, box: Span): Span => ({
+  const cut = (span: Span, box: Span): Span => ({
     start: Math.max(span.start, box.start),
     end: Math.max(Math.max(span.start, box.start), Math.min(span.end, box.end)),
   })
 
   const findings: string[] = []
+  const cutControls = new Set<Element>()
   let controls = 0
   // Under a dialog that takes the page (a modal) only the dialog's own controls are in reach.
   const modals = Array.from(document.querySelectorAll('[role="dialog"][aria-modal="true"], dialog[open]'))
@@ -150,20 +169,16 @@ export function reach(ask: ReachAsk): Reach {
     if (modal !== null && !modal.contains(element)) continue
     if (element.closest('[inert], [aria-hidden="true"], [hidden]') !== null) continue
     if (exempt !== '' && element.closest(exempt) !== null) continue
-    const style = getComputedStyle(element)
+    const style = styleOf(element)
     const rect = element.getBoundingClientRect()
     if (style.display === 'none' || style.visibility !== 'visible') continue
     // The contents of a closed disclosure and of a list row far off screen keep boxes but are not drawn (`content-visibility`).
     if (!element.checkVisibility({ contentVisibilityAuto: true })) continue
     // A field drawn by its label (a radio under a card, a file input under a button) has no box of its own to press.
     if (rect.width < 4 || rect.height < 4 || Number(style.opacity) === 0) continue
-    if (style.position === 'absolute' && style.clipPath !== 'none') continue
-    // A control nested in another is judged by the outer one.
-    if (
-      element.parentElement?.closest(SELECTOR) != null &&
-      element.matches('[tabindex]:not(button, a, input)')
-    )
-      continue
+    if (readerOnly(element, style)) continue
+    // A box that only takes the keyboard for what it holds (a tab's panel, a list that scrolls) is judged by its controls.
+    if (!element.matches(PRESSED) && element.querySelector(SELECTOR) !== null) continue
     controls += 1
     const full = { x: { start: rect.left, end: rect.right }, y: { start: rect.top, end: rect.bottom } }
     let x: Span = full.x
@@ -173,12 +188,17 @@ export function reach(ask: ReachAsk): Reach {
     let own: Element | null = element
     let ownStyle = style
     const scrollers: Element[] = []
+    let spoken = false
     // Every box on the way out either scrolls (it can show the control) or clips it for good.
     for (;;) {
       dim *= Number(ownStyle.opacity)
       const up: Element | null = holder(own, ownStyle)
       if (up === null || up === root || up === document.body) break
-      const upStyle = getComputedStyle(up)
+      const upStyle = styleOf(up)
+      if (readerOnly(up, upStyle)) {
+        spoken = true
+        break
+      }
       if (upStyle.display !== 'contents') {
         const box = up.getBoundingClientRect()
         const across = { start: box.left + up.clientLeft, end: box.left + up.clientLeft + up.clientWidth }
@@ -193,6 +213,10 @@ export function reach(ask: ReachAsk): Reach {
       }
       own = up
       ownStyle = upStyle
+    }
+    if (spoken) {
+      controls -= 1
+      continue
     }
     // The page itself scrolls down where it is meant to, never sideways.
     const windowDown = { start: 0, end: inner.height }
@@ -209,6 +233,7 @@ export function reach(ask: ReachAsk): Reach {
             ? 'the window'
             : `${named(clipper)} and the window`
       findings.push(`cut off: ${named(element)} at ${where}, ${Math.round(seen * 100)} % in view, by ${by}`)
+      cutControls.add(element)
       continue
     }
     if (dim < 0.05) {
@@ -274,15 +299,17 @@ export function reach(ask: ReachAsk): Reach {
     if (modal !== null && !modal.contains(parent)) continue
     if (parent.closest('[inert], [aria-hidden="true"], [hidden], svg, [role="img"]') !== null) continue
     if (exempt !== '' && parent.closest(exempt) !== null) continue
-    const style = getComputedStyle(parent)
+    const style = styleOf(parent)
     if (
       style.display === 'none' ||
       style.visibility !== 'visible' ||
       !parent.checkVisibility({ contentVisibilityAuto: true })
     )
       continue
-    // Text for a screen reader alone is clipped to a pixel on purpose.
-    if (style.position === 'absolute' && (style.clipPath !== 'none' || parent.clientWidth <= 1)) continue
+    if (readerOnly(parent, style)) continue
+    // A control that is cut off is one finding; its words are not named again.
+    const within = parent.closest(SELECTOR)
+    if (within !== null && cutControls.has(within)) continue
     range.selectNodeContents(node)
     for (const line of Array.from(range.getClientRects())) {
       if (line.width < 2 || line.height < 2) continue
@@ -297,10 +324,14 @@ export function reach(ask: ReachAsk): Reach {
       for (;;) {
         // The text's own box is the first that can clip it; after it, the boxes that hold that one.
         const up: Element | null = first ? own : holder(own, ownStyle)
-        const upStyle: CSSStyleDeclaration = first ? ownStyle : up === null ? ownStyle : getComputedStyle(up)
+        const upStyle: CSSStyleDeclaration = first ? ownStyle : up === null ? ownStyle : styleOf(up)
         if (!first) dim *= Number(ownStyle.opacity)
         first = false
         if (up === null || up === root || up === document.body) break
+        if (readerOnly(up, upStyle)) {
+          gone = true
+          break
+        }
         if (upStyle.display !== 'contents' && upStyle.display !== 'inline') {
           const box = up.getBoundingClientRect()
           const across = { start: box.left + up.clientLeft, end: box.left + up.clientLeft + up.clientWidth }

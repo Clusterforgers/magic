@@ -33,7 +33,8 @@
   &[data-home='dock'],
   &[data-home='bar'] {
     padding-block: 0;
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    /* The chip gives way first (its name ends in an ellipsis): the reading beside it, a cost in symbols, stays whole. */
+    grid-template-columns: minmax(0, auto) minmax(min-content, 1fr) auto auto;
     grid-template-areas:
       'chip reading clock stops'
       'question question question question'
@@ -50,7 +51,8 @@
     grid-area: chip;
     justify-self: start;
     /* The reading beside it (a payment's symbols) keeps the rest of the line. */
-    max-width: min(16rem, 60cqi);
+    min-width: min(4.5rem, 100%);
+    max-width: min(16rem, 60cqi, 100%);
     height: 2rem;
   }
   &[data-home='dock'] > [data-slot='prompt-meter'],
@@ -178,6 +180,20 @@
   overflow: hidden;
 }
 
+/*
+ * A short dock (`DockForm` `short`, 288 px) has no room for the asking chip, a reading and the Stops button on one
+ * line: the reading (a payment's cost in symbols) takes the line under the chip, so neither lies over the other.
+ */
+[data-dock-form='short']
+  .decision-home[data-home='dock']:has(> [data-slot='prompt-asker']):has(> [data-slot='prompt-meter']) {
+  grid-template-areas:
+    'chip chip clock stops'
+    'reading reading reading reading'
+    'question question question question'
+    'choices choices choices choices'
+    'answers answers answers answers';
+}
+
 /* Priority in the dock: its sentence is one short line over the pass controls, so the stops above keep their room. */
 .decision-home[data-home='dock'][data-decision='Priority'] {
   row-gap: 0;
@@ -191,6 +207,14 @@
     font-size: 0.875rem;
     line-height: 1.125rem;
   }
+}
+
+/* Priority in a phone's bar: one line too, so the Stack chip's line above it and the pass controls under it fit the bar. */
+.decision-home[data-home='bar'][data-decision='Priority']
+  [data-slot='prompt-sentence']
+  .prompt-sentence-clamp {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
 }
 
 /* The top item of the stack: the gold outline of what resolves next. */
