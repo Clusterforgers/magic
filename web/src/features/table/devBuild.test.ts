@@ -10,6 +10,7 @@ import { UNVALIDATED_FIXTURE_MARKER } from '@/features/decks/unvalidated/fixture
 import { PRECONS_FIXTURE_MARKER } from '@/features/precons/dev/fixture'
 import { BULK_READS_FIXTURE_MARKER } from '@/features/bulk-reads/dev/fixture'
 import { READS_FIXTURE_MARKER } from '@/features/reads/dev/fixture'
+import { SUPPORT_FIXTURE_MARKER } from '@/features/cardSupport/dev/fixture'
 import { COMMANDERS } from './dev/cards'
 import { FIXTURE_MARKER } from './dev/fixture'
 
@@ -43,6 +44,7 @@ const FIXTURE_TRACES = [
   PRECONS_FIXTURE_MARKER,
   BULK_READS_FIXTURE_MARKER,
   READS_FIXTURE_MARKER,
+  SUPPORT_FIXTURE_MARKER,
   'Tidecaller of the Long Shoal',
   UNVALIDATED_FIXTURE_MARKER,
   'Wolfeschlegelsteinhausenbergerdo',

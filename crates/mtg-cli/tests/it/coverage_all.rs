@@ -46,6 +46,8 @@ fn args(top: usize, out: Option<&Path>) -> CoverageArgs {
         top,
         all: true,
         out: out.map(Path::to_path_buf),
+        snapshot: false,
+        release: None,
     }
 }
 

@@ -29,7 +29,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Done
 
 - Foundations: workspace, lint rules, CI, `CLAUDE.md`, local Postgres and the React stack.
-- Card data: Scryfall and MTGJSON import, deck-list parsers and exporters, the schema with card search and precons, and `mtg-cli` (fetch, ingest, migrate, compile, coverage, fix-marks, promote).
+- Card data: Scryfall and MTGJSON import, deck-list parsers and exporters, the schema with card search and precons, `mtg-cli` (fetch, ingest, migrate, compile, coverage, fix-marks, promote) and the daily refresh with its Card support page (`docs/deploy.md`, Card data).
 - Engine: zones, turns, priority, stack, combat with forecast, the stack forecast of the top item and of a target answer, layers (CR 613), replacement and prevention, counters, planeswalkers, battles and Sieges, attachments, copies and faces, Rooms, soulbond, mutate, phasing, day and night, vehicles, the Monarch, the initiative and speed, Attractions and tickets, banding, splice, coin flips with Krark's Thumb, bots, `mtg-testkit` (`docs/engine.md`).
 - Card language and compiler: the DSL, the reader framework, the renderer with goldens, the corpus ratchet, templates for every ability shape and stored `card_rules` (`docs/cards-dsl.md`).
 - Protocol and server: generated bindings with a drift test, the game actor, a WebSocket per seat, persistence and resume, accounts (the admin makes, resets and removes them), lobbies, open games, precons, concurrent keep and mulligan, seat presence, the snapshot log, spectators (`docs/protocol.md`, `docs/server.md`).
@@ -74,6 +74,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
+- [ ] (rl1) A deck a seat chooses in the lobby is written into the stored recipe at once, like the teams, so a restart before the start keeps it (a seat made without a deck holds a stand-in until then)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
 - [ ] (pf9b2) Prompt cards under 76 px wide draw a compact face (name, cost, power and toughness) whole instead of cutting the full face's foot line

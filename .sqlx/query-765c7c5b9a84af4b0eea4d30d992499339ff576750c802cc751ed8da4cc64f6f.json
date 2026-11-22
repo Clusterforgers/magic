@@ -1,0 +1,33 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id FROM (\n                   SELECT id, release, cards, automatic, states, buckets, missing\n                   FROM coverage_snapshots ORDER BY taken_at DESC, id DESC LIMIT 1\n               ) newest\n               WHERE release IS NOT DISTINCT FROM NULLIF($1, '') AND cards = $2 AND automatic = $3\n                 AND states = $4 AND buckets = $5 AND missing = $6",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int4",
+        "Int4",
+        "Jsonb",
+        "Jsonb",
+        "Jsonb"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "765c7c5b9a84af4b0eea4d30d992499339ff576750c802cc751ed8da4cc64f6f"
+}

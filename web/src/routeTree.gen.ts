@@ -22,6 +22,7 @@ import { Route as ReadRouteImport } from './routes/read'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as TournamentsRouteImport } from './routes/tournaments'
 import { Route as AdminGamesRouteImport } from './routes/admin.games'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
@@ -34,6 +35,7 @@ import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
 import { Route as DevPreconsRouteImport } from './routes/dev.precons'
 import { Route as DevReadRouteImport } from './routes/dev.read'
 import { Route as DevReadBulkRouteImport } from './routes/dev.read-bulk'
+import { Route as DevSupportRouteImport } from './routes/dev.support'
 import { Route as DevTableRouteImport } from './routes/dev.table'
 import { Route as DevUnvalidatedRouteImport } from './routes/dev.unvalidated'
 import { Route as GameGameIdRouteImport } from './routes/game.$gameId'
@@ -110,6 +112,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TournamentsRoute = TournamentsRouteImport.update({
   id: '/tournaments',
   path: '/tournaments',
@@ -168,6 +175,11 @@ const DevReadRoute = DevReadRouteImport.update({
 const DevReadBulkRoute = DevReadBulkRouteImport.update({
   id: '/dev/read-bulk',
   path: '/dev/read-bulk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevSupportRoute = DevSupportRouteImport.update({
+  id: '/dev/support',
+  path: '/dev/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevTableRoute = DevTableRouteImport.update({
@@ -235,6 +247,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/tournaments': typeof TournamentsRoute
   '/admin/games': typeof AdminGamesRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
@@ -247,6 +260,7 @@ export interface FileRoutesByFullPath {
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -272,6 +286,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/tournaments': typeof TournamentsRoute
   '/admin/games': typeof AdminGamesRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
@@ -284,6 +299,7 @@ export interface FileRoutesByTo {
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -310,6 +326,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/tournaments': typeof TournamentsRoute
   '/admin/games': typeof AdminGamesRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
@@ -322,6 +339,7 @@ export interface FileRoutesById {
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
   '/game/$gameId': typeof GameGameIdRoute
@@ -349,6 +367,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/support'
     | '/tournaments'
     | '/admin/games'
     | '/decks/$deckId'
@@ -361,6 +380,7 @@ export interface FileRouteTypes {
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -386,6 +406,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/support'
     | '/tournaments'
     | '/admin/games'
     | '/decks/$deckId'
@@ -398,6 +419,7 @@ export interface FileRouteTypes {
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -423,6 +445,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/support'
     | '/tournaments'
     | '/admin/games'
     | '/decks_/$deckId'
@@ -435,6 +458,7 @@ export interface FileRouteTypes {
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
     | '/game/$gameId'
@@ -461,6 +485,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ReviewRoute: typeof ReviewRoute
   SettingsRoute: typeof SettingsRoute
+  SupportRoute: typeof SupportRoute
   TournamentsRoute: typeof TournamentsRoute
   AdminGamesRoute: typeof AdminGamesRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
@@ -473,6 +498,7 @@ export interface RootRouteChildren {
   DevPreconsRoute: typeof DevPreconsRoute
   DevReadRoute: typeof DevReadRoute
   DevReadBulkRoute: typeof DevReadBulkRoute
+  DevSupportRoute: typeof DevSupportRoute
   DevTableRoute: typeof DevTableRoute
   DevUnvalidatedRoute: typeof DevUnvalidatedRoute
   GameGameIdRoute: typeof GameGameIdRoute
@@ -578,6 +604,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/tournaments': {
       id: '/tournaments'
       path: '/tournaments'
@@ -660,6 +693,13 @@ declare module '@tanstack/react-router' {
       path: '/dev/read-bulk'
       fullPath: '/dev/read-bulk'
       preLoaderRoute: typeof DevReadBulkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev/support': {
+      id: '/dev/support'
+      path: '/dev/support'
+      fullPath: '/dev/support'
+      preLoaderRoute: typeof DevSupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev/table': {
@@ -749,6 +789,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ReviewRoute: ReviewRoute,
   SettingsRoute: SettingsRoute,
+  SupportRoute: SupportRoute,
   TournamentsRoute: TournamentsRoute,
   AdminGamesRoute: AdminGamesRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,
@@ -761,6 +802,7 @@ const rootRouteChildren: RootRouteChildren = {
   DevPreconsRoute: DevPreconsRoute,
   DevReadRoute: DevReadRoute,
   DevReadBulkRoute: DevReadBulkRoute,
+  DevSupportRoute: DevSupportRoute,
   DevTableRoute: DevTableRoute,
   DevUnvalidatedRoute: DevUnvalidatedRoute,
   GameGameIdRoute: GameGameIdRoute,

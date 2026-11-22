@@ -59,7 +59,7 @@ Limits per socket: `Join` within 10 s of the upgrade; frames and messages of 64 
 - A recipe, seat rows or log that do not load (a replay panic included), a changed or lost deck or card and a started game with an unheld seat mark the game `failed`; only an unreachable database stops boot. A `failed` game is not retried (fix the row and set `running` by hand) or loaded, so its tokens, lookup and sockets answer 404.
 - A failure has two texts: `failure`, the operator's detail (error, seat, fingerprints), also logged; and `failure_reason`, one sentence for the players from `Cause` (`registry/cause.rs`) with no internals. My games shows "This game could not be restored, so it cannot continue." for a `failed` game without a reason.
 - A lobby returns with its visibility, join code and claims, nobody ready, and its age: past `Retention::lobby_after` (database clock) it becomes `expired`. A started game with an open seat does not load; a running one gets a fresh `abandoned_after` without a connection. `MTG_MAX_GAMES` limits creation only.
-- Teams the lobby sets are written into the stored recipe at once (`GameRecords::set_lobby_teams`), so a restart before the start keeps them; a resumed lobby takes them back as the draft they were, checked whole only at the start. Other lobby choices are not stored until the start: a restarted lobby reads its recipe, so a seat returns on its built-in deck, and a seat whose recipe names a stored deck has none until it chooses again.
+- Teams the lobby sets are written into the stored recipe at once (`GameRecords::set_lobby_teams`), so a restart before the start keeps them; a resumed lobby takes them back as the draft they were, checked whole only at the start. Other lobby choices are not stored until the start: a restarted lobby reads its recipe, so every seat returns on the deck the recipe names (a built-in deck by id; a deck of oracle ids rebuilt from the card database with its printings, by-hand cards, companion, Attractions, stickers and Satchel, under the name the table was told, `DeckRef::Oracle.note`), and a deck chosen in the lobby after creation is lost.
 
 ### Deck check
 
@@ -282,6 +282,15 @@ Public and read-only (`card_api.rs`). `GET /api/cards` searches the deck cards (
 - One row per account and card (`PRIMARY KEY (user_id, oracle_id)`); a second `PUT` replaces the note and keeps the time. An account holds at most `MAX_FIX_MARKS_PER_USER` (500): a new card beyond it is 409 `fix_mark_limit` (a note on a marked card is always taken), checked under an advisory lock of the account (`FixMarkRepo::mark_within`); a `wrong` read past the cap keeps its verdict without a mark. Marks and unmarks count per account (`AttemptLimits::fix_mark_writes_per_user`, 200 per `window`, 429 `rate_limited`). `user_id` has no foreign key (`Accounts::delete_user` deletes the marks); a card deleted from `cards` takes them. An unknown card or a non-uuid id is 404 `not_found`.
 - A note is trimmed; an empty one is none. It holds at most 280 characters (`MAX_FIX_NOTE_CHARS`; the table checks the same limit) and no control character but a line break, else 400 `invalid_request`.
 - No endpoint shows another account's mark. `FixMarkRepo::ranked(limit)` counts accounts per card, most marked first, ties by the newest mark and then name; `mtg-cli fix-marks` adds the support state and prints it ([data-sources.md](data-sources.md)), and `check-rules --gaps --marks` weighs gaps by the marks of the cards they free.
+
+### Card support
+
+`card_support.rs` and `mtg-db`'s `CardFeedRepo` (`card_refresh_runs`, `coverage_snapshots`). Both routes need a signed-in account: 503 `cards_unavailable` without a database, then 401 `unauthenticated`.
+
+- `GET /api/card-support` answers `CardSupport`: the newest snapshot (counts per state, popularity buckets, how many cards are missing), the trend over the newest `MAX_SUPPORT_HISTORY` (120) snapshots oldest first, the newest refresh run (`last_check`) and the feed, newest first, at most `MAX_FEED_EVENTS` (40).
+- The feed is built from the rows: a refresh run gives `new_precons` per set code and `new_cards` at its start, or `check_failed`; a first load is no news. A snapshot gives `now_automatic` when cards play automatically that did not in the snapshot before, or when its release differs from the one before. An event names at most `MAX_FEED_NAMES` (30) cards; its count is whole.
+- `GET /api/card-support/missing` answers `MissingCards`: the newest snapshot's cards that do not play automatically, the most played first, each with its state, its first blocker in plain words and as the coverage report labels it, and its rank.
+- The rows are written by `mtg-cli refresh` and `mtg-cli coverage --all --snapshot` ([data-sources.md](data-sources.md)). A snapshot is stored only when it differs from the newest; only the newest two keep their missing cards.
 
 ### Reads
 

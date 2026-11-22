@@ -32,7 +32,9 @@ pub mod progress;
 pub mod propose;
 pub mod read_candidates;
 pub mod reads;
+pub mod refresh;
 pub mod semantic_audit;
+pub mod snapshot;
 pub mod status;
 pub mod translate;
 pub mod w19b_pairs;
@@ -132,6 +134,7 @@ pub async fn run(cli: Cli, progress: Progress) -> Result<String, CliError> {
             forge::forge_check(&connect(cli.database_url).await?, &args).await
         }
         Command::TranslateForge(args) => translate_command(cli.database_url, &cache, &args).await,
+        Command::Refresh(args) => refresh_command(cli.database_url, &cache, &args, progress).await,
         Command::Coverage(args) => {
             coverage::report(&connect(cli.database_url).await?, &cache, &args).await
         }
@@ -230,6 +233,18 @@ async fn fix_mark_counts(db: &Database) -> Result<gaps::Marks, CliError> {
 }
 
 /// The database the URL names, or the error that asks for one.
+/// `refresh`: the daily card refresh against the real Scryfall and MTGJSON.
+async fn refresh_command(
+    url: Option<String>,
+    cache: &Cache,
+    args: &args::RefreshArgs,
+    progress: Progress,
+) -> Result<String, CliError> {
+    let db = connect(url).await?;
+    let http = Http::new(&HttpConfig::default(), progress.clone())?;
+    refresh::refresh(&db, cache, &http, &Endpoints::real()?, args, &progress).await
+}
+
 async fn connect(url: Option<String>) -> Result<Database, CliError> {
     let url = url.ok_or_else(missing_database_url)?;
     Ok(Database::connect(&url).await?)
