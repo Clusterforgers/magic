@@ -1,5 +1,6 @@
-//! Main's bot brains, frozen for match tests against the current ones (`bot_tournament`, `old-<level>`). Bot brains: what answers a seat's decisions for a server bot or a test harness, from random play to a heuristic
-//! player that searches clones of the engine.
+//! Main's bot brains, frozen for match tests against the current ones (`bot_tournament`, `bot_suite`, `old-<level>`):
+//! what answers a seat's decisions for a server bot or a test harness, from random play to a heuristic player that
+//! searches clones of the engine.
 //!
 //! Every brain implements [`SeatBrain`]. [`Level::Easy`] is [`EasyBrain`] (a land when it can, else a random legal
 //! answer); [`Level::Normal`], [`Level::Hard`] and [`Level::VeryHard`] are a [`HeuristicBot`] with

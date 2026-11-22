@@ -158,7 +158,7 @@ pub fn plan_priority(
     let Judged { mut play, cut } =
         judge_plays(search, engine, &seen, window, &plays, horizon, follow_ups);
     // The clock or the count ran out before every play was judged: judge them again until the stack settles, on a short
-    // clock of its own, rather than pass for want of time; a walker that still has nothing judged uses its first ability.
+    // clock of its own, rather than pass for want of time; a walker with nothing judged still uses its first ability.
     if cut && play == PriorityAction::Pass && window != Window::Combat {
         let mut quick = Search::new(search.seat(), search.settings().quick(), 0x51_E77E);
         let again = judge_plays(

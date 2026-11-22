@@ -533,7 +533,8 @@ impl Search {
     /// A seat's play in a simulation, judged as a good player plays: in its main phase on an empty stack a land, else
     /// each of its costliest castable spells (by name, at most [`JUDGED_CASTS`]) cast on a copy, the stack settled (the
     /// opponents' counters included) and the position scored for the caster; the best that beats keeping the cards by
-    /// [`JUDGED_MARGIN`], else a loyalty ability ([`walker_play`]), else a pass. Other windows play as [`rollout_play`] does.
+    /// [`JUDGED_MARGIN`], else a loyalty ability ([`walker_play`]), else a pass. Other windows play as [`rollout_play`]
+    /// does.
     fn judged_play(
         &mut self,
         engine: &Engine,
@@ -625,7 +626,8 @@ impl Search {
 
 /// A seat's own play in a look-ahead simulation: over an opposing spell a counterspell when the spell is worth it
 /// ([`counter_reply`]); on an empty stack in its main phase a land, else its most expensive castable permanent or
-/// sorcery spell, else a loyalty ability ([`walker_play`]); at an opponent's end step its most expensive castable instant (removal, burn); else a pass.
+/// sorcery spell, else a loyalty ability ([`walker_play`]); at an opponent's end step its most expensive castable
+/// instant (removal, burn); else a pass.
 fn rollout_play(
     engine: &Engine,
     options: &mtg_engine::decision::PriorityOptions,
