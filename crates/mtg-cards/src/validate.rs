@@ -2283,7 +2283,18 @@ impl<'a> Walker<'a> {
             self.uses("Ability", "AdditionalCost.Required.Mana.X");
         }
         // The X a required cost counts is the one the caster announces as the spell is cast.
-        let saved = std::mem::replace(&mut self.x_now, required && cost.has_x());
+        // An optional sacrifice by the X ("you may sacrifice a creature with power X", casualty X) announces its X with
+        // the pick when it is chosen; not chosen, X is 0.
+        let picks_by_x = !required
+            && !cost.0.is_empty()
+            && cost
+                .0
+                .iter()
+                .all(|item| matches!(item, CostItem::Sacrifice { filter, count } if *count == Amount::one() && filter.r301_reads_x()));
+        if picks_by_x {
+            self.uses("Ability", "R116AdditionalCost.PicksByX");
+        }
+        let saved = std::mem::replace(&mut self.x_now, (required && cost.has_x()) || picks_by_x);
         let choosing = std::mem::replace(&mut self.choosing, required);
         let capping = std::mem::replace(&mut self.r5523_spell_cap, required && self.nested == 0);
         if cost.0.len() > 1 && cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_))) {
@@ -2679,14 +2690,18 @@ impl<'a> Walker<'a> {
         }
     }
 
-    /// An ability is activated from the battlefield, a hand, a graveyard, exile or the command zone, and a cost that
-    /// needs its source in a place is only paid from there: `{T}`, `{Q}` and sacrificing it on the battlefield,
+    /// An ability is activated from the battlefield, a hand, a graveyard, exile, the command zone or the stack, and a cost
+    /// that needs its source in a place is only paid from there: `{T}`, `{Q}` and sacrificing it on the battlefield,
     /// discarding it from a hand.
     fn activated_zone(&mut self, cost: &Cost, from: ZoneKind) {
-        if matches!(from, ZoneKind::Library | ZoneKind::Stack) {
+        if from == ZoneKind::Library {
             self.problem(
-                "an activated ability works from the battlefield, a hand, a graveyard, exile or the command zone",
+                "an activated ability works from the battlefield, a hand, a graveyard, exile, the command zone or the stack",
             );
+        }
+        // "Any player may activate this ability but only if ~ is on the stack" (CR 113.6).
+        if from == ZoneKind::Stack {
+            self.uses("Ability", "R116ActivatedFromStack");
         }
         for item in &cost.0 {
             let (needs, place) = match item {
@@ -3916,7 +3931,21 @@ impl Walker<'_> {
         if except.contains(&Modification::ThisAbility) {
             self.problem(THIS_ABILITY_BECOMES_ONLY);
         }
-        self.copy_exceptions(except);
+        // A starting loyalty or a power and toughness by an amount ("has starting loyalty X") is counted as the copy of
+        // the spell is made (CR 707.9b).
+        let (counted, rest): (Vec<Modification>, Vec<Modification>) =
+            except.iter().cloned().partition(|modification| {
+                matches!(modification, Modification::SetLoyalty(amount) if !matches!(amount, Amount::Fixed(_)))
+                    || matches!(modification, Modification::SetPT { power, toughness }
+                        if !matches!((power, toughness), (Amount::Fixed(_), Amount::Fixed(_))))
+            });
+        for (i, modification) in counted.iter().enumerate() {
+            self.at(format!("except[{i}]"), |w| {
+                w.modification(modification);
+                w.uses("Copy", "Except.R116Counted");
+            });
+        }
+        self.copy_exceptions(&rest);
     }
 
     /// The exceptions of a token that is a copy: base power and toughness set by amounts ("half that creature's power")
@@ -6390,7 +6419,11 @@ impl Walker<'_> {
                 .any(|item| matches!(item, CostItem::R114RollDie(_)));
         self.x_now = self.x_free;
         self.activated_cost = true;
+        // The targets are chosen before the total cost is worked out (CR 601.2c, 601.2f): an X the text defines may read
+        // them ("X is twice the mana value of that spell").
+        let outer_scope = std::mem::replace(&mut self.scope, Scope::new(targets, false));
         self.at("cost", |w| w.cost(cost));
+        self.scope = outer_scope;
         self.at("from", |w| w.activated_zone(cost, from));
         self.activated_cost = false;
         if let Some(condition) = condition {
@@ -8557,6 +8590,7 @@ pub(crate) fn check_printed(
         let additional_x = card.faces.get(face).is_some_and(|face| {
             face.abilities.iter().any(|ability| {
                 matches!(ability, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x())
+                    || r116_picks_by_x(ability)
             })
         });
         if !printed.faces[face].mana_cost.contains("{X}") && !kicker_x && !additional_x {
@@ -8581,6 +8615,15 @@ pub(crate) fn check_printed(
 /// `AddKeyword`s and the keyword abilities of tokens and of granted abilities, which Scryfall lists
 /// for "Enchanted creature has flying" and "a token with flying" as for a keyword line), or a
 /// `Manual` clause names it in that face's printed text (a typecycling or landwalk form).
+/// Whether the ability is an optional sacrifice of one permanent by the X the caster announces with it ("you may
+/// sacrifice a creature with power X", casualty X).
+fn r116_picks_by_x(ability: &Ability) -> bool {
+    matches!(ability, Ability::AdditionalCost { cost, required: false, .. }
+        if !cost.0.is_empty()
+            && cost.0.iter().all(|item| matches!(item, CostItem::Sacrifice { filter, count }
+                if *count == Amount::one() && filter.r301_reads_x())))
+}
+
 fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Keyword]) -> bool {
     granted.iter().any(|k| lists(k, keyword))
         // Equip with an option is the attach abilities, which the equip line of the text stands for.
@@ -8589,6 +8632,9 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
                 (0..face.abilities.len())
                     .any(|at| crate::compile::equip_line(&face.abilities[at..]).is_some())
             }))
+        // Casualty X is its optional sacrifice by X and its copy trigger (`r116_picks_by_x`).
+        || (keyword.eq_ignore_ascii_case("Casualty")
+            && card.abilities().any(|(_, ability)| r116_picks_by_x(ability)))
         || card.abilities().any(|(face, ability)| match ability {
             Ability::Keyword(k) => lists(k, keyword),
             ability if mentions_keyword(ability, keyword) => true,
@@ -9457,9 +9503,9 @@ mod tests {
         r#"{"Activated":{"cost":"{1}","from":"Library","effects":[{"Draw":{}}]}}"#,
         "abilities[0].Activated.from: an activated ability works from the battlefield, a hand"
     )]
-    #[case::activated_from_the_stack(
-        r#"{"Activated":{"cost":"{1}","from":"Stack","effects":[{"Draw":{}}]}}"#,
-        "abilities[0].Activated.from: an activated ability works from the battlefield, a hand"
+    #[case::tapping_from_the_stack(
+        r#"{"Activated":{"cost":["Tap"],"from":"Stack","effects":[{"Draw":{}}]}}"#,
+        "abilities[0].Activated.from: `Tap` is paid from the battlefield"
     )]
     #[case::a_state_among_events(
         r#"{"Triggered":{"when":{"AnyOf":[{"Attacks":{"what":["This"]}},{"State":{"condition":"YourTurn"}}]},"effects":[{"Draw":{}}]}}"#,

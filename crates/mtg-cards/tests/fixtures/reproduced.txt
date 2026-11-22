@@ -449,6 +449,7 @@ Chitterspitter
 Choked Estuary
 Chomping Kavu
 Chromanticore
+Chromatic Armor
 Chromatic Lantern
 Churning Reservoir
 Cinder Glade
@@ -1541,6 +1542,7 @@ Light Up the Stage
 Lightform
 Lightning Bolt
 Lightning Greaves
+Lightning Storm
 Lightning, Security Sergeant
 Lignify
 Lilah, Undefeated Slickshot
@@ -2035,6 +2037,7 @@ Primitive Etchings
 Primordial Hydra
 Prismatic Geoscope
 Prismatic Lens
+Prismatic Ward
 Prison Sentence
 Prisoner's Dilemma
 Prize Wall
@@ -2133,6 +2136,7 @@ Redcap Heelslasher
 Redemption Choir
 Redress Fate
 Reed Richards, Smartest Man
+Reflecting Mirror
 Reflecting Pool
 Reflections of Littjara
 Reforge the Soul

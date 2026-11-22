@@ -46,11 +46,12 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
                 .ok_or_else(|| invalid(format!("{named:?} is not in the game")))?;
             let counters = if let Some(permanent) = object.permanent.as_mut() {
                 &mut permanent.counters
-            } else if object.zone == Zone::Exile {
+            } else if matches!(object.zone, Zone::Exile | Zone::Stack) {
+                // A card in exile and a spell on the stack hold counters too (CR 122.1); they leave with the zone.
                 &mut object.card_counters
             } else {
                 return Err(invalid(format!(
-                    "{named:?} is not a permanent on the battlefield or a card in exile"
+                    "{named:?} is not a permanent on the battlefield, a spell or a card in exile"
                 )));
             };
             change(counters, &event.counter, event.delta)?;
