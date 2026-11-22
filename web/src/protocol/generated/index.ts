@@ -392,6 +392,7 @@ export type { SpendKind } from "./SpendKind";
 export type { SpendOn } from "./SpendOn";
 export type { SpendTraits } from "./SpendTraits";
 export type { SpentFrom } from "./SpentFrom";
+export type { StackStops } from "./StackStops";
 export type { Stage } from "./Stage";
 export type { StandingView } from "./StandingView";
 export type { StateView } from "./StateView";

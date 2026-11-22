@@ -35,6 +35,8 @@ pub struct StoredPrefs {
     pub hand_sort: Option<Value>,
     /// Whether the account's seats start every game in Full Control held.
     pub full_control_held: bool,
+    /// Which objects on top of the stack the seats of the account are asked at, as the server wrote it (`All` by default).
+    pub stack_stops: String,
 }
 
 /// The stops an account that saved none has pinned: its own declare attackers step and its postcombat main phase.
@@ -60,6 +62,7 @@ impl Default for StoredPrefs {
             auto_yields: Value::Array(Vec::new()),
             hand_sort: None,
             full_control_held: false,
+            stack_stops: "All".to_owned(),
         }
     }
 }
@@ -78,7 +81,7 @@ impl PrefsRepo {
     /// The preferences of `user`; the defaults when none were saved.
     pub async fn get(&self, user: Uuid) -> Result<StoredPrefs, DbError> {
         let row = sqlx::query!(
-            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held FROM user_prefs WHERE user_id = $1",
+            "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held, stack_stops FROM user_prefs WHERE user_id = $1",
             user
         )
         .fetch_optional(&self.pool)
@@ -95,14 +98,15 @@ impl PrefsRepo {
             auto_yields: row.auto_yields,
             hand_sort: row.hand_sort,
             full_control_held: row.full_control_held,
+            stack_stops: row.stack_stops,
         }))
     }
 
     /// Replaces the preferences of `user`.
     pub async fn put(&self, user: Uuid, prefs: &StoredPrefs) -> Result<(), DbError> {
         sqlx::query!(
-            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            "INSERT INTO user_prefs (user_id, default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held, stack_stops)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
              ON CONFLICT (user_id) DO UPDATE
              SET default_stops = EXCLUDED.default_stops,
                  end_turn_by_hand = EXCLUDED.end_turn_by_hand,
@@ -115,6 +119,7 @@ impl PrefsRepo {
                  auto_yields = EXCLUDED.auto_yields,
                  hand_sort = EXCLUDED.hand_sort,
                  full_control_held = EXCLUDED.full_control_held,
+                 stack_stops = EXCLUDED.stack_stops,
                  updated_at = now()",
             user,
             prefs.default_stops,
@@ -127,7 +132,8 @@ impl PrefsRepo {
             prefs.auto_pay_all,
             prefs.auto_yields,
             prefs.hand_sort,
-            prefs.full_control_held
+            prefs.full_control_held,
+            prefs.stack_stops
         )
         .execute(&self.pool)
         .await?;

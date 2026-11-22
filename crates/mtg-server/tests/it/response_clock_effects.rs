@@ -538,7 +538,7 @@ async fn triggers_go_on_in_the_order_they_triggered_unasked_when_the_seat_chose_
         smart_stops: false,
         skip_triggers: false,
         auto_pay: false,
-        auto_pay_all: false,
+        ..AutoChoices::default()
     };
     clients[1]
         .say(&handle, ClientMessage::AutoChoices { choices })
