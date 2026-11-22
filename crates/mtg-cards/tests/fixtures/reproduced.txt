@@ -541,6 +541,7 @@ Consider
 Consign // Oblivion
 Consign to Dust
 Conspiracy Theorist
+Constable Odo
 Constable of the Realm
 Consume Spirit
 Consuming Aetherborn
@@ -1160,6 +1161,7 @@ Gluttonous Slime
 Gluttonous Troll
 Glyph of Delusion
 Gnarled Professor
+Gnarling Targ
 Gnarlwood Dryad
 Gnoll Hunter
 Go for the Throat
@@ -2694,6 +2696,7 @@ Stubborn Burrowfiend
 Student of Warfare
 Study Break
 Stumpsquall Hydra
+Subcommander T'Pol
 Sublime Epiphany
 Sublime Exhalation
 Submerged Boneyard

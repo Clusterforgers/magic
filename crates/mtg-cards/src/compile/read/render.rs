@@ -665,6 +665,11 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r304b_writers::r304b_wordings(ability, written_variants, &mut texts);
     super::r116_02_writers::r116_02_wordings(ability, written_variants, &mut texts);
     super::r116_06_while::r116_06_while_wordings(ability, written_variants, &mut texts);
+    super::r116_reminder_tokens::r116_reminder_token_wordings(
+        ability,
+        written_variants,
+        &mut texts,
+    );
     super::r300b_writers::r300b_wordings(ability, written_variants, &mut texts);
     super::r300c_writers::r300c_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);

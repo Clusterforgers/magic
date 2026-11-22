@@ -218,6 +218,7 @@ mod r116_04_wholes;
 mod r116_05_assimilate;
 mod r116_05_mana;
 mod r116_06_while;
+mod r116_reminder_tokens;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;

@@ -39,10 +39,16 @@ pub(super) fn r116_02_whole_read(text: &str) -> Option<Ability> {
         })
 }
 
+/// Whether the ability is the entry's, as the writers see it: an entry holds the logs of its investigations, which the
+/// writers leave out (`l31a_unlogged`).
+fn is_entry(one: &Ability, ability: &Ability) -> bool {
+    one == ability || super::l31a_performed::l31a_unlogged(one).as_ref() == Some(ability)
+}
+
 /// Adds the wording of an ability that one of the entries matches whole.
 pub(super) fn r116_02_add_wholes(ability: &Ability, texts: &mut Vec<String>) {
     for (shape, text) in R116_02_SHAPES.iter() {
-        if matches!(shape.as_slice(), [one] if one == ability) && !texts.contains(text) {
+        if matches!(shape.as_slice(), [one] if is_entry(one, ability)) && !texts.contains(text) {
             texts.push(text.clone());
         }
     }
@@ -94,6 +100,25 @@ mod tests {
                 _ => panic!("an entry holds one or two abilities: {text}"),
             }
         }
+    }
+
+    #[test]
+    fn r116_02_investigating_twice_logs_each_investigation() {
+        let text = R116_02_SHAPES
+            .iter()
+            .map(|(_, text)| text)
+            .find(|text| text.ends_with("Investigate twice."))
+            .unwrap();
+        let read = serde_json::to_string(&r116_02_whole_read(text).unwrap()).unwrap();
+        assert_eq!(read.matches(r#""Performed""#).count(), 2, "{read}");
+        // One investigation is not the words of two.
+        let once = read.replacen(
+            r#"{"CreateToken":{"token":{"Named":"clue"}}},{"Performed":{"action":"Investigated"}},"#,
+            "",
+            1,
+        );
+        let once: Ability = serde_json::from_str(&once).unwrap();
+        assert!(!written_variants(&once).contains(text), "{once:?}");
     }
 
     #[test]
