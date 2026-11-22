@@ -215,4 +215,9 @@ export const ACTIONS: readonly Entry[] = [
     'Vibranium',
     'A Vibranium token is an indestructible artifact with "{T}: Add {C}. This mana can not be spent to cast a nonartifact spell."',
   ],
+  [
+    'Black Lotus',
+    'A Black Lotus token is an artifact with "{T}, Sacrifice this artifact: Add three mana of any one color."',
+  ],
+  ["Feroz's Ban", 'A Feroz\'s Ban token is an artifact with "Creature spells cost {2} more to cast."'],
 ]
