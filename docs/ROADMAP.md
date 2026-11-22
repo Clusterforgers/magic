@@ -154,6 +154,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (ai54a) Very Hard beats main's Very Hard by 62% or more and Hard main's Hard by 58% in 4-player pods and Commander pods with SPRT significance (Hard 1v1 59.1%, accepted; Very Hard 1v1 49.6% over 121 games, Hard pods 56.1% over 82), so Very Hard's guarded margin and its importance budget want their own tuning; Texel weights fitted on self-play (held-out loss 0.229 to 0.188) wait for a match test, and a pod Commander game of seed 51405 loops a choose-option question at turn 44 (`crates/mtg-testkit/src/brain`, `examples/bot_tournament.rs`)
 - [ ] (ai55) Hard and Very Hard animate a manland before combat: the tree search scores a permanent that is a creature until end of turn as a creature at its cut-off after combat, so the pass line (animating next turn) looks as good (`brain/deep.rs`, `brain/eval.rs`)
 - [ ] (ai56) The evaluation and the rollouts see card selection and non-loyalty abilities (loots, scry, mana sinks, equip): a loot scores level with a pass, so only the end-step rule plays it (`brain/eval.rs`, `brain/sim.rs`)
+- [ ] (ai57) The Commander pod of seed 6104 (`bot_tournament normal normal 2 cpod 6104 1`) stops on the invariant "ObjectId(261) is a planeswalker with no loyalty at a decision point", with main's brains too (`crates/mtg-engine`, `mtg-testkit` invariants)
 
 ## Delves
 

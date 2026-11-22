@@ -62,14 +62,16 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 
 ## Measured
 
-Decision-quality suite (66 cases, untimed, seed 7):
+Decision-quality suite (77 cases, 11 of them abilities, untimed, seed 7):
 
-| Level | main | Now |
-| --- | --- | --- |
-| Easy | 39% | 39% |
-| Normal | 97% | 97% |
-| Hard | 97% | 97% |
-| Very Hard | 92% | 97% |
+| Level | main | Now | Abilities, main | Abilities, now |
+| --- | --- | --- | --- | --- |
+| Easy | 40% | 40% | 5/11 | 5/11 |
+| Normal | 94% | 97% | 8/11 | 11/11 |
+| Hard | 94% | 95% | 9/11 | 10/11 |
+| Very Hard | 94% | 95% | 10/11 | 11/11 |
+
+Main misses the loot at the end step at every level (it aims the draw at the opponent) and Normal never crews or animates before combat (the stack settles with nothing lasting changed). In timed Commander pods 9 to 18% of Hard's priority judgements run out of budget. In the server's recorded games main's Very Hard leaves a planeswalker unused in 23 of 34 turns it has one (Hard 2 of 10, Normal 0 of 35, players 37 of 156) and ends 20% of its turns with every land untapped (Hard 15%, Normal 9%, players 7%).
 
 Seeded games against main's brains of the same level on the interaction pairings, untimed, each deal played with the sides swapped (Elo with its 95% interval; SPRT with elo0 0, elo1 40 at 5% errors):
 
