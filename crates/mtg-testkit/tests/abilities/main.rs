@@ -89,6 +89,7 @@ mod r115_exiled_together;
 mod r115_life_paid_as_exile;
 mod r115_skipped_step;
 mod r115_untap_by_counter;
+mod r116_06_while;
 mod r300_random_discard;
 mod r300c_activations;
 mod r301_target_costs;

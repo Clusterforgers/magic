@@ -11,7 +11,11 @@
         {
           "Triggered": {
             "when": { "Attacks": { "what": ["This"] } },
-            "if": { "Matches": { "subject": "This", "selector": [{ "HasKeyword": "Saddled" }] } },
+            "if": {
+              "AtTrigger": {
+                "Matches": { "subject": "This", "selector": [{ "HasKeyword": "Saddled" }] }
+              }
+            },
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "Saddled": "This" }] } }],
             "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
           }

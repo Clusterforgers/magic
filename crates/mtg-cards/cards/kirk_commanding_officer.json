@@ -13,15 +13,17 @@
               "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
             },
             "if": {
-              "Compare": {
-                "left": {
-                  "Total": {
-                    "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
-                    "stat": "Power"
-                  }
-                },
-                "op": "Ge",
-                "right": 8
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "op": "Ge",
+                  "right": 8
+                }
               }
             },
             "effects": [

@@ -453,22 +453,6 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(named);
     }
-    // The monarch held as the event happens may follow it: "Whenever you tap a land for mana while you're the monarch".
-    if let Ability::Triggered {
-        when,
-        intervening_if: Some(held),
-        ..
-    } = ability
-        && while_held(when)
-        && let Some(held) = super::triggers::monarch_text(held)
-    {
-        let after: Vec<String> = texts
-            .iter()
-            .map(|text| text.replacen(&format!(", if {held}, "), &format!(" while {held}, "), 1))
-            .filter(|text| !texts.contains(text))
-            .collect();
-        texts.extend(after);
-    }
     // A card may open with "When" for the damage its commander deals (Archivist of Gondor).
     if matches!(
         ability,
@@ -679,6 +663,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::l290_writers::l290_wordings(ability, written_variants, &mut texts);
     super::r304b_writers::r304b_wordings(ability, written_variants, &mut texts);
     super::r116_02_writers::r116_02_wordings(ability, written_variants, &mut texts);
+    super::r116_06_while::r116_06_while_wordings(ability, written_variants, &mut texts);
     super::r300b_writers::r300b_wordings(ability, written_variants, &mut texts);
     super::r300c_writers::r300c_wordings(ability, written_variants, &mut texts);
     super::l31b_any_amount::l31b_wordings(ability, written_variants, &mut texts);
@@ -1096,6 +1081,23 @@ fn chapter_texts(number: u32, targets: &[TargetSpec], effects: &[Effect]) -> Vec
 fn head_wordings(head: Vec<String>, condition: Option<&Condition>) -> Vec<Vec<String>> {
     // An Equipment says "equipped creature" and an Aura "enchanted creature"; the data does not say which.
     let mut heads = vec![head.clone()];
+    // A "while" condition in its other wordings ("while creatures you control have total power eight or greater").
+    if let Some(Condition::AtTrigger(held)) = condition
+        && let [only] = head.as_slice()
+    {
+        let facts = super::facts::texts(held);
+        if let Some(event) = facts
+            .iter()
+            .find_map(|fact| only.strip_suffix(&format!(" while {fact},")))
+        {
+            heads.extend(
+                facts
+                    .iter()
+                    .map(|fact| vec![format!("{event} while {fact},")])
+                    .filter(|found| found != &head),
+            );
+        }
+    }
     // A number in the condition is a word or digits ("if you gained 3 or more life this turn").
     heads.extend(condition.iter().flat_map(|held| {
         let facts = super::facts::texts(held);
@@ -1860,13 +1862,14 @@ fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<
     if let Some(head) = super::r307c_events::r307c_head(when, condition) {
         return Some(vec![head]);
     }
-    if condition == Some(&super::triggers::saddled())
-        && matches!(when, TriggerPattern::Attacks { .. })
-    {
-        return Some(vec![format!("{} while saddled,", pattern_text(when)?)]);
-    }
     if let Some(head) = super::wf24_token_bind::wf24_head(when, condition) {
         return Some(vec![head]);
+    }
+    if let Some(Condition::AtTrigger(held)) = condition
+        && let Some(held) = while_text(when, held)
+    {
+        let event = player_events::text(when).or_else(|| pattern_text(when))?;
+        return Some(vec![format!("{event} while {held},")]);
     }
     let event = player_events::text(when).or_else(|| pattern_text(when))?;
     let mut parts = vec![format!("{event},")];
@@ -4492,13 +4495,25 @@ impl Writer<'_> {
     }
 }
 
-/// Whether a trigger may say "while you're the monarch" after its event: not one about damage, which can itself pass the
-/// designation on, so that the state after it is not the one the event happened in.
+/// Whether a trigger may say "while <condition>" after its event: not one about damage, which can itself pass the
+/// monarch designation on, so that the state after it is not the one the event happened in.
 pub(super) fn while_held(when: &TriggerPattern) -> bool {
     !matches!(
         when,
         TriggerPattern::DealsDamage { .. } | TriggerPattern::Batch(_) | TriggerPattern::AnyOf(_)
     )
+}
+
+/// The words after "while" for a condition checked only as the event happens: "saddled" after an attack (CR 702.171b),
+/// "you're the monarch", "creatures you control have total power 8 or greater".
+fn while_text(when: &TriggerPattern, held: &Condition) -> Option<String> {
+    if *held == super::triggers::saddled() {
+        return matches!(when, TriggerPattern::Attacks { .. }).then(|| "saddled".to_owned());
+    }
+    if !while_held(when) {
+        return None;
+    }
+    super::triggers::monarch_text(held).or_else(|| condition_text(held))
 }
 
 /// The count after "connives": nothing for one, " X" for X (the where-X writer adds what X is).

@@ -212,6 +212,7 @@ mod r115_03_wholes;
 mod r115_04_wholes;
 mod r116_02_wholes;
 mod r116_02_writers;
+mod r116_06_while;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
