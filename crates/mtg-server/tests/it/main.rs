@@ -126,6 +126,7 @@ mod resume;
 mod seat_decks;
 mod seat_http;
 mod shutdown;
+mod stack_stops;
 mod stops;
 mod store_contract;
 mod store_failures;

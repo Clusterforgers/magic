@@ -222,7 +222,7 @@ describe('the words on the buttons', () => {
     expect(after.container.querySelector('[data-slot="primary-action"]')).toBeNull()
   })
 
-  it('has one prompt, its title and a live sentence, and draws the three buttons in the controls dock', () => {
+  it('has one prompt, its title and a live sentence, and draws its buttons in the controls dock', () => {
     const { container } = renderControls()
     const line = must(container.querySelector<HTMLElement>('[data-slot="decision-line"]'))
     // The buttons belong to the prompt (state, keys), but sit in the dock at the bottom right of the table.
@@ -231,7 +231,8 @@ describe('the words on the buttons', () => {
     const slot = must(
       container.querySelector<HTMLElement>('[data-region="controls"] [data-slot="pass-slot"]'),
     )
-    expect(within(slot).getAllByRole('button')).toHaveLength(3)
+    // End turn, the menu and the primary button, and "Resolve all" over the fixture's three spells.
+    expect(within(slot).getAllByRole('button')).toHaveLength(4)
     expect(line.querySelectorAll('[aria-live]')).toHaveLength(1)
   })
 })

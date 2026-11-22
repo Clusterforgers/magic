@@ -45,7 +45,7 @@ use mtg_engine::{Answer, Decision, Engine, Event};
 use mtg_protocol::{
     AutoChoices, AutoSkip, AutoYield, ClientMessage, DecidingView, DecisionId, DecisionName,
     ErrorCode, EventBatch, EventView, FullControlMode, HiddenEvent, LobbySeat, PROTOCOL_VERSION,
-    ServerMessage, StateView, Stop, StopSide, TakeBackOutcome, TriggerKey, YieldUntil,
+    ServerMessage, StackStops, StateView, Stop, StopSide, TakeBackOutcome, TriggerKey, YieldUntil,
     project_events,
 };
 use mtg_testkit::fuzz_setup;
@@ -739,13 +739,14 @@ fn mode_welcomes() -> [ServerMessage; 3] {
 }
 
 /// Every combination of the auto choices.
-fn auto_choices() -> [AutoChoices; 32] {
+fn auto_choices() -> [AutoChoices; 96] {
     std::array::from_fn(|bits| AutoChoices {
         order_triggers: bits & 1 != 0,
         assign_damage: bits & 2 != 0,
         smart_stops: bits & 4 != 0,
         skip_triggers: bits & 8 != 0,
         auto_pay: bits & 16 != 0,
+        stack_stops: [StackStops::All, StackStops::Opponents, StackStops::Aimed][bits / 32],
     })
 }
 
@@ -1135,8 +1136,8 @@ fn every_event_view_variant_round_trips() {
     json!({"type": "EndTurnByHand", "on": true})
 )]
 #[case(
-    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true, smart_stops: true, skip_triggers: false, auto_pay: true } },
-    json!({"type": "AutoChoices", "choices": {"order_triggers": false, "assign_damage": true, "smart_stops": true, "auto_pay": true}})
+    ClientMessage::AutoChoices { choices: AutoChoices { order_triggers: false, assign_damage: true, smart_stops: true, skip_triggers: false, auto_pay: true, stack_stops: StackStops::Aimed } },
+    json!({"type": "AutoChoices", "choices": {"order_triggers": false, "assign_damage": true, "smart_stops": true, "auto_pay": true, "stack_stops": "Aimed"}})
 )]
 #[case(
     ClientMessage::AutoYield { object: ObjectId(12) },
@@ -1178,7 +1179,7 @@ fn client_wire_shape_is_flat_and_tagged(
     ServerMessage::Welcome {
         protocol_version: 1, game: "g".into(), player: PlayerId(2), seats: 4, auto_pass: true, yielding: None,
         stops: vec![], full_control: FullControlMode::Off, end_turn_by_hand: false,
-        auto_choices: AutoChoices { order_triggers: true, assign_damage: false, smart_stops: false, skip_triggers: false, auto_pay: false },
+        auto_choices: AutoChoices { order_triggers: true, assign_damage: false, smart_stops: false, skip_triggers: false, auto_pay: false, stack_stops: StackStops::All },
         auto_yields: vec![AutoYield { name: "Soul Warden".into(), text: "Whenever another creature enters, you gain 1 life.".into() }],
         auto_skips: auto_skips(),
     },
@@ -1255,7 +1256,7 @@ fn client_wire_shape_is_flat_and_tagged(
     json!({"type": "EndTurnByHand", "on": false})
 )]
 #[case(
-    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true, smart_stops: false, skip_triggers: false, auto_pay: false } },
+    ServerMessage::AutoChoices { choices: AutoChoices { order_triggers: true, assign_damage: true, smart_stops: false, skip_triggers: false, auto_pay: false, stack_stops: StackStops::All } },
     json!({"type": "AutoChoices", "choices": {"order_triggers": true, "assign_damage": true, "smart_stops": false}})
 )]
 #[case(

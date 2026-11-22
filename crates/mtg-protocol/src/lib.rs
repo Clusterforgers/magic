@@ -33,6 +33,7 @@ pub use events::{
 pub use forecast_cache::forecasts_worked_out;
 pub use message::{
     AutoChoices, AutoSkip, AutoYield, ClientMessage, DecidingView, DecisionId, DecisionName,
+    StackStops,
     ErrorCode, FullControlMode, LobbySeat, MAX_AUTO_SKIPS, MAX_ORDER_TRIGGERS, PROTOCOL_VERSION,
     RevealedDeck, SeatDeck, ServerMessage, Stop, StopSide, TakeBackOutcome, TriggerKey, YieldUntil,
     manual_play,

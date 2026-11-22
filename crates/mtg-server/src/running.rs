@@ -22,6 +22,7 @@ use crate::auto_yields;
 use crate::bank::Banks;
 use crate::dwell::Waits;
 use crate::pace::{self, Pace, chosen_answer};
+use crate::stack_stops;
 use crate::stops::{self, Stops};
 use crate::turn_time::TurnTimes;
 use crate::windows::{self, Verdict};
@@ -351,7 +352,9 @@ impl Running {
             return Verdict::Pass;
         }
         // A yield to the ability on top passes at once, whatever the seat holds: the pace shows the choice alone.
-        if auto_yields::passes_for(decision, stops, self.engine.state()) {
+        if auto_yields::passes_for(decision, stops, self.engine.state())
+            || stack_stops::passes_for(decision, stops, self.engine.state())
+        {
             return Verdict::Pass;
         }
         match windows::verdict(decision, stops, yields, self.engine.state()) {

@@ -1646,6 +1646,7 @@ mod tests {
             smart_stops: false,
             skip_triggers: false,
             auto_pay: false,
+            ..AutoChoices::default()
         }
     }
 

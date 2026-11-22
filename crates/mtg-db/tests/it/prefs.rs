@@ -29,6 +29,7 @@ fn prefs(on: bool) -> StoredPrefs {
         auto_yields: json!([{"name": "Pinger", "text": "{T}: deal 1 damage"}]),
         hand_sort: on.then(|| json!({"by": "Groups", "groups": ["Land", "Artifact", "Creature"]})),
         full_control_held: on,
+        stack_stops: if on { "Aimed" } else { "All" }.to_owned(),
     }
 }
 

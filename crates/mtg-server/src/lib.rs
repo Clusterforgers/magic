@@ -136,6 +136,7 @@ mod seats;
 mod secret;
 mod server;
 mod session;
+mod stack_stops;
 mod stops;
 mod store;
 mod take_backs;
