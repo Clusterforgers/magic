@@ -7,7 +7,6 @@ Itazura, Lingering Wick	Secret number choice of each opponent (R110SecretOpponen
 Kai Winn, Faithless Leader	TriggerPattern for an opponent's spell or activated ability of a source with the chosen card name (CardName chosen as it enters), with the player as Triggering	none
 Kuroki, Thief of Talents	Opponent's optional draw with "if they do" followed by casting a spell from that opponent's hand without paying its mana cost (MayCast from another player's hand, free)	none
 Massimo, the Magician	Granting a trigger to the entering creature that copies the card exiled by this ability and casts the copy free (linked exile carried into a granted ability)	none
-Miles O'Brien, Transporter Ops	Condition "a permanent was returned to your hand from the battlefield this turn" (a TurnTally of permanents moved battlefield to hand owned by you)	the ETB bounce reads
 Miss Highwater	Contract counters on players and a delayed "when they lose the game, for each artifact and creature they controlled, create a token copy" (a player loss trigger with LKI of their permanents)	none
 Olinda the Oblivious	Per-opponent targets ("for each opponent, up to one target creature that player controls") and a granted trigger lasting while the creature has an odor counter (Duration::WhileHasCounter on a GrantAbility)	none
 Peace in Our Time	Begin-combat trigger of each player's turn where that player may draw; if they do, Rule CantAttack for them this turn and a peace counter on this; second ability (win at twelve counters) reads	none

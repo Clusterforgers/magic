@@ -48,6 +48,7 @@ fn compact(name: &str) -> String {
 #[case("Brad Boimler, Eager Ensign")]
 #[case("Cantankerous Captain")]
 #[case("Captain Janeway, Endgame")]
+#[case("Captain Kathryn Janeway")]
 #[case("Captain Michael Burnham")]
 #[case("Chief Kyle, Transporter Tech")]
 #[case("Commander Raffi Musiker")]
@@ -81,6 +82,7 @@ fn compact(name: &str) -> String {
 #[case("Lieutenant Hikaru Sulu")]
 #[case("Lore, Positronic Provocateur")]
 #[case("L'Rell, Fierce Visionary")]
+#[case("Miles O'Brien, Transporter Ops")]
 #[case("Ni'Var Science Academy")]
 #[case("Q Continuum")]
 #[case("Quark's Bar")]
@@ -140,8 +142,8 @@ fn r116_02_reads_back_whole(#[case] name: &str) {
 )]
 #[case::three_lands(
     "Will Riker, First in the Field",
-    r#""count":2,"as":"lands""#,
-    r#""count":3,"as":"lands""#
+    r#""count":2,"filter":[{"Type":"Land"}]"#,
+    r#""count":3,"filter":[{"Type":"Land"}]"#
 )]
 #[case::smaller("Ensign Harry Kim, Operations", r#""op":"Gt""#, r#""op":"Lt""#)]
 fn r116_02_a_near_miss_does_not_read_back(

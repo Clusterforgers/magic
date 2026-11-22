@@ -574,7 +574,7 @@ pub fn own_names(face: &PrintedFace) -> Vec<String> {
 
 /// The first and the last word of a legendary name of three words or more (the part before the comma) when the text
 /// uses them alone: a title and a surname ("Captain Burnham" for "Captain Michael Burnham", "Ensign Kim" for "Ensign
-/// Harry Kim, Operations", "Dr. McCoy" for "Dr. Leonard \"Bones\" McCoy").
+/// Harry Kim, Operations").
 fn r116_first_and_last(face: &PrintedFace) -> Option<String> {
     let base = face
         .name
