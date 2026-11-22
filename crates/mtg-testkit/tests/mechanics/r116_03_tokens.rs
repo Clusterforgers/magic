@@ -10,8 +10,8 @@ use std::sync::Arc;
 use common::pid;
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
+use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
-use mtg_core::counter::CounterKind;
 use mtg_engine::characteristics::characteristics;
 use mtg_engine::decision::DecisionKind;
 use mtg_engine::turn::Step;
@@ -123,13 +123,14 @@ fn r116_a_new_planet_enters_tapped_as_a_planet_land_with_a_mana_ability(
     let id = r116_named(&driver, "New Planet").expect("the planet entered");
     let state = driver.state();
     let object = state.object(id).unwrap();
-    assert!(object.tapped());
+    assert!(object.permanent().unwrap().tapped());
     assert_eq!(object.controller(), pid(0));
     let made = characteristics(state, id).unwrap();
     assert!(made.types.contains(CardType::Land));
     assert!(!made.types.contains(CardType::Creature));
     assert_eq!(made.power, None);
-    assert!(made.subtypes.iter().any(|subtype| subtype.0 == "Planet"));
+    let planet = mtg_core::card::Subtype("Planet".to_owned());
+    assert!(made.has_subtype(&object.card().subtypes, &planet));
     assert_eq!(made.colors, mtg_core::color::ColorSet::EMPTY);
     assert_eq!(object.card().rules.len() + object.card().abilities.len(), 1);
     Ok(())
