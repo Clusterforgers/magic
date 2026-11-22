@@ -3140,6 +3140,10 @@ impl Writer<'_> {
             } if filter.0 == [Pred::Is(Ref::Triggering)] && count.is_one() => {
                 "sacrifice that permanent".to_owned()
             }
+            Effect::ExileTop { who, .. } if !matches!(who, Ref::You | Ref::Triggering) => {
+                let subject = self.player(who)?;
+                super::their_top::text(effect, &subject)?
+            }
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
             | Effect::Discard { who, .. }
@@ -4027,6 +4031,7 @@ impl Writer<'_> {
                 "its controller".to_owned()
             }
             Ref::Triggering | Ref::TriggeringPlayer => "that player".to_owned(),
+            Ref::Defending => "defending player".to_owned(),
             Ref::PlayersWhere { .. } => super::r9w_players::r408_fewest_players(who)?,
             Ref::Seated { .. } => super::r376_seats::r376_seated_text(who)?,
             Ref::ControllerOf(inner) if **inner == Ref::Triggering => {
