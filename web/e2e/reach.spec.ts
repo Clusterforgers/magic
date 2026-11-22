@@ -23,6 +23,8 @@ interface Stop {
    * `phone-arrows.spec.ts` and `layout.spec.ts` hold at 390x844.
    */
   desk?: true
+  /** Shown to an account: the header then has every tab (Decks, My games, Tournaments, Delves, Review cards). */
+  account?: true
 }
 
 /**
@@ -154,6 +156,7 @@ const STOPS: readonly Stop[] = [
   page('Play', '/'),
   page('Create a game', '/new'),
   page('Learn', '/learn'),
+  { ...page('Learn, signed in', '/learn'), account: true },
   page('Sign in', '/login'),
   page('Register', '/register'),
 ]
@@ -203,8 +206,19 @@ for (const stop of STOPS) {
     const errors: string[] = []
     page.on('pageerror', (error) => errors.push(error.message))
     const session = await page.context().newCDPSession(page)
+    if (stop.account === true) {
+      // The server of this run has no accounts; the header asks only who is signed in.
+      await page.route('**/api/auth/me', (route) =>
+        route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ id: 'reach', username: 'Reach', is_admin: false }),
+        }),
+      )
+    }
     await page.goto(stop.url)
     await page.locator(stop.ready).first().waitFor()
+    if (stop.account === true) await page.locator('nav[aria-label="Main"] a[href="/delves"]').waitFor()
     // The dev route's own tools are for looking at the table, not part of it.
     await page.addStyleTag({ content: '[data-dev-tool] { display: none !important; }' })
     const ask: ReachAsk = {

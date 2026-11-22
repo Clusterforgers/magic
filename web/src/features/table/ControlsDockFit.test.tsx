@@ -82,6 +82,28 @@ describe('the controls dock at its height', () => {
     expect(dock().querySelector('[data-slot="dock-upper"] [data-slot="auto-skip"]')).not.toBeNull()
   })
 
+  it.each([
+    { width: 1366, dock: 'a short dock', inline: false },
+    { width: 1500, dock: 'a full dock without the stops row', inline: false },
+    { width: 2300, dock: 'the widest dock', inline: true },
+  ])('under a question $dock keeps the switches beside the Stops button: $inline', ({ width, inline }) => {
+    renderTable({
+      options: { viewport: { width, height: 800 } },
+      state: (state) => {
+        const hand = must(must(state.view).players[0]?.hand.cards)
+        return {
+          ...state,
+          pending: { id: 9, decision: { player: 0, kind: { Discard: { hand, count: 1 } } } },
+        }
+      },
+    })
+    const stops = must(dock().querySelector('[data-slot="decision-dock"] [data-slot="home-stops"]'))
+    expect(stops.querySelector('[data-slot="stops-button"]')).not.toBeNull()
+    expect(stops.querySelector('[data-slot="auto-skip"]') !== null).toBe(inline)
+    expect(stops.querySelector('[data-slot="pass-turn"]') !== null).toBe(inline)
+    expect(dock()).toHaveAttribute('data-dock-form', width === 1366 ? 'short' : 'full')
+  })
+
   it('keeps the full form while it fits', () => {
     measure({ need: 60, room: 70, dock: 200 })
     renderTable({ options: { viewport: { width: 2300, height: 900 } } })
