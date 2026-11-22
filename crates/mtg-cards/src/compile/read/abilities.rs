@@ -10,6 +10,7 @@ use crate::ability::{Ability, Limit, LoyaltyCost};
 use crate::effect::Effect;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
 use crate::trigger::TriggerPattern;
+use crate::value::Condition;
 
 /// Whether the next sentence is a restriction that ends the effects: "Activate only ..." or "This ability triggers only
 /// once each turn."
@@ -110,8 +111,8 @@ pub fn modal_spell(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
-/// A triggered ability: an event, a comma, an optional intervening "if" and then sentences, every
-/// one of which must be read.
+/// A triggered ability: an event with an optional "while" condition checked as it triggers, a comma, an optional
+/// intervening "if" and then sentences, every one of which must be read.
 pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let when = triggers::pattern(r)?;
     r.triggered = true;
@@ -162,11 +163,13 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         TriggerPattern::ZoneChange { what, to: Some(ZoneKind::Battlefield), .. } if what.0 != [Pred::This]
     );
     note_other_creatures(r, &when);
+    // "while <condition>" after the event is checked only as the event happens, never again on resolution.
     let held = if render::while_held(&when) {
         r.attempt(|r| {
             r.need("while")?;
-            triggers::monarch_condition(r)
+            triggers::condition(r)
         })
+        .map(|held| Condition::AtTrigger(Box::new(held)))
     } else {
         None
     };
@@ -186,7 +189,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         (false, None) => held,
         (false, Some(_)) if held.is_some() => return None,
         (false, other) => other,
-        (true, None) => Some(triggers::saddled()),
+        (true, None) => Some(Condition::AtTrigger(Box::new(triggers::saddled()))),
         (true, Some(_)) => return None,
     };
     let monstrous = super::c10_pa_monstrous::c10_pa_x_of(r, &when);
@@ -319,6 +322,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Bolstered { .. }
             | TriggerPattern::Expend { .. }
             | TriggerPattern::W11cCrime { .. }
+            | TriggerPattern::R116Dilemma { .. }
             | TriggerPattern::Surveilled { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }

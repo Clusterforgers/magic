@@ -1,0 +1,55 @@
+{
+  "oracle_id": "e6973668-4ea7-4920-82a5-73abfc1c9fd5",
+  "name": "Subcommander T'Pol",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subcommander T'Pol",
+      "oracle_fingerprint": "212846a6a93d2f2b64fe8c1c0192b533",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Counter": { "what": { "Target": 0 } } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                            ]
+                          },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [
+                        { "Tap": { "what": { "Target": 0 } } },
+                        { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

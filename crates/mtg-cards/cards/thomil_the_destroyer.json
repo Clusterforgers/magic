@@ -1,0 +1,54 @@
+{
+  "oracle_id": "fd769cfb-668c-4557-a907-c6c17539c96a",
+  "name": "Thomil, the Destroyer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Thomil, the Destroyer",
+      "oracle_fingerprint": "3cd940f7239efa61278f0eb30bd705f3",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Zombie",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Zombie"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }] } }],
+                  "paid": [{ "AddMana": { "mana": { "Fixed": ["Black", "Black", "Black"] } } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "effects": [{ "CreateToken": { "token": { "Named": "lord_of_the_pit" } } }]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,156 @@
+{
+  "object": "card",
+  "id": "756e41ad-f181-4c1e-8ad6-970cee684582",
+  "oracle_id": "fd769cfb-668c-4557-a907-c6c17539c96a",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709773,
+  "cardmarket_id": 917845,
+  "name": "Thomil, the Destroyer",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/756e41ad-f181-4c1e-8ad6-970cee684582",
+  "scryfall_uri": "https://scryfall.com/card/mbc/19/thomil-the-destroyer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-23T07:17:46Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.jpg?1792739866",
+    "normal": "https://cards.scryfall.io/normal/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.jpg?1792739866",
+    "large": "https://cards.scryfall.io/large/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.jpg?1792739866",
+    "png": "https://cards.scryfall.io/png/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.png?1792739866",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.jpg?1792739866",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.jpg?1792739866",
+    "thumb": "https://cards.scryfall.io/thumb/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.webp?1792739866",
+    "grid": "https://cards.scryfall.io/grid/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.webp?1792739866",
+    "display": "https://cards.scryfall.io/display/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.webp?1792739866",
+    "art": "https://cards.scryfall.io/art/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.webp?1792739866",
+    "crop": "https://cards.scryfall.io/crop/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.webp?1792739866",
+    "jpeg": "https://cards.scryfall.io/normal/front/7/5/756e41ad-f181-4c1e-8ad6-970cee684582.jpg?1792739866"
+  },
+  "mana_cost": "{3}{B}{B}",
+  "cmc": 5,
+  "type_line": "Legendary Planeswalker — Thomil",
+  "oracle_text": "+2: Create a 2/2 black Zombie creature token.\n0: You may sacrifice a creature. If you do, add {B}{B}{B}.\n−5: Create a Lord of the Pit token. (It's a {4}{B}{B}{B} 7/7 Demon creature with flying, trample, and \"At the beginning of your upkeep, sacrifice another creature. If you can't, this token deals 7 damage to you.\")\nThomil, the Destroyer can be your commander.",
+  "loyalty": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [],
+  "produced_mana": [
+    "B"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "5e16386a-d478-475b-8e9b-edef62cae02b",
+      "component": "token",
+      "name": "Zombie",
+      "type_line": "Token Creature — Zombie",
+      "uri": "https://api.scryfall.com/cards/5e16386a-d478-475b-8e9b-edef62cae02b"
+    },
+    {
+      "object": "related_card",
+      "id": "18a52dd6-f2f6-4031-80de-739f446e34db",
+      "component": "combo_piece",
+      "name": "Lord of the Pit",
+      "type_line": "Creature — Demon",
+      "uri": "https://api.scryfall.com/cards/18a52dd6-f2f6-4031-80de-739f446e34db"
+    },
+    {
+      "object": "related_card",
+      "id": "756e41ad-f181-4c1e-8ad6-970cee684582",
+      "component": "combo_piece",
+      "name": "Thomil, the Destroyer",
+      "type_line": "Legendary Planeswalker — Thomil",
+      "uri": "https://api.scryfall.com/cards/756e41ad-f181-4c1e-8ad6-970cee684582"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/756e41ad-f181-4c1e-8ad6-970cee684582/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Afd769cfb-668c-4557-a907-c6c17539c96a&unique=prints",
+  "collector_number": "19",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Heonhwa",
+  "artist_ids": [
+    "ce415f9e-8a20-4d64-bcba-2b1b7e94012e"
+  ],
+  "illustration_id": "27be617d-f6d1-4c3a-9250-35189dc99e71",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 21657,
+  "prices": {
+    "usd": "26.24",
+    "usd_foil": "65.82",
+    "usd_etched": null,
+    "eur": "10.47",
+    "eur_foil": "66.40",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThomil%252C%2Bthe%2BDestroyer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThomil%252C%2Bthe%2BDestroyer",
+    "edhrec": "https://edhrec.com/route/?cc=Thomil%2C+the+Destroyer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709773%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=917845&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Thomil%2C+the+Destroyer&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

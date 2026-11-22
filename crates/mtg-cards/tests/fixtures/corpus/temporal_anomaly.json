@@ -1,0 +1,164 @@
+{
+  "object": "card",
+  "id": "d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6",
+  "oracle_id": "cf0d1859-699e-47d4-bc91-7c5ff61fabe9",
+  "multiverse_ids": [],
+  "resource_id": "A0277715515C9FB5F0B9380FD7ACDBF9D774FF096E5DB0374333C98F022EC60F",
+  "mtgo_id": 158744,
+  "tcgplayer_id": 728524,
+  "cardmarket_id": 920723,
+  "name": "Temporal Anomaly",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6",
+  "scryfall_uri": "https://scryfall.com/card/trk/302/temporal-anomaly?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-30T11:57:25Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.jpg?1793361445",
+    "normal": "https://cards.scryfall.io/normal/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.jpg?1793361445",
+    "large": "https://cards.scryfall.io/large/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.jpg?1793361445",
+    "png": "https://cards.scryfall.io/png/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.png?1793361445",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.jpg?1793361445",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.jpg?1793361445",
+    "thumb": "https://cards.scryfall.io/thumb/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.webp?1793361445",
+    "grid": "https://cards.scryfall.io/grid/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.webp?1793361445",
+    "display": "https://cards.scryfall.io/display/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.webp?1793361445",
+    "art": "https://cards.scryfall.io/art/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.webp?1793361445",
+    "crop": "https://cards.scryfall.io/crop/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.webp?1793361445",
+    "jpeg": "https://cards.scryfall.io/normal/front/d/2/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6.jpg?1793361445"
+  },
+  "mana_cost": "",
+  "cmc": 0,
+  "type_line": "Land",
+  "oracle_text": "{T}: Add {C}.\n{3}{G}, {T}, Sacrifice this land: Mill four cards. You may put a permanent card from among them into your hand. Create a tapped Planet land token named New Planet with \"{T}: Add one mana of any color.\"",
+  "colors": [],
+  "color_identity": [
+    "G"
+  ],
+  "keywords": [
+    "Mill"
+  ],
+  "produced_mana": [
+    "B",
+    "C",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6",
+      "component": "combo_piece",
+      "name": "Temporal Anomaly",
+      "type_line": "Land",
+      "uri": "https://api.scryfall.com/cards/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6"
+    },
+    {
+      "object": "related_card",
+      "id": "21d855f7-fd5c-4eb4-b997-a905849806b9",
+      "component": "token",
+      "name": "New Planet",
+      "type_line": "Token Land — Planet",
+      "uri": "https://api.scryfall.com/cards/21d855f7-fd5c-4eb4-b997-a905849806b9"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set": "trk",
+  "set_name": "Star Trek",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/d2000219-0a57-48e6-ab0f-d5ad0fb7bcf6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Acf0d1859-699e-47d4-bc91-7c5ff61fabe9&unique=prints",
+  "collector_number": "302",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"Captain, it seems to be a—to be a—to be a...\"\n—Ensign Pavel Chekov",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Neil Blevins",
+  "artist_ids": [
+    "a89d397a-4994-4353-a03f-211af74b5469"
+  ],
+  "illustration_id": "6c43c9f7-3180-4804-bfcb-a288d02c9496",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 28977,
+  "preview": {
+    "source": "Magic Arena - MundoTK",
+    "source_uri": "",
+    "previewed_at": "2026-10-30"
+  },
+  "prices": {
+    "usd": "0.27",
+    "usd_foil": "0.37",
+    "usd_etched": null,
+    "eur": "0.21",
+    "eur_foil": "0.26",
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DTemporal%2BAnomaly",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DTemporal%2BAnomaly",
+    "edhrec": "https://edhrec.com/route/?cc=Temporal+Anomaly"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F728524%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=920723&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/158744?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,75 @@
+70,000 Light-Years from Home	reader for a type-or-subtype target "target creature or Spacecraft" (Pred::AnyOf[Type Creature, Subtype Spacecraft] in Form::Target) and "Its controller may search their library ..." after an exile (May by ControllerOf(Target 0) around a Search of their library)	
+Assimilate the Wounded	"For each opponent, ... up to one target ... from that player's graveyard": one target spec per opponent (TargetSpec divided by player, like "for each opponent, up to one target creature that player controls") with the "put there from the battlefield this turn" filter, then R116Assimilate of each	Effect::R116Assimilate works
+Borg Cube	"If you can't, exile up to one target creature." after the chosen assimilate: a performed binding for Choose+R116Assimilate (Effect::R116Assimilate is Reports::Nothing in resolve/prim/done.rs) and the reader/writer for "If you can't"	Station 12+ line reads; the assimilate sentence reads alone (r116_05_assimilate)
+Branching Timeline	library reader of "Reveal the top X cards of your library, where X is ...": library::top_cards reads no X, and a where clause in the middle of a multi-sentence library template is never bound (where_x::bind runs after the template)	Amount::Distinct reads
+Captain Benjamin Sisko	"You may cast any number of spells with mana value less than or equal to <count> from among those cards without paying their mana costs" after "Exile the top five cards": a free cast of any number with an Amount bound in the filter	Officers count reads
+Captain Jean-Luc Picard	trigger "Whenever you cast a creature or Spacecraft spell" (spell selector AnyOf[Type Creature, Subtype Spacecraft]) and cost "Tap seven untapped Officers you control" with "put it onto the battlefield with seven charge counters on it"	
+Captain Jonathan Archer	the dilemma/other line reads; "create Porthos, a legendary 1/1 green Dog creature token" reads raw but the face's short name "Captain Archer" in "When Captain Archer enters" is not taken as ~ (normalize own_names lacks the title-less short name)	
+Captain Kirk, Boldly Going	Search of "your library and/or graveyard" (two zones) for "a basic land card or a card named Starship Enterprise", "If you search your library this way, shuffle"	
+Chief Montgomery Scott	"It enters with X additional +1/+1 counters on it if it's a creature and X additional charge counters on it if it's a Spacecraft, where X is ...": conditional counters on entry by type of the moved card	
+Colossal Clone Master	clone "except it isn't legendary and it has \"This creature's power and toughness are each equal to ...\"": a granted characteristic-defining ability in the copy exception (CopyExcept with GrantAbility of a defining Static)	
+Commander Spock	"You may cast that card without paying its mana cost if that spell's mana value is equal to or less than <count>. If it's a land card, you may put it onto the battlefield tapped. If that card is still on top of your library, draw a card.": a conditional free cast of the revealed top card, a land alternative and "still on top" condition	
+D-7 Battle Cruiser	station block line "At the beginning of combat on your turn, create a 2/1 ... with haste. Sacrifice it at the beginning of the next end step." under 3+: the delayed sacrifice of the token after a token creation inside a station block	
+Deep Space 9	trigger "When ~ enters and at the beginning of your upkeep" (AnyOf of an enters and a step) plus "Put all permanent cards exiled this way onto the battlefield"	
+Deep Space Scan	"You have no maximum hand size until your next turn." (Effect::Rule NoMaxHandSize with Duration::UntilYourNextTurn): a writer for the timed rule in the effect chain of render.rs drops the "for the rest of the game" wordings of Sea Gate Restoration (oracle_only::no_max_hand twin), so the duration must be written where that twin is	the draw X sentence reads
+Ensign Pavel Chekov	"each opponent exiles the top X cards ..., For each opponent, choose a land card that player owns exiled this way. You may play the chosen cards for as long as they remain exiled.": per-opponent choice and a lasting play permission	
+Enterprise NX-01	"tap target creature an opponent controls and put a stun counter on it": the joined tap-and-counter sentence has no reader (the stun reminder no longer holds it back)	
+Final Frontier	search filter "a basic land card or Planet card": two card phrases joined by "or" (no Pred::AllOf; would be [Type Land, AnyOf[Supertype Basic, Subtype Planet]] with a writer)	beam me up keyword reads
+Gabriel Lorca, Mirror Menace	a dilemma trigger that works from the graveyard ("you may pay {B}. If you do, return this card from your graveyard to your hand"): the trigger reader does not take "this card" in the graveyard for a dilemma trigger	R116Dilemma reads
+Geordi La Forge, Innovator	"~ can't be blocked if you control a Spacecraft": the "if" form of "as long as you control" for a static restriction (a trailing "if" in statics::cannot did not reach the reader; another static reader takes the clause first)	
+Gift of Perfection	"Each opponent reveals cards from the top of their library until they reveal a creature card. Assimilate one of the creature cards revealed this way. Then each opponent puts the other cards ...": reveal-until per opponent, a Choose among the revealed creature cards, then R116Assimilate	Effect::R116Assimilate works
+H.M.S. Bounty, Unlikely Timeship	station block 8+ holds the next line "Whenever ~ deals combat damage to a player, draw a card. If you control a Whale and haven't begun an extra turn this game, take an extra turn after this one."	
+Hemmer, Fixing What Is Broken	"During your turn, Spacecraft you control have hexproof.": a subtype group after "During your turn," does not read (the same group alone or after "As long as it's your turn," reads)	Spacecraft plural reads
+Hoshi Sato, Exolinguist	"look at the top X cards of your library, where X is ...": library::top_cards reads no X and the where clause sits before the second sentence	
+Infinite Diversity	"Copy that card X times ... You may cast the copies without paying their mana costs. Exile ~.": copies of a card in exile cast for free	
+Jean-Luc Picard, Luminary	"put a +1/+1 counter on up to one other target creature and two charge counters on up to one target Spacecraft": two target specs with different counters	Seek out trigger reads
+Jean-Luc, Mon Capitaine	"Faeries you control enter with an additional +1/+1 counter on them for each creature type among non-Borg creatures you already control": an enters-with replacement counted by an Amount::Distinct	
+Jett Reno, Problem Solver	"surveil 1. If her power is 4 or greater, instead draw a card.": an "instead" replacing an earlier effect under a condition on the pronoun her	
+Julian Bashir, Frontier Doctor	"return target creature card with mana value X or less ..., where X is ~'s power": a where clause binding an X inside a target filter (Pred::Compare to Amount::X in TargetSpec)	
+K'Vort-Class Raider	"During your turn, this Spacecraft and creatures you control have hexproof.": a subject of the card and a group	
+K't'inga-Class Battle Cruiser	"one or two target Klingons and/or Warriors you control gain flying until end of turn": bounds 1-2 targets reader ("one or two target")	two subtypes of a group read (r116_05)
+Kirk, Man of Action	"Other Officers, Artificers, Doctors, Pilots, Scientists, and Spacecraft creatures you control": a comma list of six subtypes before "creatures"	
+Lieutenant Nyota Uhura	"Target opponent exiles the top X cards ... You may cast an instant or sorcery spell from among them without paying its mana cost. Then that player puts the rest on the bottom ...": top X with a where clause and a free cast among exiled cards	
+Lt. Arex, Ever-Adapting	"You may put up to three land cards from your hand onto the battlefield tapped." after "draw three cards"	
+Martok, Hero of the Empire	nothing in the engine: the whole card compiles since "Whenever you attack," reads (r116_05); its corpus file and fixture are still to be added	
+Maular, the Next Evolution	"double its power and toughness until end of turn" (a doubling of both stats) reader/writer	Rulebreaker reads
+Pattern Buffer Preservation	"Look at the top two cards of your library. Put one of them into your hand and the other into your graveyard." reader/writer	beam me up keyword reads
+Pure Energy	"Distribute two +1/+1 counters among one or two target creatures." reader/writer (engine r6702_distribute exists)	beam me up keyword reads
+Queen's Diamond	"Choose a color. Add one mana of that color for each charge counter on ~.": the writer writes it (r116_05_mana) but the clause reader does not reach the template (some earlier reader takes the "for each" form); hand-written rules would read back	station line reads
+Reg Barclay, Fidgety Fantasist	token copy "except it isn't legendary, it's an Illusion artifact in addition to its other types, and it has haste. Exile that token at the beginning of the next end step."	Seek out trigger reads
+Rite of Ascension	"for each opponent you attacked this turn, create a tapped and attacking 2/1 ... token": per-player iteration over Ref::AttackedThisTurn with tokens attacking that player	"Whenever you attack" reads (r116_05)
+Romulan Bird-of-Prey	"put two charge counters on it" after the intervening "if this Spacecraft isn't a creature": the condition reads (r116_05) but "it" after it does not name the card; "As long as this Spacecraft isn't a creature, it has hexproof." under the ability word Cloaking Device	
+S.S. Botany Bay	"{T}: Each opponent exiles a card from their graveyard. You may exile a card from your graveyard." (a chosen exile from each graveyard by its owner) and the 8+ station block holding "Whenever ~ deals combat damage to a player, return each creature card you own exiled with it to the battlefield."	
+Saavik, Stoic Student	"she deals X damage to ...": the pronouns she/he as the source in a damage sentence	where clause reads
+Sarcophagus, Ship of the Dead	"put a charge counter on it" after "if ~ isn't a creature": "it" after an intervening condition on the card does not name the card (reader sets it to the dying creature)	the condition reads (r116_05)
+Sarek, Federation Ambassador	"draw a card for every five creature types ...": a "for every N" count (Amount divided) and "If you draw three or more cards this way"	
+Scotty, Miracle Worker	granted beam me up to graveyard cards during your main phase with cost equal to the mana cost and the self-exclusion	Keyword::R116BeamMeUp works
+Species 8472	"can't be the target of abilities from artifact sources your opponents control"	
+Stray from History	modal spell with labelled modes ("• Name — text"): a mode effect is unread	
+Sulu, Heroic Helmsman	"stations Spacecraft and crews Vehicles as though his power were tripled"	
+Sulu, Space Swashbuckler	intervening "if an Equipment or Spacecraft entered the battlefield under your control this turn"	
+Tell Me What You See	punisher "target opponent may have you draw a card. If they don't, they lose 4 life and you surveil 1."	
+Test of Conviction	modal spell with labelled modes ("• Name — text"): a mode effect is unread	
+The Best of Both Worlds	chapter III "Exile the Borg assimilated with this Saga, then return it ...": a memory of what the Saga assimilated (R116Assimilate does not remember into the source's slot)	chapters I and II read; assimilate works
+The Borg Queen	"target opponent exiles cards from the top of their library until they exile a creature card. Assimilate that card. They put the rest on the bottom in a random order."	Effect::R116Assimilate works
+The Caretaker	"target opponent exiles cards ... until they exile a nonland card. You may cast that card without paying its mana cost." after a dilemma condition	
+The Destruction of Praxis	"If X is 6 or more, create ...": a condition on the where-clause X in a later sentence	the -X/-X sentence reads
+The Everforger	"Whenever you cast an artifact creature or Equipment spell, you may copy that spell. Do this only once each turn."	Rulebreaker reads
+The Unluckiest Planeswalker	"+1: Add one mana of any color. When you spend this mana to cast an Aura spell this turn, create ..." and "−3: ... For each Aura attached to you, attach it to an opponent of your choice."	
+There's Coffee in that Nebula	"You may reveal a Plains card or nonland permanent card with mana value 3 or less from among them": a mixed subtype-or-type choice filter	
+Transwarp Hub	"mill five cards. You may put up to two artifact cards from among them into your hand."	
+U.S.S. Defiant, Mirror Migrant	"it and up to one target creature you control phase out"	
+U.S.S. Enterprise-C, Time-Tossed	"you may discard your hand. If you do, draw a card for each card discarded this way."	
+U.S.S. Enterprise-D, Galaxy-Class	trigger "Whenever one or more charge counters are put on ~ for the first time each turn"	
+U.S.S. Farragut, Bold Explorer	"put a creature card from your hand onto the battlefield. That creature gains haste. At the beginning of the next end step, put it on the bottom of your library. When you do, draw a card."	
+U.S.S. Prometheus, Prototype	station block 8+ with an ability word and "it deals that much damage to each other opponent"	
+U.S.S. Reliant, From Hell's Heart	"return ... to the battlefield with a finality counter on it"	
+U.S.S. Stargazer, Here and There	station block 6+ holds "Picard Maneuver — Whenever ~ attacks, create a tapped and attacking 4/3 ... token with flying. Exile that token at end of combat."	
+U.S.S. Voyager, Lone Wanderer	"reveal cards from the top of your library until you reveal two land cards"	
+Unification	chapter I "The owner of up to one target creature draws two cards, then shuffles that creature into their library." and chapter II "put a Spacecraft card from your hand or graveyard onto the battlefield"	
+Vic Fontaine, One Night Only	"one or two target creatures each get +2/+0 and gain lifelink until end of turn": "one or two target" bounds	Seek out trigger reads
+Võx, Child of the Collective	"the next artifact creature spell and the next Spacecraft spell you cast this turn have undaunted"	
+Warp Speed	"Lands you control enter untapped." and search "a basic land card or Planet card"	the cost reduction reads (r116_05)
+Whtz, the Bibliophile	"This ability costs {3} less to activate if you had 200 or more cards in your starting deck."	Rulebreaker reads
+Worf, Defiant Commander	"exile the top X cards ..., where X is .... Until the end of your next turn, you may play those cards.": top X with a where clause and a play permission until the end of your next turn	"Whenever you attack" reads (r116_05)
+Zefram Cochrane, Warp Pioneer	"Once during each of your turns, you may cast an artifact spell from the top of your library." and "Spacecraft you control enter with two additional charge counters on them."	

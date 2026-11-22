@@ -1,0 +1,71 @@
+{
+  "oracle_id": "0de3aad2-5f4c-4437-b0b3-4b867309528d",
+  "name": "The Inner Light",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Inner Light",
+      "oracle_fingerprint": "5bdabfdf9dde42fc4cc1a9299b76d664",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": [{ "Color": "Green" }, { "Color": "White" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Is": { "Target": 0 } }],
+                      "to": "EachPlayer",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [{ "Draw": { "count": "Triggering" } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Greatest": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  }
+                }
+              },
+              { "CreateToken": { "token": { "Named": "treasure" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

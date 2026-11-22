@@ -1,0 +1,48 @@
+{
+  "oracle_id": "8cb700bb-daa5-4a26-bb84-e22bc11bdaff",
+  "name": "Test of Identity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Test of Identity",
+      "oracle_fingerprint": "17ba6793de3b5e34a453cc94e7ab7174",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "I Am Klingon",
+                      "targets": [{ "what": { "Object": [{ "Subtype": "Klingon" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [
+                              { "ModifyPT": { "power": 1, "toughness": 1 } },
+                              { "AddKeyword": "DoubleStrike" }
+                            ],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "I Am Starfleet",
+                      "effects": [
+                        { "Discard": {} },
+                        { "If": { "condition": "Performed", "then": [{ "Draw": { "count": 2 } }] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "1b8be000-e2fd-4157-ace2-7b8603c03fba",
+  "name": "Voq, Torchbearer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Voq, Torchbearer",
+      "oracle_fingerprint": "9be36312fa5658eb3d2d1a367219e2ee",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }, { "In": "Graveyard" }],
+                "except": [
+                  { "AddSubtype": "Klingon" },
+                  { "AddSubtype": "Spy" },
+                  { "AddKeyword": "Menace" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

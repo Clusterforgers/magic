@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d974fee0-7d20-465c-a7e3-bc361e241cd4",
+  "name": "Galvanizing Tenor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Galvanizing Tenor",
+      "oracle_fingerprint": "3c6afb324b63f84766afdfd45c92f6e5",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": { "Players": "AttackedThisTurn" } }
+              }
+            ],
+            "effects": [{ "Goad": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

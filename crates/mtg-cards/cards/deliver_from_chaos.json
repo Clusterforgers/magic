@@ -1,0 +1,43 @@
+{
+  "oracle_id": "edea104c-b563-4fae-9e74-82164a8e090b",
+  "name": "Deliver from Chaos",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deliver from Chaos",
+      "oracle_fingerprint": "88082b903b40c92cdb7eacbf0ebb96b0",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Borg",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Borg"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Stat": { "of": { "Departed": { "Target": 0 } }, "stat": "ManaValue" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

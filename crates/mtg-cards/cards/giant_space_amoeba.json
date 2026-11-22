@@ -1,0 +1,32 @@
+{
+  "oracle_id": "ff9f3d23-a12f-428b-8001-90dafac0c6d7",
+  "name": "Giant Space Amoeba",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Giant Space Amoeba",
+      "oracle_fingerprint": "4f8eb04dbafa71c3d23ee31ef65bc065",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Defending" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -3, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": "This" } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

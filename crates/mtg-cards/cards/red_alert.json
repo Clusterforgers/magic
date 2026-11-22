@@ -1,0 +1,40 @@
+{
+  "oracle_id": "4636afb5-453a-4f27-8916-1cbc32459ba6",
+  "name": "Red Alert!",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Red Alert!",
+      "oracle_fingerprint": "8301ee144a863cbd3ed43b1fdf9adf9a",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Type": "Creature" }, { "AttackingPlayer": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

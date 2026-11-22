@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "245d0430-0967-44f1-8c59-985104a8db30",
+  "oracle_id": "e85ad29a-ebd6-4f81-af99-556deaedbfe0",
+  "multiverse_ids": [],
+  "resource_id": "6F15A5F66784E723588CEE3A8F2912CEF505C19E12EE52EE70A01DCEA212FB37",
+  "mtgo_id": 158626,
+  "tcgplayer_id": 725149,
+  "cardmarket_id": 918566,
+  "name": "Kirk, Commanding Officer",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/245d0430-0967-44f1-8c59-985104a8db30",
+  "scryfall_uri": "https://scryfall.com/card/trk/243/kirk-commanding-officer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-20T14:59:16Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.jpg?1792508356",
+    "normal": "https://cards.scryfall.io/normal/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.jpg?1792508356",
+    "large": "https://cards.scryfall.io/large/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.jpg?1792508356",
+    "png": "https://cards.scryfall.io/png/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.png?1792508356",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.jpg?1792508356",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.jpg?1792508356",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.webp?1792508356",
+    "grid": "https://cards.scryfall.io/grid/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.webp?1792508356",
+    "display": "https://cards.scryfall.io/display/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.webp?1792508356",
+    "art": "https://cards.scryfall.io/art/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.webp?1792508356",
+    "crop": "https://cards.scryfall.io/crop/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.webp?1792508356",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/4/245d0430-0967-44f1-8c59-985104a8db30.jpg?1792508356"
+  },
+  "mana_cost": "{1}{R}{W}",
+  "cmc": 3.0,
+  "type_line": "Legendary Creature — Human Officer",
+  "oracle_text": "Whenever you attack while creatures you control have total power 8 or greater, exile the top card of your library. You may play that card this turn.\n{2}, Sacrifice Kirk: Destroy target artifact or enchantment.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set": "trk",
+  "set_name": "Star Trek",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/245d0430-0967-44f1-8c59-985104a8db30/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae85ad29a-ebd6-4f81-af99-556deaedbfe0&unique=prints",
+  "collector_number": "243",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "\"I don't believe in a no-win scenario.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Cliff Nielsen",
+  "artist_ids": [
+    "7416bbed-fa7f-426b-b712-8b3ccd9fd858"
+  ],
+  "illustration_id": "36063b15-0511-4a93-ac81-6574dbdcbbca",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 30135,
+  "prices": {
+    "usd": "0.35",
+    "usd_foil": "0.32",
+    "usd_etched": null,
+    "eur": "0.12",
+    "eur_foil": "0.29",
+    "tix": "0.07"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DKirk%252C%2BCommanding%2BOfficer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DKirk%252C%2BCommanding%2BOfficer",
+    "edhrec": "https://edhrec.com/route/?cc=Kirk%2C+Commanding+Officer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F725149%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=918566&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/158626?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

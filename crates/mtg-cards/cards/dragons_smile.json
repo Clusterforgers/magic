@@ -1,0 +1,32 @@
+{
+  "oracle_id": "e7611ef9-e5fc-45eb-bc3f-4358a27107fd",
+  "name": "Dragon's Smile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dragon's Smile",
+      "oracle_fingerprint": "fb932edee6f18fdbb1a58d66bbecb602",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Rule": { "rule": { "MayCast": { "from": "Exile", "once": true, "rather": "{0}" } } } },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "ExileTop": { "who": "Triggering", "count": "Triggering", "as": "exiled" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Crew": 3 } }
+      ]
+    }
+  ]
+}

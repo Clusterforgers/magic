@@ -1,0 +1,47 @@
+{
+  "oracle_id": "56d71eda-4037-45fb-9e98-1725147af6fc",
+  "name": "Tolabow, Loch Rascal",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tolabow, Loch Rascal",
+      "oracle_fingerprint": "1bfb2ee88196eb359dfe70c2ac16103b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R116Rulebreaker": "If ~ is your commander, the color identity of instant and sorcery cards in your deck can include one color of your choice not in your commander's color identity, and your deck can have any basic land cards"
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Otter",
+                      "colors": ["Blue", "Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Otter"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Prowess" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "oracle_id": "1fdcdb1c-a140-40ee-b711-5ea539eb1084",
+  "name": "Melkotian Adjudicator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Melkotian Adjudicator",
+      "oracle_fingerprint": "b3c232102511128b01caf97daeef98c2",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "R116Dilemma": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

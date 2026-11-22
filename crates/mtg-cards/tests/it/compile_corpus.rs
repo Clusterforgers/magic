@@ -303,6 +303,9 @@ fn hand_keyword_is_written(
     if written.is_empty() {
         return None;
     }
+    // The same ability may be printed as its own activated ability ("Transfer Symbiont — {2}{G}, Discard this card: Put
+    // two +1/+1 counters on target creature." is reinforce 2 in all but name).
+    written.extend(written_variants(ability));
     let lines: Vec<&str> = compiled
         .clauses
         .iter()

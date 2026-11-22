@@ -953,10 +953,22 @@ enum Noun {
     Card,
     /// A subtype alone ("Clue"), singular only.
     Subtype(String),
+    /// Either of two subtypes, plural only ("Klingons and Warriors").
+    Subtypes(Vec<String>),
     /// "token" or "tokens", after the card types before it: "creature tokens", "target creature token".
     Token,
     /// "commander": a player's commander, with no card type before it.
     Commander,
+}
+
+/// The predicate of a subtype noun: the subtype, or either of two ("Klingons and Warriors").
+fn subtype_noun(noun: &Noun) -> Option<Pred> {
+    let one = |name: &String| Pred::Subtype(Subtype(name.clone()));
+    match noun {
+        Noun::Subtype(name) => Some(one(name)),
+        Noun::Subtypes(names) => Some(Pred::AnyOf(names.iter().map(one).collect())),
+        _ => None,
+    }
 }
 
 /// The card types before the noun and the noun; "permanent" names no type.
@@ -968,6 +980,15 @@ fn head(r: &mut Reader<'_>, form: Form) -> Option<(Vec<CardType>, Noun)> {
         subtype(r)
     };
     if let Some(name) = group {
+        // "Klingons and Warriors you control", "Klingons and/or Warriors": a group of either subtype.
+        if plural
+            && let Some(second) = r.attempt(|r| {
+                connect(r, form).then_some(())?;
+                plural_subtype(r)
+            })
+        {
+            return Some((Vec::new(), Noun::Subtypes(vec![name, second])));
+        }
         return Some((Vec::new(), Noun::Subtype(name)));
     }
     if let Some(word @ ("commander" | "commanders")) = r.peek_word()
@@ -1304,8 +1325,8 @@ pub(super) fn phrase_in(r: &mut Reader<'_>, form: Form, unplaced: bool) -> Optio
                 preds.extend(type_pred);
                 preds.extend(subtypes);
             }
-            Noun::Subtype(name) => {
-                preds.push(Pred::Subtype(Subtype(name.clone())));
+            Noun::Subtype(_) | Noun::Subtypes(_) => {
+                preds.extend(subtype_noun(&noun));
                 preds.extend(adjectives);
             }
             Noun::Plain | Noun::Card => {

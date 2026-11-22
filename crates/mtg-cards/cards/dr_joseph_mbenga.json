@@ -1,0 +1,32 @@
+{
+  "oracle_id": "046c4052-4c3c-4207-b44e-e9a98a8c017f",
+  "name": "Dr. Joseph M'Benga",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dr. Joseph M'Benga",
+      "oracle_fingerprint": "5ef8a48be4ba3ae4ae58959d589104cc",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }, "HasAnyCounter"]
+            },
+            "mods": [{ "AddKeyword": "Hexproof" }]
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "by": "You"
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

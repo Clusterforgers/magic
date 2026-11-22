@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b5697e53-eb2f-482b-8b4a-1dad165ac16f",
+  "name": "Gagh Slinger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gagh Slinger",
+      "oracle_fingerprint": "87e258f73b06fe760cbc09228b6ad11f",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [
+              "Spell",
+              { "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }] },
+              { "ControlledBy": "You" }
+            ],
+            "change": "Reduce",
+            "mana": "{1}"
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }] },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

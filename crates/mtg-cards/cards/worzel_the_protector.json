@@ -1,0 +1,88 @@
+{
+  "oracle_id": "15084803-8470-469b-8cd9-154c2341b96d",
+  "name": "Worzel, the Protector",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worzel, the Protector",
+      "oracle_fingerprint": "d892f4ec8e7bebc0c1e2a2df8d5da865",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": "Zero",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Cat",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Cat"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [
+                              {
+                                "PutCounters": {
+                                  "on": {
+                                    "Each": [{ "Type": "Planeswalker" }, { "ControlledBy": "You" }]
+                                  },
+                                  "counter": "loyalty"
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              { "LookAtTop": { "count": 6, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "AnyOf": [{ "Type": "Planeswalker" }, { "Supertype": "Basic" }] },
+                      { "AnyOf": [{ "Type": "Planeswalker" }, { "Subtype": "Plains" }] }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [{ "CreateToken": { "token": { "Named": "scryb_sprites" }, "count": 10 } }]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

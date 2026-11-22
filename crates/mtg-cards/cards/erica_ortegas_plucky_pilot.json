@@ -1,0 +1,57 @@
+{
+  "oracle_id": "8b2514e5-4124-4f6c-b6b7-24c0ab3d3971",
+  "name": "Erica Ortegas, Plucky Pilot",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Erica Ortegas, Plucky Pilot",
+      "oracle_fingerprint": "9b27b4504a900d720ffe4d68d6273a83",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }, { "Type": "Land" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "End" } },
+                        "effects": [
+                          {
+                            "Choose": {
+                              "from": { "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                              "as": "land"
+                            }
+                          },
+                          { "Move": { "what": { "Bound": "land" }, "to": "Hand" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

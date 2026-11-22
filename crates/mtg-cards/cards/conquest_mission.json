@@ -1,0 +1,68 @@
+{
+  "oracle_id": "35906166-71d1-4089-bbe4-4055edb81fb0",
+  "name": "Conquest Mission",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Conquest Mission",
+      "oracle_fingerprint": "9137e35285b6bcf1ab39106ddfc6941c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Artifact" }, { "Not": "Token" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                      "op": "Ge",
+                      "right": 6
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Borg",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Borg"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Borg",
+                            "types": ["Artifact", "Creature"],
+                            "subtypes": ["Borg"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

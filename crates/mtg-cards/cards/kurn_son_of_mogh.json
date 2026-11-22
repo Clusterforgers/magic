@@ -1,0 +1,23 @@
+{
+  "oracle_id": "2a078705-4afe-4887-94cc-f12f4690fb01",
+  "name": "Kurn, Son of Mogh",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kurn, Son of Mogh",
+      "oracle_fingerprint": "de92f77ed424f6fa5fddb6d83514f7ab",
+      "abilities": [
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              { "Draw": { "count": { "Players": "AttackedThisTurn" } } },
+              { "LoseLife": { "amount": { "Players": "AttackedThisTurn" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "oracle_id": "f409e869-ea1a-4e08-b19e-949436d01cc1",
+  "name": "Excalbian Gamemaster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Excalbian Gamemaster",
+      "oracle_fingerprint": "86a57ffdcef6fb89564943d2119271bb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Officer",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Officer"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "from": "Battlefield",
+                    "to": "Graveyard"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

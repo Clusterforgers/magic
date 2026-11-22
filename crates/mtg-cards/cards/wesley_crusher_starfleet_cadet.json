@@ -1,0 +1,74 @@
+{
+  "oracle_id": "5c3cbb08-cbe1-42f5-9ac7-e558b85648bb",
+  "name": "Wesley Crusher, Starfleet Cadet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Wesley Crusher, Starfleet Cadet",
+      "oracle_fingerprint": "691494718c9b67d82f70bcd39175b2b7",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "choose": { "min": 2, "max": 2 },
+                  "modes": [
+                    {
+                      "targets": [
+                        { "what": { "Object": ["Spell", { "Not": { "Type": "Creature" } }] } }
+                      ],
+                      "effects": [
+                        {
+                          "Pay": {
+                            "who": { "ControllerOf": { "Target": 0 } },
+                            "cost": "{2}",
+                            "unpaid": [{ "Counter": { "what": { "Target": 0 } } }]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 2 } }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["CantBeBlocked"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "targets": [{ "what": "Player" }],
+                      "effects": [
+                        { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+                        { "Discard": { "who": { "Target": 0 }, "count": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

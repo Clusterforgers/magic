@@ -1,0 +1,37 @@
+{
+  "oracle_id": "ecf28b5d-a719-47d4-8ad9-d24b6297ebde",
+  "name": "The Holodeck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Holodeck",
+      "oracle_fingerprint": "f1a2104f1611e2c14414341b366a5ca4",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Type": "Battle" },
+                      { "Type": "Creature" },
+                      { "Type": "Enchantment" },
+                      { "Type": "Land" },
+                      { "Type": "Planeswalker" }
+                    ]
+                  },
+                  { "OwnedBy": "You" }
+                ],
+                "from": "Graveyard",
+                "play": true,
+                "once": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,137 @@
+{
+  "object": "card",
+  "id": "99830058-c97a-4326-8c2f-8658cf8a1561",
+  "oracle_id": "e705b055-14b3-4de0-b4a7-39626839dea8",
+  "multiverse_ids": [],
+  "resource_id": "0AC3EBF8BEA3F90564EC89F81D471958973508F6D34A603CFF7C12B69D7A34B1",
+  "mtgo_id": 158180,
+  "tcgplayer_id": 728485,
+  "cardmarket_id": 920706,
+  "name": "Ghost of Illyria",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/99830058-c97a-4326-8c2f-8658cf8a1561",
+  "scryfall_uri": "https://scryfall.com/card/trk/20/ghost-of-illyria?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-30T11:22:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.jpg?1793359367",
+    "normal": "https://cards.scryfall.io/normal/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.jpg?1793359367",
+    "large": "https://cards.scryfall.io/large/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.jpg?1793359367",
+    "png": "https://cards.scryfall.io/png/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.png?1793359367",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.jpg?1793359367",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.jpg?1793359367",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.webp?1793359367",
+    "grid": "https://cards.scryfall.io/grid/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.webp?1793359367",
+    "display": "https://cards.scryfall.io/display/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.webp?1793359367",
+    "art": "https://cards.scryfall.io/art/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.webp?1793359367",
+    "crop": "https://cards.scryfall.io/crop/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.webp?1793359367",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/9/99830058-c97a-4326-8c2f-8658cf8a1561.jpg?1793359367"
+  },
+  "mana_cost": "{3}{W}",
+  "cmc": 4.0,
+  "type_line": "Creature — Elemental Spirit",
+  "oracle_text": "Flying\nWhen this creature enters, exile up to one other target nonland permanent you control. Return that card to the battlefield under its owner's control at the beginning of the next end step.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [
+    "Flying"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set": "trk",
+  "set_name": "Star Trek",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/99830058-c97a-4326-8c2f-8658cf8a1561/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae705b055-14b3-4de0-b4a7-39626839dea8&unique=prints",
+  "collector_number": "20",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "The unique electromagnetic virus transformed Hetemit IX's colonists to living plasma.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Pace Wilder",
+  "artist_ids": [
+    "bcbb825f-cf39-4b6e-8298-62b278fe0c12"
+  ],
+  "illustration_id": "b0fa43b6-392c-4265-bd21-6668808f4276",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 32568,
+  "prices": {
+    "usd": "0.15",
+    "usd_foil": "0.23",
+    "usd_etched": null,
+    "eur": "0.09",
+    "eur_foil": "0.30",
+    "tix": "0.07"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGhost%2Bof%2BIllyria",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGhost%2Bof%2BIllyria",
+    "edhrec": "https://edhrec.com/route/?cc=Ghost+of+Illyria"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F728485%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=920706&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/158180?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

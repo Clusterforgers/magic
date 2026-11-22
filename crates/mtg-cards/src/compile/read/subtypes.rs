@@ -2,14 +2,16 @@
 
 /// The words after the dash of the type lines of creatures, artifacts, enchantments, lands and
 /// spells in the Oracle data, sorted (a two-word type such as "Time Lord" is two entries).
-const SUBTYPES: [&str; 435] = [
+const SUBTYPES: [&str; 457] = [
     "Adventure",
     "Advisor",
+    "Aenar",
     "Aetherborn",
     "Alicorn",
     "Alien",
     "Ally",
     "Andorian",
+    "Android",
     "Angel",
     "Antelope",
     "Ape",
@@ -34,6 +36,7 @@ const SUBTYPES: [&str; 435] = [
     "Azra",
     "Background",
     "Badger",
+    "Bajoran",
     "Barbarian",
     "Bard",
     "Barnyard",
@@ -45,11 +48,13 @@ const SUBTYPES: [&str; 435] = [
     "Beeble",
     "Beholder",
     "Berserker",
+    "Betazoid",
     "Bird",
     "Bison",
     "Blood",
     "Boar",
     "Bobblehead",
+    "Bolian",
     "Book",
     "Borg",
     "Boxer",
@@ -61,6 +66,7 @@ const SUBTYPES: [&str; 435] = [
     "Caitian",
     "Camel",
     "Capybara",
+    "Cardassian",
     "Carrier",
     "Cartouche",
     "Case",
@@ -83,6 +89,7 @@ const SUBTYPES: [&str; 435] = [
     "Clown",
     "Clue",
     "Cockatrice",
+    "Communicator",
     "Construct",
     "Contraption",
     "Cow",
@@ -118,8 +125,10 @@ const SUBTYPES: [&str; 435] = [
     "Dryad",
     "Dwarf",
     "Echidna",
+    "Edosian",
     "Efreet",
     "Egg",
+    "El-Aurian",
     "Elder",
     "Eldrazi",
     "Elemental",
@@ -131,8 +140,10 @@ const SUBTYPES: [&str; 435] = [
     "Equipment",
     "Eternal",
     "Etiquette",
+    "Excalbian",
     "Eye",
     "Faerie",
+    "Ferengi",
     "Ferret",
     "Fire",
     "Fish",
@@ -177,6 +188,7 @@ const SUBTYPES: [&str; 435] = [
     "Hero",
     "Hippo",
     "Hippogriff",
+    "Hirogen",
     "Homarid",
     "Homunculus",
     "Horror",
@@ -185,6 +197,7 @@ const SUBTYPES: [&str; 435] = [
     "Hydra",
     "Hyena",
     "Illusion",
+    "Illyrian",
     "Imp",
     "Incarnation",
     "Incubator",
@@ -232,6 +245,8 @@ const SUBTYPES: [&str; 435] = [
     "Mammoth",
     "Manticore",
     "Masticore",
+    "Medusan",
+    "Melkotian",
     "Mercenary",
     "Merfolk",
     "Metathran",
@@ -254,6 +269,7 @@ const SUBTYPES: [&str; 435] = [
     "Mutant",
     "Myr",
     "Mystic",
+    "Na'kuhl",
     "Nautilus",
     "Necron",
     "Nephilim",
@@ -264,6 +280,7 @@ const SUBTYPES: [&str; 435] = [
     "Noggle",
     "Nomad",
     "Nymph",
+    "Ocampa",
     "Octopus",
     "Officer",
     "Ogre",
@@ -318,6 +335,7 @@ const SUBTYPES: [&str; 435] = [
     "Robot",
     "Rogue",
     "Role",
+    "Romulan",
     "Room",
     "Rune",
     "Sable",
@@ -379,6 +397,7 @@ const SUBTYPES: [&str; 435] = [
     "Symbiote",
     "Synth",
     "Talosian",
+    "Tamarian",
     "Tellarite",
     "Thalakos",
     "The",
@@ -396,6 +415,8 @@ const SUBTYPES: [&str; 435] = [
     "Treasure",
     "Tree",
     "Treefolk",
+    "Tribble",
+    "Trill",
     "Trilobite",
     "Triskelavite",
     "Troll",
@@ -408,6 +429,7 @@ const SUBTYPES: [&str; 435] = [
     "Vampire",
     "Vampyre",
     "Varmint",
+    "Vau-N'Akat",
     "Vedalken",
     "Vehicle",
     "Vengeance",
@@ -478,7 +500,7 @@ const IRREGULAR_PLURALS: [(&str, &str); 12] = [
 ];
 
 /// The subtypes written the same in the plural.
-const SAME_PLURAL: [&str; 19] = [
+const SAME_PLURAL: [&str; 20] = [
     "Aetherborn",
     "Aurochs",
     "Dauthi",
@@ -496,6 +518,7 @@ const SAME_PLURAL: [&str; 19] = [
     "Samurai",
     "Sheep",
     "Soltari",
+    "Spacecraft",
     "Thalakos",
     "Treefolk",
 ];
@@ -565,6 +588,8 @@ mod tests {
     #[case("Vehicle")]
     #[case("Merfolk")]
     #[case("Spirit")]
+    #[case("Romulan")]
+    #[case("Borg")]
     fn the_types_the_readers_use_are_subtypes(#[case] word: &str) {
         assert!(is_subtype(word));
     }
@@ -592,6 +617,8 @@ mod tests {
     #[case("Aetherborn", "Aetherborn")]
     #[case("Equipment", "Equipment")]
     #[case("Armadillo", "Armadillos")]
+    #[case("Spacecraft", "Spacecraft")]
+    #[case("Klingon", "Klingons")]
     fn plurals_are_written_as_rules_text_writes_them(#[case] one: &str, #[case] many: &str) {
         assert_eq!(plural_subtype(one), many);
         assert_eq!(singular_subtype(many, is_subtype).as_deref(), Some(one));

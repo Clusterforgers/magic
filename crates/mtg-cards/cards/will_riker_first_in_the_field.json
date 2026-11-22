@@ -1,0 +1,48 @@
+{
+  "oracle_id": "7c1fd7c6-2f3d-496f-9f09-660a13ef923f",
+  "name": "Will Riker, First in the Field",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Will Riker, First in the Field",
+      "oracle_fingerprint": "1226891781ab99a2072725ba40443178",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": 2,
+                  "as": "lands",
+                  "revealed_as": "revealed"
+                }
+              },
+              { "Move": { "what": { "Bound": "lands" }, "to": { "Battlefield": {} } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "revealed" } },
+                      { "Not": { "Is": { "Bound": "lands" } } }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [
+                    { "Sacrifice": { "filter": [{ "Is": { "Bound": "lands" } }], "count": 2 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

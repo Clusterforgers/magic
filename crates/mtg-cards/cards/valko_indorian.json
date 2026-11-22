@@ -1,0 +1,32 @@
+{
+  "oracle_id": "8023d419-8fd2-4b92-b6ea-f25fd67e6410",
+  "name": "Valko Indorian",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Valko Indorian",
+      "oracle_fingerprint": "a3446d3fcf71f84092e6de05427c2e72",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R116Rulebreaker": "A deck with this commander can have Phyrexian cards of any color identity and any basic land cards"
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Phyrexian" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Menace" }, { "AddKeyword": "Lifelink" }]
+          }
+        }
+      ]
+    }
+  ]
+}

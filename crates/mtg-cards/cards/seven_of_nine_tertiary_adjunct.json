@@ -1,0 +1,41 @@
+{
+  "oracle_id": "22c3b484-0f96-4051-807c-fc0fcb7cd1a8",
+  "name": "Seven of Nine, Tertiary Adjunct",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seven of Nine, Tertiary Adjunct",
+      "oracle_fingerprint": "708025e9731a8c5592477b1c13c2cc7d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              { "Draw": {} },
+              { "Discard": { "as": "discarded" } },
+              {
+                "Reflexive": {
+                  "targets": [
+                    {
+                      "what": { "Object": [{ "Type": "Artifact" }] },
+                      "bounds": { "min": 0, "max": 1 }
+                    }
+                  ],
+                  "effects": [
+                    { "PutCounters": { "on": { "Target": 0 }, "counter": "charge", "count": 2 } }
+                  ],
+                  "if": {
+                    "Matches": {
+                      "subject": { "Bound": "discarded" },
+                      "selector": [{ "Not": { "Type": "Land" } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

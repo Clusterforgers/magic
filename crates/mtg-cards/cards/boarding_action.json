@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f9f70fb6-953e-40e8-a15d-ea3ee62d09e3",
+  "name": "Boarding Action",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Boarding Action",
+      "oracle_fingerprint": "3abc3a8cc2c5fd4a6e1b2f95186fae76",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Klingon Warrior",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Klingon", "Warrior"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "R116BeamMeUp": "{2}{R}" } }
+      ]
+    }
+  ]
+}

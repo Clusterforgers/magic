@@ -1,0 +1,39 @@
+{
+  "oracle_id": "24964ce8-1eec-49b3-9db1-b895bc686ec5",
+  "name": "Extraction Integrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Extraction Integrant",
+      "oracle_fingerprint": "6218850431c4d3a0765f9fb3004a7ad7",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [
+              { "AddKeyword": "Menace" },
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Blocks": { "what": [{ "Type": "Creature" }], "blocking": ["This"] } },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "Triggering",
+                          "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

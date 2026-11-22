@@ -1,0 +1,145 @@
+{
+  "object": "card",
+  "id": "309a0207-41a3-4038-98c2-fc9badbf671c",
+  "oracle_id": "15084803-8470-469b-8cd9-154c2341b96d",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709755,
+  "cardmarket_id": 917831,
+  "name": "Worzel, the Protector",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/309a0207-41a3-4038-98c2-fc9badbf671c",
+  "scryfall_uri": "https://scryfall.com/card/mbc/5/worzel-the-protector?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-23T07:15:00Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.jpg?1792739700",
+    "normal": "https://cards.scryfall.io/normal/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.jpg?1792739700",
+    "large": "https://cards.scryfall.io/large/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.jpg?1792739700",
+    "png": "https://cards.scryfall.io/png/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.png?1792739700",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.jpg?1792739700",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.jpg?1792739700",
+    "thumb": "https://cards.scryfall.io/thumb/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.webp?1792739700",
+    "grid": "https://cards.scryfall.io/grid/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.webp?1792739700",
+    "display": "https://cards.scryfall.io/display/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.webp?1792739700",
+    "art": "https://cards.scryfall.io/art/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.webp?1792739700",
+    "crop": "https://cards.scryfall.io/crop/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.webp?1792739700",
+    "jpeg": "https://cards.scryfall.io/normal/front/3/0/309a0207-41a3-4038-98c2-fc9badbf671c.jpg?1792739700"
+  },
+  "mana_cost": "{1}{W}{W}{W}",
+  "cmc": 4,
+  "type_line": "Legendary Planeswalker — Worzel",
+  "oracle_text": "0: Create a 1/1 white Cat creature token with \"{T}: Put a loyalty counter on each planeswalker you control.\"\n−1: Look at the top six cards of your library. You may reveal a planeswalker or basic Plains card from among them and put it into your hand. Put the rest on the bottom of your library in a random order.\n−8: Create ten Scryb Sprites tokens. (They're {G} 1/1 Faerie creatures with flying.)\nWorzel, the Protector can be your commander.",
+  "loyalty": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "309a0207-41a3-4038-98c2-fc9badbf671c",
+      "component": "combo_piece",
+      "name": "Worzel, the Protector",
+      "type_line": "Legendary Planeswalker — Worzel",
+      "uri": "https://api.scryfall.com/cards/309a0207-41a3-4038-98c2-fc9badbf671c"
+    },
+    {
+      "object": "related_card",
+      "id": "e05cacf1-31c4-4538-81ae-575049567367",
+      "component": "combo_piece",
+      "name": "Scryb Sprites",
+      "type_line": "Creature — Faerie",
+      "uri": "https://api.scryfall.com/cards/e05cacf1-31c4-4538-81ae-575049567367"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/309a0207-41a3-4038-98c2-fc9badbf671c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A15084803-8470-469b-8cd9-154c2341b96d&unique=prints",
+  "collector_number": "5",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Anna Steinbauer",
+  "artist_ids": [
+    "3516496c-c279-4b56-8239-720683d03ae0"
+  ],
+  "illustration_id": "faea799b-8fe6-4beb-8af3-de3aa2696a91",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 16553,
+  "prices": {
+    "usd": "18.30",
+    "usd_foil": "64.85",
+    "usd_etched": null,
+    "eur": "17.09",
+    "eur_foil": "62.46",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DWorzel%252C%2Bthe%2BProtector",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DWorzel%252C%2Bthe%2BProtector",
+    "edhrec": "https://edhrec.com/route/?cc=Worzel%2C+the+Protector"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709755%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=917831&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Worzel%2C+the+Protector&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

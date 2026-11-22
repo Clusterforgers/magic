@@ -1,0 +1,20 @@
+{
+  "oracle_id": "6eb9865e-513c-43c6-81e1-6ad000e9c48e",
+  "name": "Transporter Malfunction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Transporter Malfunction",
+      "oracle_fingerprint": "0ecac82e0ef42efc2d3d68fe176fe39a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "AnyTarget" }],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        { "Keyword": { "R116BeamMeUp": "{3}{R}{R}{R}" } }
+      ]
+    }
+  ]
+}

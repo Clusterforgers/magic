@@ -179,6 +179,15 @@ fn this_turn(r: &mut Reader<'_>) -> Option<Condition> {
     if r.words(C10_ANY_NONCREATURE_CAST) {
         return at_least(c10_any_noncreature_cast(), 1);
     }
+    if r.words("you faced a dilemma this turn") || r.words("you've faced a dilemma this turn") {
+        return at_least(
+            Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::R116Dilemmas,
+            },
+            1,
+        );
+    }
     if r.words("you gained life this turn") {
         return at_least(
             Amount::Tallied {

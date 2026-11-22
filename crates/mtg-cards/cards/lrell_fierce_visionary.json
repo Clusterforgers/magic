@@ -1,0 +1,55 @@
+{
+  "oracle_id": "ea684e78-483c-4b89-b184-b2aeede83cc7",
+  "name": "L'Rell, Fierce Visionary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "L'Rell, Fierce Visionary",
+      "oracle_fingerprint": "17750635be6ebcf1afc360910ac1832e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Klingon Warrior",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Klingon", "Warrior"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  },
+                  "as": "token"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "token" } }] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "Sacrifice": {
+                  "filter": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] }, "Other"]
+                }
+              }
+            ],
+            "effects": [{ "Surveil": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

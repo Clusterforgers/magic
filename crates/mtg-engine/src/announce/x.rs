@@ -64,7 +64,9 @@ impl XCost {
                     return Some(XCost::R110Chosen { least, most });
                 }
                 // "As an additional cost to cast this spell, pay X life.": the cost counts the X it asks for.
-                if card.x_in_cost == 0 && required::counts_x(card) {
+                if card.x_in_cost == 0
+                    && (required::counts_x(card) || super::optional::r116_picks_by_x(card))
+                {
                     return Some(XCost::Parts);
                 }
                 // A cleave, madness, foretell or freerunning cost may hold an `{X}` the mana cost lacks.
@@ -113,6 +115,25 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     if ctx.needs.x.is_none() {
         // A trigger that reads the X of the spell or ability it came from remembers it as it goes on the stack.
         work.choices.x = ctx.triggered.and_then(remembered);
+        work.done.x = true;
+        return None;
+    }
+    // An X only an optional cost picks by is 0 when that cost is not chosen (casualty X).
+    if ctx.needs.x == Some(XCost::Parts)
+        && let What::Spell(spell) = ctx.what
+        && ctx.state.object(*spell).is_some_and(|card| {
+            card.card().x_in_cost == 0
+                && !required::counts_x(card.card())
+                && super::optional::r116_picks_by_x(card.card())
+        })
+        && !super::optional::r116_chosen_picks_by_x(ctx, work.choices)
+    {
+        work.choices.x = Some(0);
+        work.done.x = true;
+        return None;
+    }
+    // An X the text defines from the targets is worked out with the total cost (`r5523_x_cap::r116_x_of_targets`).
+    if super::r5523_x_cap::r116_x_of_targets(ctx).is_some() {
         work.done.x = true;
         return None;
     }

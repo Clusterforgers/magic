@@ -1,0 +1,50 @@
+{
+  "oracle_id": "a8bcc930-3efe-4595-b164-f5985e1dc289",
+  "name": "Federation Outpost",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Federation Outpost",
+      "oracle_fingerprint": "7c422278954e358c40d1b09bc9a49c5e",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Land" }, "Other", { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Untapped"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    { "effects": [{ "GainLife": { "amount": 2 } }] },
+                    { "effects": [{ "Surveil": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["White"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

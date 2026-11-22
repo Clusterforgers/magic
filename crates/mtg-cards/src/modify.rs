@@ -1421,6 +1421,10 @@ pub enum GameRule {
     /// A deck can hold up to this many cards with the card's name (CR 100.2a, "A deck can have up to nine cards named
     /// ~"); it changes nothing in a game, and the rule is written without `from`.
     UpToInDeck(u32),
+    /// Rulebreaker: what a deck with the card as its commander may hold, as the card words it after the ability word (`~`
+    /// for its name, no final period: "A deck with this commander can have any land cards"); it changes nothing in a game,
+    /// the deck check only warns (CR 903.5), and the rule is written without `from`.
+    R116Rulebreaker(String),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
     /// "If this card is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst.": a

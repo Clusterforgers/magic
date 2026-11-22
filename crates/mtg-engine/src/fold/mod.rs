@@ -98,6 +98,7 @@ pub fn apply_event(state: &mut GameState, event: &Event) -> Result<(), EngineErr
     w14b_note_exiled(state, event);
     crate::memory::forget_object(state, event);
     crate::triggers::g10c_note_crime(state, event);
+    crate::triggers::r116_note_dilemma(state, event);
     crate::spotlight::note(state, event);
     crate::rivalry::note(state, event);
     // A loop offer waits for its answer, and any event that follows has answered it.

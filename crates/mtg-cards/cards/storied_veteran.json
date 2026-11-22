@@ -1,0 +1,26 @@
+{
+  "oracle_id": "b1012ac3-77f8-4384-b947-84c094d6b59e",
+  "name": "Storied Veteran",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Storied Veteran",
+      "oracle_fingerprint": "404210b334d8cfe952e6d1ce7a1ca5f3",
+      "abilities": [
+        { "Static": { "affected": "This", "mods": ["CantBlock"] } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": ["This"],
+                "from": "Graveyard",
+                "riders": [{ "EntersWithCounter": { "Other": "finality" } }]
+              }
+            },
+            "from": "Graveyard"
+          }
+        }
+      ]
+    }
+  ]
+}

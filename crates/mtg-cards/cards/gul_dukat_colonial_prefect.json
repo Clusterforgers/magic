@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f41f0290-0f9d-4c51-935e-f69d2120e4a7",
+  "name": "Gul Dukat, Colonial Prefect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gul Dukat, Colonial Prefect",
+      "oracle_fingerprint": "7052a08777cd128ec3b7481e86313742",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "LoseLife": {
+                        "who": { "Bound": "opponent" },
+                        "amount": {
+                          "Tallied": { "who": { "Bound": "opponent" }, "what": "LifeLost" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              { "GainLife": { "amount": "LifeLostThisWay" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

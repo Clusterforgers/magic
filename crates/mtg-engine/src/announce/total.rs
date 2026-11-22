@@ -45,6 +45,12 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         return Some(Next::Drop);
     }
     work.done.modifier_life = life;
+    // "X is twice the mana value of that spell": the X counted from the targets just chosen (CR 601.2f).
+    if work.choices.x.is_none()
+        && let Some(x) = super::r5523_x_cap::r116_x_with_targets(ctx, work.choices)
+    {
+        work.choices.x = Some(x);
+    }
     match of(ctx, work.choices) {
         Some(mut total) => {
             total.life = total.life.saturating_add(life);

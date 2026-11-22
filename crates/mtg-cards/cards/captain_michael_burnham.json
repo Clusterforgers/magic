@@ -1,0 +1,33 @@
+{
+  "oracle_id": "9a71aa6c-2d5f-468d-b588-252fae37ccbb",
+  "name": "Captain Michael Burnham",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Michael Burnham",
+      "oracle_fingerprint": "4840a60136ae73395eef257c3aeeba67",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "oracle_id": "de8ebef9-fa0e-42df-a1bc-5c4b86d1bdd1",
+  "name": "Starfleet Academy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfleet Academy",
+      "oracle_fingerprint": "ce545db6e22e318336c779e1d4443e8e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}" }, "Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "AnyColor": {
+                      "Distinct": {
+                        "of": [
+                          { "Type": "Creature" },
+                          { "Not": { "Subtype": "Borg" } },
+                          { "ControlledBy": "You" }
+                        ],
+                        "stat": "CreatureType"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

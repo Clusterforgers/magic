@@ -1,0 +1,52 @@
+{
+  "oracle_id": "78c423ad-1f8b-4262-b64f-a98899da9372",
+  "name": "Encounter the Unknown",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Encounter the Unknown",
+      "oracle_fingerprint": "012645ca646993295f8079d534adbe00",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Come in Peace",
+                      "effects": [
+                        { "ExileTop": { "count": 2, "as": "impulse" } },
+                        {
+                          "Rule": {
+                            "rule": {
+                              "MayCast": {
+                                "from": "Exile",
+                                "only": { "Bound": "impulse" },
+                                "play": true
+                              }
+                            },
+                            "duration": "UntilEndOfYourNextTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Shoot to Kill",
+                      "effects": [
+                        {
+                          "DealDamage": { "to": { "Each": [{ "Type": "Creature" }] }, "amount": 2 }
+                        },
+                        { "DealDamage": { "to": "EachPlayer", "amount": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

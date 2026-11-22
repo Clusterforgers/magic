@@ -15,7 +15,7 @@ use crate::ability_reader;
 use crate::announce::{Pending, Special, What, companion, foretell, plot, suspend, turn_up};
 use crate::answers::Outcome;
 use crate::choose::{Choice, Choices};
-use crate::decision::{PayChoice, PayOptions};
+use crate::decision::{Decision, PayChoice, PayOptions};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::{Event, ZoneCause};
 use crate::help::Offered;
@@ -53,13 +53,15 @@ fn paid_from(part: &Part, ability: AbilityRef) -> ObjectId {
 /// the activation and the ability on the stack. The mana of its cost is paid around them by [`pay_answer`].
 ///
 /// The source is photographed before the costs, so the ability knows what it was (CR 113.7a); a token sacrificed
-/// for it has ceased to exist by then, and the ability still has the rules it was activated from.
+/// for it has ceased to exist by then, and the ability still has the rules it was activated from. `rolled` are the answers to
+/// the changes of a die the cost rolls (`r114_cost_roll`).
 #[allow(clippy::too_many_lines)] // one arm for each kind of ability and of source-moving cost
 pub(crate) fn activation_events(
     state: &GameState,
     player: PlayerId,
     ability: AbilityRef,
     choices: &Choices,
+    rolled: &[usize],
 ) -> Option<Vec<Event>> {
     let source = state.object(ability.object)?;
     let rules = crate::r115_cost_choice::r115_as_chosen(
@@ -117,7 +119,8 @@ pub(crate) fn activation_events(
                 &price.parts,
                 choices,
             ));
-            if let Some((rolled, result)) = r114_cost_roll(state, player, cost) {
+            if let Some(roll) = r114_cost_roll(state, player, cost, rolled) {
+                let (rolled, result) = roll.ok()?;
                 events.extend(rolled);
                 rolled_x = Some(result);
             }
@@ -203,28 +206,70 @@ pub(crate) fn activation_events(
 }
 
 /// The die a cost rolls as it is paid (`CostItem::R114RollDie`, CR 706, 602.2h): the roll from the game's random stream,
-/// logged with the payment, and its result, which is the ability's X. None for a cost that rolls nothing.
+/// changed by the rules that let the player change a roll (`Rule::R6402ChangeRoll`, `R113ExchangeRoll`) with the
+/// `answers` they gave in the announcement's payment step, logged with the payment, and its result, which is the
+/// ability's X. `Err` asks the next of those questions; `None` for a cost that rolls nothing.
 fn r114_cost_roll(
     state: &GameState,
     player: PlayerId,
     cost: &mtg_cards::cost::Cost,
-) -> Option<(Vec<Event>, u32)> {
+    answers: &[usize],
+) -> Option<Result<(Vec<Event>, u32), Decision>> {
     let sides = cost.0.iter().find_map(|item| match item {
         CostItem::R114RollDie(sides) => Some(*sides),
         _ => None,
     })?;
-    let rolled = crate::resolve::prim::roll_dice::rolls(state, player, sides, 1);
-    let result = rolled.last().copied()?;
-    let events = rolled
+    let natural = crate::resolve::prim::roll_dice::rolls(state, player, sides, 1);
+    let journal: Vec<(PlayerId, Choice)> = answers
         .iter()
-        .map(|result| Event::DieRolled {
-            player,
-            sides,
-            result: *result,
-            natural: None,
-        })
+        .map(|index| (player, Choice::Option(*index)))
         .collect();
-    Some((events, result))
+    let changed = match crate::resolve::prim::r6402_change_roll::r6402_change_in(
+        (state, &journal),
+        player,
+        sides,
+        &natural,
+    )
+    .ok()?
+    {
+        Ok(changed) => changed,
+        Err(crate::resolve::Run::Ask(decision)) => return Some(Err(decision)),
+        Err(_) => return None,
+    };
+    let result = changed.results.last().copied()?;
+    let mut events = changed.events.clone();
+    events.extend(changed.rolled(player, sides, &natural));
+    Some(Ok((events, result)))
+}
+
+/// The roll of the cost of `ability` (`r114_cost_roll`) as the announcement's payment step asks it: the next question
+/// of a rule that changes the roll, or the life the changes chosen pay. `None` for a cost that rolls nothing.
+pub(crate) fn r114_roll_asks(
+    state: &GameState,
+    player: PlayerId,
+    ability: AbilityRef,
+    choices: &Choices,
+    answers: &[usize],
+) -> Option<Result<u32, Decision>> {
+    let rules = crate::r115_cost_choice::r115_as_chosen(
+        ability_reader::ability(state, ability)?,
+        choices.cost_variant(),
+    );
+    let Ability::Activated { cost, .. } = &*rules else {
+        return None;
+    };
+    let cost = crate::free_activation::cost(state, player, (ability, &rules), cost);
+    Some(
+        r114_cost_roll(state, player, &cost, answers)?.map(|(events, _)| {
+            events
+                .iter()
+                .map(|event| match event {
+                    Event::LifePaid { amount, .. } => *amount,
+                    _ => 0,
+                })
+                .sum()
+        }),
+    )
 }
 
 /// The payment decision for `cost`, which `player` pays with `sources` for `object`: the spell cast, the source of
@@ -817,8 +862,10 @@ fn announcement(
         Some(Pending {
             what: What::Ability(ability),
             choices,
+            done,
             ..
-        }) => activation_events(state, player, *ability, choices).ok_or_else(unexpected),
+        }) => activation_events(state, player, *ability, choices, &done.r114_rolled)
+            .ok_or_else(unexpected),
         None if state.resolving().is_some() => Ok(vec![Event::ChoiceMade {
             player,
             choice: Choice::YesNo(true),

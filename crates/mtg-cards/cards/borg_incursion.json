@@ -1,0 +1,46 @@
+{
+  "oracle_id": "f00dfc16-c253-4483-94fb-3c2beabd5820",
+  "name": "Borg Incursion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Borg Incursion",
+      "oracle_fingerprint": "82ee37200630193994bd7a26ac63cc8c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Borg",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Borg"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": ["AddProtectionFromChosenColor"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

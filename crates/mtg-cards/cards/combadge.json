@@ -1,0 +1,60 @@
+{
+  "oracle_id": "ccd0e613-17c1-4a97-b519-de0376d596f0",
+  "name": "Combadge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Combadge",
+      "oracle_fingerprint": "144e01beffd3531239f525fd27aba439",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "if": {
+                      "AtTrigger": {
+                        "Compare": {
+                          "left": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              "Other",
+                              { "ControlledBy": "You" },
+                              { "HasAttached": [{ "Subtype": "Communicator" }] }
+                            ]
+                          },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      }
+                    },
+                    "effects": [
+                      {
+                        "Continuous": {
+                          "affected": "This",
+                          "mods": ["CantBeBlocked"],
+                          "duration": "UntilEndOfTurn"
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{2}" } }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "1ce8bc83-3cda-4ac5-ad9a-2a2a327c5193",
+  "name": "Kang, Suspicious Captain",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kang, Suspicious Captain",
+      "oracle_fingerprint": "3fb57aed0ac9f5f8ab8100e39cbe6365",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["Goaded"],
+                  "duration": "WhileYouControlSource"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["Goaded"],
+                  "duration": "WhileYouControlSource"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "GroupAttacks": { "what": [{ "Type": "Creature" }, "Goaded"] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

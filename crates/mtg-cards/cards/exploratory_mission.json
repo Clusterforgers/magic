@@ -1,0 +1,53 @@
+{
+  "oracle_id": "3fdba8ee-6dfe-480d-b84a-43922229d9b4",
+  "name": "Exploratory Mission",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Exploratory Mission",
+      "oracle_fingerprint": "6bfbb011b7263e7c542827fe1cc0804c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } },
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "card",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "card" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                      "op": "Ge",
+                      "right": 5
+                    }
+                  },
+                  "then": [{ "AddMana": { "mana": { "Fixed": ["Red", "Red"] } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

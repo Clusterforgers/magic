@@ -1,7 +1,7 @@
 {
   "oracle_id": "2a5376aa-8996-476e-9ee8-1426b0944091",
   "name": "Nivea, Beloved Battlemage",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Nivea, Beloved Battlemage",
@@ -25,9 +25,9 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 93, "end": 309 }
+          "Activated": {
+            "cost": [{ "Mana": "{5}{W}{W}{W}" }, "SacrificeSelf"],
+            "effects": [{ "CreateToken": { "token": { "Named": "akroma_angel_of_wrath" } } }]
           }
         }
       ]

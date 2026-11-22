@@ -1,0 +1,28 @@
+{
+  "oracle_id": "b7ea2089-abcd-4e60-8201-93801eae5084",
+  "name": "Khan, Despot by Design",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Khan, Despot by Design",
+      "oracle_fingerprint": "f5c39e6e3d178e7c33354d9fb2fabb94",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "DealDamage": { "to": "Opponents", "amount": 1 } },
+              {
+                "DealDamage": {
+                  "to": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                  "amount": 1
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

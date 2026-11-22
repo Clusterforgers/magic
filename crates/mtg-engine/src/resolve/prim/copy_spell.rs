@@ -128,7 +128,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     for (id, (spell, mut choices)) in (state.next_object().get()..).zip(planned) {
         let mut definition = spell.card().copiable();
         for modification in except {
-            if !definition.except(modification) {
+            if !definition.except(&r116_fixed(cx, modification)?) {
                 return Err(ResolveError::Unsupported("Effect.CopySpell.Except"));
             }
         }
@@ -192,6 +192,25 @@ pub(super) fn r302_uncopyable(definition: &mtg_cards::CardDefinition) -> bool {
     })
 }
 
+/// An exception of a copy with its amounts counted as the copy is made ("has starting loyalty X", CR 707.9b): the copy's
+/// characteristics are fixed values.
+fn r116_fixed(cx: &Cx<'_>, modification: &Modification) -> Result<Modification, ResolveError> {
+    let fixed =
+        |amount: &mtg_cards::value::Amount| -> Result<mtg_cards::value::Amount, ResolveError> {
+            Ok(mtg_cards::value::Amount::Fixed(
+                i32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(i32::MAX),
+            ))
+        };
+    Ok(match modification {
+        Modification::SetLoyalty(amount) => Modification::SetLoyalty(fixed(amount)?),
+        Modification::SetPT { power, toughness } => Modification::SetPT {
+            power: fixed(power)?,
+            toughness: fixed(toughness)?,
+        },
+        other => other.clone(),
+    })
+}
+
 /// Copies of the spell a delayed ability kept, `copies` of them and `added` more with new targets, made the way copies of a spell on the stack are: with the
 /// exceptions of the effect, and the modes, X and targets of the original, which the controller may change when the effect
 /// lets them. The copy goes on top of the stack (CR 702.50a, 707.10).
@@ -209,7 +228,7 @@ fn copy_kept(
     }
     let mut definition = (*kept.definition).clone();
     for modification in except {
-        if !definition.except(modification) {
+        if !definition.except(&r116_fixed(cx, modification)?) {
             return Err(ResolveError::Unsupported("Effect.CopySpell.Except"));
         }
     }

@@ -784,6 +784,16 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player faces a dilemma ("whenever you face a dilemma"): they choose one or more modes for a spell or ability as
+    /// it is cast, activated or put on the stack (CR 700.2), a random pick of modes excepted; `Triggering` is that player.
+    R116Dilemma {
+        /// Who faces it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player surveils ("whenever you surveil"); `Triggering` is that player.
     Surveilled {
         /// Who surveils.

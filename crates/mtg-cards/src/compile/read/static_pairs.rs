@@ -96,6 +96,14 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !whole_pair.is_empty() {
         return whole_pair;
     }
+    let whole_pair = super::r116_03_wholes::r116_03_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
+    let whole_pair = super::r116_02_wholes::r116_02_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
     let whole_pair = super::r113_01_wholes::r113_01_pair_texts(first, second);
     if !whole_pair.is_empty() {
         return whole_pair;
@@ -120,7 +128,15 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !whole_pair.is_empty() {
         return whole_pair;
     }
+    let whole_pair = super::r116_04_wholes::r116_04_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
     let whole_pair = super::r115_04_wholes::r115_04_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
+    let whole_pair = super::r116_01_wholes::r116_01_pair_texts(first, second);
     if !whole_pair.is_empty() {
         return whole_pair;
     }

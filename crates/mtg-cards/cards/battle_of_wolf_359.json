@@ -1,0 +1,57 @@
+{
+  "oracle_id": "bb203cf5-1545-43c7-8278-3720616c22f4",
+  "name": "Battle of Wolf 359",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Battle of Wolf 359",
+      "oracle_fingerprint": "f8aa23e45d1017db3d1f050732dde018",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Type": "Artifact" } }]
+                  },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Count": [
+                                { "Type": "Artifact" },
+                                { "Type": "Creature" },
+                                { "ControlledBy": "You" }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

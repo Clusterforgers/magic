@@ -159,11 +159,11 @@ fn near_misses_of_the_conditions_stay_with_the_table(#[case] text: &str) {
 )]
 #[case::the_monarch_held_after_an_event(
     "Whenever you tap a land for mana while you're the monarch, draw a card.",
-    r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}},"if":{"Monarch":"You"},"effects":[{"Draw":{}}]}}"#
+    r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}},"if":{"AtTrigger":{"Monarch":"You"}},"effects":[{"Draw":{}}]}}"#
 )]
 #[case::an_opponent_the_monarch_after_an_event(
     "Whenever you cast a spell while an opponent is the monarch, you gain 1 life.",
-    r#"{"Triggered":{"when":{"SpellCast":{"by":"You"}},"if":{"Monarch":"Opponents"},"effects":[{"GainLife":{"amount":1}}]}}"#
+    r#"{"Triggered":{"when":{"SpellCast":{"by":"You"}},"if":{"AtTrigger":{"Monarch":"Opponents"}},"effects":[{"GainLife":{"amount":1}}]}}"#
 )]
 fn the_monarch_wordings_of_the_commander_the_attack_the_turn_the_exile_and_the_held_designation(
     #[case] text: &str,

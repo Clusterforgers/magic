@@ -1,0 +1,66 @@
+{
+  "oracle_id": "af9c9b8a-0713-4904-8e86-2b3331ec5495",
+  "name": "Seven of Nine, Unassimilated",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seven of Nine, Unassimilated",
+      "oracle_fingerprint": "4facd88b0c7d31c3651af36bf25c9926",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Compare": {
+                        "left": {
+                          "Distinct": {
+                            "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                            "stat": "Name"
+                          }
+                        },
+                        "op": "Ge",
+                        "right": 5
+                      }
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{6}{U}",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Distinct": {
+                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                    "stat": "Name"
+                  }
+                },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "SetPT": { "power": 7, "toughness": 9 } }],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

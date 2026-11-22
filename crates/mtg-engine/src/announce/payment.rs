@@ -11,7 +11,7 @@ use mtg_core::mana::ManaCost;
 use super::x::XCost;
 use super::{Ctx, Next, What, Work};
 use crate::abilities::PutOnStack;
-use crate::cast::{activation_events, payment_decision, spell_cast};
+use crate::cast::{activation_events, payment_decision, r114_roll_asks, spell_cast};
 use crate::choose::Choices;
 use crate::decision::DecisionKind;
 use crate::events::Event;
@@ -45,32 +45,52 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Next {
             cost,
             total.sources,
             total.help,
-            total.life,
+            (total.life, true),
             total.spend,
         ),
         // An attack is paid for by `attack_tax::next` and never gets here.
         (What::Spell(_) | What::Attack(..), None) | (What::Attack(..) | What::Block(_), _) => {
             Next::Drop
         }
-        (What::Ability(ability), Some(cost)) => pay(
-            ctx,
-            ability.object,
-            cost,
-            total.sources,
-            total.help,
-            total.life,
-            total.spend,
-        ),
-        (What::Ability(ability), None) => {
-            activation_events(ctx.state, ctx.player, *ability, work.choices).map_or(
-                Next::Drop,
-                |mut events| {
-                    crate::r281_mana_at_priority::r281_resolve_at_once(ctx.state, &mut events);
-                    Next::Commit(events)
-                },
-            )
+        (What::Ability(ability), mana) => {
+            // A die the cost rolls is rolled first, so the rules that change a roll can ask (CR 706.2, 601.2h); the
+            // payment that follows can no longer be backed out of once a question showed the result.
+            let rolled = &work.done.r114_rolled;
+            let roll_life =
+                match r114_roll_asks(ctx.state, ctx.player, *ability, work.choices, rolled) {
+                    Some(Err(decision)) => return Next::Ask(decision),
+                    Some(Ok(life)) => life,
+                    None => 0,
+                };
+            match mana {
+                Some(cost) => pay(
+                    ctx,
+                    ability.object,
+                    cost,
+                    total.sources,
+                    total.help,
+                    (total.life + roll_life, rolled.is_empty()),
+                    total.spend,
+                ),
+                None => activate(ctx, *ability, work),
+            }
         }
     }
+}
+
+/// The events of an activation that has no mana to pay: it goes on the stack at once.
+fn activate(ctx: &Ctx<'_>, ability: crate::abilities::AbilityRef, work: &Work<'_>) -> Next {
+    activation_events(
+        ctx.state,
+        ctx.player,
+        ability,
+        work.choices,
+        &work.done.r114_rolled,
+    )
+    .map_or(Next::Drop, |mut events| {
+        crate::r281_mana_at_priority::r281_resolve_at_once(ctx.state, &mut events);
+        Next::Commit(events)
+    })
 }
 
 /// What the payment of the cost being announced is for: the spell or the ability, with whether the cost has {X}.
@@ -100,14 +120,15 @@ pub(super) fn spend(ctx: &Ctx<'_>, way: Option<CastWay>) -> Spend {
 }
 
 /// The payment decision for `cost` on behalf of `object`, if it can be paid; nothing is paid until it is answered, so
-/// the player can back out. `reserved_life` is the life other parts of the cost pay.
+/// the player can back out unless `can_cancel` is false (a die the cost rolled has been seen). `reserved_life` is the life
+/// other parts of the cost pay.
 fn pay(
     ctx: &Ctx<'_>,
     object: ObjectId,
     cost: ManaCost,
     sources: Vec<ManaOption>,
     help: Offered,
-    reserved_life: u32,
+    (reserved_life, can_cancel): (u32, bool),
     paying: Spend,
 ) -> Next {
     let reserved_life =
@@ -120,7 +141,7 @@ fn pay(
         sources,
         help,
         paying,
-        ctx.can_cancel(),
+        ctx.can_cancel() && can_cancel,
         reserved_life,
     ) {
         Some(mut options)

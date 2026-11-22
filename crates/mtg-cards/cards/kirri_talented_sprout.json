@@ -11,8 +11,8 @@
           "Static": {
             "affected": {
               "Each": [
-                "Other",
                 { "AnyOf": [{ "Subtype": "Plant" }, { "Subtype": "Treefolk" }] },
+                "Other",
                 { "ControlledBy": "You" }
               ]
             },

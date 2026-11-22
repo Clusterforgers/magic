@@ -1,0 +1,32 @@
+{
+  "oracle_id": "10af9cd9-1700-48f9-97e1-61e239536fef",
+  "name": "Brad Boimler, Eager Ensign",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brad Boimler, Eager Ensign",
+      "oracle_fingerprint": "5e5900dd5d7611d961694ba6a38c74b2",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              {
+                "Shield": {
+                  "when": {
+                    "CountersPut": {
+                      "on": { "Each": [{ "ControlledBy": "You" }, { "In": "Battlefield" }] }
+                    }
+                  },
+                  "by": { "Add": 1 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "oracle_id": "195d1f2a-0d71-475b-9dd1-0c8efe64ad8f",
+  "name": "Balefang the Unslayable",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Balefang the Unslayable",
+      "oracle_fingerprint": "f3dc3057d5069f3337a512208695fe62",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Trample" },
+        { "Keyword": { "Protection": [{ "Subtype": "Angel" }] } },
+        { "Keyword": { "Protection": [{ "Subtype": "Archon" }] } },
+        { "Rule": { "rule": { "CantGainLife": "EachPlayer" } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": { "Target": 0 },
+                  "token": {
+                    "Custom": {
+                      "name": "Baneslayer Angel",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Angel"],
+                      "power": 5,
+                      "toughness": 5,
+                      "abilities": [
+                        { "Keyword": "Flying" },
+                        { "Keyword": "FirstStrike" },
+                        { "Keyword": "Lifelink" },
+                        { "Keyword": { "Protection": [{ "Subtype": "Demon" }] } },
+                        { "Keyword": { "Protection": [{ "Subtype": "Dragon" }] } }
+                      ],
+                      "mana_cost": "{3}{W}{W}"
+                    }
+                  },
+                  "tapped": true,
+                  "as": "token"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "token" },
+                  "mods": ["Goaded"],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

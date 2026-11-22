@@ -1,0 +1,35 @@
+{
+  "oracle_id": "f0c1c97f-b8e1-49ec-b369-3d2694c33f29",
+  "name": "Jake Sisko, War Correspondent",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jake Sisko, War Correspondent",
+      "oracle_fingerprint": "86daae10304647077b446fd21e76240d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              { "GainLife": { "amount": 1 } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [
+                    { "CreateToken": { "token": { "Named": "clue" } } },
+                    { "Performed": { "action": "Investigated" } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

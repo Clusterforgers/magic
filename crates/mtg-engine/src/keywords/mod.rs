@@ -99,6 +99,7 @@ mod melee;
 mod menace;
 mod mentor;
 mod miracle;
+pub(crate) mod r116_beam_me_up;
 mod r5510_fortify;
 pub(crate) use miracle::reveal as miracle_reveal;
 mod morph;
@@ -591,6 +592,7 @@ fn rules_of_later(keyword: &Keyword) -> &'static dyn KeywordRules {
         Keyword::Emerge(_) | Keyword::R6701EmergeFromArtifact(_) => &c9_emerge_emerge::Emerge,
         Keyword::Offering(_) => &r301_offering::Offering,
         Keyword::Harmonize(_) => &c9_emerge_harmonize::Harmonize,
+        Keyword::R116BeamMeUp(_) => &r116_beam_me_up::BeamMeUp,
         Keyword::ReadAhead => &w2b_read_ahead::ReadAhead,
         Keyword::Ascend => &ascend::Ascend,
         Keyword::Storied => &storied::Storied,
@@ -1072,6 +1074,7 @@ mod tests {
             Keyword::R6701EmergeFromArtifact(cost()),
             Keyword::Offering(Selector::default()),
             Keyword::Harmonize(cost()),
+            Keyword::R116BeamMeUp(cost()),
             Keyword::ReadAhead,
             Keyword::Exert {
                 once_per_turn: false,
@@ -1279,6 +1282,7 @@ mod tests {
         "Keyword.R6701EmergeFromArtifact",
         "Keyword.Offering",
         "Keyword.Harmonize",
+        "Keyword.R116BeamMeUp",
         "Keyword.ReadAhead",
         "Keyword.SplitSecond",
         "Keyword.Undaunted",
@@ -1452,6 +1456,7 @@ mod tests {
     #[case::emerge(Keyword::Emerge(Cost::mana("{5}{U}{U}".parse().unwrap())), Hooks::none())]
     #[case::r301_offering(Keyword::Offering(Selector::default()), Hooks::none())]
     #[case::harmonize(Keyword::Harmonize(Cost::mana("{4}{R}".parse().unwrap())), Hooks::none())]
+    #[case::r116_beam_me_up(Keyword::R116BeamMeUp(Cost::mana("{3}{G}".parse().unwrap())), Hooks::none())]
     #[case::read_ahead(Keyword::ReadAhead, Hooks { abilities: 1, ..Hooks::none() })]
     #[case::annihilator(Keyword::Annihilator(mtg_cards::value::Amount::Fixed(2)), Hooks { abilities: 1, ..Hooks::none() })]
     #[case::macro_keyword(Keyword::Macro { name: "bushido".to_owned(), amount: 2 }, Hooks { abilities: 1, ..Hooks::none() })]

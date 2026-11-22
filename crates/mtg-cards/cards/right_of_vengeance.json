@@ -1,0 +1,50 @@
+{
+  "oracle_id": "7e019f06-7e87-419e-b51d-e2cb86a6c7f1",
+  "name": "Right of Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Right of Vengeance",
+      "oracle_fingerprint": "a641488b01d7ca638a9a76fde9332f33",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "DealsDamage": {
+                      "source": [{ "Type": "Creature" }],
+                      "to": "You",
+                      "combat": true
+                    }
+                  },
+                  "once": false,
+                  "until": "UntilEndOfTurn",
+                  "effects": [
+                    { "Destroy": { "what": "Dealer" } },
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Klingon Warrior",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Klingon", "Warrior"],
+                            "power": 2,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Haste" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

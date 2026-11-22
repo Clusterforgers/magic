@@ -1,0 +1,43 @@
+{
+  "oracle_id": "bdfe5809-17d4-4239-a9ee-6accdef99035",
+  "name": "Spock, Always Your Friend",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spock, Always Your Friend",
+      "oracle_fingerprint": "4345f193de24cf366d6cba78b909483e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "LookAtTop": { "count": 4, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      { "Not": { "Type": "Creature" } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

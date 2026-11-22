@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b572be16-ad13-4f9f-bcf6-085f81e5292c",
+  "name": "Hologram Janeway",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hologram Janeway",
+      "oracle_fingerprint": "4e327eb4234503c2b436a0d288d06381",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Total": {
+                      "of": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "stat": "Power"
+                    }
+                  },
+                  "op": "Ge",
+                  "right": 8
+                }
+              }
+            },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

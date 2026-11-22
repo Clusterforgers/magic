@@ -1,0 +1,46 @@
+{
+  "oracle_id": "d9bc0f83-c522-44c9-baa6-fffdeb02a0f5",
+  "name": "Ensign Harry Kim, Operations",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ensign Harry Kim, Operations",
+      "oracle_fingerprint": "88afd0a2b2032424095ebe12fe9cad35",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "if": {
+              "Compare": {
+                "left": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                "op": "Gt",
+                "right": { "Stat": { "of": "This", "stat": "Power" } }
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{2}" },
+              {
+                "RemoveCountersAmong": {
+                  "counter": "+1/+1",
+                  "count": 2,
+                  "from": [{ "Type": "Creature" }]
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

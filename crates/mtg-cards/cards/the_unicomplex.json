@@ -1,0 +1,70 @@
+{
+  "oracle_id": "b38fcf9a-464a-432a-b13c-9a206d52dcd9",
+  "name": "The Unicomplex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Unicomplex",
+      "oracle_fingerprint": "7270c9aaf970d91180f52ceeeb7362c5",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": "Tapped",
+            "condition": {
+              "Not": {
+                "Compare": {
+                  "left": { "Count": [{ "Type": "Land" }, "Other", { "ControlledBy": "You" }] },
+                  "op": "Ge",
+                  "right": 2
+                }
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "Matches": { "subject": "This", "selector": ["Untapped"] } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Move": {
+                            "what": { "Target": 0 },
+                            "to": { "Library": { "place": "Top" } }
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Surveil": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Black"] } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

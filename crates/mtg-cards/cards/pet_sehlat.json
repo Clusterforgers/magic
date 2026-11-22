@@ -1,0 +1,14 @@
+{
+  "oracle_id": "509f255f-c3ee-4836-a583-d018060d0c4d",
+  "name": "Pet Sehlat",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pet Sehlat",
+      "oracle_fingerprint": "b9522c1e5f22c555f81306b8cf241dda",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "CantAttackAlone" } } } }
+      ]
+    }
+  ]
+}

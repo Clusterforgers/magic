@@ -598,6 +598,22 @@ impl<'a> Reader<'a> {
         }
     }
 
+    /// Reads a name of several words inside a sentence, all or none ("Lord of the Pit", "Akroma, Angel of Wrath"): the
+    /// tokens the name has after an article.
+    pub fn r116_name_text(&mut self, name: &str) -> bool {
+        let wanted = tokenize(&format!("a {name}"));
+        let Some(wanted) = wanted.get(1..) else {
+            return false;
+        };
+        let end = self.at + wanted.len();
+        if self.tokens.get(self.at..end) == Some(wanted) {
+            self.at = end;
+            true
+        } else {
+            false
+        }
+    }
+
     /// Reads these words or fails.
     pub fn need(&mut self, phrase: &str) -> Option<()> {
         self.words(phrase).then_some(())

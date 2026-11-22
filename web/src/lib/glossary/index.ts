@@ -158,6 +158,8 @@ const PLAIN = new Set(
     'Mutagen',
     'Powerstone',
     'Vibranium',
+    'Black Lotus',
+    "Feroz's Ban",
     'Clue',
     'Incubator',
   ].map(key),

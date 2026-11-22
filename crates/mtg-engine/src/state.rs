@@ -253,6 +253,8 @@ pub(crate) enum Tally {
     G10cCreatureCardsGraved,
     /// A crime committed (CR 700.13), once for each spell or ability (counted for the player who committed it).
     G10cCrimes,
+    /// A dilemma faced: the modes of a spell or ability chosen (counted for the player who chose them).
+    R116Dilemmas,
     /// A token created (counted for the player who controls it).
     Tokens,
     /// A kind of counter put on a permanent or a card in exile, once for each event (counted for the object).

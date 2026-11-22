@@ -1,0 +1,63 @@
+{
+  "oracle_id": "22249955-0741-470e-bc2b-f32d4510849b",
+  "name": "The Wrath of Khan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Wrath of Khan",
+      "oracle_fingerprint": "f9a8013d8781099b704b6c13e97945e0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 4 } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "BeginCombat" } },
+                  "this_turn": true,
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "SetController": "You" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "Untap": { "what": { "Target": 0 } } },
+                    {
+                      "Continuous": {
+                        "affected": { "Target": 0 },
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Pay": { "cost": [{ "ExileFromHand": { "filter": [] } }], "paid": [{ "Draw": {} }] }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [{ "Sacrifice": { "who": "Opponents", "filter": [{ "Not": "Token" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "488ff0d9-a74c-4ba9-9c10-3aa88230c2bd",
+  "name": "Captain Janeway, Endgame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Janeway, Endgame",
+      "oracle_fingerprint": "6f7c92ef63d0619755b9efae5721c363",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Batch": {
+                "DealsDamage": {
+                  "source": [{ "Subtype": "Officer" }, { "ControlledBy": "You" }],
+                  "to": "EachPlayer",
+                  "combat": true
+                }
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Officer",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Officer"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, { "TapPermanents": { "filter": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

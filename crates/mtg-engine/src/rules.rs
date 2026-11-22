@@ -2041,6 +2041,39 @@ pub(crate) fn lower_objects(scope: &Scope<'_>, who: &Ref) -> Result<Vec<ObjectRe
     w17b_rule_objects(scope, who, Zone::Battlefield)
 }
 
+/// The cards a cast permission covers as its rule begins: a card the resolution bound and `what` names ("you may cast
+/// that card", `Pred::Is(Ref::Bound)`) is named by `only` as it is now, since the binding ends with the resolution and
+/// the card that leaves its zone is a new object (CR 400.7); the rest of `what` still judges it.
+fn r116_bound_only(
+    permission: &mtg_cards::modify::CastPermission,
+) -> (Selector, Option<mtg_cards::refs::Ref>) {
+    if permission.only.is_some() {
+        return (permission.what.clone(), permission.only.clone());
+    }
+    let bound = permission.what.0.iter().find_map(|pred| match pred {
+        mtg_cards::refs::Pred::Is(named @ mtg_cards::refs::Ref::Bound(_)) => Some(named.clone()),
+        _ => None,
+    });
+    match bound {
+        Some(named) => {
+            let rest = permission
+                .what
+                .0
+                .iter()
+                .filter(|pred| {
+                    !matches!(
+                        pred,
+                        mtg_cards::refs::Pred::Is(mtg_cards::refs::Ref::Bound(_))
+                    )
+                })
+                .cloned()
+                .collect();
+            (Selector(rest), Some(named))
+        }
+        None => (permission.what.clone(), None),
+    }
+}
+
 /// What the data's references name in `scope`, as the engine plays the rule: the permanents, the spells or the players.
 /// A rule the engine does not play refuses by name.
 #[allow(clippy::too_many_lines)] // one arm for every rule
@@ -2283,28 +2316,30 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::RevealHand(who) => Rule::RevealHand(scope.players(who)?),
         GameRule::ControlSearches(who) => Rule::ControlSearches(scope.players(who)?),
         GameRule::ExileFound(who) => Rule::ExileFound(scope.players(who)?),
-        GameRule::MayCast(permission) => Rule::MayCast {
-            who: scope.players(&permission.who)?,
-            what: permission.what.clone(),
-            from: permission.from,
-            free: permission.free,
-            flash: permission.flash,
-            only: permission
-                .only
-                .as_ref()
-                .map(|named| scope.objects(named))
-                .transpose()?,
-            play: permission.play,
-            once: permission.once,
-            any_turn: permission.any_turn,
-            additional: permission.additional.clone().map(Box::new),
-            rather: permission.rather.clone().map(Box::new),
-            spend_as: permission.spend_as,
-            when: permission.when.clone().map(Box::new),
-            any_cast: permission.any_cast,
-            riders: permission.riders.clone(),
-            limit: permission.limit,
-        },
+        GameRule::MayCast(permission) => {
+            let (what, only) = r116_bound_only(permission);
+            Rule::MayCast {
+                who: scope.players(&permission.who)?,
+                what,
+                from: permission.from,
+                free: permission.free,
+                flash: permission.flash,
+                only: only
+                    .as_ref()
+                    .map(|named| scope.objects(named))
+                    .transpose()?,
+                play: permission.play,
+                once: permission.once,
+                any_turn: permission.any_turn,
+                additional: permission.additional.clone().map(Box::new),
+                rather: permission.rather.clone().map(Box::new),
+                spend_as: permission.spend_as,
+                when: permission.when.clone().map(Box::new),
+                any_cast: permission.any_cast,
+                riders: permission.riders.clone(),
+                limit: permission.limit,
+            }
+        }
         GameRule::NextSpell { what, benefit } => next_spell(scope, what, benefit)?,
         GameRule::R112SpellsGain { what, keyword } => Rule::R112SpellsGain {
             what: what.clone(),
@@ -2411,6 +2446,9 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         // The deck check reads it from the card; nothing changes in a game.
         GameRule::AnyNumberInDeck => return Err(ResolveError::Unsupported("Rule.AnyNumberInDeck")),
         GameRule::UpToInDeck(_) => return Err(ResolveError::Unsupported("Rule.UpToInDeck")),
+        GameRule::R116Rulebreaker(_) => {
+            return Err(ResolveError::Unsupported("Rule.R116Rulebreaker"));
+        }
         // A draft rule works only during a booster draft; nothing changes in a game.
         GameRule::Draft(_) => return Err(ResolveError::Unsupported("Rule.Draft")),
         GameRule::DamageAsWither => Rule::DamageAsWither,

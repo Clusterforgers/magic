@@ -7,7 +7,7 @@ use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::modify::Modification;
 use crate::refs::{Pred, Ref, Selector, ZoneKind};
-use crate::value::{Amount, StatKind};
+use crate::value::{Amount, StatKind, TurnTally};
 
 /// The count words "one" to "twenty", in order.
 const NUMBER_WORDS: [&str; 20] = [
@@ -205,6 +205,12 @@ fn for_each_one(r: &mut Reader<'_>) -> Option<Amount> {
             })
         }) {
             return Some(found);
+        }
+        if r.words("dilemma you've faced this turn") {
+            return Some(Amount::Tallied {
+                who: Ref::You,
+                what: TurnTally::R116Dilemmas,
+            });
         }
         if r.words("opponent you attacked this turn") {
             return Some(Amount::Players(Ref::AttackedThisTurn));
@@ -429,6 +435,10 @@ pub fn for_each_text(counted: &Amount) -> Option<String> {
             on: Ref::You,
             counter,
         } => super::w13b_mill_rad::w13b_you_have_text(counter)?,
+        Amount::Tallied {
+            who: Ref::You,
+            what: TurnTally::R116Dilemmas,
+        } => "dilemma you've faced this turn".to_owned(),
         Amount::Tallied { .. } => defining::died_text(counted, true)?,
         Amount::Tally { .. } => {
             super::r11w_tallies::each(counted).or_else(|| super::e16a_history::each(counted))?

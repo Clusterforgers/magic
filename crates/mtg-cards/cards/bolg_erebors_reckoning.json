@@ -17,8 +17,8 @@
                   "affected": {
                     "Each": [
                       { "AnyOf": [{ "Subtype": "Goblin" }, { "Subtype": "Orc" }] },
-                      { "ControlledBy": "You" },
-                      "Other"
+                      "Other",
+                      { "ControlledBy": "You" }
                     ]
                   },
                   "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
