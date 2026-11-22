@@ -68,6 +68,8 @@ pub(crate) const W6C_PAID_X: &str = "~x:";
 
 /// The prefix of a bound name in a finished step that keeps a number (`~let:<number>:<name>`) for `Amount::Bound` instead.
 pub(crate) const LET: &str = "~let:";
+/// The bound name a delayed trigger keeps the objects its creating ability called `Triggering` under (CR 603.7c).
+pub(crate) const CARRIED_TRIGGERING: &str = "?triggering";
 /// The prefix of a bound name in a finished step that records a chosen value (`~value:<as>` and the value as JSON after
 /// a tab) instead: what `Effect::ChooseValue` remembers for the rest of the resolution.
 pub(crate) const CHOSEN_VALUE: &str = "~value:";
@@ -544,6 +546,17 @@ fn step_with(
     })
 }
 
+/// Whether no step of the resolution has bound a name yet: the names a delayed ability starts with are its setup's.
+fn unbound(resolving: &Resolving, object: &GameObject) -> bool {
+    let carried = object
+        .ability()
+        .map(crate::abilities::AbilityObject::bindings);
+    resolving
+        .bindings
+        .iter()
+        .all(|(name, bound)| carried.and_then(|names| names.get(name)) == Some(bound))
+}
+
 /// The step of `rules`, the rules of `object`, at which `resolving` stands.
 fn run_step(
     state: &GameState,
@@ -557,7 +570,7 @@ fn run_step(
     // resolution begins: a first step that runs again once its events are folded (`Next::Again`) has bound its names
     // and is not checked again.
     if resolving.position == START
-        && resolving.bindings.is_empty()
+        && unbound(resolving, object)
         && let Ability::Triggered {
             intervening_if: Some(condition),
             ..
@@ -583,7 +596,7 @@ fn run_step(
     }
     // A triggered ability that is nothing but conditions, each false as it begins, does nothing, and the log says why.
     if resolving.position == START
-        && resolving.bindings.is_empty()
+        && unbound(resolving, object)
         && let Ability::Triggered { effects, .. } = rules
         && let Some(conditions) = all_failed(&scope, effects)
     {
@@ -612,7 +625,7 @@ fn run_step(
         .any(|effect| matches!(effect, Effect::StillResolves));
     if resolving.position == START
         && resolving.journal.is_empty()
-        && resolving.bindings.is_empty()
+        && unbound(resolving, object)
         && !still
         && scope.all_targets_illegal()
     {

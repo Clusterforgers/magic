@@ -70,6 +70,10 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
         .filter(|(name, _)| !name.starts_with("?performed"))
         .map(|(name, targets)| (name.clone(), targets.clone()))
         .collect();
+    if let Some(triggering) = carried_triggering(cx)? {
+        bindings.retain(|(name, _)| name != crate::resolve::CARRIED_TRIGGERING);
+        bindings.push((crate::resolve::CARRIED_TRIGGERING.to_owned(), triggering));
+    }
     // The counters the steps before put, so "for each counter put this way, remove one" reads them later (CR 603.7c).
     bindings.extend(super::r110_remove_put::r110_carried(cx.resolving));
     // The numbers `Let` kept travel as names too, so the trigger reads them as the setup fixed them.
@@ -87,6 +91,27 @@ pub(super) fn origin(cx: &Cx<'_>) -> Result<Origin, ResolveError> {
         from,
         bindings,
     })
+}
+
+/// What this resolution calls `Triggering`, kept for the delayed ability (CR 603.7c): an object that left the battlefield
+/// by the triggering event is the card it became ("return that card", CR 400.7), so it is found again only while it
+/// stays where that event put it. Nothing for a resolution without a triggering event.
+fn carried_triggering(cx: &Cx<'_>) -> Result<Option<Vec<Target>>, ResolveError> {
+    if cx.scope.cause.is_none() {
+        return Ok(None);
+    }
+    let followed = cx.scope.followed_cards(&Ref::Triggering);
+    let mut named: Vec<Target> = Vec::new();
+    for subject in cx.scope.refs(&Ref::Triggering)? {
+        let became = subject.object().and_then(|object| {
+            followed
+                .iter()
+                .find(|card| card.id() == object.id)
+                .map(|card| Target::Object(card.reference()))
+        });
+        named.push(became.unwrap_or(subject));
+    }
+    Ok(Some(named))
 }
 
 /// Sets the delayed trigger up with the names this resolution has bound so far, as they are now; it triggers on the

@@ -1487,10 +1487,13 @@ impl<'a> Scope<'a> {
                 self.each_target(usize::from(*index))?
             }
             Ref::Target(index) => self.chosen(usize::from(*index)),
-            Ref::Triggering => self
-                .cause
-                .map(|cause| crate::r111_triggering::r111_subjects(state, cause))
-                .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Ref::Triggering => match self.carried_triggering() {
+                Some(carried) => carried.clone(),
+                None => self
+                    .cause
+                    .map(|cause| crate::r111_triggering::r111_subjects(state, cause))
+                    .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            },
             Ref::TriggeringFirst => self
                 .cause
                 .map(|cause| cause.subjects.first().copied().into_iter().collect())
@@ -1906,6 +1909,21 @@ impl<'a> Scope<'a> {
             .into_iter()
             .filter_map(Target::object)
             .collect())
+    }
+
+    /// What `Triggering` names in a delayed ability whose own event is about no object ("at the beginning of the next end
+    /// step, return that card"): the objects its creating ability called so, as that ability set it up (CR 603.7c).
+    fn carried_triggering(&self) -> Option<&'a Vec<Target>> {
+        let own_object = self.cause.is_some_and(|cause| {
+            cause
+                .subjects
+                .iter()
+                .any(|subject| matches!(subject, Target::Object(_)))
+        });
+        if own_object {
+            return None;
+        }
+        self.bindings.get(crate::resolve::CARRIED_TRIGGERING)
     }
 
     /// The objects `Triggering` names that left the battlefield by the triggering event and are still where that put
