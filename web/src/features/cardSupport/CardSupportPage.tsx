@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/context'
 import { usePageTitle } from '@/hooks/usePageTitle'
+import { BY_HAND } from '@/lib/byHand'
 import { cardSupportApi } from '@/net/cardSupport'
 import type { CardSupportApi } from '@/net/cardSupport'
 import { BucketList } from './BucketList'
@@ -24,8 +25,7 @@ function Header({ check }: { check: string | null }) {
     <header className="grid gap-1">
       <h1 className="font-display text-2xl font-semibold tracking-tight">Card support</h1>
       <p className="text-base text-muted-foreground">
-        How many Commander-legal cards the game plays automatically, and what is still played by hand. New
-        cards and precons are looked for every day.
+        {`How many Commander-legal cards the game plays automatically, and what is still ${BY_HAND}. New cards and precons are looked for every day.`}
       </p>
       {check === null ? null : (
         <p className="text-sm text-muted-foreground" data-slot="check">

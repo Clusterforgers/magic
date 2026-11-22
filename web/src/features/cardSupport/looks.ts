@@ -9,6 +9,7 @@ import {
   ShieldHalfIcon,
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { BY_HAND } from '@/lib/byHand'
 import type { SupportStates } from '@/protocol/generated'
 
 /** A state of the snapshot's breakdown. */
@@ -52,7 +53,7 @@ export const LOOKS: Readonly<Record<StateKey, StateLook>> = {
   },
   waiting: {
     word: 'Waiting',
-    meaning: 'Partial rules wait for a read; played by hand until then.',
+    meaning: `Partial rules wait for a read; ${BY_HAND} until then.`,
     Icon: ClockIcon,
     segment: 'bg-support-forge',
     mark: 'border-support-forge bg-support-forge/12 text-support-forge',
@@ -60,7 +61,7 @@ export const LOOKS: Readonly<Record<StateKey, StateLook>> = {
   },
   partial: {
     word: 'Partial',
-    meaning: 'Some clauses are played by hand.',
+    meaning: `Some clauses are ${BY_HAND}.`,
     Icon: ShieldHalfIcon,
     segment: 'bg-support-partial',
     mark: 'border-support-partial bg-support-partial/12 text-support-partial',
@@ -68,7 +69,7 @@ export const LOOKS: Readonly<Record<StateKey, StateLook>> = {
   },
   manual: {
     word: 'Manual',
-    meaning: 'The whole card is played by hand.',
+    meaning: `The whole card is ${BY_HAND}.`,
     Icon: HandIcon,
     segment: 'bg-support-manual',
     mark: 'border-support-manual bg-support-manual/12 text-support-manual',
