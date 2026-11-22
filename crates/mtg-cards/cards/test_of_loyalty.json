@@ -1,0 +1,45 @@
+{
+  "oracle_id": "6cb1c3fb-033a-4de5-ad07-69d9ad0ca5ae",
+  "name": "Test of Loyalty",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Test of Loyalty",
+      "oracle_fingerprint": "aabb6034e4633a54c0511b17aa28f48c",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Plain, Simple Garak",
+                      "targets": [{ "what": { "Object": [{ "In": "Graveyard" }] } }],
+                      "effects": [{ "Exile": { "what": { "Target": 0 } } }, { "Draw": {} }]
+                    },
+                    {
+                      "label": "Of the Obsidian Order",
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Type": "Creature" },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

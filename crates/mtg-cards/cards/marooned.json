@@ -1,0 +1,28 @@
+{
+  "oracle_id": "74e02bdf-a074-4356-9d06-0df01dd2df66",
+  "name": "Marooned",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Marooned",
+      "oracle_fingerprint": "ed87f6d000739d0454e4d886ed280479",
+      "abilities": [
+        {
+          "Keyword": { "Enchant": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }] }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Pay": { "cost": "{3}", "paid": [{ "Tap": { "what": "Attached" } }] } }]
+          }
+        },
+        {
+          "Manual": {
+            "reason": "you apply this static ability by hand",
+            "span": { "start": 105, "end": 197 }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "oracle_id": "a9368972-4697-4a10-97e3-324149a26fba",
+  "name": "Make It So",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Make It So",
+      "oracle_fingerprint": "ade126bb20678b1f33812c56457bffb9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        { "what": { "Object": [{ "ControlledBy": "You" }] } },
+                        { "what": "Player" }
+                      ],
+                      "effects": [
+                        { "Untap": { "what": { "Target": 0 } } },
+                        { "Draw": { "who": { "Target": 1 }, "count": 2 } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        {
+                          "CreateToken": {
+                            "token": {
+                              "Custom": {
+                                "name": "Officer",
+                                "colors": ["Red"],
+                                "types": ["Creature"],
+                                "subtypes": ["Officer"],
+                                "power": 1,
+                                "toughness": 1
+                              }
+                            }
+                          }
+                        },
+                        { "Draw": { "count": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

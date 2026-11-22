@@ -1,0 +1,16 @@
+{
+  "id": "black_lotus",
+  "token": {
+    "name": "Black Lotus",
+    "types": ["Artifact"],
+    "abilities": [
+      {
+        "Activated": {
+          "cost": ["Tap", "SacrificeSelf"],
+          "effects": [{ "AddMana": { "mana": { "AnyColor": 3 } } }]
+        }
+      }
+    ],
+    "mana_cost": "{0}"
+  }
+}

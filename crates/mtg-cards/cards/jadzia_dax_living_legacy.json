@@ -1,0 +1,32 @@
+{
+  "oracle_id": "67601646-f906-4824-9269-3cf89766d25f",
+  "name": "Jadzia Dax, Living Legacy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jadzia Dax, Living Legacy",
+      "oracle_fingerprint": "fedd0ab0f34d85d29b3e312b73ffae70",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "AddMana": { "mana": { "Fixed": ["Green"] }, "times": { "AnyCounters": "This" } } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{G}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+{
+  "object": "card",
+  "id": "6c5a87cf-7790-4335-8497-ff793bbdcb05",
+  "oracle_id": "e277ed07-2113-4465-a45c-a64490814c1d",
+  "multiverse_ids": [],
+  "resource_id": "DF029777718FC02B177BBF0AA98D5995383F19DCCF376F421941571C56642864",
+  "mtgo_id": 158372,
+  "tcgplayer_id": 725927,
+  "cardmarket_id": 918925,
+  "name": "Impossible Choice",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/6c5a87cf-7790-4335-8497-ff793bbdcb05",
+  "scryfall_uri": "https://scryfall.com/card/trk/116/impossible-choice?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-26T11:12:37Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.jpg?1793013157",
+    "normal": "https://cards.scryfall.io/normal/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.jpg?1793013157",
+    "large": "https://cards.scryfall.io/large/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.jpg?1793013157",
+    "png": "https://cards.scryfall.io/png/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.png?1793013157",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.jpg?1793013157",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.jpg?1793013157",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.webp?1793013157",
+    "grid": "https://cards.scryfall.io/grid/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.webp?1793013157",
+    "display": "https://cards.scryfall.io/display/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.webp?1793013157",
+    "art": "https://cards.scryfall.io/art/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.webp?1793013157",
+    "crop": "https://cards.scryfall.io/crop/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.webp?1793013157",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/c/6c5a87cf-7790-4335-8497-ff793bbdcb05.jpg?1793013157"
+  },
+  "mana_cost": "{2}{B}",
+  "cmc": 3,
+  "type_line": "Instant",
+  "oracle_text": "Choose one —\n• Surgical Separation — Destroy target creature. Its controller creates two 1/1 red Officer creature tokens.\n• Remain Fused — You draw two cards and each player loses 2 life.",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Surgical Separation",
+    "Remain Fused"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "6c5a87cf-7790-4335-8497-ff793bbdcb05",
+      "component": "combo_piece",
+      "name": "Impossible Choice",
+      "type_line": "Instant",
+      "uri": "https://api.scryfall.com/cards/6c5a87cf-7790-4335-8497-ff793bbdcb05"
+    },
+    {
+      "object": "related_card",
+      "id": "012b04de-d9a5-4b12-afc8-cdf54bc42fc9",
+      "component": "token",
+      "name": "Officer",
+      "type_line": "Token Creature — Officer",
+      "uri": "https://api.scryfall.com/cards/012b04de-d9a5-4b12-afc8-cdf54bc42fc9"
+    }
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set": "trk",
+  "set_name": "Star Trek",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6c5a87cf-7790-4335-8497-ff793bbdcb05/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae277ed07-2113-4465-a45c-a64490814c1d&unique=prints",
+  "collector_number": "116",
+  "digital": false,
+  "rarity": "uncommon",
+  "flavor_text": "Saving Neelix and Tuvok meant destroying the person they'd become.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Douglas Shuler",
+  "artist_ids": [
+    "a9ddb513-51c7-455c-ab8f-5b90aae9f75b"
+  ],
+  "illustration_id": "90c08bc5-b00c-4c01-b999-eea13fd0457a",
+  "border_color": "black",
+  "frame": "2015",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 25752,
+  "preview": {
+    "source": "Ella Lowgren",
+    "source_uri": "https://www.instagram.com/p/De2lNxlGVav",
+    "previewed_at": "2026-10-23"
+  },
+  "prices": {
+    "usd": "0.26",
+    "usd_foil": "0.35",
+    "usd_etched": null,
+    "eur": "0.03",
+    "eur_foil": "0.02",
+    "tix": "0.08"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DImpossible%2BChoice",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DImpossible%2BChoice",
+    "edhrec": "https://edhrec.com/route/?cc=Impossible+Choice"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F725927%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=918925&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/158372?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

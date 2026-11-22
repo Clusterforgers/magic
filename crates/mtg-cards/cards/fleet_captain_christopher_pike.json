@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e0a9a7a2-c996-4e3e-817d-9283be690c39",
+  "name": "Fleet Captain Christopher Pike",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Fleet Captain Christopher Pike",
+      "oracle_fingerprint": "9604234d19772f17690ab926a39803f4",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [{ "Untap": { "what": { "Target": 0 } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [{ "Tap": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

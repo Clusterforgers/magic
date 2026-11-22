@@ -22,14 +22,17 @@ use mtg_testkit::corpus::{card, corpus};
 use mtg_testkit::{Driver, Scenario, ScriptError, play_game, ready};
 use rstest::rstest;
 
-use Support::{Partial, Verified};
+use Support::{Manual, Partial, Verified};
 
 /// The corpus cards whose state its file cannot give, each with the state its capabilities give it and the number of
 /// abilities its definition carries (mana abilities and rules together): a card the engine cannot yet play as its file
 /// says. Every other card arrives as its file says: Partial when the file leaves a clause to the table, else Verified, with
 /// the abilities of its file the engine runs; a basic land type adds the mana ability of that land type. A Manual card
 /// carries none (the table resolves it).
-const NOT_VERIFIED: &[(&str, Support, usize)] = &[("Titania, Rugged Rumbler", Partial, 1)];
+const NOT_VERIFIED: &[(&str, Support, usize)] = &[
+    ("Test of Identity", Manual, 0),
+    ("Titania, Rugged Rumbler", Partial, 1),
+];
 
 /// The abilities a Verified card carries: those of its file the engine runs, the mana ability each basic land type gives and
 /// the two rules of each Siege face (CR 310.11).

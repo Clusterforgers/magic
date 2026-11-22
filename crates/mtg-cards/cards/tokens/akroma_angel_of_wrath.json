@@ -1,0 +1,21 @@
+{
+  "id": "akroma_angel_of_wrath",
+  "token": {
+    "name": "Akroma, Angel of Wrath",
+    "supertypes": ["Legendary"],
+    "types": ["Creature"],
+    "subtypes": ["Angel"],
+    "power": 6,
+    "toughness": 6,
+    "abilities": [
+      { "Keyword": "Flying" },
+      { "Keyword": "FirstStrike" },
+      { "Keyword": "Vigilance" },
+      { "Keyword": "Trample" },
+      { "Keyword": "Haste" },
+      { "Keyword": { "Protection": [{ "Color": "Black" }] } },
+      { "Keyword": { "Protection": [{ "Color": "Red" }] } }
+    ],
+    "mana_cost": "{5}{W}{W}{W}"
+  }
+}

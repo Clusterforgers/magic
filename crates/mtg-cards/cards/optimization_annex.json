@@ -1,0 +1,24 @@
+{
+  "oracle_id": "9f38914f-7870-44bf-887e-ee893e98989c",
+  "name": "Optimization Annex",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Optimization Annex",
+      "oracle_fingerprint": "b633ed4794532e7c7afc288c04e9a454",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "counter": "charge"
+              }
+            },
+            "by": { "Add": 1 }
+          }
+        }
+      ]
+    }
+  ]
+}

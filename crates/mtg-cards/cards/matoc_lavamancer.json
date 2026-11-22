@@ -1,0 +1,50 @@
+{
+  "oracle_id": "bbe79ca2-8f05-4f1b-b5d3-84724d3eff3a",
+  "name": "Matoc, Lavamancer",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Matoc, Lavamancer",
+      "oracle_fingerprint": "65493723f5b48af71bcc2e0dacde409f",
+      "abilities": [
+        {
+          "Manual": {
+            "reason": "you apply this triggered ability by hand",
+            "span": { "start": 0, "end": 200 }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{R}" },
+              "Tap",
+              { "ExileFromGraveyard": { "filter": [], "count": 2 } }
+            ],
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    {
+                      "Object": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Creature" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        },
+                        "Other"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

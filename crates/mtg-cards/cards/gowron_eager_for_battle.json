@@ -1,0 +1,47 @@
+{
+  "oracle_id": "40616029-e1a8-4e7c-bc7b-e381779c57cc",
+  "name": "Gowron, Eager for Battle",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gowron, Eager for Battle",
+      "oracle_fingerprint": "0daea807d2e3930158cf150c51bf56d5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other"],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Paid", "selector": [{ "Subtype": "Klingon" }] }
+                  },
+                  "then": [{ "Draw": {} }, { "LoseLife": { "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

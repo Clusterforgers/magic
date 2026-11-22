@@ -1,0 +1,65 @@
+{
+  "oracle_id": "bb86849c-fdec-4ca5-a8c0-ed682d921759",
+  "name": "Genesis Device",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genesis Device",
+      "oracle_fingerprint": "f2df055fe1b4f8b04ffb8e5ef6aca09e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "AnyOf": [{ "Subtype": "Planet" }, { "Supertype": "Basic" }] },
+                    { "AnyOf": [{ "Subtype": "Planet" }, { "Type": "Land" }] }
+                  ],
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}{G}" }, "Tap", "SacrificeSelf"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "SacrificeUpTo": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                  "as": "lands"
+                }
+              },
+              {
+                "Search": {
+                  "filter": [{ "Type": "Land" }],
+                  "count": { "min": 0, "max": { "Bound": "lands~moved" } },
+                  "as": "found"
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

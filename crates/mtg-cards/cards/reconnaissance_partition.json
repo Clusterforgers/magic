@@ -1,0 +1,50 @@
+{
+  "oracle_id": "c52e4704-6edb-477f-b80c-ea8146d4385f",
+  "name": "Reconnaissance Partition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reconnaissance Partition",
+      "oracle_fingerprint": "02a4f8cb6edc75d7ffdcebc1eb8a7afa",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": "charge", "count": 2 } }
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap", { "RemoveCounters": {} }],
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Search": {
+                            "filter": [{ "Type": "Land" }, { "Supertype": "Basic" }],
+                            "as": "found"
+                          }
+                        },
+                        {
+                          "Move": {
+                            "what": { "Bound": "found" },
+                            "to": { "Battlefield": { "tapped": true } }
+                          }
+                        },
+                        { "Shuffle": {} }
+                      ]
+                    },
+                    { "effects": [{ "Draw": {} }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "oracle_id": "ec763f36-3504-4bfe-8481-1a7d0bff8d8e",
+  "name": "Genesis Effect",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Genesis Effect",
+      "oracle_fingerprint": "b6d00f2fafd88323fc6cb5811e787a28",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] } },
+              { "what": { "Object": [{ "Type": "Land" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 6 } },
+              { "Destroy": { "what": { "Target": 1 } } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "New Planet",
+                      "types": ["Land"],
+                      "subtypes": ["Planet"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

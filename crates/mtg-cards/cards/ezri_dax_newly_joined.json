@@ -1,0 +1,34 @@
+{
+  "oracle_id": "d4fb650a-94fd-4361-9648-45d6ad64b7a2",
+  "name": "Ezri Dax, Newly Joined",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ezri Dax, Newly Joined",
+      "oracle_fingerprint": "83f8972e0179fd01b3f36a22ceed1c2d",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [
+                  { "Type": "Creature" },
+                  { "In": "Graveyard" },
+                  { "OwnedBy": "You" },
+                  "GravedThisTurn"
+                ],
+                "except": [
+                  { "SetName": "Ezri Dax, Newly Joined" },
+                  { "AddSupertype": "Legendary" },
+                  { "AddSubtype": "Trill" }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

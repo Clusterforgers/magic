@@ -1,0 +1,35 @@
+{
+  "oracle_id": "912d6e44-b479-4e07-88a8-9ab5132163f4",
+  "name": "Temporal Tribulation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Tribulation",
+      "oracle_fingerprint": "ebd0a9f5d019f9a7316bd78383e9b64b",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "ControlledBy": "You" }] },
+                "bounds": { "min": 2, "max": 2 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{5}{U}" } }
+      ]
+    }
+  ]
+}

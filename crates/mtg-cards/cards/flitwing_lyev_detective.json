@@ -1,0 +1,30 @@
+{
+  "oracle_id": "e8a9dddd-4527-46cd-8b7e-4f83c5b51e48",
+  "name": "Flitwing, Lyev Detective",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Flitwing, Lyev Detective",
+      "oracle_fingerprint": "44b74c3802eefc448213046cea0d91f3",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "TokenCreation": {} },
+            "by": {
+              "Instead": [
+                {
+                  "May": {
+                    "effects": [
+                      { "CreateToken": { "token": { "Named": "clue" }, "count": "Triggering" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

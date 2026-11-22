@@ -1,0 +1,37 @@
+{
+  "oracle_id": "42c77c4d-90bb-45d6-a9e0-36704b5a2b11",
+  "name": "Armus, Skin of Evil",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Armus, Skin of Evil",
+      "oracle_fingerprint": "ccccbd60adcf8486844b587f7446b4d9",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [{ "Discard": { "who": { "Target": 0 }, "count": 2 } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{B}" }, "DiscardSelf"],
+            "from": "Hand",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "ModifyPT": { "power": -4, "toughness": -4 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

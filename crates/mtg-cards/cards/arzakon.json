@@ -1,0 +1,61 @@
+{
+  "oracle_id": "a95d29b9-c30b-4e63-afcb-dec7ed522c5a",
+  "name": "Arzakon",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Arzakon",
+      "oracle_fingerprint": "932854232519c4183c67b349f9ef0634",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "targets": [
+              {
+                "what": {
+                  "Either": [
+                    "Player",
+                    {
+                      "Object": [
+                        {
+                          "AnyOf": [
+                            { "Type": "Creature" },
+                            { "Type": "Planeswalker" },
+                            { "Type": "Battle" }
+                          ]
+                        },
+                        "Other"
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": 3 } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [{ "CreateToken": { "token": { "Named": "black_lotus" } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 7 },
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Each": [{ "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] }] },
+                  "to": { "Library": { "place": "Shuffled" } }
+                }
+              },
+              { "Draw": { "who": "EachPlayer", "count": 7 } }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}
