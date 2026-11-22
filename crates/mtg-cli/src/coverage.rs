@@ -19,6 +19,10 @@ use crate::status::missing_table;
 /// The report the arguments ask for as the text to print: that of the precons, or with `--all` that of every
 /// Commander-legal card. With `--deck` the report of the precons ends in the list of their cards to draft.
 pub async fn report(db: &Database, cache: &Cache, args: &CoverageArgs) -> Result<String, CliError> {
+    if args.snapshot {
+        let outcome = crate::snapshot::take_snapshot(db, args.release.as_deref()).await?;
+        return Ok(outcome.summary());
+    }
     if args.all {
         return coverage_all(db, cache, args).await;
     }
