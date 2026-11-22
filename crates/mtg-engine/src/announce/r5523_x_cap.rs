@@ -60,3 +60,41 @@ pub(super) fn r6503_fixed_x(ctx: &Ctx<'_>) -> Option<u32> {
     }?;
     Some(u32::try_from(value.max(0)).unwrap_or(u32::MAX))
 }
+
+/// The amount an activated ability's text defines its X as when it reads the ability's targets ("X is twice the mana
+/// value of that spell", `CostItem::XIs`): the targets are chosen after X would be announced (CR 601.2b, 601.2c), so the
+/// X is worked out with the total cost (CR 601.2f) and never asked.
+pub(super) fn r116_x_of_targets<'a>(ctx: &Ctx<'a>) -> Option<&'a mtg_cards::value::Amount> {
+    let Some(Ability::Activated { cost, .. }) = ctx.ability else {
+        return None;
+    };
+    cost.0.iter().find_map(|item| match item {
+        CostItem::XIs(amount) if r116_names_target(&serde_json::to_value(amount).ok()?) => {
+            Some(amount)
+        }
+        _ => None,
+    })
+}
+
+/// Whether a value of the data names a target (`Ref::Target`).
+fn r116_names_target(value: &serde_json::Value) -> bool {
+    match value {
+        serde_json::Value::Object(fields) => {
+            fields.contains_key("Target") || fields.values().any(r116_names_target)
+        }
+        serde_json::Value::Array(items) => items.iter().any(r116_names_target),
+        _ => false,
+    }
+}
+
+/// The X of `r116_x_of_targets` counted with the targets announced in `choices`, never below 0.
+pub(super) fn r116_x_with_targets(ctx: &Ctx<'_>, choices: &crate::choose::Choices) -> Option<u32> {
+    let amount = r116_x_of_targets(ctx)?;
+    let object = ctx.state.object(ctx.source)?;
+    let scope = Scope {
+        choices,
+        ..Scope::announcing(ctx.state, ctx.player, object.reference())
+    };
+    let value = scope.amount(amount).ok()?;
+    Some(u32::try_from(value.max(0)).unwrap_or(u32::MAX))
+}

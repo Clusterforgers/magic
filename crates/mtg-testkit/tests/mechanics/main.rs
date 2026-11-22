@@ -131,6 +131,7 @@ mod r113_04_cards;
 mod r114_04_cost_roll;
 mod r114_aradesh;
 mod r116_03_tokens;
+mod r116_04_cost_roll_change;
 mod r1c;
 mod r1fix;
 mod r1g_taken_names;

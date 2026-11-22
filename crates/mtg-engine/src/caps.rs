@@ -23,6 +23,9 @@ const RUNS: &[&str] = &[
     PLAIN_MANA_ABILITY,
     "Ability.Spell",
     "Ability.Activated",
+    "Ability.R116ActivatedFromStack",
+    "Ability.R116AdditionalCost.PicksByX",
+    "Copy.Except.R116Counted",
     "Ability.Triggered",
     "Ability.Loyalty",
     "Ability.Limit",
@@ -1377,7 +1380,6 @@ const RUNS: &[&str] = &[
 pub fn caps() -> Caps {
     Caps::from_names(RUNS.iter().copied())
 }
-
 #[cfg(test)]
 mod tests {
     //! Goal: every ability of the embedded rules that the engine's capabilities cover is carried into the definition, so a Verified card never loses an ability on its way into the game, and the capabilities pin what the engine runs today.

@@ -1,7 +1,7 @@
 {
   "oracle_id": "2c0fceb6-d92d-4f4a-85a2-0af5be5bba81",
   "name": "Lightning Storm",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Lightning Storm",
@@ -21,9 +21,14 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 114, "end": 296 }
+          "Activated": {
+            "cost": [{ "Discard": { "filter": [{ "Type": "Land" }] } }],
+            "by": "Anyone",
+            "from": "Stack",
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "charge", "count": 2 } },
+              { "ChangeTargets": { "what": "This", "to": "Choose" } }
+            ]
           }
         }
       ]

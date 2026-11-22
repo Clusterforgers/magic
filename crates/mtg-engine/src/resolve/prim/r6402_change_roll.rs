@@ -129,7 +129,17 @@ pub(crate) fn r6402_change(
     sides: u32,
     rolled: &[u32],
 ) -> Result<Result<R6402Changed, Run>, ResolveError> {
-    let state = cx.state();
+    r6402_change_in((cx.state(), cx.journal()), player, sides, rolled)
+}
+
+/// `r6402_change` over a state and the answers given so far: a roll made outside a resolution, as a cost is paid
+/// (`CostItem::R114RollDie`), keeps its answers in the announcement.
+pub(crate) fn r6402_change_in(
+    (state, journal): (&GameState, &[(PlayerId, Choice)]),
+    player: PlayerId,
+    sides: u32,
+    rolled: &[u32],
+) -> Result<Result<R6402Changed, Run>, ResolveError> {
     let mut changed = R6402Changed {
         results: rolled.to_vec(),
         events: Vec::new(),
@@ -140,7 +150,7 @@ pub(crate) fn r6402_change(
     }
     // The roll is replaced by one that lets them exchange (CR 614.1a), so the exchanges come before any change made
     // after it.
-    if let Err(ask) = r113_exchange(cx, player, sides, &mut changed)? {
+    if let Err(ask) = r113_exchange((state, journal), player, sides, &mut changed)? {
         return Ok(Err(ask));
     }
     let mut spent = 0;
@@ -153,7 +163,7 @@ pub(crate) fn r6402_change(
         }
         let offers = r6402_offers(&changed.results, changer.by);
         let options = r6402_options(&changed.results, &offers, &r6402_pay_text(&changer.pay));
-        let index = match cx.journal().get(changed.asked) {
+        let index = match journal.get(changed.asked) {
             None => {
                 return Ok(Err(Run::Ask(Decision {
                     player,
@@ -232,12 +242,11 @@ fn r113_options(
 /// permanent stored (`Rule::R113ExchangeRoll`) which exchange to make; the die takes the stored number and the memory the
 /// result. The answers continue the step's journal after those `changed` used.
 fn r113_exchange(
-    cx: &Cx<'_>,
+    (state, journal): (&GameState, &[(PlayerId, Choice)]),
     player: PlayerId,
     sides: u32,
     changed: &mut R6402Changed,
 ) -> Result<Result<(), Run>, ResolveError> {
-    let state = cx.state();
     for exchanger in crate::rules::r113_roll_exchangers(state, player, sides) {
         let slot = crate::memory::r112_lasting(&exchanger.slot);
         let mut stored = crate::memory::recall_numbers(state, exchanger.source, &slot);
@@ -261,7 +270,7 @@ fn r113_exchange(
             continue;
         }
         let offers = r113_offers(&changed.results, &stored);
-        let index = match cx.journal().get(changed.asked) {
+        let index = match journal.get(changed.asked) {
             None => {
                 return Ok(Err(Run::Ask(Decision {
                     player,

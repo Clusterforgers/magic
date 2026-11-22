@@ -394,6 +394,9 @@ pub(crate) struct Done {
     pub(crate) r115_cost: bool,
     /// The variant the player picked among those offered, by position in the options.
     pub(crate) r115_picked: Option<usize>,
+    /// The answers, in order, to the rules that change a die the cost rolls (`cast::r114_roll_asks`), by position in the
+    /// options.
+    pub(crate) r114_rolled: Vec<usize>,
     /// The step whose decision the player has been asked.
     asked: Option<Phase>,
     /// Why the announcement was taken back: the step that could not be met.
@@ -598,6 +601,7 @@ impl Pending {
             }
             Answered::Cards(_) => Phase::Parts,
             Answered::Way(_) if self.done.asked == Some(Phase::Targets) => Phase::Targets,
+            Answered::Way(_) if self.done.asked == Some(Phase::Payment) => Phase::Payment,
             Answered::Way(_) => Phase::Alternative,
             Answered::Targets(_) => Phase::Targets,
             // A number is asked for X, and for the times a repeatable optional cost is paid, which comes once the
@@ -654,6 +658,7 @@ impl Pending {
                 self.done.r114_picked = Some(pick);
             }
             Answered::Way(pick) if wanted == Phase::Targets => self.done.r112_picked = Some(pick),
+            Answered::Way(pick) if wanted == Phase::Payment => self.done.r114_rolled.push(pick),
             Answered::Way(pick) => self.done.way_picked = Some(pick),
             Answered::Cards(cards) => self.choices.pick_for_cost(cards),
             Answered::Targets(targets) => {

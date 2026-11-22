@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2fb505c6-3d28-4b83-9820-4b9db64c8304",
+  "name": "Reflecting Mirror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reflecting Mirror",
+      "oracle_fingerprint": "e5770127cf57077a7d1f76781333ad26",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}" },
+              "Tap",
+              {
+                "XIs": {
+                  "Times": {
+                    "by": 2,
+                    "of": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } }
+                  }
+                }
+              }
+            ],
+            "targets": [{ "what": { "Object": ["Spell", "SingleTarget"] } }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "TargetsPlayer": "You" }]
+                    }
+                  },
+                  "then": [{ "ChangeTargets": { "what": { "Target": 0 }, "to": "AnotherPlayer" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

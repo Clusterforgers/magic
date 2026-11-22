@@ -64,7 +64,12 @@ impl Place {
     const fn activates(self) -> bool {
         matches!(
             self,
-            Place::Battlefield | Place::Hand | Place::Graveyard | Place::Exile | Place::Command
+            Place::Battlefield
+                | Place::Hand
+                | Place::Graveyard
+                | Place::Exile
+                | Place::Command
+                | Place::Stack
         )
     }
 }

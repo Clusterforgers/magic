@@ -173,6 +173,9 @@ fn read_cost(printed: Printed) -> Optional {
     };
     let mut counted = price.clone();
     counted.x -= x;
+    // A pick by the X announced ("sacrifice a creature with power X", casualty X) is asked with the parts once the cost
+    // is chosen, its X with it (`parts`).
+    counted.parts.retain(|part| !part.r301_picks_by_x());
     let payable = payable(&counted) && (price.mana.is_some() || x > 0 || !price.parts.is_empty());
     Optional {
         label,
@@ -206,6 +209,23 @@ pub(super) fn kicker_x(card: &CardDefinition) -> u32 {
         .map(|cost| cost.x)
         .max()
         .unwrap_or(0)
+}
+
+/// Whether an optional cost of `card` picks by the X announced ("you may sacrifice a creature with power X", casualty
+/// X): the spell announces that X when the cost is chosen, and X is 0 when it is not.
+pub(super) fn r116_picks_by_x(card: &CardDefinition) -> bool {
+    printed(card)
+        .map(read_cost)
+        .any(|cost| cost.parts.iter().any(Part::r301_picks_by_x))
+}
+
+/// Whether an optional cost chosen in `choices` picks by the X announced (`r116_picks_by_x`).
+pub(super) fn r116_chosen_picks_by_x(ctx: &Ctx<'_>, choices: &Choices) -> bool {
+    choices
+        .optional_costs
+        .iter()
+        .filter_map(|index| ctx.needs.optional.get(*index))
+        .any(|cost| cost.parts.iter().any(Part::r301_picks_by_x))
 }
 
 /// The `{X}` symbols of the optional costs chosen in `choices`.

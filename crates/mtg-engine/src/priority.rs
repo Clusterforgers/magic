@@ -625,6 +625,37 @@ fn own_cards_elsewhere(state: &GameState, player: PlayerId) -> impl Iterator<Ite
     .filter(move |object| object.owner() == player)
 }
 
+/// The activated abilities of the spells on the stack that work there and that `player` may activate now ("Any player
+/// may activate this ability but only if ~ is on the stack", CR 113.6, 602.1).
+fn stack_abilities(state: &GameState, player: PlayerId) -> Vec<AbilityRef> {
+    let mut found = Vec::new();
+    for &id in state.zone(Zone::Stack) {
+        let Some(object) = state
+            .object(id)
+            .filter(|o| o.kind() != crate::object::ObjectKind::Ability)
+        else {
+            continue;
+        };
+        let controller = controller_of_object(state, object);
+        for (address, rules) in working_here(object) {
+            let allowed = match &**rules {
+                Ability::Activated { by, .. } => match by {
+                    Activators::Controller => controller == player,
+                    Activators::Anyone => true,
+                    Activators::Opponents => state.is_opponent(controller, player),
+                    Activators::Owner => object.owner() == player,
+                    Activators::R113AttachedController => false,
+                },
+                _ => false,
+            };
+            if allowed && can_activate(state, player, object, address, rules) {
+                found.push(address);
+            }
+        }
+    }
+    found
+}
+
 /// Activated abilities of `player`'s permanents, and of the cards they own in a hand, a graveyard, exile or the command
 /// zone, that are not mana abilities and could be used now.
 #[cfg(test)]
@@ -687,6 +718,7 @@ pub(crate) fn abilities_now(
                 }
             }
         }
+        found.extend(stack_abilities(state, player));
     }
     (found, inactive)
 }

@@ -41,8 +41,8 @@ pub(super) fn whole(amount: i64) -> i32 {
     i32::try_from(amount.max(0)).unwrap_or(i32::MAX)
 }
 
-/// The players and permanents `reference` names that can hold counters now, each once: a player still in the game, a
-/// permanent on the battlefield that is still the object that was named.
+/// The players and objects `reference` names that can hold counters now, each once: a player still in the game, a
+/// permanent, a card in exile or a spell on the stack (CR 122.1) that is still the object that was named.
 pub(super) fn holders(cx: &Cx<'_>, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
     let mut found: Vec<Target> = Vec::new();
     for named in cx.scope.refs(reference)? {
@@ -50,7 +50,9 @@ pub(super) fn holders(cx: &Cx<'_>, reference: &Ref) -> Result<Vec<Target>, Resol
             Target::Player(player) => cx.state().is_alive(player),
             Target::Object(object) => cx.state().object(object.id).is_some_and(|live| {
                 live.counter() == object.counter
-                    && matches!(live.zone(), Zone::Battlefield | Zone::Exile)
+                    && (matches!(live.zone(), Zone::Battlefield | Zone::Exile)
+                        || (live.zone() == Zone::Stack
+                            && live.kind() != crate::object::ObjectKind::Ability))
             }),
         };
         if holds && !found.contains(&named) {

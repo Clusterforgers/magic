@@ -1,7 +1,7 @@
 {
   "oracle_id": "65b3a40e-1d2b-4b24-996f-c935414ded7d",
   "name": "Chromatic Armor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chromatic Armor",
@@ -18,15 +18,22 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 101, "end": 198 }
+          "Replacement": {
+            "when": { "Damage": { "to": "Attached", "source": ["ChosenColor"] } },
+            "by": "Prevent"
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 199, "end": 308 }
+          "Activated": {
+            "cost": [
+              { "Mana": "{X}" },
+              { "XIs": { "Counters": { "on": "This", "counter": { "Other": "sleight" } } } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "sleight" } } },
+              { "ChooseValue": { "kind": "Color", "as": "color" } },
+              { "R111KeepChosen": "color" }
+            ]
           }
         }
       ]
