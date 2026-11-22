@@ -1,0 +1,56 @@
+{
+  "oracle_id": "035bee4c-6f79-4123-9b6c-feba190052e8",
+  "name": "Curzon Dax, Bound by Blood",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Curzon Dax, Bound by Blood",
+      "oracle_fingerprint": "a66c6225fda72575bfed27435bd5d4c0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  { "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }] },
+                  "Other",
+                  { "ControlledBy": "You" }
+                ],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [{ "DealDamage": { "to": "Opponents", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Type": "Creature" },
+                            { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

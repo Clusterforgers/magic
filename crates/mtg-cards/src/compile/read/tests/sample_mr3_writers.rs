@@ -268,7 +268,7 @@ const OVERSOLD_CEMETERY: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"U
 const PROPHETIC_BOLT: &str = r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"source":"This","to":{"Target":0},"amount":4}},{"LookAtTop":{"count":4,"as":"top"}},{"Choose":{"from":{"Bound":"top"},"as":"kept","rest_as":"rest"}},{"Move":{"what":{"Bound":"kept"},"to":"Hand"}},{"Move":{"what":{"Bound":"rest"},"to":{"Library":{"place":"Bottom","order":"Chosen"}}}}]}}"#;
 
 /// "Whenever this creature attacks while you don't control another Dinosaur, put a stun counter on it."
-const PUGNACIOUS_HAMMERSKULL: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":{"Compare":{"left":{"Count":[{"Subtype":"Dinosaur"},"Other",{"ControlledBy":"You"}]},"op":"Eq","right":0}},"effects":[{"PutCounters":{"on":"This","counter":{"Other":"stun"}}}]}}"#;
+const PUGNACIOUS_HAMMERSKULL: &str = r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":{"AtTrigger":{"Compare":{"left":{"Count":[{"Subtype":"Dinosaur"},"Other",{"ControlledBy":"You"}]},"op":"Eq","right":0}}},"effects":[{"PutCounters":{"on":"This","counter":{"Other":"stun"}}}]}}"#;
 
 /// "{4}, {T}: Exile target attacking creature an opponent controls. At the beginning of the next end step, return it to the battlefield tapped under its owner's control."
 const MYSTIFYING_MAZE: &str = r#"{"Activated":{"cost":[{"Mana":"{4}"},"Tap"],"targets":[{"what":{"Object":[{"Type":"Creature"},"Attacking",{"ControlledBy":"Opponents"}]}}],"effects":[{"Exile":{"what":{"Target":0},"as":"exiled"}},{"DelayedTrigger":{"when":{"StepBegins":{"step":"End"}},"effects":[{"Move":{"what":{"Bound":"exiled"},"to":{"Battlefield":{"tapped":true}}}}]}}]}}"#;

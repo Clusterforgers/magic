@@ -168,11 +168,11 @@ fn near_misses_of_a_group_with_a_counter_stay_with_the_table(#[case] text: &str)
 #[rstest]
 #[case::a_token(
     "Whenever ~ attacks while saddled, create a 1/1 white Sheep creature token.",
-    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":{"Matches":{"subject":"This","selector":[{"HasKeyword":"Saddled"}]}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Sheep","colors":["White"],"types":["Creature"],"subtypes":["Sheep"],"power":1,"toughness":1}}}}]}}"#
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":{"AtTrigger":{"Matches":{"subject":"This","selector":[{"HasKeyword":"Saddled"}]}}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Sheep","colors":["White"],"types":["Creature"],"subtypes":["Sheep"],"power":1,"toughness":1}}}}]}}"#
 )]
 #[case::a_draw(
     "Whenever ~ attacks while saddled, draw a card.",
-    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":{"Matches":{"subject":"This","selector":[{"HasKeyword":"Saddled"}]}},"effects":[{"Draw":{}}]}}"#
+    r#"{"Triggered":{"when":{"Attacks":{"what":["This"]}},"if":{"AtTrigger":{"Matches":{"subject":"This","selector":[{"HasKeyword":"Saddled"}]}}},"effects":[{"Draw":{}}]}}"#
 )]
 fn attacking_while_saddled_is_the_attack_with_the_saddled_designation(
     #[case] text: &str,

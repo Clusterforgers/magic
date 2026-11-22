@@ -1,0 +1,38 @@
+{
+  "oracle_id": "e705b055-14b3-4de0-b4a7-39626839dea8",
+  "name": "Ghost of Illyria",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghost of Illyria",
+      "oracle_fingerprint": "b49465bca39e1d7ff51db2899cf4c04c",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [{ "Not": { "Type": "Land" } }, "Other", { "ControlledBy": "You" }]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

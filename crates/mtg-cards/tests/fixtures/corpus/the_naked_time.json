@@ -1,0 +1,135 @@
+{
+  "object": "card",
+  "id": "627c2ff6-88be-4c37-a676-0eddf453e8c6",
+  "oracle_id": "2cf79dd0-c9db-403e-969d-6c09e7aaa575",
+  "multiverse_ids": [],
+  "resource_id": "650E05A42492766EA50F8E58B638B2C2F4DAA36E1A04F4C17604B7923063AE74",
+  "mtgo_id": 158458,
+  "tcgplayer_id": 728507,
+  "cardmarket_id": 920714,
+  "name": "The Naked Time",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/627c2ff6-88be-4c37-a676-0eddf453e8c6",
+  "scryfall_uri": "https://scryfall.com/card/trk/159/the-naked-time?utm_source=api",
+  "layout": "saga",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-30T11:26:24Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.jpg?1793359584",
+    "normal": "https://cards.scryfall.io/normal/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.jpg?1793359584",
+    "large": "https://cards.scryfall.io/large/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.jpg?1793359584",
+    "png": "https://cards.scryfall.io/png/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.png?1793359584",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.jpg?1793359584",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.jpg?1793359584",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.webp?1793359584",
+    "grid": "https://cards.scryfall.io/grid/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.webp?1793359584",
+    "display": "https://cards.scryfall.io/display/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.webp?1793359584",
+    "art": "https://cards.scryfall.io/art/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.webp?1793359584",
+    "crop": "https://cards.scryfall.io/crop/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.webp?1793359584",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/2/627c2ff6-88be-4c37-a676-0eddf453e8c6.jpg?1793359584"
+  },
+  "mana_cost": "{1}{R}",
+  "cmc": 2.0,
+  "type_line": "Enchantment — Saga",
+  "oracle_text": "(As this Saga enters and after your draw step, add a lore counter. Sacrifice after III.)\nI — Search your library for a basic Mountain card, put it onto the battlefield tapped, then shuffle.\nII — Whenever a creature you control enters this turn, put a +1/+1 counter on it and it gains haste until end of turn.\nIII — Sacrifice a land.",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set": "trk",
+  "set_name": "Star Trek",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/627c2ff6-88be-4c37-a676-0eddf453e8c6/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A2cf79dd0-c9db-403e-969d-6c09e7aaa575&unique=prints",
+  "collector_number": "159",
+  "digital": false,
+  "rarity": "uncommon",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Raish",
+  "artist_ids": [
+    "0179cdc7-014b-44bb-be56-73d06a1b8661"
+  ],
+  "illustration_id": "176be3c8-565b-4c47-8b37-83d037e56eab",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "enchantment"
+  ],
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 30731,
+  "prices": {
+    "usd": "0.89",
+    "usd_foil": "0.70",
+    "usd_etched": null,
+    "eur": "0.40",
+    "eur_foil": "0.65",
+    "tix": "2.11"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BNaked%2BTime",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BNaked%2BTime",
+    "edhrec": "https://edhrec.com/route/?cc=The+Naked+Time"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F728507%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=920714&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/158458?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

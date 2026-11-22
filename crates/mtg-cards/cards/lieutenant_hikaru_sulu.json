@@ -1,0 +1,34 @@
+{
+  "oracle_id": "565cfa73-8c6b-4296-bcb8-388de8c960ff",
+  "name": "Lieutenant Hikaru Sulu",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lieutenant Hikaru Sulu",
+      "oracle_fingerprint": "d5ab107e40711a1cd2830813ab62007e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "Explore": { "what": "This" } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}{U}",
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": ["CantBeBlocked"],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

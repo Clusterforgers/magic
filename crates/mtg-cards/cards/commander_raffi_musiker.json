@@ -1,0 +1,45 @@
+{
+  "oracle_id": "4f8a70cb-2487-4e6d-9a3f-c6c5313b8e82",
+  "name": "Commander Raffi Musiker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Commander Raffi Musiker",
+      "oracle_fingerprint": "8e840ef6831282ee87e2c0e1a0969bbd",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "In": "Graveyard" }] },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [
+                        { "Exile": { "what": { "Target": 0 } } },
+                        { "GainLife": { "amount": 2 } }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "CreateToken": { "token": { "Named": "clue" } } },
+                        { "Performed": { "action": "Investigated" } },
+                        { "LoseLife": { "amount": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "eae07535-487b-48ac-b99e-b4b62286254c",
+  "name": "Vengeance Mission",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vengeance Mission",
+      "oracle_fingerprint": "222b0cd0e185f0413590ef0e7e43e743",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                      "op": "Ge",
+                      "right": 7
+                    }
+                  },
+                  "then": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 2 } }],
+                  "otherwise": [{ "LoseLife": { "who": { "Target": 0 }, "amount": 1 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

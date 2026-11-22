@@ -1,0 +1,31 @@
+{
+  "oracle_id": "9d08cc9b-2b26-49de-80aa-962a358bfc1a",
+  "name": "Blood-Sport Champion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Blood-Sport Champion",
+      "oracle_fingerprint": "6c13d75696d300b73d9e60f681a3548e",
+      "abilities": [
+        { "Keyword": { "Kicker": "{2}" } },
+        { "Keyword": "Deathtouch" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This", "Kicked"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [{ "AddKeyword": "Deathtouch" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

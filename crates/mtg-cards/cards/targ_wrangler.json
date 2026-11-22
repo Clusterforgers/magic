@@ -1,0 +1,21 @@
+{
+  "oracle_id": "a066eeb1-61fc-448b-bbab-650d672652ad",
+  "name": "Targ Wrangler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Targ Wrangler",
+      "oracle_fingerprint": "42865264e50d1ce894f50413d4f96f93",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "if": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Not": { "Type": "Land" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

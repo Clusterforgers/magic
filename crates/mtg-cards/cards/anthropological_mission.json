@@ -1,0 +1,36 @@
+{
+  "oracle_id": "535c0280-fdb5-4ff8-8608-c2f98b8a7ffc",
+  "name": "Anthropological Mission",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Anthropological Mission",
+      "oracle_fingerprint": "a8eced9050da1cf28642ad4931a7d86e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": { "Other": "quest" } } },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Not": {
+                      "Compare": {
+                        "left": { "Counters": { "on": "This", "counter": { "Other": "quest" } } },
+                        "op": "Ge",
+                        "right": 3
+                      }
+                    }
+                  },
+                  "then": [{ "Discard": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

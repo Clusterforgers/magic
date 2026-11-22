@@ -1,0 +1,76 @@
+{
+  "oracle_id": "bce974a2-d9ad-4ef5-bc2e-7aa2833a39f5",
+  "name": "Sins of the Father",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sins of the Father",
+      "oracle_fingerprint": "1dbefa89bf74c09da8efe087bf7f7bbc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Sacrifice": {
+                  "who": "Opponents",
+                  "filter": [{ "Type": "Creature" }, { "Not": "Token" }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Klingon Warrior",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Klingon", "Warrior"],
+                            "power": 2,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Haste" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Exile": {
+                  "what": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Target": 0 } }] },
+                  "as": "exiled"
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Count": [{ "Is": { "Bound": "exiled" } }, { "Type": "Creature" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

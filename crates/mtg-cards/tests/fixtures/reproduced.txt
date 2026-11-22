@@ -90,6 +90,7 @@ Angelic Field Marshal
 Angelic Sleuth
 Animate Dead
 Ant-Man, Elusive Avenger
+Anthropological Mission
 Apex Altisaur
 Aquastrand Spider
 Aradesh, the Founder
@@ -174,6 +175,7 @@ Baird, Steward of Argive
 Balduvian Conjurer
 Balduvian Shaman
 Balduvian Warlord
+Balefang the Unslayable
 Baleful Strix
 Bandit's Haul
 Bane of Progress
@@ -256,6 +258,7 @@ Bladed Bracers
 Blasphemous Act
 Blast Zone
 Blastoderm
+Blastoneuron
 Blatant Thievery
 Blaze
 Blaze Commando
@@ -321,6 +324,7 @@ Bosh, Iron Golem
 Bounty of Skemfar
 Bounty of the Hunt
 Boxing Ring
+Brad Boimler, Eager Ensign
 Braids, Arisen Nightmare
 Brain Freeze
 Brainstorm
@@ -329,6 +333,7 @@ Branchblight Stalker
 Brass Infiniscope
 Brass's Tunnel-Grinder // Tecutlan, the Searing Rift
 Brave the Sands
+Brazen Blademaster
 Brazen Borrower // Petty Theft
 Break the Ice
 Breath of Life
@@ -500,6 +505,7 @@ Combat Celebrant
 Combustion Technique
 Command Tower
 Commandeer
+Commander Raffi Musiker
 Commander's Insignia
 Commander's Plate
 Commander's Sphere
@@ -511,6 +517,7 @@ Conclave Tribunal
 Condemn
 Conduit of Worlds
 Conifer Wurm
+Conquest Mission
 Consider
 Consign // Oblivion
 Consign to Dust
@@ -535,6 +542,7 @@ Cosmic Intervention
 Cosmos Charger
 Counterflux
 Counterspell
+Courageous Goblin
 Courser of Kruphix
 Court of Bounty
 Court of Grace
@@ -615,6 +623,7 @@ Darkwater Catacombs
 Dauntless Scrapbot
 Dauthi Horror
 Dauthi Marauder
+David and Carol Marcus, Creators
 Dawn to Dusk
 Dawn's Reflection
 Dawnglade Regent
@@ -720,6 +729,7 @@ Doublecast
 Doubling Cube
 Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
+Dr. Leonard "Bones" McCoy
 Dr. McCoy, Surly Surgeon
 Draconic Lore
 Drag to the Bottom
@@ -849,6 +859,7 @@ Endless Obedience
 Endless One
 Enigma Thief
 Enraged Revolutionary
+Ensign Harry Kim, Operations
 Entangling Trap
 Enthusiastic Study
 Entity Tracker
@@ -863,6 +874,7 @@ Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Erhnam Djinn
+Erica Ortegas, Plucky Pilot
 Eris, Roar of the Storm
 Errand of Duty
 Esix, Fractal Bloom
@@ -900,6 +912,7 @@ Exotic Orchard
 Expedite
 Exploding Barrel
 Exploration
+Exploratory Mission
 Explore
 Exquisite Blood
 Exquisite Huntmaster
@@ -1206,6 +1219,7 @@ Guidelight Matrix
 Guiding Voice
 Guildless Commons
 Guile
+Gul Dukat, Colonial Prefect
 Gurmag Angler
 Gurmag Drowner
 Gwaihir, Greatest of the Eagles
@@ -1295,6 +1309,7 @@ Hogaak, Arisen Necropolis
 Holdout Settlement
 Hollow Warrior
 Holo-Engineer
+Hologram Stalker
 Honor Troll
 Honor's Reward
 Hoofprints of the Stag
@@ -1408,6 +1423,7 @@ Jack-o'-Lantern
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
+Janice Rand, Essential Aide
 Jarad, Golgari Lich Lord
 Jareth, Leonine Titan
 Jasmine Boreal of the Seven
@@ -1441,6 +1457,7 @@ Kalemne, Disciple of Iroas
 Kalitas, Traitor of Ghet
 Kalonian Hydra
 Kami of the Crescent Moon
+Kang, Suspicious Captain
 Kang, Temporal Tyrant
 Karador, Ghost Chieftain
 Karametra's Favor
@@ -1474,6 +1491,7 @@ Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
 Kiora's Follower
+Kirk, Enterprising Captain
 Kirol, Attentive First-Year
 Kirol, History Buff // Pack a Punch
 Kitchen Finks
@@ -1515,6 +1533,7 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+L'Rell, Fierce Visionary
 Land Grant
 Landslide
 Lantern Flare
@@ -1714,6 +1733,7 @@ Midnight Scavengers
 Migration Path
 Migratory Greathorn
 Migratory Route
+Miles O'Brien, Transporter Ops
 Military Intelligence
 Millicent, Restless Revenant
 Millikin
@@ -1768,6 +1788,7 @@ Mona Lisa, Science Geek
 Monastery Swiftspear
 Monk of the Open Hand
 Monk's Fist
+Moon-Boy, Dino Rider
 Moonlit Meditation
 Moonrager's Slash
 Moonstone Eulogist
@@ -1840,6 +1861,7 @@ Night Shift of the Living Dead
 Night Soil
 Night's Whisper
 Nighthawk Scavenger
+Nighthowl Pursuer
 Nightmare
 Nightscape Familiar
 Nightveil Sprite
@@ -2133,6 +2155,7 @@ Rapid Hybridization
 Rasputin Dreamweaver
 Ratadrabik of Urborg
 Ravenform
+Ravening Warg
 Ravenous Chupacabra
 Ravenous Leucrocota
 Ravenous Slime
@@ -2251,6 +2274,7 @@ Rowan, Scion of War
 Rowdy Research
 Rowen
 Ruby Medallion
+Ruby, Daring Tracker
 Rugged Prairie
 Ruinous Path
 Ruins of Oran-Rief
@@ -2323,6 +2347,7 @@ Search for Tomorrow
 Search the Premises
 Season of the Witch
 Seasoned Hallowblade
+Seasoned Warrenguard
 Secluded Courtyard
 Secluded Glen
 Secluded Steppe
@@ -2532,6 +2557,7 @@ Squad Commander
 Squirrel Nest
 Squirrel Sovereign
 Sram, Senior Edificer
+Stable Wormhole
 Staff of Nin
 Staggering Insight
 Staggershock
@@ -2652,6 +2678,7 @@ Sword of Vengeance
 Sword of the Animist
 Sword-Swallowing Seraph
 Swords to Plowshares
+Sylvia Tilly, Joy of Discovery
 Sylvok Battle-Chair
 Syndic of Tithes
 Syndicate Messenger
@@ -2681,6 +2708,7 @@ Tangleweave Armor
 Tannuk, Steadfast Second
 Tanuki Transplanter
 Tapestry Warden
+Targ Wrangler
 Tariff
 Tato Farmer
 Tatyova, Benthic Druid
@@ -2712,6 +2740,7 @@ Temple of Silence
 Temple of Triumph
 Temple of the False God
 Temporal Anomaly
+Temporal Conqueror
 Temporal Manipulation
 Tempt with Discovery
 Tempt with Mayhem
@@ -2962,6 +2991,7 @@ Vanishing Verse
 Vanishment
 Vanquish the Horde
 Vanquisher's Banner
+Vash, Freelance Archaeologist
 Vastwood Hydra
 Vastwood Surge
 Vault 11: Voter's Dilemma
@@ -2971,6 +3001,7 @@ Vault of the Archangel
 Vazi, Keen Negotiator
 Vedalken Engineer
 Vedalken Squirrel-Whacker
+Vengeance Mission
 Vengeful Dead
 Vengeful Vampire
 Venomous Vines
@@ -3083,7 +3114,9 @@ Wickersmith's Tools
 Wild Growth
 Wild Ride
 Wild Wasteland
+Wilderland Scrounger
 Wilderness Elemental
+Will Riker, First in the Field
 Will of the Sultai
 Wilt-Leaf Liege
 Windborn Muse
@@ -3121,6 +3154,7 @@ Woodland Stream
 Woodripper
 Woolly Mammoths
 Word of Seizing
+Worf, Still Not Merry
 Worldspine Wurm
 Worn Powerstone
 Worst Fears

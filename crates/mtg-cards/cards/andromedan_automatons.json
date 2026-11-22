@@ -1,0 +1,36 @@
+{
+  "oracle_id": "2da322e6-a8e2-4d7a-bd34-54a3dfa85940",
+  "name": "Andromedan Automatons",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Andromedan Automatons",
+      "oracle_fingerprint": "a96803f4e96a3e0c0debf276f8e69483",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": {
+                        "filter": [{ "Named": "Andromedan Automatons" }],
+                        "count": { "min": 0, "max": null },
+                        "reveal": true,
+                        "as": "found"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

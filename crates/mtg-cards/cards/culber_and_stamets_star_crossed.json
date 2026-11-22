@@ -1,0 +1,31 @@
+{
+  "oracle_id": "5b8e8ef2-2f04-4485-ae12-08f52dac81a2",
+  "name": "Culber and Stamets, Star-Crossed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Culber and Stamets, Star-Crossed",
+      "oracle_fingerprint": "489fce9738bbc028fa78c491f62798b5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+                    },
+                    { "effects": [{ "AddMana": { "mana": { "AnyColor": 2 } } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

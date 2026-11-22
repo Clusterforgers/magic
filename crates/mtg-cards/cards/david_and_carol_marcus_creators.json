@@ -1,0 +1,40 @@
+{
+  "oracle_id": "15885e58-76a9-49fa-ae67-a0482aacd81c",
+  "name": "David and Carol Marcus, Creators",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "David and Carol Marcus, Creators",
+      "oracle_fingerprint": "6f94417ed231ccbf1e4f815eb3e6bf0a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "New Planet",
+                      "types": ["Land"],
+                      "subtypes": ["Planet"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

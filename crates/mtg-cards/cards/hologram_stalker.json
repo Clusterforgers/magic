@@ -1,0 +1,60 @@
+{
+  "oracle_id": "8f91e7aa-a2d4-42ed-a959-3acd621679a5",
+  "name": "Hologram Stalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hologram Stalker",
+      "oracle_fingerprint": "0567f377759fb9468851e0c3528da83e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Artifact" },
+                        { "Type": "Battle" },
+                        { "Type": "Creature" },
+                        { "Type": "Enchantment" },
+                        { "Type": "Land" },
+                        { "Type": "Planeswalker" }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Illusion"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

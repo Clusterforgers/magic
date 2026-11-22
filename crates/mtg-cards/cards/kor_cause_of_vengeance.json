@@ -1,0 +1,42 @@
+{
+  "oracle_id": "fc8d8c51-428c-4b2f-965d-c43ec94997c3",
+  "name": "Kor, Cause of Vengeance",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kor, Cause of Vengeance",
+      "oracle_fingerprint": "38c745b0ded9786423d46163991b0ab9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } }],
+                  "paid": [
+                    { "Draw": {} },
+                    {
+                      "Continuous": {
+                        "affected": {
+                          "Each": [
+                            { "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }] },
+                            { "ControlledBy": "You" }
+                          ]
+                        },
+                        "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

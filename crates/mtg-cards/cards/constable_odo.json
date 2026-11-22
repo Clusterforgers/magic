@@ -1,0 +1,53 @@
+{
+  "oracle_id": "74b58f31-7634-4b51-a900-6fbfccfb3cd2",
+  "name": "Constable Odo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Constable Odo",
+      "oracle_fingerprint": "dadc8eebc132652d5a57344078925eef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        { "Tap": { "what": { "Target": 0 } } },
+                        {
+                          "PutCounters": {
+                            "on": { "Target": 0 },
+                            "counter": { "Other": "stun" },
+                            "count": 2
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "CreateToken": { "token": { "Named": "clue" } } },
+                        { "Performed": { "action": "Investigated" } },
+                        { "CreateToken": { "token": { "Named": "clue" } } },
+                        { "Performed": { "action": "Investigated" } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

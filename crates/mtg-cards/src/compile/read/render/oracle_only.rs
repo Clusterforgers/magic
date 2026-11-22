@@ -380,7 +380,6 @@ mod w8c_still_kind;
 mod w8c_then_discards;
 mod w8c_then_tap;
 mod wheres;
-mod while_control;
 mod without_counter;
 mod you_create;
 
@@ -1073,7 +1072,6 @@ fn third_sample_of_m_to_r(ability: &Ability, texts: &mut Vec<String>) {
     tail_sentences::add(ability, texts);
     those_cards::add(ability, texts);
     uncounterable_group::add(ability, texts);
-    while_control::add(ability, texts);
     add_sz3(ability, texts);
 }
 

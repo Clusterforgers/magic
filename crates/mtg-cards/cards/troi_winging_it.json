@@ -1,0 +1,36 @@
+{
+  "oracle_id": "38561191-ecd1-4028-a0fd-4bca6a7eab58",
+  "name": "Troi, Winging It",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Troi, Winging It",
+      "oracle_fingerprint": "923f49605b7f3ad71b2b2fdbbaa16ad4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Drew": { "who": "Opponents" } },
+            "if": "YourTurn",
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

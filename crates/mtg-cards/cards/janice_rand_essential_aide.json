@@ -1,0 +1,52 @@
+{
+  "oracle_id": "2130193c-3518-4a7d-9cb3-ea65aec845b4",
+  "name": "Janice Rand, Essential Aide",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Janice Rand, Essential Aide",
+      "oracle_fingerprint": "eaf25061c3b5faa89f0ba6dc0090961f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "ZoneChange": {
+                    "what": ["Commander", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                },
+                { "Attacks": { "what": ["Commander", { "ControlledBy": "You" }] } }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+              {
+                "RevealUntil": {
+                  "filter": [{ "Type": "Land" }],
+                  "as": "land",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "revealed" } },
+                      { "Not": { "Is": { "Bound": "land" } } }
+                    ]
+                  },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "oracle_id": "9d4d3682-e904-412d-b8ae-734962865dfb",
+  "name": "Type-2 Phaser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Type-2 Phaser",
+      "oracle_fingerprint": "deef873079fe38e6c7cfd639a91dc10f",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Tap": { "what": { "Target": 0 } } },
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "stun" } } }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 0 } }]
+          }
+        },
+        { "Keyword": { "Equip": "{3}" } }
+      ]
+    }
+  ]
+}

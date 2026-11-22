@@ -17,7 +17,7 @@
         {
           "Triggered": {
             "when": { "TappedForMana": { "what": [{ "Type": "Land" }], "by": "You" } },
-            "if": { "Monarch": "You" },
+            "if": { "AtTrigger": { "Monarch": "You" } },
             "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
           }
         }

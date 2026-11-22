@@ -1,0 +1,30 @@
+{
+  "oracle_id": "3b04f5b9-40d9-49aa-a38d-0f946401263c",
+  "name": "The Doctor, EMH",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Doctor, EMH",
+      "oracle_fingerprint": "b4614e7c44eaad827431f756f6133313",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "HasAnyCounter"]
+                  },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -566,7 +566,34 @@ pub fn own_names(face: &PrintedFace) -> Vec<String> {
     if legendary && !face.name.contains(',') {
         names.extend(shorter_name(face));
     }
+    if legendary {
+        names.extend(r116_first_and_last(face).filter(|short| !names.contains(short)));
+    }
     names
+}
+
+/// The first and the last word of a legendary name of three words or more (the part before the comma) when the text
+/// uses them alone: a title and a surname ("Captain Burnham" for "Captain Michael Burnham", "Ensign Kim" for "Ensign
+/// Harry Kim, Operations").
+fn r116_first_and_last(face: &PrintedFace) -> Option<String> {
+    let base = face
+        .name
+        .split_once(',')
+        .map_or(face.name.as_str(), |(base, _)| base);
+    let words: Vec<&str> = base.split_whitespace().collect();
+    let (first, last) = match words.as_slice() {
+        [first, _, .., last] => (*first, *last),
+        _ => return None,
+    };
+    let short = format!("{first} {last}");
+    let text = face.oracle_text.replace(&face.name, "");
+    text.match_indices(&short)
+        .any(|(at, _)| {
+            let before = text[..at].chars().next_back();
+            !before.is_some_and(char::is_alphanumeric)
+                && !text[at + short.len()..].starts_with(char::is_alphanumeric)
+        })
+        .then_some(short)
 }
 
 /// A legendary name the text shortens: "Rosie Cotton" for "Rosie Cotton of South Lane", "King Darien" for "King Darien
@@ -1221,6 +1248,24 @@ mod tests {
         "Creature \u{2014} Imp",
         "Fire deals 2 damage.",
         "Fire deals 2 damage."
+    )]
+    #[case::a_title_and_a_surname(
+        "Captain Michael Burnham",
+        "Legendary Creature \u{2014} Human Officer",
+        "Captain Burnham flies.",
+        "~ flies."
+    )]
+    #[case::a_title_and_a_surname_before_the_comma(
+        "Ensign Harry Kim, Operations",
+        "Legendary Creature \u{2014} Human Officer",
+        "Ensign Kim flies.",
+        "~ flies."
+    )]
+    #[case::no_title_for_a_card_that_is_not_legendary(
+        "Captain Michael Burnham",
+        "Creature \u{2014} Human Officer",
+        "Captain Burnham flies.",
+        "Captain Burnham flies."
     )]
     #[case::an_article_is_no_name(
         "The Ur-Dragon",

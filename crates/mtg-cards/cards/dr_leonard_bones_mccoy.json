@@ -1,0 +1,88 @@
+{
+  "oracle_id": "0157faee-f307-43c0-b308-bbf36ce02e32",
+  "name": "Dr. Leonard \"Bones\" McCoy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dr. Leonard \"Bones\" McCoy",
+      "oracle_fingerprint": "b29532d5ad4a39f5b9b1ba9222a080bd",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Battle" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" }
+                                ]
+                              },
+                              { "Not": { "Subtype": "Doctor" } },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "targets": [
+                        {
+                          "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                          "bounds": { "min": 0, "max": 1 }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "DelayedTrigger": {
+                            "when": {
+                              "ZoneChange": {
+                                "what": [{ "Is": { "Target": 0 } }],
+                                "from": "Battlefield",
+                                "to": "Graveyard"
+                              }
+                            },
+                            "this_turn": true,
+                            "effects": [
+                              {
+                                "DelayedTrigger": {
+                                  "when": { "StepBegins": { "step": "End" } },
+                                  "effects": [
+                                    {
+                                      "Move": {
+                                        "what": "Triggering",
+                                        "to": { "Battlefield": { "counters": [["+1/+1", 1]] } }
+                                      }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

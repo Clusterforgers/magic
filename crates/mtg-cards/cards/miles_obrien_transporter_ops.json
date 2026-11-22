@@ -1,0 +1,44 @@
+{
+  "oracle_id": "31e3f39f-8b18-4316-984f-4d57d2d480ca",
+  "name": "Miles O'Brien, Transporter Ops",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Miles O'Brien, Transporter Ops",
+      "oracle_fingerprint": "f1bcc834ef02c793fbdf1e75b7069fb5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Creature" }, { "Type": "Artifact" }] },
+                    "Other",
+                    { "ControlledBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "PermanentsToHand" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

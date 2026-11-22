@@ -1,0 +1,26 @@
+{
+  "oracle_id": "ec5a9dde-b89d-4c54-8563-4a7170f5cefd",
+  "name": "Vash, Freelance Archaeologist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vash, Freelance Archaeologist",
+      "oracle_fingerprint": "f4534f19a450f67dd2c4efd47d3f320c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "Surveil": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "oracle_id": "8153cd58-cb8b-461c-a2c9-aaa9e2ea1b31",
+  "name": "Worf, Still Not Merry",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worf, Still Not Merry",
+      "oracle_fingerprint": "f60992f816d1478bb95728b3b1c7b765",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "Type": "Creature" },
+                      "Attacking",
+                      { "Not": { "Subtype": "Faerie" } }
+                    ]
+                  },
+                  "tapped": true,
+                  "attacking": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
