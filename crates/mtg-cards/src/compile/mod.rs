@@ -13,6 +13,7 @@ mod linked;
 mod manual;
 mod normalize;
 mod read;
+pub(crate) use read::r116_is_reminder_token;
 mod tables;
 
 use std::collections::BTreeSet;

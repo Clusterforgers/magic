@@ -219,6 +219,7 @@ mod r116_05_assimilate;
 mod r116_05_mana;
 mod r116_06_while;
 mod r116_reminder_tokens;
+pub(crate) use r116_reminder_tokens::r116_is_reminder_token;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;

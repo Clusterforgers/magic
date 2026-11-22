@@ -46,6 +46,11 @@ fn named(custom: &Value) -> Option<&'static str> {
         .find_map(|(name, token)| (*token == custom).then_some(*name))
 }
 
+/// True when a custom token is exactly one a reminder text defines, so its abilities add no color to an identity.
+pub(crate) fn r116_is_reminder_token(custom: &Value) -> bool {
+    named(custom).is_some()
+}
+
 /// Replaces every custom token that is a defined one with the token of that card name, which is worded by its name
 /// alone; true when one was replaced.
 fn rename(value: &mut Value) -> bool {

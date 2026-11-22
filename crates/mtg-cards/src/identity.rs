@@ -333,6 +333,10 @@ fn scan(value: &Value, set: &mut ColorSet) {
                 return;
             }
             for (key, inner) in fields {
+                // A token named by the text and defined by its reminder text adds no color (CR 903.4).
+                if key == "Custom" && crate::compile::r116_is_reminder_token(inner) {
+                    continue;
+                }
                 // A token's mana cost is printed only in reminder text, which adds no color (CR 903.4).
                 if key == "mana_cost" {
                     continue;
@@ -457,6 +461,8 @@ mod tests {
     #[case::a_combination_of_listed_types(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":2,"among":["Blue","Black","Red"]}}}}]}}"#)), "BRU")]
     #[case::a_combination_of_any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyCombination":{"count":2}}}}]}}"#)), "")]
     #[case::a_token_mana_cost_adds_none(costing("{R}").with_rules(rules(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Angel","colors":["White"],"types":["Creature"],"power":5,"toughness":5,"mana_cost":"{3}{W}{W}"}}}}]}}"#)), "R")]
+    #[case::a_token_its_reminder_text_defines_adds_none(costing("{G}").with_rules(rules(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Heartwood","colors":["Red","Green"],"types":["Artifact"],"subtypes":["Heartwood"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["Red","Green"]}}}]}}]}}}}]}}"#)), "G")]
+    #[case::a_token_with_a_quoted_ability_adds_its_colors(costing("{G}").with_rules(rules(r#"{"Spell":{"effects":[{"CreateToken":{"token":{"Custom":{"name":"Rootwood","colors":["Red","Green"],"types":["Artifact"],"abilities":[{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"OneOf":["Red","Green"]}}}]}}]}}}}]}}"#)), "GR")]
     #[case::two_pairs_of_any_colors_add_none(costing("{2}{R}").with_rules(rules(&format!(r#"{{"Spell":{{"effects":[{{"AddMana":{{"mana":{}}}}}]}}}}"#, serde_json::to_string(&crate::effect::Produce::two_pairs_of_colors()).unwrap()))), "R")]
     #[case::any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#)), "")]
     #[case::mana_spent_to_cast(costing("{1}").with_rules(rules(r#"{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"If":{"condition":{"Not":{"ManaSpent":"Green"}},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#)), "G")]
