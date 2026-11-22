@@ -1,4 +1,4 @@
-/** Goal: with "Always pay for me" on, a payment the game still asks about shows one short line saying why (a Treasure, a Phyrexian symbol, convoke), named with the card; with the setting off, or when the game finds no payment at all, the line is left out. */
+/** Goal: with "Always pay for me" on, a payment the game still asks about shows one short line saying why (a Treasure, a Phyrexian symbol, convoke), named with the card; with the setting off, or when the game finds no payment at all, the line is left out; with "Even with life, sacrifices and other costs" on too, the line says the last life is why. */
 import { describe, expect, it } from 'vitest'
 import type { AskedWhy, PayOptions } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
@@ -27,11 +27,11 @@ const payOptions = (text: string, asked: AskedWhy | undefined, auto = true): Pay
   ...(asked === undefined ? {} : { asked }),
 })
 
-function askedLine(given: PayOptions, autoPay: boolean): string | null {
+function askedLine(given: PayOptions, autoPay: boolean, payAll = false): string | null {
   const table = renderTable({
     state: (state) => ({
       ...state,
-      autoChoices: { ...state.autoChoices, auto_pay: autoPay },
+      autoChoices: { ...state.autoChoices, auto_pay: autoPay, auto_pay_all: payAll },
       pending: { id: 4, decision: { player: 0, kind: { PayMana: given } } },
     }),
   })
@@ -69,5 +69,19 @@ describe('the line saying why a payment is asked', () => {
     ['no payment exists', payOptions('{5}', 'NoPayment', false), true],
   ])('is left out when %s', (_, given, autoPay) => {
     expect(askedLine(given, autoPay)).toBeNull()
+  })
+
+  it.each<[string, AskedWhy]>([
+    ['a Phyrexian symbol', { Life: { Phyrexian: 'Black' } }],
+    ['a life land', { PaysLife: [land.id] }],
+    ['a painland', { DoesMore: [land.id] }],
+  ])('says the last life is why %s was asked with every cost paid for the player', (_, asked) => {
+    expect(askedLine(payOptions('{R}', asked), true, true)).toBe(
+      'Asked: paying it would take your last life.',
+    )
+  })
+
+  it('is left out with every cost paid when no payment exists', () => {
+    expect(askedLine(payOptions('{5}', 'NoPayment', false), true, true)).toBeNull()
   })
 })

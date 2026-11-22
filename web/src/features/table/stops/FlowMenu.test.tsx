@@ -1,4 +1,4 @@
-// Goal: the Full Control menu ends with the pace settings: "End my turn by hand" shows what the server holds and asks for the other value, the auto choices ("Always pay for me" among them) show what the server holds and ask for the one toggled, the abilities the seat always yields to are listed and a click takes one back, and the pinned stops are saved as the default of new games or reset, with the count in words.
+// Goal: the Full Control menu ends with the pace settings: "End my turn by hand" shows what the server holds and asks for the other value, the auto choices ("Always pay for me" among them, and under it "Even with life, sacrifices and other costs", offered only with it) show what the server holds and ask for the one toggled, the abilities the seat always yields to are listed and a click takes one back, and the pinned stops are saved as the default of new games or reset, with the count in words.
 import { screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flowPrefs, resetDefaultStops, resetFlowPrefs, saveDefaultStops } from '@/play/flowPrefs'
@@ -45,6 +45,7 @@ describe('auto choices', () => {
     'Assign combat damage for me': 'assign_damage',
     'Stop where my permanents can act': 'smart_stops',
     'Always pay for me': 'auto_pay',
+    'Even with life, sacrifices and other costs': 'auto_pay_all',
   } as const
   it.each([
     ['Order my triggers by timestamp', none, { ...none, order_triggers: true }],
@@ -55,6 +56,16 @@ describe('auto choices', () => {
     ['Assign combat damage for me', all, { ...all, assign_damage: false }],
     ['Stop where my permanents can act', all, { ...all, smart_stops: false }],
     ['Always pay for me', all, { ...all, auto_pay: false }],
+    [
+      'Even with life, sacrifices and other costs',
+      { ...none, auto_pay: true },
+      { ...none, auto_pay: true, auto_pay_all: true },
+    ],
+    [
+      'Even with life, sacrifices and other costs',
+      { ...all, auto_pay_all: true },
+      { ...all, auto_pay_all: false },
+    ],
   ] as const)('%s from %o asks for %o', async (name, held, asked) => {
     const setAutoChoices = vi.fn((_choices: AutoChoices) => true)
     const { user } = renderTable({
@@ -67,6 +78,18 @@ describe('auto choices', () => {
     expect(item).toHaveAttribute('aria-checked', String(on))
     await user.click(item)
     expect(setAutoChoices).toHaveBeenCalledExactlyOnceWith(asked)
+  })
+
+  it('offers "Even with life, sacrifices and other costs" only with "Always pay for me" on, unchecked while off', async () => {
+    const { user } = renderTable({
+      state: withState({ autoChoices: { ...none, auto_pay_all: true } }),
+    })
+    await user.click(trigger())
+    const item = await screen.findByRole('menuitemcheckbox', {
+      name: 'Even with life, sacrifices and other costs',
+    })
+    expect(item).toHaveAttribute('aria-disabled', 'true')
+    expect(item).toHaveAttribute('aria-checked', 'false')
   })
 })
 

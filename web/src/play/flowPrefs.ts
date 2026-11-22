@@ -52,7 +52,14 @@ export interface FlowPrefs {
 }
 
 /** Every flag of `AutoChoices`, each kept and applied on its own. */
-const AUTO_FLAGS = ['order_triggers', 'assign_damage', 'smart_stops', 'skip_triggers', 'auto_pay'] as const
+const AUTO_FLAGS = [
+  'order_triggers',
+  'assign_damage',
+  'smart_stops',
+  'skip_triggers',
+  'auto_pay',
+  'auto_pay_all',
+] as const
 
 const listeners = new Set<() => void>()
 /** Told when an account's copy replaces the preferences, so a game already joined catches up with them. */
@@ -126,6 +133,7 @@ function readAuto(): AutoChoices {
     smart_stops: flags.smart_stops === true,
     skip_triggers: flags.skip_triggers === true,
     auto_pay: flags.auto_pay === true,
+    auto_pay_all: flags.auto_pay_all === true,
   }
 }
 

@@ -159,6 +159,11 @@ pub struct AutoChoices {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub auto_pay: bool,
+    /// With `auto_pay`, every payment the game's automatic payment makes is paid at once too (life, a sacrifice,
+    /// convoke, a paid ability), except one that would take the seat's last life; left out (false) when off.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[ts(as = "Option<bool>", optional)]
+    pub auto_pay_all: bool,
 }
 
 /// A triggered or activated ability a seat lets resolve unasked for the rest of the game (see

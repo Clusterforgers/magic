@@ -11,7 +11,7 @@ import { markCards, useCardMarks } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { PayColumn, PayMeter } from '../PayColumn'
 import { paySlots } from '../paySlots'
-import { askedText, payText, proposalNote, spendWords } from '../payText'
+import { askedText, LAST_LIFE_ASKED, payText, proposalNote, spendWords } from '../payText'
 import {
   allowed,
   completable,
@@ -153,6 +153,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   useEffect(() => () => publishBadges([]), [])
   // "Always pay for me" makes "Pay for me" pay at once; without it the game's payment is proposed for a Confirm.
   const payAtOnce = usePlay((state) => state.autoChoices.auto_pay === true)
+  const payAll = usePlay((state) => state.autoChoices.auto_pay_all === true)
   const confirmRef = useRef<HTMLButtonElement>(null)
   const autoReasonId = useId()
   const [choosing] = selection.ids
@@ -379,7 +380,12 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
   const nothingChosen = spends.length === 0 && life.length === 0
   const restCanBePaid = completable(cost, pool, spends, life, reach)
   // Why "Always pay for me" left this payment to the player.
-  const asked = options.asked === undefined ? '' : askedText(options.asked, nameOf)
+  const asked =
+    options.asked === undefined
+      ? ''
+      : payAll && options.asked !== 'NoPayment'
+        ? LAST_LIFE_ASKED
+        : askedText(options.asked, nameOf)
   const slots = paySlots(cost, spends, life)
   return (
     <PromptLayout

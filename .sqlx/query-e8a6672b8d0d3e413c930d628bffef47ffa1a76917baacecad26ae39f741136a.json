@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_yields, hand_sort, full_control_held FROM user_prefs WHERE user_id = $1",
+  "query": "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held FROM user_prefs WHERE user_id = $1",
   "describe": {
     "columns": [
       {
@@ -82,6 +82,17 @@
       },
       {
         "ordinal": 7,
+        "name": "auto_pay_all",
+        "type_info": "Bool",
+        "origin": {
+          "Table": {
+            "table": "user_prefs",
+            "name": "auto_pay_all"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
         "name": "auto_yields",
         "type_info": "Jsonb",
         "origin": {
@@ -92,7 +103,7 @@
         }
       },
       {
-        "ordinal": 8,
+        "ordinal": 9,
         "name": "hand_sort",
         "type_info": "Jsonb",
         "origin": {
@@ -103,7 +114,7 @@
         }
       },
       {
-        "ordinal": 9,
+        "ordinal": 10,
         "name": "full_control_held",
         "type_info": "Bool",
         "origin": {
@@ -128,9 +139,10 @@
       false,
       false,
       false,
+      false,
       true,
       false
     ]
   },
-  "hash": "c09e70223b45f8a9f1227d1bd76b2119537d47ba96287cd8d82352a0d65b837b"
+  "hash": "e8a6672b8d0d3e413c930d628bffef47ffa1a76917baacecad26ae39f741136a"
 }

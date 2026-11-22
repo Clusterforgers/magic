@@ -211,6 +211,9 @@ function namesOf(ids: readonly ObjectId[], nameOf: (id: ObjectId) => string): st
   return names.length === 0 ? last : `${names.join(', ')} and ${last}`
 }
 
+/** Why "Always pay for me" with "Even with life, sacrifices and other costs" asked: only the last life is never paid. */
+export const LAST_LIFE_ASKED = 'Asked: paying it would take your last life.'
+
 /** Why "Always pay for me" asked about this payment, in one short line; empty when no automatic payment exists at all. */
 export function askedText(why: AskedWhy, nameOf: (id: ObjectId) => string): string {
   if (why === 'NoPayment') return ''
