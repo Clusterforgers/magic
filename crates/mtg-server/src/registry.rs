@@ -572,7 +572,7 @@ impl Registry {
             format: options.format,
             house_rules: options.house_rules.clone(),
             seed,
-            decks: held.iter().map(|deck| deck.reference().clone()).collect(),
+            decks: held.iter().map(|deck| deck.recorded()).collect(),
             fingerprints: held.iter().map(|deck| *deck.fingerprint()).collect(),
             reads,
             conjured: crate::recipe::fingerprints_of(&conjured).map_err(RecipeError::from)?,

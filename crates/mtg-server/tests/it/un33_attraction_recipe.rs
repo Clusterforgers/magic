@@ -60,6 +60,7 @@ fn oracle(attractions: Vec<AttractionRef>) -> DeckRef {
         attractions,
         stickers: Vec::new(),
         satchel: Vec::new(),
+        note: None,
     }
 }
 
