@@ -1,0 +1,35 @@
+{
+  "oracle_id": "03973bad-1b3c-4488-a23e-232b192c95cc",
+  "name": "The Duras Sisters",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Duras Sisters",
+      "oracle_fingerprint": "1f18017adc723cfe75da72cc48acc378",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Klingon Warrior",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Klingon", "Warrior"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "oracle_id": "2cf79dd0-c9db-403e-969d-6c09e7aaa575",
+  "name": "The Naked Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Naked Time",
+      "oracle_fingerprint": "1640310f4c5b54134005c50103fc04e6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [{ "Supertype": "Basic" }, { "Subtype": "Mountain" }],
+                  "as": "land"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "land" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "ZoneChange": {
+                      "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                      "to": "Battlefield"
+                    }
+                  },
+                  "once": false,
+                  "this_turn": true,
+                  "effects": [
+                    { "PutCounters": { "on": "Triggering", "counter": "+1/+1" } },
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [{ "AddKeyword": "Haste" }],
+                        "duration": "UntilEndOfTurn"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [{ "Sacrifice": { "filter": [{ "Type": "Land" }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d4c1dbc8-23d8-49e0-bc2d-d005e9215172",
+  "name": "Sylvia Tilly, Joy of Discovery",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sylvia Tilly, Joy of Discovery",
+      "oracle_fingerprint": "56ab1c9d62167645c2719330f7edd828",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [{ "Surveil": { "count": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [{ "Mana": "{1}" }, { "ExileFromGraveyard": { "filter": [] } }],
+                  "paid": [
+                    {
+                      "Reflexive": {
+                        "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                        "effects": [
+                          { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

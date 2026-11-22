@@ -1,0 +1,51 @@
+{
+  "oracle_id": "9d18253d-a38e-48a4-80bf-aa8fe5283584",
+  "name": "Indelicate Healer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Indelicate Healer",
+      "oracle_fingerprint": "28900b683d9658fcdfb1734a120bed0b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      "This",
+                      {
+                        "Not": {
+                          "AnyOf": [
+                            {
+                              "Not": {
+                                "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }]
+                              }
+                            },
+                            { "Not": { "ControlledBy": "You" } },
+                            { "Not": "Other" }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "AddKeyword": "Lifelink" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

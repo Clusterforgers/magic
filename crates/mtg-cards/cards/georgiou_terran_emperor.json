@@ -1,0 +1,45 @@
+{
+  "oracle_id": "31932df4-0be8-45c4-8b22-84119d9c20ba",
+  "name": "Georgiou, Terran Emperor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Georgiou, Terran Emperor",
+      "oracle_fingerprint": "6040ccaefa5800c20cd23ee3c76db7d1",
+      "abilities": [
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              { "LoseLife": { "amount": 3 } },
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": { "Life": "You" }, "op": "Le", "right": 0 } },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Officer",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Officer"],
+                            "power": 1,
+                            "toughness": 1
+                          }
+                        },
+                        "count": 10
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -474,7 +474,7 @@ Errors name the file and the path inside it; all are collected.
 ## Compiler and Manual fallback
 
 - The oracle-text compiler (`compile/`) writes `Card`s with `mtg_cards::load::canonical`, validated by the same functions, with the fingerprint of the text it read.
-- `compile::compile(&PrintedCard) -> Compiled { card, clauses }` is pure: reminder text and the card's own name (`~`) are stripped with a map back to the original text, and the text splits into clauses. Templates live in `compile/read/`, one module per family of wording, each with goldens and near-misses in `compile/read/tests/`.
+- `compile::compile(&PrintedCard) -> Compiled { card, clauses }` is pure: reminder text and the card's own name (`~`) are stripped (a legendary name also as the part before its comma, its first word, and its first and last word: "Captain Burnham" for Captain Michael Burnham) with a map back to the original text, and the text splits into clauses. Templates live in `compile/read/`, one module per family of wording, each with goldens and near-misses in `compile/read/tests/`.
 - Every reader has a writer (`compile/read/render/`). The checker accepts a proposal only when the writer reproduces the printed clause; wordings only the checker needs live in `render/oracle_only/`.
 - `r4705_wholes.json` pairs whole abilities with the one wording a card prints; the reader (`r4705_reads`) reads exactly that wording, of any clause kind, and the writer writes it back, so a near miss of the data reads as other text.
 - A last-resort pass (`written_memo::or_last_resort`) writes shapes whose wordings would hide another writer's only for an ability nothing else writes, so a known wording never turns into `Differs`.

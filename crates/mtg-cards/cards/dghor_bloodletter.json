@@ -1,0 +1,42 @@
+{
+  "oracle_id": "ae5ee92a-5915-49ce-aa4c-611ab711b2ef",
+  "name": "D'Ghor Bloodletter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "D'Ghor Bloodletter",
+      "oracle_fingerprint": "309f0bbb41626e725184ae1b4002afa4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Each": [{ "Type": "Creature" }, "Other"] },
+                            "mods": [{ "ModifyPT": { "power": -1, "toughness": -1 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "effects": [
+                        { "Sacrifice": { "who": "EachPlayer", "filter": [{ "Type": "Creature" }] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

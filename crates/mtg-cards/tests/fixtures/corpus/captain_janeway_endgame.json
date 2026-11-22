@@ -1,0 +1,167 @@
+{
+  "object": "card",
+  "id": "1fc05320-c8f8-4acd-8bac-86c4156352d2",
+  "oracle_id": "488ff0d9-a74c-4ba9-9c10-3aa88230c2bd",
+  "multiverse_ids": [],
+  "resource_id": "9F2AFF88EC776C6CB1E7131C37C7292C9505DD2FFF0457F7E3CC7D9F419631CE",
+  "mtgo_id": 156952,
+  "tcgplayer_id": 726381,
+  "cardmarket_id": 919481,
+  "name": "Captain Janeway, Endgame",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/1fc05320-c8f8-4acd-8bac-86c4156352d2",
+  "scryfall_uri": "https://scryfall.com/card/trc/84/captain-janeway-endgame?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-11-10T08:41:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.jpg?1794300064",
+    "normal": "https://cards.scryfall.io/normal/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.jpg?1794300064",
+    "large": "https://cards.scryfall.io/large/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.jpg?1794300064",
+    "png": "https://cards.scryfall.io/png/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.png?1794300064",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.jpg?1794300064",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.jpg?1794300064",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.webp?1794300064",
+    "grid": "https://cards.scryfall.io/grid/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.webp?1794300064",
+    "display": "https://cards.scryfall.io/display/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.webp?1794300064",
+    "art": "https://cards.scryfall.io/art/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.webp?1794300064",
+    "crop": "https://cards.scryfall.io/crop/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.webp?1794300064",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/f/1fc05320-c8f8-4acd-8bac-86c4156352d2.jpg?1794300064"
+  },
+  "mana_cost": "{1}{U}{R}{W}",
+  "cmc": 4.0,
+  "type_line": "Legendary Creature — Human Officer",
+  "oracle_text": "Whenever one or more Officers you control deal combat damage to a player, you draw a card and create a 1/1 red Officer creature token.\n{2}, Tap an untapped creature you control: Captain Janeway can't be blocked this turn.",
+  "power": "3",
+  "toughness": "3",
+  "colors": [
+    "R",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "R",
+    "U",
+    "W"
+  ],
+  "keywords": [],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "ca41b0a7-ad2f-4047-9e4e-f1e44b7fc7ac",
+      "component": "combo_piece",
+      "name": "Captain Janeway, Endgame",
+      "type_line": "Legendary Creature — Human Officer",
+      "uri": "https://api.scryfall.com/cards/ca41b0a7-ad2f-4047-9e4e-f1e44b7fc7ac"
+    },
+    {
+      "object": "related_card",
+      "id": "012b04de-d9a5-4b12-afc8-cdf54bc42fc9",
+      "component": "token",
+      "name": "Officer",
+      "type_line": "Token Creature — Officer",
+      "uri": "https://api.scryfall.com/cards/012b04de-d9a5-4b12-afc8-cdf54bc42fc9"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1fc05320-c8f8-4acd-8bac-86c4156352d2/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A488ff0d9-a74c-4ba9-9c10-3aa88230c2bd&unique=prints",
+  "collector_number": "84",
+  "digital": false,
+  "rarity": "mythic",
+  "flavor_text": "\"Hold on, even when you think you can't.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Jason Pastrana",
+  "artist_ids": [
+    "e0dbd970-2299-479f-aab3-f83c341ffc72"
+  ],
+  "illustration_id": "137757e5-366d-4d95-9377-9eea7c2720f2",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 27050,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://www.youtube.com/watch?v=lI6pzIWFViA",
+    "previewed_at": "2026-10-27"
+  },
+  "prices": {
+    "usd": "2.78",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.98",
+    "eur_foil": null,
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCaptain%2BJaneway%252C%2BEndgame",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCaptain%2BJaneway%252C%2BEndgame",
+    "edhrec": "https://edhrec.com/route/?cc=Captain+Janeway%2C+Endgame"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726381%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919481&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156952?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "oracle_id": "02583549-b618-4d41-9f46-209a99e30cd7",
+  "name": "Chief Kyle, Transporter Tech",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chief Kyle, Transporter Tech",
+      "oracle_fingerprint": "440dd9a1f6e765181f4ae24d22bcd4cc",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    { "Move": { "what": { "Bound": "exiled" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

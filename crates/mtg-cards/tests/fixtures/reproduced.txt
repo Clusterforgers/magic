@@ -90,6 +90,7 @@ Angelic Field Marshal
 Angelic Sleuth
 Animate Dead
 Ant-Man, Elusive Avenger
+Anthropological Mission
 Apex Altisaur
 Aquastrand Spider
 Aradesh, the Founder
@@ -173,6 +174,7 @@ Baird, Steward of Argive
 Balduvian Conjurer
 Balduvian Shaman
 Balduvian Warlord
+Balefang the Unslayable
 Baleful Strix
 Bandit's Haul
 Bane of Progress
@@ -255,6 +257,7 @@ Bladed Bracers
 Blasphemous Act
 Blast Zone
 Blastoderm
+Blastoneuron
 Blatant Thievery
 Blaze
 Blaze Commando
@@ -320,6 +323,7 @@ Bosh, Iron Golem
 Bounty of Skemfar
 Bounty of the Hunt
 Boxing Ring
+Brad Boimler, Eager Ensign
 Braids, Arisen Nightmare
 Brain Freeze
 Brainstorm
@@ -497,6 +501,7 @@ Combat Celebrant
 Combustion Technique
 Command Tower
 Commandeer
+Commander Raffi Musiker
 Commander's Insignia
 Commander's Plate
 Commander's Sphere
@@ -508,6 +513,7 @@ Conclave Tribunal
 Condemn
 Conduit of Worlds
 Conifer Wurm
+Conquest Mission
 Consider
 Consign // Oblivion
 Consign to Dust
@@ -611,6 +617,7 @@ Darkwater Catacombs
 Dauntless Scrapbot
 Dauthi Horror
 Dauthi Marauder
+David and Carol Marcus, Creators
 Dawn to Dusk
 Dawn's Reflection
 Dawnglade Regent
@@ -715,6 +722,7 @@ Doublecast
 Doubling Cube
 Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
+Dr. Leonard "Bones" McCoy
 Draconic Lore
 Drag to the Bottom
 Dragon Fodder
@@ -842,6 +850,7 @@ Endless Obedience
 Endless One
 Enigma Thief
 Enraged Revolutionary
+Ensign Harry Kim, Operations
 Entangling Trap
 Enthusiastic Study
 Entity Tracker
@@ -856,6 +865,7 @@ Epic Proportions
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Erhnam Djinn
+Erica Ortegas, Plucky Pilot
 Eris, Roar of the Storm
 Errand of Duty
 Esix, Fractal Bloom
@@ -893,6 +903,7 @@ Exotic Orchard
 Expedite
 Exploding Barrel
 Exploration
+Exploratory Mission
 Explore
 Exquisite Blood
 Exquisite Huntmaster
@@ -1192,6 +1203,7 @@ Guidelight Matrix
 Guiding Voice
 Guildless Commons
 Guile
+Gul Dukat, Colonial Prefect
 Gurmag Angler
 Gurmag Drowner
 Gwaihir, Greatest of the Eagles
@@ -1280,6 +1292,7 @@ Hobgoblin Captain
 Hogaak, Arisen Necropolis
 Holdout Settlement
 Hollow Warrior
+Hologram Stalker
 Honor Troll
 Honor's Reward
 Hoofprints of the Stag
@@ -1393,6 +1406,7 @@ Jack-o'-Lantern
 Jacked Rabbit
 Jadelight Ranger
 Jagged Barrens
+Janice Rand, Essential Aide
 Jarad, Golgari Lich Lord
 Jareth, Leonine Titan
 Jasmine Boreal of the Seven
@@ -1425,6 +1439,7 @@ Kalemne, Disciple of Iroas
 Kalitas, Traitor of Ghet
 Kalonian Hydra
 Kami of the Crescent Moon
+Kang, Suspicious Captain
 Kang, Temporal Tyrant
 Karador, Ghost Chieftain
 Karametra's Favor
@@ -1498,6 +1513,7 @@ Krosan Verge
 Kulrath Knight
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
+L'Rell, Fierce Visionary
 Land Grant
 Landslide
 Lantern Flare
@@ -2504,6 +2520,7 @@ Squad Commander
 Squirrel Nest
 Squirrel Sovereign
 Sram, Senior Edificer
+Stable Wormhole
 Staff of Nin
 Staggering Insight
 Staggershock
@@ -2622,6 +2639,7 @@ Sword of Vengeance
 Sword of the Animist
 Sword-Swallowing Seraph
 Swords to Plowshares
+Sylvia Tilly, Joy of Discovery
 Sylvok Battle-Chair
 Syndic of Tithes
 Syndicate Messenger
@@ -2651,6 +2669,7 @@ Tangleweave Armor
 Tannuk, Steadfast Second
 Tanuki Transplanter
 Tapestry Warden
+Targ Wrangler
 Tariff
 Tato Farmer
 Tatyova, Benthic Druid
@@ -2681,6 +2700,7 @@ Temple of Mystery
 Temple of Silence
 Temple of Triumph
 Temple of the False God
+Temporal Conqueror
 Temporal Manipulation
 Tempt with Discovery
 Tempt with Mayhem
@@ -2927,6 +2947,7 @@ Vanishing Verse
 Vanishment
 Vanquish the Horde
 Vanquisher's Banner
+Vash, Freelance Archaeologist
 Vastwood Hydra
 Vastwood Surge
 Vault 11: Voter's Dilemma
@@ -2936,6 +2957,7 @@ Vault of the Archangel
 Vazi, Keen Negotiator
 Vedalken Engineer
 Vedalken Squirrel-Whacker
+Vengeance Mission
 Vengeful Dead
 Vengeful Vampire
 Venomous Vines
@@ -3049,6 +3071,7 @@ Wild Growth
 Wild Ride
 Wild Wasteland
 Wilderness Elemental
+Will Riker, First in the Field
 Will of the Sultai
 Wilt-Leaf Liege
 Windborn Muse
@@ -3086,6 +3109,7 @@ Woodland Stream
 Woodripper
 Woolly Mammoths
 Word of Seizing
+Worf, Still Not Merry
 Worldspine Wurm
 Worn Powerstone
 Worst Fears

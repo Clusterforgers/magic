@@ -1,0 +1,42 @@
+{
+  "oracle_id": "1c1caf0f-9ee8-4eaa-b8e7-309ba9be9282",
+  "name": "Tribble Cluster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tribble Cluster",
+      "oracle_fingerprint": "2a0af493fa04d3d3fc7db7ebdd3f73b4",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Tribble",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Tribble"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  },
+                  "count": { "Stat": { "of": "This", "stat": "Power" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

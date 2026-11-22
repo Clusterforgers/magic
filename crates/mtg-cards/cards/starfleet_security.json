@@ -1,0 +1,24 @@
+{
+  "oracle_id": "896077f9-b26e-4964-9279-03ee284a3e89",
+  "name": "Starfleet Security",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfleet Security",
+      "oracle_fingerprint": "1f9c818db0739dde34fbd4403b6da32d",
+      "abilities": [
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "if": "YourTurn",
+            "effects": [
+              { "CreateToken": { "token": { "Named": "clue" } } },
+              { "Performed": { "action": "Investigated" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

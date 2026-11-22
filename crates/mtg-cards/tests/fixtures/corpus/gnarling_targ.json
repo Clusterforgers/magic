@@ -1,0 +1,143 @@
+{
+  "object": "card",
+  "id": "88d3aa36-0eb2-4b53-8384-9d8f309c4911",
+  "oracle_id": "1fc59e37-0dc0-4e24-af71-6bab4a2b56ca",
+  "multiverse_ids": [],
+  "resource_id": "C16033C25920C66A1A99E088F6FD514DEF1F9A793155844446C506AF67516C8D",
+  "mtgo_id": 156922,
+  "tcgplayer_id": 726865,
+  "cardmarket_id": 919880,
+  "name": "Gnarling Targ",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/88d3aa36-0eb2-4b53-8384-9d8f309c4911",
+  "scryfall_uri": "https://scryfall.com/card/trc/69/gnarling-targ?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-28T14:17:04Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.jpg?1793197024",
+    "normal": "https://cards.scryfall.io/normal/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.jpg?1793197024",
+    "large": "https://cards.scryfall.io/large/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.jpg?1793197024",
+    "png": "https://cards.scryfall.io/png/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.png?1793197024",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.jpg?1793197024",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.jpg?1793197024",
+    "thumb": "https://cards.scryfall.io/thumb/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.webp?1793197024",
+    "grid": "https://cards.scryfall.io/grid/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.webp?1793197024",
+    "display": "https://cards.scryfall.io/display/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.webp?1793197024",
+    "art": "https://cards.scryfall.io/art/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.webp?1793197024",
+    "crop": "https://cards.scryfall.io/crop/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.webp?1793197024",
+    "jpeg": "https://cards.scryfall.io/normal/front/8/8/88d3aa36-0eb2-4b53-8384-9d8f309c4911.jpg?1793197024"
+  },
+  "mana_cost": "{4}{R}",
+  "cmc": 5.0,
+  "type_line": "Creature — Boar",
+  "oracle_text": "Trample\nWhenever you attack, Klingons and Warriors you control get +2/+0 and gain trample until end of turn.",
+  "power": "4",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Trample"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/88d3aa36-0eb2-4b53-8384-9d8f309c4911/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A1fc59e37-0dc0-4e24-af71-6bab4a2b56ca&unique=prints",
+  "collector_number": "69",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "The Klingon pet of choice eagerly bites the hand that feeds it, teaching children to be wary and quick.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Borja Pindado",
+  "artist_ids": [
+    "1624a1a8-3492-4c0b-9abc-83dcf2653111"
+  ],
+  "illustration_id": "e7872817-f22e-41d9-914e-75a2bb4e3659",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 30815,
+  "preview": {
+    "source": "Anna Margaret",
+    "source_uri": "https://www.youtube.com/watch?v=LqRSDqoQ8O8",
+    "previewed_at": "2026-10-28"
+  },
+  "prices": {
+    "usd": "0.40",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.25",
+    "eur_foil": null,
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGnarling%2BTarg",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGnarling%2BTarg",
+    "edhrec": "https://edhrec.com/route/?cc=Gnarling+Targ"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726865%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919880&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156922?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

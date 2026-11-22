@@ -1,0 +1,46 @@
+{
+  "oracle_id": "ee712451-01de-4486-9048-fafb5aa5a584",
+  "name": "Lore, Positronic Provocateur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lore, Positronic Provocateur",
+      "oracle_fingerprint": "ccae7d92ff7bcf9077dbcb8fb0067f85",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": ["CantBeBlocked"],
+                            "duration": "UntilEndOfTurn"
+                          }
+                        }
+                      ]
+                    },
+                    { "effects": [{ "Surveil": { "count": 2 } }] }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

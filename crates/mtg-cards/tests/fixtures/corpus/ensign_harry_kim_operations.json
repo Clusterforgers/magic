@@ -1,0 +1,144 @@
+{
+  "object": "card",
+  "id": "1ccd6aeb-e6f4-4673-b4f5-a4b66b869992",
+  "oracle_id": "d9bc0f83-c522-44c9-baa6-fffdeb02a0f5",
+  "multiverse_ids": [],
+  "resource_id": "C15760ED9B9F530492389CA6C0DB956F2DEB7BC9C355F2B8495623B5DA58DC90",
+  "mtgo_id": 156814,
+  "tcgplayer_id": 726328,
+  "cardmarket_id": 919404,
+  "name": "Ensign Harry Kim, Operations",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992",
+  "scryfall_uri": "https://scryfall.com/card/trc/15/ensign-harry-kim-operations?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-27T14:34:50Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.jpg?1793111690",
+    "normal": "https://cards.scryfall.io/normal/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.jpg?1793111690",
+    "large": "https://cards.scryfall.io/large/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.jpg?1793111690",
+    "png": "https://cards.scryfall.io/png/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.png?1793111690",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.jpg?1793111690",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.jpg?1793111690",
+    "thumb": "https://cards.scryfall.io/thumb/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.webp?1793111690",
+    "grid": "https://cards.scryfall.io/grid/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.webp?1793111690",
+    "display": "https://cards.scryfall.io/display/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.webp?1793111690",
+    "art": "https://cards.scryfall.io/art/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.webp?1793111690",
+    "crop": "https://cards.scryfall.io/crop/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.webp?1793111690",
+    "jpeg": "https://cards.scryfall.io/normal/front/1/c/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992.jpg?1793111690"
+  },
+  "mana_cost": "{1}{W}",
+  "cmc": 2.0,
+  "type_line": "Legendary Creature — Human Officer",
+  "oracle_text": "Whenever another creature you control enters, if it has greater power than Ensign Kim, put a +1/+1 counter on Ensign Kim.\n{2}, Remove two +1/+1 counters from among creatures you control: Draw a card.",
+  "power": "1",
+  "toughness": "2",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/1ccd6aeb-e6f4-4673-b4f5-a4b66b869992/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad9bc0f83-c522-44c9-baa6-fffdeb02a0f5&unique=prints",
+  "collector_number": "15",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Where's your sense of adventure?\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lixin Yin",
+  "artist_ids": [
+    "25645c87-71be-400b-8522-618a52c37454"
+  ],
+  "illustration_id": "d178b07b-1ce2-4080-97c0-e11aa26db99f",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 26811,
+  "preview": {
+    "source": "LoadingReadyRun",
+    "source_uri": "https://www.youtube.com/watch?v=lI6pzIWFViA",
+    "previewed_at": "2026-10-27"
+  },
+  "prices": {
+    "usd": "0.50",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.43",
+    "eur_foil": null,
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DEnsign%2BHarry%2BKim%252C%2BOperations",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DEnsign%2BHarry%2BKim%252C%2BOperations",
+    "edhrec": "https://edhrec.com/route/?cc=Ensign+Harry+Kim%2C+Operations"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726328%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919404&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156814?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

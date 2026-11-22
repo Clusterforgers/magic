@@ -1,0 +1,38 @@
+{
+  "oracle_id": "1fc59e37-0dc0-4e24-af71-6bab4a2b56ca",
+  "name": "Gnarling Targ",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gnarling Targ",
+      "oracle_fingerprint": "89a5e1b3310592fa35134444fa205c67",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "oracle_id": "306002e6-d68d-47ad-879b-e6060efebeff",
+  "name": "Temporal Conqueror",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Conqueror",
+      "oracle_fingerprint": "4b436449c26efa1f2781077136f4eb6b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Mill": { "count": 3 } },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Count": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Land" }, { "In": "Graveyard" }, { "OwnedBy": "You" }]
+                        },
+                        "as": "land"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "land" }, "to": "Hand" } }
+                  ],
+                  "otherwise": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
