@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO card_refresh_runs (release) VALUES (NULLIF($1, '')) RETURNING id AS \"id: RefreshId\"",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id: RefreshId",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "card_refresh_runs",
+            "name": "id"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "ea2174ec7c0b6cb7236b8f6c02eef549c3c75910de96699811cd0a44d74616c3"
+}

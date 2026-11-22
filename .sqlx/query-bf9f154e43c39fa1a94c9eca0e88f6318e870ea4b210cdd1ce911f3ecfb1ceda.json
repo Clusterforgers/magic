@@ -1,0 +1,12 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "LOCK TABLE coverage_snapshots IN SHARE ROW EXCLUSIVE MODE",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": []
+  },
+  "hash": "bf9f154e43c39fa1a94c9eca0e88f6318e870ea4b210cdd1ce911f3ecfb1ceda"
+}

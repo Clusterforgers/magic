@@ -1,0 +1,14 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE coverage_snapshots SET missing = NULL\n             WHERE missing IS NOT NULL AND id NOT IN (\n                 SELECT id FROM coverage_snapshots ORDER BY taken_at DESC, id DESC LIMIT $1\n             )",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "763ebb6e7fbb40a48cb530683fe2f80d394bf552b2f81a05024e5f87f54ab297"
+}

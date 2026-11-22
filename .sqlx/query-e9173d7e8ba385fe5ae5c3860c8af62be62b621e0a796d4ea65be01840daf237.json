@@ -1,0 +1,35 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE card_refresh_runs\n               SET finished_at = greatest(now(), started_at), status = $2,\n                   scryfall_updated_at = $3, mtgjson_build = $4, new_card_count = $5, new_cards = $6,\n                   new_precons = $7, first_load = $8, steps = $9, failures = $10\n               WHERE id = $1 AND status = 'running'",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Int8",
+        {
+          "Custom": {
+            "name": "refresh_status",
+            "kind": {
+              "Enum": [
+                "running",
+                "succeeded",
+                "deferred",
+                "failed"
+              ]
+            }
+          }
+        },
+        "Text",
+        "Text",
+        "Int4",
+        "Jsonb",
+        "Jsonb",
+        "Bool",
+        "Jsonb",
+        "Jsonb"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "e9173d7e8ba385fe5ae5c3860c8af62be62b621e0a796d4ea65be01840daf237"
+}

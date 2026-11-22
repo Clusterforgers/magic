@@ -1,0 +1,38 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, missing AS \"missing: Json<Vec<MissingCard>>\"\n               FROM coverage_snapshots ORDER BY taken_at DESC, id DESC LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "missing: Json<Vec<MissingCard>>",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "missing"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      true
+    ]
+  },
+  "hash": "136c7f4dc1003d5372fa52cdc665a221ad0c3894ee5f19d7a1df7b4d492b5c97"
+}
