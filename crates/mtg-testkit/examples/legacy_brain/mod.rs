@@ -1,4 +1,5 @@
-//! Frozen copy of the bot brains of main before ai50, kept as the yardstick for match testing.
+//! Main's bot brains, frozen for match tests against the current ones (`bot_tournament`, `old-<level>`). Bot brains: what answers a seat's decisions for a server bot or a test harness, from random play to a heuristic
+//! player that searches clones of the engine.
 //!
 //! Every brain implements [`SeatBrain`]. [`Level::Easy`] is [`EasyBrain`] (a land when it can, else a random legal
 //! answer); [`Level::Normal`], [`Level::Hard`] and [`Level::VeryHard`] are a [`HeuristicBot`] with
@@ -9,14 +10,23 @@
 //! seat's candidate answers that a level's settings may add.
 
 pub mod choices;
+pub mod clock;
 pub mod combat;
 pub mod deep;
+pub mod endgame;
 pub mod eval;
+pub mod haunt;
+pub mod knobs;
 pub mod priority;
+pub mod satchel;
 pub mod seen;
 pub mod sim;
+pub mod spotlight;
+
 pub mod targets;
 pub mod threat;
+
+use std::time::Instant;
 
 use mtg_core::ids::PlayerId;
 use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
@@ -36,13 +46,15 @@ pub enum Level {
     /// Heuristics with a shallow search ([`Settings::NORMAL`]).
     #[default]
     Normal,
-    /// Heuristics with a deeper search that looks through the next turn's combat ([`Settings::HARD`]).
+    /// Heuristics with a deeper search that looks through the next turn's combat, and a light tree search
+    /// ([`Settings::HARD`]).
     Hard,
     /// Hard's search with a bigger budget in several redealt worlds, the answer most of them give winning
     /// ([`Settings::VERY_HARD`]).
     VeryHard,
 }
 
+/// What answers one seat's decisions: the crate's trait, so these brains seat beside the current ones.
 pub use mtg_testkit::brain::SeatBrain;
 
 /// The brain of `seat` at `level` in a game seeded with `seed`; `timed` caps each decision by the level's clock (the
@@ -102,7 +114,18 @@ pub struct HeuristicBot {
     played: Vec<PriorityAction>,
     /// The share of the deep search's budget it may spend ([`SeatBrain::set_budget`]).
     budget: f64,
+    /// What the tree search learnt about the seat's answers this game ([`deep::History`]).
+    history: deep::History,
+    /// When the decision being answered was asked.
+    started: Instant,
+    /// When the next decision was asked, if the caller said ([`SeatBrain::set_asked`]).
+    next_asked: Option<Instant>,
+    /// The bot backed out of paying for its attack: the declaration that comes back does only what the rules require.
+    backed_out: bool,
 }
+
+/// The longest a timed bot looks for a forced win ([`endgame::forced_win`]).
+const ENDGAME_TIME: std::time::Duration = std::time::Duration::from_millis(400);
 
 /// How often one play (an ability, say) may be made in a turn.
 const REPEATS: usize = 3;
@@ -122,6 +145,49 @@ impl HeuristicBot {
             turn: 0,
             played: Vec::new(),
             budget: 1.0,
+            history: deep::History::default(),
+            started: Instant::now(),
+            next_asked: None,
+            backed_out: false,
+        }
+    }
+
+    /// `answer` as the table can take it under an attack tax (CR 508.1h): a declaration of attackers is cut back to the
+    /// mana the seat surely has, and after backing out of paying for one the next declaration does only what the rules
+    /// require, so the seat never declares the same attack again and again.
+    fn payable(&mut self, decision: &Decision, answer: Answer) -> Answer {
+        match (&decision.kind, answer) {
+            (DecisionKind::DeclareAttackers(options), Answer::DeclareAttackers(attack)) => {
+                if std::mem::take(&mut self.backed_out) {
+                    Answer::DeclareAttackers(options.legal_attack())
+                } else {
+                    Answer::DeclareAttackers(mtg_testkit::bot::affordable_attack(options, &attack))
+                }
+            }
+            (
+                DecisionKind::DeclareAttackers(options),
+                Answer::DeclareExerting {
+                    attackers, exert, ..
+                },
+            ) => {
+                let attack = if std::mem::take(&mut self.backed_out) {
+                    options.legal_attack()
+                } else {
+                    mtg_testkit::bot::affordable_attack(options, &attackers)
+                };
+                let exert = exert
+                    .into_iter()
+                    .filter(|object| attack.iter().any(|(attacker, _)| attacker == object))
+                    .collect();
+                mtg_testkit::bot::w11a_declaration(attack, exert)
+            }
+            (DecisionKind::PayMana(options), answer @ Answer::PayMana(PayChoice::Cancel))
+                if options.attack =>
+            {
+                self.backed_out = true;
+                answer
+            }
+            (_, answer) => answer,
         }
     }
 
@@ -147,6 +213,26 @@ impl HeuristicBot {
         self.asked += 1;
         let key = self.seed ^ self.asked.wrapping_mul(0x9E37_79B9_7F4A_7C15);
         let pending = engine.decision() == Some(decision);
+        if pending
+            && let DecisionKind::Priority(options) = &decision.kind
+            && let Some(play) = haunt::plan(engine, self.seat, options)
+        {
+            if play != PriorityAction::Pass {
+                self.played.push(play.clone());
+            }
+            return Answer::Priority(play);
+        }
+        if pending
+            && let DecisionKind::Priority(options) = &decision.kind
+            && let Some(play) = satchel::plan(
+                &seen::Seen::new(engine.state(), self.seat),
+                options,
+                &self.held(),
+            )
+        {
+            self.played.push(play.clone());
+            return Answer::Priority(play);
+        }
         let matters = matches!(
             decision.kind,
             DecisionKind::Priority(_)
@@ -156,6 +242,27 @@ impl HeuristicBot {
         );
         if pending && matters && self.settings.votes > 1 {
             return self.voted(decision, engine);
+        }
+        if pending
+            && matters
+            && self.settings.endgame
+            && (self.played.len() < TURN_PLAYS
+                || !matches!(decision.kind, DecisionKind::Priority(_)))
+            && let Some(win) = endgame::forced_win(
+                engine,
+                self.seat,
+                decision,
+                key,
+                self.settings.time.map(|_| self.started + ENDGAME_TIME),
+                &self.held(),
+            )
+        {
+            if let Answer::Priority(play) = &win
+                && *play != PriorityAction::Pass
+            {
+                self.played.push(play.clone());
+            }
+            return win;
         }
         if pending
             && matters
@@ -174,7 +281,8 @@ impl HeuristicBot {
         key: u64,
         pending: bool,
     ) -> Answer {
-        let mut search = Search::new(self.seat, self.settings, key);
+        let mut search =
+            Search::new(self.seat, self.settings, key).capped(clock::cap(self.started));
         let world;
         let engine = if self.settings.fair && pending {
             let mut redealt = engine.clone();
@@ -185,6 +293,9 @@ impl HeuristicBot {
             engine
         };
         match &decision.kind {
+            DecisionKind::Loop(options) => {
+                mtg_testkit::loop_answer::loop_answer_in(engine.state(), self.seat, options)
+            }
             DecisionKind::Priority(options) if pending => {
                 if self.played.len() >= TURN_PLAYS {
                     return Answer::Priority(PriorityAction::Pass);
@@ -328,17 +439,57 @@ impl HeuristicBot {
         }
         answers.retain(|answer| *answer != prior);
         answers.insert(0, prior.clone());
+        let answers = deep::distinct(engine, answers);
         let seen = Seen::new(engine.state(), self.seat);
+        let budget = clock::Budget::new(
+            self.started,
+            deep.iterations,
+            deep.time,
+            clock::importance(&seen, decision),
+            // An untimed search keeps its whole count, so its answers replay as before.
+            if deep.time.is_some() {
+                self.budget * clock::board_share(seen.battlefield().len())
+            } else {
+                self.budget
+            },
+        );
+        if budget.iterations == 0 {
+            return self.settled(before, prior);
+        }
         let window = priority::window(&seen);
+        let mut ramp = Search::new(self.seat, self.settings, key);
+        // The ramp bonus is simulated in a world whose hidden cards are redealt, so it reads nothing the seat cannot see.
+        let mut world = engine.clone();
+        if window == priority::Window::Main {
+            world.redeal(self.seat, key);
+        }
         let costs: Vec<f64> = answers
             .iter()
             .map(|answer| match answer {
                 Answer::Priority(play) => {
                     priority::hold_cost(self.settings.careful, &seen, window, play)
+                        - priority::ramp_bonus(&mut ramp, &world, window, play)
                 }
                 _ => 0.0,
             })
             .collect();
+        // Spending interaction the heuristics keep, and attacks at a table of more than two (whom to pressure) turn on
+        // what rollouts see least: the search must win those by the guard too.
+        let reactive = matches!(&prior, Answer::Priority(PriorityAction::Pass))
+            && matches!(
+                window,
+                priority::Window::Response | priority::Window::Combat | priority::Window::EndStep
+            );
+        let crowded =
+            matches!(decision.kind, DecisionKind::DeclareAttackers(_)) && seen.alive().len() > 2;
+        let deep = if reactive || crowded {
+            Deep {
+                trust: deep.trust + deep.guard,
+                ..deep
+            }
+        } else {
+            deep
+        };
         let chosen = deep::ismcts(
             engine,
             self.seat,
@@ -347,9 +498,21 @@ impl HeuristicBot {
             deep,
             self.settings.weights,
             key,
-            self.budget,
+            budget,
+            &mut self.history,
         )
-        .unwrap_or(prior);
+        .unwrap_or_else(|| prior.clone());
+        // An attack that dies to the crack back, when the heuristic's does not, is vetoed: the rollouts' opponents
+        // attack too timidly to show it.
+        let chosen = match (&chosen, &prior) {
+            (Answer::DeclareAttackers(attack), Answer::DeclareAttackers(kept))
+                if exposed(&seen, attack) && !exposed(&seen, kept) =>
+            {
+                prior.clone()
+            }
+            _ => chosen,
+        };
+        deep::count_search(chosen != prior);
         self.played = before;
         if let Answer::Priority(play) = &chosen
             && *play != PriorityAction::Pass
@@ -360,15 +523,45 @@ impl HeuristicBot {
     }
 }
 
+/// Whether `attack` loses the seat the game to the opponents' next attack without winning it first.
+fn exposed(seen: &Seen<'_>, attack: &combat::Attack) -> bool {
+    !combat::lethal(seen, attack) && combat::crack_back(seen, attack) >= seen.life(seen.seat())
+}
+
+impl HeuristicBot {
+    /// Plays `answer` with the plays of this turn back at `before`.
+    fn settled(&mut self, before: Vec<PriorityAction>, answer: Answer) -> Answer {
+        self.played = before;
+        if let Answer::Priority(play) = &answer
+            && *play != PriorityAction::Pass
+        {
+            self.played.push(play.clone());
+        }
+        answer
+    }
+}
+
 impl SeatBrain for HeuristicBot {
     fn set_budget(&mut self, share: f64) {
         self.budget = share.clamp(0.0, 1.0);
     }
 
+    fn set_asked(&mut self, at: Instant) {
+        self.next_asked = Some(at);
+    }
+
     fn choose(&mut self, decision: &Decision, table: Option<&Engine>) -> Answer {
-        match table {
+        self.started = self.next_asked.take().unwrap_or_else(Instant::now);
+        let answer = match table {
+            // A timed brain stops every loop of its search at the decision cap.
+            Some(engine) if self.settings.time.is_some() => {
+                clock::stopping(clock::Stop::at(clock::cap(self.started)), || {
+                    self.answer(decision, engine)
+                })
+            }
             Some(engine) => self.answer(decision, engine),
             None => self.random.choose(decision),
-        }
+        };
+        self.payable(decision, answer)
     }
 }

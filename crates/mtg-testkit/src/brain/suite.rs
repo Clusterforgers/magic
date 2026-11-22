@@ -70,6 +70,8 @@ pub enum Theme {
     Develop,
     /// Combat tricks and fogs.
     Trick,
+    /// Activated abilities: loyalty, tap and mana-sink abilities, each in its window.
+    Ability,
 }
 
 /// When an outcome case stops playing.
@@ -1550,6 +1552,186 @@ fn keep_the_fog_for_a_real_attack() -> Result<Table, SuiteError> {
     table(&driver, outcome(Until::CombatEnds, |e| in_hand(e, "Fog")))
 }
 
+// ---- Ability ----
+
+/// The planeswalker `name` with `loyalty` counters, ready.
+fn walker(name: &str, loyalty: u32) -> Result<PresetPermanent, SuiteError> {
+    Ok(with_counters(
+        ready(real(name)?),
+        CounterKind::Loyalty,
+        loyalty,
+    ))
+}
+
+/// The loyalty of the permanent named `name`, `None` once it is gone.
+fn loyalty_of(engine: &Engine, name: &str) -> Option<u32> {
+    let state = engine.state();
+    state.zone(Zone::Battlefield).iter().find_map(|id| {
+        let object = state.object(*id)?;
+        if object.card().name != name {
+            return None;
+        }
+        object
+            .permanent()
+            .map(|p| p.counters_of(&CounterKind::Loyalty))
+    })
+}
+
+/// How many permanents named `name` are on the battlefield.
+fn count_named(engine: &Engine, name: &str) -> usize {
+    let state = engine.state();
+    state
+        .zone(Zone::Battlefield)
+        .iter()
+        .filter(|id| state.object(**id).is_some_and(|o| o.card().name == name))
+        .count()
+}
+
+/// Seat 0's main phase with an empty hand and the planeswalker `name` at `loyalty` over four lands, seat 1 with a bear;
+/// judged on whether the walker used an ability by the end of the turn.
+fn walker_table(
+    name: &str,
+    loyalty: u32,
+    land: fn() -> Arc<CardDefinition>,
+) -> Result<Table, SuiteError> {
+    let mut mine = lands(land, 4);
+    mine.push(walker(name, loyalty)?);
+    let mut theirs = lands(mountain, 3);
+    theirs.push(body("Their Bear", 2, 2, NONE));
+    let driver = Driver::from_scenario(own_main(vec![], mine, theirs, 3))?;
+    let name = name.to_owned();
+    table(
+        &driver,
+        outcome(Until::TurnEnds, move |e| {
+            loyalty_of(e, &name) != Some(loyalty)
+        }),
+    )
+}
+
+fn garruk_uses_its_loyalty() -> Result<Table, SuiteError> {
+    walker_table("Garruk Wildspeaker", 3, forest)
+}
+
+fn jace_uses_its_loyalty() -> Result<Table, SuiteError> {
+    walker_table("Jace Beleren", 3, island)
+}
+
+fn sorin_uses_its_loyalty() -> Result<Table, SuiteError> {
+    walker_table("Sorin Markov", 4, swamp)
+}
+
+fn ajani_uses_its_loyalty() -> Result<Table, SuiteError> {
+    walker_table("Ajani Goldmane", 4, plains)
+}
+
+fn cast_and_use_the_walker() -> Result<Table, SuiteError> {
+    let mut mine = lands(island, 3);
+    mine.push(walker("Jace Beleren", 3)?);
+    let drake = beast("Cloud Drake", 2, Color::Blue, 2, 2, FLYING);
+    let driver = Driver::from_scenario(own_main(vec![drake], mine, lands(mountain, 3), 3))?;
+    table(
+        &driver,
+        outcome(Until::TurnEnds, |e| {
+            on_battlefield(e, "Cloud Drake") && loyalty_of(e, "Jace Beleren") != Some(3)
+        }),
+    )
+}
+
+/// Seat 1's end step with seat 0 holding `hand` over `mine`, seat 1 with `theirs`.
+fn their_end(
+    hand: Vec<Arc<CardDefinition>>,
+    mine: Vec<PresetPermanent>,
+    theirs: Vec<PresetPermanent>,
+) -> Result<Driver, SuiteError> {
+    let scenario = Scenario::new(2)
+        .at(5, 1, Step::End)
+        .hand(0, hand)
+        .battlefield(0, mine)
+        .hand(1, filler(3))
+        .battlefield(1, theirs);
+    let mut driver = Driver::from_scenario(scenario)?;
+    to_seat0(&mut driver)?;
+    Ok(driver)
+}
+
+fn ping_the_x1_at_their_end_step() -> Result<Table, SuiteError> {
+    let mut mine = lands(mountain, 2);
+    mine.push(ready(real("Fireslinger")?));
+    let mut theirs = lands(forest, 3);
+    theirs.push(body("Their Sparrow", 1, 1, FLYING));
+    let driver = their_end(vec![], mine, theirs)?;
+    table(
+        &driver,
+        outcome(Until::TurnEnds, |e| !on_battlefield(e, "Their Sparrow")),
+    )
+}
+
+fn make_a_snake_at_their_end_step() -> Result<Table, SuiteError> {
+    let mut mine = lands(swamp, 4);
+    mine.push(ready(real("Serpent Generator")?));
+    let driver = their_end(vec![], mine, lands(forest, 3))?;
+    table(
+        &driver,
+        outcome(Until::TurnEnds, |e| count_named(e, "Snake") > 0),
+    )
+}
+
+fn loot_at_their_end_step() -> Result<Table, SuiteError> {
+    let mut mine = lands(island, 2);
+    mine.push(ready(real("Cephalid Looter")?));
+    let driver = their_end(vec![island(), island()], mine, lands(forest, 3))?;
+    table(
+        &driver,
+        outcome(Until::TurnEnds, |e| {
+            e.state()
+                .zone(Zone::Graveyard(PlayerId::from_index(0)))
+                .len()
+                == 1
+        }),
+    )
+}
+
+/// Seat 0's first main phase with an empty hand and `mine`, seat 1 at 20 life with only lands; judged on whether seat 1
+/// took at least `damage` by the end of combat.
+fn swing_table(mine: Vec<PresetPermanent>, damage: i32) -> Result<Table, SuiteError> {
+    let driver = Driver::from_scenario(own_main(vec![], mine, lands(mountain, 3), 3))?;
+    table(
+        &driver,
+        outcome(Until::CombatEnds, move |e| {
+            e.state()
+                .player(PlayerId::from_index(1))
+                .is_some_and(|p| p.life() <= 20 - damage)
+        }),
+    )
+}
+
+fn equip_before_combat() -> Result<Table, SuiteError> {
+    let mut mine = lands(plains, 2);
+    mine.push(ready(real("Bonesplitter")?));
+    mine.push(ready(real("Grizzly Bears")?));
+    swing_table(mine, 4)
+}
+
+fn crew_the_copter_and_attack() -> Result<Table, SuiteError> {
+    let mut mine = lands(plains, 2);
+    mine.push(ready(real("Smuggler's Copter")?));
+    mine.push(crate::scenario::sick(beast(
+        "Deckhand",
+        0,
+        Color::White,
+        1,
+        1,
+        NONE,
+    )));
+    swing_table(mine, 3)
+}
+
+fn animate_the_manland_and_attack() -> Result<Table, SuiteError> {
+    let mut mine = lands(plains, 3);
+    mine.push(ready(real("Mutavault")?));
+    swing_table(mine, 2)
+}
+
 /// Every case of the suite.
 pub fn cases() -> Vec<Case> {
     macro_rules! case {
@@ -1628,5 +1810,16 @@ pub fn cases() -> Vec<Case> {
         case!(Trick, pump_for_lethal),
         case!(Trick, fog_the_lethal_attack),
         case!(Trick, keep_the_fog_for_a_real_attack),
+        case!(Ability, garruk_uses_its_loyalty),
+        case!(Ability, jace_uses_its_loyalty),
+        case!(Ability, sorin_uses_its_loyalty),
+        case!(Ability, ajani_uses_its_loyalty),
+        case!(Ability, ping_the_x1_at_their_end_step),
+        case!(Ability, make_a_snake_at_their_end_step),
+        case!(Ability, loot_at_their_end_step),
+        case!(Ability, cast_and_use_the_walker),
+        case!(Ability, equip_before_combat),
+        case!(Ability, crew_the_copter_and_attack),
+        case!(Ability, animate_the_manland_and_attack),
     ]
 }

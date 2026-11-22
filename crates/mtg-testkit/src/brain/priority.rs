@@ -155,22 +155,133 @@ pub fn plan_priority(
         Horizon::Settle
     };
     let follow_ups = window == Window::Main && search.settings().sequences;
+    let judged = judge_plays(search, engine, &seen, window, &plays, horizon, follow_ups);
+    let cut = matches!(judged, Judged::Cut(_));
+    let play = match judged {
+        Judged::Done(play) => play,
+        // The clock or the count ran out before every play was judged: judge them again until the stack settles, on a
+        // short clock of its own, rather than pass for want of time.
+        Judged::Cut(play) if play == PriorityAction::Pass && window != Window::Combat => {
+            let mut quick = Search::new(search.seat(), search.settings().quick(), 0x51_E77E);
+            match judge_plays(&mut quick, engine, &seen, window, &plays, Horizon::Settle, false) {
+                Judged::Done(play) => play,
+                Judged::Cut(play) if play == PriorityAction::Pass && window == Window::Main => {
+                    super::sim::walker_play(&seen, options)
+                }
+                Judged::Cut(play) => play,
+            }
+        }
+        Judged::Cut(play) => play,
+    };
+    CUTS.with(|cell| {
+        let (judged, cuts, rescued) = cell.get();
+        cell.set((
+            judged + 1,
+            cuts + u64::from(cut),
+            rescued + u64::from(cut && play != PriorityAction::Pass),
+        ));
+    });
+    play
+}
+
+thread_local! {
+    /// This thread's priority judgements, those the budget cut short and those of them that still found a play.
+    static CUTS: std::cell::Cell<(u64, u64, u64)> = const { std::cell::Cell::new((0, 0, 0)) };
+}
+
+/// This thread's priority judgements since [`reset_cuts`]: (judged, cut short by the budget, cut but still played).
+pub fn cuts() -> (u64, u64, u64) {
+    CUTS.with(std::cell::Cell::get)
+}
+
+/// Clears this thread's [`cuts`].
+pub fn reset_cuts() {
+    CUTS.with(|cell| cell.set((0, 0, 0)));
+}
+
+/// Whether `seat` has a creature in `after` that could attack and could not in `before`: a crewed vehicle, an animated
+/// land.
+fn new_attacker(before: &Engine, after: &Engine, seat: mtg_core::ids::PlayerId) -> bool {
+    let ready = |engine: &Engine| -> Vec<ObjectId> {
+        let seen = Seen::new(engine.state(), seat);
+        seen.bodies()
+            .into_iter()
+            .filter(|body| {
+                body.controller == seat
+                    && body.is_creature()
+                    && !body.tapped
+                    && !body.cant_attack
+                    && !mtg_engine::keywords::summoning_sick(engine.state(), body.id)
+            })
+            .map(|body| body.id)
+            .collect()
+    };
+    let had = ready(before);
+    ready(after).iter().any(|id| !had.contains(id))
+}
+
+/// The play [`judge_plays`] found, and whether it judged every play.
+enum Judged {
+    /// Every play was simulated.
+    Done(PriorityAction),
+    /// The budget ran out before every play (or the pass) was simulated.
+    Cut(PriorityAction),
+}
+
+/// The play among `plays` whose outcome at `horizon` beats passing by the knob `margin` (and, outside combat, changes
+/// something that lasts beyond the turn), else a pass; `follow_ups` also weighs each of the best followed by a second
+/// play ([`best_sequence`]).
+fn judge_plays(
+    search: &mut Search,
+    engine: &Engine,
+    seen: &Seen<'_>,
+    window: Window,
+    plays: &[PriorityAction],
+    horizon: Horizon,
+    follow_ups: bool,
+) -> Judged {
+    let combat = window == Window::Combat;
     let pass = Answer::Priority(PriorityAction::Pass);
     let Some(baseline) = search.outcome(engine, pass, horizon) else {
-        return PriorityAction::Pass;
+        return Judged::Cut(PriorityAction::Pass);
     };
     let mut best: Option<(f64, PriorityAction)> = None;
     let mut scored: Vec<(f64, PriorityAction, Engine)> = Vec::new();
+    let mut complete = true;
+    let before_combat = window == Window::Main && seen.turn().step() == Step::Main1;
+    // The pass played through the combat, once a play needs it ([`new_attacker`]).
+    let mut pass_through: Option<Option<super::sim::Outcome>> = None;
     for play in plays {
         if !search.can_simulate() {
+            complete = false;
             break;
         }
-        let Some((outcome, after)) = search.played(engine, Answer::Priority(play.clone()), horizon)
+        let Some((mut outcome, after)) =
+            search.played(engine, Answer::Priority(play.clone()), horizon)
         else {
             continue;
         };
         if !combat && outcome.lasting == baseline.lasting {
-            continue;
+            // A crew or an animation lasts only the turn, but the attacker it makes can deal damage that lasts: such a
+            // play before combat is judged by the end of the turn, against the pass played as far.
+            if !(before_combat && new_attacker(engine, &after, search.seat())) {
+                continue;
+            }
+            let through = *pass_through.get_or_insert_with(|| {
+                search.outcome(engine, Answer::Priority(PriorityAction::Pass), Horizon::EndOfTurn)
+            });
+            let Some(through) = through else {
+                continue;
+            };
+            let Some(attacked) =
+                search.outcome(engine, Answer::Priority(play.clone()), Horizon::EndOfTurn)
+            else {
+                continue;
+            };
+            if attacked.lasting == through.lasting {
+                continue;
+            }
+            outcome.score = baseline.score + attacked.score - through.score;
         }
         let knobs = super::knobs::knobs();
         let ramp = if window == Window::Main && count(baseline.sources) < knobs.ramp_until {
@@ -178,15 +289,22 @@ pub fn plan_priority(
         } else {
             0.0
         };
-        let score =
-            outcome.score + ramp - hold_cost(search.settings().careful, &seen, window, &play);
+        let score = outcome.score + ramp - hold_cost(search.settings().careful, seen, window, play);
         if follow_ups {
             scored.push((score, play.clone(), after));
         }
-        if score > baseline.score + knobs.margin
+        // At an opponent's end step an ability spends mana and untapped permanents that untap before they could be
+        // used again, so one that loses nothing is worth its card selection.
+        let free = window == Window::EndStep && matches!(play, PriorityAction::Activate(_));
+        let wins = if free {
+            score >= baseline.score
+        } else {
+            score > baseline.score + knobs.margin
+        };
+        if wins
             && best.as_ref().is_none_or(|(held, _)| score > *held)
         {
-            best = Some((score, play));
+            best = Some((score, play.clone()));
         }
     }
     if follow_ups {
@@ -197,7 +315,12 @@ pub fn plan_priority(
         )
         .or(best);
     }
-    best.map_or(PriorityAction::Pass, |(_, play)| play)
+    let play = best.map_or(PriorityAction::Pass, |(_, play)| play);
+    if complete {
+        Judged::Done(play)
+    } else {
+        Judged::Cut(play)
+    }
 }
 
 /// The knob `ramp` per mana source `play` adds in the main phase while the seat has fewer than the knob `ramp_until`
