@@ -5,7 +5,26 @@
 use super::subtypes::plural_subtype;
 use crate::ability::Ability;
 use crate::refs::{Pred, Ref};
+use crate::trigger::TriggerPattern;
 use crate::value::{Amount, Cmp, Condition};
+
+/// Whether a condition checked as the trigger happens is worded "while" after its event: an event that is no step
+/// beginning ("At end of combat, if ..."), and a condition that is not about the turn or step ("during your turn").
+pub(super) fn r116_06_worded_while(when: &TriggerPattern, held: &Condition) -> bool {
+    super::render::while_held(when)
+        && !matches!(when, TriggerPattern::StepBegins { .. })
+        && !of_the_turn(held)
+}
+
+/// Whether the condition asks whose turn, which step or whether it is combat.
+fn of_the_turn(held: &Condition) -> bool {
+    match held {
+        Condition::YourTurn | Condition::Step(_) | Condition::InCombat => true,
+        Condition::Not(inner) => of_the_turn(inner),
+        Condition::All(parts) | Condition::Any(parts) => parts.iter().any(of_the_turn),
+        _ => false,
+    }
+}
 
 /// Adds the "while" wordings of a trigger whose condition is checked only as it triggers.
 pub(super) fn r116_06_while_wordings(
@@ -21,7 +40,7 @@ pub(super) fn r116_06_while_wordings(
     else {
         return;
     };
-    if !super::render::while_held(when) {
+    if !r116_06_worded_while(when, held) {
         return;
     }
     let mut plain = ability.clone();
@@ -98,6 +117,16 @@ mod tests {
             serde_json::from_str(&ATTACK.replace(r#""right":8"#, r#""right":9"#)).unwrap();
         let text = "Whenever you attack while creatures you control have total power 8 or greater, draw a card.";
         assert!(!written_variants(&nine).iter().any(|t| t == text));
+    }
+
+    #[rstest]
+    #[case::during_your_turn(r#"{"Triggered":{"when":{"SpellCast":{"by":"You"}},"if":{"AtTrigger":"YourTurn"},"effects":[{"Draw":{}}]}}"#)]
+    #[case::a_main_phase(r#"{"Triggered":{"when":{"SpellCast":{"by":"You"}},"if":{"AtTrigger":{"All":["YourTurn",{"Step":"Main1"}]}},"effects":[{"Draw":{}}]}}"#)]
+    #[case::a_step_begins(r#"{"Triggered":{"when":{"StepBegins":{"step":"EndCombat"}},"if":{"AtTrigger":{"Monarch":"You"}},"effects":[{"Draw":{}}]}}"#)]
+    fn r116_06_the_turn_and_a_step_beginning_are_never_worded_while(#[case] json: &str) {
+        let ability: Ability = serde_json::from_str(json).unwrap();
+        let texts = written_variants(&ability);
+        assert!(!texts.iter().any(|t| t.contains(" while ")), "{texts:#?}");
     }
 
     #[rstest]

@@ -1,13 +1,13 @@
 {
-  "oracle_id": "89aa97d0-1aef-4ed8-b29c-7943bb3d0e60",
-  "name": "Nighthowl Pursuer",
+  "oracle_id": "5d1b0eee-3a7a-4f22-a40d-7658a368962a",
+  "name": "Ruby, Daring Tracker",
   "impl_status": "Full",
   "faces": [
     {
-      "name": "Nighthowl Pursuer",
-      "oracle_fingerprint": "fbccc22ba48c2638d25366d59f9acbdb",
+      "name": "Ruby, Daring Tracker",
+      "oracle_fingerprint": "023d17c6f75c350d417b208499bde01c",
       "abilities": [
-        { "Keyword": "Menace" },
+        { "Keyword": "Haste" },
         {
           "Triggered": {
             "when": { "Attacks": { "what": ["This"] } },
@@ -17,8 +17,8 @@
                   "left": {
                     "Count": [
                       { "Type": "Creature" },
-                      { "ControlledBy": "You" },
-                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                      { "ControlledBy": "You" }
                     ]
                   },
                   "op": "Ge",
@@ -35,6 +35,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "OneOf": ["Red", "Green"] } } }]
           }
         }
       ]

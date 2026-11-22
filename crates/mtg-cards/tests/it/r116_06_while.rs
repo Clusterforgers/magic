@@ -70,6 +70,20 @@ fn conditions(value: &mut serde_json::Value, out: &mut Vec<serde_json::Value>, u
 #[case("Regal Behemoth")]
 #[case("Una Chin-Riley, Number One")]
 #[case("Worf, Honor-Bound Warrior")]
+#[case("Brazen Blademaster")]
+#[case("Courageous Goblin")]
+#[case("Fire Lord Azula")]
+#[case("Hand That Feeds")]
+#[case("Kirk, Enterprising Captain")]
+#[case("La'An Noonien-Singh, Security")]
+#[case("Moon-Boy, Dino Rider")]
+#[case("Nighthowl Pursuer")]
+#[case("Ravening Warg")]
+#[case("Ruby, Daring Tracker")]
+#[case("Seasoned Warrenguard")]
+#[case("Tactical Officer")]
+#[case("The Chief Warg")]
+#[case("Wilderland Scrounger")]
 fn r116_06_a_while_trigger_is_checked_as_it_triggers_only(#[case] name: &str) {
     let mut card = rules(name);
     let mut found = Vec::new();

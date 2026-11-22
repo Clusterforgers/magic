@@ -332,6 +332,7 @@ Branchblight Stalker
 Brass Infiniscope
 Brass's Tunnel-Grinder // Tecutlan, the Searing Rift
 Brave the Sands
+Brazen Blademaster
 Brazen Borrower // Petty Theft
 Break the Ice
 Breath of Life
@@ -538,6 +539,7 @@ Cosmic Intervention
 Cosmos Charger
 Counterflux
 Counterspell
+Courageous Goblin
 Courser of Kruphix
 Court of Bounty
 Court of Grace
@@ -1473,6 +1475,7 @@ Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
 Kiora's Follower
+Kirk, Enterprising Captain
 Kirol, Attentive First-Year
 Kirol, History Buff // Pack a Punch
 Kitchen Finks
@@ -1765,6 +1768,7 @@ Mona Lisa, Science Geek
 Monastery Swiftspear
 Monk of the Open Hand
 Monk's Fist
+Moon-Boy, Dino Rider
 Moonlit Meditation
 Moonrager's Slash
 Moonstone Eulogist
@@ -1837,6 +1841,7 @@ Night Shift of the Living Dead
 Night Soil
 Night's Whisper
 Nighthawk Scavenger
+Nighthowl Pursuer
 Nightmare
 Nightscape Familiar
 Nightveil Sprite
@@ -2126,6 +2131,7 @@ Rapid Hybridization
 Rasputin Dreamweaver
 Ratadrabik of Urborg
 Ravenform
+Ravening Warg
 Ravenous Chupacabra
 Ravenous Leucrocota
 Ravenous Slime
@@ -2242,6 +2248,7 @@ Rowan, Scion of War
 Rowdy Research
 Rowen
 Ruby Medallion
+Ruby, Daring Tracker
 Rugged Prairie
 Ruinous Path
 Ruins of Oran-Rief
@@ -2314,6 +2321,7 @@ Search for Tomorrow
 Search the Premises
 Season of the Witch
 Seasoned Hallowblade
+Seasoned Warrenguard
 Secluded Courtyard
 Secluded Glen
 Secluded Steppe
@@ -3071,6 +3079,7 @@ Wickersmith's Tools
 Wild Growth
 Wild Ride
 Wild Wasteland
+Wilderland Scrounger
 Wilderness Elemental
 Will Riker, First in the Field
 Will of the Sultai

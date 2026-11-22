@@ -17,8 +17,8 @@
                   "left": {
                     "Count": [
                       { "Type": "Creature" },
-                      { "ControlledBy": "You" },
-                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                      { "ControlledBy": "You" }
                     ]
                   },
                   "op": "Ge",

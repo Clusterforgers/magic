@@ -4510,7 +4510,7 @@ fn while_text(when: &TriggerPattern, held: &Condition) -> Option<String> {
     if *held == super::triggers::saddled() {
         return matches!(when, TriggerPattern::Attacks { .. }).then(|| "saddled".to_owned());
     }
-    if !while_held(when) {
+    if !super::r116_06_while::r116_06_worded_while(when, held) {
         return None;
     }
     super::triggers::monarch_text(held).or_else(|| condition_text(held))

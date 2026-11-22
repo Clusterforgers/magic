@@ -1,11 +1,11 @@
 {
-  "oracle_id": "8a2946ad-7a7b-4cda-8591-da8c7da5e072",
-  "name": "Wilderland Scrounger",
+  "oracle_id": "c107e271-5741-4a84-bfc4-3bc322972d0d",
+  "name": "Courageous Goblin",
   "impl_status": "Full",
   "faces": [
     {
-      "name": "Wilderland Scrounger",
-      "oracle_fingerprint": "f321035365660e5fcf587734f98a8f52",
+      "name": "Courageous Goblin",
+      "oracle_fingerprint": "346f907f4e075d1b938cdc571f397aa9",
       "abilities": [
         {
           "Triggered": {
@@ -16,8 +16,8 @@
                   "left": {
                     "Count": [
                       { "Type": "Creature" },
-                      { "ControlledBy": "You" },
-                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } }
+                      { "Compare": { "stat": "Power", "op": "Ge", "to": 4 } },
+                      { "ControlledBy": "You" }
                     ]
                   },
                   "op": "Ge",
@@ -27,9 +27,13 @@
             },
             "effects": [
               {
-                "PutCounters": {
-                  "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
-                  "counter": "+1/+1"
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    { "ModifyPT": { "power": 1, "toughness": 0 } },
+                    { "AddKeyword": "Menace" }
+                  ],
+                  "duration": "UntilEndOfTurn"
                 }
               }
             ]
