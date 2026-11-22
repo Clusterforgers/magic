@@ -1,0 +1,30 @@
+{
+  "oracle_id": "d89f34e4-8628-4faf-89e6-c9c16023ae8b",
+  "name": "Nyota Uhura, Communications",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nyota Uhura, Communications",
+      "oracle_fingerprint": "931a8244b6543ffa3f8ec0f065841a62",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": { "Number": { "min": 0, "max": 10 } } }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "Compare": { "stat": "ManaValue", "op": "Eq", "to": "Chosen" } }],
+                "by": "Opponents"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

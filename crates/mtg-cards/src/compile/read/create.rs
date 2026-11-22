@@ -25,7 +25,7 @@ use crate::refs::Ref;
 use crate::value::Amount;
 
 /// The predefined tokens, as a card names them and as their files are named.
-pub(super) const NAMED: [(&str, &str); 13] = [
+pub(super) const NAMED: [(&str, &str); 19] = [
     ("Treasure", "treasure"),
     ("Clue", "clue"),
     ("Food", "food"),
@@ -39,6 +39,12 @@ pub(super) const NAMED: [(&str, &str); 13] = [
     ("Gingerbrute", "gingerbrute"),
     ("Lander", "lander"),
     ("Spellgorger Weird", "spellgorger_weird"),
+    ("Black Lotus", "black_lotus"),
+    ("Feroz's Ban", "ferozs_ban"),
+    ("Lord of the Pit", "lord_of_the_pit"),
+    ("Giant Badger", "giant_badger"),
+    ("Scryb Sprites", "scryb_sprites"),
+    ("Akroma, Angel of Wrath", "akroma_angel_of_wrath"),
 ];
 
 fn effect(who: Ref, token: TokenRef, count: Amount, tapped: bool, attacking: bool) -> Effect {
@@ -66,20 +72,38 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
     }) {
         return Some(TokenRef::Named(id));
     }
+    // A token named after a card of several words ("a Lord of the Pit token").
+    if let Some((_, id)) = NAMED
+        .iter()
+        .find(|(shown, _)| shown.contains(' ') && r.r116_name_text(shown))
+    {
+        return Some(TokenRef::Named((*id).to_owned()));
+    }
     // "an X/X token": its size is the amount the sentence gives X.
     let sized = r.attempt(|r| (r.word("x") && r.punct('/') && r.word("x")).then_some(()));
-    let (power, toughness) = if sized.is_some() {
-        (None, None)
-    } else {
+    // A noncreature token has no size, and a land token no colour word ("a tapped Planet land token", CR 111.4).
+    let size = r.attempt(|r| {
         let power = i32::try_from(r.number()?).ok()?;
         r.punct('/').then_some(())?;
-        (Some(power), Some(i32::try_from(r.number()?).ok()?))
+        Some((power, i32::try_from(r.number()?).ok()?))
+    });
+    let sizeless = sized.is_none() && size.is_none();
+    let (power, toughness) = match size {
+        Some((power, toughness)) => (Some(power), Some(toughness)),
+        None => (None, None),
     };
     let mut colors = Vec::new();
     if !r.word("colorless") {
-        colors.push(r.take_word().and_then(color)?);
-        while r.word("and") {
-            colors.push(r.take_word().and_then(color)?);
+        let first = if sizeless {
+            r.attempt(|r| r.take_word().and_then(color))
+        } else {
+            Some(r.take_word().and_then(color)?)
+        };
+        if let Some(first) = first {
+            colors.push(first);
+            while r.word("and") {
+                colors.push(r.take_word().and_then(color)?);
+            }
         }
     }
     let mut subtypes = Vec::new();
@@ -92,6 +116,9 @@ fn token(r: &mut Reader<'_>) -> Option<TokenRef> {
         types.push(found);
     }
     if subtypes.is_empty() || types.is_empty() {
+        return None;
+    }
+    if sizeless && types.contains(&mtg_core::card::CardType::Creature) {
         return None;
     }
     let name = subtypes
@@ -377,10 +404,12 @@ fn group(r: &mut Reader<'_>, who: &Ref) -> Option<Effect> {
     let single = matches!(quantity, Quantity::Number(1));
     r.word(if single { "token" } else { "tokens" })
         .then_some(())?;
+    // The name may come before the abilities ("token named New Planet with "{T}: ..."").
+    let named_first = r.attempt(token_name);
     if let Some(abilities) = r.attempt(keyword_abilities) {
         spec_of(&mut token)?.abilities = abilities;
     }
-    if let Some(name) = r.attempt(token_name) {
+    if let Some(name) = named_first.or_else(|| r.attempt(token_name)) {
         spec_of(&mut token)?.name = name;
     }
     let (tapped_and_attacking, attacking_only) = if single {
@@ -471,6 +500,8 @@ struct Described {
     what: String,
     name: Option<String>,
     legendary: bool,
+    /// A noncreature token without a size, whose name comes before its abilities.
+    sizeless: bool,
 }
 
 fn token_text(token: &TokenRef) -> Option<Described> {
@@ -480,6 +511,7 @@ fn token_text(token: &TokenRef) -> Option<Described> {
             what: name.clone(),
             name: None,
             legendary: false,
+            sizeless: false,
         }),
         TokenRef::Named(id) => {
             NAMED
@@ -489,9 +521,14 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                     what: (*shown).to_owned(),
                     name: None,
                     legendary: false,
+                    sizeless: false,
                 })
         }
         TokenRef::Custom(spec) | TokenRef::Sized { token: spec, .. } => {
+            let sizeless = matches!(token, TokenRef::Custom(_))
+                && spec.power.is_none()
+                && spec.toughness.is_none()
+                && !spec.types.contains(&mtg_core::card::CardType::Creature);
             let size = match token {
                 TokenRef::Sized {
                     size,
@@ -499,7 +536,15 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                     ..
                 } if *size == Amount::X => "X/X".to_owned(),
                 TokenRef::Sized { .. } => return None,
+                _ if sizeless => String::new(),
                 _ => format!("{}/{}", spec.power?, spec.toughness?),
+            };
+            // A land token is colorless without saying so ("a tapped Planet land token").
+            let land = spec.types.contains(&mtg_core::card::CardType::Land);
+            let colors = if sizeless && land && spec.colors.is_empty() {
+                String::new()
+            } else {
+                colors_text(&spec.colors)
             };
             let (power, toughness) = (spec.power.unwrap_or(0), spec.toughness.unwrap_or(0));
             let subtypes: Vec<&str> = spec.subtypes.iter().map(|found| found.0.as_str()).collect();
@@ -512,15 +557,17 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                 && !types.is_empty()
                 && power >= 0
                 && toughness >= 0;
+            let words = [size, colors, subtypes.join(" "), types.join(" ")];
             plain.then(|| Described {
-                what: format!(
-                    "{size} {} {} {}",
-                    colors_text(&spec.colors),
-                    subtypes.join(" "),
-                    types.join(" ")
-                ),
+                what: words
+                    .iter()
+                    .filter(|word| !word.is_empty())
+                    .cloned()
+                    .collect::<Vec<_>>()
+                    .join(" "),
                 name: named.then(|| spec.name.clone()),
                 legendary,
+                sizeless,
             })
         }
         TokenRef::CopyOf { .. } | TokenRef::R4700OfChosen { .. } => None,
@@ -591,6 +638,7 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
         mut what,
         name,
         legendary,
+        sizeless,
     } = token_text(token)?;
     let with = keywords_text(token)?;
     let verb = if *who == Ref::You {
@@ -645,7 +693,9 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
         .map(|name| format!(" named {name}"))
         .unwrap_or_default();
     Some(format!(
-        "{verb} {number} {what} {noun}{with}{named}{}{tail}",
+        "{verb} {number} {what} {noun}{}{}{}{tail}",
+        if sizeless { &named } else { &with },
+        if sizeless { &with } else { &named },
         entering(single)
     ))
 }

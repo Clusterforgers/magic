@@ -4,6 +4,7 @@
   "oracle_id": "2a5376aa-8996-476e-9ee8-1426b0944091",
   "multiverse_ids": [],
   "tcgplayer_id": 709753,
+  "cardmarket_id": 917829,
   "name": "Nivea, Beloved Battlemage",
   "lang": "en",
   "released_at": "2026-10-19",
@@ -12,23 +13,23 @@
   "layout": "normal",
   "highres_image": true,
   "image_status": "highres_scan",
-  "image_updated_at": "2026-08-03T12:06:39Z",
+  "image_updated_at": "2026-10-23T07:14:32Z",
   "image_uris": {
-    "small": "https://cards.scryfall.io/small/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1785758799",
-    "normal": "https://cards.scryfall.io/normal/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1785758799",
-    "large": "https://cards.scryfall.io/large/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1785758799",
-    "png": "https://cards.scryfall.io/png/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.png?1785758799",
-    "art_crop": "https://cards.scryfall.io/art_crop/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1785758799",
-    "border_crop": "https://cards.scryfall.io/border_crop/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1785758799",
-    "thumb": "https://cards.scryfall.io/thumb/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1785758799",
-    "grid": "https://cards.scryfall.io/grid/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1785758799",
-    "display": "https://cards.scryfall.io/display/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1785758799",
-    "art": "https://cards.scryfall.io/art/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1785758799",
-    "crop": "https://cards.scryfall.io/crop/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1785758799",
-    "jpeg": "https://cards.scryfall.io/normal/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1785758799"
+    "small": "https://cards.scryfall.io/small/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1792739672",
+    "normal": "https://cards.scryfall.io/normal/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1792739672",
+    "large": "https://cards.scryfall.io/large/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1792739672",
+    "png": "https://cards.scryfall.io/png/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.png?1792739672",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1792739672",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1792739672",
+    "thumb": "https://cards.scryfall.io/thumb/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1792739672",
+    "grid": "https://cards.scryfall.io/grid/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1792739672",
+    "display": "https://cards.scryfall.io/display/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1792739672",
+    "art": "https://cards.scryfall.io/art/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1792739672",
+    "crop": "https://cards.scryfall.io/crop/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.webp?1792739672",
+    "jpeg": "https://cards.scryfall.io/normal/front/9/a/9a845742-a20d-4332-aaa8-d6cd2d5f482b.jpg?1792739672"
   },
   "mana_cost": "{2}{W}",
-  "cmc": 3.0,
+  "cmc": 3,
   "type_line": "Legendary Creature — Human Wizard Warrior",
   "oracle_text": "Whenever a creature you control becomes blocked, you may untap it and remove it from combat.\n{5}{W}{W}{W}, Sacrifice Nivea: Create an Akroma, Angel of Wrath token. (She's a {5}{W}{W}{W} legendary 6/6 Angel creature with flying, first strike, vigilance, trample, haste, and protection from black and from red.)",
   "power": "3",
@@ -70,7 +71,7 @@
     "pauper": "not_legal",
     "vintage": "not_legal",
     "penny": "not_legal",
-    "commander": "not_legal",
+    "commander": "legal",
     "oathbreaker": "not_legal",
     "standardbrawl": "not_legal",
     "brawl": "not_legal",
@@ -81,7 +82,7 @@
     "oldschool": "not_legal",
     "premodern": "not_legal",
     "predh": "not_legal",
-    "tlr": "not_legal"
+    "tlr": "legal"
   },
   "games": [
     "paper"
@@ -126,13 +127,13 @@
   "textless": false,
   "booster": false,
   "story_spotlight": false,
-  "edhrec_rank": 24104,
+  "edhrec_rank": 23552,
   "prices": {
-    "usd": null,
-    "usd_foil": null,
+    "usd": "11.24",
+    "usd_foil": "48.33",
     "usd_etched": null,
-    "eur": null,
-    "eur_foil": null,
+    "eur": "6.68",
+    "eur_foil": "60.00",
     "tix": null
   },
   "related_uris": {
@@ -142,7 +143,7 @@
   },
   "purchase_uris": {
     "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709753%3Fpage%3D1",
-    "cardmarket": "https://www.cardmarket.com/en/Magic/Products/Search?referrer=scryfall&searchString=Nivea%2C+Beloved+Battlemage&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=917829&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
     "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Nivea%2C+Beloved+Battlemage&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
   }
 }

@@ -1,0 +1,29 @@
+{
+  "oracle_id": "61703e94-cb57-44d8-b37b-7b14b3cfd86d",
+  "name": "Quark, Humble Proprietor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Quark, Humble Proprietor",
+      "oracle_fingerprint": "ad1aa18cd0f19b2880220fc25a2c3065",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": { "Each": [{ "Subtype": "Treasure" }, "Token", { "ControlledBy": "You" }] },
+                "action": "Sacrifice"
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [{ "CreateToken": { "token": { "Named": "treasure" } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

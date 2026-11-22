@@ -1,0 +1,63 @@
+{
+  "oracle_id": "20b90808-0279-46eb-ae51-6990ac679a83",
+  "name": "Greensleeves",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Greensleeves",
+      "oracle_fingerprint": "ef1e4dc75286a33006f8ad814c6ecb2f",
+      "abilities": [
+        {
+          "Loyalty": {
+            "cost": { "Plus": 2 },
+            "effects": [{ "CreateToken": { "token": { "Named": "giant_badger" } } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              { "Mill": { "count": 3, "as": "milled" } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 8 },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [{ "SetPT": { "power": 8, "toughness": 8 } }, { "AddKeyword": "Trample" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

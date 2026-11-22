@@ -1,0 +1,70 @@
+{
+  "oracle_id": "cf0d1859-699e-47d4-bc91-7c5ff61fabe9",
+  "name": "Temporal Anomaly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Temporal Anomaly",
+      "oracle_fingerprint": "a28120fd18dfeb3b7ada8510855bf2fb",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{3}{G}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "New Planet",
+                      "types": ["Land"],
+                      "subtypes": ["Planet"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

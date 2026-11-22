@@ -1,0 +1,38 @@
+{
+  "oracle_id": "2c2fdeff-a0c6-44cb-9603-4a9865f62985",
+  "name": "Planetary Bombardment",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Planetary Bombardment",
+      "oracle_fingerprint": "b3b5a2bc09da6aa4c0bf2d31c93c8f3c",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "When": {
+                      "condition": {
+                        "Compare": {
+                          "left": { "Tallied": { "who": "EachPlayer", "what": "CreaturesDied" } },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      "then": 4,
+                      "otherwise": 2
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "oracle_id": "0d830d0c-3339-49cc-8527-4f4edf787925",
+  "name": "Holo-Engineer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Holo-Engineer",
+      "oracle_fingerprint": "5ad6bed57267291772dfeef3bde7c592",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Illusion",
+                      "types": ["Artifact", "Creature"],
+                      "subtypes": ["Illusion"],
+                      "power": 3,
+                      "toughness": 3
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "TokenCreation": {} },
+            "by": {
+              "Instead": [
+                {
+                  "CreateToken": {
+                    "token": {
+                      "Custom": {
+                        "name": "Illusion",
+                        "types": ["Artifact", "Creature"],
+                        "subtypes": ["Illusion"],
+                        "power": 3,
+                        "toughness": 3
+                      }
+                    },
+                    "count": "Triggering"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

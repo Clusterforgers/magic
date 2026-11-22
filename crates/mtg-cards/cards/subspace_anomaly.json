@@ -1,0 +1,61 @@
+{
+  "oracle_id": "1a28a83a-de27-4aaa-b35f-1e7075fc1e43",
+  "name": "Subspace Anomaly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Subspace Anomaly",
+      "oracle_fingerprint": "66790161a84b2f9263d1e753caee0632",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{W}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Officer",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Officer"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "New Planet",
+                      "types": ["Land"],
+                      "subtypes": ["Planet"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

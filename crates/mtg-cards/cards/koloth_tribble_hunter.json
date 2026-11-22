@@ -1,0 +1,43 @@
+{
+  "oracle_id": "01b7ced9-5dcb-45ce-bcda-ffdc1afefb2a",
+  "name": "Koloth, Tribble Hunter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Koloth, Tribble Hunter",
+      "oracle_fingerprint": "dbed07d91f59c1f16840958e9236d394",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "who": "EachPlayer",
+                  "token": {
+                    "Custom": {
+                      "name": "Tribble",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Tribble"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Static": { "affected": "This", "mods": ["CantBlock"] } }]
+                    }
+                  },
+                  "count": 2
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Tribble" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }, "Goaded"]
+          }
+        }
+      ]
+    }
+  ]
+}

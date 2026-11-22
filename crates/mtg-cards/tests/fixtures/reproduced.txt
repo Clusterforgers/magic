@@ -119,6 +119,7 @@ Army of the Damned
 Arrest
 Arrogant Wurm
 Artful Maneuver
+Artificial Anomaly
 Artificial Evolution
 Artisan of Kozilek
 Artistic Refusal
@@ -493,6 +494,7 @@ Colonel Autumn
 Colossal Majesty
 Colossal Plow
 Colossus Hammer
+Combadge
 Combat Celebrant
 Combustion Technique
 Command Tower
@@ -600,6 +602,7 @@ Dalek Squadron
 Damocles Base, Sword of Kang
 Dampen Thought
 Damping Field
+Daniels, Temporal Agent
 Danny Pink
 Dark Inquiry
 Darkblast
@@ -643,6 +646,7 @@ Defacing Duskmage // Vandal's Edit
 Defensive Formation
 Defile
 Deification
+Deliver from Chaos
 Deluxe Dragster
 Delver of Secrets // Insectile Aberration
 Demolition Field
@@ -715,6 +719,7 @@ Doublecast
 Doubling Cube
 Down, Down to Goblin-town
 Dowsing Dagger // Lost Vale
+Dr. McCoy, Surly Surgeon
 Draconic Lore
 Drag to the Bottom
 Dragon Fodder
@@ -722,6 +727,7 @@ Dragon Grip
 Dragon Mage
 Dragon's Disciple
 Dragon's Fire
+Dragon's Smile
 Dragonlord Dromoka
 Dragonlord Ojutai
 Dragonmaster Outcast
@@ -898,9 +904,11 @@ Exquisite Blood
 Exquisite Huntmaster
 Exterminate!
 Exterminator Magmarch
+Extraction Integrant
 Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
+Ezri Dax, Newly Joined
 Ezzaroot Channeler
 Fabrication Foundry
 Face Yourself
@@ -977,6 +985,7 @@ Fleecemane Lion
 Fleetfeather Cockatrice
 Fleshbag Marauder
 Fleshwrither
+Flitwing, Lyev Detective
 Flooded Grove
 Flooded Strand
 Flooded Woodlands
@@ -1037,6 +1046,7 @@ Garruk's Packleader
 Garruk's Uprising
 Garruk, Primal Hunter
 Garza's Assassin
+Gaseous Anomaly
 Gastal Raider
 Gatebreaker Ram
 Gather Specimens
@@ -1052,6 +1062,7 @@ General Kreat, the Boltbringer
 General's Enforcer
 Generous Ent
 Generous Gift
+Genesis Device
 Genesis Hydra
 Genesis Storm
 Genesis Wave
@@ -1143,6 +1154,7 @@ Goreclaw, Terror of Qal Sisma
 Gorger Wurm
 Gorm the Great
 Gorma, the Gullet
+Gowron, Eager for Battle
 Grabby Tabby
 Graf Rats
 Grafted Wargear
@@ -1163,6 +1175,7 @@ Graypelt Refuge
 Greater Good
 Greater Mossdog
 Green Goblin, Back for More
+Greensleeves
 Gremlin Mine
 Grenzo's Cutthroat
 Greymond, Avacyn's Stalwart
@@ -1280,6 +1293,7 @@ Hobgoblin Captain
 Hogaak, Arisen Necropolis
 Holdout Settlement
 Hollow Warrior
+Holo-Engineer
 Honor Troll
 Honor's Reward
 Hoofprints of the Stag
@@ -1410,6 +1424,7 @@ Join the Maestros
 Jolly Gerbils
 Jolting Merfolk
 Jor Kadeen, the Prevailer
+Joven and Chandler
 Judoon Enforcers
 Jumbo Cactuar
 Jungle Hollow
@@ -1474,6 +1489,7 @@ Kodama's Reach
 Koh, the Face Stealer
 Kolaghan Skirmisher
 Kolaghan's Command
+Koloth, Tribble Hunter
 Kolvori, God of Kinship // The Ringhart Crest
 Kongming, "Sleeping Dragon"
 Konstrari Charm
@@ -1552,6 +1568,7 @@ Liquid Fire
 Liquimetal Torque
 Lita, Little Orphan Amphibian
 Lithoform Engine
+Live Long and Prosper
 Living Laser
 Living Twister
 Lizard Blades
@@ -1583,6 +1600,7 @@ Loxodon Smiter
 Loxodon Warhammer
 Loyal Apprentice
 Loyal Retainers
+Lt. Cmdr. Geordi La Forge
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
 Luck Bobblehead
@@ -1989,6 +2007,7 @@ Plague Myr
 Plague Stinger
 Planar Disruption
 Planar Outburst
+Planetary Bombardment
 Plargg and Nassari
 Plaxcaster Frogling
 Plaxmanta
@@ -2064,9 +2083,11 @@ Pygmy Kavu
 Pygmy Troll
 Pyramids
 Pyreswipe Hawk
+Q, Your Illustrious Host
 Qasali Pridemage
 Qasali Slingers
 Quantum Misalignment
+Quark, Humble Proprietor
 Quarry Hauler
 Quest for the Goblin Lord
 Questing Beast
@@ -2186,6 +2207,7 @@ Riddlekeeper
 Riders of Gavony
 Rienne, Angel of Rebirth
 Rift Bolt
+Right of Vengeance
 Righteous Avengers
 Righteous Confluence
 Riku of Many Paths
@@ -2328,6 +2350,7 @@ Serra Avatar
 Serum Powder
 Servant of the Conduit
 Setessan Champion
+Seven of Nine, Unassimilated
 Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
@@ -2458,6 +2481,7 @@ Soultether Golem
 Souvenir Snatcher
 Sower of Temptation
 Space Marine Devastator
+Spatial Anomaly
 Spatial Contortion
 Spawn of Mayhem
 Spear of Heliod
@@ -2510,6 +2534,7 @@ Staggershock
 Stalking Leonin
 Stalwart Pathlighter
 Star Whale
+Starfleet Spanner Jockey
 Starforged Sword
 Starlit Sanctum
 Starnheim Aspirant
@@ -2568,6 +2593,7 @@ Stumpsquall Hydra
 Sublime Epiphany
 Sublime Exhalation
 Submerged Boneyard
+Subspace Anomaly
 Subterranean Schooner
 Subterranean Tremors
 Sudden Death
@@ -2681,6 +2707,7 @@ Temple of Mystery
 Temple of Silence
 Temple of Triumph
 Temple of the False God
+Temporal Anomaly
 Temporal Manipulation
 Tempt with Discovery
 Tempt with Mayhem
@@ -2715,6 +2742,7 @@ The Eleventh Doctor
 The Fallen
 The Gaffer
 The Great Henge
+The Holodeck
 The Locust God
 The Mechanist, Aerial Artisan
 The Mightstone and Weakstone
@@ -2722,9 +2750,11 @@ The Modern Age // Vector Glider
 The Moment
 The Most Dangerous Gamer
 The Mycosynth Gardens
+The Needs of the Many
 The Odd Acorn Gang
 The Parting of the Ways
 The Prismatic Piper
+The Promise of Kahless
 The Scorpion God
 The Seriema
 The Serpent Society
@@ -2743,6 +2773,7 @@ Thick-Skinned Goblin
 Thieving Magpie
 Thieving Varmint
 Thinking Cap
+Thomil, the Destroyer
 Thopter Fabricator
 Thorin Oakenshield
 Thorn-Thrash Viashino
@@ -3089,6 +3120,7 @@ Word of Seizing
 Worldspine Wurm
 Worn Powerstone
 Worst Fears
+Worzel, the Protector
 Wrath of God
 Wretched Confluence
 Wrexial, the Risen Deep

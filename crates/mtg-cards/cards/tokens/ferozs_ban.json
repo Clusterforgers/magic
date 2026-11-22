@@ -1,0 +1,17 @@
+{
+  "id": "ferozs_ban",
+  "token": {
+    "name": "Feroz's Ban",
+    "types": ["Artifact"],
+    "abilities": [
+      {
+        "CostModifier": {
+          "applies_to": ["Spell", { "Type": "Creature" }],
+          "change": "Increase",
+          "mana": "{2}"
+        }
+      }
+    ],
+    "mana_cost": "{6}"
+  }
+}

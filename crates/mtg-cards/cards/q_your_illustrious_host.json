@@ -1,0 +1,28 @@
+{
+  "oracle_id": "e4e96682-1130-49cc-b1e5-04a774024f7a",
+  "name": "Q, Your Illustrious Host",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Q, Your Illustrious Host",
+      "oracle_fingerprint": "daf45315bb6951a4bf97c839c4b58390",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Faerie" }], "count": 3 } }],
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

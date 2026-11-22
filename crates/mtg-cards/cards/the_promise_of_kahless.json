@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a5866d5e-ee03-4bca-9964-0d391eae9011",
+  "name": "The Promise of Kahless",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Promise of Kahless",
+      "oracle_fingerprint": "a8be0be940143ab3efba32ec3f977f45",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    {
+                      "Sacrifice": {
+                        "filter": [
+                          { "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }] }
+                        ]
+                      }
+                    }
+                  ],
+                  "paid": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }] },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": "You" },
+                            { "Not": { "SameCard": "Paid" } }
+                          ]
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

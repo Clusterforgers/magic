@@ -1,0 +1,47 @@
+{
+  "oracle_id": "1fb736bf-c9bd-45ab-86ce-7f138f1724b2",
+  "name": "Gaseous Anomaly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gaseous Anomaly",
+      "oracle_fingerprint": "ee94e283ad871193ed46cc1b2b80e44c",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{5}{U}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "New Planet",
+                      "types": ["Land"],
+                      "subtypes": ["Planet"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

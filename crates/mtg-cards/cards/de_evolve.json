@@ -1,0 +1,37 @@
+{
+  "oracle_id": "663e120a-a74f-47fb-aa0a-9d1a75db626e",
+  "name": "De-evolve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "De-evolve",
+      "oracle_fingerprint": "ac8356af5c4eb9a36b167ad43e05115d",
+      "abilities": [
+        { "Keyword": { "Enchant": [{ "Type": "Creature" }] } },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              { "ModifyPT": { "power": -4, "toughness": 0 } },
+              "CantBlock",
+              { "SetCreatureTypes": ["Salamander"] }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "if": {
+              "Compare": {
+                "left": { "Count": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                "op": "Ge",
+                "right": 7
+              }
+            },
+            "effects": [{ "Exile": { "what": "Attached" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

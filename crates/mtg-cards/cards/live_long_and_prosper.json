@@ -1,0 +1,23 @@
+{
+  "oracle_id": "ff6bc9f5-5a83-42d9-b1a4-f0979aed28ad",
+  "name": "Live Long and Prosper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Live Long and Prosper",
+      "oracle_fingerprint": "b248576efec590a72e5e98647e2f148c",
+      "abilities": [
+        { "Rule": { "rule": { "CantBeCountered": "This" }, "from": "Stack" } },
+        {
+          "Spell": {
+            "effects": [
+              { "SetLife": { "amount": { "Times": { "by": 2, "of": { "Life": "You" } } } } },
+              { "Draw": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              { "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "UntilYourNextTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

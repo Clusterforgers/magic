@@ -1,0 +1,27 @@
+{
+  "id": "giant_badger",
+  "token": {
+    "name": "Giant Badger",
+    "types": ["Creature"],
+    "subtypes": ["Badger"],
+    "power": 2,
+    "toughness": 2,
+    "abilities": [
+      {
+        "Triggered": {
+          "when": { "Blocks": { "what": ["This"] } },
+          "effects": [
+            {
+              "Continuous": {
+                "affected": "This",
+                "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                "duration": "UntilEndOfTurn"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "mana_cost": "{1}{G}{G}"
+  }
+}

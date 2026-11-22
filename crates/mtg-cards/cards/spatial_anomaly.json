@@ -1,0 +1,48 @@
+{
+  "oracle_id": "a4f31512-a91c-42e0-9929-5069386c3c71",
+  "name": "Spatial Anomaly",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spatial Anomaly",
+      "oracle_fingerprint": "835737b4ce534e83c9d578081f055038",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{4}{R}" }, "Tap", "SacrificeSelf"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "DealDamage": { "to": { "Target": 0 }, "amount": 2 } },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "New Planet",
+                      "types": ["Land"],
+                      "subtypes": ["Planet"],
+                      "abilities": [
+                        {
+                          "Activated": {
+                            "cost": ["Tap"],
+                            "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "tapped": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "cb3b4cfe-fd8d-4a26-905e-8ccd30f033a3",
+  "name": "Lt. Cmdr. Geordi La Forge",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lt. Cmdr. Geordi La Forge",
+      "oracle_fingerprint": "dbc619055303d1941b396431b90f4a12",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "CountersPut": {
+                "on": { "Each": [{ "Type": "Artifact" }, { "ControlledBy": "You" }] },
+                "counter": "charge",
+                "by": "You"
+              }
+            },
+            "by": { "Multiply": 2 }
+          }
+        }
+      ]
+    }
+  ]
+}

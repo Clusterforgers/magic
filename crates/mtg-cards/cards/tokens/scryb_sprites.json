@@ -1,0 +1,12 @@
+{
+  "id": "scryb_sprites",
+  "token": {
+    "name": "Scryb Sprites",
+    "types": ["Creature"],
+    "subtypes": ["Faerie"],
+    "power": 1,
+    "toughness": 1,
+    "abilities": [{ "Keyword": "Flying" }],
+    "mana_cost": "{G}"
+  }
+}

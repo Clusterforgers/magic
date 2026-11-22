@@ -1,0 +1,29 @@
+{
+  "id": "lord_of_the_pit",
+  "token": {
+    "name": "Lord of the Pit",
+    "types": ["Creature"],
+    "subtypes": ["Demon"],
+    "power": 7,
+    "toughness": 7,
+    "abilities": [
+      { "Keyword": "Flying" },
+      { "Keyword": "Trample" },
+      {
+        "Triggered": {
+          "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+          "effects": [
+            { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Other"] } },
+            {
+              "If": {
+                "condition": { "Not": "Performed" },
+                "then": [{ "DealDamage": { "source": "This", "to": "You", "amount": 7 } }]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "mana_cost": "{4}{B}{B}{B}"
+  }
+}

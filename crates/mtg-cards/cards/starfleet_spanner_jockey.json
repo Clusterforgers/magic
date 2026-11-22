@@ -1,0 +1,26 @@
+{
+  "oracle_id": "d41ff489-7d74-4b06-b3a1-638f3e3303d1",
+  "name": "Starfleet Spanner Jockey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfleet Spanner Jockey",
+      "oracle_fingerprint": "96a2605d1ab52b176de4398bf8f3e094",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": "AttackDespiteDefender" } },
+            "condition": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "NoncreatureSpellsCast" } },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
