@@ -63,15 +63,22 @@ export function InControlsDock({ children }: { children: ReactNode }) {
  * pass, then the primary button in the corner: "Next: Combat", "Resolve Lightning Bolt"). At most five controls show
  * at any size. The pass controls never scroll or leave the dock: what is above them gives way (`useDockFit`), first by
  * folding the stops into their button and setting the take-backs and stops side by side, last by scrolling itself.
+ * Off a phone the dock's body grows upwards past its cell for what the decision and the pass controls need.
  */
 export function ControlsDock({ stopsRow }: { stopsRow: boolean }) {
+  const phone = useContext(HomeSlotsContext)?.phone === true
+  // A phone's dock is other elements: it is mounted anew, so what watches the dock's parts watches the new ones.
+  return <Dock key={phone ? 'phone' : 'desk'} stopsRow={stopsRow} />
+}
+
+function Dock({ stopsRow }: { stopsRow: boolean }) {
   const setSlot = useContext(SetSlotContext)
   const homes = useContext(HomeSlotsContext)
   const dock = useRef<HTMLElement>(null)
   const upper = useRef<HTMLDivElement>(null)
   useEdgeFade(upper)
   const phone = homes?.phone === true
-  const { tight, least: upperLeast } = useDockFit(dock, upper, phone)
+  const { tight, least: upperLeast } = useDockFit(dock, upper)
   const { home } = useDecisionHome()
   const form = useDockForm()
   // A question other than priority answered here takes the stops' row: they fold into their button meanwhile.
@@ -210,7 +217,6 @@ const UPPER_MOST_PX = 76
 function useDockFit(
   dock: RefObject<HTMLElement | null>,
   upper: RefObject<HTMLElement | null>,
-  phone: boolean,
 ): { tight: boolean; least: number } {
   const [tightAt, setTightAt] = useState<number | null>(null)
   const [least, setLeast] = useState(0)
@@ -238,8 +244,7 @@ function useDockFit(
       sizes?.disconnect()
       content?.disconnect()
     }
-    // A phone's dock is another element: the watch moves with it.
-  }, [dock, upper, phone])
+  }, [dock, upper])
   const tight = tightAt !== null
   return { tight, least: tight ? least : 0 }
 }
