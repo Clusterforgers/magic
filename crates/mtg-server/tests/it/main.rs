@@ -54,6 +54,7 @@ mod pg_bot_seats;
 mod pg_bulk_reads;
 mod pg_card_decks;
 mod pg_card_rules;
+mod pg_card_support;
 mod pg_cards_api;
 mod pg_commander;
 mod pg_commander_pairs;

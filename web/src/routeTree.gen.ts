@@ -22,6 +22,7 @@ import { Route as ReadRouteImport } from './routes/read'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ReviewRouteImport } from './routes/review'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SupportRouteImport } from './routes/support'
 import { Route as TournamentsRouteImport } from './routes/tournaments'
 import { Route as AdminGamesRouteImport } from './routes/admin.games'
 import { Route as DecksDeckIdRouteImport } from './routes/decks_.$deckId'
@@ -108,6 +109,11 @@ const ReviewRoute = ReviewRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SupportRoute = SupportRouteImport.update({
+  id: '/support',
+  path: '/support',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TournamentsRoute = TournamentsRouteImport.update({
@@ -235,6 +241,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/tournaments': typeof TournamentsRoute
   '/admin/games': typeof AdminGamesRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
@@ -272,6 +279,7 @@ export interface FileRoutesByTo {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/tournaments': typeof TournamentsRoute
   '/admin/games': typeof AdminGamesRoute
   '/decks/$deckId': typeof DecksDeckIdRoute
@@ -310,6 +318,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/review': typeof ReviewRoute
   '/settings': typeof SettingsRoute
+  '/support': typeof SupportRoute
   '/tournaments': typeof TournamentsRoute
   '/admin/games': typeof AdminGamesRoute
   '/decks_/$deckId': typeof DecksDeckIdRoute
@@ -349,6 +358,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/support'
     | '/tournaments'
     | '/admin/games'
     | '/decks/$deckId'
@@ -386,6 +396,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/support'
     | '/tournaments'
     | '/admin/games'
     | '/decks/$deckId'
@@ -423,6 +434,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/review'
     | '/settings'
+    | '/support'
     | '/tournaments'
     | '/admin/games'
     | '/decks_/$deckId'
@@ -461,6 +473,7 @@ export interface RootRouteChildren {
   RegisterRoute: typeof RegisterRoute
   ReviewRoute: typeof ReviewRoute
   SettingsRoute: typeof SettingsRoute
+  SupportRoute: typeof SupportRoute
   TournamentsRoute: typeof TournamentsRoute
   AdminGamesRoute: typeof AdminGamesRoute
   DecksDeckIdRoute: typeof DecksDeckIdRoute
@@ -576,6 +589,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/support': {
+      id: '/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof SupportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/tournaments': {
@@ -749,6 +769,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegisterRoute: RegisterRoute,
   ReviewRoute: ReviewRoute,
   SettingsRoute: SettingsRoute,
+  SupportRoute: SupportRoute,
   TournamentsRoute: TournamentsRoute,
   AdminGamesRoute: AdminGamesRoute,
   DecksDeckIdRoute: DecksDeckIdRoute,

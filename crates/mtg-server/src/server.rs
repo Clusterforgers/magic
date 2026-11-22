@@ -24,6 +24,7 @@ use tower_http::set_header::SetResponseHeaderLayer;
 
 use crate::auth::{self, Auth};
 use crate::card_api;
+use crate::card_support;
 use crate::cards::CardSource;
 use crate::config::ServerConfig;
 use crate::delves::Delves;
@@ -484,6 +485,8 @@ pub(crate) fn router(state: AppState) -> Router {
             "/api/favourites/precons/{code}",
             put(favourites::put).delete(favourites::remove),
         )
+        .route("/api/card-support", get(card_support::overview))
+        .route("/api/card-support/missing", get(card_support::missing))
         .route("/api/fix-marks", get(fix_marks::list))
         .route(
             "/api/fix-marks/{oracle_id}",

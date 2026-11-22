@@ -89,6 +89,7 @@ mod bank;
 pub mod bots;
 mod bulk_reads;
 mod card_api;
+mod card_support;
 mod cards;
 pub mod config;
 mod cookie;

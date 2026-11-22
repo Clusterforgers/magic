@@ -22,6 +22,7 @@ use crate::rest::{
     TeamsBody, UserPrefs, UserView, VisibilityBody,
 };
 use crate::rest::{AdminGame, AdminGameList, AdminGameSeat, EndGameBody};
+use crate::rest::{CardSupport, MissingCards};
 use crate::rest::{CreateDelve, DelveAction, DelveContent, DelveLeaderboard, DelveList, DelveView};
 use crate::rest::{
     CreateTournament, JoinTournament, SetMatchOutcome, TournamentCreated, TournamentErrorCode,
@@ -103,6 +104,8 @@ pub fn export_to(dir: &Path) -> Result<(), BindingsError> {
     UserPrefs::export_all(&config)?;
     FixMarkBody::export_all(&config)?;
     FixMarkList::export_all(&config)?;
+    CardSupport::export_all(&config)?;
+    MissingCards::export_all(&config)?;
     LobbyList::export_all(&config)?;
     GameInfo::export_all(&config)?;
     JoinRequest::export_all(&config)?;
