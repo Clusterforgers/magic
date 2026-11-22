@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held FROM user_prefs WHERE user_id = $1",
+  "query": "SELECT default_stops, end_turn_by_hand, auto_order_triggers, auto_assign_damage, auto_smart_stops, auto_skip_triggers, auto_pay, auto_pay_all, auto_yields, hand_sort, full_control_held, stack_stops FROM user_prefs WHERE user_id = $1",
   "describe": {
     "columns": [
       {
@@ -123,6 +123,17 @@
             "name": "full_control_held"
           }
         }
+      },
+      {
+        "ordinal": 11,
+        "name": "stack_stops",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "user_prefs",
+            "name": "stack_stops"
+          }
+        }
       }
     ],
     "parameters": {
@@ -141,8 +152,9 @@
       false,
       false,
       true,
+      false,
       false
     ]
   },
-  "hash": "e8a6672b8d0d3e413c930d628bffef47ffa1a76917baacecad26ae39f741136a"
+  "hash": "420b9d878e1e7c4f18c657852a6e691e91fd951fa40b291d76820b1a9e9ddd8c"
 }

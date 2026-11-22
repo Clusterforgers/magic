@@ -14,6 +14,7 @@ import type {
   Stop,
 } from '@/protocol/generated'
 import { DEFAULT_HAND_SORT, legacyHandSort, readHandSort, sameHandSort } from './handSort'
+import { isStackStops, stackStopsOf } from './stackStops'
 import { canHoldStop } from './stops'
 
 /** The `localStorage` key of the default stops. */
@@ -134,6 +135,10 @@ function readAuto(): AutoChoices {
     skip_triggers: flags.skip_triggers === true,
     auto_pay: flags.auto_pay === true,
     auto_pay_all: flags.auto_pay_all === true,
+    // Left out unless a level other than the first was stored.
+    ...(isStackStops(flags.stack_stops) && flags.stack_stops !== 'All'
+      ? { stack_stops: flags.stack_stops }
+      : {}),
   }
 }
 
@@ -198,12 +203,15 @@ function store(next: FlowPrefs): void {
 
 /** Whether any decision is left to the server. */
 function hasAuto(auto: AutoChoices): boolean {
-  return AUTO_FLAGS.some((flag) => auto[flag] === true)
+  return AUTO_FLAGS.some((flag) => auto[flag] === true) || stackStopsOf(auto) !== 'All'
 }
 
 /** Whether `a` and `b` leave the same decisions to the server; a flag left out counts as off. */
 function sameAuto(a: AutoChoices, b: AutoChoices): boolean {
-  return AUTO_FLAGS.every((flag) => (a[flag] === true) === (b[flag] === true))
+  return (
+    AUTO_FLAGS.every((flag) => (a[flag] === true) === (b[flag] === true)) &&
+    stackStopsOf(a) === stackStopsOf(b)
+  )
 }
 
 /** Whether `prefs` are what a new account has. */

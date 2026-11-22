@@ -113,6 +113,8 @@ fn read(stored: StoredPrefs) -> UserPrefs {
             skip_triggers: stored.auto_skip_triggers,
             auto_pay: stored.auto_pay,
             auto_pay_all: stored.auto_pay_all,
+            // A word the server did not write reads as the default.
+            stack_stops: serde_json::from_value(stored.stack_stops.into()).unwrap_or_default(),
         },
         auto_yields: serde_json::from_value(stored.auto_yields).unwrap_or_default(),
         hand_sort: stored
@@ -152,6 +154,7 @@ pub(crate) async fn put(
             .transpose()
             .map_err(|_| ApiError::unavailable())?,
         full_control_held: prefs.full_control_held,
+        stack_stops: prefs.auto_choices.stack_stops.as_str().to_owned(),
     };
     s.repo
         .put(s.user, &stored)

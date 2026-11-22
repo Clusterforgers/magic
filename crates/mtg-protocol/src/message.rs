@@ -164,6 +164,43 @@ pub struct AutoChoices {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[ts(as = "Option<bool>", optional)]
     pub auto_pay_all: bool,
+    /// Which objects on top of the stack the seat is asked at; left out when it is asked at all of them.
+    #[serde(default, skip_serializing_if = "StackStops::is_all")]
+    #[ts(as = "Option<StackStops>", optional)]
+    pub stack_stops: StackStops,
+}
+
+/// Which spells and abilities on top of the stack a seat is asked at (see [`AutoChoices::stack_stops`]).
+///
+/// The server passes for the seat at once at every other object, out of Full Control. The rule reads what every player
+/// sees (who controls the object and what it targets), never the seat's hand or what it could do.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
+pub enum StackStops {
+    /// Every object, by the usual windows.
+    #[default]
+    All,
+    /// Only an opponent's object: the seat's own and its teammates' resolve unasked.
+    Opponents,
+    /// Only an opponent's object that targets the seat, a teammate or something one of them controls or owns.
+    Aimed,
+}
+
+impl StackStops {
+    /// Whether the seat is asked at every object, which is what an absent field reads as.
+    #[must_use]
+    pub fn is_all(&self) -> bool {
+        *self == StackStops::All
+    }
+
+    /// The word the level is written as on the wire and in an account's preferences.
+    #[must_use]
+    pub fn as_str(self) -> &'static str {
+        match self {
+            StackStops::All => "All",
+            StackStops::Opponents => "Opponents",
+            StackStops::Aimed => "Aimed",
+        }
+    }
 }
 
 /// A triggered or activated ability a seat lets resolve unasked for the rest of the game (see

@@ -10,6 +10,7 @@ import type { AutoChoices } from '@/protocol/generated'
 import { AUTO_SKIP_DESCRIPTION, autoSkipListName, ruleKey, ruleWords } from '../autoSkips'
 import { canSetStops } from '../selectors'
 import { PassTurnToggle } from './PassTurnToggle'
+import { StackStopsMenu } from './StackStopsMenu'
 
 /**
  * "Auto-skip triggers" beside Full Control: a switch that asks the server to pass for the seat at every triggered
@@ -17,7 +18,7 @@ import { PassTurnToggle } from './PassTurnToggle'
  * button that opens the per-card list: the triggers it auto-passes and its rules for its own triggers, each with a
  * remove button. The switch moves the moment it is pressed and keeps that value until the server's next auto choices
  * arrive, which then decide it; the list shows what the server holds. Full Control sets them all aside while on. The
- * "Pass until my turn" switch (`PassTurnToggle`) follows in the same group.
+ * "Pass until my turn" switch (`PassTurnToggle`) and the stack stops button (`StackStopsMenu`) follow in the same group.
  */
 export function AutoSkipToggle() {
   const { session } = useGame()
@@ -117,6 +118,7 @@ export function AutoSkipToggle() {
         </PopoverContent>
       </Popover>
       <PassTurnToggle />
+      <StackStopsMenu />
     </div>
   )
 }
