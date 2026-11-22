@@ -297,9 +297,16 @@ fn unpack(
             Cause::Seats,
         ));
     }
+    // A lobby's seats come back on the decks the recipe names, so Ready starts the game the recipe describes.
+    let decks = SeatDecks::of_recipe(recipe, catalog, &setup.conjurable).map_err(|error| {
+        Unloadable::new(
+            format!("the decks of its lobby do not build: {error}"),
+            Cause::Setup,
+        )
+    })?;
     Ok(Unpacked {
         checked: recipe.is_fingerprinted(),
-        decks: SeatDecks::of_recipe(recipe),
+        decks,
         bots: (recipe.bots.clone(), recipe.seed),
         format: recipe.format,
         seats: record

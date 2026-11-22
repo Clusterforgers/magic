@@ -106,6 +106,7 @@ mod pg_relaxed_decks;
 mod pg_replay;
 mod pg_resume;
 mod pg_resume_decks;
+mod pg_resume_lobby_decks;
 mod pg_seat_decks;
 mod pg_spectators;
 mod pg_store;

@@ -118,7 +118,30 @@ pub enum DeckRef {
         /// while empty, which is also how a recipe stored before the Satchel reads.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         satchel: Vec<String>,
+        /// What the table was told of the deck when the recipe was written, so a lobby that comes back after a restart
+        /// tells it alike; it changes nothing the game does. Left out while none, which is also how a recipe stored
+        /// before it reads.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        note: Option<Box<DeckNote>>,
     },
+}
+
+/// What the table is told of a deck of oracle ids, as a recipe keeps it.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct DeckNote {
+    /// The deck's name as the table sees it; the label of a deck drawn at random.
+    pub name: String,
+    /// The deck's format key.
+    pub format: String,
+    /// Copies of the main deck's cards that are not verified.
+    #[serde(default)]
+    pub manual_cards: u32,
+    /// How many rules of the table's format the deck breaks.
+    #[serde(default)]
+    pub warnings: u32,
+    /// The real name of a deck drawn at random, told at the start; left out for a deck chosen by name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub hidden: Option<String>,
 }
 
 /// One card of a stored Attraction deck: its oracle id and the numbers lit up on it.
@@ -142,6 +165,7 @@ impl DeckRef {
             attractions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
+            note: None,
         }
     }
 
@@ -292,18 +316,18 @@ impl Catalog {
 }
 
 /// The cards one seat's deck names.
-struct SeatCards {
-    library: Vec<Arc<CardDefinition>>,
-    commanders: Vec<Arc<CardDefinition>>,
-    companion: Option<Arc<CardDefinition>>,
-    attractions: Vec<AttractionCard>,
-    stickers: Vec<Arc<CardDefinition>>,
-    satchel: Vec<Arc<CardDefinition>>,
+pub(crate) struct SeatCards {
+    pub(crate) library: Vec<Arc<CardDefinition>>,
+    pub(crate) commanders: Vec<Arc<CardDefinition>>,
+    pub(crate) companion: Option<Arc<CardDefinition>>,
+    pub(crate) attractions: Vec<AttractionCard>,
+    pub(crate) stickers: Vec<Arc<CardDefinition>>,
+    pub(crate) satchel: Vec<Arc<CardDefinition>>,
 }
 
 impl SeatCards {
     /// What the recipe remembers of these cards.
-    fn fingerprint(&self) -> Result<DeckFingerprint, FingerprintError> {
+    pub(crate) fn fingerprint(&self) -> Result<DeckFingerprint, FingerprintError> {
         DeckFingerprint::of_seat_all(
             &self.library,
             &self.commanders,
@@ -682,8 +706,8 @@ impl GameRecipe {
         Ok(cards)
     }
 
-    /// The library, the commanders and the companion of every seat, in deck order.
-    fn resolve(&self, catalog: &Catalog) -> Result<Vec<SeatCards>, RecipeError> {
+    /// The cards of every seat's deck, in seat order, before a Delves fight is laid over them.
+    pub(crate) fn resolve(&self, catalog: &Catalog) -> Result<Vec<SeatCards>, RecipeError> {
         let mut seats = Vec::with_capacity(self.decks.len());
         for (seat, deck) in self.decks.iter().enumerate() {
             seats.push(match deck {
@@ -721,6 +745,7 @@ impl GameRecipe {
                     attractions,
                     stickers,
                     satchel,
+                    note: _,
                 } => {
                     let ids: Vec<String> = cards
                         .iter()
@@ -1171,6 +1196,7 @@ mod tests {
             attractions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
+            note: None,
         }
     }
 
@@ -1467,6 +1493,7 @@ mod tests {
             attractions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
+            note: None,
         }
     }
 
@@ -1594,6 +1621,7 @@ mod tests {
             attractions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
+            note: None,
         };
         let recipe = GameRecipe::normal(1, [deck.clone(), deck]);
         assert_eq!(recipe.card_art(), art(expected));
@@ -1610,6 +1638,7 @@ mod tests {
             attractions: Vec::new(),
             stickers: Vec::new(),
             satchel: Vec::new(),
+            note: None,
         };
         let recipe = GameRecipe::normal(
             1,

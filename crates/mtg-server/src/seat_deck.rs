@@ -20,11 +20,15 @@ use crate::cards::{canonical, reprinted, with_printings};
 use crate::deck_choice::format_issues;
 use crate::demo::{self, DemoDeck};
 use crate::recipe::{
-    AttractionRef, DeckFingerprint, DeckRef, FingerprintError, FormatKind, GameRecipe, merged_reads,
+    AttractionRef, Catalog, DeckFingerprint, DeckNote, DeckRef, FingerprintError, FormatKind,
+    GameRecipe, RecipeError, SeatCards, merged_reads,
 };
 
 /// The format key the table is told for a built-in deck.
 const DEMO_FORMAT: &str = "normal";
+
+/// The name a lobby that came back after a restart tells for a deck whose recipe kept none.
+const RESTORED_NAME: &str = "Deck";
 
 /// A deck chosen for a seat, as it was when it was chosen.
 #[derive(Debug, Clone)]
@@ -143,6 +147,7 @@ impl ChosenDeck {
                 attractions: Vec::new(),
                 stickers: Vec::new(),
                 satchel: Vec::new(),
+                note: None,
             },
             note,
             own_issues: Arc::from([]),
@@ -324,6 +329,76 @@ impl ChosenDeck {
     /// How the recipe names the deck.
     pub fn reference(&self) -> &DeckRef {
         &self.deck
+    }
+
+    /// The deck as a recipe stores it: its name for the cards with, for a deck of oracle ids, what the table is told
+    /// of it, so a lobby that comes back after a restart tells the same ([`ChosenDeck::restored`]).
+    pub fn recorded(&self) -> DeckRef {
+        let mut deck = self.deck.clone();
+        if let DeckRef::Oracle { note, .. } = &mut deck {
+            *note = Some(Box::new(DeckNote {
+                name: self.note.name.clone(),
+                format: self.note.format.clone(),
+                manual_cards: self.note.manual_cards,
+                warnings: self.note.warnings,
+                hidden: self.hidden.clone(),
+            }));
+        }
+        deck
+    }
+
+    /// The deck of oracle ids `deck` that a stored recipe of `format` names, from its `cards` as the recipe builds
+    /// them: the table is told what the recipe kept of it, and its cards play on `reads` and may conjure `conjured`,
+    /// the game's own. The issues of its own check are gone; the warnings the table was told stay.
+    pub(crate) fn restored(
+        deck: &DeckRef,
+        cards: SeatCards,
+        format: FormatKind,
+        reads: BTreeMap<String, String>,
+        conjured: BTreeMap<String, Arc<CardDefinition>>,
+    ) -> Result<ChosenDeck, FingerprintError> {
+        let fingerprint = cards.fingerprint()?;
+        let mut deck = deck.clone();
+        let kept = match &mut deck {
+            DeckRef::Oracle { note, .. } => note.take().map(|kept| *kept),
+            DeckRef::Demo { .. } => None,
+        };
+        let (note, hidden) = match kept {
+            Some(kept) => (
+                SeatDeck {
+                    name: kept.name,
+                    format: kept.format,
+                    manual_cards: kept.manual_cards,
+                    warnings: kept.warnings,
+                },
+                kept.hidden,
+            ),
+            // A recipe stored before the note keeps no name for the deck.
+            None => (
+                SeatDeck {
+                    name: RESTORED_NAME.to_owned(),
+                    format: format.as_str().to_owned(),
+                    manual_cards: 0,
+                    warnings: 0,
+                },
+                None,
+            ),
+        };
+        Ok(ChosenDeck {
+            cards: cards.library.into(),
+            commanders: cards.commanders.into(),
+            companion: cards.companion,
+            attractions: cards.attractions.into(),
+            stickers: cards.stickers.into(),
+            satchel: cards.satchel.into(),
+            deck,
+            fingerprint,
+            note,
+            own_issues: Arc::from([]),
+            reads,
+            conjured,
+            hidden,
+        })
     }
 
     /// The fingerprint of the cards the engine is given.
@@ -656,21 +731,39 @@ impl SeatDecks {
         self
     }
 
-    /// The lobby of a game stored in `recipe`: only built-in decks come back as chosen, since the
-    /// recipe keeps no name for a stored deck; its seat chooses again.
-    pub(crate) fn of_recipe(recipe: &GameRecipe) -> Self {
+    /// The lobby of a game stored in `recipe`, each seat on the deck the recipe names: a built-in deck by its id, a
+    /// deck of oracle ids rebuilt from `catalog` as the game builds it ([`ChosenDeck::restored`]), its cards on the
+    /// recipe's reads and the game's `conjured` cards. A Commander seat's stand-in and a built-in deck the server no
+    /// longer has come back without a deck.
+    pub(crate) fn of_recipe(
+        recipe: &GameRecipe,
+        catalog: &Catalog,
+        conjured: &BTreeMap<String, Arc<CardDefinition>>,
+    ) -> Result<Self, RecipeError> {
+        let seats = recipe.resolve(catalog)?;
         let defaults = recipe
             .decks
             .iter()
-            .map(|deck| match deck {
-                DeckRef::Demo { id } => demo::find(id).and_then(|deck| ChosenDeck::demo(deck).ok()),
-                DeckRef::Oracle { .. } => None,
+            .zip(seats)
+            .map(|(deck, cards)| match deck {
+                DeckRef::Demo { id } => {
+                    Ok(demo::find(id).and_then(|deck| ChosenDeck::demo(deck).ok()))
+                }
+                // Every seat holds the game's reads and conjured cards, so the recipe a changed seat writes keeps them.
+                DeckRef::Oracle { .. } => ChosenDeck::restored(
+                    deck,
+                    cards,
+                    recipe.format,
+                    recipe.reads.clone(),
+                    conjured.clone(),
+                )
+                .map(Some),
             })
-            .collect();
-        SeatDecks::new(recipe.format, recipe.seed, defaults)
+            .collect::<Result<_, FingerprintError>>()?;
+        Ok(SeatDecks::new(recipe.format, recipe.seed, defaults)
             .with_house_rules(recipe.house_rules.clone())
             .with_bots(recipe.bots.clone())
-            .with_campaign(recipe.campaign.clone())
+            .with_campaign(recipe.campaign.clone()))
     }
 
     /// What the table is told of `seat`'s deck.
@@ -776,7 +869,7 @@ impl SeatDecks {
             format: self.format,
             house_rules: self.house_rules.clone(),
             seed: self.seed,
-            decks: chosen.iter().map(|deck| deck.deck.clone()).collect(),
+            decks: chosen.iter().map(|deck| deck.recorded()).collect(),
             fingerprints: chosen.iter().map(|deck| deck.fingerprint).collect(),
             reads: merged_reads(chosen.iter().map(|deck| &deck.reads)),
             conjured: crate::recipe::fingerprints_of(&self.conjured()).ok()?,
@@ -788,7 +881,7 @@ impl SeatDecks {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a lobby's decks follow the seats: a seat plays what it chose until it is given back and then what the game was made with, a seat without a deck keeps the recipe from being written, and only a change from the creation decks asks for a new recipe. A commander table lifts the issues of the deck's own check that its relaxed rules replace, and a Normal game lifts none.
+    //! Goal: a lobby's decks follow the seats: a seat plays what it chose until it is given back and then what the game was made with, a seat without a deck keeps the recipe from being written, and only a change from the creation decks asks for a new recipe; a lobby read back from its recipe has every seat on its deck with the note the table was told (a plain name for a recipe stored before the note). A commander table lifts the issues of the deck's own check that its relaxed rules replace, and a Normal game lifts none.
     use mtg_cards::deck::IssueCode;
     use mtg_cards::vanilla;
     use mtg_core::color::Color;
@@ -936,9 +1029,13 @@ mod tests {
                 DeckRef::Demo {
                     id: "mono-green".into()
                 },
-                DeckRef::oracle(vec!["forest".into(); 60])
+                stored_deck("Burn").recorded()
             ]
         );
+        let DeckRef::Oracle { note, .. } = &recipe.decks[1] else {
+            panic!("a stored deck is named by oracle ids");
+        };
+        assert_eq!(note.as_ref().map(|n| n.name.as_str()), Some("Burn"));
         assert_eq!(recipe.fingerprints.len(), 2);
         assert_eq!(recipe.fingerprints[1], *stored_deck("Burn").fingerprint());
     }
@@ -957,27 +1054,54 @@ mod tests {
         assert!(decks.changed(), "a seat made without a deck chose one");
     }
 
-    #[test]
-    fn a_lobby_read_back_from_its_recipe_keeps_the_built_in_decks_and_forgets_the_stored_ones() {
-        let recipe = GameRecipe::normal(
+    fn forests() -> Catalog {
+        Catalog::new([("forest".to_owned(), vanilla::basic_land(Color::Green))])
+    }
+
+    #[rstest::rstest]
+    #[case::chosen_by_name(stored_deck("Burn"), "Burn", None)]
+    #[case::drawn_at_random(stored_deck("Burn").hidden_as("Random deck"), "Random deck", Some("Burn"))]
+    fn a_lobby_read_back_from_its_recipe_keeps_every_deck_as_the_table_was_told_it(
+        #[case] stored: ChosenDeck,
+        #[case] shown: &str,
+        #[case] revealed: Option<&str>,
+    ) {
+        let mut made = SeatDecks::new(
+            FormatKind::Normal,
             3,
-            [
-                DeckRef::Demo {
-                    id: "mono-white".into(),
-                },
-                DeckRef::oracle(vec!["forest".into(); 60]),
-                DeckRef::Demo {
-                    id: "no-such-deck".into(),
-                },
-            ],
+            vec![Some(demo_deck("mono-white")), Some(stored.clone()), None],
         );
-        let decks = SeatDecks::of_recipe(&recipe);
+        made.choose(2, ChosenDeck::commander_stand_in().unwrap());
+        let recipe = made.recipe().unwrap();
+        let decks = SeatDecks::of_recipe(&recipe, &forests(), &BTreeMap::new()).unwrap();
         assert_eq!(
             decks.note(0).map(|n| n.name.as_str()),
             Some("Mono White Weenies")
         );
-        assert!(!decks.has(1) && !decks.has(2));
+        assert_eq!(decks.note(1), Some(stored.note()));
+        assert_eq!(decks.note(1).map(|n| n.name.as_str()), Some(shown));
+        assert_eq!(
+            decks.revealed(),
+            revealed
+                .map(|name| vec![(1, name.to_owned())])
+                .unwrap_or_default()
+        );
+        let back = decks.current[1].as_ref().unwrap();
+        assert_eq!(back.fingerprint(), stored.fingerprint());
+        assert_eq!(back.reference(), stored.reference());
+        assert!(!decks.has(2), "a stand-in is no deck");
         assert!(!decks.changed());
+    }
+
+    #[test]
+    fn a_recipe_stored_before_the_note_brings_its_deck_back_under_a_plain_name() {
+        let recipe = GameRecipe::normal(3, [DeckRef::oracle(vec!["forest".into(); 60])]);
+        let decks = SeatDecks::of_recipe(&recipe, &forests(), &BTreeMap::new()).unwrap();
+        assert_eq!(decks.note(0).map(|n| n.name.as_str()), Some(RESTORED_NAME));
+        assert_eq!(
+            *decks.current[0].as_ref().unwrap().fingerprint(),
+            *stored_deck("x").fingerprint()
+        );
     }
 }
 

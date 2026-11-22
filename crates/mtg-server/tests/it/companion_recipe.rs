@@ -50,6 +50,7 @@ fn oracle(ids: &[String], companion: Option<&str>) -> DeckRef {
         attractions: Vec::new(),
         stickers: Vec::new(),
         satchel: Vec::new(),
+        note: None,
     }
 }
 
