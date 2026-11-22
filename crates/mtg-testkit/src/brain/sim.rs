@@ -681,9 +681,7 @@ pub(crate) fn walker_play(
         .filter(|ability| {
             seen.controller(ability.object) == Some(seen.seat())
                 && seen.chars(ability.object).is_some_and(|chars| {
-                    chars
-                        .types
-                        .contains(mtg_core::card::CardType::Planeswalker)
+                    chars.types.contains(mtg_core::card::CardType::Planeswalker)
                 })
         })
         .min_by_key(|ability| (ability.object, ability.ability))

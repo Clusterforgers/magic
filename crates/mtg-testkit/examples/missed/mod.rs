@@ -13,7 +13,7 @@ use mtg_engine::decision::{Answer, DecisionKind, PriorityAction};
 use mtg_engine::turn::Step;
 use mtg_engine::{Decision, Engine};
 use mtg_testkit::brain::priority::{Window, window};
-use mtg_testkit::brain::{Horizon, Search, Seen, SeatBrain, Settings};
+use mtg_testkit::brain::{Horizon, Search, SeatBrain, Seen, Settings};
 
 /// The counts by kind, over every wrapped seat.
 pub static TALLY: Mutex<BTreeMap<String, u64>> = Mutex::new(BTreeMap::new());
@@ -75,11 +75,19 @@ fn check(
         bump(format!("activated {at:?}"));
         if step == Step::Main1
             && at == Window::Main
-            && seen.body(source).is_some_and(|b| b.is_creature() && !b.tapped && b.power() > 0)
+            && seen
+                .body(source)
+                .is_some_and(|b| b.is_creature() && !b.tapped && b.power() > 0)
             && !mtg_engine::keywords::summoning_sick(engine.state(), source)
         {
             let mut copy = engine.clone();
-            if mtg_testkit::bot::apply_answer(&mut copy, &engine.decision().unwrap().clone(), answer.clone()).is_ok() {
+            if mtg_testkit::bot::apply_answer(
+                &mut copy,
+                &engine.decision().unwrap().clone(),
+                answer.clone(),
+            )
+            .is_ok()
+            {
                 let tapped = copy
                     .state()
                     .object(source)

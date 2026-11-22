@@ -155,24 +155,26 @@ pub fn plan_priority(
         Horizon::Settle
     };
     let follow_ups = window == Window::Main && search.settings().sequences;
-    let judged = judge_plays(search, engine, &seen, window, &plays, horizon, follow_ups);
-    let cut = matches!(judged, Judged::Cut(_));
-    let play = match judged {
-        Judged::Done(play) => play,
-        // The clock or the count ran out before every play was judged: judge them again until the stack settles, on a
-        // short clock of its own, rather than pass for want of time.
-        Judged::Cut(play) if play == PriorityAction::Pass && window != Window::Combat => {
-            let mut quick = Search::new(search.seat(), search.settings().quick(), 0x51_E77E);
-            match judge_plays(&mut quick, engine, &seen, window, &plays, Horizon::Settle, false) {
-                Judged::Done(play) => play,
-                Judged::Cut(play) if play == PriorityAction::Pass && window == Window::Main => {
-                    super::sim::walker_play(&seen, options)
-                }
-                Judged::Cut(play) => play,
-            }
+    let Judged { mut play, cut } =
+        judge_plays(search, engine, &seen, window, &plays, horizon, follow_ups);
+    // The clock or the count ran out before every play was judged: judge them again until the stack settles, on a short
+    // clock of its own, rather than pass for want of time; a walker that still has nothing judged uses its first ability.
+    if cut && play == PriorityAction::Pass && window != Window::Combat {
+        let mut quick = Search::new(search.seat(), search.settings().quick(), 0x51_E77E);
+        let again = judge_plays(
+            &mut quick,
+            engine,
+            &seen,
+            window,
+            &plays,
+            Horizon::Settle,
+            false,
+        );
+        play = again.play;
+        if again.cut && play == PriorityAction::Pass && window == Window::Main {
+            play = super::sim::walker_play(&seen, options);
         }
-        Judged::Cut(play) => play,
-    };
+    }
     CUTS.with(|cell| {
         let (judged, cuts, rescued) = cell.get();
         cell.set((
@@ -221,11 +223,11 @@ fn new_attacker(before: &Engine, after: &Engine, seat: mtg_core::ids::PlayerId) 
 }
 
 /// The play [`judge_plays`] found, and whether it judged every play.
-enum Judged {
-    /// Every play was simulated.
-    Done(PriorityAction),
+struct Judged {
+    /// The play, a pass when none beats passing.
+    play: PriorityAction,
     /// The budget ran out before every play (or the pass) was simulated.
-    Cut(PriorityAction),
+    cut: bool,
 }
 
 /// The play among `plays` whose outcome at `horizon` beats passing by the knob `margin` (and, outside combat, changes
@@ -243,7 +245,10 @@ fn judge_plays(
     let combat = window == Window::Combat;
     let pass = Answer::Priority(PriorityAction::Pass);
     let Some(baseline) = search.outcome(engine, pass, horizon) else {
-        return Judged::Cut(PriorityAction::Pass);
+        return Judged {
+            play: PriorityAction::Pass,
+            cut: true,
+        };
     };
     let mut best: Option<(f64, PriorityAction)> = None;
     let mut scored: Vec<(f64, PriorityAction, Engine)> = Vec::new();
@@ -268,7 +273,11 @@ fn judge_plays(
                 continue;
             }
             let through = *pass_through.get_or_insert_with(|| {
-                search.outcome(engine, Answer::Priority(PriorityAction::Pass), Horizon::EndOfTurn)
+                search.outcome(
+                    engine,
+                    Answer::Priority(PriorityAction::Pass),
+                    Horizon::EndOfTurn,
+                )
             });
             let Some(through) = through else {
                 continue;
@@ -301,9 +310,7 @@ fn judge_plays(
         } else {
             score > baseline.score + knobs.margin
         };
-        if wins
-            && best.as_ref().is_none_or(|(held, _)| score > *held)
-        {
+        if wins && best.as_ref().is_none_or(|(held, _)| score > *held) {
             best = Some((score, play.clone()));
         }
     }
@@ -315,11 +322,9 @@ fn judge_plays(
         )
         .or(best);
     }
-    let play = best.map_or(PriorityAction::Pass, |(_, play)| play);
-    if complete {
-        Judged::Done(play)
-    } else {
-        Judged::Cut(play)
+    Judged {
+        play: best.map_or(PriorityAction::Pass, |(_, play)| play),
+        cut: !complete,
     }
 }
 

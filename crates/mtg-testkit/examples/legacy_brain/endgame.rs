@@ -13,8 +13,8 @@ use super::eval::Weights;
 use super::seen::Seen;
 use super::sim::{Horizon, SIM_STEPS, Search, Start, minimal, reached};
 use super::threat;
-use mtg_testkit::bot::apply_answer;
 use mtg_engine::decision::{Answer, PriorityAction};
+use mtg_testkit::bot::apply_answer;
 
 /// Redealt worlds an answer must win in to count as a forced win.
 const WORLDS: u64 = 3;
