@@ -152,6 +152,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
+        | Effect::R116Assimilate { .. }
         | Effect::R6400Block { .. }
         | Effect::R115ExchangeBlocks { .. }
         | Effect::R115ExchangeBlockers { .. }

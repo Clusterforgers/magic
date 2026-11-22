@@ -29,6 +29,7 @@ mod detect_turn_nth;
 mod l291_detect;
 mod life_floor;
 mod queue;
+mod r116_dilemma;
 mod reads_x;
 mod state;
 mod w11c_crime;
@@ -60,6 +61,7 @@ pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::{ByHandDue, detect, due};
 pub(crate) use detect::{needs_before, step_matches};
 pub use queue::{PendingTrigger, RunMember, TriggerRun, effect_words, public_cause};
+pub(crate) use r116_dilemma::r116_note_dilemma;
 pub(crate) use reads_x::read as x_read;
 pub(crate) use w11c_crime::g10c_note_crime;
 

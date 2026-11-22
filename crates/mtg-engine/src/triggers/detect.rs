@@ -92,6 +92,8 @@ enum Happened {
     },
     /// A player committed a crime (CR 700.13).
     W11cCrime { player: PlayerId },
+    /// A player faced a dilemma: they chose the modes of a spell or ability (CR 700.2).
+    R116Dilemma { player: PlayerId },
     /// A player's cast spent mana: the total of mana they spent to cast spells this turn went from `from` to `to`.
     Expended {
         player: PlayerId,
@@ -715,6 +717,10 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 });
                 found.extend(w9a_expended(post, look.later, *player, choices));
                 found.extend(w11c_crime(post, *player, choices));
+                found.extend(
+                    super::r116_dilemma::r116_dilemma_of(*player, choices)
+                        .map(|player| Happened::R116Dilemma { player }),
+                );
                 found.extend(targeted(look, choices, (*object, *player)));
             }
             Event::AbilityPutOnStack(put) => {
@@ -723,6 +729,10 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     player: put.controller,
                 });
                 found.extend(w11c_crime(post, put.controller, &put.choices));
+                found.extend(
+                    super::r116_dilemma::r116_dilemma_of(put.controller, &put.choices)
+                        .map(|player| Happened::R116Dilemma { player }),
+                );
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
             }
             Event::SpellCopied(copy) => {
@@ -2249,7 +2259,8 @@ fn matching_event(
         _ => matching_player_action(pattern, happened, scope)
             .or_else(|| matching_permanents(pattern, happened, scope))
             .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope))
-            .or_else(|| phase_began(pattern, happened, scope)),
+            .or_else(|| phase_began(pattern, happened, scope))
+            .or_else(|| r116_dilemma_matching(pattern, happened, scope)),
     }
 }
 
@@ -3397,6 +3408,22 @@ fn r5502_at_or_walkers(post: &GameState, attackers: &[(ObjectId, AttackTarget)])
         .into_iter()
         .map(|(at, attackers)| Happened::R5502AttackedAtOrWalkers { attackers, at })
         .collect()
+}
+/// "Whenever you face a dilemma": the dilemma of a player the pattern names.
+fn r116_dilemma_matching(
+    pattern: &TriggerPattern,
+    happened: &Happened,
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let (TriggerPattern::R116Dilemma { who }, Happened::R116Dilemma { player }) =
+        (pattern, happened)
+    else {
+        return None;
+    };
+    scope
+        .players(who)
+        .is_ok_and(|named| named.contains(player))
+        .then(|| counted(scope.state, vec![Target::Player(*player)], 0))
 }
 
 #[cfg(test)]

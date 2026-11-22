@@ -170,6 +170,7 @@ mod r114_life_paid;
 mod r115_04_call_to_arms;
 mod r115_04_torrent_of_lava;
 mod r115_flashback_among;
+mod r116_beam_me_up;
 mod r1a_spend;
 mod r281_cards;
 mod r281_kicked_spend;

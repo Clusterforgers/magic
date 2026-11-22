@@ -1,0 +1,63 @@
+{
+  "oracle_id": "3f5db55a-8bae-4e97-86bd-f2a2dacf07a4",
+  "name": "Grizzlegom, Hurloon Hero",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grizzlegom, Hurloon Hero",
+      "oracle_fingerprint": "578257b76db342739e522c2309cc312a",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "R116Rulebreaker": "A deck with this commander can have any land cards" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Soldier",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Soldier"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Count": [{ "Subtype": "Plains" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "Draw": {
+                  "count": { "Count": [{ "Subtype": "Island" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "LoseLife": {
+                  "who": "Opponents",
+                  "amount": { "Count": [{ "Subtype": "Swamp" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": { "Count": [{ "Subtype": "Mountain" }, { "ControlledBy": "You" }] }
+                }
+              },
+              {
+                "GainLife": {
+                  "amount": { "Count": [{ "Subtype": "Forest" }, { "ControlledBy": "You" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

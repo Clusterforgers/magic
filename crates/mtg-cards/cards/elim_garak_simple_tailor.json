@@ -1,0 +1,23 @@
+{
+  "oracle_id": "c83465bd-f95f-4c57-b9ce-925a85b45276",
+  "name": "Elim Garak, Simple Tailor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Elim Garak, Simple Tailor",
+      "oracle_fingerprint": "465d672a92849512040d467784dfb640",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "R116Dilemma": { "who": "You" } },
+            "effects": [
+              { "LoseLife": { "who": "Opponents", "amount": 2 } },
+              { "GainLife": { "amount": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

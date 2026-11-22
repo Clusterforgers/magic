@@ -130,6 +130,10 @@ export const CASTING: readonly Entry[] = [
     'You may cast this card from your graveyard for its harmonize cost. You may tap a creature you control to reduce that cost by its power. Then exile this card.',
   ],
   [
+    'Beam me up',
+    "You may cast this card from your graveyard for its beam me up cost if you also return a creature you control to its owner's hand. Then exile this spell.",
+  ],
+  [
     'Disturb',
     'You may cast this card transformed from your graveyard for its disturb cost. If it would go to a graveyard, exile it instead.',
   ],

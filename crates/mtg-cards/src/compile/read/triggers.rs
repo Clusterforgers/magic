@@ -791,6 +791,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     } else if verb == if third { "commits" } else { "commit" } {
         r.need("a crime")?;
         Some(TriggerPattern::W11cCrime { who: by })
+    } else if verb == if third { "faces" } else { "face" } {
+        r.need("a dilemma")?;
+        Some(TriggerPattern::R116Dilemma { who: by })
     } else if verb == if third { "activates" } else { "activate" } {
         super::l294_activations::event(r, by)
     } else if verb == if third { "taps" } else { "tap" } {
@@ -1688,6 +1691,9 @@ fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::W11cCrime { who } => {
             return Some(format!("Whenever {} a crime", player_verb(who, "commit")?));
         }
+        TriggerPattern::R116Dilemma { who } => {
+            return Some(format!("Whenever {} a dilemma", player_verb(who, "face")?));
+        }
         TriggerPattern::Bolstered { who } => (who, "bolster", None),
         TriggerPattern::Surveilled { who } => (who, "surveil", None),
         _ => return None,
@@ -1830,6 +1836,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Amassed { .. }
         | TriggerPattern::Expend { .. }
         | TriggerPattern::W11cCrime { .. }
+        | TriggerPattern::R116Dilemma { .. }
         | TriggerPattern::Bolstered { .. }
         | TriggerPattern::Surveilled { .. } => w9a_player_action_text(pattern),
         TriggerPattern::LifeGained { who } => {

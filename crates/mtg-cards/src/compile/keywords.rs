@@ -179,6 +179,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("prowl", Params::Cost),
     ("mayhem", Params::Cost),
     ("emerge", Params::Cost),
+    ("beam me up", Params::Cost),
     ("harmonize", Params::Cost),
     ("transmute", Params::Cost),
     ("transfigure", Params::Cost),
@@ -486,6 +487,7 @@ pub fn read(item: &str) -> Option<Keyword> {
         "emerge" => spell_cost(rest).map(Keyword::Emerge),
         "emerge from artifact" => spell_cost(rest).map(Keyword::R6701EmergeFromArtifact),
         "harmonize" => spell_cost(rest).map(Keyword::Harmonize),
+        "beam me up" => spell_cost(rest).map(Keyword::R116BeamMeUp),
         "spectacle" => spell_cost(rest).map(Keyword::Spectacle),
         "freerunning" => spell_cost(rest).map(Keyword::Freerunning),
         "afterlife" => positive(rest).map(Keyword::Afterlife),
@@ -2277,6 +2279,7 @@ mod tests {
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
             "Fox offering",
+            "Beam me up {3}{U}",
         ];
         let mut seen = Vec::new();
         for sample in samples {

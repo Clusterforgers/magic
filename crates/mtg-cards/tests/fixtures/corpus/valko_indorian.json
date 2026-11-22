@@ -1,0 +1,134 @@
+{
+  "object": "card",
+  "id": "a0b51fb8-6e5a-479d-aa3a-17cf603dd05c",
+  "oracle_id": "8023d419-8fd2-4b92-b6ea-f25fd67e6410",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709774,
+  "cardmarket_id": 917914,
+  "name": "Valko Indorian",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c",
+  "scryfall_uri": "https://scryfall.com/card/mbc/60/valko-indorian?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-23T07:50:51Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.jpg?1792741851",
+    "normal": "https://cards.scryfall.io/normal/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.jpg?1792741851",
+    "large": "https://cards.scryfall.io/large/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.jpg?1792741851",
+    "png": "https://cards.scryfall.io/png/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.png?1792741851",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.jpg?1792741851",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.jpg?1792741851",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.webp?1792741851",
+    "grid": "https://cards.scryfall.io/grid/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.webp?1792741851",
+    "display": "https://cards.scryfall.io/display/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.webp?1792741851",
+    "art": "https://cards.scryfall.io/art/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.webp?1792741851",
+    "crop": "https://cards.scryfall.io/crop/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.webp?1792741851",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/0/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c.jpg?1792741851"
+  },
+  "mana_cost": "{3}{B}",
+  "cmc": 4,
+  "type_line": "Legendary Creature — Human Wizard",
+  "oracle_text": "Rulebreaker — A deck with this commander can have Phyrexian cards of any color identity and any basic land cards.\nPhyrexian creatures you control have menace and lifelink.",
+  "power": "2",
+  "toughness": "4",
+  "colors": [
+    "B"
+  ],
+  "color_identity": [
+    "B"
+  ],
+  "keywords": [
+    "Rulebreaker"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "not_legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "not_legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/a0b51fb8-6e5a-479d-aa3a-17cf603dd05c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A8023d419-8fd2-4b92-b6ea-f25fd67e6410&unique=prints",
+  "collector_number": "60",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"xe [being organic pl 2:4] 'št[mother pl 2:2] [weep 2:3], loxuφ [being mixed organic/inorganic pl 2:4] φl[phyrexia-eternal-love] [comfort 1:2]. ^'elš norn.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Paolo Parente",
+  "artist_ids": [
+    "d48dd097-720d-476a-8722-6a02854ae28b"
+  ],
+  "illustration_id": "8db91c31-f76b-48db-beec-1c5e6f5cedc5",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 24257,
+  "prices": {
+    "usd": "8.12",
+    "usd_foil": "110.97",
+    "usd_etched": null,
+    "eur": "5.02",
+    "eur_foil": "75.00",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DValko%2BIndorian",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DValko%2BIndorian",
+    "edhrec": "https://edhrec.com/route/?cc=Valko+Indorian"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709774%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=917914&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=Valko+Indorian&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

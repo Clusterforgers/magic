@@ -1,0 +1,140 @@
+{
+  "object": "card",
+  "id": "24c7e179-c016-4db8-ad8b-aa5629152b5c",
+  "oracle_id": "e47c340d-b20b-4103-955b-3f76424c43f8",
+  "multiverse_ids": [],
+  "resource_id": "254C25B6EE0814BB5A11D327611ABCB69E8B31AC162351AC1A6606B7865AA5EC",
+  "mtgo_id": 158460,
+  "tcgplayer_id": 725937,
+  "cardmarket_id": 919313,
+  "name": "Pah-Wraith",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/24c7e179-c016-4db8-ad8b-aa5629152b5c",
+  "scryfall_uri": "https://scryfall.com/card/trk/160/pah-wraith?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-26T11:19:55Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.jpg?1793013595",
+    "normal": "https://cards.scryfall.io/normal/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.jpg?1793013595",
+    "large": "https://cards.scryfall.io/large/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.jpg?1793013595",
+    "png": "https://cards.scryfall.io/png/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.png?1793013595",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.jpg?1793013595",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.jpg?1793013595",
+    "thumb": "https://cards.scryfall.io/thumb/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.webp?1793013595",
+    "grid": "https://cards.scryfall.io/grid/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.webp?1793013595",
+    "display": "https://cards.scryfall.io/display/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.webp?1793013595",
+    "art": "https://cards.scryfall.io/art/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.webp?1793013595",
+    "crop": "https://cards.scryfall.io/crop/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.webp?1793013595",
+    "jpeg": "https://cards.scryfall.io/normal/front/2/4/24c7e179-c016-4db8-ad8b-aa5629152b5c.jpg?1793013595"
+  },
+  "mana_cost": "{5}{R}{R}",
+  "cmc": 7,
+  "type_line": "Creature — Wraith",
+  "oracle_text": "First strike, haste\nStrange new worlds — Whenever this creature attacks, creatures you control get +X/+0 until end of turn, where X is the number of differently named lands you control.",
+  "power": "4",
+  "toughness": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "First strike",
+    "Haste",
+    "Strange new worlds"
+  ],
+  "legalities": {
+    "standard": "legal",
+    "future": "legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "legal",
+    "modern": "legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set": "trk",
+  "set_name": "Star Trek",
+  "set_type": "expansion",
+  "set_uri": "https://api.scryfall.com/sets/b47039dc-da5a-448c-8feb-e77d458108a6",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrk&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trk?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/24c7e179-c016-4db8-ad8b-aa5629152b5c/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ae47c340d-b20b-4103-955b-3f76424c43f8&unique=prints",
+  "collector_number": "160",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "Know power. Know adoration. All you must do is accept their love.",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nino Vecia",
+  "artist_ids": [
+    "21466232-678a-4836-89fd-82cb15f52366"
+  ],
+  "illustration_id": "64ebd71d-9d49-4fb9-8a7e-4664bed9b0d3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "universesbeyond"
+  ],
+  "edhrec_rank": 31498,
+  "prices": {
+    "usd": "0.28",
+    "usd_foil": "0.64",
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": "0.98",
+    "tix": "0.25"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DPah-Wraith",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DPah-Wraith",
+    "edhrec": "https://edhrec.com/route/?cc=Pah-Wraith"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F725937%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919313&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/158460?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

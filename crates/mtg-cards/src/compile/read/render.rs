@@ -713,6 +713,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r113_04_wholes::r113_04_add_wholes(ability, &mut texts);
     super::r114_04_wholes::r114_04_add_wholes(ability, &mut texts);
     super::r115_04_wholes::r115_04_add_wholes(ability, &mut texts);
+    super::r116_01_wholes::r116_01_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
     super::r6703_wholes::r6703_add_wholes(ability, &mut texts);
@@ -2045,6 +2046,7 @@ fn is_imperative(effect: &Effect) -> bool {
                 | Effect::RemoveFromCombat { .. }
                 | Effect::Regenerate { .. }
                 | Effect::Counter { .. }
+                | Effect::R116Assimilate { .. }
                 | Effect::Move { .. }
                 | Effect::CreateToken { who: Ref::You, .. }
                 | Effect::PutCounters { .. }
@@ -3040,6 +3042,7 @@ impl Writer<'_> {
                 format!("{} fights {}", self.object(what)?, self.object(with)?)
             }
             Effect::Regenerate { what } => format!("regenerate {}", self.object(what)?),
+            Effect::R116Assimilate { what } => format!("assimilate {}", self.object(what)?),
             Effect::Counter { what, bind: None } => format!("counter {}", self.object(what)?),
             _ => return None,
         })
@@ -3174,6 +3177,7 @@ impl Writer<'_> {
             | Effect::Fight { .. }
             | Effect::Regenerate { .. }
             | Effect::Unattach { .. }
+            | Effect::R116Assimilate { .. }
             | Effect::Counter { .. } => self.on_objects(effect)?,
             Effect::Continuous {
                 affected,

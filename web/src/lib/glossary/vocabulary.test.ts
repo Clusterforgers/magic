@@ -41,6 +41,7 @@ const CAST_WAYS: Record<CastWay, string> = {
   Offering: 'Offering',
   Emerge: 'Emerge',
   Harmonize: 'Harmonize',
+  R116BeamMeUp: 'Beam me up',
   Cleave: 'Cleave',
   Alternative: 'Alternative cost',
 }

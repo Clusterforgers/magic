@@ -40,7 +40,7 @@ use crate::value::{Amount, Condition, CounterKind};
 pub(super) type Template = fn(&mut Reader<'_>) -> Option<Vec<Effect>>;
 
 /// The sentence shapes, tried in this order.
-const TEMPLATES: [Template; 130] = [
+const TEMPLATES: [Template; 131] = [
     super::keyword_actions::keyword_action,
     super::r4706_counters::r4706_same_counters,
     super::r404_look::r404_look_face_down,
@@ -125,6 +125,7 @@ const TEMPLATES: [Template; 130] = [
     evasion,
     super::zone_moves::from_graveyard,
     super::zone_moves::may_put_from_hand,
+    assimilate_card,
     return_card,
     return_chosen,
     super::zone_moves::return_from_graveyard,
@@ -174,7 +175,7 @@ const TEMPLATES: [Template; 130] = [
 ];
 
 /// The shapes that begin with a verb ("you" is the subject): "you may" can stand before each.
-pub(super) const IMPERATIVES: [Template; 20] = [
+pub(super) const IMPERATIVES: [Template; 21] = [
     super::r4706_counters::r4706_same_counters,
     super::actions::goad,
     super::actions::suspect,
@@ -182,6 +183,7 @@ pub(super) const IMPERATIVES: [Template; 20] = [
     chain,
     removal,
     super::zone_moves::from_graveyard,
+    assimilate_card,
     return_card,
     return_chosen,
     copies::token_copy,
@@ -992,6 +994,14 @@ pub(super) fn describes_a_kind(pred: &Pred) -> bool {
         Pred::AnyOf(preds) => preds.iter().all(describes_a_kind),
         _ => false,
     }
+}
+
+/// "Assimilate target creature card from an opponent's graveyard.", "Assimilate target nonartifact creature an opponent
+/// controls." (`Effect::R116Assimilate`).
+fn assimilate_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    r.need("assimilate")?;
+    let what = target_object(r).or_else(|| up_to_one_object(r))?;
+    Some(vec![Effect::R116Assimilate { what }])
 }
 
 /// "Return target card from your graveyard to your hand.", "Return target creature to its owner's

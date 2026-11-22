@@ -1,0 +1,39 @@
+{
+  "oracle_id": "dbbf6379-01b4-400d-a277-5887e6be1d0f",
+  "name": "Seluma, Light of Aysen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Seluma, Light of Aysen",
+      "oracle_fingerprint": "f88b59c07e6b7bcee216c09cb961247d",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R116Rulebreaker": "A deck with this commander can have Angel cards of any color identity and any basic land cards"
+            }
+          }
+        },
+        { "Keyword": "Flying" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "Subtype": "Angel" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

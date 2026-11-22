@@ -1,0 +1,41 @@
+{
+  "oracle_id": "e47c340d-b20b-4103-955b-3f76424c43f8",
+  "name": "Pah-Wraith",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pah-Wraith",
+      "oracle_fingerprint": "04889573b144d035cd6985da0bb07bd1",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "Attacks": { "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Distinct": {
+                            "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                            "stat": "Name"
+                          }
+                        },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

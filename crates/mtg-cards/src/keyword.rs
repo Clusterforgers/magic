@@ -413,6 +413,10 @@ pub enum Keyword {
     R6701EmergeFromArtifact(Cost),
     /// Harmonize with its cost (CR 702.180): an alternative cost to cast the card from its owner's graveyard, reduced by the power of a creature its caster may tap; the spell is exiled when it leaves the stack.
     Harmonize(Cost),
+    /// Beam me up with its cost: "You may cast this card from your graveyard for <cost> if you also return a creature you
+    /// control to its owner's hand. Then exile this spell." An alternative cost from its owner's graveyard with the return
+    /// as an additional cost; the spell is exiled when it leaves the stack.
+    R116BeamMeUp(Cost),
     /// Read ahead (CR 702.155): as the Saga enters, its controller chooses a chapter number and it enters with that many lore counters; chapter abilities with a lower number don't trigger.
     ReadAhead,
     /// Exert as it attacks (CR 701.43): its controller may exert the creature as it is declared an attacker; with
@@ -692,6 +696,7 @@ impl Keyword {
         "Emerge from artifact",
         "Offering",
         "Harmonize",
+        "Beam me up",
         "Read ahead",
         "Exert",
         "Flash, sacrificed at cleanup",
@@ -929,6 +934,7 @@ impl Keyword {
             Keyword::R6701EmergeFromArtifact(_) => "Emerge from artifact",
             Keyword::Offering(_) => "Offering",
             Keyword::Harmonize(_) => "Harmonize",
+            Keyword::R116BeamMeUp(_) => "Beam me up",
             Keyword::ReadAhead => "Read ahead",
             Keyword::Exert { .. } => "Exert",
             Keyword::FlashSacrifice => "Flash, sacrificed at cleanup",
@@ -1253,6 +1259,7 @@ mod tests {
             Keyword::R6701EmergeFromArtifact(Cost::default()),
             Keyword::Offering(Selector::default()),
             Keyword::Harmonize(Cost::default()),
+            Keyword::R116BeamMeUp(Cost::default()),
             Keyword::ReadAhead,
             Keyword::Exert {
                 once_per_turn: true,

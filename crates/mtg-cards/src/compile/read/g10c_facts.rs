@@ -37,6 +37,13 @@ pub(super) fn texts(left: &Amount, op: Cmp, number: u32) -> Vec<String> {
         } => vec!["you've committed a crime this turn".to_owned()],
         Amount::Tallied {
             who: Ref::You,
+            what: TurnTally::R116Dilemmas,
+        } => vec![
+            "you faced a dilemma this turn".to_owned(),
+            "you've faced a dilemma this turn".to_owned(),
+        ],
+        Amount::Tallied {
+            who: Ref::You,
             what: TurnTally::CreatureCardsGraved,
         } => vec!["a creature card was put into your graveyard from anywhere this turn".to_owned()],
         Amount::Tally {

@@ -27,6 +27,7 @@ Adorned Pouncer
 Adriana, Captain of the Guard
 Adric, Mathematical Genius
 Adventurous Eater // Have a Bite
+Adversary by Algorithm
 Aegis of the Legion
 Aerialephant
 Aeromunculus
@@ -288,6 +289,7 @@ Blossoming Sands
 Blot Out the Sky
 Blue, Loyal Raptor
 Blustersquall
+Boarding Action
 Body Count
 Body Double
 Bog Witch
@@ -383,6 +385,7 @@ Canopy Vista
 Caprichrome
 Capsize
 Captain Marvel, Apex Avenger
+Captain Pike, Fullness of Time
 Captivating Crew
 Capture of Jingzhou
 Caravan Escort
@@ -816,6 +819,7 @@ Elenda, the Dusk Rose
 Elfhame Druid
 Elfhame Palace
 Eligeth, Crossroads Augur
+Elim Garak, Simple Tailor
 Eliminate the Competition
 Elite Arcanist
 Elspeth's Nightmare
@@ -840,6 +844,7 @@ Encroach
 End-Raze Forerunners
 Endless Obedience
 Endless One
+Energize
 Enigma Thief
 Enraged Revolutionary
 Entangling Trap
@@ -881,6 +886,7 @@ Evolutionary Leap
 Evolving Wilds
 Exalted Angel
 Exalted Dragon
+Excalbian Gamemaster
 Excavation Technique
 Exchange of Words
 Excise the Imperfect
@@ -941,6 +947,7 @@ Fearsome Goblin Pair
 Feaster of Fools
 Feasting Hobbit
 Feather, the Redeemed
+Federation Resupply
 Felidar Sovereign
 Fellwar Stone
 Ferocity of the Wilds
@@ -1175,6 +1182,7 @@ Grim Haruspex
 Grim Initiate
 Grime Gorger
 Grisly Salvage
+Grizzlegom, Hurloon Hero
 Grothama, All-Devouring
 Ground Seal
 Growing Ranks
@@ -1663,6 +1671,7 @@ Meeting of the Five
 Megaton's Fate
 Megrim
 Melee
+Melkotian Adjudicator
 Meloku the Clouded Mirror
 Memorial to Folly
 Memorial to Genius
@@ -1858,6 +1867,7 @@ Oblivious Bookworm
 Obscura Storefront
 Obscuring Haze
 Observed Stasis
+Obsidian Order Operative
 Obstinate Baloth
 Obyra, Dreaming Duelist
 Octomancer
@@ -1875,6 +1885,7 @@ On Thin Ice
 Onakke Oathkeeper
 Ondu Spiritdancer
 Oona's Blackguard
+Open Communications
 Open the Graves
 Open the Omenpaths
 Open the Way
@@ -1914,6 +1925,7 @@ Overwhelming Stampede
 Ox Drover
 Oyobi, Who Split the Heavens
 Pacifism
+Pah-Wraith
 Palace Jailer
 Paladin's Arms
 Pale Bears
@@ -2318,6 +2330,7 @@ Seize the Day
 Selective Obliteration
 Selesnya Guildgate
 Selesnya Sanctuary
+Seluma, Light of Aysen
 Seraph Sanctuary
 Seraph of the Sword
 Sergeant John Benton
@@ -2328,6 +2341,7 @@ Serra Avatar
 Serum Powder
 Servant of the Conduit
 Setessan Champion
+Seven of Nine
 Shabraz, the Skyshark
 Shacklegeist
 Shadowmage Infiltrator
@@ -2733,6 +2747,7 @@ The Squadron Sinister
 The Thing, Ben Grimm
 The Torment of Gollum
 The Toymaker's Trap
+The Traveler
 The Underworld Cookbook
 The Valeyard
 The War Doctor
@@ -2810,6 +2825,7 @@ Tithebearer Giant
 Tivash, Gloom Summoner
 Tivit, Seller of Secrets
 Tocasia's Dig Site
+Tolabow, Loch Rascal
 Toll of the Invasion
 Tomb Tyrant
 Tomb of the Spirit Dragon
@@ -2833,6 +2849,7 @@ Trait Doctoring
 Tranquil Expanse
 Tranquil Thicket
 Transmogrifying Wand
+Transporter Malfunction
 Trapped in the Tower
 Trash for Treasure
 Traumatic Visions
@@ -2915,6 +2932,7 @@ Uthros Scanship
 Utopia Sprawl
 Utter End
 Valiant Rescuer
+Valko Indorian
 Valkyrie Harbinger
 Valley Rannet
 Valorous Stance

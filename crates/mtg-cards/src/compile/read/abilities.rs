@@ -319,6 +319,7 @@ fn about_a_player(when: &TriggerPattern) -> bool {
             | TriggerPattern::Bolstered { .. }
             | TriggerPattern::Expend { .. }
             | TriggerPattern::W11cCrime { .. }
+            | TriggerPattern::R116Dilemma { .. }
             | TriggerPattern::Surveilled { .. }
             | TriggerPattern::Cycled { .. }
             | TriggerPattern::TappedForMana { .. }
