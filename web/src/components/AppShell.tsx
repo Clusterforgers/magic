@@ -1,5 +1,5 @@
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
-import { ListChecksIcon, PlusIcon, SparklesIcon } from 'lucide-react'
+import { ChartNoAxesColumnIcon, ListChecksIcon, PlusIcon, SparklesIcon } from 'lucide-react'
 import { useRef } from 'react'
 import { useIsFitWindow, useIsFullBleed } from '@/components/appChrome'
 import { FlashNotice } from '@/components/FlashNotice'
@@ -92,6 +92,10 @@ function ShellHeader() {
                 Delves
               </Link>
               <ReviewTab account={account} />
+              <Link to="/support" className={cn(TAB, 'gap-2')} aria-label="Card support" title="Card support">
+                <ChartNoAxesColumnIcon aria-hidden="true" className="size-4 shrink-0 lg:hidden" />
+                <span className="hidden lg:inline">Card support</span>
+              </Link>
             </>
           ) : null}
           <Link

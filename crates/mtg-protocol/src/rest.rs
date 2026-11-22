@@ -1,5 +1,5 @@
 //! Bodies of the account endpoints of `mtg-server` (`/api/auth/*`), of the signed-in user's game
-//! list (`/api/me/games`), of the card endpoints (`/api/cards`), of the deck endpoints
+//! list (`/api/me/games`), of the card endpoints (`/api/cards`), of card support (`/api/card-support`), of the deck endpoints
 //! (`/api/decks`), of the fix-mark endpoints (`/api/fix-marks`), of the read endpoints
 //! (`/api/reads`), of the precon endpoints
 //! (`/api/precons`), of the game browser (`/api/lobbies`, joining) and of tournaments
@@ -10,6 +10,7 @@
 
 mod admin_games;
 mod bulk_reads;
+mod card_support;
 mod cards;
 mod deck_groups;
 mod decks;
@@ -33,6 +34,11 @@ pub use admin_games::{AdminGame, AdminGameList, AdminGameSeat, EndGameBody, MAX_
 pub use bulk_reads::{
     BulkApproval, BulkApprovalBody, BulkApprovalResult, BulkCard, BulkClause, BulkReads, BulkRule,
     MAX_BULK_APPROVALS,
+};
+pub use card_support::{
+    CardSupport, FeedEvent, MAX_FEED_EVENTS, MAX_FEED_NAMES, MAX_SUPPORT_HISTORY, MissingCardView,
+    MissingCards, MissingState, RefreshCheck, RefreshState, SupportBucket, SupportPoint,
+    SupportSnapshot, SupportStates,
 };
 pub use cards::{
     CardColor, CardDetail, CardFaceView, CardHit, CardImages, CardSearchPage, DEFAULT_PER_PAGE,

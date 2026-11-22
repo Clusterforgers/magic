@@ -1,6 +1,7 @@
 //! Goal: the Postgres schema and repositories (import, search, decks, constraints) against a database per test; one test binary so the crate's integration tests share one link and run together on the thread pool.
 
 mod card_detail;
+mod card_feed;
 mod card_import;
 mod card_index;
 mod card_index_names;

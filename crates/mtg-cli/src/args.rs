@@ -44,6 +44,9 @@ pub enum Command {
     Migrate,
     /// Show what is cached, the latest import runs and the row counts.
     Status,
+    /// The daily card refresh: fetch Scryfall and MTGJSON, load and compile what changed unless a game is running, store
+    /// a coverage snapshot and record the run (new cards, new precons, failures) for the Card support page.
+    Refresh(RefreshArgs),
     /// Report how well the compiler and the engine cover the stored precons, and what would free the most cards.
     Coverage(CoverageArgs),
     /// List a seeded sample of the cards the compiler reads: oracle text beside the reading and the JSON.
@@ -149,6 +152,32 @@ pub struct CoverageArgs {
     /// `rank<TAB>state<TAB>name<TAB>first blocker` line each.
     #[arg(long, value_name = "FILE", requires = "all")]
     pub out: Option<PathBuf>,
+
+    /// With `--all`: store the result as a coverage snapshot for the Card support page (when it differs from the newest
+    /// one) and print one line instead of the report; popularity comes from the stored ranks, so no cache is read.
+    #[arg(long, requires = "all", conflicts_with = "out")]
+    pub snapshot: bool,
+
+    /// The release the snapshot is taken by (`v0.2.131`), shown in the feed; the chart passes its image tag.
+    #[arg(long, env = "MTG_RELEASE", value_name = "TAG")]
+    pub release: Option<String>,
+}
+
+/// Options of `refresh`.
+#[derive(Debug, Args)]
+pub struct RefreshArgs {
+    /// The release that runs the refresh (`v0.2.131`), recorded with the run and the snapshot; the chart passes its image
+    /// tag.
+    #[arg(long, env = "MTG_RELEASE", value_name = "TAG")]
+    pub release: Option<String>,
+
+    /// Load and compile even while a game is running (a later server restart can then fail that game).
+    #[arg(long)]
+    pub even_if_games: bool,
+
+    /// Load and compile even when nothing upstream changed since the last successful run.
+    #[arg(long)]
+    pub force: bool,
 }
 
 /// Options of `forge-check`.

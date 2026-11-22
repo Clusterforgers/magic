@@ -1,0 +1,131 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT id, release, cards, automatic, missing_count, newly_supported_count,\n                   to_char(taken_at AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS\"Z\"') AS \"taken_at!\",\n                   states AS \"states: Json<StateCounts>\", buckets AS \"buckets: Json<Vec<RankBucket>>\",\n                   newly_supported AS \"newly_supported: Json<Vec<String>>\"\n               FROM coverage_snapshots ORDER BY taken_at DESC, id DESC LIMIT $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "id",
+        "type_info": "Int8",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "id"
+          }
+        }
+      },
+      {
+        "ordinal": 1,
+        "name": "release",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "release"
+          }
+        }
+      },
+      {
+        "ordinal": 2,
+        "name": "cards",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "cards"
+          }
+        }
+      },
+      {
+        "ordinal": 3,
+        "name": "automatic",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "automatic"
+          }
+        }
+      },
+      {
+        "ordinal": 4,
+        "name": "missing_count",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "missing_count"
+          }
+        }
+      },
+      {
+        "ordinal": 5,
+        "name": "newly_supported_count",
+        "type_info": "Int4",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "newly_supported_count"
+          }
+        }
+      },
+      {
+        "ordinal": 6,
+        "name": "taken_at!",
+        "type_info": "Text",
+        "origin": "Expression"
+      },
+      {
+        "ordinal": 7,
+        "name": "states: Json<StateCounts>",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "states"
+          }
+        }
+      },
+      {
+        "ordinal": 8,
+        "name": "buckets: Json<Vec<RankBucket>>",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "buckets"
+          }
+        }
+      },
+      {
+        "ordinal": 9,
+        "name": "newly_supported: Json<Vec<String>>",
+        "type_info": "Jsonb",
+        "origin": {
+          "Table": {
+            "table": "coverage_snapshots",
+            "name": "newly_supported"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int8"
+      ]
+    },
+    "nullable": [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      null,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "f84d78f996007c0af56f7b59c8fbafa279da087f7f392599b3cf08b8bd9f5cf4"
+}

@@ -1,5 +1,6 @@
-//! Postgres schema and repositories for card data: oracle cards, printings, rulings, precon decks, import runs, the compiled rules of cards, the decks accounts store, the art they prefer and the cards they mark as important to fix, and the read-tier drafts with the verdicts players give them.
+//! Postgres schema and repositories for card data: oracle cards, printings, rulings, precon decks, import runs, the compiled rules of cards, the decks accounts store, the art they prefer and the cards they mark as important to fix, the read-tier drafts with the verdicts players give them, and the card feed of daily refreshes and coverage snapshots.
 
+pub mod card_feed;
 pub mod card_rules;
 pub mod cards;
 pub mod codec;
@@ -21,6 +22,10 @@ pub mod reads;
 mod rows;
 pub mod runs;
 
+pub use card_feed::{
+    CardFeedRepo, MAX_LISTED, MissingCard, NewPrecon, NewSnapshot, RankBucket, RefreshId,
+    RefreshReport, RefreshRun, RefreshStatus, Snapshot, StateCounts, Stored,
+};
 pub use card_rules::{CardRulesRepo, NewRules, RuleCounts, RuleStamp, RulesVersion, StoredRules};
 pub use cards::{
     CardPage, CardRepo, CardSearch, ColorFilter, ColorMatch, IndexVersion, NameSuggestion, Page,

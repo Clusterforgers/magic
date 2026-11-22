@@ -76,6 +76,8 @@ fn args(deck: Option<&str>, all: bool) -> CoverageArgs {
         top: 20,
         all,
         out: None,
+        snapshot: false,
+        release: None,
     }
 }
 

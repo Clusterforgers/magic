@@ -122,6 +122,11 @@ impl Database {
         PreconRepo::new(self.pool.clone())
     }
 
+    /// The daily card refresh runs and the coverage snapshots.
+    pub fn card_feed(&self) -> crate::CardFeedRepo {
+        crate::CardFeedRepo::new(self.pool.clone())
+    }
+
     /// Import run history.
     pub fn import_runs(&self) -> ImportRuns {
         ImportRuns::new(self.pool.clone())

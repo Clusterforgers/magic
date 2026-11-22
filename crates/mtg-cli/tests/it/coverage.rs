@@ -50,6 +50,8 @@ fn args(deck: Option<&str>) -> CoverageArgs {
         top: 20,
         all: false,
         out: None,
+        snapshot: false,
+        release: None,
     }
 }
 

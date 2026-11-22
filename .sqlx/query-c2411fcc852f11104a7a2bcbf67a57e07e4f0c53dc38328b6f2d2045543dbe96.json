@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT set_name FROM printings\n             WHERE lower(set_code) = lower($1) AND set_name IS NOT NULL LIMIT 1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "set_name",
+        "type_info": "Text",
+        "origin": {
+          "Table": {
+            "table": "printings",
+            "name": "set_name"
+          }
+        }
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      true
+    ]
+  },
+  "hash": "c2411fcc852f11104a7a2bcbf67a57e07e4f0c53dc38328b6f2d2045543dbe96"
+}

@@ -429,6 +429,16 @@ const STOPS: readonly Stop[] = [
       await expect(page.getByText(`friend_29_`.padEnd(32, 'x'))).toBeVisible()
     },
   },
+  {
+    name: 'The Card support page (dev), a month of snapshots and a thousand missing cards',
+    fitsFrom: Infinity,
+    actions: { 'Search the missing cards': 'main input[type="search"]' },
+    async open(page) {
+      await page.goto(`${DEV_WEB_URL}/dev/support`)
+      await expect(page.getByRole('heading', { level: 1, name: 'Card support' })).toBeVisible()
+      await expect(page.locator('[data-slot="missing"]')).toBeVisible()
+    },
+  },
 ]
 
 for (const theme of THEMES) {
