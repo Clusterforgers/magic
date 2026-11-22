@@ -835,7 +835,11 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
 /// Whether the change gives a triggered ability that works outside the battlefield, itself or through a keyword.
 fn r112_triggers_elsewhere(modification: &crate::effects::Modification) -> bool {
     use mtg_cards::ability::Ability;
-    let elsewhere = |ability: &Ability| matches!(ability, Ability::Triggered { from, .. } if *from != mtg_cards::refs::ZoneKind::Battlefield);
+    let elsewhere = |ability: &Ability| {
+        matches!(ability, Ability::Triggered { .. })
+            && crate::ability_reader::works_from(ability)
+                != Some(mtg_cards::refs::ZoneKind::Battlefield)
+    };
     match modification {
         crate::effects::Modification::AddKeyword(keyword) => crate::keywords::rules(keyword)
             .adds_abilities(keyword)

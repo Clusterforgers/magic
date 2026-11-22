@@ -27,7 +27,7 @@ pub use by_hand::{ByHandDue, due};
 
 use super::{DelayedId, Triggered, x_read};
 use crate::abilities::{AbilityRef, AbilitySource, Cause};
-use crate::ability_reader::{abilities_of, provided_here, working_here};
+use crate::ability_reader::{abilities_of, provided_here, working_here, works_from};
 use crate::characteristics::{controller_of, controller_of_object};
 use crate::choose::{Choices, Target};
 use crate::combat::{AttackTarget, DamageForm, DamageTarget};
@@ -3023,7 +3023,10 @@ fn object_triggers(
                 when,
                 TriggerPattern::ZoneChange { what, from: None, to: Some(ZoneKind::Graveyard) } if *what == Selector::this()
             );
-        if *from != zone && !from_anywhere && !crate::l292_haunt::works_here_too(&rules, zone) {
+        if works_from(&rules) != Some(zone)
+            && !from_anywhere
+            && !crate::l292_haunt::works_here_too(&rules, zone)
+        {
             continue;
         }
         let mut scope = Scope::announcing(state, controller, source).with_caused(used.caused);
