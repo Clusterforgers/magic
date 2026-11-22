@@ -202,8 +202,9 @@ pub(super) const IMPERATIVES: [Template; 21] = [
 /// Every sentence shape, in the order they are tried: the shapes of `conditional` first, which read a sentence
 /// that another shape would read in part.
 pub(super) fn templates() -> impl Iterator<Item = Template> {
-    conditional::TEMPLATES
-        .into_iter()
+    // "Choose a color. Add ...": the choice and the mana are one effect, read before the choice alone.
+    std::iter::once(super::r116_05_mana::r116_chosen_color_mana as Template)
+        .chain(conditional::TEMPLATES)
         .chain(TEMPLATES)
         .chain(super::lands::TEMPLATES)
 }
@@ -999,6 +1000,11 @@ pub(super) fn describes_a_kind(pred: &Pred) -> bool {
 /// "Assimilate target creature card from an opponent's graveyard.", "Assimilate target nonartifact creature an opponent
 /// controls." (`Effect::R116Assimilate`).
 fn assimilate_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
+    let start = r.clone();
+    if let Some(effects) = super::r116_05_assimilate::r116_assimilate_chosen(r) {
+        return Some(effects);
+    }
+    *r = start;
     r.need("assimilate")?;
     let what = target_object(r).or_else(|| up_to_one_object(r))?;
     Some(vec![Effect::R116Assimilate { what }])

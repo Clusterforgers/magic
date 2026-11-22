@@ -211,6 +211,8 @@ mod r115_02_wholes;
 mod r115_03_wholes;
 mod r115_04_wholes;
 mod r116_01_wholes;
+mod r116_05_assimilate;
+mod r116_05_mana;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;

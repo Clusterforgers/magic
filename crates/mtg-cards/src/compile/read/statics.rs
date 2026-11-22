@@ -1224,8 +1224,9 @@ pub(super) fn cost_times(r: &mut Reader<'_>, itself: bool, x: bool) -> Option<Am
     if x {
         r.punct(',').then_some(())?;
         r.need("where x is")?;
+        // A count of objects is "for each" ("{1} less to cast for each artifact you control").
         let amount = defining::counting(r)?;
-        return matches!(amount, Amount::Greatest { .. } | Amount::Total { .. }).then_some(amount);
+        return (!matches!(amount, Amount::Count(_))).then_some(amount);
     }
     if itself && r.words("for each target beyond the first") {
         return Some(beyond_the_first());
@@ -1411,41 +1412,48 @@ pub(super) fn cost_sentences(
             .map(|(mana, tail)| format!("{subject} {verb} {mana} {more} to cast{tail}"))
             .collect();
     }
-    let (mana, tail) = if per.is_one() {
-        (mana.to_string(), String::new())
+    let mut tails = Vec::new();
+    if per.is_one() {
+        tails.push((mana.to_string(), String::new()));
     } else if itself && *per == beyond_the_first() {
-        (
+        tails.push((
             mana.to_string(),
             " for each target beyond the first".to_owned(),
-        )
+        ));
     } else if let Some(each) = (!itself)
         .then(|| super::r402_spell_costs::r402_for_each_text(per))
         .flatten()
         .or_else(|| super::r4703_reads::r4703_sacrificed_types_text(per))
         .or_else(|| for_each_text(per))
     {
-        (mana.to_string(), format!(" for each {each}"))
-    } else if matches!(per, Amount::Greatest { .. } | Amount::Total { .. })
+        tails.push((mana.to_string(), format!(" for each {each}")));
+    }
+    // "{X} less to cast, where X is the number of differently named lands you control": a count of {1} each.
+    if !per.is_one()
+        && !matches!(per, Amount::Count(_))
         && mana.to_string() == "{1}"
+        && let Some(count) = defining::counting_text(per)
     {
-        let Some(count) = defining::counting_text(per) else {
-            return Vec::new();
-        };
-        ("{X}".to_owned(), format!(", where X is {count}"))
-    } else {
-        return Vec::new();
-    };
-    let sentence = format!("{subject} {verb} {mana} {more} to cast{tail}");
-    let Some(held) = condition else {
-        return vec![sentence];
-    };
-    cost_conditions::texts(held)
+        tails.push(("{X}".to_owned(), format!(", where X is {count}")));
+    }
+    let sentences: Vec<String> = tails
         .into_iter()
-        .flat_map(|fact| {
-            [
-                format!("{sentence} if {fact}"),
-                format!("if {fact}, {sentence}"),
-            ]
+        .map(|(mana, tail)| format!("{subject} {verb} {mana} {more} to cast{tail}"))
+        .collect();
+    let Some(held) = condition else {
+        return sentences;
+    };
+    sentences
+        .iter()
+        .flat_map(|sentence| {
+            cost_conditions::texts(held)
+                .into_iter()
+                .flat_map(move |fact| {
+                    [
+                        format!("{sentence} if {fact}"),
+                        format!("if {fact}, {sentence}"),
+                    ]
+                })
         })
         .collect()
 }

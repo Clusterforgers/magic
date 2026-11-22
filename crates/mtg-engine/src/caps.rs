@@ -415,6 +415,7 @@ const RUNS: &[&str] = &[
     "Effect.Fabricate",
     "Effect.Learn",
     "Effect.R111OrderGraveyard",
+    "Effect.R116Assimilate",
     "Effect.R112DoubleX",
     "Effect.Performed",
     "Effect.Crewed",
@@ -2147,6 +2148,7 @@ mod tests {
     #[case::r6701_emerge_from_artifact("Keyword.R6701EmergeFromArtifact", true)]
     #[case::r111_ability_triggered("Trigger.R111AbilityTriggered", true)]
     #[case::r111_order_graveyard("Effect.R111OrderGraveyard", true)]
+    #[case::r116_assimilate("Effect.R116Assimilate", true)]
     #[case::r111_draw_by("ReplaceWhen.R111DrawBy", true)]
     #[case::harmonize("Keyword.Harmonize", true)]
     #[case::r116_beam_me_up("Keyword.R116BeamMeUp", true)]

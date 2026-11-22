@@ -1,0 +1,28 @@
+{
+  "oracle_id": "aeec05f1-43ea-4012-82d8-cded5494535d",
+  "name": "Death Is Irrelevant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Death Is Irrelevant",
+      "oracle_fingerprint": "d1ebca08c6381bc05ee39072267ad5cd",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "AddKeyword": "Indestructible" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }, { "In": "Graveyard" }] } }],
+            "effects": [{ "R116Assimilate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

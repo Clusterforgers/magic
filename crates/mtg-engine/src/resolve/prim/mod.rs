@@ -708,6 +708,7 @@ mod tests {
         "Effect.R112NoteChosen",
         "Effect.Rule",
         "Effect.Regenerate",
+        "Effect.R116Assimilate",
         "Effect.RemoveFromCombat",
         "Effect.R6400Block",
         "Effect.R115ExchangeBlocks",

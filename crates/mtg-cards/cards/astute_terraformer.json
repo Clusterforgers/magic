@@ -1,0 +1,42 @@
+{
+  "oracle_id": "c5a7a82e-3c13-4fa1-8bf5-bb85b2890f75",
+  "name": "Astute Terraformer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Astute Terraformer",
+      "oracle_fingerprint": "7c5c54ffddd8a645d6752835d3cdec7f",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{6}" },
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ],
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

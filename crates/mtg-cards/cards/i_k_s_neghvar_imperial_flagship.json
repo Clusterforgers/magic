@@ -1,0 +1,51 @@
+{
+  "oracle_id": "373e2b58-ccf0-444b-aeb2-0b6e8d4e80e7",
+  "name": "I.K.S. Negh'Var, Imperial Flagship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "I.K.S. Negh'Var, Imperial Flagship",
+      "oracle_fingerprint": "c74b378631ea5461118fe077d1ee5a88",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "AnyOf": [{ "Subtype": "Klingon" }, { "Subtype": "Warrior" }] },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Vigilance" }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -193,7 +193,16 @@ pub(super) fn amount(r: &mut Reader<'_>) -> Option<Amount> {
 /// Reads the where clause that ends a sentence and puts its amount where the effects have X.
 pub(super) fn bind(r: &mut Reader<'_>, effects: &[Effect]) -> Option<Vec<Effect>> {
     let amount = amount(r)?;
-    put_in(&effects.to_vec(), &amount)
+    // "goad up to X target creatures, where X is ...": the X may be the number of targets alone.
+    let targets = put_in(&r.targets, &amount);
+    let found = put_in(&effects.to_vec(), &amount);
+    if found.is_none() && targets.is_none() {
+        return None;
+    }
+    if let Some(targets) = targets {
+        r.targets = targets;
+    }
+    Some(found.unwrap_or_else(|| effects.to_vec()))
 }
 
 /// The data with the amount in the place of each X; `None` when there is no X.

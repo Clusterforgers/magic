@@ -1,4 +1,4 @@
-//! Goal: the Star Trek wordings read into the DSL and write back as the card's own text: "whenever you face a dilemma", "for each dilemma you've faced this turn", "the number of differently named lands you control", "the number of creature types among non-Borg creatures you control" and "assimilate target ..."; a near miss stays with the table.
+//! Goal: the Star Trek wordings read into the DSL and write back as the card's own text: "whenever you face a dilemma", "for each dilemma you've faced this turn", "the number of differently named lands you control", "the number of creature types among non-Borg creatures you control", "assimilate target ..." and "assimilate a creature card exiled with it"; a near miss stays with the table.
 use super::*;
 
 #[rstest]
@@ -33,6 +33,11 @@ fn r116_wordings_read_and_write_back(
 #[rstest]
 #[case::no_dilemma("Whenever you face, draw a card.")]
 #[case::two_dilemmas("Whenever you face two dilemmas, draw a card.")]
+#[case::a_creature_on_the_battlefield("Whenever ~ attacks, assimilate a creature you control.")]
+#[case::a_creature_exiled_with_it("Whenever ~ attacks, assimilate a creature exiled with it.")]
+#[case::a_card_in_a_graveyard(
+    "Whenever ~ attacks, assimilate a creature card in your graveyard exiled with it."
+)]
 #[case::named_lands(
     "~'s power and toughness are each equal to the number of named lands you control."
 )]
@@ -51,6 +56,12 @@ fn r116_near_misses_stay_with_the_table(#[case] text: &str) {
 )]
 #[case::a_creature(
     "Whenever ~ attacks, assimilate target nonartifact creature an opponent controls."
+)]
+#[case::from_any_graveyard(
+    "At the beginning of your end step, assimilate target creature card from a graveyard."
+)]
+#[case::a_card_exiled_with_it(
+    "Whenever this creature attacks, assimilate a creature card exiled with it."
 )]
 fn r116_assimilate_reads_and_writes_back(#[case] text: &str) {
     let read = clause(text, ClauseKind::Triggered, false).unwrap();

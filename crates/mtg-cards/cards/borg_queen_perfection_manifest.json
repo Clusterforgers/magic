@@ -1,0 +1,38 @@
+{
+  "oracle_id": "f9b46a1a-474f-4fac-8d71-131c1720e4c0",
+  "name": "Borg Queen, Perfection Manifest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Borg Queen, Perfection Manifest",
+      "oracle_fingerprint": "1546a982f7e0f75c222cd834d7d4c8e9",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [{ "R116Assimilate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

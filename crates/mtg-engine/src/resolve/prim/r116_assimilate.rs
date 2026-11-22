@@ -38,20 +38,9 @@ fn r116_borg(affected: Ref) -> Effect {
     }
 }
 
-/// Declared ahead of the engine: the two passes below do not move or take the object yet in a game
-/// (`r116_assimilate.rs` of the testkit, ignored), so the effect refuses until they do.
-pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::R116Assimilate { .. } = effect else {
-        return Err(wrong_effect("R116Assimilate"));
-    };
-    let _ = cx;
-    Err(ResolveError::Unsupported("Effect.R116Assimilate"))
-}
-
 /// The first pass puts the cards onto the battlefield (or takes control of the permanents) and binds them; the second
 /// pass makes them Borg artifact creatures (and puts the counter on the permanents).
-#[allow(dead_code)]
-fn r116_two_passes(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::R116Assimilate { what } = effect else {
         return Err(wrong_effect("R116Assimilate"));
     };

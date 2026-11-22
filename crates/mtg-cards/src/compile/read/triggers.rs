@@ -736,6 +736,16 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         if by == Ref::You && r.peek_word() == Some("with") {
             return attack_with(r);
         }
+        // "Whenever you attack, ...": one or more creatures you control attack (CR 508.1).
+        if by == Ref::You && r.at_punct(',') {
+            return Some(TriggerPattern::GroupAttacks {
+                what: Selector(vec![
+                    Pred::Type(CardType::Creature),
+                    Pred::ControlledBy(Ref::You),
+                ]),
+                at_least: 1,
+            });
+        }
         let at = if r.words("enchanted player") {
             Ref::AttachedPlayer
         } else {
@@ -1134,6 +1144,9 @@ fn damage_dealt(r: &mut Reader<'_>, source: &Selector) -> Option<TriggerPattern>
 
 /// The condition of an intervening "if": "you have 40 or more life", "you're the monarch", "there is no monarch".
 pub fn condition(r: &mut Reader<'_>) -> Option<Condition> {
+    if let Some(kind) = super::as_long_as::r116_this_kind(r) {
+        return Some(kind);
+    }
     if let Some(attacked) = r.attempt(super::r5513_events::r5513_condition) {
         return Some(attacked);
     }
@@ -1406,7 +1419,8 @@ pub fn condition_text(condition: &Condition) -> Option<String> {
         right: Amount::Fixed(number),
     } = condition
     else {
-        return None;
+        // "if ~ isn't a creature": only when no other wording says the condition.
+        return super::as_long_as::r116_this_kind_text(condition);
     };
     let more = match op {
         Cmp::Ge => "more",

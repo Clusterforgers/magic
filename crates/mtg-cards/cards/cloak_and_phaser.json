@@ -1,0 +1,46 @@
+{
+  "oracle_id": "668a9b6b-731c-4127-9c88-1c6112ffd590",
+  "name": "Cloak and Phaser",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cloak and Phaser",
+      "oracle_fingerprint": "a6fca8455f166029f365a5133107191b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": ["This"],
+            "change": "Reduce",
+            "mana": "{1}",
+            "per": {
+              "Distinct": { "of": [{ "Type": "Land" }, { "ControlledBy": "You" }], "stat": "Name" }
+            }
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Romulan",
+                      "colors": ["Black"],
+                      "types": ["Creature"],
+                      "subtypes": ["Romulan"],
+                      "power": 2,
+                      "toughness": 2
+                    }
+                  },
+                  "count": 2
+                }
+              },
+              { "Draw": { "count": 2 } },
+              { "Discard": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

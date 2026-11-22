@@ -33,7 +33,7 @@
             "targets": [
               {
                 "what": {
-                  "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Attacking"]
+                  "Object": [{ "Type": "Creature" }, "Attacking", { "ControlledBy": "You" }]
                 }
               },
               {
