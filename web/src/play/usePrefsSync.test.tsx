@@ -40,6 +40,7 @@ const none: UserPrefs = {
     smart_stops: false,
     skip_triggers: false,
     auto_pay: false,
+    auto_pay_all: false,
   },
   auto_yields: [],
   hand_sort: DEFAULT_HAND_SORT,

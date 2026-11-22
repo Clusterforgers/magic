@@ -1,4 +1,4 @@
-//! Goal: "Always pay for me" pays whenever plain mana pays, at tables of two to four seats: monocolored hybrid (The Reaper, King No More from a land of any colour, two Glades and two Swamps), hybrid and Phyrexian symbols with mana, a source's plain ability; it asks only when the rest needs a Treasure or life, and the question says why.
+//! Goal: "Always pay for me" pays whenever plain mana pays, at tables of two to four seats: monocolored hybrid (The Reaper, King No More from a land of any colour, two Glades and two Swamps), hybrid and Phyrexian symbols with mana, a source's plain ability; it asks only when the rest needs a Treasure or life, and the question says why; with "…even with other costs" those are paid too.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -96,8 +96,9 @@ async fn send(handle: &GameHandle, from: &Client, message: ClientMessage) {
     handle.status().await.unwrap();
 }
 
-/// Every seat joins and is ready, seat 0 with "Always pay for me" on; seat 0 casts its spell and gets what follows.
-async fn cast(setup: GameSetup, seats: usize) -> Vec<ServerMessage> {
+/// Every seat joins and is ready, seat 0 with "Always pay for me" on (and "…even with other costs" with `all`); seat 0
+/// casts its spell and gets what follows.
+async fn cast(setup: GameSetup, seats: usize, all: bool) -> Vec<ServerMessage> {
     let config = GameConfig {
         pace: OFF,
         ..roomy()
@@ -109,6 +110,7 @@ async fn cast(setup: GameSetup, seats: usize) -> Vec<ServerMessage> {
     }
     let choices = AutoChoices {
         auto_pay: true,
+        auto_pay_all: all,
         ..AutoChoices::default()
     };
     send(&handle, &clients[0], ClientMessage::AutoChoices { choices }).await;
@@ -169,7 +171,7 @@ async fn always_pay_for_me_asks_only_when_plain_mana_cannot_pay(
     #[case] lands: &[&str],
     #[case] expected: Option<AskedWhy>,
 ) {
-    let sent = cast(table(seats, held, lands), seats).await;
+    let sent = cast(table(seats, held, lands), seats, false).await;
     let got: Vec<_> = asked(&sent)
         .into_iter()
         .map(|why| match why {
@@ -180,4 +182,17 @@ async fn always_pay_for_me_asks_only_when_plain_mana_cannot_pay(
         .collect();
     let wanted: Vec<_> = expected.into_iter().map(Some).collect();
     assert_eq!(got, wanted, "{sent:?}");
+}
+
+#[rstest]
+#[case::only_a_treasure("Red", &["Forest", "Treasure"])]
+#[case::only_life("Black Phyrexian", &["Forest"])]
+#[tokio::test(start_paused = true)]
+async fn even_with_other_costs_pays_what_plain_mana_cannot(
+    #[values(2, 4)] seats: usize,
+    #[case] held: &str,
+    #[case] lands: &[&str],
+) {
+    let sent = cast(table(seats, held, lands), seats, true).await;
+    assert_eq!(asked(&sent), Vec::<Option<AskedWhy>>::new(), "{sent:?}");
 }

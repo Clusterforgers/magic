@@ -32,6 +32,7 @@ const OFF = {
   smart_stops: false,
   skip_triggers: false,
   auto_pay: false,
+  auto_pay_all: false,
 }
 const BOTH = {
   order_triggers: true,
@@ -39,6 +40,7 @@ const BOTH = {
   smart_stops: true,
   skip_triggers: true,
   auto_pay: true,
+  auto_pay_all: true,
 }
 
 beforeEach(() => {
@@ -298,7 +300,14 @@ describe('in a session', () => {
 })
 
 describe('every auto choice', () => {
-  const FLAGS = ['order_triggers', 'assign_damage', 'smart_stops', 'skip_triggers', 'auto_pay'] as const
+  const FLAGS = [
+    'order_triggers',
+    'assign_damage',
+    'smart_stops',
+    'skip_triggers',
+    'auto_pay',
+    'auto_pay_all',
+  ] as const
 
   it.each(FLAGS)('keeps %s alone across a reload and sends it when the server holds it off', (flag) => {
     const saved: AutoChoices = { ...OFF, [flag]: true }

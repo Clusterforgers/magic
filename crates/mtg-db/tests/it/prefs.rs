@@ -26,6 +26,7 @@ fn prefs(on: bool) -> StoredPrefs {
         auto_smart_stops: on,
         auto_skip_triggers: on,
         auto_pay: !on,
+        auto_pay_all: on,
         auto_yields: json!([{"name": "Pinger", "text": "{T}: deal 1 damage"}]),
         hand_sort: on.then(|| json!({"by": "Groups", "groups": ["Land", "Artifact", "Creature"]})),
         full_control_held: on,
