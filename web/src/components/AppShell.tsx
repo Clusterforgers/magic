@@ -55,7 +55,6 @@ function ShellHeader() {
   const signedIn = useAuth((state) => state.status === 'signed-in')
   const account = useAuth((state) => (state.status === 'signed-in' ? (state.user?.id ?? null) : null))
   const checking = useLocation({ select: (location) => location.pathname === '/decks/unvalidated' })
-  usePrefsSync(signedIn)
   return (
     <header className="plaque border-b border-brass/40">
       <div className="flex flex-wrap items-center gap-x-1 px-4 sm:px-6">
@@ -124,6 +123,8 @@ function ShellHeader() {
  */
 export function AppShell() {
   const main = useRef<HTMLElement>(null)
+  // Here, not in the header: the game table has no header, and the account's preferences stay in use there.
+  usePrefsSync(useAuth((state) => state.status === 'signed-in'))
   const bleed = useIsFullBleed()
   const fit = useIsFitWindow() && !bleed
   return (

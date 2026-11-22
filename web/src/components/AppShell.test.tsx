@@ -1,10 +1,14 @@
-// Goal: the shell frames every page with the brand, a main navigation (Play at /, Create at /new) that marks the current page and offers "Decks", "My games", "Tournaments" and "Review cards" (with a badge of the distinct cards of your decks to read, echoed on the home page) only to an account, a window-high frame under the header for a page that fits it, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, and a notice while the browser is offline.
-import { act, screen, waitFor, within } from '@testing-library/react'
+// Goal: the shell frames every page with the brand, a main navigation (Play at /, Create at /new) that marks the current page and offers "Decks", "My games", "Tournaments" and "Review cards" (with a badge of the distinct cards of your decks to read, echoed on the home page) only to an account, a window-high frame under the header for a page that fits it, a theme menu that changes the page's theme and remembers it, a way past the header by keyboard, a notice while the browser is offline, and the account preferences kept in use and saved on a page without the header (the game table).
+import { act, render, screen, waitFor, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { useFullBleed } from '@/components/appChrome'
 import { appTheme } from '@/hooks/useTheme'
 import { clearFlash, showFlash } from '@/lib/flash'
+import { prefsApi } from '@/net/prefs'
+import { AUTO_CHOICES_KEY, flowPrefs, saveAutoChoices } from '@/play/flowPrefs'
+import { DEFAULT_HAND_SORT } from '@/play/handSort'
 import { listed } from '@/test-utils/accountsServer'
-import type { ReadState } from '@/protocol/generated'
+import type { ReadState, UserPrefs } from '@/protocol/generated'
 import { renderApp } from '@/test-utils/appHarness'
 import { jsonResponse } from '@/test-utils/fakeFetch'
 
@@ -268,5 +272,38 @@ describe('the pages of Play and Create', () => {
     expect(shell).not.toHaveAttribute('data-fit')
     expect(shell).toHaveClass('min-h-dvh')
     expect(shell).not.toHaveClass('h-dvh')
+  })
+})
+
+describe('the account preferences', () => {
+  function Table() {
+    useFullBleed()
+    return <p>the game table</p>
+  }
+
+  const kept: UserPrefs = {
+    default_stops: [],
+    end_turn_by_hand: true,
+    auto_choices: { order_triggers: true, assign_damage: false, smart_stops: false },
+    auto_yields: [],
+    hand_sort: DEFAULT_HAND_SORT,
+  }
+
+  it('stay the account’s on a page without the header (the game table), so a change made there is saved to it', async () => {
+    const load = vi.spyOn(prefsApi, 'load').mockResolvedValue(kept)
+    const save = vi.spyOn(prefsApi, 'save').mockImplementation((prefs) => Promise.resolve(prefs))
+    await open('/', true)
+    await waitFor(() => expect(flowPrefs().endTurnByHand).toBe(true))
+    const table = render(<Table />)
+    await waitFor(() => expect(screen.queryByRole('navigation', { name: 'Main' })).toBeNull())
+    expect(flowPrefs().autoChoices.order_triggers).toBe(true)
+    act(() => saveAutoChoices({ ...flowPrefs().autoChoices, auto_pay: true }))
+    await waitFor(() => expect(save).toHaveBeenCalledTimes(1))
+    expect(save.mock.calls[0]?.[0].auto_choices.auto_pay).toBe(true)
+    expect(window.localStorage.getItem(AUTO_CHOICES_KEY)).toBeNull()
+    act(() => table.unmount())
+    await screen.findByRole('navigation', { name: 'Main' })
+    expect(flowPrefs().autoChoices.auto_pay).toBe(true)
+    expect(load).toHaveBeenCalledTimes(1)
   })
 })
