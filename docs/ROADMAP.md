@@ -169,7 +169,8 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10a) The Spirits' worth, acting against idle, at three or more heroes
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
-- [ ] (dl13) A second theme with its bosses, events and reward pool; Heat 3 and above
+- [ ] (dl13) More themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look; Heat 3 and above
+- [ ] (dl15) A descent can move the party into another theme, so a long run passes through several
 - [ ] (dl14) The Drowned Spire grows to the Warrens' size: more lieutenants (every colour and colour pair) and a second final boss beside the Leviathan, each with its precon, innate, phases, satchel and fight test
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
