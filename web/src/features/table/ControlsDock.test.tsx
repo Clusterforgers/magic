@@ -168,7 +168,9 @@ describe('the dock of the table', () => {
   it('scrolls only the controls above the pass buttons when it holds more than it has room for, with the edge fade, never the page', () => {
     renderTable({ seats: 2 })
     const dock = screen.getByRole('region', { name: 'Pass controls' })
-    expect(dock).toHaveClass('min-h-0', 'min-w-0', 'overflow-hidden')
+    expect(dock).toHaveClass('min-h-0', 'min-w-0')
+    // The body is at least the cell's height and grows upwards from its foot; only the part above the pass controls scrolls.
+    expect(dock.querySelector('[data-slot="dock-body"]')).toHaveClass('absolute', 'bottom-0', 'min-h-full')
     expect(dock.querySelector('[data-slot="dock-upper"]')).toHaveClass('fade-scroll', 'min-h-0')
   })
 })
