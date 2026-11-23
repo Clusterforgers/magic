@@ -8,7 +8,7 @@
    "id": "brannoc_anvil",
    "name": "Brannoc, the Anvil Warden",
    "colors": "W",
-   "since": 8,
+   "since": 11,
    "deck_file": "c14-forged-in-stone.json",
    "innate": "brannoc_anvil_ward",
    "round_phases": [
@@ -57,7 +57,7 @@
    "id": "ottoline_clockworks",
    "name": "Ottoline the Clockmaker",
    "colors": "U",
-   "since": 8,
+   "since": 11,
    "deck_file": "c14-peer-through-time.json",
    "innate": "ottoline_grinding_gears",
    "round_phases": [
@@ -107,7 +107,7 @@
    "id": "morvane_tomb",
    "name": "Morvane, the Slag Lich",
    "colors": "B",
-   "since": 8,
+   "since": 11,
    "deck_file": "40k-necron-dynasties.json",
    "innate": "morvane_reanimation_protocol",
    "round_phases": [
@@ -157,7 +157,7 @@
    "id": "grizzek_scrapyard",
    "name": "Grizzek the Scrapmaster",
    "colors": "R",
-   "since": 8,
+   "since": 11,
    "deck_file": "c14-built-from-scratch.json",
    "innate": "grizzek_scrap_fire",
    "round_phases": [
@@ -207,7 +207,7 @@
    "id": "veyla_grove",
    "name": "Veyla of the Rusted Grove",
    "colors": "G",
-   "since": 8,
+   "since": 11,
    "deck_file": "c14-guided-by-nature.json",
    "innate": "veyla_rust_bloom",
    "round_phases": [
@@ -256,7 +256,7 @@
    "id": "ilsabet_flues",
    "name": "Ilsabet, the Ghost in the Gears",
    "colors": "WU",
-   "since": 8,
+   "since": 11,
    "deck_file": "khc-phantom-premonition.json",
    "innate": "ilsabet_steam_wings",
    "round_phases": [
@@ -305,7 +305,7 @@
    "id": "haldric_stokehold",
    "name": "Haldric, the Ashen Stoker",
    "colors": "UB",
-   "since": 8,
+   "since": 11,
    "deck_file": "mic-undead-unleashed.json",
    "innate": "haldric_stoke_the_dead",
    "round_phases": [
@@ -354,7 +354,7 @@
    "id": "vashka_pyre",
    "name": "Vashka, the Ember Warlock",
    "colors": "BR",
-   "since": 8,
+   "since": 11,
    "deck_file": "afc-planar-portal.json",
    "innate": "vashka_ember_tithe",
    "round_phases": [
@@ -404,7 +404,7 @@
    "id": "kassa_quench",
    "name": "Kassa Bladebreaker",
    "colors": "RG",
-   "since": 8,
+   "since": 11,
    "deck_file": "nec-upgrades-unleashed.json",
    "innate": "kassa_tempered_in_fire",
    "round_phases": [
@@ -453,7 +453,7 @@
    "id": "ironbark_hollow",
    "name": "Mother Ironbark",
    "colors": "GW",
-   "since": 8,
+   "since": 11,
    "deck_file": "mic-coven-counters.json",
    "innate": "ironbark_heartwood",
    "round_phases": [
@@ -502,7 +502,7 @@
    "id": "calvaine_counting_house",
    "name": "Overseer Calvaine",
    "colors": "WB",
-   "since": 8,
+   "since": 11,
    "deck_file": "c21-silverquill-statement.json",
    "innate": "calvaine_foundry_tax",
    "round_phases": [
@@ -550,7 +550,7 @@
    "id": "ivra_workshop",
    "name": "Ivra, the Brass Inventor",
    "colors": "UR",
-   "since": 8,
+   "since": 11,
    "deck_file": "c18-exquisite-invention.json",
    "innate": "ivra_brass_invention",
    "round_phases": [
@@ -600,7 +600,7 @@
    "id": "winnow_ashfield",
    "name": "Winnow, the Ash Gardener",
    "colors": "BG",
-   "since": 8,
+   "since": 11,
    "deck_file": "dsc-death-toll.json",
    "innate": "winnow_ash_compost",
    "round_phases": [
@@ -650,7 +650,7 @@
    "id": "teodora_reforge",
    "name": "Dame Teodora, the Reforger",
    "colors": "RW",
-   "since": 8,
+   "since": 11,
    "deck_file": "c21-lorehold-legacies.json",
    "innate": "teodora_salvage_legion",
    "round_phases": [
@@ -699,7 +699,7 @@
    "id": "quillon_moldworks",
    "name": "Quillon the Mold-Maker",
    "colors": "GU",
-   "since": 8,
+   "since": 11,
    "deck_file": "dsc-jump-scare.json",
    "innate": "quillon_living_molds",
    "round_phases": [
@@ -748,7 +748,7 @@
    "name": "Kaldrek the Ironmaster",
    "final": true,
    "colors": "UBR",
-   "since": 8,
+   "since": 11,
    "deck_file": "brc-mishra-s-burnished-banner.json",
    "innate": "kaldrek_sparks_fly",
    "round_phases": [
@@ -799,7 +799,7 @@
    "name": "Ignivar, the Forge-Wyrm",
    "final": true,
    "colors": "RG",
-   "since": 8,
+   "since": 11,
    "deck_file": "afc-draconic-rage.json",
    "innate": "ignivar_wyrmfire",
    "round_phases": [
@@ -849,7 +849,7 @@
  "events": [
   {
    "id": "slag_heap",
-   "since": 8,
+   "since": 11,
    "title": "The Slag Heap",
    "text": "Mounds of cooling slag hide whatever the smiths threw away. Some of it still glows.",
    "options": [
@@ -883,7 +883,7 @@
   },
   {
    "id": "bellows_shrine",
-   "since": 8,
+   "since": 11,
    "title": "The Bellows Shrine",
    "text": "Brass bellows breathe heat into the dark around a small shrine. Its keeper trades in whatever burns.",
    "options": [
@@ -919,7 +919,7 @@
   },
   {
    "id": "quench_trough",
-   "since": 8,
+   "since": 11,
    "title": "The Quench Trough",
    "text": "Black water hisses in a trough where the smiths cooled their blades. What goes in comes out tempered.",
    "options": [
@@ -953,7 +953,7 @@
   },
   {
    "id": "master_anvil",
-   "since": 8,
+   "since": 11,
    "title": "The Master Smith's Anvil",
    "text": "An empty anvil still rings in a hall of its own. Strike it, and the foundry answers.",
    "options": [
@@ -991,7 +991,7 @@
   },
   {
    "id": "ore_cart",
-   "since": 8,
+   "since": 11,
    "title": "The Runaway Ore Cart",
    "text": "A cart of raw ore rattles past on its rails, sparks flying. There is coin in it, for whoever dares.",
    "options": [

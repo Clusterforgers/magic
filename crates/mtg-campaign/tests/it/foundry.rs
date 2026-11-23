@@ -1,11 +1,12 @@
 //! Goal: the Ember Foundry holds together and its bosses do what their words say: fifteen lieutenants cover every colour
 //! and colour pair and two final bosses close it, each naming its precon, a five-level innate, two phases and a satchel
-//! of real cards; only a run at Heat 3 or more draws the Foundry; a Foundry ladder is four rooms ending in a final boss;
-//! in real games the innates and phases act as written; and every boss plays a real fight at level V.
+//! of real cards; only a run of the Foundry's generation at Heat 3 or more draws it; a Foundry ladder is four rooms
+//! ending in a final boss; in real games the innates and phases act as written; and every boss plays a real fight at
+//! level V.
 use std::collections::BTreeSet;
 use std::sync::Arc;
 
-use mtg_campaign::content::{Boss, Theme};
+use mtg_campaign::content::{Boss, FOUNDRY_FROM, FOUNDRY_HEAT, Theme};
 use mtg_campaign::innate::{LEVELS, innate_id};
 use mtg_campaign::{CardKind, Run, RunEvent, content};
 use mtg_cards::CardDefinition;
@@ -26,8 +27,6 @@ use rstest::rstest;
 
 const HERO: usize = 0;
 const BOSS: usize = 1;
-/// The least Heat that draws the Foundry.
-const FOUNDRY_HEAT: u8 = 3;
 
 fn pid(seat: usize) -> PlayerId {
     PlayerId::from_index(seat)
@@ -123,7 +122,7 @@ fn every_foundry_boss_holds_its_record() {
     let corpus = corpus::corpus().unwrap();
     let mut decks = BTreeSet::new();
     for boss in &foundry().bosses {
-        assert_eq!(boss.since, mtg_campaign::run::CONTENT, "{}", boss.id);
+        assert_eq!(boss.since, FOUNDRY_FROM, "{}", boss.id);
         assert!(decks.insert(&boss.deck_file), "{} shares its deck", boss.id);
         let deck = content.deck(&boss.deck_file).unwrap();
         assert_eq!(deck.cards.iter().map(|(_, n)| n).sum::<u32>(), 100);
@@ -159,7 +158,7 @@ fn every_foundry_boss_holds_its_record() {
 #[test]
 fn only_a_run_at_heat_three_or_more_draws_the_foundry() {
     let content = content().unwrap();
-    let generation = mtg_campaign::run::CONTENT;
+    let generation = FOUNDRY_FROM;
     let draw = |seed, heat| content.theme_at(seed, generation, heat).unwrap().id.clone();
     for heat in 0..FOUNDRY_HEAT {
         assert!(
@@ -175,13 +174,24 @@ fn only_a_run_at_heat_three_or_more_draws_the_foundry() {
             drawn,
             BTreeSet::from(["foundry".into(), "spire".into(), "warrens".into()])
         );
+        let older = |seed| {
+            content
+                .theme_at(seed, FOUNDRY_FROM - 1, heat)
+                .unwrap()
+                .id
+                .clone()
+        };
+        assert!(
+            (0..300).all(|seed| older(seed) != "foundry"),
+            "an older run never meets it"
+        );
     }
 }
 
 /// A run of the Foundry at Heat 3 with `heroes` heroes, started.
 fn foundry_run(seed: u64, heroes: u8) -> Run {
     let mut events = vec![RunEvent::Content {
-        version: mtg_campaign::run::CONTENT,
+        version: FOUNDRY_FROM,
     }];
     for at in 0..heroes {
         events.push(RunEvent::Joined {

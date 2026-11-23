@@ -437,6 +437,12 @@ impl EventSpec {
     }
 }
 
+/// The content generation the Ember Foundry joins in; a run of an earlier one never meets it.
+pub const FOUNDRY_FROM: u32 = 11;
+
+/// The least Heat of a run that meets the Ember Foundry.
+pub const FOUNDRY_HEAT: u8 = 3;
+
 /// A dungeon theme: its bosses, events and the cards its rewards offer.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
