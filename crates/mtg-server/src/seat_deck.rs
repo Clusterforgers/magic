@@ -77,6 +77,23 @@ impl ChosenDeck {
         })
     }
 
+    /// What the recipe of a `format` table under `house` names for a seat without a deck: a built-in deck, or for
+    /// Commander a stand-in of the table's deck size.
+    pub fn stand_in(
+        format: FormatKind,
+        house: &HouseRules,
+    ) -> Result<ChosenDeck, FingerprintError> {
+        match format {
+            FormatKind::Normal => ChosenDeck::demo(demo::stand_in()),
+            FormatKind::Commander => ChosenDeck::commander_stand_in_of(
+                house
+                    .deck
+                    .deck_size
+                    .map_or(demo::COMMANDER_DECK, |size| size as usize),
+            ),
+        }
+    }
+
     /// What a Commander seat holds until its holder chooses a deck; the seat cannot be ready with it.
     pub fn commander_stand_in() -> Result<ChosenDeck, FingerprintError> {
         ChosenDeck::commander_stand_in_of(demo::COMMANDER_DECK)
@@ -864,7 +881,23 @@ impl SeatDecks {
     /// The recipe of the game as the seats chose it; none while a seat has no deck.
     pub(crate) fn recipe(&self) -> Option<GameRecipe> {
         let chosen: Option<Vec<&ChosenDeck>> = self.current.iter().map(Option::as_ref).collect();
-        let chosen = chosen?;
+        self.recipe_of(&chosen?)
+    }
+
+    /// The recipe the lobby stores as it is now, a seat without a deck on the table's stand-in
+    /// ([`ChosenDeck::stand_in`]), so a restart before the start comes back to the decks chosen so far.
+    pub(crate) fn lobby_recipe(&self) -> Option<GameRecipe> {
+        let stand_in = ChosenDeck::stand_in(self.format, &self.house_rules).ok()?;
+        let held: Vec<&ChosenDeck> = self
+            .current
+            .iter()
+            .map(|deck| deck.as_ref().unwrap_or(&stand_in))
+            .collect();
+        self.recipe_of(&held)
+    }
+
+    /// The recipe of the game with the seats on `chosen`.
+    fn recipe_of(&self, chosen: &[&ChosenDeck]) -> Option<GameRecipe> {
         Some(GameRecipe {
             format: self.format,
             house_rules: self.house_rules.clone(),
@@ -881,7 +914,7 @@ impl SeatDecks {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a lobby's decks follow the seats: a seat plays what it chose until it is given back and then what the game was made with, a seat without a deck keeps the recipe from being written, and only a change from the creation decks asks for a new recipe; a lobby read back from its recipe has every seat on its deck with the note the table was told (a plain name for a recipe stored before the note). A commander table lifts the issues of the deck's own check that its relaxed rules replace, and a Normal game lifts none.
+    //! Goal: a lobby's decks follow the seats: a seat plays what it chose until it is given back and then what the game was made with, a seat without a deck keeps the start's recipe from being written (the lobby stores it on a stand-in), and only a change from the creation decks asks for a new recipe; a lobby read back from its recipe has every seat on its deck with the note the table was told (a plain name for a recipe stored before the note). A commander table lifts the issues of the deck's own check that its relaxed rules replace, and a Normal game lifts none.
     use mtg_cards::deck::IssueCode;
     use mtg_cards::vanilla;
     use mtg_core::color::Color;
@@ -1020,7 +1053,16 @@ mod tests {
     fn the_recipe_waits_for_every_seat_and_names_each_deck_with_its_fingerprint() {
         let mut decks = lobby();
         assert_eq!(decks.recipe(), None, "a seat has no deck");
+        let stored = decks.lobby_recipe().unwrap();
+        assert_eq!(
+            stored.decks[1],
+            DeckRef::Demo {
+                id: demo::stand_in().id.into()
+            },
+            "the lobby stores a seat without a deck on its stand-in"
+        );
         decks.choose(1, stored_deck("Burn"));
+        assert_eq!(decks.lobby_recipe(), decks.recipe());
         let recipe = decks.recipe().unwrap();
         assert_eq!(recipe.seed, 7);
         assert_eq!(

@@ -40,7 +40,7 @@ use crate::actor::{GameConfig, StartError, spawn_named};
 use crate::cards::Reads;
 use crate::cards::{CardSource, CatalogError};
 use crate::config::{Retention, ServerConfig};
-use crate::demo::{self, DemoDeck};
+use crate::demo::DemoDeck;
 use crate::game_id::GameId;
 use crate::handle::{GameHandle, GameStatus};
 use crate::images::Warmer;
@@ -516,7 +516,7 @@ impl Registry {
     /// Creates a game of `options.format` whose seats start with `decks`, one entry per seat: the deck a seat
     /// plays until its holder chooses another, which is also the deck it returns to when a player
     /// gives it back. A seat with `None` has no deck and cannot press Ready until it chooses one;
-    /// the recipe holds [`demo::stand_in`] for it meanwhile.
+    /// the recipe holds [`ChosenDeck::stand_in`] for it meanwhile.
     ///
     /// The recipe names the decks as given, with the fingerprint of their cards, and the seed is
     /// server-chosen. A game made this way tells the table each seat's deck and holds back a `Ready`
@@ -532,17 +532,8 @@ impl Registry {
             Some(seed) => seed,
             None => random_seed()?,
         };
-        let stand_in = match options.format {
-            FormatKind::Normal => ChosenDeck::demo(demo::stand_in()),
-            FormatKind::Commander => ChosenDeck::commander_stand_in_of(
-                options
-                    .house_rules
-                    .deck
-                    .deck_size
-                    .map_or(demo::COMMANDER_DECK, |size| size as usize),
-            ),
-        }
-        .map_err(RecipeError::from)?;
+        let stand_in = ChosenDeck::stand_in(options.format, &options.house_rules)
+            .map_err(RecipeError::from)?;
         let mut decks = decks;
         crate::seat_deck::unify_reads(decks.iter_mut().flatten()).map_err(RecipeError::from)?;
         let held: Vec<&ChosenDeck> = decks
