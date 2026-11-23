@@ -190,12 +190,15 @@ export function BossLadder({ view, content }: { view: DelveView; content: DelveC
   return (
     <section aria-labelledby="ladder-title" className="grid gap-3 rounded-xl border bg-delve-stone p-4">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <div className="flex items-baseline gap-2">
+        <div className="flex flex-wrap items-baseline gap-x-2">
           <h2 id="ladder-title" className="text-lg font-semibold">
             The descent
           </h2>
           <span data-slot="ladder-floor" className="text-sm font-medium text-muted-foreground">
             Floor {run.floor}
+          </span>
+          <span data-slot="ladder-theme" className="text-sm font-medium text-delve">
+            {view.theme}
           </span>
         </div>
         {choosing ? (

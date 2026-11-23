@@ -34,8 +34,9 @@ import { BossIntro } from './BossIntro'
 import { DescendPanel } from './DescendPanel'
 import { DeckPicker } from './DeckPicker'
 import { FightLog } from './FightLog'
-import { heatTier, lastFight, listOf, nextStep, regroupLife } from './model'
+import { floorTheme, heatTier, lastFight, listOf, nextStep, regroupLife } from './model'
 import type { FindCard } from './findCard'
+import { DescentNotice } from './DescentNotice'
 import { PartyLobby } from './PartyLobby'
 import { ResultPanel } from './ResultPanel'
 import { RunHeader } from './RunHeader'
@@ -409,8 +410,9 @@ export function DelvePage({
   const step = nextStep(view)
   const me = view.me === undefined ? undefined : view.run.heroes[view.me]
   return (
-    <PageShell width="wide" className="grid gap-4 sm:py-6">
+    <PageShell width="wide" className="grid gap-4 sm:py-6" data-delve-theme={floorTheme(view.run)}>
       <RunHeader view={view} content={content} />
+      <DescentNotice view={view} />
       {error !== null ? (
         <p role="alert" className="text-sm text-destructive">
           {error}
