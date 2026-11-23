@@ -1,0 +1,450 @@
+{
+  "code": "BRC",
+  "name": "Mishra's Burnished Banner",
+  "commander": [
+    "Mishra, Eminent One"
+  ],
+  "swaps": [
+    {
+      "out": "Jhoira, Weatherlight Captain",
+      "into": "Whirler Rogue"
+    },
+    {
+      "out": "Master Transmuter",
+      "into": "Phyrexian Metamorph"
+    },
+    {
+      "out": "Slobad, Goblin Tinkerer",
+      "into": "Goblin Archaeologist"
+    },
+    {
+      "out": "Bedevil",
+      "into": "Kolaghan's Command"
+    },
+    {
+      "out": "Abrade",
+      "into": "Rakdos Charm"
+    },
+    {
+      "out": "Spine of Ish Sah",
+      "into": "Chromatic Orrery"
+    },
+    {
+      "out": "Trading Post",
+      "into": "Coin of Mastery"
+    },
+    {
+      "out": "Executioner's Capsule",
+      "into": "Vexing Bauble"
+    },
+    {
+      "out": "Prophetic Prism",
+      "into": "Key to the City"
+    },
+    {
+      "out": "Rakdos Signet",
+      "into": "Thought Vessel"
+    },
+    {
+      "out": "Shadowblood Ridge",
+      "into": "Swamp"
+    },
+    {
+      "out": "Smoldering Marsh",
+      "into": "Mountain"
+    },
+    {
+      "out": "Temple of Epiphany",
+      "into": "Island"
+    },
+    {
+      "out": "Temple of Malice",
+      "into": "Swamp"
+    },
+    {
+      "out": "Crumbling Necropolis",
+      "into": "Mountain"
+    },
+    {
+      "out": "Rakdos Carnarium",
+      "into": "Island"
+    },
+    {
+      "out": "Drossforge Bridge",
+      "into": "Swamp"
+    },
+    {
+      "out": "Great Furnace",
+      "into": "Mountain"
+    },
+    {
+      "out": "Mistvault Bridge",
+      "into": "Island"
+    },
+    {
+      "out": "Seat of the Synod",
+      "into": "Swamp"
+    },
+    {
+      "out": "Silverbluff Bridge",
+      "into": "Mountain"
+    },
+    {
+      "out": "Vault of Whispers",
+      "into": "Island"
+    }
+  ],
+  "cards": [
+    [
+      "Mishra, Eminent One",
+      1
+    ],
+    [
+      "Muzzio, Visionary Architect",
+      1
+    ],
+    [
+      "Geth, Lord of the Vault",
+      1
+    ],
+    [
+      "Herald of Anguish",
+      1
+    ],
+    [
+      "Silas Renn, Seeker Adept",
+      1
+    ],
+    [
+      "Emry, Lurker of the Loch",
+      1
+    ],
+    [
+      "Padeem, Consul of Innovation",
+      1
+    ],
+    [
+      "Workshop Elders",
+      1
+    ],
+    [
+      "Fain, the Broker",
+      1
+    ],
+    [
+      "Audacious Reshapers",
+      1
+    ],
+    [
+      "Hellkite Igniter",
+      1
+    ],
+    [
+      "Brudiclad, Telchor Engineer",
+      1
+    ],
+    [
+      "Metalwork Colossus",
+      1
+    ],
+    [
+      "Traxos, Scourge of Kroog",
+      1
+    ],
+    [
+      "Blasphemous Act",
+      1
+    ],
+    [
+      "Expressive Iteration",
+      1
+    ],
+    [
+      "Thoughtcast",
+      1
+    ],
+    [
+      "Feed the Swarm",
+      1
+    ],
+    [
+      "Faithless Looting",
+      1
+    ],
+    [
+      "Chaos Warp",
+      1
+    ],
+    [
+      "Fact or Fiction",
+      1
+    ],
+    [
+      "Thirst for Knowledge",
+      1
+    ],
+    [
+      "Lithoform Engine",
+      1
+    ],
+    [
+      "Cursed Mirror",
+      1
+    ],
+    [
+      "Idol of Oblivion",
+      1
+    ],
+    [
+      "Mirrorworks",
+      1
+    ],
+    [
+      "Oblivion Stone",
+      1
+    ],
+    [
+      "Strionic Resonator",
+      1
+    ],
+    [
+      "Oni-Cult Anvil",
+      1
+    ],
+    [
+      "Dreamstone Hedron",
+      1
+    ],
+    [
+      "Fellwar Stone",
+      1
+    ],
+    [
+      "Hedron Archive",
+      1
+    ],
+    [
+      "Ichor Wellspring",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Servo Schematic",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Thran Dynamo",
+      1
+    ],
+    [
+      "Mnemonic Sphere",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Dimir Signet",
+      1
+    ],
+    [
+      "Mycosynth Wellspring",
+      1
+    ],
+    [
+      "Nihil Spellbomb",
+      1
+    ],
+    [
+      "Wayfarer's Bauble",
+      1
+    ],
+    [
+      "Darkwater Catacombs",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Temple of Deceit",
+      1
+    ],
+    [
+      "Buried Ruin",
+      1
+    ],
+    [
+      "Dimir Aqueduct",
+      1
+    ],
+    [
+      "Izzet Boilerworks",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Reliquary Tower",
+      1
+    ],
+    [
+      "Ash Barrens",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Path of Ancestry",
+      1
+    ],
+    [
+      "Terramorphic Expanse",
+      1
+    ],
+    [
+      "Swamp",
+      8
+    ],
+    [
+      "Island",
+      9
+    ],
+    [
+      "Mountain",
+      8
+    ],
+    [
+      "Ashnod the Uncaring",
+      1
+    ],
+    [
+      "Glint Raker",
+      1
+    ],
+    [
+      "Terisiare's Devastation",
+      1
+    ],
+    [
+      "Blast-Furnace Hellkite",
+      1
+    ],
+    [
+      "Farid, Enterprising Salvager",
+      1
+    ],
+    [
+      "Machine God's Effigy",
+      1
+    ],
+    [
+      "Scavenged Brawler",
+      1
+    ],
+    [
+      "Smelting Vat",
+      1
+    ],
+    [
+      "Wondrous Crucible",
+      1
+    ],
+    [
+      "Whirler Rogue",
+      1
+    ],
+    [
+      "Phyrexian Metamorph",
+      1
+    ],
+    [
+      "Goblin Archaeologist",
+      1
+    ],
+    [
+      "Kolaghan's Command",
+      1
+    ],
+    [
+      "Rakdos Charm",
+      1
+    ],
+    [
+      "Chromatic Orrery",
+      1
+    ],
+    [
+      "Coin of Mastery",
+      1
+    ],
+    [
+      "Vexing Bauble",
+      1
+    ],
+    [
+      "Key to the City",
+      1
+    ],
+    [
+      "Thought Vessel",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 11,
+      "R": 16,
+      "U": 16
+    },
+    "types": {
+      "Artifact": 36,
+      "Creature": 22,
+      "Instant": 5,
+      "Land": 37,
+      "Sorcery": 6
+    },
+    "subtypes": {
+      "Artificer": 9,
+      "Construct": 3,
+      "Demon": 1,
+      "Dragon": 3,
+      "Drake": 1,
+      "Goblin": 1,
+      "Human": 9,
+      "Island": 9,
+      "Merfolk": 1,
+      "Mountain": 8,
+      "Phyrexian": 3,
+      "Rogue": 1,
+      "Shapeshifter": 1,
+      "Soldier": 1,
+      "Swamp": 8,
+      "Vedalken": 1,
+      "Warlock": 1,
+      "Wizard": 1,
+      "Zombie": 1
+    },
+    "tokens": 7,
+    "counters": 4,
+    "graveyard": 9,
+    "creature_commanders": 0
+  }
+}

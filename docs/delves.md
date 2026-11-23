@@ -5,7 +5,7 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 ## Shape
 
 - A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds three of the theme's lieutenants drawn from the seed (fewer when the theme has fewer), then one of the theme's final bosses drawn by the seed (the Warrens: Grimgut or the Unmaker); a stored run of a generation before 4 folds by its older ladder of every lieutenant, then the final boss; between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
-- Themes: the Warrens and the Drowned Spire (`content/spire.json`: the Siren Queen and the Drowned Archivist, then the Leviathan; three rooms). A new run draws its theme by its seed among the themes whose final boss its generation meets (`Content::theme_for`).
+- Themes: the Warrens, the Drowned Spire (`content/spire.json`: the Siren Queen and the Drowned Archivist, then the Leviathan; three rooms) and, from Heat 3, the Ember Foundry (`content/foundry.json`, The Ember Foundry). A new run draws its theme by its seed among the themes whose final boss its generation meets and whose least Heat (`Theme.min_heat`) its Heat reaches (`Content::theme_at`).
 - Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them (`FightPlan`).
 - Each side takes one shared team turn (`TeamMode::SharedTurns`, CR 805): every hero untaps, draws, plays a land and casts sorceries in the party's turn, a side's turn is led by its first seat (`turn_lead`: the first living hero, the boss) and priority goes round the table from it. In the declare-attackers step each player of the side chooses the attacks of their own creatures in turn order, seeing what the teammates before chose; the side declares every choice at once, so limits, requirements and "attacks alone" read the whole declaration (`party_attacks`), and each hero pays the attack costs of their own creatures. A choice illegal only together is refused with its reason and chosen again; after two refusals the engine declares the plain legal attack. Life totals stay per hero. The table names the party's turn ("Your party's turn").
 - Life carries over between fights. After a won fight each hero keeps their end life and heals 15; a hero who ended it as a Spirit comes back at 10 first. A Campfire rest heals 20, the shop's draught 15; nothing heals above 40 plus relic bonuses.
@@ -40,7 +40,7 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 Every boss (`boss_plan.rs`) is: one innate, one encounter modifier, two phases by round, a satchel, a precon deck and relics by depth. The boss has nothing else; its brain is Hard at every Heat and depth.
 
-- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`<code>-<name>.json` in `content/decks`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight; `cue`, when its bot casts it, `docs/bots.md`), `art` the real card whose art crop pictures it. The deck file holds the precon's cards with its by-hand cards swapped for basics (`swaps`) and its `makeup`, counted from the corpus by the `boss_decks` test (`MTG_UPDATE_MAKEUPS=1` rewrites it). The server loads the deck as a live game loads a deck: each Read or Unverified card plays its draft, pinned in the recipe (`cards_read`); the satchel cards come last in the deck (`FightPlan::boss_deck`) and the plan moves them into the seat's satchel.
+- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`<code>-<name>.json` in `content/decks`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight; `cue`, when its bot casts it, `docs/bots.md`), `art` the real card whose art crop pictures it. The deck file holds the precon's cards with its by-hand cards swapped for basics or, in the Foundry, for automatic cards of the same type within its colours (`swaps`) and its `makeup`, counted from the corpus by the `boss_decks` test (`MTG_UPDATE_MAKEUPS=1` rewrites it). The server loads the deck as a live game loads a deck: each Read or Unverified card plays its draft, pinned in the recipe (`cards_read`); the satchel cards come last in the deck (`FightPlan::boss_deck`) and the plan moves them into the seat's satchel.
 - Depth: the bosses the party defeated in the run over all floors (`Run::defeated`); a lost and retried fight adds none.
 - Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` and a cost's `{N}` in its abilities, `"$L"` for the level where the shape changes); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. A level may differ in more than N: `"params": {"NAME": [v1, …, v5]}` puts any value where `"$NAME"` stands (an ability that becomes `null` is left out at that level), and `"texts"` gives each level its own words. A phase may be written with levels too; the fight plays it at the innate's level (`boss_plan.rs`). The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
 
@@ -49,17 +49,42 @@ Every boss (`boss_plan.rs`) is: one innate, one encounter modifier, two phases b
 | Heat 0 Casual | I | I | II | II | III | III | IV | IV | V |
 | Heat 1 Seasoned | I | II | II | III | III | IV | IV | V | V |
 | Heat 2 Heroic | II | II | III | III | IV | IV | V | V | V |
+| Heat 3 Legendary | II | III | III | IV | IV | V | V | V | V |
 
 - Encounter modifier: one game-warping rule for the whole fight, drawn from the pool both themes share (`content/modifiers.json`, its cards in `content/encounters.json`) by the seed keyed by floor and room, so a retried fight keeps it. A modifier never meets a boss its `not_with` names (`modifiers.rs`).
 - Phases: Phase 1 begins at the beginning of the end step of the last turn of round 8, Phase 2 of round 14 (`PHASE_ROUNDS`, `PhaseStart::AtRound`). A round is one turn of each seat or team (`Turn::round`); an extra turn does not advance it. A phase is an emblem for the rest of the fight; its "when this phase begins" ability (`TriggerPattern::PhaseBegins`) uses the stack once.
 - Satchel: four spells in the boss's command zone, cast like cards in hand and public; a reusable one returns as it leaves the stack and costs {2} more for each earlier cast this fight, a once card does not return.
-- Relics: `depth − offset` relics, the offset 4, 3 and 2 at Heat 0, 1 and 2, at most 6 (`boss_relics.rs`). They come from the heroes' whole relic pool of the run's generation, risky relics included, never one that names teammates (`team`), and only those the deck's makeup can use. Each is Rare by chance (10, 15 or 20 % at Heat 0, 1 and 2 with one relic, 10 points more for each further relic, at most 60 %) or, from four relics at Heat 1 and 2, Mythic (5 % at four, 10 at five, 15 at six); the rest are Common. Copies can repeat and stack. The draw is keyed by floor and room.
+- Relics: `depth − offset` relics, the offset 4, 3, 2 and 1 at Heat 0 to 3, at most 6 (`boss_relics.rs`). They come from the heroes' whole relic pool of the run's generation, risky relics included, never one that names teammates (`team`), and only those the deck's makeup can use. Each is Rare by chance (10, 15, 20 or 25 % at Heat 0 to 3 with one relic, 10 points more for each further relic, at most 60 %) or, from four relics at Heat 1 and above, Mythic (5 % at four, 10 at five, 15 at six); the rest are Common. Copies can repeat and stack. The draw is keyed by floor and room.
 - Life: 40 and 15 for each hero after the first (`Scale::boss_life`); Heat and depth do not change it.
 - Its advantages are open: the innate, modifier and relics are emblems in its command zone from the start, named with their rules on the seat's sheet (`boss_sheet.rs`, `BossSeat::sheet`). The intro (`DelveFightView`) lists the two effects, the phases with their rounds ("Phase 1 at round 8"), the satchel with each card's mark and the relics; at the table the bar shows the innate with its level, the modifier and relics as chips, and a pill counting down ("Phase 1 in 3 rounds") that names the phase in force once it begins, with the next one's countdown. A reusable satchel card reads "returns · +{N}" with its tax now, a once card "once" (`BossView`: `innate`, `modifier`, `round_phases`, `phase_in`, `relics`, `satchel`).
 - Opening hand: the boss draws 7 with 2 to 4 lands and takes no mulligan (`OpeningLands::BOSS`).
 - No loops: the boss's bot answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
 - Drain rule: a boss's innate, modifier, phase or satchel card takes life from a hero only as damage or unless the hero pays.
 - Relics for heroes: from generation 8 (`RELICS_AGAIN_FROM`) a relic can drop again; owning it never lowers its chance, and copies stack.
+
+### The Ember Foundry
+
+A burning foundry under a mountain, drawn only at Heat 3 (`min_heat`): fifteen lieutenants, one of every colour and colour pair, then Kaldrek or Ignivar. Its art is the commanders, artificers and dragons of its precons; its events trade at forges, troughs and anvils (the Slag Heap, the Bellows Shrine, the Quench Trough, the Master Smith's Anvil, the Runaway Ore Cart), and its reward pool leans on mana rocks, artifacts and equipment. Cards: `content/rework_foundry.json`.
+
+| Boss | Colours | Precon | Innate | Phases |
+|---|---|---|---|---|
+| Brannoc, the Anvil Warden | W | Forged in Stone | equipped creatures +N/+N and first strike | Soldiers, vigilance; +1/+1, equipped double strike |
+| Ottoline the Clockmaker | U | Peer Through Time | heroes' spells cost {N} more | heroes' creatures tapped through an untap; a card each upkeep, spells {2} less |
+| Morvane, the Slag Lich | B | Necron Dynasties | an artifact creature of value N or less returns each end step | every artifact creature returns; +1/+1 deathtouch |
+| Grizzek the Scrapmaster | R | Built From Scratch | a Servo each upkeep; an artifact dying deals N to each hero | 3 to the heroes' creatures; +2/+0 menace |
+| Veyla of the Rusted Grove | G | Guided by Nature | destroys a hero artifact of value N or less each upkeep | a counter each, trample; +2/+2 |
+| Ilsabet, the Ghost in the Gears | WU | Phantom Premonition | flyers +N/+N | small hero creatures bounce; flying, a Spirit per hero each upkeep |
+| Haldric, the Ashen Stoker | UB | Undead Unleashed | a hero creature card of value N or less rises for him each upkeep | heroes mill ten; heroes' creatures −1/−1 |
+| Vashka, the Ember Warlock | BR | Planar Portal | N damage to each hero each end step | 2 to heroes and their creatures; 1 to each hero per spell |
+| Kassa Bladebreaker | RG | Upgrades Unleashed | N counters on her biggest creature each upkeep | a counter each, modified trample; modified +2/+0 haste |
+| Mother Ironbark | GW | Coven Counters | a counter on her smallest creature each upkeep; countered creatures +N/+0 vigilance | two counters each; countered trample and hexproof |
+| Overseer Calvaine | WB | Silverquill Statement | each hero pays {N} or he gets a flying Inkling | each hero sacrifices a creature; +1/+1 lifelink |
+| Ivra, the Brass Inventor | UR | Exquisite Invention | N Thopters per artifact spell | two Thopters per hero, artifacts {1} less; artifact creatures +1/+1 haste |
+| Winnow, the Ash Gardener | BG | Death Toll | mills N, a creature card back to hand each upkeep | everyone mills five, a creature returns; +2/+1 trample |
+| Dame Teodora, the Reforger | RW | Lorehold Legacies | N Servos when an artifact creature dies | a 4/4 Golem per hero; +1/+1 first strike |
+| Quillon the Mold-Maker | GU | Jump Scare! | an Ooze with N counters each upkeep | counters doubled, trample; +1/+1 hexproof |
+| Kaldrek the Ironmaster (final) | UBR | Mishra's Burnished Banner | N damage to a hero creature per artifact entering | takes each hero's greatest artifact, artifacts {1} less; 4 to the heroes' creatures, artifact creatures +2/+2 |
+| Ignivar, the Forge-Wyrm (final) | RG | Draconic Rage | N to each hero when his creature is dealt damage | 3 to every creature and each hero; a 4/4 Dragon each upkeep |
 
 ### Encounter modifiers
 
@@ -121,6 +146,7 @@ The host picks the Heat when creating a run; the creation form and the run heade
 | 0 | Casual | any deck can win with some luck |
 | 1 | Seasoned | needs a deck that suits the format |
 | 2 | Heroic | needs a team of decks that work together and suit the format |
+| 3 | Legendary | needs a tuned team, and opens the Ember Foundry |
 
 Depth and Heat act on the boss through its innate level and relics (Bosses); the party size sets its life.
 
@@ -187,7 +213,7 @@ From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor
 
 ## Leaderboard
 
-- `GET /api/delves/leaderboard` ([server.md](server.md), Delves) folds every stored run past its lobby, abandoned ones included, into one board per Heat the run was started at (Heroic, Seasoned, Casual), the greatest first.
+- `GET /api/delves/leaderboard` ([server.md](server.md), Delves) folds every stored run past its lobby, abandoned ones included, into one board per Heat the run was started at (Legendary, Heroic, Seasoned, Casual), the greatest first.
 - Depth (`Run::depth`): the floors whose final boss fell, then the bosses beaten on the floor below them (none while the party stands on a cleared floor). A deeper run ranks first by floors, then by bosses; a tie goes to the run that last changed earlier, then by name.
 - Each signed-in player stands once per board with their deepest run: their name in it, its depth, their commanders (the deck name for a deck chosen before commanders were read), the party size with bot allies and the day the run last changed. A run with no boss beaten and a bot ally never stand on it; a board lists at most 20 (`BOARD_LIMIT`).
 

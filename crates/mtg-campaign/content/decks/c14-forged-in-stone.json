@@ -1,0 +1,385 @@
+{
+  "code": "C14",
+  "name": "Forged In Stone",
+  "commander": [
+    "Nahiri, the Lithomancer"
+  ],
+  "swaps": [
+    {
+      "out": "Whitemane Lion",
+      "into": "Adorned Pouncer"
+    },
+    {
+      "out": "Silverblade Paladin",
+      "into": "Adeline, Resplendent Cathar"
+    },
+    {
+      "out": "Skyhunter Skirmisher",
+      "into": "Danitha Capashen, Paragon"
+    },
+    {
+      "out": "Geist-Honored Monk",
+      "into": "Celestine, the Living Saint"
+    },
+    {
+      "out": "Requiem Angel",
+      "into": "Valkyrie Harbinger"
+    },
+    {
+      "out": "Sun Titan",
+      "into": "Jareth, Leonine Titan"
+    },
+    {
+      "out": "Spectral Procession",
+      "into": "Austere Command"
+    },
+    {
+      "out": "Nomads' Assembly",
+      "into": "Phyrexian Rebirth"
+    },
+    {
+      "out": "Deploy to the Front",
+      "into": "Hour of Reckoning"
+    },
+    {
+      "out": "Afterlife",
+      "into": "Generous Gift"
+    },
+    {
+      "out": "Masterwork of Ingenuity",
+      "into": "Bloodforged Battle-Axe"
+    },
+    {
+      "out": "Pearl Medallion",
+      "into": "Arcane Signet"
+    },
+    {
+      "out": "Moonsilver Spear",
+      "into": "Mirrormind Crown"
+    },
+    {
+      "out": "Mobilization",
+      "into": "Caretaker's Talent"
+    },
+    {
+      "out": "True Conviction",
+      "into": "Echoes of Eternity"
+    },
+    {
+      "out": "Drifting Meadow",
+      "into": "Plains"
+    },
+    {
+      "out": "Emeria, the Sky Ruin",
+      "into": "Plains"
+    }
+  ],
+  "cards": [
+    [
+      "Nahiri, the Lithomancer",
+      1
+    ],
+    [
+      "Containment Priest",
+      1
+    ],
+    [
+      "Grand Abolisher",
+      1
+    ],
+    [
+      "Kor Sanctifiers",
+      1
+    ],
+    [
+      "Mentor of the Meek",
+      1
+    ],
+    [
+      "Flickerwisp",
+      1
+    ],
+    [
+      "Hallowed Spiritkeeper",
+      1
+    ],
+    [
+      "Kemba, Kha Regent",
+      1
+    ],
+    [
+      "Angelic Field Marshal",
+      1
+    ],
+    [
+      "Celestial Crusader",
+      1
+    ],
+    [
+      "Jazal Goldmane",
+      1
+    ],
+    [
+      "Adarkar Valkyrie",
+      1
+    ],
+    [
+      "Sunblast Angel",
+      1
+    ],
+    [
+      "Twilight Shepherd",
+      1
+    ],
+    [
+      "Angel of the Dire Hour",
+      1
+    ],
+    [
+      "Serra Avatar",
+      1
+    ],
+    [
+      "Gift of Estates",
+      1
+    ],
+    [
+      "Fell the Mighty",
+      1
+    ],
+    [
+      "Martial Coup",
+      1
+    ],
+    [
+      "Decree of Justice",
+      1
+    ],
+    [
+      "Brave the Elements",
+      1
+    ],
+    [
+      "Condemn",
+      1
+    ],
+    [
+      "Midnight Haunting",
+      1
+    ],
+    [
+      "Oblation",
+      1
+    ],
+    [
+      "Wing Shards",
+      1
+    ],
+    [
+      "Benevolent Offering",
+      1
+    ],
+    [
+      "Comeuppance",
+      1
+    ],
+    [
+      "Return to Dust",
+      1
+    ],
+    [
+      "White Sun's Zenith",
+      1
+    ],
+    [
+      "Skullclamp",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Marble Diamond",
+      1
+    ],
+    [
+      "Mask of Memory",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Loxodon Warhammer",
+      1
+    ],
+    [
+      "Strata Scythe",
+      1
+    ],
+    [
+      "Sword of Vengeance",
+      1
+    ],
+    [
+      "Assault Suit",
+      1
+    ],
+    [
+      "Bonehoard",
+      1
+    ],
+    [
+      "Argentum Armor",
+      1
+    ],
+    [
+      "Loreseeker's Stone",
+      1
+    ],
+    [
+      "Armistice",
+      1
+    ],
+    [
+      "Sacred Mesa",
+      1
+    ],
+    [
+      "Marshal's Anthem",
+      1
+    ],
+    [
+      "Cathars' Crusade",
+      1
+    ],
+    [
+      "Arcane Lighthouse",
+      1
+    ],
+    [
+      "Ghost Quarter",
+      1
+    ],
+    [
+      "Karoo",
+      1
+    ],
+    [
+      "Secluded Steppe",
+      1
+    ],
+    [
+      "Temple of the False God",
+      1
+    ],
+    [
+      "Plains",
+      34
+    ],
+    [
+      "Adorned Pouncer",
+      1
+    ],
+    [
+      "Adeline, Resplendent Cathar",
+      1
+    ],
+    [
+      "Danitha Capashen, Paragon",
+      1
+    ],
+    [
+      "Celestine, the Living Saint",
+      1
+    ],
+    [
+      "Valkyrie Harbinger",
+      1
+    ],
+    [
+      "Jareth, Leonine Titan",
+      1
+    ],
+    [
+      "Austere Command",
+      1
+    ],
+    [
+      "Phyrexian Rebirth",
+      1
+    ],
+    [
+      "Hour of Reckoning",
+      1
+    ],
+    [
+      "Generous Gift",
+      1
+    ],
+    [
+      "Bloodforged Battle-Axe",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Mirrormind Crown",
+      1
+    ],
+    [
+      "Caretaker's Talent",
+      1
+    ],
+    [
+      "Echoes of Eternity",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "W": 44
+    },
+    "types": {
+      "Artifact": 16,
+      "Creature": 21,
+      "Enchantment": 6,
+      "Instant": 10,
+      "Kindred": 1,
+      "Land": 39,
+      "Planeswalker": 1,
+      "Sorcery": 7
+    },
+    "subtypes": {
+      "Angel": 6,
+      "Avatar": 2,
+      "Cat": 4,
+      "Class": 1,
+      "Cleric": 5,
+      "Eldrazi": 1,
+      "Elemental": 1,
+      "Equipment": 11,
+      "Giant": 1,
+      "Human": 6,
+      "Knight": 2,
+      "Kor": 1,
+      "Nahiri": 1,
+      "Plains": 34,
+      "Soldier": 1,
+      "Spirit": 1,
+      "Warrior": 2
+    },
+    "tokens": 14,
+    "counters": 1,
+    "graveyard": 7,
+    "creature_commanders": 0
+  }
+}
