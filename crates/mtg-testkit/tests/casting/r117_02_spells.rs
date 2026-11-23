@@ -160,7 +160,7 @@ fn ending_the_combat_phase_exiles_the_stack_and_goes_to_the_postcombat_main_phas
             Step::Main2,
             "the end of combat step is skipped"
         );
-        assert!(state.combat().attackers().is_empty());
+        assert_eq!(state.combat().attackers().len(), 0);
         let bear = driver.id_of("Bear").unwrap();
         assert!(
             !state.object(bear).unwrap().permanent().unwrap().tapped(),

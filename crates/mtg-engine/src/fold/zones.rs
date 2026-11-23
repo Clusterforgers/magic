@@ -512,6 +512,24 @@ fn note_permission_used(
     }
 }
 
+/// Tallies the kinds of the spell just cast: an instant or sorcery, a noncreature spell, and the kinds a cost counts.
+fn tally_kinds_cast(state: &mut GameState, player: PlayerId, object: ObjectId) {
+    let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
+        spell.card().is_type(CardType::Instant) || spell.card().is_type(CardType::Sorcery)
+    });
+    if instant_or_sorcery {
+        state.tally(player, Tally::CastInstantOrSorcery);
+    }
+    if state
+        .objects
+        .get(&object)
+        .is_some_and(|spell| !spell.card().is_type(CardType::Creature))
+    {
+        state.tally(player, Tally::C10AnyNoncreatureCast);
+    }
+    crate::c11a_less::c11a_tally_kinds(state, player, object);
+}
+
 /// A card is cast: it moves to the stack as the spell, with what was announced for it, and lies face down when it is cast that way.
 fn spell_cast(
     state: &mut GameState,
@@ -572,20 +590,7 @@ fn spell_cast(
     for by in resolves {
         crate::rules::r6503_resolves_from_now(state, player, object, by);
     }
-    let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
-        spell.card().is_type(CardType::Instant) || spell.card().is_type(CardType::Sorcery)
-    });
-    if instant_or_sorcery {
-        state.tally(player, Tally::CastInstantOrSorcery);
-    }
-    if state
-        .objects
-        .get(&object)
-        .is_some_and(|spell| !spell.card().is_type(CardType::Creature))
-    {
-        state.tally(player, Tally::C10AnyNoncreatureCast);
-    }
-    crate::c11a_less::c11a_tally_kinds(state, player, object);
+    tally_kinds_cast(state, player, object);
     // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
     if let Some(spell) = state.objects.get_mut(&object) {
         spell.choices.clone_from(choices);
