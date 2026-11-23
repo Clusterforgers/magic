@@ -1,0 +1,61 @@
+{
+  "oracle_id": "b0efb6fb-f2d1-4027-90b5-44fb3f5dd538",
+  "name": "Unification",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Unification",
+      "oracle_fingerprint": "e1ab259661a120f2713de077c7ff049d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
+            ],
+            "effects": [
+              { "Draw": { "who": { "OwnerOf": { "Target": 0 } }, "count": 2 } },
+              { "Move": { "what": { "Target": 0 }, "to": { "Library": { "place": "Shuffled" } } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "AnyOf": [{ "In": "Hand" }, { "In": "Graveyard" }] },
+                            { "OwnedBy": "You" },
+                            { "Subtype": "Spacecraft" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

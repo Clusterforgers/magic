@@ -553,7 +553,8 @@ fn token_text(token: &TokenRef) -> Option<Described> {
             let named = spec.name != subtypes.join(" ");
             let plain = (spec.supertypes.is_empty() || legendary)
                 && legendary <= named
-                && !subtypes.is_empty()
+                // A sizeless token that only a name tells apart: "a tapped land token named Sanctum".
+                && (!subtypes.is_empty() || (sizeless && named))
                 && !types.is_empty()
                 && power >= 0
                 && toughness >= 0;
@@ -586,8 +587,15 @@ fn keywords_text(token: &TokenRef) -> Option<String> {
     for ability in &spec.abilities {
         match ability {
             Ability::Keyword(found) => granted.push(Modification::AddKeyword(found.clone())),
-            Ability::Activated { .. } | Ability::Triggered { .. } | Ability::Static { .. } => {
+            Ability::Activated { .. }
+            | Ability::Triggered { .. }
+            | Ability::Static { .. } => {
                 quoted.push(format!("\"{}\"", render::ability(ability)?));
+            }
+            // A rule of the token: "Permanents can't phase in." (The City on the Edge of Forever).
+            Ability::Rule { .. } => {
+                let text = render::written_variants(ability).into_iter().next()?;
+                quoted.push(format!("\"{text}\""));
             }
             _ => return None,
         }

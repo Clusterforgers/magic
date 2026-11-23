@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6349eecb-dabd-4dcb-a8fb-c8ee66f61461",
+  "name": "Gabriel Lorca, Mirror Menace",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gabriel Lorca, Mirror Menace",
+      "oracle_fingerprint": "11ef50d7b3ce34bb23159e05721d7c5f",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "R116Dilemma": { "who": "You" } },
+            "from": "Graveyard",
+            "effects": [
+              { "Pay": { "cost": "{B}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

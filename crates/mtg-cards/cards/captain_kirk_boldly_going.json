@@ -1,0 +1,60 @@
+{
+  "oracle_id": "5228fffe-6347-4177-bccb-b15621c7159c",
+  "name": "Captain Kirk, Boldly Going",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Kirk, Boldly Going",
+      "oracle_fingerprint": "f8ddb69291d45463a876e1429b69be43",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "Subtype": "Spacecraft" },
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "effects": [
+              {
+                "Search": {
+                  "also": ["Graveyard"],
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "R117AllOf": [{ "Supertype": "Basic" }, { "Type": "Land" }] },
+                        { "Named": "Starship Enterprise" }
+                      ]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": { "Searched": { "zone": "Library" } },
+                  "then": [{ "Shuffle": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

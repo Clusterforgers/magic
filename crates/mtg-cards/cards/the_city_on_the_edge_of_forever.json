@@ -1,0 +1,66 @@
+{
+  "oracle_id": "47c9ef8c-7ba7-4702-bd8c-5fedc59c8166",
+  "name": "The City on the Edge of Forever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The City on the Edge of Forever",
+      "oracle_fingerprint": "45bf53d776336eebd558233f64792a6a",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "PhaseOut": {
+                  "what": {
+                    "Each": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+                  }
+                }
+              },
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Human",
+                      "colors": ["White"],
+                      "types": ["Creature"],
+                      "subtypes": ["Human"],
+                      "power": 0,
+                      "toughness": 1,
+                      "abilities": [
+                        {
+                          "Rule": {
+                            "rule": { "Cant": { "who": "EachPlayer", "action": "PhaseIn" } }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              { "LoseLife": { "who": "EachPlayer", "amount": 2 } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, "Token"] } },
+              { "If": { "condition": "Performed", "then": [{ "GainLife": { "amount": 5 } }] } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

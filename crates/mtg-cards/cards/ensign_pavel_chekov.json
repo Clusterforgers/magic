@@ -1,0 +1,62 @@
+{
+  "oracle_id": "7d7e232f-e4f9-41db-a2d9-cfe88721b7a9",
+  "name": "Ensign Pavel Chekov",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ensign Pavel Chekov",
+      "oracle_fingerprint": "7b10f308ad9d072fdb6ad23eff205772",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "ExileTop": {
+                  "who": "Opponents",
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Land" },
+                            { "OwnedBy": { "Bound": "player" } },
+                            { "Is": { "Bound": "exiled" } },
+                            { "In": "Exile" }
+                          ]
+                        },
+                        "as": "picked"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "picked" }, "as": "chosen", "adds": true } }
+                  ]
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "chosen" }, "play": true }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

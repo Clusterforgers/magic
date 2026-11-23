@@ -1,0 +1,90 @@
+{
+  "oracle_id": "eaa47a9b-79ad-4f42-a98b-dcf76138207c",
+  "name": "H.M.S. Bounty, Unlikely Timeship",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "H.M.S. Bounty, Unlikely Timeship",
+      "oracle_fingerprint": "12f90db780bff39439cd8199f1e54084",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Search": { "filter": [{ "Subtype": "Whale" }], "reveal": true, "as": "card" }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+                    { "Shuffle": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": { "Count": [{ "Subtype": "Whale" }, { "ControlledBy": "You" }] },
+                          "op": "Ge",
+                          "right": 1
+                        }
+                      },
+                      { "Not": { "R118BegunExtraTurn": "You" } }
+                    ]
+                  },
+                  "then": [{ "ExtraTurn": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

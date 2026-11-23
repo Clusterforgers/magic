@@ -1,0 +1,64 @@
+{
+  "oracle_id": "9b627fa4-af4c-482b-b1cf-2ad15938602c",
+  "name": "Starship Enterprise",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starship Enterprise",
+      "oracle_fingerprint": "e50c1400d378ec4e11a2f076e7ecbfb9",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge", "count": 4 } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 16
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 16
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 16
+              }
+            },
+            "effects": [{ "Draw": { "count": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "oracle_id": "f4831eee-fef6-4fef-a174-400a25d0837d",
+  "name": "Pure Energy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pure Energy",
+      "oracle_fingerprint": "edfd37c406b695baa54b68f87a8f9941",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 1, "max": 2 },
+                "divide": 2
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        },
+        { "Keyword": { "R116BeamMeUp": "{2}{W}" } }
+      ]
+    }
+  ]
+}

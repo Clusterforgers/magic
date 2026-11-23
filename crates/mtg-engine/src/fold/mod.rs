@@ -475,6 +475,7 @@ fn begin_turn(
         };
         state.turn.no_power_up = taken.no_power_up;
         state.turn.r109_unpreventable = taken.r109_unpreventable;
+        state.r5522.r118_extra_turns.insert(active);
         at_end = taken.r6703_end;
     } else {
         state.turn.regular = active;

@@ -708,12 +708,22 @@ fn r117_either_text(sides: &[Pred], plural: bool) -> Option<String> {
             let preds = match side {
                 Pred::R117AllOf(all) => all.clone(),
                 Pred::AnyOf(_) => return None,
+                // "a basic land card or a card named Starship Enterprise": a name is its own card phrase.
+                Pred::Named(name) => return Some(format!("a card named {name}")),
                 one => vec![one.clone()],
             };
             filter_text(&Selector(preds), false)
         })
         .collect();
-    Some(texts?.join(" or "))
+    let texts = texts?;
+    // The article of the first side comes from the count; a named side keeps its own.
+    if texts
+        .first()
+        .is_some_and(|first| first.starts_with("a card named"))
+    {
+        return None;
+    }
+    Some(texts.join(" or "))
 }
 
 /// "a basic land card", "up to two Forest cards", "any number of Dragon creature cards".
@@ -964,7 +974,12 @@ fn search_sequence(effects: &[Effect], who: &Ref) -> Option<(String, usize)> {
             ..,
         ] if count_of == 1 && *what == found && shuffler == who => {
             let pron = if plural { "them" } else { "it" };
-            let _ = write!(text, ", put {pron} {}, then shuffle", destination_text(to)?);
+            let mut put = destination_text(to)?;
+            // Another searcher's card goes to their own hand (70,000 Light-Years from Home).
+            if *who != Ref::You {
+                put = put.replace(" your ", " their ");
+            }
+            let _ = write!(text, ", put {pron} {put}, then shuffle");
         }
         [
             Effect::Move { what, to, .. },

@@ -225,6 +225,7 @@ mod r117_04_affected;
 mod r117_04_creature;
 mod r117_04_during;
 mod r117_04_x_target;
+mod r118_01_wordings;
 pub(crate) use r116_reminder_tokens::r116_is_reminder_token;
 mod r117_01_joins;
 mod r11w_tallies;

@@ -4188,6 +4188,10 @@ impl<'a> Scope<'a> {
             | Condition::CitysBlessing(who)
             | Condition::EnduringStory(who)
             | Condition::MaxSpeed(who) => self.w11d_designation(condition, who)?,
+            Condition::R118BegunExtraTurn(who) => self
+                .players(who)?
+                .iter()
+                .any(|player| self.state.r5522.r118_extra_turns.contains(player)),
             Condition::RingTempted { who, times } => self
                 .players(who)?
                 .iter()

@@ -1,0 +1,150 @@
+{
+  "object": "card",
+  "id": "6b5d9bd2-cc78-4c30-b6ee-65b76c60a588",
+  "oracle_id": "5228fffe-6347-4177-bccb-b15621c7159c",
+  "multiverse_ids": [],
+  "resource_id": "E663DAE00FF5A323A01AEFD925D7704EE92D283E1CE4844C3BCD191A4B6C004A",
+  "mtgo_id": 156954,
+  "tcgplayer_id": 727664,
+  "cardmarket_id": 920690,
+  "name": "Captain Kirk, Boldly Going",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588",
+  "scryfall_uri": "https://scryfall.com/card/trc/85/captain-kirk-boldly-going?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-11-10T08:40:42Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.jpg?1794300042",
+    "normal": "https://cards.scryfall.io/normal/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.jpg?1794300042",
+    "large": "https://cards.scryfall.io/large/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.jpg?1794300042",
+    "png": "https://cards.scryfall.io/png/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.png?1794300042",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.jpg?1794300042",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.jpg?1794300042",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.webp?1794300042",
+    "grid": "https://cards.scryfall.io/grid/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.webp?1794300042",
+    "display": "https://cards.scryfall.io/display/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.webp?1794300042",
+    "art": "https://cards.scryfall.io/art/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.webp?1794300042",
+    "crop": "https://cards.scryfall.io/crop/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.webp?1794300042",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/b/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588.jpg?1794300042"
+  },
+  "mana_cost": "{1}{G}{W}{U}",
+  "cmc": 4,
+  "type_line": "Legendary Creature — Human Officer",
+  "oracle_text": "Vigilance\nSpacecraft creatures you control get +3/+3.\nWhenever Captain Kirk enters or attacks, search your library and/or graveyard for a basic land card or a card named Starship Enterprise, reveal it, and put it into your hand. If you search your library this way, shuffle.",
+  "power": "3",
+  "toughness": "4",
+  "colors": [
+    "G",
+    "U",
+    "W"
+  ],
+  "color_identity": [
+    "G",
+    "U",
+    "W"
+  ],
+  "keywords": [
+    "Vigilance"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/6b5d9bd2-cc78-4c30-b6ee-65b76c60a588/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A5228fffe-6347-4177-bccb-b15621c7159c&unique=prints",
+  "collector_number": "85",
+  "digital": false,
+  "rarity": "mythic",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Josh Newton",
+  "artist_ids": [
+    "0a37dc19-786c-44ed-954b-0a5967a16bdb"
+  ],
+  "illustration_id": "c26239d2-5223-4021-b21f-6e682df1cac8",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 25162,
+  "preview": {
+    "source": "Kess Wylie",
+    "source_uri": "https://www.instagram.com/p/DYnVjC1yF4p/?igsh=MTUzZzNuMnI4dDJheg==",
+    "previewed_at": "2026-05-21"
+  },
+  "prices": {
+    "usd": "3.29",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "2.43",
+    "eur_foil": null,
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DCaptain%2BKirk%252C%2BBoldly%2BGoing",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DCaptain%2BKirk%252C%2BBoldly%2BGoing",
+    "edhrec": "https://edhrec.com/route/?cc=Captain+Kirk%2C+Boldly+Going"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F727664%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=920690&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156954?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

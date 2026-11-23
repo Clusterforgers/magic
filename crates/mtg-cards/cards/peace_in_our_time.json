@@ -1,0 +1,48 @@
+{
+  "oracle_id": "b19ce6f2-7778-4779-8173-973eb7ee0b02",
+  "name": "Peace in Our Time",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Peace in Our Time",
+      "oracle_fingerprint": "9d68063ea7dd5508d4a7151e193e8ce8",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat" } },
+            "effects": [
+              { "May": { "who": "Triggering", "effects": [{ "Draw": { "who": "Triggering" } }] } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Rule": {
+                        "rule": { "Cant": { "who": "Triggering", "action": { "R118Attack": {} } } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    { "PutCounters": { "on": "This", "counter": { "Other": "peace" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": { "Other": "peace" } } },
+                "op": "Ge",
+                "right": 12
+              }
+            },
+            "effects": [{ "WinGame": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

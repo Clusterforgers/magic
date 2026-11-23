@@ -1,0 +1,52 @@
+{
+  "oracle_id": "645a5619-d0b2-4153-aae0-ca2adc6f5e3d",
+  "name": "Species 8472",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Species 8472",
+      "oracle_fingerprint": "bf7ffabf34490d5feb656df755a4c3fb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "GainLife": {
+                  "amount": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "CantBeBlockedBy": [{ "Type": "Artifact" }, { "Type": "Creature" }] }]
+          }
+        },
+        {
+          "Rule": {
+            "rule": {
+              "Cant": {
+                "who": "This",
+                "action": {
+                  "BeTargeted": [
+                    { "Type": "Artifact" },
+                    { "Not": "Spell" },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1933,6 +1933,7 @@ impl<'a> Walker<'a> {
             Condition::Performed => self.performed(),
             Condition::CompletedDungeon(who) => self.player_condition("CompletedDungeon", who),
             Condition::Monarch(who) => self.player_condition("Monarch", who),
+            Condition::R118BegunExtraTurn(who) => self.player_condition("R118BegunExtraTurn", who),
             Condition::Initiative(who) => self.player_condition("Initiative", who),
             Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
             Condition::AttackedYouLastTurn(who) => {
@@ -5868,7 +5869,13 @@ impl Walker<'_> {
                     // to attack a planeswalker through that turn.
                     && !(*duration == Duration::TheirNextTurn
                         && (attack_at
-                            || matches!(rule, GameRule::Cant { action: Prohibited::Cast { .. }, .. })))
+                            || matches!(
+                                rule,
+                                GameRule::Cant {
+                                    action: Prohibited::Cast { .. } | Prohibited::R118Attack { .. },
+                                    ..
+                                }
+                            )))
                 {
                     w.problem(RMT3_SKIP_ONLY);
                 }

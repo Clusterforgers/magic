@@ -1,0 +1,65 @@
+{
+  "oracle_id": "adbbb968-5721-427c-a15a-320d49ab4c3e",
+  "name": "Stray from History",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Stray from History",
+      "oracle_fingerprint": "31c335b14a6cd278bac426c2a6ee3467",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Rewrite the Past",
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] },
+                              { "In": "Graveyard" },
+                              { "OwnedBy": "You" }
+                            ]
+                          },
+                          "bounds": { "min": 1, "max": 2 }
+                        }
+                      ],
+                      "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }]
+                    },
+                    {
+                      "label": "Repair the Timeline",
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        {
+                          "Reveal": {
+                            "what": { "Each": [{ "OwnedBy": { "Target": 0 } }, { "In": "Hand" }] }
+                          }
+                        },
+                        {
+                          "Choose": {
+                            "from": {
+                              "Each": [
+                                { "Not": { "Type": "Land" } },
+                                { "In": "Hand" },
+                                { "OwnedBy": { "Target": 0 } }
+                              ]
+                            },
+                            "as": "picked"
+                          }
+                        },
+                        { "Exile": { "what": { "Bound": "picked" } } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

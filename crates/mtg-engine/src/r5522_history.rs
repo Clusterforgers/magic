@@ -25,6 +25,8 @@ pub(crate) struct R5522Game {
     pub(crate) r6500_untapped: BTreeSet<ObjectRef>,
     /// The permanents each permanent devoured as it entered, as they last existed on the battlefield (`r6500_devoured`).
     pub(crate) r6500_devoured: Vec<(ObjectRef, Vec<Snapshot>)>,
+    /// The players who have begun an extra turn this game (CR 500.7).
+    pub(crate) r118_extra_turns: BTreeSet<PlayerId>,
 }
 
 impl R5522Game {
@@ -36,6 +38,7 @@ impl R5522Game {
             && self.r6100_struck.is_empty()
             && self.r6500_untapped.is_empty()
             && self.r6500_devoured.is_empty()
+            && self.r118_extra_turns.is_empty()
     }
 }
 
