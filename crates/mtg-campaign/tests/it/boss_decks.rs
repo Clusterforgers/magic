@@ -69,7 +69,7 @@ fn automatic_in_corpus(name: &str) -> bool {
 #[test]
 fn every_boss_deck_is_a_hundred_cards() {
     let decks = decks();
-    assert!(decks.len() >= 19, "the nineteen boss precons");
+    assert!(decks.len() >= 34, "the thirty-four boss precons");
     for deck in &decks {
         let size: u32 = deck.cards.iter().map(|(_, count)| count).sum();
         assert_eq!(size, 100, "{}", deck.name);

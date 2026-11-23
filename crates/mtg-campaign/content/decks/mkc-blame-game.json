@@ -1,0 +1,435 @@
+{
+  "code": "MKC",
+  "name": "Blame Game",
+  "commander": [
+    "Nelly Borca, Impulsive Accuser"
+  ],
+  "swaps": [
+    {
+      "out": "Redemption Arc",
+      "into": "Timely Ward"
+    },
+    {
+      "out": "Elspeth, Sun's Champion",
+      "into": "Elspeth, Storm Slayer"
+    },
+    {
+      "out": "Sun Titan",
+      "into": "Valkyrie Harbinger"
+    },
+    {
+      "out": "Brash Taunter",
+      "into": "Siege-Gang Commander"
+    },
+    {
+      "out": "Boros Reckoner",
+      "into": "Dualcaster Mage"
+    },
+    {
+      "out": "Labyrinth of Skophos",
+      "into": "Mountain"
+    },
+    {
+      "out": "Needle Spires",
+      "into": "Plains"
+    },
+    {
+      "out": "Seal of Cleansing",
+      "into": "Darksteel Mutation"
+    },
+    {
+      "out": "Wall of Omens",
+      "into": "Crystal Barricade"
+    },
+    {
+      "out": "Access Tunnel",
+      "into": "Mountain"
+    },
+    {
+      "out": "Escape Tunnel",
+      "into": "Plains"
+    },
+    {
+      "out": "Sunhome, Fortress of the Legion",
+      "into": "Mountain"
+    }
+  ],
+  "cards": [
+    [
+      "Nelly Borca, Impulsive Accuser",
+      1
+    ],
+    [
+      "Feather, Radiant Arbiter",
+      1
+    ],
+    [
+      "Immortal Obligation",
+      1
+    ],
+    [
+      "Otherworldly Escort",
+      1
+    ],
+    [
+      "Trouble in Pairs",
+      1
+    ],
+    [
+      "Havoc Eater",
+      1
+    ],
+    [
+      "Hot Pursuit",
+      1
+    ],
+    [
+      "Mob Verdict",
+      1
+    ],
+    [
+      "Prisoner's Dilemma",
+      1
+    ],
+    [
+      "Take the Bait",
+      1
+    ],
+    [
+      "Ransom Note",
+      1
+    ],
+    [
+      "Angel of the Ruins",
+      1
+    ],
+    [
+      "Comeuppance",
+      1
+    ],
+    [
+      "Darien, King of Kjeldor",
+      1
+    ],
+    [
+      "Duelist's Heritage",
+      1
+    ],
+    [
+      "Keeper of the Accord",
+      1
+    ],
+    [
+      "Loran of the Third Path",
+      1
+    ],
+    [
+      "Promise of Loyalty",
+      1
+    ],
+    [
+      "Selfless Squire",
+      1
+    ],
+    [
+      "Sevinne's Reclamation",
+      1
+    ],
+    [
+      "Smuggler's Share",
+      1
+    ],
+    [
+      "Stalking Leonin",
+      1
+    ],
+    [
+      "Windborn Muse",
+      1
+    ],
+    [
+      "Winds of Rath",
+      1
+    ],
+    [
+      "Agitator Ant",
+      1
+    ],
+    [
+      "Disrupt Decorum",
+      1
+    ],
+    [
+      "Etali, Primal Storm",
+      1
+    ],
+    [
+      "Fiendish Duo",
+      1
+    ],
+    [
+      "Frontier Warmonger",
+      1
+    ],
+    [
+      "Kazuul, Tyrant of the Cliffs",
+      1
+    ],
+    [
+      "Spectacular Showdown",
+      1
+    ],
+    [
+      "Vengeful Ancestor",
+      1
+    ],
+    [
+      "Anya, Merciless Angel",
+      1
+    ],
+    [
+      "Deflecting Palm",
+      1
+    ],
+    [
+      "Gisela, Blade of Goldnight",
+      1
+    ],
+    [
+      "Ancient Stone Idol",
+      1
+    ],
+    [
+      "Solemn Simulacrum",
+      1
+    ],
+    [
+      "Steel Hellkite",
+      1
+    ],
+    [
+      "Tome of Legends",
+      1
+    ],
+    [
+      "Castle Ardenvale",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Furycalm Snarl",
+      1
+    ],
+    [
+      "Kher Keep",
+      1
+    ],
+    [
+      "Scavenger Grounds",
+      1
+    ],
+    [
+      "Slayers' Stronghold",
+      1
+    ],
+    [
+      "Temple of Triumph",
+      1
+    ],
+    [
+      "Throne of the High City",
+      1
+    ],
+    [
+      "War Room",
+      1
+    ],
+    [
+      "Ghostly Prison",
+      1
+    ],
+    [
+      "Gideon's Sacrifice",
+      1
+    ],
+    [
+      "Martial Impetus",
+      1
+    ],
+    [
+      "Orzhov Advokist",
+      1
+    ],
+    [
+      "Soul Snare",
+      1
+    ],
+    [
+      "Vow of Duty",
+      1
+    ],
+    [
+      "Curse of Opulence",
+      1
+    ],
+    [
+      "Rite of the Raging Storm",
+      1
+    ],
+    [
+      "Shiny Impetus",
+      1
+    ],
+    [
+      "Vow of Lightning",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Bloodthirsty Blade",
+      1
+    ],
+    [
+      "Fellwar Stone",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Talisman of Conviction",
+      1
+    ],
+    [
+      "Thought Vessel",
+      1
+    ],
+    [
+      "Ash Barrens",
+      1
+    ],
+    [
+      "Boros Garrison",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Reliquary Tower",
+      1
+    ],
+    [
+      "Rogue's Passage",
+      1
+    ],
+    [
+      "Temple of the False God",
+      1
+    ],
+    [
+      "Plains",
+      11
+    ],
+    [
+      "Mountain",
+      10
+    ],
+    [
+      "Timely Ward",
+      1
+    ],
+    [
+      "Elspeth, Storm Slayer",
+      1
+    ],
+    [
+      "Valkyrie Harbinger",
+      1
+    ],
+    [
+      "Siege-Gang Commander",
+      1
+    ],
+    [
+      "Dualcaster Mage",
+      1
+    ],
+    [
+      "Darksteel Mutation",
+      1
+    ],
+    [
+      "Crystal Barricade",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 24,
+      "W": 33
+    },
+    "types": {
+      "Artifact": 14,
+      "Creature": 27,
+      "Enchantment": 14,
+      "Instant": 5,
+      "Land": 37,
+      "Planeswalker": 1,
+      "Sorcery": 7
+    },
+    "subtypes": {
+      "Advisor": 1,
+      "Angel": 5,
+      "Archer": 1,
+      "Artificer": 1,
+      "Aura": 7,
+      "Book": 1,
+      "Cat": 1,
+      "Cleric": 1,
+      "Clue": 1,
+      "Curse": 1,
+      "Desert": 1,
+      "Detective": 2,
+      "Devil": 1,
+      "Dinosaur": 1,
+      "Dragon": 2,
+      "Elder": 1,
+      "Elemental": 1,
+      "Elspeth": 1,
+      "Equipment": 1,
+      "Goblin": 1,
+      "Golem": 2,
+      "Human": 9,
+      "Insect": 1,
+      "Mountain": 10,
+      "Ogre": 1,
+      "Plains": 11,
+      "Soldier": 3,
+      "Spirit": 2,
+      "Wall": 1,
+      "Warrior": 2,
+      "Wizard": 1
+    },
+    "tokens": 12,
+    "counters": 3,
+    "graveyard": 3,
+    "creature_commanders": 0
+  }
+}

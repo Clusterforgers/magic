@@ -1,0 +1,413 @@
+{
+  "code": "C21",
+  "name": "Prismari Performance",
+  "commander": [
+    "Zaffai, Thunder Conductor"
+  ],
+  "swaps": [
+    {
+      "out": "Naru Meha, Master Wizard",
+      "into": "Archmage Emeritus"
+    },
+    {
+      "out": "Erratic Cyclops",
+      "into": "Wild-Magic Sorcerer"
+    },
+    {
+      "out": "Inspiring Refrain",
+      "into": "Echo of Eons"
+    },
+    {
+      "out": "Serum Visions",
+      "into": "Preordain"
+    },
+    {
+      "out": "Resculpt",
+      "into": "Counterspell"
+    },
+    {
+      "out": "Talisman of Creativity",
+      "into": "Sky Diamond"
+    },
+    {
+      "out": "Shivan Reef",
+      "into": "Mountain"
+    },
+    {
+      "out": "Temple of Epiphany",
+      "into": "Island"
+    },
+    {
+      "out": "Prismari Campus",
+      "into": "Mountain"
+    },
+    {
+      "out": "Blighted Cataract",
+      "into": "Island"
+    },
+    {
+      "out": "Desert of the Fervent",
+      "into": "Mountain"
+    },
+    {
+      "out": "Desert of the Mindful",
+      "into": "Island"
+    },
+    {
+      "out": "Lonely Sandbar",
+      "into": "Mountain"
+    },
+    {
+      "out": "Elementalist's Palette",
+      "into": "Cursed Mirror"
+    }
+  ],
+  "cards": [
+    [
+      "Zaffai, Thunder Conductor",
+      1
+    ],
+    [
+      "Jaya Ballard",
+      1
+    ],
+    [
+      "Veyran, Voice of Duality",
+      1
+    ],
+    [
+      "Dazzling Sphinx",
+      1
+    ],
+    [
+      "Octavia, Living Thesis",
+      1
+    ],
+    [
+      "Sly Instigator",
+      1
+    ],
+    [
+      "Inferno Project",
+      1
+    ],
+    [
+      "Radiant Performer",
+      1
+    ],
+    [
+      "Rionya, Fire Dancer",
+      1
+    ],
+    [
+      "Diluvian Primordial",
+      1
+    ],
+    [
+      "Talrand, Sky Summoner",
+      1
+    ],
+    [
+      "Charmbreaker Devils",
+      1
+    ],
+    [
+      "Dualcaster Mage",
+      1
+    ],
+    [
+      "Etali, Primal Storm",
+      1
+    ],
+    [
+      "Wildfire Devils",
+      1
+    ],
+    [
+      "Storm-Kiln Artist",
+      1
+    ],
+    [
+      "Rootha, Mercurial Artist",
+      1
+    ],
+    [
+      "Living Lore",
+      1
+    ],
+    [
+      "Humble Defector",
+      1
+    ],
+    [
+      "Crackling Drake",
+      1
+    ],
+    [
+      "Muse Vortex",
+      1
+    ],
+    [
+      "Creative Technique",
+      1
+    ],
+    [
+      "Fiery Encore",
+      1
+    ],
+    [
+      "Rousing Refrain",
+      1
+    ],
+    [
+      "Surge to Victory",
+      1
+    ],
+    [
+      "Aether Gale",
+      1
+    ],
+    [
+      "Apex of Power",
+      1
+    ],
+    [
+      "Blasphemous Act",
+      1
+    ],
+    [
+      "Volcanic Vision",
+      1
+    ],
+    [
+      "Call the Skybreaker",
+      1
+    ],
+    [
+      "Epic Experiment",
+      1
+    ],
+    [
+      "Elemental Masterpiece",
+      1
+    ],
+    [
+      "Expressive Iteration",
+      1
+    ],
+    [
+      "Ponder",
+      1
+    ],
+    [
+      "Treasure Cruise",
+      1
+    ],
+    [
+      "Faithless Looting",
+      1
+    ],
+    [
+      "Mana Geyser",
+      1
+    ],
+    [
+      "Reinterpret",
+      1
+    ],
+    [
+      "Aetherspouts",
+      1
+    ],
+    [
+      "Dig Through Time",
+      1
+    ],
+    [
+      "Brainstorm",
+      1
+    ],
+    [
+      "Traumatic Visions",
+      1
+    ],
+    [
+      "Fiery Fall",
+      1
+    ],
+    [
+      "Seething Song",
+      1
+    ],
+    [
+      "Letter of Acceptance",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Hedron Archive",
+      1
+    ],
+    [
+      "Izzet Signet",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Metallurgic Summonings",
+      1
+    ],
+    [
+      "Swarm Intelligence",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Scavenger Grounds",
+      1
+    ],
+    [
+      "Study Hall",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Forgotten Cave",
+      1
+    ],
+    [
+      "Izzet Boilerworks",
+      1
+    ],
+    [
+      "Mage-Ring Network",
+      1
+    ],
+    [
+      "Memorial to Genius",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Reliquary Tower",
+      1
+    ],
+    [
+      "Temple of the False God",
+      1
+    ],
+    [
+      "Island",
+      13
+    ],
+    [
+      "Mountain",
+      13
+    ],
+    [
+      "Mind's Desire",
+      1
+    ],
+    [
+      "Brass's Bounty",
+      1
+    ],
+    [
+      "Sunbird's Invocation",
+      1
+    ],
+    [
+      "Pyromancer's Goggles",
+      1
+    ],
+    [
+      "Archmage Emeritus",
+      1
+    ],
+    [
+      "Wild-Magic Sorcerer",
+      1
+    ],
+    [
+      "Echo of Eons",
+      1
+    ],
+    [
+      "Preordain",
+      1
+    ],
+    [
+      "Counterspell",
+      1
+    ],
+    [
+      "Sky Diamond",
+      1
+    ],
+    [
+      "Cursed Mirror",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 34,
+      "U": 30
+    },
+    "types": {
+      "Artifact": 9,
+      "Creature": 21,
+      "Enchantment": 3,
+      "Instant": 8,
+      "Land": 37,
+      "Planeswalker": 1,
+      "Sorcery": 21
+    },
+    "subtypes": {
+      "Avatar": 2,
+      "Desert": 1,
+      "Devil": 2,
+      "Dinosaur": 1,
+      "Drake": 1,
+      "Dwarf": 1,
+      "Efreet": 1,
+      "Elder": 1,
+      "Elemental": 2,
+      "Human": 7,
+      "Island": 13,
+      "Jaya": 1,
+      "Merfolk": 1,
+      "Mountain": 13,
+      "Octopus": 1,
+      "Orc": 2,
+      "Rogue": 1,
+      "Shaman": 4,
+      "Sorcerer": 1,
+      "Sphinx": 1,
+      "Wizard": 7
+    },
+    "tokens": 7,
+    "counters": 1,
+    "graveyard": 11,
+    "creature_commanders": 0
+  }
+}

@@ -23,6 +23,7 @@ mod satchel;
 mod satchel_cues;
 mod sim_lengths;
 mod spire;
+mod spire_grown;
 mod spirits;
 mod themed_floors;
 mod trades;
