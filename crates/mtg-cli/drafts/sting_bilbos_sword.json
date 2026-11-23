@@ -21,7 +21,7 @@
             "effects": [
               {
                 "PutCounters": {
-                  "on": { "Target": 0 },
+                  "on": "This",
                   "counter": { "Other": "hone" },
                   "count": {
                     "Largest": {

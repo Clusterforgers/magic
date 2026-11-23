@@ -1,5 +1,6 @@
-//! Goal: every card the r118-02 pack made fully automatic reads back as its printed text clause by clause, the compiler
-//! reads it whole, and a near miss of each (another number, filter or kind) does not read back.
+//! Goal: every card the r118-02 pack made fully automatic (and Gideon, Champion of Justice) reads back as its printed
+//! text clause by clause, the compiler reads it whole, and a near miss of each (another number, filter, kind or holder of
+//! the counters) does not read back.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -51,6 +52,7 @@ fn compact(name: &str) -> String {
 
 #[rstest]
 #[case("Frankenstein's Monster")]
+#[case("Gideon, Champion of Justice")]
 #[case("Haste Magic")]
 #[case("Inti, Seneschal of the Sun")]
 #[case("Nahiri's Sacrifice")]
@@ -71,6 +73,7 @@ fn r118_02_reads_back_whole(#[case] name: &str) {
 
 #[rstest]
 #[case("Frankenstein's Monster")]
+#[case("Gideon, Champion of Justice")]
 #[case("Inti, Seneschal of the Sun")]
 #[case("Riveteers Charm")]
 #[case("Volatile Stormdrake")]
@@ -116,6 +119,16 @@ fn r118_02_a_sacrifice_by_x_reads_as_a_required_cost_by_x() {
     r#"{"Other":"+0/+3"}"#
 )]
 #[case("Frankenstein's Monster", r#""Creature""#, r#""Artifact""#)]
+#[case(
+    "Gideon, Champion of Justice",
+    r#""counter":"loyalty","on":"This"}"#,
+    r#""counter":"loyalty","on":{"Target":0}}"#
+)]
+#[case(
+    "Gideon, Champion of Justice",
+    r#""what":"Opponent""#,
+    r#""what":"Player""#
+)]
 fn r118_02_a_near_miss_does_not_read_back(
     #[case] name: &str,
     #[case] from: &str,

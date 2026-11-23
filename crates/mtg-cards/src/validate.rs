@@ -5302,8 +5302,14 @@ impl Walker<'_> {
                 w.at("mana", |w| w.produce(mana));
                 w.at("times", |w| w.amount(times));
             }
-            Effect::PutCounters { on, count, .. } => {
-                w.at("on", |w| w.reference(on, Kind::Either));
+            Effect::PutCounters { on, count, counter } => {
+                // A loyalty or +1/+1 counter never goes on a player, nor energy on a permanent (CR 122.1).
+                let holder = if counter.held_by_players() {
+                    Kind::Player
+                } else {
+                    Kind::Object
+                };
+                w.at("on", |w| w.reference(on, holder));
                 w.amounting = Amounting::Shared;
                 w.at("count", |w| w.amount(count));
             }
@@ -9485,6 +9491,54 @@ mod tests {
             found.iter().any(|problem| problem.contains(message)),
             "{message:?} is not among {found:#?}"
         );
+    }
+
+    #[rstest]
+    #[case::loyalty_on_a_target_opponent(
+        r#"{"Loyalty":{"cost":{"Plus":1},"targets":[{"what":"Opponent"}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"loyalty","count":{"Count":[{"Type":"Creature"},{"ControlledBy":{"Target":0}}]}}}]}}"#,
+        Some("PutCounters.on: expected an object but this is a player")
+    )]
+    #[case::plus_one_on_you(
+        r#"{"Spell":{"effects":[{"PutCounters":{"on":"You","counter":"+1/+1"}}]}}"#,
+        Some("PutCounters.on: expected an object but this is a player")
+    )]
+    #[case::hone_on_each_opponent(
+        r#"{"Spell":{"effects":[{"PutCounters":{"on":"Opponents","counter":{"Other":"hone"}}}]}}"#,
+        Some("PutCounters.on: expected an object but this is a player")
+    )]
+    #[case::energy_on_a_card(
+        r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":{"Other":"energy"},"count":2}}]}}"#,
+        Some("PutCounters.on: expected a player but this is an object")
+    )]
+    #[case::loyalty_on_the_card(
+        r#"{"Loyalty":{"cost":{"Plus":1},"targets":[{"what":"Opponent"}],"effects":[{"PutCounters":{"on":"This","counter":"loyalty","count":{"Count":[{"Type":"Creature"},{"ControlledBy":{"Target":0}}]}}}]}}"#,
+        None
+    )]
+    #[case::poison_on_a_target_player(
+        r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"poison"}}]}}"#,
+        None
+    )]
+    #[case::energy_experience_rad_and_tickets_on_you(
+        r#"{"Spell":{"effects":[{"PutCounters":{"on":"You","counter":{"Other":"energy"}}},{"PutCounters":{"on":"You","counter":{"Other":"experience"}}},{"PutCounters":{"on":"You","counter":{"Other":"rad"}}},{"PutCounters":{"on":"You","counter":{"Other":"ticket"}}}]}}"#,
+        None
+    )]
+    #[case::a_plus_one_on_any_target(
+        r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1"}}]}}"#,
+        None
+    )]
+    fn a_counter_goes_on_what_can_hold_its_kind(#[case] json: &str, #[case] message: Option<&str>) {
+        let found = problems(json);
+        let holder: Vec<&String> = found
+            .iter()
+            .filter(|problem| problem.contains("PutCounters.on"))
+            .collect();
+        match message {
+            Some(message) => assert!(
+                holder.iter().any(|problem| problem.contains(message)),
+                "{message:?} is not among {found:#?}"
+            ),
+            None => assert!(holder.is_empty(), "{found:#?}"),
+        }
     }
 
     #[rstest]
