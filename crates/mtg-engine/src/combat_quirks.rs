@@ -913,7 +913,7 @@ mod tests {
         rule(&mut game, wanted);
         let source = id(&game, "Wolf");
         assert_eq!(
-            crate::keywords::protects(&game, shade, source, by),
+            crate::keywords::protects(&game, shade, source, by, None),
             protected
         );
     }
@@ -934,7 +934,7 @@ mod tests {
         };
         rule(&mut game, wanted);
         let source = id(&game, "Wolf");
-        assert!(crate::keywords::protects(&game, shade, source, ME));
+        assert!(crate::keywords::protects(&game, shade, source, ME, None));
     }
 
     #[test]

@@ -397,6 +397,7 @@ fn scope_of<'a>(
         as_was: false,
         inline: None,
         entering: None,
+        r118_by: crate::choose::r118_kind_of(Some(rules)),
     }
 }
 

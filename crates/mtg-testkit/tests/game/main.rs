@@ -14,6 +14,7 @@ mod c4_party;
 mod c4_skipped_turns;
 mod c7_untap_dies;
 mod c7_untap_held;
+mod c7_untap_shared;
 mod c8_vote_coins;
 mod cast_self;
 mod chosen_player;

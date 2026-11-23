@@ -1765,7 +1765,14 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
         )],
         (ReplaceBy::RevealOrTapped(of), None) => reveal_texts(of),
         (ReplaceBy::BeholdOrTapped(of), None) => r5508_behold_texts(of),
-        (ReplaceBy::PayOrGraveyard { cost, optional }, None) => {
+        (
+            ReplaceBy::PayOrGraveyard {
+                cost,
+                optional,
+                r118_counter_each,
+            },
+            None,
+        ) if r118_counter_each.is_empty() => {
             super::e14b_entering::pay_or_graveyard_texts(cost, *optional)
         }
         (ReplaceBy::RevealOrTapped(of), Some(Condition::Not(held))) => {

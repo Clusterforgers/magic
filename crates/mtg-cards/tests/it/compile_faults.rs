@@ -1,4 +1,4 @@
-//! Goal: each fault the compiler's output showed against a full Oracle Cards download stays fixed, so the cards that had it generate valid rules or none: a keyword Scryfall lists is explained by a grant or a landwalk in the text, a spell has no event for "that much" to name, a partner is the card itself or a card that exists, and the X of "mana value X" is no X the caster announces.
+//! Goal: each fault the compiler's output showed against a full Oracle Cards download stays fixed, so the cards that had it generate valid rules or none: a keyword Scryfall lists is explained by a grant or a landwalk in the text, a spell has no event for "that much" to name, a partner is the card itself or a card that exists, and the X of "mana value X" in a required cost is the X the caster announces, whose cost then reads valid.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -145,7 +145,7 @@ const SOLDIER: &str = "Legendary Creature \u{2014} Human Soldier";
         "As an additional cost to cast this spell, sacrifice an artifact or creature with mana value X.\n~ deals X damage divided as you choose among any number of target creatures.",
         &[],
     ),
-    None
+    Some(ImplStatus::Partial)
 )]
 fn the_cards_that_failed_the_checks_generate_valid_rules_or_none(
     #[case] card: PrintedCard,
@@ -202,6 +202,7 @@ fn mentions(card: &Card, needle: &str) -> bool {
     serde_json::to_string(card).unwrap().contains(needle)
 }
 
+/// A required sacrifice by a stat of X announces X with the cast (CR 601.2b): the cost picks by it and the spell reads it.
 #[rstest]
 #[case::the_stat_of_what_the_cost_takes(
     "As an additional cost to cast this spell, sacrifice an artifact or creature with mana value X.\n~ deals X damage to any target."
@@ -209,15 +210,17 @@ fn mentions(card: &Card, needle: &str) -> bool {
 #[case::the_power_of_what_the_cost_takes(
     "As an additional cost to cast this spell, sacrifice a creature with power X.\n~ deals X damage to any target."
 )]
-fn the_x_of_a_stat_in_a_cost_is_no_x_the_caster_announces(#[case] text: &str) {
+fn the_x_of_a_stat_in_a_required_cost_is_the_x_the_caster_announces(#[case] text: &str) {
     let card = printed("Test Spell", "Sorcery", "{1}{R}", text, &[]);
     let compiled = compile(&card);
     assert!(
-        compiled.clauses.iter().all(|clause| !clause.read),
+        compiled.clauses.iter().all(|clause| clause.read),
         "{:?}",
         compiled.clauses
     );
-    assert!(compiled.card.is_none_or(|card| !mentions(&card, "\"X\"")));
+    let card = compiled.card.unwrap();
+    assert_eq!(card.impl_status, ImplStatus::Full);
+    assert!(mentions(&card, r#""to":"X""#), "{card:?}");
 }
 
 #[rstest]

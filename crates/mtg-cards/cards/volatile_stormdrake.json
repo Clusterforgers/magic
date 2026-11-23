@@ -1,0 +1,45 @@
+{
+  "oracle_id": "08d64b16-9221-4532-890c-d5cdbf181e28",
+  "name": "Volatile Stormdrake",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Volatile Stormdrake",
+      "oracle_fingerprint": "a70c8fefd674985dcd580e2b94a92c0f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Keyword": {
+            "HexproofFrom": [{ "AnyOf": [{ "Ability": "Activated" }, { "Ability": "Triggered" }] }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "ExchangeControl": { "what": ["This", { "Target": 0 }], "duration": "Forever" } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 4 } },
+                    {
+                      "Pay": {
+                        "cost": [{ "PayEnergy": 1 }],
+                        "times": { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                        "unpaid": [{ "Sacrifice": { "filter": [{ "Is": { "Target": 0 } }] } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

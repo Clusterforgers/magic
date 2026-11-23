@@ -137,6 +137,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             &work.choices.optional_costs,
             work.choices.way,
             Some(&work.choices.targets[base..index]),
+            ctx.r118_by(),
         ) else {
             return Some(Next::Drop);
         };

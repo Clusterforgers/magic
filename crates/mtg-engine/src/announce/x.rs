@@ -327,12 +327,30 @@ fn targets_met_at(
     x: u32,
 ) -> bool {
     let Some(modal) = modal_of(rules) else {
-        return targets_met(state, source, player, rules.targets(), None, Some(x));
+        return targets_met(
+            state,
+            source,
+            player,
+            rules.targets(),
+            None,
+            Some(x),
+            crate::choose::r118_kind_of(Some(rules)),
+        );
     };
     let available = modal
         .modes
         .iter()
-        .filter(|mode| targets_met(state, source, player, &mode.targets, None, Some(x)))
+        .filter(|mode| {
+            targets_met(
+                state,
+                source,
+                player,
+                &mode.targets,
+                None,
+                Some(x),
+                crate::choose::r118_kind_of(Some(rules)),
+            )
+        })
         .count();
     enough_modes(&modal, u32::try_from(available).unwrap_or(u32::MAX))
 }
@@ -407,6 +425,7 @@ impl Offer {
                     &specs,
                     ctx.cause(),
                     Some(*x),
+                    ctx.r118_by(),
                 )
             })
             .collect();

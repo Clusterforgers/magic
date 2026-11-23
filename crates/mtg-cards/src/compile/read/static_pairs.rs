@@ -140,6 +140,10 @@ pub fn texts(first: &Ability, second: &Ability) -> Vec<String> {
     if !whole_pair.is_empty() {
         return whole_pair;
     }
+    let whole_pair = super::r118_02_wholes::r118_02_pair_texts(first, second);
+    if !whole_pair.is_empty() {
+        return whole_pair;
+    }
     let whole_pair = super::r115_04_wholes::r115_04_pair_texts(first, second);
     if !whole_pair.is_empty() {
         return whole_pair;

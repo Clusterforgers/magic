@@ -25,6 +25,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
                     work.choices.x,
                     work.choices.modes_chooser(),
                     &chosen[bases.get(at).copied().unwrap_or(0).min(at)..at],
+                    ctx.r118_by(),
                 );
                 without_earlier(spec, &chosen[..at], &mut legal);
                 picked.iter().all(|target| legal.contains(target))

@@ -51,13 +51,16 @@ pub fn exile_top(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 }
 
 /// "You may play that card this turn.", "Until end of turn, you may play that card.", "Until the end of your next turn,
-/// you may play those cards.", "You may play that card for as long as you control ~.": the permission to play the cards an exile from the top of a library named.
+/// you may play those cards.", "You may play that card for as long as you control ~.", "You may play that card until your
+/// next end step.": the permission to play the cards an exile from the top of a library named.
 fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
     let leading = r.attempt(|r| {
         let duration = if r.words("until end of turn") {
             Duration::UntilEndOfTurn
         } else if r.words("until end of combat on your next turn") {
             Duration::UntilEndOfCombatOnYourNextTurn
+        } else if r.words("until your next end step") {
+            Duration::UntilYourNextEndStep
         } else {
             r.need("until the end of your next turn")?;
             Duration::UntilEndOfYourNextTurn
@@ -75,6 +78,7 @@ fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
         None if r.words("for as long as you control") => {
             r.source().then_some(Duration::WhileYouControlSource)
         }
+        None if r.words("until your next end step") => Some(Duration::UntilYourNextEndStep),
         None => r.need("this turn").map(|()| Duration::UntilEndOfTurn),
     }
 }
@@ -198,6 +202,7 @@ pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
         Duration::WhileYouControlSource => {
             format!("You may play {cards} for as long as you control ~")
         }
+        Duration::UntilYourNextEndStep => format!("You may play {cards} until your next end step"),
         _ => return None,
     };
     Some((
@@ -251,6 +256,22 @@ pub fn impulse_wordings(text: String) -> Vec<String> {
         (
             "Until the end of your next turn, you may play those cards",
             "You may play those cards until the end of your next turn",
+        ),
+        (
+            "You may play that card until your next end step",
+            "Until your next end step, you may play that card",
+        ),
+        (
+            "You may play those cards until your next end step",
+            "Until your next end step, you may play those cards",
+        ),
+        (
+            "You may play that card until your next end step",
+            "You may play it until your next end step",
+        ),
+        (
+            "Until your next end step, you may play that card",
+            "Until your next end step, you may play it",
         ),
         ("You may play those cards", "You may play them"),
         ("you may play those cards", "you may play them"),

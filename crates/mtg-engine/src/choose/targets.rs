@@ -1,7 +1,9 @@
 //! `ChooseTargets`: who and what a target specification may name, the decision that picks them, and the
 //! recheck on resolution that uses the same rule (CR 115, 608.2b).
 
-use mtg_cards::refs::{Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable};
+use mtg_cards::refs::{
+    AbilityKind, Bounds, Pred, Ref, Selector, TargetSet, TargetSpec, Targetable,
+};
 use mtg_cards::value::{Amount, CastWay};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
@@ -28,6 +30,7 @@ pub(crate) fn options_before_x(
     index: usize,
     spec: &TargetSpec,
     cause: Option<&Cause>,
+    by: Option<AbilityKind>,
 ) -> Option<TargetOptions> {
     let relaxed = TargetSpec {
         what: without_x(&spec.what),
@@ -52,7 +55,19 @@ pub(crate) fn options_before_x(
         &[],
         None,
         None,
+        by,
     )
+}
+
+/// The kind of ability that targets with `rules` (hexproof from activated and triggered abilities, CR 702.11d); `None`
+/// for a spell or no ability.
+pub(crate) fn r118_kind_of(rules: Option<&mtg_cards::ability::Ability>) -> Option<AbilityKind> {
+    use mtg_cards::ability::Ability;
+    match rules? {
+        Ability::Activated { .. } | Ability::Loyalty { .. } => Some(AbilityKind::Activated),
+        Ability::Triggered { .. } => Some(AbilityKind::Triggered),
+        _ => None,
+    }
 }
 
 /// Whether what `spec` may target depends on X: a comparison against X among its predicates.
@@ -73,6 +88,7 @@ pub(crate) fn targets_met(
     specs: &[TargetSpec],
     cause: Option<&Cause>,
     x: Option<u32>,
+    by: Option<AbilityKind>,
 ) -> bool {
     specs.iter().enumerate().all(|(index, spec)| {
         options_for(
@@ -88,6 +104,7 @@ pub(crate) fn targets_met(
             &[],
             None,
             None,
+            by,
         )
         .is_some()
     })
@@ -281,7 +298,7 @@ pub fn legal_targets(
     source: ObjectId,
     controller: PlayerId,
 ) -> Vec<Target> {
-    legal_for(state, spec, source, controller, None, None, None, &[])
+    legal_for(state, spec, source, controller, None, None, None, &[], None)
 }
 
 /// [`legal_targets`] for an ability that triggered: what it triggered on is what "that player" in the specification
@@ -297,6 +314,7 @@ pub(crate) fn legal_for(
     x: Option<u32>,
     modes_by: Option<PlayerId>,
     earlier: &[Vec<Target>],
+    by: Option<AbilityKind>,
 ) -> Vec<Target> {
     let source = state.object(source).map_or(
         ObjectRef {
@@ -315,6 +333,7 @@ pub(crate) fn legal_for(
         x,
         modes_by,
         earlier,
+        by,
     )
 }
 
@@ -334,6 +353,7 @@ pub(crate) fn legal_from(
     x: Option<u32>,
     modes_by: Option<PlayerId>,
     earlier: &[Vec<Target>],
+    by: Option<AbilityKind>,
 ) -> Vec<Target> {
     let announced = Choices {
         x,
@@ -374,7 +394,7 @@ pub(crate) fn legal_from(
             !crate::w17b_statics::w17b_shielded_in_graveyard(state, object.id)
                 && !forbidden_target(state, Target::Object(*object), source)
                 && !r377_walls_shut_out(state, &spec.what, object.id)
-                && !keywords::protects(state, object.id, source.id, controller)
+                && !keywords::protects(state, object.id, source.id, controller, by)
                 && !keywords::protected_from(state, keywords::Holder::Object(object.id), origin)
         }
         Target::Player(player) => {
@@ -448,6 +468,7 @@ pub(crate) fn options_for(
     paid: &[usize],
     way: Option<CastWay>,
     earlier: Option<&[Vec<Target>]>,
+    by: Option<AbilityKind>,
 ) -> Option<TargetOptions> {
     let relaxed;
     let spec = if earlier.is_some() {
@@ -468,6 +489,7 @@ pub(crate) fn options_for(
         x,
         modes_by,
         earlier.unwrap_or(&[]),
+        by,
     );
     let available = u32::try_from(legal.len()).unwrap_or(u32::MAX);
     let (legal, apart) = c10_dice_first_of_each(&legal, c10_dice_apart(state, spec, &legal));
@@ -1139,6 +1161,7 @@ mod tests {
             None,
             None,
             &[],
+            None,
             None,
             None,
         );
