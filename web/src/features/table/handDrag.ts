@@ -1,7 +1,8 @@
 /**
  * What a drag of a card of the hand dock means (docs/web.md, Hand dock): moved along the hand it reorders, carried up
- * out of the dock onto the table it plays the card, and let go anywhere else it does nothing. Pure, but for `dropCard`,
- * which presses the card as a click does. Nothing here talks to the server: a drag is the viewer's own until the drop.
+ * out of the dock onto the table it plays the card (a land played, a spell cast, never an ability of the card), and let
+ * go anywhere else it does nothing. Pure, but for `dropCard`, which hands the card to the prompt's drop handler. Nothing
+ * here talks to the server: a drag is the viewer's own until the drop.
  */
 import type { ObjectId } from '@/protocol/generated'
 import type { MarksStore } from './prompt/marks'
@@ -28,7 +29,7 @@ export type DragOutcome =
 /** The facts of a drop. */
 export interface Drop {
   zone: DragZone
-  /** A click on the card would play it now (`playableBy`). */
+  /** A drop on the table plays the card now (`playableBy`). */
   playable: boolean
   /** The hand takes a new order (the cards at the head of the dock do not). */
   sortable: boolean
@@ -48,21 +49,26 @@ export function dragOutcome({ zone, playable, sortable, from, to }: Drop): DragO
 }
 
 /**
- * True when a click on the card acts at once and the prompt marks it legal: a land to play, a spell to cast, a card
- * with several plays. A pick among the hand (a discard, a payment) is a toggle and never a play.
+ * True when the prompt on screen plays the card on a drop (`MarksStore.drops`): a land to play or a spell to cast. A
+ * card that only has an ability to activate (cycling with a cast it cannot pay) and every card during a pick among the
+ * hand (a discard, a payment) is not.
  */
-export function playableBy(marks: Pick<MarksStore, 'markOf' | 'toggles'>, id: ObjectId): boolean {
-  return !marks.toggles() && marks.markOf(id) === 'legal'
+export function playableBy(marks: Pick<MarksStore, 'drops'>, id: ObjectId): boolean {
+  return marks.drops(id)
 }
 
 /**
- * Plays a card dropped on the table: the same call a click on its button makes (`MarksStore.select` with the card's
- * element, where a chooser of several plays opens), so the prompt cannot tell a drop from a click. False when the card
- * cannot be played now; nothing is called then.
+ * Plays a card dropped on the table through the prompt's drop handler (`MarksStore.drop` with the card's element),
+ * which plays the land or casts the spell with the answer a click sends for that. False when the card cannot be played
+ * now; nothing is called then.
  */
-export function dropCard(marks: MarksStore, id: ObjectId, element: HTMLElement | undefined): boolean {
+export function dropCard(
+  marks: Pick<MarksStore, 'drops' | 'drop'>,
+  id: ObjectId,
+  element: HTMLElement | undefined,
+): boolean {
   if (!playableBy(marks, id)) return false
-  marks.select(id, element)
+  marks.drop(id, element)
   return true
 }
 

@@ -1,6 +1,5 @@
-// Goal: a drag of a hand card is classified by where the pointer is and what the card can do: along the hand it reorders, carried up out of the dock past the rise it plays a playable card and returns any other, and a drop that plays makes the very call a click makes, with nothing called for a card that cannot be played or while the prompt picks among the hand.
+// Goal: a drag of a hand card is classified by where the pointer is and what the card can do: along the hand it reorders, carried up out of the dock past the rise it plays a playable card and returns any other, and a drop that plays goes to the prompt's drop handler alone (never the click's, which may offer an ability), with nothing called for a card the prompt does not play on a drop.
 import { describe, expect, it, vi } from 'vitest'
-import type { Highlight } from './cardModel'
 import { dragOutcome, dragZone, dropCard, eventY, PLAY_RISE_PX, playableBy } from './handDrag'
 import type { DragOutcome, Drop } from './handDrag'
 import { createMarksStore } from './prompt/marks'
@@ -43,24 +42,32 @@ describe('what a drop does', () => {
 })
 
 describe('a drop on the table', () => {
-  it.each<[string, Highlight | undefined, boolean, boolean]>([
-    ['a legal card of a prompt that acts at once', 'legal', false, true],
-    ['a dimmed card', 'dimmed', false, false],
-    ['an unmarked card', undefined, false, false],
-    ['a card queued already', 'selected', false, false],
-    ['a legal card of a pick among the hand', 'legal', true, false],
-  ])('%s', (_name, mark, toggles, plays) => {
+  it.each<[string, number[] | null, boolean]>([
+    ['a card the prompt plays on a drop', [7], true],
+    ['a legal card with only an ability to activate', [8], false],
+    ['a prompt that plays no card on a drop', [], false],
+    ['a prompt that says nothing of drops (a pick among the hand)', null, false],
+  ])('%s', (_name, drops, plays) => {
     const marks = createMarksStore()
     const onSelect = vi.fn()
-    marks.publish(mark === undefined ? new Map() : new Map([[7, mark]]), onSelect, toggles)
+    const onDrop = vi.fn()
+    // The card is legal for a click in every row: only the drops decide.
+    marks.publish(new Map([[7, 'legal']]), onSelect, false)
+    if (drops !== null) marks.publishDrops(new Set(drops), onDrop)
     const element = document.createElement('button')
     expect(playableBy(marks, 7)).toBe(plays)
     expect(dropCard(marks, 7, element)).toBe(plays)
-    const dropped = [...onSelect.mock.calls]
-    // A click on the card's button goes through `select` with the button: the drop's call is the same.
-    onSelect.mockClear()
-    marks.select(7, element)
-    expect(dropped).toEqual(plays ? onSelect.mock.calls : [])
+    expect(onDrop.mock.calls).toEqual(plays ? [[7, element]] : [])
+    expect(onSelect).not.toHaveBeenCalled()
+  })
+
+  it('plays nothing once the prompt has left', () => {
+    const marks = createMarksStore()
+    const onDrop = vi.fn()
+    marks.publishDrops(new Set([7]), onDrop)
+    marks.publishDrops(new Set(), undefined)
+    expect(dropCard(marks, 7, undefined)).toBe(false)
+    expect(onDrop).not.toHaveBeenCalled()
   })
 })
 

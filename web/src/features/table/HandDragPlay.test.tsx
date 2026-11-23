@@ -1,4 +1,4 @@
-// Goal: dragging a hand card up out of the dock onto the table sends the same answer as a click on it (a land played, a spell cast, a commander cast from the head of the dock) in every layout, the viewer's board is marked as the drop target and the card says "Release to play"; a card that cannot be played says so and sends nothing, a drag along the hand or one let go back over the hand sends nothing, a pick among the hand is no play, and nothing is sent before the drop.
+// Goal: dragging a hand card up out of the dock onto the table sends the same answer as a click on it (a land played, a spell cast, a commander cast from the head of the dock) in every layout, the viewer's board is marked as the drop target and the card says "Release to play"; a card that cannot be played says so and sends nothing, a drag along the hand or one let go back over the hand sends nothing, a pick among the hand is no play, nothing is sent before the drop, and a drop never activates an ability: a card with a cast too dear and a Plainscycling returns ("Can't cast now") while a click still cycles it, and a card that can be cast or cycled is cast by the drop while a click asks which.
 import { act, fireEvent } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, ObjectId, ObjectView } from '@/protocol/generated'
@@ -7,6 +7,7 @@ import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import type { TableHarness } from '@/test-utils/tableHarness'
 import { withBoss } from './dev/devGame'
+import { DEV_PROMPTS, DEV_TABLES } from './dev/prompts'
 import { buildFixture } from './dev/fixture'
 import type { Fixture } from './dev/fixture'
 import type { Viewport } from './layout'
@@ -108,16 +109,16 @@ const lastSpell = (state: PlayState): ObjectId =>
   ).id
 
 describe.each(LAYOUTS)('a hand card dragged onto the table at %s', (_name, fixture, viewport) => {
-  it.each<[string, (state: PlayState) => ObjectId]>([
-    ['a land', land],
-    ['a spell', spell],
-  ])('plays %s as a click does, and says nothing before the drop', async (_kind, pick) => {
+  it.each<[string, (state: PlayState) => ObjectId, string]>([
+    ['a land', land, 'Release to play'],
+    ['a spell', spell, 'Release to cast'],
+  ])('plays %s as a click does, and says nothing before the drop', async (_kind, pick, says) => {
     const want = clicked(fixture, viewport, pick)
     expect(want).toHaveLength(1)
     const h = table(fixture(), viewport)
     carry(pick(h.store.getState()), 0, -200)
     expect(face()).toHaveAttribute('data-play', 'can')
-    expect(word()).toBe('Release to play')
+    expect(word()).toBe(says)
     expect(h.answer).not.toHaveBeenCalled()
     await letGo()
     expect(h.answer.mock.calls).toEqual(want)
@@ -128,7 +129,7 @@ describe.each(LAYOUTS)('a hand card dragged onto the table at %s', (_name, fixtu
     const h = table(fixture(), viewport)
     carry(lastSpell(h.store.getState()), 0, -200)
     expect(face()).toHaveAttribute('data-play', 'cannot')
-    expect(word()).not.toBe('Release to play')
+    expect(word()).not.toMatch(/^Release/)
     await letGo()
     expect(h.answer).not.toHaveBeenCalled()
     expect(face()).toBeNull()
@@ -162,6 +163,48 @@ describe('a card at the head of the dock', () => {
     expect(face()).toHaveAttribute('data-play', 'can')
     await letGo()
     expect(h.answer.mock.calls).toEqual(want)
+  })
+})
+
+describe('a hand card with an ability', () => {
+  /** The cycling scene's table at `prompt`, and its Angel of the Ruins. */
+  function cycling(prompt: string): { h: TableHarness; answer: Answers; angel: ObjectId } {
+    const answer = vi.fn<(given: Answer) => boolean>(() => true)
+    const fixture = must(DEV_TABLES[prompt])(buildFixture({ seats: 2 }))
+    const pending = must(DEV_PROMPTS[prompt])(fixture)
+    const h = renderTable({ fixture, session: { answer }, state: (state) => ({ ...state, pending }) })
+    const angel = must(
+      cardsOf(h.store.getState()).hand.find((object) => object.name === 'Angel of the Ruins'),
+    ).id
+    return { h, answer, angel }
+  }
+  const chooser = (): HTMLElement | null => document.querySelector('[data-slot="ability-chooser"]')
+
+  it('returns when its cast is too dear, while a click still cycles it', async () => {
+    const { answer, angel } = cycling('priority-cycling-only')
+    expect(button(angel)).toHaveAttribute('data-highlight', 'legal')
+    carry(angel, 0, -200)
+    expect(face()).toHaveAttribute('data-play', 'cannot')
+    expect(word()).toBe('Can’t cast now')
+    await letGo()
+    expect(answer).not.toHaveBeenCalled()
+    expect(chooser()).toBeNull()
+    act(() => button(angel).click())
+    expect(answer.mock.calls).toEqual([[{ Priority: { Activate: { object: angel, ability: 1 } } }]])
+  })
+
+  it('is cast by the drop when it can be cast or cycled, while a click asks which', async () => {
+    const { answer, angel } = cycling('priority-cycling')
+    carry(angel, 0, -200)
+    expect(face()).toHaveAttribute('data-play', 'can')
+    expect(word()).toBe('Release to cast')
+    await letGo()
+    expect(answer.mock.calls).toEqual([[{ Priority: { CastSpell: angel } }]])
+    expect(chooser()).toBeNull()
+    answer.mockClear()
+    act(() => button(angel).click())
+    expect(answer).not.toHaveBeenCalled()
+    expect(chooser()).toHaveTextContent('Plainscycling')
   })
 })
 

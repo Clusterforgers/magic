@@ -1,4 +1,4 @@
-// Goal: on the development table at 1280x720 and 1920x1080 a land, then a spell, dragged with the mouse up out of the hand onto the board is played on the drop (the board is marked as the drop target and the card says "Release to play"), a card that cannot be played says so and returns with the decision still open, a card brought back over the hand plays nothing, a drag along the hand still reorders and plays nothing, a card with two plays opens the chooser a click opens, a commander is cast from the head of the dock at four seats, and on a touch screen a held card is played the same way.
+// Goal: on the development table at 1280x720 and 1920x1080 a land, then a spell, dragged with the mouse up out of the hand onto the board is played on the drop (the board is marked as the drop target and the card says "Release to play"), a card that cannot be played says so and returns with the decision still open, a card brought back over the hand plays nothing, a drag along the hand still reorders and plays nothing, a card that can be cast or cycled is cast by the drop without the chooser a click opens, one whose cast is too dear returns although a click still cycles it, a commander is cast from the head of the dock at four seats, and on a touch screen a held card is played the same way.
 import { expect, test } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -66,9 +66,9 @@ for (const { width, height } of SIZES) {
   test.describe(`drag to play at ${width}x${height}`, () => {
     test.use({ viewport: { width, height } })
 
-    for (const [kind, name] of [
-      ['a land', /\bLand\b/],
-      ['a spell', /\b(Creature|Instant|Sorcery|Enchantment|Artifact)\b/],
+    for (const [kind, name, says] of [
+      ['a land', /\bLand\b/, 'Release to play'],
+      ['a spell', /\b(Creature|Instant|Sorcery|Enchantment|Artifact)\b/, 'Release to cast'],
     ] as const) {
       test(`${kind} dragged onto the board is played on the drop`, async ({ page }) => {
         await open(page, SCENE)
@@ -76,7 +76,7 @@ for (const { width, height } of SIZES) {
         const id = await card.getAttribute('data-object-id')
         await carryUp(page, card)
         await expect(page.locator(FACE)).toHaveAttribute('data-play', 'can')
-        await expect(page.locator(FACE)).toContainText('Release to play')
+        await expect(page.locator(FACE)).toContainText(says)
         await expect(page.locator(`${TARGET}[data-over]`)).toBeVisible()
         // Nothing is answered while the card is in the air.
         await expect(page.locator('[data-decision]')).not.toHaveCount(0)
@@ -134,17 +134,43 @@ for (const { width, height } of SIZES) {
       await expect(page.locator('[data-decision]')).not.toHaveCount(0)
     })
 
-    test('a card with two plays dropped on the board opens the chooser a click opens', async ({ page }) => {
-      await open(page, `${DEV_WEB_URL}/dev/table?seats=2&prompt=priority-cycling`)
+    test('a card that can be cast or cycled is cast by the drop; a click still offers both', async ({
+      page,
+    }) => {
+      const url = `${DEV_WEB_URL}/dev/table?seats=2&prompt=priority-cycling`
+      await open(page, url)
       const angel = page.locator(`${CARDS}[aria-label^="Angel of the Ruins"]`).first()
+      const chooser = page.locator('[data-slot="ability-chooser"]')
       await carryUp(page, angel)
       await expect(page.locator(FACE)).toHaveAttribute('data-play', 'can')
+      await expect(page.locator(FACE)).toContainText('Release to cast')
       await page.mouse.up()
-      const chooser = page.locator('[data-slot="ability-chooser"]')
-      await expect(chooser).toBeVisible()
+      await expect(page.locator('[data-decision]')).toHaveCount(0)
+      await expect(chooser).toHaveCount(0)
+
+      await open(page, url)
+      await angel.click()
       await expect(chooser.locator('[data-play="cast"]')).toContainText('Cast Angel of the Ruins')
       await expect(chooser.getByRole('menuitem', { name: 'Activate Plainscycling 2' })).toBeVisible()
+    })
+
+    test('a card with only its cycling to offer returns from the board; a click still cycles it', async ({
+      page,
+    }) => {
+      await open(page, `${DEV_WEB_URL}/dev/table?seats=2&prompt=priority-cycling-only`)
+      const angel = page.locator(`${CARDS}[aria-label^="Angel of the Ruins"]`).first()
+      await expect(angel).toHaveAttribute('data-highlight', 'legal')
+      await carryUp(page, angel)
+      await expect(page.locator(FACE)).toHaveAttribute('data-play', 'cannot')
+      await expect(page.locator(FACE)).toContainText('Can’t cast now')
+      await expect(page.locator(TARGET)).toHaveCount(0)
+      await page.mouse.up()
+      await expect(page.locator(FACE)).toHaveCount(0)
+      await expect(page.locator('[data-slot="ability-chooser"]')).toHaveCount(0)
       await expect(page.locator('[data-decision]')).not.toHaveCount(0)
+      // The click's own offer is untouched: the one play there is, the Plainscycling, is taken.
+      await angel.click()
+      await expect(page.locator('[data-decision]')).toHaveCount(0)
     })
 
     test('a commander at the head of the dock is cast by a drag at four seats', async ({ page }) => {

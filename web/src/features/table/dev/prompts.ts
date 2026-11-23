@@ -42,7 +42,7 @@ import {
   paySourcesTable,
 } from './paySources'
 import { roomsTable, withRooms } from './roomsScene'
-import { cyclingTable, payCycling, withCycling } from './cyclingScene'
+import { cyclingTable, payCycling, withCycling, withCyclingOnly } from './cyclingScene'
 import { withProposal } from './payProposal'
 import { companionTable, forecastStackTable, stackAbilityTable } from './previewScenes'
 
@@ -517,6 +517,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-rooms': withRooms(priority),
   // A hand card that can be cast or typecycled (`dev/cyclingScene.ts`): the chooser names both with their costs.
   'priority-cycling': withCycling(priority),
+  'priority-cycling-only': withCyclingOnly(priority),
   'priority-stack-ability': priority,
   'priority-forecast': priority,
   'priority-companion': priority,
@@ -630,6 +631,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'priority-abilities': abilitiesTable,
   'priority-rooms': roomsTable,
   'priority-cycling': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
+  'priority-cycling-only': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
   'pay-cycling': (fixture) => cyclingTable(quietMoment('Main1', true)(fixture)),
   'priority-stack-ability': stackAbilityTable,
   'priority-forecast': forecastStackTable,

@@ -24,7 +24,7 @@ import { Backpack, Crown, Library } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { usePlay } from '@/features/game/gameContext'
+import { useGame, usePlay } from '@/features/game/gameContext'
 import { prefersReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
@@ -94,6 +94,8 @@ interface Drag {
   playable: boolean
   /** Why it cannot be played, in the words on its foot. */
   hint: string | undefined
+  /** A land is played, any other card is cast: the words of the drop say which. */
+  land: boolean
   /** The viewport y the pointer went down at, and of the dock's top edge. */
   startY: number
   dockTop: number
@@ -166,6 +168,7 @@ export function HandFan({
   const marks = useMarksStore()
   const preview = usePreviewStore()
   const seat = usePlay((state) => state.seat)
+  const objects = useGame().session.store
   const [drag, setDrag] = useState<Drag | null>(null)
   const [over, setOver] = useState<ObjectId | null>(null)
   // A card let go where it does nothing glides home; one that plays or takes a new place is there at once.
@@ -211,6 +214,7 @@ export function HandFan({
     }
     roving.onKeyDown(event)
   }
+  const objectTypes = (id: ObjectId): readonly string[] => objects.getState().objectsById[id]?.types ?? []
   const start = (event: DragStartEvent) => {
     const id = Number(event.active.id)
     const dock = list.current?.closest('[data-region="hand"]') ?? list.current
@@ -224,7 +228,9 @@ export function HandFan({
       id,
       zone: 'hand',
       playable,
-      hint: marks.noteOf(id)?.hint,
+      // The reason on its foot when the prompt blocks it; a card with only an ability to activate has none.
+      hint: marks.noteOf(id)?.blocked === undefined ? undefined : marks.noteOf(id)?.hint,
+      land: objectTypes(id).includes('Land'),
       startY: eventY(event.activatorEvent) ?? Number.POSITIVE_INFINITY,
       dockTop: dock?.getBoundingClientRect().top ?? 0,
       target: playable ? boardBox(seat, dock ?? null) : null,
@@ -363,7 +369,8 @@ export function HandFan({
                     fit={layout !== undefined}
                     style={style}
                     play={onBoard ? (drag.playable ? 'can' : 'cannot') : undefined}
-                    hint={drag.hint}
+                    hint={drag.hint ?? (drag.land ? CANNOT_PLAY : CANNOT_CAST)}
+                    word={drag.land ? CAN_PLAY : CAN_CAST}
                   />
                 )}
               </DragOverlay>
@@ -538,7 +545,9 @@ function HandSlot({
 
 /** What the dragged card says while it is over the table. */
 const CAN_PLAY = 'Release to play'
+const CAN_CAST = 'Release to cast'
 const CANNOT_PLAY = 'Can’t play now'
+const CANNOT_CAST = 'Can’t cast now'
 
 /**
  * The viewer's board while a playable card is dragged: a dashed edge says where it can go, and once the card is over
@@ -563,7 +572,7 @@ function PlayTarget({ box, over }: { box: DOMRect; over: boolean }) {
 
 /**
  * The card under the pointer while it is dragged: its face only, so no second button with its id is on the page. Over
- * the table (`play`) it stands straight and says what a drop does: lit with "Release to play", or dimmed with why not.
+ * the table (`play`) it stands straight and says what a drop does: lit with "Release to play" or "Release to cast", or dimmed with why not.
  */
 function DragFace({
   id,
@@ -573,6 +582,7 @@ function DragFace({
   style,
   play,
   hint,
+  word,
 }: {
   id: ObjectId
   size: CardSize
@@ -580,7 +590,9 @@ function DragFace({
   fit: boolean
   style: CSSProperties | undefined
   play?: 'can' | 'cannot' | undefined
+  /** What the card says over the table when it cannot be played, and when it can. */
   hint?: string | undefined
+  word?: string | undefined
 }) {
   const object = usePlay((state) => state.objectsById[id])
   if (object === undefined) return null
@@ -605,7 +617,7 @@ function DragFace({
           data-slot="hand-drag-word"
           className="absolute top-full left-1/2 mt-1 -translate-x-1/2 rounded-full bg-background/95 px-2 py-0.5 text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
         >
-          {play === 'can' ? CAN_PLAY : (hint ?? CANNOT_PLAY)}
+          {play === 'can' ? word : hint}
         </span>
       )}
     </div>
