@@ -638,7 +638,13 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
 /// Reads a static clause that is two statics in one sentence after one condition ("As long as you control your
 /// commander, this creature gets +2/+2 and creatures you control have vigilance.") into the two abilities in order. An
 /// ability word before a dash is flavor and left out.
+/// A pair that holds a `Manual` is not a reading, as with `clause_with`.
 pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
+    read_static_pair(text, x_free, own).filter(|found| !found.iter().any(Ability::is_manual))
+}
+
+/// The readers of `static_pair`, in order.
+fn read_static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
     let head = text.lines().next().unwrap_or_default();
     let text = text.get(classify::ability_word_len(head).unwrap_or(0)..)?;
     if let Some(found) = r4708_reveal::r4708_reveal_group_read(text, |sentence| {
@@ -810,8 +816,13 @@ const MEANINGFUL_WORDS: [&str; 6] = [
 ];
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
+///
+/// A clause left to the table is the compiler's to mark with its own span, so a table entry that reads as `Manual`
+/// is not a reading.
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
-    clause_read(text, kind, x_free, own).map(r117_04_affected::r117_04_affected)
+    clause_read(text, kind, x_free, own)
+        .filter(|found| !found.is_manual())
+        .map(r117_04_affected::r117_04_affected)
 }
 
 /// The reading of `clause_with` before the object of a group static is named.
