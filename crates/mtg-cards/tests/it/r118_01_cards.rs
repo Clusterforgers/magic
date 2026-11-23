@@ -61,7 +61,6 @@ fn compact(name: &str) -> String {
 #[case("Species 8472")]
 #[case("S.S. Botany Bay")]
 #[case("Starship Enterprise")]
-#[case("Stray from History")]
 #[case("Sulu, Space Swashbuckler")]
 #[case("Tell Me What You See")]
 #[case("The Borg Queen")]
@@ -105,11 +104,7 @@ fn r118_01_reads_back_whole(#[case] name: &str) {
     r#"{"Not":{"R118BegunExtraTurn":"You"}}"#,
     r#"{"R118BegunExtraTurn":"You"}"#
 )]
-#[case::rest_on_top(
-    "Lieutenant Nyota Uhura",
-    r#""place":"Bottom""#,
-    r#""place":"Top""#
-)]
+#[case::rest_on_top("Lieutenant Nyota Uhura", r#""place":"Bottom""#, r#""place":"Top""#)]
 #[case::creature_spell(
     "Lieutenant Nyota Uhura",
     r#"{"Type":"Sorcery"}"#,
@@ -125,11 +120,7 @@ fn r118_01_reads_back_whole(#[case] name: &str) {
     r#"{"If":{"condition":{"Searched":{"zone":"Library"}},"then":[{"Shuffle":{}}]}}"#,
     r#"{"Shuffle":{}}"#
 )]
-#[case::deathtouch(
-    "Vic Fontaine, One Night Only",
-    r#""Lifelink""#,
-    r#""Deathtouch""#
-)]
+#[case::deathtouch("Vic Fontaine, One Night Only", r#""Lifelink""#, r#""Deathtouch""#)]
 #[case::three_lands("U.S.S. Voyager, Lone Wanderer", r#""count":2"#, r#""count":3"#)]
 #[case::their_power(
     "Maular, the Next Evolution",

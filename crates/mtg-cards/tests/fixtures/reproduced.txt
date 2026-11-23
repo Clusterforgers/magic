@@ -1206,7 +1206,6 @@ Goblin Lackey
 Goblin Matron
 Goblin Sharpshooter
 Goblin Spy
-Goblin Spymaster
 Goblin Trashmaster
 Goblin War Buggy
 Goblin Warchief

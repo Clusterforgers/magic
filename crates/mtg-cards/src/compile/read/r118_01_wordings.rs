@@ -327,7 +327,8 @@ fn may_other(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<Str
     // Their own step is worded as an order ("may draw a card"); yours as one they have you do ("may have you draw").
     let (yours, have) = match as_yours(step, who) {
         Some(yours) => (yours, ""),
-        None => (step.clone(), "have you "),
+        None if matches!(who, Ref::Target(_)) => (step.clone(), "have you "),
+        None => return Vec::new(),
     };
     let Some(done) = then
         .iter()
@@ -342,7 +343,7 @@ fn may_other(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<Str
     let twin = Ability::Triggered {
         when: when.clone(),
         intervening_if: intervening_if.clone(),
-        limit: limit.clone(),
+        limit: *limit,
         from: *from,
         targets: if matches!(who, Ref::Target(_)) {
             Vec::new()
@@ -456,7 +457,7 @@ fn each_player_may(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> V
     let twin = Ability::Triggered {
         when: when.clone(),
         intervening_if: intervening_if.clone(),
-        limit: limit.clone(),
+        limit: *limit,
         from: *from,
         targets: targets.clone(),
         effects: vec![yours],
@@ -705,12 +706,12 @@ fn subtype_list(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<
         .iter()
         .map(|name| super::subtypes::plural_subtype(name))
         .collect();
-    let list = format!("{}, and {last} creatures", plurals.join(", "));
+    let group = format!("{}, and {last} creatures", plurals.join(", "));
     let one = format!("Other {first} creatures ");
     written(&twin)
         .iter()
         .filter_map(|text| text.strip_prefix(&one))
-        .map(|rest| format!("Other {list} {rest}"))
+        .map(|rest| format!("Other {group} {rest}"))
         .collect()
 }
 
@@ -783,6 +784,11 @@ fn up_to_two_twin(ability: &Ability) -> Option<Ability> {
 /// "one or two target creatures each get +2/+0 and gain lifelink until end of turn", "Return one or two target creature
 /// cards ...": one or two targets, from the twin of up to two (CR 115.1d).
 fn one_or_two(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
+    // A spell is left out: the modes of a modal spell are worded as spells of their own, beside modes whose writers
+    // word them another way (Yuna's Decision).
+    if matches!(ability, Ability::Spell { .. }) {
+        return Vec::new();
+    }
     let Some(twin) = up_to_two_twin(ability) else {
         return Vec::new();
     };
@@ -797,6 +803,10 @@ fn one_or_two(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<St
         // "each get" says that the two get it apart.
         if let Some((before, after)) = text.split_once(" get ") {
             found.push(format!("{before} each get {after}"));
+        }
+        // "each with mana value 3 or less" says the same of each card.
+        if let Some((before, after)) = text.split_once(" cards with ") {
+            found.push(format!("{before} cards each with {after}"));
         }
         found.push(text);
     }
@@ -829,6 +839,11 @@ fn type_or_subtype(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> V
         return Vec::new();
     };
     let whole = format!(r#"{opening}{subtype}"}}]}}"#);
+    // Only a target is "target creature or Spacecraft"; a count or a filter of the same kind is worded another way.
+    let in_targets = json.contains(&format!(r#""what":{{"Object":[{whole}"#));
+    if !in_targets || json.matches(&whole).count() != 1 {
+        return Vec::new();
+    }
     let single = format!(r#"{{"Type":"{kind}"}}"#);
     let Ok(twin) = serde_json::from_str::<Ability>(&json.replacen(&whole, &single, 1)) else {
         return Vec::new();
@@ -1007,12 +1022,11 @@ fn milled_to_hand(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Ve
     else {
         return Vec::new();
     };
-    use crate::refs::Pred;
     let among = [
-        Pred::Is(Ref::Bound(milled.clone())),
-        Pred::In(crate::refs::ZoneKind::Graveyard),
+        crate::refs::Pred::Is(Ref::Bound(milled.clone())),
+        crate::refs::Pred::In(crate::refs::ZoneKind::Graveyard),
     ];
-    let kind: Vec<Pred> = from
+    let kind: Vec<crate::refs::Pred> = from
         .iter()
         .filter(|pred| !among.contains(pred))
         .cloned()
@@ -1042,6 +1056,16 @@ fn milled_to_hand(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Ve
 /// entered under your control this turn, counted as they entered (`Amount::Tally`), from the twin that counts those you
 /// still control.
 fn entered_this_turn(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
+    // An intervening "if" of a trigger; an activation restriction words it "if you had ... enter".
+    if !matches!(
+        ability,
+        Ability::Triggered {
+            intervening_if: Some(_),
+            ..
+        }
+    ) {
+        return Vec::new();
+    }
     let Ok(json) = serde_json::to_string(ability) else {
         return Vec::new();
     };
@@ -1053,6 +1077,11 @@ fn entered_this_turn(ability: &Ability, written: fn(&Ability) -> Vec<String>) ->
     else {
         return Vec::new();
     };
+    // One permanent of a kind, not a token made ("if you created a token this turn").
+    let one = format!(r#"{opening}{preds},{{"ControlledBy":"You"}}]}}}},"op":"Ge","right":1}}"#);
+    if preds.contains(r#""Token""#) || !json.contains(&one) {
+        return Vec::new();
+    }
     let tally = format!(r#"{opening}{preds},{{"ControlledBy":"You"}}]}}}}"#);
     let count = format!(r#"{{"Count":[{preds},{{"ControlledBy":"You"}},"EnteredThisTurn"]}}"#);
     let Ok(twin) = serde_json::from_str::<Ability>(&json.replacen(&tally, &count, 1)) else {
@@ -1063,10 +1092,12 @@ fn entered_this_turn(ability: &Ability, written: fn(&Ability) -> Vec<String>) ->
         .filter_map(|text| {
             let (before, rest) = text.split_once("if you control ")?;
             let (what, after) = rest.split_once(" that entered this turn")?;
-            Some(format!(
-                "{before}if {what} entered the battlefield under your control this turn{after}"
-            ))
+            Some([
+                format!("{before}if {what} entered the battlefield under your control this turn{after}"),
+                format!("{before}if you had {what} enter the battlefield under your control this turn{after}"),
+            ])
         })
+        .flatten()
         .collect()
 }
 
@@ -1427,9 +1458,17 @@ fn counters_on_two_targets(ability: &Ability, written: fn(&Ability) -> Vec<Strin
     let ([first, second], [one, two]) = (ability.targets(), ability.effects()) else {
         return Vec::new();
     };
+    // Two targets of the same words are told apart by "another", which the pair writers word.
+    if first.what == second.what {
+        return Vec::new();
+    }
     let (
-        Effect::PutCounters { on: Ref::Target(0), .. },
-        Effect::PutCounters { on: Ref::Target(1), .. },
+        Effect::PutCounters {
+            on: Ref::Target(0), ..
+        },
+        Effect::PutCounters {
+            on: Ref::Target(1), ..
+        },
     ) = (one, two)
     else {
         return Vec::new();
@@ -1450,7 +1489,11 @@ fn counters_on_two_targets(ability: &Ability, written: fn(&Ability) -> Vec<Strin
         };
         written(&spell)
             .into_iter()
-            .filter_map(|text| text.strip_prefix("Put ")?.strip_suffix('.').map(str::to_owned))
+            .filter_map(|text| {
+                text.strip_prefix("Put ")?
+                    .strip_suffix('.')
+                    .map(str::to_owned)
+            })
             .find(|text| !text.contains(". "))
     };
     let (Some(first), Some(second)) = (part(first, one), part(second, &two)) else {

@@ -473,7 +473,7 @@ fn step(r: &mut Reader<'_>) -> Option<TriggerPattern> {
     if r.words("combat on your turn") {
         return Some(combat(Ref::You));
     }
-    if r.words("each combat") || r.words("combat on each player's turn") {
+    if r.words("each combat") {
         return Some(combat(Ref::EachPlayer));
     }
     let whose = if r.word("your") {

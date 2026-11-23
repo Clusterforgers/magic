@@ -4,10 +4,6 @@
 use super::*;
 
 #[rstest]
-#[case::each_players_combat(
-    ClauseKind::Triggered,
-    "At the beginning of combat on each player's turn, that player draws a card."
-)]
 #[case::each_combat(
     ClauseKind::Triggered,
     "At the beginning of each combat, that player draws a card."
