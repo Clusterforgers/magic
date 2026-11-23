@@ -635,6 +635,7 @@ fn tally_moved(state: &mut GameState, cause: ZoneCause, object: ObjectId) {
     if cause == ZoneCause::Milled {
         w13b_tally_milled(state, object);
     }
+    r117_tally_surveilled(state, object);
     if cause == ZoneCause::LandPlayed
         && let Some(owner) = state.objects.get(&object).map(GameObject::owner)
     {
@@ -836,6 +837,21 @@ fn log_sacrifice(
     }
 }
 
+/// Counts the card `id` that a surveil chose for the graveyard among the cards that player surveilled this turn, when the
+/// move put it into a graveyard (a replacement may have sent it elsewhere).
+fn r117_tally_surveilled(state: &mut GameState, id: ObjectId) {
+    let Some(player) = state.tallies.r117_surveilling.remove(&id) else {
+        return;
+    };
+    let landed = state
+        .object(id)
+        .filter(|card| matches!(card.zone(), Zone::Graveyard(_)))
+        .map(GameObject::reference);
+    if let Some(reference) = landed {
+        state.tally_object(reference, Some(player), Tally::Surveilled);
+    }
+}
+
 /// Counts the card `id` milled this turn while it lies in the graveyard it was milled into.
 fn w13b_tally_milled(state: &mut GameState, id: ObjectId) {
     if let Some(reference) = state.object(id).map(GameObject::reference) {
@@ -944,6 +960,12 @@ pub(super) fn surveil(state: &mut GameState, surveilled: &Surveilled) -> Result<
     state.zones.set(zone, arranged);
     crate::sight::show(state, Some(surveilled.player), &looked);
     state.tally(surveilled.player, Tally::Surveilled);
+    for card in &surveilled.graveyard {
+        state
+            .tallies
+            .r117_surveilling
+            .insert(*card, surveilled.player);
+    }
     Ok(())
 }
 

@@ -49,7 +49,7 @@ mod w6d_shares;
 mod da_attached_auras;
 use super::still_there;
 use crate::abilities::Cause;
-use crate::announce::{kicked_with, payments};
+use crate::announce::{kicked_with, payments, r117_paid_with};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
@@ -2237,6 +2237,7 @@ impl<'a> Scope<'a> {
             | Pred::SharesType(_)
             | Pred::SharesTypeOf { .. }
             | Pred::SharesColor(_)
+            | Pred::R117SharesBasicLandType(_)
             | Pred::SharesManaValue(_)
             | Pred::XInCost
             | Pred::PhyrexianInCost
@@ -2348,6 +2349,10 @@ impl<'a> Scope<'a> {
                     })
             }
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
+            Pred::R117SurveilledBy(who) => self
+                .players(who)?
+                .into_iter()
+                .any(|player| state.object_tallied(reference, Some(player), Tally::Surveilled) > 0),
             Pred::DrawnThisTurn => state.object_tallied(reference, None, Tally::Dk26Drawn) > 0,
             Pred::LastDrawnThisTurn => {
                 let nth = state.object_tallied(reference, None, Tally::R5500DrawnNth);
@@ -2895,6 +2900,8 @@ impl<'a> Scope<'a> {
             Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::AdditionalPaid => i64::try_from(self.payments(OptionalKind::Additional))
+                .map_err(|_| ResolveError::Invalid("too many payments".into()))?,
+            Amount::R117AdditionalPaidWith(cost) => i64::try_from(self.r117_paid_with(cost))
                 .map_err(|_| ResolveError::Invalid("too many payments".into()))?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
@@ -3755,6 +3762,13 @@ impl<'a> Scope<'a> {
     }
 
     /// How many times the optional costs of `kind` were paid (`paid_costs`), read against the costs the card prints.
+    /// How many times the spell the source is, or the permanent it became, paid its "you may" additional cost `cost`.
+    fn r117_paid_with(&self, cost: &mtg_cards::cost::Cost) -> usize {
+        self.state.object(self.source.id).map_or(0, |source| {
+            r117_paid_with(source.card(), self.paid_costs(), cost)
+        })
+    }
+
     fn payments(&self, kind: OptionalKind) -> usize {
         let Some(source) = self.state.object(self.source.id) else {
             return 0;

@@ -990,6 +990,7 @@ impl<'a> Walker<'a> {
             | Pred::OwnedBy(r)
             | Pred::ProtectedBy(r)
             | Pred::DamagedThisTurnBy(r)
+            | Pred::R117SurveilledBy(r)
             | Pred::AttackingPlayer(r)
             | Pred::AttackingPlaneswalkerOf(r)
             | Pred::AttackingPlayerOrPlaneswalker(r) => {
@@ -1000,7 +1001,8 @@ impl<'a> Walker<'a> {
             | Pred::SharesType(r)
             | Pred::SharesColor(r)
             | Pred::SharesTypeOf { with: r, .. }
-            | Pred::SharesManaValue(r) => {
+            | Pred::SharesManaValue(r)
+            | Pred::R117SharesBasicLandType(r) => {
                 self.scope.tests += 1;
                 self.reference(r, Kind::Object);
                 self.scope.tests -= 1;
@@ -1507,6 +1509,14 @@ impl<'a> Walker<'a> {
         match amount {
             Amount::Drafted(_) => self.uses("Amount", "Drafted"),
             Amount::AdditionalPaid => self.paid_amount(amount),
+            Amount::R117AdditionalPaidWith(_) => {
+                self.uses("Amount", "R117AdditionalPaidWith");
+                if !self.has_additional_cost {
+                    self.problem(
+                        "`R117AdditionalPaidWith` needs an additional cost the caster may pay",
+                    );
+                }
+            }
             Amount::CardsAbove { filter, .. } => self.w2c_selector_amount("CardsAbove", filter),
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
@@ -2300,7 +2310,19 @@ impl<'a> Walker<'a> {
         if cost.0.len() > 1 && cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_))) {
             self.problem("a choice between costs is the only part of an additional cost");
         }
+        // An X the text defines may read the spell's targets ("where X is the total mana value of the permanents this
+        // spell targets"): the parts that take it are picked once they are chosen (CR 601.2c, 601.2h).
+        let reads_targets = required
+            && self.nested == 0
+            && cost.0.iter().any(|item| matches!(item, CostItem::XIs(_)));
+        let outer_scope = reads_targets.then(|| {
+            let specs = self.spell_targets.clone();
+            std::mem::replace(&mut self.scope, Scope::new(&specs, false))
+        });
         self.at("cost", |w| w.cost(cost));
+        if let Some(outer) = outer_scope {
+            self.scope = outer;
+        }
         self.r5523_spell_cap = capping;
         self.choosing = choosing;
         self.x_now = saved;
@@ -7374,7 +7396,7 @@ impl Walker<'_> {
             self.uses("ReplaceWhen", "Draw.First");
         }
         match when {
-            ReplaceWhen::R6001DamageBetweenChosen => {}
+            ReplaceWhen::R6001DamageBetweenChosen | ReplaceWhen::R117CreaturesSharingColor => {}
             ReplaceWhen::TokenCreation { controller, what } => {
                 self.at("controller", |w| w.reference(controller, Kind::Player));
                 if !what.is_empty() {

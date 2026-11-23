@@ -726,6 +726,9 @@ pub enum Amount {
     /// each card exiled this way" after "you may exile any number of white cards"); a permanent and its abilities read the
     /// spell it came from.
     AdditionalPaid,
+    /// How many times the "you may" additional cost of the spell with exactly this cost was paid ("for each additional
+    /// {1}{R} you paid"); a permanent and its abilities read the spell it came from.
+    R117AdditionalPaidWith(Cost),
     /// How many times the permanents the reference names have mutated: the cards merged into each, less the one it was
     /// (CR 702.140; "the number of times this creature has mutated"); zero for a permanent that never merged.
     Mutations(Ref),
@@ -1189,6 +1192,7 @@ enum Tagged {
     PhasedOut(Selector),
     Kicks,
     AdditionalPaid,
+    R117AdditionalPaidWith(Cost),
     Mutations(Ref),
     Promised,
     ResolvedThisTurn,
@@ -1434,6 +1438,7 @@ enum TaggedRef<'a> {
     PhasedOut(&'a Selector),
     Kicks,
     AdditionalPaid,
+    R117AdditionalPaidWith(&'a Cost),
     Mutations(&'a Ref),
     Promised,
     ResolvedThisTurn,
@@ -1649,6 +1654,7 @@ impl From<Tagged> for Amount {
             Tagged::PhasedOut(of) => Amount::PhasedOut(of),
             Tagged::Kicks => Amount::Kicks,
             Tagged::AdditionalPaid => Amount::AdditionalPaid,
+            Tagged::R117AdditionalPaidWith(cost) => Amount::R117AdditionalPaidWith(cost),
             Tagged::Mutations(of) => Amount::Mutations(of),
             Tagged::Promised => Amount::Promised,
             Tagged::ResolvedThisTurn => Amount::ResolvedThisTurn,
@@ -1810,6 +1816,9 @@ impl Serialize for Amount {
             Amount::PhasedOut(of) => TaggedRef::PhasedOut(of).serialize(serializer),
             Amount::Kicks => TaggedRef::Kicks.serialize(serializer),
             Amount::AdditionalPaid => TaggedRef::AdditionalPaid.serialize(serializer),
+            Amount::R117AdditionalPaidWith(cost) => {
+                TaggedRef::R117AdditionalPaidWith(cost).serialize(serializer)
+            }
             Amount::Mutations(of) => TaggedRef::Mutations(of).serialize(serializer),
             Amount::Promised => TaggedRef::Promised.serialize(serializer),
             Amount::ResolvedThisTurn => TaggedRef::ResolvedThisTurn.serialize(serializer),

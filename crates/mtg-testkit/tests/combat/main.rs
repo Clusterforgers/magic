@@ -57,6 +57,8 @@ mod ninjutsu;
 mod poisoned_defender;
 mod r115_block_exchanges;
 mod r115_pack_tactics;
+mod r117_domain_landwalk;
+mod r117_shared_color_damage;
 mod r2g_combat;
 mod r306c_cards;
 mod r307c_cards;

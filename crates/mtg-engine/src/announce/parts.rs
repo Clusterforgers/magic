@@ -71,6 +71,17 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     }
     let mut settled = 0;
     for part in &price.parts {
+        // An X the text counts from the targets is known once they are chosen: the parts from this one on are picked
+        // then (CR 601.2b, 601.2c, 601.2h).
+        if part.is_counted()
+            && work.choices.x.is_none()
+            && super::r5523_x_cap::r116_x_of_targets(ctx).is_some()
+        {
+            if !super::targets::r117_all_chosen(ctx, work.choices) {
+                break;
+            }
+            work.choices.x = super::r5523_x_cap::r116_x_with_targets(ctx, work.choices);
+        }
         // A counted part needs X first, which is asked when the parts come to it (CR 601.2b).
         if part.is_counted()
             && let Some(next) = x::run(ctx, work)

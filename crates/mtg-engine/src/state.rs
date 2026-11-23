@@ -306,6 +306,9 @@ pub(crate) struct Tallies {
     pub(crate) r5522: Box<crate::r5522_history::R5522Turn>,
     /// The players who put a nontoken permanent onto the battlefield this turn (`r111_history`).
     pub(crate) r111: Box<crate::r111_history::R111Turn>,
+    /// The cards a surveil chose for the graveyard that have not moved there yet, with the player who surveilled; the move
+    /// that follows the `Surveilled` event counts each one for that player (`Pred::R117SurveilledBy`).
+    pub(crate) r117_surveilling: BTreeMap<ObjectId, PlayerId>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).

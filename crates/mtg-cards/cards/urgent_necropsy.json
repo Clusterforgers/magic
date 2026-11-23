@@ -1,16 +1,28 @@
 {
   "oracle_id": "378a6203-0d47-4165-bdc2-43dfdfb4d15d",
   "name": "Urgent Necropsy",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Urgent Necropsy",
       "oracle_fingerprint": "8ebf224892b2191d21ac1be0d7aebd8a",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 131 }
+          "AdditionalCost": {
+            "cost": [
+              "R6702CollectEvidenceX",
+              {
+                "XIs": {
+                  "Sum": [
+                    { "Stat": { "of": { "Target": 0 }, "stat": "ManaValue" } },
+                    { "Stat": { "of": { "Target": 1 }, "stat": "ManaValue" } },
+                    { "Stat": { "of": { "Target": 2 }, "stat": "ManaValue" } },
+                    { "Stat": { "of": { "Target": 3 }, "stat": "ManaValue" } }
+                  ]
+                }
+              }
+            ],
+            "required": true
           }
         },
         {

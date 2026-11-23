@@ -945,6 +945,7 @@ Exquisite Huntmaster
 Exterminate!
 Exterminator Magmarch
 Extraction Integrant
+Eye of Duskmantle
 Eye of Nidhogg
 Eyeblight Massacre
 Eyetwitch
@@ -1005,6 +1006,7 @@ Fiery Temper
 Fight Rigging
 Finale of Eternity
 Finch Formation
+Fire Covenant
 Fire-Lit Thicket
 Fireshrieker
 Firestorm Hellkite
@@ -1691,6 +1693,7 @@ Magma Pummeler
 Magmatic Galleon
 Magmatic Insight
 Magnetic Web
+Magnigoth Treefolk
 Magus of the Moon
 Majestic Heliopterus
 Make Disappear
@@ -2113,6 +2116,7 @@ Pouncing Jaguar
 Pouncing Shoreshark
 Powder Ganger
 Power Conduit
+Power Pack
 Power Surge
 Prairie Stream
 Pramikon, Sky Rampart
@@ -2134,6 +2138,7 @@ Primaris Eliminator
 Primeval Protector
 Primeval Spawn
 Primitive Etchings
+Primitive Justice
 Primordial Hydra
 Prismatic Geoscope
 Prismatic Lens
@@ -3054,6 +3059,7 @@ Unstable Obelisk
 Up the Beanstalk
 Urabrask the Hidden
 Urban Evolution
+Urgent Necropsy
 Ursine Champion
 Urza's Engine
 Urza's Incubator
@@ -3189,6 +3195,7 @@ Wei Scout
 Weigh Down
 Weirding Wood
 Well Rested
+Well-Laid Plans
 Werewolf Pack Leader
 Whim of Volrath
 Whims of the Fates
