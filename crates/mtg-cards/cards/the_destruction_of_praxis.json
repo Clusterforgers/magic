@@ -1,0 +1,87 @@
+{
+  "oracle_id": "028d6812-55db-40df-9288-89c2e478c76c",
+  "name": "The Destruction of Praxis",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Destruction of Praxis",
+      "oracle_fingerprint": "9abb9b6540523d67baba21fb6823aaf9",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Each": [{ "Type": "Creature" }] },
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Distinct": {
+                                "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                "stat": "Name"
+                              }
+                            }
+                          }
+                        },
+                        "toughness": {
+                          "Times": {
+                            "by": -1,
+                            "of": {
+                              "Distinct": {
+                                "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                "stat": "Name"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": {
+                        "Distinct": {
+                          "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                          "stat": "Name"
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 6
+                    }
+                  },
+                  "then": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Klingon Warrior",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Klingon", "Warrior"],
+                            "power": 2,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Haste" }]
+                          }
+                        },
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

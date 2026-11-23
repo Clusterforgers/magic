@@ -689,9 +689,21 @@ fn w6c_cost_x(line: &str) -> bool {
     line.starts_with("Cycling ") && line.contains("{X}")
 }
 
-/// The charge counters at which a Spacecraft with a printed power becomes a creature: its highest station threshold.
+/// The charge counters at which a Spacecraft with a printed power becomes a creature: the threshold its reminder text names,
+/// else its highest station threshold.
 pub fn creature_at(face: &PrintedFace) -> Option<i32> {
     face.power.as_deref()?.parse::<i32>().ok()?;
+    // The reminder of the station keyword names the threshold when it is not the highest block's (U.S.S. Prometheus: "It's
+    // an artifact creature at 4+." above a block of 8+).
+    let reminded = face
+        .oracle_text
+        .split("It's an artifact creature at ")
+        .nth(1)
+        .and_then(|rest| rest.split_once("+.)"))
+        .and_then(|(number, _)| number.parse::<i32>().ok());
+    if reminded.is_some() {
+        return reminded;
+    }
     face.oracle_text
         .lines()
         .filter_map(|line| clauses::station_header(line).map(|(threshold, _)| threshold))

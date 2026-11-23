@@ -1,0 +1,100 @@
+{
+  "oracle_id": "8284c6ae-d86e-4f72-81da-7d3f9861fd12",
+  "name": "S.S. Botany Bay",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "S.S. Botany Bay",
+      "oracle_fingerprint": "71dd1ab6214d8135edc02c867d6c9fc6",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "who": { "Bound": "player" },
+                        "from": {
+                          "Each": [{ "In": "Graveyard" }, { "OwnedBy": { "Bound": "player" } }]
+                        },
+                        "as": "theirs"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "theirs" } } }
+                  ]
+                }
+              },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": { "Each": [{ "In": "Graveyard" }, { "OwnedBy": "You" }] },
+                        "as": "yours"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "yours" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "if": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            },
+            "effects": [
+              {
+                "Move": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "OwnedBy": "You" }, { "ExiledWith": "This" }]
+                  },
+                  "to": { "Battlefield": {} }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "oracle_id": "d090131d-428c-4a98-afc5-595b9bc7adce",
+  "name": "Sulu, Space Swashbuckler",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sulu, Space Swashbuckler",
+      "oracle_fingerprint": "9cd72ef4c88d3a7273dd1f0b3256b274",
+      "abilities": [
+        { "Keyword": "FirstStrike" },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "if": {
+              "Compare": {
+                "left": {
+                  "Tally": {
+                    "event": "Entered",
+                    "who": "EachPlayer",
+                    "filter": [
+                      { "AnyOf": [{ "Subtype": "Equipment" }, { "Subtype": "Spacecraft" }] },
+                      { "ControlledBy": "You" }
+                    ]
+                  }
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "oracle_id": "254177f2-5a03-4a29-8b98-248f6a41a351",
+  "name": "Kirk, Man of Action",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kirk, Man of Action",
+      "oracle_fingerprint": "ef21340cf1874e49844ceadbb0343f91",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "AnyOf": [
+                    { "Subtype": "Officer" },
+                    { "Subtype": "Artificer" },
+                    { "Subtype": "Doctor" },
+                    { "Subtype": "Pilot" },
+                    { "Subtype": "Scientist" },
+                    { "Subtype": "Spacecraft" }
+                  ]
+                },
+                "Other",
+                { "ControlledBy": "You" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

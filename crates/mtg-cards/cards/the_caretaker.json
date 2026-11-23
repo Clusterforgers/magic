@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f77ea393-4142-4c06-8bb3-589ca74a7338",
+  "name": "The Caretaker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Caretaker",
+      "oracle_fingerprint": "c02d2c3802953eb0043682c8a2e37298",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": { "Ward": "{2}" } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "if": {
+              "Compare": {
+                "left": { "Tallied": { "who": "You", "what": "R116Dilemmas" } },
+                "op": "Ge",
+                "right": 1
+              }
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "found" }, "free": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

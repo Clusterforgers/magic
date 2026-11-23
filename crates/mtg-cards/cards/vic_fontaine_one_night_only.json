@@ -1,0 +1,33 @@
+{
+  "oracle_id": "1d6f4573-d2f6-4771-a748-291846ef14b9",
+  "name": "Vic Fontaine, One Night Only",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vic Fontaine, One Night Only",
+      "oracle_fingerprint": "3b380ff44b140c02c74a37f864293977",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 1, "max": 2 } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 0 } },
+                    { "AddKeyword": "Lifelink" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

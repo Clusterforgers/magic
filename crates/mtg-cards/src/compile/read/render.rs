@@ -695,6 +695,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r117_04_x_target::r117_04_sized_wordings(ability, written_variants, &mut texts);
     super::r117_04_creature::r117_04_creature_wordings(ability, written_variants, &mut texts);
     super::r117_04_during::r117_04_during_wordings(ability, &mut texts);
+    super::r118_01_wordings::r118_01_wordings(ability, written_variants, &mut texts);
     super::r116_reminder_tokens::r116_reminder_token_wordings(
         ability,
         written_variants,

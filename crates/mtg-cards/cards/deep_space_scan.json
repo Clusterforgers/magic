@@ -1,0 +1,30 @@
+{
+  "oracle_id": "5dabb7c1-8937-42b0-87c6-1cc7af46aaae",
+  "name": "Deep Space Scan",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Deep Space Scan",
+      "oracle_fingerprint": "cf4f1438c27b2faf9f361110b5342a52",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              },
+              { "Rule": { "rule": { "NoMaxHandSize": "You" }, "duration": "UntilYourNextTurn" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

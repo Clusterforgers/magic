@@ -400,6 +400,7 @@ mod put_back;
 mod r116_05_wordings;
 mod r116_trek;
 mod r117_01_wordings;
+mod r118_01_wordings;
 mod r303c_writers;
 mod r304b_writers;
 mod r306c_wordings;

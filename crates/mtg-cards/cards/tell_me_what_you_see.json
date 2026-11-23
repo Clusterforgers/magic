@@ -1,0 +1,37 @@
+{
+  "oracle_id": "abfdfae5-61aa-42d6-9c8e-83fda59de233",
+  "name": "Tell Me What You See",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tell Me What You See",
+      "oracle_fingerprint": "c442bb52c72486202637d8d973a4f88b",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "May": { "who": { "Target": 0 }, "effects": [{ "Draw": {} }] } },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    { "LoseLife": { "who": { "Target": 0 }, "amount": 4 } },
+                    { "Surveil": {} }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "R116Dilemma": { "who": "You" } },
+            "effects": [{ "May": { "effects": [{ "Move": { "what": "This", "to": "Hand" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
