@@ -148,6 +148,7 @@ fn changeable_targets(
             original.choices.x,
             original.choices.modes_chooser(),
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
+            crate::choose::r118_kind_of(Some(original.ability)),
         );
         if another || random {
             if way == Way::R113RandomNotYours {
@@ -321,6 +322,7 @@ pub(super) fn one_to(
             original.choices.x,
             original.choices.modes_chooser(),
             &original.choices.targets[bases.get(at).copied().unwrap_or(0).min(at)..at],
+            crate::choose::r118_kind_of(Some(original.ability)),
         );
         if legal.contains(&onto) {
             changeable.extend(kept.iter().map(|target| (at, *target)));

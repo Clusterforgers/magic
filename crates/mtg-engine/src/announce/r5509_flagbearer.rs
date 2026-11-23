@@ -112,6 +112,7 @@ pub(super) fn r5509_narrow(
             choices.x,
             choices.modes_chooser(),
             &choices.targets,
+            ctx.r118_by(),
         )
         .iter()
         .any(|target| is_flag(state, target))

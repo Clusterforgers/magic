@@ -10,7 +10,7 @@ use crate::companion::{CardFact, DeckCondition};
 use crate::cost::{Cost, CostItem};
 use crate::keyword::{GiftKind, Keyword, SpliceOnto};
 use crate::mana::ManaCostX;
-use crate::refs::{Pred, Selector};
+use crate::refs::{AbilityKind, Pred, Selector};
 use crate::value::{Amount, Cmp, StatKind};
 
 /// What may follow a keyword's name.
@@ -407,6 +407,13 @@ pub fn read_all(item: &str) -> Option<Vec<Keyword>> {
 /// enchantments") that is one hexproof for each.
 fn hexproof_qualities(rest: &str) -> Option<Vec<Selector>> {
     let lower = rest.trim_end_matches('.').to_ascii_lowercase();
+    // r118-02: "hexproof from activated and triggered abilities" is one quality, every ability on the stack.
+    if lower == "activated and triggered abilities" {
+        return Some(vec![Selector(vec![Pred::AnyOf(vec![
+            Pred::Ability(AbilityKind::Activated),
+            Pred::Ability(AbilityKind::Triggered),
+        ])])]);
+    }
     lower
         .replace(", and ", ", ")
         .replace(" and ", ", ")
@@ -1483,6 +1490,13 @@ mod tests {
     #[case::hexproof_from_a_colour("Hexproof from black", Keyword::HexproofFrom(Selector(vec![Pred::Color(Color::Black)])))]
     #[case::hexproof_from_lowercase("hexproof from planeswalkers", Keyword::HexproofFrom(Selector(vec![Pred::Type(CardType::Planeswalker)])))]
     #[case::hexproof_from_instants("hexproof from instants", Keyword::HexproofFrom(Selector(vec![Pred::Type(CardType::Instant)])))]
+    #[case::hexproof_from_abilities(
+        "hexproof from activated and triggered abilities",
+        Keyword::HexproofFrom(Selector(vec![Pred::AnyOf(vec![
+            Pred::Ability(AbilityKind::Activated),
+            Pred::Ability(AbilityKind::Triggered),
+        ])]))
+    )]
     #[case::hexproof_from_each_color(
         "Hexproof from each color",
         Keyword::HexproofFrom(each_color())

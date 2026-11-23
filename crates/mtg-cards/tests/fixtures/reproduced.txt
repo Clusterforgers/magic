@@ -1075,6 +1075,7 @@ Fountainport
 Four Knocks
 Fractal Mascot
 Fractured Powerstone
+Frankenstein's Monster
 Franklin Richards, Ascendant
 Frenzied Saddlebrute
 Freya Crescent
@@ -1458,6 +1459,7 @@ Inspiring Statuary
 Inspirit
 Intangible Virtue
 Intelligence Bobblehead
+Inti, Seneschal of the Sun
 Into the North
 Into the Roil
 Into the Time Vortex
@@ -3233,6 +3235,7 @@ Vogar, Necropolis Tyrant
 Voice of All
 Voice of the Blessed
 Voidmage Husher
+Volatile Stormdrake
 Volcanic Offering
 Voldaren Estate
 Volo, Itinerant Scholar

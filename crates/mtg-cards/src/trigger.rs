@@ -1524,6 +1524,11 @@ pub enum ReplaceBy {
         /// The controller may decline ("you may discard a land card instead").
         #[serde(default, skip_serializing_if = "is_false")]
         optional: bool,
+        /// For each card the cost took, the permanent enters with one counter of the kind its controller chooses among
+        /// these ("For each creature card exiled this way, this creature enters with a +2/+0, +1/+1, or +0/+2 counter on
+        /// it"); empty for none.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r118_counter_each: Vec<crate::value::CounterKind>,
     },
     /// Umbra armor (CR 702.89): all damage is removed from the permanent instead, and the object with the ability is destroyed.
     UmbraArmor,

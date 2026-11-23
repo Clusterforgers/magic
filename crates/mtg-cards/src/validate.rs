@@ -24,7 +24,7 @@ use crate::spend::{SpendOn, WhenSpent};
 use crate::support::{PrintedCard, PrintedFace, oracle_fingerprint};
 use crate::trigger::{EntersChoice, ReplaceBy, ReplaceWhen, ShieldShape, Step, TriggerPattern};
 use crate::value::CastWay;
-use crate::value::{Amount, Condition, StatKind, TurnTally};
+use crate::value::{Amount, Condition, CounterKind, StatKind, TurnTally};
 
 /// One problem found in a file: where, and what.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -2309,15 +2309,23 @@ impl<'a> Walker<'a> {
         // The X a required cost counts is the one the caster announces as the spell is cast.
         // An optional sacrifice by the X ("you may sacrifice a creature with power X", casualty X) announces its X with
         // the pick when it is chosen; not chosen, X is 0.
-        let picks_by_x = !required
-            && !cost.0.is_empty()
+        let sacrifices_by_x = !cost.0.is_empty()
             && cost
                 .0
                 .iter()
                 .all(|item| matches!(item, CostItem::Sacrifice { filter, count } if *count == Amount::one() && filter.r301_reads_x()));
+        let picks_by_x = !required && sacrifices_by_x;
         if picks_by_x {
             self.uses("Ability", "R116AdditionalCost.PicksByX");
         }
+        // A required sacrifice by the X ("sacrifice an artifact or creature with mana value X") announces X with the
+        // cast (CR 601.2b) and picks by it.
+        let picks_by_x = if required && sacrifices_by_x {
+            self.uses("Ability", "R118AdditionalCost.Required.PicksByX");
+            true
+        } else {
+            picks_by_x
+        };
         let saved = std::mem::replace(&mut self.x_now, (required && cost.has_x()) || picks_by_x);
         let choosing = std::mem::replace(&mut self.choosing, required);
         let capping = std::mem::replace(&mut self.r5523_spell_cap, required && self.nested == 0);
@@ -7764,12 +7772,42 @@ impl Walker<'_> {
         let one_pick = match &cost.0[..] {
             [CostItem::Sacrifice { count, .. }] => fixed(count),
             [CostItem::Discard { count, .. }] => fixed(count) && optional,
+            // "As this creature enters, exile X creature cards from your graveyard. If you can't, ...": X is the X the
+            // spell was cast with.
+            [
+                CostItem::ExileFromGraveyard {
+                    count: Amount::X,
+                    any_player: false,
+                    ..
+                },
+            ] if !optional => {
+                self.uses("ReplaceBy", "R118PayOrGraveyard.ExileX");
+                true
+            }
             _ => false,
         };
         if !one_pick {
-            self.problem("an entering is paid for with one sacrifice or one optional discard");
+            self.problem(
+                "an entering is paid for with one sacrifice, one optional discard or an exile of X cards from the graveyard",
+            );
         }
+        let saved = std::mem::replace(&mut self.x_now, true);
         self.at("cost", |w| w.cost(cost));
+        self.x_now = saved;
+    }
+
+    /// A counter for each card an entering paid with, of a kind chosen among two or more.
+    fn r118_counter_each(&mut self, cost: &Cost, kinds: &[CounterKind]) {
+        if kinds.is_empty() {
+            return;
+        }
+        self.uses("ReplaceBy", "R118PayOrGraveyard.CounterEach");
+        if kinds.len() < 2 {
+            self.problem("a counter for each card paid is chosen among two kinds or more");
+        }
+        if !matches!(&cost.0[..], [CostItem::ExileFromGraveyard { .. }]) {
+            self.problem("a counter for each card paid follows an exile of cards");
+        }
     }
 
     /// A choice of words as a permanent enters offers two or more words.
@@ -8031,8 +8069,13 @@ impl Walker<'_> {
             | ReplaceBy::R6007RevealOrControl { of, .. } => {
                 self.at("of", |w| w.selector(of));
             }
-            ReplaceBy::PayOrGraveyard { cost, optional } => {
+            ReplaceBy::PayOrGraveyard {
+                cost,
+                optional,
+                r118_counter_each,
+            } => {
                 self.pay_or_graveyard(enters, cost, *optional);
+                self.r118_counter_each(cost, r118_counter_each);
             }
             ReplaceBy::WithCounterOf(kinds) if kinds.len() < 2 => {
                 self.problem("a choice of a counter offers two kinds or more");
@@ -8650,6 +8693,7 @@ pub(crate) fn check_printed(
             face.abilities.iter().any(|ability| {
                 matches!(ability, Ability::AdditionalCost { cost, required: true, .. } if cost.has_x())
                     || r116_picks_by_x(ability)
+                    || r118_required_picks_by_x(ability)
             })
         });
         if !printed.faces[face].mana_cost.contains("{X}") && !kicker_x && !additional_x {
@@ -8677,7 +8721,25 @@ pub(crate) fn check_printed(
 /// Whether the ability is an optional sacrifice of one permanent by the X the caster announces with it ("you may
 /// sacrifice a creature with power X", casualty X).
 fn r116_picks_by_x(ability: &Ability) -> bool {
-    matches!(ability, Ability::AdditionalCost { cost, required: false, .. }
+    matches!(
+        ability,
+        Ability::AdditionalCost {
+            required: false,
+            ..
+        }
+    ) && sacrifices_one_by_x(ability)
+}
+
+/// Whether the ability is a required sacrifice of one permanent by the X the caster announces with the cast ("sacrifice an
+/// artifact or creature with mana value X", CR 601.2b).
+fn r118_required_picks_by_x(ability: &Ability) -> bool {
+    matches!(ability, Ability::AdditionalCost { required: true, .. })
+        && sacrifices_one_by_x(ability)
+}
+
+/// Whether the ability is an additional cost of sacrifices of one permanent each, by a filter that reads X.
+fn sacrifices_one_by_x(ability: &Ability) -> bool {
+    matches!(ability, Ability::AdditionalCost { cost, .. }
         if !cost.0.is_empty()
             && cost.0.iter().all(|item| matches!(item, CostItem::Sacrifice { filter, count }
                 if *count == Amount::one() && filter.r301_reads_x())))
