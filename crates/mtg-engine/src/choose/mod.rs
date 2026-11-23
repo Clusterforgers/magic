@@ -54,8 +54,8 @@ pub(crate) use cards::{
     Chooser, Picked, Selection, pick_cards, pick_selections, pick_selections_within,
 };
 pub(crate) use mode::{
-    C11dOnce, Modal, announceable, announced_specs, enough_modes, every_mode_is_legal, modal_of,
-    mode_options, spec_bases, targets_before, unmet_target,
+    C11dOnce, Modal, announceable, announced_mode_options, announced_specs, enough_modes,
+    every_mode_is_legal, modal_of, mode_options, spec_bases, targets_before, unmet_target,
 };
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
 pub(crate) use targets::{

@@ -3,6 +3,7 @@
 mod activation_costs;
 mod affinity;
 mod aftermath;
+mod all_if_kicked;
 mod alt_cast;
 mod alternative_costs;
 mod announce_again;

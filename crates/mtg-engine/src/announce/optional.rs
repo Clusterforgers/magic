@@ -6,7 +6,8 @@
 //! cost is offered: the mana, the life and the objects the parts take. The costs chosen are kept in
 //! `Choices.optional_costs`, a repeatable cost once for each payment, their mana joins the total cost, their parts are
 //! picked and paid with the others (`parts.rs`), and the spell, the permanent it becomes and their abilities remember
-//! them. A spell with entwine asks its costs before its modes, since paying entwine chooses them all.
+//! them. A spell with entwine asks its costs before its modes, since paying entwine chooses them all, and so does one
+//! whose modes widen with a condition (`all_if`: "if this spell was kicked, choose any number instead").
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;

@@ -14,6 +14,7 @@ use mtg_cards::value::{Amount, Condition};
 use mtg_core::ids::{ObjectId, PlayerId};
 use serde::{Deserialize, Serialize};
 
+use super::Choices;
 use super::targets::options_before_x;
 use crate::abilities::Cause;
 use crate::answers::Outcome;
@@ -258,25 +259,15 @@ pub(crate) fn enough_modes(modal: &Modal<'_>, available: u32) -> bool {
     }
 }
 
-/// The scope an amount or a condition is read in while the ability is announced.
-fn announcing(state: &GameState, source: ObjectId, controller: PlayerId) -> Scope<'_> {
-    let origin = state.object(source).map_or(
-        ObjectRef {
-            id: source,
-            counter: 0,
-        },
-        GameObject::reference,
-    );
-    Scope::announcing(state, controller, origin)
-}
-
-/// The scope the bounds of a modal ability are read in: a triggered one also reads the event it triggered on ("where X
-/// is the number of times you chose a mode for that spell").
+/// The scope the bounds of a modal ability and its `all_if` are read in: a triggered one also reads the event it
+/// triggered on ("where X is the number of times you chose a mode for that spell"), and a spell reads the optional costs
+/// announced with its modes ("if this spell was kicked", CR 601.2b).
 fn r112_bounds_scope<'a>(
     state: &'a GameState,
     source: ObjectId,
     controller: PlayerId,
     cause: Option<&'a Cause>,
+    announced: Option<&'a Choices>,
 ) -> Scope<'a> {
     let origin = state.object(source).map_or(
         ObjectRef {
@@ -285,10 +276,14 @@ fn r112_bounds_scope<'a>(
         },
         GameObject::reference,
     );
-    match cause {
+    let mut scope = match cause {
         Some(cause) => Scope::triggered(state, controller, origin, cause),
         None => Scope::announcing(state, controller, origin),
+    };
+    if let Some(choices) = announced {
+        scope.choices = choices;
     }
+    scope
 }
 
 /// Whether the condition that lets every mode be chosen holds as the ability is announced ("If you control a commander
@@ -298,9 +293,10 @@ fn all_may_be_chosen(
     source: ObjectId,
     controller: PlayerId,
     all_if: Option<&Condition>,
+    announced: Option<&Choices>,
 ) -> bool {
     all_if.is_some_and(|condition| {
-        announcing(state, source, controller)
+        r112_bounds_scope(state, source, controller, None, announced)
             .holds(condition)
             .unwrap_or(false)
     })
@@ -315,6 +311,20 @@ pub(crate) fn mode_options(
     modal: &Modal<'_>,
     can_cancel: bool,
     cause: Option<&Cause>,
+) -> Option<ModeOptions> {
+    announced_mode_options(state, source, controller, modal, can_cancel, cause, None)
+}
+
+/// [`mode_options`] read with the choices announced so far, such as the optional costs a condition like "if this spell
+/// was kicked, choose any number instead" reads (CR 601.2b).
+pub(crate) fn announced_mode_options(
+    state: &GameState,
+    source: ObjectId,
+    controller: PlayerId,
+    modal: &Modal<'_>,
+    can_cancel: bool,
+    cause: Option<&Cause>,
+    announced: Option<&Choices>,
 ) -> Option<ModeOptions> {
     let card = state
         .object(source)
@@ -339,7 +349,7 @@ pub(crate) fn mode_options(
     let min = match &modal.choose.min {
         Amount::Fixed(n) => u32::try_from(*n).unwrap_or(0),
         // A fewest that depends on the game ("choose both instead") is read as the ability is announced.
-        other => r112_bounds_scope(state, source, controller, cause)
+        other => r112_bounds_scope(state, source, controller, cause, announced)
             .amount(other)
             .map_or(0, |n| u32::try_from(n).unwrap_or(0)),
     };
@@ -350,10 +360,12 @@ pub(crate) fn mode_options(
     };
     let wanted = match &modal.choose.max {
         None => available,
-        Some(_) if all_may_be_chosen(state, source, controller, modal.all_if) => available,
+        Some(_) if all_may_be_chosen(state, source, controller, modal.all_if, announced) => {
+            available
+        }
         Some(Amount::Fixed(n)) => u32::try_from(*n).unwrap_or(0),
         Some(other) => {
-            let amount = r112_bounds_scope(state, source, controller, cause)
+            let amount = r112_bounds_scope(state, source, controller, cause, announced)
                 .amount(other)
                 .ok()?;
             u32::try_from(amount).unwrap_or(0)
