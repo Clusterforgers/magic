@@ -100,7 +100,7 @@ impl<S: EventStore> GameActor<S> {
     /// who left stays at the table, and its deck goes back to the one the game was made with. A
     /// person who comes with a `deck` plays it. Returns false, with nothing changed, once the game
     /// runs or for a seat the table does not have.
-    pub(crate) fn seat_at(
+    pub(crate) async fn seat_at(
         &mut self,
         seat: PlayerId,
         name: Option<String>,
@@ -113,6 +113,8 @@ impl<S: EventStore> GameActor<S> {
         else {
             return false;
         };
+        // Emptying a seat returns its deck, and a person who comes with one changes it.
+        let new_deck = name.is_none() || deck.is_some();
         if let Some(name) = name {
             *listed = name;
             if let Some(deck) = deck {
@@ -151,6 +153,9 @@ impl<S: EventStore> GameActor<S> {
                 player.satchel = Vec::new();
             }
         }
+        if new_deck {
+            self.store_decks().await;
+        }
         self.push_roster();
         true
     }
@@ -172,9 +177,18 @@ impl<S: EventStore> GameActor<S> {
         decks.choose(seat.index(), deck);
     }
 
+    /// Stores the recipe as the seats chose their decks so far, like the teams, so a restart before the start keeps
+    /// them.
+    async fn store_decks(&self) {
+        let recipe = self.decks.as_ref().and_then(SeatDecks::lobby_recipe);
+        if let (Some(recorder), Some(recipe)) = (&self.recorder, recipe) {
+            recorder.lobby_recipe(&recipe).await;
+        }
+    }
+
     /// Sets the deck `seat` plays and tells the table. A seat that pressed Ready takes that back
     /// before it changes its deck; once the game runs, or for a seat nobody holds, nothing changes.
-    pub(crate) fn choose_deck(
+    pub(crate) async fn choose_deck(
         &mut self,
         seat: PlayerId,
         deck: ChosenDeck,
@@ -190,6 +204,7 @@ impl<S: EventStore> GameActor<S> {
         }
         let note = deck.note().clone();
         self.play(seat, deck);
+        self.store_decks().await;
         self.push_roster();
         Ok(note)
     }

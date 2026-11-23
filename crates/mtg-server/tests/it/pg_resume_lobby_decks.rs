@@ -1,6 +1,6 @@
 //! Goal: a lobby whose seats hold decks of oracle ids (precons, a stored Commander deck, a Delves fight's heroes and boss)
 //! comes back after a restart with every seat on its deck and the name the table was told: Ready starts it under the
-//! recipe it was made with, which the start leaves as it is, and the started game comes back after another restart.
+//! recipe it was made with, which the start leaves as it is, and the started game comes back after another restart. A deck a seat chooses in the lobby is stored at once and the lobby comes back on it.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::pg_delve_forfeit::fight_run;
@@ -105,4 +105,77 @@ async fn starts_on_its_decks_after_a_restart(pool: PgPool, made: Made) {
         RecordStatus::Running,
         "{made:?}"
     );
+}
+
+/// The commanders the public listing names for `game`, by seat.
+async fn listed_leaders(server: &TestServer, game: &str) -> Vec<(u64, String)> {
+    let listing = lobby::lobbies(server.addr, &[]).await.json();
+    let row = listing["games"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|row| row["game"] == game)
+        .unwrap()
+        .clone();
+    let mut leaders: Vec<(u64, String)> = row["commanders"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|c| {
+            (
+                c["seat"].as_u64().unwrap(),
+                c["name"].as_str().unwrap().to_owned(),
+            )
+        })
+        .collect();
+    leaders.sort();
+    leaders
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_deck_chosen_in_the_lobby_is_stored_at_once_and_kept_by_a_restart(pool: PgPool) {
+    let server = pg_commander::start(&pool).await;
+    let ann = register(server.addr, "ann", PASSWORD).await;
+    // Seat 0 is made on a precon and seat 1 without a deck, which the recipe names by its stand-in.
+    let seats = [
+        json!({"name": "Ann", "deck": on(BEAR)}),
+        json!({"name": "Bo"}),
+    ];
+    let (game, tokens) = ann.create_game(server.addr, &create_body(&seats, 2)).await;
+    let (made, _) = record(&pool, &game).await;
+    for (seat, deck) in [(0, BEAST), (1, BEAR)] {
+        let chosen = lobby::call(
+            server.addr,
+            "PUT",
+            &format!("/api/games/{game}/seats/{seat}/deck"),
+            Some(&json!({ "deck": on(deck) }).to_string()),
+            &[("Authorization", &lobby::bearer(&tokens[seat]))],
+        )
+        .await;
+        assert_eq!(chosen.status, 200, "{}", chosen.text());
+    }
+    let (stored, status) = record(&pool, &game).await;
+    assert_eq!(status, RecordStatus::Lobby);
+    assert_ne!(
+        stored["decks"], made["decks"],
+        "the choices are stored at once"
+    );
+    assert_eq!(stored["decks"][0]["note"]["name"], "Beast Pack");
+    assert_eq!(stored["decks"][1]["note"]["name"], "Bear Pack");
+    let chosen = vec![
+        (0, "Questing Beast".to_owned()),
+        (1, "Grizzly Bears".to_owned()),
+    ];
+    assert_eq!(listed_leaders(&server, &game).await, chosen);
+
+    let server = restart(server, &pool).await;
+    assert_eq!(
+        listed_leaders(&server, &game).await,
+        chosen,
+        "the lobby comes back on the decks chosen before the restart"
+    );
+    lobby::start(&server.registry, &game, 2).await;
+    let (after, status) = record(&pool, &game).await;
+    assert_eq!(status, RecordStatus::Running);
+    assert_eq!(after, stored, "the game starts under the stored choices");
 }

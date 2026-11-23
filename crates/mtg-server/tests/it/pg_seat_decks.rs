@@ -449,13 +449,11 @@ async fn a_started_game_survives_the_deletion_of_its_stored_decks_and_resumes_wi
         200
     );
 
-    // The lobby's recipe still names the decks the game was made with.
+    // The lobby's recipe names the deck chosen in the lobby at once.
     let (before, status) = recipe(&pool, &game).await;
     assert_eq!(status, RecordStatus::Lobby);
-    assert_eq!(
-        before["decks"][0],
-        json!({"kind": "demo", "id": "mono-green"})
-    );
+    assert_eq!(before["decks"][0]["kind"], "oracle");
+    assert_eq!(before["decks"][0]["note"]["name"], "Evergreen");
 
     lobby::start(&server.registry, &game, 2).await;
     let (stored, status) = recipe(&pool, &game).await;

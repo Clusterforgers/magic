@@ -433,6 +433,25 @@ impl GameRecords {
         }
     }
 
+    /// Stores the recipe of a game still in its lobby as its seats chose it, so a restart before the start keeps their
+    /// decks; false when the game is not in its lobby or not recorded.
+    pub(crate) async fn set_lobby_recipe(
+        &self,
+        id: GameId,
+        recipe: &GameRecipe,
+    ) -> Result<bool, RecordError> {
+        let recipe =
+            serde_json::to_value(recipe).map_err(|e| RecordError::Encode(e.to_string()))?;
+        let updated = sqlx::query!(
+            "UPDATE games SET recipe = $2 WHERE id = $1 AND status = 'lobby'",
+            id.uuid(),
+            recipe,
+        )
+        .execute(&self.pool)
+        .await?;
+        Ok(updated.rows_affected() == 1)
+    }
+
     /// Stores the teams the lobby set in its recipe's house rules (none takes them out), so a restart before the start
     /// keeps them; false when the game is not in its lobby or not recorded.
     pub(crate) async fn set_lobby_teams(
