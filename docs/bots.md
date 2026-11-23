@@ -71,7 +71,16 @@ Decision-quality suite (77 cases, 11 of them abilities, untimed, seed 7):
 | Hard | 94% | 95% | 9/11 | 10/11 |
 | Very Hard | 94% | 95% | 10/11 | 11/11 |
 
-Main misses the loot at the end step at every level (it aims the draw at the opponent) and Normal never crews or animates before combat (the stack settles with nothing lasting changed). In timed Commander pods 9 to 18% of Hard's priority judgements run out of budget. In the server's recorded games main's Very Hard leaves a planeswalker unused in 23 of 34 turns it has one (Hard 2 of 10, Normal 0 of 35, players 37 of 156) and ends 20% of its turns with every land untapped (Hard 15%, Normal 9%, players 7%).
+Main misses the loot at the end step at every level (it aims the draw at the opponent) and Normal never crews or animates before combat (the stack settles with nothing lasting changed). In timed Commander pods 4 to 18% of Hard's priority judgements run out of budget; the fallback still finds a play in 94% of them.
+
+Ability play against main's brains of the same level, each deal played with the sides swapped (SPRT with elo0 0, elo1 40):
+
+| Level | Mode | Games | Score | Elo | SPRT |
+| --- | --- | --- | --- | --- | --- |
+| Normal | 1v1, interaction decks | 423 | 50.1% | +1 [-32, +34] | H0 accepted (the duel decks hold no activated abilities) |
+| Normal | Commander pod, untimed | 230 | 52.6% | +18 [-26, +64] | undecided |
+| Hard | 1v1, interaction decks | 36 | 50.0% | 0 | every deal split: the same plays |
+| Hard | Commander pod, timed | 48 | 45.8% | -29 [-133, +70] | undecided | In the server's recorded games main's Very Hard leaves a planeswalker unused in 23 of 34 turns it has one (Hard 2 of 10, Normal 0 of 35, players 37 of 156) and ends 20% of its turns with every land untapped (Hard 15%, Normal 9%, players 7%).
 
 Seeded games against main's brains of the same level on the interaction pairings, untimed, each deal played with the sides swapped (Elo with its 95% interval; SPRT with elo0 0, elo1 40 at 5% errors):
 
