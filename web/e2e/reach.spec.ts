@@ -157,6 +157,7 @@ const STOPS: readonly Stop[] = [
   page('Create a game', '/new'),
   page('Learn', '/learn'),
   { ...page('Learn, signed in', '/learn'), account: true },
+  dev('the Card support page', '/dev/support', 'main'),
   page('Sign in', '/login'),
   page('Register', '/register'),
 ]

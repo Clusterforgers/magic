@@ -21,7 +21,7 @@ const TAB =
 
 /**
  * "Review cards": the cards of the account's decks that wait for a read or a check, with a count of those to read
- * (hidden at none). Under `lg` the words give way to the icon, so the tabs fit a phone's row.
+ * (hidden at none). Under `xl` the words give way to the icon, so the tabs fit a phone's row.
  */
 function ReviewTab({ account }: { account: string | null }) {
   const toRead = useToReadCount(account)
@@ -35,8 +35,8 @@ function ReviewTab({ account }: { account: string | null }) {
       title="Review cards"
       data-slot="review-cards"
     >
-      <ListChecksIcon aria-hidden="true" className="size-4 shrink-0 lg:hidden" />
-      <span className="hidden lg:inline">Review cards</span>
+      <ListChecksIcon aria-hidden="true" className="size-4 shrink-0 xl:hidden" />
+      <span className="hidden xl:inline">Review cards</span>
       {toRead > 0 ? (
         <span
           aria-hidden="true"
@@ -76,40 +76,51 @@ function ShellHeader() {
         <nav
           ref={nav}
           aria-label="Main"
-          // A phone gives the tabs a row of their own, which scrolls sideways where an account's seven do not fit it.
-          className="order-3 flex w-full min-w-0 items-center overflow-x-auto border-t [scrollbar-width:none] sm:order-none sm:w-auto sm:flex-1 sm:overflow-visible sm:border-t-0"
+          className="order-3 flex w-full min-w-0 items-center border-t sm:order-none sm:w-auto sm:flex-1 sm:border-t-0"
         >
-          <Link to="/" className={TAB}>
-            Play
-          </Link>
-          <Link to="/precons" className={TAB}>
-            Precons
-          </Link>
-          {signedIn ? (
-            <>
-              {/* Cards to check lives under /decks but is a tab of its own, so Decks is not current there. */}
-              <Link to="/decks" className={TAB} activeOptions={{ exact: checking }}>
-                Decks
-              </Link>
-              <Link to="/games" className={TAB}>
-                My games
-              </Link>
-              <Link to="/tournaments" className={TAB}>
-                Tournaments
-              </Link>
-              <Link to="/delves" className={TAB}>
-                Delves
-              </Link>
-              <ReviewTab account={account} />
-              <Link to="/support" className={cn(TAB, 'gap-2')} aria-label="Card support" title="Card support">
-                <ChartNoAxesColumnIcon aria-hidden="true" className="size-4 shrink-0 lg:hidden" />
-                <span className="hidden lg:inline">Card support</span>
-              </Link>
-            </>
-          ) : null}
+          {/* The tabs take the room the brand and the buttons leave and scroll sideways where an account's tabs do
+              not fit it (a phone's row, a narrow window), so they never run under Create, the theme or the account. */}
+          <div
+            data-slot="nav-tabs"
+            className="flex min-w-0 items-center overflow-x-auto [scrollbar-width:none]"
+          >
+            <Link to="/" className={TAB}>
+              Play
+            </Link>
+            <Link to="/precons" className={TAB}>
+              Precons
+            </Link>
+            {signedIn ? (
+              <>
+                {/* Cards to check lives under /decks but is a tab of its own, so Decks is not current there. */}
+                <Link to="/decks" className={TAB} activeOptions={{ exact: checking }}>
+                  Decks
+                </Link>
+                <Link to="/games" className={TAB}>
+                  My games
+                </Link>
+                <Link to="/tournaments" className={TAB}>
+                  Tournaments
+                </Link>
+                <Link to="/delves" className={TAB}>
+                  Delves
+                </Link>
+                <ReviewTab account={account} />
+                <Link
+                  to="/support"
+                  className={cn(TAB, 'gap-2')}
+                  aria-label="Card support"
+                  title="Card support"
+                >
+                  <ChartNoAxesColumnIcon aria-hidden="true" className="size-4 shrink-0 xl:hidden" />
+                  <span className="hidden xl:inline">Card support</span>
+                </Link>
+              </>
+            ) : null}
+          </div>
           <Link
             to="/new"
-            className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto hidden sm:inline-flex')}
+            className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto hidden shrink-0 sm:inline-flex')}
           >
             <PlusIcon aria-hidden="true" />
             Create
