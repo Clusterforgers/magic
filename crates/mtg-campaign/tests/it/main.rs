@@ -9,6 +9,7 @@ mod descent_loot;
 mod discard_cost;
 mod endless;
 mod events;
+mod foundry;
 mod modifiers;
 mod mythic_cards;
 mod old_runs;

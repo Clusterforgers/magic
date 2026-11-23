@@ -1,4 +1,4 @@
-// Goal: a run in the list shows its party and how far down the ladder it got, one skull per boss with the beaten ones marked; runs under way lead the list, finished runs (victory, defeat) sit in a collapsed "Past runs" section, abandoned runs are not shown, and the new-run form offers the three Heats as worded tiers and the timers with Relaxed as its default and sends the ones that are chosen; a signed-in player sees the leaderboard after the page's own content, a visitor does not.
+// Goal: a run in the list shows its party and how far down the ladder it got, one skull per boss with the beaten ones marked; runs under way lead the list, finished runs (victory, defeat) sit in a collapsed "Past runs" section, abandoned runs are not shown, and the new-run form offers the four Heats as worded tiers and the timers with Relaxed as its default and sends the ones that are chosen; a signed-in player sees the leaderboard after the page's own content, a visitor does not.
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
@@ -94,7 +94,7 @@ describe('the new run form', () => {
     ])
   })
 
-  it('offers the three Heats as tiers, Casual chosen, with what the chosen one asks in plain words', async () => {
+  it('offers the four Heats as tiers, Casual chosen, with what the chosen one asks in plain words', async () => {
     const { bodies, user } = await open()
     const heat = screen.getByLabelText('Heat')
     expect(heat).toHaveValue('0')
@@ -102,7 +102,7 @@ describe('the new run form', () => {
       within(heat)
         .getAllByRole('option')
         .map((option) => option.textContent),
-    ).toEqual(['Heat 0 — Casual', 'Heat 1 — Seasoned', 'Heat 2 — Heroic'])
+    ).toEqual(['Heat 0 — Casual', 'Heat 1 — Seasoned', 'Heat 2 — Heroic', 'Heat 3 — Legendary'])
     expect(heat).toHaveAccessibleDescription(/^Heat 0 — Casual: any deck can win with some luck\./)
     await user.selectOptions(heat, '2')
     expect(heat).toHaveAccessibleDescription(

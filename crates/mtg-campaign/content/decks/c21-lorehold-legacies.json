@@ -1,0 +1,431 @@
+{
+  "code": "C21",
+  "name": "Lorehold Legacies",
+  "commander": [
+    "Osgir, the Reconstructor"
+  ],
+  "swaps": [
+    {
+      "out": "Bronze Guardian",
+      "into": "Karn, Legacy Reforged"
+    },
+    {
+      "out": "Digsite Engineer",
+      "into": "Loran of the Third Path"
+    },
+    {
+      "out": "Triplicate Titan",
+      "into": "Phyrexian Triniform"
+    },
+    {
+      "out": "Sun Titan",
+      "into": "Firbolg Flutist"
+    },
+    {
+      "out": "Sanctum Gargoyle",
+      "into": "Canoptek Scarab Swarm"
+    },
+    {
+      "out": "Quicksmith Genius",
+      "into": "Ingenious Artillerist"
+    },
+    {
+      "out": "Thopter Engineer",
+      "into": "Loyal Apprentice"
+    },
+    {
+      "out": "Pilgrim's Eye",
+      "into": "Ornithopter of Paradise"
+    },
+    {
+      "out": "Sculpting Steel",
+      "into": "Herald's Horn"
+    },
+    {
+      "out": "Dispeller's Capsule",
+      "into": "Wayfarer's Bauble"
+    },
+    {
+      "out": "Boros Locket",
+      "into": "Basalt Monolith"
+    },
+    {
+      "out": "Monologue Tax",
+      "into": "Caretaker's Talent"
+    },
+    {
+      "out": "Lorehold Campus",
+      "into": "Mountain"
+    },
+    {
+      "out": "Ancient Den",
+      "into": "Plains"
+    },
+    {
+      "out": "Darksteel Citadel",
+      "into": "Mountain"
+    },
+    {
+      "out": "Great Furnace",
+      "into": "Plains"
+    },
+    {
+      "out": "Phyrexia's Core",
+      "into": "Mountain"
+    },
+    {
+      "out": "Sunhome, Fortress of the Legion",
+      "into": "Plains"
+    }
+  ],
+  "cards": [
+    [
+      "Osgir, the Reconstructor",
+      1
+    ],
+    [
+      "Daretti, Scrap Savant",
+      1
+    ],
+    [
+      "Combustible Gearhulk",
+      1
+    ],
+    [
+      "Alibou, Ancient Witness",
+      1
+    ],
+    [
+      "Angel of the Ruins",
+      1
+    ],
+    [
+      "Losheel, Clockwork Scholar",
+      1
+    ],
+    [
+      "Audacious Reshapers",
+      1
+    ],
+    [
+      "Laelia, the Blade Reforged",
+      1
+    ],
+    [
+      "Ruin Grinder",
+      1
+    ],
+    [
+      "Feldon of the Third Path",
+      1
+    ],
+    [
+      "Hellkite Igniter",
+      1
+    ],
+    [
+      "Hellkite Tyrant",
+      1
+    ],
+    [
+      "Hoard-Smelter Dragon",
+      1
+    ],
+    [
+      "Pia Nalaar",
+      1
+    ],
+    [
+      "Jor Kadeen, the Prevailer",
+      1
+    ],
+    [
+      "Bosh, Iron Golem",
+      1
+    ],
+    [
+      "Duplicant",
+      1
+    ],
+    [
+      "Myr Battlesphere",
+      1
+    ],
+    [
+      "Scrap Trawler",
+      1
+    ],
+    [
+      "Solemn Simulacrum",
+      1
+    ],
+    [
+      "Steel Hellkite",
+      1
+    ],
+    [
+      "Steel Overseer",
+      1
+    ],
+    [
+      "Burnished Hart",
+      1
+    ],
+    [
+      "Meteor Golem",
+      1
+    ],
+    [
+      "Excavation Technique",
+      1
+    ],
+    [
+      "Wake the Past",
+      1
+    ],
+    [
+      "Cleansing Nova",
+      1
+    ],
+    [
+      "Rout",
+      1
+    ],
+    [
+      "Chain Reaction",
+      1
+    ],
+    [
+      "Secret Rendezvous",
+      1
+    ],
+    [
+      "Reconstruct History",
+      1
+    ],
+    [
+      "Rip Apart",
+      1
+    ],
+    [
+      "Faithless Looting",
+      1
+    ],
+    [
+      "Dispatch",
+      1
+    ],
+    [
+      "Return to Dust",
+      1
+    ],
+    [
+      "Boros Charm",
+      1
+    ],
+    [
+      "Archaeomancer's Map",
+      1
+    ],
+    [
+      "Battlemage's Bracers",
+      1
+    ],
+    [
+      "Cursed Mirror",
+      1
+    ],
+    [
+      "Key to the City",
+      1
+    ],
+    [
+      "Thousand-Year Elixir",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Hedron Archive",
+      1
+    ],
+    [
+      "Ichor Wellspring",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Mycosynth Wellspring",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Unstable Obelisk",
+      1
+    ],
+    [
+      "Darksteel Mutation",
+      1
+    ],
+    [
+      "Battlefield Forge",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Slayers' Stronghold",
+      1
+    ],
+    [
+      "Temple of Triumph",
+      1
+    ],
+    [
+      "Study Hall",
+      1
+    ],
+    [
+      "Boros Garrison",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Forgotten Cave",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Rogue's Passage",
+      1
+    ],
+    [
+      "Secluded Steppe",
+      1
+    ],
+    [
+      "Temple of the False God",
+      1
+    ],
+    [
+      "Mountain",
+      15
+    ],
+    [
+      "Plains",
+      11
+    ],
+    [
+      "Karn, Legacy Reforged",
+      1
+    ],
+    [
+      "Loran of the Third Path",
+      1
+    ],
+    [
+      "Phyrexian Triniform",
+      1
+    ],
+    [
+      "Firbolg Flutist",
+      1
+    ],
+    [
+      "Canoptek Scarab Swarm",
+      1
+    ],
+    [
+      "Ingenious Artillerist",
+      1
+    ],
+    [
+      "Loyal Apprentice",
+      1
+    ],
+    [
+      "Ornithopter of Paradise",
+      1
+    ],
+    [
+      "Herald's Horn",
+      1
+    ],
+    [
+      "Wayfarer's Bauble",
+      1
+    ],
+    [
+      "Basalt Monolith",
+      1
+    ],
+    [
+      "Caretaker's Talent",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 24,
+      "W": 19
+    },
+    "types": {
+      "Artifact": 33,
+      "Creature": 31,
+      "Enchantment": 2,
+      "Instant": 3,
+      "Land": 38,
+      "Planeswalker": 1,
+      "Sorcery": 9
+    },
+    "subtypes": {
+      "Angel": 1,
+      "Artificer": 8,
+      "Aura": 1,
+      "Bard": 1,
+      "Class": 1,
+      "Construct": 5,
+      "Daretti": 1,
+      "Dragon": 4,
+      "Elephant": 1,
+      "Elk": 1,
+      "Equipment": 1,
+      "Giant": 2,
+      "Golem": 6,
+      "Human": 7,
+      "Insect": 1,
+      "Mountain": 15,
+      "Myr": 1,
+      "Phyrexian": 1,
+      "Plains": 11,
+      "Shapeshifter": 1,
+      "Spirit": 1,
+      "Thopter": 1,
+      "Warrior": 2
+    },
+    "tokens": 6,
+    "counters": 2,
+    "graveyard": 4,
+    "creature_commanders": 0
+  }
+}

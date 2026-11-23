@@ -1,6 +1,9 @@
 //! Goal: from the themed generation each descent leads into another open theme drawn by the seed and the floor, so a
 //! long run passes through several and never plays one theme on two floors in a row; the floor's bosses, events and
 //! reward pool are its theme's, and the chronicle and the descent's summary name the new theme.
+use std::collections::BTreeSet;
+
+use mtg_campaign::content::{FOUNDRY_FROM, FOUNDRY_HEAT};
 use mtg_campaign::run::{CONTENT, THEMES_FROM, in_sentence};
 use mtg_campaign::{Offer, RoomKind, Run, content};
 use proptest::prelude::*;
@@ -136,12 +139,12 @@ fn clear_until_room(run: &mut Run) {
 proptest! {
     #![proptest_config(ProptestConfig::with_cases(128))]
     #[test]
-    fn the_next_theme_is_another_open_one(seed in any::<u64>(), floor in 2u8..40) {
+    fn the_next_theme_is_another_open_one(seed in any::<u64>(), floor in 2u8..40, heat in 0u8..5) {
         let content = content().unwrap();
-        let open = content.open_themes(THEMES_FROM);
+        let open = content.open_themes(CONTENT, heat);
         for from in &open {
-            let next = content.next_theme(seed, THEMES_FROM, floor, &from.id).unwrap();
-            prop_assert_eq!(next, content.next_theme(seed, THEMES_FROM, floor, &from.id).unwrap());
+            let next = content.next_theme(seed, CONTENT, heat, floor, &from.id).unwrap();
+            prop_assert_eq!(next, content.next_theme(seed, CONTENT, heat, floor, &from.id).unwrap());
             prop_assert!(open.contains(&next));
             prop_assert!(open.len() < 2 || next.id != from.id);
         }
@@ -151,6 +154,48 @@ proptest! {
 #[test]
 fn a_lone_open_theme_stays() {
     let content = content().unwrap();
-    let warrens = content.next_theme(3, 4, 2, "warrens").unwrap();
+    let warrens = content.next_theme(3, 4, 0, 2, "warrens").unwrap();
     assert_eq!(warrens.id, "warrens");
+}
+
+/// A descent enters the Ember Foundry only at its least Heat or above, from any theme, seed and floor.
+#[rstest]
+fn a_descent_enters_the_foundry_only_from_its_heat(
+    #[values(0, 1, 2, 3, 4)] heat: u8,
+    #[values(1, 7, 42, 1009, 65_537)] seed: u64,
+) {
+    let content = content().unwrap();
+    let reached: BTreeSet<String> = content
+        .open_themes(CONTENT, u8::MAX)
+        .iter()
+        .flat_map(|from| {
+            (2u8..40).map(|floor| {
+                let next = content
+                    .next_theme(seed, CONTENT, heat, floor, &from.id)
+                    .unwrap();
+                next.id.clone()
+            })
+        })
+        .collect();
+    assert_eq!(
+        reached.contains("foundry"),
+        heat >= FOUNDRY_HEAT,
+        "{reached:?}"
+    );
+}
+
+/// A run's floors keep to the themes its Heat opens, and a run of a generation before the Foundry never meets it.
+#[rstest]
+fn a_runs_floors_meet_the_foundry_only_from_its_heat(
+    #[values(1, 2, 3)] heat: u8,
+    #[values(THEMES_FROM, FOUNDRY_FROM - 1, CONTENT)] version: u32,
+    #[values(3, 11)] seed: u64,
+) {
+    let mut run = started(seed, heat, version, 1, 1);
+    let visited = descend_to(&mut run, 5);
+    let foundry = visited.iter().any(|theme| theme == "foundry");
+    assert!(
+        !foundry || (heat >= FOUNDRY_HEAT && version >= FOUNDRY_FROM),
+        "{visited:?}"
+    );
 }

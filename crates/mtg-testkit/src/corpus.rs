@@ -77,6 +77,8 @@ pub enum CorpusError {
 pub struct Corpus {
     cards: Vec<Entry>,
     by_name: BTreeMap<String, usize>,
+    /// The cards by the name of one of their faces, asked only when no card has that full name.
+    by_face: BTreeMap<String, usize>,
 }
 
 #[derive(Debug)]
@@ -121,6 +123,7 @@ impl Corpus {
         let mut corpus = Corpus {
             cards: Vec::new(),
             by_name: BTreeMap::new(),
+            by_face: BTreeMap::new(),
         };
         // The color identity of the pieces of each meld pair, by the name of the card they meld into.
         let mut melded: BTreeMap<String, ColorSet> = BTreeMap::new();
@@ -136,8 +139,12 @@ impl Corpus {
                     .fold(*pieces, ColorSet::with);
             }
             let at = corpus.cards.len();
-            for name in std::iter::once(&record.name).chain(record.faces().map(|f| &f.name)) {
-                corpus.by_name.entry(name.to_lowercase()).or_insert(at);
+            corpus
+                .by_name
+                .entry(record.name.to_lowercase())
+                .or_insert(at);
+            for face in record.faces() {
+                corpus.by_face.entry(face.name.to_lowercase()).or_insert(at);
             }
             corpus.cards.push(Entry {
                 definition: Arc::new(assembled.definition.clone()),
@@ -161,8 +168,10 @@ impl Corpus {
     }
 
     fn entry(&self, name: &str) -> Result<&Entry, CorpusError> {
+        let key = name.to_lowercase();
         self.by_name
-            .get(&name.to_lowercase())
+            .get(&key)
+            .or_else(|| self.by_face.get(&key))
             .and_then(|&at| self.cards.get(at))
             .ok_or_else(|| CorpusError::UnknownCard(name.to_owned()))
     }
@@ -261,6 +270,7 @@ mod tests {
     #[case::back_face_of_a_split_card("Ice", "Fire // Ice")]
     #[case::whole_name_of_a_split_card("Fire // Ice", "Fire // Ice")]
     #[case::adventure("Stomp", "Bonecrusher Giant")]
+    #[case::a_full_name_before_a_face_of_another_card("Reanimate", "Reanimate")]
     #[case::punctuation("Gaea's Cradle", "Gaea's Cradle")]
     fn a_card_is_found_by_any_of_its_names(#[case] asked: &str, #[case] front: &str) {
         assert_eq!(card(asked).unwrap().name, front);

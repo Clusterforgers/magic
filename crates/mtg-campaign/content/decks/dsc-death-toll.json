@@ -391,13 +391,13 @@
     },
     "types": {
       "Artifact": 14,
-      "Creature": 28,
+      "Creature": 27,
       "Enchantment": 12,
       "Instant": 6,
       "Kindred": 1,
       "Land": 38,
       "Planeswalker": 4,
-      "Sorcery": 8
+      "Sorcery": 9
     },
     "subtypes": {
       "Bear": 1,
@@ -427,9 +427,8 @@
       "Snake": 1,
       "Spider": 2,
       "Swamp": 9,
-      "Troll": 1,
       "Wall": 1,
-      "Warlock": 2,
+      "Warlock": 1,
       "Warrior": 1,
       "Wrenn": 1,
       "Zombie": 1

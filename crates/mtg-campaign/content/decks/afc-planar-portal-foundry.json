@@ -1,0 +1,393 @@
+{
+  "code": "AFC",
+  "name": "Planar Portal",
+  "commander": [
+    "Prosper, Tome-Bound"
+  ],
+  "swaps": [
+    {
+      "out": "Dark-Dweller Oracle",
+      "into": "Mogg War Marshal"
+    },
+    {
+      "out": "Hex",
+      "into": "Zombie Apocalypse"
+    },
+    {
+      "out": "Bedevil",
+      "into": "Kolaghan's Command"
+    },
+    {
+      "out": "Bituminous Blast",
+      "into": "Savage Beating"
+    },
+    {
+      "out": "Terminate",
+      "into": "Go for the Throat"
+    },
+    {
+      "out": "Rakdos Signet",
+      "into": "Thought Vessel"
+    },
+    {
+      "out": "Talisman of Indulgence",
+      "into": "Charcoal Diamond"
+    },
+    {
+      "out": "Foreboding Ruins",
+      "into": "Swamp"
+    },
+    {
+      "out": "Shadowblood Ridge",
+      "into": "Mountain"
+    },
+    {
+      "out": "Smoldering Marsh",
+      "into": "Swamp"
+    },
+    {
+      "out": "Mortuary Mire",
+      "into": "Mountain"
+    },
+    {
+      "out": "Rakdos Carnarium",
+      "into": "Swamp"
+    },
+    {
+      "out": "Tainted Peak",
+      "into": "Mountain"
+    },
+    {
+      "out": "Zhalfirin Void",
+      "into": "Swamp"
+    },
+    {
+      "out": "Grim Hireling",
+      "into": "Siege-Gang Lieutenant"
+    }
+  ],
+  "cards": [
+    [
+      "Prosper, Tome-Bound",
+      1
+    ],
+    [
+      "Chittering Witch",
+      1
+    ],
+    [
+      "Fiend of the Shadows",
+      1
+    ],
+    [
+      "Gonti, Lord of Luxury",
+      1
+    ],
+    [
+      "Marionette Master",
+      1
+    ],
+    [
+      "Ogre Slumlord",
+      1
+    ],
+    [
+      "Piper of the Swarm",
+      1
+    ],
+    [
+      "Pontiff of Blight",
+      1
+    ],
+    [
+      "Dire Fleet Daredevil",
+      1
+    ],
+    [
+      "Dream Pillager",
+      1
+    ],
+    [
+      "Etali, Primal Storm",
+      1
+    ],
+    [
+      "Izzet Chemister",
+      1
+    ],
+    [
+      "Tectonic Giant",
+      1
+    ],
+    [
+      "Loyal Apprentice",
+      1
+    ],
+    [
+      "Consuming Vapors",
+      1
+    ],
+    [
+      "Apex of Power",
+      1
+    ],
+    [
+      "Disrupt Decorum",
+      1
+    ],
+    [
+      "Ignite the Future",
+      1
+    ],
+    [
+      "Phthisis",
+      1
+    ],
+    [
+      "Light Up the Stage",
+      1
+    ],
+    [
+      "Throes of Chaos",
+      1
+    ],
+    [
+      "Vandalblast",
+      1
+    ],
+    [
+      "Chaos Warp",
+      1
+    ],
+    [
+      "Commune with Lava",
+      1
+    ],
+    [
+      "Rakdos Charm",
+      1
+    ],
+    [
+      "Chaos Wand",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Fellwar Stone",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Orazca Relic",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Unstable Obelisk",
+      1
+    ],
+    [
+      "Dead Man's Chest",
+      1
+    ],
+    [
+      "Theater of Horrors",
+      1
+    ],
+    [
+      "Shiny Impetus",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Spinerock Knoll",
+      1
+    ],
+    [
+      "Bojuka Bog",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Swamp",
+      18
+    ],
+    [
+      "Mountain",
+      16
+    ],
+    [
+      "Karazikar, the Eye Tyrant",
+      1
+    ],
+    [
+      "Bag of Devouring",
+      1
+    ],
+    [
+      "Danse Macabre",
+      1
+    ],
+    [
+      "Death Tyrant",
+      1
+    ],
+    [
+      "Hellish Rebuke",
+      1
+    ],
+    [
+      "Lorcan, Warlock Collector",
+      1
+    ],
+    [
+      "Fiendlash",
+      1
+    ],
+    [
+      "Reckless Endeavor",
+      1
+    ],
+    [
+      "Share the Spoils",
+      1
+    ],
+    [
+      "Wild-Magic Sorcerer",
+      1
+    ],
+    [
+      "Fevered Suspicion",
+      1
+    ],
+    [
+      "Hurl Through Hell",
+      1
+    ],
+    [
+      "Warlock Class",
+      1
+    ],
+    [
+      "Chaos Channeler",
+      1
+    ],
+    [
+      "You Find Some Prisoners",
+      1
+    ],
+    [
+      "Bucknard's Everfull Purse",
+      1
+    ],
+    [
+      "Ebony Fly",
+      1
+    ],
+    [
+      "Underdark Rift",
+      1
+    ],
+    [
+      "Mogg War Marshal",
+      1
+    ],
+    [
+      "Zombie Apocalypse",
+      1
+    ],
+    [
+      "Kolaghan's Command",
+      1
+    ],
+    [
+      "Savage Beating",
+      1
+    ],
+    [
+      "Go for the Throat",
+      1
+    ],
+    [
+      "Thought Vessel",
+      1
+    ],
+    [
+      "Charcoal Diamond",
+      1
+    ],
+    [
+      "Siege-Gang Lieutenant",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 25,
+      "R": 31
+    },
+    "types": {
+      "Artifact": 14,
+      "Creature": 21,
+      "Enchantment": 5,
+      "Instant": 9,
+      "Land": 39,
+      "Sorcery": 12
+    },
+    "subtypes": {
+      "Aetherborn": 1,
+      "Artificer": 2,
+      "Aura": 2,
+      "Beholder": 2,
+      "Class": 1,
+      "Cleric": 1,
+      "Devil": 1,
+      "Dinosaur": 1,
+      "Dragon": 1,
+      "Elder": 1,
+      "Elemental": 1,
+      "Equipment": 1,
+      "Giant": 1,
+      "Goblin": 3,
+      "Human": 6,
+      "Mountain": 16,
+      "Ogre": 1,
+      "Orc": 1,
+      "Pirate": 1,
+      "Rogue": 2,
+      "Shaman": 2,
+      "Skeleton": 1,
+      "Sorcerer": 1,
+      "Swamp": 18,
+      "Tiefling": 1,
+      "Vampire": 1,
+      "Warlock": 3,
+      "Warrior": 1,
+      "Wizard": 2,
+      "Zombie": 1
+    },
+    "tokens": 10,
+    "counters": 0,
+    "graveyard": 6,
+    "creature_commanders": 0
+  }
+}

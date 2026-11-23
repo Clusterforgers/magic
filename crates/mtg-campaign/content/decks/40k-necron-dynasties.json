@@ -1,0 +1,390 @@
+{
+  "code": "40K",
+  "name": "Necron Dynasties",
+  "commander": [
+    "Szarekh, the Silent King"
+  ],
+  "swaps": [
+    {
+      "out": "Dread Return",
+      "into": "Blood for Bones"
+    },
+    {
+      "out": "Darkness",
+      "into": "Tainted Strike"
+    },
+    {
+      "out": "Sculpting Steel",
+      "into": "Herald's Horn"
+    },
+    {
+      "out": "Desert of the Glorified",
+      "into": "Swamp"
+    },
+    {
+      "out": "Vault of Whispers",
+      "into": "Swamp"
+    },
+    {
+      "out": "Chronomancer",
+      "into": "Syr Ginger, the Meal Ender"
+    },
+    {
+      "out": "Lokhust Heavy Destroyer",
+      "into": "Starscream, Power Hungry // Starscream, Seeker Leader"
+    },
+    {
+      "out": "Necron Overlord",
+      "into": "Solemn Simulacrum"
+    },
+    {
+      "out": "Royal Warden",
+      "into": "Karn, Legacy Reforged"
+    },
+    {
+      "out": "Skorpekh Lord",
+      "into": "Armix, Filigree Thrasher"
+    },
+    {
+      "out": "Their Name Is Death",
+      "into": "Zombie Apocalypse"
+    },
+    {
+      "out": "Cryptothrall",
+      "into": "Crystalline Crawler"
+    },
+    {
+      "out": "Flayed One",
+      "into": "Academy Manufactor"
+    },
+    {
+      "out": "Hexmark Destroyer",
+      "into": "Noxious Gearhulk"
+    },
+    {
+      "out": "Plasmancer",
+      "into": "Barbed Servitor"
+    },
+    {
+      "out": "Skorpekh Destroyer",
+      "into": "Big Mother Mouser"
+    },
+    {
+      "out": "Night Scythe",
+      "into": "Nettlecyst"
+    }
+  ],
+  "cards": [
+    [
+      "Szarekh, the Silent King",
+      1
+    ],
+    [
+      "Beacon of Unrest",
+      1
+    ],
+    [
+      "Living Death",
+      1
+    ],
+    [
+      "Mutilate",
+      1
+    ],
+    [
+      "Defile",
+      1
+    ],
+    [
+      "Go for the Throat",
+      1
+    ],
+    [
+      "Caged Sun",
+      1
+    ],
+    [
+      "Endless Atlas",
+      1
+    ],
+    [
+      "Gilded Lotus",
+      1
+    ],
+    [
+      "Mystic Forge",
+      1
+    ],
+    [
+      "Cranial Plating",
+      1
+    ],
+    [
+      "Hedron Archive",
+      1
+    ],
+    [
+      "Mask of Memory",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Thought Vessel",
+      1
+    ],
+    [
+      "Unstable Obelisk",
+      1
+    ],
+    [
+      "Wayfarer's Bauble",
+      1
+    ],
+    [
+      "Barren Moor",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Reliquary Tower",
+      1
+    ],
+    [
+      "Polluted Mire",
+      1
+    ],
+    [
+      "Swamp",
+      32
+    ],
+    [
+      "Imotekh the Stormlord",
+      1
+    ],
+    [
+      "Anrakyr the Traveller",
+      1
+    ],
+    [
+      "Biotransference",
+      1
+    ],
+    [
+      "Cryptek",
+      1
+    ],
+    [
+      "Illuminor Szeras",
+      1
+    ],
+    [
+      "Lychguard",
+      1
+    ],
+    [
+      "Necron Deathmark",
+      1
+    ],
+    [
+      "Out of the Tombs",
+      1
+    ],
+    [
+      "Shard of the Nightbringer",
+      1
+    ],
+    [
+      "Shard of the Void Dragon",
+      1
+    ],
+    [
+      "Technomancer",
+      1
+    ],
+    [
+      "Their Number Is Legion",
+      1
+    ],
+    [
+      "Tomb Blade",
+      1
+    ],
+    [
+      "Trazyn the Infinite",
+      1
+    ],
+    [
+      "Triarch Stalker",
+      1
+    ],
+    [
+      "The War in Heaven",
+      1
+    ],
+    [
+      "Canoptek Scarab Swarm",
+      1
+    ],
+    [
+      "Canoptek Spyder",
+      1
+    ],
+    [
+      "Canoptek Tomb Sentinel",
+      1
+    ],
+    [
+      "Canoptek Wraith",
+      1
+    ],
+    [
+      "Convergence of Dominion",
+      1
+    ],
+    [
+      "Ghost Ark",
+      1
+    ],
+    [
+      "Necron Monolith",
+      1
+    ],
+    [
+      "Resurrection Orb",
+      1
+    ],
+    [
+      "Sceptre of Eternal Glory",
+      1
+    ],
+    [
+      "Tomb Fortress",
+      1
+    ],
+    [
+      "Psychomancer",
+      1
+    ],
+    [
+      "Sautekh Immortal",
+      1
+    ],
+    [
+      "Triarch Praetorian",
+      1
+    ],
+    [
+      "Blood for Bones",
+      1
+    ],
+    [
+      "Tainted Strike",
+      1
+    ],
+    [
+      "Herald's Horn",
+      1
+    ],
+    [
+      "Syr Ginger, the Meal Ender",
+      1
+    ],
+    [
+      "Starscream, Power Hungry // Starscream, Seeker Leader",
+      1
+    ],
+    [
+      "Solemn Simulacrum",
+      1
+    ],
+    [
+      "Karn, Legacy Reforged",
+      1
+    ],
+    [
+      "Armix, Filigree Thrasher",
+      1
+    ],
+    [
+      "Zombie Apocalypse",
+      1
+    ],
+    [
+      "Crystalline Crawler",
+      1
+    ],
+    [
+      "Academy Manufactor",
+      1
+    ],
+    [
+      "Noxious Gearhulk",
+      1
+    ],
+    [
+      "Barbed Servitor",
+      1
+    ],
+    [
+      "Big Mother Mouser",
+      1
+    ],
+    [
+      "Nettlecyst",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 32
+    },
+    "types": {
+      "Artifact": 49,
+      "Creature": 30,
+      "Enchantment": 3,
+      "Instant": 3,
+      "Land": 37,
+      "Sorcery": 6
+    },
+    "subtypes": {
+      "Assembly-Worker": 1,
+      "C'tan": 2,
+      "Construct": 3,
+      "Equipment": 4,
+      "Food": 1,
+      "Golem": 3,
+      "Insect": 2,
+      "Knight": 1,
+      "Necron": 14,
+      "Robot": 2,
+      "Saga": 1,
+      "Spider": 1,
+      "Swamp": 32,
+      "Vehicle": 2,
+      "Wizard": 3,
+      "Wraith": 1
+    },
+    "tokens": 5,
+    "counters": 5,
+    "graveyard": 14,
+    "creature_commanders": 0
+  }
+}

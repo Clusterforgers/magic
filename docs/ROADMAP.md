@@ -69,6 +69,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Middle bar: a prompt band of one fixed line with the asking card's chip, and the decision's detail (the asking card with its clause, runs of triggers, ordering, paying) in the Stack column or a sheet over the hand (`docs/ui-design.md`, The band and the Stack column).
 - Delves encounter modifiers: the 23 rules of the pool as emblems with their `not_with` lists, no commander tax for the heroes, and "first instant or sorcery each turn" counting only the spells it names (`docs/delves.md`).
 - Delves boss rework: every boss plays its stored precon (drafts loaded as live games load them), an innate in five levels by depth and Heat, one encounter modifier, two phases by round, a public satchel and relics by depth, with life by party size only; the old boss systems are gone and the rework closed the runs open at the time (`docs/delves.md`).
+- Delves Ember Foundry: a third theme drawn from Heat 3 (Legendary), fifteen lieutenants of every colour and colour pair and two final bosses on swapped precons, with its events and reward pool (`docs/delves.md`).
 - Tokens entering: replacements over how a permanent enters (counters, a form, a token's own copy) apply to each token as it is created, and Coiled Growth gives tokens its counters as they enter (`docs/cards-dsl.md`).
 
 ## Live game
@@ -177,7 +178,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10a) The Spirits' worth, acting against idle, at three or more heroes
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
-- [ ] (dl13) More themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look; Heat 3 and above
+- [ ] (dl13) A fourth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
 - [ ] (dl14a) The Drowned Spire's grown bosses measured with `delve_sim` against the targets of Tuning and tuned; a simulated fight (seed 2) fails with "unknown effect EffectId(1)"
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps

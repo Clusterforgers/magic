@@ -6,7 +6,7 @@ import type { DelveBoardEntry } from "./DelveBoardEntry";
  */
 export type DelveBoard = { 
 /**
- * The Heat the runs were started at, 0 to 2.
+ * The Heat the runs were started at, 0 to 3.
  */
 heat: number, 
 /**

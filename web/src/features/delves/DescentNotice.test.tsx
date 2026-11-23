@@ -62,4 +62,24 @@ describe('the run page on a new theme', () => {
     expect(within(screen.getByRole('region', { name: 'The descent' })).getByText(SPIRE)).toBeInTheDocument()
     expect(document.querySelector('[data-delve-theme]')).toHaveAttribute('data-delve-theme', 'spire')
   })
+
+  it('names the Ember Foundry and takes its look', async () => {
+    const view = delveView(
+      { theme: 'The Ember Foundry' },
+      {
+        status: 'Map',
+        at: 0,
+        cleared: [],
+        floor: 2,
+        floors_cleared: 1,
+        floor_theme: 'foundry',
+        theme_from: 'spire',
+      },
+    )
+    await renderInRouter(
+      <DelvePage id="d1" client={fakeDelves(view)} loadDecks={pickerDecks} find={async () => null} />,
+    )
+    expect(await screen.findByText('The party descends into the Ember Foundry')).toBeInTheDocument()
+    expect(document.querySelector('[data-delve-theme]')).toHaveAttribute('data-delve-theme', 'foundry')
+  })
 })

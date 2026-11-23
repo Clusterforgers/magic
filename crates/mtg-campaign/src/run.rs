@@ -48,9 +48,10 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// known trade-offs; from 4 a ladder draws three lieutenants and one final boss; from 5 the roster grows by more
 /// two-colour bosses and a cleared floor may descend; from 6 a boss stands for every colour pair; from 7 a descent
 /// first gives the final boss's loot; from 8 a relic drops again for a hero who owns it; from 9 each descent leads into
-/// another theme; from 10 the Drowned Spire holds a lieutenant for every colour and colour pair and a second final boss.
+/// another theme; from 10 the Drowned Spire holds a lieutenant for every colour and colour pair and a second final boss;
+/// from 11 the Ember Foundry opens at Heat 3.
 /// Every run plays the boss of `docs/delves.md` (Bosses), whatever its generation.
-pub const CONTENT: u32 = SPIRE_GROWN_FROM;
+pub const CONTENT: u32 = crate::content::FOUNDRY_FROM;
 /// The content generation from which each descent leads into another open theme (`Content::next_theme`).
 pub const THEMES_FROM: u32 = 9;
 /// The content generation from which the Drowned Spire's ladder draws from its grown roster.
@@ -912,7 +913,13 @@ impl Run {
         }
         let below = self.floor.saturating_add(1);
         content
-            .next_theme(self.seed, self.content, below, self.floor_theme())
+            .next_theme(
+                self.seed,
+                self.content,
+                self.heat,
+                below,
+                self.floor_theme(),
+            )
             .map(Some)
     }
 

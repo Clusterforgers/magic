@@ -1,7 +1,7 @@
 //! Goal: every boss precon deck file of `content/decks` is 100 cards with its face commander shuffled in; each card
 //! plays automatically from the test corpus (Verified or Read) or from a whole draft of the read tier, unless it waits
 //! on the pending list; each corpus card lies within the colour identity of the precon's face commander; and each
-//! file's makeup is the count of its cards (`MTG_UPDATE_MAKEUPS=1` writes it).
+//! file's makeup is the count of its cards (`MTG_UPDATE_MAKEUPS=1` writes it); each card name resolves to that card.
 
 use std::path::{Path, PathBuf};
 
@@ -81,6 +81,31 @@ fn every_boss_deck_is_a_hundred_cards() {
             deck.name
         );
     }
+}
+
+/// A name resolves to the card of that name (by its front face for a card of two), never to another card one of whose faces it
+/// names ("Reanimate" is not "Grave Researcher // Reanimate").
+#[test]
+fn every_boss_deck_card_name_resolves_to_that_card() {
+    let corpus = corpus::corpus().unwrap();
+    let mut failures = Vec::new();
+    for deck in decks() {
+        for name in deck
+            .cards
+            .iter()
+            .map(|(name, _)| name)
+            .chain(&deck.commander)
+        {
+            let Ok(card) = corpus.card(name) else {
+                continue;
+            };
+            let front = |full: &str| full.split(" // ").next().unwrap_or_default().to_owned();
+            if front(&card.name) != front(name) {
+                failures.push(format!("{}: {name} plays {}", deck.name, card.name));
+            }
+        }
+    }
+    assert!(failures.is_empty(), "{}", failures.join("\n"));
 }
 
 #[test]

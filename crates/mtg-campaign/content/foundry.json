@@ -1,0 +1,1239 @@
+{
+ "id": "foundry",
+ "name": "The Ember Foundry",
+ "text": "Under the mountain a foundry still burns, its forges fed by whatever wanders in. Its smiths, engines and wardens guard the long way down to the furnace at its heart.",
+ "min_heat": 3,
+ "bosses": [
+  {
+   "id": "brannoc_anvil",
+   "name": "Brannoc, the Anvil Warden",
+   "colors": "W",
+   "since": 11,
+   "deck_file": "c14-forged-in-stone-foundry.json",
+   "innate": "brannoc_anvil_ward",
+   "round_phases": [
+    "brannoc_anvil_rings",
+    "brannoc_masterwork"
+   ],
+   "satchel": [
+    {
+     "card": "Dispatch",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Ephemerate",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Generous Gift",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Fumigate",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Every blade in this hall was forged for my hand.",
+   "art": {
+    "card": "Danitha Capashen, Paragon",
+    "oracle_id": "4b6377da-83e7-4519-9582-16a9c16b8faa"
+   }
+  },
+  {
+   "id": "ottoline_clockworks",
+   "name": "Ottoline the Clockmaker",
+   "colors": "U",
+   "since": 11,
+   "deck_file": "c14-peer-through-time-foundry.json",
+   "innate": "ottoline_grinding_gears",
+   "round_phases": [
+    "ottoline_hour_strikes",
+    "ottoline_perpetual_motion"
+   ],
+   "satchel": [
+    {
+     "card": "Snap",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Rewind",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Frantic Search",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Reality Shift",
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    }
+   ],
+   "line": "You are late. Everyone here is late, except me.",
+   "art": {
+    "card": "Teferi, Temporal Archmage",
+    "oracle_id": "07d0b06b-80cb-4518-92c9-84ea87a7e08a"
+   }
+  },
+  {
+   "id": "morvane_tomb",
+   "name": "Morvane, the Slag Lich",
+   "colors": "B",
+   "since": 11,
+   "deck_file": "40k-necron-dynasties.json",
+   "innate": "morvane_reanimation_protocol",
+   "round_phases": [
+    "morvane_tomb_wakes",
+    "morvane_living_metal"
+   ],
+   "satchel": [
+    {
+     "card": "Go for the Throat",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Stitch Together",
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 2
+     }
+    },
+    {
+     "card": "Night's Whisper",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Decree of Pain",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Metal does not die. It waits to be poured again.",
+   "art": {
+    "card": "Noxious Gearhulk",
+    "oracle_id": "a77b5be2-f361-4135-ba25-670a74d268ac"
+   }
+  },
+  {
+   "id": "grizzek_scrapyard",
+   "name": "Grizzek the Scrapmaster",
+   "colors": "R",
+   "since": 11,
+   "deck_file": "c14-built-from-scratch-foundry.json",
+   "innate": "grizzek_scrap_fire",
+   "round_phases": [
+    "grizzek_furnace_roars",
+    "grizzek_molten_slag"
+   ],
+   "satchel": [
+    {
+     "card": "Vandalblast",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Thrill of Possibility",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Unleash Fury",
+     "reusable": true,
+     "cue": {
+      "when": "lethal",
+      "reach": 3
+     }
+    },
+    {
+     "card": "Chain Reaction",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "Break it, burn it, build it bigger!",
+   "art": {
+    "card": "Krenko, Mob Boss",
+    "oracle_id": "68418069-f615-40ef-ae0d-764192acae00"
+   }
+  },
+  {
+   "id": "veyla_grove",
+   "name": "Veyla of the Rusted Grove",
+   "colors": "G",
+   "since": 11,
+   "deck_file": "c14-guided-by-nature-foundry.json",
+   "innate": "veyla_rust_bloom",
+   "round_phases": [
+    "veyla_roots_break_through",
+    "veyla_canopy_closes"
+   ],
+   "satchel": [
+    {
+     "card": "Force of Vigor",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Harmonize",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Arachnogenesis",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Overrun",
+     "cue": {
+      "when": "lethal",
+      "reach": 3
+     }
+    }
+   ],
+   "line": "The roots were here before the furnace. They will be here after.",
+   "art": {
+    "card": "Marwyn, the Nurturer",
+    "oracle_id": "ee35de1c-aef1-4bd4-85fd-fe77bc927790"
+   }
+  },
+  {
+   "id": "ilsabet_flues",
+   "name": "Ilsabet, the Ghost in the Gears",
+   "colors": "WU",
+   "since": 11,
+   "deck_file": "khc-phantom-premonition-foundry.json",
+   "innate": "ilsabet_steam_wings",
+   "round_phases": [
+    "ilsabet_veil_of_steam",
+    "ilsabet_gears_turn"
+   ],
+   "satchel": [
+    {
+     "card": "Turn to Mist",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "No More Lies",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Faithful Mending",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Time Wipe",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "I keep the gears turning. I always have.",
+   "art": {
+    "card": "Ranar the Ever-Watchful",
+    "oracle_id": "c73a9939-0742-4919-94d6-c3b537697f17"
+   }
+  },
+  {
+   "id": "haldric_stokehold",
+   "name": "Haldric, the Ashen Stoker",
+   "colors": "UB",
+   "since": 11,
+   "deck_file": "mic-undead-unleashed.json",
+   "innate": "haldric_stoke_the_dead",
+   "round_phases": [
+    "haldric_ash_storm",
+    "haldric_cold_forge"
+   ],
+   "satchel": [
+    {
+     "card": "Agony Warp",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Soul Manipulation",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Recoil",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Enter the God-Eternals",
+     "cue": {
+      "when": "mana",
+      "mana": 6
+     }
+    }
+   ],
+   "line": "The furnace needs feeding. You will do.",
+   "art": {
+    "card": "Wilhelt, the Rotcleaver",
+    "oracle_id": "eada96a1-4964-4ad0-b0e3-2df08d6ae188"
+   }
+  },
+  {
+   "id": "vashka_pyre",
+   "name": "Vashka, the Ember Warlock",
+   "colors": "BR",
+   "since": 11,
+   "deck_file": "afc-planar-portal-foundry.json",
+   "innate": "vashka_ember_tithe",
+   "round_phases": [
+    "vashka_the_pyre",
+    "vashka_infernal_bargain"
+   ],
+   "satchel": [
+    {
+     "card": "Kolaghan's Command",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Unlicensed Disintegration",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Rakdos Charm",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Fire Covenant",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "Every flame here burns on borrowed time. Yours most of all.",
+   "art": {
+    "card": "Kardur, Doomscourge",
+    "oracle_id": "bc14356c-3a1a-47af-9a6e-2b449de0331f"
+   }
+  },
+  {
+   "id": "kassa_quench",
+   "name": "Kassa Bladebreaker",
+   "colors": "RG",
+   "since": 11,
+   "deck_file": "nec-upgrades-unleashed-foundry.json",
+   "innate": "kassa_tempered_in_fire",
+   "round_phases": [
+    "kassa_the_quench",
+    "kassa_white_heat"
+   ],
+   "satchel": [
+    {
+     "card": "Destructive Revelry",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Surge of Strength",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Temur Battle Rage",
+     "reusable": true,
+     "cue": {
+      "when": "lethal",
+      "reach": 3
+     }
+    },
+    {
+     "card": "Firespout",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "Show me your steel. I will show you where it breaks.",
+   "art": {
+    "card": "Chishiro, the Shattered Blade",
+    "oracle_id": "c98a4af3-3e58-4927-9a60-d2664cf0b139"
+   }
+  },
+  {
+   "id": "ironbark_hollow",
+   "name": "Mother Ironbark",
+   "colors": "GW",
+   "since": 11,
+   "deck_file": "mic-coven-counters-foundry.json",
+   "innate": "ironbark_heartwood",
+   "round_phases": [
+    "ironbark_grove_tempers",
+    "ironbark_bark_and_brass"
+   ],
+   "satchel": [
+    {
+     "card": "Dromoka's Command",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Seeds of Strength",
+     "reusable": true,
+     "cue": {
+      "when": "lethal",
+      "reach": 3
+     }
+    },
+    {
+     "card": "Common Bond",
+     "reusable": true,
+     "cue": {
+      "when": "board",
+      "creatures": 2
+     }
+    },
+    {
+     "card": "Rite of Harmony",
+     "cue": {
+      "when": "mana",
+      "mana": 5
+     }
+    }
+   ],
+   "line": "Bark over brass, children. Hold the line.",
+   "art": {
+    "card": "Leinore, Autumn Sovereign",
+    "oracle_id": "cd47eedd-57cb-460d-b339-4785f63a5475"
+   }
+  },
+  {
+   "id": "calvaine_counting_house",
+   "name": "Overseer Calvaine",
+   "colors": "WB",
+   "since": 11,
+   "deck_file": "c21-silverquill-statement-foundry.json",
+   "innate": "calvaine_foundry_tax",
+   "round_phases": [
+    "calvaine_ledger_closes",
+    "calvaine_debts_collected"
+   ],
+   "satchel": [
+    {
+     "card": "Vanishing Verse",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Executioner's Swing",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Orzhov Charm",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Kaya's Wrath",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Passage through the foundry is taxed. Pay, or be counted.",
+   "art": {
+    "card": "Breena, the Demagogue",
+    "oracle_id": "d11e627b-8a48-411d-a261-2c9a02a758ba"
+   }
+  },
+  {
+   "id": "ivra_workshop",
+   "name": "Ivra, the Brass Inventor",
+   "colors": "UR",
+   "since": 11,
+   "deck_file": "c18-exquisite-invention.json",
+   "innate": "ivra_brass_invention",
+   "round_phases": [
+    "ivra_assembly_line",
+    "ivra_overclocked"
+   ],
+   "satchel": [
+    {
+     "card": "Prismari Command",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Counterflux",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Prismari Charm",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 1
+     }
+    },
+    {
+     "card": "Expansion // Explosion",
+     "cue": {
+      "when": "mana",
+      "mana": 7
+     }
+    }
+   ],
+   "line": "Hold still. I need to see how you work.",
+   "art": {
+    "card": "Pia Nalaar",
+    "oracle_id": "715336f5-a708-488b-9f30-5702a9013af0"
+   }
+  },
+  {
+   "id": "winnow_ashfield",
+   "name": "Winnow, the Ash Gardener",
+   "colors": "BG",
+   "since": 11,
+   "deck_file": "dsc-death-toll-foundry.json",
+   "innate": "winnow_ash_compost",
+   "round_phases": [
+    "winnow_compost_heap",
+    "winnow_ash_bloom"
+   ],
+   "satchel": [
+    {
+     "card": "Putrefy",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Golgari Charm",
+     "reusable": true,
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    },
+    {
+     "card": "Witherbloom Charm",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Casualties of War",
+     "cue": {
+      "when": "mana",
+      "mana": 6
+     }
+    }
+   ],
+   "line": "Ash makes the finest soil. You will see.",
+   "art": {
+    "card": "Beledros Witherbloom",
+    "oracle_id": "90194ff1-db61-463f-b5a3-15cd85311d0e"
+   }
+  },
+  {
+   "id": "teodora_reforge",
+   "name": "Dame Teodora, the Reforger",
+   "colors": "RW",
+   "since": 11,
+   "deck_file": "c21-lorehold-legacies.json",
+   "innate": "teodora_salvage_legion",
+   "round_phases": [
+    "teodora_the_reforging",
+    "teodora_legion_marches"
+   ],
+   "satchel": [
+    {
+     "card": "Boros Charm",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Rip Apart",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Justice Strike",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Solar Blaze",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Nothing broken stays broken in my legion.",
+   "art": {
+    "card": "Loran of the Third Path",
+    "oracle_id": "b3d81980-76f2-44e2-b1c9-01e30c726312"
+   }
+  },
+  {
+   "id": "quillon_moldworks",
+   "name": "Quillon the Mold-Maker",
+   "colors": "GU",
+   "since": 11,
+   "deck_file": "dsc-jump-scare.json",
+   "innate": "quillon_living_molds",
+   "round_phases": [
+    "quillon_molds_crack",
+    "quillon_the_casting"
+   ],
+   "satchel": [
+    {
+     "card": "Simic Charm",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Growth Spiral",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 4
+     }
+    },
+    {
+     "card": "Snakeform",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Plasm Capture",
+     "cue": {
+      "when": "counter",
+      "mana_value": 5
+     }
+    }
+   ],
+   "line": "Every mold wants filling. I have so many molds.",
+   "art": {
+    "card": "Zimone, Quandrix Prodigy",
+    "oracle_id": "ee2ef1e0-6803-4eb5-8664-605438c67505"
+   }
+  },
+  {
+   "id": "kaldrek_great_forge",
+   "name": "Kaldrek the Ironmaster",
+   "final": true,
+   "colors": "UBR",
+   "since": 11,
+   "deck_file": "brc-mishra-s-burnished-banner.json",
+   "innate": "kaldrek_sparks_fly",
+   "round_phases": [
+    "kaldrek_forge_claims",
+    "kaldrek_molten_core"
+   ],
+   "satchel": [
+    {
+     "card": "Bitter Triumph",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Fact or Fiction",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 4
+     }
+    },
+    {
+     "card": "Rise // Fall",
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 1
+     }
+    },
+    {
+     "card": "Grave Upheaval",
+     "cue": {
+      "when": "graveyard",
+      "creatures": 2
+     }
+    }
+   ],
+   "line": "The forge was mine before your kings were born. It will be mine after.",
+   "art": {
+    "card": "Tezzeret the Seeker",
+    "oracle_id": "4aeafdf3-7828-4114-8c74-3bd46357caec"
+   }
+  },
+  {
+   "id": "ignivar_furnace",
+   "name": "Ignivar, the Forge-Wyrm",
+   "final": true,
+   "colors": "RG",
+   "since": 11,
+   "deck_file": "afc-draconic-rage.json",
+   "innate": "ignivar_wyrmfire",
+   "round_phases": [
+    "ignivar_wyrm_stirs",
+    "ignivar_furnace_heart"
+   ],
+   "satchel": [
+    {
+     "card": "Hull Breach",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Simoon",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 1
+     }
+    },
+    {
+     "card": "Return of the Wildspeaker",
+     "reusable": true,
+     "cue": {
+      "when": "lethal",
+      "reach": 3
+     }
+    },
+    {
+     "card": "Treacherous Terrain",
+     "cue": {
+      "when": "mana",
+      "mana": 8
+     }
+    }
+   ],
+   "line": "You came all this way to stoke my fire.",
+   "art": {
+    "card": "Drakuseth, Maw of Flames",
+    "oracle_id": "060deaff-44d6-4f03-9568-bcb7add80255"
+   }
+  }
+ ],
+ "events": [
+  {
+   "id": "slag_heap",
+   "since": 11,
+   "title": "The Slag Heap",
+   "text": "Mounds of cooling slag hide whatever the smiths threw away. Some of it still glows.",
+   "options": [
+    {
+     "label": "Dig with bare hands",
+     "outcomes": [
+      {
+       "Life": -6
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Trade a card for what you find",
+     "outcomes": [
+      "LoseCard",
+      {
+       "RelicOf": "Common"
+      }
+     ]
+    },
+    {
+     "label": "Warm your hands and move on",
+     "outcomes": [
+      {
+       "Life": 6
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "bellows_shrine",
+   "since": 11,
+   "title": "The Bellows Shrine",
+   "text": "Brass bellows breathe heat into the dark around a small shrine. Its keeper trades in whatever burns.",
+   "options": [
+    {
+     "label": "Feed it your strength",
+     "outcomes": [
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Feed it a relic",
+     "outcomes": [
+      "LoseRelic",
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Take the coins from its bowl",
+     "outcomes": [
+      {
+       "Gold": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "quench_trough",
+   "since": 11,
+   "title": "The Quench Trough",
+   "text": "Black water hisses in a trough where the smiths cooled their blades. What goes in comes out tempered.",
+   "options": [
+    {
+     "label": "Temper a card",
+     "outcomes": [
+      {
+       "Life": -5
+      },
+      "Duplicate"
+     ]
+    },
+    {
+     "label": "Sell your scraps to the smiths",
+     "outcomes": [
+      "LoseCard",
+      {
+       "Gold": 40
+      }
+     ]
+    },
+    {
+     "label": "Drink and rest",
+     "outcomes": [
+      {
+       "Life": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "master_anvil",
+   "since": 11,
+   "title": "The Master Smith's Anvil",
+   "text": "An empty anvil still rings in a hall of its own. Strike it, and the foundry answers.",
+   "options": [
+    {
+     "label": "Strike it with your blood",
+     "outcomes": [
+      {
+       "Life": -12
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Strike it with everything",
+     "outcomes": [
+      {
+       "MaxLife": -10
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Let it ring",
+     "outcomes": [
+      {
+       "Gold": 20
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "ore_cart",
+   "since": 11,
+   "title": "The Runaway Ore Cart",
+   "text": "A cart of raw ore rattles past on its rails, sparks flying. There is coin in it, for whoever dares.",
+   "options": [
+    {
+     "label": "Pay the rail toll",
+     "outcomes": [
+      {
+       "Gold": -30
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Jump aboard",
+     "outcomes": [
+      {
+       "Life": -4
+      },
+      {
+       "Gold": 40
+      }
+     ]
+    },
+    {
+     "label": "Let it pass",
+     "outcomes": [
+      {
+       "Life": 5
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "pool": [
+  [
+   "Swords to Plowshares",
+   "W"
+  ],
+  [
+   "Generous Gift",
+   "W"
+  ],
+  [
+   "Puresteel Paladin",
+   "W"
+  ],
+  [
+   "Danitha Capashen, Paragon",
+   "W"
+  ],
+  [
+   "Ephemerate",
+   "W"
+  ],
+  [
+   "Thoughtcast",
+   "U"
+  ],
+  [
+   "Frantic Search",
+   "U"
+  ],
+  [
+   "Brainstorm",
+   "U"
+  ],
+  [
+   "Rewind",
+   "U"
+  ],
+  [
+   "Go for the Throat",
+   "B"
+  ],
+  [
+   "Night's Whisper",
+   "B"
+  ],
+  [
+   "Reanimate",
+   "B"
+  ],
+  [
+   "Village Rites",
+   "B"
+  ],
+  [
+   "Thrill of Possibility",
+   "R"
+  ],
+  [
+   "Vandalblast",
+   "R"
+  ],
+  [
+   "Chaos Warp",
+   "R"
+  ],
+  [
+   "Krenko's Command",
+   "R"
+  ],
+  [
+   "Cultivate",
+   "G"
+  ],
+  [
+   "Harmonize",
+   "G"
+  ],
+  [
+   "Force of Vigor",
+   "G"
+  ],
+  [
+   "Beast Within",
+   "G"
+  ],
+  [
+   "Kolaghan's Command",
+   "BR"
+  ],
+  [
+   "Putrefy",
+   "BG"
+  ],
+  [
+   "Growth Spiral",
+   "UG"
+  ],
+  [
+   "Boros Charm",
+   "WR"
+  ],
+  [
+   "Prismari Command",
+   "UR"
+  ],
+  [
+   "Utter End",
+   "WB"
+  ],
+  [
+   "Sol Ring",
+   ""
+  ],
+  [
+   "Arcane Signet",
+   ""
+  ],
+  [
+   "Thought Vessel",
+   ""
+  ],
+  [
+   "Mind Stone",
+   ""
+  ],
+  [
+   "Hedron Archive",
+   ""
+  ],
+  [
+   "Burnished Hart",
+   ""
+  ],
+  [
+   "Solemn Simulacrum",
+   ""
+  ],
+  [
+   "Adaptive Automaton",
+   ""
+  ],
+  [
+   "Steel Overseer",
+   ""
+  ],
+  [
+   "Key to the City",
+   ""
+  ],
+  [
+   "Bloodforged Battle-Axe",
+   ""
+  ],
+  [
+   "Wayfarer's Bauble",
+   ""
+  ],
+  [
+   "Ornithopter of Paradise",
+   ""
+  ],
+  [
+   "Basalt Monolith",
+   ""
+  ]
+ ],
+ "pool_types": {
+  "Swords to Plowshares": "Instant",
+  "Generous Gift": "Instant",
+  "Puresteel Paladin": "Creature — Human Knight",
+  "Danitha Capashen, Paragon": "Legendary Creature — Human Knight",
+  "Ephemerate": "Instant",
+  "Thoughtcast": "Sorcery",
+  "Frantic Search": "Instant",
+  "Brainstorm": "Instant",
+  "Rewind": "Instant",
+  "Go for the Throat": "Instant",
+  "Night's Whisper": "Sorcery",
+  "Reanimate": "Sorcery",
+  "Village Rites": "Instant",
+  "Thrill of Possibility": "Instant",
+  "Vandalblast": "Sorcery",
+  "Chaos Warp": "Instant",
+  "Krenko's Command": "Sorcery",
+  "Cultivate": "Sorcery",
+  "Harmonize": "Sorcery",
+  "Force of Vigor": "Instant",
+  "Beast Within": "Instant",
+  "Kolaghan's Command": "Instant",
+  "Putrefy": "Instant",
+  "Growth Spiral": "Instant",
+  "Boros Charm": "Instant",
+  "Prismari Command": "Instant",
+  "Utter End": "Instant",
+  "Sol Ring": "Artifact",
+  "Arcane Signet": "Artifact",
+  "Thought Vessel": "Artifact",
+  "Mind Stone": "Artifact",
+  "Hedron Archive": "Artifact",
+  "Burnished Hart": "Artifact Creature — Elk",
+  "Solemn Simulacrum": "Artifact Creature — Golem",
+  "Adaptive Automaton": "Artifact Creature — Construct",
+  "Steel Overseer": "Artifact Creature — Construct",
+  "Key to the City": "Artifact",
+  "Bloodforged Battle-Axe": "Artifact — Equipment",
+  "Wayfarer's Bauble": "Artifact",
+  "Ornithopter of Paradise": "Artifact Creature — Thopter",
+  "Basalt Monolith": "Artifact"
+ }
+}
