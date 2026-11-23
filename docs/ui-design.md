@@ -42,7 +42,7 @@ The twenty rules of motion and interaction the table, lobby, deck pages and Delv
 | Miller | Groups of at most about seven: stack chips fold into "×N" and "+N more", lands fold into counts, a deck list groups by type |
 | Doherty | A press shows its pressed state in the same frame; an answer sent closes its prompt at once, before the server's batch (`answerPending`); an answer the server has not followed within 400 ms shows a quiet turning ring in the strip until its next word (`answered`, `WorkingMark`); a card cast or played as a land dips and rises out of its slot on the press and stands there again if the server refuses (`handLeaving`) |
 | Postel | Deck import takes Arena, MTGO, Moxfield and plain lists; search ignores case and accents; a number field takes typing and steppers |
-| Jakob | Arena's layout and words: hand at the bottom in an arc, opponents across, the pass button bottom right with Arena's labels, Space to pass |
+| Jakob | Arena's layout and words: hand at the bottom in an arc, opponents across, the pass button bottom right with Arena's labels, Space to pass; a card dragged up out of the hand onto the table is played, and let go back over the hand it is not |
 | Frequency | Pass, Next, Resolve and Attack are gold and largest, and swell once when they come to the viewer; stops one press away; manual commands in the side panel; rare actions in menus |
 | Reduced motion | Under `reduce` nothing travels, scales or shakes: marks and outlines stand for the effect's time |
 

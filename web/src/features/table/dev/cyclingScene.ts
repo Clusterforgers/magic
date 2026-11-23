@@ -1,5 +1,6 @@
 /**
- * A hand card that can be cast or typecycled, for `?prompt=priority-cycling` (the chooser names both with their costs)
+ * A hand card that can be cast or typecycled, for `?prompt=priority-cycling` (the chooser names both with their costs),
+ * `?prompt=priority-cycling-only` (the cast is too dear, the Plainscycling is all there is)
  * and `?prompt=pay-cycling` (paying for Plainscycling, which names what it pays for and can be backed out of).
  */
 import type { PendingDecision } from '@/play/store'
@@ -62,6 +63,21 @@ export const withCycling =
       abilities: [...(kind.Priority.abilities ?? []), PLAINSCYCLING(card.id)],
     }
     return { ...pending, decision: { ...pending.decision, kind: { Priority: priority } } }
+  }
+
+/** `base`'s priority with Angel of the Ruins too dear to cast and only its Plainscycling offered (`?prompt=priority-cycling-only`). */
+export const withCyclingOnly =
+  (base: DevPrompt): DevPrompt =>
+  (fixture) => {
+    const pending = withCycling(base)(fixture)
+    const card = cycler(fixture.view)
+    const { kind } = pending.decision
+    if (card === undefined || !('Priority' in kind)) return pending
+    const castable = kind.Priority.castable.filter((id) => id !== card.id)
+    return {
+      ...pending,
+      decision: { ...pending.decision, kind: { Priority: { ...kind.Priority, castable } } },
+    }
   }
 
 /** The viewer's untapped basic lands with the one mana each makes. */

@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 35] = [
+const MODIFICATIONS: [&str; 36] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -183,6 +183,7 @@ const MODIFICATIONS: [&str; 35] = [
     r#""CantBlock""#,
     r#""DoesntUntap""#,
     r#""CantBeTurnedFaceUp""#,
+    r#""R119CantBeBeamedUp""#,
     r#""CantBeBlocked""#,
     r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
     r#"{"CanBlockOnly":[{"HasKeyword":"Flying"}]}"#,
@@ -327,6 +328,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::DoesntUntap
             | mtg_cards::modify::Modification::R6700KeepsLastLoyalty
             | mtg_cards::modify::Modification::CantBeTurnedFaceUp
+            | mtg_cards::modify::Modification::R119CantBeBeamedUp
             | mtg_cards::modify::Modification::CantBeBlocked
             | mtg_cards::modify::Modification::CantBeBlockedBy(_)
             | mtg_cards::modify::Modification::CanBlockOnly(_)

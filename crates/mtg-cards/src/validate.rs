@@ -1278,6 +1278,20 @@ impl<'a> Walker<'a> {
         self.at(name, |w| w.reference(who, Kind::Player));
     }
 
+    /// The conditions of the r119-01 pack: a starting deck of a player and the card types shared by objects.
+    fn r119_condition(&mut self, condition: &Condition) {
+        match condition {
+            Condition::R119StartingDeck { who, .. } => {
+                self.player_condition("R119StartingDeck", who);
+            }
+            Condition::R119ShareCardType(what) => {
+                self.uses("Condition", "R119ShareCardType");
+                self.at("R119ShareCardType", |w| w.reference(what, Kind::Object));
+            }
+            _ => {}
+        }
+    }
+
     /// The player conditions of the r55-21 pack: the Ring's temptations (1 to 4), the fastest player and a dungeon
     /// completed by name.
     fn r5521_condition(&mut self, condition: &Condition) {
@@ -1937,12 +1951,8 @@ impl<'a> Walker<'a> {
             Condition::CompletedDungeon(who) => self.player_condition("CompletedDungeon", who),
             Condition::Monarch(who) => self.player_condition("Monarch", who),
             Condition::R118BegunExtraTurn(who) => self.player_condition("R118BegunExtraTurn", who),
-            Condition::R119StartingDeck { who, .. } => {
-                self.player_condition("R119StartingDeck", who)
-            }
-            Condition::R119ShareCardType(what) => {
-                self.uses("Condition", "R119ShareCardType");
-                self.at("R119ShareCardType", |w| w.reference(what, Kind::Object));
+            Condition::R119StartingDeck { .. } | Condition::R119ShareCardType(_) => {
+                self.r119_condition(condition);
             }
             Condition::Initiative(who) => self.player_condition("Initiative", who),
             Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),

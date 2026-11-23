@@ -2773,7 +2773,7 @@ impl<'a> Scope<'a> {
                 None => 0,
             },
             Amount::X => i64::from(self.x_value()),
-            Amount::Count(selector) => i64::try_from(self.matching(selector)?.len())
+            Amount::Count(selector) => i64::try_from(self.measured(selector)?.len())
                 .map_err(|_| ResolveError::Invalid("too many objects".into()))?,
             Amount::Stat { of, stat } if r374_counts::is_r374(*stat) => {
                 let mut total = 0i64;
@@ -3362,9 +3362,57 @@ impl<'a> Scope<'a> {
         Ok(greatest)
     }
 
+    /// The objects an amount over a selector measures: those it matches in its zones, and when it names objects (`Is`),
+    /// also those of them that are elsewhere or gone. One that left the battlefield is read as it last existed there (a
+    /// sacrificed commander now in the command zone, a token that ceased to exist: CR 608.2h), any other as it is now
+    /// (a discarded or exiled card).
+    pub(super) fn measured(&self, of: &Selector) -> Result<Vec<ObjectRef>, ResolveError> {
+        let mut found = self.matching(of)?;
+        // A selector that names its zones ("if it's still on the battlefield") measures only what is there now.
+        let zoned = of.0.iter().any(|pred| match pred {
+            Pred::In(_) => true,
+            Pred::AnyOf(list) => list.iter().all(|one| alternative_zone(one).is_some()),
+            _ => false,
+        });
+        if zoned {
+            return Ok(found);
+        }
+        let scanned = self.zones_of(of);
+        for (at, pred) in of.0.iter().enumerate() {
+            let Pred::Is(named) = pred else {
+                continue;
+            };
+            let mut rest = of.clone();
+            rest.0.remove(at);
+            for object in self.objects(named)? {
+                let now = self
+                    .state
+                    .object(object.id)
+                    .filter(|now| now.counter() == object.counter);
+                if now.is_some_and(|now| scanned.contains(&now.zone())) {
+                    continue;
+                }
+                let left = self.as_it_left(object);
+                let read = if left != object
+                    && self
+                        .seen(left)
+                        .is_some_and(|seen| seen.zone == Zone::Battlefield)
+                {
+                    left
+                } else {
+                    object
+                };
+                if !found.contains(&read) && self.selects(&rest, read)? {
+                    found.push(read);
+                }
+            }
+        }
+        Ok(found)
+    }
+
     fn stats(&self, of: &Selector, stat: StatKind) -> Result<Vec<i64>, ResolveError> {
         Ok(self
-            .matching(of)?
+            .measured(of)?
             .into_iter()
             .filter_map(|object| self.seen(object).and_then(|seen| Self::stat(&seen, stat)))
             .collect())
@@ -3440,7 +3488,7 @@ impl<'a> Scope<'a> {
 
     fn card_types_among(&self, of: &Selector) -> Result<i64, ResolveError> {
         let seen: Vec<Seen<'a>> = self
-            .matching(of)?
+            .measured(of)?
             .into_iter()
             .filter_map(|object| self.seen(object))
             .collect();
@@ -3605,7 +3653,7 @@ impl<'a> Scope<'a> {
         if stat == StatKind::Colors {
             // Each color once among the objects, a multicolored object adding every one of its colors.
             let mut colors = BTreeSet::new();
-            for object in self.matching(of)? {
+            for object in self.measured(of)? {
                 if let Some(seen) = self.seen(object) {
                     colors.extend(seen.chars.colors.iter().map(|color| format!("{color:?}")));
                 }
@@ -3615,7 +3663,7 @@ impl<'a> Scope<'a> {
         if stat == StatKind::CounterKinds {
             // Each kind of counter once among the objects ("for each kind of counter among permanents you control").
             let mut kinds = BTreeSet::new();
-            for object in self.matching(of)? {
+            for object in self.measured(of)? {
                 if let Some(seen) = self.seen(object) {
                     kinds.extend(
                         seen.counters
@@ -3631,7 +3679,7 @@ impl<'a> Scope<'a> {
         if stat == StatKind::R6018PermanentTypes {
             // Each permanent type once among the objects, a card of several adding each of them.
             let seen: Vec<Seen<'a>> = self
-                .matching(of)?
+                .measured(of)?
                 .into_iter()
                 .filter_map(|object| self.seen(object))
                 .collect();
@@ -3651,7 +3699,7 @@ impl<'a> Scope<'a> {
         if stat == StatKind::Subtypes {
             // Each subtype once among the objects, an object of several subtypes adding each of them.
             let mut subtypes = BTreeSet::new();
-            for object in self.matching(of)? {
+            for object in self.measured(of)? {
                 if let Some(seen) = self.seen(object) {
                     let printed: &[mtg_core::card::Subtype] =
                         seen.card.map_or(&[], |card| &card.card().subtypes);
@@ -3672,7 +3720,7 @@ impl<'a> Scope<'a> {
         }
         if stat == StatKind::Name {
             let mut names = BTreeSet::new();
-            for object in self.matching(of)? {
+            for object in self.measured(of)? {
                 // A face-down card has no name.
                 if let Some(name) = self.seen(object).as_ref().and_then(Self::card_name) {
                     names.insert(name);
@@ -3683,7 +3731,7 @@ impl<'a> Scope<'a> {
         let values: BTreeSet<i64> = if stat == StatKind::BasicLandTypes {
             // Domain counts each basic land type once, a land of several types adding each of them.
             let mut types = BTreeSet::new();
-            for object in self.matching(of)? {
+            for object in self.measured(of)? {
                 if let Some(seen) = self.seen(object) {
                     types.extend(
                         Self::w7a_basic_land_types(&seen).filter_map(|i| i64::try_from(i).ok()),

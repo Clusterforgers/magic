@@ -89,7 +89,15 @@ export interface MarksStore {
   clearNotes(): void
   /** A click or key press on a marked card, with the element it was on; goes to the published handler. */
   select(id: ObjectId, from?: HTMLElement): void
+  /** True when a drop of the card on the table plays it: a land to play or a spell to cast, never an ability. */
+  drops(id: ObjectId): boolean
+  /** Replaces the cards a drop plays and what the drop does. */
+  publishDrops(ids: ReadonlySet<ObjectId>, onDrop: CardSelect | undefined): void
+  /** A card dropped on the table, with its element in the hand; goes to the published drop handler if it `drops`. */
+  drop(id: ObjectId, from?: HTMLElement): void
 }
+
+const NO_DROPS: ReadonlySet<ObjectId> = new Set()
 
 /** A store with no marks. */
 export function createMarksStore(): MarksStore {
@@ -97,6 +105,8 @@ export function createMarksStore(): MarksStore {
   let handler: CardSelect | undefined
   let toggling = false
   let notes: CardNotes = NO_NOTES
+  let droppable: ReadonlySet<ObjectId> = NO_DROPS
+  let dropper: CardSelect | undefined
   const listeners = new Map<ObjectId, Set<() => void>>()
   const notify = (ids: Iterable<ObjectId>): void => {
     for (const id of ids) for (const listener of [...(listeners.get(id) ?? [])]) listener()
@@ -157,6 +167,14 @@ export function createMarksStore(): MarksStore {
       replace(NO_MARKS, false)
     },
     select: (id, from) => handler?.(id, from),
+    drops: (id) => dropper !== undefined && droppable.has(id),
+    publishDrops(ids, onDrop) {
+      droppable = ids
+      dropper = onDrop
+    },
+    drop(id, from) {
+      if (droppable.has(id)) dropper?.(id, from)
+    },
     noteOf: (id) => notes.get(id),
     publishNotes: replaceNotes,
     clearNotes: () => replaceNotes(NO_NOTES),
@@ -212,6 +230,23 @@ export function useCardMarks(
     store.publish(marks, forward, toggles)
   }, [store, marks, forward, toggles])
   useLayoutEffect(() => () => store.clear(), [store])
+}
+
+/**
+ * Says which cards a drop on the table plays for as long as the calling prompt is on screen (`handDrag.ts`): `ids`
+ * (memoised) are the cards to play as a land or cast, and `onDrop` plays one; it may change every render.
+ */
+export function useCardDrops(ids: ReadonlySet<ObjectId>, onDrop: CardSelect): void {
+  const store = useMarksStore()
+  const latest = useRef(onDrop)
+  useLayoutEffect(() => {
+    latest.current = onDrop
+  })
+  const forward = useCallback<CardSelect>((id, from) => latest.current(id, from), [])
+  useLayoutEffect(() => {
+    store.publishDrops(ids, forward)
+  }, [store, ids, forward])
+  useLayoutEffect(() => () => store.publishDrops(NO_DROPS, undefined), [store])
 }
 
 /**

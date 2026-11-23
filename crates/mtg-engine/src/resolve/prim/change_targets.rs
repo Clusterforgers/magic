@@ -49,11 +49,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let mut events = Vec::new();
     let mut picks = 0;
     for object in &objects {
+        // An Aura spell targets through its enchant ability, not a `Spell` ability (CR 303.4a); its target changes too.
         let spell_rules = (object.kind() != ObjectKind::Ability)
-            .then(|| crate::resolve::spell_ability(state, object.id()))
+            .then(|| crate::resolve::spell_target_rules(state, object.id()))
             .flatten();
         let (ability, origin, cause) = match (&spell_rules, object.ability()) {
-            (Some((_, rules)), _) => (&**rules, object.reference(), None),
+            (Some(rules), _) => (&**rules, object.reference(), None),
             (None, Some(ability)) if object.kind() == ObjectKind::Ability => {
                 (ability.rules(), ability.source(), ability.cause())
             }
