@@ -176,7 +176,7 @@ const C11F_WHOLES: [(&str, &str); 99] = [
         "You may cast Spirit spells as though they had flash.",
     ),
     (
-        r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Creature"}],"by":"You"}},"if":{"Not":"YourTurn"},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Tap":{"what":{"Target":0}}}]}}"#,
+        r#"{"Triggered":{"when":{"SpellCast":{"what":[{"Type":"Creature"}],"by":"You"}},"if":{"AtTrigger":{"Not":"YourTurn"}},"targets":[{"what":{"Object":[{"Type":"Creature"}]},"bounds":{"min":0,"max":1}}],"effects":[{"Tap":{"what":{"Target":0}}}]}}"#,
         "Whenever you cast a creature spell during an opponent's turn, tap up to one target creature.",
     ),
     (

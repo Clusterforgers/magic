@@ -10,7 +10,7 @@
         {
           "Triggered": {
             "when": { "Batch": { "ZoneChange": { "what": [], "to": "Exile" } } },
-            "if": "YourTurn",
+            "if": { "AtTrigger": "YourTurn" },
             "limit": "OncePerTurn",
             "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
           }

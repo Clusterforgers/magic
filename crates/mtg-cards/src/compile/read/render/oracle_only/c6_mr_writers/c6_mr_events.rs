@@ -11,7 +11,7 @@ const C6_MR_ATTACKS_YOU: [(&str, &str); 2] = [
 
 /// Your first spell in a turn that is not yours, and your second spell in any turn.
 const C6_MR_FIRST_SPELL: [(&str, &str); 1] = [(
-    r#"{"Nth":{"event":{"SpellCast":{"by":"You"}},"nth":1}},"if":{"Not":"YourTurn"}"#,
+    r#"{"Nth":{"event":{"SpellCast":{"by":"You"}},"nth":1}},"if":{"AtTrigger":{"Not":"YourTurn"}}"#,
     r#"{"Nth":{"event":{"SpellCast":{"by":"You"}},"nth":2}}"#,
 )];
 

@@ -11,7 +11,7 @@
         {
           "Triggered": {
             "when": { "TurnedFaceUp": { "what": ["This"] } },
-            "if": { "AtTrigger": "YourTurn" },
+            "if": "YourTurn",
             "targets": [{ "what": { "Object": [{ "Type": "Creature" }, "Other"] } }],
             "effects": [
               {

@@ -15,7 +15,7 @@
                 "GrantAbility": {
                   "Triggered": {
                     "when": { "DealsDamage": { "source": [{ "Is": "Attached" }], "combat": true } },
-                    "if": "YourTurn",
+                    "if": { "AtTrigger": "YourTurn" },
                     "effects": [
                       {
                         "PutCounters": { "on": "This", "counter": "loyalty", "count": "Triggering" }

@@ -14,7 +14,7 @@ use crate::value::Condition;
 
 /// Whether the next sentence is a restriction that ends the effects: "Activate only ..." or "This ability triggers only
 /// once each turn."
-fn at_restriction(r: &mut Reader<'_>) -> bool {
+pub(super) fn at_restriction(r: &mut Reader<'_>) -> bool {
     r.peek_word() == Some("activate")
         || r.lookahead(|r| {
             r.words(super::restrictions::W6E_NOT_IN_COMBAT)
@@ -164,7 +164,11 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     );
     note_other_creatures(r, &when);
     // "while <condition>" after the event is checked only as the event happens, never again on resolution.
-    let held = if render::while_held(&when) {
+    // So is "during your turn" (CR 603.2): only an "if" clause is an intervening "if".
+    let during = r.attempt(super::r117_04_during::r117_04_during);
+    let held = if let Some(turn) = during {
+        Some(Condition::AtTrigger(Box::new(turn)))
+    } else if render::while_held(&when) {
         r.attempt(|r| {
             r.need("while")?;
             triggers::condition(r)

@@ -7,13 +7,13 @@
       "name": "Mirror Box",
       "oracle_fingerprint": "aebf544c47b4d23efa196896622c9b1f",
       "abilities": [
-        { "Rule": { "rule": { "NoLegendRule": "You" } } },
+        { "Rule": { "rule": { "NoLegendRuleFor": [{ "ControlledBy": "You" }] } } },
         {
           "Static": {
             "affected": {
               "Each": [
-                { "Supertype": "Legendary" },
                 { "Type": "Creature" },
+                { "Supertype": "Legendary" },
                 { "ControlledBy": "You" }
               ]
             },
@@ -23,7 +23,7 @@
         {
           "Static": {
             "affected": {
-              "Each": [{ "Not": "Token" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+              "Each": [{ "Type": "Creature" }, { "Not": "Token" }, { "ControlledBy": "You" }]
             },
             "mods": [
               {
@@ -31,16 +31,16 @@
                   "power": {
                     "Count": [
                       { "Type": "Creature" },
-                      { "ControlledBy": "You" },
                       { "Not": { "Is": "Affected" } },
+                      { "ControlledBy": "You" },
                       { "SharesName": "Affected" }
                     ]
                   },
                   "toughness": {
                     "Count": [
                       { "Type": "Creature" },
-                      { "ControlledBy": "You" },
                       { "Not": { "Is": "Affected" } },
+                      { "ControlledBy": "You" },
                       { "SharesName": "Affected" }
                     ]
                   }

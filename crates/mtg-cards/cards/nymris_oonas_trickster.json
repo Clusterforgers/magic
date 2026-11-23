@@ -12,7 +12,7 @@
         {
           "Triggered": {
             "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
-            "if": { "Not": "YourTurn" },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
             "effects": [
               { "LookAtTop": { "count": 2, "as": "top" } },
               { "Choose": { "from": { "Bound": "top" }, "as": "card", "rest_as": "rest" } },

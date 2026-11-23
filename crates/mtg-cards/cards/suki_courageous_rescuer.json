@@ -1,21 +1,23 @@
 {
-  "oracle_id": "5d1d9914-3ef2-45c5-b1cb-cb85d2f7394c",
-  "name": "Tolls of War",
+  "oracle_id": "70ea1a9d-ec52-4c11-8c4d-0d957e5491ad",
+  "name": "Suki, Courageous Rescuer",
   "impl_status": "Full",
   "faces": [
     {
-      "name": "Tolls of War",
-      "oracle_fingerprint": "a02c24f6c01f9663fb14738e0969227d",
+      "name": "Suki, Courageous Rescuer",
+      "oracle_fingerprint": "b7b92947570a7042a889d6cc3b207d06",
       "abilities": [
         {
-          "Triggered": {
-            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
-            "effects": [{ "CreateToken": { "token": { "Named": "clue" } } }]
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
           }
         },
         {
           "Triggered": {
-            "when": { "Sacrificed": { "what": [{ "ControlledBy": "You" }], "by": "You" } },
+            "when": {
+              "ZoneChange": { "what": ["Other", { "ControlledBy": "You" }], "from": "Battlefield" }
+            },
             "if": { "AtTrigger": "YourTurn" },
             "limit": "OncePerTurn",
             "effects": [

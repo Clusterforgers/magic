@@ -12,7 +12,7 @@
             "when": {
               "SpellCast": { "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
             },
-            "if": "YourTurn",
+            "if": { "AtTrigger": "YourTurn" },
             "targets": [{ "what": "AnyTarget" }],
             "effects": [
               {

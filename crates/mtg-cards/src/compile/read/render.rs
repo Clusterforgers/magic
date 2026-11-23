@@ -246,6 +246,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
+    super::r117_04_x_target::r117_04_sized_wordings(ability, variants, &mut texts);
     texts
 }
 
@@ -665,6 +666,10 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r304b_writers::r304b_wordings(ability, written_variants, &mut texts);
     super::r116_02_writers::r116_02_wordings(ability, written_variants, &mut texts);
     super::r116_06_while::r116_06_while_wordings(ability, written_variants, &mut texts);
+    super::r117_04_affected::r117_04_affected_wordings(ability, written_variants, &mut texts);
+    super::r117_04_x_target::r117_04_sized_wordings(ability, written_variants, &mut texts);
+    super::r117_04_creature::r117_04_creature_wordings(ability, written_variants, &mut texts);
+    super::r117_04_during::r117_04_during_wordings(ability, &mut texts);
     super::r116_reminder_tokens::r116_reminder_token_wordings(
         ability,
         written_variants,
@@ -1882,6 +1887,14 @@ fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<
     }
     if let Some(head) = super::wf24_token_bind::wf24_head(when, condition) {
         return Some(vec![head]);
+    }
+    if let Some(Condition::AtTrigger(held)) = condition
+        && let Some(during) = super::r117_04_during::r117_04_during_text(held)
+    {
+        // A batch or a damage event words its subject another way after "during" ("a source you control deals").
+        while_held(when).then_some(())?;
+        let event = player_events::text(when).or_else(|| pattern_text(when))?;
+        return Some(vec![format!("{event} {during},")]);
     }
     if let Some(Condition::AtTrigger(held)) = condition
         && let Some(held) = while_text(when, held)

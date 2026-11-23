@@ -95,6 +95,7 @@ mod r116_04_x_of_target;
 mod r116_06_while;
 mod r116_assimilate;
 mod r116_dilemma;
+mod r117_04_during;
 mod r300_random_discard;
 mod r300c_activations;
 mod r301_target_costs;

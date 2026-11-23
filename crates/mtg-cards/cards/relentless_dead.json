@@ -12,7 +12,16 @@
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
             "effects": [
-              { "Pay": { "cost": "{B}", "paid": [{ "Move": { "what": "This", "to": "Hand" } }] } }
+              {
+                "Pay": {
+                  "cost": "{B}",
+                  "paid": [
+                    {
+                      "Move": { "what": { "Each": [{ "In": "Graveyard" }, "This"] }, "to": "Hand" }
+                    }
+                  ]
+                }
+              }
             ]
           }
         },
@@ -23,11 +32,11 @@
               {
                 "what": {
                   "Object": [
-                    { "Subtype": "Zombie" },
                     { "Type": "Creature" },
+                    { "Subtype": "Zombie" },
                     "Other",
-                    { "OwnedBy": "You" },
-                    { "In": "Graveyard" }
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
                   ]
                 }
               }
