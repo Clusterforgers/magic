@@ -2510,7 +2510,23 @@ impl<'a> Scope<'a> {
             Pred::Foretold | Pred::HasName => self.r5520_pred(pred, reference, seen),
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
+            Pred::R117AllOf(all) => self.r117_all_of(all, reference, seen)?,
         })
+    }
+
+    /// Whether every one of the predicates holds for the object.
+    fn r117_all_of(
+        &self,
+        all: &[Pred],
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        for inner in all {
+            if !self.pred(inner, reference, seen)? {
+                return Ok(false);
+            }
+        }
+        Ok(true)
     }
 
     /// Whether at least one of the predicates holds for the object.

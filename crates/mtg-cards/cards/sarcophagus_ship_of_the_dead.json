@@ -1,0 +1,61 @@
+{
+  "oracle_id": "22b86863-c992-405b-949a-bdf8859884ef",
+  "name": "Sarcophagus, Ship of the Dead",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarcophagus, Ship of the Dead",
+      "oracle_fingerprint": "19220980ae433396da707d827226e212",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 0 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "if": {
+              "Matches": { "subject": "This", "selector": [{ "Not": { "Type": "Creature" } }] }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge" } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 10
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

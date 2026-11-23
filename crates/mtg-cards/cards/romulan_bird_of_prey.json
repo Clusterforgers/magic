@@ -1,0 +1,58 @@
+{
+  "oracle_id": "e614f97b-da8e-4569-9bdd-f76371c66836",
+  "name": "Romulan Bird-of-Prey",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Romulan Bird-of-Prey",
+      "oracle_fingerprint": "d04f215da85f3d70615ce5dd60a98b07",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": {
+              "Matches": { "subject": "This", "selector": [{ "Not": { "Type": "Creature" } }] }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Not": { "Type": "Creature" } }], "by": "You" } },
+            "if": {
+              "Matches": { "subject": "This", "selector": [{ "Not": { "Type": "Creature" } }] }
+            },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "charge", "count": 2 } }]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

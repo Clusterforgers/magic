@@ -322,6 +322,7 @@ Bonesplitter
 Bontu's Monument
 Booby Trap
 Book of Mazarbul
+Boomerang, Blade Flinger
 Boompile
 Boon Reflection
 Boon Satyr
@@ -344,6 +345,7 @@ Brain Freeze
 Brainstorm
 Bramble Elemental
 Branchblight Stalker
+Branching Timeline
 Brass Infiniscope
 Brass's Tunnel-Grinder // Tecutlan, the Searing Rift
 Brave the Sands
@@ -529,6 +531,7 @@ Commander's Insignia
 Commander's Plate
 Commander's Sphere
 Commence the Endgame
+Commune with Lava
 Complaints Clerk
 Composer of Spring
 Conclave Sledge-Captain
@@ -819,6 +822,7 @@ Dusk Legion Zealot
 Dusk Mangler
 Duskshell Crawler
 Dying to Serve
+Dáin of the Ancient Halls
 Dúnedain Blade
 Eagles of the North
 Earth-Cult Elemental
@@ -884,6 +888,7 @@ Endless One
 Energize
 Enigma Thief
 Enraged Revolutionary
+Enshrined Memories
 Ensign Harry Kim, Operations
 Entangling Trap
 Enthusiastic Study
@@ -1003,6 +1008,7 @@ Fiery Confluence
 Fiery Fall
 Fiery Temper
 Fight Rigging
+Final Frontier
 Finale of Eternity
 Finch Formation
 Fire-Lit Thicket
@@ -1019,6 +1025,7 @@ Flamekin Village
 Flamerush Rider
 Flaring Cinder
 Flash Photography
+Flash of Insight
 Flatline
 Flawless Maneuver
 Flayer of Loyalties
@@ -1109,6 +1116,7 @@ Genesis Device
 Genesis Hydra
 Genesis Storm
 Genesis Wave
+Geordi La Forge, Innovator
 Germination Practicum
 Gerrard's Wisdom
 Getaway Car
@@ -1306,6 +1314,7 @@ Hellkite Overlord
 Hellkite Tyrant
 Helm of Chatzuk
 Helm of the Host
+Hemmer, Fixing What Is Broken
 Hengegate Pathway // Mistgate Pathway
 Henry Wu, InGen Geneticist
 Henzie "Toolbox" Torre
@@ -1350,6 +1359,7 @@ Honor's Reward
 Hoofprints of the Stag
 Hordeling Outburst
 Horizon Canopy
+Hoshi Sato, Exolinguist
 Hostile Desert
 Hound Tamer // Untamed Pup
 Hound of Griselbrand
@@ -1472,6 +1482,7 @@ Jazal Goldmane
 Jedit Ojanen of Efrava
 Jegantha, the Wellspring
 Jeska's Will
+Jet, Freedom Fighter
 Jeweled Amulet
 Jinnie Fay, Jetmir's Second
 Jirina Kudro
@@ -1491,6 +1502,7 @@ Junk Winder
 Jwar Isle Refuge
 Jyoti, Moag Ancient
 Jötun Grunt
+K'Vort-Class Raider
 Kaervek's Torch
 Kaito's Pursuit
 Kalemne's Captain
@@ -1523,6 +1535,7 @@ Kess, Dissident Mage
 Kessig Cagebreakers
 Kessig Naturalist // Lord of the Ulvenwald
 Kessig Wolf Run
+Khan, Despot by Design
 Kiki-Jiki, Mirror Breaker
 Kill! Maim! Burn!
 Kimoyo Beads
@@ -1724,6 +1737,7 @@ Marsh Flitter
 Marshal of the Lost
 Marshmist Titan
 Martial Coup
+Martok, Hero of the Empire
 Martyr of Dusk
 Marvo, Deep Operative
 Marwyn, the Nurturer
@@ -1836,6 +1850,7 @@ Molt Tender
 Molten Exhale
 Molten Hydra
 Molten Slagheap
+Momo, Rambunctious Rascal
 Mona Lisa, Science Geek
 Monastery Swiftspear
 Monk of the Open Hand
@@ -1869,6 +1884,7 @@ Murmuring Bosk
 Muscle Sliver
 Mutavault
 Mutilate
+Muzzio, Visionary Architect
 Mycoloth
 Myr Retriever
 Myr Superion
@@ -2041,6 +2057,7 @@ Patrolling Peacemaker
 Patron of the Akki
 Patron of the Kitsune
 Patron of the Vein
+Pattern Buffer Preservation
 Peacewalker Colossus
 Pearl-Ear, Imperial Advisor
 Peema Outrider
@@ -2328,6 +2345,7 @@ Rocksteady, Mutant Marauder
 Rogue Refiner
 Rogue's Passage
 Roku's Mastery
+Romulan Bird-of-Prey
 Root Sliver
 Rootborn Defenses
 Rootcast Apprenticeship
@@ -2353,6 +2371,7 @@ Runebound Wolf
 Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
+Saavik, Stoic Student
 Sacred Cat
 Sacred Rites
 Sadistic Slash
@@ -2382,6 +2401,7 @@ Sanitarium Skeleton
 Sapling Nursery
 Saproling Symbiosis
 Sarah Jane Smith
+Sarcophagus, Ship of the Dead
 Sarkhan, Dragonsoul
 Saruman, the White Hand
 Satyr Firedancer
@@ -2552,6 +2572,7 @@ Slippery Karst
 Slither Blade
 Slitherhead
 Sluiceway Scorpion
+Smaug the Magnificent
 Smell Fear
 Smoke
 Smoke Teller
@@ -2883,8 +2904,10 @@ The Underworld Cookbook
 The Valeyard
 The War Doctor
 The Warring Triad
+The Wasp, Janet Van Dyne
 The Wise Mothman
 Thelonite Hermit
+There's Coffee in that Nebula
 Thick-Skinned Goblin
 Thieving Magpie
 Thieving Varmint
@@ -3173,6 +3196,7 @@ Warchief Giant
 Warg Rider
 Wargate
 Warmonger Hellkite
+Warp Speed
 Warren Warleader
 Warrior's Sword
 Wash Away
@@ -3248,6 +3272,7 @@ Woodland Stream
 Woodripper
 Woolly Mammoths
 Word of Seizing
+Worf, Defiant Commander
 Worf, Still Not Merry
 Worldspine Wurm
 Worn Powerstone

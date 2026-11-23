@@ -1,0 +1,32 @@
+{
+  "oracle_id": "adbef171-3640-4f77-8c92-b50c109ca303",
+  "name": "Geordi La Forge, Innovator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Geordi La Forge, Innovator",
+      "oracle_fingerprint": "a00abcadc09023941c893ac913ec1089",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": ["CantBeBlocked"],
+            "condition": {
+              "Compare": {
+                "left": { "Count": [{ "Subtype": "Spacecraft" }, { "ControlledBy": "You" }] },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

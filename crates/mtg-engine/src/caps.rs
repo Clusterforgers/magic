@@ -1328,6 +1328,7 @@ const RUNS: &[&str] = &[
     "Pred.R113SnowOfOwnColor",
     "Pred.ManaFrom",
     "Pred.GravedThisTurn",
+    "Pred.R117AllOf",
     "Pred.GravedThisCombat",
     "Pred.R6500StartedTurnUntapped",
     "Pred.SharesColorWithLastCast",

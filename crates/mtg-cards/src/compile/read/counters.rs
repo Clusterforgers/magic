@@ -14,12 +14,11 @@ use crate::refs::{Ref, Targetable};
 use crate::value::{Amount, Cmp, Condition, CounterKind};
 
 /// The counters whose effect the rules of the game give and the engine does not play (CR 122.1: exalted and decayed
-/// counters, stun, shield, finality; the lore counters of Sagas and the defense counters of Battles); the data holds a
+/// counters, shield; the lore counters of Sagas and the defense counters of Battles; stun and finality counters are played,
+/// CR 122.1d and 122.1g, by `stun.rs` and the finality replacement of the engine); the data holds a
 /// counter as a name only, so a clause that puts, removes or moves one stays with the table. The other keyword counters
 /// are read: the layers give their keyword (`CounterKind::keyword`).
-const RULES_COUNTERS: [&str; 7] = [
-    "decayed", "exalted", "finality", "shield", "stun", "defense", "lore",
-];
+const RULES_COUNTERS: [&str; 5] = ["decayed", "exalted", "shield", "defense", "lore"];
 
 /// A counter named for the numbers it adds: "+1/+1", "-1/-1", or others such as "-0/-1" (CR 122.1a).
 pub(super) fn sized(r: &mut Reader<'_>) -> Option<CounterKind> {
@@ -206,6 +205,9 @@ pub(super) fn place(r: &mut Reader<'_>) -> Option<Ref> {
         Some(Ref::Triggering)
     } else if r.it == Some(Ref::Dealer) && r.word("it") {
         Some(Ref::Dealer)
+    } else if matches!(r.it, Some(Ref::Target(_))) && r.word("it") {
+        // The one target an instruction before named: "tap target creature and put a stun counter on it".
+        r.it.clone()
     } else if matches!(r.it, Some(Ref::Bound(_)))
         && (r.word("it") || r.words("that token") || r.words("each of them"))
     {

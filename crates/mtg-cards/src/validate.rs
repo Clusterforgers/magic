@@ -296,7 +296,7 @@ fn w9c_token_pred(pred: &Pred) -> bool {
     match pred {
         Pred::Type(_) | Pred::Subtype(_) | Pred::Supertype(_) | Pred::Color(_) => true,
         Pred::Not(inner) => w9c_token_pred(inner),
-        Pred::AnyOf(any) => any.iter().all(w9c_token_pred),
+        Pred::AnyOf(any) | Pred::R117AllOf(any) => any.iter().all(w9c_token_pred),
         _ => false,
     }
 }
@@ -1141,6 +1141,15 @@ impl<'a> Walker<'a> {
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {
                     self.problem("`AnyOf` needs at least one predicate");
+                }
+                for (i, inner) in preds.iter().enumerate() {
+                    self.at(format!("[{i}]"), |w| w.pred(inner));
+                }
+            }
+            Pred::R117AllOf(preds) => {
+                self.uses("Pred", "R117AllOf");
+                if preds.len() < 2 {
+                    self.problem("`R117AllOf` needs at least two predicates");
                 }
                 for (i, inner) in preds.iter().enumerate() {
                     self.at(format!("[{i}]"), |w| w.pred(inner));

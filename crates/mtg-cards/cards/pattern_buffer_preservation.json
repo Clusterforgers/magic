@@ -1,0 +1,24 @@
+{
+  "oracle_id": "690d0d8f-48b9-40a6-b881-6f17ac19bf3b",
+  "name": "Pattern Buffer Preservation",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pattern Buffer Preservation",
+      "oracle_fingerprint": "8d8a0ba16dd1668ff8305bb89cb1af97",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 2, "as": "top" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
+            ]
+          }
+        },
+        { "Keyword": { "R116BeamMeUp": "{1}{B}" } }
+      ]
+    }
+  ]
+}

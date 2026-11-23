@@ -771,6 +771,9 @@ pub enum Pred {
     Not(Box<Pred>),
     /// At least one of the predicates is true.
     AnyOf(Vec<Pred>),
+    /// Every one of the predicates is true: one side of an `AnyOf` that is itself several qualities ("a basic land card or
+    /// Planet card", "a Plains card or nonland permanent card with mana value 3 or less").
+    R117AllOf(Vec<Pred>),
 }
 
 /// A description of a set of objects: all predicates must hold. The empty list matches everything.

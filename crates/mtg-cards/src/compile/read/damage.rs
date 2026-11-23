@@ -80,6 +80,9 @@ fn amount_and_recipient(r: &mut Reader<'_>) -> Option<(Amount, Ref)> {
 pub(super) fn damage(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     let source = if r.source() {
         None
+    } else if r.targets.is_empty() && r.acts_itself && (r.word("she") || r.word("he")) {
+        // "When ~ enters, she deals X damage ...": a person on the card is "she" or "he" for the card itself.
+        None
     } else if r.targets.is_empty() && r.word("it") {
         // "Whenever equipped creature is dealt damage, it deals that much damage": the creature is the source.
         r.it.clone().filter(|it| *it == Ref::Attached)

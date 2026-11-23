@@ -1,0 +1,62 @@
+{
+  "oracle_id": "887614f9-f12f-47bc-ae56-1438cd7cad10",
+  "name": "There's Coffee in that Nebula",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "There's Coffee in that Nebula",
+      "oracle_fingerprint": "613d72de2c859bdb2d10a90843f00c8a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "LookAtTop": { "count": 5, "as": "top" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Subtype": "Plains" },
+                          {
+                            "R117AllOf": [
+                              { "Not": { "Type": "Land" } },
+                              {
+                                "AnyOf": [
+                                  { "Type": "Artifact" },
+                                  { "Type": "Creature" },
+                                  { "Type": "Enchantment" },
+                                  { "Type": "Land" },
+                                  { "Type": "Planeswalker" },
+                                  { "Type": "Battle" }
+                                ]
+                              },
+                              { "Compare": { "stat": "ManaValue", "op": "Le", "to": 3 } }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "kept" } } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "R116BeamMeUp": "{2}{W}" } }
+      ]
+    }
+  ]
+}

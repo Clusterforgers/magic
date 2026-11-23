@@ -68,7 +68,7 @@ fn the_count_of_counters_condition_reads_in_the_shape_of_the_hand_written_files(
 )]
 #[case::any_counters("Whenever ~ attacks, if there are five or more counters on ~, draw a card.")]
 #[case::a_counter_the_rules_give(
-    "Whenever ~ attacks, if there are five or more stun counters on ~, draw a card."
+    "Whenever ~ attacks, if there are five or more shield counters on ~, draw a card."
 )]
 #[case::no_comma("Whenever ~ attacks, if there are five or more charge counters on ~ draw a card.")]
 #[case::an_unread_step(

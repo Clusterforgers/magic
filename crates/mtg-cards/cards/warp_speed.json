@@ -1,0 +1,63 @@
+{
+  "oracle_id": "5a824931-2b65-42b1-8653-d4313a6693d2",
+  "name": "Warp Speed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Warp Speed",
+      "oracle_fingerprint": "4815bd3c808845cdd0f1617c8d93e08c",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Type": "Land" }, { "ControlledBy": "You" }] } },
+            "by": "Untapped"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "R117AllOf": [{ "Supertype": "Basic" }, { "Type": "Land" }] },
+                        { "Subtype": "Planet" }
+                      ]
+                    }
+                  ],
+                  "reveal": true,
+                  "as": "card"
+                }
+              },
+              { "Move": { "what": { "Bound": "card" }, "to": "Hand" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{7}{U}{U}" },
+              "SacrificeSelf",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{1}",
+                  "per": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Draw": { "count": 2 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
