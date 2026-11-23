@@ -1,0 +1,70 @@
+{
+  "oracle_id": "f2768bab-a6a4-490a-a676-fbfbfefdd8b8",
+  "name": "U.S.S. Enterprise-C, Time-Tossed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "U.S.S. Enterprise-C, Time-Tossed",
+      "oracle_fingerprint": "ef851e84c4e1d24cffbf243a8713841d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } }
+              ]
+            },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Discard": {
+                        "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                        "as": "discarded"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "Draw": { "count": { "Bound": "discarded~moved" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 3
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

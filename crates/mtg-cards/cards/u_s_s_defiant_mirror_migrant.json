@@ -1,0 +1,56 @@
+{
+  "oracle_id": "c7c529c4-08eb-480b-a699-0d783215419b",
+  "name": "U.S.S. Defiant, Mirror Migrant",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "U.S.S. Defiant, Mirror Migrant",
+      "oracle_fingerprint": "43ad4cf1fcd95fecb5273abb2e2a4674",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PhaseOut": { "what": "This" } },
+              { "PhaseOut": { "what": { "Target": 0 } } }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "oracle_id": "44837c9b-971a-44b6-8e55-301cebc3a361",
+  "name": "Queen's Diamond",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Queen's Diamond",
+      "oracle_fingerprint": "0456327b458fc4969bd3d521492209a9",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": { "Counters": { "on": "This", "counter": "charge" } } },
+                  "only": [{ "Spell": { "facts": ["YourCommander"] } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Vigilance" },
+              { "AddKeyword": "Haste" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 8
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "oracle_id": "e444c824-6b9c-4b72-8aa9-a86489c47cbe",
+  "name": "Zagorka, Mother of Sanctum",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zagorka, Mother of Sanctum",
+      "oracle_fingerprint": "88980fa0340d796c0ef0c4d5593bc1a2",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "May": {
+                        "who": { "Bound": "player" },
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "who": { "Bound": "player" },
+                              "token": {
+                                "Custom": {
+                                  "name": "Sanctum",
+                                  "types": ["Land"],
+                                  "abilities": [
+                                    {
+                                      "Activated": {
+                                        "cost": ["Tap"],
+                                        "effects": [{ "AddMana": { "mana": { "AnyColor": 1 } } }]
+                                      }
+                                    }
+                                  ]
+                                }
+                              },
+                              "tapped": true
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "Rule": {
+                              "rule": {
+                                "Cant": {
+                                  "who": { "Bound": "player" },
+                                  "action": { "R118Attack": { "you": true } }
+                                }
+                              },
+                              "duration": "TheirNextTurn"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

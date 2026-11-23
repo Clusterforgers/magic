@@ -1,0 +1,39 @@
+{
+  "oracle_id": "492ba01e-c0fa-414c-95fd-df5b59212d2a",
+  "name": "Jett Reno, Problem Solver",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jett Reno, Problem Solver",
+      "oracle_fingerprint": "f60dda6e73bf39b757eabd414ddd3f84",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Compare": {
+                      "left": { "Stat": { "of": "This", "stat": "Power" } },
+                      "op": "Ge",
+                      "right": 4
+                    }
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [{ "Surveil": {} }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "R116Dilemma": { "who": "You" } },
+            "effects": [{ "PutCounters": { "on": "This", "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

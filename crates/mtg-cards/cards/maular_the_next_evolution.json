@@ -1,0 +1,49 @@
+{
+  "oracle_id": "214f4e0a-eba7-4a08-86b2-d490d6ae1048",
+  "name": "Maular, the Next Evolution",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Maular, the Next Evolution",
+      "oracle_fingerprint": "53f9376346f89e1d6da9c76e376a7972",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R116Rulebreaker": "A deck with this commander can have creature cards with mana value 7 or greater of any color identity and any basic land cards"
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "Attacks": {
+                "what": [
+                  { "Type": "Creature" },
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 7 } }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "Stat": { "of": "Triggering", "stat": "Power" } },
+                        "toughness": { "Stat": { "of": "Triggering", "stat": "Toughness" } }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

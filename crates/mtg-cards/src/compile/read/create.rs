@@ -553,7 +553,8 @@ fn token_text(token: &TokenRef) -> Option<Described> {
             let named = spec.name != subtypes.join(" ");
             let plain = (spec.supertypes.is_empty() || legendary)
                 && legendary <= named
-                && !subtypes.is_empty()
+                // A land token that only a name tells apart: "a tapped land token named Sanctum with ...".
+                && (!subtypes.is_empty() || (sizeless && named && r118_mana_land(spec)))
                 && !types.is_empty()
                 && power >= 0
                 && toughness >= 0;
@@ -574,6 +575,16 @@ fn token_text(token: &TokenRef) -> Option<Described> {
     }
 }
 
+/// Whether the token is a land and nothing else, whose abilities all add mana (Sanctum).
+fn r118_mana_land(spec: &TokenSpec) -> bool {
+    spec.types == [mtg_core::card::CardType::Land]
+        && !spec.abilities.is_empty()
+        && spec.abilities.iter().all(|ability| {
+            matches!(ability, Ability::Activated { effects, .. }
+                if effects.iter().all(|effect| matches!(effect, Effect::AddMana { .. })))
+        })
+}
+
 /// The abilities of a described token as a card words them, with the space before: " with flying", " with flying and
 /// vigilance", " with flying, vigilance, and haste", " with \"Sacrifice this token: Add {C}.\"". `None` for an ability
 /// that is neither a keyword nor an activated or triggered ability.
@@ -588,6 +599,18 @@ fn keywords_text(token: &TokenRef) -> Option<String> {
             Ability::Keyword(found) => granted.push(Modification::AddKeyword(found.clone())),
             Ability::Activated { .. } | Ability::Triggered { .. } | Ability::Static { .. } => {
                 quoted.push(format!("\"{}\"", render::ability(ability)?));
+            }
+            // A rule of the token: "Permanents can't phase in." (The City on the Edge of Forever).
+            Ability::Rule {
+                rule:
+                    crate::modify::GameRule::Cant {
+                        action: crate::modify::Prohibited::PhaseIn,
+                        ..
+                    },
+                ..
+            } => {
+                let text = render::written_variants(ability).into_iter().next()?;
+                quoted.push(format!("\"{text}\""));
             }
             _ => return None,
         }

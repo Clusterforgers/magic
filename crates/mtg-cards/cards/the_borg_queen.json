@@ -1,0 +1,49 @@
+{
+  "oracle_id": "b03d6bc2-d9f1-4d03-b1b3-77993bec6547",
+  "name": "The Borg Queen",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Borg Queen",
+      "oracle_fingerprint": "ceb593665a48bdc9e8ac322b2480c835",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [{ "Type": "Artifact" }, { "Type": "Creature" }, { "ControlledBy": "You" }]
+            },
+            "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "ExileUntil": {
+                  "who": { "Target": 0 },
+                  "filter": [{ "Type": "Creature" }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              { "R116Assimilate": { "what": { "Bound": "found" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

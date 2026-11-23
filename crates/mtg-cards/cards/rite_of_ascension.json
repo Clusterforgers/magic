@@ -1,0 +1,48 @@
+{
+  "oracle_id": "08c6ca45-09ff-4fe4-bc9b-45876e94f430",
+  "name": "Rite of Ascension",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rite of Ascension",
+      "oracle_fingerprint": "9eedb460270a5399ed53161253a5ec75",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "AttackedThisTurn",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "Custom": {
+                            "name": "Klingon Warrior",
+                            "colors": ["Red"],
+                            "types": ["Creature"],
+                            "subtypes": ["Klingon", "Warrior"],
+                            "power": 2,
+                            "toughness": 1,
+                            "abilities": [{ "Keyword": "Haste" }]
+                          }
+                        },
+                        "tapped": true,
+                        "attacking": true,
+                        "against": { "Bound": "player" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

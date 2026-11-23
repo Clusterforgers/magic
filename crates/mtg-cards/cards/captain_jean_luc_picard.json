@@ -1,0 +1,60 @@
+{
+  "oracle_id": "04624f75-5981-4607-aa8f-706554f826e1",
+  "name": "Captain Jean-Luc Picard",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Jean-Luc Picard",
+      "oracle_fingerprint": "61973bcabf7eee85b7915a4f56a276ba",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] },
+            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [{ "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] }],
+                "by": "You"
+              }
+            },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Officer",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Officer"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "TapPermanents": { "filter": [{ "Subtype": "Officer" }], "count": 7 } }],
+            "effects": [
+              { "Search": { "filter": [{ "Subtype": "Spacecraft" }], "as": "found" } },
+              {
+                "Move": {
+                  "what": { "Bound": "found" },
+                  "to": { "Battlefield": { "counters": [["charge", 7]] } }
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

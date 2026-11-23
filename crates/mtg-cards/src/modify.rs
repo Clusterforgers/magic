@@ -853,6 +853,13 @@ pub enum Prohibited {
     /// Cast the spells and play the lands whose cards the selector picks (CR 601, 305.1): "spells with the chosen names
     /// can't be cast and lands with the chosen names can't be played".
     R111CastOrPlay(Selector),
+    /// Attack at all (CR 508.1): "they can't attack this turn". With `you` only the player who controls the rule is out of
+    /// reach, not the planeswalkers or battles (CR 508.1b): "can't attack you during their next turn".
+    R118Attack {
+        /// Only the rule's controller can't be attacked.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        you: bool,
+    },
 }
 
 /// What the next spell of a `GameRule::NextSpell` gets.

@@ -724,6 +724,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::Performed
         | Condition::ExtraTurn => Traits::NONE,
         Condition::Monarch(who)
+        | Condition::R118BegunExtraTurn(who)
         | Condition::MonarchAtTurnStart(who)
         | Condition::AttackedYouLastTurn(who)
         | Condition::CompletedDungeon(who)

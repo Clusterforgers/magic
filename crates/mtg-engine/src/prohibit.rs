@@ -344,6 +344,18 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                 })
         }
         (
+            Prohibited::R118Attack { you },
+            Doing::Attack {
+                player,
+                object,
+                defender,
+                walker,
+            },
+        ) => {
+            covers(who, Some(player), Some(object))
+                && (!*you || (walker.is_none() && defender == ban.controller))
+        }
+        (
             Prohibited::AttackPlaneswalkers(walkers),
             Doing::Attack {
                 player,

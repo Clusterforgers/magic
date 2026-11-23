@@ -2313,6 +2313,9 @@ pub enum Condition {
     /// This spell is the first spell its controller has cast this game (CR 601.2i): "if this spell is the first spell
     /// you've cast this game". False for a copy, which was not cast, and for any other spell.
     R117FirstSpellThisGame,
+    /// A player the reference names (any of them when it names several) has begun an extra turn this game (CR 500.7): "if
+    /// you haven't begun an extra turn this game" is its negation. The current turn counts once it has begun.
+    R118BegunExtraTurn(Ref),
 }
 
 #[cfg(test)]

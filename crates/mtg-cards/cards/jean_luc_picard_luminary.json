@@ -1,0 +1,54 @@
+{
+  "oracle_id": "b95a6001-2773-43c1-a5ad-a37ef7c9f054",
+  "name": "Jean-Luc Picard, Luminary",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jean-Luc Picard, Luminary",
+      "oracle_fingerprint": "4326e088d888c665dd3761e9c5eea8d1",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "Type": "Artifact" },
+                      { "Supertype": "Legendary" },
+                      { "Subtype": "Saga" }
+                    ]
+                  },
+                  "Other",
+                  { "ControlledBy": "You" },
+                  { "Compare": { "stat": "ManaValue", "op": "Ge", "to": 3 } }
+                ],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [{ "Draw": {} }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Other"] },
+                "bounds": { "min": 0, "max": 1 }
+              },
+              {
+                "what": { "Object": [{ "Subtype": "Spacecraft" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              { "PutCounters": { "on": { "Target": 1 }, "counter": "charge", "count": 2 } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

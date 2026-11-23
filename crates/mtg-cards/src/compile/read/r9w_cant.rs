@@ -414,6 +414,14 @@ fn targeted(sources: &Selector) -> Option<String> {
             )
         }
         [kind, Pred::Spell] => format!("{} spells", kind_words(kind)?),
+        // "abilities from artifact sources your opponents control" (Species 8472): a source that is no spell.
+        [
+            Pred::Type(CardType::Artifact),
+            Pred::Not(spell),
+            Pred::ControlledBy(Ref::Opponents),
+        ] if **spell == Pred::Spell => {
+            "abilities from artifact sources your opponents control".to_owned()
+        }
         _ => return None,
     })
 }
