@@ -616,7 +616,7 @@ fn fight_view(run: &Run) -> Option<DelveFightView> {
 fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> DelveView {
     let theme = campaign()
         .ok()
-        .and_then(|content| content.theme(&loaded.run.theme).ok());
+        .and_then(|content| content.theme(loaded.run.floor_theme()).ok());
     let me = loaded
         .run
         .heroes
@@ -650,7 +650,7 @@ fn view(loaded: &Loaded, user: UserId, deck_problems: Vec<DelveDeckProblem>) -> 
         boss_lives: campaign().map_or_default(|content| loaded.run.boss_lives(content)),
         deck_problems,
         fight: fight_view(&loaded.run),
-        descent: loaded.run.descent_words(),
+        descent: campaign().map_or_default(|content| loaded.run.descent_words(content)),
         mirror: Vec::new(),
     }
 }
@@ -835,7 +835,7 @@ pub(crate) async fn list(
             id: id.to_string(),
             code: loaded.header.code.clone(),
             theme: content
-                .theme(&run.theme)
+                .theme(run.floor_theme())
                 .map_or_else(|_| run.theme.clone(), |t| t.name.clone()),
             status: status_word(&run.status).to_owned(),
             heroes: run.heroes.iter().map(|h| h.name.clone()).collect(),
