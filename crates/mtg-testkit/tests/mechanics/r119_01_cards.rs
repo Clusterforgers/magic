@@ -310,13 +310,11 @@ fn r119_lwaxana_makes_the_chosen_creature_trigger_twice(
         );
     let mut driver = Driver::from_scenario(scenario)?;
     if activated {
-        let echo = driver.id_of("Echo")?;
+        let echo = driver.target_named("Echo")?;
         driver.begin_ability("Lwaxana Troi, Charming Guest", 1)?;
         r119_resolve(&mut driver, |decision| match &decision.kind {
             DecisionKind::ChooseTargets(_) => {
-                Some(Answer::ChooseTargets(TargetChoice::Targets(vec![
-                    Target::Object(echo),
-                ])))
+                Some(Answer::ChooseTargets(TargetChoice::Targets(vec![echo])))
             }
             DecisionKind::PayMana(_) => Some(Answer::PayMana(PayChoice::Auto)),
             _ => None,

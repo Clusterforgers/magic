@@ -48,7 +48,7 @@ const RULES: Record<GivenRule, RuleWords> = {
     'raise',
   ),
   CantBeTurnedFaceUp: give('Stays face down', 'Face down', "can't be turned face up", 'restrict'),
-  R119CantBeBeamedUp: give('No beam up', 'Grounded', "can't be beamed up", 'restrict'),
+  R119CantBeBeamedUp: give('Not beamable', 'No beam', "can't be beamed up", 'restrict'),
   LoseAbilities: give('Loses abilities', 'Blanked', 'loses all abilities', 'restrict'),
   LoseKeyword: give('Loses a keyword', 'No keyword', 'loses a keyword', 'restrict'),
   GainAbility: give('New ability', 'Ability', 'gains an ability', 'raise'),

@@ -39,7 +39,7 @@ power: number,
 /**
  * Toughness delta.
  */
-toughness: number, } } | "SwitchPowerToughness" | "CantAttack" | "CantBlock" | "DoesntUntap" | "R6700KeepsLastLoyalty" | "CantBeTurnedFaceUp" | "CantBeBlocked" | { "CantBeBlockedBy": { 
+toughness: number, } } | "SwitchPowerToughness" | "CantAttack" | "CantBlock" | "DoesntUntap" | "R6700KeepsLastLoyalty" | "CantBeTurnedFaceUp" | "R119CantBeBeamedUp" | "CantBeBlocked" | { "CantBeBlockedBy": { 
 /**
  * The blockers it keeps out.
  */
