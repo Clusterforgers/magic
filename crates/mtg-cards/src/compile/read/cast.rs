@@ -59,6 +59,8 @@ fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
             Duration::UntilEndOfTurn
         } else if r.words("until end of combat on your next turn") {
             Duration::UntilEndOfCombatOnYourNextTurn
+        } else if r.words("until your next end step") {
+            Duration::UntilYourNextEndStep
         } else {
             r.need("until the end of your next turn")?;
             Duration::UntilEndOfYourNextTurn
@@ -254,6 +256,22 @@ pub fn impulse_wordings(text: String) -> Vec<String> {
         (
             "Until the end of your next turn, you may play those cards",
             "You may play those cards until the end of your next turn",
+        ),
+        (
+            "You may play that card until your next end step",
+            "Until your next end step, you may play that card",
+        ),
+        (
+            "You may play those cards until your next end step",
+            "Until your next end step, you may play those cards",
+        ),
+        (
+            "You may play that card until your next end step",
+            "You may play it until your next end step",
+        ),
+        (
+            "Until your next end step, you may play that card",
+            "Until your next end step, you may play it",
         ),
         ("You may play those cards", "You may play them"),
         ("you may play those cards", "you may play them"),

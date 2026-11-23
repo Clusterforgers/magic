@@ -80,32 +80,28 @@ fn the_monster_exiles_x_creature_cards_and_takes_a_counter_for_each(
     assert_eq!(asked, (picks, kinds.len()));
     let graveyard = names(driver.state(), Zone::Graveyard(pid(0)));
     let exiled = names(driver.state(), Zone::Exile);
-    match stats {
-        Some((power, toughness)) => {
-            let monster = driver.id_of("Frankenstein's Monster")?;
-            let seen =
-                mtg_engine::characteristics::characteristics(driver.state(), monster).unwrap();
-            assert_eq!((seen.power, seen.toughness), (Some(power), Some(toughness)));
-            let object = driver.state().object(monster).unwrap().permanent().unwrap();
-            let named = |name: &str| object.counters_of(&CounterKind::Other(name.to_owned()));
-            let expected = |index: usize| kinds.iter().filter(|kind| **kind == index).count();
-            assert_eq!(named("+2/+0") as usize, expected(0));
-            assert_eq!(
-                object.counters_of(&CounterKind::PlusOnePlusOne) as usize,
-                expected(1)
-            );
-            assert_eq!(named("+0/+2") as usize, expected(2));
-            assert_eq!(exiled.len(), x as usize, "{exiled:?}");
-            assert_eq!(graveyard.len(), dead - x as usize + 1, "{graveyard:?}");
-        }
-        None => {
-            assert!(graveyard.contains(&"Frankenstein's Monster".to_owned()));
-            assert!(exiled.is_empty(), "{exiled:?}");
-            assert!(
-                !names(driver.state(), Zone::Battlefield)
-                    .contains(&"Frankenstein's Monster".to_owned())
-            );
-        }
+    if let Some((power, toughness)) = stats {
+        let monster = driver.id_of("Frankenstein's Monster")?;
+        let seen = mtg_engine::characteristics::characteristics(driver.state(), monster).unwrap();
+        assert_eq!((seen.power, seen.toughness), (Some(power), Some(toughness)));
+        let object = driver.state().object(monster).unwrap().permanent().unwrap();
+        let named = |name: &str| object.counters_of(&CounterKind::Other(name.to_owned()));
+        let expected = |index: usize| kinds.iter().filter(|kind| **kind == index).count();
+        assert_eq!(named("+2/+0") as usize, expected(0));
+        assert_eq!(
+            object.counters_of(&CounterKind::PlusOnePlusOne) as usize,
+            expected(1)
+        );
+        assert_eq!(named("+0/+2") as usize, expected(2));
+        assert_eq!(exiled.len(), x as usize, "{exiled:?}");
+        assert_eq!(graveyard.len(), dead - x as usize + 1, "{graveyard:?}");
+    } else {
+        assert!(graveyard.contains(&"Frankenstein's Monster".to_owned()));
+        assert!(exiled.is_empty(), "{exiled:?}");
+        assert!(
+            !names(driver.state(), Zone::Battlefield)
+                .contains(&"Frankenstein's Monster".to_owned())
+        );
     }
     Ok(())
 }

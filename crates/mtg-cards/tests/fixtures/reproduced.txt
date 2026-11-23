@@ -2383,6 +2383,7 @@ Rite of Replication
 Rith, Liberated Primeval
 River Song's Diary
 River of Tears
+Riveteers Charm
 Riveteers Overlook
 Riveteers Requisitioner
 Road Rage
@@ -3305,6 +3306,7 @@ Whispering Snitch
 White Auracite
 Whiteout
 Wibbly-wobbly, Timey-wimey
+Wiccan, Young Avenger
 Wicker Picker
 Wickerbough Elder
 Wickersmith's Tools

@@ -51,9 +51,14 @@ fn compact(name: &str) -> String {
 
 #[rstest]
 #[case("Frankenstein's Monster")]
+#[case("Haste Magic")]
 #[case("Inti, Seneschal of the Sun")]
 #[case("Nahiri's Sacrifice")]
+#[case("Questing Druid // Seek the Beast")]
+#[case("Riveteers Charm")]
 #[case("Volatile Stormdrake")]
+#[case("Wiccan, Young Avenger")]
+#[case("Yasmin Khan")]
 fn r118_02_reads_back_whole(#[case] name: &str) {
     let report = report_of(name, &compact(name));
     assert_eq!(
@@ -67,7 +72,9 @@ fn r118_02_reads_back_whole(#[case] name: &str) {
 #[rstest]
 #[case("Frankenstein's Monster")]
 #[case("Inti, Seneschal of the Sun")]
+#[case("Riveteers Charm")]
 #[case("Volatile Stormdrake")]
+#[case("Wiccan, Young Avenger")]
 fn r118_02_the_compiler_reads_whole(#[case] name: &str) {
     let compiled = compile(&printed(name));
     assert_eq!(
