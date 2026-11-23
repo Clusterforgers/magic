@@ -52,6 +52,10 @@ use super::*;
     ClauseKind::Triggered,
     "When ~ enters, tap target creature an opponent controls and put a stun counter on it."
 )]
+#[case::tap_and_stun_then_a_rider(
+    ClauseKind::Activated,
+    "{2}{U}, Exile ~ from your graveyard: Tap target creature an opponent controls and put a stun counter on it. Activate only as a sorcery."
+)]
 #[case::untap_and_counter(
     ClauseKind::Triggered,
     "Whenever ~ attacks, untap target creature you control and put a +1/+1 counter on it."

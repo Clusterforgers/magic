@@ -139,8 +139,17 @@ pub(super) fn r117_join_wordings(ability: &Ability) -> Vec<String> {
     super::render::variants(&without)
         .into_iter()
         .filter_map(|text| {
-            let head = text.strip_suffix('.')?;
-            Some(format!("{head} and put {counters} on it."))
+            // The counters join the sentence of the tap, before any rider after it ("Activate only as a sorcery.").
+            let lowered = text.to_lowercase();
+            let at = lowered.find("tap target ")?;
+            let end = text[at..].find('.')? + at;
+            let (head, tail) = text.split_at(end);
+            // Also a sentence of its own ("... controls. Put a stun counter on it."), as the last-resort writer says it.
+            Some([
+                format!("{head} and put {counters} on it{tail}"),
+                format!("{head}. Put {counters} on it{tail}"),
+            ])
         })
+        .flatten()
         .collect()
 }

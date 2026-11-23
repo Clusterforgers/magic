@@ -12,11 +12,11 @@
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
             "effects": [
-              { "ExileTop": { "count": "X", "as": "exiled" } },
+              { "ExileTop": { "count": "X", "as": "impulse" } },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
                   },
                   "duration": "UntilEndOfYourNextTurn"
                 }

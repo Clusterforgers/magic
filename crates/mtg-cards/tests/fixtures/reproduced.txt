@@ -50,6 +50,7 @@ Akrasan Squire
 Akroma's Vengeance
 Akroma's Will
 Akroma, Angel of Wrath
+Alchemax Slayer-Bots
 Alchemist's Retrieval
 Alhammarret's Archive
 Alisaie Leveilleur
@@ -66,6 +67,7 @@ Always Watching
 Amass the Components
 Ambition's Cost
 Ambitious Aetherborn
+Ambling Stormshell
 Aminatou, Veil Piercer
 Aminatou, the Fateshifter
 Amulet of Safekeeping
@@ -215,6 +217,7 @@ Battle Frenzy
 Battle Hymn
 Battle Screech
 Battle Sliver
+Battle of Hoover Dam
 Battlefield Forge
 Battlefield Thaumaturge
 Battlesong Berserker
@@ -546,6 +549,7 @@ Consign to Dust
 Conspiracy Theorist
 Constable Odo
 Constable of the Realm
+Constrictor Sage
 Consume Spirit
 Consuming Aetherborn
 Consuming Corruption
@@ -590,6 +594,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Cruel Celebrant
 Crush Contraband
+Crushing Disappointment
 Crushing Vines
 Crypt Ghast
 Crypt Rats
@@ -891,6 +896,7 @@ Enraged Revolutionary
 Enshrined Memories
 Ensign Harry Kim, Operations
 Entangling Trap
+Enterprise NX-01
 Enthusiastic Study
 Entity Tracker
 Entomber Exarch
@@ -1066,6 +1072,7 @@ Freyalise, Llanowar's Fury
 Frodo, Adventurous Hobbit
 Frogtosser Banneret
 Frost Titan
+Frostfist Strider
 Fruit of Tizerus
 Fumigate
 Fungal Colossus
@@ -1085,6 +1092,7 @@ Galadhrim Brigade
 Galadriel, Gift-Giver
 Galea, Kindler of Hope
 Gallifrey Falls // No More
+Galvanic Giant // Storm Reading
 Galvanic Iteration
 Galvanizing Sawship
 Galvanizing Tenor
@@ -1138,6 +1146,7 @@ Gift of Paradise
 Gilded Drake
 Gilded Goose
 Gilded Lotus
+Gilded Scuttler
 Gilt-Leaf Palace
 Giltspire Avenger
 Gimli's Reckless Might
@@ -1214,6 +1223,7 @@ Graf Rats
 Grafted Wargear
 Grand Entryway // Elegant Rotunda
 Grapeshot
+Grappling Kraken
 Grasp of Fate
 Grasslands
 Grave Titan
@@ -1680,6 +1690,7 @@ Loxodon Smiter
 Loxodon Warhammer
 Loyal Apprentice
 Loyal Retainers
+Lt. Arex, Ever-Adapting
 Lt. Cmdr. Geordi La Forge
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
@@ -1913,6 +1924,7 @@ Necroduality
 Necroplasm
 Necropolis Regent
 Necroskitter
+Necrotic Hex
 Nessian Asp
 Nest of Scarabs
 Nested Shambler
@@ -1943,6 +1955,7 @@ Ninja Teen
 Ninja of the Deep Hours
 Ninja of the New Moon
 Nirkana Revenant
+No Way Out
 Nori, Teller of Tales
 Norn's Annex
 Norn's Choirmaster
@@ -2214,6 +2227,7 @@ Rain of Gore
 Rain of Thorns
 Rakdos Headliner
 Rakish Heir
+Rakshasa's Secret
 Ral, Storm Conduit
 Rally the Ranks
 Rambling Possum
@@ -2261,6 +2275,7 @@ Redcap Heelslasher
 Redemption Choir
 Redress Fate
 Reed Richards, Smartest Man
+Referee Squad
 Reflecting Mirror
 Reflecting Pool
 Reflections of Littjara
@@ -2357,6 +2372,7 @@ Rousing Refrain
 Rout
 Rowan, Scion of War
 Rowdy Research
+Rowdy Snowballers
 Rowen
 Ruby Medallion
 Ruby, Daring Tracker
@@ -2462,6 +2478,7 @@ Selective Obliteration
 Selesnya Guildgate
 Selesnya Sanctuary
 Seluma, Light of Aysen
+Send in the Pest
 Seraph Sanctuary
 Seraph of the Sword
 Sergeant John Benton
@@ -2503,6 +2520,7 @@ Shineshadow Snarl
 Shinka, the Bloodsoaked Keep
 Shiny Impetus
 Shipbreaker Kraken
+Shipwreck Patrol
 Shriekmaw
 Shrine of the Forsaken Gods
 Shrouded Shepherd // Cleave Shadows
@@ -2786,6 +2804,7 @@ Synth Infiltrator
 Syphon Life
 Syrix, Carrier of the Flame
 Szadek, Lord of Secrets
+T'Pol, Vulcan Representative
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Taii Wakeen, Perfect Shot
@@ -2810,6 +2829,7 @@ Tanuki Transplanter
 Tapestry Warden
 Targ Wrangler
 Tariff
+Taste of Death
 Tato Farmer
 Tatyova, Benthic Druid
 Taurean Mauler
@@ -2861,6 +2881,7 @@ Territorial Hellkite
 Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle
+Test of Conviction
 Teval's Judgment
 Textbook Tabulator
 Teyo, Geometric Tactician
@@ -2868,6 +2889,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Beacon of Kahless
 The Birth of Meletis
+The Caves of Androzani
 The Celestial Toymaker
 The Celestus
 The Chain Veil
@@ -3005,6 +3027,7 @@ Training Grounds
 Trait Doctoring
 Tranquil Expanse
 Tranquil Thicket
+Tranquilize
 Transmogrifying Wand
 Transporter Malfunction
 Trap the Trespassers
@@ -3041,10 +3064,12 @@ Twincast
 Twinflame
 Twinning Staff
 Two-Headed Giant of Foriys
+Type-2 Phaser
 Tyranid Prime
 Tyrant Guard
 Tyrant's Familiar
 Tyvar the Bellicose
+U.S.S. Reliant, From Hell's Heart
 Ukkima, Stalking Shadow
 Uktabi Efreet
 Ulamog's Crusher
@@ -3054,6 +3079,7 @@ Ultimecia, Temporal Threat
 Ultramarines Honour Guard
 Ultron, Machine Overlord
 Ultron, Unlimited
+Ultros, Obnoxious Octopus
 Umaro, Raging Yeti
 Umbral Collar Zealot
 Unable to Scream
@@ -3204,6 +3230,7 @@ Wasteland Raider
 Wastes
 Wastescape Battlemage
 Wayfarer's Bauble
+Waylaying Pirates
 Weaponcraft Enthusiast
 Wear // Tear
 Wear Away
