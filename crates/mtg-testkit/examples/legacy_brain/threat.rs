@@ -227,18 +227,19 @@ pub fn spell_threat(seen: &Seen<'_>, id: ObjectId) -> f64 {
 /// removal, fogs, burn and tricks; `None` for a card that is not interaction.
 pub fn interaction(card: &CardDefinition) -> Option<f64> {
     let traits = traits(card);
+    let knobs = super::knobs::knobs();
     if traits.wipe {
-        Some(1.4)
+        Some(knobs.wipe)
     } else if traits.counter {
-        Some(1.0)
+        Some(knobs.counter)
     } else if traits.removal && !traits.permanent {
-        Some(0.8)
+        Some(knobs.removal)
     } else if traits.fog {
-        Some(0.6)
+        Some(knobs.fog)
     } else if traits.burn {
-        Some(0.5)
+        Some(knobs.burn)
     } else if traits.trick {
-        Some(0.35)
+        Some(knobs.trick)
     } else {
         None
     }
@@ -253,21 +254,14 @@ pub fn hold_value(seen: &Seen<'_>) -> f64 {
         .filter(|player| seen.is_alive(*player))
         .map(|player| seen.hand_size(player))
         .sum();
-    HOLD_BASE + HOLD_PER_CARD * count(cards.min(HOLD_CARDS))
+    let knobs = super::knobs::knobs();
+    knobs.hold_base + knobs.hold_per_card * count(cards.min(HOLD_CARDS))
 }
 
-/// [`hold_value`] with no card in the opponents' hands.
-const HOLD_BASE: f64 = 4.0;
-/// What each card in the opponents' hands adds to [`hold_value`].
-const HOLD_PER_CARD: f64 = 1.6;
 /// The opponents' cards counted by [`hold_value`].
 const HOLD_CARDS: usize = 5;
-/// The share of its worth each further piece of interaction in hand keeps: the first answers the biggest threat, the
-/// next ones smaller ones.
-const HOLD_DECAY: f64 = 0.5;
-
 /// What the interaction in the seat's own hand is worth beyond its cards ([`interaction`], [`hold_value`]): the most
-/// valuable piece in full, each further one [`HOLD_DECAY`] of the one before, all at `share`.
+/// valuable piece in full, each further one the knob `hold_decay` of the one before, all at `share`.
 pub fn held_interaction(seen: &Seen<'_>, share: f64) -> f64 {
     let hold = hold_value(seen);
     let mut factors: Vec<f64> = seen
@@ -281,7 +275,7 @@ pub fn held_interaction(seen: &Seen<'_>, share: f64) -> f64 {
     let mut worth = 0.0;
     for factor in factors {
         worth += factor * hold * share * keep;
-        keep *= HOLD_DECAY;
+        keep *= super::knobs::knobs().hold_decay;
     }
     worth
 }
@@ -328,7 +322,79 @@ pub fn player_threat(seen: &Seen<'_>, player: PlayerId, bodies: &[Body]) -> f64 
         + 0.25 * f64::from(seen.life(player).max(0))
 }
 
+/// Whether the seat faces more than one opponent, where whom to pressure is a choice.
+pub fn many_opponents(seen: &Seen<'_>) -> bool {
+    seen.alive()
+        .into_iter()
+        .filter(|player| !seen.is_teammate(*player))
+        .count()
+        > 1
+}
+
+/// What the table's recent damage adds to `player`'s worth as a target ([`mtg_engine::rivalry`]): retaliation for the
+/// damage they dealt the seat's team, less a mild share for each point they took past the least-hit opponent.
+pub fn rivalry_lean(seen: &Seen<'_>, player: PlayerId) -> f64 {
+    let state = seen.state();
+    let knobs = super::knobs::knobs();
+    let opponents: Vec<PlayerId> = seen
+        .alive()
+        .into_iter()
+        .filter(|p| !seen.is_teammate(*p))
+        .collect();
+    let least = opponents
+        .iter()
+        .map(|p| mtg_engine::rivalry::received(state, *p))
+        .min()
+        .unwrap_or(0);
+    let hit_us: u32 = seen
+        .alive()
+        .into_iter()
+        .filter(|p| seen.is_teammate(*p))
+        .map(|p| mtg_engine::rivalry::dealt(state, player, p))
+        .fold(0, u32::saturating_add);
+    let taken = mtg_engine::rivalry::received(state, player).saturating_sub(least);
+    knobs.rival * f64::from(hit_us.min(12)) - knobs.spread * f64::from(taken.min(12))
+}
+
+/// `player`'s worth as the target of the seat's attacks and harmful spells at a table of several opponents: their
+/// threat ([`player_threat`], where life counts for them) and the [`rivalry_lean`]; low life alone adds nothing.
+pub fn aim_worth(seen: &Seen<'_>, player: PlayerId, bodies: &[Body]) -> f64 {
+    player_threat(seen, player, bodies) + rivalry_lean(seen, player)
+}
+
 /// A small count as a float.
 fn count(n: usize) -> f64 {
     f64::from(u32::try_from(n).unwrap_or(u32::MAX))
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: card traits are read from the rules of real cards, and interaction ranks wipes above counters above
+    //! removal above tricks.
+    use rstest::rstest;
+
+    use super::*;
+    use mtg_testkit::corpus::card;
+
+    #[rstest]
+    #[case::counterspell("Counterspell", |t: Traits| t.counter && t.fast)]
+    #[case::doom_blade("Doom Blade", |t: Traits| t.removal && t.fast)]
+    #[case::wrath("Wrath of God", |t: Traits| t.wipe && !t.fast)]
+    #[case::bolt("Lightning Bolt", |t: Traits| t.burn && t.removal)]
+    #[case::growth("Giant Growth", |t: Traits| t.trick && !t.removal)]
+    #[case::study("Rhystic Study", |t: Traits| t.draws && t.permanent)]
+    #[case::bears("Grizzly Bears", |t: Traits| t == Traits { permanent: true, ..Traits::default() })]
+    fn traits_are_read_from_the_rules(#[case] name: &str, #[case] holds: fn(Traits) -> bool) {
+        let read = traits(&card(name).unwrap());
+        assert!(holds(read), "{name}: {read:?}");
+    }
+
+    #[test]
+    fn counters_are_worth_keeping_more_than_removal_and_tricks() {
+        let worth = |name: &str| interaction(&card(name).unwrap()).unwrap_or(0.0);
+        assert!(worth("Wrath of God") > worth("Counterspell"));
+        assert!(worth("Counterspell") > worth("Doom Blade"));
+        assert!(worth("Doom Blade") > worth("Giant Growth"));
+        assert!(worth("Giant Growth") > worth("Grizzly Bears"));
+    }
 }

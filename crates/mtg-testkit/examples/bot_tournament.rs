@@ -32,6 +32,10 @@ use mtg_testkit::match_stats::{Sprt, elo, elo_interval};
 #[path = "legacy_brain/mod.rs"]
 mod legacy;
 
+#[allow(dead_code)]
+#[path = "missed/mod.rs"]
+mod missed;
+
 /// A brain that times its answers.
 struct Timed {
     inner: Box<dyn SeatBrain>,
@@ -349,6 +353,9 @@ impl SeatBrain for Aimed {
     }
 }
 
+/// Priority judgements of the current brains, those cut short by the budget, and those of them that still played.
+static CUTS: Mutex<(u64, u64, u64)> = Mutex::new((0, 0, 0));
+
 /// A brain that plays with its own policy constants.
 struct Knobbed {
     inner: Box<dyn SeatBrain>,
@@ -467,7 +474,12 @@ fn main() {
                     let mut brains: Vec<Box<dyn SeatBrain>> = (0..seats)
                         .map(|seat| {
                             let player = PlayerId::from_index(seat);
-                            if strong_seat(seat) {
+                            if strong_seat(seat) && std::env::var("MISSED").is_ok() {
+                                Box::new(missed::Missed {
+                                    inner: make(strong, seed, player, timed),
+                                    seat: player,
+                                }) as Box<dyn SeatBrain>
+                            } else if strong_seat(seat) {
                                 Box::new(Timed {
                                     inner: make(strong, seed, player, timed),
                                     stats: Arc::clone(&stats),
@@ -500,8 +512,16 @@ fn main() {
                         ..PlayOptions::default()
                     };
                     mtg_testkit::brain::deep::reset_tally();
+                    mtg_testkit::brain::priority::reset_cuts();
                     let outcome = play_brains(setup, seed, options, &mut brains);
                     let (searches, overrides) = mtg_testkit::brain::deep::tally();
+                    {
+                        let (judged, cut, played) = mtg_testkit::brain::priority::cuts();
+                        let mut all = CUTS.lock().unwrap();
+                        all.0 += judged;
+                        all.1 += cut;
+                        all.2 += played;
+                    }
                     let verdict = match outcome.map(|o| o.result) {
                         Ok(GameResult::Winner(player)) => {
                             if strong_seat(player.index()) {
@@ -593,6 +613,14 @@ fn main() {
             println!("{name}: {} of {total:.0} power", shares.join(" / "));
         }
     }
+    if std::env::var("MISSED").is_ok() {
+        missed::report();
+    }
+    let (judged, cut, played) = *CUTS.lock().unwrap();
+    println!(
+        "priority judgements {judged}, cut short by the budget {cut} ({:.1}%), of them still played {played}",
+        100.0 * cut as f64 / judged.max(1) as f64
+    );
     let (searches, overrides, with, points) = *searched.lock().unwrap();
     println!(
         "tree searches {searches}, overrides {overrides} ({:.1}%); games with an override {with}, scoring {:.1}%",

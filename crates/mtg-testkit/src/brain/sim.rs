@@ -135,6 +135,23 @@ impl Settings {
         ..Settings::HARD
     };
 
+    /// The fallback search of a play the full search ran out of time for: Normal's count of simulations to the
+    /// settled stack, on [`QUICK_TIME`] when these settings are timed.
+    #[must_use]
+    pub const fn quick(self) -> Settings {
+        Settings {
+            time: match self.time {
+                Some(_) => Some(QUICK_TIME),
+                None => None,
+            },
+            weights: self.weights,
+            careful: self.careful,
+            fair: self.fair,
+            deep: None,
+            ..Settings::NORMAL
+        }
+    }
+
     /// These settings without a clock: the answers depend on the seed alone.
     #[must_use]
     pub const fn untimed(mut self) -> Settings {
@@ -200,6 +217,9 @@ pub struct Search {
 
 /// Lands and permanent spells the seat plays by itself in one look-ahead simulation, its most expensive castable first.
 const ROLLOUT_PLAYS: u32 = 6;
+
+/// The clock of the fallback search ([`Settings::quick`]).
+pub const QUICK_TIME: Duration = Duration::from_millis(250);
 
 /// Whether `step` comes after the combat damage of its turn.
 pub fn after_combat(step: Step) -> bool {
@@ -513,7 +533,8 @@ impl Search {
     /// A seat's play in a simulation, judged as a good player plays: in its main phase on an empty stack a land, else
     /// each of its costliest castable spells (by name, at most [`JUDGED_CASTS`]) cast on a copy, the stack settled (the
     /// opponents' counters included) and the position scored for the caster; the best that beats keeping the cards by
-    /// [`JUDGED_MARGIN`], else a pass. Other windows play as [`rollout_play`] does.
+    /// [`JUDGED_MARGIN`], else a loyalty ability ([`walker_play`]), else a pass. Other windows play as [`rollout_play`]
+    /// does.
     fn judged_play(
         &mut self,
         engine: &Engine,
@@ -599,13 +620,14 @@ impl Search {
         self.judging = false;
         self.plays_left = saved;
         self.plays_turn = turn;
-        best.map_or(PriorityAction::Pass, |(_, play)| play)
+        best.map_or_else(|| walker_play(&seen, options), |(_, play)| play)
     }
 }
 
 /// A seat's own play in a look-ahead simulation: over an opposing spell a counterspell when the spell is worth it
 /// ([`counter_reply`]); on an empty stack in its main phase a land, else its most expensive castable permanent or
-/// sorcery spell; at an opponent's end step its most expensive castable instant (removal, burn); else a pass.
+/// sorcery spell, else a loyalty ability ([`walker_play`]); at an opponent's end step its most expensive castable
+/// instant (removal, burn); else a pass.
 fn rollout_play(
     engine: &Engine,
     options: &mtg_engine::decision::PriorityOptions,
@@ -633,7 +655,7 @@ fn rollout_play(
     if main && let Some(land) = options.playable_lands.first() {
         return PriorityAction::PlayLand(*land);
     }
-    options
+    let cast = options
         .castable
         .iter()
         .filter(|id| {
@@ -642,7 +664,32 @@ fn rollout_play(
             })
         })
         .max_by_key(|id| (seen.mana_value(**id), std::cmp::Reverse(**id)))
-        .map_or(PriorityAction::Pass, |id| PriorityAction::CastSpell(*id))
+        .map_or(PriorityAction::Pass, |id| PriorityAction::CastSpell(*id));
+    match cast {
+        PriorityAction::Pass if main => walker_play(&seen, options),
+        cast => cast,
+    }
+}
+
+/// A loyalty ability of one of the seat's planeswalkers (the first offered, its first printed ability), else a pass:
+/// the rollouts' walkers act every turn, so a walker is worth its abilities in every search.
+pub(crate) fn walker_play(
+    seen: &Seen<'_>,
+    options: &mtg_engine::decision::PriorityOptions,
+) -> PriorityAction {
+    options
+        .abilities
+        .iter()
+        .filter(|ability| {
+            seen.controller(ability.object) == Some(seen.seat())
+                && seen.chars(ability.object).is_some_and(|chars| {
+                    chars.types.contains(mtg_core::card::CardType::Planeswalker)
+                })
+        })
+        .min_by_key(|ability| (ability.object, ability.ability))
+        .map_or(PriorityAction::Pass, |ability| {
+            PriorityAction::Activate(*ability)
+        })
 }
 
 /// A seat's reply in a simulation to `top`, the object on top of the stack: a counterspell when it is an opposing

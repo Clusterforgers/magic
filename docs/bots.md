@@ -43,6 +43,7 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 - **Opening book** (`brain/choices.rs`): seven-card hands keep three to five lands, or two with a spell of mana value two or less; smaller hands keep two to their size less two.
 - **Loops** (`loop_answer.rs`, every level and the random bot): a loop that never ends by itself and asks no one to act is a draw; otherwise one iteration is worth the seat's tokens and life gained plus the opponents' lost, less the opponents' tokens and life gained. A loop worth something runs 100 times (to the cap when it ends by itself, as a life drain does); one worth nothing is stopped. A seat of a Delves boss's side runs a loop at most 5 times and never draws the game (`loop_answer_in`).
 - **Search** (Normal, Hard): plays, attacks, blocks and targets are simulated on engine copies with quick policies for every seat and scored by the shared evaluation. Responses settle the whole stack (counter wars), combat plays run to the end of the turn (pumps wear off before scoring). In rollouts a seat holding a counterspell counters an opposing spell that threatens more than the counter's hold value, so opponents keeping mana up are modelled as holding interaction when their redealt hands have it.
+- **Abilities** (`brain/priority.rs`, `brain/sim.rs`, `brain/targets.rs`): activated abilities are plays like spells, judged in the same windows. A judgement the clock or the count cuts short is judged again until the stack settles on a 250 ms clock of its own (`Settings::quick`), and a walker with nothing judged uses its first ability, so a crowded board never turns into a pass for want of time. Rollouts use a loyalty ability when they cast nothing in a main phase (`sim::walker_play`), so searches see what walkers do on later turns. A crew or an animation before combat, which changes nothing that lasts until the stack settles, is judged by the end of the turn against the pass played as far. At an opponent's end step an ability that loses nothing is played (its mana and tapped permanents untap before they could be used). A spell or ability whose effect starts by drawing, gaining life, scrying or surveilling aims at the seat's own side first (a loot, Jace's draw).
 - **Endgame** (Hard, Very Hard; `brain/endgame.rs`): with an opponent within reach of the seat's creatures and burn, each answer worth trying is played to the end of the turn in three redealt worlds, and one that wins in all of them is played at once. A play the seat has already made three times this turn (`REPEATS`) is not tried again, since a play that changes nothing wins whenever the quick policies win without it; after 40 plays in a turn the search takes no more priority plays.
 - **ISMCTS** (Hard with `Deep::LIGHT`, Very Hard with `Deep::FULL`): one tree over redealt worlds per decision with the heuristic answer first, the same evaluation at the cut-off, and the policy's tap-out costs charged to the root answers. Iterations cycle through 32 fixed worlds (common random numbers, so answers are compared in the same deals); an opponent's blocks, and an opponent's counterspell reply to the seat's spell when its redealt hand holds one, are minimizing nodes of the tree (the paranoid reply of max^n: opponents are assumed to block well and counter with open mana); a node belongs to the seat that first chose there, and another seat's choice passes it by; at a table of more than two a rollout plays once round the table, so every crack back is seen. Rollouts judge each seat's main-phase casts (`Search::judged`): each of the four costliest castable spells is cast on a copy, the stack settled with the opponents' counters, and the best that beats keeping the cards is played, for the seat and its opponents alike. Root answers that do the same thing are merged, answers clearly below the best are pruned, untried answers come in the history's order, and the search budget follows the decision's importance (`brain/clock.rs`: up to three times the level's budget with lethal in reach, 2.5 times over an opposing spell worth answering, 1.5 times for combat and big spells, 0.5 to 0.6 times for small plays and end steps). The search has authority: its favourite replaces the heuristic answer when its mean reward is one standard error of the difference higher (`Deep::trust` 0, `Deep::doubt` 1), which it does in about a fifth of its searches. Where rollouts see least the margin grows by `Deep::guard` (0.05): spending interaction the heuristics keep (a counter, a fog, removal in a response, combat or end step) and attacks at a table of more than two. An attack that dies to the crack back is vetoed when the heuristic's does not, and the ramp bonus (`priority::ramp_bonus`) is charged to the root answers with the tap-out costs.
 - **Tuning** (`brain/knobs.rs`, `eval::Terms`): the policy constants and evaluation weights are parameters; Texel tuning (`examples/eval_tune.rs`) and SPSA (`examples/spsa_tune.rs`) fit them, and a fit is kept only when it wins matches without losing suite cases.
@@ -53,7 +54,7 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 
 ## Testing
 
-- **Match testing** (`examples/bot_tournament.rs`): each deal is played twice with the sides swapped, so identical brains score exactly 50%; `DECKS=interaction` plays every pairing of an interaction deck (`Duel::INTERACTION`: Izzet, Dimir, Azorius) with every duel deck; `SPRT=elo0,elo1` stops at 5% error rates; the summary gives the Elo difference with its 95% interval and the longest answer. `old-<level>` plays main's brains, frozen in `examples/legacy_brain`.
+- **Match testing** (`examples/bot_tournament.rs`): each deal is played twice with the sides swapped, so identical brains score exactly 50%; `DECKS=interaction` plays every pairing of an interaction deck (`Duel::INTERACTION`: Izzet, Dimir, Azorius) with every duel deck; `SPRT=elo0,elo1` stops at 5% error rates; the summary gives the Elo difference with its 95% interval and the longest answer. `old-<level>` plays main's brains, frozen in `examples/legacy_brain` (`bot_suite` takes them too). The summary counts the priority judgements the budget cut short. `MISSED=1` checks every pass of the strong side in its main phase or an opponent's end step (`examples/missed`): each ability and castable spell is simulated to the end of the turn and those that beat the pass are counted by kind, with unused loyalty abilities and tap abilities of ready attackers used before combat; `MISSED=fast` counts only the walkers, `MISSED_SHOW=1` names the cards.
 - **Benchmark**: the decision-quality suite (`bot_suite`), as a fixed position set.
 - **Pods**: mode `pod` seats four players, two of each side alternating, so equal brains score 50%; `cpod` deals random Commander decks (`commander_cards::commander_fuzz_setup`).
 - **Overrides**: the tournament reports the tree searches, how many replaced the heuristic answer (`deep::tally`) and the score of the games with an override.
@@ -61,14 +62,25 @@ The 5 s server deadline rules out deep full-game search per decision; the levels
 
 ## Measured
 
-Decision-quality suite (66 cases, untimed, seed 7):
+Decision-quality suite (77 cases, 11 of them abilities, untimed, seed 7):
 
-| Level | main | Now |
-| --- | --- | --- |
-| Easy | 39% | 39% |
-| Normal | 97% | 97% |
-| Hard | 97% | 97% |
-| Very Hard | 92% | 97% |
+| Level | main | Now | Abilities, main | Abilities, now |
+| --- | --- | --- | --- | --- |
+| Easy | 40% | 40% | 5/11 | 5/11 |
+| Normal | 94% | 97% | 8/11 | 11/11 |
+| Hard | 94% | 95% | 9/11 | 10/11 |
+| Very Hard | 94% | 95% | 10/11 | 11/11 |
+
+Main misses the loot at the end step at every level (it aims the draw at the opponent) and Normal never crews or animates before combat (the stack settles with nothing lasting changed). In timed Commander pods 4 to 18% of Hard's priority judgements run out of budget; the fallback still finds a play in 94% of them.
+
+Ability play against main's brains of the same level, each deal played with the sides swapped (SPRT with elo0 0, elo1 40):
+
+| Level | Mode | Games | Score | Elo | SPRT |
+| --- | --- | --- | --- | --- | --- |
+| Normal | 1v1, interaction decks | 423 | 50.1% | +1 [-32, +34] | H0 accepted (the duel decks hold no activated abilities) |
+| Normal | Commander pod, untimed | 230 | 52.6% | +18 [-26, +64] | undecided |
+| Hard | 1v1, interaction decks | 36 | 50.0% | 0 | every deal split: the same plays |
+| Hard | Commander pod, timed | 48 | 45.8% | -29 [-133, +70] | undecided | In the server's recorded games main's Very Hard leaves a planeswalker unused in 23 of 34 turns it has one (Hard 2 of 10, Normal 0 of 35, players 37 of 156) and ends 20% of its turns with every land untapped (Hard 15%, Normal 9%, players 7%).
 
 Seeded games against main's brains of the same level on the interaction pairings, untimed, each deal played with the sides swapped (Elo with its 95% interval; SPRT with elo0 0, elo1 40 at 5% errors):
 

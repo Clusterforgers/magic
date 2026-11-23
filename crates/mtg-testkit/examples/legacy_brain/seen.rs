@@ -139,6 +139,11 @@ impl<'a> Seen<'a> {
         Seen { state, seat }
     }
 
+    /// The public game state, for rules every seat reads alike (the spotlight).
+    pub const fn state(&self) -> &'a GameState {
+        self.state
+    }
+
     /// The seat reading.
     pub const fn seat(&self) -> PlayerId {
         self.seat
