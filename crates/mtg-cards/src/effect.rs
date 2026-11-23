@@ -1836,6 +1836,17 @@ pub enum Effect {
     /// The turn ends (CR 723): the other spells and abilities on the stack are exiled, combat ends and the game goes on
     /// at the cleanup step.
     EndTurn,
+    /// The combat phase ends (the Mandate of Peace rulings): every spell and ability on the stack is exiled, this one
+    /// included, attackers and blockers are removed from combat, and the game goes on at the phase after combat without
+    /// the end of combat step. Nothing happens outside a combat phase.
+    R117EndCombat,
+    /// "Choose a counter on target enchantment you control. Put another counter of that kind on it.": the controller
+    /// chooses one kind among the counters on each permanent the reference names (asked only when it has several kinds)
+    /// and one more counter of that kind is put on it; a permanent with no counters gets none.
+    R117AnotherOfKind {
+        /// The permanents.
+        on: Ref,
+    },
     /// Phases are added after the current phase (CR 500.8), in this order and before any phase added earlier:
     /// "After this main phase, there is an additional combat phase followed by an additional main phase."
     AddPhase {

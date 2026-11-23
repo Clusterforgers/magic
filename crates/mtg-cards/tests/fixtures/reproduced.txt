@@ -52,6 +52,7 @@ Akroma's Vengeance
 Akroma's Will
 Akroma, Angel of Wrath
 Alchemist's Retrieval
+Alexander, Ship's Fool
 Alhammarret's Archive
 Alisaie Leveilleur
 All That Glitters
@@ -65,6 +66,7 @@ Altar's Reap
 Alter Reality
 Always Watching
 Amass the Components
+Ambassador K'Ehleyr
 Ambition's Cost
 Ambitious Aetherborn
 Aminatou, Veil Piercer
@@ -641,6 +643,7 @@ Darksteel Juggernaut
 Darksteel Mutation
 Darksteel Splicer
 Darkwater Catacombs
+Dathon, His Heart Open
 Dauntless Scrapbot
 Dauthi Horror
 Dauthi Marauder
@@ -1010,6 +1013,7 @@ Fire-Lit Thicket
 Fireshrieker
 Firestorm Hellkite
 Firmament Sage
+First Contact
 First Little Pig
 Fissure Vent
 Fists of Flame
@@ -1230,6 +1234,7 @@ Greymond, Avacyn's Stalwart
 Grief
 Griffin Aerie
 Grifter's Blade
+Grilka, Widowed Warrior
 Grim Backwoods
 Grim Flayer
 Grim Haruspex
@@ -1359,6 +1364,7 @@ Hour of Revelation
 Howlpack Resurgence
 Howltooth Hollow
 Hua Tuo, Honored Physician
+Hugh, First of Many
 Hulking Metamorph
 Hulking Raptor
 Hum of the Radix
@@ -1764,6 +1770,7 @@ Mentor of the Meek
 Mer-Ek Nightblade
 Mercadia's Downfall
 Merchant of Truth
+Merciful Mandate
 Mercurial Chemister
 Merfolk Branchwalker
 Merfolk Mistbinder
@@ -1968,6 +1975,7 @@ Ohran Yeti
 Ojer Axonil, Deepest Might // Temple of Power
 Okiba Reckoner Raid // Nezumi Road Captain
 Old Stickfingers
+Olinda the Oblivious
 Olivia's Wrath
 Ominous Harvest
 On Thin Ice
@@ -3018,6 +3026,7 @@ Tunnel of Love
 Turn // Burn
 Turn to Frog
 Tuskguard Captain
+Tuvok, Chief Tactical Officer
 Twilight Drover
 Twilight Mire
 Twincast
@@ -3254,6 +3263,7 @@ Woodland Stream
 Woodripper
 Woolly Mammoths
 Word of Seizing
+Worf, Intelligence Contractor
 Worf, Still Not Merry
 Worldspine Wurm
 Worn Powerstone

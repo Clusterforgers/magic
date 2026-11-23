@@ -1146,6 +1146,8 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 }
             }),
         Just(Effect::EndTurn),
+        Just(Effect::R117EndCombat),
+        Just(Effect::R117AnotherOfKind { on: Ref::Target(0) }),
         who().prop_map(|who| Effect::TimeTravel { who }),
         (who(), amount(), any::<bool>(), any::<bool>(), any::<bool>()).prop_map(
             |(who, count, skip_untap, no_power_up, r109_unpreventable)| Effect::ExtraTurn {

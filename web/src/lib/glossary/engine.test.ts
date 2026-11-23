@@ -58,6 +58,7 @@ const EFFECTS: Record<string, string> = {
   MultiplyCounters: 'Double',
   PutCountersOf: 'Counters',
   PutRandomCounter: 'Counters',
+  R117AnotherOfKind: 'Counters',
   Tap: 'Tap',
   Untap: 'Untap',
   TapOrUntap: 'Tap',
@@ -154,7 +155,7 @@ const ORDINARY_EFFECTS =
   PayAnyTimes StillResolves Bind Let R110RemovePutThisWay R110MoveEachKindMissing R110MoveOneOrMore R110ChooseSecretly R111KeepChosen R112NoteManaSpent
   R110AddCombatAfterFirst R111OrderGraveyard R112DoubleX R112NoteChosen
   R112GuessNumber R112Piles R112RollStore R112RerollStored R113PhaseIn R114StoreValue R114CopySpellOnto
-  R115ExchangeBlocks R115ExchangeBlockers R115JoinBlock R115SkipStep`)
+  R115ExchangeBlocks R115ExchangeBlockers R115JoinBlock R115SkipStep R117EndCombat`)
 
 /** The `CostItem` variants that are keyword actions or the words of one, by lexicon term. */
 const COSTS: Record<string, string> = {

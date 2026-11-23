@@ -1,0 +1,64 @@
+{
+  "oracle_id": "6ec8a9b8-233f-4de5-8f4c-3d677fbf2f30",
+  "name": "Olinda the Oblivious",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Olinda the Oblivious",
+      "oracle_fingerprint": "e3924588a31784d1bc992975e26fcd77",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "Attacks": { "what": ["This"] } }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [
+                      { "Type": "Creature" },
+                      { "Not": { "HasCounter": { "Other": "odor" } } }
+                    ]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "odor" } } },
+              {
+                "RepeatEach": {
+                  "over": { "Target": 0 },
+                  "as": "each",
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": { "Bound": "each" },
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                                "effects": [{ "LoseLife": { "amount": 2 } }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": { "WhileHasCounter": { "Other": "odor" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

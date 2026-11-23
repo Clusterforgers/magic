@@ -1073,6 +1073,14 @@ pub enum Amount {
         /// The stat compared.
         stat: StatKind,
     },
+    /// The greatest value of the stat among the objects `of` names, each judged as it was when it left (CR 400.7): "the
+    /// greatest mana value among cards revealed this way"; zero when it names none.
+    R117GreatestOf {
+        /// The objects.
+        of: Ref,
+        /// The stat compared.
+        stat: StatKind,
+    },
     /// The greatest number the first object `on` names noted this turn (`GameRule::R113NoteExiledManaValue`): "the greatest
     /// number noted for it this turn"; 0 when it noted none.
     R113GreatestNoted {
@@ -1355,6 +1363,10 @@ enum Tagged {
         of: Ref,
         stat: StatKind,
     },
+    R117GreatestOf {
+        of: Ref,
+        stat: StatKind,
+    },
     R113GreatestNoted {
         on: Ref,
     },
@@ -1600,6 +1612,10 @@ enum TaggedRef<'a> {
         of: &'a Ref,
         stat: &'a StatKind,
     },
+    R117GreatestOf {
+        of: &'a Ref,
+        stat: &'a StatKind,
+    },
     R113GreatestNoted {
         on: &'a Ref,
     },
@@ -1742,6 +1758,7 @@ impl From<Tagged> for Amount {
             Tagged::R113SharesWithAnother { of, stat } => {
                 Amount::R113SharesWithAnother { of, stat }
             }
+            Tagged::R117GreatestOf { of, stat } => Amount::R117GreatestOf { of, stat },
             Tagged::R113GreatestNoted { on } => Amount::R113GreatestNoted { on },
             Tagged::R113NotedWords { on } => Amount::R113NotedWords { on },
         }
@@ -1984,6 +2001,9 @@ impl Serialize for Amount {
             }
             Amount::R113SharesWithAnother { of, stat } => {
                 TaggedRef::R113SharesWithAnother { of, stat }.serialize(serializer)
+            }
+            Amount::R117GreatestOf { of, stat } => {
+                TaggedRef::R117GreatestOf { of, stat }.serialize(serializer)
             }
             Amount::R113GreatestNoted { on } => {
                 TaggedRef::R113GreatestNoted { on }.serialize(serializer)
@@ -2281,6 +2301,9 @@ pub enum Condition {
     /// common color among nontoken permanents the chosen player controls but isn't tied for most common". False for a source
     /// that chose no colour.
     R115MostCommonColor(Selector),
+    /// This spell is the first spell its controller has cast this game (CR 601.2i): "if this spell is the first spell
+    /// you've cast this game". False for a copy, which was not cast, and for any other spell.
+    R117FirstSpellThisGame,
 }
 
 #[cfg(test)]

@@ -115,6 +115,8 @@ mod one_of;
 mod pair;
 mod r111_order_graveyard;
 mod r112_double_x;
+mod r117_another_of_kind;
+mod r117_end_combat;
 mod r301b_exchange_toughness;
 mod r372_gain_suspend;
 mod r404_look_face_down;
@@ -274,6 +276,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Choose { .. } => choose::run(cx, effect),
         Effect::ChooseAtRandom { .. } => choose_at_random::run(cx, effect),
         Effect::PutRandomCounter { .. } => r6102_random_counter::run(cx, effect),
+        Effect::R117AnotherOfKind { .. } => r117_another_of_kind::run(cx, effect),
         Effect::ChooseValue { .. } => choose_value::run(cx, effect),
         Effect::Shuffle { .. } => shuffle::run(cx, effect),
         Effect::Move { .. } => move_to::run(cx, effect),
@@ -381,6 +384,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::GainSuspend { .. } => r372_gain_suspend::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
         Effect::EndTurn => Ok(end_turn::run(cx)),
+        Effect::R117EndCombat => Ok(r117_end_combat::run(cx)),
         Effect::AddPhase { .. } => add_phase::run(cx, effect),
         Effect::AddStep { .. } => r306_add_step::run(cx, effect),
         Effect::WinGame { .. } => win_game::run(cx, effect),
@@ -486,7 +490,7 @@ mod tests {
         {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
         {"BecomeMonarch":{}}, {"ReduceSpeed":{"who":"You"}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Empower":{"count":1}}, {"ChooseWithin":{"from":"This","within":{"TotalPowerAtMost":1},"as":"kept"}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Meld":{"with":[{"Named":"Bruna"}],"into":"Brisela"}}, "AuraSwap", "R6501RedistributeLife", {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"FaceDownPile":{"what":"This","then":"Manifest"}}, {"BecomeForetold":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn",
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"FaceDownPile":{"what":"This","then":"Manifest"}}, {"BecomeForetold":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn", "R117EndCombat", {"R117AnotherOfKind":{"on":"This"}},
         {"ChangeTargets":{"what":"This","to":"Another"}},
         {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
@@ -536,7 +540,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 169, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 171, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -683,6 +687,8 @@ mod tests {
         "Effect.GainSuspend",
         "Effect.ExtraTurn",
         "Effect.EndTurn",
+        "Effect.R117EndCombat",
+        "Effect.R117AnotherOfKind",
         "Effect.ChangeTargets",
         "Effect.CopySpell",
         "Effect.CopyAbility",

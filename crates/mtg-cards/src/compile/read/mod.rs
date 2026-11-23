@@ -219,6 +219,7 @@ mod r116_05_assimilate;
 mod r116_05_mana;
 mod r116_06_while;
 mod r116_reminder_tokens;
+mod r117_02_wholes;
 pub(crate) use r116_reminder_tokens::r116_is_reminder_token;
 mod r11w_tallies;
 mod r281_unless;
@@ -659,6 +660,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         found
     } else if let Some(found) = r116_02_wholes::r116_02_pair_read(text) {
         found
+    } else if let Some(found) = r117_02_wholes::r117_02_pair_read(text) {
+        found
     } else if let Some(found) = r113_01_wholes::r113_01_pair_read(text) {
         found
     } else if let Some(found) = r114_01_wholes::r114_01_pair_read(text) {
@@ -901,6 +904,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r116_02_wholes::r116_02_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r117_02_wholes::r117_02_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r113_01_wholes::r113_01_whole_read(text) {

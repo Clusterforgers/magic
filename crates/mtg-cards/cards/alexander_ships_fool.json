@@ -1,0 +1,49 @@
+{
+  "oracle_id": "d629311f-a7fc-4af5-91ce-5bf506a3cdb3",
+  "name": "Alexander, Ship's Fool",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Alexander, Ship's Fool",
+      "oracle_fingerprint": "aa66c598c3cf6c68261b2088ae78f2c3",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Haste" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "Bound": "player" },
+                        "filter": [],
+                        "as": "card",
+                        "revealed_as": "seen"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card" }, "as": "revealed", "adds": true } },
+                    { "Draw": { "who": { "Bound": "player" } } }
+                  ]
+                }
+              },
+              { "ChooseAtRandom": { "from": "Opponents", "as": "foe" } },
+              {
+                "DealDamage": {
+                  "to": { "Bound": "foe" },
+                  "amount": {
+                    "R117GreatestOf": { "of": { "Bound": "revealed" }, "stat": "ManaValue" }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
