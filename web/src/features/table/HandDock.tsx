@@ -215,6 +215,7 @@ export const HandDock = memo(function HandDock({
               cost
               layout={layouts?.command}
               commanders={waiting}
+              plays
               grabs={pick}
             />
           </div>
@@ -231,6 +232,7 @@ export const HandDock = memo(function HandDock({
             cost
             layout={layout}
             onMove={onMove}
+            plays
             grabs={pick}
           />
         )}
