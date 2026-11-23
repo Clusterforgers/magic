@@ -1073,6 +1073,7 @@ Founding of Omashu
 Foundry Inspector
 Fountainport
 Four Knocks
+Fractal Mascot
 Fractured Powerstone
 Franklin Richards, Ascendant
 Frenzied Saddlebrute
@@ -1390,6 +1391,7 @@ Howlpack Resurgence
 Howltooth Hollow
 Hua Tuo, Honored Physician
 Hugh, First of Many
+Hugs, Grisly Guardian
 Hulking Metamorph
 Hulking Raptor
 Hum of the Radix
@@ -1404,6 +1406,7 @@ Hypnotic Sprite // Mesmeric Glare
 I.K.S. Negh'Var, Imperial Flagship
 Icatian Infantry
 Ice Cauldron
+Ice Flan
 Ice-Fang Coatl
 Icefeather Aven
 Ichor Elixir
@@ -1504,6 +1507,7 @@ Jazal Goldmane
 Jedit Ojanen of Efrava
 Jegantha, the Wellspring
 Jeska's Will
+Jessica Jones, Private Eye
 Jet, Freedom Fighter
 Jeweled Amulet
 Jinnie Fay, Jetmir's Second
@@ -1685,6 +1689,7 @@ Loki's Scepter
 Loki, the Deceiver
 Long List of the Ents
 Loot, Exuberant Explorer
+Loot, the Key to Everything
 Looter il-Kor
 Loran of the Third Path
 Lord of Extinction
@@ -1801,6 +1806,7 @@ Mentor of the Meek
 Mer-Ek Nightblade
 Mercadia's Downfall
 Merchant of Truth
+Merchant's Dockhand
 Merciful Mandate
 Mercurial Chemister
 Merfolk Branchwalker
@@ -1920,6 +1926,7 @@ Mystic Reflection
 Mystic Retrieval
 Mystic Snake
 Nadier's Nightblade
+Nagging Thoughts
 Nahiri's Binding
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
@@ -1941,6 +1948,7 @@ Necroskitter
 Necrotic Hex
 Nemesis of Reason
 Nessian Asp
+Nessian Game Warden
 Nest of Scarabs
 Nested Shambler
 Netherese Puzzle-Ward
@@ -2247,6 +2255,7 @@ Rain of Thorns
 Rakdos Headliner
 Rakish Heir
 Rakshasa's Secret
+Ral's Outburst
 Ral, Storm Conduit
 Rally the Ranks
 Rambling Possum
@@ -2494,6 +2503,7 @@ Seekers' Squire
 Seer's Sundial
 Seething Song
 Segovian Angel
+Seismic Sense
 Seize the Day
 Selective Obliteration
 Selesnya Guildgate
@@ -2547,6 +2557,7 @@ Shriekmaw
 Shrine of the Forsaken Gods
 Shrouded Shepherd // Cleave Shadows
 Shu Cavalry
+Sibsig Appraiser
 Sickening Shoal
 Siege Smash
 Siege Wurm
@@ -2821,6 +2832,7 @@ Sword of Vengeance
 Sword of the Animist
 Sword-Swallowing Seraph
 Swords to Plowshares
+Sylvan Advocate
 Sylvia Tilly, Joy of Discovery
 Sylvok Battle-Chair
 Syndic of Tithes
@@ -2839,6 +2851,7 @@ Tainted Isle
 Tainted Remedy
 Tainted Wood
 Takeno, Samurai General
+Talas Lookout
 Talisman of Conviction
 Talisman of Dominance
 Talisman of Hierarchy
@@ -3045,6 +3058,7 @@ Torrent of Stone
 Torrential Gearhulk
 Toski, Bearer of Secrets
 Totentanz, Swarm Piper
+Tower Geist
 Towering Titan
 Toxic Deluge
 Trace of Abundance

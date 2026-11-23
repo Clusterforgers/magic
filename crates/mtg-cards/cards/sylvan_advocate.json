@@ -12,9 +12,18 @@
           "Static": {
             "affected": {
               "Each": [
-                { "AnyOf": ["This", { "Type": "Land" }] },
-                { "Type": "Creature" },
-                { "ControlledBy": "You" }
+                {
+                  "AnyOf": [
+                    "This",
+                    {
+                      "R117AllOf": [
+                        { "Type": "Land" },
+                        { "Type": "Creature" },
+                        { "ControlledBy": "You" }
+                      ]
+                    }
+                  ]
+                }
               ]
             },
             "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],

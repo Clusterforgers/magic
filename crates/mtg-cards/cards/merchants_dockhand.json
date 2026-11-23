@@ -16,11 +16,11 @@
             ],
             "effects": [
               { "LookAtTop": { "count": "X", "as": "top" } },
-              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
-              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
               {
                 "Move": {
-                  "what": { "Bound": "rest3" },
+                  "what": { "Bound": "rest" },
                   "to": { "Library": { "place": "Bottom", "order": "Chosen" } }
                 }
               }
