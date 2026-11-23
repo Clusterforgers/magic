@@ -39,6 +39,7 @@ fn every_case_builds_with_a_decision_for_seat_0() {
         Theme::Wipe,
         Theme::Develop,
         Theme::Trick,
+        Theme::Ability,
     ] {
         assert!(all.iter().any(|case| case.theme == theme), "{theme:?}");
     }

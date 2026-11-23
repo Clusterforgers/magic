@@ -13,14 +13,12 @@ use super::eval::{creature_value, life_value, pressure};
 use super::seen::{Body, Seen};
 use super::sim::{Horizon, Search};
 use super::threat;
+use mtg_testkit::bot::affordable_attack;
 
 /// A declaration of attackers.
 pub type Attack = Vec<(ObjectId, AttackTarget)>;
 /// A declaration of blockers.
 pub type Blocks = Vec<(ObjectId, ObjectId)>;
-
-/// What a forecast lethal hit on the seat's team costs a block.
-const LETHAL_HIT: f64 = 500.0;
 
 /// Combat damage divided as the rules ask for least: each blocker in order gets lethal damage while the power lasts;
 /// what is left goes past them with trample, else to the first blocker.
@@ -59,11 +57,8 @@ fn punishes(blocker: &Body, attacker: &Body) -> bool {
     // trades far up.
     blocker_first
         || !kills(attacker, blocker)
-        || creature_value(blocker) < TRADE_UP * creature_value(attacker)
+        || creature_value(blocker) < super::knobs::knobs().trade_up * creature_value(attacker)
 }
-
-/// The share of an attacker's value below which a blocker that dies killing it still makes the attack a loss.
-const TRADE_UP: f64 = 0.6;
 
 /// Every permanent `seen` reads, by id.
 fn bodies_by_id(seen: &Seen<'_>) -> BTreeMap<ObjectId, Body> {
@@ -73,11 +68,10 @@ fn bodies_by_id(seen: &Seen<'_>) -> BTreeMap<ObjectId, Body> {
         .collect()
 }
 
-/// What each untapped creature that would punish the seat's attackers takes off a player's appeal as a target.
-const WALL: f64 = 8.0;
-
 /// The opponent the seat's attacks go at among `offered`: one its creatures can kill this turn, else the one who
-/// threatens its team most ([`threat::player_threat`], the archenemy), less for each untapped creature of theirs that punishes the seat's attackers. Teammates choose the same way, so they focus on one opponent.
+/// threatens its team most ([`threat::player_threat`], the archenemy), less for each untapped creature of theirs that
+/// punishes the seat's attackers. With several opponents the kill must get past every blocker, and recent damage leans
+/// the choice ([`threat::rivalry_lean`]: retaliation, spread); low life alone adds nothing. Teammates never.
 pub fn focus(
     seen: &Seen<'_>,
     bodies: &BTreeMap<ObjectId, Body>,
@@ -90,7 +84,36 @@ pub fn focus(
         .sum();
     let all: Vec<Body> = bodies.values().cloned().collect();
     let mut best: Option<(f64, PlayerId)> = None;
-    for player in offered.iter().copied().filter(|p| !seen.is_teammate(*p)) {
+    let boss = super::spotlight::boss_seat(seen);
+    // A boss's side aims at the heroes the spotlight allows, at any of them when it allows none.
+    let fair: Vec<PlayerId> = offered
+        .iter()
+        .copied()
+        .filter(|p| !seen.is_teammate(*p) && super::spotlight::may_aim(seen, *p))
+        .collect();
+    let pool: Vec<PlayerId> = if fair.is_empty() {
+        offered
+            .iter()
+            .copied()
+            .filter(|p| !seen.is_teammate(*p))
+            .collect()
+    } else {
+        fair
+    };
+    let archenemy = super::knobs::knobs().archenemy > 0.0 && threat::many_opponents(seen);
+    // What the seat's untapped creatures surely deal a player this turn, every blocker of theirs blocking.
+    let strikers: Vec<Body> = all
+        .iter()
+        .filter(|body| {
+            !body.is_creature()
+                || (body.controller == seen.seat() && !body.tapped)
+                || !seen.is_teammate(body.controller)
+        })
+        .cloned()
+        .collect();
+    let own_team = seen.team_of(seen.seat());
+    let reach = |player: PlayerId| pressure(seen, &strikers, own_team, seen.team_of(player));
+    for player in pool {
         let life = seen.life(player);
         let board = threat::player_threat(seen, player, &all);
         // Untapped creatures that punish the seat's attackers make a player a worse target.
@@ -107,11 +130,23 @@ pub fn focus(
                 })
             })
             .count();
-        let score = if life <= power {
+        let wall = super::knobs::knobs().wall * f64::from(u32::try_from(walls).unwrap_or(u32::MAX));
+        let score = if boss {
+            // A boss's side weighs threat against the attention a hero already got, never weakness alone.
+            board + super::spotlight::lean(seen, player)
+                - super::knobs::knobs().wall * f64::from(u32::try_from(walls).unwrap_or(u32::MAX))
+                + if life <= power { 10.0 } else { 0.0 }
+        } else if archenemy {
+            // Several opponents: the one the seat surely kills now, else by threat, never low life alone.
+            if life <= reach(player) {
+                1_000.0 - f64::from(life)
+            } else {
+                board + threat::rivalry_lean(seen, player) - wall
+            }
+        } else if life <= power {
             1_000.0 - f64::from(life)
         } else {
-            board + 0.5 * f64::from(40 - life.min(40))
-                - WALL * f64::from(u32::try_from(walls).unwrap_or(u32::MAX))
+            board + 0.5 * f64::from(40 - life.min(40)) - wall
         };
         if best.is_none_or(|(held, _)| score > held) {
             best = Some((score, player));
@@ -139,7 +174,17 @@ fn aimed(seen: &Seen<'_>, options: &AttackOptions, at: Option<PlayerId>) -> Atta
                     .defenders
                     .iter()
                     .copied()
-                    .find(|t| matches!(t, AttackTarget::Player(_)) && opposing(t))
+                    .find(|t| {
+                        matches!(t, AttackTarget::Player(p) if super::spotlight::may_aim(seen, *p))
+                            && opposing(t)
+                    })
+                    .or_else(|| {
+                        option
+                            .defenders
+                            .iter()
+                            .copied()
+                            .find(|t| matches!(t, AttackTarget::Player(_)) && opposing(t))
+                    })
             })
             .or_else(|| option.defenders.iter().copied().find(opposing))
             .or_else(|| {
@@ -154,6 +199,42 @@ fn aimed(seen: &Seen<'_>, options: &AttackOptions, at: Option<PlayerId>) -> Atta
         }
     }
     attack
+}
+
+/// `attacks` without those at a hero the spotlight spares ([`super::spotlight::fair_attack`]), unless none is left.
+fn keep_fair(seen: &Seen<'_>, attacks: &mut Vec<Attack>) {
+    if attacks
+        .iter()
+        .any(|attack| super::spotlight::fair_attack(seen, attack))
+    {
+        attacks.retain(|attack| super::spotlight::fair_attack(seen, attack));
+    }
+}
+
+/// The opponent the seat's attacks go at: a boss's side aims at the hero it eyes unless the engine finds a reason not to
+/// ([`super::spotlight::attack_aim`]); any other seat, and a boss's side with no hero to attack, by [`focus`].
+fn aim_of(
+    seen: &Seen<'_>,
+    bodies: &BTreeMap<ObjectId, Body>,
+    options: &AttackOptions,
+) -> Option<PlayerId> {
+    super::spotlight::attack_aim(seen, options)
+        .map(|aim| aim.hero)
+        .or_else(|| focus(seen, bodies, &offered_players(options)))
+}
+
+/// `attacks` without those that go at another hero than the one a boss's side's attacks are bound to
+/// ([`super::spotlight::bound_attack`]), unless none is left.
+fn keep_bound(seen: &Seen<'_>, options: &AttackOptions, attacks: &mut Vec<Attack>) {
+    let Some(aim) = super::spotlight::attack_aim(seen, options) else {
+        return;
+    };
+    if attacks
+        .iter()
+        .any(|attack| super::spotlight::bound_attack(seen, options, &aim, attack))
+    {
+        attacks.retain(|attack| super::spotlight::bound_attack(seen, options, &aim, attack));
+    }
 }
 
 /// The players `options` lets the seat attack.
@@ -175,11 +256,14 @@ fn offered_players(options: &AttackOptions) -> Vec<PlayerId> {
 /// and every creature when together they deal lethal damage past the defenders' blockers.
 pub fn quick_attack(seen: &Seen<'_>, options: &AttackOptions) -> Attack {
     let bodies = bodies_by_id(seen);
-    let at = focus(seen, &bodies, &offered_players(options));
+    let at = aim_of(seen, &bodies, options);
     let all = aimed(seen, options, at);
+    // Only the aimed hero's creatures block a boss's side's attack at them; any other seat reads every opposing one.
+    let boss = super::spotlight::boss_seat(seen);
     let defenders: Vec<&Body> = bodies
         .values()
         .filter(|body| body.is_creature() && !body.tapped && !seen.is_teammate(body.controller))
+        .filter(|body| !boss || at.is_none_or(|target| body.controller == target))
         .collect();
     let attacking: Vec<&Body> = all.iter().filter_map(|(id, _)| bodies.get(id)).collect();
     if let Some(target) = at {
@@ -268,7 +352,7 @@ pub fn safe_attack(seen: &Seen<'_>, options: &AttackOptions) -> Attack {
 
 /// Whether `attack` kills a defending player outright if each of that player's team's untapped creatures blocks one of
 /// its biggest attackers.
-fn lethal(seen: &Seen<'_>, attack: &Attack) -> bool {
+pub fn lethal(seen: &Seen<'_>, attack: &Attack) -> bool {
     let bodies = bodies_by_id(seen);
     let mut players: Vec<PlayerId> = Vec::new();
     for (_, target) in attack {
@@ -315,7 +399,7 @@ fn forecast_score(
         let change = life_value(player.life_after) - life_value(player.life);
         if seen.is_teammate(player.player) {
             if player.lethal || player.life_after <= 0 {
-                score -= LETHAL_HIT;
+                score -= super::knobs::knobs().lethal_hit;
             } else {
                 score += change;
             }
@@ -343,7 +427,7 @@ pub fn greedy_blocks(
         .map(|body| (body.id, creature_value(body)))
         .collect();
     let mut score = |blocks: &Blocks| -> Option<f64> {
-        if *budget == 0 || !options.accepts(blocks) {
+        if *budget == 0 || super::clock::stopped() || !options.accepts(blocks) {
             return None;
         }
         *budget -= 1;
@@ -477,7 +561,7 @@ pub fn plan_blocks(search: &mut Search, engine: &Engine, options: &BlockOptions)
 pub fn attack_candidates(seen: &Seen<'_>, options: &AttackOptions) -> Vec<Attack> {
     let bodies = bodies_by_id(seen);
     let offered = offered_players(options);
-    let at = focus(seen, &bodies, &offered);
+    let at = aim_of(seen, &bodies, options);
     let all = aimed(seen, options, at);
     let quick = quick_attack(seen, options);
     let mut candidates: Vec<Attack> = vec![
@@ -512,6 +596,7 @@ pub fn attack_candidates(seen: &Seen<'_>, options: &AttackOptions) -> Vec<Attack
     let mut keys: Vec<Attack> = Vec::new();
     let mut unique: Vec<Attack> = Vec::new();
     for attack in candidates {
+        let attack = affordable_attack(options, &attack);
         let mut key = attack.clone();
         key.sort_unstable_by_key(|(id, _)| *id);
         if !keys.contains(&key) && options.accepts(&attack) {
@@ -519,6 +604,8 @@ pub fn attack_candidates(seen: &Seen<'_>, options: &AttackOptions) -> Vec<Attack
             unique.push(attack);
         }
     }
+    keep_fair(seen, &mut unique);
+    keep_bound(seen, options, &mut unique);
     if unique.is_empty() {
         unique.push(options.legal_attack());
     }
@@ -533,15 +620,16 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
     let seat = search.seat();
     let seen = Seen::new(engine.state(), seat);
     if !search.settings().combat_search {
-        return if search.settings().careful {
+        let attack = if search.settings().careful {
             safe_attack(&seen, options)
         } else {
             quick_attack(&seen, options)
         };
+        return affordable_attack(options, &attack);
     }
     let bodies = bodies_by_id(&seen);
     let offered = offered_players(options);
-    let at = focus(&seen, &bodies, &offered);
+    let at = aim_of(&seen, &bodies, options);
     let all = aimed(&seen, options, at);
     let horizon = if search.settings().lookahead {
         Horizon::NextTurn
@@ -565,9 +653,12 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
             candidates.push(aimed(&seen, options, Some(other)));
         }
     }
+    keep_fair(&seen, &mut candidates);
+    keep_bound(&seen, options, &mut candidates);
     let mut tried: Vec<Attack> = Vec::new();
     let mut best: Option<(f64, Attack)> = None;
     let mut consider = |search: &mut Search, attack: Attack, best: &mut Option<(f64, Attack)>| {
+        let attack = affordable_attack(options, &attack);
         let mut key = attack.clone();
         key.sort_unstable_by_key(|(id, _)| *id);
         if tried.contains(&key) || !options.accepts(&attack) {
@@ -612,5 +703,44 @@ pub fn plan_attack(search: &mut Search, engine: &Engine, options: &AttackOptions
         };
         consider(search, toggled, &mut best);
     }
-    best.map_or_else(|| safe_attack(&seen, options), |(_, attack)| attack)
+    best.map_or_else(
+        || affordable_attack(options, &safe_attack(&seen, options)),
+        |(_, attack)| attack,
+    )
+}
+
+#[cfg(test)]
+mod tests {
+    //! Goal: combat damage is assigned lethal first, trample past the blockers and the rest to the first blocker.
+    use rstest::rstest;
+
+    use super::*;
+
+    #[rstest]
+    #[case::exact(4, vec![2, 2], false, vec![2, 2])]
+    #[case::short(3, vec![2, 2], false, vec![2, 1])]
+    #[case::spare_without_trample(6, vec![2, 2], false, vec![4, 2])]
+    #[case::spare_with_trample(6, vec![2, 2], true, vec![2, 2])]
+    fn damage_goes_lethal_first(
+        #[case] power: u32,
+        #[case] lethal: Vec<u32>,
+        #[case] trample: bool,
+        #[case] expected: Vec<u32>,
+    ) {
+        let blockers: Vec<ObjectId> = (0..lethal.len() as u64).map(|i| ObjectId(10 + i)).collect();
+        let options = DamageOptions {
+            attacker: ObjectId(1),
+            power,
+            blockers: blockers.clone(),
+            excess: trample.then_some(mtg_engine::combat::DamageTarget::Player(PlayerId(1))),
+            lethal,
+            unblocked: false,
+            whole: Vec::new(),
+        };
+        let shares: Vec<u32> = assign_lethal(&options)
+            .into_iter()
+            .map(|(_, s)| s)
+            .collect();
+        assert_eq!(shares, expected);
+    }
 }

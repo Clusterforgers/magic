@@ -65,6 +65,8 @@ pub struct Settings {
     pub votes: u32,
     /// A wall-clock cap per decision; `None` searches by count alone, so the answers replay with the seed.
     pub time: Option<Duration>,
+    /// Whether the seat's own decisions first look for a forced win this turn ([`super::endgame::forced_win`]).
+    pub endgame: bool,
 }
 
 impl Settings {
@@ -84,16 +86,31 @@ impl Settings {
         deep: None,
         votes: 1,
         time: Some(Duration::from_millis(300)),
+        endgame: false,
     };
 
-    /// The first Normal: [`Settings::NORMAL`] without careful play, kept as a fixed yardstick for measuring the levels.
+    /// The first Normal (heuristic combat, a shallow search of plays and targets, careless), kept as a fixed
+    /// yardstick for measuring the levels.
     pub const BASELINE: Settings = Settings {
+        sims: 40,
+        forecasts: 160,
+        targets: 3,
+        depth: 1,
+        combat_search: false,
+        lookahead: false,
         careful: false,
-        ..Settings::NORMAL
+        sequences: false,
+        fair: false,
+        weights: Weights::NORMAL,
+        deep: None,
+        votes: 1,
+        time: Some(Duration::from_millis(300)),
+        endgame: false,
     };
 
     /// Hard: simulated attacks, blocks and main-phase plays through the next turn's combat in a world whose hidden
-    /// cards are redealt, more candidates and searched targets inside simulations, about 1 s at most.
+    /// cards are redealt, more candidates and searched targets inside simulations, then a light tree search over the
+    /// decisions that matter ([`Deep::LIGHT`]), about 2 s at most.
     pub const HARD: Settings = Settings {
         sims: 160,
         forecasts: 500,
@@ -105,14 +122,14 @@ impl Settings {
         sequences: true,
         fair: true,
         weights: Weights::NORMAL,
-        deep: None,
+        deep: Some(Deep::LIGHT),
         votes: 1,
         time: Some(Duration::from_millis(1000)),
+        endgame: true,
     };
 
-    /// Very Hard: Hard's answer to every decision, and for the decisions that matter (casts, attacks, blocks, targets)
-    /// a tree search over that answer and its alternatives in worlds redealt from what the seat has seen
-    /// ([`Deep::FULL`]), about 2.5 s at most.
+    /// Very Hard: Hard with the full tree search over the decisions that matter (casts, attacks, blocks, targets) in
+    /// worlds redealt from what the seat has seen ([`Deep::FULL`]), at most 4.5 s ([`super::clock::DECISION_CAP`]).
     pub const VERY_HARD: Settings = Settings {
         deep: Some(Deep::FULL),
         ..Settings::HARD
@@ -175,6 +192,10 @@ pub struct Search {
     plays_left: Vec<u32>,
     /// The turn `plays_left` was filled for: a new turn fills it again.
     plays_turn: u32,
+    /// Whether main-phase plays in simulations are judged by casting each on a copy ([`Search::judged_play`]).
+    judged: bool,
+    /// Whether a judged play is being tried: its copy plays on with the plain rollout plays.
+    judging: bool,
 }
 
 /// Lands and permanent spells the seat plays by itself in one look-ahead simulation, its most expensive castable first.
@@ -200,7 +221,23 @@ impl Search {
             others: RandomBot::new(seed, 0x005E_A4C4),
             plays_left: Vec::new(),
             plays_turn: 0,
+            judged: false,
+            judging: false,
         }
+    }
+
+    /// This search with main-phase plays in its simulations judged by casting them ([`Search::judged_play`]).
+    #[must_use]
+    pub const fn judged(mut self, judged: bool) -> Search {
+        self.judged = judged;
+        self
+    }
+
+    /// This search ending by `cap` at the latest, when it is timed (the decision cap, [`super::clock::cap`]).
+    #[must_use]
+    pub fn capped(mut self, cap: Instant) -> Search {
+        self.deadline = self.deadline.map(|deadline| deadline.min(cap));
+        self
     }
 
     /// The seat searched for.
@@ -217,6 +254,7 @@ impl Search {
     fn late(&self) -> bool {
         self.deadline
             .is_some_and(|deadline| Instant::now() >= deadline)
+            || super::clock::stopped()
     }
 
     /// Whether another simulation may start.
@@ -331,6 +369,10 @@ impl Search {
             if engine.result().is_some() || reached(&engine, &decision, start, horizon, step) {
                 break;
             }
+            // A simulation cut by the clock is scored where it stands.
+            if step > 0 && self.late() {
+                break;
+            }
             if self.branches(&engine, &decision, depth) {
                 return self.branch(&engine, &decision, start, horizon, depth);
             }
@@ -418,7 +460,11 @@ impl Search {
             DecisionKind::Priority(options)
                 if self.plays_left.get(player.index()).is_some_and(|n| *n > 0) =>
             {
-                let play = rollout_play(engine, options);
+                let play = if self.judged && !self.judging {
+                    self.judged_play(engine, options)
+                } else {
+                    rollout_play(engine, options)
+                };
                 if play != PriorityAction::Pass
                     && let Some(left) = self.plays_left.get_mut(player.index())
                 {
@@ -454,6 +500,106 @@ impl Search {
             }
             _ => self.others.choose_in(decision, engine.state()),
         }
+    }
+}
+
+/// The most spells a judged play casts on copies.
+const JUDGED_CASTS: usize = 4;
+
+/// What a judged cast must gain over keeping the card.
+const JUDGED_MARGIN: f64 = 0.25;
+
+impl Search {
+    /// A seat's play in a simulation, judged as a good player plays: in its main phase on an empty stack a land, else
+    /// each of its costliest castable spells (by name, at most [`JUDGED_CASTS`]) cast on a copy, the stack settled (the
+    /// opponents' counters included) and the position scored for the caster; the best that beats keeping the cards by
+    /// [`JUDGED_MARGIN`], else a pass. Other windows play as [`rollout_play`] does.
+    fn judged_play(
+        &mut self,
+        engine: &Engine,
+        options: &mtg_engine::decision::PriorityOptions,
+    ) -> PriorityAction {
+        let quick = rollout_play(engine, options);
+        let Some(decision) = engine.decision().cloned() else {
+            return quick;
+        };
+        let seat = decision.player;
+        let state = engine.state();
+        let main = matches!(state.turn().step(), Step::Main1 | Step::Main2)
+            && state.is_active(seat)
+            && state.stack().is_empty()
+            && !engine.announcing();
+        if !main || matches!(quick, PriorityAction::PlayLand(_)) {
+            return quick;
+        }
+        let seen = Seen::new(state, seat);
+        let mut casts: Vec<mtg_core::ids::ObjectId> = options.castable.clone();
+        casts.sort_by_key(|id| (std::cmp::Reverse(seen.mana_value(*id)), *id));
+        let mut names: Vec<String> = Vec::new();
+        casts.retain(|id| {
+            let name = seen
+                .card(*id)
+                .map(|card| card.name.clone())
+                .unwrap_or_default();
+            if names.contains(&name) {
+                false
+            } else {
+                names.push(name);
+                true
+            }
+        });
+        let bar = evaluate_with(&seen, self.settings.weights) + JUDGED_MARGIN;
+        let saved = self.plays_left.clone();
+        let turn = self.plays_turn;
+        self.judging = true;
+        let mut best: Option<(f64, PriorityAction)> = None;
+        for id in casts.into_iter().take(JUDGED_CASTS) {
+            if super::clock::stopped() {
+                break;
+            }
+            let play = PriorityAction::CastSpell(id);
+            let mut copy = engine.clone();
+            if apply_answer(&mut copy, &decision, Answer::Priority(play.clone())).is_err() {
+                continue;
+            }
+            let start = Start {
+                turn: state.turn().number(),
+            };
+            let mut cut = false;
+            for step in 1..SIM_STEPS {
+                let Some(next) = copy.decision().cloned() else {
+                    break;
+                };
+                if copy.result().is_some() || reached(&copy, &next, start, Horizon::Settle, step) {
+                    break;
+                }
+                // A cast cut by the hard stop is not judged: its stack never settled.
+                if super::clock::stopped() {
+                    cut = true;
+                    break;
+                }
+                let answer = self.quick(&copy, &next);
+                if apply_answer(&mut copy, &next, answer).is_err() {
+                    let Some(fallback) = minimal(&next) else {
+                        break;
+                    };
+                    if apply_answer(&mut copy, &next, fallback).is_err() {
+                        break;
+                    }
+                }
+            }
+            if cut {
+                break;
+            }
+            let score = evaluate_with(&Seen::new(copy.state(), seat), self.settings.weights);
+            if score > bar && best.as_ref().is_none_or(|(held, _)| score > *held) {
+                best = Some((score, play));
+            }
+        }
+        self.judging = false;
+        self.plays_left = saved;
+        self.plays_turn = turn;
+        best.map_or(PriorityAction::Pass, |(_, play)| play)
     }
 }
 
@@ -552,10 +698,11 @@ pub(crate) fn reached(
     }
 }
 
-/// Whether `state` (with `stack` objects on the stack) is past the combat of turn `end`.
+/// Whether `state` (with `stack` objects on the stack) is past the combat of turn `end`, with an empty stack: a search
+/// never stops with a spell waiting to resolve (a quiescence rule).
 fn reached_turn(state: &mtg_engine::state::GameState, end: u32, stack: usize) -> bool {
     let turn = state.turn().number();
-    turn > end || (turn == end && stack == 0 && after_combat(state.turn().step()))
+    stack == 0 && (turn > end || (turn == end && after_combat(state.turn().step())))
 }
 
 /// The answer that decides least, when a quick answer was refused: a pass, the fewest targets, a keep; `None` for a

@@ -100,6 +100,10 @@ pub fn rank_targets(seen: &Seen<'_>, options: &TargetOptions) -> Vec<Target> {
     // The seat itself before its teammates.
     our_players.sort_by_key(|(_, target)| target.player() != Some(seen.seat()));
     let mut ranked = Vec::new();
+    // A draw, a life gain or a look at the library goes to the seat's own side first.
+    if helps_players(seen, options) {
+        ranked.extend(our_players.drain(..).map(|(_, target)| target));
+    }
     let longest = theirs.len().max(ours.len()).max(their_players.len());
     for at in 0..longest {
         for list in [&theirs, &ours, &their_players] {
@@ -146,6 +150,47 @@ pub fn rank_targets(seen: &Seen<'_>, options: &TargetOptions) -> Vec<Target> {
         }
     }
     ranked
+}
+
+/// Whether the spell or ability choosing `options` starts by giving its target player something: cards, life or a look
+/// at the library (a loot, Jace's "target player draws"), not a mill or a discard.
+fn helps_players(seen: &Seen<'_>, options: &TargetOptions) -> bool {
+    use mtg_cards::effect::Effect;
+    let state = seen.state();
+    let Some(object) = state.object(options.source) else {
+        return false;
+    };
+    let helps = |effects: &[Effect]| {
+        matches!(
+            effects.first(),
+            Some(
+                Effect::Draw { .. }
+                    | Effect::GainLife { .. }
+                    | Effect::Scry { .. }
+                    | Effect::Surveil { .. }
+            )
+        )
+    };
+    if let Some(ability) = object.ability() {
+        return helps(ability.rules().effects());
+    }
+    // A spell on the stack, or a permanent whose ability is being announced: every rule of its kind that targets must
+    // help, since which one asks is not shown.
+    let spell = seen.zone(options.source) == Some(Zone::Stack);
+    let mut rules = object
+        .card()
+        .rules
+        .iter()
+        .filter(|rule| match rule.as_ref() {
+            mtg_cards::ability::Ability::Spell { targets, .. } => spell && !targets.is_empty(),
+            mtg_cards::ability::Ability::Activated { targets, .. }
+            | mtg_cards::ability::Ability::Loyalty { targets, .. } => {
+                !spell && !targets.is_empty() && !rule.is_mana_ability()
+            }
+            _ => false,
+        })
+        .peekable();
+    rules.peek().is_some() && rules.all(|rule| helps(rule.effects()))
 }
 
 /// The answer naming `picked`, topped up to the least count from the legal targets and cut to the total the options

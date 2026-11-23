@@ -37,6 +37,7 @@ Aether Hub
 Aetherplasm
 Aethersnatch
 Agate Instigator
+Agate-Blade Assassin
 Agatha's Soul Cauldron
 Aggravated Assault
 Agrus Kos, Eternal Soldier
@@ -1897,6 +1898,7 @@ Necroduality
 Necroplasm
 Necropolis Regent
 Necroskitter
+Nemesis of Reason
 Nessian Asp
 Nest of Scarabs
 Nested Shambler
@@ -2273,6 +2275,7 @@ Research // Development
 Reset
 Reshape
 Resplendent Angel
+Restless Fortress
 Restoration Seminar
 Retaliation
 Retreat to Coralhelm
@@ -2483,6 +2486,7 @@ Shineshadow Snarl
 Shinka, the Bloodsoaked Keep
 Shiny Impetus
 Shipbreaker Kraken
+Shrieking Specter
 Shriekmaw
 Shrine of the Forsaken Gods
 Shrouded Shepherd // Cleave Shadows
@@ -2497,6 +2501,7 @@ Sigiled Paladin
 Sigiled Sentinel
 Sign in Blood
 Silent Arbiter
+Silent Skimmer
 Silhana Ledgewalker
 Silumgar's Command
 Silumgar, the Drifting Death
@@ -2909,6 +2914,7 @@ Thraben Watcher
 Thran Dynamo
 Thrashing Brontodon
 Thrashing Mossdog
+Thraximundar
 Thrill of Possibility
 Thriving Bluff
 Thriving Grove

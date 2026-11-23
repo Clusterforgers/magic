@@ -92,11 +92,7 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         Some(found) => super::condition::single(intervening.into_iter().chain([found]).collect()),
         None => intervening,
     };
-    let from = match p.get("TriggerZones") {
-        None | Some("Battlefield") => None,
-        Some(zone @ ("Graveyard" | "Hand" | "Exile" | "Library" | "Command")) => Some(zone),
-        Some(other) => return unmapped(format!("key:Trigger.TriggerZones={other}")),
-    };
+    let from = trigger_zone(&p, &when)?;
     let Some(execute) = p.get("Execute") else {
         return unmapped("trigger:no-Execute");
     };
@@ -156,6 +152,23 @@ pub fn triggered(ctx: &mut Ctx, body: &str) -> Tr<Value> {
         }
     }
     Ok(ability)
+}
+
+/// The zone a trigger works from when not the battlefield: its `TriggerZones`, and the stack for "When you cast this
+/// spell", where Forge names no zone.
+fn trigger_zone(p: &Params, when: &Value) -> Tr<Option<&'static str>> {
+    if when.pointer("/SpellCast/what") == Some(&json!(["This"])) {
+        return Ok(Some("Stack"));
+    }
+    Ok(match p.get("TriggerZones") {
+        None | Some("Battlefield") => None,
+        Some("Graveyard") => Some("Graveyard"),
+        Some("Hand") => Some("Hand"),
+        Some("Exile") => Some("Exile"),
+        Some("Library") => Some("Library"),
+        Some("Command") => Some("Command"),
+        Some(other) => return unmapped(format!("key:Trigger.TriggerZones={other}")),
+    })
 }
 
 /// The limit of a trigger. A limit on what resolves after a choice ("you may ... Do this only once each turn") is spent as

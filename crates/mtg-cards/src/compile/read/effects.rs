@@ -666,6 +666,10 @@ pub(super) fn player(r: &mut Reader<'_>) -> Option<Ref> {
     if r.words("each player") {
         return Some(Ref::EachPlayer);
     }
+    // "Whenever ~ attacks, defending player loses 1 life.": the player it attacks (CR 506.3).
+    if r.attacker && r.words("defending player") {
+        return Some(Ref::Defending);
+    }
     if r.words("its controller")
         || (r.it.is_some()
             && (r.words("that creature's controller") || r.words("that land's controller")))
@@ -791,6 +795,11 @@ fn phrases(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
 fn verb_phrase(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
     if matches!(r.peek_word(), Some("create" | "creates")) {
         return create::made_by(r, who);
+    }
+    if r.lookahead(|r| r.words("exiles the top").then_some(()))
+        .is_some()
+    {
+        return super::their_top::exiles_top(r, who);
     }
     if matches!(r.peek_word(), Some("exile" | "exiles")) {
         return exiles_from_graveyard(r, who);

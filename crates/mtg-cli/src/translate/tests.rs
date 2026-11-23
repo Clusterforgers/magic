@@ -318,6 +318,10 @@ fn gaps(text: &str) -> Vec<String> {
     "Name:Test Echo\nTypes:Creature Wizard\nT:Mode$ SpellCast | ValidActivatingPlayer$ You | ActivatorThisTurnCast$ EQ2 | Execute$ Draw1\nSVar:Draw1:DB$ Draw | NumCards$ 1\n",
     json!({"Triggered": {"when": {"Nth": {"event": {"SpellCast": {"by": "You"}}, "nth": 2}}, "effects": [{"Draw": {}}]}})
 )]
+#[case::cast_itself_works_from_the_stack(
+    "Name:Test Titan\nTypes:Creature Eldrazi\nT:Mode$ SpellCast | ValidCard$ Card.Self | Execute$ Draw4\nSVar:Draw4:DB$ Draw | NumCards$ 4\n",
+    json!({"Triggered": {"when": {"SpellCast": {"what": ["This"]}}, "from": "Stack", "effects": [{"Draw": {"count": 4}}]}})
+)]
 #[case::dig_until(
     "Name:Test Delve\nTypes:Sorcery\nA:SP$ DigUntil | Valid$ Creature | FoundDestination$ Hand | RevealedDestination$ Library | RevealedLibraryPosition$ -1 | RevealRandomOrder$ True\n",
     json!({"Spell": {"effects": [

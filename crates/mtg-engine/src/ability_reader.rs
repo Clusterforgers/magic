@@ -117,9 +117,11 @@ pub(crate) fn printed_rules(definition: &CardDefinition) -> impl Iterator<Item =
 }
 
 /// The zone an ability works from, for the kinds that name one (`from`): where its source must be for it to be
-/// activated, to trigger, to apply or to replace.
-pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {
+/// activated, to trigger, to apply or to replace. A trigger on the casting of its own card works from the stack,
+/// whatever zone it names: "this spell" is only ever there (`cast_itself`).
+pub(crate) fn works_from(ability: &Ability) -> Option<ZoneKind> {
     match ability {
+        Ability::Triggered { when, .. } if cast_itself(when) => Some(ZoneKind::Stack),
         Ability::Activated { from, .. }
         | Ability::Triggered { from, .. }
         | Ability::Static { from, .. }
@@ -127,6 +129,12 @@ pub(crate) const fn works_from(ability: &Ability) -> Option<ZoneKind> {
         | Ability::Replacement { from, .. } => Some(*from),
         _ => None,
     }
+}
+
+/// Whether the pattern is the casting of the ability's own card ("When you cast this spell"), by whoever casts it: the
+/// caster of a spell is its controller, so "you" never tells one cast from another.
+pub(crate) fn cast_itself(when: &mtg_cards::trigger::TriggerPattern) -> bool {
+    matches!(when, mtg_cards::trigger::TriggerPattern::SpellCast { what, .. } if *what == mtg_cards::refs::Selector::this())
 }
 
 /// Whether the ability replaces its own object's move to a graveyard from anywhere ("If ~ would be put into a graveyard
