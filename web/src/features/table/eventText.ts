@@ -188,6 +188,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       CantBeBlockedUnlessAttackingOwner:
         "can't be blocked unless it's attacking its owner or a permanent its owner controls",
       CantBeTurnedFaceUp: "can't be turned face up",
+      R119CantBeBeamedUp: "can't be beamed up",
       BlockedByAll: "can't be blocked unless all creatures defending player controls block it",
       AddAllCreatureTypes: `${becomes} every creature type`,
       R612ExchangeTextBoxes: `${group ? 'exchange their text boxes' : 'exchanges its text box'}`,

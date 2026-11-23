@@ -358,6 +358,20 @@ pub(super) fn texts(condition: &Condition) -> Vec<String> {
     if *condition == Condition::YourTurn {
         return vec!["it's your turn".to_owned()];
     }
+    if let Condition::R119StartingDeck {
+        who: Ref::You,
+        at_least,
+    } = condition
+    {
+        return vec![format!(
+            "you had {at_least} or more cards in your starting deck"
+        )];
+    }
+    if let Condition::R119ShareCardType(Ref::Each(selector)) = condition
+        && selector.0 == [Pred::In(ZoneKind::Exile), Pred::ExiledWith(Ref::This)]
+    {
+        return vec!["all cards exiled with this Saga share a card type".to_owned()];
+    }
     // "it was cast": the permanent came from a spell, cast from anywhere by anyone (rmt4, The Tarrasque).
     if let Condition::Matches {
         subject: Ref::This,

@@ -1,0 +1,37 @@
+{
+  "oracle_id": "e56472ec-6ae8-48b2-a4ce-0ed154161c06",
+  "name": "Lwaxana Troi, Charming Guest",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Lwaxana Troi, Charming Guest",
+      "oracle_fingerprint": "f14d4cff4139b120a8e2e62a5ff2f320",
+      "abilities": [
+        { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Rule": { "rule": { "TriggerAgain": { "source": ["This"] } } }
+                      }
+                    }
+                  ],
+                  "duration": "WhileSourceTapped"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

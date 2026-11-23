@@ -1,0 +1,139 @@
+{
+  "object": "card",
+  "id": "06fa6050-0f9d-46a2-9635-8d05899dbc49",
+  "oracle_id": "b93915ac-744b-4b59-8f16-ae68d6d898c6",
+  "multiverse_ids": [],
+  "resource_id": "3781B1F1364C6A5AE3D76933C6A8D372CAF5AB639B1FD2335197560D2CBBC5C7",
+  "mtgo_id": 156818,
+  "tcgplayer_id": 725216,
+  "cardmarket_id": 919408,
+  "name": "Guinan, Ancient Advisor",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/06fa6050-0f9d-46a2-9635-8d05899dbc49",
+  "scryfall_uri": "https://scryfall.com/card/trc/17/guinan-ancient-advisor?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-20T14:52:41Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.jpg?1792507961",
+    "normal": "https://cards.scryfall.io/normal/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.jpg?1792507961",
+    "large": "https://cards.scryfall.io/large/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.jpg?1792507961",
+    "png": "https://cards.scryfall.io/png/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.png?1792507961",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.jpg?1792507961",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.jpg?1792507961",
+    "thumb": "https://cards.scryfall.io/thumb/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.webp?1792507961",
+    "grid": "https://cards.scryfall.io/grid/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.webp?1792507961",
+    "display": "https://cards.scryfall.io/display/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.webp?1792507961",
+    "art": "https://cards.scryfall.io/art/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.webp?1792507961",
+    "crop": "https://cards.scryfall.io/crop/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.webp?1792507961",
+    "jpeg": "https://cards.scryfall.io/normal/front/0/6/06fa6050-0f9d-46a2-9635-8d05899dbc49.jpg?1792507961"
+  },
+  "mana_cost": "{2}{W}",
+  "cmc": 3,
+  "type_line": "Legendary Creature — El-Aurian Advisor",
+  "oracle_text": "{1}, {T}: Put a +1/+1 counter on each creature you control that entered this turn. If you put two or more +1/+1 counters on creatures this way, draw a card.",
+  "power": "1",
+  "toughness": "4",
+  "colors": [
+    "W"
+  ],
+  "color_identity": [
+    "W"
+  ],
+  "keywords": [],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/06fa6050-0f9d-46a2-9635-8d05899dbc49/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab93915ac-744b-4b59-8f16-ae68d6d898c6&unique=prints",
+  "collector_number": "17",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"Human intuition and instinct are not always right, but they do make life interesting.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Nicky Barkla",
+  "artist_ids": [
+    "54d8d5b4-9c71-4535-987b-11f3be9f3c82"
+  ],
+  "illustration_id": "0688fbb6-86b0-4a66-96dc-b238e6aeb437",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 27538,
+  "prices": {
+    "usd": "0.97",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.93",
+    "eur_foil": null,
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGuinan%252C%2BAncient%2BAdvisor",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGuinan%252C%2BAncient%2BAdvisor",
+    "edhrec": "https://edhrec.com/route/?cc=Guinan%2C+Ancient+Advisor"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F725216%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919408&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156818?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

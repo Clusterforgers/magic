@@ -1,0 +1,29 @@
+{
+  "oracle_id": "2147101f-d24a-45bb-a141-b69ef7841f53",
+  "name": "Assimilate the Wounded",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Assimilate the Wounded",
+      "oracle_fingerprint": "45d15cb536e6af6c20e0942a85cdb937",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "PerPlayer": {
+                    "players": "Opponents",
+                    "what": [{ "Type": "Creature" }, { "In": "Graveyard" }, "GravedThisTurn"]
+                  }
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "R116Assimilate": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

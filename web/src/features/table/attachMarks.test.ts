@@ -56,6 +56,7 @@ const RULE_MARKS: Record<GivenRule, RuleMark> = {
   DoesntUntap: ["Doesn't untap", 'No untap', "doesn't untap", 'restrict'],
   R6700KeepsLastLoyalty: ['Keeps loyalty', 'Last loyalty', 'damage leaves it one loyalty counter', 'raise'],
   CantBeTurnedFaceUp: ['Stays face down', 'Face down', "can't be turned face up", 'restrict'],
+  R119CantBeBeamedUp: ['No beam up', 'Grounded', "can't be beamed up", 'restrict'],
   LoseAbilities: ['Loses abilities', 'Blanked', 'loses all abilities', 'restrict'],
   LoseKeyword: ['Loses a keyword', 'No keyword', 'loses a keyword', 'restrict'],
   GainAbility: ['New ability', 'Ability', 'gains an ability', 'raise'],

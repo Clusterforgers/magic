@@ -1,0 +1,82 @@
+{
+  "oracle_id": "5068eba6-ccf0-45f2-b0db-40f787ee3308",
+  "name": "Rules of Acquisition",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rules of Acquisition",
+      "oracle_fingerprint": "7362c16279b5b65d596a30b0ca961798",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Follow the 3rd Rule",
+                      "targets": [
+                        {
+                          "what": {
+                            "Object": [
+                              { "Not": { "Type": "Land" } },
+                              { "ControlledBy": "Opponents" }
+                            ]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "opponent" }
+                        },
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 0 },
+                            "mods": [{ "SetController": "You" }],
+                            "duration": "Forever"
+                          }
+                        },
+                        { "Draw": { "who": { "Bound": "opponent" }, "count": 3 } }
+                      ]
+                    },
+                    {
+                      "label": "Follow the 98th Rule",
+                      "targets": [
+                        { "what": "Opponent" },
+                        {
+                          "what": {
+                            "Object": [{ "Not": { "Type": "Land" } }, { "ControlledBy": "You" }]
+                          }
+                        }
+                      ],
+                      "effects": [
+                        {
+                          "Continuous": {
+                            "affected": { "Target": 1 },
+                            "mods": [{ "SetController": { "Target": 0 } }],
+                            "duration": "Forever"
+                          }
+                        },
+                        {
+                          "If": {
+                            "condition": {
+                              "Matches": {
+                                "subject": { "Target": 1 },
+                                "selector": [{ "ControlledBy": { "Target": 0 } }]
+                              }
+                            },
+                            "then": [{ "Draw": { "count": 3 } }]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

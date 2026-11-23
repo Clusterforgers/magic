@@ -46,6 +46,8 @@ pub enum GivenRule {
     R6700KeepsLastLoyalty,
     /// The host can't be turned face up.
     CantBeTurnedFaceUp,
+    /// The host can't be beamed up.
+    R119CantBeBeamedUp,
     /// The host loses all abilities.
     LoseAbilities,
     /// The host loses a keyword.
@@ -153,6 +155,7 @@ impl Gives {
             Modification::DoesntUntap => GivenRule::DoesntUntap,
             Modification::R6700KeepsLastLoyalty => GivenRule::R6700KeepsLastLoyalty,
             Modification::CantBeTurnedFaceUp => GivenRule::CantBeTurnedFaceUp,
+            Modification::R119CantBeBeamedUp => GivenRule::R119CantBeBeamedUp,
             Modification::LoseAbilities | Modification::LoseAbilitiesExceptMana => {
                 GivenRule::LoseAbilities
             }

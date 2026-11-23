@@ -1,0 +1,62 @@
+{
+  "oracle_id": "55b45ac9-9ce7-4d17-9efb-3c0c51482950",
+  "name": "Itazura, Lingering Wick",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Itazura, Lingering Wick",
+      "oracle_fingerprint": "972c5df13b5258c97ae859b63d91aecb",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [
+              { "ExileTop": { "count": 3, "as": "exiled" } },
+              {
+                "ChooseNumbers": {
+                  "who": "Opponents",
+                  "secret": true,
+                  "as": "number",
+                  "highest": "highest",
+                  "lowest": "lowest"
+                }
+              },
+              { "Choose": { "from": { "Bound": "highest" }, "as": "opponent" } },
+              {
+                "DealDamage": { "to": { "Bound": "opponent" }, "amount": { "ChosenAs": "number" } }
+              },
+              {
+                "Choose": {
+                  "who": { "Bound": "opponent" },
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "who": { "Bound": "opponent" },
+                  "what": { "Bound": "card" },
+                  "free": true
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "Is": { "Bound": "exiled" } }, { "In": "Exile" }] },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "523c244b-7292-40c7-8b12-27106fffe63f",
+  "name": "Overflow Submatrix",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Overflow Submatrix",
+      "oracle_fingerprint": "9715a4ae0be488af2189c7cdb013d8b7",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "Type": "Artifact" }, { "Type": "Creature" }],
+                "from": "Graveyard",
+                "once": true,
+                "riders": [{ "EntersWithCounter": { "Other": "finality" } }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "oracle_id": "3855cb66-2e29-4d4b-a752-214843b647ff",
+  "name": "Jean-Luc, Mon Capitaine",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Jean-Luc, Mon Capitaine",
+      "oracle_fingerprint": "6a7433d8939c111bd12e51dbd56fd028",
+      "abilities": [
+        { "Keyword": "Flying" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Subtype": "Faerie" }, { "ControlledBy": "You" }] } },
+            "by": {
+              "WithCounters": {
+                "counter": "+1/+1",
+                "count": {
+                  "Distinct": {
+                    "of": [
+                      { "Type": "Creature" },
+                      { "Not": { "Subtype": "Borg" } },
+                      { "ControlledBy": "You" }
+                    ],
+                    "stat": "CreatureType"
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

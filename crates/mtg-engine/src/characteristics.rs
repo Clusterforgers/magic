@@ -286,6 +286,14 @@ pub(crate) fn cant_be_turned_face_up(state: &GameState, id: ObjectId) -> bool {
     })
 }
 
+/// Whether an effect that applies to `id` says it can't be beamed up: the one place the cost of beam me up reads this
+/// restriction.
+pub(crate) fn r119_cant_be_beamed_up(state: &GameState, id: ObjectId) -> bool {
+    restricted(state, id, |modification| {
+        matches!(modification, Modification::R119CantBeBeamedUp)
+    })
+}
+
 /// Whether an effect that applies to `id` says it can't block, or it has the ability "This creature can't block" its
 /// suspected designation gives (CR 701.60c), which losing all abilities takes away: the one place the block rules read
 /// this restriction.

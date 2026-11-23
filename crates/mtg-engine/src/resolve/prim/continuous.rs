@@ -636,6 +636,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::DoesntUntap => Modification::DoesntUntap,
         Wanted::R6700KeepsLastLoyalty => Modification::R6700KeepsLastLoyalty,
         Wanted::CantBeTurnedFaceUp => Modification::CantBeTurnedFaceUp,
+        Wanted::R119CantBeBeamedUp => Modification::R119CantBeBeamedUp,
         Wanted::CantBeBlocked => Modification::CantBeBlocked,
         Wanted::Goaded => Modification::Goaded {
             by: scope.controller,

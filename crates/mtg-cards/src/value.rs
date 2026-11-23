@@ -749,6 +749,10 @@ pub enum Amount {
     /// belongs to, and in the one that set up its delayed or reflexive trigger ("when one or more counters are removed
     /// this way, it deals that much damage"); zero when none was removed.
     R110RemovedThisWay(CounterKind),
+    /// How many counters of the kind the steps before it put on objects (not players), in the resolution or the
+    /// replacement it belongs to, and in the one that set up its delayed or reflexive trigger ("If you put two or more
+    /// +1/+1 counters on creatures this way"); zero when none was put.
+    R119PutThisWay(CounterKind),
     /// The number a `Let` of the resolving spell or ability fixed under the name; zero before it ran.
     Bound(String),
     /// One if the spell was cast for this alternative cost, else zero (a target specification that only awaken adds reads it in its most).
@@ -1208,6 +1212,7 @@ enum Tagged {
     Devoured,
     RemovedThisWay(CounterKind),
     R110RemovedThisWay(CounterKind),
+    R119PutThisWay(CounterKind),
     Bound(String),
     CastWith(CastWay),
     ColorsSpent,
@@ -1458,6 +1463,7 @@ enum TaggedRef<'a> {
     Devoured,
     RemovedThisWay(&'a CounterKind),
     R110RemovedThisWay(&'a CounterKind),
+    R119PutThisWay(&'a CounterKind),
     Bound(&'a str),
     CastWith(CastWay),
     ColorsSpent,
@@ -1678,6 +1684,7 @@ impl From<Tagged> for Amount {
             Tagged::Devoured => Amount::Devoured,
             Tagged::RemovedThisWay(counter) => Amount::RemovedThisWay(counter),
             Tagged::R110RemovedThisWay(counter) => Amount::R110RemovedThisWay(counter),
+            Tagged::R119PutThisWay(counter) => Amount::R119PutThisWay(counter),
             Tagged::Bound(name) => Amount::Bound(name),
             Tagged::CastWith(way) => Amount::CastWith(way),
             Tagged::ColorsSpent => Amount::ColorsSpent,
@@ -1848,6 +1855,9 @@ impl Serialize for Amount {
             }
             Amount::R110RemovedThisWay(counter) => {
                 TaggedRef::R110RemovedThisWay(counter).serialize(serializer)
+            }
+            Amount::R119PutThisWay(counter) => {
+                TaggedRef::R119PutThisWay(counter).serialize(serializer)
             }
             Amount::Bound(name) => TaggedRef::Bound(name).serialize(serializer),
             Amount::CastWith(way) => TaggedRef::CastWith(*way).serialize(serializer),
@@ -2316,6 +2326,18 @@ pub enum Condition {
     /// A player the reference names (any of them when it names several) has begun an extra turn this game (CR 500.7): "if
     /// you haven't begun an extra turn this game" is its negation. The current turn counts once it has begun.
     R118BegunExtraTurn(Ref),
+    /// A player the reference names (any of them when it names several) began the game with at least `at_least` cards in
+    /// their starting deck, the commanders included (CR 103.1, 903.5): "if you had 200 or more cards in your starting deck".
+    R119StartingDeck {
+        /// Whose deck.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The least number of cards.
+        at_least: u32,
+    },
+    /// The objects the reference names, one or more, share a card type (CR 205.2a): "if all cards exiled with this Saga
+    /// share a card type"; false when it names none.
+    R119ShareCardType(Ref),
 }
 
 #[cfg(test)]

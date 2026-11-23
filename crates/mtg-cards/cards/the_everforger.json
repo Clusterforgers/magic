@@ -1,0 +1,39 @@
+{
+  "oracle_id": "b8354ac6-5285-43dd-9ba5-93064def2e96",
+  "name": "The Everforger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Everforger",
+      "oracle_fingerprint": "cd65ac8982bdd6d04ec01830bd181e6b",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R116Rulebreaker": "A deck with this commander can have artifact creature and Equipment cards of any color identity and any basic land cards"
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": {
+                "what": [
+                  {
+                    "AnyOf": [
+                      { "R117AllOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                      { "Subtype": "Equipment" }
+                    ]
+                  }
+                ],
+                "by": "You"
+              }
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [{ "May": { "effects": [{ "CopySpell": { "what": "Triggering" } }] } }]
+          }
+        }
+      ]
+    }
+  ]
+}
