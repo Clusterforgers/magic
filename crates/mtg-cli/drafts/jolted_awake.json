@@ -22,13 +22,7 @@
               }
             ],
             "effects": [
-              {
-                "PutCounters": {
-                  "on": { "Target": 0 },
-                  "counter": { "Other": "energy" },
-                  "count": 2
-                }
-              },
+              { "PutCounters": { "on": "You", "counter": { "Other": "energy" }, "count": 2 } },
               {
                 "Pay": {
                   "cost": [{ "PayEnergy": 1 }],

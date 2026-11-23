@@ -119,6 +119,16 @@ const CREATURES: &str = r#"{"Count":[{"Type":"Creature"},{"ControlledBy":"You"}]
     ClauseKind::Spell,
     r#"{"Spell":{"effects":[{"PutCounters":{"on":"This","counter":"+1/+1","count":{"Count":[{"Type":"Creature"},{"In":"Graveyard"},{"OwnedBy":"You"}]}}}]}}"#
 )]
+#[case::the_group_of_a_target_opponent(
+    "Draw a card for each tapped creature target opponent controls.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"Draw":{"count":{"Count":[{"Type":"Creature"},"Tapped",{"ControlledBy":{"Target":0}}]}}}]}}"#
+)]
+#[case::the_group_of_a_target_player(
+    "Put a +1/+1 counter on ~ for each artifact target player controls.",
+    ClauseKind::Spell,
+    r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"PutCounters":{"on":"This","counter":"+1/+1","count":{"Count":[{"Type":"Artifact"},{"ControlledBy":{"Target":0}}]}}}]}}"#
+)]
 fn a_count_by_for_each_reads_as_the_count_of_a_selector(
     #[case] text: &str,
     #[case] kind: ClauseKind,
@@ -129,7 +139,9 @@ fn a_count_by_for_each_reads_as_the_count_of_a_selector(
 
 #[rstest]
 #[case::two_verbs("Target player draws a card and loses 1 life for each creature you control.")]
-#[case::a_target_holds("Draw a card for each tapped creature target opponent controls.")]
+#[case::a_second_target_holds(
+    "Target player draws a card for each creature target opponent controls."
+)]
 #[case::another_player_zone("Target opponent loses 1 life for each card in their graveyard.")]
 #[case::a_compound_type(
     "Target opponent loses 2 life for each instant and sorcery card in your graveyard."

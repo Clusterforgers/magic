@@ -884,6 +884,7 @@ mod p6;
 mod p7;
 mod p8;
 mod p8b;
+mod pc1_defined;
 mod qf1;
 mod r11w;
 mod r1b;

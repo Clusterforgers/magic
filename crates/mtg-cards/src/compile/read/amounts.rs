@@ -6,7 +6,7 @@ use super::defining;
 use super::selectors::{Form, phrase, phrase_text};
 use super::tokens::Reader;
 use crate::modify::Modification;
-use crate::refs::{Pred, Ref, Selector, ZoneKind};
+use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
 use crate::value::{Amount, StatKind, TurnTally};
 
 /// The count words "one" to "twenty", in order.
@@ -260,13 +260,36 @@ fn for_each_one(r: &mut Reader<'_>) -> Option<Amount> {
         if let Some(own) = super::r374_counts::r374_each(r) {
             return Some(own);
         }
-        let selector = phrase(r, Form::Count)?;
+        let mut selector = phrase(r, Form::Count)?;
+        if let Some(held) = r.attempt(target_holds) {
+            selector.0.push(held);
+        }
         // A group that no one holds stands on the battlefield.
         if !selector.0.iter().any(holds) {
             r.words("on the battlefield");
         }
         Some(Amount::Count(selector))
     })
+}
+
+/// "target player controls", "target opponent controls" after the counted group, in a clause with no target yet: the
+/// group of the player the clause targets ("put a loyalty counter on ~ for each creature target opponent controls").
+fn target_holds(r: &mut Reader<'_>) -> Option<Pred> {
+    r.targets.is_empty().then_some(())?;
+    r.need("target")?;
+    let what = if r.word("player") {
+        Targetable::Player
+    } else {
+        r.need("opponent")?;
+        Targetable::Opponent
+    };
+    r.need("controls")?;
+    r.targets.push(TargetSpec {
+        what,
+        bounds: Bounds::default(),
+        divide: None,
+    });
+    Some(Pred::ControlledBy(Ref::Target(0)))
 }
 
 /// Whether the predicate says who holds the objects or where they are.

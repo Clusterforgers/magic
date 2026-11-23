@@ -1,4 +1,4 @@
-//! r118-02 abilities whose wordings no other reader or writer joins (Volatile Stormdrake):
+//! r118-02 abilities whose wordings no other reader or writer joins (Volatile Stormdrake, Gideon, Champion of Justice):
 //! each entry of `r118_02_wholes.json` is an ability, or a list of two that one clause holds, with the words the card
 //! prints for it (the card's name as `~`), read when a clause says exactly those words and written back from the
 //! abilities.

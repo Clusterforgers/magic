@@ -236,6 +236,18 @@ pub enum CounterKind {
 }
 
 impl CounterKind {
+    /// Whether a counter of this kind is one a player holds (CR 122.1f-h: poison, energy, experience, rad, ticket);
+    /// every other kind sits on a permanent or a card.
+    pub fn held_by_players(&self) -> bool {
+        match self {
+            CounterKind::Poison => true,
+            CounterKind::Other(name) => {
+                matches!(name.as_str(), "energy" | "experience" | "rad" | "ticket")
+            }
+            _ => false,
+        }
+    }
+
     /// The lore counter of a Saga (CR 714).
     pub fn lore() -> Self {
         CounterKind::Other("lore".to_owned())
