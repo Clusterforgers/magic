@@ -176,6 +176,15 @@ pub fn quick_choice(engine: &Engine, decision: &Decision, random: &mut RandomBot
         DecisionKind::ChooseCards(options)
             if !options.one_per_name && options.groups.is_empty() =>
         {
+            // From a single graveyard: the cards of the owner of the card it would take first.
+            let narrowed;
+            let options = if crate::bot::r112_one_graveyard(options) {
+                let first = pick_cards(&seen, options).first().copied();
+                narrowed = crate::bot::r112_one_owner(options, engine.state(), first);
+                &narrowed
+            } else {
+                options
+            };
             Answer::ChooseCards(CardsChoice(
                 options.within_total(pick_cards(&seen, options)),
             ))
