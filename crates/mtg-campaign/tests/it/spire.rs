@@ -1,7 +1,7 @@
 //! Goal: the Drowned Spire holds together and its bosses do what their words say: each boss record names its precon,
 //! a five-level innate, two phases and a satchel of real cards; a new run draws the Spire or the Warrens by its seed
 //! only from the Spire's generation; a Spire ladder is three rooms ending in one of its two final bosses, and a run of
-//! the Spire's first generation keeps its first ladder; and in real games Siren
+//! a generation before the grown roster keeps the Spire's first ladder; and in real games Siren
 //! Song, Borrowed Words and Grasping Deep act at levels I and V, a Tentacle stops an attacker, and each phase's
 //! effect lands once.
 use std::sync::Arc;
@@ -254,10 +254,14 @@ fn the_spire_draws_both_final_bosses_and_a_first_generation_run_keeps_its_ladder
         .map(|seed| ladder(&spire_run(seed, mtg_campaign::run::CONTENT))[3].clone())
         .collect();
     assert_eq!(finals.len(), 2, "{finals:?}");
-    for seed in 0..20 {
-        let mut first = ladder(&spire_run(seed, SPIRE_FROM));
+    for (seed, version) in (0..20).zip((SPIRE_FROM..mtg_campaign::run::SPIRE_GROWN_FROM).cycle()) {
+        let mut first = ladder(&spire_run(seed, version));
         first.sort();
-        assert_eq!(first, ["drowned_archivist", "leviathan", "siren_queen"]);
+        assert_eq!(
+            first,
+            ["drowned_archivist", "leviathan", "siren_queen"],
+            "{version}"
+        );
     }
 }
 

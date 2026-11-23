@@ -156,7 +156,7 @@
    "id": "lamplighter",
    "name": "The Lamplighter",
    "colors": "W",
-   "since": 9,
+   "since": 10,
    "deck_file": "c14-forged-in-stone.json",
    "innate": "lantern_sweep",
    "round_phases": [
@@ -204,7 +204,7 @@
    "id": "tidecaller",
    "name": "The Tidecaller",
    "colors": "U",
-   "since": 9,
+   "since": 10,
    "deck_file": "c14-peer-through-time.json",
    "innate": "ebb_tide",
    "round_phases": [
@@ -253,7 +253,7 @@
    "id": "drowned_abbess",
    "name": "The Drowned Abbess",
    "colors": "B",
-   "since": 9,
+   "since": 10,
    "deck_file": "c14-sworn-to-darkness.json",
    "innate": "held_breath",
    "round_phases": [
@@ -302,7 +302,7 @@
    "id": "wreck_forger",
    "name": "The Wreck-Forger",
    "colors": "R",
-   "since": 9,
+   "since": 10,
    "deck_file": "c14-built-from-scratch.json",
    "innate": "salvage",
    "round_phases": [
@@ -352,7 +352,7 @@
    "id": "coral_mother",
    "name": "The Coral Mother",
    "colors": "G",
-   "since": 9,
+   "since": 10,
    "deck_file": "c14-guided-by-nature.json",
    "innate": "reef_growth",
    "round_phases": [
@@ -401,7 +401,7 @@
    "id": "fog_bell",
    "name": "The Fog Bell",
    "colors": "WU",
-   "since": 9,
+   "since": 10,
    "deck_file": "khc-phantom-premonition.json",
    "innate": "sea_fog",
    "round_phases": [
@@ -450,7 +450,7 @@
    "id": "salt_magistrate",
    "name": "The Salt Magistrate",
    "colors": "WB",
-   "since": 9,
+   "since": 10,
    "deck_file": "c21-silverquill-statement.json",
    "innate": "salt_tithe",
    "round_phases": [
@@ -500,7 +500,7 @@
    "id": "storm_herald",
    "name": "The Storm Herald",
    "colors": "WR",
-   "since": 9,
+   "since": 10,
    "deck_file": "mkc-blame-game.json",
    "innate": "squall",
    "round_phases": [
@@ -549,7 +549,7 @@
    "id": "kelp_shepherd",
    "name": "The Kelp Shepherd",
    "colors": "WG",
-   "since": 9,
+   "since": 10,
    "deck_file": "mic-coven-counters.json",
    "innate": "kelp_bed",
    "round_phases": [
@@ -598,7 +598,7 @@
    "id": "maelstrom",
    "name": "The Maelstrom",
    "colors": "UR",
-   "since": 9,
+   "since": 10,
    "deck_file": "c21-prismari-performance.json",
    "innate": "whirlpool",
    "round_phases": [
@@ -647,7 +647,7 @@
    "id": "spawning_shoal",
    "name": "The Spawning Shoal",
    "colors": "UG",
-   "since": 9,
+   "since": 10,
    "deck_file": "c21-quantum-quandrix.json",
    "innate": "spawning_grounds",
    "round_phases": [
@@ -696,7 +696,7 @@
    "id": "brine_hag",
    "name": "The Brine Hag",
    "colors": "BR",
-   "since": 9,
+   "since": 10,
    "deck_file": "afc-planar-portal.json",
    "innate": "brine_curse",
    "round_phases": [
@@ -746,7 +746,7 @@
    "id": "silt_crawler",
    "name": "The Silt Crawler",
    "colors": "BG",
-   "since": 9,
+   "since": 10,
    "deck_file": "dsc-death-toll.json",
    "innate": "silt",
    "round_phases": [
@@ -796,7 +796,7 @@
    "id": "magma_vent",
    "name": "The Magma Vent",
    "colors": "RG",
-   "since": 9,
+   "since": 10,
    "deck_file": "nec-upgrades-unleashed.json",
    "innate": "undersea_eruption",
    "round_phases": [
@@ -847,7 +847,7 @@
    "name": "The Drowned Admiral",
    "final": true,
    "colors": "UBR",
-   "since": 9,
+   "since": 10,
    "deck_file": "lcc-ahoy-mateys.json",
    "innate": "ghost_fleet",
    "round_phases": [

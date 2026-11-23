@@ -221,7 +221,7 @@ From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor
 - Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint. The kinds are relics, the Spirit's haunt, innates, phases and encounter modifiers.
 - Files: `cards.json` (relics, the haunt), `encounters.json` and `modifiers.json` (encounter modifiers), `rework_*.json` (innates and phases), `<theme>.json` (bosses, events, reward pool), `decks/` (the bosses' precons).
 - Content tests check that every satchel and reward card plays automatically (Verified or Read) in the corpus, every boss names a 100-card deck file, an innate with five levels, two phases and four satchel cards, every custom card keeps all its abilities, and each boss plays a real fight at level V under the loop detector.
-- Content generations of bosses: a boss's `since` keeps it off the ladder of an older run (Ozrith, Aurenne, Vorthana and Sivanne 6, the Spire 8, its grown roster 9); every run plays the boss of Bosses whatever its generation; `RunEvent::Content` stores the generation and the map is drawn again for it.
+- Content generations of bosses: a boss's `since` keeps it off the ladder of an older run (Ozrith, Aurenne, Vorthana and Sivanne 6, the Spire 8, its grown roster 10); every run plays the boss of Bosses whatever its generation; `RunEvent::Content` stores the generation and the map is drawn again for it.
 
 ## Tuning
 

@@ -47,12 +47,12 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
 /// known trade-offs; from 4 a ladder draws three lieutenants and one final boss; from 5 the roster grows by more
 /// two-colour bosses and a cleared floor may descend; from 6 a boss stands for every colour pair; from 7 a descent
-/// first gives the final boss's loot; from 8 a relic drops again for a hero who owns it; from 9 the Drowned Spire holds a
+/// first gives the final boss's loot; from 8 a relic drops again for a hero who owns it; from 10 the Drowned Spire holds a
 /// lieutenant for every colour and colour pair and a second final boss. Every run plays the boss of
 /// `docs/delves.md` (Bosses), whatever its generation.
 pub const CONTENT: u32 = SPIRE_GROWN_FROM;
 /// The content generation from which the Drowned Spire's ladder draws from its grown roster.
-pub const SPIRE_GROWN_FROM: u32 = 9;
+pub const SPIRE_GROWN_FROM: u32 = 10;
 /// The content generation from which owning a relic never lowers its chance in an offer, and copies stack.
 pub const RELICS_AGAIN_FROM: u32 = 8;
 /// The content generation from which the party may descend to a deeper floor after a floor's final boss.
