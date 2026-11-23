@@ -183,7 +183,7 @@ impl Scope<'_> {
         let mut found = BTreeSet::new();
         match stat {
             StatKind::R374ManaCost => {
-                for object in self.matching(of)? {
+                for object in self.measured(of)? {
                     let cost = self
                         .seen(object)
                         .and_then(|seen| seen.card)
@@ -193,7 +193,7 @@ impl Scope<'_> {
                 }
             }
             StatKind::R374ColorSet => {
-                for object in self.matching(of)? {
+                for object in self.measured(of)? {
                     if let Some(seen) = self.seen(object)
                         && !seen.chars.colors.is_empty()
                     {

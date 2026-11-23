@@ -205,6 +205,7 @@ mod r5g;
 mod r6003_totals;
 mod r6008_pack;
 mod r6018_cards;
+mod r608h_departed_amounts;
 mod r6100_cards;
 mod r6102_pack;
 mod r6103_cards;
