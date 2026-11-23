@@ -652,19 +652,14 @@ fn requires_a_pick(line: &str) -> bool {
 }
 
 /// Whether a line of text is a required additional cost that counts the X the caster announces ("As an additional cost
-/// to cast this spell, pay X life."), which the effects of the spell read. The X of "with mana value X" is no amount the
-/// caster announces: it names the mana value of the permanent the cost takes, which the table plays.
+/// to cast this spell, pay X life."), which the effects of the spell read. The X of "sacrifice an artifact or creature
+/// with mana value X" is announced too (CR 601.2b): the cost then picks a permanent by it.
 fn counts_x(line: &str) -> bool {
     let line = line.to_lowercase();
     line.strip_prefix("as an additional cost to cast this spell, ")
         .is_some_and(|cost| {
-            let announced = ["mana value", "power", "toughness"]
-                .iter()
-                .fold(cost.to_owned(), |cost, stat| {
-                    cost.replace(&format!("{stat} x"), stat)
-                });
             !cost.starts_with("you may ")
-                && announced
+                && cost
                     .split(|c: char| !c.is_alphanumeric())
                     .any(|word| word == "x")
         })

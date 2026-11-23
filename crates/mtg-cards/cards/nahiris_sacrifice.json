@@ -1,0 +1,40 @@
+{
+  "oracle_id": "a84cc828-8d1b-4e61-a13f-60124e2ee35f",
+  "name": "Nahiri's Sacrifice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nahiri's Sacrifice",
+      "oracle_fingerprint": "dab2496399928ec5d3e3db1361669eb0",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "Sacrifice": {
+                  "filter": [
+                    { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                  ]
+                }
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": "X" },
+                "divide": "X"
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

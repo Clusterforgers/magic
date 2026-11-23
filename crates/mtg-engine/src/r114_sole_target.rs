@@ -115,6 +115,7 @@ pub(crate) fn r114_sole_target<A: std::ops::Deref<Target = Ability>>(
             original.x,
             original.modes_chooser(),
             &original.targets[bases.get(*at).copied().unwrap_or(0).min(*at)..*at],
+            crate::choose::r118_kind_of(Some(&spell.ability)),
         );
         legal_everywhere = Some(match legal_everywhere {
             None => legal,

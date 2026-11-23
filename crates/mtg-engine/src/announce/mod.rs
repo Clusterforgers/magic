@@ -757,6 +757,14 @@ impl Ctx<'_> {
         self.triggered.is_none() && self.granted.is_none()
     }
 
+    /// The kind of ability being announced, which hexproof from a kind of ability reads; `None` for a spell.
+    pub(super) fn r118_by(&self) -> Option<mtg_cards::refs::AbilityKind> {
+        match self.what {
+            What::Spell(_) => None,
+            _ => crate::choose::r118_kind_of(self.ability),
+        }
+    }
+
     /// What a triggered ability triggered on.
     pub(super) fn cause(&self) -> Option<&Cause> {
         self.triggered.map(|waiting| &waiting.trigger.cause)

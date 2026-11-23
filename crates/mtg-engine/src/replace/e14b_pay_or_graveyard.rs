@@ -8,14 +8,17 @@
 
 use std::collections::BTreeSet;
 
-use mtg_cards::cost::Cost;
+use mtg_cards::cost::{Cost, CostItem};
+use mtg_cards::value::{Amount, CounterKind};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::{Applied, Asked, Candidate, Item, Origin, Pass, Slot};
-use crate::choose::{CardsOptions, Choice, YesNoOptions};
+use crate::choose::{CardsOptions, Choice, ChoiceOption, OptionOptions, Target, YesNoOptions};
+use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
 use crate::events::{Event, ZoneCause};
+use crate::object::{GameObject, ObjectRef};
 use crate::parts::{Part, Payer, Pick};
 use crate::price::Price;
 use crate::zones::Zone;
@@ -26,10 +29,21 @@ impl Pass<'_> {
         &mut self,
         at: usize,
         candidate: &Candidate,
-        (cost, optional): (&Cost, bool),
+        (cost, optional, counter_each): (&Cost, bool, &[CounterKind]),
         (object, controller): (ObjectId, PlayerId),
         applied: Vec<Origin>,
     ) -> Result<Applied, EngineError> {
+        // "Exile X creature cards": X is the X the spell was cast with, which the card remembers (CR 107.3m).
+        let x = self
+            .state
+            .object(object)
+            .and_then(GameObject::announced_x)
+            .unwrap_or(0);
+        let cost = &r118_with_x(cost, x);
+        if r118_takes_nothing(cost) {
+            self.slots[at].applied = applied;
+            return Ok(Applied::Done);
+        }
         let pick = Price::announced(cost)
             .ok()
             .and_then(|price| match &price.parts[..] {
@@ -67,6 +81,19 @@ impl Pass<'_> {
             Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
             Asked::Got(picked) => picked,
         };
+        let mut kinds = Vec::new();
+        if !counter_each.is_empty() {
+            for _ in &picked {
+                match self.r118_counter_kind(object, controller, counter_each)? {
+                    Asked::Ask(decision) => return Ok(Applied::Ask(decision)),
+                    Asked::Got(kind) => kinds.push(kind),
+                }
+            }
+        }
+        let permanent = self.state.object(object).map(|card| ObjectRef {
+            id: object,
+            counter: card.counter() + 1,
+        });
         let paid: Vec<Slot> = Part::Pick(pick)
             .events(self.state, controller, object, &picked)
             .into_iter()
@@ -76,9 +103,60 @@ impl Pass<'_> {
         self.slots.splice(at..at, paid);
         // The enter event moved to make room for the payment.
         if let Some(slot) = self.slots.get_mut(at + made) {
-            slot.applied = applied;
+            slot.applied.clone_from(&applied);
+        }
+        // The counters come in with the events that bring the permanent in, so a replacement of counters reaches them.
+        if let Some(permanent) = permanent {
+            let mut inherited = applied;
+            inherited.dedup();
+            for (offset, counter) in kinds.into_iter().enumerate() {
+                self.slots.insert(
+                    at + made + 1 + offset,
+                    Slot {
+                        item: Item::One(Event::CountersChanged(CountersChanged {
+                            on: Target::Object(permanent),
+                            counter,
+                            delta: 1,
+                        })),
+                        applied: inherited.clone(),
+                        frozen: false,
+                    },
+                );
+            }
         }
         Ok(Applied::Done)
+    }
+
+    /// The kind of one counter the permanent `object` enters with for a card paid, chosen by `controller` among `kinds`.
+    fn r118_counter_kind(
+        &mut self,
+        object: ObjectId,
+        controller: PlayerId,
+        kinds: &[CounterKind],
+    ) -> Result<Asked<CounterKind>, EngineError> {
+        if let [only] = kinds {
+            return Ok(Asked::Got(only.clone()));
+        }
+        match self.answer() {
+            None => Ok(Asked::Ask(Decision {
+                player: controller,
+                kind: DecisionKind::ChooseOption(OptionOptions {
+                    can_cancel: false,
+                    source: object,
+                    options: kinds
+                        .iter()
+                        .map(|kind| ChoiceOption::Label(format!("{} counter", kind.name())))
+                        .collect(),
+                    text: "Choose a counter it enters with for a card exiled.".to_owned(),
+                }),
+            })),
+            Some((who, Choice::Option(index))) if *who == controller && *index < kinds.len() => {
+                Ok(Asked::Got(kinds[*index].clone()))
+            }
+            Some(other) => Err(Self::invalid(format!(
+                "{other:?} is no answer to the choice of a counter of {controller:?}"
+            ))),
+        }
     }
 
     /// Whether `controller` pays the optional cost; No is the only answer when they cannot.
@@ -177,4 +255,37 @@ impl Pass<'_> {
             _ => self.redirect(at, object, from, grave, applied),
         }
     }
+}
+
+/// `cost` with the X of an exile of cards from the graveyard fixed at `x`.
+fn r118_with_x(cost: &Cost, x: u32) -> Cost {
+    let fixed = Amount::Fixed(i32::try_from(x).unwrap_or(i32::MAX));
+    Cost(
+        cost.0
+            .iter()
+            .map(|item| match item {
+                CostItem::ExileFromGraveyard {
+                    filter,
+                    any_player,
+                    count: Amount::X,
+                } => CostItem::ExileFromGraveyard {
+                    filter: filter.clone(),
+                    any_player: *any_player,
+                    count: fixed.clone(),
+                },
+                other => other.clone(),
+            })
+            .collect(),
+    )
+}
+
+/// Whether the cost takes no card: an exile of 0 cards, paid by doing nothing (CR 107.3, 601.2h).
+fn r118_takes_nothing(cost: &Cost) -> bool {
+    matches!(
+        &cost.0[..],
+        [CostItem::ExileFromGraveyard {
+            count: Amount::Fixed(0),
+            ..
+        }]
+    )
 }

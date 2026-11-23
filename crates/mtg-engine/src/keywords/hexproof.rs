@@ -1,6 +1,7 @@
 //! Hexproof (CR 702.11): a permanent or player with hexproof can't be the target of spells or abilities its controller's opponents control.
 
 use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::{AbilityKind, Pred, Selector};
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use super::KeywordRules;
@@ -64,6 +65,46 @@ pub(crate) fn ep23_player_hexproof_from(
             }
             _ => false,
         })
+}
+
+/// The kinds of ability a quality of hexproof from names when it names nothing else ("hexproof from activated and
+/// triggered abilities"); `None` for a quality of the source.
+fn r118_ability_kinds(quality: &Selector) -> Option<Vec<AbilityKind>> {
+    let [pred] = quality.0.as_slice() else {
+        return None;
+    };
+    let kind = |pred: &Pred| match pred {
+        Pred::Ability(kind) => Some(*kind),
+        _ => None,
+    };
+    match pred {
+        Pred::AnyOf(preds) => preds.iter().map(kind).collect(),
+        other => kind(other).map(|kind| vec![kind]),
+    }
+}
+
+/// Whether hexproof from a kind of ability keeps `controller`'s ability of kind `by` (`None`: a spell) from targeting
+/// `holder` (CR 702.11d): the kind is the targeting object's, which the source permanent does not show.
+pub(crate) fn r118_from_abilities(
+    state: &GameState,
+    keyword: &Keyword,
+    holder: ObjectId,
+    controller: PlayerId,
+    by: Option<AbilityKind>,
+) -> bool {
+    let Keyword::HexproofFrom(quality) = keyword else {
+        return false;
+    };
+    let (Some(kinds), Some(by)) = (r118_ability_kinds(quality), by) else {
+        return false;
+    };
+    kinds.contains(&by)
+        && state
+            .object(holder)
+            .filter(|object| object.zone() == Zone::Battlefield)
+            .is_some_and(|object| {
+                crate::characteristics::controller_of_object(state, object) != controller
+            })
 }
 
 /// The rules of hexproof from a quality.
@@ -159,6 +200,52 @@ mod tests {
                 Target::Object(object) => game.object(object.id).unwrap().card().name.clone(),
             })
             .collect()
+    }
+
+    /// "Hexproof from activated and triggered abilities" (Volatile Stormdrake).
+    fn r118_from_abilities() -> Keyword {
+        Keyword::HexproofFrom(mtg_cards::refs::Selector(vec![Pred::AnyOf(vec![
+            Pred::Ability(AbilityKind::Activated),
+            Pred::Ability(AbilityKind::Triggered),
+        ])]))
+    }
+
+    #[rstest]
+    #[case::opponents_spell(2, 0, None, true)]
+    #[case::opponents_activated_ability(2, 0, Some(AbilityKind::Activated), false)]
+    #[case::opponents_triggered_ability(2, 0, Some(AbilityKind::Triggered), false)]
+    #[case::own_activated_ability(2, 1, Some(AbilityKind::Activated), true)]
+    #[case::own_triggered_ability(3, 1, Some(AbilityKind::Triggered), true)]
+    #[case::other_opponents_triggered_ability(3, 2, Some(AbilityKind::Triggered), false)]
+    #[case::other_opponents_spell(4, 3, None, true)]
+    fn hexproof_from_abilities_stops_opponents_abilities_and_never_spells(
+        #[case] seats: usize,
+        #[case] caster: usize,
+        #[case] by: Option<AbilityKind>,
+        #[case] legal: bool,
+    ) {
+        let mut setup = table(seats);
+        setup.players[1].battlefield[0] = crate::setup::PresetPermanent::new(Arc::new(
+            CardDefinition::new("Shade")
+                .with_type(CardType::Creature)
+                .with_power_toughness(2, 2)
+                .with_rules(Ability::Keyword(r118_from_abilities())),
+        ));
+        let game = game(&setup);
+        let source = spell_of(&game, caster);
+        let found = crate::choose::legal_for(
+            &game,
+            &spec(r#"{"what":{"Object":[{"Type":"Creature"}]}}"#),
+            source,
+            PlayerId::from_index(caster),
+            None,
+            None,
+            None,
+            &[],
+            by,
+        );
+        assert_eq!(names(&game, &found).contains(&"Shade".to_owned()), legal);
+        assert!(names(&game, &found).contains(&"Bear".to_owned()));
     }
 
     #[rstest]
@@ -344,6 +431,7 @@ mod tests {
                 as_was: false,
                 inline: None,
                 entering: None,
+                r118_by: None,
             };
             (
                 scope.all_targets_illegal(),

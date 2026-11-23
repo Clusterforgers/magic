@@ -179,6 +179,8 @@ mod r117_02_spells;
 mod r117_evidence_of_targets;
 mod r117_paid_with;
 mod r117_surveilled_cards;
+mod r118_02_monster;
+mod r118_02_sacrifice_x;
 mod r1a_spend;
 mod r281_cards;
 mod r281_kicked_spend;

@@ -159,6 +159,9 @@ pub struct Scope<'a> {
     /// The choice the source made as it enters, kept with its enter event until the event folds: what the replacements
     /// of the same entering read as the source's choice ("enters with a counter for each creature that player controls").
     pub(crate) entering: Option<&'a Chosen>,
+    /// The kind of the resolving ability, which hexproof from a kind of ability reads in the recheck of its targets;
+    /// `None` for a spell.
+    pub(crate) r118_by: Option<mtg_cards::refs::AbilityKind>,
 }
 
 /// The targets a spell being cast has chosen so far (CR 601.2c).
@@ -429,6 +432,7 @@ impl<'a> Scope<'a> {
             as_was: false,
             inline: None,
             entering: None,
+            r118_by: None,
         }
     }
 
@@ -1261,6 +1265,7 @@ impl<'a> Scope<'a> {
             Some(self.x_value()),
             self.choices.modes_chooser(),
             self.earlier(index),
+            self.r118_by,
         );
         set.iter()
             .copied()
@@ -1324,6 +1329,7 @@ impl<'a> Scope<'a> {
             Some(self.x_value()),
             self.choices.modes_chooser(),
             self.earlier(index),
+            self.r118_by,
         ))
     }
 

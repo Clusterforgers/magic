@@ -59,7 +59,7 @@ pub(crate) use mode::{
 };
 pub(crate) use option::{OptionChooser, Optioned, pick_options};
 pub(crate) use targets::{
-    asks, legal_for, legal_from, options_for, reads_x, targets_met, without_earlier,
+    asks, legal_for, legal_from, options_for, r118_kind_of, reads_x, targets_met, without_earlier,
 };
 pub(crate) use yes_no::{Said, pick_yes_no};
 

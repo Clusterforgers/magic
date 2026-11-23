@@ -2964,8 +2964,12 @@ impl Pass<'_> {
             ReplaceBy::R114ChooseObject(what) => {
                 self.r114_choose_object(at, candidate, what, (object, controller), applied)
             }
-            ReplaceBy::PayOrGraveyard { cost, optional } => {
-                let paid = (cost, *optional);
+            ReplaceBy::PayOrGraveyard {
+                cost,
+                optional,
+                r118_counter_each,
+            } => {
+                let paid = (cost, *optional, r118_counter_each.as_slice());
                 self.e14b_pay_or_graveyard(at, candidate, paid, (object, controller), applied)
             }
             ReplaceBy::TappedForCounters { counter, count } => {

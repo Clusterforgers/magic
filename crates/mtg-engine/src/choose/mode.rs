@@ -147,6 +147,8 @@ pub(crate) struct Modal<'a> {
     pub(crate) extra_mode_cost: Option<&'a Cost>,
     /// The pawprints each mode takes from the most, parallel to `modes`; empty for one each.
     pub(crate) pawprints: &'a [u32],
+    /// The kind of ability the modes are of, which hexproof from a kind of ability reads; `None` for a spell.
+    pub(crate) r118_by: Option<mtg_cards::refs::AbilityKind>,
     /// The modes this ability chose earlier in the turn, or in any turn (read from the tally by the announcement).
     pub(crate) used: Vec<usize>,
 }
@@ -206,6 +208,7 @@ pub(crate) fn modal_of(rules: &Ability) -> Option<Modal<'_>> {
             extra_mode_cost: extra_mode_cost.as_ref(),
             pawprints,
             used: Vec::new(),
+            r118_by: crate::choose::r118_kind_of(Some(rules)),
         }),
         _ => None,
     }
@@ -218,9 +221,10 @@ fn is_legal(
     controller: PlayerId,
     mode: &Mode,
     cause: Option<&Cause>,
+    by: Option<mtg_cards::refs::AbilityKind>,
 ) -> bool {
     mode.targets.iter().enumerate().all(|(index, spec)| {
-        options_before_x(state, source, controller, index, spec, cause).is_some()
+        options_before_x(state, source, controller, index, spec, cause, by).is_some()
     })
 }
 
@@ -235,7 +239,7 @@ pub(crate) fn every_mode_is_legal(
     modal
         .modes
         .iter()
-        .all(|mode| is_legal(state, source, controller, mode, cause))
+        .all(|mode| is_legal(state, source, controller, mode, cause, modal.r118_by))
 }
 
 /// What a mode is called in the prompt: the label the card gives it, else the oracle wording of what it does (a
@@ -334,7 +338,7 @@ pub(crate) fn announced_mode_options(
         .iter()
         .enumerate()
         .filter(|(index, _)| modal.once == C11dOnce::Any || !modal.used.contains(index))
-        .filter(|(_, mode)| is_legal(state, source, controller, mode, cause))
+        .filter(|(_, mode)| is_legal(state, source, controller, mode, cause, modal.r118_by))
         .map(|(index, mode)| ModeOption {
             index,
             label: label_of(mode, card),
@@ -437,7 +441,16 @@ pub(crate) fn announceable(
     match modal_of(rules) {
         Some(modal) => mode_options(state, source, player, &modal, true, None).is_some(),
         None => rules.targets().iter().enumerate().all(|(index, spec)| {
-            options_before_x(state, source, player, index, spec, None).is_some()
+            options_before_x(
+                state,
+                source,
+                player,
+                index,
+                spec,
+                None,
+                crate::choose::r118_kind_of(Some(rules)),
+            )
+            .is_some()
         }),
     }
 }
@@ -458,9 +471,17 @@ pub(crate) fn unmet_target<'a>(
             }
             modal.modes.iter().find_map(|mode| {
                 mode.targets.iter().enumerate().find_map(|(index, spec)| {
-                    options_before_x(state, source, player, index, spec, None)
-                        .is_none()
-                        .then_some(spec)
+                    options_before_x(
+                        state,
+                        source,
+                        player,
+                        index,
+                        spec,
+                        None,
+                        crate::choose::r118_kind_of(Some(rules)),
+                    )
+                    .is_none()
+                    .then_some(spec)
                 })
             })
         }
@@ -469,9 +490,17 @@ pub(crate) fn unmet_target<'a>(
             .iter()
             .enumerate()
             .find_map(|(index, spec)| {
-                options_before_x(state, source, player, index, spec, None)
-                    .is_none()
-                    .then_some(spec)
+                options_before_x(
+                    state,
+                    source,
+                    player,
+                    index,
+                    spec,
+                    None,
+                    crate::choose::r118_kind_of(Some(rules)),
+                )
+                .is_none()
+                .then_some(spec)
             }),
     }
 }

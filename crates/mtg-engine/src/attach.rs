@@ -347,6 +347,7 @@ pub(crate) fn bestow_announceable(state: &GameState, player: PlayerId, id: Objec
         &[],
         None,
         None,
+        None,
     )
     .is_some()
 }
@@ -385,6 +386,7 @@ pub(crate) fn announceable(state: &GameState, player: PlayerId, id: ObjectId) ->
             None,
             None,
             &[],
+            None,
             None,
             None,
         )

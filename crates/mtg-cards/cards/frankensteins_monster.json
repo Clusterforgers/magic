@@ -1,0 +1,26 @@
+{
+  "oracle_id": "100218ce-1572-4bce-bb00-d2df5f68705c",
+  "name": "Frankenstein's Monster",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Frankenstein's Monster",
+      "oracle_fingerprint": "1a7606718b97798a3f383eaf7d44d78a",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "PayOrGraveyard": {
+                "cost": [
+                  { "ExileFromGraveyard": { "filter": [{ "Type": "Creature" }], "count": "X" } }
+                ],
+                "r118_counter_each": [{ "Other": "+2/+0" }, "+1/+1", { "Other": "+0/+2" }]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

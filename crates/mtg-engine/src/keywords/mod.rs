@@ -175,6 +175,7 @@ use std::fmt::Debug;
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::Cost;
 use mtg_cards::keyword::Keyword;
+use mtg_cards::refs::AbilityKind;
 use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::ability_reader::keyword_abilities;
@@ -743,15 +744,18 @@ pub fn player_keywords(state: &GameState, id: PlayerId) -> Vec<&Keyword> {
     held
 }
 
-/// Whether a keyword of `holder` stops `controller`'s `source` from targeting it.
+/// Whether a keyword of `holder` stops `controller`'s `source` from targeting it; `by` is the kind of ability that
+/// targets, `None` for a spell.
 pub(crate) fn protects(
     state: &GameState,
     holder: ObjectId,
     source: ObjectId,
     controller: PlayerId,
+    by: Option<AbilityKind>,
 ) -> bool {
     keywords_of(state, holder).into_iter().any(|keyword| {
-        rules(keyword).restricts_targeting(state, keyword, holder, source, controller)
+        (rules(keyword).restricts_targeting(state, keyword, holder, source, controller)
+            || hexproof::r118_from_abilities(state, keyword, holder, controller, by))
             && !crate::combat_quirks::ignores_protection(
                 state,
                 crate::combat_quirks::Holder::Object(holder),
