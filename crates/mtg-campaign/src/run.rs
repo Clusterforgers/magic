@@ -47,9 +47,11 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// relic offers follow the deck and the relics of the larger pool are offered; from 3 relics have rarities and events are
 /// known trade-offs; from 4 a ladder draws three lieutenants and one final boss; from 5 the roster grows by more
 /// two-colour bosses and a cleared floor may descend; from 6 a boss stands for every colour pair; from 7 a descent
-/// first gives the final boss's loot; from 8 a relic drops again for a hero who owns it. Every run plays the boss of
-/// `docs/delves.md` (Bosses), whatever its generation.
-pub const CONTENT: u32 = RELICS_AGAIN_FROM;
+/// first gives the final boss's loot; from 8 a relic drops again for a hero who owns it; from 9 each descent leads into
+/// another theme. Every run plays the boss of `docs/delves.md` (Bosses), whatever its generation.
+pub const CONTENT: u32 = THEMES_FROM;
+/// The content generation from which each descent leads into another open theme (`Content::next_theme`).
+pub const THEMES_FROM: u32 = 9;
 /// The content generation from which owning a relic never lowers its chance in an offer, and copies stack.
 pub const RELICS_AGAIN_FROM: u32 = 8;
 /// The content generation from which the party may descend to a deeper floor after a floor's final boss.
@@ -430,6 +432,12 @@ fn first_floor() -> u8 {
     1
 }
 
+/// A theme's name inside a sentence: "The Drowned Spire" as "the Drowned Spire".
+pub fn in_sentence(name: &str) -> String {
+    name.strip_prefix("The ")
+        .map_or_else(|| name.to_owned(), |rest| format!("the {rest}"))
+}
+
 /// A run: its seed and theme, the ladder, the party and where they are.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -445,8 +453,16 @@ pub struct Run {
     /// How long the party may take in each fight's game: relaxed unless the host chose otherwise.
     #[serde(default)]
     pub timers: Timers,
-    /// The theme's id.
+    /// The theme's id: the first floor's.
     pub theme: String,
+    /// The theme of the floor the party is on, once a descent chose it; none while that is the first floor's.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub floor_theme: Option<String>,
+    /// The theme of the floor above, when the descent onto this floor left it for another.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "ts", ts(optional))]
+    pub theme_from: Option<String>,
     /// The ladder of the floor the party is on.
     pub map: FloorMap,
     /// The floor the party is on, from 1.
@@ -495,6 +511,8 @@ impl Run {
             heat,
             content: 0,
             theme: theme.to_owned(),
+            floor_theme: None,
+            theme_from: None,
             timers: Timers::default(),
             map,
             floor: 1,
@@ -528,8 +546,14 @@ impl Run {
         Ok(run)
     }
 
+    /// The id of the theme of the floor the party is on.
+    pub fn floor_theme(&self) -> &str {
+        self.floor_theme.as_deref().unwrap_or(&self.theme)
+    }
+
+    /// The theme of the floor the party is on: its bosses, events and reward pool.
     fn theme<'a>(&self, content: &'a Content) -> Result<&'a Theme, CampaignError> {
-        content.theme(&self.theme)
+        content.theme(self.floor_theme())
     }
 
     fn hero_mut(&mut self, hero: u8) -> Result<&mut Hero, CampaignError> {
@@ -649,8 +673,13 @@ impl Run {
                     return Err(refused(format!("{} has no deck", h.name)));
                 }
                 self.status = Status::Map;
-                self.log
-                    .push("The party descends into the Warrens.".to_owned());
+                // Older runs keep the words they were played with.
+                let name = if self.content >= THEMES_FROM {
+                    in_sentence(&self.theme(content)?.name)
+                } else {
+                    "the Warrens".to_owned()
+                };
+                self.log.push(format!("The party descends into {name}."));
                 // The first room is the first boss: no vote.
                 if let [only] = self.map.choices(None).as_slice() {
                     self.enter(content, *only)?;
@@ -836,6 +865,11 @@ impl Run {
             .filter_map(|n| n.boss.clone())
             .collect();
         let avoid: Vec<&str> = fought.iter().map(String::as_str).collect();
+        if let Some(next) = self.next_floor_theme(content)? {
+            let from = self.floor_theme().to_owned();
+            self.floor_theme = Some(next.id.clone());
+            self.theme_from = (next.id != from).then_some(from);
+        }
         self.floor = self.floor.saturating_add(1);
         self.map = generate_floor(
             self.theme(content)?,
@@ -854,18 +888,45 @@ impl Run {
             "The party descends to floor {} ({} hearts).",
             self.floor, self.hearts
         ));
+        if self.theme_from.is_some() {
+            let name = in_sentence(&self.theme(content)?.name);
+            self.log.push(format!("The party descends into {name}."));
+        }
         if let [only] = self.map.choices(None).as_slice() {
             self.enter(content, *only)?;
         }
         Ok(())
     }
 
+    /// The theme of the floor below, from [`THEMES_FROM`] on: another open theme drawn by the seed keyed by that floor
+    /// (`Content::next_theme`); none for an older run, whose floors all play the first floor's theme.
+    pub fn next_floor_theme<'a>(
+        &self,
+        content: &'a Content,
+    ) -> Result<Option<&'a Theme>, CampaignError> {
+        if self.content < THEMES_FROM {
+            return Ok(None);
+        }
+        let below = self.floor.saturating_add(1);
+        content
+            .next_theme(self.seed, self.content, below, self.floor_theme())
+            .map(Some)
+    }
+
     /// What a descent changes, one line each, for the choice on a cleared floor: empty while there is none to make.
-    pub fn descent_words(&self) -> Vec<String> {
+    pub fn descent_words(&self, content: &Content) -> Vec<String> {
         if self.status != Status::FloorCleared {
             return Vec::new();
         }
         let next = self.floor.saturating_add(1);
+        let into = self
+            .next_floor_theme(content)
+            .ok()
+            .flatten()
+            .filter(|theme| theme.id != self.floor_theme())
+            .map_or_else(String::new, |theme| {
+                format!(" in {}", in_sentence(&theme.name))
+            });
         let depth = self.defeated();
         let hearts = self.hearts.saturating_add(DESCENT_HEARTS).min(HEARTS);
         let loot = (self.content >= DESCENT_LOOT_FROM).then(|| {
@@ -876,7 +937,7 @@ impl Run {
         let mut words: Vec<String> = loot.into_iter().collect();
         words.extend([
             format!(
-                "Floor {next}: new bosses, their innates at level {} from the first fight and growing, more relics the deeper the party goes",
+                "Floor {next}{into}: new bosses, their innates at level {} from the first fight and growing, more relics the deeper the party goes",
                 crate::scale::Scale::innate_level(depth, self.heat)
             ),
             format!(
@@ -1135,7 +1196,23 @@ impl Run {
             && let Some(makeup) = h.deck.as_ref().and_then(|d| d.makeup.as_ref())
             && let Ok(theme) = self.theme(content)
         {
-            fits = offerable(fits, &makeup.with_satchel(&h.satchel, theme));
+            let with = if self.content >= THEMES_FROM {
+                // A Satchel of several themes: each card counts by the first pool that names it, the floor's first.
+                let mut with = makeup.clone();
+                let mut left = h.satchel.clone();
+                let others = content.themes.iter().filter(|t| t.id != theme.id);
+                for pool in std::iter::once(theme).chain(others) {
+                    let (here, rest): (Vec<String>, Vec<String>) = left
+                        .into_iter()
+                        .partition(|card| pool.pool.iter().any(|(name, _)| name == card));
+                    with = with.with_satchel(&here, pool);
+                    left = rest;
+                }
+                with
+            } else {
+                makeup.with_satchel(&h.satchel, theme)
+            };
+            fits = offerable(fits, &with);
         }
         let salt = u64::try_from(h.offers.len() + h.relics.len()).unwrap_or(0);
         let mut rng = Stream::new(self.seed, label, u64::from(node) * 16 + salt, hero as u64);

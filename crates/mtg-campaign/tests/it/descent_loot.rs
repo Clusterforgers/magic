@@ -98,7 +98,7 @@ fn a_descent_gives_the_final_boss_loot_first(
     );
     assert_eq!(run.hearts, 2, "one heart back");
     let avoid: Vec<&str> = fought.iter().map(String::as_str).collect();
-    let theme = &content.themes[0];
+    let theme = content.theme(run.floor_theme()).unwrap();
     assert_eq!(run.map, generate_floor(theme, run.seed, CONTENT, 2, &avoid));
     assert_eq!(run.at, run.map.choices(None).first().copied());
     for (h, was) in run.heroes.iter().zip(&before.heroes) {
@@ -143,7 +143,9 @@ fn older_endless_runs_descend_straight_to_the_fight(
     clear_floor(&mut run);
     let before = run.clone();
     assert!(
-        !run.descent_words().iter().any(|w| w.contains("loot")),
+        !run.descent_words(content().unwrap())
+            .iter()
+            .any(|w| w.contains("loot")),
         "no loot promised"
     );
     vote_all(&mut run, true);
@@ -156,7 +158,7 @@ fn older_endless_runs_descend_straight_to_the_fight(
 fn the_descent_choice_names_the_loot() {
     let mut run = started(31, 1, CONTENT, 2, 0);
     clear_floor(&mut run);
-    let words = run.descent_words();
+    let words = run.descent_words(content().unwrap());
     assert!(words[0].contains("final boss's loot"), "{words:?}");
 }
 

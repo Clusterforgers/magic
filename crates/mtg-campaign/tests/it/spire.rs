@@ -22,6 +22,9 @@ use mtg_testkit::cards::{burn, creature, free_creature, instant, island};
 use mtg_testkit::{Driver, Scenario, ScriptError, corpus, ready};
 use rstest::rstest;
 
+/// The content generation the Drowned Spire joined in.
+const SPIRE_FROM: u32 = 8;
+
 const HERO: usize = 0;
 const BOSS: usize = 1;
 
@@ -126,7 +129,7 @@ fn a_spire_boss_holds_the_reworked_record(
     let content = content().unwrap();
     let boss = spire().boss(id).unwrap();
     assert_eq!((boss.colors.as_str(), boss.final_boss), (colors, last));
-    assert_eq!(boss.since, mtg_campaign::run::CONTENT);
+    assert_eq!(boss.since, SPIRE_FROM);
     assert_eq!(boss.deck_file, deck);
     let path = format!("{}/content/decks/{deck}", env!("CARGO_MANIFEST_DIR"));
     let file: serde_json::Value =
@@ -169,7 +172,7 @@ fn a_spire_boss_holds_the_reworked_record(
 fn a_new_run_draws_its_theme_by_seed_from_the_spires_generation_only() {
     let content = content().unwrap();
     let draw = |seed, generation| content.theme_for(seed, generation).unwrap().id.clone();
-    assert!((0..200).all(|seed| draw(seed, mtg_campaign::run::CONTENT - 1) == "warrens"));
+    assert!((0..200).all(|seed| draw(seed, SPIRE_FROM - 1) == "warrens"));
     let drawn: Vec<String> = (0..200)
         .map(|seed| draw(seed, mtg_campaign::run::CONTENT))
         .collect();
