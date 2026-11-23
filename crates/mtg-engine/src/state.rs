@@ -267,6 +267,8 @@ pub(crate) enum Tally {
     W9aSpellMana,
     /// Players made to guess or to group into piles (counted for the spell or ability that did).
     R112Grouped,
+    /// The spell was the first its caster cast this game (counted for the spell and its caster; CR 601.2i).
+    R117FirstOfGame,
 }
 
 /// The events counted in the turn so far.

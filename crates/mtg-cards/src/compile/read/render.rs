@@ -721,6 +721,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r115_03_wholes::r115_03_add_wholes(ability, &mut texts);
     super::r116_03_wholes::r116_03_add_wholes(ability, &mut texts);
     super::r116_02_wholes::r116_02_add_wholes(ability, &mut texts);
+    super::r117_02_wholes::r117_02_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -3639,6 +3640,7 @@ impl Writer<'_> {
                 self.rmt8_action(effect, what)?
             }
             Effect::EndTurn => "end the turn".to_owned(),
+            Effect::R117EndCombat => "end the combat phase".to_owned(),
             Effect::LoseGame { who: Ref::You } => "you lose the game".to_owned(),
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
             // The card an earlier step exiled and named is "it".

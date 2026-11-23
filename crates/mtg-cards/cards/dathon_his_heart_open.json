@@ -1,0 +1,39 @@
+{
+  "oracle_id": "8de259a9-99d0-4f07-8dbc-f065e3af352b",
+  "name": "Dathon, His Heart Open",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dathon, His Heart Open",
+      "oracle_fingerprint": "a9b0326455d8279b083f0ff2a6fb9a25",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": [{ "Type": "Enchantment" }], "by": "You" } },
+            "effects": [
+              { "Draw": {} },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "Triggering", "selector": [{ "Subtype": "Saga" }] }
+                  },
+                  "then": [{ "DealDamage": { "to": "Opponents", "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "timing": "Sorcery",
+            "targets": [
+              { "what": { "Object": [{ "Type": "Enchantment" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [{ "R117AnotherOfKind": { "on": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

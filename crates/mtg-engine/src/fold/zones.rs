@@ -520,6 +520,7 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    let first_of_game = !state.r379_cast_game.contains_key(&player);
     *state.r379_cast_game.entry(player).or_insert(0) += 1;
     if state
         .objects
@@ -562,6 +563,9 @@ fn spell_cast(
     let off_sorcery_timing =
         !crate::priority::sorcery_timing(state, player) || state.resolving().is_some();
     r112_to_stack(state, player, object, r112_gained)?;
+    if first_of_game && let Some(spell) = state.objects.get(&object).map(GameObject::reference) {
+        state.tally_object(spell, Some(player), Tally::R117FirstOfGame);
+    }
     if uncounterable {
         crate::rules::uncounterable_from_now(state, player, object);
     }

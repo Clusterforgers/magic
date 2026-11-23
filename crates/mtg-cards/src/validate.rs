@@ -1547,6 +1547,10 @@ impl<'a> Walker<'a> {
                 self.uses("Amount", "R113SharesWithAnother");
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
+            Amount::R117GreatestOf { of, .. } => {
+                self.uses("Amount", "R117GreatestOf");
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
             Amount::CountedAsCast(inner) => {
                 self.uses("Amount", "CountedAsCast");
                 self.at("inner", |w| w.amount(inner));
@@ -1945,6 +1949,7 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "R115MostCommonColor");
                 self.at("R115MostCommonColor", |w| w.selector(among));
             }
+            Condition::R117FirstSpellThisGame => self.uses("Condition", "R117FirstSpellThisGame"),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
             Condition::TriggeringSticker(_) => self.uses("Condition", "TriggeringSticker"),
@@ -2836,7 +2841,10 @@ impl<'a> Walker<'a> {
             Keyword::Ward(cost) => {
                 // A generic amount counted as the ward trigger resolves ("ward {X}, where X is ...") is paid then.
                 let held = std::mem::replace(&mut self.r5511_resolving_cost, true);
+                // "Ward—Discard a card or pay {2}": the payer chooses one cost as the payment resolves.
+                self.r281_paying = matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
                 self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
+                self.r281_paying = false;
                 self.r5511_resolving_cost = held;
                 self.payment_of_the_source(cost);
             }
@@ -4305,6 +4313,8 @@ impl Walker<'_> {
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
+                            // A discard logs an event for each card discarded, none from an empty hand.
+                            | Effect::Discard { .. }
                             | Effect::R110MoveOneOrMore { .. }
                             // A guess binds "if you do" when a number was left to choose.
                             | Effect::R112GuessNumber { .. }
@@ -5489,6 +5499,7 @@ impl Walker<'_> {
                     w.at("each", |w| w.amount(each));
                 }
             }
+            Effect::R117AnotherOfKind { on } => w.at("on", |w| w.reference(on, Kind::Object)),
             Effect::PutRandomCounter { on, among } => {
                 w.at("on", |w| w.reference(on, Kind::Object));
                 if among.len() < 2 {
@@ -5875,6 +5886,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::R117EndCombat
             | Effect::R112NoteManaSpent
             | Effect::R110RemovePutThisWay { .. }
             | Effect::R110AddCombatAfterFirst

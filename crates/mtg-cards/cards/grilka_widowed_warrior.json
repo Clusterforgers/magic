@@ -1,0 +1,63 @@
+{
+  "oracle_id": "d8366080-dd0c-40cf-84e9-f628dfe8f45c",
+  "name": "Grilka, Widowed Warrior",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grilka, Widowed Warrior",
+      "oracle_fingerprint": "d6434cc664e4d9e67a45ef5407df6d62",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "Untap": { "what": { "Target": 0 } } },
+              {
+                "Continuous": {
+                  "affected": { "Target": 0 },
+                  "mods": [
+                    { "AddKeyword": "Trample" },
+                    { "AddKeyword": "Haste" },
+                    {
+                      "GrantAbility": {
+                        "Triggered": {
+                          "when": {
+                            "DealsDamage": {
+                              "source": ["This"],
+                              "to": "EachPlayer",
+                              "combat": true
+                            }
+                          },
+                          "effects": [
+                            {
+                              "CreateToken": {
+                                "token": { "Named": "treasure" },
+                                "count": "Triggering",
+                                "tapped": true
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

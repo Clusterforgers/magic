@@ -1,0 +1,28 @@
+{
+  "oracle_id": "201269a1-8f11-485a-a9be-6447b189b4df",
+  "name": "Merciful Mandate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Merciful Mandate",
+      "oracle_fingerprint": "9c9c828a8380ec67166bebe5e226dc75",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Untap": { "what": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+              },
+              {
+                "If": {
+                  "condition": "InCombat",
+                  "then": [{ "May": { "effects": ["R117EndCombat"] } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
