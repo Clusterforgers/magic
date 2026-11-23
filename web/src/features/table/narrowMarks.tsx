@@ -5,6 +5,7 @@ import {
   CircleDot,
   Coins,
   Copy,
+  Crosshair,
   EyeOff,
   Ghost,
   Heart,
@@ -25,6 +26,7 @@ import {
 import type { LucideIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { CounterChip, StatusChip } from './cardModel'
+import { PAYS_COST_BADGE, TARGETED_BADGE } from './prompt/costTarget'
 
 /** A mark drawn short: an icon, a glyph of at most `GLYPH_MAX` characters, or both; `words` says it in full. */
 export interface Glyph {
@@ -119,6 +121,12 @@ const MUST_ICON: Partial<Record<string, LucideIcon>> = {
   'Must be blocked': ShieldAlert,
 }
 
+/** The notes of a cost that takes a target of its own spell or ability (`costTarget.ts`), drawn as their icon alone. */
+const CLASH_ICON: Partial<Record<string, LucideIcon>> = {
+  [TARGETED_BADGE]: Crosshair,
+  [PAYS_COST_BADGE]: Coins,
+}
+
 /**
  * The corner label a prompt writes on a card ("Pay {2}", "Needs 2 more", "At Ana") as a glyph: an icon, plus the cost,
  * the count or the label itself while it fits `GLYPH_MAX`; the label is its words.
@@ -127,6 +135,8 @@ export function noteGlyph(label: string): Glyph {
   const short = (text: string): string => (text.length <= GLYPH_MAX ? text : '')
   const must = MUST_ICON[label]
   if (must !== undefined) return { icon: must, text: '!', words: label }
+  const clash = CLASH_ICON[label]
+  if (clash !== undefined) return { icon: clash, text: '', words: label }
   const more = /^Needs (\d+) more$/.exec(label)
   if (more !== null) return { icon: Shield, text: `+${countText(Number(more[1]))}`, words: label }
   const least = /^Needs (\d+)\+ blockers$/.exec(label)

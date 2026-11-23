@@ -427,6 +427,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             apart: Vec::new(),
             together: None,
             total: None,
+            paid: Box::default(),
         }),
         DecisionKind::ChooseMode(ModeOptions {
             source: b,
@@ -489,6 +490,7 @@ fn pipeline_decision_kinds() -> Vec<DecisionKind> {
             can_cancel: true,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         }),
         DecisionKind::OrderCards(OrderOptions {
             source: b,
@@ -2031,6 +2033,7 @@ fn the_new_decisions_and_answers_have_their_documented_wire_shape() {
             apart: Vec::new(),
             together: None,
             total: None,
+            paid: Box::default(),
         }),
     };
     assert_eq!(

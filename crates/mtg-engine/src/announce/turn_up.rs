@@ -96,6 +96,7 @@ pub(super) fn next(
                 can_cancel: true,
                 total: None,
                 groups: Vec::new(),
+                targeted: Box::default(),
             }),
         });
     }
@@ -154,6 +155,7 @@ fn optional_pick(
             can_cancel: false,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         }),
     })
 }

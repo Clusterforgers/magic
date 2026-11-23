@@ -170,6 +170,7 @@ fn r114_pick(
                 apart: Vec::new(),
                 together: None,
                 total: None,
+                paid: Box::default(),
             }),
         })),
         Some((who, Choice::Targets(picked))) if *who == player => match picked.as_slice() {

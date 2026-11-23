@@ -980,6 +980,7 @@ mod tests {
             apart: Vec::new(),
             together: None,
             total: None,
+            paid: Box::default(),
         })
     }
 
@@ -997,6 +998,7 @@ mod tests {
             apart: Vec::new(),
             together: None,
             total: None,
+            paid: Box::default(),
         })
     }
 
@@ -1149,6 +1151,7 @@ mod tests {
             can_cancel: false,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         })
     }
 

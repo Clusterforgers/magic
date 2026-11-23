@@ -178,6 +178,7 @@ pub(crate) fn scry_decision(state: &GameState, player: PlayerId) -> Option<Decis
             can_cancel: false,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         }),
     })
 }
@@ -333,6 +334,7 @@ fn dk26_exile_decision(state: &GameState, player: PlayerId) -> Option<Decision> 
             can_cancel: false,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         }),
     })
 }
@@ -460,6 +462,7 @@ pub(crate) fn seat_decision(state: &GameState, player: PlayerId) -> Option<Decis
                 can_cancel: false,
                 total: None,
                 groups: Vec::new(),
+                targeted: Box::default(),
             })
         }
         MulliganStatus::Deciding => {

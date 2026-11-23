@@ -181,6 +181,11 @@ pub struct TargetOptions {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub total: Option<Total>,
+    /// The legal objects the cost of the same spell or ability already takes and moves (sacrificed, exiled, returned):
+    /// such a target is a new object by then and the spell or ability will not reach it (CR 400.7, 608.2b).
+    #[serde(default, skip_serializing_if = "crate::choose::none_listed")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub paid: Box<Vec<ObjectId>>,
 }
 
 /// A most for the mana values of the chosen targets added up ("with total mana value 3 or less").
@@ -558,6 +563,7 @@ pub(crate) fn options_for(
         apart,
         together,
         total,
+        paid: Box::default(),
     })
 }
 
@@ -1188,6 +1194,7 @@ mod tests {
             apart: Vec::new(),
             together: None,
             total: None,
+            paid: Box::default(),
         }
     }
 

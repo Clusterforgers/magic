@@ -112,6 +112,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 
 ### Payments
 
+- Announcing asks a cost's picks before the targets (an X counted from the targets after them), so either question can name what the other took: `TargetOptions.paid` lists the legal objects the picks so far move (a sacrifice, an exile, a return, not a tap), `CardsOptions.targeted` the offered cards already chosen as targets, when the pick moves them. Both are absent while empty and only inform; the engine accepts either answer.
 - `Answer::Undo` backs out of a cast or activation at any question with `can_cancel` (`DecisionKind::can_undo`), like a kind's `Cancel`; `ChooseOption` (face, way to cast, counter kind of a cost) and `ChooseCards` (cards for a cost) have only it. Elsewhere it is refused (`NotOffered`); the clock answers it to a `ChooseOption` that allows it.
 - `PayOptions.can_cancel` says whether `PayChoice::Cancel` is legal. `PayChoice::Complete(Payment)` sends part of a payment for the engine to finish; a rejected answer leaves the decision pending.
 - `PayOptions.proposal` is the `Payment` the game would make (`mana::propose`: plain mana first, otherwise `auto_payment`; present while `auto_available`): "Pay for me" lays it out for the player to confirm as a `Manual` answer or change. `PayOptions.ability` names the ability being activated (cycling from a hand), so the band says what is paid for.

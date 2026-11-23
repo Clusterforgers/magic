@@ -40,6 +40,7 @@ mod cost_parts;
 mod cost_reductions;
 mod cost_reductions_alisaie;
 mod cost_reductions_more;
+mod cost_takes_target;
 mod costly_mana;
 mod counted_costs;
 mod counted_mana;

@@ -1163,6 +1163,39 @@ impl Payer<'_> {
 /// The largest X a pick whose filter reads X is tried with: more than any mana value or count a game has.
 const R301_MOST_X: u32 = 64;
 
+impl Kind {
+    /// Whether paying moves the object to another zone, so a target it was is a new object (CR 400.7); tapping,
+    /// untapping, revealing and adding or removing counters leave it where it is.
+    pub(crate) const fn moves(self) -> bool {
+        match self {
+            Kind::Reveal
+            | Kind::Tap
+            | Kind::TapPower
+            | Kind::Untap
+            | Kind::Counter
+            | Kind::Blight(_)
+            | Kind::Behold(false) => false,
+            Kind::Sacrifice
+            | Kind::Discard
+            | Kind::Exile
+            | Kind::ExileHand
+            | Kind::Return
+            | Kind::ExilePermanent
+            | Kind::ExileSpell
+            | Kind::ExileAny
+            | Kind::Evidence
+            | Kind::R5511CardTypes
+            | Kind::R6703TotalValue
+            | Kind::Behold(true)
+            | Kind::R113BottomAny
+            | Kind::ToLibrary(..)
+            | Kind::Forage
+            | Kind::Craft
+            | Kind::ExiledToGraveyard => true,
+        }
+    }
+}
+
 impl Pick {
     /// The pick once X is announced as `x`: its filter reads `x` in the place of X.
     fn r301_at(&self, x: u32) -> Pick {

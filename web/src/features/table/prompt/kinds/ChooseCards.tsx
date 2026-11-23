@@ -1,4 +1,4 @@
-import { useLayoutEffect, useMemo, useRef } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import type { ObjectId } from '@/protocol/generated'
 import {
@@ -18,7 +18,11 @@ import { cardsTotalWords, fitsCardsTotal, overTotal } from '../cardsTotal'
 import { askerWords } from '../choiceText'
 import { uniqueNames } from '../combatText'
 import { awayOf, inLibrary } from '../lookText'
-import { markCards, useCardMarks } from '../marks'
+import { markCards, useCardMarks, useCardNotes } from '../marks'
+import type { CardNotes } from '../marks'
+import { clashWarning, TARGETED_BADGE } from '../costTarget'
+import type { ClashWarning } from '../costTarget'
+import { CostTargetAnswers, CostTargetText } from '../CostTargetWarning'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
@@ -94,8 +98,10 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
     }
     return shut
   }, [options.one_per_name, options.groups, chosen, from, byId, cardsTotal])
+  const [warning, setWarning] = useState<ClashWarning | null>(null)
   const press = (id: ObjectId): void => {
     if (!fromSet.has(id) || sameName.has(id)) return
+    setWarning(null)
     const next = pressedCard(latest.current, id, hi)
     if (next === latest.current) return
     latest.current = next
@@ -144,10 +150,32 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
   useDefaultFocus(first)
 
   const legal = countFits(chosen.length, bounds) && fitsCardsTotal(from, cardsTotal, chosen)
+  // A pick that takes a target of the same spell or ability is warned of once, never refused (`costTarget.ts`).
+  const targeted = options.targeted ?? NONE
+  const badges = useMemo(() => new Map(targeted.map((id) => [id, TARGETED_BADGE] as const)), [targeted])
+  const notes = useMemo<CardNotes>(
+    () => new Map(targeted.map((id) => [id, { label: TARGETED_BADGE, words: TARGETED_BADGE }] as const)),
+    [targeted],
+  )
+  useCardNotes(notes)
+  const confirm = (): void => {
+    if (!legal) return
+    const clash = clashWarning({
+      chosen,
+      clashing: targeted,
+      source: source?.name,
+      objects: (id) => byId.get(id),
+      all: targeted.every((id) => chosen.includes(id)),
+    })
+    if (clash === null) answer({ ChooseCards: [...chosen] })
+    else setWarning(clash)
+  }
   const asker = askerWords(source?.name)
   const words = options.text ?? ''
   const text =
-    chosen.length === 0 ? (
+    warning !== null ? (
+      <CostTargetText warning={warning} />
+    ) : chosen.length === 0 ? (
       <>
         {cardsAsk(asker, words === '' ? cardsTitle(bounds, total) : words)}
         <span className="sr-only">
@@ -183,22 +211,27 @@ const PickCards: PromptComponent<'ChooseCards'> = ({ options }) => {
             focusFirst={first}
             search={searching}
             rest={quick.length > 0 ? QUICK_ROW_REM : 0}
+            badges={badges}
           />
         </>
       }
     >
-      <Button
-        className="h-9 px-4"
-        disabled={!legal}
-        onClick={() => {
-          if (legal) answer({ ChooseCards: [...chosen] })
-        }}
-      >
-        Confirm
-      </Button>
-      {options.can_cancel === true ? (
-        <UndoButton zone={source?.zone} className="h-9 px-4" onUndo={() => void answer('Undo')} />
-      ) : null}
+      {warning !== null ? (
+        <CostTargetAnswers
+          anyway="Pay anyway"
+          onAnyway={() => answer({ ChooseCards: [...chosen] })}
+          onBack={() => setWarning(null)}
+        />
+      ) : (
+        <>
+          <Button className="h-9 px-4" disabled={!legal} onClick={confirm}>
+            Confirm
+          </Button>
+          {options.can_cancel === true ? (
+            <UndoButton zone={source?.zone} className="h-9 px-4" onUndo={() => void answer('Undo')} />
+          ) : null}
+        </>
+      )}
       <p
         data-slot="cards-count"
         aria-hidden="true"
