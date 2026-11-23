@@ -25,11 +25,17 @@ const decision = (id: number): ServerMessage => ({
   decision: { player: 0, kind: { Priority: options() } },
 })
 
-/** A live table of seat 0 that has been sent the fixture as a Snapshot. */
-function mount() {
+/** The fixture with only its top spell on the stack, where "End turn" stands beside the primary button. */
+const oneSpell = {
+  ...fixture.view,
+  stack: { count: 1, cards: (fixture.view.stack.cards ?? []).slice(-1) },
+}
+
+/** A live table of seat 0 that has been sent the fixture (one spell on the stack, or all three) as a Snapshot. */
+function mount(many = false) {
   const h = startSession()
   h.join(0, 2)
-  act(() => h.deliver({ type: 'Snapshot', seq: 1, state: fixture.view }))
+  act(() => h.deliver({ type: 'Snapshot', seq: 1, state: many ? fixture.view : oneSpell }))
   const table = renderLiveTable(h.session, fixtureLookup(fixture))
   const send = (...messages: ServerMessage[]): void => act(() => h.deliver(...messages))
   const indicator = (): HTMLElement | null => table.container.querySelector('[data-slot="yield-indicator"]')
@@ -164,5 +170,35 @@ describe('handing the turn over', () => {
     expect(await screen.findByText('Passing until the stack is empty')).toBeInTheDocument()
     expect(indicator()).toHaveAttribute('data-yield', 'Resolve')
     expect(prompt()).toBeNull()
+  })
+})
+
+describe('"Resolve all"', () => {
+  const resolveAll = (): HTMLElement | null => document.querySelector('[data-slot="resolve-all"]')
+
+  it('stands beside the primary button over three spells and sends one Yield until the stack is empty', async () => {
+    const { h, send, user, prompt, indicator } = mount(true)
+    send(decision(11))
+    const button = must(resolveAll())
+    expect(button).toHaveTextContent('Resolve all')
+    expect(button.nextElementSibling).toBe(primaryButton())
+    await user.dblClick(button)
+    expect(h.sentOf('Yield')).toEqual([{ type: 'Yield', until: 'Resolve' }])
+    expect(h.sentOf('Answer')).toEqual([])
+
+    send({ type: 'Yielding', until: 'Resolve' })
+    expect(prompt()).toBeNull()
+    expect(resolveAll()).toBeNull()
+    expect(indicator()).toHaveAttribute('data-yield', 'Resolve')
+  })
+
+  it('is not drawn over one spell, nor without priority', () => {
+    const { send } = mount(false)
+    send(decision(11))
+    expect(primaryButton()).toBeInTheDocument()
+    expect(resolveAll()).toBeNull()
+    const many = mount(true)
+    expect(many.prompt()).toBeNull()
+    expect(resolveAll()).toBeNull()
   })
 })

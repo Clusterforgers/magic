@@ -36,8 +36,8 @@ interface Situation {
   step?: Step
   /** Whose turn: the viewer's (seat 0) or the opponent's. */
   own?: boolean
-  /** Whether the fixture's three spells are on the stack. */
-  stacked?: boolean
+  /** The top spell of the fixture on the stack (`true`), all three of its spells (`'many'`) or none. */
+  stacked?: boolean | 'many'
   given?: PriorityOptions
   /** What the session answers to a request for a yield. */
   accepts?: boolean
@@ -83,6 +83,7 @@ function renderControls({
       const view = clone(must(state.view))
       view.turn = { ...view.turn, step, active: own ? 0 : 1 }
       if (!stacked) view.stack = { count: 0, cards: [] }
+      else if (stacked !== 'many') view.stack = { count: 1, cards: (view.stack.cards ?? []).slice(-1) }
       return {
         ...state,
         view,
@@ -353,7 +354,36 @@ describe('the menu', () => {
     expect(screen.queryByRole('menu')).toBeNull()
     expect(trigger()).toHaveAttribute('aria-haspopup', 'menu')
     await user.click(trigger())
-    expect(await items()).toEqual(['Resolve everything on the stack', 'Pass until my next turn'])
+    expect(await items()).toEqual(['Resolve all', 'Pass until my next turn'])
+  })
+
+  it('over a stack of three holds "End turn", while "Resolve all" stands beside the primary button', async () => {
+    const { trigger, user, secondary } = renderControls({ stacked: 'many' })
+    expect(secondary()).toBeNull()
+    const resolveAll = must(document.querySelector<HTMLElement>('[data-slot="resolve-all"]'))
+    expect(resolveAll).toHaveAccessibleName('Resolve all')
+    expect(resolveAll).toHaveAttribute('aria-description', expect.stringContaining('trigger of yours'))
+    await user.click(trigger())
+    expect(await items()).toEqual(['End turn', 'Pass until my next turn'])
+  })
+
+  it('keeps Enter on "End turn" and Space on the primary button over a stack of three', async () => {
+    const enter = renderControls({ stacked: 'many' })
+    await enter.user.keyboard('{Enter}')
+    expect(enter.yieldUntil.mock.calls).toEqual([['EndOfTurn']])
+    enter.unmount()
+    const space = renderControls({ stacked: 'many' })
+    await space.user.keyboard(' ')
+    expect(space.answer.mock.calls).toEqual([[{ Priority: 'Pass' }]])
+    expect(space.yieldUntil).not.toHaveBeenCalled()
+  })
+
+  it('draws no "Resolve all" under Full Control or over one spell', () => {
+    const held = renderControls({ stacked: 'many', fullControl: 'Held' })
+    expect(document.querySelector('[data-slot="resolve-all"]')).toBeNull()
+    held.unmount()
+    renderControls({ stacked: true })
+    expect(document.querySelector('[data-slot="resolve-all"]')).toBeNull()
   })
 
   it('leaves out resolving the stack when there is none', async () => {
@@ -363,7 +393,7 @@ describe('the menu', () => {
   })
 
   it.each([
-    ['Resolve everything on the stack', 'Resolve'],
+    ['Resolve all', 'Resolve'],
     ['Pass until my next turn', 'MyTurn'],
   ] satisfies [string, YieldUntil][])('"%s" asks for the yield until %s', async (name, until) => {
     const { trigger, yieldUntil, answer, user } = renderControls()
@@ -404,9 +434,9 @@ describe('the menu', () => {
   it('describes each item to a screen reader', async () => {
     const { trigger, user } = renderControls()
     await user.click(trigger())
-    expect(await screen.findByRole('menuitem', { name: 'Resolve everything on the stack' })).toHaveAttribute(
+    expect(await screen.findByRole('menuitem', { name: 'Resolve all' })).toHaveAttribute(
       'aria-description',
-      expect.stringContaining('until the stack is empty'),
+      expect.stringContaining('on the stack now has resolved'),
     )
     expect(await screen.findByRole('menuitem', { name: 'Pass until my next turn' })).toHaveAttribute(
       'aria-description',

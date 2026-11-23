@@ -60,7 +60,7 @@ export function InControlsDock({ children }: { children: ReactNode }) {
  * The controls dock at the bottom right, top to bottom in the order of reading: take-backs (the seat's "Take back"
  * button, the table's request and its notice), the line that says the server is passing for this seat, the stops (the ladder and Full Control in one line where the dock has the room, else one
  * "Stops" button that opens them), and the pass controls of a Priority prompt ("End turn", the menu of other ways to
- * pass, then the primary button in the corner: "Next: Combat", "Resolve Lightning Bolt"). At most five controls show
+ * pass, "Resolve all" in place of "End turn" over a stack of two or more, then the primary button in the corner: "Next: Combat", "Resolve Lightning Bolt"). At most five controls show
  * at any size. The pass controls never scroll or leave the dock: what is above them gives way (`useDockFit`), first by
  * folding the stops into their button and setting the take-backs and stops side by side, last by scrolling itself.
  * Off a phone the dock's body grows upwards past its cell for what the decision and the pass controls need.

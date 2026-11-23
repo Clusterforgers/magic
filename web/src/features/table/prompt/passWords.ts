@@ -107,9 +107,10 @@ export interface YieldWords {
 /** The words of each yield, which the server holds per seat. */
 export const YIELD_WORDS: Record<YieldUntil, YieldWords> = {
   Resolve: {
-    action: 'Resolve everything on the stack',
+    action: 'Resolve all',
     passing: 'Passing until the stack is empty',
-    description: 'Passes priority until the stack is empty. You are asked again if an opponent adds to it.',
+    description:
+      'Passes priority until everything on the stack now has resolved. You are asked again if an opponent adds to it or a trigger of yours goes on it.',
   },
   EndOfTurn: {
     action: 'End turn',
@@ -137,4 +138,15 @@ export function passSituation(state: PlayState): PassSituation {
     yourTurn: view !== null && seat !== null && sharesTurn(view.house_rules?.teams, seat, view.turn.active),
     top: topOfStack(state)?.name ?? null,
   }
+}
+
+/** The fewest objects on the stack at which "Resolve all" stands beside the primary button. */
+export const RESOLVE_ALL_FROM = 2
+
+/**
+ * Whether "Resolve all" is offered: over a stack of `RESOLVE_ALL_FROM` objects or more, wherever a yield can run
+ * (never under Full Control, which the server does not let a yield run beside).
+ */
+export function resolveAllShown(stackCount: number, fullControl: boolean): boolean {
+  return stackCount >= RESOLVE_ALL_FROM && !fullControl
 }
