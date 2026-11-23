@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { useGame, usePlay } from '@/features/game/gameContext'
 import type { ObjectId } from '@/protocol/generated'
 import type { CardMarks, CardNote, CardNotes } from './marks'
-import { useCardMarks, useCardNotes } from './marks'
+import { useCardDrops, useCardMarks, useCardNotes } from './marks'
 import { quickCastIds, quickCastNote } from './quickCast'
 
 /**
@@ -31,6 +31,9 @@ export function QuickCast() {
     if (online) session.castWhenAsked(id === queued ? null : id)
   }
   useCardMarks(marks, pick)
+  // A drop on the table queues the cast as a click does; the queued card is not dropped again.
+  const droppable = useMemo(() => new Set(ids.filter((id) => id !== queued)), [ids, queued])
+  useCardDrops(droppable, pick)
   useCardNotes(notes)
 
   if (queued === null || !ids.includes(queued)) return null

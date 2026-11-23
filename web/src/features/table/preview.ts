@@ -63,6 +63,11 @@ export function holdPreview(on: boolean): void {
   for (const listener of hold.listeners) listener()
 }
 
+/** True while the hover preview is held closed. */
+export function previewHeld(): boolean {
+  return hold.on
+}
+
 /** A store with nothing shown. */
 export function createPreviewStore(): PreviewStore {
   let target: PreviewTarget | null = null

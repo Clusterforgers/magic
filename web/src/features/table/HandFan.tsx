@@ -15,24 +15,31 @@ import type {
   Announcements,
   CollisionDetection,
   DragEndEvent,
+  DragMoveEvent,
   DragOverEvent,
   DragStartEvent,
+  DropAnimation,
 } from '@dnd-kit/core'
 import { Backpack, Crown, Library } from 'lucide-react'
 import { useLayoutEffect, useRef, useState } from 'react'
 import type { CSSProperties, KeyboardEvent, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
-import { usePlay } from '@/features/game/gameContext'
+import { useGame, usePlay } from '@/features/game/gameContext'
+import { prefersReducedMotion } from '@/hooks/useReducedMotion'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { Card } from './Card'
 import { CardFace } from './CardFace'
 import type { CardSize } from './cardSize'
+import { dragOutcome, dragZone, dropCard, eventY, playableBy } from './handDrag'
+import type { DragZone } from './handDrag'
 import { HAND_HEAD_PX } from './handFit'
 import type { HandLayout } from './handFit'
 import { leavingCard } from './handLeaving'
 import { ManaPips } from './ManaPips'
 import { CardWidthContext } from './ImageFace'
+import { holdPreview, previewHeld, usePreviewStore } from './preview'
+import { useMarksStore } from './prompt/marks'
 import { objectIdOf, rovingTarget, useRoving } from './useRoving'
 import { useWheelSideways } from './useWheelSideways'
 
@@ -52,6 +59,8 @@ interface HandFanProps {
   commanders?: ReadonlyMap<ObjectId, HandCommander>
   /** Lets the viewer reorder the cards by drag and drop and by Alt with an arrow key, Home or End. */
   onMove?: ((from: number, to: number) => void) | undefined
+  /** Lets the viewer play a card by dragging it up out of the dock onto the table, as a click on it would. */
+  plays?: boolean
   /** A line that scrolls takes the pointer, so its scrollbar drags: while a decision picks among the hand, where the table
    * under the room above the cards is not what is clicked. */
   grabs?: boolean
@@ -73,6 +82,37 @@ const MOUSE_DRAG_PX = 6
 /** How long a finger rests on a card before it drags, and how far it may stray meanwhile; a swipe scrolls instead. */
 const TOUCH_HOLD_MS = 250
 const TOUCH_STRAY_PX = 8
+
+/** A card let go where it cannot be played glides back to its place in the hand: 200 ms, eased out. */
+const SNAP_BACK: DropAnimation = { duration: 200, easing: 'cubic-bezier(0.2, 0, 0, 1)' }
+
+/** A dragged card and where it is. */
+interface Drag {
+  id: ObjectId
+  zone: DragZone
+  /** A drop on the table plays it. */
+  playable: boolean
+  /** Why it cannot be played, in the words on its foot. */
+  hint: string | undefined
+  /** A land is played, any other card is cast: the words of the drop say which. */
+  land: boolean
+  /** The viewport y the pointer went down at, and of the dock's top edge. */
+  startY: number
+  dockTop: number
+  /** The viewer's board on screen, which lights as the place to drop. */
+  target: DOMRect | null
+}
+
+/** The box of the viewer's own battlefield, else of the table above the dock; null when neither is drawn. */
+function boardBox(seat: number | null, dock: Element | null): DOMRect | null {
+  const own = seat === null ? null : document.querySelector(`[data-battlefield-seat="${seat}"]`)
+  const box = own?.getBoundingClientRect()
+  if (box !== undefined && box.width > 0 && box.height > 0) return box
+  const main = dock?.closest('[data-slot="table-main"]')?.getBoundingClientRect()
+  const top = dock?.getBoundingClientRect().top
+  if (main === undefined || top === undefined || top <= main.top) return null
+  return new DOMRect(main.left, main.top, main.width, top - main.top)
+}
 
 /** The card under the pointer or finger is where the dragged card goes; between cards, the nearest one. */
 const underPointer: CollisionDetection = (args) => {
@@ -104,7 +144,9 @@ function offPageElement(): HTMLElement {
  * stands on the bottom of the dock: the part above the cards takes no pointer, so the table under it stays clickable,
  * and a line that scrolls keeps the lifted card inside its own box. With `onMove` the viewer drags a card to another
  * place (a mouse after a few pixels, a finger after a short hold, so a click still plays it and a swipe still scrolls)
- * or moves the focused card with Alt and an arrow key.
+ * or moves the focused card with Alt and an arrow key. With `plays` a card carried up out of the dock onto the table
+ * (`handDrag.ts`) is played on the drop, as a click plays it; the viewer's board lights as the place to drop, the card
+ * says whether it can be played, and one that cannot glides back.
  */
 export function HandFan({
   ids,
@@ -114,6 +156,7 @@ export function HandFan({
   layout,
   commanders,
   onMove,
+  plays = false,
   grabs = false,
 }: HandFanProps) {
   const roving = useRoving(ids)
@@ -122,8 +165,18 @@ export function HandFan({
   // A line that scrolls: a wheel moves it sideways, and while `grabs` its own box takes the pointer so its scrollbar drags.
   useWheelSideways(list)
   const refocus = useRef<ObjectId | null>(null)
-  const [dragging, setDragging] = useState<ObjectId | null>(null)
+  const marks = useMarksStore()
+  const preview = usePreviewStore()
+  const seat = usePlay((state) => state.seat)
+  const objects = useGame().session.store
+  const [drag, setDrag] = useState<Drag | null>(null)
   const [over, setOver] = useState<ObjectId | null>(null)
+  // A card let go where it does nothing glides home; one that plays or takes a new place is there at once.
+  const [snaps, setSnaps] = useState(false)
+  const heldPreview = useRef(false)
+  const dragging = drag?.id ?? null
+  const onBoard = drag?.zone === 'board'
+  const sortable = onMove !== undefined
   const sensors = useSensors(
     useSensor(MouseSensor, { activationConstraint: { distance: MOUSE_DRAG_PX } }),
     useSensor(TouchSensor, { activationConstraint: { delay: TOUCH_HOLD_MS, tolerance: TOUCH_STRAY_PX } }),
@@ -161,9 +214,60 @@ export function HandFan({
     }
     roving.onKeyDown(event)
   }
-  const end = () => {
-    setDragging(null)
+  const objectTypes = (id: ObjectId): readonly string[] => objects.getState().objectsById[id]?.types ?? []
+  const start = (event: DragStartEvent) => {
+    const id = Number(event.active.id)
+    const dock = list.current?.closest('[data-region="hand"]') ?? list.current
+    const playable = plays && playableBy(marks, id)
+    // The dragged card is in hand: its preview closes, and the cards it passes over open none.
+    preview.hide(id)
+    heldPreview.current = !previewHeld() && preview.get() === null
+    if (heldPreview.current) holdPreview(true)
+    setSnaps(false)
+    setDrag({
+      id,
+      zone: 'hand',
+      playable,
+      // The reason on its foot when the prompt blocks it; a card with only an ability to activate has none.
+      hint: marks.noteOf(id)?.blocked === undefined ? undefined : marks.noteOf(id)?.hint,
+      land: objectTypes(id).includes('Land'),
+      startY: eventY(event.activatorEvent) ?? Number.POSITIVE_INFINITY,
+      dockTop: dock?.getBoundingClientRect().top ?? 0,
+      target: playable ? boardBox(seat, dock ?? null) : null,
+    })
+  }
+  /** The zone of the pointer after it moved by `dy` since it went down. */
+  const zoneAt = (dy: number): DragZone =>
+    drag === null || !plays ? 'hand' : dragZone(drag.startY, drag.startY + dy, drag.dockTop)
+  const move = (event: DragMoveEvent) => {
+    const zone = zoneAt(event.delta.y)
+    if (drag !== null && zone !== drag.zone) setDrag({ ...drag, zone })
+  }
+  const end = (snap: boolean) => {
+    // The glide is the Web Animations API's; without it, and under reduced motion, the card is back at once.
+    setSnaps(snap && !prefersReducedMotion() && typeof Element.prototype.animate === 'function')
+    setDrag(null)
     setOver(null)
+    if (heldPreview.current) holdPreview(false)
+    heldPreview.current = false
+  }
+  const drop = (event: DragEndEvent) => {
+    const id = Number(event.active.id)
+    const outcome = dragOutcome({
+      zone: zoneAt(event.delta.y),
+      playable: plays && playableBy(marks, id),
+      sortable,
+      from: ids.indexOf(id),
+      to: event.over === null ? -1 : ids.indexOf(Number(event.over.id)),
+    })
+    end(outcome.kind === 'cancel')
+    if (outcome.kind === 'reorder') onMove?.(outcome.from, outcome.to)
+    else if (outcome.kind === 'play')
+      dropCard(
+        marks,
+        id,
+        list.current?.querySelector<HTMLElement>(`button[data-object-id="${id}"]`) ?? undefined,
+      )
   }
   const fan = (
     <ul
@@ -195,7 +299,8 @@ export function HandFan({
           <HandSlot
             key={id}
             id={id}
-            sortable={onMove !== undefined}
+            draggable={sortable || plays}
+            sortable={sortable}
             // A row another row lies over keeps only its top as its slot, so the slots of the row below start right under it.
             back={rows > 1 && Math.floor(index / perRow) < rows - 1}
             lifts={rows === 1 || Math.floor(index / perRow) < rows - 1}
@@ -205,7 +310,11 @@ export function HandFan({
             satchel={commander?.satchel === true}
             leaving={leaving === id}
             drop={
-              over === id && from >= 0 && from !== index ? (from < index ? 'after' : 'before') : undefined
+              !onBoard && over === id && from >= 0 && from !== index
+                ? from < index
+                  ? 'after'
+                  : 'before'
+                : undefined
             }
           >
             <Card
@@ -230,7 +339,7 @@ export function HandFan({
   )
   return (
     <CardWidthContext.Provider value={layout?.box.width ?? null}>
-      {onMove === undefined ? (
+      {!sortable && !plays ? (
         fan
       ) : (
         <DndContext
@@ -241,24 +350,31 @@ export function HandFan({
             screenReaderInstructions: INSTRUCTIONS,
             container: offPageElement(),
           }}
-          onDragStart={(event: DragStartEvent) => setDragging(Number(event.active.id))}
+          onDragStart={start}
+          onDragMove={move}
           onDragOver={(event: DragOverEvent) => setOver(event.over === null ? null : Number(event.over.id))}
-          onDragCancel={end}
-          onDragEnd={(event: DragEndEvent) => {
-            end()
-            if (event.over === null) return
-            const from = ids.indexOf(Number(event.active.id))
-            const to = ids.indexOf(Number(event.over.id))
-            if (from >= 0 && to >= 0 && from !== to) onMove(from, to)
-          }}
+          onDragCancel={() => end(true)}
+          onDragEnd={drop}
         >
           {fan}
           {createPortal(
-            <DragOverlay dropAnimation={null} zIndex={60}>
-              {dragging === null ? null : (
-                <DragFace id={dragging} size={size} cost={cost} fit={layout !== undefined} style={style} />
-              )}
-            </DragOverlay>,
+            <>
+              {drag === null || drag.target === null ? null : <PlayTarget box={drag.target} over={onBoard} />}
+              <DragOverlay dropAnimation={snaps ? SNAP_BACK : null} zIndex={60}>
+                {drag === null ? null : (
+                  <DragFace
+                    id={drag.id}
+                    size={size}
+                    cost={cost}
+                    fit={layout !== undefined}
+                    style={style}
+                    play={onBoard ? (drag.playable ? 'can' : 'cannot') : undefined}
+                    hint={drag.hint ?? (drag.land ? CANNOT_PLAY : CANNOT_CAST)}
+                    word={drag.land ? CAN_PLAY : CAN_CAST}
+                  />
+                )}
+              </DragOverlay>
+            </>,
             document.body,
           )}
         </DndContext>
@@ -334,6 +450,7 @@ export function fanPlace(index: number, count: number, box?: { width: number; he
  */
 function HandSlot({
   id,
+  draggable,
   sortable,
   back,
   lifts,
@@ -346,6 +463,9 @@ function HandSlot({
   children,
 }: {
   id: ObjectId
+  /** The card is picked up by a drag: to reorder the hand, to play it on the table, or both. */
+  draggable: boolean
+  /** The slot takes a dragged card: the hand's own cards, not those at the head of the dock. */
   sortable: boolean
   back: boolean
   lifts: boolean
@@ -359,7 +479,7 @@ function HandSlot({
   drop: 'before' | 'after' | undefined
   children: ReactNode
 }) {
-  const drag = useDraggable({ id, disabled: !sortable })
+  const drag = useDraggable({ id, disabled: !draggable })
   const target = useDroppable({ id, disabled: !sortable })
   return (
     <li
@@ -376,12 +496,12 @@ function HandSlot({
       data-drag={drag.isDragging || undefined}
       data-drop={drop}
       style={back ? { height: HAND_HEAD_PX } : undefined}
-      {...(sortable ? drag.listeners : null)}
+      {...(draggable ? drag.listeners : null)}
       // The slot stays put under the pointer while its card rises, so the hover never lets go of it.
       className={cn(
         'group/slot pointer-events-auto relative flex items-start hover:z-10 focus-within:z-10',
         // A held finger drags the card, so the phone's text selection and callout stay away.
-        sortable && 'select-none [-webkit-touch-callout:none]',
+        draggable && 'select-none [-webkit-touch-callout:none]',
         drag.isDragging && 'opacity-40',
       )}
     >
@@ -423,19 +543,56 @@ function HandSlot({
   )
 }
 
-/** The card under the pointer while it is dragged: its face only, so no second button with its id is on the page. */
+/** What the dragged card says while it is over the table. */
+const CAN_PLAY = 'Release to play'
+const CAN_CAST = 'Release to cast'
+const CANNOT_PLAY = 'Can’t play now'
+const CANNOT_CAST = 'Can’t cast now'
+
+/**
+ * The viewer's board while a playable card is dragged: a dashed edge says where it can go, and once the card is over
+ * the table the edge closes and the board glows. It takes no pointer and stands over the page, so nothing moves.
+ */
+function PlayTarget({ box, over }: { box: DOMRect; over: boolean }) {
+  return (
+    <div
+      aria-hidden="true"
+      data-slot="hand-play-target"
+      data-over={over || undefined}
+      style={{ left: box.left, top: box.top, width: box.width, height: box.height }}
+      className={cn(
+        'pointer-events-none fixed z-50 rounded-xl outline-2 -outline-offset-2 motion-safe:transition-[background-color,box-shadow,outline-color] motion-safe:duration-fast motion-safe:ease-out',
+        over
+          ? 'bg-primary/10 shadow-[inset_0_0_32px_color-mix(in_oklch,var(--primary)_45%,transparent)] outline-primary'
+          : 'outline-primary/60 outline-dashed',
+      )}
+    />
+  )
+}
+
+/**
+ * The card under the pointer while it is dragged: its face only, so no second button with its id is on the page. Over
+ * the table (`play`) it stands straight and says what a drop does: lit with "Release to play" or "Release to cast", or dimmed with why not.
+ */
 function DragFace({
   id,
   size,
   cost,
   fit,
   style,
+  play,
+  hint,
+  word,
 }: {
   id: ObjectId
   size: CardSize
   cost: boolean
   fit: boolean
   style: CSSProperties | undefined
+  play?: 'can' | 'cannot' | undefined
+  /** What the card says over the table when it cannot be played, and when it can. */
+  hint?: string | undefined
+  word?: string | undefined
 }) {
   const object = usePlay((state) => state.objectsById[id])
   if (object === undefined) return null
@@ -443,10 +600,26 @@ function DragFace({
     <div
       aria-hidden="true"
       data-slot="hand-drag-face"
+      data-play={play}
       style={style}
-      className="pointer-events-none rotate-2 rounded-md bg-table shadow-lg"
+      className={cn(
+        'pointer-events-none relative rounded-md bg-table shadow-lg motion-safe:transition-[rotate,scale,box-shadow] motion-safe:duration-fast motion-safe:ease-out',
+        play === undefined && 'rotate-2',
+        play === 'can' &&
+          'scale-105 shadow-[0_0_16px_color-mix(in_oklch,var(--primary)_60%,transparent)] ring-2 ring-primary',
+      )}
     >
-      <CardFace object={object} role={null} size={size} cost={cost} fit={fit} />
+      <div className={cn(play === 'cannot' && 'opacity-60 saturate-50')}>
+        <CardFace object={object} role={null} size={size} cost={cost} fit={fit} />
+      </div>
+      {play === undefined ? null : (
+        <span
+          data-slot="hand-drag-word"
+          className="absolute top-full left-1/2 mt-1 -translate-x-1/2 rounded-full bg-background/95 px-2 py-0.5 text-xs leading-4 font-semibold whitespace-nowrap text-foreground shadow-sm ring-1 ring-foreground/20"
+        >
+          {play === 'can' ? word : hint}
+        </span>
+      )}
     </div>
   )
 }

@@ -10,7 +10,7 @@ import { BringCompanion } from '../BringCompanion'
 import { AbilityChooser } from '../AbilityChooser'
 import { abilityPlays, activationNotes, blockedPlays, mergeNotes, playsOf } from '../activations'
 import type { Play } from '../activations'
-import { markCards, NO_NOTES, useCardMarks, useCardNotes } from '../marks'
+import { markCards, NO_NOTES, useCardDrops, useCardMarks, useCardNotes } from '../marks'
 import { undoableSources, undoNotes } from '../manaUndo'
 import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
@@ -65,6 +65,20 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
     [own, options.playable_lands, options.castable, mana, abilities, undoable, choosing],
   )
 
+  /** Plays the card as a land or casts it; false when it is neither now. A click with nothing else to offer and a drop on the table both end here. */
+  const playCard = (id: ObjectId): boolean => {
+    const land = options.playable_lands.includes(id)
+    if (!land && !options.castable.includes(id)) return false
+    answer({ Priority: land ? { PlayLand: id } : { CastSpell: id } })
+    return true
+  }
+  const droppable = useMemo(
+    () => new Set([...options.playable_lands, ...options.castable]),
+    [options.playable_lands, options.castable],
+  )
+  // A drop on the table only plays or casts: an ability of the card (cycling, channel) is a click's to offer.
+  useCardDrops(droppable, playCard)
+
   const act = (id: ObjectId, from?: HTMLElement): void => {
     // A source tapped for mana just now is pressed again: its mana ability is undone, as a payment's pressed source is.
     if (undoable.includes(id)) {
@@ -86,14 +100,7 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
       }
       return
     }
-    if (options.playable_lands.includes(id)) {
-      answer({ Priority: { PlayLand: id } })
-      return
-    }
-    if (options.castable.includes(id)) {
-      answer({ Priority: { CastSpell: id } })
-      return
-    }
+    if (playCard(id)) return
     const manaAbilities = mana.get(id)
     const only = manaAbilities?.at(0)
     if (manaAbilities === undefined || only === undefined) return
