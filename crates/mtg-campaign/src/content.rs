@@ -594,18 +594,46 @@ impl Content {
             .ok_or_else(|| CampaignError::Unknown(format!("theme {id}")))
     }
 
-    /// The theme a new run of content generation `generation` plays, drawn by its seed among the themes whose final boss
-    /// that generation meets (only the Warrens before the Drowned Spire's generation).
-    pub fn theme_for(&self, seed: u64, generation: u32) -> Result<&Theme, CampaignError> {
-        let open: Vec<&Theme> = self
-            .themes
+    /// The themes a run of content generation `generation` may play, in content order: those whose final boss that
+    /// generation meets (only the Warrens before the Drowned Spire's generation).
+    pub fn open_themes(&self, generation: u32) -> Vec<&Theme> {
+        self.themes
             .iter()
             .filter(|t| {
                 t.bosses
                     .iter()
                     .any(|b| b.final_boss && b.since <= generation)
             })
+            .collect()
+    }
+
+    /// The theme of `floor` (from 2) after a floor of theme `from`: drawn by the seed keyed by the floor among the open
+    /// themes other than `from`, or `from` again while it is the only one open.
+    pub fn next_theme(
+        &self,
+        seed: u64,
+        generation: u32,
+        floor: u8,
+        from: &str,
+    ) -> Result<&Theme, CampaignError> {
+        let others: Vec<&Theme> = self
+            .open_themes(generation)
+            .into_iter()
+            .filter(|t| t.id != from)
             .collect();
+        if others.is_empty() {
+            return self.theme(from);
+        }
+        let at = crate::rng::Stream::new(seed, "theme", u64::from(floor), 0).below(others.len());
+        others
+            .get(at)
+            .copied()
+            .ok_or_else(|| CampaignError::Unknown(format!("a theme of generation {generation}")))
+    }
+
+    /// The theme a new run of content generation `generation` plays, drawn by its seed among the open themes.
+    pub fn theme_for(&self, seed: u64, generation: u32) -> Result<&Theme, CampaignError> {
+        let open = self.open_themes(generation);
         let at = crate::rng::Stream::new(seed, "theme", 0, 0).below(open.len());
         open.get(at)
             .copied()

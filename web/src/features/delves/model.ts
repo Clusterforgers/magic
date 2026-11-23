@@ -236,3 +236,19 @@ export function floorBallots(run: Run): FloorBallot[] {
     return { hero, name: h.name, state: h.bot === null ? 'pending' : 'follows' }
   })
 }
+
+/** The id of the theme of the floor the party is on, which picks the run page's look. */
+export function floorTheme(run: Run): string {
+  return run.floor_theme ?? run.theme
+}
+
+/**
+ * The words of the notice that a descent led the party into another theme ("The party descends into the Drowned
+ * Spire"), while none of the new floor's rooms is cleared and the run goes on; else null.
+ */
+export function descentNotice(view: DelveView): string | null {
+  const run = view.run
+  if (run.theme_from === undefined || run.cleared.length > 0) return null
+  if (run.status === 'Victory' || run.status === 'Defeat' || run.status === 'Abandoned') return null
+  return `The party descends into ${view.theme.replace(/^The /, 'the ')}`
+}

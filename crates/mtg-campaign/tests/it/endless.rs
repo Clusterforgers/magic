@@ -217,7 +217,7 @@ fn older_runs_end_in_victory_as_before(#[values(0, 3, 4)] version: u32) {
     clear_floor(&mut run);
     assert_eq!(run.status, Status::Victory);
     assert_eq!(run.floor, 1);
-    assert_eq!(run.descent_words(), Vec::<String>::new());
+    assert_eq!(run.descent_words(content().unwrap()), Vec::<String>::new());
     let vote = RunEvent::FloorVoted {
         hero: 0,
         descend: true,
@@ -256,5 +256,5 @@ fn bots_descend_with_two_hearts_and_most_of_their_life(
             RunEvent::FloorVoted { hero: 2, descend },
         ]
     );
-    assert_ne!(run.descent_words(), Vec::<String>::new());
+    assert_ne!(run.descent_words(content), Vec::<String>::new());
 }
