@@ -1,0 +1,48 @@
+{
+  "oracle_id": "cf38ac6e-e370-4ca5-90cd-26a1b812c63a",
+  "name": "Primitive Justice",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Primitive Justice",
+      "oracle_fingerprint": "b2fbc4353d20e50cb4ca211b32daff5d",
+      "abilities": [
+        { "AdditionalCost": { "cost": "{1}{R}", "repeatable": true } },
+        { "AdditionalCost": { "cost": "{1}{G}", "repeatable": true } },
+        {
+          "Spell": {
+            "targets": [
+              { "what": { "Object": [{ "Type": "Artifact" }] } },
+              {
+                "what": { "Object": [{ "Type": "Artifact" }, { "Not": { "Is": { "Target": 0 } } }] },
+                "bounds": {
+                  "min": { "R117AdditionalPaidWith": "{1}{R}" },
+                  "max": { "R117AdditionalPaidWith": "{1}{R}" }
+                }
+              },
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Artifact" },
+                    { "Not": { "Is": { "Target": 0 } } },
+                    { "Not": { "Is": { "Target": 1 } } }
+                  ]
+                },
+                "bounds": {
+                  "min": { "R117AdditionalPaidWith": "{1}{G}" },
+                  "max": { "R117AdditionalPaidWith": "{1}{G}" }
+                }
+              }
+            ],
+            "effects": [
+              { "Destroy": { "what": { "Target": 0 } } },
+              { "Destroy": { "what": { "Target": 1 } } },
+              { "Destroy": { "what": { "Target": 2 } } },
+              { "GainLife": { "amount": { "R117AdditionalPaidWith": "{1}{G}" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

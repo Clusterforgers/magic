@@ -1,0 +1,58 @@
+{
+  "oracle_id": "6e13c619-706d-4c77-bc7d-187df0fd054a",
+  "name": "Branching Timeline",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Branching Timeline",
+      "oracle_fingerprint": "88efa4ba1f48daf3457ddf973000dd14",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Distinct": {
+                      "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                      "stat": "Name"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": { "Battlefield": { "tapped": true } }
+                }
+              },
+              {
+                "Move": {
+                  "what": { "Bound": "top" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "oracle_id": "83d8e98d-ab97-40b1-820a-2d193a5ed261",
+  "name": "Hemmer, Fixing What Is Broken",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hemmer, Fixing What Is Broken",
+      "oracle_fingerprint": "15fe84519e8a947e90f82c6213f19099",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "Subtype": "Spacecraft" }, { "ControlledBy": "You" }] },
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": "YourTurn"
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "effects": [{ "Draw": {} }, { "Discard": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ce60a1a4-1e53-4985-a54f-3627dd35c5f2",
+  "name": "Ambassador K'Ehleyr",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ambassador K'Ehleyr",
+      "oracle_fingerprint": "d29cd0acf1f51a6bc3c48692bd4e7b91",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "EachPlayer",
+                  "as": "player",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "Bound": "player" },
+                        "filter": [],
+                        "as": "card",
+                        "revealed_as": "seen"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "card" }, "as": "revealed", "adds": true } },
+                    { "Draw": { "who": { "Bound": "player" } } }
+                  ]
+                }
+              },
+              {
+                "PutCounters": {
+                  "on": "This",
+                  "counter": "+1/+1",
+                  "count": {
+                    "CountOf": {
+                      "of": { "Bound": "revealed" },
+                      "filter": [{ "Not": { "Type": "Land" } }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

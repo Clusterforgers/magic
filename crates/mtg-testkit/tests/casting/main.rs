@@ -3,6 +3,7 @@
 mod activation_costs;
 mod affinity;
 mod aftermath;
+mod all_if_kicked;
 mod alt_cast;
 mod alternative_costs;
 mod announce_again;
@@ -174,6 +175,10 @@ mod r115_flashback_among;
 mod r116_04_bound_permission;
 mod r116_04_casualty_x;
 mod r116_beam_me_up;
+mod r117_02_spells;
+mod r117_evidence_of_targets;
+mod r117_paid_with;
+mod r117_surveilled_cards;
 mod r1a_spend;
 mod r281_cards;
 mod r281_kicked_spend;

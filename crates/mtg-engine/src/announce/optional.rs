@@ -6,7 +6,8 @@
 //! cost is offered: the mana, the life and the objects the parts take. The costs chosen are kept in
 //! `Choices.optional_costs`, a repeatable cost once for each payment, their mana joins the total cost, their parts are
 //! picked and paid with the others (`parts.rs`), and the spell, the permanent it becomes and their abilities remember
-//! them. A spell with entwine asks its costs before its modes, since paying entwine chooses them all.
+//! them. A spell with entwine asks its costs before its modes, since paying entwine chooses them all, and so does one
+//! whose modes widen with a condition (`all_if`: "if this spell was kicked, choose any number instead").
 
 use mtg_cards::CardDefinition;
 use mtg_cards::ability::Ability;
@@ -279,6 +280,17 @@ pub(crate) fn kicked_with(card: &CardDefinition, paid: &[usize], cost: &Cost) ->
     printed(card).enumerate().any(|(index, printed)| {
         printed.kind == OptionalKind::Kicker && printed.cost == *cost && paid.contains(&index)
     })
+}
+
+/// How many of the optional costs `paid` names are the "you may" additional cost of `card` with exactly this cost ("for
+/// each additional {1}{R} you paid").
+pub(crate) fn r117_paid_with(card: &CardDefinition, paid: &[usize], cost: &Cost) -> usize {
+    let matching: Vec<usize> = printed(card)
+        .enumerate()
+        .filter(|(_, printed)| printed.kind == OptionalKind::Additional && printed.cost == *cost)
+        .map(|(index, _)| index)
+        .collect();
+    paid.iter().filter(|index| matching.contains(index)).count()
 }
 
 /// The optional costs of a spell, in the order the card prints them, then the replicate costs static abilities give it

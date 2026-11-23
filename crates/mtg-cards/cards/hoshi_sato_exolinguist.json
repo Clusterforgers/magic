@@ -1,0 +1,43 @@
+{
+  "oracle_id": "39426cd1-8c0d-4ec6-8747-f0693080f8f2",
+  "name": "Hoshi Sato, Exolinguist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hoshi Sato, Exolinguist",
+      "oracle_fingerprint": "9cc3bb5cbff94e8a2781e19ced780d15",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "LookAtTop": {
+                  "count": {
+                    "Distinct": {
+                      "of": [
+                        { "Type": "Creature" },
+                        { "Not": { "Subtype": "Borg" } },
+                        { "ControlledBy": "You" }
+                      ],
+                      "stat": "CreatureType"
+                    }
+                  },
+                  "as": "top"
+                }
+              },
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "rest" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

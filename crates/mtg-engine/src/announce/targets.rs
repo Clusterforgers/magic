@@ -59,6 +59,11 @@ pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
     })
 }
 
+/// Whether every target specification announced has its targets chosen.
+pub(super) fn r117_all_chosen(ctx: &Ctx<'_>, choices: &Choices) -> bool {
+    choices.targets.len() >= specs(ctx, choices).len()
+}
+
 /// Leaves out of `legal`, the targets offered for the next of a spell's `specs` target specifications, those with
 /// which its cost can no longer be paid: a reduction that reads the targets ("spells that target a creature cost {2}
 /// less") is counted on before the targets are chosen, so only the targets that bring it are offered. Nothing is left

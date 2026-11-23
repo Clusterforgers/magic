@@ -49,7 +49,7 @@ mod w6d_shares;
 mod da_attached_auras;
 use super::still_there;
 use crate::abilities::Cause;
-use crate::announce::{kicked_with, payments};
+use crate::announce::{kicked_with, payments, r117_paid_with};
 use crate::characteristics::{Characteristics, characteristics, controller_of, seen_as};
 use crate::choose::legal_from;
 use crate::choose::{Choices, Target};
@@ -2037,16 +2037,33 @@ impl<'a> Scope<'a> {
         let mut count = 0;
         for object in self.objects(subject)? {
             // An object that is gone (a token that left) is judged as it was; one that is there, as it is.
-            let judged = if self.seen(object).is_some() {
-                object
-            } else {
-                self.as_it_left(object)
-            };
+            let judged = self.r117_judged(object);
             if self.selects(selector, judged)? {
                 count += 1;
             }
         }
         Ok(count)
+    }
+
+    /// The reference an object a step named is judged by: itself while it is there, else as it was when it left, else
+    /// the card it became by one move between zones off the battlefield and the stack (a card revealed from a library and
+    /// then drawn: CR 400.7), whose characteristics are the card's own there.
+    pub(super) fn r117_judged(&self, object: ObjectRef) -> ObjectRef {
+        if self.seen(object).is_some() {
+            return object;
+        }
+        let left = self.as_it_left(object);
+        if left != object || self.seen(left).is_some() {
+            return left;
+        }
+        self.state
+            .object(object.id)
+            .filter(|now| {
+                now.counter() == object.counter + 1
+                    && now.kind() != ObjectKind::Ability
+                    && !matches!(now.zone(), Zone::Battlefield | Zone::Stack)
+            })
+            .map_or(object, GameObject::reference)
     }
 
     /// The reference to read an object a step moved (an `as` name binds it as the object it became) by: the object as it
@@ -2255,6 +2272,7 @@ impl<'a> Scope<'a> {
             | Pred::SharesType(_)
             | Pred::SharesTypeOf { .. }
             | Pred::SharesColor(_)
+            | Pred::R117SharesBasicLandType(_)
             | Pred::SharesManaValue(_)
             | Pred::XInCost
             | Pred::PhyrexianInCost
@@ -2366,6 +2384,10 @@ impl<'a> Scope<'a> {
                     })
             }
             Pred::MilledThisTurn => state.object_tallied(reference, None, Tally::W13bMilled) > 0,
+            Pred::R117SurveilledBy(who) => self
+                .players(who)?
+                .into_iter()
+                .any(|player| state.object_tallied(reference, Some(player), Tally::Surveilled) > 0),
             Pred::DrawnThisTurn => state.object_tallied(reference, None, Tally::Dk26Drawn) > 0,
             Pred::LastDrawnThisTurn => {
                 let nth = state.object_tallied(reference, None, Tally::R5500DrawnNth);
@@ -2528,7 +2550,23 @@ impl<'a> Scope<'a> {
             Pred::Foretold | Pred::HasName => self.r5520_pred(pred, reference, seen),
             Pred::Not(inner) => !self.pred(inner, reference, seen)?,
             Pred::AnyOf(any) => self.w6d_any_of(any, reference, seen)?,
+            Pred::R117AllOf(all) => self.r117_all_of(all, reference, seen)?,
         })
+    }
+
+    /// Whether every one of the predicates holds for the object.
+    fn r117_all_of(
+        &self,
+        all: &[Pred],
+        reference: ObjectRef,
+        seen: &Seen<'_>,
+    ) -> Result<bool, ResolveError> {
+        for inner in all {
+            if !self.pred(inner, reference, seen)? {
+                return Ok(false);
+            }
+        }
+        Ok(true)
     }
 
     /// Whether at least one of the predicates holds for the object.
@@ -2778,6 +2816,15 @@ impl<'a> Scope<'a> {
                 });
                 i64::try_from(shared.count()).unwrap_or(i64::MAX)
             }
+            Amount::R117GreatestOf { of, stat } => self
+                .objects(of)?
+                .iter()
+                .filter_map(|object| {
+                    self.seen(self.r117_judged(*object))
+                        .and_then(|seen| Self::stat(&seen, *stat))
+                })
+                .max()
+                .unwrap_or(0),
             Amount::Stat { of, stat } => self
                 .objects(of)?
                 .iter()
@@ -2913,6 +2960,8 @@ impl<'a> Scope<'a> {
             Amount::CastLastTurn(who) => self.cast_last_turn(who)?,
             Amount::Mutations(of) => self.mutations(of)?,
             Amount::AdditionalPaid => i64::try_from(self.payments(OptionalKind::Additional))
+                .map_err(|_| ResolveError::Invalid("too many payments".into()))?,
+            Amount::R117AdditionalPaidWith(cost) => i64::try_from(self.r117_paid_with(cost))
                 .map_err(|_| ResolveError::Invalid("too many payments".into()))?,
             Amount::Kicks => i64::try_from(self.payments(OptionalKind::Kicker))
                 .map_err(|_| ResolveError::Invalid("too many kicks".into()))?,
@@ -3773,6 +3822,13 @@ impl<'a> Scope<'a> {
     }
 
     /// How many times the optional costs of `kind` were paid (`paid_costs`), read against the costs the card prints.
+    /// How many times the spell the source is, or the permanent it became, paid its "you may" additional cost `cost`.
+    fn r117_paid_with(&self, cost: &mtg_cards::cost::Cost) -> usize {
+        self.state.object(self.source.id).map_or(0, |source| {
+            r117_paid_with(source.card(), self.paid_costs(), cost)
+        })
+    }
+
     fn payments(&self, kind: OptionalKind) -> usize {
         let Some(source) = self.state.object(self.source.id) else {
             return 0;
@@ -4115,6 +4171,13 @@ impl<'a> Scope<'a> {
                 .any(|player| self.state.r379_since.hurt_since(*player)),
             Condition::AttackedYouLastTurn(who) => self.r305b_attacked_you(who)?,
             Condition::R111CastOrPutLastTurn => self.r111_cast_or_put_last_turn(),
+            Condition::R117FirstSpellThisGame => {
+                self.state.object_tallied(
+                    self.source,
+                    Some(self.controller),
+                    Tally::R117FirstOfGame,
+                ) > 0
+            }
             Condition::R111AttackedLastCombat(by) => self.r111_attacked_last_combat(by)?,
             Condition::R111DamagedThisTurnBy(by) => self.r111_damaged_this_turn_by(by)?,
             Condition::R115MostCommonColor(among) => self.r115_most_common_color(among)?,

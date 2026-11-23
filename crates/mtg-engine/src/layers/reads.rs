@@ -455,6 +455,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::ExiledWith(who)
         | Pred::R114ExiledByThem(who)
         | Pred::R114EnlistedBy(who)
+        | Pred::R117SurveilledBy(who)
+        | Pred::R117SharesBasicLandType(who)
         | Pred::EncodedWith(who)
         | Pred::HauntedBy(who)
         | Pred::Crewed(who)
@@ -501,7 +503,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::HasAttached(inner)
         | Pred::FromSource(inner)
         | Pred::AbilityFrom(inner) => reads_of_selector(inner),
-        Pred::AnyOf(any) => any
+        Pred::AnyOf(any) | Pred::R117AllOf(any) => any
             .iter()
             .fold(Traits::NONE, |all, inner| all.or(reads_of_pred(inner))),
     }
@@ -545,6 +547,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TargetCount(_)
         | Amount::Kicks
         | Amount::AdditionalPaid
+        | Amount::R117AdditionalPaidWith(_)
         | Amount::Promised
         | Amount::ResolvedThisTurn
         | Amount::Devoured
@@ -648,6 +651,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::R112MostAlike { on, .. }
         | Amount::R113Stored { on, .. }
         | Amount::R113SharesWithAnother { of: on, .. }
+        | Amount::R117GreatestOf { of: on, .. }
         | Amount::R113GreatestNoted { on }
         | Amount::R113NotedWords { on } => reads_of_ref(on),
         Amount::R112NumberChosen { by, .. } => reads_of_ref(by),
@@ -713,6 +717,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::TriggeringSticker(_)
         | Condition::NeitherDayNorNight
         | Condition::R111CastOrPutLastTurn
+        | Condition::R117FirstSpellThisGame
         | Condition::R111DamagedThisTurnBy(_)
         | Condition::ChosenWord { .. }
         | Condition::EnteredAs(_)

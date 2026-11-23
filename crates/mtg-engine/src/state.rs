@@ -267,6 +267,8 @@ pub(crate) enum Tally {
     W9aSpellMana,
     /// Players made to guess or to group into piles (counted for the spell or ability that did).
     R112Grouped,
+    /// The spell was the first its caster cast this game (counted for the spell and its caster; CR 601.2i).
+    R117FirstOfGame,
 }
 
 /// The events counted in the turn so far.
@@ -306,6 +308,9 @@ pub(crate) struct Tallies {
     pub(crate) r5522: Box<crate::r5522_history::R5522Turn>,
     /// The players who put a nontoken permanent onto the battlefield this turn (`r111_history`).
     pub(crate) r111: Box<crate::r111_history::R111Turn>,
+    /// The cards a surveil chose for the graveyard that have not moved there yet, with the player who surveilled; the move
+    /// that follows the `Surveilled` event counts each one for that player (`Pred::R117SurveilledBy`).
+    pub(crate) r117_surveilling: BTreeMap<ObjectId, PlayerId>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).

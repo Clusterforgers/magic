@@ -1,0 +1,11 @@
+Inti, Seneschal of the Sun	"Whenever you discard one or more cards, exile the top card of your library. You may play that card until your next end step.": a writer for the Rule effect (MayPlay of the exiled card until your next end step) in a triggered ability; the first ability now reads whole (every sentence after "When you do" is the reflexive trigger)	draft kept (Forge, whole)
+Caller of the Untamed	A pre-game reveal and exile of a drafted card; no draft happens in the engine, so the card stays inert	draft
+Steamflogger Boss	Contraptions: a Contraption deck, assembling, and a ReplaceWhen for a Rigger assembling a Contraption (CR 905)	contraptions
+Cyclopean Tomb	A land type granted while a mire counter remains, and a delayed trigger for the rest of the game that removes the counters this artifact put (objects linked across zones, CR 607)	linked objects
+Frankenstein's Monster	ReplaceBy::PayOrGraveyard whose cost counts the spell's X (ExileFromGraveyard of X creature cards; Price::announced gives up on an unannounced X) and a counter kind chosen per paid card (+2/+0, +1/+1 or +0/+2) put as it enters	entering replacement
+Guardian Beast	Three rules for noncreature artifacts you control while this is untapped: can't be enchanted (Aura targets and attach legality, attached Auras stay, CR 303.4), indestructible, and other players can't gain control (control-change effects of others skip them)	game rules
+Tawnos's Coffin	Linked exile that notes the counters of the exiled creature and its attached Auras, returning them with the noted counters and attached (CR 607)	linked exile
+Grimoire Thief	Cards exiled face down with the source, turned face up by an effect, and countering every spell with the same name as one of them	face-down exile
+Spy Kit	A characteristic: the equipped creature has all names of nonlegendary creature cards (CR 201.2 name set; Pred::Named matching any such name)	names
+Ertai's Meddling	Exile a spell with delay counters and put it back on the stack as a copy of the original when the last is removed (spell state kept in exile)	delay counters
+Garth One-Eye	Conjure by Oracle name from a fixed list with a once-per-name memory, and a cast permission for the copy	conjure

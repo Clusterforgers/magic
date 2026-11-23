@@ -1,0 +1,44 @@
+{
+  "oracle_id": "beffaea5-beeb-4d4e-aca3-82c698caf6f8",
+  "name": "Test of Conviction",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Test of Conviction",
+      "oracle_fingerprint": "ab2fd18d4f1c1e6584bd70ef474ef5ad",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Modal": {
+                  "modes": [
+                    {
+                      "label": "Battle Stations",
+                      "effects": [
+                        {
+                          "PutCounters": {
+                            "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                            "counter": "+1/+1"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "label": "Begin Negotiations",
+                      "targets": [{ "what": "Opponent" }],
+                      "effects": [
+                        { "Draw": { "who": { "Target": 0 } } },
+                        { "Draw": { "count": 2 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

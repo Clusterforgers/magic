@@ -1,0 +1,26 @@
+{
+  "oracle_id": "9964f2fe-b7f4-40f5-8e71-948756d27f0a",
+  "name": "Hugh, First of Many",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Hugh, First of Many",
+      "oracle_fingerprint": "315c824e1535782ea960c267be34054e",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Artifact" },
+                { "ControlledBy": "You" },
+                { "WasCast": {} },
+                { "In": "Stack" }
+              ]
+            },
+            "mods": [{ "AddKeyword": { "Replicate": "{2}{U}" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

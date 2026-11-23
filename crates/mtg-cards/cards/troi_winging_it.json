@@ -10,7 +10,7 @@
         {
           "Triggered": {
             "when": { "Drew": { "who": "Opponents" } },
-            "if": "YourTurn",
+            "if": { "AtTrigger": "YourTurn" },
             "effects": [
               {
                 "CreateToken": {

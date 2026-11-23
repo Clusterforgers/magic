@@ -35,6 +35,17 @@ const ROWS: &[(&str, &str)] = &[
     ),
 ];
 
+/// Adds "the other" of two cards looked at, which the reader takes as "the rest" (Pattern Buffer Preservation).
+pub fn r117_the_other(texts: &mut Vec<String>) {
+    let (written, oracle) = ROWS[3];
+    let found: Vec<String> = texts
+        .iter()
+        .filter(|text| text.contains(written))
+        .map(|text| text.replace(written, oracle))
+        .collect();
+    texts.extend(found);
+}
+
 /// Adds the Oracle wording of each row to the wordings that have the writers' phrase.
 pub fn add(texts: &mut Vec<String>) {
     let found: Vec<String> = texts

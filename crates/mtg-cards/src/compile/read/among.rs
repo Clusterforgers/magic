@@ -78,7 +78,7 @@ pub fn among(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         r.need("reveal")?;
     }
     let count = top_cards(r)?;
-    r.need("of your library")?;
+    let count = super::library::r117_top_of(r, "of your library", count)?;
     r.punct('.').then_some(())?;
     let mut effects = vec![Effect::LookAtTop {
         who: Ref::You,

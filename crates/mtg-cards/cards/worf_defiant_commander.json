@@ -1,0 +1,53 @@
+{
+  "oracle_id": "a7fcdbab-491f-40d9-be40-409af0d6c3f5",
+  "name": "Worf, Defiant Commander",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Worf, Defiant Commander",
+      "oracle_fingerprint": "689c43099ddc708a46f6b708c448bfaa",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Klingon Warrior",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Klingon", "Warrior"],
+                      "power": 2,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Haste" }]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "effects": [
+              { "ExileTop": { "count": { "Players": "AttackedThisTurn" }, "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

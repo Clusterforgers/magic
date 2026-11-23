@@ -14,7 +14,7 @@ use crate::value::Condition;
 
 /// Whether the next sentence is a restriction that ends the effects: "Activate only ..." or "This ability triggers only
 /// once each turn."
-fn at_restriction(r: &mut Reader<'_>) -> bool {
+pub(super) fn at_restriction(r: &mut Reader<'_>) -> bool {
     r.peek_word() == Some("activate")
         || r.lookahead(|r| {
             r.words(super::restrictions::W6E_NOT_IN_COMBAT)
@@ -163,16 +163,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         TriggerPattern::ZoneChange { what, to: Some(ZoneKind::Battlefield), .. } if what.0 != [Pred::This]
     );
     note_other_creatures(r, &when);
-    // "while <condition>" after the event is checked only as the event happens, never again on resolution.
-    let held = if render::while_held(&when) {
-        r.attempt(|r| {
-            r.need("while")?;
-            triggers::condition(r)
-        })
-        .map(|held| Condition::AtTrigger(Box::new(held)))
-    } else {
-        None
-    };
+    let held = held_as_it_triggers(r, &when);
     r.punct(',').then_some(())?;
     // "if this creature is in your graveyard": the ability works from the graveyard, where the card returns itself from.
     let in_graveyard = r.attempt(super::w8b_milled::w8b_in_graveyard).is_some();
@@ -183,7 +174,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let intervening_if = r.attempt(|r| {
         r.word("if").then_some(())?;
         let condition = triggers::condition(r)?;
-        r.punct(',').then_some(condition)
+        r.punct(',').then(|| r117_it_after_if(r, condition))
     });
     let intervening_if = match (saddled, intervening_if) {
         (false, None) => held,
@@ -224,6 +215,31 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         targets: std::mem::take(&mut r.targets),
         effects,
     })
+}
+
+/// "Whenever a creature dies, if ~ isn't a creature, put a charge counter on it.": the condition named the card last, so
+/// "it" is the card, not the object of the event.
+fn r117_it_after_if(r: &mut Reader<'_>, intervening_if: Condition) -> Condition {
+    if super::as_long_as::subject_of(&intervening_if) == Some(Ref::This) {
+        r.it = Some(Ref::This);
+    }
+    intervening_if
+}
+
+/// The condition after the event checked only as the event happens, never again on resolution: "while <condition>"
+/// and "during your turn" (CR 603.2); only an "if" clause is an intervening "if".
+fn held_as_it_triggers(r: &mut Reader<'_>, when: &TriggerPattern) -> Option<Condition> {
+    if let Some(turn) = r.attempt(super::r117_04_during::r117_04_during) {
+        return Some(Condition::AtTrigger(Box::new(turn)));
+    }
+    if !render::while_held(when) {
+        return None;
+    }
+    r.attempt(|r| {
+        r.need("while")?;
+        triggers::condition(r)
+    })
+    .map(|held| Condition::AtTrigger(Box::new(held)))
 }
 
 /// A tap for mana holds the permanent too, so the damage to "that player" is to the player alone.

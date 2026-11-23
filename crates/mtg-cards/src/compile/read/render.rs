@@ -247,6 +247,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
     super::their_top::possessive_wordings(&mut texts);
+    super::r117_04_x_target::r117_04_sized_wordings(ability, variants, &mut texts);
     texts
 }
 
@@ -401,6 +402,21 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    // After an intervening "if" about the card, the card is "it" ("if ~ isn't a creature, put a charge counter on it").
+    if matches!(ability, Ability::Triggered { intervening_if: Some(held), .. }
+        if super::as_long_as::subject_of(held) == Some(Ref::This))
+    {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter_map(|text| {
+                let at = text.find(", if ~ ")? + 2;
+                let after = text[at..].find(", ")? + at;
+                let tail = text[after..].replacen(" on ~", " on it", 1);
+                (tail != text[after..]).then(|| format!("{}{tail}", &text[..after]))
+            })
+            .collect();
+        texts.extend(pronouns);
+    }
     // A creature that attacks enchanted player is "it", and the player who controls it "its controller".
     if matches!(
         ability,
@@ -500,7 +516,11 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
         let pronouns: Vec<String> = texts
             .iter()
             .filter(|text| text.contains(", ~ deals "))
-            .map(|text| text.replacen(", ~ deals ", ", it deals ", 1))
+            .flat_map(|text| {
+                // A person on the card is "she" or "he" (Saavik, Stoic Student).
+                [", it deals ", ", she deals ", ", he deals "]
+                    .map(|pronoun| text.replacen(", ~ deals ", pronoun, 1))
+            })
             .collect();
         texts.extend(pronouns);
     }
@@ -568,6 +588,10 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = super::r371_owner::r371_and_draw_wordings(&texts);
     texts.extend(more);
+    let more = super::r117_01_joins::r117_join_wordings(ability);
+    texts.extend(more);
+    let more = super::r117_01_joins::r117_you_wordings(&texts);
+    texts.extend(more);
     let more = super::w11a_joins::w11a_wordings(&texts);
     texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
@@ -594,6 +618,7 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
     super::w15b_time::w15b_wordings(ability, &mut texts);
     super::fix32_animate::wordings(ability, &mut texts);
     super::w20b_reflexive::w20b_wordings(ability, &mut texts);
+    super::r5a_wordings::r117_the_other(&mut texts);
     texts
 }
 
@@ -666,6 +691,10 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r304b_writers::r304b_wordings(ability, written_variants, &mut texts);
     super::r116_02_writers::r116_02_wordings(ability, written_variants, &mut texts);
     super::r116_06_while::r116_06_while_wordings(ability, written_variants, &mut texts);
+    super::r117_04_affected::r117_04_affected_wordings(ability, written_variants, &mut texts);
+    super::r117_04_x_target::r117_04_sized_wordings(ability, written_variants, &mut texts);
+    super::r117_04_creature::r117_04_creature_wordings(ability, written_variants, &mut texts);
+    super::r117_04_during::r117_04_during_wordings(ability, &mut texts);
     super::r116_reminder_tokens::r116_reminder_token_wordings(
         ability,
         written_variants,
@@ -707,6 +736,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r114_04_wholes::r114_04_add_wholes(ability, &mut texts);
     super::r115_04_wholes::r115_04_add_wholes(ability, &mut texts);
     super::r116_04_wholes::r116_04_add_wholes(ability, &mut texts);
+    super::r117_03_wholes::r117_03_add_wholes(ability, &mut texts);
     super::r116_01_wholes::r116_01_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
@@ -722,6 +752,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r115_03_wholes::r115_03_add_wholes(ability, &mut texts);
     super::r116_03_wholes::r116_03_add_wholes(ability, &mut texts);
     super::r116_02_wholes::r116_02_add_wholes(ability, &mut texts);
+    super::r117_02_wholes::r117_02_add_wholes(ability, &mut texts);
     super::r6103_wholes::r6103_add_wholes(ability, &mut texts);
     super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
     super::r5510_fortified::r5510_wordings(&mut texts);
@@ -1883,6 +1914,14 @@ fn trigger_head(when: &TriggerPattern, condition: Option<&Condition>) -> Option<
     }
     if let Some(head) = super::wf24_token_bind::wf24_head(when, condition) {
         return Some(vec![head]);
+    }
+    if let Some(Condition::AtTrigger(held)) = condition
+        && let Some(during) = super::r117_04_during::r117_04_during_text(held)
+    {
+        // A batch or a damage event words its subject another way after "during" ("a source you control deals").
+        while_held(when).then_some(())?;
+        let event = player_events::text(when).or_else(|| pattern_text(when))?;
+        return Some(vec![format!("{event} {during},")]);
     }
     if let Some(Condition::AtTrigger(held)) = condition
         && let Some(held) = while_text(when, held)
@@ -3645,6 +3684,7 @@ impl Writer<'_> {
                 self.rmt8_action(effect, what)?
             }
             Effect::EndTurn => "end the turn".to_owned(),
+            Effect::R117EndCombat => "end the combat phase".to_owned(),
             Effect::LoseGame { who: Ref::You } => "you lose the game".to_owned(),
             Effect::Plot { what } => format!("exile {}. It becomes plotted", self.object(what)?),
             // The card an earlier step exiled and named is "it".

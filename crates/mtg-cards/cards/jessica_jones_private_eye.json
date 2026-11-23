@@ -14,13 +14,13 @@
               {
                 "ExileTop": {
                   "count": { "Stat": { "of": "This", "stat": "Power" } },
-                  "as": "exiled"
+                  "as": "impulse"
                 }
               },
               {
                 "Rule": {
                   "rule": {
-                    "MayCast": { "from": "Exile", "only": { "Bound": "exiled" }, "play": true }
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
                   },
                   "duration": "UntilEndOfTurn"
                 }

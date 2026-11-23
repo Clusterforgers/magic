@@ -747,6 +747,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         }
         ReplaceWhen::TokenCreation { .. }
         | ReplaceWhen::R6001DamageBetweenChosen
+        | ReplaceWhen::R117CreaturesSharingColor
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
         | ReplaceWhen::LifeLoss { .. }
@@ -1411,6 +1412,24 @@ impl Pass<'_> {
                     },
                 };
                 by != hit && chosen.contains(&by) && chosen.contains(&hit)
+            }
+            (
+                ReplaceWhen::R117CreaturesSharingColor,
+                Unit::Damage {
+                    source: dealer,
+                    target: DamageTarget::Object(hit),
+                    ..
+                },
+            ) => {
+                // Both are judged with their characteristics as the damage would be dealt (CR 613).
+                let colors = |id: ObjectId| {
+                    crate::characteristics::characteristics(self.state, id)
+                        .filter(crate::characteristics::Characteristics::is_creature)
+                        .map(|chars| chars.colors)
+                };
+                dealer != hit
+                    && matches!((colors(*dealer), colors(*hit)), (Some(mine), Some(theirs))
+                        if mine.iter().any(|color| theirs.contains(color)))
             }
             (
                 ReplaceWhen::R6105Uncycled { what },

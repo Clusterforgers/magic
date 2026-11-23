@@ -15,7 +15,7 @@
         {
           "Triggered": {
             "when": { "SpellCast": { "what": [{ "Type": "Creature" }], "by": "You" } },
-            "if": { "Not": "YourTurn" },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
             "targets": [
               { "what": { "Object": [{ "Type": "Creature" }] }, "bounds": { "min": 0, "max": 1 } }
             ],

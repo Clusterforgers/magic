@@ -1349,4 +1349,49 @@ mod tests {
             .filter(|(_, ability)| matches!(ability, Ability::Loyalty { .. }));
         assert_eq!(found.count(), loyalty, "{text}");
     }
+
+    #[test]
+    fn no_table_wording_reads_as_a_clause_left_to_the_table() {
+        let dir = std::path::Path::new(env!("CARGO_MANIFEST_DIR")).join("src/compile/read");
+        for entry in std::fs::read_dir(&dir).unwrap() {
+            let path = entry.unwrap().path();
+            if path.extension().is_none_or(|ext| ext != "json") {
+                continue;
+            }
+            let Ok(entries) = serde_json::from_str::<Vec<(serde_json::Value, String)>>(
+                &std::fs::read_to_string(&path).unwrap(),
+            ) else {
+                continue;
+            };
+            for (shape, wording) in entries {
+                let manual = match &shape {
+                    serde_json::Value::Array(list) => {
+                        list.iter().any(|one| one.get("Manual").is_some())
+                    }
+                    one => one.get("Manual").is_some(),
+                };
+                assert!(!manual, "{}: {wording}", path.display());
+            }
+        }
+    }
+
+    #[test]
+    fn a_trigger_left_to_the_table_beside_an_activated_ability_keeps_one_span_each() {
+        let text = "Whenever a source you control deals damage, if at least one permanent or player was dealt exactly 2 of that damage, exile the top card of your library. You may play it until the end of your next turn.\n{R}, {T}, Exile two cards from your graveyard: ~ deals 2 damage to any other target.";
+        let compiled = one(
+            "Matoc, Lavamancer",
+            "Legendary Creature \u{2014} Giant Shaman",
+            text,
+        );
+        assert_eq!(status(&compiled), Some(ImplStatus::Partial));
+        let card = compiled.card.unwrap();
+        let abilities = &card.faces[0].abilities;
+        assert_eq!(abilities.len(), 2, "{abilities:?}");
+        assert!(abilities[0].is_manual());
+        assert!(
+            matches!(abilities[1], Ability::Activated { .. }),
+            "{:?}",
+            abilities[1]
+        );
+    }
 }

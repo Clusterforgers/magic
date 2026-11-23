@@ -468,7 +468,17 @@ fn following_step(state: &GameState, step: Step) -> Step {
 
 /// Empties mana pools (CR 500.4), closes combat if leaving it, and starts the next step.
 pub(crate) fn leave_step(state: &GameState) -> Vec<Event> {
-    let step = state.turn().step();
+    leave_step_from(state, state.turn().step())
+}
+
+/// The combat phase ends at once ("end the combat phase"): the game leaves it as it leaves its end of combat step,
+/// so the steps of combat left are not begun.
+pub(crate) fn r117_leave_combat(state: &GameState) -> Vec<Event> {
+    leave_step_from(state, Step::EndCombat)
+}
+
+/// Leaves the turn's current step as if it were `step`.
+fn leave_step_from(state: &GameState, step: Step) -> Vec<Event> {
     let natural = next_step(state, step);
     // Mana kept through the steps of a phase goes as the phase ends; a phase added after it (CR 500.8) comes next.
     let ends_phase = natural.phase() != step.phase() || state.turn().step_is_lone();

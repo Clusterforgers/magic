@@ -219,7 +219,14 @@ mod r116_05_assimilate;
 mod r116_05_mana;
 mod r116_06_while;
 mod r116_reminder_tokens;
+mod r117_02_wholes;
+mod r117_03_wholes;
+mod r117_04_affected;
+mod r117_04_creature;
+mod r117_04_during;
+mod r117_04_x_target;
 pub(crate) use r116_reminder_tokens::r116_is_reminder_token;
+mod r117_01_joins;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;
@@ -631,7 +638,13 @@ pub fn clause(text: &str, kind: ClauseKind, x_free: bool) -> Option<Ability> {
 /// Reads a static clause that is two statics in one sentence after one condition ("As long as you control your
 /// commander, this creature gets +2/+2 and creatures you control have vigilance.") into the two abilities in order. An
 /// ability word before a dash is flavor and left out.
+/// A pair that holds a `Manual` is not a reading, as with `clause_with`.
 pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
+    read_static_pair(text, x_free, own).filter(|found| !found.iter().any(Ability::is_manual))
+}
+
+/// The readers of `static_pair`, in order.
+fn read_static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
     let head = text.lines().next().unwrap_or_default();
     let text = text.get(classify::ability_word_len(head).unwrap_or(0)..)?;
     if let Some(found) = r4708_reveal::r4708_reveal_group_read(text, |sentence| {
@@ -659,6 +672,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
         found
     } else if let Some(found) = r116_02_wholes::r116_02_pair_read(text) {
         found
+    } else if let Some(found) = r117_02_wholes::r117_02_pair_read(text) {
+        found
     } else if let Some(found) = r113_01_wholes::r113_01_pair_read(text) {
         found
     } else if let Some(found) = r114_01_wholes::r114_01_pair_read(text) {
@@ -672,6 +687,8 @@ pub fn static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> 
     } else if let Some(found) = r114_04_wholes::r114_04_pair_read(text) {
         found
     } else if let Some(found) = r116_04_wholes::r116_04_pair_read(text) {
+        found
+    } else if let Some(found) = r117_03_wholes::r117_03_pair_read(text) {
         found
     } else if let Some(found) = r115_04_wholes::r115_04_pair_read(text) {
         found
@@ -799,8 +816,18 @@ const MEANINGFUL_WORDS: [&str; 6] = [
 ];
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
-#[allow(clippy::too_many_lines)]
+///
+/// A clause left to the table is the compiler's to mark with its own span, so a table entry that reads as `Manual`
+/// is not a reading.
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    clause_read(text, kind, x_free, own)
+        .filter(|found| !found.is_manual())
+        .map(r117_04_affected::r117_04_affected)
+}
+
+/// The reading of `clause_with` before the object of a group static is named.
+#[allow(clippy::too_many_lines)]
+fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
     if let Some(found) = render::r6105_read_whole(text) {
         return Some(found);
     }
@@ -858,6 +885,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
     if let Some(found) = r116_04_wholes::r116_04_whole_read(text) {
         return Some(found);
     }
+    if let Some(found) = r117_03_wholes::r117_03_whole_read(text) {
+        return Some(found);
+    }
     if let Some(found) = r115_04_wholes::r115_04_whole_read(text) {
         return Some(found);
     }
@@ -901,6 +931,9 @@ pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Opt
         return Some(found);
     }
     if let Some(found) = r116_02_wholes::r116_02_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r117_02_wholes::r117_02_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r113_01_wholes::r113_01_whole_read(text) {

@@ -1,0 +1,165 @@
+{
+  "object": "card",
+  "id": "63d3add3-be3f-4ced-85c5-a7d4891b11f5",
+  "oracle_id": "d8366080-dd0c-40cf-84e9-f628dfe8f45c",
+  "multiverse_ids": [],
+  "resource_id": "3F705625103B971C102E426CD35E03D7E6B8C34D5723520D816025B0C734D0C2",
+  "mtgo_id": 156924,
+  "tcgplayer_id": 726866,
+  "cardmarket_id": 919881,
+  "name": "Grilka, Widowed Warrior",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/63d3add3-be3f-4ced-85c5-a7d4891b11f5",
+  "scryfall_uri": "https://scryfall.com/card/trc/70/grilka-widowed-warrior?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-11-10T08:39:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.jpg?1794299987",
+    "normal": "https://cards.scryfall.io/normal/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.jpg?1794299987",
+    "large": "https://cards.scryfall.io/large/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.jpg?1794299987",
+    "png": "https://cards.scryfall.io/png/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.png?1794299987",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.jpg?1794299987",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.jpg?1794299987",
+    "thumb": "https://cards.scryfall.io/thumb/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.webp?1794299987",
+    "grid": "https://cards.scryfall.io/grid/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.webp?1794299987",
+    "display": "https://cards.scryfall.io/display/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.webp?1794299987",
+    "art": "https://cards.scryfall.io/art/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.webp?1794299987",
+    "crop": "https://cards.scryfall.io/crop/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.webp?1794299987",
+    "jpeg": "https://cards.scryfall.io/normal/front/6/3/63d3add3-be3f-4ced-85c5-a7d4891b11f5.jpg?1794299987"
+  },
+  "mana_cost": "{5}{R}",
+  "cmc": 6.0,
+  "type_line": "Legendary Creature — Klingon Warrior",
+  "oracle_text": "When Grilka enters, gain control of target creature an opponent controls until end of turn. Untap it. Until end of turn, it gains trample, haste, and \"Whenever this creature deals combat damage to a player, create that many tapped Treasure tokens.\"",
+  "power": "5",
+  "toughness": "5",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Treasure"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "b8e8c3b4-3b8d-48a4-b427-a2b8ac3e2f8b",
+      "component": "token",
+      "name": "Treasure",
+      "type_line": "Token Artifact — Treasure",
+      "uri": "https://api.scryfall.com/cards/b8e8c3b4-3b8d-48a4-b427-a2b8ac3e2f8b"
+    },
+    {
+      "object": "related_card",
+      "id": "e307a7c9-335a-4b9c-9662-41c5e9ec536f",
+      "component": "combo_piece",
+      "name": "Grilka, Widowed Warrior",
+      "type_line": "Legendary Creature — Klingon Warrior",
+      "uri": "https://api.scryfall.com/cards/e307a7c9-335a-4b9c-9662-41c5e9ec536f"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "legal",
+    "timeless": "legal",
+    "gladiator": "legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "legal",
+    "competitivebrawl": "legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo",
+    "arena"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/63d3add3-be3f-4ced-85c5-a7d4891b11f5/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ad8366080-dd0c-40cf-84e9-f628dfe8f45c&unique=prints",
+  "collector_number": "70",
+  "digital": false,
+  "rarity": "rare",
+  "flavor_text": "\"I've been told that you are the one who killed my husband.\"",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Lucio Parrillo",
+  "artist_ids": [
+    "1b452d3f-5c32-46dc-adc3-83eba53052d5"
+  ],
+  "illustration_id": "dacc51f0-f4df-489f-a63d-8f4d50a27971",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 29422,
+  "preview": {
+    "source": "Anna Margaret",
+    "source_uri": "https://www.youtube.com/watch?v=LqRSDqoQ8O8",
+    "previewed_at": "2026-10-28"
+  },
+  "prices": {
+    "usd": "1.36",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "0.02",
+    "eur_foil": null,
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DGrilka%252C%2BWidowed%2BWarrior",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DGrilka%252C%2BWidowed%2BWarrior",
+    "edhrec": "https://edhrec.com/route/?cc=Grilka%2C+Widowed+Warrior"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F726866%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=919881&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/156924?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -4,13 +4,17 @@
 
 use crate::zones::Zone;
 use mtg_cards::refs::{Pred, Ref, Selector};
-use mtg_core::card::CardType;
+use mtg_core::card::{CardType, Subtype};
+use mtg_core::ids::ObjectId;
 use mtg_core::mana::ManaSymbol;
 
 use super::{ResolveError, Scope, Seen};
 use crate::characteristics::{goaded_by, goaders};
 use crate::object::ObjectRef;
 use crate::object::{GameObject, ObjectKind};
+
+/// The basic land types (CR 205.3i).
+const R117_BASIC_LAND_TYPES: [&str; 5] = ["Plains", "Island", "Swamp", "Mountain", "Forest"];
 
 /// Every card type, in the order of the comprehensive rules.
 const W6D_TYPES: [CardType; 9] = [
@@ -60,6 +64,33 @@ impl Scope<'_> {
                 })?
             }
             Pred::SharesColor(named) => self.w6d_shares_color(named, seen)?,
+            Pred::R117SharesBasicLandType(named) => {
+                // Each object as the layers leave it now: a land type an effect gave counts, one it replaced does not.
+                let basics = |id: ObjectId| -> Vec<&str> {
+                    let (Some(object), Some(chars)) = (
+                        self.state.object(id),
+                        crate::characteristics::characteristics(self.state, id),
+                    ) else {
+                        return Vec::new();
+                    };
+                    R117_BASIC_LAND_TYPES
+                        .into_iter()
+                        .filter(|basic| {
+                            chars
+                                .has_subtype(&object.card().subtypes, &Subtype((*basic).to_owned()))
+                        })
+                        .collect()
+                };
+                let mine = self
+                    .candidate
+                    .get()
+                    .map_or_else(Vec::new, |land| basics(land.id));
+                !mine.is_empty()
+                    && self
+                        .objects(named)?
+                        .into_iter()
+                        .any(|other| basics(other.id).iter().any(|basic| mine.contains(basic)))
+            }
             Pred::SharesManaValue(named) => self.w6d_any_named(named, seen, |mine, theirs| {
                 let value = |seen: &Seen<'_>| seen.card.map(GameObject::mana_value);
                 value(mine).is_some() && value(mine) == value(theirs)

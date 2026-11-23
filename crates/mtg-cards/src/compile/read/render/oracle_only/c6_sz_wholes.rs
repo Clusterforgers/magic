@@ -28,7 +28,7 @@ const C6_SZ_WHOLES: [(&str, &str); 17] = [
         "{T}: Copy target instant or sorcery spell you control. You may choose new targets for the copy. Activate only if you've cast three or more spells this turn.",
     ),
     (
-        r#"{"Triggered":{"when":{"Sacrificed":{"what":["Other",{"Not":"Token"}],"by":"You"}},"if":"YourTurn","targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]},"bounds":{"min":0,"max":1}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":{"Stat":{"of":"This","stat":"Power"}}}}]}}"#,
+        r#"{"Triggered":{"when":{"Sacrificed":{"what":["Other",{"Not":"Token"}],"by":"You"}},"if":{"AtTrigger":"YourTurn"},"targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]},"bounds":{"min":0,"max":1}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":{"Stat":{"of":"This","stat":"Power"}}}}]}}"#,
         "Whenever you sacrifice another nontoken permanent during your turn, put a number of +1/+1 counters equal to ~'s power on up to one other target creature.",
     ),
     (

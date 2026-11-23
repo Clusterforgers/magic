@@ -11,6 +11,23 @@ use crate::zones::Zone;
 /// begun. A resolving ability finishes as usual. A turn already in its cleanup step has nothing more to end.
 pub(super) fn run(cx: &Cx<'_>) -> Run {
     let state = cx.state();
+    let mut events = stack_exiled(cx);
+    let step = state.turn().step();
+    if step != Step::Cleanup {
+        if step.phase() == Phase::Combat {
+            events.push(Event::CombatEnded);
+        }
+        events.push(Event::StepBegan {
+            step: Step::Cleanup,
+        });
+    }
+    Run::events(events)
+}
+
+/// Every spell on the stack exiled, the resolving one included, and every other ability ended without resolving; they
+/// are not countered (CR 723.1a, the Mandate of Peace rulings).
+pub(super) fn stack_exiled(cx: &Cx<'_>) -> Vec<Event> {
+    let state = cx.state();
     let mut events = Vec::new();
     for &id in state.zone(Zone::Stack) {
         let Some(object) = state.object(id) else {
@@ -33,14 +50,5 @@ pub(super) fn run(cx: &Cx<'_>) -> Run {
             }
         });
     }
-    let step = state.turn().step();
-    if step != Step::Cleanup {
-        if step.phase() == Phase::Combat {
-            events.push(Event::CombatEnded);
-        }
-        events.push(Event::StepBegan {
-            step: Step::Cleanup,
-        });
-    }
-    Run::events(events)
+    events
 }

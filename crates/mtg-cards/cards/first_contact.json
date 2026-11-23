@@ -1,0 +1,49 @@
+{
+  "oracle_id": "81229e0a-8413-40cf-8087-9d580cbb21c3",
+  "name": "First Contact",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "First Contact",
+      "oracle_fingerprint": "7f1394a6110a3d4bf52e2bf7a81a170a",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Mill": { "count": 4, "as": "milled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Is": { "Bound": "milled" } },
+                      { "In": "Graveyard" },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" },
+                          { "Type": "Battle" }
+                        ]
+                      }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "If": {
+                  "condition": "R117FirstSpellThisGame",
+                  "then": [{ "GainLife": { "amount": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

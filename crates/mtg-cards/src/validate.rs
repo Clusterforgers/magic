@@ -296,7 +296,7 @@ fn w9c_token_pred(pred: &Pred) -> bool {
     match pred {
         Pred::Type(_) | Pred::Subtype(_) | Pred::Supertype(_) | Pred::Color(_) => true,
         Pred::Not(inner) => w9c_token_pred(inner),
-        Pred::AnyOf(any) => any.iter().all(w9c_token_pred),
+        Pred::AnyOf(any) | Pred::R117AllOf(any) => any.iter().all(w9c_token_pred),
         _ => false,
     }
 }
@@ -990,6 +990,7 @@ impl<'a> Walker<'a> {
             | Pred::OwnedBy(r)
             | Pred::ProtectedBy(r)
             | Pred::DamagedThisTurnBy(r)
+            | Pred::R117SurveilledBy(r)
             | Pred::AttackingPlayer(r)
             | Pred::AttackingPlaneswalkerOf(r)
             | Pred::AttackingPlayerOrPlaneswalker(r) => {
@@ -1000,7 +1001,8 @@ impl<'a> Walker<'a> {
             | Pred::SharesType(r)
             | Pred::SharesColor(r)
             | Pred::SharesTypeOf { with: r, .. }
-            | Pred::SharesManaValue(r) => {
+            | Pred::SharesManaValue(r)
+            | Pred::R117SharesBasicLandType(r) => {
                 self.scope.tests += 1;
                 self.reference(r, Kind::Object);
                 self.scope.tests -= 1;
@@ -1141,6 +1143,15 @@ impl<'a> Walker<'a> {
             Pred::AnyOf(preds) => {
                 if preds.is_empty() {
                     self.problem("`AnyOf` needs at least one predicate");
+                }
+                for (i, inner) in preds.iter().enumerate() {
+                    self.at(format!("[{i}]"), |w| w.pred(inner));
+                }
+            }
+            Pred::R117AllOf(preds) => {
+                self.uses("Pred", "R117AllOf");
+                if preds.len() < 2 {
+                    self.problem("`R117AllOf` needs at least two predicates");
                 }
                 for (i, inner) in preds.iter().enumerate() {
                     self.at(format!("[{i}]"), |w| w.pred(inner));
@@ -1507,6 +1518,14 @@ impl<'a> Walker<'a> {
         match amount {
             Amount::Drafted(_) => self.uses("Amount", "Drafted"),
             Amount::AdditionalPaid => self.paid_amount(amount),
+            Amount::R117AdditionalPaidWith(_) => {
+                self.uses("Amount", "R117AdditionalPaidWith");
+                if !self.has_additional_cost {
+                    self.problem(
+                        "`R117AdditionalPaidWith` needs an additional cost the caster may pay",
+                    );
+                }
+            }
             Amount::CardsAbove { filter, .. } => self.w2c_selector_amount("CardsAbove", filter),
             Amount::ManaSymbols { of, .. } => self.at("of", |w| w.reference(of, Kind::Object)),
             Amount::SourcesDealtDamage(who) => self.player_amount("SourcesDealtDamage", who),
@@ -1545,6 +1564,10 @@ impl<'a> Walker<'a> {
             }
             Amount::R113SharesWithAnother { of, .. } => {
                 self.uses("Amount", "R113SharesWithAnother");
+                self.at("of", |w| w.reference(of, Kind::Object));
+            }
+            Amount::R117GreatestOf { of, .. } => {
+                self.uses("Amount", "R117GreatestOf");
                 self.at("of", |w| w.reference(of, Kind::Object));
             }
             Amount::CountedAsCast(inner) => {
@@ -1945,6 +1968,7 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "R115MostCommonColor");
                 self.at("R115MostCommonColor", |w| w.selector(among));
             }
+            Condition::R117FirstSpellThisGame => self.uses("Condition", "R117FirstSpellThisGame"),
             Condition::SorceryTiming => self.uses("Condition", "SorceryTiming"),
             Condition::AfterCombat => self.uses("Condition", "AfterCombat"),
             Condition::TriggeringSticker(_) => self.uses("Condition", "TriggeringSticker"),
@@ -2300,7 +2324,19 @@ impl<'a> Walker<'a> {
         if cost.0.len() > 1 && cost.0.iter().any(|item| matches!(item, CostItem::OneOf(_))) {
             self.problem("a choice between costs is the only part of an additional cost");
         }
+        // An X the text defines may read the spell's targets ("where X is the total mana value of the permanents this
+        // spell targets"): the parts that take it are picked once they are chosen (CR 601.2c, 601.2h).
+        let reads_targets = required
+            && self.nested == 0
+            && cost.0.iter().any(|item| matches!(item, CostItem::XIs(_)));
+        let outer_scope = reads_targets.then(|| {
+            let specs = self.spell_targets.clone();
+            std::mem::replace(&mut self.scope, Scope::new(&specs, false))
+        });
         self.at("cost", |w| w.cost(cost));
+        if let Some(outer) = outer_scope {
+            self.scope = outer;
+        }
         self.r5523_spell_cap = capping;
         self.choosing = choosing;
         self.x_now = saved;
@@ -2836,7 +2872,10 @@ impl<'a> Walker<'a> {
             Keyword::Ward(cost) => {
                 // A generic amount counted as the ward trigger resolves ("ward {X}, where X is ...") is paid then.
                 let held = std::mem::replace(&mut self.r5511_resolving_cost, true);
+                // "Ward—Discard a card or pay {2}": the payer chooses one cost as the payment resolves.
+                self.r281_paying = matches!(cost.0.as_slice(), [CostItem::OneOf(_)]);
                 self.at("cost", |w| w.c6_eg_paid_cost(cost, &Ref::Triggering));
+                self.r281_paying = false;
                 self.r5511_resolving_cost = held;
                 self.payment_of_the_source(cost);
             }
@@ -4305,6 +4344,8 @@ impl Walker<'_> {
                             | Effect::Sacrifice { .. }
                             | Effect::SacrificeUpTo { .. }
                             | Effect::RemoveCounters { .. }
+                            // A discard logs an event for each card discarded, none from an empty hand.
+                            | Effect::Discard { .. }
                             | Effect::R110MoveOneOrMore { .. }
                             // A guess binds "if you do" when a number was left to choose.
                             | Effect::R112GuessNumber { .. }
@@ -5489,6 +5530,7 @@ impl Walker<'_> {
                     w.at("each", |w| w.amount(each));
                 }
             }
+            Effect::R117AnotherOfKind { on } => w.at("on", |w| w.reference(on, Kind::Object)),
             Effect::PutRandomCounter { on, among } => {
                 w.at("on", |w| w.reference(on, Kind::Object));
                 if among.len() < 2 {
@@ -5875,6 +5917,7 @@ impl Walker<'_> {
                 }
             }),
             Effect::EndTurn
+            | Effect::R117EndCombat
             | Effect::R112NoteManaSpent
             | Effect::R110RemovePutThisWay { .. }
             | Effect::R110AddCombatAfterFirst
@@ -7374,7 +7417,7 @@ impl Walker<'_> {
             self.uses("ReplaceWhen", "Draw.First");
         }
         match when {
-            ReplaceWhen::R6001DamageBetweenChosen => {}
+            ReplaceWhen::R6001DamageBetweenChosen | ReplaceWhen::R117CreaturesSharingColor => {}
             ReplaceWhen::TokenCreation { controller, what } => {
                 self.at("controller", |w| w.reference(controller, Kind::Player));
                 if !what.is_empty() {

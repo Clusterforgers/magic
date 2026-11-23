@@ -43,11 +43,27 @@ pub(super) fn run(cx: &Cx<'_>, who: &Ref, alternatives: &[Cost]) -> Result<Run, 
         .peekable();
     let mut paid = None;
     for player in asked_order(cx.scope.players(who)?, cx.journal()) {
+        // Once the player's mana payment is logged, the mana is spent: the costs were offered before it was, so the
+        // mana of a cost is not judged again (a "{2}" taken is still the cost taken).
+        let mut ahead = journal.clone();
+        let mana_paid = ahead.next().is_some_and(|entry| entry.0 == player)
+            && ahead.any(|entry| entry.0 == player && matches!(entry.1, Choice::YesNo(true)));
         let offered: Vec<usize> = (0..prices.len())
             .filter(|at| {
-                prices
-                    .get(*at)
-                    .is_some_and(|price| can_pay(cx, player, price))
+                prices.get(*at).is_some_and(|price| {
+                    if mana_paid && price.mana.is_some() {
+                        can_pay(
+                            cx,
+                            player,
+                            &Price {
+                                mana: None,
+                                ..price.clone()
+                            },
+                        )
+                    } else {
+                        can_pay(cx, player, price)
+                    }
+                })
             })
             .collect();
         let Some((_, asked)) = journal.next_if(|entry| entry.0 == player) else {

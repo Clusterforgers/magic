@@ -180,7 +180,7 @@ const C9_WR_WHOLES: [(&str, &str); 65] = [
         "Whenever a creature you control of the chosen type enters or attacks, draw a card.",
     ),
     (
-        r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"OwnedBy":"You"}],"from":"Graveyard"}},"if":"YourTurn","limit":"OncePerTurn","effects":[{"Draw":{"count":1}}]}}"#,
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":[{"OwnedBy":"You"}],"from":"Graveyard"}},"if":{"AtTrigger":"YourTurn"},"limit":"OncePerTurn","effects":[{"Draw":{"count":1}}]}}"#,
         "Whenever a card leaves your graveyard during your turn, draw a card. This ability triggers only once each turn.",
     ),
     (

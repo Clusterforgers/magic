@@ -1,0 +1,37 @@
+{
+  "oracle_id": "26f7e903-2a00-4878-b8b7-d5abe35c9526",
+  "name": "Final Frontier",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Final Frontier",
+      "oracle_fingerprint": "bf55c01fd6398a5b9eec3b01c07242f1",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    {
+                      "AnyOf": [
+                        { "R117AllOf": [{ "Supertype": "Basic" }, { "Type": "Land" }] },
+                        { "Subtype": "Planet" }
+                      ]
+                    }
+                  ],
+                  "as": "card"
+                }
+              },
+              {
+                "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": { "tapped": true } } }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        { "Keyword": { "R116BeamMeUp": "{1}{G}" } }
+      ]
+    }
+  ]
+}

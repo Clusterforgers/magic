@@ -1,0 +1,12 @@
+{
+  "oracle_id": "50343947-d127-4479-9c1b-8f5040a97afb",
+  "name": "Well-Laid Plans",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Well-Laid Plans",
+      "oracle_fingerprint": "accc197429d05e5f6d387712069e1d97",
+      "abilities": [{ "Replacement": { "when": "R117CreaturesSharingColor", "by": "Prevent" } }]
+    }
+  ]
+}

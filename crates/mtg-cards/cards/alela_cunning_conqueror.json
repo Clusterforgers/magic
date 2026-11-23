@@ -11,7 +11,7 @@
         {
           "Triggered": {
             "when": { "Nth": { "event": { "SpellCast": { "by": "You" } }, "nth": 1 } },
-            "if": { "Not": "YourTurn" },
+            "if": { "AtTrigger": { "Not": "YourTurn" } },
             "effects": [
               {
                 "CreateToken": {

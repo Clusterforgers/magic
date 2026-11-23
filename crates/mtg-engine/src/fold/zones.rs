@@ -512,6 +512,24 @@ fn note_permission_used(
     }
 }
 
+/// Tallies the kinds of the spell just cast: an instant or sorcery, a noncreature spell, and the kinds a cost counts.
+fn tally_kinds_cast(state: &mut GameState, player: PlayerId, object: ObjectId) {
+    let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
+        spell.card().is_type(CardType::Instant) || spell.card().is_type(CardType::Sorcery)
+    });
+    if instant_or_sorcery {
+        state.tally(player, Tally::CastInstantOrSorcery);
+    }
+    if state
+        .objects
+        .get(&object)
+        .is_some_and(|spell| !spell.card().is_type(CardType::Creature))
+    {
+        state.tally(player, Tally::C10AnyNoncreatureCast);
+    }
+    crate::c11a_less::c11a_tally_kinds(state, player, object);
+}
+
 /// A card is cast: it moves to the stack as the spell, with what was announced for it, and lies face down when it is cast that way.
 fn spell_cast(
     state: &mut GameState,
@@ -520,6 +538,7 @@ fn spell_cast(
     choices: &Choices,
 ) -> Result<(), EngineError> {
     state.tally(player, Tally::Cast);
+    let first_of_game = !state.r379_cast_game.contains_key(&player);
     *state.r379_cast_game.entry(player).or_insert(0) += 1;
     if state
         .objects
@@ -562,26 +581,16 @@ fn spell_cast(
     let off_sorcery_timing =
         !crate::priority::sorcery_timing(state, player) || state.resolving().is_some();
     r112_to_stack(state, player, object, r112_gained)?;
+    if first_of_game && let Some(spell) = state.objects.get(&object).map(GameObject::reference) {
+        state.tally_object(spell, Some(player), Tally::R117FirstOfGame);
+    }
     if uncounterable {
         crate::rules::uncounterable_from_now(state, player, object);
     }
     for by in resolves {
         crate::rules::r6503_resolves_from_now(state, player, object, by);
     }
-    let instant_or_sorcery = state.objects.get(&object).is_some_and(|spell| {
-        spell.card().is_type(CardType::Instant) || spell.card().is_type(CardType::Sorcery)
-    });
-    if instant_or_sorcery {
-        state.tally(player, Tally::CastInstantOrSorcery);
-    }
-    if state
-        .objects
-        .get(&object)
-        .is_some_and(|spell| !spell.card().is_type(CardType::Creature))
-    {
-        state.tally(player, Tally::C10AnyNoncreatureCast);
-    }
-    crate::c11a_less::c11a_tally_kinds(state, player, object);
+    tally_kinds_cast(state, player, object);
     // The face cast is the card a spell is from now on: its buyback and flashback below are those of the face.
     if let Some(spell) = state.objects.get_mut(&object) {
         spell.choices.clone_from(choices);
@@ -635,6 +644,7 @@ fn tally_moved(state: &mut GameState, cause: ZoneCause, object: ObjectId) {
     if cause == ZoneCause::Milled {
         w13b_tally_milled(state, object);
     }
+    r117_tally_surveilled(state, object);
     if cause == ZoneCause::LandPlayed
         && let Some(owner) = state.objects.get(&object).map(GameObject::owner)
     {
@@ -836,6 +846,21 @@ fn log_sacrifice(
     }
 }
 
+/// Counts the card `id` that a surveil chose for the graveyard among the cards that player surveilled this turn, when the
+/// move put it into a graveyard (a replacement may have sent it elsewhere).
+fn r117_tally_surveilled(state: &mut GameState, id: ObjectId) {
+    let Some(player) = state.tallies.r117_surveilling.remove(&id) else {
+        return;
+    };
+    let landed = state
+        .object(id)
+        .filter(|card| matches!(card.zone(), Zone::Graveyard(_)))
+        .map(GameObject::reference);
+    if let Some(reference) = landed {
+        state.tally_object(reference, Some(player), Tally::Surveilled);
+    }
+}
+
 /// Counts the card `id` milled this turn while it lies in the graveyard it was milled into.
 fn w13b_tally_milled(state: &mut GameState, id: ObjectId) {
     if let Some(reference) = state.object(id).map(GameObject::reference) {
@@ -944,6 +969,12 @@ pub(super) fn surveil(state: &mut GameState, surveilled: &Surveilled) -> Result<
     state.zones.set(zone, arranged);
     crate::sight::show(state, Some(surveilled.player), &looked);
     state.tally(surveilled.player, Tally::Surveilled);
+    for card in &surveilled.graveyard {
+        state
+            .tallies
+            .r117_surveilling
+            .insert(*card, surveilled.player);
+    }
     Ok(())
 }
 

@@ -57,6 +57,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::MultiplyCounters { .. }
         | Effect::PutCountersOf { .. }
         | Effect::PutRandomCounter { .. }
+        | Effect::R117AnotherOfKind { .. }
         | Effect::Tap { .. }
         | Effect::Untap { .. }
         | Effect::TapOrUntap { .. }
@@ -163,6 +164,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::LoseUnspentMana { .. }
         | Effect::Shield { .. }
         | Effect::EndTurn
+        | Effect::R117EndCombat
         | Effect::LoseGame { .. }
         | Effect::DrawGame {}
         | Effect::SetLife { .. }

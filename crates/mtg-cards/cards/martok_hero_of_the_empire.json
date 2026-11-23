@@ -1,0 +1,27 @@
+{
+  "oracle_id": "d17c3079-372d-4e4f-8214-12a9893088ff",
+  "name": "Martok, Hero of the Empire",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Martok, Hero of the Empire",
+      "oracle_fingerprint": "e0467ea9385353b34901d05353fa1295",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+            },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": { "Players": "AttackedThisTurn" } }
+              }
+            ],
+            "effects": [{ "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

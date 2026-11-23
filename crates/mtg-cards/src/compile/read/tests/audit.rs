@@ -51,8 +51,6 @@ fn mana_in_a_spell_or_a_trigger_uses_the_stack_and_reads(
 
 #[rstest]
 #[case::shield("Put a shield counter on target creature.")]
-#[case::stun("Put a stun counter on target creature.")]
-#[case::finality("Put a finality counter on target creature.")]
 #[case::exalted("Put an exalted counter on target creature.")]
 #[case::decayed("Put a decayed counter on ~.")]
 #[case::lore("Put a lore counter on ~.")]

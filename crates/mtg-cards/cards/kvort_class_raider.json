@@ -1,0 +1,60 @@
+{
+  "oracle_id": "a52d7ab2-a750-4c3a-9f0c-999121aa81af",
+  "name": "K'Vort-Class Raider",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "K'Vort-Class Raider",
+      "oracle_fingerprint": "086e65e8a090e13f46bcfaa9eca3fcac",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                {
+                  "AnyOf": [
+                    "This",
+                    { "R117AllOf": [{ "Type": "Creature" }, { "ControlledBy": "You" }] }
+                  ]
+                }
+              ]
+            },
+            "mods": [{ "AddKeyword": "Hexproof" }],
+            "condition": "YourTurn"
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [
+              { "AddKeyword": "Flying" },
+              { "AddKeyword": "Menace" },
+              { "AddKeyword": "Haste" }
+            ],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 4
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

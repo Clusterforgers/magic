@@ -1,0 +1,27 @@
+{
+  "oracle_id": "05c5f17e-40f9-4259-9b03-03683e1c5ba6",
+  "name": "Tuvok, Chief Tactical Officer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tuvok, Chief Tactical Officer",
+      "oracle_fingerprint": "e97b2fafe4b047597e05496dfff19cfa",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "if": { "AtTrigger": { "Step": "DeclareAttackers" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, "Attacking"] },
+                "bounds": { "min": 0, "max": 2 }
+              }
+            ],
+            "effects": [{ "Reattack": { "what": { "Target": 0 } } }]
+          }
+        }
+      ]
+    }
+  ]
+}

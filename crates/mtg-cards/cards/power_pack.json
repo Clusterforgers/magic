@@ -1,0 +1,59 @@
+{
+  "oracle_id": "3d5c98ff-fcf1-42bd-9533-2648791a4f45",
+  "name": "Power Pack",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Power Pack",
+      "oracle_fingerprint": "94ae5e51557e16540612a50c52fd1377",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        { "Keyword": "Haste" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "targets": [
+              {
+                "what": {
+                  "AtRandom": {
+                    "Object": [
+                      { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                      { "In": "Graveyard" },
+                      { "OwnedBy": "You" }
+                    ]
+                  }
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "card" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "effects": [
+                    { "CastFromZone": { "what": { "Bound": "card" }, "free": true, "as": "cast" } },
+                    {
+                      "Shield": {
+                        "when": {
+                          "ZoneChange": {
+                            "what": [{ "In": "Stack" }, { "Is": { "Bound": "cast" } }],
+                            "from": "Stack",
+                            "to": "Graveyard"
+                          }
+                        },
+                        "by": { "MoveTo": "Exile" },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

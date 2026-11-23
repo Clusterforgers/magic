@@ -13,9 +13,9 @@
             "effects": [
               { "DealDamage": { "to": { "Target": 0 }, "amount": 3 } },
               { "LookAtTop": { "count": 2, "as": "top" } },
-              { "Choose": { "from": { "Bound": "top" }, "as": "kept2", "rest_as": "rest3" } },
-              { "Move": { "what": { "Bound": "kept2" }, "to": "Hand" } },
-              { "Move": { "what": { "Bound": "rest3" }, "to": "Graveyard" } }
+              { "Choose": { "from": { "Bound": "top" }, "as": "kept", "rest_as": "rest" } },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              { "Move": { "what": { "Bound": "rest" }, "to": "Graveyard" } }
             ]
           }
         }
