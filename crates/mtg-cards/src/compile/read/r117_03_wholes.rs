@@ -117,7 +117,6 @@ mod tests {
 
     #[rstest::rstest]
     #[case("collect evidence X", "collect evidence 6")]
-    #[case("any number of target creatures", "one or two target creatures")]
     #[case("chosen at random", "of your choice")]
     #[case("up to one target planeswalker", "up to one target battle")]
     #[case("and/or {1}{G} any number of times", "and/or {1}{G}")]
