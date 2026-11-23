@@ -142,7 +142,8 @@ async fn the_leaderboard_ranks_each_players_deepest_run_per_heat(pool: PgPool) {
     );
     assert_eq!(rows(&got, 1), vec![], "no boss beaten, no entry");
     assert_eq!(rows(&got, 0), vec![("ana".to_owned(), 0, 1)]);
-    let entry = &got["boards"][0]["entries"][0];
+    // The Heroic board, after the empty Legendary one.
+    let entry = &got["boards"][1]["entries"][0];
     assert_eq!(entry["party"], 2);
     assert!(
         !entry["commanders"].as_array().unwrap().is_empty(),
