@@ -135,6 +135,7 @@ mod r116_04_cost_roll_change;
 mod r117_02_counter_kind;
 mod r117_02_odor;
 mod r117_02_parley;
+mod r117_all_of;
 mod r1c;
 mod r1fix;
 mod r1g_taken_names;

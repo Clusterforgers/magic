@@ -234,7 +234,7 @@ fn free_cast(r: &mut Reader<'_>) -> Option<Ability> {
     })
 }
 
-/// "Creatures your opponents control enter tapped.", "Artifacts and creatures your opponents control enter tapped.": a
+/// "Creatures your opponents control enter tapped.", "Lands you control enter untapped.": a
 /// replacement of the entering of every permanent the group names.
 fn group_enters_tapped(r: &mut Reader<'_>) -> Option<Ability> {
     let what = phrase(r, Form::All)?;
@@ -244,10 +244,17 @@ fn group_enters_tapped(r: &mut Reader<'_>) -> Option<Ability> {
             .iter()
             .any(|pred| matches!(pred, Pred::Spell | Pred::This | Pred::In(_)));
     permanents.then_some(())?;
-    r.words("enter tapped").then_some(())?;
+    r.word("enter").then_some(())?;
+    // "Lands you control enter untapped." (CR 614.1c): the writer `group_enters` words both.
+    let by = if r.word("untapped") {
+        ReplaceBy::Untapped
+    } else {
+        r.word("tapped").then_some(())?;
+        ReplaceBy::Tapped
+    };
     Some(Ability::Replacement {
         when: ReplaceWhen::Enters { what },
-        by: ReplaceBy::Tapped,
+        by,
         condition: None,
         from: ZoneKind::Battlefield,
     })
@@ -782,7 +789,21 @@ pub(super) fn plural(r: &mut Reader<'_>) -> Option<Ref> {
 /// The permanent a static ability changes: the card, what it is attached to or a group.
 pub(super) fn subject(r: &mut Reader<'_>, itself: bool) -> Option<(Ref, bool)> {
     if itself && r.source() {
-        return Some((Ref::This, false));
+        // "this Spacecraft and creatures you control have hexproof": the card and a group it need not belong to.
+        let and_group = r.attempt(|r| {
+            r.word("and").then_some(())?;
+            match plural(r)? {
+                Ref::Each(group) if group.0.len() > 1 => Some(Pred::R117AllOf(group.0)),
+                _ => None,
+            }
+        });
+        return Some(match and_group {
+            Some(group) => (
+                Ref::Each(Selector(vec![Pred::AnyOf(vec![Pred::This, group])])),
+                true,
+            ),
+            None => (Ref::This, false),
+        });
     }
     let attached = r.attempt(|r| {
         (r.word("equipped") || r.word("enchanted")).then_some(())?;
@@ -860,12 +881,43 @@ fn cannot(r: &mut Reader<'_>) -> Option<Ability> {
     } else {
         return None;
     };
-    let condition = leading.or_else(|| r.attempt(|r| as_long_as::read(r, Some(&affected))));
+    let condition = leading
+        .or_else(|| r.attempt(|r| as_long_as::read(r, Some(&affected))))
+        // "~ can't be blocked if you control a Spacecraft.": the "if" of a restriction is "as long as".
+        .or_else(|| {
+            r.attempt(|r| {
+                r.word("if").then_some(())?;
+                control(r)
+            })
+        });
     // The pair exists only while the card is paired: "Each of those creatures has ..." alone names nobody.
     if !super::soulbond::allowed(&affected, condition.as_ref()) {
         return None;
     }
     Some(statics(affected, mods, condition))
+}
+
+/// The tails "if you control a Spacecraft" a restriction is also worded with, for a condition of what a player controls.
+fn r117_if_tails(mods: &[Modification], helds: &[String]) -> Vec<String> {
+    let restriction = |m: &Modification| {
+        matches!(
+            m,
+            Modification::CantAttack
+                | Modification::CantBlock
+                | Modification::CantBeBlocked
+                | Modification::CantBeBlockedBy(_)
+        )
+    };
+    if mods.is_empty() || !mods.iter().all(restriction) {
+        return Vec::new();
+    }
+    helds
+        .iter()
+        .filter(|held| {
+            held.starts_with("you control ") || held.starts_with("your opponents control ")
+        })
+        .map(|held| format!(" if {held}"))
+        .collect()
 }
 
 /// The condition a sentence opens with: "As long as it's your turn, ...".
@@ -2183,6 +2235,19 @@ pub(super) fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
             ("Equipped creature".to_owned(), false),
             ("Enchanted creature".to_owned(), false),
         ],
+        Ref::Each(selector) if r117_itself_and(selector).is_some() => {
+            let Some(group) = r117_itself_and(selector) else {
+                return Vec::new();
+            };
+            subjects(&group, false)
+                .into_iter()
+                .filter(|(_, plural)| *plural)
+                .map(|(text, _)| {
+                    let lowered = leading_subject(&text, &group);
+                    (format!("~ and {lowered}"), true)
+                })
+                .collect()
+        }
         Ref::Each(selector) => {
             let mut spells = super::w21_spells::subjects(selector);
             spells.extend(super::w21_spells::blockers(selector));
@@ -2235,6 +2300,17 @@ pub(super) fn subjects(affected: &Ref, itself: bool) -> Vec<(String, bool)> {
 
 /// The subject after a leading condition: lowered, except a subtype that opens it keeps its capital ("As long as you
 /// have the city's blessing, Detectives you control can't be blocked.").
+/// The group of "~ and creatures you control": the selector `subject` reads for the card and a group.
+fn r117_itself_and(selector: &Selector) -> Option<Ref> {
+    let [Pred::AnyOf(sides)] = selector.0.as_slice() else {
+        return None;
+    };
+    let [Pred::This, Pred::R117AllOf(group)] = sides.as_slice() else {
+        return None;
+    };
+    Some(Ref::Each(Selector(group.clone())))
+}
+
 fn leading_subject(subject: &str, affected: &Ref) -> String {
     let named = match affected {
         Ref::Each(selector) => selector.0.iter().any(|pred| {
@@ -2273,6 +2349,7 @@ fn static_texts(
         vec![String::new()]
     };
     tails.extend(condition.and_then(super::rmt7_atoms::rmt7_condition_tail));
+    tails.extend(r117_if_tails(mods, &helds));
     let mut subjects = subjects(affected, true);
     // "Creatures can't attack you." says no "All".
     if let [Modification::CantAttackYou(_)] = mods {
@@ -2325,11 +2402,9 @@ fn static_texts(
             let trailing = tails
                 .iter()
                 .map(|tail| format!("{subject} {predicate}{tail}"));
+            // A subtype keeps its capital: "During your turn, Spacecraft you control have hexproof."
             let during = (condition == Some(&Condition::YourTurn)).then(|| {
-                let mut words = subject.chars();
-                let lowered: String = words.next().map_or_else(String::new, |first| {
-                    first.to_lowercase().chain(words).collect()
-                });
+                let lowered = leading_subject(&subject, affected);
                 format!("during your turn, {lowered} {predicate}")
             });
             // "As long as ~ is monstrous, it has menace."

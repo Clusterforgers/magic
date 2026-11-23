@@ -244,7 +244,9 @@ fn it_in_a_spell_has_no_antecedent(#[case] text: &str) {
 #[case::two_or_more("Whenever two or more +1/+1 counters are put on this creature, draw a card.")]
 #[case::singular("Whenever one or more +1/+1 counter is put on this creature, draw a card.")]
 #[case::no_kind_word("Whenever one or more are put on this creature, draw a card.")]
-#[case::rules_counter("Whenever one or more stun counters are put on this creature, draw a card.")]
+#[case::rules_counter(
+    "Whenever one or more shield counters are put on this creature, draw a card."
+)]
 #[case::on_a_player("Whenever one or more poison counters are put on target player, draw a card.")]
 fn near_misses_of_the_counter_batch_stay_unread(#[case] text: &str) {
     assert_eq!(trigger(text), None, "{text}");
@@ -275,7 +277,7 @@ fn counters_you_put_are_a_batch_caused_by_you() {
 #[case::without_on_it("Each creature you control with a +1/+1 counter has trample.")]
 #[case::two_counters("Each creature you control with two +1/+1 counters on it has trample.")]
 #[case::a_chosen_kind("Each creature you control with two counters on it has trample.")]
-#[case::no_counter_kind("Each creature you control with a stun counter on it has trample.")]
+#[case::no_counter_kind("Each creature you control with a shield counter on it has trample.")]
 fn near_misses_of_a_noun_with_a_counter_stay_unread(#[case] text: &str) {
     assert_eq!(static_ability(text), None, "{text}");
 }

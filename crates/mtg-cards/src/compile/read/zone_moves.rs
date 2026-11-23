@@ -8,7 +8,7 @@ use super::selectors::{Form, phrase, target};
 use super::tokens::Reader;
 use crate::effect::{Destination, Effect};
 use crate::refs::{Bounds, Pred, Ref, Selector, TargetSpec, Targetable, ZoneKind};
-use crate::value::CounterKind;
+use crate::value::{Amount, CounterKind};
 
 /// The name the card chosen from the hand is bound to.
 pub const CHOSEN: &str = "card";
@@ -159,8 +159,25 @@ pub fn return_from_graveyard(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 /// as `card`, and it goes onto the battlefield.
 pub fn may_put_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("you may put")?;
-    (r.word("a") || r.word("an")).then_some(())?;
-    let found = phrase(r, Form::Subject)?;
+    // "You may put up to three land cards from your hand onto the battlefield tapped." (Lt. Arex): up to that many.
+    let most = r.attempt(|r| {
+        r.need("up to")?;
+        super::amounts::number_word(r.take_word()?).filter(|most| *most > 1)
+    });
+    let count = if let Some(most) = most {
+        Bounds::up_to(Some(Amount::Fixed(i32::try_from(most).ok()?)))
+    } else {
+        (r.word("a") || r.word("an")).then_some(())?;
+        Bounds::default()
+    };
+    let found = phrase(
+        r,
+        if most.is_some() {
+            Form::All
+        } else {
+            Form::Subject
+        },
+    )?;
     // The files list the zone first.
     let zone = [Pred::In(ZoneKind::Hand), Pred::OwnedBy(Ref::You)];
     zone.iter()
@@ -176,7 +193,7 @@ pub fn may_put_from_hand(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             Effect::Choose {
                 who: Ref::You,
                 from: Ref::Each(Selector(preds)),
-                count: Bounds::default(),
+                count,
                 bind: CHOSEN.to_owned(),
                 rest_as: None,
                 differ: None,

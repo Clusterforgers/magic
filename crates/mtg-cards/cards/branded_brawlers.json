@@ -37,7 +37,7 @@
             "mods": ["CantBlock"],
             "condition": {
               "Compare": {
-                "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }, "Untapped"] },
+                "left": { "Count": [{ "Type": "Land" }, "Untapped", { "ControlledBy": "You" }] },
                 "op": "Ge",
                 "right": 1
               }

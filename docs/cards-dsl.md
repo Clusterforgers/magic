@@ -91,7 +91,8 @@ A printed gap makes the card `Manual` and attaches no rules; `support` computes 
 - A node is a variant of a type in `crates/mtg-cards/src`; the rustdoc of each variant says what it means. `mtg-cli dsl-reference` prints the type tree as the model prompt of `propose` sees it, and `mtg-cli dsl-schema` its JSON schema.
 - Defaults: `who` is `You`; `source` is `This`; an `Amount` is 1; a `Bounds` is 1..1 and `max: null` is any number.
 - `Target(i)` is the set chosen for the i-th `TargetSpec`: one object for a plain spec, several for "any number". An effect on a set applies to each member.
-- A `Selector` is a list of `Pred`s that must all hold; the zone is the battlefield unless `In(zone)` says otherwise.
+- A `Selector` is a list of `Pred`s that must all hold; the zone is the battlefield unless `In(zone)` says otherwise. A side of an `AnyOf` that is several qualities is an `R117AllOf` ("a basic land card or Planet card", "~ and creatures you control").
+- "the top X cards of your library, where X is ..." names X before the sentences that act on the cards; the template reads the clause in place (`library::r117_top_of`).
 - Values (`Ref`, `Selector`, `Amount`, `Condition`) are evaluated when an effect runs or a pattern is matched and produce no events.
 - One reader and one writer turn every object phrase into a `Selector` and back (`selectors::phrase`, `selectors::phrase_text`); every effect, trigger, condition and static reader uses this pair, so a new atom works in all of them.
 - Machinery that counts "this way" (`Destroyed`, `Exiled`, `LifeLostThisWay`) counts what the resolving spell or ability has done so far, as the objects last existed.

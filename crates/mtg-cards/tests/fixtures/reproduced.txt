@@ -51,6 +51,7 @@ Akrasan Squire
 Akroma's Vengeance
 Akroma's Will
 Akroma, Angel of Wrath
+Alchemax Slayer-Bots
 Alchemist's Retrieval
 Alexander, Ship's Fool
 Alhammarret's Archive
@@ -69,6 +70,7 @@ Amass the Components
 Ambassador K'Ehleyr
 Ambition's Cost
 Ambitious Aetherborn
+Ambling Stormshell
 Aminatou, Veil Piercer
 Aminatou, the Fateshifter
 Amulet of Safekeeping
@@ -218,6 +220,7 @@ Battle Frenzy
 Battle Hymn
 Battle Screech
 Battle Sliver
+Battle of Hoover Dam
 Battlefield Forge
 Battlefield Thaumaturge
 Battlesong Berserker
@@ -325,6 +328,7 @@ Bonesplitter
 Bontu's Monument
 Booby Trap
 Book of Mazarbul
+Boomerang, Blade Flinger
 Boompile
 Boon Reflection
 Boon Satyr
@@ -347,6 +351,7 @@ Brain Freeze
 Brainstorm
 Bramble Elemental
 Branchblight Stalker
+Branching Timeline
 Brass Infiniscope
 Brass's Tunnel-Grinder // Tecutlan, the Searing Rift
 Brave the Sands
@@ -532,6 +537,7 @@ Commander's Insignia
 Commander's Plate
 Commander's Sphere
 Commence the Endgame
+Commune with Lava
 Complaints Clerk
 Composer of Spring
 Conclave Sledge-Captain
@@ -546,6 +552,7 @@ Consign to Dust
 Conspiracy Theorist
 Constable Odo
 Constable of the Realm
+Constrictor Sage
 Consume Spirit
 Consuming Aetherborn
 Consuming Corruption
@@ -590,6 +597,7 @@ Crucible of Worlds
 Crucible of the Spirit Dragon
 Cruel Celebrant
 Crush Contraband
+Crushing Disappointment
 Crushing Vines
 Crypt Ghast
 Crypt Rats
@@ -823,6 +831,7 @@ Dusk Legion Zealot
 Dusk Mangler
 Duskshell Crawler
 Dying to Serve
+Dáin of the Ancient Halls
 Dúnedain Blade
 Eagles of the North
 Earth-Cult Elemental
@@ -888,8 +897,10 @@ Endless One
 Energize
 Enigma Thief
 Enraged Revolutionary
+Enshrined Memories
 Ensign Harry Kim, Operations
 Entangling Trap
+Enterprise NX-01
 Enthusiastic Study
 Entity Tracker
 Entomber Exarch
@@ -1008,6 +1019,7 @@ Fiery Confluence
 Fiery Fall
 Fiery Temper
 Fight Rigging
+Final Frontier
 Finale of Eternity
 Finch Formation
 Fire-Lit Thicket
@@ -1025,6 +1037,7 @@ Flamekin Village
 Flamerush Rider
 Flaring Cinder
 Flash Photography
+Flash of Insight
 Flatline
 Flawless Maneuver
 Flayer of Loyalties
@@ -1065,6 +1078,7 @@ Freyalise, Llanowar's Fury
 Frodo, Adventurous Hobbit
 Frogtosser Banneret
 Frost Titan
+Frostfist Strider
 Fruit of Tizerus
 Fumigate
 Fungal Colossus
@@ -1084,6 +1098,7 @@ Galadhrim Brigade
 Galadriel, Gift-Giver
 Galea, Kindler of Hope
 Gallifrey Falls // No More
+Galvanic Giant // Storm Reading
 Galvanic Iteration
 Galvanizing Sawship
 Galvanizing Tenor
@@ -1115,6 +1130,7 @@ Genesis Device
 Genesis Hydra
 Genesis Storm
 Genesis Wave
+Geordi La Forge, Innovator
 Germination Practicum
 Gerrard's Wisdom
 Getaway Car
@@ -1136,6 +1152,7 @@ Gift of Paradise
 Gilded Drake
 Gilded Goose
 Gilded Lotus
+Gilded Scuttler
 Gilt-Leaf Palace
 Giltspire Avenger
 Gimli's Reckless Might
@@ -1212,6 +1229,7 @@ Graf Rats
 Grafted Wargear
 Grand Entryway // Elegant Rotunda
 Grapeshot
+Grappling Kraken
 Grasp of Fate
 Grasslands
 Grave Titan
@@ -1313,6 +1331,7 @@ Hellkite Overlord
 Hellkite Tyrant
 Helm of Chatzuk
 Helm of the Host
+Hemmer, Fixing What Is Broken
 Hengegate Pathway // Mistgate Pathway
 Henry Wu, InGen Geneticist
 Henzie "Toolbox" Torre
@@ -1357,6 +1376,7 @@ Honor's Reward
 Hoofprints of the Stag
 Hordeling Outburst
 Horizon Canopy
+Hoshi Sato, Exolinguist
 Hostile Desert
 Hound Tamer // Untamed Pup
 Hound of Griselbrand
@@ -1480,6 +1500,7 @@ Jazal Goldmane
 Jedit Ojanen of Efrava
 Jegantha, the Wellspring
 Jeska's Will
+Jet, Freedom Fighter
 Jeweled Amulet
 Jinnie Fay, Jetmir's Second
 Jirina Kudro
@@ -1499,6 +1520,7 @@ Junk Winder
 Jwar Isle Refuge
 Jyoti, Moag Ancient
 Jötun Grunt
+K'Vort-Class Raider
 Kaervek's Torch
 Kaito's Pursuit
 Kalemne's Captain
@@ -1531,6 +1553,7 @@ Kess, Dissident Mage
 Kessig Cagebreakers
 Kessig Naturalist // Lord of the Ulvenwald
 Kessig Wolf Run
+Khan, Despot by Design
 Kiki-Jiki, Mirror Breaker
 Kill! Maim! Burn!
 Kimoyo Beads
@@ -1675,6 +1698,7 @@ Loxodon Smiter
 Loxodon Warhammer
 Loyal Apprentice
 Loyal Retainers
+Lt. Arex, Ever-Adapting
 Lt. Cmdr. Geordi La Forge
 Lu Bu, Master-at-Arms
 Lu Xun, Scholar General
@@ -1733,6 +1757,7 @@ Marsh Flitter
 Marshal of the Lost
 Marshmist Titan
 Martial Coup
+Martok, Hero of the Empire
 Martyr of Dusk
 Marvo, Deep Operative
 Marwyn, the Nurturer
@@ -1846,6 +1871,7 @@ Molt Tender
 Molten Exhale
 Molten Hydra
 Molten Slagheap
+Momo, Rambunctious Rascal
 Mona Lisa, Science Geek
 Monastery Swiftspear
 Monk of the Open Hand
@@ -1879,6 +1905,7 @@ Murmuring Bosk
 Muscle Sliver
 Mutavault
 Mutilate
+Muzzio, Visionary Architect
 Mycoloth
 Myr Retriever
 Myr Superion
@@ -1907,6 +1934,7 @@ Necroduality
 Necroplasm
 Necropolis Regent
 Necroskitter
+Necrotic Hex
 Nemesis of Reason
 Nessian Asp
 Nest of Scarabs
@@ -1938,6 +1966,7 @@ Ninja Teen
 Ninja of the Deep Hours
 Ninja of the New Moon
 Nirkana Revenant
+No Way Out
 Nori, Teller of Tales
 Norn's Annex
 Norn's Choirmaster
@@ -2053,6 +2082,7 @@ Patrolling Peacemaker
 Patron of the Akki
 Patron of the Kitsune
 Patron of the Vein
+Pattern Buffer Preservation
 Peacewalker Colossus
 Pearl-Ear, Imperial Advisor
 Peema Outrider
@@ -2211,6 +2241,7 @@ Rain of Gore
 Rain of Thorns
 Rakdos Headliner
 Rakish Heir
+Rakshasa's Secret
 Ral, Storm Conduit
 Rally the Ranks
 Rambling Possum
@@ -2258,6 +2289,7 @@ Redcap Heelslasher
 Redemption Choir
 Redress Fate
 Reed Richards, Smartest Man
+Referee Squad
 Reflecting Mirror
 Reflecting Pool
 Reflections of Littjara
@@ -2343,6 +2375,7 @@ Rocksteady, Mutant Marauder
 Rogue Refiner
 Rogue's Passage
 Roku's Mastery
+Romulan Bird-of-Prey
 Root Sliver
 Rootborn Defenses
 Rootcast Apprenticeship
@@ -2354,6 +2387,7 @@ Rousing Refrain
 Rout
 Rowan, Scion of War
 Rowdy Research
+Rowdy Snowballers
 Rowen
 Ruby Medallion
 Ruby, Daring Tracker
@@ -2368,6 +2402,7 @@ Runebound Wolf
 Rust-Shield Rampager
 Rustrazor Butcher
 Ruthless Radrat
+Saavik, Stoic Student
 Sacred Cat
 Sacred Rites
 Sadistic Slash
@@ -2397,6 +2432,7 @@ Sanitarium Skeleton
 Sapling Nursery
 Saproling Symbiosis
 Sarah Jane Smith
+Sarcophagus, Ship of the Dead
 Sarkhan, Dragonsoul
 Saruman, the White Hand
 Satyr Firedancer
@@ -2457,6 +2493,7 @@ Selective Obliteration
 Selesnya Guildgate
 Selesnya Sanctuary
 Seluma, Light of Aysen
+Send in the Pest
 Seraph Sanctuary
 Seraph of the Sword
 Sergeant John Benton
@@ -2498,6 +2535,7 @@ Shineshadow Snarl
 Shinka, the Bloodsoaked Keep
 Shiny Impetus
 Shipbreaker Kraken
+Shipwreck Patrol
 Shrieking Specter
 Shriekmaw
 Shrine of the Forsaken Gods
@@ -2569,6 +2607,7 @@ Slippery Karst
 Slither Blade
 Slitherhead
 Sluiceway Scorpion
+Smaug the Magnificent
 Smell Fear
 Smoke
 Smoke Teller
@@ -2782,6 +2821,7 @@ Synth Infiltrator
 Syphon Life
 Syrix, Carrier of the Flame
 Szadek, Lord of Secrets
+T'Pol, Vulcan Representative
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
 Taii Wakeen, Perfect Shot
@@ -2806,6 +2846,7 @@ Tanuki Transplanter
 Tapestry Warden
 Targ Wrangler
 Tariff
+Taste of Death
 Tato Farmer
 Tatyova, Benthic Druid
 Taurean Mauler
@@ -2857,6 +2898,7 @@ Territorial Hellkite
 Territorial Maro
 Terrus Wurm
 Teshar, Ancestor's Apostle
+Test of Conviction
 Teval's Judgment
 Textbook Tabulator
 Teyo, Geometric Tactician
@@ -2864,6 +2906,7 @@ Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Beacon of Kahless
 The Birth of Meletis
+The Caves of Androzani
 The Celestial Toymaker
 The Celestus
 The Chain Veil
@@ -2900,8 +2943,10 @@ The Underworld Cookbook
 The Valeyard
 The War Doctor
 The Warring Triad
+The Wasp, Janet Van Dyne
 The Wise Mothman
 Thelonite Hermit
+There's Coffee in that Nebula
 Thick-Skinned Goblin
 Thieving Magpie
 Thieving Varmint
@@ -3000,6 +3045,7 @@ Training Grounds
 Trait Doctoring
 Tranquil Expanse
 Tranquil Thicket
+Tranquilize
 Transmogrifying Wand
 Transporter Malfunction
 Trap the Trespassers
@@ -3037,10 +3083,12 @@ Twincast
 Twinflame
 Twinning Staff
 Two-Headed Giant of Foriys
+Type-2 Phaser
 Tyranid Prime
 Tyrant Guard
 Tyrant's Familiar
 Tyvar the Bellicose
+U.S.S. Reliant, From Hell's Heart
 Ukkima, Stalking Shadow
 Uktabi Efreet
 Ulamog's Crusher
@@ -3050,6 +3098,7 @@ Ultimecia, Temporal Threat
 Ultramarines Honour Guard
 Ultron, Machine Overlord
 Ultron, Unlimited
+Ultros, Obnoxious Octopus
 Umaro, Raging Yeti
 Umbral Collar Zealot
 Unable to Scream
@@ -3193,6 +3242,7 @@ Warchief Giant
 Warg Rider
 Wargate
 Warmonger Hellkite
+Warp Speed
 Warren Warleader
 Warrior's Sword
 Wash Away
@@ -3200,6 +3250,7 @@ Wasteland Raider
 Wastes
 Wastescape Battlemage
 Wayfarer's Bauble
+Waylaying Pirates
 Weaponcraft Enthusiast
 Wear // Tear
 Wear Away
@@ -3269,6 +3320,7 @@ Woodland Stream
 Woodripper
 Woolly Mammoths
 Word of Seizing
+Worf, Defiant Commander
 Worf, Intelligence Contractor
 Worf, Still Not Merry
 Worldspine Wurm

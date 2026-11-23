@@ -401,6 +401,21 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
             .collect();
         texts.extend(pronouns);
     }
+    // After an intervening "if" about the card, the card is "it" ("if ~ isn't a creature, put a charge counter on it").
+    if matches!(ability, Ability::Triggered { intervening_if: Some(held), .. }
+        if super::as_long_as::subject_of(held) == Some(Ref::This))
+    {
+        let pronouns: Vec<String> = texts
+            .iter()
+            .filter_map(|text| {
+                let at = text.find(", if ~ ")? + 2;
+                let after = text[at..].find(", ")? + at;
+                let tail = text[after..].replacen(" on ~", " on it", 1);
+                (tail != text[after..]).then(|| format!("{}{tail}", &text[..after]))
+            })
+            .collect();
+        texts.extend(pronouns);
+    }
     // A creature that attacks enchanted player is "it", and the player who controls it "its controller".
     if matches!(
         ability,
@@ -500,7 +515,11 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
         let pronouns: Vec<String> = texts
             .iter()
             .filter(|text| text.contains(", ~ deals "))
-            .map(|text| text.replacen(", ~ deals ", ", it deals ", 1))
+            .flat_map(|text| {
+                // A person on the card is "she" or "he" (Saavik, Stoic Student).
+                [", it deals ", ", she deals ", ", he deals "]
+                    .map(|pronoun| text.replacen(", ~ deals ", pronoun, 1))
+            })
             .collect();
         texts.extend(pronouns);
     }
@@ -568,6 +587,10 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
     texts.extend(more);
     let more = super::r371_owner::r371_and_draw_wordings(&texts);
     texts.extend(more);
+    let more = super::r117_01_joins::r117_join_wordings(ability);
+    texts.extend(more);
+    let more = super::r117_01_joins::r117_you_wordings(&texts);
+    texts.extend(more);
     let more = super::w11a_joins::w11a_wordings(&texts);
     texts.extend(more);
     let more = super::w8b_then::w8b_then_wordings(&texts);
@@ -594,6 +617,7 @@ fn unchecked_variants(ability: &Ability) -> Vec<String> {
     super::w15b_time::w15b_wordings(ability, &mut texts);
     super::fix32_animate::wordings(ability, &mut texts);
     super::w20b_reflexive::w20b_wordings(ability, &mut texts);
+    super::r5a_wordings::r117_the_other(&mut texts);
     texts
 }
 

@@ -1,0 +1,47 @@
+{
+  "oracle_id": "53aaa919-d08f-4b76-8583-bc2d4635f991",
+  "name": "Saavik, Stoic Student",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Saavik, Stoic Student",
+      "oracle_fingerprint": "4c9c9ca9f04e4f67100c6b31516ebcf4",
+      "abilities": [
+        { "Keyword": "Flash" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Type": "Creature" },
+                    { "AnyOf": ["Attacking", "Blocking"] },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "DealDamage": {
+                  "to": { "Target": 0 },
+                  "amount": {
+                    "Distinct": {
+                      "of": [
+                        { "Type": "Creature" },
+                        { "Not": { "Subtype": "Borg" } },
+                        { "ControlledBy": "You" }
+                      ],
+                      "stat": "CreatureType"
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

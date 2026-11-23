@@ -118,7 +118,7 @@ fn only_the_cycling_of_the_card_itself_works_from_the_graveyard(
 #[case::cycling_a_type("Whenever you cycle a creature card, draw a card.")]
 #[case::cycling_this_by_a_player("When a player cycles ~, draw a card.")]
 #[case::a_counter_without_an_article("Whenever counters are put on ~, draw a card.")]
-#[case::a_counter_of_a_rules_kind("Whenever a stun counter is put on ~, draw a card.")]
+#[case::a_counter_of_a_rules_kind("Whenever a shield counter is put on ~, draw a card.")]
 #[case::a_counter_moved("Whenever a +1/+1 counter is moved onto ~, draw a card.")]
 #[case::tapping_for_nothing("Whenever you tap a land, draw a card.")]
 #[case::attached_to_nothing("Whenever an Aura becomes attached, draw a card.")]

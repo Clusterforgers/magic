@@ -183,7 +183,7 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
     let intervening_if = r.attempt(|r| {
         r.word("if").then_some(())?;
         let condition = triggers::condition(r)?;
-        r.punct(',').then_some(condition)
+        r.punct(',').then(|| r117_it_after_if(r, condition))
     });
     let intervening_if = match (saddled, intervening_if) {
         (false, None) => held,
@@ -224,6 +224,15 @@ pub fn triggered(r: &mut Reader<'_>) -> Option<Ability> {
         targets: std::mem::take(&mut r.targets),
         effects,
     })
+}
+
+/// "Whenever a creature dies, if ~ isn't a creature, put a charge counter on it.": the condition named the card last, so
+/// "it" is the card, not the object of the event.
+fn r117_it_after_if(r: &mut Reader<'_>, intervening_if: Condition) -> Condition {
+    if super::as_long_as::subject_of(&intervening_if) == Some(Ref::This) {
+        r.it = Some(Ref::This);
+    }
+    intervening_if
 }
 
 /// A tap for mana holds the permanent too, so the damage to "that player" is to the player alone.

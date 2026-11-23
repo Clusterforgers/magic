@@ -222,6 +222,7 @@ mod r116_reminder_tokens;
 mod r117_02_wholes;
 mod r117_03_wholes;
 pub(crate) use r116_reminder_tokens::r116_is_reminder_token;
+mod r117_01_joins;
 mod r11w_tallies;
 mod r281_unless;
 mod r283_atoms;

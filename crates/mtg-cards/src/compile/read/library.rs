@@ -147,6 +147,44 @@ fn listed<T>(
 /// "basic land", "Plains or Island", "Forest, Plains, or Island", "legendary Dragon creature", "artifact or creature",
 /// then "card" or "cards", then what the card has: "with mana value 3 or less".
 pub(super) fn filter(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
+    let first = filter_one(r, plural)?;
+    if plural {
+        return Some(first);
+    }
+    let second = r.attempt(|r| {
+        r.word("or").then_some(())?;
+        filter_one(r, false)
+    });
+    match second {
+        Some(second) => r117_either(first, second),
+        None => Some(first),
+    }
+}
+
+/// "a basic land card or Planet card": two card phrases of one card joined by "or", one `AnyOf` of a side each, a side of
+/// several qualities an `R117AllOf`; a side that is itself an either-or is not one.
+fn r117_either(first: Selector, second: Selector) -> Option<Selector> {
+    let side = |selector: Selector| -> Option<Pred> {
+        let mut preds = selector.0;
+        if preds.iter().any(|pred| matches!(pred, Pred::R117AllOf(_))) || preds.is_empty() {
+            return None;
+        }
+        Some(if preds.len() == 1 {
+            preds.remove(0)
+        } else {
+            Pred::R117AllOf(preds)
+        })
+    };
+    let sides = vec![side(first)?, side(second)?];
+    // Two single qualities are the list "Plains or Island card", which the first phrase reads itself.
+    sides
+        .iter()
+        .any(|pred| matches!(pred, Pred::R117AllOf(_)))
+        .then(|| Selector(vec![Pred::AnyOf(sides)]))
+}
+
+/// One card phrase of `filter`: the adjectives, the subtypes and types, "card" and what the card has.
+fn filter_one(r: &mut Reader<'_>, plural: bool) -> Option<Selector> {
     let mut preds = Vec::new();
     while let Some(pred) = r
         .peek_word()
@@ -434,15 +472,33 @@ fn searched_by(r: &mut Reader<'_>, who: Ref, optional: bool) -> Option<Vec<Effec
     })
 }
 
-/// "the top card", "the top three cards": how many cards of the top of a library.
+/// "the top card", "the top three cards", "the top X cards": how many cards of the top of a library.
 pub(super) fn top_cards(r: &mut Reader<'_>) -> Option<Amount> {
     r.need("the top")?;
     if r.word("card") {
         return Some(Amount::one());
     }
+    if r.attempt(|r| (r.x() && r.word("cards")).then_some(()))
+        .is_some()
+    {
+        return Some(Amount::X);
+    }
     let number = number_word(r.take_word()?).filter(|number| *number > 1)?;
     r.word("cards").then_some(())?;
     Some(Amount::Fixed(i32::try_from(number).ok()?))
+}
+
+/// The library of "the top X cards of your library, where X is ...": the owner's words, then the where clause that names X
+/// when the sentence has one. The clause sits before the sentences that act on the cards, so the template reads it in
+/// place and `where_x::bind` has none left to find.
+pub(super) fn r117_top_of(r: &mut Reader<'_>, owner: &str, count: Amount) -> Option<Amount> {
+    r.need(owner)?;
+    if count != Amount::X || !r.where_x {
+        return Some(count);
+    }
+    let named = r.attempt(super::where_x::amount)?;
+    r.where_x = false;
+    Some(named)
 }
 
 /// Where the cards of the top that are not kept go: "into your graveyard", "on the bottom of your library in any order",
@@ -485,7 +541,8 @@ pub(super) fn rest_text(to: &Destination) -> Option<&'static str> {
 pub fn look(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("look at")?;
     let count = top_cards(r)?;
-    r.need("of your library")?;
+    let count = r117_top_of(r, "of your library", count)?;
+    let two = count == Amount::Fixed(2);
     let looked = Effect::LookAtTop {
         who: Ref::You,
         count,
@@ -493,7 +550,10 @@ pub fn look(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     };
     let rest = r.attempt(|r| {
         r.punct('.').then_some(())?;
-        r.need("put one of them into your hand and the rest")?;
+        r.need("put one of them into your hand and the")?;
+        // Of two cards the rest is "the other" (`r5a_wordings`).
+        let other = two && r.word("other");
+        (other || r.word("rest")).then_some(())?;
         rest_destination(r)
     });
     let Some(rest) = rest else {
@@ -601,6 +661,11 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
     if plural && let Some(lands) = lands_and_or_text(filter) {
         return Some(lands);
     }
+    if let [Pred::AnyOf(sides)] = filter.0.as_slice()
+        && sides.iter().any(|pred| matches!(pred, Pred::R117AllOf(_)))
+    {
+        return r117_either_text(sides, plural);
+    }
     let (mut head, mut tail) = (Vec::new(), Vec::new());
     let mut stage = 0;
     // The conditions are a set: adjectives come first in the words whatever order the rules list them in.
@@ -632,6 +697,23 @@ pub(super) fn filter_text(filter: &Selector, plural: bool) -> Option<String> {
     head.push(if plural { "cards" } else { "card" }.to_owned());
     head.extend(tail);
     Some(head.join(" "))
+}
+
+/// The words of `r117_either`: "basic land card or Planet card", one card phrase a side.
+fn r117_either_text(sides: &[Pred], plural: bool) -> Option<String> {
+    (!plural && sides.len() == 2).then_some(())?;
+    let texts: Option<Vec<String>> = sides
+        .iter()
+        .map(|side| {
+            let preds = match side {
+                Pred::R117AllOf(all) => all.clone(),
+                Pred::AnyOf(_) => return None,
+                one => vec![one.clone()],
+            };
+            filter_text(&Selector(preds), false)
+        })
+        .collect();
+    Some(texts?.join(" or "))
 }
 
 /// "a basic land card", "up to two Forest cards", "any number of Dragon creature cards".

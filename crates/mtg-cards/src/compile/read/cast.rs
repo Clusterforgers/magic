@@ -40,7 +40,7 @@ pub fn exile_until(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 pub fn exile_top(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("exile")?;
     let count = top_cards(r)?;
-    r.need("of your library")?;
+    let count = super::library::r117_top_of(r, "of your library", count)?;
     Some(vec![Effect::ExileTop {
         who: Ref::You,
         count,
