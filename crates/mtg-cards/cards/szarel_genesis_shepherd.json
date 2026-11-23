@@ -18,7 +18,7 @@
         {
           "Triggered": {
             "when": { "Sacrificed": { "what": ["Other", { "Not": "Token" }], "by": "You" } },
-            "if": "YourTurn",
+            "if": { "AtTrigger": "YourTurn" },
             "targets": [
               {
                 "what": { "Object": [{ "Type": "Creature" }, "Other"] },

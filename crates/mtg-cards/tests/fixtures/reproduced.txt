@@ -369,6 +369,7 @@ Brightstone Ritual
 Brigid's Command
 Brimaz, Blight of Oreskos
 Brimstone Vandal
+Brineborn Cutthroat
 Brinelin, the Moon Kraken
 Brion Stoutarm
 Brisela, Voice of Nightmares
@@ -963,6 +964,7 @@ Extraction Integrant
 Eye of Duskmantle
 Eye of Nidhogg
 Eyeblight Massacre
+Eyes of the Wisent
 Eyetwitch
 Ezri Dax, Newly Joined
 Ezzaroot Channeler
@@ -1051,6 +1053,7 @@ Flooded Strand
 Flooded Woodlands
 Floodtide Serpent
 Flowerfoot Swordmaster
+Foe-liage
 Fog
 Foggy Swamp Visions
 Follow the Bodies
@@ -1170,6 +1173,7 @@ Glamerdye
 Glassworks // Shattered Yard
 Glen Elendra Archmage
 Glen Elendra Liege
+Glen Elendra Pranksters
 Glimpse of Freedom
 Glimpse the Core
 Glint-Sleeve Artisan
@@ -2051,6 +2055,7 @@ Overgrowth
 Overrun
 Overseer of the Damned
 Overwhelming Stampede
+Overzealous Muscle
 Ox Drover
 Oyobi, Who Split the Heavens
 Pacifism
@@ -2300,6 +2305,7 @@ Regisaur Alpha
 Reiterate
 Rejuvenation Chamber
 Relentless Advance
+Relentless Dead
 Relentless Skaabs
 Relic Seeker
 Relic of Progenitus
@@ -2696,6 +2702,7 @@ Stalking Leonin
 Stalwart Pathlighter
 Star Whale
 Starfleet Academy
+Starfleet Security
 Starfleet Spanner Jockey
 Starforged Sword
 Starlit Sanctum
@@ -2764,6 +2771,7 @@ Sudden Edict
 Sudden Shock
 Sudden Spoiling
 Suffocation
+Suki, Courageous Rescuer
 Sulfur Elemental
 Sultai Devotee
 Sultai Soothsayer
@@ -3024,6 +3032,7 @@ Tivit, Seller of Secrets
 Tocasia's Dig Site
 Tolabow, Loch Rascal
 Toll of the Invasion
+Tolls of War
 Tomb Tyrant
 Tomb of the Spirit Dragon
 Tome of Legends
@@ -3063,6 +3072,7 @@ Tribal Flames
 Tributary Instructor
 Tribute to the Wild
 Triton Shorestalker
+Troi, Winging It
 Trostani Discordant
 Trove Tracker
 Trove of Temptation
@@ -3119,6 +3129,7 @@ Unpredictable Cyclone
 Unsettled Mariner
 Unstable Molecule Suit
 Unstable Obelisk
+Unwelcome Sprite
 Up the Beanstalk
 Urabrask the Hidden
 Urban Evolution
@@ -3142,6 +3153,7 @@ Valkyrie Harbinger
 Valley Rannet
 Valorous Stance
 Vampire Cutthroat
+Vampire Scrivener
 Vampiric Dragon
 Vandalblast
 Vanguard Seraph
@@ -3203,6 +3215,7 @@ Vivid Marsh
 Vivid Meadow
 Vizier of Many Faces
 Vizier of the Anointed
+Vogar, Necropolis Tyrant
 Voice of All
 Voice of the Blessed
 Voidmage Husher
@@ -3216,6 +3229,7 @@ Volunteer Reserves
 Vona, Butcher of Magan
 Voodoo Doll
 Voracious Dragon
+Voracious Tome-Skimmer
 Vorel of the Hull Clade
 Vorrac Battlehorns
 Vow of Duty

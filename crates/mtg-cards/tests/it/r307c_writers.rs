@@ -39,7 +39,7 @@ const CISTERN: &str = r#"{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"
 
 const CISTERN_TEXT: &str = "Whenever one or more cards are put into your graveyard from your library, each opponent loses 1 life for each card type among those cards.";
 
-const KETRAMOSE: &str = r#"{"Triggered":{"when":{"Batch":{"AnyOf":[{"ZoneChange":{"what":[],"from":"Graveyard","to":"Exile"}},{"ZoneChange":{"what":[{"Not":"Token"}],"from":"Battlefield","to":"Exile"}}]}},"if":"YourTurn","effects":[{"Draw":{}}]}}"#;
+const KETRAMOSE: &str = r#"{"Triggered":{"when":{"Batch":{"AnyOf":[{"ZoneChange":{"what":[],"from":"Graveyard","to":"Exile"}},{"ZoneChange":{"what":[{"Not":"Token"}],"from":"Battlefield","to":"Exile"}}]}},"if":{"AtTrigger":"YourTurn"},"effects":[{"Draw":{}}]}}"#;
 
 const KETRAMOSE_TEXT: &str = "Whenever one or more cards are put into exile from graveyards and/or the battlefield during your turn, draw a card.";
 
@@ -94,7 +94,7 @@ fn r307c_shapes_read_as_the_card(#[case] json: &str, #[case] text: &str) {
 #[case::players_attacked(&STRANDCATCHER.replace(r#""who":"Opponents""#, r#""who":"EachPlayer""#), STRANDCATCHER_TEXT)]
 #[case::types_on_the_battlefield(&CISTERN.replace(r#"{"In":"Graveyard"},"#, ""), CISTERN_TEXT)]
 #[case::types_in_any_graveyard(&CISTERN.replace(r#",{"Is":"Triggering"}"#, ""), CISTERN_TEXT)]
-#[case::exiled_any_turn(&KETRAMOSE.replace(r#""if":"YourTurn","#, ""), KETRAMOSE_TEXT)]
+#[case::exiled_any_turn(&KETRAMOSE.replace(r#""if":{"AtTrigger":"YourTurn"},"#, ""), KETRAMOSE_TEXT)]
 #[case::exiled_tokens_too(&KETRAMOSE.replace(r#"[{"Not":"Token"}]"#, "[]"), KETRAMOSE_TEXT)]
 #[case::exiled_from_a_library(&KETRAMOSE.replace(r#""from":"Graveyard""#, r#""from":"Library""#), KETRAMOSE_TEXT)]
 fn r307c_near_misses_keep_their_words(#[case] json: &str, #[case] text: &str) {

@@ -125,7 +125,7 @@ fn r116_02_reads_back_whole(#[case] name: &str) {
 #[rstest]
 #[case::any_creature("Curzon Dax, Bound by Blood", r#"{"Subtype":"Klingon"},"#, "")]
 #[case::two_damage("Gagh Slinger", r#""amount":1"#, r#""amount":2"#)]
-#[case::any_turn("Starfleet Security", r#""if":"YourTurn","#, "")]
+#[case::any_turn("Starfleet Security", r#""if":{"AtTrigger":"YourTurn"},"#, "")]
 #[case::seven_power("Hologram Janeway", r#""right":8"#, r#""right":7"#)]
 #[case::tapped_land(
     "Federation Outpost",

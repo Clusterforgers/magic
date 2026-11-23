@@ -14,7 +14,7 @@ fn c6_mr_written(json: &str, clause: &str) -> (bool, Vec<String>) {
 const C6_MR_MACCREADY: &str = r#"{"Triggered":{"when":{"AttacksPlayer":{"what":[{"Type":"Creature"},{"Compare":{"op":"Ge","to":4,"stat":"Power"}}],"at":"You"}},"effects":[{"LoseLife":{"who":{"ControllerOf":"Triggering"},"amount":2}},{"GainLife":{"amount":2}}]}}"#;
 
 /// "Whenever you cast your first spell during each opponent's turn, look at the top two cards of your library. Put one of those cards into your hand and the other into your graveyard."
-const C6_MR_NYMRIS: &str = r#"{"Triggered":{"when":{"Nth":{"nth":1,"event":{"SpellCast":{"by":"You"}}}},"if":{"Not":"YourTurn"},"effects":[{"LookAtTop":{"count":2,"as":"top"}},{"Choose":{"from":{"Bound":"top"},"as":"card","rest_as":"rest"}},{"Move":{"what":{"Bound":"card"},"to":"Hand"}},{"Move":{"what":{"Bound":"rest"},"to":"Graveyard"}}]}}"#;
+const C6_MR_NYMRIS: &str = r#"{"Triggered":{"when":{"Nth":{"nth":1,"event":{"SpellCast":{"by":"You"}}}},"if":{"AtTrigger":{"Not":"YourTurn"}},"effects":[{"LookAtTop":{"count":2,"as":"top"}},{"Choose":{"from":{"Bound":"top"},"as":"card","rest_as":"rest"}},{"Move":{"what":{"Bound":"card"},"to":"Hand"}},{"Move":{"what":{"Bound":"rest"},"to":"Graveyard"}}]}}"#;
 
 /// "{3}{U}, {T}: Look at the top X cards of your library, where X is the greatest mana value among artifacts you control. You may put an artifact card from among them onto the battlefield. Put the rest on the bottom of your library in any order."
 const C6_MR_MUZZIO: &str = r#"{"Activated":{"cost":[{"Mana":"{3}{U}"},"Tap"],"effects":[{"LookAtTop":{"count":{"Greatest":{"of":[{"Type":"Artifact"},{"ControlledBy":"You"}],"stat":"ManaValue"}},"as":"top"}},{"Choose":{"from":{"Each":[{"In":"Library"},{"Is":{"Bound":"top"}},{"Type":"Artifact"}]},"count":{"min":0,"max":1},"as":"kept"}},{"Move":{"what":{"Bound":"kept"},"to":{"Battlefield":{}}}},{"Move":{"what":{"Bound":"top"},"to":{"Library":{"place":"Bottom","order":"Chosen"}}}}]}}"#;
@@ -88,7 +88,7 @@ fn c6_mr_wordings_read_back(#[case] json: &str, #[case] clause: &str) {
 
 #[rstest]
 #[case::other_player(C6_MR_MACCREADY, r#""at":"You""#, r#""at":"Opponents""#)]
-#[case::any_turn(C6_MR_NYMRIS, r#","if":{"Not":"YourTurn"}"#, "")]
+#[case::any_turn(C6_MR_NYMRIS, r#","if":{"AtTrigger":{"Not":"YourTurn"}}"#, "")]
 #[case::second_spell(C6_MR_NYMRIS, r#""nth":1"#, r#""nth":2"#)]
 #[case::other_to_hand(
     C6_MR_NYMRIS,

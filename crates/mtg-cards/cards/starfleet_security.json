@@ -11,7 +11,7 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
-            "if": "YourTurn",
+            "if": { "AtTrigger": "YourTurn" },
             "effects": [
               { "CreateToken": { "token": { "Named": "clue" } } },
               { "Performed": { "action": "Investigated" } }

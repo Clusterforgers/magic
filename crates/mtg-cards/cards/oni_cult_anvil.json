@@ -17,7 +17,7 @@
                 }
               }
             },
-            "if": "YourTurn",
+            "if": { "AtTrigger": "YourTurn" },
             "limit": "OncePerTurn",
             "effects": [
               {

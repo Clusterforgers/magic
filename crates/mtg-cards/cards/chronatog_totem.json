@@ -45,6 +45,12 @@
                   "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }],
                   "duration": "UntilEndOfTurn"
                 }
+              },
+              {
+                "Rule": {
+                  "rule": { "Cant": { "who": "You", "action": "SkipTurn" } },
+                  "duration": "UntilTurnSkipped"
+                }
               }
             ]
           }

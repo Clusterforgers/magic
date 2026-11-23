@@ -11,7 +11,7 @@
         {
           "Triggered": {
             "when": { "ZoneChange": { "what": [{ "OwnedBy": "You" }], "from": "Graveyard" } },
-            "if": "YourTurn",
+            "if": { "AtTrigger": "YourTurn" },
             "limit": "OncePerTurn",
             "effects": [{ "Draw": {} }]
           }

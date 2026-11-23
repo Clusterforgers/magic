@@ -221,6 +221,10 @@ mod r116_06_while;
 mod r116_reminder_tokens;
 mod r117_02_wholes;
 mod r117_03_wholes;
+mod r117_04_affected;
+mod r117_04_creature;
+mod r117_04_during;
+mod r117_04_x_target;
 pub(crate) use r116_reminder_tokens::r116_is_reminder_token;
 mod r117_01_joins;
 mod r11w_tallies;
@@ -806,8 +810,13 @@ const MEANINGFUL_WORDS: [&str; 6] = [
 ];
 
 /// Reads a clause like `clause`, with what the face itself says (`Own`).
-#[allow(clippy::too_many_lines)]
 pub fn clause_with(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
+    clause_read(text, kind, x_free, own).map(r117_04_affected::r117_04_affected)
+}
+
+/// The reading of `clause_with` before the object of a group static is named.
+#[allow(clippy::too_many_lines)]
+fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<Ability> {
     if let Some(found) = render::r6105_read_whole(text) {
         return Some(found);
     }

@@ -56,8 +56,9 @@ pub(super) fn r307c_head(
     let words =
         "Whenever one or more cards are put into exile from graveyards and/or the battlefield";
     match condition {
-        Some(crate::value::Condition::YourTurn)
-            if r307c_exiled_from_graveyards_or_battlefield(when) =>
+        Some(crate::value::Condition::AtTrigger(held))
+            if **held == crate::value::Condition::YourTurn
+                && r307c_exiled_from_graveyards_or_battlefield(when) =>
         {
             Some(format!("{words} during your turn,"))
         }

@@ -20,7 +20,7 @@ const C11G_WHOLES: [(&str, &str); 41] = [
         "Paradox — Whenever you cast a spell from anywhere other than your hand, this creature deals 2 damage to target player. That player discards a card, then draws a card. Put a +1/+1 counter on this creature.",
     ),
     (
-        r#"{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"Type":"Artifact"},{"ControlledBy":"You"}],"from":"Battlefield"}}},"if":"YourTurn","limit":"OncePerTurn","effects":[{"CreateToken":{"token":{"Custom":{"name":"Construct","types":["Artifact","Creature"],"subtypes":["Construct"],"power":1,"toughness":1}}}}]}}"#,
+        r#"{"Triggered":{"when":{"Batch":{"ZoneChange":{"what":[{"Type":"Artifact"},{"ControlledBy":"You"}],"from":"Battlefield"}}},"if":{"AtTrigger":"YourTurn"},"limit":"OncePerTurn","effects":[{"CreateToken":{"token":{"Custom":{"name":"Construct","types":["Artifact","Creature"],"subtypes":["Construct"],"power":1,"toughness":1}}}}]}}"#,
         "Whenever one or more artifacts you control leave the battlefield during your turn, create a 1/1 colorless Construct artifact creature token. This ability triggers only once each turn.",
     ),
     (

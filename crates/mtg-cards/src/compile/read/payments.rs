@@ -78,7 +78,15 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         && costs::takes_objects(&cost)
         && cost.0.iter().any(|item| matches!(item, CostItem::Mana(_)));
     r.paid |= took;
-    let paid = one_sentence(r);
+    let mut paid = one_sentence(r);
+    // Every sentence after "When you do" is the reflexive trigger (CR 603.12): "It gains trample until end of turn."
+    while reflexive && paid.is_some() && r117_04_more(r) {
+        r.punct('.');
+        paid = paid.zip(one_sentence(r)).map(|(mut first, more)| {
+            first.extend(more);
+            first
+        });
+    }
     r.paid &= !took;
     r.x_free = x_free;
     let mut paid = paid?;
@@ -90,13 +98,28 @@ pub fn may_pay(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     if reflexive {
         paid = vec![super::w20b_reflexive::w20b_trigger(r, from, &paid)?];
     }
+    // A target chosen before the payment that names the X paid: the payment is sized by the target.
+    let (cost, times) = if x_paid && !reflexive {
+        super::r117_04_x_target::r117_04_sized(&mut r.targets, from, &cost)
+            .unwrap_or((cost, Amount::one()))
+    } else {
+        (cost, Amount::one())
+    };
     Some(vec![Effect::Pay {
         who: Ref::You,
         cost,
-        times: Amount::one(),
+        times,
         paid,
         unpaid: Vec::new(),
     }])
+}
+
+/// Whether another sentence of the effects follows: a period, then neither the end nor a restriction.
+fn r117_04_more(r: &mut Reader<'_>) -> bool {
+    r.lookahead(|r| {
+        (r.punct('.') && !r.end() && !super::abilities::at_restriction(r)).then_some(())
+    })
+    .is_some()
 }
 
 /// After "you may pay": mana with an `{X}` the payer announces once they say yes ("{X}{R}"); the X of the sentence after it is

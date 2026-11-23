@@ -35,6 +35,24 @@ fn e15a_granted(ability: &Ability) -> Option<&Ability> {
     own.then_some(granted.as_ref())
 }
 
+/// A rule under "Max speed — " ("You may cast this card from your graveyard."): the rule works from its own zone under
+/// the condition, since a granted rule works from the battlefield only; `None` for any other ability.
+fn r117_04_rule(ability: &Ability) -> Option<Ability> {
+    let Ability::Rule {
+        rule,
+        condition: Some(Condition::MaxSpeed(Ref::You)),
+        from,
+    } = ability
+    else {
+        return None;
+    };
+    Some(Ability::Rule {
+        rule: rule.clone(),
+        condition: None,
+        from: *from,
+    })
+}
+
 /// The wordings of a "Max speed — " static, `None` for any other ability: one for each wording of the ability it
 /// grants. A granted ability that works from a graveyard says so in its own words ("Exile this card from your
 /// graveyard"), so it must be the zone the static works from.
@@ -42,6 +60,15 @@ pub(super) fn e15a_variants(
     ability: &Ability,
     write: fn(&Ability) -> Vec<String>,
 ) -> Option<Vec<String>> {
+    if let Some(rule) = r117_04_rule(ability) {
+        let texts = write(&rule);
+        return Some(
+            texts
+                .into_iter()
+                .map(|text| format!("{MAX_SPEED}{text}"))
+                .collect(),
+        );
+    }
     let granted = e15a_granted(ability)?;
     let Ability::Static { from, .. } = ability else {
         return None;
@@ -128,8 +155,20 @@ fn capitalized(text: &str) -> String {
 }
 
 /// The static the reader makes of "Max speed — A" once it has read A: its object grants A to itself, from the zone A
-/// works from, as long as you have max speed.
+/// works from, as long as you have max speed; a rule is that rule under the condition, from the zone it works from.
 pub(super) fn e15a_wrap(granted: Ability) -> Ability {
+    if let Ability::Rule {
+        rule,
+        condition: None,
+        from,
+    } = granted
+    {
+        return Ability::Rule {
+            rule,
+            condition: Some(Condition::MaxSpeed(Ref::You)),
+            from,
+        };
+    }
     let from = granted_zone(&granted);
     let affected = match from {
         ZoneKind::Battlefield => Ref::This,
@@ -174,6 +213,7 @@ mod tests {
     const MILL: &str = r#"{"Static":{"affected":"This","condition":{"MaxSpeed":"You"},"mods":[{"GrantAbility":{"Triggered":{"effects":[{"Mill":{"count":2,"who":"Opponents"}}],"when":{"Drew":{"who":"You"}}}}}]}}"#;
     const DRAW_FROM_GRAVEYARD: &str = r#"{"Static":{"affected":{"Each":["This",{"In":"Graveyard"}]},"condition":{"MaxSpeed":"You"},"from":"Graveyard","mods":[{"GrantAbility":{"Activated":{"cost":[{"Mana":"{3}"},"ExileSelf"],"effects":[{"Draw":{}}],"from":"Graveyard"}}}]}}"#;
     const TAP_FOR_HASTE: &str = r#"{"Static":{"affected":"This","condition":{"MaxSpeed":"You"},"mods":[{"GrantAbility":{"Activated":{"cost":["Tap"],"effects":[{"Continuous":{"affected":{"Target":0},"duration":"UntilEndOfTurn","mods":[{"AddKeyword":"Haste"}]}}],"targets":[{"what":{"Object":[{"Type":"Creature"}]}}]}}}]}}"#;
+    const CAST_FROM_GRAVEYARD: &str = r#"{"Rule":{"rule":{"MayCast":{"what":["This"],"from":"Graveyard"}},"condition":{"MaxSpeed":"You"},"from":"Graveyard"}}"#;
 
     #[rstest]
     #[case::a_keyword(DOUBLE_STRIKE, "Max speed \u{2014} This creature has double strike.")]
@@ -188,6 +228,10 @@ mod tests {
     #[case::a_tap_ability(
         TAP_FOR_HASTE,
         "Max speed \u{2014} {T}: Target creature gains haste until end of turn."
+    )]
+    #[case::a_rule_from_the_graveyard(
+        CAST_FROM_GRAVEYARD,
+        "Max speed \u{2014} You may cast this card from your graveyard."
     )]
     fn a_max_speed_static_is_written_as_the_card_words_it(#[case] json: &str, #[case] text: &str) {
         assert!(
@@ -205,6 +249,7 @@ mod tests {
     #[case::no_condition(&DOUBLE_STRIKE.replace(r#""condition":{"MaxSpeed":"You"},"#, ""), "Max speed \u{2014} This creature has double strike.")]
     #[case::another_object(&DOUBLE_STRIKE.replace(r#""affected":"This","condition""#, r#""affected":{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]},"condition""#), "Max speed \u{2014} This creature has double strike.")]
     #[case::granted_from_the_battlefield(&DRAW_FROM_GRAVEYARD.replace(r#","from":"Graveyard","mods""#, r#","mods""#), "Max speed \u{2014} {3}, Exile this card from your graveyard: Draw a card.")]
+    #[case::a_rule_without_the_condition(&CAST_FROM_GRAVEYARD.replace(r#""condition":{"MaxSpeed":"You"},"#, ""), "Max speed \u{2014} You may cast this card from your graveyard.")]
     #[case::two_cards(
         MILL,
         "Max speed \u{2014} Whenever you draw a card, each opponent mills a card."

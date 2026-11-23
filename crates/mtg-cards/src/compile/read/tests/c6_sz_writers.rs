@@ -35,7 +35,7 @@ const C6_SZ_VAULT_87_FORCED_EVOLUTION: &str = r#"{"Triggered":{"when":{"Chapter"
 const C6_SZ_SIMIC_ASCENDANCY: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Counters":{"on":"This","counter":{"Other":"growth"}}},"op":"Ge","right":20}},"effects":[{"WinGame":{}}]}}"#;
 const C6_SZ_SPEAKER_OF_THE_HEAVENS: &str = r#"{"Activated":{"cost":["Tap"],"timing":"Sorcery","condition":{"Compare":{"left":{"Life":"You"},"op":"Ge","right":{"Sum":[{"StartingLife":"You"},7]}}},"effects":[{"CreateToken":{"token":{"Custom":{"name":"Angel","colors":["White"],"types":["Creature"],"subtypes":["Angel"],"power":4,"toughness":4,"abilities":[{"Keyword":"Flying"}]}}}}]}}"#;
 const C6_SZ_STELLA_LEE_WILD_CARD: &str = r#"{"Activated":{"cost":["Tap"],"condition":{"Compare":{"left":{"Tallied":{"who":"You","what":"SpellsCast"}},"op":"Ge","right":3}},"targets":[{"what":{"Object":["Spell",{"AnyOf":[{"Type":"Instant"},{"Type":"Sorcery"}]},{"ControlledBy":"You"}]}}],"effects":[{"CopySpell":{"what":{"Target":0},"new_targets":true}}]}}"#;
-const C6_SZ_SZAREL_GENESIS_SHEPHERD: &str = r#"{"Triggered":{"when":{"Sacrificed":{"what":["Other",{"Not":"Token"}],"by":"You"}},"if":"YourTurn","targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]},"bounds":{"min":0,"max":1}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":{"Stat":{"of":"This","stat":"Power"}}}}]}}"#;
+const C6_SZ_SZAREL_GENESIS_SHEPHERD: &str = r#"{"Triggered":{"when":{"Sacrificed":{"what":["Other",{"Not":"Token"}],"by":"You"}},"if":{"AtTrigger":"YourTurn"},"targets":[{"what":{"Object":[{"Type":"Creature"},"Other"]},"bounds":{"min":0,"max":1}}],"effects":[{"PutCounters":{"on":{"Target":0},"counter":"+1/+1","count":{"Stat":{"of":"This","stat":"Power"}}}}]}}"#;
 const C6_SZ_THOPTER_ASSEMBLY: &str = r#"{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"if":{"Compare":{"left":{"Count":[{"Subtype":"Thopter"},"Other",{"ControlledBy":"You"}]},"op":"Eq","right":0}},"effects":[{"Move":{"what":"This","to":"Hand"}},{"CreateToken":{"count":5,"token":{"Custom":{"name":"Thopter","colors":[],"types":["Artifact","Creature"],"subtypes":["Thopter"],"power":1,"toughness":1,"abilities":[{"Keyword":"Flying"}]}}}}]}}"#;
 const C6_SZ_ULASHT_THE_HATE_SEED: &str = r#"{"Replacement":{"when":{"Enters":{"what":["This"]}},"by":{"WithCounters":{"counter":"+1/+1","count":{"Sum":[{"Count":[{"Type":"Creature"},"Other",{"Color":"Red"},{"ControlledBy":"You"}]},{"Count":[{"Type":"Creature"},"Other",{"Color":"Green"},{"ControlledBy":"You"}]}]}}}}}"#;
 const C6_SZ_URO_TITAN_OF_NATURES_WRATH: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"if":{"Not":{"CastWith":"Escape"}},"effects":[{"Sacrifice":{"filter":["This"]}}]}}"#;
@@ -376,7 +376,7 @@ fn c6_sz_the_clause_reads_back(#[case] json: &str, #[case] clause: &str) {
 )]
 #[case::szarel_genesis_shepherd(
     C6_SZ_SZAREL_GENESIS_SHEPHERD,
-    "\"if\":\"YourTurn\",",
+    "\"if\":{\"AtTrigger\":\"YourTurn\"},",
     "",
     "Whenever you sacrifice another nontoken permanent during your turn, put a number of +1/+1 counters equal to ~'s power on up to one other target creature."
 )]
