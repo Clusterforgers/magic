@@ -39,3 +39,33 @@ fn another_player_acts_on_their_own_cards(#[case] text: &str, #[case] json: &str
 fn the_near_misses_stay_unread(#[case] text: &str) {
     assert_eq!(clause(text, ClauseKind::Triggered, false), None, "{text}");
 }
+
+#[test]
+fn each_opponent_exiles_the_top_after_other_verbs_in_one_sentence() {
+    reads_as(
+        "When ~ enters, each opponent discards a card, loses 2 life, and exiles the top three cards of their library.",
+        ClauseKind::Triggered,
+        false,
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Discard":{"who":"Opponents"}},{"LoseLife":{"who":"Opponents","amount":2}},{"ExileTop":{"who":"Opponents","count":3,"as":"exiled"}}]}}"#,
+    );
+}
+
+#[rstest]
+#[case::target_opponent(
+    r#"{"Spell":{"targets":[{"what":"Opponent"}],"effects":[{"ExileTop":{"who":{"Target":0},"count":3,"as":"exiled"}}]}}"#,
+    "Exile the top three cards of target opponent's library."
+)]
+#[case::target_player(
+    r#"{"Spell":{"targets":[{"what":"Player"}],"effects":[{"ExileTop":{"who":{"Target":0},"as":"exiled"}}]}}"#,
+    "Exile the top card of target player's library."
+)]
+fn a_target_player_exiles_the_top_in_the_wording_the_cards_print(
+    #[case] json: &str,
+    #[case] text: &str,
+) {
+    let wordings = render_variants(&ability(json));
+    assert!(
+        wordings.iter().any(|written| same_text(written, text)),
+        "{wordings:?}"
+    );
+}
