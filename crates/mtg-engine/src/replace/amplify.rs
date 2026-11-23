@@ -62,6 +62,7 @@ impl Pass<'_> {
                             can_cancel: false,
                             total: None,
                             groups: Vec::new(),
+                            targeted: Box::default(),
                         }),
                     }));
                 }

@@ -83,6 +83,8 @@ export interface CardChoicesProps {
    * band's first line and a search box are counted here. The cards have what is left of the sheet (`--choice-room`).
    */
   rest?: number
+  /** A short word on some cards about the choice ("Targeted"), by id. */
+  badges?: ReadonlyMap<ObjectId, string>
   /** A search of a library: the search box shows from two cards and takes focus when the prompt appears. */
   search?: boolean
 }
@@ -119,6 +121,7 @@ export function CardChoices({
   quick,
   rest = 0,
   search = false,
+  badges,
 }: CardChoicesProps) {
   const total = cards.length
   const fit = useMemo(() => stripCardWidth(total), [total])
@@ -212,6 +215,7 @@ export function CardChoices({
         label={labels.get(id) ?? 'A card'}
         size={size}
         overlay={host !== null}
+        badge={badges?.get(id)}
         chosen={chosen.includes(id)}
         closed={(closed || shut?.has(id) === true) && !chosen.includes(id)}
         tabbable={id === current}

@@ -34,6 +34,12 @@ import { useTargetTips } from '../targetTip'
 import { usePublishDefenders } from '../../combat/defender'
 import { quickButtons } from '../quickSelect'
 import { useObjects } from '../useCombatNames'
+import { clashWarning, PAYS_COST_BADGE } from '../costTarget'
+import type { ClashWarning } from '../costTarget'
+import { CostTargetAnswers, CostTargetText } from '../CostTargetWarning'
+import type { CardNotes } from '../marks'
+
+const NO_IDS: readonly ObjectId[] = []
 
 /**
  * ChooseTargets: the legal objects on the table are marked and a click, Enter or Space on one chooses it (again, takes
@@ -57,7 +63,6 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
   const triggered = options.triggered === true
 
   const offered = useMemo(() => distinctTargets(options.legal), [options.legal])
-  useTargetTips(decisionId, offered)
   const objectIds = useMemo(
     () => offered.flatMap((target) => ('Object' in target ? [target.Object.id] : [])),
     [offered],
@@ -86,6 +91,27 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
     }
     return words
   }, [offered, objectIds, byId, seatName, me])
+  // A target the cost of the same spell or ability takes is marked, and warned of once before it is sent (`costTarget.ts`).
+  const paid = options.paid ?? NO_IDS
+  const badges = useMemo(() => new Map(paid.map((id) => [id, PAYS_COST_BADGE] as const)), [paid])
+  const paidNotes = useMemo<CardNotes>(
+    () => new Map(paid.map((id) => [id, { label: PAYS_COST_BADGE, words: PAYS_COST_BADGE }] as const)),
+    [paid],
+  )
+  useTargetTips(decisionId, offered, paidNotes)
+  const [pending, setPending] = useState<{ warning: ClashWarning; targets: readonly Target[] } | null>(null)
+  const send = (targets: readonly Target[]): void => {
+    const ids = targets.flatMap((target) => ('Object' in target ? [target.Object.id] : []))
+    const warning = clashWarning({
+      chosen: ids,
+      clashing: paid,
+      source: source?.name,
+      objects: (id) => byId.get(id),
+      all: ids.length === targets.length && ids.every((id) => paid.includes(id)),
+    })
+    if (warning === null) answer({ ChooseTargets: { Targets: [...targets] } })
+    else setPending({ warning, targets })
+  }
   const labelOf = (target: Target): string => labels.get(targetKey(target)) ?? 'a target'
   // Targets on the table are pressed there; only the ones it does not draw (a graveyard, the stack, exile) are pictures here.
   const drawn = useDrawnCards(objectIds)
@@ -116,7 +142,8 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
   const total = options.total ?? undefined
   const fits = (target: Target, current: readonly Target[]): boolean =>
     fitsTotal(options.legal, total, current, target)
-  const pick = (target: Target): void =>
+  const pick = (target: Target): void => {
+    setPending(null)
     setChosen((current) => {
       if (current.some((picked) => sameTarget(picked, target))) {
         return current.filter((picked) => !sameTarget(picked, target))
@@ -125,9 +152,10 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
       if (!fits(target, current)) return current
       return current.length < max ? [...current, target] : current
     })
+  }
   // The press of a target answers when it is the only one to choose; otherwise it is added to the choice.
   const choose = (target: Target): void => {
-    if (onPress) answer({ ChooseTargets: { Targets: [target] } })
+    if (onPress) send([target])
     else pick(target)
   }
   // A player target is pressed on its pod or tile too, which wear the legal mark and a "Target" tag (`promptBand.css`).
@@ -200,7 +228,8 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
       return undefined
     },
   })
-  const text = totalText === '' ? sentence : `${sentence} ${totalText}`
+  const asked = totalText === '' ? sentence : `${sentence} ${totalText}`
+  const text = pending === null ? asked : <CostTargetText warning={pending.warning} />
 
   return (
     <PromptLayout
@@ -228,6 +257,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
             objects={byId}
             onPress={onCard}
             label="Legal targets"
+            badges={badges}
             rest={quick.length > 0 ? QUICK_ROW_REM : 0}
             lead={
               players.length === 0 ? undefined : (
@@ -287,7 +317,13 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
         </>
       }
     >
-      {onPress ? (
+      {pending !== null ? (
+        <CostTargetAnswers
+          anyway="Target anyway"
+          onAnyway={() => answer({ ChooseTargets: { Targets: [...pending.targets] } })}
+          onBack={() => setPending(null)}
+        />
+      ) : onPress ? (
         // One target answers on its press; "up to one" may still choose none.
         min === 0 ? (
           <Button
@@ -305,7 +341,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
             {...anchor('targets.confirm')}
             className="h-10 px-4"
             disabled={chosen.length < min}
-            onClick={() => answer({ ChooseTargets: { Targets: [...chosen] } })}
+            onClick={() => send(chosen)}
           >
             Confirm targets
           </Button>
@@ -319,7 +355,9 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
           </Button>
         </>
       )}
-      {options.can_cancel ? <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} /> : null}
+      {options.can_cancel && pending === null ? (
+        <UndoButton zone={source?.zone} onUndo={() => void answer('Undo')} />
+      ) : null}
     </PromptLayout>
   )
 }

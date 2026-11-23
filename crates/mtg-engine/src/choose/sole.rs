@@ -115,6 +115,7 @@ mod tests {
             apart: Vec::new(),
             together: None,
             total: None,
+            paid: Box::default(),
         })
     }
 

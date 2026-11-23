@@ -562,6 +562,7 @@ pub(super) fn settle<'a>(
                         can_cancel: false,
                         total: None,
                         groups,
+                        targeted: Box::default(),
                     }),
                 }));
             }

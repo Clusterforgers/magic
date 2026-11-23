@@ -90,6 +90,7 @@ impl<'a> Questions<'a> {
             can_cancel: false,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         };
         match self.answers.next() {
             None => Err(Stop::Ask(Box::new(Decision {
@@ -277,6 +278,7 @@ mod tests {
                     can_cancel: false,
                     total: None,
                     groups: Vec::new(),
+                    targeted: Box::default(),
                 })
             }
         );

@@ -55,4 +55,9 @@ together?: Together,
  * For a specification whose targets' mana values may add up to at most a number, that number and the mana value
  * of each legal target; `None` for any other.
  */
-total?: Total, };
+total?: Total, 
+/**
+ * The legal objects the cost of the same spell or ability already takes and moves (sacrificed, exiled, returned):
+ * such a target is a new object by then and the spell or ability will not reach it (CR 400.7, 608.2b).
+ */
+paid?: Array<ObjectId>, };

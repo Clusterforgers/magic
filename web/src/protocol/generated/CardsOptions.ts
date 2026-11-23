@@ -43,4 +43,9 @@ total?: CardsTotal,
  * The group of each card of `from`, in its order: no two cards chosen may be of one group ("with different
  * powers"); no such rule when empty.
  */
-groups?: Array<number>, };
+groups?: Array<number>, 
+/**
+ * The cards of `from` already chosen as targets of the spell or ability whose cost asks, when taking them moves
+ * them: such a target is a new object by then and the spell or ability will not reach it (CR 400.7, 608.2b).
+ */
+targeted?: Array<ObjectId>, };

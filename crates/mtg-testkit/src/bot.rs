@@ -1510,6 +1510,7 @@ mod tests {
             one_per_name: false,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         }
     }
 

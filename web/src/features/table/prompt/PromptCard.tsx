@@ -1,3 +1,4 @@
+import { Crosshair } from 'lucide-react'
 import type { Ref } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
@@ -55,6 +56,8 @@ export interface PromptCardProps {
   onPress(id: ObjectId): void
   /** The card stands in the long-list overlay, at the width its grid sets (`OVERLAY_CARD_BOX`). */
   overlay?: boolean
+  /** A short word on the card about this choice ("Targeted"), drawn on its top edge and read after its name. */
+  badge?: string | undefined
   ref?: Ref<HTMLButtonElement>
 }
 
@@ -73,6 +76,7 @@ export function PromptCard({
   hotkey,
   onPress,
   overlay = false,
+  badge,
   ref,
 }: PromptCardProps) {
   const object = usePlay((state) => state.objectsById[id])
@@ -90,7 +94,7 @@ export function PromptCard({
       data-candidate={id}
       data-chosen={chosen || undefined}
       data-size={size}
-      aria-label={label}
+      aria-label={badge === undefined ? label : `${label}, ${badge.toLowerCase()}`}
       aria-pressed={chosen}
       aria-disabled={closed || undefined}
       aria-keyshortcuts={hotkey}
@@ -117,6 +121,16 @@ export function PromptCard({
       ) : (
         // Every card of a choice stands upright and whole, tapped or not, so the row reads as one size.
         <CardFace object={object} role={null} size={size} fit upright />
+      )}
+      {badge === undefined ? null : (
+        <span
+          aria-hidden="true"
+          data-slot="card-badge"
+          className="absolute top-1 left-1/2 z-10 inline-flex max-w-[90%] -translate-x-1/2 items-center gap-1 truncate rounded-sm bg-warning px-1 text-xs leading-snug font-medium text-warning-foreground shadow-sm"
+        >
+          <Crosshair className="size-3 shrink-0" />
+          {badge}
+        </span>
       )}
       {chosen ? <ChosenMark /> : null}
       {hotkey === undefined ? null : (

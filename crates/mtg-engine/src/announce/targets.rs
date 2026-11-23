@@ -172,6 +172,15 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             continue;
         }
         options.triggered = ctx.triggered.is_some();
+        let moved = super::parts::r6012h_moved(ctx, work.choices);
+        options.paid = Box::new(
+            options
+                .legal
+                .iter()
+                .filter_map(|target| target.object().map(|object| object.id))
+                .filter(|id| moved.contains(id))
+                .collect(),
+        );
         let chooser = chooser(ctx, &specs, index, work.done);
         if chooser != ctx.player {
             // Another player chooses: backing out of the controller's spell or ability is not theirs to do.

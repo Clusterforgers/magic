@@ -8,7 +8,7 @@ import { useGame, usePlay } from '@/features/game/gameContext'
 import type { DecisionId, ObjectId, Target } from '@/protocol/generated'
 import { previewForecastWords } from '../fx/forecast'
 import { useSeatNamer } from '../names'
-import { useCardNotes } from './marks'
+import { NO_NOTES, useCardNotes } from './marks'
 import type { CardNotes } from './marks'
 
 /** A legal card of the table under the pointer or the focus, for `event`'s target. */
@@ -24,8 +24,15 @@ export function tipWords(forecast: string | null): string {
   return forecast === null ? 'Click to target' : `Click to target · ${forecast}`
 }
 
-/** Asks a preview for the legal object target pointed at, and writes its tip on its foot. */
-export function useTargetTips(decision: DecisionId, offered: readonly Target[]): void {
+/**
+ * Asks a preview for the legal object target pointed at, and writes its tip on its foot, over the prompt's own `base`
+ * notes (a target the cost takes).
+ */
+export function useTargetTips(
+  decision: DecisionId,
+  offered: readonly Target[],
+  base: CardNotes = NO_NOTES,
+): void {
   const { session } = useGame()
   const names = useSeatNamer()
   const [pointed, setPointed] = useState<ObjectId | null>(null)
@@ -55,12 +62,13 @@ export function useTargetTips(decision: DecisionId, offered: readonly Target[]):
       [pointed, target, names],
     ),
   )
-  const notes = useMemo<CardNotes>(
-    () =>
-      pointed === null || target === undefined
-        ? new Map()
-        : new Map([[pointed, { words: tipWords(forecast), hint: tipWords(forecast) }]]),
-    [pointed, target, forecast],
-  )
+  const notes = useMemo<CardNotes>(() => {
+    if (pointed === null || target === undefined) return base
+    const tip = tipWords(forecast)
+    const own = base.get(pointed)
+    const merged = new Map(base)
+    merged.set(pointed, { ...own, words: own === undefined ? tip : `${own.words}. ${tip}`, hint: tip })
+    return merged
+  }, [pointed, target, forecast, base])
   useCardNotes(notes)
 }

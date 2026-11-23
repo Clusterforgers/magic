@@ -77,6 +77,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                         can_cancel: false,
                         total: None,
                         groups: Vec::new(),
+                        targeted: Box::default(),
                     }),
                 }));
             }

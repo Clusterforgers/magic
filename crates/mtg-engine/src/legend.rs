@@ -92,6 +92,7 @@ pub(crate) fn decision(state: &GameState) -> Option<Decision> {
             can_cancel: false,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         }),
     })
 }
