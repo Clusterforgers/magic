@@ -390,6 +390,12 @@ pub enum Pred {
     R114EnlistedBy(Ref),
     /// Is a card in a graveyard that a mill put there this turn ("a land card in a graveyard that was milled this turn").
     MilledThisTurn,
+    /// Is a card in a graveyard that a surveil by a player the reference names put there this turn ("cards in your
+    /// graveyard you've surveilled this turn").
+    R117SurveilledBy(Ref),
+    /// Has a basic land type that one of the objects the reference names has ("landwalk of each basic land type among lands
+    /// you control", CR 702.14c).
+    R117SharesBasicLandType(Ref),
     /// Is a card its owner drew this turn, still in the hand ("cards in your hand drawn this turn").
     DrawnThisTurn,
     /// Is the last card its owner drew this turn, still in the hand it was drawn into ("the last card you drew this turn").

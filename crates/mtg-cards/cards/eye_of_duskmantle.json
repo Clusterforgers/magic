@@ -1,7 +1,7 @@
 {
   "oracle_id": "04e7f739-fe50-440d-aa3d-e547295044a8",
   "name": "Eye of Duskmantle",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Eye of Duskmantle",
@@ -10,9 +10,15 @@
         { "Keyword": "Flying" },
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 17, "end": 216 }
+          "Rule": {
+            "rule": {
+              "MayCast": {
+                "what": [{ "R117SurveilledBy": "You" }],
+                "from": "Graveyard",
+                "play": true,
+                "rather": [{ "PayLife": { "Stat": { "of": "This", "stat": "ManaValue" } } }]
+              }
+            }
           }
         }
       ]

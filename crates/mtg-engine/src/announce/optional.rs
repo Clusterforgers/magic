@@ -281,6 +281,17 @@ pub(crate) fn kicked_with(card: &CardDefinition, paid: &[usize], cost: &Cost) ->
     })
 }
 
+/// How many of the optional costs `paid` names are the "you may" additional cost of `card` with exactly this cost ("for
+/// each additional {1}{R} you paid").
+pub(crate) fn r117_paid_with(card: &CardDefinition, paid: &[usize], cost: &Cost) -> usize {
+    let matching: Vec<usize> = printed(card)
+        .enumerate()
+        .filter(|(_, printed)| printed.kind == OptionalKind::Additional && printed.cost == *cost)
+        .map(|(index, _)| index)
+        .collect();
+    paid.iter().filter(|index| matching.contains(index)).count()
+}
+
 /// The optional costs of a spell, in the order the card prints them, then the replicate costs static abilities give it
 /// that it does not print ("Each instant and sorcery spell you cast has replicate", CR 702.56b).
 pub(super) fn read(state: &GameState, what: &What) -> Vec<Optional> {

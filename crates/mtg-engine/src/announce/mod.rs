@@ -74,7 +74,7 @@ use crate::ways::Way;
 use anchor::Anchor;
 
 pub(crate) use modifiers::{c11a_reduced, cheapest, floored};
-pub(crate) use optional::{Optional, kicked_with, payments};
+pub(crate) use optional::{Optional, kicked_with, payments, r117_paid_with};
 pub(crate) use x::{XCost, least_of, payable, some_x_has_targets};
 
 /// What is being put on the stack.
@@ -941,8 +941,11 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
                     decision.kind,
                     DecisionKind::ChooseCosts(_) | DecisionKind::ChooseNumber(_)
                 );
+                // Cards for the cost are answered as the parts step, also when the step after the targets asks them.
                 work.done.asked = Some(if phase == Phase::Modes && asks_costs {
                     Phase::Optional
+                } else if matches!(decision.kind, DecisionKind::ChooseCards(_)) {
+                    Phase::Parts
                 } else {
                     phase
                 });

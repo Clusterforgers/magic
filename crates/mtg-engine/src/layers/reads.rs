@@ -455,6 +455,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::ExiledWith(who)
         | Pred::R114ExiledByThem(who)
         | Pred::R114EnlistedBy(who)
+        | Pred::R117SurveilledBy(who)
+        | Pred::R117SharesBasicLandType(who)
         | Pred::EncodedWith(who)
         | Pred::HauntedBy(who)
         | Pred::Crewed(who)
@@ -545,6 +547,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TargetCount(_)
         | Amount::Kicks
         | Amount::AdditionalPaid
+        | Amount::R117AdditionalPaidWith(_)
         | Amount::Promised
         | Amount::ResolvedThisTurn
         | Amount::Devoured

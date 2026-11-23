@@ -1,0 +1,24 @@
+{
+  "oracle_id": "b153e4c4-6557-43a6-8404-e4450f879945",
+  "name": "Magnigoth Treefolk",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magnigoth Treefolk",
+      "oracle_fingerprint": "c71a264989e569d9492f485ce571df4d",
+      "abilities": [
+        {
+          "Keyword": {
+            "Landwalk": [
+              {
+                "R117SharesBasicLandType": {
+                  "Each": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

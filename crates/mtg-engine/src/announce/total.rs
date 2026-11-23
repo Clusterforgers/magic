@@ -36,6 +36,13 @@ pub(crate) struct Total {
 /// Works out the total cost, with the life the cost modifiers add kept for the payment of the other parts; a player
 /// whose life total is less than that life cannot pay it (CR 119.4) and the cast is taken back.
 pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
+    // The parts of a spell's cost that take an X counted from its targets are picked once the targets are chosen.
+    if matches!(ctx.what, What::Spell(_))
+        && super::r5523_x_cap::r116_x_of_targets(ctx).is_some()
+        && let Some(next) = super::parts::run(ctx, work)
+    {
+        return Some(next);
+    }
     let life = modifiers::life(ctx, work.choices);
     let short = ctx
         .state

@@ -932,6 +932,9 @@ pub enum ReplaceWhen {
     /// players or a permanent that player controls ("a source controlled by one of the chosen players would deal damage
     /// to the other chosen player or a permanent that player controls").
     R6001DamageBetweenChosen,
+    /// A creature would deal damage to another creature that shares a color with it ("damage that would be dealt to a
+    /// creature by another creature if they share a color").
+    R117CreaturesSharingColor,
     /// An object matching the selector would move between zones, except a card drawn, a land played, a spell cast and
     /// a permanent entering (`Enters`).
     ZoneChange {
