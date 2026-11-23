@@ -101,3 +101,43 @@ fn r113_jotun_grunt_bottoms_two_cards_of_one_graveyard(
     );
     Ok(())
 }
+
+/// Every answer path of the bots takes the cards of a single graveyard: the random bot and the brain pick from one
+/// owner, and a pick across graveyards is turned into one owner's by [`mtg_testkit::bot::apply_answer`].
+#[rstest]
+fn r112_every_bot_answer_takes_cards_of_one_graveyard(
+    #[values(2, 3, 4)] seats: usize,
+) -> Result<(), ScriptError> {
+    use mtg_testkit::bot::{RandomBot, apply_answer};
+    use mtg_testkit::brain::{HeuristicBot, SeatBrain};
+    let mut driver = grunt(seats, 2, 3)?;
+    driver.idle_until(1 + u32::try_from(seats).unwrap(), Step::Upkeep)?;
+    until_question(&mut driver)?;
+    driver.answer(Answer::YesNo(YesNoChoice(true)))?;
+    let decision = driver.decision()?.clone();
+    assert!(matches!(decision.kind, DecisionKind::ChooseCards(_)));
+    let engine = driver.engine();
+    let across = vec![
+        engine.state().zone(Zone::Graveyard(pid(0)))[0],
+        engine.state().zone(Zone::Graveyard(pid(1)))[0],
+    ];
+    let mut fixed = engine.clone();
+    apply_answer(
+        &mut fixed,
+        &decision,
+        Answer::ChooseCards(CardsChoice(across)),
+    )
+    .unwrap();
+    for seed in 0..24 {
+        let answer = RandomBot::new(seed, 0).choose_in(&decision, engine.state());
+        engine.clone().apply(answer.clone()).unwrap_or_else(|e| {
+            panic!("random bot, seed {seed}: {answer:?}: {e}");
+        });
+        let settings = mtg_testkit::brain::sim::Settings::NORMAL.untimed();
+        let answer = HeuristicBot::new(seed, pid(0), settings).choose(&decision, Some(engine));
+        engine.clone().apply(answer.clone()).unwrap_or_else(|e| {
+            panic!("brain, seed {seed}: {answer:?}: {e}");
+        });
+    }
+    Ok(())
+}
