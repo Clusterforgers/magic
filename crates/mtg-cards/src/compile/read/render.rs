@@ -246,6 +246,7 @@ pub fn variants(ability: &Ability) -> Vec<String> {
     super::r371_copy_except::r371_not_legendary_too(&mut texts);
     super::r371_copy_except::r371_that_creature_dies(ability, &mut texts);
     super::r5505_convert::r5505_convert_wordings(ability, &mut texts);
+    super::their_top::possessive_wordings(&mut texts);
     texts
 }
 
@@ -1909,6 +1910,7 @@ fn player_of(effect: &Effect) -> Option<&Ref> {
         | Effect::Sacrifice { who, .. }
         | Effect::Incubate { who, .. }
         | Effect::CreateToken { who, .. } => Some(who),
+        Effect::ExileTop { who, .. } if !matches!(who, Ref::You | Ref::Triggering) => Some(who),
         _ => None,
     }
 }
@@ -3140,6 +3142,10 @@ impl Writer<'_> {
             } if filter.0 == [Pred::Is(Ref::Triggering)] && count.is_one() => {
                 "sacrifice that permanent".to_owned()
             }
+            Effect::ExileTop { who, .. } if !matches!(who, Ref::You | Ref::Triggering) => {
+                let subject = self.acting(who)?;
+                format!("{subject} {}", super::their_top::phrase(effect)?)
+            }
             Effect::Draw { who, .. }
             | Effect::Mill { who, .. }
             | Effect::Discard { who, .. }
@@ -3147,7 +3153,7 @@ impl Writer<'_> {
             | Effect::LoseLife { who, .. }
             | Effect::Shuffle { who }
             | Effect::Sacrifice { who, .. } => {
-                let subject = self.player(who)?;
+                let subject = self.acting(who)?;
                 format!("{subject} {}", self.predicate(effect, *who != Ref::You)?)
             }
             Effect::Move {
@@ -4005,6 +4011,15 @@ impl Writer<'_> {
     }
 
     /// Who does something: "you", "target player", "each opponent", "its controller".
+    /// The player who does what a verb says: any player `player` words, and "defending player" of an attack trigger,
+    /// which the reader reads only there.
+    fn acting(&mut self, who: &Ref) -> Option<String> {
+        if *who == Ref::Defending {
+            return Some("defending player".to_owned());
+        }
+        self.player(who)
+    }
+
     fn player(&mut self, who: &Ref) -> Option<String> {
         Some(match who {
             Ref::You => "you".to_owned(),
@@ -4146,6 +4161,7 @@ impl Writer<'_> {
         Some(match effect {
             Effect::Draw { count, .. } => format!("draw{s} {}", cards_text(count)?),
             Effect::Mill { count, .. } => format!("mill{s} {}", cards_text(count)?),
+            Effect::ExileTop { .. } if third => super::their_top::phrase(effect)?,
             Effect::Discard {
                 who,
                 count,
@@ -4198,7 +4214,7 @@ impl Writer<'_> {
                 .iter()
                 .take_while(|effect| player_of(effect) == Some(who))
                 .count();
-            let subject = self.player(who)?;
+            let subject = self.acting(who)?;
             let mut phrases = Vec::with_capacity(run);
             for effect in &rest[..run] {
                 phrases.push(self.predicate(effect, *who != Ref::You)?);

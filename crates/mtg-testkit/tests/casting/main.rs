@@ -18,6 +18,7 @@ mod c11b_cast_target;
 mod c6_mr_modes_again;
 mod c9_emerge;
 mod cascade;
+mod cast_itself_triggers;
 mod cast_kinds;
 mod cast_permissions;
 mod change_targets;

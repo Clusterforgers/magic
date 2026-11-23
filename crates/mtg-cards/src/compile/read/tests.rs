@@ -1276,6 +1276,7 @@ mod r5520_foretold_named;
 mod r6402_change_roll;
 mod r6402_dice_facts;
 mod tc34_control;
+mod their_top;
 mod w20_attached;
 mod w22_moves;
 mod w22_shields;
