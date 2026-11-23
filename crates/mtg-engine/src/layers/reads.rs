@@ -556,6 +556,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Bound(_)
         | Amount::CastWith(_)
         | Amount::ColorsSpent
+        | Amount::R119SpentOnTriggering(_)
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
         | Amount::R6702FlipStakes

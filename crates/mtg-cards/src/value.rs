@@ -1004,6 +1004,9 @@ pub enum Amount {
         /// The type of mana counted.
         mana: ManaType,
     },
+    /// How much mana of the types was spent on the payment the trigger event is about ("for each {B} or {R} spent this
+    /// way" of a cumulative upkeep paid, CR 702.24a); kept by the trigger.
+    R119SpentOnTriggering(Vec<ManaType>),
     /// The doors unlocked among the Rooms the selector names (CR 709.5), both doors of a Room counting twice.
     Doors(Selector),
     /// The number the controller of the source chose as the source entered the battlefield; 0 when it chose none.
@@ -1332,6 +1335,7 @@ enum Tagged {
         who: Ref,
         mana: ManaType,
     },
+    R119SpentOnTriggering(Vec<ManaType>),
     Doors(Selector),
     Chosen,
     ChosenAs(String),
@@ -1582,6 +1586,7 @@ enum TaggedRef<'a> {
         who: &'a Ref,
         mana: &'a ManaType,
     },
+    R119SpentOnTriggering(&'a Vec<ManaType>),
     Doors(&'a Selector),
     Chosen,
     ChosenAs(&'a String),
@@ -1747,6 +1752,7 @@ impl From<Tagged> for Amount {
             Tagged::Random { min, max } => Amount::Random { min, max },
             Tagged::ManaInPool(who) => Amount::ManaInPool(who),
             Tagged::ManaInPoolOf { who, mana } => Amount::ManaInPoolOf { who, mana },
+            Tagged::R119SpentOnTriggering(of) => Amount::R119SpentOnTriggering(of),
             Tagged::Doors(of) => Amount::Doors(of),
             Tagged::Chosen => Amount::Chosen,
             Tagged::ChosenAs(name) => Amount::ChosenAs(name),
@@ -1979,6 +1985,9 @@ impl Serialize for Amount {
             Amount::ManaInPool(who) => TaggedRef::ManaInPool(who).serialize(serializer),
             Amount::ManaInPoolOf { who, mana } => {
                 TaggedRef::ManaInPoolOf { who, mana }.serialize(serializer)
+            }
+            Amount::R119SpentOnTriggering(of) => {
+                TaggedRef::R119SpentOnTriggering(of).serialize(serializer)
             }
             Amount::Doors(of) => TaggedRef::Doors(of).serialize(serializer),
             Amount::Chosen => TaggedRef::Chosen.serialize(serializer),
@@ -2440,6 +2449,10 @@ mod tests {
     #[case::mana_spent(Amount::ManaSpent { of: Some(ManaType::Red), from: None }, r#"{"ManaSpent":{"of":"Red"}}"#)]
     #[case::all_mana_spent(Amount::ManaSpent { of: None, from: None }, r#"{"ManaSpent":{"of":null}}"#)]
     #[case::mana_colors(Amount::ManaColors(Ref::You), r#"{"ManaColors":"You"}"#)]
+    #[case::r119_spent_on_triggering(
+        Amount::R119SpentOnTriggering(vec![ManaType::Black, ManaType::Red]),
+        r#"{"R119SpentOnTriggering":["Black","Red"]}"#
+    )]
     #[case::mana_in_pool(Amount::ManaInPool(Ref::You), r#"{"ManaInPool":"You"}"#)]
     #[case::mana_in_pool_of(
         Amount::ManaInPoolOf { who: Ref::You, mana: ManaType::Green },

@@ -1,7 +1,7 @@
 {
   "oracle_id": "3f60a7ce-c714-4e87-a2d9-3710f2d610fa",
   "name": "Balduvian Fallen",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Balduvian Fallen",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": { "CumulativeUpkeep": "{1}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 172, "end": 291 }
+          "Triggered": {
+            "when": { "Did": { "action": "PaidCumulativeUpkeep", "what": ["This"] } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "This",
+                  "mods": [
+                    {
+                      "ModifyPT": {
+                        "power": { "R119SpentOnTriggering": ["Black", "Red"] },
+                        "toughness": 0
+                      }
+                    }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

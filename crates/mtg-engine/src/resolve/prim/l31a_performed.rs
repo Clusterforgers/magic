@@ -69,6 +69,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     object,
                     echo: *action == Action::PaidEcho,
                     paid: *action != Action::DeclinedCumulativeUpkeep,
+                    r119_mana: if *action == Action::PaidCumulativeUpkeep {
+                        cx.resolving.r119_spent.clone()
+                    } else {
+                        Vec::new()
+                    },
                 }));
             }
             Action::R6401Mentored => events.extend(card.map(|mentored| Event::R6401Mentored {

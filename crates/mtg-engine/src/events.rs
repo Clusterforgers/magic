@@ -1225,6 +1225,11 @@ pub enum Event {
         echo: bool,
         /// It was paid.
         paid: bool,
+        /// The mana spent on a paid cumulative upkeep, in the order spent ("for each {B} or {R} spent this way");
+        /// left out means none.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ManaType>>", optional))]
+        r119_mana: Vec<ManaType>,
     },
     /// A creature mentored a creature (CR 702.134a): its mentor ability put a +1/+1 counter on the creature, the event
     /// before it.

@@ -1,0 +1,48 @@
+{
+  "oracle_id": "0d39513a-1f05-4d9a-a772-745f4f1a3471",
+  "name": "Pygmy Hippo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pygmy Hippo",
+      "oracle_fingerprint": "0ba91687eedd71259779cf40e72c06b0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Unblocked": { "what": ["This"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "R119ActivateLandMana": { "who": "Defending" } },
+                    { "Let": { "as": "lost", "amount": { "ManaInPool": "Defending" } } },
+                    { "LoseUnspentMana": { "who": "Defending" } },
+                    {
+                      "Rule": {
+                        "rule": { "Combat": { "who": "This", "quirk": "AssignsNoCombatDamage" } },
+                        "duration": "UntilEndOfTurn"
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": { "StepBegins": { "step": "Main2", "whose": "You" } },
+                        "effects": [
+                          {
+                            "AddMana": {
+                              "mana": { "Fixed": ["Colorless"] },
+                              "times": { "Bound": "lost" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
