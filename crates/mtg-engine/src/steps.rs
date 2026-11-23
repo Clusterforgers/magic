@@ -208,9 +208,7 @@ pub(crate) fn untap_events(state: &GameState, kept: &[ObjectId]) -> (Vec<Event>,
             .filter_map(|id| state.object(*id))
             .flat_map(|object| crate::r6013_winds::r6013_untap_events(state, object, active)),
     );
-    for player in &actives {
-        events.extend(crate::c7_untap::c7_untap_spent(state, *player));
-    }
+    events.extend(crate::c7_untap::c7_untap_spent(state, &actives));
     events.extend(leave_step(state));
     let held = active.map_or_else(Vec::new, |active| {
         crate::rmt4_untap_limit::held_back(state, active, &untapping)
