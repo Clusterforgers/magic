@@ -8,7 +8,8 @@
 //! Everything that decides when a yield stops is in [`Active::ends_at`], judged at each priority decision of the seat
 //! and from the table alone: never from what the seat could do there, so a seat that can act and one that cannot are
 //! passed for, and stopped, at the same moments. The rules:
-//! - `Resolve` stops when the stack is empty.
+//! - `Resolve` ("Resolve all", as in MTG Arena) stops when the stack is empty, and at any object the seat has not
+//!   passed on, its own included: so it passes until the stack it saw has resolved, and a trigger of its own stops it.
 //! - `EndOfTurn` stops when a turn other than the one it was asked in has begun.
 //! - `MyTurn` and `MyTurnThrough` stop when such a turn is the seat's own (its team's, where a team shares one);
 //!   `MyTurnThrough` ends as that turn begins ([`Yields::drop_reached`]), before any decision in it.
@@ -61,7 +62,10 @@ impl Active {
             return reached;
         }
         let seen_here = turn.number() == self.turn && self.here == Some(turn.step());
-        reached || (stopped && !seen_here) || self.opponent_added(state, seat)
+        let any = self.until == YieldUntil::Resolve;
+        reached
+            || (stopped && !seen_here)
+            || self.added(state, |controller| any || controller != seat)
     }
 
     /// Whether a turn of `seat`'s own other than the one it asked in has begun.
@@ -69,13 +73,13 @@ impl Active {
         state.turn().number() != self.turn && state.is_active(seat)
     }
 
-    /// Whether the stack holds an object of another seat that the seat has not passed on yet.
-    fn opponent_added(&self, state: &GameState, seat: PlayerId) -> bool {
+    /// Whether the stack holds an object the seat has not passed on yet whose controller `counts`.
+    fn added(&self, state: &GameState, counts: impl Fn(PlayerId) -> bool) -> bool {
         state.stack().iter().any(|id| {
             !self.seen.contains(id)
                 && state
                     .object(*id)
-                    .is_some_and(|object| object.controller() != seat)
+                    .is_some_and(|object| counts(object.controller()))
         })
     }
 }
@@ -525,20 +529,34 @@ mod tests {
         assert_eq!(yields.get(ME).is_none(), ends);
     }
 
-    #[test]
-    fn the_seats_own_objects_never_stop_it() {
-        // Seat 1 is the active player and casts its own instant; a yield that had not seen it still passes.
+    #[rstest]
+    #[case::end_of_turn(YieldUntil::EndOfTurn, true)]
+    #[case::my_turn(YieldUntil::MyTurn, true)]
+    #[case::through(YieldUntil::MyTurnThrough, true)]
+    #[case::resolve_all(YieldUntil::Resolve, false)]
+    fn the_seats_own_new_object_stops_only_resolve_all(
+        #[case] until: YieldUntil,
+        #[case] passes: bool,
+    ) {
+        // Seat 1 is the active player and puts an object of its own on top of a spell it saw; only "Resolve all"
+        // stops at what it has not passed on, its own included.
         let setup = Scenario::new(2)
             .at(1, 1, mtg_engine::turn::Step::Main1)
-            .hand(1, [instant("Mine", 0, &[])])
+            .hand(1, [instant("Mine", 0, &[]), instant("Mine too", 0, &[])])
             .setup()
             .unwrap();
         let mut engine = Engine::new(setup).unwrap();
-        let mut yields = Yields::new(2);
-        yields.start(ME, YieldUntil::EndOfTurn, engine.state());
         cast(&mut engine);
-        assert_eq!(engine.state().stack().len(), 1);
-        assert!(yields.passes(ME, engine.state(), false));
+        let mut yields = Yields::new(2);
+        yields.start(ME, until, engine.state());
+        cast(&mut engine);
+        assert_eq!(engine.state().stack().len(), 2);
+        assert_eq!(
+            yields.passes(ME, engine.state(), false),
+            passes,
+            "{until:?}"
+        );
+        assert_eq!(yields.get(ME).is_some(), passes);
     }
 
     #[test]

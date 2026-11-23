@@ -121,6 +121,7 @@ mod question_clocks;
 mod reconnect;
 mod registry;
 mod rejected_answers;
+mod resolve_all;
 mod response_clock;
 mod response_clock_effects;
 mod rest;

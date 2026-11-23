@@ -28,8 +28,8 @@ interface Situation {
   /** Whether it is the viewer's turn (seat 0). */
   own?: boolean
   step?: Step
-  /** Whether the fixture's three spells are on the stack. */
-  stacked?: boolean
+  /** The top spell of the fixture on the stack (`true`), all three of its spells (`'many'`) or none. */
+  stacked?: boolean | 'many'
   /** Whether a Priority decision is on screen; the stops are there without one. */
   prompt?: boolean
   fullControl?: FullControlMode
@@ -55,6 +55,7 @@ function dockOf({
       const view = clone(must(state.view))
       view.turn = { ...view.turn, step, active: own ? 0 : 1 }
       if (!stacked) view.stack = { count: 0, cards: [] }
+      else if (stacked !== 'many') view.stack = { count: 1, cards: (view.stack.cards ?? []).slice(-1) }
       return {
         ...state,
         view,
@@ -129,6 +130,24 @@ describe.each(SIZES)('the dock at %i x %i', (width, height, expected) => {
     expect(dock().querySelector('[data-slot="stop-ladder"]') !== null).toBe(row)
     expect(dock().querySelector('[data-slot="stops-button"]') !== null).toBe(!row)
     expect(document.querySelectorAll('[data-slot="full-control"]')).toHaveLength(1)
+  })
+
+  it('over a stack of three draws "Resolve all" beside the primary button in place of "End turn", within five controls', async () => {
+    const { user, yieldUntil } = dockOf({ width, height, stacked: 'many' })
+    const found = controls().map(slotOf)
+    expect(found.length).toBeLessThanOrEqual(5)
+    expect(found.at(-1)).toBe('primary-action')
+    expect(found).not.toContain('secondary-action')
+    const phone = width <= 640
+    // A phone's bar has no room for it: its menu holds it, as it holds "End turn".
+    expect(found.at(-2)).toBe(phone ? 'more-passing' : 'resolve-all')
+    expect(found.filter((slot) => slot !== 'resolve-all')).toEqual(
+      expected.filter((slot) => slot !== 'secondary-action'),
+    )
+    if (!phone) {
+      await user.click(must(dock().querySelector<HTMLElement>('[data-slot="resolve-all"]')))
+      expect(yieldUntil.mock.calls).toEqual([['Resolve']])
+    }
   })
 })
 
