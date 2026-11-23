@@ -316,6 +316,25 @@ pub(crate) fn spell_ability(state: &GameState, id: ObjectId) -> Option<(AbilityR
     Some((address, rules))
 }
 
+/// What says the targets of the spell `id` are: its `Spell` ability, or for a permanent spell that targets (an Aura,
+/// a bestowed or a mutating creature spell) rules with that one target and no effects (CR 303.4a, 702.103b, 702.140a).
+pub(crate) fn spell_target_rules(state: &GameState, id: ObjectId) -> Option<Arc<Ability>> {
+    let object = state.object(id)?;
+    // In the order the targets were announced: a mutating spell, an Aura spell, then the text of the spell.
+    let spec = if object.choices().way == Some(mtg_cards::value::CastWay::Mutate) {
+        Some(crate::merged::target_spec())
+    } else {
+        crate::attach::spell_target(state, id)
+    };
+    match spec {
+        Some(spec) => Some(Arc::new(Ability::Spell {
+            targets: vec![spec],
+            effects: Vec::new(),
+        })),
+        None => spell_ability(state, id).map(|(_, rules)| rules),
+    }
+}
+
 /// The rules a stack object runs: those of the ability it is, or the `Spell` ability of its card.
 fn rules_of(state: &GameState, object: &GameObject) -> Option<Arc<Ability>> {
     match object.ability() {
