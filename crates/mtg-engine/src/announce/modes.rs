@@ -2,14 +2,16 @@
 //!
 //! A mode is offered only when each of its target specifications has enough legal targets; with fewer legal modes than
 //! the fewest to choose, the announcement is rewound. A spell with entwine asks its optional costs first, and when the
-//! entwine cost is paid every mode is chosen without a question (CR 702.42). An ability that picks its modes at random
-//! chooses among the modes that could be chosen with the next substream of the game's random source, and no player is
-//! asked; one that chooses a mode not yet chosen this turn, or ever, leaves out the modes its tally holds.
+//! entwine cost is paid every mode is chosen without a question (CR 702.42); one whose modes widen with a condition
+//! (`all_if`, "if this spell was kicked, choose any number instead") also asks them first, so the condition reads them.
+//! An ability that picks its modes at random chooses among the modes that could be chosen with the next substream of
+//! the game's random source, and no player is asked; one that chooses a mode not yet chosen this turn, or ever, leaves
+//! out the modes its tally holds.
 
 use super::{Ctx, Next, What, Work, optional, price};
 use mtg_core::ids::PlayerId;
 
-use crate::choose::{Modal, ModeOptions, modal_of, mode_options};
+use crate::choose::{Modal, ModeOptions, announced_mode_options, modal_of};
 use crate::decision::{Decision, DecisionKind};
 use crate::object::{GameObject, ObjectRef};
 use crate::resolve::Scope;
@@ -20,24 +22,28 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         return None;
     }
     if let Some(mut modal) = ctx.ability.and_then(modal_of) {
-        if optional::entwines(ctx) {
-            if let Some(ask) = optional::run(ctx, work) {
-                return Some(ask);
-            }
-            if optional::entwined(ctx, work.choices) {
-                work.choices.modes = (0..modal.modes.len()).collect();
-                work.done.modes = true;
-                return None;
-            }
+        // The optional costs are announced with the modes (CR 601.2b): asked first when the modes read them (entwine,
+        // "if this spell was kicked, choose any number instead").
+        let entwines = optional::entwines(ctx);
+        if (entwines || modal.all_if.is_some())
+            && let Some(ask) = optional::run(ctx, work)
+        {
+            return Some(ask);
+        }
+        if entwines && optional::entwined(ctx, work.choices) {
+            work.choices.modes = (0..modal.modes.len()).collect();
+            work.done.modes = true;
+            return None;
         }
         modal.used = chosen_before(ctx, modal.once == crate::choose::C11dOnce::Ever);
-        let Some(mut options) = mode_options(
+        let Some(mut options) = announced_mode_options(
             ctx.state,
             ctx.source,
             ctx.player,
             &modal,
             ctx.can_cancel() && decider(ctx, &modal) == ctx.player,
             ctx.cause(),
+            Some(&*work.choices),
         ) else {
             return Some(Next::Drop);
         };
