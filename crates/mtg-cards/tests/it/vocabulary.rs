@@ -96,8 +96,8 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     &["Ability.Spell", "Condition.Performed", "Effect.Discard", "Effect.Draw", "Effect.If", "Effect.May"]
 )]
 #[case::if_you_dont(
-    r#"{"Spell":{"effects":[{"Discard":{}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
-    &["Ability.Spell", "Condition.Performed", "Condition.Performed.Other", "Effect.Discard", "Effect.Draw", "Effect.If"]
+    r#"{"Spell":{"effects":[{"Mill":{}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Condition.Performed", "Condition.Performed.Other", "Effect.Draw", "Effect.If", "Effect.Mill"]
 )]
 #[case::if_you_do_not_exile(
     r#"{"Spell":{"effects":[{"Exile":{"what":"This"}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
