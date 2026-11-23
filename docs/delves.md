@@ -4,8 +4,8 @@ Design of Delves, the co-op campaign: a party of 1 to 6 heroes fights a ladder o
 
 ## Shape
 
-- A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds three of the theme's lieutenants drawn from the seed (fewer when the theme has fewer), then one of the theme's final bosses drawn by the seed (the Warrens: Grimgut or the Unmaker); a stored run of a generation before 4 folds by its older ladder of every lieutenant, then the final boss; between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
-- Themes: the Warrens and the Drowned Spire (`content/spire.json`: the Siren Queen and the Drowned Archivist, then the Leviathan; three rooms). A new run draws its theme by its seed among the themes whose final boss its generation meets (`Content::theme_for`).
+- A run is a boss rush. Its ladder (`mtg-campaign`, `map.rs`) holds three of the theme's lieutenants drawn from the seed (fewer when the theme has fewer), then one of the theme's final bosses drawn by the seed (the Warrens: Grimgut or the Unmaker; the Drowned Spire: the Leviathan or the Drowned Admiral); a stored run of a generation before 4 folds by its older ladder of every lieutenant, then the final boss; between two bosses the party votes for one of two camps: Treasure, Shop, Event or Campfire.
+- Themes: the Warrens and the Drowned Spire (`content/spire.json`, Bosses). A run of generation 8 climbs the Spire's first ladder: the Siren Queen and the Drowned Archivist, then the Leviathan. A new run draws its theme by its seed among the themes whose final boss its generation meets (`Content::theme_for`).
 - Every boss fight is a fresh, normally recorded Commander game: board, hand and library reset. The party is one team of seats from seat 0, the boss one seat after them (`FightPlan`).
 - Each side takes one shared team turn (`TeamMode::SharedTurns`, CR 805): every hero untaps, draws, plays a land and casts sorceries in the party's turn, a side's turn is led by its first seat (`turn_lead`: the first living hero, the boss) and priority goes round the table from it. In the declare-attackers step each player of the side chooses the attacks of their own creatures in turn order, seeing what the teammates before chose; the side declares every choice at once, so limits, requirements and "attacks alone" read the whole declaration (`party_attacks`), and each hero pays the attack costs of their own creatures. A choice illegal only together is refused with its reason and chosen again; after two refusals the engine declares the plain legal attack. Life totals stay per hero. The table names the party's turn ("Your party's turn").
 - Life carries over between fights. After a won fight each hero keeps their end life and heals 15; a hero who ended it as a Spirit comes back at 10 first. A Campfire rest heals 20, the shop's draught 15; nothing heals above 40 plus relic bonuses.
@@ -40,7 +40,7 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 
 Every boss (`boss_plan.rs`) is: one innate, one encounter modifier, two phases by round, a satchel, a precon deck and relics by depth. The boss has nothing else; its brain is Hard at every Heat and depth.
 
-- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`<code>-<name>.json` in `content/decks`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight; `cue`, when its bot casts it, `docs/bots.md`), `art` the real card whose art crop pictures it. The deck file holds the precon's cards with its by-hand cards swapped for basics (`swaps`) and its `makeup`, counted from the corpus by the `boss_decks` test (`MTG_UPDATE_MAKEUPS=1` rewrites it). The server loads the deck as a live game loads a deck: each Read or Unverified card plays its draft, pinned in the recipe (`cards_read`); the satchel cards come last in the deck (`FightPlan::boss_deck`) and the plan moves them into the seat's satchel.
+- Record (`content/<theme>.json`): `deck_file` names its stored Commander precon (`<code>-<name>.json` in `content/decks`, the face commander shuffled in as an ordinary card), `innate` its innate card, `round_phases` its Phase 1 and Phase 2 cards, `satchel` its four satchel spells (`reusable`, or once per fight; `cue`, when its bot casts it, `docs/bots.md`), `art` the real card whose art crop pictures it. The deck file holds the precon's cards with each card that does not play automatically swapped (`swaps`) for a basic land, or for an automatic card of its colours, card type and mana value and its `makeup`, counted from the corpus by the `boss_decks` test (`MTG_UPDATE_MAKEUPS=1` rewrites it). The server loads the deck as a live game loads a deck: each Read or Unverified card plays its draft, pinned in the recipe (`cards_read`); the satchel cards come last in the deck (`FightPlan::boss_deck`) and the plan moves them into the seat's satchel.
 - Depth: the bosses the party defeated in the run over all floors (`Run::defeated`); a lost and retried fight adds none.
 - Innate: written once with a number N over five levels (`"levels": [n1, …, n5]`, `{N}` in its text, `"$N"` and a cost's `{N}` in its abilities, `"$L"` for the level where the shape changes); loading makes the card of each level (`<id>_i` to `<id>_v`, `innate.rs`) and refuses levels that fall. A level may differ in more than N: `"params": {"NAME": [v1, …, v5]}` puts any value where `"$NAME"` stands (an ability that becomes `null` is left out at that level), and `"texts"` gives each level its own words. A phase may be written with levels too; the fight plays it at the innate's level (`boss_plan.rs`). The level is `1 + (depth points + Heat) / 2`, at most V (`Scale::innate_level`); depth points are the depth for the first four bosses, then one more per two bosses.
 
@@ -61,24 +61,49 @@ Every boss (`boss_plan.rs`) is: one innate, one encounter modifier, two phases b
 - Drain rule: a boss's innate, modifier, phase or satchel card takes life from a hero only as damage or unless the hero pays.
 - Relics for heroes: from generation 8 (`RELICS_AGAIN_FROM`) a relic can drop again; owning it never lowers its chance, and copies stack.
 
+### The Drowned Spire
+
+Sixteen lieutenants, one for each colour and colour pair (two blue-black), and two final bosses. Each innate scales its number N with the level.
+
+| Boss | Colours | Precon | Innate | Phase 1; Phase 2 |
+|---|---|---|---|---|
+| The Lamplighter | W | C14 Forged in Stone | beginning of combat: taps up to N hero creatures | taps every hero creature, +1/+1 and vigilance; hero creatures -2/-0, first strike |
+| The Tidecaller | U | C14 Peer Through Time | end step: returns a hero permanent of mana value N or less | returns hero permanents of mana value 3 or less; hero spells cost {1} more, it draws an extra card |
+| The Drowned Abbess | B | C14 Sworn to Darkness | upkeep: the eyed hero sacrifices a creature unless they pay {N} | hero creatures -2/-2; a hero creature dying deals 1 damage to its controller |
+| The Wreck-Forger | R | C14 Built From Scratch | upkeep: a Treasure; its artifacts dying deal N damage to a hero creature | destroys hero artifacts; +2/+0 and haste |
+| The Coral Mother | G | C14 Guided by Nature | end step: a +1/+1 counter on each of up to N creatures | a 4/4 reach Coral per hero; creatures with counters +1/+1, trample and hexproof |
+| The Siren Queen | UB | ZNC Sneak Attack | takes an attacker of mana value N or less | takes each hero's strongest creature; heroes must attack into her |
+| The Drowned Archivist | UB | MKC Revenant Recon | casts a hero's instant or sorcery of mana value N or less | heroes mill ten, it casts their creatures; copies what it casts from them |
+| The Fog Bell | WU | KHC Phantom Premonition | attacking hero creatures get -N/-0 | two flying Spirits per hero; blockable only by flying or reach |
+| The Salt Magistrate | WB | C21 Silverquill Statement | a hero's noncreature spell makes an Inkling unless they pay {N} | each hero sacrifices two creatures; flyers +1/+1 and lifelink |
+| The Storm Herald | WR | MKC Blame Game | beginning of combat: N damage to a hero creature | 2 damage to each hero and their creatures; +1/+0, flying and haste |
+| The Kelp Shepherd | WG | MIC Coven Counters | end step: N 1/3 Crabs | two +1/+1 counters on each of its creatures; +1/+1 and trample |
+| The Maelstrom | UR | C21 Prismari Performance | its instants and sorceries return a hero creature of mana value N or less | 3 damage to each hero creature; its instants and sorceries deal 1 to each hero |
+| The Spawning Shoal | UG | C21 Quantum Quandrix | upkeep: N 1/1 Fish | a Fish per creature token it has; Fish +2/+1 and trample |
+| The Brine Hag | BR | AFC Planar Portal | upkeep: N damage to the eyed hero | 2 damage to each creature; a hero creature dying makes a Treasure, menace |
+| The Silt Crawler | BG | DSC Death Toll | upkeep: each hero mills N | a creature from each hero's graveyard joins it; +1/+1 and deathtouch |
+| The Magma Vent | RG | NEC Upgrades Unleashed | landfall: N damage to a hero creature | 3 damage to each hero creature and 1 to each hero; landfall makes a 3/3 haste Elemental |
+| The Leviathan (final) | UG | CMR Reap the Tides | upkeep: Tentacles up to N, each can stop an attacker | returns all but sea creatures, lands are Islands; +2/+2 and islandwalk |
+| The Drowned Admiral (final) | UBR | LCC Ahoy Mateys | upkeep: N 2/2 menace Zombie Pirates; a Pirate's combat damage makes a Treasure | its Pirates return from its graveyard, +1/+0; Pirates +1/+1 and haste, end step 2 damage to each hero |
+
 ### Encounter modifiers
 
-Each modifier is an emblem on the boss's seat whose rule binds every player alike unless it names the heroes; most copy the rule a Verified card runs. The Spire bosses are `siren_queen`, `drowned_archivist` and `leviathan` in `not_with`.
+Each modifier is an emblem on the boss's seat whose rule binds every player alike unless it names the heroes; most copy the rule a Verified card runs. The Spire bosses go by their ids in `not_with` (`siren_queen`, `fog_bell`, …).
 
 | Modifier | Rule | Never with |
 |---|---|---|
-| Mirror Hall | No one controls more than five creatures of one name; the newest beyond five are sacrificed. | Skrix, Grimgut, Vex, Hollowmere, Sahrra, the Leviathan |
+| Mirror Hall | No one controls more than five creatures of one name; the newest beyond five are sacrificed. | Skrix, Grimgut, Vex, Hollowmere, Sahrra, the Leviathan, the Fog Bell, the Kelp Shepherd, the Spawning Shoal, the Drowned Admiral |
 | Living Stone | Artifacts have "{T}: Add {C}." | |
-| Waking Earth | Lands are 1/1 creatures too (Kormus Bell). | Vex, Seraphine, Korrath, Ozrith, Ysolde, Hollowmere, Valdric, Vorthana, the Leviathan |
+| Waking Earth | Lands are 1/1 creatures too (Kormus Bell). | Vex, Seraphine, Korrath, Ozrith, Ysolde, Hollowmere, Valdric, Vorthana, the Leviathan, the Lamplighter, the Drowned Abbess, the Salt Magistrate, the Storm Herald, the Maelstrom, the Brine Hag, the Magma Vent |
 | Bloodlust | Creatures have double strike and attack each combat (Avatar of Slaughter). | the Siren Queen, Aurenne |
 | Twin Flames | Damage is doubled (Furnace of Rath). | |
 | Overflowing Mana | A land tapped for mana adds one more of a type it made. | |
 | Deep Pockets | An extra card in each draw step and no maximum hand size (Howling Mine, Anvil of Bogardan). | |
 | Quickening | Spells may be cast as though they had flash (Vedalken Orrery). | |
-| One Voice | One spell per player each turn (Rule of Law). | Ozrith, Morwenna, the Drowned Archivist |
-| Narrow Pass | At most two attackers and two blockers each combat (Caverns of Despair). | Skrix, Grimgut, Aurenne, Hollowmere, Sahrra |
-| Second Spring | Tokens and +1/+1 counters on creatures are doubled (Primal Vigor). | Sivanne, Sahrra, Skrix |
-| No Rest | Each card or token going to a graveyard flips a coin; on a loss it is exiled. | Vex, Vorthana, Hollowmere, the Siren Queen, the Drowned Archivist, the Leviathan |
+| One Voice | One spell per player each turn (Rule of Law). | Ozrith, Morwenna, the Drowned Archivist, the Maelstrom |
+| Narrow Pass | At most two attackers and two blockers each combat (Caverns of Despair). | Skrix, Grimgut, Aurenne, Hollowmere, Sahrra, the Kelp Shepherd, the Spawning Shoal, the Drowned Admiral |
+| Second Spring | Tokens and +1/+1 counters on creatures are doubled (Primal Vigor). | Sivanne, Sahrra, Skrix, the Coral Mother, the Kelp Shepherd, the Spawning Shoal |
+| No Rest | Each card or token going to a graveyard flips a coin; on a loss it is exiled. | Vex, Vorthana, Hollowmere, the Siren Queen, the Drowned Archivist, the Leviathan, the Drowned Abbess, the Silt Crawler, the Drowned Admiral |
 | Stone Sleep | One flip for the active player each untap step; on a loss their creatures with power 3 or more stay tapped. | Mossjaw, Korrath, the Unmaker, the Leviathan |
 | Prismatic Chaos | Each round the colored symbols of the heroes' costs stand for other colors of their commander's identity. | |
 | Endless Summer | One additional land each turn (Ghirapur Orrery). | |
@@ -87,7 +112,7 @@ Each modifier is an emblem on the boss's seat whose rule binds every player alik
 | Shared Blood | Creatures are every creature type. | Vex |
 | Giant's Table | Creature spells cost {2} less. | |
 | Free Command | Heroes pay no commander tax (`GameRule::NoCommanderTax`). | |
-| Echoing Spells | Each player's first instant or sorcery each turn is copied (Double Vision). | Ozrith |
+| Echoing Spells | Each player's first instant or sorcery each turn is copied (Double Vision). | Ozrith, the Maelstrom |
 | No Mercy | Each life gain flips a coin; on a loss no life is gained. | Seraphine, Valdric, Mossjaw |
 | Haunted Ground | A nontoken creature dying gives its controller a 1/1 white flying Spirit. | Hollowmere |
 
@@ -196,7 +221,7 @@ From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor
 - Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint. The kinds are relics, the Spirit's haunt, innates, phases and encounter modifiers.
 - Files: `cards.json` (relics, the haunt), `encounters.json` and `modifiers.json` (encounter modifiers), `rework_*.json` (innates and phases), `<theme>.json` (bosses, events, reward pool), `decks/` (the bosses' precons).
 - Content tests check that every satchel and reward card plays automatically (Verified or Read) in the corpus, every boss names a 100-card deck file, an innate with five levels, two phases and four satchel cards, every custom card keeps all its abilities, and each boss plays a real fight at level V under the loop detector.
-- Content generations of bosses: a boss's `since` keeps it off the ladder of an older run (Ozrith, Aurenne, Vorthana and Sivanne 6, the Spire 8); every run plays the boss of Bosses whatever its generation; `RunEvent::Content` stores the generation and the map is drawn again for it.
+- Content generations of bosses: a boss's `since` keeps it off the ladder of an older run (Ozrith, Aurenne, Vorthana and Sivanne 6, the Spire 8, its grown roster 9); every run plays the boss of Bosses whatever its generation; `RunEvent::Content` stores the generation and the map is drawn again for it.
 
 ## Tuning
 

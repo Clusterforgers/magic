@@ -1,0 +1,442 @@
+{
+  "code": "DSC",
+  "name": "Death Toll",
+  "commander": [
+    "Winter, Cynical Opportunist"
+  ],
+  "swaps": [
+    {
+      "out": "Deluge of Doom",
+      "into": "Toxic Deluge"
+    },
+    {
+      "out": "Formless Genesis",
+      "into": "Cultivate"
+    },
+    {
+      "out": "Giant Adephage",
+      "into": "Avenger of Zendikar"
+    },
+    {
+      "out": "Hornet Queen",
+      "into": "Nyxbloom Ancient"
+    },
+    {
+      "out": "Dryad Arbor",
+      "into": "Swamp"
+    },
+    {
+      "out": "Stitcher's Supplier",
+      "into": "Carrion Feeder"
+    },
+    {
+      "out": "Nyx Weaver",
+      "into": "Obelisk Spider"
+    },
+    {
+      "out": "Darkmoss Bridge",
+      "into": "Forest"
+    },
+    {
+      "out": "Tree of Tales",
+      "into": "Swamp"
+    },
+    {
+      "out": "Vault of Whispers",
+      "into": "Forest"
+    }
+  ],
+  "cards": [
+    [
+      "Winter, Cynical Opportunist",
+      1
+    ],
+    [
+      "Rendmaw, Creaking Nest",
+      1
+    ],
+    [
+      "Demonic Covenant",
+      1
+    ],
+    [
+      "Into the Pit",
+      1
+    ],
+    [
+      "Polluted Cistern // Dim Oubliette",
+      1
+    ],
+    [
+      "Demolisher Spawn",
+      1
+    ],
+    [
+      "Ursine Monstrosity",
+      1
+    ],
+    [
+      "Convert to Slime",
+      1
+    ],
+    [
+      "Moldgraf Monstrosity",
+      1
+    ],
+    [
+      "Culling Ritual",
+      1
+    ],
+    [
+      "Cemetery Tampering",
+      1
+    ],
+    [
+      "Noxious Gearhulk",
+      1
+    ],
+    [
+      "Ob Nixilis Reignited",
+      1
+    ],
+    [
+      "Professor Onyx",
+      1
+    ],
+    [
+      "Reanimate",
+      1
+    ],
+    [
+      "Whip of Erebos",
+      1
+    ],
+    [
+      "Arachnogenesis",
+      1
+    ],
+    [
+      "Deathcap Cultivator",
+      1
+    ],
+    [
+      "Inscription of Abundance",
+      1
+    ],
+    [
+      "Ishkanah, Grafwidow",
+      1
+    ],
+    [
+      "Scavenging Ooze",
+      1
+    ],
+    [
+      "Titania, Nature's Force",
+      1
+    ],
+    [
+      "Wrenn and Seven",
+      1
+    ],
+    [
+      "Deadbridge Chant",
+      1
+    ],
+    [
+      "Grim Flayer",
+      1
+    ],
+    [
+      "Grist, the Hunger Tide",
+      1
+    ],
+    [
+      "Old Stickfingers",
+      1
+    ],
+    [
+      "Solemn Simulacrum",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Grim Backwoods",
+      1
+    ],
+    [
+      "Llanowar Wastes",
+      1
+    ],
+    [
+      "Necroblossom Snarl",
+      1
+    ],
+    [
+      "Temple of Malady",
+      1
+    ],
+    [
+      "Twilight Mire",
+      1
+    ],
+    [
+      "Viridescent Bog",
+      1
+    ],
+    [
+      "Woodland Cemetery",
+      1
+    ],
+    [
+      "Vile Mutilator",
+      1
+    ],
+    [
+      "Terramorphic Expanse",
+      1
+    ],
+    [
+      "Night's Whisper",
+      1
+    ],
+    [
+      "Grapple with the Past",
+      1
+    ],
+    [
+      "Deathreap Ritual",
+      1
+    ],
+    [
+      "Putrefy",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Suspicious Bookcase",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Carrion Grub",
+      1
+    ],
+    [
+      "Crawling Sensation",
+      1
+    ],
+    [
+      "Gnarlwood Dryad",
+      1
+    ],
+    [
+      "Harmonize",
+      1
+    ],
+    [
+      "Harrow",
+      1
+    ],
+    [
+      "Moldgraf Millipede",
+      1
+    ],
+    [
+      "Mulch",
+      1
+    ],
+    [
+      "Obsessive Skinner",
+      1
+    ],
+    [
+      "Rampant Growth",
+      1
+    ],
+    [
+      "Sakura-Tribe Elder",
+      1
+    ],
+    [
+      "Skola Grovedancer",
+      1
+    ],
+    [
+      "Binding the Old Gods",
+      1
+    ],
+    [
+      "Grisly Salvage",
+      1
+    ],
+    [
+      "Burnished Hart",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Golgari Signet",
+      1
+    ],
+    [
+      "Haywire Mite",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Talisman of Resilience",
+      1
+    ],
+    [
+      "Whispersilk Cloak",
+      1
+    ],
+    [
+      "Ash Barrens",
+      1
+    ],
+    [
+      "Barren Moor",
+      1
+    ],
+    [
+      "Bojuka Bog",
+      1
+    ],
+    [
+      "Evolving Wilds",
+      1
+    ],
+    [
+      "Golgari Rot Farm",
+      1
+    ],
+    [
+      "Jungle Hollow",
+      1
+    ],
+    [
+      "Reliquary Tower",
+      1
+    ],
+    [
+      "Tainted Wood",
+      1
+    ],
+    [
+      "Temple of the False God",
+      1
+    ],
+    [
+      "Tranquil Thicket",
+      1
+    ],
+    [
+      "Swamp",
+      9
+    ],
+    [
+      "Forest",
+      9
+    ],
+    [
+      "Toxic Deluge",
+      1
+    ],
+    [
+      "Cultivate",
+      1
+    ],
+    [
+      "Avenger of Zendikar",
+      1
+    ],
+    [
+      "Nyxbloom Ancient",
+      1
+    ],
+    [
+      "Carrion Feeder",
+      1
+    ],
+    [
+      "Obelisk Spider",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 27,
+      "G": 37
+    },
+    "types": {
+      "Artifact": 14,
+      "Creature": 28,
+      "Enchantment": 12,
+      "Instant": 6,
+      "Kindred": 1,
+      "Land": 38,
+      "Planeswalker": 4,
+      "Sorcery": 8
+    },
+    "subtypes": {
+      "Bear": 1,
+      "Construct": 1,
+      "Demon": 2,
+      "Druid": 2,
+      "Dryad": 1,
+      "Elemental": 3,
+      "Elk": 1,
+      "Equipment": 1,
+      "Forest": 9,
+      "Golem": 1,
+      "Grist": 1,
+      "Horror": 4,
+      "Human": 4,
+      "Insect": 4,
+      "Liliana": 1,
+      "Mutant": 1,
+      "Nixilis": 1,
+      "Ooze": 1,
+      "Rogue": 1,
+      "Room": 1,
+      "Saga": 1,
+      "Satyr": 1,
+      "Scarecrow": 1,
+      "Shaman": 1,
+      "Snake": 1,
+      "Spider": 2,
+      "Swamp": 9,
+      "Troll": 1,
+      "Wall": 1,
+      "Warlock": 2,
+      "Warrior": 1,
+      "Wrenn": 1,
+      "Zombie": 1
+    },
+    "tokens": 6,
+    "counters": 6,
+    "graveyard": 20,
+    "creature_commanders": 0
+  }
+}

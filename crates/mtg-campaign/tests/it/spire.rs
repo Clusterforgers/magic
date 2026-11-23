@@ -1,6 +1,7 @@
 //! Goal: the Drowned Spire holds together and its bosses do what their words say: each boss record names its precon,
 //! a five-level innate, two phases and a satchel of real cards; a new run draws the Spire or the Warrens by its seed
-//! only from the Spire's generation; a Spire ladder is three rooms ending in the Leviathan; and in real games Siren
+//! only from the Spire's generation; a Spire ladder is three rooms ending in one of its two final bosses, and a run of
+//! the Spire's first generation keeps its first ladder; and in real games Siren
 //! Song, Borrowed Words and Grasping Deep act at levels I and V, a Tentacle stops an attacker, and each phase's
 //! effect lands once.
 use std::sync::Arc;
@@ -22,6 +23,8 @@ use mtg_testkit::cards::{burn, creature, free_creature, instant, island};
 use mtg_testkit::{Driver, Scenario, ScriptError, corpus, ready};
 use rstest::rstest;
 
+/// The content generation the Spire came with.
+const SPIRE_FROM: u32 = 8;
 const HERO: usize = 0;
 const BOSS: usize = 1;
 
@@ -126,7 +129,7 @@ fn a_spire_boss_holds_the_reworked_record(
     let content = content().unwrap();
     let boss = spire().boss(id).unwrap();
     assert_eq!((boss.colors.as_str(), boss.final_boss), (colors, last));
-    assert_eq!(boss.since, mtg_campaign::run::CONTENT);
+    assert_eq!(boss.since, SPIRE_FROM);
     assert_eq!(boss.deck_file, deck);
     let path = format!("{}/content/decks/{deck}", env!("CARGO_MANIFEST_DIR"));
     let file: serde_json::Value =
@@ -169,7 +172,7 @@ fn a_spire_boss_holds_the_reworked_record(
 fn a_new_run_draws_its_theme_by_seed_from_the_spires_generation_only() {
     let content = content().unwrap();
     let draw = |seed, generation| content.theme_for(seed, generation).unwrap().id.clone();
-    assert!((0..200).all(|seed| draw(seed, mtg_campaign::run::CONTENT - 1) == "warrens"));
+    assert!((0..200).all(|seed| draw(seed, SPIRE_FROM - 1) == "warrens"));
     let drawn: Vec<String> = (0..200)
         .map(|seed| draw(seed, mtg_campaign::run::CONTENT))
         .collect();
@@ -181,11 +184,9 @@ fn a_new_run_draws_its_theme_by_seed_from_the_spires_generation_only() {
     ));
 }
 
-fn spire_run(seed: u64) -> Run {
+fn spire_run(seed: u64, version: u32) -> Run {
     let mut events = vec![
-        RunEvent::Content {
-            version: mtg_campaign::run::CONTENT,
-        },
+        RunEvent::Content { version },
         RunEvent::Joined {
             name: "H".into(),
             user: Some("u".into()),
@@ -207,16 +208,19 @@ fn spire_run(seed: u64) -> Run {
 }
 
 #[rstest]
-fn a_spire_ladder_is_three_rooms_ending_in_the_leviathan(#[values(1, 2, 3, 99)] seed: u64) {
-    let run = spire_run(seed);
-    let bosses: Vec<&str> = run
-        .map
-        .nodes
-        .iter()
-        .filter_map(|n| n.boss.as_deref())
-        .collect();
-    assert_eq!(bosses.len(), 3);
-    assert_eq!(bosses.last(), Some(&"leviathan"));
+fn a_spire_ladder_is_three_rooms_ending_in_a_final_boss(#[values(1, 2, 3, 99)] seed: u64) {
+    let run = spire_run(seed, mtg_campaign::run::CONTENT);
+    let bosses = ladder(&run);
+    assert_eq!(bosses.len(), 4);
+    assert!(
+        ["leviathan", "drowned_admiral"].contains(&bosses[3].as_str()),
+        "{bosses:?}"
+    );
+    assert!(
+        bosses[..3]
+            .iter()
+            .all(|id| !spire().boss(id).unwrap().final_boss)
+    );
     let plan = run.fight_plan(content().unwrap()).unwrap().unwrap();
     let rework = &plan.boss;
     let boss = spire().boss(&plan.boss.boss).unwrap();
@@ -232,6 +236,28 @@ fn a_spire_ladder_is_three_rooms_ending_in_the_leviathan(#[values(1, 2, 3, 99)] 
             written.clone()
         };
         assert_eq!(card, &expected);
+    }
+}
+
+/// The bosses of a run's ladder in order.
+fn ladder(run: &Run) -> Vec<String> {
+    run.map
+        .nodes
+        .iter()
+        .filter_map(|n| n.boss.clone())
+        .collect()
+}
+
+#[test]
+fn the_spire_draws_both_final_bosses_and_a_first_generation_run_keeps_its_ladder() {
+    let finals: std::collections::BTreeSet<String> = (0..40)
+        .map(|seed| ladder(&spire_run(seed, mtg_campaign::run::CONTENT))[3].clone())
+        .collect();
+    assert_eq!(finals.len(), 2, "{finals:?}");
+    for seed in 0..20 {
+        let mut first = ladder(&spire_run(seed, SPIRE_FROM));
+        first.sort();
+        assert_eq!(first, ["drowned_archivist", "leviathan", "siren_queen"]);
     }
 }
 

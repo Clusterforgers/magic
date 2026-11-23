@@ -493,7 +493,7 @@ pub struct DeckFile {
     pub name: String,
     /// Its face commanders, which play as ordinary cards of the library.
     pub commander: Vec<String>,
-    /// The cards played by hand that the file swaps for basic lands.
+    /// The cards that do not play automatically, each swapped for a basic land or an automatic card.
     #[serde(default)]
     pub swaps: Vec<DeckSwap>,
     /// Its cards and copies, the swaps made: 100 cards.
@@ -503,7 +503,7 @@ pub struct DeckFile {
     pub makeup: crate::relics::DeckMakeup,
 }
 
-/// A card of a precon played by hand, swapped for a basic land.
+/// A card of a precon that does not play automatically, swapped for a basic land or an automatic card.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct DeckSwap {
@@ -660,8 +660,32 @@ pub fn content() -> Result<&'static Content, CampaignError> {
 /// The bosses' deck files shipped with the crate.
 const DECK_FILES: &[(&str, &str)] = &[
     (
+        "afc-planar-portal.json",
+        include_str!("../content/decks/afc-planar-portal.json"),
+    ),
+    (
         "blc-squirreled-away.json",
         include_str!("../content/decks/blc-squirreled-away.json"),
+    ),
+    (
+        "c14-built-from-scratch.json",
+        include_str!("../content/decks/c14-built-from-scratch.json"),
+    ),
+    (
+        "c14-forged-in-stone.json",
+        include_str!("../content/decks/c14-forged-in-stone.json"),
+    ),
+    (
+        "c14-guided-by-nature.json",
+        include_str!("../content/decks/c14-guided-by-nature.json"),
+    ),
+    (
+        "c14-peer-through-time.json",
+        include_str!("../content/decks/c14-peer-through-time.json"),
+    ),
+    (
+        "c14-sworn-to-darkness.json",
+        include_str!("../content/decks/c14-sworn-to-darkness.json"),
     ),
     (
         "c15-plunder-the-graves.json",
@@ -680,12 +704,28 @@ const DECK_FILES: &[(&str, &str)] = &[
         include_str!("../content/decks/c17-feline-ferocity.json"),
     ),
     (
+        "c21-prismari-performance.json",
+        include_str!("../content/decks/c21-prismari-performance.json"),
+    ),
+    (
+        "c21-quantum-quandrix.json",
+        include_str!("../content/decks/c21-quantum-quandrix.json"),
+    ),
+    (
+        "c21-silverquill-statement.json",
+        include_str!("../content/decks/c21-silverquill-statement.json"),
+    ),
+    (
         "cmm-eldrazi-unbound.json",
         include_str!("../content/decks/cmm-eldrazi-unbound.json"),
     ),
     (
         "cmr-reap-the-tides.json",
         include_str!("../content/decks/cmr-reap-the-tides.json"),
+    ),
+    (
+        "dsc-death-toll.json",
+        include_str!("../content/decks/dsc-death-toll.json"),
     ),
     (
         "fdc-calling-all-angels.json",
@@ -700,6 +740,14 @@ const DECK_FILES: &[(&str, &str)] = &[
         include_str!("../content/decks/fdc-wretched-ranks.json"),
     ),
     (
+        "khc-phantom-premonition.json",
+        include_str!("../content/decks/khc-phantom-premonition.json"),
+    ),
+    (
+        "lcc-ahoy-mateys.json",
+        include_str!("../content/decks/lcc-ahoy-mateys.json"),
+    ),
+    (
         "lcc-blood-rites.json",
         include_str!("../content/decks/lcc-blood-rites.json"),
     ),
@@ -712,8 +760,20 @@ const DECK_FILES: &[(&str, &str)] = &[
         include_str!("../content/decks/lcc-veloci-ramp-tor.json"),
     ),
     (
+        "mic-coven-counters.json",
+        include_str!("../content/decks/mic-coven-counters.json"),
+    ),
+    (
+        "mkc-blame-game.json",
+        include_str!("../content/decks/mkc-blame-game.json"),
+    ),
+    (
         "mkc-revenant-recon.json",
         include_str!("../content/decks/mkc-revenant-recon.json"),
+    ),
+    (
+        "nec-upgrades-unleashed.json",
+        include_str!("../content/decks/nec-upgrades-unleashed.json"),
     ),
     (
         "onc-rebellion-rising.json",

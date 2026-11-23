@@ -1,0 +1,390 @@
+{
+  "code": "C14",
+  "name": "Sworn To Darkness",
+  "commander": [
+    "Ob Nixilis of the Black Oath"
+  ],
+  "swaps": [
+    {
+      "out": "Nantuko Shade",
+      "into": "Blood Artist"
+    },
+    {
+      "out": "Flesh Carver",
+      "into": "Morbid Opportunist"
+    },
+    {
+      "out": "Evernight Shade",
+      "into": "Mirkwood Bats"
+    },
+    {
+      "out": "Nekrataal",
+      "into": "Ruthless Technomancer"
+    },
+    {
+      "out": "Magus of the Coffers",
+      "into": "Bone Miser"
+    },
+    {
+      "out": "Bloodgift Demon",
+      "into": "Archfiend of Ifnir"
+    },
+    {
+      "out": "Phyrexian Gargantua",
+      "into": "Massacre Wurm"
+    },
+    {
+      "out": "Pestilence Demon",
+      "into": "Archfiend of Despair"
+    },
+    {
+      "out": "Read the Bones",
+      "into": "Toxic Deluge"
+    },
+    {
+      "out": "Dread Return",
+      "into": "Crippling Fear"
+    },
+    {
+      "out": "Promise of Power",
+      "into": "Living Death"
+    },
+    {
+      "out": "Dregs of Sorrow",
+      "into": "Blasphemous Edict"
+    },
+    {
+      "out": "Spoils of Blood",
+      "into": "Village Rites"
+    },
+    {
+      "out": "Annihilate",
+      "into": "Stinging Study"
+    },
+    {
+      "out": "Jet Medallion",
+      "into": "Cranial Plating"
+    },
+    {
+      "out": "Lashwrithe",
+      "into": "Pact Weapon"
+    }
+  ],
+  "cards": [
+    [
+      "Ob Nixilis of the Black Oath",
+      1
+    ],
+    [
+      "Skirsdag High Priest",
+      1
+    ],
+    [
+      "Vampire Hexmage",
+      1
+    ],
+    [
+      "Burnished Hart",
+      1
+    ],
+    [
+      "Crypt Ghast",
+      1
+    ],
+    [
+      "Disciple of Bolas",
+      1
+    ],
+    [
+      "Abyssal Persecutor",
+      1
+    ],
+    [
+      "Raving Dead",
+      1
+    ],
+    [
+      "Shriekmaw",
+      1
+    ],
+    [
+      "Demon of Wailing Agonies",
+      1
+    ],
+    [
+      "Drana, Kalastria Bloodchief",
+      1
+    ],
+    [
+      "Ghoulcaller Gisa",
+      1
+    ],
+    [
+      "Gray Merchant of Asphodel",
+      1
+    ],
+    [
+      "Morkrut Banshee",
+      1
+    ],
+    [
+      "Grave Titan",
+      1
+    ],
+    [
+      "Pontiff of Blight",
+      1
+    ],
+    [
+      "Reaper from the Abyss",
+      1
+    ],
+    [
+      "Butcher of Malakir",
+      1
+    ],
+    [
+      "Overseer of the Damned",
+      1
+    ],
+    [
+      "Liliana's Reaver",
+      1
+    ],
+    [
+      "Xathrid Demon",
+      1
+    ],
+    [
+      "Sign in Blood",
+      1
+    ],
+    [
+      "Victimize",
+      1
+    ],
+    [
+      "Syphon Mind",
+      1
+    ],
+    [
+      "Mutilate",
+      1
+    ],
+    [
+      "Infernal Offering",
+      1
+    ],
+    [
+      "Aether Snap",
+      1
+    ],
+    [
+      "Necromantic Selection",
+      1
+    ],
+    [
+      "Profane Command",
+      1
+    ],
+    [
+      "Black Sun's Zenith",
+      1
+    ],
+    [
+      "Tragic Slip",
+      1
+    ],
+    [
+      "Malicious Affliction",
+      1
+    ],
+    [
+      "Sudden Spoiling",
+      1
+    ],
+    [
+      "Tendrils of Corruption",
+      1
+    ],
+    [
+      "Skeletal Scrying",
+      1
+    ],
+    [
+      "Wake the Dead",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Charcoal Diamond",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Unstable Obelisk",
+      1
+    ],
+    [
+      "Worn Powerstone",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Bad Moon",
+      1
+    ],
+    [
+      "Arcane Lighthouse",
+      1
+    ],
+    [
+      "Barren Moor",
+      1
+    ],
+    [
+      "Bojuka Bog",
+      1
+    ],
+    [
+      "Crypt of Agadeem",
+      1
+    ],
+    [
+      "Everglades",
+      1
+    ],
+    [
+      "Ghost Quarter",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Polluted Mire",
+      1
+    ],
+    [
+      "Swamp",
+      32
+    ],
+    [
+      "Blood Artist",
+      1
+    ],
+    [
+      "Morbid Opportunist",
+      1
+    ],
+    [
+      "Mirkwood Bats",
+      1
+    ],
+    [
+      "Ruthless Technomancer",
+      1
+    ],
+    [
+      "Bone Miser",
+      1
+    ],
+    [
+      "Archfiend of Ifnir",
+      1
+    ],
+    [
+      "Massacre Wurm",
+      1
+    ],
+    [
+      "Archfiend of Despair",
+      1
+    ],
+    [
+      "Toxic Deluge",
+      1
+    ],
+    [
+      "Crippling Fear",
+      1
+    ],
+    [
+      "Living Death",
+      1
+    ],
+    [
+      "Blasphemous Edict",
+      1
+    ],
+    [
+      "Village Rites",
+      1
+    ],
+    [
+      "Stinging Study",
+      1
+    ],
+    [
+      "Cranial Plating",
+      1
+    ],
+    [
+      "Pact Weapon",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 51
+    },
+    "types": {
+      "Artifact": 10,
+      "Creature": 28,
+      "Enchantment": 1,
+      "Instant": 8,
+      "Land": 40,
+      "Planeswalker": 1,
+      "Sorcery": 13
+    },
+    "subtypes": {
+      "Bat": 1,
+      "Cleric": 2,
+      "Demon": 7,
+      "Elemental": 1,
+      "Elk": 1,
+      "Equipment": 3,
+      "Giant": 1,
+      "Human": 5,
+      "Nixilis": 1,
+      "Phyrexian": 1,
+      "Rogue": 1,
+      "Shaman": 2,
+      "Spirit": 2,
+      "Swamp": 32,
+      "Vampire": 4,
+      "Warrior": 1,
+      "Wizard": 4,
+      "Wurm": 1,
+      "Zombie": 5
+    },
+    "tokens": 7,
+    "counters": 0,
+    "graveyard": 6,
+    "creature_commanders": 0
+  }
+}
