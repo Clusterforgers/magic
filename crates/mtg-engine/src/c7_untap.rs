@@ -11,15 +11,16 @@ use crate::rules::Rule;
 use crate::state::GameState;
 use crate::zones::Zone;
 
-/// The `EffectExpired` events of the untap step of `active`: each effect that lasts through the next untap step and
-/// holds down a permanent `active` controls is used up by this step, whether that permanent is tapped or not. The
-/// untap of the step reads the effects before these events remove them. The exerts of `active` end with them
-/// (`ExertEnded`, `w11a_exert`).
-pub(crate) fn c7_untap_spent(state: &GameState, active: PlayerId) -> Vec<Event> {
+/// The `EffectExpired` events of the untap step of the `actives` (several on a shared turn, CR 805.3): each effect
+/// that lasts through the next untap step and holds down a permanent one of them controls is used up by this step,
+/// whether that permanent is tapped or not, and expires once however many of them it holds down. The untap of the
+/// step reads the effects before these events remove them. The exerts of each of them end with them (`ExertEnded`,
+/// `w11a_exert`).
+pub(crate) fn c7_untap_spent(state: &GameState, actives: &[PlayerId]) -> Vec<Event> {
     let mut spent: Vec<_> = state
         .zone(Zone::Battlefield)
         .iter()
-        .filter(|id| controller_of(state, **id) == Some(active))
+        .filter(|id| controller_of(state, **id).is_some_and(|c| actives.contains(&c)))
         .filter_map(|id| state.layers().get(*id))
         .flat_map(|held| &held.applied)
         .filter(|applied| matches!(applied.modification, Modification::DoesntUntap))
@@ -46,13 +47,17 @@ pub(crate) fn c7_untap_spent(state: &GameState, active: PlayerId) -> Vec<Event> 
         .iter()
         .filter(|effect| {
             effect.duration == Duration::NextUntapStep
-                && matches!(&effect.rule, Rule::UntapLimit { who, .. } if who.contains(&active))
+                && matches!(&effect.rule, Rule::UntapLimit { who, .. } if actives.iter().any(|a| who.contains(a)))
         })
         .map(|effect| Event::RuleExpired { id: effect.id });
     spent
         .into_iter()
         .map(|id| Event::EffectExpired { id })
         .chain(limits)
-        .chain(crate::w11a_exert::w11a_spent(state, active))
+        .chain(
+            actives
+                .iter()
+                .flat_map(|active| crate::w11a_exert::w11a_spent(state, *active)),
+        )
         .collect()
 }
