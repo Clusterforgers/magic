@@ -1202,10 +1202,10 @@ impl Run {
                 let mut left = h.satchel.clone();
                 let others = content.themes.iter().filter(|t| t.id != theme.id);
                 for pool in std::iter::once(theme).chain(others) {
-                    let (here, rest): (Vec<String>, Vec<String>) = left
+                    let (named, rest): (Vec<String>, Vec<String>) = left
                         .into_iter()
                         .partition(|card| pool.pool.iter().any(|(name, _)| name == card));
-                    with = with.with_satchel(&here, pool);
+                    with = with.with_satchel(&named, pool);
                     left = rest;
                 }
                 with
