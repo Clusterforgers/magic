@@ -53,6 +53,21 @@
     max-width: min(16rem, 60cqi);
     height: 2rem;
   }
+  /*
+   * The dock's first line: the chip gives way first (its name ends in an ellipsis) and the reading beside it, a cost in
+   * symbols, stays whole; the room left over lies before the clock. Only that room is flexible, with no least width, so
+   * the parts that take the whole width (the question, the choices, the answers) widen no column.
+   */
+  &[data-home='dock'] {
+    grid-template-columns: minmax(0, auto) auto minmax(0, 1fr) auto;
+  }
+  &[data-home='dock'] > [data-slot='prompt-asker'] {
+    min-width: min(4.5rem, 100%);
+    max-width: min(16rem, 60cqi, 100%);
+  }
+  &[data-home='dock'] > [data-slot='response-clock'] {
+    justify-self: end;
+  }
   &[data-home='dock'] > [data-slot='prompt-meter'],
   &[data-home='bar'] > [data-slot='prompt-meter'] {
     grid-area: reading;
@@ -178,6 +193,20 @@
   overflow: hidden;
 }
 
+/*
+ * A short dock (`DockForm` `short`, 288 px) has no room for the asking chip, a reading and the Stops button on one
+ * line: the reading (a payment's cost in symbols) takes the line under the chip, so neither lies over the other.
+ */
+[data-dock-form='short']
+  .decision-home[data-home='dock']:has(> [data-slot='prompt-asker']):has(> [data-slot='prompt-meter']) {
+  grid-template-areas:
+    'chip chip clock stops'
+    'reading reading reading reading'
+    'question question question question'
+    'choices choices choices choices'
+    'answers answers answers answers';
+}
+
 /* Priority in the dock: its sentence is one short line over the pass controls, so the stops above keep their room. */
 .decision-home[data-home='dock'][data-decision='Priority'] {
   row-gap: 0;
@@ -191,6 +220,14 @@
     font-size: 0.875rem;
     line-height: 1.125rem;
   }
+}
+
+/* Priority in a phone's bar: one line too, so the Stack chip's line above it and the pass controls under it fit the bar. */
+.decision-home[data-home='bar'][data-decision='Priority']
+  [data-slot='prompt-sentence']
+  .prompt-sentence-clamp {
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
 }
 
 /* The top item of the stack: the gold outline of what resolves next. */

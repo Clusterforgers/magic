@@ -59,6 +59,20 @@ describe('the main navigation', () => {
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/precons', '/new'])
   })
 
+  it('keeps the tabs in a strip that scrolls sideways, with Create outside it, so no tab runs under the buttons', async () => {
+    await open('/', true)
+    const strip = mainNav().querySelector('[data-slot="nav-tabs"]')
+    expect(strip).toHaveClass('min-w-0', 'overflow-x-auto')
+    const create = within(mainNav()).getByRole('link', { name: 'Create' })
+    expect(strip?.contains(create)).toBe(false)
+    expect(create).toHaveClass('shrink-0')
+    expect(
+      within(mainNav())
+        .getAllByRole('link')
+        .filter((link) => strip?.contains(link)),
+    ).toHaveLength(8)
+  })
+
   it('adds Decks, My games, Tournaments, Delves, Review cards and Card support, between Precons and Create, for an account', async () => {
     await open('/', true)
     const links = within(mainNav()).getAllByRole('link')

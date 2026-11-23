@@ -327,7 +327,12 @@ export function Builder({ view, api, cards, fixMarks, printings }: BuilderProps)
         })()
 
   return (
-    <PageShell width="wider" className="flex flex-col gap-3 py-4 sm:h-[calc(100dvh-3.5rem-1px)] sm:py-4">
+    // As high as the window under the header, and never so low that the panes have no room for a row of cards: a short
+    // window (a zoomed desktop, a laptop under browser bars) scrolls the page instead.
+    <PageShell
+      width="wider"
+      className="flex flex-col gap-3 py-4 sm:h-[calc(100dvh-3.5rem-1px)] sm:min-h-[40rem] sm:py-4"
+    >
       <h1 className="sr-only">Edit {stored.view.name}</h1>
       <ViewSwitch shown={shown} onChange={setShown} count={totalOf(draft)} />
       {refusal === null ? null : (

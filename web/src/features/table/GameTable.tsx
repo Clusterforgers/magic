@@ -141,7 +141,7 @@ const Table = memo(function Table() {
             <MarksContext value={marks}>
               <ManualMenuProvider>
                 <StopControlsProvider inBar={table.ladderInBar}>
-                  <ControlsSlotProvider form={table.dock}>
+                  <ControlsSlotProvider form={table.dock} wide={table.stopsRow}>
                     <section
                       ref={section}
                       aria-label="Game table"
