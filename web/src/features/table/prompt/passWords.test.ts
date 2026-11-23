@@ -15,6 +15,8 @@ import {
   passSituation,
   primaryDescription,
   primaryLabel,
+  RESOLVE_ALL_FROM,
+  resolveAllShown,
   YIELD_WORDS,
 } from './passWords'
 import type { PassSituation } from './passWords'
@@ -191,7 +193,7 @@ describe('what a screen reader is told', () => {
   })
 
   it('words the three yields as the table, the menu and the indicator show them', () => {
-    expect(YIELD_WORDS.Resolve.action).toBe('Resolve everything on the stack')
+    expect(YIELD_WORDS.Resolve.action).toBe('Resolve all')
     expect(YIELD_WORDS.EndOfTurn.action).toBe('End turn')
     expect(YIELD_WORDS.MyTurn.action).toBe('Pass until my next turn')
     expect(YIELD_WORDS.EndOfTurn.passing).toBe('Passing until the end of turn')
@@ -245,5 +247,24 @@ describe('what Enter does', () => {
     expect(KEY_LEGEND).toContain('Space')
     expect(KEY_LEGEND).toContain('Enter')
     expect(KEY_LEGEND).not.toMatch(/priority/i)
+  })
+})
+
+describe('"Resolve all"', () => {
+  it.each([
+    [0, false, false],
+    [1, false, false],
+    [2, false, true],
+    [3, false, true],
+    [12, false, true],
+    [2, true, false],
+    [3, true, false],
+  ])('over a stack of %i (Full Control %s) is offered: %s', (count, fullControl, shown) => {
+    expect(resolveAllShown(count, fullControl)).toBe(shown)
+  })
+
+  it('starts at two objects and says that a trigger of your own stops it', () => {
+    expect(RESOLVE_ALL_FROM).toBe(2)
+    expect(YIELD_WORDS.Resolve.description).toMatch(/trigger of yours/)
   })
 })

@@ -25,6 +25,7 @@ import {
   passSituation,
   primaryDescription,
   primaryLabel,
+  resolveAllShown,
   YIELD_WORDS,
 } from './passWords'
 import { usePrimaryKey } from './usePrimaryKey'
@@ -50,9 +51,10 @@ const END_TURN = anchor('pass.end-turn')
 /**
  * The ways to pass priority, for a Priority prompt: a primary button that passes once and says what that does now
  * ("Next: Combat", "Resolve Lightning Bolt", "Continue"), "End turn" beside it to pass until the turn ends, and a small
- * menu with "Resolve everything on the stack", "Always yield to <ability>" (over an ability every player can read) and
- * "Pass until my next turn". Resolve and End turn are never one button: in the last window of the viewer's turn the
- * primary button is not drawn and "End turn" alone moves on, so a Resolve pressed twice never ends the turn. The
+ * menu with "Resolve all", "Always yield to <ability>" (over an ability every player can read) and "Pass until my
+ * next turn". Over a stack of two or more objects "Resolve all" (MTG Arena's) stands beside the primary button instead,
+ * off a phone, and "End turn" moves into the menu, so the dock keeps five controls; Space and Enter keep their meaning.
+ * Resolve and End turn are never one button: in the last window of the viewer's turn the primary button is not drawn and "End turn" alone moves on, so a Resolve pressed twice never ends the turn. The
  * yields are the server's: it passes for the seat and says so, and the prompt goes with its first pass. With nothing
  * holding the keyboard Space passes once and Enter ends the turn (the "End turn" button); under Full Control, which the
  * server does not let a yield run beside, Enter passes once.
@@ -65,7 +67,8 @@ export function PassControls({ canPass }: { canPass: boolean }) {
   const held = usePassHeld()
   const { answer } = usePrompt()
   const situation = usePlay(useShallow(passSituation))
-  const stacked = usePlay((state) => (state.view?.stack.count ?? 0) > 0)
+  const stackCount = usePlay((state) => state.view?.stack.count ?? 0)
+  const stacked = stackCount > 0
   // The server refuses a yield while Full Control is on, so there is nothing to offer then.
   const canYield = usePlay((state) => state.fullControl === 'Off')
   // One request per prompt: the server answers it with a new decision or a notice, and either replaces this prompt.
@@ -92,7 +95,11 @@ export function PassControls({ canPass }: { canPass: boolean }) {
   // window there is no primary button and "End turn" stands in the dock.
   const compact = form === 'compact'
   const full = form === 'full'
-  const endTurnInDock = endTurnShown(situation, !canYield) && (!compact || last)
+  // Over a stack of two or more "Resolve all" stands beside the primary button and "End turn" waits in the menu, so the
+  // dock keeps its five controls; Enter still ends the turn. A phone has no room for it: its menu holds it.
+  const resolveAll = resolveAllShown(stackCount, !canYield)
+  const resolveAllInDock = resolveAll && !compact
+  const endTurnInDock = endTurnShown(situation, !canYield) && (!compact || last) && !resolveAllInDock
   usePrimaryKey({ space: pass, enter: endTurn }, free)
 
   const label = primaryLabel(situation, form)
@@ -132,7 +139,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
             <EllipsisVertical aria-hidden="true" />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            {compact && !last ? (
+            {!endTurnInDock ? (
               <DropdownMenuItem
                 data-yield="EndOfTurn"
                 {...END_TURN}
@@ -142,7 +149,7 @@ export function PassControls({ canPass }: { canPass: boolean }) {
                 {YIELD_WORDS.EndOfTurn.action}
               </DropdownMenuItem>
             ) : null}
-            {stacked ? (
+            {stacked && !resolveAllInDock ? (
               <DropdownMenuItem
                 data-yield="Resolve"
                 aria-description={YIELD_WORDS.Resolve.description}
@@ -176,6 +183,19 @@ export function PassControls({ canPass }: { canPass: boolean }) {
             </p>
           </DropdownMenuContent>
         </DropdownMenu>
+      ) : null}
+      {resolveAllInDock ? (
+        <Button
+          data-slot="resolve-all"
+          data-yield="Resolve"
+          variant="outline"
+          className={cn('h-11', padding)}
+          disabled={!free}
+          aria-description={YIELD_WORDS.Resolve.description}
+          onClick={() => yieldTo('Resolve')}
+        >
+          {YIELD_WORDS.Resolve.action}
+        </Button>
       ) : null}
       {/* Last, so the primary button is the one in the corner of the dock and the last stop of its row. */}
       {label === null ? null : (

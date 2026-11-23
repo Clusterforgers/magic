@@ -111,7 +111,8 @@ describe('the dock of the table', () => {
     const dock = screen.getByRole('region', { name: 'Pass controls' })
     expect(dock).toHaveAttribute('data-region', 'controls')
     expect(dock.querySelector('[data-slot="primary-action"]')).not.toBeNull()
-    expect(dock.querySelector('[data-slot="secondary-action"]')).not.toBeNull()
+    // The fixture holds three spells on the stack: "Resolve all" stands beside the primary button, "End turn" in the menu.
+    expect(dock.querySelector('[data-slot="resolve-all"]')).not.toBeNull()
     expect(dock.querySelector('[data-slot="more-passing"]')).not.toBeNull()
   })
 

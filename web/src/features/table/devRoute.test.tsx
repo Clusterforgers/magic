@@ -149,14 +149,18 @@ describe('/dev/table with a prompt', () => {
 
 describe('/dev/table with the controls of the Priority prompt', () => {
   it.each([
-    ['priority', 'Resolve Lightning Bolt', true],
-    ['priority-main', 'Next: Combat', true],
-    ['priority-wait', 'Continue', true],
-  ])('?prompt=%s reads "%s" (an End turn beside it: %s)', async (prompt, label, hasSecondary) => {
+    ['priority', 'Resolve Lightning Bolt', 'resolve-all'],
+    ['priority-main', 'Next: Combat', 'secondary-action'],
+    ['priority-wait', 'Continue', 'secondary-action'],
+  ])('?prompt=%s reads "%s" with %s beside it', async (prompt, label, beside) => {
     await visit(`/dev/table?seats=2&prompt=${prompt}`)
     await screen.findByRole('region', { name: 'Game table' })
     expect(await findPrimary()).toHaveTextContent(label)
-    expect(document.querySelector('[data-slot="secondary-action"]') !== null).toBe(hasSecondary)
+    expect(document.querySelector(`[data-slot="${beside}"]`)).not.toBeNull()
+    // Over the three spells of ?prompt=priority "Resolve all" takes the place of "End turn", which waits in the menu.
+    expect(document.querySelector('[data-slot="secondary-action"]') !== null).toBe(
+      beside === 'secondary-action',
+    )
     expect(document.querySelector('[data-slot="yield-indicator"]')).toBeNull()
   })
 
@@ -170,17 +174,23 @@ describe('/dev/table with the controls of the Priority prompt', () => {
     expect(document.querySelector('[data-slot="primary-action"]')).toBeNull()
   })
 
-  it('starts a yield from the prompt as the server would: the prompt gives way to the line, which can be stopped', async () => {
-    await visit('/dev/table?seats=2&prompt=priority')
-    await findPrimary()
-    await act(async () => document.querySelector<HTMLElement>('[data-slot="secondary-action"]')?.click())
-    expect(document.querySelector('[data-decision]')).toBeNull()
-    expect(await screen.findByText('Passing until the end of turn')).toBeInTheDocument()
-    expect(document.querySelectorAll('[data-highlight]')).toHaveLength(0)
+  it.each([
+    ['priority-wait', 'secondary-action', 'Passing until the end of turn'],
+    ['priority', 'resolve-all', 'Passing until the stack is empty'],
+  ])(
+    '?prompt=%s starts a yield from %s as the server would: the prompt gives way to "%s", which can be stopped',
+    async (prompt, slot, words) => {
+      await visit(`/dev/table?seats=2&prompt=${prompt}`)
+      await findPrimary()
+      await act(async () => document.querySelector<HTMLElement>(`[data-slot="${slot}"]`)?.click())
+      expect(document.querySelector('[data-decision]')).toBeNull()
+      expect(await screen.findByText(words)).toBeInTheDocument()
+      expect(document.querySelectorAll('[data-highlight]')).toHaveLength(0)
 
-    await act(async () => screen.getByRole('button', { name: 'Stop passing' }).click())
-    expect(document.querySelector('[data-slot="yield-indicator"]')).toBeNull()
-  })
+      await act(async () => screen.getByRole('button', { name: 'Stop passing' }).click())
+      expect(document.querySelector('[data-slot="yield-indicator"]')).toBeNull()
+    },
+  )
 
   it.each([
     ['yield', 'Passing until the end of turn'],
