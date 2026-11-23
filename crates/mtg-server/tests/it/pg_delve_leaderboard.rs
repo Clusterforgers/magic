@@ -122,7 +122,7 @@ async fn the_leaderboard_ranks_each_players_deepest_run_per_heat(pool: PgPool) {
         .iter()
         .map(|b| b["heat"].as_u64().unwrap())
         .collect();
-    assert_eq!(heats, vec![2, 1, 0], "the greatest Heat first");
+    assert_eq!(heats, vec![3, 2, 1, 0], "the greatest Heat first");
 
     let shallow = started(&server, &ana, 2).await;
     win(&server, &pool, &shallow, &ana).await;

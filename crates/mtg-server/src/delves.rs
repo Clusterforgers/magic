@@ -860,7 +860,7 @@ pub(crate) async fn create(
         return Err(failure(
             StatusCode::BAD_REQUEST,
             "invalid",
-            "Heat is 0 to 2",
+            "Heat is 0 to 3",
         ));
     }
     let seed = match body.seed.as_deref().filter(|s| !s.trim().is_empty()) {
@@ -874,7 +874,7 @@ pub(crate) async fn create(
         None => crate::secret::random_seed().map_err(|_| ApiError::internal())?,
     };
     let theme = campaign()?
-        .theme_for(seed, mtg_campaign::run::CONTENT)
+        .theme_at(seed, mtg_campaign::run::CONTENT, body.heat)
         .map_err(|_| ApiError::internal())?
         .id
         .clone();

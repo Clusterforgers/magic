@@ -4,7 +4,7 @@
 /// The most heroes in a party.
 pub const MOST: usize = 6;
 /// The hottest Heat.
-pub const MAX_HEAT: u8 = 2;
+pub const MAX_HEAT: u8 = 3;
 /// The rounds whose last turn's end step begins Phase 1 and Phase 2.
 pub const PHASE_ROUNDS: [u32; 2] = [8, 14];
 /// A boss's life against one hero.

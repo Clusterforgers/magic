@@ -6,7 +6,7 @@ import type { Timers } from "./Timers";
  */
 export type CreateDelve = { 
 /**
- * The difficulty level, 0 to 2.
+ * The difficulty level, 0 to 3.
  */
 heat: number, 
 /**

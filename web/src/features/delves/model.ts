@@ -85,11 +85,12 @@ export interface HeatTier {
 
 const CASUAL: HeatTier = { heat: 0, name: 'Casual', text: 'any deck can win with some luck' }
 
-/** The three Heats, from the gentlest. */
+/** The four Heats, from the gentlest. */
 export const HEAT_TIERS: readonly HeatTier[] = [
   CASUAL,
   { heat: 1, name: 'Seasoned', text: 'needs a deck that suits the format' },
   { heat: 2, name: 'Heroic', text: 'needs a team of decks that work together and suit the format' },
+  { heat: 3, name: 'Legendary', text: 'needs a tuned team, and opens the Ember Foundry' },
 ]
 
 /** The tier of `heat`; a Heat above the table reads as the highest. */
