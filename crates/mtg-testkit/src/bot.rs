@@ -202,12 +202,29 @@ pub fn apply_answer(
                     | IllegalAnswer::TooLittlePower { .. }
                     | IllegalAnswer::TooLittleValue { .. }
                     | IllegalAnswer::TooFewCardTypes { .. }
-                    | IllegalAnswer::WrongPick(R5518_ALIKE_SAME_NAME | R5518_ALIKE_SHARE_COLOR),
+                    | IllegalAnswer::WrongPick(
+                        R5518_ALIKE_SAME_NAME | R5518_ALIKE_SHARE_COLOR | R112_ONE_GRAVEYARD,
+                    ),
                 ),
             ) => error,
             result => return result,
         };
         let smaller = match (&decision.kind, &answer) {
+            // Cards of several graveyards: as many of the first card's owner's, else of the first owner with enough.
+            (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
+                if matches!(
+                    refused,
+                    EngineError::Illegal(IllegalAnswer::WrongPick(R112_ONE_GRAVEYARD))
+                ) =>
+            {
+                let narrowed = r112_one_owner(options, engine.state(), cards.first().copied());
+                let size = cards
+                    .len()
+                    .clamp(narrowed.min as usize, narrowed.max as usize);
+                let next: Vec<ObjectId> = narrowed.from.iter().copied().take(size).collect();
+                (next != *cards && narrowed.from.len() < options.from.len())
+                    .then_some(Answer::ChooseCards(CardsChoice(next)))
+            }
             (DecisionKind::ChooseCards(options), Answer::ChooseCards(CardsChoice(cards)))
                 if matches!(refused, EngineError::Illegal(IllegalAnswer::WrongPick(_))) =>
             {
@@ -500,6 +517,57 @@ pub fn rmt1_within_total(
         .collect()
 }
 
+/// The refusal of a pick for a cost that takes its cards from one graveyard ("Exile two cards from a single graveyard").
+const R112_ONE_GRAVEYARD: &str = "cards from a single graveyard";
+
+/// Whether the choice of cards is a cost that takes them all from one graveyard, as its question says.
+pub fn r112_one_graveyard(options: &CardsOptions) -> bool {
+    options
+        .text
+        .trim_end_matches('.')
+        .ends_with(" from a single graveyard")
+}
+
+/// The options of a choice from a single graveyard cut to the cards of one owner who has as many as the least count:
+/// the owner of `first` when they have enough, else the first in the order offered, so any pick is legal; the options
+/// unchanged when no owner has enough.
+pub fn r112_one_owner(
+    options: &CardsOptions,
+    state: &GameState,
+    first: Option<ObjectId>,
+) -> CardsOptions {
+    let owner = |id: ObjectId| state.object(id).map(mtg_engine::object::GameObject::owner);
+    let of = |player| -> Vec<ObjectId> {
+        options
+            .from
+            .iter()
+            .copied()
+            .filter(|id| owner(*id) == Some(player))
+            .collect()
+    };
+    let enough = |cards: &Vec<ObjectId>| !cards.is_empty() && cards.len() >= options.min as usize;
+    let from = first.and_then(owner).map(of).filter(enough).or_else(|| {
+        options
+            .from
+            .iter()
+            .filter_map(|id| owner(*id))
+            .map(of)
+            .find(enough)
+    });
+    let Some(from) = from else {
+        return options.clone();
+    };
+    let max = options
+        .max
+        .min(u32::try_from(from.len()).unwrap_or(u32::MAX));
+    CardsOptions {
+        from,
+        max,
+        min: options.min.min(max),
+        ..options.clone()
+    }
+}
+
 /// The options of a choice of cards with different names, cut to the first card of each name, so any pick is legal.
 fn rmt1_one_per_name(options: &CardsOptions, state: &GameState) -> CardsOptions {
     let mut seen: Vec<&str> = Vec::new();
@@ -644,6 +712,13 @@ impl RandomBot {
             }
             DecisionKind::ChooseCards(options) if options.one_per_name => {
                 self.cards(&rmt1_one_per_name(options, state))
+            }
+            DecisionKind::ChooseCards(options) if r112_one_graveyard(options) => {
+                let first = options
+                    .from
+                    .get(self.rng.index(options.from.len().max(1)))
+                    .copied();
+                self.cards(&r112_one_owner(options, state, first))
             }
             DecisionKind::ChooseCards(options) if !options.groups.is_empty() => {
                 self.cards(&options.one_per_group())
