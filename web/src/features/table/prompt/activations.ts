@@ -34,6 +34,8 @@ export interface Play {
   detail?: string
   /** The spoken name. */
   words: string
+  /** The play in a few words for a card's foot: the keyword with its mana (`Cycling {2}`), else what it costs. */
+  cue?: string
   /** What the prompt answers when it is chosen. */
   action: PriorityAction
 }
@@ -101,6 +103,21 @@ function wording(ref: AbilityRef, worded: ActivatedView | undefined): Pick<Play,
   if (worded.unworded === true) return { label: worded.effect }
   if (worded.keyword !== undefined) return { label: worded.keyword, detail: full }
   return { label: full }
+}
+
+/** The mana symbols at the head of a cost, as written: `{1}{G}` of "{1}{G}, Discard this card". */
+const manaOf = (cost: string): string => /^(\{[^}]+\})+/.exec(cost.trim())?.[0] ?? ''
+
+/**
+ * The ability in a few words for the foot of a card: its keyword line (`Plainscycling {2}`), the keyword with the mana
+ * of its cost when the line has none, else "Ability" with that mana (`Ability {1}{G}` for a channel ability).
+ */
+export function abilityCue(worded: ActivatedView | undefined): string {
+  const mana = worded === undefined ? '' : manaOf(worded.cost)
+  const keyword = worded?.keyword
+  if (keyword !== undefined && keyword !== '')
+    return keyword.includes('{') ? keyword : `${keyword} ${mana}`.trim()
+  return `Ability ${mana}`.trim()
 }
 
 /** The line of the ability `ref` of `object` in the card's words: "{T}: Add one mana of any color. Roll a d20." */
@@ -206,6 +223,7 @@ export function abilityPlays(
       key: abilityKey(ref),
       label,
       words: `Activate ${spoken(label)}`,
+      cue: abilityCue(worded),
       action: { Activate: ref },
       ...(detail === undefined ? {} : { detail }),
     })
@@ -233,7 +251,7 @@ export function abilityPlays(
     const object = objectsById[id]
     if (object === undefined || !usable(object, seat)) continue
     const words = `${verb} ${object.name}`
-    add(id, { key: `${verb.toLowerCase().replace(/ /g, '-')}-${id}`, label: words, words, action })
+    add(id, { key: `${verb.toLowerCase().replace(/ /g, '-')}-${id}`, label: words, words, cue: verb, action })
   }
   return found
 }
@@ -305,6 +323,49 @@ export function mergeNotes(hand: CardNotes, activation: CardNotes): CardNotes {
     )
   }
   return merged
+}
+
+/** Whether the hand dock draws `object` for `seat`: a card of its hand, or its commander or top card at the dock's head. */
+function inHandDock(object: ObjectView, seat: PlayerId): boolean {
+  const { zone } = object
+  if (typeof zone !== 'object') return false
+  if ('Hand' in zone) return zone.Hand === seat
+  if ('Command' in zone) return zone.Command === seat
+  if ('Library' in zone) return zone.Library === seat
+  return false
+}
+
+/**
+ * The cue of each card of the hand dock that cannot be cast or played now but has a play of its own (cycling, channel,
+ * ninjutsu, suspend): the play in a few words (`Cycling {2}`), or their count when several.
+ */
+export function abilityOnlyCues(
+  activations: Activations,
+  options: PriorityOptions,
+  objectsById: Readonly<Record<number, ObjectView>>,
+  seat: PlayerId | null,
+): ReadonlyMap<ObjectId, string> {
+  const cues = new Map<ObjectId, string>()
+  if (seat === null) return cues
+  for (const [id, plays] of activations) {
+    const object = objectsById[id]
+    const [only] = plays
+    if (object === undefined || only === undefined || !inHandDock(object, seat)) continue
+    if (options.castable.includes(id) || options.playable_lands.includes(id)) continue
+    cues.set(id, plays.length === 1 ? (only.cue ?? only.label) : `${plays.length} abilities`)
+  }
+  return cues
+}
+
+/** `notes` with each cue of `cues` on its card (`CardNote.ability`); a card without a note gets one of the cue alone. */
+export function withAbilityCues(notes: CardNotes, cues: ReadonlyMap<ObjectId, string>): CardNotes {
+  if (cues.size === 0) return notes
+  const out = new Map(notes)
+  for (const [id, ability] of cues) {
+    const note = notes.get(id)
+    out.set(id, { ...(note ?? { words: ability }), ability })
+  }
+  return out
 }
 
 /** The line of one mana ability in a chooser: the mana it adds, told apart by place on the card when two add the same. */
