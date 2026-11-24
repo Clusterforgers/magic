@@ -903,6 +903,7 @@ fn paid_specials(
 /// Everything `player` may do while holding priority.
 #[allow(clippy::too_many_lines)]
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
+    let _views = crate::faces::FaceViews::open(state);
     let hand = state.zone(Zone::Hand(player));
     let (at_priority, all_mana) = both_manas(state, player);
     let pool = state

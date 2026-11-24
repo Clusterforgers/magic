@@ -1,4 +1,4 @@
-//! Goal: however many permanents the table holds, the layers are worked out once for all the reads between two events (the options of a priority round, an attack and a block, the snapshots of a sweep), and a block offers every blocker every attacker it may block.
+//! Goal: however many permanents the table holds, the layers are worked out once for all the reads between two events (the options of a priority round, an attack and a block, the snapshots of a sweep) and once more for each face of a card the options try, and a block offers every blocker every attacker it may block.
 use mtg_cards::CardDefinition;
 use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
@@ -89,4 +89,31 @@ fn the_snapshots_of_a_sweep_work_out_the_layers_once(#[values(30, 120)] size: us
             .count();
     });
     assert_eq!((count, shots), (1, 2 * size + 1));
+}
+
+/// A split card of two instant halves that cost more than a player without lands has.
+fn split_card() -> Arc<CardDefinition> {
+    let half = |name: &str| {
+        CardDefinition::new(name)
+            .with_type(CardType::Instant)
+            .with_mana_cost(mtg_core::mana::ManaCost::parse("{3}").unwrap())
+    };
+    let (left, right) = (half("Left"), half("Right"));
+    Arc::new(
+        left.clone()
+            .with_faces(mtg_cards::definition::Layout::Split, vec![left, right]),
+    )
+}
+
+#[rstest]
+fn the_options_of_a_round_work_out_each_face_of_a_card_once(#[values(1, 3)] cards: usize) {
+    let hand = (0..cards).map(|_| split_card()).collect();
+    let game = state(vec![hand, vec![]], vec![vec![anthem()], vec![]]);
+    let mut options = None;
+    let count = computed(|| options = Some(priority_options(&game, ME)));
+    // The state itself, then one view for each half of each card: whether it can be cast, and why not, read the same.
+    assert_eq!(count, 1 + 2 * cards as u64);
+    let options = options.unwrap();
+    assert_eq!(options.castable, Vec::new());
+    assert_eq!(options.unplayable.len(), cards);
 }

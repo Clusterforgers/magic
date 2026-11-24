@@ -7,6 +7,11 @@
 //! the card already in use as the face.
 
 use std::borrow::Cow;
+use std::cell::RefCell;
+use std::collections::BTreeMap;
+use std::marker::PhantomData;
+use std::ops::Deref;
+use std::rc::Rc;
 
 use mtg_cards::definition::Layout;
 use mtg_core::card::CardType;
@@ -25,16 +30,105 @@ use crate::zones::Zone;
 impl GameState {
     /// This state with the card `id` in use as `face` (CR 601.2a): what the announcement of a cast and the options
     /// read, since the rules move the card to the stack before they ask anything. A card with one face, or the front
-    /// face of an adventure or modal double-faced card (`None`), is the state itself.
-    pub(crate) fn with_face(&self, id: ObjectId, face: Option<u8>) -> Cow<'_, GameState> {
+    /// face of an adventure or modal double-faced card (`None`), is the state itself. Inside a [`FaceViews`] scope of
+    /// this state a view is made once and shared.
+    pub(crate) fn with_face(&self, id: ObjectId, face: Option<u8>) -> Faced<'_> {
         if face.is_none() {
-            return Cow::Borrowed(self);
+            return Faced::Same(self);
+        }
+        let key = (id, face);
+        let shared = VIEWS.with_borrow(|views| {
+            views
+                .as_ref()
+                .filter(|views| views.base == std::ptr::from_ref(self) as usize)
+                .and_then(|views| views.made.get(&key).cloned())
+        });
+        if let Some(view) = shared {
+            return Faced::Shared(view);
         }
         let mut view = self.clone();
         if let Some(object) = view.objects.get_mut(&id) {
             object.choices.face = face;
         }
-        Cow::Owned(view)
+        let view = Rc::new(view);
+        VIEWS.with_borrow_mut(|views| {
+            if let Some(views) = views
+                .as_mut()
+                .filter(|views| views.base == std::ptr::from_ref(self) as usize)
+            {
+                views.made.insert(key, Rc::clone(&view));
+            }
+        });
+        Faced::Shared(view)
+    }
+}
+
+/// A state read as [`GameState::with_face`] gives it: the state itself, or a view with the card turned to a face.
+pub(crate) enum Faced<'a> {
+    /// The state itself.
+    Same(&'a GameState),
+    /// A view of the state with one card as a face.
+    Shared(Rc<GameState>),
+}
+
+impl Deref for Faced<'_> {
+    type Target = GameState;
+
+    fn deref(&self) -> &GameState {
+        match self {
+            Faced::Same(state) => state,
+            Faced::Shared(view) => view,
+        }
+    }
+}
+
+/// The face views made of one state while a [`FaceViews`] scope is open on this thread.
+struct Views {
+    /// The address of the state the views are of.
+    base: usize,
+    made: BTreeMap<(ObjectId, Option<u8>), Rc<GameState>>,
+}
+
+thread_local! {
+    static VIEWS: RefCell<Option<Views>> = const { RefCell::new(None) };
+}
+
+/// While alive, [`GameState::with_face`] of `state` makes each view once (with its layers) and shares it: the options
+/// of a priority decision ask several questions of the same face of a card (can it be cast, has it a way, why not).
+/// The state is borrowed for the scope, so it cannot change under the views; a scope opened inside another keeps the
+/// outer one.
+pub(crate) struct FaceViews<'a> {
+    /// Whether this scope opened the views, and so closes them.
+    opened: bool,
+    state: PhantomData<&'a GameState>,
+}
+
+impl<'a> FaceViews<'a> {
+    /// Opens a scope over `state`, unless one is open already.
+    pub(crate) fn open(state: &'a GameState) -> FaceViews<'a> {
+        let opened = VIEWS.with_borrow_mut(|views| {
+            if views.is_some() {
+                return false;
+            }
+            *views = Some(Views {
+                base: std::ptr::from_ref(state) as usize,
+                made: BTreeMap::new(),
+            });
+            true
+        });
+        FaceViews {
+            opened,
+            state: PhantomData,
+        }
+    }
+}
+
+impl Drop for FaceViews<'_> {
+    fn drop(&mut self) {
+        if self.opened {
+            let made = VIEWS.with_borrow_mut(Option::take);
+            drop(made);
+        }
     }
 }
 

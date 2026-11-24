@@ -1,4 +1,4 @@
-//! Goal: at a Two-Headed Giant table made through the lobby both players of the active team receive their own attack question in the same declare-attackers step, in turn order, the second seeing what the first chose; one player declining never keeps the teammate's creatures at home, a bot teammate answers for itself while the human is still asked, and the team's one declaration is exactly the players' choices together (CR 805.10).
+//! Goal: at a Two-Headed Giant table made through the lobby both players of the active team receive their own attack question in the same declare-attackers step, in turn order, the second seeing what the first chose; one player declining never keeps the teammate's creatures at home, a bot teammate answers for itself while the human is still asked, and the team's one declaration is exactly the players' choices together (CR 805.10). Each case plays a fixed seed, so a run never depends on the cards the table happens to draw.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -104,13 +104,14 @@ fn respond(
     )
 }
 
-/// Plays a Two-Headed Giant game with human seats `humans` (the rest are bots) until turn 40 and returns what the table
-/// showed of each turn's combat; the humans in `declining` never attack.
-async fn play(humans: &[usize], declining: &[usize]) -> BTreeMap<u32, Turn> {
+/// Plays the Two-Headed Giant game of `seed` with human seats `humans` (the rest are bots) until turn 40 and returns
+/// what the table showed of each turn's combat; the humans in `declining` never attack.
+async fn play(humans: &[usize], declining: &[usize], seed: u64) -> BTreeMap<u32, Turn> {
     let seats = 4;
     let registry = Registry::new(&ServerConfig {
         game: windowed(),
         bot_delay: Duration::from_millis(50),
+        fixed_seed: Some(seed),
         ..ServerConfig::default()
     });
     let requests: Vec<SeatRequest> = (0..seats)
@@ -201,16 +202,17 @@ async fn play(humans: &[usize], declining: &[usize]) -> BTreeMap<u32, Turn> {
 }
 
 #[rstest]
-#[case::humans_the_first_head_declines(&[0, 1, 2, 3], &[0, 2])]
-#[case::humans_the_second_head_declines(&[0, 1, 2, 3], &[1, 3])]
-#[case::a_human_and_a_bot_teammate(&[0, 2], &[])]
+#[case::humans_the_first_head_declines(&[0, 1, 2, 3], &[0, 2], 1)]
+#[case::humans_the_second_head_declines(&[0, 1, 2, 3], &[1, 3], 2)]
+#[case::a_human_and_a_bot_teammate(&[0, 2], &[], 3)]
 #[tokio::test(start_paused = true)]
 async fn both_players_of_a_giant_team_choose_their_own_attacks(
     #[case] humans: &[usize],
     #[case] declining: &[usize],
+    #[case] seed: u64,
 ) {
     let teams = Teams::even(TeamMode::TwoHeadedGiant, 2, 2);
-    let turns = play(humans, declining).await;
+    let turns = play(humans, declining, seed).await;
     // Turns where both players of the team were asked, and where one declined and the other still attacked.
     let (mut both, mut kept, mut questions) = (0, 0, 0);
     for (number, turn) in &turns {
