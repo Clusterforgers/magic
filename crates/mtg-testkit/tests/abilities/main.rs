@@ -17,6 +17,7 @@ mod common;
 mod conditional_statics;
 mod continuous_effects;
 mod copy_dies;
+mod dack_give_away;
 mod defining;
 mod did_triggers;
 mod dk1c_triggers;

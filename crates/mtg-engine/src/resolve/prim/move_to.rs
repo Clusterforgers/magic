@@ -18,7 +18,7 @@ use crate::events::{Event, ZoneCause};
 use crate::loyalty;
 use crate::mulligan::shuffled;
 use crate::object::{GameObject, ObjectKind, ObjectRef};
-use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::resolve::{Cx, Next, R4007_ARRIVED, ResolveError, Run};
 use crate::saga;
 use crate::snapshot::{Snapshot, snapshot};
 use crate::state::GameState;
@@ -541,7 +541,19 @@ fn arrived_as(cx: &Cx<'_>, what: &Ref, entered: &[ObjectId]) -> Vec<(String, Vec
     if renewed == named {
         return Vec::new();
     }
-    vec![(name, renewed)]
+    // The permanents the name follows are kept apart too, so `Arrived` of the name still finds them.
+    let mut arrived = cx
+        .scope
+        .bindings
+        .get(R4007_ARRIVED)
+        .cloned()
+        .unwrap_or_default();
+    for target in &renewed {
+        if !named.contains(target) && !arrived.contains(target) {
+            arrived.push(*target);
+        }
+    }
+    vec![(name, renewed), (R4007_ARRIVED.to_owned(), arrived)]
 }
 
 /// The events that put each owner's cards into their library at `place`.
@@ -1285,16 +1297,22 @@ mod tests {
         let unmoved = Target::Object(game.object(on_the_field).unwrap().reference());
         assert_eq!(
             bound_by(run),
-            [(
-                "cards".to_owned(),
-                vec![
-                    renewed(first),
-                    renewed(second),
-                    unmoved,
-                    Target::Object(stale)
-                ]
-            )],
-            "what arrived is named again, what stayed or was stale is not"
+            [
+                (
+                    "cards".to_owned(),
+                    vec![
+                        renewed(first),
+                        renewed(second),
+                        unmoved,
+                        Target::Object(stale)
+                    ]
+                ),
+                (
+                    R4007_ARRIVED.to_owned(),
+                    vec![renewed(first), renewed(second)]
+                )
+            ],
+            "what arrived is named again and kept as arrived, what stayed or was stale is not"
         );
         let stays = named(&game, &[on_the_field]);
         let run = run_bound(&game, stays, Vec::new(), &moving(r#"{"Battlefield":{}}"#)).unwrap();
