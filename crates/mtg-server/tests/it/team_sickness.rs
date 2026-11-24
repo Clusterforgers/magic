@@ -20,7 +20,8 @@ use mtg_server::demo;
 use mtg_server::registry::{GameOptions, Registry, SeatRequest};
 use rstest::rstest;
 
-/// A human who plays a land or a creature whenever it can and passes otherwise, so its seat has creatures to attack with.
+/// A human who plays a land or a creature whenever it can and passes otherwise, so its seat has creatures to attack with;
+/// a target question of what it cast gets the first legal targets.
 pub(crate) fn plays(decision: &Decision, view: Option<&StateView>) -> Answer {
     match (&decision.kind, view) {
         (DecisionKind::Priority(options), Some(view)) => {
@@ -36,6 +37,10 @@ pub(crate) fn plays(decision: &Decision, view: Option<&StateView>) -> Answer {
             }
         }
         (DecisionKind::PayMana(_), _) => Answer::PayMana(PayChoice::Auto),
+        (DecisionKind::ChooseTargets(_), _) => mtg_server::bots::tries(decision)
+            .into_iter()
+            .next()
+            .unwrap_or_else(|| common::passive(decision)),
         _ => common::passive(decision),
     }
 }
