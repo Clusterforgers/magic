@@ -24,7 +24,7 @@ use mtg_engine::state::{GameState, Stage};
 use mtg_engine::zones::Zone;
 
 use crate::message::AutoYield;
-use crate::modifiers::modifier_views;
+use crate::modifiers::{cost_views, modifier_views, player_effect_views};
 use crate::view::{
     AttackerView, CombatView, CommanderDamageView, CommanderView, CompanionView, CopyView,
     GivesView, Granter, LoyaltyAbilityView, MergedCardView, ObjectView, PermanentView, PlayerView,
@@ -552,7 +552,8 @@ impl ObjectView {
         let rules_text = stack_text(object, &name, granter);
         let manual_owed = (printed || !name.is_empty()) && card.manual_owed();
         // A face-down permanent's abilities are the 2/2's; the card behind it is read off `abilities`.
-        let modifiers = modifier_views(state, sight, object, look, &name);
+        let mut modifiers = modifier_views(state, sight, object, look, &name);
+        modifiers.extend(cost_views(state, sight, object, look, &name));
         let activated = if printed && !behind && sight.reads_rules_of(object) {
             activated_views(state, id, &chars.abilities, &card.name)
         } else {
@@ -730,6 +731,7 @@ impl PlayerView {
             ring_bearer: state.ring_bearer(seat),
             enchanted_by: state.attachments_of_player(seat),
             effects: mtg_engine::rules::player_effects(state, seat),
+            sources: player_effect_views(state, viewer, seat),
             spirit: player.is_spirit(),
             eyes: mtg_engine::spotlight::focus(state, seat),
             boss: crate::boss_view::of(state, player),

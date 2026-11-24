@@ -33,6 +33,7 @@ mod common;
 mod companion_view;
 mod copy_view;
 mod cost_now_view;
+mod cost_sources_view;
 mod counter_view;
 mod crew_hidden;
 mod deck_pictures;

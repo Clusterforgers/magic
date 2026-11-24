@@ -84,7 +84,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 - [ ] (ln1) The Help menu's table tour runs on the Learn coach and its anchors instead of `TourCard` and CSS selectors
 - [ ] (ln2) Outside lessons too, the hover preview of a chosen hand card keeps clear of the prompt band's question
-- [ ] (ln3) The log and the preview conjugate for the viewer's own seat, so a seat named "You" never reads "You plays" or "You's turn"
 
 ## M5 Table and prompts
 
@@ -95,9 +94,7 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1b2b) The other Sieges' unread clauses: the enter triggers of Invasion of Arcavios (search outside the game), Ergamon, Kamigawa, Karsus, Lorwyn (X lands) and Regatha (two targets), and back-face lines of Eldraine, Ergamon, Fiora, Kamigawa and Regatha
 - [ ] (hx29a) Detail for the refusals still told only by their reason: a cast taken back for its cost or mana (`AnnouncementRewound.why`), an Aura, bestow or mutate spell with no host (`attach`, `merged`), the abilities of cards in a graveyard, exile or the command zone (`PriorityOptions.inactive` covers the battlefield), and a `-X` or X ability whose least X has no target
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
-- [ ] (pm1) The preview's "Modified by" also names cost changes (reductions, taxes, the Unmaker's drawn colours) by source, and a seat pod lists what changes the player by source
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
-- [ ] (mb2) An asking source that has left its zone keeps its picture: a last-known face (`AskingView` identity) for the chip and the column's card
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
 - [ ] (dh8) Combat forecasts are badges on attackers, blockers and the attacked pod, with the total in the dock
 - [ ] (dh11) `hand.spec.ts`: the rotated end card's name line clips the hand container (7 cases)

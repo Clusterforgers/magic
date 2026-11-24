@@ -482,12 +482,101 @@ fn changes(
     choices: &Choices,
     judging: Option<&[TargetSpec]>,
 ) -> Option<Changes> {
+    let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
+    let mut life = 0u32;
+    each_change(
+        state,
+        player,
+        spell,
+        specs,
+        choices,
+        judging,
+        |_, change, part, least, each| match change {
+            CostChange::Increase => {
+                more = joined(std::mem::replace(&mut more, ManaCost::ZERO), &part);
+                life = life.saturating_add(each);
+            }
+            CostChange::Reduce => {
+                floor = floor.max(least);
+                less = joined(std::mem::replace(&mut less, ManaCost::ZERO), &part);
+            }
+        },
+    )?;
+    Some(Changes {
+        more,
+        less,
+        floor,
+        life,
+    })
+}
+
+/// One cost modifier's change to the cost of a spell, with the object it comes from.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CostChangeBy {
+    /// The object whose ability or rule changes the cost; the spell itself for its own ("costs {1} less for each").
+    pub source: ObjectRef,
+    /// More or less.
+    pub change: CostChange,
+    /// The mana it adds or takes away.
+    pub mana: ManaCost,
+    /// The life it adds.
+    pub life: u32,
+}
+
+/// Each cost modifier that changes what `player` pays for `spell` before anything is announced (as [`cheapest`] judges
+/// it), with its source; the commander tax aside, and nothing while no cost can change.
+#[must_use]
+pub fn cost_changes_by_source(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+) -> Vec<CostChangeBy> {
+    let mut found = Vec::new();
+    if !state.possible.costs {
+        return found;
+    }
+    let choices = Choices {
+        x: dk27_most_counted(state, player, spell),
+        ..Choices::default()
+    };
+    let specs = possible_specs(state, spell);
+    each_change(
+        state,
+        player,
+        spell,
+        &[],
+        &choices,
+        Some(&specs),
+        |modifier, change, mana, _, life| {
+            if !mana.symbols().is_empty() || life > 0 {
+                found.push(CostChangeBy {
+                    source: modifier.source,
+                    change,
+                    mana,
+                    life,
+                });
+            }
+        },
+    );
+    found
+}
+
+/// Calls `found` with each modifier that applies to `spell`, which `player` casts with `choices` announced: what it does,
+/// the mana it changes the cost by, the least mana a reduction leaves and the life an increase adds. `None` when the
+/// spell is gone.
+fn each_change(
+    state: &GameState,
+    player: PlayerId,
+    spell: ObjectId,
+    specs: &[TargetSpec],
+    choices: &Choices,
+    judging: Option<&[TargetSpec]>,
+    mut found: impl FnMut(&Modifier, CostChange, ManaCost, u32, u32),
+) -> Option<()> {
     let target = state
         .object(spell)
         .map(crate::object::GameObject::reference)?;
     let announced = Choices::default();
-    let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
-    let mut life = 0u32;
     for modifier in gathered(state, spell, player) {
         let Ability::CostModifier {
             targeting: None,
@@ -531,23 +620,13 @@ fn changes(
         }
         let times = u32::try_from(scope.amount(per).unwrap_or(0).clamp(0, MOST_TIMES)).unwrap_or(0);
         let part = repeated(unit, times);
-        match change {
-            CostChange::Increase => {
-                more = joined(more, &part);
-                life = life.saturating_add(each.saturating_mul(times));
-            }
-            CostChange::Reduce => {
-                floor = floor.max(*least);
-                less = joined(less, &part);
-            }
-        }
+        let life = match change {
+            CostChange::Increase => each.saturating_mul(times),
+            CostChange::Reduce => 0,
+        };
+        found(&modifier, *change, part, *least, life);
     }
-    Some(Changes {
-        more,
-        less,
-        floor,
-        life,
-    })
+    Some(())
 }
 
 /// `cost` less `less`, as a spell's reductions take it (an activated ability's own reductions, `c11a_less`).

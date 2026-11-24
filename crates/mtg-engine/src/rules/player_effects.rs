@@ -1,12 +1,14 @@
 //! The effects in force on one player, as the table shows them on the player's pod: the rules that name the player
-//! and the keywords the player has. Read from the rules in force, so each holds exactly while the game applies it.
+//! and the keywords the player has. Read from the rules in force, so each holds exactly while the game applies it;
+//! each rule read alone tells which source brings which effect.
 
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use serde::{Deserialize, Serialize};
 
+use super::{RulesInForce, seat_bit};
+use crate::object::ObjectRef;
 use crate::state::GameState;
-use crate::w17b_statics as w;
 
 /// One effect in force on a player.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -58,16 +60,45 @@ pub enum PlayerEffect {
 /// Every effect in force on `player`, in the order of [`PlayerEffect`], keywords last and each once.
 #[must_use]
 pub fn player_effects(state: &GameState, player: PlayerId) -> Vec<PlayerEffect> {
-    let rules = state.rules();
+    with_keywords(
+        ruled(state, state.rules(), player),
+        crate::keywords::player_keywords(state, player),
+    )
+}
+
+/// Each effect in force on `player` that a rule of an object brings, with that object; an effect two objects bring is
+/// listed once for each, in the order of [`PlayerEffect`] within the rules of one object.
+#[must_use]
+pub fn player_effect_sources(
+    state: &GameState,
+    player: PlayerId,
+) -> Vec<(PlayerEffect, ObjectRef)> {
+    let mut out = Vec::new();
+    for (rule, controller, source) in super::rules_by_source(state) {
+        let Some(source) = source else { continue };
+        let mut alone = RulesInForce::default();
+        alone.put(&rule, controller, Some(source));
+        let keywords = alone
+            .player_keywords
+            .iter()
+            .filter(|(who, _)| *who == player)
+            .map(|(_, keyword)| keyword);
+        let effects = with_keywords(ruled(state, &alone, player), keywords);
+        out.extend(effects.into_iter().map(|effect| (effect, source)));
+    }
+    out
+}
+
+/// The effects `rules` put on `player`, their keywords included.
+fn ruled(state: &GameState, rules: &RulesInForce, player: PlayerId) -> Vec<PlayerEffect> {
     let fixed = rules.no_life_change.contains(&player);
+    let [cant_lose, spared, winless, cant_cast] =
+        rules.w17b.w17b_flags(player, state.turn().active());
     let flags = [
-        (w::w17b_cant_lose(state, player), PlayerEffect::CantLose),
-        (w::w17b_life_spared(state, player), PlayerEffect::LifeSpared),
-        (w::w17b_cant_win(state, player), PlayerEffect::CantWin),
-        (
-            w::w17b_cant_cast(state, player),
-            PlayerEffect::CantCastSpells,
-        ),
+        (cant_lose, PlayerEffect::CantLose),
+        (spared, PlayerEffect::LifeSpared),
+        (winless, PlayerEffect::CantWin),
+        (cant_cast, PlayerEffect::CantCastSpells),
         (
             !fixed && rules.no_life_gain.contains(&player),
             PlayerEffect::CantGainLife,
@@ -131,18 +162,21 @@ pub fn player_effects(state: &GameState, player: PlayerId) -> Vec<PlayerEffect> 
             .into_iter()
             .filter_map(|(on, effect)| on.then_some(effect)),
     );
-    if let Some(colors) = crate::cost_colors::drawn(state, player) {
+    // The colors are drawn from the identity and the round, whichever rule draws them.
+    if rules.cost_colors & seat_bit(player) != 0
+        && let Some(colors) = crate::cost_colors::drawn(state, player)
+    {
         out.push(PlayerEffect::CostColorsDrawn(colors.into_iter().collect()));
     }
-    let granted = rules
-        .player_keywords
-        .iter()
-        .filter(|(who, _)| *who == player)
-        .map(|(_, keyword)| keyword);
-    for keyword in crate::keywords::player_keywords(state, player)
-        .into_iter()
-        .chain(granted)
-    {
+    out
+}
+
+/// `out` with each of `keywords` the player has added once, after the rest.
+fn with_keywords<'a>(
+    mut out: Vec<PlayerEffect>,
+    keywords: impl IntoIterator<Item = &'a mtg_cards::keyword::Keyword>,
+) -> Vec<PlayerEffect> {
+    for keyword in keywords {
         let shown = PlayerEffect::Keyword(keyword.shown_name());
         if !out.contains(&shown) {
             out.push(shown);

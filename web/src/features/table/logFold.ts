@@ -8,6 +8,7 @@ import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
 import { byHandLine, manualRun, manualText, remember } from './manual/manualLog'
 import { STEP_LABEL } from './turnText'
+import { speak, voiced } from './speech'
 
 /** What a line is: the head of a turn, the name of a step something happened in, or a line of play. */
 export type LineKind = 'turn' | 'step' | 'play'
@@ -40,6 +41,8 @@ export interface FoldOptions {
   seats: readonly PlayerId[]
   /** The players as the view shows them now, whose commander damage names the hits of commanders; none by default. */
   players?: readonly PlayerView[]
+  /** The seat the viewer plays, whose lines read in second person ("You play Plains"); none for a spectator. */
+  viewer?: PlayerId | null
 }
 
 /**
@@ -54,6 +57,7 @@ export function foldLog(log: readonly LogEntry[], given: EventNames, options: Fo
   const granters = abilityGranters(log.map((entry) => entry.event))
   const names: EventNames = {
     ...given,
+    seat: voiced(given.seat, options.viewer),
     ability: (id) => given.ability?.(id) ?? sources.get(id),
     copy: (id) => given.copy?.(id) ?? copies.has(id),
     granter: (id) => given.granter?.(id) ?? granters.get(id),
@@ -174,7 +178,11 @@ export function foldLog(log: readonly LogEntry[], given: EventNames, options: Fo
     }
   })
   flush(undefined)
-  return withoutEmptySteps(lines)
+  return withoutEmptySteps(lines).map((line) => ({
+    ...line,
+    text: speak(line.text),
+    spoken: speak(line.spoken),
+  }))
 }
 
 /**

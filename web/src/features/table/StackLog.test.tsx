@@ -154,11 +154,11 @@ describe('log panel', () => {
 
   it('writes the events as sentences with the seats named by the lookup', () => {
     renderTable({ seats: 4, ui: <LogPanel /> })
-    expect(log()).toHaveTextContent('Bo attacks Alice with')
-    expect(log()).toHaveTextContent('Alice declares blockers:')
-    expect(log()).toHaveTextContent('Alice casts Lightning Bolt')
+    expect(log()).toHaveTextContent('Bo attacks you with')
+    expect(log()).toHaveTextContent('You declare blockers:')
+    expect(log()).toHaveTextContent('You cast Lightning Bolt')
     expect(log()).toHaveTextContent('Grizzly Bears dies from lethal damage')
-    expect(log()).toHaveTextContent('Alice shuffles their library')
+    expect(log()).toHaveTextContent('You shuffle your library')
   })
 
   it('draws a round of passes quietly, with the passing seats as colour dots and named for a screen reader', () => {
@@ -170,9 +170,9 @@ describe('log panel', () => {
       expect(line).toHaveClass('text-muted-foreground')
       expect(line.querySelectorAll('[data-slot="seat-dot"]')).toHaveLength(4)
       expect(line).toHaveTextContent(/^All pass: .+ pass$/)
-      for (const name of ['Alice', 'Bo', 'Cy', 'Dee']) expect(line).toHaveTextContent(name)
+      for (const name of ['you', 'Bo', 'Cy', 'Dee']) expect(line).toHaveTextContent(name)
     }
-    expect(within(log()).getByText('Alice casts Lightning Bolt')).not.toHaveClass('text-muted-foreground')
+    expect(within(log()).getByText('You cast Lightning Bolt')).not.toHaveClass('text-muted-foreground')
   })
 
   it('says so before anything has happened', () => {
@@ -189,7 +189,7 @@ describe('log panel', () => {
     ]
     update((state) => ({ log: appendLog(state.log, state.log.length, events) }))
     const lines = within(log()).getAllByRole('listitem')
-    expect(lines.at(-2)).toHaveTextContent("Turn 6 begins: Alice's turn")
+    expect(lines.at(-2)).toHaveTextContent('Turn 6 begins: your turn')
     expect(lines.at(-1)).toHaveTextContent('Bo draws a card')
   })
 
