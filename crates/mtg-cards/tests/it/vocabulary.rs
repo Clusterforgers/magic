@@ -111,6 +111,10 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Spell":{"effects":[{"Fight":{"what":"This","with":"This"}},{"If":{"condition":"Performed","then":[{"Draw":{}}]}}]}}"#,
     &["Ability.Spell", "Condition.Performed", "Effect.Draw", "Effect.Fight", "Effect.If"]
 )]
+#[case::r122_counters_by_the_type_of_the_card(
+    r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"},{"In":"Graveyard"}]}}],"effects":[{"Move":{"what":{"Target":0},"to":{"R6502BattlefieldAs":{"becomes":[],"r122_typed_counters":[[[{"Type":"Creature"}],"+1/+1",2]]}}}}]}}"#,
+    &["Ability.Spell", "Effect.Move", "Effect.Move.Battlefield", "Effect.Move.R6502As", "Effect.Move.R122TypedCounters"]
+)]
 #[case::the_monarch(
     r#"{"Spell":{"effects":[{"If":{"condition":{"Monarch":"You"},"then":[{"Draw":{}}]}}]}}"#,
     &["Ability.Spell", "Condition.Monarch", "Effect.Draw", "Effect.If"]

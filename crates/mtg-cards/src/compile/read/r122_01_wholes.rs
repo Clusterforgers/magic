@@ -147,8 +147,6 @@ mod tests {
             ("equip {2}", "equip {1}"),
             ("from their library this turn", "from anywhere this turn"),
             ("for each opponent, put", "for each player, put"),
-            ("enters tapped and attacking", "enters tapped"),
-            ("an attacking creature", "a blocking creature"),
         ];
         for (_, text) in R122_01_SHAPES.iter() {
             for (from, to) in swaps {

@@ -8,8 +8,7 @@
 //! Captain Benjamin Sisko casts the exiled spells whose mana value the Officers reach; Gwyndala equips her Heirloom and
 //! turns her Equipment tokens into copies; Infinite Diversity casts one copy for each creature type of the non-Borg
 //! creatures; The Weaver King takes a creature card each opponent lost from the library this turn; each log replays to
-//! the live state. Kira Nerys makes a creature entering during an attack enter tapped and attacking what its controller
-//! chooses.
+//! the live state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common::pid;
@@ -23,10 +22,7 @@ use mtg_cards::modify::Duration;
 use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_engine::characteristics::{characteristics, controller_of};
-use mtg_engine::choose::{
-    CardsChoice, ChoiceOption, CostsChoice, OptionChoice, Target, TargetChoice, YesNoChoice,
-};
-use mtg_engine::combat::AttackTarget;
+use mtg_engine::choose::{CardsChoice, CostsChoice, Target, TargetChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice};
 use mtg_engine::effects::Modification;
 use mtg_engine::keywords::keywords_of;
@@ -35,7 +31,7 @@ use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{
-    bear, burn, cost, forest, free_creature, island, keyworded, mountain, plains, swamp,
+    bear, burn, cost, forest, free_creature, island, mountain, plains, swamp,
 };
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
@@ -97,7 +93,7 @@ fn r122_id(driver: &Driver, name: &str) -> Result<mtg_core::ids::ObjectId, Scrip
 
 /// The counters of a kind on the named permanent.
 fn r122_counters(driver: &Driver, name: &str, kind: &CounterKind) -> u32 {
-    let id = r122_id(&driver, name).unwrap();
+    let id = r122_id(driver, name).unwrap();
     driver
         .state()
         .object(id)
@@ -108,7 +104,7 @@ fn r122_counters(driver: &Driver, name: &str, kind: &CounterKind) -> u32 {
 
 /// Whether the named card is on the battlefield.
 fn r122_on_battlefield(driver: &Driver, name: &str) -> bool {
-    let id = r122_id(&driver, name).unwrap();
+    let id = r122_id(driver, name).unwrap();
     driver.state().zone(Zone::Battlefield).contains(&id)
 }
 
@@ -468,7 +464,7 @@ fn r122_mirror_universe_intrusion_copies_one_creature_or_an_opponents_all(
             let target = if kicked {
                 Target::Player(pid(victim))
             } else {
-                ogre.clone()
+                ogre
             };
             Some(Answer::ChooseTargets(TargetChoice::Targets(vec![target])))
         }
@@ -485,7 +481,7 @@ fn r122_mirror_universe_intrusion_copies_one_creature_or_an_opponents_all(
 
 /// The power and toughness of the named object.
 fn r122_size(driver: &Driver, name: &str) -> (i32, i32) {
-    let found = characteristics(driver.state(), r122_id(&driver, name).unwrap()).unwrap();
+    let found = characteristics(driver.state(), r122_id(driver, name).unwrap()).unwrap();
     (found.power.unwrap(), found.toughness.unwrap())
 }
 
@@ -540,7 +536,7 @@ fn r122_typed(name: &str, subtype: &str) -> Arc<CardDefinition> {
 fn r122_zone(driver: &Driver, name: &str) -> Zone {
     driver
         .state()
-        .object(r122_id(&driver, name).unwrap())
+        .object(r122_id(driver, name).unwrap())
         .unwrap()
         .zone()
 }
@@ -630,7 +626,7 @@ fn r122_gwyndala_equips_her_heirloom_and_turns_the_tokens_into_copies(
     let gwyndala = r122_id(&driver, "Gwyndala, the Progeny")?;
     let heirloom = r122_id(&driver, "Neuroflux Heirloom")?;
     let state = driver.state();
-    assert!(state.object(heirloom).unwrap().kind() == ObjectKind::Token);
+    assert_eq!(state.object(heirloom).unwrap().kind(), ObjectKind::Token);
     assert_eq!(
         state
             .object(heirloom)
@@ -646,9 +642,9 @@ fn r122_gwyndala_equips_her_heirloom_and_turns_the_tokens_into_copies(
     driver.begin_activation("Gwyndala, the Progeny")?;
     r122_resolve(&mut driver, |decision| match &decision.kind {
         DecisionKind::PayMana(_) => Some(Answer::PayMana(PayChoice::Auto)),
-        DecisionKind::ChooseTargets(_) => Some(Answer::ChooseTargets(TargetChoice::Targets(vec![
-            target.clone(),
-        ]))),
+        DecisionKind::ChooseTargets(_) => {
+            Some(Answer::ChooseTargets(TargetChoice::Targets(vec![target])))
+        }
         _ => None,
     })?;
     // The token is a Blade now, still on Gwyndala: she gets +3/+0 instead of +1/+1.
@@ -705,90 +701,15 @@ fn r122_infinite_diversity_casts_a_copy_for_each_creature_type(
     driver.begin_cast("Infinite Diversity")?;
     r122_resolve(&mut driver, |decision| match &decision.kind {
         DecisionKind::PayMana(_) => Some(Answer::PayMana(PayChoice::Auto)),
-        DecisionKind::ChooseTargets(_) => Some(Answer::ChooseTargets(TargetChoice::Targets(vec![
-            gift.clone(),
-        ]))),
+        DecisionKind::ChooseTargets(_) => {
+            Some(Answer::ChooseTargets(TargetChoice::Targets(vec![gift])))
+        }
         DecisionKind::YesNo(_) => Some(Answer::YesNo(YesNoChoice(true))),
         _ => None,
     })?;
     assert_eq!(driver.state().player(pid(0)).unwrap().life() - life, copies);
     assert_eq!(r122_zone(&driver, "Infinite Diversity"), Zone::Exile);
     assert_eq!(r122_zone(&driver, "Gift"), Zone::Exile);
-    r122_replays(&driver);
-    Ok(())
-}
-
-// Kira Nerys, Firebrand
-
-/// What the named creature attacks, if it attacks.
-fn r122_attacks(driver: &Driver, name: &str) -> Option<AttackTarget> {
-    let id = r122_id(&driver, name).unwrap();
-    driver
-        .state()
-        .combat()
-        .attackers()
-        .iter()
-        .find(|attacker| attacker.object() == id)
-        .map(mtg_engine::combat::Attacker::target)
-}
-
-#[rstest]
-fn r122_kira_makes_a_creature_entering_in_combat_enter_tapped_and_attacking(
-    #[values(2, 3, 4)] seats: usize,
-) -> Result<(), ScriptError> {
-    let victim = seats - 1;
-    let flash = |name: &str| keyworded(name, 2, 2, &[Keyword::Flash]);
-    let scenario = Scenario::new(seats)
-        .hand(0, [flash("Early"), flash("Ambusher")])
-        .battlefield(
-            0,
-            [
-                ready(card("Kira Nerys, Firebrand").unwrap()),
-                ready(free_creature("Raider", 2, 2)),
-            ],
-        )
-        .at(2, 0, Step::Main1);
-    let mut driver = Driver::from_scenario(scenario)?;
-    // Before the attack nothing attacks: the creature enters untapped and only grows.
-    driver.cast("Early")?;
-    r122_resolve(&mut driver, |_| None)?;
-    assert!(r122_attacks(&driver, "Early").is_none());
-    assert!(
-        !driver
-            .state()
-            .object(r122_id(&driver, "Early")?)
-            .unwrap()
-            .permanent()
-            .unwrap()
-            .tapped()
-    );
-    assert_eq!(r122_size(&driver, "Early"), (3, 3));
-    driver.pass_until(Step::DeclareAttackers)?;
-    driver.attack(&[("Raider", 1)])?;
-    driver.cast("Ambusher")?;
-    r122_resolve(&mut driver, |decision| match &decision.kind {
-        DecisionKind::ChooseOption(options) => options
-            .options
-            .iter()
-            .position(|option| *option == ChoiceOption::Player(pid(victim)))
-            .map(|at| Answer::ChooseOption(OptionChoice(at))),
-        _ => None,
-    })?;
-    let ambusher = r122_id(&driver, "Ambusher")?;
-    assert!(
-        driver
-            .state()
-            .object(ambusher)
-            .unwrap()
-            .permanent()
-            .unwrap()
-            .tapped()
-    );
-    assert_eq!(
-        r122_attacks(&driver, "Ambusher"),
-        Some(AttackTarget::Player(pid(victim)))
-    );
-    assert_eq!(r122_size(&driver, "Ambusher"), (3, 3));
     r122_replays(&driver);
     Ok(())
 }

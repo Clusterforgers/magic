@@ -8158,11 +8158,6 @@ impl Walker<'_> {
                 }
                 self.at("to", |w| w.selector(to));
             }
-            ReplaceBy::R122TappedAndAttacking => {
-                if !matches!(when, ReplaceWhen::Enters { .. }) {
-                    self.problem("only a creature entering enters attacking");
-                }
-            }
             ReplaceBy::R114ChooseObject(what) => {
                 if !matches!(
                     when,

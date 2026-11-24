@@ -1166,7 +1166,6 @@ const RUNS: &[&str] = &[
     "ReplaceBy.R6007RevealOrControl",
     "ReplaceBy.R6702MayAttach",
     "ReplaceBy.R109EntersAttached",
-    "ReplaceBy.R122TappedAndAttacking",
     "ReplaceBy.R612MayExchangeTextBoxes",
     "ReplaceBy.R114ChooseObject",
     "ReplaceBy.R6603AttachToPlayer",

@@ -686,8 +686,7 @@ pub enum CombatQuirk {
     /// They station permanents using their toughness rather than their power (CR 702.184a): the station ability they pay
     /// for puts charge counters equal to their toughness.
     R6500StationsByToughness,
-    /// They station permanents and crew Vehicles as though their power were this many times as great (saddling stays
-    /// as it is): "~ stations Spacecraft and crews Vehicles as though his power were tripled."
+    /// They station and crew (not saddle) as though their power were this many times as great.
     R122CrewStationTimes(u32),
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),

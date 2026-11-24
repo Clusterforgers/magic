@@ -1537,11 +1537,6 @@ pub enum ReplaceBy {
     /// and it enters attached to that permanent (CR 301.5, 614.12): "As this Equipment enters, choose a creature you
     /// control it could be attached to. If you do, it enters attached to that creature." Only `Enters` of itself.
     R109EntersAttached(Selector),
-    /// The creature enters tapped and attacking (CR 508.4): its controller chooses the player or planeswalker it attacks
-    /// as it enters, among those its controller's creatures may attack; while no attack is declared it only enters
-    /// tapped. "If a creature you control would enter while you control an attacking creature, instead it enters tapped
-    /// and attacking."
-    R122TappedAndAttacking,
     /// As the permanent enters, its controller may choose another permanent the selector names, and the two exchange their
     /// text boxes for good (CR 612.1, 614.1c): "As Deadpool enters, you may exchange his text box and another creature's."
     /// Only `Enters` of itself.

@@ -43,7 +43,7 @@ pub(crate) use inline::{
     w5d_run_instead,
 };
 pub use left::LeftToTable;
-pub(crate) use prim::{first_step_done, lower, r122_attackable};
+pub(crate) use prim::{first_step_done, lower};
 pub use value::{Bindings, ResolveError, Scope};
 pub(crate) use value::{CastTargets, R5520_PAID, zone_kind};
 

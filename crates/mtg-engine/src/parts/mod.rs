@@ -110,6 +110,7 @@ pub(crate) enum Kind {
 
 /// A part of the cost that takes objects the player picks.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[allow(clippy::struct_excessive_bools)] // independent flags of one part of a cost
 pub(crate) struct Pick {
     /// What is taken.
     pub(crate) kind: Kind,
