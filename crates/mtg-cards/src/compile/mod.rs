@@ -1384,7 +1384,7 @@ mod tests {
 
     #[test]
     fn a_trigger_left_to_the_table_beside_an_activated_ability_keeps_one_span_each() {
-        let text = "Whenever a source you control deals damage, if at least one permanent or player was dealt exactly 2 of that damage, exile the top card of your library. You may play it until the end of your next turn.\n{R}, {T}, Exile two cards from your graveyard: ~ deals 2 damage to any other target.";
+        let text = "Whenever a source you control deals damage, if at least one permanent or player was dealt exactly 3 of that damage, exile the top card of your library. You may play it until the end of your next turn.\n{R}, {T}, Exile two cards from your graveyard: ~ deals 2 damage to any other target.";
         let compiled = one(
             "Matoc, Lavamancer",
             "Legendary Creature \u{2014} Giant Shaman",

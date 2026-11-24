@@ -143,8 +143,8 @@ mod tests {
         Event::CoinFlipped {
             player,
             won: true,
-            call: Default::default(),
-            side: Default::default(),
+            call: crate::choose::CoinSide::default(),
+            side: crate::choose::CoinSide::default(),
             coins: Vec::new(),
         }
     }
@@ -216,7 +216,7 @@ mod tests {
             target: crate::combat::DamageTarget::Player(player),
             amount,
             deathtouch: false,
-            form: Default::default(),
+            form: crate::combat::DamageForm::default(),
             toxic: 0,
             unpreventable: false,
         }
