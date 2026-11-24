@@ -1,5 +1,5 @@
 //! Goal: an innate level may take its own values, abilities and words; the Warrens' reworked bosses Korrath to the
-//! Unmaker load whole (precon deck file, five innate levels, two
+//! Unmaker and the Drowned Spire's grown roster load whole (precon deck file, five innate levels, two
 //! phases, four satchel spells, life by party size, colours of the deck); each innate does its thing at level I and at
 //! level V; each phase begins at its round with its begin effect once; each satchel spell casts from the satchel, a
 //! reusable one coming back with its tax; and a real fight at level V plays on with the invariants checked.
@@ -93,7 +93,22 @@ fn the_reworked_record_loads_whole(
         "aurenne_bastion",
         "vorthana_hive",
         "sivanne_mire",
-        "unmaker_void"
+        "unmaker_void",
+        "lamplighter",
+        "tidecaller",
+        "drowned_abbess",
+        "wreck_forger",
+        "coral_mother",
+        "fog_bell",
+        "salt_magistrate",
+        "storm_herald",
+        "kelp_shepherd",
+        "maelstrom",
+        "spawning_shoal",
+        "brine_hag",
+        "silt_crawler",
+        "magma_vent",
+        "drowned_admiral"
     )]
     id: &str,
 ) {
@@ -564,6 +579,21 @@ fn tapped_heroes(driver: &Driver) -> usize {
 #[case::vorthana("vorthana_hive", (1, 1, 0))]
 #[case::sivanne("sivanne_mire", (4, 2, 4))]
 #[case::unmaker("unmaker_void", (0, 1, 0))]
+#[case::lamplighter("lamplighter", (4, 2, 1))]
+#[case::tidecaller("tidecaller", (0, 2, 0))]
+#[case::drowned_abbess("drowned_abbess", (0, 2, 0))]
+#[case::wreck_forger("wreck_forger", (4, 2, 0))]
+#[case::coral_mother("coral_mother", (4, 4, 0))]
+#[case::fog_bell("fog_bell", (4, 6, 0))]
+#[case::salt_magistrate("salt_magistrate", (1, 2, 0))]
+#[case::storm_herald("storm_herald", (0, 2, 0))]
+#[case::kelp_shepherd("kelp_shepherd", (4, 2, 0))]
+#[case::maelstrom("maelstrom", (0, 2, 0))]
+#[case::spawning_shoal("spawning_shoal", (4, 2, 0))]
+#[case::brine_hag("brine_hag", (0, 1, 0))]
+#[case::silt_crawler("silt_crawler", (4, 2, 0))]
+#[case::magma_vent("magma_vent", (0, 2, 0))]
+#[case::drowned_admiral("drowned_admiral", (4, 2, 0))]
 fn each_phase_begins_at_its_round_and_its_begin_effect_fires_once(
     #[case] id: &str,
     #[case] left: Left,
@@ -680,7 +710,7 @@ fn cast_from_satchel(
         .satchel(pid(BOSS))
         .into_iter()
         .find(|id| state.object(*id).is_some_and(|o| o.card().name == card))
-        .unwrap();
+        .unwrap_or_else(|| panic!("{card} is not in the satchel"));
     if respond {
         let raptor = driver.target_named("Raptor")?;
         driver.cast_at("Jolt", &[raptor])?;
@@ -718,12 +748,31 @@ fn each_satchel_spell_casts_and_a_reusable_one_returns_with_its_tax(
         "aurenne_bastion",
         "vorthana_hive",
         "sivanne_mire",
-        "unmaker_void"
+        "unmaker_void",
+        "lamplighter",
+        "tidecaller",
+        "drowned_abbess",
+        "wreck_forger",
+        "coral_mother",
+        "fog_bell",
+        "salt_magistrate",
+        "storm_herald",
+        "kelp_shepherd",
+        "maelstrom",
+        "spawning_shoal",
+        "brine_hag",
+        "silt_crawler",
+        "magma_vent",
+        "drowned_admiral"
     )]
     id: &str,
 ) -> Result<(), ScriptError> {
-    for card in &boss(id).satchel {
-        let respond = card.card == "Not of This World";
+    for card in boss(id)
+        .satchel
+        .iter()
+        .filter(|c| !NEEDS_ATTACKERS.contains(&c.card.as_str()))
+    {
+        let respond = ANSWERS_A_SPELL.contains(&card.card.as_str());
         let start = if respond { (4, 0) } else { (3, BOSS) };
         let scenario = satchel_table(card).at(start.0, start.1, Step::Main1);
         let mut driver = Driver::from_scenario(scenario)?;
@@ -742,6 +791,17 @@ fn each_satchel_spell_casts_and_a_reusable_one_returns_with_its_tax(
     }
     Ok(())
 }
+
+/// Satchel spells that answer a spell on the stack: the table casts the hero's burn spell first.
+const ANSWERS_A_SPELL: [&str; 5] = [
+    "Not of This World",
+    "Counterspell",
+    "Swan Song",
+    "Undermine",
+    "Mystic Confluence",
+];
+/// Satchel spells that only target an attacking creature, which the table has none of.
+const NEEDS_ATTACKERS: [&str; 1] = ["Condemn"];
 
 /// Two heroes on fixture precons against the boss at innate level V with its precon, phases and satchel.
 fn fight_setup(id: &str, seed: u64) -> GameSetup {
@@ -796,7 +856,22 @@ fn a_real_fight_at_level_v_plays_on(
         "unmaker_void",
         "siren_queen",
         "drowned_archivist",
-        "leviathan"
+        "leviathan",
+        "lamplighter",
+        "tidecaller",
+        "drowned_abbess",
+        "wreck_forger",
+        "coral_mother",
+        "fog_bell",
+        "salt_magistrate",
+        "storm_herald",
+        "kelp_shepherd",
+        "maelstrom",
+        "spawning_shoal",
+        "brine_hag",
+        "silt_crawler",
+        "magma_vent",
+        "drowned_admiral"
     )]
     id: &str,
 ) {

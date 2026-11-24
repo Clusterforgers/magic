@@ -151,6 +151,746 @@
     "card": "Inkwell Leviathan",
     "oracle_id": "dbdd0963-b395-4cb8-ad9a-ed85a3e9f2e5"
    }
+  },
+  {
+   "id": "lamplighter",
+   "name": "The Lamplighter",
+   "colors": "W",
+   "since": 10,
+   "deck_file": "c14-forged-in-stone.json",
+   "innate": "lantern_sweep",
+   "round_phases": [
+    "the_beacon_blazes",
+    "blinding_light"
+   ],
+   "satchel": [
+    {
+     "card": "Condemn",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Valorous Stance",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Swords to Plowshares",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Fumigate",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Hold still. The light only wants a look at you.",
+   "art": {
+    "card": "Lantern Bearer // Lanterns' Lift",
+    "oracle_id": "67a025eb-6e65-435c-becb-b51085175292"
+   }
+  },
+  {
+   "id": "tidecaller",
+   "name": "The Tidecaller",
+   "colors": "U",
+   "since": 10,
+   "deck_file": "c14-peer-through-time.json",
+   "innate": "ebb_tide",
+   "round_phases": [
+    "high_tide",
+    "the_undertow_pulls"
+   ],
+   "satchel": [
+    {
+     "card": "Into the Roil",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Repulse",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Counterspell",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Whelming Wave",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Everything you brought, the sea takes back.",
+   "art": {
+    "card": "Halimar Tidecaller",
+    "oracle_id": "3aa709b5-0465-4103-aea1-8cfb15086f76"
+   }
+  },
+  {
+   "id": "drowned_abbess",
+   "name": "The Drowned Abbess",
+   "colors": "B",
+   "since": 10,
+   "deck_file": "c14-sworn-to-darkness.json",
+   "innate": "held_breath",
+   "round_phases": [
+    "the_lungs_fill",
+    "the_requiem"
+   ],
+   "satchel": [
+    {
+     "card": "Undying Evil",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Night's Whisper",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Murder",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Feed the Swarm",
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    }
+   ],
+   "line": "Breathe out. All of it.",
+   "art": {
+    "card": "Gurmag Drowner",
+    "oracle_id": "9839f80b-d28b-49c7-a31a-40c245af2edc"
+   }
+  },
+  {
+   "id": "wreck_forger",
+   "name": "The Wreck-Forger",
+   "colors": "R",
+   "since": 10,
+   "deck_file": "c14-built-from-scratch.json",
+   "innate": "salvage",
+   "round_phases": [
+    "scuttle_the_fleet",
+    "the_forge_roars"
+   ],
+   "satchel": [
+    {
+     "card": "Lightning Bolt",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 3
+     }
+    },
+    {
+     "card": "Fiery Temper",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 3
+     }
+    },
+    {
+     "card": "Faithless Looting",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Blasphemous Act",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Every wreck down here was somebody like you.",
+   "art": {
+    "card": "Dargo, the Shipwrecker",
+    "oracle_id": "a2414a2d-0fd8-4084-8762-ace48f70c853"
+   }
+  },
+  {
+   "id": "coral_mother",
+   "name": "The Coral Mother",
+   "colors": "G",
+   "since": 10,
+   "deck_file": "c14-guided-by-nature.json",
+   "innate": "reef_growth",
+   "round_phases": [
+    "the_reef_rises",
+    "the_reef_closes"
+   ],
+   "satchel": [
+    {
+     "card": "Giant Growth",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Beast Within",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Harmonize",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Tempt with Discovery",
+     "cue": {
+      "when": "early_turns",
+      "turns": 5
+     }
+    }
+   ],
+   "line": "Stay a while. Everything here does, in the end.",
+   "art": {
+    "card": "Coral Reef",
+    "oracle_id": "37a40a53-2668-4521-a786-c5747eedeeb2"
+   }
+  },
+  {
+   "id": "fog_bell",
+   "name": "The Fog Bell",
+   "colors": "WU",
+   "since": 10,
+   "deck_file": "khc-phantom-premonition.json",
+   "innate": "sea_fog",
+   "round_phases": [
+    "the_bell_tolls",
+    "lost_in_the_fog"
+   ],
+   "satchel": [
+    {
+     "card": "Ephemerate",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Brainstorm",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Fact or Fiction",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 4
+     }
+    },
+    {
+     "card": "Sleep",
+     "cue": {
+      "when": "lethal",
+      "reach": 0
+     }
+    }
+   ],
+   "line": "Ring once if you are lost. Everyone does.",
+   "art": {
+    "card": "Fog Bank",
+    "oracle_id": "3a2bb47d-228d-499e-a34b-9e10d99e9b2c"
+   }
+  },
+  {
+   "id": "salt_magistrate",
+   "name": "The Salt Magistrate",
+   "colors": "WB",
+   "since": 10,
+   "deck_file": "c21-silverquill-statement.json",
+   "innate": "salt_tithe",
+   "round_phases": [
+    "the_sentence",
+    "ink_and_salt"
+   ],
+   "satchel": [
+    {
+     "card": "Utter End",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Heartless Act",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 5
+     }
+    },
+    {
+     "card": "Thoughtseize",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 4
+     }
+    },
+    {
+     "card": "Damn",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "The court is in session. The fee is salt.",
+   "art": {
+    "card": "Tithe Drinker",
+    "oracle_id": "06b1fd96-a3ad-4ebd-9ea4-b3cfb4c9c43d"
+   }
+  },
+  {
+   "id": "storm_herald",
+   "name": "The Storm Herald",
+   "colors": "WR",
+   "since": 10,
+   "deck_file": "mkc-blame-game.json",
+   "innate": "squall",
+   "round_phases": [
+    "lightning_on_the_spire",
+    "the_gale"
+   ],
+   "satchel": [
+    {
+     "card": "Lorehold Command",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
+    },
+    {
+     "card": "Boros Charm",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Wear // Tear",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Storm's Wrath",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Hear that? The sky is choosing.",
+   "art": {
+    "card": "Raiyuu, Storm's Edge",
+    "oracle_id": "9028f726-50c7-49f3-8386-e584415dcba2"
+   }
+  },
+  {
+   "id": "kelp_shepherd",
+   "name": "The Kelp Shepherd",
+   "colors": "WG",
+   "since": 10,
+   "deck_file": "mic-coven-counters.json",
+   "innate": "kelp_bed",
+   "round_phases": [
+    "pearls_in_the_kelp",
+    "the_tide_turns"
+   ],
+   "satchel": [
+    {
+     "card": "Dromoka's Command",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Tamiyo's Safekeeping",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Explore",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 4
+     }
+    },
+    {
+     "card": "Martial Coup",
+     "cue": {
+      "when": "mana",
+      "mana": 7
+     }
+    }
+   ],
+   "line": "Mind the crabs. They mind you.",
+   "art": {
+    "card": "Grazing Kelpie",
+    "oracle_id": "a2db1035-008e-4de3-b5e5-2a0de83082b2"
+   }
+  },
+  {
+   "id": "maelstrom",
+   "name": "The Maelstrom",
+   "colors": "UR",
+   "since": 10,
+   "deck_file": "c21-prismari-performance.json",
+   "innate": "whirlpool",
+   "round_phases": [
+    "waterspout",
+    "eye_of_the_maelstrom"
+   ],
+   "satchel": [
+    {
+     "card": "Prismari Command",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Whirlpool Whelm",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Swan Song",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Mystic Confluence",
+     "cue": {
+      "when": "heroes_end",
+      "mana": 5
+     }
+    }
+   ],
+   "line": "Round and round, and down.",
+   "art": {
+    "card": "Maelstrom Nexus",
+    "oracle_id": "b1c346a4-fc9b-474a-9d51-cac168e363fa"
+   }
+  },
+  {
+   "id": "spawning_shoal",
+   "name": "The Spawning Shoal",
+   "colors": "UG",
+   "since": 10,
+   "deck_file": "c21-quantum-quandrix.json",
+   "innate": "spawning_grounds",
+   "round_phases": [
+    "the_shoal_swells",
+    "feeding_frenzy"
+   ],
+   "satchel": [
+    {
+     "card": "Simic Charm",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Rapid Hybridization",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Growth Spiral",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 4
+     }
+    },
+    {
+     "card": "Crush of Tentacles",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 1
+     }
+    }
+   ],
+   "line": "There are always more of us.",
+   "art": {
+    "card": "Homarid Spawning Bed",
+    "oracle_id": "173f2b8e-8072-4fdd-a469-8a1fb0bb6e64"
+   }
+  },
+  {
+   "id": "brine_hag",
+   "name": "The Brine Hag",
+   "colors": "BR",
+   "since": 10,
+   "deck_file": "afc-planar-portal.json",
+   "innate": "brine_curse",
+   "round_phases": [
+    "the_boiling_sea",
+    "the_hags_bargain"
+   ],
+   "satchel": [
+    {
+     "card": "Kolaghan's Command",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Price of Fame",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Lightning Bolt",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 3
+     }
+    },
+    {
+     "card": "Fiery Confluence",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "Salt in the wound, dearie. Always salt.",
+   "art": {
+    "card": "Bog Witch",
+    "oracle_id": "85573cba-07ae-4421-a167-a8569f85c0f7"
+   }
+  },
+  {
+   "id": "silt_crawler",
+   "name": "The Silt Crawler",
+   "colors": "BG",
+   "since": 10,
+   "deck_file": "dsc-death-toll.json",
+   "innate": "silt",
+   "round_phases": [
+    "the_drowned_rise",
+    "bottom_feeders"
+   ],
+   "satchel": [
+    {
+     "card": "Putrefy",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Maelstrom Pulse",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Grisly Salvage",
+     "reusable": true,
+     "cue": {
+      "when": "heroes_end",
+      "mana": 0
+     }
+    },
+    {
+     "card": "Golgari Charm",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "Everything sinks eventually. I wait at the bottom.",
+   "art": {
+    "card": "Mire Triton",
+    "oracle_id": "4fe6f784-0290-4d4a-85ae-0b66522d31e9"
+   }
+  },
+  {
+   "id": "magma_vent",
+   "name": "The Magma Vent",
+   "colors": "RG",
+   "since": 10,
+   "deck_file": "nec-upgrades-unleashed.json",
+   "innate": "undersea_eruption",
+   "round_phases": [
+    "the_seafloor_splits",
+    "new_land_rises"
+   ],
+   "satchel": [
+    {
+     "card": "Harrow",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 5
+     }
+    },
+    {
+     "card": "Hull Breach",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Arc Lightning",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 3
+     }
+    },
+    {
+     "card": "Chandra's Ignition",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "The sea boils where the new land is born.",
+   "art": {
+    "card": "Fissure Vent",
+    "oracle_id": "f5bac25d-72e9-4655-8a04-3646fc10be27"
+   }
+  },
+  {
+   "id": "drowned_admiral",
+   "name": "The Drowned Admiral",
+   "final": true,
+   "colors": "UBR",
+   "since": 10,
+   "deck_file": "lcc-ahoy-mateys.json",
+   "innate": "ghost_fleet",
+   "round_phases": [
+    "all_hands_on_deck",
+    "broadside"
+   ],
+   "satchel": [
+    {
+     "card": "Agony Warp",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Recoil",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Undermine",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Devastation Tide",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "All hands! The fleet never stopped sailing.",
+   "art": {
+    "card": "Fathom Fleet Captain",
+    "oracle_id": "7bcf3090-95c6-4384-a857-9fe571e6da85"
+   }
   }
  ],
  "events": [

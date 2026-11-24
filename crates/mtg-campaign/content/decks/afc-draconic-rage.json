@@ -1,0 +1,410 @@
+{
+  "code": "AFC",
+  "name": "Draconic Rage",
+  "commander": [
+    "Vrondiss, Rage of Ancients"
+  ],
+  "swaps": [
+    {
+      "out": "Shivan Hellkite",
+      "into": "Drakuseth, Maw of Flames"
+    },
+    {
+      "out": "Skyline Despot",
+      "into": "Knollspine Dragon"
+    },
+    {
+      "out": "Skyship Stalker",
+      "into": "Thundermane Dragon"
+    },
+    {
+      "out": "Terror of Mount Velus",
+      "into": "Ancient Copper Dragon"
+    },
+    {
+      "out": "Atarka, World Render",
+      "into": "Foe-Razer Regent"
+    },
+    {
+      "out": "Dragonlord's Servant",
+      "into": "Hexing Squelcher"
+    },
+    {
+      "out": "Decree of Savagery",
+      "into": "Not of This World"
+    },
+    {
+      "out": "Return to Nature",
+      "into": "Grapple with the Past"
+    },
+    {
+      "out": "Dragon's Hoard",
+      "into": "Staff of Compleation"
+    },
+    {
+      "out": "Gruul Signet",
+      "into": "Thought Vessel"
+    },
+    {
+      "out": "Outpost Siege",
+      "into": "Court of Embereth"
+    },
+    {
+      "out": "Mossfire Valley",
+      "into": "Forest"
+    },
+    {
+      "out": "Gruul Turf",
+      "into": "Mountain"
+    },
+    {
+      "out": "Bag of Tricks",
+      "into": "Ozolith, the Shattered Spire"
+    },
+    {
+      "out": "Klauth's Will",
+      "into": "Broken Wings"
+    },
+    {
+      "out": "Component Pouch",
+      "into": "Vexing Puzzlebox"
+    }
+  ],
+  "cards": [
+    [
+      "Vrondiss, Rage of Ancients",
+      1
+    ],
+    [
+      "Bogardan Hellkite",
+      1
+    ],
+    [
+      "Demanding Dragon",
+      1
+    ],
+    [
+      "Dragonmaster Outcast",
+      1
+    ],
+    [
+      "Hoard-Smelter Dragon",
+      1
+    ],
+    [
+      "Opportunistic Dragon",
+      1
+    ],
+    [
+      "Scourge of Valkas",
+      1
+    ],
+    [
+      "Taurean Mauler",
+      1
+    ],
+    [
+      "Thunderbreak Regent",
+      1
+    ],
+    [
+      "Chameleon Colossus",
+      1
+    ],
+    [
+      "Anger",
+      1
+    ],
+    [
+      "Savage Ventmaw",
+      1
+    ],
+    [
+      "Dragonspeaker Shaman",
+      1
+    ],
+    [
+      "Chain Reaction",
+      1
+    ],
+    [
+      "Rishkar's Expertise",
+      1
+    ],
+    [
+      "Shamanic Revelation",
+      1
+    ],
+    [
+      "Rile",
+      1
+    ],
+    [
+      "Cultivate",
+      1
+    ],
+    [
+      "Explore",
+      1
+    ],
+    [
+      "Rampant Growth",
+      1
+    ],
+    [
+      "Magmaquake",
+      1
+    ],
+    [
+      "Spit Flame",
+      1
+    ],
+    [
+      "Kindred Summons",
+      1
+    ],
+    [
+      "Return of the Wildspeaker",
+      1
+    ],
+    [
+      "Beast Within",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Heirloom Blade",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Gratuitous Violence",
+      1
+    ],
+    [
+      "Warstorm Surge",
+      1
+    ],
+    [
+      "Colossal Majesty",
+      1
+    ],
+    [
+      "Garruk's Uprising",
+      1
+    ],
+    [
+      "Cinder Glade",
+      1
+    ],
+    [
+      "Crucible of the Spirit Dragon",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Game Trail",
+      1
+    ],
+    [
+      "Haven of the Spirit Dragon",
+      1
+    ],
+    [
+      "Mosswort Bridge",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Desert",
+      1
+    ],
+    [
+      "Path of Ancestry",
+      1
+    ],
+    [
+      "Mountain",
+      13
+    ],
+    [
+      "Forest",
+      16
+    ],
+    [
+      "Klauth, Unrivaled Ancient",
+      1
+    ],
+    [
+      "Berserker's Frenzy",
+      1
+    ],
+    [
+      "Chaos Dragon",
+      1
+    ],
+    [
+      "Maddening Hex",
+      1
+    ],
+    [
+      "Vengeful Ancestor",
+      1
+    ],
+    [
+      "Druid of Purification",
+      1
+    ],
+    [
+      "Indomitable Might",
+      1
+    ],
+    [
+      "Neverwinter Hydra",
+      1
+    ],
+    [
+      "Wild Endeavor",
+      1
+    ],
+    [
+      "Dragonborn Champion",
+      1
+    ],
+    [
+      "Wulfgar of Icewind Dale",
+      1
+    ],
+    [
+      "Barbarian Class",
+      1
+    ],
+    [
+      "Earth-Cult Elemental",
+      1
+    ],
+    [
+      "Sword of Hours",
+      1
+    ],
+    [
+      "Underdark Rift",
+      1
+    ],
+    [
+      "Drakuseth, Maw of Flames",
+      1
+    ],
+    [
+      "Knollspine Dragon",
+      1
+    ],
+    [
+      "Thundermane Dragon",
+      1
+    ],
+    [
+      "Ancient Copper Dragon",
+      1
+    ],
+    [
+      "Foe-Razer Regent",
+      1
+    ],
+    [
+      "Hexing Squelcher",
+      1
+    ],
+    [
+      "Not of This World",
+      1
+    ],
+    [
+      "Grapple with the Past",
+      1
+    ],
+    [
+      "Staff of Compleation",
+      1
+    ],
+    [
+      "Thought Vessel",
+      1
+    ],
+    [
+      "Court of Embereth",
+      1
+    ],
+    [
+      "Ozolith, the Shattered Spire",
+      1
+    ],
+    [
+      "Broken Wings",
+      1
+    ],
+    [
+      "Vexing Puzzlebox",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 24,
+      "R": 33
+    },
+    "types": {
+      "Artifact": 9,
+      "Creature": 27,
+      "Enchantment": 8,
+      "Instant": 9,
+      "Kindred": 1,
+      "Land": 39,
+      "Sorcery": 8
+    },
+    "subtypes": {
+      "Aura": 2,
+      "Barbarian": 3,
+      "Class": 1,
+      "Curse": 1,
+      "Desert": 1,
+      "Dragon": 17,
+      "Druid": 1,
+      "Elder": 1,
+      "Eldrazi": 1,
+      "Elemental": 1,
+      "Equipment": 2,
+      "Forest": 17,
+      "Goblin": 1,
+      "Human": 4,
+      "Hydra": 1,
+      "Incarnation": 1,
+      "Mountain": 14,
+      "Shaman": 2,
+      "Shapeshifter": 2,
+      "Sorcerer": 1,
+      "Spirit": 1,
+      "Warrior": 1
+    },
+    "tokens": 4,
+    "counters": 4,
+    "graveyard": 4,
+    "creature_commanders": 0
+  }
+}

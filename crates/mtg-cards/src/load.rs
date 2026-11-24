@@ -308,16 +308,20 @@ impl Library {
         self.cards.get(oracle_id)
     }
 
-    /// The rules of a card by its full name or one face name, ignoring case.
+    /// The rules of a card by its full name, else by one face name, ignoring case: "Reanimate" is Reanimate, not the
+    /// back face of Grave Researcher.
     pub fn card_by_name(&self, name: &str) -> Option<&Card> {
         let wanted = name.to_lowercase();
-        self.cards.values().find(|card| {
-            card.name.to_lowercase() == wanted
-                || card
-                    .faces
-                    .iter()
-                    .any(|face| face.name.to_lowercase() == wanted)
-        })
+        self.cards
+            .values()
+            .find(|card| card.name.to_lowercase() == wanted)
+            .or_else(|| {
+                self.cards.values().find(|card| {
+                    card.faces
+                        .iter()
+                        .any(|face| face.name.to_lowercase() == wanted)
+                })
+            })
     }
 
     /// A predefined token by id.

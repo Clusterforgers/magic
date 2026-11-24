@@ -9,7 +9,7 @@ use ts_rs::TS;
 /// A new run.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct CreateDelve {
-    /// The difficulty level, 0 to 2.
+    /// The difficulty level, 0 to 3.
     pub heat: u8,
     /// A seed code to replay a known ladder; a random one when absent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -185,7 +185,7 @@ pub struct DelveLeaderboard {
 /// The deepest run of each player at one Heat, deepest first.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 pub struct DelveBoard {
-    /// The Heat the runs were started at, 0 to 2.
+    /// The Heat the runs were started at, 0 to 3.
     pub heat: u8,
     /// One entry per player, ranked.
     pub entries: Vec<DelveBoardEntry>,
