@@ -327,8 +327,14 @@ export function layoutSeat({
         ? LANE_LIMITS.maxWidth
         : Math.max(floor, Math.min(LANE_LIMITS.maxWidth, most)),
   }
-  const fit = (counts: LaneCounts): LaneFit =>
-    hold === undefined ? fitLanes(box, counts, facing, limits) : fitHeld(box, counts, facing, limits, hold)
+  const fit = (counts: LaneCounts): LaneFit => {
+    const first =
+      hold === undefined ? fitLanes(box, counts, facing, limits) : fitHeld(box, counts, facing, limits, hold)
+    // Clear of the dock's corner comes before a raised floor: the cards go under it rather than under the dock.
+    if (!first.scrolls || box.notch === undefined || floor <= LANE_LIMITS.minWidth) return first
+    const lower = fitLanes(box, counts, facing, { ...limits, minWidth: LANE_LIMITS.minWidth })
+    return lower.scrolls ? first : lower
+  }
   const plainFit = fit(laneCounts(plain, held))
   // A zone that scrolls at a raised floor merges identical cards too: fewer boxes to scroll past.
   if (plainFit.cardWidth >= GROUP_OTHERS_BELOW && !plainFit.scrolls) {

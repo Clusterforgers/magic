@@ -37,6 +37,7 @@ import { usePreviewInset } from './previewReserve'
 import { useMarkedIds } from './useMarkedIds'
 import { useStable } from './useStable'
 import { useContentBox } from './useZoneFit'
+import { useDockNotch, withNotch } from './dockNotch'
 
 const LANE_NAME: Record<RowKind, string> = {
   lands: 'lands',
@@ -56,6 +57,8 @@ interface DrawnBand {
   key: string
   lanes: readonly (LanePlace | { lane: RowKind })[]
   height: number
+  /** The px kept free at its right, beside the controls dock's corner. */
+  inset?: number | undefined
 }
 
 const faceOf = (width: number | undefined, size: CardSize): CardSize => {
@@ -186,7 +189,10 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const zone = useRef<HTMLDivElement>(null)
   useEdgeFade(zone)
   const inset = usePreviewInset(zone)
-  const box = useContentBox(zone)
+  const content = useContentBox(zone)
+  // Your board keeps its lower right corner clear where the controls dock's body grows over it on a short window.
+  const notch = useDockNotch(zone, own && facing === 'near', content)
+  const box = useMemo(() => withNotch(content, notch), [content, notch])
   const permanents = useMemo(() => idsOfRows(stacks.plain), [stacks])
   const marked = useMarkedIds(permanents)
   const [opened, setOpened] = useState<ReadonlySet<string>>(NONE)
@@ -338,7 +344,10 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
               key={band.key}
               data-slot="board-band"
               data-band={band.key}
-              style={band.height > 0 ? { minHeight: band.height } : undefined}
+              style={{
+                ...(band.height > 0 ? { minHeight: band.height } : {}),
+                ...(band.inset === undefined ? {} : { paddingRight: band.inset }),
+              }}
               // Lanes start at the board's left edge, so the room a short row leaves stays at the right, where a
               // side preview stands.
               className="flex shrink-0 items-start justify-start gap-3"
