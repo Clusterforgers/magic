@@ -34,7 +34,7 @@ use mtg_engine::{Decision, Engine};
 
 pub use deep::Deep;
 pub use seen::Seen;
-pub use sim::{Horizon, Search, Settings};
+pub use sim::{Horizon, PACED_ROLLOUTS, Search, Settings};
 
 use crate::bot::RandomBot;
 
@@ -73,6 +73,22 @@ pub trait SeatBrain: Send {
 /// answers then depend on the machine's speed too).
 pub fn brain(level: Level, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> {
     let settings = |settings: Settings| if timed { settings } else { settings.untimed() };
+    brain_with(level, seed, seat, settings)
+}
+
+/// The untimed brain of `seat` at `level` whose tree search plays what its clock reaches at a live table
+/// ([`Settings::paced`]): a simulator's bot, as strong as a live one and replaying with the seed.
+pub fn paced_brain(level: Level, seed: u64, seat: PlayerId) -> Box<dyn SeatBrain> {
+    brain_with(level, seed, seat, Settings::paced)
+}
+
+/// The brain of `seat` at `level`, its settings passed through `settings`.
+fn brain_with(
+    level: Level,
+    seed: u64,
+    seat: PlayerId,
+    settings: impl Fn(Settings) -> Settings,
+) -> Box<dyn SeatBrain> {
     match level {
         Level::Easy => Box::new(EasyBrain::new(seed, seat)),
         Level::Normal => Box::new(HeuristicBot::new(seed, seat, settings(Settings::NORMAL))),

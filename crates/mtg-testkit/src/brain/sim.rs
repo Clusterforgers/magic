@@ -161,7 +161,26 @@ impl Settings {
         }
         self
     }
+
+    /// These settings without a clock, the tree search cut to the iterations its clock reaches on a crowded Commander
+    /// board ([`PACED_ROLLOUTS`] a second): a simulator plays as a live table does, and its answers replay with the
+    /// seed.
+    #[must_use]
+    pub fn paced(self) -> Settings {
+        let mut paced = self.untimed();
+        if let (Some(deep), Some(time)) = (&mut paced.deep, self.deep.and_then(|deep| deep.time)) {
+            // In range: a clock of a few seconds at a few rollouts a second.
+            #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+            let reached = (time.as_secs_f64() * PACED_ROLLOUTS).round().max(1.0) as u32;
+            deep.iterations = deep.iterations.min(reached);
+        }
+        paced
+    }
 }
+
+/// The tree-search rollouts one second of a clock buys on a crowded Commander board (a Delves boss fight, about 0.1 s
+/// each): what a paced search plays in place of its clock ([`Settings::paced`]).
+pub const PACED_ROLLOUTS: f64 = 12.0;
 
 /// How far a simulation plays on.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

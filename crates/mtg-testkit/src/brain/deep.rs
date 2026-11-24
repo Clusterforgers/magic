@@ -86,6 +86,8 @@ impl Deep {
 thread_local! {
     /// Tree searches run on this thread and how many of them replaced the heuristic answer ([`tally`]).
     static TALLY: std::cell::Cell<(u64, u64)> = const { std::cell::Cell::new((0, 0)) };
+    /// Rollouts the tree searches on this thread played to the end ([`iterations`]).
+    static ITERATIONS: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
 }
 
 /// The tree searches run on this thread since the last [`reset_tally`] and how many replaced the heuristic answer.
@@ -96,6 +98,12 @@ pub fn tally() -> (u64, u64) {
 /// Clears this thread's [`tally`].
 pub fn reset_tally() {
     TALLY.with(|cell| cell.set((0, 0)));
+    ITERATIONS.with(|cell| cell.set(0));
+}
+
+/// The rollouts the tree searches on this thread played to the end since the last [`reset_tally`].
+pub fn iterations() -> u64 {
+    ITERATIONS.with(std::cell::Cell::get)
 }
 
 /// Counts one tree search on this thread, `overrode` when it replaced the heuristic answer.
@@ -651,6 +659,7 @@ pub fn ismcts(
             child.reward += gained;
             child.squares += gained * gained;
         }
+        ITERATIONS.with(|cell| cell.set(cell.get() + 1));
     }
     let tried: Vec<&Child> = tree[0].iter().filter(|child| child.visits > 0).collect();
     if !tried.is_empty() {
