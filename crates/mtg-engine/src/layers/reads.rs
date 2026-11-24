@@ -36,8 +36,7 @@ impl Traits {
 
     /// Both sets together.
     pub(crate) const fn or(self, other: Traits) -> Traits {
-                | Condition::R123AttackedThisTurn(who)
-Traits(self.0 | other.0)
+        Traits(self.0 | other.0)
     }
 
     /// Whether the two sets share something.
@@ -740,6 +739,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::R119StartingDeck { who, .. }
         | Condition::MonarchAtTurnStart(who)
         | Condition::AttackedYouLastTurn(who)
+        | Condition::R123AttackedThisTurn(who)
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)

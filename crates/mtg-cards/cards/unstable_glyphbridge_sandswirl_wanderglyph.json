@@ -5,24 +5,78 @@
   "faces": [
     {
       "name": "Unstable Glyphbridge",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "a115a614c3072bcdd29a20d6a7a720cc",
       "abilities": [
         {
           "Triggered": {
-            "when": { "ZoneChange": { "what": ["This", { "WasCast": { "by": "You" } }], "to": "Battlefield" } },
+            "when": {
+              "ZoneChange": {
+                "what": ["This", { "WasCast": { "by": "You" } }],
+                "to": "Battlefield"
+              }
+            },
             "effects": [
               {
                 "Choose": {
-                  "from": { "Each": [{ "Type": "Creature" }, { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }] },
+                  "from": {
+                    "Each": [
+                      { "Type": "Creature" },
+                      { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }
+                    ]
+                  },
                   "count": {
-                    "min": { "Players": { "PlayersWhere": { "who": "EachPlayer", "test": { "Compare": { "left": { "Count": [{ "Type": "Creature" }, { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }, { "ControlledBy": "You" }] }, "op": "Ge", "right": 1 } } } } },
-                    "max": { "Players": { "PlayersWhere": { "who": "EachPlayer", "test": { "Compare": { "left": { "Count": [{ "Type": "Creature" }, { "Compare": { "stat": "Power", "op": "Le", "to": 2 } }, { "ControlledBy": "You" }] }, "op": "Ge", "right": 1 } } } } }
+                    "min": {
+                      "Players": {
+                        "PlayersWhere": {
+                          "who": "EachPlayer",
+                          "test": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                                  { "ControlledBy": "You" }
+                                ]
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "max": {
+                      "Players": {
+                        "PlayersWhere": {
+                          "who": "EachPlayer",
+                          "test": {
+                            "Compare": {
+                              "left": {
+                                "Count": [
+                                  { "Type": "Creature" },
+                                  { "Compare": { "stat": "Power", "op": "Le", "to": 2 } },
+                                  { "ControlledBy": "You" }
+                                ]
+                              },
+                              "op": "Ge",
+                              "right": 1
+                            }
+                          }
+                        }
+                      }
+                    }
                   },
                   "as": "chosen",
                   "differ": "DifferentControllers"
                 }
               },
-              { "Destroy": { "what": { "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "chosen" } } }] } } }
+              {
+                "Destroy": {
+                  "what": {
+                    "Each": [{ "Type": "Creature" }, { "Not": { "Is": { "Bound": "chosen" } } }]
+                  }
+                }
+              }
             ]
           }
         },
@@ -38,17 +92,32 @@
     },
     {
       "name": "Sandswirl Wanderglyph",
-      "oracle_fingerprint": "",
+      "oracle_fingerprint": "77d63b24ef6d083d2c3d96946cdc1d99",
       "abilities": [
         { "Keyword": "Flying" },
         {
           "Triggered": {
             "when": { "SpellCast": { "by": "Opponents" } },
-            "if": { "AtTrigger": { "Compare": { "left": { "Players": { "PlayersWhere": { "who": "TriggeringPlayer", "test": "YourTurn" } } }, "op": "Ge", "right": 1 } } },
+            "if": {
+              "AtTrigger": {
+                "Compare": {
+                  "left": {
+                    "Players": { "PlayersWhere": { "who": "TriggeringPlayer", "test": "YourTurn" } }
+                  },
+                  "op": "Ge",
+                  "right": 1
+                }
+              }
+            },
             "effects": [
               {
                 "Rule": {
-                  "rule": { "Cant": { "who": "TriggeringPlayer", "action": "R123AttackYou" } },
+                  "rule": {
+                    "Cant": {
+                      "who": "TriggeringPlayer",
+                      "action": { "R118Attack": { "you": true, "walkers": true } }
+                    }
+                  },
                   "duration": "UntilEndOfTurn"
                 }
               }
@@ -59,7 +128,12 @@
           "Rule": {
             "rule": {
               "Cant": {
-                "who": { "PlayersWhere": { "who": "Opponents", "test": { "R123AttackedThisTurn": "Asker" } } },
+                "who": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": { "R123AttackedThisTurn": "Asker" }
+                  }
+                },
                 "action": { "Cast": {} }
               }
             }

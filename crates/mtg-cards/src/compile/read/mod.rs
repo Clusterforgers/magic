@@ -236,6 +236,7 @@ mod r121_01_wholes;
 mod r121_02_wholes;
 mod r122_01_wholes;
 mod r122_02_wholes;
+mod r123_02_wholes;
 pub(crate) use r116_reminder_tokens::r116_is_reminder_token;
 mod r117_01_joins;
 mod r11w_tallies;
@@ -926,6 +927,9 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
         return Some(found);
     }
     if let Some(found) = r122_02_wholes::r122_02_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r123_02_wholes::r123_02_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r118_02_wholes::r118_02_whole_read(text) {

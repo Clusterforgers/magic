@@ -5165,11 +5165,12 @@ impl Walker<'_> {
                     | Some(
                         TargetSet::DifferentNames
                         | TargetSet::DifferentPowers
-                        | TargetSet::DifferentManaValues,
+                        | TargetSet::DifferentManaValues
+                        | TargetSet::DifferentControllers,
                     ) => {}
                     Some(TargetSet::DifferentColorSets) => w.uses("Choose", "DifferentColorSets"),
                     Some(_) => w.at("differ", |w| {
-                        w.problem("a choice keeps apart names, powers or mana values");
+                        w.problem("a choice keeps apart names, powers, mana values or controllers");
                     }),
                 }
                 w.at("who", |w| w.reference(who, Kind::Player));

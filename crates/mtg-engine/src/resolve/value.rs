@@ -344,6 +344,20 @@ fn ep31_has_ability(state: &GameState, seen: &Seen<'_>, held: HeldAbility) -> bo
             matches!(**rule, Ability::Loyalty { .. })
                 || (matches!(**rule, Ability::Activated { .. }) && !rule.is_mana_ability())
         }),
+        HeldAbility::R123TwoActivated => {
+            let written = rules
+                .iter()
+                .filter(|(_, rule)| {
+                    matches!(**rule, Ability::Activated { .. } | Ability::Loyalty { .. })
+                })
+                .count();
+            let keyworded = seen.keywords.map_or(0, |held| {
+                held.iter()
+                    .filter(|keyword| r123_activated_keyword(keyword))
+                    .count()
+            });
+            seen.chars.abilities.len() + written + keyworded >= 2
+        }
         // A plain mana ability is "{T}: Add ...".
         HeldAbility::TapCost => {
             plain_mana
@@ -353,6 +367,38 @@ fn ep31_has_ability(state: &GameState, seen: &Seen<'_>, held: HeldAbility) -> bo
                 })
         }
     }
+}
+
+/// Whether the keyword is an activated ability (CR 702: equip, cycling, ninjutsu, ...), not a static or triggered one
+/// or a special action.
+fn r123_activated_keyword(keyword: &mtg_cards::keyword::Keyword) -> bool {
+    use mtg_cards::keyword::Keyword as K;
+    matches!(
+        keyword,
+        K::Equip(..)
+            | K::EquipTo { .. }
+            | K::Fortify(..)
+            | K::Reconfigure(..)
+            | K::Cycling(..)
+            | K::Typecycling { .. }
+            | K::Crew(..)
+            | K::CrewOnce(..)
+            | K::Unearth(..)
+            | K::Ninjutsu(..)
+            | K::CommanderNinjutsu(..)
+            | K::LevelUp(..)
+            | K::Outlast(..)
+            | K::AuraSwap(..)
+            | K::Saddle(..)
+            | K::Station
+            | K::Embalm(..)
+            | K::Eternalize(..)
+            | K::Scavenge(..)
+            | K::Transmute(..)
+            | K::R110Transfigure(..)
+            | K::Craft(..)
+            | K::Encore(..)
+    )
 }
 
 #[cfg(test)]
