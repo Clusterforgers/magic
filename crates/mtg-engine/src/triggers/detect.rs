@@ -1664,6 +1664,7 @@ fn counted(state: &GameState, subjects: Vec<Target>, amount: u32) -> Cause {
         .collect();
     Cause {
         r115_causer: None,
+        r121_made: Vec::new(),
         dealers: Vec::new(),
         subjects,
         snapshots,
@@ -2516,7 +2517,10 @@ fn matching_permanents(
                 && produced.is_none_or(|kind| made.contains(&kind))
                 && (!chosen_color || crate::mana_bonus::makes_chosen(state, scope.source, made))
                 && picks(what, tapped)?)
-            .then(|| cause(state, vec![Target::Object(tapped), Target::Player(*player)]))
+            .then(|| Cause {
+                r121_made: made.clone(),
+                ..cause(state, vec![Target::Object(tapped), Target::Player(*player)])
+            })
         }
         (
             TriggerPattern::CountersPut { what, counter, .. }
@@ -2797,6 +2801,7 @@ fn r6701_activating(scope: &Scope<'_>, kind: mtg_cards::ability::ActivationKind)
 fn r115_with_causer(cause: Cause, scope: &Scope<'_>) -> Cause {
     Cause {
         r115_causer: scope.caused.map(|caused| caused.player),
+        r121_made: Vec::new(),
         ..cause
     }
 }

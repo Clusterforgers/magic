@@ -392,6 +392,17 @@ export interface Fan {
 /** The most a card at the end of the arc turns, in degrees, and sits lower, in px. */
 export const FAN_TURN_MOST = 6
 export const FAN_DROP_MOST = 8
+/**
+ * The most the top edge of a turned card falls across its width, in px: a wide card turns less, so the name line just
+ * under its top edge stays inside the card's outline instead of reaching past it.
+ */
+export const FAN_TILT_PX = 3
+
+/** The most a card `width` px wide turns at rest, in degrees, rounded down to a tenth (`FAN_TILT_PX`). */
+export function fanTurnMost(width: number): number {
+  const tilt = (Math.asin(Math.min(1, FAN_TILT_PX / Math.max(width, 1))) * 180) / Math.PI
+  return Math.min(FAN_TURN_MOST, Math.floor(tilt * 10) / 10)
+}
 
 /**
  * The place of card `index` of `count` in the arc: the middle card upright and highest, the ends turned outwards and a
@@ -427,15 +438,21 @@ export interface FanPlace {
 const ceilTenth = (px: number): number => Math.ceil(Math.round(px * 1000) / 100) / 10
 
 /**
- * Where card `index` of `count` lies in a slot of `box`: the arc of `fanOf` raised so the lowest corner of the hand rests
+ * Where card `index` of `count` lies in a slot of `box`: the arc of `fanOf`, its turns scaled to `fanTurnMost`, raised so the lowest corner of the hand rests
  * on the floor of the slots, and each turned card moved inwards by what its corners reach past its sides, so the arc
  * stays inside the fan at rest (the room above the cards is the lift's). Without a box only the drop is raised.
  */
 export function fanPlace(index: number, count: number, box?: { width: number; height: number }): FanPlace {
-  const { turn, drop } = fanOf(index, count)
+  const { turn: raw, drop } = fanOf(index, count)
   const end = fanOf(count - 1, count)
+  // The whole arc is scaled to the card's own limit, so its shape stays even.
+  const most = box === undefined ? FAN_TURN_MOST : fanTurnMost(box.width)
+  const scale = end.turn === 0 ? 1 : Math.min(1, most / end.turn)
+  const turnOf = (of: number): number =>
+    Math.sign(of) * Math.min(most, Math.round(Math.abs(of) * scale * 10) / 10)
+  const turn = turnOf(raw)
   const reach = box === undefined ? 0 : turnedReach(turn, box).x
-  const endReach = box === undefined ? 0 : turnedReach(end.turn, box).y
+  const endReach = box === undefined ? 0 : turnedReach(turnOf(end.turn), box).y
   const rise = ceilTenth(end.drop + endReach)
   return {
     turn,

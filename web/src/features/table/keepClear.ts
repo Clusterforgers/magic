@@ -66,7 +66,21 @@ const sameBoxes = (a: readonly ClearBox[], b: readonly ClearBox[]): boolean =>
     )
   })
 
-/** The boxes the preview keeps clear of, measured again when the window or one of them changes size. */
+/** Whether a DOM change added or removed a marked element, or changed a mark. */
+const marksChanged = (records: readonly MutationRecord[]): boolean =>
+  records.some(
+    (record) =>
+      record.type === 'attributes' ||
+      [...record.addedNodes, ...record.removedNodes].some(
+        (node) =>
+          node instanceof Element && (node.matches(SELECTOR) || node.querySelector(SELECTOR) !== null),
+      ),
+  )
+
+/**
+ * The boxes the preview keeps clear of, measured again when the window or one of them changes size, and when one comes
+ * or goes: a question that opens while the preview stands (a hand card chosen to cast asks for its targets) moves it.
+ */
 export function useKeepClear(): readonly ClearBox[] {
   const [boxes, setBoxes] = useState(keepClearBoxes)
   useLayoutEffect(() => {
@@ -76,10 +90,29 @@ export function useKeepClear(): readonly ClearBox[] {
     }
     measure()
     const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure)
-    for (const element of document.querySelectorAll(SELECTOR)) observer?.observe(element)
+    const watch = (): void => {
+      observer?.disconnect()
+      for (const element of document.querySelectorAll(SELECTOR)) observer?.observe(element)
+    }
+    watch()
+    const marks =
+      typeof MutationObserver === 'undefined'
+        ? null
+        : new MutationObserver((records) => {
+            if (!marksChanged(records)) return
+            watch()
+            measure()
+          })
+    marks?.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: [KEEP_CLEAR_ATTR],
+    })
     window.addEventListener('resize', measure)
     return () => {
       observer?.disconnect()
+      marks?.disconnect()
       window.removeEventListener('resize', measure)
     }
   }, [])

@@ -84,7 +84,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out
 - [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 - [ ] (ln1) The Help menu's table tour runs on the Learn coach and its anchors instead of `TourCard` and CSS selectors
-- [ ] (ln2) Outside lessons too, the hover preview of a chosen hand card keeps clear of the prompt band's question
 
 ## M5 Table and prompts
 
@@ -98,12 +97,9 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
 - [ ] (dh8) Combat forecasts are badges on attackers, blockers and the attacked pod, with the total in the dock
-- [ ] (dh11) `hand.spec.ts`: the rotated end card's name line clips the hand container (7 cases)
-- [ ] (dh10) On a phone, paying shows the cost once: the pay sheet header or the bar's chip and meter, not both
 - [ ] (mb4) The phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
 - [ ] (pf1) `DeckPictures` also lists an opponent's whole deck where its list is public (an unchanged precon, an open-deck house rule), and the tokens a deck can make (`docs/web.md`, Card images)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
-- [ ] (rg1) On a phone the decision bar shows the Stops button whole under a combat declaration, the stack chip beside a take-back and the choice cards of a phone on its side, and `reach.spec.ts` holds those stops on phones too
 - [ ] (rg3) `reach.spec.ts` holds the signed-in pages (Decks, My games, Tournaments, Delves, Settings) on the accounts server
 
 - [ ] Playwright games with corpus decks that ask every decision kind

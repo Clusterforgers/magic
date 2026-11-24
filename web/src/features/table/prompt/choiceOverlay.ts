@@ -136,6 +136,8 @@ export function useChoiceOverlayHost(
   viewport: Viewport,
   opening = false,
   every = phone,
+  // A phone on its side has a phone's low room: its cards take a phone's sizes and the whole room.
+  small = phone,
 ): {
   value: ChoiceOverlay
   open: boolean
@@ -164,8 +166,8 @@ export function useChoiceOverlayHost(
     return () => observer.disconnect()
   }, [host, open])
   const room = useMemo(
-    () => (measured === null ? guessRoom(viewport, phone) : { ...measured, phone }),
-    [measured, viewport, phone],
+    () => (measured === null ? guessRoom(viewport, small) : { ...measured, phone: small }),
+    [measured, viewport, small],
   )
   const value = useMemo(
     () => ({ host, phone, every, room, claim, open, opening: opening && !phone }),

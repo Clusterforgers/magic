@@ -50,18 +50,21 @@ export interface DockNeedInput {
  */
 export function handDockNeed({ width, count, commanders, most, pick = false }: DockNeedInput): number {
   const cardHeight = Math.round(HAND_FLOOR_PX * CARD_ASPECT)
-  const shown = pick && count > 0 ? Math.min(1, commanders) : commanders
-  const head = shown > 0 ? shown * (HAND_FLOOR_PX + HAND_GAP_PX) + COMMAND_GAP_PX : 0
-  const room = width - head
   const cards = Math.max(1, count)
-  for (let rows = 1; rows <= HAND_MAX_ROWS && rows <= cards; rows += 1) {
-    const perRow = Math.ceil(cards / rows)
-    if (perRow * HAND_FLOOR_PX + (perRow - 1) * HAND_GAP_PX > room) continue
-    if (rows === 1) return 0
-    const need = cardHeight + (rows - 1) * HAND_HEAD_PX + HAND_DOCK_CHROME_PX
-    return need <= most ? need : 0
+  const rowsBeside = (shown: number): number | null => {
+    const head = shown > 0 ? shown * (HAND_FLOOR_PX + HAND_GAP_PX) + COMMAND_GAP_PX : 0
+    for (let rows = 1; rows <= HAND_MAX_ROWS && rows <= cards; rows += 1) {
+      const perRow = Math.ceil(cards / rows)
+      if (perRow * HAND_FLOOR_PX + (perRow - 1) * HAND_GAP_PX <= width - head) return rows
+    }
+    return null
   }
-  return 0
+  // A hand whose rows the whole head leaves no room for keeps one card of the head, as `dockLayouts` lays it out.
+  const one = Math.min(1, commanders)
+  const rows = (pick && count > 0 ? null : rowsBeside(commanders)) ?? rowsBeside(count > 0 ? one : commanders)
+  if (rows === null || rows === 1) return 0
+  const need = cardHeight + (rows - 1) * HAND_HEAD_PX + HAND_DOCK_CHROME_PX
+  return need <= most ? need : 0
 }
 
 /** The dock height a hand dock grew to and when: the settle point it was taken at and the room it was taken for. */
@@ -199,16 +202,27 @@ export interface DockLayouts {
   command?: HandLayout
   /** The widest the commanders' list and its divider may be in px. */
   commandWidth?: number
+  /** The hand was laid out first and the head takes what it leaves (`handFirst`). */
+  first?: true
 }
 
 /**
  * The hand and the commanders at its head share the line: the commanders take one card's width each and a divider,
  * but never so much that the hand keeps fewer than `HAND_KEPT_BESIDE_HEAD` whole cards (or all of a smaller hand);
- * the commanders then scroll in what is left, at least one of them in view.
+ * the commanders then scroll in what is left, at least one of them in view. A hand that would scroll beside them, or one
+ * a decision picks among, comes first (`handFirst`).
  */
 export function dockLayouts({ commanders, pick = false, ...input }: DockInput): DockLayouts {
   if (commanders <= 0) return { hand: handLayout(input) }
-  if (pick && input.count > 0) return pickLayouts(commanders, input)
+  const shared = sharedLayouts(commanders, input)
+  if (input.count <= 0 || (!shared.hand.scrolls && !(pick && shared.command?.scrolls === true))) return shared
+  const first = handFirst(commanders, input)
+  // A pick shows every card on offer; any other hand takes the head's room only where that spares it its scroll.
+  return pick || !first.hand.scrolls ? first : shared
+}
+
+/** The shared line: the commanders' whole head where the hand keeps its whole cards beside it (`dockLayouts`). */
+function sharedLayouts(commanders: number, input: HandInput): DockLayouts {
   const all = handLayout({ ...input, count: input.count + commanders })
   const card = all.box.width + all.gap
   const head = commanders * card + COMMAND_GAP_PX
@@ -232,13 +246,11 @@ export function dockLayouts({ commanders, pick = false, ...input }: DockInput): 
 }
 
 /**
- * The line while a decision picks among the hand's cards (bottoming, a discard), where the shared line does not hold
- * both whole: the hand is laid out first, beside one card of the head, and the head (commanders, the Satchel, the top
- * card) takes what the hand leaves and scrolls in it, so every card on offer stays in view.
+ * The line with the hand first, where the shared line does not hold both whole (a decision picking among the hand, or a
+ * hand that would scroll): the hand is laid out beside one card of the head, and the head (commanders, the Satchel, the
+ * top card) takes what the hand leaves and scrolls in it, so every card of the hand stays in view.
  */
-function pickLayouts(commanders: number, input: HandInput): DockLayouts {
-  const shared = dockLayouts({ ...input, commanders })
-  if (shared.command?.scrolls !== true && !shared.hand.scrolls) return shared
+function handFirst(commanders: number, input: HandInput): DockLayouts {
   // The head keeps one card and its divider: first at the narrowest card, then at the hand's card where that is wider.
   const handBeside = (card: number): HandLayout =>
     handLayout({ ...input, width: Math.max(0, input.width - (card + HAND_GAP_PX + COMMAND_GAP_PX)) })
@@ -256,5 +268,5 @@ function pickLayouts(commanders: number, input: HandInput): DockLayouts {
     scrolls: commandWidth < head,
     overlap: 0,
   }
-  return { hand, command, commandWidth }
+  return { hand, command, commandWidth, first: true }
 }

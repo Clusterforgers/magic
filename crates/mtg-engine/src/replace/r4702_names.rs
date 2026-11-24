@@ -25,6 +25,7 @@ pub(super) fn r4702_fits(card: &CardDefinition, kind: EntersChoice) -> bool {
             !land && !card.types.contains(&CardType::Creature)
         }
         EntersChoice::NonbasicLandCardName => land && !card.supertypes.contains(&Supertype::Basic),
+        EntersChoice::R121CreatureNameAndType => card.types.contains(&CardType::Creature),
         _ => true,
     }
 }
@@ -50,6 +51,9 @@ impl Pass<'_> {
             EntersChoice::NonbasicLandCardName => {
                 (false, false, true, "Choose a nonbasic land card name.")
             }
+            EntersChoice::R121CreatureNameAndType => {
+                (false, false, false, "Choose a creature card name.")
+            }
             _ => (false, false, false, "Choose a card name."),
         };
         let name = match self.answer() {
@@ -63,6 +67,7 @@ impl Pass<'_> {
                         noncreature,
                         nonbasic_land,
                         r111_not_basic_land: false,
+                        r121_creature: kind == EntersChoice::R121CreatureNameAndType,
                         looked,
                     }),
                 }));

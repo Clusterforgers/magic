@@ -416,6 +416,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     ObjectId(first + made),
                     definition,
                 ));
+                events.extend(crate::saga::r121_token_entering(
+                    ObjectId(first + made),
+                    definition,
+                ));
                 made += 1;
             }
         }

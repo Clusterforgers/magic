@@ -166,6 +166,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         // A static copy is no part of the layers: housekeeping begins and ends it (`r707_static_copies`).
         Wanted::R707CopyOf { .. }
         | Wanted::SetName(_)
+        | Wanted::R121SetChosenName
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::CantAttack
@@ -222,6 +223,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::RemoveSupertype(_)
         | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
+        | Wanted::R121SetChosenName
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
@@ -491,6 +493,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Colorless
         | Pred::ChosenColor
         | Pred::R112SharesColorWithSpent
+        | Pred::R121SharesColorWithMade
         | Pred::OutsideCommanderIdentity => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
         Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) | Pred::R113HasWay(_) => Traits::KEYWORDS,

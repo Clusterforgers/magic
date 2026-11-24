@@ -1,7 +1,15 @@
-// Goal: a one-row hand lies in a gentle, symmetric arc (the middle card upright and highest, the ends turned outwards no more than 6° and no more than 8 px lower) raised so that at rest every card stays inside its slot below and at its outer side with its lowest corner on the floor, a card stands straight as it rises, and a hand of several rows lies flat.
+// Goal: a one-row hand lies in a gentle, symmetric arc (the middle card upright and highest, the ends turned outwards no more than 6°, nor so far that a card's top edge falls more than 3 px across its width, and no more than 8 px lower) raised so that at rest every card stays inside its slot below and at its outer side with its lowest corner on the floor, a card stands straight as it rises, and a hand of several rows lies flat.
 import { describe, expect, it } from 'vitest'
 import { renderTable } from '@/test-utils/tableHarness'
-import { FAN_DROP_MOST, FAN_TURN_MOST, fanOf, fanPlace, turnedReach } from './HandFan'
+import {
+  FAN_DROP_MOST,
+  FAN_TILT_PX,
+  FAN_TURN_MOST,
+  fanOf,
+  fanPlace,
+  fanTurnMost,
+  turnedReach,
+} from './HandFan'
 
 describe('fanOf', () => {
   it('stands a lone card straight', () => {
@@ -52,6 +60,16 @@ describe('fanPlace', () => {
       expect(Math.max(...floors)).toBeGreaterThan(box.height - 0.15)
     },
   )
+
+  it.each(boxes)('turns a card of %o so its top edge falls no more than the tilt limit', (box) => {
+    for (const count of [2, 3, 7, 12, 24]) {
+      const first = fanPlace(0, count, box)
+      const last = fanPlace(count - 1, count, box)
+      expect(last.turn).toBeCloseTo(-first.turn, 5)
+      expect(box.width * Math.sin((Math.abs(first.turn) * Math.PI) / 180)).toBeLessThanOrEqual(FAN_TILT_PX)
+      expect(Math.abs(first.turn)).toBe(Math.min(fanTurnMost(box.width), Math.abs(fanOf(0, count).turn)))
+    }
+  })
 
   it('reaches no further than the upright box when the card stands straight', () => {
     expect(turnedReach(0, { width: 100, height: 140 })).toEqual({ x: 0, y: 0 })

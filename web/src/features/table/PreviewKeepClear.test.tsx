@@ -1,5 +1,5 @@
-// Goal: the table's card preview keeps its full size and moves off the elements marked `data-keep-clear` (the decision's home, its sentence and answers, the hand dock, the controls) to the side they leave free; each mark carries its rank, the answers measured button by button with the primary one marked, and the strip is marked only while a decision is owed.
-import { screen } from '@testing-library/react'
+// Goal: the table's card preview keeps its full size and moves off the elements marked `data-keep-clear` (the decision's home, its sentence and answers, the hand dock, the controls) to the side they leave free, also from a mark that comes or goes while it stands; each mark carries its rank, the answers measured button by button with the primary one marked, and the strip is marked only while a decision is owed.
+import { screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { DEV_PROMPTS } from '@/features/table/dev/prompts'
 import { buildFixture } from '@/features/table/dev/fixture'
@@ -57,6 +57,21 @@ describe('the preview beside a strip', () => {
     expect(preview.style.width).toBe(`${full.width}px`)
     expect(preview).toHaveAttribute('data-picture', String(full.picture))
   })
+
+  it.each(['', 'text'])(
+    'moves off a mark (%o) that comes while it stands, as a question asked after a card is chosen',
+    async (rank) => {
+      const { user, container } = renderTable({ seats: 2 })
+      await user.hover(firstCard(container))
+      const preview = screen.getByTestId('card-preview')
+      expect(preview).toHaveAttribute('data-dock', 'right')
+      const late = mark(620, 100, 1000, 500)
+      late.setAttribute('data-keep-clear', rank)
+      await waitFor(() => expect(preview).toHaveAttribute('data-dock', 'left'))
+      late.remove()
+      await waitFor(() => expect(preview).toHaveAttribute('data-dock', 'right'))
+    },
+  )
 })
 
 describe('the measured boxes', () => {

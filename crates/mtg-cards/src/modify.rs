@@ -150,6 +150,9 @@ pub enum Modification {
     /// Adds each ability the source chose as it entered from among first strike, vigilance, and lifelink (layer 6):
     /// "have each of the chosen abilities". Only a static ability has it; with nothing chosen it changes nothing.
     R6001AddChosenAbilities,
+    /// Makes the card name the source chose as it entered or became attached the name (layer 3): "its name is the last
+    /// chosen name". Only a static ability has it; with no name chosen it changes nothing.
+    R121SetChosenName,
     /// Sets the color to the one the card's owner chose for it before the game began as their commander (layer 5): "If ~
     /// is your commander, choose a color before the game begins. ~ is the chosen color." Only the card's own
     /// characteristic-defining static ability has it; a card nobody chose a color for keeps its colors.
@@ -279,7 +282,8 @@ impl Modification {
             Modification::SetController(_) => Some("2"),
             Modification::ChangeTextChosen { .. }
             | Modification::ChangeTextChosenTo { .. }
-            | Modification::R612ExchangeTextBoxes => Some("3"),
+            | Modification::R612ExchangeTextBoxes
+            | Modification::R121SetChosenName => Some("3"),
             Modification::AddType(_)
             | Modification::RemoveType(_)
             | Modification::SetTypes(_)

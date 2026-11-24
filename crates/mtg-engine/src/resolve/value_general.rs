@@ -123,6 +123,7 @@ fn the_triggering_spell_has_its_targets(#[case] targets: Vec<Target>, #[case] ex
     };
     let cause = Cause {
         r115_causer: None,
+        r121_made: Vec::new(),
         dealers: Vec::new(),
         subjects: vec![Target::Object(spell)],
         snapshots: Vec::new(),

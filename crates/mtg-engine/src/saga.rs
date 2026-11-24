@@ -47,6 +47,18 @@ pub(crate) fn entering(state: &GameState, id: ObjectId) -> Option<Event> {
     }))
 }
 
+/// The lore counter a Saga token `id` of this definition is created with (CR 714.3a, 111.1): a token copy of a Saga
+/// enters with one like the card does; `None` for a token that is no Saga.
+pub(crate) fn r121_token_entering(
+    id: ObjectId,
+    definition: &mtg_cards::CardDefinition,
+) -> Option<Event> {
+    definition
+        .subtypes
+        .contains(&saga())
+        .then(|| lore(ObjectRef { id, counter: 0 }))
+}
+
 /// The lore counters the Sagas of the active player get as their precombat main phase begins (CR 714.3b): a
 /// turn-based action, so the chapter abilities they reach trigger once it is done.
 pub(crate) fn precombat_counters(state: &GameState) -> Vec<Event> {

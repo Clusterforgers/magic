@@ -1,0 +1,39 @@
+{
+  "oracle_id": "f3240a86-28b6-4338-9a59-1fb6f795d713",
+  "name": "Spoils of War",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Spoils of War",
+      "oracle_fingerprint": "c0707f4e961c3f4663ceb72707693c46",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              {
+                "R121XIsPerOpponent": [
+                  { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                ]
+              }
+            ],
+            "required": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }] },
+                "bounds": { "min": 0, "max": "X" },
+                "divide": "X"
+              }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1", "count": "Divided" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

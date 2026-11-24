@@ -252,6 +252,14 @@ pub struct Cause {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub r115_causer: Option<PlayerId>,
+    /// The mana a permanent tapped for mana made (`TriggerPattern::TappedForMana`, `Pred::R121SharesColorWithMade`: "the
+    /// mana that land produced"); empty for any other event.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(
+        feature = "ts",
+        ts(as = "Option<Vec<mtg_core::mana::ManaType>>", optional)
+    )]
+    pub r121_made: Vec<mtg_core::mana::ManaType>,
 }
 
 /// The event a triggered ability triggered on, as `Cause::event` keeps it: an object entering or moving between zones, a

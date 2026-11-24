@@ -11,6 +11,7 @@ pub fn r4702_choice_shape(kind: EntersChoice) -> Option<&'static str> {
         EntersChoice::RevealedNonlandName => "Choose.RevealedNonlandName",
         EntersChoice::R6001Abilities(_) => "Choose.R6001Abilities",
         EntersChoice::R115ColorAndOpponent => "Choose.R115ColorAndOpponent",
+        EntersChoice::R121CreatureNameAndType => "Choose.R121CreatureNameAndType",
         _ => return None,
     })
 }
