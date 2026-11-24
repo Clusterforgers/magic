@@ -54,9 +54,19 @@ Every boss (`boss_plan.rs`) is: one innate, one encounter modifier, two phases b
 - Encounter modifier: one game-warping rule for the whole fight, drawn from the pool both themes share (`content/modifiers.json`, its cards in `content/encounters.json`) by the seed keyed by floor and room, so a retried fight keeps it. A modifier never meets a boss its `not_with` names (`modifiers.rs`).
 - Phases: Phase 1 begins at the beginning of the end step of the last turn of round 8, Phase 2 of round 14 (`PHASE_ROUNDS`, `PhaseStart::AtRound`). A round is one turn of each seat or team (`Turn::round`); an extra turn does not advance it. A phase is an emblem for the rest of the fight; its "when this phase begins" ability (`TriggerPattern::PhaseBegins`) uses the stack once.
 - Satchel: four spells in the boss's command zone, cast like cards in hand and public; a reusable one returns as it leaves the stack and costs {2} more for each earlier cast this fight, a once card does not return.
-- Relics: `depth − offset` relics, the offset 4, 3, 2 and 1 at Heat 0 to 3, at most 6 (`boss_relics.rs`). They come from the heroes' whole relic pool of the run's generation, risky relics included, never one that names teammates (`team`), and only those the deck's makeup can use. Each is Rare by chance (10, 15, 20 or 25 % at Heat 0 to 3 with one relic, 10 points more for each further relic, at most 60 %) or, from four relics at Heat 1 and above, Mythic (5 % at four, 10 at five, 15 at six); the rest are Common. Copies can repeat and stack. The draw is keyed by floor and room.
+- Relics: `(depth + Heat + 1) / 2` relics and never fewer than `depth − offset`, the offset 4, 3, 2 and 1 at Heat 0 to 3, at most 6 (`boss_relics.rs`); a run of a generation before 12 (`BOSS_SCALE_FROM`) counts only `depth − offset`.
+
+| Depth | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10+ |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Heat 0 | 0 | 1 | 1 | 2 | 2 | 3 | 3 | 4 | 4 | 5 | 6 |
+| Heat 1 | 1 | 1 | 2 | 2 | 3 | 3 | 4 | 4 | 5 | 6 | 6 |
+| Heat 2 | 1 | 2 | 2 | 3 | 3 | 4 | 4 | 5 | 6 | 6 | 6 |
+| Heat 3 | 2 | 2 | 3 | 3 | 4 | 4 | 5 | 6 | 6 | 6 | 6 |
+
+- They come from the heroes' whole relic pool of the run's generation, risky relics included, never one that names teammates (`team`), and only those the deck's makeup can use. Each is Rare by chance (10, 15, 20 or 25 % at Heat 0 to 3 with one relic, 10 points more for each further relic, at most 60 %) or, from four relics at Heat 1 and above, Mythic (5 % at four, 10 at five, 15 at six); the rest are Common. Copies can repeat and stack. The draw is keyed by floor and room.
 - Life: 40 and 15 for each hero after the first (`Scale::boss_life`); Heat and depth do not change it.
-- Its advantages are open: the innate, modifier and relics are emblems in its command zone from the start, named with their rules on the seat's sheet (`boss_sheet.rs`, `BossSeat::sheet`). The intro (`DelveFightView`) lists the two effects, the phases with their rounds ("Phase 1 at round 8"), the satchel with each card's mark and the relics; at the table the bar shows the innate with its level, the modifier and relics as chips, and a pill counting down ("Phase 1 in 3 rounds") that names the phase in force once it begins, with the next one's countdown. A reusable satchel card reads "returns · +{N}" with its tax now, a once card "once" (`BossView`: `innate`, `modifier`, `round_phases`, `phase_in`, `relics`, `satchel`).
+- Reinforcements: from generation 12 the boss brings one Reinforcements emblem for each hero after the first (`Scale::reinforcements`, `content/cards.json`): it draws an additional card in its draw step and may play an additional land each turn, so it plays about one more deck's cards for each deck the party adds. A solo hero meets none.
+- Its advantages are open: the innate, modifier, relics and reinforcements are emblems in its command zone from the start, named with their rules on the seat's sheet (`boss_sheet.rs`, `BossSeat::sheet`). The intro (`DelveFightView`) lists the two effects, the phases with their rounds ("Phase 1 at round 8"), the satchel with each card's mark and the relics; at the table the bar shows the innate with its level, the modifier and relics (reinforcements among them) as chips, and a pill counting down ("Phase 1 in 3 rounds") that names the phase in force once it begins, with the next one's countdown. A reusable satchel card reads "returns · +{N}" with its tax now, a once card "once" (`BossView`: `innate`, `modifier`, `round_phases`, `phase_in`, `relics`, `satchel`).
 - Opening hand: the boss draws 7 with 2 to 4 lands and takes no mulligan (`OpeningLands::BOSS`).
 - No loops: the boss's bot answer any loop offer with at most 5 iterations or Stop and never a draw (`loop_answer_in`, `BOSS_LOOP_CAP`).
 - Drain rule: a boss's innate, modifier, phase or satchel card takes life from a hero only as damage or unless the hero pays.
@@ -172,7 +182,7 @@ The host picks the Heat when creating a run; the creation form and the run heade
 | 2 | Heroic | needs a team of decks that work together and suit the format |
 | 3 | Legendary | needs a tuned team, and opens the Ember Foundry |
 
-Depth and Heat act on the boss through its innate level and relics (Bosses); the party size sets its life.
+Depth and Heat act on the boss through its innate level and relics (Bosses); the party size sets its life and reinforcements.
 
 ## Endless
 
@@ -244,7 +254,7 @@ From content generation 5 (`ENDLESS_FROM`) a run continues below its first floor
 
 ## Content
 
-- Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint. The kinds are relics, the Spirit's haunt, innates, phases and encounter modifiers.
+- Custom cards are not on Scryfall: id, name, type line, rules text, art placeholder key, role and price, and their abilities in the card DSL. The engine plays each as an emblem; the web draws them from the content endpoint. The kinds are relics, the Spirit's haunt, innates, phases, encounter modifiers and the boss's reinforcements.
 - Files: `cards.json` (relics, the haunt), `encounters.json` and `modifiers.json` (encounter modifiers), `rework_*.json` (innates and phases), `<theme>.json` (bosses, events, reward pool), `decks/` (the bosses' precons).
 - Content tests check that every satchel and reward card plays automatically (Verified or Read) in the corpus, every boss names a 100-card deck file, an innate with five levels, two phases and four satchel cards, every custom card keeps all its abilities, and each boss plays a real fight at level V under the loop detector.
 - Content generations of bosses: a boss's `since` keeps it off the ladder of an older run (Ozrith, Aurenne, Vorthana and Sivanne 6, the Spire 8, its grown roster 10, the Foundry 11); every run plays the boss of Bosses whatever its generation; `RunEvent::Content` stores the generation and the map is drawn again for it.
