@@ -1611,6 +1611,11 @@ pub enum ReplaceBy {
         /// copy", CR 708.8).
         #[serde(default, skip_serializing_if = "is_false")]
         r115_turned_up: bool,
+        /// It enters as a copy with as many more counters of each kind as the copied permanent has as it is copied ("it
+        /// enters with additional counters on it equal to the same number and kinds of counters the copied permanent
+        /// has on it").
+        #[serde(default, skip_serializing_if = "is_false")]
+        r121_copied_counters: bool,
     },
     /// Devour (CR 702.82): as the permanent enters, its controller may sacrifice any number of other permanents they control that match the selector, and it enters with this many +1/+1 counters for each.
     Devour {

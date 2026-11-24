@@ -653,6 +653,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
         super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
         super::r119_01_wholes::r119_01_add_wholes(ability, &mut texts);
         super::r120_01_wholes::r120_01_add_wholes(ability, &mut texts);
+        super::r121_01_wholes::r121_01_add_wholes(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -743,6 +744,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r118_02_wholes::r118_02_add_wholes(ability, &mut texts);
     super::r119_01_wholes::r119_01_add_wholes(ability, &mut texts);
     super::r120_01_wholes::r120_01_add_wholes(ability, &mut texts);
+    super::r121_01_wholes::r121_01_add_wholes(ability, &mut texts);
     super::r119_02_wholes::r119_02_add_wholes(ability, &mut texts);
     super::r120_02_wholes::r120_02_add_wholes(ability, &mut texts);
     super::r116_01_wholes::r116_01_add_wholes(ability, &mut texts);
@@ -1725,6 +1727,17 @@ fn written(
             unsplit(mask, start, used)?;
             sentences.extend(texts);
             start += used;
+            continue;
+        }
+        // A number chosen from none and that many counters put are one sentence ("put up to three lore counters on it").
+        if let [choose, put, ..] = &effects[start..]
+            && let Some(most) = super::r121_01_up_to::r121_up_to_put(choose, put)
+        {
+            unsplit(mask, start, 2)?;
+            sentences.push(super::r121_01_up_to::r121_up_to_text(
+                &writer.effect(&most)?,
+            )?);
+            start += 2;
             continue;
         }
         // A choice of cards and the move (or the assimilate) of what was chosen are one sentence, which no joint splits.

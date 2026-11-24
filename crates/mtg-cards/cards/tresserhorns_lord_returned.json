@@ -1,0 +1,39 @@
+{
+  "oracle_id": "11cc638c-b1c5-4b73-8eac-00cac6ae32b6",
+  "name": "Tresserhorn's Lord, Returned",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Tresserhorn's Lord, Returned",
+      "oracle_fingerprint": "e6798911d6eeff8cabcd95b563bd9f44",
+      "abilities": [
+        { "Keyword": "Trample" },
+        { "Keyword": "Indestructible" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "Pay": {
+                  "cost": [
+                    { "Sacrifice": { "filter": [{ "Type": "Creature" }], "count": 3 } },
+                    { "PayLife": 3 }
+                  ],
+                  "paid": [{ "Draw": { "who": { "Target": 0 }, "count": 3 } }],
+                  "unpaid": [{ "Sacrifice": { "filter": ["This"] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Sacrificed": { "what": [{ "Type": "Creature" }], "by": "You" } },
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

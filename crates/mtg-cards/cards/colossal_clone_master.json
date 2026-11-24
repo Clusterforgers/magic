@@ -1,0 +1,52 @@
+{
+  "oracle_id": "94fee2cf-7604-48fa-9d3c-03ca4af0edfd",
+  "name": "Colossal Clone Master",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Colossal Clone Master",
+      "oracle_fingerprint": "b7146b821335a2e150f2670ae7537801",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "Type": "Creature" }],
+                "except": [
+                  { "RemoveSupertype": "Legendary" },
+                  {
+                    "GrantAbility": {
+                      "Static": {
+                        "affected": "This",
+                        "mods": [
+                          {
+                            "SetPT": {
+                              "power": {
+                                "Distinct": {
+                                  "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                  "stat": "Name"
+                                }
+                              },
+                              "toughness": {
+                                "Distinct": {
+                                  "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                  "stat": "Name"
+                                }
+                              }
+                            }
+                          }
+                        ],
+                        "defining": true
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

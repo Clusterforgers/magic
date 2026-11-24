@@ -2602,6 +2602,10 @@ pub enum Effect {
         who: Ref,
         /// The cost of one payment.
         cost: Cost,
+        /// The name the number of payments is kept under (`Amount::Bound`), for any later step to read ("you may pay any
+        /// amount of mana ... that much"); a `Reflexive` right after it reads the number without it.
+        #[serde(rename = "as", default, skip_serializing_if = "Option::is_none")]
+        bind: Option<String>,
     },
     /// The ability resolves even when every target it chose became illegal, so CR 608.2b does not stop it ("This ability
     /// still resolves if its target becomes illegal."); as a step it does nothing.

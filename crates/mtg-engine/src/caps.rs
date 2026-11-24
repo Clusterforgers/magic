@@ -500,6 +500,7 @@ const RUNS: &[&str] = &[
     "Copy.Duration.WhileSourceAttached",
     "Copy.Duration.WhileTapped",
     "Copy.Duration.R115UntilFaceDown",
+    "Copy.R121CopiedCounters",
     "Copy.WhenYouDo",
     "Copy.Static",
     "Copy.Except.ThisAbility",

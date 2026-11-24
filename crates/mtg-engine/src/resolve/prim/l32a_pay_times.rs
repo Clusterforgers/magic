@@ -65,7 +65,7 @@ fn most(
 /// can pay), then pays the cost that many times at once as a payment an effect asks for. The step binds the number for a
 /// following reflexive trigger and reports whether anything was paid for "When you pay this cost one or more times".
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::PayAnyTimes { who, cost } = effect else {
+    let Effect::PayAnyTimes { who, cost, bind } = effect else {
         return Err(wrong_effect("PayAnyTimes"));
     };
     let state = cx.state();
@@ -75,7 +75,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .into_iter()
         .find(|player| state.is_alive(*player))
     else {
-        return Ok(done(cx, 0, Vec::new()));
+        return Ok(done(cx, bind.as_deref(), 0, Vec::new()));
     };
     let mut journal = cx
         .journal()
@@ -103,7 +103,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Some((_, other)) => return Err(unexpected(other, player)),
     };
     if times == 0 {
-        return Ok(done(cx, 0, Vec::new()));
+        return Ok(done(cx, bind.as_deref(), 0, Vec::new()));
     }
     let price = price(cx, cost, times)?;
     match settle(cx, player, &price, &mut journal)? {
@@ -114,7 +114,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     "an answer was given to a question that was not asked".into(),
                 ));
             }
-            Ok(done(cx, times, events))
+            Ok(done(cx, bind.as_deref(), times, events))
         }
     }
 }
@@ -124,9 +124,9 @@ fn cost_words(cx: &Cx<'_>, cost: &mtg_cards::cost::Cost) -> Result<String, Resol
     Ok(super::pay::said(&price(cx, cost, 1)?).join(", "))
 }
 
-/// The finished step: the events of the payment, the number of payments kept for a reflexive trigger, and the
+/// The finished step: the events of the payment, the number of payments kept for a reflexive trigger and under the step's own name when it has one, and the
 /// controller bound as having done it when they paid at least once.
-fn done(cx: &Cx<'_>, times: u32, events: Vec<crate::events::Event>) -> Run {
+fn done(cx: &Cx<'_>, bind: Option<&str>, times: u32, events: Vec<crate::events::Event>) -> Run {
     let position = cx.resolving.position();
     let who = if times > 0 {
         vec![Target::Player(cx.scope.controller)]
@@ -135,10 +135,11 @@ fn done(cx: &Cx<'_>, times: u32, events: Vec<crate::events::Event>) -> Run {
     };
     Run::Done {
         events,
-        bound: vec![
-            (format!("{LET}{times}:{}", times_name(position)), Vec::new()),
-            (performed_name(position), who),
-        ],
+        bound: std::iter::once(times_name(position))
+            .chain(bind.map(str::to_owned))
+            .map(|name| (format!("{LET}{times}:{name}"), Vec::new()))
+            .chain(std::iter::once((performed_name(position), who)))
+            .collect(),
         snapshots: Vec::new(),
         next: Next::Sibling,
     }

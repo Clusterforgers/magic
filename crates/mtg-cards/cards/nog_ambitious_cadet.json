@@ -1,0 +1,87 @@
+{
+  "oracle_id": "5a8ae1c0-1935-4d03-aa94-9e9088650821",
+  "name": "Nog, Ambitious Cadet",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Nog, Ambitious Cadet",
+      "oracle_fingerprint": "e86f4974e525a2919988c4d93f9b1419",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Activated": {
+            "cost": "{1}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Rogue" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetCreatureTypes": ["Ferengi", "Scout"] },
+                          { "SetPT": { "power": 3, "toughness": 4 } },
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": { "Tapped": { "what": ["This"] } },
+                                "effects": [{ "Surveil": { "count": 2 } }]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{3}",
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "Subtype": "Scout" }] }
+                  },
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [
+                          { "SetCreatureTypes": ["Ferengi", "Officer"] },
+                          {
+                            "GrantAbility": {
+                              "Rule": {
+                                "rule": {
+                                  "MayCast": {
+                                    "what": [{ "Type": "Land" }],
+                                    "from": "Graveyard",
+                                    "play": true
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          { "GrantAbility": { "Rule": { "rule": { "AdditionalLandPlays": {} } } } }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

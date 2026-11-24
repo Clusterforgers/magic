@@ -341,6 +341,7 @@ Boon-Bringer Valkyrie
 Boosted Sloop
 Borderland Behemoth
 Boreal Outrider
+Borg Cube
 Borg Queen, Perfection Manifest
 Boromir, Gondor's Hope
 Boros Charm
@@ -763,6 +764,7 @@ Dog Umbra
 Dokuchi Shadow-Walker
 Domesticated Hydra
 Dominate
+Dominion Saboteur
 Don't Blink
 Donal, Herald of Wings
 Done for the Day
@@ -1167,6 +1169,7 @@ Giant Growth
 Gideon, Champion of Justice
 Gift of Doom
 Gift of Paradise
+Gift of Perfection
 Gilded Drake
 Gilded Goose
 Gilded Lotus
@@ -2001,6 +2004,7 @@ Ninja of the Deep Hours
 Ninja of the New Moon
 Nirkana Revenant
 No Way Out
+Nog, Ambitious Cadet
 Nori, Teller of Tales
 Norn's Annex
 Norn's Choirmaster
@@ -2957,6 +2961,7 @@ Teyo, Geometric Tactician
 Thalia, Guardian of Thraben
 Thassa, God of the Sea
 The Beacon of Kahless
+The Best of Both Worlds
 The Birth of Meletis
 The Caves of Androzani
 The Celestial Toymaker
@@ -2970,8 +2975,10 @@ The Everforger
 The Fallen
 The Gaffer
 The Great Henge
+The Guardian of Forever
 The Holodeck
 The Locust God
+The Madcap Jester
 The Mechanist, Aerial Artisan
 The Mightstone and Weakstone
 The Modern Age // Vector Glider
@@ -3115,6 +3122,7 @@ Traxos, Scourge of Kroog
 Treasure Cruise
 Treasure Hunt
 Trench Behemoth
+Tresserhorn's Lord, Returned
 Triarch Praetorian
 Tribal Flames
 Tributary Instructor
@@ -3421,6 +3429,7 @@ Zefram Cochrane, Warp Pioneer
 Zellix, Sanity Flayer
 Zendikar Farguide
 Zendikar Resurgent
+Zero, Incorporeal Sensate
 Zetalpa, Primal Dawn
 Zevlor, Elturel Exile
 Zhang Fei, Fierce Warrior

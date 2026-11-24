@@ -1,0 +1,72 @@
+{
+  "oracle_id": "a53d9c36-a033-450b-a095-7645876c9ef3",
+  "name": "The Best of Both Worlds",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Best of Both Worlds",
+      "oracle_fingerprint": "26d00614be7a3825d5639b75a1b8ea72",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Type": "Artifact" } },
+                    { "Type": "Creature" },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "R116Assimilate": { "what": { "Target": 0 } } },
+              { "Remember": { "what": { "Target": 0 }, "slot": "assimilated" } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [
+                      { "Type": "Artifact" },
+                      { "Type": "Creature" },
+                      { "ControlledBy": "You" }
+                    ]
+                  },
+                  "mods": [{ "ModifyPT": { "power": 2, "toughness": 2 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      { "Is": { "Remembered": { "on": "This", "slot": "assimilated" } } },
+                      { "Subtype": "Borg" }
+                    ]
+                  },
+                  "as": "gone"
+                }
+              },
+              { "Move": { "what": { "Bound": "gone" }, "to": { "Battlefield": {} } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
