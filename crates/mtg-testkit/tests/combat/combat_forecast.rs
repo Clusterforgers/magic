@@ -110,6 +110,11 @@ fn forecast_shapes(
         .collect();
     want.sort();
     assert_eq!(hits_of(&driver, &forecast), want, "damage packets");
+    for creature in &forecast.creatures {
+        let name = name_of(driver.state(), creature.object);
+        let dealt: u32 = hits.iter().filter(|h| h.0 == name).map(|h| h.2).sum();
+        assert_eq!(creature.dealt, dealt, "{name} deals");
+    }
 
     let mut doomed: Vec<String> = forecast
         .dying()
@@ -277,5 +282,56 @@ fn a_division_already_chosen_replaces_the_default() -> Result<(), ScriptError> {
     assert_eq!(packets(&after, &driver, &asked_name), vec![0, 4]);
     let other = if asked_name == "A1" { "A2" } else { "A1" };
     assert_eq!(packets(&after, &driver, other), vec![2, 2]);
+    Ok(())
+}
+
+/// 2/2s attack a planeswalker on 3 loyalty: the forecast lists it under `attacked` with the damage it takes and its
+/// fate, never among the creatures, and each attacker deals its 2.
+#[rstest]
+#[case::survives(vec![("A1", 2, 2, 0)], 2, false)]
+#[case::falls(vec![("A1", 2, 2, 0), ("A2", 2, 2, 0)], 4, true)]
+fn an_attacked_planeswalker_has_its_damage_and_fate(
+    #[case] attackers: Vec<Fighter>,
+    #[case] damage: u32,
+    #[case] dies: bool,
+) -> Result<(), ScriptError> {
+    use mtg_engine::combat::AttackTarget;
+    use mtg_testkit::cards::walker;
+    use mtg_testkit::ready;
+
+    let mut driver = Driver::from_scenario(
+        Scenario::new(2)
+            .at(2, 0, Step::DeclareAttackers)
+            .battlefield(0, creatures(&attackers))
+            .battlefield(1, vec![ready(walker("Walker", 2))]),
+    )?;
+    let target = driver.id_of("Walker").expect("the walker");
+    let declared = attackers
+        .iter()
+        .map(|f| {
+            let id = driver.id_of(f.0).expect("an attacker");
+            (id, AttackTarget::Planeswalker(target))
+        })
+        .collect();
+    driver.answer(mtg_engine::Answer::DeclareAttackers(declared))?;
+    let forecast = forecast_of(&driver);
+    let [walker] = forecast.attacked.as_slice() else {
+        panic!(
+            "one attacked planeswalker expected: {:?}",
+            forecast.attacked
+        );
+    };
+    assert_eq!(walker.object, target);
+    assert_eq!(
+        (walker.damage, walker.dies, walker.dealt),
+        (damage, dies, 0)
+    );
+    assert_eq!(forecast.creatures.len(), attackers.len());
+    assert!(
+        forecast
+            .creatures
+            .iter()
+            .all(|c| c.object != target && c.dealt == 2)
+    );
     Ok(())
 }

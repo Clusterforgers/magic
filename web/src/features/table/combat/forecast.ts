@@ -16,6 +16,8 @@ export interface CreatureOutlook {
   damage: number
   /** Whether that is enough to destroy it. */
   dies: boolean
+  /** Combat damage it would deal; left out when none. */
+  dealt?: number
   /** The numbers depend on a choice among replacement effects, so they show the first option. */
   choice?: boolean
 }
@@ -68,14 +70,18 @@ export function useBlockPreview(): CombatForecast | null {
   return choice === null ? table : previewed
 }
 
-/** The outlook of one creature in `forecast`, or null when nothing would happen to it. */
+/** The outlook of one creature or attacked planeswalker in `forecast`, or null when it neither deals nor takes damage. */
 export function creatureOutlook(forecast: CombatForecast | null, id: ObjectId): CreatureOutlook | null {
-  const entry = forecast?.creatures.find((creature) => creature.object === id)
-  return entry === undefined || (entry.damage === 0 && !entry.dies)
+  const entry =
+    forecast?.creatures.find((creature) => creature.object === id) ??
+    forecast?.attacked?.find((walker) => walker.object === id)
+  const dealt = entry?.dealt ?? 0
+  return entry === undefined || (entry.damage === 0 && !entry.dies && dealt === 0)
     ? null
     : {
         damage: entry.damage,
         dies: entry.dies,
+        ...(dealt > 0 ? { dealt } : {}),
         ...(forecast?.depends_on_choice === true ? { choice: true } : {}),
       }
 }

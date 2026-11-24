@@ -179,7 +179,12 @@ export const Card = memo(function Card({
         handNote={object.note}
       />
       {outlook === null ? null : (
-        <ForecastMarks outlook={outlook} tapped={tapped} compact={size === 'compact'} />
+        <ForecastMarks
+          outlook={outlook}
+          tapped={tapped}
+          compact={size === 'compact'}
+          cornerTaken={highlight === 'selected' || note?.label !== undefined || object.cost_now !== undefined}
+        />
       )}
       <CardForecast id={id} />
       {fx.map((entry) =>

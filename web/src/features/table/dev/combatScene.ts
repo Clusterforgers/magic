@@ -184,3 +184,49 @@ export function forecastChoiceScene(fixture: Fixture): Fixture {
     ? scene
     : { ...scene, view: { ...scene.view, combat_forecast: { ...forecast, depends_on_choice: true } } }
 }
+
+/** The loyalty of the planeswalker in `walkerScene`, less than the 6 the unblocked attacker deals, so it falls. */
+export const WALKER_LOYALTY = 5
+
+/**
+ * The forecast scene with the unblocked attacker aimed at a planeswalker of the defender (`?prompt=forecast-walker`):
+ * the walker falls, and the defender's life is not attacked.
+ */
+export function walkerScene(fixture: Fixture): Fixture {
+  const scene = forecastScene(fixture)
+  const { view } = scene
+  const free = view.combat.attackers.find((attacker) => !attacker.blocked)
+  const defender = free !== undefined && 'Player' in free.target ? free.target.Player : undefined
+  const base = view.objects.find(
+    (object) =>
+      object.zone === 'Battlefield' && object.controller === defender && object.types.includes('Land'),
+  )
+  if (free === undefined || base === undefined) return scene
+  const id = Math.max(...view.objects.map((object) => object.id)) + 1
+  const walker: ObjectView = {
+    ...base,
+    id,
+    name: 'Chandra, Torch of Defiance',
+    supertypes: ['Legendary'],
+    types: ['Planeswalker'],
+    subtypes: [],
+    power: null,
+    toughness: null,
+    counters: [['loyalty', WALKER_LOYALTY]],
+    permanent: base.permanent === null ? null : { ...base.permanent, tapped: false },
+  }
+  const attackers = view.combat.attackers.map((attacker) =>
+    attacker === free ? { ...attacker, target: { Planeswalker: id } } : attacker,
+  )
+  const staged: StateView = {
+    ...view,
+    objects: [...view.objects, walker],
+    battlefield: {
+      ...view.battlefield,
+      count: view.battlefield.count + 1,
+      cards: [...(view.battlefield.cards ?? []), id],
+    },
+    combat: { ...view.combat, attackers },
+  }
+  return { ...scene, view: { ...staged, combat_forecast: devForecast(staged) } }
+}

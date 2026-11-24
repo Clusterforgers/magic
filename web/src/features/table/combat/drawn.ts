@@ -24,7 +24,7 @@ export interface DrawnForecastStore {
 }
 
 const sameOutlook = (a: CreatureOutlook, b: CreatureOutlook): boolean =>
-  a.damage === b.damage && a.dies === b.dies && a.choice === b.choice
+  a.damage === b.damage && a.dies === b.dies && a.dealt === b.dealt && a.choice === b.choice
 
 const samePlayer = (a: PlayerForecast, b: PlayerForecast): boolean =>
   a.damage === b.damage && a.life === b.life && a.life_after === b.life_after && a.lethal === b.lethal
@@ -77,7 +77,7 @@ export function createDrawnForecastStore(): DrawnForecastStore {
   return {
     publish(forecast) {
       const nextCreatures = new Map<ObjectId, CreatureOutlook>()
-      for (const { object } of forecast?.creatures ?? []) {
+      for (const { object } of [...(forecast?.creatures ?? []), ...(forecast?.attacked ?? [])]) {
         const outlook = creatureOutlook(forecast, object)
         if (outlook !== null) nextCreatures.set(object, outlook)
       }

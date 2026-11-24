@@ -59,6 +59,8 @@ const SCALAR_KEYS: &[&str] = &[
     "bank",
     "turn_time_ms",
     "damage",
+    // The combat damage a creature is forecast to deal (`CreatureForecast.dealt`).
+    "dealt",
     "casts",
     "tax",
     "delayed",

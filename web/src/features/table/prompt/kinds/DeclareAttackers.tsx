@@ -27,6 +27,7 @@ import type { CardMarks, CardNote, CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
+import { ForecastTotal } from '../../combat/ForecastTotal'
 import { PreviewOutcome } from '../PreviewOutcome'
 import type { PromptComponent } from '../types'
 import { usePrimaryKey } from '../usePrimaryKey'
@@ -406,7 +407,16 @@ export const DeclareAttackersPrompt: PromptComponent<'DeclareAttackers'> = ({ op
   const cleared = selection.ids.size === required.length && missing.length === 0
 
   return (
-    <PromptLayout compact text={`${partyWords(options.party, seatName)}${text}`}>
+    <PromptLayout
+      compact
+      text={`${partyWords(options.party, seatName)}${text}`}
+      meter={
+        <ForecastTotal
+          forecast={declared.length === 0 ? null : preview}
+          checking={previewStatus === 'checking'}
+        />
+      }
+    >
       {options.most === undefined ? null : (
         <p data-slot="declaration-limit" className="basis-full text-xs text-muted-foreground">
           No more than {options.most} {options.most === 1 ? 'creature' : 'creatures'} can attack this combat.

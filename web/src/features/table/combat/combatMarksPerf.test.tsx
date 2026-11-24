@@ -53,7 +53,7 @@ describe('a table of 12 seats with a forecast', () => {
     const t = renderForecastTable({ seats: SEATS, layout: { mode: 'grid' } })
     const forecast = t.forecast()
     const marked = forecast.creatures
-      .filter((creature) => creature.damage > 0 || creature.dies)
+      .filter((creature) => creature.damage > 0 || creature.dies || (creature.dealt ?? 0) > 0)
       .map((creature) => creature.object)
       .sort((a, b) => a - b)
     expect(marked.length).toBeGreaterThan(5)
@@ -113,7 +113,7 @@ describe('a block chosen at 12 seats', () => {
     const attacker = must(options.blockers[0]?.can_block[0])
     const marked = t
       .forecast()
-      .creatures.filter((creature) => creature.damage > 0 || creature.dies)
+      .creatures.filter((creature) => creature.damage > 0 || creature.dies || (creature.dealt ?? 0) > 0)
       .map((creature) => creature.object)
     // Only the viewer's cards and the attacking seat's can be marked or noted by a block; nobody else's.
     const mayChange = new Set<ObjectId>(

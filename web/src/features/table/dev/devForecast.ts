@@ -35,6 +35,7 @@ export function devForecast(view: StateView): CombatForecast {
 
   const toObjects = new Map<ObjectId, number>()
   const toPlayers = new Map<PlayerId, number>()
+  const fromObjects = new Map<ObjectId, number>()
   const involved = new Set<ObjectId>()
   const add = <K>(totals: Map<K, number>, key: K, amount: number): void => {
     totals.set(key, (totals.get(key) ?? 0) + amount)
@@ -66,6 +67,7 @@ export function devForecast(view: StateView): CombatForecast {
     involved.add(source)
     for (const blocker of attacker.blockers) involved.add(blocker)
     for (const hit of [...deals, ...receives]) {
+      add(fromObjects, hit.source, hit.amount)
       if ('Player' in hit.target) add(toPlayers, hit.target.Player, hit.amount)
       else add(toObjects, hit.target.Object, hit.amount)
     }
@@ -87,12 +89,33 @@ export function devForecast(view: StateView): CombatForecast {
       if (object === undefined || !object.types.includes('Creature')) return []
       const damage = toObjects.get(id) ?? 0
       const toughness = object.toughness ?? 0
-      return [{ object: id, damage, dies: toughness <= 0 || marked(id) + damage >= toughness }]
+      const dealt = fromObjects.get(id) ?? 0
+      return [
+        {
+          object: id,
+          damage,
+          dies: toughness <= 0 || marked(id) + damage >= toughness,
+          ...(dealt > 0 ? { dealt } : {}),
+        },
+      ]
     })
-  const attacked = new Set<PlayerId>(toPlayers.keys())
+  // A planeswalker that is no creature loses loyalty for the damage and falls at none.
+  const walkers = new Set<ObjectId>()
   for (const attacker of view.combat.attackers)
-    if ('Player' in attacker.target) attacked.add(attacker.target.Player)
-  const players = [...attacked]
+    if ('Planeswalker' in attacker.target) walkers.add(attacker.target.Planeswalker)
+  const attacked = [...walkers]
+    .sort((a, b) => a - b)
+    .flatMap((id): CreatureForecast[] => {
+      const object = byId.get(id)
+      if (object === undefined || object.types.includes('Creature')) return []
+      const damage = toObjects.get(id) ?? 0
+      const loyalty = object.counters?.find(([kind]) => kind === 'loyalty')?.[1] ?? 0
+      return [{ object: id, damage, dies: damage >= loyalty }]
+    })
+  const seats = new Set<PlayerId>(toPlayers.keys())
+  for (const attacker of view.combat.attackers)
+    if ('Player' in attacker.target) seats.add(attacker.target.Player)
+  const players = [...seats]
     .sort((a, b) => a - b)
     .flatMap((seat): PlayerForecast[] => {
       const player = view.players.find((candidate) => candidate.seat === seat)
@@ -103,7 +126,7 @@ export function devForecast(view: StateView): CombatForecast {
         { player: seat, damage, life: player.life, life_after: after, lethal: damage > 0 && after <= 0 },
       ]
     })
-  return { attackers, creatures, players }
+  return { attackers, creatures, players, ...(attacked.length > 0 ? { attacked } : {}) }
 }
 
 /**

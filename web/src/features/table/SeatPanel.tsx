@@ -17,6 +17,7 @@ import type { DefenderState } from './combat/defender'
 import { AttackBadges } from './combat/AttackBadges'
 import { ATTACKED_EDGE, useAttacked } from './combat/attacked'
 import { LifeForecast } from './combat/LifeForecast'
+import { WalkerForecast } from './combat/WalkerForecast'
 import { SeatForecast } from './fx/ForecastBadge'
 import { LifeFx } from './fx/LifeFx'
 import { LiveManaPool } from './LiveManaPool'
@@ -318,6 +319,7 @@ export const SeatPanel = memo(function SeatPanel({
             <div className="flex shrink-0 items-center gap-1.5">
               <AttackBadges seat={seat} />
               <SeatForecast seat={seat} />
+              <WalkerForecast seat={seat} />
               <LifeForecast seat={seat} />
               <Life
                 seat={seat}
@@ -478,12 +480,15 @@ export const SeatPanel = memo(function SeatPanel({
           <header className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-1">
             <div
               data-slot="pod-name-row"
-              className="col-span-full flex min-w-0 items-center justify-between gap-2"
+              className="col-span-full flex min-w-0 flex-wrap items-center justify-between gap-x-2 gap-y-1"
             >
               {name}
-              {/* The attacks at the seat stand at the end of its name row, clear of the figures beside the life. */}
-              <span className="flex shrink-0 items-center gap-1 empty:hidden">
+              {/* The attacks at the seat and what they would do stand at the end of its name row, clear of the figures
+                  beside the life. */}
+              <span className="ml-auto flex shrink-0 items-center gap-1 empty:hidden">
                 <AttackBadges seat={seat} />
+                <WalkerForecast seat={seat} short />
+                <LifeForecast seat={seat} />
               </span>
             </div>
             <div
@@ -495,7 +500,6 @@ export const SeatPanel = memo(function SeatPanel({
             </div>
             <div className="flex items-center gap-1.5 justify-self-end">
               <SeatForecast seat={seat} />
-              <LifeForecast seat={seat} />
               <Life
                 seat={seat}
                 life={player.life}

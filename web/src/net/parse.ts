@@ -324,7 +324,13 @@ function isAttackerForecast(value: unknown): value is AttackerForecast {
 }
 
 function isCreatureForecast(value: unknown): value is CreatureForecast {
-  return isRecord(value) && isCount(value.object) && isCount(value.damage) && isFlag(value.dies)
+  return (
+    isRecord(value) &&
+    isCount(value.object) &&
+    isCount(value.damage) &&
+    isFlag(value.dies) &&
+    (value.dealt === undefined || isCount(value.dealt))
+  )
 }
 
 function isPlayerForecast(value: unknown): value is PlayerForecast {
@@ -344,7 +350,8 @@ export function isCombatForecast(value: unknown): value is CombatForecast {
     isRecord(value) &&
     isListOf(value.attackers, isAttackerForecast) &&
     isListOf(value.creatures, isCreatureForecast) &&
-    isListOf(value.players, isPlayerForecast)
+    isListOf(value.players, isPlayerForecast) &&
+    (value.attacked === undefined || isListOf(value.attacked, isCreatureForecast))
   )
 }
 
