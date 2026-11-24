@@ -1,18 +1,23 @@
 //! What changes an object now, in words, each with its source as the viewer may know it (`ObjectView.modifiers`): the
 //! engine's modifiers (`mtg_engine::modifiers`) worded, and identical ones from sources of one name added together.
 
+use mtg_cards::ability::CostChange;
 use mtg_cards::compile::render_ability;
 use mtg_cards::modify::Duration;
 use mtg_cards::read::duration_wording;
 use mtg_core::color::ColorSet;
-use mtg_core::ids::ObjectId;
+use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::effects::Modification;
-use mtg_engine::modifiers::{ModifierChange, ModifierSource, modifiers};
-use mtg_engine::object::GameObject;
+use mtg_engine::modifiers::{
+    CostChangeBy, ModifierChange, ModifierSource, cost_changes_by_source, modifiers,
+};
+use mtg_engine::object::{GameObject, ObjectKind};
+use mtg_engine::rules::{PlayerEffect, player_effect_sources};
 use mtg_engine::state::GameState;
+use mtg_engine::zones::Zone;
 
 use crate::project::{Look, Sight, given_keyword_names, type_list};
-use crate::view::ModifierView;
+use crate::view::{ModifierView, PlayerEffectSourceView};
 use crate::wording::named;
 
 /// What one origin does, as a key of the adding up: its power and toughness change apart, so identical ones add.
@@ -186,6 +191,102 @@ fn add_up(lines: Vec<Line>) -> Vec<ModifierView> {
             }
         })
         .collect()
+}
+
+/// What changes the cost the owner of `object` pays for it now, each change with its source (`ObjectView.modifiers`):
+/// the increases and reductions of cost modifiers and the colors a rule draws anew. Only for a card the viewer sees
+/// whole in a hand or a command zone, where it waits to be cast; `name` is the name the viewer reads on it.
+pub(crate) fn cost_views(
+    state: &GameState,
+    sight: &Sight<'_>,
+    object: &GameObject,
+    look: Look,
+    name: &str,
+) -> Vec<ModifierView> {
+    let waiting = matches!(object.zone(), Zone::Hand(_) | Zone::Command(_));
+    if look != Look::Whole || !waiting || object.kind() != ObjectKind::Card {
+        return Vec::new();
+    }
+    let Some(printed) = object.card().mana_cost.as_ref() else {
+        return Vec::new();
+    };
+    let owner = object.owner();
+    let named = |source: ObjectId| {
+        if source == object.id() {
+            (name.to_owned(), Some(source))
+        } else {
+            source_name(state, sight, source)
+        }
+    };
+    let mut out: Vec<ModifierView> = cost_changes_by_source(state, owner, object.id())
+        .into_iter()
+        .map(|change| {
+            let (source, id) = named(change.source.id);
+            sourced(cost_words(&change), source, id)
+        })
+        .collect();
+    let now = mtg_engine::cost_colors::redrawn(state, owner, printed);
+    if now != *printed {
+        let by = player_effect_sources(state, owner)
+            .into_iter()
+            .find(|(effect, _)| matches!(effect, PlayerEffect::CostColorsDrawn(_)));
+        let (source, id) = by.map_or_else(
+            || ("An effect".to_owned(), None),
+            |(_, source)| named(source.id),
+        );
+        out.push(sourced(format!("Costs {now} this round"), source, id));
+    }
+    out
+}
+
+/// The effects on `player` an object brings, each with that object as the viewer may know it (`PlayerView.sources`).
+pub(crate) fn player_effect_views(
+    state: &GameState,
+    viewer: PlayerId,
+    player: PlayerId,
+) -> Vec<PlayerEffectSourceView> {
+    let found = player_effect_sources(state, player);
+    if found.is_empty() {
+        return Vec::new();
+    }
+    let sight = Sight::new(state, viewer);
+    found
+        .into_iter()
+        .map(|(effect, source)| {
+            let (name, id) = source_name(state, &sight, source.id);
+            PlayerEffectSourceView {
+                effect,
+                source: name,
+                id,
+            }
+        })
+        .collect()
+}
+
+/// One line of the preview from `source` alone, lasting as long as it does.
+fn sourced(effect: String, source: String, id: Option<ObjectId>) -> ModifierView {
+    ModifierView {
+        effect,
+        source,
+        sources: id.into_iter().collect(),
+        count: 1,
+        duration: None,
+    }
+}
+
+/// A cost change in words: "Costs {1} less", "Costs {2} more", "Costs {1} and 2 life more".
+fn cost_words(change: &CostChangeBy) -> String {
+    let mana = (!change.mana.symbols().is_empty()).then(|| change.mana.to_string());
+    let life = (change.life > 0).then(|| format!("{} life", change.life));
+    let what = [mana, life]
+        .into_iter()
+        .flatten()
+        .collect::<Vec<_>>()
+        .join(" and ");
+    match change.change {
+        CostChange::Increase => format!("Costs {what} more"),
+        CostChange::Reduce => format!("Costs {what} less"),
+    }
 }
 
 /// A number with its sign: "+2", "-1", "+0".

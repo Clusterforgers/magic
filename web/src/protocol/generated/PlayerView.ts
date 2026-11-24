@@ -9,6 +9,7 @@ import type { ManaPool } from "./ManaPool";
 import type { MulliganStatus } from "./MulliganStatus";
 import type { ObjectId } from "./ObjectId";
 import type { PlayerEffect } from "./PlayerEffect";
+import type { PlayerEffectSourceView } from "./PlayerEffectSourceView";
 import type { PlayerId } from "./PlayerId";
 import type { StickerSheetView } from "./StickerSheetView";
 import type { ZoneView } from "./ZoneView";
@@ -68,6 +69,11 @@ enchanted_by?: Array<ObjectId>,
  * The rules in force on the player and the keywords the player has; public, and left out while there are none.
  */
 effects?: Array<PlayerEffect>, 
+/**
+ * The effects of `effects` an object brings, each with that object: one entry per object and effect; public, and
+ * left out while none does.
+ */
+sources?: Array<PlayerEffectSourceView>, 
 /**
  * Whether the player is a Spirit: at 0 life, kept in the game by a living teammate (campaign fights); left out
  * while false.

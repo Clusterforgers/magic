@@ -108,6 +108,29 @@ fn a_hero_sees_the_cost_they_pay_now(#[values(2, 3, 4)] seats: usize) {
     assert_eq!(boss.cost_now, None, "the boss's own costs stay");
 }
 
+#[rstest]
+fn a_hero_reads_whose_rule_draws_their_colors(#[values(2, 3, 4)] seats: usize) {
+    let driver = driver(seats, true);
+    for seat in 0..seats - 1 {
+        let view = seen(&driver, seat, &format!("Spell {seat}"));
+        let drawn: Vec<_> = view
+            .modifiers
+            .iter()
+            .map(|line| (line.effect.as_str(), line.source.as_str()))
+            .collect();
+        assert_eq!(
+            drawn,
+            vec![("Costs {1}{W}{U}{U} this round", "The Unmaker")]
+        );
+        let state = StateView::for_player(driver.state(), PlayerId::from_index(seat));
+        let sources = &state.table.players[seat].sources;
+        assert_eq!(sources.len(), 1);
+        assert_eq!(sources[0].source, "The Unmaker");
+    }
+    let boss = seen(&driver, seats - 1, "Boss Spell");
+    assert_eq!(boss.modifiers.len(), 0, "the boss's own costs stay");
+}
+
 #[test]
 fn without_the_rule_the_field_is_left_out() {
     let driver = driver(3, false);

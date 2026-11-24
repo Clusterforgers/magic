@@ -5,6 +5,7 @@
  */
 import type { Color, ObjectId, ObjectView, PlayerEffect, PlayerId, PlayerView } from '@/protocol/generated'
 import { abilityText } from './cardModel'
+import { joinWords } from './eventText'
 
 /** Whether an effect helps the seat, hinders it, or neither. */
 export type EffectTone = 'help' | 'hinder' | 'neutral'
@@ -27,6 +28,8 @@ export interface EffectFacts {
   colors?: readonly (readonly [Color, Color])[]
   /** An emblem's object, which the chip can show. */
   object?: ObjectId
+  /** The names of the objects that bring the effect, which the detail ends with. */
+  from?: readonly string[]
 }
 
 type Fixed = Exclude<
@@ -243,8 +246,24 @@ export function seatEffects(
   return [
     ...campaignFacts(player, owner, nameOf),
     ...emblemFacts(player, objects, owner),
-    ...(player.effects ?? []).map((effect) => effectFacts(effect, owner)),
+    ...(player.effects ?? []).map((effect) => sourcedFacts(effectFacts(effect, owner), effect, player)),
   ]
+}
+
+/** The objects that bring `effect` to the seat (`PlayerView.sources`), each name once, in the server's order. */
+export function effectSources(effect: PlayerEffect, player: PlayerView): string[] {
+  const key = JSON.stringify(effect)
+  const names = (player.sources ?? [])
+    .filter((entry) => JSON.stringify(entry.effect) === key)
+    .map((entry) => entry.source)
+  return [...new Set(names)]
+}
+
+// The detail ends with what brings the effect, so the pod tells each change by its source.
+function sourcedFacts(facts: EffectFacts, effect: PlayerEffect, player: PlayerView): EffectFacts {
+  const from = effectSources(effect, player)
+  if (from.length === 0) return facts
+  return { ...facts, from, detail: `${facts.detail} From ${joinWords(from)}.` }
 }
 
 /**

@@ -152,6 +152,20 @@ pub struct GivesView {
     pub rules: Vec<GivenRule>,
 }
 
+/// One effect on a player with an object that brings it, for the player's pod.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
+pub struct PlayerEffectSourceView {
+    /// The effect, as `PlayerView.effects` lists it.
+    pub effect: PlayerEffect,
+    /// The object's name as the viewer reads it, or "A face-down card" and "A hidden card" for one the viewer may not
+    /// identify.
+    pub source: String,
+    /// The object, while the viewer sees it on the table.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub id: Option<ObjectId>,
+}
+
 /// One thing that changes an object now with its source, for the preview: an effect or static ability, an attachment,
 /// an emblem, counters or a copy effect. Identical ones from sources of one name are one line with their count.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
@@ -707,6 +721,11 @@ pub struct PlayerView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<PlayerEffect>>", optional)]
     pub effects: Vec<PlayerEffect>,
+    /// The effects of `effects` an object brings, each with that object: one entry per object and effect; public, and
+    /// left out while none does.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[ts(as = "Option<Vec<PlayerEffectSourceView>>", optional)]
+    pub sources: Vec<PlayerEffectSourceView>,
     /// Whether the player is a Spirit: at 0 life, kept in the game by a living teammate (campaign fights); left out
     /// while false.
     #[serde(default, skip_serializing_if = "is_false")]
