@@ -84,7 +84,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pf9i) An announced mana ability (a die roll or discard besides the mana: Vexing Puzzlebox) can be chosen in the PayMana prompt while paying, not only at priority before the cast; automatic payment still leaves it out
 - [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 - [ ] (ln1) The Help menu's table tour runs on the Learn coach and its anchors instead of `TourCard` and CSS selectors
-- [ ] (ln2) Outside lessons too, the hover preview of a chosen hand card keeps clear of the prompt band's question
 
 ## M5 Table and prompts
 
