@@ -803,7 +803,7 @@ pub struct DamageShield {
     /// It covers only damage that a resolving spell or ability targeting the recipient causes
     /// (`ReplaceWhen::R123DamageByTargeting`).
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
-    #[cfg_attr(feature = "ts", ts(optional))]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub r123_by_targeting: bool,
 }
 

@@ -1843,8 +1843,8 @@ impl ShieldShape {
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::RedirectCounted { .. }
                 | ReplaceBy::Redirect { .. },
-            ) => Some(Self::Damage),
-            (ReplaceWhen::R123DamageByTargeting { .. }, ReplaceBy::Prevent) => Some(Self::Damage),
+            )
+            | (ReplaceWhen::R123DamageByTargeting { .. }, ReplaceBy::Prevent) => Some(Self::Damage),
             (
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),
