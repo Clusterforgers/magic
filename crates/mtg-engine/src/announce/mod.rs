@@ -450,6 +450,9 @@ pub(crate) struct Pending {
     pub(crate) granted: Option<Granted>,
     /// Set when the card is the subject of a special action that pays a cost and does not use the stack.
     pub(crate) special: Option<Special>,
+    /// The card of a cast whose payment is set aside while this mana ability is activated (`PayChoice::Activate`): no
+    /// part of the ability's cost takes it.
+    pub(crate) aside: Option<ObjectId>,
     needs: Option<Needs>,
     /// The objects it is about when it began, which a manual action may take away (`anchor.rs`).
     anchor: Option<Anchor>,
@@ -476,6 +479,7 @@ impl Pending {
             answers: Vec::new(),
             stale: false,
             special: None,
+            aside: None,
         }
     }
 
@@ -578,6 +582,7 @@ impl Pending {
             ability: held.as_deref(),
             triggered: None,
             granted: self.granted.clone(),
+            aside: self.aside,
             needs,
         };
         if price::affordable_set(&ctx, &self.choices, modes) {
@@ -750,10 +755,18 @@ pub(super) struct Ctx<'a> {
     pub(super) ability: Option<&'a Ability>,
     pub(super) triggered: Option<&'a PendingTrigger>,
     pub(super) granted: Option<Granted>,
+    /// The card of a cast set aside for this activation (`Pending.aside`), which no part of the cost takes.
+    pub(super) aside: Option<ObjectId>,
     pub(super) needs: &'a Needs,
 }
 
 impl Ctx<'_> {
+    /// `barred` with the card of a cast set aside for this activation, which no part of the cost may take.
+    pub(super) fn barred(&self, mut barred: Vec<ObjectId>) -> Vec<ObjectId> {
+        barred.extend(self.aside);
+        barred
+    }
+
     /// Whether the player may still back out: a triggered ability that is put on the stack cannot be (CR 603.3c), nor
     /// can a spell the resolution of another is casting, which the player chose to cast already.
     pub(super) const fn can_cancel(&self) -> bool {
@@ -871,6 +884,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         done,
         granted,
         special,
+        aside,
         needs,
         anchor,
         touched: _,
@@ -932,6 +946,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
             _ => None,
         },
         granted: granted.clone(),
+        aside: *aside,
         needs,
     };
     let mut work = Work {

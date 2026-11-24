@@ -369,7 +369,9 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
     let announced = |cost: &ManaCost| {
         let abilities = super::payment::announced_while_paying(ctx);
         !abilities.is_empty() && {
-            let more = crate::r281_mana_at_priority::r281_mana(ctx.state, ctx.player, &abilities, 0);
+            let spare = super::payment::spare_of(ctx);
+            let more =
+                crate::r281_mana_at_priority::r281_mana(ctx.state, ctx.player, &abilities, spare);
             with(cost, &[sources.as_slice(), &more].concat())
         }
     };

@@ -163,7 +163,7 @@ fn pay(
             && affords(
                 &[
                     options.sources.as_slice(),
-                    &r281_mana(ctx.state, ctx.player, &announced, 0),
+                    &r281_mana(ctx.state, ctx.player, &announced, spare_of(ctx)),
                 ]
                 .concat(),
             ));
@@ -181,10 +181,22 @@ fn pay(
 /// for a cast granted in the middle of a resolution, a trigger or combat.
 pub(super) fn announced_while_paying(ctx: &Ctx<'_>) -> Vec<crate::abilities::AbilityRef> {
     match (ctx.what, &ctx.granted) {
-        (What::Spell(_), None) => r281_while_paying(ctx.state, ctx.player, None),
-        (What::Ability(ability), None) => r281_while_paying(ctx.state, ctx.player, Some(*ability)),
+        (What::Spell(card), None) => r281_while_paying(ctx.state, ctx.player, None, Some(*card)),
+        (What::Ability(ability), None) => {
+            r281_while_paying(ctx.state, ctx.player, Some(*ability), ctx.aside)
+        }
         _ => Vec::new(),
     }
+}
+
+/// The hand cards the mana abilities of [`announced_while_paying`] may not discard: the card of the cast being paid for
+/// or set aside, while it is in the hand.
+pub(super) fn spare_of(ctx: &Ctx<'_>) -> usize {
+    let card = match ctx.what {
+        What::Spell(card) => Some(*card),
+        _ => ctx.aside,
+    };
+    crate::r281_mana_at_priority::r281_spare(ctx.state, ctx.player, card)
 }
 
 /// The event that puts a waiting triggered ability on the stack with the targets its controller chose.

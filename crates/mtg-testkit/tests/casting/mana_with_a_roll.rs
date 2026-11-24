@@ -1,4 +1,4 @@
-//! Goal: a mana ability that does more than add mana and asks for what the payment cannot run (Vexing Puzzlebox's "{T}: Add one mana of any color. Roll a d20.") is offered at priority, resolves at once with its mana and its roll, its "whenever you roll" trigger goes on the stack afterwards and puts that many charge counters on it, and its floating mana pays a later cast; the payment never counts or taps it on its own; while paying for a spell it is offered too, resolves at once and the payment is asked again with its mana, its trigger waiting until the cast is done, and automatic payment never activates it (docs/engine.md), at two to four seats.
+//! Goal: a mana ability that does more than add mana and asks for what the payment cannot run (Vexing Puzzlebox's "{T}: Add one mana of any color. Roll a d20.") is offered at priority, resolves at once with its mana and its roll, its "whenever you roll" trigger goes on the stack afterwards and puts that many charge counters on it, and its floating mana pays a later cast; the payment never taps it on its own; while paying for a spell it is offered too, resolves at once and the payment is asked again with its mana, its trigger waiting until the cast is done, and automatic payment never activates it (docs/engine.md), at two to four seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::value::CounterKind;
@@ -115,14 +115,14 @@ fn puzzlebox_mana_tapped_at_priority_pays_a_cast(#[case] seats: usize) -> Result
     )?;
     let me = PlayerId(0);
     let puzzlebox = driver.id_of("Vexing Puzzlebox")?;
-    // The payment counts no source with a roll, so the Forest alone cannot cast the creature: the player taps the
-    // Puzzlebox at priority first and its mana floats.
+    // The payment never taps a source with a roll, but priority counts it, so the creature is offered; here the player
+    // taps the Puzzlebox at priority first and its mana floats.
     let bears = driver.state().zone(Zone::Hand(me))[0];
     let castable = |driver: &Driver| match &driver.decision().unwrap().kind {
         DecisionKind::Priority(options) => options.castable.contains(&bears),
         _ => false,
     };
-    assert!(!castable(&driver));
+    assert!(castable(&driver), "the Puzzlebox's mana counts at priority");
     let (_, roll) = tap_puzzlebox(&mut driver, me)?;
     // The trigger resolves first; the mana floats until the step ends.
     while !driver.state().stack().is_empty() {

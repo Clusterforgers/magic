@@ -52,21 +52,28 @@ pub(crate) fn r281_resolve_at_once(state: &GameState, events: &mut Vec<Event>) {
 
 /// The mana abilities of this kind `player` may activate while paying for `paying` (CR 601.2g): each one offered at
 /// priority now but the ability being paid for; none while a resolution is under way, whose cast asks its payment in
-/// the middle of it.
+/// the middle of it. A discard cost may not take the card `aside` of the cast being paid for.
 pub(crate) fn r281_while_paying(
     state: &GameState,
     player: PlayerId,
     paying: Option<AbilityRef>,
+    aside: Option<ObjectId>,
 ) -> Vec<AbilityRef> {
     if state.resolving().is_some() {
         return Vec::new();
     }
+    let hand = state
+        .zone(crate::zones::Zone::Hand(player))
+        .len()
+        .saturating_sub(r281_spare(state, player, aside));
     crate::priority::abilities_now(state, player)
         .0
         .into_iter()
         .filter(|address| Some(*address) != paying)
         .filter(|address| {
-            ability_reader::ability(state, *address).is_some_and(|rules| r281_at_priority(&rules))
+            ability_reader::ability(state, *address).is_some_and(|rules| {
+                r281_at_priority(&rules) && r281_discards(&rules).is_none_or(|count| count <= hand)
+            })
         })
         .collect()
 }
@@ -138,6 +145,27 @@ pub(crate) fn r281_cast_mana<'a>(
     std::borrow::Cow::Owned([sources, more.as_slice()].concat())
 }
 
+/// How many cards the cost of `rules` discards; `None` when the number is counted as it is paid.
+fn r281_discards(rules: &Ability) -> Option<usize> {
+    let Ability::Activated { cost, .. } = rules else {
+        return Some(0);
+    };
+    cost.0.iter().try_fold(0usize, |sum, item| match item {
+        CostItem::Discard { count, .. } | CostItem::DiscardRandom(count) => {
+            Some(sum.saturating_add(usize::try_from(count.fixed()?).ok()?))
+        }
+        _ => Some(sum),
+    })
+}
+
+/// The hand cards a discard cost of a mana ability activated now may not take: the card `aside` of a cast whose payment
+/// waits for it, while it is still in `player`'s hand.
+pub(crate) fn r281_spare(state: &GameState, player: PlayerId, aside: Option<ObjectId>) -> usize {
+    usize::from(
+        aside.is_some_and(|card| state.zone(crate::zones::Zone::Hand(player)).contains(&card)),
+    )
+}
+
 /// What one use of an announced mana ability gives a payment: how many mana, its own mana cost, and whether it taps or
 /// sacrifices its source.
 #[derive(Clone)]
@@ -165,22 +193,15 @@ fn r281_options(rules: &Ability, hand: usize) -> Option<Vec<(ManaType, R281Use)>
         tap: false,
         sacrifice: false,
     };
-    let mut discards = 0usize;
     for item in &cost.0 {
         match item {
             CostItem::Tap => shape.tap = true,
             CostItem::SacrificeSelf => shape.sacrifice = true,
             CostItem::Mana(mana) => shape.cost = mana.rest().clone(),
-            CostItem::Discard { count, .. } => {
-                discards += usize::try_from(count.fixed()?).ok()?;
-            }
-            CostItem::DiscardRandom(count) => {
-                discards += usize::try_from(count.fixed()?).ok()?;
-            }
             _ => {}
         }
     }
-    if discards > hand {
+    if r281_discards(rules)? > hand {
         return None;
     }
     let (mana, times) = effects.iter().find_map(|effect| match effect {

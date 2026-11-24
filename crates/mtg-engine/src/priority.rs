@@ -930,9 +930,11 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     let (abilities, inactive) = silence(state, silenced, abilities_now(state, player));
     // A spell is offered when a mana ability activated while paying (Vexing Puzzlebox) would make it affordable; the
     // hand keeps the spell's own card from a discard cost.
-    let cast_mana = crate::r281_mana_at_priority::r281_cast_mana(state, player, &abilities, &all_mana);
+    let cast_mana =
+        crate::r281_mana_at_priority::r281_cast_mana(state, player, &abilities, &all_mana);
     let judged = unplayable::judge(state, player, &pool, &cast_mana, life, restricted);
-    let castable = unplayable::castable(state, player, &judged, restricted, &pool, &cast_mana, life);
+    let castable =
+        unplayable::castable(state, player, &judged, restricted, &pool, &cast_mana, life);
     // A special action: no stack, so no target or modes are needed (CR 116.2f).
     let suspendable: Vec<ObjectId> = hand
         .iter()

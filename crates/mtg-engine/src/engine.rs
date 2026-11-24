@@ -790,8 +790,7 @@ impl Engine {
             Outcome::Division(shares) => self.announced(Answered::Division(shares)),
             Outcome::Assisted(events) => self.announced(Answered::Assisted(events)),
             Outcome::PauseFor(ability) => {
-                self.paused = self.pending.take().map(Box::new);
-                self.pending = Some(Pending::new(player, What::Ability(ability)));
+                self.pause_for(player, ability);
                 Ok(())
             }
             Outcome::CancelCast => {
@@ -1026,6 +1025,19 @@ impl Engine {
             }
         }
         Err(EngineError::Stalled(MAX_INTERNAL_STEPS))
+    }
+
+    /// Sets the payment under way aside and begins `player`'s activation of the mana ability `ability` (CR 601.2g); the
+    /// card of a cast set aside is kept from the ability's cost.
+    fn pause_for(&mut self, player: PlayerId, ability: crate::abilities::AbilityRef) {
+        self.paused = self.pending.take().map(Box::new);
+        let aside = match self.paused.as_deref().map(|paused| &paused.what) {
+            Some(What::Spell(card)) => Some(*card),
+            _ => None,
+        };
+        let mut activation = Pending::new(player, What::Ability(ability));
+        activation.aside = aside;
+        self.pending = Some(activation);
     }
 
     /// Rewinds the announcement under way: nothing it chose is paid or kept. A cast the resolution of another spell or
