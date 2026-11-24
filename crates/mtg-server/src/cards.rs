@@ -521,9 +521,9 @@ impl CardSource {
         Some(library)
     }
 
-    /// Builds the library and then the precon index once, so the first request does not wait for them and the
-    /// precons' cards are decided before a deck list asks for them; a failure is logged and a later request tries
-    /// again.
+    /// Builds the library, decides the cards of the stored decks and then builds the precon index once, so the first
+    /// request does not wait for them and a deck list after a start finds its cards decided; a failure is logged and a
+    /// later request tries again.
     pub(crate) async fn warm(&self) {
         match self.layers().await {
             Ok(_) => tracing::info!("card library warmed"),
@@ -532,9 +532,34 @@ impl CardSource {
                 return;
             }
         }
+        if let Err(error) = self.decide_deck_cards().await {
+            tracing::warn!(%error, "the cards of the stored decks could not be decided");
+        }
         if let Err(error) = self.precon_index().await {
             tracing::warn!(%error, "the precon index could not be warmed");
         }
+    }
+
+    /// Decides every card of the stored decks on a few threads: a card's first decision takes milliseconds, and a
+    /// deck list judges all of its owner's cards.
+    async fn decide_deck_cards(&self) -> Result<(), CatalogError> {
+        let database = |error: DbError| CatalogError::Database(error.to_string());
+        let rules = self.rules().await?;
+        let ids = self.db.decks().all_card_ids().await.map_err(database)?;
+        let cards = self.db.cards().get_many(&ids).await.map_err(database)?;
+        let started = Instant::now();
+        let decided = cards.len();
+        off_runtime(move || {
+            let printed: Vec<PrintedCard> = cards.iter().map(printed_card).collect();
+            crate::precons::decide_cards(&rules, &printed);
+        })
+        .await?;
+        tracing::info!(
+            cards = decided,
+            elapsed_ms = started.elapsed().as_millis(),
+            "deck cards decided"
+        );
+        Ok(())
     }
 
     /// The current draft of every card with the state its verdicts give it.

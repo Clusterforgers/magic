@@ -1,11 +1,11 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT DISTINCT ON (oracle_id) oracle_id, images AS \"images: sqlx::types::Json<PrintingImages>\"\n               FROM printings WHERE oracle_id = ANY($1)\n               ORDER BY oracle_id, digital, released_at DESC NULLS LAST, printing_id",
+  "query": "SELECT p.oracle_id AS \"oracle_id!\", p.images AS \"images!: sqlx::types::Json<PrintingImages>\"\n               FROM unnest($1::uuid[]) AS k(id)\n               CROSS JOIN LATERAL (\n                   SELECT oracle_id, images FROM printings WHERE oracle_id = k.id\n                   ORDER BY digital, released_at DESC NULLS LAST, printing_id LIMIT 1\n               ) p",
   "describe": {
     "columns": [
       {
         "ordinal": 0,
-        "name": "oracle_id",
+        "name": "oracle_id!",
         "type_info": "Uuid",
         "origin": {
           "Table": {
@@ -16,7 +16,7 @@
       },
       {
         "ordinal": 1,
-        "name": "images: sqlx::types::Json<PrintingImages>",
+        "name": "images!: sqlx::types::Json<PrintingImages>",
         "type_info": "Jsonb",
         "origin": {
           "Table": {
@@ -36,5 +36,5 @@
       false
     ]
   },
-  "hash": "4f7381fa2b93214c5f2f0ecdbfac353393c538b4d7844f9107513fca17af6469"
+  "hash": "946b66e693cb939d564f21b02306fe74e21b6ff0980d5cf78774f77955dd9f74"
 }

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { describeDeckError } from '@/features/decks/errors'
 import type { DeckGroupsApi } from '@/net/deckGroups'
+import { groupListKey, listCache } from '@/net/listCache'
 import type { DeckGroupView } from '@/protocol/generated'
 import { added, moved, removed } from './grouping'
 
@@ -33,14 +34,19 @@ const NONE: readonly DeckGroupView[] = []
  * refused one says why in `problem` and the list is read again, so the page shows what the server keeps.
  */
 export function useDeckGroups(api: DeckGroupsApi, enabled = true): DeckGroups {
-  const [groups, setGroups] = useState<readonly DeckGroupView[] | null>(null)
+  const [groups, setGroups] = useState<readonly DeckGroupView[] | null>(
+    () => listCache.getQueryData<DeckGroupView[]>(groupListKey(api)) ?? null,
+  )
   const [problem, setProblem] = useState<string | null>(null)
   const [round, setRound] = useState(0)
 
   useEffect(() => {
     if (!enabled) return
     let stale = false
-    api.list().then(
+    // A read again after a refused change asks the server, never the cache.
+    const read = () => api.list()
+    const list = round === 0 ? listCache.fetchQuery({ queryKey: groupListKey(api), queryFn: read }) : read()
+    list.then(
       (list) => {
         if (!stale) setGroups(list)
       },
@@ -52,6 +58,11 @@ export function useDeckGroups(api: DeckGroupsApi, enabled = true): DeckGroups {
       stale = true
     }
   }, [api, enabled, round])
+
+  // The cache holds what the page shows, so the next chooser opens on the groups as they were left.
+  useEffect(() => {
+    if (enabled && groups !== null) listCache.setQueryData(groupListKey(api), groups)
+  }, [api, enabled, groups])
 
   const run = useCallback(
     (change: (was: readonly DeckGroupView[]) => readonly DeckGroupView[], send: () => Promise<unknown>) => {
