@@ -71,6 +71,9 @@ pub(crate) const W6C_PAID_X: &str = "~x:";
 pub(crate) const LET: &str = "~let:";
 /// The bound name a delayed trigger keeps the objects its creating ability called `Triggering` under (CR 603.7c).
 pub(crate) const CARRIED_TRIGGERING: &str = "?triggering";
+/// The bound name a move onto the battlefield keeps the permanents it put there under, once a name that named their
+/// cards follows them: `Ref::Arrived` of that name then still finds them (CR 400.7).
+pub(crate) const R4007_ARRIVED: &str = "?arrived";
 /// The prefix of a bound name in a finished step that records a chosen value (`~value:<as>` and the value as JSON after
 /// a tab) instead: what `Effect::ChooseValue` remembers for the rest of the resolution.
 pub(crate) const CHOSEN_VALUE: &str = "~value:";
