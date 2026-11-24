@@ -312,6 +312,7 @@ export type { PermanentView } from "./PermanentView";
 export type { Pick } from "./Pick";
 export type { PictureCard } from "./PictureCard";
 export type { PlayerEffect } from "./PlayerEffect";
+export type { PlayerEffectSourceView } from "./PlayerEffectSourceView";
 export type { PlayerForecast } from "./PlayerForecast";
 export type { PlayerId } from "./PlayerId";
 export type { PlayerView } from "./PlayerView";

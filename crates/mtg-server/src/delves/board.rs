@@ -173,7 +173,7 @@ pub(crate) async fn leaderboard(
 #[cfg(test)]
 mod tests {
     //! Goal: the boards rank deeper first (floors cleared, then bosses beaten below them, then the earlier day), keep
-    //! one best mark per player and Heat, come Heat 2 to 0 with an empty board for a Heat nobody played, and stop at
+    //! one best mark per player and Heat, come from the greatest Heat to 0 with an empty board for a Heat nobody played, and stop at
     //! the limit.
     use proptest::prelude::*;
     use rstest::rstest;
@@ -195,6 +195,11 @@ mod tests {
         }
     }
 
+    /// The board of `heat`.
+    fn at_heat(got: &DelveLeaderboard, heat: u8) -> &DelveBoard {
+        got.boards.iter().find(|b| b.heat == heat).unwrap()
+    }
+
     fn order(board: &DelveBoard) -> Vec<(String, u8, u8)> {
         board
             .entries
@@ -212,7 +217,7 @@ mod tests {
             runs.iter()
                 .map(|(user, floors, bosses)| mark(user, 2, *floors, *bosses, "2026-11-01")),
         );
-        let names: Vec<String> = got.boards[0]
+        let names: Vec<String> = at_heat(&got, 2)
             .entries
             .iter()
             .map(|e| e.player.clone())
@@ -226,7 +231,7 @@ mod tests {
             mark("late", 1, 1, 1, "2026-11-09"),
             mark("early", 1, 1, 1, "2026-11-02"),
         ]);
-        assert_eq!(got.boards[1].entries[0].player, "early");
+        assert_eq!(at_heat(&got, 1).entries[0].player, "early");
     }
 
     #[test]
@@ -239,13 +244,19 @@ mod tests {
             mark("b", 2, 0, 1, "2026-11-01"),
         ]);
         let heats: Vec<u8> = got.boards.iter().map(|b| b.heat).collect();
-        assert_eq!(heats, vec![2, 1, 0], "the greatest Heat first");
         assert_eq!(
-            order(&got.boards[0]),
+            heats,
+            (0..=mtg_campaign::scale::MAX_HEAT)
+                .rev()
+                .collect::<Vec<u8>>(),
+            "the greatest Heat first"
+        );
+        assert_eq!(
+            order(at_heat(&got, 2)),
             vec![("a".to_owned(), 1, 0), ("b".to_owned(), 0, 1)]
         );
-        assert_eq!(got.boards[1].entries, Vec::<DelveBoardEntry>::new());
-        assert_eq!(order(&got.boards[2]), vec![("a".to_owned(), 0, 1)]);
+        assert_eq!(at_heat(&got, 1).entries, Vec::<DelveBoardEntry>::new());
+        assert_eq!(order(at_heat(&got, 0)), vec![("a".to_owned(), 0, 1)]);
     }
 
     proptest! {

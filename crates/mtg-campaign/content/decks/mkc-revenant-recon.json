@@ -351,11 +351,11 @@
     },
     "types": {
       "Artifact": 11,
-      "Creature": 29,
+      "Creature": 28,
       "Enchantment": 6,
       "Instant": 9,
       "Land": 39,
-      "Sorcery": 8
+      "Sorcery": 9
     },
     "subtypes": {
       "Aura": 1,
@@ -386,10 +386,8 @@
       "Spirit": 2,
       "Starfish": 1,
       "Swamp": 12,
-      "Troll": 1,
       "Vampire": 3,
       "Vehicle": 1,
-      "Warlock": 1,
       "Wizard": 1,
       "Wurm": 1,
       "Zombie": 2

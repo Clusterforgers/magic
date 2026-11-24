@@ -794,6 +794,37 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
+    /// A player does something at random ("whenever you discard one or more cards at random, select one or more targets
+    /// at random, choose one or more modes at random, flip one or more coins, or roll one or more dice"): once for each
+    /// instruction that does one of these, however many cards, targets, modes, coins or dice it takes; `Triggering` is
+    /// that player.
+    R120RandomAction {
+        /// Who does it.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
+    /// A source deals damage, once for each source in one batch, when one permanent or player was dealt exactly
+    /// `amount` of it ("whenever a source you control deals damage, if at least one permanent or player was dealt
+    /// exactly 2 of that damage"); `Dealer` is the source.
+    R120DealsExactly {
+        /// The source of the damage.
+        source: Selector,
+        /// The damage one recipient took from it in the batch.
+        amount: u32,
+    },
+    /// A player casts a spell another player spent mana to cast, as assist lets them (CR 702.132a): "if another player
+    /// spent mana to cast it"; `Triggering` is the player who helped. An `Nth` of it counts the caster's spells.
+    R120AssistedCast {
+        /// Who casts the spell.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+    },
     /// A player surveils ("whenever you surveil"); `Triggering` is that player.
     Surveilled {
         /// Who surveils.
@@ -852,7 +883,7 @@ pub enum TriggerPattern {
     /// starts again at zero when each turn begins. The event is `Drew`, `SpellCast`, `LifeGained`, `LifeLost`, `Cycled`,
     /// `Surveilled` or `DiceRolled` (any result) of a player, a token created under your control (`ZoneChange` of `[Token, ControlledBy You]`
     /// from no zone) and, of an object, `Attacks`, `BecomesCrewed`, `BecomesSaddled`, `BecomesTarget`, `DealsDamage`
-    /// into it and `CountersPut` on it.
+    /// into it and `CountersPut` on it (of any kind, or of its one kind).
     Nth {
         /// The event.
         event: Box<TriggerPattern>,

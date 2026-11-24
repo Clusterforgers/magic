@@ -1,0 +1,411 @@
+{
+  "code": "C14",
+  "name": "Built From Scratch",
+  "commander": [
+    "Daretti, Scrap Savant"
+  ],
+  "swaps": [
+    {
+      "out": "Myr Sire",
+      "into": "Hexing Squelcher"
+    },
+    {
+      "out": "Bottle Gnomes",
+      "into": "Professional Face-Breaker"
+    },
+    {
+      "out": "Cathodion",
+      "into": "Taurean Mauler"
+    },
+    {
+      "out": "Junk Diver",
+      "into": "Combat Celebrant"
+    },
+    {
+      "out": "Pilgrim's Eye",
+      "into": "Weftstalker Ardent"
+    },
+    {
+      "out": "Flametongue Kavu",
+      "into": "Storm-Kiln Artist"
+    },
+    {
+      "out": "Beetleback Chief",
+      "into": "Siege-Gang Lieutenant"
+    },
+    {
+      "out": "Ingot Chewer",
+      "into": "Fury"
+    },
+    {
+      "out": "Wurmcoil Engine",
+      "into": "Ancient Copper Dragon"
+    },
+    {
+      "out": "Spitebellows",
+      "into": "Chandra's Incinerator"
+    },
+    {
+      "out": "Whipflare",
+      "into": "Grapeshot"
+    },
+    {
+      "out": "Starstorm",
+      "into": "Thrill of Possibility"
+    },
+    {
+      "out": "Fire Diamond",
+      "into": "Chainsaw"
+    },
+    {
+      "out": "Liquimetal Coating",
+      "into": "Cori-Steel Cutter"
+    },
+    {
+      "out": "Jalum Tome",
+      "into": "Cursed Mirror"
+    },
+    {
+      "out": "Pristine Talisman",
+      "into": "Carnelian Orb of Dragonkind"
+    },
+    {
+      "out": "Trading Post",
+      "into": "Wand of Wonder"
+    },
+    {
+      "out": "Spine of Ish Sah",
+      "into": "Aether Refinery"
+    },
+    {
+      "out": "Darksteel Citadel",
+      "into": "Mountain"
+    },
+    {
+      "out": "Great Furnace",
+      "into": "Mountain"
+    },
+    {
+      "out": "Phyrexia's Core",
+      "into": "Mountain"
+    }
+  ],
+  "cards": [
+    [
+      "Daretti, Scrap Savant",
+      1
+    ],
+    [
+      "Goblin Welder",
+      1
+    ],
+    [
+      "Epochrasite",
+      1
+    ],
+    [
+      "Myr Retriever",
+      1
+    ],
+    [
+      "Palladium Myr",
+      1
+    ],
+    [
+      "Tuktuk the Explorer",
+      1
+    ],
+    [
+      "Dualcaster Mage",
+      1
+    ],
+    [
+      "Feldon of the Third Path",
+      1
+    ],
+    [
+      "Solemn Simulacrum",
+      1
+    ],
+    [
+      "Steel Hellkite",
+      1
+    ],
+    [
+      "Hoard-Smelter Dragon",
+      1
+    ],
+    [
+      "Warmonger Hellkite",
+      1
+    ],
+    [
+      "Myr Battlesphere",
+      1
+    ],
+    [
+      "Pentavus",
+      1
+    ],
+    [
+      "Tyrant's Familiar",
+      1
+    ],
+    [
+      "Bosh, Iron Golem",
+      1
+    ],
+    [
+      "Bogardan Hellkite",
+      1
+    ],
+    [
+      "Faithless Looting",
+      1
+    ],
+    [
+      "Scrap Mastery",
+      1
+    ],
+    [
+      "Incite Rebellion",
+      1
+    ],
+    [
+      "Blasphemous Act",
+      1
+    ],
+    [
+      "Impact Resonance",
+      1
+    ],
+    [
+      "Chaos Warp",
+      1
+    ],
+    [
+      "Volcanic Offering",
+      1
+    ],
+    [
+      "Word of Seizing",
+      1
+    ],
+    [
+      "Magmaquake",
+      1
+    ],
+    [
+      "Everflowing Chalice",
+      1
+    ],
+    [
+      "Panic Spellbomb",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Wayfarer's Bauble",
+      1
+    ],
+    [
+      "Ichor Wellspring",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Mycosynth Wellspring",
+      1
+    ],
+    [
+      "Ruby Medallion",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Unstable Obelisk",
+      1
+    ],
+    [
+      "Caged Sun",
+      1
+    ],
+    [
+      "Dreamstone Hedron",
+      1
+    ],
+    [
+      "Loreseeker's Stone",
+      1
+    ],
+    [
+      "Bitter Feud",
+      1
+    ],
+    [
+      "Arcane Lighthouse",
+      1
+    ],
+    [
+      "Buried Ruin",
+      1
+    ],
+    [
+      "Dormant Volcano",
+      1
+    ],
+    [
+      "Flamekin Village",
+      1
+    ],
+    [
+      "Forgotten Cave",
+      1
+    ],
+    [
+      "Ghost Quarter",
+      1
+    ],
+    [
+      "Reliquary Tower",
+      1
+    ],
+    [
+      "Smoldering Crater",
+      1
+    ],
+    [
+      "Temple of the False God",
+      1
+    ],
+    [
+      "Mountain",
+      32
+    ],
+    [
+      "Hexing Squelcher",
+      1
+    ],
+    [
+      "Professional Face-Breaker",
+      1
+    ],
+    [
+      "Taurean Mauler",
+      1
+    ],
+    [
+      "Combat Celebrant",
+      1
+    ],
+    [
+      "Weftstalker Ardent",
+      1
+    ],
+    [
+      "Storm-Kiln Artist",
+      1
+    ],
+    [
+      "Siege-Gang Lieutenant",
+      1
+    ],
+    [
+      "Fury",
+      1
+    ],
+    [
+      "Ancient Copper Dragon",
+      1
+    ],
+    [
+      "Chandra's Incinerator",
+      1
+    ],
+    [
+      "Grapeshot",
+      1
+    ],
+    [
+      "Thrill of Possibility",
+      1
+    ],
+    [
+      "Chainsaw",
+      1
+    ],
+    [
+      "Cori-Steel Cutter",
+      1
+    ],
+    [
+      "Cursed Mirror",
+      1
+    ],
+    [
+      "Carnelian Orb of Dragonkind",
+      1
+    ],
+    [
+      "Wand of Wonder",
+      1
+    ],
+    [
+      "Aether Refinery",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 37
+    },
+    "types": {
+      "Artifact": 28,
+      "Creature": 26,
+      "Enchantment": 1,
+      "Instant": 6,
+      "Land": 41,
+      "Planeswalker": 1,
+      "Sorcery": 5
+    },
+    "subtypes": {
+      "Artificer": 3,
+      "Construct": 3,
+      "Daretti": 1,
+      "Dragon": 6,
+      "Drix": 1,
+      "Dwarf": 1,
+      "Elder": 1,
+      "Elemental": 2,
+      "Equipment": 3,
+      "Goblin": 4,
+      "Golem": 2,
+      "Human": 4,
+      "Incarnation": 1,
+      "Mountain": 32,
+      "Myr": 3,
+      "Shaman": 1,
+      "Shapeshifter": 1,
+      "Sorcerer": 1,
+      "Warrior": 2,
+      "Wizard": 1
+    },
+    "tokens": 6,
+    "counters": 3,
+    "graveyard": 4,
+    "creature_commanders": 0
+  }
+}

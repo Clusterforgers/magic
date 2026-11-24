@@ -399,10 +399,6 @@ fn an_event_word_outside_a_trigger_is_refused(#[case] json: &str) {
     r#"{"Triggered":{"when":{"Nth":{"event":{"ZoneChange":{"what":["Token"],"to":"Battlefield"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
     "are counted in a turn"
 )]
-#[case::a_count_of_one_kind_of_counter(
-    r#"{"Triggered":{"when":{"Nth":{"event":{"CountersPut":{"what":["This"],"counter":"+1/+1"}},"nth":1}},"effects":[{"Draw":{}}]}}"#,
-    "are counted in a turn"
-)]
 #[case::a_batch_of_surveils(
     r#"{"Triggered":{"when":{"Batch":{"Surveilled":{"who":"You"}}},"effects":[{"Draw":{}}]}}"#,
     "a batch is of one event"

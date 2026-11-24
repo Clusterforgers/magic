@@ -229,9 +229,11 @@ mod r118_01_wordings;
 mod r118_02_wholes;
 mod r119_01_wholes;
 mod r119_02_wholes;
+mod r120_01_wholes;
 pub(crate) use r116_reminder_tokens::r116_is_reminder_token;
 mod r117_01_joins;
 mod r11w_tallies;
+mod r120_01_atoms;
 mod r281_unless;
 mod r283_atoms;
 mod r284_pairs;
@@ -672,6 +674,8 @@ fn read_static_pair(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>>
         found
     } else if let Some(found) = r115_03_wholes::r115_03_pair_read(text) {
         found
+    } else if let Some(found) = r120_01_wholes::r120_01_pair_read(text) {
+        found
     } else if let Some(found) = r116_03_wholes::r116_03_pair_read(text) {
         found
     } else if let Some(found) = r116_02_wholes::r116_02_pair_read(text) {
@@ -900,6 +904,9 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
         return Some(found);
     }
     if let Some(found) = r118_02_wholes::r118_02_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = r120_01_wholes::r120_01_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r119_01_wholes::r119_01_whole_read(text) {

@@ -19,6 +19,16 @@ const BOTH = [
   /Ada creates 1 Treasure token \(by hand\)/,
 ]
 
+// Ada's own log tells her actions in second person.
+const OWN = [
+  /You lose 5 life \(by hand\)/,
+  /You gain 1 life \(by hand\)/,
+  /You lose 1 life \(by hand\)/,
+  /You draw .+ and .+ \(by hand\)/,
+  /You move the top 2 cards of your library to the graveyard \(by hand\)/,
+  /You create 1 Treasure token \(by hand\)/,
+]
+
 for (const size of SIZES) {
   test(`the Commands panel acts for one seat and both logs tell it, at ${size.name} size`, async ({
     browser,
@@ -41,7 +51,7 @@ for (const size of SIZES) {
       }
       const page = ada.page
       // Ada has the first turn of the pinned seed.
-      await expect(page.getByText('You have priority', { exact: false }).first()).toBeVisible()
+      await expect(page.locator('[data-decision="Priority"]')).toBeVisible()
       await openSide(page, 'Commands')
       await expect(page.getByRole('region', { name: 'Commands' })).toBeVisible()
 
@@ -86,11 +96,11 @@ for (const size of SIZES) {
 
       // Ada's own log names the cards she looked at and where each went; Bo's says how many, and no names.
       const own = await logOf(page, [
-        ...BOTH,
-        /Ada looks at the top 3 cards of their library: .+ \(by hand\)/,
-        /Ada puts back the top 3 cards of their library: .+ on top, .+ on the bottom \(by hand\)/,
+        ...OWN,
+        /You look at the top 3 cards of your library: .+ \(by hand\)/,
+        /You put back the top 3 cards of your library: .+ on top, .+ on the bottom \(by hand\)/,
       ])
-      const looked = /looks at the top 3 cards of their library: (.+?) \(by hand\)/.exec(own)?.[1] ?? ''
+      const looked = /look at the top 3 cards of your library: (.+?) \(by hand\)/.exec(own)?.[1] ?? ''
       expect(looked).not.toBe('')
       const theirs = await logOf(bo.page, [
         ...BOTH,

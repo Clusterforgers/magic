@@ -30,6 +30,7 @@ mod l291_detect;
 mod life_floor;
 mod queue;
 mod r116_dilemma;
+mod r120_random;
 mod reads_x;
 mod state;
 mod w11c_crime;

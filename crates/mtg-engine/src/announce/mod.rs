@@ -21,6 +21,8 @@ mod legality;
 mod modes;
 mod modifiers;
 
+pub use modifiers::{CostChangeBy, cost_changes_by_source};
+
 /// `cost` less `less`, generic mana coming off the generic part down to nothing.
 pub(crate) fn r6018_reduced(
     cost: &mtg_core::mana::ManaCost,

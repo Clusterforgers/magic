@@ -1,0 +1,453 @@
+{
+  "code": "C14",
+  "name": "Guided By Nature",
+  "commander": [
+    "Freyalise, Llanowar's Fury"
+  ],
+  "swaps": [
+    {
+      "out": "Elvish Skysweeper",
+      "into": "Fyndhorn Elves"
+    },
+    {
+      "out": "Essence Warden",
+      "into": "Copperhorn Scout"
+    },
+    {
+      "out": "Sylvan Safekeeper",
+      "into": "Insidious Fungus"
+    },
+    {
+      "out": "Priest of Titania",
+      "into": "Devoted Druid"
+    },
+    {
+      "out": "Sylvan Ranger",
+      "into": "Bloom Tender"
+    },
+    {
+      "out": "Thornweald Archer",
+      "into": "Wildborn Preserver"
+    },
+    {
+      "out": "Wellwisher",
+      "into": "Elvish Warmaster"
+    },
+    {
+      "out": "Farhaven Elf",
+      "into": "Evolution Sage"
+    },
+    {
+      "out": "Imperious Perfect",
+      "into": "Marwyn, the Nurturer"
+    },
+    {
+      "out": "Timberwatch Elf",
+      "into": "Tireless Provisioner"
+    },
+    {
+      "out": "Titania's Chosen",
+      "into": "Legolas Greenleaf"
+    },
+    {
+      "out": "Elvish Archdruid",
+      "into": "Rishkar, Peema Renegade"
+    },
+    {
+      "out": "Ezuri, Renegade Leader",
+      "into": "Tyvar, the Pummeler"
+    },
+    {
+      "out": "Immaculate Magistrate",
+      "into": "Dionus, Elvish Archdruid"
+    },
+    {
+      "out": "Lys Alana Huntmaster",
+      "into": "Oakhame Adversary"
+    },
+    {
+      "out": "Creeperhulk",
+      "into": "Cavalier of Thorns"
+    },
+    {
+      "out": "Silklash Spider",
+      "into": "Kalonian Hydra"
+    },
+    {
+      "out": "Primordial Sage",
+      "into": "Kodama of the East Tree"
+    },
+    {
+      "out": "Soul of the Harvest",
+      "into": "Titania, Nature's Force"
+    },
+    {
+      "out": "Whirlwind",
+      "into": "Harmonize"
+    },
+    {
+      "out": "Grim Flowering",
+      "into": "Season of Gathering"
+    },
+    {
+      "out": "Fresh Meat",
+      "into": "Force of Vigor"
+    },
+    {
+      "out": "Emerald Medallion",
+      "into": "Arcane Signet"
+    },
+    {
+      "out": "Moss Diamond",
+      "into": "Mind Stone"
+    },
+    {
+      "out": "Predator, Flagship",
+      "into": "Eldrazi Monument"
+    },
+    {
+      "out": "Crystal Vein",
+      "into": "Forest"
+    },
+    {
+      "out": "Gargoyle Castle",
+      "into": "Forest"
+    },
+    {
+      "out": "Haunted Fengraf",
+      "into": "Forest"
+    },
+    {
+      "out": "Havenwood Battleground",
+      "into": "Forest"
+    }
+  ],
+  "cards": [
+    [
+      "Freyalise, Llanowar's Fury",
+      1
+    ],
+    [
+      "Elvish Mystic",
+      1
+    ],
+    [
+      "Joraga Warcaller",
+      1
+    ],
+    [
+      "Llanowar Elves",
+      1
+    ],
+    [
+      "Elvish Visionary",
+      1
+    ],
+    [
+      "Reclamation Sage",
+      1
+    ],
+    [
+      "Wood Elves",
+      1
+    ],
+    [
+      "Drove of Elves",
+      1
+    ],
+    [
+      "Wren's Run Packmaster",
+      1
+    ],
+    [
+      "Masked Admirers",
+      1
+    ],
+    [
+      "Wolfbriar Elemental",
+      1
+    ],
+    [
+      "Titania, Protector of Argoth",
+      1
+    ],
+    [
+      "Grave Sifter",
+      1
+    ],
+    [
+      "Rampaging Baloths",
+      1
+    ],
+    [
+      "Thunderfoot Baloth",
+      1
+    ],
+    [
+      "Siege Behemoth",
+      1
+    ],
+    [
+      "Tornado Elemental",
+      1
+    ],
+    [
+      "Terastodon",
+      1
+    ],
+    [
+      "Lifeblood Hydra",
+      1
+    ],
+    [
+      "Hunting Triad",
+      1
+    ],
+    [
+      "Overwhelming Stampede",
+      1
+    ],
+    [
+      "Overrun",
+      1
+    ],
+    [
+      "Collective Unconscious",
+      1
+    ],
+    [
+      "Desert Twister",
+      1
+    ],
+    [
+      "Wave of Vitriol",
+      1
+    ],
+    [
+      "Praetor's Counsel",
+      1
+    ],
+    [
+      "Sylvan Offering",
+      1
+    ],
+    [
+      "Harrow",
+      1
+    ],
+    [
+      "Skullclamp",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Assault Suit",
+      1
+    ],
+    [
+      "Seer's Sundial",
+      1
+    ],
+    [
+      "Loreseeker's Stone",
+      1
+    ],
+    [
+      "Beastmaster Ascension",
+      1
+    ],
+    [
+      "Song of the Dryads",
+      1
+    ],
+    [
+      "Wolfcaller's Howl",
+      1
+    ],
+    [
+      "Evolving Wilds",
+      1
+    ],
+    [
+      "Ghost Quarter",
+      1
+    ],
+    [
+      "Jungle Basin",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Oran-Rief, the Vastwood",
+      1
+    ],
+    [
+      "Slippery Karst",
+      1
+    ],
+    [
+      "Terramorphic Expanse",
+      1
+    ],
+    [
+      "Tranquil Thicket",
+      1
+    ],
+    [
+      "Forest",
+      29
+    ],
+    [
+      "Fyndhorn Elves",
+      1
+    ],
+    [
+      "Copperhorn Scout",
+      1
+    ],
+    [
+      "Insidious Fungus",
+      1
+    ],
+    [
+      "Devoted Druid",
+      1
+    ],
+    [
+      "Bloom Tender",
+      1
+    ],
+    [
+      "Wildborn Preserver",
+      1
+    ],
+    [
+      "Elvish Warmaster",
+      1
+    ],
+    [
+      "Evolution Sage",
+      1
+    ],
+    [
+      "Marwyn, the Nurturer",
+      1
+    ],
+    [
+      "Tireless Provisioner",
+      1
+    ],
+    [
+      "Legolas Greenleaf",
+      1
+    ],
+    [
+      "Rishkar, Peema Renegade",
+      1
+    ],
+    [
+      "Tyvar, the Pummeler",
+      1
+    ],
+    [
+      "Dionus, Elvish Archdruid",
+      1
+    ],
+    [
+      "Oakhame Adversary",
+      1
+    ],
+    [
+      "Cavalier of Thorns",
+      1
+    ],
+    [
+      "Kalonian Hydra",
+      1
+    ],
+    [
+      "Kodama of the East Tree",
+      1
+    ],
+    [
+      "Titania, Nature's Force",
+      1
+    ],
+    [
+      "Harmonize",
+      1
+    ],
+    [
+      "Season of Gathering",
+      1
+    ],
+    [
+      "Force of Vigor",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Eldrazi Monument",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 53
+    },
+    "types": {
+      "Artifact": 10,
+      "Creature": 37,
+      "Enchantment": 3,
+      "Instant": 2,
+      "Kindred": 1,
+      "Land": 37,
+      "Planeswalker": 1,
+      "Sorcery": 10
+    },
+    "subtypes": {
+      "Archer": 2,
+      "Aura": 1,
+      "Beast": 4,
+      "Druid": 9,
+      "Elemental": 6,
+      "Elephant": 1,
+      "Elf": 24,
+      "Equipment": 3,
+      "Forest": 29,
+      "Freyalise": 1,
+      "Fungus": 1,
+      "Hydra": 2,
+      "Knight": 1,
+      "Scout": 3,
+      "Shaman": 3,
+      "Spirit": 1,
+      "Warrior": 5
+    },
+    "tokens": 10,
+    "counters": 11,
+    "graveyard": 5,
+    "creature_commanders": 0
+  }
+}

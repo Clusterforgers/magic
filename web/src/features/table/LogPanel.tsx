@@ -6,7 +6,7 @@ import { KeywordText } from './Keyword'
 import { cn } from '@/lib/utils'
 import { foldLog } from './logFold'
 import type { FoldedLine } from './logFold'
-import { useSeatNamer } from './names'
+import { useSeatNamer, useViewerSeat } from './names'
 import { knownDoorFaces, usePrintedVersion } from './printed'
 import { doorNameOf } from './rooms'
 import { SeatDot } from './PodParts'
@@ -57,6 +57,7 @@ export function LogPanel() {
   const objects = usePlay((state) => state.objectsById)
   const logNames = usePlay((state) => state.logNames)
   const seat = useSeatNamer()
+  const viewer = useViewerSeat()
   const printedVersion = usePrintedVersion()
   const players = usePlay((state) => state.view?.players)
   const seats = usePlay(
@@ -83,9 +84,9 @@ export function LogPanel() {
           clauses: (id) => objects[id]?.manual?.map((clause) => clause.text) ?? [],
           boss: (id) => bossOwner(objects[id], players, seat),
         },
-        { seats, players },
+        { seats, players, viewer },
       ),
-    [log, objects, logNames, seat, seats, players, printedVersion],
+    [log, objects, logNames, seat, seats, players, viewer, printedVersion],
   )
   const scroller = useRef<HTMLDivElement>(null)
   const following = useRef(true)

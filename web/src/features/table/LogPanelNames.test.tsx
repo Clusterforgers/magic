@@ -98,6 +98,6 @@ describe('the log line about an unlocked door', () => {
       }),
     })
     const log = screen.getByRole('log', { name: 'Game log' })
-    expect(await within(log).findByText(/unlocks Bottomless Pool/)).toBeInTheDocument()
+    expect(await within(log).findByText(/You unlock Bottomless Pool/)).toBeInTheDocument()
   })
 })

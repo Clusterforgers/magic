@@ -138,6 +138,7 @@ mod r117_02_parley;
 mod r117_all_of;
 mod r118_attack;
 mod r119_01_cards;
+mod r120_01_cards;
 mod r1c;
 mod r1fix;
 mod r1g_taken_names;

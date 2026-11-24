@@ -270,7 +270,7 @@ const ORDINARY_TRIGGERS =
   names(`ZoneChange ZoneChangeExcept ResolvedToGraveyard Attacks AttacksAlone AttacksPlayer
   AttacksPlayerOrPlaneswalker PlayerAttacked PlayerAttacks BecomesTarget PlayerBecomesTarget PutOnStack FirstDrawRevealed
   Drew Blocks BecomesBlocked Unblocked GroupAttacks GroupAttacksAt StepBegins State Did AnyOf Batch Nth Caused R6701WhileActivating R109WhileCasting DealsToughnessDamage PhaseBegins
-  R110ThatCombatBegins R111AbilityTriggered`)
+  R110ThatCombatBegins R111AbilityTriggered R120RandomAction R120AssistedCast R120DealsExactly`)
 
 /** The fields of the player view that are a designation, a status or a counter the rules define, by lexicon term. */
 const PLAYER_FIELDS: Record<string, string> = {
@@ -302,7 +302,7 @@ const PLAYER_FIELDS: Record<string, string> = {
 }
 
 const PLAIN_PLAYER_FIELDS = names(
-  'seat effects spirit eyes boss satchel bank turn_time_ms turn_time_running connected',
+  'seat effects sources spirit eyes boss satchel bank turn_time_ms turn_time_running connected',
 )
 
 /** The fields of the turn view that are a designation or a rules term, by lexicon term. */

@@ -13,6 +13,8 @@ use crate::layers::Applied;
 use crate::object::ObjectRef;
 use crate::state::GameState;
 
+pub use crate::announce::{CostChangeBy, cost_changes_by_source};
+
 /// Where a modifier comes from.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ModifierSource {

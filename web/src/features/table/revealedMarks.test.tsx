@@ -183,7 +183,7 @@ describe('the preview', () => {
     await user.hover(must(container.querySelector<HTMLElement>(`button[data-object-id="${own}"]`)))
     const preview = screen.getByTestId('card-preview')
     expect(preview.querySelector('[data-slot="preview-revealed"]')).toHaveTextContent(
-      /^Revealed to every seat, in \w+'s hand\.$/,
+      /^Revealed to every seat, in your hand\.$/,
     )
     await user.unhover(must(container.querySelector<HTMLElement>(`button[data-object-id="${own}"]`)))
     const rival = must(fixture.view.objects.find((object) => object.note === RIVAL_NOTE))

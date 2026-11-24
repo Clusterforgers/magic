@@ -3,6 +3,7 @@
 //! The table shows the asking card beside the question, marks the asked clause in its rules text and places the
 //! question in the run of triggers it is one of (`docs/protocol.md`, Decisions).
 
+use mtg_cards::CardIdentity;
 use mtg_cards::ability::Ability;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::state::GameState;
@@ -35,6 +36,11 @@ pub struct AskingView {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     #[ts(as = "Option<String>", optional)]
     pub name: String,
+    /// The printed card of the source as last seen, for its picture once the source has left its zone; left out while
+    /// `source` is set, for a source with no printed card (a token) and while the source is hidden.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub identity: Option<CardIdentity>,
     /// The index of the asking ability among the rules of its source; left out for a spell.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
@@ -175,6 +181,12 @@ impl AskingView {
             .object(source.id)
             .filter(|found| found.counter() == source.counter)
             .and_then(|_| ObjectView::of(state, viewer, source.id));
+        // An ability keeps its source's card, so the card the source last was shows once the source has left.
+        let identity = object
+            .card()
+            .identity
+            .clone()
+            .filter(|_| seen.is_none() && !view.name.is_empty());
         let text = view.rules_text;
         let marked = text.as_deref().and_then(|text| clause_of(text, question));
         let cause = ability.cause().and_then(|cause| {
@@ -191,6 +203,7 @@ impl AskingView {
             resolving,
             source: seen.map(|seen| seen.id),
             name: view.name,
+            identity,
             ability: Some(ability.index()),
             text,
             clause: marked,

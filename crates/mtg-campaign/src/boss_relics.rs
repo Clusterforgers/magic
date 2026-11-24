@@ -11,9 +11,9 @@ use crate::scale::MAX_HEAT;
 /// The most relics a boss brings.
 pub const MOST_BOSS_RELICS: usize = 6;
 /// The depth below which a boss brings no relic, by Heat.
-pub const RELIC_OFFSET: [u32; MAX_HEAT as usize + 1] = [4, 3, 2];
-/// The Rare chance of a boss's relic at Heat 0 to 2 with one relic; each more relic adds 10 points.
-pub const RARE_BASE: [u32; MAX_HEAT as usize + 1] = [10, 15, 20];
+pub const RELIC_OFFSET: [u32; MAX_HEAT as usize + 1] = [4, 3, 2, 1];
+/// The Rare chance of a boss's relic at Heat 0 to 3 with one relic; each more relic adds 10 points.
+pub const RARE_BASE: [u32; MAX_HEAT as usize + 1] = [10, 15, 20, 25];
 /// The highest Rare chance.
 pub const RARE_CAP: u32 = 60;
 /// The relic count from which a Mythic can come (Heat 1 and above), 5 points more for each relic beyond the one before.

@@ -97,13 +97,14 @@ it.each([
   [0, 'Heat 0 — Casual: any deck can win with some luck'],
   [1, 'Heat 1 — Seasoned: needs a deck that suits the format'],
   [2, 'Heat 2 — Heroic: needs a team of decks that work together and suit the format'],
+  [3, 'Heat 3 — Legendary: needs a tuned team, and opens the Ember Foundry'],
 ] as const)('words Heat %i as its tier', (heat, words) => {
   expect(heatWords(heat)).toBe(words)
   expect(heatTier(heat).heat).toBe(heat)
 })
 
 it('reads a Heat beyond the table as the highest tier', () => {
-  expect(heatTier(5).name).toBe('Heroic')
+  expect(heatTier(5).name).toBe('Legendary')
 })
 
 it.each([

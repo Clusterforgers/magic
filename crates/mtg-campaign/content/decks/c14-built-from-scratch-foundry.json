@@ -1,0 +1,410 @@
+{
+  "code": "C14",
+  "name": "Built From Scratch",
+  "commander": [
+    "Daretti, Scrap Savant"
+  ],
+  "swaps": [
+    {
+      "out": "Myr Sire",
+      "into": "Soulless Jailer"
+    },
+    {
+      "out": "Bottle Gnomes",
+      "into": "Burnished Hart"
+    },
+    {
+      "out": "Cathodion",
+      "into": "Metalworker"
+    },
+    {
+      "out": "Junk Diver",
+      "into": "Dauntless Scrapbot"
+    },
+    {
+      "out": "Pilgrim's Eye",
+      "into": "Ornithopter of Paradise"
+    },
+    {
+      "out": "Flametongue Kavu",
+      "into": "Defiler of Instinct"
+    },
+    {
+      "out": "Beetleback Chief",
+      "into": "Krenko, Mob Boss"
+    },
+    {
+      "out": "Ingot Chewer",
+      "into": "Fury"
+    },
+    {
+      "out": "Wurmcoil Engine",
+      "into": "Thopter Assembly"
+    },
+    {
+      "out": "Spitebellows",
+      "into": "Chandra's Incinerator"
+    },
+    {
+      "out": "Whipflare",
+      "into": "Cathartic Reunion"
+    },
+    {
+      "out": "Starstorm",
+      "into": "Thrill of Possibility"
+    },
+    {
+      "out": "Fire Diamond",
+      "into": "Thought Vessel"
+    },
+    {
+      "out": "Liquimetal Coating",
+      "into": "Key to the City"
+    },
+    {
+      "out": "Jalum Tome",
+      "into": "Sword of Fire and Ice"
+    },
+    {
+      "out": "Pristine Talisman",
+      "into": "Basalt Monolith"
+    },
+    {
+      "out": "Trading Post",
+      "into": "Hedron Archive"
+    },
+    {
+      "out": "Spine of Ish Sah",
+      "into": "Chromatic Orrery"
+    },
+    {
+      "out": "Darksteel Citadel",
+      "into": "Mountain"
+    },
+    {
+      "out": "Great Furnace",
+      "into": "Mountain"
+    },
+    {
+      "out": "Phyrexia's Core",
+      "into": "Mountain"
+    }
+  ],
+  "cards": [
+    [
+      "Daretti, Scrap Savant",
+      1
+    ],
+    [
+      "Goblin Welder",
+      1
+    ],
+    [
+      "Epochrasite",
+      1
+    ],
+    [
+      "Myr Retriever",
+      1
+    ],
+    [
+      "Palladium Myr",
+      1
+    ],
+    [
+      "Tuktuk the Explorer",
+      1
+    ],
+    [
+      "Dualcaster Mage",
+      1
+    ],
+    [
+      "Feldon of the Third Path",
+      1
+    ],
+    [
+      "Solemn Simulacrum",
+      1
+    ],
+    [
+      "Steel Hellkite",
+      1
+    ],
+    [
+      "Hoard-Smelter Dragon",
+      1
+    ],
+    [
+      "Warmonger Hellkite",
+      1
+    ],
+    [
+      "Myr Battlesphere",
+      1
+    ],
+    [
+      "Pentavus",
+      1
+    ],
+    [
+      "Tyrant's Familiar",
+      1
+    ],
+    [
+      "Bosh, Iron Golem",
+      1
+    ],
+    [
+      "Bogardan Hellkite",
+      1
+    ],
+    [
+      "Faithless Looting",
+      1
+    ],
+    [
+      "Scrap Mastery",
+      1
+    ],
+    [
+      "Incite Rebellion",
+      1
+    ],
+    [
+      "Blasphemous Act",
+      1
+    ],
+    [
+      "Impact Resonance",
+      1
+    ],
+    [
+      "Chaos Warp",
+      1
+    ],
+    [
+      "Volcanic Offering",
+      1
+    ],
+    [
+      "Word of Seizing",
+      1
+    ],
+    [
+      "Magmaquake",
+      1
+    ],
+    [
+      "Everflowing Chalice",
+      1
+    ],
+    [
+      "Panic Spellbomb",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Wayfarer's Bauble",
+      1
+    ],
+    [
+      "Ichor Wellspring",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Mycosynth Wellspring",
+      1
+    ],
+    [
+      "Ruby Medallion",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Unstable Obelisk",
+      1
+    ],
+    [
+      "Caged Sun",
+      1
+    ],
+    [
+      "Dreamstone Hedron",
+      1
+    ],
+    [
+      "Loreseeker's Stone",
+      1
+    ],
+    [
+      "Bitter Feud",
+      1
+    ],
+    [
+      "Arcane Lighthouse",
+      1
+    ],
+    [
+      "Buried Ruin",
+      1
+    ],
+    [
+      "Dormant Volcano",
+      1
+    ],
+    [
+      "Flamekin Village",
+      1
+    ],
+    [
+      "Forgotten Cave",
+      1
+    ],
+    [
+      "Ghost Quarter",
+      1
+    ],
+    [
+      "Reliquary Tower",
+      1
+    ],
+    [
+      "Smoldering Crater",
+      1
+    ],
+    [
+      "Temple of the False God",
+      1
+    ],
+    [
+      "Mountain",
+      32
+    ],
+    [
+      "Soulless Jailer",
+      1
+    ],
+    [
+      "Burnished Hart",
+      1
+    ],
+    [
+      "Metalworker",
+      1
+    ],
+    [
+      "Dauntless Scrapbot",
+      1
+    ],
+    [
+      "Ornithopter of Paradise",
+      1
+    ],
+    [
+      "Defiler of Instinct",
+      1
+    ],
+    [
+      "Krenko, Mob Boss",
+      1
+    ],
+    [
+      "Fury",
+      1
+    ],
+    [
+      "Thopter Assembly",
+      1
+    ],
+    [
+      "Chandra's Incinerator",
+      1
+    ],
+    [
+      "Cathartic Reunion",
+      1
+    ],
+    [
+      "Thrill of Possibility",
+      1
+    ],
+    [
+      "Thought Vessel",
+      1
+    ],
+    [
+      "Key to the City",
+      1
+    ],
+    [
+      "Sword of Fire and Ice",
+      1
+    ],
+    [
+      "Basalt Monolith",
+      1
+    ],
+    [
+      "Hedron Archive",
+      1
+    ],
+    [
+      "Chromatic Orrery",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 25
+    },
+    "types": {
+      "Artifact": 34,
+      "Creature": 26,
+      "Enchantment": 1,
+      "Instant": 6,
+      "Land": 41,
+      "Planeswalker": 1,
+      "Sorcery": 5
+    },
+    "subtypes": {
+      "Artificer": 2,
+      "Construct": 4,
+      "Daretti": 1,
+      "Dragon": 5,
+      "Elemental": 2,
+      "Elk": 1,
+      "Equipment": 2,
+      "Goblin": 3,
+      "Golem": 3,
+      "Human": 2,
+      "Incarnation": 1,
+      "Kavu": 1,
+      "Mountain": 32,
+      "Myr": 3,
+      "Phyrexian": 2,
+      "Robot": 1,
+      "Thopter": 2,
+      "Warrior": 1,
+      "Wizard": 1
+    },
+    "tokens": 5,
+    "counters": 2,
+    "graveyard": 6,
+    "creature_commanders": 0
+  }
+}

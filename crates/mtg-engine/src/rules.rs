@@ -9,7 +9,7 @@
 
 mod player_effects;
 
-pub use player_effects::{PlayerEffect, player_effects};
+pub use player_effects::{PlayerEffect, player_effect_sources, player_effects};
 
 use std::cell::Cell;
 use std::collections::{BTreeMap, BTreeSet};
@@ -2753,15 +2753,39 @@ impl Drop for Gathering {
 /// Gathers the rules in force in `state`.
 fn gather(state: &GameState) -> RulesInForce {
     let mut found = RulesInForce::default();
+    each_rule(state, |rule, controller, source, held| {
+        found.put(rule, controller, source);
+        if let (true, Some(source), Rule::SpellCost { .. }) = (held, source, rule) {
+            found
+                .static_spell_costs
+                .push((rule.clone(), controller, source));
+        }
+    });
+    found
+}
+
+/// Every rule in force in `state` with its controller and the object it comes from, when one does.
+pub(crate) fn rules_by_source(state: &GameState) -> Vec<(Rule, PlayerId, Option<ObjectRef>)> {
+    let mut found = Vec::new();
+    let _gathering = Gathering::enter();
+    each_rule(state, |rule, controller, source, _| {
+        found.push((rule.clone(), controller, source));
+    });
+    found
+}
+
+/// Calls `found` with each rule in force in `state`, its controller, its source and whether an ability of the source
+/// holds it (a static rule, not an effect's).
+fn each_rule(state: &GameState, mut found: impl FnMut(&Rule, PlayerId, Option<ObjectRef>, bool)) {
     for effect in state
         .rule_effects()
         .iter()
         .filter(|effect| effect.is_active(state) && !crate::r377_skips::r377_waits(state, effect))
     {
-        found.put(&effect.rule, effect.controller, effect.source);
+        found(&effect.rule, effect.controller, effect.source, false);
     }
     if !state.rules_possible {
-        return found;
+        return;
     }
     // A rule that a permanent has works from the battlefield, one a spell has for itself from the stack, and a card's
     // permission to cast itself from its owner's graveyard, from exile or from a hand ("you may cast this spell as though
@@ -2812,17 +2836,11 @@ fn gather(state: &GameState) -> RulesInForce {
                     continue;
                 }
                 if let Ok(lowered) = lower_rule(&scope, rule) {
-                    found.put(&lowered, controller, Some(object.reference()));
-                    if matches!(lowered, Rule::SpellCost { .. }) {
-                        found
-                            .static_spell_costs
-                            .push((lowered, controller, object.reference()));
-                    }
+                    found(&lowered, controller, Some(object.reference()), true);
                 }
             }
         }
     }
-    found
 }
 
 /// The rules of a game in which none can be in force, and of one whose rules are being gathered (the gathering reads

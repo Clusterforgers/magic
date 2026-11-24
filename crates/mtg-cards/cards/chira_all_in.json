@@ -1,0 +1,22 @@
+{
+  "oracle_id": "f6552921-f949-4f3c-b75d-718c106d712b",
+  "name": "Chira, All In",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chira, All In",
+      "oracle_fingerprint": "2a861185aa31e3efe19b37a0a1e07fd0",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "R120RandomAction": { "who": "You" } },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              { "CreateToken": { "token": { "Named": "treasure" }, "tapped": true } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

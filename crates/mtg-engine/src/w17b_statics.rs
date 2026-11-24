@@ -50,6 +50,19 @@ pub(crate) const W17B_NONE: W17bRules = W17bRules {
 };
 
 impl W17bRules {
+    /// Whether these rules have `player` unable to lose, spared at 0 life, unable to win and unable to cast spells
+    /// while `active` takes their turn.
+    pub(crate) fn w17b_flags(&self, player: PlayerId, active: PlayerId) -> [bool; 4] {
+        [
+            self.cant_lose.contains(&player),
+            self.life_spared.contains(&player),
+            self.winless.contains(&player),
+            self.cant_cast
+                .iter()
+                .any(|(who, turn, _)| *who == player && turn.is_none_or(|turn| turn == active)),
+        ]
+    }
+
     /// Puts one of these rules of `source` in force.
     pub(crate) fn w17b_put(&mut self, rule: &Rule, source: Option<ObjectRef>) {
         match rule {

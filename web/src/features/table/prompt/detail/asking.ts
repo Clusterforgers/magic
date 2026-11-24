@@ -3,7 +3,7 @@
  * asked clause, the run of triggers it is one of, and whether the decision brings the Stack column forward.
  */
 import type { PendingDecision } from '@/play/store'
-import type { AskingCause, DecisionKind, ObjectId, RunView } from '@/protocol/generated'
+import type { AskingCause, CardIdentity, DecisionKind, ObjectId, RunView } from '@/protocol/generated'
 
 /** The decisions answered on the board, in the hand or in the band alone: the Stack column stays as the viewer left it. */
 const NO_DETAIL: ReadonlySet<string> = new Set([
@@ -59,6 +59,8 @@ export interface Asker {
   resolving: boolean
   /** The source's name as the server gave it; empty when it gave none. */
   name: string
+  /** The printed card the source last was, for its picture once it has left its zone. */
+  identity?: CardIdentity | undefined
   /** The asking ability's rules text. */
   text: string | undefined
   /** The asked clause of `text`, in UTF-16 code units. */
@@ -84,6 +86,7 @@ export function askerOf(pending: PendingDecision | null): Asker | null {
       stack: undefined,
       resolving: false,
       name: '',
+      identity: undefined,
       text: undefined,
       clause: undefined,
       cause: undefined,
@@ -95,6 +98,7 @@ export function askerOf(pending: PendingDecision | null): Asker | null {
     stack: asking.stack,
     resolving: asking.resolving === true,
     name: asking.name ?? '',
+    identity: asking.identity,
     text: asking.text,
     clause: asking.clause,
     cause: asking.cause,

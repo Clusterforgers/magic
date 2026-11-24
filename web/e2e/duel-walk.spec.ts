@@ -11,6 +11,12 @@ const releaseFocus = (page: Page) =>
 /** The sentence of the seat's prompt. */
 const sentence = (player: Player) => player.page.locator('[data-decision] [data-slot="prompt-text"]')
 
+/** Waits until `player` holds priority with nothing to respond to: a Priority decision whose sentence answers no spell. */
+async function holdsPriority(player: Player): Promise<void> {
+  await expect(player.page.locator('[data-decision="Priority"]')).toBeVisible()
+  await expect(sentence(player)).not.toContainText('Responding to')
+}
+
 /** The accessible names of the stack's chips, top first. */
 const stack = (player: Player) =>
   player.page
@@ -74,7 +80,9 @@ async function cast(player: Player, name: string, target?: string): Promise<void
     const confirm = player.page.getByRole('button', { name: 'Confirm targets' })
     if ((await confirm.count()) > 0) await confirm.click()
   }
+  // "Pay for me" lays out the game's payment; Confirm sends it.
   await player.page.getByRole('button', { name: 'Pay for me' }).click()
+  await player.page.locator('[data-slot="pay-confirm"]').click()
   await expect(sentence(player)).toContainText(`Responding to your ${name}`)
 }
 
@@ -93,7 +101,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
       players.map(({ page }) => page.getByRole('button', { name: 'Keep', exact: true }).click()),
     )
     // Ada has the first turn of the pinned seed. Both seats hold Full Control, so each is asked at every window.
-    await expect(sentence(ada)).toContainText('You have priority')
+    await holdsPriority(ada)
     await expect(banner(ada)).toContainText('Your turn · Round 1 · Precombat main')
     for (const { page } of players) await releaseFocus(page)
     for (const { page } of players) await page.keyboard.press('Control+Shift')
@@ -117,21 +125,25 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
     await pass(bo)
     await expect(sentence(ada)).toContainText("Responding to Bo's Counterspell")
     await pass(ada)
-    await expect(sentence(ada)).toContainText('You have priority')
+    await holdsPriority(ada)
     for (const player of players) await expect.poll(() => stack(player)).toEqual([])
-    const countered = [
-      /Ada casts Silvercoat Lion/,
+    // Each seat reads its own actions in second person.
+    const adaLog = await logOf(ada.page, [
+      /You cast Silvercoat Lion/,
       /Bo casts Counterspell targeting Silvercoat Lion/,
       /Counterspell counters Silvercoat Lion/,
-    ]
-    const adaLog = await logOf(ada.page, [...countered, /Bo puts a card from their library into their hand/])
+      /Bo puts a card from their library into their hand/,
+    ])
     const boLog = await logOf(bo.page, [
-      ...countered,
-      /Bo puts Counterspell from their library into their hand/,
+      /Ada casts Silvercoat Lion/,
+      /You cast Counterspell targeting Silvercoat Lion/,
+      /Counterspell counters Silvercoat Lion/,
+      /You put Counterspell from your library into your hand/,
     ])
     // A tutored card is named to its owner only.
     expect(adaLog).not.toMatch(/Bo puts Counterspell/)
     expect(boLog).not.toMatch(/Ada puts Silvercoat Lion/)
+    expect(boLog).not.toMatch(/Bo casts|Bo puts/)
 
     // 2. A combat trick. Ada attacks with a creature Bo blocks, and removes the blocker at instant speed.
     await tutor(ada, 'Pearled Unicorn')
@@ -140,7 +152,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
     await pass(ada)
     await expect(sentence(bo)).toContainText("Responding to Ada's Pearled Unicorn")
     await pass(bo)
-    await expect(sentence(ada)).toContainText('You have priority')
+    await holdsPriority(ada)
     await ownCard(ada, 'Pearled Unicorn').click({ button: 'right' })
     await ada.page.locator('[data-item="unsick"]').click()
     const tokens = await openRow(bo.page, 'Tokens')
@@ -148,24 +160,24 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
     await tokens.getByRole('button', { name: '1', exact: true }).click()
     await apply(tokens, /^Create 1 Soldier/)
     await pass(ada)
-    await expect(sentence(bo)).toContainText('You have priority')
+    await holdsPriority(bo)
     await pass(bo)
     await expect(banner(ada)).toContainText('Beginning of combat')
     await pass(ada)
-    await expect(sentence(bo)).toContainText('You have priority')
+    await holdsPriority(bo)
     await pass(bo)
     await expect(sentence(ada)).toContainText('Choose the creatures that attack Bo')
     await ada.page.getByRole('button', { name: 'Attack with all', exact: true }).click()
     await ada.page.getByRole('button', { name: 'Confirm attack', exact: true }).click()
     await expect(banner(ada)).toContainText('Declare attackers')
     await pass(ada)
-    await expect(sentence(bo)).toContainText('You have priority')
+    await holdsPriority(bo)
     await pass(bo)
     await expect(sentence(bo)).toContainText('Click a blocker, then the attacker it blocks')
     await ownCard(bo, 'Soldier').click()
     await bo.page.getByRole('button', { name: 'Confirm blocks' }).click()
     await expect(banner(ada)).toContainText('Declare blockers')
-    await expect(sentence(ada)).toContainText('You have priority')
+    await holdsPriority(ada)
     await tutor(ada, 'Swords to Plowshares')
     await addMana(ada, 'White', 1)
     await cast(ada, 'Swords to Plowshares', 'Soldier')
@@ -175,17 +187,21 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
     await pass(ada)
     await expect(sentence(bo)).toContainText("Responding to Ada's Swords to Plowshares")
     await pass(bo)
-    await expect(sentence(ada)).toContainText('You have priority')
+    await holdsPriority(ada)
     for (const player of players) await expect.poll(() => stack(player)).toEqual([])
     await expect(ownCard(bo, 'Soldier')).toHaveCount(0)
-    const trick = [
-      /Ada attacks Bo with Pearled Unicorn/,
+    await logOf(ada.page, [
+      /You attack Bo with Pearled Unicorn/,
       /Bo declares blockers: Soldier blocks Pearled Unicorn/,
+      /You cast Swords to Plowshares targeting Soldier/,
+      /Soldier is exiled by Swords to Plowshares/,
+    ])
+    await logOf(bo.page, [
+      /Ada attacks you with Pearled Unicorn/,
+      /You declare blockers: Soldier blocks Pearled Unicorn/,
       /Ada casts Swords to Plowshares targeting Soldier/,
       /Soldier is exiled by Swords to Plowshares/,
-    ]
-    await logOf(ada.page, trick)
-    await logOf(bo.page, trick)
+    ])
 
     // 3. A sacrifice by hand, from the card's menu; both logs say it and the card leaves the battlefield.
     await ownCard(ada, 'Pearled Unicorn').click({ button: 'right' })
@@ -196,7 +212,7 @@ test('a counterspell, a combat trick and a sacrifice by hand, both seats reading
         `section[aria-label="Ada's battlefield"] button[data-object-id][aria-label^="Pearled Unicorn"]`,
       ),
     ).toHaveCount(0)
-    await logOf(ada.page, [/Ada sacrifices Pearled Unicorn \(by hand\)/])
+    await logOf(ada.page, [/You sacrifice Pearled Unicorn \(by hand\)/])
     await logOf(bo.page, [/Ada sacrifices Pearled Unicorn \(by hand\)/])
 
     for (const player of players) expect(player.errors, `${player.name}'s page errors`).toEqual([])

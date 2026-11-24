@@ -94,6 +94,17 @@ enum Happened {
     W11cCrime { player: PlayerId },
     /// A player faced a dilemma: they chose the modes of a spell or ability (CR 700.2).
     R116Dilemma { player: PlayerId },
+    /// A player did something at random: one instruction that discarded, selected targets or chose modes at random,
+    /// flipped coins or rolled dice.
+    R120RandomAction { player: PlayerId },
+    /// A source dealt damage in the batch: at its first damage of the batch, the total each recipient took from it.
+    R120SourceDamage { source: ObjectId, totals: Vec<u32> },
+    /// A player cast a spell, the `nth` of their turn, that `helper` spent mana to cast (assist, CR 702.132a).
+    R120Assisted {
+        caster: PlayerId,
+        helper: PlayerId,
+        nth: u32,
+    },
     /// A player's cast spent mana: the total of mana they spent to cast spells this turn went from `from` to `to`.
     Expended {
         player: PlayerId,
@@ -176,6 +187,8 @@ enum Happened {
         delta: i32,
         before: u32,
         nth: u32,
+        /// The time this turn counters of this kind were put on the object.
+        nth_kind: u32,
     },
     /// A player got counters of a kind (`delta` above 0) or lost them.
     PlayerCounters {
@@ -426,7 +439,8 @@ impl Happened {
             | Happened::DiceRolled { nth, .. }
             | Happened::Tapped { nth, .. }
             | Happened::Created { nth, .. }
-            | Happened::Counters { nth, .. } => Some(*nth),
+            | Happened::Counters { nth, .. }
+            | Happened::R120Assisted { nth, .. } => Some(*nth),
             _ => None,
         }
     }
@@ -447,6 +461,12 @@ impl Happened {
                 },
                 TriggerPattern::Did { .. },
             ) => Some(*amount),
+            (
+                Happened::Counters { nth_kind, .. },
+                TriggerPattern::CountersPut {
+                    counter: Some(_), ..
+                },
+            ) => Some(*nth_kind),
             _ => self.nth(),
         }
     }
@@ -635,6 +655,15 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
         found.extend(dk26_unattached(pre, event));
         found.extend(r288_final_chapter::r288_happened(pre, event, post));
         found.extend(r111_on_trigger::r111_happened(event));
+        found.extend(
+            super::r120_random::r120_random_actions(look.earlier, event)
+                .into_iter()
+                .map(|player| Happened::R120RandomAction { player }),
+        );
+        found.extend(
+            super::r120_random::r120_source_damage(look.earlier, event, look.later)
+                .map(|(source, totals)| Happened::R120SourceDamage { source, totals }),
+        );
         match event {
             Event::TokenCreated(token) => found.push(Happened::Created {
                 object: token.object,
@@ -705,6 +734,13 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 choices,
             } => {
                 let nth = ordinal(post, look.later, *player, Tally::Cast);
+                found.extend(super::r120_random::r120_helper(look.earlier, *player).map(
+                    |helper| Happened::R120Assisted {
+                        caster: *player,
+                        helper,
+                        nth,
+                    },
+                ));
                 found.push(Happened::Cast {
                     player: *player,
                     spell: *object,
@@ -1027,6 +1063,7 @@ fn defense_removed(look: Look<'_>, hit: ObjectId, amount: u32) -> Option<Happene
         delta,
         before: held.saturating_add(dealt),
         nth: 0,
+        nth_kind: 0,
     })
 }
 
@@ -1144,6 +1181,29 @@ fn object_ordinal(look: Look<'_>, object: ObjectRef, by: Option<PlayerId>, kind:
     };
     let later = look.later.iter().filter(|event| same(event)).count();
     let after = look.post.object_tallied(object, by, kind);
+    after.saturating_sub(u32::try_from(later).unwrap_or(u32::MAX))
+}
+
+/// Which time this turn counters of the changed kind were put on `on`: the turn's count after the batch, less the puts
+/// of that kind on it that follow in the batch.
+fn r120_kind_ordinal(look: Look<'_>, changed: &CountersChanged, on: ObjectRef) -> u32 {
+    let later = look
+        .later
+        .iter()
+        .filter(|event| {
+            matches!(event, Event::CountersChanged(other)
+                if other.delta > 0
+                    && other.counter == changed.counter
+                    && matches!(other.on, Target::Object(at) if at.id == on.id))
+        })
+        .count();
+    let after = look
+        .post
+        .tallies
+        .r120_counter_kinds
+        .get(&(on, changed.counter.clone()))
+        .copied()
+        .unwrap_or(0);
     after.saturating_sub(u32::try_from(later).unwrap_or(u32::MAX))
 }
 
@@ -1378,6 +1438,11 @@ fn about_players_and_permanents(
                 before: counters_before(look, changed, on),
                 nth: if changed.delta > 0 {
                     object_ordinal(look, on, None, Tally::Countered)
+                } else {
+                    0
+                },
+                nth_kind: if changed.delta > 0 {
+                    r120_kind_ordinal(look, changed, on)
                 } else {
                     0
                 },
@@ -2260,7 +2325,8 @@ fn matching_event(
             .or_else(|| matching_permanents(pattern, happened, scope))
             .or_else(|| r288_final_chapter::r288_matching(pattern, happened, scope))
             .or_else(|| phase_began(pattern, happened, scope))
-            .or_else(|| r116_dilemma_matching(pattern, happened, scope)),
+            .or_else(|| r116_dilemma_matching(pattern, happened, scope))
+            .or_else(|| r120_random_matching(pattern, happened, scope)),
     }
 }
 
@@ -3427,6 +3493,48 @@ fn r116_dilemma_matching(
         .players(who)
         .is_ok_and(|named| named.contains(player))
         .then(|| counted(scope.state, vec![Target::Player(*player)], 0))
+}
+
+/// "Whenever you discard one or more cards at random, ..., or roll one or more dice": a random action of a player the
+/// pattern names.
+fn r120_random_matching(
+    pattern: &TriggerPattern,
+    happened: &Happened,
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    if let (
+        TriggerPattern::R120DealsExactly { source, amount },
+        Happened::R120SourceDamage {
+            source: dealer,
+            totals,
+        },
+    ) = (pattern, happened)
+    {
+        let dealer = scope.state.object(*dealer).map(GameObject::reference)?;
+        return (totals.contains(amount) && scope.selects(source, dealer).ok()?).then(|| {
+            let mut cause = counted(scope.state, Vec::new(), *amount);
+            cause.snapshots.extend(snapshot(scope.state, dealer.id));
+            Cause {
+                source: Some(dealer),
+                ..cause
+            }
+        });
+    }
+    let (player, subject) = match (pattern, happened) {
+        (TriggerPattern::R120RandomAction { who }, Happened::R120RandomAction { player }) => {
+            (who, (*player, *player))
+        }
+        (
+            TriggerPattern::R120AssistedCast { who },
+            Happened::R120Assisted { caster, helper, .. },
+        ) => (who, (*caster, *helper)),
+        _ => return None,
+    };
+    let (by, subject) = subject;
+    scope
+        .players(player)
+        .is_ok_and(|named| named.contains(&by))
+        .then(|| counted(scope.state, vec![Target::Player(subject)], 0))
 }
 
 #[cfg(test)]
