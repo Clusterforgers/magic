@@ -23,7 +23,7 @@ pub struct BossSheet {
     pub level: u8,
     /// The fight's encounter modifier.
     pub modifier: Option<SheetCard>,
-    /// The relics and reinforcements it brings, copies included.
+    /// The relics it brings, copies included.
     pub relics: Vec<SheetCard>,
     /// The words of its phases, in the order they begin.
     pub phases: Vec<SheetCard>,
