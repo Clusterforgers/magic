@@ -247,6 +247,7 @@ Every decision has one home that holds its question and its answers; who asks an
 | cards not on the table (a graveyard, a library, exile, revealed cards), or more than twelve | a window | a window |
 
 - A window groups cards by owner, dims the ones that cannot be chosen, and carries the question in its foot; the answers stay in the home, one set, so View table (V) hides the window without losing them.
+- A card window whose cards are on the table too offers Pick on board (V): the window hides, the table takes the presses, and Show choices (V) stands with the answers. Copies of one card under one controller carry the same number in the window and on the table, and pointing at a picture rings its card on the table.
 - One target, or up to one, answers on the press; Cancel is the only button and a spell's take-back the way out of a slip. Several targets, every window and every list wait for Confirm.
 - "Pay for me" proposes only when pressed: until then the sources are lit and nothing is laid out. The proposal draws its sources dashed and turned with "pays U", says what it keeps untapped, and Confirm pays it. Undo, "Pay the rest for me", Cancel and the source tools stay as they are.
 - A run of triggers shows done entries with a tick, the asking one expanded and the next ones numbered. A rule for the rest of the game ("Always Yes", "Always No", "Always use this order") stands under the answers.

@@ -61,6 +61,8 @@ export interface PromptCardProps {
   overlay?: boolean
   /** A short word on the card about this choice ("Targeted"), drawn on its top edge and read after its name. */
   badge?: string | undefined
+  /** The number of a card whose name another offered card shares, drawn at the middle of its left edge and on its object of the table (`twins.ts`). */
+  twin?: number | undefined
   ref?: Ref<HTMLButtonElement>
 }
 
@@ -80,6 +82,7 @@ export function PromptCard({
   onPress,
   overlay = false,
   badge,
+  twin,
   ref,
 }: PromptCardProps) {
   const object = usePlay((state) => state.objectsById[id])
@@ -144,6 +147,15 @@ export function PromptCard({
         </span>
       )}
       <span ref={box} aria-hidden="true" className="pointer-events-none absolute inset-0" />
+      {twin === undefined ? null : (
+        <span
+          aria-hidden="true"
+          data-slot="twin-number"
+          className="absolute top-1/2 -left-2 z-20 inline-flex h-5 -translate-y-1/2 min-w-5 items-center justify-center rounded-full bg-primary px-1 text-xs font-bold text-primary-foreground tabular-nums ring-2 ring-background"
+        >
+          {twin}
+        </span>
+      )}
       {chosen ? <ChosenMark /> : null}
       {hotkey === undefined ? null : (
         <kbd

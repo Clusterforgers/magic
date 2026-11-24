@@ -34,6 +34,7 @@ import { useTargetTips } from '../targetTip'
 import { usePublishDefenders } from '../../combat/defender'
 import { quickButtons } from '../quickSelect'
 import { useObjects } from '../useCombatNames'
+import { twinNumbers } from '../twins'
 import { clashWarning, PAYS_COST_BADGE } from '../costTarget'
 import type { ClashWarning } from '../costTarget'
 import { CostTargetAnswers, CostTargetText } from '../CostTargetWarning'
@@ -120,6 +121,8 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
     () => (objectIds.length > WINDOW_FROM ? objectIds : objectIds.filter((id) => !drawn.has(id))),
     [objectIds, drawn],
   )
+  // Twins are numbered over every legal object, as the labels are, so a picture and its label agree.
+  const twins = useMemo(() => twinNumbers(objectIds, byId), [objectIds, byId])
   const players = useMemo(() => offered.filter((target) => 'Player' in target), [offered])
   const cardLabels = useMemo(
     () =>
@@ -258,6 +261,7 @@ export const ChooseTargetsPrompt: PromptComponent<'ChooseTargets'> = ({ options 
             onPress={onCard}
             label="Legal targets"
             badges={badges}
+            twins={twins}
             rest={quick.length > 0 ? QUICK_ROW_REM : 0}
             lead={
               players.length === 0 ? undefined : (

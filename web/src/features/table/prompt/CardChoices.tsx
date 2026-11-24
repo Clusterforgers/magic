@@ -14,6 +14,9 @@ import { FILTER_FROM, matchesFilter } from './cardsText'
 import { BAND_HEAD_REM, SEARCH_ROW_REM, stripCardWidth } from './cardPrompts'
 import { ChoiceAnchorContext } from './choiceAnchor'
 import { useChoiceOverlay, useOverlayRoom } from './choiceOverlay'
+import { useDrawnCards } from './drawnCards'
+import { usePickOnBoard } from './pickOnBoard'
+import { PickOnBoardButton } from './PickOnBoardButton'
 import { groupByController, overlayLayout, SCROLLBAR_PX } from './overlayLayout'
 import type { CardGroup } from './overlayLayout'
 import { PromptContext } from './PromptContext'
@@ -24,10 +27,13 @@ import { PromptCard } from './PromptCard'
 import type { PromptCardSize } from './PromptCard'
 import { useRestingPreview } from './restingPreview'
 import { usePromptKeys } from './usePromptKeys'
+import { shownTwins, twinFacts, twinNumbers, twinStyle } from './twins'
 
 /** What the search box and the players' row take of the panel, in px, for the layout to leave room for. */
 const SEARCH_PX = 44
 const LEAD_PX = 52
+/** What Pick on board takes of the panel on a row of its own (with a search box it shares the search's row), in px. */
+const HEAD_PX = 44
 
 /** How many of the whole list's cards `seat` controls; null where the list is not grouped. */
 function wholeSize(whole: readonly CardGroup[], seat: PlayerId | null): number | undefined {
@@ -87,6 +93,11 @@ export interface CardChoicesProps {
   badges?: ReadonlyMap<ObjectId, string>
   /** A search of a library: the search box shows from two cards and takes focus when the prompt appears. */
   search?: boolean
+  /**
+   * The number of each card whose name another offered card shares, as the caller's labels number them; by default
+   * counted over `cards` in order (`twinNumbers`).
+   */
+  twins?: ReadonlyMap<ObjectId, number>
 }
 
 /** The card a focused element belongs to, or null. */
@@ -122,6 +133,7 @@ export function CardChoices({
   rest = 0,
   search = false,
   badges,
+  twins,
 }: CardChoicesProps) {
   const total = cards.length
   const fit = useMemo(() => stripCardWidth(total), [total])
@@ -145,6 +157,27 @@ export function CardChoices({
         : cards,
     [filtering, cards, objects, filter, rules],
   )
+  // Pick on board: the overlay hides and the table's own marked cards take the presses (V, `pickOnBoard.ts`).
+  const drawn = useDrawnCards(cards)
+  const onBoard =
+    host !== null && cards.some((id) => drawn.has(id) || objects.get(id)?.zone === 'Battlefield')
+  const pick = usePickOnBoard(onBoard)
+  const hidden = onBoard && pick?.hidden === true
+  // Twins are numbered on their pictures and on the table; the one pointed at or focused is ringed on the table.
+  const numbers = useMemo(
+    () => shownTwins(twins ?? twinNumbers(cards, objects), objects),
+    [twins, cards, objects],
+  )
+  const [pointed, setPointed] = useState<ObjectId | null>(null)
+  const style = twinStyle(numbers, hidden ? null : pointed)
+  const nameOf = (id: ObjectId): string | undefined => objects.get(id)?.name
+  const spoken = (id: ObjectId): string => {
+    const base = labels.get(id) ?? 'A card'
+    const object = objects.get(id)
+    if (!numbers.has(id) || object === undefined) return base
+    const facts = twinFacts(object, nameOf)
+    return facts.length === 0 ? base : `${base}, ${facts.join(', ')}`
+  }
   // In the overlay the cards stand in runs by the seat that controls them, so that order is the one keys and Tab follow.
   const room = useOverlayRoom()
   const groups = useMemo(
@@ -165,9 +198,11 @@ export function CardChoices({
         : overlayLayout(
             room,
             whole.map((group) => group.cards.length),
-            (filtering ? SEARCH_PX : 0) + (lead === undefined || lead === null ? 0 : LEAD_PX),
+            (filtering ? SEARCH_PX : 0) +
+              (lead === undefined || lead === null ? 0 : LEAD_PX) +
+              (onBoard && !filtering ? HEAD_PX : 0),
           ),
-    [host, room, whole, filtering, lead],
+    [host, room, whole, filtering, lead, onBoard],
   )
   const hiddenChosen = chosen.filter((id) => !visible.includes(id)).length
   // Tab reaches one card of the list (the last one focused, else the first); the arrow keys move along it.
@@ -181,11 +216,17 @@ export function CardChoices({
 
   const onFocus = (event: FocusEvent<HTMLElement>): void => {
     const id = candidateOf(event.target)
-    if (id !== null) setLast(id)
+    if (id !== null) {
+      setLast(id)
+      setPointed(id)
+    }
   }
   const onBlur = (event: FocusEvent<HTMLElement>): void => {
     // Focus that stays inside the grid is a move to another card, which shows itself.
-    if (!event.currentTarget.contains(event.relatedTarget)) restore()
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      restore()
+      setPointed(null)
+    }
   }
   const onKeyDown = (event: KeyboardEvent<HTMLElement>): void => {
     if (event.altKey || event.ctrlKey || event.metaKey) return
@@ -200,7 +241,7 @@ export function CardChoices({
     keys
       ? Object.fromEntries(shown.slice(0, 10).map((id, place) => [numberKey(place) ?? '', () => onPress(id)]))
       : {},
-    keys,
+    keys && !hidden,
   )
 
   // The strip draws a long list compact; the overlay draws whole cards at the width its layout picked.
@@ -212,7 +253,8 @@ export function CardChoices({
         key={id}
         ref={place === 0 ? focusFirst : undefined}
         id={id}
-        label={labels.get(id) ?? 'A card'}
+        label={spoken(id)}
+        twin={numbers.get(id)}
         size={size}
         overlay={host !== null}
         badge={badges?.get(id)}
@@ -224,22 +266,33 @@ export function CardChoices({
       />
     )
   }
+  const toggle = onBoard && pick !== null && !hidden ? <PickOnBoardButton pick={pick} /> : null
+  const searchField = filtering ? (
+    <CardSearchField
+      value={filter}
+      onChange={setFilter}
+      shown={visible.length}
+      total={total}
+      hiddenChosen={hiddenChosen}
+      onLeave={() => root.current?.querySelector<HTMLElement>('button[data-candidate]')?.focus()}
+      focusOnOpen={search}
+      className={host === null ? 'min-w-48 flex-1 basis-48' : toggle === null ? 'shrink-0' : 'min-w-0 flex-1'}
+    />
+  ) : null
   let place = 0
   const body = (
     <ChoiceAnchorContext value={root}>
+      {style === '' ? null : <style data-slot="twin-style">{style}</style>}
       {quick}
-      {filtering ? (
-        <CardSearchField
-          value={filter}
-          onChange={setFilter}
-          shown={visible.length}
-          total={total}
-          hiddenChosen={hiddenChosen}
-          onLeave={() => root.current?.querySelector<HTMLElement>('button[data-candidate]')?.focus()}
-          focusOnOpen={search}
-          className={host === null ? 'min-w-48 flex-1 basis-48' : 'shrink-0'}
-        />
-      ) : null}
+      {toggle === null ? (
+        searchField
+      ) : (
+        // Pick on board stands at the end of the search's row, or on a row of its own over the cards.
+        <div data-slot="choice-head" className="flex min-w-0 shrink-0 items-center justify-end gap-2">
+          {searchField}
+          {toggle}
+        </div>
+      )}
       <div
         ref={root}
         role="group"
@@ -251,6 +304,8 @@ export function CardChoices({
         onBlur={onBlur}
         // A pointer that leaves a card for the gap or the edge gives the preview back to the chosen card.
         onPointerOut={restore}
+        onPointerOver={(event) => setPointed(candidateOf(event.target))}
+        onPointerLeave={() => setPointed(null)}
         onKeyDown={onKeyDown}
         style={
           host === null
@@ -330,6 +385,9 @@ export function CardChoices({
       data-slot="choice-overlay"
       data-decision={name}
       data-decision-id={decisionId}
+      data-peek={hidden || undefined}
+      // Hidden, not unmounted: the search and the place of the focus come back with Show choices.
+      hidden={hidden}
       className={cn(
         'plaque flex min-h-0 w-fit min-w-[min(100%,22rem)] flex-col gap-2 rounded-xl border-2 border-brass p-3 shadow-e3',
         room.phone ? 'max-h-full max-w-full' : 'max-h-[80%] max-w-[80%]',
