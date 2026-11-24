@@ -1798,6 +1798,7 @@ Master of Pearls
 Master of the Pearl Trident
 Mastery of the Unseen
 Matca Rioters
+Matoc, Lavamancer
 Maul of the Skyclaves
 Maulfist Squad
 Mausoleum Harpy
@@ -3402,6 +3403,7 @@ Yisan, the Wanderer Bard
 You Cannot Pass!
 Young Wolf
 Youthful Valkyrie
+Yume, Chronicler of Valor
 Yurlok of Scorch Thrash
 Zabaz, the Glimmerwasp
 Zack Fair

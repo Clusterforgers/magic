@@ -132,13 +132,16 @@ fn r120_the_first_charge_counters_of_a_turn_trigger_once(
 }
 
 #[rstest]
-#[case::two_dice_in_one_roll(r#"[{"RollDice":{"sides":6,"dice":2}}]"#, 1)]
-#[case::two_rolls(r#"[{"RollDice":{"sides":6}},{"RollDice":{"sides":20}}]"#, 2)]
+#[case::two_dice_in_one_roll(r#"[{"RollDice":{"sides":6,"dice":2,"results":[]}}]"#, 1)]
+#[case::two_rolls(
+    r#"[{"RollDice":{"sides":6,"results":[]}},{"RollDice":{"sides":20,"results":[]}}]"#,
+    2
+)]
 #[case::a_coin(r#"[{"FlipCoin":{}}]"#, 1)]
-#[case::a_coin_and_a_die(r#"[{"FlipCoin":{}},{"RollDice":{"sides":6}}]"#, 2)]
+#[case::a_coin_and_a_die(r#"[{"FlipCoin":{}},{"RollDice":{"sides":6,"results":[]}}]"#, 2)]
 #[case::two_cards_at_random(r#"[{"Discard":{"count":2,"random":true}}]"#, 1)]
 #[case::a_chosen_discard(r#"[{"Discard":{"count":2}}]"#, 0)]
-#[case::an_opponents_roll(r#"[{"RollDice":{"who":"Opponents","sides":6}}]"#, 0)]
+#[case::an_opponents_roll(r#"[{"RollDice":{"who":"Opponents","sides":6,"results":[]}}]"#, 0)]
 #[case::modes_at_random(
     r#"[{"Modal":{"at_random":true,"modes":[{"effects":[{"Draw":{}}]},{"effects":[{"Mill":{}}]}]}}]"#,
     1
@@ -184,35 +187,37 @@ fn r120_la_forge_counts_the_permanents_you_put_a_counter_on(
     #[case] countered: usize,
     #[case] artifacts: usize,
 ) -> Result<(), ScriptError> {
-    // The sorcery puts a counter on each of the first `countered` artifacts, and on every opponent's artifact.
+    // The sorcery puts a counter on each artifact: the first `countered` of mine, the rest are enchantments, and the
+    // opponent's artifact, which is not mine.
     let test = r120_card(
         "Test",
         CardType::Sorcery,
-        r#"{"Spell":{"effects":[{"PutCounters":{"on":{"Each":[{"Type":"Artifact"},{"Subtype":"Gear"}]},"counter":"charge"}}]}}"#,
+        r#"{"Spell":{"effects":[{"PutCounters":{"on":{"Each":[{"Type":"Artifact"}]},"counter":"charge"}}]}}"#,
     );
     let gear = |name: &str| {
         Arc::new(
             CardDefinition::new(name)
                 .with_type(CardType::Artifact)
-                .with_subtype("Gear")
                 .with_mana_cost(cost(0, &[])),
         )
     };
-    let mine = (0..artifacts).map(|at| {
-        if at < countered {
-            ready(gear(&format!("Gear {at}")))
-        } else {
-            ready(r120_card(
-                &format!("Plain {at}"),
-                CardType::Artifact,
-                r#"{"Keyword":"Flying"}"#,
-            ))
-        }
-    });
+    let la_forge = ready(card("La Forge, Thoughtful as Ever").unwrap());
+    let mine = (0..artifacts)
+        .map(|at| {
+            if at < countered {
+                ready(gear(&format!("Gear {at}")))
+            } else {
+                ready(r120_card(
+                    &format!("Plain {at}"),
+                    CardType::Enchantment,
+                    r#"{"Keyword":"Flying"}"#,
+                ))
+            }
+        })
+        .chain([la_forge]);
     let scenario = r120_table(seats, 10)
         .hand(0, [test])
         .battlefield(0, mine)
-        .battlefield(0, [ready(card("La Forge, Thoughtful as Ever").unwrap())])
         .battlefield(1, [ready(gear("Their Gear"))])
         .at(2, 0, Step::Main1);
     let mut driver = Driver::from_scenario(scenario)?;
@@ -326,8 +331,12 @@ fn r120_yume_gives_the_first_spell_assist_and_a_card_to_each_when_helped(
     };
     let scenario = r120_table(seats, 10)
         .hand(0, [giant("First Giant"), giant("Second Giant")])
-        .battlefield(0, [ready(card("Yume, Chronicler of Valor").unwrap())])
-        .battlefield(0, lands(6, mtg_testkit::cards::swamp))
+        .battlefield(
+            0,
+            lands(6, mtg_testkit::cards::swamp)
+                .into_iter()
+                .chain([ready(card("Yume, Chronicler of Valor").unwrap())]),
+        )
         .battlefield(1, lands(2, forest))
         .at(2, 0, Step::Main1);
     let mut driver = Driver::from_scenario(scenario)?;
