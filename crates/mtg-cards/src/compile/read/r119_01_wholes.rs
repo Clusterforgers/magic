@@ -49,7 +49,14 @@ mod tests {
         let entries: Vec<serde_json::Value> = serde_json::from_str(R119_01_WHOLES).unwrap();
         assert_eq!(R119_01_SHAPES.len(), entries.len());
         for (shape, text) in R119_01_SHAPES.iter() {
-            assert_eq!(r119_01_whole_read(text).as_ref(), Some(shape), "{text}");
+            // Chapters that print one text share it: the text reads as the first of them.
+            let read = r119_01_whole_read(text);
+            assert!(
+                R119_01_SHAPES
+                    .iter()
+                    .any(|(other, wording)| wording == text && read.as_ref() == Some(other)),
+                "{text}"
+            );
             assert!(written_variants(shape).contains(text), "{text}");
         }
     }
@@ -61,7 +68,10 @@ mod tests {
             for (at, digit) in json.char_indices().filter(|(_, c)| c.is_ascii_digit()) {
                 let raised = char::from_digit((digit.to_digit(10).unwrap() + 1) % 10, 10).unwrap();
                 let changed = format!("{}{raised}{}", &json[..at], &json[at + 1..]);
-                if let Ok(near) = serde_json::from_str::<Ability>(&changed) {
+                // Another chapter that prints the same text is an entry of its own.
+                if let Ok(near) = serde_json::from_str::<Ability>(&changed)
+                    && !R119_01_SHAPES.iter().any(|(other, _)| *other == near)
+                {
                     assert!(!written_variants(&near).contains(text), "{changed}");
                 }
             }

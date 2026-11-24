@@ -183,7 +183,6 @@ const MODIFICATIONS: [&str; 36] = [
     r#""CantBlock""#,
     r#""DoesntUntap""#,
     r#""CantBeTurnedFaceUp""#,
-    r#""R119CantBeBeamedUp""#,
     r#""CantBeBlocked""#,
     r#"{"CantBeBlockedBy":[{"Type":"Creature"}]}"#,
     r#"{"CanBlockOnly":[{"HasKeyword":"Flying"}]}"#,
@@ -200,6 +199,7 @@ const MODIFICATIONS: [&str; 36] = [
     r#"{"BlocksAdditionalPer":2}"#,
     r#""R6700KeepsLastLoyalty""#,
     r#"{"R111GainNonManaAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
+    r#""R119CantBeBeamedUp""#,
 ];
 
 /// CR 613.1e, 105.3: adding a colour keeps the colours the object has; a later setting replaces them all.
