@@ -78,7 +78,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (rl1) A deck a seat chooses in the lobby is written into the stored recipe at once, like the teams, so a restart before the start keeps it (a seat made without a deck holds a stand-in until then)
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
-- [ ] (pf9b2) Prompt cards under 76 px wide draw a compact face (name, cost, power and toughness) whole instead of cutting the full face's foot line
 - [ ] (pf9b3) At 1280 × 720 a card prompt's sheet holds its first line and one row of whole cards without scrolling, and more than eight target cards wrap at 1400 × 900
 - [ ] (pf9d2) An eight-seat grid at 1400 × 900 shows a row of each opponent's cards
 - [ ] (pf9d3) Your pod column in boss mode at 1400 × 900 shows all its chips without scrolling
