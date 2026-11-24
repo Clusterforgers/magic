@@ -3930,10 +3930,13 @@ impl Walker<'_> {
             Destination::R6502BattlefieldAs {
                 becomes,
                 r110_counters,
+                r122_typed_counters,
             } => {
                 let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
                 // Counters alone are a return "with X +1/+1 counters on it" that changes nothing else.
-                if !becomes.is_empty() || r110_counters.is_empty() {
+                if !becomes.is_empty()
+                    || (r110_counters.is_empty() && r122_typed_counters.is_empty())
+                {
                     self.at("becomes", |w| w.mods(becomes));
                 }
                 self.r6701_effect_grant = effect_grant;
@@ -3941,6 +3944,15 @@ impl Walker<'_> {
                     self.uses("Effect", "Move.R110AsWithCounters");
                     self.at("r110_counters", |w| {
                         for (_, count) in r110_counters {
+                            w.amount(count);
+                        }
+                    });
+                }
+                if !r122_typed_counters.is_empty() {
+                    self.uses("Effect", "Move.R122TypedCounters");
+                    self.at("r122_typed_counters", |w| {
+                        for (filter, _, count) in r122_typed_counters {
+                            w.selector(filter);
                             w.amount(count);
                         }
                     });
@@ -5625,7 +5637,7 @@ impl Walker<'_> {
             Effect::R6602CreateAttached { who, token, to } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
-                w.at("to", |w| w.reference(to, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Either));
             }
             Effect::CreateToken {
                 who,
@@ -8145,6 +8157,11 @@ impl Walker<'_> {
                     self.problem("only the Equipment itself enters attached");
                 }
                 self.at("to", |w| w.selector(to));
+            }
+            ReplaceBy::R122TappedAndAttacking => {
+                if !matches!(when, ReplaceWhen::Enters { .. }) {
+                    self.problem("only a creature entering enters attacking");
+                }
             }
             ReplaceBy::R114ChooseObject(what) => {
                 if !matches!(

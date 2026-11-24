@@ -178,6 +178,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 only: None,
                 face_down: false,
                 becomes: &[],
+                r122_typed: &[],
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
@@ -213,12 +214,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 only: None,
                 face_down: false,
                 becomes: &[],
+                r122_typed: &[],
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
         Destination::R6502BattlefieldAs {
             becomes,
             r110_counters,
+            r122_typed_counters,
         } => {
             let becomes = super::r6502_enters_as::lowered(cx, becomes)?;
             // "with X additional +1/+1 counters on it": the counters are counted as the cards move (CR 122.6).
@@ -227,9 +230,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 let count = u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
                 counters.push((kind.clone(), count));
             }
+            let mut typed = Vec::new();
+            for (filter, kind, count) in r122_typed_counters {
+                let count = u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(u32::MAX);
+                typed.push((filter.clone(), kind.clone(), count));
+            }
             let entry = Entry {
                 counters: &counters,
                 becomes: &becomes,
+                r122_typed: &typed,
                 ..Entry::plain()
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
@@ -268,6 +277,8 @@ struct Entry<'a> {
     face_down: bool,
     /// What it is from the moment it enters (`Destination::R6502BattlefieldAs`).
     becomes: &'a [crate::effects::Modification],
+    /// Counters each card enters with only when it matches the selector (`r122_typed_counters`), counted already.
+    r122_typed: &'a [(Selector, CounterKind, u32)],
 }
 
 impl Entry<'_> {
@@ -282,6 +293,7 @@ impl Entry<'_> {
             only: None,
             face_down: false,
             becomes: &[],
+            r122_typed: &[],
         }
     }
 
@@ -373,6 +385,7 @@ fn onto_battlefield(
         only,
         face_down,
         becomes,
+        r122_typed,
     } = *entry;
     let mut made = 0u64;
     let mut questions = Questions::new(cx);
@@ -464,7 +477,18 @@ fn onto_battlefield(
             });
         }
         // The counters it enters with are proposed with the move too, for the new object the card becomes (CR 400.7).
-        for (kind, count) in counters {
+        // A counter a selector names comes only to a card it matches as it is before it moves.
+        let mut typed = Vec::new();
+        for (filter, kind, count) in r122_typed {
+            if cx
+                .scope
+                .selects(filter, object.reference())
+                .map_err(Stop::from)?
+            {
+                typed.push((kind.clone(), *count));
+            }
+        }
+        for (kind, count) in counters.iter().chain(typed.iter()) {
             if let Ok(delta) = i32::try_from(*count)
                 && delta > 0
             {

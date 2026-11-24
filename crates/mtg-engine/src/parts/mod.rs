@@ -126,6 +126,8 @@ pub(crate) struct Pick {
     /// One or more are picked whose mana values add up to exactly `count` ("Exile one or more other artifacts you
     /// control with total mana value X").
     pub(crate) r6702_total: bool,
+    /// A crew cost: a creature that crews as though its power were greater counts for more (`CostItem::TapPower`).
+    pub(crate) r122_crew: bool,
 }
 
 /// One part of a cost the engine pays besides `{T}`, mana and the loss of the source.
@@ -276,6 +278,7 @@ fn pick(
             alike: None,
             up_to: false,
             r6702_total: false,
+            r122_crew: false,
         }),
         x || reads_x,
     ))
@@ -337,7 +340,11 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
         CostItem::OthersGainLife(amount) => (Part::OthersGainLife(*amount), false),
         CostItem::OpponentGainsLife(amount) => (Part::OpponentGainsLife(*amount), false),
         CostItem::GetPoison(amount) => (Part::Poison(*amount), false),
-        CostItem::TapPower { filter, power } => {
+        CostItem::TapPower {
+            filter,
+            power,
+            r122_crew,
+        } => {
             let count = usize::try_from(*power).unwrap_or(usize::MAX);
             let kind = Kind::TapPower;
             let filter = filter.clone();
@@ -350,6 +357,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     alike: None,
                     up_to: false,
                     r6702_total: false,
+                    r122_crew: *r122_crew,
                 }),
                 false,
             )
@@ -363,6 +371,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 alike: None,
                 up_to: false,
                 r6702_total: true,
+                r122_crew: false,
             }),
             true,
         ),
@@ -375,6 +384,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 alike: None,
                 up_to: true,
                 r6702_total: false,
+                r122_crew: false,
             }),
             false,
         ),
@@ -387,6 +397,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 alike: None,
                 up_to: false,
                 r6702_total: false,
+                r122_crew: false,
             }),
             true,
         ),
@@ -403,6 +414,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     alike: None,
                     up_to: false,
                     r6702_total: false,
+                    r122_crew: false,
                 }),
                 false,
             )
@@ -416,6 +428,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 alike: None,
                 up_to: false,
                 r6702_total: false,
+                r122_crew: false,
             }),
             false,
         ),
@@ -428,6 +441,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 alike: None,
                 up_to: false,
                 r6702_total: false,
+                r122_crew: false,
             }),
             false,
         ),
@@ -445,6 +459,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     alike: None,
                     up_to: false,
                     r6702_total: false,
+                    r122_crew: false,
                 }),
                 x,
             )
@@ -489,6 +504,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                     alike: None,
                     up_to: false,
                     r6702_total: false,
+                    r122_crew: false,
                 }),
                 false,
             )
@@ -939,7 +955,13 @@ impl Part {
             } => among::payable(payer, filter, counter.as_ref(), *count).then(Vec::new),
             Part::Pick(pick) if pick.kind == Kind::TapPower => {
                 let power = u32::try_from(pick.count).unwrap_or(u32::MAX);
-                tap::enough(payer.state, pick.candidates(payer), power, spare)
+                tap::enough(
+                    payer.state,
+                    pick.candidates(payer),
+                    power,
+                    spare,
+                    pick.r122_crew,
+                )
             }
             // Cards of one graveyard: the first owner who has enough of them.
             Part::Pick(pick) if pick.alike == Some(mtg_cards::cost::Alike::R112SameOwner) => {
@@ -1294,7 +1316,7 @@ impl Pick {
             return groups.len() < self.count;
         }
         match self.kind {
-            Kind::TapPower => usize::try_from(tap::total_power(state, candidates))
+            Kind::TapPower => usize::try_from(tap::total_power(state, candidates, self.r122_crew))
                 .is_ok_and(|total| total < self.count),
             Kind::Evidence | Kind::R6703TotalValue => {
                 usize::try_from(evidence::total_value(state, candidates))
@@ -1437,7 +1459,7 @@ impl Pick {
         }
         match self.kind {
             Kind::TapPower => {
-                let got = tap::total_power(state, picked);
+                let got = tap::total_power(state, picked, self.r122_crew);
                 (got < needed).then_some(IllegalAnswer::TooLittlePower { needed, got })
             }
             Kind::Evidence | Kind::R6703TotalValue => {

@@ -888,6 +888,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::RevealOrTapped(_)
         | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::R109EntersAttached(_)
+        | ReplaceBy::R122TappedAndAttacking
         | ReplaceBy::R612MayExchangeTextBoxes(_)
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
@@ -967,6 +968,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::AsEntersWith { .. }
                 | ReplaceBy::ChooseAfter { .. }
                 | ReplaceBy::R109EntersAttached(_)
+                | ReplaceBy::R122TappedAndAttacking
                 | ReplaceBy::R612MayExchangeTextBoxes(_)
                 | ReplaceBy::R114ChooseObject(_)
         )
@@ -3663,6 +3665,12 @@ impl Pass<'_> {
         let tapped = |step: &mut Pass<'_>, at: usize| set_tapped(step, at, true);
         match by {
             ReplaceBy::Tapped => tapped(self, at),
+            ReplaceBy::R122TappedAndAttacking => {
+                tapped(self, at);
+                if let Asked::Ask(decision) = self.r122_attacking(at, source, object, controller)? {
+                    return Ok(Applied::Ask(decision));
+                }
+            }
             ReplaceBy::Untapped => set_tapped(self, at, false),
             ReplaceBy::WithCounters {
                 counter,
@@ -4724,6 +4732,7 @@ mod r113_copy_reflexive;
 mod r113_text_boxes;
 pub(crate) mod r114_choose_object;
 mod r121_02_attach_object;
+mod r122_enters_attacking;
 mod reveal;
 
 mod amplify;

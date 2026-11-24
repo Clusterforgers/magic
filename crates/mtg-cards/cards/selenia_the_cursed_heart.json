@@ -1,0 +1,47 @@
+{
+  "oracle_id": "7126be80-cebc-4868-b39d-8b215410f575",
+  "name": "Selenia, the Cursed Heart",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Selenia, the Cursed Heart",
+      "oracle_fingerprint": "fe3b621efeac29ecd05d044e9ed99b0f",
+      "abilities": [
+        { "Keyword": "Flying" },
+        { "Keyword": "Lifelink" },
+        { "Replacement": { "when": { "LifeGain": {} }, "by": { "Multiply": 2 } } },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "R6602CreateAttached": {
+                  "token": {
+                    "Custom": {
+                      "name": "Selenia's Curse",
+                      "colors": ["Black"],
+                      "supertypes": ["Legendary"],
+                      "types": ["Enchantment"],
+                      "subtypes": ["Aura", "Curse"],
+                      "abilities": [
+                        { "Keyword": { "EnchantPlayer": {} } },
+                        {
+                          "Replacement": {
+                            "when": { "LifeLoss": { "who": "AttachedPlayer" } },
+                            "by": { "LossTimes": 2 }
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "to": { "Target": 0 }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

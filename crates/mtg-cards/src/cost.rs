@@ -134,6 +134,10 @@ pub enum CostItem {
         filter: Selector,
         /// The least total power of the permanents tapped.
         power: u32,
+        /// The cost of a crew ability (CR 702.122a), which a creature that "crews Vehicles as though its power were
+        /// tripled" pays with more; a saddle cost and any other tapping for power leave it unset.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        r122_crew: bool,
     },
     /// Exile cards from the payer's graveyard that match.
     ExileFromGraveyard {

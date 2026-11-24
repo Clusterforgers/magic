@@ -26,6 +26,7 @@ impl KeywordRules for Saddle {
             cost: Cost(vec![CostItem::TapPower {
                 filter: Selector(vec![Pred::Type(CardType::Creature), Pred::Other]),
                 power: *power,
+                r122_crew: false,
             }]),
             timing: Timing::Sorcery,
             condition: None,

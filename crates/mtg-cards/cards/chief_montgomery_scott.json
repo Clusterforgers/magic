@@ -1,0 +1,70 @@
+{
+  "oracle_id": "07f9c121-8a12-4f28-ae89-ec71f073b9ba",
+  "name": "Chief Montgomery Scott",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Chief Montgomery Scott",
+      "oracle_fingerprint": "a8e77535e28fdad69d15a2fd3fe1440e",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{6}" }, "Tap"],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "AnyOf": [{ "Type": "Creature" }, { "Subtype": "Spacecraft" }] }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": {
+                          "R6502BattlefieldAs": {
+                            "becomes": [],
+                            "r122_typed_counters": [
+                              [
+                                [{ "Type": "Creature" }],
+                                "+1/+1",
+                                {
+                                  "Distinct": {
+                                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                    "stat": "Name"
+                                  }
+                                }
+                              ],
+                              [
+                                [{ "Subtype": "Spacecraft" }],
+                                "charge",
+                                {
+                                  "Distinct": {
+                                    "of": [{ "Type": "Land" }, { "ControlledBy": "You" }],
+                                    "stat": "Name"
+                                  }
+                                }
+                              ]
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

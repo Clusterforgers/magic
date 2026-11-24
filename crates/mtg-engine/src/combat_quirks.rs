@@ -160,8 +160,15 @@ pub(crate) fn rmt6_blocks_as_though_reach(
 }
 
 /// What a creature counts for when it is tapped to crew or saddle (CR 702.122): its power, or its toughness when a rule
-/// says so, and the greater amounts rules add to it; never below nothing.
-pub(crate) fn tap_value(state: &GameState, id: ObjectId, power: i32, toughness: i32) -> u32 {
+/// says so, and the greater amounts rules add to it; never below nothing. A crew cost (`crew`) counts its power as many
+/// times as a rule says (`CombatQuirk::R122CrewStationTimes`).
+pub(crate) fn tap_value(
+    state: &GameState,
+    id: ObjectId,
+    power: i32,
+    toughness: i32,
+    crew: bool,
+) -> u32 {
     let quirks = &state.rules().quirks;
     let by_toughness = quirks.has(id, |q| {
         matches!(q, CombatQuirk::TapPower(TapPowerAs::Toughness))
@@ -174,7 +181,13 @@ pub(crate) fn tap_value(state: &GameState, id: ObjectId, power: i32, toughness: 
             })
             .sum()
     });
-    let base = i64::from(if by_toughness { toughness } else { power });
+    let base = if by_toughness {
+        i64::from(toughness)
+    } else if crew {
+        i64::from(power).saturating_mul(r122_power_times(state, id))
+    } else {
+        i64::from(power)
+    };
     u32::try_from((base + more).max(0)).unwrap_or(u32::MAX)
 }
 
@@ -234,7 +247,19 @@ pub(crate) fn assigns_by_toughness(state: &GameState, id: ObjectId) -> bool {
         .has(id, |q| matches!(q, CombatQuirk::AssignsByToughness))
 }
 
-/// Whether a rule makes the creature station permanents using its toughness rather than its power (CR 702.184a).
+/// How many times its power a creature counts for when it crews or stations (`CombatQuirk::R122CrewStationTimes`); 1 without one.
+pub(crate) fn r122_power_times(state: &GameState, id: ObjectId) -> i64 {
+    state.rules().quirks.quirks.get(&id).map_or(1, |held| {
+        held.iter()
+            .map(|q| match q {
+                CombatQuirk::R122CrewStationTimes(times) => i64::from(*times),
+                _ => 1,
+            })
+            .product()
+    })
+}
+
+/// Whether the creature stations using its toughness rather than its power (CR 702.184a).
 pub(crate) fn r6500_stations_by_toughness(state: &GameState, id: ObjectId) -> bool {
     state
         .rules()

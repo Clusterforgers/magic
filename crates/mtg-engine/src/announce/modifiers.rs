@@ -331,7 +331,8 @@ fn cost_modifier(
     }
 }
 
-/// The cost changes of the `NextSpell` rules in force for `caster`: each one is a modifier of the spell it selects.
+/// The cost changes of the `NextSpell` rules in force for `caster`: each one is a modifier of the spell it selects. A
+/// spell given undaunted costs {1} less for each opponent, as one that prints it (CR 702.125a).
 fn next_spell_costs(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec<Modifier> {
     let Some(target) = state
         .object(spell)
@@ -344,11 +345,23 @@ fn next_spell_costs(state: &GameState, spell: ObjectId, caster: PlayerId) -> Vec
         .iter()
         .filter(|effect| effect.controller == caster)
         .filter_map(|effect| {
-            let Rule::NextSpell {
-                what,
-                benefit: SpellBenefit::Cost { change, mana, per },
-            } = &effect.rule
-            else {
+            let undaunted = (
+                CostChange::Reduce,
+                ManaCostX::new(0, ManaCost::from_symbols([ManaSymbol::Generic(1)])),
+                Amount::Players(mtg_cards::refs::Ref::Opponents),
+            );
+            let (change, mana, per) = match &effect.rule {
+                Rule::NextSpell {
+                    benefit: SpellBenefit::Cost { change, mana, per },
+                    ..
+                } => (change, mana, per),
+                Rule::NextSpell {
+                    benefit: SpellBenefit::Keyword(Keyword::Undaunted),
+                    ..
+                } => (&undaunted.0, &undaunted.1, &undaunted.2),
+                _ => return None,
+            };
+            let Rule::NextSpell { what, .. } = &effect.rule else {
                 return None;
             };
             let applies_to = if what.is_empty() {

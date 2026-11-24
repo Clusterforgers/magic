@@ -3095,12 +3095,13 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
 }
 
 /// Whether a rule in force changes the costs of spells (`GameState::possible`): a cost change of the next spell or of
-/// every matching spell for a time.
+/// every matching spell for a time, undaunted given to the next spell among them.
 pub(crate) const fn changes_costs(effect: &RuleEffect) -> bool {
     matches!(
         effect.rule,
         Rule::NextSpell {
-            benefit: mtg_cards::modify::SpellBenefit::Cost { .. },
+            benefit: mtg_cards::modify::SpellBenefit::Cost { .. }
+                | mtg_cards::modify::SpellBenefit::Keyword(mtg_cards::keyword::Keyword::Undaunted),
             ..
         } | Rule::SpellCost { .. }
     )
