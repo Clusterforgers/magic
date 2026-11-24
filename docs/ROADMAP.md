@@ -100,7 +100,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (mb4) The phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
 - [ ] (pf1) `DeckPictures` also lists an opponent's whole deck where its list is public (an unchanged precon, an open-deck house rule), and the tokens a deck can make (`docs/web.md`, Card images)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
-- [ ] (rg1) On a phone the decision bar shows the Stops button whole under a combat declaration, the stack chip beside a take-back and the choice cards of a phone on its side, and `reach.spec.ts` holds those stops on phones too
 - [ ] (rg3) `reach.spec.ts` holds the signed-in pages (Decks, My games, Tournaments, Delves, Settings) on the accounts server
 
 - [ ] Playwright games with corpus decks that ask every decision kind

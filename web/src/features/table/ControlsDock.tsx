@@ -104,7 +104,11 @@ function Dock({ stopsRow }: { stopsRow: boolean }) {
         !phone && 'absolute right-0 bottom-0 max-h-full',
       )}
     >
-      <div data-slot="take-back-slot" className="max-w-full empty:hidden">
+      {/* On a phone the take-backs give way on their line, so the stops and the Stack chip stand beside them. */}
+      <div
+        data-slot="take-back-slot"
+        className={cn('max-w-full empty:hidden', phone && 'min-w-0 flex-[1_1_8rem] [&_button]:max-w-full')}
+      >
         <TakeBackControls />
       </div>
       <div data-slot="yield-slot" className="max-w-full empty:hidden">
@@ -119,6 +123,7 @@ function Dock({ stopsRow }: { stopsRow: boolean }) {
           <StopsDock row={stopsRow && !tight} tuck={tight && form === 'short' ? 'skip' : undefined} />
         )}
       </div>
+      {phone ? <div ref={homes?.setBarLine} data-slot="bar-stack-slot" className="contents" /> : null}
     </div>
   )
   const lower = (

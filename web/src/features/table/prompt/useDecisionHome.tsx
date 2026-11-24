@@ -14,9 +14,12 @@ export interface HomeSlots {
   panel: HTMLElement | null
   dock: HTMLElement | null
   bar: HTMLElement | null
+  /** A phone's line of take-backs and stops, where priority's Stack chip stands beside them. */
+  barLine: HTMLElement | null
   setPanel(element: HTMLElement | null): void
   setDock(element: HTMLElement | null): void
   setBar(element: HTMLElement | null): void
+  setBarLine(element: HTMLElement | null): void
 }
 
 /** Provided by `HomeSlotsProvider` at a table; none elsewhere, where a prompt draws in place. */
@@ -27,9 +30,10 @@ export function HomeSlotsProvider({ phone, children }: { phone: boolean; childre
   const [panel, setPanel] = useState<HTMLElement | null>(null)
   const [dock, setDock] = useState<HTMLElement | null>(null)
   const [bar, setBar] = useState<HTMLElement | null>(null)
+  const [barLine, setBarLine] = useState<HTMLElement | null>(null)
   const value = useMemo<HomeSlots>(
-    () => ({ phone, panel, dock, bar, setPanel, setDock, setBar }),
-    [phone, panel, dock, bar],
+    () => ({ phone, panel, dock, bar, barLine, setPanel, setDock, setBar, setBarLine }),
+    [phone, panel, dock, bar, barLine],
   )
   return <HomeSlotsContext value={value}>{children}</HomeSlotsContext>
 }

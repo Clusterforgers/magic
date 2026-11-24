@@ -131,7 +131,13 @@ const Table = memo(function Table() {
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
   // The opening-hand decision floats in the overlay at every table but a phone's, so the dock keeps its size then.
-  const choice = useChoiceOverlayHost(regions.phone, viewport, true, regions.side !== 'column')
+  const choice = useChoiceOverlayHost(
+    regions.phone,
+    viewport,
+    true,
+    regions.side !== 'column',
+    regions.phone || regions.landscape,
+  )
 
   return (
     <AttackLinesContext value={party}>

@@ -222,7 +222,13 @@
   }
 }
 
-/* Priority in a phone's bar: one line too, so the Stack chip's line above it and the pass controls under it fit the bar. */
+/*
+ * Priority in a phone's bar: one line too, so the line of take-backs, stops and the Stack chip above it and the pass
+ * controls under it fit the bar; it sits on the pass controls.
+ */
+.decision-home[data-home='bar'][data-decision='Priority'] {
+  grid-template-rows: repeat(5, auto);
+}
 .decision-home[data-home='bar'][data-decision='Priority']
   [data-slot='prompt-sentence']
   .prompt-sentence-clamp {

@@ -18,11 +18,6 @@ interface Stop {
   open?: { press: string; shows: string }
   /** Held to every screen of `SCREENS`; the other stops to the `core` ones. */
   every?: true
-  /**
-   * Not held on a phone: there the decision is a bar of one height under the hand, which `decision-home.spec.ts`,
-   * `phone-arrows.spec.ts` and `layout.spec.ts` hold at 390x844.
-   */
-  desk?: true
   /** Shown to an account: the header then has every tab (Decks, My games, Tournaments, Delves, Review cards). */
   account?: true
 }
@@ -70,9 +65,6 @@ const table = (name: string, query: string, open?: Stop['open']): Stop => ({
 /** A table stop held to every screen. */
 const crowded = (name: string, query: string): Stop => ({ ...table(name, query), every: true })
 
-/** A stop held off a phone alone. */
-const desk = (stop: Stop): Stop => ({ ...stop, desk: true })
-
 const dev = (name: string, path: string, ready = 'main h1'): Stop => ({
   name,
   fits: false,
@@ -91,7 +83,7 @@ const PRIORITY = 'seats=4&prompt=priority&turn=you'
 
 const STOPS: readonly Stop[] = [
   crowded('4 seats, your priority', PRIORITY),
-  desk(table('4 seats, a take-back offered', `${PRIORITY}&takeback=1`)),
+  table('4 seats, a take-back offered', `${PRIORITY}&takeback=1`),
   table('4 seats, the table menu open', PRIORITY, {
     press: 'button[aria-label="Table menu"]',
     shows: '[data-slot="popover-content"][data-open]',
@@ -113,13 +105,13 @@ const STOPS: readonly Stop[] = [
     shows: '[data-slot="dialog-content"][data-open]',
   }),
   crowded('the duel board, your priority', 'board=duel&prompt=priority&turn=you'),
-  desk(table('the duel board, declaring attackers', 'board=duel&prompt=attack&turn=you')),
+  table('the duel board, declaring attackers', 'board=duel&prompt=attack&turn=you'),
   crowded('2 seats, the opening hand', 'seats=2&prompt=mulligan'),
-  desk(crowded('4 seats, declaring attackers', 'seats=4&prompt=attack&turn=you')),
+  crowded('4 seats, declaring attackers', 'seats=4&prompt=attack&turn=you'),
   crowded('4 seats, declaring blockers', 'seats=4&prompt=block'),
   table('4 seats, declaring blockers with the side column folded', 'seats=4&prompt=block&side=folded'),
   table('the heavy board, declaring blockers', 'board=heavy&prompt=block'),
-  desk(crowded('4 seats, choosing targets', 'seats=4&prompt=targets')),
+  crowded('4 seats, choosing targets', 'seats=4&prompt=targets'),
   table('4 seats, choosing targets with the side column folded', 'seats=4&prompt=targets&side=folded'),
   table('4 seats, assigning damage', 'seats=4&prompt=damage'),
   table('4 seats, a discard', 'seats=4&prompt=discard'),
@@ -229,9 +221,7 @@ for (const stop of STOPS) {
     }
     const broken: string[] = []
     let judged = 0
-    const held = SCREENS.filter(
-      (one) => (stop.every === true || one.core === true) && !(stop.desk === true && one.phone === true),
-    )
+    const held = SCREENS.filter((one) => stop.every === true || one.core === true)
     for (const screen of held) {
       await show(session, screen)
       await opened(page, stop)
