@@ -1,7 +1,7 @@
 {
   "oracle_id": "9b0c6b77-69df-4330-86a7-8dc4666abd38",
   "name": "Paleontologist's Pick-Axe // Dinosaur Headdress",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Paleontologist's Pick-Axe",
@@ -38,15 +38,21 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 70, "end": 180 }
+          "Replacement": {
+            "when": { "BecomesAttached": { "what": ["This"] } },
+            "by": {
+              "R114ChooseObject": [
+                { "In": "Exile" },
+                { "Type": "Creature" },
+                { "Is": "R6702CraftedWith" }
+              ]
+            }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 181, "end": 233 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [{ "R707CopyOf": { "of": "R114ChosenObject" } }]
           }
         },
         { "Keyword": { "Equip": "{2}" } }

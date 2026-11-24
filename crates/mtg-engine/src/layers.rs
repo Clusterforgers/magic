@@ -869,7 +869,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         Wanted::ChangeTextChosen { .. }
         | Wanted::ChangeTextChosenTo { .. }
         | Wanted::R612ExchangeTextBoxes
-        | Wanted::SetName(_) => Layer::Text,
+        | Wanted::SetName(_)
+        | Wanted::R121SetChosenName => Layer::Text,
         Wanted::AddType(_)
         | Wanted::RemoveType(_)
         | Wanted::SetTypes(_)

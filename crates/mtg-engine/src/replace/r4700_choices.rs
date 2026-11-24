@@ -16,6 +16,21 @@ use crate::object::Chosen;
 /// The abilities `EntersChoice::R6001Abilities` chooses among, as the card words them.
 pub(crate) const R6001_ABILITIES: [&str; 3] = ["first strike", "vigilance", "lifelink"];
 
+/// Whether the kind is a choice of several values that `r4700_chooses` asks.
+pub(super) const fn r4700_several(kind: EntersChoice) -> bool {
+    matches!(
+        kind,
+        EntersChoice::Colors(_)
+            | EntersChoice::ColorAndCreatureType
+            | EntersChoice::Players(_)
+            | EntersChoice::R6001Abilities(_)
+            | EntersChoice::R111OpponentAndName
+            | EntersChoice::R111NamesWithOpponent
+            | EntersChoice::R115ColorAndOpponent
+            | EntersChoice::R121CreatureNameAndType
+    )
+}
+
 impl Pass<'_> {
     /// What `controller` chooses for a choice of several values as the card enters; nothing for any other kind.
     pub(super) fn r4700_chooses(
@@ -103,6 +118,7 @@ impl Pass<'_> {
                 }
                 Ok(Asked::Got(Some(Chosen::Players(chosen))))
             }
+            EntersChoice::R121CreatureNameAndType => self.r121_name_and_type(source, controller),
             EntersChoice::R115ColorAndOpponent => self.r115_color_and_opponent(source, controller),
             EntersChoice::R6001Abilities(count) => self.r6001_abilities(source, controller, count),
             EntersChoice::R111OpponentAndName | EntersChoice::R111NamesWithOpponent => {
@@ -110,6 +126,38 @@ impl Pass<'_> {
             }
             _ => Ok(Asked::Got(None)),
         }
+    }
+
+    /// A creature card name, then a creature type ("choose a creature card name and a creature type"), remembered
+    /// together; nothing when either is left unchosen.
+    fn r121_name_and_type(
+        &mut self,
+        source: ObjectId,
+        controller: PlayerId,
+    ) -> Result<Asked<Option<Chosen>>, EngineError> {
+        let kind = EntersChoice::R121CreatureNameAndType;
+        let name = match self.r4702_chooses_name(source, controller, kind, Vec::new())? {
+            Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+            Asked::Got(Some(Chosen::Name(name))) => Some(name),
+            Asked::Got(_) => None,
+        };
+        let types = crate::choose::values::creature_types();
+        let picked = match self.r4700_pick(
+            source,
+            controller,
+            types.clone(),
+            "Choose a creature type.".to_owned(),
+        )? {
+            Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+            Asked::Got(at) => at.and_then(|at| types.get(at).cloned()),
+        };
+        let subtype = match picked {
+            Some(ChoiceOption::Label(name)) => Some(Subtype(name)),
+            _ => None,
+        };
+        Ok(Asked::Got(name.zip(subtype).map(|(name, subtype)| {
+            Chosen::R121NameAndType(name, subtype)
+        })))
     }
 
     /// A colour, then an opponent of `controller` ("choose a color and an opponent"), remembered together.

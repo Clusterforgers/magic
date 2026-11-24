@@ -249,6 +249,7 @@ fn name(
                 noncreature: false,
                 nonbasic_land: false,
                 r111_not_basic_land: false,
+                r121_creature: false,
                 looked: Vec::new(),
             }),
         })),

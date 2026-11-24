@@ -1,0 +1,36 @@
+{
+  "oracle_id": "9bf498ce-6d6d-462f-9ec3-b36a2184aff7",
+  "name": "C.A.M.P.",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "C.A.M.P.",
+      "oracle_fingerprint": "dddf80df1f1dc1dd2fbd46d9fc30ea0e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Is": "Attached" }] } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": ["R121SharesColorWithMade"]
+                    }
+                  },
+                  "then": [{ "CreateToken": { "token": { "Named": "junk" } } }]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Fortify": "{3}" } }
+      ]
+    }
+  ]
+}

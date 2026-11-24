@@ -503,7 +503,7 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
-    /// The visit ability of an Attraction (CR 702.159a, "Visit — "): its controller rolls to visit their Attractions and
+    /// The visit ability of an Attraction (CR 702.159a, "Visit â "): its controller rolls to visit their Attractions and
     /// the result is a number lit up on the source; `Triggering` is that player.
     Visit {},
     /// A player rolls to visit their Attractions ("whenever you roll to visit your Attractions", CR 701.52);
@@ -526,7 +526,7 @@ pub enum TriggerPattern {
         )]
         who: Ref,
     },
-    /// The prize ability of an Attraction ("Prize — "): its controller claims the prize of the source; `Triggering` is
+    /// The prize ability of an Attraction ("Prize â "): its controller claims the prize of the source; `Triggering` is
     /// that player.
     Prize {},
     /// A campaign phase begins ("when this phase begins"): the source is the emblem that the phase just put in its
@@ -1150,8 +1150,8 @@ pub enum ReplaceWhen {
         what: Selector,
     },
     /// An Aura, Equipment or Fortification matching the selector would become attached to a permanent (CR 701.3): "As
-    /// this Equipment becomes attached to a creature, choose a color." Only `Choose`; one attached again to the same
-    /// permanent does not become attached, so nothing is chosen anew.
+    /// this Equipment becomes attached to a creature, choose a color." Only `Choose` or `R114ChooseObject`; one attached
+    /// again to the same permanent does not become attached, so nothing is chosen anew.
     BecomesAttached {
         /// The attachment.
         what: Selector,
@@ -1282,6 +1282,9 @@ pub enum EntersChoice {
     /// This many different abilities from among first strike, vigilance, and lifelink ("choose two abilities from among
     /// first strike, vigilance, and lifelink"), read by `Modification::R6001AddChosenAbilities`.
     R6001Abilities(u32),
+    /// A creature card name and a creature type, chosen together ("choose a creature card name and a creature type"):
+    /// read by `Modification::R121SetChosenName` and `Modification::AddChosenSubtype`.
+    R121CreatureNameAndType,
     /// A number from `min` to `max`.
     Number {
         /// The smallest number.
@@ -1360,6 +1363,9 @@ pub enum ReplaceBy {
     /// Up to this many of the damage in all, counted as the shield begins ("prevent the next X damage", CR 611.2c); only
     /// a shield uses it.
     PreventCounted(Amount),
+    /// Up to this many of the damage of the next damage event it covers, counted as the shield begins, is prevented, and
+    /// the shield ends ("This Aura deals 2 damage to that player. Prevent X of that damage"); only a shield uses it.
+    R121PreventCountedNext(Amount),
     /// Up to `most` of the damage in all, counted as the shield begins, is prevented, and the effects follow each event
     /// it lessens, reading the damage prevented from it as the amount of the event (`Amount::Triggering`): "prevent the
     /// next 3 damage ... You gain life equal to the damage prevented this way"; only a shield uses it.
@@ -1537,7 +1543,8 @@ pub enum ReplaceBy {
     R612MayExchangeTextBoxes(Selector),
     /// As the permanent enters, its controller chooses a permanent on the battlefield the selector names, which the
     /// permanent remembers as the object it was then (`Ref::R114ChosenObject`, CR 614.1c): "As this Aura enters, choose a
-    /// creature." Only `Enters` of itself.
+    /// creature." Only `Enters` of itself, or its `BecomesAttached`, where any object the selector names may be chosen,
+    /// in any zone, and the newer choice replaces the older.
     R114ChooseObject(Selector),
     /// As the permanent transforms into this face, an Aura with enchant player, its controller attaches it to a player of
     /// their choice (CR 303.4f, 701.28, 614.1c): "As this permanent transforms into ~, attach it to a player." Only
@@ -1809,6 +1816,7 @@ impl ShieldShape {
                 | ReplaceBy::PreventAllButNext(_)
                 | ReplaceBy::PreventUpTo(_)
                 | ReplaceBy::PreventCounted(_)
+                | ReplaceBy::R121PreventCountedNext(_)
                 | ReplaceBy::PreventCountedAnd { .. }
                 | ReplaceBy::PreventAnd(_)
                 | ReplaceBy::Multiply(_)

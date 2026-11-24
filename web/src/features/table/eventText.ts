@@ -98,6 +98,10 @@ function chosenWords(chosen: Chosen, n: EventNames): string {
     return `, choosing ${n.seat(seat)} and ${name}`
   }
   if ('R111Names' in chosen) return `, choosing ${joinWords(chosen.R111Names)}`
+  if ('R121NameAndType' in chosen) {
+    const [name, type] = chosen.R121NameAndType
+    return `, choosing ${name} and ${type}`
+  }
   if ('R115ColorAndPlayer' in chosen) {
     const [color, seat] = chosen.R115ColorAndPlayer
     return `, choosing ${color.toLowerCase()} and ${n.seat(seat)}`

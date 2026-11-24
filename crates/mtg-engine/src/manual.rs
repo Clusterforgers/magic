@@ -1086,7 +1086,9 @@ fn made_tokens(
                 blocking: None,
                 definition: Arc::clone(definition),
             });
-            std::iter::once(created).chain(crate::r371_token_loyalty::entering(object, definition))
+            std::iter::once(created)
+                .chain(crate::r371_token_loyalty::entering(object, definition))
+                .chain(crate::saga::r121_token_entering(object, definition))
         })
         .collect()
 }

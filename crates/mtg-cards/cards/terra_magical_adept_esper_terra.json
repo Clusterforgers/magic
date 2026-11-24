@@ -1,7 +1,7 @@
 {
   "oracle_id": "54ca5904-9099-497a-9684-101656025487",
   "name": "Terra, Magical Adept // Esper Terra",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Terra, Magical Adept",
@@ -51,9 +51,165 @@
       "oracle_fingerprint": "4b8e0de75cfb6324ec7c7e05f7290182",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 68, "end": 279 }
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "Type": "Enchantment" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "tokens" }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tokens" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "tokens" },
+                      "selector": [{ "Subtype": "Saga" }]
+                    }
+                  },
+                  "then": [
+                    { "ChooseValue": { "kind": { "Number": [0, 3] }, "as": "lore" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "tokens" },
+                        "counter": { "Other": "lore" },
+                        "count": { "ChosenAs": "lore" }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "tokens" } }] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "Type": "Enchantment" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "tokens" }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tokens" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "tokens" },
+                      "selector": [{ "Subtype": "Saga" }]
+                    }
+                  },
+                  "then": [
+                    { "ChooseValue": { "kind": { "Number": [0, 3] }, "as": "lore" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "tokens" },
+                        "counter": { "Other": "lore" },
+                        "count": { "ChosenAs": "lore" }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "tokens" } }] } }]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "Not": { "Supertype": "Legendary" } },
+                    { "Type": "Enchantment" },
+                    { "ControlledBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "CreateToken": { "token": { "CopyOf": { "of": { "Target": 0 } } }, "as": "tokens" }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "tokens" },
+                  "mods": [{ "AddKeyword": "Haste" }],
+                  "duration": "Forever"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Bound": "tokens" },
+                      "selector": [{ "Subtype": "Saga" }]
+                    }
+                  },
+                  "then": [
+                    { "ChooseValue": { "kind": { "Number": [0, 3] }, "as": "lore" } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "tokens" },
+                        "counter": { "Other": "lore" },
+                        "count": { "ChosenAs": "lore" }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End", "whose": "You" } },
+                  "effects": [{ "Sacrifice": { "filter": [{ "Is": { "Bound": "tokens" } }] } }]
+                }
+              }
+            ]
           }
         },
         {

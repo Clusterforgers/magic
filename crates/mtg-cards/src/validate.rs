@@ -96,6 +96,7 @@ fn prevents_in_part(by: &ReplaceBy) -> bool {
             | ReplaceBy::R110MayPreventAmount(_)
             | ReplaceBy::PreventAtMost(_)
             | ReplaceBy::PreventCounted(_)
+            | ReplaceBy::R121PreventCountedNext(_)
             | ReplaceBy::PreventCountedAnd { .. }
             | ReplaceBy::PreventHalf
             | ReplaceBy::PreventAllBut(_)
@@ -1220,6 +1221,7 @@ impl<'a> Walker<'a> {
             | Pred::HasAnyCounter
             | Pred::ChosenColor
             | Pred::R112SharesColorWithSpent
+            | Pred::R121SharesColorWithMade
             | Pred::CanEnchantSource
             | Pred::XInCost
             | Pred::PhyrexianInCost
@@ -2258,6 +2260,10 @@ impl<'a> Walker<'a> {
                         w.uses("Cost", "XIs");
                         w.at("XIs", |w| w.amount(amount));
                     }
+                    CostItem::R121XIsPerOpponent(filter) => {
+                        w.uses("Cost", "R121XIsPerOpponent");
+                        w.at("R121XIsPerOpponent", |w| w.selector(filter));
+                    }
                     CostItem::R114RollDie(sides) => {
                         if *sides < 2 {
                             w.problem("a die has at least two sides");
@@ -3192,6 +3198,7 @@ impl<'a> Walker<'a> {
             | Modification::SetChosenColor
             | Modification::AddChosenColor
             | Modification::R6001AddChosenAbilities
+            | Modification::R121SetChosenName
             | Modification::SetLandTypesNthChosen(_) => {
                 if !self.scope.in_static {
                     self.problem(
@@ -6153,9 +6160,13 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.effect_list("effects", effects, false);
             }
-            Effect::PayAnyTimes { who, cost } => {
+            Effect::PayAnyTimes { who, cost, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
+                if let Some(bind) = bind {
+                    w.at("as", |w| w.bind(bind, Kind::Either));
+                    w.scope.numbers.insert(bind.clone());
+                }
                 if cost
                     .0
                     .iter()
@@ -7614,11 +7625,15 @@ impl Walker<'_> {
         if matches!(when, ReplaceWhen::BecomesAttached { .. })
             && !matches!(
                 by,
-                ReplaceBy::Choose(EntersChoice::Color | EntersChoice::CreatureType)
+                ReplaceBy::Choose(
+                    EntersChoice::Color
+                        | EntersChoice::CreatureType
+                        | EntersChoice::R121CreatureNameAndType
+                ) | ReplaceBy::R114ChooseObject(_)
             )
         {
             self.problem(
-                "an attachment chooses only a color or a creature type as it becomes attached",
+                "an attachment chooses only a color, a creature type, a creature card name with a creature type, or an object as it becomes attached",
             );
         }
         if matches!((when, by), (ReplaceWhen::Scries { .. }, ReplaceBy::Add(_))) {
@@ -7721,6 +7736,11 @@ impl Walker<'_> {
                 // The effects run as each damage event is lessened, reading the targets fixed as the shield began.
                 self.w9c_prevent_and(when, effects);
             }
+            ReplaceBy::R121PreventCountedNext(amount)
+                if matches!(when, ReplaceWhen::Damage { .. }) =>
+            {
+                self.at("R121PreventCountedNext", |w| w.amount(amount));
+            }
             ReplaceBy::Redirect { to, .. } => self.r6f_redirect(when, 1, to),
             ReplaceBy::Plus(effects) => self.ep21_plus(when, effects),
             _ => {}
@@ -7738,6 +7758,7 @@ impl Walker<'_> {
                 | ReplaceBy::RedirectCounted { .. }
                 | ReplaceBy::Redirect { .. }
                 | ReplaceBy::PreventCounted(_)
+                | ReplaceBy::R121PreventCountedNext(_)
                 | ReplaceBy::PreventCountedAnd { .. }
                 | ReplaceBy::PreventHalfNext
                 | ReplaceBy::PreventAllButNext(_)
@@ -8117,8 +8138,14 @@ impl Walker<'_> {
                 self.at("to", |w| w.selector(to));
             }
             ReplaceBy::R114ChooseObject(what) => {
-                if !matches!(when, ReplaceWhen::Enters { what } if *what == Selector::this()) {
-                    self.problem("only the permanent itself chooses an object as it enters");
+                if !matches!(
+                    when,
+                    ReplaceWhen::Enters { what } | ReplaceWhen::BecomesAttached { what }
+                        if *what == Selector::this()
+                ) {
+                    self.problem(
+                        "only the permanent itself chooses an object as it enters or becomes attached",
+                    );
                 }
                 self.at("what", |w| w.selector(what));
             }

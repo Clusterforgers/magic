@@ -118,6 +118,7 @@ impl Pass<'_> {
                         noncreature: false,
                         nonbasic_land: false,
                         r111_not_basic_land: true,
+                        r121_creature: false,
                         looked: Vec::new(),
                     }),
                 }));

@@ -40,6 +40,7 @@ mod r110_cast_choice;
 mod r110_chosen_number;
 mod r114_sticker_kick;
 mod r115_cost_choice;
+mod r121_02_x_per_opponent;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;

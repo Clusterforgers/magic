@@ -541,6 +541,9 @@ pub enum Pred {
     /// Shares a color with the mana spent to pay the activation cost of the ability resolving ("a source of your choice
     /// that shares a color with the mana spent on this activation cost"); colorless mana shares none.
     R112SharesColorWithSpent,
+    /// Shares a color with the mana the permanent tapped for mana made, in the ability that tapping triggered ("If that
+    /// creature shares a color with the mana that land produced"); colorless mana shares none.
+    R121SharesColorWithMade,
     /// Has the creature type the controller of the source chose as the source entered the battlefield; in a landwalk the land type.
     ChosenSubtype,
     /// Has the land type at this place among the basic land types the controller of the source chose as it entered

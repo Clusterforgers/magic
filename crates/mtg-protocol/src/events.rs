@@ -1651,6 +1651,7 @@ mod tests {
                 event: None,
                 ability: None,
                 r115_causer: None,
+                r121_made: Vec::new(),
             },
             snapshot: snapshot(&t.state, t.creature).unwrap(),
             delayed: None,

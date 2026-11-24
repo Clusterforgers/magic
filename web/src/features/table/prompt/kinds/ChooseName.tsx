@@ -14,12 +14,13 @@ import { useDefaultFocus } from '../usePromptKeys'
 /** How long typing pauses before the catalog is searched. */
 const SEARCH_DELAY_MS = 250
 
-/** What the card lets be named: no land ("nonland"), no creature ("noncreature"), only a land that is not basic, or no basic land. */
+/** What the card lets be named: no land ("nonland"), no creature ("noncreature"), only a land that is not basic, no basic land, or only a creature. */
 export interface NameKinds {
   nonland?: boolean
   noncreature?: boolean
   nonbasic_land?: boolean
   r111_not_basic_land?: boolean
+  r121_creature?: boolean
 }
 
 /** The hits that may be named under the kinds the card says. */
@@ -30,6 +31,7 @@ export function nameable(hits: CardHit[], kinds: NameKinds): CardHit[] {
     if (kinds.noncreature === true && /\bCreature\b/.test(hit.type_line)) return false
     if (kinds.nonbasic_land === true && (!land || /\bBasic\b/.test(hit.type_line))) return false
     if (kinds.r111_not_basic_land === true && land && /\bBasic\b/.test(hit.type_line)) return false
+    if (kinds.r121_creature === true && !/\bCreature\b/.test(hit.type_line)) return false
     return true
   })
 }
@@ -53,6 +55,7 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
   const noncreature = options.noncreature === true
   const nonbasicLand = options.nonbasic_land === true
   const notBasicLand = options.r111_not_basic_land === true
+  const creature = options.r121_creature === true
   // The hand looked at just before naming ("look at an opponent's hand, then choose any card name"), each name once.
   const looked = useMemo(() => [...new Set(options.looked ?? [])], [options.looked])
 
@@ -73,6 +76,7 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
               noncreature,
               nonbasic_land: nonbasicLand,
               r111_not_basic_land: notBasicLand,
+              r121_creature: creature,
             }).slice(0, 8),
           )
         },
@@ -85,7 +89,7 @@ export const ChooseNamePrompt: PromptComponent<'ChooseName'> = ({ options }) => 
       clearTimeout(timer)
       controller.abort()
     }
-  }, [api, typed, nonland, noncreature, nonbasicLand, notBasicLand])
+  }, [api, typed, nonland, noncreature, nonbasicLand, notBasicLand, creature])
 
   const name = (card: string): void => void answer({ ChooseName: card })
   const submit = (event: FormEvent): void => {

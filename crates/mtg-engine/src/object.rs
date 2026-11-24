@@ -98,6 +98,8 @@ pub enum Chosen {
     R111Names(Vec<String>),
     /// A colour and a player chosen together ("choose a color and an opponent").
     R115ColorAndPlayer(mtg_core::color::Color, PlayerId),
+    /// A creature card name and a creature type chosen together ("choose a creature card name and a creature type").
+    R121NameAndType(String, mtg_core::card::Subtype),
     /// The chapter a Saga with read ahead entered at (CR 702.155): lower chapters don't trigger.
     Chapter(u32),
 }

@@ -330,6 +330,10 @@ pub enum CostItem {
     /// (CR 107.3c, 601.2b): no player chooses it ("X is the number of pin counters on this artifact"); pays nothing
     /// itself. A spell holds it as a required `AdditionalCost`.
     XIs(crate::value::Amount),
+    /// "X is the number of artifact and/or creature cards in an opponent's graveyard as you cast this spell" (CR 107.3c,
+    /// 601.2b): the caster picks the opponent as X is fixed, so X is the number of cards the selector names in the
+    /// graveyard of one opponent of their choice; pays nothing itself. A spell holds it as a required `AdditionalCost`.
+    R121XIsPerOpponent(crate::refs::Selector),
     /// "As an additional cost to cast this spell, choose a creature type." (CR 601.2b): the caster chooses the value as the
     /// spell is announced; it pays nothing itself. The spell and the permanent it becomes read it as the value the source
     /// chose (`Pred::ChosenSubtype`). Only a spell holds it, as a required `AdditionalCost`.
