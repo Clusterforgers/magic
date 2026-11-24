@@ -16,7 +16,7 @@ use mtg_engine::decision::{Answer, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{bear, cost, creature, instant, island, pinger, plains, walker};
+use mtg_testkit::cards::{cost, creature, instant, island, pinger, plains, walker};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ready};
 use rstest::rstest;
@@ -41,8 +41,10 @@ fn libraries(scenario: Scenario, seats: usize) -> Scenario {
 
 /// Passes and answers passively until a decision of `kind` comes, which is returned.
 fn until(driver: &mut Driver, kind: &str) -> mtg_engine::decision::Decision {
+    let mut seen = Vec::new();
     for _ in 0..300 {
         let decision = driver.decision().unwrap().clone();
+        seen.push(decision.kind.name());
         if decision.kind.name() == kind {
             return decision;
         }
@@ -53,7 +55,7 @@ fn until(driver: &mut Driver, kind: &str) -> mtg_engine::decision::Decision {
         };
         driver.answer(answer).unwrap();
     }
-    panic!("no {kind} came");
+    panic!("no {kind} came: {seen:?}");
 }
 
 fn names_on_battlefield(driver: &Driver, seat: usize) -> Vec<String> {
@@ -64,7 +66,7 @@ fn names_on_battlefield(driver: &Driver, seat: usize) -> Vec<String> {
         .filter_map(|id| driver.state().object(*id))
         .filter(|object| object.controller() == PlayerId(u64::try_from(seat).unwrap()))
         .map(|object| object.card().name.clone())
-        .filter(|name| name == "Bear" || name == "Giant")
+        .filter(|name| ["Bear", "Cub", "Giant"].contains(&name.as_str()))
         .collect();
     names.sort();
     names
@@ -80,33 +82,44 @@ fn glyphbridge_keeps_one_small_creature_of_each_player(
     for seat in 0..seats {
         let mut mine = vec![giant()];
         if !(last_has_none && seat == seats - 1) {
-            mine.push(ready(bear()));
+            mine.push(ready(creature("Bear", 0, &[], 2, 2)));
         }
         if seat == 0 {
+            // Seat 0 has two to choose between, so the choice is asked.
+            mine.push(ready(creature("Cub", 0, &[], 1, 1)));
             mine.extend((0..5).map(|_| ready(plains())));
         }
         scenario = scenario.battlefield(seat, mine);
     }
     let scenario = scenario.hand_named(0, ["Unstable Glyphbridge // Sandswirl Wanderglyph"]);
     let mut driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
-    driver
-        .cast("Unstable Glyphbridge // Sandswirl Wanderglyph")
-        .unwrap();
+    driver.cast("Unstable Glyphbridge").unwrap();
     let decision = until(&mut driver, "choose-cards");
     let DecisionKind::ChooseCards(options) = &decision.kind else {
         unreachable!()
     };
     let holders = if last_has_none { seats - 1 } else { seats };
     assert_eq!(options.min as usize, holders);
-    let bears: Vec<ObjectId> = options.from.clone();
-    assert_eq!(bears.len(), holders, "only the creatures with power 2 or less");
-    // Two creatures of one player are not a choice for each player.
-    let two_of_one = driver
-        .answer(Answer::ChooseCards(CardsChoice(vec![bears[0], bears[0]])));
-    assert!(two_of_one.is_err());
-    driver
-        .answer(Answer::ChooseCards(CardsChoice(bears)))
+    assert_eq!(options.from.len(), holders + 1, "only the creatures with power 2 or less");
+    let mine = |id: &ObjectId| driver.state().object(*id).unwrap().controller() == PlayerId(0);
+    let (seat_zero, others): (Vec<ObjectId>, Vec<ObjectId>) = options.from.iter().copied().partition(mine);
+    let cub = seat_zero
+        .iter()
+        .copied()
+        .find(|id| driver.state().object(*id).unwrap().card().name == "Cub")
         .unwrap();
+    if let Some(other) = others.first() {
+        // Seat 0's Bear and Cub are two of one player, not one of each.
+        let mut two_of_one = seat_zero.clone();
+        two_of_one.extend(others.iter().copied().filter(|id| id != other));
+        assert!(
+            driver
+                .answer(Answer::ChooseCards(CardsChoice(two_of_one)))
+                .is_err()
+        );
+    }
+    let kept: Vec<ObjectId> = std::iter::once(cub).chain(others).collect();
+    driver.answer(Answer::ChooseCards(CardsChoice(kept))).unwrap();
     until(&mut driver, "priority");
     while !driver.state().stack().is_empty() {
         driver.pass().unwrap();
@@ -115,7 +128,7 @@ fn glyphbridge_keeps_one_small_creature_of_each_player(
         let kept = if last_has_none && seat == seats - 1 {
             Vec::<String>::new()
         } else {
-            vec!["Bear".to_owned()]
+            vec![if seat == 0 { "Cub" } else { "Bear" }.to_owned()]
         };
         assert_eq!(names_on_battlefield(&driver, seat), kept, "seat {seat}");
     }
@@ -135,7 +148,7 @@ fn wanderglyph_table(seats: usize) -> Driver {
     let scenario = Scenario::new(seats)
         .at(2, 1, Step::Main1)
         .battlefield(0, [ready(Arc::new(glyph)), ready(walker("Jace", 3))])
-        .battlefield(1, [ready(bear()), ready(creature("Giant", 0, &[], 3, 3))])
+        .battlefield(1, [ready(creature("Bear", 0, &[], 2, 2)), ready(creature("Giant", 0, &[], 3, 3))])
         .hand(1, [instant("Shock", 0, &[]), instant("Bolt", 0, &[])]);
     Driver::from_scenario(libraries(scenario, seats)).unwrap()
 }
@@ -199,7 +212,7 @@ fn tazri_taps_a_creature_with_another_activated_ability(
     #[case] taps: bool,
 ) {
     let other = match name {
-        "Bear" => bear(),
+        "Bear" => creature("Bear", 0, &[], 2, 2),
         "Pinger" => pinger("Pinger", 0),
         _ => card(name).unwrap(),
     };

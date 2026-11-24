@@ -1,16 +1,40 @@
 {
   "oracle_id": "13a3e61d-c9ff-447d-9016-09a183b7af1d",
   "name": "Tazri, Stalwart Survivor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tazri, Stalwart Survivor",
       "oracle_fingerprint": "3751938f05b00c5463f6e7be815db765",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 0, "end": 204 }
+          "Static": {
+            "affected": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "condition": {
+                      "Matches": {
+                        "subject": "This",
+                        "selector": [{ "HasAbility": "R123TwoActivated" }]
+                      }
+                    },
+                    "effects": [
+                      {
+                        "AddMana": {
+                          "mana": { "AnyColorAmong": ["This"] },
+                          "only": [
+                            { "Ability": { "types": ["Creature"], "facts": ["OnBattlefield"] } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         },
         {

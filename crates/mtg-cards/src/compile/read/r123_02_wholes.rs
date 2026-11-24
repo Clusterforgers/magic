@@ -49,7 +49,13 @@ mod tests {
         assert_eq!(R123_02_SHAPES.len(), entries.len());
         for (shape, text) in R123_02_SHAPES.iter() {
             assert_eq!(r123_02_whole_read(text).as_ref(), Some(shape), "{text}");
-            assert!(written_variants(shape).contains(text), "{text}");
+            assert!(
+                written_variants(shape)
+                    .iter()
+                    .any(|written| super::super::tokens::same_written_text(written, text)),
+                "{text} {:?}",
+                written_variants(shape)
+            );
         }
     }
 
@@ -66,7 +72,12 @@ mod tests {
             }
             let changed = json.replacen(from, to, 1);
             if let Ok(near) = serde_json::from_str::<Ability>(&changed) {
-                assert!(!written_variants(&near).contains(text), "{changed}");
+                assert!(
+                    !written_variants(&near)
+                        .iter()
+                        .any(|written| super::super::tokens::same_written_text(written, text)),
+                    "{changed}"
+                );
             }
         }
     }
