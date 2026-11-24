@@ -23,7 +23,7 @@ pub(super) fn r118_cant_attack_text(effect: &Effect, subject: &str) -> Option<St
         rule:
             GameRule::Cant {
                 who,
-                action: Prohibited::R118Attack { you },
+                action: Prohibited::R118Attack { you, walkers },
             },
         duration,
     } = effect
@@ -33,9 +33,12 @@ pub(super) fn r118_cant_attack_text(effect: &Effect, subject: &str) -> Option<St
     if !is_player(who) {
         return None;
     }
-    match (you, duration) {
-        (false, Duration::UntilEndOfTurn) => Some(format!("{subject} can't attack this turn")),
-        (true, Duration::TheirNextTurn) => {
+    match (you, walkers, duration) {
+        (false, false, Duration::UntilEndOfTurn) => Some(format!("{subject} can't attack this turn")),
+        (true, true, Duration::UntilEndOfTurn) => Some(format!(
+            "{subject} can't attack you or planeswalkers you control this turn"
+        )),
+        (true, false, Duration::TheirNextTurn) => {
             Some(format!("{subject} can't attack you during their next turn"))
         }
         _ => None,

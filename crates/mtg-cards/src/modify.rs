@@ -869,6 +869,10 @@ pub enum Prohibited {
         /// Only the rule's controller can't be attacked.
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         you: bool,
+        /// With `you`, the planeswalkers the rule's controller controls are out of reach too: "they can't attack you or
+        /// planeswalkers you control this turn".
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        walkers: bool,
     },
 }
 

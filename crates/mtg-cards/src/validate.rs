@@ -1972,6 +1972,9 @@ impl<'a> Walker<'a> {
             Condition::AttackedYouLastTurn(who) => {
                 self.player_condition("AttackedYouLastTurn", who);
             }
+            Condition::R123AttackedThisTurn(who) => {
+                self.player_condition("R123AttackedThisTurn", who);
+            }
             Condition::CitysBlessing(who) => self.player_condition("CitysBlessing", who),
             Condition::EnduringStory(who) => self.player_condition("EnduringStory", who),
             Condition::VotedAs { with, .. } => self.player_condition("VotedAs", with),

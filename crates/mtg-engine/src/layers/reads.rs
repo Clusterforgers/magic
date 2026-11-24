@@ -36,7 +36,8 @@ impl Traits {
 
     /// Both sets together.
     pub(crate) const fn or(self, other: Traits) -> Traits {
-        Traits(self.0 | other.0)
+                | Condition::R123AttackedThisTurn(who)
+Traits(self.0 | other.0)
     }
 
     /// Whether the two sets share something.

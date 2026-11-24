@@ -4274,6 +4274,7 @@ impl<'a> Scope<'a> {
                 .iter()
                 .any(|player| self.state.r379_since.hurt_since(*player)),
             Condition::AttackedYouLastTurn(who) => self.r305b_attacked_you(who)?,
+            Condition::R123AttackedThisTurn(who) => self.r123_attacked_this_turn(who)?,
             Condition::R111CastOrPutLastTurn => self.r111_cast_or_put_last_turn(),
             Condition::R117FirstSpellThisGame => {
                 self.state.object_tallied(
