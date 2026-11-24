@@ -6,6 +6,7 @@ mod brain_aim;
 mod brain_clock;
 mod brain_heuristics;
 mod brain_matches;
+mod brain_paced;
 mod brain_repeats;
 mod brain_suite;
 mod c10_vp_planar_votes;

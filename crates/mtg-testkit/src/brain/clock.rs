@@ -200,6 +200,9 @@ pub struct Budget {
     pub soft: Option<Instant>,
     /// The search stops here whatever its state.
     pub hard: Option<Instant>,
+    /// The answers its simulations may apply ([`crate::bot::applied`]), counted from the first: a paced search's
+    /// clock.
+    pub work: Option<(u64, u64)>,
 }
 
 impl Budget {
@@ -223,12 +226,31 @@ impl Budget {
             iterations,
             soft,
             hard,
+            work: None,
         }
     }
 
-    /// Whether the hard limit has passed.
+    /// This budget also cut at `answers` applied for a decision of ordinary importance, scaled as the iterations are
+    /// ([`Budget::new`]); `None` leaves it as it is.
+    #[must_use]
+    pub fn with_work(mut self, answers: Option<u32>, importance: f64, share: f64) -> Budget {
+        if let Some(answers) = answers {
+            let scale = (importance * share.clamp(0.0, 1.0)).clamp(0.0, MOST);
+            // In range: at most MOST times the answers.
+            #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+            let most = (f64::from(answers) * scale).round() as u64;
+            self.work = Some((crate::bot::applied(), most));
+        }
+        self
+    }
+
+    /// Whether the hard limit has passed, or the work is done.
     pub fn out(&self) -> bool {
-        self.hard.is_some_and(|hard| Instant::now() >= hard) || stopped()
+        self.hard.is_some_and(|hard| Instant::now() >= hard)
+            || self
+                .work
+                .is_some_and(|(from, most)| crate::bot::applied() - from >= most)
+            || stopped()
     }
 
     /// Whether the soft limit has passed.
@@ -239,7 +261,7 @@ impl Budget {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a decision's budget scales with its importance and the board's size and never reaches past the decision cap,
+    //! Goal: a decision's budget (its iterations, time and a paced search's work) scales with its importance and the board's size and never reaches past the decision cap,
     //! and a stop ends it at its time or its flag, the earlier of nested stops holding.
     use rstest::rstest;
 
@@ -254,6 +276,23 @@ mod tests {
         let budget = Budget::new(Instant::now(), 600, None, importance, 1.0);
         assert_eq!(budget.iterations, expected);
         assert!(budget.soft.is_none() && budget.hard.is_none() && !budget.out());
+    }
+
+    #[rstest]
+    #[case::unpaced(None, 1.0, None, false)]
+    #[case::ordinary(Some(780), 1.0, Some(780), false)]
+    #[case::combat(Some(780), 1.5, Some(1_170), false)]
+    #[case::nothing_to_think_about(Some(780), 0.0, Some(0), true)]
+    fn the_work_follows_importance_and_ends_the_search(
+        #[case] answers: Option<u32>,
+        #[case] importance: f64,
+        #[case] expected: Option<u64>,
+        #[case] out: bool,
+    ) {
+        let budget = Budget::new(Instant::now(), 150, None, importance, 1.0)
+            .with_work(answers, importance, 1.0);
+        assert_eq!(budget.work.map(|(_, most)| most), expected);
+        assert_eq!(budget.out(), out);
     }
 
     #[rstest]

@@ -34,7 +34,7 @@ use mtg_engine::{Decision, Engine};
 
 pub use deep::Deep;
 pub use seen::Seen;
-pub use sim::{Horizon, Search, Settings};
+pub use sim::{Horizon, PACED_WORK, Search, Settings};
 
 use crate::bot::RandomBot;
 
@@ -73,6 +73,22 @@ pub trait SeatBrain: Send {
 /// answers then depend on the machine's speed too).
 pub fn brain(level: Level, seed: u64, seat: PlayerId, timed: bool) -> Box<dyn SeatBrain> {
     let settings = |settings: Settings| if timed { settings } else { settings.untimed() };
+    brain_with(level, seed, seat, settings)
+}
+
+/// The untimed brain of `seat` at `level` whose tree search plays what its clock reaches at a live table
+/// ([`Settings::paced`]): a simulator's bot, as strong as a live one and replaying with the seed.
+pub fn paced_brain(level: Level, seed: u64, seat: PlayerId) -> Box<dyn SeatBrain> {
+    brain_with(level, seed, seat, Settings::paced)
+}
+
+/// The brain of `seat` at `level`, its settings passed through `settings`.
+fn brain_with(
+    level: Level,
+    seed: u64,
+    seat: PlayerId,
+    settings: impl Fn(Settings) -> Settings,
+) -> Box<dyn SeatBrain> {
     match level {
         Level::Easy => Box::new(EasyBrain::new(seed, seat)),
         Level::Normal => Box::new(HeuristicBot::new(seed, seat, settings(Settings::NORMAL))),
@@ -453,18 +469,17 @@ impl HeuristicBot {
         answers.insert(0, prior.clone());
         let answers = deep::distinct(engine, answers);
         let seen = Seen::new(engine.state(), self.seat);
-        let budget = clock::Budget::new(
-            self.started,
-            deep.iterations,
-            deep.time,
-            clock::importance(&seen, decision),
-            // An untimed search keeps its whole count, so its answers replay as before.
-            if deep.time.is_some() {
-                self.budget * clock::board_share(seen.battlefield().len())
-            } else {
-                self.budget
-            },
-        );
+        let importance = clock::importance(&seen, decision);
+        // An untimed search keeps its whole count, so its answers replay as before; a paced one shares its work as the
+        // clock does.
+        let share = if deep.time.is_some() || deep.work.is_some() {
+            self.budget * clock::board_share(seen.battlefield().len())
+        } else {
+            self.budget
+        };
+        let budget =
+            clock::Budget::new(self.started, deep.iterations, deep.time, importance, share)
+                .with_work(deep.work, importance, share);
         if budget.iterations == 0 {
             return self.settled(before, prior);
         }
