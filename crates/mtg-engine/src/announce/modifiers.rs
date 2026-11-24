@@ -425,6 +425,7 @@ pub(crate) fn modified(
     let Some(Changes {
         mut more,
         less,
+        or_generic,
         floor,
         ..
     }) = changes(state, player, spell, specs, choices, judging)
@@ -449,8 +450,9 @@ pub(crate) fn modified(
         Some(joined(mana.unwrap_or(ManaCost::ZERO), &more))
     };
     match mana {
-        Some(cost) if !less.symbols().is_empty() => {
-            Some(floored(&cost, reduced(&cost, &less), floor))
+        Some(cost) if !less.symbols().is_empty() || !or_generic.symbols().is_empty() => {
+            let taken = r122_reduced_or_generic(&reduced(&cost, &less), &or_generic);
+            Some(floored(&cost, taken, floor))
         }
         other => other,
     }
@@ -479,6 +481,8 @@ struct Changes {
     more: ManaCost,
     /// The mana the reductions take away.
     less: ManaCost,
+    /// The mana the reductions of a color or else generic mana take away ("{U} (or {1}) less").
+    or_generic: ManaCost,
     /// The least mana the reductions leave.
     floor: u32,
     /// The life the increases add.
@@ -496,6 +500,7 @@ fn changes(
     judging: Option<&[TargetSpec]>,
 ) -> Option<Changes> {
     let (mut more, mut less, mut floor) = (ManaCost::ZERO, ManaCost::ZERO, 0u32);
+    let mut or_generic = ManaCost::ZERO;
     let mut life = 0u32;
     each_change(
         state,
@@ -513,11 +518,16 @@ fn changes(
                 floor = floor.max(least);
                 less = joined(std::mem::replace(&mut less, ManaCost::ZERO), &part);
             }
+            CostChange::R122ReduceOrGeneric => {
+                floor = floor.max(least);
+                or_generic = joined(std::mem::replace(&mut or_generic, ManaCost::ZERO), &part);
+            }
         },
     )?;
     Some(Changes {
         more,
         less,
+        or_generic,
         floor,
         life,
     })
@@ -635,7 +645,7 @@ fn each_change(
         let part = repeated(unit, times);
         let life = match change {
             CostChange::Increase => each.saturating_mul(times),
-            CostChange::Reduce => 0,
+            CostChange::Reduce | CostChange::R122ReduceOrGeneric => 0,
         };
         found(&modifier, *change, part, *least, life);
     }
@@ -693,6 +703,32 @@ pub(super) fn reduced(cost: &ManaCost, less: &ManaCost) -> ManaCost {
     ManaCost::from_symbols(rest).with(ManaSymbol::Generic(generic))
 }
 
+/// `cost` less `less`, each colored symbol of `less` taking one symbol of its color from the cost or, when the cost has
+/// none left, one generic mana ("costs {U} (or {1}) less"); generic mana in `less` comes off the generic part.
+pub(super) fn r122_reduced_or_generic(cost: &ManaCost, less: &ManaCost) -> ManaCost {
+    let mut generic = cost.generic();
+    let mut rest: Vec<ManaSymbol> = cost
+        .symbols()
+        .iter()
+        .copied()
+        .filter(|symbol| !matches!(symbol, ManaSymbol::Generic(_)))
+        .collect();
+    for symbol in less.symbols() {
+        match symbol {
+            ManaSymbol::Generic(n) => generic = generic.saturating_sub(*n),
+            ManaSymbol::Colored(_) | ManaSymbol::Colorless => {
+                if let Some(at) = rest.iter().position(|have| have == symbol) {
+                    rest.remove(at);
+                } else {
+                    generic = generic.saturating_sub(1);
+                }
+            }
+            _ => {}
+        }
+    }
+    ManaCost::from_symbols(rest).with(ManaSymbol::Generic(generic))
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: a cost reduction takes generic mana from the generic part down to nothing and a colored symbol from a
@@ -728,6 +764,24 @@ mod tests {
         #[case] after: &str,
     ) {
         assert_eq!(reduced(&cost(before), &cost(less)), cost(after));
+    }
+
+    #[rstest]
+    #[case::the_color_first("{2}{U}", "{U}", "{2}")]
+    #[case::generic_when_no_color("{3}{R}", "{U}", "{2}{R}")]
+    #[case::color_then_generic("{2}{U}", "{U}{U}", "{1}")]
+    #[case::two_colors("{1}{U}{U}", "{U}{U}", "{1}")]
+    #[case::down_to_the_colors("{R}{R}", "{U}{U}", "{R}{R}")]
+    #[case::hybrid_stays("{1}{U/R}", "{U}", "{U/R}")]
+    fn r122_a_color_or_generic_reduction_takes_a_generic_when_the_color_is_gone(
+        #[case] before: &str,
+        #[case] less: &str,
+        #[case] after: &str,
+    ) {
+        assert_eq!(
+            r122_reduced_or_generic(&cost(before), &cost(less)),
+            cost(after)
+        );
     }
 
     #[rstest]

@@ -79,6 +79,7 @@ fn flashback(ability: &Ability) -> Option<String> {
     };
     let more = match change {
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return None,
         CostChange::Increase => "more",
     };
     Some(format!("Flashback costs {payer} pay cost {mana} {more}."))

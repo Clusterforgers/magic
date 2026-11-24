@@ -894,6 +894,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
         | ReplaceBy::EntersPrepared
+        | ReplaceBy::R122TappedAndAttacking
         | ReplaceBy::ChooseWord(_)
         | ReplaceBy::OpponentChooses(_)
         | ReplaceBy::UnderChosenOpponent
@@ -958,6 +959,7 @@ const fn enters_apart(action: &Action) -> bool {
                 | ReplaceBy::WithCountersOf { .. }
                 | ReplaceBy::WithKindsOn(_)
                 | ReplaceBy::EntersPrepared
+                | ReplaceBy::R122TappedAndAttacking
                 | ReplaceBy::ChooseWord(_)
                 | ReplaceBy::OpponentChooses(_)
                 | ReplaceBy::UnderChosenOpponent
@@ -3738,6 +3740,9 @@ impl Pass<'_> {
                 }
             }
             ReplaceBy::EntersPrepared => self.enters_prepared(at, object, controller),
+            ReplaceBy::R122TappedAndAttacking => {
+                return self.r122_tapped_and_attacking(at, (object, controller), applied);
+            }
             ReplaceBy::Choose(EntersChoice::RevealedNonlandName) => {
                 return self.r4702_revealed_name(at, source, object, controller, applied);
             }
@@ -4724,6 +4729,7 @@ mod r113_copy_reflexive;
 mod r113_text_boxes;
 pub(crate) mod r114_choose_object;
 mod r121_02_attach_object;
+mod r122_02_attacking;
 mod reveal;
 
 mod amplify;

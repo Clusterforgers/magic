@@ -1,0 +1,194 @@
+{
+  "oracle_id": "98a13f7b-ebe7-4a90-a0b9-95dccfff7fa6",
+  "name": "The Tale of Tamiyo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Tale of Tamiyo",
+      "oracle_fingerprint": "54ca7ee89c93372f18b7d1a15eff8f53",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Is": { "Bound": "milled" } }, { "In": "Graveyard" }]
+                          },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      },
+                      { "R119ShareCardType": { "Bound": "milled" } }
+                    ]
+                  },
+                  "effects": [
+                    { "Mill": { "count": 2, "as": "milled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "All": [
+                            {
+                              "Compare": {
+                                "left": {
+                                  "Count": [{ "Is": { "Bound": "milled" } }, { "In": "Graveyard" }]
+                                },
+                                "op": "Ge",
+                                "right": 2
+                              }
+                            },
+                            { "R119ShareCardType": { "Bound": "milled" } }
+                          ]
+                        },
+                        "then": [{ "Draw": {} }]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Is": { "Bound": "milled" } }, { "In": "Graveyard" }]
+                          },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      },
+                      { "R119ShareCardType": { "Bound": "milled" } }
+                    ]
+                  },
+                  "effects": [
+                    { "Mill": { "count": 2, "as": "milled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "All": [
+                            {
+                              "Compare": {
+                                "left": {
+                                  "Count": [{ "Is": { "Bound": "milled" } }, { "In": "Graveyard" }]
+                                },
+                                "op": "Ge",
+                                "right": 2
+                              }
+                            },
+                            { "R119ShareCardType": { "Bound": "milled" } }
+                          ]
+                        },
+                        "then": [{ "Draw": {} }]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "RepeatWhile": {
+                  "condition": {
+                    "All": [
+                      {
+                        "Compare": {
+                          "left": {
+                            "Count": [{ "Is": { "Bound": "milled" } }, { "In": "Graveyard" }]
+                          },
+                          "op": "Ge",
+                          "right": 2
+                        }
+                      },
+                      { "R119ShareCardType": { "Bound": "milled" } }
+                    ]
+                  },
+                  "effects": [
+                    { "Mill": { "count": 2, "as": "milled" } },
+                    {
+                      "If": {
+                        "condition": {
+                          "All": [
+                            {
+                              "Compare": {
+                                "left": {
+                                  "Count": [{ "Is": { "Bound": "milled" } }, { "In": "Graveyard" }]
+                                },
+                                "op": "Ge",
+                                "right": 2
+                              }
+                            },
+                            { "R119ShareCardType": { "Bound": "milled" } }
+                          ]
+                        },
+                        "then": [{ "Draw": {} }]
+                      }
+                    }
+                  ],
+                  "most": 1000,
+                  "at_least_once": true
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    {
+                      "AnyOf": [
+                        { "Type": "Instant" },
+                        { "Type": "Sorcery" },
+                        { "R117AllOf": [{ "Subtype": "Tamiyo" }, { "Type": "Planeswalker" }] }
+                      ]
+                    },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": null }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copies" } },
+              {
+                "RepeatEach": {
+                  "over": { "Bound": "copies" },
+                  "as": "copy",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

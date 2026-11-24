@@ -419,6 +419,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             "planeswalkers {} controls aren't put into their owners' graveyards for having 0 loyalty",
             phrase::who(ctx, who)
         ),
+        GameRule::R122CascadeLand(who) => format!(
+            "as {} cascades, they may put a land card from among the exiled cards onto the battlefield tapped",
+            phrase::who(ctx, who)
+        ),
         GameRule::R6007ExhaustAgain(who) => format!(
             "during their turn, as long as {} hasn't activated an exhaust ability this turn, they may activate exhaust abilities as though they haven't been activated",
             phrase::who(ctx, who)

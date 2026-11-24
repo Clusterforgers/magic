@@ -1,0 +1,12 @@
+{
+  "oracle_id": "23695bc2-86d3-4d78-b374-9e83c4cc9cc4",
+  "name": "Averna, the Chaos Bloom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Averna, the Chaos Bloom",
+      "oracle_fingerprint": "c9a80ba12ee9b612d28d3c0b325e1da5",
+      "abilities": [{ "Rule": { "rule": { "R122CascadeLand": "You" } } }]
+    }
+  ]
+}

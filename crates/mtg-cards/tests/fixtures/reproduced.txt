@@ -168,6 +168,7 @@ Aven Tactician
 Aven Trailblazer
 Avenger of Zendikar
 Avenging Huntbonder
+Averna, the Chaos Bloom
 Awakened Amalgam
 Ayara, First of Locthwain
 Aysen Crusader
@@ -891,6 +892,7 @@ Eliminate the Competition
 Elite Arcanist
 Elite Spellbinder
 Elspeth's Nightmare
+Eluge, the Shoreless Sea
 Elven Ambush
 Elvish Aberration
 Elvish Mystic
@@ -1600,6 +1602,7 @@ Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
 Kiora's Follower
+Kira Nerys, Firebrand
 Kirk, Enterprising Captain
 Kirol, Attentive First-Year
 Kirol, History Buff // Pack a Punch
@@ -2984,6 +2987,7 @@ The Dalek Emperor
 The Elder Dragon War
 The Eleventh Doctor
 The Everforger
+The Face of Boe
 The Fallen
 The Gaffer
 The Great Henge
@@ -3008,6 +3012,7 @@ The Seriema
 The Serpent Society
 The Spear of Bashenga
 The Squadron Sinister
+The Tale of Tamiyo
 The Thing, Ben Grimm
 The Torment of Gollum
 The Toymaker's Trap

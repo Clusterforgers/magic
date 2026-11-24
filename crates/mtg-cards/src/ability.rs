@@ -119,6 +119,9 @@ pub enum CostChange {
     Increase,
     /// Costs less (generic mana only, CR 601.2f).
     Reduce,
+    /// Costs less, each colored symbol of the mana taking one symbol of its color or else one generic mana (CR 601.2f):
+    /// "costs {U} (or {1}) less to cast". Spells only.
+    R122ReduceOrGeneric,
 }
 
 /// A kind of activated ability whose cost a modifier changes or whose activation a prohibition forbids.

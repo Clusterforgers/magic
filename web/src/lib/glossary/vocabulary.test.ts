@@ -42,6 +42,7 @@ const CAST_WAYS: Record<CastWay, string> = {
   Emerge: 'Emerge',
   Harmonize: 'Harmonize',
   R116BeamMeUp: 'Beam me up',
+  R122SuspendCost: 'Suspend',
   Cleave: 'Cleave',
   Alternative: 'Alternative cost',
 }

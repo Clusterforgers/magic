@@ -3078,6 +3078,10 @@ impl<'a> Scope<'a> {
             Amount::R110RemovedThisWay(counter) => self.r110_removed_this_way(counter)?,
             Amount::R119PutThisWay(counter) => self.r119_put_this_way(counter)?,
             Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
+            Amount::R122CascadeLands => i64::from(crate::rules::r122_cascade_lands(
+                self.state,
+                self.controller,
+            )),
             Amount::CastSameNameThisGame(who) => {
                 let name = self
                     .state

@@ -188,6 +188,9 @@ pub enum CastWay {
     /// Beam me up: from a graveyard for its beam me up cost and the return of a creature its caster controls to its owner's
     /// hand; exiled when it leaves the stack.
     R116BeamMeUp,
+    /// For its suspend cost rather than its mana cost, from a hand, by an effect ("If you do, pay its suspend cost rather
+    /// than its mana cost"): no time counters, no haste (CR 118.9).
+    R122SuspendCost,
 }
 
 impl CastWay {
@@ -905,6 +908,9 @@ pub enum Amount {
     /// The times the players named have cycled a card with the same name as the object with the ability this game, that
     /// object included ("if you've cycled a card named ~ four or more times this game").
     CycledSameNameThisGame(Ref),
+    /// How many times the controller may put a land card from among the cards their cascade exiled onto the battlefield
+    /// tapped: one for each `GameRule::R122CascadeLand` they hold ("As you cascade, you may put a land card ...").
+    R122CascadeLands,
     /// `Tally` over the turn that ended last ("if you had another creature enter the battlefield under your control last
     /// turn"); only the kinds kept as objects (`Entered`, `SpellCast`, `Died` and the like), not the records.
     TallyLastTurn {
@@ -1307,6 +1313,7 @@ enum Tagged {
     },
     CastSameNameThisGame(Ref),
     CycledSameNameThisGame(Ref),
+    R122CascadeLands,
     TallyLastTurn {
         event: TallyEvent,
         who: Ref,
@@ -1559,6 +1566,7 @@ enum TaggedRef<'a> {
     },
     CastSameNameThisGame(&'a Ref),
     CycledSameNameThisGame(&'a Ref),
+    R122CascadeLands,
     TallyLastTurn {
         event: TallyEvent,
         who: &'a Ref,
@@ -1737,6 +1745,7 @@ impl From<Tagged> for Amount {
             Tagged::StickerStats { on, stat } => Amount::StickerStats { on, stat },
             Tagged::CastSameNameThisGame(who) => Amount::CastSameNameThisGame(who),
             Tagged::CycledSameNameThisGame(who) => Amount::CycledSameNameThisGame(who),
+            Tagged::R122CascadeLands => Amount::R122CascadeLands,
             Tagged::TallyLastTurn { event, who, filter } => {
                 Amount::TallyLastTurn { event, who, filter }
             }
@@ -1950,6 +1959,7 @@ impl Serialize for Amount {
             Amount::CycledSameNameThisGame(who) => {
                 TaggedRef::CycledSameNameThisGame(who).serialize(serializer)
             }
+            Amount::R122CascadeLands => TaggedRef::R122CascadeLands.serialize(serializer),
             Amount::TallyLastTurn { event, who, filter } => TaggedRef::TallyLastTurn {
                 event: *event,
                 who,
@@ -2406,6 +2416,7 @@ mod tests {
     #[case::emerge(CastWay::Emerge, true)]
     #[case::harmonize(CastWay::Harmonize, true)]
     #[case::r116_beam_me_up(CastWay::R116BeamMeUp, true)]
+    #[case::r122_suspend_cost(CastWay::R122SuspendCost, true)]
     #[case::r301_offering_adds_to_the_cost(CastWay::Offering, false)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]

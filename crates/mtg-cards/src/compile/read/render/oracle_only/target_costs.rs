@@ -31,6 +31,7 @@ fn add_equip(ability: &Ability, texts: &mut Vec<String>) {
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return,
     };
     texts.push(format!(
         "Equip abilities you activate that target ~ cost {mana} {more} to activate."
@@ -91,6 +92,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return,
     };
     texts.push(format!(
         "Spells {caster} that target {aim} cost {mana} {more} to cast."

@@ -101,6 +101,7 @@ fn c11a_less_texts(item: &CostItem) -> Vec<String> {
         let more = match change {
             CostChange::Increase => "more",
             CostChange::Reduce => "less",
+            CostChange::R122ReduceOrGeneric => return Vec::new(),
         };
         return vec![format!(
             "This ability costs {mana} {more} to activate for each {counted}."
