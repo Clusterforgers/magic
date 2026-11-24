@@ -2486,6 +2486,13 @@ impl<'a> Scope<'a> {
                 .iter()
                 .filter_map(|mana| mana.color())
                 .any(|color| seen.chars.colors.contains(color)),
+            Pred::R121SharesColorWithMade => self.cause.is_some_and(|cause| {
+                cause
+                    .r121_made
+                    .iter()
+                    .filter_map(|mana| mana.color())
+                    .any(|color| seen.chars.colors.contains(color))
+            }),
             Pred::R6600OnlyControllersColor(name) => {
                 matches!(self.chosen_value(&crate::resolve::r6600_player_value(name, seen.controller)), Some(Chosen::Color(color))
                     if seen.chars.colors == mtg_core::color::ColorSet::default().with(*color))
@@ -5049,6 +5056,7 @@ mod tests {
         let game = game();
         let cause = crate::abilities::Cause {
             r115_causer: None,
+            r121_made: Vec::new(),
             dealers: Vec::new(),
             subjects: vec![Target::Player(PlayerId(1))],
             snapshots: Vec::new(),

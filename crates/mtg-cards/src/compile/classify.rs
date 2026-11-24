@@ -88,6 +88,8 @@ fn is_spell_rule(body: &str) -> bool {
         || body.starts_with("You may cast ~ from your graveyard as long as ")
         // A spell's own color, which works in every zone (CR 604.3): "Awaken the Maelstrom is all colors."
         || body == "~ is all colors."
+        // An X the spell defines from an opponent's graveyard as it is cast (CR 107.3c): Spoils of War.
+        || (body.starts_with("X is the number of ") && body.ends_with(" in an opponent's graveyard as you cast this spell."))
 }
 
 /// Whether a line is a rule about the spell under a condition: "If you revealed a Dragon card ..., this spell can't be

@@ -402,8 +402,17 @@ pub(crate) fn least_of(cost: &mtg_cards::cost::Cost) -> u32 {
 
 impl Offer {
     /// The values of X from 0 to `most` for which every target specification can be met, or `None` when there are
-    /// none. A target specification that does not read X is the same for every value.
+    /// none, and only an opponent's count where X is counted per opponent. A target specification that does not read X
+    /// is the same for every value.
     fn of(ctx: &Ctx<'_>, choices: &Choices, most: u32) -> Option<Offer> {
+        let mut offer = Offer::of_targets(ctx, choices, most)?;
+        let range = (offer.min, offer.max);
+        super::r121_02_x_per_opponent::r121_except_others(ctx, range, &mut offer.except)
+            .then_some(offer)
+    }
+
+    /// The values of X the targets allow, before an X counted per opponent narrows them.
+    fn of_targets(ctx: &Ctx<'_>, choices: &Choices, most: u32) -> Option<Offer> {
         let least = least_x(ctx, choices);
         if least > most {
             return None;

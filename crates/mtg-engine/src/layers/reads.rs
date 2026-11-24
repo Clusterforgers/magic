@@ -493,6 +493,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Colorless
         | Pred::ChosenColor
         | Pred::R112SharesColorWithSpent
+        | Pred::R121SharesColorWithMade
         | Pred::OutsideCommanderIdentity => Traits::COLORS,
         Pred::ControlledBy(who) => Traits::CONTROL.or(reads_of_ref(who)),
         Pred::HasKeyword(_) | Pred::HasKeywordNamed(_) | Pred::R113HasWay(_) => Traits::KEYWORDS,

@@ -84,6 +84,7 @@ mod r110_secret;
 mod r114_04_sticker_kicker;
 mod r114_04_stickers;
 mod r121_02_attach_choices;
+mod r121_02_esper_terra;
 mod r305c_copy_counters;
 mod r306c_attractions;
 mod r371_copy_except;

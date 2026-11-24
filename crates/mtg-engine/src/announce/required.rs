@@ -77,6 +77,7 @@ fn variants_at(
                     | CostItem::R112XOneEachColor
                     | CostItem::XAtMost(_)
                     | CostItem::XIs(_)
+                    | CostItem::R121XIsPerOpponent(_)
                     | CostItem::R110ChooseNumber { .. }
                     | CostItem::R110Choose(_)
             )

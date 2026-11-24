@@ -1221,6 +1221,7 @@ impl<'a> Walker<'a> {
             | Pred::HasAnyCounter
             | Pred::ChosenColor
             | Pred::R112SharesColorWithSpent
+            | Pred::R121SharesColorWithMade
             | Pred::CanEnchantSource
             | Pred::XInCost
             | Pred::PhyrexianInCost
@@ -2258,6 +2259,10 @@ impl<'a> Walker<'a> {
                     CostItem::XIs(amount) => {
                         w.uses("Cost", "XIs");
                         w.at("XIs", |w| w.amount(amount));
+                    }
+                    CostItem::R121XIsPerOpponent(filter) => {
+                        w.uses("Cost", "R121XIsPerOpponent");
+                        w.at("R121XIsPerOpponent", |w| w.selector(filter));
                     }
                     CostItem::R114RollDie(sides) => {
                         if *sides < 2 {

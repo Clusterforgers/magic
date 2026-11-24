@@ -232,6 +232,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.R6503Resolves",
     "Keyword.Annihilator.Counted",
     "Cost.XIs",
+    "Cost.R121XIsPerOpponent",
     "Cost.XColor",
     "Cost.R113XHybrid",
     "Cost.R112ExileFromOneGraveyard",

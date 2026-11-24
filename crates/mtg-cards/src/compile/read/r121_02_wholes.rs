@@ -1,4 +1,5 @@
-//! r121-02 abilities whose wordings no other reader or writer joins (Psychic Paper, Dinosaur Headdress):
+//! r121-02 abilities whose wordings no other reader or writer joins (Psychic Paper, Dinosaur Headdress, Power Leak,
+//! C.A.M.P., Spoils of War):
 //! each entry of `r121_02_wholes.json` is an ability, or a list of two that one clause holds, with the words the card
 //! prints for it, read when a clause says exactly those words and written back from the abilities.
 
@@ -49,6 +50,28 @@ pub(super) fn r121_02_add_wholes(ability: &Ability, texts: &mut Vec<String>) {
     for (shape, text) in R121_02_SHAPES.iter() {
         if matches!(shape.as_slice(), [one] if one == ability) && !texts.contains(text) {
             texts.push(text.clone());
+        }
+    }
+    // A Saga chapter (CR 714.2) made of the effects of a spell entry is worded behind its numeral.
+    if let Ability::Triggered {
+        when: crate::trigger::TriggerPattern::Chapter { number },
+        intervening_if: None,
+        limit: None,
+        from: crate::refs::ZoneKind::Battlefield,
+        targets,
+        effects,
+    } = ability
+        && let Some(numeral) = crate::compile::classify::numeral(*number)
+    {
+        let spell = Ability::Spell {
+            targets: targets.clone(),
+            effects: effects.clone(),
+        };
+        for (shape, text) in R121_02_SHAPES.iter() {
+            let worded = format!("{numeral} \u{2014} {text}");
+            if matches!(shape.as_slice(), [one] if *one == spell) && !texts.contains(&worded) {
+                texts.push(worded);
+            }
         }
     }
 }
@@ -108,6 +131,8 @@ mod tests {
     #[case("\"{1}\"", "\"{2}\"")]
     #[case("\"Exile\"", "\"Graveyard\"")]
     #[case("\"R6702CraftedWith\"", "\"Attached\"")]
+    #[case("\"R121SharesColorWithMade\"", "\"ChosenColor\"")]
+    #[case("\"Artifact\"", "\"Enchantment\"")]
     fn r121_02_a_changed_part_is_not_written_whole(#[case] from: &str, #[case] to: &str) {
         for (shape, text) in R121_02_SHAPES.iter() {
             let [one] = shape.as_slice() else {
@@ -129,6 +154,9 @@ mod tests {
     #[case("ward {1}", "ward {2}")]
     #[case("exiled creature card", "exiled card")]
     #[case("last chosen card", "first chosen card")]
+    #[case("an opponent's graveyard", "your graveyard")]
+    #[case("shares a color", "shares a creature type")]
+    #[case("fortified land", "enchanted land")]
     fn r121_02_a_near_miss_reads_as_nothing(#[case] from: &str, #[case] to: &str) {
         for (_, text) in R121_02_SHAPES.iter() {
             if text.contains(from) {

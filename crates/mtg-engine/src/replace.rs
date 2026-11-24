@@ -4404,17 +4404,7 @@ impl Pass<'_> {
         ) {
             return self.r4702_chooses_name(source, controller, kind, Vec::new());
         }
-        if matches!(
-            kind,
-            EntersChoice::Colors(_)
-                | EntersChoice::ColorAndCreatureType
-                | EntersChoice::Players(_)
-                | EntersChoice::R6001Abilities(_)
-                | EntersChoice::R111OpponentAndName
-                | EntersChoice::R111NamesWithOpponent
-                | EntersChoice::R115ColorAndOpponent
-                | EntersChoice::R121CreatureNameAndType
-        ) {
+        if r4700_choices::r4700_several(kind) {
             return self.r4700_chooses(source, controller, kind);
         }
         let options = self.options_of(kind, controller, source);
