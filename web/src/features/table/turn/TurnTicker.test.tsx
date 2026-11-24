@@ -54,7 +54,7 @@ describe('the lines of a batch', () => {
     seen.push(cueDom().ticker)
     expect(seen[0]).toBe('Skipped End of combat, Postcombat main')
     expect(seen[1]).toBe('You had no plays')
-    expect(seen[2]).toMatch(/^Alice plays /)
+    expect(seen[2]).toMatch(/^You play /)
     expect(seen[3]).toBeNull()
   })
 

@@ -129,7 +129,7 @@ const cases: Case[] = [
     after: at(9, 1, 'CombatDamage'),
     stage: 'Finished',
     events: [pub({ GameEnded: { result: { Winner: 0 } } })],
-    expected: { banner: null, lines: [{ kind: 'event', text: 'Alice wins the game' }] },
+    expected: { banner: null, lines: [{ kind: 'event', text: 'You win the game' }] },
   },
 ]
 
@@ -243,7 +243,7 @@ describe('what the viewer alone could see', () => {
     )
 
   it('words the viewer’s own draw as any seat’s draw, without the card', () => {
-    expect(draws([pub({ CardDrawn: { player: 0, object: card.id } })])).toEqual(['Alice draws a card'])
+    expect(draws([pub({ CardDrawn: { player: 0, object: card.id } })])).toEqual(['You draw a card'])
     expect(draws([hid({ CardDrawn: { player: 1 } })])).toEqual(['Bo draws a card'])
   })
 

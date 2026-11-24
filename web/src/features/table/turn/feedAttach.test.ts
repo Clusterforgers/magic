@@ -34,7 +34,7 @@ const tickerOf = (before: Moment, to: number): string[] =>
 describe('the ticker line of an attachment that moves', () => {
   it.each([
     ['a creature', { attached_to: BEARS }, 'Bonesplitter moves from Grizzly Bears to Llanowar Elves'],
-    ['a player', { attached_player: 0 }, 'Bonesplitter moves from Alice to Llanowar Elves'],
+    ['a player', { attached_player: 0 }, 'Bonesplitter moves from you to Llanowar Elves'],
     ['nothing', {}, 'Bonesplitter is attached to Llanowar Elves'],
   ])('says it from %s', (_name, host, text) => {
     expect(tickerOf(momentWith(host), ELVES)).toEqual([text])

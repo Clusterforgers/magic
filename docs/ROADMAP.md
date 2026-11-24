@@ -89,7 +89,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 - [ ] (ln1) The Help menu's table tour runs on the Learn coach and its anchors instead of `TourCard` and CSS selectors
 - [ ] (ln2) Outside lessons too, the hover preview of a chosen hand card keeps clear of the prompt band's question
-- [ ] (ln3) The log and the preview conjugate for the viewer's own seat, so a seat named "You" never reads "You plays" or "You's turn"
 
 ## M5 Table and prompts
 

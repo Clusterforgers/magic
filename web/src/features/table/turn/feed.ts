@@ -13,6 +13,7 @@ import { commanderDamageLine } from '../commander'
 import { commanderHits } from '../commanderLog'
 import { eventContexts } from '../eventContext'
 import { describeEvent } from '../eventText'
+import { speak, voiced } from '../speech'
 import type { EventNames } from '../eventText'
 import { batchBetween } from '../fx/batch'
 import type { Moment } from '../fx/derive'
@@ -197,7 +198,7 @@ export function deriveFeed(
     options.yielding !== true &&
     ended.some((run) => run.own && (run.step === 'Main1' || run.step === 'Main2'))
   const eventNames: EventNames = {
-    seat: names,
+    seat: voiced(names, after.view.spectator === true ? null : viewer),
     card: (id) => after.objectsById[id]?.name ?? before.objectsById[id]?.name ?? 'a card',
   }
   const hosts = hostsBefore(events, before.objectsById)
@@ -205,7 +206,7 @@ export function deriveFeed(
   const lines = [
     ...(note === null ? [] : [{ kind: 'skipped', text: note } satisfies TickerLine]),
     ...(explained ? [{ kind: 'reason', text: OWN_REASON } satisfies TickerLine] : []),
-    ...(newest === null ? [] : [newest]),
+    ...(newest === null ? [] : [{ ...newest, text: speak(newest.text) }]),
   ].slice(0, TICKER_MAX_LINES)
 
   const announcement =

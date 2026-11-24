@@ -28,7 +28,8 @@ import { PreviewCard } from './PreviewCard'
 import { PreviewModifiers } from './PreviewModifiers'
 import { useCreatureOutlook } from './combat/drawn'
 import { outlookText } from './combat/forecastText'
-import { useSeatNamer } from './names'
+import { useVoicedNamer } from './names'
+import { speak } from './speech'
 import { usePreviewStore, usePreviewTarget } from './preview'
 import { usePreviewDismiss } from './usePreviewDismiss'
 import type { Dock, PreviewTarget } from './preview'
@@ -110,7 +111,7 @@ function PreviewHeading({ children }: { children: string }) {
 
 function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card: Reading) => void }) {
   const store = usePreviewStore()
-  const name = useSeatNamer()
+  const name = useVoicedNamer()
   const { id } = target
   const live = usePlay((state) => state.objectsById[id])
   // A card shown at a reveal is drawn as it was shown, which the view may hold no longer.
@@ -219,7 +220,7 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
         <p className="font-semibold">{roomTitle(object.name, links.doors)}</p>
         {summary === null ? null : (
           <div data-slot="preview-stack" className="grid gap-0.5 rounded-md bg-muted px-2 py-1">
-            <p className="font-medium">{summary.heading}</p>
+            <p className="font-medium">{speak(summary.heading)}</p>
             {summary.rules.map((line, index) => (
               <p key={index} data-slot="preview-stack-rules" className="select-text">
                 <RulesText text={line} />
@@ -410,21 +411,21 @@ function PreviewBody({ target, onRead }: { target: PreviewTarget; onRead: (card:
           <ul aria-label="Attachments" data-slot="preview-attachments" className="grid gap-0.5">
             {attaches.map((attach) => (
               <li key={attach.id} data-foreign={attach.foreign ?? undefined}>
-                {attachLine(attach, name)}
+                {speak(attachLine(attach, name))}
               </li>
             ))}
           </ul>
         )}
         {place === undefined ? null : (
-          <p data-slot="preview-revealed">{revealedLine(place, name(object.owner))}</p>
+          <p data-slot="preview-revealed">{speak(revealedLine(place, name(object.owner)))}</p>
         )}
         {object.note === undefined ? null : <p data-slot="preview-note">{noteName(object.note)}</p>}
-        {fight === null ? null : <p>{fight}</p>}
+        {fight === null ? null : <p>{speak(fight)}</p>}
         {outlook === null ? null : (
           <p data-slot="preview-forecast">Combat forecast: {outlookText(outlook)}.</p>
         )}
         <p className="text-muted-foreground">
-          {zoneText(object.zone, name)}. {controlText(object, name)}.
+          {speak(zoneText(object.zone, name))}. {speak(controlText(object, name))}.
         </p>
         {target.pinned ? (
           // Stays at the foot of the panel while the lines above it scroll.
