@@ -1,4 +1,4 @@
-// Goal: with 1 to 3 commanders waiting at the head of a hand of 0 to 12 cards, in docks from 300 to 1500 px wide and 96 to 200 px high on fine and touch pointers, the hand's line keeps at least one whole card, and beside a large Satchel (twelve cards and more at its head) two where the line holds three, the commanders keep the line they need when it holds everything, and scroll in what is left (one at least in view) when it does not.
+// Goal: with 1 to 3 commanders waiting at the head of a hand of 0 to 12 cards, in docks from 300 to 1500 px wide and 96 to 200 px high on fine and touch pointers, the hand's line keeps at least one whole card, and beside a large Satchel (twelve cards and more at its head) two where the line holds three, the commanders keep the line they need when it holds everything, and scroll in what is left (one at least in view) when it does not, in one card's room beside a hand that would scroll otherwise.
 import { describe, expect, it } from 'vitest'
 import { COMMAND_GAP_PX, dockLayouts, HAND_KEPT_BESIDE_HEAD, handLayout } from './handFit'
 
@@ -46,9 +46,12 @@ describe.each([false, true])('dockLayouts (coarse pointer %s)', (coarse) => {
         for (const count of COUNTS) {
           for (const commanders of COMMANDERS) {
             const where = `${count} cards and ${commanders} commanders in ${width}x${height}`
-            const { command, commandWidth = 0 } = dockLayouts({ width, height, count, commanders, coarse })
+            const docks = dockLayouts({ width, height, count, commanders, coarse })
+            const { command, commandWidth = 0 } = docks
             const all = handLayout({ width, height, count: count + commanders, coarse })
-            const head = commanders * (all.box.width + all.gap) + COMMAND_GAP_PX
+            // The head's cards are the shared line's, or the hand's own where the hand comes first.
+            const card = docks.first === true && command !== undefined ? command : all
+            const head = commanders * (card.box.width + card.gap) + COMMAND_GAP_PX
             expect(command?.perRow, where).toBe(commanders)
             expect(command?.scrolls, where).toBe(commandWidth < head)
             expect(commandWidth, where).toBeLessThanOrEqual(head)
