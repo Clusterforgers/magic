@@ -1,0 +1,7 @@
+[
+ [{"Replacement":{"when":{"BecomesAttached":{"what":["This"]}},"by":{"Choose":"R121CreatureNameAndType"}}},"As this Equipment becomes attached to a creature, choose a creature card name and a creature type."]
+ , [{"Static":{"affected":"Attached","mods":[{"AddKeyword":{"Ward":"{1}"}},"CantBeBlocked","R121SetChosenName",{"SetCreatureTypes":[]},"AddChosenSubtype"]}},"Equipped creature has ward {1}, it can't be blocked, and its name and creature type are the last chosen name and creature type."]
+ , [{"Replacement":{"when":{"BecomesAttached":{"what":["This"]}},"by":{"R114ChooseObject":[{"In":"Exile"},{"Type":"Creature"},{"Is":"R6702CraftedWith"}]}}},"As this Equipment becomes attached to a creature, choose an exiled creature card used to craft this Equipment."]
+ , [{"Static":{"affected":"Attached","mods":[{"R707CopyOf":{"of":"R114ChosenObject"}}]}},"Equipped creature is a copy of the last chosen card."]
+ , [{"Triggered":{"when":{"StepBegins":{"step":"Upkeep","whose":{"ControllerOf":"Attached"}}},"effects":[{"PayAnyTimes":{"who":"Triggering","cost":"{1}","as":"paid"}},{"Shield":{"when":{"Damage":{"to":"Triggering","source":["This"]}},"by":{"R121PreventCountedNext":{"Bound":"paid"}},"duration":"UntilEndOfTurn"}},{"DealDamage":{"to":"Triggering","amount":2}}]}},"At the beginning of the upkeep of enchanted enchantment's controller, that player may pay any amount of mana. This Aura deals 2 damage to that player. Prevent X of that damage, where X is the amount of mana that player paid this way."]
+]

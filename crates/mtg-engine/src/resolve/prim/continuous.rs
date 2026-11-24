@@ -270,9 +270,18 @@ fn spells_taken(
 /// sets. A source that chose nothing of the kind gives no modification.
 fn entered(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveError> {
     match (wanted, scope.entered_choice()) {
-        (Wanted::AddChosenSubtype, Some(Chosen::CreatureType(kind) | Chosen::LandType(kind))) => {
-            Ok(Modification::AddSubtype(kind.clone()))
-        }
+        (
+            Wanted::AddChosenSubtype,
+            Some(
+                Chosen::CreatureType(kind)
+                | Chosen::LandType(kind)
+                | Chosen::R121NameAndType(_, kind),
+            ),
+        ) => Ok(Modification::AddSubtype(kind.clone())),
+        (
+            Wanted::R121SetChosenName,
+            Some(Chosen::Name(name) | Chosen::R121NameAndType(name, _)),
+        ) => Ok(Modification::SetName(name.clone())),
         (Wanted::SetChosenColor, Some(Chosen::Color(color))) => {
             Ok(Modification::SetColors(std::iter::once(*color).collect()))
         }
@@ -551,7 +560,8 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::AddChosenSubtype
         | Wanted::SetChosenColor
         | Wanted::AddChosenColor
-        | Wanted::R6001AddChosenAbilities => entered(scope, wanted)?,
+        | Wanted::R6001AddChosenAbilities
+        | Wanted::R121SetChosenName => entered(scope, wanted)?,
         // The color its owner chose for it as a commander, read by its id in any zone; none was chosen for another card.
         Wanted::SetCommanderColor => {
             match crate::r404_commander_color::chosen(scope.state, scope.source.id) {

@@ -1,7 +1,7 @@
 {
   "oracle_id": "dc2f0000-870b-487f-9623-618fc8eb9765",
   "name": "Power Leak",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Power Leak",
@@ -9,9 +9,19 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Enchantment" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 20, "end": 253 }
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": { "ControllerOf": "Attached" } } },
+            "effects": [
+              { "PayAnyTimes": { "who": "Triggering", "cost": "{1}", "as": "paid" } },
+              {
+                "Shield": {
+                  "when": { "Damage": { "to": "Triggering", "source": ["This"] } },
+                  "by": { "R121PreventCountedNext": { "Bound": "paid" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              { "DealDamage": { "to": "Triggering", "amount": 2 } }
+            ]
           }
         }
       ]

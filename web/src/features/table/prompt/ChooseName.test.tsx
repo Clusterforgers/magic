@@ -92,6 +92,9 @@ describe('nameable', () => {
     ['Basic Land — Forest', { r111_not_basic_land: true }, false],
     ['Land — Desert', { r111_not_basic_land: true }, true],
     ['Creature — Elf', { r111_not_basic_land: true }, true],
+    ['Creature — Elf', { r121_creature: true }, true],
+    ['Artifact Creature — Golem', { r121_creature: true }, true],
+    ['Instant', { r121_creature: true }, false],
   ])('"%s" with %o is %s', (type, kinds, kept) => {
     expect(nameable([hit('X', type)], kinds)).toHaveLength(kept ? 1 : 0)
   })

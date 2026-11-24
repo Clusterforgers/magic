@@ -688,7 +688,7 @@ fn block(ctx: &Ctx, effect: &Effect, depth: u8, out: &mut Vec<Step>) -> bool {
             out.push(Step::new(depth, format!("{} may:", phrase::who(ctx, who))));
             list(ctx, effects, depth + 1, out);
         }
-        Effect::PayAnyTimes { who, cost } => out.push(Step::new(
+        Effect::PayAnyTimes { who, cost, .. } => out.push(Step::new(
             depth,
             format!(
                 "{} any number of times",

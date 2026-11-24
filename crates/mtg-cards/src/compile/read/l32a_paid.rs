@@ -104,6 +104,7 @@ pub(super) fn l32a_times_read(
             Effect::PayAnyTimes {
                 who: Ref::You,
                 cost: Cost::mana(mana),
+                bind: None,
             },
             Effect::Reflexive {
                 targets,
@@ -127,6 +128,7 @@ pub(super) fn l32a_times_wordings(
             Effect::PayAnyTimes {
                 who: Ref::You,
                 cost,
+                bind: None,
             },
             Effect::Reflexive {
                 targets: own,

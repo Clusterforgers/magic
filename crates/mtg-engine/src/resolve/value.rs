@@ -3329,6 +3329,13 @@ impl<'a> Scope<'a> {
             Chosen::R111Names(names) => seen
                 .card
                 .is_some_and(|c| names.contains(&seen.chars.name_for(&c.card().name))),
+            // A name and a type chosen together: an object of either has what was chosen.
+            Chosen::R121NameAndType(name, subtype) => {
+                has_subtype(subtype)
+                    || seen
+                        .card
+                        .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name)
+            }
             Chosen::Player(_)
             | Chosen::Players(_)
             | Chosen::Chapter(_)

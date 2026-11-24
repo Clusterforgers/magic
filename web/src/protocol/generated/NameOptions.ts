@@ -31,6 +31,10 @@ nonbasic_land?: boolean,
  */
 r111_not_basic_land?: boolean, 
 /**
+ * The card must be a creature ("choose a creature card name"); the client offers only such cards.
+ */
+r121_creature?: boolean, 
+/**
  * The names of the cards the chooser looked at just before naming ("look at an opponent's hand, then choose any
  * card name"), in the order they were looked at; the look is logged as the permanent enters.
  */

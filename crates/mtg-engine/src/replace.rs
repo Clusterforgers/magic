@@ -830,6 +830,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         // More cards to surveil are offered by the surveil itself (`r4708_actions`).
         // An Aura attached as it turns face up is asked by the turn-up itself (`announce::turn_up`).
         ReplaceBy::PreventCounted(_)
+        | ReplaceBy::R121PreventCountedNext(_)
         | ReplaceBy::PreventNextAnd(_)
         | ReplaceBy::MayAddAmount(_)
         | ReplaceBy::MayInstead(_)
@@ -888,7 +889,6 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::R6007RevealOrControl { .. }
         | ReplaceBy::R109EntersAttached(_)
         | ReplaceBy::R612MayExchangeTextBoxes(_)
-        | ReplaceBy::R114ChooseObject(_)
         | ReplaceBy::BeholdOrTapped(_)
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
@@ -908,6 +908,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::AsEnters(_) => matches!(unit, Unit::Enter { .. } | Unit::Transform { .. }),
         ReplaceBy::R6603AttachToPlayer => matches!(unit, Unit::Transform { .. }),
+        ReplaceBy::R114ChooseObject(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
         ReplaceBy::Choose(_) => matches!(
             unit,
             Unit::Enter { .. } | Unit::Attach { .. } | Unit::Transform { .. }
@@ -2906,6 +2907,9 @@ impl Pass<'_> {
             (ReplaceBy::Choose(kind), Unit::Attach { object } | Unit::Transform { object, .. }) => {
                 return self.r5501_choose_as_attached(at, candidate, *kind, *object, applied);
             }
+            (ReplaceBy::R114ChooseObject(what), Unit::Attach { object }) => {
+                return self.r121_choose_object_as_attached(at, candidate, what, *object, applied);
+            }
             (ReplaceBy::R6603AttachToPlayer, Unit::Transform { object, .. }) => {
                 return self.r6603_attach_to_player(at, candidate, *object, applied);
             }
@@ -4409,6 +4413,7 @@ impl Pass<'_> {
                 | EntersChoice::R111OpponentAndName
                 | EntersChoice::R111NamesWithOpponent
                 | EntersChoice::R115ColorAndOpponent
+                | EntersChoice::R121CreatureNameAndType
         ) {
             return self.r4700_chooses(source, controller, kind);
         }
@@ -4548,6 +4553,7 @@ impl Pass<'_> {
             | EntersChoice::R111NamesWithOpponent
             | EntersChoice::R6001Abilities(_)
             | EntersChoice::R115ColorAndOpponent
+            | EntersChoice::R121CreatureNameAndType
             | EntersChoice::ColorAndCreatureType => Vec::new(),
             EntersChoice::Player => self
                 .state
@@ -4619,6 +4625,7 @@ fn entering_question(kind: EntersChoice) -> String {
         | EntersChoice::Players(_)
         | EntersChoice::R6001Abilities(_)
         | EntersChoice::R115ColorAndOpponent
+        | EntersChoice::R121CreatureNameAndType
         | EntersChoice::ColorAndCreatureType => String::new(),
     }
 }
@@ -4693,6 +4700,7 @@ mod r109_enters_attached;
 mod r113_copy_reflexive;
 mod r113_text_boxes;
 pub(crate) mod r114_choose_object;
+mod r121_02_attach_object;
 mod reveal;
 
 mod amplify;

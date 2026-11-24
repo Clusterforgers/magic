@@ -104,6 +104,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         | ReplaceBy::PreventAllButNext(_)
         | ReplaceBy::PreventUpTo(_)
         | ReplaceBy::PreventCounted(_)
+        | ReplaceBy::R121PreventCountedNext(_)
         | ReplaceBy::PreventCountedAnd { .. }
         | ReplaceBy::PreventAnd(_)
         | ReplaceBy::Multiply(_)
@@ -148,6 +149,7 @@ pub(super) fn damage_shield(
             | ReplaceBy::Redirect { next: true, .. }
             | ReplaceBy::PreventHalfNext
             | ReplaceBy::PreventAllButNext(_)
+            | ReplaceBy::R121PreventCountedNext(_)
     );
     let instead = match by {
         ReplaceBy::PreventHalfNext
@@ -172,7 +174,9 @@ pub(super) fn damage_shield(
         ReplaceBy::PreventUpTo(most) | ReplaceBy::RedirectUpTo { most, .. } => {
             (Some(*most), Vec::new())
         }
-        ReplaceBy::PreventCounted(amount) | ReplaceBy::RedirectCounted { most: amount, .. } => {
+        ReplaceBy::PreventCounted(amount)
+        | ReplaceBy::R121PreventCountedNext(amount)
+        | ReplaceBy::RedirectCounted { most: amount, .. } => {
             let most = u32::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(u32::MAX);
             (Some(most), Vec::new())
         }

@@ -44,6 +44,10 @@ pub struct NameOptions {
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub r111_not_basic_land: bool,
+    /// The card must be a creature ("choose a creature card name"); the client offers only such cards.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub r121_creature: bool,
     /// The names of the cards the chooser looked at just before naming ("look at an opponent's hand, then choose any
     /// card name"), in the order they were looked at; the look is logged as the permanent enters.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]

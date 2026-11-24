@@ -103,6 +103,30 @@ impl Pass<'_> {
                 }
                 Ok(Asked::Got(Some(Chosen::Players(chosen))))
             }
+            EntersChoice::R121CreatureNameAndType => {
+                let name = match self.r4702_chooses_name(source, controller, kind, Vec::new())? {
+                    Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+                    Asked::Got(Some(Chosen::Name(name))) => Some(name),
+                    Asked::Got(_) => None,
+                };
+                let types = crate::choose::values::creature_types();
+                let picked = match self.r4700_pick(
+                    source,
+                    controller,
+                    types.clone(),
+                    "Choose a creature type.".to_owned(),
+                )? {
+                    Asked::Ask(decision) => return Ok(Asked::Ask(decision)),
+                    Asked::Got(at) => at.and_then(|at| types.get(at).cloned()),
+                };
+                let subtype = match picked {
+                    Some(ChoiceOption::Label(name)) => Some(Subtype(name)),
+                    _ => None,
+                };
+                Ok(Asked::Got(name.zip(subtype).map(|(name, subtype)| {
+                    Chosen::R121NameAndType(name, subtype)
+                })))
+            }
             EntersChoice::R115ColorAndOpponent => self.r115_color_and_opponent(source, controller),
             EntersChoice::R6001Abilities(count) => self.r6001_abilities(source, controller, count),
             EntersChoice::R111OpponentAndName | EntersChoice::R111NamesWithOpponent => {
