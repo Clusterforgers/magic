@@ -6,9 +6,9 @@
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS};
 use mtg_campaign::content::{Content, FOUNDRY_FROM, Rarity};
-use mtg_campaign::run::CONTENT;
 use mtg_campaign::modifiers::{self, EncounterModifier};
 use mtg_campaign::relics::DeckMakeup;
+use mtg_campaign::run::CONTENT;
 use mtg_campaign::scale::PHASE_ROUNDS;
 use mtg_campaign::{Brain, Run, RunEvent, Scale, content};
 use proptest::prelude::*;
@@ -179,9 +179,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
 
 fn reworked_run(heroes: usize, heat: u8) -> Run {
     let content = content().unwrap();
-    let mut events = vec![RunEvent::Content {
-        version: CONTENT,
-    }];
+    let mut events = vec![RunEvent::Content { version: CONTENT }];
     for at in 0..heroes {
         events.push(RunEvent::Joined {
             name: format!("H{at}"),

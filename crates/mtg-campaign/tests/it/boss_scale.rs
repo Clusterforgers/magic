@@ -95,14 +95,25 @@ fn the_fight_plan_carries_the_reinforcements_by_party_size(
     #[values(FOUNDRY_FROM, CONTENT)] version: u32,
 ) {
     let content = content().unwrap();
-    let boss = run(heroes, version).fight_plan(content).unwrap().unwrap().boss;
-    let extra = if version >= BOSS_SCALE_FROM { heroes - 1 } else { 0 };
+    let boss = run(heroes, version)
+        .fight_plan(content)
+        .unwrap()
+        .unwrap()
+        .boss;
+    let extra = if version >= BOSS_SCALE_FROM {
+        heroes - 1
+    } else {
+        0
+    };
     assert_eq!(boss.reinforcements.len(), extra);
     assert_eq!(boss.relics.len(), boss_relics::count(0, 1, version));
     assert_eq!(boss.life, Scale::boss_life(heroes));
     // Each reinforcement is an emblem from the start and named on the sheet beside the relics.
     let emblems = boss.emblems();
-    assert_eq!(emblems.iter().filter(|id| *id == REINFORCEMENT).count(), extra);
+    assert_eq!(
+        emblems.iter().filter(|id| *id == REINFORCEMENT).count(),
+        extra
+    );
     assert_eq!(
         boss.sheet(content).unwrap().relics.len(),
         boss.relics.len() + extra
@@ -112,7 +123,11 @@ fn the_fight_plan_carries_the_reinforcements_by_party_size(
 #[test]
 fn a_solo_hero_meets_the_same_boss_apart_from_the_early_relics() {
     let content = content().unwrap();
-    let old = run(1, FOUNDRY_FROM).fight_plan(content).unwrap().unwrap().boss;
+    let old = run(1, FOUNDRY_FROM)
+        .fight_plan(content)
+        .unwrap()
+        .unwrap()
+        .boss;
     let mut now = run(1, CONTENT).fight_plan(content).unwrap().unwrap().boss;
     assert!(now.reinforcements.is_empty());
     now.relics.clone_from(&old.relics);
