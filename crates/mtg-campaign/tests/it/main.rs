@@ -2,6 +2,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 mod boss_decks;
+mod boss_scale;
 mod boss_switch;
 mod common;
 mod content;

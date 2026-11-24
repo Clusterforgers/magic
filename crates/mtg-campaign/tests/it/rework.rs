@@ -5,9 +5,10 @@
 //! boss seat carries the sheet that names them, its innate at its level.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS};
-use mtg_campaign::content::{Content, Rarity};
+use mtg_campaign::content::{Content, FOUNDRY_FROM, Rarity};
 use mtg_campaign::modifiers::{self, EncounterModifier};
 use mtg_campaign::relics::DeckMakeup;
+use mtg_campaign::run::CONTENT;
 use mtg_campaign::scale::PHASE_ROUNDS;
 use mtg_campaign::{Brain, Run, RunEvent, Scale, content};
 use proptest::prelude::*;
@@ -19,7 +20,7 @@ const LEVELS: [[u8; 14]; 3] = [
     [1, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5],
     [2, 2, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5],
 ];
-/// The design's relic count table, same columns.
+/// The relic count table of generations before `BOSS_SCALE_FROM`, same columns.
 const RELICS: [[usize; 14]; 3] = [
     [0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6],
     [0, 0, 0, 0, 1, 2, 3, 4, 5, 6, 6, 6, 6, 6],
@@ -37,7 +38,7 @@ fn innate_level_and_relic_count_follow_the_tables(#[values(0, 1, 2)] heat: u8) {
             "depth {depth}"
         );
         assert_eq!(
-            boss_relics::count(depth, heat),
+            boss_relics::count(depth, heat, FOUNDRY_FROM),
             RELICS[row][at],
             "depth {depth}"
         );
@@ -69,13 +70,13 @@ proptest! {
     fn deeper_or_hotter_never_weakens_the_boss(depth in 0u32..40, heat in 0u8..3) {
         let deeper = depth + 1;
         prop_assert!(Scale::innate_level(deeper, heat) >= Scale::innate_level(depth, heat));
-        prop_assert!(boss_relics::count(deeper, heat) >= boss_relics::count(depth, heat));
-        prop_assert!(boss_relics::count(depth, heat) <= MOST_BOSS_RELICS);
+        prop_assert!(boss_relics::count(deeper, heat, CONTENT) >= boss_relics::count(depth, heat, CONTENT));
+        prop_assert!(boss_relics::count(depth, heat, CONTENT) <= MOST_BOSS_RELICS);
         if heat < 2 {
             prop_assert!(Scale::innate_level(depth, heat + 1) >= Scale::innate_level(depth, heat));
-            prop_assert!(boss_relics::count(depth, heat + 1) >= boss_relics::count(depth, heat));
+            prop_assert!(boss_relics::count(depth, heat + 1, CONTENT) >= boss_relics::count(depth, heat, CONTENT));
         }
-        let n = boss_relics::count(depth, heat).max(1);
+        let n = boss_relics::count(depth, heat, CONTENT).max(1);
         let (rare, mythic) = boss_relics::odds(n, heat);
         let (rare_more, mythic_more) = boss_relics::odds((n + 1).min(MOST_BOSS_RELICS), heat);
         prop_assert!(rare_more >= rare && mythic_more >= mythic);
@@ -156,11 +157,11 @@ fn a_boss_never_brings_a_relic_naming_teammates(
     let relics = boss_relics::draw(
         content,
         &DeckMakeup::default(),
-        mtg_campaign::run::CONTENT,
+        CONTENT,
         (depth, heat),
         (seed, 2, 3),
     );
-    assert_eq!(relics.len(), boss_relics::count(depth, heat));
+    assert_eq!(relics.len(), boss_relics::count(depth, heat, CONTENT));
     for id in &relics {
         let relic = content.card(id).unwrap();
         assert!(!relic.team, "{id}");
@@ -169,7 +170,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
     let again = boss_relics::draw(
         content,
         &DeckMakeup::default(),
-        mtg_campaign::run::CONTENT,
+        CONTENT,
         (depth, heat),
         (seed, 2, 3),
     );
@@ -178,9 +179,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
 
 fn reworked_run(heroes: usize, heat: u8) -> Run {
     let content = content().unwrap();
-    let mut events = vec![RunEvent::Content {
-        version: mtg_campaign::run::CONTENT,
-    }];
+    let mut events = vec![RunEvent::Content { version: CONTENT }];
     for at in 0..heroes {
         events.push(RunEvent::Joined {
             name: format!("H{at}"),
@@ -215,11 +214,14 @@ fn a_reworked_fight_plan_holds_only_the_reworked_parts(
     assert_eq!(boss.life, Scale::boss_life(heroes));
     assert_eq!(boss.brain, Brain::Hard);
     assert!(rework.modifier.is_some());
-    assert_eq!(rework.relics.len(), boss_relics::count(0, heat));
+    assert_eq!(rework.relics.len(), boss_relics::count(0, heat, CONTENT));
     let rounds: Vec<u32> = rework.round_phases.iter().map(|(_, r)| *r).collect();
     assert!(rounds.is_empty() || rounds == PHASE_ROUNDS);
     // The plan's emblems: the modifier and any relics, copies kept.
-    assert_eq!(boss.emblems().len(), 2 + rework.relics.len());
+    assert_eq!(
+        boss.emblems().len(),
+        2 + rework.relics.len() + rework.reinforcements.len()
+    );
 }
 
 #[rstest]
@@ -263,6 +265,7 @@ fn seat(innate: &str, relics: Vec<String>) -> mtg_campaign::BossSeat {
         innate: innate.into(),
         modifier: None,
         relics,
+        reinforcements: Vec::new(),
         round_phases: Vec::new(),
         satchel: Vec::new(),
     }
@@ -319,7 +322,10 @@ fn a_reworked_boss_seat_carries_its_sheet(
     assert_eq!(*sheet, rework.sheet(content).unwrap());
     let modifier = content.card(rework.modifier.as_deref().unwrap()).unwrap();
     assert_eq!(sheet.modifier.as_ref().unwrap().name, modifier.name);
-    assert_eq!(sheet.relics.len(), rework.relics.len());
+    assert_eq!(
+        sheet.relics.len(),
+        rework.relics.len() + rework.reinforcements.len()
+    );
     assert_eq!(sheet.phases.len(), rework.round_phases.len());
     assert!(
         setup.players[..heroes]

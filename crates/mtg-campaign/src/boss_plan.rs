@@ -1,6 +1,6 @@
 //! The boss's seat: its precon deck, its innate at the level of the run's depth and Heat, one encounter modifier and
-//! its relics drawn by the seed keyed by floor and room, two phases by round, its satchel, its life by party size only,
-//! and the Hard brain. A phase written with levels (as an innate is) plays at the innate's level.
+//! its relics drawn by the seed keyed by floor and room, two phases by round, its satchel, its life and reinforcements
+//! by party size only, and the Hard brain. A phase written with levels (as an innate is) plays at the innate's level.
 
 use mtg_engine::boss_sheet::{BossSheet, SheetCard};
 
@@ -47,6 +47,7 @@ impl Run {
             innate: innate_id(&boss.innate, level),
             modifier: modifier.map(|m| m.id.clone()),
             relics,
+            reinforcements: Scale::reinforcements(heroes, self.content),
             round_phases: boss
                 .round_phases
                 .iter()
@@ -82,7 +83,12 @@ impl BossSeat {
             level: content.card(&self.innate)?.level,
             innate: Some(card(&self.innate)?),
             modifier: self.modifier.as_ref().map(card).transpose()?,
-            relics: self.relics.iter().map(card).collect::<Result<_, _>>()?,
+            relics: self
+                .relics
+                .iter()
+                .chain(&self.reinforcements)
+                .map(card)
+                .collect::<Result<_, _>>()?,
             phases: self
                 .round_phases
                 .iter()
