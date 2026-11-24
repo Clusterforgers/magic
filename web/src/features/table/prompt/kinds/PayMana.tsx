@@ -389,13 +389,45 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         : askedText(options.asked, nameOf)
   const slots = paySlots(cost, spends, life)
   // A phone's bar holds the chip and the meter, so its sheet does not draw the cost again.
-  const inBar = useDecisionHome().home === 'bar'
+  const home = useDecisionHome().home
+  const inBar = home === 'bar'
+  // The dock draws no column (its sources are pressed on the board): each announced ability is a button by the meter.
+  const dockActivate =
+    home === 'dock' && announced.length > 0
+      ? announced.map((ref, at) => {
+          const line = lines[at] ?? 'its mana ability'
+          const name = nameOf(ref.object)
+          return (
+            <Button
+              key={`${ref.object}-${abilityKey(ref)}`}
+              size="sm"
+              variant="outline"
+              data-slot="pay-activate"
+              className="max-w-full min-w-0 shrink"
+              title={`${name}: ${line}`}
+              aria-label={`Activate ${name}: ${spoken(line)}`}
+              onClick={() => activate(ref)}
+            >
+              <span className="truncate">Activate {name}</span>
+            </Button>
+          )
+        })
+      : null
   return (
     <PromptLayout
       text={text}
       quiet
       doing={doing}
-      meter={<PayMeter slots={slots} />}
+      meter={
+        dockActivate === null ? (
+          <PayMeter slots={slots} />
+        ) : (
+          <>
+            <PayMeter slots={slots} />
+            {dockActivate}
+          </>
+        )
+      }
       choices={
         <PayColumn
           name={keyword === undefined ? nameOf(spell) : `${keyword} of ${nameOf(spell)}`}
