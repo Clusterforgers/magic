@@ -85,6 +85,12 @@ pub(crate) fn fold(state: &mut GameState, event: &CountersChanged) -> Result<(),
             }
             if event.delta > 0 {
                 state.tally_object(named, None, Tally::Countered);
+                let kind = state
+                    .tallies
+                    .r120_counter_kinds
+                    .entry((named, event.counter.clone()))
+                    .or_insert(0);
+                *kind = kind.saturating_add(1);
                 let by = state.resolving_controller();
                 state.record(
                     mtg_cards::value::TallyEvent::CountersPut,

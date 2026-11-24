@@ -311,6 +311,8 @@ pub(crate) struct Tallies {
     /// The cards a surveil chose for the graveyard that have not moved there yet, with the player who surveilled; the move
     /// that follows the `Surveilled` event counts each one for that player (`Pred::R117SurveilledBy`).
     pub(crate) r117_surveilling: BTreeMap<ObjectId, PlayerId>,
+    /// How many times counters of each kind were put on each object (`Nth` over `CountersPut` of one kind).
+    pub(crate) r120_counter_kinds: BTreeMap<(ObjectRef, mtg_cards::value::CounterKind), u32>,
 }
 
 /// A creature that dealt combat damage to a player this turn, as it was then (prowl, CR 702.76).

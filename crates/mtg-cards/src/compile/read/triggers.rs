@@ -1697,6 +1697,28 @@ fn tapped_for_mana_text(pattern: &TriggerPattern) -> Option<String> {
     ))
 }
 
+/// "Whenever you discard one or more cards at random, select one or more targets at random, choose one or more modes at
+/// random, flip one or more coins, or roll one or more dice".
+fn r120_random_text(who: &Ref) -> Option<String> {
+    let subject = player_verb(who, "discard")?;
+    let third = !subject.starts_with("you ");
+    let verb = |plain: &str, third_person: &str| {
+        if third {
+            third_person.to_owned()
+        } else {
+            plain.to_owned()
+        }
+    };
+    Some(format!(
+        "Whenever {subject} one or more cards at random, {} one or more targets at random, {} one or more modes at \
+         random, {} one or more coins, or {} one or more dice",
+        verb("select", "selects"),
+        verb("choose", "chooses"),
+        verb("flip", "flips"),
+        verb("roll", "rolls"),
+    ))
+}
+
 /// "Whenever you amass", "Whenever an opponent expends 4": a keyword action of a player, with its number.
 fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
     let (who, verb, n) = match pattern {
@@ -1708,6 +1730,7 @@ fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::R116Dilemma { who } => {
             return Some(format!("Whenever {} a dilemma", player_verb(who, "face")?));
         }
+        TriggerPattern::R120RandomAction { who } => return r120_random_text(who),
         TriggerPattern::Bolstered { who } => (who, "bolster", None),
         TriggerPattern::Surveilled { who } => (who, "surveil", None),
         _ => return None,
@@ -1851,6 +1874,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         | TriggerPattern::Expend { .. }
         | TriggerPattern::W11cCrime { .. }
         | TriggerPattern::R116Dilemma { .. }
+        | TriggerPattern::R120RandomAction { .. }
         | TriggerPattern::Bolstered { .. }
         | TriggerPattern::Surveilled { .. } => w9a_player_action_text(pattern),
         TriggerPattern::LifeGained { who } => {
@@ -2043,8 +2067,8 @@ fn nth_text(event: &TriggerPattern, nth: u32) -> Option<String> {
                 .or_else(|| super::e16a_history::first_discards(inner))?;
             return Some(format!("{counted} for the first time each turn"));
         }
-        // The counters of one batch are one time: the first counter put in the turn is the one that counts.
-        TriggerPattern::CountersPut { counter: None, .. } => {
+        // The counters of one batch are one time: the first counter put in the turn (of its kind) is the one that counts.
+        TriggerPattern::CountersPut { .. } => {
             let counted = batch_text(event)?;
             return Some(format!("{counted} for the {ordinal} time each turn"));
         }

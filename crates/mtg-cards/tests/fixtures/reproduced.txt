@@ -344,6 +344,7 @@ Boromir, Gondor's Hope
 Boros Charm
 Boros Garrison
 Boros Signet
+Borrowing 100,000 Arrows
 Bosh, Iron Golem
 Bounty of Skemfar
 Bounty of the Hunt
@@ -750,6 +751,7 @@ Dissension in the Ranks
 Distorting Wake
 Distress
 Divest
+Divine Congregation
 Divine Visitation
 Diviner Spirit
 Djinn of Infinite Deceits
@@ -2339,6 +2341,7 @@ Reliquary Tower
 Remorseful Cleric
 Render Inert
 Renewed Faith
+Renewing Dawn
 Renounce
 Repeal
 Replication Technique
@@ -2734,6 +2737,7 @@ Starfleet Communicator
 Starfleet Security
 Starfleet Spanner Jockey
 Starforged Sword
+Starlight
 Starlit Sanctum
 Starnheim Aspirant
 Starscape Cleric
@@ -2986,6 +2990,7 @@ The War Doctor
 The Warring Triad
 The Wasp, Janet Van Dyne
 The Wise Mothman
+Theft of Dreams
 Thelonite Hermit
 There's Coffee in that Nebula
 Thick-Skinned Goblin

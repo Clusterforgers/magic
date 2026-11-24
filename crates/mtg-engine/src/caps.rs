@@ -108,6 +108,9 @@ const RUNS: &[&str] = &[
     "Trigger.Expend",
     "Trigger.W11cCrime",
     "Trigger.R116Dilemma",
+    "Trigger.R120RandomAction",
+    "Trigger.R120AssistedCast",
+    "Trigger.R120DealsExactly",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
     "Trigger.ResolvedToGraveyard",
@@ -1992,6 +1995,9 @@ mod tests {
     #[case::expend_triggers("Trigger.Expend", true)]
     #[case::w11c_crime_triggers("Trigger.W11cCrime", true)]
     #[case::r116_dilemma_triggers("Trigger.R116Dilemma", true)]
+    #[case::r120_random_action_triggers("Trigger.R120RandomAction", true)]
+    #[case::r120_assisted_cast_triggers("Trigger.R120AssistedCast", true)]
+    #[case::r120_deals_exactly_triggers("Trigger.R120DealsExactly", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::resolved_to_graveyard("Trigger.ResolvedToGraveyard", true)]

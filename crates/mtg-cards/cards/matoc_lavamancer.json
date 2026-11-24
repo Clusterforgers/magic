@@ -1,16 +1,26 @@
 {
   "oracle_id": "bbe79ca2-8f05-4f1b-b5d3-84724d3eff3a",
   "name": "Matoc, Lavamancer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Matoc, Lavamancer",
       "oracle_fingerprint": "65493723f5b48af71bcc2e0dacde409f",
       "abilities": [
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 0, "end": 200 }
+          "Triggered": {
+            "when": { "R120DealsExactly": { "source": [{ "ControlledBy": "You" }], "amount": 2 } },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfYourNextTurn"
+                }
+              }
+            ]
           }
         },
         {

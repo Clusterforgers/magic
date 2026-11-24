@@ -1,0 +1,61 @@
+{
+  "oracle_id": "d95af032-3efd-40c7-8229-ade9d974934f",
+  "name": "U.S.S. Enterprise-D, Galaxy-Class",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "U.S.S. Enterprise-D, Galaxy-Class",
+      "oracle_fingerprint": "a26d8e56cc2bdb91b4d4528021c087a3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "Nth": {
+                "event": { "CountersPut": { "what": ["This"], "counter": "charge" } },
+                "nth": 1
+              }
+            },
+            "effects": [
+              { "ExileTop": { "as": "impulse" } },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": { "from": "Exile", "only": { "Bound": "impulse" }, "play": true }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": "Station" },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddType": "Creature" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        },
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "AddKeyword": "Flying" }, { "AddKeyword": "Vigilance" }],
+            "condition": {
+              "Compare": {
+                "left": { "Counters": { "on": "This", "counter": "charge" } },
+                "op": "Ge",
+                "right": 7
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
