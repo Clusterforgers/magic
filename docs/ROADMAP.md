@@ -179,7 +179,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A fourth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
-- [ ] (dl14a) The Drowned Spire's grown bosses measured with `delve_sim` against the targets of Tuning and tuned; a simulated fight (seed 2) fails with "unknown effect EffectId(1)"
+- [ ] (dl14a) The Drowned Spire's grown bosses and the Ember Foundry measured with `delve_sim` against the targets of Tuning and tuned; a Spire fight takes the sim 8 to 20 minutes, so the sim gets faster first
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 
