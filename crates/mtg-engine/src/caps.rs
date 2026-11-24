@@ -432,6 +432,8 @@ const RUNS: &[&str] = &[
     "Effect.R111OrderGraveyard",
     "Effect.R116Assimilate",
     "Effect.R112DoubleX",
+    "Effect.R123XBecomes",
+    "Effect.R123ExileContest",
     "Effect.Performed",
     "Effect.Crewed",
     "Effect.BecomeMonarch",

@@ -655,6 +655,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
         super::r120_01_wholes::r120_01_add_wholes(ability, &mut texts);
         super::r121_01_wholes::r121_01_add_wholes(ability, &mut texts);
         super::r122_01_wholes::r122_01_add_wholes(ability, &mut texts);
+        super::r123_01_wholes::r123_01_add_wholes(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -747,6 +748,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r120_01_wholes::r120_01_add_wholes(ability, &mut texts);
     super::r121_01_wholes::r121_01_add_wholes(ability, &mut texts);
     super::r122_01_wholes::r122_01_add_wholes(ability, &mut texts);
+    super::r123_01_wholes::r123_01_add_wholes(ability, &mut texts);
     super::r119_02_wholes::r119_02_add_wholes(ability, &mut texts);
     super::r120_02_wholes::r120_02_add_wholes(ability, &mut texts);
     super::r121_02_wholes::r121_02_add_wholes(ability, &mut texts);

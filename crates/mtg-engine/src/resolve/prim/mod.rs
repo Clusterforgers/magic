@@ -117,6 +117,7 @@ mod r111_order_graveyard;
 mod r112_double_x;
 mod r117_another_of_kind;
 mod r117_end_combat;
+mod r123_contest;
 mod r301b_exchange_toughness;
 mod r372_gain_suspend;
 mod r404_look_face_down;
@@ -374,6 +375,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Learn { .. } => learn::run(cx, effect),
         Effect::R111OrderGraveyard { .. } => r111_order_graveyard::run(cx, effect),
         Effect::R112DoubleX { .. } => r112_double_x::run(cx, effect),
+        Effect::R123XBecomes { .. } => r112_double_x::r123_run(cx, effect),
         Effect::Performed { .. } => l31a_performed::run(cx, effect),
         Effect::Crewed { .. } => crewed::run(cx, effect),
         Effect::Explore { .. } => explore::run(cx, effect),
@@ -385,6 +387,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
         Effect::GainSuspend { .. } => r372_gain_suspend::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
+        Effect::R123ExileContest { .. } => r123_contest::run(cx, effect),
         Effect::EndTurn => Ok(end_turn::run(cx)),
         Effect::R117EndCombat => Ok(r117_end_combat::run(cx)),
         Effect::AddPhase { .. } => add_phase::run(cx, effect),

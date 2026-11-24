@@ -2380,8 +2380,12 @@ impl Pass<'_> {
         else {
             return false;
         };
-        cause.choices().targets.iter().flatten().any(|named| {
-            match (named, target) {
+        cause
+            .choices()
+            .targets
+            .iter()
+            .flatten()
+            .any(|named| match (named, target) {
                 (Target::Player(player), DamageTarget::Player(hit)) => *player == hit,
                 (Target::Object(named), DamageTarget::Object(hit)) => {
                     named.id == hit
@@ -2391,8 +2395,7 @@ impl Pass<'_> {
                             .is_some_and(|o| o.counter() == named.counter)
                 }
                 _ => false,
-            }
-        })
+            })
     }
 
     /// The player who orders the effects that apply to the item (CR 616.1): the one it happens to, or the controller of
