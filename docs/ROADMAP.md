@@ -80,7 +80,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
 - [ ] (pf9b3) At 1280 × 720 a card prompt's sheet holds its first line and one row of whole cards without scrolling, and more than eight target cards wrap at 1400 × 900
 - [ ] (pf9d2) An eight-seat grid at 1400 × 900 shows a row of each opponent's cards
-- [ ] (pf9d3) Your pod column in boss mode at 1400 × 900 shows all its chips without scrolling
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9f) Stable tests under load: the 40-tap budget in `perf.test.tsx` and the `check_sched` lock-wait case
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped

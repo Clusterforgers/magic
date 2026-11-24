@@ -1,5 +1,5 @@
 /** The boards of boss mode as `splitBoss` reads them: their widths in the table's frames and what each row spends besides lanes. */
-import { allyShares, holdBoss, POD_MIN_PX } from './bossSplit'
+import { allyShares, holdBoss, OWN_POD_PX, POD_MIN_PX } from './bossSplit'
 import type { BossBoard, BossSplit } from './bossSplit'
 import type { LaneCounts } from './laneFit'
 import { BOSS_ABILITIES_PX, BOSS_SPAN, POD_COLUMN_PX, ZONE_GAP_PX } from './layout'
@@ -72,7 +72,7 @@ export function bossSplitOf(
       own,
       ownChrome: 2 * ZONE_GAP_PX + 2 * ZONE_PAD_PX,
       ownReady: counts.ownReady,
-      ownFloor: 2 * ZONE_GAP_PX + POD_MIN_PX,
+      ownFloor: 2 * ZONE_GAP_PX + OWN_POD_PX,
       gap: ZONE_GAP_PX,
     },
     held,
