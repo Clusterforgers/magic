@@ -324,7 +324,10 @@ fn a_reworked_boss_seat_carries_its_sheet(
     assert_eq!(*sheet, rework.sheet(content).unwrap());
     let modifier = content.card(rework.modifier.as_deref().unwrap()).unwrap();
     assert_eq!(sheet.modifier.as_ref().unwrap().name, modifier.name);
-    assert_eq!(sheet.relics.len(), rework.relics.len());
+    assert_eq!(
+        sheet.relics.len(),
+        rework.relics.len() + rework.reinforcements.len()
+    );
     assert_eq!(sheet.phases.len(), rework.round_phases.len());
     assert!(
         setup.players[..heroes]
