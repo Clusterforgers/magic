@@ -171,7 +171,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A fourth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
-- [ ] (dl14a) The Drowned Spire's grown bosses and the Ember Foundry tuned to the targets of Tuning from their measured numbers (two Hard heroes win 95 % and 98 % at Heat 1)
+- [ ] (dl14a) Two Hard heroes win 50 to 60 % against the Spire, Foundry and Warrens bosses at Heat 1 from the second boss: life, innate level and hand leave them at 92 to 98 % because the boss brings no relic there and its creatures never attack into two boards, so the boss needs strength by party size or early relics (Tuning)
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 

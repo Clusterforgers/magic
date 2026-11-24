@@ -325,6 +325,23 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                         }
                     )),
                 );
+                for at in 0..plan.seats() {
+                    let p = PlayerId::from_index(at);
+                    println!(
+                        "seed {seed}: seat {at} lands {} spells {} attackers {}",
+                        count(&|e| matches!(e, Event::LandPlayed { player, .. } if *player == p)),
+                        count(&|e| matches!(e, Event::SpellCast { player, .. } if *player == p)),
+                        outcome
+                            .events
+                            .iter()
+                            .map(|e| match e {
+                                Event::AttackersDeclared { player, attackers } if *player == p =>
+                                    attackers.len(),
+                                _ => 0,
+                            })
+                            .sum::<usize>(),
+                    );
+                }
             }
             let state = mtg_engine::replay(&setup_of(plan, cards, seed), &outcome.events);
             if let Ok(engine) = &state
@@ -646,6 +663,18 @@ fn main() {
                             .unwrap();
                         if let Some(modifier) = &modifier {
                             plan.boss.modifier.clone_from(modifier);
+                        }
+                        // `DELVE_SIM_LEVEL` plays the innate and leveled phases at that level, the relics kept.
+                        if let Ok(level) = std::env::var("DELVE_SIM_LEVEL") {
+                            let level: u8 = level.parse().unwrap();
+                            let at = |id: &str| {
+                                let leveled = mtg_campaign::innate::innate_id(id, level);
+                                if content.cards.contains_key(&leveled) { leveled } else { id.to_owned() }
+                            };
+                            plan.boss.innate = at(&spec.innate);
+                            for ((id, _), base) in plan.boss.round_phases.iter_mut().zip(&spec.round_phases) {
+                                *id = at(base);
+                            }
                         }
                         let t = Instant::now();
                         let fought = fight(&plan, &vec![Vec::new(); heroes], seed, hero_level);
