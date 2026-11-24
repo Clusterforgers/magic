@@ -1,5 +1,6 @@
 /** Pure split of the table's height in boss mode: the boss's side, the other heroes' row and your board, each by what it draws. */
 import { ALLY_STRIP_PX } from './layout'
+import { POD_CRAMPED_PX } from './cornerFit'
 import { GROW_SHARE, padded } from './holdFit'
 import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts, LaneLimits } from './laneFit'
@@ -30,6 +31,11 @@ export const OWN_READY_COUNTS: LaneCounts = { lands: 3, creatures: 1, other: 0 }
 export const BOSS_READY_COUNTS: LaneCounts = OWN_READY_COUNTS
 /** The least height of a pod column beside a board that has permanents, in px. */
 export const POD_MIN_PX = 104
+/**
+ * The least height of your pod column in boss mode, in px: the tight blocks (name, the figures on two lines, the pool
+ * with a damage and a tax chip on three, the untapped sources on two) over the corner's chips, so none scrolls away.
+ */
+export const OWN_POD_PX = 240
 
 /** A board of the split: the width of its lanes, its boxes, and what its frame draws above the lanes in px. */
 export interface BossBoard {
@@ -181,11 +187,14 @@ function squeezed(
   gap: number,
 ): BossSplit {
   const [boss, allies, own] = needs
-  const opponents = Math.min(cap, boss)
+  const least = allyShows ? ALLY_ROW_MIN_PX : ALLY_LINE_PX
+  // The boss's side gives way, down to a pod column that keeps its chips (`POD_CRAMPED_PX`), where the allies' least row and your pod column need the room.
+  const partyLeast = (allies === 0 ? 0 : least + gap) + Math.min(own, finite(input.ownFloor))
+  const floor = Math.min(boss, finite(input.bossFloor) + POD_CRAMPED_PX - POD_MIN_PX)
+  const opponents = Math.min(cap, boss, Math.max(floor, room - partyLeast))
   const party = Math.max(0, room - opponents)
   const rest = Math.max(0, party - gap)
   // Your board is where you play: it keeps what it needs at the floor first, and the allies' row takes the rest.
-  const least = allyShows ? ALLY_ROW_MIN_PX : ALLY_LINE_PX
   const scaled = allies === 0 ? 0 : rest - Math.min(own, Math.max(0, rest - least))
   const low = scaled < least
   const band = input.allies.length === 0 ? 0 : low ? Math.min(ALLY_STRIP_PX, rest) : scaled
@@ -208,6 +217,11 @@ export function holdBoss(
   const cardless = (split: BossSplit): boolean => split.heroCard === 0 || split.bossCard === 0
   if (held === null || cardless(held) || cardless(fresh)) return fresh
   if (Math.abs(held.opponents + held.own - room) > 0.5) return fresh
+  // Your pod column is held whole: a held row under its floor gives way to a fresh one that keeps it.
+  const ownBoard = (split: BossSplit): number =>
+    split.own - split.band - (input.allies.length === 0 ? 0 : finite(input.gap))
+  const floor = finite(input.ownFloor)
+  if (ownBoard(held) < floor && ownBoard(fresh) > ownBoard(held)) return fresh
   const need = (board: BossBoard, card: number): number =>
     finite(board.head ?? 0) + laneHeight(board.width, board.counts, card, limits)
   const most = (boards: readonly BossBoard[], card: number): number =>

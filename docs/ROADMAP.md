@@ -77,10 +77,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
-- [ ] (pf9b2) Prompt cards under 76 px wide draw a compact face (name, cost, power and toughness) whole instead of cutting the full face's foot line
-- [ ] (pf9b3) At 1280 × 720 a card prompt's sheet holds its first line and one row of whole cards without scrolling, and more than eight target cards wrap at 1400 × 900
-- [ ] (pf9d2) An eight-seat grid at 1400 × 900 shows a row of each opponent's cards
-- [ ] (pf9d3) Your pod column in boss mode at 1400 × 900 shows all its chips without scrolling
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (pf9k) Priority offers a spell that only an announced mana ability (Vexing Puzzlebox) makes affordable, so it can be cast and paid from the payment prompt
@@ -105,13 +101,11 @@ The table and its prompts are live; the items below polish them.
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
 - [ ] (dh8) Combat forecasts are badges on attackers, blockers and the attacked pod, with the total in the dock
 - [ ] (dh11) `hand.spec.ts`: the rotated end card's name line clips the hand container (7 cases)
-- [ ] (dh12) Under priority a large Satchel leaves the hand at least two whole cards beside it
 - [ ] (dh10) On a phone, paying shows the cost once: the pay sheet header or the bar's chip and meter, not both
 - [ ] (mb4) The phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
 - [ ] (pf1) `DeckPictures` also lists an opponent's whole deck where its list is public (an unchanged precon, an open-deck house rule), and the tokens a deck can make (`docs/web.md`, Card images)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 - [ ] (rg1) On a phone the decision bar shows the Stops button whole under a combat declaration, the stack chip beside a take-back and the choice cards of a phone on its side, and `reach.spec.ts` holds those stops on phones too
-- [ ] (rg2) Your board keeps its lower right cards clear of the controls dock where the dock's body grows over that corner on a short window
 - [ ] (rg3) `reach.spec.ts` holds the signed-in pages (Decks, My games, Tournaments, Delves, Settings) on the accounts server
 
 - [ ] Playwright games with corpus decks that ask every decision kind

@@ -12,6 +12,14 @@ export interface FitBox {
   width: number
   /** The height in px. */
   height: number
+  /** A corner at the box's lower right that something lies over (the grown controls dock): no card is placed in it. */
+  notch?: FitNotch
+}
+
+/** A box's lower right corner, in px from its right and bottom edges. */
+export interface FitNotch {
+  width: number
+  height: number
 }
 
 /** One row to place: how many stacks it holds and the shape of its cards. */

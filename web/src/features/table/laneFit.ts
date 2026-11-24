@@ -110,6 +110,8 @@ export interface BandPlace {
   lanes: readonly LanePlace[]
   /** The height of its tallest lane in px. */
   height: number
+  /** The px kept free at its right: the band reaches into the box's notch. */
+  inset?: number
 }
 
 /** The answer of `fitLanes`. */
@@ -228,6 +230,49 @@ function placeShape(
 const heightOf = (bands: readonly BandPlace[], bandGap: number): number =>
   bands.length === 0 ? 0 : bands.reduce((sum, band) => sum + band.height, 0) + bandGap * (bands.length - 1)
 
+/** `bands` with the notch's width kept free at the right of each that reaches into it; every band where `all`. */
+function insetForNotch(
+  bands: readonly BandPlace[],
+  box: FitBox,
+  facing: 'near' | 'far',
+  limits: LaneLimits,
+  all = false,
+): BandPlace[] {
+  const notch = box.notch
+  if (notch === undefined || !(notch.width > 0) || !(notch.height > 0)) return [...bands]
+  const height = whole(box.height)
+  const top = height - notch.height
+  let at = facing === 'near' ? 0 : height - heightOf(bands, limits.bandGap)
+  return bands.map((band) => {
+    const reaches = all || at + band.height > top
+    at += band.height + limits.bandGap
+    return reaches ? { ...band, inset: notch.width } : band
+  })
+}
+
+/**
+ * Whether `bands`, stacked from the top of the box (`near`) or from its bottom (`far`), keep clear of the box's
+ * notch: every band that reaches into its lowest `notch.height` px fits in the width beside it. Lanes start at the left.
+ */
+function clearOfNotch(
+  bands: readonly BandPlace[],
+  box: FitBox,
+  facing: 'near' | 'far',
+  limits: LaneLimits,
+): boolean {
+  const notch = box.notch
+  if (notch === undefined || !(notch.width > 0) || !(notch.height > 0)) return true
+  const height = whole(box.height)
+  const top = height - notch.height
+  const beside = whole(box.width) - notch.width
+  let at = facing === 'near' ? 0 : height - heightOf(bands, limits.bandGap)
+  for (const band of bands) {
+    if (at + band.height > top && spanOf(band.lanes, limits.laneGap) > beside) return false
+    at += band.height + limits.bandGap
+  }
+  return true
+}
+
 /**
  * The least height a board `boxWidth` wide needs to hold its lanes at `cardWidth`, over every shape; 0 for an empty
  * board and `Infinity` when no shape fits the width.
@@ -305,7 +350,15 @@ export function fitAt(
     const bands = placeShape(shape, counts, cardWidth, box.width, limits, facing)
     if (bands === null) continue
     const height = heightOf(bands, limits.bandGap)
-    if (height <= boxHeight) return { shape, cardWidth, bands, height, scrolls: false, hidden: 0 }
+    if (height <= boxHeight && clearOfNotch(bands, box, facing, limits))
+      return {
+        shape,
+        cardWidth,
+        bands: insetForNotch(bands, box, facing, limits),
+        height,
+        scrolls: false,
+        hidden: 0,
+      }
   }
   return null
 }
@@ -326,7 +379,11 @@ export function fitLanes(
   const minWidth = at(0)
   const fits = (shape: BoardShape, rung: number): BandPlace[] | null => {
     const bands = placeShape(shape, counts, at(rung), box.width, limits, facing)
-    return bands !== null && heightOf(bands, limits.bandGap) <= boxHeight ? bands : null
+    return bands !== null &&
+      heightOf(bands, limits.bandGap) <= boxHeight &&
+      clearOfNotch(bands, box, facing, limits)
+      ? bands
+      : null
   }
   let best: LaneFit | null = null
   for (const shape of PREFERENCE) {
@@ -337,7 +394,7 @@ export function fitLanes(
     best = {
       shape,
       cardWidth: at(low),
-      bands,
+      bands: insetForNotch(bands, box, facing, limits),
       height: heightOf(bands, limits.bandGap),
       scrolls: false,
       hidden: 0,
@@ -346,16 +403,19 @@ export function fitLanes(
   if (best !== null) return best
   // Nothing fits at the floor: the shape that needs the least height, wrapping inside the width where it can. The
   // zone scrolls from its top, so creatures lead on every board, an opponent's too, and what is cut off is the rest.
+  // A notch keeps the whole height beside it: the zone scrolls past it, so no card ever passes under it.
+  const notched = box.notch !== undefined && box.notch.width > 0 && box.notch.height > 0
+  const width = notched ? Math.max(minWidth, box.width - (box.notch?.width ?? 0)) : box.width
   let floor: LaneFit | null = null
   for (const shape of PREFERENCE) {
-    const bands = placeShape(shape, counts, minWidth, box.width, limits, 'near')
+    const bands = placeShape(shape, counts, minWidth, width, limits, 'near')
     if (bands === null) continue
     const height = heightOf(bands, limits.bandGap)
     if (floor !== null && height >= floor.height) continue
     floor = {
       shape,
       cardWidth: minWidth,
-      bands,
+      bands: notched ? insetForNotch(bands, box, facing, limits, true) : bands,
       height,
       scrolls: true,
       hidden: hiddenBelow(bands, boxHeight, limits),

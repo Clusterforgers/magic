@@ -1,4 +1,4 @@
-// Goal: the boss-mode split shares the table's height by what each board draws: the rows add up to the room, a board with more permanents gets more, the boss's side stays under its cap and its cards under the heroes', the boss's side without permanents keeps the room of its first ones, an ally's or an idle own board without permanents is one line, a hand that will fill an empty board keeps your row, and a room too small for boards leaves the allies a strip of tiles; the hand dock of a seat with nothing to play is a slim bar in boss mode only.
+// Goal: the boss-mode split shares the table's height by what each board draws: the rows add up to the room, a board with more permanents gets more, the boss's side stays under its cap and its cards under the heroes', the boss's side without permanents keeps the room of its first ones, an ally's or an idle own board without permanents is one line, a hand that will fill an empty board keeps your row, your pod column is held whole where the room allows, and a room too small for boards leaves the allies a strip of tiles; the hand dock of a seat with nothing to play is a slim bar in boss mode only.
 import { describe, expect, it } from 'vitest'
 import {
   ALLY_LINE_PX,
@@ -8,6 +8,7 @@ import {
   BOSS_SCALE,
   BOSS_SIDE_MOST,
   OWN_LINE_PX,
+  OWN_POD_PX,
   allyShares,
   holdBoss,
   permanentsIn,
@@ -229,6 +230,31 @@ describe('splitBoss', () => {
       expect(lanes).toBeGreaterThanOrEqual(laneHeight(ownWidth, counts.own, card) - 1e-6)
     },
   )
+
+  // Your pod column beside your board holds its chips whole (`OWN_POD_PX`) where the window has the room.
+  it.each([
+    [2, 1400, 900],
+    [3, 1400, 900],
+    [2, 1920, 1080],
+    [3, 1920, 1080],
+  ])('%i heroes at %i x %i: your row holds your whole pod column', (heroes, width, height) => {
+    const state = fixtureState(withBoss(buildFixture({ seats: heroes + 1 }), 0))
+    const plan = planTable({
+      viewport: { width, height },
+      seatCount: heroes + 1,
+      viewer: 0,
+      sides: must(bossSidesOf(must(state.view))),
+    })
+    const counts = {
+      own: seatCounts(state, 0),
+      theirs: plan.seats.boards.map((seat) => seatCounts(state, seat)),
+      allies: plan.seats.allies.map((seat) => seatCounts(state, seat)),
+      ownReady: true,
+    }
+    const { split } = bossSplitOf(plan.regions, plan.seats, counts, 0, 0)
+    const gap = counts.allies.length === 0 ? 0 : ZONE_GAP_PX
+    expect(split.own - split.band - gap - 2 * ZONE_GAP_PX).toBeGreaterThanOrEqual(OWN_POD_PX)
+  })
 
   // `/dev/table?seats=4&boss=0&permanents=10` with the side column open: every hero's face stays whole (76 px and up).
   it.each([

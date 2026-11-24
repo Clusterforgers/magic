@@ -1,15 +1,18 @@
 import { Crosshair } from 'lucide-react'
+import { useRef } from 'react'
 import type { Ref } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
-import { HIGHLIGHT } from '../cardSize'
+import { HIGHLIGHT, NARROW_PX } from '../cardSize'
 import { CardFace } from '../CardFace'
 import { ChosenMark } from '../ChosenMark'
+import { CardWidthContext } from '../ImageFace'
+import { useBoxWidth } from '../useBoxHeight'
 import { usePreviewHandlers } from '../usePreviewHandlers'
 import { useChoiceAnchor } from './choiceAnchor'
 
-/** How a card of a prompt is drawn: whole (cost and type line, from 76 px wide) or compact (name and power only). */
+/** How a card of a prompt is sized: whole (cost and type line) or compact (name, cost and power); under 76 px wide a card draws the compact face. */
 export type PromptCardSize = 'normal' | 'compact'
 
 /**
@@ -80,6 +83,11 @@ export function PromptCard({
   ref,
 }: PromptCardProps) {
   const object = usePlay((state) => state.objectsById[id])
+  // A box over the whole card, measured: the card's width is set by CSS (the room of its list).
+  const box = useRef<HTMLSpanElement | null>(null)
+  const width = useBoxWidth(box)
+  // A full face narrower than this cuts its foot line: the compact face keeps the name, the cost and the stats whole.
+  const face = size === 'compact' || (width !== null && width < NARROW_PX) ? 'compact' : 'normal'
   const handlers = usePreviewHandlers(
     id,
     () => {
@@ -94,6 +102,7 @@ export function PromptCard({
       data-candidate={id}
       data-chosen={chosen || undefined}
       data-size={size}
+      data-face={face}
       aria-label={badge === undefined ? label : `${label}, ${badge.toLowerCase()}`}
       aria-pressed={chosen}
       aria-disabled={closed || undefined}
@@ -120,7 +129,9 @@ export function PromptCard({
         </span>
       ) : (
         // Every card of a choice stands upright and whole, tapped or not, so the row reads as one size.
-        <CardFace object={object} role={null} size={size} fit upright />
+        <CardWidthContext.Provider value={width}>
+          <CardFace object={object} role={null} size={face} cost={face === 'compact'} fit upright />
+        </CardWidthContext.Provider>
       )}
       {badge === undefined ? null : (
         <span
@@ -132,6 +143,7 @@ export function PromptCard({
           {badge}
         </span>
       )}
+      <span ref={box} aria-hidden="true" className="pointer-events-none absolute inset-0" />
       {chosen ? <ChosenMark /> : null}
       {hotkey === undefined ? null : (
         <kbd
