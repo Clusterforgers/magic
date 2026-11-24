@@ -1194,7 +1194,12 @@ echo: boolean,
 /**
  * It was paid.
  */
-paid: boolean, } } | { "R6401Mentored": { 
+paid: boolean, 
+/**
+ * The mana spent on a paid cumulative upkeep, in the order spent ("for each {B} or {R} spent this way");
+ * left out means none.
+ */
+r119_mana?: Array<ManaType>, } } | { "R6401Mentored": { 
 /**
  * The controller of the mentor ability.
  */

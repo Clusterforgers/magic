@@ -926,6 +926,12 @@ describe('describeEvent', () => {
     for (const line of lines) expect(describeEvent(line, names).text.length).toBeGreaterThan(3)
   })
 
+  it('names the mana a cumulative upkeep was paid with', () => {
+    expect(
+      say({ UpkeepSettled: { player: 1, object: 3, echo: false, paid: true, r119_mana: ['Black', 'Red'] } }),
+    ).toBe('Bo pays the cumulative upkeep of Forest with {B}{R}')
+  })
+
   it('says steps added on their own after a phase are steps, not phases', () => {
     expect(say({ PhasesAdded: { steps: ['Upkeep', 'Upkeep'], lone: true } })).toBe(
       '2 additional upkeep step(s) follow this phase',
@@ -1473,6 +1479,10 @@ describe('events with more than one shape', () => {
     [
       ruleEffect({ RevealHand: [1, 2] }, 'UntilEndOfTurn'),
       'Bo and Cy play with their hands revealed until end of turn',
+    ],
+    [
+      ruleEffect({ R119PlaysRevealed: [{ id: 3, counter: 0 }] }, 'UntilYourNextTurn'),
+      "Forest stays revealed in its owner's hand and can't be played until their controller's next turn",
     ],
     [
       ruleEffect(

@@ -99,6 +99,8 @@ mod r116_dilemma;
 mod r117_04_during;
 mod r117_random_recast;
 mod r118_02_stormdrake;
+mod r119_02_drain;
+mod r119_02_revealed;
 mod r300_random_discard;
 mod r300c_activations;
 mod r301_target_costs;

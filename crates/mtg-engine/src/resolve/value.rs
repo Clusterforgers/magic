@@ -3132,6 +3132,15 @@ impl<'a> Scope<'a> {
                 .cause
                 .map(|cause| i64::from(cause.amount))
                 .ok_or_else(|| ResolveError::Invalid("there is no triggering event".into()))?,
+            Amount::R119SpentOnTriggering(of) => self.cause.map_or(0, |cause| {
+                let spent = cause
+                    .r113_spent_from
+                    .iter()
+                    .flat_map(|source| &source.r113_mana)
+                    .filter(|mana| of.contains(mana))
+                    .count();
+                i64::try_from(spent).unwrap_or(i64::MAX)
+            }),
         })
     }
 

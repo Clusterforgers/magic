@@ -1251,6 +1251,14 @@ pub enum GameRule {
     RevealTop(Ref),
     /// The players play with their hands revealed.
     RevealHand(Ref),
+    /// The player plays with the cards revealed in their hand and can't play them (CR 400.2): "that player plays with
+    /// that card revealed in their hand and can't play it"; it ends for a card once it leaves the hand.
+    R119PlaysRevealed {
+        /// The player whose hand holds the cards.
+        who: Ref,
+        /// The cards.
+        card: Ref,
+    },
     /// Players may cast cards the ordinary rules do not let them cast: from another zone, without paying their mana
     /// costs, or as though they had flash (CR 601.3).
     MayCast(CastPermission),

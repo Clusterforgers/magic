@@ -137,6 +137,9 @@ pub struct Resolving {
     /// The steps of replacement effects that reached a spell cast in the middle of the resolution, which run before its
     /// next effect (CR 608.2g).
     pub(crate) r115_continued: Vec<r115_continued::R115Continuation>,
+    /// The mana the resolution has spent so far, in the order spent, which "each {B} or {R} spent this way" of a
+    /// cumulative upkeep payment reads (CR 702.24a).
+    pub(crate) r119_spent: Vec<mtg_core::mana::ManaType>,
 }
 
 impl Resolving {
@@ -163,6 +166,7 @@ impl Resolving {
             r110_put: Vec::new(),
             r110_removed: Vec::new(),
             r115_continued: Vec::new(),
+            r119_spent: Vec::new(),
         }
     }
 

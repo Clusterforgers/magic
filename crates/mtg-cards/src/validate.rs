@@ -1726,6 +1726,12 @@ impl<'a> Walker<'a> {
             Amount::ManaColors(who) => self.player_amount("ManaColors", who),
             Amount::ManaInPool(who) => self.player_amount("ManaInPool", who),
             Amount::ManaInPoolOf { who, .. } => self.player_amount("ManaInPoolOf", who),
+            Amount::R119SpentOnTriggering(of) => {
+                self.uses("Amount", "R119SpentOnTriggering");
+                if of.is_empty() {
+                    self.problem("`R119SpentOnTriggering` names the types of mana it counts");
+                }
+            }
             Amount::MostCommon { of, .. } => self.w2c_selector_amount("MostCommon", of),
             Amount::Doors(of) => self.w2c_selector_amount("Doors", of),
             Amount::CountOf { of, filter } => {
@@ -5992,6 +5998,14 @@ impl Walker<'_> {
                 w.at("blocking", |w| w.reference(blocking, Kind::Object));
             }
             Effect::LoseUnspentMana { who } => w.at("who", |w| w.reference(who, Kind::Player)),
+            Effect::R119ActivateLandMana { who } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+            }
+            Effect::R119DrainMana { from } => w.at("from", |w| w.reference(from, Kind::Player)),
+            Effect::R119BindSpliced { of, bind } => {
+                w.at("of", |w| w.reference(of, Kind::Object));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
             Effect::PutBeneathTop { what, below } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("below", |w| w.amount(below));
@@ -7052,6 +7066,10 @@ impl Walker<'_> {
             | GameRule::LoyaltyCostsMore { who, .. } => {
                 self.at(tag, |w| w.reference(who, Kind::Player));
             }
+            GameRule::R119PlaysRevealed { who, card } => self.at(tag, |w| {
+                w.reference(who, Kind::Player);
+                w.reference(card, Kind::Object);
+            }),
             GameRule::EchoRather(cost) => self.at(tag, |w| w.cost(cost)),
             GameRule::R113ExchangeRoll { who, sides, .. } => self.at(tag, |w| {
                 w.reference(who, Kind::Player);

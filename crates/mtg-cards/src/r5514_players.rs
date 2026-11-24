@@ -7,7 +7,9 @@ use crate::refs::Ref;
 /// "their life total can't change"; none for any other rule.
 pub fn r5514_rule_player(rule: &GameRule) -> Option<&Ref> {
     match rule {
-        GameRule::LifeTotalCantChange(who) | GameRule::PlayersHave { who, .. } => Some(who),
+        GameRule::LifeTotalCantChange(who)
+        | GameRule::PlayersHave { who, .. }
+        | GameRule::R119PlaysRevealed { who, .. } => Some(who),
         _ => None,
     }
 }

@@ -247,7 +247,7 @@ spells: unknown,
 /**
  * With `spells`, the permanents whose abilities it is also for.
  */
-abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "R6600LoyaltyOnceMore": Array<PlayerId> } | { "R6600AdaptsFresh": Array<ObjectRef> } | { "R6603LoyaltyAgain": { 
+abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "R119PlaysRevealed": Array<ObjectRef> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "R6600LoyaltyOnceMore": Array<PlayerId> } | { "R6600AdaptsFresh": Array<ObjectRef> } | { "R6603LoyaltyAgain": { 
 /**
  * The planeswalker.
  */

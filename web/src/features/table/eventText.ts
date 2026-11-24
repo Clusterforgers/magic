@@ -449,6 +449,8 @@ function describeRule(effect: RuleEffect, n: EventNames): string {
   else if ('RevealTop' in rule)
     what = `${seats(rule.RevealTop)} play with the top card of their library revealed`
   else if ('RevealHand' in rule) what = `${seats(rule.RevealHand)} play with their hands revealed`
+  else if ('R119PlaysRevealed' in rule)
+    what = `${named(rule.R119PlaysRevealed)} stays revealed in its owner's hand and can't be played`
   else if ('MayCast' in rule) {
     const { who, only, play } = rule.MayCast
     what = `${seats(who)} may ${play ? 'play' : 'cast'} ${only === null ? 'cards they could not' : named(only)}`
@@ -1240,9 +1242,12 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`${n.seat(event.GiftGiven.player)} gives ${n.seat(event.GiftGiven.to)} a gift`)
   }
   if ('UpkeepSettled' in event) {
-    const { player, object, echo, paid } = event.UpkeepSettled
+    const { player, object, echo, paid, r119_mana } = event.UpkeepSettled
     const cost = echo ? 'echo cost' : 'cumulative upkeep'
-    return line(`${n.seat(player)} ${paid ? 'pays' : "doesn't pay"} the ${cost} of ${n.card(object)}`)
+    const spent = r119_mana?.length
+      ? ` with ${r119_mana.map((mana) => `{${manaLetter(mana)}}`).join('')}`
+      : ''
+    return line(`${n.seat(player)} ${paid ? 'pays' : "doesn't pay"} the ${cost} of ${n.card(object)}${spent}`)
   }
   if ('Foraged' in event) return line(`${n.seat(event.Foraged.player)} forages`)
   if ('R115CountersPutBy' in event) {

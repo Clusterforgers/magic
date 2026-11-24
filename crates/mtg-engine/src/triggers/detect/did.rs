@@ -277,6 +277,7 @@ pub(super) fn did_happened(
             object,
             echo,
             paid,
+            r119_mana,
         } => {
             let action = match (echo, paid) {
                 (false, true) => Some(Action::PaidCumulativeUpkeep),
@@ -284,7 +285,20 @@ pub(super) fn did_happened(
                 (true, true) => Some(Action::PaidEcho),
                 (true, false) => None,
             };
-            found.extend(action.map(|action| did(action, Some(*player), Some(*object))));
+            found.extend(action.map(|action| {
+                let mut settled = did(action, Some(*player), Some(*object));
+                // "For each {B} or {R} spent this way" reads the payment's mana off the trigger.
+                if let Happened::Did { r113_spent, .. } = &mut settled
+                    && !r119_mana.is_empty()
+                {
+                    r113_spent.push(mtg_cards::spend::SpentFrom {
+                        traits: mtg_cards::spend::SpendTraits::default(),
+                        count: u32::try_from(r119_mana.len()).unwrap_or(u32::MAX),
+                        r113_mana: r119_mana.clone(),
+                    });
+                }
+                settled
+            }));
         }
         Event::Foraged { player } => found.push(did(Action::Foraged, Some(*player), None)),
         Event::Bent { player, element } => {

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "6c7239b0-e67f-4848-b244-8be9915bd2dc",
+  "name": "Minamo's Meddling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Minamo's Meddling",
+      "oracle_fingerprint": "7da68180658252757b31e8c6c9b0bb2a",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "R119BindSpliced": { "of": { "Target": 0 }, "as": "spliced" } },
+              { "Bind": { "what": { "ControllerOf": { "Target": 0 } }, "as": "caster" } },
+              { "Counter": { "what": { "Target": 0 } } },
+              {
+                "Reveal": {
+                  "what": { "Each": [{ "OwnedBy": { "Bound": "caster" } }, { "In": "Hand" }] }
+                }
+              },
+              {
+                "Discard": {
+                  "who": { "Bound": "caster" },
+                  "count": {
+                    "Count": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Bound": "caster" } },
+                      { "SharesName": { "Bound": "spliced" } }
+                    ]
+                  },
+                  "filter": [{ "SharesName": { "Bound": "spliced" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

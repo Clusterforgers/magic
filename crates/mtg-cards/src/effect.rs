@@ -807,6 +807,28 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// The players activate a mana ability of each land they control (CR 605): of a land with several, or with a choice
+    /// of mana, its controller chooses which; a land none of whose mana abilities can be activated now adds nothing
+    /// ("target player activates a mana ability of each land they control").
+    R119ActivateLandMana {
+        /// Who activates.
+        who: Ref,
+    },
+    /// Keeps the cards spliced onto the spells the reference names (CR 702.47) under a name, as they are when the step
+    /// runs, so steps after a counter still read them ("each card with the same name as a card spliced onto that spell").
+    R119BindSpliced {
+        /// The spells.
+        of: Ref,
+        /// The name the spliced cards are kept under.
+        #[serde(rename = "as")]
+        bind: String,
+    },
+    /// The players lose all unspent mana and the controller of the effect adds the mana lost this way, each mana keeping
+    /// what it may be spent on ("that player loses all unspent mana and you add the mana lost this way").
+    R119DrainMana {
+        /// Whose mana is taken.
+        from: Ref,
+    },
     /// Puts objects into their owners' libraries just beneath the top `below` cards ("just beneath the top X cards of
     /// that library"), the number worked out as the step runs; a library with fewer cards takes them at the bottom.
     PutBeneathTop {

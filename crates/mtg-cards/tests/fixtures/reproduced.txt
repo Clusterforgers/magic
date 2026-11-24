@@ -187,6 +187,7 @@ Backdraft
 Bad Moon
 Baird, Steward of Argive
 Balduvian Conjurer
+Balduvian Fallen
 Balduvian Shaman
 Balduvian Warlord
 Balefang the Unslayable
@@ -785,6 +786,7 @@ Dragonmaster Outcast
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Drain Power
 Dralnu's Pet
 Dralnu, Lich Lord
 Dramatist's Puppet
@@ -1031,6 +1033,7 @@ Finch Formation
 Fire-Lit Thicket
 Fireshrieker
 Firestorm Hellkite
+Firestorm Phoenix
 Firmament Sage
 First Contact
 First Little Pig
@@ -1844,6 +1847,7 @@ Miles O'Brien, Transporter Ops
 Military Intelligence
 Millicent, Restless Revenant
 Millikin
+Minamo's Meddling
 Mind Bend
 Mind Bomb
 Mind Flayer
@@ -2232,6 +2236,7 @@ Pure // Simple
 Purple Dragon Punks
 Putrefy
 Putrid Goblin
+Pygmy Hippo
 Pygmy Kavu
 Pygmy Troll
 Pyramids
