@@ -29,7 +29,8 @@ const namedIds = (forecast: CombatForecast | null): ObjectId[] =>
 
 /**
  * The combat forecast's total in the dock or a phone's bar, under a combat declaration: what the viewer's side would
- * deal and take, and the creatures each side would lose, as chips with an icon, a word and a number. The line is
+ * deal and take, and the creatures each side would lose, as chips with an icon, a word and a number (on a line of its
+ * own, or beside the last answers where the home has no line to spare, `PromptLayout`). The total is
  * always drawn, empty without a forecast, so the dock does not move, and while the engine is asked (`checking`) the
  * last total stays, dimmed. Each chip has its sentence as its label; the line is a group a screen reader can find.
  */
@@ -65,7 +66,7 @@ export function ForecastTotal({
       role="group"
       aria-label="Combat outcome"
       className={cn(
-        'flex h-5 min-w-0 basis-full items-center gap-1 overflow-hidden transition-opacity',
+        'flex h-5 min-w-0 grow items-center gap-1 overflow-hidden transition-opacity',
         stale !== null && 'opacity-50',
       )}
     >

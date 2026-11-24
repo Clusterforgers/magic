@@ -202,7 +202,7 @@ export interface PromptLayoutProps {
   choices?: ReactNode
   /** The choices are short (a number, a few options): they stand beside the question in every home. */
   inline?: boolean
-  /** A short reading between the question and the answers: a run's place, what a payment still owes; a compact prompt draws it as the line under its row (the combat total). */
+  /** A short reading between the question and the answers: a run's place, what a payment still owes; a compact prompt draws it as the line under its row (the combat total), or at the end of the last line of answers where Stops stands beside the sentence. */
   meter?: ReactNode
   /** The meter says what the sentence says (a payment's symbols): the sentence is read aloud and not drawn. */
   quiet?: boolean
@@ -382,6 +382,10 @@ export function PromptLayout({
       Your decision: {Object.hasOwn(DECISION_LABEL, name) ? DECISION_LABEL[name as DecisionName] : name}
     </p>
   )
+  // A phone's bar and a short dock have no line to spare under a combat declaration: Stops stands beside its sentence,
+  // and the combat total takes the room the last line of answers leaves (a line of its own only when it needs more).
+  const stopsBeside = home === 'bar' || (home === 'dock' && dockForm === 'short')
+  const meterBeside = compact && stopsBeside && hasContent(meter)
   const answers =
     children === undefined ? null : (
       <div
@@ -392,6 +396,12 @@ export function PromptLayout({
       >
         {children}
         {pick.value.hidden ? <PickOnBoardButton pick={pick.value} /> : null}
+        {meterBeside ? (
+          // Last in a row-reverse wrap: the far end of the last line of answers.
+          <div data-slot="combat-meter" className="order-last flex min-w-0 flex-[1_1_auto]">
+            {meter}
+          </div>
+        ) : null}
       </div>
     )
   const clock = <ResponseClock id={id} kind={clockKind(decision.kind)} compact />
@@ -403,8 +413,6 @@ export function PromptLayout({
         <StopsDock row={false} tuck={dockForm === 'full' && dockWide ? undefined : 'all'} />
       </div>
     ) : null
-  // A phone's bar and a short dock have no line to spare under a combat declaration: Stops stands beside its sentence.
-  const stopsBeside = home === 'bar' || (home === 'dock' && dockForm === 'short')
   const body = compact ? (
     <>
       {title}
@@ -414,7 +422,11 @@ export function PromptLayout({
         </LiveText>
         {stopsBeside ? stops : null}
         {answers}
-        {meter}
+        {meterBeside || !hasContent(meter) ? null : (
+          <div data-slot="combat-meter" className="flex min-w-0 basis-full">
+            {meter}
+          </div>
+        )}
       </div>
       {clock}
       {stopsBeside ? null : stops}
