@@ -6171,10 +6171,6 @@ impl Walker<'_> {
             }
             Effect::PayAnyTimes { who, cost, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
-                if let Some(bind) = bind {
-                    w.at("as", |w| w.bind(bind, Kind::Either));
-                    w.scope.numbers.insert(bind.clone());
-                }
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
                 if let Some(bind) = bind {
                     w.at("as", |w| w.bind(bind, Kind::Either));
