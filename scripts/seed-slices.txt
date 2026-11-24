@@ -9,6 +9,7 @@ mtg-testkit::fuzz !seed_campaigns::
 mtg-testkit::fuzz !harness_selfcheck::
 mtg-testkit::fuzz !determinism_replay::
 mtg-testkit::fuzz !checkpoint::
+mtg-testkit::fuzz_mz
 
 mtg-testkit::game house_commander::
 mtg-testkit::game house_rules::
