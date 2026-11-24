@@ -361,11 +361,21 @@ pub(super) fn affordable(ctx: &Ctx<'_>, total: &Total) -> bool {
         ),
         _ => (seat.mana().clone(), total.sources.clone()),
     };
-    let alone = |cost: &ManaCost| {
-        can_afford_with(cost, &pool, &sources, total.help.help(), life, &total.spend)
+    let with = |cost: &ManaCost, sources: &[ManaOption]| {
+        can_afford_with(cost, &pool, sources, total.help.help(), life, &total.spend)
+    };
+    let alone = |cost: &ManaCost| with(cost, &sources);
+    // A mana ability the payment offers to activate (Vexing Puzzlebox) counts once the sources alone fall short.
+    let announced = |cost: &ManaCost| {
+        let abilities = super::payment::announced_while_paying(ctx);
+        !abilities.is_empty() && {
+            let more = crate::r281_mana_at_priority::r281_mana(ctx.state, ctx.player, &abilities, 0);
+            with(cost, &[sources.as_slice(), &more].concat())
+        }
     };
     total.mana.as_ref().is_none_or(|cost| {
         alone(cost)
+            || announced(cost)
             || match ctx.what {
                 What::Spell(spell) => super::assist::helped(ctx.state, ctx.player, *spell, cost)
                     .is_some_and(|less| alone(&less)),

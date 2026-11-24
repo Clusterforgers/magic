@@ -17,7 +17,7 @@ use crate::decision::DecisionKind;
 use crate::events::Event;
 use crate::help::Offered;
 use crate::mana::{ManaOption, can_afford_with};
-use crate::r281_mana_at_priority::r281_while_paying;
+use crate::r281_mana_at_priority::{r281_mana, r281_while_paying};
 use crate::spend::Spend;
 use crate::state::GameState;
 use crate::triggers::PendingTrigger;
@@ -133,7 +133,7 @@ fn pay(
 ) -> Next {
     let reserved_life =
         crate::r4707_pay_costs::r4707_reserved_life(ctx.state, ctx.player, reserved_life);
-    match payment_decision(
+    let Some(mut options) = payment_decision(
         ctx.state,
         ctx.player,
         object,
@@ -143,30 +143,47 @@ fn pay(
         paying,
         ctx.can_cancel() && can_cancel,
         reserved_life,
-    ) {
-        Some(mut options)
-            if can_afford_with(
-                &options.cost,
-                &options.pool,
-                &options.sources,
-                options.help(),
-                options.life,
-                &options.spend,
-            ) =>
-        {
-            if let What::Ability(ability) = ctx.what {
-                options.ability = Some(Box::new(*ability));
-            }
-            options.announced = match (ctx.what, &ctx.granted) {
-                (What::Spell(_), None) => r281_while_paying(ctx.state, ctx.player, None),
-                (What::Ability(ability), None) => {
-                    r281_while_paying(ctx.state, ctx.player, Some(*ability))
-                }
-                _ => Vec::new(),
-            };
-            ctx.ask(DecisionKind::PayMana(options))
-        }
-        _ => Next::Drop,
+    ) else {
+        return Next::Drop;
+    };
+    let affords = |sources: &[ManaOption]| {
+        can_afford_with(
+            &options.cost,
+            &options.pool,
+            sources,
+            options.help(),
+            options.life,
+            &options.spend,
+        )
+    };
+    let announced = announced_while_paying(ctx);
+    // The payment is asked too when only a mana ability activated from it (Vexing Puzzlebox) makes it affordable.
+    let payable = affords(&options.sources)
+        || (!announced.is_empty()
+            && affords(
+                &[
+                    options.sources.as_slice(),
+                    &r281_mana(ctx.state, ctx.player, &announced, 0),
+                ]
+                .concat(),
+            ));
+    if !payable {
+        return Next::Drop;
+    }
+    if let What::Ability(ability) = ctx.what {
+        options.ability = Some(Box::new(*ability));
+    }
+    options.announced = announced;
+    ctx.ask(DecisionKind::PayMana(options))
+}
+
+/// The announced mana abilities the payment of the cast or activation in progress offers (`PayOptions.announced`): none
+/// for a cast granted in the middle of a resolution, a trigger or combat.
+pub(super) fn announced_while_paying(ctx: &Ctx<'_>) -> Vec<crate::abilities::AbilityRef> {
+    match (ctx.what, &ctx.granted) {
+        (What::Spell(_), None) => r281_while_paying(ctx.state, ctx.player, None),
+        (What::Ability(ability), None) => r281_while_paying(ctx.state, ctx.player, Some(*ability)),
+        _ => Vec::new(),
     }
 }
 
