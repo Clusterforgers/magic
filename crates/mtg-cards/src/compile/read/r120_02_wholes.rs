@@ -135,6 +135,8 @@ mod tests {
     #[case("any type", "any color")]
     #[case("For each of those colors", "For one of those colors")]
     #[case("X nonland cards", "X land cards")]
+    #[case("cast an instant", "cast a sorcery")]
+    #[case("top creature card", "top card")]
     #[case("two nonland cards", "three nonland cards")]
     #[case("three +1/+1 counters", "two +1/+1 counters")]
     fn r120_02_a_near_miss_reads_as_nothing(#[case] from: &str, #[case] to: &str) {

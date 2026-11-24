@@ -346,6 +346,7 @@ const RUNS: &[&str] = &[
     "Cost.OneOf.Activated",
     "Cost.XAtLeast.Way",
     "Ability.R115MulliganExile",
+    "Ability.R120DiscardAnyTime",
     "Ability.ManaAbility.Other",
     "Ability.ManaAbility.From",
     "Effect.PutCounters",
@@ -1924,6 +1925,7 @@ mod tests {
         true
     )]
     #[case::r115_exiling_the_hand_at_a_mulligan("Ability.R115MulliganExile", true)]
+    #[case::r120_discarding_any_time("Ability.R120DiscardAnyTime", true)]
     #[case::choosing_between_costs_elsewhere("Cost.OneOf.Elsewhere", false)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]

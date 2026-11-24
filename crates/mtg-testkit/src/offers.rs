@@ -79,6 +79,7 @@ fn name_of(engine: &Engine, action: &PriorityAction) -> String {
         | PriorityAction::Suspend(id)
         | PriorityAction::Foretell(id)
         | PriorityAction::Plot(id)
+        | PriorityAction::R120Discard(id)
         | PriorityAction::TurnFaceUp(id)
         | PriorityAction::CastPrepared(id) => Some(*id),
         PriorityAction::Activate(ability) => Some(ability.object),

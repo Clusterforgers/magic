@@ -122,6 +122,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::CastOnly { .. }
         | Ability::CantTargetAsCast { .. }
         | Ability::R115MulliganExile
+        | Ability::R120DiscardAnyTime
         | Ability::OpeningHand
         | Ability::OpeningHandWith { .. }
         | Ability::Sticker(_)

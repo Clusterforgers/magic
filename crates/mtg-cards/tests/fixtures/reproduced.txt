@@ -206,6 +206,7 @@ Bard's Bow
 Bard's Company
 Bard, Heir of Girion
 Barren Moor
+Barrow Ghoul
 Barter in Blood
 Bartolomé del Presidio
 Basalt Monolith
@@ -494,6 +495,7 @@ Churning Reservoir
 Cinder Glade
 Cinderhaze Wretch
 Circle of Dreams Druid
+Circling Vultures
 Circuitous Route
 Circuits Act
 Citadel Gate

@@ -479,8 +479,8 @@ fn clause_spans_cut_out_the_sentences_they_name() {
     }
     let expected = [
         (
-            "Circling Vultures",
-            "You may discard this card any time you could cast an instant.",
+            "Cryptic Spires",
+            "As you create your deck, circle two of the colors below.",
         ),
         (
             "Yotia Declares War",

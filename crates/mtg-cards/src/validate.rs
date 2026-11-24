@@ -6768,6 +6768,7 @@ impl Walker<'_> {
             }
             Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
             Ability::R115MulliganExile => w.uses("Ability", "R115MulliganExile"),
+            Ability::R120DiscardAnyTime => w.uses("Ability", "R120DiscardAnyTime"),
             Ability::Sticker(sticker) => w.sticker(sticker),
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),

@@ -195,6 +195,11 @@ pub struct PriorityOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
     pub plottable: Vec<ObjectId>,
+    /// Cards in the hand their owner may discard now (Circling Vultures: a special action that does not use the stack,
+    /// CR 116.2).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub r120_discardable: Vec<ObjectId>,
     /// Face-down permanents their controller can turn face up now (a special action that does not use the stack, CR 702.37e).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
@@ -971,6 +976,9 @@ pub enum PriorityAction {
     Foretell(ObjectId),
     /// Plot this card from the hand (CR 702.170, a special action at sorcery timing): pay its plot cost and exile it face up.
     Plot(ObjectId),
+    /// Discard this card from the hand (Circling Vultures: "You may discard this card any time you could cast an instant",
+    /// a special action, CR 116.2).
+    R120Discard(ObjectId),
     /// Turn this face-down permanent face up (CR 702.37e, a special action): pay its morph, megamorph or disguise cost.
     TurnFaceUp(ObjectId),
     /// Cast a copy of the spell face of this prepared permanent (it must be offered in `PriorityOptions.faces`): the copy is made and the

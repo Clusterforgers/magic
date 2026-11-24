@@ -31,6 +31,7 @@ pub(super) fn label(ability: &Ability) -> String {
             "opening-hand ability".to_owned()
         }
         Ability::R115MulliganExile => "mulligan-time ability".to_owned(),
+        Ability::R120DiscardAnyTime => "special action".to_owned(),
         Ability::Sticker(_) => "sticker".to_owned(),
         Ability::Keyword(keyword) => format!("keyword {}", parts::keyword(&ctx, keyword)),
         Ability::Manual { .. } => "played by hand".to_owned(),
@@ -322,6 +323,10 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
         Ability::R115MulliganExile => out.push(Step::new(
             depth,
             "may exile the hand and draw that many whenever a mulligan could be taken".to_owned(),
+        )),
+        Ability::R120DiscardAnyTime => out.push(Step::new(
+            depth,
+            "may be discarded from the hand whenever its owner could cast an instant".to_owned(),
         )),
         Ability::Sticker(sticker) => sticker_steps(sticker, depth, out),
         Ability::OpeningReveal {
