@@ -129,6 +129,7 @@ fn shield_for(
         instead: None,
         redirect: None,
         bound: Vec::new(),
+        r123_by_targeting: false,
     }))
 }
 

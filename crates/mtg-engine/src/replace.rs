@@ -761,6 +761,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Surveils { .. }
         | ReplaceWhen::CopiesSpell { .. }
         | ReplaceWhen::Learns { .. }
+        | ReplaceWhen::R123DamageByTargeting { .. }
         | ReplaceWhen::R6603DrawsSeveral { .. }
         | ReplaceWhen::R111DrawBy { .. }
         | ReplaceWhen::R6700Draws { .. }
@@ -2308,6 +2309,9 @@ impl Pass<'_> {
         {
             return Ok(false);
         }
+        if shield.r123_by_targeting && !self.r123_caused_by_targeting(target) {
+            return Ok(false);
+        }
         // Both a fixed list and a kind of object: the shield covers either (`Ref::Union`).
         if let (Some(_), Some(each)) = (&shield.to, &shield.each) {
             let fixed = DamageShield {
@@ -2365,6 +2369,30 @@ impl Pass<'_> {
         };
         let scope = Scope::announcing(self.state, effect.controller, maker);
         Ok(scope.selects(&shield.source, reference)?)
+    }
+
+    /// Whether the spell or ability resolving now, which causes the damage, has the recipient among its targets.
+    fn r123_caused_by_targeting(&self, target: DamageTarget) -> bool {
+        let Some(cause) = self
+            .state
+            .resolving()
+            .and_then(|resolving| self.state.object(resolving.object))
+        else {
+            return false;
+        };
+        cause.choices().targets.iter().flatten().any(|named| {
+            match (named, target) {
+                (Target::Player(player), DamageTarget::Player(hit)) => *player == hit,
+                (Target::Object(named), DamageTarget::Object(hit)) => {
+                    named.id == hit
+                        && self
+                            .state
+                            .object(hit)
+                            .is_some_and(|o| o.counter() == named.counter)
+                }
+                _ => false,
+            }
+        })
     }
 
     /// The player who orders the effects that apply to the item (CR 616.1): the one it happens to, or the controller of

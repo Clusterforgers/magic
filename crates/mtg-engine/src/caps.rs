@@ -1083,6 +1083,7 @@ const RUNS: &[&str] = &[
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
     "ReplaceWhen.Damage",
+    "ReplaceWhen.R123DamageByTargeting",
     "ReplaceWhen.R6001DamageBetweenChosen",
     "ReplaceWhen.R117CreaturesSharingColor",
     "ReplaceWhen.R6105Uncycled",

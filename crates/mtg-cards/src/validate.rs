@@ -7562,6 +7562,9 @@ impl Walker<'_> {
                 }
                 self.at("source", |w| w.selector(source));
             }
+            ReplaceWhen::R123DamageByTargeting { to } => {
+                self.at("to", |w| w.reference(to, Kind::Either));
+            }
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
             | ReplaceWhen::Countered { what }

@@ -95,6 +95,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             duration.clone(),
         ));
     }
+    // "If a spell or ability that targets that creature would cause a source to deal damage to that creature".
+    if let ReplaceWhen::R123DamageByTargeting { to } = when {
+        return match damage_shield(cx, (Some(to), &Selector::default(), None), by)? {
+            Some(shield) => Ok(begin(
+                cx,
+                Rule::PreventDamage(Box::new(DamageShield {
+                    r123_by_targeting: true,
+                    ..shield
+                })),
+                duration.clone(),
+            )),
+            None => Ok(Run::events(Vec::new())),
+        };
+    }
     let (
         ReplaceWhen::Damage { to, source, combat },
         ReplaceBy::Prevent
@@ -243,6 +257,7 @@ pub(super) fn damage_shield(
         instead,
         redirect,
         bound,
+        r123_by_targeting: false,
     }))
 }
 
