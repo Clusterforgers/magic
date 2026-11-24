@@ -51,7 +51,7 @@ for (const size of SIZES) {
       }
       const page = ada.page
       // Ada has the first turn of the pinned seed.
-      await expect(page.getByText('You have priority', { exact: false }).first()).toBeVisible()
+      await expect(page.locator('[data-decision="Priority"]')).toBeVisible()
       await openSide(page, 'Commands')
       await expect(page.getByRole('region', { name: 'Commands' })).toBeVisible()
 
