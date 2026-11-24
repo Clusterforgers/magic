@@ -1,0 +1,44 @@
+{
+  "oracle_id": "f6841a6f-7dd3-4976-9891-539189c0e148",
+  "name": "Yume, Chronicler of Valor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yume, Chronicler of Valor",
+      "oracle_fingerprint": "7ecd9574006eac8e11560a9500d33a2d",
+      "abilities": [
+        {
+          "Static": {
+            "affected": { "Each": [{ "ControlledBy": "You" }, { "In": "Stack" }] },
+            "mods": [{ "AddKeyword": "Assist" }],
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "SpellCast",
+                        "who": "EachPlayer",
+                        "filter": [{ "ControlledBy": "You" }, { "Not": { "Is": "Affected" } }]
+                      }
+                    },
+                    "op": "Eq",
+                    "right": 0
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "R120AssistedCast": { "who": "You" } }, "nth": 1 } },
+            "if": "YourTurn",
+            "effects": [{ "Draw": {} }, { "Draw": { "who": "Triggering" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

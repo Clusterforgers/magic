@@ -22,11 +22,13 @@ use crate::priority::mana_options;
 use crate::spend::Spend;
 use crate::state::GameState;
 
-/// Whether the card `spell` has assist.
-fn has_assist(state: &GameState, spell: ObjectId) -> bool {
+/// Whether the card `spell` that `caster` casts has assist: of its own, or given by a static ability of a permanent
+/// ("The first spell you cast during each of your turns has assist", `spell_keywords`).
+fn has_assist(state: &GameState, caster: PlayerId, spell: ObjectId) -> bool {
     crate::keywords::keywords_of(state, spell)
         .into_iter()
         .any(|keyword| matches!(keyword, Keyword::Assist))
+        || crate::spell_keywords::given_to_spell(state, caster, spell).contains(&Keyword::Assist)
 }
 
 /// `k` generic mana.
@@ -54,7 +56,7 @@ pub(crate) fn helped(
     spell: ObjectId,
     cost: &ManaCost,
 ) -> Option<ManaCost> {
-    if cost.generic() == 0 || !has_assist(state, spell) {
+    if cost.generic() == 0 || !has_assist(state, caster, spell) {
         return None;
     }
     let best = state
@@ -85,7 +87,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     let What::Spell(spell) = ctx.what else {
         return None;
     };
-    if !has_assist(ctx.state, *spell) {
+    if !has_assist(ctx.state, ctx.player, *spell) {
         return None;
     }
     let total = work.total.as_mut()?;

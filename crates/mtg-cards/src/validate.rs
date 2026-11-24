@@ -3438,7 +3438,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Prize {}
             | TriggerPattern::PhaseBegins {} => {}
             TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
-            TriggerPattern::DealsToughnessDamage { source, .. } => {
+            TriggerPattern::DealsToughnessDamage { source, .. }
+            | TriggerPattern::R120DealsExactly { source, .. } => {
                 self.at("source", |w| w.selector(source));
             }
             TriggerPattern::DealsDamage { source, to, .. } => {
@@ -3470,6 +3471,8 @@ impl<'a> Walker<'a> {
             | TriggerPattern::Expend { who, .. }
             | TriggerPattern::W11cCrime { who }
             | TriggerPattern::R116Dilemma { who }
+            | TriggerPattern::R120RandomAction { who }
+            | TriggerPattern::R120AssistedCast { who }
             | TriggerPattern::PlayerCountersPut { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
@@ -3674,6 +3677,8 @@ impl<'a> Walker<'a> {
                 | TriggerPattern::Expend { .. }
                 | TriggerPattern::W11cCrime { .. }
                 | TriggerPattern::R116Dilemma { .. }
+                | TriggerPattern::R120RandomAction { .. }
+                | TriggerPattern::R120AssistedCast { .. }
                 | TriggerPattern::Surveilled { .. }
                 | TriggerPattern::SpellCast { .. }
                 | TriggerPattern::BecomesTarget { .. }
@@ -3746,8 +3751,10 @@ impl Walker<'_> {
             | TriggerPattern::Attacks { .. }
             | TriggerPattern::BecomesCrewed { .. }
             | TriggerPattern::BecomesSaddled { .. }
-            // The counters put on an object, of any kind.
-            | TriggerPattern::CountersPut { counter: None, .. } => true,
+            // The counters put on an object, of any kind or of one kind.
+            | TriggerPattern::CountersPut { .. }
+            // The caster's spells, of which this one was helped.
+            | TriggerPattern::R120AssistedCast { .. } => true,
             // Every die the player rolls, whatever its result.
             TriggerPattern::DiceRolled {
                 highest: false,

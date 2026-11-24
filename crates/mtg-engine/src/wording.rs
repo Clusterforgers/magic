@@ -667,6 +667,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             };
             (format!("{recipient} is dealt damage"), *hit == Ref::This)
         }
+        TriggerPattern::R120DealsExactly { source, amount } => (
+            format!(
+                "{} deals damage and one permanent or player is dealt exactly {amount} of it",
+                subject(source)
+            ),
+            false,
+        ),
         TriggerPattern::DealsToughnessDamage { source, combat } => {
             let kind = match combat {
                 Some(true) => "combat damage",
@@ -852,6 +859,23 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
         TriggerPattern::R116Dilemma { who: by } => {
             let (name, s) = who(by);
             (format!("{name} face{s} a dilemma"), false)
+        }
+        TriggerPattern::R120RandomAction { who: by } => {
+            let (name, s) = who(by);
+            (
+                format!(
+                    "{name} discard{s} cards, select{s} targets or choose{s} modes at random, flip{s} coins or \
+                     roll{s} dice (once for each instruction)"
+                ),
+                false,
+            )
+        }
+        TriggerPattern::R120AssistedCast { who: by } => {
+            let (name, s) = who(by);
+            (
+                format!("{name} cast{s} a spell another player spent mana to cast"),
+                false,
+            )
         }
         TriggerPattern::Expend { who: by, n } => {
             let (name, s) = who(by);

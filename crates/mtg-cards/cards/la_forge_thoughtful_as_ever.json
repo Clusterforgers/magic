@@ -1,0 +1,41 @@
+{
+  "oracle_id": "d5e2ca35-053e-4155-97e7-73f75ae87d52",
+  "name": "La Forge, Thoughtful as Ever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "La Forge, Thoughtful as Ever",
+      "oracle_fingerprint": "1a8693b5b9623c72b953d0b6071112de",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Faerie",
+                      "colors": ["Blue"],
+                      "types": ["Creature"],
+                      "subtypes": ["Faerie"],
+                      "power": 1,
+                      "toughness": 1,
+                      "abilities": [{ "Keyword": "Flying" }]
+                    }
+                  },
+                  "count": {
+                    "Count": [
+                      { "ControlledBy": "You" },
+                      { "DidThisTurn": { "event": "CountersPut", "by": "You" } }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
