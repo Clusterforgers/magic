@@ -32,8 +32,8 @@ fn a_boss_brings_relics_at_low_depth_by_heat(#[values(0, 1, 2, 3)] heat: u8) {
 proptest! {
     #[test]
     fn older_generations_keep_their_relic_count(depth in 0u32..40, heat in 0u8..4, generation in 0u32..BOSS_SCALE_FROM) {
-        let old = depth.saturating_sub(RELIC_OFFSET[usize::from(heat)]).min(MOST_BOSS_RELICS as u32);
-        prop_assert_eq!(boss_relics::count(depth, heat, generation), old as usize);
+        let old = usize::try_from(depth.saturating_sub(RELIC_OFFSET[usize::from(heat)])).unwrap().min(MOST_BOSS_RELICS);
+        prop_assert_eq!(boss_relics::count(depth, heat, generation), old);
     }
 
     #[test]
@@ -60,7 +60,10 @@ fn one_reinforcement_for_each_hero_after_the_first(#[case] heroes: usize, #[case
         Scale::reinforcements(heroes, CONTENT),
         vec![REINFORCEMENT.to_owned(); extra]
     );
-    assert!(Scale::reinforcements(heroes, FOUNDRY_FROM).is_empty());
+    assert_eq!(
+        Scale::reinforcements(heroes, FOUNDRY_FROM),
+        Vec::<String>::new()
+    );
     let card = content().unwrap().card(REINFORCEMENT).unwrap();
     assert_eq!(card.kind, CardKind::Reinforcement);
 }
@@ -129,7 +132,7 @@ fn a_solo_hero_meets_the_same_boss_apart_from_the_early_relics() {
         .unwrap()
         .boss;
     let mut now = run(1, CONTENT).fight_plan(content).unwrap().unwrap().boss;
-    assert!(now.reinforcements.is_empty());
+    assert_eq!(now.reinforcements, Vec::<String>::new());
     now.relics.clone_from(&old.relics);
     assert_eq!(now, old);
 }
