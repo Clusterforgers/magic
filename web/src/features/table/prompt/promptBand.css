@@ -129,6 +129,23 @@
     min-height: 2.75rem;
     overflow: hidden;
   }
+  /*
+   * Show choices (`PickOnBoardButton`) is its icon alone in the dock and the bar, so the answers keep their one row
+   * and the home does not grow over the board; in the bar the answers take the width their words need.
+   */
+  &[data-home='bar'] > [data-slot='prompt-actions']:has(> [data-slot='pick-on-board']) > button {
+    flex: 1 1 auto;
+  }
+  &[data-home='bar'] > [data-slot='prompt-actions'] > [data-slot='pick-on-board'] {
+    flex: 0 0 2.75rem;
+  }
+  &:is([data-home='bar'], [data-home='dock']) > [data-slot='prompt-actions'] > [data-slot='pick-on-board'] {
+    padding-inline: 0;
+    aspect-ratio: 1;
+    & :is([data-slot='pick-words'], [data-slot='key-hint']) {
+      display: none;
+    }
+  }
   &[data-home='bar'] [data-slot='prompt-actions'] [data-slot='key-hint'],
   &[data-home='bar'] [data-slot='prompt-actions'] [data-slot='undo-rest'] {
     display: none;
@@ -250,6 +267,14 @@
     border-color: transparent;
     box-shadow: none;
   }
+}
+/*
+ * Pick on board (V): the card overlay hides, the scrim goes and the table takes the presses; the home keeps the
+ * question, the count and the answers with Show choices. The host keeps its place, so no board moves.
+ */
+[data-slot='choice-host']:has(> [data-slot='choice-overlay'][data-peek]) {
+  background: transparent;
+  pointer-events: none;
 }
 
 /*

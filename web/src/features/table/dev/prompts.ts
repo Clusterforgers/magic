@@ -28,6 +28,7 @@ import { lookTopMoment } from './lookTopScene'
 import { withTopCard, withTopCast } from './topCardScene'
 import { withBlocked } from './blockedScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
+import { TWIN_PROMPTS, TWIN_TABLES } from './twinScene'
 import {
   payLotus,
   payLotusSix,
@@ -576,6 +577,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-cycling': payCycling,
   'commander-return': commanderReturn,
   ...ASK_PROMPTS,
+  ...TWIN_PROMPTS,
   ...EFFECT_PROMPTS,
   ...LOOKED_PROMPTS,
   ...ANNOUNCE_PROMPTS,
@@ -658,6 +660,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'pass-turn': quietMoment('Upkeep', false, false),
   'commander-return': commanderReturnTable,
   ...ASK_TABLES,
+  ...TWIN_TABLES,
   ...EFFECT_MOMENTS,
   ...LOOKED_MOMENTS,
   'look-top': lookTopMoment,

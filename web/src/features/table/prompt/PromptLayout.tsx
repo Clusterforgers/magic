@@ -37,6 +37,8 @@ import { ResponseClock } from './ResponseClock'
 import { useDockForm, useDockWide } from '../dockLayout'
 import { StopsDock } from '../stops/StopsDock'
 import { useDecisionHome } from './useDecisionHome'
+import { PickOnBoardContext, usePickOnBoardHost } from './pickOnBoard'
+import { PickOnBoardButton } from './PickOnBoardButton'
 
 /** The coach's anchors of a decision's home: its question and its primary answer. */
 const QUESTION = anchor('ask.question')
@@ -357,6 +359,8 @@ export function PromptLayout({
   const at = choicesAt(name, home, inline, folded)
   useHomeKeys(home !== null, askedByCard(name))
   const windowHost = useWindowHost(at === 'window' && hasContent(choices))
+  // A card choice picked on the table hides its overlay; Show choices then stands with the answers (`pickOnBoard.ts`).
+  const pick = usePickOnBoardHost()
   const asker = useAsker()
   const named = detailKind(name) && asker !== null && asker.shown !== ''
   // The chip leads the dock and the bar; in the panel the asking card stands above. Either way it names the asker.
@@ -376,6 +380,7 @@ export function PromptLayout({
         className="prompt-answers sticky bottom-0 z-10 empty:hidden"
       >
         {children}
+        {pick.value.hidden ? <PickOnBoardButton pick={pick.value} /> : null}
       </div>
     )
   const clock = <ResponseClock id={id} kind={clockKind(decision.kind)} compact />
@@ -454,12 +459,13 @@ export function PromptLayout({
       {answers}
     </>
   )
+  const provided = <PickOnBoardContext value={pick.value}>{body}</PickOnBoardContext>
   if (home === null) {
     return here ? (
-      body
+      provided
     ) : (
       <div data-slot="decision-line" data-decision={name} data-decision-id={id} className="grid gap-2">
-        {body}
+        {provided}
       </div>
     )
   }
@@ -477,7 +483,7 @@ export function PromptLayout({
       className="decision-home"
       ref={markPrimary}
     >
-      {body}
+      {provided}
     </div>,
     element,
   )
