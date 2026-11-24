@@ -2,6 +2,7 @@
 import type { ManaCost } from "./ManaCost";
 import type { ManaSource } from "./ManaSource";
 import type { ManaType } from "./ManaType";
+import type { R120RestrictedMana } from "./R120RestrictedMana";
 import type { SpendOn } from "./SpendOn";
 import type { Take } from "./Take";
 
@@ -45,6 +46,11 @@ only?: Array<SpendOn>,
  * More mana of other types the same activation adds after `count` of `produces` (a bounceland's second mana); left out means none.
  */
 also?: Array<ManaType>, 
+/**
+ * Mana a triggered mana ability adds to the same tap with a restriction of its own (Snowfall's {U} spent only on
+ * cumulative upkeep), after what `made` lists; left out means none.
+ */
+r120_restricted?: Array<R120RestrictedMana>, 
 /**
  * Life the activation pays; left out means none.
  */

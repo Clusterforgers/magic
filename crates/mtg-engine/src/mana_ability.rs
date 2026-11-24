@@ -87,6 +87,7 @@ fn takes_of(
                 let take = Take {
                     sacrifice,
                     exile: !sacrifice,
+                    r120_untap: false,
                     count: u32::try_from(count).unwrap_or(u32::MAX),
                     from,
                 };
@@ -104,6 +105,7 @@ fn takes_of(
             {
                 let sacrifice = pick.kind == Kind::Sacrifice;
                 let exile = pick.kind == Kind::ExileHand;
+                let r120_untap = pick.kind == Kind::Untap;
                 let mut from = pick.candidates(&owner);
                 if sacrifice || exile {
                     // The cheapest goes first, a land after the spells; the order of the zone settles a tie.
@@ -121,6 +123,7 @@ fn takes_of(
                 let take = Take {
                     sacrifice,
                     exile,
+                    r120_untap,
                     count: u32::try_from(pick.count).unwrap_or(u32::MAX),
                     from,
                 };
@@ -166,6 +169,47 @@ pub(crate) fn split(made: &[ManaType]) -> Option<(ManaType, u32, Vec<ManaType>)>
         u32::try_from(run).unwrap_or(u32::MAX),
         made[run..].to_vec(),
     ))
+}
+
+/// Whether `among` names the permanent the cost takes (`Is(Paid)`): "any type that land could produce".
+fn r120_names_paid(among: &mtg_cards::refs::Selector) -> bool {
+    among
+        .0
+        .iter()
+        .any(|pred| matches!(pred, mtg_cards::refs::Pred::Is(mtg_cards::refs::Ref::Paid)))
+}
+
+/// Each way the mana of a cost-taken permanent is made: for each candidate of the first take of one permanent, each
+/// type it could produce (CR 106.7), with the take's place.
+fn r120_paid_ways(
+    state: &GameState,
+    takes: &[Take],
+    colorless: bool,
+) -> Vec<(usize, ObjectId, ManaType)> {
+    let Some((at, take)) = takes.iter().enumerate().find(|(_, take)| take.count == 1) else {
+        return Vec::new();
+    };
+    take.from
+        .iter()
+        .flat_map(|land| {
+            crate::mana_kinds::could_produce(state, *land)
+                .into_iter()
+                .filter(move |mana| colorless || *mana != ManaType::Colorless)
+                .collect::<std::collections::BTreeSet<_>>()
+                .into_iter()
+                .map(move |mana| (at, *land, mana))
+        })
+        .collect()
+}
+
+/// `takes` with the take at the pinned place taking only the pinned permanent.
+fn r120_pin(mut takes: Vec<Take>, pinned: Option<(usize, ObjectId)>) -> Vec<Take> {
+    if let Some((at, land)) = pinned
+        && let Some(take) = takes.get_mut(at)
+    {
+        take.from = vec![land];
+    }
+    takes
 }
 
 /// The mana abilities among the abilities of `id` that the engine activates at priority (`mana_shape`), for an object
@@ -298,6 +342,9 @@ fn rule_mana(
             };
             produces = next;
         }
+        // The permanent a way's mana is read from, when the cost takes it ("any type that land could produce"): the take
+        // at that place takes only it.
+        let mut pinned: Vec<Option<(usize, ObjectId)>> = Vec::new();
         // Each way to add the mana, as the types one addition makes.
         let additions: Vec<Vec<ManaType>> = match produces {
             // "X plus one" adds its one even for X = 0.
@@ -386,6 +433,20 @@ fn rule_mana(
                 among,
                 count,
                 colorless,
+            } if r120_names_paid(among) => {
+                let ways = r120_paid_ways(state, &takes, colorless);
+                pinned = ways
+                    .iter()
+                    .map(|(at, land, _)| Some((*at, *land)))
+                    .collect();
+                ways.into_iter()
+                    .map(|(_, _, mana)| vec![mana; count as usize])
+                    .collect()
+            }
+            ManaProduced::ProducedBy {
+                among,
+                count,
+                colorless,
             } => producible_types(state, player, (id, Some(place)), among, colorless)
                 .into_iter()
                 .map(|t| vec![t; count as usize])
@@ -455,6 +516,8 @@ fn rule_mana(
                     tapless: !tap,
                     only: only.clone(),
                     also,
+                    r120_restricted: Vec::new(),
+                    r120_folded: false,
                     life,
                     energy,
                     energy_held: if energy > 0 {
@@ -463,7 +526,10 @@ fn rule_mana(
                         0
                     },
                     cost: cost.clone(),
-                    takes: counted_to(&takes, &counted_takes, made.len()),
+                    takes: r120_pin(
+                        counted_to(&takes, &counted_takes, made.len()),
+                        pinned.get(variant).copied().flatten(),
+                    ),
                     repeat,
                     priority_only: shape.priority_only,
                     nonland: false,
@@ -761,13 +827,7 @@ pub(crate) fn activation(
     if let Some(shape) = &shape {
         events.extend(run_inline(state, player, object, shape.before)?);
     }
-    events.extend(option.made().into_iter().map(|mana| Event::ManaAdded {
-        player,
-        mana,
-        source: Some(id),
-        only: option.only.clone(),
-        lasts: mtg_cards::spend::ManaLasts::Step,
-    }));
+    events.extend(r120_added(player, id, option));
     if let Some(shape) = shape {
         // What it does besides reads the state after the cost is paid (CR 602.2): a depletion land is sacrificed once
         // its last counter is removed. The sacrificed source is read where it was, as before.
@@ -779,6 +839,28 @@ pub(crate) fn activation(
         events.extend(run_inline(now, player, object, shape.then)?);
     }
     Ok(events)
+}
+
+/// The mana `option` adds for `player` from `id`: its own under its restriction, then each restricted extra a triggered
+/// mana ability adds to the tap under its own. A payment's copy holds the extra in `also` too (`mana::usable`); it is
+/// added once.
+fn r120_added(player: PlayerId, id: ObjectId, option: &ManaOption) -> Vec<Event> {
+    let added = |mana: ManaType, only: &[mtg_cards::spend::SpendOn]| Event::ManaAdded {
+        player,
+        mana,
+        source: Some(id),
+        only: only.to_vec(),
+        lasts: mtg_cards::spend::ManaLasts::Step,
+    };
+    let mut events: Vec<Event> = option
+        .r120_own_made()
+        .into_iter()
+        .map(|mana| added(mana, &option.only))
+        .collect();
+    for part in &option.r120_restricted {
+        events.extend(part.mana.iter().map(|mana| added(*mana, &part.only)));
+    }
+    events
 }
 
 /// Gives each continuous effect and delayed trigger that one payment's events create an id and a timestamp of its own, in

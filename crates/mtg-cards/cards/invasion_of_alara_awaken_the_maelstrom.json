@@ -1,0 +1,101 @@
+{
+  "oracle_id": "8faa4330-07bb-4b65-810a-bbce29d3cd42",
+  "name": "Invasion of Alara // Awaken the Maelstrom",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Invasion of Alara",
+      "oracle_fingerprint": "f6895b576778b6c1b2970ef0d22f8bd3",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "ExileUntil": {
+                  "filter": [
+                    { "Not": { "Type": "Land" } },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": 4 } }
+                  ],
+                  "r120_count": 2,
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "Choose": {
+                  "from": { "Bound": "found" },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "cast"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "cast" }, "free": true } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Exile" }, { "Is": { "Bound": "found" } }] },
+                  "as": "kept"
+                }
+              },
+              { "Move": { "what": { "Bound": "kept" }, "to": "Hand" } },
+              {
+                "Move": {
+                  "what": { "Bound": "exiled" },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Awaken the Maelstrom",
+      "oracle_fingerprint": "1c9e68397e2c34e136c31b0d62347346",
+      "abilities": [
+        {
+          "Static": {
+            "affected": "This",
+            "mods": [{ "SetColors": ["White", "Blue", "Black", "Red", "Green"] }],
+            "defining": true
+          }
+        },
+        {
+          "Spell": {
+            "targets": [
+              { "what": "Player" },
+              { "what": { "Object": [{ "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              { "Draw": { "who": { "Target": 0 }, "count": 2 } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [{ "Type": "Artifact" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Move": { "what": { "Bound": "card" }, "to": { "Battlefield": {} } } }
+                  ]
+                }
+              },
+              { "Choose": { "from": { "Each": [{ "ControlledBy": "You" }] }, "as": "copied" } },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "copied" } } } } },
+              {
+                "R6702Distribute": {
+                  "among": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                  "counter": "+1/+1",
+                  "count": 3
+                }
+              },
+              { "Destroy": { "what": { "Target": 1 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

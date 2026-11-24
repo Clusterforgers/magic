@@ -1099,6 +1099,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 who,
                 filter,
                 total,
+                r120_count: None,
                 bind,
                 exiled_as
             }),

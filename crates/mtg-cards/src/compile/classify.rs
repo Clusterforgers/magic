@@ -86,6 +86,8 @@ fn is_spell_rule(body: &str) -> bool {
         // The card's own permission to be cast from its graveyard (Eelectrocute).
         || body.starts_with("You may cast this card from your graveyard as long as ")
         || body.starts_with("You may cast ~ from your graveyard as long as ")
+        // A spell's own color, which works in every zone (CR 604.3): "Awaken the Maelstrom is all colors."
+        || body == "~ is all colors."
 }
 
 /// Whether a line is a rule about the spell under a condition: "If you revealed a Dragon card ..., this spell can't be

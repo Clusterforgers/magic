@@ -750,6 +750,7 @@ fn x_binds(
 fn picked_by_the_planner(item: &CostItem) -> bool {
     match item {
         CostItem::TapPermanents { count, .. }
+        | CostItem::UntapPermanents { count, .. }
         | CostItem::Sacrifice { count, .. }
         | CostItem::ExileFromHand { count, .. } => {
             matches!(count, Amount::Fixed(number) if *number > 0) || matches!(count, Amount::X)

@@ -1385,6 +1385,7 @@ fn exiled_until_by_target(ability: &Ability, written: fn(&Ability) -> Vec<String
                 who: Ref::Target(0),
                 filter,
                 total: None,
+                r120_count: None,
                 bind,
                 exiled_as,
             },

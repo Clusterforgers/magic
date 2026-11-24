@@ -247,6 +247,7 @@ Belisarius Cawl
 Bell Borca, Spectral Sergeant
 Bellowing Aegisaur
 Benthic Biomancer
+Benthic Explorers
 Bespoke Battlewagon
 Bewitching Leechcraft
 Big Mother Mouser
@@ -344,6 +345,7 @@ Boromir, Gondor's Hope
 Boros Charm
 Boros Garrison
 Boros Signet
+Borrowing 100,000 Arrows
 Bosh, Iron Golem
 Bounty of Skemfar
 Bounty of the Hunt
@@ -750,6 +752,7 @@ Dissension in the Ranks
 Distorting Wake
 Distress
 Divest
+Divine Congregation
 Divine Visitation
 Diviner Spirit
 Djinn of Infinite Deceits
@@ -1478,6 +1481,7 @@ Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
 Invasion Plans
+Invasion of Alara // Awaken the Maelstrom
 Invasion of Arcavios // Invocation of the Founders
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
@@ -2339,6 +2343,7 @@ Reliquary Tower
 Remorseful Cleric
 Render Inert
 Renewed Faith
+Renewing Dawn
 Renounce
 Repeal
 Replication Technique
@@ -2449,6 +2454,7 @@ Sakura-Tribe Elder
 Saltcrusted Steppe
 Sami's Curiosity
 Samurai's Katana
+Sanar, Innovative First-Year
 Sanctum Lurker
 Sanctum Seeker
 Sanctum Weaver
@@ -2650,6 +2656,7 @@ Smuggler's Buggy
 Smuggler's Copter
 Snake Umbra
 Snakeform
+Snowfall
 Snubhorn Sentry
 Snuff Out
 Sodden Verdure
@@ -2694,6 +2701,7 @@ Sphinx of Jwar Isle
 Sphinx of Magosi
 Sphinx of the Chimes
 Sphinx of the Final Word
+Sphinx of the Guildpact
 Sphinx of the Steel Wind
 Spider Spawning
 Spider-Islanders
@@ -2734,6 +2742,7 @@ Starfleet Communicator
 Starfleet Security
 Starfleet Spanner Jockey
 Starforged Sword
+Starlight
 Starlit Sanctum
 Starnheim Aspirant
 Starscape Cleric
@@ -2986,6 +2995,7 @@ The War Doctor
 The Warring Triad
 The Wasp, Janet Van Dyne
 The Wise Mothman
+Theft of Dreams
 Thelonite Hermit
 There's Coffee in that Nebula
 Thick-Skinned Goblin
@@ -3089,6 +3099,7 @@ Trait Doctoring
 Tranquil Expanse
 Tranquil Thicket
 Tranquilize
+Transguild Courier
 Transmogrifying Wand
 Transporter Malfunction
 Trap the Trespassers

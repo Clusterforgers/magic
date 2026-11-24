@@ -54,6 +54,7 @@ fn table(blooms: &[(u64, &str)], hand: &[u64], lands: &str) -> Vec<ManaOption> {
                 takes: vec![Take {
                     sacrifice: false,
                     exile: true,
+                    r120_untap: false,
                     count: 1,
                     from: hand.iter().copied().map(ObjectId).collect(),
                 }],

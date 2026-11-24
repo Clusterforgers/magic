@@ -292,6 +292,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Random.Top",
     "Effect.ExileUntil",
     "ExileUntil.Total",
+    "ExileUntil.Count",
     "Effect.RevealUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
@@ -571,6 +572,7 @@ const RUNS: &[&str] = &[
     "Effect.R119ActivateLandMana",
     "Effect.R119DrainMana",
     "Effect.R119BindSpliced",
+    "Effect.R120ChooseEachColor",
     "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",
@@ -1871,6 +1873,7 @@ mod tests {
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_until_a_total_mana_value("ExileUntil.Total", true)]
+    #[case::exiling_until_a_count_of_matches("ExileUntil.Count", true)]
     #[case::revealing_until_a_card_matches("Effect.RevealUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]

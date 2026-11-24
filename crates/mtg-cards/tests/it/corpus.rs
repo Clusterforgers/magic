@@ -479,8 +479,8 @@ fn clause_spans_cut_out_the_sentences_they_name() {
     }
     let expected = [
         (
-            "Snowfall",
-            "Whenever an Island is tapped for mana, its controller may add an additional {U}. If that Island is snow, its controller may add an additional {U}{U} instead. Spend this mana only to pay cumulative upkeep costs.",
+            "Circling Vultures",
+            "You may discard this card any time you could cast an instant.",
         ),
         (
             "Yotia Declares War",

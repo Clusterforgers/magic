@@ -4,18 +4,25 @@ import { usesWords } from './spendRules'
 
 /** One mark: the short word the chip shows and the sentence a screen reader and the tooltip get. */
 export interface SourceMark {
-  key: 'only' | 'life' | 'energy' | 'hand' | 'tap' | 'sacrifice' | 'exile'
+  key: 'only' | 'life' | 'energy' | 'hand' | 'tap' | 'untap' | 'sacrifice' | 'exile'
   short: string
   words: string
 }
 
-type TakeKind = 'tap' | 'sacrifice' | 'exile'
+type TakeKind = 'tap' | 'untap' | 'sacrifice' | 'exile'
 
 const takeKind = (take: Take): TakeKind =>
-  take.sacrifice === true ? 'sacrifice' : take.exile === true ? 'exile' : 'tap'
+  take.sacrifice === true
+    ? 'sacrifice'
+    : take.exile === true
+      ? 'exile'
+      : take.r120_untap === true
+        ? 'untap'
+        : 'tap'
 
 const TAKE_WORDS: Record<TakeKind, (count: number) => string> = {
   tap: (count) => `taps ${count} more ${count === 1 ? 'permanent' : 'permanents'}`,
+  untap: (count) => `untaps ${count} tapped ${count === 1 ? 'permanent' : 'permanents'}`,
   sacrifice: (count) => `sacrifices ${count} more ${count === 1 ? 'permanent' : 'permanents'}`,
   exile: (count) => `exiles ${count} ${count === 1 ? 'card' : 'cards'} from your hand`,
 }
@@ -62,7 +69,7 @@ export function sourceMarks(options: readonly ManaOption[]): SourceMark[] {
   if (options.some((option) => option.exile === true)) {
     marks.push({ key: 'hand', short: 'from hand', words: 'exiles it from your hand' })
   }
-  for (const kind of ['tap', 'sacrifice', 'exile'] as const) {
+  for (const kind of ['tap', 'untap', 'sacrifice', 'exile'] as const) {
     const taken = most(options, (option) =>
       (option.takes ?? [])
         .filter((take) => takeKind(take) === kind)
