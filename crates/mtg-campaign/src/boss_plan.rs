@@ -30,15 +30,10 @@ impl Run {
         let modifier =
             crate::modifiers::draw(&content.modifiers, &boss.id, self.seed, self.floor, node);
         let deck = content.deck(&boss.deck_file)?;
-        let extra = content
-            .themes
-            .iter()
-            .find(|t| t.boss(&boss.id).is_some())
-            .map_or(0, |t| t.boss_relics);
         let relics = boss_relics::draw(
             content,
             &deck.makeup,
-            (self.content, extra),
+            self.content,
             (depth, self.heat),
             (self.seed, self.floor, node),
         );
@@ -52,7 +47,15 @@ impl Run {
             innate: innate_id(&boss.innate, level),
             modifier: modifier.map(|m| m.id.clone()),
             relics,
-            reinforcements: Scale::reinforcements(heroes, self.content),
+            reinforcements: Scale::theme_reinforcements(
+                heroes,
+                self.content,
+                content
+                    .themes
+                    .iter()
+                    .find(|t| t.boss(&boss.id).is_some())
+                    .map_or(0, |t| t.boss_supplies),
+            ),
             round_phases: boss
                 .round_phases
                 .iter()

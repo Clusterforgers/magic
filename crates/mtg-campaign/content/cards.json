@@ -285,6 +285,33 @@
   ]
  },
  {
+  "id": "supplies",
+  "name": "Supplies",
+  "kind": "Reinforcement",
+  "type_line": "Boss — Reinforcement",
+  "text": "At the beginning of your draw step, draw an additional card.",
+  "art": "reinforcements",
+  "abilities": [
+   {
+    "Triggered": {
+     "when": {
+      "StepBegins": {
+       "step": "Draw",
+       "whose": "You"
+      }
+     },
+     "effects": [
+      {
+       "Draw": {
+        "who": "You"
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
   "id": "ember_idol",
   "name": "Ember Idol",
   "kind": "Relic",
