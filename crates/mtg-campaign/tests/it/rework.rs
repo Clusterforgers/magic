@@ -157,7 +157,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
     let relics = boss_relics::draw(
         content,
         &DeckMakeup::default(),
-        CONTENT,
+        (CONTENT, 0),
         (depth, heat),
         (seed, 2, 3),
     );
@@ -170,7 +170,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
     let again = boss_relics::draw(
         content,
         &DeckMakeup::default(),
-        CONTENT,
+        (CONTENT, 0),
         (depth, heat),
         (seed, 2, 3),
     );

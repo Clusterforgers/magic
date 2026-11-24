@@ -7,7 +7,7 @@
 use crate::content::{Content, CustomCard, Rarity};
 use crate::relics::{DeckMakeup, usable};
 use crate::rng::Stream;
-use crate::run::BOSS_SCALE_FROM;
+use crate::run::{BOSS_SCALE_FROM, THEME_RELICS_FROM};
 use crate::scale::MAX_HEAT;
 
 /// The most relics a boss brings.
@@ -37,6 +37,19 @@ pub fn count(depth: u32, heat: u8, generation: u32) -> usize {
         .min(MOST_BOSS_RELICS)
 }
 
+/// How many relics a boss of a theme that adds `extra` (`Theme::boss_relics`) brings at `depth` and `heat` in a run of
+/// content `generation`: [`count`], plus `extra` from [`THEME_RELICS_FROM`], at most [`MOST_BOSS_RELICS`].
+pub fn theme_count(depth: u32, heat: u8, generation: u32, extra: u32) -> usize {
+    let extra = if generation >= THEME_RELICS_FROM {
+        usize::try_from(extra).unwrap_or(MOST_BOSS_RELICS)
+    } else {
+        0
+    };
+    count(depth, heat, generation)
+        .saturating_add(extra)
+        .min(MOST_BOSS_RELICS)
+}
+
 /// The Rare and Mythic chances, in percent, of each relic of a boss that brings `count` relics at `heat`.
 pub fn odds(count: usize, heat: u8) -> (u32, u32) {
     let heat = heat.min(MAX_HEAT);
@@ -57,12 +70,12 @@ pub fn fits(relic: &CustomCard, makeup: &DeckMakeup) -> bool {
     !relic.team && usable(relic, makeup)
 }
 
-/// The relics, by id, of the boss in `room` of `floor` at `depth` and `heat`, whose deck has `makeup`, drawn by the
-/// run's `seed` from the relics of content generation `content` and earlier.
+/// The relics, by id, of the boss in `room` of `floor` at `depth` and `heat`, whose deck has `makeup` and whose theme
+/// adds `extra`, drawn by the run's `seed` from the relics of content `generation` and earlier.
 pub fn draw(
     content: &Content,
     makeup: &DeckMakeup,
-    generation: u32,
+    (generation, extra): (u32, u32),
     (depth, heat): (u32, u8),
     (seed, floor, room): (u64, u8, u8),
 ) -> Vec<String> {
@@ -71,7 +84,7 @@ pub fn draw(
         .into_iter()
         .filter(|c| c.since <= generation && fits(c, makeup))
         .collect();
-    let n = count(depth, heat, generation);
+    let n = theme_count(depth, heat, generation, extra);
     let (rare, mythic) = odds(n, heat);
     let mut rng = Stream::new(seed, "boss relics", u64::from(floor), u64::from(room));
     (0..n)

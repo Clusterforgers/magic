@@ -467,6 +467,10 @@ pub struct Theme {
     /// The least Heat of a run that may draw it; 0 for every Heat.
     #[serde(default)]
     pub min_heat: u8,
+    /// The relics each of its bosses brings beyond the count by depth and Heat, from generation
+    /// [`THEME_RELICS_FROM`](crate::run::THEME_RELICS_FROM).
+    #[serde(default)]
+    pub boss_relics: u32,
 }
 
 impl Theme {

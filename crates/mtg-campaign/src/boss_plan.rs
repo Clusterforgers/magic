@@ -30,10 +30,15 @@ impl Run {
         let modifier =
             crate::modifiers::draw(&content.modifiers, &boss.id, self.seed, self.floor, node);
         let deck = content.deck(&boss.deck_file)?;
+        let extra = content
+            .themes
+            .iter()
+            .find(|t| t.boss(&boss.id).is_some())
+            .map_or(0, |t| t.boss_relics);
         let relics = boss_relics::draw(
             content,
             &deck.makeup,
-            self.content,
+            (self.content, extra),
             (depth, self.heat),
             (self.seed, self.floor, node),
         );

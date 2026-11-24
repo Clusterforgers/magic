@@ -1,10 +1,11 @@
 //! Goal: from generation `BOSS_SCALE_FROM` a boss brings relics from the first fight, more with depth and Heat, and one
 //! reinforcement for each hero after the first (a solo hero meets the same boss as before); runs of older generations
-//! keep the relic count and the boss they were played with.
+//! keep the relic count and the boss they were played with; from `THEME_RELICS_FROM` a theme may add relics to its
+//! bosses.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS, RELIC_OFFSET};
 use mtg_campaign::content::FOUNDRY_FROM;
-use mtg_campaign::run::{BOSS_SCALE_FROM, CONTENT};
+use mtg_campaign::run::{BOSS_SCALE_FROM, CONTENT, THEME_RELICS_FROM};
 use mtg_campaign::scale::REINFORCEMENT;
 use mtg_campaign::{CardKind, HeroDeck, Run, RunEvent, Scale, content};
 use proptest::prelude::*;
@@ -133,6 +134,79 @@ fn a_solo_hero_meets_the_same_boss_apart_from_the_early_relics() {
         .boss;
     let mut now = run(1, CONTENT).fight_plan(content).unwrap().unwrap().boss;
     assert_eq!(now.reinforcements, Vec::<String>::new());
+    now.relics.clone_from(&old.relics);
+    assert_eq!(now, old);
+}
+
+proptest! {
+    #[test]
+    fn a_theme_adds_its_relics_only_from_its_generation(
+        depth in 0u32..40,
+        heat in 0u8..4,
+        generation in 0u32..20,
+        extra in 0u32..4,
+    ) {
+        let base = boss_relics::count(depth, heat, generation);
+        let now = boss_relics::theme_count(depth, heat, generation, extra);
+        if generation < THEME_RELICS_FROM {
+            prop_assert_eq!(now, base);
+        } else {
+            prop_assert_eq!(now, (base + extra as usize).min(MOST_BOSS_RELICS));
+        }
+    }
+}
+
+/// A started run of the `theme` with two heroes at `heat` in content `version`, its first boss's plan.
+fn first_boss(theme: &str, heat: u8, version: u32) -> mtg_campaign::BossSeat {
+    let mut events = vec![RunEvent::Content { version }];
+    for at in 0..2u8 {
+        events.push(RunEvent::Joined {
+            name: format!("H{at}"),
+            user: Some(format!("u{at}")),
+            bot: None,
+        });
+        events.push(RunEvent::DeckChosen {
+            hero: at,
+            deck: HeroDeck {
+                id: "x".into(),
+                name: "x".into(),
+                colors: "G".into(),
+                commanders: Vec::new(),
+                makeup: None,
+            },
+        });
+    }
+    events.push(RunEvent::Started);
+    let content = content().unwrap();
+    Run::replay(content, theme, 21, heat, &events)
+        .unwrap()
+        .fight_plan(content)
+        .unwrap()
+        .unwrap()
+        .boss
+}
+
+#[rstest]
+#[case::warrens("warrens", 1, 0)]
+#[case::spire("spire", 1, 0)]
+#[case::foundry("foundry", 3, 1)]
+fn a_themes_bosses_bring_its_extra_relics_from_its_generation(
+    #[case] theme: &str,
+    #[case] heat: u8,
+    #[case] extra: usize,
+) {
+    assert_eq!(
+        content().unwrap().theme(theme).unwrap().boss_relics as usize,
+        extra
+    );
+    let old = first_boss(theme, heat, BOSS_SCALE_FROM);
+    let mut now = first_boss(theme, heat, CONTENT);
+    assert_eq!(
+        old.relics.len(),
+        boss_relics::count(0, heat, BOSS_SCALE_FROM)
+    );
+    assert_eq!(now.relics.len(), old.relics.len() + extra);
+    // Apart from the relics, the boss is the one of generation 12.
     now.relics.clone_from(&old.relics);
     assert_eq!(now, old);
 }
