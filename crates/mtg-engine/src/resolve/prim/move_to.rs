@@ -1,7 +1,5 @@
 //! `Effect::Move`: objects change zones, to a hand, a graveyard, a library or the battlefield.
 
-use std::borrow::Cow;
-
 use mtg_cards::definition::Layout;
 use mtg_cards::effect::{Destination, Effect, Order, Place};
 use mtg_cards::refs::{Ref, Selector};
@@ -344,11 +342,11 @@ fn attached_entry(
 /// The state with the card `id` as it will be once it is on the battlefield: the back face when it enters transformed.
 /// What it enters with (the lore counter of a Saga, the loyalty of a planeswalker, the host of an Aura) is that
 /// face's (CR 712.14a).
-fn as_entering(state: &GameState, id: ObjectId, transformed: bool) -> Cow<'_, GameState> {
+fn as_entering(state: &GameState, id: ObjectId, transformed: bool) -> crate::faces::Faced<'_> {
     if transformed {
         state.with_face(id, Some(1))
     } else {
-        Cow::Borrowed(state)
+        crate::faces::Faced::Same(state)
     }
 }
 
