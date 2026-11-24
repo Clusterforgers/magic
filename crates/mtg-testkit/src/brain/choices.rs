@@ -193,6 +193,10 @@ pub fn quick_choice(engine: &Engine, decision: &Decision, random: &mut RandomBot
         DecisionKind::PayMana(options) if options.auto_available => {
             Answer::PayMana(PayChoice::Auto)
         }
+        // Only a mana ability that does more than add mana (Vexing Puzzlebox) pays the rest: it is activated first.
+        DecisionKind::PayMana(options) if !options.announced.is_empty() => {
+            Answer::PayMana(PayChoice::Activate(options.announced[0]))
+        }
         DecisionKind::ChooseOption(options) => threatening_color(&seen, &options.options)
             .map_or_else(
                 || random.choose_in(decision, engine.state()),

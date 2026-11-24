@@ -951,6 +951,9 @@ impl RandomBot {
         }
         if options.auto_available {
             choices.push(PayChoice::Auto);
+        } else if let Some(ability) = options.announced.first() {
+            // Only a mana ability that does more than add mana (Vexing Puzzlebox) pays the rest.
+            choices.push(PayChoice::Activate(*ability));
         }
         if let Some(payment) = manual {
             if self.partial_payments {
