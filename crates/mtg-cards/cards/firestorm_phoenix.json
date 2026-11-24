@@ -1,7 +1,7 @@
 {
   "oracle_id": "5653b40f-c566-4a14-b188-a9268ea36218",
   "name": "Firestorm Phoenix",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Firestorm Phoenix",
@@ -9,9 +9,24 @@
       "abilities": [
         { "Keyword": "Flying" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 179 }
+          "Replacement": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "by": {
+              "Instead": [
+                { "Move": { "what": "This", "to": "Hand", "as": "card" } },
+                {
+                  "Rule": {
+                    "rule": {
+                      "R119PlaysRevealed": {
+                        "who": { "OwnerOf": { "Bound": "card" } },
+                        "card": { "Bound": "card" }
+                      }
+                    },
+                    "duration": "UntilTheirNextTurn"
+                  }
+                }
+              ]
+            }
           }
         }
       ]

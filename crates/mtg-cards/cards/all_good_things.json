@@ -1,0 +1,73 @@
+{
+  "oracle_id": "61dc9770-1e29-49fa-a31b-b63b5f0496fb",
+  "name": "All Good Things...",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "All Good Things...",
+      "oracle_fingerprint": "98dd6d1036cbb7d1abb646d30d718bba",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              { "Draw": { "count": 2 } },
+              {
+                "Choose": {
+                  "from": { "Each": [{ "In": "Hand" }, { "OwnedBy": "You" }] },
+                  "as": "card"
+                }
+              },
+              { "Exile": { "what": { "Bound": "card" } } }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 4 } },
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "R119ShareCardType": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] }
+                  },
+                  "then": [{ "GainLife": { "amount": 10 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "oracle_id": "0669172d-396b-4f5a-9703-129c5c849b55",
+  "name": "Drain Power",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Drain Power",
+      "oracle_fingerprint": "eb4deaf2efeb7cf6683fff1bd77e3783",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              { "R119ActivateLandMana": { "who": { "Target": 0 } } },
+              { "R119DrainMana": { "from": { "Target": 0 } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

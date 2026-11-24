@@ -1,0 +1,51 @@
+{
+  "oracle_id": "ce70f16c-ea45-4f1d-aafb-34a5d05d31e7",
+  "name": "Kuroki, Thief of Talents",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kuroki, Thief of Talents",
+      "oracle_fingerprint": "8c084bc8c15adce7e06bfdbc86bdcca4",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "May": {
+                  "who": { "Target": 0 },
+                  "effects": [{ "Draw": { "who": { "Target": 0 }, "count": 4 } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "LookAtHand": { "of": { "Target": 0 } } },
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "card"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+                  ],
+                  "otherwise": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

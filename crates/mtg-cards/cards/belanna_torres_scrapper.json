@@ -1,0 +1,47 @@
+{
+  "oracle_id": "c905227d-b5fe-42e6-a11d-5008b7a7922f",
+  "name": "B'Elanna Torres, Scrapper",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "B'Elanna Torres, Scrapper",
+      "oracle_fingerprint": "ec9d3a811b7594ddf5dd197247f8df1f",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        { "Keyword": "Trample" },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}" }, "Tap"],
+            "effects": [
+              { "Surveil": { "count": 2 } },
+              {
+                "Bind": {
+                  "what": { "Each": [{ "In": "Library" }, { "OwnedBy": "You" }, "TopOfLibrary"] },
+                  "as": "top"
+                }
+              },
+              { "May": { "effects": [{ "Reveal": { "what": { "Bound": "top" } } }] } },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      "Performed",
+                      {
+                        "Matches": {
+                          "subject": { "Bound": "top" },
+                          "selector": [{ "Type": "Artifact" }]
+                        }
+                      }
+                    ]
+                  },
+                  "then": [{ "Draw": {} }],
+                  "otherwise": [{ "PutCounters": { "on": "This", "counter": "+1/+1", "count": 2 } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

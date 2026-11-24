@@ -13,6 +13,15 @@ const seatRow = (seat: number) => within(must(deckField(seat).closest('li')))
 
 const seatCounts = [2, 3, 4, 8, 12, 13, 24, 64]
 
+/**
+ * Presses Add seat until the form holds `count` seats. The button is looked up once: a role query walks the whole
+ * form, and at 64 seats a fresh one per press doubled the test's time, which a loaded machine pushed past its timeout.
+ */
+async function addSeats(user: Awaited<ReturnType<typeof openLinks>>['user'], count: number) {
+  const add = button('Add seat')
+  for (let seat = MIN_SEATS; seat < count; seat += 1) await user.click(add)
+}
+
 async function openLinks() {
   const page = await openCreateForm()
   await chooseSeatLinks(page.user)
@@ -52,28 +61,33 @@ describe('switching it on', () => {
 })
 
 describe('the number of seats', () => {
-  it.each(seatCounts)('sends exactly the documented request for %i seats, every seat held', async (count) => {
-    const { server, user } = await openLinks()
-    for (let seat = MIN_SEATS; seat < count; seat += 1) await user.click(button('Add seat'))
-    expect(screen.getByText(`${count} seats`)).toBeInTheDocument()
-    await user.click(button('Create game'))
-    await waitFor(() => expect(server.creates).toHaveLength(1))
-    expect(server.creates[0]).toEqual({
-      format: 'normal',
-      seats: Array.from({ length: count }, (_, i) => ({
-        name: `Player ${i + 1}`,
-        deck: DECKS[i % DECKS.length]?.id,
-      })),
-      visibility: 'invite',
-    })
-    expect(await screen.findByRole('heading', { name: 'Game created' })).toBeInTheDocument()
-  })
+  it.each(seatCounts)(
+    'sends exactly the documented request for %i seats, every seat held',
+    async (count) => {
+      const { server, user } = await openLinks()
+      await addSeats(user, count)
+      expect(screen.getByText(`${count} seats`)).toBeInTheDocument()
+      await user.click(button('Create game'))
+      await waitFor(() => expect(server.creates).toHaveLength(1))
+      expect(server.creates[0]).toEqual({
+        format: 'normal',
+        seats: Array.from({ length: count }, (_, i) => ({
+          name: `Player ${i + 1}`,
+          deck: DECKS[i % DECKS.length]?.id,
+        })),
+        visibility: 'invite',
+      })
+      expect(await screen.findByRole('heading', { name: 'Game created' })).toBeInTheDocument()
+      // No time is measured here; the cap only catches a hang, so 64 seats on a loaded machine stay inside it.
+    },
+    60_000,
+  )
 
   it('never stops offering more seats, and stops at 2 when removing', async () => {
     const { user } = await openLinks()
     expect(button('Remove seat 1')).toBeDisabled()
     expect(button('Remove seat 2')).toBeDisabled()
-    for (let seat = MIN_SEATS; seat < 14; seat += 1) await user.click(button('Add seat'))
+    await addSeats(user, 14)
     expect(button('Add seat')).toBeEnabled()
     expect(screen.getAllByRole('heading', { name: /^Seat \d+$/ })).toHaveLength(14)
     expect(button('Remove seat 1')).toBeEnabled()

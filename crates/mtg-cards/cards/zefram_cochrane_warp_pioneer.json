@@ -1,0 +1,29 @@
+{
+  "oracle_id": "fea67446-f413-4a8c-b79a-49172e798fff",
+  "name": "Zefram Cochrane, Warp Pioneer",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zefram Cochrane, Warp Pioneer",
+      "oracle_fingerprint": "6aaa46aa9092fd0579d05efd97f1d4ce",
+      "abilities": [
+        { "Rule": { "rule": { "LookAtTopAnyTime": "You" } } },
+        {
+          "Rule": {
+            "rule": {
+              "MayCast": { "what": [{ "Type": "Artifact" }], "from": "Library", "once": true }
+            }
+          }
+        },
+        {
+          "Replacement": {
+            "when": {
+              "Enters": { "what": [{ "Subtype": "Spacecraft" }, { "ControlledBy": "You" }] }
+            },
+            "by": { "WithCounters": { "counter": "charge", "count": 2 } }
+          }
+        }
+      ]
+    }
+  ]
+}

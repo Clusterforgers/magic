@@ -792,6 +792,9 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
                     )));
                 }
             }
+            if let Some(resolving) = state.resolving.as_mut() {
+                resolving.r119_spent.extend(mana.iter().copied());
+            }
         }
         Event::ManaPoolEmptied {
             player,

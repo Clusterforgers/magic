@@ -1,0 +1,40 @@
+{
+  "oracle_id": "73ba7ed0-0f08-4ba4-9f51-42c48f1b62ea",
+  "name": "Whtz, the Bibliophile",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Whtz, the Bibliophile",
+      "oracle_fingerprint": "4a5afecd2b8d569c080cd8067ecbf0bf",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "R116Rulebreaker": "A deck with this commander has no maximum deck size" }
+          }
+        },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              "Tap",
+              {
+                "Changed": {
+                  "change": "Reduce",
+                  "mana": "{3}",
+                  "per": {
+                    "When": {
+                      "condition": { "R119StartingDeck": { "at_least": 200 } },
+                      "then": 1,
+                      "otherwise": 0
+                    }
+                  }
+                }
+              }
+            ],
+            "effects": [{ "Draw": {} }, { "GainLife": { "amount": 1 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

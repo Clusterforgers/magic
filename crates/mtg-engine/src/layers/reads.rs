@@ -97,6 +97,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::DoesntUntap
         | Modification::R6700KeepsLastLoyalty
         | Modification::CantBeTurnedFaceUp
+        | Modification::R119CantBeBeamedUp
         | Modification::CantBeBlocked
         | Modification::CantBeBlockedBy { .. }
         | Modification::CanBlockOnly { .. }
@@ -176,6 +177,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
+        | Wanted::R119CantBeBeamedUp
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
         | Wanted::CanBlockOnly(_)
@@ -262,6 +264,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
+        | Wanted::R119CantBeBeamedUp
         | Wanted::CantBeBlocked
         | Wanted::MinBlockers(_)
         | Wanted::MaxBlockers(_)
@@ -419,6 +422,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::R4700TopOfGraveyard { .. }
         | Pred::Kicked
         | Pred::R112Modal
+        | Pred::R119CanBeBeamedUp
         | Pred::AdditionalCostPaid
         | Pred::Suspended
         | Pred::Foretold
@@ -556,6 +560,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Bound(_)
         | Amount::CastWith(_)
         | Amount::ColorsSpent
+        | Amount::R119SpentOnTriggering(_)
         | Amount::PermanentsGraved
         | Amount::LifeLostThisWay
         | Amount::R6702FlipStakes
@@ -590,6 +595,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::Triggering
         | Amount::R110MostDamageToOne
         | Amount::R110RemovedThisWay(_)
+        | Amount::R119PutThisWay(_)
         | Amount::Drafted(_) => Traits::NONE,
         Amount::Count(selector) => reads_of_selector(selector),
         Amount::Stat { of, stat } => reads_of_ref(of).or(reads_of_stat(*stat)),
@@ -678,6 +684,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::Matches { subject, selector } => {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
+        Condition::R119ShareCardType(what) => reads_of_ref(what).or(Traits::TYPES),
         Condition::CountOf {
             subject,
             selector,
@@ -725,6 +732,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::ExtraTurn => Traits::NONE,
         Condition::Monarch(who)
         | Condition::R118BegunExtraTurn(who)
+        | Condition::R119StartingDeck { who, .. }
         | Condition::MonarchAtTurnStart(who)
         | Condition::AttackedYouLastTurn(who)
         | Condition::CompletedDungeon(who)

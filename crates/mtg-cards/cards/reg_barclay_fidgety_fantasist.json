@@ -1,0 +1,45 @@
+{
+  "oracle_id": "adcf571f-c465-44c6-8941-48313810e732",
+  "name": "Reg Barclay, Fidgety Fantasist",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reg Barclay, Fidgety Fantasist",
+      "oracle_fingerprint": "44fe1b35ef75e8b3f9d916173fc4207e",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Nth": { "event": { "Drew": { "who": "You" } }, "nth": 2 } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Other"] } }
+            ],
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "CopyOf": {
+                      "of": { "Target": 0 },
+                      "except": [
+                        { "RemoveSupertype": "Legendary" },
+                        { "AddSubtype": "Illusion" },
+                        { "AddType": "Artifact" },
+                        { "AddKeyword": "Haste" }
+                      ]
+                    }
+                  },
+                  "as": "copy"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [{ "Exile": { "what": { "Bound": "copy" } } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

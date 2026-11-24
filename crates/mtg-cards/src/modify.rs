@@ -228,6 +228,9 @@ pub enum Modification {
     R6700KeepsLastLoyalty,
     /// The object can't be turned face up (a restriction, no layer).
     CantBeTurnedFaceUp,
+    /// The object can't be returned to its owner's hand to pay a beam me up cost (a restriction, no layer): "can't be
+    /// beamed up".
+    R119CantBeBeamedUp,
     /// The object can't be blocked (a restriction, no layer).
     CantBeBlocked,
     /// The object can't be blocked by creatures the selector matches (a restriction, no layer).
@@ -330,6 +333,7 @@ impl Modification {
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
+            | Modification::R119CantBeBeamedUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy(_)
             | Modification::CanBlockOnly(_)
@@ -1247,6 +1251,14 @@ pub enum GameRule {
     RevealTop(Ref),
     /// The players play with their hands revealed.
     RevealHand(Ref),
+    /// The player plays with the cards revealed in their hand and can't play them (CR 400.2): "that player plays with
+    /// that card revealed in their hand and can't play it"; it ends for a card once it leaves the hand.
+    R119PlaysRevealed {
+        /// The player whose hand holds the cards.
+        who: Ref,
+        /// The cards.
+        card: Ref,
+    },
     /// Players may cast cards the ordinary rules do not let them cast: from another zone, without paying their mana
     /// costs, or as though they had flash (CR 601.3).
     MayCast(CastPermission),

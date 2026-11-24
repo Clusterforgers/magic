@@ -235,7 +235,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                     .is_some_and(|o| picks(state, ban, cards, o.reference()))
         }
         (Prohibited::PlayLands(lands), Doing::PlayLandCard { player, card }) => {
-            covers(who, Some(player), None)
+            covers(who, Some(player), Some(card))
                 && state
                     .object(card)
                     .is_some_and(|o| picks(state, ban, lands, o.reference()))
@@ -302,7 +302,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             },
             Doing::Cast { player, card },
         ) => {
-            covers(who, Some(player), None)
+            covers(who, Some(player), Some(card))
                 && casting_forbidden(
                     state,
                     ban,

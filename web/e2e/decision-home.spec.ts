@@ -1,4 +1,4 @@
-// Goal: on the development table (a duel, a grid of six, two teams, Two-Headed Giant and the boss) every decision kind has one home, the strip between the boards stays one status line and no board, card, hand or column moves from one prompt to the next: a card's question stands under its card in the Stack panel with the column open, in the dock with it folded or on its Log tab, and in the bar on a phone, whose payment grows into a sheet of at most 330 px; the answers are in the window and uncovered, and the dock and the bar never scroll.
+// Goal: on the development table (a duel, a grid of six, two teams, Two-Headed Giant and the boss) every decision kind has one home, the strip between the boards stays one status line and no board, card, hand or column moves from one prompt to the next: a card's question stands under its card in the Stack panel with the column open, in the dock with it folded or on its Log tab, and in the bar on a phone, whose payment grows into a sheet of at most 330 px; the answers are in the window and uncovered (your cards size anew, in place, only where the dock grows over their corner), and the dock and the bar never scroll.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
@@ -19,6 +19,8 @@ interface Shown {
   still: Record<string, Box | null>
   /** The centre overlay or a window lays out a choice: the strip stands above the hand meanwhile. */
   overlay: boolean
+  /** The dock's body grows above its cell, over the corner of your board. */
+  dockOver: boolean
   /** A phone's payment sheet. */
   sheet: Box | null
 }
@@ -67,6 +69,9 @@ function readShown(): Shown {
       'their card': one('[data-area="opponents"] button[data-object-id][data-size]'),
     },
     overlay: document.querySelector('[data-slot="choice-host"]:not([hidden])') !== null,
+    dockOver:
+      (document.querySelector('[data-slot="dock-body"]')?.getBoundingClientRect().top ?? Infinity) <
+      (document.querySelector('[data-region="controls"]')?.getBoundingClientRect().top ?? -Infinity) - 1,
     sheet: one('[data-slot="decision-sheet"]'),
   }
 }
@@ -168,6 +173,15 @@ test.describe('the decision homes', () => {
           for (const [name, box] of Object.entries(shown.still)) {
             // A payment opens your piles of equal lands, so each can be tapped: the cards of a full board size anew.
             if (prompt === 'pay' && name === 'own card') continue
+            // A dock grown over the corner of your board sizes your cards anew to keep them clear of it; they stay in place.
+            if (name === 'own card' && shown.dockOver && box !== null) {
+              const was = quiet.still[name] ?? null
+              const corner = (at: Box): Box => [at[0], at[1], 0, 0]
+              expect(same(corner(box), was === null ? null : corner(was)), `${label}: own card moved`).toBe(
+                true,
+              )
+              continue
+            }
             expect(
               same(box, quiet.still[name] ?? null),
               `${label}: ${name} moved, ${box} against ${quiet.still[name]}`,

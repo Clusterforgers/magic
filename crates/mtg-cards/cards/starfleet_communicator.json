@@ -1,0 +1,74 @@
+{
+  "oracle_id": "d5560aaa-7459-498f-b3c5-e096d8c75b51",
+  "name": "Starfleet Communicator",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Starfleet Communicator",
+      "oracle_fingerprint": "be521f187c25ecf9eb0d96c1a9f1eddf",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "SpellCast": { "what": ["This"], "by": "You" } },
+            "from": "Stack",
+            "effects": [{ "CopySpell": { "what": "This" } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Triggered": {
+                    "when": { "Attacks": { "what": ["This"] } },
+                    "effects": [
+                      {
+                        "Draw": {
+                          "count": {
+                            "Count": [
+                              { "Type": "Creature" },
+                              "Other",
+                              { "ControlledBy": "You" },
+                              { "HasAttached": [{ "Subtype": "Communicator" }] }
+                            ]
+                          }
+                        }
+                      },
+                      {
+                        "Choose": {
+                          "from": {
+                            "Each": [{ "Type": "Land" }, { "In": "Hand" }, { "OwnedBy": "You" }]
+                          },
+                          "count": {
+                            "min": 0,
+                            "max": {
+                              "Count": [
+                                { "Type": "Creature" },
+                                "Other",
+                                { "ControlledBy": "You" },
+                                { "HasAttached": [{ "Subtype": "Communicator" }] }
+                              ]
+                            }
+                          },
+                          "as": "lands"
+                        }
+                      },
+                      {
+                        "Move": {
+                          "what": { "Bound": "lands" },
+                          "to": { "Battlefield": { "tapped": true } }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Equip": "{1}" } }
+      ]
+    }
+  ]
+}

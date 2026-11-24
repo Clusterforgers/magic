@@ -138,6 +138,7 @@ Ashes of the Abhorrent
 Ashnod the Uncaring
 Assassin's Trophy
 Assemble the Entmoot
+Assimilate the Wounded
 Assimilation Assessor
 Astute Terraformer
 Atlantean Skirmisher
@@ -177,6 +178,7 @@ Azorius Locket
 Azorius Signet
 Azure Fleet Admiral
 Azusa, Lost but Seeking
+B'Elanna Torres, Scrapper
 Baaallerina
 Baba Lysaga, Night Witch
 Back from the Brink
@@ -185,6 +187,7 @@ Backdraft
 Bad Moon
 Baird, Steward of Argive
 Balduvian Conjurer
+Balduvian Fallen
 Balduvian Shaman
 Balduvian Warlord
 Balefang the Unslayable
@@ -356,6 +359,7 @@ Brass Infiniscope
 Brass's Tunnel-Grinder // Tecutlan, the Searing Rift
 Brave the Sands
 Brazen Blademaster
+Brazen Bluff
 Brazen Borrower // Petty Theft
 Break the Ice
 Breath of Life
@@ -517,6 +521,7 @@ Cloudthresher
 Clown Car
 Clutch of Currents
 Clutch of the Undercity
+Cmdr. Troi, Outgoing Empath
 Coastal Breach
 Coastal Discovery
 Coffin Puppets
@@ -781,6 +786,7 @@ Dragonmaster Outcast
 Dragonspeaker Shaman
 Dragonstorm Globe
 Dragonwing Glider
+Drain Power
 Dralnu's Pet
 Dralnu, Lich Lord
 Dramatist's Puppet
@@ -1027,6 +1033,7 @@ Finch Formation
 Fire-Lit Thicket
 Fireshrieker
 Firestorm Hellkite
+Firestorm Phoenix
 Firmament Sage
 First Contact
 First Little Pig
@@ -1285,6 +1292,7 @@ Guidelight Matrix
 Guiding Voice
 Guildless Commons
 Guile
+Guinan, Ancient Advisor
 Gul Dukat, Colonial Prefect
 Gurmag Angler
 Gurmag Drowner
@@ -1484,6 +1492,7 @@ Iron League Steed
 Isolated Chapel
 Isperia, Supreme Judge
 It's Clobberin' Time!
+Itazura, Lingering Wick
 Item Shopkeep
 Ivory Mask
 Ixalli's Lorekeeper
@@ -1533,6 +1542,7 @@ Jyoti, Moag Ancient
 Jötun Grunt
 K'Vort-Class Raider
 Kaervek's Torch
+Kai Winn, Faithless Leader
 Kaito's Pursuit
 Kalemne's Captain
 Kalemne, Disciple of Iroas
@@ -1617,6 +1627,7 @@ Krosan Grip
 Krosan Verge
 Kulrath Knight
 Kurn, Son of Mogh
+Kuroki, Thief of Talents
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
 L'Rell, Fierce Visionary
@@ -1836,6 +1847,7 @@ Miles O'Brien, Transporter Ops
 Military Intelligence
 Millicent, Restless Revenant
 Millikin
+Minamo's Meddling
 Mind Bend
 Mind Bomb
 Mind Flayer
@@ -2224,6 +2236,7 @@ Pure // Simple
 Purple Dragon Punks
 Putrefy
 Putrid Goblin
+Pygmy Hippo
 Pygmy Kavu
 Pygmy Troll
 Pyramids
@@ -2717,6 +2730,7 @@ Stalking Leonin
 Stalwart Pathlighter
 Star Whale
 Starfleet Academy
+Starfleet Communicator
 Starfleet Security
 Starfleet Spanner Jockey
 Starforged Sword
@@ -2940,6 +2954,7 @@ The Cruelty of Gix
 The Dalek Emperor
 The Elder Dragon War
 The Eleventh Doctor
+The Everforger
 The Fallen
 The Gaffer
 The Great Henge
@@ -3307,6 +3322,7 @@ Whispering Madness
 Whispering Snitch
 White Auracite
 Whiteout
+Whtz, the Bibliophile
 Wibbly-wobbly, Timey-wimey
 Wiccan, Young Avenger
 Wicker Picker
@@ -3386,6 +3402,7 @@ Zabaz, the Glimmerwasp
 Zack Fair
 Zanikev Locust
 Zealous Conscripts
+Zefram Cochrane, Warp Pioneer
 Zellix, Sanity Flayer
 Zendikar Farguide
 Zendikar Resurgent

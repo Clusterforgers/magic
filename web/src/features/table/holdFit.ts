@@ -116,6 +116,8 @@ export interface HeldBand {
   key: string
   lanes: readonly LanePlace[]
   height: number
+  /** The px kept free at its right (`BandPlace.inset`). */
+  inset?: number
 }
 
 /**
@@ -124,7 +126,8 @@ export interface HeldBand {
  */
 export function heldBands(fit: LaneFit, hold: BandHold | null, facing: 'near' | 'far'): readonly HeldBand[] {
   const drawn = fit.bands.map((band) => ({ key: keyIn(fit.shape, band), band }))
-  if (hold === null) return drawn.map(({ key, band }) => ({ key, lanes: band.lanes, height: band.height }))
+  if (hold === null)
+    return drawn.map(({ key, band }) => ({ key, lanes: band.lanes, height: band.height, inset: band.inset }))
   const placed = new Map(drawn.map(({ key, band }) => [key, band]))
   const outwards = SHAPES[fit.shape].map(bandKey)
   const keys = outwards.filter((key) => placed.has(key) || (hold.heights[key] ?? 0) > 0)
@@ -135,6 +138,6 @@ export function heldBands(fit: LaneFit, hold: BandHold | null, facing: 'near' | 
   return ordered.map((key) => {
     const band = placed.get(key)
     const height = Math.max(band?.height ?? 0, hold.heights[key] ?? 0)
-    return { key, lanes: band?.lanes ?? [], height }
+    return { key, lanes: band?.lanes ?? [], height, inset: band?.inset }
   })
 }

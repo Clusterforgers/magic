@@ -72,9 +72,9 @@ impl GameState {
         {
             return true;
         }
-        // A hand a rule has its owner play with revealed is shown to every seat.
+        // A hand a rule has its owner play with revealed is shown to every seat, and so is a card a rule keeps revealed.
         if let Zone::Hand(owner) = object.zone()
-            && self.hand_revealed(owner)
+            && (self.hand_revealed(owner) || self.r119_card_revealed(object.reference()))
         {
             return true;
         }
@@ -197,7 +197,7 @@ pub(crate) fn forget_revealed(state: &mut GameState, seat: PlayerId) {
 }
 
 /// The cards of `seat`'s hand that it showed to every seat by hand and that are still there, or the whole hand while a
-/// rule has it played revealed, in the hand's order.
+/// rule has it played revealed, with the cards a rule keeps revealed (`Rule::R119PlaysRevealed`), in the hand's order.
 pub fn revealed_hand(state: &GameState, seat: PlayerId) -> Vec<ObjectId> {
     let whole = state.hand_revealed(seat);
     state
@@ -205,9 +205,10 @@ pub fn revealed_hand(state: &GameState, seat: PlayerId) -> Vec<ObjectId> {
         .iter()
         .filter(|id| {
             whole
-                || state
-                    .object(**id)
-                    .is_some_and(|object| state.revealed_by_hand.contains(&object.reference()))
+                || state.object(**id).is_some_and(|object| {
+                    state.revealed_by_hand.contains(&object.reference())
+                        || state.r119_card_revealed(object.reference())
+                })
         })
         .copied()
         .collect()

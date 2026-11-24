@@ -1,10 +1,11 @@
-// Goal: on a crowded board (60 and 120 mana sources of every kind: basics, duals, rocks, Signets, Treasures, filter lands, Cabal Coffers, creature-only mana) the payment prompt's work stays quick: the sources that fit, the game's payment laid out and the rest paid for me, by arithmetic and rendered on the dev table, and permanents alike give the same answer.
+// Goal: on a crowded board (60 and 120 mana sources of every kind: basics, duals, rocks, Signets, Treasures, filter lands, Cabal Coffers, creature-only mana) the payment prompt's work stays quick in the CPU time of the test's thread: the sources that fit, the game's payment laid out and the rest paid for me, by arithmetic and rendered on the dev table, and permanents alike give the same answer.
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import { GameContext } from '@/features/game/gameContext'
 import type { ManaOption } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
+import { cpuMs, cpuMsAsync } from '@/test-utils/cpuTime'
 import { cost, poolOf, source } from '@/test-utils/mana'
 import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { fixtureGame } from '../dev/devGame'
@@ -63,7 +64,7 @@ function board(count: number): ManaOption[] {
 
 const CREATURE = { kind: 'Spell', traits: { types: 1 << 2, colors: 0 } } as const
 
-/** The time the prompt's arithmetic takes for one render: every permanent's fitting options, then the payment laid out. */
+/** The CPU time the prompt's arithmetic takes for one render: every permanent's fitting options, then the payment laid out. */
 function timed(count: number, price: string): { ms: number; legal: number; paid: boolean } {
   const sources = board(count)
   const reach: Reach = { sources, maxLife: 0, spend: CREATURE as unknown as Reach['spend'] }
@@ -71,24 +72,27 @@ function timed(count: number, price: string): { ms: number; legal: number; paid:
   const pool = poolOf('')
   const ids = [...new Set(sources.map((one) => one.source.object))]
   const by = new Map(ids.map((id) => [id, sources.filter((one) => one.source.object === id)]))
-  const start = performance.now()
-  const legal = ids.filter((id) => fittingOptions(owed, pool, [], by.get(id) ?? [], [], reach).length > 0)
-  const whole = completion(owed, pool, [], [], reach)
-  const spends: Spend[] = [...(whole?.spends ?? [])]
-  for (const id of ids) fittingOptions(owed, pool, spends, by.get(id) ?? [], [], reach)
-  for (const id of ids) fittingOptions(owed, pool, spends.slice(0, 2), by.get(id) ?? [], [], reach)
-  return { ms: performance.now() - start, legal: legal.length, paid: whole !== undefined }
+  let legal: number[] = []
+  let whole: ReturnType<typeof completion>
+  const ms = cpuMs(() => {
+    legal = ids.filter((id) => fittingOptions(owed, pool, [], by.get(id) ?? [], [], reach).length > 0)
+    whole = completion(owed, pool, [], [], reach)
+    const spends: Spend[] = [...(whole?.spends ?? [])]
+    for (const id of ids) fittingOptions(owed, pool, spends, by.get(id) ?? [], [], reach)
+    for (const id of ids) fittingOptions(owed, pool, spends.slice(0, 2), by.get(id) ?? [], [], reach)
+  })
+  return { ms, legal: legal.length, paid: whole !== undefined }
 }
 
 describe('a crowded board of mana', () => {
   it.each([
-    [60, '{3}{G}{G}', 10_000],
-    [60, '{W}{U}{B}{R}{G}', 10_000],
-    [60, '{2}{G/U}{G/U}', 10_000],
-    [120, '{3}{G}{G}', 15_000],
-    [120, '{W}{U}{B}{R}{G}', 15_000],
-    [120, '{6}{U}{U}', 15_000],
-  ])('with %i sources works out %s within %i ms', (count, price, bound) => {
+    [60, '{3}{G}{G}', 6_000],
+    [60, '{W}{U}{B}{R}{G}', 6_000],
+    [60, '{2}{G/U}{G/U}', 6_000],
+    [120, '{3}{G}{G}', 6_000],
+    [120, '{W}{U}{B}{R}{G}', 6_000],
+    [120, '{6}{U}{U}', 6_000],
+  ])('with %i sources works out %s within %i CPU ms', (count, price, bound) => {
     const { ms, legal, paid } = timed(count, price)
     expect(paid).toBe(true)
     expect(legal).toBeGreaterThan(count / 2)
@@ -118,32 +122,35 @@ describe('a crowded board of mana', () => {
 /** The dev table facing the crowded payment `prompt`, rendered. */
 function crowdTable(prompt: string): { ms: number } {
   const game = fixtureGame({ seats: 4, prompt })
-  const start = performance.now()
-  render(
-    <GameContext value={game}>
-      <TableOptionsContext value={{ viewport: TEST_VIEWPORT }}>
-        <GameTable />
-      </TableOptionsContext>
-    </GameContext>,
-  )
-  return { ms: performance.now() - start }
+  const ms = cpuMs(() => {
+    render(
+      <GameContext value={game}>
+        <TableOptionsContext value={{ viewport: TEST_VIEWPORT }}>
+          <GameTable />
+        </TableOptionsContext>
+      </GameContext>,
+    )
+  })
+  return { ms }
 }
 
 describe('the crowded payment on the table', () => {
   it.each([
-    ['pay-crowd', 10_000],
-    ['pay-crowd-120', 15_000],
+    ['pay-crowd', 4_000],
+    ['pay-crowd-120', 4_000],
   ])(
-    '%s renders, lays out the game payment and confirms it within %i ms',
+    '%s renders, lays out the game payment and confirms it within %i CPU ms',
     async (prompt, bound) => {
       const user = userEvent.setup()
-      const start = performance.now()
       const { ms } = crowdTable(prompt)
       expect(ms).toBeLessThan(bound)
-      await user.click(screen.getByRole('button', { name: 'Pay for me' }))
-      expect(screen.getByRole('button', { name: 'Confirm payment' })).toBeEnabled()
-      expect(performance.now() - start).toBeLessThan(bound)
+      const paying = await cpuMsAsync(async () => {
+        await user.click(screen.getByRole('button', { name: 'Pay for me' }))
+        expect(screen.getByRole('button', { name: 'Confirm payment' })).toBeEnabled()
+      })
+      expect(ms + paying).toBeLessThan(bound)
     },
-    30_000,
+    // Only a hang runs into this: the bound above is the measure, in CPU time.
+    120_000,
   )
 })

@@ -347,6 +347,8 @@ pub enum Rule {
     RevealTop(Vec<PlayerId>),
     /// The players play with their hands revealed to every seat.
     RevealHand(Vec<PlayerId>),
+    /// The cards stay revealed in their owners' hands and can't be played: `GameRule::R119PlaysRevealed`.
+    R119PlaysRevealed(Vec<ObjectRef>),
     /// The rule's controller controls the players while they search their libraries (CR 722).
     ControlSearches(Vec<PlayerId>),
     /// The players exile each card they find while they search their libraries, and the rule's controller may play
@@ -893,6 +895,7 @@ impl RuleEffect {
             | Rule::MustBlock(named)
             | Rule::CantBeCountered(named)
             | Rule::CantBeRegenerated(named)
+            | Rule::R119PlaysRevealed(named)
             | Rule::R6500CounterCap { named, .. }
             | Rule::MayCast {
                 only: Some(named), ..
@@ -1058,6 +1061,8 @@ pub(crate) struct RulesInForce {
     spend_mana_as: Vec<SpendManaAsHeld>,
     reveal_top: BTreeSet<PlayerId>,
     reveal_hand: BTreeSet<PlayerId>,
+    /// The cards a rule keeps revealed in their owners' hands (`Rule::R119PlaysRevealed`).
+    r119_revealed: Vec<ObjectRef>,
     /// Who controls each player while they search their library, the latest rule last.
     control_searches: Vec<(PlayerId, PlayerId)>,
     /// Whose searches exile what they find, with the controller and source of each rule that says so.
@@ -1720,6 +1725,22 @@ impl RulesInForce {
             }
             Rule::RevealTop(players) => self.reveal_top.extend(players),
             Rule::RevealHand(players) => self.reveal_hand.extend(players),
+            Rule::R119PlaysRevealed(cards) => {
+                self.r119_revealed.extend(cards.iter().copied());
+                let who: Vec<Target> = cards.iter().map(|card| Target::Object(*card)).collect();
+                for action in [
+                    Prohibited::Cast {
+                        filter: Selector::default(),
+                        more_than: None,
+                        unless: None,
+                    },
+                    Prohibited::PlayLands(Selector::default()),
+                ] {
+                    self.cants.push(crate::prohibit::Banned::new(
+                        &who, &action, controller, source,
+                    ));
+                }
+            }
             Rule::ExileFound(players) => self
                 .exile_found
                 .extend(players.iter().map(|player| (*player, controller, source))),
@@ -2314,6 +2335,17 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         }
         GameRule::RevealTop(who) => Rule::RevealTop(scope.players(who)?),
         GameRule::RevealHand(who) => Rule::RevealHand(scope.players(who)?),
+        GameRule::R119PlaysRevealed { card, .. } => Rule::R119PlaysRevealed(
+            scope
+                .objects(card)?
+                .into_iter()
+                .filter(|named| {
+                    scope.state.object(named.id).is_some_and(|o| {
+                        o.counter() == named.counter && matches!(o.zone(), Zone::Hand(_))
+                    })
+                })
+                .collect(),
+        ),
         GameRule::ControlSearches(who) => Rule::ControlSearches(scope.players(who)?),
         GameRule::ExileFound(who) => Rule::ExileFound(scope.players(who)?),
         GameRule::MayCast(permission) => {
@@ -2570,6 +2602,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::MustBlock(named)
         | Rule::CantBeCountered(named)
         | Rule::CantBeRegenerated(named)
+        | Rule::R119PlaysRevealed(named)
         | Rule::R6500CounterCap { named, .. }
         | Rule::PowerUpAgain(named) => named.is_empty(),
         Rule::EntersWith {
@@ -2848,6 +2881,7 @@ static NONE: RulesInForce = RulesInForce {
     spend_mana_as: Vec::new(),
     reveal_top: BTreeSet::new(),
     reveal_hand: BTreeSet::new(),
+    r119_revealed: Vec::new(),
     control_searches: Vec::new(),
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
@@ -2984,6 +3018,11 @@ impl GameState {
             .filter(|(by, _, _, your_turns)| *by == player && (active || !*your_turns))
             .filter_map(|(_, source, may, _)| source.map(|source| (source.id, *may)))
             .collect()
+    }
+
+    /// Whether a rule keeps the card revealed in its owner's hand (`Rule::R119PlaysRevealed`).
+    pub fn r119_card_revealed(&self, card: ObjectRef) -> bool {
+        self.rules().r119_revealed.contains(&card)
     }
 
     /// Whether a rule has `player` play with their hand revealed to every seat.

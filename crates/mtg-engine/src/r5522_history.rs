@@ -27,6 +27,8 @@ pub(crate) struct R5522Game {
     pub(crate) r6500_devoured: Vec<(ObjectRef, Vec<Snapshot>)>,
     /// The players who have begun an extra turn this game (CR 500.7).
     pub(crate) r118_extra_turns: BTreeSet<PlayerId>,
+    /// How many cards each player's starting deck held, the commanders included (`Condition::R119StartingDeck`).
+    pub(crate) r119_deck_sizes: BTreeMap<PlayerId, u32>,
 }
 
 impl R5522Game {
@@ -39,6 +41,7 @@ impl R5522Game {
             && self.r6500_untapped.is_empty()
             && self.r6500_devoured.is_empty()
             && self.r118_extra_turns.is_empty()
+            && self.r119_deck_sizes.is_empty()
     }
 }
 

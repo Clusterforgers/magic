@@ -21,7 +21,10 @@ impl KeywordRules for BeamMeUp {}
 pub(crate) fn r116_beam_cost(cost: &Cost) -> Cost {
     let mut whole = cost.clone();
     whole.0.push(CostItem::ReturnToHand {
-        filter: Selector(vec![Pred::Type(CardType::Creature)]),
+        filter: Selector(vec![
+            Pred::Type(CardType::Creature),
+            Pred::R119CanBeBeamedUp,
+        ]),
         count: mtg_cards::value::Amount::one(),
     });
     whole

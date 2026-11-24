@@ -773,6 +773,8 @@ pub enum Pred {
     /// Is a modal spell (CR 700.2): its spell ability chooses modes as it is cast ("a modal spell"); a modal double-faced
     /// card is not one for that.
     R112Modal,
+    /// Is a permanent no effect says "can't be beamed up" of: one that may be returned to pay a beam me up cost.
+    R119CanBeBeamedUp,
     /// The predicate is false.
     Not(Box<Pred>),
     /// At least one of the predicates is true.

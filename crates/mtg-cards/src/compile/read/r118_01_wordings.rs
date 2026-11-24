@@ -784,11 +784,6 @@ fn up_to_two_twin(ability: &Ability) -> Option<Ability> {
 /// "one or two target creatures each get +2/+0 and gain lifelink until end of turn", "Return one or two target creature
 /// cards ...": one or two targets, from the twin of up to two (CR 115.1d).
 fn one_or_two(ability: &Ability, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
-    // A spell is left out: the modes of a modal spell are worded as spells of their own, beside modes whose writers
-    // word them another way (Yuna's Decision).
-    if matches!(ability, Ability::Spell { .. }) {
-        return Vec::new();
-    }
     let Some(twin) = up_to_two_twin(ability) else {
         return Vec::new();
     };
