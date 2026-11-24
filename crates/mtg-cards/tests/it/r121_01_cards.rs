@@ -43,6 +43,7 @@ fn compact(name: &str) -> String {
 #[case("The Best of Both Worlds")]
 #[case("Colossal Clone Master")]
 #[case("Dominion Saboteur")]
+#[case("Elite Spellbinder")]
 #[case("Gift of Perfection")]
 #[case("Nog, Ambitious Cadet")]
 #[case("T'Pring, Never Parted")]

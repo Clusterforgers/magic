@@ -194,8 +194,8 @@ fn r121_an_opponents_spell_gives_the_jester_nothing(
     driver.cast("Quick Peek")?;
     r121_resolve(&mut driver, |_| None)?;
     assert_eq!(r121_exiled(&driver).len(), seats);
-    assert!(driver.state().pending_triggers().is_empty());
-    assert!(r121_castable(&driver).is_empty());
+    assert_eq!(driver.state().pending_triggers().len(), 0);
+    assert_eq!(r121_castable(&driver), Vec::<ObjectId>::new());
     r121_replays(&driver);
     Ok(())
 }
