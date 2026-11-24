@@ -483,6 +483,42 @@ async fn a_deck_with_manual_cards_or_one_that_breaks_its_format_is_not_verified(
 }
 
 #[sqlx::test(migrations = false)]
+async fn a_list_judged_on_several_threads_keeps_each_deck_its_order_and_its_state(pool: PgPool) {
+    let server = start(&pool).await;
+    let ann = register_ann(&server).await;
+    let mut want = Vec::new();
+    for n in 0..9 {
+        let mut body = if n % 3 == 0 { commander() } else { modern() };
+        body["name"] = json!(format!("Deck {n}"));
+        let view = create(&server, &ann, &body).await;
+        want.push((
+            format!("Deck {n}"),
+            view["state"].as_str().unwrap().to_owned(),
+        ));
+    }
+    want.reverse();
+
+    let list = ann.get(server.addr, "/api/decks").await.json();
+    let got: Vec<(String, String)> = list["decks"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .map(|d| {
+            (
+                d["name"].as_str().unwrap().to_owned(),
+                d["state"].as_str().unwrap().to_owned(),
+            )
+        })
+        .collect();
+    assert_eq!(
+        got, want,
+        "the most recently saved first, each with its own state"
+    );
+    assert!(want.iter().any(|(_, state)| state == "manual_play"));
+    assert!(want.iter().any(|(_, state)| state == "verified"));
+}
+
+#[sqlx::test(migrations = false)]
 async fn replacing_a_deck_runs_the_check_again_and_marks_it_at_once(pool: PgPool) {
     let server = start(&pool).await;
     let ann = register_ann(&server).await;

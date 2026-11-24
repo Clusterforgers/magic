@@ -32,6 +32,21 @@ The rest is fast: page TTFB 4 to 15 ms, `auth/me`, `auth/options` and `lobbies` 
 | First page after a release that changes app code only (gzip) | 241 kB | 137 kB |
 | Entry chunk on the wire | 150 kB (gzip 1) | 60 kB entry + 94 kB vendor at gzip 9 |
 
+## Deck lists
+
+How fast the deck choosers (lobby, Create game, Delves, the Decks page) get their lists.
+
+- Method: live server logs and `EXPLAIN (ANALYZE, BUFFERS)` of the list queries on the live database (read only); a local release server on a copy of the local database with an account of 24 Commander decks (2,069 lines), timed with `curl` right after start and warm.
+- Causes found: the default printing of each card sorted every printing of every card (16,746 rows for 1,174 cards, a 12 MB sort spilled to disk; 10.7 s once on live); each precon list read both card tables whole for its fingerprint (49,000 buffers, 28,000 from disk, in a 128 MB buffer cache); after a start every card is decided anew, and a deck list decided its owner's cards on one thread beside the precon index's eight; the client read every list again on every open, the Decks page its groups only after its decks.
+
+| Measure | Before | After |
+| --- | --- | --- |
+| Default printings of 1,174 cards (live plan) | 16,746 rows sorted, 12 MB on disk | one index probe per card |
+| Card fingerprint of a precon list | 49,000 buffers, 193 ms idle | 600 buffers, 3 ms |
+| First deck list after a start (local) | 74 s | 17.5 s, fast once the deck cards are decided (19 s for 1,620 cards) |
+| Warm deck list, 24 decks (local) | 170 to 260 ms | 150 to 220 ms |
+| A chooser opened again | every list read again | cached lists at once, read again behind them |
+
 ## Bot load
 
 How bot thinking shares the server with requests, sockets and the database.

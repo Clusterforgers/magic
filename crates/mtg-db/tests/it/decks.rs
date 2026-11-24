@@ -1,4 +1,4 @@
-//! Goal: stored decks read back exactly as saved (lines in order, printings, the by-hand mark, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, an owner's distinct cards span every deck of its own and no other, a removed printing leaves the card, and the database refuses what the server would not send.
+//! Goal: stored decks read back exactly as saved (lines in order, printings, the by-hand mark, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, an owner's distinct cards span every deck of its own and no other while the cards of all decks list each card once, a removed printing leaves the card, and the database refuses what the server would not send.
 
 use crate::common;
 
@@ -399,6 +399,13 @@ async fn card_ids_are_the_owners_distinct_cards_over_every_deck_and_zone(pool: P
     assert_eq!(
         repo.card_ids(owner(2)).await.unwrap(),
         vec![oracle_of("Island")]
+    );
+    want.push(oracle_of("Island"));
+    want.sort_by(|a, b| a.0.cmp(&b.0));
+    assert_eq!(
+        repo.all_card_ids().await.unwrap(),
+        want,
+        "every owner's cards, each once"
     );
 }
 

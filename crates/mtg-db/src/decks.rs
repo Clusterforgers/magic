@@ -420,6 +420,15 @@ impl DeckRepo {
         with_lines(&mut conn, rows).await
     }
 
+    /// Every distinct card some stored deck holds, of any owner.
+    pub async fn all_card_ids(&self) -> Result<Vec<OracleId>, DbError> {
+        let ids =
+            sqlx::query_scalar!("SELECT DISTINCT oracle_id FROM deck_cards ORDER BY oracle_id")
+                .fetch_all(&self.pool)
+                .await?;
+        Ok(ids.into_iter().map(|id| OracleId(id.to_string())).collect())
+    }
+
     /// Replaces the name, format, notes, lines and check of the deck `id` of `owner` in one
     /// transaction; `None` if the owner holds no such deck.
     pub async fn replace(

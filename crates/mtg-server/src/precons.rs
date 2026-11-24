@@ -452,8 +452,8 @@ impl PreconIndex {
     }
 }
 
-/// Most threads [`decide_all`] runs on.
-const DECIDING_THREADS: usize = 8;
+/// Most threads [`decide_cards`] runs on.
+pub(crate) const DECIDING_THREADS: usize = 8;
 
 /// Decides every card of the precons once, spread over a few threads, so the library holds the decisions before the
 /// decks are judged one by one: the first build decides thousands of cards, each in milliseconds.
@@ -467,6 +467,11 @@ fn decide_all(rules: &Rules, details: &[PreconDeckDetail]) {
         .into_values()
         .map(printed_card)
         .collect();
+    decide_cards(rules, &cards);
+}
+
+/// Decides `cards` once, spread over a few threads, so the library holds their decisions before a deck check asks.
+pub(crate) fn decide_cards(rules: &Rules, cards: &[PrintedCard]) {
     let threads = std::thread::available_parallelism()
         .map_or(1, std::num::NonZero::get)
         .clamp(1, DECIDING_THREADS);
