@@ -208,6 +208,9 @@ pub enum Destination {
         /// it", CR 122.6).
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         r110_counters: Vec<(CounterKind, Amount)>,
+        /// Counters it enters with only when it matches the selector, counted as it moves.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        r122_typed_counters: Vec<(Selector, CounterKind, Amount)>,
     },
     /// The battlefield under its owner's control, where an Aura enters attached only to a permanent the selector matches
     /// among those it may enchant, chosen by its controller, and stays where it was when there is none ("Only creatures
@@ -2278,16 +2281,16 @@ pub enum Effect {
         /// What happens.
         act: PlanarAct,
     },
-    /// Creates an Aura token attached to a permanent ("create a Wicked Role token attached to it", CR 303.7, 111.1): the
-    /// token enters attached to the first permanent `to` names on the battlefield; when there is none, or the token
-    /// could not enchant it, the token is not created (CR 303.4i).
+    /// Creates an Aura token attached to a permanent, else a player ("create a Wicked Role token attached to it", CR 303.7,
+    /// 111.1): the first `to` names on the battlefield or in the game; when there is none, or the token could not enchant
+    /// it, the token is not created (CR 303.4i).
     R6602CreateAttached {
         /// Who controls the token.
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
         /// What the token is.
         token: TokenRef,
-        /// The permanent it enters attached to.
+        /// The permanent or player it enters attached to.
         to: Ref,
     },
     /// Creates tokens.

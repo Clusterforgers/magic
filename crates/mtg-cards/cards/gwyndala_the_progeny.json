@@ -1,0 +1,61 @@
+{
+  "oracle_id": "852c38fe-8bfa-420b-b961-7b91af9b38d1",
+  "name": "Gwyndala, the Progeny",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gwyndala, the Progeny",
+      "oracle_fingerprint": "7bdd59eadbdbd642b6ba2c65873fce34",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Neuroflux Heirloom",
+                      "types": ["Artifact"],
+                      "subtypes": ["Equipment"],
+                      "abilities": [
+                        {
+                          "Static": {
+                            "affected": "Attached",
+                            "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }]
+                          }
+                        },
+                        { "Keyword": { "Equip": "{2}" } }
+                      ]
+                    }
+                  },
+                  "as": "heirloom"
+                }
+              },
+              { "Attach": { "what": { "Bound": "heirloom" }, "to": "This" } }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": "{2}",
+            "targets": [
+              { "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              {
+                "BecomeCopy": {
+                  "what": {
+                    "Each": [{ "Subtype": "Equipment" }, "Token", { "ControlledBy": "You" }]
+                  },
+                  "of": { "Target": 0 },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

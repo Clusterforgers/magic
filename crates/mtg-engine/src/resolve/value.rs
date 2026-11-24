@@ -1003,12 +1003,12 @@ impl<'a> Scope<'a> {
                 let seen = self.seen(self.as_it_left(*object))?;
                 let by_toughness =
                     crate::combat_quirks::r6500_stations_by_toughness(self.state, object.id);
-                let stat = if by_toughness {
-                    StatKind::Toughness
-                } else {
-                    StatKind::Power
-                };
-                Self::stat(&seen, stat)
+                if by_toughness {
+                    return Self::stat(&seen, StatKind::Toughness);
+                }
+                // "Stations Spacecraft as though his power were tripled."
+                let times = crate::combat_quirks::r122_power_times(self.state, object.id);
+                Self::stat(&seen, StatKind::Power).map(|power| power.saturating_mul(times))
             })
             .sum())
     }

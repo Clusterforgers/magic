@@ -56,23 +56,25 @@ pub(super) fn text(filter: &Selector, count: usize) -> String {
     crate::wording::tap_untapped(filter, count)
 }
 
-/// The power of a permanent as it stands, 0 for no power or a negative one (CR 702.122a counts what is there).
-pub(super) fn power_of(state: &GameState, object: ObjectId) -> u32 {
+/// The power of a permanent as it stands, 0 for no power or a negative one (CR 702.122a counts what is there); `crew`
+/// when it pays a crew cost.
+pub(super) fn power_of(state: &GameState, object: ObjectId, crew: bool) -> u32 {
     characteristics(state, object).map_or(0, |found| {
         crate::combat_quirks::tap_value(
             state,
             object,
             found.power.unwrap_or(0),
             found.toughness.unwrap_or(0),
+            crew,
         )
     })
 }
 
 /// The power of all of `objects` together.
-pub(super) fn total_power(state: &GameState, objects: &[ObjectId]) -> u32 {
+pub(super) fn total_power(state: &GameState, objects: &[ObjectId], crew: bool) -> u32 {
     objects
         .iter()
-        .map(|object| power_of(state, *object))
+        .map(|object| power_of(state, *object, crew))
         .fold(0, u32::saturating_add)
 }
 
@@ -82,15 +84,21 @@ pub(super) fn enough(
     mut from: Vec<ObjectId>,
     power: u32,
     spare: &[ObjectId],
+    crew: bool,
 ) -> Option<Vec<ObjectId>> {
-    from.sort_by_key(|id| (spare.contains(id), std::cmp::Reverse(power_of(state, *id))));
+    from.sort_by_key(|id| {
+        (
+            spare.contains(id),
+            std::cmp::Reverse(power_of(state, *id, crew)),
+        )
+    });
     let mut taken = Vec::new();
     let mut total = 0u32;
     for id in from {
         if total >= power {
             break;
         }
-        total = total.saturating_add(power_of(state, id));
+        total = total.saturating_add(power_of(state, id, crew));
         taken.push(id);
     }
     (total >= power).then_some(taken)

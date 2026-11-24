@@ -1,0 +1,62 @@
+{
+  "oracle_id": "f997ad8a-6903-47b1-83af-837b3b55a3d4",
+  "name": "Captain Benjamin Sisko",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain Benjamin Sisko",
+      "oracle_fingerprint": "3492e3e711a9ed09ad01d60a4f8db003",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End", "whose": "You" } },
+            "effects": [
+              {
+                "CreateToken": {
+                  "token": {
+                    "Custom": {
+                      "name": "Officer",
+                      "colors": ["Red"],
+                      "types": ["Creature"],
+                      "subtypes": ["Officer"],
+                      "power": 1,
+                      "toughness": 1
+                    }
+                  },
+                  "count": { "Tallied": { "who": "You", "what": "R116Dilemmas" } }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{2}{W}{U}{B}{R}{G}" }, "Tap"],
+            "effects": [
+              { "ExileTop": { "count": 5, "as": "exiled" } },
+              {
+                "RepeatEach": {
+                  "over": {
+                    "Each": [
+                      { "Is": { "Bound": "exiled" } },
+                      { "In": "Exile" },
+                      {
+                        "Compare": {
+                          "stat": "ManaValue",
+                          "op": "Le",
+                          "to": { "Count": [{ "Subtype": "Officer" }, { "ControlledBy": "You" }] }
+                        }
+                      }
+                    ]
+                  },
+                  "as": "card",
+                  "effects": [{ "CastFromZone": { "what": { "Bound": "card" }, "free": true } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

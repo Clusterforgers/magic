@@ -134,6 +134,9 @@ pub enum CostItem {
         filter: Selector,
         /// The least total power of the permanents tapped.
         power: u32,
+        /// The cost of a crew ability (CR 702.122a), not of saddle or another tapping for power.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        r122_crew: bool,
     },
     /// Exile cards from the payer's graveyard that match.
     ExileFromGraveyard {

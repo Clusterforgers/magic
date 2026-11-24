@@ -1,11 +1,12 @@
-//! `Effect::R6602CreateAttached`: an Aura token is created attached to a permanent (CR 303.7, 111.1); when the permanent
-//! is gone or the token could not enchant it, no token is created (CR 303.4i).
+//! `Effect::R6602CreateAttached`: an Aura token is created attached to a permanent or a player (CR 303.7, 111.1); when
+//! the host is gone or the token could not enchant it, no token is created (CR 303.4i).
 
 use mtg_cards::effect::Effect;
 use mtg_core::ids::ObjectId;
 
 use super::create_token::made_from;
 use super::wrong_effect;
+use crate::attach::Host;
 use crate::events::Event;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::tokens::TokenCreated;
@@ -23,12 +24,22 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     };
-    let host = cx
+    // A permanent it names on the battlefield, else a player it names who is still in the game ("attached to target
+    // opponent").
+    let host = match cx
         .scope
         .live_objects(to)?
         .into_iter()
         .find(|object| object.zone() == Zone::Battlefield)
-        .map(crate::object::GameObject::id);
+    {
+        Some(object) => Some(Host::Object(object.id())),
+        None => cx
+            .scope
+            .players(to)?
+            .into_iter()
+            .find(|player| state.is_alive(*player))
+            .map(Host::Player),
+    };
     let controller = cx
         .scope
         .players(who)?
@@ -54,10 +65,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         // The token is judged as it would stand on the battlefield: its enchant ability and the host's protection.
         let mut judged = state.clone();
         let legal = crate::fold::apply_event(&mut judged, &created).is_ok()
-            && crate::attach::legal_host(&judged, object, host);
+            && match host {
+                Host::Object(on) => crate::attach::legal_host(&judged, object, on),
+                Host::Player(player) => crate::attach::legal_player_host(&judged, object, player),
+            };
         if legal {
             events.push(created);
-            events.push(Event::Attached { object, to: host });
+            events.push(host.attach(object));
             next += 1;
         }
     }

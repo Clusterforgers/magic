@@ -871,6 +871,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         CombatQuirk::R6500StationsByToughness => {
             format!("{who} station permanents using their toughness rather than their power")
         }
+        CombatQuirk::R122CrewStationTimes(times) => {
+            format!("{who} station and crew as though their power were {times} times as great")
+        }
         CombatQuirk::AssignsByToughness => {
             format!("{who} assign combat damage equal to their toughness rather than their power")
         }

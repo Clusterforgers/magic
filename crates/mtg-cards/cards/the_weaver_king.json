@@ -1,0 +1,49 @@
+{
+  "oracle_id": "ed1a6d06-436b-45c0-979c-7802246eeb9e",
+  "name": "The Weaver King",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Weaver King",
+      "oracle_fingerprint": "918232079dc1516fc9e467fc6d6faa15",
+      "abilities": [
+        { "Keyword": "Shadow" },
+        {
+          "Triggered": {
+            "when": { "DealsDamage": { "source": ["This"], "to": "EachPlayer", "combat": true } },
+            "effects": [
+              { "Mill": { "who": "Triggering", "count": "Triggering" } },
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Type": "Creature" },
+                            { "In": "Graveyard" },
+                            { "OwnedBy": { "Bound": "opponent" } },
+                            { "ArrivedFrom": "Library" }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    {
+                      "Move": {
+                        "what": { "Bound": "card" },
+                        "to": { "Battlefield": { "under": "You" } }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

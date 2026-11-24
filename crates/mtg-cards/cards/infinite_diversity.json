@@ -1,0 +1,52 @@
+{
+  "oracle_id": "c7d8ed66-d66e-42fd-9c3e-8c2d8194e009",
+  "name": "Infinite Diversity",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Infinite Diversity",
+      "oracle_fingerprint": "2beff8c8a9bab16753cd85c02142cfd2",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "RepeatWhile": {
+                  "condition": { "Compare": { "left": 0, "op": "Eq", "right": 0 } },
+                  "effects": [
+                    { "CopyCard": { "what": { "Bound": "exiled" }, "as": "copy" } },
+                    { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                  ],
+                  "most": 1000,
+                  "times": {
+                    "Distinct": {
+                      "of": [
+                        { "Type": "Creature" },
+                        { "Not": { "Subtype": "Borg" } },
+                        { "ControlledBy": "You" }
+                      ],
+                      "stat": "CreatureType"
+                    }
+                  }
+                }
+              },
+              { "Exile": { "what": "This" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
