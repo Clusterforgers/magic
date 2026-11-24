@@ -267,11 +267,32 @@ unit_failed() {
   exit 1
 }
 
+# reap_reported: take in the units (and the lock tick) whose processes are gone, with the exit code `wait` kept.
+reap_reported() {
+  local pid rc found=0
+  if [[ -n "$tick_pid" ]] && ! kill -0 "$tick_pid" 2>/dev/null; then
+    tick_pid="" found=1
+  fi
+  for pid in "${!running[@]}"; do
+    kill -0 "$pid" 2>/dev/null && continue
+    rc=0
+    wait "$pid" 2>/dev/null || rc=$?
+    found=1
+    finished_unit "$pid" "$rc"
+  done
+  ((found)) || sleep 0.05
+}
+
 # finish_one: wait for any unit (or the lock tick) to end.
 finish_one() {
   local pid="" rc=0
   wait -n -p pid || rc=$?
-  [[ -n "$pid" ]] || return 0
+  if [[ -z "${pid:-}" ]]; then
+    # A job the shell has already reported done is no longer one `wait -n` returns (127, the variable unset), but
+    # `wait <pid>` still has its exit code.
+    reap_reported
+    return 0
+  fi
   if [[ "$pid" == "$tick_pid" ]]; then
     tick_pid=""
   elif [[ -v running[$pid] ]]; then

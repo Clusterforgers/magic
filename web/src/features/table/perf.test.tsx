@@ -1,8 +1,8 @@
-// Goal: a batch redraws only what it changed, at the worst case of 12 seats with 40 permanents each (480 cards on screen): tapping one permanent renders that card and no battlefield row, a change to the turn renders no card, a change of controller renders that card and the two rows it leaves and joins; a decision arriving, being replaced or answered renders only the viewer's own marked cards (once each) and no row, and while one is on screen a tap still renders one card; over a run of 20 mana taps, each answering and replacing the prompt, the faces inside draw again only for the tapped card and the hand notes that change; with stacks on, 4 seats of 40 permanents mount inside a time budget as one face a box, the tap of a lone creature renders its card and no row, and a land that leaves its stack redraws that row only.
+// Goal: a batch redraws only what it changed, at the worst case of 12 seats with 40 permanents each (480 cards on screen): tapping one permanent renders that card and no battlefield row, a change to the turn renders no card, a change of controller renders that card and the two rows it leaves and joins; a decision arriving, being replaced or answered renders only the viewer's own marked cards (once each) and no row, and while one is on screen a tap still renders one card; over a run of 20 mana taps, each answering and replacing the prompt, the faces inside draw again only for the tapped card and the hand notes that change; with stacks on, 4 seats of 40 permanents mount as one face a box and take 40 single taps, each inside a budget of the test thread's CPU time, the tap of a lone creature renders its card and no row, and a land that leaves its stack redraws that row only.
 import { act } from '@testing-library/react'
 import type { ComponentProps } from 'react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { scaled } from '@/test-utils/loadFactor'
+import { cpuMs } from '@/test-utils/cpuTime'
 import { applyBatch, indexById } from '@/play/view'
 import type { EventBatch, ObjectView, PriorityOptions, ServerMessage, StateView } from '@/protocol/generated'
 import { batchOf, clone, must, tableOf, withTapped } from '@/test-utils/batches'
@@ -378,8 +378,10 @@ describe('a decision at the same table', () => {
 
 // ---- Stacked boards: 4 seats with 40 permanents each -------------------------------------------------------------
 
-/** What mounting 4 seats, 160 permanents and the pods around them may cost, in ms idle (five times what it takes here); `scaled` stretches it by the load. */
+/** What mounting 4 seats, 160 permanents and the pods around them may cost, in CPU ms of the test's thread (about seven times what it takes). */
 const MOUNT_BUDGET_MS = 1500
+/** What a run of 40 single taps on that table may cost, in CPU ms of the test's thread (about 2.5 times what it takes; a busy machine adds a third). */
+const TAPS_BUDGET_MS = 2000
 const FOUR = buildFixture({ seats: 4 })
 
 /** The whole table in grid mode with stacks on, 4 seats, on a real session fed a Snapshot of the fixture. */
@@ -402,11 +404,10 @@ function mountStacked(): Mounted {
 describe('a table of 4 seats with 40 permanents each, stacked', () => {
   beforeEach(reset)
 
-  it(`draws all 160 permanents as one face a box inside ${MOUNT_BUDGET_MS} ms`, () => {
-    const started = performance.now()
-    const { view } = mountStacked()
-    const elapsed = performance.now() - started
-    expect(elapsed).toBeLessThan(scaled(MOUNT_BUDGET_MS))
+  it(`draws all 160 permanents as one face a box inside ${MOUNT_BUDGET_MS} CPU ms`, () => {
+    let mounted: Mounted | undefined
+    expect(cpuMs(() => (mounted = mountStacked()))).toBeLessThan(MOUNT_BUDGET_MS)
+    const { view } = must(mounted)
     const onBattlefield = must(view().battlefield.cards)
     expect(onBattlefield).toHaveLength(160)
     const boxes = [0, 1, 2, 3].reduce((sum, seat) => {
@@ -456,18 +457,20 @@ describe('a table of 4 seats with 40 permanents each, stacked', () => {
     expect(battlefieldRows()[0]).toMatch(/'s lands$/)
   })
 
-  it('stays inside a time budget over a run of 40 single taps', () => {
+  it(`stays inside ${TAPS_BUDGET_MS} CPU ms over a run of 40 single taps`, () => {
     const { send, view } = mountStacked()
     const lands = view()
       .objects.filter((object) => object.types.includes('Land') && object.permanent?.tapped === false)
       .slice(0, 40)
-    const started = performance.now()
-    for (const land of lands) {
-      send({
-        events: [{ Public: { PermanentTapped: { object: land.id } } }],
-        objects: [withTapped(land, true)],
-      })
-    }
-    expect(performance.now() - started).toBeLessThan(scaled(MOUNT_BUDGET_MS))
+    expect(lands).toHaveLength(40)
+    const spent = cpuMs(() => {
+      for (const land of lands) {
+        send({
+          events: [{ Public: { PermanentTapped: { object: land.id } } }],
+          objects: [withTapped(land, true)],
+        })
+      }
+    })
+    expect(spent).toBeLessThan(TAPS_BUDGET_MS)
   })
 })
