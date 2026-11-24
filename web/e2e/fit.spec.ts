@@ -1,4 +1,4 @@
-// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats, and at 16, 24 and 40 in both themes, with 40 permanents a seat, and also at 2560x1440, 1600x1000, 1400x900, 768x1024 and 360x740, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock, three targeting items on the stack at rest fit too; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card; on the crowded scene (`crowd=1`) the stack's chips and its "+N more" button stay inside the strip with every item counted once, and the three bundles of the big attack carry whole labels in the window and off the strip. In every game mode with bare boards (duel, three to twelve seats, teams, Two-Headed Giant, boss fights of one to four heroes and with minions) the opening hand stands centred over the table between the top bar and the dock, every card whole in one row, its answers clear of the sentence and the panel not scrolling, as in a real game; and on an empty first turn the opponents' row keeps a quarter of the boards' room and never outgrows yours.
+// Goal: the table is exactly the window at the six sizes of the design (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768 and a 390x844 phone): in a real two-seat game, at the opening hands and at the first priority window, and on the development table at 2, 4, 6 and 12 seats, and at 16, 24 and 40 in both themes, with 40 permanents a seat, and also at 2560x1440, 1600x1000, 1400x900, 768x1024 and 360x740, the page never scrolls either way, every region of the grid stays inside the window, and your hand, the primary pass button (or Keep), and your life are in view and not covered, no battlefield card in view lies under the prompt sheet or the turn banner, the divider after the commanders stays inside the hand dock, three targeting items on the stack at rest fit too; the game-over screen of a real game fits the window too; with the attachments scene (`equip=1`, also on the duel board) the table fits as well, every grant mark is written in whole words of 11 px or more, and a pod column draws its corner as pictures inside it or as chips with no card; on the crowded scene (`crowd=1`) the stack's chips and its "+N more" button stay inside the strip with every item counted once, and the three bundles of the big attack carry whole labels in the window and off the strip. In every game mode with bare boards (duel, three to twelve seats, teams, Two-Headed Giant, boss fights of one to four heroes and with minions) the opening hand stands centred over the table between the top bar and the dock, every card whole in one row, its answers clear of the sentence and the panel not scrolling, as in a real game; and on an empty first turn the opponents' row keeps a quarter of the boards' room and never outgrows yours. At 1280x720 to 1920x1080 your board keeps its cards clear of the grown controls dock in the duel, at four seats and in a boss fight, a Satchel of twelve leaves the hand two whole cards, a prompt card under 76 px draws the compact face whole, and a card prompt shows its question and a first row of whole cards in the Stack panel and the window, wrapping more than eight; an eight-seat grid shows a row of each opponent's cards, and your pod column in boss mode shows every chip without scrolling.
 import { expect, test } from '@playwright/test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
@@ -953,4 +953,215 @@ test('the game-over screen of a real game fits at every size, with the way to a 
   } finally {
     await Promise.all(players.map(({ context }) => context.close()))
   }
+})
+
+test.describe('the play-session findings at laptop and desktop sizes', () => {
+  /** The sizes every finding is held at besides its own. */
+  const LAPTOPS = [
+    [1366, 768],
+    [1920, 1080],
+  ] as const
+  const at = async (page: Page, query: string, width: number, height: number) => {
+    await page.setViewportSize({ width, height })
+    await page.goto(`${DEV_WEB_URL}/dev/table?${query}`)
+    await page.locator('[data-area="hand"]').waitFor()
+  }
+
+  for (const [name, query] of [
+    ['the duel', 'seats=2&board=duel&side=folded'],
+    ['four seats', 'seats=4&side=folded'],
+    ['the boss fight', 'boss=1&side=folded'],
+  ] as const) {
+    test(`keeps your board's lower right cards clear of the grown controls dock on ${name}`, async ({
+      page,
+    }) => {
+      for (const [width, height] of [[1280, 720], [1400, 900], ...LAPTOPS] as const) {
+        for (const prompt of ['targets-two', 'x', 'pay']) {
+          await at(page, `${query}&prompt=${prompt}`, width, height)
+          await page.locator('[data-slot="dock-body"] [data-slot="prompt-actions"]').first().waitFor()
+          const covered = () =>
+            page.evaluate(() => {
+              const body = document.querySelector('[data-slot="dock-body"]')?.getBoundingClientRect()
+              if (body === undefined) return ['no dock']
+              return [...document.querySelectorAll('[data-area="own"] button[data-object-id]')]
+                .filter((card) => {
+                  const r = card.getBoundingClientRect()
+                  // A card its board has scrolled out of view is not drawn there.
+                  const zone = card.closest('[data-slot="battlefield-zone"]')?.getBoundingClientRect()
+                  const shown = zone === undefined || (r.top < zone.bottom - 1 && r.bottom > zone.top + 1)
+                  return (
+                    shown &&
+                    r.width > 0 &&
+                    r.right > body.left + 1 &&
+                    r.bottom > body.top + 1 &&
+                    r.left < body.right
+                  )
+                })
+                .map((card) => card.getAttribute('aria-label') ?? '')
+            })
+          await expect
+            .poll(covered, { message: `${width}x${height} ${prompt}: cards under the dock` })
+            .toEqual([])
+        }
+      }
+    })
+  }
+
+  for (const [name, query] of [
+    ['the duel', 'board=duel'],
+    ['four seats', 'seats=4'],
+    ['the boss fight', 'seats=2&boss=0&bare=1'],
+  ] as const) {
+    test(`leaves the hand two whole cards beside a Satchel of twelve under priority on ${name}`, async ({
+      page,
+    }) => {
+      for (const [width, height] of [[1280, 720], [1400, 900], ...LAPTOPS] as const) {
+        await at(page, `${query}&prompt=priority&turn=you&satchel=12`, width, height)
+        const whole = () =>
+          page.evaluate(() => {
+            const line = document.querySelector('[data-region="hand"] ul[aria-label$="\'s hand"]')
+            if (line === null) return 0
+            const box = line.getBoundingClientRect()
+            return [...line.querySelectorAll('button[data-object-id]')].filter((card) => {
+              const r = card.getBoundingClientRect()
+              return r.left >= box.left - 1 && r.right <= box.right + 1 && r.right <= window.innerWidth + 1
+            }).length
+          })
+        await expect
+          .poll(whole, { message: `${width}x${height}: whole hand cards` })
+          .toBeGreaterThanOrEqual(2)
+      }
+    })
+  }
+
+  /** Every prompt card: its width, the face it draws and whether a line of the face runs past its box. */
+  const promptCards = (page: Page) =>
+    page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>('[data-candidate]')]
+        .filter((card) => card.getBoundingClientRect().width > 0)
+        .map((card) => {
+          const face = card.querySelector('[data-slot="card-face"]')?.getBoundingClientRect()
+          const cut =
+            face !== undefined &&
+            [...card.querySelectorAll('[data-slot="card-face"] *')].some((part) => {
+              if (part.children.length > 0 || (part.textContent ?? '').trim() === '') return false
+              const r = part.getBoundingClientRect()
+              return r.width > 0 && (r.bottom > face.bottom + 0.5 || r.right > face.right + 0.5)
+            })
+          return { width: card.getBoundingClientRect().width, face: card.dataset['face'], cut }
+        }),
+    )
+
+  test('draws prompt cards under 76 px as the compact face, whole', async ({ page }) => {
+    for (const [width, height] of [[1280, 720], [390, 844], ...LAPTOPS] as const) {
+      for (const prompt of ['cards-exile', 'targets-zones']) {
+        await at(page, `seats=4&prompt=${prompt}`, width, height)
+        await expect.poll(async () => (await promptCards(page)).length).toBeGreaterThan(0)
+        for (const card of await promptCards(page)) {
+          const label = `${width}x${height} ${prompt}: a card ${Math.round(card.width)} px wide`
+          if (card.width < 76) expect(card.face, label).toBe('compact')
+          expect(card.cut, `${label} cuts a line of its face`).toBe(false)
+        }
+      }
+    }
+  })
+
+  /** The prompt's cards: how many, the first row and how much of it is whole in every box that clips it, and the rows. */
+  const firstRow = (page: Page) =>
+    page.evaluate(() => {
+      const cards = [...document.querySelectorAll('[data-candidate]')].filter(
+        (card) => card.getBoundingClientRect().width > 0,
+      )
+      const top = Math.min(...cards.map((card) => card.getBoundingClientRect().top))
+      const row = cards.filter((card) => Math.abs(card.getBoundingClientRect().top - top) < 4)
+      const whole = (card: Element): boolean => {
+        const r = card.getBoundingClientRect()
+        let [low, high, left, right] = [0, window.innerHeight, 0, window.innerWidth]
+        for (let box = card.parentElement; box !== null; box = box.parentElement) {
+          const style = getComputedStyle(box)
+          if (!/auto|scroll|hidden|clip/.test(style.overflowX + style.overflowY)) continue
+          const clip = box.getBoundingClientRect()
+          low = Math.max(low, clip.top)
+          high = Math.min(high, clip.bottom)
+          left = Math.max(left, clip.left)
+          right = Math.min(right, clip.right)
+        }
+        return r.top >= low - 1 && r.bottom <= high + 1 && r.left >= left - 1 && r.right <= right + 1
+      }
+      const rows = new Set(cards.map((card) => Math.round(card.getBoundingClientRect().top))).size
+      return { cards: cards.length, row: row.length, whole: row.filter(whole).length, rows }
+    })
+
+  for (const [name, query] of [
+    ['the Stack panel', 'seats=4'],
+    ['the window over the table', 'seats=2&board=duel&side=folded'],
+  ] as const) {
+    test(`shows a card prompt's first row of cards whole without scrolling in ${name}, wrapping more than eight`, async ({
+      page,
+    }) => {
+      for (const [width, height] of [[1280, 720], [1400, 900], ...LAPTOPS] as const) {
+        for (const prompt of ['cards-exile', 'targets-zones', 'cards-graveyard']) {
+          await at(page, `${query}&prompt=${prompt}`, width, height)
+          await expect.poll(async () => (await firstRow(page)).cards).toBeGreaterThan(0)
+          const seen = await firstRow(page)
+          const label = `${width}x${height} ${prompt}`
+          expect(seen.whole, `${label}: whole cards of the first row`).toBe(seen.row)
+          await expect(
+            page.locator('[data-slot="decision-line"]').first(),
+            `${label}: the question`,
+          ).toBeInViewport()
+          if (seen.cards > 8) expect(seen.rows, `${label}: ${seen.cards} cards wrap`).toBeGreaterThan(1)
+        }
+      }
+    })
+  }
+
+  test("shows a row of each opponent's cards in an eight-seat grid", async ({ page }) => {
+    // An eight-seat grid at 1366x768 has no room for three rows of boards over yours: the table draws focus mode there.
+    for (const [width, height] of [
+      [1400, 900],
+      [1920, 1080],
+    ] as const) {
+      await at(page, 'seats=8&mode=grid&prompt=priority', width, height)
+      const rows = () =>
+        page.evaluate(() =>
+          [...document.querySelectorAll('[data-area="opponents"] [data-slot="seat-frame"]')].map((frame) => {
+            const zone = frame.querySelector('[data-slot="battlefield-zone"]')?.getBoundingClientRect()
+            if (zone === undefined) return 0
+            return [...frame.querySelectorAll('button[data-object-id]')].filter((card) => {
+              const r = card.getBoundingClientRect()
+              return r.width > 0 && r.top >= zone.top - 1 && r.bottom <= zone.bottom + 1
+            }).length
+          }),
+        )
+      await expect.poll(async () => (await rows()).length).toBe(7)
+      await expect
+        .poll(async () => Math.min(...(await rows())), {
+          message: `${width}x${height}: whole cards of a board`,
+        })
+        .toBeGreaterThanOrEqual(1)
+    }
+  })
+
+  test('shows every chip of your pod column in boss mode without scrolling', async ({ page }) => {
+    // With a party beside you the table has the room from 900 px high; without one, from 768.
+    for (const [query, width, height] of [
+      ['boss=1', 1400, 900],
+      ['boss=1', 1920, 1080],
+      ['boss=2', 1400, 900],
+      ['boss=2', 1366, 768],
+      ['boss=2', 1920, 1080],
+    ] as const) {
+      await at(page, `${query}&prompt=priority`, width, height)
+      const scrolls = () =>
+        page.evaluate(() => {
+          const column = document.querySelector('[data-slot="pod-column"]:has([data-seat="0"])')
+          if (column === null) return -1
+          return [column, ...column.querySelectorAll('[data-slot="pod-top-scroll"], [data-slot="pod-more"]')]
+            .map((box) => Math.max(box.scrollHeight - box.clientHeight, box.scrollWidth - box.clientWidth))
+            .reduce((a, b) => Math.max(a, b), 0)
+        })
+      await expect.poll(scrolls, { message: `${query} at ${width}x${height}: your pod column` }).toBe(0)
+    }
+  })
 })
