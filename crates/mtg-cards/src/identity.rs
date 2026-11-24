@@ -320,7 +320,8 @@ fn color_of(mana: ManaType) -> Option<Color> {
 }
 
 /// Adds the colors of the mana symbols in the strings of an ability's serialized form, and of the mana an effect
-/// names by type (`Fixed`, `OneOf`, `OneOfLists`, `OrChosenColor`) or asks about (`ManaSpent`).
+/// names by type (`Fixed`, `OneOf`, `OneOfLists`, `OrChosenColor`), asks about or counts (`ManaSpent`,
+/// `R119SpentOnTriggering`: "for each {R} spent" names {R}, CR 903.4).
 fn scan(value: &Value, set: &mut ColorSet) {
     match value {
         Value::String(text) => symbols(text, set),
@@ -343,9 +344,20 @@ fn scan(value: &Value, set: &mut ColorSet) {
                 }
                 if matches!(
                     key.as_str(),
-                    "Fixed" | "OneOf" | "OneOfLists" | "OrChosenColor" | "ManaSpent"
+                    "Fixed"
+                        | "OneOf"
+                        | "OneOfLists"
+                        | "OrChosenColor"
+                        | "ManaSpent"
+                        | "R119SpentOnTriggering"
                 ) {
                     named(inner, set);
+                }
+                // The amount `ManaSpent { of }` names the type it counts in a field.
+                if key == "ManaSpent"
+                    && let Some(of) = inner.get("of")
+                {
+                    named(of, set);
                 }
                 // "in any combination of {U}, {B}, and/or {R}" names the types it picks from.
                 if key == "AnyCombination"
@@ -466,6 +478,8 @@ mod tests {
     #[case::two_pairs_of_any_colors_add_none(costing("{2}{R}").with_rules(rules(&format!(r#"{{"Spell":{{"effects":[{{"AddMana":{{"mana":{}}}}}]}}}}"#, serde_json::to_string(&crate::effect::Produce::two_pairs_of_colors()).unwrap()))), "R")]
     #[case::any_color_adds_none(costing("{1}").with_rules(rules(r#"{"Activated":{"cost":["Tap"],"effects":[{"AddMana":{"mana":{"AnyColor":1}}}]}}"#)), "")]
     #[case::mana_spent_to_cast(costing("{1}").with_rules(rules(r#"{"Triggered":{"when":{"ZoneChange":{"to":"Battlefield","what":["This"]}},"effects":[{"If":{"condition":{"Not":{"ManaSpent":"Green"}},"then":[{"Sacrifice":{"filter":["This"]}}]}}]}}"#)), "G")]
+    #[case::mana_spent_counted(costing("{1}").with_rules(rules(r#"{"Spell":{"effects":[{"Draw":{"count":{"ManaSpent":{"of":"Red"}}}}]}}"#)), "R")]
+    #[case::mana_spent_on_the_trigger_counted(costing("{1}").with_rules(rules(r#"{"Spell":{"effects":[{"Draw":{"count":{"R119SpentOnTriggering":["Black","Red"]}}}]}}"#)), "BR")]
     #[case::rules_text_clause(costing("{1}").with_manual("{W}, {T}: Draw a card.", "not run"), "W")]
     #[case::reminder_text_is_no_rules_text(costing("{1}").with_manual("Flash (You may cast this for {W}.)", "not run"), "")]
     #[case::devoid_keeps_the_identity_of_its_cost(costing("{3}{U}{R}").with_rules(rules(r#"{"Keyword":"Devoid"}"#)), "UR")]
