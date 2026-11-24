@@ -301,7 +301,8 @@ export const SeatPanel = memo(function SeatPanel({
         data-variant="line"
         style={seatHueStyle(seat)}
         className={cn(
-          '@container relative plaque flex min-w-0 flex-col gap-1 rounded-xl px-2 py-1 text-card-foreground',
+          '@container relative plaque flex min-w-0 flex-col gap-1 rounded-xl px-2 text-card-foreground',
+          oneRow ? 'py-0.5' : 'py-1',
           ring,
           eliminated && 'border-l-4 border-destructive',
           player.boss ? 'border-2 border-boss' : SEAT_EDGE,
@@ -322,7 +323,8 @@ export const SeatPanel = memo(function SeatPanel({
                 seat={seat}
                 life={player.life}
                 as="span"
-                className="text-2xl font-semibold tabular-nums"
+                // Two lines of a crowded grid's pod are as high as its figures' row: the life keeps its size on a 24 px line.
+                className={cn('text-2xl font-semibold tabular-nums', oneRow && 'leading-6')}
                 team={team}
                 spirit={player.spirit === true}
               />

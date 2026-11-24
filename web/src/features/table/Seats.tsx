@@ -109,7 +109,9 @@ export const SeatArea = memo(function SeatArea({
         data-defender-area={defender.state}
         onClick={defender.onClick}
         className={cn(
-          'flex min-h-0 min-w-0 flex-1 gap-2',
+          // A crowded grid's two-line pod stands close over its board, so a band of the smallest cards fits under it.
+          'flex min-h-0 min-w-0 flex-1',
+          oneRow ? 'gap-1' : 'gap-2',
           aside ? 'flex-row' : 'flex-col',
           defender.state !== undefined && 'cursor-pointer',
         )}
