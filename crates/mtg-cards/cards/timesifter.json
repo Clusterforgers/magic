@@ -1,3 +1,22 @@
-{"oracle_id":"99f8805f-6618-4838-a4e7-a3660e3b087f","name":"Timesifter","impl_status":"Full","faces":[{"name":"Timesifter","oracle_fingerprint":"","abilities":[
-{"Triggered":{"when":{"StepBegins":{"step":"Upkeep"}},"effects":[{"R123ExileContest":{"as":"winner"}},{"ExtraTurn":{"who":{"Bound":"winner"}}}]}}
-]}]}
+{
+  "oracle_id": "99f8805f-6618-4838-a4e7-a3660e3b087f",
+  "name": "Timesifter",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Timesifter",
+      "oracle_fingerprint": "88b96169f760d298fd8a8648fed49b70",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep" } },
+            "effects": [
+              { "R123ExileContest": { "as": "winner" } },
+              { "ExtraTurn": { "who": { "Bound": "winner" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

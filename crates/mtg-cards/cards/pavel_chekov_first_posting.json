@@ -1,11 +1,68 @@
-{"oracle_id":"473aba5a-5c87-4294-a556-f8aca0e5fe39","name":"Pavel Chekov, First Posting","impl_status":"Full","faces":[{"name":"Pavel Chekov, First Posting","oracle_fingerprint":"","abilities":[
-{"Replacement":{"when":{"Draw":{}},"by":{"Instead":[{"May":{"effects":[
-    {"ChooseValue":{"kind":{"Options":["land","nonland"]},"as":"kind"}},
-    {"If":{"condition":{"ChosenWord":{"name":"kind","word":"land"}},
-      "then":[{"RevealUntil":{"filter":[{"Type":"Land"}],"as":"found","revealed_as":"revealed"}},
-              {"Move":{"what":{"Bound":"found"},"to":"Hand"}},
-              {"Move":{"what":{"Bound":"revealed"},"to":{"Library":{"place":"Bottom","order":"Random"}}}}],
-      "otherwise":[{"RevealUntil":{"filter":[{"Not":{"Type":"Land"}}],"as":"found","revealed_as":"revealed"}},
-              {"Move":{"what":{"Bound":"found"},"to":"Hand"}},
-              {"Move":{"what":{"Bound":"revealed"},"to":{"Library":{"place":"Bottom","order":"Random"}}}}]}}]}}]}}}
-]}]}
+{
+  "oracle_id": "473aba5a-5c87-4294-a556-f8aca0e5fe39",
+  "name": "Pavel Chekov, First Posting",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Pavel Chekov, First Posting",
+      "oracle_fingerprint": "1600b49d8f0f41eca27e9b08c8188b80",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                {
+                  "May": {
+                    "effects": [
+                      {
+                        "ChooseValue": { "kind": { "Options": ["land", "nonland"] }, "as": "kind" }
+                      },
+                      {
+                        "If": {
+                          "condition": { "ChosenWord": { "name": "kind", "word": "land" } },
+                          "then": [
+                            {
+                              "RevealUntil": {
+                                "filter": [{ "Type": "Land" }],
+                                "as": "found",
+                                "revealed_as": "revealed"
+                              }
+                            },
+                            { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                            {
+                              "Move": {
+                                "what": { "Bound": "revealed" },
+                                "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                              }
+                            }
+                          ],
+                          "otherwise": [
+                            {
+                              "RevealUntil": {
+                                "filter": [{ "Not": { "Type": "Land" } }],
+                                "as": "found",
+                                "revealed_as": "revealed"
+                              }
+                            },
+                            { "Move": { "what": { "Bound": "found" }, "to": "Hand" } },
+                            {
+                              "Move": {
+                                "what": { "Bound": "revealed" },
+                                "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
