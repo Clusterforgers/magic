@@ -2,6 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   COMMAND_GAP_PX,
+  dockLayouts,
   HAND_DOCK_CHROME_PX,
   HAND_DOCK_SIDES_PX,
   HAND_FLOOR_PX,
@@ -28,6 +29,8 @@ describe('handDockNeed', () => {
     [601, 14, 2, 230, THREE_ROWS],
     [601, 16, 2, 230, THREE_ROWS],
     [601, 24, 2, 230, 0],
+    // The whole head leaves no room for three rows; one card of it does.
+    [665, 24, 2, 230, THREE_ROWS],
     [626, 7, 2, 207, TWO_ROWS],
     [626, 8, 2, 207, TWO_ROWS],
     [626, 14, 2, 207, 0],
@@ -59,6 +62,18 @@ describe('handDockNeed', () => {
       expect(layout.box.width).toBeGreaterThanOrEqual(HAND_FLOOR_PX)
     },
   )
+
+  it('holds a hand whose rows only one card of the head leaves room for, the head scrolling in that card', () => {
+    const need = handDockNeed({ width: 665, count: 24, commanders: 2, most: 230 })
+    const { hand, command } = dockLayouts({
+      width: 665,
+      height: need - HAND_DOCK_CHROME_PX,
+      count: 24,
+      commanders: 2,
+    })
+    expect(hand).toMatchObject({ rows: 3, scrolls: false })
+    expect(command?.scrolls).toBe(true)
+  })
 })
 
 describe('handRowPx', () => {

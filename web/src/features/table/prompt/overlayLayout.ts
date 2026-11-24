@@ -43,7 +43,7 @@ interface CardSizes {
 const DESKTOP: CardSizes = { most: 160, least: 120, floor: 104, kept: 120, smallest: 88 }
 const PHONE: CardSizes = { most: 80, least: 80, floor: 64, kept: 76, smallest: 64 }
 
-/** The room of the overlay in px, and whether it is a phone's. */
+/** The room of the overlay in px, and whether it takes a phone's card sizes (a phone either way up). */
 export interface OverlayRoom {
   width: number
   height: number

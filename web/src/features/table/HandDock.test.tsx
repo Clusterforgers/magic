@@ -1,4 +1,4 @@
-// Goal: the hand dock draws the viewer's cards as tall as the dock allows, side by side in one row while they fit, then in two or three rows that lie over each other with the top (name and cost) of every card showing, shrinks the cards to 68 px before it wraps and scrolls only past three rows, draws the cost on the short card face under 76 px, rises a hovered or focused card by 40 % and opens its preview, moves focus along the hand with the arrow keys, keeps one tab stop, takes no pointer above the cards, and says so when the hand is empty or hidden, for 1 to 20 cards; a decision that picks among the hand gives it its row before the Satchel, and a line that scrolls takes the pointer for its scrollbar.
+// Goal: the hand dock draws the viewer's cards as tall as the dock allows, side by side in one row while they fit, then in two or three rows that lie over each other with the top (name and cost) of every card showing, shrinks the cards to 68 px before it wraps and scrolls only past three rows, draws the cost on the short card face under 76 px, rises a hovered or focused card by 40 % and opens its preview, moves focus along the hand with the arrow keys, keeps one tab stop, takes no pointer above the cards, and says so when the hand is empty or hidden, for 1 to 20 cards; a hand that would scroll beside the Satchel, or one a decision picks among, gets its row before the Satchel, and a line that scrolls takes the pointer for its scrollbar.
 import { act, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
@@ -236,14 +236,11 @@ describe('a pick among the hand beside the Satchel', () => {
     return renderTable({ fixture, state: (state) => ({ ...state, pending }) })
   }
 
-  it.each(['bottom', 'discard'])(
-    'gives the hand of a %s its row first, the Satchel scrolling in one card, where priority does not',
+  it.each(['priority', 'bottom', 'discard'])(
+    'gives the hand at %s its row first where it would scroll beside the Satchel, the Satchel scrolling in one card',
     (prompt) => {
       room.width = 665
       room.height = 152
-      const { unmount } = facing('priority')
-      expect(hand()).toHaveAttribute('data-scrolls', 'true')
-      unmount()
       facing(prompt)
       expect(hand()).not.toHaveAttribute('data-scrolls')
       expect(cardsOf()).toHaveLength(8)

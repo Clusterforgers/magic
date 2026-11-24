@@ -113,7 +113,7 @@ export function TakeBackControls() {
           disabled={!online}
           onClick={() => session.takeBack()}
         >
-          Take back {takeBackAction(offer.kind, offer.name)}
+          <span className="min-w-0 truncate">Take back {takeBackAction(offer.kind, offer.name)}</span>
         </Button>
       )}
     </div>

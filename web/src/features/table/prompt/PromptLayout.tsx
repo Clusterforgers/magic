@@ -36,7 +36,7 @@ import type { Home } from './home'
 import { ResponseClock } from './ResponseClock'
 import { useDockForm, useDockWide } from '../dockLayout'
 import { StopsDock } from '../stops/StopsDock'
-import { useDecisionHome } from './useDecisionHome'
+import { HomeSlotsContext, useDecisionHome } from './useDecisionHome'
 
 /** The coach's anchors of a decision's home: its question and its primary answer. */
 const QUESTION = anchor('ask.question')
@@ -315,8 +315,17 @@ function markPrimary(home: HTMLElement | null): (() => void) | undefined {
 }
 
 /** A phone's bar: the chip that opens the stack sheet, with how many items are on the stack. */
-function BarStack({ count, onOpen }: { count: number; onOpen: () => void }) {
-  return (
+function BarStack({
+  count,
+  onOpen,
+  into,
+}: {
+  count: number
+  onOpen: () => void
+  /** The element it is drawn into instead of the bar's own first line. */
+  into: HTMLElement | null
+}) {
+  const chip = (
     <button
       type="button"
       data-slot="bar-stack"
@@ -327,6 +336,7 @@ function BarStack({ count, onOpen }: { count: number; onOpen: () => void }) {
       <ChevronUp aria-hidden="true" className="size-3.5" />
     </button>
   )
+  return into === null ? chip : createPortal(chip, into)
 }
 
 /**
@@ -350,6 +360,7 @@ export function PromptLayout({
 }: PromptLayoutProps) {
   const { id, name, decision } = usePrompt()
   const { home: found, element } = useDecisionHome()
+  const slots = useContext(HomeSlotsContext)
   const dockForm = useDockForm()
   const dockWide = useDockWide()
   const home = here ? null : found
@@ -387,6 +398,8 @@ export function PromptLayout({
         <StopsDock row={false} tuck={dockForm === 'full' && dockWide ? undefined : 'all'} />
       </div>
     ) : null
+  // A phone's bar and a short dock have no line to spare under a combat declaration: Stops stands beside its sentence.
+  const stopsBeside = home === 'bar' || (home === 'dock' && dockForm === 'short')
   const body = compact ? (
     <>
       {title}
@@ -394,10 +407,11 @@ export function PromptLayout({
         <LiveText coach={home !== null} className="min-w-0 flex-1 basis-44">
           {text}
         </LiveText>
+        {stopsBeside ? stops : null}
         {answers}
       </div>
       {clock}
-      {stops}
+      {stopsBeside ? null : stops}
     </>
   ) : (
     <>
@@ -405,7 +419,12 @@ export function PromptLayout({
       {chip ? <AskerChip doing={doing} /> : home === 'panel' ? null : (lead ?? null)}
       {stops}
       {home === 'bar' && side !== null ? (
-        <BarStack count={side.counts.stack} onOpen={() => side.activate('stack')} />
+        <BarStack
+          count={side.counts.stack}
+          onOpen={() => side.activate('stack')}
+          // Priority keeps the line of take-backs and stops above it: the chip stands there, so the bar loses no row.
+          into={name === 'Priority' ? (slots?.barLine ?? null) : null}
+        />
       ) : null}
       <Sentence
         text={named && home !== null ? withoutAsker(text, asker.shown) : text}

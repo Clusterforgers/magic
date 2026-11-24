@@ -234,6 +234,8 @@ function MadePips({ option, small = false }: { option: ManaOption; small?: boole
 export interface PayColumnProps {
   /** The spell or ability paid for. */
   name: string
+  /** Draws the name and the circles owed; off in a phone's sheet, whose bar holds the chip and the meter. */
+  track?: boolean
   slots: readonly PaySlot[]
   spends: readonly Spend[]
   covered: boolean
@@ -270,6 +272,7 @@ export interface PayColumnProps {
  */
 export function PayColumn({
   name,
+  track = true,
   slots,
   spends,
   covered,
@@ -314,50 +317,52 @@ export function PayColumn({
   }
   return (
     <div ref={root} data-slot="pay-column" className="grid min-w-0 gap-2">
-      <Kicker lead="Paying" rest={`${name} · ${paid} of ${slots.length}`} />
-      <div
-        data-slot="pay-track"
-        role="group"
-        aria-label="What is owed"
-        className="flex flex-wrap gap-x-1 gap-y-1.5"
-      >
-        {slots.map((slot, at) => {
-          const caption = slot.fill === null ? openCaption(slot, nameOf) : paidCaption(slot, spends, nameOf)
-          const index = slot.fill?.spend ?? null
-          const spend = index === null ? undefined : spends[index]
-          const disc = <SlotDisc slot={slot} sizeClass="size-[2.125rem] text-[0.8125rem]" />
-          return (
-            <span
-              key={slot.key}
-              data-slot="pay-slot"
-              data-paid={slot.fill !== null || undefined}
-              data-extra={(slot.extraOf !== undefined && slots[at - 1]?.extraOf === undefined) || undefined}
-              className="pay-slot"
-            >
-              {spend === undefined || index === null ? (
-                <span data-slot="pay-circle" className="!border-0">
-                  {disc}
+      {track ? <Kicker lead="Paying" rest={`${name} · ${paid} of ${slots.length}`} /> : null}
+      {track ? (
+        <div
+          data-slot="pay-track"
+          role="group"
+          aria-label="What is owed"
+          className="flex flex-wrap gap-x-1 gap-y-1.5"
+        >
+          {slots.map((slot, at) => {
+            const caption = slot.fill === null ? openCaption(slot, nameOf) : paidCaption(slot, spends, nameOf)
+            const index = slot.fill?.spend ?? null
+            const spend = index === null ? undefined : spends[index]
+            const disc = <SlotDisc slot={slot} sizeClass="size-[2.125rem] text-[0.8125rem]" />
+            return (
+              <span
+                key={slot.key}
+                data-slot="pay-slot"
+                data-paid={slot.fill !== null || undefined}
+                data-extra={(slot.extraOf !== undefined && slots[at - 1]?.extraOf === undefined) || undefined}
+                className="pay-slot"
+              >
+                {spend === undefined || index === null ? (
+                  <span data-slot="pay-circle" className="!border-0">
+                    {disc}
+                  </span>
+                ) : (
+                  <button
+                    type="button"
+                    data-slot="pay-circle"
+                    data-spend={index}
+                    aria-label={`Remove ${spendWords(spend, nameOf)}`}
+                    title={`Remove ${spendWords(spend, nameOf)}`}
+                    className="!border-0 outline-offset-2 outline-primary focus-visible:outline-2"
+                    onClick={() => take(index)}
+                  >
+                    {disc}
+                  </button>
+                )}
+                <span data-slot="pay-caption" title={caption}>
+                  {caption}
                 </span>
-              ) : (
-                <button
-                  type="button"
-                  data-slot="pay-circle"
-                  data-spend={index}
-                  aria-label={`Remove ${spendWords(spend, nameOf)}`}
-                  title={`Remove ${spendWords(spend, nameOf)}`}
-                  className="!border-0 outline-offset-2 outline-primary focus-visible:outline-2"
-                  onClick={() => take(index)}
-                >
-                  {disc}
-                </button>
-              )}
-              <span data-slot="pay-caption" title={caption}>
-                {caption}
               </span>
-            </span>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
+      ) : null}
       <p data-slot="pay-note" className="text-[0.8125rem] leading-[1.125rem] text-muted-foreground">
         {note !== ''
           ? note
