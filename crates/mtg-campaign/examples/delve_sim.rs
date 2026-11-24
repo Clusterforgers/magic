@@ -205,8 +205,9 @@ fn dropped(plan: &FightPlan) -> FightPlan {
     plan
 }
 
-/// The decisions of one seat and kind: how many, their seconds in all and at most, the tree searches and rollouts.
-type Spent = (u64, f64, f64, u64, u64);
+/// The decisions of one seat and kind: how many, their seconds in all and at most, the tree searches, their
+/// rollouts and the answers the searches applied.
+type Spent = (u64, f64, f64, u64, u64, u64);
 
 /// What the decisions every seat answered cost, by seat and decision kind (`DELVE_SIM_PROFILE`).
 static PROFILE: Mutex<BTreeMap<(usize, String), Spent>> = Mutex::new(BTreeMap::new());
@@ -226,6 +227,7 @@ impl SeatBrain for Profiled {
         let before = (
             mtg_testkit::brain::deep::tally().0,
             mtg_testkit::brain::deep::iterations(),
+            mtg_testkit::bot::applied(),
         );
         let t = Instant::now();
         let answer = self.inner.choose(decision, table);
@@ -239,6 +241,7 @@ impl SeatBrain for Profiled {
         entry.2 = entry.2.max(secs);
         entry.3 += mtg_testkit::brain::deep::tally().0 - before.0;
         entry.4 += mtg_testkit::brain::deep::iterations() - before.1;
+        entry.5 += mtg_testkit::bot::applied() - before.2;
         answer
     }
 
@@ -752,10 +755,11 @@ fn main() {
         },
         started.elapsed().as_secs_f64()
     );
-    for ((seat, kind), (count, secs, most, searches, iterations)) in PROFILE.lock().unwrap().iter()
+    for ((seat, kind), (count, secs, most, searches, iterations, applied)) in
+        PROFILE.lock().unwrap().iter()
     {
         println!(
-            "profile seat={seat} kind={kind} count={count} secs={secs:.1} max={most:.2} searches={searches} iterations={iterations}"
+            "profile seat={seat} kind={kind} count={count} secs={secs:.1} max={most:.2} searches={searches} iterations={iterations} applied={applied}"
         );
     }
     let table = fights.lock().unwrap();

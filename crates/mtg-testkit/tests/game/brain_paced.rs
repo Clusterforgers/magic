@@ -1,6 +1,6 @@
-//! Goal: a paced bot (a simulator's) keeps its level's search but cuts each tree search to the rollouts its clock
-//! reaches at a live table, plays no tree search longer than that count scaled by the decision's importance, and its
-//! games replay with the seed, at every searching level.
+//! Goal: a paced bot (a simulator's) keeps its level's search but turns each tree search's clock into the work it buys
+//! at a live table, never searches more rollouts than its level's count, and its games replay with the seed, at every
+//! searching level.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::{Arc, Mutex};
@@ -10,7 +10,7 @@ use mtg_core::ids::PlayerId;
 use mtg_engine::decision::Answer;
 use mtg_engine::{Decision, Engine};
 use mtg_testkit::brain::clock::MOST;
-use mtg_testkit::brain::{Deep, Level, PACED_ROLLOUTS, SeatBrain, Settings, deep, paced_brain};
+use mtg_testkit::brain::{Deep, Level, PACED_WORK, SeatBrain, Settings, deep, paced_brain};
 use mtg_testkit::brain_decks::{Duel, duel_setup};
 use mtg_testkit::harness::{PlayOptions, play_brains};
 use rstest::rstest;
@@ -19,7 +19,7 @@ use rstest::rstest;
 #[case::normal(Settings::NORMAL, None)]
 #[case::hard(Settings::HARD, Some(Deep::LIGHT))]
 #[case::very_hard(Settings::VERY_HARD, Some(Deep::FULL))]
-fn a_paced_search_keeps_its_level_but_plays_the_rollouts_its_clock_reaches(
+fn a_paced_search_keeps_its_level_but_does_the_work_its_clock_buys(
     #[case] settings: Settings,
     #[case] deep: Option<Deep>,
 ) {
@@ -30,10 +30,10 @@ fn a_paced_search_keeps_its_level_but_plays_the_rollouts_its_clock_reaches(
     assert_eq!(paced.deep.is_some(), deep.is_some());
     if let (Some(paced), Some(deep)) = (paced.deep, deep) {
         let clock = deep.time.unwrap().as_secs_f64();
-        assert_eq!(paced.time, None);
-        assert!(paced.iterations >= 1);
-        assert!(paced.iterations < deep.iterations);
-        assert!((f64::from(paced.iterations) - clock * PACED_ROLLOUTS).abs() <= 0.5);
+        assert_eq!(paced.iterations, deep.iterations);
+        assert_eq!(deep.work, None);
+        let work = f64::from(paced.work.unwrap());
+        assert!((work - clock * PACED_WORK).abs() <= 0.5);
     }
 }
 

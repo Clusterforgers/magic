@@ -49,6 +49,10 @@ pub struct Deep {
     /// Whether rollouts judge each seat's main-phase casts by trying them ([`Search::judged`]) rather than casting the
     /// costliest.
     pub judged: bool,
+    /// The answers an untimed search's simulations may apply for a decision of ordinary importance, the work its clock
+    /// buys at a live table, shared on a crowded board as the clock is (a paced search, [`super::Settings::paced`]);
+    /// `None` counts iterations alone.
+    pub work: Option<u32>,
 }
 
 impl Deep {
@@ -66,6 +70,7 @@ impl Deep {
         doubt: 1.0,
         guard: 0.05,
         judged: true,
+        work: None,
     };
 
     /// A light budget for Hard: up to 150 iterations, about 0.6 s for a decision of ordinary importance.

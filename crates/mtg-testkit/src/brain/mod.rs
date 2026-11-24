@@ -34,7 +34,7 @@ use mtg_engine::{Decision, Engine};
 
 pub use deep::Deep;
 pub use seen::Seen;
-pub use sim::{Horizon, PACED_ROLLOUTS, Search, Settings};
+pub use sim::{Horizon, PACED_WORK, Search, Settings};
 
 use crate::bot::RandomBot;
 
@@ -469,18 +469,17 @@ impl HeuristicBot {
         answers.insert(0, prior.clone());
         let answers = deep::distinct(engine, answers);
         let seen = Seen::new(engine.state(), self.seat);
-        let budget = clock::Budget::new(
-            self.started,
-            deep.iterations,
-            deep.time,
-            clock::importance(&seen, decision),
-            // An untimed search keeps its whole count, so its answers replay as before.
-            if deep.time.is_some() {
-                self.budget * clock::board_share(seen.battlefield().len())
-            } else {
-                self.budget
-            },
-        );
+        let importance = clock::importance(&seen, decision);
+        // An untimed search keeps its whole count, so its answers replay as before; a paced one shares its work as the
+        // clock does.
+        let share = if deep.time.is_some() || deep.work.is_some() {
+            self.budget * clock::board_share(seen.battlefield().len())
+        } else {
+            self.budget
+        };
+        let budget =
+            clock::Budget::new(self.started, deep.iterations, deep.time, importance, share)
+                .with_work(deep.work, importance, share);
         if budget.iterations == 0 {
             return self.settled(before, prior);
         }

@@ -177,6 +177,16 @@ fn smaller_block(options: &BlockOptions, blocks: &[(ObjectId, ObjectId)]) -> Opt
 /// A block as the declaration lists it: each blocker and the attacker it blocks.
 type Block = Vec<(ObjectId, ObjectId)>;
 
+thread_local! {
+    /// Answers [`apply_answer`] applied on this thread ([`applied`]).
+    static APPLIED: std::cell::Cell<u64> = const { std::cell::Cell::new(0) };
+}
+
+/// The answers [`apply_answer`] applied on this thread so far: the work the searches did, the same on every machine.
+pub fn applied() -> u64 {
+    APPLIED.with(std::cell::Cell::get)
+}
+
 /// Applies a bot's `answer` to the `decision` it answers.
 ///
 /// An attack or a block the engine refuses because its player cannot pay for it (CR 508.1h, 509.1d) is taken back
@@ -191,6 +201,7 @@ pub fn apply_answer(
     answer: Answer,
 ) -> Result<Vec<Event>, EngineError> {
     let mut answer = answer;
+    APPLIED.with(|cell| cell.set(cell.get() + 1));
     // The sets of alike cards are tried from the random first pick to the last, then once more from the first set.
     let mut wrapped = false;
     loop {
