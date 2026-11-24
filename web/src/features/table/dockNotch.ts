@@ -43,22 +43,31 @@ export function notchOf(
 const same = (a: FitNotch | null, b: FitNotch | null): boolean =>
   a === b || (a !== null && b !== null && a.width === b.width && a.height === b.height)
 
+/** The dock's corner over a board: what its body covers now, and what it covers at the common decisions too. */
+export interface DockNotch {
+  covered: FitNotch | null
+  kept: FitNotch | null
+}
+
+const NO_NOTCH: DockNotch = { covered: null, kept: null }
+
 /**
- * The corner of `zone` the dock's body covers, followed as either changes size; null while they do not meet, or
- * when `on` is false (an opponent's board, a phone, whose dock is a bar under the hand).
+ * The corner of `zone` the dock's body covers, and the one it covers at the common decisions (`DOCK_DECISION_PX`),
+ * followed as either changes size; none while they do not meet, or when `on` is false (an opponent's board, a
+ * phone, whose dock is a bar under the hand).
  */
 export function useDockNotch(
   zone: RefObject<HTMLElement | null>,
   on: boolean,
   box: FitBox | null,
-): FitNotch | null {
-  const [notch, setNotch] = useState<FitNotch | null>(null)
+): DockNotch {
+  const [notch, setNotch] = useState<DockNotch>(NO_NOTCH)
   useLayoutEffect(() => {
     const element = zone.current
     const body = on ? document.querySelector(DOCK_BODY) : null
     const cell = on ? document.querySelector(DOCK_CELL) : null
     if (element === null || body === null || cell === null) {
-      setNotch(null)
+      setNotch(NO_NOTCH)
       return
     }
     const measure = (): void => {
@@ -66,12 +75,16 @@ export function useDockNotch(
       const px = (value: string): number => parseFloat(value) || 0
       const grown = body.getBoundingClientRect()
       const top = Math.min(grown.top, cell.getBoundingClientRect().bottom - DOCK_DECISION_PX)
-      const next = notchOf(
-        element.getBoundingClientRect(),
-        { right: px(style.paddingRight), bottom: px(style.paddingBottom) },
-        { left: grown.left, top, right: grown.right, bottom: grown.bottom },
-      )
-      setNotch((was) => (same(was, next) ? was : next))
+      const zoneBox = element.getBoundingClientRect()
+      const padding = { right: px(style.paddingRight), bottom: px(style.paddingBottom) }
+      const covered = notchOf(zoneBox, padding, grown)
+      const kept = notchOf(zoneBox, padding, {
+        left: grown.left,
+        top,
+        right: grown.right,
+        bottom: grown.bottom,
+      })
+      setNotch((was) => (same(was.covered, covered) && same(was.kept, kept) ? was : { covered, kept }))
     }
     measure()
     if (typeof ResizeObserver !== 'function') return

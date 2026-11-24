@@ -16,7 +16,7 @@ The rules the web client is built to: principles, design system, a fit-to-viewpo
 | Fitts's law | Pass is the largest target, bottom right; frequent controls 32 px or more, 44 on touch |
 | Contrast and focus | 4.5:1 text, 3:1 edges and rings, focus never covered, colour never alone |
 | Motion and timing | 100 to 300 ms, ease-out in; nothing delays an answer; a working state past 1 s |
-| Nothing hidden, nothing jumps | A decision moves no board: it is answered under the asking card in the Stack panel or at the bottom right ([Decisions](#decisions)), both of fixed size, and the middle strip is one line in every prompt and between prompts; only a window for cards that are not on the table covers boards, and V shows the table through it; a line too long is cut with its whole text in a tooltip |
+| Nothing hidden, nothing jumps | A decision moves no board (only where the controls dock grows over your board's corner do your cards size anew, in place, to stay clear of it): it is answered under the asking card in the Stack panel or at the bottom right ([Decisions](#decisions)), both of fixed size, and the middle strip is one line in every prompt and between prompts; only a window for cards that are not on the table covers boards, and V shows the table through it; a line too long is cut with its whole text in a tooltip |
 | Fair share | Every board stays readable: the boss's cards are at least about 60 % of the heroes' where its board is like theirs |
 
 ### Feel

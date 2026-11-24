@@ -29,7 +29,8 @@ import {
   sameEntries,
   visibleIds,
 } from './rowStacks'
-import type { RowEntry } from './rowStacks'
+import type { RowEntry, SeatLayout } from './rowStacks'
+import type { FitBox } from './fit'
 import { STACKS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
 import { useEdgeFade } from './useEdgeFade'
 import { ZONE_PAD_PX } from './boardSplit'
@@ -192,7 +193,6 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   const content = useContentBox(zone)
   // Your board keeps its lower right corner clear where the controls dock's body grows over it on a short window.
   const notch = useDockNotch(zone, own && facing === 'near', content)
-  const box = useMemo(() => withNotch(content, notch), [content, notch])
   const permanents = useMemo(() => idsOfRows(stacks.plain), [stacks])
   const marked = useMarkedIds(permanents)
   const [opened, setOpened] = useState<ReadonlySet<string>>(NONE)
@@ -218,20 +218,35 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   // A window resized a moment ago fits afresh while its regions settle, so growing it back gives the size a fresh load has.
   const held = (): FitHold | null => (settling(performance.now()) ? null : hold.current)
   // The fit of the box alone, which a grid of boards shares out as one size; it never depends on that size.
-  const alone = useMemo(
-    () =>
+  // It keeps the corner the dock covers at the common decisions where that costs no card size, so those decisions
+  // move nothing; else only the corner the dock covers now.
+  // A corner that comes or goes fits afresh, so the cards grow back once the dock gives the corner back.
+  const lastNotch = useRef(notch)
+  const notchMoved = lastNotch.current !== notch
+  useLayoutEffect(() => {
+    lastNotch.current = notch
+  }, [notch])
+  const { box, alone } = useMemo(() => {
+    const fitIn = (room: FitBox | null): SeatLayout =>
       layoutSeat({
-        box,
+        box: room,
         stacks: shown,
         facing,
         opened,
         marked,
         held: { creatures: creatureGhosts, other: otherGhosts, lands: landGhosts },
         least,
-        hold: held(),
-      }),
-    [box, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts, least],
-  )
+        hold: notchMoved ? undefined : held(),
+      })
+    const kept = withNotch(content, notch.kept)
+    const keptFit = fitIn(kept)
+    if (notch.kept === notch.covered) return { box: kept, alone: keptFit }
+    const covered = withNotch(content, notch.covered)
+    const coveredFit = fitIn(covered)
+    return (keptFit.fit?.cardWidth ?? 0) >= (coveredFit.fit?.cardWidth ?? 0)
+      ? { box: kept, alone: keptFit }
+      : { box: covered, alone: coveredFit }
+  }, [content, notch, shown, facing, opened, marked, creatureGhosts, otherGhosts, landGhosts, least])
   const aloneWidth = alone.fit?.cardWidth ?? null
   const layout = useMemo(
     () =>
