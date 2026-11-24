@@ -153,7 +153,6 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Rule { .. }
         | Effect::Regenerate { .. }
         | Effect::RemoveFromCombat { .. }
-        | Effect::R116Assimilate { .. }
         | Effect::R6400Block { .. }
         | Effect::R115ExchangeBlocks { .. }
         | Effect::R115ExchangeBlockers { .. }
@@ -183,7 +182,8 @@ fn reports(effect: &Effect) -> Reports {
         Effect::May { .. }
         | Effect::CastFromZone { .. }
         | Effect::PayAnyTimes { .. }
-        | Effect::R112GuessNumber { .. } => Reports::Itself,
+        | Effect::R112GuessNumber { .. }
+        | Effect::R116Assimilate { .. } => Reports::Itself,
         #[rustfmt::skip]
         Effect::LookAtTop { .. } | Effect::Choose { .. } | Effect::ChooseWithin { .. } | Effect::ChooseAtRandom { .. } | Effect::Encode { .. } | Effect::Haunt { .. }
         | Effect::R110ChooseSecretly(_) | Effect::R111KeepChosen(_) | Effect::R112NoteManaSpent | Effect::R112NoteChosen(_) | Effect::Remember { .. } | Effect::Forget { .. } | Effect::RememberValue { .. } | Effect::DelayedTrigger { .. } | Effect::Reflexive { .. }

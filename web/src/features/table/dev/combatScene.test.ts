@@ -1,11 +1,11 @@
-// Goal: the dev forecast agrees with the cards it is drawn for (damage is power, lethal damage goes to each blocker in turn and the rest to the last, marked damage counts, a creature dies at its toughness, a player at zero life), and the two dev scenes built on it hold what the screens must be shown: every outcome, a double block, an unblocked attacker and a lethal player in `forecast`, and the viewer on lethal damage with a double block by another defender in `block`, at every seat count and from either side of the table, all of it valid on the wire.
+// Goal: the dev forecast agrees with the cards it is drawn for (damage is power, lethal damage goes to each blocker in turn and the rest to the last, marked damage counts, a creature dies at its toughness, a player at zero life), and the two dev scenes built on it hold what the screens must be shown: every outcome, a double block, an unblocked attacker and a lethal player in `forecast`, and the viewer on lethal damage with a double block by another defender in `block`, at every seat count and from either side of the table, all of it valid on the wire; `forecast-walker` aims the unblocked attacker at a planeswalker that falls.
 import { describe, expect, it } from 'vitest'
 import { isCombatForecast, isStateView } from '@/net/parse'
 import type { AttackerView, CombatView, ObjectId, StateView } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { blockOutcome } from '../combat/outcome'
 import type { Outcome } from '../combat/outcome'
-import { forecastScene } from './combatScene'
+import { forecastScene, walkerScene, WALKER_LOYALTY } from './combatScene'
 import { devForecast } from './devForecast'
 import { fixtureGame } from './devGame'
 import { buildFixture } from './fixture'
@@ -60,7 +60,7 @@ describe('devForecast', () => {
       deals: [{ source: A, target: at0, amount: 4 }],
       receives: [],
     })
-    expect(forecast.creatures).toEqual([{ object: A, damage: 0, dies: false }])
+    expect(forecast.creatures).toEqual([{ object: A, damage: 0, dies: false, dealt: 4 }])
     expect(forecast.players).toEqual([{ player: 0, damage: 4, life: 20, life_after: 16, lethal: false }])
   })
 
@@ -114,6 +114,7 @@ describe('devForecast', () => {
       object: X,
       damage: 2,
       dies: true,
+      dealt: 1,
     })
   })
 
@@ -126,7 +127,7 @@ describe('devForecast', () => {
 
   it('kills a creature with no toughness without any damage', () => {
     const view = table({ [A]: [1, 0] }, [{ object: A, target: at0, blocked: false, blockers: [] }])
-    expect(devForecast(view).creatures).toEqual([{ object: A, damage: 0, dies: true }])
+    expect(devForecast(view).creatures).toEqual([{ object: A, damage: 0, dies: true, dealt: 1 }])
   })
 
   it.each<[string, number, number, number, boolean]>([
@@ -317,5 +318,21 @@ describe.each(COUNTS)('withBlockForecast at %i seats (prompt=block)', (seats) =>
     expect(forecast.attackers.find((attacker) => attacker.attacker === only?.object)?.blockers).toEqual(
       only?.blockers,
     )
+  })
+})
+
+describe.each(COUNTS)('walkerScene at %i seats', (seats) => {
+  const { view } = walkerScene(buildFixture({ seats }))
+  const forecast = must(view.combat_forecast)
+
+  it('aims the unblocked attacker at a planeswalker of the defender on the battlefield, which falls to it', () => {
+    expect(isStateView(view)).toBe(true)
+    expect(isCombatForecast(forecast)).toBe(true)
+    const free = must(view.combat.attackers.find((attacker) => !attacker.blocked))
+    const target = free.target
+    if (!('Planeswalker' in target)) throw new Error('the free attacker attacks a player')
+    expect(view.battlefield.cards).toContain(target.Planeswalker)
+    expect(forecast.attacked).toEqual([{ object: target.Planeswalker, damage: 6, dies: WALKER_LOYALTY <= 6 }])
+    expect(forecast.creatures.find((creature) => creature.object === free.object)?.dealt).toBe(6)
   })
 })

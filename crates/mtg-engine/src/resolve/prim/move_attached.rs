@@ -186,9 +186,11 @@ fn the_attachment_follows_its_card_into_the_batch() {
 fn a_name_is_bound_again_to_the_permanent_that_arrived() {
     let game = game();
     let (_, bound) = attached_move(&game, "Halo", "Bear");
-    let [(name, targets)] = bound.as_slice() else {
-        panic!("one name is bound again: {bound:?}");
+    let [(name, targets), (kept, arrivals)] = bound.as_slice() else {
+        panic!("one name is bound again and the arrival kept: {bound:?}");
     };
+    assert_eq!(kept, crate::resolve::R4007_ARRIVED);
+    assert_eq!(arrivals, targets);
     assert_eq!(name, "a");
     let [Target::Object(arrived)] = targets.as_slice() else {
         panic!("one object arrived");

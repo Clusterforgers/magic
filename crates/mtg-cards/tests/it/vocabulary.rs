@@ -103,6 +103,14 @@ fn names(list: &[&str]) -> BTreeSet<String> {
     r#"{"Spell":{"effects":[{"Exile":{"what":"This"}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
     &["Ability.Spell", "Condition.Performed", "Effect.Draw", "Effect.Exile", "Effect.If"]
 )]
+#[case::r121_if_you_cant_assimilate(
+    r#"{"Spell":{"effects":[{"R116Assimilate":{"what":"This"}},{"If":{"condition":{"Not":"Performed"},"then":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Condition.Performed", "Effect.Draw", "Effect.If", "Effect.R116Assimilate"]
+)]
+#[case::r121_if_they_fought(
+    r#"{"Spell":{"effects":[{"Fight":{"what":"This","with":"This"}},{"If":{"condition":"Performed","then":[{"Draw":{}}]}}]}}"#,
+    &["Ability.Spell", "Condition.Performed", "Effect.Draw", "Effect.Fight", "Effect.If"]
+)]
 #[case::the_monarch(
     r#"{"Spell":{"effects":[{"If":{"condition":{"Monarch":"You"},"then":[{"Draw":{}}]}}]}}"#,
     &["Ability.Spell", "Condition.Monarch", "Effect.Draw", "Effect.If"]

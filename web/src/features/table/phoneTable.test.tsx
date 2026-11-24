@@ -1,4 +1,4 @@
-// Goal: a phone held upright keeps its table to the essentials: the combat answers keep their words, the controls dock shows the auto-skip switch without its label (the switch keeps its name), the pod drops the untapped sources the lands already show, the hand dock is 104 to 140 px, the boards fold their lands into chips and draw no card under the phone floor, the strip is one line, the decision stands in the bar under the hand, and a row of choice cards never widens its box past the screen. The bar loses no line: priority's Stack chip stands beside a take-back and the stops, the Stops button beside a combat declaration's sentence, and a phone on its side lays choice cards out at a phone's sizes.
+// Goal: a phone held upright keeps its table to the essentials: the combat answers keep their words, the controls dock shows the auto-skip switch without its label (the switch keeps its name), the pod drops the untapped sources the lands already show, the hand dock is 104 to 140 px, the boards fold their lands into chips and draw no card under the phone floor, the strip is one line, the decision stands in the bar under the hand, and a row of choice cards never widens its box past the screen. The bar loses no line: priority's Stack chip stands beside a take-back and the stops, the Stops button beside a combat declaration's sentence and its total at the end of the last answers, and a phone on its side lays choice cards out at a phone's sizes.
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { act, render } from '@testing-library/react'
@@ -110,6 +110,22 @@ describe("the phone's bar loses no line", () => {
         'home-stops',
         'prompt-actions',
       ])
+    },
+  )
+
+  it.each(['attack', 'block'])(
+    'sets the combat total at the end of the last answers while %s is declared, labelled and drawn',
+    (prompt) => {
+      const { one } = phone(prompt)
+      const meter = one(
+        '[data-slot="decision-bar"] [data-slot="prompt-actions"] > [data-slot="combat-meter"]',
+      )
+      expect(meter).toHaveClass('order-last', 'min-w-0')
+      expect(meter).not.toHaveClass('basis-full')
+      const total = one('[data-slot="forecast-total"]')
+      expect(meter).toContainElement(total)
+      expect(total).toHaveAttribute('role', 'group')
+      expect(total).toHaveAttribute('aria-label', 'Combat outcome')
     },
   )
 

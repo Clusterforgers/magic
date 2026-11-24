@@ -71,6 +71,16 @@ pub struct CreatureForecast {
     /// Whether state-based actions take it off the battlefield once the damage is dealt: lethal damage or deathtouch,
     /// unless it is indestructible or a shield regenerates it (an effect may send it to exile instead of the graveyard).
     pub dies: bool,
+    /// Combat damage it is expected to deal, to every recipient together.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
+    pub dealt: u32,
+}
+
+/// True for 0, so a creature that deals nothing leaves `dealt` out.
+#[allow(clippy::trivially_copy_pass_by_ref)]
+fn is_zero(amount: &u32) -> bool {
+    *amount == 0
 }
 
 /// What combat damage does to one player.
@@ -99,6 +109,11 @@ pub struct CombatForecast {
     pub creatures: Vec<CreatureForecast>,
     /// Every player an attacker is aimed at and every player who gains life from the damage, by seat.
     pub players: Vec<PlayerForecast>,
+    /// Every planeswalker an attacker is aimed at that is no creature, with the damage it takes and whether it leaves
+    /// the battlefield (`dealt` is 0).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<CreatureForecast>>", optional))]
+    pub attacked: Vec<CreatureForecast>,
     /// The numbers take the first option of each question the replacement effects would ask a player (the order they
     /// apply in, the damage a shield stops first), and another answer would change them.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
@@ -175,11 +190,17 @@ fn forecast_of(state: &GameState, run: &Run) -> CombatForecast {
 
     let mut involved: BTreeSet<ObjectId> = BTreeSet::new();
     let mut attacked: BTreeSet<PlayerId> = BTreeSet::new();
+    let mut walkers: BTreeSet<ObjectId> = BTreeSet::new();
     for attacker in state.combat().attackers() {
         involved.insert(attacker.object());
         involved.extend(attacker.blockers());
-        if let AttackTarget::Player(player) = attacker.target() {
-            attacked.insert(player);
+        match attacker.target() {
+            AttackTarget::Player(player) => {
+                attacked.insert(player);
+            }
+            AttackTarget::Planeswalker(object) => {
+                walkers.insert(object);
+            }
         }
     }
     for (_, target) in run.dealt.keys() {
@@ -213,6 +234,10 @@ fn forecast_of(state: &GameState, run: &Run) -> CombatForecast {
         players: attacked
             .into_iter()
             .filter_map(|id| player_forecast(state, id, run))
+            .collect(),
+        attacked: walkers
+            .into_iter()
+            .filter_map(|id| walker_forecast(state, id, run))
             .collect(),
         depends_on_choice: false,
     }
@@ -326,6 +351,13 @@ impl Run {
         self.dealt.get(&(source, target)).copied().unwrap_or(0)
     }
 
+    fn total_from(&self, source: ObjectId) -> u32 {
+        self.dealt
+            .iter()
+            .filter(|((from, _), _)| *from == source)
+            .fold(0u32, |sum, (_, amount)| sum.saturating_add(*amount))
+    }
+
     fn total_to(&self, target: DamageTarget) -> u32 {
         self.dealt
             .iter()
@@ -392,6 +424,21 @@ fn creature_forecast(state: &GameState, id: ObjectId, run: &Run) -> Option<Creat
         object: id,
         damage: run.total_to(DamageTarget::Object(id)),
         dies: run.left.contains(&id),
+        dealt: run.total_from(id),
+    })
+}
+
+/// An attacked planeswalker's damage and fate; `None` for one that is also a creature (it is among the creatures) and
+/// for one that is gone.
+fn walker_forecast(state: &GameState, id: ObjectId, run: &Run) -> Option<CreatureForecast> {
+    if characteristics(state, id)?.is_creature() {
+        return None;
+    }
+    Some(CreatureForecast {
+        object: id,
+        damage: run.total_to(DamageTarget::Object(id)),
+        dies: run.left.contains(&id),
+        dealt: 0,
     })
 }
 

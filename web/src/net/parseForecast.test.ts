@@ -22,7 +22,7 @@ function put(node: unknown, path: readonly (string | number)[], value: unknown):
 
 /**
  * Attacker 1 is blocked by 2 and 3 (a double block: 1 and 2 die), attacker 4 is blocked by 5 (nobody dies) and
- * attacker 6 is not blocked and takes seat 0 to a lethal total.
+ * attacker 6 is not blocked and takes seat 0 to a lethal total; planeswalker 9, which 4 attacks, takes nothing.
  */
 const FORECAST: CombatForecast = {
   attackers: [
@@ -58,14 +58,15 @@ const FORECAST: CombatForecast = {
     },
   ],
   creatures: [
-    { object: 1, damage: 4, dies: true },
-    { object: 2, damage: 2, dies: true },
-    { object: 3, damage: 2, dies: false },
-    { object: 4, damage: 1, dies: false },
-    { object: 5, damage: 1, dies: false },
-    { object: 6, damage: 0, dies: false },
+    { object: 1, damage: 4, dies: true, dealt: 4 },
+    { object: 2, damage: 2, dies: true, dealt: 2 },
+    { object: 3, damage: 2, dies: false, dealt: 2 },
+    { object: 4, damage: 1, dies: false, dealt: 1 },
+    { object: 5, damage: 1, dies: false, dealt: 1 },
+    { object: 6, damage: 0, dies: false, dealt: 7 },
   ],
   players: [{ player: 0, damage: 7, life: 5, life_after: -2, lethal: true }],
+  attacked: [{ object: 9, damage: 0, dies: false }],
 }
 
 const events = (): Record<string, unknown> => {
@@ -196,6 +197,11 @@ describe('a combat forecast in a table view', () => {
     ['a player life as text', ['players', '0', 'life'], '5'],
     ['life after as null', ['players', '0', 'life_after'], null],
     ['lethal as a number', ['players', '0', 'lethal'], 1],
+    ['dealt as text', ['creatures', '0', 'dealt'], '4'],
+    ['dealt as negative', ['creatures', '1', 'dealt'], -2],
+    ['attacked as an object', ['attacked'], { object: 9 }],
+    ['an attacked planeswalker without its damage', ['attacked', '0', 'damage'], undefined],
+    ['an attacked planeswalker whose dies is text', ['attacked', '0', 'dies'], 'no'],
   ]
 
   it.each(wrongTypes)('with %s is a bad_shape error', (_what, path, value) => {

@@ -200,19 +200,37 @@ pub(crate) fn provided_here(
     }
     let zone = zone_kind(object.zone());
     // A keyword a static ability gave to the card (a hand's cycling, a graveyard's flashback) adds its abilities too.
-    let abilities = match state.layers().get(object.id()) {
-        Some(held) => held
-            .abilities
-            .iter()
-            .map(|held| (held.address, Arc::clone(&held.body)))
-            .collect(),
-        None => printed_and_provided(object),
+    let Some(held) = state.layers().get(object.id()) else {
+        // What `printed_and_provided` lists less the printed abilities, without copying those: this runs for every
+        // card outside the battlefield on every event.
+        let mut found = Vec::new();
+        for (address, rules) in printed(object) {
+            if let Ability::Keyword(keyword) = &**rules {
+                found.extend(
+                    provided(
+                        object.id(),
+                        keyword,
+                        AbilitySource::PrintedKeyword(address.ability),
+                    )
+                    .into_iter()
+                    .filter(|(_, rules)| works_from(rules) == Some(zone)),
+                );
+            }
+        }
+        found.extend(
+            crate::r111_way_riders::r111_riders(object)
+                .into_iter()
+                .filter(|(_, rules)| works_from(rules) == Some(zone)),
+        );
+        return found;
     };
-    abilities
-        .into_iter()
-        .filter(|(address, rules)| {
-            !matches!(address.source, AbilitySource::Printed) && works_from(rules) == Some(zone)
+    held.abilities
+        .iter()
+        .filter(|held| {
+            !matches!(held.address.source, AbilitySource::Printed)
+                && works_from(&held.body) == Some(zone)
         })
+        .map(|held| (held.address, Arc::clone(&held.body)))
         .collect()
 }
 
@@ -1338,5 +1356,54 @@ mod tests {
             }
         }
         assert!(offenders.is_empty(), "{offenders:#?}");
+    }
+
+    /// A card with cycling, flying, an activated ability and unearth: keywords that work from a hand, the battlefield
+    /// and a graveyard.
+    fn cycler() -> Arc<CardDefinition> {
+        Arc::new(
+            CardDefinition::new("Cycler")
+                .with_type(CardType::Creature)
+                .with_power_toughness(1, 1)
+                .with_rules(Ability::Keyword(Keyword::Cycling(Cost(Vec::new()))))
+                .with_rules(Ability::Keyword(Keyword::Flying))
+                .with_rules(activated())
+                .with_rules(Ability::Keyword(Keyword::Unearth(Cost(Vec::new())))),
+        )
+    }
+
+    #[rstest]
+    #[case::in_hand(false, 1)]
+    #[case::in_a_graveyard(true, 1)]
+    fn the_abilities_provided_outside_the_battlefield_are_the_keywords_own_that_work_there(
+        #[case] graveyard: bool,
+        #[case] expected: usize,
+    ) {
+        let mut game = state(vec![vec![cycler()], vec![]], vec![vec![], vec![]]);
+        let id = game.zone(Zone::Hand(ME))[0];
+        if graveyard {
+            let discarded = Event::ZoneChanged {
+                object: id,
+                from: Zone::Hand(ME),
+                to: Zone::Graveyard(ME),
+                cause: ZoneCause::Discarded,
+            };
+            fold(&mut game, &[discarded]);
+        }
+        let object = game.object(id).unwrap();
+        let zone = zone_kind(object.zone());
+        let reference: Vec<AbilityRef> = printed_and_provided(object)
+            .into_iter()
+            .filter(|(address, rules)| {
+                !matches!(address.source, AbilitySource::Printed) && works_from(rules) == Some(zone)
+            })
+            .map(|(address, _)| address)
+            .collect();
+        let found: Vec<AbilityRef> = provided_here(&game, object)
+            .into_iter()
+            .map(|(address, _)| address)
+            .collect();
+        assert_eq!(found, reference);
+        assert_eq!(found.len(), expected);
     }
 }

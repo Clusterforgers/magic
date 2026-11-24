@@ -20,6 +20,11 @@ creatures: Array<CreatureForecast>,
  */
 players: Array<PlayerForecast>, 
 /**
+ * Every planeswalker an attacker is aimed at that is no creature, with the damage it takes and whether it leaves
+ * the battlefield (`dealt` is 0).
+ */
+attacked?: Array<CreatureForecast>, 
+/**
  * The numbers take the first option of each question the replacement effects would ask a player (the order they
  * apply in, the damage a shield stops first), and another answer would change them.
  */

@@ -1,4 +1,4 @@
-/** Goal: the life each seat would have after combat damage is one small chip beside its life figure (the change in red or green, "0" when all is blocked, a skull when lethal) that takes no row of its own, is named by a sentence, has the forecast's sentences as its tooltip, and is gone while there is no forecast. */
+/** Goal: the life each seat would have after combat damage is one small chip beside its life figure or at the end of its name row (the change in red or green, "0" when all is blocked, a skull when lethal) that takes no row of its own, is named by a sentence, has the forecast's sentences as its tooltip, and is gone while there is no forecast. */
 import { describe, expect, it } from 'vitest'
 import type { PlayerForecast } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
@@ -75,11 +75,13 @@ describe('the chip on a seat panel', () => {
     expect(chip.title.split('\n').length).toBeGreaterThan(1)
   })
 
-  it('sits inside the life area of the pod and gives it no row', () => {
+  it('sits beside the life figure, or at the end of the name row of a pod whose life shares a row with its counts, and gives it no row', () => {
     const table = renderForecastTable({ seats: 2 })
     const chip = must(table.life(0))
     const pod = must(chip.closest('section[data-seat]'))
-    expect(must(chip.parentElement).contains(pod.querySelector('p'))).toBe(true)
+    const nameRow = pod.querySelector('[data-slot="pod-name-row"]')
+    const besideLife = must(chip.parentElement).contains(pod.querySelector('p'))
+    expect(besideLife || (nameRow?.contains(chip) ?? false)).toBe(true)
     expect(pod.querySelector('[data-slot="pod-status"]')?.contains(chip) ?? false).toBe(false)
   })
 

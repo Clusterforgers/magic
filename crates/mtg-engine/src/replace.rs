@@ -3776,6 +3776,7 @@ impl Pass<'_> {
                 r109_embalmed,
                 r707_when_you_do,
                 r115_turned_up,
+                r121_copied_counters,
             } => {
                 let embalmed = (!r109_embalmed.is_empty() && self.r109_embalmed(object))
                     .then_some(r109_embalmed.as_slice());
@@ -3809,6 +3810,9 @@ impl Pass<'_> {
                         r707_when_you_do,
                     );
                     self.r305c_copy_counters(at, candidate, object, copied, counters, &applied)?;
+                    if *r121_copied_counters {
+                        self.r121_copied_counters(at, candidate, object, copied, &applied)?;
+                    }
                 }
             }
             _ => {}
@@ -4295,6 +4299,35 @@ impl Pass<'_> {
                 continue;
             }
             self.enter_with_counters(at, candidate, object, &entry.counter, &entry.count, applied)?;
+        }
+        Ok(())
+    }
+
+    /// The permanent entering as a copy enters with as many more counters of each kind as the copied permanent has as
+    /// it is copied; a copied object that has left the battlefield gives none.
+    fn r121_copied_counters(
+        &mut self,
+        at: usize,
+        candidate: &Candidate,
+        object: ObjectId,
+        copied: ObjectRef,
+        applied: &[Origin],
+    ) -> Result<(), EngineError> {
+        let held: Vec<(CounterKind, u32)> = self
+            .state
+            .object(copied.id)
+            .filter(|found| found.counter() == copied.counter)
+            .and_then(|found| found.permanent())
+            .map(|permanent| {
+                permanent
+                    .counters()
+                    .map(|(kind, count)| (kind.clone(), count))
+                    .collect()
+            })
+            .unwrap_or_default();
+        for (kind, count) in held {
+            let count = mtg_cards::value::Amount::Fixed(i32::try_from(count).unwrap_or(i32::MAX));
+            self.enter_with_counters(at, candidate, object, &kind, &count, applied)?;
         }
         Ok(())
     }

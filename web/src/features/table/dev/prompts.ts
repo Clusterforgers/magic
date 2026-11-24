@@ -17,7 +17,13 @@ import type {
   Step,
   YieldUntil,
 } from '@/protocol/generated'
-import { forecastChoiceScene, forecastScene, sidesAttackScene, withBlockForecast } from './combatScene'
+import {
+  forecastChoiceScene,
+  forecastScene,
+  sidesAttackScene,
+  walkerScene,
+  withBlockForecast,
+} from './combatScene'
 import { abilitiesTable, withAbilities } from './abilityScene'
 import { assignBandedDamage, assignDamage } from './damagePrompt'
 import { ANNOUNCE_PROMPTS } from './announcePrompts'
@@ -28,6 +34,7 @@ import { lookTopMoment } from './lookTopScene'
 import { withTopCard, withTopCast } from './topCardScene'
 import { withBlocked } from './blockedScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
+import { TWIN_PROMPTS, TWIN_TABLES } from './twinScene'
 import {
   payLotus,
   payLotusSix,
@@ -505,6 +512,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   // The viewer holds priority in a declare-blockers step whose blocks are made: the forecast is all there is to read.
   forecast: priority,
   'forecast-choice': priority,
+  'forecast-walker': priority,
   // The controls of the Priority prompt at other moments (`DEV_TABLES`): the viewer's turn, its last window, a quiet one.
   'priority-main': priority,
   'priority-end': priority,
@@ -576,6 +584,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-cycling': payCycling,
   'commander-return': commanderReturn,
   ...ASK_PROMPTS,
+  ...TWIN_PROMPTS,
   ...EFFECT_PROMPTS,
   ...LOOKED_PROMPTS,
   ...ANNOUNCE_PROMPTS,
@@ -612,6 +621,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   forecast: forecastScene,
   'attack-sides': sidesAttackScene,
   'forecast-choice': forecastChoiceScene,
+  'forecast-walker': walkerScene,
   'pay-hybrid': hybridTable,
   'pay-low-life': hybridTable,
   'pay-sources': paySourcesTable,
@@ -658,6 +668,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'pass-turn': quietMoment('Upkeep', false, false),
   'commander-return': commanderReturnTable,
   ...ASK_TABLES,
+  ...TWIN_TABLES,
   ...EFFECT_MOMENTS,
   ...LOOKED_MOMENTS,
   'look-top': lookTopMoment,

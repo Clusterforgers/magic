@@ -1869,12 +1869,17 @@ impl<'a> Scope<'a> {
     }
 
     /// The objects the reference named that have moved once since and are now in `zone`: the card they became (CR 400.7).
-    /// An object that moved twice, moved to another zone or is gone is nobody.
+    /// A permanent a move of this resolution put there under a name that follows it counts as it is. An object that moved
+    /// twice, moved to another zone or is gone is nobody.
     fn arrived(&self, of: &Ref, zone: ZoneKind) -> Result<Vec<Target>, ResolveError> {
         let mut found: Vec<Target> = Vec::new();
+        // A name a move of this resolution renewed already names the permanent that arrived.
+        let moved_on = self.bindings.get(crate::resolve::R4007_ARRIVED);
         for named in self.objects(of)? {
             if let Some(now) = self.state.object(named.id).filter(|now| {
-                now.counter() == named.counter + 1
+                (now.counter() == named.counter + 1
+                    || (now.counter() == named.counter
+                        && moved_on.is_some_and(|kept| kept.contains(&Target::Object(named)))))
                     && now.kind() != ObjectKind::Ability
                     && zone_kind(now.zone()) == zone
             }) && !found.contains(&Target::Object(now.reference()))
@@ -5117,6 +5122,37 @@ mod tests {
         assert_eq!(found.is_empty(), nobody);
         if let [now] = found.as_slice() {
             assert_eq!(now.counter, ogre.counter + 1);
+        }
+    }
+
+    #[rstest]
+    #[case::kept_as_arrived(true, ZoneKind::Battlefield, false)]
+    #[case::never_moved(false, ZoneKind::Battlefield, true)]
+    #[case::kept_but_another_zone(true, ZoneKind::Graveyard, true)]
+    fn a_name_a_move_renewed_still_finds_the_permanent_that_arrived(
+        #[case] kept: bool,
+        #[case] zone: ZoneKind,
+        #[case] nobody: bool,
+    ) {
+        let game = game();
+        let ogre = named(&game, "Ogre", 1);
+        let mut bound: Bindings = [("it".to_owned(), vec![Target::Object(ogre)])].into();
+        if kept {
+            bound.insert(
+                crate::resolve::R4007_ARRIVED.to_owned(),
+                vec![Target::Object(ogre)],
+            );
+        }
+        let mut scope = scope(&game);
+        scope.bindings = &bound;
+        let arrived = Ref::Arrived {
+            of: Box::new(Ref::Bound("it".to_owned())),
+            zone,
+        };
+        let found = scope.objects(&arrived).unwrap();
+        assert_eq!(found.is_empty(), nobody);
+        if let [now] = found.as_slice() {
+            assert_eq!(*now, ogre);
         }
     }
 

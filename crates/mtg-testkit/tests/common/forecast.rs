@@ -91,12 +91,23 @@ pub fn disagreement(
         ));
     }
 
-    for creature in &forecast.creatures {
+    for creature in forecast.creatures.iter().chain(&forecast.attacked) {
         let real = to_objects.get(&creature.object).copied().unwrap_or(0);
         if creature.damage != real {
             return Some(format!(
                 "{:?} takes {} in the forecast, {real} for real",
                 creature.object, creature.damage
+            ));
+        }
+        let real_dealt: u32 = dealt
+            .iter()
+            .filter(|(source, _, _)| *source == creature.object)
+            .map(|(_, _, amount)| amount)
+            .sum();
+        if creature.dealt != real_dealt {
+            return Some(format!(
+                "{:?} deals {} in the forecast, {real_dealt} for real",
+                creature.object, creature.dealt
             ));
         }
     }

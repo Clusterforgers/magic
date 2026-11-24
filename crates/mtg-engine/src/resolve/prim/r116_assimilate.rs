@@ -12,6 +12,7 @@ use mtg_cards::refs::Ref;
 use mtg_cards::value::{Amount, CounterKind};
 use mtg_core::card::{CardType, Subtype};
 
+use super::may::performed_name;
 use super::{continuous, move_to, moved_as, put_counters, wrong_effect};
 use crate::choose::Target;
 use crate::resolve::{Cx, Next, ResolveError, Run};
@@ -45,8 +46,17 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         return Err(wrong_effect("R116Assimilate"));
     };
     let (cards, permanents) = r116_markers(cx);
-    if cx.resolving.bindings.contains_key(&cards) {
+    if let Some(taken) = cx.resolving.bindings.get(&cards) {
+        // "If you can't" after it reads whether anything was assimilated.
+        let who = if taken.is_empty() {
+            Vec::new()
+        } else {
+            vec![Target::Player(cx.scope.controller)]
+        };
         let mut run = continuous::run(cx, &r116_borg(Ref::Bound(cards)))?;
+        if let Run::Done { bound, .. } = &mut run {
+            bound.push((performed_name(cx.resolving.position()), who));
+        }
         if cx.resolving.bindings.contains_key(&permanents)
             && let (Run::Done { events, .. }, Run::Done { events: more, .. }) = (
                 &mut run,

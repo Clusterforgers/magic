@@ -1,0 +1,56 @@
+{
+  "oracle_id": "746e494e-fdc4-415e-8a82-d35e11ebeccb",
+  "name": "Zero, Incorporeal Sensate",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Zero, Incorporeal Sensate",
+      "oracle_fingerprint": "9e7d22123ea5afc4d852ddc34ac703fa",
+      "abilities": [
+        { "Keyword": "Lifelink" },
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "LookAtHand": { "of": { "Target": 0 } } },
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": { "Target": 0 } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "as": "card"
+                      }
+                    },
+                    { "Exile": { "what": { "Bound": "card" }, "as": "exiled" } },
+                    {
+                      "Rule": {
+                        "rule": {
+                          "MayCast": {
+                            "who": { "OwnerOf": { "Bound": "exiled" } },
+                            "from": "Exile",
+                            "only": { "Bound": "exiled" },
+                            "play": true,
+                            "additional": "{2}"
+                          }
+                        },
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

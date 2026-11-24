@@ -233,9 +233,11 @@ fn w2b_each_of_targets(r: &mut Reader<'_>) -> Option<Ref> {
 /// on each creature you control."
 pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     r.need("put")?;
+    // "up to three lore counters": a number from none to the count, chosen as the step resolves.
+    let up_to = r.words("up to");
     // "a number of +1/+1 counters on ~ equal to the number of creatures you control": the count follows the object.
-    let equal = r.words("a number of");
-    let (counter, count) = if r.ability && r.triggered && r.words("that many") {
+    let equal = !up_to && r.words("a number of");
+    let (counter, count) = if !up_to && r.ability && r.triggered && r.words("that many") {
         let counter = kind(r)?;
         r.need("counters")?;
         (counter, Amount::Triggering)
@@ -265,6 +267,10 @@ pub fn put(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         // "Put a +1/+1 counter on target creature for each Elf you control."
         amounts::counted(r, count)?
     };
+    if up_to {
+        matches!(count, Amount::Fixed(n) if n >= 1).then_some(())?;
+        return Some(super::r121_01_up_to::r121_up_to_steps(on, counter, count));
+    }
     Some(vec![Effect::PutCounters { on, counter, count }])
 }
 

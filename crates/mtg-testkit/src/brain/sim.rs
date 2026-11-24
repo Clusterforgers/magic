@@ -161,7 +161,26 @@ impl Settings {
         }
         self
     }
+
+    /// These settings without a clock, the tree search's clock turned into the work it buys at a live table
+    /// ([`PACED_WORK`] answers a second, [`Deep::work`]): a simulator plays as a live table does, and its answers
+    /// replay with the seed.
+    #[must_use]
+    pub fn paced(self) -> Settings {
+        let mut paced = self.untimed();
+        if let (Some(deep), Some(time)) = (&mut paced.deep, self.deep.and_then(|deep| deep.time)) {
+            // In range: a clock of a few seconds at some thousand answers a second.
+            #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+            let work = (time.as_secs_f64() * PACED_WORK).round().max(1.0) as u32;
+            deep.work = Some(work);
+        }
+        paced
+    }
 }
+
+/// The answers the simulations of a search apply in one second of its clock in a Delves boss fight (about 1,300 on
+/// small and crowded boards alike): what a paced search does in place of its clock ([`Settings::paced`]).
+pub const PACED_WORK: f64 = 1300.0;
 
 /// How far a simulation plays on.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

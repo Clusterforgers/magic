@@ -2,7 +2,7 @@
 //! delve_sim -- <mode> [games] [heroes] [hero level] [first seed] [threads] [heat] [depth] [modifier]`, a mode
 //! `fights` (each boss against a fresh party) or `runs` (whole runs, life carried and loot taken), a level `easy`,
 //! `normal`, `hard` or `veryhard`. The heroes play the four fixture Commander decks in turn;
-//! every game is untimed, so a result replays with its seed.
+//! every game is seeded and paced as at a live table, so a result replays with its seed.
 //! The depth is the bosses defeated before the fight; the modifier is `rolled`, `none` or a modifier's id. Each boss
 //! gets one `key=value` line: wins, the round each fight ended in, the share that reached each phase, turns, minutes.
 //! A run plays the newest content generation (`DELVE_SIM_CONTENT` sets another); `DELVE_SIM_THEME` picks the theme
@@ -26,7 +26,7 @@ use mtg_cards::CardDefinition;
 use mtg_core::ids::PlayerId;
 use mtg_engine::format::Commander;
 use mtg_engine::{GameResult, GameSetup};
-use mtg_testkit::brain::{Level, SeatBrain, brain};
+use mtg_testkit::brain::{Level, SeatBrain, brain, paced_brain};
 use mtg_testkit::corpus;
 use mtg_testkit::fixture_decks::{FixtureDeck, fixture_deck};
 use mtg_testkit::harness::{PlayOptions, play_brains};
@@ -205,6 +205,67 @@ fn dropped(plan: &FightPlan) -> FightPlan {
     plan
 }
 
+/// The decisions of one seat and kind: how many, their seconds in all and at most, the tree searches, their
+/// rollouts and the answers the searches applied.
+type Spent = (u64, f64, f64, u64, u64, u64);
+
+/// What the decisions every seat answered cost, by seat and decision kind (`DELVE_SIM_PROFILE`).
+static PROFILE: Mutex<BTreeMap<(usize, String), Spent>> = Mutex::new(BTreeMap::new());
+
+/// A brain that adds the time its inner brain takes to [`PROFILE`].
+struct Profiled {
+    seat: usize,
+    inner: Box<dyn SeatBrain>,
+}
+
+impl SeatBrain for Profiled {
+    fn choose(
+        &mut self,
+        decision: &mtg_engine::Decision,
+        table: Option<&mtg_engine::Engine>,
+    ) -> mtg_engine::decision::Answer {
+        let before = (
+            mtg_testkit::brain::deep::tally().0,
+            mtg_testkit::brain::deep::iterations(),
+            mtg_testkit::bot::applied(),
+        );
+        let t = Instant::now();
+        let answer = self.inner.choose(decision, table);
+        let secs = t.elapsed().as_secs_f64();
+        let kind = format!("{:?}", decision.kind);
+        let kind = kind.split(['(', ' ', '{']).next().unwrap_or("").to_owned();
+        let mut profile = PROFILE.lock().unwrap();
+        let entry = profile.entry((self.seat, kind)).or_default();
+        entry.0 += 1;
+        entry.1 += secs;
+        entry.2 = entry.2.max(secs);
+        entry.3 += mtg_testkit::brain::deep::tally().0 - before.0;
+        entry.4 += mtg_testkit::brain::deep::iterations() - before.1;
+        entry.5 += mtg_testkit::bot::applied() - before.2;
+        answer
+    }
+
+    fn set_budget(&mut self, share: f64) {
+        self.inner.set_budget(share);
+    }
+
+    fn set_asked(&mut self, at: Instant) {
+        self.inner.set_asked(at);
+    }
+}
+
+/// The brain of `seat`: paced as at a live table ([`paced_brain`]); `DELVE_SIM_TIMED` plays on the clock instead and
+/// `DELVE_SIM_UNPACED` searches the level's whole count.
+fn sim_brain(level: Level, seed: u64, seat: PlayerId) -> Box<dyn SeatBrain> {
+    if std::env::var_os("DELVE_SIM_TIMED").is_some() {
+        brain(level, seed, seat, true)
+    } else if std::env::var_os("DELVE_SIM_UNPACED").is_some() {
+        brain(level, seed, seat, false)
+    } else {
+        paced_brain(level, seed, seat)
+    }
+}
+
 /// Plays one planned fight.
 fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> Fought {
     let plan = &dropped(plan);
@@ -217,7 +278,12 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                 None => heroes,
                 Some(_) => boss_level(plan.boss.brain),
             };
-            brain(level, seed, player, false)
+            let inner = sim_brain(level, seed, player);
+            if std::env::var_os("DELVE_SIM_PROFILE").is_some() {
+                Box::new(Profiled { seat, inner }) as Box<dyn SeatBrain>
+            } else {
+                inner
+            }
         })
         .collect();
     let options = PlayOptions {
@@ -259,6 +325,23 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                         }
                     )),
                 );
+                for at in 0..plan.seats() {
+                    let p = PlayerId::from_index(at);
+                    println!(
+                        "seed {seed}: seat {at} lands {} spells {} attackers {}",
+                        count(&|e| matches!(e, Event::LandPlayed { player, .. } if *player == p)),
+                        count(&|e| matches!(e, Event::SpellCast { player, .. } if *player == p)),
+                        outcome
+                            .events
+                            .iter()
+                            .map(|e| match e {
+                                Event::AttackersDeclared { player, attackers } if *player == p =>
+                                    attackers.len(),
+                                _ => 0,
+                            })
+                            .sum::<usize>(),
+                    );
+                }
             }
             let state = mtg_engine::replay(&setup_of(plan, cards, seed), &outcome.events);
             if let Ok(engine) = &state
@@ -581,6 +664,18 @@ fn main() {
                         if let Some(modifier) = &modifier {
                             plan.boss.modifier.clone_from(modifier);
                         }
+                        // `DELVE_SIM_LEVEL` plays the innate and leveled phases at that level, the relics kept.
+                        if let Ok(level) = std::env::var("DELVE_SIM_LEVEL") {
+                            let level: u8 = level.parse().unwrap();
+                            let at = |id: &str| {
+                                let leveled = mtg_campaign::innate::innate_id(id, level);
+                                if content.cards.contains_key(&leveled) { leveled } else { id.to_owned() }
+                            };
+                            plan.boss.innate = at(&spec.innate);
+                            for ((id, _), base) in plan.boss.round_phases.iter_mut().zip(&spec.round_phases) {
+                                *id = at(base);
+                            }
+                        }
                         let t = Instant::now();
                         let fought = fight(&plan, &vec![Vec::new(); heroes], seed, hero_level);
                         // `DELVE_SIM_SEEDS` prints a line per fight.
@@ -689,6 +784,13 @@ fn main() {
         },
         started.elapsed().as_secs_f64()
     );
+    for ((seat, kind), (count, secs, most, searches, iterations, applied)) in
+        PROFILE.lock().unwrap().iter()
+    {
+        println!(
+            "profile seat={seat} kind={kind} count={count} secs={secs:.1} max={most:.2} searches={searches} iterations={iterations} applied={applied}"
+        );
+    }
     let table = fights.lock().unwrap();
     let mut all = Tally::default();
     for (boss, tally) in table.iter() {

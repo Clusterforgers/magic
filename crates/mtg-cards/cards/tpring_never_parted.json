@@ -1,0 +1,59 @@
+{
+  "oracle_id": "29775eb6-f658-4839-a434-2fa063069f1c",
+  "name": "T'Pring, Never Parted",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "T'Pring, Never Parted",
+      "oracle_fingerprint": "3b850c391c755e5660db00b2ffcc4158",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }] } },
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] } }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    { "Fight": { "what": { "Target": 0 }, "with": { "Target": 1 } } },
+                    {
+                      "If": {
+                        "condition": "Performed",
+                        "then": [
+                          {
+                            "DelayedTrigger": {
+                              "when": {
+                                "ZoneChange": {
+                                  "what": [
+                                    {
+                                      "AnyOf": [
+                                        { "Is": { "Target": 0 } },
+                                        { "Is": { "Target": 1 } }
+                                      ]
+                                    }
+                                  ],
+                                  "from": "Battlefield",
+                                  "to": "Graveyard"
+                                }
+                              },
+                              "once": false,
+                              "this_turn": true,
+                              "effects": [{ "Draw": {} }]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
