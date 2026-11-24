@@ -469,6 +469,27 @@ fn preset_state(
     }
 }
 
+/// How many cards each seat's starting deck holds: its library, its commanders and the deck cards a scenario starts
+/// elsewhere (hand, battlefield, graveyard).
+fn r119_deck_sizes(setup: &GameSetup) -> BTreeMap<PlayerId, u32> {
+    setup
+        .players
+        .iter()
+        .enumerate()
+        .map(|(seat, player)| {
+            let cards = player.library.len()
+                + player.hand.len()
+                + player.battlefield.len()
+                + player.graveyard.len()
+                + player.commanders.len();
+            (
+                PlayerId::from_index(seat),
+                u32::try_from(cards).unwrap_or(u32::MAX),
+            )
+        })
+        .collect()
+}
+
 /// The seat `owner` as its setup describes it: its life (the format's unless it names one), keywords and counters.
 fn starting_player(
     owner: PlayerId,
@@ -706,7 +727,10 @@ impl GameState {
             day_night: None,
             seat_turns: std::collections::BTreeMap::new(),
             cast_names: std::collections::BTreeMap::new(),
-            r5522: Box::default(),
+            r5522: Box::new(crate::r5522_history::R5522Game {
+                r119_deck_sizes: r119_deck_sizes(setup),
+                ..Default::default()
+            }),
             r111: Box::default(),
             rmt8_turns: crate::rmt8_turns::turns_before(turn.0, first_player, seats),
             rmt8_lives: lives,

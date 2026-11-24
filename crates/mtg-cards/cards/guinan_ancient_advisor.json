@@ -1,0 +1,36 @@
+{
+  "oracle_id": "b93915ac-744b-4b59-8f16-ae68d6d898c6",
+  "name": "Guinan, Ancient Advisor",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Guinan, Ancient Advisor",
+      "oracle_fingerprint": "c7d9d4e7560303eef89256ef3f62bca8",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "effects": [
+              {
+                "PutCounters": {
+                  "on": {
+                    "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "EnteredThisTurn"]
+                  },
+                  "counter": "+1/+1"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "Compare": { "left": { "R119PutThisWay": "+1/+1" }, "op": "Ge", "right": 2 }
+                  },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

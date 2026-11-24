@@ -2325,6 +2325,9 @@ impl<'a> Scope<'a> {
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
             Pred::Dungeon => state.r376_is_dungeon(reference.id),
+            Pred::R119CanBeBeamedUp => {
+                !crate::characteristics::r119_cant_be_beamed_up(state, reference.id)
+            }
             Pred::R112Modal => {
                 seen.zone == Zone::Stack
                     && seen.kind != ObjectKind::Ability
@@ -3061,6 +3064,7 @@ impl<'a> Scope<'a> {
             }
             Amount::R110MostDamageToOne => self.r110_most_damage_to_one(),
             Amount::R110RemovedThisWay(counter) => self.r110_removed_this_way(counter)?,
+            Amount::R119PutThisWay(counter) => self.r119_put_this_way(counter)?,
             Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
             Amount::CastSameNameThisGame(who) => {
                 let name = self
@@ -3189,6 +3193,19 @@ impl<'a> Scope<'a> {
             own,
             self.bindings,
             super::prim::r110_remove_put::R110_REMOVED,
+            counter,
+        )?;
+        Ok(found.iter().map(|(_, count)| i64::from(*count)).sum())
+    }
+
+    /// How many counters of the kind the steps before put on objects this way (`Amount::R119PutThisWay`).
+    fn r119_put_this_way(&self, counter: &CounterKind) -> Result<i64, ResolveError> {
+        let none = Vec::new();
+        let own = self.own_run().map_or(&none, |run| &run.r110_put);
+        let found = super::prim::r110_remove_put::r110_this_way(
+            own,
+            self.bindings,
+            super::prim::r110_remove_put::R110_PUT,
             counter,
         )?;
         Ok(found.iter().map(|(_, count)| i64::from(*count)).sum())
@@ -4179,6 +4196,7 @@ impl<'a> Scope<'a> {
                 named > 0
                     && self.count_of(subject, selector)? == i64::try_from(named).unwrap_or(i64::MAX)
             }
+            Condition::R119ShareCardType(what) => self.r119_share_card_type(what)?,
             Condition::AtTrigger(inner) => self.holds(inner)?,
             Condition::DamagedThisGameBy { by, combat } => {
                 self.r5522_damaged_this_game(by, *combat)?
@@ -4246,6 +4264,17 @@ impl<'a> Scope<'a> {
                 .players(who)?
                 .iter()
                 .any(|player| self.state.r5522.r118_extra_turns.contains(player)),
+            Condition::R119StartingDeck { who, at_least } => {
+                self.players(who)?.iter().any(|player| {
+                    self.state
+                        .r5522
+                        .r119_deck_sizes
+                        .get(player)
+                        .copied()
+                        .unwrap_or(0)
+                        >= *at_least
+                })
+            }
             Condition::RingTempted { who, times } => self
                 .players(who)?
                 .iter()

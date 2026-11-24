@@ -277,6 +277,7 @@ fn add(phrase: &mut Phrase, modification: &Modification, host: &str) {
         Modification::DoesntUntap => "Doesn't untap".to_owned(),
         Modification::R6700KeepsLastLoyalty => "Keeps its last loyalty counter".to_owned(),
         Modification::CantBeTurnedFaceUp => "Can't be turned face up".to_owned(),
+        Modification::R119CantBeBeamedUp => "Can't be beamed up".to_owned(),
         Modification::CantBeBlocked => "Can't be blocked".to_owned(),
         Modification::CantBeBlockedBy { .. } | Modification::CantBeBlockedUnlessAttackingOwner => {
             "Can't be blocked by some creatures".to_owned()

@@ -565,6 +565,7 @@ impl Held {
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
+            | Modification::R119CantBeBeamedUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
             | Modification::CanBlockOnly { .. }
@@ -926,6 +927,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
+        | Wanted::R119CantBeBeamedUp
         | Wanted::CantBeBlocked
         | Wanted::CantBeBlockedBy(_)
         | Wanted::CanBlockOnly(_)

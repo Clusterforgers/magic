@@ -1,0 +1,57 @@
+{
+  "oracle_id": "9a52cb6b-b0d8-4649-b65a-5f9a9d2a7eb2",
+  "name": "Cmdr. Troi, Outgoing Empath",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Cmdr. Troi, Outgoing Empath",
+      "oracle_fingerprint": "8c407b88af0db7a79b84569d021de4dc",
+      "abilities": [
+        { "Keyword": "Vigilance" },
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "targets": [
+              {
+                "what": {
+                  "PlayerAmong": { "PlayersWhere": { "who": "Opponents", "test": "YourTurn" } }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "Target": 0 },
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": { "Target": 0 } },
+                      { "Not": { "Type": "Land" } }
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "who": { "Target": 0 },
+                  "what": { "Bound": "card" },
+                  "free": true,
+                  "as": "spell"
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [{ "CopySpell": { "what": { "Bound": "spell" }, "new_targets": true } }],
+                  "otherwise": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

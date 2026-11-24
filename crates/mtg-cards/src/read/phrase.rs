@@ -375,6 +375,7 @@ fn part(ctx: &Ctx, pred: &Pred) -> Part {
         Pred::Dungeon => Part::Kind("dungeon".to_owned()),
         Pred::Emblem => Part::Kind("emblem".to_owned()),
         Pred::R112Modal => Part::Before("modal".to_owned()),
+        Pred::R119CanBeBeamedUp => Part::After("that can be beamed up".to_owned()),
         Pred::Ability(kind) => Part::Kind(format!("{} ability", lower(kind))),
         Pred::Tapped => Part::Before("tapped".to_owned()),
         Pred::Untapped => Part::Before("untapped".to_owned()),

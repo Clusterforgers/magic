@@ -942,6 +942,7 @@ impl<'a> Walker<'a> {
             Pred::Kicked => self.uses("Pred", "Kicked"),
             Pred::R113HasWay(_) => self.uses("Pred", "R113HasWay"),
             Pred::R112Modal => self.uses("Pred", "R112Modal"),
+            Pred::R119CanBeBeamedUp => self.uses("Pred", "R119CanBeBeamedUp"),
             Pred::AdditionalCostPaid => self.uses("Pred", "AdditionalCostPaid"),
             Pred::CounterCount { .. } => self.uses("Pred", "CounterCount"),
             Pred::Foretold => self.uses("Pred", "Foretold"),
@@ -1134,6 +1135,7 @@ impl<'a> Walker<'a> {
             | Pred::R113HasWay(_)
             | Pred::Kicked
             | Pred::R112Modal
+            | Pred::R119CanBeBeamedUp
             | Pred::AdditionalCostPaid
             | Pred::CounterCount { .. }
             | Pred::Foretold
@@ -1274,6 +1276,20 @@ impl<'a> Walker<'a> {
     fn player_condition(&mut self, name: &str, who: &Ref) {
         self.uses("Condition", name);
         self.at(name, |w| w.reference(who, Kind::Player));
+    }
+
+    /// The conditions of the r119-01 pack: a starting deck of a player and the card types shared by objects.
+    fn r119_condition(&mut self, condition: &Condition) {
+        match condition {
+            Condition::R119StartingDeck { who, .. } => {
+                self.player_condition("R119StartingDeck", who);
+            }
+            Condition::R119ShareCardType(what) => {
+                self.uses("Condition", "R119ShareCardType");
+                self.at("R119ShareCardType", |w| w.reference(what, Kind::Object));
+            }
+            _ => {}
+        }
     }
 
     /// The player conditions of the r55-21 pack: the Ring's temptations (1 to 4), the fastest player and a dungeon
@@ -1532,6 +1548,7 @@ impl<'a> Walker<'a> {
             Amount::MostDamageBySource(who) => self.player_amount("MostDamageBySource", who),
             Amount::R110MostDamageToOne => self.uses("Amount", "R110MostDamageToOne"),
             Amount::R110RemovedThisWay(_) => self.uses("Amount", "R110RemovedThisWay"),
+            Amount::R119PutThisWay(_) => self.uses("Amount", "R119PutThisWay"),
             Amount::Tally { who, filter, .. } => {
                 self.player_amount("Tally", who);
                 self.at("filter", |w| w.selector(filter));
@@ -1934,6 +1951,9 @@ impl<'a> Walker<'a> {
             Condition::CompletedDungeon(who) => self.player_condition("CompletedDungeon", who),
             Condition::Monarch(who) => self.player_condition("Monarch", who),
             Condition::R118BegunExtraTurn(who) => self.player_condition("R118BegunExtraTurn", who),
+            Condition::R119StartingDeck { .. } | Condition::R119ShareCardType(_) => {
+                self.r119_condition(condition);
+            }
             Condition::Initiative(who) => self.player_condition("Initiative", who),
             Condition::MonarchAtTurnStart(who) => self.player_condition("MonarchAtTurnStart", who),
             Condition::AttackedYouLastTurn(who) => {
@@ -3211,6 +3231,7 @@ impl<'a> Walker<'a> {
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
+            | Modification::R119CantBeBeamedUp
             | Modification::CantBeBlocked
             | Modification::BlockedByAll
             | Modification::Goaded => {}

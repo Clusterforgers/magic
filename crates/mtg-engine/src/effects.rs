@@ -253,6 +253,9 @@ pub enum Modification {
     R6700KeepsLastLoyalty,
     /// The object can't be turned face up: a restriction with no layer that the special action of turning it up reads.
     CantBeTurnedFaceUp,
+    /// The object can't be returned to pay a beam me up cost: a restriction with no layer that the cast with beam me up
+    /// reads.
+    R119CantBeBeamedUp,
     /// The object can't be blocked: a restriction with no layer that `block_options` reads.
     CantBeBlocked,
     /// The object can't be blocked by the creatures the selector names, judged when blockers are declared as `controller`
@@ -383,6 +386,7 @@ impl Modification {
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
+            | Modification::R119CantBeBeamedUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
             | Modification::CanBlockOnly { .. }
@@ -467,6 +471,7 @@ impl Modification {
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
+            | Modification::R119CantBeBeamedUp
             | Modification::CantBeBlocked
             | Modification::CantBeBlockedBy { .. }
             | Modification::CanBlockOnly { .. }

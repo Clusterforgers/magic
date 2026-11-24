@@ -1,0 +1,58 @@
+{
+  "oracle_id": "9ac20f38-adc4-40a9-95c9-bbdc689b928b",
+  "name": "Brazen Bluff",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Brazen Bluff",
+      "oracle_fingerprint": "8c151e3924da270eba8f84c3ab151944",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    "Spell",
+                    { "Not": { "Type": "Creature" } },
+                    { "ControlledBy": "Opponents" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "May": {
+                  "who": { "ControllerOf": { "Target": 0 } },
+                  "effects": [{ "Exile": { "what": { "Target": 0 } } }]
+                }
+              },
+              {
+                "If": {
+                  "condition": { "Not": "Performed" },
+                  "then": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "In": "Hand" },
+                            { "OwnedBy": "You" },
+                            { "Not": { "Type": "Creature" } },
+                            { "Not": { "Type": "Land" } }
+                          ]
+                        },
+                        "count": { "min": 0, "max": 1 },
+                        "as": "card"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "card" }, "free": true } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

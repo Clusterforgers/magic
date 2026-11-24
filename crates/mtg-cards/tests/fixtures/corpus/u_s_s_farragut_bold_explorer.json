@@ -1,0 +1,142 @@
+{
+  "object": "card",
+  "id": "bfbef056-cf8b-46f8-892e-30742fd78707",
+  "oracle_id": "3b2e3deb-1f21-4311-b8a9-4153089ac5ff",
+  "multiverse_ids": [],
+  "resource_id": "75CFF8D378C4BB8BCE3811CD4C24E7BCDCFD3BE8297B56483FCD6B1B1FE8AE3B",
+  "mtgo_id": 157038,
+  "tcgplayer_id": 727685,
+  "cardmarket_id": 920246,
+  "name": "U.S.S. Farragut, Bold Explorer",
+  "lang": "en",
+  "released_at": "2026-11-13",
+  "uri": "https://api.scryfall.com/cards/bfbef056-cf8b-46f8-892e-30742fd78707",
+  "scryfall_uri": "https://scryfall.com/card/trc/127/uss-farragut-bold-explorer?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-29T13:41:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.jpg?1793281307",
+    "normal": "https://cards.scryfall.io/normal/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.jpg?1793281307",
+    "large": "https://cards.scryfall.io/large/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.jpg?1793281307",
+    "png": "https://cards.scryfall.io/png/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.png?1793281307",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.jpg?1793281307",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.jpg?1793281307",
+    "thumb": "https://cards.scryfall.io/thumb/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.webp?1793281307",
+    "grid": "https://cards.scryfall.io/grid/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.webp?1793281307",
+    "display": "https://cards.scryfall.io/display/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.webp?1793281307",
+    "art": "https://cards.scryfall.io/art/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.webp?1793281307",
+    "crop": "https://cards.scryfall.io/crop/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.webp?1793281307",
+    "jpeg": "https://cards.scryfall.io/normal/front/b/f/bfbef056-cf8b-46f8-892e-30742fd78707.jpg?1793281307"
+  },
+  "mana_cost": "{6}",
+  "cmc": 6,
+  "type_line": "Legendary Artifact — Spacecraft",
+  "oracle_text": "Landfall — Whenever a land you control enters, you may put a creature card from your hand onto the battlefield. That creature gains haste. At the beginning of the next end step, put it on the bottom of your library. When you do, draw a card.\nStation (Tap another creature you control: Put charge counters equal to its power on this Spacecraft. Station only as a sorcery. It's an artifact creature at 7+.)\n7+ | Flying",
+  "power": "4",
+  "toughness": "4",
+  "colors": [],
+  "color_identity": [],
+  "keywords": [
+    "Station",
+    "Landfall"
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "legal",
+    "pauper": "not_legal",
+    "vintage": "legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "not_legal"
+  },
+  "games": [
+    "paper",
+    "mtgo"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set": "trc",
+  "set_name": "Star Trek Commander",
+  "set_type": "commander",
+  "set_uri": "https://api.scryfall.com/sets/a38c10be-90b1-4bb9-bd74-46784a751ac3",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Atrc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/trc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/bfbef056-cf8b-46f8-892e-30742fd78707/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3A3b2e3deb-1f21-4311-b8a9-4153089ac5ff&unique=prints",
+  "collector_number": "127",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Raymond Bonilla",
+  "artist_ids": [
+    "39fcaaac-bf5d-4c43-ae20-4cf4921a44fa"
+  ],
+  "illustration_id": "6a318c2c-2a45-4083-bb32-e75ab30e0b52",
+  "border_color": "black",
+  "frame": "2015",
+  "frame_effects": [
+    "legendary"
+  ],
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "promo_types": [
+    "surgefoil",
+    "universesbeyond"
+  ],
+  "edhrec_rank": 25668,
+  "preview": {
+    "source": "Good Luck High Five",
+    "source_uri": "https://www.youtube.com/watch?v=io9Eaz6kBP0",
+    "previewed_at": "2026-10-29"
+  },
+  "prices": {
+    "usd": "2.72",
+    "usd_foil": null,
+    "usd_etched": null,
+    "eur": "1.78",
+    "eur_foil": null,
+    "tix": "1.28"
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DU.S.S.%2BFarragut%252C%2BBold%2BExplorer",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DU.S.S.%2BFarragut%252C%2BBold%2BExplorer",
+    "edhrec": "https://edhrec.com/route/?cc=U.S.S.+Farragut%2C+Bold+Explorer"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F727685%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=920246&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards/157038?affiliate_id=scryfall&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

@@ -1,4 +1,4 @@
-//! Goal: beam me up casts a card from its owner's graveyard for its beam me up cost and the return of a creature its caster controls to its owner's hand, exiles the spell as it resolves, is not offered without a creature to return or from a hand, and the log replays to the same state at 2 to 4 seats.
+//! Goal: beam me up casts a card from its owner's graveyard for its beam me up cost and the return of a creature its caster controls to its owner's hand, exiles the spell as it resolves, is not offered without a creature to return or from a hand, never returns a creature that can't be beamed up (Marooned), and the log replays to the same state at 2 to 4 seats.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -124,6 +124,39 @@ fn r116_beam_me_up_is_not_offered_without_its_cost(
 ) -> Result<(), ScriptError> {
     let driver = game(seats, hand, graveyard, creatures, count)?;
     assert!(!castable(&driver, "Energize"));
+    Ok(())
+}
+
+#[rstest]
+fn r119_a_creature_that_cant_be_beamed_up_pays_no_beam_me_up_cost(
+    #[values(2, 3, 4)] seats: usize,
+    #[values(false, true)] another: bool,
+) -> Result<(), ScriptError> {
+    // Marooned enchants the first Grizzly Bears; a second creature still pays.
+    let mut battlefield = vec![
+        ready(card("Grizzly Bears")),
+        mtg_testkit::scenario::attached_to(ready(card("Marooned")), 0, 0),
+    ];
+    if another {
+        battlefield.push(ready(card("Llanowar Elves")));
+    }
+    battlefield.extend(lands(4, island));
+    let scenario = (0..seats)
+        .fold(Scenario::new(seats), |scenario, seat| {
+            scenario.library(seat, (0..8).map(|_| forest()))
+        })
+        .graveyard_named(0, vec!["Energize"])
+        .battlefield(0, battlefield)
+        .battlefield(1, vec![ready(card("Serra Angel"))]);
+    let mut driver = Driver::from_scenario(scenario)?;
+    assert_eq!(castable(&driver, "Energize"), another);
+    if another {
+        beam(&mut driver, "Llanowar Elves")?;
+        assert_eq!(
+            names(driver.state(), Zone::Hand(pid(0))),
+            ["Llanowar Elves"]
+        );
+    }
     Ok(())
 }
 

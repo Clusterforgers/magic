@@ -1,0 +1,30 @@
+{
+  "oracle_id": "16a5ed42-ee86-4dcb-b8ea-239ac2b13d67",
+  "name": "Kai Winn, Faithless Leader",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kai Winn, Faithless Leader",
+      "oracle_fingerprint": "bb8c15ca1c1750f33cda8830b3b575f3",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "NonlandCardName" }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "SpellCast": { "what": ["ChosenName"], "by": "Opponents" } },
+                { "Did": { "action": "ActivatedAny", "who": "Opponents", "what": ["ChosenName"] } }
+              ]
+            },
+            "effects": [{ "LoseLife": { "who": "TriggeringPlayer", "amount": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}

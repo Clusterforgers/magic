@@ -1,0 +1,62 @@
+{
+  "oracle_id": "72c51539-5f15-4636-8cb8-b688cf53f431",
+  "name": "Sarek, Federation Ambassador",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sarek, Federation Ambassador",
+      "oracle_fingerprint": "6e60e1972d0ea46ac8af35c4e15fb46c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "effects": [
+              {
+                "Draw": {
+                  "count": {
+                    "Quotient": {
+                      "of": {
+                        "Distinct": {
+                          "of": [
+                            { "Type": "Creature" },
+                            { "Not": { "Subtype": "Borg" } },
+                            { "ControlledBy": "You" }
+                          ],
+                          "stat": "CreatureType"
+                        }
+                      },
+                      "by": 5,
+                      "up": false
+                    }
+                  },
+                  "as": "drawn"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "drawn" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 3
+                    }
+                  },
+                  "then": [
+                    {
+                      "PutCounters": {
+                        "on": { "Each": [{ "Type": "Creature" }, { "ControlledBy": "You" }] },
+                        "counter": "+1/+1",
+                        "count": 2
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
