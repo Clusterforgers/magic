@@ -182,6 +182,9 @@ export function handLayout({ width, height, count, coarse = false, cap }: HandIn
   return make(coarse ? widest : floor, 1, cards, true)
 }
 
+/** The whole cards a hand keeps beside a head that does not fit the line (a large Satchel). */
+export const HAND_KEPT_BESIDE_HEAD = 2
+
 /** What `dockLayouts` needs: a hand line's room, with `commanders` waiting at its head. */
 export interface DockInput extends HandInput {
   commanders: number
@@ -200,8 +203,8 @@ export interface DockLayouts {
 
 /**
  * The hand and the commanders at its head share the line: the commanders take one card's width each and a divider,
- * but never so much that a hand of one card or more loses its last whole card; the commanders then scroll in what is
- * left, at least one of them in view.
+ * but never so much that the hand keeps fewer than `HAND_KEPT_BESIDE_HEAD` whole cards (or all of a smaller hand);
+ * the commanders then scroll in what is left, at least one of them in view.
  */
 export function dockLayouts({ commanders, pick = false, ...input }: DockInput): DockLayouts {
   if (commanders <= 0) return { hand: handLayout(input) }
@@ -211,7 +214,10 @@ export function dockLayouts({ commanders, pick = false, ...input }: DockInput): 
   const head = commanders * card + COMMAND_GAP_PX
   // A touch screen's hand that scrolls keeps the full card size, so that is the card it must hold.
   const whole = input.coarse === true ? handCardWidth(input.height, input.cap) : all.box.width
-  const keep = input.count > 0 ? whole : 0
+  // Two whole cards where the line holds them beside one of the head's, else one.
+  const roomy = input.width >= (HAND_KEPT_BESIDE_HEAD + 1) * (whole + all.gap) + COMMAND_GAP_PX
+  const kept = Math.min(input.count, roomy ? HAND_KEPT_BESIDE_HEAD : 1)
+  const keep = kept > 0 ? kept * whole + (kept - 1) * all.gap : 0
   const most = Math.max(card + COMMAND_GAP_PX, input.width - keep)
   const commandWidth = Math.min(head, most)
   const hand = handLayout({ ...input, width: Math.max(0, input.width - commandWidth) })
