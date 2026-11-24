@@ -11,6 +11,10 @@ use crate::trigger::TriggerPattern;
 /// The chapter abilities of a chapter line (and the bullets under it): one for each number, each with the effects the
 /// text reads into; `None` when the text is not read (the line stays with the table).
 pub fn block(text: &str, x_free: bool, own: &Own) -> Option<Vec<Ability>> {
+    // A chapter whose steps keep what they did for a later chapter reads whole, before its plain twin.
+    if let Some(found) = super::r121_01_wholes::r121_01_whole_read(text) {
+        return Some(vec![found]);
+    }
     let mut lines = text.lines();
     let (numbers, first) = classify::chapter(lines.next()?)?;
     let body = std::iter::once(first)

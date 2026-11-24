@@ -1,0 +1,40 @@
+{
+  "oracle_id": "5144361a-0308-49b8-96e6-c948d4beae09",
+  "name": "The Guardian of Forever",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Guardian of Forever",
+      "oracle_fingerprint": "a307fe45d349f6f37f9282144c9b1730",
+      "abilities": [
+        { "Keyword": "Defender" },
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{4}" },
+              { "Sacrifice": { "filter": [{ "Type": "Creature" }, { "Not": "Token" }, "Other"] } }
+            ],
+            "effects": [
+              { "Bind": { "what": "Paid", "as": "sacrificed" } },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "End" } },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": {
+                          "Arrived": { "of": { "Bound": "sacrificed" }, "zone": "Graveyard" }
+                        },
+                        "to": { "Battlefield": {} }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

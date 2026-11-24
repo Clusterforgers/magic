@@ -1,0 +1,45 @@
+{
+  "oracle_id": "b44026ae-eaf1-4daf-99c6-2663db674ff7",
+  "name": "Gift of Perfection",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Gift of Perfection",
+      "oracle_fingerprint": "47711fe3829a821e9d8e48aa4054fe29",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "RepeatEach": {
+                  "over": "Opponents",
+                  "as": "opponent",
+                  "effects": [
+                    {
+                      "RevealUntil": {
+                        "who": { "Bound": "opponent" },
+                        "filter": [{ "Type": "Creature" }],
+                        "as": "one",
+                        "revealed_as": "seen"
+                      }
+                    },
+                    { "Bind": { "what": { "Bound": "one" }, "as": "found", "adds": true } },
+                    { "Bind": { "what": { "Bound": "seen" }, "as": "revealed", "adds": true } }
+                  ]
+                }
+              },
+              { "Choose": { "from": { "Bound": "found" }, "as": "chosen" } },
+              { "R116Assimilate": { "what": { "Bound": "chosen" } } },
+              {
+                "Move": {
+                  "what": { "Each": [{ "Is": { "Bound": "revealed" } }, { "In": "Library" }] },
+                  "to": { "Library": { "place": "Bottom", "order": "Random" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "oracle_id": "af03149b-9307-443c-aefa-69bda52607ba",
+  "name": "Dominion Saboteur",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Dominion Saboteur",
+      "oracle_fingerprint": "1ba3cd69805ccc6f350edb4ebfc992b4",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "AsCopy": {
+                "of": [{ "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }],
+                "except": [{ "RemoveSupertype": "Legendary" }],
+                "r121_copied_counters": true
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

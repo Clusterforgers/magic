@@ -653,6 +653,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
         super::r6400_wholes::r6400_add_wholes(ability, &mut texts);
         super::r119_01_wholes::r119_01_add_wholes(ability, &mut texts);
         super::r120_01_wholes::r120_01_add_wholes(ability, &mut texts);
+        super::r121_01_wholes::r121_01_add_wholes(ability, &mut texts);
         return texts;
     }
     // An investigation is worded as the Clue tokens it makes.
@@ -743,6 +744,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r118_02_wholes::r118_02_add_wholes(ability, &mut texts);
     super::r119_01_wholes::r119_01_add_wholes(ability, &mut texts);
     super::r120_01_wholes::r120_01_add_wholes(ability, &mut texts);
+    super::r121_01_wholes::r121_01_add_wholes(ability, &mut texts);
     super::r119_02_wholes::r119_02_add_wholes(ability, &mut texts);
     super::r120_02_wholes::r120_02_add_wholes(ability, &mut texts);
     super::r121_02_wholes::r121_02_add_wholes(ability, &mut texts);
@@ -1721,6 +1723,7 @@ fn written(
             .or_else(|| writer.g10d_colors(&effects[start..]))
             .or_else(|| writer.rmt0_hand_pick(&effects[start..]))
             .or_else(|| writer.r280_random_reveal(&effects[start..]))
+            .or_else(|| writer.r121_up_to(&effects[start..]))
             .or_else(|| instead::pair(targets, &effects[start..], wording))
         {
             unsplit(mask, start, used)?;
@@ -4201,6 +4204,16 @@ impl Writer<'_> {
         let (text, used) = super::l292_hand_reads::l292_hand_text(effects, self.targets)?;
         self.named = true;
         Some((vec![text], used))
+    }
+
+    /// A number chosen from none and that many counters put, as one sentence ("put up to three lore counters on it").
+    fn r121_up_to(&mut self, effects: &[Effect]) -> Option<(Vec<String>, usize)> {
+        let [choose, put, ..] = effects else {
+            return None;
+        };
+        let most = super::r121_01_up_to::r121_up_to_put(choose, put)?;
+        let text = super::r121_01_up_to::r121_up_to_text(&self.effect(&most)?)?;
+        Some((vec![text], 2))
     }
 
     /// What a player does, without the subject: "draws a card", "sacrifice a creature"; `third` is

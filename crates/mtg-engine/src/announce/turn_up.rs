@@ -241,6 +241,7 @@ pub(crate) fn r115_copy_options(
                         of,
                         except,
                         r115_turned_up: true,
+                        r121_copied_counters: false,
                         ..
                     },
                 ..

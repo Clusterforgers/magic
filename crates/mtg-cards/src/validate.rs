@@ -496,6 +496,9 @@ struct Walker<'a> {
     /// The walk stands in the changes of a resolved effect (`Effect::Continuous`), whose granted static ability may grant
     /// abilities in turn (`Grant::R6701Nested` in the engine).
     r6701_effect_grant: bool,
+    /// The walk stands in the exceptions of an entering copy, whose granted static ability is acquired by a copy effect and
+    /// so may define characteristics (CR 604.3a).
+    r121_copy_grant: bool,
     /// The walk stands in the changes of a static ability that names spells, which may give a way to cast them
     /// (`Ability::AltCast`).
     r6701_spell_grant: bool,
@@ -550,6 +553,7 @@ impl<'a> Walker<'a> {
             amounting: Amounting::Other,
             nested: 0,
             r6701_effect_grant: false,
+            r121_copy_grant: false,
             r6701_spell_grant: false,
             r4702_emblem_values: BTreeSet::new(),
             after: After::Nothing,
@@ -3277,7 +3281,7 @@ impl<'a> Walker<'a> {
         // A given static ability is named by what gives it, so it cannot give abilities in turn, and a characteristic-defining
         // ability is printed on the card it defines (CR 604.3a).
         if let Ability::Static { mods, defining, .. } = granted {
-            if *defining {
+            if *defining && !self.r121_copy_grant {
                 self.problem("a static ability that is granted cannot be characteristic-defining");
             }
             if !self.r6701_effect_grant
@@ -4065,7 +4069,9 @@ impl Walker<'_> {
     fn r6104_entering_copy_exceptions(&mut self, except: &[Modification]) {
         for (i, modification) in except.iter().enumerate() {
             self.at(format!("except[{i}]"), |w| {
+                let held = std::mem::replace(&mut w.r121_copy_grant, true);
                 w.modification(modification);
+                w.r121_copy_grant = held;
                 if matches!(modification, Modification::SetPT { power, toughness }
                     if !matches!((power, toughness), (Amount::Fixed(_), Amount::Fixed(_))))
                 {
@@ -4404,6 +4410,9 @@ impl Walker<'_> {
                             | Effect::PayAnyTimes { .. }
                             // A transformation (or conversion) logs its event only when the permanent turns over.
                             | Effect::Transform { .. }
+                            // An assimilate binds whether it took anything; a fight logs `Fought` only when both creatures fight.
+                            | Effect::R116Assimilate { .. }
+                            | Effect::Fight { .. }
                     )
                 );
             self.at(format!("{field}[{i}]"), |w| w.effect(effect, only));
@@ -6162,6 +6171,10 @@ impl Walker<'_> {
             }
             Effect::PayAnyTimes { who, cost, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
+                if let Some(bind) = bind {
+                    w.at("as", |w| w.bind(bind, Kind::Either));
+                    w.scope.numbers.insert(bind.clone());
+                }
                 w.at("cost", |w| w.c6_eg_paid_cost(cost, who));
                 if let Some(bind) = bind {
                     w.at("as", |w| w.bind(bind, Kind::Either));
@@ -8204,6 +8217,7 @@ impl Walker<'_> {
                 except_if,
                 r707_when_you_do,
                 r115_turned_up,
+                r121_copied_counters,
                 ..
             } => {
                 if !enters {
@@ -8211,6 +8225,9 @@ impl Walker<'_> {
                 }
                 if *r115_turned_up {
                     self.uses("Copy", "Duration.R115UntilFaceDown");
+                }
+                if *r121_copied_counters {
+                    self.uses("Copy", "R121CopiedCounters");
                 }
                 if !r707_when_you_do.is_empty() {
                     self.uses("Copy", "WhenYouDo");

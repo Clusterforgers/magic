@@ -1482,6 +1482,7 @@ fn ability() -> impl Strategy<Value = Ability> {
                             r109_embalmed: Vec::new(),
                             r707_when_you_do: Vec::new(),
                             r115_turned_up: false,
+                            r121_copied_counters: false,
                         }
                     }),
             ],
