@@ -346,6 +346,10 @@ impl HeuristicBot {
             DecisionKind::PayMana(options) if options.auto_available => {
                 Answer::PayMana(PayChoice::Auto)
             }
+            // Only a mana ability that does more than add mana (Vexing Puzzlebox) pays the rest: it is activated first.
+            DecisionKind::PayMana(options) if !options.announced.is_empty() => {
+                Answer::PayMana(PayChoice::Activate(options.announced[0]))
+            }
             DecisionKind::ChooseTargets(options) if pending => {
                 Self::searched_targets(&mut search, engine, options, self.settings.targets)
             }

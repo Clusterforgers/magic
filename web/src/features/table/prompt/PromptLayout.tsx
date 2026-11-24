@@ -451,7 +451,7 @@ export function PromptLayout({
         coach={home !== null}
       />
       {hasContent(meter) ? (
-        <div data-slot="prompt-meter" className="flex min-w-0 items-center gap-2 empty:hidden">
+        <div data-slot="prompt-meter" className="flex min-w-0 flex-wrap items-center gap-2 empty:hidden">
           {meter}
         </div>
       ) : null}

@@ -1,5 +1,6 @@
 //! Goal: the server's games, transport, accounts and persistence end to end; one test binary so the crate's integration tests share one link and run together on the thread pool.
 
+mod announced_mana_bots;
 mod auto_pass;
 mod auto_pay;
 mod auto_pay_plain;

@@ -928,8 +928,14 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
     // actions and mana abilities stay.
     let silenced = keywords::split_second_on_stack(state);
     let restricted = silenced || crate::w17b_statics::w17b_cant_cast(state, player);
-    let judged = unplayable::judge(state, player, &pool, &all_mana, life, restricted);
-    let castable = unplayable::castable(state, player, &judged, restricted, &pool, &all_mana, life);
+    let (abilities, inactive) = silence(state, silenced, abilities_now(state, player));
+    // A spell is offered when a mana ability activated while paying (Vexing Puzzlebox) would make it affordable; the
+    // hand keeps the spell's own card from a discard cost.
+    let cast_mana =
+        crate::r281_mana_at_priority::r281_cast_mana(state, player, &abilities, &all_mana);
+    let judged = unplayable::judge(state, player, &pool, &cast_mana, life, restricted);
+    let castable =
+        unplayable::castable(state, player, &judged, restricted, &pool, &cast_mana, life);
     // A special action: no stack, so no target or modes are needed (CR 116.2f).
     let suspendable: Vec<ObjectId> = hand
         .iter()
@@ -952,18 +958,17 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .collect();
     let (unlockable, endable, ignorable, r114_payable, paid_open) =
         paid_specials(state, player, (&pool, &all_mana, life));
-    let (abilities, inactive) = silence(state, silenced, abilities_now(state, player));
     let mut faces = face_options(
         state,
         player,
         &castable,
         may_play_land,
         &pool,
-        &all_mana,
+        &cast_mana,
         life,
     );
     if !silenced {
-        faces.extend(prepared::options(state, player, &pool, &all_mana, life));
+        faces.extend(prepared::options(state, player, &pool, &cast_mana, life));
     }
     let mana_abilities = crate::costly_mana::at_priority(state, &at_priority, &pool, life);
     let offered = unplayable::Offered {
