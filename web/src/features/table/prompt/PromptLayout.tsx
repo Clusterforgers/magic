@@ -200,7 +200,7 @@ export interface PromptLayoutProps {
   choices?: ReactNode
   /** The choices are short (a number, a few options): they stand beside the question in every home. */
   inline?: boolean
-  /** A short reading between the question and the answers: a run's place, what a payment still owes. */
+  /** A short reading between the question and the answers: a run's place, what a payment still owes; a compact prompt draws it as the line under its row (the combat total). */
   meter?: ReactNode
   /** The meter says what the sentence says (a payment's symbols): the sentence is read aloud and not drawn. */
   quiet?: boolean
@@ -395,6 +395,7 @@ export function PromptLayout({
           {text}
         </LiveText>
         {answers}
+        {meter}
       </div>
       {clock}
       {stops}

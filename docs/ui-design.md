@@ -276,7 +276,7 @@ A card or player an effect is about to change wears a forecast badge: dark, acro
 | an item is on top of the stack (every seat) | each object and player it will change | "+3/+3 → 7/7", "3 damage · dies", "destroyed", "countered", "to hand", "−3 → 37" | the engine's forecast of that item (`ObjectView.forecast`) |
 | the viewer points at a legal target | that target | the same words in its tip: "Click to target · 3 damage, survives" | a preview of that answer |
 | a payment is proposed | its sources | "pays U"; the block notes what stays castable | the proposal |
-| attackers or blockers are being declared | attackers, blockers, the attacked pod | "blocks · dies", "survives", "−4 → 36"; the dock reads the total | the combat forecast |
+| combat damage is ahead (attackers declared, blocks being chosen) | attackers, blockers, attacked planeswalkers, the attacked pod | a sword and "4" (deals), "-2" (takes) and a skull "Dies" as small badges at the card's corners; "-4" on the pod; the dock reads the total ("Deal 6", "Take 12 · lethal", "Lose 1", "Kill 2") | the combat forecast |
 
 - The engine works a forecast out on a copy of the game from public objects only; the client never reads it off a card's words. An item whose result hangs on a choice, a hidden card or chance has none and its targets keep the "targeted" mark.
 - The panel's top item repeats the forecast as a line ("Serra Angel becomes 7/7 until end of turn").

@@ -461,7 +461,7 @@ The turn sequence is the fixed run of steps (`turn.rs`, `steps.rs`) with two que
 `forecast::combat_forecast(&GameState) -> CombatForecast` says what the combat damage still ahead would do if dealt now. It is derived from the state on every call and never stored.
 
 - It plays the damage steps on a copy with the real code: `damage_events`, the fold, state-based actions, the game-end check and housekeeping, every batch through `replace::process`. A question is answered with its first option, as the server's clock does; `depends_on_choice` is set when another option would change the numbers.
-- Per attacker: the damage it assigns; per creature in combat: damage taken and whether it leaves the battlefield; per attacked player: the damage, life after (with lifelink gain) and whether it is lethal.
+- Per attacker: the damage it assigns; per creature in combat: damage taken, damage dealt (`dealt`) and whether it leaves the battlefield; per attacked planeswalker that is no creature (`attacked`): damage taken and whether it leaves; per attacked player: the damage, life after (with lifelink gain) and whether it is lethal.
 - `pending_combat_forecast` is the guarded form views use: `None` before attackers are declared, with no attacker left and after the last damage.
 
 ### Preview

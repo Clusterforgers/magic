@@ -612,11 +612,13 @@ fn sample_forecast() -> CombatForecast {
                 object: blocker,
                 damage: 3,
                 dies: true,
+                dealt: 1,
             },
             CreatureForecast {
                 object: attacker,
                 damage: 1,
                 dies: false,
+                dealt: 3,
             },
         ],
         players: vec![PlayerForecast {
@@ -626,6 +628,7 @@ fn sample_forecast() -> CombatForecast {
             life_after: 20,
             lethal: false,
         }],
+        attacked: Vec::new(),
         depends_on_choice: true,
     }
 }
@@ -1342,8 +1345,9 @@ fn client_wire_shape_is_flat_and_tagged(
         decision: DecisionId(7),
         forecast: Some(CombatForecast {
             attackers: Vec::new(),
-            creatures: vec![CreatureForecast { object: ObjectId(3), damage: 2, dies: true }],
+            creatures: vec![CreatureForecast { object: ObjectId(3), damage: 2, dies: true, dealt: 0 }],
             players: Vec::new(),
+            attacked: Vec::new(),
             depends_on_choice: false,
         }),
         changes: Vec::new(),
@@ -1359,8 +1363,28 @@ fn client_wire_shape_is_flat_and_tagged(
         decision: DecisionId(7),
         forecast: Some(CombatForecast {
             attackers: Vec::new(),
+            creatures: vec![CreatureForecast { object: ObjectId(3), damage: 0, dies: false, dealt: 4 }],
+            players: Vec::new(),
+            attacked: vec![CreatureForecast { object: ObjectId(9), damage: 4, dies: true, dealt: 0 }],
+            depends_on_choice: false,
+        }),
+        changes: Vec::new(),
+    },
+    json!({"type": "Forecast", "decision": 7, "forecast": {
+        "attackers": [],
+        "creatures": [{"object": 3, "damage": 0, "dies": false, "dealt": 4}],
+        "players": [],
+        "attacked": [{"object": 9, "damage": 4, "dies": true}],
+    }})
+)]
+#[case(
+    ServerMessage::Forecast {
+        decision: DecisionId(7),
+        forecast: Some(CombatForecast {
+            attackers: Vec::new(),
             creatures: Vec::new(),
             players: Vec::new(),
+            attacked: Vec::new(),
             depends_on_choice: true,
         }),
         changes: Vec::new(),

@@ -18,6 +18,7 @@ import type { CardNotes } from '../marks'
 import { useOwnCardIds } from '../ownCards'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
+import { ForecastTotal } from '../../combat/ForecastTotal'
 import { PreviewOutcome } from '../PreviewOutcome'
 import type { PromptComponent } from '../types'
 import { usePrimaryKey } from '../usePrimaryKey'
@@ -307,7 +308,11 @@ export const DeclareBlockersPrompt: PromptComponent<'DeclareBlockers'> = ({ opti
                 : `${blockSummary(pairs.size, new Set(pairs.values()).size)}.`)
 
   return (
-    <PromptLayout compact text={text}>
+    <PromptLayout
+      compact
+      text={text}
+      meter={<ForecastTotal forecast={preview} checking={previewStatus === 'checking'} />}
+    >
       {options.most === undefined ? null : (
         <p data-slot="declaration-limit" className="basis-full text-xs text-muted-foreground">
           No more than {options.most} {options.most === 1 ? 'creature' : 'creatures'} can block this combat.

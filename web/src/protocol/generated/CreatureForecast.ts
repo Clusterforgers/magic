@@ -17,4 +17,8 @@ damage: number,
  * Whether state-based actions take it off the battlefield once the damage is dealt: lethal damage or deathtouch,
  * unless it is indestructible or a shield regenerates it (an effect may send it to exile instead of the graveyard).
  */
-dies: boolean, };
+dies: boolean, 
+/**
+ * Combat damage it is expected to deal, to every recipient together.
+ */
+dealt?: number, };

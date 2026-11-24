@@ -9,6 +9,8 @@ import { boxOf, fakeRects } from '@/test-utils/rects'
 import { renderTable } from '@/test-utils/tableHarness'
 import { forecastScene } from '../dev/combatScene'
 import { buildFixture } from '../dev/fixture'
+import { creatureOutlook } from './forecast'
+import { outlookText } from './forecastText'
 import { RectProviderContext } from './rects'
 import type { Rect } from './geometry'
 import { GameTable } from '../GameTable'
@@ -248,10 +250,17 @@ describe('the cards', () => {
     const { table, forecast } = scene()
     for (const creature of forecast.creatures) {
       const name = table.card(creature.object).getAttribute('aria-label') ?? ''
+      const dealt = creature.dealt ?? 0
+      const deals = dealt > 0 ? `deal ${dealt} damage` : ''
       if (creature.damage > 0 && creature.dies)
-        expect(name).toMatch(new RegExp(`, would take ${creature.damage} damage and die$`))
+        expect(name).toMatch(
+          new RegExp(`, would ${deals === '' ? '' : `${deals}, `}take ${creature.damage} damage and die$`),
+        )
       else if (creature.damage > 0)
-        expect(name).toMatch(new RegExp(`, would take ${creature.damage} damage$`))
+        expect(name).toMatch(
+          new RegExp(`, would ${deals === '' ? '' : `${deals} and `}take ${creature.damage} damage$`),
+        )
+      else if (dealt > 0) expect(name).toMatch(new RegExp(`, would ${deals}$`))
       else expect(name).not.toMatch(/would/)
     }
   })
@@ -300,14 +309,18 @@ describe('the card preview', () => {
     await table.user.hover(table.card(hurt.object))
     const preview = screen.getByTestId('card-preview')
     expect(
-      within(preview).getByText(`Combat forecast: would take ${hurt.damage} damage and die.`),
+      within(preview).getByText(
+        `Combat forecast: ${outlookText(must(creatureOutlook(forecast, hurt.object)))}.`,
+      ),
     ).toBeInTheDocument()
+    expect(preview).toHaveTextContent(`take ${hurt.damage} damage and die.`)
     await table.user.unhover(table.card(hurt.object))
     const survivor = must(forecast.creatures.find((creature) => creature.damage > 0 && !creature.dies))
     await table.user.hover(table.card(survivor.object))
     expect(screen.getByTestId('card-preview')).toHaveTextContent(
-      `Combat forecast: would take ${survivor.damage} damage.`,
+      `Combat forecast: ${outlookText(must(creatureOutlook(forecast, survivor.object)))}.`,
     )
+    expect(screen.getByTestId('card-preview')).toHaveTextContent(`take ${survivor.damage} damage.`)
   })
 
   it('says nothing of a forecast that is gone', async () => {

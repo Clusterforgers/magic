@@ -91,14 +91,28 @@ export function forecastSummary(forecast: CombatForecast, names: ForecastNames):
   return forecast.depends_on_choice === true ? `${sentence}, ${CHOICE_WORDS}.` : `${sentence}.`
 }
 
-/** What a creature's outlook says: "would take 3 damage and die", "would take 1 damage", "would die". */
+/**
+ * What a creature's outlook says: "would deal 2 damage, take 3 damage and die", "would take 1 damage", "would die",
+ * "would deal 4 damage".
+ */
 export function outlookText(outlook: CreatureOutlook): string {
-  const text =
-    outlook.damage === 0
-      ? 'would die'
-      : `would take ${damageOf(outlook.damage)}${outlook.dies ? ' and die' : ''}`
+  const dealt = outlook.dealt ?? 0
+  const fate = [
+    ...(outlook.damage > 0 ? [`take ${damageOf(outlook.damage)}`] : []),
+    ...(outlook.dies ? ['die'] : []),
+  ]
+  const text = `would ${listOf([...(dealt > 0 ? [`deal ${damageOf(dealt)}`] : []), ...fate])}`
   return outlook.choice ? `${text}, ${CHOICE_WORDS}` : text
 }
+
+/** What the deal badge of a card says to a screen reader: "Deals 3 damage". */
+export const dealtWords = (amount: number): string => `Deals ${damageOf(amount)}`
+
+/** What the damage badge of a card says to a screen reader: "Takes 3 damage". */
+export const takenWords = (amount: number): string => `Takes ${damageOf(amount)}`
+
+/** What the doomed badge of a card says to a screen reader. */
+export const DIES_WORDS = 'Dies'
 
 /** What a card's spoken name gains from its outlook: ", would take 3 damage and die". Nothing without one. */
 export function outlookWords(outlook: CreatureOutlook | null): string {

@@ -1,4 +1,4 @@
-// Goal: while blocks are being chosen the prompt and the table agree on what is pending and what is known: each block made is a dashed line from the blocker to its attacker and a sentence "Your X blocks Bo's Y" with a way to undo it; the table's forecast, which knows nothing of those blocks, is shown only while none is made (as the outcome "if you do not block", the marks on cards and the seat's life) and gives way to "outcome shown after you confirm"; undoing a block, cancelling, confirming or answering brings it back or takes the lines away; and chosen attacks are muted dashed lines to the seat or planeswalker each one goes at.
+// Goal: while blocks are being chosen the prompt and the table agree on what is pending and what is known: each block made is a dashed line from the blocker to its attacker and a sentence "Your X blocks Bo's Y" with a way to undo it; the table's forecast, which knows nothing of those blocks, is shown only while none is made (as the outcome "if you do not block", the marks on cards and the seat's life) and gives way to "outcome shown after you confirm"; undoing a block, cancelling, confirming or answering brings it back or takes the lines away; the total in the prompt keeps its line and labels the lethal damage; and chosen attacks are muted dashed lines to the seat or planeswalker each one goes at.
 import { screen, waitFor, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 import type { Answer, AttackTarget, BlockOptions, ObjectId } from '@/protocol/generated'
@@ -69,6 +69,24 @@ describe('the declare-blockers prompt before any block is made', () => {
     const t = block({ forecast: false })
     expect(t.outcome()).toBeNull()
     expect(t.life(0)).toBeNull()
+    // The total keeps its line in the prompt, empty, so the dock does not move when a forecast comes.
+    expect(must(t.container.querySelector('[data-slot="forecast-total"]'))).toHaveAttribute(
+      'data-state',
+      'empty',
+    )
+  })
+
+  it('reads the total in the prompt: the lethal damage the viewer would take, labelled for a screen reader', () => {
+    const t = block()
+    const total = must(t.container.querySelector<HTMLElement>('[data-slot="forecast-total"]'))
+    expect(total).toHaveAttribute('data-state', 'ready')
+    expect(total).toHaveAttribute('role', 'group')
+    const mine = must(t.forecast().players.find((player) => player.player === 0))
+    const take = within(total).getByRole('img', {
+      name: `You would take ${mine.damage} damage, which is lethal`,
+    })
+    expect(take).toHaveTextContent(`Take ${mine.damage} · lethal`)
+    expect(take).toHaveAttribute('data-lethal', 'true')
   })
 
   it('lists the attackers in the same words the table uses for them', () => {
