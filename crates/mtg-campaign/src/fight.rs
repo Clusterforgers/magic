@@ -55,6 +55,9 @@ pub struct BossSeat {
     /// The relics it brings, copies included ([`crate::boss_relics`]).
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub relics: Vec<String>,
+    /// Its reinforcements, one for each hero after the first ([`crate::Scale::reinforcements`]).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub reinforcements: Vec<String>,
     /// Its phases: the phase card and the round whose last turn's end step begins it.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub round_phases: Vec<(String, u32)>,
@@ -64,11 +67,13 @@ pub struct BossSeat {
 }
 
 impl BossSeat {
-    /// The custom cards in its command zone from the start: its innate, modifier and relics (copies stack).
+    /// The custom cards in its command zone from the start: its innate, modifier, relics and reinforcements (copies
+    /// stack).
     pub fn emblems(&self) -> Vec<String> {
         std::iter::once(self.innate.clone())
             .chain(self.modifier.iter().cloned())
             .chain(self.relics.iter().cloned())
+            .chain(self.reinforcements.iter().cloned())
             .collect()
     }
 

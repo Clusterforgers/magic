@@ -26,6 +26,8 @@ pub enum CardKind {
     Innate,
     /// An encounter modifier rolled for a fight from the shared pool ([`crate::modifiers`]).
     Encounter,
+    /// What a boss brings for each hero after the first ([`crate::scale::Scale::reinforcements`]).
+    Reinforcement,
 }
 
 /// How rare a relic is: stronger effects sit in rarer tiers, and the tier decides where the relic comes from

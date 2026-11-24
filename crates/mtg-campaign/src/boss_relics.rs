@@ -1,17 +1,21 @@
-//! The relics a boss brings: `depth − offset` of them by Heat (at most [`MOST_BOSS_RELICS`]), drawn from the heroes'
-//! whole relic pool, risky relics included, never one that names teammates and only ones the boss's deck can use. Each
-//! is Rare or Mythic by chance (the odds grow with the count), otherwise Common; copies may repeat and stack. The draw
-//! is keyed by floor and room, so a retried fight keeps it.
+//! The relics a boss brings by depth and Heat (at most [`MOST_BOSS_RELICS`]): from generation [`BOSS_SCALE_FROM`]
+//! `(depth + Heat + EARLY_RELICS) / 2` and never fewer than `depth − offset` by Heat, the count of older generations.
+//! They are drawn from the heroes' whole relic pool, risky relics included, never one that names teammates and only
+//! ones the boss's deck can use. Each is Rare or Mythic by chance (the odds grow with the count), otherwise Common;
+//! copies may repeat and stack. The draw is keyed by floor and room, so a retried fight keeps it.
 
 use crate::content::{Content, CustomCard, Rarity};
 use crate::relics::{DeckMakeup, usable};
 use crate::rng::Stream;
+use crate::run::BOSS_SCALE_FROM;
 use crate::scale::MAX_HEAT;
 
 /// The most relics a boss brings.
 pub const MOST_BOSS_RELICS: usize = 6;
-/// The depth below which a boss brings no relic, by Heat.
+/// The depth below which a boss brings no relic, by Heat (the whole count before [`BOSS_SCALE_FROM`]).
 pub const RELIC_OFFSET: [u32; MAX_HEAT as usize + 1] = [4, 3, 2, 1];
+/// From [`BOSS_SCALE_FROM`] a boss brings at least `(depth + Heat + EARLY_RELICS) / 2` relics.
+pub const EARLY_RELICS: u32 = 1;
 /// The Rare chance of a boss's relic at Heat 0 to 3 with one relic; each more relic adds 10 points.
 pub const RARE_BASE: [u32; MAX_HEAT as usize + 1] = [10, 15, 20, 25];
 /// The highest Rare chance.
@@ -19,10 +23,16 @@ pub const RARE_CAP: u32 = 60;
 /// The relic count from which a Mythic can come (Heat 1 and above), 5 points more for each relic beyond the one before.
 pub const MYTHIC_FROM: usize = 4;
 
-/// How many relics a boss at `depth` brings at `heat`.
-pub fn count(depth: u32, heat: u8) -> usize {
-    let offset = RELIC_OFFSET[usize::from(heat.min(MAX_HEAT))];
-    usize::try_from(depth.saturating_sub(offset))
+/// How many relics a boss at `depth` brings at `heat` in a run of content `generation`.
+pub fn count(depth: u32, heat: u8, generation: u32) -> usize {
+    let heat = heat.min(MAX_HEAT);
+    let late = depth.saturating_sub(RELIC_OFFSET[usize::from(heat)]);
+    let n = if generation >= BOSS_SCALE_FROM {
+        late.max(depth.saturating_add(u32::from(heat) + EARLY_RELICS) / 2)
+    } else {
+        late
+    };
+    usize::try_from(n)
         .unwrap_or(MOST_BOSS_RELICS)
         .min(MOST_BOSS_RELICS)
 }
@@ -61,7 +71,7 @@ pub fn draw(
         .into_iter()
         .filter(|c| c.since <= generation && fits(c, makeup))
         .collect();
-    let n = count(depth, heat);
+    let n = count(depth, heat, generation);
     let (rare, mythic) = odds(n, heat);
     let mut rng = Stream::new(seed, "boss relics", u64::from(floor), u64::from(room));
     (0..n)
