@@ -99,7 +99,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
 - [ ] (dh8) Combat forecasts are badges on attackers, blockers and the attacked pod, with the total in the dock
 - [ ] (dh11) `hand.spec.ts`: the rotated end card's name line clips the hand container (7 cases)
-- [ ] (dh10) On a phone, paying shows the cost once: the pay sheet header or the bar's chip and meter, not both
 - [ ] (mb4) The phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
 - [ ] (pf1) `DeckPictures` also lists an opponent's whole deck where its list is public (an unchanged precon, an open-deck house rule), and the tokens a deck can make (`docs/web.md`, Card images)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server

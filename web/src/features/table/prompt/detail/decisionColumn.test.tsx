@@ -1,4 +1,4 @@
-// Goal: in every game mode and window a card's question has one home, under the asking card in the Stack panel of a column, in the dock on a rail and in the bar on a phone, and the strip asks nothing; the panel holds the asking card with the asked clause marked, the run it is one of with what was answered, the triggers to order as rows that move or are pressed in order, a payment as circles captioned with their sources over rows grouped by what they make (on a phone in the sheet the bar grows into); the column gives its tab back afterwards, and a source the view does not hold is named and not pointed at.
+// Goal: in every game mode and window a card's question has one home, under the asking card in the Stack panel of a column, in the dock on a rail and in the bar on a phone, and the strip asks nothing; the panel holds the asking card with the asked clause marked, the run it is one of with what was answered, the triggers to order as rows that move or are pressed in order, a payment as circles captioned with their sources over rows grouped by what they make (on a phone the rows in the sheet the bar grows into, the cost shown once by the bar's chip and meter); the column gives its tab back afterwards, and a source the view does not hold is named and not pointed at.
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -271,10 +271,10 @@ describe('paying', () => {
     table.all('[data-slot="pay-caption"]').map((caption) => caption.textContent ?? '')
 
   it.each(WINDOWS.filter(([, , home]) => home !== 'dock'))(
-    'draws the circles, the groups and the meter at %s',
-    (_window, viewport) => {
+    'draws the circles (not on a phone, whose bar shows the meter alone), the groups and the meter at %s',
+    (_window, viewport, home) => {
       const table = owe('ask-pay', {}, viewport)
-      expect(captions(table)).toEqual(['any', 'any', 'white', 'blue'])
+      expect(captions(table)).toEqual(home === 'bar' ? [] : ['any', 'any', 'white', 'blue'])
       expect(
         table.all('[data-slot="pay-group-label"]').map((label) => label.getAttribute('aria-label')),
       ).toEqual([
@@ -363,10 +363,20 @@ describe("a phone's payment sheet", () => {
     const handle = table.one('[data-slot="sheet-grab"]')
     expect(handle).toHaveAttribute('aria-expanded', 'true')
     expect(handle).toHaveTextContent('Stack · Pay for Brago, King Eternal')
-    expect(table.one('[data-slot="decision-sheet"]').querySelector('[data-slot="pay-slot"]')).not.toBeNull()
+    expect(table.one('[data-slot="decision-sheet"]').querySelector('[data-slot="pay-group"]')).not.toBeNull()
     await table.user.click(handle)
     expect(handle).toHaveAttribute('aria-expanded', 'false')
     expect(table.one('[data-slot="decision-detail"]')).not.toBeVisible()
+  })
+
+  it('shows the cost once: the bar`s meter, with no name line or circles in the sheet', () => {
+    const table = owe('ask-pay', {}, PHONE)
+    const sheet = table.one('[data-slot="decision-sheet"]')
+    expect(table.all('[data-slot="pay-meter"]')).toHaveLength(1)
+    expect(table.one('[data-slot="pay-meter"]').closest('[data-home="bar"]')).not.toBeNull()
+    expect(sheet.querySelector('[data-slot="pay-track"]')).toBeNull()
+    expect(sheet).not.toHaveTextContent(/Paying/)
+    expect(sheet.querySelector('[data-slot="pay-note"]')).not.toBeNull()
   })
 
   it.each(['ask-may', 'targets', 'ask-order', 'x'])('is not there for %s: the bar answers it', (prompt) => {

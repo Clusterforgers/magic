@@ -36,6 +36,7 @@ import { spendAllows, usesWords } from '../spendRules'
 import { manaByPermanent } from '../priorityText'
 import { usePrompt } from '../PromptContext'
 import { PromptLayout } from '../PromptLayout'
+import { useDecisionHome } from '../useDecisionHome'
 import type { PromptComponent } from '../types'
 import { UndoButton } from '../UndoButton'
 import { publishBadges } from '../detail/boardBadges'
@@ -387,6 +388,8 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
         ? LAST_LIFE_ASKED
         : askedText(options.asked, nameOf)
   const slots = paySlots(cost, spends, life)
+  // A phone's bar holds the chip and the meter, so its sheet does not draw the cost again.
+  const inBar = useDecisionHome().home === 'bar'
   return (
     <PromptLayout
       text={text}
@@ -396,6 +399,7 @@ export const PayManaPrompt: PromptComponent<'PayMana'> = ({ options }) => {
       choices={
         <PayColumn
           name={keyword === undefined ? nameOf(spell) : `${keyword} of ${nameOf(spell)}`}
+          track={!inBar}
           slots={slots}
           spends={spends}
           covered={covered}
