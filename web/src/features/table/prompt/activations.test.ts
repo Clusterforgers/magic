@@ -447,6 +447,7 @@ describe('special actions are offered as plays', () => {
     ['foretell', { foretellable: [10] }, { Hand: ME }, { Foretell: 10 }],
     ['plot', { plottable: [10] }, { Hand: ME }, { Plot: 10 }],
     ['plot from the top of the library', { plottable: [10] }, { Library: ME }, { Plot: 10 }],
+    ['discard any time (Circling Vultures)', { r120_discardable: [10] }, { Hand: ME }, { R120Discard: 10 }],
     ['turn face up', { turnable: [10] }, 'Battlefield', { TurnFaceUp: 10 }],
     [
       'cast prepared',

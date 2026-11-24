@@ -15,6 +15,11 @@ sacrifice?: boolean,
  */
 exile?: boolean, 
 /**
+ * The permanents are untapped (Benthic Explorers: "Untap a tapped land an opponent controls"); left out means they
+ * are tapped, sacrificed or exiled.
+ */
+r120_untap?: boolean, 
+/**
  * How many it takes.
  */
 count: number, 

@@ -186,6 +186,20 @@ fn refused_ability(options: &PriorityOptions, ability: AbilityRef) -> EngineErro
         .into()
 }
 
+/// The cards of `hand` with "You may discard this card any time you could cast an instant." (CR 116.2).
+fn r120_discardable_of(state: &GameState, hand: &[ObjectId]) -> Vec<ObjectId> {
+    hand.iter()
+        .copied()
+        .filter(|id| {
+            crate::ability_reader::abilities_of(state, *id)
+                .iter()
+                .any(|(_, ability)| {
+                    matches!(**ability, mtg_cards::ability::Ability::R120DiscardAnyTime)
+                })
+        })
+        .collect()
+}
+
 fn plot_answer(options: &PriorityOptions, object: ObjectId) -> Result<Outcome, EngineError> {
     if options.plottable.contains(&object) {
         Ok(Outcome::BeginPlot(object))
@@ -833,6 +847,7 @@ fn shortcut_options() -> PriorityOptions {
         suspendable: Vec::new(),
         foretellable: Vec::new(),
         plottable: Vec::new(),
+        r120_discardable: Vec::new(),
         turnable: Vec::new(),
         unlockable: Vec::new(),
         endable: Vec::new(),
@@ -886,6 +901,7 @@ fn paid_specials(
 }
 
 /// Everything `player` may do while holding priority.
+#[allow(clippy::too_many_lines)]
 pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityOptions {
     let hand = state.zone(Zone::Hand(player));
     let (at_priority, all_mana) = both_manas(state, player);
@@ -925,6 +941,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         .filter(|id| ways::can_foretell(state, player, *id, &pool, &all_mana, life))
         .collect();
     let plottable = ways::plottable(state, player, hand, &pool, &all_mana, life);
+    let r120_discardable = r120_discardable_of(state, hand);
     let companion = crate::companions::can_bring(state, player, &pool, &all_mana, life);
     let turnable: Vec<ObjectId> = state
         .zone(Zone::Battlefield)
@@ -965,6 +982,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
                 suspendable.as_slice(),
                 foretellable.as_slice(),
                 plottable.as_slice(),
+                r120_discardable.as_slice(),
                 turnable.as_slice(),
             ]
             .concat(),
@@ -978,6 +996,7 @@ pub(crate) fn priority_options(state: &GameState, player: PlayerId) -> PriorityO
         suspendable,
         foretellable,
         plottable,
+        r120_discardable,
         turnable,
         unlockable,
         endable,
@@ -1051,6 +1070,15 @@ pub(crate) fn answer(
             Ok(Outcome::BeginForetell(object))
         }
         PriorityAction::Plot(object) => plot_answer(options, object),
+        PriorityAction::R120Discard(object) => {
+            if !options.r120_discardable.contains(&object) {
+                return Err(IllegalAnswer::NotOffered("discard").into());
+            }
+            Ok(Outcome::Events(vec![Event::CardDiscarded {
+                player,
+                object,
+            }]))
+        }
         PriorityAction::BringCompanion => {
             let outside = crate::companions::outside(state, player)
                 .filter(|_| options.companion)

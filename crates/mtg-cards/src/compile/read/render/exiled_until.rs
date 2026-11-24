@@ -14,6 +14,7 @@ impl Writer<'_> {
                 who: Ref::Target(0),
                 filter,
                 total: None,
+                r120_count: None,
                 bind,
                 exiled_as,
             },

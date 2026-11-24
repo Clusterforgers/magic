@@ -5,7 +5,7 @@ import { must } from '@/test-utils/batches'
 import { cost, manaOfLetter } from '@/test-utils/mana'
 import { manaLetter } from './cardModel'
 import { buildFixture } from './dev/fixture'
-import { givesNow, givesOfOptions, manaAbilitiesOf, madeCost } from './manaMade'
+import { givesNow, givesOfOptions, madeByOption, manaAbilitiesOf, madeCost } from './manaMade'
 
 const option = (letter: string, extra: Partial<ManaOption> = {}, ability = 0): ManaOption => ({
   source: { object: 1, ability },
@@ -166,5 +166,17 @@ describe('givesNow shows a tap only while the seat may tap it', () => {
       ),
     )
     expect(gives.ways.map((way) => letters(way.made))).toEqual(['G', 'W'])
+  })
+})
+
+describe('madeByOption', () => {
+  it("adds a tap's restricted extra after its own mana (Snowfall)", () => {
+    const option: ManaOption = {
+      source: { object: 3, ability: 0 },
+      produces: 'Blue',
+      r120_restricted: [{ mana: ['Blue', 'Blue'], only: ['CumulativeUpkeep'] }],
+    }
+    expect(madeByOption(option)).toEqual(['Blue', 'Blue', 'Blue'])
+    expect(madeByOption({ source: { object: 3, ability: 0 }, produces: 'Blue' })).toEqual(['Blue'])
   })
 })

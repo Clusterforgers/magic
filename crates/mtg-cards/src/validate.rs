@@ -5017,11 +5017,16 @@ impl Walker<'_> {
                 who,
                 filter,
                 total,
+                r120_count,
                 bind,
                 exiled_as,
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("filter", |w| w.selector(filter));
+                if let Some(count) = r120_count {
+                    w.uses("ExileUntil", "Count");
+                    w.at("r120_count", |w| w.amount(count));
+                }
                 if let Some(total) = total {
                     w.uses("ExileUntil", "Total");
                     w.at("total", |w| w.amount(total));
@@ -6009,6 +6014,17 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
             }
             Effect::R119DrainMana { from } => w.at("from", |w| w.reference(from, Kind::Player)),
+            Effect::R120ChooseEachColor {
+                who,
+                colors_of,
+                from,
+                bind,
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("colors_of", |w| w.selector(colors_of));
+                w.at("from", |w| w.reference(from, Kind::Object));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
             Effect::R119BindSpliced { of, bind } => {
                 w.at("of", |w| w.reference(of, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
@@ -6759,6 +6775,7 @@ impl Walker<'_> {
             }
             Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
             Ability::R115MulliganExile => w.uses("Ability", "R115MulliganExile"),
+            Ability::R120DiscardAnyTime => w.uses("Ability", "R120DiscardAnyTime"),
             Ability::Sticker(sticker) => w.sticker(sticker),
             Ability::OpeningReveal { when, effects } => w.opening_reveal(when, effects),
             Ability::Keyword(keyword) => w.keyword_ability(keyword),
@@ -8369,6 +8386,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ExilePermanents { .. }
                 | CostItem::ExileSpell { .. }
                 | CostItem::TapPermanents { .. }
+                | CostItem::UntapPermanents { .. }
                 | CostItem::TapPower { .. }
                 | CostItem::CollectEvidence(_)
                 | CostItem::R6702CollectEvidenceX

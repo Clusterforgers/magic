@@ -27,10 +27,14 @@ pub struct ManaTrigger<'a> {
     pub who: &'a Ref,
     /// The mana it adds for the player who tapped the permanent.
     pub mana: &'a Produce,
+    /// The player who adds it may decline ("its controller may add"), so a tap also makes the mana without it.
+    pub optional: bool,
+    /// What the mana it adds may be spent on ("Spend this mana only to pay cumulative upkeep costs"); empty means anything.
+    pub only: &'a [crate::spend::SpendOn],
 }
 
 /// The shape of `ability` as a triggered mana ability, if it has one: an event of a permanent tapped for mana, no
-/// targets, and one `AddMana` for the player who tapped it, once, with no restriction on spending it; it works from the battlefield, or from the command zone on an emblem.
+/// targets, and one `AddMana` for the player who tapped it, once, or a `May` of that player around it; it works from the battlefield, or from the command zone on an emblem.
 pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
     let Ability::Triggered {
         when:
@@ -49,6 +53,11 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
     else {
         return None;
     };
+    // "Its controller may add" is a `May` of that player around the one `AddMana`.
+    let (effects, optional, chooser) = match effects.as_slice() {
+        [Effect::May { who, effects }] => (effects.as_slice(), true, Some(who)),
+        all => (all, false, None),
+    };
     let [
         Effect::AddMana {
             who,
@@ -58,10 +67,13 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
             lasts,
             when_spent: None,
         },
-    ] = effects.as_slice()
+    ] = effects
     else {
         return None;
     };
+    if chooser.is_some_and(|chooser| chooser != who) {
+        return None;
+    }
     // "You add" is the player who tapped it only when that is the player the event names.
     let taps_for_you = *who == Ref::You && *by == Ref::You;
     let taps_for_them = *who == Ref::Triggering;
@@ -71,11 +83,13 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
         Produce::ChosenColor(count) => *count > 0,
         Produce::AnyCombination { count, .. } => count.fixed().is_some_and(|count| count > 0),
         Produce::OfTapped => true,
+        Produce::Instead { base, instead, .. } => {
+            matches!((&**base, &**instead), (Produce::Fixed(a), Produce::Fixed(b)) if !a.is_empty() && !b.is_empty())
+        }
         _ => false,
     };
     (targets.is_empty()
         && times.is_one()
-        && only.is_empty()
         && lasts.is_step()
         && adds
         && (taps_for_you || taps_for_them))
@@ -87,12 +101,14 @@ pub fn mana_trigger(ability: &Ability) -> Option<ManaTrigger<'_>> {
             condition: intervening_if.as_ref(),
             who,
             mana,
+            optional,
+            only,
         })
 }
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a triggered ability on a permanent tapped for mana is a triggered mana ability only when it adds mana for the player who tapped it with no target, no limit and no restriction; every other ability stays on the stack.
+    //! Goal: a triggered ability on a permanent tapped for mana is a triggered mana ability only when it adds mana, perhaps restricted or optional, for the player who tapped it with no target and no limit; every other ability stays on the stack.
     use rstest::rstest;
 
     use super::*;
@@ -117,6 +133,12 @@ mod tests {
     #[case::crypt_ghast(
         r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Subtype":"Swamp"}],"by":"You"}},"effects":[{"AddMana":{"mana":{"Fixed":["Black"]}}}]}}"#
     )]
+    #[case::restricted(
+        r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}},"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#
+    )]
+    #[case::snowfall(
+        r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Subtype":"Island"}]}},"effects":[{"May":{"who":"Triggering","effects":[{"AddMana":{"who":"Triggering","mana":{"Instead":{"base":{"Fixed":["Blue"]},"when":{"Matches":{"subject":"Triggering","selector":[{"Supertype":"Snow"}]}},"instead":{"Fixed":["Blue","Blue"]}}},"only":["CumulativeUpkeep"]}}]}}]}}"#
+    )]
     fn a_trigger_that_adds_mana_for_the_player_who_tapped_is_a_mana_ability(#[case] json: &str) {
         assert!(mana_trigger(&ability(json)).is_some(), "{json}");
     }
@@ -128,9 +150,6 @@ mod tests {
     #[case::mana_for_an_opponent(
         r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}},"effects":[{"AddMana":{"who":"Opponents","mana":{"Fixed":["Green"]}}}]}}"#
     )]
-    #[case::restricted(
-        r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}},"effects":[{"AddMana":{"mana":{"Fixed":["Green"]},"only":[{"Spell":{"types":["Creature"]}}]}}]}}"#
-    )]
     #[case::and_something_else(
         r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}],"by":"You"}},"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}},{"Draw":{}}]}}"#
     )]
@@ -139,6 +158,9 @@ mod tests {
     )]
     #[case::another_event(
         r#"{"Triggered":{"when":{"Tapped":{"what":[{"Type":"Land"}]}},"effects":[{"AddMana":{"mana":{"Fixed":["Green"]}}}]}}"#
+    )]
+    #[case::may_of_another_player(
+        r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}]}},"effects":[{"May":{"effects":[{"AddMana":{"who":"Triggering","mana":{"Fixed":["Green"]}}}]}}]}}"#
     )]
     #[case::damage_instead(
         r#"{"Triggered":{"when":{"TappedForMana":{"what":[{"Type":"Land"}]}},"effects":[{"DealDamage":{"to":"Triggering","amount":1}}]}}"#

@@ -15,8 +15,10 @@ use mtg_cards::refs::ZoneKind;
 use mtg_core::ids::PlayerId;
 use mtg_core::mana::ManaType;
 
+use crate::abilities::Cause;
 use crate::ability_reader::abilities_of;
 use crate::characteristics::controller_of_object;
+use crate::choose::Target;
 use crate::mana::ManaOption;
 use crate::mana_ability::split;
 use crate::mana_kinds::{COLORS, combinations, mana_of};
@@ -90,8 +92,27 @@ fn ways(
     trigger: &Trigger,
     mana: &Produce,
     option: &ManaOption,
+    land: ObjectRef,
 ) -> Vec<Vec<ManaType>> {
     match mana {
+        Produce::Instead {
+            base,
+            when,
+            instead,
+        } => {
+            // "If that Island is snow, ... instead" reads the tapped permanent as the object the event is about.
+            let cause = Cause {
+                subjects: vec![Target::Object(land)],
+                ..Cause::default()
+            };
+            let scope = Scope::triggered(state, trigger.controller, trigger.source, &cause);
+            let chosen = if scope.holds(when).unwrap_or(false) {
+                instead
+            } else {
+                base
+            };
+            ways(state, trigger, chosen, option, land)
+        }
         Produce::Fixed(list) => vec![list.clone()],
         Produce::OfTapped => vec![vec![option.produces]],
         Produce::AnyCombination { count, among } => count
@@ -160,6 +181,23 @@ fn with(mut option: ManaOption, added: &[ManaType]) -> ManaOption {
     option
 }
 
+/// `option` with `added` mana that may be spent only on `only` made by the same tap; no mana leaves it as it is.
+fn restricted(
+    mut option: ManaOption,
+    added: Vec<ManaType>,
+    only: &[mtg_cards::spend::SpendOn],
+) -> ManaOption {
+    if !added.is_empty() {
+        option
+            .r120_restricted
+            .push(crate::mana::R120RestrictedMana {
+                mana: added,
+                only: only.to_vec(),
+            });
+    }
+    option
+}
+
 /// The options one option becomes once the triggered mana abilities of the permanents in play add their mana to its tap.
 fn expand(
     state: &GameState,
@@ -188,11 +226,22 @@ fn expand(
         found = found
             .into_iter()
             .flat_map(|(option, number)| {
-                let all = ways(state, trigger, shape.mana, &option);
+                let mut all = ways(state, trigger, shape.mana, &option, land);
+                // A player who may add the mana may also add none of it.
+                if shape.optional {
+                    all.insert(0, Vec::new());
+                }
                 let width = all.len();
                 all.into_iter()
                     .enumerate()
-                    .map(|(pick, mana)| (with(option.clone(), &mana), number * width + pick))
+                    .map(|(pick, mana)| {
+                        let made = if shape.only.is_empty() {
+                            with(option.clone(), &mana)
+                        } else {
+                            restricted(option.clone(), mana, shape.only)
+                        };
+                        (made, number * width + pick)
+                    })
                     .collect::<Vec<_>>()
             })
             .collect();

@@ -1,7 +1,7 @@
 {
   "oracle_id": "5ffed544-1656-4753-ac8f-ad8fb4442c7f",
   "name": "Snowfall",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Snowfall",
@@ -9,9 +9,35 @@
       "abilities": [
         { "Keyword": { "CumulativeUpkeep": "{U}" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 172, "end": 382 }
+          "Triggered": {
+            "when": { "TappedForMana": { "what": [{ "Subtype": "Island" }] } },
+            "effects": [
+              {
+                "May": {
+                  "who": "Triggering",
+                  "effects": [
+                    {
+                      "AddMana": {
+                        "who": "Triggering",
+                        "mana": {
+                          "Instead": {
+                            "base": { "Fixed": ["Blue"] },
+                            "when": {
+                              "Matches": {
+                                "subject": "Triggering",
+                                "selector": [{ "Supertype": "Snow" }]
+                              }
+                            },
+                            "instead": { "Fixed": ["Blue", "Blue"] }
+                          }
+                        },
+                        "only": ["CumulativeUpkeep"]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
