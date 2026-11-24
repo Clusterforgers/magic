@@ -1250,6 +1250,25 @@ fn target_what(ctx: &Ctx, valid: &str, zone: Option<&str>) -> Tr<Value> {
     }
 }
 
+/// [`subject`] of a verb Forge resolves on its defined objects before its targets (`PutCounter`, `Pump`): beside a
+/// target, a `Defined$` word other than `Targeted` names what the line acts on, and the target is only chosen (for an
+/// amount to read: "Put a loyalty counter on ~ for each creature target opponent controls").
+pub fn defined_or_target(
+    ctx: &mut Ctx,
+    params: &Params,
+    default: &str,
+    zone: Option<&str>,
+) -> Tr<Value> {
+    match params.get("Defined") {
+        Some(word) if params.has("ValidTgts") && word != "Targeted" => {
+            let spec = target_spec(ctx, params, zone)?;
+            ctx.target(spec)?;
+            defined(ctx, word)
+        }
+        _ => subject(ctx, params, default, zone),
+    }
+}
+
 /// The reference to what an ability line acts on: its target (`ValidTgts$`, declared on the context) or its
 /// `Defined$` word, which is `default` when the line has none.
 pub fn subject(ctx: &mut Ctx, params: &Params, default: &str, zone: Option<&str>) -> Tr<Value> {

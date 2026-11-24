@@ -87,6 +87,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 continue;
             }
         }
+        // An Aura, bestowed or mutating spell holds its one announced target outside a `Spell` ability (CR 303.4a,
+        // 702.103b, 702.140a); its copy may choose a new one like any spell (CR 707.10c).
+        let target_rules = crate::resolve::spell_target_rules(state, spell.id());
         let start = if each_target.is_some() { made } else { 0 };
         let total = if made > 0 {
             made.saturating_add(added)
@@ -96,9 +99,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         for n in start..total {
             // An added copy may always get new targets.
             let new_targets = *new_targets || n >= made;
-            // A permanent spell has no rules of a spell (an Aura asks for its host through its keyword): its copy
-            // announces what it did.
-            let choices = if let Some((_, ability)) = &ability {
+            // A permanent spell with no target announces what the original did.
+            let choices = if let Some(ability) = &target_rules {
                 let original = Original {
                     id: spell.id(),
                     name: spell.card().name.as_str(),

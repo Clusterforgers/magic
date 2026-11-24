@@ -30,6 +30,12 @@ use serde::{Deserialize, Serialize};
 use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
+/// Whether a boxed list of objects is empty, so serialization can leave it out.
+#[allow(clippy::borrowed_box)]
+pub(crate) fn none_listed(list: &Box<Vec<ObjectId>>) -> bool {
+    list.is_empty()
+}
+
 pub use auto::{damage_in_order, triggers_in_order};
 pub use cards::{CardsChoice, CardsOptions, CardsTotal};
 pub use costs::{CostsChoice, CostsOptions, OptionalCost};

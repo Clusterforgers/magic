@@ -14,7 +14,7 @@
             "effects": [
               {
                 "PutCounters": {
-                  "on": { "Target": 0 },
+                  "on": "This",
                   "counter": "loyalty",
                   "count": {
                     "Count": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 0 } }]
@@ -32,15 +32,14 @@
                 "Continuous": {
                   "affected": "This",
                   "mods": [
+                    { "AddType": "Creature" },
+                    { "SetCreatureTypes": ["Human", "Soldier"] },
                     {
                       "SetPT": {
                         "power": { "Counters": { "on": "This", "counter": "loyalty" } },
                         "toughness": { "Counters": { "on": "This", "counter": "loyalty" } }
                       }
                     },
-                    { "AddSubtype": "Human" },
-                    { "AddSubtype": "Soldier" },
-                    { "AddType": "Creature" },
                     { "AddKeyword": "Indestructible" }
                   ],
                   "duration": "UntilEndOfTurn"

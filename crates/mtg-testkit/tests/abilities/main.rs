@@ -55,6 +55,7 @@ mod memory_after_leaving;
 mod once_a_game;
 mod optional_triggers;
 mod owner_left_abilities;
+mod pc1_gideon_loyalty;
 mod prevent_half;
 mod prevention;
 mod prohibitions;

@@ -7,7 +7,9 @@ use super::ctx::{Ctx, Tr, only, unmapped};
 use super::frame::{self, Slot, Verb};
 use super::keyword::{keyword_list, keyword_value};
 use super::remember;
-use super::valid::{bound, defined, objects, selector_any, selector_in, subject};
+use super::valid::{
+    bound, defined, defined_or_target, objects, selector_any, selector_in, subject,
+};
 use crate::forge::script::Params;
 
 /// The effects of a verb on objects.
@@ -469,7 +471,7 @@ fn add_or_remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
     let Some(kind) = p.get("CounterType").and_then(kind_word) else {
         return unmapped("key:AddOrRemoveCounter.CounterType");
     };
-    let on = subject(ctx, p, "Self", None)?;
+    let on = defined_or_target(ctx, p, "Self", None)?;
     let count = amount(ctx, p.get("CounterNum").unwrap_or("1"))?;
     let put = json!({"PutCounters": {"on": on, "counter": kind, "count": count}});
     let take = json!({"RemoveCounters": {"from": on, "counter": kind, "count": count}});
@@ -921,7 +923,7 @@ fn pump(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
     } else {
         pump_duration(p)?
     };
-    let subject = subject(ctx, p, "Self", None)?;
+    let subject = defined_or_target(ctx, p, "Self", None)?;
     if let Some(found) = player_keywords(ctx, p, &subject, duration) {
         return found;
     }
@@ -1599,7 +1601,7 @@ fn put_counter(ctx: &mut Ctx, p: &Params) -> Tr<Vec<Value>> {
         None if p.has("ChoiceAmount") || p.has("MinChoiceAmount") => {
             return unmapped("key:PutCounter.ChoiceAmount");
         }
-        None => subject(ctx, p, "Self", None)?,
+        None => defined_or_target(ctx, p, "Self", None)?,
     };
     let count = if super::effects::divided(p, "CounterNum")? {
         json!("Divided")
@@ -1734,7 +1736,7 @@ fn per_object_counters(ctx: &mut Ctx, p: &Params, name: &str) -> Tr<Vec<Value>> 
     let over = if p.get("Defined") == Some("Targeted") && p.has("ValidTgts") {
         subject(ctx, &p.without(&["Defined"]), "Self", None)?
     } else {
-        subject(ctx, p, "Self", None)?
+        defined_or_target(ctx, p, "Self", None)?
     };
     let count = amount(ctx, name)?;
     let each = ctx.fresh("each");
@@ -1794,7 +1796,7 @@ fn remove_counter(ctx: &mut Ctx, p: &Params) -> Tr<Value> {
             "UpTo",
         ],
     )?;
-    let from = subject(ctx, p, "Self", None)?;
+    let from = defined_or_target(ctx, p, "Self", None)?;
     // "Remove up to N counters": the controller may stop before a number; "up to all" is no number.
     let up_to = match p.get("UpTo") {
         None | Some("False") => false,

@@ -1,4 +1,4 @@
-/** The other questions of a spell the dev table can show: `?prompt=divide`, `divide-three`, `costs`, `costs-gift`, `x`, `way`, `sacrifice-cost` and `unknown-kind`. */
+/** The other questions of a spell the dev table can show: `?prompt=divide`, `divide-three`, `costs`, `costs-gift`, `x`, `way`, `sacrifice-cost`, `sacrifice-targeted`, `targets-paid` and `unknown-kind`. */
 import type { PendingDecision } from '@/play/store'
 import type { DecisionKind, ObjectId, OptionalCost, Target } from '@/protocol/generated'
 import { SEAT_BASE } from '../prompt/costsText'
@@ -131,6 +131,44 @@ const sacrificeCost: DevPrompt = (fixture) => {
   })
 }
 
+/** The same sacrifice after the ability's target was chosen: the first creature offered is that target. */
+const sacrificeTargeted: DevPrompt = (fixture) => {
+  const own = creaturesOf(fixture.view, fixture.view.viewer)
+  const from = own.slice(0, 3).map((creature) => creature.id)
+  return decision(fixture, {
+    ChooseCards: {
+      source: own[3]?.id ?? own[0]?.id ?? 0,
+      from,
+      min: 1,
+      max: 1,
+      text: 'Sacrifice a creature.',
+      can_cancel: true,
+      targeted: from.slice(0, 1),
+    },
+  })
+}
+
+/** "Sacrifice a creature: 1 damage to any target" asks its target after the sacrifice of the viewer's first creature. */
+const targetsPaid: DevPrompt = (fixture) => {
+  const { view } = fixture
+  const own = creaturesOf(view, view.viewer)
+  const [foe] = opponents(view)
+  const theirs = foe === undefined ? [] : creaturesOf(view, foe).slice(0, 2)
+  const sacrificed = own[0]?.id
+  return decision(fixture, {
+    ChooseTargets: {
+      source: own[3]?.id ?? own[1]?.id ?? 0,
+      spec: 0,
+      legal: [...own.slice(0, 3), ...theirs].map((creature) => object(creature.id)),
+      min: 1,
+      max: 1,
+      can_cancel: true,
+      wording: 'any target',
+      paid: sacrificed === undefined ? [] : [sacrificed],
+    },
+  })
+}
+
 /** A decision of a kind this client does not know, as a newer server could send: the generic prompt answers it. */
 const unknownKind: DevPrompt = (fixture) =>
   decision(fixture, { Frobnicate: { source: ownSpell(fixture.view)?.id ?? 0 } } as unknown as DecisionKind)
@@ -145,5 +183,7 @@ export const ANNOUNCE_PROMPTS: Record<string, DevPrompt> = {
   x,
   way,
   'sacrifice-cost': sacrificeCost,
+  'sacrifice-targeted': sacrificeTargeted,
+  'targets-paid': targetsPaid,
   'unknown-kind': unknownKind,
 }

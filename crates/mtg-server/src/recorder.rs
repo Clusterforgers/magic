@@ -152,6 +152,14 @@ impl Recorder {
         self.records.set_start(self.game, recipe, manual_play).await
     }
 
+    /// Stores the recipe of the lobby as its seats chose it. The lobby already plays with it: a failed write is logged
+    /// and only a restart before the start loses it.
+    pub(crate) async fn lobby_recipe(&self, recipe: &GameRecipe) {
+        if let Err(error) = self.records.set_lobby_recipe(self.game, recipe).await {
+            tracing::warn!(game = %self.game, %error, "could not store a lobby's decks");
+        }
+    }
+
     /// Notes that the lobby is over.
     pub(crate) async fn started(&self) {
         if let Err(error) = self.records.mark_running(self.game).await {

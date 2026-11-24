@@ -177,6 +177,7 @@ pub(crate) fn r6400_next(
                 can_cancel: true,
                 total: None,
                 groups: Vec::new(),
+                targeted: Box::default(),
             }),
         }));
     }

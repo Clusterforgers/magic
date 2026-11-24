@@ -114,6 +114,11 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         }
         let (min, max) = pick.bounds(candidates.len());
         let groups = pick.r4709_groups(ctx.state, &candidates);
+        let targeted = if pick.kind.moves() {
+            r6012h_targeted(work.choices, &candidates)
+        } else {
+            Vec::new()
+        };
         return Some(ctx.ask(DecisionKind::ChooseCards(CardsOptions {
             one_per_name: false,
             source: ctx.source,
@@ -124,12 +129,47 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             can_cancel: ctx.can_cancel(),
             total: None,
             groups,
+            targeted: Box::new(targeted),
         })));
     }
     if let Some(next) = r109_opponent(ctx, work, &price) {
         return Some(next);
     }
     super::w2f_counter_kinds::w2f_run(ctx, work, &price)
+}
+
+/// The `candidates` already chosen as targets (an X counted from the targets asks its parts after them, CR 601.2c).
+fn r6012h_targeted(choices: &Choices, candidates: &[ObjectId]) -> Vec<ObjectId> {
+    candidates
+        .iter()
+        .copied()
+        .filter(|candidate| {
+            choices.targets.iter().flatten().any(|target| {
+                target
+                    .object()
+                    .is_some_and(|object| object.id == *candidate)
+            })
+        })
+        .collect()
+}
+
+/// The objects the parts picked so far move when paid (sacrificed, exiled, returned): a target among them is a new
+/// object by the time the spell or ability resolves (CR 400.7, 601.2c, 601.2h).
+pub(super) fn r6012h_moved(ctx: &Ctx<'_>, choices: &Choices) -> Vec<ObjectId> {
+    let Some(price) = price_of(ctx, choices) else {
+        return Vec::new();
+    };
+    price
+        .parts
+        .iter()
+        .filter_map(|part| match part.at(choices.x.unwrap_or(0)) {
+            Part::Pick(pick) => Some(pick.kind.moves()),
+            _ => None,
+        })
+        .zip(choices.cost_picks())
+        .filter(|(moves, _)| *moves)
+        .flat_map(|(_, picked)| picked.iter().copied())
+        .collect()
 }
 
 /// Settles the opponent of each part that has one gain life ("have an opponent gain 3 life"), or asks the payer for the

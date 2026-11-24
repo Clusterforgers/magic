@@ -26,6 +26,10 @@ fn loyalty(text: &str) -> Option<Ability> {
     "\u{2212}12: You gain 12 life.",
     r#"{"Loyalty":{"cost":{"Minus":12},"effects":[{"GainLife":{"amount":12}}]}}"#
 )]
+#[case::counters_by_the_group_of_a_target_opponent(
+    "+1: Put a loyalty counter on ~ for each creature target opponent controls.",
+    r#"{"Loyalty":{"cost":{"Plus":1},"targets":[{"what":"Opponent"}],"effects":[{"PutCounters":{"on":"This","counter":"loyalty","count":{"Count":[{"Type":"Creature"},{"ControlledBy":{"Target":0}}]}}}]}}"#
+)]
 #[case::minus_x(
     "\u{2212}X: ~ deals X damage to target creature.",
     r#"{"Loyalty":{"cost":"MinusX","targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":"X"}}]}}"#

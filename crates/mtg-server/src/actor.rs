@@ -349,11 +349,11 @@ impl<S: EventStore> GameActor<S> {
                 reply,
             } => {
                 // A caller that stopped waiting needs no answer.
-                let _ = reply.send(self.seat_at(seat, name, deck));
+                let _ = reply.send(self.seat_at(seat, name, deck).await);
             }
             Command::Deck { seat, deck, reply } => {
                 // A caller that stopped waiting needs no answer.
-                let _ = reply.send(self.choose_deck(seat, deck));
+                let _ = reply.send(self.choose_deck(seat, deck).await);
             }
             Command::Teams { teams, reply } => {
                 // A caller that stopped waiting needs no answer.

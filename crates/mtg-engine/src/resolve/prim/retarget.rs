@@ -229,6 +229,7 @@ pub(super) fn ask(
                         apart: Vec::new(),
                         together: None,
                         total: None,
+                        paid: Box::default(),
                     }),
                 }));
             }
@@ -347,6 +348,7 @@ pub(super) fn one_to(
                         apart: Vec::new(),
                         together: None,
                         total: None,
+                        paid: Box::default(),
                     }),
                 }));
             }

@@ -48,6 +48,11 @@ pub struct CardsOptions {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<u32>>", optional))]
     pub groups: Vec<u32>,
+    /// The cards of `from` already chosen as targets of the spell or ability whose cost asks, when taking them moves
+    /// them: such a target is a new object by then and the spell or ability will not reach it (CR 400.7, 608.2b).
+    #[serde(default, skip_serializing_if = "crate::choose::none_listed")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ObjectId>>", optional))]
+    pub targeted: Box<Vec<ObjectId>>,
 }
 
 /// The most the values of the cards chosen may add up to, and the value of each card offered.
@@ -324,6 +329,7 @@ pub(crate) fn pick_selections_within(
                 one_per_name: selection.one_per_name,
                 total,
                 groups: selection.groups.clone(),
+                targeted: Box::default(),
             };
             match answers.next() {
                 None => {
@@ -383,6 +389,7 @@ mod tests {
             can_cancel: false,
             total: None,
             groups: Vec::new(),
+            targeted: Box::default(),
         }
     }
 
@@ -509,6 +516,7 @@ mod tests {
                     can_cancel: false,
                     total: None,
                     groups: Vec::new(),
+                    targeted: Box::default(),
                 }),
             })
         );
