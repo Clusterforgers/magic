@@ -47,9 +47,14 @@ export function madeCost(made: readonly ManaType[]): ManaCost {
   return made.map((mana) => SYMBOL_OF[mana])
 }
 
-/** The mana one use of the option makes: `count` of what it produces (Sol Ring: two), then what `also` adds. */
+/** The mana one use of the option makes: `count` of what it produces (Sol Ring: two), then what `also` adds, then the
+ * restricted extra a triggered mana ability adds to the tap (Snowfall). */
 export function madeByOption(option: ManaOption): ManaType[] {
-  return [...Array.from({ length: option.count ?? 1 }, () => option.produces), ...(option.also ?? [])]
+  return [
+    ...Array.from({ length: option.count ?? 1 }, () => option.produces),
+    ...(option.also ?? []),
+    ...(option.r120_restricted ?? []).flatMap((part) => part.mana),
+  ]
 }
 
 const keyOf = (way: Way): string =>

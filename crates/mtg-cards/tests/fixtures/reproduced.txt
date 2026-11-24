@@ -206,6 +206,7 @@ Bard's Bow
 Bard's Company
 Bard, Heir of Girion
 Barren Moor
+Barrow Ghoul
 Barter in Blood
 Bartolomé del Presidio
 Basalt Monolith
@@ -247,6 +248,7 @@ Belisarius Cawl
 Bell Borca, Spectral Sergeant
 Bellowing Aegisaur
 Benthic Biomancer
+Benthic Explorers
 Bespoke Battlewagon
 Bewitching Leechcraft
 Big Mother Mouser
@@ -493,6 +495,7 @@ Churning Reservoir
 Cinder Glade
 Cinderhaze Wretch
 Circle of Dreams Druid
+Circling Vultures
 Circuitous Route
 Circuits Act
 Citadel Gate
@@ -1480,6 +1483,7 @@ Intrepid Rabbit
 Intrepid Stablemaster
 Invading Manticore
 Invasion Plans
+Invasion of Alara // Awaken the Maelstrom
 Invasion of Arcavios // Invocation of the Founders
 Invasion of Muraganda // Primordial Plasm
 Invasion of Segovia // Caetus, Sea Tyrant of Segovia
@@ -2453,6 +2457,7 @@ Sakura-Tribe Elder
 Saltcrusted Steppe
 Sami's Curiosity
 Samurai's Katana
+Sanar, Innovative First-Year
 Sanctum Lurker
 Sanctum Seeker
 Sanctum Weaver
@@ -2654,6 +2659,7 @@ Smuggler's Buggy
 Smuggler's Copter
 Snake Umbra
 Snakeform
+Snowfall
 Snubhorn Sentry
 Snuff Out
 Sodden Verdure
@@ -2698,6 +2704,7 @@ Sphinx of Jwar Isle
 Sphinx of Magosi
 Sphinx of the Chimes
 Sphinx of the Final Word
+Sphinx of the Guildpact
 Sphinx of the Steel Wind
 Spider Spawning
 Spider-Islanders
@@ -3095,6 +3102,7 @@ Trait Doctoring
 Tranquil Expanse
 Tranquil Thicket
 Tranquilize
+Transguild Courier
 Transmogrifying Wand
 Transporter Malfunction
 Trap the Trespassers

@@ -1,6 +1,7 @@
-//! Untapping tapped permanents the payer controls as a cost ("Untap two tapped creatures you control").
+//! Untapping tapped permanents as a cost: the payer's own ("Untap two tapped creatures you control"), or those the
+//! filter names by controller ("Untap a tapped land an opponent controls").
 
-use mtg_cards::refs::Selector;
+use mtg_cards::refs::{Pred, Selector};
 use mtg_core::ids::ObjectId;
 
 use super::Payer;
@@ -8,13 +9,17 @@ use crate::characteristics::controller_of;
 use crate::events::Event;
 use crate::zones::Zone;
 
-/// The tapped permanents the payer controls that match.
+/// The tapped permanents that match: those the payer controls, unless the filter names their controller itself.
 pub(super) fn candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> {
+    let named = filter
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::ControlledBy(_)));
     payer.matching(
         payer.state.zone(Zone::Battlefield).iter().copied(),
         filter,
         |id| {
-            controller_of(payer.state, id) == Some(payer.player)
+            (named || controller_of(payer.state, id) == Some(payer.player))
                 && payer
                     .state
                     .object(id)
@@ -23,7 +28,6 @@ pub(super) fn candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> 
         },
     )
 }
-
 /// The permanent becomes untapped.
 pub(super) const fn event(object: ObjectId) -> Event {
     Event::PermanentUntapped { object }

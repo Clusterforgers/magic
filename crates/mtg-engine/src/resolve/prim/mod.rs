@@ -167,6 +167,7 @@ mod r6400_block;
 pub(crate) use r306_add_step::engine_step as r115_engine_step;
 mod r116_assimilate;
 mod r119_02_drain;
+mod r120_02_each_color;
 pub(crate) mod r6402_change_roll;
 pub(crate) mod r6502_enters_as;
 mod r6701_remove_among;
@@ -419,6 +420,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::R119ActivateLandMana { .. } => r119_02_drain::run_activate(cx, effect),
         Effect::R119DrainMana { .. } => r119_02_drain::run_drain(cx, effect),
         Effect::R119BindSpliced { .. } => r119_02_drain::run_bind_spliced(cx, effect),
+        Effect::R120ChooseEachColor { .. } => r120_02_each_color::run(cx, effect),
         Effect::Shield { .. } => shield::run(cx, effect),
         Effect::DelayedTrigger { .. } => delayed_trigger::run(cx, effect),
         Effect::Reflexive { .. } => reflexive::run(cx, effect),
@@ -514,7 +516,7 @@ mod tests {
         {"R115ExchangeBlocks":{"what":"This"}}, {"R115ExchangeBlockers":{"what":"This"}}, {"R115JoinBlock":{"what":"This","blocking":"This"}}, {"R115SkipStep":{"step":"Draw"}},
         {"BecomeBlocked":{"what":"This"}},
         {"PutBeneathTop":{"what":"This","below":2}},
-        {"LoseUnspentMana":{}}, {"R119ActivateLandMana":{"who":"You"}}, {"R119DrainMana":{"from":"You"}}, {"R119BindSpliced":{"of":"This","as":"spliced"}},
+        {"LoseUnspentMana":{}}, {"R119ActivateLandMana":{"who":"You"}}, {"R119DrainMana":{"from":"You"}}, {"R119BindSpliced":{"of":"This","as":"spliced"}}, {"R120ChooseEachColor":{"colors_of":[],"from":"This","as":"chosen"}},
         {"Shield":{"when":{"Damage":{}},"by":"Prevent","duration":"UntilEndOfTurn"}},
         {"DelayedTrigger":{"when":{"StepBegins":{"step":"Upkeep","whose":"You"}},"effects":[]}},
         {"Reflexive":{"effects":[]}},
@@ -544,7 +546,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 174, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 175, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -731,6 +733,7 @@ mod tests {
         "Effect.R119ActivateLandMana",
         "Effect.R119DrainMana",
         "Effect.R119BindSpliced",
+        "Effect.R120ChooseEachColor",
         "Effect.Shield",
         "Effect.DelayedTrigger",
         "Effect.Reflexive",

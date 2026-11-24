@@ -13,7 +13,8 @@ use crate::zones::Zone;
 /// (exile is open to every seat), until one matches the filter or the library is empty. The exiling stops at the first
 /// match, which stays in exile with the cards before it; a library with no match is exiled whole. The card found is
 /// bound to `as` and every card exiled, the one found included, to `exiled_as`, each as the object it becomes in exile
-/// (CR 400.7). Nothing is bound to `as` when nothing matched. With several players each exiles from their own library, in
+/// (CR 400.7). Nothing is bound to `as` when nothing matched; with a count the exiling goes on until that many matched.
+/// With several players each exiles from their own library, in
 /// turn order, and every card found is bound. With a `total` the exiling of each player goes on until the cards they
 /// exiled add up to that mana value or more, the last one matching the filter.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
@@ -21,6 +22,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         who,
         filter,
         total,
+        r120_count,
         bind,
         exiled_as,
     } = effect
@@ -32,6 +34,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Some(amount) => Some(cx.scope.amount(amount)?),
         None => None,
     };
+    // "Until you exile two nonland cards": the matches that end it; one when absent.
+    let wanted = match r120_count {
+        Some(amount) => usize::try_from(cx.scope.amount(amount)?.max(0)).unwrap_or(0),
+        None => 1,
+    };
     let mut events = Vec::new();
     let mut found = Vec::new();
     let mut exiled = Vec::new();
@@ -40,6 +47,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             continue;
         }
         let mut sum: i64 = 0;
+        let mut matched = 0usize;
+        if wanted == 0 {
+            continue;
+        }
         for &id in state.zone(Zone::Library(owner)).iter().rev() {
             let Some(card) = state.object(id) else {
                 continue;
@@ -60,7 +71,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             sum += i64::from(card.mana_value());
             if least.is_none_or(|least| sum >= least) && cx.scope.selects(filter, reference)? {
                 found.push(arrived);
-                break;
+                matched += 1;
+                if matched >= wanted {
+                    break;
+                }
             }
         }
     }

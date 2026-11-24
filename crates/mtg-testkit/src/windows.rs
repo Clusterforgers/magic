@@ -194,6 +194,7 @@ mod tests {
                 suspendable: Vec::new(),
                 foretellable: Vec::new(),
                 plottable: Vec::new(),
+                r120_discardable: Vec::new(),
                 companion: false,
                 turnable: Vec::new(),
                 unlockable: Vec::new(),

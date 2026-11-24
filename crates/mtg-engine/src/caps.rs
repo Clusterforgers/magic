@@ -295,6 +295,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Random.Top",
     "Effect.ExileUntil",
     "ExileUntil.Total",
+    "ExileUntil.Count",
     "Effect.RevealUntil",
     "Effect.ExileTop",
     "Effect.ExileHidden",
@@ -348,6 +349,7 @@ const RUNS: &[&str] = &[
     "Cost.OneOf.Activated",
     "Cost.XAtLeast.Way",
     "Ability.R115MulliganExile",
+    "Ability.R120DiscardAnyTime",
     "Ability.ManaAbility.Other",
     "Ability.ManaAbility.From",
     "Effect.PutCounters",
@@ -574,6 +576,7 @@ const RUNS: &[&str] = &[
     "Effect.R119ActivateLandMana",
     "Effect.R119DrainMana",
     "Effect.R119BindSpliced",
+    "Effect.R120ChooseEachColor",
     "Effect.Shield",
     "Ability.Static",
     "Ability.Static.Defining",
@@ -1874,6 +1877,7 @@ mod tests {
     #[case::conniving("Effect.Connive", true)]
     #[case::exiling_until_a_card_matches("Effect.ExileUntil", true)]
     #[case::exiling_until_a_total_mana_value("ExileUntil.Total", true)]
+    #[case::exiling_until_a_count_of_matches("ExileUntil.Count", true)]
     #[case::revealing_until_a_card_matches("Effect.RevealUntil", true)]
     #[case::exiling_the_top_cards("Effect.ExileTop", true)]
     #[case::exiling_face_down("Effect.ExileHidden", true)]
@@ -1924,6 +1928,7 @@ mod tests {
         true
     )]
     #[case::r115_exiling_the_hand_at_a_mulligan("Ability.R115MulliganExile", true)]
+    #[case::r120_discarding_any_time("Ability.R120DiscardAnyTime", true)]
     #[case::choosing_between_costs_elsewhere("Cost.OneOf.Elsewhere", false)]
     #[case::mana_of_the_chosen_color("Effect.AddMana.ChosenColor", true)]
     #[case::mana_of_a_type_or_the_chosen_color("Effect.AddMana.OrChosenColor", true)]

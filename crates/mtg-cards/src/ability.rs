@@ -541,6 +541,9 @@ pub enum Ability {
     /// that many cards." (CR 103.5): offered with each keep-or-mulligan decision while the card is in its owner's hand;
     /// the decision is asked again of the new hand, and no mulligan is taken.
     R115MulliganExile,
+    /// "You may discard this card any time you could cast an instant." (CR 116.2): a special action of the player whose
+    /// hand holds the card, offered whenever they hold priority; the discard uses no stack.
+    R120DiscardAnyTime,
     /// "If this card is in your opening hand, you may begin the game with it on the battlefield." (CR 103.6): the card
     /// is asked about once its owner has kept a hand.
     OpeningHand,

@@ -468,6 +468,16 @@ pub struct ManaOption {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<ManaType>>", optional))]
     pub also: Vec<ManaType>,
+    /// Mana a triggered mana ability adds to the same tap with a restriction of its own (Snowfall's {U} spent only on
+    /// cumulative upkeep), after what `made` lists; left out means none.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<R120RestrictedMana>>", optional))]
+    pub r120_restricted: Vec<R120RestrictedMana>,
+    /// A payment counts the mana of `r120_restricted` in `also` (`usable`): the activation adds it once, restricted;
+    /// engine only.
+    #[serde(skip)]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub r120_folded: bool,
     /// Life the activation pays; left out means none.
     #[serde(default, skip_serializing_if = "is_zero")]
     #[cfg_attr(feature = "ts", ts(as = "Option<u32>", optional))]
@@ -504,6 +514,16 @@ pub struct ManaOption {
     pub nonland: bool,
 }
 
+/// Mana a triggered mana ability adds to a tap that may be spent only on some things.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub struct R120RestrictedMana {
+    /// The mana.
+    pub mana: Vec<ManaType>,
+    /// What it may be spent on.
+    pub only: Vec<SpendOn>,
+}
+
 /// Permanents or cards a mana ability's cost takes besides its source: "Tap an untapped creature you control", "Sacrifice
 /// a Goblin", "Exile a card from your hand".
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
@@ -517,6 +537,11 @@ pub struct Take {
     #[serde(default, skip_serializing_if = "is_false")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
     pub exile: bool,
+    /// The permanents are untapped (Benthic Explorers: "Untap a tapped land an opponent controls"); left out means they
+    /// are tapped, sacrificed or exiled.
+    #[serde(default, skip_serializing_if = "is_false")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub r120_untap: bool,
     /// How many it takes.
     pub count: u32,
     /// What it may take, as the cost allows it when it is offered.
@@ -559,6 +584,8 @@ impl ManaOption {
             tapless: false,
             only: Vec::new(),
             also: Vec::new(),
+            r120_restricted: Vec::new(),
+            r120_folded: false,
             life: 0,
             energy: 0,
             energy_held: 0,
@@ -602,6 +629,20 @@ impl ManaOption {
     pub fn made(&self) -> Vec<ManaType> {
         let mut made = vec![self.produces; self.count as usize];
         made.extend_from_slice(&self.also);
+        made
+    }
+
+    /// The mana the activation adds under the option's own restriction: `made` without a restricted extra a payment
+    /// counted in it (`r120_folded`).
+    pub fn r120_own_made(&self) -> Vec<ManaType> {
+        let mut made = self.made();
+        if self.r120_folded {
+            for mana in self.r120_restricted.iter().flat_map(|part| &part.mana) {
+                if let Some(at) = made.iter().rposition(|held| held == mana) {
+                    made.remove(at);
+                }
+            }
+        }
         made
     }
 }
@@ -649,6 +690,17 @@ fn usable(sources: &[ManaOption], spend: &Spend, life: i32) -> Vec<ManaOption> {
         .iter()
         .filter(|o| spend.allows(&o.only) && (o.life == 0 || affordable))
         .cloned()
+        // A tap's restricted extra the payment can't spend is left out of it: the player declines the optional mana
+        // (Snowfall).
+        .map(|mut o| {
+            o.r120_restricted.retain(|part| spend.allows(&part.only));
+            // What the payment may spend counts as the tap's mana for it; the activation keeps its restriction.
+            for part in &o.r120_restricted {
+                o.also.extend_from_slice(&part.mana);
+            }
+            o.r120_folded = !o.r120_restricted.is_empty();
+            o
+        })
         .collect()
 }
 
@@ -1538,11 +1590,21 @@ fn split_spent(spent: Vec<ManaType>, payment: &Payment, sources: &[ManaOption]) 
         if let Some(option) = sources.iter().find(|o| o.source == *tap)
             && !option.only.is_empty()
         {
-            units.extend(option.made().into_iter().map(|mana| Restricted {
+            units.extend(option.r120_own_made().into_iter().map(|mana| Restricted {
                 mana,
                 only: option.only.clone(),
                 lasts: ManaLasts::Step,
             }));
+        }
+        // A tap's restricted extra is spent as the restricted mana it is added as.
+        if let Some(option) = sources.iter().find(|o| o.source == *tap && o.r120_folded) {
+            for part in &option.r120_restricted {
+                units.extend(part.mana.iter().map(|mana| Restricted {
+                    mana: *mana,
+                    only: part.only.clone(),
+                    lasts: ManaLasts::Step,
+                }));
+            }
         }
     }
     let mut restricted = Vec::new();
@@ -3309,6 +3371,7 @@ mod tests {
                             source.takes.push(Take {
                                 sacrifice,
                                 exile: false,
+                                r120_untap: false,
                                 count,
                                 from: from.into_iter().map(ObjectId).collect(),
                             });
@@ -3374,6 +3437,7 @@ mod tests {
                         source.takes = vec![Take {
                             sacrifice: false,
                             exile: true,
+                            r120_untap: false,
                             count: *count,
                             from: from.iter().copied().map(ObjectId).collect(),
                         }];

@@ -823,6 +823,21 @@ pub enum Effect {
         #[serde(rename = "as")]
         bind: String,
     },
+    /// For each color among the objects `colors_of` picks, read as the step begins, the player may choose one object of
+    /// that color among those `from` names that no earlier color took; all the chosen are bound together ("For each of
+    /// those colors, you may exile a card of that color from among the revealed cards").
+    R120ChooseEachColor {
+        /// Who chooses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The objects whose colors are read.
+        colors_of: Selector,
+        /// The objects chosen from.
+        from: Ref,
+        /// The name the chosen objects are bound to.
+        #[serde(rename = "as")]
+        bind: String,
+    },
     /// The players lose all unspent mana and the controller of the effect adds the mana lost this way, each mana keeping
     /// what it may be spent on ("that player loses all unspent mana and you add the mana lost this way").
     R119DrainMana {
@@ -1677,6 +1692,10 @@ pub enum Effect {
         /// card that matches ends it when absent.
         #[serde(default, skip_serializing_if = "Option::is_none")]
         total: Option<Amount>,
+        /// The exiling goes on until this many cards matching the filter are exiled ("until you exile two nonland cards with
+        /// mana value 4 or less"), each bound to `as`; one when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r120_count: Option<Amount>,
         /// The name the card found is bound to.
         #[serde(rename = "as")]
         bind: String,
@@ -2773,6 +2792,7 @@ fn exile_cast_bottom(filter: Selector, otherwise: Vec<Effect>) -> Vec<Effect> {
             who: Ref::You,
             filter,
             total: None,
+            r120_count: None,
             bind: FOUND.to_owned(),
             exiled_as: EXILED.to_owned(),
         },

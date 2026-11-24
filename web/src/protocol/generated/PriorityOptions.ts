@@ -43,6 +43,11 @@ foretellable?: Array<ObjectId>,
  */
 plottable?: Array<ObjectId>, 
 /**
+ * Cards in the hand their owner may discard now (Circling Vultures: a special action that does not use the stack,
+ * CR 116.2).
+ */
+r120_discardable?: Array<ObjectId>, 
+/**
  * Face-down permanents their controller can turn face up now (a special action that does not use the stack, CR 702.37e).
  */
 turnable?: Array<ObjectId>, 

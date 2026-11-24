@@ -134,6 +134,7 @@ mod tests {
             takes: vec![Take {
                 sacrifice: false,
                 exile: true,
+                r120_untap: false,
                 count: 1,
                 from: from.iter().map(|id| ObjectId(*id)).collect(),
             }],

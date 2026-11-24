@@ -387,6 +387,12 @@ pub(crate) fn priority_actions(options: &PriorityOptions) -> Vec<PriorityAction>
     actions.extend(options.plottable.iter().map(|o| PriorityAction::Plot(*o)));
     actions.extend(
         options
+            .r120_discardable
+            .iter()
+            .map(|o| PriorityAction::R120Discard(*o)),
+    );
+    actions.extend(
+        options
             .turnable
             .iter()
             .map(|o| PriorityAction::TurnFaceUp(*o)),
@@ -415,6 +421,7 @@ fn played_object(action: &PriorityAction) -> Option<ObjectId> {
         | PriorityAction::Suspend(object)
         | PriorityAction::Foretell(object)
         | PriorityAction::Plot(object)
+        | PriorityAction::R120Discard(object)
         | PriorityAction::TurnFaceUp(object)
         | PriorityAction::CastPrepared(object) => Some(*object),
         PriorityAction::ActivateMana(source) => Some(source.object),

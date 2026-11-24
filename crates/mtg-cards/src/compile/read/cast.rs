@@ -30,6 +30,7 @@ pub fn exile_until(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         who: Ref::You,
         filter: nonland_up_to(count),
         total: None,
+        r120_count: None,
         bind: FOUND.to_owned(),
         exiled_as: EXILED.to_owned(),
     }])
@@ -432,6 +433,7 @@ pub fn text(effect: &Effect) -> Option<String> {
             who: Ref::You,
             filter: Selector(preds),
             total: None,
+            r120_count: None,
             bind,
             exiled_as,
         } if bind == FOUND && exiled_as == EXILED => {

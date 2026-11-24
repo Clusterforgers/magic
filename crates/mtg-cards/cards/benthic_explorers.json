@@ -1,0 +1,34 @@
+{
+  "oracle_id": "bc0518fc-d34b-474a-92c5-2cb013828396",
+  "name": "Benthic Explorers",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Benthic Explorers",
+      "oracle_fingerprint": "fdcdf33528f5e97e3688171d394a2f33",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              "Tap",
+              {
+                "UntapPermanents": {
+                  "filter": [{ "Type": "Land" }, { "ControlledBy": "Opponents" }]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": {
+                    "ProducedBy": { "among": [{ "Is": "Paid" }], "count": 1, "colorless": true }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

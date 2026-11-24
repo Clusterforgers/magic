@@ -1,0 +1,43 @@
+{
+  "oracle_id": "2676ba6d-e7a7-48cf-9c86-6e2a11f03096",
+  "name": "Sanar, Innovative First-Year",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sanar, Innovative First-Year",
+      "oracle_fingerprint": "82f8fe6f118465a1570081b8867e1f35",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Main1", "whose": "You" } },
+            "effects": [
+              {
+                "RevealUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "count": { "Distinct": { "of": [{ "ControlledBy": "You" }], "stat": "Colors" } },
+                  "as": "found",
+                  "revealed_as": "revealed"
+                }
+              },
+              {
+                "R120ChooseEachColor": {
+                  "colors_of": [{ "ControlledBy": "You" }],
+                  "from": { "Bound": "revealed" },
+                  "as": "chosen"
+                }
+              },
+              { "Exile": { "what": { "Bound": "chosen" }, "as": "exiled" } },
+              { "Shuffle": {} },
+              {
+                "Rule": {
+                  "rule": { "MayCast": { "from": "Exile", "only": { "Bound": "exiled" } } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

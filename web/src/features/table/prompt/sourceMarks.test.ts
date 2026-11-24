@@ -29,6 +29,11 @@ describe('sourceMarks', () => {
       [['sacrifice 2', 'sacrifices 2 more permanents']],
     ],
     [
+      "Benthic Explorers untapping an opponent's land",
+      [way({ takes: [{ count: 1, r120_untap: true, from: [8] }] })],
+      [['untap 1', 'untaps 1 tapped permanent']],
+    ],
+    [
       'an exiled hand card',
       [way({ takes: [{ count: 1, exile: true, from: [7] }] })],
       [['exile 1', 'exiles 1 card from your hand']],
