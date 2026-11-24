@@ -326,7 +326,7 @@ fn modified_as(
                     .as_ref()
                     .is_some_and(|held| !scope.holds(held).unwrap_or(false))
                 || targeting.as_ref().is_some_and(|wanted| {
-                    !targets_one(&scope, wanted, targeted, *change == CostChange::Reduce)
+                    !targets_one(&scope, wanted, targeted, *change != CostChange::Increase)
                 })
             {
                 continue;
@@ -334,7 +334,7 @@ fn modified_as(
             let times = scope.amount(per).unwrap_or(0).clamp(0, MOST_TIMES);
             let part = match change {
                 CostChange::Increase => &mut more,
-                CostChange::Reduce => {
+                CostChange::Reduce | CostChange::R122ReduceOrGeneric => {
                     floor = floor.max(*least);
                     &mut less
                 }

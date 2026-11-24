@@ -54,6 +54,7 @@ pub(super) fn r4702_named_activation_text(
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return None,
     };
     Some(format!(
         "Activated abilities of sources with the chosen name cost {mana} {more} to activate unless they're mana abilities"

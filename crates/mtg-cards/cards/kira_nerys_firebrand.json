@@ -1,0 +1,48 @@
+{
+  "oracle_id": "ff9f5bbb-43c4-481e-9bd7-db9f246355ae",
+  "name": "Kira Nerys, Firebrand",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Kira Nerys, Firebrand",
+      "oracle_fingerprint": "029a76f1260f7fed1c71c41242bfbe95",
+      "abilities": [
+        { "Keyword": "Trample" },
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } },
+            "by": "R122TappedAndAttacking",
+            "condition": {
+              "Compare": {
+                "left": {
+                  "Count": [{ "Type": "Creature" }, { "ControlledBy": "You" }, "Attacking"]
+                },
+                "op": "Ge",
+                "right": 1
+              }
+            }
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                "to": "Battlefield"
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": "Triggering",
+                  "mods": [{ "ModifyPT": { "power": 1, "toughness": 1 } }],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

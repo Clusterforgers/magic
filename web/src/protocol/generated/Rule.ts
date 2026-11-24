@@ -315,7 +315,7 @@ what: unknown,
 /**
  * The most of them that untap.
  */
-count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "R6007ExhaustAgain": Array<PlayerId> } | { "R6500CounterCap": { 
+count: number, } } | { "SkipDrawStep": Array<PlayerId> } | { "R6007ExhaustAgain": Array<PlayerId> } | { "R122CascadeLand": Array<PlayerId> } | { "R6500CounterCap": { 
 /**
  * The permanents capped.
  */

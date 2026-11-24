@@ -186,6 +186,7 @@ mod r119_02_meddling;
 mod r119_copy_aura;
 mod r119_retarget_aura;
 mod r121_02_spoils;
+mod r122_02_cards;
 mod r1a_spend;
 mod r281_cards;
 mod r281_kicked_spend;

@@ -38,6 +38,7 @@ pub fn g13g_activation_texts(
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return Vec::new(),
     };
     let you = Pred::ControlledBy(Ref::You);
     let other_equipment = [

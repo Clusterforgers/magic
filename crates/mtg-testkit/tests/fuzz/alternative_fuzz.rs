@@ -57,6 +57,7 @@ fn bot_games_with_alternative_costs_keep_every_invariant_and_use_each_way() {
                             CastWay::Emerge => "emerge",
                             CastWay::Harmonize => "harmonize",
                             CastWay::R116BeamMeUp => "beam me up",
+                            CastWay::R122SuspendCost => "suspend cost",
                             CastWay::Offering => "offering",
                             CastWay::Sneak
                             | CastWay::Prototype

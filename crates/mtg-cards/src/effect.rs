@@ -2856,8 +2856,47 @@ pub fn discover(count: Amount) -> Vec<Effect> {
 }
 
 /// The steps of cascade (CR 702.85a): the first nonland card of lesser mana value than the source, the spell that cascades,
-/// may be cast free, and the cards exiled with it go to the bottom of the library.
+/// may be cast free, and the cards exiled with it go to the bottom of the library. Before the cast, the controller may put
+/// a land card from among the exiled cards onto the battlefield tapped for each `GameRule::R122CascadeLand` they hold.
 pub fn cascade() -> Vec<Effect> {
+    let mut steps = r122_cascade_steps();
+    let lands = Selector(vec![
+        Pred::In(ZoneKind::Exile),
+        Pred::Is(Ref::Bound(EXILED.to_owned())),
+        Pred::Type(CardType::Land),
+    ]);
+    let land = "r122_land".to_owned();
+    steps.splice(
+        1..1,
+        [
+            Effect::Choose {
+                who: Ref::You,
+                from: Ref::Each(lands),
+                count: Bounds {
+                    min: Amount::Fixed(0),
+                    max: Some(Amount::R122CascadeLands),
+                },
+                bind: land.clone(),
+                rest_as: None,
+                differ: None,
+            },
+            Effect::Move {
+                what: Ref::Bound(land),
+                to: Destination::Battlefield {
+                    tapped: true,
+                    under: None,
+                    transformed: false,
+                    counters: Vec::new(),
+                },
+                bind: None,
+            },
+        ],
+    );
+    steps
+}
+
+/// The exiling, the cast and the move to the bottom of cascade.
+fn r122_cascade_steps() -> Vec<Effect> {
     exile_cast_bottom(
         Selector(vec![
             Pred::Not(Box::new(Pred::Type(CardType::Land))),

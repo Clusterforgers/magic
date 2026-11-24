@@ -582,6 +582,7 @@ pub(crate) fn reads_of_amount(amount: &Amount) -> Traits {
         | Amount::TallyLastTurn { .. }
         | Amount::CastSameNameThisGame(_)
         | Amount::CycledSameNameThisGame(_)
+        | Amount::R122CascadeLands
         | Amount::TallyTotal { .. }
         | Amount::TallyTypes { .. }
         | Amount::ManaSpent { .. }

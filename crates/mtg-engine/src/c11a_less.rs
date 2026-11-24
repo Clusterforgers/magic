@@ -93,7 +93,7 @@ fn c11a_own(
         let times = scope.amount(per).unwrap_or(0).clamp(0, C11A_MOST_TIMES);
         let part = match change {
             CostChange::Increase => &mut more,
-            CostChange::Reduce => &mut less,
+            CostChange::Reduce | CostChange::R122ReduceOrGeneric => &mut less,
         };
         for _ in 0..times {
             *part = c11a_joined(part.clone(), unit.rest());

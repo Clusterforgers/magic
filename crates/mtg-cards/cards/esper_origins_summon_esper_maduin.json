@@ -1,0 +1,104 @@
+{
+  "oracle_id": "947b40a2-e272-4ef6-85fb-3d767a21bc7a",
+  "name": "Esper Origins // Summon: Esper Maduin",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Esper Origins",
+      "oracle_fingerprint": "1aae62dbafa033fddf5ee4b2a5a6670f",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              { "Surveil": { "count": 2 } },
+              { "GainLife": { "amount": 2 } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": { "subject": "This", "selector": [{ "CastFrom": "Graveyard" }] }
+                  },
+                  "then": [
+                    { "Exile": { "what": "This", "as": "exiled" } },
+                    {
+                      "Move": {
+                        "what": { "Bound": "exiled" },
+                        "to": {
+                          "Battlefield": {
+                            "transformed": true,
+                            "counters": [[{ "Other": "finality" }, 1]]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Keyword": { "Flashback": "{3}{G}" } }
+      ]
+    },
+    {
+      "name": "Summon: Esper Maduin",
+      "oracle_fingerprint": "0d34a5183ebe7234480803b7a890f04d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 1 } },
+            "effects": [
+              { "LookAtTop": { "as": "top" } },
+              { "Reveal": { "what": { "Bound": "top" } } },
+              {
+                "Move": {
+                  "what": {
+                    "Each": [
+                      { "In": "Library" },
+                      { "Is": { "Bound": "top" } },
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      }
+                    ]
+                  },
+                  "to": "Hand"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 2 } },
+            "effects": [{ "AddMana": { "mana": { "Fixed": ["Green", "Green"] } } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "Chapter": { "number": 3 } },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }]
+                  },
+                  "mods": [
+                    { "ModifyPT": { "power": 2, "toughness": 2 } },
+                    { "AddKeyword": "Trample" }
+                  ],
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

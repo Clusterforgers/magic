@@ -206,6 +206,7 @@ pub(super) fn c11a_first_spell_text(
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return None,
     };
     let kind = if words.is_empty() {
         String::new()
