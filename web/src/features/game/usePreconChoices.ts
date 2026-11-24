@@ -1,4 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useCallback } from 'react'
+import { listCache, preconListKey } from '@/net/listCache'
 import { PreconError } from '@/net/precons'
 import type { PreconsApi } from '@/net/precons'
 import type { PreconListItem } from '@/protocol/generated'
@@ -9,8 +11,6 @@ export type PreconChoices =
   | { status: 'loading' }
   | { status: 'ready'; precons: PreconListItem[] }
   | { status: 'failed'; message: string }
-
-type Settled = Exclude<PreconChoices, { status: 'loading' }>
 
 /** What to tell a player about a precon list that did not load. */
 export function preconListWords(error: unknown): string {
@@ -23,7 +23,11 @@ export function preconListWords(error: unknown): string {
   return 'The precons could not be loaded. Check the connection, then try again.'
 }
 
-/** Loads `GET /api/precons` once `enabled` (the Precons tab opened, or a favourite needs it), and again when `reload` is called. */
+/**
+ * Reads `GET /api/precons` once `enabled` (the Precons tab opened, or a favourite needs it), on every mount after that
+ * and when `reload` is called, through the list cache (`listCache`): precons seen before show at once while they are
+ * read again.
+ */
 export function usePreconChoices(
   api: Pick<PreconsApi, 'list'>,
   enabled = true,
@@ -31,29 +35,12 @@ export function usePreconChoices(
   state: PreconChoices
   reload: () => void
 } {
-  const [round, setRound] = useState(0)
-  // Tagged with the round it answers, so a new round reads as loading without resetting state inside the effect.
-  const [settled, setSettled] = useState<{ round: number; state: Settled } | null>(null)
-  const reload = useCallback(() => setRound((n) => n + 1), [])
+  const query = useQuery({ queryKey: preconListKey(api), queryFn: () => api.list(), enabled }, listCache)
+  const { refetch } = query
+  const reload = useCallback(() => void refetch(), [refetch])
 
-  useEffect(() => {
-    if (!enabled) return
-    let stale = false
-    api.list().then(
-      (list) => {
-        if (!stale) setSettled({ round, state: { status: 'ready', precons: list.precons } })
-      },
-      (error: unknown) => {
-        if (!stale) setSettled({ round, state: { status: 'failed', message: preconListWords(error) } })
-      },
-    )
-    return () => {
-      stale = true
-    }
-  }, [api, round, enabled])
-
-  return {
-    state: settled !== null && settled.round === round ? settled.state : { status: 'loading' },
-    reload,
-  }
+  let state: PreconChoices = { status: 'loading' }
+  if (query.isError && !query.isFetching) state = { status: 'failed', message: preconListWords(query.error) }
+  else if (query.data !== undefined) state = { status: 'ready', precons: query.data.precons }
+  return { state, reload }
 }

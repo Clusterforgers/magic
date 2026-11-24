@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/vitest'
 import { cleanup, configure } from '@testing-library/react'
 import { afterEach } from 'vitest'
 import { toReadClient } from '@/features/reads/useToReadCount'
+import { listCache } from '@/net/listCache'
 import { lexiconStore } from '@/features/table/lexicon/lexiconStore'
 import { tourStore } from '@/features/table/tour/tourStore'
 import { FULL_CONTROL_KEY, resetFlowPrefs } from '@/play/flowPrefs'
@@ -12,6 +13,9 @@ afterEach(cleanup)
 
 // The nav badge's count is cached per account, and the fake accounts have the same ids in every test.
 afterEach(() => toReadClient.clear())
+
+// The deck chooser's lists are cached per client, and some tests share one fake client.
+afterEach(() => listCache.clear())
 
 // The table tour and the lexicon are one per page, so every test leaves them shut.
 afterEach(() => {

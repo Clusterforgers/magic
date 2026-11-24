@@ -34,6 +34,7 @@ import type {
 } from '@/protocol/generated'
 import type { Fetch } from './api'
 import { isCount, isFlag, isListOf, isRecord, isText } from './check'
+import { forgetDeckLists } from './listCache'
 
 // A `Record` over every code, so a code added in Rust (and so to the generated union) stops this file compiling.
 const DECK_CODES: Record<DeckErrorCode, true> = {
@@ -90,6 +91,8 @@ export interface DecksOptions {
   fetch?: Fetch
   /** Prefix for every path; empty means the page origin, which Vite proxies to the server in development. */
   baseUrl?: string
+  /** Called after a deck was stored, replaced or deleted. */
+  onChange?: () => void
 }
 
 /** The deck calls; each rejects with a `DeckError`. */
@@ -416,20 +419,26 @@ export function createDecksApi(options: DecksOptions = {}): DecksApi {
     return value
   }
 
+  const changed = <T>(value: T): T => {
+    options.onChange?.()
+    return value
+  }
+
   return {
     list: () => call(`${base}/api/decks`, readList, GET),
     get: (id) => call(deckPath(id), readDeckView, GET),
-    create: (deck) => call(`${base}/api/decks`, readDeckView, withBody('POST', deck)),
-    update: (id, deck) => call(deckPath(id), readDeckView, withBody('PUT', deck)),
+    create: (deck) => call(`${base}/api/decks`, readDeckView, withBody('POST', deck)).then(changed),
+    update: (id, deck) => call(deckPath(id), readDeckView, withBody('PUT', deck)).then(changed),
     check: (request, signal) =>
       call(`${base}/api/decks/check`, readReport, withBody('POST', request, signal)),
     importList: (request) => call(`${base}/api/decks/import`, readImport, withBody('POST', request)),
     remove: async (id) => {
       await call(deckPath(id), () => true, DELETE)
+      changed(undefined)
     },
     exportUrl: (id, format = 'text') => `${deckPath(id)}/export?format=${format}`,
   }
 }
 
-/** The client for the page origin, using the global `fetch`. */
-export const decksApi: DecksApi = createDecksApi()
+/** The client for the page origin, using the global `fetch`; a change drops the cached deck lists. */
+export const decksApi: DecksApi = createDecksApi({ onChange: forgetDeckLists })
