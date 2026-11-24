@@ -326,8 +326,12 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
             "put {what} onto the battlefield; an Aura may enchant only {} this way",
             phrase::selectors(ctx, only)
         ),
-        Destination::R6502BattlefieldAs { r110_counters, .. } => {
-            let with: Vec<String> = r110_counters
+        Destination::R6502BattlefieldAs {
+            r110_counters,
+            r122_typed_counters,
+            becomes,
+        } => {
+            let mut with: Vec<String> = r110_counters
                 .iter()
                 .map(|(kind, count)| {
                     format!(
@@ -337,12 +341,24 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
                     )
                 })
                 .collect();
+            with.extend(r122_typed_counters.iter().map(|(filter, kind, count)| {
+                format!(
+                    "{} {} counters if it's {}",
+                    phrase::amount(ctx, count),
+                    phrase::counter_text(kind),
+                    phrase::selectors(ctx, filter)
+                )
+            }));
             let with = if with.is_empty() {
                 String::new()
             } else {
                 format!(" with {}", with.join(", "))
             };
-            format!("put {what} onto the battlefield{with}, as it enters and while it stays:")
+            if becomes.is_empty() {
+                format!("put {what} onto the battlefield{with}")
+            } else {
+                format!("put {what} onto the battlefield{with}, as it enters and while it stays:")
+            }
         }
     }
 }

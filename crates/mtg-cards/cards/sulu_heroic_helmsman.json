@@ -1,0 +1,18 @@
+{
+  "oracle_id": "9565feaf-252d-43c2-a28e-4291c9ff5872",
+  "name": "Sulu, Heroic Helmsman",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sulu, Heroic Helmsman",
+      "oracle_fingerprint": "7cf1515bf0aba9d67697139ae7b066fe",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": { "Combat": { "who": "This", "quirk": { "R122CrewStationTimes": 3 } } }
+          }
+        }
+      ]
+    }
+  ]
+}

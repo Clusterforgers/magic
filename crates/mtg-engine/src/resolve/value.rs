@@ -1003,12 +1003,12 @@ impl<'a> Scope<'a> {
                 let seen = self.seen(self.as_it_left(*object))?;
                 let by_toughness =
                     crate::combat_quirks::r6500_stations_by_toughness(self.state, object.id);
-                let stat = if by_toughness {
-                    StatKind::Toughness
-                } else {
-                    StatKind::Power
-                };
-                Self::stat(&seen, stat)
+                if by_toughness {
+                    return Self::stat(&seen, StatKind::Toughness);
+                }
+                // "Stations Spacecraft as though his power were tripled."
+                let times = crate::combat_quirks::r122_power_times(self.state, object.id);
+                Self::stat(&seen, StatKind::Power).map(|power| power.saturating_mul(times))
             })
             .sum())
     }
@@ -3078,6 +3078,10 @@ impl<'a> Scope<'a> {
             Amount::R110RemovedThisWay(counter) => self.r110_removed_this_way(counter)?,
             Amount::R119PutThisWay(counter) => self.r119_put_this_way(counter)?,
             Amount::CycledSameNameThisGame(who) => self.r5522_cycled_same_name(who)?,
+            Amount::R122CascadeLands => i64::from(crate::rules::r122_cascade_lands(
+                self.state,
+                self.controller,
+            )),
             Amount::CastSameNameThisGame(who) => {
                 let name = self
                     .state

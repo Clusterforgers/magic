@@ -99,6 +99,7 @@ pub(super) fn r5506_wordings(ability: &Ability, texts: &mut Vec<String>) {
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return,
     };
     let each = if per.is_one() {
         String::new()

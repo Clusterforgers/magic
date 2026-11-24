@@ -27,6 +27,7 @@ impl KeywordRules for Crew {
             cost: Cost(vec![CostItem::TapPower {
                 filter: Selector(vec![Pred::Type(CardType::Creature)]),
                 power: *power,
+                r122_crew: true,
             }]),
             timing: Timing::Instant,
             condition: None,
@@ -59,7 +60,7 @@ mod tests {
 
     fn written(power: u32) -> Ability {
         serde_json::from_str(&format!(
-            r#"{{"Activated":{{"cost":[{{"TapPower":{{"filter":[{{"Type":"Creature"}}],"power":{power}}}}}],"effects":[{{"Continuous":{{"affected":"This","mods":[{{"AddType":"Artifact"}},{{"AddType":"Creature"}}],"duration":"UntilEndOfTurn"}}}},{{"Crewed":{{}}}}]}}}}"#
+            r#"{{"Activated":{{"cost":[{{"TapPower":{{"filter":[{{"Type":"Creature"}}],"power":{power},"r122_crew":true}}}}],"effects":[{{"Continuous":{{"affected":"This","mods":[{{"AddType":"Artifact"}},{{"AddType":"Creature"}}],"duration":"UntilEndOfTurn"}}}},{{"Crewed":{{}}}}]}}}}"#
         ))
         .unwrap()
     }

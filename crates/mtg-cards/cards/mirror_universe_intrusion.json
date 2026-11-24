@@ -1,0 +1,75 @@
+{
+  "oracle_id": "007d08e8-4db2-47d1-ba39-8bb8efa491a1",
+  "name": "Mirror Universe Intrusion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Mirror Universe Intrusion",
+      "oracle_fingerprint": "7c1d0d7fcccf20281731299b769b040c",
+      "abilities": [
+        { "Keyword": { "Kicker": "{4}{U}{B}" } },
+        {
+          "Spell": {
+            "targets": [
+              {
+                "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] },
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } },
+                  "max": { "When": { "condition": "Kicked", "then": 0, "otherwise": 1 } }
+                }
+              },
+              {
+                "what": "Opponent",
+                "bounds": {
+                  "min": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } },
+                  "max": { "When": { "condition": "Kicked", "then": 1, "otherwise": 0 } }
+                }
+              }
+            ],
+            "effects": [
+              {
+                "If": {
+                  "condition": "Kicked",
+                  "then": [
+                    {
+                      "RepeatEach": {
+                        "over": {
+                          "Each": [{ "Type": "Creature" }, { "ControlledBy": { "Target": 1 } }]
+                        },
+                        "as": "that",
+                        "effects": [
+                          {
+                            "CreateToken": {
+                              "token": {
+                                "CopyOf": {
+                                  "of": { "Bound": "that" },
+                                  "except": [{ "AddKeyword": "Menace" }]
+                                }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "CreateToken": {
+                        "token": {
+                          "CopyOf": {
+                            "of": { "Target": 0 },
+                            "except": [{ "AddKeyword": "Menace" }]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

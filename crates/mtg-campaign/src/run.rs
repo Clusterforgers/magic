@@ -49,9 +49,13 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// two-colour bosses and a cleared floor may descend; from 6 a boss stands for every colour pair; from 7 a descent
 /// first gives the final boss's loot; from 8 a relic drops again for a hero who owns it; from 9 each descent leads into
 /// another theme; from 10 the Drowned Spire holds a lieutenant for every colour and colour pair and a second final boss;
-/// from 11 the Ember Foundry opens at Heat 3.
+/// from 11 the Ember Foundry opens at Heat 3; from 12 a boss brings relics from the first fight and a reinforcement for
+/// each hero after the first.
 /// Every run plays the boss of `docs/delves.md` (Bosses), whatever its generation.
-pub const CONTENT: u32 = crate::content::FOUNDRY_FROM;
+pub const CONTENT: u32 = BOSS_SCALE_FROM;
+/// The content generation from which a boss brings relics at low depth and a reinforcement for each hero after the
+/// first (`boss_relics::count`, `Scale::reinforcements`).
+pub const BOSS_SCALE_FROM: u32 = 12;
 /// The content generation from which each descent leads into another open theme (`Content::next_theme`).
 pub const THEMES_FROM: u32 = 9;
 /// The content generation from which the Drowned Spire's ladder draws from its grown roster.

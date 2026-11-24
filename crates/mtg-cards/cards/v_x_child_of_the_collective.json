@@ -1,0 +1,47 @@
+{
+  "oracle_id": "7e58ea13-4041-4ef4-bc09-1e4bf79a842a",
+  "name": "Võx, Child of the Collective",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Võx, Child of the Collective",
+      "oracle_fingerprint": "9a08cece7f4d3de975deb8788f6908ac",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                { "StepBegins": { "step": "Main1", "whose": "You" } }
+              ]
+            },
+            "effects": [
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Type": "Artifact" }, { "Type": "Creature" }],
+                      "benefit": { "Keyword": "Undaunted" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "NextSpell": {
+                      "what": [{ "Subtype": "Spacecraft" }],
+                      "benefit": { "Keyword": "Undaunted" }
+                    }
+                  },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

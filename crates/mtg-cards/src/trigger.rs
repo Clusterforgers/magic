@@ -1652,6 +1652,10 @@ pub enum ReplaceBy {
     WithKindsOn(Ref),
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
+    /// The creature enters tapped and attacking a player, planeswalker or battle its controller chooses as it enters
+    /// (CR 508.4): "If a creature you control would enter while you control an attacking creature, instead it enters
+    /// tapped and attacking." It was never declared as an attacker. Only `Enters`.
+    R122TappedAndAttacking,
     /// As the permanent enters, its controller chooses one of these words ("choose Khans or Dragons"), which
     /// `Condition::EnteredAs` reads for as long as it stays.
     ChooseWord(Vec<String>),

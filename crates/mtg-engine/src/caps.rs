@@ -34,6 +34,8 @@ const RUNS: &[&str] = &[
     "CostModifier.Boast",
     "CostModifier.Buyback",
     "CostModifier.ManaLife",
+    "CostModifier.R122ReduceOrGeneric",
+    "CastWay.R122SuspendCost",
     "Ability.By",
     "Ability.From",
     "Ability.Sorcery",
@@ -478,6 +480,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.R118PayOrGraveyard.ExileX",
     "ReplaceBy.R118PayOrGraveyard.CounterEach",
     "ReplaceBy.EntersPrepared",
+    "ReplaceBy.R122TappedAndAttacking",
     "ReplaceBy.ChooseWord",
     "ReplaceBy.OpponentChooses",
     "ReplaceBy.BecomesChoice",
@@ -686,6 +689,7 @@ const RUNS: &[&str] = &[
     "Rule.R112UntapChosenType",
     "Rule.SkipDrawStep",
     "Rule.R6007ExhaustAgain",
+    "Rule.R122CascadeLand",
     "Rule.R6500CounterCap",
     "Rule.R6500ZeroLoyaltyStays",
     "Rule.LookAtTopAnyTime",
@@ -1052,6 +1056,7 @@ const RUNS: &[&str] = &[
     "Amount.TallyLastTurn",
     "Amount.CastSameNameThisGame",
     "Amount.CycledSameNameThisGame",
+    "Amount.R122CascadeLands",
     "Condition.DamagedThisGameBy",
     "Amount.TallyTotal",
     "Amount.TriggeringTargets",
@@ -1410,6 +1415,7 @@ const RUNS: &[&str] = &[
     "Cost.R110ChooseNumber",
     "Cost.R114RollDie",
     "Effect.Move.R110AsWithCounters",
+    "Effect.Move.R122TypedCounters",
     "Cost.R110Choose",
 ];
 
@@ -2231,6 +2237,7 @@ mod tests {
     #[case::r110_a_number_chosen_as_a_cost("Cost.R110ChooseNumber", true)]
     #[case::r110_a_value_chosen_as_a_cost("Cost.R110Choose", true)]
     #[case::r110_put_as_an_object_with_counted_counters("Effect.Move.R110AsWithCounters", true)]
+    #[case::r122_counters_by_the_type_of_the_card("Effect.Move.R122TypedCounters", true)]
     fn the_engine_runs_what_it_runs_today(#[case] name: &str, #[case] runs: bool) {
         assert_eq!(caps().runs(name), runs);
     }

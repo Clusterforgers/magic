@@ -168,6 +168,7 @@ Aven Tactician
 Aven Trailblazer
 Avenger of Zendikar
 Avenging Huntbonder
+Averna, the Chaos Bloom
 Awakened Amalgam
 Ayara, First of Locthwain
 Aysen Crusader
@@ -421,6 +422,7 @@ Canopy Vista
 Caprichrome
 Capsize
 Captain America, Unbowed
+Captain Benjamin Sisko
 Captain Marvel, Apex Avenger
 Captain Pike, Fullness of Time
 Captivating Crew
@@ -480,6 +482,7 @@ Chef's Kiss
 Chemister's Insight
 Chicken Troupe
 Chief Engineer
+Chief Montgomery Scott
 Chill to the Bone
 Chimil, the Inner Sun
 Chittering Harvester
@@ -889,6 +892,7 @@ Eliminate the Competition
 Elite Arcanist
 Elite Spellbinder
 Elspeth's Nightmare
+Eluge, the Shoreless Sea
 Elven Ambush
 Elvish Aberration
 Elvish Mystic
@@ -1307,6 +1311,7 @@ Gul Dukat, Colonial Prefect
 Gurmag Angler
 Gurmag Drowner
 Gwaihir, Greatest of the Eagles
+Gwyndala, the Progeny
 H.E.R.B.I.E., Lovable Robot
 Hackrobat
 Hada Spy Patrol
@@ -1465,6 +1470,7 @@ Infernal Idol
 Inferno Project
 Infesting Radroach
 Infiltration Lens
+Infinite Diversity
 Ink-Treader Nephilim
 Inkwell Leviathan
 Inniaz, the Gale Force
@@ -1596,6 +1602,7 @@ Kingpin's Pet
 Kinjalli's Sunwing
 Kinsbaile Courier
 Kiora's Follower
+Kira Nerys, Firebrand
 Kirk, Enterprising Captain
 Kirol, Attentive First-Year
 Kirol, History Buff // Pack a Punch
@@ -1884,6 +1891,7 @@ Mirror Entity
 Mirror Image
 Mirror Match
 Mirror Sheen
+Mirror Universe Intrusion
 Mirrormind Crown
 Mirrorpool
 Mirrorweave
@@ -2541,6 +2549,7 @@ Segovian Angel
 Seismic Sense
 Seize the Day
 Selective Obliteration
+Selenia, the Cursed Heart
 Selesnya Guildgate
 Selesnya Sanctuary
 Seluma, Light of Aysen
@@ -2826,6 +2835,7 @@ Suki, Courageous Rescuer
 Sulfur Elemental
 Sultai Devotee
 Sultai Soothsayer
+Sulu, Heroic Helmsman
 Summer Bloom
 Summon: G.F. Ifrit
 Sunblast Angel
@@ -2977,6 +2987,7 @@ The Dalek Emperor
 The Elder Dragon War
 The Eleventh Doctor
 The Everforger
+The Face of Boe
 The Fallen
 The Gaffer
 The Great Henge
@@ -2989,6 +3000,7 @@ The Mightstone and Weakstone
 The Modern Age // Vector Glider
 The Moment
 The Most Dangerous Gamer
+The Muckslinger Gang
 The Mycosynth Gardens
 The Needs of the Many
 The Odd Acorn Gang
@@ -3000,6 +3012,7 @@ The Seriema
 The Serpent Society
 The Spear of Bashenga
 The Squadron Sinister
+The Tale of Tamiyo
 The Thing, Ben Grimm
 The Torment of Gollum
 The Toymaker's Trap
@@ -3009,6 +3022,7 @@ The Valeyard
 The War Doctor
 The Warring Triad
 The Wasp, Janet Van Dyne
+The Weaver King
 The Wise Mothman
 Theft of Dreams
 Thelonite Hermit
@@ -3302,6 +3316,7 @@ Vow of Torment
 Vow of Wildness
 Vulshok Factory
 Vulshok Splitter
+Võx, Child of the Collective
 Wakanda Forever!
 Walking Ballista
 Wall of Blossoms

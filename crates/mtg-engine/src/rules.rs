@@ -454,6 +454,8 @@ pub enum Rule {
     SkipDrawStep(Vec<PlayerId>),
     /// The players may activate exhaust abilities again during their turns until they activate one.
     R6007ExhaustAgain(Vec<PlayerId>),
+    /// The players may put a land card their cascade exiled onto the battlefield tapped, once for each such rule.
+    R122CascadeLand(Vec<PlayerId>),
     /// The permanents can't have more than `most` counters of the kind (`GameRule::R6500CounterCap`).
     R6500CounterCap {
         /// The permanents capped.
@@ -1089,6 +1091,8 @@ pub(crate) struct RulesInForce {
     skip_draw: BTreeSet<PlayerId>,
     /// The players who may activate exhaust abilities again (`R6007ExhaustAgain`).
     exhaust_again: BTreeSet<PlayerId>,
+    /// How many cascade lands each player may put onto the battlefield (`R122CascadeLand`).
+    r122_cascade_lands: BTreeMap<PlayerId, u32>,
     /// The counter caps on permanents: the permanent, the kind and the most it may have (`R6500CounterCap`).
     r6500_caps: Vec<(ObjectId, CounterKind, u32)>,
     /// The players whose planeswalkers stay with 0 loyalty (`R6500ZeroLoyaltyStays`).
@@ -1790,6 +1794,11 @@ impl RulesInForce {
             }
             Rule::SkipDrawStep(players) => self.skip_draw.extend(players),
             Rule::R6007ExhaustAgain(players) => self.exhaust_again.extend(players),
+            Rule::R122CascadeLand(players) => {
+                for player in players {
+                    *self.r122_cascade_lands.entry(*player).or_default() += 1;
+                }
+            }
             Rule::R6500CounterCap {
                 named,
                 counter,
@@ -2445,6 +2454,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         ),
         GameRule::SkipDrawStep(who) => Rule::SkipDrawStep(scope.players(who)?),
         GameRule::R6007ExhaustAgain(who) => Rule::R6007ExhaustAgain(scope.players(who)?),
+        GameRule::R122CascadeLand(who) => Rule::R122CascadeLand(scope.players(who)?),
         GameRule::R6500CounterCap {
             what,
             counter,
@@ -2660,6 +2670,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::LookAtTop(players)
         | Rule::SkipDrawStep(players)
         | Rule::R6007ExhaustAgain(players)
+        | Rule::R122CascadeLand(players)
         | Rule::R6500ZeroLoyaltyStays(players)
         | Rule::NoLegendRule(players)
         | Rule::NoMaxHandSize(players)
@@ -2914,6 +2925,7 @@ static NONE: RulesInForce = RulesInForce {
     loyalty_more: BTreeMap::new(),
     skip_draw: BTreeSet::new(),
     exhaust_again: BTreeSet::new(),
+    r122_cascade_lands: BTreeMap::new(),
     r6500_caps: Vec::new(),
     r6500_zero_loyalty: BTreeSet::new(),
     look_top: BTreeSet::new(),
@@ -3095,12 +3107,13 @@ pub(crate) fn fold_created(state: &mut GameState, effect: &RuleEffect) -> Result
 }
 
 /// Whether a rule in force changes the costs of spells (`GameState::possible`): a cost change of the next spell or of
-/// every matching spell for a time.
+/// every matching spell for a time, undaunted given to the next spell among them.
 pub(crate) const fn changes_costs(effect: &RuleEffect) -> bool {
     matches!(
         effect.rule,
         Rule::NextSpell {
-            benefit: mtg_cards::modify::SpellBenefit::Cost { .. },
+            benefit: mtg_cards::modify::SpellBenefit::Cost { .. }
+                | mtg_cards::modify::SpellBenefit::Keyword(mtg_cards::keyword::Keyword::Undaunted),
             ..
         } | Rule::SpellCost { .. }
     )
@@ -3551,6 +3564,16 @@ pub(crate) fn r6500_counter_cap(
 /// Whether the planeswalkers `player` controls stay on the battlefield with 0 loyalty (CR 704.5i).
 pub fn r6500_zero_loyalty_stays(state: &GameState, player: PlayerId) -> bool {
     state.rules().r6500_zero_loyalty.contains(&player)
+}
+
+/// How many lands `player` may put onto the battlefield from among the cards their cascade exiled (`R122CascadeLand`).
+pub(crate) fn r122_cascade_lands(state: &GameState, player: PlayerId) -> u32 {
+    state
+        .rules()
+        .r122_cascade_lands
+        .get(&player)
+        .copied()
+        .unwrap_or(0)
 }
 
 pub(crate) fn r6007_exhaust_again(state: &GameState, player: PlayerId) -> bool {

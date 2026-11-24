@@ -419,6 +419,10 @@ pub(super) fn rule(ctx: &Ctx, rule: &GameRule) -> String {
             "planeswalkers {} controls aren't put into their owners' graveyards for having 0 loyalty",
             phrase::who(ctx, who)
         ),
+        GameRule::R122CascadeLand(who) => format!(
+            "as {} cascades, they may put a land card from among the exiled cards onto the battlefield tapped",
+            phrase::who(ctx, who)
+        ),
         GameRule::R6007ExhaustAgain(who) => format!(
             "during their turn, as long as {} hasn't activated an exhaust ability this turn, they may activate exhaust abilities as though they haven't been activated",
             phrase::who(ctx, who)
@@ -870,6 +874,9 @@ fn combat_quirk(who: &str, quirk: &CombatQuirk) -> String {
         }
         CombatQuirk::R6500StationsByToughness => {
             format!("{who} station permanents using their toughness rather than their power")
+        }
+        CombatQuirk::R122CrewStationTimes(times) => {
+            format!("{who} station and crew as though their power were {times} times as great")
         }
         CombatQuirk::AssignsByToughness => {
             format!("{who} assign combat damage equal to their toughness rather than their power")

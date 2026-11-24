@@ -1,0 +1,34 @@
+{
+  "oracle_id": "acef7666-53b1-43c5-8107-236bea22a8b3",
+  "name": "The Face of Boe",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Face of Boe",
+      "oracle_fingerprint": "f1c0b7456dd916d7f0a675f7cde2cd40",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "HasKeywordNamed": "Suspend" }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "CastFromZone": { "what": { "Bound": "card" }, "way": "R122SuspendCost" } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

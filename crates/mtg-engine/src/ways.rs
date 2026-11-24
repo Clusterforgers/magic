@@ -127,7 +127,11 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
     if let Some(x) = r301_alt_cast_x(state, id, way) {
         return x;
     }
-    if !matches!(way, CastWay::Miracle | CastWay::Cleave) && !R283_X_WAYS.contains(&way) {
+    if !matches!(
+        way,
+        CastWay::Miracle | CastWay::Cleave | CastWay::R122SuspendCost
+    ) && !R283_X_WAYS.contains(&way)
+    {
         return 0;
     }
     let kept = crate::r110_foretell::r110_kept_keyword(state, id);
@@ -137,6 +141,7 @@ pub(crate) fn alternative_x(state: &GameState, id: ObjectId, way: CastWay) -> u3
         .find_map(|keyword| match (way, keyword) {
             (CastWay::Miracle, Keyword::Miracle(cost))
             | (CastWay::Cleave, Keyword::Cleave { cost, .. })
+            | (CastWay::R122SuspendCost, Keyword::Suspend { cost, .. })
             | (CastWay::Madness, Keyword::Madness(cost))
             | (CastWay::Foretold, Keyword::Foretell(cost))
             | (CastWay::Freerunning, Keyword::Freerunning(cost)) => {
@@ -998,9 +1003,11 @@ fn granted_before_required(
     {
         return Vec::new();
     }
-    if let Some(named @ (CastWay::Madness | CastWay::Miracle)) = way {
+    if let Some(named @ (CastWay::Madness | CastWay::Miracle | CastWay::R122SuspendCost)) = way {
         // Miracle is cast from the hand the card was drawn into (CR 702.94a).
-        if named == CastWay::Miracle && !matches!(card.zone(), Zone::Hand(_)) {
+        if matches!(named, CastWay::Miracle | CastWay::R122SuspendCost)
+            && !matches!(card.zone(), Zone::Hand(_))
+        {
             return Vec::new();
         }
         return keyword_cost(state, id, named)
@@ -1267,7 +1274,12 @@ pub(crate) fn alternative_cost(
     id: ObjectId,
     way: Option<CastWay>,
 ) -> Option<(CastWay, String)> {
-    let way = way.filter(|way| matches!(way, CastWay::Madness | CastWay::Miracle))?;
+    let way = way.filter(|way| {
+        matches!(
+            way,
+            CastWay::Madness | CastWay::Miracle | CastWay::R122SuspendCost
+        )
+    })?;
     keyword_cost(state, id, way).map(|(mana, _)| {
         let x = "{X}".repeat(usize::try_from(alternative_x(state, id, way)).unwrap_or(0));
         (way, format!("{x}{mana}"))
@@ -1278,6 +1290,7 @@ pub(crate) fn alternative_cost(
 const fn way_name(way: CastWay) -> &'static str {
     match way {
         CastWay::Miracle => "Miracle",
+        CastWay::R122SuspendCost => "Suspend",
         _ => "Madness",
     }
 }
@@ -1288,7 +1301,8 @@ fn keyword_cost(state: &GameState, id: ObjectId, way: CastWay) -> Option<(ManaCo
         .into_iter()
         .find_map(|keyword| match (way, keyword) {
             (CastWay::Madness, Keyword::Madness(cost))
-            | (CastWay::Miracle, Keyword::Miracle(cost)) => {
+            | (CastWay::Miracle, Keyword::Miracle(cost))
+            | (CastWay::R122SuspendCost, Keyword::Suspend { cost, .. }) => {
                 cast_cost_x(cost, false).map(|(mana, parts, _)| (mana, parts))
             }
             _ => None,

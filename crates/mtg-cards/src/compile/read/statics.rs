@@ -1456,6 +1456,7 @@ pub(super) fn cost_sentences(
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return Vec::new(),
     };
     if let Some(wordings) = super::c11a_turn_costs::c11a_turn_wordings(mana, per) {
         return wordings

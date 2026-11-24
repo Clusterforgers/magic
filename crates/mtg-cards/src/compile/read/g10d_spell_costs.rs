@@ -186,6 +186,7 @@ pub fn g10d_spell_cost_text(effect: &Effect) -> Option<String> {
     let more = match change {
         CostChange::Increase => "more",
         CostChange::Reduce => "less",
+        CostChange::R122ReduceOrGeneric => return None,
     };
     if !per.is_one() {
         // A count is only said as X of a cost change for this turn: "cost {X} less to cast, where X is ...".

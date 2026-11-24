@@ -1681,6 +1681,7 @@ impl<'a> Walker<'a> {
             Amount::CycledSameNameThisGame(who) => {
                 self.player_amount("CycledSameNameThisGame", who);
             }
+            Amount::R122CascadeLands => self.uses("Amount", "R122CascadeLands"),
             Amount::TallyLastTurn { event, who, filter }
             | Amount::TallyTypes { event, who, filter }
             | Amount::TallyTotal {
@@ -2582,6 +2583,14 @@ impl<'a> Walker<'a> {
         };
         if let Some(kind) = kind {
             self.uses("CostModifier", kind);
+        }
+        if *change == crate::ability::CostChange::R122ReduceOrGeneric {
+            if activating.is_some() || targeting.is_some() {
+                self.problem(
+                    "a reduction of a color or else generic mana changes the cost of spells only",
+                );
+            }
+            self.uses("CostModifier", "R122ReduceOrGeneric");
         }
         // "Mana abilities of this land cost an additional 1 life to activate.": life on mana abilities, with no mana.
         let mana_life = *activating == Some(crate::ability::ActivationKind::Mana)
@@ -3930,10 +3939,13 @@ impl Walker<'_> {
             Destination::R6502BattlefieldAs {
                 becomes,
                 r110_counters,
+                r122_typed_counters,
             } => {
                 let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
                 // Counters alone are a return "with X +1/+1 counters on it" that changes nothing else.
-                if !becomes.is_empty() || r110_counters.is_empty() {
+                if !becomes.is_empty()
+                    || (r110_counters.is_empty() && r122_typed_counters.is_empty())
+                {
                     self.at("becomes", |w| w.mods(becomes));
                 }
                 self.r6701_effect_grant = effect_grant;
@@ -3941,6 +3953,15 @@ impl Walker<'_> {
                     self.uses("Effect", "Move.R110AsWithCounters");
                     self.at("r110_counters", |w| {
                         for (_, count) in r110_counters {
+                            w.amount(count);
+                        }
+                    });
+                }
+                if !r122_typed_counters.is_empty() {
+                    self.uses("Effect", "Move.R122TypedCounters");
+                    self.at("r122_typed_counters", |w| {
+                        for (filter, _, count) in r122_typed_counters {
+                            w.selector(filter);
                             w.amount(count);
                         }
                     });
@@ -5089,10 +5110,16 @@ impl Walker<'_> {
                 if let Some(way) = way
                     && !matches!(
                         way,
-                        CastWay::Madness | CastWay::Miracle | CastWay::Suspend
+                        CastWay::Madness
+                            | CastWay::Miracle
+                            | CastWay::Suspend
+                            | CastWay::R122SuspendCost
                     )
                 {
                     w.problem("only madness, miracle and suspend are cast for a way of their own");
+                }
+                if *way == Some(CastWay::R122SuspendCost) {
+                    w.uses("CastWay", "R122SuspendCost");
                 }
                 w.effect_list("otherwise", otherwise, false);
                 if let Some(name) = bind {
@@ -5625,7 +5652,7 @@ impl Walker<'_> {
             Effect::R6602CreateAttached { who, token, to } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("token", |w| w.token(token));
-                w.at("to", |w| w.reference(to, Kind::Object));
+                w.at("to", |w| w.reference(to, Kind::Either));
             }
             Effect::CreateToken {
                 who,
@@ -7100,6 +7127,7 @@ impl Walker<'_> {
             | GameRule::LookAtTopAnyTime(who)
             | GameRule::SkipDrawStep(who)
             | GameRule::R6007ExhaustAgain(who)
+            | GameRule::R122CascadeLand(who)
             | GameRule::R6500ZeroLoyaltyStays(who)
             | GameRule::NoMaxHandSize(who)
             | GameRule::LoyaltyTwice(who)
@@ -8082,6 +8110,7 @@ impl Walker<'_> {
             | ReplaceBy::WithCounterOf(_)
             | ReplaceBy::WithCountersOf { .. }
             | ReplaceBy::EntersPrepared
+            | ReplaceBy::R122TappedAndAttacking
             | ReplaceBy::ChooseWord(_)
             | ReplaceBy::OpponentChooses(_)
             | ReplaceBy::UnderChosenOpponent

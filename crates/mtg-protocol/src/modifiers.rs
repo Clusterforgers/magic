@@ -286,6 +286,7 @@ fn cost_words(change: &CostChangeBy) -> String {
     match change.change {
         CostChange::Increase => format!("Costs {what} more"),
         CostChange::Reduce => format!("Costs {what} less"),
+        CostChange::R122ReduceOrGeneric => format!("Costs {what} (or that much generic mana) less"),
     }
 }
 

@@ -686,6 +686,8 @@ pub enum CombatQuirk {
     /// They station permanents using their toughness rather than their power (CR 702.184a): the station ability they pay
     /// for puts charge counters equal to their toughness.
     R6500StationsByToughness,
+    /// They station and crew (not saddle) as though their power were this many times as great.
+    R122CrewStationTimes(u32),
     /// They must be blocked if able: a requirement on the block declaration (CR 509.1c).
     MustBeBlocked(Blocking),
     /// Every creature the selector picks that is able to block them does so (CR 509.1c), judged for their controller:
@@ -1414,6 +1416,10 @@ pub enum GameRule {
     /// exhaust abilities as though they haven't been activated ("During your turn, as long as you haven't activated an
     /// exhaust ability this turn, you may activate exhaust abilities as though they haven't been activated.").
     R6007ExhaustAgain(Ref),
+    /// As the players cascade, each may put a land card from among the exiled cards onto the battlefield tapped, after
+    /// the last card is exiled and before the cast (CR 702.85a): "As you cascade, you may put a land card from among the
+    /// exiled cards onto the battlefield tapped." Each rule a player holds is one land.
+    R122CascadeLand(Ref),
     /// The permanents can't have more than `most` counters of the kind on them ("~ can't have more than seven dream
     /// counters on it."): a put that would pass the cap puts only enough to reach it, and none once it is reached.
     R6500CounterCap {

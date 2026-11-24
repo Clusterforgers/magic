@@ -1,0 +1,49 @@
+{
+  "oracle_id": "56cacdcf-2f11-4969-9629-446068a15369",
+  "name": "The Muckslinger Gang",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Muckslinger Gang",
+      "oracle_fingerprint": "8ce45f9de158b22b87baa5d812364626",
+      "abilities": [
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                { "ControlledBy": "You" },
+                "Other",
+                { "Not": "Attacking" },
+                { "Not": "Blocking" }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        },
+        {
+          "Static": {
+            "affected": {
+              "Each": [
+                { "Type": "Creature" },
+                {
+                  "AnyOf": [
+                    { "In": "Stack" },
+                    { "In": "Hand" },
+                    { "In": "Library" },
+                    { "In": "Graveyard" },
+                    { "In": "Exile" },
+                    { "In": "Command" }
+                  ]
+                },
+                { "AnyOf": [{ "Not": { "In": "Stack" } }, { "ControlledBy": "You" }] },
+                { "AnyOf": [{ "In": "Stack" }, { "OwnedBy": "You" }] }
+              ]
+            },
+            "mods": [{ "ModifyPT": { "power": 3, "toughness": 3 } }]
+          }
+        }
+      ]
+    }
+  ]
+}
