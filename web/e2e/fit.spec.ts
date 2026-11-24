@@ -698,17 +698,36 @@ test.describe('the development table with 40 permanents a seat', () => {
           ),
         })),
       )
+    // The marks lie over pictures only once every card's search and picture have come back, one routed request each,
+    // which a busy machine serves slowly: the wait is for that state, bounded by the test and not by a guess.
+    test.setTimeout(120_000)
     await page.goto(`${DEV_WEB_URL}/dev/table?board=duel&equip=1&cards=real`)
-    await expect
-      .poll(async () => (await read()).length, { message: 'marks over pictures' })
-      .toBeGreaterThan(0)
+    await page
+      .locator('[data-slot="card-overlay"] [data-slot="card-grant"]')
+      .first()
+      .waitFor({ timeout: 60_000 })
+    // The table fits itself over a few frames after each resize: two equal reads in a row are the settled marks.
+    const settled = async (label: string) => {
+      let last = ''
+      await expect
+        .poll(
+          async () => {
+            const now = JSON.stringify(await read())
+            const same = now === last
+            last = now
+            return same
+          },
+          { message: `${label}: the marks settle`, intervals: [150], timeout: 30_000 },
+        )
+        .toBe(true)
+      return read()
+    }
     let short = 0
     let whole = 0
     for (const size of SIZES) {
       await page.setViewportSize({ width: size.width, height: size.height })
-      await page.waitForTimeout(400)
       const label = `${size.width}x${size.height}`
-      const marks = await read()
+      const marks = await settled(label)
       expect(
         marks.filter((mark) => mark.cut).map((mark) => mark.text),
         `${label}: marks cut`,

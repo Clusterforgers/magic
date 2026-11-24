@@ -135,6 +135,13 @@ sched 'unit bad tests "exit 3"; start_ready
        reap_done; unit never tests "touch '"$scratch"'/never"'
 check "early failure: exit code" "$rc $([[ -e "$scratch/never" ]] && echo ran || echo stopped)" "1 stopped"
 
+# A unit the shell already reported done is not one `wait -n` returns (a busy machine meets this while the scheduler
+# waits; `jobs` reports it here at once): the run still takes it in, with its exit code.
+sched 'unit gone tests "exit 0"; start_ready
+       for p in "${!running[@]}"; do n=0; while kill -0 "$p" 2>/dev/null && ((n++ < 1200)); do sleep 0.05; done; done
+       jobs >/dev/null; finish_one'
+check "reported unit: taken in" "$rc $(grep -c '^\[tests\] gone ok' <<<"$out")" "0 1"
+
 # The web checks run the typecheck, lint, format and tests in order, or only the vitest files a diff touches.
 mkdir -p "$scratch/fake"
 printf '#!/bin/sh\necho "pnpm $*" >>%s/pnpm.log\n' "$scratch" >"$scratch/fake/pnpm"
