@@ -2,6 +2,9 @@
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use std::sync::Arc;
+
+use mtg_cards::CardIdentity;
 use mtg_cards::effect::Effect;
 use mtg_cards::refs::Ref;
 use mtg_cards::trigger::TriggerPattern;
@@ -157,20 +160,55 @@ fn the_triggers_to_order_carry_their_effect_and_cause_and_each_question_its_plac
     }
 }
 
-#[test]
-fn a_source_that_left_is_named_and_not_pointed_at() {
-    let mut driver = Driver::from_scenario(
+/// The printed card a test card is.
+fn printed() -> CardIdentity {
+    CardIdentity {
+        oracle_id: "martyr-oracle".into(),
+        printing_id: Some("martyr-print".into()),
+    }
+}
+
+/// Seat 0 controls a Martyr that asks "you may gain 1 life" as it dies, and holds a Bolt for it.
+fn martyr_table(identity: Option<CardIdentity>) -> Driver {
+    let mut martyr = (*watcher("Martyr", when::this_dies(), may_gain())).clone();
+    martyr.identity = identity;
+    Driver::from_scenario(
         Scenario::new(2)
-            .battlefield(
-                0,
-                [
-                    ready(watcher("Martyr", when::this_dies(), may_gain())),
-                    ready(mountain()),
-                ],
-            )
+            .battlefield(0, [ready(Arc::new(martyr)), ready(mountain())])
             .hand(0, [burn("Bolt", 3)]),
     )
-    .unwrap();
+    .unwrap()
+}
+
+#[rstest]
+#[case::printed(Some(printed()))]
+#[case::a_token(None)]
+fn a_source_that_left_keeps_the_card_it_last_was(#[case] identity: Option<CardIdentity>) {
+    let mut driver = martyr_table(identity.clone());
+    let martyr = driver
+        .state()
+        .object(driver.id_of("Martyr").unwrap())
+        .unwrap()
+        .reference();
+    driver.cast_at("Bolt", &[Target::Object(martyr)]).unwrap();
+    pass_to_question(&mut driver);
+    let asking = asking(&driver).unwrap();
+    assert_eq!(asking.source, None);
+    assert_eq!(asking.identity, identity);
+}
+
+#[test]
+fn a_source_still_seen_is_pointed_at_and_not_pictured_again() {
+    let mut driver = watchers(&["Mentor"], when::any_creature_enters);
+    driver.cast("Cub").unwrap();
+    pass_to_question(&mut driver);
+    assert!(asking(&driver).unwrap().source.is_some());
+    assert_eq!(asking(&driver).unwrap().identity, None);
+}
+
+#[test]
+fn a_source_that_left_is_named_and_not_pointed_at() {
+    let mut driver = martyr_table(None);
     let martyr = driver
         .state()
         .object(driver.id_of("Martyr").unwrap())
