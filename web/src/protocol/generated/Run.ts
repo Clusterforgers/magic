@@ -23,9 +23,17 @@ content: number,
  */
 timers: Timers, 
 /**
- * The theme's id.
+ * The theme's id: the first floor's.
  */
 theme: string, 
+/**
+ * The theme of the floor the party is on, once a descent chose it; none while that is the first floor's.
+ */
+floor_theme?: string, 
+/**
+ * The theme of the floor above, when the descent onto this floor left it for another.
+ */
+theme_from?: string, 
 /**
  * The ladder of the floor the party is on.
  */

@@ -1,0 +1,452 @@
+{
+  "code": "C14",
+  "name": "Guided By Nature",
+  "commander": [
+    "Freyalise, Llanowar's Fury"
+  ],
+  "swaps": [
+    {
+      "out": "Elvish Skysweeper",
+      "into": "Fyndhorn Elves"
+    },
+    {
+      "out": "Essence Warden",
+      "into": "Allosaurus Shepherd"
+    },
+    {
+      "out": "Sylvan Safekeeper",
+      "into": "Birds of Paradise"
+    },
+    {
+      "out": "Priest of Titania",
+      "into": "Bloom Tender"
+    },
+    {
+      "out": "Sylvan Ranger",
+      "into": "Incubation Druid"
+    },
+    {
+      "out": "Thornweald Archer",
+      "into": "Devoted Druid"
+    },
+    {
+      "out": "Wellwisher",
+      "into": "Elvish Warmaster"
+    },
+    {
+      "out": "Farhaven Elf",
+      "into": "Tireless Provisioner"
+    },
+    {
+      "out": "Imperious Perfect",
+      "into": "Evolution Sage"
+    },
+    {
+      "out": "Timberwatch Elf",
+      "into": "Springbloom Druid"
+    },
+    {
+      "out": "Titania's Chosen",
+      "into": "Circle of Dreams Druid"
+    },
+    {
+      "out": "Elvish Archdruid",
+      "into": "Augur of Autumn"
+    },
+    {
+      "out": "Ezuri, Renegade Leader",
+      "into": "Selvala, Heart of the Wilds"
+    },
+    {
+      "out": "Immaculate Magistrate",
+      "into": "Beast Whisperer"
+    },
+    {
+      "out": "Lys Alana Huntmaster",
+      "into": "Forgotten Ancient"
+    },
+    {
+      "out": "Creeperhulk",
+      "into": "Fecund Greenshell"
+    },
+    {
+      "out": "Silklash Spider",
+      "into": "Kalonian Hydra"
+    },
+    {
+      "out": "Primordial Sage",
+      "into": "Ancient Greenwarden"
+    },
+    {
+      "out": "Soul of the Harvest",
+      "into": "Bane of Progress"
+    },
+    {
+      "out": "Whirlwind",
+      "into": "Harmonize"
+    },
+    {
+      "out": "Grim Flowering",
+      "into": "Rishkar's Expertise"
+    },
+    {
+      "out": "Fresh Meat",
+      "into": "Second Harvest"
+    },
+    {
+      "out": "Emerald Medallion",
+      "into": "Herd Heirloom"
+    },
+    {
+      "out": "Moss Diamond",
+      "into": "Power Fist"
+    },
+    {
+      "out": "Predator, Flagship",
+      "into": "Conduit of Worlds"
+    },
+    {
+      "out": "Crystal Vein",
+      "into": "Forest"
+    },
+    {
+      "out": "Gargoyle Castle",
+      "into": "Forest"
+    },
+    {
+      "out": "Haunted Fengraf",
+      "into": "Forest"
+    },
+    {
+      "out": "Havenwood Battleground",
+      "into": "Forest"
+    }
+  ],
+  "cards": [
+    [
+      "Freyalise, Llanowar's Fury",
+      1
+    ],
+    [
+      "Elvish Mystic",
+      1
+    ],
+    [
+      "Joraga Warcaller",
+      1
+    ],
+    [
+      "Llanowar Elves",
+      1
+    ],
+    [
+      "Elvish Visionary",
+      1
+    ],
+    [
+      "Reclamation Sage",
+      1
+    ],
+    [
+      "Wood Elves",
+      1
+    ],
+    [
+      "Drove of Elves",
+      1
+    ],
+    [
+      "Wren's Run Packmaster",
+      1
+    ],
+    [
+      "Masked Admirers",
+      1
+    ],
+    [
+      "Wolfbriar Elemental",
+      1
+    ],
+    [
+      "Titania, Protector of Argoth",
+      1
+    ],
+    [
+      "Grave Sifter",
+      1
+    ],
+    [
+      "Rampaging Baloths",
+      1
+    ],
+    [
+      "Thunderfoot Baloth",
+      1
+    ],
+    [
+      "Siege Behemoth",
+      1
+    ],
+    [
+      "Tornado Elemental",
+      1
+    ],
+    [
+      "Terastodon",
+      1
+    ],
+    [
+      "Lifeblood Hydra",
+      1
+    ],
+    [
+      "Hunting Triad",
+      1
+    ],
+    [
+      "Overwhelming Stampede",
+      1
+    ],
+    [
+      "Overrun",
+      1
+    ],
+    [
+      "Collective Unconscious",
+      1
+    ],
+    [
+      "Desert Twister",
+      1
+    ],
+    [
+      "Wave of Vitriol",
+      1
+    ],
+    [
+      "Praetor's Counsel",
+      1
+    ],
+    [
+      "Sylvan Offering",
+      1
+    ],
+    [
+      "Harrow",
+      1
+    ],
+    [
+      "Skullclamp",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Assault Suit",
+      1
+    ],
+    [
+      "Seer's Sundial",
+      1
+    ],
+    [
+      "Loreseeker's Stone",
+      1
+    ],
+    [
+      "Beastmaster Ascension",
+      1
+    ],
+    [
+      "Song of the Dryads",
+      1
+    ],
+    [
+      "Wolfcaller's Howl",
+      1
+    ],
+    [
+      "Evolving Wilds",
+      1
+    ],
+    [
+      "Ghost Quarter",
+      1
+    ],
+    [
+      "Jungle Basin",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Oran-Rief, the Vastwood",
+      1
+    ],
+    [
+      "Slippery Karst",
+      1
+    ],
+    [
+      "Terramorphic Expanse",
+      1
+    ],
+    [
+      "Tranquil Thicket",
+      1
+    ],
+    [
+      "Forest",
+      29
+    ],
+    [
+      "Fyndhorn Elves",
+      1
+    ],
+    [
+      "Allosaurus Shepherd",
+      1
+    ],
+    [
+      "Birds of Paradise",
+      1
+    ],
+    [
+      "Bloom Tender",
+      1
+    ],
+    [
+      "Incubation Druid",
+      1
+    ],
+    [
+      "Devoted Druid",
+      1
+    ],
+    [
+      "Elvish Warmaster",
+      1
+    ],
+    [
+      "Tireless Provisioner",
+      1
+    ],
+    [
+      "Evolution Sage",
+      1
+    ],
+    [
+      "Springbloom Druid",
+      1
+    ],
+    [
+      "Circle of Dreams Druid",
+      1
+    ],
+    [
+      "Augur of Autumn",
+      1
+    ],
+    [
+      "Selvala, Heart of the Wilds",
+      1
+    ],
+    [
+      "Beast Whisperer",
+      1
+    ],
+    [
+      "Forgotten Ancient",
+      1
+    ],
+    [
+      "Fecund Greenshell",
+      1
+    ],
+    [
+      "Kalonian Hydra",
+      1
+    ],
+    [
+      "Ancient Greenwarden",
+      1
+    ],
+    [
+      "Bane of Progress",
+      1
+    ],
+    [
+      "Harmonize",
+      1
+    ],
+    [
+      "Rishkar's Expertise",
+      1
+    ],
+    [
+      "Second Harvest",
+      1
+    ],
+    [
+      "Herd Heirloom",
+      1
+    ],
+    [
+      "Power Fist",
+      1
+    ],
+    [
+      "Conduit of Worlds",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 56
+    },
+    "types": {
+      "Artifact": 10,
+      "Creature": 37,
+      "Enchantment": 3,
+      "Instant": 2,
+      "Kindred": 1,
+      "Land": 37,
+      "Planeswalker": 1,
+      "Sorcery": 10
+    },
+    "subtypes": {
+      "Aura": 1,
+      "Beast": 4,
+      "Bird": 1,
+      "Druid": 11,
+      "Elemental": 8,
+      "Elephant": 1,
+      "Elf": 22,
+      "Equipment": 4,
+      "Forest": 29,
+      "Freyalise": 1,
+      "Human": 1,
+      "Hydra": 2,
+      "Scout": 3,
+      "Shaman": 4,
+      "Turtle": 1,
+      "Warrior": 3
+    },
+    "tokens": 10,
+    "counters": 9,
+    "graveyard": 5,
+    "creature_commanders": 0
+  }
+}

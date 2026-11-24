@@ -437,6 +437,12 @@ impl EventSpec {
     }
 }
 
+/// The content generation the Ember Foundry joins in; a run of an earlier one never meets it.
+pub const FOUNDRY_FROM: u32 = 11;
+
+/// The least Heat of a run that meets the Ember Foundry.
+pub const FOUNDRY_HEAT: u8 = 3;
+
 /// A dungeon theme: its bosses, events and the cards its rewards offer.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -456,6 +462,9 @@ pub struct Theme {
     /// The type line of each pool card ("Creature — Angel"), which counts the Satchel's cards for the relic filter.
     #[serde(default)]
     pub pool_types: BTreeMap<String, String>,
+    /// The least Heat of a run that may draw it; 0 for every Heat.
+    #[serde(default)]
+    pub min_heat: u8,
 }
 
 impl Theme {
@@ -493,7 +502,7 @@ pub struct DeckFile {
     pub name: String,
     /// Its face commanders, which play as ordinary cards of the library.
     pub commander: Vec<String>,
-    /// The cards played by hand that the file swaps for basic lands.
+    /// The cards played by hand that the file swaps for basic lands or automatic cards of their type.
     #[serde(default)]
     pub swaps: Vec<DeckSwap>,
     /// Its cards and copies, the swaps made: 100 cards.
@@ -503,13 +512,13 @@ pub struct DeckFile {
     pub makeup: crate::relics::DeckMakeup,
 }
 
-/// A card of a precon played by hand, swapped for a basic land.
+/// A card of a precon played by hand, swapped for a basic land or an automatic card of its type and colours.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct DeckSwap {
     /// The card taken out.
     pub out: String,
-    /// The basic land put in.
+    /// The card put in.
     pub into: String,
 }
 
@@ -594,18 +603,54 @@ impl Content {
             .ok_or_else(|| CampaignError::Unknown(format!("theme {id}")))
     }
 
-    /// The theme a new run of content generation `generation` plays, drawn by its seed among the themes whose final boss
-    /// that generation meets (only the Warrens before the Drowned Spire's generation).
-    pub fn theme_for(&self, seed: u64, generation: u32) -> Result<&Theme, CampaignError> {
-        let open: Vec<&Theme> = self
-            .themes
+    /// The themes a run of content generation `generation` at `heat` may play, in content order: those whose final boss
+    /// that generation meets and whose least Heat it reaches (only the Warrens before the Drowned Spire's generation; the
+    /// Ember Foundry from Heat 3).
+    pub fn open_themes(&self, generation: u32, heat: u8) -> Vec<&Theme> {
+        self.themes
             .iter()
             .filter(|t| {
-                t.bosses
-                    .iter()
-                    .any(|b| b.final_boss && b.since <= generation)
+                t.min_heat <= heat
+                    && t.bosses
+                        .iter()
+                        .any(|b| b.final_boss && b.since <= generation)
             })
+            .collect()
+    }
+
+    /// The theme of `floor` (from 2) after a floor of theme `from`: drawn by the seed keyed by the floor among the themes
+    /// open at `generation` and `heat` other than `from`, or `from` again while no other is open.
+    pub fn next_theme(
+        &self,
+        seed: u64,
+        generation: u32,
+        heat: u8,
+        floor: u8,
+        from: &str,
+    ) -> Result<&Theme, CampaignError> {
+        let others: Vec<&Theme> = self
+            .open_themes(generation, heat)
+            .into_iter()
+            .filter(|t| t.id != from)
             .collect();
+        if others.is_empty() {
+            return self.theme(from);
+        }
+        let at = crate::rng::Stream::new(seed, "theme", u64::from(floor), 0).below(others.len());
+        others
+            .get(at)
+            .copied()
+            .ok_or_else(|| CampaignError::Unknown(format!("a theme of generation {generation}")))
+    }
+
+    /// The theme a new run of content generation `generation` plays at Heat 0, drawn by its seed ([`Content::theme_at`]).
+    pub fn theme_for(&self, seed: u64, generation: u32) -> Result<&Theme, CampaignError> {
+        self.theme_at(seed, generation, 0)
+    }
+
+    /// The theme a new run of content generation `generation` at `heat` plays, drawn by its seed among the open themes.
+    pub fn theme_at(&self, seed: u64, generation: u32, heat: u8) -> Result<&Theme, CampaignError> {
+        let open = self.open_themes(generation, heat);
         let at = crate::rng::Stream::new(seed, "theme", 0, 0).below(open.len());
         open.get(at)
             .copied()
@@ -644,10 +689,12 @@ pub fn content() -> Result<&'static Content, CampaignError> {
                     include_str!("../content/rework_warrens_a.json"),
                     include_str!("../content/rework_spire.json"),
                     include_str!("../content/rework_warrens_b.json"),
+                    include_str!("../content/rework_foundry.json"),
                 ],
                 &[
                     include_str!("../content/warrens.json"),
                     include_str!("../content/spire.json"),
+                    include_str!("../content/foundry.json"),
                 ],
                 include_str!("../content/modifiers.json"),
             )
@@ -660,8 +707,64 @@ pub fn content() -> Result<&'static Content, CampaignError> {
 /// The bosses' deck files shipped with the crate.
 const DECK_FILES: &[(&str, &str)] = &[
     (
+        "40k-necron-dynasties.json",
+        include_str!("../content/decks/40k-necron-dynasties.json"),
+    ),
+    (
+        "afc-draconic-rage.json",
+        include_str!("../content/decks/afc-draconic-rage.json"),
+    ),
+    (
+        "afc-planar-portal-foundry.json",
+        include_str!("../content/decks/afc-planar-portal-foundry.json"),
+    ),
+    (
+        "afc-planar-portal.json",
+        include_str!("../content/decks/afc-planar-portal.json"),
+    ),
+    (
         "blc-squirreled-away.json",
         include_str!("../content/decks/blc-squirreled-away.json"),
+    ),
+    (
+        "brc-mishra-s-burnished-banner.json",
+        include_str!("../content/decks/brc-mishra-s-burnished-banner.json"),
+    ),
+    (
+        "c14-built-from-scratch-foundry.json",
+        include_str!("../content/decks/c14-built-from-scratch-foundry.json"),
+    ),
+    (
+        "c14-built-from-scratch.json",
+        include_str!("../content/decks/c14-built-from-scratch.json"),
+    ),
+    (
+        "c14-forged-in-stone-foundry.json",
+        include_str!("../content/decks/c14-forged-in-stone-foundry.json"),
+    ),
+    (
+        "c14-forged-in-stone.json",
+        include_str!("../content/decks/c14-forged-in-stone.json"),
+    ),
+    (
+        "c14-guided-by-nature-foundry.json",
+        include_str!("../content/decks/c14-guided-by-nature-foundry.json"),
+    ),
+    (
+        "c14-guided-by-nature.json",
+        include_str!("../content/decks/c14-guided-by-nature.json"),
+    ),
+    (
+        "c14-peer-through-time-foundry.json",
+        include_str!("../content/decks/c14-peer-through-time-foundry.json"),
+    ),
+    (
+        "c14-peer-through-time.json",
+        include_str!("../content/decks/c14-peer-through-time.json"),
+    ),
+    (
+        "c14-sworn-to-darkness.json",
+        include_str!("../content/decks/c14-sworn-to-darkness.json"),
     ),
     (
         "c15-plunder-the-graves.json",
@@ -680,12 +783,48 @@ const DECK_FILES: &[(&str, &str)] = &[
         include_str!("../content/decks/c17-feline-ferocity.json"),
     ),
     (
+        "c18-exquisite-invention.json",
+        include_str!("../content/decks/c18-exquisite-invention.json"),
+    ),
+    (
+        "c21-lorehold-legacies.json",
+        include_str!("../content/decks/c21-lorehold-legacies.json"),
+    ),
+    (
+        "c21-prismari-performance.json",
+        include_str!("../content/decks/c21-prismari-performance.json"),
+    ),
+    (
+        "c21-quantum-quandrix.json",
+        include_str!("../content/decks/c21-quantum-quandrix.json"),
+    ),
+    (
+        "c21-silverquill-statement-foundry.json",
+        include_str!("../content/decks/c21-silverquill-statement-foundry.json"),
+    ),
+    (
+        "c21-silverquill-statement.json",
+        include_str!("../content/decks/c21-silverquill-statement.json"),
+    ),
+    (
         "cmm-eldrazi-unbound.json",
         include_str!("../content/decks/cmm-eldrazi-unbound.json"),
     ),
     (
         "cmr-reap-the-tides.json",
         include_str!("../content/decks/cmr-reap-the-tides.json"),
+    ),
+    (
+        "dsc-death-toll-foundry.json",
+        include_str!("../content/decks/dsc-death-toll-foundry.json"),
+    ),
+    (
+        "dsc-death-toll.json",
+        include_str!("../content/decks/dsc-death-toll.json"),
+    ),
+    (
+        "dsc-jump-scare.json",
+        include_str!("../content/decks/dsc-jump-scare.json"),
     ),
     (
         "fdc-calling-all-angels.json",
@@ -700,6 +839,18 @@ const DECK_FILES: &[(&str, &str)] = &[
         include_str!("../content/decks/fdc-wretched-ranks.json"),
     ),
     (
+        "khc-phantom-premonition-foundry.json",
+        include_str!("../content/decks/khc-phantom-premonition-foundry.json"),
+    ),
+    (
+        "khc-phantom-premonition.json",
+        include_str!("../content/decks/khc-phantom-premonition.json"),
+    ),
+    (
+        "lcc-ahoy-mateys.json",
+        include_str!("../content/decks/lcc-ahoy-mateys.json"),
+    ),
+    (
         "lcc-blood-rites.json",
         include_str!("../content/decks/lcc-blood-rites.json"),
     ),
@@ -712,8 +863,32 @@ const DECK_FILES: &[(&str, &str)] = &[
         include_str!("../content/decks/lcc-veloci-ramp-tor.json"),
     ),
     (
+        "mic-coven-counters-foundry.json",
+        include_str!("../content/decks/mic-coven-counters-foundry.json"),
+    ),
+    (
+        "mic-coven-counters.json",
+        include_str!("../content/decks/mic-coven-counters.json"),
+    ),
+    (
+        "mic-undead-unleashed.json",
+        include_str!("../content/decks/mic-undead-unleashed.json"),
+    ),
+    (
+        "mkc-blame-game.json",
+        include_str!("../content/decks/mkc-blame-game.json"),
+    ),
+    (
         "mkc-revenant-recon.json",
         include_str!("../content/decks/mkc-revenant-recon.json"),
+    ),
+    (
+        "nec-upgrades-unleashed-foundry.json",
+        include_str!("../content/decks/nec-upgrades-unleashed-foundry.json"),
+    ),
+    (
+        "nec-upgrades-unleashed.json",
+        include_str!("../content/decks/nec-upgrades-unleashed.json"),
     ),
     (
         "onc-rebellion-rising.json",

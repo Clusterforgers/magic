@@ -1,0 +1,398 @@
+{
+  "code": "NEC",
+  "name": "Upgrades Unleashed",
+  "commander": [
+    "Chishiro, the Shattered Blade"
+  ],
+  "swaps": [
+    {
+      "out": "Ox of Agonas",
+      "into": "Goldspan Dragon"
+    },
+    {
+      "out": "Akki Battle Squad",
+      "into": "Ancient Copper Dragon"
+    },
+    {
+      "out": "Orochi Merge-Keeper",
+      "into": "Bloom Tender"
+    },
+    {
+      "out": "Towashi Guide-Bot",
+      "into": "Storm-Kiln Artist"
+    },
+    {
+      "out": "Walking Skyscraper",
+      "into": "Terastodon"
+    },
+    {
+      "out": "Loyal Guardian",
+      "into": "Kalonian Hydra"
+    },
+    {
+      "out": "Spearbreaker Behemoth",
+      "into": "Cultivator Colossus"
+    },
+    {
+      "out": "Starstorm",
+      "into": "Thrill of Possibility"
+    },
+    {
+      "out": "Invigorating Hot Spring",
+      "into": "Garruk's Uprising"
+    },
+    {
+      "out": "Gruul Turf",
+      "into": "Forest"
+    },
+    {
+      "out": "Mossfire Valley",
+      "into": "Mountain"
+    },
+    {
+      "out": "Raging Ravine",
+      "into": "Forest"
+    },
+    {
+      "out": "Temple of Abandon",
+      "into": "Mountain"
+    }
+  ],
+  "cards": [
+    [
+      "Chishiro, the Shattered Blade",
+      1
+    ],
+    [
+      "Kaima, the Fractured Calm",
+      1
+    ],
+    [
+      "Kami of Celebration",
+      1
+    ],
+    [
+      "Komainu Battle Armor",
+      1
+    ],
+    [
+      "Ascendant Acolyte",
+      1
+    ],
+    [
+      "Kosei, Penitent Warlord",
+      1
+    ],
+    [
+      "Rampant Rejuvenator",
+      1
+    ],
+    [
+      "Tanuki Transplanter",
+      1
+    ],
+    [
+      "Agitator Ant",
+      1
+    ],
+    [
+      "Goblin Razerunners",
+      1
+    ],
+    [
+      "Krenko, Tin Street Kingpin",
+      1
+    ],
+    [
+      "Taurean Mauler",
+      1
+    ],
+    [
+      "Acidic Slime",
+      1
+    ],
+    [
+      "Champion of Lambholt",
+      1
+    ],
+    [
+      "Fertilid",
+      1
+    ],
+    [
+      "Forgotten Ancient",
+      1
+    ],
+    [
+      "Genesis Hydra",
+      1
+    ],
+    [
+      "Primeval Protector",
+      1
+    ],
+    [
+      "Rishkar, Peema Renegade",
+      1
+    ],
+    [
+      "Sakura-Tribe Elder",
+      1
+    ],
+    [
+      "Whiptongue Hydra",
+      1
+    ],
+    [
+      "Grumgully, the Generous",
+      1
+    ],
+    [
+      "Ulasht, the Hate Seed",
+      1
+    ],
+    [
+      "Collision of Realms",
+      1
+    ],
+    [
+      "Smoke Spirits' Aid",
+      1
+    ],
+    [
+      "Chain Reaction",
+      1
+    ],
+    [
+      "Kodama's Reach",
+      1
+    ],
+    [
+      "Rampant Growth",
+      1
+    ],
+    [
+      "Rishkar's Expertise",
+      1
+    ],
+    [
+      "Shamanic Revelation",
+      1
+    ],
+    [
+      "Soul's Majesty",
+      1
+    ],
+    [
+      "Vastwood Surge",
+      1
+    ],
+    [
+      "Decimate",
+      1
+    ],
+    [
+      "Silkguard",
+      1
+    ],
+    [
+      "Chaos Warp",
+      1
+    ],
+    [
+      "Beast Within",
+      1
+    ],
+    [
+      "Hunter's Insight",
+      1
+    ],
+    [
+      "Mage Slayer",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Blackblade Reforged",
+      1
+    ],
+    [
+      "Bonehoard",
+      1
+    ],
+    [
+      "Fireshrieker",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Sword of Vengeance",
+      1
+    ],
+    [
+      "Unquenchable Fury",
+      1
+    ],
+    [
+      "Concord with the Kami",
+      1
+    ],
+    [
+      "One with the Kami",
+      1
+    ],
+    [
+      "Elemental Mastery",
+      1
+    ],
+    [
+      "Shifting Shadow",
+      1
+    ],
+    [
+      "Bear Umbra",
+      1
+    ],
+    [
+      "Ordeal of Nylea",
+      1
+    ],
+    [
+      "Snake Umbra",
+      1
+    ],
+    [
+      "Rhythm of the Wild",
+      1
+    ],
+    [
+      "Cinder Glade",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Game Trail",
+      1
+    ],
+    [
+      "Opal Palace",
+      1
+    ],
+    [
+      "Oran-Rief, the Vastwood",
+      1
+    ],
+    [
+      "Mountain",
+      15
+    ],
+    [
+      "Forest",
+      16
+    ],
+    [
+      "Goldspan Dragon",
+      1
+    ],
+    [
+      "Ancient Copper Dragon",
+      1
+    ],
+    [
+      "Bloom Tender",
+      1
+    ],
+    [
+      "Storm-Kiln Artist",
+      1
+    ],
+    [
+      "Terastodon",
+      1
+    ],
+    [
+      "Kalonian Hydra",
+      1
+    ],
+    [
+      "Cultivator Colossus",
+      1
+    ],
+    [
+      "Thrill of Possibility",
+      1
+    ],
+    [
+      "Garruk's Uprising",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 39,
+      "R": 24
+    },
+    "types": {
+      "Artifact": 10,
+      "Creature": 30,
+      "Enchantment": 10,
+      "Instant": 5,
+      "Land": 37,
+      "Sorcery": 10
+    },
+    "subtypes": {
+      "Arcane": 1,
+      "Aura": 7,
+      "Avatar": 1,
+      "Beast": 1,
+      "Dog": 2,
+      "Dragon": 2,
+      "Druid": 2,
+      "Dwarf": 1,
+      "Elder": 1,
+      "Elemental": 2,
+      "Elephant": 1,
+      "Elf": 2,
+      "Equipment": 8,
+      "Forest": 17,
+      "Goblin": 3,
+      "Hellion": 1,
+      "Human": 2,
+      "Hydra": 5,
+      "Insect": 1,
+      "Lizard": 1,
+      "Monk": 1,
+      "Mountain": 16,
+      "Ogre": 1,
+      "Ooze": 1,
+      "Plant": 3,
+      "Samurai": 2,
+      "Shaman": 3,
+      "Shapeshifter": 1,
+      "Snake": 2,
+      "Spirit": 2,
+      "Warrior": 2
+    },
+    "tokens": 8,
+    "counters": 20,
+    "graveyard": 1,
+    "creature_commanders": 0
+  }
+}

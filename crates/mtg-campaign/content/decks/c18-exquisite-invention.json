@@ -1,0 +1,401 @@
+{
+  "code": "C18",
+  "name": "Exquisite Invention",
+  "commander": [
+    "Saheeli, the Gifted"
+  ],
+  "swaps": [
+    {
+      "out": "Scuttling Doom Engine",
+      "into": "Scavenged Brawler"
+    },
+    {
+      "out": "Etherium Sculptor",
+      "into": "Steel Overseer"
+    },
+    {
+      "out": "Chief of the Foundry",
+      "into": "Adaptive Automaton"
+    },
+    {
+      "out": "Pilgrim's Eye",
+      "into": "Ornithopter of Paradise"
+    },
+    {
+      "out": "Tidings",
+      "into": "Thoughtcast"
+    },
+    {
+      "out": "Magnifying Glass",
+      "into": "Basalt Monolith"
+    },
+    {
+      "out": "Darksteel Citadel",
+      "into": "Mountain"
+    },
+    {
+      "out": "Great Furnace",
+      "into": "Island"
+    },
+    {
+      "out": "Seat of the Synod",
+      "into": "Mountain"
+    },
+    {
+      "out": "Thopter Spy Network",
+      "into": "Reconnaissance Mission"
+    },
+    {
+      "out": "Foundry of the Consuls",
+      "into": "Island"
+    },
+    {
+      "out": "Highland Lake",
+      "into": "Mountain"
+    },
+    {
+      "out": "Saheeli's Directive",
+      "into": "Trash for Treasure"
+    },
+    {
+      "out": "Retrofitter Foundry",
+      "into": "Wayfarer's Bauble"
+    },
+    {
+      "out": "Loyal Drake",
+      "into": "Geyser Drake"
+    },
+    {
+      "out": "Thopter Engineer",
+      "into": "Ingenious Artillerist"
+    }
+  ],
+  "cards": [
+    [
+      "Saheeli, the Gifted",
+      1
+    ],
+    [
+      "Maverick Thopterist",
+      1
+    ],
+    [
+      "Soul of New Phyrexia",
+      1
+    ],
+    [
+      "Inkwell Leviathan",
+      1
+    ],
+    [
+      "Sharding Sphinx",
+      1
+    ],
+    [
+      "Hellkite Igniter",
+      1
+    ],
+    [
+      "Bosh, Iron Golem",
+      1
+    ],
+    [
+      "Darksteel Juggernaut",
+      1
+    ],
+    [
+      "Duplicant",
+      1
+    ],
+    [
+      "Myr Battlesphere",
+      1
+    ],
+    [
+      "Psychosis Crawler",
+      1
+    ],
+    [
+      "Steel Hellkite",
+      1
+    ],
+    [
+      "Thopter Assembly",
+      1
+    ],
+    [
+      "Whirler Rogue",
+      1
+    ],
+    [
+      "Saheeli's Artistry",
+      1
+    ],
+    [
+      "Blasphemous Act",
+      1
+    ],
+    [
+      "Reverse Engineer",
+      1
+    ],
+    [
+      "Chaos Warp",
+      1
+    ],
+    [
+      "Magmaquake",
+      1
+    ],
+    [
+      "Into the Roil",
+      1
+    ],
+    [
+      "Thirst for Knowledge",
+      1
+    ],
+    [
+      "Blinkmoth Urn",
+      1
+    ],
+    [
+      "Mimic Vat",
+      1
+    ],
+    [
+      "Mirrorworks",
+      1
+    ],
+    [
+      "Prototype Portal",
+      1
+    ],
+    [
+      "Unwinding Clock",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Dreamstone Hedron",
+      1
+    ],
+    [
+      "Hedron Archive",
+      1
+    ],
+    [
+      "Izzet Signet",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Prismatic Lens",
+      1
+    ],
+    [
+      "Scrabbling Claws",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Unstable Obelisk",
+      1
+    ],
+    [
+      "Vessel of Endless Rest",
+      1
+    ],
+    [
+      "Worn Powerstone",
+      1
+    ],
+    [
+      "Island",
+      17
+    ],
+    [
+      "Mountain",
+      15
+    ],
+    [
+      "Buried Ruin",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Izzet Boilerworks",
+      1
+    ],
+    [
+      "Izzet Guildgate",
+      1
+    ],
+    [
+      "Swiftwater Cliffs",
+      1
+    ],
+    [
+      "Brudiclad, Telchor Engineer",
+      1
+    ],
+    [
+      "Tawnos, Urza's Apprentice",
+      1
+    ],
+    [
+      "Echo Storm",
+      1
+    ],
+    [
+      "Vedalken Humiliator",
+      1
+    ],
+    [
+      "Enchanter's Bane",
+      1
+    ],
+    [
+      "Treasure Nabber",
+      1
+    ],
+    [
+      "Varchild, Betrayer of Kjeldor",
+      1
+    ],
+    [
+      "Ancient Stone Idol",
+      1
+    ],
+    [
+      "Coveted Jewel",
+      1
+    ],
+    [
+      "Endless Atlas",
+      1
+    ],
+    [
+      "Aether Gale",
+      1
+    ],
+    [
+      "Loyal Apprentice",
+      1
+    ],
+    [
+      "Geode Golem",
+      1
+    ],
+    [
+      "Forge of Heroes",
+      1
+    ],
+    [
+      "Scavenged Brawler",
+      1
+    ],
+    [
+      "Steel Overseer",
+      1
+    ],
+    [
+      "Adaptive Automaton",
+      1
+    ],
+    [
+      "Ornithopter of Paradise",
+      1
+    ],
+    [
+      "Thoughtcast",
+      1
+    ],
+    [
+      "Basalt Monolith",
+      1
+    ],
+    [
+      "Reconnaissance Mission",
+      1
+    ],
+    [
+      "Trash for Treasure",
+      1
+    ],
+    [
+      "Wayfarer's Bauble",
+      1
+    ],
+    [
+      "Geyser Drake",
+      1
+    ],
+    [
+      "Ingenious Artillerist",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "R": 14,
+      "U": 17
+    },
+    "types": {
+      "Artifact": 38,
+      "Creature": 27,
+      "Enchantment": 2,
+      "Instant": 4,
+      "Land": 38,
+      "Planeswalker": 1,
+      "Sorcery": 7
+    },
+    "subtypes": {
+      "Artificer": 6,
+      "Avatar": 1,
+      "Construct": 4,
+      "Dragon": 2,
+      "Drake": 1,
+      "Equipment": 1,
+      "Gate": 1,
+      "Goblin": 1,
+      "Golem": 3,
+      "Horror": 1,
+      "Human": 6,
+      "Island": 17,
+      "Juggernaut": 1,
+      "Knight": 1,
+      "Leviathan": 1,
+      "Mountain": 15,
+      "Myr": 1,
+      "Phyrexian": 3,
+      "Rogue": 2,
+      "Saheeli": 1,
+      "Shapeshifter": 1,
+      "Sphinx": 1,
+      "Thopter": 2,
+      "Vedalken": 1,
+      "Wizard": 1
+    },
+    "tokens": 9,
+    "counters": 2,
+    "graveyard": 6,
+    "creature_commanders": 0
+  }
+}

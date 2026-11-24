@@ -69,6 +69,19 @@ mod tests {
             .collect()
     }
 
+    #[rstest::rstest]
+    #[case::full_name("Lightning Bolt", "Lightning Bolt")]
+    #[case::full_name_before_another_cards_face("Reanimate", "Reanimate")]
+    #[case::face_of_a_split_card("Ice", "Fire // Ice")]
+    #[case::face_of_an_adventure("Stomp", "Bonecrusher Giant // Stomp")]
+    fn a_name_finds_its_own_card_before_another_cards_face(
+        #[case] asked: &str,
+        #[case] found: &str,
+    ) {
+        let library = library().unwrap();
+        assert_eq!(library.card_by_name(asked).unwrap().name, found);
+    }
+
     #[test]
     fn the_embedded_files_are_the_corpus() {
         let library = library().unwrap_or_else(|errors| panic!("{errors}"));

@@ -126,6 +126,10 @@
   --color-delve: var(--delve);
   --color-on-delve: var(--on-delve);
   --color-delve-stone: var(--delve-stone);
+  --color-delve-spire: var(--delve-spire);
+  --color-delve-spire-stone: var(--delve-spire-stone);
+  --color-delve-foundry: var(--delve-foundry);
+  --color-delve-foundry-stone: var(--delve-foundry-stone);
   --color-relic: var(--relic);
   --color-boss: var(--boss);
   --color-on-boss: var(--on-boss);
@@ -213,6 +217,12 @@
   --delve: oklch(0.5 0.15 45);
   --on-delve: oklch(0.985 0 0);
   --delve-stone: oklch(0.945 0.012 60);
+  /* The Drowned Spire's sea-green ember and stone, which a floor of it lays over the Delves ones (`data-delve-theme`). */
+  --delve-spire: oklch(0.47 0.09 205);
+  --delve-spire-stone: oklch(0.945 0.014 215);
+  /* The Ember Foundry's molten ember and iron, laid over the Delves ones the same way. */
+  --delve-foundry: oklch(0.5 0.17 32);
+  --delve-foundry-stone: oklch(0.935 0.006 255);
   --relic: oklch(0.5 0.1 85);
   /* A boss seat's frame and chip (wine), and a fallen hero's Spirit mark (cold blue-grey). */
   --boss: oklch(0.45 0.16 350);
@@ -322,6 +332,10 @@
   --delve: oklch(0.76 0.14 55);
   --on-delve: oklch(0.17 0.012 50);
   --delve-stone: oklch(0.195 0.014 50);
+  --delve-spire: oklch(0.78 0.1 200);
+  --delve-spire-stone: oklch(0.2 0.018 225);
+  --delve-foundry: oklch(0.74 0.16 42);
+  --delve-foundry-stone: oklch(0.2 0.008 255);
   --relic: oklch(0.82 0.12 88);
   --boss: oklch(0.74 0.13 350);
   --on-boss: oklch(0.17 0.012 265);
@@ -348,6 +362,18 @@
   --accent: oklch(0.31 0.022 60);
 
   color-scheme: dark;
+}
+
+/* A run page on a floor of the Drowned Spire: its ember and stone in place of the Warrens' ones. */
+[data-delve-theme='spire'] {
+  --delve: var(--delve-spire);
+  --delve-stone: var(--delve-spire-stone);
+}
+
+/* A run page on a floor of the Ember Foundry: its molten ember and iron in place of the Warrens' ones. */
+[data-delve-theme='foundry'] {
+  --delve: var(--delve-foundry);
+  --delve-stone: var(--delve-foundry-stone);
 }
 
 @keyframes your-turn-glow {

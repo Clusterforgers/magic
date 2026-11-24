@@ -1,0 +1,420 @@
+{
+  "code": "C21",
+  "name": "Quantum Quandrix",
+  "commander": [
+    "Adrix and Nev, Twincasters"
+  ],
+  "swaps": [
+    {
+      "out": "Curiosity Crafter",
+      "into": "Archmage Emeritus"
+    },
+    {
+      "out": "Desolation Twin",
+      "into": "Apex Altisaur"
+    },
+    {
+      "out": "Hornet Nest",
+      "into": "Horizon Explorer"
+    },
+    {
+      "out": "Hornet Queen",
+      "into": "Avenger of Zendikar"
+    },
+    {
+      "out": "Biomathematician",
+      "into": "Eternal Witness"
+    },
+    {
+      "out": "Quandrix Cultivator",
+      "into": "Beast Whisperer"
+    },
+    {
+      "out": "Incubation // Incongruity",
+      "into": "Aetherize"
+    },
+    {
+      "out": "Sequence Engine",
+      "into": "Lifecrafter's Bestiary"
+    },
+    {
+      "out": "Lumbering Falls",
+      "into": "Forest"
+    },
+    {
+      "out": "Yavimaya Coast",
+      "into": "Island"
+    },
+    {
+      "out": "Quandrix Campus",
+      "into": "Forest"
+    },
+    {
+      "out": "Lonely Sandbar",
+      "into": "Island"
+    },
+    {
+      "out": "Nissa's Expedition",
+      "into": "Overwhelming Stampede"
+    }
+  ],
+  "cards": [
+    [
+      "Adrix and Nev, Twincasters",
+      1
+    ],
+    [
+      "Garruk, Primal Hunter",
+      1
+    ],
+    [
+      "Esix, Fractal Bloom",
+      1
+    ],
+    [
+      "Deekah, Fractal Theorist",
+      1
+    ],
+    [
+      "Spawning Kraken",
+      1
+    ],
+    [
+      "Guardian Augmenter",
+      1
+    ],
+    [
+      "Ruxa, Patient Professor",
+      1
+    ],
+    [
+      "Champion of Wits",
+      1
+    ],
+    [
+      "Crafty Cutpurse",
+      1
+    ],
+    [
+      "Reef Worm",
+      1
+    ],
+    [
+      "Arashi, the Sky Asunder",
+      1
+    ],
+    [
+      "Forgotten Ancient",
+      1
+    ],
+    [
+      "Hydra Broodmaster",
+      1
+    ],
+    [
+      "Incubation Druid",
+      1
+    ],
+    [
+      "Kazandu Tuskcaller",
+      1
+    ],
+    [
+      "Managorger Hydra",
+      1
+    ],
+    [
+      "Rampaging Baloths",
+      1
+    ],
+    [
+      "Terastodon",
+      1
+    ],
+    [
+      "Kaseto, Orochi Archmage",
+      1
+    ],
+    [
+      "Master Biomancer",
+      1
+    ],
+    [
+      "Zimone, Quandrix Prodigy",
+      1
+    ],
+    [
+      "Coiling Oracle",
+      1
+    ],
+    [
+      "Plaxcaster Frogling",
+      1
+    ],
+    [
+      "Trygon Predator",
+      1
+    ],
+    [
+      "Replication Technique",
+      1
+    ],
+    [
+      "Oversimplify",
+      1
+    ],
+    [
+      "Curse of the Swine",
+      1
+    ],
+    [
+      "Rite of Replication",
+      1
+    ],
+    [
+      "Shamanic Revelation",
+      1
+    ],
+    [
+      "Spitting Image",
+      1
+    ],
+    [
+      "Golden Ratio",
+      1
+    ],
+    [
+      "Rampant Growth",
+      1
+    ],
+    [
+      "Perplexing Test",
+      1
+    ],
+    [
+      "Theoretical Duplication",
+      1
+    ],
+    [
+      "Return of the Wildspeaker",
+      1
+    ],
+    [
+      "Biomass Mutation",
+      1
+    ],
+    [
+      "Eureka Moment",
+      1
+    ],
+    [
+      "Rapid Hybridization",
+      1
+    ],
+    [
+      "Beast Within",
+      1
+    ],
+    [
+      "Krosan Grip",
+      1
+    ],
+    [
+      "Fractal Harness",
+      1
+    ],
+    [
+      "Geometric Nexus",
+      1
+    ],
+    [
+      "Idol of Oblivion",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Simic Signet",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Paradox Zone",
+      1
+    ],
+    [
+      "Primal Empathy",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Mosswort Bridge",
+      1
+    ],
+    [
+      "Oran-Rief, the Vastwood",
+      1
+    ],
+    [
+      "Temple of Mystery",
+      1
+    ],
+    [
+      "Study Hall",
+      1
+    ],
+    [
+      "Blighted Woodland",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Llanowar Reborn",
+      1
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Novijen, Heart of Progress",
+      1
+    ],
+    [
+      "Opal Palace",
+      1
+    ],
+    [
+      "Simic Growth Chamber",
+      1
+    ],
+    [
+      "Temple of the False God",
+      1
+    ],
+    [
+      "Tranquil Thicket",
+      1
+    ],
+    [
+      "Forest",
+      13
+    ],
+    [
+      "Island",
+      12
+    ],
+    [
+      "Commander's Insight",
+      1
+    ],
+    [
+      "Ezuri's Predation",
+      1
+    ],
+    [
+      "Kodama's Reach",
+      1
+    ],
+    [
+      "Rogue's Passage",
+      1
+    ],
+    [
+      "Archmage Emeritus",
+      1
+    ],
+    [
+      "Apex Altisaur",
+      1
+    ],
+    [
+      "Horizon Explorer",
+      1
+    ],
+    [
+      "Avenger of Zendikar",
+      1
+    ],
+    [
+      "Eternal Witness",
+      1
+    ],
+    [
+      "Beast Whisperer",
+      1
+    ],
+    [
+      "Aetherize",
+      1
+    ],
+    [
+      "Lifecrafter's Bestiary",
+      1
+    ],
+    [
+      "Overwhelming Stampede",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "G": 40,
+      "U": 28
+    },
+    "types": {
+      "Artifact": 7,
+      "Creature": 29,
+      "Enchantment": 2,
+      "Instant": 10,
+      "Land": 40,
+      "Planeswalker": 1,
+      "Sorcery": 11
+    },
+    "subtypes": {
+      "Arcane": 1,
+      "Bear": 1,
+      "Beast": 2,
+      "Dinosaur": 1,
+      "Druid": 4,
+      "Elemental": 2,
+      "Elephant": 1,
+      "Elf": 4,
+      "Equipment": 1,
+      "Forest": 13,
+      "Fractal": 1,
+      "Frog": 1,
+      "Garruk": 1,
+      "Human": 6,
+      "Hydra": 2,
+      "Insect": 1,
+      "Island": 12,
+      "Kraken": 1,
+      "Merfolk": 1,
+      "Mutant": 1,
+      "Pirate": 1,
+      "Scout": 1,
+      "Shaman": 2,
+      "Snake": 3,
+      "Spirit": 1,
+      "Troll": 1,
+      "Wizard": 8,
+      "Worm": 1
+    },
+    "tokens": 19,
+    "counters": 11,
+    "graveyard": 2,
+    "creature_commanders": 0
+  }
+}

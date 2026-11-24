@@ -1,0 +1,415 @@
+{
+  "code": "KHC",
+  "name": "Phantom Premonition",
+  "commander": [
+    "Ranar the Ever-Watchful"
+  ],
+  "swaps": [
+    {
+      "out": "Cloudblazer",
+      "into": "Riptide Gearhulk"
+    },
+    {
+      "out": "Cloudgoat Ranger",
+      "into": "Stonehewer Giant"
+    },
+    {
+      "out": "Empyrean Eagle",
+      "into": "Skyclave Apparition"
+    },
+    {
+      "out": "Geist-Honored Monk",
+      "into": "Karmic Guide"
+    },
+    {
+      "out": "Kor Cartographer",
+      "into": "Windborn Muse"
+    },
+    {
+      "out": "Mist Raven",
+      "into": "Archmage Emeritus"
+    },
+    {
+      "out": "Sun Titan",
+      "into": "Valkyrie Harbinger"
+    },
+    {
+      "out": "Thunderclap Wyvern",
+      "into": "Phyrexian Metamorph"
+    },
+    {
+      "out": "Wall of Omens",
+      "into": "Crystal Barricade"
+    },
+    {
+      "out": "Iron Verdict",
+      "into": "Generous Gift"
+    },
+    {
+      "out": "Warhorn Blast",
+      "into": "Virtue of Loyalty // Ardenvale Fealty"
+    },
+    {
+      "out": "Storm Herd",
+      "into": "Organic Extinction"
+    },
+    {
+      "out": "Azorius Guildgate",
+      "into": "Island"
+    },
+    {
+      "out": "Cryptic Caves",
+      "into": "Plains"
+    },
+    {
+      "out": "Gates of Istfell",
+      "into": "Island"
+    },
+    {
+      "out": "Glacial Floodplain",
+      "into": "Plains"
+    },
+    {
+      "out": "Meandering River",
+      "into": "Island"
+    },
+    {
+      "out": "Sejiri Refuge",
+      "into": "Plains"
+    },
+    {
+      "out": "Tranquil Cove",
+      "into": "Island"
+    }
+  ],
+  "cards": [
+    [
+      "Ranar the Ever-Watchful",
+      1
+    ],
+    [
+      "Angel of Finality",
+      1
+    ],
+    [
+      "Angel of Serenity",
+      1
+    ],
+    [
+      "Arcane Artisan",
+      1
+    ],
+    [
+      "Brago, King Eternal",
+      1
+    ],
+    [
+      "Burnished Hart",
+      1
+    ],
+    [
+      "Ethereal Valkyrie",
+      1
+    ],
+    [
+      "Evangel of Heliod",
+      1
+    ],
+    [
+      "Flickerwisp",
+      1
+    ],
+    [
+      "Goldnight Commander",
+      1
+    ],
+    [
+      "Hero of Bretagard",
+      1
+    ],
+    [
+      "Inspired Sphinx",
+      1
+    ],
+    [
+      "Meteor Golem",
+      1
+    ],
+    [
+      "Mistmeadow Witch",
+      1
+    ],
+    [
+      "Mulldrifter",
+      1
+    ],
+    [
+      "Restoration Angel",
+      1
+    ],
+    [
+      "Sage of the Beyond",
+      1
+    ],
+    [
+      "Sea Gate Oracle",
+      1
+    ],
+    [
+      "Soulherder",
+      1
+    ],
+    [
+      "Stoic Farmer",
+      1
+    ],
+    [
+      "Surtland Elementalist",
+      1
+    ],
+    [
+      "Vega, the Watcher",
+      1
+    ],
+    [
+      "Whirler Rogue",
+      1
+    ],
+    [
+      "Behold the Multiverse",
+      1
+    ],
+    [
+      "Cosmic Intervention",
+      1
+    ],
+    [
+      "Eerie Interlude",
+      1
+    ],
+    [
+      "Ghostly Flicker",
+      1
+    ],
+    [
+      "Momentary Blink",
+      1
+    ],
+    [
+      "Return to Dust",
+      1
+    ],
+    [
+      "Saw It Coming",
+      1
+    ],
+    [
+      "Synthetic Destiny",
+      1
+    ],
+    [
+      "Cleansing Nova",
+      1
+    ],
+    [
+      "Curse of the Swine",
+      1
+    ],
+    [
+      "Migratory Route",
+      1
+    ],
+    [
+      "Ravenform",
+      1
+    ],
+    [
+      "Spectral Deluge",
+      1
+    ],
+    [
+      "Tales of the Ancestors",
+      1
+    ],
+    [
+      "Windfall",
+      1
+    ],
+    [
+      "Banishing Light",
+      1
+    ],
+    [
+      "Day of the Dragons",
+      1
+    ],
+    [
+      "Ghostly Prison",
+      1
+    ],
+    [
+      "Marshal's Anthem",
+      1
+    ],
+    [
+      "Niko Defies Destiny",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Azorius Signet",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Marble Diamond",
+      1
+    ],
+    [
+      "Mind Stone",
+      1
+    ],
+    [
+      "Replicating Ring",
+      1
+    ],
+    [
+      "Sky Diamond",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Swiftfoot Boots",
+      1
+    ],
+    [
+      "Azorius Chancery",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Island",
+      16
+    ],
+    [
+      "Myriad Landscape",
+      1
+    ],
+    [
+      "Opal Palace",
+      1
+    ],
+    [
+      "Plains",
+      16
+    ],
+    [
+      "Riptide Gearhulk",
+      1
+    ],
+    [
+      "Stonehewer Giant",
+      1
+    ],
+    [
+      "Skyclave Apparition",
+      1
+    ],
+    [
+      "Karmic Guide",
+      1
+    ],
+    [
+      "Windborn Muse",
+      1
+    ],
+    [
+      "Archmage Emeritus",
+      1
+    ],
+    [
+      "Valkyrie Harbinger",
+      1
+    ],
+    [
+      "Phyrexian Metamorph",
+      1
+    ],
+    [
+      "Crystal Barricade",
+      1
+    ],
+    [
+      "Generous Gift",
+      1
+    ],
+    [
+      "Virtue of Loyalty // Ardenvale Fealty",
+      1
+    ],
+    [
+      "Organic Extinction",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "U": 28,
+      "W": 34
+    },
+    "types": {
+      "Artifact": 14,
+      "Creature": 32,
+      "Enchantment": 6,
+      "Instant": 9,
+      "Land": 36,
+      "Sorcery": 8
+    },
+    "subtypes": {
+      "Angel": 6,
+      "Artificer": 1,
+      "Bird": 1,
+      "Cleric": 3,
+      "Construct": 1,
+      "Dwarf": 1,
+      "Elemental": 2,
+      "Elk": 1,
+      "Equipment": 1,
+      "Giant": 3,
+      "Golem": 1,
+      "Human": 7,
+      "Island": 16,
+      "Kithkin": 1,
+      "Kor": 1,
+      "Noble": 1,
+      "Peasant": 1,
+      "Phyrexian": 1,
+      "Plains": 16,
+      "Rogue": 1,
+      "Saga": 1,
+      "Shapeshifter": 1,
+      "Soldier": 1,
+      "Sphinx": 1,
+      "Spirit": 9,
+      "Wall": 1,
+      "Warrior": 3,
+      "Wizard": 5
+    },
+    "tokens": 9,
+    "counters": 2,
+    "graveyard": 6,
+    "creature_commanders": 0
+  }
+}

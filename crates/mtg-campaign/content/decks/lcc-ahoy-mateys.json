@@ -1,0 +1,441 @@
+{
+  "code": "LCC",
+  "name": "Ahoy Mateys",
+  "commander": [
+    "Admiral Brass, Unsinkable"
+  ],
+  "swaps": [
+    {
+      "out": "Francisco, Fowl Marauder",
+      "into": "Blood Artist"
+    },
+    {
+      "out": "Corsair Captain",
+      "into": "Tandem Lookout"
+    },
+    {
+      "out": "Evacuation",
+      "into": "Misdirection"
+    },
+    {
+      "out": "Warkite Marauder",
+      "into": "Snapcaster Mage"
+    },
+    {
+      "out": "Captain Lannery Storm",
+      "into": "Professional Face-Breaker"
+    },
+    {
+      "out": "Coercive Recruiter",
+      "into": "Goldspan Dragon"
+    },
+    {
+      "out": "Desolate Lighthouse",
+      "into": "Swamp"
+    },
+    {
+      "out": "Foreboding Ruins",
+      "into": "Mountain"
+    },
+    {
+      "out": "Frostboil Snarl",
+      "into": "Island"
+    },
+    {
+      "out": "Nephalia Drownyard",
+      "into": "Swamp"
+    },
+    {
+      "out": "Smoldering Marsh",
+      "into": "Mountain"
+    },
+    {
+      "out": "Sulfur Falls",
+      "into": "Island"
+    },
+    {
+      "out": "Daring Saboteur",
+      "into": "Invisible Stalker"
+    },
+    {
+      "out": "Pitiless Plunderer",
+      "into": "Disciple of Bolas"
+    },
+    {
+      "out": "Rakdos Signet",
+      "into": "Talisman of Dominance"
+    },
+    {
+      "out": "Crumbling Necropolis",
+      "into": "Swamp"
+    }
+  ],
+  "cards": [
+    [
+      "Admiral Brass, Unsinkable",
+      1
+    ],
+    [
+      "Don Andres, the Renegade",
+      1
+    ],
+    [
+      "The Indomitable",
+      1
+    ],
+    [
+      "Storm Fleet Negotiator",
+      1
+    ],
+    [
+      "The Grim Captain's Locker",
+      1
+    ],
+    [
+      "Skeleton Crew",
+      1
+    ],
+    [
+      "Broadside Bombardiers",
+      1
+    ],
+    [
+      "Gemcutter Buccaneer",
+      1
+    ],
+    [
+      "Arm-Mounted Anchor",
+      1
+    ],
+    [
+      "Amphin Mutineer",
+      1
+    ],
+    [
+      "Bident of Thassa",
+      1
+    ],
+    [
+      "Timestream Navigator",
+      1
+    ],
+    [
+      "Black Market Connections",
+      1
+    ],
+    [
+      "Blood Money",
+      1
+    ],
+    [
+      "Dire Fleet Ravager",
+      1
+    ],
+    [
+      "Fathom Fleet Captain",
+      1
+    ],
+    [
+      "Lethal Scheme",
+      1
+    ],
+    [
+      "Angrath's Marauders",
+      1
+    ],
+    [
+      "Blasphemous Act",
+      1
+    ],
+    [
+      "Captivating Crew",
+      1
+    ],
+    [
+      "Chaos Warp",
+      1
+    ],
+    [
+      "Dire Fleet Daredevil",
+      1
+    ],
+    [
+      "Kari Zev, Skyship Raider",
+      1
+    ],
+    [
+      "Port Razer",
+      1
+    ],
+    [
+      "Shared Animosity",
+      1
+    ],
+    [
+      "Admiral Beckett Brass",
+      1
+    ],
+    [
+      "Hostage Taker",
+      1
+    ],
+    [
+      "King Narfi's Betrayal",
+      1
+    ],
+    [
+      "Prismari Command",
+      1
+    ],
+    [
+      "Zara, Renegade Recruiter",
+      1
+    ],
+    [
+      "Icon of Ancestry",
+      1
+    ],
+    [
+      "Vanquisher's Banner",
+      1
+    ],
+    [
+      "Choked Estuary",
+      1
+    ],
+    [
+      "Exotic Orchard",
+      1
+    ],
+    [
+      "Geier Reach Sanitarium",
+      1
+    ],
+    [
+      "Sunken Hollow",
+      1
+    ],
+    [
+      "Azure Fleet Admiral",
+      1
+    ],
+    [
+      "Enterprising Scallywag",
+      1
+    ],
+    [
+      "Departed Deckhand",
+      1
+    ],
+    [
+      "Distant Melody",
+      1
+    ],
+    [
+      "Ghost of Ramirez DePietro",
+      1
+    ],
+    [
+      "Malcolm, Keen-Eyed Navigator",
+      1
+    ],
+    [
+      "Merchant Raiders",
+      1
+    ],
+    [
+      "Siren Stormtamer",
+      1
+    ],
+    [
+      "Spectral Sailor",
+      1
+    ],
+    [
+      "Windfall",
+      1
+    ],
+    [
+      "Feed the Swarm",
+      1
+    ],
+    [
+      "Breeches, Brazen Plunderer",
+      1
+    ],
+    [
+      "Faithless Looting",
+      1
+    ],
+    [
+      "Rakdos Charm",
+      1
+    ],
+    [
+      "Ramirez DePietro, Pillager",
+      1
+    ],
+    [
+      "Arcane Signet",
+      1
+    ],
+    [
+      "Commander's Sphere",
+      1
+    ],
+    [
+      "Dimir Signet",
+      1
+    ],
+    [
+      "Herald's Horn",
+      1
+    ],
+    [
+      "Izzet Signet",
+      1
+    ],
+    [
+      "Sol Ring",
+      1
+    ],
+    [
+      "Wayfarer's Bauble",
+      1
+    ],
+    [
+      "Command Tower",
+      1
+    ],
+    [
+      "Evolving Wilds",
+      1
+    ],
+    [
+      "Path of Ancestry",
+      1
+    ],
+    [
+      "Port of Karfell",
+      1
+    ],
+    [
+      "Rogue's Passage",
+      1
+    ],
+    [
+      "Secluded Courtyard",
+      1
+    ],
+    [
+      "Terramorphic Expanse",
+      1
+    ],
+    [
+      "Thriving Bluff",
+      1
+    ],
+    [
+      "Thriving Isle",
+      1
+    ],
+    [
+      "Thriving Moor",
+      1
+    ],
+    [
+      "Unclaimed Territory",
+      1
+    ],
+    [
+      "Island",
+      8
+    ],
+    [
+      "Swamp",
+      7
+    ],
+    [
+      "Mountain",
+      7
+    ],
+    [
+      "Blood Artist",
+      1
+    ],
+    [
+      "Tandem Lookout",
+      1
+    ],
+    [
+      "Misdirection",
+      1
+    ],
+    [
+      "Snapcaster Mage",
+      1
+    ],
+    [
+      "Professional Face-Breaker",
+      1
+    ],
+    [
+      "Goldspan Dragon",
+      1
+    ],
+    [
+      "Invisible Stalker",
+      1
+    ],
+    [
+      "Disciple of Bolas",
+      1
+    ],
+    [
+      "Talisman of Dominance",
+      1
+    ]
+  ],
+  "makeup": {
+    "colors": {
+      "B": 17,
+      "R": 21,
+      "U": 26
+    },
+    "types": {
+      "Artifact": 14,
+      "Creature": 35,
+      "Enchantment": 4,
+      "Instant": 5,
+      "Land": 37,
+      "Sorcery": 6
+    },
+    "subtypes": {
+      "Artificer": 1,
+      "Dragon": 1,
+      "Equipment": 1,
+      "Goblin": 3,
+      "Human": 18,
+      "Island": 9,
+      "Mountain": 7,
+      "Orc": 3,
+      "Pirate": 28,
+      "Rogue": 1,
+      "Saga": 1,
+      "Salamander": 1,
+      "Scout": 1,
+      "Siren": 3,
+      "Skeleton": 1,
+      "Spirit": 3,
+      "Swamp": 8,
+      "Vampire": 2,
+      "Vehicle": 1,
+      "Warrior": 1,
+      "Wizard": 5
+    },
+    "tokens": 11,
+    "counters": 0,
+    "graveyard": 8,
+    "creature_commanders": 0
+  }
+}
