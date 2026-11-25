@@ -7,6 +7,7 @@ import { usePlay } from '@/features/game/gameContext'
 import type { PlayState } from '@/play/store'
 import type { ObjectId } from '@/protocol/generated'
 import { CardFace } from '../CardFace'
+import { useSeatNamer } from '../names'
 import { usePreviewHandlers } from '../usePreviewHandlers'
 import { useWheelSideways } from '../useWheelSideways'
 
@@ -35,20 +36,23 @@ function OpeningCard({ id }: { id: ObjectId }) {
 
 /**
  * The cards of the hand being judged, whole and side by side up to 7 rem wide, so the keep is decided on the
- * cards, not on their names in the dock: seven fill the row, never below 3 rem, and a row wider than the band scrolls (a phone) rather than wrap under the answers. Decoration for the eye: the hand dock holds the same cards for a screen
- * reader and the keyboard, so the row is `aria-hidden` apart from its preview on hover.
+ * cards, not on their names in the dock: seven fill the row, never below 3 rem, and a row wider than the band scrolls (a phone) rather than wrap under the answers. In the band the hand dock holds the same cards for a screen
+ * reader and the keyboard, so that row is `aria-hidden` apart from its preview on hover; the floating panel's row is
+ * the one copy drawn (the dock hides its own), so a screen reader reads it as the hand.
  */
 export function OpeningHand({ card }: { card?: number } = {}) {
   const coach = anchor('opening.hand')
   const ids = usePlay(useShallow(openingHandIds))
+  const seat = usePlay((state) => state.seat)
+  const name = useSeatNamer()
   if (ids.length === 0) return null
   if (card !== undefined) {
     // The floating panel: one row of cards at the width the room gives (`openingCardPx`).
     return (
       <ul
-        aria-hidden="true"
+        role="list"
+        aria-label={seat === null ? undefined : `${name(seat)}'s hand`}
         data-slot="opening-hand"
-        {...coach}
         {...coach}
         data-large=""
         style={{ '--card-w': `${card}px`, '--card-h': `${Math.round((card * 7) / 5)}px` } as CSSProperties}

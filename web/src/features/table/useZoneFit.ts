@@ -39,3 +39,25 @@ export function useContentBox(ref: RefObject<HTMLElement | null>): FitBox | null
   }, [ref])
   return box
 }
+
+/** The attribute that holds the transitions of a zone's cards off while its room is new (`feel.css`). */
+export const STILL_ATTR = 'data-fit-still'
+
+/**
+ * Marks `ref` with `STILL_ATTR` from the commit in which `box` changes (the first measure included) until two frames
+ * later, so cards laid out anew for their room stand in place at once: a load, a reload or a resize is a state, not a
+ * move. Set in a layout effect, so the mark is on before the browser styles the new layout.
+ */
+export function useStillOnResize(ref: RefObject<HTMLElement | null>, box: FitBox | null): void {
+  const width = box?.width
+  const height = box?.height
+  useLayoutEffect(() => {
+    const element = ref.current
+    if (element === null) return undefined
+    element.setAttribute(STILL_ATTR, '')
+    let frame = requestAnimationFrame(() => {
+      frame = requestAnimationFrame(() => element.removeAttribute(STILL_ATTR))
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [ref, width, height])
+}

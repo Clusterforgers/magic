@@ -174,6 +174,8 @@ export function measure(ask: Ask): Look {
     const rect = element.getBoundingClientRect()
     if (unseen(style, rect)) continue
     const span = clipOf(element, style)
+    // Clipped to the 1 px box of a visually hidden list (`sr-only`): none of it can be seen, so none of it is cut off.
+    if (span.right - span.left <= 1) continue
     const left = Math.max(0, span.left)
     const right = Math.min(inner.width, span.right)
     if (rect.left >= left - slack && rect.right <= right + slack) continue
