@@ -70,6 +70,8 @@ const SIZES: Viewport[] = [
   { width: 1873, height: 1047 },
   { width: 1400, height: 900 },
   { width: 390, height: 844 },
+  { width: 390, height: 700 },
+  { width: 390, height: 600 },
 ]
 /** The most jumps of rows and cards together the thirty states may make at one table and size. */
 const BUDGET = 6

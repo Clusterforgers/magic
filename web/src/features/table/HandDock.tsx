@@ -7,7 +7,8 @@ import { castCostLine } from './commander'
 import { HandBacks } from './Hand'
 import { dockLayouts, HAND_GAP_PX, handDockNeed, settleKey, settleNeed } from './handFit'
 import type { SettledNeed } from './handFit'
-import { HAND_GROW_VAR } from './layout'
+import type { HandLayout } from './handFit'
+import { HAND_GROW_VAR, handSink } from './layout'
 import { headLabel, seenTop, TOP_WORDS } from './libraryTop'
 import { HandFan } from './HandFan'
 import type { HandCommander } from './HandFan'
@@ -93,14 +94,18 @@ const SATCHEL_WORDS = 'in your Satchel'
  * pass controls beside it. The commanders waiting in the command zone stand in a list of their own before the hand, each
  * with a crown and the tax on its cast,
  * so a commander is cast from here like any card of the hand; the top card of your library you may see stands there too. A hand that one row of the narrowest card does not hold
- * grows the dock to the height of its rows, up to `growMost` px (`HAND_GROW_VAR` on the table's main area).
+ * grows the dock to the height of its rows, up to `growMost` px (`HAND_GROW_VAR` on the table's main area). With
+ * `peek` (a phone) a dock lower than `PEEK_ROOM_PX` keeps its cards at that size and lets them sink under its bottom
+ * edge, a peek row of their heads; a hovered, focused or tapped card rises whole above it.
  */
 export const HandDock = memo(function HandDock({
   seat,
   growMost = 0,
+  peek = false,
 }: {
   seat: PlayerId
   growMost?: number
+  peek?: boolean
 }) {
   const owner = useSeatNamer()(seat)
   const player = usePlay((state) => playerOf(state, seat))
@@ -131,11 +136,11 @@ export const HandDock = memo(function HandDock({
   const layouts = useMemo(() => {
     if (room === null || cards === null) return undefined
     const width = room.width - 2 * PAD_PX
-    const height = room.height - 2 * PAD_PX
+    const height = room.height + handSink(room.height, peek) - 2 * PAD_PX
     // The commanders take one card's width each, and a divider, at the head of the dock; the hand fits the rest.
     // A decision that picks among the hand's cards gives the hand its room first, so every card on offer shows.
     return dockLayouts({ width, height, count: cards.length, commanders: waiting.size, coarse, pick })
-  }, [room, cards, waiting, coarse, pick])
+  }, [room, cards, waiting, coarse, pick, peek])
   const lineWidth = room === null ? 0 : room.width - 2 * PAD_PX
   const fresh =
     room === null || cards === null || coarse || growMost <= 0
@@ -169,7 +174,11 @@ export const HandDock = memo(function HandDock({
       main.style.removeProperty(HAND_GROW_VAR)
     }
   }, [need])
-  const layout = layouts?.hand
+  const sink = room === null ? 0 : handSink(room.height, peek)
+  // A card of a peek row rises by its lift and by what the dock's edge hides of it, so a lifted card shows whole.
+  const sunk = (fan: HandLayout | undefined): HandLayout | undefined =>
+    fan === undefined || sink === 0 ? fan : { ...fan, lift: fan.lift + sink }
+  const layout = sunk(layouts?.hand)
   const size = layout !== undefined && layout.box.width < NORMAL_FACE_PX ? 'compact' : 'normal'
   return (
     <section
@@ -179,7 +188,12 @@ export const HandDock = memo(function HandDock({
       {...coachZone('hand')}
       data-keep-clear=""
       data-fx-anchor={`${seat}:hand`}
-      className="dock flex min-h-0 min-w-0 items-center justify-center px-2 py-1"
+      data-peek={sink > 0 || undefined}
+      className={cn(
+        'dock flex min-h-0 min-w-0 items-center justify-center px-2 py-1',
+        // A peek row cuts its cards at its bottom edge only: a lifted card still rises over the board.
+        sink > 0 && '[clip-path:inset(-100vh_-100vw_0_-100vw)]',
+      )}
     >
       <p aria-live="polite" className="sr-only">
         {moved}
@@ -188,6 +202,7 @@ export const HandDock = memo(function HandDock({
         ref={zone}
         data-floating={floating || undefined}
         aria-hidden={floating || undefined}
+        style={sink > 0 ? { position: 'relative', top: sink } : undefined}
         className={cn(
           'flex size-full min-h-0 min-w-0 items-end justify-center gap-1',
           floating && 'invisible',
@@ -213,7 +228,7 @@ export const HandDock = memo(function HandDock({
               label={headLabel(owner, waiting)}
               size={size}
               cost
-              layout={layouts?.command}
+              layout={sunk(layouts?.command)}
               commanders={waiting}
               plays
               grabs={pick}

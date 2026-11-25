@@ -1,4 +1,4 @@
-// Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, a 36 px shared strip (28 on a phone, with its 164 px decision bar), 112 to 200 px hand dock), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding), in focus mode the strip of tiles leads with the seat whose turn it is, and the hand dock grows for a large or an opening hand from a 640 px window and keeps its size on a phone.
+// Goal: the table's regions follow the window: the rows always add up to the window height with the minimums of the design (44 px bar, a 36 px shared strip (28 on a phone, with its 164 px decision bar), 112 to 200 px hand dock, a phone's 56 to 140 px), the side area is a column, a rail or a sheet by width, the CSS templates equal the numbers, and the mode and seat arrangement follow the seat count and the width of a board column (grid for 2 to 4 seats unless a column would be under 280 px, focus otherwise, the menu overriding), in focus mode the strip of tiles leads with the seat whose turn it is, and the hand dock grows for a large or an opening hand from a 640 px window and keeps its size on a phone.
 import { describe, expect, it } from 'vitest'
 import { handRowPx } from './handFit'
 import {
@@ -16,10 +16,13 @@ import {
   gridRows,
   HAND_CLAMP,
   HAND_GROW_VH,
+  HAND_PEEK_PX,
   HAND_PHONE_CLAMP,
   handGrowMost,
   mainColumns,
   MIN_COLUMN_PX,
+  phoneHandCss,
+  phoneHandPx,
   planTable,
   regionSizes,
   STRIP_PHONE_PX,
@@ -111,7 +114,7 @@ describe('regionSizes', () => {
         const where = `${width}x${height}`
         expect(regions.shared, where).toBe(regions.phone ? STRIP_PHONE_PX : STRIP_PX)
         const hand = regions.phone ? HAND_PHONE_CLAMP : HAND_CLAMP
-        expect(regions.hand, where).toBeGreaterThanOrEqual(hand.min)
+        expect(regions.hand, where).toBeGreaterThanOrEqual(regions.phone ? HAND_PEEK_PX : hand.min)
         expect(regions.hand, where).toBeLessThanOrEqual(hand.max)
         expect(regions.opponents, where).toBeGreaterThan(0)
         expect(regions.own, where).toBeGreaterThan(regions.opponents)
@@ -184,11 +187,12 @@ describe('the CSS templates', () => {
     )
   })
 
-  it('writes a 32 px bar for a phone on its side, and for a phone upright a 104 to 140 px hand dock over the decision bar', () => {
+  it('writes a 32 px bar for a phone on its side, and for a phone upright a 56 to 140 px hand dock over the decision bar', () => {
     expect(gridRows({ phone: false, landscape: true })).toMatch(/^32px /)
-    expect(gridRows({ phone: true, landscape: false })).toMatch(
-      new RegExp(`clamp\\(104px, 16dvh, 140px\\) ${DECISION_BAR_PX}px$`),
-    )
+    expect(
+      gridRows({ phone: true, landscape: false }).endsWith(` ${phoneHandCss()} ${DECISION_BAR_PX}px`),
+    ).toBe(true)
+    expect(phoneHandCss()).toBe('clamp(56px, calc(100dvh - 596px), clamp(104px, 16dvh, 140px))')
   })
 
   it.each(SIZES)('gives the sizes regionSizes does at %s', (_name, viewport) => {
@@ -196,6 +200,11 @@ describe('the CSS templates', () => {
     expect(gridRows(regions)).toMatch(
       new RegExp(`^${regions.topBar}px minmax\\(0, [0-9.]+fr\\) ${regions.shared}px `),
     )
+    if (regions.phone) {
+      expect(gridRows(regions)).toContain(phoneHandCss())
+      expect(regions.hand).toBeCloseTo(phoneHandPx(viewport.height), 9)
+      return
+    }
     const [hand] = gridRows(regions).match(/clamp\([^)]*\)/g) ?? []
     expect(clampedHeight(readClamp(hand ?? ''), viewport.height)).toBeCloseTo(regions.hand, 9)
   })

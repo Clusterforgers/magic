@@ -247,18 +247,37 @@ function AllyStrip({ allies, size }: { allies: readonly PlayerId[]; size: CardSi
   )
 }
 
-/** Your board: with no permanent and nothing in your hand to play, your pod as one line. */
-function OwnBoard({ plan, size, pod }: { plan: SeatPlan; size: CardSize; pod: PodPlace }) {
+/** Your board: with no permanent and nothing in your hand to play, your pod as one line; a phone keeps its pod line to one row of figures. */
+function OwnBoard({
+  plan,
+  size,
+  pod,
+  oneRow,
+}: {
+  plan: SeatPlan
+  size: CardSize
+  pod: PodPlace
+  oneRow: boolean
+}) {
   const idle = usePlay(
     (state) => isBattlefieldEmpty(state, plan.viewer) && handIdle(state, handSeat(state, plan.viewer)),
   )
   const line = idle && pod === 'aside'
-  return <SeatArea seat={plan.viewer} size={size} facing="near" pod={line ? 'line' : pod} collapsed={line} />
+  return (
+    <SeatArea
+      seat={plan.viewer}
+      size={size}
+      facing="near"
+      pod={line ? 'line' : pod}
+      collapsed={line}
+      oneRow={oneRow}
+    />
+  )
 }
 
 /** The party: the other heroes over your board, which takes the rest of the row. */
 export function PartySide({ plan, size, pod, band, shares, phone }: PartySideProps) {
-  const own = <OwnBoard plan={plan} size={size} pod={pod} />
+  const own = <OwnBoard plan={plan} size={size} pod={pod} oneRow={phone} />
   if (plan.allies.length === 0) return own
   return (
     <div data-slot="party" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">

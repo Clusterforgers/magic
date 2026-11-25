@@ -223,6 +223,13 @@ export const STRIP_PHONE_PX = 28
 /** The hand dock; a phone held upright gets the lower one. */
 export const HAND_CLAMP: HeightClamp = { min: 104, vh: 16, max: 200 }
 export const HAND_PHONE_CLAMP: HeightClamp = { min: 104, vh: 16, max: 140 }
+/** A phone's hand dock at its lowest, a peek row: the heads of its cards (name and cost) over the decision bar. */
+export const HAND_PEEK_PX = 56
+/**
+ * What a phone's two boards need at their floor before its hand dock gives way: the opponents' tiles, lands line and
+ * a row of cards, and a row of your cards over your pod line (`PHONE_FLOOR_PX` cards).
+ */
+export const PHONE_BOARDS_PX = 360
 /** The hand dock of a seat with nothing to play from it in boss mode: the pass controls beside it need this much, the hand nothing. */
 export const HAND_SLIM_PX = 104
 /**
@@ -305,7 +312,7 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
   const topBar = landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
   const shared = phone ? STRIP_PHONE_PX : STRIP_PX
   const slim = handSlim && !phone
-  const hand = slim ? HAND_SLIM_PX : clampedHeight(phone ? HAND_PHONE_CLAMP : HAND_CLAMP, height)
+  const hand = slim ? HAND_SLIM_PX : phone ? phoneHandPx(height) : clampedHeight(HAND_CLAMP, height)
   const rest = Math.max(0, height - topBar - shared - hand - (phone ? DECISION_BAR_PX : 0))
   const opponents = rest / (1 + OWN_SHARE)
   const own = rest - opponents
@@ -328,6 +335,34 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
 
 const clampCss = (range: HeightClamp): string => `clamp(${range.min}px, ${range.vh}dvh, ${range.max}px)`
 
+/** The px of a phone's top bar, strip and decision bar: the boards and the hand dock share the rest of the window. */
+const phoneFixedPx = (): number => TOP_BAR_PX + STRIP_PHONE_PX + DECISION_BAR_PX
+
+/**
+ * A phone's hand dock in a window `height` px high: `HAND_PHONE_CLAMP`, lowered where the window leaves the boards less
+ * than `PHONE_BOARDS_PX`, down to the peek row `HAND_PEEK_PX` (`phoneHandCss` writes the same in CSS).
+ */
+export function phoneHandPx(height: number): number {
+  const high = finite(height)
+  const spare = high - phoneFixedPx() - PHONE_BOARDS_PX
+  return Math.max(HAND_PEEK_PX, Math.min(spare, clampedHeight(HAND_PHONE_CLAMP, high)))
+}
+
+/** The hand dock's top border and its padding (`py-1`): the line of its cards is the dock's height less these. */
+const HAND_DOCK_INSET_PX = 9
+
+/** The line a phone's hand cards are laid out for: that of a dock of `HAND_PHONE_CLAMP.min`, where they show whole. */
+export const PEEK_ROOM_PX = HAND_PHONE_CLAMP.min - HAND_DOCK_INSET_PX
+
+/** How far a phone's hand cards sink under the dock's bottom edge in a line `room` px high: what a peek row hides. */
+export function handSink(room: number, peek: boolean): number {
+  return peek ? Math.max(0, Math.round(PEEK_ROOM_PX - finite(room))) : 0
+}
+
+/** `phoneHandPx` as a CSS length of the table's height. */
+export const phoneHandCss = (): string =>
+  `clamp(${HAND_PEEK_PX}px, calc(100dvh - ${phoneFixedPx() + PHONE_BOARDS_PX}px), ${clampCss(HAND_PHONE_CLAMP)})`
+
 /**
  * The `grid-template-rows` of the table's main area: top bar, opponents, shared strip, own board, hand dock. The two
  * board rows share what is left by the weights of `opponents` and `own` (a split, `boardSplit.ts`), else 1 to `OWN_SHARE`.
@@ -340,7 +375,7 @@ export function gridRows(
 ): string {
   const bar = regions.landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
   const hand = regions.phone
-    ? clampCss(HAND_PHONE_CLAMP)
+    ? phoneHandCss()
     : regions.handSlim === true
       ? `${HAND_SLIM_PX}px`
       : `max(${clampCss(HAND_CLAMP)}, var(${HAND_GROW_VAR}, 0px))`

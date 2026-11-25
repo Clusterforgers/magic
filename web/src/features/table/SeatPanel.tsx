@@ -341,11 +341,11 @@ export const SeatPanel = memo(function SeatPanel({
                 : 'contents'
             }
           >
-            {/* The lands lead the row: their chip and what they leave untapped stay in view however many figures follow. */}
+            {/* The lands lead the row: their chip and what they leave untapped stay in view however many figures follow (a phone, whose lands show it, keeps the chip). */}
             {oneRow ? (
               <>
                 <LandSummary seat={seat} owner={owner} density="line" />
-                <UntappedSources seat={seat} className="flex-nowrap" />
+                <UntappedSources seat={seat} className="flex-nowrap max-sm:hidden" />
               </>
             ) : null}
             <div

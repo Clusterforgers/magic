@@ -220,10 +220,17 @@ const Table = memo(function Table() {
                                         facing="near"
                                         pod={table.pod}
                                         foldLands={foldsLands(plan, folding, regions.phone)}
+                                        oneRow={regions.phone}
                                       />
                                     )
                                   }
-                                  hand={<HandDock seat={handFrom} growMost={handGrowMost(regions)} />}
+                                  hand={
+                                    <HandDock
+                                      seat={handFrom}
+                                      growMost={handGrowMost(regions)}
+                                      peek={regions.phone}
+                                    />
+                                  }
                                   controls={
                                     spectator ? <Watching /> : <ControlsDock stopsRow={table.stopsRow} />
                                   }
