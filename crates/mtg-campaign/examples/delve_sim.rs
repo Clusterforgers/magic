@@ -181,17 +181,33 @@ fn setup_of(plan: &FightPlan, cards: &[Vec<String>], seed: u64) -> GameSetup {
     plan.apply(content, setup).unwrap()
 }
 
-/// The plan without the boss's modifier, relics and phases `DELVE_SIM_DROP` names (comma-separated ids), with the
-/// boss's life changed by `DELVE_SIM_LIFE`: tuning knobs to measure what each is worth.
+/// The plan without the boss's modifier, relics, reinforcements and phases `DELVE_SIM_DROP` names (comma-separated
+/// ids), with `DELVE_SIM_ADD`'s reinforcements and the boss's life changed by `DELVE_SIM_LIFE`: tuning knobs to measure
+/// what each is worth.
 fn dropped(plan: &FightPlan) -> FightPlan {
     let mut plan = plan.clone();
     if let Ok(drop) = std::env::var("DELVE_SIM_DROP") {
         let drop: Vec<&str> = drop.split(',').collect();
         plan.boss.relics.retain(|id| !drop.contains(&id.as_str()));
         plan.boss
+            .reinforcements
+            .retain(|id| !drop.contains(&id.as_str()));
+        plan.boss
             .round_phases
             .retain(|(id, _)| !drop.contains(&id.as_str()));
         plan.boss.modifier = plan.boss.modifier.filter(|id| !drop.contains(&id.as_str()));
+    }
+    // `DELVE_SIM_ADD` adds these reinforcements (comma-separated ids) to the boss's.
+    if let Ok(add) = std::env::var("DELVE_SIM_ADD") {
+        plan.boss.reinforcements.extend(
+            add.split(',')
+                .filter(|id| !id.is_empty())
+                .map(str::to_owned),
+        );
+    }
+    // `DELVE_SIM_RELICS` keeps at most this many of the boss's relics.
+    if let Ok(most) = std::env::var("DELVE_SIM_RELICS") {
+        plan.boss.relics.truncate(most.parse().unwrap());
     }
     // `DELVE_SIM_HAND` sets the boss's opening hand.
     if let Ok(hand) = std::env::var("DELVE_SIM_HAND") {

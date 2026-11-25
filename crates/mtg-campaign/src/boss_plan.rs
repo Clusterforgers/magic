@@ -55,6 +55,7 @@ impl Run {
                     .iter()
                     .find(|t| t.boss(&boss.id).is_some())
                     .map_or(0, |t| t.boss_supplies),
+                boss_relics::count(depth, self.heat, self.content),
             ),
             round_phases: boss
                 .round_phases
