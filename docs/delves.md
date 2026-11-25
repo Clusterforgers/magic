@@ -35,6 +35,14 @@ A fallen hero keeps playing: it haunts the fight with small, clear choices and c
 - A Spirit is asked at priority only where its haunts matter (`docs/server.md`, Windows): the party's upkeep and main phases with an empty stack (Rise Again, spending ectoplasm), the boss side's beginning of combat (Hinder, Howl) and its declare attackers step when it attacks the party (Ward), and whenever an object of the boss side is on the stack. Spells and abilities of its teammates never ask it and every other step is passed for; a stop of its own asks anywhere, and Full Control asks at every window. The Spirit panel says so.
 - Bot Spirits (`brain/haunt.rs`) rise as soon as they can, Ward when 4 or more power attacks the party, and before an opponent's combat Hinder its biggest creature (power 4 or more, 2 ectoplasm held) or Howl (4 held). A bot holding the Phoenix Feather uses it while it has 14 life or more.
 - Measured with two Hard heroes against the boss at Heat 1, rank 2 (`fights`): the fallen hero spends its Spirit turns on 3 haunt actions a fight and never reaches Rise Again, so haunting helps at the margin and does not decide a fight.
+- Acting against idle (`DELVE_SIM_IDLE_SPIRITS`) with Hard heroes at Heat 1, depth 1 (`fights <n> <heroes> hard <seed> 3 1 1`, the Warrens, the same seeds):
+
+| Heroes | Seeds | Spirits acting | Spirits idle | Falls (acting, idle) | Haunt actions | Fights changed |
+|---|---|---|---|---|---|---|
+| 3 | 1 to 32 | 56 % (18 of 32), round 8 | 53 % (17 of 32), round 8 | 31, 31 | 71 | 1 (seed 1, Skrix, won) |
+| 4 | 1 to 12 | 75 % (9 of 12), round 11 | 67 % (8 of 12), round 12 | 16, 19 | 45 | 1 (seed 6, Ysolde, won) |
+
+- A fallen hero takes 2 to 3 haunt actions and no Spirit reaches Rise Again; haunting turns about one fight in 12 to 32 into a win, so it stays worth a few points at every size and the bosses need no change for it.
 
 ## Bosses
 
