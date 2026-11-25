@@ -156,7 +156,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl8a) Boss brain priorities: the boss and its minions focus the biggest threat, punish the healer and break combos, at Very Hard once its clock suits the server
 - [ ] (dl8b) Whole runs won in 20 to 35 % at every party size, measured for 1 to 6 heroes and with Very Hard heroes
 - [ ] (dl13) A fifth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
-- [ ] (dl13a) The Gloamwood innates The Hag's Due and Hedge Blessing each have their own fight test (a teams table, a driver that picks up to N targets)
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 
