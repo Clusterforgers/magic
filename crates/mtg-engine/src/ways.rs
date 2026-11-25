@@ -5,6 +5,8 @@
 //! `of` lists them for a card and a player; the options of a player offer a card when one of its ways can be used now
 //! (`castable_now`), and the announcement of the cast asks which one when there is more than one (`announce/alternative.rs`).
 
+use std::cell::Cell;
+
 use mtg_cards::ability::Ability;
 use mtg_cards::cost::{Cost, CostItem};
 use mtg_cards::definition::Layout;
@@ -1475,6 +1477,30 @@ pub(crate) fn hindrance_as_is(
     sources: &[ManaOption],
     life: i32,
 ) -> Option<Unplayable> {
+    hindrance_noting(state, player, id, (pool, sources, life), &Cell::new(None))
+}
+
+/// The first way of casting `id` that [`hindrance_as_is`] judges by its targets because no X it pays for leaves a target
+/// that reads X a legal choice (CR 601.2c): the way, and the most X it pays for.
+fn x_short_way(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    at_hand: (&ManaPool, &[ManaOption], i32),
+) -> Option<(Option<CastWay>, u32)> {
+    let noted = Cell::new(None);
+    hindrance_noting(state, player, id, at_hand, &noted);
+    noted.get()
+}
+
+/// [`hindrance_as_is`], noting the first way [`x_short_way`] names in `x_short`.
+fn hindrance_noting(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    (pool, sources, life): (&ManaPool, &[ManaOption], i32),
+    x_short: &Cell<Option<(Option<CastWay>, u32)>>,
+) -> Option<Unplayable> {
     let life = crate::r4707_pay_costs::r4707_phyrexian_life(state, player, life);
     let Some(card) = state.object(id) else {
         return Some(Unplayable::Cost);
@@ -1509,7 +1535,7 @@ pub(crate) fn hindrance_as_is(
             .cost(card.card().mana_cost.as_ref())
             .map(|cost| crate::c9_emerge_ways::c9_emerge_offered(state, player, id, way, cost));
         let paid = |cost: &ManaCost| {
-            announce::payable(
+            announce::paid_for_x(
                 state,
                 player,
                 id,
@@ -1521,8 +1547,15 @@ pub(crate) fn hindrance_as_is(
                 |total| can_afford_with(total, pool, sources, help.help(), life, &spend),
             )
         };
-        if cost.as_ref().is_some_and(|cost| !paid(cost)) {
-            return Some(Unplayable::Mana);
+        match cost.as_ref().map(paid) {
+            Some(announce::XPaid::Short) => return Some(Unplayable::Mana),
+            Some(announce::XPaid::NoTarget { most }) => {
+                if x_short.get().is_none() {
+                    x_short.set(Some((way.alternative, most)));
+                }
+                return Some(Unplayable::Targets);
+            }
+            Some(announce::XPaid::Paid) | None => {}
         }
         if !announceable_in(state, player, id, way.alternative) {
             return Some(Unplayable::Targets);
@@ -1585,7 +1618,7 @@ fn why_as_is(
     player: PlayerId,
     id: ObjectId,
     reason: Unplayable,
-    (pool, sources, _): (&ManaPool, &[ManaOption], i32),
+    (pool, sources, life): (&ManaPool, &[ManaOption], i32),
     restricted: bool,
 ) -> Option<Why> {
     let card = state.object(id)?;
@@ -1630,10 +1663,18 @@ fn why_as_is(
                 tax,
             ))
         }
-        // A target of the spell's own, else the host of an Aura, bestowed or mutating spell.
-        Unplayable::Targets => spell_ability(state, id)
-            .and_then(|(_, rules)| crate::why::target(state, player, id, &rules))
-            .or_else(|| crate::why::host_of_any_way(state, player, id)),
+        // The target no payable X leaves, a target of the spell's own, else the host of an Aura, bestowed or mutating
+        // spell.
+        Unplayable::Targets => {
+            let (_, rules) = spell_ability(state, id).unzip();
+            x_short_way(state, player, id, (pool, sources, life))
+                .and_then(|(way, most)| {
+                    let least = r115_way_least_x(state, id, way).min(most);
+                    crate::why::x_target(rules.as_ref()?, least, most)
+                })
+                .or_else(|| crate::why::target(state, player, id, rules.as_ref()?))
+                .or_else(|| crate::why::host_of_any_way(state, player, id))
+        }
         Unplayable::Cost => Some(if of(state, player, id).is_empty() {
             Why::NoWay
         } else {

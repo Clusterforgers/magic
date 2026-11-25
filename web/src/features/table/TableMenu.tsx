@@ -2,14 +2,17 @@ import { anchor } from '@/features/learn/anchors'
 import { setImageChoice, useImageChoice } from '@/features/cards/imageSetting'
 import type { ImageChoice } from '@/features/cards/imageSetting'
 import { MenuIcon } from 'lucide-react'
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import type { ReactNode } from 'react'
+import type { PlayerId } from '@/protocol/generated'
 import { Button } from '@/components/ui/button'
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
 import { Switch } from '@/components/ui/switch'
 import { parseChoice, useTheme } from '@/hooks/useTheme'
 import type { ThemeChoice } from '@/hooks/useTheme'
 import { usePlay } from '@/features/game/gameContext'
+import { DeckListDialog, DeckListMenu } from './DeckListDialog'
+import { hasMore } from './deckLists'
 import { HandOrderMenu } from './HandOrderMenu'
 import { LandsShownContext, setLandsShown } from './landPrefs'
 import type { TableMode } from './layout'
@@ -61,7 +64,8 @@ const MODE_WORDS: Record<TableMode, string> = { boss: 'Boss', grid: 'Grid', focu
 
 /**
  * The table menu at the right of the top bar: the layout (grid or focus, and following the turn), the theme, the card
- * images, the "Show lands" switch (`landPrefs.ts`), the order of the hand (on a phone its only place) and
+ * images, the "Show lands" switch (`landPrefs.ts`), the order of the hand (on a phone its only place), the deck lists
+ * the viewer may look through (`DeckListDialog`) and
  * Concede. A panel, not a list of commands, since it holds controls that keep their state.
  */
 export function TableMenu({
@@ -80,105 +84,129 @@ export function TableMenu({
   const concede = usePlay(canConcede)
   const images = useImageChoice()
   const landsShown = useContext(LandsShownContext)
+  const hasLists = usePlay((state) => state.deckLists.some(hasMore))
+  // The seat whose list the menu opened; the dialog outlives the menu, which closes as it opens.
+  const [listed, setListed] = useState<PlayerId | null>(null)
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger
-        render={
-          <Button
-            variant="ghost"
-            size={compact ? 'icon-sm' : 'icon'}
-            aria-label="Table menu"
-            {...anchor('table.menu')}
-          />
-        }
-      >
-        <MenuIcon aria-hidden="true" />
-      </PopoverTrigger>
-      <PopoverContent>
-        <PopoverTitle className="sr-only">Table menu</PopoverTitle>
-        <Section title="Layout">
-          <div role="toolbar" aria-label="Table layout" className="flex flex-wrap items-center gap-2">
+    <>
+      <Popover open={open} onOpenChange={onOpenChange}>
+        <PopoverTrigger
+          render={
+            <Button
+              variant="ghost"
+              size={compact ? 'icon-sm' : 'icon'}
+              aria-label="Table menu"
+              {...anchor('table.menu')}
+            />
+          }
+        >
+          <MenuIcon aria-hidden="true" />
+        </PopoverTrigger>
+        <PopoverContent>
+          <PopoverTitle className="sr-only">Table menu</PopoverTitle>
+          <Section title="Layout">
+            <div role="toolbar" aria-label="Table layout" className="flex flex-wrap items-center gap-2">
+              <div className="inline-flex gap-0.5 rounded-lg bg-muted p-0.5">
+                {modes.map((value) => (
+                  <Button
+                    key={value}
+                    size="sm"
+                    variant={mode === value ? 'default' : 'ghost'}
+                    aria-pressed={mode === value}
+                    onClick={() => onMode(value)}
+                  >
+                    {MODE_WORDS[value]}
+                  </Button>
+                ))}
+              </div>
+              {mode === 'focus' && pinnedFocus ? (
+                <Button size="sm" variant="outline" onClick={onFollow}>
+                  Follow the turn
+                </Button>
+              ) : null}
+            </div>
+          </Section>
+          <Section title="Theme">
             <div className="inline-flex gap-0.5 rounded-lg bg-muted p-0.5">
-              {modes.map((value) => (
+              {THEMES.map(({ value, label }) => (
                 <Button
                   key={value}
                   size="sm"
-                  variant={mode === value ? 'default' : 'ghost'}
-                  aria-pressed={mode === value}
-                  onClick={() => onMode(value)}
+                  variant={choice === value ? 'default' : 'ghost'}
+                  aria-pressed={choice === value}
+                  onClick={() => setChoice(parseChoice(value))}
                 >
-                  {MODE_WORDS[value]}
+                  {label}
                 </Button>
               ))}
             </div>
-            {mode === 'focus' && pinnedFocus ? (
-              <Button size="sm" variant="outline" onClick={onFollow}>
-                Follow the turn
-              </Button>
-            ) : null}
-          </div>
-        </Section>
-        <Section title="Theme">
-          <div className="inline-flex gap-0.5 rounded-lg bg-muted p-0.5">
-            {THEMES.map(({ value, label }) => (
-              <Button
-                key={value}
-                size="sm"
-                variant={choice === value ? 'default' : 'ghost'}
-                aria-pressed={choice === value}
-                onClick={() => setChoice(parseChoice(value))}
-              >
-                {label}
-              </Button>
-            ))}
-          </div>
-        </Section>
-        <Section title="Card images">
-          <div className="inline-flex gap-0.5 rounded-lg bg-muted p-0.5">
-            {IMAGE_CHOICES.map(({ value, label }) => (
-              <Button
-                key={value}
-                size="sm"
-                variant={images === value ? 'default' : 'ghost'}
-                aria-pressed={images === value}
-                onClick={() => setImageChoice(value)}
-              >
-                {label}
-              </Button>
-            ))}
-          </div>
-        </Section>
-        <Section title="Lands">
-          <label className="flex items-start gap-2 text-sm">
-            <Switch
-              data-slot="show-lands"
-              checked={landsShown}
-              onCheckedChange={setLandsShown}
-              aria-label="Show lands"
-              className="mt-0.5"
-            />
-            <span className="grid gap-0.5">
-              <span aria-hidden="true">Show lands</span>
-              <span className="text-xs text-muted-foreground">
-                Off folds each board's lands into a chip on its pod, which opens them.
+          </Section>
+          <Section title="Card images">
+            <div className="inline-flex gap-0.5 rounded-lg bg-muted p-0.5">
+              {IMAGE_CHOICES.map(({ value, label }) => (
+                <Button
+                  key={value}
+                  size="sm"
+                  variant={images === value ? 'default' : 'ghost'}
+                  aria-pressed={images === value}
+                  onClick={() => setImageChoice(value)}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+          </Section>
+          <Section title="Lands">
+            <label className="flex items-start gap-2 text-sm">
+              <Switch
+                data-slot="show-lands"
+                checked={landsShown}
+                onCheckedChange={setLandsShown}
+                aria-label="Show lands"
+                className="mt-0.5"
+              />
+              <span className="grid gap-0.5">
+                <span aria-hidden="true">Show lands</span>
+                <span className="text-xs text-muted-foreground">
+                  Off folds each board's lands into a chip on its pod, which opens them.
+                </span>
               </span>
-            </span>
-          </label>
-        </Section>
-        <Section title="Hand order">
-          <HandOrderMenu />
-        </Section>
-        {concede ? (
-          <Button
-            variant="outline"
-            className="justify-start text-destructive"
-            aria-haspopup="dialog"
-            onClick={onConcede}
-          >
-            Concede
-          </Button>
-        ) : null}
-      </PopoverContent>
-    </Popover>
+            </label>
+          </Section>
+          <Section title="Hand order">
+            <HandOrderMenu />
+          </Section>
+          {hasLists ? (
+            <Section title="Decks">
+              <DeckListMenu
+                onPick={(seat) => {
+                  onOpenChange(false)
+                  setListed(seat)
+                }}
+              />
+            </Section>
+          ) : null}
+          {concede ? (
+            <Button
+              variant="outline"
+              className="justify-start text-destructive"
+              aria-haspopup="dialog"
+              onClick={onConcede}
+            >
+              Concede
+            </Button>
+          ) : null}
+        </PopoverContent>
+      </Popover>
+      {listed === null ? null : (
+        <DeckListDialog
+          seat={listed}
+          open
+          onOpenChange={(next) => {
+            if (!next) setListed(null)
+          }}
+        />
+      )}
+    </>
   )
 }

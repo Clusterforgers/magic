@@ -92,6 +92,10 @@ open_hands?: boolean,
  */
 revealed_library_top?: boolean, 
 /**
+ * Whether every seat's deck list is public: every viewer may look through each seat's whole list.
+ */
+open_decks?: boolean, 
+/**
  * Whether teammates see each other's hands; on at a table with teams when left out.
  */
 team_hands?: boolean, 

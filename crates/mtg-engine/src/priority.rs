@@ -385,8 +385,8 @@ pub(crate) fn activation(
                 Hindered(Unplayable::Cost, Some(Why::OtherCost))
             };
         }
-        if !loyalty_mana_affordable(state, player, object, address, rules) {
-            return Hindered(Unplayable::Mana, None);
+        if let Some(why) = loyalty_mana_short(state, player, object, address, rules) {
+            return Hindered(Unplayable::Mana, Some(why));
         }
         if !announceable(state, player, object.id(), rules) {
             return targets();
@@ -468,20 +468,32 @@ pub(crate) fn activation(
     if let Some(mana) =
         crate::c11a_less::c11a_mana(state, player, (object.id(), address, rules), &price, None)
     {
+        let Some(seat) = state.player(player) else {
+            return Never;
+        };
+        let mut sources = price.sources(state, player, object.id());
         let Some(mana) = crate::price::chosen_color_only(state, object.id(), &cost, mana) else {
-            return Hindered(Unplayable::Mana, None);
+            return Hindered(
+                Unplayable::Mana,
+                Some(crate::why::chosen_color(
+                    state,
+                    object.id(),
+                    None,
+                    seat.mana(),
+                    &sources,
+                )),
+            );
         };
         // Mana spent as though of any color or type pays the total (`announce/total.rs`).
-        let mana = match crate::rules::ep24_spend_as(state, player, None, Some(object.id())) {
+        let spend_as = crate::rules::ep24_spend_as(state, player, None, Some(object.id()));
+        let chosen_only = spend_as == SpendAs::Normal
+            && cost.0.contains(&mtg_cards::cost::CostItem::ChosenColorOnly);
+        let mana = match spend_as {
             SpendAs::AnyType => mana.paid_by_any_mana(),
             SpendAs::AnyColor => mana.paid_by_any_color(),
             SpendAs::Normal => mana,
         };
         let mana = &mana;
-        let Some(seat) = state.player(player) else {
-            return Never;
-        };
-        let mut sources = price.sources(state, player, object.id());
         // What the other parts of the cost take is not there to make mana or to be taken by a mana ability's cost (a
         // Cadaverous Bloom), and the life they pay is not there to spend.
         crate::mana_takes::leave(&mut sources, &claimed);
@@ -495,10 +507,18 @@ pub(crate) fn activation(
             Spend::for_ability(state, object.id(), price.x > 0).of_ability(state, address, rules);
         let helpers = waterbend_help(state, player, object.id(), &price, &claimed);
         if !can_afford_with(mana, seat.mana(), &sources, helpers.help(), life, &spend) {
-            return Hindered(
-                Unplayable::Mana,
-                Some(crate::why::mana(mana.clone(), seat.mana(), &sources, 0)),
-            );
+            let why = if chosen_only {
+                crate::why::chosen_color(
+                    state,
+                    object.id(),
+                    Some(mana.clone()),
+                    seat.mana(),
+                    &sources,
+                )
+            } else {
+                crate::why::mana(mana.clone(), seat.mana(), &sources, 0)
+            };
+            return Hindered(Unplayable::Mana, Some(why));
         }
     }
     let affords = |x: u32| {
@@ -510,7 +530,7 @@ pub(crate) fn activation(
     // "X can't be 0": the least X must be paid for.
     let least = crate::announce::least_of(&cost);
     if least != 0 && !affords(least) {
-        return Hindered(Unplayable::Mana, None);
+        return least_x_short(state, player, object, &price, least);
     }
     if !announceable(state, player, object.id(), rules) {
         return targets();
@@ -520,6 +540,36 @@ pub(crate) fn activation(
     } else {
         x_targets(rules, least, affords)
     }
+}
+
+/// The refusal of an ability whose cost cannot be paid at its least X: its mana when that is short, else the counters or
+/// objects the other parts take at that X.
+fn least_x_short(
+    state: &GameState,
+    player: PlayerId,
+    object: &GameObject,
+    price: &Price,
+    least: u32,
+) -> Activation {
+    let at = price.at(least);
+    let claimed = at.claimed(state, player, object.id());
+    let Some(claimed) = claimed else {
+        return Activation::Hindered(Unplayable::Cost, Some(crate::why::least_x(least, None)));
+    };
+    let Some(seat) = state.player(player) else {
+        return Activation::Never;
+    };
+    let mana = price.mana.clone().unwrap_or(ManaCost::ZERO);
+    let mana = crate::price::with_x(mana, least.saturating_mul(price.x), price.x_color);
+    let mut sources = at.sources(state, player, object.id());
+    sources.retain(|option| !claimed.contains(&option.source.object));
+    Activation::Hindered(
+        Unplayable::Mana,
+        Some(crate::why::least_x(
+            least,
+            Some((mana, seat.mana(), &sources)),
+        )),
+    )
 }
 
 /// The refusal of an ability whose targets read X when no X from `least` that `affords` pays for leaves a target.
@@ -584,26 +634,23 @@ fn waterbend_help(
     crate::help::waterbend(state, player, &barred)
 }
 
-/// Whether `player` can pay the mana that cost modifiers add to a loyalty ability (CR 606.4, 601.2f), if any do.
-fn loyalty_mana_affordable(
+/// The mana that cost modifiers add to a loyalty ability (CR 606.4, 601.2f) against the mana at hand, when `player`
+/// cannot pay it; `None` when they can or none is added.
+fn loyalty_mana_short(
     state: &GameState,
     player: PlayerId,
     object: &GameObject,
     address: AbilityRef,
     rules: &Ability,
-) -> bool {
-    let Some((mana, price)) =
-        crate::c11a_less::loyalty_mana(state, player, (object.id(), address, rules), None)
-    else {
-        return true;
-    };
-    let Some(seat) = state.player(player) else {
-        return false;
-    };
+) -> Option<Why> {
+    let (mana, price) =
+        crate::c11a_less::loyalty_mana(state, player, (object.id(), address, rules), None)?;
     let sources = price.sources(state, player, object.id());
+    let seat = state.player(player)?;
     let spend = Spend::for_ability(state, object.id(), false);
     let life = crate::r4707_pay_costs::r4707_phyrexian_life(state, player, seat.life());
-    can_afford(&mana, seat.mana(), &sources, life, &spend)
+    (!can_afford(&mana, seat.mana(), &sources, life, &spend))
+        .then(|| crate::why::mana(mana, seat.mana(), &sources, 0))
 }
 
 /// Whether `player` can pay the mana of `price` with `x` more generic mana for each `{X}`, as `can_activate` judges the

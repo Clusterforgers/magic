@@ -72,12 +72,7 @@ pub(crate) fn split_second(state: &GameState) -> Option<Why> {
 /// `cost` against the mana at hand: the pool and one use of each source, and the kinds of mana the cost asks for by a
 /// symbol of one kind that neither the pool nor any source makes; `tax` is the commander tax `cost` includes.
 pub(crate) fn mana(cost: ManaCost, pool: &ManaPool, sources: &[ManaOption], tax: u32) -> Why {
-    let mut best: BTreeMap<ObjectId, u32> = BTreeMap::new();
-    for option in sources {
-        let most = best.entry(option.source.object).or_default();
-        *most = (*most).max(option.count.max(1));
-    }
-    let at_hand = pool.total().saturating_add(best.values().sum::<u32>());
+    let at_hand = at_hand(pool, sources, None);
     let mut missing: Vec<ManaType> = Vec::new();
     for symbol in cost.symbols() {
         let kind = match symbol {
@@ -95,6 +90,60 @@ pub(crate) fn mana(cost: ManaCost, pool: &ManaPool, sources: &[ManaOption], tax:
         at_hand,
         missing,
         tax,
+    }
+}
+
+/// The most mana `pool` and one use of each of `sources` make, of the kind `kind` alone when it is given.
+fn at_hand(pool: &ManaPool, sources: &[ManaOption], kind: Option<ManaType>) -> u32 {
+    let mut best: BTreeMap<ObjectId, u32> = BTreeMap::new();
+    for option in sources
+        .iter()
+        .filter(|option| kind.is_none_or(|kind| option.produces == kind))
+    {
+        let most = best.entry(option.source.object).or_default();
+        *most = (*most).max(option.count.max(1));
+    }
+    let floating = kind.map_or_else(|| pool.total(), |kind| pool.get(kind));
+    floating.saturating_add(best.values().sum::<u32>())
+}
+
+/// The least X of a cost that cannot be paid at that X: `short` is its mana there against the pool and the sources when
+/// the mana is what falls short, `None` when another part of the cost is.
+pub(crate) fn least_x(least: u32, short: Option<(ManaCost, &ManaPool, &[ManaOption])>) -> Why {
+    let (cost, at_hand) = match short {
+        Some((cost, pool, sources)) => (Some(cost), Some(self::at_hand(pool, sources, None))),
+        None => (None, None),
+    };
+    Why::LeastX {
+        least,
+        cost,
+        at_hand,
+    }
+}
+
+/// "Spend only mana of the chosen color" for an ability of `source`: the color it chose, `cost` as that color pays it
+/// (`None` when no color is chosen or the cost asks for another), and the mana of that color at hand.
+pub(crate) fn chosen_color(
+    state: &GameState,
+    source: ObjectId,
+    cost: Option<ManaCost>,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+) -> Why {
+    let color = match state
+        .object(source)
+        .and_then(GameObject::permanent)
+        .and_then(crate::object::PermanentState::chosen)
+    {
+        Some(crate::object::Chosen::Color(color)) => Some(*color),
+        _ => None,
+    };
+    Why::ChosenColor {
+        color,
+        cost: color.and(cost),
+        at_hand: color.map_or(0, |color| {
+            self::at_hand(pool, sources, Some(ManaType::from(color)))
+        }),
     }
 }
 

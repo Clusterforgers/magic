@@ -194,6 +194,7 @@ async fn precon(app: &AppState, code: &str) -> Result<ChosenDeck, Refused> {
             .with_printings(printings)
             .with_reads(reads)
             .with_conjured(conjured)
+            .public_list()
     })
     .map_err(|error| {
         tracing::error!(%error, "a precon could not be fingerprinted");

@@ -1,4 +1,4 @@
-// Goal: at two and four seats, on a desktop dock, a short dock and a phone, the refusals the engine details say why in one plain line where the player looks: a press on an Aura in hand with nothing to enchant names the host it needs, a press on a graveyard card whose unearth is short of mana names the mana, an X ability names the target no payable X has in the permanent's preview words, and an activation taken back for its mana says so in the centre strip.
+// Goal: at two and four seats, on a desktop dock, a short dock and a phone, the refusals the engine details say why in one plain line where the player looks: a press on an Aura in hand with nothing to enchant names the host it needs, a press on a graveyard card whose unearth is short of mana names the mana, an X ability names the target no payable X has in the permanent's preview words, a press on an X spell in hand names the target no payable X has, an ability paid only with the chosen color names that mana, one short at its least X names the X, and an activation taken back for its mana says so in the centre strip.
 import { render } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -9,7 +9,14 @@ import type { Viewport } from '@/features/table/layout'
 import { must } from '@/test-utils/batches'
 import { useBlockedTell } from './blockedTell'
 import { fixtureGame } from './dev/devGame'
-import { DETAIL_AURA, DETAIL_UNEARTH, DETAIL_X } from './dev/detailScene'
+import {
+  DETAIL_AURA,
+  DETAIL_CHOSEN,
+  DETAIL_LEAST_X,
+  DETAIL_UNEARTH,
+  DETAIL_X,
+  DETAIL_X_SPELL,
+} from './dev/detailScene'
 import { inactiveNotes } from './handReason'
 
 afterEach(() => useBlockedTell.getState().hush())
@@ -72,8 +79,31 @@ describe.each([2, 4])('detailed refusals at %i seats', (seats) => {
       const note = must(inactiveNotes(state.objectsById, kind.Priority).get(idOf(DETAIL_X)))
       expect(note.hint).toBeUndefined()
       expect(note.line).toBe(
-        `${DETAIL_X} has no target for any X you can pay (X from 0 to 2): it needs an artifact or creature card with mana value X an opponent owns in a graveyard.`,
+        `${DETAIL_X} has no target for any X you can pay (X from 0 to 2): it needs an artifact or creature card with mana value X in an opponent's graveyard.`,
       )
+    })
+
+    it('says which target no payable X of the X spell in hand has when it is pressed', async () => {
+      const { idOf, user } = scene(seats, viewport)
+      await user.click(must(cardButton(idOf(DETAIL_X_SPELL))))
+      expect(must(tell())).toHaveTextContent(
+        `${DETAIL_X_SPELL} has no target for any X you can pay (X from 0 to 2): it needs a creature with mana value X on the battlefield.`,
+      )
+    })
+
+    it('says the chosen color an ability is paid with and the least X another lacks', () => {
+      const { state, idOf } = scene(seats, viewport)
+      const kind = must(state.pending).decision.kind
+      if (!('Priority' in kind)) throw new Error('a priority decision')
+      const notes = inactiveNotes(state.objectsById, kind.Priority)
+      const throne = must(notes.get(idOf(DETAIL_CHOSEN)))
+      expect(throne.hint).toBeUndefined()
+      expect(throne.line).toBe(
+        'Only red mana can be spent to activate it: needs {R}{R}{R}, and you have 1 red mana available.',
+      )
+      const rasputin = must(notes.get(idOf(DETAIL_LEAST_X)))
+      expect(rasputin.hint).toBeUndefined()
+      expect(rasputin.line).toBe("X must be at least 1, and the rest of its cost can't be paid for that.")
     })
 
     it('says an activation was taken back for its mana in the centre strip', () => {

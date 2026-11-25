@@ -1,4 +1,4 @@
-//! Goal: on Postgres the precon browser lists every stored precon with the deck check of its cards and whether a game can start with it, shows one by board with each card's support, follows the precons and the cards without a restart, and answers an unknown code like a malformed one; a seat plays a precon as its deck and a lobby is made with one in a single request, both held to the rules of any seat's deck (the holder alone chooses, an illegal deck is taken with its warnings and only a deck with no known card is refused, the recipe names the cards with their fingerprint); the endpoints are public, throttled per address and leak nothing of any account, and the writes keep the origin guard.
+//! Goal: on Postgres the precon browser lists every stored precon with the deck check of its cards and whether a game can start with it, shows one by board with each card's support, follows the precons and the cards without a restart, and answers an unknown code like a malformed one; a seat plays a precon as its deck and a lobby is made with one in a single request, both held to the rules of any seat's deck (the holder alone chooses, an illegal deck is taken with its warnings and only a deck with no known card is refused, the recipe names the cards with their fingerprint); the endpoints are public, throttled per address and leak nothing of any account, and the writes keep the origin guard; an unchanged precon is a list every seat may look through, while a built-in deck stays hidden.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::net;
@@ -918,6 +918,55 @@ async fn a_guest_makes_a_lobby_with_a_precon_for_every_seat_and_a_stored_deck_is
         (refused.status, refused.error_code().as_str()),
         (400, "unknown_deck")
     );
+}
+
+/// The seat lists of the one `DeckPictures` among `messages`.
+fn seat_lists(messages: &[ServerMessage]) -> Vec<mtg_protocol::SeatList> {
+    messages
+        .iter()
+        .find_map(|message| match message {
+            ServerMessage::DeckPictures { decks, .. } => Some(decks.clone()),
+            _ => None,
+        })
+        .expect("a DeckPictures message")
+}
+
+#[sqlx::test(migrations = false)]
+async fn an_unchanged_precon_is_a_list_every_seat_may_look_through_and_a_built_in_deck_stays_hidden(
+    pool: PgPool,
+) {
+    let server = start(&pool).await;
+    let body = json!({
+        "format": "normal", "held": 2,
+        "seats": [{"name": "Ann", "deck": on(QUEST)}, {"name": "Bo", "deck": "mono-red"}],
+    });
+    let made = net::post_json(server.addr, "/api/games", &body.to_string()).await;
+    assert_eq!(made.status, 201, "{}", made.text());
+    let game = made.json()["game"].as_str().unwrap().to_owned();
+    lobby::start(&server.registry, &game, 2).await;
+    let (stored, _) = recipe(&pool, &game).await;
+    assert_eq!(stored["decks"][0]["note"]["public"], true, "{stored}");
+
+    let handle = server.registry.handle(game.parse().unwrap()).unwrap();
+    // Bo looks through Ann's precon whole: every Forest and Fang-Druid Summoner, copies counted.
+    let lists = seat_lists(&crate::common::Client::join(&handle, 1).await.drain_all());
+    let anns = lists.iter().find(|list| list.seat.index() == 0).unwrap();
+    assert!(anns.whole);
+    let lines: BTreeSet<(String, u32)> = anns
+        .cards
+        .iter()
+        .map(|line| (line.name.clone(), line.count))
+        .collect();
+    assert_eq!(
+        lines,
+        BTreeSet::from([
+            ("Forest".to_owned(), 56),
+            ("Fang-Druid Summoner".to_owned(), 4)
+        ])
+    );
+    // Ann is told her own list and nothing of Bo's built-in deck.
+    let lists = seat_lists(&crate::common::Client::join(&handle, 0).await.drain_all());
+    assert!(lists.iter().all(|list| list.seat.index() == 0), "{lists:?}");
 }
 
 // ---- access ----

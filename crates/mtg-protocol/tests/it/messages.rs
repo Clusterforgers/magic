@@ -928,6 +928,32 @@ fn server_samples() -> Vec<ServerMessage> {
             },
             faces: 2,
         }],
+        decks: Vec::new(),
+    });
+    out.push(ServerMessage::DeckPictures {
+        cards: Vec::new(),
+        decks: vec![mtg_protocol::SeatList {
+            seat: PlayerId(1),
+            whole: true,
+            cards: vec![mtg_protocol::ListCard {
+                name: "Krenko, Mob Boss".into(),
+                identity: Some(mtg_cards::CardIdentity {
+                    oracle_id: "o".into(),
+                    printing_id: None,
+                }),
+                count: 1,
+                group: mtg_protocol::ListGroup::Commander,
+            }],
+            tokens: vec![mtg_protocol::TokenPicture {
+                name: "Goblin".into(),
+                colors: vec![mtg_core::color::Color::Red],
+                supertypes: Vec::new(),
+                types: vec![mtg_core::card::CardType::Creature],
+                subtypes: vec![mtg_core::card::Subtype("Goblin".into())],
+                power: Some(1),
+                toughness: Some(1),
+            }],
+        }],
     });
     let offer = TakeBackOffer {
         player: PlayerId(1),

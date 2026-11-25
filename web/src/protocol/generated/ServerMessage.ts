@@ -20,6 +20,7 @@ import type { PictureCard } from "./PictureCard";
 import type { PlayerId } from "./PlayerId";
 import type { Refusal } from "./Refusal";
 import type { RevealedDeck } from "./RevealedDeck";
+import type { SeatList } from "./SeatList";
 import type { StateView } from "./StateView";
 import type { Stop } from "./Stop";
 import type { TakeBackOffer } from "./TakeBackOffer";
@@ -283,4 +284,8 @@ decks: Array<RevealedDeck>, } | { "type": "DeckPictures",
 /**
  * The cards, each once: the viewer's own first.
  */
-cards: Array<PictureCard>, };
+cards: Array<PictureCard>, 
+/**
+ * Each seat's list with the tokens it can make, in seat order; a seat with nothing to show is left out.
+ */
+decks?: Array<SeatList>, };

@@ -394,6 +394,34 @@ pub enum Why {
         /// The most X the player can pay.
         most: u32,
     },
+    /// The cost cannot be paid for the least X it allows ("X can't be 0"): with the mana it then costs against the mana
+    /// at hand when the mana is short, else another part (the counters or objects X counts) is.
+    LeastX {
+        /// The least X allowed.
+        least: u32,
+        /// The mana the cost asks at that X, when the mana is what falls short.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        cost: Option<ManaCost>,
+        /// The most mana the pool and the untapped sources can make, one use of each source, beside `cost`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        at_hand: Option<u32>,
+    },
+    /// "Spend only mana of the chosen color": the color its source chose, or none when it chose none, and the mana of that
+    /// color at hand.
+    ChosenColor {
+        /// The chosen color.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        color: Option<mtg_core::color::Color>,
+        /// The cost in mana of that color, when a color is chosen.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        #[cfg_attr(feature = "ts", ts(optional))]
+        cost: Option<ManaCost>,
+        /// The most mana of that color the pool and the untapped sources can make, one use of each source.
+        at_hand: u32,
+    },
 }
 
 /// How a spell goes on its host ([`Why::Host`]).

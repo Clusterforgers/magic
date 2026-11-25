@@ -10,6 +10,7 @@ use mtg_cards::refs::{
 };
 use mtg_cards::trigger::{Step, TriggerPattern};
 use mtg_cards::value::{Amount, CastWay, Cmp, Condition, DayNight, StatKind};
+use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 
 use crate::decision::TargetZone;
@@ -95,17 +96,50 @@ fn counter_count(kind: &str, op: Cmp, to: u32) -> String {
 }
 
 fn zone_phrase(kind: ZoneKind, yours: bool) -> String {
-    let (place, owner) = match kind {
+    owned_zone_phrase(kind, if yours { "your" } else { "a" })
+}
+
+/// The zone `kind` with its owner's word ahead of a zone a player owns: "in an opponent's graveyard".
+fn owned_zone_phrase(kind: ZoneKind, whose: &str) -> String {
+    let place = match kind {
         ZoneKind::Battlefield => return "on the battlefield".to_owned(),
         ZoneKind::Stack => return "on the stack".to_owned(),
         ZoneKind::Exile => return "in exile".to_owned(),
-        ZoneKind::Hand => ("hand", "a"),
-        ZoneKind::Library => ("library", "a"),
-        ZoneKind::Graveyard => ("graveyard", "a"),
-        ZoneKind::Command => ("command zone", "a"),
+        ZoneKind::Hand => "hand",
+        ZoneKind::Library => "library",
+        ZoneKind::Graveyard => "graveyard",
+        ZoneKind::Command => "command zone",
         ZoneKind::Outside => return "outside the game".to_owned(),
     };
-    format!("in {} {place}", if yours { "your" } else { owner })
+    format!("in {whose} {place}")
+}
+
+/// The card types a permanent can have (CR 110.4).
+const PERMANENT_TYPES: [CardType; 6] = [
+    CardType::Artifact,
+    CardType::Battle,
+    CardType::Creature,
+    CardType::Enchantment,
+    CardType::Land,
+    CardType::Planeswalker,
+];
+
+/// "permanent" for a list of card types that names every type a permanent can have, "nonland permanent" for every one
+/// but land (the "nonland" left out when the phrase says it already); `None` for any other list.
+fn permanent_types(types: &[CardType], nonland_said: bool) -> Option<&'static str> {
+    let has = |wanted: &CardType| types.contains(wanted);
+    let all_but_land = PERMANENT_TYPES
+        .iter()
+        .filter(|kind| **kind != CardType::Land)
+        .all(has);
+    if !all_but_land || types.iter().any(|kind| !PERMANENT_TYPES.contains(kind)) {
+        return None;
+    }
+    Some(if has(&CardType::Land) || nonland_said {
+        "permanent"
+    } else {
+        "nonland permanent"
+    })
 }
 
 /// The adjective of a state or designation a permanent is in ("tapped", "suspected").
@@ -132,7 +166,11 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
 /// ("tapped creature", "you control").
 pub(crate) fn phrase(selector: &Selector) -> (String, String) {
     let (mut adjectives, mut nouns, mut tail) = (Vec::new(), Vec::new(), Vec::new());
-    let (mut zone, mut yours, mut this) = (None, false, false);
+    let (mut zone, mut yours, mut theirs, mut this) = (None, false, false, false);
+    let nonland_said = selector
+        .0
+        .iter()
+        .any(|pred| matches!(pred, Pred::Not(inner) if **inner == Pred::Type(CardType::Land)));
     for pred in &selector.0 {
         match pred {
             Pred::This => this = true,
@@ -182,7 +220,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::ControlledBy(Ref::You) => tail.push("you control".to_owned()),
             Pred::ControlledBy(Ref::Opponents) => tail.push("an opponent controls".to_owned()),
             Pred::OwnedBy(Ref::You) => yours = true,
-            Pred::OwnedBy(Ref::Opponents) => tail.push("an opponent owns".to_owned()),
+            Pred::OwnedBy(Ref::Opponents) => theirs = true,
             Pred::In(kind) => zone = Some(*kind),
             Pred::Named(name) => nouns.push(format!("card named {name}")),
             Pred::HasKeyword(keyword) => {
@@ -207,26 +245,54 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
                     .iter()
                     .all(|p| matches!(p, Pred::Type(_) | Pred::Subtype(_))) =>
             {
-                let words: Vec<String> = any
-                    .iter()
-                    .filter_map(|p| match p {
-                        Pred::Type(card_type) => Some(lower(card_type)),
-                        Pred::Subtype(subtype) => Some(subtype.0.clone()),
-                        _ => None,
-                    })
-                    .collect();
-                nouns.push(words.join(" or "));
+                nouns.push(any_of_noun(any, nonland_said));
             }
             _ => {}
         }
     }
-    match zone {
-        Some(kind) => tail.push(zone_phrase(kind, yours)),
-        None if yours => tail.push("you own".to_owned()),
-        None => {}
-    }
+    tail.extend(owner_and_zone(zone, yours, theirs));
     adjectives.push(head_noun(&nouns, zone, this));
     (adjectives.join(" "), tail.join(" "))
+}
+
+/// The noun of a list of card types and subtypes: "permanent" or "nonland permanent" for the types of a permanent,
+/// else "artifact or creature".
+fn any_of_noun(any: &[Pred], nonland_said: bool) -> String {
+    let types: Vec<CardType> = any
+        .iter()
+        .filter_map(|p| match p {
+            Pred::Type(card_type) => Some(*card_type),
+            _ => None,
+        })
+        .collect();
+    if types.len() == any.len()
+        && let Some(word) = permanent_types(&types, nonland_said)
+    {
+        return word.to_owned();
+    }
+    let words: Vec<String> = any
+        .iter()
+        .filter_map(|p| match p {
+            Pred::Type(card_type) => Some(lower(card_type)),
+            Pred::Subtype(subtype) => Some(subtype.0.clone()),
+            _ => None,
+        })
+        .collect();
+    words.join(" or ")
+}
+
+/// The owner and zone at the end of a phrase; a zone a player owns names the owner in it: "in an opponent's graveyard".
+fn owner_and_zone(zone: Option<ZoneKind>, yours: bool, theirs: bool) -> Vec<String> {
+    match zone {
+        Some(
+            kind @ (ZoneKind::Hand | ZoneKind::Library | ZoneKind::Graveyard | ZoneKind::Command),
+        ) if theirs => vec![owned_zone_phrase(kind, "an opponent's")],
+        Some(kind) if theirs => vec!["an opponent owns".to_owned(), zone_phrase(kind, yours)],
+        Some(kind) => vec![zone_phrase(kind, yours)],
+        None if theirs => vec!["an opponent owns".to_owned()],
+        None if yours => vec!["you own".to_owned()],
+        None => Vec::new(),
+    }
 }
 
 /// "nonblack", "nonland": the adjective of a negated color or card type; `None` for any other predicate.
@@ -1978,6 +2044,26 @@ mod tests {
     #[case::two_kinds(
         r#"{"what":{"Object":[{"AnyOf":[{"Type":"Creature"},{"Type":"Planeswalker"}]}]}}"#,
         "target creature or planeswalker"
+    )]
+    #[case::in_an_opponents_graveyard(
+        r#"{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"}]},{"Compare":{"stat":"ManaValue","op":"Eq","to":"X"}},{"In":"Graveyard"},{"OwnedBy":"Opponents"}]}}"#,
+        "target artifact or creature card with mana value X in an opponent's graveyard"
+    )]
+    #[case::an_opponent_owns(
+        r#"{"what":{"Object":[{"Type":"Creature"},{"OwnedBy":"Opponents"}]}}"#,
+        "target creature an opponent owns"
+    )]
+    #[case::a_nonland_permanent_card(
+        r#"{"what":{"Object":[{"Not":{"Type":"Land"}},{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Planeswalker"},{"Type":"Battle"}]},{"In":"Graveyard"},{"OwnedBy":"You"}]}}"#,
+        "target nonland permanent card in your graveyard"
+    )]
+    #[case::a_permanent_card_without_its_nonland(
+        r#"{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Planeswalker"},{"Type":"Battle"}]},{"In":"Graveyard"}]}}"#,
+        "target nonland permanent card in a graveyard"
+    )]
+    #[case::every_permanent_type(
+        r#"{"what":{"Object":[{"AnyOf":[{"Type":"Artifact"},{"Type":"Creature"},{"Type":"Enchantment"},{"Type":"Land"},{"Type":"Planeswalker"},{"Type":"Battle"}]},{"In":"Exile"}]}}"#,
+        "target permanent card in exile"
     )]
     #[case::with_a_counter(
         r#"{"what":{"Object":[{"Type":"Creature"},{"HasCounter":"+1/+1"}]}}"#,

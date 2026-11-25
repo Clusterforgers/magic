@@ -61,6 +61,7 @@ import { SpeedChip } from './SpeedChip'
 import { PlayerCounterChips } from './PlayerCounterChips'
 import { PlayerEffectChips } from './PlayerEffectChips'
 import { CompanionChip } from './CompanionChip'
+import { LibraryChip } from './DeckListDialog'
 import { StickerSheetsChip } from './StickerSheetsChip'
 import { ZoneButton } from './ZoneButton'
 import { TurnTimeMark } from './TurnTimeMark'
@@ -389,7 +390,7 @@ export const SeatPanel = memo(function SeatPanel({
               ) : (
                 <ZoneButton zone="hand" owner={owner} ids={theirHand} density="line" />
               )}
-              <CountChip zone="library" count={counts.library} density="line" />
+              <LibraryChip seat={seat} owner={owner} count={counts.library} density="line" />
               {flags.you ? <LibraryTopChip player={player} /> : null}
               <RevealedChip owner={owner} player={player} density="line" />
               <RingChip owner={owner} player={player} density="line" />
@@ -452,7 +453,7 @@ export const SeatPanel = memo(function SeatPanel({
       ) : (
         <ZoneButton zone="hand" owner={owner} ids={theirHand} density="line" />
       )}
-      <CountChip zone="library" count={counts.library} density="tile" />
+      <LibraryChip seat={seat} owner={owner} count={counts.library} density="tile" />
       <LandSummary seat={seat} owner={owner} density="tile" />
     </>
   )

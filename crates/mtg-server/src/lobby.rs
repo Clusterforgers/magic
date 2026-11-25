@@ -507,7 +507,14 @@ impl<S: EventStore> GameActor<S> {
         let opening = engine.events().to_vec();
         match self.persist(&before, &opening, 0).await {
             Ok(batches) => {
-                let mut running = Running::new(engine, self.pace).with_manual_play(manual_play);
+                let public = self
+                    .decks
+                    .as_ref()
+                    .map(SeatDecks::public_seats)
+                    .unwrap_or_default();
+                let mut running = Running::new(engine, self.pace)
+                    .with_manual_play(manual_play)
+                    .with_public_lists(public);
                 let first = running.settle(false, Halt::Ask);
                 // A game starts in the mulligans, but a scenario can open on a priority decision nobody is asked.
                 let idle = first.first().is_some_and(|issued| {

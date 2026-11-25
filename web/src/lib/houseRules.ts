@@ -164,7 +164,14 @@ const counted = (c: Count): RuleSpec =>
 const plural = (n: number, one: string, many = `${one}s`): string => `${n} ${n === 1 ? one : many}`
 
 type Flag = keyof HouseRules &
-  ('mana_burn' | 'blocker_timer' | 'open_hands' | 'revealed_library_top' | 'opening_hand_smoothing')
+  (
+    | 'mana_burn'
+    | 'blocker_timer'
+    | 'open_hands'
+    | 'revealed_library_top'
+    | 'open_decks'
+    | 'opening_hand_smoothing'
+  )
 
 const flag = (id: Flag, label: string, help: string, group: RuleGroup, on: string, off: string): RuleSpec =>
   rule<boolean>({
@@ -524,6 +531,14 @@ export const RULES: readonly RuleSpec[] = [
     'Table',
     'Top cards revealed',
     'Top cards hidden',
+  ),
+  flag(
+    'open_decks',
+    'Open decks',
+    'Every player may look through every deck list and the tokens it makes.',
+    'Table',
+    'Open deck lists',
+    'Deck lists hidden',
   ),
   counted({
     key: 'commander_tax',

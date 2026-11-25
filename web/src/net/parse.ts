@@ -42,8 +42,11 @@ import type {
   TakeBackOffer,
   TakeBackOutcome,
   TakeBackRefusal,
+  ListCard,
   PictureCard,
   RevealedDeck,
+  SeatList,
+  TokenPicture,
   YieldUntil,
 } from '@/protocol/generated'
 import { isCount, isFlag, isInt, isListOf, isRecord, isText } from './check'
@@ -512,6 +515,47 @@ function isPictureCard(value: unknown): value is PictureCard {
   return isText(oracle) && (printing === undefined || isText(printing))
 }
 
+const isIdentity = (value: unknown): boolean =>
+  isRecord(value) && isText(value.oracle_id) && (value.printing_id === undefined || isText(value.printing_id))
+
+/** One line of a seat's list: a name, its identity when it has a picture, the copies and a group name. */
+function isListCard(value: unknown): value is ListCard {
+  return (
+    isRecord(value) &&
+    isText(value.name) &&
+    (value.identity === undefined || isIdentity(value.identity)) &&
+    isCount(value.count) &&
+    isText(value.group)
+  )
+}
+
+/** A token a deck can make: its name, its types and, optionally, colours, subtypes and power/toughness. */
+function isTokenPicture(value: unknown): value is TokenPicture {
+  const optionalTexts = (list: unknown) => list === undefined || isListOf(list, isText)
+  const optionalInt = (n: unknown) => n === undefined || n === null || isInt(n)
+  return (
+    isRecord(value) &&
+    isText(value.name) &&
+    isListOf(value.types, isText) &&
+    optionalTexts(value.colors) &&
+    optionalTexts(value.supertypes) &&
+    optionalTexts(value.subtypes) &&
+    optionalInt(value.power) &&
+    optionalInt(value.toughness)
+  )
+}
+
+/** A seat's deck as this viewer may look through it, with the tokens it can make. */
+function isSeatList(value: unknown): value is SeatList {
+  return (
+    isRecord(value) &&
+    isCount(value.seat) &&
+    isFlag(value.whole) &&
+    isListOf(value.cards, isListCard) &&
+    isListOf(value.tokens, isTokenPicture)
+  )
+}
+
 /** A seat and the name of its decision; a name this page does not know yet reads as a plain decision. */
 function isDeciding(value: unknown): value is DecidingView {
   return isRecord(value) && isCount(value.seat) && isText(value.kind)
@@ -795,7 +839,9 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
       return { type, decks: v.decks }
     case 'DeckPictures':
       if (!isListOf(v.cards, isPictureCard)) return '"cards" must be a list of cards (identity, faces)'
-      return { type, cards: v.cards }
+      if (v.decks !== undefined && !isListOf(v.decks, isSeatList))
+        return '"decks" must be a list of seat lists (seat, whole, cards, tokens)'
+      return v.decks === undefined ? { type, cards: v.cards } : { type, cards: v.cards, decks: v.decks }
     default: {
       // Compile-time exhaustiveness: a new `ServerMessage` variant stops building here until it is handled.
       const unhandled: never = type

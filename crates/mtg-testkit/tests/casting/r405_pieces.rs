@@ -240,7 +240,7 @@ fn the_attendant_gives_a_counter_to_non_humans(
 }
 
 /// Seat 0 casts Throne of Eldraine with five Wastes, beside `lands`, choosing red, and holds `spell`.
-fn r405_throne(
+pub(crate) fn r405_throne(
     seats: usize,
     lands: &[&str],
     spell: Arc<CardDefinition>,
