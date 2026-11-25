@@ -52,7 +52,7 @@ impl Run {
             reinforcements: Scale::theme_reinforcements(
                 heroes,
                 self.content,
-                theme.map_or(0, |t| t.boss_supplies),
+                theme.map_or((0, None), |t| (t.boss_supplies, t.boss_reinforcements_most)),
                 // The fade follows the depth's count, not a theme's cap.
                 boss_relics::count(depth, self.heat, self.content),
             ),

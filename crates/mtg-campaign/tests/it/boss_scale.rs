@@ -3,12 +3,14 @@
 //! keep the relic count and the boss they were played with; from `THEME_SUPPLIES_FROM` a theme may add supplies to its
 //! bosses against two or more heroes, and from `REINFORCEMENTS_FADE_FROM` a boss with the most relics brings no
 //! reinforcement (the theme's supplies stay); from `THEME_RELICS_FROM` a theme may cap its bosses' relics, the
-//! Warrens at three.
+//! Warrens at three; from `THEME_REINFORCEMENTS_FROM` a theme may cap its bosses' reinforcements, each further one
+//! coming as supplies, the Warrens at one.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS, RELIC_OFFSET};
 use mtg_campaign::content::FOUNDRY_FROM;
 use mtg_campaign::run::{
-    BOSS_SCALE_FROM, CONTENT, REINFORCEMENTS_FADE_FROM, THEME_RELICS_FROM, THEME_SUPPLIES_FROM,
+    BOSS_SCALE_FROM, CONTENT, CROWN_CASCADE_FROM, REINFORCEMENTS_FADE_FROM,
+    THEME_REINFORCEMENTS_FROM, THEME_RELICS_FROM, THEME_SUPPLIES_FROM,
 };
 use mtg_campaign::scale::{FADE_RELICS, REINFORCEMENT, SUPPLIES};
 use mtg_campaign::{CardKind, HeroDeck, Run, RunEvent, Scale, content};
@@ -100,7 +102,7 @@ fn run(heroes: usize, version: u32) -> Run {
 #[rstest]
 fn the_fight_plan_carries_the_reinforcements_by_party_size(
     #[values(1, 2, 3)] heroes: usize,
-    #[values(FOUNDRY_FROM, CONTENT)] version: u32,
+    #[values(FOUNDRY_FROM, CROWN_CASCADE_FROM)] version: u32,
 ) {
     let content = content().unwrap();
     let boss = run(heroes, version)
@@ -150,7 +152,7 @@ proptest! {
         supplies in 0usize..3,
     ) {
         let base = Scale::reinforcements(heroes, generation);
-        let now = Scale::theme_reinforcements(heroes, generation, supplies, 0);
+        let now = Scale::theme_reinforcements(heroes, generation, (supplies, None), 0);
         prop_assert_eq!(&now[..base.len()], &base[..]);
         let added = if generation < THEME_SUPPLIES_FROM || heroes < 2 { 0 } else { supplies };
         prop_assert_eq!(&now[base.len()..], &vec![SUPPLIES.to_owned(); added][..]);
@@ -200,7 +202,7 @@ fn a_themes_bosses_bring_its_supplies_from_its_generation_against_two_heroes(
     let card = content().unwrap().card(SUPPLIES).unwrap();
     assert_eq!(card.kind, CardKind::Reinforcement);
     let old = first_boss(theme, heroes, heat, BOSS_SCALE_FROM);
-    let mut now = first_boss(theme, heroes, heat, CONTENT);
+    let mut now = first_boss(theme, heroes, heat, CROWN_CASCADE_FROM);
     let extra = if heroes >= 2 { supplies } else { 0 };
     assert_eq!(old.reinforcements.len(), usize::from(heroes) - 1);
     assert_eq!(now.reinforcements.len(), usize::from(heroes) - 1 + extra);
@@ -224,8 +226,8 @@ proptest! {
         supplies in 0usize..3,
         relics in 0usize..=MOST_BOSS_RELICS,
     ) {
-        let now = Scale::theme_reinforcements(heroes, generation, supplies, relics);
-        let before = Scale::theme_reinforcements(heroes, generation.min(THEME_SUPPLIES_FROM), supplies, relics);
+        let now = Scale::theme_reinforcements(heroes, generation, (supplies, None), relics);
+        let before = Scale::theme_reinforcements(heroes, generation.min(THEME_SUPPLIES_FROM), (supplies, None), relics);
         if generation < REINFORCEMENTS_FADE_FROM || relics < FADE_RELICS {
             // Every older generation, and a boss with fewer relics, keeps the reinforcements of generation 13.
             prop_assert_eq!(&now, &before);
@@ -339,5 +341,69 @@ fn a_deep_warrens_boss_brings_at_most_three_relics_from_the_cap(
     }
     // Apart from the relics, the boss is the one of generation 14, its reinforcements faded by the depth's count.
     now.relics.clone_from(&old.relics);
+    assert_eq!(now, old);
+}
+
+proptest! {
+    #[test]
+    fn a_themes_reinforcement_cap_binds_only_from_its_generation(
+        heroes in 1usize..9,
+        generation in 0u32..20,
+        supplies in 0usize..3,
+        relics in 0usize..=MOST_BOSS_RELICS,
+        most in proptest::option::of(0usize..4),
+    ) {
+        let now = Scale::theme_reinforcements(heroes, generation, (supplies, most), relics);
+        let before = Scale::theme_reinforcements(heroes, generation, (supplies, None), relics);
+        let count = |all: &[String], id: &str| all.iter().filter(|card| *card == id).count();
+        match most {
+            Some(most) if generation >= THEME_REINFORCEMENTS_FROM => {
+                // As many cards as before: the reinforcements beyond the cap come as supplies.
+                let all = count(&before, REINFORCEMENT);
+                prop_assert_eq!(now.len(), before.len());
+                prop_assert_eq!(count(&now, REINFORCEMENT), all.min(most));
+                prop_assert_eq!(count(&now, SUPPLIES), count(&before, SUPPLIES) + all - all.min(most));
+            }
+            // Every older generation, and a theme without a cap, keeps the reinforcements of generation 16.
+            _ => prop_assert_eq!(&now, &before),
+        }
+    }
+}
+
+#[rstest]
+fn a_warrens_boss_brings_one_reinforcement_and_supplies_for_the_rest(
+    #[values(("warrens", Some(1)), ("spire", None), ("foundry", None))] theme: (
+        &str,
+        Option<usize>,
+    ),
+    #[values(1, 2, 3, 4)] heroes: u8,
+) {
+    let (theme, most) = theme;
+    assert_eq!(
+        content()
+            .unwrap()
+            .theme(theme)
+            .unwrap()
+            .boss_reinforcements_most,
+        most
+    );
+    let heat = if theme == "foundry" { 3 } else { 1 };
+    let old = first_boss(theme, heroes, heat, CROWN_CASCADE_FROM);
+    let mut now = first_boss(theme, heroes, heat, CONTENT);
+    let all = usize::from(heroes) - 1;
+    let kept = most.map_or(all, |most| all.min(most));
+    let count = |seat: &mtg_campaign::BossSeat, id: &str| {
+        seat.reinforcements
+            .iter()
+            .filter(|card| *card == id)
+            .count()
+    };
+    assert_eq!(count(&now, REINFORCEMENT), kept);
+    assert_eq!(count(&now, SUPPLIES), count(&old, SUPPLIES) + all - kept);
+    if kept == all {
+        assert_eq!(now.reinforcements, old.reinforcements);
+    }
+    // Apart from the reinforcements, the boss is the one of generation 16.
+    now.reinforcements.clone_from(&old.reinforcements);
     assert_eq!(now, old);
 }
