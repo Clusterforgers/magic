@@ -1,7 +1,9 @@
 //! How a boss scales: its innate's level by depth (bosses the party defeated in the run) and Heat, its life and
 //! reinforcements by party size only, and the rounds its two phases begin in (`docs/delves.md`, Difficulty).
 
-use crate::run::{BOSS_SCALE_FROM, REINFORCEMENTS_FADE_FROM, THEME_SUPPLIES_FROM};
+use crate::run::{
+    BOSS_SCALE_FROM, REINFORCEMENTS_FADE_FROM, THEME_REINFORCEMENTS_FROM, THEME_SUPPLIES_FROM,
+};
 
 /// The most heroes in a party.
 pub const MOST: usize = 6;
@@ -59,16 +61,23 @@ impl Scale {
     /// The reinforcements a boss of a theme that adds `supplies` (`Theme::boss_supplies`) and brings `relics` relics
     /// brings against `heroes` heroes in a run of content `generation`: [`Scale::reinforcements`], but
     /// none from [`REINFORCEMENTS_FADE_FROM`] with [`FADE_RELICS`] relics or more, and from
-    /// [`THEME_SUPPLIES_FROM`] the theme's [`SUPPLIES`] against two or more heroes.
+    /// [`THEME_SUPPLIES_FROM`] the theme's [`SUPPLIES`] against two or more heroes; from
+    /// [`THEME_REINFORCEMENTS_FROM`] at most `most` (`Theme::boss_reinforcements_most`) reinforcements, each further one
+    /// coming as [`SUPPLIES`].
     pub fn theme_reinforcements(
         heroes: usize,
         generation: u32,
-        supplies: usize,
+        (supplies, most): (usize, Option<usize>),
         relics: usize,
     ) -> Vec<String> {
         let mut all = Self::reinforcements(heroes, generation);
         if generation >= REINFORCEMENTS_FADE_FROM && relics >= FADE_RELICS {
             all.clear();
+        }
+        if let Some(most) = most.filter(|_| generation >= THEME_REINFORCEMENTS_FROM) {
+            for beyond in all.iter_mut().skip(most) {
+                SUPPLIES.clone_into(beyond);
+            }
         }
         if generation >= THEME_SUPPLIES_FROM && heroes >= 2 {
             all.extend(std::iter::repeat_n(SUPPLIES.to_owned(), supplies));
