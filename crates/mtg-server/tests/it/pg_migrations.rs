@@ -49,6 +49,7 @@ async fn the_server_alone_creates_only_its_own_tables_and_can_rerun(pool: PgPool
                 "delves",
                 "game_events",
                 "games",
+                "precon_judgements",
                 "seats",
                 "sessions",
                 "tournament_entrants",
