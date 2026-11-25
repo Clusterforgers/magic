@@ -114,6 +114,20 @@ pub fn sticker_keywords(ability: &Ability) -> Vec<&Keyword> {
     }
 }
 
+/// The clause of a face, a sticker line of a sheet in today's wording.
+pub(super) fn current_clause(sheet: bool, text: String) -> String {
+    if sheet {
+        current_line(&text).unwrap_or(text)
+    } else {
+        text
+    }
+}
+
+/// The tickets and the rest of a sticker line of a sheet; none for another face or line.
+pub(super) fn sheet_line(sheet: bool, text: &str) -> Option<(u32, &str)> {
+    sheet.then(|| sticker_line(text)).flatten()
+}
+
 /// A sticker line in today's wording; none for another line.
 pub(super) fn current_line(text: &str) -> Option<String> {
     let (tickets, rest) = sticker_line(text)?;

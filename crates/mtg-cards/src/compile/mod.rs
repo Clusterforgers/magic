@@ -149,10 +149,7 @@ fn read_face(
     let sheet = un34_sheets::is_sheet(shown);
     let mut pending = Vec::new();
     for raw in clauses::split(&text) {
-        let mut clause_text = text.slice(raw.range.clone());
-        if sheet && let Some(current) = un34_sheets::current_line(&clause_text) {
-            clause_text = current;
-        }
+        let clause_text = un34_sheets::current_clause(sheet, text.slice(raw.range.clone()));
         let Some(span) = text.span(raw.range, raw.ends_line) else {
             continue;
         };
@@ -164,42 +161,15 @@ fn read_face(
             && span
                 .slice(&shown.oracle_text)
                 .is_some_and(normalize::reminder_mentions_counter);
-        let sticker = sheet
-            .then(|| un34_sheets::sticker_line(&clause_text))
-            .flatten();
+        let sticker = |(tickets, rest)| {
+            un34_sheets::sticker(tickets, rest, |rest| {
+                read_sticker_rest(rest, reminds_counter, x_free, (&own, partners))
+            })
+        };
         // A loyalty cost on a face that is no planeswalker is a line of the card's own, not an ability.
-        let (ability, more) = if let Some((tickets, rest)) = sticker {
+        let (ability, more) = if let Some(line) = un34_sheets::sheet_line(sheet, &clause_text) {
             kind = ClauseKind::Static;
-            let ability = un34_sheets::sticker(tickets, rest, |rest| {
-                let mut kind = classify::classify(rest, false);
-                if is_unread_keyword_line(rest, kind, x_free, &own) {
-                    kind = ClauseKind::Keyword;
-                }
-                // A run of keywords ("Vigilance, reach") reads item by item, as a keyword line does.
-                if kind == ClauseKind::Keyword
-                    && let Some(items) = keywords::split_items(rest).filter(|items| items.len() > 1)
-                {
-                    let chars: Vec<char> = rest.chars().collect();
-                    let mut read = Vec::new();
-                    for item in items {
-                        let item: String = chars.get(item).unwrap_or_default().iter().collect();
-                        match read_clause(&item, kind, (false, false), x_free, (&own, partners)) {
-                            (Some(keyword), more) if more.is_empty() => read.push(keyword),
-                            _ => return (None, Vec::new()),
-                        }
-                    }
-                    let mut read = read.into_iter();
-                    return (read.next(), read.collect());
-                }
-                read_clause(
-                    rest,
-                    kind,
-                    (false, reminds_counter),
-                    x_free,
-                    (&own, partners),
-                )
-            });
-            (ability, Vec::new())
+            (sticker(line), Vec::new())
         } else if kind == ClauseKind::Loyalty && !walker {
             (None, Vec::new())
         } else {
@@ -265,6 +235,42 @@ fn read_face(
         });
     }
     abilities
+}
+
+/// The ability of a sticker line after its tickets, read as a line of its own; a run of keywords ("Vigilance, reach")
+/// reads item by item, as a keyword line does.
+fn read_sticker_rest(
+    rest: &str,
+    reminds_counter: bool,
+    x_free: bool,
+    (own, partners): (&read::Own, Partners<'_>),
+) -> (Option<Ability>, Vec<Ability>) {
+    let mut kind = classify::classify(rest, false);
+    if is_unread_keyword_line(rest, kind, x_free, own) {
+        kind = ClauseKind::Keyword;
+    }
+    let Some(items) =
+        keywords::split_items(rest).filter(|items| kind == ClauseKind::Keyword && items.len() > 1)
+    else {
+        return read_clause(
+            rest,
+            kind,
+            (false, reminds_counter),
+            x_free,
+            (own, partners),
+        );
+    };
+    let chars: Vec<char> = rest.chars().collect();
+    let mut read = Vec::new();
+    for item in items {
+        let item: String = chars.get(item).unwrap_or_default().iter().collect();
+        match read_clause(&item, kind, (false, false), x_free, (own, partners)) {
+            (Some(keyword), more) if more.is_empty() => read.push(keyword),
+            _ => return (None, Vec::new()),
+        }
+    }
+    let mut read = read.into_iter();
+    (read.next(), read.collect())
 }
 
 /// Whether the face has cleave (CR 702.148): its spell reads with the words in square brackets and its keyword without.
