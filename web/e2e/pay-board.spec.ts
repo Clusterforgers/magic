@@ -1,5 +1,5 @@
 // Goal: a payment takes a mana source pressed on the board at once, the moment the prompt is drawn (a basic land, a land of any colour, a land of two colours, Sol Ring and a Signet), so the card reads pressed, a source of several kinds lights its row and the circles fill; "Pay for me" lays out the game's payment for a Confirm, and pays at once with "Always pay for me" on; in a duel and at four seats, at 1400x900 and on a phone (390x844, the detail in the sheet); a Gilded Lotus of five three-pip options is offered when it overpays and keeps its name and buttons inside its row at 1366 and 390.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

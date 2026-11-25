@@ -1,5 +1,5 @@
 // Goal: on a phone an attack arrow at a seat whose tile is scrolled out of the tile strip ends at the edge of the strip it went out by, never off the window or at the tile's hidden place, before and after the strip is scrolled, at a crowded table and in a team game.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

@@ -1,5 +1,5 @@
 // Goal: a decision that picks among the hand (bottoming after a mulligan, a discard) beside a Satchel of twelve cards keeps every one of twelve cards on offer reachable, in a duel, at four seats and in a boss fight, at 1644x947 and on a phone (390x844): where the dock has the room every card shows whole without scrolling, the Satchel giving way to one card; where it does not, a turn of the wheel over the line moves it sideways, its scrollbar takes the pointer, and the last card can be scrolled to and chosen.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Locator, Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

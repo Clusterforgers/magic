@@ -1,5 +1,5 @@
 // Goal: in a real two-seat game of two white-blue decks the seats walk a counterspell, a combat trick and a sacrifice by hand, and each step's prompt, stack chips and log lines read right in both seats, the hidden card named only to its owner.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
 import type { Player } from './lobby'

@@ -1,5 +1,5 @@
 // Goal: five fit defects of the layout stay fixed at the sizes of the design (1440x900, 1366x768, 1280x720, 1024x768, 390x844): the lobby shows its seats on the first screen and the host's invite link and code whole under them; a hand of ten or more cards ends inside its dock, never under the controls, with its tags whole or an icon; the turn banner lies over neither the step ladder nor the turn badge while it shows; in every game mode (duel, three to twelve seats, teams, Two-Headed Giant, boss fights of one to four heroes and with minions) and also at 2560x1440 and 1920x1080 the opening hand is drawn large in its panel centred over the table while the Mulligan prompt waits, every card whole, with Keep and Mulligan in reach and clear of the sentence; and the table has no text under 12 px, the letters of a mana symbol included.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { openingProblems, TABLE_MODES } from './openingFit'
 import { DEV_WEB_URL } from './ports'

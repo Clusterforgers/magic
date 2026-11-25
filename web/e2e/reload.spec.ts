@@ -1,5 +1,5 @@
 // Goal: a seat that reloads its page mid-game gets the game log back, as the seat that stayed saw it, and the table at rest (nothing animates from a snapshot: no effect, no cross-fade, no picture fading in), at tables of two and four seats.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
 import type { Hooks } from './driver'

@@ -1,5 +1,5 @@
 // Goal: in a real two-seat game, at desktop and phone size, one seat loses life, draws, mills, looks at the top and puts a card on the bottom, and makes a token from the Commands panel; each row says Done, both seats' logs tell every action, and the other seat's log never names the cards looked at.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { createAndJoin, everyoneReady } from './lobby'
 import { apply, logOf, openRow, openSide } from './manual'
 import type { Player } from './lobby'

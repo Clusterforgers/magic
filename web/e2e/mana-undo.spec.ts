@@ -1,5 +1,5 @@
 // Goal: on the development table a land the viewer taps for mana at priority is untapped again by a second press, its mana gone from the pool again, in a duel and at four seats, at 1400x900 and on a phone (390x844, in the sheet of the viewer's lands).
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

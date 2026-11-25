@@ -1,5 +1,5 @@
 // Goal: on a two-seat table, at desktop and phone size, a Partial card in hand shows the by-hand mark, a press on the mark and the `h` key on the focused card each open its clause list, and the cast and entering lines that quote the clauses are in both seats' logs.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, Locator, Page } from '@playwright/test'
 import type { DeckView, ImportResult } from '../src/protocol/generated'
 import type { Player } from './lobby'

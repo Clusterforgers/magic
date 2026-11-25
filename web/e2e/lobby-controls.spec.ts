@@ -1,5 +1,5 @@
 // Goal: the host makes a public game on /new and a guest in another browser context joins it from the open games list; the host's toggle takes the game out of the list and back (the guest's lobby follows), and Close game, after its question, sends the host to Play with a notice and shows the guest "The host closed this game."; the host can also remove the guest, who is told so, and a guest who joins again can leave from the lobby and lands on Play.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
 import { deckLines, seatRows } from './lobby'
 

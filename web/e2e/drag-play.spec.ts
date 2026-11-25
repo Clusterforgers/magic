@@ -1,5 +1,5 @@
 // Goal: on the development table at 1280x720 and 1920x1080 a land, then a spell, dragged with the mouse up out of the hand onto the board is played on the drop (the board is marked as the drop target and the card says "Release to play"), a card that cannot be played says so and returns with the decision still open, a card brought back over the hand plays nothing, a drag along the hand still reorders and plays nothing, a card that can be cast or cycled is cast by the drop without the chooser a click opens, one whose cast is too dear returns although a click still cycles it, a commander is cast from the head of the dock at four seats, and on a touch screen a held card is played the same way.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Locator, Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

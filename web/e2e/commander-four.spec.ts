@@ -1,5 +1,5 @@
 // Goal: four accounts play a four-seat Commander game with real decks (precons, or with E2E_DECK=owner the owner's imported list) in the real client against a real server, from the create form and the lobby through mulligans, casts from the command zone with their tax and commander damage to a winner, with every seat seeing the same game, no notice, no page scrolling and no console error.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
 import type { Hooks, Seen, Style } from './driver'

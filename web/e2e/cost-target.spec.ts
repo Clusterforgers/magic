@@ -1,5 +1,5 @@
 // Goal: on the dev table a cost pick that takes the ability's target (`?prompt=sacrifice-targeted`) and a target pick of what the cost already takes (`?prompt=targets-paid`) badge that card, warn before the answer is sent with the warning and both answers inside the window, return to the choice from the keyboard (Escape) with nothing sent, and send the answer on "Pay anyway" or "Target anyway"; on the duel board, at four seats, with the side column folded and on a phone.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Locator, Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 
