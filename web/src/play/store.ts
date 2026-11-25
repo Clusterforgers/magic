@@ -20,6 +20,7 @@ import type {
   ObjectView,
   PictureCard,
   PlayerId,
+  SeatList,
   StateView,
   Stop,
   TakeBackOffer,
@@ -215,6 +216,8 @@ export interface PlayState {
   deciding: DecidingView[]
   /** The cards whose pictures this viewer may load ahead (`DeckPictures`), as the server last told it; empty before. */
   deckPictures: PictureCard[]
+  /** Each seat's deck as this viewer may look through it, with the tokens it can make (`DeckPictures.decks`). */
+  deckLists: SeatList[]
   /** How many spectators watch the game, as the server last told this seat (`Spectators`); 0 before any word. */
   spectators: number
   /** What this seat may ask the table to take back (`TakeBackOffer`), or null while nothing. */
@@ -277,6 +280,7 @@ export function initialPlayState(): PlayState {
     away: {},
     deciding: [],
     deckPictures: [],
+    deckLists: [],
     spectators: 0,
     takeBackOffer: null,
     takeBackRequest: null,

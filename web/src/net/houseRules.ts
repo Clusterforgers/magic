@@ -24,6 +24,7 @@ const FLAGS = [
   'blocker_timer',
   'open_hands',
   'revealed_library_top',
+  'open_decks',
   'team_hands',
   'opening_hand_smoothing',
 ] as const

@@ -1,4 +1,4 @@
-//! Goal: the pictures a viewer may load ahead name its own deck whole and of every other seat only its commanders and companion, so a hidden list never reaches a client; each card comes once, with a picture per face only for a double-faced card.
+//! Goal: the pictures a viewer may load ahead name its own deck whole, a public list whole, and of every other seat only its commanders and companion, so a hidden list never reaches a client; each card comes once, with a picture per face only for a double-faced card.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -99,7 +99,24 @@ fn a_viewer_gets_its_own_deck_and_the_public_cards_of_the_others(
     #[case] viewer: usize,
     #[case] expected: &[&[&str]],
 ) {
-    let cards = deck_pictures(&setup(), PlayerId::from_index(viewer));
+    let cards = deck_pictures(&setup(), PlayerId::from_index(viewer), &[]);
+    let expected: Vec<String> = expected.concat().iter().map(|&n| n.to_owned()).collect();
+    assert_eq!(names(&cards), expected);
+}
+
+#[rstest]
+#[case::the_other_seat_public(0, &[1], &[OWN_0, OWN_1])]
+#[case::its_own_seat_public(0, &[0], &[OWN_0, PUBLIC_1])]
+#[case::both_public(1, &[0, 1], &[OWN_1, OWN_0])]
+#[case::a_spectator_and_one_public(2, &[0], &[OWN_0, PUBLIC_1])]
+#[case::a_spectator_and_both_public(2, &[0, 1], &[OWN_0, OWN_1])]
+fn a_public_list_is_loaded_ahead_whole(
+    #[case] viewer: usize,
+    #[case] public: &[usize],
+    #[case] expected: &[&[&str]],
+) {
+    let public: Vec<PlayerId> = public.iter().copied().map(PlayerId::from_index).collect();
+    let cards = deck_pictures(&setup(), PlayerId::from_index(viewer), &public);
     let expected: Vec<String> = expected.concat().iter().map(|&n| n.to_owned()).collect();
     assert_eq!(names(&cards), expected);
 }
@@ -109,7 +126,7 @@ fn a_viewer_gets_its_own_deck_and_the_public_cards_of_the_others(
 #[case::split("s0-split", 1)]
 #[case::normal("s0-lib-b", 1)]
 fn a_double_faced_card_alone_has_two_pictures(#[case] oracle: &str, #[case] faces: u8) {
-    let cards = deck_pictures(&setup(), PlayerId::from_index(0));
+    let cards = deck_pictures(&setup(), PlayerId::from_index(0), &[]);
     let card = cards
         .iter()
         .find(|card| card.identity.oracle_id == oracle)
@@ -121,7 +138,7 @@ fn a_double_faced_card_alone_has_two_pictures(#[case] oracle: &str, #[case] face
 fn no_other_seats_hidden_card_is_named_to_any_viewer() {
     let setup = setup();
     for viewer in 0..=2 {
-        for card in deck_pictures(&setup, PlayerId::from_index(viewer)) {
+        for card in deck_pictures(&setup, PlayerId::from_index(viewer), &[]) {
             let oracle = &card.identity.oracle_id;
             let public = oracle.ends_with("-cmd") || oracle.ends_with("-companion");
             assert!(

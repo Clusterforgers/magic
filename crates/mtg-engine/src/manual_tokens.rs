@@ -32,7 +32,7 @@ fn cache() -> &'static Cache {
 }
 
 /// The tokens `def` makes, read once while that definition lives.
-fn made_by(def: &Arc<CardDefinition>) -> Arc<[TokenSpec]> {
+pub fn made_by(def: &Arc<CardDefinition>) -> Arc<[TokenSpec]> {
     let Ok(mut cache) = cache().lock() else {
         return def.made_tokens().into();
     };

@@ -181,6 +181,8 @@ pub(crate) struct Running {
     clock_kept: bool,
     /// The seats the table was last told it waits for (`ServerMessage::Deciding`).
     told_deciding: Vec<DecidingView>,
+    /// The seats whose deck list is public whatever the house rules say: an unchanged precon.
+    public_lists: Vec<PlayerId>,
 }
 
 pub(crate) fn count(len: usize) -> u64 {
@@ -226,7 +228,14 @@ impl Running {
             deferred: VecDeque::new(),
             clock_kept: false,
             told_deciding: Vec::new(),
+            public_lists: Vec::new(),
         }
+    }
+
+    /// The game whose `seats` play a deck whose list is public (an unchanged precon).
+    pub(crate) fn with_public_lists(mut self, seats: Vec<PlayerId>) -> Running {
+        self.public_lists = seats;
+        self
     }
 
     /// The game of a table that plays with manual cards (`on`) or not.
@@ -591,10 +600,26 @@ impl Running {
         messages
     }
 
-    /// The pictures `seat` may load ahead ([`mtg_protocol::deck_pictures`]); none when no card has a picture.
+    /// The seats whose deck list every viewer may look through: every seat under the open-deck house rule, else each
+    /// seat that plays an unchanged precon.
+    pub(crate) fn public_lists(&self) -> Vec<PlayerId> {
+        if self.engine.state().ruleset().open_decks() {
+            return (0..self.engine.setup().players.len())
+                .map(PlayerId::from_index)
+                .collect();
+        }
+        self.public_lists.clone()
+    }
+
+    /// The pictures `seat` may load ahead and the lists it may look through ([`mtg_protocol::deck_pictures`],
+    /// [`mtg_protocol::deck_lists`]); none when there is neither.
     pub(crate) fn deck_pictures(&self, seat: PlayerId) -> Option<ServerMessage> {
-        let cards = mtg_protocol::deck_pictures(self.engine.setup(), seat);
-        (!cards.is_empty()).then_some(ServerMessage::DeckPictures { cards })
+        let public = self.public_lists();
+        let setup = self.engine.setup();
+        let cards = mtg_protocol::deck_pictures(setup, seat, &public);
+        let decks = mtg_protocol::deck_lists(setup, seat, &public);
+        (!cards.is_empty() || !decks.is_empty())
+            .then_some(ServerMessage::DeckPictures { cards, decks })
     }
 
     /// Applies `seat`'s answer to the decision `id`, if that decision is pending for that seat.

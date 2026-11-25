@@ -12,6 +12,7 @@ use std::sync::Arc;
 use mtg_cards::CardDefinition;
 use mtg_cards::deck::Issue;
 use mtg_core::house::HouseRules;
+use mtg_core::ids::PlayerId;
 use mtg_core::teams::Teams;
 use mtg_engine::un33_attractions::AttractionCard;
 use mtg_protocol::SeatDeck;
@@ -47,6 +48,8 @@ pub struct ChosenDeck {
     conjured: BTreeMap<String, Arc<CardDefinition>>,
     /// The real name of a deck drawn at random, which the table hears only at the start; `None` for a deck chosen by name.
     hidden: Option<String>,
+    /// Whether the list is public: an unchanged precon, whose list anyone can read.
+    public: bool,
 }
 
 impl ChosenDeck {
@@ -74,6 +77,7 @@ impl ChosenDeck {
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
             hidden: None,
+            public: false,
         })
     }
 
@@ -124,6 +128,7 @@ impl ChosenDeck {
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
             hidden: None,
+            public: false,
         })
     }
 
@@ -171,6 +176,7 @@ impl ChosenDeck {
             reads: BTreeMap::new(),
             conjured: BTreeMap::new(),
             hidden: None,
+            public: false,
         })
     }
 
@@ -184,6 +190,8 @@ impl ChosenDeck {
         if cards.is_empty() {
             return Ok(self);
         }
+        // A precon with earned cards is no list anyone can read.
+        self.public = false;
         if let DeckRef::Oracle { satchel, .. } = &mut self.deck {
             *satchel = cards
                 .iter()
@@ -205,6 +213,8 @@ impl ChosenDeck {
     /// The deck less one library copy of each card named in `names`: the cards a Delves hero gave up for an event's
     /// cost. The recipe and the fingerprint follow; a built-in deck has no oracle ids to name them by and stays as it is.
     pub fn without(mut self, names: &[String]) -> Result<ChosenDeck, FingerprintError> {
+        // A precon less some cards is no list anyone can read.
+        self.public &= names.is_empty();
         let DeckRef::Oracle {
             cards: ids,
             printings,
@@ -338,6 +348,18 @@ impl ChosenDeck {
         self
     }
 
+    /// The deck as a list anyone can read: an unchanged precon.
+    #[must_use]
+    pub fn public_list(mut self) -> ChosenDeck {
+        self.public = true;
+        self
+    }
+
+    /// Whether the list is public (an unchanged precon), so every viewer may look through it.
+    pub fn is_public(&self) -> bool {
+        self.public
+    }
+
     /// The real name of a deck drawn at random, told at the start; `None` for a deck chosen by name.
     pub fn revealed(&self) -> Option<&str> {
         self.hidden.as_deref()
@@ -359,6 +381,7 @@ impl ChosenDeck {
                 manual_cards: self.note.manual_cards,
                 warnings: self.note.warnings,
                 hidden: self.hidden.clone(),
+                public: self.public,
             }));
         }
         deck
@@ -380,6 +403,7 @@ impl ChosenDeck {
             DeckRef::Oracle { note, .. } => note.take().map(|kept| *kept),
             DeckRef::Demo { .. } => None,
         };
+        let public = kept.as_ref().is_some_and(|kept| kept.public);
         let (note, hidden) = match kept {
             Some(kept) => (
                 SeatDeck {
@@ -415,6 +439,7 @@ impl ChosenDeck {
             reads,
             conjured,
             hidden,
+            public,
         })
     }
 
@@ -797,6 +822,16 @@ impl SeatDecks {
             .collect()
     }
 
+    /// The seats whose deck list is public (an unchanged precon), in seat order.
+    pub(crate) fn public_seats(&self) -> Vec<PlayerId> {
+        self.current
+            .iter()
+            .enumerate()
+            .filter(|(_, deck)| deck.as_ref().is_some_and(ChosenDeck::is_public))
+            .map(|(seat, _)| PlayerId::from_index(seat))
+            .collect()
+    }
+
     /// The commanders `seat`'s deck leads; none while it has no deck.
     pub(crate) fn commanders(&self, seat: usize) -> &[Arc<CardDefinition>] {
         self.current
@@ -914,7 +949,7 @@ impl SeatDecks {
 
 #[cfg(test)]
 mod tests {
-    //! Goal: a lobby's decks follow the seats: a seat plays what it chose until it is given back and then what the game was made with, a seat without a deck keeps the start's recipe from being written (the lobby stores it on a stand-in), and only a change from the creation decks asks for a new recipe; a lobby read back from its recipe has every seat on its deck with the note the table was told (a plain name for a recipe stored before the note). A commander table lifts the issues of the deck's own check that its relaxed rules replace, and a Normal game lifts none.
+    //! Goal: a lobby's decks follow the seats: a seat plays what it chose until it is given back and then what the game was made with, a seat without a deck keeps the start's recipe from being written (the lobby stores it on a stand-in), and only a change from the creation decks asks for a new recipe; a lobby read back from its recipe has every seat on its deck with the note the table was told (a plain name for a recipe stored before the note). Only an unchanged precon is a public list, and its recipe keeps that. A commander table lifts the issues of the deck's own check that its relaxed rules replace, and a Normal game lifts none.
     use mtg_cards::deck::IssueCode;
     use mtg_cards::vanilla;
     use mtg_core::color::Color;
@@ -1133,6 +1168,27 @@ mod tests {
         assert_eq!(back.reference(), stored.reference());
         assert!(!decks.has(2), "a stand-in is no deck");
         assert!(!decks.changed());
+    }
+
+    #[rstest::rstest]
+    #[case::a_stored_deck(stored_deck("Burn"), &[])]
+    #[case::a_precon(stored_deck("Precon").public_list(), &[1])]
+    #[case::a_precon_less_a_card(stored_deck("Precon").public_list().without(&["Forest".to_owned()]).unwrap(), &[])]
+    #[case::a_precon_drawn_at_random(stored_deck("Precon").public_list().hidden_as("Random deck"), &[1])]
+    fn only_an_unchanged_precon_is_a_public_list_and_its_recipe_keeps_it(
+        #[case] stored: ChosenDeck,
+        #[case] public: &[usize],
+    ) {
+        let public: Vec<PlayerId> = public.iter().copied().map(PlayerId::from_index).collect();
+        let made = SeatDecks::new(
+            FormatKind::Normal,
+            3,
+            vec![Some(demo_deck("mono-white")), Some(stored)],
+        );
+        assert_eq!(made.public_seats(), public);
+        let recipe = made.recipe().unwrap();
+        let decks = SeatDecks::of_recipe(&recipe, &forests(), &BTreeMap::new()).unwrap();
+        assert_eq!(decks.public_seats(), public);
     }
 
     #[test]

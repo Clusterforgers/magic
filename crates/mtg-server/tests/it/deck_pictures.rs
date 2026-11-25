@@ -1,4 +1,4 @@
-//! Goal: each seat is told the pictures of its own deck as the game starts and again when it reconnects, a spectator only the public ones, and no message to a seat names a card of another seat's hidden deck.
+//! Goal: each seat is told the pictures of its own deck as the game starts and again when it reconnects, a spectator only the public ones, and no message to a seat names a card of another seat's hidden deck; under the open-deck house rule every seat and spectator is told every list whole.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -36,7 +36,7 @@ fn told(messages: &[ServerMessage]) -> Vec<String> {
     let lists: Vec<_> = messages
         .iter()
         .filter_map(|message| match message {
-            ServerMessage::DeckPictures { cards } => Some(cards),
+            ServerMessage::DeckPictures { cards, .. } => Some(cards),
             _ => None,
         })
         .collect();
@@ -108,4 +108,53 @@ async fn a_spectator_is_told_no_hidden_deck() {
         "the fuzz decks have no commanders, so nothing is public"
     );
     assert!(!names_seat(&messages, 0) && !names_seat(&messages, 1));
+}
+
+/// The seats told whole, by the lists of the one `DeckPictures` among `messages`.
+fn whole_seats(messages: &[ServerMessage]) -> Vec<usize> {
+    messages
+        .iter()
+        .find_map(|message| match message {
+            ServerMessage::DeckPictures { decks, .. } => Some(decks),
+            _ => None,
+        })
+        .unwrap()
+        .iter()
+        .filter(|list| list.whole)
+        .map(|list| list.seat.index())
+        .collect()
+}
+
+#[rstest::rstest]
+#[case::hidden(false, &[0], &[1])]
+#[case::open_decks(true, &[0, 1], &[0, 1])]
+#[tokio::test]
+async fn each_seat_looks_through_the_lists_the_table_makes_public(
+    #[case] open: bool,
+    #[case] seat_0: &[usize],
+    #[case] seat_1: &[usize],
+) {
+    let expected = [seat_0, seat_1];
+    let mut setup = pictured(2);
+    setup.house_rules.open_decks = Some(open);
+    let handle = spawn_game_with(game_id(32), setup, MemoryStore::new(), roomy()).unwrap();
+    let mut clients = vec![
+        Client::join(&handle, 0).await,
+        Client::join(&handle, 1).await,
+    ];
+    for client in &mut clients {
+        handle
+            .send(client.seat, ClientMessage::Ready)
+            .await
+            .unwrap();
+    }
+    assert!(handle.status().await.unwrap().started);
+    for (at, client) in clients.iter_mut().enumerate() {
+        let messages = client.drain_all();
+        assert_eq!(whole_seats(&messages), expected[at]);
+        assert_eq!(names_seat(&messages, 1 - at), open, "seat {at}");
+    }
+    let mut inbox = handle.watch().await.unwrap();
+    let messages: Vec<_> = std::iter::from_fn(|| inbox.try_recv().ok()).collect();
+    assert_eq!(names_seat(&messages, 0) && names_seat(&messages, 1), open);
 }

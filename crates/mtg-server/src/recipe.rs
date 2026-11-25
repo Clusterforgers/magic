@@ -142,6 +142,10 @@ pub struct DeckNote {
     /// The real name of a deck drawn at random, told at the start; left out for a deck chosen by name.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub hidden: Option<String>,
+    /// Whether the list is public (an unchanged precon); left out while not, which is also how a recipe stored before
+    /// public lists reads.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub public: bool,
 }
 
 /// One card of a stored Attraction deck: its oracle id and the numbers lit up on it.
