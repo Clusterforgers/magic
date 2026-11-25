@@ -160,6 +160,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
         CONTENT,
         (depth, heat),
         (seed, 2, 3),
+        None,
     );
     assert_eq!(relics.len(), boss_relics::count(depth, heat, CONTENT));
     for id in &relics {
@@ -173,6 +174,7 @@ fn a_boss_never_brings_a_relic_naming_teammates(
         CONTENT,
         (depth, heat),
         (seed, 2, 3),
+        None,
     );
     assert_eq!(again, relics);
 }

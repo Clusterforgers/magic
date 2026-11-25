@@ -102,6 +102,9 @@ pub struct CustomCard {
     /// The content generation from which a relic is offered (`RunEvent::Content`); a run of an earlier one never meets it.
     #[serde(default)]
     pub since: u32,
+    /// The last content generation that offers a relic; a later run meets the relic that replaced it instead.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub until: Option<u32>,
     /// A relic's rarity, which from the rarity generation on decides where it is offered and its shop price.
     #[serde(default)]
     pub rarity: Rarity,
@@ -116,6 +119,11 @@ pub struct CustomCard {
 }
 
 impl CustomCard {
+    /// Whether a run of content generation `version` may meet it.
+    pub fn in_generation(&self, version: u32) -> bool {
+        self.since <= version && self.until.is_none_or(|last| version <= last)
+    }
+
     /// The card as an emblem the engine plays.
     pub fn definition(&self) -> Arc<CardDefinition> {
         Arc::new(mtg_engine::w6b_emblems::emblem_definition(
@@ -471,6 +479,10 @@ pub struct Theme {
     /// [`THEME_SUPPLIES_FROM`](crate::run::THEME_SUPPLIES_FROM).
     #[serde(default)]
     pub boss_supplies: usize,
+    /// The most relics each of its bosses brings from generation
+    /// [`THEME_RELICS_FROM`](crate::run::THEME_RELICS_FROM); none for [`MOST_BOSS_RELICS`](crate::boss_relics::MOST_BOSS_RELICS).
+    #[serde(default)]
+    pub boss_relics_most: Option<usize>,
 }
 
 impl Theme {

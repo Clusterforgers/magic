@@ -30,12 +30,14 @@ impl Run {
         let modifier =
             crate::modifiers::draw(&content.modifiers, &boss.id, self.seed, self.floor, node);
         let deck = content.deck(&boss.deck_file)?;
+        let theme = content.themes.iter().find(|t| t.boss(&boss.id).is_some());
         let relics = boss_relics::draw(
             content,
             &deck.makeup,
             self.content,
             (depth, self.heat),
             (self.seed, self.floor, node),
+            theme.and_then(|t| t.boss_relics_most),
         );
         Ok(BossSeat {
             boss: boss.id.clone(),
@@ -50,11 +52,8 @@ impl Run {
             reinforcements: Scale::theme_reinforcements(
                 heroes,
                 self.content,
-                content
-                    .themes
-                    .iter()
-                    .find(|t| t.boss(&boss.id).is_some())
-                    .map_or(0, |t| t.boss_supplies),
+                theme.map_or(0, |t| t.boss_supplies),
+                // The fade follows the depth's count, not a theme's cap.
                 boss_relics::count(depth, self.heat, self.content),
             ),
             round_phases: boss
