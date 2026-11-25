@@ -1,7 +1,7 @@
 /**
  * The dev table's boss (`?boss=0&rework=1|2`): the boss of `withBoss` with its parts: an innate at level III, this
  * fight's modifier, two copies of a relic, its Satchel of three reusable cards and one once card, its phases by round
- * (the begun one an emblem too), and a relic of the first hero. `1` is round 6, Phase 1 three rounds away; `2` is round
+ * (the begun one an emblem too), and a relic of an ally (else of the viewer). `1` is round 6, Phase 1 three rounds away; `2` is round
  * 10, Phase 1 in force and Phase 2 five rounds away, after two casts of Rat Out.
  */
 import type { BossView, ObjectView, PlayerView } from '@/protocol/generated'
@@ -12,7 +12,7 @@ export type DevRework = 1 | 2
 
 const EMBLEMS = ['Brood III', 'Deep Pockets', 'Whetstone', 'Whetstone'] as const
 
-/** The relic the first hero brings, an emblem in its command zone. */
+/** The relic an ally brings, an emblem in its command zone. */
 export const DEV_HERO_RELIC = 'Lantern of Embers'
 
 /** `zone` with the card `id` added. */
@@ -95,7 +95,9 @@ export function withReworkedBoss(moment: Fixture, stage: DevRework): Fixture {
   const first = Math.max(0, ...moment.view.objects.map((each) => each.id)) + 1
   const phases = stage === 2 ? ['The Nest Stirs'] : []
   const emblems = [...EMBLEMS, ...phases].map((name, at) => object(first + at, boss.seat, name, 'Emblem'))
-  const hero = moment.view.players.find((player) => player.boss === undefined)
+  // An ally brings the relic where there is one, so the viewer's pod keeps the chips it has without one.
+  const heroes = moment.view.players.filter((player) => player.boss === undefined)
+  const hero = heroes.find((player) => player.seat !== moment.view.viewer) ?? heroes[0]
   const relic = object(first + emblems.length, hero?.seat ?? 0, DEV_HERO_RELIC, 'Emblem')
   const satchelFirst = relic.id + 1
   const satchel = SATCHEL.map((card, at) => object(satchelFirst + at, boss.seat, card.name, 'Card'))

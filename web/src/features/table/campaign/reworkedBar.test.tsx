@@ -1,4 +1,4 @@
-// Goal: on a desktop and on a phone a reworked boss's phase pill sits in the top bar ("Phase 1 in 3 rounds", short "P1 in 3"; then the phase's name with Phase 2's countdown) at one width whatever it says, never in the abilities row; the row keeps the innate and modifier as chips and every part behind "All"; the pill, each chip, each row of "All", the boss's emblems and a hero's relic open their custom card in the card preview (its frame, what it is to the fight, a phase's steps that move between the phases); the boss's Satchel list marks reusable cards "returns · +{N}" and the once card "once"; in Grid the pod's track names the countdown.
+// Goal: on a desktop and on a phone a reworked boss's phase pill sits in the top bar ("Phase 1 in 3 rounds", short "P1 in 3"; then the phase's name with Phase 2's countdown) at one width whatever it says, never in the abilities row; the row keeps the innate and modifier as chips and every part behind "All"; the pill, each chip, each row of "All", the boss's emblems and an ally's relic (Grid) open their custom card in the card preview (its frame, what it is to the fight, a phase's steps that move between the phases); the boss's Satchel list marks reusable cards "returns · +{N}" and the once card "once"; in Grid the pod's track names the countdown.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
@@ -105,8 +105,8 @@ describe('custom cards as emblems', () => {
   it.each([
     ['desktop', DESKTOP],
     ['phone', PHONE],
-  ] as const)("opens a hero's relic from its pod on a %s, in its frame with its rarity", async (_, viewport) => {
-    const { user } = fight(2, viewport)
+  ] as const)("opens a hero's relic from an ally's pod (Grid) on a %s, in its frame with its rarity", async (_, viewport) => {
+    const { user } = fight(2, viewport, 'grid')
     const chips = [...document.querySelectorAll<HTMLElement>('[data-slot="player-effect"]')]
     const relic = must(chips.find((chip) => chip.textContent === DEV_HERO_RELIC))
     await user.click(relic)
@@ -114,7 +114,7 @@ describe('custom cards as emblems', () => {
     const frame = within(preview()).getByRole('figure', { name: DEV_HERO_RELIC })
     expect(frame).toHaveAttribute('data-rarity', 'Rare')
     expect(within(frame).getByText('Removal')).toBeInTheDocument()
-    expect(within(preview()).getByText('In your command zone.')).toBeInTheDocument()
+    expect(within(preview()).getByText(/^In .+'s command zone\.$/)).toBeInTheDocument()
     await user.click(relic)
     expect(screen.queryByTestId('card-preview')).toBeNull()
   })
