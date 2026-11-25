@@ -169,7 +169,7 @@ Teams: `table/teamLife.ts` (`useSeatTeam`) reads the view's `house_rules.teams`;
 
 ### Manual menu
 
-- The default way to act by hand is the Commands panel ([ui-design.md](ui-design.md#manual-commands-panel), `features/table/manual/panel/`); the menu below is the shortcut for one card.
+- The default way to act by hand is the Commands panel ([ui-design.md](ui-design.md#manual-commands-panel), `features/table/manual/panel/`); the menu below is the shortcut for one card. The bodies of Look at the top and Search (`LookTopBody`, `TutorBody`) load apart from the table chunk, fetched as the panel mounts.
 - The panel opens with "To do by hand" (`DueGroup.tsx`) while the seat has due lines (`PlayState.dueLines`, `byHand.ts` `dueLinesAfter`); a pass of its priority or Done clears them.
 - The Mana row of Make opens on the first colour of the commander's identity (`startMana`, `identityOf` in `table/commander.ts`) and returns to it after each Add.
 - The panel shows the response clock at its top, sticky (`PanelClock`, `quiet`, so only the prompt announces it).

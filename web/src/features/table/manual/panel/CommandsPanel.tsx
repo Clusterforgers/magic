@@ -1,5 +1,5 @@
 import { anchor } from '@/features/learn/anchors'
-import { useId, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useId, useRef, useState } from 'react'
 import type { KeyboardEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { Button } from '@/components/ui/button'
@@ -23,13 +23,17 @@ import { useManualSender } from './feedback'
 import { panelGroups, previewOf, startDraft, subjectOf } from './commands'
 import { COMMAND_ICONS } from './icons'
 import { LifeCounter } from './LifeCounter'
-import { LookTopBody } from './LookTopBody'
 import { RollChoice } from './RollChoice'
 import { RowButton } from './RowButton'
-import { TutorBody } from './TutorBody'
 import { TokenChoice } from './TokenChoice'
 import { useRevealOnOpen } from './reveal'
 import type { Command, CommandId, PanelDraft, PanelGroup, PanelInput, PanelSeat } from './commands'
+
+// The bodies of looking at the top cards and of a search are rare, so they load apart from the table, as the panel opens.
+const loadLook = () => import('./LookTopBody')
+const loadTutor = () => import('./TutorBody')
+const LookTopBody = lazy(() => loadLook().then((module) => ({ default: module.LookTopBody })))
+const TutorBody = lazy(() => loadTutor().then((module) => ({ default: module.TutorBody })))
 
 const NO_COUNTERS: readonly (readonly [CounterKind, number])[] = []
 const NO_CARDS: readonly ObjectId[] = []
@@ -163,6 +167,10 @@ export function CommandsPanel({ initialOpen = null }: { initialOpen?: CommandId 
   const input = usePanelInput(pick)
   // One row is open at a time, whichever group it is in; a command of the picked card is `card:` and its id.
   const [open, setOpen] = useState<string | null>(initialOpen)
+  useEffect(() => {
+    void loadLook()
+    void loadTutor()
+  }, [])
   if (input === null) return null
   const groups = panelGroups(input)
   return (
@@ -253,24 +261,26 @@ function Row({ command, input, open, onToggle, onClose }: RowProps) {
         onToggle={onToggle}
       />
       {open ? (
-        command.id === 'look' ? (
-          <LookTopBody
-            id={form}
-            command={command}
-            input={input}
-            onClose={close}
-            plain={<CommandForm id={form} command={command} input={input} onClose={close} />}
-          />
-        ) : command.id === 'tutor' ? (
-          <TutorBody
-            id={form}
-            input={input}
-            onClose={close}
-            plain={<CommandForm id={form} command={command} input={input} onClose={close} />}
-          />
-        ) : (
-          <CommandForm id={form} command={command} input={input} onClose={close} />
-        )
+        <Suspense fallback={null}>
+          {command.id === 'look' ? (
+            <LookTopBody
+              id={form}
+              command={command}
+              input={input}
+              onClose={close}
+              plain={<CommandForm id={form} command={command} input={input} onClose={close} />}
+            />
+          ) : command.id === 'tutor' ? (
+            <TutorBody
+              id={form}
+              input={input}
+              onClose={close}
+              plain={<CommandForm id={form} command={command} input={input} onClose={close} />}
+            />
+          ) : (
+            <CommandForm id={form} command={command} input={input} onClose={close} />
+          )}
+        </Suspense>
       ) : null}
     </div>
   )
