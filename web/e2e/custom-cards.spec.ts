@@ -1,5 +1,5 @@
 // Goal: on the development table's reworked boss fight at 1920x1080, 1536x864, 1400x900, 1280x800, 1024x768 and a 390x844 phone, the phase pill stands in the top bar beside a turn badge that says whose turn it is in whole words (as it does without a boss), the bar keeps the height it has at a table without a boss, and the pill, a boss chip and a hero's relic each open their custom card in the card preview, whole inside the window, where a phase's steps move to the other phase.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Locator, Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 
