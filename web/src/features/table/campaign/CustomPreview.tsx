@@ -7,7 +7,6 @@
 import { X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
-import { anchor } from '@/features/learn/anchors'
 import { cn } from '@/lib/utils'
 import { CustomCardFrame } from '@/features/delves/CustomCardFrame'
 import { useKeepClear } from '../keepClear'
@@ -88,7 +87,6 @@ export function CustomPreviewBody({ target, shown }: { target: PreviewTarget; sh
     <div
       role="group"
       aria-label="Card preview"
-      {...anchor('preview')}
       ref={panel}
       data-testid="card-preview"
       data-custom={card.kind}
