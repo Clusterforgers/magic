@@ -166,7 +166,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl13) A fourth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
 - [ ] (dl14c) Three Hard heroes win the Warrens 50 to 60 % at Heat 1, depth 1 (43 % at generation 12), measured with 30 whole fights (Tuning)
 - [ ] (dl14e) A solo Foundry fight (delve_sim generation 13, seed 23) no longer fails with "DelayedId(2) is set up twice"
-- [ ] (dl14g) A boss that brings Maelstrom Crown no longer exiles its library and loses in round 2 (delve_sim generation 14, Heat 3, depth 7, Warrens seeds 4, 17 and 36)
+- [ ] (dl14h) A boss that brings Maelstrom Crown no longer exiles its library and loses in round 2 (delve_sim generation 14, Heat 3, depth 7, Warrens seeds 4, 17 and 36)
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 
