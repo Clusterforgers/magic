@@ -47,7 +47,9 @@ impl Scope<'_> {
                 && match record.other {
                     Some(Target::Player(player)) => named.contains(&player),
                     Some(Target::Object(_)) => record.other_shot.as_ref().is_some_and(|shot| {
-                        shot.characteristics.types.contains(mtg_core::card::CardType::Planeswalker)
+                        shot.characteristics
+                            .types
+                            .contains(mtg_core::card::CardType::Planeswalker)
                             && named.contains(&shot.controller)
                     }),
                     None => false,

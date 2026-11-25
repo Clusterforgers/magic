@@ -34,7 +34,9 @@ pub(super) fn r118_cant_attack_text(effect: &Effect, subject: &str) -> Option<St
         return None;
     }
     match (you, walkers, duration) {
-        (false, false, Duration::UntilEndOfTurn) => Some(format!("{subject} can't attack this turn")),
+        (false, false, Duration::UntilEndOfTurn) => {
+            Some(format!("{subject} can't attack this turn"))
+        }
         (true, true, Duration::UntilEndOfTurn) => Some(format!(
             "{subject} can't attack you or planeswalkers you control this turn"
         )),

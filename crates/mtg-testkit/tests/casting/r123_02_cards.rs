@@ -100,9 +100,14 @@ fn glyphbridge_keeps_one_small_creature_of_each_player(
     };
     let holders = if last_has_none { seats - 1 } else { seats };
     assert_eq!(options.min as usize, holders);
-    assert_eq!(options.from.len(), holders + 1, "only the creatures with power 2 or less");
+    assert_eq!(
+        options.from.len(),
+        holders + 1,
+        "only the creatures with power 2 or less"
+    );
     let mine = |id: &ObjectId| driver.state().object(*id).unwrap().controller() == PlayerId(0);
-    let (seat_zero, others): (Vec<ObjectId>, Vec<ObjectId>) = options.from.iter().copied().partition(mine);
+    let (seat_zero, others): (Vec<ObjectId>, Vec<ObjectId>) =
+        options.from.iter().copied().partition(mine);
     let cub = seat_zero
         .iter()
         .copied()
@@ -119,7 +124,9 @@ fn glyphbridge_keeps_one_small_creature_of_each_player(
         );
     }
     let kept: Vec<ObjectId> = std::iter::once(cub).chain(others).collect();
-    driver.answer(Answer::ChooseCards(CardsChoice(kept))).unwrap();
+    driver
+        .answer(Answer::ChooseCards(CardsChoice(kept)))
+        .unwrap();
     until(&mut driver, "priority");
     while !driver.state().stack().is_empty() {
         driver.pass().unwrap();
@@ -148,7 +155,13 @@ fn wanderglyph_table(seats: usize) -> Driver {
     let scenario = Scenario::new(seats)
         .at(2, 1, Step::Main1)
         .battlefield(0, [ready(Arc::new(glyph)), ready(walker("Jace", 3))])
-        .battlefield(1, [ready(creature("Bear", 0, &[], 2, 2)), ready(creature("Giant", 0, &[], 3, 3))])
+        .battlefield(
+            1,
+            [
+                ready(creature("Bear", 0, &[], 2, 2)),
+                ready(creature("Giant", 0, &[], 3, 3)),
+            ],
+        )
         .hand(1, [instant("Shock", 0, &[]), instant("Bolt", 0, &[])]);
     Driver::from_scenario(libraries(scenario, seats)).unwrap()
 }
@@ -164,7 +177,10 @@ fn bear_attacks(mut driver: Driver, seat: Option<usize>) -> bool {
 
 #[rstest]
 fn wanderglyph_keeps_a_caster_from_attacking_you(#[values(2, 3, 4)] seats: usize) {
-    assert!(bear_attacks(wanderglyph_table(seats), Some(0)), "before a spell");
+    assert!(
+        bear_attacks(wanderglyph_table(seats), Some(0)),
+        "before a spell"
+    );
     let cast = || {
         let mut driver = wanderglyph_table(seats);
         driver.cast("Shock").unwrap();
@@ -177,7 +193,10 @@ fn wanderglyph_keeps_a_caster_from_attacking_you(#[values(2, 3, 4)] seats: usize
     assert!(!bear_attacks(cast(), Some(0)));
     assert!(!bear_attacks(cast(), None), "nor your planeswalkers");
     if seats > 2 {
-        assert!(bear_attacks(cast(), Some(seats - 1)), "the others stay open");
+        assert!(
+            bear_attacks(cast(), Some(seats - 1)),
+            "the others stay open"
+        );
     }
 }
 
@@ -198,7 +217,11 @@ fn wanderglyph_keeps_an_attacker_from_casting(
     };
     driver.idle_until(2, Step::Main2).unwrap();
     let cast = driver.cast("Bolt");
-    assert_eq!(cast.is_ok(), at == 2, "only an attack elsewhere leaves casting open");
+    assert_eq!(
+        cast.is_ok(),
+        at == 2,
+        "only an attack elsewhere leaves casting open"
+    );
     replays(&driver);
 }
 
