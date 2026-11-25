@@ -4095,9 +4095,7 @@ pub(crate) fn r5503_limit_use(
     if covering.iter().any(|cast| cast.limit.is_none()) {
         return None;
     }
-    covering
-        .first()
-        .map(|cast| (cast.source, cast.r5503_key()))
+    covering.first().map(|cast| (cast.source, cast.r5503_key()))
 }
 
 /// The source of the permission that works once each turn which a cast of `card` by `player` from `from` for `way` uses

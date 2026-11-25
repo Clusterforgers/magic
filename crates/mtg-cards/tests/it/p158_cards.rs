@@ -106,6 +106,7 @@ fn p158_probe() {
 #[case("Reprieve")]
 #[case("Firkraag, Cunning Instigator")]
 #[case("Urza, Planeswalker")]
+#[case("March of Reckless Joy")]
 fn p158_reads_back_whole(#[case] name: &str) {
     let report = p158_report(name, &p158_file(name));
     assert_eq!(
@@ -128,6 +129,12 @@ fn p158_reads_back_whole(#[case] name: &str) {
     "Firkraag, Cunning Instigator",
     r#""if": { "P158HadToAttack": "Dealer" },"#,
     ""
+)]
+#[case::march_three_cards("March of Reckless Joy", r#""limit": 2"#, r#""limit": 3"#)]
+#[case::march_this_turn(
+    "March of Reckless Joy",
+    r#""UntilEndOfYourNextTurn""#,
+    r#""UntilEndOfTurn""#
 )]
 #[case::urza_every_planeswalker(
     "Urza, Planeswalker",

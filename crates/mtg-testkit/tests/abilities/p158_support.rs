@@ -10,6 +10,7 @@ use rstest::rstest;
 #[case::reprieve("Reprieve")]
 #[case::firkraag("Firkraag, Cunning Instigator")]
 #[case::urza("Urza, Planeswalker")]
+#[case::march_of_reckless_joy("March of Reckless Joy")]
 fn p158_the_card_is_verified(#[case] name: &str) {
     let support = corpus().unwrap().support(name).unwrap();
     assert_eq!(support.support, Support::Verified, "{name}: {support:?}");
