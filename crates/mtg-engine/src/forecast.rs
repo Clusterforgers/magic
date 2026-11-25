@@ -300,8 +300,10 @@ impl Run {
 
     /// Folds `events` onto the copy and notes the damage among them; `false` if one cannot be folded.
     fn fold(&mut self, events: &[Event]) -> bool {
+        let mut fresh = crate::triggers::FreshDelayedIds::default();
         for event in events {
-            if apply_event(&mut self.after, event).is_err() {
+            let renamed = fresh.renamed(&self.after, event);
+            if apply_event(&mut self.after, renamed.as_ref().unwrap_or(event)).is_err() {
                 return false;
             }
             if let Event::DamageDealt {

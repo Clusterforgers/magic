@@ -165,10 +165,12 @@ impl Resolution {
     /// Sends `events` through the replacement step and folds what comes out; `None` if that fails.
     fn commit(&mut self, events: &[Event]) -> Option<()> {
         let events = settle(&mut self.after, events, &mut self.picks).ok()?;
-        for event in &events {
-            apply_event(&mut self.after, event).ok()?;
+        let mut fresh = crate::triggers::FreshDelayedIds::default();
+        for event in events {
+            let event = fresh.renamed(&self.after, &event).unwrap_or(event);
+            apply_event(&mut self.after, &event).ok()?;
+            self.events.push(event);
         }
-        self.events.extend(events);
         Some(())
     }
 
