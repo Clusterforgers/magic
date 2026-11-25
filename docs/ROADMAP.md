@@ -7,10 +7,10 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
-- Live: foundations, team play (Two-Headed Giant and N v N teams), card data, engine core, protocol and server, game flow, Commander, the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, deployment.
+- Live: foundations, team play (Two-Headed Giant and N v N teams), card data, engine core, protocol and server, game flow, Commander, the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, Delves (three themes, bosses balanced for one to three heroes), deployment.
 - Cards: 94.7% of the 32,116 Commander cards play automatically (Verified 22,622, Read 4,863, Unverified 2,935); Partial (973) and Manual (723) cards play through by-hand clauses. Run `mtg-cli compile` and `coverage` before quoting newer numbers.
-- In progress: refusal explanations, tutorial fixes and the card coverage of M3 and M6.
-- Open: an off-queen copy of the backups (M7).
+- In progress: the asked clause of each decision (mb3), tutorial fixes and the card coverage of M3 and M6.
+- Open: an off-queen copy of the backups (M7) and the database commit time (db1).
 
 ## Order of work
 
@@ -78,6 +78,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 Items that touch the running game come first; the play-session findings (pf) lead, the web items before the engine and card items.
 
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
+- [ ] (db1) Game event commits take milliseconds instead of 1 to 1.8 s on the replicated volume, by an owner-chosen fix: a larger `shared_buffers`, `synchronous_commit` off for event writes, or a local volume (`docs/performance.md`, Deck lists)
 - [ ] (pl2m) `join.spec.ts` "a guest follows an invite link" times out on the Join button only in a full run: the trace a failed run keeps (`web/test-results`) names the cause, and the fix makes the spec pass in full runs
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
