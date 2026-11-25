@@ -7,13 +7,12 @@ import { useSeatNamer } from './names'
 import { isYourTurn, turnLeft, turnParty, turnTeammate } from './selectors'
 import { PhaseTag } from './turn/PhaseTag'
 import { usePhase } from './turn/usePhase'
-import { badgeText, badgeTitle } from './turnText'
+import { badgeParts, badgeText, badgeTitle } from './turnText'
 
 // Whole class names, so Tailwind can see them. The phase's colour fills the badge on your turn and tints it on another's.
-// A block, not the pill's flex box, so that words which do not fit end in an ellipsis instead of being cut at both ends.
 const ON_PHASE = {
-  you: 'block w-auto rounded-l-none border-2 border-phase border-l-on-phase/30 bg-phase leading-6 text-on-phase',
-  them: 'block w-auto rounded-l-none border-2 border-phase border-l-phase/40 bg-phase-soft leading-6 text-foreground',
+  you: 'w-auto rounded-l-none border-2 border-phase border-l-on-phase/30 bg-phase leading-6 text-on-phase',
+  them: 'w-auto rounded-l-none border-2 border-phase border-l-phase/40 bg-phase-soft leading-6 text-foreground',
 }
 
 /** The party's seats from their joined form, which a shallow selector compares as one string. */
@@ -43,8 +42,16 @@ export function TurnBadge() {
   const seat = usePlay((state) => state.seat)
   const yours = usePlay(isYourTurn)
   const phase = usePhase()
+  const { who, rest } = badgeParts(badgeText({ ...input, party: partySeats(input.party) }, seat, name))
   return (
-    <div data-slot="turn-badge" {...anchor('turn.badge')} className="flex h-7 min-w-0 items-center">
+    // It takes whose turn it is first and grows into the free room for the rest, up to all its words, before the room
+    // of the turn banner (`TurnBanner`) does; with no `min-w-0`
+    // it never shrinks below whose turn it is, so the phase pill and the round and step give way first.
+    <div
+      data-slot="turn-badge"
+      {...anchor('turn.badge')}
+      className="flex h-7 max-w-max grow-[999] basis-0 items-center"
+    >
       {phase === null ? null : <PhaseTag phase={phase} yours={yours} />}
       <h2
         data-slot="banner"
@@ -52,17 +59,20 @@ export function TurnBadge() {
         data-left={input.left || undefined}
         data-turn={input.turn}
         data-round={input.round}
-        className="min-w-0"
       >
         <Pill
           data-themed={phase === null ? undefined : ''}
           title={badgeTitle({ ...input, party: partySeats(input.party) })}
           className={cn(
-            'h-7 max-w-full shrink truncate px-3 text-sm max-sm:px-2',
+            // A grid whose second column may fall to nothing: a squeeze takes the round and step, never whose turn it is.
+            'grid h-7 max-w-full grid-cols-[minmax(min-content,auto)_minmax(0,max-content)] justify-start px-3 text-sm max-sm:px-2',
             phase !== null && ON_PHASE[yours ? 'you' : 'them'],
           )}
         >
-          {badgeText({ ...input, party: partySeats(input.party) }, seat, name)}
+          <span data-slot="turn-who" className="max-w-48 truncate max-sm:max-w-32">
+            {who}
+          </span>
+          {rest === '' ? null : <span className="min-w-0 truncate">{rest}</span>}
         </Pill>
       </h2>
     </div>

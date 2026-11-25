@@ -238,4 +238,51 @@ test.describe('the decision homes', () => {
     await handle.click()
     await expect(handle).toHaveAttribute('aria-expanded', 'false')
   })
+
+  for (const [table, query] of [
+    ['a duel', 'seats=2&board=duel'],
+    ['a grid of four', 'seats=4&permanents=16'],
+  ] as const) {
+    test(`quotes the asked clause on the question's line of a phone's bar in ${table}, nothing pushed off`, async ({
+      page,
+    }) => {
+      await page.setViewportSize({ width: 390, height: 844 })
+      const quiet = await show(page, query, null)
+      for (const prompt of ['asked-number', 'asked-cards']) {
+        const shown = await show(page, query, prompt)
+        const label = `${prompt} in ${table}`
+        expect(shown.homes, label).toEqual(['bar'])
+        expect(shown.hidden, label).toEqual([])
+        expect(shown.homeScrolls, `${label}: the bar scrolls`).toBe(false)
+        expect(
+          same(shown.still['controls'] ?? null, quiet.still['controls'] ?? null),
+          `${label}: the bar moved`,
+        ).toBe(true)
+        // The quote stands on the question's first line, inside the bar and the window.
+        const placed = await page.evaluate(() => {
+          const rect = (selector: string) => document.querySelector(selector)?.getBoundingClientRect() ?? null
+          const quote = rect('[data-slot="decision-line"] [data-slot="asked-quote"]')
+          const words = rect('[data-slot="decision-line"] [data-slot="prompt-text"]')
+          const bar = rect('[data-area="controls"]')
+          if (quote === null || words === null || bar === null) return null
+          return {
+            sameLine: Math.abs(quote.top + quote.height / 2 - (words.top + 10)) <= 6,
+            inside:
+              quote.left >= bar.left && quote.right <= bar.right + 0.5 && quote.right <= window.innerWidth,
+            pressable: quote.height >= 31,
+          }
+        })
+        expect(placed, label).toEqual({ sameLine: true, inside: true, pressable: true })
+      }
+      // A press opens the spell's words with the clause marked, inside the window.
+      await show(page, query, 'asked-number')
+      await page.locator('[data-slot="decision-line"] [data-slot="asked-quote"]').click()
+      const whole = page.locator('[data-slot="asked-quote-whole"]')
+      await expect(whole.locator('[data-slot="asked-clause"]')).toContainText('Put up to two +1/+1 counters')
+      const box = await whole.boundingBox()
+      expect(
+        box !== null && box.y >= 0 && box.x >= 0 && box.x + box.width <= 390 && box.y + box.height <= 844,
+      ).toBe(true)
+    })
+  }
 })

@@ -17,6 +17,8 @@ export interface BossAbility {
   text: string
   /** The first sentence of the rules, without reminder text. */
   summary: string
+  /** The name of its custom card, without a copy count. */
+  card: string
   /** The innate's level, or when a phase begins ("Phase 1 at round 8"); none for the others. */
   when?: string
 }

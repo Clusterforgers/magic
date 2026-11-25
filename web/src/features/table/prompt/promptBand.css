@@ -459,6 +459,46 @@
   color: var(--foreground);
 }
 
+/*
+ * A phone's bar quotes the clause on the rest of the question's line: the question keeps the width its words need, the
+ * quote takes what is left, cut to one line, and below 5rem only its mark stays. The press area reaches 2rem high
+ * without growing the line.
+ */
+@utility asked-quote-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1 1 0;
+  min-width: 1.75rem;
+  margin-block: -0.5rem;
+  padding-block: 0.5rem;
+  min-height: 2rem;
+  container-type: inline-size;
+  text-align: start;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  & svg {
+    color: var(--turn-you);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--ring);
+  }
+  &:active {
+    background: color-mix(in oklch, var(--turn-you) 15%, transparent);
+  }
+  & [data-slot='asked-quote-words'] {
+    display: block;
+  }
+  @container (width < 5rem) {
+    & [data-slot='asked-quote-words'] {
+      display: none;
+    }
+  }
+}
+[data-slot='prompt-sentence']:has(> [data-slot='asked-quote']) > [data-slot='prompt-text'] {
+  flex: 0 1 auto;
+}
+
 /* A row of the column: a number, a picture, a name over a line of words, and controls at the end. */
 @utility detail-row {
   display: grid;

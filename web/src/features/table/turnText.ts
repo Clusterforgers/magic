@@ -143,6 +143,12 @@ export function badgeText(input: BannerInput, viewer: PlayerId | null, name: Nam
   return `${who}${controlWords(input, viewer, name)} · Round ${input.round} · ${STEP_LABEL[input.step]}`
 }
 
+/** The badge's words split into whose turn it is, which never shrinks, and the rest (" · Round 3 · Combat"), which may. */
+export function badgeParts(text: string): { who: string; rest: string } {
+  const at = text.indexOf(' · ')
+  return at < 0 ? { who: text, rest: '' } : { who: text.slice(0, at), rest: text.slice(at) }
+}
+
 /** The tooltip of the turn badge: "Turn 5", the count of every turn taken, which the round in its words leaves out. */
 export function badgeTitle(input: BannerInput): string | undefined {
   return input.stage === 'Turns' ? `Turn ${input.turn}` : undefined

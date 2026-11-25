@@ -1,10 +1,11 @@
-// Goal: the top bar of the table has home, a turn badge that says whose turn it is, in which round and which step (the turn number in its tooltip), with the phase's icon and name in its colour (filled on your own turn, tinted on another's) over an accent rule in the bar, the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede only, at every window size, since the stop ladder and Full Control live in the controls dock, and the Control keys work with the menu shut.
+// Goal: the top bar of the table has home, a turn badge that says whose turn it is, in which round and which step (the turn number in its tooltip), with the phase's icon and name in its colour (filled on your own turn, tinted on another's) over an accent rule in the bar, whose turn it is in words that never give way (the round, the step and a boss's phase pill shrink first), the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede only, at every window size, since the stop ladder and Full Control live in the controls dock, and the Control keys work with the menu shut.
 import { act, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
 import type { FullControlMode } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
+import { withBoss } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import type { Viewport } from './layout'
 
@@ -17,6 +18,8 @@ afterEach(() => {
 })
 
 const badge = (): HTMLElement => must(document.querySelector<HTMLElement>('[data-slot="banner"]'))
+const badgePill = (): HTMLElement =>
+  must(badge().querySelector<HTMLElement>('[data-slot="turn-who"]')?.parentElement)
 const bar = (): HTMLElement => must(document.querySelector<HTMLElement>('[data-region="bar"]'))
 const menuButton = () => screen.getByRole('button', { name: 'Table menu' })
 const menu = () => screen.getByRole('dialog', { name: 'Table menu' })
@@ -41,18 +44,28 @@ describe('the bar', () => {
       options: { viewport: WIDE },
     })
     expect(badge()).toHaveTextContent('Your turn · Round 3 · Declare blockers')
-    expect(within(badge()).getByText(/^Your turn/)).toHaveClass('bg-phase', 'text-on-phase', 'border-phase')
+    expect(badgePill()).toHaveClass('bg-phase', 'text-on-phase', 'border-phase')
   })
 
   it("names the other seat on an opponent's turn", () => {
     renderTable({ seats: 3, options: { viewport: WIDE } })
     expect(badge()).toHaveTextContent("Bo's turn · Round 2 · Declare blockers")
-    expect(within(badge()).getByText(/^Bo's turn/)).toHaveClass(
-      'bg-phase-soft',
-      'text-foreground',
-      'border-phase',
-    )
+    expect(badgePill()).toHaveClass('bg-phase-soft', 'text-foreground', 'border-phase')
   })
+
+  it.each([WIDE, LAPTOP, PHONE])(
+    'keeps whose turn it is in words of its own that never shrink, and lets the rest give way, at %o',
+    (viewport) => {
+      renderTable({ fixture: withBoss(buildFixture({ seats: 3 }), 0, 2), options: { viewport } })
+      const who = must(badge().querySelector<HTMLElement>('[data-slot="turn-who"]'))
+      expect(who.textContent).toMatch(/^(Your|.+'s) turn$/)
+      expect(who.nextElementSibling).toHaveTextContent(/^· Round \d+ · /)
+      expect(who.nextElementSibling).toHaveClass('min-w-0', 'truncate')
+      // The badge has no `min-w-0`, so the bar cannot squeeze it below these words; the pill gives way instead.
+      expect(must(document.querySelector('[data-slot="turn-badge"]'))).not.toHaveClass('min-w-0')
+      expect(badgePill()).toHaveClass('grid-cols-[minmax(min-content,auto)_minmax(0,max-content)]')
+    },
+  )
 
   it('puts the phase’s icon and name in the same capsule, ahead of the words, and the accent rule under the bar', () => {
     renderTable({ seats: 2, options: { viewport: WIDE } })

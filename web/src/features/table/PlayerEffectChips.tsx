@@ -8,7 +8,7 @@ import type { LucideIcon } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
-import type { Color, PlayerView } from '@/protocol/generated'
+import type { Color, ObjectId, PlayerView } from '@/protocol/generated'
 import { costPips } from './cardModel'
 import { Pip } from './ManaPips'
 import { DENSITY } from './PodParts'
@@ -18,6 +18,7 @@ import { BossBarContext } from './campaign/useBossAbilities'
 import { effectsName, seatEffects, withoutBossBar } from './playerEffects'
 import type { EffectFacts, EffectIcon, EffectTone } from './playerEffects'
 import { useStable } from './useStable'
+import { usePreviewHandlers } from './usePreviewHandlers'
 import { useSeatNamer } from './names'
 
 const ICON: Record<EffectIcon, LucideIcon> = {
@@ -59,7 +60,43 @@ function DrawnColors({ colors }: { colors: readonly (readonly [Color, Color])[] 
   )
 }
 
+/**
+ * An emblem's chip: a button whose hover or focus shows the emblem in the card preview, a relic of a Delves fight in
+ * its frame, and whose press pins it there.
+ */
+function EmblemChip({
+  effect,
+  object,
+  density,
+}: {
+  effect: EffectFacts
+  object: ObjectId
+  density: Exclude<ChipDensity, 'tile'>
+}) {
+  const Icon = ICON[effect.icon]
+  const handlers = usePreviewHandlers(object)
+  return (
+    <button
+      type="button"
+      {...handlers}
+      aria-label={effect.detail}
+      data-object-id={object}
+      data-slot="player-effect"
+      data-effect={effect.key}
+      data-tone={effect.tone}
+      className={cn(DENSITY[density].chip, 'max-w-36 text-foreground hover:brightness-110')}
+    >
+      <Icon aria-hidden="true" className={cn('shrink-0', DENSITY[density].icon, TONE[effect.tone])} />
+      <span aria-hidden="true" className="truncate">
+        {effect.label}
+      </span>
+    </button>
+  )
+}
+
 function EffectChip({ effect, density }: { effect: EffectFacts; density: Exclude<ChipDensity, 'tile'> }) {
+  if (effect.object !== undefined)
+    return <EmblemChip effect={effect} object={effect.object} density={density} />
   const Icon = ICON[effect.icon]
   const chip = (
     <span

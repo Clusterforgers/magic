@@ -31,6 +31,18 @@ export const DEV_BOSS_CONTENT: DelveContent = {
       "At the beginning of each player's draw step, that player draws an additional card.",
     ),
     card('whetstone', 'Whetstone', 'Relic', 'Creatures you control get +1/+0.'),
+    {
+      ...card(
+        'lantern_of_embers',
+        'Lantern of Embers',
+        'Relic',
+        'At the beginning of your upkeep, Lantern of Embers deals 1 damage to each creature the boss controls.',
+      ),
+      type_line: 'Relic',
+      role: 'Removal',
+      price: 120,
+      rarity: 'Rare',
+    },
     card(
       'skrix_nest_stirs',
       'The Nest Stirs',

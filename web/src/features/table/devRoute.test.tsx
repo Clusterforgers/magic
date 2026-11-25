@@ -95,7 +95,9 @@ describe('/dev/table in development', () => {
     await visit('/dev/table?seats=2')
     await screen.findByRole('region', { name: 'Game table' })
     expect(screen.getByRole('button', { name: 'Table menu' })).toBeInTheDocument()
-    expect(screen.getByText("Bo's turn · Round 3 · Declare blockers")).toBeInTheDocument()
+    expect(document.querySelector('[data-slot="banner"]')).toHaveTextContent(
+      "Bo's turn · Round 3 · Declare blockers",
+    )
     expect(screen.getByRole('complementary', { name: 'Commands, log, chat and stack' })).toBeInTheDocument()
     expect(screen.queryByRole('navigation', { name: 'Main' })).toBeNull()
   })
@@ -216,7 +218,7 @@ describe('/dev/table with the viewer’s own turn', () => {
     async (search) => {
       await visit(`/dev/table${search}`)
       await screen.findByRole('region', { name: 'Game table' })
-      expect(screen.getByText(/^Your turn · Round \d+ · /)).toBeInTheDocument()
+      expect(document.querySelector('[data-slot="banner"]')).toHaveTextContent(/^Your turn · Round \d+ · /)
       // The turn badge, the shared strip (its section and the glowing sheet in it) and the viewer's own panel.
       const lit = [...document.querySelectorAll('[data-your-turn]')].map(
         (element) =>
