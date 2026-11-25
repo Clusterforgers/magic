@@ -94,9 +94,15 @@ pub fn asked_clause(
     None
 }
 
-/// The writer's words of `ability` in lower case, its card's name for `~`.
+/// The words of an ability as the table shows them: the writer's, else the first of the wordings written for its
+/// effects as a whole (`written_variants`); `None` when neither words it.
+pub fn rules_words(ability: &Ability) -> Option<String> {
+    super::ability(ability).or_else(|| super::written_variants(ability).into_iter().next())
+}
+
+/// The words of `ability` in lower case (`rules_words`), its card's name for `~`.
 fn written(ability: &Ability, name: &str) -> Option<String> {
-    super::ability(ability).map(|words| words.replace('~', name).to_ascii_lowercase())
+    rules_words(ability).map(|words| words.replace('~', name).to_ascii_lowercase())
 }
 
 /// The lists of effects down `path`, each with the targets its effects read.

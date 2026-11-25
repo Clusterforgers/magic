@@ -39,7 +39,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
-pub use asked::{AskedAt, AskedPart, asked_at, effect_on_card};
+pub use asked::{AskedAt, AskedPart, asked_at, effect_on_card, stack_rules};
 pub(crate) use inline::{
     Inline, R114Replaced, r114_run_bound, r304_run_then_count, r370_run_instead_bound, run_inline,
     w5d_run_instead,

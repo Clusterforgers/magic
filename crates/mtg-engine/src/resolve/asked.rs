@@ -56,6 +56,11 @@ pub fn asked_at(state: &GameState, stack: ObjectId, kind: &DecisionKind) -> Opti
     Some(AskedAt { rules, part })
 }
 
+/// The rules the spell or ability `stack` runs: those of the ability, or the spell ability of the card as cast.
+pub fn stack_rules(state: &GameState, stack: ObjectId) -> Option<Arc<Ability>> {
+    rules_of(state, state.object(stack)?)
+}
+
 /// The effect at a path in the card's own terms.
 pub fn effect_on_card<'a>(root: &'a [Effect], path: &[usize]) -> Option<&'a Effect> {
     let (&index, mut rest) = path.split_first()?;

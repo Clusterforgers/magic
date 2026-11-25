@@ -36,13 +36,14 @@ identity?: CardIdentity,
  */
 ability?: number, 
 /**
- * The rules text of the asking ability in the card writer's words; left out for a spell, for an ability the writer
- * cannot word and while the source is hidden.
+ * The rules text of the asking spell or ability in the card writer's words, its card's name for `~`; left out for
+ * rules the writer cannot word and while the source is hidden.
  */
 text?: string, 
 /**
- * The clause of `text` the decision asks about, as the first and one past the last UTF-16 code unit; left out
- * when no clause is found.
+ * The clause of `text` the decision asks about, as the first and one past the last UTF-16 code unit: the effect the
+ * resolution stands at or the modes chosen (`mtg_engine::resolve::asked_at`), else the "you may" or the target's
+ * words of the question; left out when no clause is found.
  */
 clause?: [number, number], 
 /**

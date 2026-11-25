@@ -117,3 +117,25 @@ fn a_place_marks_its_own_clause(
 ) {
     assert_eq!(marked(text, kind, place).as_deref(), expected);
 }
+
+/// A colour chosen by a trigger, which only the written wordings word: "~ becomes the color of your choice."
+const EYE: &str = r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{}},{"ChooseValue":{"kind":"Color","as":"chosen"}},{"Continuous":{"affected":"This","mods":[{"SetColorsChosen":"chosen"}],"duration":"Forever"}}]}}"#;
+
+#[rstest]
+#[case::the_choice_and_what_it_changes(&[1], Some("Seer becomes the color of your choice."))]
+#[case::the_draw_before_it(&[0], Some("draw a card."))]
+fn a_place_in_words_only_written_marks_its_clause(
+    #[case] path: &[usize],
+    #[case] expected: Option<&str>,
+) {
+    let ability: crate::ability::Ability = serde_json::from_str(EYE).expect("json");
+    let words = super::rules_words(&ability)
+        .expect("written")
+        .replace('~', "Seer");
+    assert_eq!(
+        words,
+        "When Seer enters, draw a card. Seer becomes the color of your choice."
+    );
+    let span = asked_clause(&ability, AskedPlace::Effect(path), "Seer", &words);
+    assert_eq!(span.and_then(|span| words.get(span)), expected);
+}
