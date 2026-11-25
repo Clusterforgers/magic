@@ -33,7 +33,7 @@ const MELODY_TEXT = 'Gain control of target creature with mana value X.'
 const THRONE_TEXT =
   'As Throne of Eldraine enters, choose a color.\n{T}: Add four mana of the chosen color. Spend this mana only to cast monocolored spells of that color.\n{3}, {T}: Draw two cards. Spend only mana of the chosen color to activate this ability.'
 const RASPUTIN_TEXT =
-  'At the beginning of your end step, put a dream counter on Rasputin.\n{T}, Remove X dream counters from Rasputin: Look at the top X cards of your library. Put one of them into your hand and the rest on the bottom of your library in a random order. X can\'t be 0.'
+  "At the beginning of your end step, put a dream counter on Rasputin.\n{T}, Remove X dream counters from Rasputin: Look at the top X cards of your library. Put one of them into your hand and the rest on the bottom of your library in a random order. X can't be 0."
 
 const ownedIn = (object: ObjectView, zone: 'Hand' | 'Graveyard', seat: number): boolean =>
   typeof object.zone === 'object' && zone in object.zone && Object.values(object.zone)[0] === seat
@@ -201,7 +201,12 @@ export function withDetail(
         card: melody.id,
         reason: 'Targets',
         why: {
-          XTarget: { needs: 'a creature with mana value X on the battlefield', zone: 'Battlefield', least: 0, most: 2 },
+          XTarget: {
+            needs: 'a creature with mana value X on the battlefield',
+            zone: 'Battlefield',
+            least: 0,
+            most: 2,
+          },
         },
       },
     ]

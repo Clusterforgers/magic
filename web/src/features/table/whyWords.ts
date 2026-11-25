@@ -2,7 +2,16 @@
  * The plain sentence for why a card or ability cannot be played now (docs/ui-design.md, Playing is legible). Pure: it
  * reads the engine's reason and its detail (`Why`), the card's name and its rules text, and nothing else.
  */
-import type { Color, HostBy, ManaCost, ManaType, ObjectView, Refusal, Unplayable, Why } from '@/protocol/generated'
+import type {
+  Color,
+  HostBy,
+  ManaCost,
+  ManaType,
+  ObjectView,
+  Refusal,
+  Unplayable,
+  Why,
+} from '@/protocol/generated'
 import { costText } from './cardModel'
 
 /** Whether the sentence is about casting a card or activating one of its abilities. */
@@ -102,17 +111,24 @@ function hostLine(name: string, needs: string, by: HostBy): string {
 
 /** "X can't be 0" short at its least X: "X must be at least 1: that costs {1}{G}, and you have 1 mana available." */
 function leastXLine(least: number, cost: ManaCost | undefined, atHand: number | undefined): string {
-  if (cost === undefined) return `X must be at least ${least}, and the rest of its cost can't be paid for that.`
+  if (cost === undefined)
+    return `X must be at least ${least}, and the rest of its cost can't be paid for that.`
   return `X must be at least ${least}: that costs ${costText(cost)}, and you have ${atHand ?? 0} mana available.`
 }
 
 /** "Spend only mana of the chosen color": the color, and its mana against the cost. */
-function chosenColorLine(name: string, color: Color | undefined, cost: ManaCost | undefined, atHand: number): string {
+function chosenColorLine(
+  name: string,
+  color: Color | undefined,
+  cost: ManaCost | undefined,
+  atHand: number,
+): string {
   if (color === undefined) {
     return `${name} has no chosen color, and only mana of the chosen color can be spent to activate it.`
   }
   const word = color.toLowerCase()
-  if (cost === undefined) return `Only ${word} mana can be spent to activate it, and its cost asks for another color.`
+  if (cost === undefined)
+    return `Only ${word} mana can be spent to activate it, and its cost asks for another color.`
   return `Only ${word} mana can be spent to activate it: needs ${costText(cost)}, and you have ${atHand} ${word} mana available.`
 }
 

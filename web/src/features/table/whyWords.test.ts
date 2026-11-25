@@ -330,7 +330,14 @@ describe('the last details', () => {
       'an X spell with no target for any payable X',
       cast('Entrancing Melody', 'Gain control of target creature with mana value X.'),
       'Targets',
-      { XTarget: { needs: 'a creature with mana value X on the battlefield', zone: 'Battlefield', least: 0, most: 2 } },
+      {
+        XTarget: {
+          needs: 'a creature with mana value X on the battlefield',
+          zone: 'Battlefield',
+          least: 0,
+          most: 2,
+        },
+      },
       'Entrancing Melody has no target for any X you can pay (X from 0 to 2): it needs a creature with mana value X on the battlefield.',
     ],
     [
