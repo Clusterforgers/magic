@@ -123,7 +123,7 @@ async fn follow_run(
     let mut last_pong = Instant::now();
     loop {
         tokio::select! {
-            _ = follower.stop.wait_for(|stopping| *stopping) => return Some(SHUTTING_DOWN),
+            () = stopped(&mut follower.stop) => return Some(SHUTTING_DOWN),
             change = follower.changes.recv() => {
                 match change {
                     Ok(id) if id != follower.id => continue,
@@ -160,6 +160,11 @@ async fn follow_run(
             }
         }
     }
+}
+
+/// Resolves once the server is stopping (or gone, which comes to the same); the borrow of the flag ends here.
+async fn stopped(stop: &mut watch::Receiver<bool>) {
+    let _ = stop.wait_for(|stopping| *stopping).await;
 }
 
 /// Sends `view` as one text frame; false when the client is gone or stalled.

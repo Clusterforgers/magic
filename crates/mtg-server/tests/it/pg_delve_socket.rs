@@ -20,7 +20,14 @@ async fn call(server: &TestServer, method: &str, path: &str, who: &Browser, body
 }
 
 async fn act(server: &TestServer, id: &str, who: &Browser, action: Value) {
-    let reply = call(server, "POST", &format!("/api/delves/{id}/act"), who, action).await;
+    let reply = call(
+        server,
+        "POST",
+        &format!("/api/delves/{id}/act"),
+        who,
+        action,
+    )
+    .await;
     assert_eq!(reply.status, 200, "{}", reply.text());
 }
 
@@ -73,7 +80,14 @@ async fn every_open_socket_of_a_run_hears_each_change(pool: sqlx::PgPool) {
     assert_eq!(first["host"], true);
     assert_eq!(names(&first), ["hostess"]);
 
-    let reply = call(&server, "POST", &format!("/api/delves/join/{code}"), &guest, json!({})).await;
+    let reply = call(
+        &server,
+        "POST",
+        &format!("/api/delves/join/{code}"),
+        &guest,
+        json!({}),
+    )
+    .await;
     assert_eq!(reply.status, 200, "{}", reply.text());
     let joined = frame(&mut hosts).await;
     assert_eq!(names(&joined), ["hostess", "guest"]);
@@ -83,8 +97,20 @@ async fn every_open_socket_of_a_run_hears_each_change(pool: sqlx::PgPool) {
     assert_eq!(frame(&mut guests).await["me"], 1);
 
     // Another run's change sends nothing: the next frame on each socket is this run's bot ally.
-    act(&server, &elsewhere, &other, json!({"kind": "add_bot", "level": "Easy"})).await;
-    act(&server, &id, &host, json!({"kind": "add_bot", "level": "Normal"})).await;
+    act(
+        &server,
+        &elsewhere,
+        &other,
+        json!({"kind": "add_bot", "level": "Easy"}),
+    )
+    .await;
+    act(
+        &server,
+        &id,
+        &host,
+        json!({"kind": "add_bot", "level": "Normal"}),
+    )
+    .await;
     for (socket, me, host) in [(&mut hosts, 0, true), (&mut guests, 1, false)] {
         let view = frame(socket).await;
         assert_eq!(view["id"], id.as_str());
@@ -98,7 +124,11 @@ async fn every_open_socket_of_a_run_hears_each_change(pool: sqlx::PgPool) {
     act(&server, &id, &guest, choose).await;
     for socket in [&mut hosts, &mut guests] {
         let view = frame(socket).await;
-        assert!(view["run"]["heroes"][1]["deck"].is_object(), "{}", view["run"]["heroes"][1]);
+        assert!(
+            view["run"]["heroes"][1]["deck"].is_object(),
+            "{}",
+            view["run"]["heroes"][1]
+        );
     }
     hosts.close().await;
     guests.close().await;
