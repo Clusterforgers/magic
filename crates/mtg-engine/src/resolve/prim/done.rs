@@ -140,6 +140,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::R114CopySpellOnto { .. }
         | Effect::CopyAbility { .. }
         | Effect::CopyCard { .. }
+        | Effect::CopyNamedCard { .. }
         | Effect::BecomeCopy { .. }
         | Effect::CreateToken { .. }
         | Effect::R6602CreateAttached { .. }

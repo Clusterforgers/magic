@@ -218,7 +218,7 @@ pub(crate) fn offered(
         .object(spell)
         .is_some_and(|card| crate::announce::required::r109_waterbends_to_cast(card.card()))
     {
-        let waterbenders = waterbend(state, player, &[]).improvise;
+        let waterbenders = waterbend(state, player, &[], false).improvise;
         offer.improvise.extend(waterbenders);
         offer.improvise.sort_unstable();
         offer.improvise.dedup();
@@ -235,11 +235,18 @@ pub(crate) fn offered(
 }
 
 /// What may help pay a waterbend cost (Avatar): the untapped artifacts and creatures `player` controls, each paying {1} as an
-/// improvising artifact does, except the objects in `taken`, which the rest of the cost taps or gives up.
-pub(crate) fn waterbend(state: &GameState, player: PlayerId, taken: &[ObjectId]) -> Offered {
+/// improvising artifact does, except the objects in `taken`, which the rest of the cost taps or gives up; only the creatures
+/// when `creatures_only` (`CostItem::CreaturesHelpPay`).
+pub(crate) fn waterbend(
+    state: &GameState,
+    player: PlayerId,
+    taken: &[ObjectId],
+    creatures_only: bool,
+) -> Offered {
     Offered {
         improvise: untapped(state, player, |id, chars| {
-            (chars.is_creature() || chars.types.contains(CardType::Artifact)).then_some(id)
+            (chars.is_creature() || (!creatures_only && chars.types.contains(CardType::Artifact)))
+                .then_some(id)
         }),
         ..Offered::default()
     }
