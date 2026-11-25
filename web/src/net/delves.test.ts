@@ -1,8 +1,11 @@
-// Goal: the Delves client sends each call to its path with its method and body, and turns a server error or no answer into a DelveError with the server's code and words.
+// Goal: the Delves client sends each call to its path with its method and body, and turns a server error or no answer into a DelveError with the server's code and words. A followed run hands on each view its socket sends, reports a lost socket and reconnects with the game socket's backoff until stopped.
 import { describe, expect, it } from 'vitest'
 import { fakeFetch, jsonResponse } from '@/test-utils/fakeFetch'
+import { FakeNetwork, FakeTimers } from '@/test-utils/fakes'
 import { delveView } from '@/features/delves/fakeDelves'
-import { createDelvesApi, DelveError } from './delves'
+import type { DelveView } from '@/protocol/generated'
+import { createDelvesApi, DelveError, delveSocketUrl, followDelve } from './delves'
+import { FIRST_RETRY_MS } from './socket'
 
 describe('delves client', () => {
   it.each([
@@ -75,5 +78,70 @@ describe('delves client', () => {
   it('turns no answer into a network error', async () => {
     const api = createDelvesApi({ fetch: () => Promise.reject(new Error('down')) })
     await expect(api.list()).rejects.toMatchObject({ code: 'network', status: 0 })
+  })
+})
+
+describe('following a run', () => {
+  function follow() {
+    const network = new FakeNetwork()
+    const timers = new FakeTimers()
+    const views: DelveView[] = []
+    let lost = 0
+    const stop = followDelve(
+      'd/1',
+      { view: (view) => views.push(view), lost: () => (lost += 1) },
+      { createSocket: network.factory, timers, random: () => 0, origin: 'https://play.example' },
+    )
+    return { network, timers, views, stop, lost: () => lost }
+  }
+
+  it.each([
+    ['https://play.example', 'wss://play.example/ws/delves/d%2F1'],
+    ['http://localhost:5173', 'ws://localhost:5173/ws/delves/d%2F1'],
+  ])('opens the socket of %s at %s', (origin, url) => {
+    expect(delveSocketUrl('d/1', origin)).toBe(url)
+  })
+
+  it('hands on each view and skips frames that are not one', () => {
+    const live = follow()
+    expect(live.network.last.url).toBe('wss://play.example/ws/delves/d%2F1')
+    live.network.last.open()
+    live.network.last.receive(delveView())
+    live.network.last.receive('not json')
+    live.network.last.receive({ kind: 'other' })
+    live.network.last.receiveRaw(new ArrayBuffer(2))
+    expect(live.views).toHaveLength(1)
+    expect(live.network.last.sent).toEqual([])
+  })
+
+  it('reports a lost socket and reconnects with a growing wait, reset by a view', () => {
+    const live = follow()
+    live.network.last.fail()
+    expect(live.lost()).toBe(1)
+    expect(live.timers.pending()).toEqual([FIRST_RETRY_MS])
+    live.timers.advance(FIRST_RETRY_MS)
+    expect(live.network.sockets).toHaveLength(2)
+    live.network.last.serverClose(1001)
+    expect(live.timers.pending()).toEqual([FIRST_RETRY_MS * 2])
+    live.timers.advance(FIRST_RETRY_MS * 2)
+    live.network.last.receive(delveView())
+    live.network.last.fail()
+    expect(live.lost()).toBe(3)
+    expect(live.timers.pending()).toEqual([FIRST_RETRY_MS])
+  })
+
+  it('stops: closes the socket, cancels a retry and reports nothing more', () => {
+    const live = follow()
+    const first = live.network.last
+    live.stop()
+    expect(first.closedByClient?.code).toBe(1000)
+    first.receive(delveView())
+    expect(live.views).toEqual([])
+
+    const again = follow()
+    again.network.last.fail()
+    again.stop()
+    expect(again.timers.pending()).toEqual([])
+    expect(again.lost()).toBe(1)
   })
 })

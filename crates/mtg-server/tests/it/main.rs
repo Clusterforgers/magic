@@ -76,6 +76,7 @@ mod pg_delve_list;
 mod pg_delve_party_turn;
 mod pg_delve_rework_close;
 mod pg_delve_satchel;
+mod pg_delve_socket;
 mod pg_delve_votes;
 mod pg_delves;
 mod pg_failed_games;

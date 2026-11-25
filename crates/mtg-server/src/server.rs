@@ -504,6 +504,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/me/prefs", get(prefs::get).put(prefs::put))
         .route("/api/me/games", get(my_games::list))
         .route("/api/me/games/{id}", delete(my_games::remove))
+        .route("/ws/delves/{id}", get(delves::follow))
         .route("/ws/{game}/{token}", get(ws::upgrade))
         .route("/ws/{game}/watch", get(ws::upgrade_watcher))
         .route("/ws/{game}", get(ws::upgrade_as_user))
