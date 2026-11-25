@@ -92,6 +92,24 @@ describe('splitBoards', () => {
     expect(ownRow + Math.max(least, theirMore + base.theirChrome)).toBeGreaterThan(base.room)
   })
 
+  it.each([
+    [360, counts(5, 7, 3), counts(4, 4, 2)],
+    [380, counts(5, 7, 3), counts(4, 4, 3)],
+    [420, counts(5, 6, 4), counts(4, 5, 2)],
+  ])(
+    'sizes the opponents row of a narrow %f px room for a card no smaller than the floor: %o against %o',
+    (room, own, theirs) => {
+      const narrow = { ...base, room, ownWidth: 340, theirWidth: 340 }
+      const split = splitBoards({ ...narrow, own, theirs: [theirs] })
+      expect(split.theirCard).toBeGreaterThanOrEqual(LANE_LIMITS.minWidth)
+      // The row holds their board at the floor card any fit draws, so it never scrolls under a card no fit draws.
+      if (split.ownCard >= LANE_LIMITS.minWidth)
+        expect(laneHeight(narrow.theirWidth, theirs, LANE_LIMITS.minWidth)).toBeLessThanOrEqual(
+          split.opponents - narrow.theirChrome,
+        )
+    },
+  )
+
   it('gives a crowded board the room a sparse one lends', () => {
     const crowdedOwn = splitBoards({ ...base, own: counts(8, 12, 6), theirs: [counts(3, 1, 0)] })
     const crowdedTheirs = splitBoards({ ...base, own: counts(3, 1, 0), theirs: [counts(8, 12, 6)] })
