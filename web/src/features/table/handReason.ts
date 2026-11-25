@@ -7,7 +7,7 @@ import type { ManaCost, ObjectView, PriorityOptions, StateView, Unplayable, Why 
 import { sharesTurn } from '@/lib/teams'
 import type { Blocker, CardNote, CardNotes } from './prompt/marks'
 import { manaValue } from './prompt/payment'
-import { whyLine } from './whyWords'
+import { HOST_LABEL, whyLine } from './whyWords'
 
 /** A reason the server can give. */
 export type { Unplayable }
@@ -74,6 +74,7 @@ export function blockerOf(why: Why | undefined): Blocker {
 /** The short label on the card's foot: the name of the rule that blocks it when there is one, else the reason's label. */
 export function reasonLabel(reason: HandReason, why: Why | undefined): string {
   if (why !== undefined && typeof why !== 'string' && 'SplitSecond' in why) return 'Split second'
+  if (why !== undefined && typeof why !== 'string' && 'Host' in why) return HOST_LABEL[why.Host.by]
   return blockerOf(why).name ?? REASON_WORDS[reason].label
 }
 
@@ -115,15 +116,17 @@ export function handNotes(
 }
 
 /**
- * The note of every permanent of the viewer with activated abilities, none of which can be activated now: the reason
- * of its first ability (`PriorityOptions.inactive`) in the preview and the spoken name, no hint on the card.
+ * The note of every card of the viewer with activated abilities, none of which can be activated now: the reason of its
+ * first ability (`PriorityOptions.inactive`) in the preview and the spoken name. A permanent gets no hint on the card;
+ * a card in a graveyard, exile or the command zone (unearth, embalm, an emblem) shows the reason's label on its foot,
+ * as a flashback card does, unless it can be cast now.
  */
 export function inactiveNotes(
   objectsById: Readonly<Record<number, ObjectView>>,
   options: PriorityOptions,
 ): CardNotes {
   const notes = new Map<number, CardNote>()
-  const usable = new Set((options.abilities ?? []).map((ability) => ability.object))
+  const usable = new Set([...(options.abilities ?? []).map((ability) => ability.object), ...offered(options)])
   for (const entry of options.inactive ?? []) {
     const id = entry.ability.object
     const object = objectsById[id]
@@ -133,7 +136,12 @@ export function inactiveNotes(
       entry.reason,
       entry.why,
     )
-    notes.set(id, { line, words: `can't activate now: ${line}` })
+    if (object.zone === 'Battlefield') {
+      notes.set(id, { line, words: `can't activate now: ${line}` })
+      continue
+    }
+    const hint = reasonLabel(entry.reason, entry.why)
+    notes.set(id, { hint, line, words: `${hint.toLowerCase()}: ${line}`, blocked: blockerOf(entry.why) })
   }
   return notes
 }

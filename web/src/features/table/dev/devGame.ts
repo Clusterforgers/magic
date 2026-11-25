@@ -4,7 +4,7 @@ import type { GameLookup } from '@/features/game/useGameInfo'
 import { previewKey } from '@/play/preview'
 import type { Session } from '@/play/session'
 import { canHoldStop } from '@/play/stops'
-import { appendChat, createPlayStore, initialPlayState } from '@/play/store'
+import { appendChat, appendLog, createPlayStore, initialPlayState } from '@/play/store'
 import type { PendingDecision, PlayState, PlayStore } from '@/play/store'
 import { indexById, withPresence } from '@/play/view'
 import type {
@@ -35,6 +35,7 @@ import { withEquip } from './equip'
 import { withRevealed } from './revealScene'
 import { withPlayerCounters } from './countersScene'
 import { withOneVoice } from './blockedScene'
+import { detailRewound } from './detailScene'
 import { endedWith, withTeams } from './endScene'
 import type { DevResult, DevTeams } from '../devSearch'
 
@@ -504,6 +505,9 @@ export function fixtureGame(options: FixtureGameOptions): GameContextValue {
   const fixture = options.turn === 'left' ? withActiveLeft(voiced) : voiced
   const shown = prompt !== undefined ? prompt(fixture) : options.holding === true ? undefined : null
   store.setState(fixtureState(fixture, shown))
+  const rewound = name === 'priority-detail' ? detailRewound(fixture) : null
+  if (rewound !== null)
+    store.setState((state) => ({ log: appendLog(state.log, state.log.length, [rewound]) }))
   if (options.result !== undefined) {
     const { players, result } = endedWith(fixture, options.result)
     store.setState((state) => ({

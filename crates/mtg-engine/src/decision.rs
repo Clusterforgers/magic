@@ -375,6 +375,37 @@ pub enum Why {
     OtherCost,
     /// The card has no way to be cast from where it is.
     NoWay,
+    /// An Aura, bestow or mutate spell has no permanent to go on: what the host must be, in the words of its target.
+    Host {
+        /// What the host must be, with its article ("a creature").
+        needs: String,
+        /// How the spell would go on it.
+        by: HostBy,
+    },
+    /// No value of X the player can announce leaves a target: what the target reading X must be, and the values of X
+    /// that could be paid.
+    XTarget {
+        /// What the target must be, with its article ("a creature card with mana value X").
+        needs: String,
+        /// Where it is looked for.
+        zone: TargetZone,
+        /// The least X allowed.
+        least: u32,
+        /// The most X the player can pay.
+        most: u32,
+    },
+}
+
+/// How a spell goes on its host ([`Why::Host`]).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum HostBy {
+    /// An Aura spell enchants it (CR 303.4a).
+    Enchant,
+    /// A creature cast for its bestow cost enchants it (CR 702.103b).
+    Bestow,
+    /// A creature cast for its mutate cost merges with it (CR 702.140a).
+    Mutate,
 }
 
 /// Where a target is looked for.

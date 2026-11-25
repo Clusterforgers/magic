@@ -52,6 +52,59 @@ describe('latestRewound', () => {
     expect(note?.text ?? null).toBe(expected)
   })
 
+  it.each<[string, EventView, string]>([
+    [
+      'a cast short of mana with its total',
+      {
+        Public: {
+          AnnouncementRewound: {
+            player: 0,
+            object: 7,
+            reason: 'Mana',
+            why: { Mana: { cost: [{ Generic: 4 }, { Colored: 'Green' }, { Colored: 'Green' }], at_hand: 5 } },
+          },
+        },
+      },
+      'Imprisoned in the Moon could not be played. Needs {4}{G}{G}: you have 5 mana available.',
+    ],
+    [
+      'an activation short of mana',
+      {
+        Public: {
+          AnnouncementRewound: {
+            player: 0,
+            object: 7,
+            reason: 'Mana',
+            why: { Mana: { cost: [{ Generic: 3 }, { Colored: 'Black' }], at_hand: 2 } },
+            activated: true,
+          },
+        },
+      },
+      'Imprisoned in the Moon could not be activated. Needs {3}{B}: you have 2 mana available.',
+    ],
+    [
+      'an activation with no detail',
+      { Public: { AnnouncementRewound: { player: 0, object: 7, reason: 'Cost', activated: true } } },
+      'Imprisoned in the Moon could not be activated: a cost cannot be paid',
+    ],
+    [
+      'a cast with no host',
+      {
+        Public: {
+          AnnouncementRewound: {
+            player: 0,
+            object: 7,
+            reason: 'Targets',
+            why: { Host: { needs: 'a creature on the battlefield', by: 'Enchant' } },
+          },
+        },
+      },
+      'Imprisoned in the Moon could not be played. Imprisoned in the Moon needs a creature on the battlefield to enchant.',
+    ],
+  ])('says the detail of %s', (_name, event, expected) => {
+    expect(latestRewound(state(logOf(event)))?.text).toBe(expected)
+  })
+
   it('finds nothing when the seat is not known', () => {
     expect(latestRewound(state(logOf(rewound(0, 7, 'Mana')), null))).toBeNull()
   })

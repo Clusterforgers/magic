@@ -4,10 +4,11 @@
 use std::collections::BTreeMap;
 
 use mtg_cards::ability::Ability;
+use mtg_cards::value::CastWay;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::{ManaCost, ManaSymbol, ManaType};
 
-use crate::decision::Why;
+use crate::decision::{HostBy, Why};
 use crate::mana::{ManaOption, ManaPool};
 use crate::object::{GameObject, ObjectRef};
 use crate::state::GameState;
@@ -95,4 +96,67 @@ pub(crate) fn mana(cost: ManaCost, pool: &ManaPool, sources: &[ManaOption], tax:
         missing,
         tax,
     }
+}
+
+/// The host the spell `id` cast in `way` lacks, in the words of its target: an Aura's enchant ability, a bestowed creature
+/// (CR 702.103b) or a mutating one (CR 702.140a); `None` when it has a host or needs none.
+pub(crate) fn host(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    way: Option<CastWay>,
+) -> Option<Why> {
+    let words = |spec: mtg_cards::refs::TargetSpec| crate::wording::target_need(&spec).0;
+    let (needs, by, met) = match way {
+        Some(CastWay::Bestow) => (
+            words(crate::attach::bestow_target()),
+            HostBy::Bestow,
+            crate::attach::bestow_announceable(state, player, id),
+        ),
+        // The mutate target in the words of its reminder text: the owner it names is the caster's.
+        Some(CastWay::Mutate) => (
+            "a non-Human creature you own on the battlefield".to_owned(),
+            HostBy::Mutate,
+            crate::merged::announceable(state, player, id),
+        ),
+        _ => (
+            words(crate::attach::cast_target(state, id)?),
+            HostBy::Enchant,
+            crate::attach::announceable(state, player, id),
+        ),
+    };
+    (!met).then_some(Why::Host { needs, by })
+}
+
+/// [`host`] for the first way of casting `id` that has no host, the mutate way left out for that among them.
+pub(crate) fn host_of_any_way(state: &GameState, player: PlayerId, id: ObjectId) -> Option<Why> {
+    let ways = crate::ways::of(state, player, id);
+    let unhosted = crate::ways::hx29_unhosted_mutate(state, player, id, &ways);
+    ways.iter()
+        .chain(&unhosted)
+        .find_map(|way| host(state, player, id, way.alternative))
+}
+
+/// The first target of `rules` that reads X, in words, for X from `least` to `most`, none of which leaves it a legal
+/// choice; `None` when no target reads X.
+pub(crate) fn x_target(rules: &Ability, least: u32, most: u32) -> Option<Why> {
+    let modes = crate::choose::modal_of(rules);
+    let spec = match &modes {
+        Some(modal) => modal
+            .modes
+            .iter()
+            .flat_map(|mode| mode.targets.iter())
+            .find(|spec| crate::choose::reads_x(spec)),
+        None => rules
+            .targets()
+            .iter()
+            .find(|spec| crate::choose::reads_x(spec)),
+    }?;
+    let (needs, zone) = crate::wording::target_need(spec);
+    Some(Why::XTarget {
+        needs,
+        zone,
+        least,
+        most,
+    })
 }

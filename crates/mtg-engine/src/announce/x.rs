@@ -13,7 +13,7 @@ use mtg_core::mana::ManaCost;
 
 use super::{Ctx, Next, What, Work, cheapest, parts, required, targets, total};
 use crate::choose::{Choices, NumberOptions, enough_modes, modal_of, reads_x, targets_met};
-use crate::decision::DecisionKind;
+use crate::decision::{DecisionKind, Unplayable};
 use crate::price::Price;
 use crate::resolve::spell_ability;
 use crate::state::GameState;
@@ -176,10 +176,9 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         return Some(Next::Drop);
     };
     // A value of X that leaves a target specification without a target cannot be announced (CR 601.2b, 601.2c).
-    let Some(offer) = Offer::of(ctx, work.choices, max) else {
-        return Some(Next::Drop);
+    let Some(mut offer) = Offer::of(ctx, work.choices, max) else {
+        return Some(no_target(ctx, work, max));
     };
-    let mut offer = offer;
     offer.except.extend(parts::r301_x_without_picks(
         ctx,
         work.choices,
@@ -218,6 +217,20 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
         per_x: per_x(ctx, work.choices),
         secret: false,
     })))
+}
+
+/// Takes the announcement back when no X up to `max` leaves a target, naming the target that reads X when there is one.
+fn no_target(ctx: &Ctx<'_>, work: &mut Work<'_>, max: u32) -> Next {
+    let least = least_x(ctx, work.choices);
+    if let Some(why) = ctx
+        .ability
+        .filter(|_| least <= max)
+        .and_then(|rules| crate::why::x_target(rules, least, max))
+    {
+        work.done.rewound = Some(Unplayable::Targets);
+        work.done.rewound_why = Some(why);
+    }
+    Next::Drop
 }
 
 /// The total mana cost with X at 0, which the prompt adds X to; `None` for an X that is not in a mana cost.
@@ -306,6 +319,10 @@ pub(crate) fn some_x_has_targets(
         .any(|x| targets_met_at(state, source, player, rules, x))
 }
 
+/// The most X that `affords` accepts counting up from 0, the run [`some_x_has_targets`] tries.
+pub(crate) fn most_afforded(affords: impl Fn(u32) -> bool) -> u32 {
+    (0..=MOST_X).take_while(|x| affords(*x)).last().unwrap_or(0)
+}
 /// Whether what `rules` may target reads X, in its own specifications or in those of any of its modes.
 fn targets_read_x(rules: &Ability) -> bool {
     match modal_of(rules) {
@@ -364,7 +381,7 @@ struct Offer {
 
 /// The least X the cost allows: craft takes at least as many materials as it names (CR 702.167a), and a cost may say
 /// "X can't be 0", and so may a kicker with `{X}` the spell is kicked for.
-fn least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
+pub(super) fn least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     // An X the text defines is its own floor and cap (`largest`): no player chooses it (CR 107.3c).
     if let Some(XCost::R110Chosen { least, .. }) = ctx.needs.x {
         return least;

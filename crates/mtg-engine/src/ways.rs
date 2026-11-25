@@ -1538,7 +1538,8 @@ pub(crate) fn hindrance_as_is(
         (cost.is_none() || !parts_payable(state, player, id, &parts)).then_some(Unplayable::Cost)
     };
     let mut nearest = None;
-    for way in &of(state, player, id) {
+    let ways = of(state, player, id);
+    for way in &ways {
         match hindrance(way) {
             None => {
                 return (!w17c_cast_only_holds(state, player, card))
@@ -1546,6 +1547,12 @@ pub(crate) fn hindrance_as_is(
             }
             reason => nearest = nearest.max(reason),
         }
+    }
+    // A mutating creature with nothing to merge with has no mutate way; judged as one, only its host is missing.
+    if nearest < Some(Unplayable::Targets)
+        && let Some(way) = hx29_unhosted_mutate(state, player, id, &ways)
+    {
+        nearest = nearest.max(hindrance(&way));
     }
     Some(nearest.unwrap_or(Unplayable::Cost))
 }
@@ -1623,10 +1630,10 @@ fn why_as_is(
                 tax,
             ))
         }
-        Unplayable::Targets => {
-            let (_, rules) = spell_ability(state, id)?;
-            crate::why::target(state, player, id, &rules)
-        }
+        // A target of the spell's own, else the host of an Aura, bestowed or mutating spell.
+        Unplayable::Targets => spell_ability(state, id)
+            .and_then(|(_, rules)| crate::why::target(state, player, id, &rules))
+            .or_else(|| crate::why::host_of_any_way(state, player, id)),
         Unplayable::Cost => Some(if of(state, player, id).is_empty() {
             Why::NoWay
         } else {
@@ -1733,4 +1740,35 @@ pub(crate) fn r115_way_least_x(state: &GameState, id: ObjectId, way: Option<Cast
             (own == way).then(|| announce::least_of(cost))
         })
         .unwrap_or(0)
+}
+
+/// The mutate way of the creature card `id` in `player`'s hand while it has no creature to merge with, which [`of`]
+/// leaves out (CR 702.140a): judged at the timing of its other ways, so a refusal names the host it lacks.
+pub(crate) fn hx29_unhosted_mutate(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    ways: &[Way],
+) -> Option<Way> {
+    let card = state.object(id)?;
+    if card.zone() != Zone::Hand(player)
+        || !is_creature(state, id)
+        || merged::announceable(state, player, id)
+    {
+        return None;
+    }
+    let cost = keywords_of(state, id)
+        .into_iter()
+        .find_map(|keyword| match keyword {
+            Keyword::Mutate(cost) => Some(cost.clone()),
+            _ => None,
+        })?;
+    Some(Way {
+        alternative: Some(CastWay::Mutate),
+        label: "Mutate".to_owned(),
+        mana: Some(mana_only(&cost)?),
+        instant: ways.iter().any(|way| way.instant),
+        variant: 0,
+        parts: Vec::new(),
+    })
 }

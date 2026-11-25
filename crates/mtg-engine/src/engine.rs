@@ -888,7 +888,7 @@ impl Engine {
         let before = (watching && !open && !was_open && triggers::needs_before(&events))
             .then(|| self.state.clone());
         let start = self.events.len();
-        let mut fresh = triggers::FreshDelayedIds::default();
+        let mut fresh = crate::batch_ids::FreshIds::default();
         for event in events {
             let event = fresh.renamed(&self.state, &event).unwrap_or(event);
             apply_event(&mut self.state, &event)?;
@@ -1062,24 +1062,36 @@ impl Engine {
             (What::Trigger(_) | What::Attack(..) | What::Block(_), None) => return Ok(()),
         };
         let reason = pending.done.rewound.unwrap_or(Unplayable::Restricted);
-        // The target that had no legal choice, read as the announcement read it.
-        let why = (reason == Unplayable::Targets)
-            .then(|| {
-                let rules = match &pending.what {
-                    What::Spell(card) => {
-                        crate::resolve::spell_ability(&self.state, *card).map(|(_, rules)| rules)
-                    }
-                    What::Ability(address) => crate::ability_reader::ability(&self.state, *address),
-                    _ => None,
-                }?;
-                crate::why::target(&self.state, player, object, &rules)
-            })
-            .flatten();
+        // The detail the step gave, else the target that had no legal choice, read as the announcement read it, else
+        // the host an Aura, bestowed or mutating spell lacks.
+        let why = pending.done.rewound_why.clone().or_else(|| {
+            (reason == Unplayable::Targets)
+                .then(|| {
+                    let rules = match &pending.what {
+                        What::Spell(card) => crate::resolve::spell_ability(&self.state, *card)
+                            .map(|(_, rules)| rules),
+                        What::Ability(address) => {
+                            crate::ability_reader::ability(&self.state, *address)
+                        }
+                        _ => None,
+                    };
+                    rules
+                        .and_then(|rules| crate::why::target(&self.state, player, object, &rules))
+                        .or_else(|| match pending.what {
+                            What::Spell(card) => {
+                                crate::why::host(&self.state, player, card, pending.choices.way)
+                            }
+                            _ => None,
+                        })
+                })
+                .flatten()
+        });
         self.commit(vec![Event::AnnouncementRewound {
             player,
             object,
             reason,
             why,
+            activated: matches!(pending.what, What::Ability(_)),
         }])
     }
 

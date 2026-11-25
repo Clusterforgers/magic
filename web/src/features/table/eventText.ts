@@ -1468,8 +1468,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`An additional ${STEP_LABEL[event.StepAdded.step].toLowerCase()} follows this step`)
   if ('StepBegan' in event) return quiet(`${STEP_LABEL[event.StepBegan.step]} begins`)
   if ('AnnouncementRewound' in event) {
-    const { player, object, reason } = event.AnnouncementRewound
-    return line(`${n.seat(player)} cannot play ${n.card(object)}: ${REASON_WORDS[reason].line.toLowerCase()}`)
+    const { player, object, reason, activated } = event.AnnouncementRewound
+    const verb = activated === true ? 'activate' : 'play'
+    return line(
+      `${n.seat(player)} cannot ${verb} ${n.card(object)}: ${REASON_WORDS[reason].line.toLowerCase()}`,
+    )
   }
   if ('NothingToDo' in event) {
     const what = event.NothingToDo.kind === 'Attack' ? 'attackers' : 'blockers'

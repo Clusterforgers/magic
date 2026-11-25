@@ -483,6 +483,11 @@ pub struct Theme {
     /// [`THEME_RELICS_FROM`](crate::run::THEME_RELICS_FROM); none for [`MOST_BOSS_RELICS`](crate::boss_relics::MOST_BOSS_RELICS).
     #[serde(default)]
     pub boss_relics_most: Option<usize>,
+    /// The most [`REINFORCEMENT`](crate::scale::REINFORCEMENT)s each of its bosses brings from generation
+    /// [`THEME_REINFORCEMENTS_FROM`](crate::run::THEME_REINFORCEMENTS_FROM), each further one coming as
+    /// [`SUPPLIES`](crate::scale::SUPPLIES); none for one reinforcement for each hero after the first.
+    #[serde(default)]
+    pub boss_reinforcements_most: Option<usize>,
 }
 
 impl Theme {

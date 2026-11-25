@@ -98,6 +98,7 @@ mod random_mode_view;
 mod random_pick_view;
 mod read_view;
 mod refill_hidden;
+mod refusal_detail_wire;
 mod required_cost_hidden;
 mod rest;
 mod rest_art;
