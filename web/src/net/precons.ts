@@ -123,7 +123,7 @@ function readEach<T>(items: unknown, read: (item: unknown) => T | null): T[] | n
 function readList(body: unknown): PreconList | null {
   if (!isRecord(body)) return null
   const precons = readEach(body.precons, readPreconItem)
-  return precons === null ? null : { precons }
+  return precons === null ? null : { precons, judging: body.judging === true }
 }
 
 function readCard(item: unknown): PreconCardView | null {

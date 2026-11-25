@@ -19,7 +19,7 @@ function devApi(view: DevView): PreconsApi {
     list: (signal) => {
       switch (view) {
         case 'empty':
-          return Promise.resolve({ precons: [] })
+          return Promise.resolve({ precons: [], judging: false })
         case 'loading':
           return never(signal)
         case 'error':
@@ -27,7 +27,7 @@ function devApi(view: DevView): PreconsApi {
         case 'unavailable':
           return Promise.reject(new PreconError('cards_unavailable', 503, 'no database'))
         case 'list':
-          return Promise.resolve({ precons: [...FIXTURE_PRECONS] })
+          return Promise.resolve({ precons: [...FIXTURE_PRECONS], judging: false })
       }
     },
     get: (code) => {

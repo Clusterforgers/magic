@@ -111,6 +111,7 @@ fn a_list_and_a_precon_survive_a_json_round_trip() {
             item("c18-adaptive-enchantment", DeckState::Verified),
             item("c19-merciless-rage", DeckState::Blocked),
         ],
+        judging: true,
     };
     let json = serde_json::to_value(&list).unwrap();
     assert_eq!(serde_json::from_value::<PreconList>(json).unwrap(), list);

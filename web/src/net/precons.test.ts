@@ -20,7 +20,11 @@ describe('list and get', () => {
   it('reads the list in the order the server sends it and asks the right path', async () => {
     const list = [checked(preconItem({ code: 'b-deck' }), { manual: 2 }), preconItem({ code: 'a-deck' })]
     const server = startPrecons({ precons: list })
-    expect(await server.api.list()).toEqual({ precons: list })
+    expect(await server.api.list()).toEqual({ precons: list, judging: false })
+    expect(await startPrecons({ precons: list, judging: true }).api.list()).toEqual({
+      precons: list,
+      judging: true,
+    })
     expect(server.calls.map((call) => call.url)).toEqual(['/api/precons'])
   })
 

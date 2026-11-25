@@ -166,7 +166,7 @@ export function lobbyDecks(switches: DevDeckSwitches = {}): DecksApi {
 export function lobbyPrecons(switches: DevDeckSwitches = {}): Pick<PreconsApi, 'list' | 'get'> {
   const many = switches.decks === 'many'
   return {
-    list: async () => ({ precons: preconFixtures(many).map(fixturePreconItem) }),
+    list: async () => ({ precons: preconFixtures(many).map(fixturePreconItem), judging: false }),
     get: async (code) => {
       const deck = preconFixtures(many).find((candidate) => candidate.id === code)
       if (switches.detail === 'failed' || deck === undefined) {

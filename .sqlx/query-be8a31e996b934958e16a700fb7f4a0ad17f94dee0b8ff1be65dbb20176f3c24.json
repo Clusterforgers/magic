@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO precon_judgements (fingerprint, items) VALUES ($1, $2)\n             ON CONFLICT (singleton) DO UPDATE\n             SET fingerprint = EXCLUDED.fingerprint, items = EXCLUDED.items, judged_at = now()",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Text"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "be8a31e996b934958e16a700fb7f4a0ad17f94dee0b8ff1be65dbb20176f3c24"
+}
