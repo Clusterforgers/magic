@@ -43,6 +43,7 @@ pub(super) fn read(r: &mut Reader<'_>) -> Option<Condition> {
         .or_else(|| r.attempt(super::c4_hands::read))
         .or_else(|| r.attempt(super::r5522_facts::r5522_read))
         .or_else(|| r.attempt(super::r6402_dice_facts::r6402_read))
+        .or_else(|| r.attempt(p158_had_to_attack))
 }
 
 /// What `died_under_you` reads, written back.
@@ -327,9 +328,19 @@ fn ep28_last_turn(this_turn: &Condition) -> Vec<String> {
         .collect()
 }
 
+/// "that creature had to attack this combat": a requirement made the creature of the event attack (Firkraag, Cunning
+/// Instigator).
+fn p158_had_to_attack(r: &mut Reader<'_>) -> Option<Condition> {
+    r.need("that creature had to attack this combat")?;
+    Some(Condition::P158HadToAttack(Ref::Dealer))
+}
+
 /// What `read` reads, written back after "if" or "as long as", one text for each wording.
 pub(super) fn texts(condition: &Condition) -> Vec<String> {
     match condition {
+        Condition::P158HadToAttack(Ref::Dealer) => {
+            vec!["that creature had to attack this combat".to_owned()]
+        }
         Condition::Compare {
             left: Amount::TalliedLastTurn { who, what },
             op,

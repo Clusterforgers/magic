@@ -53,8 +53,9 @@ pub fn exile_top(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
 
 /// "You may play that card this turn.", "Until end of turn, you may play that card.", "Until the end of your next turn,
 /// you may play those cards.", "You may play that card for as long as you control ~.", "You may play that card until your
-/// next end step.": the permission to play the cards an exile from the top of a library named.
-fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
+/// next end step.", "You may play up to two of those cards until the end of your next turn.": the permission to play the
+/// cards an exile from the top of a library named, and the most of them it lets be played.
+fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<(Duration, Option<u32>)> {
     let leading = r.attempt(|r| {
         let duration = if r.words("until end of turn") {
             Duration::UntilEndOfTurn
@@ -69,19 +70,40 @@ fn may_play(r: &mut Reader<'_>, count: &Amount) -> Option<Duration> {
         r.punct(',').then_some(duration)
     });
     r.need("you may play")?;
+    let mut limit = None;
     if count.is_one() {
         r.need("that card")?;
+    } else if r.words("up to") {
+        // "You may play up to two of those cards": at most that many of them, all told.
+        limit = Some(super::facts::quantity(r).filter(|most| *most > 1)?);
+        r.need("of those cards")?;
     } else if !(r.words("those cards") || r.word("them")) {
         return None;
     }
-    match leading {
+    let duration = match leading {
         Some(duration) => Some(duration),
         None if r.words("for as long as you control") => {
             r.source().then_some(Duration::WhileYouControlSource)
         }
         None if r.words("until your next end step") => Some(Duration::UntilYourNextEndStep),
+        None if limit.is_some() && r.words("until the end of your next turn") => {
+            Some(Duration::UntilEndOfYourNextTurn)
+        }
         None => r.need("this turn").map(|()| Duration::UntilEndOfTurn),
+    }?;
+    Some((duration, limit))
+}
+
+/// Sets the most cards the permission of an impulse draw lets be played, all told.
+fn p158_limited(mut permission: Effect, most: Option<u32>) -> Effect {
+    if let Effect::Rule {
+        rule: crate::modify::GameRule::MayCast(cast),
+        ..
+    } = &mut permission
+    {
+        cast.limit = most;
     }
+    permission
 }
 
 /// The sentences that follow an exiling until a card is found and refer to what it exiled: "You may cast it without paying
@@ -108,8 +130,8 @@ pub fn after_exiling(r: &mut Reader<'_>, effects: &mut Vec<Effect>) -> Option<()
             }
         }
         Effect::ExileTop { count, bind, .. } if bind == IMPULSE => {
-            let duration = may_play(r, count)?;
-            impulse(count.clone(), duration).remove(1)
+            let (duration, most) = may_play(r, count)?;
+            p158_limited(impulse(count.clone(), duration).remove(1), most)
         }
         Effect::CastFromZone { .. } => {
             r.need("put all cards exiled this way that weren't cast on the bottom of your library in a random order")?;
@@ -183,9 +205,37 @@ pub fn impulse_text(effects: &[Effect]) -> Option<(String, usize)> {
     else {
         return None;
     };
+    let most = match &effects[1] {
+        Effect::Rule {
+            rule: crate::modify::GameRule::MayCast(cast),
+            ..
+        } => cast.limit,
+        _ => None,
+    };
     // The name the cards are bound to is the translator's choice; the permission must name the same one.
-    if effects.get(..2)? != impulse_named(count, duration, bind) {
+    let mut named = impulse_named(count, duration, bind);
+    if let Some(permission) = named.pop() {
+        named.push(p158_limited(permission, most));
+    }
+    if effects.get(..2)? != named {
         return None;
+    }
+    if let Some(most) = most {
+        // "You may play up to two of those cards until the end of your next turn."
+        let most = super::amounts::count_word(most).filter(|_| most > 1 && !count.is_one())?;
+        let may = match duration {
+            Duration::UntilEndOfTurn => {
+                format!("You may play up to {most} of those cards this turn")
+            }
+            Duration::UntilEndOfYourNextTurn => {
+                format!("You may play up to {most} of those cards until the end of your next turn")
+            }
+            _ => return None,
+        };
+        return Some((
+            format!("exile {} of your library. {may}", top_text(count)?),
+            2,
+        ));
     }
     let cards = if count.is_one() {
         "that card"

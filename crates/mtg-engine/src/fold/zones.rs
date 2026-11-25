@@ -421,8 +421,8 @@ fn land_played(
     if from != Zone::Hand(player) {
         state.tally(player, Tally::R5522PlayedNotFromHand);
     }
-    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
-        state.tally_object(source, None, used);
+    if let Some(key) = crate::rules::r5503_limit_use(state, player, object, from) {
+        *state.p158_limit_uses.entry(key).or_default() += 1;
     }
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);
@@ -507,8 +507,8 @@ fn note_permission_used(
     if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, way) {
         state.tally_object(source, None, Tally::C11bOnceUsed);
     }
-    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
-        state.tally_object(source, None, used);
+    if let Some(key) = crate::rules::r5503_limit_use(state, player, object, from) {
+        *state.p158_limit_uses.entry(key).or_default() += 1;
     }
 }
 

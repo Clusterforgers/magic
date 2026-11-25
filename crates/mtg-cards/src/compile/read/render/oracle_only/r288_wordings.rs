@@ -303,7 +303,8 @@ fn final_chapter(ability: &Ability) -> Vec<String> {
 }
 
 /// "Whenever you attack a player, tap target creature that player controls and goad it.": the head of the event, then the
-/// tap and goad of the one target, a creature the attacked player controls.
+/// tap and goad of the one target, a creature the attacked player controls; also the goad alone ("Whenever one or more
+/// Dragons you control attack an opponent, goad target creature that player controls.").
 fn tap_and_goad(ability: &Ability) -> Vec<String> {
     let Ability::Triggered {
         targets, effects, ..
@@ -311,17 +312,22 @@ fn tap_and_goad(ability: &Ability) -> Vec<String> {
     else {
         return Vec::new();
     };
-    let [
-        Effect::Tap {
-            what: Ref::Target(0),
-            bind: None,
-        },
-        Effect::Goad {
-            what: Ref::Target(0),
-        },
-    ] = effects.as_slice()
-    else {
-        return Vec::new();
+    let tail = match effects.as_slice() {
+        [
+            Effect::Tap {
+                what: Ref::Target(0),
+                bind: None,
+            },
+            Effect::Goad {
+                what: Ref::Target(0),
+            },
+        ] => "tap target creature that player controls and goad it.",
+        [
+            Effect::Goad {
+                what: Ref::Target(0),
+            },
+        ] => "goad target creature that player controls.",
+        _ => return Vec::new(),
     };
     let creature = crate::refs::Selector(vec![
         crate::refs::Pred::Type(mtg_core::card::CardType::Creature),
@@ -335,7 +341,7 @@ fn tap_and_goad(ability: &Ability) -> Vec<String> {
     }
     r288_heads(ability)
         .into_iter()
-        .map(|head| format!("{head} tap target creature that player controls and goad it."))
+        .map(|head| format!("{head} {tail}"))
         .collect()
 }
 

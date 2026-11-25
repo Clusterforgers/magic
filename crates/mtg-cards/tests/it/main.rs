@@ -36,6 +36,7 @@ mod l31b_writers;
 mod l31d_cards;
 mod l32a_cards;
 mod linked_exile;
+mod p158_cards;
 mod partial;
 mod partial_draft;
 mod player_words;
