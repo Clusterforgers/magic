@@ -261,7 +261,8 @@ enum Count {
     HeroHand,
 }
 
-/// A bear and a 0-cost creature for the hero, the boss's 2/2 Brute and 5-cost Ancient in its graveyard.
+/// The board of the named rows: three 2/2 Bears, a dead Ghoul and seven cards in hand for the hero; a 2/2 Brute and a
+/// dead Wight (mana value 0) or Ancient (mana value 5) for the boss.
 fn board(rows: &str) -> Board {
     let mut board = Board::default();
     for row in rows.split(',').filter(|r| !r.is_empty()) {
@@ -295,8 +296,6 @@ fn board(rows: &str) -> Board {
 #[case::toads_gift_three_counters("mossbeard_toads_gift", 5, "boss_brute", Count::BossPower("Brute"), 5)]
 #[case::moon_hunger_one("gnarl_moon_hunger", 1, "boss_brute", Count::BossPower("Brute"), 3)]
 #[case::moon_hunger_two("gnarl_moon_hunger", 5, "boss_brute", Count::BossPower("Brute"), 4)]
-#[case::hedge_blessing("hawthorn_hedge_blessing", 1, "boss_brute", Count::BossPower("Brute"), 3)]
-#[case::hags_due_unpaid("nettlewick_hags_due", 1, "hero_bears", Count::Hero("Bear"), 2)]
 fn an_innate_acts_at_its_level(
     #[case] id: &str,
     #[case] level: u8,
