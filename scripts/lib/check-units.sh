@@ -6,6 +6,14 @@
 # unit_crate <unit>: the crate a unit tests; crate_left <crate>: its units still running.
 declare -A unit_crate=() crate_left=()
 REPLY_WORDS=()
+# alone_units: the heaviest binaries (MTG_ALONE_UNITS replaces them). With run_alone set (every mode but gate, which
+# skips their slow tests) each runs by itself on the whole share once the others are done: beside them its tail starves
+# on the few threads it started with.
+alone_units="${MTG_ALONE_UNITS-mtg-testkit::fuzz mtg-testkit::fuzz_mz mtg-cards::it}"
+run_alone=0
+
+# is_alone <unit>: the unit runs by itself.
+is_alone() { ((run_alone)) && [[ " $alone_units " == *" $1 "* ]]; }
 
 # slice_words <exe> <unit> <skip args...>: sets REPLY_WORDS to the exact names of the tests the unit runs in this seed
 # slice (the slow list applied as well) and prints how many it runs; fails when it runs none.
@@ -112,6 +120,7 @@ add_test_units() {
     [[ "$pg_crates" != *" $crate "* ]] || kind=pg
     add_unit "$name" "$kind" "$dir" auto "$env_lines" "$(printf '%s\n' "${words[@]}")"
     unit_crate[$name]="$crate"
+    ! is_alone "$name" || u_alone[$name]=1
     crate_left[$crate]=$((${crate_left[$crate]:-0} + 1))
   done
   # Doc tests need cargo itself; no crate has any today.
