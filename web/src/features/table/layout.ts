@@ -280,6 +280,8 @@ export interface Regions {
   party?: PartyRows
   /** The hand dock is the slim bar (`HAND_SLIM_PX`): the seat has nothing to play from it. */
   handSlim?: boolean
+  /** A phone: the px the mode's own bars take from the boards (`phoneBarsPx`); 0 when left out. */
+  bars?: number
 }
 
 /** The boss-mode split's sizes: the allies' row in px, the widest card of the boss's side and of the heroes, the allies' column shares. */
@@ -299,7 +301,7 @@ export function clampedHeight(range: HeightClamp, height: number): number {
 }
 
 /** Sizes the regions of the table for a window, with the side column folded to its rail where `folded`; total for any input. */
-export function regionSizes(viewport: Viewport, folded = false, handSlim = false): Regions {
+export function regionSizes(viewport: Viewport, folded = false, handSlim = false, bars = 0): Regions {
   const width = finite(viewport.width)
   const height = finite(viewport.height)
   const breakpoint = breakpointOf(width)
@@ -312,7 +314,8 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
   const topBar = landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
   const shared = phone ? STRIP_PHONE_PX : STRIP_PX
   const slim = handSlim && !phone
-  const hand = slim ? HAND_SLIM_PX : phone ? phoneHandPx(height) : clampedHeight(HAND_CLAMP, height)
+  const extra = phone ? finite(bars) : 0
+  const hand = slim ? HAND_SLIM_PX : phone ? phoneHandPx(height, extra) : clampedHeight(HAND_CLAMP, height)
   const rest = Math.max(0, height - topBar - shared - hand - (phone ? DECISION_BAR_PX : 0))
   const opponents = rest / (1 + OWN_SHARE)
   const own = rest - opponents
@@ -330,6 +333,7 @@ export function regionSizes(viewport: Viewport, folded = false, handSlim = false
     opponents,
     own,
     ...(slim ? { handSlim: true } : {}),
+    ...(extra > 0 ? { bars: extra } : {}),
   }
 }
 
@@ -340,11 +344,12 @@ const phoneFixedPx = (): number => TOP_BAR_PX + STRIP_PHONE_PX + DECISION_BAR_PX
 
 /**
  * A phone's hand dock in a window `height` px high: `HAND_PHONE_CLAMP`, lowered where the window leaves the boards less
- * than `PHONE_BOARDS_PX`, down to the peek row `HAND_PEEK_PX` (`phoneHandCss` writes the same in CSS).
+ * than `PHONE_BOARDS_PX` besides the `bars` px of the mode's own bars (`phoneBarsPx`), down to the peek row
+ * `HAND_PEEK_PX` (`phoneHandCss` writes the same in CSS).
  */
-export function phoneHandPx(height: number): number {
+export function phoneHandPx(height: number, bars = 0): number {
   const high = finite(height)
-  const spare = high - phoneFixedPx() - PHONE_BOARDS_PX
+  const spare = high - phoneFixedPx() - PHONE_BOARDS_PX - finite(bars)
   return Math.max(HAND_PEEK_PX, Math.min(spare, clampedHeight(HAND_PHONE_CLAMP, high)))
 }
 
@@ -360,8 +365,8 @@ export function handSink(room: number, peek: boolean): number {
 }
 
 /** `phoneHandPx` as a CSS length of the table's height. */
-export const phoneHandCss = (): string =>
-  `clamp(${HAND_PEEK_PX}px, calc(100dvh - ${phoneFixedPx() + PHONE_BOARDS_PX}px), ${clampCss(HAND_PHONE_CLAMP)})`
+export const phoneHandCss = (bars = 0): string =>
+  `clamp(${HAND_PEEK_PX}px, calc(100dvh - ${phoneFixedPx() + PHONE_BOARDS_PX + finite(bars)}px), ${clampCss(HAND_PHONE_CLAMP)})`
 
 /**
  * The `grid-template-rows` of the table's main area: top bar, opponents, shared strip, own board, hand dock. The two
@@ -370,12 +375,13 @@ export const phoneHandCss = (): string =>
  * covers both boards and the strip keeps the sentence and the buttons above the hand.
  */
 export function gridRows(
-  regions: Pick<Regions, 'phone' | 'landscape'> & Partial<Pick<Regions, 'opponents' | 'own' | 'handSlim'>>,
+  regions: Pick<Regions, 'phone' | 'landscape'> &
+    Partial<Pick<Regions, 'opponents' | 'own' | 'handSlim' | 'bars'>>,
   choice = false,
 ): string {
   const bar = regions.landscape ? TOP_BAR_LANDSCAPE_PX : TOP_BAR_PX
   const hand = regions.phone
-    ? phoneHandCss()
+    ? phoneHandCss(regions.bars)
     : regions.handSlim === true
       ? `${HAND_SLIM_PX}px`
       : `max(${clampCss(HAND_CLAMP)}, var(${HAND_GROW_VAR}, 0px))`
@@ -571,9 +577,12 @@ export function bossOnPhone(plan: SeatPlan, phone: boolean): SeatPlan {
  * The height in px of the party's band over your board in boss mode: a row of boards, at most `ALLIES_OWN_MOST` of
  * your row so your board stays the larger; a tile strip on a phone or where that share is under `ALLIES_MIN_PX`.
  */
-export function alliesBandPx(regions: Pick<Regions, 'phone' | 'opponents' | 'own'>, allies: number): number {
+export function alliesBandPx(
+  regions: Pick<Regions, 'phone' | 'opponents' | 'own'> & { main?: Pick<Viewport, 'height'> },
+  allies: number,
+): number {
   if (allies <= 0) return 0
-  if (regions.phone) return ALLY_STRIP_PX
+  if (regions.phone) return regions.main === undefined ? ALLY_STRIP_PX : tileStripPx(regions.main.height)
   const room = finite(regions.opponents) + finite(regions.own)
   const most = Math.floor(finite(regions.own) * ALLIES_OWN_MOST)
   if (most < ALLIES_MIN_PX) return ALLY_STRIP_PX
@@ -591,6 +600,33 @@ export const ALLY_WIDE_SPAN = 3
 
 /** The party's tile strip on a phone (`h-14`). */
 export const ALLY_STRIP_PX = 56
+/** A strip of one-line tiles (name and life) on a short phone: the party's and the boss's side's (`TileStrip` `line`, `h-8`). */
+export const TILE_LINE_PX = 32
+/** A phone lower than this draws boss mode's tile strips and the boss's pod on one line each, the details a tap away. */
+export const SHORT_PHONE_PX = 760
+
+/** Whether a phone window `height` px high is short: its mode's bars keep to one line (`SHORT_PHONE_PX`). */
+export const shortPhone = (height: number): boolean => finite(height) < SHORT_PHONE_PX
+
+/** The height in px of a boss mode tile strip on a phone window `height` px high. */
+export const tileStripPx = (height: number): number => (shortPhone(height) ? TILE_LINE_PX : ALLY_STRIP_PX)
+
+/** The gap under each bar of boss mode's sides (`gap-1` on a short phone, else `gap-2`). */
+export const bossGapPx = (phone: boolean, height: number): number =>
+  phone && shortPhone(height) ? SHORT_GAP_PX : ZONE_GAP_PX
+const SHORT_GAP_PX = 4
+
+/**
+ * The px a phone's mode spends on bars of its own besides the opponents' tiles and the two board rows that
+ * `PHONE_BOARDS_PX` holds: in boss mode the boss's abilities and the party's strip, each with its gap; 0 elsewhere.
+ */
+export function phoneBarsPx(seats: Pick<SeatPlan, 'shape' | 'allies'>, height: number): number {
+  if (seats.shape !== 'boss') return 0
+  const gap = bossGapPx(true, height)
+  const party = seats.allies.length === 0 ? 0 : tileStripPx(height) + gap
+  return BOSS_ABILITIES_PX + gap + party
+}
+
 /** The share of the boards' room the party's row of boards takes, and its bounds in px. */
 export const ALLIES_SHARE = 0.34
 export const ALLIES_MIN_PX = 120
@@ -626,11 +662,12 @@ export function planTable(input: TableInput): TablePlan {
     viewer: input.viewer,
   })
   const arranged = bossOnPhone(arrangeSeats({ ...input, seatCount, mode }), sized.phone)
-  // A seat with nothing in its hand dock gives the boards that room, in boss mode only.
+  // A seat with nothing in its hand dock gives the boards that room, in boss mode only; a phone's hand dock gives the
+  // mode's own bars theirs.
+  const slim = input.handSlim === true && arranged.shape === 'boss'
+  const bars = sized.phone ? phoneBarsPx(arranged, sized.main.height) : 0
   const regions =
-    input.handSlim === true && arranged.shape === 'boss'
-      ? regionSizes(input.viewport, input.sideFolded === true, true)
-      : sized
+    slim || bars > 0 ? regionSizes(input.viewport, input.sideFolded === true, slim, bars) : sized
   // The strip leads with the seat whose turn it is, so that it is in view where the strip scrolls and one place to look at everywhere.
   const seats = { ...arranged, tiles: activeFirst(arranged.tiles, input.active) }
   const pod: PodPlace = regions.phone ? 'line' : 'aside'

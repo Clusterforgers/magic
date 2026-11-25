@@ -1,6 +1,6 @@
 import { useSeatAnchor } from '@/features/learn/seatAnchors'
-import { Crosshair, GhostIcon } from 'lucide-react'
-import { memo, useContext, useRef } from 'react'
+import { ChevronDown, Crosshair, GhostIcon } from 'lucide-react'
+import { memo, useContext, useRef, useState } from 'react'
 import { BossBarContext } from './campaign/useBossAbilities'
 import type { MouseEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
@@ -77,6 +77,8 @@ interface SeatPanelProps {
   variant?: 'panel' | 'line'
   /** A line keeps its figures to one row under the name, scrolling sideways where they do not fit (a grid of opponents). */
   oneRow?: boolean
+  /** A `oneRow` line keeps to its name row, a toggle beside the life showing its figures (a short phone's boss). */
+  fold?: boolean
 }
 
 /** How a pod reads while an attack is aimed: a seat that may be attacked has an outline, the one chosen a filled one. */
@@ -158,8 +160,11 @@ export const SeatPanel = memo(function SeatPanel({
   seat,
   variant = 'panel',
   oneRow = false,
+  fold = false,
 }: SeatPanelProps) {
   const owner = useSeatNamer()(seat)
+  const [unfolded, setUnfolded] = useState(false)
+  const folded = fold && oneRow && !unfolded
   const player = usePlay((state) => playerOf(state, seat))
   const coach = useSeatAnchor(seat, 'pod')
   const graveyardCoach = useSeatAnchor(seat, 'graveyard')
@@ -330,15 +335,37 @@ export const SeatPanel = memo(function SeatPanel({
                 team={team}
                 spirit={player.spirit === true}
               />
+              {fold && oneRow ? (
+                <button
+                  type="button"
+                  data-slot="pod-fold"
+                  aria-expanded={!folded}
+                  aria-label={folded ? `Show ${owner}'s zones` : `Hide ${owner}'s zones`}
+                  title={folded ? `Show ${owner}'s zones` : `Hide ${owner}'s zones`}
+                  onClick={() => setUnfolded((was) => !was)}
+                  // The hit area reaches past the 16 px chevron, a thumb's width.
+                  className="-my-1 -mr-1 grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground outline-none hover:bg-foreground/10 focus-visible:ring-2 focus-visible:ring-primary"
+                >
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cn(
+                      'size-4 transition-transform motion-reduce:transition-none',
+                      !folded && 'rotate-180',
+                    )}
+                  />
+                </button>
+              ) : null}
             </div>
           </div>
           {/* One row of figures: a crowded grid keeps every pod two lines high, so the boards under them keep their room. */}
           <div
             data-slot={oneRow ? 'pod-figures' : undefined}
             className={
-              oneRow
-                ? 'flex min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none] [mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)] *:shrink-0'
-                : 'contents'
+              folded
+                ? 'hidden'
+                : oneRow
+                  ? 'flex min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none] [mask-image:linear-gradient(to_right,black_calc(100%-1rem),transparent)] *:shrink-0'
+                  : 'contents'
             }
           >
             {/* The lands lead the row: their chip and what they leave untapped stay in view however many figures follow (a phone, whose lands show it, keeps the chip). */}

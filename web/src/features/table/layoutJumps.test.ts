@@ -2,7 +2,7 @@
 import { describe, expect, it } from 'vitest'
 import { boardCounts, boardFrames, holdSplit, splitBoards, splitRegions } from './boardSplit'
 import type { HeldRows } from './boardSplit'
-import { fixtureState } from './dev/devGame'
+import { fixtureState, withBoss } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import type { FixtureOptions } from './dev/fixture'
 import { scriptStates } from './dev/layoutScript'
@@ -12,6 +12,7 @@ import { fitLanes, LANE_LIMITS } from './laneFit'
 import type { LaneCounts } from './laneFit'
 import { planTable } from './layout'
 import type { Viewport } from './layout'
+import { bossSidesOf } from './selectors'
 
 /** A box moving or a card resizing by more than this is a jump, as `scripts/layout-jumps.mjs` counts them. */
 const JUMP_PX = 4
@@ -24,11 +25,14 @@ interface Jumps {
 /**
  * The jumps of the layout script over `options` in `viewport`: the opponents' row and your row as the split gives
  * them, and the card width of your board and of the first opponent's in the boxes the split leaves. `held` keeps
- * the split's rows and the boards' cards (`HeldRows`, `fitHeld`); without it every state is fitted afresh.
+ * the split's rows and the boards' cards (`HeldRows`, `fitHeld`); without it every state is fitted afresh. With `boss`
+ * the last seat is a boss and the table is in boss mode.
  */
-function jumpsOf(options: FixtureOptions, viewport: Viewport, held: boolean): Jumps {
-  const plan = planTable({ viewport, seatCount: options.seats, viewer: 0 })
-  const states = scriptStates(buildFixture(options))
+function jumpsOf(options: FixtureOptions, viewport: Viewport, held: boolean, boss = false): Jumps {
+  const base = boss ? withBoss(buildFixture(options), 0) : buildFixture(options)
+  const plan = planTable({ viewport, seatCount: options.seats, viewer: 0, sides: bossSidesOf(base.view) })
+  expect(plan.seats.shape === 'boss').toBe(boss)
+  const states = scriptStates(base)
   let rows: HeldRows | null = null
   const holds: (FitHold | null)[] = [null, null]
   let last: number[] | null = null
@@ -82,6 +86,18 @@ describe('the layout script', () => {
     (_, options, size) => {
       const held = jumpsOf(options, size, true)
       const fresh = jumpsOf(options, size, false)
+      expect(held.rows + held.cards).toBeLessThanOrEqual(BUDGET)
+      expect(held.rows + held.cards).toBeLessThanOrEqual(fresh.rows + fresh.cards)
+    },
+  )
+
+  // Boss mode on a phone splits two rows under its bars as the other tables do, its one-line bars fixed by the height.
+  it.each(SIZES.filter((size) => size.width < 640))(
+    'moves a boss fight at %o within the budget, fewer times than fitting every state afresh',
+    (size) => {
+      const options = { seats: 4, permanents: 20 }
+      const held = jumpsOf(options, size, true, true)
+      const fresh = jumpsOf(options, size, false, true)
       expect(held.rows + held.cards).toBeLessThanOrEqual(BUDGET)
       expect(held.rows + held.cards).toBeLessThanOrEqual(fresh.rows + fresh.cards)
     },

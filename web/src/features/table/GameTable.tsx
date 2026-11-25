@@ -22,7 +22,15 @@ import { TableMoments } from './moment/TableMoments'
 import { useTableMoments } from './moment/useTableMoments'
 import { LexiconDialog } from './lexicon/LexiconDialog'
 import { ManualMenuProvider } from './manual/ManualMenu'
-import { alliesBandPx, handGrowMost, planTable, POD_COLUMN_PX, sidePanelRows, ZONE_GAP_PX } from './layout'
+import {
+  alliesBandPx,
+  handGrowMost,
+  planTable,
+  POD_COLUMN_PX,
+  shortPhone,
+  sidePanelRows,
+  ZONE_GAP_PX,
+} from './layout'
 import type { TableMode } from './layout'
 import { ChoiceOverlayContext, useChoiceOverlayHost } from './prompt/choiceOverlay'
 import { createMarksStore, MarksContext } from './prompt/marks'
@@ -127,6 +135,8 @@ const Table = memo(function Table() {
   useTheirHead(section, onHead, `${ready}|${plan.shape}|${plan.boards.join(',')}`)
   const regions = useBoardSplit(table.regions, plan, 0, head, 0)
   const size: CardSize = plan.compact ? 'compact' : 'normal'
+  // A short phone keeps the boss's pod and the party's strip to one line each, so your row keeps a band of your cards.
+  const short = regions.phone && shortPhone(regions.main.height)
   const folding = options.foldLands ?? FOLD_LANDS_BY_DEFAULT
   const fx = useTableFx(options.effects ?? EFFECTS_BY_DEFAULT, options.effectsSlow)
   const moments = useTableMoments(options.effects ?? EFFECTS_BY_DEFAULT)
@@ -185,6 +195,8 @@ const Table = memo(function Table() {
                                         pod={table.opponentPod}
                                         card={regions.party?.bossCard}
                                         onFocusSeat={setChosen}
+                                        oneRow={regions.phone}
+                                        fold={short}
                                       />
                                     ) : (
                                       <Opponents
@@ -212,6 +224,7 @@ const Table = memo(function Table() {
                                         }
                                         shares={regions.party?.shares}
                                         phone={regions.phone}
+                                        short={short}
                                       />
                                     ) : (
                                       <SeatArea

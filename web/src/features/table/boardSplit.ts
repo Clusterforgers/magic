@@ -2,7 +2,16 @@
 import { LANE_LIMITS, highestRung, ladderOf, laneHeight } from './laneFit'
 import type { LaneCounts, LaneLimits } from './laneFit'
 import { POD_CRAMPED_PX, POD_PICTURES_PX } from './cornerFit'
-import { BOSS_ABILITIES_PX, BOSS_SPAN, OWN_SHARE, POD_COLUMN_PX, ZONE_GAP_PX, alliesBandPx } from './layout'
+import {
+  BOSS_ABILITIES_PX,
+  BOSS_SPAN,
+  OWN_SHARE,
+  POD_COLUMN_PX,
+  ZONE_GAP_PX,
+  alliesBandPx,
+  bossGapPx,
+  tileStripPx,
+} from './layout'
 import type { Regions, SeatPlan } from './layout'
 import type { PlayState } from '@/play/store'
 import type { PlayerId } from '@/protocol/generated'
@@ -397,9 +406,11 @@ function bossFrames(
   widths: { aside: number; full: number; pads: number },
 ): { own: BoardFrame; theirs: BoardFrame } {
   const band = alliesBandPx(regions, seats.allies.length)
-  const party = { ...own, chrome: own.chrome + (band > 0 ? band + ZONE_GAP_PX : 0) }
+  const gap = bossGapPx(regions.phone, regions.main.height)
+  const party = { ...own, chrome: own.chrome + (band > 0 ? band + gap : 0) }
   const minions = regions.phone ? 0 : Math.max(0, seats.boards.length - 1)
-  const strip = (seats.tiles.length > 0 ? TILE_STRIP_PX + ZONE_GAP_PX : 0) + BOSS_ABILITIES_PX + ZONE_GAP_PX
+  const tiles = seats.tiles.length > 0 ? tileStripPx(regions.main.height) + gap : 0
+  const strip = tiles + BOSS_ABILITIES_PX + gap
   if (minions === 0) {
     return {
       own: party,
