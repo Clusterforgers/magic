@@ -95,7 +95,6 @@ The table and its prompts are live; the items below polish them.
 - [ ] (dk1c4a) The soulbond cards the compiler still leaves out: Donna Noble (a damage trigger), Joint Assault ("if it's paired"), Doom Weaver, Imperious Mindbreaker, Breathkeeper Seraph, Mirage Phalanx (quoted grants with their own amount), Flowering Lumberknot, Tarelily, Azra Matchthrower
 - [ ] (dk1c5c) Rooms: lock a door (Marina Vendrell, Keys to the House), a token copy of a half (Blu) and the copiable door state (CR 707.2)
 - [ ] (mb3) The asked clause for every decision of a spell or ability: the spell's own text and the clause of a mode, a number, an option and a choice of cards from the engine's position in the effect, not from the words
-- [ ] (mb4) The phone's board split holds the layout script to six jumps again (`layoutJumps.test.ts`)
 - [ ] (pf1) `DeckPictures` also lists an opponent's whole deck where its list is public (an unchanged precon, an open-deck house rule), and the tokens a deck can make (`docs/web.md`, Card images)
 - [ ] (mb5) `/dev/table?cards=real` over a card fixture of its own, so the asking card's art shows without a running server
 - [ ] (rg3) `reach.spec.ts` holds the signed-in pages (Decks, My games, Tournaments, Delves, Settings) on the accounts server
