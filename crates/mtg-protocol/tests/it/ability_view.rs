@@ -1,15 +1,21 @@
-//! Goal: an ability on the stack reaches every seat as an object of its own, named after its source with nothing else of the source's printed side, with its source and targets; a spell on the stack shows its targets; a card shows none of this, so the JSON of a vanilla game is what it was; and the ability comes and goes through the batches like any object.
+//! Goal: an ability on the stack reaches every seat as an object of its own, named after its source with nothing else of the source's printed side, with its source, its targets and its words (the writer's or the wordings written for it); a spell on the stack shows its targets; a card shows none of this, so the JSON of a vanilla game is what it was; and the ability comes and goes through the batches like any object.
 
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
+use mtg_core::card::CardType;
 use mtg_core::ids::PlayerId;
 use mtg_engine::Event;
 use mtg_engine::choose::Target;
 use mtg_engine::object::ObjectKind;
 use mtg_engine::zones::Zone;
 use mtg_protocol::{EventView, ObjectView, StateView, project_events};
-use mtg_testkit::cards::{burn, mountain, pinger};
+use mtg_testkit::cards::{burn, cost, mountain, pinger};
 use mtg_testkit::{Driver, Scenario, ready};
+use rstest::rstest;
 
 const SEATS: [PlayerId; 2] = [PlayerId(0), PlayerId(1)];
 
@@ -70,6 +76,50 @@ fn an_ability_on_the_stack_carries_its_rules_text_with_the_source_named() {
         assert!(text.contains("Pinger") && !text.contains('~'), "{text}");
         // A card keeps none.
         assert!(view_of(&driver, viewer, pinger_id).rules_text.is_none());
+    }
+}
+
+/// An entering trigger the writer words, and one worded only by the wordings written for its effects as a whole.
+#[rstest]
+#[case::by_the_writer(
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Draw":{}}]}}"#,
+    "When Herald enters, draw a card."
+)]
+#[case::by_the_written_wordings(
+    r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Destroy":{"what":{"Each":[{"Subtype":"Curse"},{"AttachedTo":"You"}]}}}]}}"#,
+    "When Herald enters, destroy all Curses attached to you."
+)]
+fn a_trigger_on_the_stack_shows_its_words_however_they_are_written(
+    #[case] rules: &str,
+    #[case] words: &str,
+) {
+    let rules: Ability = serde_json::from_str(rules).unwrap();
+    let herald = Arc::new(
+        CardDefinition::new("Herald")
+            .with_type(CardType::Creature)
+            .with_mana_cost(cost(0, &[]))
+            .with_power_toughness(1, 1)
+            .with_rules(rules),
+    );
+    let mut driver = Driver::from_scenario(Scenario::new(2).hand(0, [herald])).unwrap();
+    driver.cast("Herald").unwrap();
+    for _ in 0..4 {
+        let top = driver.state().stack().last().copied();
+        if top.is_some_and(|id| {
+            driver
+                .state()
+                .object(id)
+                .is_some_and(|o| o.ability().is_some())
+        }) {
+            break;
+        }
+        driver.pass().unwrap();
+    }
+    let trigger = *driver.state().stack().last().unwrap();
+    for viewer in SEATS {
+        let shown = view_of(&driver, viewer, trigger);
+        assert_eq!(shown.kind, ObjectKind::Ability);
+        assert_eq!(shown.rules_text.as_deref(), Some(words));
     }
 }
 

@@ -386,9 +386,9 @@ pub struct ObjectView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub granter: Option<Granter>,
-    /// The rules text of an ability on the stack in the card writer's words, with the source's name for `~` (the
-    /// granter's words when it has one); left out for any other object, for an ability the writer cannot word and while
-    /// the source is hidden from the viewer.
+    /// The rules text of an ability on the stack in the card writer's words or else its first written wording
+    /// (`rules_words`), with the source's name for `~` (the granter's words when it has one); left out for any other
+    /// object, for an ability neither words and while the source is hidden from the viewer.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub rules_text: Option<String>,

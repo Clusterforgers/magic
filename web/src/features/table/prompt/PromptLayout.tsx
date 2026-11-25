@@ -107,9 +107,12 @@ function Sentence({
   quiet = false,
   capital = false,
   coach = false,
+  aside = null,
 }: {
   text: ReactNode
   quiet?: boolean
+  /** What stands on the rest of the sentence's line (a phone's bar quotes the asked clause there). */
+  aside?: ReactNode
   /** The words start after a name that is not drawn: the first letter in view is drawn as a capital. */
   capital?: boolean
   /** The question of a decision in its home: the coach's `ask.question` anchor. */
@@ -140,6 +143,7 @@ function Sentence({
       >
         {text}
       </LiveText>
+      {quiet ? null : aside}
       {/* A sentence that is not drawn has nothing to open: a reader hears all of it. */}
       {(clamped || open) && !quiet ? (
         <button
@@ -451,6 +455,12 @@ export function PromptLayout({
         quiet={quiet && side !== null}
         capital={named && home !== null}
         coach={home !== null}
+        // A phone's bar has no line for the quote: it takes the rest of the question's line.
+        aside={
+          chip && home === 'bar' && !(at === 'window' && hasContent(choices)) ? (
+            <AskedQuote where="bar" />
+          ) : null
+        }
       />
       {/* The dock draws no card: the asked clause is quoted, in the list's window when one stands over it. */}
       {chip && home === 'dock' && !(at === 'window' && hasContent(choices)) ? (
