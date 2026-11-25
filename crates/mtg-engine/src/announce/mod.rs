@@ -79,7 +79,9 @@ use anchor::Anchor;
 
 pub(crate) use modifiers::{c11a_reduced, cheapest, floored};
 pub(crate) use optional::{Optional, kicked_with, payments, r117_paid_with};
-pub(crate) use x::{XCost, least_of, most_afforded, payable, some_x_has_targets};
+pub(crate) use x::{
+    XCost, XPaid, least_of, most_afforded, paid_for_x, payable, some_x_has_targets,
+};
 
 /// What is being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]

@@ -291,6 +291,7 @@ mod r6q1_face_down_cost;
 mod r7p3_next_spell;
 mod rebound;
 mod refusal_detail;
+mod refusal_detail_rest;
 mod refusal_why;
 mod removal_spells;
 mod removal_stack;

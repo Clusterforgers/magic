@@ -266,8 +266,34 @@ pub(crate) fn payable(
     cost: &ManaCost,
     pays: impl Fn(&ManaCost) -> bool,
 ) -> bool {
+    paid_for_x(state, player, id, (fixed, way), cost, pays) == XPaid::Paid
+}
+
+/// How a spell's total cost meets its targets that read X ([`paid_for_x`]).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(crate) enum XPaid {
+    /// Some X is paid for and leaves every target a legal choice.
+    Paid,
+    /// Not even the least X is paid for.
+    Short,
+    /// X from 0 to `most` is paid for, and none of them leaves a target that reads X a legal choice.
+    NoTarget {
+        /// The most X paid for.
+        most: u32,
+    },
+}
+
+/// [`payable`], telling a total that is short apart from one whose every payable X leaves no target.
+pub(crate) fn paid_for_x(
+    state: &GameState,
+    player: PlayerId,
+    id: ObjectId,
+    (fixed, way): (bool, Option<CastWay>),
+    cost: &ManaCost,
+    pays: impl Fn(&ManaCost) -> bool,
+) -> XPaid {
     let Some(cost) = super::price::floor(state, player, id, cost) else {
-        return false;
+        return XPaid::Short;
     };
     let cost = &*cost;
     let alone = pays;
@@ -280,7 +306,11 @@ pub(crate) fn payable(
         .map(|(_, rules)| rules)
         .filter(|rules| targets_read_x(rules));
     let Some(rules) = rules else {
-        return pays(&cheapest(state, player, id, way, cost));
+        return if pays(&cheapest(state, player, id, way, cost)) {
+            XPaid::Paid
+        } else {
+            XPaid::Short
+        };
     };
     let symbols = state.object(id).map_or(0, |card| {
         u32::from(card.card().x_in_cost) + required::r109_waterbend_x(card.card())
@@ -292,13 +322,16 @@ pub(crate) fn payable(
     for x in 0..=most {
         let total = crate::price::with_x(cost.clone(), x.saturating_mul(symbols), color);
         if !pays(&cheapest(state, player, id, way, &total)) {
-            return false;
+            return match x.checked_sub(1) {
+                Some(most) => XPaid::NoTarget { most },
+                None => XPaid::Short,
+            };
         }
         if targets_met_at(state, id, player, &rules, x) {
-            return true;
+            return XPaid::Paid;
         }
     }
-    false
+    XPaid::NoTarget { most }
 }
 
 /// Whether the ability `rules` of `source` can be announced with some X that `affords`: when what it may target reads X

@@ -26,13 +26,13 @@ use mtg_testkit::cards::{cost, forest, gain_life, island, mountain, plains, swam
 use mtg_testkit::{Driver, Scenario, ScriptError, ready};
 use rstest::rstest;
 
-fn card(name: &str) -> Arc<CardDefinition> {
+pub(crate) fn card(name: &str) -> Arc<CardDefinition> {
     mtg_testkit::corpus::card(name).unwrap()
 }
 
 /// `players` seats with seat 0 active in `step` of turn 2, holding `hand` and controlling `mine`; seat 1 has `theirs` in
 /// its graveyard.
-fn table(
+pub(crate) fn table(
     players: usize,
     step: Step,
     hand: Vec<Arc<CardDefinition>>,
@@ -50,7 +50,7 @@ fn table(
     scenario
 }
 
-fn options(driver: &Driver) -> PriorityOptions {
+pub(crate) fn options(driver: &Driver) -> PriorityOptions {
     match &driver.decision().unwrap().kind {
         DecisionKind::Priority(options) => (**options).clone(),
         other => panic!("not a priority decision: {other:?}"),
@@ -58,7 +58,7 @@ fn options(driver: &Driver) -> PriorityOptions {
 }
 
 /// The first card named `name` in `zone`.
-fn in_zone(driver: &Driver, zone: Zone, name: &str) -> ObjectId {
+pub(crate) fn in_zone(driver: &Driver, zone: Zone, name: &str) -> ObjectId {
     let state = driver.state();
     *state
         .zone(zone)
@@ -68,7 +68,7 @@ fn in_zone(driver: &Driver, zone: Zone, name: &str) -> ObjectId {
 }
 
 /// The reason and detail the offer gives for the card `name` of seat 0's hand.
-fn told_card(driver: &Driver, name: &str) -> Option<(Unplayable, Option<Why>)> {
+pub(crate) fn told_card(driver: &Driver, name: &str) -> Option<(Unplayable, Option<Why>)> {
     let id = in_zone(driver, Zone::Hand(PlayerId(0)), name);
     options(driver)
         .unplayable
@@ -78,7 +78,7 @@ fn told_card(driver: &Driver, name: &str) -> Option<(Unplayable, Option<Why>)> {
 }
 
 /// The reason and detail the offer gives for the first ability of `id`, which it does not offer.
-fn told_ability(driver: &Driver, id: ObjectId) -> Option<(Unplayable, Option<Why>)> {
+pub(crate) fn told_ability(driver: &Driver, id: ObjectId) -> Option<(Unplayable, Option<Why>)> {
     let options = options(driver);
     assert!(
         options.abilities.iter().all(|ability| ability.object != id),
@@ -98,7 +98,7 @@ fn host(needs: &str, by: HostBy) -> Why {
     }
 }
 
-fn lands(count: usize, land: fn() -> Arc<CardDefinition>) -> Vec<PresetPermanent> {
+pub(crate) fn lands(count: usize, land: fn() -> Arc<CardDefinition>) -> Vec<PresetPermanent> {
     (0..count).map(|_| ready(land())).collect()
 }
 
@@ -288,7 +288,7 @@ fn graveyard_keywords_say_why(
     assert_eq!(told_ability(&driver, id), Some((reason, why)));
 }
 
-fn x_target(needs: &str, zone: TargetZone, least: u32, most: u32) -> Why {
+pub(crate) fn x_target(needs: &str, zone: TargetZone, least: u32, most: u32) -> Why {
     Why::XTarget {
         needs: needs.to_owned(),
         zone,
@@ -298,9 +298,9 @@ fn x_target(needs: &str, zone: TargetZone, least: u32, most: u32) -> Why {
 }
 
 #[rstest]
-#[case::geth_with_two_swamps("Geth, Lord of the Vault", vec![ready(swamp()), ready(swamp())], vec![card("Serra Angel")], x_target("an artifact or creature card with mana value X an opponent owns in a graveyard", TargetZone::Graveyard, 0, 1))]
-#[case::geth_with_three_swamps("Geth, Lord of the Vault", vec![ready(swamp()), ready(swamp()), ready(swamp())], vec![card("Serra Angel")], x_target("an artifact or creature card with mana value X an opponent owns in a graveyard", TargetZone::Graveyard, 0, 2))]
-#[case::tamiyo_with_three_loyalty("Tamiyo, Compleated Sage", vec![], vec![], x_target("a nonland artifact or creature or enchantment or planeswalker or battle card with mana value X in your graveyard", TargetZone::Graveyard, 0, 3))]
+#[case::geth_with_two_swamps("Geth, Lord of the Vault", vec![ready(swamp()), ready(swamp())], vec![card("Serra Angel")], x_target("an artifact or creature card with mana value X in an opponent's graveyard", TargetZone::Graveyard, 0, 1))]
+#[case::geth_with_three_swamps("Geth, Lord of the Vault", vec![ready(swamp()), ready(swamp()), ready(swamp())], vec![card("Serra Angel")], x_target("an artifact or creature card with mana value X in an opponent's graveyard", TargetZone::Graveyard, 0, 2))]
+#[case::tamiyo_with_three_loyalty("Tamiyo, Compleated Sage", vec![], vec![], x_target("a nonland permanent card with mana value X in your graveyard", TargetZone::Graveyard, 0, 3))]
 fn an_x_ability_names_the_target_no_payable_x_has(
     #[values(2, 3, 4)] players: usize,
     #[case] name: &str,
