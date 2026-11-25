@@ -37,9 +37,13 @@
     grid-template-areas:
       'chip reading clock stops'
       'question question question question'
+      'quote quote quote quote'
       'choices choices choices choices'
       'answers answers answers answers';
     column-gap: 0.5rem;
+  }
+  &[data-home='dock'] > [data-slot='asked-quote'] {
+    grid-area: quote;
   }
   &[data-home='dock'] > *,
   &[data-home='bar'] > * {
@@ -444,6 +448,15 @@
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
   box-shadow: inset 0 -2px 0 var(--turn-you);
+}
+
+/* The asked clause quoted where the asking card's text is not drawn (the dock, a phone's bar, a list's window). */
+@utility asked-quote {
+  border-inline-start: 2px solid var(--turn-you);
+  padding-inline-start: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  color: var(--foreground);
 }
 
 /* A row of the column: a number, a picture, a name over a line of words, and controls at the end. */

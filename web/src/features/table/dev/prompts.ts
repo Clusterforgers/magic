@@ -35,6 +35,7 @@ import { withTopCard, withTopCast } from './topCardScene'
 import { withBlocked } from './blockedScene'
 import { withDetail, withDetailCards } from './detailScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
+import { ASKED_PROMPTS, ASKED_TABLES } from './askedClauseScene'
 import { TWIN_PROMPTS, TWIN_TABLES } from './twinScene'
 import {
   payLotus,
@@ -587,6 +588,7 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'pay-cycling': payCycling,
   'commander-return': commanderReturn,
   ...ASK_PROMPTS,
+  ...ASKED_PROMPTS,
   ...TWIN_PROMPTS,
   ...EFFECT_PROMPTS,
   ...LOOKED_PROMPTS,
@@ -672,6 +674,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   'pass-turn': quietMoment('Upkeep', false, false),
   'commander-return': commanderReturnTable,
   ...ASK_TABLES,
+  ...ASKED_TABLES,
   ...TWIN_TABLES,
   ...EFFECT_MOMENTS,
   ...LOOKED_MOMENTS,

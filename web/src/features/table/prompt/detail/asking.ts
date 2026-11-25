@@ -117,6 +117,12 @@ export function clauseParts(
   return { before: text.slice(0, start), marked: text.slice(start, end), after: text.slice(end) }
 }
 
+/** The words of `text` that `clause` marks; null when there is no clause or it does not fit the text. */
+export function askedWords(text: string, clause: readonly [number, number] | undefined): string | null {
+  const { marked } = clauseParts(text, clause)
+  return marked.trim() === '' ? null : marked.trim()
+}
+
 const FOLLOW_UPS = [
   'If you do,',
   "If you don't,",
