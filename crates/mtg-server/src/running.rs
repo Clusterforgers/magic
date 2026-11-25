@@ -612,14 +612,14 @@ impl Running {
     }
 
     /// The pictures `seat` may load ahead and the lists it may look through ([`mtg_protocol::deck_pictures`],
-    /// [`mtg_protocol::deck_lists`]); none when there is neither.
+    /// [`mtg_protocol::deck_lists`]); none when no card has a picture.
     pub(crate) fn deck_pictures(&self, seat: PlayerId) -> Option<ServerMessage> {
         let public = self.public_lists();
         let setup = self.engine.setup();
         let cards = mtg_protocol::deck_pictures(setup, seat, &public);
         let decks = mtg_protocol::deck_lists(setup, seat, &public);
-        (!cards.is_empty() || !decks.is_empty())
-            .then_some(ServerMessage::DeckPictures { cards, decks })
+        // A table without a single picture (built-in and test decks) is told nothing, its lists included.
+        (!cards.is_empty()).then_some(ServerMessage::DeckPictures { cards, decks })
     }
 
     /// Applies `seat`'s answer to the decision `id`, if that decision is pending for that seat.
