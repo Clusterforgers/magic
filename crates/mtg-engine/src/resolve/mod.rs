@@ -6,6 +6,7 @@
 //! step with k decisions runs k + 1 times. State stays the fold of the log, and an engine rebuilt from the log
 //! stands at the same step (`docs/cards-dsl.md`, Execution).
 
+pub mod asked;
 mod inline;
 mod left;
 pub(crate) mod prim;
@@ -38,6 +39,7 @@ use mtg_cards::ability::Ability;
 use mtg_cards::effect::Effect;
 use mtg_core::ids::{ObjectId, PlayerId};
 
+pub use asked::{AskedAt, AskedPart, asked_at, effect_on_card};
 pub(crate) use inline::{
     Inline, R114Replaced, r114_run_bound, r304_run_then_count, r370_run_instead_bound, run_inline,
     w5d_run_instead,
