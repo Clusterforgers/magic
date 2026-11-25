@@ -1,4 +1,4 @@
-//! The boss's sea                theme.map_or(0, |t| t.boss_supplies),: its precon deck, its innate at the level of the run's depth and Heat, one encounter modifier and
+//! The boss's seat: its precon deck, its innate at the level of the run's depth and Heat, one encounter modifier and
 //! its relics drawn by the seed keyed by floor and room, two phases by round, its satchel, its life and reinforcements
 //! by party size only, and the Hard brain. A phase written with levels (as an innate is) plays at the innate's level.
 
