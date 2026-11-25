@@ -22,6 +22,7 @@ mod defining;
 mod did_triggers;
 mod dk1c_triggers;
 mod dl14e_delayed_batches;
+mod dl14g_batch_ids;
 mod e14b_unattach_granter;
 mod e15b_enters;
 mod e15c_statics;

@@ -162,7 +162,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A fourth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
 - [ ] (dl14c) Three Hard heroes win the Warrens 50 to 60 % at Heat 1, depth 1 (43 % at generation 12), measured with 30 whole fights (Tuning)
-- [ ] (dl14g) Instead effects of one batch that each create a continuous effect get their own effect ids, as delayed triggers already do (`FreshDelayedIds`), so the fold never refuses a duplicate effect
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 

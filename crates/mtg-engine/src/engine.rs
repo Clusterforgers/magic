@@ -888,7 +888,7 @@ impl Engine {
         let before = (watching && !open && !was_open && triggers::needs_before(&events))
             .then(|| self.state.clone());
         let start = self.events.len();
-        let mut fresh = triggers::FreshDelayedIds::default();
+        let mut fresh = crate::batch_ids::FreshIds::default();
         for event in events {
             let event = fresh.renamed(&self.state, &event).unwrap_or(event);
             apply_event(&mut self.state, &event)?;
