@@ -481,10 +481,10 @@ fn t15a_v_syr_konrad_sees_the_creatures_dying_beside_it(
 }
 
 #[rstest]
-#[ignore = "t15o: the {2}, {T} ability of Three Tree City is not offered among the mana abilities"]
 fn t15a_v_three_tree_city_adds_one_color_per_creature_of_the_type(
     #[values(2, 3, 4)] seats: usize,
     #[values(0, 1, 3)] zombies: usize,
+    #[values(ManaType::Black, ManaType::White, ManaType::Green)] color: ManaType,
 ) -> Result<(), ScriptError> {
     let creatures = (0..zombies).map(|_| ready(card("Dregscape Zombie").unwrap()));
     let scenario = t15a_v_table(seats, 1, 0, Step::Main1)
@@ -522,39 +522,37 @@ fn t15a_v_three_tree_city_adds_one_color_per_creature_of_the_type(
     let DecisionKind::Priority(options) = &driver.decision()?.kind else {
         panic!("priority after mana");
     };
-    let colored: Vec<ManaSource> = options
+    // The color is chosen by which option is taken: one option per color, each adding the counted amount.
+    let colored: Vec<(ManaType, u32, ManaSource)> = options
         .mana_abilities
         .iter()
         .filter(|m| m.source.object == city && m.produces != ManaType::Colorless)
-        .map(|m| m.source)
+        .map(|m| (m.produces, m.count, m.source))
         .collect();
     if zombies == 0 {
         assert_eq!(colored, [], "no mana to add, nothing offered");
         return Ok(());
     }
-    driver.answer(Answer::Priority(PriorityAction::ActivateMana(colored[0])))?;
-    for _ in 0..6 {
-        let decision = driver.decision()?.clone();
-        if matches!(decision.kind, DecisionKind::Priority(_)) {
-            break;
-        }
-        let answer =
-            pick(&driver, &decision, "Black").unwrap_or_else(|| Driver::passive_answer(&decision));
-        driver.answer(answer)?;
-    }
+    let count = u32::try_from(zombies).unwrap();
+    let offered: Vec<(ManaType, u32)> = colored.iter().map(|(m, n, _)| (*m, *n)).collect();
     assert_eq!(
-        t15a_v_pool(&driver, 0, ManaType::Black),
-        u32::try_from(zombies).unwrap()
+        offered,
+        ManaType::ALL[..5]
+            .iter()
+            .map(|m| (*m, count))
+            .collect::<Vec<_>>()
     );
-    for other in [
-        ManaType::White,
-        ManaType::Blue,
-        ManaType::Red,
-        ManaType::Green,
-        ManaType::Colorless,
-    ] {
-        assert_eq!(t15a_v_pool(&driver, 0, other), 0, "{other:?}");
+    let (_, _, source) = colored.iter().find(|(m, ..)| *m == color).unwrap();
+    driver.answer(Answer::Priority(PriorityAction::ActivateMana(*source)))?;
+    assert!(
+        matches!(driver.decision()?.kind, DecisionKind::Priority(_)),
+        "no question asked"
+    );
+    assert_eq!(t15a_v_pool(&driver, 0, color), count);
+    for other in ManaType::ALL.iter().filter(|m| **m != color) {
+        assert_eq!(t15a_v_pool(&driver, 0, *other), 0, "{other:?}");
     }
+    assert!(t15a_v_tapped(driver.state(), "Three Tree City"));
     Ok(())
 }
 
