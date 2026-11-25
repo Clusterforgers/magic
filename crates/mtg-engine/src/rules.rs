@@ -358,6 +358,8 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
     LoyaltyTwice(Vec<PlayerId>),
+    /// The loyalty abilities of the permanent may be activated twice each turn (Urza, Planeswalker; CR 606.3).
+    P158LoyaltyTwiceThis(ObjectRef),
     /// The players may activate one loyalty ability of each of their planeswalkers once more this turn (CR 606.3).
     R6600LoyaltyOnceMore(Vec<PlayerId>),
     /// The next time each creature adapts, it adapts as though it had no +1/+1 counters (CR 701.46a); read by the adapt.
@@ -1077,6 +1079,8 @@ pub(crate) struct RulesInForce {
     no_hand_limit: BTreeSet<PlayerId>,
     /// The players who may activate each planeswalker's loyalty abilities twice each turn.
     loyalty_twice: BTreeSet<PlayerId>,
+    /// The planeswalkers whose loyalty abilities may be activated twice each turn.
+    p158_loyalty_twice: Vec<ObjectRef>,
     /// For each player, how many more loyalty activations of each of their planeswalkers the rules in force allow.
     loyalty_once_more: BTreeMap<PlayerId, u32>,
     /// The loyalty abilities that may be activated more times this turn, with how many more each rule allows.
@@ -1276,11 +1280,12 @@ impl Cast {
                 && state.object_tallied(self.source, None, Tally::C11bOnceUsed) == 0)
     }
 
-    /// Whether a permission with a limit has room for another card this turn (`Tally::R5503LimitUsed` of its source,
-    /// keyed by the first object it names). Any other permission always has.
+    /// Whether a permission with a limit has room for another card while it lasts (its uses counted by its source and
+    /// the first object it names, over every turn it spans). Any other permission always has.
     fn r5503_open(&self, state: &GameState) -> bool {
         self.limit.is_none_or(|limit| {
-            state.object_tallied(self.source, None, Tally::R5503LimitUsed(self.r5503_key())) < limit
+            let key = (self.source, self.r5503_key());
+            state.p158_limit_uses.get(&key).copied().unwrap_or(0) < limit
         })
     }
 
@@ -1758,6 +1763,7 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::P158LoyaltyTwiceThis(permanent) => self.p158_loyalty_twice.push(*permanent),
             Rule::R6600LoyaltyOnceMore(players) => {
                 for player in players {
                     let more = self.loyalty_once_more.entry(*player).or_default();
@@ -2437,6 +2443,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::P158LoyaltyTwiceThis => Rule::P158LoyaltyTwiceThis(scope.source),
         GameRule::R6600LoyaltyOnceMore(who) => Rule::R6600LoyaltyOnceMore(scope.players(who)?),
         GameRule::R6603LoyaltyAgain(times) => r6603_lower_loyalty_again(scope, *times)?,
         GameRule::EchoRather(cost) => Rule::EchoRather {
@@ -2689,6 +2696,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::R6603LoyaltyAgain { times, .. } => *times == 0,
+        Rule::P158LoyaltyTwiceThis(_) => false,
         Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
@@ -2920,6 +2928,7 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
+    p158_loyalty_twice: Vec::new(),
     loyalty_once_more: BTreeMap::new(),
     r6603_loyalty_again: Vec::new(),
     echo_rather: Vec::new(),
@@ -3490,14 +3499,16 @@ pub fn r6603_loyalty_again(state: &GameState, permanent: ObjectRef, ability: usi
 }
 
 /// How many times each turn `player` may activate the loyalty abilities of one planeswalker they control: twice under a
-/// rule that allows it (Oath of Teferi), else once (CR 606.3), and once more for each rule that grants one more
-/// activation this turn (The Chain Veil).
-pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
-    let base: u32 = if state.rules().loyalty_twice.contains(&player) {
-        2
-    } else {
-        1
-    };
+/// rule that allows it (Oath of Teferi) or under one of `permanent` itself (Urza, Planeswalker), else once (CR 606.3), and
+/// once more for each rule that grants one more activation this turn (The Chain Veil).
+pub fn loyalty_activations(state: &GameState, player: PlayerId, permanent: ObjectRef) -> u32 {
+    let rules = state.rules();
+    let base: u32 =
+        if rules.loyalty_twice.contains(&player) || rules.p158_loyalty_twice.contains(&permanent) {
+            2
+        } else {
+            1
+        };
     let more = state
         .rules()
         .loyalty_once_more
@@ -4063,15 +4074,15 @@ pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
 }
 
-/// The source and the tally a cast or land play of `card` by `player` from `from` uses up: that of the first permission with
-/// a limit that covers it, when no permission without one for that zone does. None for a card from a hand or the command
-/// zone.
+/// The source and key of the limited permission a cast or land play of `card` by `player` from `from` uses up: the first
+/// permission with a limit that covers it, when no permission without one for that zone does. None for a card from a
+/// hand or the command zone.
 pub(crate) fn r5503_limit_use(
     state: &GameState,
     player: PlayerId,
     card: ObjectId,
     from: Zone,
-) -> Option<(ObjectRef, Tally)> {
+) -> Option<(ObjectRef, ObjectRef)> {
     if matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return None;
     }
@@ -4086,7 +4097,7 @@ pub(crate) fn r5503_limit_use(
     }
     covering
         .first()
-        .map(|cast| (cast.source, Tally::R5503LimitUsed(cast.r5503_key())))
+        .map(|cast| (cast.source, cast.r5503_key()))
 }
 
 /// The source of the permission that works once each turn which a cast of `card` by `player` from `from` for `way` uses

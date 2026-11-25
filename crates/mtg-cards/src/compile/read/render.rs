@@ -2601,6 +2601,16 @@ impl Writer<'_> {
             })
     }
 
+    /// Whether the reference is one target spell on the stack ("return target spell to its owner's hand").
+    fn p158_is_a_spell(&self, what: &Ref) -> bool {
+        self.at_most_one(what)
+            && self.target_is(|kind| {
+                matches!(kind, Targetable::Object(selector)
+                    if selector.0.contains(&Pred::Spell)
+                        && !selector.0.iter().any(|pred| matches!(pred, Pred::In(_))))
+            })
+    }
+
     /// Whether the reference is the one target specification that takes several objects, all permanents.
     fn are_permanents(&self, what: &Ref) -> bool {
         *what == Ref::Target(0)
@@ -2926,6 +2936,8 @@ impl Writer<'_> {
                 "their owners' hands"
             };
             Some(format!("return {} to {tail}", self.object(what)?))
+        } else if self.p158_is_a_spell(what) {
+            Some(format!("return {} to its owner's hand", self.object(what)?))
         } else {
             None
         }

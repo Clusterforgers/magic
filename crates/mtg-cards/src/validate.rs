@@ -2013,6 +2013,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "NewlyControlled");
                 self.at("NewlyControlled", |w| w.reference(what, Kind::Object));
             }
+            Condition::P158HadToAttack(what) => {
+                self.uses("Condition", "P158HadToAttack");
+                self.at("P158HadToAttack", |w| w.reference(what, Kind::Object));
+            }
             Condition::Level { of, .. } => {
                 self.uses("Condition", "Level");
                 self.at("Level", |w| w.reference(of, Kind::Object));
@@ -7217,7 +7221,8 @@ impl Walker<'_> {
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_)
             | GameRule::R112SpendOnlyFromWay { .. }
-            | GameRule::R113NoteExiledManaValue => {}
+            | GameRule::R113NoteExiledManaValue
+            | GameRule::P158LoyaltyTwiceThis => {}
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }

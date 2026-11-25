@@ -4406,6 +4406,13 @@ impl<'a> Scope<'a> {
             Condition::AfterCombat => self.state.turn().step() >= crate::turn::Step::Main2,
             Condition::TriggeringSticker(kind) => self.r378_triggering_sticker(*kind),
             Condition::Level { of, op, level } => self.level_holds(of, *op, *level)?,
+            Condition::P158HadToAttack(what) => {
+                let named = self.objects(what)?;
+                !named.is_empty()
+                    && named
+                        .iter()
+                        .all(|named| self.state.combat().p158_had_to_attack(named.id))
+            }
             Condition::NewlyControlled(what) => {
                 let named = self.objects(what)?;
                 !named.is_empty()
