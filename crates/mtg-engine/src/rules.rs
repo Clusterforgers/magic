@@ -2696,7 +2696,6 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         Rule::MayCastRather { casts, .. } => casts.is_empty(),
         Rule::MaxHandSize(sizes) => sizes.is_empty(),
         Rule::R6603LoyaltyAgain { times, .. } => *times == 0,
-        Rule::P158LoyaltyTwiceThis(_) => false,
         Rule::LoyaltyCostsMore(more) => more.iter().all(|(_, plus)| *plus == 0),
         Rule::HandSizeChange(changes) => changes.is_empty(),
         Rule::UntapDuring { whose, .. } => whose.is_empty(),
@@ -2732,7 +2731,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RevealFirstDraw { .. }
         | Rule::UntapRemovesCounters(_)
         | Rule::R6400ChoosesVotes(_)
-        | Rule::R113NoteExiled { .. } => false,
+        | Rule::R113NoteExiled { .. }
+        | Rule::P158LoyaltyTwiceThis(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
