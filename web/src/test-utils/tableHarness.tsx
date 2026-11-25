@@ -8,6 +8,8 @@ import { fixtureLookup, fixtureSession, fixtureState } from '@/features/table/de
 import { buildFixture } from '@/features/table/dev/fixture'
 import type { Fixture } from '@/features/table/dev/fixture'
 import { GameTable } from '@/features/table/GameTable'
+import { DelveContentContext } from '@/features/table/campaign/useBossAbilities'
+import type { DelveContent } from '@/protocol/generated'
 import { boardCounts, splitRegions } from '@/features/table/boardSplit'
 import { planTable } from '@/features/table/layout'
 import type { TablePlan, Viewport } from '@/features/table/layout'
@@ -31,6 +33,8 @@ export interface TableSetup {
   session?: Partial<Session>
   /** Changes the play state before the first render. */
   state?: (state: PlayState) => PlayState
+  /** The campaign content a Delves fight reads its custom cards from; fetched (and failing) when left out. */
+  content?: DelveContent
   /** What to render instead of `GameTable` inside the game; the same providers wrap it. */
   ui?: ReactElement
 }
@@ -86,7 +90,7 @@ export function renderTable(setup: TableSetup = {}): TableHarness {
   const view = render(
     <GameContext value={value}>
       <TableOptionsContext value={{ viewport: TEST_VIEWPORT, ...setup.options }}>
-        {setup.ui ?? <GameTable />}
+        <DelveContentContext value={setup.content}>{setup.ui ?? <GameTable />}</DelveContentContext>
       </TableOptionsContext>
     </GameContext>,
   )

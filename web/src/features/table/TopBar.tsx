@@ -16,6 +16,7 @@ import { TurnBadge } from './TurnBadge'
 import { StepLadder } from './turn/StepLadder'
 import { TurnBanner } from './turn/TurnBanner'
 import { PhaseBanner } from './campaign/PhaseBanner'
+import { BossPhasePill } from './campaign/PhaseCountdown'
 import { SpiritMoment } from './campaign/SpiritMoment'
 
 const HOME = cn(
@@ -23,14 +24,17 @@ const HOME = cn(
   'shrink-0 gap-1.5 px-2 text-base font-semibold',
 )
 
-/** Home: a router link where there is a router, a plain one where there is none (a table drawn on its own). */
-function HomeLink() {
+/**
+ * Home: a router link where there is a router, a plain one where there is none (a table drawn on its own); `narrow`
+ * keeps its word for a wide window.
+ */
+function HomeLink({ narrow = false }: { narrow?: boolean }) {
   // The router's context is null outside a router.
   const router = useRouter({ warn: false }) as ReturnType<typeof useRouter> | null | undefined
   const content = (
     <>
       <SparklesIcon aria-hidden="true" className="text-primary" />
-      <span className="max-sm:sr-only">Magic</span>
+      <span className={narrow ? 'max-xl:sr-only' : 'max-sm:sr-only'}>Magic</span>
     </>
   )
   return router === undefined || router === null ? (
@@ -82,8 +86,10 @@ export function TopBar({
       data-themed=""
       className="relative flex min-h-0 min-w-0 items-center gap-2 border-b-[3px] border-phase bg-surface px-2"
     >
-      <HomeLink />
+      {/* A boss fight spends the room of the word on the phase pill below a wide window. */}
+      <HomeLink narrow={bossFight} />
       <TurnBadge />
+      <BossPhasePill />
       <StepLadder />
       <TurnBanner />
       <PhaseBanner />

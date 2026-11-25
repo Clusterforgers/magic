@@ -14,6 +14,7 @@ const ability = (kind: BossAbilityKind, name: string): BossAbility => ({
   key: name,
   kind,
   name,
+  card: name,
   text: '',
   summary: '',
 })

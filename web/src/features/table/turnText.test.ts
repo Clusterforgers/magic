@@ -7,6 +7,7 @@ import { KINDS } from '@/test-utils/decisions'
 import { fixtureState } from './dev/devGame'
 import { buildFixture } from './dev/fixture'
 import {
+  badgeParts,
   badgeText,
   badgeTitle,
   bannerText,
@@ -166,6 +167,22 @@ describe('badgeText', () => {
   ])('says what the game is doing in stage %s, whoever is looking', (stage, text) => {
     expect(badgeText({ stage, turn: 0, round: 0, active: 0, step: 'Untap' }, 0, name)).toBe(text)
     expect(badgeText({ stage, turn: 0, round: 0, active: 0, step: 'Untap' }, 1, name)).toBe(text)
+  })
+})
+
+describe('badgeParts', () => {
+  it.each<[string, string, string]>([
+    ['Your turn · Round 3 · Precombat main', 'Your turn', ' · Round 3 · Precombat main'],
+    ["Alice and Bo's turn · Round 3 · Combat", "Alice and Bo's turn", ' · Round 3 · Combat'],
+    [
+      "Bo's turn · you control them · Round 3 · Upkeep",
+      "Bo's turn",
+      ' · you control them · Round 3 · Upkeep',
+    ],
+    ['Opening hands', 'Opening hands', ''],
+  ])('splits "%s" into whose turn it is and the rest', (text, who, rest) => {
+    expect(badgeParts(text)).toEqual({ who, rest })
+    expect(who + rest).toBe(text)
   })
 })
 

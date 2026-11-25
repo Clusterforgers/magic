@@ -54,6 +54,15 @@ export interface PhaseCountdown {
   next?: string
   /** The sentence for a screen reader and the tooltip. */
   title: string
+  /** The words where room is short: the next phase and its rounds ("P1 in 3", "P2 in 4"), else the one in force ("P2"). */
+  short: string
+  /** The place of the phase the pill names: the one to come before any began, else the one in force. */
+  named: number
+}
+
+/** "P1 in 3": a countdown where room is short. */
+function shortCountdown(at: number, rounds: number): string {
+  return `P${at + 1} in ${Math.max(1, rounds)}`
 }
 
 /** The phase pill of a reworked boss: the countdown to Phase 1, then the phase in force with the countdown to the next. */
@@ -68,12 +77,24 @@ export function phaseCountdown(view: BossView): PhaseCountdown | null {
       : `${phaseLabel(upcoming)} ${roundsWords(view.phase_in)}`
   if (current < 0) {
     const label = countdown ?? phaseLabel(0)
-    return { label, begun: false, title: `${label}.` }
+    const short = view.phase_in === undefined ? 'P1' : shortCountdown(0, view.phase_in)
+    return { label, begun: false, title: `${label}.`, short, named: 0 }
   }
   const now = phases[current]
   const label = now?.name ?? phaseLabel(current)
   const title = `${phaseLabel(current)}: ${label}${countdown === undefined ? '' : `. ${countdown}`}.`
-  return { label, begun: true, ...(countdown === undefined ? {} : { next: countdown }), title }
+  const short =
+    countdown === undefined || view.phase_in === undefined
+      ? `P${current + 1}`
+      : shortCountdown(upcoming, view.phase_in)
+  return {
+    label,
+    begun: true,
+    ...(countdown === undefined ? {} : { next: countdown }),
+    title,
+    short,
+    named: current,
+  }
 }
 
 /** The mark of a Satchel card: "returns · +{2}" for a reusable one with its tax now, "once" for the others. */
@@ -94,8 +115,9 @@ function part(
   name: string,
   text: string,
   when?: string,
+  card: string = name,
 ): BossAbility {
-  return { key, kind, name, text, summary: summaryOf(text), ...(when === undefined ? {} : { when }) }
+  return { key, kind, name, text, summary: summaryOf(text), card, ...(when === undefined ? {} : { when }) }
 }
 
 /**
@@ -117,7 +139,7 @@ export function reworkedAbilities(parts: ReworkedParts): BossAbility[] {
   }
   for (const { relic, count } of counts.values()) {
     const name = count > 1 ? `${relic.name} ×${count}` : relic.name
-    out.push(part(`relic-${relic.name}`, 'relic', name, relic.text))
+    out.push(part(`relic-${relic.name}`, 'relic', name, relic.text, undefined, relic.name))
   }
   ;(parts.round_phases ?? []).forEach((phase, at) => {
     out.push(
