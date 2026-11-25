@@ -43,7 +43,9 @@ function PhasePill({ player, boss }: { player: PlayerView; boss: BossView }) {
       data-begun={countdown.begun || undefined}
       aria-label={countdown.title}
       className={cn(
-        'flex h-7 w-20 shrink-0 items-center gap-1 rounded-full border px-1.5 text-left text-xs font-semibold outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring xl:w-40 xl:px-2 2xl:w-72',
+        // It gives way once the turn badge is down to whose turn it is; its own width picks its words (a container
+        // query): the phase and the next at its widest, the phase, the short countdown, then the icon alone.
+        '@container flex h-7 w-20 min-w-7 items-center justify-center gap-1 rounded-full border px-1.5 text-xs font-semibold outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring xl:w-40 xl:px-2 2xl:w-72',
         countdown.begun ? 'border-boss bg-boss text-on-boss' : 'border-boss/60 bg-boss/10 text-foreground',
       )}
     >
@@ -51,17 +53,26 @@ function PhasePill({ player, boss }: { player: PlayerView; boss: BossView }) {
         aria-hidden="true"
         className={cn('size-3.5 shrink-0', countdown.begun ? 'text-on-boss' : 'text-boss')}
       />
-      <span aria-hidden="true" data-slot="phase-countdown-short" className="min-w-0 truncate xl:hidden">
+      <span
+        aria-hidden="true"
+        data-slot="phase-countdown-short"
+        className="hidden min-w-0 truncate @min-[3.75rem]:inline @min-[8rem]:hidden"
+      >
         {countdown.short}
       </span>
-      <span aria-hidden="true" className="hidden min-w-0 truncate xl:inline">
+      <span aria-hidden="true" className="hidden min-w-0 truncate @min-[8rem]:inline">
         {countdown.label}
       </span>
       {countdown.next === undefined ? null : (
-        <span aria-hidden="true" className="hidden min-w-0 truncate font-medium opacity-80 2xl:inline">
+        <span
+          aria-hidden="true"
+          className="hidden min-w-0 truncate font-medium opacity-80 @min-[16rem]:inline"
+        >
           · {countdown.next}
         </span>
       )}
+      {/* Words that do not fill the pill keep to its left, as before; the icon alone stands in its middle. */}
+      <span aria-hidden="true" className="hidden grow @min-[3.75rem]:block" />
     </button>
   )
 }

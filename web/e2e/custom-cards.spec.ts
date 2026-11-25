@@ -1,11 +1,13 @@
-// Goal: on the development table's reworked boss fight at 1920x1080, 1400x900, 1024x768 and a 390x844 phone, the phase pill stands in the top bar beside a turn badge that keeps its words in view, the bar keeps the height it has at a table without a boss, and the pill, a boss chip and a hero's relic each open their custom card in the card preview, whole inside the window, where a phase's steps move to the other phase.
+// Goal: on the development table's reworked boss fight at 1920x1080, 1536x864, 1400x900, 1280x800, 1024x768 and a 390x844 phone, the phase pill stands in the top bar beside a turn badge that says whose turn it is in whole words (as it does without a boss), the bar keeps the height it has at a table without a boss, and the pill, a boss chip and a hero's relic each open their custom card in the card preview, whole inside the window, where a phase's steps move to the other phase.
 import { expect, test } from '@playwright/test'
 import type { Locator, Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 
 const SIZES = [
   { name: 'wide desktop', width: 1920, height: 1080 },
+  { name: 'large laptop', width: 1536, height: 864 },
   { name: 'desktop', width: 1400, height: 900 },
+  { name: 'laptop', width: 1280, height: 800 },
   { name: 'tablet', width: 1024, height: 768 },
   { name: 'phone', width: 390, height: 844 },
 ] as const
@@ -20,6 +22,17 @@ async function box(locator: Locator) {
   const found = await locator.boundingBox()
   if (found === null) throw new Error('not drawn')
   return found
+}
+
+/** The turn badge says whose turn it is in whole words, inside the bar. */
+async function wholeTurn(page: Page): Promise<void> {
+  const who = page.locator('[data-region="bar"] [data-slot="turn-badge"] [data-slot="turn-who"]')
+  await expect(who).toHaveText(/^(Your|\w+'s) turn$/)
+  expect(await who.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true)
+  const at = await box(who)
+  const bar = await box(page.locator('[data-region="bar"]'))
+  expect(at.x).toBeGreaterThanOrEqual(bar.x)
+  expect(at.x + at.width).toBeLessThanOrEqual(bar.x + bar.width + 0.5)
 }
 
 /** The card preview is drawn whole inside the window. */
@@ -58,10 +71,11 @@ for (const size of SIZES) {
       for (const words of await pill.locator('span:visible').all()) {
         expect(await words.evaluate((el) => el.scrollWidth <= el.clientWidth + 1)).toBe(true)
       }
-      // The badge keeps room for words beside the pill, never squeezed to its icon.
-      const badge = page.locator('[data-slot="turn-badge"] [data-slot="banner"]')
-      expect((await box(badge)).width).toBeGreaterThanOrEqual(size.width < 640 ? 16 : 48)
       await expect(page.locator('[data-slot="boss-abilities"] [data-slot="phase-countdown"]')).toHaveCount(0)
+      // Whose turn it is stays whole beside the pill, and at a table without a boss: the pill and the round give way.
+      await wholeTurn(page)
+      await open(page, 'seats=3')
+      await wholeTurn(page)
     })
 
     test('the pill, a boss chip and a relic open their cards in the preview', async ({ page }) => {
