@@ -1,4 +1,4 @@
-// Goal: every detail the engine gives (`Why`) reads as one plain sentence that names the card and what is missing, a target on the stack adds the Full Control hint with the card's own verb, a printed condition is quoted from the rules text, a spell limit (One Voice) names its rule and the spells cast, a commander short of mana names its tax, an Aura, bestow or mutate spell names the host it lacks, an X ability names the target no payable X has, a reason without detail falls back to its plain line, and a refused play becomes the notice.
+// Goal: every detail the engine gives (`Why`) reads as one plain sentence that names the card and what is missing, a target on the stack adds the Full Control hint with the card's own verb, a printed condition is quoted from the rules text, a spell limit (One Voice) names its rule and the spells cast, a commander short of mana names its tax, an Aura, bestow or mutate spell names the host it lacks, an X ability or spell names the target no payable X has, a cost short at its least X names that X and its mana, an ability paid only with the chosen color names the color and its mana, a reason without detail falls back to its plain line, and a refused play becomes the notice.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView, Unplayable, Why } from '@/protocol/generated'
 import { reasonLabel } from './handReason'
@@ -248,13 +248,13 @@ describe('the details of hosts and X', () => {
       activate('Geth, Lord of the Vault'),
       {
         XTarget: {
-          needs: 'an artifact or creature card with mana value X an opponent owns in a graveyard',
+          needs: "an artifact or creature card with mana value X in an opponent's graveyard",
           zone: 'Graveyard',
           least: 0,
           most: 2,
         },
       },
-      'Geth, Lord of the Vault has no target for any X you can pay (X from 0 to 2): it needs an artifact or creature card with mana value X an opponent owns in a graveyard.',
+      "Geth, Lord of the Vault has no target for any X you can pay (X from 0 to 2): it needs an artifact or creature card with mana value X in an opponent's graveyard.",
     ],
     [
       'a -X ability with one X',
@@ -280,5 +280,71 @@ describe('the details of hosts and X', () => {
     expect(reasonLabel('Targets', { Host: { needs: 'a creature', by: 'Mutate' } })).toBe(
       'Nothing to mutate onto',
     )
+  })
+})
+
+describe('the last details', () => {
+  it.each<[string, Subject, Unplayable, Why, string]>([
+    [
+      'a least X short of mana',
+      activate('Life Keeper'),
+      'Mana',
+      { LeastX: { least: 1, cost: [{ Generic: 1 }, { Colored: 'Green' }], at_hand: 1 } },
+      'X must be at least 1: that costs {1}{G}, and you have 1 mana available.',
+    ],
+    [
+      'a least X short of counters',
+      activate('Rasputin, the Oneiromancer'),
+      'Cost',
+      { LeastX: { least: 1 } },
+      "X must be at least 1, and the rest of its cost can't be paid for that.",
+    ],
+    [
+      'a source that chose no color',
+      activate('Throne of Eldraine'),
+      'Mana',
+      { ChosenColor: { at_hand: 0 } },
+      'Throne of Eldraine has no chosen color, and only mana of the chosen color can be spent to activate it.',
+    ],
+    [
+      'too little mana of the chosen color',
+      activate('Throne of Eldraine'),
+      'Mana',
+      {
+        ChosenColor: {
+          color: 'Red',
+          cost: [{ Colored: 'Red' }, { Colored: 'Red' }, { Colored: 'Red' }],
+          at_hand: 1,
+        },
+      },
+      'Only red mana can be spent to activate it: needs {R}{R}{R}, and you have 1 red mana available.',
+    ],
+    [
+      'a cost of another color than the chosen one',
+      activate('Throne of Eldraine'),
+      'Mana',
+      { ChosenColor: { color: 'Green', at_hand: 2 } },
+      'Only green mana can be spent to activate it, and its cost asks for another color.',
+    ],
+    [
+      'an X spell with no target for any payable X',
+      cast('Entrancing Melody', 'Gain control of target creature with mana value X.'),
+      'Targets',
+      { XTarget: { needs: 'a creature with mana value X on the battlefield', zone: 'Battlefield', least: 0, most: 2 } },
+      'Entrancing Melody has no target for any X you can pay (X from 0 to 2): it needs a creature with mana value X on the battlefield.',
+    ],
+    [
+      'a loyalty ability short of the mana added to it',
+      activate('Jace Beleren'),
+      'Mana',
+      { Mana: { cost: [{ Generic: 2 }], at_hand: 1 } },
+      'Needs {2}: you have 1 mana available.',
+    ],
+  ])('says %s', (_name, subject, reason, why, line) => {
+    expect(whyLine(subject, reason, why)).toBe(line)
+  })
+
+  it('labels a least X short of counters as a cost', () => {
+    expect(reasonLabel('Cost', { LeastX: { least: 1 } })).toBe("Can't pay")
   })
 })
