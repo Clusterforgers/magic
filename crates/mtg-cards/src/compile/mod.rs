@@ -14,7 +14,8 @@ mod manual;
 mod normalize;
 mod read;
 pub(crate) use read::r116_is_reminder_token;
-pub(crate) use un34_sheets::{sticker_keywords, sticker_line};
+pub use un34_sheets::sticker_keywords;
+pub(crate) use un34_sheets::sticker_line;
 mod tables;
 mod un34_sheets;
 

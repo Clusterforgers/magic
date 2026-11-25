@@ -94,7 +94,7 @@ pub(super) fn sticker(
 }
 
 /// The keywords an ability sticker gives: its keyword, or each keyword of its run.
-pub(crate) fn sticker_keywords(ability: &Ability) -> Vec<&Keyword> {
+pub fn sticker_keywords(ability: &Ability) -> Vec<&Keyword> {
     match ability {
         Ability::Keyword(keyword) => vec![keyword],
         Ability::Static {
