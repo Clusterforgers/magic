@@ -14,7 +14,9 @@ mod manual;
 mod normalize;
 mod read;
 pub(crate) use read::r116_is_reminder_token;
+pub(crate) use un34_sheets::{sticker_keywords, sticker_line};
 mod tables;
+mod un34_sheets;
 
 use std::collections::BTreeSet;
 
@@ -143,9 +145,13 @@ fn read_face(
     let walker = is_planeswalker(shown);
     let x_free = shown.mana_cost.contains("{X}") || shown.oracle_text.lines().any(counts_x);
     let own = own_face(shown);
+    let sheet = un34_sheets::is_sheet(shown);
     let mut pending = Vec::new();
     for raw in clauses::split(&text) {
-        let clause_text = text.slice(raw.range.clone());
+        let mut clause_text = text.slice(raw.range.clone());
+        if sheet && let Some(current) = un34_sheets::current_line(&clause_text) {
+            clause_text = current;
+        }
         let Some(span) = text.span(raw.range, raw.ends_line) else {
             continue;
         };
@@ -157,8 +163,43 @@ fn read_face(
             && span
                 .slice(&shown.oracle_text)
                 .is_some_and(normalize::reminder_mentions_counter);
+        let sticker = sheet
+            .then(|| un34_sheets::sticker_line(&clause_text))
+            .flatten();
         // A loyalty cost on a face that is no planeswalker is a line of the card's own, not an ability.
-        let (ability, more) = if kind == ClauseKind::Loyalty && !walker {
+        let (ability, more) = if let Some((tickets, rest)) = sticker {
+            kind = ClauseKind::Static;
+            let ability = un34_sheets::sticker(tickets, rest, |rest| {
+                let mut kind = classify::classify(rest, false);
+                if is_unread_keyword_line(rest, kind, x_free, &own) {
+                    kind = ClauseKind::Keyword;
+                }
+                // A run of keywords ("Vigilance, reach") reads item by item, as a keyword line does.
+                if kind == ClauseKind::Keyword
+                    && let Some(items) = keywords::split_items(rest).filter(|items| items.len() > 1)
+                {
+                    let chars: Vec<char> = rest.chars().collect();
+                    let mut read = Vec::new();
+                    for item in items {
+                        let item: String = chars.get(item).unwrap_or_default().iter().collect();
+                        match read_clause(&item, kind, (false, false), x_free, (&own, partners)) {
+                            (Some(keyword), more) if more.is_empty() => read.push(keyword),
+                            _ => return (None, Vec::new()),
+                        }
+                    }
+                    let mut read = read.into_iter();
+                    return (read.next(), read.collect());
+                }
+                read_clause(
+                    rest,
+                    kind,
+                    (false, reminds_counter),
+                    x_free,
+                    (&own, partners),
+                )
+            });
+            (ability, Vec::new())
+        } else if kind == ClauseKind::Loyalty && !walker {
             (None, Vec::new())
         } else {
             read_clause(
@@ -199,7 +240,11 @@ fn read_face(
     tables::attach(&mut pending, x_free, &own);
     give_backup(&mut pending);
     linked::exile_pair(&mut pending);
-    let mut abilities = Vec::new();
+    let mut abilities = if sheet {
+        un34_sheets::free_stickers(&shown.name)
+    } else {
+        Vec::new()
+    };
     for clause in pending {
         match clause.ability {
             Some(ability) => {
