@@ -31,7 +31,10 @@ function PhaseSteps({ shown, target }: { shown: CustomShown; target: PreviewTarg
   if (phases.length < 2) return null
   return (
     <>
-      <p aria-hidden="true" className="mt-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+      <p
+        aria-hidden="true"
+        className="mt-1 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+      >
         Phases
       </p>
       <ol aria-label="Phases" data-slot="preview-phases" className="grid gap-1">

@@ -105,19 +105,22 @@ describe('custom cards as emblems', () => {
   it.each([
     ['desktop', DESKTOP],
     ['phone', PHONE],
-  ] as const)("opens a hero's relic from an ally's pod (Grid) on a %s, in its frame with its rarity", async (_, viewport) => {
-    const { user } = fight(2, viewport, 'grid')
-    const chips = [...document.querySelectorAll<HTMLElement>('[data-slot="player-effect"]')]
-    const relic = must(chips.find((chip) => chip.textContent === DEV_HERO_RELIC))
-    await user.click(relic)
-    expect(preview()).toHaveAttribute('data-custom', 'Relic')
-    const frame = within(preview()).getByRole('figure', { name: DEV_HERO_RELIC })
-    expect(frame).toHaveAttribute('data-rarity', 'Rare')
-    expect(within(frame).getByText('Removal')).toBeInTheDocument()
-    expect(within(preview()).getByText(/^In .+'s command zone\.$/)).toBeInTheDocument()
-    await user.click(relic)
-    expect(screen.queryByTestId('card-preview')).toBeNull()
-  })
+  ] as const)(
+    "opens a hero's relic from an ally's pod (Grid) on a %s, in its frame with its rarity",
+    async (_, viewport) => {
+      const { user } = fight(2, viewport, 'grid')
+      const chips = [...document.querySelectorAll<HTMLElement>('[data-slot="player-effect"]')]
+      const relic = must(chips.find((chip) => chip.textContent === DEV_HERO_RELIC))
+      await user.click(relic)
+      expect(preview()).toHaveAttribute('data-custom', 'Relic')
+      const frame = within(preview()).getByRole('figure', { name: DEV_HERO_RELIC })
+      expect(frame).toHaveAttribute('data-rarity', 'Rare')
+      expect(within(frame).getByText('Removal')).toBeInTheDocument()
+      expect(within(preview()).getByText(/^In .+'s command zone\.$/)).toBeInTheDocument()
+      await user.click(relic)
+      expect(screen.queryByTestId('card-preview')).toBeNull()
+    },
+  )
 
   it("draws a boss's phase emblem on its pod (Grid) as that phase, with the boss's phases", async () => {
     const { user, store } = fight(2, DESKTOP, 'grid')

@@ -95,7 +95,8 @@ function EmblemChip({
 }
 
 function EffectChip({ effect, density }: { effect: EffectFacts; density: Exclude<ChipDensity, 'tile'> }) {
-  if (effect.object !== undefined) return <EmblemChip effect={effect} object={effect.object} density={density} />
+  if (effect.object !== undefined)
+    return <EmblemChip effect={effect} object={effect.object} density={density} />
   const Icon = ICON[effect.icon]
   const chip = (
     <span

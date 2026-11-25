@@ -23,7 +23,6 @@ const KIND_CARD: Record<BossAbilityKind, CardKind> = {
   'next-phase': 'Phase',
 }
 
-
 /** The content's custom card named `name`; undefined when the content is not known or holds none. */
 export function customCardNamed(content: DelveContent | null, name: string): CustomCardView | undefined {
   return content?.cards.find((card) => card.name === name)
@@ -81,7 +80,10 @@ export function abilityShown(
 }
 
 /** The custom card an emblem of a command zone is: the content's card of its name; undefined for any other object. */
-export function emblemCard(object: ObjectView | undefined, content: DelveContent | null): CustomCardView | undefined {
+export function emblemCard(
+  object: ObjectView | undefined,
+  content: DelveContent | null,
+): CustomCardView | undefined {
   if (object?.kind !== 'Emblem') return undefined
   return customCardNamed(content, object.name)
 }
