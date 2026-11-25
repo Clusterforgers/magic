@@ -47,12 +47,15 @@ import {
 import { clausesOf } from './manual/clauses'
 import { useCardMark } from './prompt/marks'
 import { noteName, revealedLine, revealedPlace } from './revealed'
-import { combatRoleIn } from './selectors'
+import { combatRoleIn, playerOf } from './selectors'
 import { roomTitle } from './rooms'
 import { AutoPassButton } from './AutoPassButton'
 import { isStacked, shownObject, stackSummary } from './stackPreview'
 import { useStackEntries, useTargetNamer } from './useStackEntries'
 import { useLinks } from './useLinks'
+import { CustomPreviewBody } from './campaign/CustomPreview'
+import { emblemCard, emblemShown } from './campaign/customCards'
+import { KIND_WORDS, useTableContent } from './campaign/useBossAbilities'
 
 // Whole class names, so Tailwind can see them.
 const DOCK: Record<Dock, string> = {
@@ -74,13 +77,35 @@ export function CardPreview() {
   const [reading, setReading] = useState<Reading | null>(null)
   return (
     <>
-      {target === null ? null : <PreviewBody target={target} onRead={setReading} />}
+      {target === null ? null : <ShownBody target={target} onRead={setReading} />}
       <ReadDialog
         oracleId={reading?.oracleId ?? null}
         name={reading?.name ?? ''}
         onClose={() => setReading(null)}
       />
     </>
+  )
+}
+
+/**
+ * The body for `target`: a custom card (one the caller names, or an emblem of a Delves fight that is one) in its frame,
+ * any other card as the table shows it.
+ */
+function ShownBody({ target, onRead }: { target: PreviewTarget; onRead: (card: Reading) => void }) {
+  const content = useTableContent()
+  const name = useVoicedNamer()
+  const emblem = usePlay((state) => state.objectsById[target.id])
+  const owner = usePlay((state) => (emblem === undefined ? undefined : playerOf(state, emblem.owner)))
+  const card = target.custom === undefined ? emblemCard(emblem, content) : undefined
+  const custom =
+    target.custom ??
+    (card === undefined || emblem === undefined
+      ? undefined
+      : emblemShown(card, owner, content, speak(zoneText(emblem.zone, name)), KIND_WORDS))
+  return custom === undefined ? (
+    <PreviewBody target={target} onRead={onRead} />
+  ) : (
+    <CustomPreviewBody target={target} shown={custom} />
   )
 }
 

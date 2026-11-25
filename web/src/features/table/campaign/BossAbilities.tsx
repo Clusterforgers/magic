@@ -1,8 +1,8 @@
 /**
  * The boss's abilities across the top of a fight against a boss: one row of small chips, each its kind's icon and its
- * name, the whole rules text on hover, focus or press. The row never wraps: chips that do not fit are left out of it and
- * counted on the "All" button at its end, which lists every ability in full. The intro screen of a Delves fight lists
- * the same abilities (`BossAbilityList`).
+ * name, its card in the card preview on hover, focus or press. The row never wraps: chips that do not fit are left out
+ * of it and counted on the "All" button at its end, which lists every ability in full. The phases stand in the top
+ * bar's pill (`BossPhasePill`). The intro screen of a Delves fight lists the same abilities (`BossAbilityList`).
  */
 import { CrownIcon, FlameIcon, GemIcon, HourglassIcon, ListIcon, SparklesIcon } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
@@ -11,14 +11,12 @@ import type { RefObject } from 'react'
 import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
-import { usePlay } from '@/features/game/gameContext'
 import { useIsBlockerNamed } from '../blockedTell'
 import { useSeatNamer } from '../names'
-import { playerOf } from '../selectors'
 import { barOrder } from './bossAbilities'
-import { PhaseCountdown } from './PhaseCountdown'
 import type { BossAbility, BossAbilityKind } from './bossAbilities'
 import { KIND_WORDS, useBossAbilities } from './useBossAbilities'
+import { useCustomPreview } from './useCustomPreview'
 
 const ICONS: Record<BossAbilityKind, LucideIcon> = {
   innate: CrownIcon,
@@ -37,8 +35,8 @@ const CHIP: Record<BossAbilityKind, { chip: string; icon: string }> = {
   relic: { chip: 'border-boss/45 bg-card', icon: 'text-boss' },
 }
 
-/** One ability's kind, when it comes, name and whole text: the body of its popover and a row of the full list. */
-function AbilityText({ ability, title }: { ability: BossAbility; title: boolean }) {
+/** One ability's kind, when it comes, name and whole text: a row of the full list. */
+function AbilityText({ ability }: { ability: BossAbility }) {
   const Icon = ICONS[ability.kind]
   return (
     <>
@@ -47,11 +45,7 @@ function AbilityText({ ability, title }: { ability: BossAbility; title: boolean 
         {KIND_WORDS[ability.kind]}
         {ability.when === undefined ? '' : ` · ${ability.when}`}
       </p>
-      {title ? (
-        <PopoverTitle>{ability.name}</PopoverTitle>
-      ) : (
-        <p className="text-sm font-semibold">{ability.name}</p>
-      )}
+      <p className="text-sm font-semibold">{ability.name}</p>
       <p data-slot="boss-ability-text" className="text-sm whitespace-pre-line text-muted-foreground">
         {ability.text === '' ? 'Its rules are being read…' : ability.text}
       </p>
@@ -59,35 +53,44 @@ function AbilityText({ ability, title }: { ability: BossAbility; title: boolean 
   )
 }
 
-/** One ability as a chip: its kind's icon and name, its summary for a screen reader; the whole text on hover, focus or press. */
-function AbilityChip({ ability, hidden }: { ability: BossAbility; hidden: boolean }) {
+/**
+ * One ability as a chip: its kind's icon and name, its summary for a screen reader; hover or focus shows its card in
+ * the card preview and a press pins it there, as a card of the table does.
+ */
+function AbilityChip({
+  ability,
+  all,
+  owner,
+  hidden,
+}: {
+  ability: BossAbility
+  all: readonly BossAbility[]
+  owner: string
+  hidden: boolean
+}) {
   const Icon = ICONS[ability.kind]
   const tone = CHIP[ability.kind]
   // Its rule is what keeps the card the viewer just pressed from being played.
   const blocking = useIsBlockerNamed(ability.name)
+  const handlers = useCustomPreview(ability, all, owner)
   return (
-    <Popover>
-      <PopoverTrigger
-        openOnHover
-        delay={200}
-        tabIndex={hidden ? -1 : undefined}
-        data-slot="boss-ability"
-        data-kind={ability.kind}
-        data-blocking={blocking || undefined}
-        className={cn(
-          'flex h-7 max-w-48 min-w-0 items-center gap-1 rounded-full border px-2 text-left text-xs font-semibold transition-colors outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring',
-          tone.chip,
-          blocking ? 'border-primary bg-primary/15 ring-2 ring-primary' : null,
-        )}
-      >
-        <Icon aria-hidden="true" className={cn('size-3.5 shrink-0', tone.icon)} />
-        <span className="truncate">{ability.name}</span>
-        {ability.summary === '' ? null : <span className="sr-only"> {ability.summary}</span>}
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-80 gap-1 p-3 text-sm">
-        <AbilityText ability={ability} title />
-      </PopoverContent>
-    </Popover>
+    <button
+      type="button"
+      {...handlers}
+      tabIndex={hidden ? -1 : undefined}
+      data-slot="boss-ability"
+      data-kind={ability.kind}
+      data-blocking={blocking || undefined}
+      className={cn(
+        'flex h-7 max-w-48 min-w-0 items-center gap-1 rounded-full border px-2 text-left text-xs font-semibold transition-colors outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring',
+        tone.chip,
+        blocking ? 'border-primary bg-primary/15 ring-2 ring-primary' : null,
+      )}
+    >
+      <Icon aria-hidden="true" className={cn('size-3.5 shrink-0', tone.icon)} />
+      <span className="truncate">{ability.name}</span>
+      {ability.summary === '' ? null : <span className="sr-only"> {ability.summary}</span>}
+    </button>
   )
 }
 
@@ -114,6 +117,40 @@ function useWrapped(ref: RefObject<HTMLElement | null>, count: number): number {
   return wrapped
 }
 
+/** One row of the full list: the ability in full, a press showing its card in the card preview. */
+function AbilityRow({
+  ability,
+  all,
+  owner,
+  onShow,
+}: {
+  ability: BossAbility
+  all: readonly BossAbility[]
+  owner: string
+  onShow: () => void
+}) {
+  const handlers = useCustomPreview(ability, all, owner)
+  return (
+    <li data-slot="boss-ability-full">
+      <button
+        type="button"
+        {...handlers}
+        // The list closes as the card opens, so only a press shows it; hover and focus leave the list in view.
+        onPointerEnter={undefined}
+        onFocus={undefined}
+        onBlur={undefined}
+        onClick={(event) => {
+          handlers?.onClick(event)
+          onShow()
+        }}
+        className="grid w-full gap-0.5 px-3 py-2 text-left outline-none hover:bg-muted focus-visible:bg-muted"
+      >
+        <AbilityText ability={ability} />
+      </button>
+    </li>
+  )
+}
+
 /** The button at the end of the row: every ability in full, with the count of those the row has no room for. */
 function AllAbilities({
   name,
@@ -124,8 +161,9 @@ function AllAbilities({
   abilities: BossAbility[]
   hidden: number
 }) {
+  const [open, setOpen] = useState(false)
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         data-slot="boss-abilities-all"
         aria-label={`All ${abilities.length} abilities of ${name}`}
@@ -141,9 +179,13 @@ function AllAbilities({
         <PopoverTitle className="sticky top-0 border-b bg-popover px-3 py-2">{name}'s abilities</PopoverTitle>
         <ul className="grid divide-y">
           {abilities.map((ability) => (
-            <li key={ability.key} data-slot="boss-ability-full" className="grid gap-0.5 px-3 py-2">
-              <AbilityText ability={ability} title={false} />
-            </li>
+            <AbilityRow
+              key={ability.key}
+              ability={ability}
+              all={abilities}
+              owner={name}
+              onShow={() => setOpen(false)}
+            />
           ))}
         </ul>
       </PopoverContent>
@@ -152,14 +194,13 @@ function AllAbilities({
 }
 
 /**
- * The boss's abilities as one row of chips after its phase countdown: its innate, modifier and relics; what does not
- * fit is counted on the button at the end, which lists them all.
+ * The boss's abilities as one row of chips: its innate, modifier and relics; what does not fit is counted on the button
+ * at the end, which lists them all with the phases.
  */
 export function BossAbilitiesBar({ seat }: { seat: PlayerId }) {
   const all = barOrder(useBossAbilities(seat))
   const name = useSeatNamer()(seat)
-  const boss = usePlay((state) => playerOf(state, seat)?.boss ?? null)
-  // The phases stand in the countdown pill; the row keeps the innate, modifier and relics.
+  // The phases stand in the top bar's pill; the row keeps the innate, modifier and relics.
   const abilities = all.filter((ability) => ability.kind !== 'next-phase' && ability.kind !== 'phase')
   const list = useRef<HTMLUListElement>(null)
   const hidden = useWrapped(list, abilities.length)
@@ -167,7 +208,6 @@ export function BossAbilitiesBar({ seat }: { seat: PlayerId }) {
   const shown = abilities.length - hidden
   return (
     <div data-slot="boss-abilities" className="flex h-8 min-w-0 shrink-0 items-center gap-1.5 px-1">
-      {boss === null ? null : <PhaseCountdown boss={boss} />}
       <ul
         ref={list}
         aria-label={`${name}'s abilities`}
@@ -180,7 +220,7 @@ export function BossAbilitiesBar({ seat }: { seat: PlayerId }) {
             data-clipped={at >= shown || undefined}
             aria-hidden={at >= shown || undefined}
           >
-            <AbilityChip ability={ability} hidden={at >= shown} />
+            <AbilityChip ability={ability} all={all} owner={name} hidden={at >= shown} />
           </li>
         ))}
       </ul>
@@ -199,7 +239,7 @@ export function BossAbilityList({ abilities }: { abilities: readonly BossAbility
           data-slot="boss-ability"
           className="grid gap-1 rounded-lg border bg-surface p-3"
         >
-          <AbilityText ability={ability} title={false} />
+          <AbilityText ability={ability} />
         </li>
       ))}
     </ul>

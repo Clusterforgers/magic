@@ -1,60 +1,67 @@
 /**
- * A reworked boss's phase pill at the head of its bar: "Phase 1 in 3 rounds" until the phase begins, then the phase's
- * name, with the countdown to the next beside it where there is room. The pill keeps one width whatever it says, so
- * the chips after it never move; a press lists both phases with their rounds and rules.
+ * A reworked boss's phase pill in the top bar, beside the round it counts: "Phase 1 in 3 rounds" until the phase
+ * begins, then the phase's name with the countdown to the next; a narrow window says it short ("P1 in 3"). Hover or
+ * focus shows the phase it names in the card preview and a press pins it there, where the boss's phases are steps to
+ * move between. The pill keeps one width whatever it says, so nothing after it moves.
  */
 import { FlameIcon, HourglassIcon } from 'lucide-react'
-import { Popover, PopoverContent, PopoverTitle, PopoverTrigger } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
-import type { BossView } from '@/protocol/generated'
-import { phaseAt, phaseCountdown, phaseLabel } from './reworkedBoss'
+import type { BossView, PlayerView } from '@/protocol/generated'
+import { useMemo } from 'react'
+import { usePlay } from '@/features/game/gameContext'
+import { useSeatNamer } from '../names'
+import { bossAbilities } from './bossAbilities'
+import { useCustomPreview } from './useCustomPreview'
+import { phaseCountdown } from './reworkedBoss'
 
-/** The phase pill of the reworked boss `boss`; nothing for a boss without phases by round. */
-export function PhaseCountdown({ boss }: { boss: BossView }) {
+/** The first boss seat with phases by round, whose pill the top bar shows; none at any other table. */
+function phasedBoss(players: readonly PlayerView[] | undefined): PlayerView | undefined {
+  return players?.find((player) => (player.boss?.round_phases?.length ?? 0) > 0)
+}
+
+/** The top bar's phase pill of the boss with phases by round; nothing at a table without one. */
+export function BossPhasePill() {
+  const player = usePlay((state) => phasedBoss(state.view?.players))
+  if (player?.boss == null) return null
+  return <PhasePill player={player} boss={player.boss} />
+}
+
+function PhasePill({ player, boss }: { player: PlayerView; boss: BossView }) {
   const countdown = phaseCountdown(boss)
-  if (countdown === null) return null
+  const owner = useSeatNamer()(player.seat)
+  const all = useMemo(() => bossAbilities(player), [player])
+  const phases = all.filter((ability) => ability.kind === 'phase' || ability.kind === 'next-phase')
+  const named = phases[countdown?.named ?? 0]
+  const handlers = useCustomPreview(named, all, owner)
+  if (countdown === null || handlers === null) return null
   const Icon = countdown.begun ? FlameIcon : HourglassIcon
-  const phases = boss.round_phases ?? []
   return (
-    <Popover>
-      <PopoverTrigger
-        openOnHover
-        delay={200}
-        data-slot="phase-countdown"
-        data-begun={countdown.begun || undefined}
-        aria-label={countdown.title}
-        className={cn(
-          'flex h-7 w-44 shrink-0 items-center gap-1 rounded-full border px-2 text-left text-xs font-semibold outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring sm:w-64',
-          countdown.begun ? 'border-boss bg-boss text-on-boss' : 'border-boss/60 bg-boss/10 text-foreground',
-        )}
-      >
-        <Icon
-          aria-hidden="true"
-          className={cn('size-3.5 shrink-0', countdown.begun ? 'text-on-boss' : 'text-boss')}
-        />
-        <span aria-hidden="true" className="min-w-0 truncate">
-          {countdown.label}
+    <button
+      type="button"
+      {...handlers}
+      data-slot="phase-countdown"
+      data-begun={countdown.begun || undefined}
+      aria-label={countdown.title}
+      className={cn(
+        'flex h-7 w-20 shrink-0 items-center gap-1 rounded-full border px-1.5 text-left text-xs font-semibold outline-none hover:brightness-110 focus-visible:ring-2 focus-visible:ring-ring xl:w-40 xl:px-2 2xl:w-72',
+        countdown.begun ? 'border-boss bg-boss text-on-boss' : 'border-boss/60 bg-boss/10 text-foreground',
+      )}
+    >
+      <Icon
+        aria-hidden="true"
+        className={cn('size-3.5 shrink-0', countdown.begun ? 'text-on-boss' : 'text-boss')}
+      />
+      <span aria-hidden="true" data-slot="phase-countdown-short" className="min-w-0 truncate xl:hidden">
+        {countdown.short}
+      </span>
+      <span aria-hidden="true" className="hidden min-w-0 truncate xl:inline">
+        {countdown.label}
+      </span>
+      {countdown.next === undefined ? null : (
+        <span aria-hidden="true" className="hidden min-w-0 truncate font-medium opacity-80 2xl:inline">
+          · {countdown.next}
         </span>
-        {countdown.next === undefined ? null : (
-          <span aria-hidden="true" className="hidden min-w-0 truncate font-medium opacity-80 sm:inline">
-            · {countdown.next}
-          </span>
-        )}
-      </PopoverTrigger>
-      <PopoverContent align="start" className="w-80 max-w-[calc(100vw-2rem)] gap-2 p-3 text-sm">
-        <PopoverTitle>Phases</PopoverTitle>
-        <ol className="grid gap-2">
-          {phases.map((phase, at) => (
-            <li key={phase.name} data-slot="phase-countdown-step" data-begun={phase.begun || undefined}>
-              <p className="text-xs font-medium text-boss">
-                {phase.begun ? `${phaseLabel(at)} · in force` : phaseAt(at, phase)}
-              </p>
-              <p className="font-semibold">{phase.name}</p>
-              <p className="text-muted-foreground">{phase.text}</p>
-            </li>
-          ))}
-        </ol>
-      </PopoverContent>
-    </Popover>
+      )}
+    </button>
   )
 }

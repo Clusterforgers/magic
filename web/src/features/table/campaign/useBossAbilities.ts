@@ -54,3 +54,9 @@ export function useBossAbilities(seat: PlayerId): BossAbility[] {
     }),
   )
 }
+
+/** The campaign content at a table: fetched once a seat is a boss (a Delves fight); null at any other table. */
+export function useTableContent(): DelveContent | null {
+  const fight = usePlay((state) => state.view?.players.some((player) => player.boss != null) ?? false)
+  return useDelveContent(fight)
+}

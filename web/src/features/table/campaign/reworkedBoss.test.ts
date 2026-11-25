@@ -20,18 +20,20 @@ const view = (begun: [boolean, boolean], phaseIn?: number): BossView => ({
 
 describe('phaseCountdown', () => {
   it.each([
-    [view([false, false], 8), 'Phase 1 in 8 rounds', false, undefined],
-    [view([false, false], 2), 'Phase 1 in 2 rounds', false, undefined],
-    [view([false, false], 1), 'Phase 1 at the end of this round', false, undefined],
-    [view([true, false], 6), 'Stir', true, 'Phase 2 in 6 rounds'],
-    [view([true, false], 1), 'Stir', true, 'Phase 2 at the end of this round'],
-    [view([true, true]), 'Tide', true, undefined],
-  ] as const)('%#: says "%s"', (boss, label, begun, next) => {
+    [view([false, false], 8), 'Phase 1 in 8 rounds', false, undefined, 'P1 in 8', 0],
+    [view([false, false], 2), 'Phase 1 in 2 rounds', false, undefined, 'P1 in 2', 0],
+    [view([false, false], 1), 'Phase 1 at the end of this round', false, undefined, 'P1 in 1', 0],
+    [view([true, false], 6), 'Stir', true, 'Phase 2 in 6 rounds', 'P2 in 6', 0],
+    [view([true, false], 1), 'Stir', true, 'Phase 2 at the end of this round', 'P2 in 1', 0],
+    [view([true, true]), 'Tide', true, undefined, 'P2', 1],
+  ] as const)('%#: says "%s"', (boss, label, begun, next, short, named) => {
     const countdown = phaseCountdown(boss)
     expect(countdown?.label).toBe(label)
     expect(countdown?.begun).toBe(begun)
     expect(countdown?.next).toBe(next)
     expect(countdown?.title).toMatch(/\.$/)
+    expect(countdown?.short).toBe(short)
+    expect(countdown?.named).toBe(named)
   })
 
   it('is none for a boss without phases by round', () => {
