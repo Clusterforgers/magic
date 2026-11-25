@@ -631,7 +631,7 @@ fn waterbend_help(
     if price.tap || price.moves_source() {
         barred.push(source);
     }
-    crate::help::waterbend(state, player, &barred, price.creatures_help)
+    crate::help::waterbend(state, player, &barred, price.helpers)
 }
 
 /// The mana that cost modifiers add to a loyalty ability (CR 606.4, 601.2f) against the mana at hand, when `player`
