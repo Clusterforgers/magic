@@ -1,5 +1,5 @@
 // Goal: the deck builder leads a Commander deck with a Partner pair, refuses a third commander that cannot lead with the deck check's reason, and narrows the search to the pair's colour identity, at a wide and a phone window, on the dev route (no server).
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { DEV_WEB_URL } from './ports'
 
 const SIZES = [

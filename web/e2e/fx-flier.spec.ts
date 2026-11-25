@@ -1,5 +1,5 @@
 // Goal: on the development table at 1440x900 and 390x844 the flier of `?fx=cast` (the viewer's spell flying from the hand to the stack) is drawn over the table, takes no click (the pass control under it answers) and moves no layout: the boxes of everything else are the same with the layer shown and hidden, and a flier far outside the window makes the page no larger.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { holdMidway, LAYER, openPlay } from './fxPlay'
 
 const SIZES = [

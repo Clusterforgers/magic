@@ -1,5 +1,5 @@
 // Goal: the reach gate. At every screen of `SCREENS` (short and small laptops, a 1920x1080 desktop zoomed to 125 to 200 %, windows under browser bars, high-DPI, 16:10, 3:2, ultrawide, a tablet and a phone each way up) every control a page draws can be seen and pressed, and no line of text is cut across: nothing is outside the window or cut off by a box that does not scroll, nothing is covered by another element, the page never scrolls sideways, and a page meant to fit never scrolls down. Held for the table in every mode (grid, duel, focus, teams, Two-Headed Giant, a boss fight) at every decision that has a home of its own, with its menus, popovers and dialogs open, for the game-over screen, and for the pages (Play, Create, Learn, sign-in, a lobby, the builder, precons, the review screens, Accounts, a delve in every state). The table at the decisions that crowd its dock most (priority, the combat declarations, targets, a payment, the opening hand, a boss fight) is held to every screen, the other stops to the `core` ones.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { CDPSession, Page } from '@playwright/test'
 import { reach, SCREENS } from './reachAudit'
 import type { Reach, ReachAsk, Screen } from './reachAudit'

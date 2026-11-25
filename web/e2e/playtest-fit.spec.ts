@@ -1,5 +1,5 @@
 // Goal: the overlaps the playtest screenshots showed stay fixed at the sizes of the design: a card's type line ends above the mana symbols at its foot, the crown and tax of a commander in the hand lie clear of its power and toughness, a compact tapped land laid out on a phone shows its Tapped chip whole and a tapped attacker or blocker its combat mark beside its stats, a pod of the four-seat table keeps its zone chips inside it, the lobby's Ready bar stays inside the deck column, a phone's turn badge shows whose turn it is uncut, and a boss's empty side keeps its pod and a quarter of the room from the opening hands to the first turn, the opening hand centred over the table.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { openingProblems } from './openingFit'
 import { DEV_WEB_URL } from './ports'

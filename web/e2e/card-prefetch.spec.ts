@@ -1,5 +1,5 @@
 // Goal: as a game starts, a seat's page loads the pictures of its own whole deck ahead (cards still in the library included), and neither its picture requests nor its socket frames name a card of the other seat's hidden deck.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { BrowserContext } from '@playwright/test'
 import type { PreconListItem, PreconView } from '../src/protocol/generated'
 import { everyoneReady } from './lobby'

@@ -1,5 +1,5 @@
 // Goal: a guest finds a public game in the open games list on /, answers the name question in the dialog, lands in the game's lobby on the seat the server gave them (the seat link in the address fragment survives a reload), and the host's lobby shows the new name; the taken seat has no deck, which both lobbies say, and Ready waits until the guest chooses one there and the host's lobby shows its name, format and manual cards; a guest reaches an invite game, which no list shows, by typing its code, hears one sentence for a code no game has with the typed code kept, and lands in the lobby the answer names.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { chooseDeck, deckLines, seatRows } from './lobby'
 import { WEB_URL } from './ports'
 

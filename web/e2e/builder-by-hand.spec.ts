@@ -1,5 +1,5 @@
 // Goal: in the deck builder a line's "Play by hand" toggle marks a Verified card, the live check then marks it Manual, and the toggle gives it back to the rules, at a wide and a phone window, on the dev route (no server).
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { DEV_WEB_URL } from './ports'
 
 const SIZES = [

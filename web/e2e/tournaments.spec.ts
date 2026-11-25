@@ -1,5 +1,5 @@
 // Goal: a tournament runs in the browser on a real server and database: an organiser creates a Swiss tournament, two players sign up through the invite link, the organiser starts round 1, each player finds "Play your game" and opens the match game, which gives the player no host controls, the organiser enters the result, and finishing the tournament shows the final standings; a player sees no organiser controls.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
 import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'
 

@@ -1,5 +1,5 @@
 // Goal: the Rooms scene of the dev table (`/dev/table?prompt=priority-rooms&turn=you`) shows every Room with a badge of two doors (name and lock) that is whole, inside the window and set at 12 px or more, opens a chooser with an "Unlock <door>" line for each locked door of a Room of the viewer inside the window, and previews a Room with both halves and their state, at 1440x900 and 390x844 in the light and the dark theme.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 import { expectTheme, themedContext } from './layoutGate'

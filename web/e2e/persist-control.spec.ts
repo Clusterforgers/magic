@@ -1,5 +1,5 @@
 // Goal: the Full Control menu's settings and the Auto-skip triggers switch a player turns on stay on in their next game in the same browser: Full Control held, end turn by hand, every auto choice and the sounds, as the new game's server holds them.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
 import type { Player } from './lobby'

@@ -1,5 +1,5 @@
 // Goal: on the dev table (`/dev/table?prompt=priority-forecast`) a Giant Growth on top of the stack shows "+3/+3 → 7/7" in a dark badge on its target, whole, inside the window and at 12 px or more, and on no other card; the badge never covers the target's name, which stays whole and readable, on the duel board and at six seats, at 1440x900, 1366x768 and 390x844.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { DEV_WEB_URL } from './ports'
 import { TEXT_FLOOR } from './layoutAudit'
 

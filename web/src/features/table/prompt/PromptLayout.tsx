@@ -24,6 +24,7 @@ import { usePrompt } from './PromptContext'
 import { useGenericOffer } from './useGenericOffer'
 import { isClamped } from './promptBand'
 import { AskerChip } from './detail/AskerChip'
+import { AskedQuote } from './detail/AskedQuote'
 import { detailKind } from './detail/asking'
 import { useAsker } from './detail/useAsker'
 import { useWindowHost } from './choiceOverlay'
@@ -279,6 +280,7 @@ function DecisionWindow({
         {children}
       </div>
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+        <AskedQuote where="window" />
         <p data-slot="window-question" aria-hidden="true" className="min-w-0 flex-1 text-sm font-semibold">
           {text}
         </p>
@@ -450,6 +452,10 @@ export function PromptLayout({
         capital={named && home !== null}
         coach={home !== null}
       />
+      {/* The dock draws no card: the asked clause is quoted, in the list's window when one stands over it. */}
+      {chip && home === 'dock' && !(at === 'window' && hasContent(choices)) ? (
+        <AskedQuote where="line" />
+      ) : null}
       {hasContent(meter) ? (
         <div data-slot="prompt-meter" className="flex min-w-0 flex-wrap items-center gap-2 empty:hidden">
           {meter}

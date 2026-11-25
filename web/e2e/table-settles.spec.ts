@@ -1,5 +1,5 @@
 // Goal: the development table settles after its first render at 5, 6, 7 and 8 seats in grid mode at 1280x720, 1920x1080 and 2180x1290: the sizes of the boards and lanes change at most twice and then hold, and every board of the opponents' grid draws one card size.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { DEV_WEB_URL } from './ports'
 
 /** The most changes of the boards' sizes after the first frame with boards: a measure, then the split's answer. */

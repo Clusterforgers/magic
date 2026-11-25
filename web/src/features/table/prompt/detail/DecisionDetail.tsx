@@ -31,7 +31,11 @@ export function Kicker({ lead, rest }: { lead: string; rest?: string }) {
 function MarkedRules({ text, clause }: { text: string; clause: readonly [number, number] | undefined }) {
   const { before, marked, after } = clauseParts(text, clause)
   return (
-    <p data-slot="detail-rules" className="text-[0.8125rem] leading-[1.1875rem] text-muted-foreground">
+    <p
+      data-slot="detail-rules"
+      // A modal text keeps its bullet lines.
+      className="text-[0.8125rem] leading-[1.1875rem] whitespace-pre-line text-muted-foreground"
+    >
       {before === '' ? null : <RulesText text={before} />}
       {marked === '' ? null : (
         <mark data-slot="asked-clause" className="detail-clause">

@@ -1,5 +1,5 @@
 // Goal: accounts play real precon decks from a Postgres database through the real UI, from the lobby into the first turns (mulligans, lands, spells with their targets and payments, attacks, every step), and the run records what stops a first real game.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { PreconListItem } from '../src/protocol/generated'
 import { playToTheEnd, Run } from './driver'
 import type { Hooks, Seen, Style } from './driver'

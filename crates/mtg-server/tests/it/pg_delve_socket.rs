@@ -134,6 +134,9 @@ async fn every_open_socket_of_a_run_hears_each_change(pool: sqlx::PgPool) {
     guests.close().await;
 }
 
+/// The request headers of a refused socket.
+type Headers<'a> = Vec<(&'a str, &'a str)>;
+
 #[sqlx::test(migrations = false)]
 async fn a_socket_is_refused_before_the_upgrade(pool: sqlx::PgPool) {
     let server = pg_commander::start(&pool).await;
@@ -141,7 +144,7 @@ async fn a_socket_is_refused_before_the_upgrade(pool: sqlx::PgPool) {
     let (id, _) = create(&server, &host).await;
     let cookie = host.cookie.as_str();
     let unknown = uuid::Uuid::new_v4().to_string();
-    let cases: [(&str, &str, Vec<(&str, &str)>, u16); 4] = [
+    let cases: [(&str, &str, Headers, u16); 4] = [
         ("no session", &id, vec![], 401),
         ("malformed run", "not-a-run", vec![("Cookie", cookie)], 404),
         ("unknown run", &unknown, vec![("Cookie", cookie)], 404),

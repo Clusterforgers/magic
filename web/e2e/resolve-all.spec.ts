@@ -1,5 +1,5 @@
 // Goal: over a stack of two or more objects "Resolve all" stands beside the primary button in every table mode (duel, grid of 2 to 6 seats, teams, Two-Headed Giant, a boss fight) at laptop and desktop sizes, inside the window and uncovered, the primary button still last and Space and Enter unchanged; a press starts the yield and the prompt gives way to the passing line; a phone holds it in the menu of other ways to pass.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Locator, Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

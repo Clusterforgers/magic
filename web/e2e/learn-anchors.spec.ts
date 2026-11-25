@@ -1,5 +1,5 @@
 // Goal: at a desktop, a laptop and a phone with touch, at every step of every lesson each lit part is one element inside the window that is on top at its centre (and at its corners, for a control), the ring lies on it, and the coach card is inside the window, shows its whole text and covers no lit part, the decision's home, the primary button, an open decision sheet or the card preview.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { LAYOUTS, LESSONS, coachState, settle, startLesson, walkLesson } from './learnWalker'
 import type { CoachState } from './learnWalker'

@@ -1,5 +1,5 @@
 // Goal: a payment on a crowded board (60 and 120 more mana sources of every kind: basics, duals, rocks, Signets, Treasures, filter lands, Cabal Coffers, creature-only mana) opens within a small multiple of the plain pay step's main-thread time (and under a ceiling) and stays quick: a source pressed on the board reads pressed, "Pay for me" lays out the game's payment and Confirm pays it; in a duel and at four seats, at 1400x900 and on a phone (390x844).
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { mainThreadMs } from './mainThread'
 import { DEV_WEB_URL } from './ports'
 

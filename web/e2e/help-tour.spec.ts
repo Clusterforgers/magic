@@ -1,5 +1,5 @@
 // Goal: on the development table at a desktop, a tablet and a phone size, the help menu runs the table tour through every step with its card inside the window and a part of the table lit for every step but the first, and opens the rules lexicon, whose search finds a rules term.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { DEV_WEB_URL } from './ports'
 
 const SIZES = [

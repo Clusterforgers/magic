@@ -3,9 +3,13 @@
 //! The table shows the asking card beside the question, marks the asked clause in its rules text and places the
 //! question in the run of triggers it is one of (`docs/protocol.md`, Decisions).
 
+use std::sync::Arc;
+
 use mtg_cards::CardIdentity;
 use mtg_cards::ability::Ability;
+use mtg_cards::compile::{AskedPlace, asked_clause, rules_words};
 use mtg_core::ids::{ObjectId, PlayerId};
+use mtg_engine::resolve::{AskedAt, AskedPart, asked_at, stack_rules};
 use mtg_engine::state::GameState;
 use mtg_engine::triggers::{effect_words, public_cause};
 use mtg_engine::zones::Zone;
@@ -45,13 +49,14 @@ pub struct AskingView {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub ability: Option<usize>,
-    /// The rules text of the asking ability in the card writer's words; left out for a spell, for an ability the writer
-    /// cannot word and while the source is hidden.
+    /// The rules text of the asking spell or ability in the card writer's words, its card's name for `~`; left out for
+    /// rules the writer cannot word and while the source is hidden.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub text: Option<String>,
-    /// The clause of `text` the decision asks about, as the first and one past the last UTF-16 code unit; left out
-    /// when no clause is found.
+    /// The clause of `text` the decision asks about, as the first and one past the last UTF-16 code unit: the effect the
+    /// resolution stands at or the modes chosen (`mtg_engine::resolve::asked_at`), else the "you may" or the target's
+    /// words of the question; left out when no clause is found.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[ts(optional)]
     pub clause: Option<(u32, u32)>,
@@ -156,9 +161,17 @@ impl AskingView {
         let Some(stack) = stack else {
             // Not on the stack: the named object itself, while the viewer sees it.
             let view = ObjectView::of(state, viewer, named)?;
+            // A card being cast off the battlefield reads as the spell it becomes.
+            let (text, clause) = state
+                .object(named)
+                .filter(|object| object.ability().is_none() && object.zone() != Zone::Battlefield)
+                .map(|_| spell_words(state, named, &decision.kind, &view.name, question))
+                .unwrap_or_default();
             return Some(AskingView {
                 source: Some(named),
                 name: view.name,
+                text,
+                clause,
                 ..AskingView::default()
             });
         };
@@ -167,12 +180,16 @@ impl AskingView {
         let resolving = state
             .resolving()
             .is_some_and(|running| running.object() == stack);
+        let asked = asked_at(state, stack, &decision.kind);
         let Some(ability) = object.ability() else {
+            let (text, clause) = spell_words(state, stack, &decision.kind, &view.name, question);
             return Some(AskingView {
                 stack: Some(stack),
                 resolving,
                 source: Some(stack),
                 name: view.name,
+                text,
+                clause,
                 ..AskingView::default()
             });
         };
@@ -188,7 +205,9 @@ impl AskingView {
             .clone()
             .filter(|_| seen.is_none() && !view.name.is_empty());
         let text = view.rules_text;
-        let marked = text.as_deref().and_then(|text| clause_of(text, question));
+        let marked = text
+            .as_deref()
+            .and_then(|text| marked(text, asked.as_ref(), &view.name, question));
         let cause = ability.cause().and_then(|cause| {
             let object = public_cause(state, cause)?;
             let name = ObjectView::of(state, viewer, object)?.name;
@@ -238,6 +257,56 @@ fn waits_for_entering(text: &str) -> bool {
     text.split(", ")
         .next()
         .is_some_and(|event| event.contains(" enters"))
+}
+
+/// The words of the spell `id` runs, its name `name` for `~`, and the clause `kind` asks about; nothing while the viewer
+/// does not see its name or the writer cannot word it.
+fn spell_words(
+    state: &GameState,
+    id: ObjectId,
+    kind: &DecisionKind,
+    name: &str,
+    question: Question<'_>,
+) -> (Option<String>, Option<(u32, u32)>) {
+    let asked = asked_at(state, id, kind);
+    let text = asked
+        .as_ref()
+        .map(|asked| Arc::clone(&asked.rules))
+        .or_else(|| stack_rules(state, id))
+        .filter(|_| !name.is_empty())
+        .and_then(|rules| rules_words(&rules))
+        .map(|words| words.replace('~', name));
+    let clause = text
+        .as_deref()
+        .and_then(|text| marked(text, asked.as_ref(), name, question));
+    (text, clause)
+}
+
+/// The clause of `text` (the words of the asking rules, `name` for `~`) the decision asks about, in UTF-16 code units:
+/// the place the engine asks at, else the words of the question.
+fn marked(
+    text: &str,
+    asked: Option<&AskedAt>,
+    name: &str,
+    question: Question<'_>,
+) -> Option<(u32, u32)> {
+    let placed = asked.and_then(|asked| {
+        let place = match &asked.part {
+            AskedPart::Modes(path) => AskedPlace::Modes(path),
+            AskedPart::Effect(path) => AskedPlace::Effect(path),
+        };
+        asked_clause(&asked.rules, place, name, text)
+    });
+    match placed {
+        Some(span) => utf16_span(text, span.start, span.end),
+        None => clause_of(text, question),
+    }
+}
+
+/// The byte span `start..end` of `text` in UTF-16 code units.
+fn utf16_span(text: &str, start: usize, end: usize) -> Option<(u32, u32)> {
+    let units = |to: usize| u32::try_from(text.get(..to)?.encode_utf16().count()).ok();
+    Some((units(start)?, units(end)?))
 }
 
 /// The run `stack` is one of, when it holds two or more abilities.
@@ -347,8 +416,7 @@ fn clause_of(text: &str, question: Question<'_>) -> Option<(u32, u32)> {
             (start, end)
         }
     };
-    let units = |to: usize| u32::try_from(text.get(..to)?.encode_utf16().count()).ok();
-    Some((units(start)?, units(end)?))
+    utf16_span(text, start, end)
 }
 
 /// One past the period that ends the sentence `from` lies in; the end of `text` when it has none.
