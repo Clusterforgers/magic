@@ -1,4 +1,4 @@
-//! Goal: a phone from 560 to 900 px high keeps a row of your permanents in view in every mode: a mode's own bars (the boss's abilities, the party's strip) lower the hand dock to its peek row sooner, a short phone keeps the boss's pod and both sides' tile strips to one line with the details a tap away, and a duel or team table keeps the layout it had.
+//! Goal: a phone from 560 to 900 px high keeps a row of your permanents in view in every mode: a mode's own bars (the party's strip, the boss's side past a duel's head) lower the hand dock to its peek row sooner, a short phone keeps the boss's pod and both sides' tile strips to one line with the details a tap away, and a duel or team table keeps the layout it had.
 import { fireEvent } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { renderTable } from '@/test-utils/tableHarness'
@@ -19,6 +19,7 @@ import {
   HAND_PEEK_PX,
   phoneBarsPx,
   phoneHandCss,
+  PHONE_HEAD_PX,
   phoneHandPx,
   planTable,
   shortPhone,
@@ -53,18 +54,30 @@ const TABLES: readonly (readonly [string, Table])[] = [
   ['a boss against one hero', { heroes: 1, minions: 0 }],
 ]
 
+/** The boss's abilities over its framed pod line of a name row and a row of figures, each with its gap, on a tall phone. */
+const BOSS_POD_844 = BOSS_ABILITIES_PX + ZONE_GAP_PX + 8 + 58 + ZONE_GAP_PX
+
 describe("a phone mode's bars", () => {
   it.each([
-    // [shape, allies, window height, px]
-    ['duel', 0, 600, 0],
-    ['focus', 0, 600, 0],
-    ['columns', 0, 844, 0],
-    ['boss', 0, 600, BOSS_ABILITIES_PX + 4],
-    ['boss', 2, 600, BOSS_ABILITIES_PX + 4 + TILE_LINE_PX + 4],
-    ['boss', 2, 844, BOSS_ABILITIES_PX + ZONE_GAP_PX + ALLY_STRIP_PX + ZONE_GAP_PX],
-  ] as const)('of a %s table with %i allies at %i px take %i px', (shape, allies, height, px) => {
-    expect(phoneBarsPx({ shape, allies: Array.from({ length: allies }, (_, at) => at + 1) }, height)).toBe(px)
-  })
+    // [shape, allies, tiles of the boss's side, window height, px]
+    ['duel', 0, 0, 600, 0],
+    ['focus', 0, 0, 600, 0],
+    ['columns', 0, 0, 844, 0],
+    // The boss's abilities over its pod line, or over its side's one-line tiles, take no more than a duel's head.
+    ['boss', 0, 0, 600, 0],
+    ['boss', 0, 2, 600, 0],
+    ['boss', 0, 0, 844, BOSS_POD_844 - PHONE_HEAD_PX],
+    ['boss', 2, 0, 600, TILE_LINE_PX + 4],
+    ['boss', 2, 0, 844, BOSS_POD_844 - PHONE_HEAD_PX + ALLY_STRIP_PX + ZONE_GAP_PX],
+    // A tall phone's tiles of the boss's side keep a zones line under them, past a duel's head.
+    ['boss', 0, 2, 844, BOSS_ABILITIES_PX + ZONE_GAP_PX + ALLY_STRIP_PX + ZONE_GAP_PX + 32 - PHONE_HEAD_PX],
+  ] as const)(
+    'of a %s table with %i allies and %i tiles at %i px take %i px',
+    (shape, allies, tiles, height, px) => {
+      const seats = (count: number) => Array.from({ length: count }, (_, at) => at + 1)
+      expect(phoneBarsPx({ shape, allies: seats(allies), tiles: seats(tiles) }, height)).toBe(px)
+    },
+  )
 
   it.each(TABLES.flatMap(([name, table]) => HEIGHTS.map((height) => [name, table, height] as const)))(
     'lower the hand dock of %s at 390x%i by their room, the duel and the teams not at all',
