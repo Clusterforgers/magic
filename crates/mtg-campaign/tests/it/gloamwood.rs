@@ -154,7 +154,11 @@ fn every_gloamwood_boss_holds_its_record() {
         let deck = content.deck(&boss.deck_file).unwrap();
         assert_eq!(deck.cards.iter().map(|(_, n)| n).sum::<u32>(), 100);
         let identity: BTreeSet<char> = deck.makeup.colors.keys().flat_map(|c| c.chars()).collect();
-        assert!(identity.is_subset(&colours(boss)), "{}: {identity:?}", boss.id);
+        assert!(
+            identity.is_subset(&colours(boss)),
+            "{}: {identity:?}",
+            boss.id
+        );
         for level in 1..=LEVELS {
             let card = content.card(&innate_id(&boss.innate, level)).unwrap();
             assert_eq!((card.kind, card.level), (CardKind::Innate, level));
@@ -274,9 +278,7 @@ fn board(rows: &str) -> Board {
             "hero_hand" => board.hero_hand.extend((0..7).map(|_| island())),
             "boss_brute" => board.boss.push(free_creature("Brute", 2, 2)),
             "boss_dead_small" => board.boss_dead.push(free_creature("Wight", 2, 2)),
-            "boss_dead_big" => board
-                .boss_dead
-                .push(creature("Ancient", 5, &[], 5, 5)),
+            "boss_dead_big" => board.boss_dead.push(creature("Ancient", 5, &[], 5, 5)),
             other => panic!("{other}"),
         }
     }
@@ -289,11 +291,41 @@ fn board(rows: &str) -> Board {
 #[case::dirge_one_spirit("pale_choir_dirge", 1, "", Count::Boss("Spirit"), 1)]
 #[case::dirge_three_spirits("pale_choir_dirge", 5, "", Count::Boss("Spirit"), 3)]
 #[case::stolen_names_unpaid("nightshade_stolen_names", 1, "", Count::Boss("Faerie Rogue"), 1)]
-#[case::restless_dead_small_rises("hollis_restless_dead", 1, "boss_dead_small", Count::Boss("Wight"), 1)]
-#[case::restless_dead_big_stays("hollis_restless_dead", 1, "boss_dead_big", Count::Boss("Ancient"), 0)]
-#[case::restless_dead_big_rises("hollis_restless_dead", 5, "boss_dead_big", Count::Boss("Ancient"), 1)]
-#[case::toads_gift_one_counter("mossbeard_toads_gift", 1, "boss_brute", Count::BossPower("Brute"), 3)]
-#[case::toads_gift_three_counters("mossbeard_toads_gift", 5, "boss_brute", Count::BossPower("Brute"), 5)]
+#[case::restless_dead_small_rises(
+    "hollis_restless_dead",
+    1,
+    "boss_dead_small",
+    Count::Boss("Wight"),
+    1
+)]
+#[case::restless_dead_big_stays(
+    "hollis_restless_dead",
+    1,
+    "boss_dead_big",
+    Count::Boss("Ancient"),
+    0
+)]
+#[case::restless_dead_big_rises(
+    "hollis_restless_dead",
+    5,
+    "boss_dead_big",
+    Count::Boss("Ancient"),
+    1
+)]
+#[case::toads_gift_one_counter(
+    "mossbeard_toads_gift",
+    1,
+    "boss_brute",
+    Count::BossPower("Brute"),
+    3
+)]
+#[case::toads_gift_three_counters(
+    "mossbeard_toads_gift",
+    5,
+    "boss_brute",
+    Count::BossPower("Brute"),
+    5
+)]
 #[case::moon_hunger_one("gnarl_moon_hunger", 1, "boss_brute", Count::BossPower("Brute"), 3)]
 #[case::moon_hunger_two("gnarl_moon_hunger", 5, "boss_brute", Count::BossPower("Brute"), 4)]
 fn an_innate_acts_at_its_level(
@@ -303,7 +335,11 @@ fn an_innate_acts_at_its_level(
     #[case] what: Count,
     #[case] expected: i32,
 ) -> Result<(), ScriptError> {
-    check(table(board(rows), vec![leveled(id, level)], &[]), what, expected)
+    check(
+        table(board(rows), vec![leveled(id, level)], &[]),
+        what,
+        expected,
+    )
 }
 
 #[rstest]
