@@ -11,6 +11,7 @@ mod discard_cost;
 mod endless;
 mod events;
 mod foundry;
+mod gloamwood;
 mod modifiers;
 mod mythic_cards;
 mod old_runs;
