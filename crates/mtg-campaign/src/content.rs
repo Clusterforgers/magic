@@ -471,6 +471,10 @@ pub struct Theme {
     /// [`THEME_SUPPLIES_FROM`](crate::run::THEME_SUPPLIES_FROM).
     #[serde(default)]
     pub boss_supplies: usize,
+    /// The most relics each of its bosses brings from generation
+    /// [`THEME_RELICS_FROM`](crate::run::THEME_RELICS_FROM); none for [`MOST_BOSS_RELICS`](crate::boss_relics::MOST_BOSS_RELICS).
+    #[serde(default)]
+    pub boss_relics_most: Option<usize>,
 }
 
 impl Theme {
