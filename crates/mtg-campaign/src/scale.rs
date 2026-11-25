@@ -17,7 +17,7 @@ pub const BOSS_LIFE_PER_HERO: i32 = 15;
 pub const REINFORCEMENT: &str = "reinforcements";
 /// The half reinforcement (an additional card each draw step) a theme may add from [`THEME_SUPPLIES_FROM`].
 pub const SUPPLIES: &str = "supplies";
-/// The relic count from which a boss's reinforcements fade to supplies, from [`REINFORCEMENTS_FADE_FROM`].
+/// The relic count from which a boss brings no reinforcement, from [`REINFORCEMENTS_FADE_FROM`].
 pub const FADE_RELICS: usize = 6;
 /// The bosses of a run whose depth counts one point each; beyond them every second boss adds a point.
 pub const FULL_DEPTH: u32 = 4;
@@ -57,8 +57,8 @@ impl Scale {
     }
 
     /// The reinforcements a boss of a theme that adds `supplies` (`Theme::boss_supplies`) and brings `relics` relics
-    /// brings against `heroes` heroes in a run of content `generation`: [`Scale::reinforcements`], each one a
-    /// [`SUPPLIES`] from [`REINFORCEMENTS_FADE_FROM`] with [`FADE_RELICS`] relics or more, and from
+    /// brings against `heroes` heroes in a run of content `generation`: [`Scale::reinforcements`], but
+    /// none from [`REINFORCEMENTS_FADE_FROM`] with [`FADE_RELICS`] relics or more, and from
     /// [`THEME_SUPPLIES_FROM`] the theme's [`SUPPLIES`] against two or more heroes.
     pub fn theme_reinforcements(
         heroes: usize,
@@ -68,7 +68,7 @@ impl Scale {
     ) -> Vec<String> {
         let mut all = Self::reinforcements(heroes, generation);
         if generation >= REINFORCEMENTS_FADE_FROM && relics >= FADE_RELICS {
-            all.fill(SUPPLIES.to_owned());
+            all.clear();
         }
         if generation >= THEME_SUPPLIES_FROM && heroes >= 2 {
             all.extend(std::iter::repeat_n(SUPPLIES.to_owned(), supplies));

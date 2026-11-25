@@ -1,8 +1,8 @@
 //! Goal: from generation `BOSS_SCALE_FROM` a boss brings relics from the first fight, more with depth and Heat, and one
 //! reinforcement for each hero after the first (a solo hero meets the same boss as before); runs of older generations
 //! keep the relic count and the boss they were played with; from `THEME_SUPPLIES_FROM` a theme may add supplies to its
-//! bosses against two or more heroes, and from `REINFORCEMENTS_FADE_FROM` a boss with many relics brings supplies for
-//! its reinforcements.
+//! bosses against two or more heroes, and from `REINFORCEMENTS_FADE_FROM` a boss with the most relics brings no
+//! reinforcement (the theme's supplies stay).
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS, RELIC_OFFSET};
 use mtg_campaign::content::FOUNDRY_FROM;
@@ -215,7 +215,7 @@ fn a_themes_bosses_bring_its_supplies_from_its_generation_against_two_heroes(
 
 proptest! {
     #[test]
-    fn reinforcements_fade_to_supplies_only_from_their_generation_and_many_relics(
+    fn reinforcements_fade_only_from_their_generation_and_the_most_relics(
         heroes in 1usize..9,
         generation in 0u32..20,
         supplies in 0usize..3,
@@ -223,12 +223,13 @@ proptest! {
     ) {
         let now = Scale::theme_reinforcements(heroes, generation, supplies, relics);
         let before = Scale::theme_reinforcements(heroes, generation.min(THEME_SUPPLIES_FROM), supplies, relics);
-        prop_assert_eq!(now.len(), before.len());
         if generation < REINFORCEMENTS_FADE_FROM || relics < FADE_RELICS {
             // Every older generation, and a boss with fewer relics, keeps the reinforcements of generation 13.
             prop_assert_eq!(&now, &before);
         } else {
-            prop_assert!(now.iter().all(|id| id == SUPPLIES));
+            // Only the theme's supplies stay.
+            let kept: Vec<String> = before.into_iter().filter(|id| id == SUPPLIES).collect();
+            prop_assert_eq!(&now, &kept);
         }
     }
 }
@@ -269,7 +270,7 @@ fn two_heroes(version: u32) -> Vec<RunEvent> {
 }
 
 #[rstest]
-fn a_deep_boss_brings_supplies_for_its_reinforcement_from_the_fade(
+fn a_deep_boss_brings_no_reinforcement_from_the_fade(
     #[values("warrens", "spire", "foundry")] theme: &str,
     #[values(1, 6, 7, 12)] depth: u32,
 ) {
@@ -282,7 +283,13 @@ fn a_deep_boss_brings_supplies_for_its_reinforcement_from_the_fade(
         .filter(|id| *id == REINFORCEMENT)
         .count();
     assert_eq!(reinforcements, usize::from(!faded), "depth {depth}");
-    assert_eq!(now.reinforcements.len(), old.reinforcements.len());
+    let supplies = |seat: &mtg_campaign::BossSeat| {
+        seat.reinforcements
+            .iter()
+            .filter(|id| *id == SUPPLIES)
+            .count()
+    };
+    assert_eq!(supplies(&now), supplies(&old));
     // Apart from the reinforcements, the boss is the one of generation 13.
     now.reinforcements.clone_from(&old.reinforcements);
     assert_eq!(now, old);
