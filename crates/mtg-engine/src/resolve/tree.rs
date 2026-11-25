@@ -36,28 +36,11 @@ const fn loops(effect: &Effect) -> bool {
 /// The lists of effects inside an effect, in branch order; `chosen` are the modes chosen for a `Modal`.
 fn branches<'a>(effect: &'a Effect, chosen: &[usize]) -> Vec<&'a [Effect]> {
     match effect {
-        Effect::RollDice { results, .. } => {
-            results.iter().map(|row| row.effects.as_slice()).collect()
-        }
-        Effect::FlipCoin { win, lose, .. } | Effect::Clash { win, lose, .. } => vec![win, lose],
-        Effect::VillainousChoice { first, second, .. } | Effect::Either { first, second } => {
-            vec![first, second]
-        }
-        Effect::OneOf { options, .. } => options.iter().map(Vec::as_slice).collect(),
-        Effect::If {
-            then, otherwise, ..
-        } => vec![then, otherwise],
-        Effect::Together { effects }
-        | Effect::May { effects, .. }
-        | Effect::RepeatEach { effects, .. }
-        | Effect::RepeatWhile { effects, .. } => vec![effects],
-        Effect::Pay { paid, unpaid, .. } => vec![paid, unpaid],
-        Effect::CastFromZone { otherwise, .. } => vec![otherwise],
         Effect::Modal { modes, .. } => chosen
             .iter()
             .map(|index| modes.get(*index).map_or(&[][..], |m| m.effects.as_slice()))
             .collect(),
-        _ => Vec::new(),
+        _ => mtg_cards::effect::branches(effect),
     }
 }
 
@@ -82,6 +65,38 @@ pub(crate) fn effect_at<'a>(
         list = branches(effect, chosen).get(branch).copied()?;
         path = deeper;
     }
+}
+
+/// `position` in the card's own terms (`mtg_cards::effect::branches`): a branch of a `Modal` is the index of its mode
+/// on the card, and the start of a repeat's next pass is the repeat itself. `None` where no effect stands.
+pub(crate) fn card_path(
+    root: &[Effect],
+    chosen: &[usize],
+    position: &[usize],
+) -> Option<Vec<usize>> {
+    let at = if is_next_pass(position) {
+        position.get(..position.len().checked_sub(1)?)?
+    } else {
+        position
+    };
+    effect_at(root, chosen, at)?;
+    let mut list = root;
+    let mut path = Vec::with_capacity(at.len());
+    let mut rest = at;
+    while let Some((&index, deeper)) = rest.split_first() {
+        path.push(index);
+        let Some((&branch, inner)) = deeper.split_first() else {
+            break;
+        };
+        let effect = list.get(index)?;
+        path.push(match effect {
+            Effect::Modal { .. } => *chosen.get(branch)?,
+            _ => branch,
+        });
+        list = branches(effect, chosen).get(branch).copied()?;
+        rest = inner;
+    }
+    Some(path)
 }
 
 /// Whether `position` is inside a `Together` batch: in its body, not at the effect itself nor past it.
@@ -285,6 +300,23 @@ mod tests {
     #[case::nothing(&[], "end")]
     fn a_position_names_an_effect_or_the_end(#[case] position: &[usize], #[case] expected: &str) {
         assert_eq!(name(effect_at(&tree(), &[], position)), expected);
+    }
+
+    #[rstest]
+    #[case::a_plain_effect(&[0], &[], Some(&[0][..]))]
+    #[case::inside_a_branch(&[1, 0, 1], &[], Some(&[1, 0, 1][..]))]
+    #[case::two_deep(&[2, 1, 0, 0, 0], &[], Some(&[2, 1, 0, 0, 0][..]))]
+    #[case::past_the_end(&[4], &[], None)]
+    #[case::the_first_mode_chosen_is_its_card_mode(&[0, 0, 0], &[3, 1], Some(&[0, 3, 0][..]))]
+    #[case::the_second_mode_chosen(&[0, 1, 0], &[3, 1], Some(&[0, 1, 0][..]))]
+    #[case::a_mode_chosen_twice(&[0, 1, 1], &[0, 0], Some(&[0, 0, 1][..]))]
+    fn a_position_reads_in_the_cards_own_terms(
+        #[case] position: &[usize],
+        #[case] chosen: &[usize],
+        #[case] expected: Option<&[usize]>,
+    ) {
+        let root = if chosen.is_empty() { tree() } else { modal() };
+        assert_eq!(card_path(&root, chosen, position).as_deref(), expected);
     }
 
     #[rstest]

@@ -6,6 +6,7 @@
 mod af_steps;
 mod all_graveyards;
 mod and_lists;
+pub(super) mod asked;
 mod becomes_subtype;
 mod bound;
 mod c10_dice_per_player;

@@ -2740,6 +2740,65 @@ pub const EXILED: &str = "exiled";
 /// The name every card revealed until a card matches is bound to, the cards found included.
 pub const REVEALED: &str = "revealed";
 
+/// The lists of effects inside an effect, in branch order: the rows of a die, the win and loss of a coin or clash, the
+/// two options of a choice, each option of a `OneOf`, the `then` and `otherwise` of an `If`, the body of a batch, a
+/// `May` or a repeat, the `paid` and `unpaid` of a `Pay`, the `otherwise` of a cast from a zone, and every mode of a
+/// `Modal` in card order (a resolution enters a `Modal` by the modes chosen instead).
+pub fn branches(effect: &Effect) -> Vec<&[Effect]> {
+    match effect {
+        Effect::RollDice { results, .. } => {
+            results.iter().map(|row| row.effects.as_slice()).collect()
+        }
+        Effect::FlipCoin { win, lose, .. } | Effect::Clash { win, lose, .. } => vec![win, lose],
+        Effect::VillainousChoice { first, second, .. } | Effect::Either { first, second } => {
+            vec![first, second]
+        }
+        Effect::OneOf { options, .. } => options.iter().map(Vec::as_slice).collect(),
+        Effect::If {
+            then, otherwise, ..
+        } => vec![then, otherwise],
+        Effect::Together { effects }
+        | Effect::May { effects, .. }
+        | Effect::RepeatEach { effects, .. }
+        | Effect::RepeatWhile { effects, .. } => vec![effects],
+        Effect::Pay { paid, unpaid, .. } => vec![paid, unpaid],
+        Effect::CastFromZone { otherwise, .. } => vec![otherwise],
+        Effect::Modal { modes, .. } => modes.iter().map(|mode| mode.effects.as_slice()).collect(),
+        _ => Vec::new(),
+    }
+}
+
+/// The list of effects of `branch` of an effect to change, counted as [`branches`] counts them.
+pub fn branch_mut(effect: &mut Effect, branch: usize) -> Option<&mut Vec<Effect>> {
+    match (effect, branch) {
+        (Effect::RollDice { results, .. }, _) => {
+            results.get_mut(branch).map(|row| &mut row.effects)
+        }
+        (Effect::FlipCoin { win, .. } | Effect::Clash { win, .. }, 0) => Some(win),
+        (Effect::FlipCoin { lose, .. } | Effect::Clash { lose, .. }, 1) => Some(lose),
+        (Effect::VillainousChoice { first, .. } | Effect::Either { first, .. }, 0) => Some(first),
+        (Effect::VillainousChoice { second, .. } | Effect::Either { second, .. }, 1) => {
+            Some(second)
+        }
+        (Effect::OneOf { options, .. }, _) => options.get_mut(branch),
+        (Effect::If { then, .. }, 0) => Some(then),
+        (Effect::If { otherwise, .. }, 1) | (Effect::CastFromZone { otherwise, .. }, 0) => {
+            Some(otherwise)
+        }
+        (
+            Effect::Together { effects }
+            | Effect::May { effects, .. }
+            | Effect::RepeatEach { effects, .. }
+            | Effect::RepeatWhile { effects, .. },
+            0,
+        ) => Some(effects),
+        (Effect::Pay { paid, .. }, 0) => Some(paid),
+        (Effect::Pay { unpaid, .. }, 1) => Some(unpaid),
+        (Effect::Modal { modes, .. }, _) => modes.get_mut(branch).map(|mode| &mut mode.effects),
+        _ => None,
+    }
+}
+
 /// The names the effects bind, those inside the lists nested in them too: the fields written `as`, `rest_as`, `exiled_as`
 /// and `revealed_as`, sorted.
 pub fn bound_names(effects: &[Effect]) -> Vec<String> {
