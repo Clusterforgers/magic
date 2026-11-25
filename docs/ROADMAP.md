@@ -156,7 +156,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl7) The scouts' forecast: background bot fights measure each boss of a new ladder and the ladder shows the measured win rate
 - [ ] (dl8a) Boss brain priorities: the boss and its minions focus the biggest threat, punish the healer and break combos, at Very Hard once its clock suits the server
 - [ ] (dl8b) Whole runs won in 20 to 35 % at every party size, measured for 1 to 6 heroes and with Very Hard heroes
-- [ ] (dl10a) The Spirits' worth, acting against idle, at three or more heroes
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A fourth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
