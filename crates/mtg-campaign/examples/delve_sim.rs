@@ -370,6 +370,24 @@ fn fight(plan: &FightPlan, cards: &[Vec<String>], seed: u64, heroes: Level) -> F
                     "seed {seed}: end lives {lives:?} of boss {}",
                     plan.boss.life
                 );
+                for at in 0..plan.seats() {
+                    let p = PlayerId::from_index(at);
+                    let owned = |zone| {
+                        engine
+                            .zone(zone)
+                            .iter()
+                            .filter_map(|id| engine.object(*id))
+                            .filter(|o| o.owner() == p)
+                            .map(|o| o.card().name.clone())
+                            .collect::<Vec<_>>()
+                    };
+                    println!(
+                        "seed {seed}: seat {at} library {} exile {} graveyard {:?}",
+                        engine.zone(mtg_engine::zones::Zone::Library(p)).len(),
+                        owned(mtg_engine::zones::Zone::Exile).len(),
+                        owned(mtg_engine::zones::Zone::Graveyard(p)),
+                    );
+                }
             }
             let mut pressure = Vec::new();
             let mut round = 0;

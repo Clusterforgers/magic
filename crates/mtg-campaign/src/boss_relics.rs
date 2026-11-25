@@ -80,7 +80,7 @@ pub fn draw(
     let pool: Vec<&CustomCard> = content
         .relics()
         .into_iter()
-        .filter(|c| c.since <= generation && fits(c, makeup))
+        .filter(|c| c.in_generation(generation) && fits(c, makeup))
         .collect();
     let n = theme_count(depth, heat, generation, most);
     let (rare, mythic) = odds(n, heat);

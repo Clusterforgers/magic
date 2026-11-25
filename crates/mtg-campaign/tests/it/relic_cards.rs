@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 use std::sync::Arc;
 
 use mtg_campaign::relics::{FILTER_FROM, RARITY_FROM, Want};
-use mtg_campaign::run::CONTENT;
+use mtg_campaign::run::{CONTENT, CROWN_CASCADE_FROM};
 use mtg_campaign::{CardKind, FightPlan, HeroDeck, Run, RunEvent, content};
 use mtg_cards::CardDefinition;
 use mtg_cards::keyword::Keyword;
@@ -174,7 +174,7 @@ fn the_larger_pool_belongs_to_the_filters_generation() {
         assert!(relic.since <= CONTENT, "{}", relic.id);
         if relic.since > 0 {
             assert!(
-                [FILTER_FROM, RARITY_FROM].contains(&relic.since),
+                [FILTER_FROM, RARITY_FROM, CROWN_CASCADE_FROM].contains(&relic.since),
                 "{}",
                 relic.id
             );

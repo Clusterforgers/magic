@@ -51,9 +51,10 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// another theme; from 10 the Drowned Spire holds a lieutenant for every colour and colour pair and a second final boss;
 /// from 11 the Ember Foundry opens at Heat 3; from 12 a boss brings relics from the first fight and a reinforcement for
 /// each hero after the first; from 13 a theme may give its bosses supplies against two or more heroes; from 14 a boss
-/// that brings the most relics brings no reinforcement; from 15 a theme may bring its bosses fewer relics.
+/// that brings the most relics brings no reinforcement; from 15 a theme may bring its bosses fewer relics; from 16 the
+/// Maelstrom Crown is a real cascade for instants.
 /// Every run plays the boss of `docs/delves.md` (Bosses), whatever its generation.
-pub const CONTENT: u32 = THEME_RELICS_FROM;
+pub const CONTENT: u32 = CROWN_CASCADE_FROM;
 /// The content generation from which a boss brings relics at low depth and a reinforcement for each hero after the
 /// first (`boss_relics::count`, `Scale::reinforcements`).
 pub const BOSS_SCALE_FROM: u32 = 12;
@@ -64,6 +65,9 @@ pub const THEME_SUPPLIES_FROM: u32 = 13;
 pub const REINFORCEMENTS_FADE_FROM: u32 = 14;
 /// The content generation from which a theme may cap its bosses' relics (`Theme::boss_relics_most`).
 pub const THEME_RELICS_FROM: u32 = 15;
+/// The content generation from which the Maelstrom Crown puts the cards it passes on the bottom
+/// (`maelstrom_crown_cascade`) instead of keeping them in exile, which emptied a library holding nothing cheaper.
+pub const CROWN_CASCADE_FROM: u32 = 16;
 /// The content generation from which each descent leads into another open theme (`Content::next_theme`).
 pub const THEMES_FROM: u32 = 9;
 /// The content generation from which the Drowned Spire's ladder draws from its grown roster.
@@ -1201,7 +1205,7 @@ impl Run {
         let mut fits: Vec<&CustomCard> = content
             .relics()
             .into_iter()
-            .filter(|c| c.since <= self.content)
+            .filter(|c| c.in_generation(self.content))
             .filter(|c| {
                 // The shop never sells a risky relic: priced 0 before the rarity generation.
                 let sold = if rarities {
