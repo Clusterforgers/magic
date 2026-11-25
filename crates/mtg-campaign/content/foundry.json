@@ -3,6 +3,7 @@
  "name": "The Ember Foundry",
  "text": "Under the mountain a foundry still burns, its forges fed by whatever wanders in. Its smiths, engines and wardens guard the long way down to the furnace at its heart.",
  "min_heat": 3,
+ "boss_supplies": 1,
  "bosses": [
   {
    "id": "brannoc_anvil",

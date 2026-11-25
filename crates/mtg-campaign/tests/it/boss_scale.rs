@@ -1,11 +1,12 @@
 //! Goal: from generation `BOSS_SCALE_FROM` a boss brings relics from the first fight, more with depth and Heat, and one
 //! reinforcement for each hero after the first (a solo hero meets the same boss as before); runs of older generations
-//! keep the relic count and the boss they were played with.
+//! keep the relic count and the boss they were played with; from `THEME_SUPPLIES_FROM` a theme may add
+//! supplies to its bosses against two or more heroes.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS, RELIC_OFFSET};
 use mtg_campaign::content::FOUNDRY_FROM;
-use mtg_campaign::run::{BOSS_SCALE_FROM, CONTENT};
-use mtg_campaign::scale::REINFORCEMENT;
+use mtg_campaign::run::{BOSS_SCALE_FROM, CONTENT, THEME_SUPPLIES_FROM};
+use mtg_campaign::scale::{REINFORCEMENT, SUPPLIES};
 use mtg_campaign::{CardKind, HeroDeck, Run, RunEvent, Scale, content};
 use proptest::prelude::*;
 use rstest::rstest;
@@ -134,5 +135,79 @@ fn a_solo_hero_meets_the_same_boss_apart_from_the_early_relics() {
     let mut now = run(1, CONTENT).fight_plan(content).unwrap().unwrap().boss;
     assert_eq!(now.reinforcements, Vec::<String>::new());
     now.relics.clone_from(&old.relics);
+    assert_eq!(now, old);
+}
+
+proptest! {
+    #[test]
+    fn a_theme_adds_its_supplies_only_from_its_generation_and_two_heroes(
+        heroes in 1usize..9,
+        generation in 0u32..20,
+        supplies in 0usize..3,
+    ) {
+        let base = Scale::reinforcements(heroes, generation);
+        let now = Scale::theme_reinforcements(heroes, generation, supplies);
+        prop_assert_eq!(&now[..base.len()], &base[..]);
+        let added = if generation < THEME_SUPPLIES_FROM || heroes < 2 { 0 } else { supplies };
+        prop_assert_eq!(&now[base.len()..], &vec![SUPPLIES.to_owned(); added][..]);
+    }
+}
+
+/// A started run of the `theme` with `heroes` heroes at `heat` in content `version`, its first boss's plan.
+fn first_boss(theme: &str, heroes: u8, heat: u8, version: u32) -> mtg_campaign::BossSeat {
+    let mut events = vec![RunEvent::Content { version }];
+    for at in 0..heroes {
+        events.push(RunEvent::Joined {
+            name: format!("H{at}"),
+            user: Some(format!("u{at}")),
+            bot: None,
+        });
+        events.push(RunEvent::DeckChosen {
+            hero: at,
+            deck: HeroDeck {
+                id: "x".into(),
+                name: "x".into(),
+                colors: "G".into(),
+                commanders: Vec::new(),
+                makeup: None,
+            },
+        });
+    }
+    events.push(RunEvent::Started);
+    let content = content().unwrap();
+    Run::replay(content, theme, 21, heat, &events)
+        .unwrap()
+        .fight_plan(content)
+        .unwrap()
+        .unwrap()
+        .boss
+}
+
+#[rstest]
+fn a_themes_bosses_bring_its_supplies_from_its_generation_against_two_heroes(
+    #[values(("warrens", 1, 0), ("spire", 1, 0), ("foundry", 3, 1))] theme: (&str, u8, usize),
+    #[values(1, 2, 3)] heroes: u8,
+) {
+    let (theme, heat, supplies) = theme;
+    assert_eq!(
+        content().unwrap().theme(theme).unwrap().boss_supplies,
+        supplies
+    );
+    let card = content().unwrap().card(SUPPLIES).unwrap();
+    assert_eq!(card.kind, CardKind::Reinforcement);
+    let old = first_boss(theme, heroes, heat, BOSS_SCALE_FROM);
+    let mut now = first_boss(theme, heroes, heat, CONTENT);
+    let extra = if heroes >= 2 { supplies } else { 0 };
+    assert_eq!(old.reinforcements.len(), usize::from(heroes) - 1);
+    assert_eq!(now.reinforcements.len(), usize::from(heroes) - 1 + extra);
+    assert_eq!(
+        now.reinforcements
+            .iter()
+            .filter(|id| *id == SUPPLIES)
+            .count(),
+        extra
+    );
+    // Apart from the supplies, the boss is the one of generation 12.
+    now.reinforcements.clone_from(&old.reinforcements);
     assert_eq!(now, old);
 }

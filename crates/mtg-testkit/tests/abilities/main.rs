@@ -21,6 +21,7 @@ mod dack_give_away;
 mod defining;
 mod did_triggers;
 mod dk1c_triggers;
+mod dl14e_delayed_batches;
 mod e14b_unattach_granter;
 mod e15b_enters;
 mod e15c_statics;
