@@ -13,6 +13,7 @@ import { DevFxControls } from './DevFxControls'
 import { DevMoments } from './DevMoments'
 import { DevScript } from './DevScript'
 import { DevTurnChange } from './DevTurnChange'
+import { devDeckLists } from './deckListScene'
 import { fixtureGame } from './devGame'
 import { FIXTURE_MARKER, buildFixture } from './fixture'
 import { FRONT_OF, SHOWCASE_NAMES, fetchRealIds } from './realCards'
@@ -75,7 +76,7 @@ function useDevHelp(tour: string | undefined, lexicon: string | undefined): void
  * once, for the turn banner and badge. `preview` is how many milliseconds the table takes to
  * answer a preview of blocks or attacks (120 when missing), so "Checking outcome…" can be looked at. `stops` lights stops
  * (`own:main1,opp:end:keep`: side, step, and `keep` for a lasting one) and `fc=next|held` sets Full Control; the
- * ladder and the toggle then answer as a server would.
+ * ladder and the toggle then answer as a server would. `decks=public|hidden` tells the deck lists of `dev/deckListScene.ts`.
  */
 export function DevTableRoute() {
   const {
@@ -103,6 +104,7 @@ export function DevTableRoute() {
     bare,
     alone,
     takeback,
+    decks,
     cards,
     states,
     equip,
@@ -225,6 +227,10 @@ export function DevTableRoute() {
       takeBackOffer: { player: view.viewer, kind: 'Cast', name: 'Lightning Bolt', at: 0 },
     })
   }, [takeback, game, view])
+  useEffect(() => {
+    if (decks === undefined || view === null) return
+    game.session.store.setState({ deckLists: devDeckLists(view.players.length, view.viewer, decks) })
+  }, [decks, game, view])
   // The result closes for a look at the final table, as on the game page.
   const [review, setReview] = useState(false)
   return (

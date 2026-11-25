@@ -410,11 +410,15 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'DeckPictures':
         // Each sync repeats the list; an equal one keeps its reference, so the prefetch does not start over.
-        setState((state) =>
-          JSON.stringify(state.deckPictures) === JSON.stringify(message.cards)
-            ? {}
-            : { deckPictures: message.cards },
-        )
+        setState((state) => {
+          const decks = message.decks ?? []
+          return {
+            ...(JSON.stringify(state.deckPictures) === JSON.stringify(message.cards)
+              ? {}
+              : { deckPictures: message.cards }),
+            ...(JSON.stringify(state.deckLists) === JSON.stringify(decks) ? {} : { deckLists: decks }),
+          }
+        })
         return
       case 'DecksRevealed':
         // The table's own lines in the chat: who drew which deck, told once as the game starts.

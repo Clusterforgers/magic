@@ -108,6 +108,7 @@ describe('naming the rules that differ', () => {
     ['the format’s hand limit', { max_hand_size: { cards: 7 } }, 'normal', []],
     ['a switch that is the default', { mana_burn: false }, 'normal', []],
     ['a switch turned on', { open_hands: true }, 'normal', ['Open hands']],
+    ['open decks on', { open_decks: true }, 'normal', ['Open deck lists']],
     ['take-backs off', { take_backs: false }, 'commander', ['No take-backs']],
     ['take-backs on, as every game has them', { take_backs: true }, 'normal', []],
     ['the blocker timer on', { blocker_timer: true }, 'normal', ['Blocker timer']],

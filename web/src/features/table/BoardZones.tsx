@@ -2,13 +2,16 @@ import { useSeatAnchor } from '@/features/learn/seatAnchors'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
 import type { PlayerId } from '@/protocol/generated'
+import { LibraryChip } from './DeckListDialog'
+import { hasMore, listOf } from './deckLists'
 import { commandCardsOf, exileOf, NO_IDS, playerOf, shownHandOf } from './selectors'
 import { ZoneButton } from './ZoneButton'
 
 /**
  * The zone chips of a board drawn without a pod (a hero beside yours, a phone's board under a tile): the hand the viewer
- * sees of another seat (a teammate's), then the graveyard, exile, command zone and Satchel that hold a card, each
- * opening its list as a pod's chip does. The tile above the board has the counts; it is one button and holds none.
+ * sees of another seat (a teammate's), the library of a list the viewer may look through (`DeckListDialog`), then the
+ * graveyard, exile, command zone and Satchel that hold a card, each opening its list as a pod's chip does. The tile
+ * above the board has the counts; it is one button and holds none.
  */
 export function BoardZones({ seat, owner }: { seat: PlayerId; owner: string }) {
   const player = usePlay((state) => playerOf(state, seat))
@@ -16,13 +19,15 @@ export function BoardZones({ seat, owner }: { seat: PlayerId; owner: string }) {
   const graveyardCoach = useSeatAnchor(seat, 'graveyard')
   const exile = usePlay(useShallow((state) => exileOf(state, seat)))
   const commanders = usePlay(useShallow((state) => commandCardsOf(state, seat)))
+  const decked = usePlay((state) => state.seat !== seat && hasMore(listOf(state.deckLists, seat)))
   if (player === undefined) return null
   const hand = shownHandOf(player, you)
   const graveyard = player.graveyard.cards ?? NO_IDS
   const satchel = player.satchel ?? NO_IDS
   const listed = !you && commanders.length > 0
   // Nothing to open draws nothing, so the board's top line stays empty and hidden.
-  if (hand === null && graveyard.length + exile.length + satchel.length === 0 && !listed) return null
+  if (hand === null && graveyard.length + exile.length + satchel.length === 0 && !listed && !decked)
+    return null
   return (
     <div
       role="group"
@@ -31,6 +36,8 @@ export function BoardZones({ seat, owner }: { seat: PlayerId; owner: string }) {
       className="flex items-center gap-1"
     >
       {hand === null ? null : <ZoneButton zone="hand" owner={owner} ids={hand} density="line" />}
+      {/* Another seat's list the viewer may look through (a public one, its commander's tokens), from its library. */}
+      {decked ? <LibraryChip seat={seat} owner={owner} count={player.library.count} density="line" /> : null}
       {graveyard.length > 0 ? (
         <ZoneButton zone="graveyard" owner={owner} ids={graveyard} density="line" coach={graveyardCoach} />
       ) : null}

@@ -143,6 +143,11 @@ impl<'a> RuleSet<'a> {
         self.house.revealed_library_top.unwrap_or(false)
     }
 
+    /// Whether every seat's deck list is public.
+    pub fn open_decks(&self) -> bool {
+        self.house.open_decks.unwrap_or(false)
+    }
+
     /// Whether each opening hand is the better of two draws by its share of lands.
     pub fn opening_hand_smoothing(&self) -> bool {
         self.house.opening_hand_smoothing.unwrap_or(false)

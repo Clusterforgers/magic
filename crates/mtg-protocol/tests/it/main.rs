@@ -36,6 +36,7 @@ mod cost_now_view;
 mod cost_sources_view;
 mod counter_view;
 mod crew_hidden;
+mod deck_lists;
 mod deck_pictures;
 mod dk27_secret_numbers;
 mod e10b_sealed_view;

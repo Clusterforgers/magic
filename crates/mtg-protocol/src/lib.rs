@@ -37,7 +37,9 @@ pub use message::{
     RevealedDeck, SeatDeck, ServerMessage, StackStops, Stop, StopSide, TakeBackOutcome, TriggerKey,
     YieldUntil, manual_play,
 };
-pub use pictures::{PictureCard, deck_pictures};
+pub use pictures::{
+    ListCard, ListGroup, PictureCard, SeatList, TokenPicture, deck_lists, deck_pictures,
+};
 pub use project::{spectator_viewer, zone_is_visible, zone_is_visible_in};
 pub use rest::{
     AccountDeletion, AccountList, AccountOptions, AccountRow, AuthErrorCode, CardDetail, CardHit,

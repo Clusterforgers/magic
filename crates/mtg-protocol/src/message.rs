@@ -729,12 +729,17 @@ pub enum ServerMessage {
         decks: Vec<RevealedDeck>,
     },
     /// The cards whose pictures this client may load before the table shows them ([`crate::deck_pictures`]): its own
-    /// deck whole, and of the other seats only their commanders and companions, never a hidden list.
+    /// deck whole, every public list whole, and of the other seats only their commanders and companions, never a hidden
+    /// list; with each seat's list as this client may look through it ([`crate::deck_lists`]).
     ///
     /// Sent after the snapshot of each sync (the start, a reconnect, a rewind); left unsent when there is none.
     DeckPictures {
         /// The cards, each once: the viewer's own first.
         cards: Vec<crate::pictures::PictureCard>,
+        /// Each seat's list with the tokens it can make, in seat order; a seat with nothing to show is left out.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        #[ts(optional, as = "Option<Vec<crate::pictures::SeatList>>")]
+        decks: Vec<crate::pictures::SeatList>,
     },
 }
 

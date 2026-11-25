@@ -9,6 +9,7 @@ describe('reading house rules', () => {
     ['an empty object', {}, {}],
     ['counts', { starting_life: 30, mulligan_cap: 0 }, { starting_life: 30, mulligan_cap: 0 }],
     ['switches', { mana_burn: true, open_hands: false }, { mana_burn: true, open_hands: false }],
+    ['open decks', { open_decks: true }, { open_decks: true }],
     ['take-backs off', { take_backs: false }, { take_backs: false }],
     ['the blocker timer on', { blocker_timer: true }, { blocker_timer: true }],
     ['quick timers', { timers: 'quick' }, { timers: 'quick' }],
