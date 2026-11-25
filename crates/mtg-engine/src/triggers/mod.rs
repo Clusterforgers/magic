@@ -58,7 +58,6 @@ use crate::object::ObjectRef;
 use crate::snapshot::Snapshot;
 
 pub(crate) use cause_of::{CausedBy, cause_of};
-pub(crate) use delayed::FreshDelayedIds;
 pub use delayed::{Delayed, DelayedCreated, DelayedId};
 pub use detect::{ByHandDue, detect, due};
 pub(crate) use detect::{needs_before, step_matches};

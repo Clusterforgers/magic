@@ -10,6 +10,7 @@ mod announce;
 mod answers;
 mod attach;
 mod attack_tax;
+mod batch_ids;
 pub mod battle;
 pub mod block_tax;
 pub mod boss_sheet;
