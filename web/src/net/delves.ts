@@ -1,6 +1,7 @@
 /**
  * The Delves endpoints of `mtg-server` (docs/server.md, Delves): the caller's runs, a new run, joining by code, the
- * run brought up to date, one action of a member, the campaign content the pages draw and the leaderboard.
+ * run brought up to date, one action of a member, the campaign content the pages draw, the leaderboard and the
+ * socket that follows a run.
  */
 import type {
   CreateDelve,
@@ -12,6 +13,10 @@ import type {
 } from '@/protocol/generated'
 import type { Fetch } from './api'
 import { isRecord } from './check'
+import { browserSocket, retryDelay } from './socket'
+import type { RawSocket, SocketFactory } from './socket'
+import { browserTimers } from './timers'
+import type { Timers } from './timers'
 
 /** Why a call failed: the server's code, or `network` when it was not reached. */
 export class DelveError extends Error {
@@ -34,6 +39,8 @@ export interface DelvesApi {
   act(id: string, action: DelveAction): Promise<DelveView>
   content(): Promise<DelveContent>
   leaderboard(): Promise<DelveLeaderboard>
+  /** Follows a run over its socket and answers the stop; left out, the page reads the run once. */
+  follow?(id: string, handlers: DelveFollowHandlers): () => void
 }
 
 function isView(body: unknown): body is DelveView {
@@ -111,4 +118,83 @@ export function createDelvesApi(options: { fetch?: Fetch; baseUrl?: string } = {
 }
 
 /** The client for the page origin, using the global `fetch`. */
-export const delvesApi: DelvesApi = createDelvesApi()
+export const delvesApi: DelvesApi = {
+  ...createDelvesApi(),
+  follow: (id, handlers) => followDelve(id, handlers),
+}
+
+/** What a run's socket tells its page. */
+export interface DelveFollowHandlers {
+  /** The run as the caller sees it: on every (re)connect, then after every change. */
+  view(view: DelveView): void
+  /** The socket closed; it reconnects by itself, and the page reads the run once meanwhile. */
+  lost(): void
+}
+
+/** Options of `followDelve`; tests pass a fake network and clock. */
+export interface FollowOptions {
+  createSocket?: SocketFactory
+  timers?: Timers
+  /** Jitter source in [0, 1); defaults to `Math.random`. */
+  random?: () => number
+  /** Origin of the page, such as `https://play.example`; defaults to `window.location.origin`. */
+  origin?: string
+}
+
+/** The socket address that follows run `id` on `origin` (`/ws/delves/{id}`), with ws or wss to match its scheme. */
+export function delveSocketUrl(id: string, origin: string): string {
+  const url = new URL(`/ws/delves/${encodeURIComponent(id)}`, origin)
+  url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:'
+  return url.href
+}
+
+/**
+ * Follows run `id` over its socket (docs/protocol.md, Delves socket): each frame is a `DelveView`; a closed socket
+ * reports `lost` and reconnects with the game socket's backoff. Answers the function that stops following.
+ */
+export function followDelve(
+  id: string,
+  handlers: DelveFollowHandlers,
+  options: FollowOptions = {},
+): () => void {
+  const createSocket = options.createSocket ?? browserSocket
+  const timers = options.timers ?? browserTimers
+  const random = options.random ?? Math.random
+  const url = delveSocketUrl(id, options.origin ?? window.location.origin)
+  let stopped = false
+  let failures = 0
+  let socket: RawSocket | null = null
+  let retry: number | null = null
+  const connect = () => {
+    retry = null
+    socket = createSocket(url, {
+      open: () => undefined,
+      message: (data) => {
+        if (stopped || typeof data !== 'string') return
+        let body: unknown = null
+        try {
+          body = JSON.parse(data)
+        } catch {
+          return
+        }
+        if (!isView(body)) return
+        failures = 0
+        handlers.view(body)
+      },
+      close: () => {
+        socket = null
+        if (stopped) return
+        handlers.lost()
+        failures += 1
+        retry = timers.setTimeout(connect, retryDelay(failures, random()))
+      },
+    })
+  }
+  connect()
+  return () => {
+    stopped = true
+    if (retry !== null) timers.clearTimeout(retry)
+    socket?.close(1000, 'left the run')
+    socket = null
+  }
+}

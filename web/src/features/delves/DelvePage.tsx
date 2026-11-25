@@ -40,7 +40,7 @@ import { DescentNotice } from './DescentNotice'
 import { PartyLobby } from './PartyLobby'
 import { ResultPanel } from './ResultPanel'
 import { RunHeader } from './RunHeader'
-import { POLL_MS, errorText } from './words'
+import { errorText } from './words'
 import { RevivalNote } from './DelvesRules'
 import { VotePanel } from './VotePanel'
 
@@ -310,7 +310,7 @@ function RoomPanel({
   )
 }
 
-/** Reads the run and the content, keeps the run fresh and sends actions. */
+/** Reads the content, follows the run over its socket (a read in its place while the socket is down) and sends actions. */
 function useDelve(client: DelvesApi, id: string) {
   const [view, setView] = useState<DelveView | null>(null)
   const [content, setContent] = useState<DelveContent | null>(null)
@@ -318,6 +318,10 @@ function useDelve(client: DelvesApi, id: string) {
   const [busy, setBusy] = useState(false)
   // Counts the actions sent: a read that left before an action's answer would show the run without that vote.
   const sent = useRef(0)
+  // Actions not answered yet: a frame meanwhile may predate the action, whose answer and own frame follow.
+  const pending = useRef(0)
+  // The error shown is a failed read's, which the next frame takes back; an action's refusal stays.
+  const readFailed = useRef(false)
   useEffect(() => {
     let live = true
     const read = () => {
@@ -325,17 +329,32 @@ function useDelve(client: DelvesApi, id: string) {
       return client
         .get(id)
         .then((answer) => live && at === sent.current && setView(answer))
-        .catch((caught: unknown) => live && setError(errorText(caught)))
+        .catch((caught: unknown) => {
+          if (!live) return
+          readFailed.current = true
+          setError(errorText(caught))
+        })
     }
     client
       .content()
       .then((answer) => live && setContent(answer))
       .catch((caught: unknown) => live && setError(errorText(caught)))
-    void read()
-    const timer = setInterval(() => void read(), POLL_MS)
+    // The socket's first frame is the run brought up to date; without a socket the page reads it once.
+    const stop = client.follow?.(id, {
+      view: (answer) => {
+        if (!live || pending.current > 0) return
+        if (readFailed.current) {
+          readFailed.current = false
+          setError(null)
+        }
+        setView(answer)
+      },
+      lost: () => void read(),
+    })
+    if (stop === undefined) void read()
     return () => {
       live = false
-      clearInterval(timer)
+      stop?.()
     }
   }, [client, id])
   const act = useCallback(
@@ -343,11 +362,16 @@ function useDelve(client: DelvesApi, id: string) {
       setBusy(true)
       setError(null)
       sent.current += 1
+      pending.current += 1
+      readFailed.current = false
       client
         .act(id, action)
         .then(setView)
         .catch((caught: unknown) => setError(errorText(caught)))
-        .finally(() => setBusy(false))
+        .finally(() => {
+          pending.current -= 1
+          setBusy(false)
+        })
     },
     [client, id],
   )
