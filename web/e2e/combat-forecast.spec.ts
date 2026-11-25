@@ -1,5 +1,5 @@
 // Goal: on the development table's combat scenes (a block at three seats, teams, Two-Headed Giant, the Delves boss, a planeswalker attacked) at desktop, tablet and phone sizes on either side, the combat forecast is drawn as badges on the cards (what each deals, takes and whether it dies), each with an aria-label and a sign or icon, inside its card and clear of the stat box and the corner marks; the attacked pod or tile says what its life and its planeswalkers would lose; and the declaration's dock or bar shows the total in labelled chips inside the window.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

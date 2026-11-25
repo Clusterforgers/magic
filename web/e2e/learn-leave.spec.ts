@@ -1,5 +1,5 @@
 // Goal: a learner has one practice game at a time: Leave lesson ends the lesson's game, Restart lesson and a lesson started from the Learn page reached any other way replace the game before, so after any of them only the game on show exists.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { WEB_URL } from './ports'
 

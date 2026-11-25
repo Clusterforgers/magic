@@ -1,5 +1,5 @@
 // Goal: the layout gate. Every page that needs no account (Play, Create, a lobby, an invite link, sign-in, register, the game-over screen) and the development routes that stand for the pages that do (the table, a lobby, the builder, the precons, the cards to check; those of a deck on reads and one with drafts waiting are also screenshotted at 390x844 and 1440x900) keep the layout rules in Chromium at the six sizes of docs/ui-design.md (1920x1080, 1440x900, 1366x768, 1280x720, 1024x768, 390x844) and 1600x1000, 1400x900, 768x1024 and 360x740, down and back up, in the light and the dark theme: the page never scrolls sideways, no element is cut off sideways by the window or a box that clips it (one drawn as its children only clips nothing), no text is under 12 px, every primary action is in the window and not covered, and a page meant to fit the window never scrolls down. Under a prompt sheet every opponent's battlefield keeps a row in view at the short sizes. Decks, My games and the builder with a real deck need Postgres and are held by accounts.spec.ts.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { APIRequestContext, BrowserContext, Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
 import { measure, problemsOf, TABLE_EXEMPT, TEXT_FLOOR, THEMES } from './layoutAudit'

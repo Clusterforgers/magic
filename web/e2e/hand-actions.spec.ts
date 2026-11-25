@@ -1,5 +1,5 @@
 // Goal: a hand card that can be cast or typecycled (Angel of the Ruins) names both plays with their costs and effects in its chooser, and the payment of the Plainscycling names what it pays for and can be cancelled with the card left in the hand and nothing tapped; in a duel and at four seats, at 1400x900 and on a phone (390x844).
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

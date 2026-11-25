@@ -512,6 +512,7 @@ pub use r5g_lines::{escalate_cost, escalate_reads, forecast_lines, reinforce_lin
 pub use r303_forms::form_text;
 pub use r304b_writers::r304b_triple_texts;
 pub use r4708_reveal::r4708_reveal_group_texts;
+pub use render::asked::{AskedPlace, asked_clause, rules_words};
 pub use render::{
     ability as render_ability, mode as render_mode, variants as render_variants, written_variants,
 };

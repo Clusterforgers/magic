@@ -1,5 +1,5 @@
 // Goal: in a real game against a real server, at two seats and at four, a seat declares an attack creature by creature with clicks (a creature, then the player it attacks) and the defender blocks with clicks (a creature, then the attacker), each prompt marking the cards and pods it says it marks, every seat's page reading the block, and no page error.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { attackersOffered, playToTheEnd, Run } from './driver'
 import type { Hooks, Style } from './driver'

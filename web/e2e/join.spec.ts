@@ -1,5 +1,5 @@
 // Goal: the page an invite link opens takes a guest from the link to the lobby: /join/{code}, typed in lower case with a hyphen as people paste it, shows the code grouped in capitals, asks for a name on the page, opens the seat the server gave in the lobby (the seat link in the address fragment survives a reload) and shows the new name to the host; a code no game has ends in one sentence with the ways to Play and to Create a game, a link that holds no code says so without a request, and both pages fit the window at 1280x720 and 390 wide without scrolling.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, Page } from '@playwright/test'
 import { seatRows } from './lobby'
 import { WEB_URL } from './ports'

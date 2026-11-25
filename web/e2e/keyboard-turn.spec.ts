@@ -1,5 +1,5 @@
 // Goal: a whole turn on the development table can be walked with the keyboard alone at a desktop and a phone size: Tab visits the bar, the boards, the hand and the passing controls in reading order and wraps without a trap, the step ladder is one tab stop that arrows move through and Enter sets a stop, H opens a card's by-hand list and Escape returns focus to that card even when the window is resized in between, the by-hand mark and the "Not now" hint of a card that cannot be played keep WCAG AA contrast (4.5:1 for text, 3:1 for the mark's fill) in the light and the dark theme, and a target, a payment and a "you may" are answered by keyboard alone in their home at both sizes (A to the answers, Tab to the lit cards, Enter).
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { expectTheme, themedContext } from './layoutGate'
 import type { Theme } from './layoutAudit'

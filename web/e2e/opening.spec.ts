@@ -1,5 +1,5 @@
 // Goal: two seats create a game, join by link and see in each other's lobby, as it happens, who is here and who has pressed Ready (and that Ready can be taken back and survives a reload), and once both are ready they are dealt opening hands and the table lists each seat's opening-hand status.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { createAndJoin, everyoneReady, seatRows } from './lobby'
 
 test('two seats create, join by link and are dealt opening hands', async ({ browser }) => {

@@ -1,5 +1,5 @@
 // Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn number of the banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield and the zones that hold one, which windows count as idle (a land with an ability to activate and a legal card in the graveyard or exile are plays), which defender an attack aims at, and that a play which comes back to its window unanswered is tried twice there.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { aimAt, attackersOffered, hasAbility, isIdle, isPlayable, look, pickPlay, Run } from './driver'
 import type { Card, Seen } from './driver'
 

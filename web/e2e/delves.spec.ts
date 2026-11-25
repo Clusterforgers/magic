@@ -1,5 +1,5 @@
 // Goal: a one-player Delves run with bot allies goes from the lobby through the first boss fight to the loot screen on a real server and database: the player creates a delve, adds two bot allies, every hero takes a precon, Descend leads to the first boss, Enter the fight opens the boss's waiting room, Ready to fight starts the table, the boss's concession (the server's test hook) gives the party the win, the fight's result says so and Continue to the run returns to the run, which offers the relic pick, then the card pick; a run the host ends with hearts left closes its fight lobby, so Play offers no way back to it.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import type { PreconListItem } from '../src/protocol/generated'
 import { ACCOUNTS_DATABASE_URL } from './ports'

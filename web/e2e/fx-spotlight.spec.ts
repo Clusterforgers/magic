@@ -1,5 +1,5 @@
 // Goal: at the six sizes of docs/ui-design.md the spotlight of `?fx=rival` (another seat's spell standing large over the shared strip) is drawn whole inside the window, lies over no button of the prompt in front of the viewer (the pass control, or the buttons of a declaring-blockers sheet), no control of the controls dock and no card of the hand, and takes no click: nothing in it or its layer can be the target of a pointer; the spotlight of the viewer's own cast (`?fx=cast`) keeps the same clear of all three.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { holdMidway, LAYER, openPlay } from './fxPlay'
 import { SIZES } from './layoutAudit'

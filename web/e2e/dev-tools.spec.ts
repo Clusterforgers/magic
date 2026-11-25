@@ -1,5 +1,5 @@
 // Goal: the development table's Effects button stands in the top bar's flow at a phone's width and a desktop's, so it covers none of the bar's controls, and its moves open below the bar inside the window.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { DEV_WEB_URL } from './ports'
 
 interface Box {

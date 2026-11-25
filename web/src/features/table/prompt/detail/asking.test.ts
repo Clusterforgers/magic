@@ -1,9 +1,10 @@
-// Goal: every decision kind either brings the Stack column forward or leaves it alone, the asker is the server's `asking` (else the object the decision names), a clause splits its text in three and a bad one marks nothing, the "you may" of a card's own text is found with the sentences that depend on it, and the kicker, a run's rows and the sheet's line say where the question stands.
+// Goal: every decision kind either brings the Stack column forward or leaves it alone, the asker is the server's `asking` (else the object the decision names), a clause splits its text in three and is quoted alone, a bad one marking nothing, the "you may" of a card's own text is found with the sentences that depend on it, and the kicker, a run's rows and the sheet's line say where the question stands.
 import { describe, expect, it } from 'vitest'
 import type { PendingDecision } from '@/play/store'
 import type { AskingView, DecisionKind, RunView } from '@/protocol/generated'
 import { KINDS } from '@/test-utils/decisions'
 import {
+  askedWords,
   askerOf,
   askKicker,
   clauseParts,
@@ -129,6 +130,16 @@ describe('the asked clause', () => {
     ['a clause that runs backwards', [9, 3], [text, '', '']],
   ])('%s', (_what, clause, [before, marked, after]) => {
     expect(clauseParts(text, clause)).toEqual({ before, marked, after })
+  })
+
+  it.each<[string, readonly [number, number] | undefined, string | null]>([
+    ['the words marked', [28, 44], 'you may pay {1}.'],
+    ['without the space around them', [27, 45], 'you may pay {1}.'],
+    ['nothing for no clause', undefined, null],
+    ['nothing for a clause of spaces', [27, 28], null],
+    ['nothing for a clause past the text', [28, 400], null],
+  ])('quotes %s', (_what, clause, words) => {
+    expect(askedWords(text, clause)).toBe(words)
   })
 
   it.each<[string, string, string, string | undefined]>([

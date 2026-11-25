@@ -1,5 +1,5 @@
 // Goal: on a real server and database a signed-in player who fills a public lobby with bots and closes the app without pressing Ready finds it again on Play: the open games list marks it "Your seat" with Open in place of a disabled Join, a "Back to your lobby" link leads there too, and both reopen the lobby on the same seat, while another account still sees the lobby full with Join disabled.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
 import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'
 

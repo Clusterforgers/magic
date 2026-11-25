@@ -33,12 +33,12 @@ pub use keywords::read_all as read_keywords;
 pub(crate) use keywords::split_items;
 pub use read::subtypes::creature_types;
 pub use read::{
-    BlockPlan, all_groups, block_plan, by_hand_event, champion_line, condition_text, die_row,
-    die_row_texts, either_way_pair_texts, ep23_three_texts, equip_line, escalate_cost,
-    escalate_reads, forecast_lines, form_text, keyword_grant, keyword_text, r304b_triple_texts,
-    r4708_reveal_group_texts, reinforce_line, render_ability, render_cost, render_mode,
-    render_variants, same_text, same_written_text, static_pair_texts, subject_group,
-    target_phrases, without_header, written_variants,
+    AskedPlace, BlockPlan, all_groups, asked_clause, block_plan, by_hand_event, champion_line,
+    condition_text, die_row, die_row_texts, either_way_pair_texts, ep23_three_texts, equip_line,
+    escalate_cost, escalate_reads, forecast_lines, form_text, keyword_grant, keyword_text,
+    r304b_triple_texts, r4708_reveal_group_texts, reinforce_line, render_ability, render_cost,
+    render_mode, render_variants, rules_words, same_text, same_written_text, static_pair_texts,
+    subject_group, target_phrases, without_header, written_variants,
 };
 
 /// Reads a dungeon room's text as a clause of this kind, with no face of its own.

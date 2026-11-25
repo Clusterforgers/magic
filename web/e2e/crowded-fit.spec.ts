@@ -1,5 +1,5 @@
 // Goal: crowded tables stay readable at 1400x900 with the side column open: three Delves heroes at ten permanents each draw every creature 76 px wide or more, inside their boards; a six-seat grid keeps every opponent's pod inside its frame with the lands chip and the untapped sources whole and in view, and a row of cards whole on every board; and near 1024 px (1024x768, 1100x800) the card preview keeps to 30 % of the width and covers neither a pod nor the card it shows.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

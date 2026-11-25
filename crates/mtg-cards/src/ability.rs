@@ -615,6 +615,17 @@ impl Ability {
         }
     }
 
+    /// The effects it runs to change, if its kind has any.
+    pub fn effects_mut(&mut self) -> Option<&mut Vec<Effect>> {
+        match self {
+            Ability::Spell { effects, .. }
+            | Ability::Activated { effects, .. }
+            | Ability::Loyalty { effects, .. }
+            | Ability::Triggered { effects, .. } => Some(effects),
+            _ => None,
+        }
+    }
+
     /// Whether this is an activated ability with no targets that could add mana (CR 605.1a): other effects after the
     /// mana do not change it, so a painland's damage and an egg's draw are part of a mana ability.
     pub fn is_mana_ability(&self) -> bool {

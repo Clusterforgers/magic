@@ -1,5 +1,5 @@
 // Goal: on the development table at 1920x1080, 1600x1000, 1400x900 and 1024x768 a hand that the dock holds (7 to 24 cards, by what the size allows) shows the name and the mana cost of every card with nothing lying over either, in one row or in rows that lie over each other, and the line does not scroll sideways; a hand that is too large for the size scrolls in one row of whole cards and the first card of the front row shows its name and cost.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 
