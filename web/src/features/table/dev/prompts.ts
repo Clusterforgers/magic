@@ -33,6 +33,7 @@ import { LOOKED_MOMENTS, LOOKED_PROMPTS } from './lookedPrompts'
 import { lookTopMoment } from './lookTopScene'
 import { withTopCard, withTopCast } from './topCardScene'
 import { withBlocked } from './blockedScene'
+import { withDetail, withDetailCards } from './detailScene'
 import { ASK_PROMPTS, ASK_TABLES } from './askScene'
 import { TWIN_PROMPTS, TWIN_TABLES } from './twinScene'
 import {
@@ -535,6 +536,8 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   'priority-top': withTopCast(priority),
   // Three hand spells left out with the server's reasons: One Voice, sorcery speed, too little mana (`dev/blockedScene.ts`).
   'priority-blocked': withBlocked(priority),
+  // An Aura with nothing to enchant, an unearth card short of mana and an X ability with no target (`dev/detailScene.ts`).
+  'priority-detail': withDetail(priority),
   attack,
   'attack-battle': attack,
   block,
@@ -660,6 +663,7 @@ export const DEV_TABLES: Record<string, DevTable> = {
   },
   'priority-top': (fixture) => withTopCard(quietMoment('Main1', true)(fixture)),
   'priority-blocked': quietMoment('Upkeep', false),
+  'priority-detail': (fixture) => withDetailCards(quietMoment('Main1', true)(fixture)),
   yield: quietMoment('Upkeep', false, false),
   // Passing until the stack is empty is asked over a stack: the fixture's three spells, the active seat holding priority.
   'yield-resolve': (fixture) =>

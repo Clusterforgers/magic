@@ -25,12 +25,14 @@ export function latestRewound(state: PlayState): RewoundNote | null {
       const { object, reason, why } = event.AnnouncementRewound
       const card = state.objectsById[object]
       const name = card?.name || 'That card'
+      const doing = event.AnnouncementRewound.activated === true ? 'activate' : 'cast'
+      const failed = `${name} could not be ${doing === 'activate' ? 'activated' : 'played'}`
       return {
         seq: entry.seq,
         text:
           why === undefined
-            ? `${name} could not be played: ${REASON_WORDS[reason].line.toLowerCase()}`
-            : `${name} could not be played. ${whyLine({ name, rulesText: card?.rules_text, doing: 'cast' }, reason, why)}`,
+            ? `${failed}: ${REASON_WORDS[reason].line.toLowerCase()}`
+            : `${failed}. ${whyLine({ name, rulesText: card?.rules_text, doing }, reason, why)}`,
       }
     }
   }
