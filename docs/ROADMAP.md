@@ -70,7 +70,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves encounter modifiers: the 23 rules of the pool as emblems with their `not_with` lists, no commander tax for the heroes, and "first instant or sorcery each turn" counting only the spells it names (`docs/delves.md`).
 - Delves boss rework: every boss plays its stored precon (drafts loaded as live games load them), an innate in five levels by depth and Heat, one encounter modifier, two phases by round, a public satchel and relics by depth, with life by party size only; the old boss systems are gone and the rework closed the runs open at the time (`docs/delves.md`).
 - Delves Ember Foundry: a third theme drawn from Heat 3 (Legendary), fifteen lieutenants of every colour and colour pair and two final bosses on swapped precons, with its events and reward pool (`docs/delves.md`).
-- Delves boss strength: a boss brings relics from the first fight by depth and Heat and a Reinforcements emblem (an extra card and land each turn) for each hero after the first, from generation 12; two Hard heroes at Heat 1 win 52 to 70 % instead of 87 to 98 % (`docs/delves.md`, Tuning).
+- Delves boss strength: a boss brings relics from the first fight by depth and Heat and a Reinforcements emblem (an extra card and land each turn) for each hero after the first, from generation 12; two Hard heroes at Heat 1 win 50 to 63 % instead of 87 to 98 %, the Foundry with Supplies (an extra draw) against two or more heroes from generation 13 (`docs/delves.md`, Tuning).
 - Tokens entering: replacements over how a permanent enters (counters, a form, a token's own copy) apply to each token as it is created, and Coiled Growth gives tokens its counters as they enter (`docs/cards-dsl.md`).
 
 ## Live game
@@ -164,7 +164,9 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl10) The run page follows the run over a socket instead of reading it every 4 s
 - [ ] (dl11) Custom cards open in the card inspector at the table with their frame and text, and the boss's phases sit in the top bar
 - [ ] (dl13) A fourth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
-- [ ] (dl14b) Three or more Hard heroes win 50 to 60 % against each theme at generation 12, measured with 30 fights a cell (a long-tail fight takes over half an hour), and the Warrens, Spire and Foundry within ten points of each other at two heroes (Tuning)
+- [ ] (dl14c) Three Hard heroes win the Warrens (43 % at generation 12) and the Foundry at generation 13 50 to 60 %, measured with 30 whole fights a cell (Tuning)
+- [ ] (dl14d) Two Hard heroes at Heat 3, depth 7 win the Foundry 40 to 50 % instead of 10 % (Tuning)
+- [ ] (dl14e) A solo Foundry fight (delve_sim generation 13, seed 23) no longer fails with "DelayedId(2) is set up twice"
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 
