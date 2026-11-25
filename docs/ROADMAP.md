@@ -166,7 +166,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl13) A fourth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
 - [ ] (dl14c) Three Hard heroes win the Warrens (43 % at generation 12) and the Foundry at generation 13 50 to 60 %, measured with 30 whole fights a cell (Tuning)
 - [ ] (dl14d) Two Hard heroes at Heat 3, depth 7 win the Foundry 40 to 50 % instead of 10 % (Tuning)
-- [ ] (dl14e) A solo Foundry fight (delve_sim generation 13, seed 23) no longer fails with "DelayedId(2) is set up twice"
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 
