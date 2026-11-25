@@ -48,7 +48,9 @@ export function useTheirHead(
     const watched = new Set<Element>()
     const publish = (): void => {
       const zones = [...area.querySelectorAll<HTMLElement>('[data-slot="battlefield-zone"]')]
-      for (const zone of zones) {
+      // A pod line that unfolds its figures moves the zone under it down without resizing a zone held at its least.
+      const pods = [...area.querySelectorAll<HTMLElement>('[data-variant="line"]')]
+      for (const zone of [...zones, ...pods]) {
         if (watched.has(zone)) continue
         watched.add(zone)
         observer?.observe(zone)

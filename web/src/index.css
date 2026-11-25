@@ -408,6 +408,32 @@
   }
 }
 
+/*
+ * A phone's strip with nothing to show (no stack, no waiting line, no ticker line; its own priority and the combat key
+ * live in the decision bar there) is a line in the phase's colour between the boards, not an empty plaque. Its box
+ * keeps its place, so nothing moves when a line arrives.
+ */
+@media (width < 40rem) {
+  [data-slot='shared-sheet']:not(
+    :has([data-slot='stack-chips'], [data-slot='waiting-line'], [data-slot='turn-ticker'] > *)
+  ) {
+    background: none;
+    border-color: transparent;
+    box-shadow: none;
+    animation-name: none;
+    &::before {
+      content: '';
+      position: absolute;
+      inset-inline: 0.5rem;
+      top: 50%;
+      height: 2px;
+      translate: 0 -50%;
+      border-radius: 9999px;
+      background: color-mix(in oklch, var(--phase) 70%, transparent);
+    }
+  }
+}
+
 /* The table's felt under the boards: lit in the middle, darker at the rim, with a fine weave. */
 @utility felt {
   background:

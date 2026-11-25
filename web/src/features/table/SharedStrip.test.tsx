@@ -1,6 +1,9 @@
-// Goal: the shared strip between the boards is one status line of fixed height in every prompt and between prompts: the stack chips, the line that says what the game waits for, who has priority and the ticker; it holds no question, clock or answer, which stand in the decision's home; on a phone the strip is a lower line.
+// Goal: the shared strip between the boards is one status line of fixed height in every prompt and between prompts: the stack chips, the line that says what the game waits for, who has priority and the ticker; it holds no question, clock or answer, which stand in the decision's home; on a phone the strip is a lower line, drawn as a line in the phase's colour while it has nothing to show.
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
+import type { PlayState } from '@/play/store'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import type { Viewport } from './layout'
@@ -72,5 +75,27 @@ describe('what it says', () => {
     unmount()
     renderTable({ seats: 2, options: { viewport: { width: 390, height: 844 } } })
     expect(sheet().style.left).toBe('')
+  })
+})
+
+describe('a phone strip with nothing to show', () => {
+  // The rule of the app stylesheet that draws such a strip as a line in the phase's colour instead of an empty plaque.
+  const css = readFileSync(join(import.meta.dirname, '../../index.css'), 'utf8')
+  const quiet = must(/(\[data-slot='shared-sheet'\]:not\([\s\S]*?\))\s*\{/.exec(css)?.[1]).replace(
+    /\s+/g,
+    ' ',
+  )
+  const emptyStack = (state: PlayState): PlayState =>
+    state.view === null
+      ? state
+      : { ...state, view: { ...state.view, stack: { ...state.view.stack, cards: [] } } }
+
+  it.each<[string, (state: PlayState) => PlayState, boolean]>([
+    ['your own priority over an empty stack', emptyStack, true],
+    ['a stack', (state) => state, false],
+    ['a seat the game waits for', (state) => ({ ...emptyStack(state), pending: null }), false],
+  ])('is a line at %s: %s', (_name, state, line) => {
+    renderTable({ seats: 2, state, options: { viewport: { width: 390, height: 600 } } })
+    expect(sheet().matches(quiet)).toBe(line)
   })
 })
