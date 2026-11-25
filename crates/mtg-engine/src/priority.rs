@@ -391,15 +391,16 @@ pub(crate) fn activation(
         if !announceable(state, player, object.id(), rules) {
             return targets();
         }
-        return if some_x_has_targets(state, player, object.id(), rules, |x| {
+        let affords = |x: u32| {
             x == 0
                 || (*cost == LoyaltyCost::MinusX
                     && x <= counters
                         .saturating_add(crate::rules::loyalty_costs_more(state, player)))
-        }) {
+        };
+        return if some_x_has_targets(state, player, object.id(), rules, affords) {
             Ready
         } else {
-            Hindered(Unplayable::Targets, None)
+            x_targets(rules, 0, affords)
         };
     }
     let Ability::Activated {
@@ -517,8 +518,17 @@ pub(crate) fn activation(
     if some_x_has_targets(state, player, object.id(), rules, affords) {
         Ready
     } else {
-        Hindered(Unplayable::Targets, None)
+        x_targets(rules, least, affords)
     }
+}
+
+/// The refusal of an ability whose targets read X when no X from `least` that `affords` pays for leaves a target.
+fn x_targets(rules: &Ability, least: u32, affords: impl Fn(u32) -> bool) -> Activation {
+    let most = crate::announce::most_afforded(affords);
+    Activation::Hindered(
+        Unplayable::Targets,
+        crate::why::x_target(rules, least, most),
+    )
 }
 
 /// Why the source cannot be tapped (`{T}`) or untapped (`{Q}`) as the price asks, `None` when it can: it must be a
@@ -727,8 +737,17 @@ pub(crate) fn abilities_now(
         for object in own_cards_elsewhere(state, player) {
             let printed = working_here(object).map(|(address, rules)| (address, Arc::clone(rules)));
             for (address, rules) in printed.chain(provided_here(state, object)) {
-                if can_activate(state, player, object, address, &rules) {
-                    found.push(address);
+                match activation(state, player, object, address, &rules) {
+                    Activation::Ready => found.push(address),
+                    // A card of a graveyard, exile or the command zone says why; one in hand speaks of its cast.
+                    Activation::Hindered(reason, why) if object.zone() != Zone::Hand(player) => {
+                        inactive.push(InactiveAbility {
+                            ability: address,
+                            reason,
+                            why,
+                        });
+                    }
+                    Activation::Hindered(..) | Activation::Never => {}
                 }
             }
         }

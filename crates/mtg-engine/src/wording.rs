@@ -61,7 +61,7 @@ fn stat_word(stat: StatKind) -> &'static str {
     }
 }
 
-fn comparison(stat: StatKind, op: Cmp, to: i32) -> String {
+fn comparison(stat: StatKind, op: Cmp, to: impl std::fmt::Display) -> String {
     let stat = stat_word(stat);
     match op {
         Cmp::Eq => format!("with {stat} {to}"),
@@ -70,6 +70,15 @@ fn comparison(stat: StatKind, op: Cmp, to: i32) -> String {
         Cmp::Le => format!("with {stat} {to} or less"),
         Cmp::Gt => format!("with {stat} greater than {to}"),
         Cmp::Ge => format!("with {stat} {to} or greater"),
+    }
+}
+
+/// A compared amount in words: a number, or X; `None` for any other amount.
+fn compared(to: &Amount) -> Option<String> {
+    match to {
+        Amount::Fixed(to) => Some(to.to_string()),
+        Amount::X => Some("X".to_owned()),
+        _ => None,
     }
 }
 
@@ -190,11 +199,9 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::CounterCount { kind, op, to } => {
                 tail.push(counter_count(kind.name(), *op, *to));
             }
-            Pred::Compare {
-                stat,
-                op,
-                to: Amount::Fixed(to),
-            } => tail.push(comparison(*stat, *op, *to)),
+            Pred::Compare { stat, op, to } => {
+                tail.extend(compared(to).map(|to| comparison(*stat, *op, to)));
+            }
             Pred::AnyOf(any)
                 if any
                     .iter()

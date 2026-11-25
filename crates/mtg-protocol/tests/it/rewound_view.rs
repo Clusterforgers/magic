@@ -26,6 +26,7 @@ fn a_rewind_names_the_card_to_its_player_alone(
         player: PlayerId(0),
         object,
         reason,
+        activated: false,
         why: detailed.then(|| Why::Target {
             needs: "a creature spell you control on the stack".to_owned(),
             zone: TargetZone::Stack,

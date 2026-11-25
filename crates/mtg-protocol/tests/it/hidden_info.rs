@@ -63,6 +63,10 @@ const SCALAR_KEYS: &[&str] = &[
     "dealt",
     "casts",
     "tax",
+    // The mana at hand and the range of X a refusal names (`Why::Mana`, `Why::XTarget`).
+    "at_hand",
+    "least",
+    "most",
     "delayed",
     "commander_lethal",
     // The seat that protects a battle.

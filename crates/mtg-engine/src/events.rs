@@ -255,6 +255,10 @@ pub enum Event {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         #[cfg_attr(feature = "ts", ts(optional))]
         why: Option<crate::decision::Why>,
+        /// It was an activation of an ability of `object`, not a cast.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+        activated: bool,
     },
     /// A player took back their last cast, activation or land play with the table's consent: the log before it is the
     /// game, and this note follows it. Nothing else changed.

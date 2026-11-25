@@ -249,7 +249,11 @@ reason: Unplayable,
 /**
  * The detail of the reason, when the engine can name it.
  */
-why?: Why, } } | { "TookBack": { 
+why?: Why, 
+/**
+ * It was an activation of an ability of `object`, not a cast.
+ */
+activated?: boolean, } } | { "TookBack": { 
 /**
  * Who took it back.
  */

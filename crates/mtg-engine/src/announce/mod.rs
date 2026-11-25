@@ -46,6 +46,7 @@ pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
 pub(crate) mod r6400_combat_costs;
 pub(crate) mod required;
+mod rewound;
 mod splice;
 pub(crate) mod suspend;
 mod targets;
@@ -64,7 +65,7 @@ use crate::abilities::{AbilityRef, Cause};
 use crate::ability_reader;
 use crate::choose::{Choices, Target};
 use crate::combat::AttackTarget;
-use crate::decision::{Decision, DecisionKind, Unplayable};
+use crate::decision::{Decision, DecisionKind, Unplayable, Why};
 use crate::error::{EngineError, IllegalAnswer};
 use crate::events::Event;
 use crate::faces;
@@ -78,7 +79,7 @@ use anchor::Anchor;
 
 pub(crate) use modifiers::{c11a_reduced, cheapest, floored};
 pub(crate) use optional::{Optional, kicked_with, payments, r117_paid_with};
-pub(crate) use x::{XCost, least_of, payable, some_x_has_targets};
+pub(crate) use x::{XCost, least_of, most_afforded, payable, some_x_has_targets};
 
 /// What is being put on the stack.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -404,6 +405,8 @@ pub(crate) struct Done {
     asked: Option<Phase>,
     /// Why the announcement was taken back: the step that could not be met.
     pub(crate) rewound: Option<Unplayable>,
+    /// The detail of `rewound`, read off the step that could not be met.
+    pub(crate) rewound_why: Option<Why>,
 }
 
 impl Done {
@@ -958,7 +961,7 @@ pub(crate) fn announce(state: &GameState, pending: &mut Pending) -> Next {
         match phase.run(&ctx, &mut work) {
             None => {}
             Some(Next::Drop) => {
-                work.done.rewound = Some(phase.hindrance());
+                rewound::note(&ctx, &mut work, phase.hindrance());
                 return ctx.rewind();
             }
             Some(Next::Ask(decision)) => {

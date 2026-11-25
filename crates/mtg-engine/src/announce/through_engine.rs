@@ -1,4 +1,4 @@
-//! Goal: the engine asks the optional costs and X of a cast one after the other, refuses an answer outside the options and asks again, keeps the answers in the `SpellCast` it logs and pays the total they make, and a cast backed out of at either question leaves the log and the state as they were, while one that cannot go on is taken back with only its reason logged.
+//! Goal: the engine asks the optional costs and X of a cast one after the other, refuses an answer outside the options and asks again, keeps the answers in the `SpellCast` it logs and pays the total they make, and a cast backed out of at either question leaves the log and the state as they were, while one that cannot go on is taken back with only its reason and detail logged.
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
@@ -171,7 +171,13 @@ fn a_cast_that_cannot_go_on_is_taken_back_with_a_logged_reason_and_nothing_else(
             player: SEAT,
             object: card,
             reason: Unplayable::Mana,
-            why: None,
+            why: Some(crate::decision::Why::Mana {
+                cost: ManaCost::parse("{9}").unwrap(),
+                at_hand: 4,
+                missing: Vec::new(),
+                tax: 0,
+            }),
+            activated: false,
         }]
     );
     assert_eq!(engine.state().zone(Zone::Hand(SEAT)), [card]);
