@@ -8,4 +8,9 @@ export type PreconList = {
 /**
  * The precons.
  */
-precons: Array<PreconListItem>, };
+precons: Array<PreconListItem>, 
+/**
+ * Whether the judgements are from before the current cards and rules while the server judges them anew: read
+ * the list again shortly.
+ */
+judging: boolean, };

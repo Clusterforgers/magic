@@ -7,7 +7,9 @@
 //! the precons, the cards, the printings or the compiled rules change; the rules files and the
 //! engine's capabilities are fixed for the life of a [`CardSource`].
 
+use std::borrow::Cow;
 use std::collections::{BTreeMap, HashMap, HashSet};
+use std::fmt::Write as _;
 use std::sync::{Arc, PoisonError};
 use std::time::{Duration, Instant};
 
@@ -22,6 +24,8 @@ use mtg_core::color::ColorSet;
 use mtg_core::house::HouseRules;
 use mtg_db::{DbError, DeckBoard, IndexVersion, PreconDeckDetail, PreconDeckId, PreconVersion};
 use mtg_protocol::rest::{DeckPicture, MAX_DECK_PICTURES, PreconListItem};
+use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 use thiserror::Error;
 use tokio::sync::watch;
 
@@ -394,6 +398,13 @@ pub(crate) fn codes(decks: &[(PreconDeckId, &str, &str)]) -> Vec<String> {
         .collect()
 }
 
+/// One precon of the index as `precon_judgements` keeps it.
+#[derive(Serialize, Deserialize)]
+struct KeptDeck<'a> {
+    id: i64,
+    item: Cow<'a, PreconListItem>,
+}
+
 /// One precon of the index.
 #[derive(Debug)]
 pub(crate) struct Indexed {
@@ -421,6 +432,42 @@ impl PreconIndex {
         self.by_code.get(code).and_then(|at| self.decks.get(*at))
     }
 
+    /// The index as `precon_judgements` keeps it: its precons as JSON, in list order.
+    fn to_kept(&self) -> Result<String, serde_json::Error> {
+        let kept: Vec<KeptDeck<'_>> = self
+            .decks
+            .iter()
+            .map(|indexed| KeptDeck {
+                id: indexed.id.0,
+                item: Cow::Borrowed(&indexed.item),
+            })
+            .collect();
+        serde_json::to_string(&kept)
+    }
+
+    /// An index read back from [`PreconIndex::to_kept`].
+    fn from_kept(kept: &str) -> Result<PreconIndex, serde_json::Error> {
+        let kept: Vec<KeptDeck<'_>> = serde_json::from_str(kept)?;
+        Ok(PreconIndex::of(
+            kept.into_iter()
+                .map(|deck| Indexed {
+                    id: PreconDeckId(deck.id),
+                    item: deck.item.into_owned(),
+                })
+                .collect(),
+        ))
+    }
+
+    /// The index of `decks`, in the order given.
+    fn of(decks: Vec<Indexed>) -> PreconIndex {
+        let by_code = decks
+            .iter()
+            .enumerate()
+            .map(|(at, indexed)| (indexed.item.code.clone(), at))
+            .collect();
+        PreconIndex { decks, by_code }
+    }
+
     fn build(rules: &Rules, details: &[PreconDeckDetail]) -> PreconIndex {
         let named: Vec<(PreconDeckId, &str, &str)> = details
             .iter()
@@ -443,12 +490,7 @@ impl PreconIndex {
                 item: judge.judge(deck).item(deck, code),
             })
             .collect();
-        let by_code = decks
-            .iter()
-            .enumerate()
-            .map(|(at, indexed)| (indexed.item.code.clone(), at))
-            .collect();
-        PreconIndex { decks, by_code }
+        PreconIndex::of(decks)
     }
 }
 
@@ -496,6 +538,30 @@ struct Stamp {
     rules: StoredVersion,
 }
 
+impl Stamp {
+    /// The stamp of what the database holds now, read without building the library.
+    async fn now(source: &CardSource) -> Result<Stamp, PreconError> {
+        let database = source.database();
+        Ok(Stamp {
+            cards: database.cards().index_version().await?,
+            precons: database.precons().version().await?,
+            rules: source.stored_version().await?,
+        })
+    }
+
+    /// The fingerprint an index of this stamp is kept under in `precon_judgements`: the stamp, the server build and
+    /// the engine's capabilities; none when `source` keeps no judgements.
+    fn fingerprint(&self, source: &CardSource) -> Option<String> {
+        let under = source.kept_under()?;
+        let digest = Sha256::digest(format!("{under}|{self:?}").as_bytes());
+        Some(digest.iter().fold(String::new(), |mut out, byte| {
+            // Writing to a String does not fail.
+            let _ = write!(out, "{byte:02x}");
+            out
+        }))
+    }
+}
+
 /// How long a request waits for a build of the index before it is served the index held from before.
 pub(crate) const FRESH_WAIT: Duration = Duration::from_millis(500);
 
@@ -509,15 +575,20 @@ struct Slots {
     building: Option<(Stamp, Building)>,
 }
 
+/// The index kept in `precon_judgements` when the process started, with its fingerprint.
+type Kept = Option<(String, Arc<PreconIndex>)>;
+
 /// The index of the precons, built the first time it is needed and again when the precons, the
-/// cards, the printings or the stored rules change.
+/// cards, the printings or the stored rules change, and kept in the database across starts.
 ///
 /// One build runs at a time per stamp, in a task of its own, its judging on the blocking pool. A request waits for it
 /// at most [`FRESH_WAIT`] while an older index is held and is then served the older one, so no request queues behind
-/// a whole build once the first one is done.
+/// a whole build once the first one is done. The index kept from before the start counts as held: of the current
+/// fingerprint it is the current index, of another it is served while the current one is built.
 #[derive(Default)]
 pub(crate) struct PreconCache {
     slots: Arc<std::sync::Mutex<Slots>>,
+    kept: tokio::sync::OnceCell<Kept>,
 }
 
 impl std::fmt::Debug for PreconCache {
@@ -531,84 +602,201 @@ fn slots(slots: &std::sync::Mutex<Slots>) -> std::sync::MutexGuard<'_, Slots> {
     slots.lock().unwrap_or_else(PoisonError::into_inner)
 }
 
+/// An index as a request is served it.
+pub(crate) struct Served {
+    /// The index.
+    pub(crate) index: Arc<PreconIndex>,
+    /// Whether it was judged under other cards, precons or rules than the current ones, which are being judged.
+    pub(crate) judging: bool,
+}
+
+impl Served {
+    fn current(index: Arc<PreconIndex>) -> Served {
+        Served {
+            index,
+            judging: false,
+        }
+    }
+}
+
 impl PreconCache {
     /// The current index, or the one held from before while the current one is built.
     pub(crate) async fn index(&self, source: &CardSource) -> Result<Arc<PreconIndex>, PreconError> {
-        let database = source.database();
-        let rules = source.rules().await?;
-        let stamp = Stamp {
-            cards: database.cards().index_version().await?,
-            precons: database.precons().version().await?,
-            rules: rules.version().clone(),
-        };
+        Ok(self.served(source).await?.index)
+    }
+
+    /// [`PreconCache::index`], saying whether it is the current one.
+    pub(crate) async fn served(&self, source: &CardSource) -> Result<Served, PreconError> {
+        let stamp = Stamp::now(source).await?;
+        if let Some(index) = self.current(&stamp) {
+            return Ok(Served::current(index));
+        }
+        let kept = self.load_kept(source).await;
         let (held, building) = {
             let mut held = slots(&self.slots);
+            if held.built.is_none()
+                && let Some((fingerprint, index)) = kept
+                && stamp.fingerprint(source).as_ref() == Some(fingerprint)
+            {
+                held.built = Some((stamp.clone(), index.clone()));
+            }
             if let Some((built, index)) = held.built.as_ref()
                 && *built == stamp
             {
-                return Ok(index.clone());
+                return Ok(Served::current(index.clone()));
             }
             let building = match &held.building {
                 Some((building, build)) if *building == stamp => build.clone(),
                 _ => {
-                    let build = self.start(source.clone(), rules, stamp.clone());
+                    let build = self.start(source.clone(), stamp.clone());
                     held.building = Some((stamp, build.clone()));
                     build
                 }
             };
-            (
-                held.built.as_ref().map(|(_, index)| index.clone()),
-                building,
-            )
+            let built = held.built.as_ref().map(|(_, index)| index.clone());
+            let held = built.or_else(|| kept.as_ref().map(|(_, index)| index.clone()));
+            (held, building)
         };
         let failed = |message: String| PreconError::Catalog(CatalogError::Rules(message));
         match held {
-            None => finished(building).await.map_err(failed),
+            None => finished(building)
+                .await
+                .map(Served::current)
+                .map_err(failed),
             Some(held) => match tokio::time::timeout(FRESH_WAIT, finished(building)).await {
-                Ok(built) => built.map_err(failed),
-                Err(_) => Ok(held),
+                Ok(built) => built.map(Served::current).map_err(failed),
+                Err(_) => Ok(Served {
+                    index: held,
+                    judging: true,
+                }),
             },
         }
     }
 
-    /// Starts a build of the index for `stamp`. When it is done it is kept, unless a build for another stamp was
-    /// started meanwhile; a failed build is forgotten, so the next request tries again.
-    fn start(&self, source: CardSource, rules: Rules, stamp: Stamp) -> Building {
+    /// The index built for `stamp`, if it is held.
+    fn current(&self, stamp: &Stamp) -> Option<Arc<PreconIndex>> {
+        let held = slots(&self.slots);
+        held.built
+            .as_ref()
+            .filter(|(built, _)| built == stamp)
+            .map(|(_, index)| index.clone())
+    }
+
+    /// The index kept in the database, read once per process; none when there is none, it does not read or
+    /// `source` keeps no judgements.
+    pub(crate) async fn load_kept(&self, source: &CardSource) -> &Kept {
+        self.kept.get_or_init(|| read_kept(source)).await
+    }
+
+    /// Starts a build of the index for `stamp`. When it is done it is kept, in memory and in the database, unless a
+    /// build for another stamp was started meanwhile; a failed build is forgotten, so the next request tries again.
+    fn start(&self, source: CardSource, stamp: Stamp) -> Building {
         let held = self.slots.clone();
         let (done, building) = watch::channel(None);
         tokio::spawn(async move {
             let started = Instant::now();
-            let built = match source.database().precons().all().await {
-                Ok(details) => tokio::task::spawn_blocking(move || {
-                    #[cfg(test)]
-                    source.pass_precon_gate();
-                    Arc::new(PreconIndex::build(&rules, &details))
-                })
-                .await
-                .map_err(|error| format!("the precon index build stopped: {error}")),
-                Err(error) => Err(error.to_string()),
-            };
+            let built = build(&source, stamp.clone()).await;
             tracing::info!(
                 elapsed_ms = started.elapsed().as_millis(),
                 built = built.is_ok(),
                 "precon index built"
             );
-            {
+            let current = {
                 let mut held = slots(&held);
-                if held
+                let current = held
                     .building
                     .as_ref()
-                    .is_none_or(|(building, _)| *building == stamp)
-                {
+                    .is_none_or(|(building, _)| *building == stamp);
+                if current {
                     held.building = None;
-                    if let Ok(index) = &built {
-                        held.built = Some((stamp, index.clone()));
+                    if let Ok((built, index)) = &built {
+                        held.built = Some((built.clone(), index.clone()));
                     }
                 }
+                current
+            };
+            done.send_replace(Some(built.clone().map(|(_, index)| index)));
+            if current
+                && let Ok((built, index)) = built
+                && let Some(fingerprint) = built.fingerprint(&source)
+            {
+                keep(&source, fingerprint, index).await;
             }
-            done.send_replace(Some(built));
         });
         building
+    }
+}
+
+/// Builds the index for `stamp` under the current rules; the stamp it was built for, with the version of those rules.
+async fn build(source: &CardSource, stamp: Stamp) -> Result<(Stamp, Arc<PreconIndex>), String> {
+    let rules = source.rules().await.map_err(|error| error.to_string())?;
+    let details = source
+        .database()
+        .precons()
+        .all()
+        .await
+        .map_err(|error| error.to_string())?;
+    let stamp = Stamp {
+        rules: rules.version().clone(),
+        ..stamp
+    };
+    #[cfg(test)]
+    let gated = source.clone();
+    let index = tokio::task::spawn_blocking(move || {
+        #[cfg(test)]
+        gated.pass_precon_gate();
+        Arc::new(PreconIndex::build(&rules, &details))
+    })
+    .await
+    .map_err(|error| format!("the precon index build stopped: {error}"))?;
+    Ok((stamp, index))
+}
+
+/// The row of `precon_judgements`, read back; a failure is logged and reads as none.
+async fn read_kept(source: &CardSource) -> Kept {
+    source.kept_under()?;
+    let started = Instant::now();
+    let row = sqlx::query!("SELECT fingerprint, items FROM precon_judgements")
+        .fetch_optional(source.database().pool())
+        .await
+        .inspect_err(|error| tracing::warn!(%error, "the kept precon judgements could not be read"))
+        .ok()??;
+    let index = off_runtime(move || PreconIndex::from_kept(&row.items))
+        .await
+        .map_err(|error| error.to_string())
+        .and_then(|read| read.map_err(|error| error.to_string()))
+        .inspect_err(|error| tracing::warn!(%error, "the kept precon judgements do not read"))
+        .ok()?;
+    tracing::info!(
+        elapsed_ms = started.elapsed().as_millis(),
+        precons = index.decks.len(),
+        "kept precon judgements read"
+    );
+    Some((row.fingerprint, Arc::new(index)))
+}
+
+/// Writes `index` to `precon_judgements` under `fingerprint`, in place of the row before; a failure is logged.
+async fn keep(source: &CardSource, fingerprint: String, index: Arc<PreconIndex>) {
+    let items = off_runtime(move || index.to_kept())
+        .await
+        .map_err(|error| error.to_string())
+        .and_then(|items| items.map_err(|error| error.to_string()));
+    let written = match items {
+        Ok(items) => sqlx::query!(
+            "INSERT INTO precon_judgements (fingerprint, items) VALUES ($1, $2)
+             ON CONFLICT (singleton) DO UPDATE
+             SET fingerprint = EXCLUDED.fingerprint, items = EXCLUDED.items, judged_at = now()",
+            fingerprint,
+            items
+        )
+        .execute(source.database().pool())
+        .await
+        .map(drop)
+        .map_err(|error| error.to_string()),
+        Err(error) => Err(error),
+    };
+    if let Err(error) = written {
+        tracing::warn!(%error, "the precon judgements could not be kept");
     }
 }
 
@@ -770,3 +958,6 @@ mod tests {
 
 #[cfg(test)]
 mod index_tests;
+
+#[cfg(test)]
+mod kept_tests;

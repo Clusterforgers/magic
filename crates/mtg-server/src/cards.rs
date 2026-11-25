@@ -31,7 +31,7 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 
 use crate::images::{Images, Warmer};
-use crate::precons::{PreconCache, PreconError, PreconIndex};
+use crate::precons::{PreconCache, PreconError, PreconIndex, Served};
 use crate::reads::PendingReads;
 use crate::recipe::{Catalog, GameRecipe};
 
@@ -240,6 +240,8 @@ pub struct CardSource {
     pending: Arc<PendingReads>,
     stored: Arc<StoredRules>,
     images: Option<Images>,
+    /// The build the precon judgements are kept under across starts ([`server_build`]); none for other rules files.
+    kept: Option<Arc<str>>,
     #[cfg(test)]
     gate: Option<Arc<tests::BuildGate>>,
     #[cfg(test)]
@@ -263,6 +265,23 @@ struct Built {
     base: Arc<Library>,
     /// `base` with the current drafts and their read state.
     full: Arc<Library>,
+}
+
+/// What tells this server's build from another: the size and time of its executable, so a release judges the
+/// precons anew; `unknown` when the executable cannot be read.
+fn server_build() -> Arc<str> {
+    static BUILD: std::sync::OnceLock<Arc<str>> = std::sync::OnceLock::new();
+    BUILD
+        .get_or_init(|| {
+            let made = std::env::current_exe().and_then(std::fs::metadata);
+            let stamp = made.ok().and_then(|meta| {
+                let modified = meta.modified().ok()?;
+                let since = modified.duration_since(std::time::UNIX_EPOCH).ok()?;
+                Some(format!("{}:{}", meta.len(), since.as_nanos()))
+            });
+            Arc::from(stamp.unwrap_or_else(|| "unknown".to_owned()))
+        })
+        .clone()
 }
 
 /// Runs CPU-heavy `work` on the blocking pool, so the runtime's workers keep serving meanwhile.
@@ -319,6 +338,7 @@ impl CardSource {
             pending: Arc::default(),
             stored: Arc::default(),
             images: None,
+            kept: Some(server_build()),
             #[cfg(test)]
             gate: None,
             #[cfg(test)]
@@ -349,6 +369,8 @@ impl CardSource {
     #[must_use]
     pub fn with_rules(mut self, rules: Library) -> CardSource {
         self.rules = Some(Arc::new(rules));
+        // Other rules files than the build's: their precon judgements are not kept for the next start.
+        self.kept = None;
         // What the library and the index hold was built from the old rules.
         self.stored = Arc::default();
         self.precons = Arc::default();
@@ -525,6 +547,7 @@ impl CardSource {
     /// request does not wait for them and a deck list after a start finds its cards decided; a failure is logged and a
     /// later request tries again.
     pub(crate) async fn warm(&self) {
+        self.precons.load_kept(self).await;
         match self.layers().await {
             Ok(_) => tracing::info!("card library warmed"),
             Err(error) => {
@@ -648,6 +671,23 @@ impl CardSource {
         Ok(Arc::new(library))
     }
 
+    /// Which stored rules a library built now holds, read from the database without building it.
+    pub(crate) async fn stored_version(&self) -> Result<StoredVersion, CatalogError> {
+        let rules = self.db.card_rules().version().await;
+        let rules = rules.map_err(|error| CatalogError::Database(error.to_string()))?;
+        Ok(StoredVersion {
+            rules,
+            drafts: self.draft_version().await,
+        })
+    }
+
+    /// The build and capabilities the precon judgements of this source are kept under, if they are kept.
+    pub(crate) fn kept_under(&self) -> Option<String> {
+        self.kept
+            .as_ref()
+            .map(|build| format!("{build}|{:?}", self.caps))
+    }
+
     /// The rules and capabilities to read cards with, as of now.
     pub(crate) async fn rules(&self) -> Result<Rules, CatalogError> {
         let (library, version) = self.library().await?;
@@ -691,6 +731,11 @@ impl CardSource {
 
     pub(crate) async fn precon_index(&self) -> Result<Arc<PreconIndex>, PreconError> {
         self.precons.index(self).await
+    }
+
+    /// [`CardSource::precon_index`], saying whether it is the current one or the one before while that is judged.
+    pub(crate) async fn precon_served(&self) -> Result<Served, PreconError> {
+        self.precons.served(self).await
     }
 
     /// Assembles each distinct card of `ids`, keyed by the id as it was asked for. Every id the
@@ -1182,6 +1227,13 @@ pub(crate) mod tests {
             if let Some(gate) = &self.gate {
                 gate.pass();
             }
+        }
+
+        /// The same source as another server build makes it: no cached index, judgements kept under `build`.
+        pub(crate) fn with_build(mut self, build: &str) -> CardSource {
+            self.kept = Some(Arc::from(build));
+            self.precons = Arc::default();
+            self
         }
 
         /// The same source whose precon index builds wait at `gate`; it shares the caches of `self`.

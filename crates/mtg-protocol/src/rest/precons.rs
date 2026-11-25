@@ -63,6 +63,9 @@ pub struct PreconListItem {
 pub struct PreconList {
     /// The precons.
     pub precons: Vec<PreconListItem>,
+    /// Whether the judgements are from before the current cards and rules while the server judges them anew: read
+    /// the list again shortly.
+    pub judging: bool,
 }
 
 /// One line of a precon: copies of a card and how far the game plays it.

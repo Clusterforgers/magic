@@ -24,7 +24,7 @@ function decksOf(...answers: (DeckListItem[] | Error)[]) {
 
 const ADA = deckItem({ id: 'a', name: 'Ada' })
 const BOB = deckItem({ id: 'b', name: 'Bob' })
-const NONE: PreconList = { precons: [] }
+const NONE: PreconList = { precons: [], judging: false }
 
 describe('useDeckList', () => {
   it('shows the cached list at once on the next mount, marked refreshing, then the list read again', async () => {

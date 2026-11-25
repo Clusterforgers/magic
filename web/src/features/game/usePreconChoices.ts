@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { listCache, preconListKey } from '@/net/listCache'
 import { PreconError } from '@/net/precons'
 import type { PreconsApi } from '@/net/precons'
+import { JUDGING_RETRY_MS } from '@/features/precons/usePrecons'
 import type { PreconListItem } from '@/protocol/generated'
 
 /** The precons the chooser offers, as the lobby sees them. */
@@ -26,7 +27,7 @@ export function preconListWords(error: unknown): string {
 /**
  * Reads `GET /api/precons` once `enabled` (the Precons tab opened, or a favourite needs it), on every mount after that
  * and when `reload` is called, through the list cache (`listCache`): precons seen before show at once while they are
- * read again.
+ * read again. A list the server is still judging (`judging`) is read again every `JUDGING_RETRY_MS` until it is current.
  */
 export function usePreconChoices(
   api: Pick<PreconsApi, 'list'>,
@@ -35,12 +36,22 @@ export function usePreconChoices(
   state: PreconChoices
   reload: () => void
 } {
-  const query = useQuery({ queryKey: preconListKey(api), queryFn: () => api.list(), enabled }, listCache)
+  const query = useQuery(
+    {
+      queryKey: preconListKey(api),
+      queryFn: () => api.list(),
+      enabled,
+      refetchInterval: (read) => (read.state.data?.judging === true ? JUDGING_RETRY_MS : false),
+    },
+    listCache,
+  )
   const { refetch } = query
   const reload = useCallback(() => void refetch(), [refetch])
 
   let state: PreconChoices = { status: 'loading' }
-  if (query.isError && !query.isFetching) state = { status: 'failed', message: preconListWords(query.error) }
-  else if (query.data !== undefined) state = { status: 'ready', precons: query.data.precons }
+  // A list shown stays when a later read fails: a re-read while the server judges, or a revalidation.
+  if (query.data !== undefined) state = { status: 'ready', precons: query.data.precons }
+  else if (query.isError && !query.isFetching)
+    state = { status: 'failed', message: preconListWords(query.error) }
   return { state, reload }
 }
