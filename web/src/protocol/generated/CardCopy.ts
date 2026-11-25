@@ -19,4 +19,8 @@ of: ObjectRef,
 /**
  * Who owns the copy.
  */
-owner: PlayerId, };
+owner: PlayerId, 
+/**
+ * The card is named from outside the game (`Effect::CopyNamedCard`): `of` is the source that made the copy.
+ */
+outside?: boolean, };
