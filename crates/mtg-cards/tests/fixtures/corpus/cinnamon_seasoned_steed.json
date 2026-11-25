@@ -84,7 +84,7 @@
   "scryfall_set_uri": "https://scryfall.com/sets/unk?utm_source=api",
   "rulings_uri": "https://api.scryfall.com/cards/281b8ca4-e65f-4dcf-9f28-667f4d73e9b3/rulings",
   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ab6f27e98-6c12-453c-8321-891f2f7c2bbb&unique=prints",
-  "collector_number": "RA01",
+  "collector_number": "20230927",
   "digital": false,
   "rarity": "rare",
   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
