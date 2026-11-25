@@ -134,7 +134,8 @@ impl Registry {
         let joined = record.seats.iter().map(|seat| seat.joined).collect();
         let recorder = Recorder::new(records.clone(), id, joined, record.manual_play)
             .with_warmer(self.warmer(), Vec::new())
-            .with_reads(self.read_repo(), reads);
+            .with_reads(self.read_repo(), reads)
+            .with_ended(self.shared.ended.clone());
         // Replaying a log is where a bug would panic; that must cost one game, not the boot.
         let resuming = tokio::spawn(resume_named(
             records.store(),

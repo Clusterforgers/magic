@@ -4,12 +4,14 @@
 //! a finished fight back into the run.
 
 mod board;
+mod ended;
 mod hooks;
 mod live;
 mod rework;
 mod store;
 
 pub(crate) use board::leaderboard;
+pub(crate) use ended::spawn_settler;
 pub(crate) use hooks::boss_concedes;
 pub(crate) use live::follow;
 
@@ -991,11 +993,21 @@ async fn fresh_view(
     user: UserId,
 ) -> Result<DelveView, ApiError> {
     let _turn = delves.turn.lock().await;
+    let (loaded, problems) = catch_up(app, delves, id).await?;
+    view_for(app, &loaded, user, problems).await
+}
+
+/// Loads the run `id`, brings it up to date and saves what changed, which tells its sockets; the caller holds the turn.
+async fn catch_up(
+    app: &AppState,
+    delves: &Delves,
+    id: Uuid,
+) -> Result<(Loaded, Vec<DelveDeckProblem>), ApiError> {
     let mut loaded = load(delves, id).await?;
     let from = loaded.events.len();
     let problems = advance(app, &mut loaded).await?;
     save(delves, &loaded, from).await?;
-    view_for(app, &loaded, user, problems).await
+    Ok((loaded, problems))
 }
 
 /// A member's answer to their first offer; a card to copy at the Mirror Pool must be one of their deck or Satchel.
