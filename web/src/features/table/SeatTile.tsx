@@ -53,6 +53,8 @@ interface SeatTileProps {
   focused: boolean
   /** Called with the seat when the tile is clicked, or activated with Enter or Space. */
   onFocusSeat: (seat: PlayerId) => void
+  /** One line: the name row only, its figures left to the spoken name and the board a press opens. */
+  line?: boolean
 }
 
 /**
@@ -61,7 +63,7 @@ interface SeatTileProps {
  * like a pod's: the active seat has a 3 px edge inside the tile, and a seat that holds priority without the turn has a
  * dot beside its name. The chips are not buttons, as a tile has no button of its own inside.
  */
-export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: SeatTileProps) {
+export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat, line = false }: SeatTileProps) {
   const coach = useSeatAnchor(seat, 'pod')
   const namer = useSeatNamer()
   const name = namer(seat)
@@ -95,6 +97,7 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
       ref={button}
       type="button"
       data-variant="tile"
+      data-line={line || undefined}
       style={seatHueStyle(seat)}
       data-tile-seat={seat}
       {...coach}
@@ -145,7 +148,8 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         onFocusSeat(seat)
       }}
       className={cn(
-        'relative grid h-full min-w-44 flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden plaque rounded-lg px-2 py-0.5 text-left text-xs ring-1 ring-foreground/10 outline-none hover:brightness-125 focus-visible:ring-3 focus-visible:ring-primary',
+        line ? 'min-w-32' : 'min-w-44',
+        'relative grid h-full flex-1 grid-cols-[minmax(0,1fr)] content-center gap-0.5 overflow-hidden plaque rounded-lg px-2 py-0.5 text-left text-xs ring-1 ring-foreground/10 outline-none hover:brightness-125 focus-visible:ring-3 focus-visible:ring-primary',
         focused && 'ring-2 ring-primary',
         attacked && ATTACKED_EDGE,
         eliminated && 'border-l-4 border-destructive',
@@ -191,7 +195,13 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat }: S
         </span>
       </span>
       {/* What does not fit the tile is cut, the last figure first; the spoken name has it all. */}
-      <span className="flex h-5 items-center gap-x-1.5 overflow-hidden whitespace-nowrap text-muted-foreground">
+      <span
+        data-slot="tile-figures"
+        className={cn(
+          'flex h-5 items-center gap-x-1.5 overflow-hidden whitespace-nowrap text-muted-foreground',
+          line && 'hidden',
+        )}
+      >
         <DamageChips chips={chips.damage} density="tile" />
         <PlayerCounterChips owner={name} player={player} density="tile" />
         {chipZones(counts).map((zone) => (

@@ -1,12 +1,16 @@
 //! Goal: from generation `BOSS_SCALE_FROM` a boss brings relics from the first fight, more with depth and Heat, and one
 //! reinforcement for each hero after the first (a solo hero meets the same boss as before); runs of older generations
-//! keep the relic count and the boss they were played with; from `THEME_SUPPLIES_FROM` a theme may add
-//! supplies to its bosses against two or more heroes.
+//! keep the relic count and the boss they were played with; from `THEME_SUPPLIES_FROM` a theme may add supplies to its
+//! bosses against two or more heroes, and from `REINFORCEMENTS_FADE_FROM` a boss with the most relics brings no
+//! reinforcement (the theme's supplies stay); from `THEME_RELICS_FROM` a theme may cap its bosses' relics, the
+//! Warrens at three.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS, RELIC_OFFSET};
 use mtg_campaign::content::FOUNDRY_FROM;
-use mtg_campaign::run::{BOSS_SCALE_FROM, CONTENT, THEME_SUPPLIES_FROM};
-use mtg_campaign::scale::{REINFORCEMENT, SUPPLIES};
+use mtg_campaign::run::{
+    BOSS_SCALE_FROM, CONTENT, REINFORCEMENTS_FADE_FROM, THEME_RELICS_FROM, THEME_SUPPLIES_FROM,
+};
+use mtg_campaign::scale::{FADE_RELICS, REINFORCEMENT, SUPPLIES};
 use mtg_campaign::{CardKind, HeroDeck, Run, RunEvent, Scale, content};
 use proptest::prelude::*;
 use rstest::rstest;
@@ -146,7 +150,7 @@ proptest! {
         supplies in 0usize..3,
     ) {
         let base = Scale::reinforcements(heroes, generation);
-        let now = Scale::theme_reinforcements(heroes, generation, supplies);
+        let now = Scale::theme_reinforcements(heroes, generation, supplies, 0);
         prop_assert_eq!(&now[..base.len()], &base[..]);
         let added = if generation < THEME_SUPPLIES_FROM || heroes < 2 { 0 } else { supplies };
         prop_assert_eq!(&now[base.len()..], &vec![SUPPLIES.to_owned(); added][..]);
@@ -209,5 +213,131 @@ fn a_themes_bosses_bring_its_supplies_from_its_generation_against_two_heroes(
     );
     // Apart from the supplies, the boss is the one of generation 12.
     now.reinforcements.clone_from(&old.reinforcements);
+    assert_eq!(now, old);
+}
+
+proptest! {
+    #[test]
+    fn reinforcements_fade_only_from_their_generation_and_the_most_relics(
+        heroes in 1usize..9,
+        generation in 0u32..20,
+        supplies in 0usize..3,
+        relics in 0usize..=MOST_BOSS_RELICS,
+    ) {
+        let now = Scale::theme_reinforcements(heroes, generation, supplies, relics);
+        let before = Scale::theme_reinforcements(heroes, generation.min(THEME_SUPPLIES_FROM), supplies, relics);
+        if generation < REINFORCEMENTS_FADE_FROM || relics < FADE_RELICS {
+            // Every older generation, and a boss with fewer relics, keeps the reinforcements of generation 13.
+            prop_assert_eq!(&now, &before);
+        } else {
+            // Only the theme's supplies stay.
+            let kept: Vec<String> = before.into_iter().filter(|id| id == SUPPLIES).collect();
+            prop_assert_eq!(&now, &kept);
+        }
+    }
+}
+
+/// The first boss's plan of a `theme` run of content `version` with two heroes at Heat 3, its depth set to `depth`.
+fn deep_boss(theme: &str, version: u32, depth: u32) -> mtg_campaign::BossSeat {
+    let content = content().unwrap();
+    let run = Run::replay(content, theme, 21, 3, &two_heroes(version)).unwrap();
+    let theme = content.theme(theme).unwrap();
+    let boss = theme
+        .boss(&run.fight_plan(content).unwrap().unwrap().boss.boss)
+        .unwrap();
+    run.boss_seat(content, boss, 0, (2, depth)).unwrap()
+}
+
+/// The events of a started run of content `version` with two heroes.
+fn two_heroes(version: u32) -> Vec<RunEvent> {
+    let mut events = vec![RunEvent::Content { version }];
+    for at in 0..2u8 {
+        events.push(RunEvent::Joined {
+            name: format!("H{at}"),
+            user: Some(format!("u{at}")),
+            bot: None,
+        });
+        events.push(RunEvent::DeckChosen {
+            hero: at,
+            deck: HeroDeck {
+                id: "x".into(),
+                name: "x".into(),
+                colors: "G".into(),
+                commanders: Vec::new(),
+                makeup: None,
+            },
+        });
+    }
+    events.push(RunEvent::Started);
+    events
+}
+
+#[rstest]
+fn a_deep_boss_brings_no_reinforcement_from_the_fade(
+    #[values("warrens", "spire", "foundry")] theme: &str,
+    #[values(1, 6, 7, 12)] depth: u32,
+) {
+    let old = deep_boss(theme, THEME_SUPPLIES_FROM, depth);
+    let mut now = deep_boss(theme, REINFORCEMENTS_FADE_FROM, depth);
+    let faded = boss_relics::count(depth, 3, REINFORCEMENTS_FADE_FROM) >= FADE_RELICS;
+    let reinforcements = now
+        .reinforcements
+        .iter()
+        .filter(|id| *id == REINFORCEMENT)
+        .count();
+    assert_eq!(reinforcements, usize::from(!faded), "depth {depth}");
+    let supplies = |seat: &mtg_campaign::BossSeat| {
+        seat.reinforcements
+            .iter()
+            .filter(|id| *id == SUPPLIES)
+            .count()
+    };
+    assert_eq!(supplies(&now), supplies(&old));
+    // Apart from the reinforcements, the boss is the one of generation 13.
+    now.reinforcements.clone_from(&old.reinforcements);
+    assert_eq!(now, old);
+}
+
+proptest! {
+    #[test]
+    fn a_themes_relic_cap_binds_only_from_its_generation(
+        depth in 0u32..40,
+        heat in 0u8..4,
+        generation in 0u32..20,
+        most in proptest::option::of(0usize..=MOST_BOSS_RELICS),
+    ) {
+        let all = boss_relics::count(depth, heat, generation);
+        let now = boss_relics::theme_count(depth, heat, generation, most);
+        match most {
+            Some(most) if generation >= THEME_RELICS_FROM => prop_assert_eq!(now, all.min(most)),
+            // Every older generation, and a theme without a cap, keeps the count of generation 14.
+            _ => prop_assert_eq!(now, all),
+        }
+    }
+}
+
+#[rstest]
+fn a_deep_warrens_boss_brings_at_most_three_relics_from_the_cap(
+    #[values(("warrens", Some(3)), ("spire", None), ("foundry", None))] theme: (
+        &str,
+        Option<usize>,
+    ),
+    #[values(1, 3, 6, 7, 12)] depth: u32,
+) {
+    let (theme, most) = theme;
+    assert_eq!(
+        content().unwrap().theme(theme).unwrap().boss_relics_most,
+        most
+    );
+    let old = deep_boss(theme, REINFORCEMENTS_FADE_FROM, depth);
+    let mut now = deep_boss(theme, CONTENT, depth);
+    let all = boss_relics::count(depth, 3, CONTENT);
+    assert_eq!(old.relics.len(), all);
+    assert_eq!(now.relics.len(), most.map_or(all, |most| all.min(most)));
+    if now.relics.len() == all {
+        assert_eq!(now.relics, old.relics);
+    }
+    // Apart from the relics, the boss is the one of generation 14, its reinforcements faded by the depth's count.
+    now.relics.clone_from(&old.relics);
     assert_eq!(now, old);
 }

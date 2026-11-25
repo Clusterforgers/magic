@@ -45,6 +45,8 @@ interface SeatAreaProps {
   zones?: boolean
   /** A line pod keeps its figures to one row (a grid of opponents). */
   oneRow?: boolean
+  /** A one-row line pod keeps to its name row, its figures a tap away (`SeatPanel` `fold`). */
+  foldPod?: boolean
 }
 
 /**
@@ -81,6 +83,7 @@ export const SeatArea = memo(function SeatArea({
   collapsed = false,
   zones = true,
   oneRow = false,
+  foldPod = false,
 }: SeatAreaProps) {
   const aside = pod === 'aside'
   // The creatures' card width of the board, which the pod's corner follows.
@@ -129,10 +132,12 @@ export const SeatArea = memo(function SeatArea({
         ) : null}
         {pod === 'aside' ? <PodColumn seat={seat} card={card} /> : null}
         {/* A line pod is on the table's middle side of its board: over an opponent's, under yours, by your hand. */}
-        {pod === 'line' && facing === 'far' ? <SeatPanel seat={seat} variant="line" oneRow={oneRow} /> : null}
+        {pod === 'line' && facing === 'far' ? (
+          <SeatPanel seat={seat} variant="line" oneRow={oneRow} fold={foldPod} />
+        ) : null}
         {collapsed ? null : <Battlefield seat={seat} size={size} facing={facing} onCardWidth={setCard} />}
         {pod === 'line' && facing === 'near' ? (
-          <SeatPanel seat={seat} variant="line" oneRow={oneRow} />
+          <SeatPanel seat={seat} variant="line" oneRow={oneRow} fold={foldPod} />
         ) : null}
       </div>
     </LandFoldContext>
@@ -193,10 +198,18 @@ interface TileStripProps {
   onFocusSeat: (seat: PlayerId) => void
   /** The strip's name for a screen reader; "Opponents" when left out. */
   label?: string
+  /** Each tile is one line of name and life (`TILE_LINE_PX`, a short phone's party). */
+  line?: boolean
 }
 
 /** The strip of tiles of focus mode; it scrolls back to its start when the seat that leads it changes. */
-export function TileStrip({ tiles, focused, onFocusSeat, label = 'Opponents' }: TileStripProps) {
+export function TileStrip({
+  tiles,
+  focused,
+  onFocusSeat,
+  label = 'Opponents',
+  line = false,
+}: TileStripProps) {
   const strip = useRef<HTMLUListElement>(null)
   useLeadInView(strip, tiles[0])
   return (
@@ -205,11 +218,15 @@ export function TileStrip({ tiles, focused, onFocusSeat, label = 'Opponents' }: 
       role="list"
       aria-label={label}
       data-slot="tile-strip"
-      className="relative flex h-14 shrink-0 gap-2 overflow-x-auto p-1 [scrollbar-width:none]"
+      data-line={line || undefined}
+      className={cn(
+        'relative flex shrink-0 gap-2 overflow-x-auto [scrollbar-width:none]',
+        line ? 'h-8 p-0.5' : 'h-14 p-1',
+      )}
     >
       {tiles.map((seat) => (
-        <li key={seat} className="flex min-w-44 flex-1">
-          <SeatTile seat={seat} focused={seat === focused} onFocusSeat={onFocusSeat} />
+        <li key={seat} className={cn('flex flex-1', line ? 'min-w-32' : 'min-w-44')}>
+          <SeatTile seat={seat} focused={seat === focused} onFocusSeat={onFocusSeat} line={line} />
         </li>
       ))}
     </ul>

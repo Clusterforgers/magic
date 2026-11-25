@@ -162,6 +162,8 @@ export const issue = (message: string, over: Partial<Issue> = {}): Issue => ({
 export interface PreconsScript {
   /** The list, newest first. */
   precons?: PreconListItem[]
+  /** Whether the list is still being judged (`PreconList.judging`). */
+  judging?: boolean
   /** The details by code; a precon of the list without one gets a view built from its counts. */
   views?: PreconView[]
   /** Every call fails with this code (and status). */
@@ -190,7 +192,7 @@ export function startPrecons(script: PreconsScript = {}): FakePrecons {
       })
     }
     const path = new URL(call.url, 'http://localhost').pathname
-    if (path === '/api/precons') return jsonResponse(200, { precons })
+    if (path === '/api/precons') return jsonResponse(200, { precons, judging: script.judging ?? false })
     const code = decodeURIComponent(path.replace('/api/precons/', ''))
     const found = precons.find((item) => item.code === code)
     if (found === undefined)

@@ -127,9 +127,10 @@ pub(crate) async fn list(
     request: Request,
 ) -> Result<Json<PreconList>, ApiError> {
     let cards = admitted(&app, &request)?;
-    let index = cards.precon_index().await?;
+    let served = cards.precon_served().await?;
     Ok(Json(PreconList {
-        precons: index.items().cloned().collect(),
+        precons: served.index.items().cloned().collect(),
+        judging: served.judging,
     }))
 }
 

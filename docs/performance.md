@@ -37,7 +37,8 @@ The rest is fast: page TTFB 4 to 15 ms, `auth/me`, `auth/options` and `lobbies` 
 How fast the deck choosers (lobby, Create game, Delves, the Decks page) get their lists.
 
 - Method: live server logs and `EXPLAIN (ANALYZE, BUFFERS)` of the list queries on the live database (read only); a local release server on a copy of the local database with an account of 24 Commander decks (2,069 lines), timed with `curl` right after start and warm.
-- Causes found: the default printing of each card sorted every printing of every card (16,746 rows for 1,174 cards, a 12 MB sort spilled to disk; 10.7 s once on live); each precon list read both card tables whole for its fingerprint (49,000 buffers, 28,000 from disk, in a 128 MB buffer cache); after a start every card is decided anew, and a deck list decided its owner's cards on one thread beside the precon index's eight; the client read every list again on every open, the Decks page its groups only after its decks.
+- Causes found: the default printing of each card sorted every printing of every card (16,746 rows for 1,174 cards, a 12 MB sort spilled to disk; 10.7 s once on live); each precon list read both card tables whole for its fingerprint (49,000 buffers, 28,000 from disk, in a 128 MB buffer cache); after a start every card is decided anew, and a deck list decided its owner's cards on one thread beside the precon index's eight; the client read every list again on every open, the Decks page its groups only after its decks; the first precon list after a start waited for every precon to be judged again (1 to 3 minutes on live).
+- Precon judgements are kept in `precon_judgements` (`docs/server.md`, Precons): a restart of the same build serves them at once; a release or a change of cards or rules serves them marked `judging` while the new ones are built, and the client reads the list again until it is current.
 
 | Measure | Before | After |
 | --- | --- | --- |
@@ -46,6 +47,7 @@ How fast the deck choosers (lobby, Create game, Delves, the Decks page) get thei
 | First deck list after a start (local) | 74 s | 17.5 s, fast once the deck cards are decided (19 s for 1,620 cards) |
 | Warm deck list, 24 decks (local) | 170 to 260 ms | 150 to 220 ms |
 | A chooser opened again | every list read again | cached lists at once, read again behind them |
+| First precon list after a start (local, 199 precons) | 101 s (the whole index judged, 94 s) | 0.4 s from the kept judgements; after a release 0.9 s, marked `judging` until the new ones are built (99 s); 86 s only on the first start with none kept |
 
 ## Bot load
 

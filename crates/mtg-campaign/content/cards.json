@@ -2628,6 +2628,51 @@
    }
   ],
   "since": 3,
+  "until": 15,
+  "rarity": "Mythic"
+ },
+ {
+  "id": "maelstrom_crown_cascade",
+  "name": "Maelstrom Crown",
+  "kind": "Relic",
+  "type_line": "Relic",
+  "role": "Support",
+  "price": 150,
+  "art": "maelstrom_crown",
+  "text": "Instant spells you cast have cascade.",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Instant"
+       },
+       {
+        "ControlledBy": "You"
+       },
+       {
+        "WasCast": {}
+       },
+       {
+        "In": "Stack"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "AddKeyword": "Cascade"
+      }
+     ]
+    }
+   }
+  ],
+  "wants": [
+   {
+    "Type": "Instant"
+   }
+  ],
+  "since": 16,
   "rarity": "Mythic"
  },
  {

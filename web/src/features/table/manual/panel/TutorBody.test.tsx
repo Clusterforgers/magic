@@ -49,7 +49,7 @@ async function openSearch() {
       .find((button) => button.hasAttribute('aria-expanded')),
   )
   await table.user.click(row)
-  const form = within(panel).getByRole('group', { name: 'Search your library' })
+  const form = await within(panel).findByRole('group', { name: 'Search your library' })
   const box = (): HTMLElement => within(form).getByRole('searchbox', { name: 'Filter cards' })
   const cards = (): HTMLElement[] => [...form.querySelectorAll<HTMLElement>('button[data-card]')]
   const names = (): string[] => cards().map((card) => card.textContent ?? '')

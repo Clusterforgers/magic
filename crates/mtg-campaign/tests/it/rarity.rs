@@ -8,7 +8,7 @@ use std::collections::BTreeMap;
 
 use mtg_campaign::relics::{FILTER_FROM, RARITY_FROM, price};
 use mtg_campaign::rng::Stream;
-use mtg_campaign::run::CONTENT;
+use mtg_campaign::run::{CONTENT, CROWN_CASCADE_FROM};
 use mtg_campaign::{
     Content, HeroDeck, Offer, Rarity, RoomKind, Run, RunEvent, ShopItem, Status, content,
 };
@@ -106,10 +106,18 @@ fn rarity(content: &Content, id: &str) -> Rarity {
 fn the_pool_has_every_tier_and_a_few_run_defining_mythics() {
     let content = content().unwrap();
     let mut tiers: BTreeMap<Rarity, usize> = BTreeMap::new();
-    for relic in content.relics() {
+    for relic in content
+        .relics()
+        .into_iter()
+        .filter(|c| c.in_generation(CONTENT))
+    {
         *tiers.entry(relic.rarity).or_default() += 1;
         if relic.rarity == Rarity::Mythic {
-            assert_eq!(relic.since, RARITY_FROM, "{}", relic.id);
+            assert!(
+                [RARITY_FROM, CROWN_CASCADE_FROM].contains(&relic.since),
+                "{}",
+                relic.id
+            );
             assert_ne!(relic.role, "Risky", "{}", relic.id);
         }
     }

@@ -41,7 +41,7 @@ describe('the look-at-the-top row with cards looked at', () => {
     const { user, panel, row, ids, nameOf } = lookTable()
     expect(row).toHaveTextContent('You looked at the top 3 cards: arrange them.')
     await user.click(row)
-    const form = within(panel).getByRole('group', { name: 'Look at the top' })
+    const form = await within(panel).findByRole('group', { name: 'Look at the top' })
     const onTop = within(form).getByRole('group', { name: 'Stays on top: 3' })
     const items = within(onTop).getAllByRole('listitem')
     expect(items.map((item) => item.getAttribute('aria-label'))).toEqual(

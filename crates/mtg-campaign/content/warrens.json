@@ -2,6 +2,7 @@
  "id": "warrens",
  "name": "The Warrens",
  "text": "Grimgut, the Warren King, rules the tunnels under the old mines. Three of his lieutenants stand between the party and his throne.",
+ "boss_relics_most": 3,
  "events": [
   {
    "id": "goblin_toll",

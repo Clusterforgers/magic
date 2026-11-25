@@ -6,6 +6,7 @@
  * sides are tile strips over one board.
  */
 import { useMemo, useState } from 'react'
+import { cn } from '@/lib/utils'
 import type { CSSProperties } from 'react'
 import { useShallow } from 'zustand/react/shallow'
 import { usePlay } from '@/features/game/gameContext'
@@ -19,6 +20,7 @@ import type { PartyRows, PodPlace, SeatPlan } from './layout'
 import { LeftStrip, SeatArea, TileStrip } from './Seats'
 import { SeatTile } from './SeatTile'
 import { BoardZones } from './BoardZones'
+import { LandSummary } from './LandSummary'
 import { useSeatNamer } from './names'
 import { BossAbilitiesBar } from './campaign/BossAbilities'
 import { BossBarContext } from './campaign/useBossAbilities'
@@ -32,6 +34,10 @@ interface BossSideProps {
   /** The widest card the boss's side draws in px (`PartyRows.bossCard`); null leaves each board its own fit. */
   card?: number | null
   onFocusSeat: (seat: PlayerId) => void
+  /** The boss's pod line keeps its figures to one row (a phone). */
+  oneRow?: boolean
+  /** A short phone: the boss's pod line keeps to its name row, its figures a tap away, and the side's tiles to one line. */
+  fold?: boolean
 }
 
 /** The seats of `seats` that have left the game, and those still playing. */
@@ -90,22 +96,49 @@ export function BossSide(props: BossSideProps) {
   )
 }
 
-function BossSideBody({ plan, size, pod, card, onFocusSeat }: BossSideProps) {
+/** The zones and lands chip of the focused board of the boss's side, beside its tiles on a short phone. */
+function StripZones({ seat }: { seat: PlayerId | null }) {
+  const owner = useSeatNamer()(seat ?? 0)
+  if (seat === null) return null
+  return (
+    <div data-slot="strip-zones" className="flex shrink-0 items-center gap-1 empty:hidden">
+      <BoardZones seat={seat} owner={owner} />
+      <LandSummary seat={seat} owner={owner} density="tile" />
+    </div>
+  )
+}
+
+function BossSideBody({ plan, size, pod, card, onFocusSeat, oneRow = false, fold = false }: BossSideProps) {
   const [boss, ...minions] = plan.boards
   const { gone, playing } = useGone(minions)
   const bossGrid = useCapped(null, card)
   const abilities = boss === undefined ? null : <BossAbilitiesBar seat={boss} />
   if (plan.tiles.length > 0) {
+    // A short phone draws the focused board's zones at the end of the tiles' line rather than on a line of their own.
+    const inStrip = fold && plan.focused !== null
+    const strip = (
+      <TileStrip
+        tiles={plan.tiles}
+        focused={plan.focused}
+        onFocusSeat={onFocusSeat}
+        label="The boss's side"
+        line={fold}
+      />
+    )
     return (
-      <div data-layout="boss" className="flex min-h-0 min-w-0 flex-col gap-2">
+      <div data-layout="boss" className={cn('flex min-h-0 min-w-0 flex-col', fold ? 'gap-1' : 'gap-2')}>
         {abilities}
-        <TileStrip
-          tiles={plan.tiles}
-          focused={plan.focused}
-          onFocusSeat={onFocusSeat}
-          label="The boss's side"
-        />
-        {plan.focused === null ? null : <SeatArea seat={plan.focused} size={size} facing="far" pod={pod} />}
+        {inStrip ? (
+          <div className="flex min-w-0 shrink-0 items-center gap-1">
+            <div className="min-w-0 flex-1">{strip}</div>
+            <StripZones seat={plan.focused} />
+          </div>
+        ) : (
+          strip
+        )}
+        {plan.focused === null ? null : (
+          <SeatArea seat={plan.focused} size={size} facing="far" pod={pod} zones={!inStrip} />
+        )}
       </div>
     )
   }
@@ -116,16 +149,23 @@ function BossSideBody({ plan, size, pod, card, onFocusSeat }: BossSideProps) {
         : `minmax(0, ${BOSS_SPAN}fr) repeat(${playing.length}, minmax(0, 1fr))`,
   }
   return (
-    <div data-layout="boss" data-minions={playing.length} className="flex min-h-0 min-w-0 flex-col gap-2">
+    <div
+      data-layout="boss"
+      data-minions={playing.length}
+      className={cn('flex min-h-0 min-w-0 flex-col', fold ? 'gap-1' : 'gap-2')}
+    >
       {abilities}
       {gone.map((seat) => (
         <LeftStrip key={seat} seat={seat} />
       ))}
       <div className="grid min-h-0 min-w-0 flex-1 gap-2" style={columns}>
         {boss === undefined ? null : (
-          <div data-slot="boss-frame" className="flex min-h-0 min-w-0 rounded-xl border-2 border-boss/70 p-1">
+          <div
+            data-slot="boss-frame"
+            className={cn('flex min-h-0 min-w-0 rounded-xl border-2 border-boss/70', fold ? 'p-0.5' : 'p-1')}
+          >
             <GridCardContext value={bossGrid}>
-              <SeatArea seat={boss} size={size} facing="far" pod={pod} />
+              <SeatArea seat={boss} size={size} facing="far" pod={pod} oneRow={oneRow} foldPod={fold} />
             </GridCardContext>
           </div>
         )}
@@ -145,6 +185,8 @@ interface PartySideProps {
   /** The allies' column shares (`PartyRows.shares`); one each when left out. */
   shares?: PartyRows['shares']
   phone: boolean
+  /** A short phone: the party's strip is one line of names and life (`shortPhone`). */
+  short?: boolean
 }
 
 /** One ally in its frame: its tile with its zone chips beside it over its board, which is left out while it holds no permanent. */
@@ -223,8 +265,12 @@ function AllyRow({
   )
 }
 
-/** The party on a phone: a strip of the other heroes' tiles; a tap opens that hero's board over yours, a second closes it. */
-function AllyStrip({ allies, size }: { allies: readonly PlayerId[]; size: CardSize }) {
+/**
+ * The party on a phone: a strip of the other heroes' tiles; a tap opens that hero's board over yours, a second closes it.
+ * On a short phone (`line`) the tiles are one line of name and life, and the opened board carries that hero's pod line
+ * with the figures the tile leaves out.
+ */
+function AllyStrip({ allies, size, line }: { allies: readonly PlayerId[]; size: CardSize; line: boolean }) {
   const [peek, setPeek] = useState<PlayerId | null>(null)
   const shown = peek !== null && allies.includes(peek) ? peek : null
   return (
@@ -234,37 +280,60 @@ function AllyStrip({ allies, size }: { allies: readonly PlayerId[]; size: CardSi
         focused={shown}
         onFocusSeat={(seat) => setPeek((was) => (was === seat ? null : seat))}
         label="Your party"
+        line={line}
       />
       {shown === null ? null : (
         <div
           data-slot="ally-peek"
           className="flex min-h-0 min-w-0 shrink-0 basis-2/5 rounded-xl border-2 border-foreground/15 p-1"
         >
-          <SeatArea seat={shown} size={size} facing="near" pod="none" />
+          <SeatArea seat={shown} size={size} facing="near" pod={line ? 'line' : 'none'} oneRow={line} />
         </div>
       )}
     </>
   )
 }
 
-/** Your board: with no permanent and nothing in your hand to play, your pod as one line. */
-function OwnBoard({ plan, size, pod }: { plan: SeatPlan; size: CardSize; pod: PodPlace }) {
+/** Your board: with no permanent and nothing in your hand to play, your pod as one line; a phone keeps its pod line to one row of figures. */
+function OwnBoard({
+  plan,
+  size,
+  pod,
+  oneRow,
+}: {
+  plan: SeatPlan
+  size: CardSize
+  pod: PodPlace
+  oneRow: boolean
+}) {
   const idle = usePlay(
     (state) => isBattlefieldEmpty(state, plan.viewer) && handIdle(state, handSeat(state, plan.viewer)),
   )
   const line = idle && pod === 'aside'
-  return <SeatArea seat={plan.viewer} size={size} facing="near" pod={line ? 'line' : pod} collapsed={line} />
+  return (
+    <SeatArea
+      seat={plan.viewer}
+      size={size}
+      facing="near"
+      pod={line ? 'line' : pod}
+      collapsed={line}
+      oneRow={oneRow}
+    />
+  )
 }
 
 /** The party: the other heroes over your board, which takes the rest of the row. */
-export function PartySide({ plan, size, pod, band, shares, phone }: PartySideProps) {
-  const own = <OwnBoard plan={plan} size={size} pod={pod} />
+export function PartySide({ plan, size, pod, band, shares, phone, short = false }: PartySideProps) {
+  const own = <OwnBoard plan={plan} size={size} pod={pod} oneRow={phone} />
   if (plan.allies.length === 0) return own
   return (
-    <div data-slot="party" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+    <div
+      data-slot="party"
+      className={cn('flex min-h-0 min-w-0 flex-1 flex-col', phone && short ? 'gap-1' : 'gap-2')}
+    >
       {/* A row too short for the other heroes' boards (`splitBoss`) keeps their tiles, as a phone does. */}
       {phone || band === ALLY_STRIP_PX ? (
-        <AllyStrip allies={plan.allies} size={size} />
+        <AllyStrip allies={plan.allies} size={size} line={phone && short} />
       ) : (
         <AllyRow allies={plan.allies} size={size} band={band} shares={shares} />
       )}

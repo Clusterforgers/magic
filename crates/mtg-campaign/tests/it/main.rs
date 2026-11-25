@@ -16,6 +16,7 @@ mod mythic_cards;
 mod old_runs;
 mod rarity;
 mod relic_cards;
+mod relic_self_harm;
 mod relics;
 mod rework;
 mod rework_warrens_a;
