@@ -53,9 +53,9 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// each hero after the first; from 13 a theme may give its bosses supplies against two or more heroes; from 14 a boss
 /// that brings the most relics brings no reinforcement; from 15 a theme may bring its bosses fewer relics; from 16 the
 /// Maelstrom Crown is a real cascade for instants; from 17 a theme may bring its bosses Supplies in place of
-/// reinforcements beyond a cap.
+/// reinforcements beyond a cap; from 18 the Gloamwood opens.
 /// Every run plays the boss of `docs/delves.md` (Bosses), whatever its generation.
-pub const CONTENT: u32 = THEME_REINFORCEMENTS_FROM;
+pub const CONTENT: u32 = crate::content::GLOAMWOOD_FROM;
 /// The content generation from which a boss brings relics at low depth and a reinforcement for each hero after the
 /// first (`boss_relics::count`, `Scale::reinforcements`).
 pub const BOSS_SCALE_FROM: u32 = 12;
