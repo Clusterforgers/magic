@@ -173,13 +173,15 @@ Each reason carries a detail (`Why`, `why.rs`) read off the check that decided i
 | `Why` | From |
 |---|---|
 | `Target { needs, zone }` | the first target specification with too few legal targets (`choose::unmet_target`), in the words of `wording::target_need`: "a creature spell you control on the stack" |
-| `Mana { cost, at_hand, missing, tax }` | the total the payment is asked for after increases and reductions, the pool plus one use of each source, the kinds of mana a one-kind symbol asks that nothing makes, and the commander tax the total includes |
+| `Mana { cost, at_hand, missing, tax }` | the total the payment is asked for after increases and reductions (for a loyalty ability, the mana cost modifiers add), the pool plus one use of each source, the kinds of mana a one-kind symbol asks that nothing makes, and the commander tax the total includes |
+| `LeastX { least, cost, at_hand }` | a cost that cannot be paid at the least X it allows ("X can't be 0"): its mana at that X against the mana at hand when the mana is short (reason `Mana`), else nothing more (reason `Cost`: the counters or objects X counts) |
+| `ChosenColor { color, cost, at_hand }` | "Spend only mana of the chosen color": the color its source chose (none when it chose none), the cost as that color pays it and the mana of that color at hand |
 | `SorcerySpeed`, `OwnCondition` | the timing of the card or ability, and a `CastOnly` or "Activate only if" that does not hold |
 | `ForbiddenBy { source, name, limit }` | the first prohibition in force (`prohibit::forbidding`, `w17b_cant_cast_by`), named while its source is face up on the battlefield, on the stack or in the command zone (an emblem: a Delves modifier or relic), and the spells a turn it allows when it limits them (One Voice, Rule of Law) |
 | `SplitSecond` | the spell with split second on the stack |
 | `SummoningSick`, `Tapped`, `LimitSpent`, `OtherCost`, `NoWay` | the source that cannot turn, a spent `Limit` or loyalty activation, a cost besides mana, and a card with no way to be cast from its zone |
 | `Host { needs, by }` | the host an Aura (`attach::cast_target`), bestowed (`attach::bestow_target`) or mutating spell (`merged`) lacks, with how it would go on it (`HostBy`) |
-| `XTarget { needs, zone, least, most }` | the first target that reads X of an ability (`-X` or `{X}`) none of whose payable X, from the least the cost allows to the most at hand, leaves it a legal choice |
+| `XTarget { needs, zone, least, most }` | the first target that reads X of an ability (`-X` or `{X}`) or a spell none of whose payable X, from the least the cost allows to the most at hand, leaves it a legal choice (`announce::paid_for_x` tells such a spell apart from one short of mana) |
 
 - A play the offer does not list is refused with `IllegalAnswer::Refused(Refusal)`, which carries the offer's reason and detail for that card or ability; any other play stays `NotOffered`.
 - `AnnouncementRewound.why` is read off the step that took a cast or activation back (`announce/rewound.rs`): the total of a cast short of mana (the first way's total before a way is chosen, the least X before X is), `OtherCost` for its other costs, the target that had none, the host a spell lacks, or the target no X leaves. `activated` marks an activation.

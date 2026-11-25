@@ -63,7 +63,8 @@ const SCALAR_KEYS: &[&str] = &[
     "dealt",
     "casts",
     "tax",
-    // The mana at hand and the range of X a refusal names (`Why::Mana`, `Why::XTarget`).
+    // The mana at hand and the range of X a refusal names (`Why::Mana`, `Why::XTarget`, `Why::LeastX`,
+    // `Why::ChosenColor`).
     "at_hand",
     "least",
     "most",
