@@ -18,9 +18,10 @@ import { useStable } from './useStable'
 function NothingToDoNote({ prompt }: { prompt: boolean }) {
   return (
     <div
-      // On one line the note keeps its few words whole and the stack chips give way to it; a phone's line is the
-      // stack's and the waiting line's.
-      className="hidden shrink-0 has-data-[slot=nothing-to-do]:block has-data-[slot=rewound]:block max-sm:hidden! [&_[data-slot=nothing-to-do-region]]:basis-auto"
+      // On one line the note keeps its few words whole and the stack chips give way to it. A phone's line is the
+      // stack's and the waiting line's, but for a play taken back, which is said there in one truncated line (the
+      // whole sentence in its title and for a reader).
+      className="hidden shrink-0 has-data-[slot=nothing-to-do]:block has-data-[slot=rewound]:block max-sm:min-w-0 max-sm:shrink max-sm:[&:not(:has([data-slot=rewound]))]:hidden! max-sm:[&_[data-slot=nothing-to-do]]:hidden max-sm:[&_[data-slot=rewound]]:max-w-full max-sm:[&_[data-slot=rewound]]:truncate [&_[data-slot=nothing-to-do-region]]:basis-auto"
     >
       <NothingToDoBanner beside={prompt} />
     </div>

@@ -1019,6 +1019,12 @@ describe('events with more than one shape', () => {
     expect(say({ NothingToDo: { player: 1, kind: 'Block' } })).toBe('Bo has no possible blockers')
   })
 
+  it('tells an activation taken back from a cast', () => {
+    expect(say({ AnnouncementRewound: { player: 0, object: 3, reason: 'Mana', activated: true } })).toBe(
+      'Ana cannot activate Forest: not enough mana',
+    )
+  })
+
   it('leaves out the source of mana that has none', () => {
     expect(say({ ManaAdded: { player: 0, mana: 'Blue', source: null } })).toBe('Ana adds {U}')
   })

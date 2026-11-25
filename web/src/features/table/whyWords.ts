@@ -2,7 +2,7 @@
  * The plain sentence for why a card or ability cannot be played now (docs/ui-design.md, Playing is legible). Pure: it
  * reads the engine's reason and its detail (`Why`), the card's name and its rules text, and nothing else.
  */
-import type { ManaType, ObjectView, Refusal, Unplayable, Why } from '@/protocol/generated'
+import type { HostBy, ManaType, ObjectView, Refusal, Unplayable, Why } from '@/protocol/generated'
 import { costText } from './cardModel'
 
 /** Whether the sentence is about casting a card or activating one of its abilities. */
@@ -88,6 +88,25 @@ function limitLine(source: string | undefined, limit: number): string {
     : `${source}: ${spent}.`
 }
 
+/** An Aura, bestowed or mutating spell with nothing to go on: "Pacifism needs a creature on the battlefield to enchant." */
+function hostLine(name: string, needs: string, by: HostBy): string {
+  switch (by) {
+    case 'Enchant':
+      return `${name} needs ${needs} to enchant.`
+    case 'Bestow':
+      return `To cast ${name} for bestow, it needs ${needs} to enchant.`
+    case 'Mutate':
+      return `To mutate, ${name} needs ${needs}.`
+  }
+}
+
+/** The short label on a card's foot when its spell has nothing to go on. */
+export const HOST_LABEL: Readonly<Record<HostBy, string>> = {
+  Enchant: 'Nothing to enchant',
+  Bestow: 'Nothing to enchant',
+  Mutate: 'Nothing to mutate onto',
+}
+
 /** The sentence for one detail, without the hint. */
 function detailLine(subject: Subject, why: Why): string {
   const { name, doing } = subject
@@ -121,6 +140,12 @@ function detailLine(subject: Subject, why: Why): string {
     }
   }
   if ('Target' in why) return `${name} needs a target: ${why.Target.needs}.`
+  if ('Host' in why) return hostLine(name, why.Host.needs, why.Host.by)
+  if ('XTarget' in why) {
+    const { needs, least, most } = why.XTarget
+    const range = least === most ? `X = ${least}` : `X from ${least} to ${most}`
+    return `${name} has no target for any X you can pay (${range}): it needs ${needs}.`
+  }
   if ('Mana' in why) {
     const { cost, at_hand, missing, tax } = why.Mana
     const taxed = tax === undefined || tax === 0 ? '' : ` with {${tax}} commander tax`

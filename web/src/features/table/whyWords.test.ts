@@ -1,6 +1,7 @@
-// Goal: every detail the engine gives (`Why`) reads as one plain sentence that names the card and what is missing, a target on the stack adds the Full Control hint with the card's own verb, a printed condition is quoted from the rules text, a spell limit (One Voice) names its rule and the spells cast, a commander short of mana names its tax, a reason without detail falls back to its plain line, and a refused play becomes the notice.
+// Goal: every detail the engine gives (`Why`) reads as one plain sentence that names the card and what is missing, a target on the stack adds the Full Control hint with the card's own verb, a printed condition is quoted from the rules text, a spell limit (One Voice) names its rule and the spells cast, a commander short of mana names its tax, an Aura, bestow or mutate spell names the host it lacks, an X ability names the target no payable X has, a reason without detail falls back to its plain line, and a refused play becomes the notice.
 import { describe, expect, it } from 'vitest'
 import type { ObjectView, Unplayable, Why } from '@/protocol/generated'
+import { reasonLabel } from './handReason'
 import { refusalNotice, whyHint, whyLine } from './whyWords'
 import type { Subject } from './whyWords'
 
@@ -218,6 +219,66 @@ describe('refusalNotice', () => {
     )
     expect(refusalNotice({ object: 9, ability: { object: 9, ability: 0 }, reason: 'Cost' }, objects)).toBe(
       "That card can't be activated now. A cost cannot be paid.",
+    )
+  })
+})
+
+describe('the details of hosts and X', () => {
+  it.each<[string, Subject, Why, string]>([
+    [
+      'an Aura with nothing to enchant',
+      cast('Pacifism'),
+      { Host: { needs: 'a creature on the battlefield', by: 'Enchant' } },
+      'Pacifism needs a creature on the battlefield to enchant.',
+    ],
+    [
+      'a bestow cast with no creature',
+      cast('Boon Satyr'),
+      { Host: { needs: 'a creature on the battlefield', by: 'Bestow' } },
+      'To cast Boon Satyr for bestow, it needs a creature on the battlefield to enchant.',
+    ],
+    [
+      'a mutate cast with nothing to merge with',
+      cast('Dreamtail Heron'),
+      { Host: { needs: 'a non-Human creature you own on the battlefield', by: 'Mutate' } },
+      'To mutate, Dreamtail Heron needs a non-Human creature you own on the battlefield.',
+    ],
+    [
+      'an X ability with a range of X',
+      activate('Geth, Lord of the Vault'),
+      {
+        XTarget: {
+          needs: 'an artifact or creature card with mana value X an opponent owns in a graveyard',
+          zone: 'Graveyard',
+          least: 0,
+          most: 2,
+        },
+      },
+      'Geth, Lord of the Vault has no target for any X you can pay (X from 0 to 2): it needs an artifact or creature card with mana value X an opponent owns in a graveyard.',
+    ],
+    [
+      'a -X ability with one X',
+      activate('Tamiyo, Compleated Sage'),
+      {
+        XTarget: {
+          needs: 'a creature card with mana value X in your graveyard',
+          zone: 'Graveyard',
+          least: 0,
+          most: 0,
+        },
+      },
+      'Tamiyo, Compleated Sage has no target for any X you can pay (X = 0): it needs a creature card with mana value X in your graveyard.',
+    ],
+  ])('says %s', (_name, subject, why, line) => {
+    expect(whyLine(subject, 'Targets', why)).toBe(line)
+  })
+
+  it('names the missing host on the card foot', () => {
+    expect(reasonLabel('Targets', { Host: { needs: 'a creature on the battlefield', by: 'Enchant' } })).toBe(
+      'Nothing to enchant',
+    )
+    expect(reasonLabel('Targets', { Host: { needs: 'a creature', by: 'Mutate' } })).toBe(
+      'Nothing to mutate onto',
     )
   })
 })

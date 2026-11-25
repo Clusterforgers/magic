@@ -202,6 +202,7 @@ export type { Held } from "./Held";
 export type { Hero } from "./Hero";
 export type { HeroDeck } from "./HeroDeck";
 export type { HiddenEvent } from "./HiddenEvent";
+export type { HostBy } from "./HostBy";
 export type { HouseRules } from "./HouseRules";
 export type { IgnoredCards } from "./IgnoredCards";
 export type { ImageLinks } from "./ImageLinks";
