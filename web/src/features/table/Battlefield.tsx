@@ -37,7 +37,7 @@ import { ZONE_PAD_PX } from './boardSplit'
 import { usePreviewInset } from './previewReserve'
 import { useMarkedIds } from './useMarkedIds'
 import { useStable } from './useStable'
-import { useContentBox } from './useZoneFit'
+import { useContentBox, useStillOnResize } from './useZoneFit'
 import { useDockNotch, withNotch } from './dockNotch'
 
 const LANE_NAME: Record<RowKind, string> = {
@@ -191,6 +191,7 @@ export const Battlefield = memo(function Battlefield({ seat, size, facing, onCar
   useEdgeFade(zone)
   const inset = usePreviewInset(zone)
   const content = useContentBox(zone)
+  useStillOnResize(zone, content)
   // Your board keeps its lower right corner clear where the controls dock's body grows over it on a short window.
   const notch = useDockNotch(zone, own && facing === 'near', content)
   const permanents = useMemo(() => idsOfRows(stacks.plain), [stacks])

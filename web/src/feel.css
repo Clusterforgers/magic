@@ -79,6 +79,14 @@
   opacity: 0;
 }
 
+/*
+ * A hand or a board laid out anew for its room (a load, a reload, a resize) stands in place at once: its cards glide
+ * only for a lift, a press, a tap or a draw, never into the places or sizes a new room gives them (`useStillOnResize`).
+ */
+[data-fit-still] * {
+  transition: none;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   @keyframes feel-hand-leave {
     0% {

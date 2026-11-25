@@ -335,6 +335,23 @@ describe('measure, on a page whose boxes and styles are given', () => {
     expect(measure(ask()).cutOff).toEqual([])
   })
 
+  it('does not count the items of a visually hidden list at the edge of a box that clips, but an item that shows', () => {
+    document.body.innerHTML =
+      '<div id="frame"><ul id="hidden"><li id="said">You would take 12 damage</li></ul><ul id="shown"><li id="seen">Bo attacks</li></ul></div>'
+    style('#frame', { overflowX: 'hidden', position: 'relative' })
+    style('#hidden', { overflowX: 'hidden', position: 'absolute' })
+    style('#shown', { position: 'absolute' })
+    put('#frame', 0, 0, 380, 100)
+    put('#hidden', 380, 0, 381, 1)
+    put('#said', 380, 0, 381, 90)
+    put('#shown', 300, 0, 381, 20)
+    put('#seen', 300, 0, 381, 20)
+    vi.spyOn(HTMLElement.prototype, 'offsetParent', 'get').mockImplementation(function (this: HTMLElement) {
+      return this.parentElement
+    })
+    expect(measure(ask()).cutOff).toEqual(['ul "Bo attacks" 300..381'])
+  })
+
   it('does not count the parts of a drawing', () => {
     document.body.innerHTML = '<svg id="drawing"><path id="part"></path></svg>'
     put('#drawing', 0, 0, 100, 100)

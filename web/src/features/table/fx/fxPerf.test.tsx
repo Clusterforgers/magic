@@ -60,6 +60,11 @@ function mount() {
   h.join(0, SEATS)
   act(() => h.deliver({ type: 'Snapshot', seq: 1, state: fixture.view }))
   renderLiveTable(h.session, fixtureLookup(fixture), { mode: 'grid', effects: true })
+  // The two frames each zone holds its cards still for after its first measure (`useStillOnResize`).
+  act(() => {
+    vi.advanceTimersToNextFrame()
+    vi.advanceTimersToNextFrame()
+  })
   const view = (): StateView => must(h.state().view)
   const send = (change: (draft: Draft) => void, events: EventView[]): void => {
     const from = must(h.state().seq)

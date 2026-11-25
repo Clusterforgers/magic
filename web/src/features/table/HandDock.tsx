@@ -16,7 +16,7 @@ import { useSeatNamer } from './names'
 import { playerOf } from './selectors'
 import { useCoarsePointer } from './useCoarsePointer'
 import { useHandOrder } from './useHandOrder'
-import { useContentBox } from './useZoneFit'
+import { useContentBox, useStillOnResize } from './useZoneFit'
 import { useOpeningInOverlay } from './prompt/choiceOverlay'
 import { usePickAmong } from './prompt/marks'
 
@@ -129,6 +129,7 @@ export const HandDock = memo(function HandDock({
   const count = player?.hand.count ?? 0
   const zone = useRef<HTMLDivElement>(null)
   const room = useContentBox(zone)
+  useStillOnResize(zone, room)
   const coarse = useCoarsePointer()
   const pick = usePickAmong(cards ?? NO_CARDS)
   // The opening hand floating in the centre overlay is the one copy to read: the dock keeps its place but not its cards.
