@@ -1195,6 +1195,7 @@ Glacial Ray
 Glacier Godmaw
 Glamerdye
 Glassworks // Shattered Yard
+Glava, Five-Advents Mage
 Glen Elendra Archmage
 Glen Elendra Liege
 Glen Elendra Pranksters
@@ -2133,6 +2134,7 @@ Patron of the Akki
 Patron of the Kitsune
 Patron of the Vein
 Pattern Buffer Preservation
+Pavel Chekov, First Posting
 Peacewalker Colossus
 Pearl-Ear, Imperial Advisor
 Peema Outrider
@@ -2614,6 +2616,7 @@ Sign in Blood
 Silent Arbiter
 Silent Skimmer
 Silhana Ledgewalker
+Silhouette
 Silumgar's Command
 Silumgar, the Drifting Death
 Silvar, Devourer of the Free
@@ -3086,6 +3089,7 @@ Time to Reflect
 Timeless Lotus
 Timeless Witness
 Timely Ward
+Timesifter
 Timin, Youthful Geist
 Tinybones, Pocket Nuisance
 Tinybones, the Pickpocket

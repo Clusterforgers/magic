@@ -947,6 +947,13 @@ pub enum ReplaceWhen {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         what: Selector,
     },
+    /// A spell or ability that targets the recipient would cause a source to deal damage to it ("If a spell or ability
+    /// that targets that creature would cause a source to deal damage to that creature"): the spell or ability resolving
+    /// as the damage would be dealt has the recipient among its targets. Only an `Effect::Shield` that prevents it.
+    R123DamageByTargeting {
+        /// The recipient, fixed as the shield begins.
+        to: Ref,
+    },
     /// A source would deal damage to a player or a permanent.
     Damage {
         /// The recipient; any player or permanent when absent.
@@ -1836,7 +1843,8 @@ impl ShieldShape {
                 | ReplaceBy::RedirectUpTo { .. }
                 | ReplaceBy::RedirectCounted { .. }
                 | ReplaceBy::Redirect { .. },
-            ) => Some(Self::Damage),
+            )
+            | (ReplaceWhen::R123DamageByTargeting { .. }, ReplaceBy::Prevent) => Some(Self::Damage),
             (
                 ReplaceWhen::Draw { .. } | ReplaceWhen::LoseGame { .. },
                 ReplaceBy::InsteadNext(_),

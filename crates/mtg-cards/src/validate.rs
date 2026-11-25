@@ -4772,6 +4772,10 @@ impl Walker<'_> {
                 w.at("count", |w| w.amount(count));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::R123ExileContest { who, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("as", |w| w.bind(bind, Kind::Player));
+            }
             Effect::BecomeForetold { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::FaceDownPile { what, top, .. } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
@@ -4863,6 +4867,7 @@ impl Walker<'_> {
                 }
             }
             Effect::R112DoubleX { what } => w.at("what", |w| w.reference(what, Kind::Object)),
+            Effect::R123XBecomes { what, .. } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::Counter { what, bind } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if let Some(name) = bind {
@@ -7561,6 +7566,9 @@ impl Walker<'_> {
                     self.at("to", |w| w.reference(to, Kind::Either));
                 }
                 self.at("source", |w| w.selector(source));
+            }
+            ReplaceWhen::R123DamageByTargeting { to } => {
+                self.at("to", |w| w.reference(to, Kind::Either));
             }
             ReplaceWhen::ZoneChange { what, .. }
             | ReplaceWhen::Destroyed { what }
