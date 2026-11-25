@@ -29,7 +29,10 @@ fn r118_table(seats: usize, turn: u32, active: usize) -> Scenario {
 fn r118_ban(driver: &Driver, you: bool) -> Rule {
     Rule::Cant {
         who: vec![driver.target_player(1)],
-        action: Box::new(Prohibited::R118Attack { you }),
+        action: Box::new(Prohibited::R118Attack {
+            you,
+            walkers: false,
+        }),
     }
 }
 

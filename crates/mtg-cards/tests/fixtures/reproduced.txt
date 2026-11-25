@@ -2926,6 +2926,7 @@ Tatyova, Benthic Druid
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Tavern Scoundrel
+Tazri, Stalwart Survivor
 Teach by Example
 Teacher's Pest
 Team Pennant
@@ -3206,6 +3207,7 @@ Universal Surveillance
 Unmask
 Unpredictable Cyclone
 Unsettled Mariner
+Unstable Glyphbridge // Sandswirl Wanderglyph
 Unstable Molecule Suit
 Unstable Obelisk
 Unwelcome Sprite

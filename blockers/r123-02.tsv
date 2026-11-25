@@ -1,0 +1,29 @@
+Panglacial Wurm	A cast window during a library search (CR 701.23) in the middle of a resolution: the search pauses for a cast from the library	OO-cast
+Firkraag, Cunning Instigator	No card file or fixture yet; then a per-combat record of the attackers a requirement (goad, "attacks each combat if able") bound at their declaration, read by an intervening "if that creature had to attack this combat"	OO-combat
+Tahngarth, First Mate	A control change to an opponent until end of combat with the creature then attacking a player or planeswalker that opponent attacks (JoinAttack for another player's attack after the control change)	OO-control
+Heirloom Epic	Convoke-like payment of an activated ability's mana by tapping creatures (help::Offered for an ability, CR 702.51 analogue)	OO-cost
+The Book of Vile Darkness	Exile of named artifacts as a cost, and a token with the triggered abilities of the exiled cards	OO-cost
+Agent Maria Hill	Teamwork cost and the trigger "becomes tapped to pay a teamwork cost"	OO-cost
+Captain America, First Avenger	Unattach an Equipment as a cost read for divided damage, and an attach of up to one target Equipment at the beginning of combat	OO-cost
+Space Beleren	Sectors assigned to creatures and blocking limited by sector	OO-kw
+Yavimaya Bloomsage // Channel	A permission for a turn to pay 1 life for {C} any time a mana ability could be activated (a rule mana source from Effect::Rule)	OO-mana
+Cryptic Spires	Colors circled as the deck is made: a pregame choice stored with the deck and read by the mana ability	OO-mana
+Garth One-Eye	Creating a card from a fixed list of names outside the game (conjure by Oracle name) with a once-per-name memory, and a cast permission for the copy	OO-misc
+Ertai's Meddling	Exiling a spell with delay counters and putting it back on the stack as a copy of the original spell when the last is removed (CR 702 delay, spell state kept in exile)	OO-misc
+Spy Kit	A characteristic: the equipped creature has all names of nonlegendary creature cards (CR 201.2 name set, a name predicate matching any such name)	OO-misc
+Grimoire Thief	Cards exiled face down with the source, turned face up by an effect, and countering spells with the same names as those cards	OO-misc
+Tawnos's Coffin	Linked exile that notes the counters of the exiled creature and its attached Auras and returns them with the noted counters and attached (CR 607)	OO-misc
+Cyclopean Tomb	A land type granted while a counter remains and a delayed trigger for the rest of the game that removes the counters put by this artifact (objects linked across zones)	OO-misc
+Steamflogger Boss	Contraptions: a ReplaceWhen for a Rigger assembling a Contraption (no Contraption deck in the engine)	OO-misc
+Caller of the Untamed	A pre-game reveal and exile of a drafted card; no draft happens, so it stays inert	OO-misc
+Martyrdom	A granted activated ability that only the granter's controller may activate (Activators on a granted ability), with a damage redirect shield to the granted creature	OO-replace
+Equinox	A Condition on a target spell "if it would destroy a land you control" (reading the effects the target spell would have) for a granted activated counter	OO-replace
+Soul Echo	A replacement applied by an opponent (CR 614.1, 616): that opponent may have each 1 damage remove an echo counter instead of making you lose life	OO-replace
+Prowl, Stoic Strategist // Prowl, Pursuit Vehicle	Convert as an effect, a trigger on a player playing a card exiled with this, and "the second time this ability has resolved this turn"	OO-trigger
+Psychic Battle	A trigger on a player choosing targets, a reveal by every player and a change of target by the highest mana value (CR 115.7)	OO-trigger
+Nicol Bolas, Dragon-God	A choice per opponent from the union of their hand and the permanents they control (Choose over a union of zones, asked of each opponent, then Exile of the chosen card or permanent), and a static "has all loyalty abilities of all other planeswalkers on the battlefield" (an ability grant reading other permanents' Loyalty abilities, with their loyalty costs paid from Nicol Bolas)	OPP-CHOICE
+Chorus of the Conclave	An optional additional cost of any amount of mana given to creature spells by a static ability, read as counters by the entering creature	PAID-VALUE
+Camouflage	A replacement of the declare blockers step: piles per attacker assigned at random, each creature blocking its pile's attacker if able (CR 509)	PILES
+Swirl the Mists	A static ChangeText of every color word to the chosen color over spells and permanents: the text change must reach spells on the stack (a resolving spell reads its rules from its card, not from the layers); no corpus fixture yet	TEXT-CHANGE
+Master Warcraft	A two-stage attack declaration: a GameRule giving the choice of attackers to another player (the caster picks the set of attackers), then the active player chooses what each of them attacks (ruling); needs a combat field and an event for the chosen set between the two DeclareAttackers decisions, with wire type and web support	OO-combat; blocks part exists (R6400ChoosesBlocks with whose EachPlayer), cast timing exists (Condition::BeforeAttackers)
+Guardian Beast	"Other players can't gain control of them": a layer-2 control prohibition read while the layers derive control (control-changing effects of other players apply again once the Beast is tapped, so not a check at resolution); "can't be enchanted" sparing Auras already attached (a Prohibited variant checked by attach legality but not by the state-based host check in attach::state_based)	OO-misc; indestructible grant while untapped exists

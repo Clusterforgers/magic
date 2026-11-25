@@ -34,6 +34,29 @@ impl Scope<'_> {
             .collect()
     }
 
+    /// Whether a creature the controller attacked with this turn attacked one of the players `who` names, directly or
+    /// through a planeswalker they controlled as it was attacked (`Condition::R123AttackedThisTurn`).
+    pub(super) fn r123_attacked_this_turn(
+        &self,
+        who: &mtg_cards::refs::Ref,
+    ) -> Result<bool, super::ResolveError> {
+        let named = self.players(who)?;
+        Ok(self.state.tallies.records.iter().any(|record| {
+            record.event == TallyEvent::Attacked
+                && record.player == Some(self.controller)
+                && match record.other {
+                    Some(Target::Player(player)) => named.contains(&player),
+                    Some(Target::Object(_)) => record.other_shot.as_ref().is_some_and(|shot| {
+                        shot.characteristics
+                            .types
+                            .contains(mtg_core::card::CardType::Planeswalker)
+                            && named.contains(&shot.controller)
+                    }),
+                    None => false,
+                }
+        }))
+    }
+
     /// The opponents of the players `inner` names, in turn order (`Ref::OpponentsOf`).
     pub(super) fn r5523_opponents_of(
         &self,

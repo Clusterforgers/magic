@@ -2237,6 +2237,10 @@ pub enum Condition {
     /// A player the reference names attacked you (not a planeswalker you control) during their latest finished turn
     /// ("if a player attacked you during their last turn").
     AttackedYouLastTurn(Ref),
+    /// "You" attacked a player the reference names, or a planeswalker they controlled as it was attacked, this turn: in a
+    /// `PlayersWhere` test over opponents with `Ref::Asker`, "each opponent who attacked you or a planeswalker you
+    /// control this turn".
+    R123AttackedThisTurn(Ref),
     /// The player has the city's blessing (CR 702.131).
     CitysBlessing(Ref),
     /// A player the reference names has an enduring story (storied).

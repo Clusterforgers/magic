@@ -1928,6 +1928,7 @@ impl<'a> Walker<'a> {
     }
 
     /// The conditions that name no condition inside them: each notes its use and checks the references it holds.
+    #[allow(clippy::too_many_lines)]
     fn leaf_condition(&mut self, condition: &Condition) {
         match condition {
             Condition::Kicked | Condition::KickedWith(_) | Condition::AdditionalCostPaid => {
@@ -1990,7 +1991,8 @@ impl<'a> Walker<'a> {
             Condition::Drafted(_) => self.uses("Condition", "Drafted"),
             Condition::DamagedThisGameBy { .. }
             | Condition::Exploited { .. }
-            | Condition::AttackedThisTurnBy { .. } => self.history_condition(condition),
+            | Condition::AttackedThisTurnBy { .. }
+            | Condition::R123AttackedThisTurn(_) => self.history_condition(condition),
             Condition::RingTempted { .. }
             | Condition::FastestPlayer(_)
             | Condition::CompletedNamedDungeon { .. } => self.r5521_condition(condition),
@@ -2062,6 +2064,9 @@ impl<'a> Walker<'a> {
             Condition::AttackedThisTurnBy { player, by } => {
                 self.player_condition("AttackedThisTurnBy", player);
                 self.at("by", |w| w.selector(by));
+            }
+            Condition::R123AttackedThisTurn(who) => {
+                self.player_condition("R123AttackedThisTurn", who);
             }
             _ => {}
         }
@@ -5167,11 +5172,12 @@ impl Walker<'_> {
                     | Some(
                         TargetSet::DifferentNames
                         | TargetSet::DifferentPowers
-                        | TargetSet::DifferentManaValues,
+                        | TargetSet::DifferentManaValues
+                        | TargetSet::DifferentControllers,
                     ) => {}
                     Some(TargetSet::DifferentColorSets) => w.uses("Choose", "DifferentColorSets"),
                     Some(_) => w.at("differ", |w| {
-                        w.problem("a choice keeps apart names, powers or mana values");
+                        w.problem("a choice keeps apart names, powers, mana values or controllers");
                     }),
                 }
                 w.at("who", |w| w.reference(who, Kind::Player));

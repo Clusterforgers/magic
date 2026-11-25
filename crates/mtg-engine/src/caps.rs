@@ -473,6 +473,7 @@ const RUNS: &[&str] = &[
     "Condition.ExtraTurn",
     "Condition.MonarchAtTurnStart",
     "Condition.AttackedYouLastTurn",
+    "Condition.R123AttackedThisTurn",
     "Effect.BecomeDayNight",
     "Condition.IsDay",
     "Condition.IsNight",
