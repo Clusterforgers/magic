@@ -2,6 +2,7 @@
 
 mod activation_moments;
 mod affected_amounts;
+mod belanna_scrapper;
 mod binding_eyes;
 mod bz39_blast_zone;
 mod c10_any_cards;

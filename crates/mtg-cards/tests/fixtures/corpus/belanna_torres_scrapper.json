@@ -33,7 +33,7 @@
   "mana_cost": "{1}{U}{R}",
   "cmc": 3,
   "type_line": "Legendary Creature — Klingon Human Artificer",
-  "oracle_text": "Vigilance, trample\n{2}, {T}: Surveil 2, then you may reveal the top card of your library. Draw a card if it's an artifact card. If you don't draw a card this way, put two +1/+1 counters on B'Elanna Torres.",
+  "oracle_text": "Vigilance, trample\n{2}, {T}: Surveil 2, then you may reveal the top card of your library. If an artifact card is revealed this way, draw a card. If you don't draw a card this way, put two +1/+1 counters on B'Elanna Torres.",
   "power": "2",
   "toughness": "2",
   "colors": [
