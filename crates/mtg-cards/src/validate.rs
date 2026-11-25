@@ -634,6 +634,12 @@ impl<'a> Walker<'a> {
             ValueKind::Options(words) if words.len() < 2 => {
                 self.problem("a choice of words needs at least two");
             }
+            ValueKind::OptionsNotNoted(words) => {
+                self.uses("ValueKind", "OptionsNotNoted");
+                if words.len() < 2 {
+                    self.problem("a choice of words needs at least two");
+                }
+            }
             ValueKind::CardTypeOf(kinds) if kinds.len() < 2 => {
                 self.problem("a choice of card types needs at least two");
             }
@@ -2249,6 +2255,7 @@ impl<'a> Walker<'a> {
                     | CostItem::R6702CollectEvidenceX
                     | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
+                    | CostItem::CreaturesHelpPay(_)
                     | CostItem::OthersGainLife(_)
                     | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
@@ -2732,6 +2739,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Craft { .. }
                     | CostItem::Forage
                     | CostItem::Waterbend(_)
+                    | CostItem::CreaturesHelpPay(_)
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
             }
@@ -4997,6 +5005,11 @@ impl Walker<'_> {
             Effect::CopyCard { who, what, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
+            Effect::CopyNamedCard { who, chosen, bind } => {
+                w.chosen_as(chosen);
+                w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
             Effect::Parade { what } => w.at("what", |w| w.selector(what)),

@@ -1,0 +1,154 @@
+{
+  "object": "card",
+  "id": "abaa08a6-62aa-4f2f-8be9-5950c2b32dc4",
+  "oracle_id": "c7ea2ce7-f684-44a2-94b2-d4aa7353f6fc",
+  "multiverse_ids": [],
+  "tcgplayer_id": 709782,
+  "cardmarket_id": 917852,
+  "name": "The Unluckiest Planeswalker",
+  "lang": "en",
+  "released_at": "2026-10-19",
+  "uri": "https://api.scryfall.com/cards/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4",
+  "scryfall_uri": "https://scryfall.com/card/mbc/26/the-unluckiest-planeswalker?utm_source=api",
+  "layout": "normal",
+  "highres_image": true,
+  "image_status": "highres_scan",
+  "image_updated_at": "2026-10-23T07:18:47Z",
+  "image_uris": {
+    "small": "https://cards.scryfall.io/small/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.jpg?1792739927",
+    "normal": "https://cards.scryfall.io/normal/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.jpg?1792739927",
+    "large": "https://cards.scryfall.io/large/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.jpg?1792739927",
+    "png": "https://cards.scryfall.io/png/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.png?1792739927",
+    "art_crop": "https://cards.scryfall.io/art_crop/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.jpg?1792739927",
+    "border_crop": "https://cards.scryfall.io/border_crop/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.jpg?1792739927",
+    "thumb": "https://cards.scryfall.io/thumb/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.webp?1792739927",
+    "grid": "https://cards.scryfall.io/grid/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.webp?1792739927",
+    "display": "https://cards.scryfall.io/display/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.webp?1792739927",
+    "art": "https://cards.scryfall.io/art/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.webp?1792739927",
+    "crop": "https://cards.scryfall.io/crop/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.webp?1792739927",
+    "jpeg": "https://cards.scryfall.io/normal/front/a/b/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4.jpg?1792739927"
+  },
+  "mana_cost": "{2}{R}",
+  "cmc": 3.0,
+  "type_line": "Legendary Planeswalker",
+  "oracle_text": "Rulebreaker — A deck with this commander can have Aura cards of any color identity and any basic land cards.\n+1: Add one mana of any color. When you spend this mana to cast an Aura spell this turn, create a 1/1 red Gremlin creature token.\n−3: Discard your hand, then draw cards equal to twice the number of Auras you control. For each Aura attached to you, attach it to an opponent of your choice.\nThe Unluckiest Planeswalker can be your commander.",
+  "loyalty": "4",
+  "colors": [
+    "R"
+  ],
+  "color_identity": [
+    "R"
+  ],
+  "keywords": [
+    "Rulebreaker"
+  ],
+  "produced_mana": [
+    "B",
+    "G",
+    "R",
+    "U",
+    "W"
+  ],
+  "all_parts": [
+    {
+      "object": "related_card",
+      "id": "d948b503-890a-49d5-a3cf-cb6e604851b8",
+      "component": "token",
+      "name": "Gremlin",
+      "type_line": "Token Creature — Gremlin",
+      "uri": "https://api.scryfall.com/cards/d948b503-890a-49d5-a3cf-cb6e604851b8"
+    },
+    {
+      "object": "related_card",
+      "id": "abaa08a6-62aa-4f2f-8be9-5950c2b32dc4",
+      "component": "combo_piece",
+      "name": "The Unluckiest Planeswalker",
+      "type_line": "Legendary Planeswalker",
+      "uri": "https://api.scryfall.com/cards/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4"
+    }
+  ],
+  "legalities": {
+    "standard": "not_legal",
+    "future": "not_legal",
+    "historic": "not_legal",
+    "timeless": "not_legal",
+    "gladiator": "not_legal",
+    "pioneer": "not_legal",
+    "modern": "not_legal",
+    "legacy": "not_legal",
+    "pauper": "not_legal",
+    "vintage": "not_legal",
+    "penny": "not_legal",
+    "commander": "legal",
+    "oathbreaker": "legal",
+    "standardbrawl": "not_legal",
+    "brawl": "not_legal",
+    "competitivebrawl": "not_legal",
+    "alchemy": "not_legal",
+    "paupercommander": "not_legal",
+    "duel": "legal",
+    "oldschool": "not_legal",
+    "premodern": "not_legal",
+    "predh": "not_legal",
+    "tlr": "legal"
+  },
+  "games": [
+    "paper"
+  ],
+  "reserved": false,
+  "game_changer": false,
+  "foil": true,
+  "nonfoil": true,
+  "finishes": [
+    "nonfoil",
+    "foil"
+  ],
+  "oversized": false,
+  "promo": false,
+  "reprint": false,
+  "variation": false,
+  "set_id": "a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set": "mbc",
+  "set_name": "Mystery Booster Commander Edition",
+  "set_type": "draft_innovation",
+  "set_uri": "https://api.scryfall.com/sets/a4135564-9f37-4aaf-963a-90666f843e0d",
+  "set_search_uri": "https://api.scryfall.com/cards/search?order=set&q=e%3Ambc&unique=prints",
+  "scryfall_set_uri": "https://scryfall.com/sets/mbc?utm_source=api",
+  "rulings_uri": "https://api.scryfall.com/cards/abaa08a6-62aa-4f2f-8be9-5950c2b32dc4/rulings",
+  "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Ac7ea2ce7-f684-44a2-94b2-d4aa7353f6fc&unique=prints",
+  "collector_number": "26",
+  "digital": false,
+  "rarity": "rare",
+  "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
+  "artist": "Kieran Yanner",
+  "artist_ids": [
+    "aa7e89ed-d294-4633-9057-ce04dacfcfa4"
+  ],
+  "illustration_id": "bea09478-ed78-44a4-a336-ecbd30e6aae3",
+  "border_color": "black",
+  "frame": "2015",
+  "security_stamp": "oval",
+  "full_art": false,
+  "textless": false,
+  "booster": false,
+  "story_spotlight": false,
+  "edhrec_rank": 21565,
+  "prices": {
+    "usd": "8.30",
+    "usd_foil": "95.36",
+    "usd_etched": null,
+    "eur": "7.54",
+    "eur_foil": "63.00",
+    "tix": null
+  },
+  "related_uris": {
+    "tcgplayer_infinite_articles": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Farticles&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Farticles%3FproductLineName%3Dmagic%26q%3DThe%2BUnluckiest%2BPlaneswalker",
+    "tcgplayer_infinite_decks": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&trafcat=tcgplayer.com%2Fsearch%2Fdecks&u=https%3A%2F%2Fwww.tcgplayer.com%2Fsearch%2Fdecks%3FproductLineName%3Dmagic%26q%3DThe%2BUnluckiest%2BPlaneswalker",
+    "edhrec": "https://edhrec.com/route/?cc=The+Unluckiest+Planeswalker"
+  },
+  "purchase_uris": {
+    "tcgplayer": "https://partner.tcgplayer.com/c/4931599/1830156/21018?subId1=api&u=https%3A%2F%2Fwww.tcgplayer.com%2Fproduct%2F709782%3Fpage%3D1",
+    "cardmarket": "https://www.cardmarket.com/en/Magic/Products?idProduct=917852&referrer=scryfall&utm_campaign=card_prices&utm_medium=text&utm_source=scryfall",
+    "cardhoarder": "https://www.cardhoarder.com/cards?affiliate_id=scryfall&data%5Bsearch%5D=The+Unluckiest+Planeswalker&ref=card-profile&utm_campaign=affiliate&utm_medium=card&utm_source=scryfall"
+  }
+}

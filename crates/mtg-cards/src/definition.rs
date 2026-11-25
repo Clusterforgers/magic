@@ -461,6 +461,18 @@ impl CardDefinition {
         fn walk(value: &serde_json::Value, names: &mut BTreeSet<String>) {
             match value {
                 serde_json::Value::Object(map) => {
+                    // The names a copy of a named card may be chosen from ("Create a copy of the card with the chosen name").
+                    if let Some(words) = map
+                        .get("OptionsNotNoted")
+                        .and_then(serde_json::Value::as_array)
+                    {
+                        names.extend(
+                            words
+                                .iter()
+                                .filter_map(serde_json::Value::as_str)
+                                .map(str::to_owned),
+                        );
+                    }
                     if let Some(name) = map
                         .get("Conjure")
                         .and_then(|conjure| conjure.get("name"))

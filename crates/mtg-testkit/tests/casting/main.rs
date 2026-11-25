@@ -141,6 +141,7 @@ mod miracle_spells;
 mod mode_picks;
 mod modes_both;
 mod own_cost;
+mod p158_cards;
 mod pay_parts;
 mod pay_unless;
 mod persistent_mana;

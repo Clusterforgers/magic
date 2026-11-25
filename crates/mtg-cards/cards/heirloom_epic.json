@@ -1,0 +1,20 @@
+{
+  "oracle_id": "43037ef5-09e8-4881-beff-ed38cf7574c6",
+  "name": "Heirloom Epic",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Heirloom Epic",
+      "oracle_fingerprint": "023056b35e7b40856f34cdf4eb5ca98d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [{ "CreaturesHelpPay": 4 }, "Tap"],
+            "timing": "Sorcery",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}
