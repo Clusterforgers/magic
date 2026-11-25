@@ -1832,6 +1832,14 @@ pub enum Effect {
         /// The spells.
         what: Ref,
     },
+    /// The value of X of each spell or ability named that is still on the stack becomes `value` ("you may have the value of
+    /// X become 5", CR 107.3): the spell, the permanent it becomes and the ability read the new X.
+    R123XBecomes {
+        /// The spells and abilities.
+        what: Ref,
+        /// The new value of X.
+        value: u32,
+    },
     /// The player learns (CR 701.48): they may discard a card, and draw a card if they do; a Lesson from outside the game is not available.
     Learn {
         /// Who learns.
@@ -1853,6 +1861,20 @@ pub enum Effect {
         /// Only a card that does not have suspend gains it ("If it doesn't have suspend, it gains suspend.").
         #[serde(default, skip_serializing_if = "is_false")]
         unless_has: bool,
+    },
+    /// Each player `who` names exiles the top card of their library; the players tied for the greatest mana value among
+    /// the cards exiled repeat this among themselves until one alone has it, and that player is bound to the name
+    /// (Timesifter). A player who exiles no card drops out; no one is bound when every player still in it does.
+    R123ExileContest {
+        /// Who takes part.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The name the winner is bound to.
+        #[serde(rename = "as")]
+        bind: String,
     },
     /// The player takes extra turns after this one (CR 500.7): the latest added is taken first.
     ExtraTurn {

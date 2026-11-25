@@ -196,7 +196,7 @@ export const FLOOR_OWN_CARD_PX = 100
  */
 export const OWN_CROWD_PX = 60
 
-/** An opponent's cards are this share of yours: their board shrinks first. */
+/** An opponent's cards are this share of yours, never under the floor card: their board shrinks first. */
 export const THEIR_SCALE = 0.8
 /** In a grid of opponents their cards are as large as yours: three boards side by side would otherwise fall unreadable. */
 export const GRID_THEIR_SCALE = 0.85
@@ -275,7 +275,8 @@ export function splitBoards(input: SplitInput, limits: LaneLimits = LANE_LIMITS)
   const theirLanes = (card: number): number =>
     rows * theirNeed(card) + finite(input.theirChrome) + (rows - 1) * finite(input.theirRowChrome ?? 0)
   const theirRow = (card: number): number => Math.max(least + finite(input.theirLead ?? 0), theirLanes(card))
-  const theirCard = (card: number): number => Math.floor(card * finite(input.theirScale ?? THEIR_SCALE))
+  const theirCard = (card: number): number =>
+    Math.max(at(0), Math.floor(card * finite(input.theirScale ?? THEIR_SCALE)))
   const fits = (rung: number): boolean => ownRow(at(rung)) + theirRow(theirCard(at(rung))) <= room
   const empty = laneHeight(input.ownWidth, input.own, at(0), limits) + theirNeed(theirCard(at(0)))
   const crowd = finite(input.ownCrowd ?? 0)

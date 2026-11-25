@@ -301,6 +301,9 @@ pub enum HeldAbility {
     /// An activated ability with {T} in its cost, a mana ability included ("that has an activated ability with {T} in its
     /// cost").
     TapCost,
+    /// Two or more activated abilities, mana and keyword ones included, even one that can't be activated where it is: an
+    /// activated ability it has says "Activate only if this creature has another activated ability".
+    R123TwoActivated,
 }
 
 /// A condition on one object; selectors hold a list of them that must all be true.

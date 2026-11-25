@@ -121,6 +121,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Learn { .. }
         | Effect::R111OrderGraveyard { .. }
         | Effect::R112DoubleX { .. }
+        | Effect::R123XBecomes { .. }
+        | Effect::R123ExileContest { .. }
         | Effect::Crewed { .. }
         | Effect::Explore { .. }
         | Effect::Connive { .. }

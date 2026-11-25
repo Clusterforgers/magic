@@ -739,6 +739,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         | Condition::R119StartingDeck { who, .. }
         | Condition::MonarchAtTurnStart(who)
         | Condition::AttackedYouLastTurn(who)
+        | Condition::R123AttackedThisTurn(who)
         | Condition::CompletedDungeon(who)
         | Condition::Initiative(who)
         | Condition::CitysBlessing(who)

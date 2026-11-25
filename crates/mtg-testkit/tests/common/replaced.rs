@@ -121,6 +121,7 @@ impl Board {
                     instead: None,
                     redirect: None,
                     bound: Vec::new(),
+                    r123_by_targeting: false,
                 })),
                 Shield::Fog => Rule::PreventDamage(Box::new(DamageShield {
                     to: None,
@@ -134,6 +135,7 @@ impl Board {
                     instead: None,
                     redirect: None,
                     bound: Vec::new(),
+                    r123_by_targeting: false,
                 })),
                 Shield::Regenerate(name) => {
                     let id = driver.id_of(name)?;

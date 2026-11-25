@@ -467,6 +467,10 @@ pub struct Theme {
     /// The least Heat of a run that may draw it; 0 for every Heat.
     #[serde(default)]
     pub min_heat: u8,
+    /// The [`SUPPLIES`](crate::scale::SUPPLIES) each of its bosses brings against two or more heroes, from generation
+    /// [`THEME_SUPPLIES_FROM`](crate::run::THEME_SUPPLIES_FROM).
+    #[serde(default)]
+    pub boss_supplies: usize,
 }
 
 impl Theme {

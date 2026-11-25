@@ -1,7 +1,7 @@
 //! How a boss scales: its innate's level by depth (bosses the party defeated in the run) and Heat, its life and
 //! reinforcements by party size only, and the rounds its two phases begin in (`docs/delves.md`, Difficulty).
 
-use crate::run::BOSS_SCALE_FROM;
+use crate::run::{BOSS_SCALE_FROM, THEME_SUPPLIES_FROM};
 
 /// The most heroes in a party.
 pub const MOST: usize = 6;
@@ -15,6 +15,8 @@ pub const BOSS_LIFE: i32 = 40;
 pub const BOSS_LIFE_PER_HERO: i32 = 15;
 /// The card a boss brings once for each hero after the first, from [`BOSS_SCALE_FROM`].
 pub const REINFORCEMENT: &str = "reinforcements";
+/// The half reinforcement (an additional card each draw step) a theme may add from [`THEME_SUPPLIES_FROM`].
+pub const SUPPLIES: &str = "supplies";
 /// The bosses of a run whose depth counts one point each; beyond them every second boss adds a point.
 pub const FULL_DEPTH: u32 = 4;
 
@@ -50,5 +52,16 @@ impl Scale {
             0
         };
         vec![REINFORCEMENT.to_owned(); extra]
+    }
+
+    /// The reinforcements a boss of a theme that adds `supplies` (`Theme::boss_supplies`) brings against `heroes`
+    /// heroes in a run of content `generation`: [`Scale::reinforcements`], and from [`THEME_SUPPLIES_FROM`] that many
+    /// [`SUPPLIES`] against two or more heroes.
+    pub fn theme_reinforcements(heroes: usize, generation: u32, supplies: usize) -> Vec<String> {
+        let mut all = Self::reinforcements(heroes, generation);
+        if generation >= THEME_SUPPLIES_FROM && heroes >= 2 {
+            all.extend(std::iter::repeat_n(SUPPLIES.to_owned(), supplies));
+        }
+        all
     }
 }

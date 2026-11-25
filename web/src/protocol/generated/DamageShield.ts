@@ -45,4 +45,9 @@ instead?: unknown,
 /**
  * The player or object the damage it redirects is dealt to, fixed when it was made (`ReplaceBy::RedirectUpTo`).
  */
-redirect?: Target, };
+redirect?: Target, 
+/**
+ * It covers only damage that a resolving spell or ability targeting the recipient causes
+ * (`ReplaceWhen::R123DamageByTargeting`).
+ */
+r123_by_targeting?: boolean, };

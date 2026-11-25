@@ -344,7 +344,7 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
                 })
         }
         (
-            Prohibited::R118Attack { you },
+            Prohibited::R118Attack { you, walkers },
             Doing::Attack {
                 player,
                 object,
@@ -353,7 +353,10 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
             },
         ) => {
             covers(who, Some(player), Some(object))
-                && (!*you || (walker.is_none() && defender == ban.controller))
+                && (!*you
+                    || (defender == ban.controller
+                        && walker
+                            .is_none_or(|walker| *walkers && r123_is_planeswalker(state, walker))))
         }
         (
             Prohibited::AttackPlaneswalkers(walkers),
@@ -400,6 +403,12 @@ fn applies(state: &GameState, ban: &Banned, doing: Doing) -> bool {
         }
         _ => false,
     }
+}
+
+/// Whether the attacked permanent is a planeswalker, not a battle (CR 508.1b): "you or planeswalkers you control".
+fn r123_is_planeswalker(state: &GameState, walker: ObjectId) -> bool {
+    crate::characteristics::characteristics(state, walker)
+        .is_some_and(|chars| chars.types.contains(mtg_core::card::CardType::Planeswalker))
 }
 
 /// Whether a prohibition keeps the creature `object` from attacking `defender` or a planeswalker they control.

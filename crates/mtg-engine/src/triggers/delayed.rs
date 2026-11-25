@@ -16,6 +16,7 @@ use crate::abilities::AbilitySource;
 use crate::choose::Target;
 use crate::copies::KeptSpell;
 use crate::error::EngineError;
+use crate::events::Event;
 use crate::fold::invalid;
 use crate::object::ObjectRef;
 use crate::resolve::Bindings;
@@ -300,6 +301,54 @@ pub(crate) fn fold_created(
         origin: created.origin,
     });
     Ok(())
+}
+
+/// Gives each delayed trigger a batch sets up an id no other has, as the batch is folded: the effects that set them up
+/// read the state before the batch (replacements of several events of one batch, CR 614.1a: a shield exiling each
+/// creature a wipe destroys, copies entering together), so two of them can name the same next id. The events of the
+/// batch after one renamed that name its old id (its trigger, its removal) name the new one.
+#[derive(Debug, Default)]
+pub(crate) struct FreshDelayedIds(std::collections::BTreeMap<DelayedId, DelayedId>);
+
+impl FreshDelayedIds {
+    /// The event with its delayed trigger renamed, when it is one to rename; `None` when it stays as it is.
+    pub(crate) fn renamed(&mut self, state: &GameState, event: &Event) -> Option<Event> {
+        match event {
+            Event::DelayedTriggerCreated(created) if created.id.0 < state.next_delayed => {
+                let fresh = DelayedId(state.next_delayed);
+                self.0.insert(created.id, fresh);
+                let mut created = created.clone();
+                created.id = fresh;
+                Some(Event::DelayedTriggerCreated(created))
+            }
+            Event::AbilityTriggered(triggered) => {
+                let fresh = self.fresh(triggered.delayed)?;
+                let mut triggered = triggered.clone();
+                triggered.delayed = Some(fresh);
+                Some(Event::AbilityTriggered(triggered))
+            }
+            Event::TriggerRemoved { delayed, .. } => {
+                let fresh = self.fresh(*delayed)?;
+                let mut event = event.clone();
+                if let Event::TriggerRemoved { delayed, .. } = &mut event {
+                    *delayed = Some(fresh);
+                }
+                Some(event)
+            }
+            Event::DelayedTriggerExpired { id } => Some(Event::DelayedTriggerExpired {
+                id: self.fresh(Some(*id))?,
+            }),
+            _ => None,
+        }
+    }
+
+    /// The new id of a renamed delayed trigger.
+    fn fresh(&self, id: Option<DelayedId>) -> Option<DelayedId> {
+        if self.0.is_empty() {
+            return None;
+        }
+        self.0.get(&id?).copied()
+    }
 }
 
 /// Drops a delayed trigger whose duration has run out.
@@ -588,5 +637,71 @@ mod tests {
                 ..
             }
         ));
+    }
+
+    /// Folds `events` as the engine commits a batch, renaming the delayed triggers that need a fresh id.
+    fn fold_batch(state: &mut GameState, events: Vec<Event>) -> Vec<Event> {
+        let mut fresh = FreshDelayedIds::default();
+        events
+            .into_iter()
+            .map(|event| {
+                let event = fresh.renamed(state, &event).unwrap_or(event);
+                apply_event(state, &event).unwrap();
+                event
+            })
+            .collect()
+    }
+
+    #[rstest]
+    fn each_delayed_trigger_of_a_batch_that_names_one_id_gets_its_own_and_its_trigger_follows(
+        #[values(0, 1)] live: usize,
+        #[values(2, 3, 5)] copies: usize,
+    ) {
+        let (mut state, source) = table();
+        for _ in 0..live {
+            set_up(&mut state, source, Duration::Forever);
+        }
+        let object = state.object(source).unwrap().reference();
+        let triggered = Triggered {
+            origin: crate::abilities::AbilitySource::default(),
+            source: object,
+            ability: 0,
+            controller: ME,
+            cause: Cause::default(),
+            snapshot: snapshot(&state, source).unwrap(),
+            delayed: Some(DelayedId(0)),
+        };
+        // Each copy of the batch was worked out from the state before it: every one names id 0.
+        let batch: Vec<Event> = (0..copies)
+            .flat_map(|_| {
+                [
+                    Event::DelayedTriggerCreated(Box::new(created(&state, source, Vec::new()))),
+                    Event::AbilityTriggered(Box::new(triggered.clone())),
+                ]
+            })
+            .collect();
+        let folded = fold_batch(&mut state, batch);
+        let first = u64::try_from(live).unwrap();
+        let want: Vec<u64> = (first..first + u64::try_from(copies).unwrap()).collect();
+        let made: Vec<u64> = folded
+            .iter()
+            .filter_map(|event| match event {
+                Event::DelayedTriggerCreated(created) => Some(created.id.0),
+                _ => None,
+            })
+            .collect();
+        let fired: Vec<u64> = folded
+            .iter()
+            .filter_map(|event| match event {
+                Event::AbilityTriggered(triggered) => triggered.delayed.map(|id| id.0),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(made, want);
+        assert_eq!(
+            fired, want,
+            "each trigger names the delayed trigger set up before it"
+        );
+        assert_eq!(state.delayed.len(), live + copies);
     }
 }

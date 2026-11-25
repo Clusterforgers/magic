@@ -1,0 +1,87 @@
+{
+  "oracle_id": "94d9a596-96b3-4fd6-b3f9-62920929c668",
+  "name": "Glava, Five-Advents Mage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Glava, Five-Advents Mage",
+      "oracle_fingerprint": "b8b4c7c2b22af52e8435c4a7baa36d2d",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "SpellCast": {
+                    "what": [
+                      {
+                        "AnyOf": [
+                          { "Type": "Artifact" },
+                          { "Type": "Battle" },
+                          { "Type": "Creature" },
+                          { "Type": "Enchantment" },
+                          { "Type": "Land" },
+                          { "Type": "Planeswalker" }
+                        ]
+                      },
+                      "XInCost"
+                    ],
+                    "by": "You"
+                  }
+                },
+                { "Did": { "action": "Activated", "who": "You" } }
+              ]
+            },
+            "if": {
+              "AtTrigger": {
+                "Any": [
+                  {
+                    "Compare": {
+                      "left": { "CountOf": { "of": "Triggering", "filter": ["Spell", "XInCost"] } },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  {
+                    "Compare": {
+                      "left": {
+                        "CountOf": {
+                          "of": "Dealer",
+                          "filter": [{ "Ability": "Activated" }, "XInCost"]
+                        }
+                      },
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  }
+                ]
+              }
+            },
+            "limit": "OncePerTurnDone",
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": { "CountOf": { "of": "Triggering", "filter": ["Spell"] } },
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [{ "R123XBecomes": { "what": "Triggering", "value": 5 } }],
+                        "otherwise": [{ "R123XBecomes": { "what": "Dealer", "value": 5 } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
