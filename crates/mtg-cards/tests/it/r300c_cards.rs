@@ -183,9 +183,9 @@ fn a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case
     assert_ne!(report.verdict(), Verdict::Accepted, "{name}: {to}");
 }
 
-/// Tazri's activated ability reads back and only the granted mana ability is left to the table.
+/// Tazri reads back whole: its activated ability and the mana ability it grants.
 #[test]
-fn tazri_keeps_only_its_grant_by_hand() {
+fn tazri_reads_back_whole() {
     let report = report("Tazri, Stalwart Survivor");
     let states: Vec<String> = report
         .clauses
@@ -193,6 +193,8 @@ fn tazri_keeps_only_its_grant_by_hand() {
         .map(|clause| format!("{:?}", clause.state))
         .collect();
     assert_eq!(states.len(), 2, "{states:?}");
-    assert!(states[0].starts_with("Manual"), "{states:?}");
-    assert!(states[1].starts_with("Reads"), "{states:?}");
+    assert!(
+        states.iter().all(|state| state.starts_with("Reads")),
+        "{states:?}"
+    );
 }
