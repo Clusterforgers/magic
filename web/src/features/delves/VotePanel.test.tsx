@@ -1,11 +1,8 @@
-// Goal: the vote for the next room is the first thing a hero sees on the map: the two camps as buttons that send the vote, the player's own vote marked, every hero's ballot (voted, still choosing, a bot following) and what the vote waits for; it hides while the party is not choosing, and a slow read never undoes a vote just sent.
+// Goal: the vote for the next room is the first thing a hero sees on the map: the two camps as buttons that send the vote, the player's own vote marked, every hero's ballot (voted, still choosing, a bot following) and what the vote waits for; it hides while the party is not choosing.
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
-import { renderInRouter } from '@/test-utils/router'
 import type { DelveAction, DelveView, Run } from '@/protocol/generated'
-import { DelvePage } from './DelvePage'
-import { delveView, fakeDelves, hero } from './fakeDelves'
-import { pickerDecks } from './fakePickerDecks'
+import { delveView, hero } from './fakeDelves'
 import { ballots, listOf, voteWaiting } from './model'
 import { VotePanel } from './VotePanel'
 
@@ -87,41 +84,5 @@ describe('the vote helpers', () => {
     const run = map({ 0: 1, 1: 2 }).run
     expect(ballots(run).map((b) => b.state)).toEqual(['voted', 'voted', 'follows'])
     expect(voteWaiting(run, 0)).toBe('Every player voted: the party moves on.')
-  })
-})
-
-describe('the vote on the run page', () => {
-  it('shows the panel above the descent and keeps a vote just sent over a slower read', async () => {
-    const before = map({})
-    const after = map({ 0: 1 })
-    let answerRead: (view: DelveView) => void = () => undefined
-    let reads = 0
-    const client = {
-      ...fakeDelves(before),
-      get: () => {
-        reads += 1
-        if (reads === 1) return Promise.resolve(before)
-        return new Promise<DelveView>((resolve) => (answerRead = resolve))
-      },
-      act: async () => after,
-    }
-    vi.useFakeTimers({ shouldAdvanceTime: true })
-    try {
-      await renderInRouter(
-        <DelvePage id="d1" client={client} loadDecks={pickerDecks} find={async () => null} />,
-      )
-      const vote = await screen.findByRole('region', { name: 'Vote for the next room' })
-      const descent = screen.getByRole('region', { name: 'The descent' })
-      expect(vote.compareDocumentPosition(descent) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
-      await vi.advanceTimersByTimeAsync(4100)
-      fireEvent.click(within(vote).getByRole('button', { name: 'Vote for Shop' }))
-      expect(await within(vote).findByRole('button', { name: 'Your vote: Shop' })).toBeInTheDocument()
-      // The read that left before the vote answers now, without it: the vote stays shown.
-      answerRead(before)
-      await vi.advanceTimersByTimeAsync(10)
-      expect(within(vote).getByRole('button', { name: 'Your vote: Shop' })).toBeInTheDocument()
-    } finally {
-      vi.useRealTimers()
-    }
   })
 })

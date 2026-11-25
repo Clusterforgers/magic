@@ -1,5 +1,5 @@
-// Goal: while the Mulligan prompt waits off a phone the opening hand floats in the centre overlay, and the hand dock keeps its size and place without drawing the hand a second time, the overlay covers the opponents and the strip but not your board, while another choice in the overlay leaves the hand drawn; on a phone the dock draws the hand as at any other decision, in a row that scrolls.
-import { screen } from '@testing-library/react'
+// Goal: while the Mulligan prompt waits off a phone the opening hand floats in the centre overlay, and the hand dock keeps its size and place without drawing the hand a second time, the floating row is the one copy a screen reader reads as the hand, the overlay covers the opponents and the strip but not your board, while another choice in the overlay leaves the hand drawn; on a phone the dock draws the hand as at any other decision, in a row that scrolls.
+import { screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { PlayState } from '@/play/store'
 import { must } from '@/test-utils/batches'
@@ -23,7 +23,12 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-const hand = (): HTMLElement => screen.getByRole('list', { name: "Alice's hand", hidden: true })
+/** The hand dock's list, hidden from a screen reader while the opening hand floats. */
+const hand = (): HTMLElement =>
+  within(screen.getByRole('region', { name: 'Your hand' })).getByRole('list', {
+    name: "Alice's hand",
+    hidden: true,
+  })
 const cardWidth = (): number => Number.parseInt(hand().style.getPropertyValue('--card-w'), 10)
 const grown = (): string =>
   must(document.querySelector<HTMLElement>('[data-slot="table-main"]')).style.getPropertyValue(HAND_GROW_VAR)
@@ -60,6 +65,19 @@ describe('the hand dock at the opening hand', () => {
       expect(other.hidden).toBe(false)
     },
   )
+
+  it.each([2, 4])('reads the floating row at %i seats as the hand, once, with every card', (seats) => {
+    room.width = 1100
+    room.height = 220
+    renderTable({ seats, state: waitingOn('Mulligan') })
+    const lists = screen.getAllByRole('list', { name: "Alice's hand" })
+    expect(lists).toHaveLength(1)
+    const read = must(lists[0])
+    expect(read.closest('[data-opening]')).not.toBeNull()
+    const cards = within(read).getAllByRole('listitem')
+    expect(cards.length).toBeGreaterThan(0)
+    expect(cards).toHaveLength(hand().querySelectorAll('li').length)
+  })
 
   it('draws its cards under another choice in the overlay, a long list of targets', () => {
     room.width = 1100

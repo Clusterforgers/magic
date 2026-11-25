@@ -4,12 +4,16 @@
 //! a finished fight back into the run.
 
 mod board;
+mod ended;
 mod hooks;
+mod live;
 mod rework;
 mod store;
 
 pub(crate) use board::leaderboard;
+pub(crate) use ended::spawn_settler;
 pub(crate) use hooks::boss_concedes;
+pub(crate) use live::follow;
 
 use std::collections::BTreeSet;
 use std::sync::Arc;
@@ -56,6 +60,8 @@ const THEME: &str = "warrens";
 const LIST_LIMIT: i64 = 50;
 /// The highest Heat.
 const MAX_HEAT: u8 = mtg_campaign::scale::MAX_HEAT;
+/// Changes a following socket may fall behind by before it reads its run again anyway.
+const CHANGES: usize = 256;
 
 /// The runs of a server with a database.
 #[derive(Debug)]
@@ -65,6 +71,8 @@ pub(crate) struct Delves {
     turn: Arc<tokio::sync::Mutex<()>>,
     /// The leaderboard's folds of the runs.
     board: board::BoardCache,
+    /// The id of each run whose log grew, for the sockets that follow it.
+    changed: tokio::sync::broadcast::Sender<Uuid>,
 }
 
 impl Delves {
@@ -74,6 +82,7 @@ impl Delves {
             store: DelveStore::new(pool),
             turn: Arc::new(tokio::sync::Mutex::new(())),
             board: board::BoardCache::default(),
+            changed: tokio::sync::broadcast::channel(CHANGES).0,
         }
     }
 }
@@ -321,7 +330,10 @@ async fn save(delves: &Delves, loaded: &Loaded, from: usize) -> Result<(), ApiEr
             &members(&loaded.run),
         )
         .await
-        .map_err(|e| unavailable(&e))
+        .map_err(|e| unavailable(&e))?;
+    // No socket following the run is no error.
+    let _ = delves.changed.send(loaded.header.id);
+    Ok(())
 }
 
 /// Reads a finished fight back into the run. A game closed or expired without a result is a lost fight; one that an
@@ -970,12 +982,32 @@ pub(crate) async fn get_one(
     let delves = service(&app)?;
     let user = app.auth().require_user(&headers).await?;
     let id = id_of(path)?;
+    Ok(Json(fresh_view(&app, delves, id, user.id).await?))
+}
+
+/// The run `id` as `user` sees it, brought up to date and saved.
+async fn fresh_view(
+    app: &AppState,
+    delves: &Delves,
+    id: Uuid,
+    user: UserId,
+) -> Result<DelveView, ApiError> {
     let _turn = delves.turn.lock().await;
+    let (loaded, problems) = catch_up(app, delves, id).await?;
+    view_for(app, &loaded, user, problems).await
+}
+
+/// Loads the run `id`, brings it up to date and saves what changed, which tells its sockets; the caller holds the turn.
+async fn catch_up(
+    app: &AppState,
+    delves: &Delves,
+    id: Uuid,
+) -> Result<(Loaded, Vec<DelveDeckProblem>), ApiError> {
     let mut loaded = load(delves, id).await?;
     let from = loaded.events.len();
-    let problems = advance(&app, &mut loaded).await?;
+    let problems = advance(app, &mut loaded).await?;
     save(delves, &loaded, from).await?;
-    Ok(Json(view_for(&app, &loaded, user.id, problems).await?))
+    Ok((loaded, problems))
 }
 
 /// A member's answer to their first offer; a card to copy at the Mirror Pool must be one of their deck or Satchel.

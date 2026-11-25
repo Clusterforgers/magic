@@ -245,6 +245,8 @@ impl Server {
         let mut stopping = state.stop();
         let janitor = state.registry().spawn_janitor(state.stop());
         let upkeep = state.auth().spawn_upkeep(state.stop());
+        // Holds the state, so it ends on the stop signal before the sessions can drain.
+        let settler = crate::delves::spawn_settler(state.clone());
         // The first visitor should not wait for the card library; the build stays off the runtime's workers.
         let warming = state.cards().cloned().map(|cards| {
             tokio::spawn(async move {
@@ -289,6 +291,9 @@ impl Server {
         }
         if let Some(upkeep) = upkeep {
             upkeep.abort();
+        }
+        if let Some(settler) = settler {
+            settler.abort();
         }
         served
     }
@@ -504,6 +509,7 @@ pub(crate) fn router(state: AppState) -> Router {
         .route("/api/me/prefs", get(prefs::get).put(prefs::put))
         .route("/api/me/games", get(my_games::list))
         .route("/api/me/games/{id}", delete(my_games::remove))
+        .route("/ws/delves/{id}", get(delves::follow))
         .route("/ws/{game}/{token}", get(ws::upgrade))
         .route("/ws/{game}/watch", get(ws::upgrade_watcher))
         .route("/ws/{game}", get(ws::upgrade_as_user))

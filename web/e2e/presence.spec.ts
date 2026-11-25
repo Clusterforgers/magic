@@ -1,4 +1,4 @@
-// Goal: when a seat's page closes mid-game the other seat sees it away within a few seconds, on its pod and in the "Waiting for" line with the time before the game acts for it, and the mark clears once the seat opens its page again.
+// Goal: when a seat's page closes mid-game the other seat sees it away within a few seconds, on its pod and in the "Waiting for" line (with no time while the opening, which runs on no clock, waits for it), and the mark clears once the seat opens its page again.
 import { expect, test } from './test'
 import { createAndJoin, everyoneReady } from './lobby'
 import { SHOTS_DIR } from './table'
@@ -17,7 +17,7 @@ test('a seat whose page closes shows as away to the others until it comes back',
     await everyoneReady(players)
     // Ada keeps, so the game waits for Bo alone and her table shows the line that says so.
     await ada.page.getByRole('button', KEEP).click()
-    await expect(ada.page.locator('[data-slot="decision-line"]')).toContainText('Waiting for Bo')
+    await expect(ada.page.locator('[data-slot="waiting-line"]')).toContainText('Waiting for Bo')
     const boPod = ada.page.locator('[data-seat="1"]')
     await expect(boPod).not.toHaveAttribute('data-away')
 
@@ -26,7 +26,9 @@ test('a seat whose page closes shows as away to the others until it comes back',
     await expect(boPod).toHaveAttribute('data-away', 'true', { timeout: 5_000 })
     await expect(boPod.locator('[data-slot="away-mark"]')).toHaveText('Away')
     const note = ada.page.locator('[data-slot="away-note"]')
-    await expect(note).toContainText(/Bo is away: the game acts for them in \d+ s/)
+    // The opening runs on no clock, so the note names the seat and no time.
+    await expect(note).toContainText('Bo is away')
+    await expect(note).not.toContainText('acts for them')
     if (SHOTS_DIR !== undefined) await ada.page.screenshot({ path: `${SHOTS_DIR}/presence-away.png` })
 
     // Bo opens the page again: the mark and the note go, and Bo is asked about the hand where it was.
