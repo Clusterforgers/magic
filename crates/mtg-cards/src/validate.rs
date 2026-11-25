@@ -8918,6 +8918,14 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
             && card.abilities().any(|(_, ability)| r116_picks_by_x(ability)))
         || card.abilities().any(|(face, ability)| match ability {
             Ability::Keyword(k) => lists(k, keyword),
+            // A sticker sheet lists the keywords of its ability stickers.
+            Ability::Sticker(crate::ability::Sticker::Ability { ability, .. })
+                if crate::compile::sticker_keywords(ability)
+                    .into_iter()
+                    .any(|k| lists(k, keyword)) =>
+            {
+                true
+            }
             ability if mentions_keyword(ability, keyword) => true,
             Ability::Manual { span, .. } => printed
                 .faces
