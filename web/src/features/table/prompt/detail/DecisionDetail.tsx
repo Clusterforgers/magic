@@ -28,7 +28,13 @@ export function Kicker({ lead, rest }: { lead: string; rest?: string }) {
 }
 
 /** Rules text with the asked clause marked. */
-function MarkedRules({ text, clause }: { text: string; clause: readonly [number, number] | undefined }) {
+export function MarkedRules({
+  text,
+  clause,
+}: {
+  text: string
+  clause: readonly [number, number] | undefined
+}) {
   const { before, marked, after } = clauseParts(text, clause)
   return (
     <p

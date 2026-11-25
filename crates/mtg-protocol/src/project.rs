@@ -2,7 +2,7 @@
 
 use crate::forecast_cache::top_forecast;
 use mtg_cards::ability::Ability;
-use mtg_cards::compile::{protection_quality_word, render_ability};
+use mtg_cards::compile::{protection_quality_word, rules_words};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::value::CounterKind;
 use mtg_cards::{CardDefinition, CardIdentity};
@@ -417,7 +417,7 @@ fn stack_text(object: &GameObject, shown: &str, granter: Option<Granter>) -> Opt
     {
         return Some(rules.to_owned());
     }
-    let text = render_ability(ability.rules())?;
+    let text = rules_words(ability.rules())?;
     let stands_for_source = match granter {
         Some(granter) => granter.source_words(),
         None => shown,

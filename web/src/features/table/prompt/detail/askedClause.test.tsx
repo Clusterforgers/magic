@@ -1,5 +1,5 @@
-// Goal: the clause the server marks for a spell's question (the modes as it is cast, a number, a card choice) is marked in the spell's own text under the asking card in the Stack panel, quoted under the question in the dock (the modes not quoted, being the choices), and left out of a phone's bar of fixed height, in a duel and a grid of four.
-import { render } from '@testing-library/react'
+// Goal: the clause the server marks for a spell's question (the modes as it is cast, a number, a card choice) is marked in the spell's own text under the asking card in the Stack panel, quoted under the question in the dock (the modes not quoted, being the choices), and in a phone's bar of fixed height on the rest of the question's line, a press opening the spell's words with the clause marked, in a duel and a grid of four.
+import { fireEvent, render, waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { GameContext } from '@/features/game/gameContext'
 import { must } from '@/test-utils/batches'
@@ -42,7 +42,7 @@ function table(prompt: string, options: Partial<FixtureGameOptions>, viewport: V
 
 describe.each(MODES)('the asked clause of a spell in %s', (_mode, options) => {
   describe.each(PROMPTS)('?prompt=%s', (prompt, clause, quoted) => {
-    it.each(WINDOWS)('at %s', (_window, viewport, home) => {
+    it.each(WINDOWS)('at %s', async (_window, viewport, home) => {
       const shown = table(prompt, options, viewport)
       expect(shown.one('[data-slot="decision-line"]')).toHaveAttribute('data-home', home)
       if (home === 'panel') {
@@ -52,10 +52,21 @@ describe.each(MODES)('the asked clause of a spell in %s', (_mode, options) => {
         return
       }
       const quotes = shown.all('[data-slot="asked-quote"]')
-      if (home === 'dock' && quoted) {
+      if (quoted) {
         expect(quotes).toHaveLength(1)
-        expect(quotes[0]?.textContent).toContain(clause)
-        expect(quotes[0]).toHaveAttribute('title', clause)
+        const quote = must(quotes[0])
+        expect(quote).toHaveAttribute('data-where', home === 'bar' ? 'bar' : 'line')
+        expect(quote.textContent).toContain(clause)
+        expect(quote).toHaveAttribute('title', clause)
+        if (home === 'bar') {
+          // On the question's own line; a press opens the spell's words with the clause marked.
+          expect(quote.closest('[data-slot="prompt-sentence"]')).not.toBeNull()
+          fireEvent.click(quote)
+          const whole = await waitFor(() =>
+            must(document.querySelector<HTMLElement>('[data-slot="asked-quote-whole"]')),
+          )
+          expect(must(whole.querySelector('[data-slot="asked-clause"]')).textContent).toContain(clause)
+        }
       } else {
         expect(quotes).toHaveLength(0)
       }
