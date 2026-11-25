@@ -610,6 +610,22 @@
 }
 
 /*
+ * While the sheet stands open over your board, your board scrolls on past its last band by the sheet's height, so
+ * every source on it scrolls above the sheet's edge to be tapped there, and a card scrolled to lands in the board's
+ * top band. The lanes keep their fit: the zone's box is the same.
+ */
+[data-slot='table-main']:has([data-slot='decision-sheet']:not([data-folded]))
+  [data-coach-zone='board']
+  > [data-slot='battlefield-zone'] {
+  scroll-padding-bottom: calc(100% - 6rem);
+  &::after {
+    content: '';
+    flex: none;
+    height: min(20.625rem, 46dvh);
+  }
+}
+
+/*
  * What a prompt chooses among, drawn in the Stack column or the decision sheet: every list is one column wide and
  * nothing is wider than its box. A prompt's cards stand three to a row, the picture a prompt draws beside its modes is
  * left out (the asking card stands above), and a list keeps no height of its own: the column scrolls.

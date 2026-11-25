@@ -616,15 +616,26 @@ export const bossGapPx = (phone: boolean, height: number): number =>
   phone && shortPhone(height) ? SHORT_GAP_PX : ZONE_GAP_PX
 const SHORT_GAP_PX = 4
 
+/** Where the opponents' battlefields begin on a phone, under their tile and lands line: the head `PHONE_BOARDS_PX` holds. */
+export const PHONE_HEAD_PX = 112
+/** The boss's framed pod line on a phone over its battlefield: its name row on a short phone, else a row of figures too. */
+const bossPodPx = (short: boolean): number => (short ? 4 + TILE_LINE_PX : 8 + 58)
+/** The focused board's zones line under the boss side's tiles where a phone is not short. */
+const ZONES_LINE_PX = 32
+
 /**
- * The px a phone's mode spends on bars of its own besides the opponents' tiles and the two board rows that
- * `PHONE_BOARDS_PX` holds: in boss mode the boss's abilities and the party's strip, each with its gap; 0 elsewhere.
+ * The px a phone's mode spends on bars of its own besides the two board rows that `PHONE_BOARDS_PX` holds: in boss
+ * mode the party's strip with its gap, and what the boss's side spends over its battlefield (its abilities, its pod
+ * line or its tiles) beyond the opponents' head `PHONE_HEAD_PX`; 0 elsewhere.
  */
-export function phoneBarsPx(seats: Pick<SeatPlan, 'shape' | 'allies'>, height: number): number {
+export function phoneBarsPx(seats: Pick<SeatPlan, 'shape' | 'allies' | 'tiles'>, height: number): number {
   if (seats.shape !== 'boss') return 0
   const gap = bossGapPx(true, height)
+  const short = shortPhone(height)
   const party = seats.allies.length === 0 ? 0 : tileStripPx(height) + gap
-  return BOSS_ABILITIES_PX + gap + party
+  const side =
+    seats.tiles.length > 0 ? tileStripPx(height) + gap + (short ? 0 : ZONES_LINE_PX) : bossPodPx(short) + gap
+  return Math.max(0, BOSS_ABILITIES_PX + gap + side - PHONE_HEAD_PX) + party
 }
 
 /** The share of the boards' room the party's row of boards takes, and its bounds in px. */
