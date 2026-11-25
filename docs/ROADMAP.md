@@ -117,6 +117,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## Tooling
 
+- [ ] (ts1p) `mtg-testkit::game` ends within the run cap under `affected`: its single deep-bot games (`brain_matches`, `brain_paced`) run on one thread each and near 40 min under load, alone or not (`crates/mtg-testkit/tests/game`)
 - [ ] (ts1e) The release images build while the batch run of the release commit runs, both images at once, and `scripts/release.sh` reuses them from the build cache (release after the check: 600 s to about 120 s; `scripts/release.sh`, `docs/deploy.md`; after ts1d)
 - [ ] (ts1f) A diff of card files only tests those cards, the test modules and fixture decks that name them and a fixed sample, and the batch run tests the whole corpus (a card change to about 3 min; `scripts/check.sh`; after ts1a)
 - [ ] (ts1j) The built-in library loads from a snapshot made at build time instead of 1.1 s of parsing per process, so nextest with per-test timeouts can replace the run cap (`crates/mtg-cards`; after ts1c)
