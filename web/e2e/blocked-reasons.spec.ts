@@ -1,5 +1,5 @@
 // Goal: on the development table's boss fight (`?prompt=priority-blocked`) a press on a hand card the offer leaves out says why in one line at the card, inside the window, at 1400x900 and on a phone: the One Voice modifier (its boss chip lit where the row shows it), sorcery speed and too little mana; before a press nothing is said over the hand.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

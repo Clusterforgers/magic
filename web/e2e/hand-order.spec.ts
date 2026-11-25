@@ -1,5 +1,5 @@
 // Goal: on the development table at 1400x900 and 390x844 the viewer drags a card of the hand in front of another with the mouse (and on a touch screen after a short hold) without playing it, a swipe still moves no card, the table menu's "Hand order" puts the hand in "By type" order (lands, creatures, the rest) and back to "As drawn", and a custom order lasts through a reload.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

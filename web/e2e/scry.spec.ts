@@ -1,5 +1,5 @@
 // Goal: the Scry prompt of the dev table (`/dev/table?prompt=scry`) is answered from the keyboard alone: a number key sends the card looked at in that place to the bottom pile, Alt with an arrow moves the focused card within its pile, Original order puts everything back, and Confirm with Enter ends the decision.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

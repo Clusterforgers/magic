@@ -1,5 +1,5 @@
 // Goal: on a server with a clock on the active player's decisions (E2E_ACTIVE_SECS), a seat that finishes three turns of its own in time earns a clock extension that both seats see on its pod, and when it lets the clock run out on a later decision the extension is spent and both seats see "used" with the count down.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
 import type { Hooks, Style } from './driver'

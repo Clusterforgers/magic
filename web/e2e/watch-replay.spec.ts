@@ -1,5 +1,5 @@
 // Goal: on a real server and database a signed-in stranger watches a running game of two accounts with no seat and no hand of its own, the game ends when a seat concedes and the watcher is told, and the finished game replays to a seat while a visitor who is not signed in is asked to sign in.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
 import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'
 

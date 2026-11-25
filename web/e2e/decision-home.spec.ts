@@ -1,5 +1,5 @@
 // Goal: on the development table (a duel, a grid of six, two teams, Two-Headed Giant and the boss) every decision kind has one home, the strip between the boards stays one status line and no board, card, hand or column moves from one prompt to the next: a card's question stands under its card in the Stack panel with the column open, in the dock with it folded or on its Log tab, and in the bar on a phone, whose payment grows into a sheet of at most 330 px; the answers are in the window and uncovered (your cards size anew, in place, only where the dock grows over their corner), and the dock and the bar never scroll.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

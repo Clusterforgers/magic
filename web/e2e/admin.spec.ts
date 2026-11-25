@@ -1,6 +1,6 @@
 // Goal: the admin's journey on a real server and database: the admin signs in and finds Accounts, makes an account with a generated password, the friend signs in with what the panel showed (and with nothing else), the friend does not see Accounts and is told so at its address, and a server that closed registration shows the closed sign-up page.
 import { execFileSync } from 'node:child_process'
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, Page } from '@playwright/test'
 import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'
 

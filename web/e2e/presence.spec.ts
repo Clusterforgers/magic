@@ -1,5 +1,5 @@
 // Goal: when a seat's page closes mid-game the other seat sees it away within a few seconds, on its pod and in the "Waiting for" line with the time before the game acts for it, and the mark clears once the seat opens its page again.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import { createAndJoin, everyoneReady } from './lobby'
 import { SHOTS_DIR } from './table'
 

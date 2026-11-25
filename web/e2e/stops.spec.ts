@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
 import type { Player } from './lobby'

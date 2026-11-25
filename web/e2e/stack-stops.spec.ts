@@ -1,5 +1,5 @@
 // Goal: a player picks a stack stops level from the button beside "Auto-skip triggers" in a live game, the button shows the level once the server holds it, and the level is still held after the page is loaded again.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
 

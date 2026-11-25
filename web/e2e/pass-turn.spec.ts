@@ -1,5 +1,5 @@
 // Goal: "Pass until my turn" beside "Auto-skip triggers" is turned on by the seat whose turn it is not, shows the line that says why the game moves on, keeps that seat free of every priority prompt while the other seat plays its turn through, and is off again, line gone, once the seat's own turn begins.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { createAndJoin, everyoneReady } from './lobby'
 

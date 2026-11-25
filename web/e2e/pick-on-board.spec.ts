@@ -1,5 +1,5 @@
 // Goal: on the development table a target choice in the card overlay with two copies of one creature numbers both on their pictures and on the table, and Pick on board (V) hides the overlay without moving a card, so the second copy is chosen on the table and unchosen again, Confirm stays in reach, and Show choices brings the cards back with the copy chosen; on a desktop window, a phone and a phone on its side.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

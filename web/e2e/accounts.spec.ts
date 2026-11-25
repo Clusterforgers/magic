@@ -1,6 +1,6 @@
 // Goal: accounts work end to end in a browser on a real server and database: register, create a game, come back through My games and rejoin with no seat link, two accounts at one table, and signing out and in again; and the pages that need an account (Decks, My games, the builder with a real imported deck) keep the layout rules of the gate at the six sizes in both themes.
 import { readFileSync } from 'node:fs'
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
 import type { DeckView, ImportResult, MyGame } from '../src/protocol/generated'
 import { THEMES } from './layoutAudit'

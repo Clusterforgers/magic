@@ -1,5 +1,5 @@
 // Goal: the account settings work end to end in a browser on a real server and database: the page needs a session and brings the visitor back after sign-in, a changed password signs the other browser out and replaces the old one, and a deleted account goes home signed out, loses its games and lets its username be registered again.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Browser, BrowserContext, Page } from '@playwright/test'
 import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'
 

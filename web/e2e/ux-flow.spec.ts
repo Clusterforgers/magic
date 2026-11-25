@@ -1,5 +1,5 @@
 // Goal: five flow defects of the web client stay fixed on the dev routes (no server): a phone opens a saved deck on its Deck tab with the report, and a wide window shows both panes; the Mana row of the Commands panel starts on a colour of the seat’s commander identity and returns to it after each Add; the card picked in the Commands panel carries a dashed mark on the table; and a seat working in the Commands panel sees the response clock there, in view at 1440x900 and 390x844.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 

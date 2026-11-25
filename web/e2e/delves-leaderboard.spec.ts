@@ -1,5 +1,5 @@
 // Goal: the Delves leaderboard never moves the page's own column: at 1400, 1600 and 1920 px the column's left edge and width are the same with the leaderboard and without it, the leaderboard stands in the right gutter inside the window, and at a phone's width it follows the page's content.
-import { expect, test } from '@playwright/test'
+import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { DEV_WEB_URL } from './ports'
 
