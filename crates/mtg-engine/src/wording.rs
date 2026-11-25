@@ -245,49 +245,54 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
                     .iter()
                     .all(|p| matches!(p, Pred::Type(_) | Pred::Subtype(_))) =>
             {
-                let types: Vec<CardType> = any
-                    .iter()
-                    .filter_map(|p| match p {
-                        Pred::Type(card_type) => Some(*card_type),
-                        _ => None,
-                    })
-                    .collect();
-                if types.len() == any.len()
-                    && let Some(word) = permanent_types(&types, nonland_said)
-                {
-                    nouns.push(word.to_owned());
-                    continue;
-                }
-                let words: Vec<String> = any
-                    .iter()
-                    .filter_map(|p| match p {
-                        Pred::Type(card_type) => Some(lower(card_type)),
-                        Pred::Subtype(subtype) => Some(subtype.0.clone()),
-                        _ => None,
-                    })
-                    .collect();
-                nouns.push(words.join(" or "));
+                nouns.push(any_of_noun(any, nonland_said));
             }
             _ => {}
         }
     }
-    // A zone a player owns names the owner in it: "in an opponent's graveyard".
+    tail.extend(owner_and_zone(zone, yours, theirs));
+    adjectives.push(head_noun(&nouns, zone, this));
+    (adjectives.join(" "), tail.join(" "))
+}
+
+/// The noun of a list of card types and subtypes: "permanent" or "nonland permanent" for the types of a permanent,
+/// else "artifact or creature".
+fn any_of_noun(any: &[Pred], nonland_said: bool) -> String {
+    let types: Vec<CardType> = any
+        .iter()
+        .filter_map(|p| match p {
+            Pred::Type(card_type) => Some(*card_type),
+            _ => None,
+        })
+        .collect();
+    if types.len() == any.len()
+        && let Some(word) = permanent_types(&types, nonland_said)
+    {
+        return word.to_owned();
+    }
+    let words: Vec<String> = any
+        .iter()
+        .filter_map(|p| match p {
+            Pred::Type(card_type) => Some(lower(card_type)),
+            Pred::Subtype(subtype) => Some(subtype.0.clone()),
+            _ => None,
+        })
+        .collect();
+    words.join(" or ")
+}
+
+/// The owner and zone at the end of a phrase; a zone a player owns names the owner in it: "in an opponent's graveyard".
+fn owner_and_zone(zone: Option<ZoneKind>, yours: bool, theirs: bool) -> Vec<String> {
     match zone {
         Some(
             kind @ (ZoneKind::Hand | ZoneKind::Library | ZoneKind::Graveyard | ZoneKind::Command),
-        ) if theirs => tail.push(owned_zone_phrase(kind, "an opponent's")),
-        Some(kind) => {
-            if theirs {
-                tail.push("an opponent owns".to_owned());
-            }
-            tail.push(zone_phrase(kind, yours));
-        }
-        None if theirs => tail.push("an opponent owns".to_owned()),
-        None if yours => tail.push("you own".to_owned()),
-        None => {}
+        ) if theirs => vec![owned_zone_phrase(kind, "an opponent's")],
+        Some(kind) if theirs => vec!["an opponent owns".to_owned(), zone_phrase(kind, yours)],
+        Some(kind) => vec![zone_phrase(kind, yours)],
+        None if theirs => vec!["an opponent owns".to_owned()],
+        None if yours => vec!["you own".to_owned()],
+        None => Vec::new(),
     }
-    adjectives.push(head_noun(&nouns, zone, this));
-    (adjectives.join(" "), tail.join(" "))
 }
 
 /// "nonblack", "nonland": the adjective of a negated color or card type; `None` for any other predicate.

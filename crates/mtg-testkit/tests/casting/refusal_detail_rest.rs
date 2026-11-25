@@ -81,7 +81,10 @@ fn a_least_x_short_of_mana_names_its_mana(
 }
 
 #[rstest]
-#[case::arcee_with_no_counters("Arcee, Sharpshooter", "Arcee, Sharpshooter // Arcee, Acrobatic Coupe")]
+#[case::arcee_with_no_counters(
+    "Arcee, Sharpshooter",
+    "Arcee, Sharpshooter // Arcee, Acrobatic Coupe"
+)]
 #[case::rasputin_with_no_dream_counters("Rasputin, the Oneiromancer", "Rasputin, the Oneiromancer")]
 fn a_least_x_short_of_counters_names_the_x(
     #[values(2, 3, 4)] players: usize,
@@ -141,7 +144,9 @@ fn a_loyalty_ability_short_of_its_added_mana_names_it(
 #[rstest]
 fn an_ability_of_a_source_that_chose_no_color_says_so(
     #[values(2, 3, 4)] players: usize,
-    #[values(mountain as fn() -> Arc<CardDefinition>, forest, island)] land: fn() -> Arc<CardDefinition>,
+    #[values(mountain as fn() -> Arc<CardDefinition>, forest, island)] land: fn() -> Arc<
+        CardDefinition,
+    >,
 ) {
     let chosen = Why::ChosenColor {
         color: None,
@@ -183,11 +188,36 @@ fn an_ability_paid_with_the_chosen_color_names_that_mana(
 }
 
 #[rstest]
-#[case::entrancing_melody("Entrancing Melody", lands(4, island), "a creature with mana value X on the battlefield", 2)]
-#[case::disembowel("Disembowel", lands(3, swamp), "a creature with mana value X on the battlefield", 2)]
-#[case::dominate("Dominate", lands(4, island), "a creature with mana value X or less on the battlefield", 1)]
-#[case::repeal("Repeal", lands(3, island), "a nonland permanent with mana value X on the battlefield", 2)]
-#[case::melody_with_three_islands("Entrancing Melody", lands(3, island), "a creature with mana value X on the battlefield", 1)]
+#[case::entrancing_melody(
+    "Entrancing Melody",
+    lands(4, island),
+    "a creature with mana value X on the battlefield",
+    2
+)]
+#[case::disembowel(
+    "Disembowel",
+    lands(3, swamp),
+    "a creature with mana value X on the battlefield",
+    2
+)]
+#[case::dominate(
+    "Dominate",
+    lands(4, island),
+    "a creature with mana value X or less on the battlefield",
+    1
+)]
+#[case::repeal(
+    "Repeal",
+    lands(3, island),
+    "a nonland permanent with mana value X on the battlefield",
+    2
+)]
+#[case::melody_with_three_islands(
+    "Entrancing Melody",
+    lands(3, island),
+    "a creature with mana value X on the battlefield",
+    1
+)]
 fn a_spell_whose_every_payable_x_has_no_target_names_it(
     #[values(2, 3, 4)] players: usize,
     #[case] name: &str,
