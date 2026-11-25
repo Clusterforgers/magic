@@ -41,10 +41,15 @@ async fn the_default_images_are_those_of_the_stored_printing(pool: PgPool) {
         oracle_of("Fire // Ice"),
         ghost(),
         OracleId("junk".into()),
+        oracle_of("Lightning Bolt"),
     ];
     let images = repo(&pool).default_images(&ids).await.unwrap();
 
-    assert_eq!(images.len(), 2, "unknown and malformed ids are absent");
+    assert_eq!(
+        images.len(),
+        2,
+        "unknown and malformed ids are absent, a repeated one is one entry"
+    );
     let bolt = normal(&images[&oracle_of("Lightning Bolt")]);
     assert!(bolt.is_some_and(|url| url.contains("e3285e6b")), "{bolt:?}");
     let split = &images[&oracle_of("Fire // Ice")];

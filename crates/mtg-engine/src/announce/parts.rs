@@ -94,7 +94,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
             settled += 1;
             continue;
         }
-        let barred = price.barred(&part, ctx.source, work.choices.cost_picks());
+        let barred = ctx.barred(price.barred(&part, ctx.source, work.choices.cost_picks()));
         let candidates = pick.candidates(&Payer {
             state: ctx.state,
             player: ctx.player,
@@ -214,7 +214,7 @@ pub(super) fn most(ctx: &Ctx<'_>, choices: &Choices) -> Option<u32> {
         .iter()
         .filter(|part| part.is_counted())
         .filter_map(|part| {
-            let barred = price.barred(part, ctx.source, choices.cost_picks());
+            let barred = ctx.barred(price.barred(part, ctx.source, choices.cost_picks()));
             part.most(&Payer {
                 state: ctx.state,
                 player: ctx.player,
@@ -252,7 +252,7 @@ pub(super) fn r301_x_without_picks(
                 let Part::Pick(pick) = part.at(*x) else {
                     return false;
                 };
-                let barred = price.barred(part, ctx.source, choices.cost_picks());
+                let barred = ctx.barred(price.barred(part, ctx.source, choices.cost_picks()));
                 let candidates = pick.candidates(&Payer {
                     state: ctx.state,
                     player: ctx.player,

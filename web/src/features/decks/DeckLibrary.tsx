@@ -61,7 +61,8 @@ interface DeckLibraryProps {
  */
 export function DeckLibrary({ api, clock, groupsApi = sharedGroups }: DeckLibraryProps) {
   const { state, reload } = useDeckList(api)
-  const groups = useDeckGroups(groupsApi, state.status === 'ready')
+  // Beside the decks, not after them; a server without decks or a failed list asks for no groups.
+  const groups = useDeckGroups(groupsApi, state.status === 'loading' || state.status === 'ready')
   const [overlay, setOverlay] = useState<Overlay | null>(null)
   const [announcement, setAnnouncement] = useState('')
   const opened = useRef(0)

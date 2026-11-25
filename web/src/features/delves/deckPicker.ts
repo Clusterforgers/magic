@@ -10,6 +10,7 @@ import type { DeckEntry } from '@/features/game/deckEntries'
 import { sections } from '@/features/decks/groups/grouping'
 import type { GroupLike } from '@/features/decks/groups/grouping'
 import { deckGroupsApi } from '@/net/deckGroups'
+import { cachedDecks, cachedGroups, cachedPrecons } from '@/net/listCache'
 
 /** The colours of the filter, in WUBRG order. */
 export const COLOURS = ['W', 'U', 'B', 'R', 'G'] as const
@@ -134,12 +135,15 @@ export function notePlayed(id: string, now: Date, store: KeyValueStore | null = 
   return next
 }
 
-/** The player's Commander decks, their deck groups and the precons; a list that fails to load is left out. */
+/**
+ * The player's Commander decks, their deck groups and the precons, from the list cache when it holds them (read again
+ * behind it); a list that fails to load is left out.
+ */
 export async function loadPickerDecks(): Promise<PickerDecks> {
   const [precons, decks, groups] = await Promise.all([
-    preconsApi.list().catch(() => ({ precons: [] })),
-    decksApi.list().catch(() => []),
-    deckGroupsApi.list().catch(() => []),
+    cachedPrecons(preconsApi).catch(() => ({ precons: [] })),
+    cachedDecks(decksApi).catch(() => []),
+    cachedGroups(deckGroupsApi).catch(() => []),
   ])
   return {
     entries: [

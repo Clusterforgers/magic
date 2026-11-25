@@ -110,5 +110,12 @@ export const HIGHLIGHT: Record<Highlight, string> = {
   dimmed: 'saturate-[0.8]',
 }
 
+/**
+ * The legal mark of a hand card whose only play now is an ability (cycling while the spell is too dear): a dashed ring
+ * in the primary colour with a softer glow, so it reads apart from a card to cast at a glance and still as available.
+ */
+export const ABILITY_ONLY =
+  "shadow-[0_0_8px_color-mix(in_oklch,var(--primary)_35%,transparent)] after:pointer-events-none after:absolute after:-inset-0.5 after:z-10 after:rounded-[inherit] after:border-2 after:border-dashed after:border-primary after:content-['']"
+
 /** A compact face narrower than this (px) has no room for a second line of name nor a wrapped row of marks. */
 export const NARROW_PX = 76

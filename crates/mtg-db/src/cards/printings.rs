@@ -22,10 +22,15 @@ impl CardRepo {
             .iter()
             .filter_map(|id| Uuid::parse_str(id.as_str()).ok())
             .collect();
+        // One probe of `printings_default_idx` per card: a basic land has hundreds of printings, and sorting them all
+        // spilled to disk.
         let rows = sqlx::query!(
-            r#"SELECT DISTINCT ON (oracle_id) oracle_id, images AS "images: sqlx::types::Json<PrintingImages>"
-               FROM printings WHERE oracle_id = ANY($1)
-               ORDER BY oracle_id, digital, released_at DESC NULLS LAST, printing_id"#,
+            r#"SELECT p.oracle_id AS "oracle_id!", p.images AS "images!: sqlx::types::Json<PrintingImages>"
+               FROM unnest($1::uuid[]) AS k(id)
+               CROSS JOIN LATERAL (
+                   SELECT oracle_id, images FROM printings WHERE oracle_id = k.id
+                   ORDER BY digital, released_at DESC NULLS LAST, printing_id LIMIT 1
+               ) p"#,
             &uuids
         )
         .fetch_all(&self.pool)

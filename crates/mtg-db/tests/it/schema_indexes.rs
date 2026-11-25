@@ -73,6 +73,26 @@ const INDEXED_QUERIES: &[(&str, &str, &str)] = &[
         "printings_oracle_idx",
     ),
     (
+        "default printing of a card",
+        "SELECT images FROM printings WHERE oracle_id = '00000000-0000-0000-0000-000000000001' ORDER BY digital, released_at DESC NULLS LAST, printing_id LIMIT 1",
+        "printings_default_idx",
+    ),
+    (
+        "newest card change",
+        "SELECT max(updated_at) FROM cards",
+        "cards_updated_idx",
+    ),
+    (
+        "newest printing change",
+        "SELECT max(updated_at) FROM printings",
+        "printings_updated_idx",
+    ),
+    (
+        "newest rules change",
+        "SELECT max(updated_at) FROM card_rules",
+        "card_rules_updated_idx",
+    ),
+    (
         "rulings of a card",
         "SELECT id FROM rulings WHERE oracle_id = '00000000-0000-0000-0000-000000000001' ORDER BY published_at NULLS LAST, id",
         "rulings_oracle_idx",

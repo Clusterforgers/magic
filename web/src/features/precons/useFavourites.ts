@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { describeDeckError } from '@/features/decks/errors'
 import { DeckError } from '@/net/decks'
 import type { FavouritesApi } from '@/net/favourites'
+import { favouriteListKey, listCache } from '@/net/listCache'
 
 /** The account's favourite precons and the press that changes them. */
 export interface Favourites {
@@ -39,18 +40,21 @@ const without = (set: ReadonlySet<string>, code: string): Set<string> => {
 
 /**
  * The favourite precons of the signed-in account (`GET /api/favourites/precons`), loaded once when `enabled` and kept
- * for the life of the page (a list that cannot be had leaves no stars and no message). A guest (`enabled` false) has none and asks for nothing. A press is optimistic: the star
- * shows at once and goes back if the server refuses, with the reason in `problem`.
+ * for the life of the page, starting from the stars the list cache holds (a list that cannot be had leaves no stars and
+ * no message). A guest (`enabled` false) has none and asks for nothing. A press is optimistic: the star shows at once
+ * and goes back if the server refuses, with the reason in `problem`.
  */
 export function useFavourites(api: FavouritesApi, enabled: boolean): Favourites {
-  const [codes, setCodes] = useState<ReadonlySet<string>>(new Set())
+  const [codes, setCodes] = useState<ReadonlySet<string>>(
+    () => new Set(listCache.getQueryData<string[]>(favouriteListKey(api)) ?? []),
+  )
   const [pending, setPending] = useState<ReadonlySet<string>>(new Set())
   const [problem, setProblem] = useState<string | null>(null)
 
   useEffect(() => {
     if (!enabled) return
     let stale = false
-    api.list().then(
+    listCache.fetchQuery({ queryKey: favouriteListKey(api), queryFn: () => api.list() }).then(
       (list) => {
         if (!stale) setCodes(new Set(list))
       },
@@ -72,7 +76,12 @@ export function useFavourites(api: FavouritesApi, enabled: boolean): Favourites 
       const done = starred ? api.unstar(code) : api.star(code)
       done
         .then(
-          () => setProblem(null),
+          () => {
+            setProblem(null)
+            listCache.setQueryData<string[]>(favouriteListKey(api), (was) =>
+              was === undefined ? was : starred ? was.filter((held) => held !== code) : [...was, code],
+            )
+          },
           (error: unknown) => {
             setCodes((was) => (starred ? new Set(was).add(code) : without(was, code)))
             setProblem(favouriteWords(error, !starred))

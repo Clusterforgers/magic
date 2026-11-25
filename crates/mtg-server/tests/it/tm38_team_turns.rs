@@ -1,4 +1,4 @@
-//! Goal: with the default windows, a team table asks the right seats at the right time: in Two-Headed Giant both players of the active team are asked in their main phases and both draw, in Teams only the active player does; the lobby keeps the teams each seat chose and checks their sizes only at the start; whole 2v2 games of human and bot seats end in a team result.
+//! Goal: with the default windows, a team table asks the right seats at the right time: in Two-Headed Giant both players of the active team are asked in their main phases and both draw, in Teams only the active player does; the lobby keeps the teams each seat chose and checks their sizes only at the start; whole 2v2 games of human and bot seats end in a team result. Each game plays a fixed seed.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -29,10 +29,12 @@ fn requests(seats: usize) -> Vec<SeatRequest> {
         .collect()
 }
 
-fn registry() -> Registry {
+/// A registry whose games all play `seed`, so a run never depends on the cards the table happens to draw.
+fn registry(seed: u64) -> Registry {
     Registry::new(&ServerConfig {
         game: windowed(),
         bot_delay: Duration::from_millis(50),
+        fixed_seed: Some(seed),
         ..ServerConfig::default()
     })
 }
@@ -60,10 +62,12 @@ fn options(teams: Teams, bots: &[usize]) -> GameOptions {
     }
 }
 
-/// What the human seats saw: the priority windows each was asked at (turn, active seat, step), every draw of a
-/// turn's draw step (turn, active seat, drawing seat), and the turns a seat held a land in a main phase (turn, seat).
+/// What the human seats saw: the turns that began (turn, active seat), the priority windows each was asked at (turn,
+/// active seat, step), every draw of a turn's draw step (turn, active seat, drawing seat), and the turns a seat held a
+/// land in a main phase (turn, seat).
 #[derive(Default)]
 struct Seen {
+    began: BTreeSet<(u32, usize)>,
     asked: Vec<(u32, usize, usize, Step)>,
     draws: BTreeSet<(u32, usize, usize)>,
     held_land: BTreeSet<(u32, usize)>,
@@ -118,6 +122,7 @@ async fn play(registry: &Registry, created: GameId, humans: &[usize], turns: u32
                         for event in &batch.events {
                             match event {
                                 EventView::Public(Event::TurnBegan { number, active, .. }) => {
+                                    seen.began.insert((*number, active.index()));
                                     draw_turn = Some((*number, active.index(), false));
                                 }
                                 EventView::Public(Event::StepBegan { step }) => {
@@ -170,15 +175,16 @@ async fn play(registry: &Registry, created: GameId, humans: &[usize], turns: u32
 }
 
 #[rstest]
-#[case::giant_four(TeamMode::TwoHeadedGiant, 4)]
-#[case::teams_four(TeamMode::Teams, 4)]
-#[case::teams_six(TeamMode::Teams, 6)]
+#[case::giant_four(TeamMode::TwoHeadedGiant, 4, 1)]
+#[case::teams_four(TeamMode::Teams, 4, 2)]
+#[case::teams_six(TeamMode::Teams, 6, 3)]
 #[tokio::test(start_paused = true)]
 async fn the_seats_of_the_active_team_are_asked_and_draw_as_the_mode_says(
     #[case] mode: TeamMode,
     #[case] seats: usize,
+    #[case] seed: u64,
 ) {
-    let registry = registry();
+    let registry = registry(seed);
     let table = teams(mode, seats);
     let created = registry
         .create_with(&requests(seats), options(table.clone(), &[]), None)
@@ -206,7 +212,20 @@ async fn the_seats_of_the_active_team_are_asked_and_draw_as_the_mode_says(
             );
         }
     }
-    let turns: BTreeSet<(u32, usize)> = seen.asked.iter().map(|(n, a, _, _)| (*n, *a)).collect();
+    // A seat that cannot act is passed unasked, so a turn can go by without a question: the turns are counted from
+    // their beginnings. The last turn that began may still have events on their way, so only the turns before it count.
+    let last = seen
+        .began
+        .iter()
+        .map(|(number, _)| *number)
+        .max()
+        .unwrap_or(0);
+    let turns: BTreeSet<(u32, usize)> = seen
+        .began
+        .iter()
+        .copied()
+        .filter(|(number, _)| *number < last)
+        .collect();
     for (number, active) in &turns {
         let holders = (0..seats)
             .filter(|seat| turn_of(*seat, *active) && seen.held_land.contains(&(*number, *seat)));
@@ -240,16 +259,17 @@ async fn the_seats_of_the_active_team_are_asked_and_draw_as_the_mode_says(
 }
 
 #[rstest]
-#[case::giant_humans_together(TeamMode::TwoHeadedGiant, &[0, 1], &[2, 3])]
-#[case::teams_humans_apart(TeamMode::Teams, &[0, 1], &[2, 3])]
-#[case::giant_human_and_bot(TeamMode::TwoHeadedGiant, &[0, 2], &[1, 3])]
+#[case::giant_humans_together(TeamMode::TwoHeadedGiant, &[0, 1], &[2, 3], 4)]
+#[case::teams_humans_apart(TeamMode::Teams, &[0, 1], &[2, 3], 5)]
+#[case::giant_human_and_bot(TeamMode::TwoHeadedGiant, &[0, 2], &[1, 3], 6)]
 #[tokio::test(start_paused = true)]
 async fn a_two_v_two_of_humans_and_bots_ends_in_a_team_result(
     #[case] mode: TeamMode,
     #[case] humans: &[usize],
     #[case] bots: &[usize],
+    #[case] seed: u64,
 ) {
-    let registry = registry();
+    let registry = registry(seed);
     let table = teams(mode, 4);
     let created = registry
         .create_with(&requests(4), options(table.clone(), bots), None)
@@ -271,7 +291,7 @@ async fn a_two_v_two_of_humans_and_bots_ends_in_a_team_result(
 async fn the_lobby_keeps_the_chosen_teams_and_checks_their_sizes_at_the_start(
     #[case] mode: TeamMode,
 ) {
-    let registry = registry();
+    let registry = registry(0);
     let created = registry
         .create_with(&requests(4), options(teams(mode, 4), &[]), None)
         .await

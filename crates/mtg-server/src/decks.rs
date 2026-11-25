@@ -261,15 +261,45 @@ pub(crate) async fn list(
         .collect();
     let loaded = Loaded::load(s.cards, &lines).await?;
     let items = loaded
-        .off(move |loaded| {
-            decks
-                .iter()
-                .map(|deck| list_item(loaded, deck, &preferred))
-                .collect()
-        })
+        .off(move |loaded| list_items(loaded, &decks, &preferred))
         .await?;
     Ok(Json(DeckList { decks: items }))
 }
+
+/// The list items of `decks` in their order, judged on a few threads at once: after a start or a change of the
+/// rules every card is decided anew, and one thread would decide an account's thousand cards one by one.
+fn list_items(
+    loaded: &Loaded,
+    decks: &[StoredDeck],
+    preferred: &HashMap<OracleId, PrintingId>,
+) -> Vec<DeckListItem> {
+    let threads = std::thread::available_parallelism()
+        .map_or(1, std::num::NonZero::get)
+        .clamp(1, LIST_THREADS);
+    let size = decks.len().div_ceil(threads).max(1);
+    std::thread::scope(|scope| {
+        let parts: Vec<_> = decks
+            .chunks(size)
+            .map(|part| {
+                scope.spawn(move || {
+                    part.iter()
+                        .map(|deck| list_item(loaded, deck, preferred))
+                        .collect::<Vec<_>>()
+                })
+            })
+            .collect();
+        parts
+            .into_iter()
+            .flat_map(|part| {
+                part.join()
+                    .unwrap_or_else(|panic| std::panic::resume_unwind(panic))
+            })
+            .collect()
+    })
+}
+
+/// Most threads one deck list is judged on.
+const LIST_THREADS: usize = 4;
 
 /// `POST /api/decks`: stores a deck and the check run on it; 201 with the deck.
 pub(crate) async fn create(

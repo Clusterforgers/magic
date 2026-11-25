@@ -4,8 +4,9 @@ import { cn } from '@/lib/utils'
 import type { ObjectId } from '@/protocol/generated'
 import { cardLabel } from './cardModel'
 import type { Highlight } from './cardModel'
-import { HIGHLIGHT, PICKED, SIZE, SOURCE_LIT } from './cardSize'
+import { ABILITY_ONLY, HIGHLIGHT, PICKED, SIZE, SOURCE_LIT } from './cardSize'
 import type { CardSize } from './cardSize'
+import { AbilityCue } from './AbilityCue'
 import { CardFace } from './CardFace'
 import { ChosenMark } from './ChosenMark'
 import { CostNowMark } from './CostNowMark'
@@ -90,6 +91,8 @@ export const Card = memo(function Card({
   // A mark that cannot write its word on a card this wide shows its icon alone.
   const drawnWidth = useDrawnWidth(size, fit)
   const highlight = given ?? marked
+  // A legal hand card whose only play now is an ability (cycling) wears its own ring and names the play on its foot.
+  const abilityOnly = highlight === 'legal' && note?.ability !== undefined
   // An explicit highlight is a toggle, as it always was; a prompt says so when its marks are.
   const pressable = given !== undefined || toggles
   const promptSelects = given === undefined && (marked === 'legal' || marked === 'selected')
@@ -132,6 +135,7 @@ export const Card = memo(function Card({
       data-object-id={id}
       data-highlight={highlight}
       data-cue={note?.cue}
+      data-play={abilityOnly ? 'ability' : undefined}
       data-picked={picked || undefined}
       data-source-lit={sourceLit || undefined}
       data-size={size}
@@ -157,7 +161,7 @@ export const Card = memo(function Card({
         // The box is the same tapped or not (the face lies down inside it), so a row counts one box per card.
         'group/card relative grid h-(--card-h) w-(--card-w) shrink-0 place-items-center rounded-md outline-offset-2 outline-primary focus-visible:outline-2',
         fit ? null : SIZE[size].vars,
-        highlight === undefined ? null : HIGHLIGHT[highlight],
+        highlight === undefined ? null : abilityOnly ? ABILITY_ONLY : HIGHLIGHT[highlight],
         picked ? PICKED : null,
         sourceLit ? SOURCE_LIT : null,
         object.permanent?.phased_out === true ? 'opacity-50 saturate-50' : null,
@@ -198,6 +202,7 @@ export const Card = memo(function Card({
       <ManaStrip id={id} />
       {object.cost_now === undefined ? null : <CostNowMark cost={object.cost_now} />}
       {highlight === 'selected' ? <ChosenMark /> : null}
+      {abilityOnly && note?.ability !== undefined ? <AbilityCue text={note.ability} /> : null}
       {note?.hint === undefined ? null : (
         <span
           aria-hidden="true"

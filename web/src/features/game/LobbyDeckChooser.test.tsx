@@ -381,6 +381,7 @@ describe('a choice that fails', () => {
 
   it('lists why a deck no game can start with was refused to its owner and says the old deck is still in force', async () => {
     const h = await openChooser({ table: WITH_DECK, signedIn: true, script: { chooseDeck: BLOCKED } })
+    await screen.findByRole('option', { name: /Rakdos Midrange/ })
     await pick(h, /Rakdos Midrange/)
     await h.settle()
     const alert = problem()

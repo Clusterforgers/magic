@@ -1,5 +1,6 @@
 //! Goal: the server's games, transport, accounts and persistence end to end; one test binary so the crate's integration tests share one link and run together on the thread pool.
 
+mod announced_mana_bots;
 mod auto_pass;
 mod auto_pay;
 mod auto_pay_plain;
@@ -68,6 +69,7 @@ mod pg_delve_descend;
 mod pg_delve_end_closes_fight;
 mod pg_delve_fights;
 mod pg_delve_forfeit;
+mod pg_delve_heat;
 mod pg_delve_hooks;
 mod pg_delve_leaderboard;
 mod pg_delve_list;

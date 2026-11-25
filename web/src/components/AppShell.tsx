@@ -9,6 +9,7 @@ import { buttonVariants } from '@/components/ui/button'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { AccountNav, AuthNotice } from '@/features/auth/AccountNav'
 import { useAuth } from '@/features/auth/context'
+import { usePrefetchChooserLists } from '@/features/decks/usePrefetchChooserLists'
 import { useToReadCount } from '@/features/reads/useToReadCount'
 import { PageTourHost } from '@/features/learn/PageTourHost'
 import { TO_READ } from '@/lib/toRead'
@@ -149,7 +150,9 @@ function ShellHeader() {
 export function AppShell() {
   const main = useRef<HTMLElement>(null)
   // Here, not in the header: the game table has no header, and the account's preferences stay in use there.
-  usePrefsSync(useAuth((state) => state.status === 'signed-in'))
+  const signedIn = useAuth((state) => state.status === 'signed-in')
+  usePrefsSync(signedIn)
+  usePrefetchChooserLists(signedIn)
   const bleed = useIsFullBleed()
   const fit = useIsFitWindow() && !bleed
   return (

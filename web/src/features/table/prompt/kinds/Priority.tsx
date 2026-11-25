@@ -8,7 +8,15 @@ import { ManaChoice } from '../ManaChoice'
 import { handNotes, inactiveNotes } from '../../handReason'
 import { BringCompanion } from '../BringCompanion'
 import { AbilityChooser } from '../AbilityChooser'
-import { abilityPlays, activationNotes, blockedPlays, mergeNotes, playsOf } from '../activations'
+import {
+  abilityOnlyCues,
+  abilityPlays,
+  activationNotes,
+  blockedPlays,
+  mergeNotes,
+  playsOf,
+  withAbilityCues,
+} from '../activations'
 import type { Play } from '../activations'
 import { markCards, NO_NOTES, useCardDrops, useCardMarks, useCardNotes } from '../marks'
 import { undoableSources, undoNotes } from '../manaUndo'
@@ -115,8 +123,10 @@ export const PriorityPrompt: PromptComponent<'Priority'> = ({ options }) => {
       new Map([...inactiveNotes(objectsById, options), ...hand]),
       activationNotes(abilities),
     )
-    return new Map([...merged, ...undoNotes(options.undo_mana, objectsById)])
-  }, [view, objectsById, options, abilities])
+    // A hand card that cannot be cast but has an ability to use names it on its foot (cycling when the spell is too dear).
+    const cued = withAbilityCues(merged, abilityOnlyCues(abilities, options, objectsById, seat))
+    return new Map([...cued, ...undoNotes(options.undo_mana, objectsById)])
+  }, [view, objectsById, options, abilities, seat])
   useCardNotes(notes)
 
   const pick = (option: ManaOption): void => {
