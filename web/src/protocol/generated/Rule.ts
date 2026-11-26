@@ -199,7 +199,19 @@ spells: unknown,
 /**
  * The sticker kicker cost.
  */
-cost: unknown, } } | { "R113NoteExiled": { 
+cost: unknown, } } | { "R6012fPayAnyAmount": { 
+/**
+ * Who casts the spells.
+ */
+players: Array<PlayerId>, 
+/**
+ * The permanent with the rule.
+ */
+source: ObjectRef, 
+/**
+ * The spells.
+ */
+spells: unknown, } } | { "R113NoteExiled": { 
 /**
  * The permanent with the rule, whose memory holds the notes.
  */

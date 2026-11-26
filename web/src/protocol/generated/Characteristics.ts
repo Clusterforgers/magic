@@ -61,4 +61,8 @@ name_words?: Array<string>,
 /**
  * The name an effect gave it in place of its printed one ("named Legitimate Businessperson", layer 3).
  */
-name_set?: string, };
+name_set?: string, 
+/**
+ * An effect gave it every name of a nonlegendary creature card in addition to its own (layer 3, Spy Kit).
+ */
+r2013_all_names?: boolean, };

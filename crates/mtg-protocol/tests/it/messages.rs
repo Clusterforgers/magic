@@ -1822,6 +1822,7 @@ fn w2f_cost_taken(
                 sticker: 3,
             }),
         }],
+        r6012f_paid: vec![2, 2],
     }
 }
 

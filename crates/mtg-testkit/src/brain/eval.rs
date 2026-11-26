@@ -496,6 +496,7 @@ mod tests {
             abilities: Vec::new(),
             name_words: Vec::new(),
             name_set: None,
+            r2013_all_names: false,
         };
         chars.power = Some(power);
         Body {
