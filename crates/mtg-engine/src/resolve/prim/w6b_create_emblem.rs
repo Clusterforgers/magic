@@ -1,4 +1,5 @@
-//! `Effect::CreateEmblem`: each player named gets an emblem with the abilities (CR 114).
+//! `Effect::CreateEmblem`: each player named gets an emblem with the abilities (CR 114); `Effect::R6051PlayerGains`
+//! gives them one that lasts until end of turn.
 
 use std::sync::Arc;
 
@@ -29,8 +30,10 @@ fn r4702_fixed(cx: &Cx<'_>, abilities: &[Ability]) -> Vec<Ability> {
 
 /// One `EmblemCreated` for each player the effect names who is still in the game, in turn order of the names.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::CreateEmblem { who, abilities } = effect else {
-        return Err(wrong_effect("CreateEmblem"));
+    let (who, abilities, this_turn) = match effect {
+        Effect::CreateEmblem { who, abilities } => (who, abilities, false),
+        Effect::R6051PlayerGains { who, abilities } => (who, abilities, true),
+        _ => return Err(wrong_effect("CreateEmblem")),
     };
     let state = cx.state();
     let abilities = r4702_fixed(cx, abilities);
@@ -47,6 +50,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 object: ObjectId(id),
                 owner,
                 definition: Arc::clone(&definition),
+                this_turn,
             })
         })
         .collect();

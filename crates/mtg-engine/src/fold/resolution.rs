@@ -233,6 +233,15 @@ fn put_on_stack(state: &mut GameState, put: &PutOnStack) -> Result<(), EngineErr
             (put.source.id, None),
             1,
         );
+        // Each object an activated ability targets, as it is now, for "the first activated ability ... that targets".
+        for target in put.choices.targeted_objects() {
+            state.record(
+                mtg_cards::value::TallyEvent::R6024ActivatedTargeting,
+                Some(put.controller),
+                (target.id, None),
+                1,
+            );
+        }
     }
     // The modes this ability chose are kept for the turn ("choose one that hasn't been chosen this turn").
     for mode in &put.choices.modes {

@@ -19,6 +19,7 @@ mod c11a_less;
 mod c7_untap;
 mod cant_named;
 mod cast;
+mod circled;
 mod combat_quirks;
 mod commanders;
 pub mod cost_colors;

@@ -526,6 +526,10 @@ pub enum TallyEvent {
     Blocked,
     /// An ability was activated, a mana ability excepted (the source of the ability).
     Activated,
+    /// An activated ability with a target was activated, a mana ability excepted (each object it targets, as it was then,
+    /// for the player who activated it): "the first activated ability you activate during your turn that targets a
+    /// creature you control".
+    R6024ActivatedTargeting,
     /// Counters were put on a permanent or a card in exile by a spell or ability (the object; an amount counts the
     /// counters put, for the player who controlled the spell or ability).
     CountersPut,

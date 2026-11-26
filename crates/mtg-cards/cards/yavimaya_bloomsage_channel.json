@@ -1,0 +1,59 @@
+{
+  "oracle_id": "d9068051-b51c-4700-b492-30b148e3a72c",
+  "name": "Yavimaya Bloomsage // Channel",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Yavimaya Bloomsage",
+      "oracle_fingerprint": "b4b6c4c7ff4e6f8dcd9936da710133ef",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "End" } },
+            "targets": [
+              { "what": { "Object": [{ "Type": "Creature" }, { "ControlledBy": "You" }] } }
+            ],
+            "effects": [
+              { "PutCounters": { "on": { "Target": 0 }, "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": { "Target": 0 },
+                      "selector": [{ "Compare": { "stat": "Power", "op": "Ge", "to": 7 } }]
+                    }
+                  },
+                  "then": [{ "Prepare": { "what": "This" } }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Channel",
+      "oracle_fingerprint": "04951b5c6e7b0b6de2400996b9884a07",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "R6051PlayerGains": {
+                  "abilities": [
+                    {
+                      "Activated": {
+                        "cost": [{ "PayLife": 1 }],
+                        "effects": [{ "AddMana": { "mana": { "Fixed": ["Colorless"] } } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

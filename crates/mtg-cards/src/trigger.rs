@@ -1079,6 +1079,17 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player's life total would be reduced to `at_most` or less by a loss of life or by damage (CR 119.3): "If your
+    /// life total would be reduced to 0 or less". The events of one batch are one reduction, judged by the total they
+    /// leave; with `Instead` none of them takes life (damage is still dealt) and the effects happen in their place.
+    R1193LifeReducedTo {
+        /// Whose life total.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The total it would be reduced to or below.
+        #[serde(default)]
+        at_most: i32,
+    },
     /// A player would pay life while their library has at least that many cards in it (CR 119.4, 614.1): "If you would
     /// pay life while your library has at least that many cards in it, exile that many cards from the top of your library
     /// instead." `Amount::Triggering` is the life; a player still pays only life they have.

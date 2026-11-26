@@ -1,0 +1,52 @@
+{
+  "oracle_id": "4ca66b33-28c2-4d0d-8a44-9d891ab13e18",
+  "name": "Professor Hojo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Professor Hojo",
+      "oracle_fingerprint": "605ed491763f661ff639bfd79abfe07b",
+      "abilities": [
+        {
+          "CostModifier": {
+            "applies_to": [{ "ControlledBy": "You" }],
+            "change": "Reduce",
+            "mana": "{2}",
+            "condition": {
+              "All": [
+                "YourTurn",
+                {
+                  "Compare": {
+                    "left": {
+                      "Tally": {
+                        "event": "R6024ActivatedTargeting",
+                        "who": "You",
+                        "filter": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+                      }
+                    },
+                    "op": "Lt",
+                    "right": 1
+                  }
+                }
+              ]
+            },
+            "activating": "Any",
+            "targeting": [{ "Type": "Creature" }, { "ControlledBy": "You" }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "BecomesTarget": {
+                "what": [{ "Type": "Creature" }, { "ControlledBy": "You" }],
+                "by": [{ "Ability": "Activated" }]
+              }
+            },
+            "limit": "OncePerTurn",
+            "effects": [{ "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

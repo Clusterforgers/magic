@@ -620,6 +620,7 @@ Crypt of Agadeem
 Cryptbreaker
 Cryptcaller Chariot
 Cryptic Gateway
+Cryptic Spires
 Crystal Barricade
 Crystal Quarry
 Crystal Spray
@@ -2243,6 +2244,7 @@ Prize Wall
 Prizefight
 Profane Command
 Professional Face-Breaker
+Professor Hojo
 Professor of Symbology
 Proficient Pyrodancer
 Propaganda
@@ -3440,6 +3442,7 @@ Xenosquirrels
 Xu-Ifit, Osteoharmonist
 Yahenni, Undying Partisan
 Yasharn, Implacable Earth
+Yavimaya Bloomsage // Channel
 Yavimaya Elder
 Ydwen Efreet
 Yenna, Redtooth Regent

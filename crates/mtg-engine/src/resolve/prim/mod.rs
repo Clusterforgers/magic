@@ -343,7 +343,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Effect::RestartGame { .. } => restart_game::run(cx, effect),
         Effect::RingTempts { .. } => ring_tempts::run(cx, effect),
-        Effect::CreateEmblem { .. } => w6b_create_emblem::run(cx, effect),
+        Effect::CreateEmblem { .. } | Effect::R6051PlayerGains { .. } => {
+            w6b_create_emblem::run(cx, effect)
+        }
         Effect::Revive { .. } => revive::run(cx, effect),
         Effect::BecomeDayNight { .. } => become_day_night::run(cx, effect),
         Effect::Amass { .. } => amass::run(cx, effect),

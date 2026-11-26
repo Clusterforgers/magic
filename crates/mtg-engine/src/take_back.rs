@@ -379,6 +379,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::CountersChanged(_)
         | Event::TokenCreated(_)
         | Event::EmblemCreated { .. }
+        | Event::R6051EmblemEnded { .. }
         | Event::CardConjured(_)
         | Event::Entered { .. }
         | Event::Attached { .. }
@@ -428,6 +429,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::CommanderColorChosen { .. }
+        | Event::ColorsCircled { .. }
         | Event::Foraged { .. }
         | Event::R115CountersPutBy { .. }
         | Event::PrizeClaimed { .. }

@@ -91,6 +91,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }
         | Effect::CreateEmblem { .. }
+        | Effect::R6051PlayerGains { .. }
         | Effect::Revive { .. }
         | Effect::BecomeDayNight { .. }
         | Effect::Amass { .. }

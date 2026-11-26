@@ -1082,6 +1082,15 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, object, color } = event.CommanderColorChosen
     return line(`${n.seat(player)} chooses ${color.toLowerCase()} for ${n.card(object)}`)
   }
+  if ('ColorsCircled' in event) {
+    const { player, object, colors } = event.ColorsCircled
+    const named = colors.map((color) => color.toLowerCase())
+    const listed =
+      named.length > 1
+        ? `${named.slice(0, -1).join(', ')} and ${named[named.length - 1]}`
+        : (named[0] ?? 'no colors')
+    return line(`${n.seat(player)} circles ${listed} on ${n.card(object)}`)
+  }
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
@@ -1214,6 +1223,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`It becomes ${event.DayNightChanged.to === 'Day' ? 'day' : 'night'}`)
   if ('MonarchChanged' in event) return line(`${n.seat(event.MonarchChanged.player)} becomes the monarch`)
   if ('EmblemCreated' in event) return line(`${n.seat(event.EmblemCreated.owner)} gets an emblem`)
+  if ('R6051EmblemEnded' in event) return quiet('An emblem that lasted the turn ends')
   if ('Proliferated' in event) return line(`${n.seat(event.Proliferated.player)} proliferates`)
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
   if ('EvidenceCollected' in event) return line(`${n.seat(event.EvidenceCollected.player)} collects evidence`)
