@@ -73,6 +73,7 @@ mod costs;
 mod counters;
 mod create;
 mod created_other;
+mod cx8_wholes;
 mod d14_wordings;
 mod damage;
 mod day_night;
@@ -942,6 +943,9 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
         return Some(found);
     }
     if let Some(found) = p159_wholes::p159_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = cx8_wholes::cx8_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r123_02_wholes::r123_02_whole_read(text) {

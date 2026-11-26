@@ -1,7 +1,7 @@
 {
   "oracle_id": "0b1557e8-3dd6-4276-8b8e-505e7ea944ec",
   "name": "Eye of Ojer Taq // Apex Observatory",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Eye of Ojer Taq",
@@ -14,9 +14,11 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 32, "end": 270 }
+          "Keyword": {
+            "Craft": [
+              { "Mana": "{6}" },
+              { "Craft": { "filter": ["Other"], "count": 2, "alike": "R702ShareCardType" } }
+            ]
           }
         }
       ]
@@ -27,15 +29,22 @@
       "abilities": [
         { "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": "Tapped" } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 29, "end": 109 }
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "Choose": "R702CraftedSharedType" }
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 110, "end": 209 }
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "NextSpell": { "what": ["ChosenSubtype"], "benefit": "Free" } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

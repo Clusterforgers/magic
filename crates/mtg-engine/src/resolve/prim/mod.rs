@@ -33,6 +33,7 @@ mod crewed;
 mod join_attack;
 mod l31a_performed;
 mod let_amount;
+mod r1084_different_opponents;
 mod r110_moves;
 pub(crate) mod r110_remove_put;
 mod r114_copy_onto;
@@ -404,6 +405,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
         Effect::R6401PassControl { .. } => r6401_pass_control::run(cx, effect),
+        Effect::R1084ToDifferentOpponents { .. } => r1084_different_opponents::run(cx, effect),
         Effect::R6702Distribute { .. } => r6702_distribute::run(cx, effect),
         Effect::R6702CountersPerVote { .. } => r6702_per_vote::run(cx, effect),
         Effect::R110RemovePutThisWay { .. } => r110_remove_put::run(cx, effect),
@@ -514,6 +516,7 @@ mod tests {
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"R6401PassControl":{"side":"Left","what":[],"pick":"All"}},
+        {"R1084ToDifferentOpponents":{"what":"This"}},
         {"R6702Distribute":{"among":"This","counter":{"Other":"stun"},"count":3}},
         {"R6702CountersPerVote":{"tally":"votes","counter":{"Other":"stun"}}},
         {"R110ChooseSecretly":"Opponent"},
@@ -555,7 +558,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 178, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 179, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -717,6 +720,7 @@ mod tests {
         "Effect.Continuous",
         "Effect.ExchangeControl",
         "Effect.R6401PassControl",
+        "Effect.R1084ToDifferentOpponents",
         "Effect.R6702Distribute",
         "Effect.R6702CountersPerVote",
         "Effect.R110ChooseSecretly",

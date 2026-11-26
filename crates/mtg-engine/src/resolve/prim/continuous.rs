@@ -109,6 +109,7 @@ fn named_objects(
     let r112_works_in_exile = mods.iter().all(|wanted| {
         matches!(wanted, Wanted::GrantAbility(granted)
             if matches!(&**granted, mtg_cards::ability::Ability::Triggered { from: mtg_cards::refs::ZoneKind::Exile, .. }
+                | mtg_cards::ability::Ability::Activated { from: mtg_cards::refs::ZoneKind::Exile, .. }
                 | mtg_cards::ability::Ability::CostModifier { .. }))
     });
     Ok(cx
@@ -594,7 +595,9 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::LockKeyword(keyword) => Modification::LockKeyword(keyword.clone()),
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
         Wanted::RemoveKeywordKind(kind) => Modification::RemoveKeywordKind(*kind),
-        Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
+        Wanted::GrantAbility(granted) => {
+            Modification::GrantAbility(super::rule::r6112_fixed_ability(scope, granted))
+        }
         Wanted::LoseAbilities => Modification::LoseAbilities,
         Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) | Wanted::R707CopyOf { .. } => {

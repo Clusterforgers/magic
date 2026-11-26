@@ -1754,6 +1754,7 @@ fn entering_texts(by: &ReplaceBy, condition: Option<&Condition>) -> Vec<String> 
             ReplaceBy::Choose(
                 kind @ (EntersChoice::CardType
                 | EntersChoice::BasicLandType
+                | EntersChoice::R702CraftedSharedType
                 | EntersChoice::CardTypeOf(_)),
             ),
             None,

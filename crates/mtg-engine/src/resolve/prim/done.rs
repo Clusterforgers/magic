@@ -149,6 +149,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Continuous { .. }
         | Effect::ExchangeControl { .. }
         | Effect::R6401PassControl { .. }
+        | Effect::R1084ToDifferentOpponents { .. }
         | Effect::R6702Distribute { .. }
         | Effect::R6702CountersPerVote { .. }
         | Effect::R110RemovePutThisWay { .. }
