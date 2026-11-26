@@ -1014,6 +1014,7 @@ const RUNS: &[&str] = &[
     "Keyword.Skulk",
     "Keyword.Shadow",
     "Condition.CastWith",
+    "Condition.R7018WouldDestroy",
     "Condition.CastOffSorceryTiming",
     "Condition.AsCast",
     "Amount.CountedAsCast",

@@ -13,13 +13,14 @@ use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
-use mtg_engine::choose::NumberChoice;
+use mtg_engine::choose::{NumberChoice, Target, YesNoChoice};
 use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice, PriorityAction};
+use mtg_engine::events::Event;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
 use mtg_testkit::cards::{bear, cost, creature, forest, instant, island, plains};
 use mtg_testkit::corpus::card;
-use mtg_testkit::{Driver, Scenario, ready};
+use mtg_testkit::{Driver, Scenario, attached_to, ready};
 use rstest::rstest;
 
 fn pid(seat: usize) -> PlayerId {
@@ -93,6 +94,7 @@ fn plus_counters(driver: &Driver, seat: usize, name: &str) -> u32 {
 #[rstest]
 #[case("Chorus of the Conclave")]
 #[case("Eriette, the Beguiler")]
+#[case("Equinox")]
 fn p164_the_cards_are_verified(#[case] name: &str) {
     let support = mtg_testkit::corpus::corpus()
         .unwrap()
@@ -226,5 +228,100 @@ fn eriette_ignores_an_aura_on_her_controllers_own_permanent(#[values(2, 3, 4)] s
     driver.cast_at("Pacifism", &[target]).unwrap();
     settle(&mut driver, 0, &|_| None);
     assert_eq!(controller(&driver, "Pet"), pid(0));
+    replays(&driver);
+}
+
+/// A sorcery for {0} with these rules.
+fn sorcery(name: &str, json: &str) -> Arc<CardDefinition> {
+    Arc::new(
+        CardDefinition::new(name)
+            .with_type(CardType::Sorcery)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(serde_json::from_str::<Ability>(json).unwrap()),
+    )
+}
+
+/// A land with no ability of its own.
+fn plain_land(name: &str) -> Arc<CardDefinition> {
+    Arc::new(CardDefinition::new(name).with_type(CardType::Land))
+}
+
+/// What the opponent's spell aims at.
+#[derive(Debug, Clone, Copy)]
+enum Aim {
+    /// The land Equinox enchants.
+    Home,
+    /// A land of the caster's own.
+    Own,
+    /// Seat 0.
+    Player,
+    /// Nothing.
+    None,
+}
+
+#[rstest]
+#[case::destroys_the_enchanted_land(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#, Aim::Home, true)]
+#[case::destroys_a_land_of_its_caster(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#, Aim::Own, false)]
+#[case::destroys_every_land(
+    r#"{"Spell":{"effects":[{"Destroy":{"what":{"Each":[{"Type":"Land"}]}}}]}}"#,
+    Aim::None,
+    true
+)]
+#[case::destroys_in_a_batch(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"Together":{"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}}"#, Aim::Home, true)]
+#[case::destroys_only_by_a_choice(r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Land"}]}}],"effects":[{"May":{"effects":[{"Destroy":{"what":{"Target":0}}}]}}]}}"#, Aim::Home, false)]
+#[case::deals_damage(r#"{"Spell":{"targets":[{"what":"AnyTarget"}],"effects":[{"DealDamage":{"to":{"Target":0},"amount":2}}]}}"#, Aim::Player, false)]
+fn equinox_counters_only_a_spell_that_would_destroy_its_controllers_land(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] rules: &str,
+    #[case] aim: Aim,
+    #[case] countered: bool,
+) {
+    let scenario = Scenario::new(seats)
+        .at(1, 1, Step::Main1)
+        .battlefield(
+            0,
+            [
+                ready(plain_land("Homeland")),
+                attached_to(ready(card("Equinox").unwrap()), 0, 0),
+            ],
+        )
+        .battlefield(1, [ready(plain_land("Far Land"))])
+        .hand(1, [sorcery("Ruin", rules)]);
+    let mut driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
+    match aim {
+        Aim::Home => {
+            let target = driver.target_named("Homeland").unwrap();
+            driver.cast_at("Ruin", &[target]).unwrap();
+        }
+        Aim::Own => {
+            let target = driver.target_named("Far Land").unwrap();
+            driver.cast_at("Ruin", &[target]).unwrap();
+        }
+        Aim::Player => {
+            let target = driver.target_player(0);
+            driver.cast_at("Ruin", &[target]).unwrap();
+        }
+        Aim::None => {
+            driver.cast("Ruin").unwrap();
+        }
+    }
+    let spell = *driver.state().stack().last().unwrap();
+    // Seat 1 passes; seat 0 taps the enchanted land at the spell.
+    while driver.decision().unwrap().player != pid(0) {
+        driver.pass().unwrap();
+    }
+    driver.begin_activation("Homeland").unwrap();
+    let at = Target::Object(driver.state().object(spell).unwrap().reference());
+    driver.choose_targets(&[at]).unwrap();
+    settle(&mut driver, 1, &|decision| match decision.kind {
+        DecisionKind::YesNo(_) => Some(Answer::YesNo(YesNoChoice(true))),
+        _ => None,
+    });
+    let resolved = driver
+        .engine()
+        .events()
+        .iter()
+        .any(|event| matches!(event, Event::ResolutionBegan { object } if *object == spell));
+    assert_eq!(!resolved, countered);
     replays(&driver);
 }

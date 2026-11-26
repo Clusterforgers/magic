@@ -698,6 +698,10 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::Matches { subject, selector } => {
             reads_of_ref(subject).or(reads_of_selector(selector))
         }
+        Condition::R7018WouldDestroy { spell, what } => reads_of_ref(spell)
+            .or(reads_of_selector(what))
+            .or(Traits::TYPES)
+            .or(Traits::CONTROL),
         Condition::R119ShareCardType(what) => reads_of_ref(what).or(Traits::TYPES),
         Condition::CountOf {
             subject,

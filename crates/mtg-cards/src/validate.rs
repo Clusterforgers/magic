@@ -1944,6 +1944,11 @@ impl<'a> Walker<'a> {
                 self.paid_condition(condition);
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
+            Condition::R7018WouldDestroy { spell, what } => {
+                self.uses("Condition", "R7018WouldDestroy");
+                self.at("spell", |w| w.reference(spell, Kind::Object));
+                self.at("what", |w| w.selector(what));
+            }
             Condition::R112CastByOwnAbility => self.uses("Condition", "R112CastByOwnAbility"),
             Condition::R113SpentFromTriggering { .. } => {
                 self.uses("Condition", "R113SpentFromTriggering");

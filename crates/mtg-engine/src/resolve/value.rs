@@ -4244,6 +4244,10 @@ impl<'a> Scope<'a> {
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
+            Condition::R7018WouldDestroy { spell, what } => self
+                .objects(spell)?
+                .iter()
+                .any(|spell| super::r7018_would_destroy::r7018_would_destroy(self, spell.id, what)),
             Condition::Drafted(_) => false,
             Condition::Exploited { by, what } => {
                 let sacrificed = self.objects(what)?;
