@@ -15,7 +15,30 @@
             "effects": [{ "Connive": { "what": "This" } }]
           }
         },
-        {"Activated":{"cost":[{"ExileTotalValue":{"filter":[{"Color":"Black"}],"total":15,"symbols":"Black"}}],"condition":{"Matches":{"subject":"This","selector":["AttackedThisTurn"]}},"limit":"OncePerTurn","effects":[{"CopyCard":{"what":{"Arrived":{"of":"Paid","zone":"Exile"}},"as":"copies"}},{"P160CastWithin":{"from":{"Bound":"copies"},"most":3,"free":true}}]}}
+        {
+          "Activated": {
+            "cost": [
+              {
+                "ExileTotalValue": {
+                  "filter": [{ "Color": "Black" }],
+                  "total": 15,
+                  "symbols": "Black"
+                }
+              }
+            ],
+            "condition": { "Matches": { "subject": "This", "selector": ["AttackedThisTurn"] } },
+            "limit": "OncePerTurn",
+            "effects": [
+              {
+                "CopyCard": {
+                  "what": { "Arrived": { "of": "Paid", "zone": "Exile" } },
+                  "as": "copies"
+                }
+              },
+              { "P160CastWithin": { "from": { "Bound": "copies" }, "most": 3, "free": true } }
+            ]
+          }
+        }
       ]
     }
   ]

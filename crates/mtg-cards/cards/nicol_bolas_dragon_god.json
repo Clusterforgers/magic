@@ -11,100 +11,47 @@
           "Static": {
             "affected": "This",
             "mods": [
-              {
-                "P160GainLoyaltyAbilitiesOf": {
-                  "Each": [
-                    {
-                      "Type": "Planeswalker"
-                    },
-                    "Other"
-                  ]
-                }
-              }
+              { "P160GainLoyaltyAbilitiesOf": { "Each": [{ "Type": "Planeswalker" }, "Other"] } }
             ]
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Plus": 1
-            },
+            "cost": { "Plus": 1 },
             "effects": [
-              {
-                "Draw": {}
-              },
+              { "Draw": {} },
               {
                 "Choose": {
                   "who": "Opponents",
                   "from": {
                     "Each": [
-                      {
-                        "AnyOf": [
-                          {
-                            "In": "Hand"
-                          },
-                          {
-                            "In": "Battlefield"
-                          }
-                        ]
-                      },
-                      {
-                        "ControlledBy": "Chooser"
-                      }
+                      { "AnyOf": [{ "In": "Hand" }, { "In": "Battlefield" }] },
+                      { "ControlledBy": "Chooser" }
                     ]
                   },
                   "as": "exiled"
                 }
               },
-              {
-                "Exile": {
-                  "what": {
-                    "Bound": "exiled"
-                  }
-                }
-              }
+              { "Exile": { "what": { "Bound": "exiled" } } }
             ]
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 3
-            },
+            "cost": { "Minus": 3 },
             "targets": [
               {
                 "what": {
-                  "Object": [
-                    {
-                      "AnyOf": [
-                        {
-                          "Type": "Creature"
-                        },
-                        {
-                          "Type": "Planeswalker"
-                        }
-                      ]
-                    }
-                  ]
+                  "Object": [{ "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] }]
                 }
               }
             ],
-            "effects": [
-              {
-                "Destroy": {
-                  "what": {
-                    "Target": 0
-                  }
-                }
-              }
-            ]
+            "effects": [{ "Destroy": { "what": { "Target": 0 } } }]
           }
         },
         {
           "Loyalty": {
-            "cost": {
-              "Minus": 8
-            },
+            "cost": { "Minus": 8 },
             "effects": [
               {
                 "LoseGame": {
@@ -115,22 +62,9 @@
                         "Compare": {
                           "left": {
                             "Count": [
-                              {
-                                "Supertype": "Legendary"
-                              },
-                              {
-                                "AnyOf": [
-                                  {
-                                    "Type": "Creature"
-                                  },
-                                  {
-                                    "Type": "Planeswalker"
-                                  }
-                                ]
-                              },
-                              {
-                                "ControlledBy": "You"
-                              }
+                              { "Supertype": "Legendary" },
+                              { "AnyOf": [{ "Type": "Creature" }, { "Type": "Planeswalker" }] },
+                              { "ControlledBy": "You" }
                             ]
                           },
                           "op": "Eq",
