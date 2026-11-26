@@ -115,22 +115,7 @@ pub(super) fn r7011_cast_pass(
     let mut finished = done.clone();
     finished.push(Target::Player(player));
     Ok(Some(match (answers.next(), answers.next()) {
-        (None, _) => Run::Ask(Decision {
-            player,
-            kind: DecisionKind::ChooseCards(CardsOptions {
-                source: cx.scope.source.id,
-                from: offered,
-                min: 0,
-                max: 1,
-                text: "Choose a card to cast from your library while you search it, or none"
-                    .to_owned(),
-                can_cancel: false,
-                one_per_name: false,
-                total: None,
-                groups: Vec::new(),
-                targeted: Box::default(),
-            }),
-        }),
+        (None, _) => Run::Ask(question(cx, player, offered)),
         (Some((by, Choice::Cards(cards))), None) if *by == player => match cards.as_slice() {
             [] => Run::Done {
                 events: Vec::new(),
@@ -151,6 +136,25 @@ pub(super) fn r7011_cast_pass(
         },
         _ => return Err(unexpected("an answer that was not asked")),
     }))
+}
+
+/// "Choose a card to cast from your library while you search it, or none."
+fn question(cx: &Cx<'_>, player: PlayerId, offered: Vec<ObjectId>) -> Decision {
+    Decision {
+        player,
+        kind: DecisionKind::ChooseCards(CardsOptions {
+            source: cx.scope.source.id,
+            from: offered,
+            min: 0,
+            max: 1,
+            text: "Choose a card to cast from your library while you search it, or none".to_owned(),
+            can_cancel: false,
+            one_per_name: false,
+            total: None,
+            groups: Vec::new(),
+            targeted: Box::default(),
+        }),
+    }
 }
 
 fn unexpected(what: &str) -> ResolveError {

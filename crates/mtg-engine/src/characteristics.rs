@@ -65,7 +65,7 @@ pub struct Characteristics {
     /// The names it has beyond the one it reads: every nonlegendary creature card's when an effect gave them (layer 3,
     /// Spy Kit).
     #[serde(default, skip_serializing_if = "R2013Names::is_own")]
-    #[cfg_attr(feature = "ts", ts(optional))]
+    #[cfg_attr(feature = "ts", ts(as = "Option<R2013Names>", optional))]
     pub r2013_names: R2013Names,
 }
 

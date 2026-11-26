@@ -2,6 +2,7 @@
 import type { AbilityDef } from "./AbilityDef";
 import type { CardTypes } from "./CardTypes";
 import type { ColorSet } from "./ColorSet";
+import type { R2013Names } from "./R2013Names";
 import type { Subtype } from "./Subtype";
 import type { Supertype } from "./Supertype";
 
@@ -63,6 +64,7 @@ name_words?: Array<string>,
  */
 name_set?: string, 
 /**
- * An effect gave it every name of a nonlegendary creature card in addition to its own (layer 3, Spy Kit).
+ * The names it has beyond the one it reads: every nonlegendary creature card's when an effect gave them (layer 3,
+ * Spy Kit).
  */
-r2013_all_names?: boolean, };
+r2013_names?: R2013Names, };
