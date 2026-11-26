@@ -142,6 +142,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::CopyAbility { .. }
         | Effect::CopyCard { .. }
         | Effect::CopyNamedCard { .. }
+        | Effect::R6008CopyNoted { .. }
         | Effect::BecomeCopy { .. }
         | Effect::CreateToken { .. }
         | Effect::R6602CreateAttached { .. }
@@ -195,6 +196,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::ChooseWords { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::R119BindSpliced { .. }
+        | Effect::P160CastWithin { .. }
         | Effect::R120ChooseEachColor { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
         | Effect::R112Piles { .. } | Effect::R112RerollStored { .. }

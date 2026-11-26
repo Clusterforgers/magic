@@ -175,6 +175,22 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         under: Option<Ref>,
     },
+    /// The battlefield face down under its owner's control with the characteristics the effect lists (CR 708.2): a creature
+    /// of this power and toughness with these abilities and nothing else ("It's a 3/3 creature with ..."), which are its
+    /// copiable values; an instant or sorcery card enters too.
+    R6008FaceDownAs {
+        /// Its power.
+        power: i32,
+        /// Its toughness.
+        toughness: i32,
+        /// Its abilities.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        rules: Vec<crate::ability::Ability>,
+        /// The card's name is noted on the permanent ("Note the name of ..."), for `Effect::R6008CopyNoted`; a copy of
+        /// the permanent does not know it.
+        #[serde(default, skip_serializing_if = "is_false")]
+        note_name: bool,
+    },
     /// Its owner's library.
     Library {
         /// Top, bottom or shuffled in.
@@ -1802,6 +1818,26 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         must: bool,
     },
+    /// The player may cast spells from among the cards `from` names, one at a time in the order they choose, while what
+    /// they cast stays within the budget (CR 608.2g): at most `most` spells, and mana values, as the cards were, adding up
+    /// to at most `total` ("any number of spells from among cards exiled with this artifact with total mana value X or
+    /// less", "up to three of the copies").
+    P160CastWithin {
+        /// Who casts them.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The cards cast from.
+        from: Ref,
+        /// The most spells cast; any number when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        most: Option<Amount>,
+        /// The most their mana values add up to; any total when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        total: Option<Amount>,
+        /// They are cast without paying their mana costs (CR 118.9).
+        #[serde(default, skip_serializing_if = "is_false")]
+        free: bool,
+    },
     /// The player copies a card in exile (CR 707.12) and binds the copy: a token card in exile that its owner may cast
     /// (`CastFromZone`) and that ceases to exist as soon as it is anywhere but on the stack (CR 704.5e).
     CopyCard {
@@ -1823,6 +1859,17 @@ pub enum Effect {
         who: Ref,
         /// The name the card's name was chosen under (`ChooseValue` of `ValueKind::OptionsNotNoted`).
         chosen: String,
+        /// The name the copy is bound to, as the object it becomes in exile.
+        #[serde(rename = "as")]
+        bind: String,
+    },
+    /// The player creates a copy of the card with the name noted on the source (`Destination::R6008FaceDownAs` with
+    /// `note_name`: "create a copy of the card with the noted name") and binds it as `CopyCard` binds its copies: a token
+    /// card in exile. A source that noted no name, such as a copy of the permanent, makes no copy and binds nothing.
+    R6008CopyNoted {
+        /// Who owns the copy.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
         /// The name the copy is bound to, as the object it becomes in exile.
         #[serde(rename = "as")]
         bind: String,

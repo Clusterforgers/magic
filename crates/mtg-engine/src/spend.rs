@@ -176,7 +176,7 @@ impl Spend {
         self.r112_way = way;
         match way {
             Some(mtg_cards::value::CastWay::Bestow) => self.bestowed(),
-            Some(mtg_cards::value::CastWay::FaceDown) => self.face_down(),
+            Some(way) if way.casts_face_down() => self.face_down(),
             Some(mtg_cards::value::CastWay::Disturb) => {
                 let mut spend = self;
                 spend.traits.disturb = true;

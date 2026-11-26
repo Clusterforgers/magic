@@ -1,4 +1,4 @@
-// Goal: the top bar of the table has home, a turn badge that says whose turn it is, in which round and which step (the turn number in its tooltip), with the phase's icon and name in its colour (filled on your own turn, tinted on another's) over an accent rule in the bar, whose turn it is in words that never give way (the round, the step and a boss's phase pill shrink first), the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede only, at every window size, since the stop ladder and Full Control live in the controls dock, and the Control keys work with the menu shut.
+// Goal: the top bar of the table has home, a turn badge that says whose turn it is, in which round and which step (the turn number in its tooltip), with the phase's icon and name in its colour (filled on your own turn, tinted on another's) over an accent rule in the bar, whose turn it is in words that never give way (the round, the step and a boss's phase pill shrink first), the button of the side sheet where the side area is a sheet, and a table menu with the layout, the theme and Concede only, at every window size (a replay names every turn in the third person, seen from any seat), since the stop ladder and Full Control live in the controls dock, and the Control keys work with the menu shut.
 import { act, screen, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { appTheme } from '@/hooks/useTheme'
@@ -6,7 +6,7 @@ import type { FullControlMode } from '@/protocol/generated'
 import { must } from '@/test-utils/batches'
 import { renderTable } from '@/test-utils/tableHarness'
 import { withBoss } from './dev/devGame'
-import { buildFixture } from './dev/fixture'
+import { NAMES, buildFixture } from './dev/fixture'
 import type { Viewport } from './layout'
 
 const WIDE: Viewport = { width: 1920, height: 1080 }
@@ -242,5 +242,35 @@ describe('the stop ladder and Full Control', () => {
     act(() => (document.activeElement as HTMLElement | null)?.blur())
     await user.keyboard('{Control}')
     expect(asked).toEqual(['NextWindow'])
+  })
+})
+
+describe('the turn badge in a replay', () => {
+  const tables = [
+    ['a duel on a wide window', 2, 'duel', WIDE],
+    ['a duel on a phone', 2, 'duel', PHONE],
+    ['Commander on a wide window', 4, 'heavy', WIDE],
+    ['Commander on a phone', 4, 'heavy', PHONE],
+  ] as const
+
+  it.each(tables.flatMap((table) => [0, 1].map((active) => [...table, active] as const)))(
+    "names the active seat in the third person, seen from seat 0, in %s (seat %i's turn)",
+    (_name, seats, board, viewport, active) => {
+      renderTable({
+        fixture: buildFixture({ seats, board, active, viewer: 0 }),
+        options: { viewport, replay: true },
+      })
+      const who = must(badge().querySelector<HTMLElement>('[data-slot="turn-who"]'))
+      expect(who).toHaveTextContent(`${NAMES[active] ?? ''}'s turn`)
+      expect(badge()).not.toHaveTextContent(/your/i)
+      expect(badge()).not.toHaveAttribute('data-your-turn')
+      expect(badgePill()).toHaveClass('bg-phase-soft')
+    },
+  )
+
+  it.each(tables)('keeps "Your turn" at a live table in %s', (_name, seats, board, viewport) => {
+    renderTable({ fixture: buildFixture({ seats, board, active: 0, viewer: 0 }), options: { viewport } })
+    expect(must(badge().querySelector('[data-slot="turn-who"]'))).toHaveTextContent('Your turn')
+    expect(badge()).toHaveAttribute('data-your-turn')
   })
 })

@@ -123,6 +123,7 @@ mod evasion;
 mod event_wordings;
 mod exiled_kind;
 mod facts;
+mod fd1_wholes;
 mod fix16_kicked;
 mod fix23_dice;
 mod fix32_animate;
@@ -177,6 +178,7 @@ mod modal;
 mod outside;
 mod p158_wholes;
 mod p159_wholes;
+mod p160_wholes;
 mod pairs;
 mod pay_phrases;
 mod payments;
@@ -946,6 +948,12 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
         return Some(found);
     }
     if let Some(found) = p158_wholes::p158_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = p160_wholes::p160_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = fd1_wholes::fd1_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r118_02_wholes::r118_02_whole_read(text) {

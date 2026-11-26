@@ -909,6 +909,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::LosePrinted(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::R111GainNonManaAbilitiesOf(_)
+        | Wanted::P160GainLoyaltyAbilitiesOf(_)
         | Wanted::R6702GainActivatedAndTriggeredOf(_)
         | Wanted::R114StickerAbilitiesOf(_)
         | Wanted::LoseAbilities

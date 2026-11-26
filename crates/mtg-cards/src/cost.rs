@@ -254,6 +254,10 @@ pub enum CostItem {
         filter: Selector,
         /// The least total mana value.
         total: u32,
+        /// The total counts the mana symbols of this color among their mana costs instead ("with fifteen or more black
+        /// mana symbols among their mana costs"; a hybrid symbol counts once for each of its colors).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        symbols: Option<mtg_core::color::Color>,
     },
     /// Blight (Lorwyn Eclipsed): put that many -1/-1 counters on a creature the payer controls and picks.
     Blight(Amount),

@@ -339,6 +339,7 @@ export type { R114PaidDo } from "./R114PaidDo";
 export type { R114StickerGiven } from "./R114StickerGiven";
 export type { R114StickerKick } from "./R114StickerKick";
 export type { R120RestrictedMana } from "./R120RestrictedMana";
+export type { R6008Listed } from "./R6008Listed";
 export type { R612TextBox } from "./R612TextBox";
 export type { Rarity } from "./Rarity";
 export type { ReadBody } from "./ReadBody";

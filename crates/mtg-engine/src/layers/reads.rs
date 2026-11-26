@@ -156,6 +156,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::R111GainNonManaAbilitiesOf(_)
+        | Wanted::P160GainLoyaltyAbilitiesOf(_)
         | Wanted::R6702GainActivatedAndTriggeredOf(_) => Traits::ACTIVATED,
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
@@ -205,6 +206,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::SetController(who)
         | Wanted::GainAbilitiesOf(who)
         | Wanted::R111GainNonManaAbilitiesOf(who)
+        | Wanted::P160GainLoyaltyAbilitiesOf(who)
         | Wanted::R6702GainActivatedAndTriggeredOf(who) => reads_of_ref(who).or(Traits::ACTIVATED),
         // Only which objects the reference names is read: the stickers on them are no characteristic.
         Wanted::R114StickerAbilitiesOf(who) => reads_of_ref(who),
@@ -399,6 +401,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CounterCount { .. }
         | Pred::CanEnchantSource
         | Pred::XInCost
+        | Pred::R6008PaidBySpent
         | Pred::PhyrexianInCost
         | Pred::GenericCost(_)
         | Pred::SingleTarget

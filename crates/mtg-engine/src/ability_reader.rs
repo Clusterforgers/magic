@@ -64,6 +64,17 @@ pub(crate) fn lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
     rules.chain(mana).collect()
 }
 
+/// The loyalty abilities printed on a card, each with its index among its rules, which an object that has "all loyalty
+/// abilities of" it gains (`Modification::P160GainLoyaltyAbilitiesOf`).
+pub(crate) fn p160_loyalty_lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
+    card.rules
+        .iter()
+        .enumerate()
+        .filter(|(_, rules)| matches!(***rules, Ability::Loyalty { .. }))
+        .map(|(index, rules)| (index, Arc::clone(rules)))
+        .collect()
+}
+
 /// The plain mana abilities printed on a card (a basic land's own), which a permanent that has its abilities lends
 /// after its rules (`r111_lent`).
 pub(crate) fn r111_printed_mana(card: &CardDefinition) -> &[AbilityDef] {

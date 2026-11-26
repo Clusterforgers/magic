@@ -386,6 +386,10 @@ pub(crate) fn r6400_declaring(state: &GameState, decider: PlayerId) -> PlayerId 
 }
 
 fn combat_damage(state: &GameState, pass: DamagePass) -> Progress {
+    let turned = crate::r6008_face_down::r6008_assigning(state, pass);
+    if !turned.is_empty() {
+        return Progress::Events(turned);
+    }
     if let Some((player, options)) = pending_assignment(state, pass) {
         return Progress::Decide(Decision {
             player,

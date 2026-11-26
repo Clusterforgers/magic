@@ -459,6 +459,10 @@ pub enum Pred {
     WithSticker(crate::ability::StickerKind),
     /// Is a harnessed permanent: its ∞ ability works.
     Harnessed,
+    /// Has a mana cost that some or all of the mana spent on the resolving ability could pay, an {X} in it counting as 0
+    /// ("a creature card in your hand whose mana cost could be paid by some amount of, or all of, the mana you spent on
+    /// {X}"): the amount and the types of that mana count. A card without a mana cost matches none.
+    R6008PaidBySpent,
     /// Attacked, blocked or became blocked (as marked) since your last upkeep.
     FoughtSinceYourLastUpkeep {
         /// It attacked.
