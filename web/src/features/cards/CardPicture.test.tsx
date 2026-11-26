@@ -1,4 +1,4 @@
-// Goal: outside the table a card's picture comes from the server's endpoint by oracle id in a reserved 5:7 box, a mouse hover shows it large in a panel docked as the table preview is, with its type and support, while touch does not, and Text only draws none.
+// Goal: outside the table a card's picture comes from the server's endpoint by oracle id in a reserved 5:7 box over a skeleton that names it (unless quiet) and clips the name to the box, a mouse hover shows it large in a panel docked as the table preview is, with its type and support, while touch does not, and Text only draws none.
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 import { CardPicture, HoverPicture } from './CardPicture'
@@ -22,6 +22,21 @@ describe('CardPicture', () => {
     expect(container.querySelector('img')).toHaveAttribute('src', src)
     expect(container.querySelector('[data-slot="card-image"]')).toHaveClass('aspect-[5/7]')
   })
+
+  it.each<[boolean, string]>([
+    [false, 'Lathril, Blade of the Elves'],
+    [true, ''],
+  ])(
+    'names the card in the skeleton unless quiet (%s), clipped to the box however narrow',
+    (quiet, words) => {
+      const { container } = render(
+        <CardPicture oracleId="lathril" name="Lathril, Blade of the Elves" className="w-10" quiet={quiet} />,
+      )
+      const skeleton = container.querySelector('[data-slot="card-image"] span[aria-hidden="true"]')
+      expect(skeleton).toHaveTextContent(words)
+      expect(skeleton).toHaveClass('overflow-hidden')
+    },
+  )
 
   it('draws nothing with Text only', () => {
     setImageChoice('text')

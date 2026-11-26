@@ -8,10 +8,11 @@ import { AwayMark } from './PodParts'
 import { awaySeats, awayText, untimed } from './presenceText'
 import { NothingToDoBanner } from './prompt/NothingToDoBanner'
 import { ownDecision } from './prompt/ownDecision'
-import { isYourTurn } from './selectors'
+import { bannerInputOf, isYourTurn } from './selectors'
 import { StackChips } from './StackChips'
 import { TurnTicker } from './turn/TurnTicker'
-import { priorityText, waitingOn, waitingText } from './turnText'
+import { useIsReplay } from './tableOptions'
+import { priorityText, replayLine, waitingOn, waitingText } from './turnText'
 import { useStable } from './useStable'
 
 /** The note that this seat has nothing to do or that a play was taken back; drawn only while it says something. */
@@ -85,8 +86,12 @@ export function SharedStrip({ inset = 0 }: { inset?: number }) {
   const name = useSeatNamer()
   const stage = usePlay((state) => state.view?.stage ?? 'PreGame')
   const priority = usePlay((state) => state.view?.priority ?? null)
+  const replay = useIsReplay()
   const waiting = usePlay(useStable(waitingOn))
-  const away = usePlay(useStable((state) => awaySeats(state, waitingOn(state))))
+  // A replay waits for nobody: its line says whose turn and step it is at this step, as the turn badge does.
+  const line = usePlay((state) => (replay ? replayLine(bannerInputOf(state), name) : null))
+  const away = usePlay(useStable((state) => (replay ? [] : awaySeats(state, waitingOn(state)))))
+  const status = line ?? waitingText(waiting, name)
   const mine = usePlay((state) => ownDecision(state) !== null)
   const yourTurn = usePlay(isYourTurn)
   const holder = priorityText(priority, stage, name)
@@ -116,7 +121,8 @@ export function SharedStrip({ inset = 0 }: { inset?: number }) {
         <div data-slot="strip-row" className="flex min-w-0 flex-1 items-center gap-x-3">
           <div
             data-slot="strip-stack"
-            className="flex min-w-0 shrink-[4] items-center overflow-hidden flex-1"
+            // Folded chips keep room for the top chip and "+N more" ("+N" on a phone) whole; the status line truncates first.
+            className="flex min-w-0 shrink-[4] items-center overflow-hidden flex-1 has-data-[slot=stack-more]:min-w-28 sm:has-data-[slot=stack-more]:min-w-48 max-sm:[&_[data-slot=stack-more-word]]:sr-only"
           >
             <StackChips />
           </div>
@@ -126,10 +132,10 @@ export function SharedStrip({ inset = 0 }: { inset?: number }) {
                 data-slot="waiting-line"
                 aria-live="polite"
                 aria-atomic="true"
-                title={waitingText(waiting, name)}
+                title={status}
                 className="min-w-0 shrink truncate text-sm font-medium"
               >
-                {waitingText(waiting, name)}
+                {status}
                 {away.length === 0 ? null : (
                   <span data-slot="away-note">
                     {' · '}

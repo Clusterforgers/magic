@@ -1,4 +1,4 @@
-// Goal: each open game's card shows its commanders' art crops grouped by seat in seat order, each seat's band edged in its seat's hue and its commanders named by the seat's dot; a game without commanders, a commander the database does not know and a picture that fails fall back to the felt with the format's mark or the seat's ground, and the card still names everything.
+// Goal: each open game's card shows its commanders' art crops grouped by seat in seat order, each seat's band edged in its seat's hue and its commanders named by the seat's dot; a game without commanders, a commander the database does not know and a picture that fails fall back to the felt with the format's mark or the seat's ground, and the card still names everything; a host name without a break wraps anywhere.
 import { fireEvent, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { installFakeClock, removeFakeClock, settle } from '@/test-utils/fakeClock'
@@ -110,5 +110,18 @@ describe('the art of a card', () => {
     expect(krenko?.querySelector('img')).toBeNull()
     expect(krenko).not.toHaveAttribute('data-pictured')
     expect(within(card).getByText('Krenko')).toBeInTheDocument()
+  })
+})
+
+describe('a host name with no place to break', () => {
+  it('wraps anywhere in the heading and the line under it, so a phone card does not cut it off', async () => {
+    const card = await cardOf(
+      lobbyRow({ host: 'Bartholomew_Featherstonehaugh_3', format: 'two_headed_giant' }),
+    )
+    const heading = within(card).getByRole('heading', { level: 3 })
+    expect(heading).toHaveClass('[overflow-wrap:anywhere]')
+    expect(within(card).getByText(/^Two headed giant · Your own deck/)).toHaveClass(
+      '[overflow-wrap:anywhere]',
+    )
   })
 })
