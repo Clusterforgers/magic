@@ -1,8 +1,9 @@
-import { Link, Outlet, useLocation } from '@tanstack/react-router'
-import { ChartNoAxesColumnIcon, ListChecksIcon, PlusIcon, SparklesIcon } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import { Link, Outlet } from '@tanstack/react-router'
+import { PlusIcon, SparklesIcon } from 'lucide-react'
+import { useRef } from 'react'
 import { useIsFitWindow, useIsFullBleed } from '@/components/appChrome'
 import { FlashNotice } from '@/components/FlashNotice'
+import { NavTabs } from '@/components/NavTabs'
 import { OfflineNotice } from '@/components/OfflineNotice'
 import { ThemeMenu } from '@/components/ThemeMenu'
 import { buttonVariants } from '@/components/ui/button'
@@ -10,60 +11,13 @@ import { TooltipProvider } from '@/components/ui/tooltip'
 import { AccountNav, AuthNotice } from '@/features/auth/AccountNav'
 import { useAuth } from '@/features/auth/context'
 import { usePrefetchChooserLists } from '@/features/decks/usePrefetchChooserLists'
-import { useToReadCount } from '@/features/reads/useToReadCount'
 import { PageTourHost } from '@/features/learn/PageTourHost'
-import { TO_READ } from '@/lib/toRead'
 import { cn } from '@/lib/utils'
 import { usePrefsSync } from '@/play/usePrefsSync'
 
-// A tab of the main navigation: quiet until it is the current page, which gets a bar under it as well as strong text.
-const TAB =
-  "relative inline-flex h-11 shrink-0 items-center border-b-2 whitespace-nowrap border-transparent px-2 text-sm font-medium sm:px-3 text-muted-foreground transition-colors duration-fast ease-out hover:text-foreground aria-[current='page']:border-primary aria-[current='page']:text-foreground sm:h-14"
-
-/**
- * "Review cards": the cards of the account's decks that wait for a read or a check, with a count of those to read
- * (hidden at none). Under `xl` the words give way to the icon, so the tabs fit a phone's row.
- */
-function ReviewTab({ account }: { account: string | null }) {
-  const toRead = useToReadCount(account)
-  const badge = toRead > 99 ? '99+' : String(toRead)
-  return (
-    <Link
-      to="/review"
-      search={{ mine: true }}
-      className={cn(TAB, 'gap-2')}
-      aria-label={toRead > 0 ? `Review cards, ${toRead} ${TO_READ}` : 'Review cards'}
-      title="Review cards"
-      data-slot="review-cards"
-    >
-      <ListChecksIcon aria-hidden="true" className="size-4 shrink-0 xl:hidden" />
-      <span className="hidden xl:inline">Review cards</span>
-      {toRead > 0 ? (
-        <span
-          aria-hidden="true"
-          data-slot="to-read-badge"
-          className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-support-read px-1 text-xs font-semibold text-on-primary tabular-nums"
-        >
-          {badge}
-        </span>
-      ) : null}
-    </Link>
-  )
-}
-
 /** The brand, the main navigation, the theme and the account. */
 function ShellHeader() {
-  const signedIn = useAuth((state) => state.status === 'signed-in')
   const account = useAuth((state) => (state.status === 'signed-in' ? (state.user?.id ?? null) : null))
-  const checking = useLocation({ select: (location) => location.pathname === '/decks/unvalidated' })
-  // A phone's row of tabs scrolls sideways: the current page's tab is brought into it.
-  const nav = useRef<HTMLElement>(null)
-  const path = useLocation({ select: (location) => location.pathname })
-  useEffect(() => {
-    const current = nav.current?.querySelector('[aria-current="page"]')
-    if (typeof current?.scrollIntoView === 'function')
-      current.scrollIntoView({ block: 'nearest', inline: 'nearest' })
-  }, [path, signedIn])
   return (
     <header className="plaque border-b border-brass/40">
       <div className="flex flex-wrap items-center gap-x-1 px-4 sm:px-6">
@@ -75,59 +29,19 @@ function ShellHeader() {
           Magic
         </Link>
         <nav
-          ref={nav}
           aria-label="Main"
           className="order-3 flex w-full min-w-0 items-center border-t sm:order-none sm:w-auto sm:flex-1 sm:border-t-0"
         >
-          {/* The tabs take the room the brand and the buttons leave and scroll sideways where an account's tabs do
-              not fit it (a phone's row, a narrow window), so they never run under Create, the theme or the account. */}
-          <div
-            data-slot="nav-tabs"
-            className="flex min-w-0 items-center overflow-x-auto [scrollbar-width:none]"
-          >
-            <Link to="/" className={TAB}>
-              Play
-            </Link>
-            <Link to="/precons" className={TAB}>
-              Precons
-            </Link>
-            {signedIn ? (
-              <>
-                {/* Cards to check lives under /decks but is a tab of its own, so Decks is not current there. */}
-                <Link to="/decks" className={TAB} activeOptions={{ exact: checking }}>
-                  Decks
-                </Link>
-                <Link to="/games" className={TAB}>
-                  My games
-                </Link>
-                <Link to="/tournaments" className={TAB}>
-                  Tournaments
-                </Link>
-                <Link to="/delves" className={TAB}>
-                  Delves
-                </Link>
-                <ReviewTab account={account} />
-                <Link
-                  to="/support"
-                  className={cn(TAB, 'gap-2')}
-                  aria-label="Card support"
-                  title="Card support"
-                >
-                  <ChartNoAxesColumnIcon aria-hidden="true" className="size-4 shrink-0 xl:hidden" />
-                  <span className="hidden xl:inline">Card support</span>
-                </Link>
-              </>
-            ) : null}
-          </div>
+          <NavTabs account={account} />
           <Link
             to="/new"
-            className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-auto hidden shrink-0 sm:inline-flex')}
+            className={cn(buttonVariants({ size: 'sm' }), 'my-auto ml-1 hidden shrink-0 sm:inline-flex')}
           >
             <PlusIcon aria-hidden="true" />
             Create
           </Link>
         </nav>
-        <div className="ml-auto flex items-center gap-1 sm:ml-0">
+        <div className="ml-auto flex min-w-0 items-center gap-1 sm:ml-0">
           {/* Under 640 px the tabs fill their own row, so Create moves up beside the account. */}
           <Link to="/new" className={cn(buttonVariants({ size: 'sm' }), 'mr-1 sm:hidden')}>
             <PlusIcon aria-hidden="true" />

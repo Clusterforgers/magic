@@ -80,7 +80,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (db1) Game event commits take milliseconds instead of 1 to 1.8 s on the replicated volume, by an owner-chosen fix: a larger `shared_buffers`, `synchronous_commit` off for event writes, or a local volume (`docs/performance.md`, Deck lists)
 - [ ] (pl2o) A full run on the scratch database stays under the registration limit (10 an address in 15 minutes): admin, by-hand, card-prefetch, commander-four, tournaments, watch-replay and one accounts layout case end on "Too many attempts" today
-- [ ] (pl2p) The accounts layout gate passes: the signed-in header cuts off "Review cards" and "Card support" at 1024 × 768 and "Delves" too at 390 × 844
 - [ ] (pl2q) `precon-game.spec.ts` "two accounts play verified precons" passes in a full run: a target click there waits 15 s for the stable check, the frame stall `join.spec.ts` had
 - [ ] (pf10m) Dev fixtures for the deck list and groups, the replay and the open games list, so a sweep shoots them without a server
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
