@@ -8,7 +8,11 @@
       "oracle_fingerprint": "bf36b9145e56d2c730ad36654c02db79",
       "abilities": [
         { "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } },
-        { "Rule": { "rule": { "R6012fPayAnyAmount": { "who": "You", "spells": [{ "Type": "Creature" }] } } } }
+        {
+          "Rule": {
+            "rule": { "R6012fPayAnyAmount": { "who": "You", "spells": [{ "Type": "Creature" }] } }
+          }
+        }
       ]
     }
   ]

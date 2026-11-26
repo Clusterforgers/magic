@@ -9,7 +9,10 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 7, "end": 344 } }
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 344 }
+          }
         }
       ]
     }

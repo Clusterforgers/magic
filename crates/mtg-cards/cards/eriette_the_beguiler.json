@@ -29,7 +29,9 @@
             "effects": [
               {
                 "Continuous": {
-                  "affected": { "Each": [{ "Is": "Triggering" }, { "Not": { "Is": "TriggeringFirst" } }] },
+                  "affected": {
+                    "Each": [{ "Is": "Triggering" }, { "Not": { "Is": "TriggeringFirst" } }]
+                  },
                   "mods": [{ "SetController": "You" }],
                   "duration": { "R6112bWhileAttached": "TriggeringFirst" }
                 }
