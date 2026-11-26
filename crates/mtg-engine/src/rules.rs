@@ -287,6 +287,17 @@ pub enum Rule {
         #[cfg_attr(feature = "ts", ts(type = "unknown"))]
         cost: mtg_cards::cost::Cost,
     },
+    /// The players may pay any amount of mana in addition as they cast a spell of `spells`, for as many +1/+1 counters on
+    /// the permanent it becomes (`GameRule::R6012fPayAnyAmount`).
+    R6012fPayAnyAmount {
+        /// Who casts the spells.
+        players: Vec<PlayerId>,
+        /// The permanent with the rule.
+        source: ObjectRef,
+        /// The spells.
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))]
+        spells: mtg_cards::refs::Selector,
+    },
     /// The permanent notes the mana value of each card put into exile (`GameRule::R113NoteExiledManaValue`).
     R113NoteExiled {
         /// The permanent with the rule, whose memory holds the notes.
@@ -1061,6 +1072,9 @@ pub(crate) struct RulesInForce {
     r113_note_exiled: Vec<ObjectRef>,
     /// The sticker kickers each player's spells may be paid for, one for each rule, in timestamp order.
     r114_sticker_kickers: Vec<R114Kicker>,
+    /// The rules that let a player pay any amount of mana in addition for a spell (`Rule::R6012fPayAnyAmount`), one for each
+    /// rule, in timestamp order.
+    r6012f_any_amount: Vec<(PlayerId, ObjectRef, mtg_cards::refs::Selector)>,
     /// The players who keep unspent mana as steps end, with the type kept (every type when `None`).
     keep_mana: Vec<(PlayerId, Option<ManaType>)>,
     /// The players whose lost mana becomes another type, in timestamp order.
@@ -1705,6 +1719,15 @@ impl RulesInForce {
                     spells: spells.clone(),
                     cost: cost.clone(),
                 })),
+            Rule::R6012fPayAnyAmount {
+                players,
+                source,
+                spells,
+            } => self.r6012f_any_amount.extend(
+                players
+                    .iter()
+                    .map(|player| (*player, *source, spells.clone())),
+            ),
             Rule::R113ExchangeRoll {
                 players,
                 source,
@@ -2335,6 +2358,11 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             spells: spells.clone(),
             cost: cost.clone(),
         },
+        GameRule::R6012fPayAnyAmount { who, spells } => Rule::R6012fPayAnyAmount {
+            players: scope.players(who)?,
+            source: scope.source,
+            spells: spells.clone(),
+        },
         GameRule::R113NoteExiledManaValue => Rule::R113NoteExiled {
             source: scope.source,
         },
@@ -2691,6 +2719,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::R6402ChangeRoll { players, .. }
         | Rule::R113ExchangeRoll { players, .. }
         | Rule::R114StickerKicker { players, .. }
+        | Rule::R6012fPayAnyAmount { players, .. }
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
         | Rule::DrawLimit(players, _)
@@ -2941,6 +2970,7 @@ static NONE: RulesInForce = RulesInForce {
     r113_exchange_roll: Vec::new(),
     r113_note_exiled: Vec::new(),
     r114_sticker_kickers: Vec::new(),
+    r6012f_any_amount: Vec::new(),
     keep_mana: Vec::new(),
     mana_becomes: Vec::new(),
     draw_limit: Vec::new(),
@@ -3885,6 +3915,21 @@ pub(crate) fn r114_sticker_kickers(state: &GameState, player: PlayerId) -> Vec<R
         .iter()
         .filter(|kicker| kicker.player == player)
         .cloned()
+        .collect()
+}
+
+/// The permanents that let `player` pay any amount of mana in addition for a spell, with the spells each allows, in
+/// timestamp order (`Rule::R6012fPayAnyAmount`).
+pub(crate) fn r6012f_any_amounts(
+    state: &GameState,
+    player: PlayerId,
+) -> Vec<(ObjectRef, mtg_cards::refs::Selector)> {
+    state
+        .rules()
+        .r6012f_any_amount
+        .iter()
+        .filter(|(who, _, _)| *who == player)
+        .map(|(_, source, spells)| (*source, spells.clone()))
         .collect()
 }
 

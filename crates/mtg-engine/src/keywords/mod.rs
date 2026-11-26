@@ -297,6 +297,9 @@ pub enum OptionalKind {
     /// Sticker kicker, which a static ability gives the spell (`Rule::R114StickerKicker`): a ticket and a sticker on the
     /// spell as it is cast; it counts as a kick for other objects (`Pred::Kicked`).
     R114StickerKicker,
+    /// Any amount of mana a static ability lets the caster pay (`Rule::R6012fPayAnyAmount`), {1} each time: the permanent
+    /// the spell becomes enters with a +1/+1 counter for each.
+    R6012fPayAnyAmount,
 }
 
 /// A cost a keyword lets the caster pay in addition: kicker, multikicker, buyback and entwine.

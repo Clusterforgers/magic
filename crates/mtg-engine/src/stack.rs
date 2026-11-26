@@ -51,6 +51,9 @@ pub(crate) fn resolve_top(state: &GameState) -> Option<Vec<Event>> {
 pub(crate) fn resolved(state: &GameState, id: ObjectId) -> Vec<Event> {
     let mut events = vec![Event::SpellResolved { object: id }];
     events.extend(entering_counters(state, id));
+    events.extend(crate::announce::r6012f_any_amount::r6012f_entering(
+        state, id,
+    ));
     events.extend(crate::spend_rider::entering(state, id));
     let ridden = crate::r401_riders::r401_entering(state, id, &events);
     events.extend(ridden);

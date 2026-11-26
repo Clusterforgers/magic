@@ -44,6 +44,7 @@ mod r121_02_x_per_opponent;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
+pub(crate) mod r6012f_any_amount;
 pub(crate) mod r6400_combat_costs;
 pub(crate) mod required;
 mod rewound;

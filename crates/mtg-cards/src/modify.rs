@@ -1271,6 +1271,16 @@ pub enum GameRule {
         /// The sticker kicker cost.
         cost: crate::cost::Cost,
     },
+    /// "As an additional cost to cast creature spells, you may pay any amount of mana. If you do, that creature enters
+    /// with that many additional +1/+1 counters on it." (CR 601.2f): a player of `who` casting a spell of `spells` may
+    /// pay {1} in addition any number of times, and the permanent the spell becomes enters with that many +1/+1
+    /// counters. Each such rule is a cost of its own.
+    R6012fPayAnyAmount {
+        /// Who casts the spells.
+        who: Ref,
+        /// The spells.
+        spells: Selector,
+    },
     /// "Note the mana value of each card as it's put into exile.": the permanent notes the number for itself as each card
     /// goes to exile, with no stack; `Amount::R113GreatestNoted` reads the notes of this turn.
     R113NoteExiledManaValue,

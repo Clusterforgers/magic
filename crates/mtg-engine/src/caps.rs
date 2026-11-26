@@ -665,6 +665,7 @@ const RUNS: &[&str] = &[
     "Rule.R6700VillainousAgain",
     "Rule.R6402ChangeRoll",
     "Rule.R114StickerKicker",
+    "Rule.R6012fPayAnyAmount",
     "Rule.R113ExchangeRoll",
     "Rule.R113NoteExiledManaValue",
     "Rule.ExtraDie",

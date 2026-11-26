@@ -7264,6 +7264,10 @@ impl Walker<'_> {
                 }
                 w.at("cost", |w| w.cost(cost));
             }),
+            GameRule::R6012fPayAnyAmount { who, spells } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("spells", |w| w.selector(spells));
+            }),
             GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {

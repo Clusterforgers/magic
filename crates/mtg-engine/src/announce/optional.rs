@@ -342,6 +342,9 @@ pub(super) fn read(state: &GameState, what: &What) -> Vec<Optional> {
             }));
         }
     }
+    costs.extend(super::r6012f_any_amount::r6012f_offered(
+        state, *spell, caster,
+    ));
     costs
 }
 
