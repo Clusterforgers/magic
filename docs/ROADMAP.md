@@ -81,7 +81,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (db1) Game event commits take milliseconds instead of 1 to 1.8 s on the replicated volume, by an owner-chosen fix: a larger `shared_buffers`, `synchronous_commit` off for event writes, or a local volume (`docs/performance.md`, Deck lists)
 - [ ] (pl2o) A full run on the scratch database stays under the registration limit (10 an address in 15 minutes): admin, by-hand, card-prefetch, commander-four, tournaments, watch-replay and one accounts layout case end on "Too many attempts" today
 - [ ] (pl2q) `precon-game.spec.ts` "two accounts play verified precons" passes in a full run: a target click there waits 15 s for the stable check, the frame stall `join.spec.ts` had
-- [ ] (rp1a) In a replay the top-bar turn badge names the player whose turn it is in the third person, as the strip does, instead of "Your turn" from the store seat
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 - [ ] (ln1) The Help menu's table tour runs on the Learn coach and its anchors instead of `TourCard` and CSS selectors
