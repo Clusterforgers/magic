@@ -2218,8 +2218,13 @@ impl<'a> Walker<'a> {
                         w.at("count", |w| w.amount(count));
                     }
                     CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
-                    CostItem::ExileTotalValue { filter, .. } => {
+                    CostItem::ExileTotalValue {
+                        filter, symbols, ..
+                    } => {
                         w.at("filter", |w| w.selector(filter));
+                        if symbols.is_some() {
+                            w.uses("Cost", "ExileTotalValue.Symbols");
+                        }
                     }
                     CostItem::OneOf(costs) => w.alternatives(costs),
                     CostItem::Discard { count, filter } => {
@@ -3174,6 +3179,7 @@ impl<'a> Walker<'a> {
             }
             Modification::GainAbilitiesOf(from)
             | Modification::R111GainNonManaAbilitiesOf(from)
+            | Modification::P160GainLoyaltyAbilitiesOf(from)
             | Modification::R6702GainActivatedAndTriggeredOf(from)
             | Modification::R114StickerAbilitiesOf(from)
             | Modification::SetCreatureTypesOf(from) => {
@@ -5151,6 +5157,22 @@ impl Walker<'_> {
                 w.effect_list("otherwise", otherwise, false);
                 if let Some(name) = bind {
                     w.bind(name, Kind::Object);
+                }
+            }
+            Effect::P160CastWithin {
+                who,
+                from,
+                most,
+                total,
+                ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("from", |w| w.reference(from, Kind::Object));
+                if let Some(most) = most {
+                    w.at("most", |w| w.amount(most));
+                }
+                if let Some(total) = total {
+                    w.at("total", |w| w.amount(total));
                 }
             }
             Effect::Bind { what, bind, adds } => {

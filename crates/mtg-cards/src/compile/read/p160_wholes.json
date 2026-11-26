@@ -1,0 +1,6 @@
+[
+[{"Activated":{"cost":[{"Mana":"{X}"},"Tap","SacrificeSelf"],"effects":[{"P160CastWithin":{"from":{"Each":[{"In":"Exile"},{"ExiledWith":"This"}]},"total":"X","free":true}}]}},"{X}, {T}, Sacrifice this artifact: You may cast any number of spells from among cards exiled with this artifact with total mana value X or less without paying their mana costs."]
+, [{"Activated":{"cost":[{"ExileTotalValue":{"filter":[{"Color":"Black"}],"total":15,"symbols":"Black"}}],"effects":[{"CopyCard":{"what":{"Arrived":{"of":"Paid","zone":"Exile"}},"as":"copies"}},{"P160CastWithin":{"from":{"Bound":"copies"},"most":3,"free":true}}]}},"Exile any number of black cards from your graveyard with fifteen or more black mana symbols among their mana costs: Copy those exiled cards. You may cast up to three of the copies without paying their mana costs."]
+, [{"Static":{"affected":"This","mods":[{"P160GainLoyaltyAbilitiesOf":{"Each":[{"Type":"Planeswalker"},"Other"]}}]}},"~ has all loyalty abilities of all other planeswalkers on the battlefield."]
+, [{"Loyalty":{"cost":{"Plus":1},"effects":[{"Draw":{}},{"Choose":{"who":"Opponents","from":{"Each":[{"AnyOf":[{"In":"Hand"},{"In":"Battlefield"}]},{"ControlledBy":"Chooser"}]},"as":"exiled"}},{"Exile":{"what":{"Bound":"exiled"}}}]}},"+1: You draw a card. Each opponent exiles a card from their hand or a permanent they control."]
+]

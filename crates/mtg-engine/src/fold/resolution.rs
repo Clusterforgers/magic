@@ -400,7 +400,9 @@ fn end(state: &mut GameState, id: ObjectId, outcome: ResolutionOutcome) -> Resul
             state.objects.remove(&id);
             state.zones.remove(Zone::Stack, id);
         }
-        (_, ResolutionOutcome::Resolved) => return Ok(()),
+        // `SpellResolved` follows and moves it; the active player receives priority even when a replacement effect
+        // sends it elsewhere instead (CR 117.3b, 608.2n).
+        (_, ResolutionOutcome::Resolved) => {}
         (
             _,
             ResolutionOutcome::Fizzled | ResolutionOutcome::Countered | ResolutionOutcome::Lapsed,

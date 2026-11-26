@@ -1,7 +1,7 @@
 {
   "oracle_id": "0fe6c042-1182-4392-8938-fee36149d74f",
   "name": "Baron Helmut Zemo",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Baron Helmut Zemo",
@@ -15,12 +15,7 @@
             "effects": [{ "Connive": { "what": "This" } }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 76, "end": 373 }
-          }
-        }
+        {"Activated":{"cost":[{"ExileTotalValue":{"filter":[{"Color":"Black"}],"total":15,"symbols":"Black"}}],"condition":{"Matches":{"subject":"This","selector":["AttackedThisTurn"]}},"limit":"OncePerTurn","effects":[{"CopyCard":{"what":{"Arrived":{"of":"Paid","zone":"Exile"}},"as":"copies"}},{"P160CastWithin":{"from":{"Bound":"copies"},"most":3,"free":true}}]}}
       ]
     }
   ]
