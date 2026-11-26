@@ -217,6 +217,11 @@ pub enum Rule {
     /// The player casts every ballot of each vote, each still counting as its voter's (CR 701.38); the last rule in
     /// force applies.
     R6400ChoosesVotes(PlayerId),
+    /// The player chooses which creatures attack, the active player what each attacks (CR 508.1a); the last rule in
+    /// force applies.
+    R5081ChoosesAttackers(PlayerId),
+    /// The sources the selector picks are colorless sources of damage (CR 609.7), judged when the damage would be dealt.
+    R6097ColorlessDamage(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The players get an additional vote (CR 701.38d).
     ExtraVote(Vec<PlayerId>),
     /// The turn order runs the other way round the table.
@@ -1019,6 +1024,10 @@ pub(crate) struct RulesInForce {
     r6400_block_choosers: BTreeMap<PlayerId, PlayerId>,
     /// The player who casts every ballot, the last in force winning.
     r6400_vote_chooser: Option<PlayerId>,
+    /// Who chooses the attackers, if a rule says another player does (CR 508.1a).
+    r5081_attack_chooser: Option<PlayerId>,
+    /// The rules that make sources colorless sources of damage (CR 609.7).
+    r6097_colorless: Vec<Unpreventable>,
     /// The players who get an additional vote (CR 701.38d), once for each rule that gives one.
     extra_vote: Vec<PlayerId>,
     /// How many rules reverse the turn order; an odd count runs it the other way.
@@ -1621,6 +1630,17 @@ impl RulesInForce {
                 }
             }
             Rule::R6400ChoosesVotes(chooser) => self.r6400_vote_chooser = Some(*chooser),
+            Rule::R5081ChoosesAttackers(chooser) => self.r5081_attack_chooser = Some(*chooser),
+            Rule::R6097ColorlessDamage(from) => {
+                if let Some(source) = source {
+                    self.r6097_colorless.push(Unpreventable {
+                        controller,
+                        source,
+                        from: from.clone(),
+                        combat: None,
+                    });
+                }
+            }
             Rule::ExtraVote(players) => self.extra_vote.extend(players),
             Rule::ReverseTurnOrder => self.r376_reversals += 1,
             Rule::AttackOnlyNearest(left) => self.r376_nearest.extend(left),
@@ -2266,6 +2286,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::R6400ChoosesVotes { chooser } => {
             Rule::R6400ChoosesVotes(one_player(scope, chooser)?)
         }
+        GameRule::R5081ChoosesAttackers { chooser } => {
+            Rule::R5081ChoosesAttackers(one_player(scope, chooser)?)
+        }
+        GameRule::R6097ColorlessDamage(from) => Rule::R6097ColorlessDamage(from.clone()),
         GameRule::ExtraVote(who) => Rule::ExtraVote(scope.players(who)?),
         GameRule::ReverseTurnOrder => Rule::ReverseTurnOrder,
         GameRule::AttackOnlyNearest(side) => {
@@ -2731,6 +2755,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RevealFirstDraw { .. }
         | Rule::UntapRemovesCounters(_)
         | Rule::R6400ChoosesVotes(_)
+        | Rule::R5081ChoosesAttackers(_)
+        | Rule::R6097ColorlessDamage(_)
         | Rule::R113NoteExiled { .. }
         | Rule::P158LoyaltyTwiceThis(_) => false,
         Rule::Planar => true,
@@ -2896,6 +2922,8 @@ static NONE: RulesInForce = RulesInForce {
     vote_again: BTreeSet::new(),
     r6400_block_choosers: BTreeMap::new(),
     r6400_vote_chooser: None,
+    r5081_attack_chooser: None,
+    r6097_colorless: Vec::new(),
     extra_vote: Vec::new(),
     r376_reversals: 0,
     r376_nearest: Vec::new(),
@@ -3982,6 +4010,25 @@ pub fn r6400_block_chooser(state: &GameState, player: PlayerId) -> Option<Player
 /// The player who casts every ballot of a vote (CR 701.38), if a rule says so.
 pub fn r6400_vote_chooser(state: &GameState) -> Option<PlayerId> {
     state.rules().r6400_vote_chooser
+}
+
+/// The player who chooses which creatures attack in place of the active player (CR 508.1a), if a rule says another
+/// player does.
+pub fn r5081_attack_chooser(state: &GameState) -> Option<PlayerId> {
+    state
+        .rules()
+        .r5081_attack_chooser
+        .filter(|chooser| Some(*chooser) != state.active_player() && state.is_alive(*chooser))
+}
+
+/// Whether a rule makes the source `dealer` a colorless source of damage (CR 609.7): what looks at the damage it deals
+/// reads it without colors. The source is judged as `source` names it, as it is or as it last existed.
+pub(crate) fn r6097_colorless_damage(state: &GameState, source: crate::keywords::Source<'_>) -> bool {
+    state.rules().r6097_colorless.iter().any(|rule| {
+        let mut scope = Scope::announcing(state, rule.controller, rule.source);
+        scope.snapshots = source.snapshots.to_vec();
+        scope.selects(&rule.from, source.object).unwrap_or(false)
+    })
 }
 
 /// The one player `who` names: the first, or an error for none.

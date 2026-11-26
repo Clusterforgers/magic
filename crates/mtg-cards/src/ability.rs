@@ -47,6 +47,9 @@ pub enum Activators {
     /// The controller of the permanent it is attached to ("Only the controller of the enchanted creature may activate
     /// this ability"); nobody while it is attached to nothing.
     R113AttachedController,
+    /// The player whose resolved spell or ability gave the ability for a time (`Ref::Granter`): "Only you may activate this
+    /// ability" in the words a spell grants (CR 602.2); nobody for an ability the object has of its own.
+    R6022Granter,
 }
 
 impl Activators {

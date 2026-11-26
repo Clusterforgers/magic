@@ -209,6 +209,13 @@ pub enum Modification {
     LosePrinted(Arc<Ability>),
     /// Changes the controller to the player (layer 2).
     SetController(Ref),
+    /// Players other than the object's controller can't gain control of it (a restriction, no layer): an effect that would
+    /// give another player control does not apply to it while this holds ("other players can't gain control of them").
+    R1012ControlKept,
+    /// The object can't be enchanted (a restriction, no layer): an Aura can't be attached to it or target it as it is
+    /// cast, while an Aura already attached stays ("can't be enchanted ... This effect doesn't remove Auras already
+    /// attached").
+    R3034CantBeEnchanted,
     /// The object can't attack (a restriction, no layer).
     CantAttack,
     /// The object can't attack the controller of the effect or ability ("you"), the planeswalkers they control or both
@@ -334,6 +341,8 @@ impl Modification {
             | Modification::R6601CantAttackPlayers(_)
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
@@ -994,6 +1003,17 @@ pub enum GameRule {
         )]
         whose: Ref,
     },
+    /// The player `chooser` names chooses which creatures attack (CR 508.1a): "You choose which creatures attack this
+    /// turn." The active player still chooses what each of them attacks (CR 508.1b) and pays the costs to attack; the
+    /// declaration obeys every restriction and requirement.
+    R5081ChoosesAttackers {
+        /// Who chooses the attackers instead.
+        chooser: Ref,
+    },
+    /// The sources the selector picks deal damage as colorless sources (CR 609.7): "Black and/or red permanents and spells
+    /// are colorless sources of damage." Only what looks at the damage (protection, prevention by the source's color)
+    /// reads them so; the sources keep their colors otherwise.
+    R6097ColorlessDamage(Selector),
     /// The player `chooser` names casts every ballot of each vote, for each player (CR 701.38): "You choose how each
     /// player votes this turn."; each vote still counts as that player's.
     R6400ChoosesVotes {

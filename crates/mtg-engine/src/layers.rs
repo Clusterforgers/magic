@@ -562,6 +562,8 @@ impl Held {
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
@@ -925,6 +927,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
+        | Wanted::R1012ControlKept
+        | Wanted::R3034CantBeEnchanted
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp

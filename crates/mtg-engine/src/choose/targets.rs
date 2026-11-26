@@ -393,6 +393,7 @@ pub(crate) fn legal_from(
     let origin = keywords::Source {
         object: source,
         snapshots: &scope.snapshots,
+        r6097_colorless: false,
     };
     legal.retain(|target| match target {
         Target::Object(object) => {

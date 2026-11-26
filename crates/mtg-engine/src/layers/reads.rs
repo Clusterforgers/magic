@@ -94,6 +94,8 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantAttackOwner { .. }
         | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
+        | Modification::R1012ControlKept
+        | Modification::R3034CantBeEnchanted
         | Modification::DoesntUntap
         | Modification::R6700KeepsLastLoyalty
         | Modification::CantBeTurnedFaceUp
@@ -175,6 +177,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
+        | Wanted::R1012ControlKept
+        | Wanted::R3034CantBeEnchanted
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
@@ -263,6 +267,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
+        | Wanted::R1012ControlKept
+        | Wanted::R3034CantBeEnchanted
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
@@ -357,6 +363,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Token
         | Pred::Commander
         | Pred::Spell
+        | Pred::R702185Warped
         | Pred::Dungeon
         | Pred::Emblem
         | Pred::Ability(_)

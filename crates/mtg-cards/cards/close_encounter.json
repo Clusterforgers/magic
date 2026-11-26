@@ -1,0 +1,4 @@
+{"oracle_id":"032fdd08-2ea7-442e-8162-0a8e5a585253","name":"Close Encounter","impl_status":"Full","faces":[{"name":"Close Encounter","oracle_fingerprint":"","abilities":[
+{"AdditionalCost":{"cost":[{"R6012ChooseOrExiled":{"filter":[{"Type":"Creature"}],"exiled":["R702185Warped",{"Type":"Creature"}]}}],"required":true}},
+{"Spell":{"targets":[{"what":{"Object":[{"Type":"Creature"}]}}],"effects":[{"DealDamage":{"amount":{"Stat":{"of":"Paid","stat":"Power"}},"to":{"Target":0}}}]}}
+]}]}

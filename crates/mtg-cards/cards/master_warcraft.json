@@ -1,0 +1,4 @@
+{"oracle_id":"f9bca7af-29b6-46ba-b847-56715d09d1da","name":"Master Warcraft","impl_status":"Full","faces":[{"name":"Master Warcraft","oracle_fingerprint":"","abilities":[
+{"CastOnly":{"condition":"BeforeAttackers"}},
+{"Spell":{"effects":[{"Rule":{"rule":{"R5081ChoosesAttackers":{"chooser":"You"}},"duration":"UntilEndOfTurn"}},{"Rule":{"rule":{"R6400ChoosesBlocks":{"chooser":"You"}},"duration":"UntilEndOfTurn"}}]}}
+]}]}

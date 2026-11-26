@@ -997,6 +997,7 @@ impl<'a> Walker<'a> {
             }
             Pred::Subtype(subtype) => self.known_subtype(subtype),
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
+            Pred::R702185Warped => self.uses("Pred", "R702185Warped"),
             Pred::Drafted(_) => self.uses("Pred", "Drafted"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
@@ -2219,6 +2220,10 @@ impl<'a> Walker<'a> {
                         w.at("count", |w| w.amount(count));
                     }
                     CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
+                    CostItem::R6012ChooseOrExiled { filter, exiled } => {
+                        w.at("filter", |w| w.selector(filter));
+                        w.at("exiled", |w| w.selector(exiled));
+                    }
                     CostItem::ExileTotalValue { filter, .. } => {
                         w.at("filter", |w| w.selector(filter));
                     }
@@ -3272,6 +3277,8 @@ impl<'a> Walker<'a> {
             | Modification::CantAttackOwner(_)
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
@@ -6947,7 +6954,11 @@ impl Walker<'_> {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
             }),
-            GameRule::R6400ChoosesVotes { chooser } => self.at(tag, |w| {
+            GameRule::R6097ColorlessDamage(source) => {
+                self.at(tag, |w| w.at("source", |w| w.selector(source)));
+            }
+            GameRule::R6400ChoosesVotes { chooser }
+            | GameRule::R5081ChoosesAttackers { chooser } => self.at(tag, |w| {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
             }),
             GameRule::R6500CounterCap { what, .. } => self.at(tag, |w| {
@@ -8504,6 +8515,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ExileTotalValue { .. }
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
+                | CostItem::R6012ChooseOrExiled { .. }
                 | CostItem::ExiledToGraveyard { .. }
                 | CostItem::ToLibrary { .. }
                 | CostItem::Craft { .. }
