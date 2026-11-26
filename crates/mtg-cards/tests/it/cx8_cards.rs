@@ -64,14 +64,26 @@ fn every_cx8_card_reads_back_as_its_text() {
 /// One part of a card's rules changed: the checker reads it as other words.
 #[rstest]
 #[case::reveal_counts_each_player("Dack Fayden, Helping Hand", r#""Opponents""#, r#""EachPlayer""#)]
-#[case::goaded_only_until_your_next_turn("Dack Fayden, Helping Hand", r#""Forever""#, r#""UntilYourNextTurn""#)]
+#[case::goaded_only_until_your_next_turn(
+    "Dack Fayden, Helping Hand",
+    r#""Forever""#,
+    r#""UntilYourNextTurn""#
+)]
 #[case::behold_one("Celestial Reunion", r#""count": 2"#, r#""count": 3"#)]
 #[case::search_greater("Celestial Reunion", r#""op": "Le""#, r#""op": "Ge""#)]
 #[case::copy_paid_for("Massimo, the Magician", r#""free": true"#, r#""free": false"#)]
 #[case::mana_value_two("Massimo, the Magician", r#""to": 1"#, r#""to": 2"#)]
 #[case::any_time("Q, Stacking the Deck", r#""condition": "YourTurn","#, "")]
-#[case::craft_any_two("Eye of Ojer Taq // Apex Observatory", r#", "alike": "R702ShareCardType""#, "")]
-#[case::until_land("Q, Stacking the Deck", r#"{ "Not": { "Type": "Land" } }"#, r#"{ "Type": "Land" }"#)]
+#[case::craft_any_two(
+    "Eye of Ojer Taq // Apex Observatory",
+    r#", "alike": "R702ShareCardType""#,
+    ""
+)]
+#[case::until_land(
+    "Q, Stacking the Deck",
+    r#"{ "Not": { "Type": "Land" } }"#,
+    r#"{ "Type": "Land" }"#
+)]
 fn a_changed_part_is_not_the_card(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
     let rules = rules_of(name);
     assert!(rules.contains(from), "{from}");

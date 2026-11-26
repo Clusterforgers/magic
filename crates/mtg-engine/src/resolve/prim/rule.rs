@@ -147,7 +147,8 @@ pub(super) fn r6112_fixed_ability(
     if !walk(scope, &mut value) {
         return std::sync::Arc::clone(granted);
     }
-    serde_json::from_value(value).map_or_else(|_| std::sync::Arc::clone(granted), std::sync::Arc::new)
+    serde_json::from_value(value)
+        .map_or_else(|_| std::sync::Arc::clone(granted), std::sync::Arc::new)
 }
 
 /// Writes the chosen values into `value`; whether it wrote any.

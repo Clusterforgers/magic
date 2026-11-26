@@ -14,9 +14,9 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{CardsChoice, ChoiceOption, OptionChoice, TargetChoice, YesNoChoice};
 use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::effects::{Modification, Selector};
+use mtg_engine::replay;
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_engine::replay;
 use mtg_testkit::cards::{forest, free_creature, plains};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ready};
@@ -39,6 +39,10 @@ fn replays(driver: &Driver) {
 fn settle(driver: &mut Driver, pick: &dyn Fn(&Driver, &Decision) -> Option<Answer>) {
     for _ in 0..300 {
         let decision = driver.decision().unwrap().clone();
+        if std::env::var("CX8_TRACE").is_ok() {
+            let text = format!("{:?}", decision.kind);
+            eprintln!("{}", &text[..text.len().min(300)]);
+        }
         if let Some(answer) = pick(driver, &decision) {
             driver.answer(answer).unwrap();
             continue;
@@ -75,7 +79,7 @@ fn named(driver: &Driver, zone: Zone, name: &str) -> Vec<ObjectId> {
         .zone(zone)
         .iter()
         .copied()
-        .filter(|id| driver.state().object(*id).is_some_and(|o| o.name() == name))
+        .filter(|id| crate::common::name_of(driver.state(), *id) == name)
         .collect()
 }
 
@@ -117,7 +121,10 @@ fn dack_table(seats: usize, creatures: usize) -> Driver {
 fn opponent_at(last: bool) -> impl Fn(&Driver, &Decision) -> Option<Answer> {
     move |_, decision| match &decision.kind {
         DecisionKind::ChooseOption(options)
-            if options.options.iter().all(|o| matches!(o, ChoiceOption::Player(_))) =>
+            if options
+                .options
+                .iter()
+                .all(|o| matches!(o, ChoiceOption::Player(_))) =>
         {
             Some(Answer::ChooseOption(OptionChoice(if last {
                 options.options.len() - 1
@@ -170,9 +177,16 @@ fn dack_with_fewer_creatures_than_opponents_gives_what_it_found(
     let wolves = named(&driver, Zone::Battlefield, "Wolf");
     assert_eq!(wolves.len(), creatures, "the whole library is revealed");
     for id in &wolves {
-        assert_eq!(controller(&driver, *id), pid(seats - 1), "the chosen opponent takes it");
+        assert_eq!(
+            controller(&driver, *id),
+            pid(seats - 1),
+            "the chosen opponent takes it"
+        );
     }
-    assert_eq!(driver.state().zone(Zone::Library(pid(0))).len(), 12 - creatures);
+    assert_eq!(
+        driver.state().zone(Zone::Library(pid(0))).len(),
+        12 - creatures
+    );
     replays(&driver);
 }
 
@@ -187,7 +201,12 @@ fn reunion_table(seats: usize, elves: usize) -> Driver {
         .hand(0, [card(REUNION).unwrap()])
         .library(
             0,
-            vec![forest(), card("Elvish Visionary").unwrap(), card("Grizzly Bears").unwrap(), forest()],
+            vec![
+                forest(),
+                card("Elvish Visionary").unwrap(),
+                card("Grizzly Bears").unwrap(),
+                forest(),
+            ],
         );
     for seat in 1..seats {
         scenario = scenario.library(seat, vec![forest(); 10]);
@@ -204,7 +223,7 @@ fn reunion_answers(pay: bool, find: &'static str) -> impl Fn(&Driver, &Decision)
         DecisionKind::YesNo(_) => Some(Answer::YesNo(YesNoChoice(pay))),
         DecisionKind::ChooseCosts(options) => Some(Answer::ChooseCosts(
             mtg_engine::choose::CostsChoice::Costs(if pay {
-                (0..options.costs.len()).collect()
+                (0..options.optional.len()).collect()
             } else {
                 Vec::new()
             }),
@@ -216,14 +235,17 @@ fn reunion_answers(pay: bool, find: &'static str) -> impl Fn(&Driver, &Decision)
             .map(|at| Answer::ChooseOption(OptionChoice(at))),
         DecisionKind::ChooseCards(options)
             if options.from.iter().any(|id| {
-                driver.state().object(*id).is_some_and(|o| o.zone() == Zone::Library(pid(0)))
+                driver
+                    .state()
+                    .object(*id)
+                    .is_some_and(|o| o.zone() == Zone::Library(pid(0)))
             }) =>
         {
             let found = options
                 .from
                 .iter()
                 .copied()
-                .find(|id| driver.state().object(*id).is_some_and(|o| o.name() == find))
+                .find(|id| crate::common::name_of(driver.state(), *id) == find)
                 .unwrap();
             Some(Answer::ChooseCards(CardsChoice(vec![found])))
         }
@@ -246,9 +268,18 @@ fn celestial_reunion_puts_the_chosen_type_onto_the_battlefield_when_beheld(
     let mut driver = reunion_table(seats, elves);
     driver.begin_cast(REUNION).unwrap();
     settle(&mut driver, &reunion_answers(pay, find));
-    assert_eq!(named(&driver, lands_in, find).len(), 1, "{find} is in {lands_in:?}");
+    assert_eq!(
+        named(&driver, lands_in, find).len(),
+        1,
+        "{find} is in {lands_in:?}"
+    );
     assert_eq!(named(&driver, Zone::Graveyard(pid(0)), REUNION).len(), 1);
-    assert_eq!(driver.state().zone(Zone::Library(pid(0))).len(), 3);
+    let drawn = usize::from(lands_in == Zone::Battlefield);
+    assert_eq!(
+        driver.state().zone(Zone::Library(pid(0))).len(),
+        3 - drawn,
+        "the Visionary that entered drew"
+    );
     replays(&driver);
 }
 
@@ -293,7 +324,7 @@ fn mimeoplasm_answers(
                 .from
                 .iter()
                 .copied()
-                .find(|id| driver.state().object(*id).is_some_and(|o| o.name() == copy))
+                .find(|id| crate::common::name_of(driver.state(), *id) == copy)
                 .unwrap();
             Some(Answer::ChooseCards(CardsChoice(vec![found])))
         }
@@ -327,7 +358,11 @@ fn the_mimeoplasm_enters_as_a_copy_of_one_exiled_card_with_the_others_power(
     let copies = named(&driver, Zone::Battlefield, copy);
     assert_eq!(copies.len(), 1, "it entered as {copy}");
     assert_eq!(plus_counters(&driver, copies[0]), counters);
-    assert_eq!(driver.state().zone(Zone::Exile).len(), 2, "both cards are exiled");
+    assert_eq!(
+        driver.state().zone(Zone::Exile).len(),
+        2,
+        "both cards are exiled"
+    );
     assert_eq!(
         driver.state().zone(Zone::Hand(pid(0))).len(),
         hand - 1 + drawn,
@@ -354,7 +389,9 @@ const Q: &str = "Q, Stacking the Deck";
 
 /// Seat 0 holds Q, a Forest and Opt with mana for Q and a Bear; its library is Forests and one Grizzly Bears.
 fn q_table(seats: usize) -> Driver {
-    let mut lands: Vec<_> = (0..4).map(|_| ready(mtg_testkit::cards::mountain())).collect();
+    let mut lands: Vec<_> = (0..4)
+        .map(|_| ready(mtg_testkit::cards::mountain()))
+        .collect();
     lands.extend((0..2).map(|_| ready(forest())));
     let mut library = vec![forest(); 8];
     library.insert(3, card("Grizzly Bears").unwrap());
@@ -384,16 +421,30 @@ fn q_gives_the_exiled_card_a_copy_ability_on_its_owners_turn(#[values(2, 3, 4)] 
     );
     driver.begin_activation("Grizzly Bears").unwrap();
     settle(&mut driver, &|_, _| None);
-    assert_eq!(named(&driver, Zone::Battlefield, "Grizzly Bears").len(), 1, "the copy was cast");
-    assert_eq!(named(&driver, Zone::Exile, "Grizzly Bears").len(), 1, "the card stays exiled");
-    assert!(named(&driver, Zone::Exile, "Opt").len() == 1, "the hand card paid the cost");
+    assert_eq!(
+        named(&driver, Zone::Battlefield, "Grizzly Bears").len(),
+        1,
+        "the copy was cast"
+    );
+    assert_eq!(
+        named(&driver, Zone::Exile, "Grizzly Bears").len(),
+        1,
+        "the card stays exiled"
+    );
+    assert!(
+        named(&driver, Zone::Exile, "Opt").len() == 1,
+        "the hand card paid the cost"
+    );
     replays(&driver);
     driver.idle_until(2, Step::Main1).unwrap();
     while driver.decision().unwrap().player != pid(0) {
         driver.answer_passively().unwrap();
     }
     assert!(
-        driver.offered_abilities("Grizzly Bears").unwrap().is_empty(),
+        driver
+            .offered_abilities("Grizzly Bears")
+            .unwrap()
+            .is_empty(),
         "not on another player's turn"
     );
 }
@@ -406,7 +457,13 @@ fn massimo_table(seats: usize) -> Driver {
         .at(1, 0, Step::Main1)
         .battlefield(0, [ready(card(MASSIMO).unwrap())])
         .hand(0, [free_creature("Wolf", 2, 2)])
-        .graveyard(0, [card("Counterspell").unwrap(), card("Lightning Bolt").unwrap()]);
+        .graveyard(
+            0,
+            [
+                card("Counterspell").unwrap(),
+                card("Lightning Bolt").unwrap(),
+            ],
+        );
     for seat in 0..seats {
         scenario = scenario.library(seat, vec![forest(); 10]);
     }
@@ -417,7 +474,9 @@ fn massimo_table(seats: usize) -> Driver {
 fn at_seat_one(_: &Driver, decision: &Decision) -> Option<Answer> {
     match &decision.kind {
         DecisionKind::ChooseTargets(options)
-            if options.legal.contains(&mtg_engine::choose::Target::Player(pid(1))) =>
+            if options
+                .legal
+                .contains(&mtg_engine::choose::Target::Player(pid(1))) =>
         {
             Some(Answer::ChooseTargets(TargetChoice::Targets(vec![
                 mtg_engine::choose::Target::Player(pid(1)),
@@ -434,8 +493,16 @@ fn massimo_exiles_a_one_mana_spell_and_the_entering_creature_casts_its_copy_on_e
     let mut driver = massimo_table(seats);
     driver.begin_cast("Wolf").unwrap();
     settle(&mut driver, &at_seat_one);
-    assert_eq!(named(&driver, Zone::Exile, "Lightning Bolt").len(), 1, "Bolt is exiled");
-    assert_eq!(named(&driver, Zone::Graveyard(pid(0)), "Counterspell").len(), 1, "a two-mana spell is no target");
+    assert_eq!(
+        named(&driver, Zone::Exile, "Lightning Bolt").len(),
+        1,
+        "Bolt is exiled"
+    );
+    assert_eq!(
+        named(&driver, Zone::Graveyard(pid(0)), "Counterspell").len(),
+        1,
+        "a two-mana spell is no target"
+    );
     let next = 1 + u32::try_from(seats).unwrap();
     for (turn, life) in [(next, 15), (next + u32::try_from(seats).unwrap(), 10)] {
         driver.idle_until(turn, Step::DeclareAttackers).unwrap();
@@ -501,7 +568,7 @@ fn eye_of_ojer_taq_crafts_with_two_alike_and_the_observatory_frees_that_type(
             .from
             .iter()
             .copied()
-            .filter(|id| driver.state().object(*id).is_some_and(|o| o.name() == name))
+            .filter(|id| crate::common::name_of(driver.state(), *id) == name)
             .collect()
     };
     let alike = pick(material);
@@ -513,25 +580,39 @@ fn eye_of_ojer_taq_crafts_with_two_alike_and_the_observatory_frees_that_type(
             .is_err(),
         "two that share no card type are refused"
     );
-    driver.answer(Answer::ChooseCards(CardsChoice(alike))).unwrap();
+    driver
+        .answer(Answer::ChooseCards(CardsChoice(alike)))
+        .unwrap();
     settle(&mut driver, &|_, _| None);
     let apex = named(&driver, Zone::Battlefield, "Apex Observatory");
     assert_eq!(apex.len(), 1, "the Eye returns transformed");
-    assert!(driver.state().object(apex[0]).unwrap().permanent().unwrap().tapped());
+    assert!(
+        driver
+            .state()
+            .object(apex[0])
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped()
+    );
     replays(&driver);
     let next = 1 + u32::try_from(seats).unwrap();
     driver.idle_until(next, Step::Main1).unwrap();
     driver.begin_activation("Apex Observatory").unwrap();
     settle(&mut driver, &|_, _| None);
-    driver.begin_cast("Grizzly Bears").unwrap();
     if bears_free {
+        driver.begin_cast("Grizzly Bears").unwrap();
         settle(&mut driver, &|_, _| None);
-        assert_eq!(named(&driver, Zone::Battlefield, "Grizzly Bears").len(), 1, "cast free");
+        assert_eq!(
+            named(&driver, Zone::Battlefield, "Grizzly Bears").len(),
+            1,
+            "cast free"
+        );
         replays(&driver);
     } else {
         assert!(
-            matches!(driver.decision().unwrap().kind, DecisionKind::PayMana(_)),
-            "a spell of another type pays its cost"
+            driver.begin_cast("Grizzly Bears").is_err(),
+            "a spell of another type pays its cost, and the Plains cannot"
         );
     }
 }

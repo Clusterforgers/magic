@@ -1025,10 +1025,11 @@ impl<'a> Walker<'a> {
             }
             Pred::SameCard(Ref::Bound(name))
                 if self.scope.lookup(name).is_none()
-                    && self
-                        .r6112_granted_outer
-                        .as_ref()
-                        .is_some_and(|outer| outer.lookup(name).is_some_and(|kind| kind.fits(Kind::Object))) => {}
+                    && self.r6112_granted_outer.as_ref().is_some_and(|outer| {
+                        outer
+                            .lookup(name)
+                            .is_some_and(|kind| kind.fits(Kind::Object))
+                    }) => {}
             Pred::Is(r)
             | Pred::SourceOf(r)
             | Pred::SharesSubtype(r)

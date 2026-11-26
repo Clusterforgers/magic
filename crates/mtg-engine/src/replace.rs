@@ -4759,8 +4759,6 @@ fn r6104_worked_out(
 
 mod r109_next_batch;
 mod r1193_life;
-mod r7071_exile_two;
-mod r702_crafted_types;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
@@ -4774,6 +4772,8 @@ pub(crate) mod r5516_learns;
 mod r5517_life;
 mod r5517_under;
 pub(crate) mod r6700_draws;
+mod r702_crafted_types;
+mod r7071_exile_two;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

@@ -54,8 +54,26 @@ pub(super) fn r110_run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     if work.choices.r110_chosen().is_some() {
         return None;
     }
-    let kind = r110_kind(ctx.state.object(*spell)?.card())?;
-    let offered = options(kind);
+    let card = ctx.state.object(*spell)?.card();
+    let (kind, optional) = match r110_kind(card) {
+        Some(kind) => (kind, false),
+        None => (
+            super::optional::r6012_chosen_kind(card, &work.choices.optional_costs)?,
+            true,
+        ),
+    };
+    let mut offered = options(kind);
+    // "You may choose a creature type and behold two creatures of that type": only a type the rest of the cost can
+    // be paid with is offered.
+    if optional {
+        offered.retain(|option| {
+            let mut trial = work.choices.clone();
+            trial.r110_set_chosen(chosen(kind, option));
+            crate::price::Price::casting(ctx.needs.cost_parts(&trial))
+                .claimed(ctx.state, ctx.player, ctx.source)
+                .is_some()
+        });
+    }
     if offered.is_empty() {
         return Some(Next::Drop);
     }

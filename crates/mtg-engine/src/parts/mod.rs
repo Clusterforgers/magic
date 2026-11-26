@@ -1446,6 +1446,7 @@ impl Pick {
                 Alike::ShareColor => "cards that share a color",
                 Alike::R112SameOwner => "cards from a single graveyard",
                 Alike::R702ShareCardType => "cards that share a card type",
+                Alike::R6012ShareCreatureType => "objects that share a creature type",
             }));
         }
         if self.r4709_rule().is_some() {

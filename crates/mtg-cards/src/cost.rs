@@ -403,6 +403,9 @@ pub enum Alike {
     R112SameOwner,
     /// They all have one card type in common (CR 702.167a: "two that share a card type").
     R702ShareCardType,
+    /// They all have one creature type in common: a pick of the creature type chosen with the same cost, before it is
+    /// chosen (CR 601.2b).
+    R6012ShareCreatureType,
 }
 
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.

@@ -18,7 +18,13 @@ use crate::resolve::Scope;
 use crate::zones::Zone;
 
 /// A choice of cards from `from`, between `min` and `max` of them.
-fn ask(player: PlayerId, source: ObjectId, from: Vec<ObjectId>, (min, max): (u32, u32), text: &str) -> Decision {
+fn ask(
+    player: PlayerId,
+    source: ObjectId,
+    from: Vec<ObjectId>,
+    (min, max): (u32, u32),
+    text: &str,
+) -> Decision {
     Decision {
         player,
         kind: DecisionKind::ChooseCards(CardsOptions {
@@ -37,6 +43,14 @@ fn ask(player: PlayerId, source: ObjectId, from: Vec<ObjectId>, (min, max): (u32
 }
 
 impl Pass<'_> {
+    /// The entering goes on as it is, with the effect marked as applied to it.
+    fn r7071_unchanged(&mut self, at: usize, applied: Vec<Origin>) -> Applied {
+        if let Some(slot) = self.slots.get_mut(at) {
+            slot.applied = applied;
+        }
+        Applied::Done
+    }
+
     /// Asks for the two cards (or none), then for the one copied; puts the exiles before the entering, the copy effect
     /// and the counters after it. Nobody is asked when fewer than two cards can be exiled.
     pub(super) fn r7071_exile_two(
@@ -60,7 +74,7 @@ impl Pass<'_> {
             })
             .collect();
         if options.len() < 2 {
-            return Ok(Applied::Done);
+            return Ok(self.r7071_unchanged(at, applied));
         }
         let source = candidate.object.id;
         let exiled = match self.answer() {
@@ -75,8 +89,7 @@ impl Pass<'_> {
             }
             Some((who, Choice::Cards(cards)))
                 if *who == controller
-                    && (cards.is_empty() || cards.len() == 2)
-                    && cards.first() != cards.get(1)
+                    && (cards.is_empty() || (cards.len() == 2 && cards[0] != cards[1]))
                     && cards.iter().all(|card| options.contains(card)) =>
             {
                 cards.clone()
@@ -88,7 +101,7 @@ impl Pass<'_> {
             }
         };
         let [first, second] = exiled.as_slice() else {
-            return Ok(Applied::Done);
+            return Ok(self.r7071_unchanged(at, applied));
         };
         let copied = match self.answer() {
             None => {
@@ -118,7 +131,7 @@ impl Pass<'_> {
                 .map(crate::object::GameObject::reference)
         };
         let (Some(copied_ref), Some(other_ref)) = (reference(copied), reference(other)) else {
-            return Ok(Applied::Done);
+            return Ok(self.r7071_unchanged(at, applied));
         };
         let values = copiable_values(self.state, copied_ref, None)
             .ok_or_else(|| Self::invalid(format!("{copied_ref:?} cannot be copied")))?;
