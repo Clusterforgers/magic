@@ -266,6 +266,37 @@ fn entering(ctx: &Ctx, tapped: bool, under: Option<&Ref>, transformed: bool) -> 
     )
 }
 
+/// "note the name of it and put it onto the battlefield face down as a 3/3 creature with \"...\"".
+fn r6008_face_down_as(
+    what: &str,
+    (power, toughness): (i32, i32),
+    rules: &[crate::ability::Ability],
+    note_name: bool,
+) -> String {
+    let quoted: Vec<String> = rules
+        .iter()
+        .map(|rule| {
+            format!(
+                "\"{}\"",
+                super::ability_wording(rule).unwrap_or_else(|| "an ability".to_owned())
+            )
+        })
+        .collect();
+    let with = if quoted.is_empty() {
+        String::new()
+    } else {
+        format!(" with {}", quoted.join(" and "))
+    };
+    let note = if note_name {
+        format!("note the name of {what} and ")
+    } else {
+        String::new()
+    };
+    format!(
+        "{note}put {what} onto the battlefield face down as a {power}/{toughness} creature{with}"
+    )
+}
+
 /// A move of objects between zones.
 fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
     let what = phrase::who(ctx, what);
@@ -312,30 +343,7 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
             toughness,
             rules,
             note_name,
-        } => {
-            let quoted: Vec<String> = rules
-                .iter()
-                .map(|rule| {
-                    format!(
-                        "\"{}\"",
-                        super::ability_wording(rule).unwrap_or_else(|| "an ability".to_owned())
-                    )
-                })
-                .collect();
-            let with = if quoted.is_empty() {
-                String::new()
-            } else {
-                format!(" with {}", quoted.join(" and "))
-            };
-            let note = if *note_name {
-                format!("note the name of {what} and ")
-            } else {
-                String::new()
-            };
-            format!(
-                "{note}put {what} onto the battlefield face down as a {power}/{toughness} creature{with}"
-            )
-        }
+        } => r6008_face_down_as(&what, (*power, *toughness), rules, *note_name),
         Destination::BattlefieldFaceDown { under } => format!(
             "put {what} onto the battlefield face down{}",
             entering(ctx, false, under.as_ref(), false)

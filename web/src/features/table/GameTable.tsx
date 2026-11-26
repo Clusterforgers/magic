@@ -53,7 +53,12 @@ import { useBoardSplit } from './useBoardSplit'
 import { handIdle } from './handIdle'
 import { useTheirHead } from './useTheirHead'
 import { foldsLands } from './boardSplit'
-import { AttackLinesContext, FOLD_LANDS_BY_DEFAULT, TableOptionsContext } from './tableOptions'
+import {
+  AttackLinesContext,
+  FOLD_LANDS_BY_DEFAULT,
+  SpectatorControlsContext,
+  TableOptionsContext,
+} from './tableOptions'
 import { TopBar } from './TopBar'
 import { TableTour } from './tour/TableTour'
 import { useViewport } from './useViewport'
@@ -65,8 +70,10 @@ import { useViewport } from './useViewport'
  * mode if a board column is at least 280 px wide, otherwise in focus mode, and the menu switches either. It reads the
  * game with `usePlay` and acts through `useGame().session`.
  */
-/** In place of the pass controls for a spectator, who has nothing to answer. */
+/** In place of the pass controls for a spectator, who has nothing to answer: the page's own controls, else a note. */
 function Watching() {
+  const controls = useContext(SpectatorControlsContext)
+  if (controls !== null) return controls
   return (
     <p
       data-slot="watching"
