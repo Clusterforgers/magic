@@ -180,6 +180,8 @@ mod p158_wholes;
 mod p159_wholes;
 mod p160_wholes;
 mod p160w_wholes;
+mod p162_wholes;
+mod p163_wholes;
 mod p164_wholes;
 mod pairs;
 mod pay_phrases;
@@ -943,6 +945,9 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
     if let Some(found) = p160w_wholes::p160w_whole_read(text) {
         return Some(found);
     }
+    if let Some(found) = p163_wholes::p163_whole_read(text) {
+        return Some(found);
+    }
     if let Some(found) = p159_wholes::p159_whole_read(text) {
         return Some(found);
     }
@@ -959,6 +964,9 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
         return Some(found);
     }
     if let Some(found) = p164_wholes::p164_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = p162_wholes::p162_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = fd1_wholes::fd1_whole_read(text) {

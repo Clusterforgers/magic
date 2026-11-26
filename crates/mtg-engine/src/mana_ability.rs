@@ -591,15 +591,25 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         let Some(perm) = object.permanent() else {
             continue;
         };
-        if controller_of_object(state, object) != player {
-            continue;
-        }
+        let others = controller_of_object(state, object) != player;
+        // "You may tap lands you don't control for mana" (CR 605.1a): only a land, and only its abilities with {T}.
+        let r605_only = if others {
+            match crate::rules::r605_tap_others(state, player) {
+                Some(only) => only,
+                None => continue,
+            }
+        } else {
+            Vec::new()
+        };
         if mana_forbidden(state, player, id, false) {
             continue;
         }
         let Some(chars) = characteristics(state, id) else {
             continue;
         };
+        if others && !chars.types.contains(CardType::Land) {
+            continue;
+        }
         let sick = chars.is_creature() && keywords::sick_for_abilities(state, id);
         let can_tap = !perm.tapped() && !sick && !mana_forbidden(state, player, id, true);
         let first = found.len();
@@ -640,8 +650,13 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             }
         }
         for mana in rule_mana(state, player, id, chars.abilities.len(), true) {
-            if !mana.tap || can_tap {
+            if (!mana.tap && !others) || (mana.tap && can_tap) {
                 found.extend(mana.options);
+            }
+        }
+        if others {
+            for option in &mut found[first..] {
+                option.only.extend(r605_only.iter().cloned());
             }
         }
         // An automatic payment taps lands before an artifact or a creature that is no land.

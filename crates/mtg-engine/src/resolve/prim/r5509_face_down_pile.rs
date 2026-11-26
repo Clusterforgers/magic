@@ -88,8 +88,31 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     events.push(Event::ChosenAtRandom {
         cards: order.clone(),
     });
-    events.extend(r5509_place(state, &order, *then, player));
+    if *then == PileFate::R406Kept {
+        events.push(r406_kept(state, cx.scope.source, &order));
+    } else {
+        events.extend(r5509_place(state, &order, *then, player));
+    }
     done(events)
+}
+
+/// The source keeps the pile in exile in its shuffled order, each card as the object it becomes there (CR 400.7).
+fn r406_kept(state: &GameState, source: crate::object::ObjectRef, order: &[ObjectId]) -> Event {
+    let objects = order
+        .iter()
+        .filter_map(|id| state.object(*id))
+        .map(|card| crate::object::ObjectRef {
+            id: card.id(),
+            counter: card.counter() + 1,
+        })
+        .collect();
+    Event::Remembered(Box::new(crate::memory::Remembered {
+        source,
+        slot: crate::memory::R406_PILE_SLOT.to_owned(),
+        objects,
+        values: Vec::new(),
+        replace: true,
+    }))
 }
 
 /// The moves that place the shuffled pile: onto the battlefield face down under `player`'s control (an `Entered` after a
@@ -107,6 +130,7 @@ fn r5509_place(
         };
         let owner = object.owner();
         match then {
+            PileFate::R406Kept => {}
             PileFate::OnTop => events.push(Event::ZoneChanged {
                 object: id,
                 from: Zone::Exile,

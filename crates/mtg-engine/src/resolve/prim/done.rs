@@ -67,10 +67,14 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Attach { .. }
         | Effect::Unattach { .. }
         | Effect::JoinAttack { .. }
+        | Effect::R5084JoinTheirAttack { .. }
         | Effect::MyriadCopies { .. }
         | Effect::Transform { .. }
         | Effect::Flip { .. }
         | Effect::TurnFaceUp { .. }
+        | Effect::R406TurnUpExiled { .. }
+        | Effect::R707ExileSpell { .. }
+        | Effect::R707PutBack { .. }
         | Effect::TurnFaceDown { .. }
         | Effect::R6701TurnFaceDownHorror { .. }
         | Effect::Harness { .. }

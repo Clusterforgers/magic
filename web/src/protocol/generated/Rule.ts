@@ -8,6 +8,7 @@ import type { ManaCost } from "./ManaCost";
 import type { ManaType } from "./ManaType";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
+import type { SpendOn } from "./SpendOn";
 import type { Target } from "./Target";
 
 /**
@@ -339,7 +340,15 @@ counter: CounterKind,
 /**
  * The most they may have.
  */
-most: number, } } | { "R6500ZeroLoyaltyStays": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
+most: number, } } | { "R6500ZeroLoyaltyStays": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "R605TapOthersLands": { 
+/**
+ * The players.
+ */
+players: Array<PlayerId>, 
+/**
+ * What the mana may be spent on; anything when empty.
+ */
+only: Array<SpendOn>, } } | { "LookAtExiled": { 
 /**
  * The players who may look.
  */

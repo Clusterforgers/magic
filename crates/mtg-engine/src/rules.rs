@@ -487,6 +487,13 @@ pub enum Rule {
     R6500ZeroLoyaltyStays(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
+    /// The players may tap lands they don't control for mana, the mana spent only as `only` says (`GameRule::R605TapOthersLands`).
+    R605TapOthersLands {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// What the mana may be spent on; anything when empty.
+        only: Vec<mtg_cards::spend::SpendOn>,
+    },
     /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
     LookAtExiled {
         /// The players who may look.
@@ -1130,6 +1137,7 @@ pub(crate) struct RulesInForce {
     /// The players whose planeswalkers stay with 0 loyalty (`R6500ZeroLoyaltyStays`).
     r6500_zero_loyalty: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
+    r605_tap_others: Vec<(PlayerId, Vec<mtg_cards::spend::SpendOn>)>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
     max_hand: BTreeMap<PlayerId, u32>,
@@ -1881,6 +1889,9 @@ impl RulesInForce {
                 }
             }
             Rule::LookAtTop(players) => self.look_top.extend(players),
+            Rule::R605TapOthersLands { players, only } => self
+                .r605_tap_others
+                .extend(players.iter().map(|player| (*player, only.clone()))),
             Rule::LookAtExiled { who, what, only } => {
                 if let Some(source) = source {
                     self.looks.push(Look {
@@ -2475,6 +2486,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
+        GameRule::R605TapOthersLands { who, only } => Rule::R605TapOthersLands {
+            players: scope.players(who)?,
+            only: only.clone(),
+        },
         GameRule::R112UntapChosenType(who) => Rule::R112UntapChosenType(scope.players(who)?),
         GameRule::UntapLimit { who, what, count } => Rule::UntapLimit {
             who: scope.players(who)?,
@@ -2737,6 +2752,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ControlSearches(players)
         | Rule::ExileFound(players)
         | Rule::LookAtTop(players)
+        | Rule::R605TapOthersLands { players, .. }
         | Rule::SkipDrawStep(players)
         | Rule::R6007ExhaustAgain(players)
         | Rule::R122CascadeLand(players)
@@ -3005,6 +3021,7 @@ static NONE: RulesInForce = RulesInForce {
     r6500_caps: Vec::new(),
     r6500_zero_loyalty: BTreeSet::new(),
     look_top: BTreeSet::new(),
+    r605_tap_others: Vec::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
     max_hand: BTreeMap::new(),
@@ -3685,6 +3702,20 @@ pub(crate) fn skips_draw_step(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` has no maximum hand size: the one place cleanup reads this rule, beside the house rule's limit.
 pub(crate) fn no_max_hand_size(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_hand_limit.contains(&player)
+}
+
+/// What the mana `player` gets by tapping a land another player controls may be spent on, when a rule lets them tap such
+/// lands for mana (`Rule::R605TapOthersLands`); a rule with no restriction wins over one with some.
+pub(crate) fn r605_tap_others(
+    state: &GameState,
+    player: PlayerId,
+) -> Option<Vec<mtg_cards::spend::SpendOn>> {
+    let granted = &state.rules().r605_tap_others;
+    let mine = || granted.iter().filter(|(who, _)| *who == player);
+    mine()
+        .find(|(_, only)| only.is_empty())
+        .or_else(|| mine().next())
+        .map(|(_, only)| only.clone())
 }
 
 /// Whether `player` may look at the top card of their library any time: the one place the sight of a seat reads this

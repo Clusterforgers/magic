@@ -112,6 +112,7 @@ pub(super) fn move_object(
     object.exiled_from_hand = None;
     object.encoded_on = None;
     object.haunting = None;
+    object.r707_kept = None;
     object.monarch_wait = None;
     object.forget_cast(from, to);
     // What the spell paid for stays with the permanent it becomes, for its abilities to read; a sticker kicker is no cost
@@ -638,6 +639,33 @@ fn spell_cast(
         spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
     });
     if choices.way.is_some_and(CastWay::exiles_the_spell) || bought_back || adventure {
+        state.possible.replacements = true;
+    }
+    reset_passes(state);
+    Ok(())
+}
+
+/// A card in exile goes onto the stack as a copy of the spell it kept (CR 707.10): its choices come back, the player
+/// controls it, and nothing counts it as cast. A way that exiles the spell as it leaves the stack (flashback) still does.
+pub(super) fn r707_put_back(
+    state: &mut GameState,
+    object: ObjectId,
+    player: PlayerId,
+) -> Result<(), EngineError> {
+    expect_in(state, object, Zone::Exile)?;
+    let kept = state
+        .objects
+        .get_mut(&object)
+        .and_then(|card| card.r707_kept.take())
+        .ok_or_else(|| invalid(format!("{object:?} keeps no spell")))?;
+    move_object(state, object, Zone::Stack, Placement::Top)?;
+    set_controller(state, object, player);
+    let (choices, _) = *kept;
+    let exiles = choices.way.is_some_and(CastWay::exiles_the_spell);
+    if let Some(spell) = state.objects.get_mut(&object) {
+        spell.choices = choices;
+    }
+    if exiles {
         state.possible.replacements = true;
     }
     reset_passes(state);

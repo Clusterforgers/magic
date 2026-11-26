@@ -208,6 +208,7 @@ pub mod r6008_face_down;
 mod r6018_plot_less;
 mod r6100_history;
 mod r6703_ignore;
+pub mod r707_spells;
 mod redeal;
 pub mod replace;
 pub mod resolve;

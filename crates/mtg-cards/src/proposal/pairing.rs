@@ -111,6 +111,12 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
             rule: crate::modify::GameRule::Draft(_),
             ..
         } => &[ClauseKind::Static, ClauseKind::Spell],
+        // "X can't be 0." on an instant or sorcery is a line of the spell's text (Ertai's Meddling).
+        Ability::AdditionalCost { cost, .. }
+            if matches!(cost.0.as_slice(), [crate::cost::CostItem::XAtLeast(_)]) =>
+        {
+            &[ClauseKind::Static, ClauseKind::Spell]
+        }
         Ability::Replacement { .. }
         | Ability::Rule { .. }
         | Ability::Static { .. }
@@ -1173,11 +1179,13 @@ impl<'a> Pairer<'a> {
 
     /// The clauses a spell ability reads as one text: its spell and modal lines, else those with the lines the compiler
     /// takes for statics ("Metalcraft — If you control three or more artifacts, exile that creature."), which a whole
-    /// wording of the spell then has to name.
+    /// wording of the spell then has to name; or with a line the compiler takes for a trigger, the delayed trigger the spell
+    /// sets up ("At the beginning of each of that player's upkeeps, ...", Ertai's Meddling), named the same way.
     fn c11f_spell_slots(&self, written: &[String], rolls: bool) -> Vec<usize> {
         let spell = [ClauseKind::Spell, ClauseKind::Modal];
         let wider = [ClauseKind::Spell, ClauseKind::Modal, ClauseKind::Static];
-        for kinds in [&spell[..], &wider[..]] {
+        let delayed = [ClauseKind::Spell, ClauseKind::Modal, ClauseKind::Triggered];
+        for kinds in [&spell[..], &wider[..], &delayed[..]] {
             let mut open = self.open_slots(kinds);
             if rolls {
                 // The rows of a die roll's table are read after the roll (`tables`).

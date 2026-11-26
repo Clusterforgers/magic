@@ -152,14 +152,15 @@ const EFFECTS: Record<string, string> = {
 const ORDINARY_EFFECTS =
   names(`Draw LookAtTop LookAtHand LookAtFaceDown Choose ChooseWithin ChooseValue ChooseAtRandom
   Move LoseUnspentMana PutBeneathTop BecomeBlocked FaceDownPile ExileHidden Remember Forget RememberValue Balance AddMana
-  SpellEntersWith JoinAttack Revive Parade ExileUntil RevealUntil ExileTop Performed EndTurn AddStep RepeatWhile
+  SpellEntersWith JoinAttack R5084JoinTheirAttack Revive Parade ExileUntil RevealUntil ExileTop Performed EndTurn AddStep RepeatWhile
   SeparatePiles RepeatEach ChooseWords ChooseNumbers BidLife Either OneOf ChangeTargets Rule Reattack If Together May Pay
   R6400Block AuraSwap Meld R6401PassControl R1084ToDifferentOpponents R6501RedistributeLife R6602CreateAttached
   R6701RemoveAmong R6701TurnFaceDownHorror R6701ControlCombat R6702Distribute R6702CountersPerVote
   PayAnyTimes StillResolves Bind Let R110RemovePutThisWay R110MoveEachKindMissing R110MoveOneOrMore R110ChooseSecretly R111KeepChosen R112NoteManaSpent
   R110AddCombatAfterFirst R111OrderGraveyard R112DoubleX R112NoteChosen R123XBecomes R123ExileContest
   R112GuessNumber R112Piles R112RollStore R112RerollStored R113PhaseIn R114StoreValue R114CopySpellOnto
-  R115ExchangeBlocks R115ExchangeBlockers R115JoinBlock R115SkipStep R117EndCombat R119ActivateLandMana R119DrainMana R119BindSpliced R120ChooseEachColor`)
+  R115ExchangeBlocks R115ExchangeBlockers R115JoinBlock R115SkipStep R117EndCombat R119ActivateLandMana R119DrainMana R119BindSpliced R120ChooseEachColor
+  R406TurnUpExiled R707ExileSpell R707PutBack`)
 
 /** The `CostItem` variants that are keyword actions or the words of one, by lexicon term. */
 const COSTS: Record<string, string> = {
@@ -275,7 +276,7 @@ const ORDINARY_TRIGGERS =
   names(`ZoneChange ZoneChangeExcept ResolvedToGraveyard Attacks AttacksAlone AttacksPlayer
   AttacksPlayerOrPlaneswalker PlayerAttacked PlayerAttacks BecomesTarget PlayerBecomesTarget PutOnStack FirstDrawRevealed
   Drew Blocks BecomesBlocked Unblocked GroupAttacks GroupAttacksAt StepBegins State Did AnyOf Batch Nth Caused R6701WhileActivating R109WhileCasting DealsToughnessDamage PhaseBegins
-  R110ThatCombatBegins R111AbilityTriggered R120RandomAction R120AssistedCast R120DealsExactly`)
+  R110ThatCombatBegins R111AbilityTriggered R120RandomAction R120AssistedCast R120DealsExactly R603Exactly`)
 
 /** The fields of the player view that are a designation, a status or a counter the rules define, by lexicon term. */
 const PLAYER_FIELDS: Record<string, string> = {

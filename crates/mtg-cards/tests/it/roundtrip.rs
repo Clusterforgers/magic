@@ -1125,6 +1125,7 @@ fn leaf_effect() -> impl Strategy<Value = Effect> {
                 bind,
                 sealed,
                 bottom: false,
+                r406_held_by: None,
             }
         }),
         (

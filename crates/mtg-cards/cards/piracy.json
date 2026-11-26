@@ -1,0 +1,25 @@
+{
+  "oracle_id": "131acf69-fa5c-4ce7-9e39-2677af4f8907",
+  "name": "Piracy",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Piracy",
+      "oracle_fingerprint": "2e0538df62645287596764f1a5301396",
+      "abilities": [
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "R605TapOthersLands": { "only": [{ "Spell": {} }] } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

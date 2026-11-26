@@ -109,3 +109,88 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         .collect();
     Ok(Run::events(events))
 }
+
+/// What the creatures `controller` controls are attacking now, each once in the order of the attack: only a player or
+/// planeswalker a creature still attacks counts, and never a planeswalker that has left (CR 506.4c).
+fn r5084_attacked(state: &GameState, controller: mtg_core::ids::PlayerId) -> Vec<AttackTarget> {
+    let mut attacked = Vec::new();
+    for attacker in state.combat().attackers() {
+        let theirs = state.object(attacker.object()).is_some_and(|object| {
+            crate::characteristics::controller_of_object(state, object) == controller
+        });
+        if theirs
+            && !attacker.attacks_nothing()
+            && attackable(state, attacker.target())
+            && !attacked.contains(&attacker.target())
+        {
+            attacked.push(attacker.target());
+        }
+    }
+    attacked
+}
+
+/// The words of a player or planeswalker to attack.
+fn r5084_option(state: &GameState, target: AttackTarget) -> crate::choose::ChoiceOption {
+    match target {
+        AttackTarget::Player(seat) => crate::choose::ChoiceOption::Player(seat),
+        AttackTarget::Planeswalker(walker) => crate::choose::ChoiceOption::Label(
+            state
+                .object(walker)
+                .map_or_else(String::new, |o| o.card().name.clone()),
+        ),
+    }
+}
+
+/// `Effect::R5084JoinTheirAttack`: the first creature `what` names that is on the battlefield and not attacking yet
+/// joins the attack of the active player when that player controls it now; the effect's controller chooses which of
+/// the players and planeswalkers that player's creatures are attacking it attacks (asked only when there is more than
+/// one). With none, it does not attack.
+pub(super) fn r5084_run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    let Effect::R5084JoinTheirAttack { what } = effect else {
+        return Err(wrong_effect("R5084JoinTheirAttack"));
+    };
+    let state = cx.state();
+    let combat = state.combat();
+    if !combat.attackers_declared() {
+        return Ok(Run::events(Vec::new()));
+    }
+    let Some(object) = cx.scope.live_objects(what)?.into_iter().find(|object| {
+        object.zone() == Zone::Battlefield
+            && characteristics(state, object.id()).is_some_and(|c| c.is_creature())
+            && !combat.attackers().iter().any(|a| a.object() == object.id())
+            && state.is_active(crate::characteristics::controller_of_object(state, object))
+    }) else {
+        return Ok(Run::events(Vec::new()));
+    };
+    let targets = r5084_attacked(
+        state,
+        crate::characteristics::controller_of_object(state, object),
+    );
+    let target = match targets.as_slice() {
+        [] => return Ok(Run::events(Vec::new())),
+        [only] => *only,
+        _ => {
+            let chooser = OptionChooser {
+                player: cx.scope.controller,
+                options: targets
+                    .iter()
+                    .map(|target| r5084_option(state, *target))
+                    .collect(),
+                text: "Choose a player or planeswalker for it to attack.".into(),
+            };
+            match pick_options(cx, &[chooser])? {
+                Optioned::Ask(decision) => return Ok(Run::Ask(decision)),
+                Optioned::Done(taken) => {
+                    match taken.first().and_then(|(_, index)| targets.get(*index)) {
+                        Some(target) => *target,
+                        None => return Ok(Run::events(Vec::new())),
+                    }
+                }
+            }
+        }
+    };
+    Ok(Run::events(vec![Event::JoinedAttack {
+        object: object.id(),
+        target,
+    }]))
+}

@@ -142,6 +142,8 @@ enum Happened {
         player: PlayerId,
         amount: u32,
         nth: u32,
+        /// The loss is the one damage to the player makes (CR 120.3a).
+        from_damage: bool,
     },
     /// A player drew `card`, the `nth` of their turn and the `in_draw_step`th of their own draw step (0 outside it).
     Drew {
@@ -1356,6 +1358,7 @@ fn about_players_and_permanents(
                         player: *player,
                         amount: lost,
                         nth: loss_ordinal(look, *player, lost),
+                        from_damage: true,
                     });
                 }
             }
@@ -1378,6 +1381,7 @@ fn about_players_and_permanents(
                 player: *player,
                 amount: *amount,
                 nth: loss_ordinal(look, *player, *amount),
+                from_damage: false,
             });
         }
         Event::FirstDrawRevealed {
@@ -2132,6 +2136,21 @@ fn matching_event(
                 .then(|| matching(inner, happened, scope))
                 .flatten()
                 .map(|cause| r115_with_causer(cause, scope))
+        }
+        (TriggerPattern::R603Exactly { event, amount }, happened) => {
+            // The life damage takes is that damage's own event, which a `DealsDamage` names (one event, one trigger).
+            let damage_loss = matches!(
+                happened,
+                Happened::LifeLost {
+                    from_damage: true,
+                    ..
+                }
+            );
+            (happened.amount() == *amount
+                && !damage_loss
+                && !matches!(happened, Happened::Batch(_)))
+            .then(|| matching(event, happened, scope))
+            .flatten()
         }
         (TriggerPattern::R111AbilityTriggered { .. }, happened) => {
             r111_on_trigger::r111_matching(pattern, happened, scope)

@@ -21,6 +21,7 @@ pub(super) fn exiles_top(r: &mut Reader<'_>, who: &Ref) -> Option<Vec<Effect>> {
         bind: EXILED.to_owned(),
         sealed: false,
         bottom: false,
+        r406_held_by: None,
     }])
 }
 
@@ -33,6 +34,7 @@ pub(super) fn phrase(effect: &Effect) -> Option<String> {
             count,
             sealed: false,
             bottom: false,
+            r406_held_by: None,
             ..
         } if !matches!(who, Ref::You | Ref::Triggering) => {
             Some(format!("exiles {} of their library", top_text(count)?))

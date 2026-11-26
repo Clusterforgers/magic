@@ -489,6 +489,9 @@ pub enum PileFate {
     },
     /// "put it back on top of your library".
     OnTop,
+    /// The pile stays in exile face down, for no player to look at (CR 406.3), and the source keeps it in its shuffled
+    /// order ("exile them in a face-down pile, and shuffle that pile"): `Ref::R406PileTop` reads its top card.
+    R406Kept,
 }
 
 /// What an `Effect::ChooseValue` asks a player for.
@@ -1315,6 +1318,14 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         against: Option<Ref>,
     },
+    /// Puts a creature into the attack of the player who controls it now, attacking a player or planeswalker that
+    /// player's attacking creatures are attacking, chosen by the effect's controller ("choose a player or planeswalker
+    /// that opponent is attacking. ~ is attacking that player or planeswalker", CR 508.4); it was never declared as an
+    /// attacker, and with nothing to choose it does not attack.
+    R5084JoinTheirAttack {
+        /// The creature that joins the attack.
+        what: Ref,
+    },
     /// For each attacking creature `of` names (CR 702.116a), creates for every opponent of its controller other than the player it attacks a token copy of it, tapped and attacking that opponent; the tokens are never declared as attackers (CR 508.4).
     MyriadCopies {
         /// The attacking creatures that are copied.
@@ -1342,6 +1353,38 @@ pub enum Effect {
     TurnFaceUp {
         /// What is turned.
         what: Ref,
+    },
+    /// The controller of each spell `what` names exiles it, and its card keeps the spell as it was: its modes, targets, X,
+    /// optional costs and the way it was cast (CR 707.10), for `R707PutBack` ("Target spell's controller exiles it"). A copy
+    /// of a spell ceases to exist instead (CR 707.10a). The cards are bound to `as`, as they are in exile, and the
+    /// controllers of the spells to `player_as`.
+    R707ExileSpell {
+        /// The spells exiled.
+        what: Ref,
+        /// The name the cards exiled are bound to.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the controllers of the spells are bound to.
+        player_as: String,
+    },
+    /// The player puts each card in exile `what` names that an `R707ExileSpell` kept a spell for onto the stack as a copy
+    /// of that original spell, with its choices, under their control (CR 707.10): it is not cast, so nothing that
+    /// triggers on a cast triggers ("the player puts it onto the stack as a copy of the original spell").
+    R707PutBack {
+        /// Who puts it onto the stack and controls it.
+        who: Ref,
+        /// The cards put back.
+        what: Ref,
+    },
+    /// Turns the cards lying face down in exile that `what` names face up, for every player to see (CR 406.3): "Turn all
+    /// cards exiled with ~ face up." A card face up already, or in another zone, is passed over. The cards turned are
+    /// bound to the name, as they are then.
+    R406TurnUpExiled {
+        /// What is turned.
+        what: Ref,
+        /// The name the cards turned are bound to.
+        #[serde(rename = "as")]
+        bind: String,
     },
     /// Turns face-up permanents face down as 2/2 morphs (CR 708.2a).
     TurnFaceDown {
@@ -1778,6 +1821,10 @@ pub enum Effect {
         /// of your library").
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         bottom: bool,
+        /// The cards lie face down and only this player, who exiles them, may look at them (CR 406.3): "Target opponent
+        /// looks at the top card of your library, then exiles it face down"; never with `sealed`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r406_held_by: Option<Ref>,
     },
     /// The player may cast a card during the resolution, without waiting for priority (CR 608.2g); `otherwise` is
     /// done when they do not.
@@ -3095,6 +3142,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
             bind: IMPULSE.to_owned(),
             sealed: false,
             bottom: false,
+            r406_held_by: None,
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {
