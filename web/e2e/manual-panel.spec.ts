@@ -34,13 +34,17 @@ for (const size of SIZES) {
     browser,
   }) => {
     test.setTimeout(3 * 60_000)
-    const players = await createAndJoin(browser, [
-      { name: 'Ada', deck: 'mono-green' },
-      { name: 'Bo', deck: 'mono-red' },
-    ])
+    const players = await createAndJoin(
+      browser,
+      [
+        { name: 'Ada', deck: 'mono-green' },
+        { name: 'Bo', deck: 'mono-red' },
+      ],
+      undefined,
+      { width: size.width, height: size.height },
+    )
     const [ada, bo] = players as [Player, Player]
     try {
-      for (const { page } of players) await page.setViewportSize({ width: size.width, height: size.height })
       await everyoneReady(players)
       await Promise.all(
         players.map(({ page }) => page.getByRole('button', { name: 'Keep', exact: true }).click()),

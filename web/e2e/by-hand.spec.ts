@@ -133,11 +133,14 @@ for (const size of SIZES) {
       }
 
       // Whoever has the first turn plays a Plains and casts the Partial card with it.
-      const active = (await host.page.getByText('You have priority', { exact: false }).first().isVisible())
-        ? host
-        : guest
+      const priority = (player: Player) => player.page.locator('[data-decision="Priority"]')
+      await expect
+        .poll(async () => (await priority(host).count()) + (await priority(guest).count()), {
+          timeout: 30_000,
+        })
+        .toBeGreaterThan(0)
+      const active = (await priority(host).count()) > 0 ? host : guest
       const other = active === host ? guest : host
-      await expect(active.page.getByText('You have priority', { exact: false }).first()).toBeVisible()
       const page = active.page
       const hand = page.locator('[data-region="hand"] button[data-object-id]')
       // The first card in hand that carries the mark is the Partial card the rest of the test follows.
@@ -165,7 +168,7 @@ for (const size of SIZES) {
 
       // Play a land, then cast the card and let it resolve.
       await page.locator('[data-region="hand"] button[data-object-id][aria-label^="Plains"]').first().click()
-      await expect(page.getByText('You have priority', { exact: false }).first()).toBeVisible()
+      await expect(priority(active)).toBeVisible()
       await infantry.first().click()
       await page.getByRole('button', { name: 'Pay for me', exact: true }).click()
       const field = page.locator(`section[aria-label="${active.name}'s battlefield"]`)
