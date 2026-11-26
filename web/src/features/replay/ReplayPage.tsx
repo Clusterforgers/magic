@@ -24,8 +24,11 @@ import { replaySession } from './replaySession'
 /** How long each step shows while the replay plays. */
 export const PLAY_STEP_MS = 900
 
-/** The table options of a replay: no sound cues and no tour; the animations of each step play as at the table. */
-const OPTIONS: TableOptions = { sounds: false, tour: false }
+/**
+ * The table options of a replay: no sound cues and no tour, the strip says whose turn it is; the animations of each step
+ * play as at the table.
+ */
+const OPTIONS: TableOptions = { sounds: false, tour: false, replay: true }
 
 type Load =
   | { state: 'loading' }

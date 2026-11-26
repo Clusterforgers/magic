@@ -3,6 +3,7 @@ import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
 import type { PlayerId } from '@/protocol/generated'
 import { useSeatNamer } from './names'
+import { useIsReplay } from './tableOptions'
 import { waitingMarkText } from './waitingMarkText'
 
 /**
@@ -11,7 +12,8 @@ import { waitingMarkText } from './waitingMarkText'
  */
 export function WaitingMark({ seat, className }: { seat: PlayerId; className?: string }) {
   const name = useSeatNamer()
-  const text = usePlay((state) => waitingMarkText(state, seat, name))
+  const replay = useIsReplay()
+  const text = usePlay((state) => (replay ? null : waitingMarkText(state, seat, name)))
   if (text === null) return null
   return (
     <span
