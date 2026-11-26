@@ -126,7 +126,7 @@ impl Scope<'_> {
             let (mine_name, theirs_name) = (w6d_name(mine), w6d_name(theirs));
             // A face-down object has no name, so not every name either (CR 708.2a).
             let all = |seen: &Seen<'_>, name: &Option<String>| {
-                name.is_some() && seen.chars.r2013_all_names
+                name.is_some() && seen.chars.r2013_names.all()
             };
             crate::r2013_names::r2013_share(
                 self.state,

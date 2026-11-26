@@ -91,7 +91,7 @@ pub(super) fn r7011_cast_pass(
         let mut grown = tried.clone();
         grown.push(Target::Object(crate::object::ObjectRef {
             id: *card,
-            counter: state.object(*card).map_or(0, |card| card.counter()),
+            counter: state.object(*card).map_or(0, crate::object::GameObject::counter),
         }));
         return Ok(Some(Run::Done {
             events: Vec::new(),

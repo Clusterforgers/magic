@@ -54,6 +54,23 @@ fn anchor(
     })
 }
 
+/// The duration with the attachment an `R6112bWhileAttached` effect follows fixed as the object it is now (CR 611.2b);
+/// any other duration as it is.
+fn r6112b_fixed(
+    cx: &Cx<'_>,
+    duration: mtg_cards::modify::Duration,
+) -> Result<mtg_cards::modify::Duration, ResolveError> {
+    let mtg_cards::modify::Duration::R6112bWhileAttached(by) = &duration else {
+        return Ok(duration);
+    };
+    Ok(match cx.scope.objects(by)?.first() {
+        Some(attachment) => mtg_cards::modify::Duration::R6112bWhileAttached(Box::new(
+            Ref::R111Object(attachment.id),
+        )),
+        None => duration,
+    })
+}
+
 /// The players the effects are begun for, each with the objects of theirs: the controller of the resolving spell or
 /// ability for every object, or for `DuringItsControllersNextTurn` the controller of each object as the effect begins,
 /// whose next turn it waits for.
@@ -202,20 +219,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         };
         modifications.push(modification);
     }
-    let mut marked = crate::effects::r109_mark_duration(state, duration);
-    // The attachment the effect follows is fixed as the object it is now (CR 611.2b).
-    if let mtg_cards::modify::Duration::R6112bWhileAttached(by) = &marked {
-        let fixed = cx
-            .scope
-            .objects(by)?
-            .first()
-            .map(|attachment| attachment.id);
-        if let Some(attachment) = fixed {
-            marked = mtg_cards::modify::Duration::R6112bWhileAttached(Box::new(Ref::R111Object(
-                attachment,
-            )));
-        }
-    }
+    let marked = r6112b_fixed(cx, crate::effects::r109_mark_duration(state, duration))?;
     let duration = &marked;
     let anchor = anchor(cx, duration)?;
     let mut made = 0u64;

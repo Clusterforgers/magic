@@ -413,7 +413,7 @@ impl Modification {
         match self {
             Modification::AddNameWords(words) => chars.name_words.push(words.clone()),
             Modification::SetName(name) => chars.set_name(name),
-            Modification::R2013AllCreatureNames => chars.r2013_all_names = true,
+            Modification::R2013AllCreatureNames => chars.r2013_names = crate::characteristics::R2013Names::AllCreatureNames,
             Modification::AddType(ty) => chars.types = chars.types.with(*ty),
             Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
             Modification::SetTypes(types) => set_types(chars, *types),

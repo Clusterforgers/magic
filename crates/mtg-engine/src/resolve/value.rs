@@ -2531,7 +2531,7 @@ impl<'a> Scope<'a> {
                 seen.card
                     .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name)
                     || self.r4703_counts_as_named(name, seen)
-                    || (seen.chars.r2013_all_names
+                    || (seen.chars.r2013_names.all()
                         && crate::r2013_names::r2013_creature_name(self.state, name))
             }
             Pred::OriginallyPrintedIn(set) => seen
