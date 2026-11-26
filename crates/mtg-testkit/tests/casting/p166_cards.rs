@@ -169,7 +169,11 @@ fn monitor_monitor_rerolls_the_turn_based_visit_roll_once_each_turn(
         .zone(mtg_engine::zones::Zone::Battlefield)
         .iter()
         .filter_map(|id| driver.state().object(*id))
-        .filter(|object| object.permanent().is_some_and(|p| p.tapped()))
+        .filter(|object| {
+            object
+                .permanent()
+                .is_some_and(mtg_engine::object::PermanentState::tapped)
+        })
         .count();
     assert_eq!(tapped, usize::from(reroll), "the reroll paid {{1}}");
     // The next roll: offered again only when the first was declined.
@@ -342,6 +346,7 @@ fn camouflage_blocks_with_piles_assigned_at_random(
         vec![pid(1)],
         "only the defending player divides"
     );
+    #[allow(clippy::type_complexity)]
     let (assigned, blocks): (Vec<(ObjectId, Vec<ObjectId>)>, Vec<(ObjectId, ObjectId)>) = {
         let events = &driver.engine().events()[start..];
         let assigned = events

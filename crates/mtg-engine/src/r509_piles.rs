@@ -197,9 +197,9 @@ pub(crate) fn r509_answer(
     state: &GameState,
     decider: PlayerId,
     options: &R509PilesOptions,
-    piles: Vec<Vec<ObjectId>>,
+    piles: &[Vec<ObjectId>],
 ) -> Result<Outcome, EngineError> {
-    r509_check(options, &piles)?;
+    r509_check(options, piles)?;
     let player = crate::steps::r6400_declaring(state, decider);
     let mut order: Vec<usize> = (0..piles.len()).collect();
     GameRng::substream(state.seed(), state.rng_index()).shuffle(&mut order);

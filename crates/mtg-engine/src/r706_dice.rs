@@ -66,7 +66,7 @@ impl R706DiceOptions {
     pub fn favoured(&self, friendly: bool) -> Vec<usize> {
         match self.purpose {
             R706DicePurpose::Reroll(_) => {
-                let middle = (self.sides + 1) / 2;
+                let middle = self.sides.div_ceil(2);
                 let low: Vec<usize> = (0..self.results.len())
                     .filter(|die| self.results[*die] < middle)
                     .collect();
@@ -196,9 +196,9 @@ pub(crate) fn r706_ignore(
                         kind: DecisionKind::R706ChooseDice(options),
                     })));
                 }
-                Some(dice) => {
+                Some(picked) => {
                     changed.asked += 1;
-                    dice.first().copied().unwrap_or(0)
+                    picked.first().copied().unwrap_or(0)
                 }
             }
         };

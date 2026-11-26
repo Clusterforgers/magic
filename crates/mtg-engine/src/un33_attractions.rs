@@ -136,7 +136,7 @@ pub(crate) fn roll_events(
     state: &GameState,
     player: PlayerId,
     journal: &[(PlayerId, crate::choose::Choice)],
-) -> Result<Vec<Event>, crate::resolve::Run> {
+) -> Result<Vec<Event>, Box<crate::resolve::Run>> {
     let natural = crate::resolve::prim::roll_dice::rolls(state, player, 6, 1);
     let changed = match crate::resolve::prim::r6402_change_roll::r6402_change_in(
         (state, journal),
@@ -146,7 +146,7 @@ pub(crate) fn roll_events(
         true,
     ) {
         Ok(Ok(changed)) => changed,
-        Ok(Err(ask)) => return Err(ask),
+        Ok(Err(ask)) => return Err(Box::new(ask)),
         // An answer that doesn't fit leaves the roll as it fell.
         Err(_) => crate::resolve::prim::r6402_change_roll::R6402Changed::new(&natural),
     };
@@ -187,10 +187,12 @@ pub(crate) fn precombat(state: &GameState) -> Visit {
     let journal = state.un33.r706_visit.as_deref();
     match roll_events(state, active, journal.unwrap_or_default()) {
         Ok(events) => Visit::Rolled(events),
-        Err(crate::resolve::Run::Ask(decision)) if journal.is_some() => {
-            Visit::Asks(Box::new(Some(decision)))
-        }
-        Err(_) => Visit::Asks(Box::new(None)),
+        Err(run) => match *run {
+            crate::resolve::Run::Ask(decision) if journal.is_some() => {
+                Visit::Asks(Box::new(Some(decision)))
+            }
+            _ => Visit::Asks(Box::new(None)),
+        },
     }
 }
 

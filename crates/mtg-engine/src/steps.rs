@@ -91,15 +91,15 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
             }
             match crate::un33_attractions::precombat(state) {
                 Visit::Rolled(rolled) => events.extend(rolled),
-                Visit::Asks(asked) => match *asked {
-                    Some(decision) => return Progress::Decide(decision),
-                    None => {
-                        if let Some(player) = active {
-                            events.push(Event::R706VisitAsks { player });
-                        }
-                        return Progress::Events(events);
+                Visit::Asks(asked) => {
+                    if let Some(decision) = *asked {
+                        return Progress::Decide(decision);
                     }
-                },
+                    if let Some(player) = active {
+                        events.push(Event::R706VisitAsks { player });
+                    }
+                    return Progress::Events(events);
+                }
             }
             events.push(grant(state));
             Progress::Events(events)

@@ -29,7 +29,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         None => match crate::un33_attractions::roll_events(state, player, cx.journal()) {
             Ok(events) => events,
-            Err(ask) => return Ok(ask),
+            Err(ask) => return Ok(*ask),
         },
     }))
 }
