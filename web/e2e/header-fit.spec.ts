@@ -49,6 +49,19 @@ const VARIANTS: Variant[] = [
 /** A page of its own at `width`, signed in as `variant` says (the server of this run has no accounts), at Play. */
 async function headerAt(browser: Browser, variant: Variant, width: number): Promise<Page> {
   const context = await browser.newContext({ baseURL: WEB_URL, viewport: { width, height: 800 } })
+  // The account's own lists (preferences, decks, reads) answer "no accounts" or "sign in first" on this server, which
+  // would sign the page out; they answer "not found" instead.
+  await context.route('**/api/**', async (route) => {
+    const response = await route.fetch()
+    const body = response.ok() ? '' : await response.text()
+    if (variant.me === null || !/accounts_unavailable|unauthenticated/.test(body))
+      return route.fulfill({ response })
+    return route.fulfill({
+      status: 404,
+      contentType: 'application/json',
+      body: JSON.stringify({ error: 'not_found', message: 'Not here.' }),
+    })
+  })
   await context.route('**/api/auth/me', (route) =>
     variant.me === null
       ? route.fulfill({
@@ -70,14 +83,16 @@ async function headerAt(browser: Browser, variant: Variant, width: number): Prom
   return page
 }
 
-/** The header's problems in the page as it stands, judged by the layout gate's rules. */
-async function headerProblems(page: Page, variant: Variant): Promise<string[]> {
+/** The header's problems in the page as it stands, judged by the layout gate's rules; with a menu open, which lies over the page, only what is cut off or scrolls. */
+async function headerProblems(page: Page, variant: Variant, menuOpen = false): Promise<string[]> {
   const ask: Ask = {
-    actions: {
-      Create: 'header a[href="/new"]',
-      Theme: 'header button[aria-label^="Theme"]',
-      Account: variant.account,
-    },
+    actions: menuOpen
+      ? {}
+      : {
+          Create: 'header a[href="/new"]',
+          Theme: 'header button[aria-label^="Theme"]',
+          Account: variant.account,
+        },
     reveal: false,
     exempt: [],
     floor: TEXT_FLOOR,
@@ -102,7 +117,7 @@ for (const variant of VARIANTS) {
         const items = page.getByRole('menuitem')
         await items.first().waitFor()
         menu = await items.allTextContents()
-        const open = await headerProblems(page, variant)
+        const open = await headerProblems(page, variant, true)
         if (open.length > 0) broken.push(`${width} menu open: ${open.join('; ')}`)
         await page.keyboard.press('Escape')
         await expect(more).toBeFocused()
