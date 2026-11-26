@@ -1491,6 +1491,21 @@ pub enum Event {
         /// The color.
         color: mtg_core::color::Color,
     },
+    /// An emblem that held abilities a player had until end of turn ceased to exist in the cleanup step.
+    R6051EmblemEnded {
+        /// The emblem.
+        object: ObjectId,
+    },
+    /// An owner circled colors for a card before the game began ("As you create your deck, circle two of the colors
+    /// below."): public, and read by the card's mana ability in every zone.
+    ColorsCircled {
+        /// Who circled them.
+        player: PlayerId,
+        /// The card.
+        object: ObjectId,
+        /// The colors circled.
+        colors: Vec<mtg_core::color::Color>,
+    },
     /// A player revealed the first card they drew this turn as they drew it, through the `RevealFirstDraw` rules of
     /// these sources; a `Revealed` of the card comes just before it. Abilities "whenever you reveal ... this way" of
     /// those sources trigger on it.
@@ -1812,6 +1827,7 @@ impl Event {
             | Event::DamagePrevented { .. }
             | Event::FirstPlayerChosen { .. }
             | Event::CommanderColorChosen { .. }
+            | Event::ColorsCircled { .. }
             | Event::GameRestarted { .. }
             | Event::MulliganPhaseBegan
             | Event::MulliganDeclared { .. }
@@ -2006,6 +2022,7 @@ impl Event {
             | Event::CreatureDied { object, .. }
             | Event::CopyEnded { object, .. }
             | Event::CopyCeased { object }
+            | Event::R6051EmblemEnded { object }
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }
             | Event::CardParted { permanent: object, .. }

@@ -13,4 +13,8 @@ object: ObjectId,
 /**
  * Who gets it.
  */
-owner: PlayerId, };
+owner: PlayerId, 
+/**
+ * It ceases to exist in the cleanup step: abilities a player has until end of turn (`Effect::R6051PlayerGains`).
+ */
+this_turn?: boolean, };

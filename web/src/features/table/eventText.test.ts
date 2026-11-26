@@ -36,6 +36,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { CommanderColorChosen: { player: 1, object: 3, color: 'Blue' } },
     'Bo chooses blue for Forest',
   ],
+  ColorsCircled: [
+    { ColorsCircled: { player: 1, object: 3, colors: ['White', 'Blue'] } },
+    'Bo circles white and blue on Forest',
+  ],
   LibraryShuffled: [{ LibraryShuffled: { player: 0, order: [] } }, 'Ana shuffles their library'],
   R111GraveyardOrdered: [
     { R111GraveyardOrdered: { player: 1, order: [3, 4] } },
@@ -155,6 +159,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MonarchChanged: [{ MonarchChanged: { player: 1 } }, 'Bo becomes the monarch'],
   EmblemCreated: [{ EmblemCreated: { object: 9, owner: 1 } }, 'Bo gets an emblem'],
+  R6051EmblemEnded: [{ R6051EmblemEnded: { object: 9 } }, 'An emblem that lasted the turn ends'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],

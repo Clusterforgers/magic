@@ -31,6 +31,10 @@ pub struct EmblemCreated {
     /// Its abilities, so a log folds to the same game with no card data at hand.
     #[cfg_attr(feature = "ts", ts(skip))]
     pub definition: Arc<CardDefinition>,
+    /// It ceases to exist in the cleanup step: abilities a player has until end of turn (`Effect::R6051PlayerGains`).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub this_turn: bool,
 }
 
 /// The definition of an emblem with these abilities: each works from the command zone, and only the ones the engine
@@ -88,7 +92,32 @@ pub(crate) fn fold(state: &mut GameState, event: &EmblemCreated) -> Result<(), E
     crate::copies::note_definition(state, &event.definition);
     state.objects.insert(id, emblem);
     state.zones.insert(zone, id, Placement::Top);
+    if event.this_turn {
+        state.r6051_emblems.push(id);
+    }
     state.next_object = state.next_object.max(id.get() + 1);
+    reset_passes(state);
+    Ok(())
+}
+
+/// The events that end the emblems that last until end of turn, in the cleanup step (CR 514.2).
+pub(crate) fn r6051_ended(state: &GameState) -> Vec<crate::events::Event> {
+    state
+        .r6051_emblems
+        .iter()
+        .map(|object| crate::events::Event::R6051EmblemEnded { object: *object })
+        .collect()
+}
+
+/// Folds the end of an emblem that lasted until end of turn: it ceases to exist.
+pub(crate) fn r6051_fold_ended(state: &mut GameState, object: ObjectId) -> Result<(), EngineError> {
+    if !state.r6051_emblems.contains(&object) {
+        return Err(invalid(format!(
+            "{object:?} is no emblem that lasts this turn"
+        )));
+    }
+    state.r6051_emblems.retain(|id| *id != object);
+    crate::tokens::cease(state, object);
     reset_passes(state);
     Ok(())
 }

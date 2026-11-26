@@ -243,6 +243,16 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         // A game has no draft, so no color was chosen and no mana is added (Paliano, the High City ruling).
         Produce::DraftedColors => (Vec::new(), 1),
+        // The colors circled for the source, or for what it copies; none when none were.
+        Produce::Circled => (
+            source
+                .map(|id| crate::circled::circled(state, id))
+                .unwrap_or_default()
+                .into_iter()
+                .map(mana_of)
+                .collect(),
+            1,
+        ),
         // The mana the source last noted: one of its first type, or all of it.
         Produce::R112Noted { amount } => {
             let noted = super::r112_note::r112_noted(state, cx.scope.source);
@@ -347,7 +357,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 })
                 .collect()
         }
-        Produce::CommanderIdentity(_) | Produce::AnyColorAmong(_) | Produce::DraftedColors => kinds
+        Produce::CommanderIdentity(_)
+        | Produce::AnyColorAmong(_)
+        | Produce::DraftedColors
+        | Produce::Circled => kinds
             .iter()
             .filter_map(|kind| kind.color().map(ChoiceOption::Color))
             .collect(),

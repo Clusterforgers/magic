@@ -1,7 +1,7 @@
 {
   "oracle_id": "93d1e21b-7326-4aad-9f6e-e0e391845a18",
   "name": "Enduring Angel // Angelic Enforcer",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Enduring Angel",
@@ -11,9 +11,22 @@
         { "Keyword": "DoubleStrike" },
         { "Static": { "affected": "You", "mods": [{ "AddKeyword": "Hexproof" }] } },
         {
-          "Manual": {
-            "reason": "you apply this static ability by hand",
-            "span": { "start": 41, "end": 221 }
+          "Replacement": {
+            "when": { "R1193LifeReducedTo": { "at_most": 0 } },
+            "by": {
+              "Instead": [
+                { "Transform": { "what": "This" } },
+                { "SetLife": { "amount": 3 } },
+                {
+                  "If": {
+                    "condition": {
+                      "Not": { "Matches": { "subject": "This", "selector": ["Transformed"] } }
+                    },
+                    "then": [{ "LoseGame": {} }]
+                  }
+                }
+              ]
+            }
           }
         }
       ]

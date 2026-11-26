@@ -472,6 +472,11 @@ pub struct GameState {
     /// The colors chosen before the game began for commanders that are the chosen color, by card id
     /// (`r404_commander_color`).
     pub(crate) commander_colors: Vec<(ObjectId, mtg_core::color::Color)>,
+    /// The colors circled before the game began for cards that circle colors as their deck is built, by card id
+    /// (`circled`).
+    pub(crate) circled: Vec<(ObjectId, Vec<mtg_core::color::Color>)>,
+    /// The emblems that cease to exist in the cleanup step (`Effect::R6051PlayerGains`).
+    pub(crate) r6051_emblems: Vec<ObjectId>,
     /// The cards a seat showed to every seat by hand (`ManualAction::Reveal`), identified by all while each is still the
     /// object it showed in the place it was shown in (a shuffle ends it for a library).
     pub(crate) revealed_by_hand: Vec<crate::object::ObjectRef>,
@@ -1163,6 +1168,14 @@ impl Hash for GameState {
         // Likewise a game with no color chosen for a commander.
         if !self.commander_colors.is_empty() {
             self.commander_colors.hash(state);
+        }
+        // Likewise a game with no colors circled.
+        if !self.circled.is_empty() {
+            self.circled.hash(state);
+        }
+        // Likewise a game with no emblem that lasts the turn.
+        if !self.r6051_emblems.is_empty() {
+            self.r6051_emblems.hash(state);
         }
         // Likewise a game in which nothing was shown or noted by hand.
         if !self.revealed_by_hand.is_empty() {

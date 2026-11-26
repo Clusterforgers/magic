@@ -749,6 +749,11 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.commander_colors.retain(|(card, _)| card != object);
             state.commander_colors.push((*object, *color));
         }
+        Event::R6051EmblemEnded { object } => crate::w6b_emblems::r6051_fold_ended(state, *object)?,
+        Event::ColorsCircled { object, colors, .. } => {
+            state.circled.retain(|(card, _)| card != object);
+            state.circled.push((*object, colors.clone()));
+        }
         Event::FaceDownLooked { object, player } => {
             crate::sight::look_face_down(state, *player, *object);
         }
