@@ -110,6 +110,7 @@ export const DeckRow = memo(function DeckRow({
                     name={card.name}
                     size="small"
                     alt=""
+                    quiet
                     className="w-10"
                   />
                 </HoverPicture>
