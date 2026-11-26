@@ -307,6 +307,35 @@ fn moved(ctx: &Ctx, what: &Ref, to: &Destination) -> String {
             };
             format!("put {what} {place} its owner's library{order}")
         }
+        Destination::R6008FaceDownAs {
+            power,
+            toughness,
+            rules,
+            note_name,
+        } => {
+            let quoted: Vec<String> = rules
+                .iter()
+                .map(|rule| {
+                    format!(
+                        "\"{}\"",
+                        super::ability_wording(rule).unwrap_or_else(|| "an ability".to_owned())
+                    )
+                })
+                .collect();
+            let with = if quoted.is_empty() {
+                String::new()
+            } else {
+                format!(" with {}", quoted.join(" and "))
+            };
+            let note = if *note_name {
+                format!("note the name of {what} and ")
+            } else {
+                String::new()
+            };
+            format!(
+                "{note}put {what} onto the battlefield face down as a {power}/{toughness} creature{with}"
+            )
+        }
         Destination::BattlefieldFaceDown { under } => format!(
             "put {what} onto the battlefield face down{}",
             entering(ctx, false, under.as_ref(), false)

@@ -2333,6 +2333,7 @@ impl<'a> Scope<'a> {
             | Pred::SharesManaValue(_)
             | Pred::XInCost
             | Pred::PhyrexianInCost
+            | Pred::R6008PaidBySpent
             | Pred::GenericCost(_)
             | Pred::Goaded
             | Pred::HasAttached(_)

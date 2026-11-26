@@ -29,6 +29,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 && object
                     .face_down()
                     .is_some_and(FaceDown::shows_characteristics)
+                // A face-down instant or sorcery card is revealed and stays face down.
+                && !crate::r6008_face_down::stays_face_down(state, object.id())
         })
         .flat_map(|object| {
             let mut events = vec![Event::TurnedFaceUp {

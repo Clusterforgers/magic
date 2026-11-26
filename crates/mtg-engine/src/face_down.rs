@@ -66,8 +66,10 @@ impl FaceDown {
             | FaceDown::Hideaway { .. }
             | FaceDown::Held { .. }
             | FaceDown::Sealed { .. }
-            | FaceDown::Attraction => None,
-            FaceDown::Morph | FaceDown::Manifest => Some(&MORPH),
+            | FaceDown::Attraction
+            // The object holds what the effect listed (`GameObject::r6008_listed`).
+            | FaceDown::R6008Listed => None,
+            FaceDown::Morph | FaceDown::Manifest | FaceDown::R6008Masked => Some(&MORPH),
             FaceDown::Disguise | FaceDown::Cloak => Some(&DISGUISE),
             FaceDown::R6701Horror => Some(&R6701_HORROR),
         }
@@ -76,7 +78,7 @@ impl FaceDown {
     /// Whether the characteristics of an object that lies face down this way are public: every seat reads a 2/2 creature
     /// and only the card behind it is hidden.
     pub fn shows_characteristics(self) -> bool {
-        self.characteristics().is_some()
+        self == FaceDown::R6008Listed || self.characteristics().is_some()
     }
 
     /// Whether an effect put the card onto the battlefield face down (manifest, cloak), so it is turned face up for its mana

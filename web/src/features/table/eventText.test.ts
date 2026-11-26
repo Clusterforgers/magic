@@ -252,6 +252,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   TurnedFaceDown: [{ TurnedFaceDown: { object: 3, player: 1 } }, 'Bo turns Forest face down'],
+  R6008Listed: [
+    { R6008Listed: { object: 4, noted: 'Lightning Bolt' } },
+    'Lightning Bolt lies face down as the creature an effect lists, noting the name Lightning Bolt',
+  ],
   FaceDownLooked: [{ FaceDownLooked: { object: 3, player: 1 } }, 'Bo looks at Forest'],
   FirstDrawRevealed: [
     { FirstDrawRevealed: { player: 1, card: 3, sources: [1] } },

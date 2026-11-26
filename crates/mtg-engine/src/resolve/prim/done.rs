@@ -142,6 +142,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::CopyAbility { .. }
         | Effect::CopyCard { .. }
         | Effect::CopyNamedCard { .. }
+        | Effect::R6008CopyNoted { .. }
         | Effect::BecomeCopy { .. }
         | Effect::CreateToken { .. }
         | Effect::R6602CreateAttached { .. }

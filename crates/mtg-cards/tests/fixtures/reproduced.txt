@@ -1447,6 +1447,7 @@ Illicit Shipment
 Illuminate History
 Illusion Spinners
 Illusion of Choice
+Illusionary Mask
 Illusionist's Gambit
 Illusory Ambusher
 Illustrious Wanderglyph
@@ -1760,6 +1761,7 @@ Mabel, Bitter Recluse
 Mace of the Valiant
 Machine God's Effigy
 Maestros Theater
+Magar of the Magic Strings
 Mage Hunter
 Magewright's Stone
 Magical Hack
@@ -2436,6 +2438,7 @@ Road Rage
 Roaring Furnace // Steaming Sauna
 Rob the Archives
 Rocksteady, Mutant Marauder
+Rod of Absorption
 Rogue Refiner
 Rogue's Passage
 Roku's Mastery

@@ -173,6 +173,7 @@ mod mana_trigger;
 mod manifest;
 mod mass_moves;
 mod modal;
+mod fd1_wholes;
 mod outside;
 mod p158_wholes;
 mod p159_wholes;
@@ -946,6 +947,9 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
         return Some(found);
     }
     if let Some(found) = p160_wholes::p160_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = fd1_wholes::fd1_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = r118_02_wholes::r118_02_whole_read(text) {
