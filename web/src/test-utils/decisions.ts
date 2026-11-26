@@ -59,9 +59,19 @@ export const KINDS: Record<DecisionName, DecisionKind> = {
     },
   },
   R706ChooseDice: {
-    R706ChooseDice: { roller: 0, sides: 6, results: [3], min: 0, max: 1, purpose: { Reroll: '{1}' }, text: 'Reroll?' },
+    R706ChooseDice: {
+      roller: 0,
+      sides: 6,
+      results: [3],
+      min: 0,
+      max: 1,
+      purpose: { Reroll: '{1}' },
+      text: 'Reroll?',
+    },
   },
-  R509BlockPiles: { R509BlockPiles: { attackers: [], creatures: [], text: 'Divide your creatures into piles.' } },
+  R509BlockPiles: {
+    R509BlockPiles: { attackers: [], creatures: [], text: 'Divide your creatures into piles.' },
+  },
 }
 
 /** A decision of the named kind for `player`. */

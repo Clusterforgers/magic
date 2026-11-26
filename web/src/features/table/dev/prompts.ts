@@ -223,7 +223,10 @@ const piles: DevPrompt = ({ view }) => {
   const attackers = view.combat.attackers
     .filter((attacker) => 'Player' in attacker.target && attacker.target.Player === viewer)
     .map((attacker) => attacker.object)
-  const creatures = untappedCreatures(view, viewer).map((object, at) => ({ object: object.id, piles: at === 0 ? 2 : 1 }))
+  const creatures = untappedCreatures(view, viewer).map((object, at) => ({
+    object: object.id,
+    piles: at === 0 ? 2 : 1,
+  }))
   const text = `Divide your creatures into ${attackers.length} piles. Each pile goes to an attacker at random, and each creature in it that can block that attacker does.`
   return { id: 1, decision: { player: viewer, kind: { R509BlockPiles: { attackers, creatures, text } } } }
 }

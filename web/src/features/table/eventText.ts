@@ -1288,7 +1288,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { roller, chooser, result } = event.R706DieIgnored
     return line(`${n.seat(chooser)} has ${n.seat(roller)} ignore a roll of ${result}`)
   }
-  if ('R706VisitAsks' in event) return quiet(`${n.seat(event.R706VisitAsks.player)} rolls to visit their Attractions`)
+  if ('R706VisitAsks' in event)
+    return quiet(`${n.seat(event.R706VisitAsks.player)} rolls to visit their Attractions`)
   if ('R509PilesAssigned' in event) {
     const { player, piles } = event.R509PilesAssigned
     const filled = piles.filter(([, pile]) => pile.length > 0).length

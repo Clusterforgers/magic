@@ -27,10 +27,7 @@ const ignore: R706DiceOptions = {
 }
 
 function mount(options: R706DiceOptions, seats = 2, mode?: TableMode) {
-  return renderDecision(
-    { R706ChooseDice: options },
-    { seats, options: mode === undefined ? {} : { mode } },
-  )
+  return renderDecision({ R706ChooseDice: options }, { seats, options: mode === undefined ? {} : { mode } })
 }
 
 describe.each<[number, TableMode | undefined]>([

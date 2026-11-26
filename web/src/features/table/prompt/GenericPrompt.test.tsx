@@ -247,7 +247,15 @@ const ROWS: Row[] = [
   [
     'R706ChooseDice',
     {
-      R706ChooseDice: { roller: 0, sides: 6, results: [6, 2], min: 1, max: 1, purpose: 'Ignore', text: 'Ignore one.' },
+      R706ChooseDice: {
+        roller: 0,
+        sides: 6,
+        results: [6, 2],
+        min: 1,
+        max: 1,
+        purpose: 'Ignore',
+        text: 'Ignore one.',
+      },
     },
     ['Ignore die 1 (6)', 'Ignore die 2 (2)'],
     1,

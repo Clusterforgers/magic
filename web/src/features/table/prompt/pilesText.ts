@@ -2,7 +2,12 @@
 import type { ObjectId } from '@/protocol/generated'
 
 /** The piles with `creature` put into pile `at`, or taken out of it; a creature already in `most` piles joins no more. */
-export function togglePile(piles: readonly ObjectId[][], at: number, creature: ObjectId, most: number): ObjectId[][] {
+export function togglePile(
+  piles: readonly ObjectId[][],
+  at: number,
+  creature: ObjectId,
+  most: number,
+): ObjectId[][] {
   const inPile = piles[at]?.includes(creature) ?? false
   const count = piles.filter((pile) => pile.includes(creature)).length
   if (!inPile && count >= most) return piles.map((pile) => [...pile])

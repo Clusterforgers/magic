@@ -40,7 +40,11 @@ export const R509BlockPilesPrompt: PromptComponent<'R509BlockPiles'> = ({ option
       }
       choices={
         <div className="flex basis-full flex-col gap-2">
-          <ul aria-label="Creatures" data-slot="pile-rows" className="flex max-h-56 flex-col gap-1.5 overflow-y-auto p-0.5">
+          <ul
+            aria-label="Creatures"
+            data-slot="pile-rows"
+            className="flex max-h-56 flex-col gap-1.5 overflow-y-auto p-0.5"
+          >
             {options.creatures.map((creature) => {
               const count = piles.filter((pile) => pile.includes(creature.object)).length
               return (
@@ -51,7 +55,11 @@ export const R509BlockPilesPrompt: PromptComponent<'R509BlockPiles'> = ({ option
                       <span className="text-muted-foreground"> (up to {creature.piles} piles)</span>
                     ) : null}
                   </span>
-                  <div role="group" aria-label={`Piles for ${name(creature.object)}`} className="flex flex-wrap gap-1.5">
+                  <div
+                    role="group"
+                    aria-label={`Piles for ${name(creature.object)}`}
+                    className="flex flex-wrap gap-1.5"
+                  >
                     {piles.map((pile, at) => {
                       const on = pile.includes(creature.object)
                       return (
@@ -59,11 +67,16 @@ export const R509BlockPilesPrompt: PromptComponent<'R509BlockPiles'> = ({ option
                           key={at}
                           type="button"
                           variant="outline"
-                          className={cn('h-9 min-w-10 px-2 tabular-nums', on && 'border-primary bg-primary/10')}
+                          className={cn(
+                            'h-9 min-w-10 px-2 tabular-nums',
+                            on && 'border-primary bg-primary/10',
+                          )}
                           aria-label={`${name(creature.object)} in pile ${at + 1}`}
                           aria-pressed={on}
                           disabled={!on && count >= creature.piles}
-                          onClick={() => setPiles((was) => togglePile(was, at, creature.object, creature.piles))}
+                          onClick={() =>
+                            setPiles((was) => togglePile(was, at, creature.object, creature.piles))
+                          }
                         >
                           {at + 1}
                         </Button>

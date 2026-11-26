@@ -23,7 +23,9 @@ export const R706ChooseDicePrompt: PromptComponent<'R706ChooseDice'> = ({ option
   const { answer } = usePrompt()
   const me = usePlay((state) => state.seat)
   const namer = useSeatNamer()
-  const [source] = useObjects(useMemo(() => (options.source === undefined ? [] : [options.source]), [options.source]))
+  const [source] = useObjects(
+    useMemo(() => (options.source === undefined ? [] : [options.source]), [options.source]),
+  )
   const reroll = isReroll(options)
   const [chosen, setChosen] = useState<number[]>([])
   const keep = useRef<HTMLButtonElement>(null)
@@ -32,7 +34,9 @@ export const R706ChooseDicePrompt: PromptComponent<'R706ChooseDice'> = ({ option
 
   const roller = options.roller === me ? 'You' : namer(options.roller)
   const toggle = (at: number) => (): void =>
-    setChosen((was) => (was.includes(at) ? was.filter((die) => die !== at) : [...was, at].sort((a, b) => a - b)))
+    setChosen((was) =>
+      was.includes(at) ? was.filter((die) => die !== at) : [...was, at].sort((a, b) => a - b),
+    )
   const press = (at: number) => (reroll ? toggle(at) : () => void answer({ R706ChooseDice: [at] }))
   const keepAll = (): void => void answer({ R706ChooseDice: [] })
   usePromptKeys({
@@ -54,7 +58,12 @@ export const R706ChooseDicePrompt: PromptComponent<'R706ChooseDice'> = ({ option
       }
       inline={options.results.length <= 4}
       choices={
-        <div role="group" aria-label="Dice" data-slot="dice-list" className="flex flex-wrap items-center gap-2 p-0.5">
+        <div
+          role="group"
+          aria-label="Dice"
+          data-slot="dice-list"
+          className="flex flex-wrap items-center gap-2 p-0.5"
+        >
           {options.results.map((result, at) => {
             const on = chosen.includes(at)
             const key = numberKey(at)
