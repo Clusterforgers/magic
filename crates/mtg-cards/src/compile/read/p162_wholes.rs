@@ -48,7 +48,14 @@ mod tests {
         let entries: Vec<serde_json::Value> = serde_json::from_str(P162_WHOLES).unwrap();
         assert_eq!(P162_SHAPES.len(), entries.len());
         for (shape, text) in P162_SHAPES.iter() {
-            assert_eq!(p162_whole_read(text).as_ref(), Some(shape), "{text}");
+            // The eminence trigger and its twin from the command zone share one wording, which reads as the first.
+            let read = p162_whole_read(text);
+            assert!(
+                P162_SHAPES
+                    .iter()
+                    .any(|(each, wording)| wording == text && read.as_ref() == Some(each)),
+                "{text}"
+            );
             assert!(
                 written_variants(shape)
                     .iter()
