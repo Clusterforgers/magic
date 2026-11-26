@@ -1,6 +1,6 @@
 // Goal: the page an invite link opens takes a guest from the link to the lobby: /join/{code}, typed in lower case with a hyphen as people paste it, shows the code grouped in capitals, asks for a name on the page, opens the seat the server gave in the lobby (the seat link in the address fragment survives a reload) and shows the new name to the host; a code no game has ends in one sentence with the ways to Play and to Create a game, a link that holds no code says so without a request, and both pages fit the window at 1280x720 and 390 wide without scrolling.
 import { expect, test } from './test'
-import type { Browser, Page } from '@playwright/test'
+import type { Browser, Page, Response } from '@playwright/test'
 import { seatRows } from './lobby'
 import { WEB_URL } from './ports'
 
@@ -28,19 +28,34 @@ async function fitsEveryWindow(page: Page): Promise<void> {
 }
 
 /**
- * Checks that the join page of `path` fits every window, on a page of its own: the page that takes the click keeps
- * one window size from its first frame to the click.
+ * Checks that `path`, once `reach` has brought it to the state under test, fits every window, on a page of its own
+ * that is closed after. A page whose window was resized can stop drawing frames in a loaded full run, and a click waits
+ * for frames (Playwright's stable check), so a page that takes clicks keeps one window size from its first frame.
  */
-async function joinPageFits(browser: Browser, path: string): Promise<void> {
+async function fitsOnItsOwnPage(
+  browser: Browser,
+  path: string,
+  reach: (page: Page) => Promise<void>,
+): Promise<void> {
   const context = await browser.newContext()
   try {
     const page = await context.newPage()
     await page.goto(path)
-    await expect(page.getByRole('button', { name: 'Join game' })).toBeVisible()
+    await reach(page)
     await fitsEveryWindow(page)
   } finally {
     await context.close()
   }
+}
+
+/** Gives a name and presses Join on a join page whose code no game has, waits for the sentence and returns the answer. */
+async function missCode(page: Page): Promise<Response> {
+  const answered = page.waitForResponse((response) => new URL(response.url()).pathname === '/api/join')
+  await page.getByLabel('Your name').fill('Ivy')
+  await page.getByRole('button', { name: 'Join game' }).click()
+  const answer = await answered
+  await expect(page.getByRole('alert')).toContainText('No open game with that code.')
+  return answer
 }
 
 test('a guest follows an invite link, gives a name on the page and lands in the lobby', async ({
@@ -82,7 +97,9 @@ test('a guest follows an invite link, gives a name on the page and lands in the 
     await hostPage.goto(`/game/${created.game}#seat=${hostSeat.seat}&token=${hostSeat.token}`)
     await expect(hostPage.getByRole('heading', { name: 'Waiting for players' })).toBeVisible()
 
-    await joinPageFits(browser, `/join/${grouped}`)
+    await fitsOnItsOwnPage(browser, `/join/${grouped}`, async (page) => {
+      await expect(page.getByRole('button', { name: 'Join game' })).toBeVisible()
+    })
 
     // As a link survives a chat message: lower case with a hyphen in the middle.
     await guestPage.goto(`/join/${grouped.toLowerCase()}`)
@@ -111,6 +128,7 @@ test('a guest follows an invite link, gives a name on the page and lands in the 
 })
 
 test('a code no game has ends in one sentence with the ways on, and a link with no code sends nothing', async ({
+  browser,
   page,
 }) => {
   const errors: string[] = []
@@ -124,14 +142,17 @@ test('a code no game has ends in one sentence with the ways on, and a link with 
   // A code of the right shape that no game holds: the answer is the Play page's sentence, nothing more.
   await page.goto('/join/ABCD2345')
   await expect(page.getByText('ABCD-2345', { exact: true })).toBeVisible()
-  await page.getByLabel('Your name').fill('Ivy')
-  await page.getByRole('button', { name: 'Join game' }).click()
-  await expect(page.getByRole('alert')).toContainText('No open game with that code.')
+  const miss = await missCode(page)
   await expect(main.getByRole('link', { name: 'Play' })).toBeFocused()
   await expect(main.getByRole('link', { name: 'Create a game' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Join game' })).toHaveCount(0)
   expect(joins).toHaveLength(1)
-  await fitsEveryWindow(page)
+  // The page that is resized gets the server's own answer again: a second miss would spend the address's budget.
+  const replay = { status: miss.status(), headers: miss.headers(), body: await miss.body() }
+  await fitsOnItsOwnPage(browser, '/join/ABCD2345', async (other) => {
+    await other.route('**/api/join', (route) => route.fulfill(replay))
+    await missCode(other)
+  })
   await main.getByRole('link', { name: 'Create a game' }).click()
   await expect(page.getByRole('heading', { name: 'Create a game' })).toBeVisible()
 
@@ -139,7 +160,9 @@ test('a code no game has ends in one sentence with the ways on, and a link with 
   await page.goto('/join/ABCD')
   await expect(page.getByRole('alert')).toContainText('That is not a join code')
   await expect(main.getByRole('link', { name: 'Play' })).toBeFocused()
-  await fitsEveryWindow(page)
+  await fitsOnItsOwnPage(browser, '/join/ABCD', async (other) => {
+    await expect(other.getByRole('alert')).toContainText('That is not a join code')
+  })
   await main.getByRole('link', { name: 'Play' }).click()
   await expect(page).toHaveURL(/\/$/)
   await expect(page.getByRole('heading', { level: 1, name: 'Play' })).toBeVisible()
