@@ -1,4 +1,4 @@
-//! Goal: the p160 cards play whole at two to four seats: Close Encounter deals the power of the creature or warped card
+//! Goal: the p160w cards play whole at two to four seats: Close Encounter deals the power of the creature or warped card
 //! chosen as it is cast; Martyrdom gives an ability only its caster may activate, which moves the next 1 damage to the
 //! creature; Master Warcraft lets its caster choose another player's attackers, which that player then aims, and their
 //! opponents' blocks; Ghostly Flame lets black and red damage through protection from those colors; Guardian Beast keeps
@@ -28,12 +28,12 @@ use rstest::rstest;
 use crate::common::casting::choose_way;
 use crate::common::pid;
 
-fn p160_replays(driver: &Driver) {
+fn p160w_replays(driver: &Driver) {
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
 }
 
-fn p160_libraries(scenario: Scenario, seats: usize) -> Scenario {
+fn p160w_libraries(scenario: Scenario, seats: usize) -> Scenario {
     (0..seats).fold(scenario, |scenario, seat| {
         scenario.library(seat, vec![island(); 12])
     })
@@ -41,7 +41,7 @@ fn p160_libraries(scenario: Scenario, seats: usize) -> Scenario {
 
 /// Answers until the stack is empty and `seat` has priority: `pick` answers first, mana is paid automatically, the first
 /// legal targets are taken and every other player passes.
-fn p160_settle(driver: &mut Driver, seat: usize, pick: &dyn Fn(&Driver, &Decision) -> Option<Answer>) {
+fn p160w_settle(driver: &mut Driver, seat: usize, pick: &dyn Fn(&Driver, &Decision) -> Option<Answer>) {
     for _ in 0..300 {
         let decision = driver.decision().unwrap().clone();
         if let Some(answer) = pick(driver, &decision) {
@@ -74,12 +74,12 @@ fn p160_settle(driver: &mut Driver, seat: usize, pick: &dyn Fn(&Driver, &Decisio
     panic!("the game did not settle");
 }
 
-fn p160_none(_: &Driver, _: &Decision) -> Option<Answer> {
+fn p160w_none(_: &Driver, _: &Decision) -> Option<Answer> {
     None
 }
 
 /// The targets of a target question that name the object `id`.
-fn p160_aim(decision: &Decision, id: ObjectId) -> Option<Answer> {
+fn p160w_aim(decision: &Decision, id: ObjectId) -> Option<Answer> {
     let DecisionKind::ChooseTargets(options) = &decision.kind else {
         return None;
     };
@@ -93,7 +93,7 @@ fn p160_aim(decision: &Decision, id: ObjectId) -> Option<Answer> {
     )))
 }
 
-fn p160_damage(driver: &Driver, id: ObjectId) -> u32 {
+fn p160w_damage(driver: &Driver, id: ObjectId) -> u32 {
     driver
         .state()
         .object(id)
@@ -101,7 +101,7 @@ fn p160_damage(driver: &Driver, id: ObjectId) -> u32 {
         .map_or(0, |permanent| permanent.damage())
 }
 
-fn p160_in_exile(driver: &Driver, name: &str) -> Option<ObjectId> {
+fn p160w_in_exile(driver: &Driver, name: &str) -> Option<ObjectId> {
     driver
         .state()
         .zone(Zone::Exile)
@@ -111,7 +111,7 @@ fn p160_in_exile(driver: &Driver, name: &str) -> Option<ObjectId> {
 }
 
 /// Passes until `seat` decides at priority.
-fn p160_until_priority(driver: &mut Driver, seat: usize) {
+fn p160w_until_priority(driver: &mut Driver, seat: usize) {
     for _ in 0..40 {
         let decision = driver.decision().unwrap();
         if decision.player == pid(seat) && matches!(decision.kind, DecisionKind::Priority(_)) {
@@ -143,7 +143,7 @@ fn close_encounter_deals_the_power_of_what_was_chosen(
         .battlefield(1, [ready(free_creature("Wall", 0, 7))])
         .graveyard(0, [free_creature("Buried", 5, 5)])
         .hand(0, [card("Timeline Culler").unwrap(), card("Close Encounter").unwrap()]);
-    let mut driver = Driver::from_scenario(p160_libraries(scenario, seats)).unwrap();
+    let mut driver = Driver::from_scenario(p160w_libraries(scenario, seats)).unwrap();
     if warped {
         driver.begin_cast("Timeline Culler").unwrap();
         for _ in 0..10 {
@@ -157,27 +157,27 @@ fn close_encounter_deals_the_power_of_what_was_chosen(
                 }
             }
         }
-        p160_settle(&mut driver, 0, &p160_none);
+        p160w_settle(&mut driver, 0, &p160w_none);
         driver
             .idle_until(2 + u32::try_from(seats).unwrap(), Step::Main1)
             .unwrap();
-        assert!(p160_in_exile(&driver, "Timeline Culler").is_some(), "warped away");
+        assert!(p160w_in_exile(&driver, "Timeline Culler").is_some(), "warped away");
     }
     let wall = driver.id_of("Wall").unwrap();
     let bear = driver.id_of("Bear").unwrap();
     let chosen = if warped {
-        p160_in_exile(&driver, "Timeline Culler").unwrap()
+        p160w_in_exile(&driver, "Timeline Culler").unwrap()
     } else {
         bear
     };
     driver.begin_cast("Close Encounter").unwrap();
     let offered = std::cell::RefCell::new(Vec::new());
-    p160_settle(&mut driver, 0, &|_, decision| match &decision.kind {
+    p160w_settle(&mut driver, 0, &|_, decision| match &decision.kind {
         DecisionKind::ChooseCards(options) => {
             offered.borrow_mut().clone_from(&options.from);
             Some(Answer::ChooseCards(CardsChoice(vec![chosen])))
         }
-        _ => p160_aim(decision, wall),
+        _ => p160w_aim(decision, wall),
     });
     let mut expected = vec![bear];
     if warped {
@@ -192,8 +192,8 @@ fn close_encounter_deals_the_power_of_what_was_chosen(
     } else {
         assert!(seen.is_empty() || seen == expected);
     }
-    assert_eq!(p160_damage(&driver, wall), if warped { 2 } else { 3 });
-    p160_replays(&driver);
+    assert_eq!(p160w_damage(&driver, wall), if warped { 2 } else { 3 });
+    p160w_replays(&driver);
 }
 
 #[rstest]
@@ -214,13 +214,13 @@ fn martyrdom_moves_the_next_damage_and_only_its_caster_activates_it(
             ],
         )
         .hand(0, [card("Martyrdom").unwrap(), card("Lightning Bolt").unwrap()]);
-    let mut driver = Driver::from_scenario(p160_libraries(scenario, seats)).unwrap();
+    let mut driver = Driver::from_scenario(p160w_libraries(scenario, seats)).unwrap();
     let martyr = driver.id_of("Martyr").unwrap();
     driver.begin_cast("Martyrdom").unwrap();
-    p160_settle(&mut driver, 0, &|_, decision| p160_aim(decision, martyr));
+    p160w_settle(&mut driver, 0, &|_, decision| p160w_aim(decision, martyr));
     for _ in 0..shields {
         driver.begin_activation("Martyr").unwrap();
-        p160_settle(&mut driver, 0, &|driver, decision| match &decision.kind {
+        p160w_settle(&mut driver, 0, &|driver, decision| match &decision.kind {
             DecisionKind::ChooseTargets(_) => Some(Answer::ChooseTargets(TargetChoice::Targets(
                 vec![driver.target_player(0)],
             ))),
@@ -228,23 +228,23 @@ fn martyrdom_moves_the_next_damage_and_only_its_caster_activates_it(
         });
     }
     driver.begin_cast("Lightning Bolt").unwrap();
-    p160_settle(&mut driver, 0, &|driver, decision| match &decision.kind {
+    p160w_settle(&mut driver, 0, &|driver, decision| match &decision.kind {
         DecisionKind::ChooseTargets(_) => Some(Answer::ChooseTargets(TargetChoice::Targets(vec![
             driver.target_player(0),
         ]))),
         _ => None,
     });
     let moved = u32::try_from(shields).unwrap();
-    assert_eq!(p160_damage(&driver, martyr), moved, "each shield moves 1 damage");
+    assert_eq!(p160w_damage(&driver, martyr), moved, "each shield moves 1 damage");
     assert_eq!(
         driver.state().player(pid(0)).unwrap().life(),
         20 - (3 - i32::try_from(shields).unwrap())
     );
     // Another player is never offered the granted ability.
     driver.pass().unwrap();
-    p160_until_priority(&mut driver, 1);
+    p160w_until_priority(&mut driver, 1);
     assert!(driver.offered_abilities("Martyr").unwrap().is_empty());
-    p160_replays(&driver);
+    p160w_replays(&driver);
 }
 
 #[rstest]
@@ -275,10 +275,10 @@ fn master_warcraft_chooses_the_attackers_of_another_player_who_aims_them(
     let scenario = (2..seats).fold(scenario, |scenario, seat| {
         scenario.battlefield(seat, [ready(free_creature("Sentry", 1, 1))])
     });
-    let mut driver = Driver::from_scenario(p160_libraries(scenario, seats)).unwrap();
-    p160_until_priority(&mut driver, 0);
+    let mut driver = Driver::from_scenario(p160w_libraries(scenario, seats)).unwrap();
+    p160w_until_priority(&mut driver, 0);
     driver.begin_cast("Master Warcraft").unwrap();
-    p160_settle(&mut driver, 0, &p160_none);
+    p160w_settle(&mut driver, 0, &p160w_none);
     let chosen: Vec<ObjectId> = ["Ogre", "Goblin"]
         .iter()
         .take(attackers)
@@ -342,11 +342,11 @@ fn master_warcraft_chooses_the_attackers_of_another_player_who_aims_them(
     } else {
         assert!(driver.state().combat().attackers().is_empty());
     }
-    p160_replays(&driver);
+    p160w_replays(&driver);
 }
 
 /// A creature with protection from the color.
-fn p160_warded(color: Color) -> Arc<CardDefinition> {
+fn p160w_warded(color: Color) -> Arc<CardDefinition> {
     Arc::new(
         CardDefinition::new("Warded")
             .with_type(CardType::Creature)
@@ -375,17 +375,17 @@ fn ghostly_flame_makes_red_damage_colorless(
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .battlefield(0, ours)
-        .battlefield(1, [ready(p160_warded(warded))])
+        .battlefield(1, [ready(p160w_warded(warded))])
         .hand(0, [card("Boiling Earth").unwrap()]);
-    let mut driver = Driver::from_scenario(p160_libraries(scenario, seats)).unwrap();
+    let mut driver = Driver::from_scenario(p160w_libraries(scenario, seats)).unwrap();
     let target = driver.id_of("Warded").unwrap();
     driver.begin_cast("Boiling Earth").unwrap();
-    p160_settle(&mut driver, 0, &|_, decision| match &decision.kind {
+    p160w_settle(&mut driver, 0, &|_, decision| match &decision.kind {
         DecisionKind::ChooseOption(_) => Some(Driver::passive_answer(decision)),
         _ => None,
     });
-    assert_eq!(p160_damage(&driver, target), dealt);
-    p160_replays(&driver);
+    assert_eq!(p160w_damage(&driver, target), dealt);
+    p160w_replays(&driver);
 }
 
 #[rstest]
@@ -393,9 +393,9 @@ fn ghostly_flame_still_leaves_targeting_to_the_color(#[values(2, 3, 4)] seats: u
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .battlefield(0, [ready(mountain()), ready(card("Ghostly Flame").unwrap())])
-        .battlefield(1, [ready(p160_warded(Color::Red))])
+        .battlefield(1, [ready(p160w_warded(Color::Red))])
         .hand(0, [card("Lightning Bolt").unwrap()]);
-    let mut driver = Driver::from_scenario(p160_libraries(scenario, seats)).unwrap();
+    let mut driver = Driver::from_scenario(p160w_libraries(scenario, seats)).unwrap();
     let warded = driver.id_of("Warded").unwrap();
     driver.begin_cast("Lightning Bolt").unwrap();
     let DecisionKind::ChooseTargets(options) = &driver.decision().unwrap().kind else {
@@ -411,30 +411,30 @@ fn ghostly_flame_still_leaves_targeting_to_the_color(#[values(2, 3, 4)] seats: u
 
 /// What a spell does to the noncreature artifact Guardian Beast's controller has.
 #[derive(Debug, Clone, Copy)]
-enum P160Hit {
+enum P160wHit {
     Destroy,
     Steal,
     Enchant,
 }
 
 #[rstest]
-#[case::destroyed_while_untapped(P160Hit::Destroy, false)]
-#[case::destroyed_while_tapped(P160Hit::Destroy, true)]
-#[case::stolen_while_untapped(P160Hit::Steal, false)]
-#[case::stolen_while_tapped(P160Hit::Steal, true)]
-#[case::enchanted_while_untapped(P160Hit::Enchant, false)]
-#[case::enchanted_while_tapped(P160Hit::Enchant, true)]
+#[case::destroyed_while_untapped(P160wHit::Destroy, false)]
+#[case::destroyed_while_tapped(P160wHit::Destroy, true)]
+#[case::stolen_while_untapped(P160wHit::Steal, false)]
+#[case::stolen_while_tapped(P160wHit::Steal, true)]
+#[case::enchanted_while_untapped(P160wHit::Enchant, false)]
+#[case::enchanted_while_tapped(P160wHit::Enchant, true)]
 fn guardian_beast_guards_noncreature_artifacts_while_untapped(
     #[values(2, 3, 4)] seats: usize,
-    #[case] hit: P160Hit,
+    #[case] hit: P160wHit,
     #[case] beast_tapped: bool,
 ) {
     let beast = card("Guardian Beast").unwrap();
     let relic = Arc::new(CardDefinition::new("Relic").with_type(CardType::Artifact));
     let (spell, lands) = match hit {
-        P160Hit::Destroy => ("Crumble", vec![forest()]),
-        P160Hit::Steal => ("Invoke the Winds", vec![island(); 5]),
-        P160Hit::Enchant => ("Akki War Paint", vec![mountain()]),
+        P160wHit::Destroy => ("Crumble", vec![forest()]),
+        P160wHit::Steal => ("Invoke the Winds", vec![island(); 5]),
+        P160wHit::Enchant => ("Akki War Paint", vec![mountain()]),
     };
     let scenario = Scenario::new(seats)
         .at(1, 1, Step::Main1)
@@ -447,7 +447,7 @@ fn guardian_beast_guards_noncreature_artifacts_while_untapped(
         )
         .battlefield(1, lands.into_iter().map(ready).collect::<Vec<_>>())
         .hand(1, [card(spell).unwrap()]);
-    let mut driver = Driver::from_scenario(p160_libraries(scenario, seats)).unwrap();
+    let mut driver = Driver::from_scenario(p160w_libraries(scenario, seats)).unwrap();
     let relic = driver.id_of("Relic").unwrap();
     let offered = driver.begin_cast(spell).is_ok() && {
         let decision = driver.decision().unwrap().clone();
@@ -460,21 +460,21 @@ fn guardian_beast_guards_noncreature_artifacts_while_untapped(
         }
     };
     if offered {
-        p160_settle(&mut driver, 1, &|_, decision| p160_aim(decision, relic));
+        p160w_settle(&mut driver, 1, &|_, decision| p160w_aim(decision, relic));
     }
     let state = driver.state();
     let here = state.object(relic).is_some_and(|o| o.zone() == Zone::Battlefield);
     let guarded = !beast_tapped;
     match hit {
-        P160Hit::Destroy => assert_eq!(here, guarded, "indestructible while untapped"),
-        P160Hit::Steal => {
+        P160wHit::Destroy => assert_eq!(here, guarded, "indestructible while untapped"),
+        P160wHit::Steal => {
             assert!(here);
             let controller = mtg_engine::characteristics::controller_of(state, relic).unwrap();
             assert_eq!(controller == pid(0), guarded, "kept while untapped");
         }
-        P160Hit::Enchant => {
+        P160wHit::Enchant => {
             assert_eq!(offered, !guarded, "an Aura can't target it while untapped");
         }
     }
-    p160_replays(&driver);
+    p160w_replays(&driver);
 }
