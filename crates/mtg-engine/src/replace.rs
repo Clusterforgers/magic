@@ -1505,16 +1505,7 @@ impl Pass<'_> {
                     }
             }
             (
-                ReplaceWhen::R1193LifeReducedTo { who, .. },
-                Unit::LifeLoss { player }
-                | Unit::Damage {
-                    target: DamageTarget::Player(player),
-                    loses_life: true,
-                    ..
-                },
-            ) => scope.players(who)?.contains(player),
-            (
-                ReplaceWhen::LifeLoss { who },
+                ReplaceWhen::LifeLoss { who } | ReplaceWhen::R1193LifeReducedTo { who, .. },
                 Unit::LifeLoss { player }
                 | Unit::Damage {
                     target: DamageTarget::Player(player),

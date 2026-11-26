@@ -298,14 +298,9 @@ pub(crate) fn handle(
         }
         // In the opening the questions of options are a commander's color and the colors circled for a card.
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice))
-            if state.stage() == Stage::Mulligan && options.text == crate::circled::ASKED =>
-        {
-            crate::circled::answer(state, player, options, choice)
-        }
-        (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice))
             if state.stage() == Stage::Mulligan =>
         {
-            crate::r404_commander_color::answer(player, options, choice)
+            crate::circled::opening_answer(state, player, options, choice)
         }
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice)) => {
             option_or_untap(state, player, options, choice, pending.is_some())

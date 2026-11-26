@@ -17,7 +17,7 @@ use crate::events::Event;
 use crate::state::GameState;
 
 /// The words of the question.
-pub(crate) const ASKED: &str = "Circle the colors of this card for your deck.";
+const ASKED: &str = "Circle the colors of this card for your deck.";
 
 /// How many colors the card of `id` circles as its deck is built; none without the ability.
 fn circles(state: &GameState, id: ObjectId) -> Option<u32> {
@@ -121,6 +121,20 @@ pub(crate) fn question(state: &GameState) -> Option<Decision> {
                 }),
             })
         })
+}
+
+/// The answer to a question of options in the opening: the colors circled for a card, else a commander's color.
+pub(crate) fn opening_answer(
+    state: &GameState,
+    player: PlayerId,
+    options: &OptionOptions,
+    choice: OptionChoice,
+) -> Result<Outcome, EngineError> {
+    if options.text == ASKED {
+        answer(state, player, options, choice)
+    } else {
+        crate::r404_commander_color::answer(player, options, choice)
+    }
 }
 
 /// The event of the colors picked for the card the question names.

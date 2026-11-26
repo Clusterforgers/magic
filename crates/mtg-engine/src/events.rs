@@ -1949,7 +1949,6 @@ impl Event {
             Event::TokenCreated(token) => vec![token.object],
             Event::CardConjured(card) => vec![card.object],
             Event::EmblemCreated(emblem) => vec![emblem.object],
-            Event::R6051EmblemEnded { object } => vec![*object],
             Event::BecameSpirit { emblem, .. }
             | Event::PhaseBegan { emblem, .. }
             | Event::SchemeSetInMotion { emblem, .. } => vec![*emblem],
@@ -2023,6 +2022,7 @@ impl Event {
             | Event::CreatureDied { object, .. }
             | Event::CopyEnded { object, .. }
             | Event::CopyCeased { object }
+            | Event::R6051EmblemEnded { object }
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }
             | Event::CardParted { permanent: object, .. }
