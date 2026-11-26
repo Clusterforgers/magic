@@ -272,6 +272,19 @@ export function genericChoices(kind: DecisionKind, words: GenericWords): Generic
       ...(can_draw ? [pick('loop-draw', 'Let it loop: a draw', { Loop: 'Draw' })] : []),
     )
   }
+  if ('R706ChooseDice' in kind) {
+    const { purpose, results } = kind.R706ChooseDice
+    if (purpose === 'Ignore') {
+      return some(
+        ...results.map((result, at) => pick(`ignore-${at}`, `Ignore die ${at + 1} (${result})`, { R706ChooseDice: [at] })),
+      )
+    }
+    return some(pick('dice-keep', 'Keep the results', { R706ChooseDice: [] }))
+  }
+  if ('R509BlockPiles' in kind) {
+    const empty = kind.R509BlockPiles.attackers.map(() => [])
+    return some(pick('piles-none', 'No blocks: every pile empty', { R509BlockPiles: empty }))
+  }
   return none()
 }
 

@@ -217,6 +217,55 @@ const block: DevPrompt = ({ view }) => {
   return { id: 1, decision: { player: viewer, kind: { DeclareBlockers: options } } }
 }
 
+/** Camouflage: the viewer divides its untapped creatures into one pile per attacker aimed at it. */
+const piles: DevPrompt = ({ view }) => {
+  const viewer = view.viewer
+  const attackers = view.combat.attackers
+    .filter((attacker) => 'Player' in attacker.target && attacker.target.Player === viewer)
+    .map((attacker) => attacker.object)
+  const creatures = untappedCreatures(view, viewer).map((object, at) => ({ object: object.id, piles: at === 0 ? 2 : 1 }))
+  const text = `Divide your creatures into ${attackers.length} piles. Each pile goes to an attacker at random, and each creature in it that can block that attacker does.`
+  return { id: 1, decision: { player: viewer, kind: { R509BlockPiles: { attackers, creatures, text } } } }
+}
+
+/** Monitor Monitor: the viewer may pay {1} to reroll dice of a roll of three six-sided dice. */
+const reroll: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      R706ChooseDice: {
+        roller: view.viewer,
+        sides: 6,
+        results: [2, 5, 1],
+        min: 0,
+        max: 3,
+        purpose: { Reroll: '{1}' },
+        text: 'Pay {1} to reroll any of these dice?',
+      },
+    },
+  },
+})
+
+/** Bamboozling Beeble: the viewer chooses which of an opponent's two rolls is ignored. */
+const ignoreRoll: DevPrompt = ({ view }) => ({
+  id: 1,
+  decision: {
+    player: view.viewer,
+    kind: {
+      R706ChooseDice: {
+        roller: (view.viewer + 1) % view.players.length,
+        sides: 6,
+        results: [6, 3],
+        min: 1,
+        max: 1,
+        purpose: 'Ignore',
+        text: 'Choose one of the rolls to ignore.',
+      },
+    },
+  },
+})
+
 /** The attack with banding on the first creature that may attack, so a band can be formed (CR 702.22c). */
 const attackBanding: DevPrompt = (context) => {
   const made = attack(context)
@@ -511,6 +560,9 @@ export const DEV_PROMPTS: Record<string, DevPrompt> = {
   priority,
   // The same decisions on a response clock (`devGame` starts the countdown; nothing ticks it in the dev route).
   'priority-clock': (fixture) => ({ ...priority(fixture), deadlineMs: 10_000 }),
+  piles,
+  reroll,
+  'ignore-roll': ignoreRoll,
   // The viewer holds priority in a declare-blockers step whose blocks are made: the forecast is all there is to read.
   forecast: priority,
   'forecast-choice': priority,

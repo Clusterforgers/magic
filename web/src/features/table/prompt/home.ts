@@ -33,10 +33,11 @@ const ASKED_BY_GAME: ReadonlySet<string> = new Set([
   'Discard',
   'DeclareAttackers',
   'DeclareBlockers',
+  'R509BlockPiles',
 ])
 
 /** Short details that stand beside the question in every home. */
-const INLINE: ReadonlySet<string> = new Set(['YesNo', 'ChooseNumber', 'Loop'])
+const INLINE: ReadonlySet<string> = new Set(['YesNo', 'ChooseNumber', 'Loop', 'R706ChooseDice'])
 
 /** Details that are a list one column wide in the panel and a window elsewhere. */
 const LIST: ReadonlySet<string> = new Set([

@@ -1285,7 +1285,47 @@ from: number,
 /**
  * The result after it.
  */
-to: number, } } | { "R111GraveyardOrdered": { 
+to: number, } } | { "R706DiceRerolled": { 
+/**
+ * Who rolled.
+ */
+player: PlayerId, 
+/**
+ * The permanent whose rule rerolled the dice.
+ */
+source: ObjectRef, 
+/**
+ * The results rerolled, before the reroll.
+ */
+from: Array<number>, } } | { "R706DieIgnored": { 
+/**
+ * Who rolled.
+ */
+roller: PlayerId, 
+/**
+ * Who chose.
+ */
+chooser: PlayerId, 
+/**
+ * The rule change that added the die.
+ */
+effect: EffectId, 
+/**
+ * The result ignored.
+ */
+result: number, } } | { "R706VisitAsks": { 
+/**
+ * Who rolls.
+ */
+player: PlayerId, } } | { "R509PilesAssigned": { 
+/**
+ * The defending player.
+ */
+player: PlayerId, 
+/**
+ * Each attacker and its pile.
+ */
+piles: Array<[ObjectId, Array<ObjectId>]>, } } | { "R111GraveyardOrdered": { 
 /**
  * Whose graveyard.
  */

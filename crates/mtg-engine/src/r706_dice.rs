@@ -276,10 +276,7 @@ pub(crate) fn r706_reroll(
             min: 0,
             max: changed.results.len(),
             purpose: R706DicePurpose::Reroll(reroller.cost.clone()),
-            text: format!(
-                "Pay {} to reroll the dice you choose, or choose none.",
-                reroller.cost
-            ),
+            text: format!("Pay {} to reroll any of these dice?", reroller.cost),
         };
         let Some(dice) = r706_read(journal, changed, &options)? else {
             return Ok(Err(Run::Ask(Decision {

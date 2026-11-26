@@ -187,6 +187,16 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { R6402DieChanged: { player: 1, source: { id: 5, counter: 0 }, from: 4, to: 5 } },
     'Bo changes a die result from 4 to 5 with Serra Angel',
   ],
+  R706DiceRerolled: [
+    { R706DiceRerolled: { player: 1, source: { id: 5, counter: 0 }, from: [2] } },
+    'Bo rerolls a 2 with Serra Angel',
+  ],
+  R706DieIgnored: [{ R706DieIgnored: { roller: 1, chooser: 0, effect: 3, result: 6 } }, 'Ana has Bo ignore a roll of 6'],
+  R706VisitAsks: [{ R706VisitAsks: { player: 1 } }, 'Bo rolls to visit their Attractions'],
+  R509PilesAssigned: [
+    { R509PilesAssigned: { player: 1, piles: [[5, [7]], [6, []]] } },
+    "Bo's piles go to the attackers at random: 1 with creatures",
+  ],
   CoinFlipped: [
     { CoinFlipped: { player: 1, won: true, call: 'Tails', side: 'Tails' } },
     'Bo calls tails, the coin comes up tails: Bo wins the flip',

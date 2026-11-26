@@ -220,7 +220,23 @@ sides: number,
 /**
  * The memory slot.
  */
-slot: string, } } | "Planar" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+slot: string, } } | "Planar" | { "R706Reroll": { 
+/**
+ * Whose rolls.
+ */
+players: Array<PlayerId>, 
+/**
+ * The permanent with the rule: it counts the once-each-turn use.
+ */
+source: ObjectRef, 
+/**
+ * What a reroll costs.
+ */
+cost: string, 
+/**
+ * Only once each turn for the permanent.
+ */
+once: boolean, } } | { "R706IgnoreChosen": Array<PlayerId> } | "R509BlockPiles" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
 /**
  * The players.
  */

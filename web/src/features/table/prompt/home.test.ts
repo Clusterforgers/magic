@@ -56,6 +56,8 @@ const KINDS: Record<DecisionName, { card: boolean; panel: string; dock: string }
   OrderTriggers: { card: true, panel: 'list', dock: 'window' },
   ChooseReplacement: { card: true, panel: 'list', dock: 'window' },
   Loop: { card: true, panel: 'inline', dock: 'inline' },
+  R706ChooseDice: { card: true, panel: 'inline', dock: 'inline' },
+  R509BlockPiles: { card: false, panel: 'inline', dock: 'inline' },
 }
 
 describe('decision homes', () => {

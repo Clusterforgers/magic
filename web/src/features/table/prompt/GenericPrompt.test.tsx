@@ -244,6 +244,22 @@ const ROWS: Row[] = [
     1,
     { Loop: { Repeat: 10 } },
   ],
+  [
+    'R706ChooseDice',
+    {
+      R706ChooseDice: { roller: 0, sides: 6, results: [6, 2], min: 1, max: 1, purpose: 'Ignore', text: 'Ignore one.' },
+    },
+    ['Ignore die 1 (6)', 'Ignore die 2 (2)'],
+    1,
+    { R706ChooseDice: [1] },
+  ],
+  [
+    'R509BlockPiles',
+    { R509BlockPiles: { attackers: [mine, other], creatures: [], text: 'Divide.' } },
+    ['No blocks: every pile empty'],
+    0,
+    { R509BlockPiles: [[], []] },
+  ],
 ]
 
 const buttons = (): string[] =>
