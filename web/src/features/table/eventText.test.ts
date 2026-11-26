@@ -1382,6 +1382,14 @@ describe('events with more than one shape', () => {
       'Hill Giant changes controller for as long as its condition holds',
     ],
     [
+      effect(objects(2), { SetController: 1 }, { R6112bWhileAttached: { R111Object: 3 } }),
+      'Hill Giant changes controller for as long as that attachment stays attached',
+    ],
+    [
+      effect(objects(2), 'R2013AllCreatureNames', 'Forever'),
+      "Hill Giant has every nonlegendary creature card's name",
+    ],
+    [
       effect(objects(2), { SetController: 1 }, 'NextUntapStep'),
       "Hill Giant changes controller through its controller's next untap step",
     ],

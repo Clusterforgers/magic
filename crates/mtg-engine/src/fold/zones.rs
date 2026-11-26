@@ -118,7 +118,9 @@ pub(super) fn move_object(
     // What the spell paid for stays with the permanent it becomes, for its abilities to read; a sticker kicker is no cost
     // of its own (the Wicker Picker rulings).
     let paid = if from == Zone::Stack && to == Zone::Battlefield {
-        let stickers = object.choices.r114_sticker_kicks();
+        let mut stickers = object.choices.r114_sticker_kicks();
+        // Nor is mana paid for counters a static ability allows (`Rule::R6012fPayAnyAmount`).
+        stickers.extend_from_slice(object.choices.r6012f_paid());
         let mut paid = std::mem::take(&mut object.choices.optional_costs);
         paid.retain(|index| !stickers.contains(index));
         paid

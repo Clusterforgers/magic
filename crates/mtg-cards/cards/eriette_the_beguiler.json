@@ -1,7 +1,7 @@
 {
   "oracle_id": "710a3499-64f8-4d2c-8c9c-d58950e47ea7",
   "name": "Eriette, the Beguiler",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Eriette, the Beguiler",
@@ -9,9 +9,34 @@
       "abilities": [
         { "Keyword": "Lifelink" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 9, "end": 235 }
+          "Triggered": {
+            "when": {
+              "Attached": {
+                "what": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }],
+                "to": [
+                  { "Not": { "Type": "Land" } },
+                  { "ControlledBy": "Opponents" },
+                  {
+                    "Compare": {
+                      "stat": "ManaValue",
+                      "op": "Le",
+                      "to": { "Stat": { "of": "TriggeringFirst", "stat": "ManaValue" } }
+                    }
+                  }
+                ]
+              }
+            },
+            "effects": [
+              {
+                "Continuous": {
+                  "affected": {
+                    "Each": [{ "Is": "Triggering" }, { "Not": { "Is": "TriggeringFirst" } }]
+                  },
+                  "mods": [{ "SetController": "You" }],
+                  "duration": { "R6112bWhileAttached": "TriggeringFirst" }
+                }
+              }
+            ]
           }
         }
       ]

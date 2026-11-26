@@ -1,0 +1,20 @@
+{
+  "oracle_id": "75d7f864-1240-43f5-8dd5-a5f7577bfa5b",
+  "name": "Miss Highwater",
+  "impl_status": "Partial",
+  "faces": [
+    {
+      "name": "Miss Highwater",
+      "oracle_fingerprint": "0fa4cffc83354b96b943b6494cda5c43",
+      "abilities": [
+        { "Keyword": "Menace" },
+        {
+          "Manual": {
+            "reason": "you apply this clause by hand",
+            "span": { "start": 7, "end": 344 }
+          }
+        }
+      ]
+    }
+  ]
+}

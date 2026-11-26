@@ -18,6 +18,7 @@ mod r300b_value;
 mod r376_seats_tests;
 #[cfg(test)]
 mod r376_shares_tests;
+mod r7018_would_destroy;
 mod share;
 mod tree;
 mod value;

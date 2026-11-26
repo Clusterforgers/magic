@@ -493,6 +493,7 @@ Chitterspitter
 Chocobo Knights
 Choked Estuary
 Chomping Kavu
+Chorus of the Conclave
 Christine Chapel, Combat Medic
 Chromanticore
 Chromatic Armor
@@ -936,10 +937,12 @@ Ephara's Dispersal
 Epic Confrontation
 Epic Fight
 Epic Proportions
+Equinox
 Era of Enlightenment // Hand of Enlightenment
 Erebos, Bleak-Hearted
 Erhnam Djinn
 Erica Ortegas, Plucky Pilot
+Eriette, the Beguiler
 Eris, Roar of the Storm
 Errand of Duty
 Esix, Fractal Bloom
@@ -2126,6 +2129,7 @@ Paladin's Arms
 Pale Bears
 Paleontologist's Pick-Axe // Dinosaur Headdress
 Palladium Myr
+Panglacial Wurm
 Panther Habit
 Panther Robot
 Paradise Druid
@@ -2774,6 +2778,7 @@ Spreading Insurrection
 Spreading Plague
 Spring // Mind
 Springleaf Drum
+Spy Kit
 Squad Commander
 Squirrel Nest
 Squirrel Sovereign

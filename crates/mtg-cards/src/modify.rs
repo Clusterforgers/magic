@@ -56,6 +56,9 @@ pub enum Modification {
     /// Names the copiable values of a copy: "except its name is Lazav, Dimir Mastermind" (layer 1); as the change of a
     /// static ability or an effect it replaces the name (layer 3): "named Legitimate Businessperson".
     SetName(String),
+    /// Gives it every name of a nonlegendary creature card in addition to its own (layer 3, the Spy Kit rulings): a name
+    /// check passes for the name of any such card, front or back face, and never for a token's name.
+    R2013AllCreatureNames,
     /// Gives the copiable values of a copy the ability that is resolving: "except it has this ability". Only the
     /// exceptions of a `BecomeCopy` have it.
     ThisAbility,
@@ -286,6 +289,7 @@ impl Modification {
         match self {
             Modification::AddSupertype(_)
             | Modification::SetName(_)
+            | Modification::R2013AllCreatureNames
             | Modification::ThisAbility
             | Modification::SetLoyalty(_)
             | Modification::R707CopyOf { .. } => Some("1"),
@@ -472,6 +476,10 @@ pub enum Duration {
     /// power remains less than or equal to this creature's power"), read with each object of the effect as `Affected`:
     /// it ends the first time the condition fails and does not come back. Only a continuous effect lasts this way.
     R113While(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<Condition>),
+    /// For as long as the object the reference names, read as the effect begins, stays attached to each object of the
+    /// effect ("gain control of that permanent for as long as that Aura is attached to it", CR 611.2b): it ends the first
+    /// time it is not, and never begins when it is not attached then. Only a continuous effect lasts this way.
+    R6112bWhileAttached(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<Ref>),
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay
@@ -1271,6 +1279,16 @@ pub enum GameRule {
         /// The sticker kicker cost.
         cost: crate::cost::Cost,
     },
+    /// "As an additional cost to cast creature spells, you may pay any amount of mana. If you do, that creature enters
+    /// with that many additional +1/+1 counters on it." (CR 601.2f): a player of `who` casting a spell of `spells` may
+    /// pay {1} in addition any number of times, and the permanent the spell becomes enters with that many +1/+1
+    /// counters. Each such rule is a cost of its own.
+    R6012fPayAnyAmount {
+        /// Who casts the spells.
+        who: Ref,
+        /// The spells.
+        spells: Selector,
+    },
     /// "Note the mana value of each card as it's put into exile.": the permanent notes the number for itself as each card
     /// goes to exile, with no stack; `Amount::R113GreatestNoted` reads the notes of this turn.
     R113NoteExiledManaValue,
@@ -1489,6 +1507,10 @@ pub enum GameRule {
     R116Rulebreaker(String),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
+    /// "While you're searching your library, you may cast this card from your library." (CR 701.23, the Panglacial Wurm
+    /// rulings): before its owner finds a card in a search of their own library, they may cast it from there, paying its
+    /// costs; the search goes on once they cast no more. Written with `from` Library.
+    R7011CastWhileSearching,
     /// "If this card is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst.": a
     /// resolving spell of that name reads the card as named so; from the graveyard only.
     CountsAsNamed(String),

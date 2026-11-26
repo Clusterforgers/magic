@@ -75,4 +75,9 @@ r110_chosen?: Chosen,
  * The sticker kickers paid (`Rule::R114StickerKicker`): each with its index among the optional costs and the
  * sticker its caster chose to put on the spell, none when they put none.
  */
-r114_stickers?: Array<R114StickerKick>, };
+r114_stickers?: Array<R114StickerKick>, 
+/**
+ * The optional costs paid for any amount of mana a static ability allows (`Rule::R6012fPayAnyAmount`), by index,
+ * once for each {1} paid: the permanent the spell becomes enters with as many +1/+1 counters.
+ */
+r6012f_paid?: Array<number>, };

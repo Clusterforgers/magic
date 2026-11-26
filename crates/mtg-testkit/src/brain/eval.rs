@@ -496,6 +496,7 @@ mod tests {
             abilities: Vec::new(),
             name_words: Vec::new(),
             name_set: None,
+            r2013_names: mtg_engine::characteristics::R2013Names::Own,
         };
         chars.power = Some(power);
         Body {

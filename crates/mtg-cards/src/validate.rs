@@ -1960,6 +1960,11 @@ impl<'a> Walker<'a> {
                 self.paid_condition(condition);
             }
             Condition::CastWith(_) => self.uses("Condition", "CastWith"),
+            Condition::R7018WouldDestroy { spell, what } => {
+                self.uses("Condition", "R7018WouldDestroy");
+                self.at("spell", |w| w.reference(spell, Kind::Object));
+                self.at("what", |w| w.selector(what));
+            }
             Condition::R112CastByOwnAbility => self.uses("Condition", "R112CastByOwnAbility"),
             Condition::R113SpentFromTriggering { .. } => {
                 self.uses("Condition", "R113SpentFromTriggering");
@@ -3275,6 +3280,7 @@ impl<'a> Walker<'a> {
             | Modification::RemoveSupertype(_)
             | Modification::AddSupertype(_)
             | Modification::SetName(_)
+            | Modification::R2013AllCreatureNames
             | Modification::ThisAbility
             | Modification::SetLoyalty(_)
             | Modification::AddSubtype(_)
@@ -5972,6 +5978,10 @@ impl Walker<'_> {
                     w.at("duration", |w| w.condition(condition));
                     w.scope.in_static = in_static;
                 }
+                if let Duration::R6112bWhileAttached(by) = duration {
+                    w.uses("Duration", "R6112bWhileAttached");
+                    w.at("duration", |w| w.reference(by, Kind::Object));
+                }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }
@@ -7355,6 +7365,10 @@ impl Walker<'_> {
                 }
                 w.at("cost", |w| w.cost(cost));
             }),
+            GameRule::R6012fPayAnyAmount { who, spells } => self.at(tag, |w| {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("spells", |w| w.selector(spells));
+            }),
             GameRule::UntapRemovesCounters(_) => self.at(tag, |_| {}),
             GameRule::MayCast(permission) => self.at(tag, |w| w.cast_permission(permission)),
             GameRule::LookAtExiled { who, what, only } => self.at(tag, |w| {
@@ -7416,6 +7430,7 @@ impl Walker<'_> {
                     });
                 }
             }
+            GameRule::R7011CastWhileSearching => self.at(tag, |_| {}),
             GameRule::CountsAsNamed(name) => {
                 if name.trim().is_empty() {
                     self.at(tag, |w| w.problem("a card counts as a card with a name"));
@@ -7697,6 +7712,10 @@ impl Walker<'_> {
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
             ZoneKind::Hand if ep27_flash => {}
             ZoneKind::Graveyard if matches!(rule, GameRule::CountsAsNamed(_)) => {}
+            ZoneKind::Library if matches!(rule, GameRule::R7011CastWhileSearching) => {}
+            _ if matches!(rule, GameRule::R7011CastWhileSearching) => self.at("from", |w| {
+                w.problem("a card is cast while its owner searches from the library: write the rule with `from` Library");
+            }),
             _ if matches!(rule, GameRule::CountsAsNamed(_)) => self.at("from", |w| {
                 w.problem("a card counts as another name from a graveyard: write the rule with `from` Graveyard");
             }),

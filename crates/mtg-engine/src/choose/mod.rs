@@ -246,6 +246,11 @@ pub struct CostTaken {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<R114StickerKick>>", optional))]
     pub r114_stickers: Vec<R114StickerKick>,
+    /// The optional costs paid for any amount of mana a static ability allows (`Rule::R6012fPayAnyAmount`), by index,
+    /// once for each {1} paid: the permanent the spell becomes enters with as many +1/+1 counters.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<usize>>", optional))]
+    pub r6012f_paid: Vec<usize>,
 }
 
 /// A sticker kicker paid as a spell was cast: the optional cost and the sticker chosen for the spell.
@@ -415,6 +420,20 @@ impl Choices {
         self.cost_taken
             .as_deref()
             .map_or(&[], |taken| &taken.r114_stickers)
+    }
+
+    /// The optional costs paid for any amount of mana a static ability allows, by index, once for each {1}.
+    pub fn r6012f_paid(&self) -> &[usize] {
+        self.cost_taken
+            .as_deref()
+            .map_or(&[], |taken| &taken.r6012f_paid)
+    }
+
+    /// Keeps the optional costs paid for any amount of mana a static ability allows.
+    pub(crate) fn r6012f_set_paid(&mut self, paid: Vec<usize>) {
+        if !paid.is_empty() || self.cost_taken.is_some() {
+            self.cost_taken.get_or_insert_with(Box::default).r6012f_paid = paid;
+        }
     }
 
     /// Keeps a sticker kicker paid and the sticker chosen for it.

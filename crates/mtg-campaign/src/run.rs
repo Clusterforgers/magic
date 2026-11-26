@@ -53,9 +53,10 @@ pub const UPGRADE_PRICE: u32 = 50;
 /// each hero after the first; from 13 a theme may give its bosses supplies against two or more heroes; from 14 a boss
 /// that brings the most relics brings no reinforcement; from 15 a theme may bring its bosses fewer relics; from 16 the
 /// Maelstrom Crown is a real cascade for instants; from 17 a theme may bring its bosses Supplies in place of
-/// reinforcements beyond a cap; from 18 the Gloamwood opens.
+/// reinforcements beyond a cap; from 18 the Gloamwood opens; from 19 a hero after the third brings the boss a Warband
+/// in place of a reinforcement.
 /// Every run plays the boss of `docs/delves.md` (Bosses), whatever its generation.
-pub const CONTENT: u32 = crate::content::GLOAMWOOD_FROM;
+pub const CONTENT: u32 = PARTY_SCALE_FROM;
 /// The content generation from which a boss brings relics at low depth and a reinforcement for each hero after the
 /// first (`boss_relics::count`, `Scale::reinforcements`).
 pub const BOSS_SCALE_FROM: u32 = 12;
@@ -72,6 +73,9 @@ pub const CROWN_CASCADE_FROM: u32 = 16;
 /// The content generation from which a theme may cap its bosses' reinforcements, each one beyond the cap coming as
 /// Supplies (`Theme::boss_reinforcements_most`, `Scale::theme_reinforcements`).
 pub const THEME_REINFORCEMENTS_FROM: u32 = 17;
+/// The content generation from which each hero after the third brings the boss a Warband in place of a reinforcement
+/// (`Scale::theme_reinforcements`).
+pub const PARTY_SCALE_FROM: u32 = 19;
 /// The content generation from which each descent leads into another open theme (`Content::next_theme`).
 pub const THEMES_FROM: u32 = 9;
 /// The content generation from which the Drowned Spire's ladder draws from its grown roster.

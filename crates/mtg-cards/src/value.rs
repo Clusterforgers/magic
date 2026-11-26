@@ -2118,6 +2118,15 @@ impl<'de> Deserialize<'de> for Amount {
 pub enum Condition {
     /// The condition is false.
     Not(Box<Condition>),
+    /// The spell the reference names would destroy a permanent the selector picks if it resolved now (CR 701.8, the
+    /// Equinox rulings): "if it would destroy a land you control". Only a destruction the spell itself names counts, with
+    /// its targets as chosen; one left to a choice, a chance or a game rule does not.
+    R7018WouldDestroy {
+        /// The spell.
+        spell: Ref,
+        /// The permanents.
+        what: Selector,
+    },
     /// Every condition is true.
     All(Vec<Condition>),
     /// At least one condition is true.

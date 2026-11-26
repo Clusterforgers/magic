@@ -122,6 +122,7 @@ impl Gives {
             | Modification::SetToughness(_)
             | Modification::AddNameWords(_)
             | Modification::SetName(_)
+            | Modification::R2013AllCreatureNames
             | Modification::LoseAbility(_)
             | Modification::R1012ControlKept
             | Modification::R3034CantBeEnchanted => {

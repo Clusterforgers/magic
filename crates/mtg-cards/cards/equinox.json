@@ -1,7 +1,7 @@
 {
   "oracle_id": "0fa2cb01-476e-4e82-94e6-9639e53a7743",
   "name": "Equinox",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Equinox",
@@ -9,9 +9,31 @@
       "abilities": [
         { "Keyword": { "Enchant": [{ "Type": "Land" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 13, "end": 99 }
+          "Static": {
+            "affected": "Attached",
+            "mods": [
+              {
+                "GrantAbility": {
+                  "Activated": {
+                    "cost": ["Tap"],
+                    "targets": [{ "what": { "Object": ["Spell"] } }],
+                    "effects": [
+                      {
+                        "If": {
+                          "condition": {
+                            "R7018WouldDestroy": {
+                              "spell": { "Target": 0 },
+                              "what": [{ "Type": "Land" }, { "ControlledBy": "You" }]
+                            }
+                          },
+                          "then": [{ "Counter": { "what": { "Target": 0 } } }]
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
           }
         }
       ]

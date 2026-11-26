@@ -123,7 +123,16 @@ impl Scope<'_> {
     /// Whether the object has the name of one of the objects the reference names.
     fn w6d_shares_name(&self, named: &Ref, seen: &Seen<'_>) -> Result<bool, ResolveError> {
         self.w6d_any_named(named, seen, |mine, theirs| {
-            w6d_name(mine).is_some_and(|name| w6d_name(theirs) == Some(name))
+            let (mine_name, theirs_name) = (w6d_name(mine), w6d_name(theirs));
+            // A face-down object has no name, so not every name either (CR 708.2a).
+            let all = |seen: &Seen<'_>, name: &Option<String>| {
+                name.is_some() && seen.chars.r2013_names.all()
+            };
+            crate::r2013_names::r2013_share(
+                self.state,
+                (mine_name.as_deref(), all(mine, &mine_name)),
+                (theirs_name.as_deref(), all(theirs, &theirs_name)),
+            )
         })
     }
 

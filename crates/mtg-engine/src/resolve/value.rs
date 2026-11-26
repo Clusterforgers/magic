@@ -2557,6 +2557,8 @@ impl<'a> Scope<'a> {
                 seen.card
                     .is_some_and(|c| seen.chars.name_for(&c.card().name) == *name)
                     || self.r4703_counts_as_named(name, seen)
+                    || (seen.chars.r2013_names.all()
+                        && crate::r2013_names::r2013_creature_name(self.state, name))
             }
             Pred::OriginallyPrintedIn(set) => seen
                 .card
@@ -4270,6 +4272,10 @@ impl<'a> Scope<'a> {
     pub fn holds(&self, condition: &Condition) -> Result<bool, ResolveError> {
         Ok(match condition {
             Condition::Not(inner) => !self.holds(inner)?,
+            Condition::R7018WouldDestroy { spell, what } => self
+                .objects(spell)?
+                .iter()
+                .any(|spell| super::r7018_would_destroy::r7018_would_destroy(self, spell.id, what)),
             Condition::Drafted(_) => false,
             Condition::Exploited { by, what } => {
                 let sacrificed = self.objects(what)?;

@@ -62,6 +62,34 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub name_set: Option<String>,
+    /// The names it has beyond the one it reads: every nonlegendary creature card's when an effect gave them (layer 3,
+    /// Spy Kit).
+    #[serde(default, skip_serializing_if = "R2013Names::is_own")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<R2013Names>", optional))]
+    pub r2013_names: R2013Names,
+}
+
+/// The names an object has beyond the one it reads (CR 201.2, the Spy Kit rulings).
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum R2013Names {
+    /// Only its own name.
+    #[default]
+    Own,
+    /// Every name of a nonlegendary creature card in addition to its own.
+    AllCreatureNames,
+}
+
+impl R2013Names {
+    /// Whether it has only its own name.
+    pub const fn is_own(&self) -> bool {
+        matches!(self, R2013Names::Own)
+    }
+
+    /// Whether it has every nonlegendary creature card's name.
+    pub const fn all(self) -> bool {
+        matches!(self, R2013Names::AllCreatureNames)
+    }
 }
 
 impl Characteristics {
@@ -114,6 +142,7 @@ impl Characteristics {
             abilities: Vec::new(),
             name_words: Vec::new(),
             name_set: None,
+            r2013_names: R2013Names::Own,
         }
     }
 }
@@ -520,6 +549,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         abilities: card.abilities.clone(),
         name_words: Vec::new(),
         name_set: None,
+        r2013_names: R2013Names::Own,
     }
 }
 

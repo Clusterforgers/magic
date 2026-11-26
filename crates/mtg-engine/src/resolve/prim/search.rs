@@ -111,6 +111,19 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             }
         }
     };
+    // Before anything is found, a searcher of their own library may cast the cards that allow it (Panglacial Wurm).
+    if *zone == ZoneKind::Library {
+        let own: Vec<PlayerId> = cx
+            .scope
+            .players(who)?
+            .into_iter()
+            .filter(|player| state.is_alive(*player) && owner.is_none_or(|owner| owner == *player))
+            .filter(|player| !cant_search(state, *player))
+            .collect();
+        if let Some(run) = super::r7011_search_cast::r7011_cast_pass(cx, &own)? {
+            return Ok(run);
+        }
+    }
     let mut searches: Vec<(PlayerId, Zone)> = Vec::new();
     let mut selections = Vec::new();
     let mut totals = Vec::new();
