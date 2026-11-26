@@ -39,10 +39,6 @@ fn replays(driver: &Driver) {
 fn settle(driver: &mut Driver, pick: &dyn Fn(&Driver, &Decision) -> Option<Answer>) {
     for _ in 0..300 {
         let decision = driver.decision().unwrap().clone();
-        if std::env::var("CX8_TRACE").is_ok() {
-            let text = format!("{:?}", decision.kind);
-            eprintln!("{}", &text[..text.len().min(300)]);
-        }
         if let Some(answer) = pick(driver, &decision) {
             driver.answer(answer).unwrap();
             continue;
