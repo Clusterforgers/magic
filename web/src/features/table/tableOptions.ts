@@ -1,4 +1,5 @@
 import { createContext } from 'react'
+import type { ReactNode } from 'react'
 import type { PlayerId } from '@/protocol/generated'
 import type { TableMode, Viewport } from './layout'
 import type { SideTab } from './sideCounts'
@@ -54,3 +55,6 @@ export const TableOptionsContext = createContext<TableOptions>({})
  * below), whose attacks and the attacks at them draw strong; null where it names none.
  */
 export const AttackLinesContext = createContext<readonly PlayerId[] | null>(null)
+
+/** What a spectator's table draws where the pass controls stand: a replay's own controls; "Watching" when null. */
+export const SpectatorControlsContext = createContext<ReactNode>(null)

@@ -74,7 +74,7 @@ export function CardPicture({
         <span
           aria-hidden="true"
           className={cn(
-            'grid size-full place-items-center rounded-[4.75%/3.393%] border bg-muted p-2 text-center text-xs text-muted-foreground',
+            'grid size-full place-items-center overflow-hidden rounded-[4.75%/3.393%] border bg-muted p-2 text-center text-xs text-muted-foreground',
             pulse && status === 'loading' && 'animate-pulse',
           )}
         >

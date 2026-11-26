@@ -9,7 +9,7 @@ import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
 import { GameContext } from '@/features/game/gameContext'
 import type { GameContextValue } from '@/features/game/gameContext'
 import { GameTable } from '@/features/table/GameTable'
-import { TableOptionsContext } from '@/features/table/tableOptions'
+import { SpectatorControlsContext, TableOptionsContext } from '@/features/table/tableOptions'
 import type { TableOptions } from '@/features/table/tableOptions'
 import { usePageTitle } from '@/hooks/usePageTitle'
 import { cn } from '@/lib/utils'
@@ -37,10 +37,12 @@ interface ReplayPageProps {
   game: string
   fetch?: Fetch
   options?: TableOptions
+  /** The step the table opens at, clamped to the replay; the first by default. */
+  start?: number
 }
 
 /** `/replay/$gameId`: a finished game step by step, from any seat's side, with what the viewer may know. */
-export function ReplayPage({ game, fetch, options }: ReplayPageProps) {
+export function ReplayPage({ game, fetch, options, start = 0 }: ReplayPageProps) {
   usePageTitle('Replay')
   const [load, setLoad] = useState<Load>({ state: 'loading' })
   useEffect(() => {
@@ -91,15 +93,25 @@ export function ReplayPage({ game, fetch, options }: ReplayPageProps) {
       </PageShell>
     )
   }
-  return <ReplayTable game={game} replay={load.replay} options={options} />
+  return <ReplayTable game={game} replay={load.replay} options={options} start={start} />
 }
 
 /** The table of a loaded replay with its controls. */
-function ReplayTable({ game, replay, options }: { game: string; replay: Replay; options?: TableOptions }) {
+function ReplayTable({
+  game,
+  replay,
+  options,
+  start,
+}: {
+  game: string
+  replay: Replay
+  options?: TableOptions
+  start: number
+}) {
   const tableOptions = useMemo(() => ({ ...OPTIONS, ...options }), [options])
   const cursor = useMemo(() => createCursor(replay.steps), [replay])
   const last = replay.steps.length - 1
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState(() => Math.max(0, Math.min(last, Math.trunc(start))))
   const [playing, setPlaying] = useState(false)
   const [seat, setSeat] = useState<PlayerId>(() => startSeat(replay))
   const [store] = useState(createPlayStore)
@@ -153,88 +165,98 @@ function ReplayTable({ game, replay, options }: { game: string; replay: Replay; 
     setPlaying(false)
     setIndex(Math.max(0, Math.min(last, to)))
   }
+  // In the pass controls' place, which a replay has no use for: it covers no card, log line or board.
+  const controls = (
+    <div
+      role="toolbar"
+      aria-label="Replay"
+      data-slot="replay-controls"
+      className="flex h-full flex-wrap content-center items-center justify-center gap-x-1 gap-y-1.5 overflow-y-auto p-2"
+    >
+      <div className="flex items-center">
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          aria-label="First step"
+          disabled={index === 0}
+          onClick={() => go(0)}
+        >
+          <ChevronFirst aria-hidden="true" />
+        </Button>
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          aria-label="Step back"
+          disabled={index === 0}
+          onClick={() => go(index - 1)}
+        >
+          <ChevronLeft aria-hidden="true" />
+        </Button>
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          aria-label={running ? 'Pause' : 'Play'}
+          data-slot="replay-play"
+          disabled={index === last}
+          onClick={() => setPlaying(!running)}
+        >
+          {running ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
+        </Button>
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          aria-label="Step forward"
+          disabled={index === last}
+          onClick={() => go(index + 1)}
+        >
+          <ChevronRight aria-hidden="true" />
+        </Button>
+        <Button
+          size="icon-sm"
+          variant="ghost"
+          aria-label="Last step"
+          disabled={index === last}
+          onClick={() => go(last)}
+        >
+          <ChevronLast aria-hidden="true" />
+        </Button>
+      </div>
+      <div className="flex min-w-0 grow basis-40 items-center gap-1">
+        <input
+          type="range"
+          aria-label="Step"
+          className="min-w-0 flex-1"
+          min={0}
+          max={last}
+          value={index}
+          onChange={(event) => go(Number(event.target.value))}
+        />
+        <span data-slot="replay-step" className="shrink-0 px-1 text-xs tabular-nums text-muted-foreground">
+          {index + 1} / {last + 1}
+        </span>
+      </div>
+      <NativeSelect
+        size="sm"
+        className="max-w-full"
+        aria-label="Seen from"
+        data-slot="replay-seat"
+        value={String(seat)}
+        onChange={(event) => setSeat(Number(event.target.value))}
+      >
+        {replay.names.map((name, at) => (
+          <NativeSelectOption key={at} value={String(at)}>
+            {`Seen from ${name}${replay.seat === at ? ' (you)' : ''}`}
+          </NativeSelectOption>
+        ))}
+      </NativeSelect>
+    </div>
+  )
   return (
     <GameContext value={context}>
       <TableOptionsContext value={tableOptions}>
-        <GameTable />
-        <div
-          role="toolbar"
-          aria-label="Replay"
-          data-slot="replay-controls"
-          className="fixed right-2 bottom-2 left-2 z-50 flex flex-wrap items-center justify-center gap-1 rounded-lg border bg-background/95 px-2 py-1 shadow-md sm:left-auto sm:max-w-[34rem]"
-        >
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            aria-label="First step"
-            disabled={index === 0}
-            onClick={() => go(0)}
-          >
-            <ChevronFirst aria-hidden="true" />
-          </Button>
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            aria-label="Step back"
-            disabled={index === 0}
-            onClick={() => go(index - 1)}
-          >
-            <ChevronLeft aria-hidden="true" />
-          </Button>
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            aria-label={running ? 'Pause' : 'Play'}
-            data-slot="replay-play"
-            disabled={index === last}
-            onClick={() => setPlaying(!running)}
-          >
-            {running ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}
-          </Button>
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            aria-label="Step forward"
-            disabled={index === last}
-            onClick={() => go(index + 1)}
-          >
-            <ChevronRight aria-hidden="true" />
-          </Button>
-          <Button
-            size="icon-sm"
-            variant="ghost"
-            aria-label="Last step"
-            disabled={index === last}
-            onClick={() => go(last)}
-          >
-            <ChevronLast aria-hidden="true" />
-          </Button>
-          <input
-            type="range"
-            aria-label="Step"
-            className="w-32 sm:w-48"
-            min={0}
-            max={last}
-            value={index}
-            onChange={(event) => go(Number(event.target.value))}
-          />
-          <span data-slot="replay-step" className="px-1 text-xs tabular-nums text-muted-foreground">
-            {index + 1} / {last + 1}
-          </span>
-          <NativeSelect
-            size="sm"
-            aria-label="Seen from"
-            data-slot="replay-seat"
-            value={String(seat)}
-            onChange={(event) => setSeat(Number(event.target.value))}
-          >
-            {replay.names.map((name, at) => (
-              <NativeSelectOption key={at} value={String(at)}>
-                {`Seen from ${name}${replay.seat === at ? ' (you)' : ''}`}
-              </NativeSelectOption>
-            ))}
-          </NativeSelect>
-        </div>
+        <SpectatorControlsContext value={controls}>
+          <GameTable />
+        </SpectatorControlsContext>
       </TableOptionsContext>
     </GameContext>
   )
