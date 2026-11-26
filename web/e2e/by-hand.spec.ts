@@ -200,7 +200,7 @@ for (const size of SIZES) {
       await page.getByRole('button', { name: 'Pay for me', exact: true }).click()
       // The payment the game proposes waits for its Confirm under the spell.
       const confirmPayment = page
-        .getByRole('button', { name: 'Confirm', exact: true })
+        .getByRole('button', { name: 'Confirm payment', exact: true })
         .filter({ visible: true })
       await confirmPayment.click({ timeout: 10_000 })
       const field = page.locator(`section[aria-label="${active.name}'s battlefield"]`)
@@ -217,7 +217,7 @@ for (const size of SIZES) {
       for (const { page: p } of players) {
         await closeSide(p)
         const log = await openLog(p)
-        await expect(log).toContainText(new RegExp(`casts ${PARTIAL}`))
+        await expect(log).toContainText(new RegExp(`(You cast|casts) ${PARTIAL}`))
         const quotes = log.getByText(new RegExp(`${PARTIAL} has rules to apply by hand`))
         await expect(quotes.first()).toBeVisible()
         expect(await quotes.count()).toBeGreaterThanOrEqual(1)
