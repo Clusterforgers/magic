@@ -2,7 +2,7 @@
 import { expect, test } from './test'
 import type { Page } from '@playwright/test'
 import { playToTheEnd, Run } from './driver'
-import { createAndJoin, everyoneReady } from './lobby'
+import { createAndJoin, everyoneReady, reseat } from './lobby'
 import { expectTheme, themedContext } from './layoutGate'
 import { boardRows, EMPTY_ROW_LEAST_SHARE, openingProblems, TABLE_MODES } from './openingFit'
 import { DEV_WEB_URL } from './ports'
@@ -915,6 +915,10 @@ test('a real two-seat game fits at every size, at the opening hands and at the f
       onTable('the opening hands of a real game'),
       (size) => expectOpening(deciding, size, 'the opening hand of a real game'),
     )
+    // The sweep resized that page in place, so the seat keeps its hand on a page of one size.
+    const swept = deciding === ada.page ? ada : bo
+    await reseat(swept)
+    await expect(swept.page.locator('[data-decision="Mulligan"]')).toBeVisible()
 
     const page = await firstPriority([ada.page, bo.page])
     await atEverySize(page, ['hand', 'life', 'primary'], onTable('the first priority window of a real game'))
@@ -945,9 +949,10 @@ test('the game-over screen of a real game fits at every size, with the way to a 
       run,
     )
     await atEverySize(ada.page, ['result', 'again'], { label: 'the game-over screen', table: false })
-    // A look back: the result closes for the final table and its log, read only, and comes back.
+    // A look back: the result closes for the final table and its log, read only, and comes back. The sweep resized the
+    // page in place, so the look back clicks on a new page of the seat.
+    await reseat(ada, { width: 1440, height: 900 })
     const page = ada.page
-    await page.setViewportSize({ width: 1440, height: 900 })
     await page.locator('[data-slot="review-open"]').click()
     const strip = page.locator('[data-slot="review-bar"]')
     await expect(strip).toBeVisible()

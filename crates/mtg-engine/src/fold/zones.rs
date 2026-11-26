@@ -19,7 +19,7 @@ use crate::zones::{Placement, Zone};
 
 /// The cards exiled to pay the craft cost of the resolving ability when that ability returns its own exiled source to
 /// the battlefield (CR 702.167c), as they are in exile; nothing for any other move.
-fn r6702_craft_materials(state: &GameState, id: ObjectId) -> Vec<ObjectRef> {
+pub(crate) fn r6702_craft_materials(state: &GameState, id: ObjectId) -> Vec<ObjectRef> {
     let Some(resolving) = state.resolving.as_ref() else {
         return Vec::new();
     };

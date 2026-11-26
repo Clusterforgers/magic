@@ -1,6 +1,16 @@
-// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn number of the banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield and the zones that hold one, which windows count as idle (a land with an ability to activate and a legal card in the graveyard or exile are plays), which defender an attack aims at, and that a play which comes back to its window unanswered is tried twice there.
+// Goal: the driver's own helpers read a prompt as the pages draw it: which cards of a hand are for casting and which for an ability alone, how a click on a card with an ability is answered in the chooser, the turn number of the banner, the cards a Priority window marks legal in the hand, the command zone and the battlefield and the zones that hold one, which windows count as idle (a land with an ability to activate and a legal card in the graveyard or exile are plays), which defender an attack aims at, that a target under the next card of a pile is pressed where it shows, and that a play which comes back to its window unanswered is tried twice there.
 import { expect, test } from './test'
-import { aimAt, attackersOffered, hasAbility, isIdle, isPlayable, look, pickPlay, Run } from './driver'
+import {
+  aimAt,
+  attackersOffered,
+  hasAbility,
+  isIdle,
+  isPlayable,
+  look,
+  pickPlay,
+  pressShown,
+  Run,
+} from './driver'
 import type { Card, Seen } from './driver'
 
 const card = (id: string): Card => ({ id, label: `Card ${id}`, land: false })
@@ -183,6 +193,24 @@ test.describe('driver helpers', () => {
     )
     expect(await aimAt(page, ['Ada'])).toBeNull()
   })
+
+  for (const [name, top] of [
+    ['under the next card of a fanned pile', 20],
+    ['with nothing over it', 400],
+  ] as const) {
+    test(`a target ${name} is pressed where it shows`, async ({ page }) => {
+      // The second card lies over all but the name line of the first, as a land pile draws them.
+      await page.setContent(`
+        <button id="under" style="position:absolute;left:0;top:0;width:100px;height:140px">Forest</button>
+        <button id="over" style="position:absolute;left:0;top:${top}px;width:100px;height:140px">Plains</button>
+        <script>
+          for (const b of document.querySelectorAll('button')) b.onclick = () => b.setAttribute('aria-pressed', 'true')
+        </script>`)
+      await pressShown(page.locator('#under'))
+      await expect(page.locator('#under')).toHaveAttribute('aria-pressed', 'true')
+      await expect(page.locator('#over')).not.toHaveAttribute('aria-pressed', 'true')
+    })
+  }
 
   test('a chosen blocker is offered the attackers the table marks legal, not the blockers', async ({
     page,

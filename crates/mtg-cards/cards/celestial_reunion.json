@@ -1,0 +1,57 @@
+{
+  "oracle_id": "ba0a815c-1dfe-47c1-890f-496c670124f3",
+  "name": "Celestial Reunion",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Celestial Reunion",
+      "oracle_fingerprint": "57fb6778b33afcd26c1edf5e547ca2ef",
+      "abilities": [
+        {
+          "AdditionalCost": {
+            "cost": [
+              { "R110Choose": "CreatureType" },
+              { "Behold": { "filter": [{ "Type": "Creature" }, "ChosenSubtype"], "count": 2 } }
+            ]
+          }
+        },
+        {
+          "Spell": {
+            "effects": [
+              {
+                "Search": {
+                  "filter": [
+                    { "Type": "Creature" },
+                    { "Compare": { "stat": "ManaValue", "op": "Le", "to": "X" } }
+                  ],
+                  "reveal": true,
+                  "as": "found"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "All": [
+                      "AdditionalCostPaid",
+                      {
+                        "Matches": {
+                          "subject": { "Bound": "found" },
+                          "selector": ["ChosenSubtype"]
+                        }
+                      }
+                    ]
+                  },
+                  "then": [
+                    { "Move": { "what": { "Bound": "found" }, "to": { "Battlefield": {} } } }
+                  ],
+                  "otherwise": [{ "Move": { "what": { "Bound": "found" }, "to": "Hand" } }]
+                }
+              },
+              { "Shuffle": {} }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

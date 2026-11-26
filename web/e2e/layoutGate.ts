@@ -16,7 +16,10 @@ export interface Rules {
   actions: Record<string, string>
   /** Regions whose contents are cut off sideways on purpose. */
   exempt?: string[]
-  /** Puts the page in the state to judge after each resize (a pane that a switch shows at a narrow width). */
+  /**
+   * Puts the page in the state to judge after each resize (a pane that a switch shows at a narrow width). It presses by
+   * the keyboard (`locator.press('Enter')`): a click on a page resized in place can wait on its stable check for good.
+   */
   afterResize?: (page: Page) => Promise<void>
 }
 
@@ -25,7 +28,7 @@ export async function showPane(page: Page, pane: 'Search' | 'Deck'): Promise<voi
   const choose = page
     .getByRole('group', { name: 'Show' })
     .getByRole('button', { name: new RegExp(`^${pane}`) })
-  if (await choose.isVisible()) await choose.click()
+  if (await choose.isVisible()) await choose.press('Enter')
 }
 
 /** Awaits two frames, so that a layout made in reaction to a resize has been drawn before the page is read. */

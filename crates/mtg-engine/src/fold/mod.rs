@@ -46,6 +46,7 @@ mod w21a_atoms;
 #[cfg(test)]
 mod zone_tally;
 mod zones;
+pub(crate) use zones::r6702_craft_materials;
 
 use std::collections::BTreeSet;
 
@@ -889,6 +890,13 @@ pub(crate) fn create_effect(
     }
     state.next_effect = state.next_effect.max(effect.id.0 + 1);
     state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
+    // A card given an ability that works outside the battlefield ("That nonland card gains 'Exile a card from your hand:
+    // ... only if this card is exiled'") is looked at there from now on.
+    if let Modification::GrantAbility(granted) = &effect.modification
+        && crate::ability_reader::works_from(granted).is_some_and(|from| !from.is_battlefield())
+    {
+        state.possible.elsewhere = true;
+    }
     if matches!(
         &effect.modification,
         Modification::AddKeyword(

@@ -909,6 +909,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::R109EntersAttached(_)
         | ReplaceBy::R612MayExchangeTextBoxes(_)
         | ReplaceBy::BeholdOrTapped(_)
+        | ReplaceBy::R7071ExileTwoAsCopy { .. }
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
@@ -3029,6 +3030,9 @@ impl Pass<'_> {
             ReplaceBy::BeholdOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
             }
+            ReplaceBy::R7071ExileTwoAsCopy { of } => {
+                self.r7071_exile_two(at, candidate, of, (object, controller), applied)
+            }
             ReplaceBy::R109EntersAttached(to) => {
                 self.r109_enters_attached(at, candidate, to, (object, controller), applied)
             }
@@ -4561,7 +4565,12 @@ impl Pass<'_> {
                     Some(Chosen::R6700PlaneswalkerType(Subtype(name)))
                 }
                 ChoiceOption::Label(name)
-                    if matches!(kind, EntersChoice::CardType | EntersChoice::CardTypeOf(_)) =>
+                    if matches!(
+                        kind,
+                        EntersChoice::CardType
+                            | EntersChoice::CardTypeOf(_)
+                            | EntersChoice::R702CraftedSharedType
+                    ) =>
                 {
                     values::CARD_TYPES
                         .into_iter()
@@ -4619,6 +4628,9 @@ impl Pass<'_> {
             EntersChoice::R6700PlaneswalkerType => values::r6700_planeswalker_types(),
             EntersChoice::CardType => values::card_types(),
             EntersChoice::CardTypeOf(set) => values::card_types_of(set),
+            EntersChoice::R702CraftedSharedType => {
+                values::card_types_of(self.r702_crafted_shared_types(source))
+            }
             EntersChoice::BasicLandType => values::basic_land_types(),
             // Two different types in order: "Plains, then Island" is Plains first.
             EntersChoice::TwoBasicLandTypes => {
@@ -4715,6 +4727,7 @@ fn entering_question(kind: EntersChoice) -> String {
         | EntersChoice::NonbasicLandCardName
         | EntersChoice::RevealedNonlandName
         | EntersChoice::CardType
+        | EntersChoice::R702CraftedSharedType
         | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
         EntersChoice::Number { .. }
         | EntersChoice::Colors(_)
@@ -4779,6 +4792,8 @@ pub(crate) mod r5516_learns;
 mod r5517_life;
 mod r5517_under;
 pub(crate) mod r6700_draws;
+mod r702_crafted_types;
+mod r7071_exile_two;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

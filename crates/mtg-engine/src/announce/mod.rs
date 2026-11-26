@@ -44,6 +44,7 @@ mod r121_02_x_per_opponent;
 mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
+mod r6012_chosen_type;
 pub(crate) mod r6012f_any_amount;
 pub(crate) mod r6400_combat_costs;
 pub(crate) mod required;
@@ -337,6 +338,9 @@ impl Needs {
         parts.extend(self.r110_sacrifices.iter().cloned());
         if let Some(costs) = &self.modes {
             parts.extend(costs.parts(&choices.modes));
+        }
+        for part in &mut parts {
+            r6012_chosen_type::r6012_fix_chosen(part, choices.r110_chosen());
         }
         parts
     }

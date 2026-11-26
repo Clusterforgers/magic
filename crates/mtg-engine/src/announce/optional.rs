@@ -250,6 +250,23 @@ pub(super) fn chosen_least_x(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
         .unwrap_or(0)
 }
 
+/// The kind of value an optional "you may choose a creature type and ..." cost of `card` has its caster choose, when
+/// that cost is among those `paid` names (CR 601.2b).
+pub(super) fn r6012_chosen_kind(
+    card: &CardDefinition,
+    paid: &[usize],
+) -> Option<mtg_cards::trigger::EntersChoice> {
+    printed(card)
+        .enumerate()
+        .filter(|(index, _)| paid.contains(index))
+        .find_map(|(_, printed)| {
+            printed.cost.0.iter().find_map(|item| match item {
+                mtg_cards::cost::CostItem::R110Choose(kind) => Some(*kind),
+                _ => None,
+            })
+        })
+}
+
 /// The optional costs of a card, by index.
 pub(crate) fn listed(card: &CardDefinition) -> Vec<Optional> {
     printed(card).map(read_cost).collect()

@@ -68,7 +68,7 @@ async function signedOut(context: BrowserContext): Promise<void> {
 /** Folds the decision sheet over the hand where one is open, as its grab handle does. */
 async function foldSheet(page: Page): Promise<void> {
   const handle = page.locator('[data-slot="sheet-grab"][aria-expanded="true"]')
-  if (await handle.isVisible()) await handle.click()
+  if (await handle.isVisible()) await handle.press('Enter')
 }
 
 /**
@@ -123,7 +123,7 @@ async function openHand(page: Page): Promise<void> {
   await page
     .getByRole('region', { name: 'Deck', exact: true })
     .getByRole('tab', { name: /^Played by hand/ })
-    .click()
+    .press('Enter')
 }
 
 const STOPS: readonly Stop[] = [

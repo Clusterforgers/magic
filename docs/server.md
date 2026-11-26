@@ -416,6 +416,7 @@ Blank values count as unset; any other malformed value refuses to start (`Config
 | `MTG_COOKIE_SECURE` | 0 | `1` marks the session cookie `Secure`; set it behind TLS. |
 | `MTG_TRUSTED_PROXIES` | 0 | Reverse proxies in front of the server, 0 to 16. |
 | `MTG_SEED` | random | A whole number (`u64`) every game shuffles with, so a game replays exactly; each game logs its seed (`game created`). For tests and replays, not production. |
+| `MTG_REGISTER_PER_IP` | 10 | Registrations one address may try in the 15-minute window, 1 to 100000. The browser tests' accounts server raises it, since every spec registers from 127.0.0.1; production keeps the default. |
 | `MTG_TEST_HOOKS` | off | `1` serves the hooks browser tests use to end a Delves fight early (`POST /api/test/delves/{id}/boss-concedes`, the host only); without it they answer 404. For tests, never production. |
 | `DATABASE_URL` | unset | Postgres URL, never logged. Set, the binary connects, migrates and calls `Server::open`; unset or blank, it warns and keeps games in memory without accounts. `.cargo/config.toml` defaults it to the local database. |
 | `MTG_IMAGE_CACHE` | `$XDG_CACHE_HOME/mtg-server/images`, else `~/.cache/mtg-server/images` | Directory of the picture cache. |

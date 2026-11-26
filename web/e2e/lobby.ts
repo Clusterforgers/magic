@@ -1,5 +1,5 @@
 import { expect } from '@playwright/test'
-import type { Browser, BrowserContext, Page } from '@playwright/test'
+import type { Browser, BrowserContext, Page, ViewportSize } from '@playwright/test'
 
 /** One player at the table: their own browser context, so their seat token and storage are not shared. */
 export interface Player {
@@ -18,9 +18,14 @@ export interface SeatPlan {
   deck: string
 }
 
-/** A player in a new context, or a new page of `context`, with the page's uncaught exceptions collected. */
-async function newPlayer(browser: Browser, name: string, context?: BrowserContext): Promise<Player> {
-  context ??= await browser.newContext()
+/** A player in a new context of `viewport`, or a new page of `context`, with the page's uncaught exceptions collected. */
+async function newPlayer(
+  browser: Browser,
+  name: string,
+  context?: BrowserContext,
+  viewport?: ViewportSize,
+): Promise<Player> {
+  context ??= await browser.newContext(viewport === undefined ? {} : { viewport })
   const page = await context.newPage()
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
@@ -30,16 +35,18 @@ async function newPlayer(browser: Browser, name: string, context?: BrowserContex
 /**
  * Creates a game through the form on `/` as the first seat, opens that seat, and has every other seat open its own
  * link in a browser context of its own. With `hostContext` the first seat plays in that browser (its storage kept from
- * an earlier game). Returns the players in seat order, all in the lobby.
+ * an earlier game). The contexts made here open at `viewport`, so a spec that plays at one size never resizes a page
+ * in place (docs/web.md, e2e). Returns the players in seat order, all in the lobby.
  */
 export async function createAndJoin(
   browser: Browser,
   plans: readonly SeatPlan[],
   hostContext?: BrowserContext,
+  viewport?: ViewportSize,
 ): Promise<Player[]> {
   const [host, ...guests] = plans
   if (host === undefined) throw new Error('a game needs at least one seat')
-  const first = await newPlayer(browser, host.name, hostContext)
+  const first = await newPlayer(browser, host.name, hostContext, viewport)
 
   await first.page.goto('/new')
   await first.page.getByRole('radio', { name: /^Normal/ }).check()
@@ -66,7 +73,7 @@ export async function createAndJoin(
   await first.page.getByRole('button', { name: `Open my seat (${host.name})` }).click()
   const players = [first]
   for (const [index, guest] of guests.entries()) {
-    const player = await newPlayer(browser, guest.name)
+    const player = await newPlayer(browser, guest.name, undefined, viewport)
     const path = paths[index + 1]
     if (path === undefined || !path.startsWith('/game/'))
       throw new Error(`no link for seat ${index + 2}: ${path}`)
@@ -113,4 +120,20 @@ export async function everyoneReady(players: readonly Player[]): Promise<void> {
   for (const { page } of players) {
     await expect(page.getByRole('heading', { name: 'Opening hands' })).toBeVisible()
   }
+}
+
+/**
+ * Moves `player`'s seat to a new page of its context at `viewport` and closes the old page, which a fit sweep resized
+ * in place: such a page can stop drawing frames in a full run, and a click on it then waits on its stable check until
+ * it times out (docs/web.md, e2e). Resolves once the new page shows the table or the result.
+ */
+export async function reseat(player: Player, viewport?: ViewportSize): Promise<void> {
+  const address = player.page.url()
+  await player.page.close()
+  const page = await player.context.newPage()
+  page.on('pageerror', (error) => player.errors.push(error.message))
+  if (viewport !== undefined) await page.setViewportSize(viewport)
+  await page.goto(address)
+  await expect(page.locator('[data-slot="table-grid"], #over-title').first()).toBeVisible()
+  player.page = page
 }

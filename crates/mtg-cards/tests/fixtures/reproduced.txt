@@ -455,6 +455,7 @@ Celebrate the Harvest
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
+Celestial Reunion
 Cemetery Reaper
 Cemetery Tampering
 Centaur of Attention
@@ -656,6 +657,7 @@ Cybermen Squadron
 Cyclonic Rift
 Cytoshape
 Círdan the Shipwright
+Dack Fayden, Helping Hand
 Dalek Squadron
 Damocles Base, Sword of Kang
 Dampen Thought
@@ -1819,6 +1821,7 @@ Mask of Griselbrand
 Mask of Memory
 Mask of Riddles
 Mass Diminish
+Massimo, the Magician
 Master Thief
 Master Trinketeer
 Master Warcraft
@@ -2282,6 +2285,7 @@ Pygmy Kavu
 Pygmy Troll
 Pyramids
 Pyreswipe Hawk
+Q, Stacking the Deck
 Q, Your Illustrious Host
 Qasali Pridemage
 Qasali Slingers
@@ -3020,6 +3024,7 @@ The Locust God
 The Madcap Jester
 The Mechanist, Aerial Artisan
 The Mightstone and Weakstone
+The Mimeoplasm
 The Modern Age // Vector Glider
 The Moment
 The Most Dangerous Gamer

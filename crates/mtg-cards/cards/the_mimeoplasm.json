@@ -1,0 +1,21 @@
+{
+  "oracle_id": "55123455-d435-46d4-b0cd-0c1614343be2",
+  "name": "The Mimeoplasm",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Mimeoplasm",
+      "oracle_fingerprint": "4c51d436f2e53f389c8445324ddcc648",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": {
+              "R7071ExileTwoAsCopy": { "of": [{ "Type": "Creature" }, { "In": "Graveyard" }] }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

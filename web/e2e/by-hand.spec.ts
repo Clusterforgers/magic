@@ -1,7 +1,7 @@
 // Goal: on a two-seat table, at desktop and phone size, a Partial card in hand shows the by-hand mark, a press on the mark and the `h` key on the focused card each open its clause list, and the cast and entering lines that quote the clauses are in both seats' logs.
 import { expect, test } from './test'
 import type { Browser, Locator, Page } from '@playwright/test'
-import type { DeckView, ImportResult } from '../src/protocol/generated'
+import type { CardSearchPage, DeckView, ImportResult } from '../src/protocol/generated'
 import type { Player } from './lobby'
 import { ACCOUNTS_DATABASE_URL, ACCOUNTS_WEB_URL } from './ports'
 import { signUp, sit } from './table'
@@ -14,26 +14,52 @@ const SIZES = [
   { name: 'phone', width: 390, height: 844 },
 ] as const
 
-/** One-mana white creatures the engine runs only in part, so their cards carry by-hand clauses; a Normal game allows four of each. */
-const PARTIALS = [
-  'Icatian Infantry',
-  'Mosquito Guard',
-  'Loyal Pegasus',
-  'Novice Knight',
-  'Foothill Guide',
-  'Charmed Stray',
-  'Ocelot Pride',
-  'Star Pupil',
-]
+/** The most different Partial cards a deck holds, four copies each (a Normal game allows four of each), and the fewest. */
+const PARTIAL_KINDS = 8
+const LEAST_PARTIAL_KINDS = 4
 
-/** Saves a 60-card freeform deck of eight Partial cards, four copies each, and Plains in `account`, as the Decks page does. */
-async function saveDeck(browser: Browser, account: Account): Promise<{ id: string; name: string }> {
+/**
+ * One-mana white creatures (cost {W}) the engine runs only in part, so their cards carry by-hand clauses. They are read from the
+ * card search, since a card leaves the list once its rules run whole.
+ */
+async function partialCreatures(browser: Browser, account: Account): Promise<string[]> {
+  const context = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL, storageState: account.storage })
+  try {
+    const found: string[] = []
+    for (let page = 1; page <= 5 && found.length < PARTIAL_KINDS; page += 1) {
+      const response = await context.request.get(
+        `/api/cards?identity=W&type=Creature&cmc=1&per_page=100&page=${page}`,
+      )
+      expect(response.ok(), `search: ${await response.text()}`).toBe(true)
+      const { cards } = (await response.json()) as CardSearchPage
+      for (const card of cards) {
+        if (card.support === 'partial' && card.mana_cost === '{W}' && !card.type_line.includes('Legendary'))
+          found.push(card.name)
+      }
+      if (cards.length < 100) break
+    }
+    expect(found.length, 'Partial creatures that cost {W}').toBeGreaterThanOrEqual(LEAST_PARTIAL_KINDS)
+    return found.slice(0, PARTIAL_KINDS)
+  } finally {
+    await context.close()
+  }
+}
+
+/** Saves a 60-card freeform deck of the Partial cards `partials`, four copies each, and Plains in `account`, as the Decks page does. */
+async function saveDeck(
+  browser: Browser,
+  account: Account,
+  partials: readonly string[],
+): Promise<{ id: string; name: string }> {
   const context = await browser.newContext({ baseURL: ACCOUNTS_WEB_URL, storageState: account.storage })
   const asAccount = { headers: { origin: ACCOUNTS_WEB_URL } }
   try {
     const read = await context.request.post('/api/decks/import', {
       ...asAccount,
-      data: { text: `${PARTIALS.map((name) => `4 ${name}`).join('\n')}\n28 Plains`, format: 'freeform' },
+      data: {
+        text: `${partials.map((name) => `4 ${name}`).join('\n')}\n${60 - 4 * partials.length} Plains`,
+        format: 'freeform',
+      },
     })
     expect(read.ok(), `import: ${await read.text()}`).toBe(true)
     const { cards, unresolved } = (await read.json()) as ImportResult
@@ -84,9 +110,10 @@ for (const size of SIZES) {
   }) => {
     test.setTimeout(4 * 60_000)
     const accounts = [await signUp(browser, 'ada'), await signUp(browser, 'bo')]
+    const partials = await partialCreatures(browser, accounts[0] as Account)
     const decks = [
-      await saveDeck(browser, accounts[0] as Account),
-      await saveDeck(browser, accounts[1] as Account),
+      await saveDeck(browser, accounts[0] as Account, partials),
+      await saveDeck(browser, accounts[1] as Account, partials),
     ]
     const host = await sit(browser, accounts[0] as Account)
     const guest = await sit(browser, accounts[1] as Account)
@@ -133,18 +160,21 @@ for (const size of SIZES) {
       }
 
       // Whoever has the first turn plays a Plains and casts the Partial card with it.
-      const active = (await host.page.getByText('You have priority', { exact: false }).first().isVisible())
-        ? host
-        : guest
+      const priority = (player: Player) => player.page.locator('[data-decision="Priority"]')
+      await expect
+        .poll(async () => (await priority(host).count()) + (await priority(guest).count()), {
+          timeout: 30_000,
+        })
+        .toBeGreaterThan(0)
+      const active = (await priority(host).count()) > 0 ? host : guest
       const other = active === host ? guest : host
-      await expect(active.page.getByText('You have priority', { exact: false }).first()).toBeVisible()
       const page = active.page
       const hand = page.locator('[data-region="hand"] button[data-object-id]')
       // The first card in hand that carries the mark is the Partial card the rest of the test follows.
       const infantry = hand.filter({ has: page.locator('[data-slot="card-support"]') })
       await expect(infantry.first()).toBeVisible()
       const PARTIAL = ((await infantry.first().getAttribute('aria-label')) ?? '').split(',')[0] ?? ''
-      expect(PARTIALS).toContain(PARTIAL)
+      expect(partials).toContain(PARTIAL)
 
       // The by-hand mark is on the card in hand; a press on it opens the clause list.
       const mark = infantry.first().locator('[data-slot="card-support"]')
@@ -165,9 +195,14 @@ for (const size of SIZES) {
 
       // Play a land, then cast the card and let it resolve.
       await page.locator('[data-region="hand"] button[data-object-id][aria-label^="Plains"]').first().click()
-      await expect(page.getByText('You have priority', { exact: false }).first()).toBeVisible()
+      await expect(priority(active)).toBeVisible()
       await infantry.first().click()
       await page.getByRole('button', { name: 'Pay for me', exact: true }).click()
+      // The payment the game proposes waits for its Confirm under the spell.
+      const confirmPayment = page
+        .getByRole('button', { name: 'Confirm payment', exact: true })
+        .filter({ visible: true })
+      await confirmPayment.click({ timeout: 10_000 })
       const field = page.locator(`section[aria-label="${active.name}'s battlefield"]`)
       const entered = field.locator(`button[data-object-id][aria-label^="${PARTIAL}"]`)
       await expect(async () => {
@@ -182,7 +217,7 @@ for (const size of SIZES) {
       for (const { page: p } of players) {
         await closeSide(p)
         const log = await openLog(p)
-        await expect(log).toContainText(new RegExp(`casts ${PARTIAL}`))
+        await expect(log).toContainText(new RegExp(`(You cast|casts) ${PARTIAL}`))
         const quotes = log.getByText(new RegExp(`${PARTIAL} has rules to apply by hand`))
         await expect(quotes.first()).toBeVisible()
         expect(await quotes.count()).toBeGreaterThanOrEqual(1)
