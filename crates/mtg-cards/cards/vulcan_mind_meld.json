@@ -12,7 +12,14 @@
             "targets": [{ "what": "Opponent" }],
             "effects": [
               { "ExileTop": { "as": "theirs", "r406_held_by": { "Target": 0 } } },
-              { "ExileTop": { "who": { "Target": 0 }, "count": 2, "as": "yours", "r406_held_by": "You" } },
+              {
+                "ExileTop": {
+                  "who": { "Target": 0 },
+                  "count": 2,
+                  "as": "yours",
+                  "r406_held_by": "You"
+                }
+              },
               {
                 "Rule": {
                   "rule": {

@@ -341,6 +341,7 @@ export type { R114StickerKick } from "./R114StickerKick";
 export type { R120RestrictedMana } from "./R120RestrictedMana";
 export type { R6008Listed } from "./R6008Listed";
 export type { R612TextBox } from "./R612TextBox";
+export type { R707Kept } from "./R707Kept";
 export type { Rarity } from "./Rarity";
 export type { ReadBody } from "./ReadBody";
 export type { ReadCard } from "./ReadCard";

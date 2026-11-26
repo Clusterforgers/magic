@@ -24,8 +24,22 @@
           "Triggered": {
             "when": {
               "AnyOf": [
-                { "R603Exactly": { "event": { "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "You" } }, "amount": 1 } },
-                { "R603Exactly": { "event": { "Caused": { "inner": { "LifeLost": { "who": "You" } }, "by": "You" } }, "amount": 1 } }
+                {
+                  "R603Exactly": {
+                    "event": {
+                      "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "You" }
+                    },
+                    "amount": 1
+                  }
+                },
+                {
+                  "R603Exactly": {
+                    "event": {
+                      "Caused": { "inner": { "LifeLost": { "who": "You" } }, "by": "You" }
+                    },
+                    "amount": 1
+                  }
+                }
               ]
             },
             "effects": [

@@ -2146,9 +2146,11 @@ fn matching_event(
                     ..
                 }
             );
-            (happened.amount() == *amount && !damage_loss && !matches!(happened, Happened::Batch(_)))
-                .then(|| matching(event, happened, scope))
-                .flatten()
+            (happened.amount() == *amount
+                && !damage_loss
+                && !matches!(happened, Happened::Batch(_)))
+            .then(|| matching(event, happened, scope))
+            .flatten()
         }
         (TriggerPattern::R111AbilityTriggered { .. }, happened) => {
             r111_on_trigger::r111_matching(pattern, happened, scope)

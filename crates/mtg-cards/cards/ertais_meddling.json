@@ -25,24 +25,41 @@
                   "when": { "StepBegins": { "step": "Upkeep", "whose": { "Bound": "player" } } },
                   "once": false,
                   "until": "Forever",
-                  "intervening_if": {
-                    "Matches": { "subject": { "Bound": "card" }, "selector": [{ "In": "Exile" }] }
-                  },
                   "effects": [
-                    { "RemoveCounters": { "from": { "Bound": "card" }, "counter": { "Other": "delay" } } },
+                    {
+                      "RemoveCounters": {
+                        "from": { "Bound": "card" },
+                        "counter": { "Other": "delay" }
+                      }
+                    },
                     {
                       "If": {
                         "condition": {
                           "Compare": {
-                            "left": { "Counters": { "on": { "Bound": "card" }, "counter": { "Other": "delay" } } },
+                            "left": {
+                              "Counters": {
+                                "on": { "Bound": "card" },
+                                "counter": { "Other": "delay" }
+                              }
+                            },
                             "op": "Eq",
                             "right": 0
                           }
                         },
-                        "then": [{ "R707PutBack": { "who": { "Bound": "player" }, "what": { "Bound": "card" } } }]
+                        "then": [
+                          {
+                            "R707PutBack": {
+                              "who": { "Bound": "player" },
+                              "what": { "Bound": "card" }
+                            }
+                          }
+                        ]
                       }
                     }
-                  ]
+                  ],
+                  "intervening_if": {
+                    "Matches": { "subject": { "Bound": "card" }, "selector": [{ "In": "Exile" }] }
+                  }
                 }
               }
             ]

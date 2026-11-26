@@ -106,7 +106,12 @@ fn settle_at(
                     .collect(),
             )),
             DecisionKind::ChooseCards(options) => Answer::ChooseCards(CardsChoice(
-                options.from.iter().copied().take(options.max as usize).collect(),
+                options
+                    .from
+                    .iter()
+                    .copied()
+                    .take(options.max as usize)
+                    .collect(),
             )),
             DecisionKind::Priority(_) => Answer::Priority(PriorityAction::Pass),
             _ => Driver::passive_answer(&decision),
@@ -160,7 +165,10 @@ fn p162_cards_are_verified_with_the_engines_capabilities(
     )]
     name: &str,
 ) {
-    let record = mtg_testkit::corpus::corpus().unwrap().support(name).unwrap();
+    let record = mtg_testkit::corpus::corpus()
+        .unwrap()
+        .support(name)
+        .unwrap();
     assert_eq!(
         record.support,
         mtg_cards::support::Support::Verified,
@@ -203,7 +211,10 @@ fn sahir_grows_on_exactly_one(
     let hand = hand_size(&driver, 0);
     let target = driver.target_player(if at_me { 0 } else { 1 });
     driver.begin_cast(&name).unwrap();
-    if matches!(driver.decision().unwrap().kind, DecisionKind::ChooseTargets(_)) {
+    if matches!(
+        driver.decision().unwrap().kind,
+        DecisionKind::ChooseTargets(_)
+    ) {
         driver.choose_targets(&[target]).unwrap();
     }
     settle(&mut driver, true, &none);
@@ -293,7 +304,10 @@ fn grimoire_thief_exiles_three_face_down_for_its_controller_alone(#[values(2, 3,
     tap_the_thief(&mut driver);
     let exiled = exiled(&driver);
     assert_eq!(exiled.len(), 3);
-    assert_eq!(driver.state().zone(Zone::Library(pid(1))).len(), foe_library - 3);
+    assert_eq!(
+        driver.state().zone(Zone::Library(pid(1))).len(),
+        foe_library - 3
+    );
     for id in exiled {
         let object = driver.state().object(id).unwrap();
         assert!(matches!(object.face_down(), Some(FaceDown::Sealed { .. })));
@@ -340,7 +354,9 @@ fn grimoire_thief_turns_its_cards_up_and_counters_spells_with_their_names(
 // --- Vulcan Mind-Meld ---
 
 #[rstest]
-fn vulcan_mind_meld_has_each_player_exile_the_others_cards_to_play(#[values(2, 3, 4)] seats: usize) {
+fn vulcan_mind_meld_has_each_player_exile_the_others_cards_to_play(
+    #[values(2, 3, 4)] seats: usize,
+) {
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
         .battlefield(0, vec![ready(island()), ready(island())])
@@ -452,7 +468,10 @@ fn parallel_thoughts_replaces_a_draw_with_the_pile_top_if_wanted(
     let hand = driver.state().zone(Zone::Hand(pid(0)));
     assert_eq!(hand.len(), 1);
     let drawn = driver.state().object(hand[0]).unwrap();
-    assert_eq!(driver.state().zone(Zone::Exile).len(), if take { 6 } else { 7 });
+    assert_eq!(
+        driver.state().zone(Zone::Exile).len(),
+        if take { 6 } else { 7 }
+    );
     assert_eq!(
         driver.state().zone(Zone::Library(pid(0))).len(),
         if take { library } else { library - 1 }
@@ -477,7 +496,10 @@ fn parallel_thoughts_takes_the_pile_then_skips_draws_from_it_empty(
     // Both pile cards came to hand and the third draw was replaced by taking from the empty pile.
     assert_eq!(hand_size(&driver, 0), 2);
     assert!(driver.state().zone(Zone::Exile).is_empty());
-    assert!(driver.state().result().is_none(), "no one drew from an empty library");
+    assert!(
+        driver.state().result().is_none(),
+        "no one drew from an empty library"
+    );
     replays(&driver);
 }
 
@@ -518,8 +540,15 @@ fn piracy_taps_the_lands_of_others_for_mana_spent_on_spells(#[values(2, 3, 4)] s
         _ => None,
     });
     let (player, only) = added.expect("mana was added");
-    assert_eq!(player, pid(0), "the mana goes to the player who tapped the land");
-    assert_eq!(only, vec![mtg_cards::spend::SpendOn::Spell(Default::default())]);
+    assert_eq!(
+        player,
+        pid(0),
+        "the mana goes to the player who tapped the land"
+    );
+    assert_eq!(
+        only,
+        vec![mtg_cards::spend::SpendOn::Spell(Default::default())]
+    );
     let foe = driver.target_player(1);
     let before = life(&driver, 1);
     driver.cast_at("Bolt", &[foe]).unwrap();
@@ -559,7 +588,10 @@ fn equilibrium_table(seats: usize, mine: usize, theirs: usize) -> Driver {
     let scenario = Scenario::new(seats)
         .at(2, 1, Step::Main1)
         .battlefield(0, board)
-        .battlefield(1, (0..theirs).map(|_| ready(mountain())).collect::<Vec<_>>())
+        .battlefield(
+            1,
+            (0..theirs).map(|_| ready(mountain())).collect::<Vec<_>>(),
+        )
         .hand(1, vec![mountain()]);
     Driver::from_scenario(libraries(scenario, seats)).unwrap()
 }
@@ -595,7 +627,12 @@ fn land_equilibrium_makes_an_opponent_with_as_many_lands_sacrifice_one(
         {
             asked.set(true);
             return Some(Answer::ChooseCards(CardsChoice(
-                options.from.iter().copied().take(options.min as usize).collect(),
+                options
+                    .from
+                    .iter()
+                    .copied()
+                    .take(options.min as usize)
+                    .collect(),
             )));
         }
         None
@@ -671,7 +708,9 @@ fn meddle(driver: &mut Driver, x: u32) -> ObjectId {
             DecisionKind::ChooseNumber(options) => {
                 assert!(options.min >= 1, "X can't be 0: {options:?}");
                 driver
-                    .answer(Answer::ChooseNumber(mtg_engine::choose::NumberChoice::Number(x)))
+                    .answer(Answer::ChooseNumber(
+                        mtg_engine::choose::NumberChoice::Number(x),
+                    ))
                     .unwrap();
             }
             DecisionKind::ChooseTargets(_) => {
@@ -709,7 +748,11 @@ fn ertais_meddling_delays_a_spell_by_x_of_its_controllers_upkeeps(
     let mut driver = meddling_table(seats, 1 + usize::try_from(x).unwrap());
     let before = life(&driver, 1);
     let bolt = meddle(&mut driver, x);
-    assert_eq!(life(&driver, 1), before, "the Bolt is exiled before it resolves");
+    assert_eq!(
+        life(&driver, 1),
+        before,
+        "the Bolt is exiled before it resolves"
+    );
     assert_eq!(driver.state().object(bolt).unwrap().zone(), Zone::Exile);
     assert_eq!(delay_counters(&driver, bolt), x);
     let round = u32::try_from(seats).unwrap();
@@ -723,7 +766,10 @@ fn ertais_meddling_delays_a_spell_by_x_of_its_controllers_upkeeps(
     }
     // The card went back onto the stack as the Bolt it was, at the same target, and resolved without being cast.
     assert_eq!(life(&driver, 1), before - 3);
-    assert_eq!(driver.state().object(bolt).unwrap().zone(), Zone::Graveyard(pid(0)));
+    assert_eq!(
+        driver.state().object(bolt).unwrap().zone(),
+        Zone::Graveyard(pid(0))
+    );
     let casts = driver
         .engine()
         .events()

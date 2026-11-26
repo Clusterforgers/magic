@@ -1290,6 +1290,7 @@ Grim Flayer
 Grim Haruspex
 Grim Initiate
 Grime Gorger
+Grimoire Thief
 Grisly Salvage
 Grizzlegom, Hurloon Hero
 Grothama, All-Devouring
@@ -1654,6 +1655,7 @@ Kuroki, Thief of Talents
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
 L'Rell, Fierce Visionary
+Land Equilibrium
 Land Grant
 Landslide
 Lantern Flare
@@ -2119,6 +2121,7 @@ Panther Habit
 Panther Robot
 Paradise Druid
 Paradise Plume
+Parallel Thoughts
 Parasitic Grasp
 Pardic Firecat
 Parhelion Patrol
@@ -2181,6 +2184,7 @@ Pillar of the Paruns
 Pinion Feast
 Piper of the Swarm
 Pippin, Warden of Isengard
+Piracy
 Pit Fight
 Pitiless Carnage
 Pixie Guide
@@ -3330,6 +3334,7 @@ Vow of Lightning
 Vow of Malice
 Vow of Torment
 Vow of Wildness
+Vulcan Mind-Meld
 Vulshok Factory
 Vulshok Splitter
 Võx, Child of the Collective

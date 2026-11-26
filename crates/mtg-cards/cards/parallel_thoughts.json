@@ -22,7 +22,13 @@
             "when": { "Draw": {} },
             "by": {
               "Instead": [
-                { "May": { "effects": [{ "Move": { "what": { "R406PileTop": { "on": "This" } }, "to": "Hand" } }] } }
+                {
+                  "May": {
+                    "effects": [
+                      { "Move": { "what": { "R406PileTop": { "on": "This" } }, "to": "Hand" } }
+                    ]
+                  }
+                }
               ]
             }
           }

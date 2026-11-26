@@ -19,14 +19,23 @@
                       "Compare": {
                         "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
                         "op": "Ge",
-                        "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": { "ControllerOf": "This" } }] }
+                        "right": {
+                          "Count": [
+                            { "Type": "Land" },
+                            { "ControlledBy": { "ControllerOf": "This" } }
+                          ]
+                        }
                       }
                     }
                   }
                 }
               }
             },
-            "by": { "R614EntersThen": [{ "Sacrifice": { "who": "R115Causer", "filter": [{ "Type": "Land" }] } }] }
+            "by": {
+              "R614EntersThen": [
+                { "Sacrifice": { "who": "R115Causer", "filter": [{ "Type": "Land" }] } }
+              ]
+            }
           }
         }
       ]

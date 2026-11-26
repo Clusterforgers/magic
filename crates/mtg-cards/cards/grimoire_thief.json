@@ -11,18 +11,27 @@
           "Triggered": {
             "when": { "Tapped": { "what": ["This"] } },
             "targets": [{ "what": "Opponent" }],
-            "effects": [{ "ExileTop": { "who": { "Target": 0 }, "count": 3, "as": "exiled", "sealed": true } }]
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": 3, "as": "exiled", "sealed": true } }
+            ]
           }
         },
-        {
-          "Rule": { "rule": { "LookAtExiled": { "what": [{ "ExiledWith": "This" }] } } }
-        },
+        { "Rule": { "rule": { "LookAtExiled": { "what": [{ "ExiledWith": "This" }] } } } },
         {
           "Activated": {
             "cost": [{ "Mana": "{U}" }, "SacrificeSelf"],
             "effects": [
-              { "R406TurnUpExiled": { "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] }, "as": "turned" } },
-              { "Counter": { "what": { "Each": ["Spell", { "SharesName": { "Bound": "turned" } }] } } }
+              {
+                "R406TurnUpExiled": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "turned"
+                }
+              },
+              {
+                "Counter": {
+                  "what": { "Each": ["Spell", { "SharesName": { "Bound": "turned" } }] }
+                }
+              }
             ]
           }
         }

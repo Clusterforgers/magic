@@ -932,7 +932,8 @@ pub enum TriggerPattern {
     },
     /// The event, of exactly this amount (CR 603.2): "whenever a source you control deals exactly 1 damage to you",
     /// "causes you to lose exactly 1 life". The amount is the damage one source deals to one recipient, or the life one
-    /// event takes; the event is `DealsDamage`, `LifeLost` or `LifeGained`, alone or inside a `Caused`.
+    /// event takes (the life damage takes is that damage's, named by `DealsDamage`); the event is `DealsDamage`, `LifeLost` or
+    /// `LifeGained`, alone or inside a `Caused`.
     R603Exactly {
         /// The event.
         event: Box<TriggerPattern>,
