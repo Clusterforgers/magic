@@ -376,7 +376,7 @@ fn the_mimeoplasm_declined_enters_as_itself_and_dies(#[values(2, 3, 4)] seats: u
     let mut driver = mimeoplasm_table(seats);
     driver.begin_cast(MIMEOPLASM).unwrap();
     settle(&mut driver, &mimeoplasm_answers(false, "Giant"));
-    assert!(driver.state().zone(Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile).len(), 0);
     assert_eq!(
         named(&driver, Zone::Graveyard(pid(0)), MIMEOPLASM).len(),
         1,
