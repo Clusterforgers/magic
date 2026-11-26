@@ -96,6 +96,7 @@ const EFFECTS: Record<string, string> = {
   RingTempts: 'The Ring tempts you',
   TakeInitiative: 'Initiative',
   CreateEmblem: 'Emblem',
+  R6051PlayerGains: 'Emblem',
   BecomeDayNight: 'Day and night',
   Amass: 'Amass',
   Empower: 'Empower Jace',
