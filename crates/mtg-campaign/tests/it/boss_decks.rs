@@ -19,7 +19,7 @@ struct DeckFile {
 
 /// Deck cards that play neither from the corpus nor from a sound draft, each with what holds it back (roadmap dl1).
 const PENDING: &[&str] = &[
-    // The renderer cannot write its compiled exile-until as the two printed sentences, so it is not a corpus card.
+    // Its compiled linked triggers read back as printed; it is not a corpus card yet.
     "Leonin Relic-Warder",
     // Read wrong: its activation cannot count its own targets for the reduction.
     "Wayta, Trainer Prodigy",

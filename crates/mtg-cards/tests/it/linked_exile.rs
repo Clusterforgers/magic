@@ -1,12 +1,16 @@
-//! Goal: the two triggers of Oblivion Ring, Journey to Nowhere, Fiend Hunter and Leonin Relic-Warder read as one exile that lasts until the card leaves the battlefield, and a return trigger without such an exile before it stays with the table.
+//! Goal: the two triggers of Oblivion Ring, Journey to Nowhere, Fiend Hunter and Leonin Relic-Warder stay two linked abilities, an exile for good and a return of what the card exiled, that read back as the printed text and are Verified, while "until ~ leaves" stays one exile, and a return trigger without such an exile before it stays with the table.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
+
+use std::collections::BTreeSet;
 
 use mtg_cards::ability::Ability;
 use mtg_cards::card::ImplStatus;
 use mtg_cards::compile::compile;
 use mtg_cards::effect::Effect;
+use mtg_cards::load::{Library, canonical};
 use mtg_cards::modify::Duration;
-use mtg_cards::support::{PrintedCard, PrintedFace};
+use mtg_cards::proposal::{Verdict, check_exact, differing};
+use mtg_cards::support::{Caps, PrintedCard, PrintedFace};
 use rstest::rstest;
 
 const RETURN: &str = "When this permanent leaves the battlefield, return the exiled card to the battlefield under its owner's control.";
@@ -69,7 +73,19 @@ fn exile_durations(abilities: &[Ability]) -> Vec<Option<Duration>> {
     "Creature — Cat Cleric",
     "When this creature enters, you may exile target artifact or enchantment.\nWhen this creature leaves the battlefield, return the exiled card to the battlefield under its owner's control."
 )]
-fn the_enter_and_leave_triggers_are_one_exile_that_lasts_until_the_card_leaves(
+#[case::faceless_butcher(
+    "Faceless Butcher",
+    "5237a105-60c4-4597-b24e-84c12ce7b01f",
+    "Creature — Nightmare Horror",
+    "When this creature enters, exile another target creature.\nWhen this creature leaves the battlefield, return the exiled card to the battlefield under its owner's control."
+)]
+#[case::petravark(
+    "Petravark",
+    "aedf022c-6065-42cb-85bb-225ae1650a5c",
+    "Creature — Nightmare Beast",
+    "When this creature enters, exile target land.\nWhen this creature leaves the battlefield, return the exiled card to the battlefield under its owner's control."
+)]
+fn the_enter_and_leave_triggers_are_two_linked_abilities_that_read_back_as_the_card(
     #[case] name: &str,
     #[case] oracle_id: &str,
     #[case] type_line: &str,
@@ -80,11 +96,52 @@ fn the_enter_and_leave_triggers_are_one_exile_that_lasts_until_the_card_leaves(
     let made = compiled.card.as_ref().expect("the card compiles");
     assert_eq!(made.impl_status, ImplStatus::Full, "{compiled:?}");
     assert!(compiled.clauses.iter().all(|clause| clause.read));
+    let clauses = text.lines().count();
+    assert_eq!(
+        made.faces[0].abilities.len(),
+        clauses,
+        "{:?}",
+        made.faces[0]
+    );
+    assert_eq!(exile_durations(&made.faces[0].abilities), vec![None]);
+    let differs = differing(made, &printed);
+    assert!(differs.is_empty(), "{differs:?}");
+    verified(made, &printed);
+}
+
+/// The compiled rules of `printed` pass the exact check whole: they read back as the card and are `Verified`.
+fn verified(made: &mtg_cards::card::Card, printed: &PrintedCard) {
+    let names = BTreeSet::from([printed.name.to_lowercase()]);
+    let report = check_exact(
+        &canonical(made),
+        printed,
+        &Library::default(),
+        &names,
+        &Caps::everything(),
+    );
+    assert!(
+        report.verdict() == Verdict::Accepted && report.summary() == "ACCEPTED Verified",
+        "{}",
+        report.render(true)
+    );
+}
+
+#[test]
+fn an_exile_until_the_card_leaves_stays_one_exile_with_its_duration() {
+    let printed = card(
+        "Banisher Priest",
+        "f9c1c6a3-4d8a-4b4e-8a0a-1f0b6f2b1c3e",
+        "Creature — Human Cleric",
+        "When this creature enters, exile target creature an opponent controls until this creature leaves the battlefield.",
+    );
+    let compiled = compile(&printed);
+    let made = compiled.card.as_ref().expect("the card compiles");
     assert_eq!(made.faces[0].abilities.len(), 1, "{:?}", made.faces[0]);
     assert_eq!(
         exile_durations(&made.faces[0].abilities),
         vec![Some(Duration::WhileSourceOnBattlefield)]
     );
+    verified(made, &printed);
 }
 
 #[rstest]

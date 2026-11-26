@@ -1,8 +1,9 @@
-//! Goal: every card lands in the state its rules and the engine's capabilities earn, with the blockers behind it; hand-written rules win over the compiler's; and the report's counts, shares and rankings follow the cards, their copies and their blockers, ties broken the same way every time.
+//! Goal: every card lands in the state its rules and the engine's capabilities earn, with the blockers behind it; hand-written rules win over the compiler's; and the report's counts, shares and rankings follow the cards, their copies and their blockers, ties broken the same way every time; compiled rules are decided as the server decides them, so rules that read back as other text are held back by both.
 use super::*;
 use crate::card::{Face, Span};
 use crate::compile::compile;
 use crate::keyword::Keyword;
+use crate::load::slug;
 use crate::support::{PrintedFace, oracle_fingerprint};
 use rstest::rstest;
 
@@ -761,4 +762,55 @@ fn a_cost_that_counts_targets_waits_for_its_spell_and_is_no_blocker_of_its_own()
     assert_eq!(labels(&held), ["spell: Wibble the wobble."]);
     let alone = analyzed_alone(printed(3, "Test Strive", "Sorcery", strive), &small_caps());
     assert_eq!(labels(&alone).len(), 1, "{alone:?}");
+}
+
+/// Journey to Nowhere as an earlier compiler read it: one exile until the card leaves, which reads back as other text.
+fn until_it_leaves(card: &mut Card) {
+    card.faces[0].abilities.truncate(1);
+    if let Ability::Triggered { effects, .. } = &mut card.faces[0].abilities[0]
+        && let Some(crate::effect::Effect::Exile { duration, .. }) = effects.first_mut()
+    {
+        *duration = Some(crate::modify::Duration::WhileSourceOnBattlefield);
+    }
+}
+
+#[test]
+fn coverage_holds_back_the_compiled_rules_the_server_holds_back() {
+    let journey = printed(
+        7,
+        "Test Journey",
+        "Enchantment",
+        "When this enchantment enters, exile target creature.\nWhen this enchantment leaves the battlefield, return the exiled card to the battlefield under its owner's control.",
+    );
+    let caps = Caps::everything();
+    let compiled = compile(&journey);
+    let mut card = compiled.card.clone().expect("the card compiles");
+    until_it_leaves(&mut card);
+    let row = GeneratedRules {
+        oracle_id: card.oracle_id.clone(),
+        rules: serde_json::to_value(&card).expect("the rules serialize"),
+    };
+    let (as_served, left_out) = Library::default().with_generated(&[row]);
+    assert!(left_out.is_empty(), "{left_out:?}");
+    let server = as_served.support(&journey, &caps);
+    assert_eq!(server.support, Support::Manual);
+    assert!(read_back_differs(&server), "{server:?}");
+    let hand_written = Library::default();
+    let context = Context {
+        hand_written: &hand_written,
+        caps: &caps,
+        names: BTreeSet::from(["test journey".to_owned()]),
+        tokens: Vec::new(),
+    };
+    let (state, blockers) = judge_compiled(&card, &journey, &compiled, &context);
+    assert_eq!(state, server.support);
+    assert_eq!(
+        blockers,
+        BTreeSet::from([Blocker::Rules(READBACK_DIFFERS.to_owned())])
+    );
+    // The two linked triggers the compiler reads now play automatically in both.
+    let fresh = compiled.card.as_ref().expect("the card compiles");
+    let (state, _) = judge_compiled(fresh, &journey, &compiled, &context);
+    assert_eq!(state, Support::Verified);
+    assert_eq!(analyzed_alone(journey, &caps).support, Support::Verified);
 }

@@ -21,7 +21,12 @@ struct Twin {
 
 /// Whole abilities matched as data and worded as the card prints them, so another target, zone or condition in the same
 /// ability never reads back (the card's name as `~`).
-const L292_WHOLES: [(&str, &str); 2] = [
+const L292_WHOLES: [(&str, &str); 3] = [
+    // the return of the two linked triggers of Oblivion Ring and Fiend Hunter (`compile::linked`)
+    (
+        r#"{"Triggered":{"when":{"ZoneChange":{"what":["This"],"from":"Battlefield"}},"effects":[{"Move":{"what":{"Each":[{"In":"Exile"},{"ExiledWith":"This"}]},"to":{"Battlefield":{}}}}]}}"#,
+        "When ~ leaves the battlefield, return the exiled card to the battlefield under its owner's control.",
+    ),
     // hypnox
     (
         r#"{"Triggered":{"when":{"ZoneChange":{"what":["This",{"WasCast":{"by":"You","from":"Hand"}}],"to":"Battlefield"}},"targets":[{"what":"Opponent"}],"effects":[{"Exile":{"what":{"Each":[{"In":"Hand"},{"OwnedBy":{"Target":0}}]}}}]}}"#,
