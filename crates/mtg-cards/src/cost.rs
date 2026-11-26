@@ -293,6 +293,10 @@ pub enum CostItem {
     /// Waterbend (Avatar): that much generic mana (`X` is the number announced for the cost), which the payer may pay in
     /// part by tapping untapped artifacts and creatures they control, each paying {1}.
     Waterbend(Amount),
+    /// That much generic mana of an activated ability, which the payer may pay in part by tapping untapped creatures they
+    /// control, each paying {1} (Heirloom Epic: "For each mana in this ability's activation cost, you may tap an untapped
+    /// creature you control rather than pay that mana"); paying it is not waterbending.
+    CreaturesHelpPay(Amount),
     /// The X announced for the cost is at least this much ("X can't be 0"); pays nothing itself.
     XAtLeast(u32),
     /// "Spend only black mana on X." (CR 107.3): the mana paid for the X announced for the cost is of this color; pays
@@ -412,7 +416,8 @@ impl CostItem {
             | CostItem::DamageToYou(amount)
             | CostItem::ExileTop(amount)
             | CostItem::Blight(amount)
-            | CostItem::Waterbend(amount) => Some(amount),
+            | CostItem::Waterbend(amount)
+            | CostItem::CreaturesHelpPay(amount) => Some(amount),
             CostItem::RemoveCounters { count, .. }
             | CostItem::RemoveCountersAmong { count, .. }
             | CostItem::PutCounters { count, .. }
@@ -455,7 +460,8 @@ impl Cost {
             | CostItem::DamageToYou(amount)
             | CostItem::ExileTop(amount)
             | CostItem::Blight(amount)
-            | CostItem::Waterbend(amount) => *amount == Amount::X,
+            | CostItem::Waterbend(amount)
+            | CostItem::CreaturesHelpPay(amount) => *amount == Amount::X,
             CostItem::RemoveCountersAmong { count, .. }
             | CostItem::PutCounters { count, .. }
             | CostItem::SpendCounters { count, .. }
@@ -560,6 +566,7 @@ mod tests {
     #[case::forage(Cost(vec![CostItem::Forage]), r#"["Forage"]"#)]
     #[case::waterbend(Cost(vec![CostItem::Waterbend(Amount::Fixed(3))]), r#"[{"Waterbend":3}]"#)]
     #[case::waterbend_x(Cost(vec![CostItem::Waterbend(Amount::X)]), r#"[{"Waterbend":"X"}]"#)]
+    #[case::creatures_help_pay(Cost(vec![CostItem::CreaturesHelpPay(Amount::Fixed(4))]), r#"[{"CreaturesHelpPay":4}]"#)]
     #[case::evidence_x(Cost(vec![CostItem::R6702CollectEvidenceX]), r#"["R6702CollectEvidenceX"]"#)]
     #[case::sacrifice_up_to(
         Cost(vec![CostItem::R6702SacrificeUpTo { filter: Selector::default(), most: 3 }]),

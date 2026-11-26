@@ -1,15 +1,13 @@
 {
   "oracle_id": "759406d7-44ae-4260-9ef5-3bb2c92f751a",
   "name": "Urza, Planeswalker",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Urza, Planeswalker",
       "oracle_fingerprint": "8ddec9f0fb965fcac26c92e908da0485",
       "abilities": [
-        {
-          "Manual": { "reason": "you apply this clause by hand", "span": { "start": 0, "end": 85 } }
-        },
+        { "Rule": { "rule": "P158LoyaltyTwiceThis" } },
         {
           "Loyalty": {
             "cost": { "Plus": 2 },

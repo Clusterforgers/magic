@@ -1147,8 +1147,12 @@ fn card_type_of(word: &str) -> Option<CardType> {
 }
 
 fn read_type_line(line: &str) -> TypeLine {
-    let (head, tail) = line.split_once('\u{2014}').unwrap_or((line, ""));
     let mut read = TypeLine::default();
+    // A sticker sheet stays outside the game (CR 123): it has no card type to apply.
+    if line == "Stickers" {
+        return read;
+    }
+    let (head, tail) = line.split_once('\u{2014}').unwrap_or((line, ""));
     for word in head.split_whitespace() {
         if let Some(supertype) = supertype_of(word) {
             read.supertypes.insert(supertype);
@@ -1382,6 +1386,7 @@ mod tests {
     #[case::old_tribal("Tribal Instant \u{2014} Goblin", &[], &["Kindred", "Instant"], &["Goblin"])]
     #[case::two_word_type("Legendary Creature \u{2014} Time Lord Doctor", &["Legendary"], &["Creature"], &["Time Lord", "Doctor"])]
     #[case::empty("", &[], &[], &[])]
+    #[case::sticker_sheet("Stickers", &[], &[], &[])]
     fn type_lines_read_into_supertypes_types_and_subtypes(
         #[case] line: &str,
         #[case] supertypes: &[&str],

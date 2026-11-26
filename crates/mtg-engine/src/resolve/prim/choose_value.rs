@@ -76,6 +76,14 @@ fn choice(
                 )
                 .collect()
         }
+        ValueKind::OptionsNotNoted(words) => {
+            let noted = crate::memory::r112_noted_words(cx.state(), cx.scope.source);
+            words
+                .iter()
+                .filter(|word| !noted.contains(*word))
+                .map(|word| ChoiceOption::Label(word.clone()))
+                .collect()
+        }
         ValueKind::R113CreatureTypeOfNotNoted(of) => {
             let noted = crate::memory::r112_noted_words(cx.state(), cx.scope.source);
             // Its creature types as the game sees them now; a changeling has every one (CR 702.73).
@@ -97,7 +105,12 @@ fn choice(
         _ => options(kind),
     };
     // A spell whose creature types are all noted leaves nothing to note.
-    if options.is_empty() && matches!(kind, ValueKind::R113CreatureTypeOfNotNoted(_)) {
+    if options.is_empty()
+        && matches!(
+            kind,
+            ValueKind::R113CreatureTypeOfNotNoted(_) | ValueKind::OptionsNotNoted(_)
+        )
+    {
         return Ok(Ok(None));
     }
     let chooser = OptionChooser {
@@ -130,6 +143,7 @@ fn r6600_by_options(kind: &ValueKind) -> bool {
         ValueKind::Number(..)
             | ValueKind::R112CreatureTypeNotNoted
             | ValueKind::R113CreatureTypeOfNotNoted(_)
+            | ValueKind::OptionsNotNoted(_)
             | ValueKind::CardName(_)
             | ValueKind::Colors
             | ValueKind::LikeChosen(_)
@@ -405,6 +419,7 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
         | ValueKind::LikeChosen(_)
         | ValueKind::R112CreatureTypeNotNoted
         | ValueKind::R113CreatureTypeOfNotNoted(_)
+        | ValueKind::OptionsNotNoted(_)
         | ValueKind::R111SpellDamage { .. } => Vec::new(),
     }
 }
@@ -476,6 +491,9 @@ fn question(kind: &ValueKind) -> String {
         ValueKind::LikeChosen(_) => "Choose the word to write in its place.".to_owned(),
         ValueKind::CardName(_) => "Choose a card name.".to_owned(),
         ValueKind::Options(words) => format!("Choose {}.", words.join(" or ")),
+        ValueKind::OptionsNotNoted(words) => {
+            format!("Choose one that hasn't been chosen: {}.", words.join(", "))
+        }
         ValueKind::Letter => "Choose a letter.".to_owned(),
         ValueKind::Number(..) => "Choose a number.".to_owned(),
         ValueKind::R111SpellDamage { .. } => "Choose one of those spells.".to_owned(),
@@ -522,7 +540,9 @@ fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Opti
                 .find(|card_type: &CardType| format!("{card_type:?}") == *name)
                 .map(Chosen::CardType)
         }
-        (ValueKind::Options(_), ChoiceOption::Label(word)) => Some(Chosen::Word(word.clone())),
+        (ValueKind::Options(_) | ValueKind::OptionsNotNoted(_), ChoiceOption::Label(word)) => {
+            Some(Chosen::Word(word.clone()))
+        }
         (ValueKind::Letter, ChoiceOption::Label(word))
             if word.len() == 1 && word.chars().all(|c| c.is_ascii_lowercase()) =>
         {

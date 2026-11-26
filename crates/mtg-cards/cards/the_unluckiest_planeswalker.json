@@ -1,0 +1,80 @@
+{
+  "oracle_id": "c7ea2ce7-f684-44a2-94b2-d4aa7353f6fc",
+  "name": "The Unluckiest Planeswalker",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "The Unluckiest Planeswalker",
+      "oracle_fingerprint": "4ea46de867b9f36812ccc2ce4ccf5a78",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R116Rulebreaker": "A deck with this commander can have Aura cards of any color identity and any basic land cards"
+            }
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [
+              {
+                "AddMana": {
+                  "mana": { "AnyColor": 1 },
+                  "when_spent": {
+                    "spell": { "subtypes": ["Aura"] },
+                    "effects": [
+                      {
+                        "CreateToken": {
+                          "token": {
+                            "Custom": {
+                              "name": "Gremlin",
+                              "colors": ["Red"],
+                              "types": ["Creature"],
+                              "subtypes": ["Gremlin"],
+                              "power": 1,
+                              "toughness": 1
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 3 },
+            "effects": [
+              { "Discard": { "count": { "Count": [{ "In": "Hand" }, { "OwnedBy": "You" }] } } },
+              {
+                "Draw": {
+                  "count": {
+                    "Times": {
+                      "by": 2,
+                      "of": { "Count": [{ "Subtype": "Aura" }, { "ControlledBy": "You" }] }
+                    }
+                  }
+                }
+              },
+              {
+                "RepeatEach": {
+                  "over": { "Each": [{ "Subtype": "Aura" }, { "AttachedTo": "You" }] },
+                  "as": "aura",
+                  "effects": [
+                    { "Choose": { "from": "Opponents", "as": "opponent" } },
+                    { "Attach": { "what": { "Bound": "aura" }, "to": { "Bound": "opponent" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "Rule": { "rule": "CanBeCommander" } }
+      ]
+    }
+  ]
+}

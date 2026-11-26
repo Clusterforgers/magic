@@ -337,6 +337,7 @@ impl<'a> Pairer<'a> {
 
     fn run(mut self) -> Paired {
         self.manual();
+        self.un34_stickers();
         self.rmt0_cleave();
         self.keywords();
         self.r301_keyword_rules();
@@ -446,6 +447,36 @@ impl<'a> Pairer<'a> {
             shown = shown.replace(name.as_str(), "~");
         }
         shown != variant && same_written_text(&shown, text)
+    }
+
+    /// The stickers of a sticker sheet: each printed one stands for its "{TK}... — ..." line, the free ones for none.
+    fn un34_stickers(&mut self) {
+        let abilities = self.abilities;
+        for (at, ability) in abilities.iter().enumerate() {
+            let Ability::Sticker(sticker) = ability else {
+                continue;
+            };
+            if self.taken[at] {
+                continue;
+            }
+            if super::un34_sheet_pairs::is_unprinted(sticker) {
+                self.taken[at] = true;
+                continue;
+            }
+            let found = self.slots.iter().position(|slot| {
+                slot.state.is_none()
+                    && super::un34_sheet_pairs::stands_for(
+                        sticker,
+                        &slot.clause.text,
+                        |variant, rest| {
+                            self.same(variant, rest) || self.same(stripped(variant), stripped(rest))
+                        },
+                    )
+            });
+            if let Some(slot) = found {
+                self.settle(at, slot, ClauseState::Reads { ability: at });
+            }
+        }
     }
 
     /// The clauses a `Manual` ability of the proposal leaves to the table.

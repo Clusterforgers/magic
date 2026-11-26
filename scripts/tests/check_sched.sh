@@ -67,6 +67,17 @@ MTG_TEST_THREADS=24 sched 'unset RUST_TEST_THREADS; for i in 1 2 3; do unit u$i 
   u_expect=([u1]=600 [u2]=300 [u3]=100)'
 check "budget: threads follow the last seconds" "$(cat "$scratch"/thr.u{1,2,3} | tr '\n' ' ')" "12 9 3 "
 
+# A unit that runs alone waits for the others, takes the whole share and holds back the rest; two run one after another.
+reset
+MTG_TEST_THREADS=24 sched 'unset RUST_TEST_THREADS
+  unit a1 tests "$(work a1 1); echo \$RUST_TEST_THREADS >'"$scratch"'/thr.a1"; u_alone[a1]=1
+  unit a2 tests "$(work a2 1)"; u_alone[a2]=1
+  for i in 1 2 3; do unit u$i tests "$(work u$i 3)"; done'
+check "alone: all ok" "$rc" 0
+check "alone: the others first, side by side" "$(head -n 3 "$scratch/events" | cut -d' ' -f2 | tr -d '\n')" sss
+check "alone: one at a time after them" "$(tail -n 4 "$scratch/events" | tr '\n' ' ')" "a1 s a1 e a2 s a2 e "
+check "alone: the whole share" "$(cat "$scratch/thr.a1")" 24
+
 reset
 sched 'for i in 1 2 3; do unit p$i pg "$(work p$i 1)"; done'
 check "postgres units run one at a time" "$(peak)" 1

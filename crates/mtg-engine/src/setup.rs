@@ -727,6 +727,7 @@ impl GameState {
             day_night: None,
             seat_turns: std::collections::BTreeMap::new(),
             cast_names: std::collections::BTreeMap::new(),
+            p158_limit_uses: std::collections::BTreeMap::new(),
             r5522: Box::new(crate::r5522_history::R5522Game {
                 r119_deck_sizes: r119_deck_sizes(setup),
                 ..Default::default()

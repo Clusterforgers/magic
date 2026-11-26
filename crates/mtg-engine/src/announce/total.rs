@@ -132,7 +132,7 @@ pub(super) fn of(ctx: &Ctx<'_>, choices: &Choices) -> Option<Total> {
     let help = match ctx.what {
         What::Spell(spell) => help::offered(ctx.state, ctx.player, *spell, &printed.taken),
         What::Ability(_) if printed.waterbend => {
-            help::waterbend(ctx.state, ctx.player, &printed.taken)
+            help::waterbend(ctx.state, ctx.player, &printed.taken, printed.helpers)
         }
         _ => Offered::default(),
     };
@@ -178,6 +178,8 @@ struct Printed {
     taken: Vec<ObjectId>,
     /// The cost holds a waterbend part: artifacts and creatures may tap to pay for it.
     waterbend: bool,
+    /// Who may tap for it: creatures alone for `CostItem::CreaturesHelpPay`.
+    helpers: crate::help::Helpers,
 }
 
 impl Printed {
@@ -188,6 +190,7 @@ impl Printed {
             life,
             taken: Vec::new(),
             waterbend: false,
+            helpers: crate::help::Helpers::Waterbend,
         }
     }
 }
@@ -301,6 +304,7 @@ fn printed(ctx: &Ctx<'_>, choices: &Choices) -> Option<Printed> {
                 let mut printed = Printed::new(mana, sources, life);
                 if price.has_waterbend() {
                     printed.waterbend = true;
+                    printed.helpers = price.helpers;
                     printed.taken = picked;
                     if price.tap || price.moves_source() {
                         printed.taken.push(ability.object);

@@ -2271,6 +2271,9 @@ pub enum Condition {
     NeitherDayNorNight,
     /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.
     NewlyControlled(Ref),
+    /// A requirement made the referenced creature attack in the combat in progress (goad, "attacks each combat if able",
+    /// CR 508.1d), as attackers were declared: "if that creature had to attack this combat".
+    P158HadToAttack(Ref),
     /// The turn is in this step or main phase: "Activate only during the declare blockers step" (with `YourTurn` for
     /// "during your upkeep").
     Step(Step),

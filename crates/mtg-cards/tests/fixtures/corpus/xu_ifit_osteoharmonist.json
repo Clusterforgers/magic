@@ -115,8 +115,8 @@
   "textless": false,
   "booster": true,
   "story_spotlight": false,
-  "edhrec_rank": 4908,
-  "penny_rank": 13484,
+  "edhrec_rank": 4795,
+  "penny_rank": 14059,
   "preview": {
     "source": "CoolStuffInc",
     "source_uri": "https://bsky.app/profile/coolstuffinc.com/post/3ltzbsoolzc2v",
@@ -124,10 +124,10 @@
   },
   "prices": {
     "usd": "0.34",
-    "usd_foil": "0.47",
+    "usd_foil": "0.44",
     "usd_etched": null,
-    "eur": "0.38",
-    "eur_foil": "0.76",
+    "eur": "0.31",
+    "eur_foil": "0.29",
     "tix": "0.02"
   },
   "related_uris": {
