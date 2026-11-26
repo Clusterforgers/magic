@@ -282,6 +282,15 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             crate::r6008_face_down::fold_listed(state, listed);
             Ok(())
         }
+        Event::R406TurnedUp { object } => {
+            crate::r707_spells::r406_fold_turned_up(state, *object);
+            Ok(())
+        }
+        Event::R707Kept(kept) => {
+            crate::r707_spells::fold_kept(state, kept);
+            Ok(())
+        }
+        Event::R707PutBack { object, player } => zones::r707_put_back(state, *object, *player),
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::TargetsChanged(change) => crate::retargeted::fold(state, change),

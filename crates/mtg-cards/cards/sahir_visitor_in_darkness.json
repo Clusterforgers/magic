@@ -1,0 +1,59 @@
+{
+  "oracle_id": "e1a8f5cf-9b59-46c6-8e41-6e44225ec0f4",
+  "name": "Sahir, Visitor in Darkness",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Sahir, Visitor in Darkness",
+      "oracle_fingerprint": "d034d183c65491899a2e2274cb2692f2",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "from": "Command",
+            "effects": [{ "DealDamage": { "to": "You", "amount": 1 } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                {
+                  "R603Exactly": {
+                    "event": {
+                      "DealsDamage": { "source": [{ "ControlledBy": "You" }], "to": "You" }
+                    },
+                    "amount": 1
+                  }
+                },
+                {
+                  "R603Exactly": {
+                    "event": {
+                      "Caused": { "inner": { "LifeLost": { "who": "You" } }, "by": "You" }
+                    },
+                    "amount": 1
+                  }
+                }
+              ]
+            },
+            "effects": [
+              { "PutCounters": { "on": "This", "counter": "+1/+1" } },
+              {
+                "If": {
+                  "condition": { "Compare": { "left": "ResolvedThisTurn", "op": "Eq", "right": 2 } },
+                  "then": [{ "Draw": {} }]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

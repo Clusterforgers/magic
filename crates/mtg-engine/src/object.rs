@@ -587,6 +587,9 @@ pub struct GameObject {
     /// The creature a card in exile haunts (CR 702.55), as it was when the card was exiled; a zone change of the card
     /// clears it.
     pub(crate) haunting: Option<ObjectRef>,
+    /// The spell a card in exile was, kept by `Effect::R707ExileSpell` for `Effect::R707PutBack` (CR 707.10): its choices and
+    /// the player who controlled it; a zone change clears it.
+    pub(crate) r707_kept: Option<Box<(Choices, PlayerId)>>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
@@ -662,6 +665,7 @@ impl GameObject {
             exiled_from_hand: None,
             encoded_on: None,
             haunting: None,
+            r707_kept: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -707,6 +711,7 @@ impl GameObject {
             exiled_from_hand: None,
             encoded_on: None,
             haunting: None,
+            r707_kept: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -1131,6 +1136,7 @@ impl PartialEq for GameObject {
             && self.exiled_from_hand == other.exiled_from_hand
             && self.encoded_on == other.encoded_on
             && self.haunting == other.haunting
+            && self.r707_kept == other.r707_kept
             && self.monarch_wait == other.monarch_wait
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
@@ -1182,6 +1188,9 @@ impl Hash for GameObject {
         }
         if let Some(haunted) = self.haunting {
             haunted.hash(state);
+        }
+        if let Some(kept) = &self.r707_kept {
+            kept.hash(state);
         }
         if let Some(wait) = self.monarch_wait {
             wait.hash(state);

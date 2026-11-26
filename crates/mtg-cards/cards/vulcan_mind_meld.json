@@ -1,0 +1,56 @@
+{
+  "oracle_id": "a6aa204a-0be9-4a38-b54c-82538adfe7f1",
+  "name": "Vulcan Mind-Meld",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Vulcan Mind-Meld",
+      "oracle_fingerprint": "65328fe3eb6a412bc5ee35a9acb7174f",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "as": "theirs", "r406_held_by": { "Target": 0 } } },
+              {
+                "ExileTop": {
+                  "who": { "Target": 0 },
+                  "count": 2,
+                  "as": "yours",
+                  "r406_held_by": "You"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "who": { "Target": 0 },
+                      "what": [{ "Is": { "Bound": "theirs" } }],
+                      "from": "Exile",
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              },
+              {
+                "Rule": {
+                  "rule": {
+                    "MayCast": {
+                      "what": [{ "Is": { "Bound": "yours" } }],
+                      "from": "Exile",
+                      "play": true,
+                      "spend_as": "AnyType"
+                    }
+                  },
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

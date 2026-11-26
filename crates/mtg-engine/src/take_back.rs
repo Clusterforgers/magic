@@ -253,7 +253,9 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
             Some(R::CardDrawn)
         }
         Event::ZoneChanged { from, .. } if hidden_from(*from, player) => Some(R::CardRevealed),
-        Event::Revealed(_)
+        // A card face down in exile that its controller could not see is shown to every seat.
+        Event::R406TurnedUp { .. }
+        | Event::Revealed(_)
         | Event::FirstDrawRevealed { .. }
         | Event::FaceDownLooked { .. }
         | Event::LibraryLooked(_)
@@ -407,6 +409,8 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::SpellCopied(_)
         | Event::CardCopied(_)
         | Event::R6008Listed(_)
+        | Event::R707Kept(_)
+        | Event::R707PutBack { .. }
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
         | Event::TargetsChanged(_)

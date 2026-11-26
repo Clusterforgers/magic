@@ -758,6 +758,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::R6105Uncycled { what }
         | ReplaceWhen::R115UntapStep { what }
         | ReplaceWhen::R6603Transforms { what }
+        | ReplaceWhen::R614PutOnto { what, .. }
         | ReplaceWhen::BecomesAttached { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
@@ -928,6 +929,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::AsEnters(_) => matches!(unit, Unit::Enter { .. } | Unit::Transform { .. }),
+        ReplaceBy::R614EntersThen(_) => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::R6603AttachToPlayer => matches!(unit, Unit::Transform { .. }),
         ReplaceBy::R114ChooseObject(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
         ReplaceBy::Choose(_) => matches!(
@@ -1630,6 +1632,13 @@ impl Pass<'_> {
                     return Ok(false);
                 };
                 scope.selects(what, reference)?
+            }
+            (ReplaceWhen::R614PutOnto { what, by }, Unit::Enter { object, controller }) => {
+                let Some(reference) = self.reference(*object) else {
+                    return Ok(false);
+                };
+                let putter = r614_enters_then::r614_putter(self.state, *controller);
+                scope.selects(what, reference)? && scope.players(by)?.contains(&putter)
             }
             _ => false,
         })
@@ -3061,6 +3070,10 @@ impl Pass<'_> {
             ReplaceBy::AsEnters(effects) => {
                 let unit = Unit::Enter { object, controller };
                 Ok(self.r304_as_enters(at, candidate, effects, &unit, applied))
+            }
+            ReplaceBy::R614EntersThen(effects) => {
+                let unit = Unit::Enter { object, controller };
+                Ok(self.r614_enters_then(at, candidate, effects, &unit, applied))
             }
             ReplaceBy::AsEntersWith {
                 effects,
@@ -4755,6 +4768,7 @@ fn zone_word(zone: Zone) -> &'static str {
 mod cost_counters;
 mod day;
 mod r304_as_enters;
+mod r614_enters_then;
 
 /// An exception of a copy as it enters with its base power and toughness worked out now ("its power and toughness are
 /// equal to this creature's power and toughness", CR 707.9b): the amounts are read before the copy begins.

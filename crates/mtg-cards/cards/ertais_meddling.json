@@ -1,0 +1,71 @@
+{
+  "oracle_id": "609c529a-b3b3-46d5-b9d0-ae0117507d6e",
+  "name": "Ertai's Meddling",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ertai's Meddling",
+      "oracle_fingerprint": "795ce952975fa6fa7cb20cc61bab9954",
+      "abilities": [
+        { "AdditionalCost": { "cost": [{ "XAtLeast": 1 }], "required": true } },
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [
+              { "R707ExileSpell": { "what": { "Target": 0 }, "as": "card", "player_as": "player" } },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "In": "Exile" }, { "Is": { "Bound": "card" } }] },
+                  "counter": { "Other": "delay" },
+                  "count": "X"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": { "Bound": "player" } } },
+                  "once": false,
+                  "until": "Forever",
+                  "effects": [
+                    {
+                      "RemoveCounters": {
+                        "from": { "Bound": "card" },
+                        "counter": { "Other": "delay" }
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "Compare": {
+                            "left": {
+                              "Counters": {
+                                "on": { "Bound": "card" },
+                                "counter": { "Other": "delay" }
+                              }
+                            },
+                            "op": "Eq",
+                            "right": 0
+                          }
+                        },
+                        "then": [
+                          {
+                            "R707PutBack": {
+                              "who": { "Bound": "player" },
+                              "what": { "Bound": "card" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "intervening_if": {
+                    "Matches": { "subject": { "Bound": "card" }, "selector": [{ "In": "Exile" }] }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
