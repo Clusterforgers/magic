@@ -198,6 +198,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
       BlockedByAll: "can't be blocked unless all creatures defending player controls block it",
       AddAllCreatureTypes: `${becomes} every creature type`,
       R612ExchangeTextBoxes: `${group ? 'exchange their text boxes' : 'exchanges its text box'}`,
+      R2013AllCreatureNames: `${group ? 'have' : 'has'} every nonlegendary creature card's name`,
     }[modification]
   }
   if ('CantBeBlockedBy' in modification) return "can't be blocked by some creatures"
@@ -330,6 +331,7 @@ function durationWords(
       return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
     if ('R6700UntilEndOfTheirNextTurn' in duration) return " until the end of that player's next turn"
     if ('R113While' in duration) return ' for as long as its condition holds'
+    if ('R6112bWhileAttached' in duration) return ' for as long as that attachment stays attached'
     if ('R109ThatCombat' in duration) return ' during the added combat phase'
     const counter = `${counterName(duration.WhileHasCounter)} counter`
     return several ? ` while each has a ${counter}` : ` while it has a ${counter}`
