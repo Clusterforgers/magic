@@ -1,7 +1,7 @@
 {
   "oracle_id": "e4e6ffab-3f0c-43f8-b1c3-b59c7fcb095d",
   "name": "Chorus of the Conclave",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Chorus of the Conclave",
@@ -9,9 +9,8 @@
       "abilities": [
         { "Keyword": { "Landwalk": [{ "Subtype": "Forest" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 91, "end": 249 }
+          "Rule": {
+            "rule": { "R6012fPayAnyAmount": { "who": "You", "spells": [{ "Type": "Creature" }] } }
           }
         }
       ]

@@ -243,6 +243,7 @@ impl Delayed {
             | Duration::WhileTapped
             | Duration::WhileMonarch(_)
             | Duration::R113While(_)
+            | Duration::R6112bWhileAttached(_)
             | Duration::UntilItsControllersNextUntapStep
             | Duration::NextUntapStep
             | Duration::UntilPaid(_)

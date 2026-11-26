@@ -45,6 +45,7 @@ mod r401_flash;
 pub(crate) mod r5509_flagbearer;
 mod r5523_x_cap;
 mod r6012_chosen_type;
+pub(crate) mod r6012f_any_amount;
 pub(crate) mod r6400_combat_costs;
 pub(crate) mod required;
 mod rewound;

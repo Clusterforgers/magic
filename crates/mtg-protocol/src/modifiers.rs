@@ -374,6 +374,9 @@ fn add(phrase: &mut Phrase, modification: &Modification, host: &str) {
         Modification::AddColors(set) => format!("Is also {}", colors(*set)),
         Modification::AddNameWords(words) => format!("Name adds \u{201c}{words}\u{201d}"),
         Modification::SetName(name) => format!("Named {name}"),
+        Modification::R2013AllCreatureNames => {
+            "Has every nonlegendary creature card's name".to_owned()
+        }
         Modification::CantAttack => "Can't attack".to_owned(),
         Modification::CantBlock => "Can't block".to_owned(),
         Modification::DoesntUntap => "Doesn't untap".to_owned(),

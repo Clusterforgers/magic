@@ -174,6 +174,7 @@ mod r120_02_each_color;
 pub(crate) mod r6402_change_roll;
 pub(crate) mod r6502_enters_as;
 mod r6701_remove_among;
+mod r7011_search_cast;
 mod r707_spells;
 mod regenerate;
 mod remove_counters;

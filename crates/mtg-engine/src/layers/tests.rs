@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 37] = [
+const MODIFICATIONS: [&str; 38] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -201,6 +201,7 @@ const MODIFICATIONS: [&str; 37] = [
     r#"{"R111GainNonManaAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
     r#"{"P160GainLoyaltyAbilitiesOf":{"Each":[{"Type":"Planeswalker"},"Other"]}}"#,
     r#""R119CantBeBeamedUp""#,
+    r#""R2013AllCreatureNames""#,
 ];
 
 /// CR 613.1e, 105.3: adding a colour keeps the colours the object has; a later setting replaces them all.
@@ -265,6 +266,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::RemoveSupertype(_)
             | mtg_cards::modify::Modification::AddSupertype(_)
             | mtg_cards::modify::Modification::SetName(_)
+            | mtg_cards::modify::Modification::R2013AllCreatureNames
             | mtg_cards::modify::Modification::ThisAbility
             | mtg_cards::modify::Modification::SetLoyalty(_)
             | mtg_cards::modify::Modification::AddSubtype(_)

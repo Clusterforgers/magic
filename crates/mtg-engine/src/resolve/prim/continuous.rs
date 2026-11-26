@@ -54,6 +54,23 @@ fn anchor(
     })
 }
 
+/// The duration with the attachment an `R6112bWhileAttached` effect follows fixed as the object it is now (CR 611.2b);
+/// any other duration as it is.
+fn r6112b_fixed(
+    cx: &Cx<'_>,
+    duration: mtg_cards::modify::Duration,
+) -> Result<mtg_cards::modify::Duration, ResolveError> {
+    let mtg_cards::modify::Duration::R6112bWhileAttached(by) = &duration else {
+        return Ok(duration);
+    };
+    Ok(match cx.scope.objects(by)?.first() {
+        Some(attachment) => mtg_cards::modify::Duration::R6112bWhileAttached(Box::new(
+            Ref::R111Object(attachment.id),
+        )),
+        None => duration,
+    })
+}
+
 /// The players the effects are begun for, each with the objects of theirs: the controller of the resolving spell or
 /// ability for every object, or for `DuringItsControllersNextTurn` the controller of each object as the effect begins,
 /// whose next turn it waits for.
@@ -202,7 +219,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         };
         modifications.push(modification);
     }
-    let marked = crate::effects::r109_mark_duration(state, duration);
+    let marked = r6112b_fixed(cx, crate::effects::r109_mark_duration(state, duration))?;
     let duration = &marked;
     let anchor = anchor(cx, duration)?;
     let mut made = 0u64;
@@ -498,6 +515,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::AddSupertype(supertype) => Modification::AddSupertype(*supertype),
         Wanted::RemoveSupertype(supertype) => Modification::RemoveSupertype(*supertype),
         Wanted::SetName(name) => Modification::SetName(name.clone()),
+        Wanted::R2013AllCreatureNames => Modification::R2013AllCreatureNames,
         Wanted::ThisAbility | Wanted::SetLoyalty(_) => {
             return Err(ResolveError::Unsupported(
                 "Mod.ThisAbility outside the exceptions of a copy",

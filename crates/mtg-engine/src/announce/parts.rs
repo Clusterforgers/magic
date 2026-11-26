@@ -60,6 +60,7 @@ pub(super) fn run(ctx: &Ctx<'_>, work: &mut Work<'_>) -> Option<Next> {
     if let Some(next) = super::r110_cast_choice::r110_run(ctx, work) {
         return Some(next);
     }
+    super::r6012f_any_amount::r6012f_note(ctx, work);
     if let Some(next) = super::r114_sticker_kick::r114_run(ctx, work) {
         return Some(next);
     }
