@@ -385,6 +385,7 @@ const RUNS: &[&str] = &[
     "Effect.Unattach",
     "Effect.Pair",
     "Effect.JoinAttack",
+    "Effect.R5084JoinTheirAttack",
     "Effect.Transform",
     "Effect.Flip",
     "Effect.TurnFaceUp",
@@ -2115,6 +2116,7 @@ mod tests {
     #[case::an_alternative_cost_of_the_table("Ability.AltCast", true)]
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
+    #[case::r5084_joining_their_attack("Effect.R5084JoinTheirAttack", true)]
     #[case::echo("Keyword.Echo", true)]
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]

@@ -320,6 +320,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Attach { .. } => attach::run(cx, effect),
         Effect::Unattach { .. } => unattach::run(cx, effect),
         Effect::JoinAttack { .. } => join_attack::run(cx, effect),
+        Effect::R5084JoinTheirAttack { .. } => join_attack::r5084_run(cx, effect),
         Effect::MyriadCopies { .. } => myriad_copies::run(cx, effect),
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),

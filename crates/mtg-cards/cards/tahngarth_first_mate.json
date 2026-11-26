@@ -1,7 +1,7 @@
 {
   "oracle_id": "1a8a41a1-6fc5-4dc8-bd28-9bf404c777d7",
   "name": "Tahngarth, First Mate",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tahngarth, First Mate",
@@ -9,9 +9,27 @@
       "abilities": [
         { "Static": { "affected": "This", "mods": [{ "MaxBlockers": 1 }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 54, "end": 331 }
+          "Triggered": {
+            "when": {
+              "GroupAttacks": { "what": [{ "Type": "Creature" }, { "ControlledBy": "Opponents" }] }
+            },
+            "if": { "Matches": { "subject": "This", "selector": ["Tapped"] } },
+            "effects": [
+              {
+                "May": {
+                  "effects": [
+                    {
+                      "Continuous": {
+                        "affected": "This",
+                        "mods": [{ "SetController": "ActivePlayer" }],
+                        "duration": "UntilEndOfCombat"
+                      }
+                    },
+                    { "R5084JoinTheirAttack": { "what": "This" } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
