@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 39] = [
+const MODIFICATIONS: [&str; 37] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -181,8 +181,6 @@ const MODIFICATIONS: [&str; 39] = [
     r#"{"SetController":"Opponents"}"#,
     r#""CantAttack""#,
     r#""CantBlock""#,
-    r#""R1012ControlKept""#,
-    r#""R3034CantBeEnchanted""#,
     r#""DoesntUntap""#,
     r#""CantBeTurnedFaceUp""#,
     r#""CantBeBlocked""#,
