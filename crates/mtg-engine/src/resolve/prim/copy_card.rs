@@ -118,6 +118,53 @@ pub(super) fn run_named(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveErro
     })
 }
 
+/// `Effect::R6008CopyNoted`: the card with the name noted on the source is copied into a token card in exile owned by the
+/// player `who` names, bound as `CopyCard` binds its copies; a source that noted no name makes no copy and binds nothing.
+pub(super) fn run_noted(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    let Effect::R6008CopyNoted { who, bind } = effect else {
+        return Err(wrong_effect("R6008CopyNoted"));
+    };
+    let state = cx.state();
+    let source = cx.scope.source;
+    let noted = state
+        .object(source.id)
+        .filter(|object| object.counter() == source.counter)
+        .and_then(|_| crate::r6008_face_down::noted_card(state, source.id));
+    let owner = cx
+        .scope
+        .players(who)?
+        .into_iter()
+        .find(|player| state.is_alive(*player));
+    let (Some(owner), Some(definition)) = (owner, noted) else {
+        return Ok(Run::Done {
+            events: Vec::new(),
+            bound: vec![(bind.clone(), Vec::new())],
+            snapshots: Vec::new(),
+            next: Next::Sibling,
+        });
+    };
+    let object = state.next_object();
+    let event = Event::CardCopied(Box::new(CardCopy {
+        object,
+        of: source,
+        owner,
+        definition: Arc::new(definition.copiable()),
+        outside: true,
+    }));
+    Ok(Run::Done {
+        events: vec![event],
+        bound: vec![(
+            bind.clone(),
+            vec![Target::Object(ObjectRef {
+                id: object,
+                counter: 0,
+            })],
+        )],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     //! Goal: copying makes one token card in exile for each face-up card of exile, a hand or a graveyard the effect names and binds the copies as new objects, passes over what lies elsewhere or face down, and the fold makes a castable copy of the card that ceases to exist when it is anywhere but on the stack.

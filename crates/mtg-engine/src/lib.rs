@@ -203,6 +203,7 @@ mod r5502_blocked_by_one;
 mod r5516_damage;
 mod r5522_history;
 mod r6001_blocked_by_many;
+pub mod r6008_face_down;
 mod r6018_plot_less;
 mod r6100_history;
 mod r6703_ignore;

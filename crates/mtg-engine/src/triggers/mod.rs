@@ -220,6 +220,7 @@ fn effects_state_trigger(effects: &[Effect]) -> bool {
 pub(crate) fn introduces(events: &[Event]) -> bool {
     events.iter().any(|event| match event {
         Event::TokenCreated(created) => definition_triggers(&created.definition),
+        Event::R6008Listed(listed) => definition_triggers(&listed.definition),
         // A new dungeon's first room and the initiative's object trigger on the event that makes them.
         Event::Ventured(ventured) => ventured.definition.is_some(),
         // A delayed trigger set up by a cast that spends mana (`spend_rider.rs`) triggers on the cast in the same batch.

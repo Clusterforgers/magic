@@ -53,7 +53,7 @@ impl Scope<'_> {
                     && self
                         .cast_targets
                         .as_ref()
-                        .is_some_and(|cast| cast.choices.way == Some(CastWay::FaceDown));
+                        .is_some_and(|cast| cast.choices.way.is_some_and(CastWay::casts_face_down));
                 announcing
                     || self.state.object(reference.id).is_some_and(|object| {
                         object.reference() == reference && object.face_down().is_some()

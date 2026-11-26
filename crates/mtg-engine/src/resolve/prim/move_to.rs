@@ -1,5 +1,7 @@
 //! `Effect::Move`: objects change zones, to a hand, a graveyard, a library or the battlefield.
 
+use std::sync::Arc;
+
 use mtg_cards::definition::Layout;
 use mtg_cards::effect::{Destination, Effect, Order, Place};
 use mtg_cards::refs::{Ref, Selector};
@@ -177,11 +179,27 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 face_down: false,
                 becomes: &[],
                 r122_typed: &[],
+                r6008_listed: None,
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
         Destination::BattlefieldFaceDown { under } => {
             let entry = Entry::face_down(entering_under(cx, under.as_ref())?);
+            return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
+        }
+        Destination::R6008FaceDownAs {
+            power,
+            toughness,
+            rules,
+            note_name,
+        } => {
+            let listed = Arc::new(crate::r6008_face_down::listed_definition(
+                *power, *toughness, rules,
+            ));
+            let entry = Entry {
+                r6008_listed: Some((&listed, *note_name)),
+                ..Entry::face_down(None)
+            };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
         Destination::BattlefieldAttached {
@@ -213,6 +231,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 face_down: false,
                 becomes: &[],
                 r122_typed: &[],
+                r6008_listed: None,
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
@@ -277,6 +296,9 @@ struct Entry<'a> {
     becomes: &'a [crate::effects::Modification],
     /// Counters each card enters with only when it matches the selector (`r122_typed_counters`), counted already.
     r122_typed: &'a [(Selector, CounterKind, u32)],
+    /// The characteristics a face-down card takes as it enters, and whether its name is noted on it
+    /// (`Destination::R6008FaceDownAs`).
+    r6008_listed: Option<(&'a Arc<mtg_cards::CardDefinition>, bool)>,
 }
 
 impl Entry<'_> {
@@ -292,6 +314,7 @@ impl Entry<'_> {
             face_down: false,
             becomes: &[],
             r122_typed: &[],
+            r6008_listed: None,
         }
     }
 
@@ -384,6 +407,7 @@ fn onto_battlefield(
         face_down,
         becomes,
         r122_typed,
+        r6008_listed,
     } = *entry;
     let mut made = 0u64;
     let mut questions = Questions::new(cx);
@@ -455,6 +479,15 @@ fn onto_battlefield(
             *cause = ZoneCause::PutFaceDown { by: controller };
         }
         events.push(event);
+        if let Some((definition, note)) = r6008_listed {
+            events.push(Event::R6008Listed(Box::new(
+                crate::r6008_face_down::R6008Listed {
+                    object: object.id(),
+                    definition: Arc::clone(definition),
+                    noted: note.then(|| object.whole_card().name.clone()),
+                },
+            )));
+        }
         events.extend(super::r6502_enters_as::arriving(
             cx, object, becomes, &mut made,
         ));

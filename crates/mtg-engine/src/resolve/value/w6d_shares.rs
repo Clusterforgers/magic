@@ -97,6 +97,7 @@ impl Scope<'_> {
             })?,
             Pred::XInCost => Self::w6d_x_in_cost(seen),
             Pred::PhyrexianInCost => Self::r407_phyrexian_in_cost(seen),
+            Pred::R6008PaidBySpent => self.r6008_paid_by_spent(seen),
             Pred::GenericCost(n) => Self::generic_cost(*n, seen),
             Pred::Goaded => self.w6d_goaded(seen),
             Pred::HasAttached(attached) => self.w6d_has_attached(attached, seen)?,
@@ -157,6 +158,16 @@ impl Scope<'_> {
     }
 
     /// Whether the object's mana cost holds a Phyrexian symbol (CR 107.4f); a face-down object has no cost.
+    /// "whose mana cost could be paid by some amount of, or all of, the mana you spent on {X}": the mana of the resolving
+    /// ability.
+    fn r6008_paid_by_spent(&self, seen: &Seen<'_>) -> bool {
+        let spent = self.mana_spent();
+        seen.card
+            .filter(|card| card.face_down().is_none())
+            .and_then(|card| card.mana_cost())
+            .is_some_and(|cost| crate::r6008_face_down::paid_by(cost, &spent))
+    }
+
     fn r407_phyrexian_in_cost(seen: &Seen<'_>) -> bool {
         seen.card
             .filter(|card| card.face_down().is_none())
