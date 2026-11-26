@@ -328,6 +328,8 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::CantAttackOwner(_)
             | mtg_cards::modify::Modification::CantBeBlockedUnlessAttackingOwner
             | mtg_cards::modify::Modification::CantBlock
+            | mtg_cards::modify::Modification::R1012ControlKept
+            | mtg_cards::modify::Modification::R3034CantBeEnchanted
             | mtg_cards::modify::Modification::DoesntUntap
             | mtg_cards::modify::Modification::R6700KeepsLastLoyalty
             | mtg_cards::modify::Modification::CantBeTurnedFaceUp

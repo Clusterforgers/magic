@@ -48,6 +48,9 @@ impl KeywordRules for Protection {
         }
         let mut scope = Scope::announcing(state, controller, anchor);
         scope.snapshots = source.snapshots.to_vec();
+        if source.r6097_colorless {
+            scope.r6097_colorless = Some(source.object);
+        }
         scope.selects(quality, source.object).unwrap_or(false)
     }
 }
@@ -132,12 +135,14 @@ mod tests {
         let without = Source {
             object: named,
             snapshots: &[],
+            r6097_colorless: false,
         };
         assert!(!protected_from(&game, holder, without));
         let known = [&shot];
         let with = Source {
             object: named,
             snapshots: &known,
+            r6097_colorless: false,
         };
         assert!(protected_from(&game, holder, with));
     }

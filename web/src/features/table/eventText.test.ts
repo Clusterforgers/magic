@@ -379,6 +379,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { AttackersChosen: { player: 1, attackers: [[1, { Player: 0 }]] } },
     'Bo chooses to attack Ana with Grizzly Bears',
   ],
+  R5081AttackersChosen: [
+    { R5081AttackersChosen: { chooser: 0, attackers: [1, 2] } },
+    'Ana chooses Grizzly Bears and Hill Giant to attack',
+  ],
   AttackChoicesRefused: [
     { AttackChoicesRefused: { reason: 'a creature can’t attack alone' } },
     "The team's attack is refused (a creature can’t attack alone); each player chooses again",
@@ -1216,6 +1220,11 @@ describe('events with more than one shape', () => {
       "Hill Giant can't be turned face up until end of turn",
     ],
     [effect(objects(2), 'R119CantBeBeamedUp', 'Forever'), "Hill Giant can't be beamed up"],
+    [effect(objects(2), 'R3034CantBeEnchanted', 'Forever'), "Hill Giant can't be enchanted"],
+    [
+      effect(objects(2), 'R1012ControlKept', 'Forever'),
+      "Hill Giant can't come under another player's control",
+    ],
     [
       effect(objects(2), 'AddAllCreatureTypes', 'UntilEndOfTurn'),
       'Hill Giant becomes every creature type until end of turn',

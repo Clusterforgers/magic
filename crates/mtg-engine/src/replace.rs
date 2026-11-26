@@ -190,7 +190,8 @@ pub(crate) fn protection_of(
     if !state.possible.protection {
         return None;
     }
-    let source = keywords::Source::live(state, dealer)?;
+    let mut source = keywords::Source::live(state, dealer)?;
+    source.r6097_colorless = crate::rules::r6097_colorless_damage(state, source);
     let (holder, controller) = match target {
         DamageTarget::Player(player) => (Holder::Player(player), player),
         DamageTarget::Object(object) => (
@@ -199,6 +200,21 @@ pub(crate) fn protection_of(
         ),
     };
     keywords::protected_from(state, holder, source).then_some((source.object, controller))
+}
+
+/// Makes `scope` judge the damage source `dealer` without colors when a rule makes it a colorless source of damage
+/// (CR 609.7): what prevents or replaces damage by the color of its source reads the damage so.
+fn r6097_judged(state: &GameState, scope: &mut Scope<'_>, dealer: ObjectRef) {
+    if crate::rules::r6097_colorless_damage(
+        state,
+        keywords::Source {
+            object: dealer,
+            snapshots: &[],
+            r6097_colorless: false,
+        },
+    ) {
+        scope.r6097_colorless = Some(dealer);
+    }
 }
 
 /// Whether combat damage is being dealt: the damage steps with nothing resolving.
@@ -1379,6 +1395,8 @@ impl Pass<'_> {
                     let Some(reference) = self.reference(*dealer) else {
                         return Ok(false);
                     };
+                    let mut scope = scope.clone();
+                    r6097_judged(self.state, &mut scope, reference);
                     if !scope.selects(from, reference)? {
                         return Ok(false);
                     }
@@ -2370,7 +2388,8 @@ impl Pass<'_> {
         let (Some(maker), Some(reference)) = (effect.source, self.reference(dealer)) else {
             return Ok(false);
         };
-        let scope = Scope::announcing(self.state, effect.controller, maker);
+        let mut scope = Scope::announcing(self.state, effect.controller, maker);
+        r6097_judged(self.state, &mut scope, reference);
         Ok(scope.selects(&shield.source, reference)?)
     }
 

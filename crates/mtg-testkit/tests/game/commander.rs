@@ -93,11 +93,12 @@ fn choose_commander_colors(driver: &mut Driver) -> usize {
             driver.state().zone(Zone::Hand(player)).is_empty(),
             "the color is chosen before any hand"
         );
-        assert!(driver.state().is_commander(options.source));
+        // A card of the deal may circle its colors before the game too (Cryptic Spires); only a commander's counts.
+        let by_commander = driver.state().is_commander(options.source);
         driver
             .answer(Answer::ChooseOption(OptionChoice(0)))
             .unwrap();
-        asked += 1;
+        asked += usize::from(by_commander);
     }
     asked
 }

@@ -460,6 +460,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::AttackersDeclared { .. }
         | Event::AttackersChosen { .. }
         | Event::AttackChoicesRefused { .. }
+        | Event::R5081AttackersChosen { .. }
         | Event::FocusShifted { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }

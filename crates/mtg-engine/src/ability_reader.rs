@@ -194,10 +194,17 @@ pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
 /// Whether a card with this definition prints an activated ability that players other than its controller may activate
 /// (`GameState::possible`).
 pub(crate) fn definition_lets_others_activate(definition: &CardDefinition) -> bool {
-    definition
-        .rules
-        .iter()
-        .any(|rules| matches!(&**rules, Ability::Activated { by, .. } if !by.is_controller()))
+    definition.rules.iter().any(|rules| {
+        matches!(&**rules, Ability::Activated { by, .. } if !by.is_controller())
+            || r6022_grants_granter_only(rules)
+    })
+}
+
+/// Whether the rules give an ability only the player who gave it may activate (`Activators::R6022Granter`), which that
+/// player may hold on a permanent another player controls; read once per card as the game is set up.
+fn r6022_grants_granter_only(rules: &Ability) -> bool {
+    !matches!(rules, Ability::Activated { .. } | Ability::Keyword(_))
+        && serde_json::to_string(rules).is_ok_and(|json| json.contains(r#""by":"R6022Granter""#))
 }
 
 /// The abilities that the keywords printed on `object`, which is not on the battlefield, add and that work from the

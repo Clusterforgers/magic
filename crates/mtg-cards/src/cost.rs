@@ -349,6 +349,16 @@ pub enum CostItem {
     /// spell is announced; it pays nothing itself. The spell and the permanent it becomes read it as the value the source
     /// chose (`Pred::ChosenSubtype`). Only a spell holds it, as a required `AdditionalCost`.
     R110Choose(crate::trigger::EntersChoice),
+    /// "As an additional cost to cast this spell, choose a creature you control or a warped creature card you own in
+    /// exile." (CR 601.2b): the caster chooses one permanent they control that `filter` selects or one card they own in
+    /// exile that `exiled` selects; it pays nothing itself, and the spell reads the choice as `Ref::Paid`, the
+    /// permanent as it is on resolution or as it last existed.
+    R6012ChooseOrExiled {
+        /// Which permanents the caster controls may be chosen.
+        filter: Selector,
+        /// Which cards the caster owns in exile may be chosen.
+        exiled: Selector,
+    },
     /// "As an additional cost to cast this spell, choose a number between 0 and 5." (CR 601.2b): the caster announces the
     /// number as the X of the spell, from `least` to `most`; it pays nothing itself. Only a spell with no `{X}` holds it, as a
     /// required `AdditionalCost`, and reads it as `Amount::X` ("where X is the chosen number").

@@ -246,6 +246,12 @@ pub enum Modification {
     CantAttack,
     /// The object can't block: a restriction with no layer that `block_options` reads.
     CantBlock,
+    /// Players other than its controller can't gain control of the object: a restriction with no layer that the control
+    /// layer reads (`r1012_control_kept`).
+    R1012ControlKept,
+    /// The object can't be enchanted: a restriction with no layer that attaching an Aura and targeting with an Aura spell
+    /// read (`r3034_cant_be_enchanted`).
+    R3034CantBeEnchanted,
     /// The object does not untap during its controller's untap step: a restriction with no layer that `steps` reads.
     DoesntUntap,
     /// Damage dealt to the object that would remove all its loyalty counters removes all but one (a restriction with no
@@ -383,6 +389,8 @@ impl Modification {
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
@@ -468,6 +476,8 @@ impl Modification {
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp

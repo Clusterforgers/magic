@@ -28,6 +28,7 @@ mod r300_random_shots;
 mod r303c_sacrifice_all;
 mod r5511_card_types;
 mod r5512_exile_spell;
+mod r6012_choose;
 mod random;
 mod rmt5_top_shots;
 pub(crate) use r300_random_shots::r300_random_shots;
@@ -106,6 +107,8 @@ pub(crate) enum Kind {
     Craft,
     /// A card in exile, of any owner, goes to its owner's graveyard.
     ExiledToGraveyard,
+    /// A permanent the payer controls or a card they own in exile is chosen, and stays as it is (`CostItem::R6012ChooseOrExiled`).
+    R6012Choose,
 }
 
 /// A part of the cost that takes objects the player picks.
@@ -470,6 +473,9 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
             )
         }
         CostItem::Behold { .. } => behold_pick(item)?,
+        CostItem::R6012ChooseOrExiled { filter, exiled } => {
+            r6012_choose::r6012_pick(filter, exiled)
+        }
         CostItem::ExiledToGraveyard { filter, count } => {
             pick(Kind::ExiledToGraveyard, filter, count, item)?
         }
@@ -825,6 +831,7 @@ impl Part {
                 Kind::R6703TotalValue(_) => "Cost.ExileTotalValue",
                 Kind::Blight(_) => "Cost.Blight",
                 Kind::Behold(_) => "Cost.Behold",
+                Kind::R6012Choose => "Cost.R6012ChooseOrExiled",
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
                 Kind::R113BottomAny => "Cost.R113BottomFromOneGraveyard",
                 Kind::Forage => "Cost.Forage",
@@ -1114,6 +1121,7 @@ pub(crate) fn photographed(
                 | Kind::ExileHand
                 | Kind::Reveal
                 | Kind::Behold(true)
+                | Kind::R6012Choose
         ) {
             shots.extend(picked.iter().filter_map(|id| snapshot(state, *id)));
         }
@@ -1201,7 +1209,8 @@ impl Kind {
             | Kind::Untap
             | Kind::Counter
             | Kind::Blight(_)
-            | Kind::Behold(false) => false,
+            | Kind::Behold(false)
+            | Kind::R6012Choose => false,
             Kind::Sacrifice
             | Kind::Discard
             | Kind::Exile
@@ -1280,6 +1289,7 @@ impl Pick {
             Kind::Counter => c11c_counter_picks::c11c_candidates(payer, &self.filter),
             Kind::ExileAny | Kind::R113BottomAny => exile::candidates_any(payer, &self.filter),
             Kind::Behold(_) => behold::candidates(payer, &self.filter),
+            Kind::R6012Choose => r6012_choose::candidates(payer, &self.filter),
             Kind::ToLibrary(from, _) => to_library::candidates(payer, from, &self.filter),
             Kind::Forage => forage::candidates(payer),
             Kind::Craft => exile::craft_candidates(payer, &self.filter),
@@ -1529,6 +1539,7 @@ impl Pick {
             Kind::R5511CardTypes => r5511_card_types::r5511_text(self.count),
             Kind::Blight(count) => blight::text(count),
             Kind::Behold(exile) => behold::text(&self.filter, self.count, exile),
+            Kind::R6012Choose => r6012_choose::text(&self.filter),
             Kind::ToLibrary(from, bottom) => {
                 to_library::text(from, &self.filter, self.count, bottom)
             }
@@ -1586,7 +1597,7 @@ impl Pick {
             Kind::Behold(_) => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
             Kind::ExiledToGraveyard => exiled::event(state, object),
-            Kind::Blight(_) | Kind::ToLibrary(..) | Kind::R113BottomAny => None,
+            Kind::Blight(_) | Kind::ToLibrary(..) | Kind::R113BottomAny | Kind::R6012Choose => None,
         }
     }
 }
