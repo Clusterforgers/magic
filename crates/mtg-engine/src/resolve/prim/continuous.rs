@@ -654,6 +654,8 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             Modification::CantBeBlockedUnlessAttackingOwner
         }
         Wanted::CantBlock => Modification::CantBlock,
+        Wanted::R1012ControlKept => Modification::R1012ControlKept,
+        Wanted::R3034CantBeEnchanted => Modification::R3034CantBeEnchanted,
         Wanted::DoesntUntap => Modification::DoesntUntap,
         Wanted::R6700KeepsLastLoyalty => Modification::R6700KeepsLastLoyalty,
         Wanted::CantBeTurnedFaceUp => Modification::CantBeTurnedFaceUp,

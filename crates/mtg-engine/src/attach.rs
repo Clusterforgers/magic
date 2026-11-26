@@ -129,7 +129,13 @@ fn judged_host(state: &GameState, attachment: ObjectId, host: ObjectId, in_play:
         return false;
     };
     let allowed = match kind_of(state, attachment) {
-        Some(Kind::Aura) => !chars.is_creature() && may_enchant(state, object, target),
+        // A permanent that can't be enchanted keeps an Aura already attached to it (Guardian Beast).
+        Some(Kind::Aura) => {
+            !chars.is_creature()
+                && may_enchant(state, object, target)
+                && (state.host_of(attachment) == Some(host)
+                    || !crate::characteristics::r3034_cant_be_enchanted(state, host))
+        }
         Some(Kind::Equipment) => {
             (!chars.is_creature() || has_reconfigure(state, attachment)) && host_chars.is_creature()
         }
@@ -399,6 +405,15 @@ pub(crate) fn is_aura_spell(state: &GameState, id: ObjectId) -> bool {
     state
         .object(id)
         .is_some_and(|object| object.zone() == Zone::Stack)
+        && spell_target(state, id).is_some()
+}
+
+/// Whether `id` is an Aura card being cast or on the stack as a spell, whose target is what it will enchant: the targets
+/// it announces skip what can't be enchanted (CR 303.4a).
+pub(crate) fn r3034_aura_spell(state: &GameState, id: ObjectId) -> bool {
+    state
+        .object(id)
+        .is_some_and(|object| object.zone() != Zone::Battlefield)
         && spell_target(state, id).is_some()
 }
 

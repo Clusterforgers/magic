@@ -150,7 +150,7 @@ const EFFECTS: Record<string, string> = {
 }
 
 const ORDINARY_EFFECTS =
-  names(`Draw LookAtTop LookAtHand LookAtFaceDown Choose ChooseWithin ChooseValue ChooseAtRandom
+  names(`Draw LookAtTop LookAtHand LookAtFaceDown Choose ChooseWithin P160CastWithin ChooseValue ChooseAtRandom
   Move LoseUnspentMana PutBeneathTop BecomeBlocked FaceDownPile ExileHidden Remember Forget RememberValue Balance AddMana
   SpellEntersWith JoinAttack Revive Parade ExileUntil RevealUntil ExileTop Performed EndTurn AddStep RepeatWhile
   SeparatePiles RepeatEach ChooseWords ChooseNumbers BidLife Either OneOf ChangeTargets Rule Reattack If Together May Pay
@@ -204,7 +204,7 @@ const COSTS: Record<string, string> = {
 
 const ORDINARY_COSTS =
   names(`Mana PayLife Draw ManaCostOf OwnManaCost OwnManaValue OwnManaCostLess ReturnToHand AlikeFromHand
-  DamageToYou OthersGainLife OpponentGainsLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor R113XHybrid R112XOneEachColor R112ExileFromOneGraveyard R113BottomFromOneGraveyard ChosenColorOnly XAtMost XIs R121XIsPerOpponent OneOf Changed R6702ExileTotalX ExileTotalValue R110ControllerDraws R110RevealChosen R110Choose R110ChooseNumber`)
+  DamageToYou OthersGainLife OpponentGainsLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor R113XHybrid R112XOneEachColor R112ExileFromOneGraveyard R113BottomFromOneGraveyard ChosenColorOnly XAtMost XIs R121XIsPerOpponent OneOf Changed R6702ExileTotalX ExileTotalValue R110ControllerDraws R110RevealChosen R110Choose R110ChooseNumber R6012ChooseOrExiled`)
 
 /** The `TriggerPattern` variants that name a keyword action, designation or rules term, by lexicon term. */
 const TRIGGERS: Record<string, string> = {

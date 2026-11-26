@@ -286,8 +286,15 @@ pub(crate) fn cant_be_turned_face_up(state: &GameState, id: ObjectId) -> bool {
     })
 }
 
-/// Whether an effect that applies to `id` says it can't be beamed up: the one place the cost of beam me up reads this
-/// restriction.
+/// Whether an effect that applies to `id` says it can't be enchanted (CR 303.4): no Aura becomes attached to it or
+/// targets it as an Aura spell, while one already attached stays.
+pub(crate) fn r3034_cant_be_enchanted(state: &GameState, id: ObjectId) -> bool {
+    restricted(state, id, |modification| {
+        matches!(modification, Modification::R3034CantBeEnchanted)
+    })
+}
+
+/// Whether an effect that applies to `id` says it can't be beamed up: the one place the beam me up cost reads it.
 pub(crate) fn r119_cant_be_beamed_up(state: &GameState, id: ObjectId) -> bool {
     restricted(state, id, |modification| {
         matches!(modification, Modification::R119CantBeBeamedUp)

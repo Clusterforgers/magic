@@ -263,6 +263,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             state.combat.attack_refusals.push(reason.clone());
         }
         Event::FocusShifted { .. } => {}
+        Event::R5081AttackersChosen { attackers, .. } => {
+            if state.combat.attackers_declared || state.combat.r5081_chosen.is_some() {
+                return Err(invalid("the attackers were already chosen"));
+            }
+            state.combat.r5081_chosen = Some(attackers.clone());
+        }
         Event::AttackersDeclared { attackers, .. } => {
             state.combat.attack_picks.clear();
             if state.combat.attackers_declared {

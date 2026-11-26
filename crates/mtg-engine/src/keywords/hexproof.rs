@@ -428,6 +428,7 @@ mod tests {
                 caused: None,
                 granter: None,
                 granter_player: None,
+                r6097_colorless: None,
                 as_was: false,
                 inline: None,
                 entering: None,
