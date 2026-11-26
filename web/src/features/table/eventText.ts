@@ -1374,10 +1374,8 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const note = noted ? `, noting the name ${noted}` : ''
     return line(`${n.card(object)} lies face down as the creature an effect lists${note}`)
   }
-  if ('R406TurnedUp' in event)
-    return line(`${n.card(event.R406TurnedUp.object)} is turned face up in exile`)
-  if ('R707Kept' in event)
-    return line(`${n.card(event.R707Kept.object)} waits in exile as the spell it was`)
+  if ('R406TurnedUp' in event) return line(`${n.card(event.R406TurnedUp.object)} is turned face up in exile`)
+  if ('R707Kept' in event) return line(`${n.card(event.R707Kept.object)} waits in exile as the spell it was`)
   if ('R707PutBack' in event) {
     const { object, player } = event.R707PutBack
     return line(`${n.seat(player)} puts ${n.card(object)} back onto the stack as the spell it was`)
