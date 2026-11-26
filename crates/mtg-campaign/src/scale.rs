@@ -2,7 +2,8 @@
 //! reinforcements by party size only, and the rounds its two phases begin in (`docs/delves.md`, Difficulty).
 
 use crate::run::{
-    BOSS_SCALE_FROM, REINFORCEMENTS_FADE_FROM, THEME_REINFORCEMENTS_FROM, THEME_SUPPLIES_FROM,
+    BOSS_SCALE_FROM, PARTY_SCALE_FROM, REINFORCEMENTS_FADE_FROM, THEME_REINFORCEMENTS_FROM,
+    THEME_SUPPLIES_FROM,
 };
 
 /// The most heroes in a party.
@@ -19,6 +20,14 @@ pub const BOSS_LIFE_PER_HERO: i32 = 15;
 pub const REINFORCEMENT: &str = "reinforcements";
 /// The half reinforcement (an additional card each draw step) a theme may add from [`THEME_SUPPLIES_FROM`].
 pub const SUPPLIES: &str = "supplies";
+/// The card a boss brings for each hero after [`PARTY_BASE`], from [`PARTY_SCALE_FROM`].
+pub const WARBAND: &str = "warband";
+/// The most heroes that each bring the boss a reinforcement from [`PARTY_SCALE_FROM`]; the further ones bring
+/// [`WARBANDS`] instead.
+pub const PARTY_BASE: usize = 3;
+/// The [`WARBAND`]s a boss brings by the heroes after [`PARTY_BASE`] (none to three), from [`PARTY_SCALE_FROM`]: a
+/// sixth hero brings two.
+pub const WARBANDS: [usize; MOST - PARTY_BASE + 1] = [0, 1, 2, 4];
 /// The relic count from which a boss brings no reinforcement, from [`REINFORCEMENTS_FADE_FROM`].
 pub const FADE_RELICS: usize = 6;
 /// The bosses of a run whose depth counts one point each; beyond them every second boss adds a point.
@@ -47,11 +56,21 @@ impl Scale {
         BOSS_LIFE + BOSS_LIFE_PER_HERO * extra
     }
 
+    /// The heroes after [`PARTY_BASE`] in a party of `heroes` from [`PARTY_SCALE_FROM`]; none before.
+    fn beyond(heroes: usize, generation: u32) -> usize {
+        if generation >= PARTY_SCALE_FROM {
+            heroes.clamp(1, MOST).saturating_sub(PARTY_BASE)
+        } else {
+            0
+        }
+    }
+
     /// The reinforcements a boss brings against `heroes` heroes in a run of content `generation`: one
-    /// [`REINFORCEMENT`] for each hero after the first, none before [`BOSS_SCALE_FROM`].
+    /// [`REINFORCEMENT`] for each hero after the first, none before [`BOSS_SCALE_FROM`], and from
+    /// [`PARTY_SCALE_FROM`] none for the heroes after [`PARTY_BASE`].
     pub fn reinforcements(heroes: usize, generation: u32) -> Vec<String> {
         let extra = if generation >= BOSS_SCALE_FROM {
-            heroes.clamp(1, MOST) - 1
+            heroes.clamp(1, MOST) - 1 - Self::beyond(heroes, generation)
         } else {
             0
         };
@@ -63,7 +82,8 @@ impl Scale {
     /// none from [`REINFORCEMENTS_FADE_FROM`] with [`FADE_RELICS`] relics or more, and from
     /// [`THEME_SUPPLIES_FROM`] the theme's [`SUPPLIES`] against two or more heroes; from
     /// [`THEME_REINFORCEMENTS_FROM`] at most `most` (`Theme::boss_reinforcements_most`) reinforcements, each further one
-    /// coming as [`SUPPLIES`].
+    /// coming as [`SUPPLIES`]; from [`PARTY_SCALE_FROM`] the [`WARBANDS`] of the heroes after [`PARTY_BASE`] in place
+    /// of their reinforcements, faded or not.
     pub fn theme_reinforcements(
         heroes: usize,
         generation: u32,
@@ -82,6 +102,10 @@ impl Scale {
         if generation >= THEME_SUPPLIES_FROM && heroes >= 2 {
             all.extend(std::iter::repeat_n(SUPPLIES.to_owned(), supplies));
         }
+        all.extend(std::iter::repeat_n(
+            WARBAND.to_owned(),
+            WARBANDS[Self::beyond(heroes, generation)],
+        ));
         all
     }
 }

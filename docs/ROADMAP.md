@@ -7,9 +7,9 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 ## Status
 
 - The game is live at https://magic.hivemindcloud.dk (k3s; `docs/deploy.md`); `scripts/release.sh` releases a landed batch.
-- Live: foundations, team play (Two-Headed Giant and N v N teams), card data, engine core, protocol and server, game flow, Commander, the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, Delves (four themes, bosses balanced for one to three heroes), deployment.
+- Live: foundations, team play (Two-Headed Giant and N v N teams), card data, engine core, protocol and server, game flow, Commander, the web table with prompts for every decision kind, lobby, deck builder and precon browser, manual play, card review, tutorials and the Learn page, Delves (four themes, bosses balanced for one to six heroes), deployment.
 - Cards: 94.7% of the 32,116 Commander cards play automatically (Verified 22,622, Read 4,863, Unverified 2,935); Partial (973) and Manual (723) cards play through by-hand clauses. Run `mtg-cli compile` and `coverage` before quoting newer numbers.
-- In progress: Delves balance at three to six heroes (dl3c), tutorial fixes and card coverage (`docs/cards-backlog.md`).
+- In progress: tutorial fixes and card coverage (`docs/cards-backlog.md`).
 - Open: the database commit time (db1).
 
 ## Order of work
@@ -70,7 +70,7 @@ One item is one piece of about 15 minutes and one line: the outcome, the cards i
 - Delves encounter modifiers: the 23 rules of the pool as emblems with their `not_with` lists, no commander tax for the heroes, and "first instant or sorcery each turn" counting only the spells it names (`docs/delves.md`).
 - Delves boss rework: every boss plays its stored precon (drafts loaded as live games load them), an innate in five levels by depth and Heat, one encounter modifier, two phases by round, a public satchel and relics by depth, with life by party size only; the old boss systems are gone and the rework closed the runs open at the time (`docs/delves.md`).
 - Delves Ember Foundry: a third theme drawn from Heat 3 (Legendary), fifteen lieutenants of every colour and colour pair and two final bosses on swapped precons, with its events and reward pool (`docs/delves.md`).
-- Delves boss strength: a boss brings relics from the first fight by depth and Heat and a Reinforcements emblem (an extra card and land each turn) for each hero after the first, from generation 12; two Hard heroes at Heat 1 win 50 to 63 % instead of 87 to 98 %, the Foundry with Supplies (an extra draw) against two or more heroes from generation 13, and a boss with six relics without Reinforcements from generation 14 (two heroes at Heat 3, depth 7 win the Spire 45 % and the Foundry 40 % instead of 15 and 5 %), and the Warrens' bosses with at most three relics from generation 15 (the deep Warrens 50 % instead of 20 % on seeds 1 to 20, 58 % instead of 45 % on 40), and the Warrens' bosses with one Reinforcements and Supplies for each further hero from generation 17 (three heroes at Heat 1, depth 1 win 53 % instead of 43 %; `docs/delves.md`, Tuning).
+- Delves boss strength: a boss brings relics from the first fight by depth and Heat and a Reinforcements emblem (an extra card and land each turn) for each hero after the first, from generation 12; two Hard heroes at Heat 1 win 50 to 63 % instead of 87 to 98 %, the Foundry with Supplies (an extra draw) against two or more heroes from generation 13, and a boss with six relics without Reinforcements from generation 14 (two heroes at Heat 3, depth 7 win the Spire 45 % and the Foundry 40 % instead of 15 and 5 %), and the Warrens' bosses with at most three relics from generation 15 (the deep Warrens 50 % instead of 20 % on seeds 1 to 20, 58 % instead of 45 % on 40), and the Warrens' bosses with one Reinforcements and Supplies for each further hero from generation 17 (three heroes at Heat 1, depth 1 win 53 % instead of 43 %, and Warbands (+1/+1 for the boss's creatures) in place of reinforcements for the heroes after the third from generation 19 (four to six heroes in the Warrens win 56 to 62 % over 16 fights instead of 62 to 100 %; `docs/delves.md`, Tuning).
 - Tokens entering: replacements over how a permanent enters (counters, a form, a token's own copy) apply to each token as it is created, and Coiled Growth gives tokens its counters as they enter (`docs/cards-dsl.md`).
 - Header and replay: the header folds tabs that overflow into a More menu (marked on its pages, counting the cards to read) and a replay's turn badge and banner name the active player in the third person from any seat (`docs/web.md`).
 - Face-down permanents: a card put onto the battlefield face down with listed characteristics (an instant or sorcery card too) and its name noted for a copy, a face-down cast that turns up before it taps, deals or takes damage, and views that show every seat the listed characteristics and only the controller the card (Magar of the Magic Strings, Illusionary Mask; `docs/cards-dsl.md`, `docs/protocol.md`).
@@ -84,6 +84,7 @@ Items that touch the running game come first; the play-session findings (pf) lea
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (db1) Game event commits take milliseconds instead of 1 to 1.8 s on the replicated volume, by an owner-chosen fix: a larger `shared_buffers`, `synchronous_commit` off for event writes, or a local volume (`docs/performance.md`, Deck lists)
 - [ ] (pl2r) `commander-four.spec.ts` passes: a span 24 px wide is cut off sideways on several seats' pages of the four-seat precon table, at the opening hands and through the first turns
+- [ ] (lg1) The game log names the state-based action that puts a permanent into the graveyard: 0 loyalty, 0 toughness, lethal damage, the legend rule, an unattached Aura
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 - [ ] (ln1) The Help menu's table tour runs on the Learn coach and its anchors instead of `TourCard` and CSS selectors
@@ -148,7 +149,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 ## Delves
 
-- [ ] (dl3c) Delves balance at three to six heroes: measure them on seeds 1 to 8 (a fight takes 30 to 90 minutes of machine time or more) and lift any size that wins below 50 %
+- [ ] (dl3d) Delves at four to six heroes measured over 30 fights a cell, on the Ember Foundry, the Gloamwood and at a deeper depth (the Spire against six heroes won 75 % of 8)
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
 - [ ] (dl2d) Each hero gives up the permanents an attack tax takes (sacrifice a land) for their own creatures in the party's combined attack, not the leader
 - [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
