@@ -647,6 +647,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     if let Some(mut texts) = super::r4709_differ::r4709_differ_texts(ability, written_variants) {
         super::p159_wholes::p159_add_wholes(ability, &mut texts);
         super::p160w_wholes::p160w_add_wholes(ability, &mut texts);
+        super::p163_wholes::p163_add_wholes(ability, &mut texts);
         super::cx8_wholes::cx8_add_wholes(ability, &mut texts);
         super::r123_02_wholes::r123_02_add_wholes(ability, &mut texts);
         super::p158_wholes::p158_add_wholes(ability, &mut texts);
@@ -764,6 +765,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r122_02_wholes::r122_02_add_wholes(ability, &mut texts);
     super::p159_wholes::p159_add_wholes(ability, &mut texts);
     super::p160w_wholes::p160w_add_wholes(ability, &mut texts);
+    super::p163_wholes::p163_add_wholes(ability, &mut texts);
     super::cx8_wholes::cx8_add_wholes(ability, &mut texts);
     super::r123_02_wholes::r123_02_add_wholes(ability, &mut texts);
     super::p158_wholes::p158_add_wholes(ability, &mut texts);

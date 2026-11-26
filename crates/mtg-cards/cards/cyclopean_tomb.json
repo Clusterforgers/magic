@@ -1,7 +1,7 @@
 {
   "oracle_id": "1edee40f-d153-4d67-aee7-ef08e11e4a79",
   "name": "Cyclopean Tomb",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Cyclopean Tomb",
@@ -16,6 +16,7 @@
             ],
             "effects": [
               { "PutCounters": { "on": { "Target": 0 }, "counter": { "Other": "mire" } } },
+              { "Remember": { "what": { "Target": 0 }, "slot": "mire" } },
               {
                 "Continuous": {
                   "affected": { "Target": 0 },
@@ -27,9 +28,39 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this triggered ability by hand",
-            "span": { "start": 154, "end": 444 }
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield", "to": "Graveyard" } },
+            "effects": [
+              {
+                "DelayedTrigger": {
+                  "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+                  "once": false,
+                  "until": "Forever",
+                  "effects": [
+                    {
+                      "Choose": {
+                        "from": {
+                          "Each": [
+                            { "Is": { "Remembered": { "on": "This", "slot": "mire" } } },
+                            {
+                              "Not": { "Is": { "Remembered": { "on": "This", "slot": "cleared" } } }
+                            }
+                          ]
+                        },
+                        "as": "land"
+                      }
+                    },
+                    { "Remember": { "what": { "Bound": "land" }, "slot": "cleared" } },
+                    {
+                      "RemoveAllCounters": {
+                        "from": { "Bound": "land" },
+                        "counter": { "Other": "mire" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

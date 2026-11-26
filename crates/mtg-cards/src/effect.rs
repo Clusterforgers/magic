@@ -1318,6 +1318,14 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         against: Option<Ref>,
     },
+    /// Puts a creature into the attack of the player who controls it now, attacking a player or planeswalker that
+    /// player's attacking creatures are attacking, chosen by the effect's controller ("choose a player or planeswalker
+    /// that opponent is attacking. ~ is attacking that player or planeswalker", CR 508.4); it was never declared as an
+    /// attacker, and with nothing to choose it does not attack.
+    R5084JoinTheirAttack {
+        /// The creature that joins the attack.
+        what: Ref,
+    },
     /// For each attacking creature `of` names (CR 702.116a), creates for every opponent of its controller other than the player it attacks a token copy of it, tapped and attacking that opponent; the tokens are never declared as attackers (CR 508.4).
     MyriadCopies {
         /// The attacking creatures that are copied.

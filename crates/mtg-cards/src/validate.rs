@@ -5399,6 +5399,7 @@ impl Walker<'_> {
                 }
             }
             Effect::Unattach { what }
+            | Effect::R5084JoinTheirAttack { what }
             | Effect::JoinAttack {
                 what,
                 against: None,
