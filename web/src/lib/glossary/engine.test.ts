@@ -150,7 +150,7 @@ const EFFECTS: Record<string, string> = {
 }
 
 const ORDINARY_EFFECTS =
-  names(`Draw LookAtTop LookAtHand LookAtFaceDown Choose ChooseWithin P160CastWithin ChooseValue ChooseAtRandom
+  names(`Draw LookAtTop LookAtHand LookAtFaceDown Choose ChooseWithin ChooseValue ChooseAtRandom
   Move LoseUnspentMana PutBeneathTop BecomeBlocked FaceDownPile ExileHidden Remember Forget RememberValue Balance AddMana
   SpellEntersWith JoinAttack Revive Parade ExileUntil RevealUntil ExileTop Performed EndTurn AddStep RepeatWhile
   SeparatePiles RepeatEach ChooseWords ChooseNumbers BidLife Either OneOf ChangeTargets Rule Reattack If Together May Pay
