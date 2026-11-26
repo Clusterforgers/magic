@@ -560,6 +560,14 @@ pub enum Event {
         /// The attacker.
         attacker: ObjectId,
     },
+    /// A player other than the active player chose which creatures attack this combat (CR 508.1a, "You choose which
+    /// creatures attack this turn"); the active player then declares them, choosing what each attacks.
+    R5081AttackersChosen {
+        /// Who chose.
+        chooser: PlayerId,
+        /// The creatures that attack; none for no attack.
+        attackers: Vec<ObjectId>,
+    },
     /// A creature began to block an attacking creature without being declared (CR 509.1h): "then it blocks an
     /// attacking creature of your choice".
     R6400Blocks {
@@ -1827,6 +1835,7 @@ impl Event {
             Event::LibraryShuffled { .. }
             | Event::AttackersChosen { .. }
             | Event::AttackChoicesRefused { .. }
+            | Event::R5081AttackersChosen { .. }
             | Event::FocusShifted { .. }
             | Event::SpiritRevived { .. }
             | Event::AttractionDeckShuffled { .. }
@@ -1975,7 +1984,6 @@ impl Event {
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::R6008Listed(listed) => vec![listed.object],
-            Event::R406TurnedUp { object } | Event::R707PutBack { object, .. } => vec![*object],
             Event::R707Kept(kept) => vec![kept.object],
             Event::AbilityCopied(copy) => vec![copy.object],
             Event::TargetsChanged(change) => vec![change.object.id],
@@ -1983,6 +1991,8 @@ impl Event {
             Event::Remembered(change) => vec![change.source.id],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
+            | Event::R406TurnedUp { object }
+            | Event::R707PutBack { object, .. }
             | Event::SpellCast { object, .. }
             | Event::CompanionBrought { object, .. }
             | Event::ZoneChanged { object, .. }

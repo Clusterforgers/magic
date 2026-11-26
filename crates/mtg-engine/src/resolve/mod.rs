@@ -423,6 +423,7 @@ fn scope_of<'a>(
         caused: None,
         granter: ability.and_then(|a| a.origin().granter()),
         granter_player: ability.and_then(|a| effect_controller(state, a.origin())),
+        r6097_colorless: None,
         as_was: false,
         inline: None,
         entering: None,

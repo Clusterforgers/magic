@@ -122,7 +122,9 @@ impl Gives {
             | Modification::SetToughness(_)
             | Modification::AddNameWords(_)
             | Modification::SetName(_)
-            | Modification::LoseAbility(_) => {
+            | Modification::LoseAbility(_)
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted => {
                 return;
             }
             Modification::AddKeywords(keywords) => {

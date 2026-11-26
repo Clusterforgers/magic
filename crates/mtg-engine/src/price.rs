@@ -94,6 +94,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::GenericOf(_) => "Cost.GenericOf",
         CostItem::Blight(_) => "Cost.Blight",
         CostItem::Behold { .. } => "Cost.Behold",
+        CostItem::R6012ChooseOrExiled { .. } => "Cost.R6012ChooseOrExiled",
         CostItem::ToLibrary { .. } => "Cost.ToLibrary",
         CostItem::Forage => "Cost.Forage",
         CostItem::Craft { .. } => "Cost.Craft",

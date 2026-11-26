@@ -150,6 +150,8 @@ pub struct Scope<'a> {
     /// The player whose spell or ability gave the running ability to its source for a time (`Ref::Granter` when a resolved
     /// effect gave it: "the player who cast ~").
     pub(crate) granter_player: Option<PlayerId>,
+    /// The source of damage that a rule makes colorless (CR 609.7): its colors read as none while this scope judges it.
+    pub(crate) r6097_colorless: Option<ObjectRef>,
     /// Objects are judged as their snapshot in scope shows them, before the live object: a turn record's subject as it
     /// was when the record was made (CR 608.2h).
     pub(crate) as_was: bool,
@@ -475,6 +477,7 @@ impl<'a> Scope<'a> {
             caused: None,
             granter: None,
             granter_player: None,
+            r6097_colorless: None,
             as_was: false,
             inline: None,
             entering: None,
@@ -1493,6 +1496,15 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// The cards a source keeps of those it exiled: the last of a kind, or the top of its face-down pile.
+    fn r406_kept(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
+        match reference {
+            Ref::LastExiledWith { on, filter } => self.r5511_last_exiled(on, filter),
+            Ref::R406PileTop { on } => self.r406_pile_top(on),
+            _ => Ok(Vec::new()),
+        }
+    }
+
     /// The top card of the face-down pile each source keeps (`PileFate::R406Kept`): the first card of it, in its
     /// shuffled order, that is still the card in exile it became.
     fn r406_pile_top(&self, on: &Ref) -> Result<Vec<Target>, ResolveError> {
@@ -1615,8 +1627,7 @@ impl<'a> Scope<'a> {
             Ref::R114ChosenObject => self.r114_chosen_object(),
             Ref::R6702CraftedWith => self.r6702_crafted_with(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
-            Ref::LastExiledWith { on, filter } => self.r5511_last_exiled(on, filter)?,
-            Ref::R406PileTop { on } => self.r406_pile_top(on)?,
+            Ref::LastExiledWith { .. } | Ref::R406PileTop { .. } => self.r406_kept(reference)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::Departed(of) => self.departed_of(of)?,
             Ref::SourceOf(of) => self.r302b_sources(of)?,
@@ -2153,9 +2164,12 @@ impl<'a> Scope<'a> {
 
     /// Whether the object satisfies every predicate of the selector.
     pub fn selects(&self, selector: &Selector, reference: ObjectRef) -> Result<bool, ResolveError> {
-        let Some(seen) = self.seen(reference) else {
+        let Some(mut seen) = self.seen(reference) else {
             return Ok(false);
         };
+        if self.r6097_colorless == Some(reference) {
+            seen.chars.to_mut().colors = mtg_core::color::ColorSet::default();
+        }
         for pred in &selector.0 {
             if !self.pred(pred, reference, &seen)? {
                 return Ok(false);
@@ -2394,6 +2408,7 @@ impl<'a> Scope<'a> {
             Pred::Token => seen.kind == ObjectKind::Token,
             Pred::Commander => state.is_commander(reference.id),
             Pred::Spell => seen.zone == Zone::Stack && seen.kind != ObjectKind::Ability,
+            Pred::R702185Warped => crate::r702185_warped::r702185_warped(state, reference),
             Pred::Dungeon => state.r376_is_dungeon(reference.id),
             Pred::R119CanBeBeamedUp => {
                 !crate::characteristics::r119_cant_be_beamed_up(state, reference.id)

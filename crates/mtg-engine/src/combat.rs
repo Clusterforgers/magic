@@ -167,6 +167,9 @@ pub struct CombatState {
     pub(crate) attack_picks: Vec<crate::party_attacks::AttackPick>,
     /// Why the team's chosen attacks were refused, each time they were this combat.
     pub(crate) attack_refusals: Vec<String>,
+    /// The creatures another player chose to attack this combat (`Event::R5081AttackersChosen`), which the active player
+    /// then declares; none until that player has chosen.
+    pub(crate) r5081_chosen: Option<Vec<ObjectId>>,
     /// Every (attacker, blocker) pair that blocked this combat, those that left combat included.
     pub(crate) r6400_blocked_by: Vec<(ObjectId, ObjectId)>,
     /// Every (creature, creature it enlisted) of this combat (CR 702.154a), which "it enlisted a creature this combat" reads.

@@ -181,6 +181,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::Supertype(supertype) => adjectives.push(lower(supertype)),
             Pred::Color(color) => adjectives.push(lower(color)),
             Pred::Colorless => adjectives.push("colorless".to_owned()),
+            Pred::R702185Warped => adjectives.push("warped".to_owned()),
             Pred::Token => adjectives.push("token".to_owned()),
             Pred::Commander => nouns.push("commander".to_owned()),
             Pred::Spell => nouns.push("spell".to_owned()),

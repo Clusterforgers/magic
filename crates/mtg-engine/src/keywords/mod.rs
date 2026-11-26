@@ -266,6 +266,8 @@ pub struct Source<'a> {
     pub object: ObjectRef,
     /// How objects that have changed zones were.
     pub snapshots: &'a [&'a Snapshot],
+    /// A rule makes it a colorless source of damage, and the damage it would deal is judged (CR 609.7).
+    pub r6097_colorless: bool,
 }
 
 impl Source<'static> {
@@ -274,6 +276,7 @@ impl Source<'static> {
         state.object(id).map(|object| Source {
             object: object.reference(),
             snapshots: &[],
+            r6097_colorless: false,
         })
     }
 }

@@ -209,7 +209,7 @@ fn sahir_grows_on_exactly_one(
     let name = hurt.name.clone();
     let mut driver = sahir_table(seats, vec![hurt]);
     let hand = hand_size(&driver, 0);
-    let target = driver.target_player(if at_me { 0 } else { 1 });
+    let target = driver.target_player(usize::from(!at_me));
     driver.begin_cast(&name).unwrap();
     if matches!(
         driver.decision().unwrap().kind,
@@ -487,7 +487,10 @@ fn parallel_thoughts_takes_the_pile_then_skips_draws_from_it_empty(
     let mut driver = thoughts_table(seats, 2, 3);
     driver.cast("Parallel Thoughts").unwrap();
     settle(&mut driver, true, &none);
-    assert!(driver.state().zone(Zone::Library(pid(0))).is_empty());
+    assert_eq!(
+        driver.state().zone(Zone::Library(pid(0))),
+        &[] as &[ObjectId]
+    );
     assert_eq!(exiled(&driver).len(), 2);
     for _ in 0..3 {
         driver.cast("Study").unwrap();
@@ -495,7 +498,7 @@ fn parallel_thoughts_takes_the_pile_then_skips_draws_from_it_empty(
     }
     // Both pile cards came to hand and the third draw was replaced by taking from the empty pile.
     assert_eq!(hand_size(&driver, 0), 2);
-    assert!(driver.state().zone(Zone::Exile).is_empty());
+    assert_eq!(driver.state().zone(Zone::Exile), &[] as &[ObjectId]);
     assert!(
         driver.state().result().is_none(),
         "no one drew from an empty library"
@@ -547,7 +550,9 @@ fn piracy_taps_the_lands_of_others_for_mana_spent_on_spells(#[values(2, 3, 4)] s
     );
     assert_eq!(
         only,
-        vec![mtg_cards::spend::SpendOn::Spell(Default::default())]
+        vec![mtg_cards::spend::SpendOn::Spell(
+            mtg_cards::spend::SpendFilter::default()
+        )]
     );
     let foe = driver.target_player(1);
     let before = life(&driver, 1);
@@ -560,7 +565,10 @@ fn piracy_taps_the_lands_of_others_for_mana_spent_on_spells(#[values(2, 3, 4)] s
         .iter()
         .filter(|id| {
             let object = driver.state().object(**id).unwrap();
-            object.controller() == pid(1) && object.permanent().is_some_and(|p| p.tapped())
+            object.controller() == pid(1)
+                && object
+                    .permanent()
+                    .is_some_and(mtg_engine::object::PermanentState::tapped)
         })
         .count();
     assert_eq!(tapped, 1, "seat 1 keeps controlling its tapped Mountain");

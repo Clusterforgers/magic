@@ -324,7 +324,25 @@ fn declare_attackers(state: &GameState) -> Progress {
             }
             return Progress::Decide(question);
         }
-        let options = attack_options(state, active);
+        let mut options = attack_options(state, active);
+        // Another player chooses the attackers first (CR 508.1a); the active player then declares them.
+        let mut decider = active;
+        if let Some(chooser) = crate::rules::r5081_attack_chooser(state) {
+            match &state.combat().r5081_chosen {
+                None if !options.attackers.is_empty() => decider = chooser,
+                None => {}
+                Some(chosen) => {
+                    options
+                        .attackers
+                        .retain(|option| chosen.contains(&option.object));
+                    options.required = options
+                        .attackers
+                        .iter()
+                        .map(|option| option.object)
+                        .collect();
+                }
+            }
+        }
         if options.attackers.is_empty() {
             return Progress::Events(vec![
                 Event::NothingToDo {
@@ -338,7 +356,7 @@ fn declare_attackers(state: &GameState) -> Progress {
             ]);
         }
         return Progress::Decide(Decision {
-            player: active,
+            player: decider,
             kind: DecisionKind::DeclareAttackers(options),
         });
     }

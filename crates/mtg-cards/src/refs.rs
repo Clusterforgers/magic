@@ -431,6 +431,9 @@ pub enum Pred {
     Commander,
     /// Is a spell on the stack.
     Spell,
+    /// Is a warped card (CR 702.185): a card in exile that its own warp ability exiled and that its owner may still cast
+    /// from there ("a warped creature card you own in exile").
+    R702185Warped,
     /// Is an activated or a triggered ability on the stack (a mana ability never is one).
     Ability(AbilityKind),
     /// Is an ability on the stack whose source matches the selector ("activated ability from an artifact source"): the
