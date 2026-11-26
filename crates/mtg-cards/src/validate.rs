@@ -634,6 +634,12 @@ impl<'a> Walker<'a> {
             ValueKind::Options(words) if words.len() < 2 => {
                 self.problem("a choice of words needs at least two");
             }
+            ValueKind::OptionsNotNoted(words) => {
+                self.uses("ValueKind", "OptionsNotNoted");
+                if words.len() < 2 {
+                    self.problem("a choice of words needs at least two");
+                }
+            }
             ValueKind::CardTypeOf(kinds) if kinds.len() < 2 => {
                 self.problem("a choice of card types needs at least two");
             }
@@ -2013,6 +2019,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "NewlyControlled");
                 self.at("NewlyControlled", |w| w.reference(what, Kind::Object));
             }
+            Condition::P158HadToAttack(what) => {
+                self.uses("Condition", "P158HadToAttack");
+                self.at("P158HadToAttack", |w| w.reference(what, Kind::Object));
+            }
             Condition::Level { of, .. } => {
                 self.uses("Condition", "Level");
                 self.at("Level", |w| w.reference(of, Kind::Object));
@@ -2249,6 +2259,7 @@ impl<'a> Walker<'a> {
                     | CostItem::R6702CollectEvidenceX
                     | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
+                    | CostItem::CreaturesHelpPay(_)
                     | CostItem::OthersGainLife(_)
                     | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
@@ -2732,6 +2743,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Craft { .. }
                     | CostItem::Forage
                     | CostItem::Waterbend(_)
+                    | CostItem::CreaturesHelpPay(_)
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
             }
@@ -4999,6 +5011,11 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::CopyNamedCard { who, chosen, bind } => {
+                w.chosen_as(chosen);
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
             Effect::Parade { what } => w.at("what", |w| w.selector(what)),
             Effect::PutSticker { who, on, up_to, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -7217,7 +7234,8 @@ impl Walker<'_> {
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_)
             | GameRule::R112SpendOnlyFromWay { .. }
-            | GameRule::R113NoteExiledManaValue => {}
+            | GameRule::R113NoteExiledManaValue
+            | GameRule::P158LoyaltyTwiceThis => {}
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }
@@ -8918,6 +8936,14 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
             && card.abilities().any(|(_, ability)| r116_picks_by_x(ability)))
         || card.abilities().any(|(face, ability)| match ability {
             Ability::Keyword(k) => lists(k, keyword),
+            // A sticker sheet lists the keywords of its ability stickers.
+            Ability::Sticker(crate::ability::Sticker::Ability { ability, .. })
+                if crate::compile::sticker_keywords(ability)
+                    .into_iter()
+                    .any(|k| lists(k, keyword)) =>
+            {
+                true
+            }
             ability if mentions_keyword(ability, keyword) => true,
             Ability::Manual { span, .. } => printed
                 .faces

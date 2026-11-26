@@ -185,6 +185,16 @@ check "unit order by last seconds" "${queue[*]}" "mtg-core::lib mtg-cli::lib mtg
 check "expected seconds" "${u_expect[mtg-core::lib]}|${u_expect[mtg-cli::lib]}|${u_expect[mtg-cli::it]:-}" "400|30|"
 rm -f "$unit_secs_file"
 
+# Outside gate the listed heavy binaries run alone; the gate runs them side by side.
+alone_units="mtg-cli::it"
+queue=() u_alone=()
+add_test_units "$scratch/build.json" >/dev/null
+check "alone: not in gate" "${u_alone[*]:-none}" none
+queue=() run_alone=1
+add_test_units "$scratch/build.json" >/dev/null
+check "alone: the listed binary" "${!u_alone[*]}" mtg-cli::it
+run_alone=0 u_alone=()
+
 # A sliced unit runs the exact names of its slice; the slow list is applied to the names.
 cat >"$scratch/fuzz" <<'EOF'
 #!/usr/bin/env bash

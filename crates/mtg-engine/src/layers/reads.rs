@@ -700,6 +700,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::YourTurn | Condition::PaidToIgnore => Traits::CONTROL,
         Condition::PaidToIgnoreBy(who) => reads_of_ref(who).or(Traits::CONTROL),
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
+        Condition::P158HadToAttack(what) => reads_of_ref(what),
         Condition::AttackedThisTurnBy { player, .. } => reads_of_ref(player),
         Condition::Exploited { by, what } => reads_of_ref(by).or(reads_of_ref(what)),
         Condition::DamagedThisGameBy { .. }

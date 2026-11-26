@@ -113,12 +113,13 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (fg3c) `translate-forge`: the whole translations the checker reads back as other text (`Mismatch`): separate wording differences from wrong translations and fix the mappers
 - [ ] (r4e2) A static ability that gives replicate or emerge at its card's mana cost (Djinn Illuminatus, Hatchery Sliver, Ian Chesterton, Herigast): the optional costs and ways read the printed card, not the layered keywords
 - [ ] (rt1n) A 4-seat bot game with 16 copies of Exotic Orchard takes 94 s for 2,635 answers (about 40 ms an answer, against 0.1 ms usual), so the smoke gate stops it at its 20 s limit; find the slow step of its mana ability and make it fast (`crates/mtg-engine` mana; no dependency)
-- [ ] (un33c) Stickers left: the kinds a card names ("put a name sticker", art stickers) for Baaallerina, Bird Gets the Worm, O-Saurus, Rocketship and Roxi; "whenever you put a sticker" (A Good Day to Pie, Make a Splash, Unlawful Entry); "with a name sticker on it" and Forge `stickered`; stickers kept through public zones; the sticker sheets' oracle text read into `Ability::Sticker` with corpus sheets; the translator's `StickerSheet` and `StickerPlaced`
+- [ ] (un33c) Stickers left: the kinds a card names ("put a name sticker", art stickers) for Baaallerina, Bird Gets the Worm, O-Saurus, Rocketship and Roxi; "whenever you put a sticker" (A Good Day to Pie, Make a Splash, Unlawful Entry); "with a name sticker on it" and Forge `stickered`; stickers kept through public zones; the translator's `StickerSheet` and `StickerPlaced`
 - [ ] (un33d) Attractions left: a database test of the lights a stored deck's Attraction deck plays with, and Motion Sickness's "attach this Aura to target tapped creature"
 - [ ] Gate: every corpus card is Verified or played through manual clauses and actions that show each unread clause, and fuzz games with a deck from each cluster pass every invariant, and a four-seat Commander game plays from the lobby to a winner in the web
 
 ## Tooling
 
+- [ ] (ts1p) `mtg-testkit::game` ends within the run cap under `affected`: its single deep-bot games (`brain_matches`, `brain_paced`) run on one thread each and near 40 min under load, alone or not (`crates/mtg-testkit/tests/game`)
 - [ ] (ts1e) The release images build while the batch run of the release commit runs, both images at once, and `scripts/release.sh` reuses them from the build cache (release after the check: 600 s to about 120 s; `scripts/release.sh`, `docs/deploy.md`; after ts1d)
 - [ ] (ts1f) A diff of card files only tests those cards, the test modules and fixture decks that name them and a fixed sample, and the batch run tests the whole corpus (a card change to about 3 min; `scripts/check.sh`; after ts1a)
 - [ ] (ts1j) The built-in library loads from a snapshot made at build time instead of 1.1 s of parsing per process, so nextest with per-test timeouts can replace the run cap (`crates/mtg-cards`; after ts1c)
@@ -158,7 +159,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (dl8a) Boss brain priorities: the boss and its minions focus the biggest threat, punish the healer and break combos, at Very Hard once its clock suits the server
 - [ ] (dl8b) Whole runs won in 20 to 35 % at every party size, measured for 1 to 6 heroes and with Very Hard heroes
 - [ ] (dl13) A fifth and further themes, each with its own bosses (lieutenants of every colour and colour pair, two final bosses), events, reward pool and look
-- [ ] (dl13a) The Gloamwood innates The Hag's Due and Hedge Blessing each have their own fight test (a teams table, a driver that picks up to N targets)
 - [ ] (rw1) Boss content: the nineteen bosses' precon deck files, innates with five levels, Phase 1 and 2 cards and satchels, each with its fight test
 - [ ] (rw7) Measure the reworked bosses at each Heat and depths 0, 3 and 7 with two and four Hard heroes; tune life and the level steps
 

@@ -695,6 +695,10 @@ const R4701_BOAST_TWICE: &str =
 
 const LOYALTY_TWICE: &str = "you may activate the loyalty abilities of planeswalkers you control twice each turn rather than only once";
 
+/// The rule of Urza, Planeswalker, lowercase.
+const P158_LOYALTY_TWICE_THIS: &str =
+    "you may activate the loyalty abilities of ~ twice each turn rather than only once";
+
 /// The rules about a player's hand, land plays and library: "You have no maximum hand size.", "You may play an
 /// additional land on each of your turns.", "You may look at the top card of your library any time."
 fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
@@ -706,6 +710,9 @@ fn player_rule(r: &mut Reader<'_>) -> Option<GameRule> {
     }
     if r.words(LOYALTY_TWICE) {
         return Some(GameRule::LoyaltyTwice(Ref::You));
+    }
+    if r.words(P158_LOYALTY_TWICE_THIS) {
+        return Some(GameRule::P158LoyaltyTwiceThis);
     }
     if r.words(R4701_BOAST_TWICE) {
         return Some(GameRule::BoastTwice(Ref::You));
@@ -2053,6 +2060,11 @@ fn player_rule_texts(rule: &GameRule) -> Option<Vec<String>> {
         GameRule::NoMaxHandSize(Ref::EachPlayer) => "Players have no maximum hand size".to_owned(),
         GameRule::LoyaltyTwice(Ref::You) => {
             let mut text = LOYALTY_TWICE.to_owned();
+            text[..1].make_ascii_uppercase();
+            text
+        }
+        GameRule::P158LoyaltyTwiceThis => {
+            let mut text = P158_LOYALTY_TWICE_THIS.to_owned();
             text[..1].make_ascii_uppercase();
             text
         }

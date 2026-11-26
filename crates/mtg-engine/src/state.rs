@@ -144,9 +144,6 @@ pub(crate) enum Tally {
     C11aArtifactCast,
     /// A spell cast through a permission that works once each turn (counted for the permission's source).
     C11bOnceUsed,
-    /// A card cast or played through a permission with a limit, keyed by the first object the permission names (counted
-    /// for the permission's source).
-    R5503LimitUsed(crate::object::ObjectRef),
     /// A creature exerted (counted for the object, and for the player who exerted it).
     W11aExerted,
     /// Life gained, once for each event.
@@ -427,6 +424,9 @@ pub struct GameState {
     pub(crate) last_turn_of: Option<PlayerId>,
     /// How many spells of each name each player has cast this game ("you've cast another spell named ~ this game").
     pub(crate) cast_names: BTreeMap<(PlayerId, String), u32>,
+    /// How many cards each permission with a limit let be cast or played while it lasted, by its source and the first
+    /// object it names ("You may play up to two of those cards until the end of your next turn").
+    pub(crate) p158_limit_uses: BTreeMap<(ObjectRef, ObjectRef), u32>,
     /// The cards each player cycled by name, the damage dealt to players and the lands untapped as the turn began (`r5522_history`).
     pub(crate) r5522: Box<crate::r5522_history::R5522Game>,
     /// What each player did during their latest turn and attacked in their latest combat (`r111_history`).
@@ -928,8 +928,9 @@ impl GameState {
         ability: Option<usize>,
     ) -> bool {
         let used = self.loyalty_used.get(&permanent).copied().unwrap_or(0);
-        let limit = crate::characteristics::controller_of(self, permanent.id)
-            .map_or(1, |player| crate::rules::loyalty_activations(self, player));
+        let limit = crate::characteristics::controller_of(self, permanent.id).map_or(1, |player| {
+            crate::rules::loyalty_activations(self, player, permanent)
+        });
         let more = ability.map_or(0, |ability| {
             crate::rules::r6603_loyalty_again(self, permanent, ability)
         });
@@ -1231,6 +1232,9 @@ impl Hash for GameState {
         // A game where no spell was cast hashes as it did before the names were counted.
         if !self.cast_names.is_empty() {
             self.cast_names.hash(state);
+        }
+        if !self.p158_limit_uses.is_empty() {
+            self.p158_limit_uses.hash(state);
         }
         // Likewise a game where no card was cycled and no player was dealt damage.
         if !self.r5522.is_empty() {

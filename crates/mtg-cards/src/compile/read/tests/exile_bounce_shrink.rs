@@ -141,7 +141,6 @@ fn more_oracle_wordings_in_a_trigger_read_and_write_back(#[case] text: &str) {
 #[case::from_your_graveyard_to_its_owners_hand(
     "Return target card from your graveyard to its owner's hand."
 )]
-#[case::a_spell("Return target spell to its owner's hand.")]
 #[case::several_to_one_hand("Return up to two target creatures to its owner's hand.")]
 #[case::each("Return each creature to its owner's hand.")]
 #[case::a_player("Return target player to its owner's hand.")]

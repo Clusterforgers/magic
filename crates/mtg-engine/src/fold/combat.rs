@@ -274,6 +274,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 )));
             }
             crate::r5522_history::r5522_note_could_attack(state);
+            let declared: Vec<mtg_core::ids::ObjectId> =
+                attackers.iter().map(|(object, _)| *object).collect();
+            crate::combat::p158_note_had_to_attack(state, &declared);
             state.combat.attackers = attackers
                 .iter()
                 .map(|(object, target)| Attacker {

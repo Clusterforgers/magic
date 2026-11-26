@@ -1,0 +1,19 @@
+{
+  "oracle_id": "f0449cbd-855c-4c20-a1f5-f76a395d8d39",
+  "name": "Reprieve",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Reprieve",
+      "oracle_fingerprint": "6aee1ee4789de0161fd5b4c185146fb7",
+      "abilities": [
+        {
+          "Spell": {
+            "targets": [{ "what": { "Object": ["Spell"] } }],
+            "effects": [{ "Move": { "what": { "Target": 0 }, "to": "Hand" } }, { "Draw": {} }]
+          }
+        }
+      ]
+    }
+  ]
+}

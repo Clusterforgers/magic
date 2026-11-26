@@ -1698,6 +1698,58 @@ fn check_snow(
     spend: &Spend,
     payment: &Payment,
 ) -> Result<Spent, PaymentError> {
+    let whole = check_snow_whole(cost, pool, sources, help, tapped, life, spend, payment);
+    let snow = cost.snow();
+    if whole.is_ok() || snow == 0 {
+        return whole;
+    }
+    // Read with `{S}` as generic, a source that adds two mana for the `{1}` beside a snow tap for the `{S}` looks
+    // like mana to spare; read the snow mana apart, as `auto_payment` builds it, so its surplus floats.
+    let rest = cost.without_snow();
+    let one_each = ManaCost::from_symbols((0..snow).map(|_| ManaSymbol::Generic(1)));
+    for c in mana_snow::choices(pool, sources, spend, snow) {
+        let Some(left) = c.rest_of(payment) else {
+            continue;
+        };
+        let Ok(mut paid) = check_snow_whole(
+            &one_each,
+            pool,
+            sources,
+            Help::NONE,
+            tapped,
+            life,
+            spend,
+            &c.paid,
+        ) else {
+            continue;
+        };
+        if mana_snow::spent_snow(&paid) < snow {
+            continue;
+        }
+        if let Ok(got) =
+            check_snow_whole(&rest, &c.pool, &c.sources, help, tapped, life, spend, &left)
+        {
+            paid.mana.extend(got.mana);
+            paid.restricted.extend(got.restricted);
+            paid.steps.extend(got.steps);
+            return Ok(paid);
+        }
+    }
+    whole
+}
+
+/// [`check_snow`] with each `{S}` read as generic mana that snow mana must make up.
+#[allow(clippy::too_many_arguments)]
+fn check_snow_whole(
+    cost: &ManaCost,
+    pool: &ManaPool,
+    sources: &[ManaOption],
+    help: Help<'_>,
+    tapped: &[ObjectId],
+    life: i32,
+    spend: &Spend,
+    payment: &Payment,
+) -> Result<Spent, PaymentError> {
     let snow = cost.snow();
     let cost = &cost.snow_as_generic();
     mana_repeat::forged(payment)?;
@@ -1919,6 +1971,17 @@ fn complete_snow(
         match complete_plain(&whole, pool, sources, help, tapped, life, spend, &joined) {
             Ok(done) => return Ok(done),
             Err(error) => refusal = error,
+        }
+    }
+    // As in `check_snow`: with the snow mana set aside first, the rest may tap a source whose surplus floats.
+    if already == 0 {
+        let rest = cost.without_snow();
+        for c in mana_snow::choices(pool, sources, spend, snow) {
+            if let Ok(done) = complete_plain(
+                &rest, &c.pool, &c.sources, help, tapped, life, spend, partial,
+            ) {
+                return Ok(c.join(done));
+            }
         }
     }
     Err(refusal)

@@ -95,7 +95,8 @@ pg_stop_all() {
 declare -A u_kind=() u_dir=() u_cmd=() u_env=() u_need=() u_lock=() u_log=() u_start=() unit_secs=() running=()
 # unit_rerun <unit>: the cargo command that runs one of its tests; unit_sliced <unit>: it ran a seed slice;
 # u_expect <unit>: the seconds of its last passing run, when known.
-declare -A unit_rerun=() unit_sliced=() u_expect=()
+# u_alone <unit>: it starts once nothing else runs, takes the whole share and nothing starts beside it.
+declare -A unit_rerun=() unit_sliced=() u_expect=() u_alone=()
 queue=()
 used=0 lock_held=0 tick_pid="" run_dir="" pg_fd_open=0
 
@@ -151,17 +152,33 @@ launch_unit() {
   used=$((used + u_need[$name]))
 }
 
-# start_ready: start the queued units that fit the thread share (a unit that needs the Postgres lock waits for it).
+# start_ready: start the queued units that fit the thread share (a unit that needs the Postgres lock waits for it; one
+# that runs alone waits until no other runs or can start, and holds back the rest).
 start_ready() {
-  local share free left name need rest=() blocked=0 secs_left=0 expect
+  local share free left=0 name need rest=() blocked=0 secs_left=0 expect lone=0 pid order=() alone=()
   share=$(current_share)
-  left=${#queue[@]}
-  for name in "${queue[@]}"; do secs_left=$((secs_left + ${u_expect[$name]:-0})); done
+  for pid in "${!running[@]}"; do ((!${u_alone[${running[$pid]}]:-0})) || lone=1; done
   for name in "${queue[@]}"; do
+    if ((${u_alone[$name]:-0})); then
+      alone+=("$name")
+      continue
+    fi
+    order+=("$name")
+    left=$((left + 1))
+    secs_left=$((secs_left + ${u_expect[$name]:-0}))
+  done
+  for name in "${order[@]}" "${alone[@]}"; do
+    if ((lone)) || { ((${u_alone[$name]:-0})) && ((${#running[@]} > 0)); }; then
+      rest+=("$name")
+      continue
+    fi
     free=$((share - used))
     need="${u_need[$name]}"
     expect="${u_expect[$name]:-0}"
-    if [[ "$need" == auto && -n "${RUST_TEST_THREADS:-}" ]]; then
+    if ((${u_alone[$name]:-0})); then
+      need="${RUST_TEST_THREADS:-$share}" expect=0
+      left=$((left + 1))
+    elif [[ "$need" == auto && -n "${RUST_TEST_THREADS:-}" ]]; then
       need="$RUST_TEST_THREADS"
     elif [[ "$need" == auto ]] && ((expect > 0)); then
       need=$(expected_threads "$free" "$expect" "$secs_left")
@@ -184,6 +201,7 @@ start_ready() {
     fi
     u_need[$name]="$need"
     launch_unit "$name" "$need"
+    ((!${u_alone[$name]:-0})) || lone=1
   done
   queue=("${rest[@]}")
   if ((blocked && ${#running[@]} > 0)) && [[ -z "$tick_pid" ]]; then

@@ -19,12 +19,14 @@
               }
             ],
             "effects": [
-              { "Move": { "what": { "Target": 0 }, "to": { "Battlefield": {} } } },
               {
-                "Continuous": {
-                  "affected": { "Arrived": { "of": { "Target": 0 }, "zone": "Battlefield" } },
-                  "mods": [{ "AddSubtype": "Skeleton" }, "LoseAbilities"],
-                  "duration": "Forever"
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": {
+                    "R6502BattlefieldAs": {
+                      "becomes": [{ "AddSubtype": "Skeleton" }, "LoseAbilities"]
+                    }
+                  }
                 }
               }
             ]

@@ -1508,7 +1508,7 @@ impl InvariantChecker {
         } else {
             0
         };
-        let limit = mtg_engine::rules::loyalty_activations(&self.shadow, player) + more;
+        let limit = mtg_engine::rules::loyalty_activations(&self.shadow, player, source) + more;
         let entry = self.loyalty_turns.entry(source).or_insert((number, 0));
         if entry.0 != number {
             *entry = (number, 0);
