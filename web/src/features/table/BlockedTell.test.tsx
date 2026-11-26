@@ -1,4 +1,4 @@
-// Goal: at two and four seats a press on a hand card the offer leaves out says why at the card in one line (One Voice with the boss's modifier chip lit, sorcery speed, too little mana), nothing is said over the hand before a press, a press elsewhere or Escape hushes it, and a press on a hand card while another seat decides says whom the game waits for.
+// Goal: at two and four seats a press on a hand card the offer leaves out says why at the card in one line (One Voice with the boss's modifier chip lit, sorcery speed, too little mana), nothing is said over the hand before a press, a press elsewhere or Escape hushes it, and a press on a hand card while another seat decides says whom the game waits for, but never to a spectator or a replay.
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it } from 'vitest'
@@ -103,5 +103,24 @@ describe.each([2, 4])('a press on a hand card while another seat decides at %i s
     await user.click(cardButton(card))
     expect(must(tell()).textContent).toMatch(/^Waiting for .+: you can play once you have priority\.$/)
     expect(screen.queryByText(/you have cast your spell/)).toBeNull()
+  })
+
+  it('says no wait to a spectator or a replay, who plays nothing', async () => {
+    const game = fixtureGame({ seats })
+    const { view } = game.session.store.getState()
+    const other = must(view).players.find((player) => player.seat !== must(view).viewer)
+    act(() => {
+      game.session.store.setState((state) => ({
+        pending: null,
+        view:
+          state.view === null
+            ? null
+            : { ...state.view, spectator: true, priority: { holder: must(other).seat, passed: [] } },
+      }))
+    })
+    const user = table(game)
+    const card = must(must(view).players[must(view).viewer]?.hand.cards?.[0])
+    await user.click(cardButton(card))
+    expect(tell()).toBeNull()
   })
 })
