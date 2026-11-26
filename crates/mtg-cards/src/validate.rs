@@ -7338,6 +7338,7 @@ impl Walker<'_> {
                     });
                 }
             }
+            GameRule::R7011CastWhileSearching => self.at(tag, |_| {}),
             GameRule::CountsAsNamed(name) => {
                 if name.trim().is_empty() {
                     self.at(tag, |w| w.problem("a card counts as a card with a name"));
@@ -7619,6 +7620,10 @@ impl Walker<'_> {
             ZoneKind::Graveyard | ZoneKind::Exile if c8_eg_itself => {}
             ZoneKind::Hand if ep27_flash => {}
             ZoneKind::Graveyard if matches!(rule, GameRule::CountsAsNamed(_)) => {}
+            ZoneKind::Library if matches!(rule, GameRule::R7011CastWhileSearching) => {}
+            _ if matches!(rule, GameRule::R7011CastWhileSearching) => self.at("from", |w| {
+                w.problem("a card is cast while its owner searches from the library: write the rule with `from` Library");
+            }),
             _ if matches!(rule, GameRule::CountsAsNamed(_)) => self.at("from", |w| {
                 w.problem("a card counts as another name from a graveyard: write the rule with `from` Graveyard");
             }),

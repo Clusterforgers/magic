@@ -1371,6 +1371,7 @@ const RUNS: &[&str] = &[
     "Rule.KeepsDamage",
     "Rule.Flagbearers",
     "Rule.CountsAsNamed",
+    "Rule.R7011CastWhileSearching",
     "Rule.CantSpendMana",
     "Rule.TaxAsLife",
     "Rule.R6018PlotLess",

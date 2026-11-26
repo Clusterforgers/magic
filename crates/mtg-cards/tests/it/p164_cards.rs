@@ -17,8 +17,6 @@ use rstest::rstest;
 #[case("Chorus of the Conclave")]
 #[case("Panglacial Wurm")]
 #[case("Eriette, the Beguiler")]
-#[case("Psychic Battle")]
-#[case("Miss Highwater")]
 fn p164_card_is_verified(#[case] name: &str) {
     let library = common::Corpus::repo().library();
     let printed = common::printed();

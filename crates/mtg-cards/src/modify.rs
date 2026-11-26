@@ -1507,6 +1507,10 @@ pub enum GameRule {
     R116Rulebreaker(String),
     /// A booster draft rule: nothing in a game; no `from`.
     Draft(DraftRule),
+    /// "While you're searching your library, you may cast this card from your library." (CR 701.23, the Panglacial Wurm
+    /// rulings): before its owner finds a card in a search of their own library, they may cast it from there, paying its
+    /// costs; the search goes on once they cast no more. Written with `from` Library.
+    R7011CastWhileSearching,
     /// "If this card is in a graveyard, effects from spells named Muscle Burst count it as a card named Muscle Burst.": a
     /// resolving spell of that name reads the card as named so; from the graveyard only.
     CountsAsNamed(String),

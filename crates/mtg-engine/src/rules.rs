@@ -2576,6 +2576,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::Flagbearers => return Err(ResolveError::Unsupported("Rule.Flagbearers")),
         // A resolving spell reads it from the card in the graveyard (`Pred::Named`); it is no rule of the game.
         GameRule::CountsAsNamed(_) => return Err(ResolveError::Unsupported("Rule.CountsAsNamed")),
+        // A search reads it from the cards of the library (`r7011_cast_while_searching`); it is no rule of the game.
+        GameRule::R7011CastWhileSearching => {
+            return Err(ResolveError::Unsupported("Rule.R7011CastWhileSearching"));
+        }
         GameRule::CantSpendMana => return Err(ResolveError::Unsupported("Rule.CantSpendMana")),
         // The cost of the cast reads it from the card (`r5500_tax_life`); it is no rule of the game.
         GameRule::TaxAsLife(_) => return Err(ResolveError::Unsupported("Rule.TaxAsLife")),

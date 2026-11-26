@@ -2,7 +2,9 @@
 //! of the Conclave lets its controller pay any amount of mana as they cast a creature spell, the creature entering with
 //! that many more +1/+1 counters, and offers nothing for other spells or other players; Eriette, the Beguiler takes an
 //! opponent's permanent her controller's Aura enchants when its mana value is at most the Aura's, for as long as the
-//! Aura stays on it; each game replays to its state.
+//! Aura stays on it; Equinox counters a spell only when the spell itself would destroy its controller's land; Spy Kit
+//! gives every nonlegendary creature card's name the game knows; Panglacial Wurm is cast, paid for, while its owner
+//! searches their own library and never in another's search; each game replays to its state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -13,7 +15,7 @@ use mtg_cards::value::CounterKind;
 use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
-use mtg_engine::choose::{NumberChoice, Target, YesNoChoice};
+use mtg_engine::choose::{CardsChoice, NumberChoice, Target, YesNoChoice};
 use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::events::Event;
 use mtg_engine::turn::Step;
@@ -96,6 +98,7 @@ fn plus_counters(driver: &Driver, seat: usize, name: &str) -> u32 {
 #[case("Eriette, the Beguiler")]
 #[case("Equinox")]
 #[case("Spy Kit")]
+#[case("Panglacial Wurm")]
 fn p164_the_cards_are_verified(#[case] name: &str) {
     let support = mtg_testkit::corpus::corpus()
         .unwrap()
@@ -377,5 +380,98 @@ fn spy_kit_gives_every_nonlegendary_creature_cards_name(
     };
     assert_eq!(!on_battlefield("Agent"), destroyed);
     assert!(on_battlefield("Bystander"));
+    replays(&driver);
+}
+
+const GROWTH: &str = r#"{"Spell":{"effects":[{"Search":{"filter":[{"Supertype":"Basic"},{"Type":"Land"}],"as":"land"}},{"Move":{"what":{"Bound":"land"},"to":{"Battlefield":{"tapped":true}}}},{"Shuffle":{}}]}}"#;
+
+fn in_zone(driver: &Driver, zone: Zone, name: &str) -> usize {
+    driver
+        .state()
+        .zone(zone)
+        .iter()
+        .filter(|id| driver.state().object(**id).unwrap().card().name == name)
+        .count()
+}
+
+#[rstest]
+#[case::cast_while_searching(7, true, true)]
+#[case::left_in_the_library(7, false, false)]
+#[case::too_little_mana(6, true, false)]
+fn panglacial_wurm_is_cast_while_its_owner_searches(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] forests: usize,
+    #[case] wants: bool,
+    #[case] cast: bool,
+) {
+    let mut library = vec![card("Panglacial Wurm").unwrap()];
+    library.extend((0..5).map(|_| island()));
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, (0..forests).map(|_| ready(forest())).collect::<Vec<_>>())
+        .hand(0, [sorcery("Growth", GROWTH)]);
+    let scenario = (1..seats).fold(scenario, |scenario, seat| {
+        scenario.library(seat, vec![island(); 10])
+    });
+    let mut driver = Driver::from_scenario(scenario.library(0, library)).unwrap();
+    driver.cast("Growth").unwrap();
+    let asked = std::cell::Cell::new(0);
+    settle(&mut driver, 0, &|decision| match &decision.kind {
+        DecisionKind::ChooseCards(options) if options.text.contains("while you search") => {
+            asked.set(asked.get() + 1);
+            let wurm = options
+                .from
+                .first()
+                .copied()
+                .filter(|_| wants && asked.get() == 1);
+            Some(Answer::ChooseCards(CardsChoice(wurm.into_iter().collect())))
+        }
+        DecisionKind::ChooseCards(options) => Some(Answer::ChooseCards(CardsChoice(
+            options.from.iter().copied().take(1).collect(),
+        ))),
+        _ => None,
+    });
+    assert_eq!(
+        asked.get() > 0,
+        forests >= 7,
+        "asked only when the Wurm can be cast"
+    );
+    assert_eq!(
+        in_zone(&driver, Zone::Battlefield, "Panglacial Wurm"),
+        usize::from(cast)
+    );
+    assert_eq!(
+        in_zone(&driver, Zone::Library(pid(0)), "Panglacial Wurm"),
+        usize::from(!cast)
+    );
+    // The search still found a land: the Island it put onto the battlefield.
+    assert_eq!(in_zone(&driver, Zone::Battlefield, "Island"), 1);
+    replays(&driver);
+}
+
+#[rstest]
+fn panglacial_wurm_waits_out_another_players_search(#[values(2, 3, 4)] seats: usize) {
+    let mut library = vec![card("Panglacial Wurm").unwrap()];
+    library.extend((0..5).map(|_| island()));
+    let scenario = Scenario::new(seats)
+        .at(1, 1, Step::Main1)
+        .battlefield(0, (0..7).map(|_| ready(forest())).collect::<Vec<_>>())
+        .hand(1, [sorcery("Growth", GROWTH)]);
+    let scenario = (1..seats).fold(scenario, |scenario, seat| {
+        scenario.library(seat, vec![island(); 10])
+    });
+    let mut driver = Driver::from_scenario(scenario.library(0, library)).unwrap();
+    driver.cast("Growth").unwrap();
+    settle(&mut driver, 1, &|decision| {
+        assert!(
+            !matches!(&decision.kind, DecisionKind::ChooseCards(options) if options.text.contains("while you search")),
+            "only a search of the Wurm's own library offers it"
+        );
+        None
+    });
+    assert_eq!(
+        in_zone(&driver, Zone::Library(pid(0)), "Panglacial Wurm"),
+        1
+    );
     replays(&driver);
 }
