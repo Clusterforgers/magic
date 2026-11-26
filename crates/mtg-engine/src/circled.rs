@@ -6,7 +6,6 @@
 //! every zone, and is public. The colors count as printed on the card: a permanent that is a copy of one reads the
 //! colors of what it copies (`Produce::Circled`).
 
-use mtg_cards::ability::Ability;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 
@@ -22,10 +21,7 @@ pub(crate) const ASKED: &str = "Circle the colors of this card for your deck.";
 
 /// How many colors the card of `id` circles as its deck is built; none without the ability.
 fn circles(state: &GameState, id: ObjectId) -> Option<u32> {
-    state.object(id)?.whole_card().rules.iter().find_map(|rules| match &**rules {
-        Ability::CircleColors(count) => Some(*count),
-        _ => None,
-    })
+    crate::ability_reader::definition_circles_colors(state.object(id)?.whole_card())
 }
 
 /// The colors circled for the card `id` before the game began, if they were.
@@ -49,7 +45,11 @@ pub(crate) fn circled(state: &GameState, id: ObjectId) -> Vec<Color> {
             .map(|effect| effect.of().id);
         match copied {
             Some(of) if of != at => at = of,
-            _ => return circled_on(state, at).map(<[Color]>::to_vec).unwrap_or_default(),
+            _ => {
+                return circled_on(state, at)
+                    .map(<[Color]>::to_vec)
+                    .unwrap_or_default();
+            }
         }
     }
     Vec::new()
@@ -93,7 +93,10 @@ fn label(colors: &[Color]) -> String {
 /// The next card the opening asks about: one with the ability and no colors yet, owned by the first seat in turn order
 /// from the first player that has one, lowest id first.
 pub(crate) fn question(state: &GameState) -> Option<Decision> {
-    if !state.objects().any(|object| circles(state, object.id()).is_some()) {
+    if !state
+        .objects()
+        .any(|object| circles(state, object.id()).is_some())
+    {
         return None;
     }
     state
@@ -147,7 +150,11 @@ mod tests {
     #[case(1, 5, "White")]
     #[case(2, 10, "White and blue")]
     #[case(3, 10, "White, blue and black")]
-    fn every_set_of_colors_is_offered_once(#[case] count: u32, #[case] sets: usize, #[case] first: &str) {
+    fn every_set_of_colors_is_offered_once(
+        #[case] count: u32,
+        #[case] sets: usize,
+        #[case] first: &str,
+    ) {
         let all = ways(count);
         assert_eq!(all.len(), sets);
         assert!(all.iter().all(|colors| colors.len() == count as usize));

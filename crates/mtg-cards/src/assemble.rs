@@ -776,7 +776,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         condition,
         limit,
         by: Activators::Controller,
-        from: from @ (ZoneKind::Battlefield | ZoneKind::Hand),
+        from: from @ (ZoneKind::Battlefield | ZoneKind::Hand | ZoneKind::Command),
         targets,
         effects,
     } = ability

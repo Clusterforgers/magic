@@ -477,12 +477,10 @@ fn clause_spans_cut_out_the_sentences_they_name() {
             }
         }
     }
-    let expected = [
-        (
-            "Yotia Declares War",
-            "II \u{2014} Tap any number of untapped artifacts you control. When you do, this Saga deals that much damage to target creature or planeswalker.",
-        ),
-    ];
+    let expected = [(
+        "Yotia Declares War",
+        "II \u{2014} Tap any number of untapped artifacts you control. When you do, this Saga deals that much damage to target creature or planeswalker.",
+    )];
     for (name, clause) in expected {
         assert!(
             found.contains(&(name.to_owned(), clause.to_owned())),

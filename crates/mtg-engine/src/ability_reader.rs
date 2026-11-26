@@ -293,6 +293,14 @@ pub(crate) fn definition_sets_commander_color(definition: &CardDefinition) -> bo
     })
 }
 
+/// How many colors a card with this definition circles as its deck is built (`Ability::CircleColors`); none without it.
+pub(crate) fn definition_circles_colors(definition: &CardDefinition) -> Option<u32> {
+    definition.rules.iter().find_map(|rules| match &**rules {
+        Ability::CircleColors(count) => Some(*count),
+        _ => None,
+    })
+}
+
 /// Whether a card with this definition counts as a card named `name` for spells of that name while in a graveyard
 /// (`GameRule::CountsAsNamed`).
 pub(crate) fn r4703_counts_as_named(definition: &CardDefinition, name: &str) -> bool {

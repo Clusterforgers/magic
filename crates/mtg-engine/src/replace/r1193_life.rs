@@ -15,12 +15,20 @@ use crate::events::Event;
 /// The change in `player`'s life total an event makes: a gain, a loss, a payment or damage that takes life.
 fn life_change(item: &Item, player: PlayerId) -> i64 {
     match item {
-        Item::One(Event::LifeLost { player: who, amount } | Event::LifePaid { player: who, amount })
-            if *who == player =>
-        {
-            -i64::from(*amount)
-        }
-        Item::One(Event::LifeGained { player: who, amount }) if *who == player => i64::from(*amount),
+        Item::One(
+            Event::LifeLost {
+                player: who,
+                amount,
+            }
+            | Event::LifePaid {
+                player: who,
+                amount,
+            },
+        ) if *who == player => -i64::from(*amount),
+        Item::One(Event::LifeGained {
+            player: who,
+            amount,
+        }) if *who == player => i64::from(*amount),
         Item::One(Event::DamageDealt {
             target: DamageTarget::Player(who),
             amount,
@@ -80,7 +88,12 @@ impl Pass<'_> {
     /// Takes the life out of every other event of the batch that reduces `player`'s life total: a loss is dropped and
     /// damage is dealt without a loss. Damage at `at`, which the effects take the place of, is dealt again without a
     /// loss just after it. Returns where the event at `at` is now.
-    pub(super) fn r1193_absorb(&mut self, at: usize, player: PlayerId, applied: &[Origin]) -> usize {
+    pub(super) fn r1193_absorb(
+        &mut self,
+        at: usize,
+        player: PlayerId,
+        applied: &[Origin],
+    ) -> usize {
         let mut now = at;
         let mut out = Vec::with_capacity(self.slots.len() + 1);
         for (index, mut slot) in std::mem::take(&mut self.slots).into_iter().enumerate() {

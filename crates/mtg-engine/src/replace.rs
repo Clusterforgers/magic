@@ -4754,6 +4754,7 @@ fn r6104_worked_out(
 }
 
 mod r109_next_batch;
+mod r1193_life;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
@@ -4764,7 +4765,6 @@ mod r5504_look;
 mod r5507_counters;
 pub(crate) mod r5516_copies;
 pub(crate) mod r5516_learns;
-mod r1193_life;
 mod r5517_life;
 mod r5517_under;
 pub(crate) mod r6700_draws;

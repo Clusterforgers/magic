@@ -1496,7 +1496,23 @@ object: ObjectId,
 /**
  * The color.
  */
-color: Color, } } | { "FirstDrawRevealed": { 
+color: Color, } } | { "R6051EmblemEnded": { 
+/**
+ * The emblem.
+ */
+object: ObjectId, } } | { "ColorsCircled": { 
+/**
+ * Who circled them.
+ */
+player: PlayerId, 
+/**
+ * The card.
+ */
+object: ObjectId, 
+/**
+ * The colors circled.
+ */
+colors: Array<Color>, } } | { "FirstDrawRevealed": { 
 /**
  * Who revealed it.
  */

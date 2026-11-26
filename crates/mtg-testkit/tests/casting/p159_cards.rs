@@ -14,8 +14,10 @@ use mtg_core::card::CardType;
 use mtg_core::color::Color;
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
-use mtg_engine::choose::{ChoiceOption, OptionChoice, TargetChoice, YesNoChoice};
-use mtg_engine::decision::{Answer, Decision, DecisionKind, MulliganChoice, PayChoice, PriorityAction};
+use mtg_engine::choose::{OptionChoice, TargetChoice, YesNoChoice};
+use mtg_engine::decision::{
+    Answer, Decision, DecisionKind, MulliganChoice, PayChoice, PriorityAction,
+};
 use mtg_engine::format::Normal;
 use mtg_engine::setup::GameSetup;
 use mtg_engine::turn::Step;
@@ -119,10 +121,18 @@ fn cryptic_spires_asks_for_two_colors_of_each_copy_before_any_hand(
 ) {
     let deck = |spires: usize| -> Vec<Arc<CardDefinition>> {
         (0..40)
-            .map(|at| if at < spires { card(SPIRES).unwrap() } else { forest() })
+            .map(|at| {
+                if at < spires {
+                    card(SPIRES).unwrap()
+                } else {
+                    forest()
+                }
+            })
             .collect()
     };
-    let decks = (0..seats).map(|seat| deck(if seat == 0 { 3 } else { 0 })).collect();
+    let decks = (0..seats)
+        .map(|seat| deck(if seat == 0 { 3 } else { 0 }))
+        .collect();
     let mut setup = GameSetup::new(Arc::new(Normal), 7, decks);
     setup.validate_decks = false;
     let mut driver = Driver::new(Engine::new(setup).unwrap()).unwrap();
@@ -130,20 +140,30 @@ fn cryptic_spires_asks_for_two_colors_of_each_copy_before_any_hand(
     while let DecisionKind::ChooseOption(options) = driver.decision().unwrap().kind.clone() {
         let player = driver.decision().unwrap().player;
         assert_eq!(player, pid(0), "only the owner of the copies is asked");
-        assert!(driver.state().zone(Zone::Hand(player)).is_empty(), "no hand before the colors");
+        assert!(
+            driver.state().zone(Zone::Hand(player)).is_empty(),
+            "no hand before the colors"
+        );
         assert_eq!(options.options.len(), 10, "every pair of colors");
         assert!(!asked.contains(&options.source), "each copy once");
         asked.push(options.source);
-        let events = driver.answer(Answer::ChooseOption(OptionChoice(pick))).unwrap();
+        let events = driver
+            .answer(Answer::ChooseOption(OptionChoice(pick)))
+            .unwrap();
         assert!(events.iter().any(|event| matches!(
             event,
             Event::ColorsCircled { object, colors, .. } if *object == options.source && colors.len() == 2
         )));
     }
     assert_eq!(asked.len(), 3, "one question per copy");
-    assert!(matches!(driver.decision().unwrap().kind, DecisionKind::Mulligan(_)));
+    assert!(matches!(
+        driver.decision().unwrap().kind,
+        DecisionKind::Mulligan(_)
+    ));
     while matches!(driver.decision().unwrap().kind, DecisionKind::Mulligan(_)) {
-        driver.answer(Answer::Mulligan(MulliganChoice::Keep)).unwrap();
+        driver
+            .answer(Answer::Mulligan(MulliganChoice::Keep))
+            .unwrap();
     }
     replays(&driver);
 }
@@ -155,7 +175,10 @@ fn cryptic_spires_adds_a_circled_color_and_a_copy_reads_the_colors_of_what_it_co
 ) {
     let scenario = Scenario::new(seats)
         .at(1, 0, Step::Main1)
-        .battlefield(0, [ready(card(SPIRES).unwrap()), ready(card(SPIRES).unwrap())])
+        .battlefield(
+            0,
+            [ready(card(SPIRES).unwrap()), ready(card(SPIRES).unwrap())],
+        )
         .hand(0, [card("Vesuva").unwrap()]);
     let driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
     let spires: Vec<ObjectId> = driver
@@ -170,10 +193,24 @@ fn cryptic_spires_adds_a_circled_color_and_a_copy_reads_the_colors_of_what_it_co
         .iter()
         .flat_map(|(_, options)| options.iter().map(|option| option.produces))
         .collect();
-    assert_eq!(ways, vec![mana_of(colors.0), mana_of(colors.1)], "the circled colors");
-    assert!(mtg_engine::mana_ways(driver.state(), spires[1]).iter().all(|(_, o)| o.is_empty()));
+    assert_eq!(
+        ways,
+        vec![mana_of(colors.0), mana_of(colors.1)],
+        "the circled colors"
+    );
     assert!(
-        !driver.state().object(spires[0]).unwrap().permanent().unwrap().tapped(),
+        mtg_engine::mana_ways(driver.state(), spires[1])
+            .iter()
+            .all(|(_, o)| o.is_empty())
+    );
+    assert!(
+        !driver
+            .state()
+            .object(spires[0])
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .tapped(),
         "untapped"
     );
     // The copy with no colors circled adds nothing.
@@ -181,21 +218,40 @@ fn cryptic_spires_adds_a_circled_color_and_a_copy_reads_the_colors_of_what_it_co
         DecisionKind::Priority(options) => options.clone(),
         other => panic!("priority, not {other:?}"),
     };
-    let offered: Vec<ObjectId> = options.mana_abilities.iter().map(|m| m.source.object).collect();
+    let offered: Vec<ObjectId> = options
+        .mana_abilities
+        .iter()
+        .map(|m| m.source.object)
+        .collect();
     assert!(offered.contains(&spires[0]));
-    assert!(!offered.contains(&spires[1]), "an uncircled Spires adds no mana");
+    assert!(
+        !offered.contains(&spires[1]),
+        "an uncircled Spires adds no mana"
+    );
     driver.tap_for_mana_of(SPIRES, mana_of(colors.1)).unwrap();
     assert_eq!(pool(&driver, 0, mana_of(colors.1)), 1);
     // Vesuva enters as a copy of the circled Spires and adds its colors.
-    let vesuva = driver.id_of("Vesuva").unwrap();
+    let vesuva = *driver.state().zone(Zone::Hand(pid(0))).first().unwrap();
     driver.play_land("Vesuva").unwrap();
     settle(&mut driver, &|decision| match &decision.kind {
-        DecisionKind::ChooseCards(options) if options.from.contains(&spires[0]) => Some(
-            Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![spires[0]])),
-        ),
-        DecisionKind::ChooseTargets(options) if options.legal.iter().any(|t| t.object().is_some_and(|o| o.id == spires[0])) => {
+        DecisionKind::ChooseCards(options) if options.from.contains(&spires[0]) => {
+            Some(Answer::ChooseCards(mtg_engine::choose::CardsChoice(vec![
+                spires[0],
+            ])))
+        }
+        DecisionKind::ChooseTargets(options)
+            if options
+                .legal
+                .iter()
+                .any(|t| t.object().is_some_and(|o| o.id == spires[0])) =>
+        {
             Some(Answer::ChooseTargets(TargetChoice::Targets(
-                options.legal.iter().copied().filter(|t| t.object().is_some_and(|o| o.id == spires[0])).collect(),
+                options
+                    .legal
+                    .iter()
+                    .copied()
+                    .filter(|t| t.object().is_some_and(|o| o.id == spires[0]))
+                    .collect(),
             )))
         }
         _ => None,
@@ -205,7 +261,10 @@ fn cryptic_spires_adds_a_circled_color_and_a_copy_reads_the_colors_of_what_it_co
         .iter()
         .flat_map(|(_, options)| options.iter().map(|option| option.produces))
         .collect();
-    assert!(made.contains(&mana_of(colors.0)) && made.contains(&mana_of(colors.1)), "{made:?}");
+    assert!(
+        made.contains(&mana_of(colors.0)) && made.contains(&mana_of(colors.1)),
+        "{made:?}"
+    );
     replays(&driver);
 }
 
@@ -213,7 +272,9 @@ fn cryptic_spires_adds_a_circled_color_and_a_copy_reads_the_colors_of_what_it_co
 fn at_seat(seat: usize) -> impl Fn(&Decision) -> Option<Answer> {
     move |decision| match &decision.kind {
         DecisionKind::ChooseTargets(options)
-            if options.legal.contains(&mtg_engine::choose::Target::Player(pid(seat))) =>
+            if options
+                .legal
+                .contains(&mtg_engine::choose::Target::Player(pid(seat))) =>
         {
             Some(Answer::ChooseTargets(TargetChoice::Targets(vec![
                 mtg_engine::choose::Target::Player(pid(seat)),
@@ -230,10 +291,8 @@ fn transformed(driver: &Driver, id: ObjectId) -> bool {
 #[rstest]
 fn enduring_angel_transforms_in_place_of_a_life_total_reaching_zero(
     #[values(2, 3, 4)] seats: usize,
-    #[values(("Lightning Bolt", 2), ("Lightning Bolt", 3), ("Sign in Blood", 1), ("Lightning Bolt", 4))] spell: (
-        &str,
-        i32,
-    ),
+    #[values(("Lightning Bolt", 2), ("Lightning Bolt", 3), ("Sign in Blood", 1), ("Lightning Bolt", 4))]
+    spell: (&str, i32),
 ) {
     let (name, before) = spell;
     let scenario = Scenario::new(seats)
@@ -255,7 +314,11 @@ fn enduring_angel_transforms_in_place_of_a_life_total_reaching_zero(
     settle(&mut driver, &at_seat(0));
     let taken = if name == "Lightning Bolt" { 3 } else { 2 };
     if before > taken {
-        assert_eq!(life(&driver, 0), before - taken, "a total above 0 is not replaced");
+        assert_eq!(
+            life(&driver, 0),
+            before - taken,
+            "a total above 0 is not replaced"
+        );
         assert!(!transformed(&driver, angel));
     } else {
         assert_eq!(life(&driver, 0), 3, "the life total becomes 3");
@@ -323,7 +386,10 @@ fn a_copy_of_enduring_angel_that_cannot_transform_loses_the_game(#[values(2, 3, 
         });
         driver.answer(answer).unwrap();
     }
-    assert!(!driver.state().is_alive(pid(0)), "the Clone cannot transform");
+    assert!(
+        !driver.state().is_alive(pid(0)),
+        "the Clone cannot transform"
+    );
     replays(&driver);
 }
 
@@ -393,32 +459,46 @@ fn professor_hojo_discounts_the_first_ability_targeting_your_creature_and_draws_
     let hand = hand_size(&driver, 0);
     if foe_first {
         pump(&mut driver, "Wolf");
-        assert_eq!(untapped_forests(&driver), 2, "an opponent's creature is no discount");
+        assert_eq!(
+            untapped_forests(&driver),
+            2,
+            "an opponent's creature is no discount"
+        );
         assert_eq!(hand_size(&driver, 0), hand, "nor a draw");
     }
     let before = untapped_forests(&driver);
     pump(&mut driver, "Bear");
-    assert_eq!(untapped_forests(&driver), before, "the first costs {{2}} less");
-    assert_eq!(hand_size(&driver, 0), hand + 1, "a target of yours draws a card");
+    assert_eq!(
+        untapped_forests(&driver),
+        before,
+        "the first costs {{2}} less"
+    );
+    assert_eq!(
+        hand_size(&driver, 0),
+        hand + 1,
+        "a target of yours draws a card"
+    );
     pump(&mut driver, "Bear");
-    assert_eq!(untapped_forests(&driver), before - 2, "the second costs in full");
+    assert_eq!(
+        untapped_forests(&driver),
+        before - 2,
+        "the second costs in full"
+    );
     assert_eq!(hand_size(&driver, 0), hand + 1, "it draws once a turn");
     replays(&driver);
 }
 
 #[rstest]
 fn professor_hojo_gives_no_discount_on_another_players_turn(#[values(2, 3, 4)] seats: usize) {
-    let scenario = Scenario::new(seats)
-        .at(1, 1, Step::Main1)
-        .battlefield(
-            0,
-            [
-                ready(card("Professor Hojo").unwrap()),
-                ready(pump_rod()),
-                ready(forest()),
-                ready(forest()),
-            ],
-        );
+    let scenario = Scenario::new(seats).at(1, 1, Step::Main1).battlefield(
+        0,
+        [
+            ready(card("Professor Hojo").unwrap()),
+            ready(pump_rod()),
+            ready(forest()),
+            ready(forest()),
+        ],
+    );
     let mut driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
     // Seat 1 passes priority to seat 0, who activates on seat 1's turn.
     while driver.decision().unwrap().player != pid(0) {
@@ -445,8 +525,16 @@ fn professor_hojo_gives_no_discount_on_another_players_turn(#[values(2, 3, 4)] s
         };
         driver.answer(answer).unwrap();
     }
-    assert_eq!(untapped_forests(&driver), 0, "it costs {{2}} on another turn");
-    assert_eq!(hand_size(&driver, 0), hand + 1, "the draw is not limited to its controller's turn");
+    assert_eq!(
+        untapped_forests(&driver),
+        0,
+        "it costs {{2}} on another turn"
+    );
+    assert_eq!(
+        hand_size(&driver, 0),
+        hand + 1,
+        "the draw is not limited to its controller's turn"
+    );
     replays(&driver);
 }
 
@@ -508,7 +596,13 @@ fn yavimaya_bloomsage_prepares_when_its_target_reaches_seven_power(
         driver.answer(answer).unwrap();
     }
     assert_eq!(
-        driver.state().object(giant).unwrap().permanent().unwrap().counters_of(&mtg_cards::value::CounterKind::PlusOnePlusOne),
+        driver
+            .state()
+            .object(giant)
+            .unwrap()
+            .permanent()
+            .unwrap()
+            .counters_of(&mtg_cards::value::CounterKind::PlusOnePlusOne),
         1
     );
     assert_eq!(prepared(&driver, "Yavimaya Bloomsage"), prepares);
@@ -517,9 +611,14 @@ fn yavimaya_bloomsage_prepares_when_its_target_reaches_seven_power(
 
 #[rstest]
 fn channel_gives_a_mana_ability_paid_in_life_until_end_of_turn(#[values(2, 3, 4)] seats: usize) {
-    let scenario = Scenario::new(seats)
-        .at(1, 0, Step::Main1)
-        .battlefield(0, [ready(card(BLOOMSAGE).unwrap()), ready(forest()), ready(forest())]);
+    let scenario = Scenario::new(seats).at(1, 0, Step::Main1).battlefield(
+        0,
+        [
+            ready(card(BLOOMSAGE).unwrap()),
+            ready(forest()),
+            ready(forest()),
+        ],
+    );
     let driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
     let bloomsage = driver.id_of("Yavimaya Bloomsage").unwrap();
     let mut events = driver.engine().events().to_vec();
@@ -529,11 +628,6 @@ fn channel_gives_a_mana_ability_paid_in_life_until_end_of_turn(#[values(2, 3, 4)
     driver.cast_prepared("Yavimaya Bloomsage").unwrap();
     settle(&mut driver, &nothing);
     let emblem = *driver.state().zone(Zone::Command(pid(0))).last().unwrap();
-    eprintln!(
-        "DEBUG {:?} {:?}",
-        driver.state().object(emblem).map(|o| (o.kind(), o.card().rules.clone())),
-        driver.engine().events().iter().rev().take(10).collect::<Vec<_>>()
-    );
     let before = life(&driver, 0);
     let options = match &driver.decision().unwrap().kind {
         DecisionKind::Priority(options) => options.clone(),
@@ -545,13 +639,20 @@ fn channel_gives_a_mana_ability_paid_in_life_until_end_of_turn(#[values(2, 3, 4)
         .find(|m| m.source.object == emblem)
         .expect("the emblem's mana ability is offered")
         .clone();
-    driver.answer(Answer::Priority(PriorityAction::ActivateMana(channel.source))).unwrap();
+    driver
+        .answer(Answer::Priority(PriorityAction::ActivateMana(
+            channel.source,
+        )))
+        .unwrap();
     assert_eq!(life(&driver, 0), before - 1, "1 life is paid");
     assert_eq!(pool(&driver, 0, ManaType::Colorless), 1, "for {{C}}");
     driver.pass_until(Step::Cleanup).ok();
     driver.idle_until(2, Step::Upkeep).ok();
     assert!(
-        driver.state().object(emblem).is_none_or(|object| object.zone() != Zone::Command(pid(0))),
+        driver
+            .state()
+            .object(emblem)
+            .is_none_or(|object| object.zone() != Zone::Command(pid(0))),
         "the ability ends with the turn"
     );
     replays(&driver);
