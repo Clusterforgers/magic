@@ -225,6 +225,7 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `${loses} ${modification.RemoveSupertype.toLowerCase()}`
   }
   if ('AddSubtype' in modification) return `${becomes} ${modification.AddSubtype} too`
+  if ('R2051RemoveSubtype' in modification) return `${loses} ${modification.R2051RemoveSubtype}`
   if ('SetCreatureTypes' in modification) {
     return `${becomes} ${joinWords(modification.SetCreatureTypes)}`
   }
@@ -330,6 +331,8 @@ function durationWords(
     if ('UntilEndOfTurnOrRolled' in duration)
       return ` until end of turn, or until any player rolls a ${duration.UntilEndOfTurnOrRolled}`
     if ('R6700UntilEndOfTheirNextTurn' in duration) return " until the end of that player's next turn"
+    if ('R122WhilePlayerHasCounter' in duration)
+      return ` while that player has a ${counterName(duration.R122WhilePlayerHasCounter[1])} counter`
     if ('R113While' in duration) return ' for as long as its condition holds'
     if ('R6112bWhileAttached' in duration) return ' for as long as that attachment stays attached'
     if ('R109ThatCombat' in duration) return ' during the added combat phase'

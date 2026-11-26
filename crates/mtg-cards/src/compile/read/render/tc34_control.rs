@@ -21,6 +21,7 @@ impl Writer<'_> {
                 what,
                 to: NewTargets::Choose,
                 onto: None,
+                r115_who: None,
             },
             ..,
         ] = effects

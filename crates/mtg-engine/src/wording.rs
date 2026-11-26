@@ -665,6 +665,13 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
                 what.0 == [Pred::This],
             )
         }
+        TriggerPattern::R1043Loses { who: player, .. } => {
+            let (name, _) = who(player);
+            (format!("{name} loses the game"), false)
+        }
+        TriggerPattern::R115ChoosesTargets { .. } => {
+            ("a player chooses one or more targets".to_owned(), false)
+        }
         TriggerPattern::PlayerBecomesTarget { who: player, by } => {
             let (name, _) = who(player);
             let whose = match by.0.as_slice() {

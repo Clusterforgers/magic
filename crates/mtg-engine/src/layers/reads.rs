@@ -53,6 +53,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         }
         Modification::AddSupertype(_) | Modification::RemoveSupertype(_) => Traits::SUPERTYPES,
         Modification::AddSubtype(_)
+        | Modification::R2051RemoveSubtype(_)
         | Modification::SetCreatureTypes(_)
         | Modification::AddAllCreatureTypes => Traits::SUBTYPES,
         // The land loses its abilities with its land types; a text change rewrites the rules, the keywords and the
@@ -119,6 +120,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
             Traits::TYPES.or(Traits::SUBTYPES)
         }
         Wanted::AddSubtype(_)
+        | Wanted::R2051RemoveSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetCreatureTypesOf(_)
         | Wanted::AddAllCreatureTypes
@@ -236,6 +238,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
+        | Wanted::R2051RemoveSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetLandTypes(_)
         | Wanted::SetLandTypesChosen(_)
@@ -306,6 +309,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::Spotlit
         | Ref::Chosen
         | Ref::R110Seat(_)
+        | Ref::R6112FixedPlayer(_)
         | Ref::R111LastDamagedYou(_)
         | Ref::R111BlockedController { .. }
         | Ref::R111Object(_)

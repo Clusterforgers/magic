@@ -109,7 +109,7 @@ fn fixed_choices(scope: &Scope<'_>, rule: &GameRule) -> GameRule {
 
 /// The granted ability with each `SameCard` it names fixed to the object its name holds now (CR 611.2c): "that creature
 /// gains 'Whenever this creature deals combat damage to a player, copy the exiled card'" keeps naming the card this
-/// resolution exiled after the resolution is over.
+/// resolution exiled after the resolution is over. Each `R6112FixedPlayer` becomes the seat of the player it names now.
 pub(super) fn r6112_fixed_ability(
     scope: &Scope<'_>,
     granted: &std::sync::Arc<mtg_cards::ability::Ability>,
@@ -127,6 +127,19 @@ pub(super) fn r6112_fixed_ability(
                         "SameCard".to_owned(),
                         serde_json::json!({ "R111Object": object.id }),
                     );
+                    return true;
+                }
+                // "That player" in the granted ability: the one player the reference names now, as a fixed seat.
+                if fields.len() == 1
+                    && let Some(named) = fields.get("R6112FixedPlayer")
+                    && let Ok(named) = serde_json::from_value::<mtg_cards::refs::Ref>(named.clone())
+                {
+                    let seat = match scope.players(&named).as_deref() {
+                        Ok([player]) => super::continuous::r110_seat_of(*player),
+                        _ => None,
+                    };
+                    // Nobody to fix leaves a seat no player has, so the ability names nobody.
+                    *value = serde_json::json!({ "R110Seat": seat.unwrap_or(u8::MAX) });
                     return true;
                 }
                 let mut any = false;

@@ -58,6 +58,8 @@ const RUNS: &[&str] = &[
     "Trigger.StepBegins",
     "Trigger.R110ThatCombatBegins",
     "Trigger.BecomesTarget",
+    "Trigger.R115ChoosesTargets",
+    "Trigger.R1043Loses",
     "Trigger.PlayerBecomesTarget",
     "Trigger.AnyOf",
     "Trigger.DealsDamage",
@@ -393,6 +395,9 @@ const RUNS: &[&str] = &[
     "Effect.Pair",
     "Effect.JoinAttack",
     "Effect.R5084JoinTheirAttack",
+    "Effect.R122NoteCounters",
+    "Effect.R115RevealContest",
+    "Move.R122BattlefieldNoted",
     "Effect.Transform",
     "Effect.Flip",
     "Effect.TurnFaceUp",
@@ -557,6 +562,7 @@ const RUNS: &[&str] = &[
     "Condition.R119StartingDeck",
     "Condition.R119ShareCardType",
     "Ref.R115Causer",
+    "Ref.R6112FixedPlayer",
     "Ref.R406PileTop",
     "Condition.R111AttackedLastCombat",
     "Condition.R111DamagedThisTurnBy",
@@ -594,6 +600,7 @@ const RUNS: &[&str] = &[
     "Duration.UntilCreatureSpellCast",
     "Duration.UntilEndOfTurnOrRolled",
     "Duration.R6700UntilEndOfTheirNextTurn",
+    "Duration.R122WhilePlayerHasCounter",
     "Effect.Rule",
     "Effect.Regenerate",
     "Effect.RemoveFromCombat",
@@ -799,6 +806,7 @@ const RUNS: &[&str] = &[
     "Mod.ThisAbility",
     "Mod.SetLoyalty",
     "Mod.AddSubtype",
+    "Mod.R2051RemoveSubtype",
     "Mod.SetCreatureTypes",
     "Mod.SetLandTypes",
     "Mod.AddAllCreatureTypes",
@@ -1036,6 +1044,7 @@ const RUNS: &[&str] = &[
     "Condition.ManaSpent",
     "Rule.MayCast",
     "NewTargets.Random",
+    "ChangeTargets.R115Who",
     "NewTargets.R113RandomNotYours",
     "CastPermission.limit",
     "MayCast.AnyTurn",
@@ -2149,6 +2158,15 @@ mod tests {
     #[case::ninjutsu("Keyword.Ninjutsu", true)]
     #[case::joining_an_attack("Effect.JoinAttack", true)]
     #[case::r5084_joining_their_attack("Effect.R5084JoinTheirAttack", true)]
+    #[case::r122_noting_counters("Effect.R122NoteCounters", true)]
+    #[case::r122_returning_with_noted_counters("Move.R122BattlefieldNoted", true)]
+    #[case::r115_a_reveal_contest("Effect.R115RevealContest", true)]
+    #[case::r115_another_player_changes_targets("ChangeTargets.R115Who", true)]
+    #[case::r115_choosing_targets("Trigger.R115ChoosesTargets", true)]
+    #[case::r1043_losing_the_game("Trigger.R1043Loses", true)]
+    #[case::r6112_a_fixed_player("Ref.R6112FixedPlayer", true)]
+    #[case::r2051_removing_a_subtype("Mod.R2051RemoveSubtype", true)]
+    #[case::r122_while_a_player_has_a_counter("Duration.R122WhilePlayerHasCounter", true)]
     #[case::echo("Keyword.Echo", true)]
     #[case::cumulative_upkeep("Keyword.CumulativeUpkeep", true)]
     #[case::undying("Keyword.Undying", true)]

@@ -78,6 +78,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
                 what: Ref::Target(0),
                 to: NewTargets::Choose,
                 onto: None,
+                r115_who: None,
             },
         ] => {
             let changed: Vec<String> = variants(ability)

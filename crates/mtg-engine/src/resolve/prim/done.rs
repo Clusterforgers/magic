@@ -128,6 +128,8 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::R112DoubleX { .. }
         | Effect::R123XBecomes { .. }
         | Effect::R123ExileContest { .. }
+        | Effect::R115RevealContest { .. }
+        | Effect::R122NoteCounters { .. }
         | Effect::Crewed { .. }
         | Effect::Explore { .. }
         | Effect::Connive { .. }

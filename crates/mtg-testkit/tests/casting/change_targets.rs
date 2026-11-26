@@ -35,6 +35,7 @@ fn redirect(to: NewTargets) -> Arc<CardDefinition> {
                     what: Ref::Target(0),
                     to,
                     onto: None,
+                    r115_who: None,
                 }],
             }),
     )

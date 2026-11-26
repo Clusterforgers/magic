@@ -11,7 +11,8 @@ use crate::resolve::{Cx, Next, ResolveError, Run};
 use crate::retargeted::TargetsChanged;
 use crate::zones::Zone;
 
-/// Each spell or ability the effect names that is still on the stack gets other targets, chosen by the controller of the
+/// Each spell or ability the effect names that is still on the stack gets other targets, chosen by the player `r115_who`
+/// names or else the controller of the
 /// effect. The new targets must be legal for the controller of the spell or ability (CR 115.7). "Change the target" takes
 /// effect only on an object with a single target and leaves it when no other target is legal; "choose new targets" asks
 /// first and then for each specification that has another choice. The ability the effect itself is, and an object that
@@ -19,16 +20,16 @@ use crate::zones::Zone;
 ///
 /// A step with k questions runs k + 1 times; the questions of every object are read from the journal in order.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
-    let Effect::ChangeTargets { what, to, onto } = effect else {
+    let Effect::ChangeTargets {
+        what,
+        to,
+        onto,
+        r115_who,
+    } = effect
+    else {
         return Err(wrong_effect("ChangeTargets"));
     };
-    let way = match to {
-        NewTargets::Another => Way::Another,
-        NewTargets::AnotherPlayer => Way::AnotherPlayer,
-        NewTargets::Choose | NewTargets::One => Way::Choose,
-        NewTargets::Random => Way::Random,
-        NewTargets::R113RandomNotYours => Way::R113RandomNotYours,
-    };
+    let way = way_of(*to);
     // "To ~" with nothing left to name changes nothing.
     let onto = match (to, onto) {
         (NewTargets::One, Some(onto)) => match cx.scope.live_objects(onto)?.first() {
@@ -38,7 +39,9 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         _ => None,
     };
     let state = cx.state();
-    let chooser = cx.controller();
+    let Some(chooser) = r115_chooser(cx, r115_who.as_ref())? else {
+        return Ok(Run::events(Vec::new()));
+    };
     let objects: Vec<_> = cx
         .scope
         .live_objects(what)?
@@ -118,6 +121,34 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         snapshots: Vec::new(),
         next: Next::Sibling,
     })
+}
+
+/// How the targets change.
+const fn way_of(to: NewTargets) -> Way {
+    match to {
+        NewTargets::Another => Way::Another,
+        NewTargets::AnotherPlayer => Way::AnotherPlayer,
+        NewTargets::Choose | NewTargets::One => Way::Choose,
+        NewTargets::Random => Way::Random,
+        NewTargets::R113RandomNotYours => Way::R113RandomNotYours,
+    }
+}
+
+/// Who chooses the new targets: the player `who` names still in the game, else the effect's controller; nobody when
+/// `who` names no such player.
+fn r115_chooser(
+    cx: &Cx<'_>,
+    who: Option<&mtg_cards::refs::Ref>,
+) -> Result<Option<mtg_core::ids::PlayerId>, ResolveError> {
+    let Some(who) = who else {
+        return Ok(Some(cx.controller()));
+    };
+    let state = cx.state();
+    Ok(cx
+        .scope
+        .players(who)?
+        .into_iter()
+        .find(|player| state.is_alive(*player)))
 }
 
 /// The public log of a target picked at random: the object or the player picked.

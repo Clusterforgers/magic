@@ -152,6 +152,8 @@ pub enum Modification {
     RemoveSupertype(Supertype),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
+    /// Removes a subtype (CR 205.1b).
+    R2051RemoveSubtype(Subtype),
     /// Replaces the creature types with these (layer 4); the other subtypes stay (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
     /// Makes these the land types (layer 4): the land types and the abilities it had are gone and it has the mana ability of
@@ -365,6 +367,7 @@ impl Modification {
             | Modification::AddSupertype(_)
             | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
+            | Modification::R2051RemoveSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => Layer::Type,
@@ -429,8 +432,15 @@ impl Modification {
                 }
             }
             Modification::AddSubtype(subtype) => {
+                chars.subtypes_removed.retain(|held| held != subtype);
                 if !chars.subtypes.contains(subtype) {
                     chars.subtypes.push(subtype.clone());
+                }
+            }
+            Modification::R2051RemoveSubtype(subtype) => {
+                chars.subtypes.retain(|held| held != subtype);
+                if !chars.subtypes_removed.contains(subtype) {
+                    chars.subtypes_removed.push(subtype.clone());
                 }
             }
             Modification::SetCreatureTypes(types) => set_creature_types(chars, types),
@@ -626,6 +636,7 @@ pub(crate) fn lasts(
         | Duration::UntilEndOfTurnOrRolled(_)
         // Only a delayed trigger lasts until the end of a named player's next turn (`triggers/delayed.rs`).
         | Duration::R6700UntilEndOfTheirNextTurn(_)
+        | Duration::R122WhilePlayerHasCounter(..)
         // The condition of `R113While` is read by the housekeeping (`ContinuousEffect::ended`), outside the layers.
         | Duration::R113While(_) => true,
         // `DuringItsControllersNextTurn` is begun for the player whose turn it waits for (`continuous.rs`).

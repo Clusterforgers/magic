@@ -1,7 +1,7 @@
 {
   "oracle_id": "05f20087-416f-4928-a0ab-6d0d2ca2ad05",
   "name": "Tawnos's Coffin",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Tawnos's Coffin",
@@ -9,9 +9,69 @@
       "abilities": [
         { "Rule": { "rule": { "Combat": { "who": "This", "quirk": "MayStayTapped" } } } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 66, "end": 497 }
+          "Activated": {
+            "cost": [{ "Mana": "{3}" }, "Tap"],
+            "targets": [{ "what": { "Object": [{ "Type": "Creature" }] } }],
+            "effects": [
+              { "Bind": { "what": { "Target": 0 }, "as": "coffined" } },
+              { "R122NoteCounters": { "what": { "Target": 0 }, "as": "noted" } },
+              {
+                "Exile": {
+                  "what": {
+                    "Each": [
+                      {
+                        "AnyOf": [
+                          { "Is": { "Target": 0 } },
+                          {
+                            "R117AllOf": [{ "Subtype": "Aura" }, { "AttachedTo": { "Target": 0 } }]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "as": "exiled"
+                }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "AnyOf": [
+                      { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                      { "Untapped": { "what": ["This"] } }
+                    ]
+                  },
+                  "effects": [
+                    {
+                      "Move": {
+                        "what": { "Arrived": { "of": { "Bound": "coffined" }, "zone": "Exile" } },
+                        "to": { "R122BattlefieldNoted": { "noted": "noted" } },
+                        "as": "returned"
+                      }
+                    },
+                    {
+                      "If": {
+                        "condition": {
+                          "CountOf": {
+                            "subject": { "Bound": "returned" },
+                            "selector": [],
+                            "op": "Ge",
+                            "right": 1
+                          }
+                        },
+                        "then": [
+                          {
+                            "Move": {
+                              "what": { "Bound": "exiled" },
+                              "to": { "BattlefieldAttached": { "to": { "Bound": "returned" } } }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

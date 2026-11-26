@@ -271,6 +271,18 @@ fn a_permanent_shows_the_controller_and_the_subtypes_the_layers_give_it() {
         (PlayerId(0), PlayerId(1), vec!["Elf".to_owned()]),
         "the owner is the same, the controller and a subtype are what the effects made them"
     );
+    driver
+        .add_effect(
+            driver.on(giant_id),
+            Modification::R2051RemoveSubtype(Subtype("Elf".into())),
+            Duration::UntilEndOfTurn,
+        )
+        .unwrap();
+    assert_eq!(
+        shown(&driver),
+        (PlayerId(0), PlayerId(1), Vec::new()),
+        "a subtype an effect took away is not shown"
+    );
 }
 
 #[test]

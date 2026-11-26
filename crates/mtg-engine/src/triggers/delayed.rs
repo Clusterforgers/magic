@@ -224,6 +224,19 @@ impl Delayed {
                             .is_some_and(|ended| ended > self.turn)
                 })
             }
+            // Ends once the player the name was bound to has no counter of the kind, and does not come back.
+            Duration::R122WhilePlayerHasCounter(who, counter) => {
+                let player = match who {
+                    mtg_cards::refs::Ref::Bound(name) => self
+                        .bindings
+                        .get(name)
+                        .and_then(|bound| bound.iter().find_map(|target| target.player())),
+                    _ => None,
+                };
+                player
+                    .and_then(|player| state.player(player))
+                    .is_none_or(|player| player.counters_of(counter) == 0)
+            }
             Duration::WhileSourceOnBattlefield => !state.object(self.source.id).is_some_and(|o| {
                 o.counter() == self.source.counter && o.zone().is_permanent_zone()
             }),
