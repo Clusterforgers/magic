@@ -80,10 +80,27 @@ fn begin_step(state: &GameState, step: Step) -> Progress {
         }
         // The Sagas of the active player get a lore counter as the precombat main phase begins (CR 714.3b), and
         // the rad counters of the active player mill (CR 725.2), then they roll to visit their Attractions (CR 505.5).
+        // A roll to visit that asks pauses the step after the counters and asks its questions one by one.
         Step::Main1 => {
-            let mut events = crate::saga::precombat_counters(state);
-            events.extend(crate::w7b_rad::w7b_precombat_rad(state));
-            events.extend(crate::un33_attractions::precombat(state));
+            use crate::un33_attractions::Visit;
+            let visiting = crate::un33_attractions::r706_visiting(state);
+            let mut events = Vec::new();
+            if !visiting {
+                events.extend(crate::saga::precombat_counters(state));
+                events.extend(crate::w7b_rad::w7b_precombat_rad(state));
+            }
+            match crate::un33_attractions::precombat(state) {
+                Visit::Rolled(rolled) => events.extend(rolled),
+                Visit::Asks(asked) => {
+                    if let Some(decision) = *asked {
+                        return Progress::Decide(decision);
+                    }
+                    if let Some(player) = active {
+                        events.push(Event::R706VisitAsks { player });
+                    }
+                    return Progress::Events(events);
+                }
+            }
             events.push(grant(state));
             Progress::Events(events)
         }
@@ -385,8 +402,15 @@ fn declare_blockers(state: &GameState) -> Progress {
             ]);
         }
         // A rule may give the declaration to another player (CR 509.1a), who sees the same options.
+        let decider = crate::rules::r6400_block_chooser(state, player).unwrap_or(player);
+        // Instead of declaring blockers, the player divides creatures into piles (Camouflage).
+        if crate::rules::r509_block_piles(state) {
+            return Progress::Decide(crate::r509_piles::r509_question(
+                state, player, decider, &options,
+            ));
+        }
         return Progress::Decide(Decision {
-            player: crate::rules::r6400_block_chooser(state, player).unwrap_or(player),
+            player: decider,
             kind: DecisionKind::DeclareBlockers(options),
         });
     }

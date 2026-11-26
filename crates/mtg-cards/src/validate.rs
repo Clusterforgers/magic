@@ -7306,6 +7306,8 @@ impl Walker<'_> {
             | GameRule::R6700FirstFlipsHeads(who)
             | GameRule::R6700VillainousAgain(who)
             | GameRule::ExtraDie(who)
+            | GameRule::R706IgnoreChosen(who)
+            | GameRule::R706Reroll { who, .. }
             | GameRule::ExtraPlanarDie(who)
             | GameRule::PlaneswalkLookTwo(who)
             | GameRule::KeepUnspentMana { who, .. }
@@ -7399,6 +7401,7 @@ impl Walker<'_> {
             | GameRule::AnyNumberInDeck
             | GameRule::Draft(_)
             | GameRule::ReverseTurnOrder
+            | GameRule::R509BlockPiles
             | GameRule::AttackOnlyNearest(_)
             | GameRule::DamageAsWither
             | GameRule::ManaBurn

@@ -27,7 +27,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             let count = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0);
             crate::un33_attractions::open_events(state, player, count)
         }
-        None => crate::un33_attractions::roll_events(state, player),
+        None => match crate::un33_attractions::roll_events(state, player, cx.journal()) {
+            Ok(events) => events,
+            Err(ask) => return Ok(*ask),
+        },
     }))
 }
 

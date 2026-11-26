@@ -137,6 +137,7 @@ fn asked(kind: &DecisionKind) -> Option<(ObjectId, Question<'_>)> {
         DecisionKind::Scry(options) => (options.source, Question::None),
         DecisionKind::ChooseOption(options) => (options.source, Question::None),
         DecisionKind::ChooseCosts(options) => (options.source, Question::None),
+        DecisionKind::R706ChooseDice(options) => (options.source?, Question::None),
         _ => return None,
     })
 }

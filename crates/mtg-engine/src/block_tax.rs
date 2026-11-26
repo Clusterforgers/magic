@@ -268,6 +268,17 @@ fn payment(
     })
 }
 
+/// Whether `blocker` blocks with nothing to pay (CR 509.1d): a block made by an effect pays no cost, so one that would
+/// cost something is not made.
+pub(crate) fn r509_costs_nothing(state: &GameState, blocker: ObjectId, attacker: ObjectId) -> bool {
+    if block_taxes(state).is_empty() {
+        return true;
+    }
+    let blocks = [(blocker, attacker)];
+    let (owed, life) = costs(state, &blocks);
+    owed.symbols().is_empty() && life == 0 && other_parts(state, &blocks).is_empty()
+}
+
 /// What a declared block does: with nothing to pay it is made, else it is paid for first (CR 509.1d) or, if its player
 /// cannot pay, refused.
 pub(crate) fn declare(

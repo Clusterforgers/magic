@@ -6,6 +6,7 @@ import type { DecisionName } from '../turnText'
 /** What a clock counts down for: a decision kind, or a kind whose answer at zero depends on its options. */
 export type ClockKind =
   | 'LoopDraw'
+  | 'R706Ignore'
   | DecisionName
   | 'Unknown'
   | 'ChooseModeCancel'
@@ -26,6 +27,7 @@ export function clockKind(kind: DecisionKind): ClockKind {
   if ('PayMana' in kind && kind.PayMana.can_cancel === true) return 'PayManaCancel'
   if ('ChooseCosts' in kind && kind.ChooseCosts.can_cancel) return 'ChooseCostsCancel'
   if ('Loop' in kind && kind.Loop.can_draw) return 'LoopDraw'
+  if ('R706ChooseDice' in kind && kind.R706ChooseDice.purpose === 'Ignore') return 'R706Ignore'
   return decisionName(kind)
 }
 
@@ -50,6 +52,9 @@ const AT_ZERO: Partial<Record<ClockKind, { countdown: string; announced: string 
   Loop: { countdown: 'Stopping the loop for you', announced: 'stops the loop for you' },
   LoopDraw: { countdown: 'Letting the loop run: a draw', announced: 'lets the loop run for you: a draw' },
   DeclareBlockers: { countdown: 'Declaring no blocks', announced: 'declares no blocks for you' },
+  R509BlockPiles: { countdown: 'Leaving every pile empty', announced: 'leaves every pile empty for you' },
+  R706ChooseDice: { countdown: 'Keeping the results for you', announced: 'keeps the results for you' },
+  R706Ignore: { countdown: 'Ignoring the first roll for you', announced: 'ignores the first roll for you' },
   ChooseTargets: { countdown: 'Choosing no targets', announced: 'chooses no targets for you' },
   OrderTriggers: { countdown: 'Ordering the triggers for you', announced: 'orders the triggers for you' },
   YesNo: { countdown: 'Answering no for you', announced: 'answers no for you' },

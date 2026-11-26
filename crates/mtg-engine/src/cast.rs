@@ -229,6 +229,7 @@ fn r114_cost_roll(
         player,
         sides,
         &natural,
+        false,
     )
     .ok()?
     {
@@ -238,7 +239,7 @@ fn r114_cost_roll(
     };
     let result = changed.results.last().copied()?;
     let mut events = changed.events.clone();
-    events.extend(changed.rolled(player, sides, &natural));
+    events.extend(changed.rolled(player, sides));
     Some(Ok((events, result)))
 }
 

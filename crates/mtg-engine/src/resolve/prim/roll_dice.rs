@@ -148,7 +148,7 @@ fn r5507_roll_many(
             match super::r6402_change_roll::r6402_change(cx, player, sides, &natural)? {
                 Ok(changed) => {
                     let mut events = changed.events.clone();
-                    events.extend(changed.rolled(player, sides, &natural));
+                    events.extend(changed.rolled(player, sides));
                     (changed.results, events)
                 }
                 Err(ask) => return Ok(ask),
@@ -220,13 +220,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Some(count) => u32::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(0),
         None => *dice,
     };
-    let mut natural = rolls(state, player, *sides, dice);
+    let natural = rolls(state, player, *sides, dice);
     // The player may change results first (`r6402_change_roll`); a choice of one result is asked after.
     let changed = match super::r6402_change_roll::r6402_change(cx, player, *sides, &natural)? {
         Ok(changed) => changed,
         Err(ask) => return Ok(ask),
     };
     let mut rolled = changed.results.clone();
+    let mut natural = changed.natural.clone();
     if highest.is_some() {
         if rolled.is_empty() {
             return Ok(Run::events(Vec::new()));
@@ -269,10 +270,10 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     events.extend(
         super::r6402_change_roll::R6402Changed {
             results: rolled,
-            events: Vec::new(),
-            asked: changed.asked,
+            natural,
+            ..changed.clone()
         }
-        .rolled(player, *sides, &natural),
+        .rolled(player, *sides),
     );
     Ok(Run::Done {
         events,

@@ -23,18 +23,33 @@ use crate::state::{GameState, Tally};
 pub(crate) struct R6402Changed {
     /// The results, in the order rolled.
     pub(crate) results: Vec<u32>,
+    /// The number each die showed, in the same order: a reroll shows a new one, an ignored roll takes its die away.
+    pub(crate) natural: Vec<u32>,
     /// The costs paid and the changes, in the order made.
     pub(crate) events: Vec<Event>,
     /// The answers the questions used, from the start of the journal.
     pub(crate) asked: usize,
+    /// The substreams of the generator the roll has used: one for each die logged, ignored or rerolled.
+    pub(crate) drawn: u64,
 }
 
 impl R6402Changed {
+    /// The roll `rolled` before anything changed it.
+    pub(crate) fn new(rolled: &[u32]) -> Self {
+        Self {
+            results: rolled.to_vec(),
+            natural: rolled.to_vec(),
+            events: Vec::new(),
+            asked: 0,
+            drawn: u64::try_from(rolled.len()).unwrap_or(0),
+        }
+    }
+
     /// The roll events, each die with its result and, when changed, its natural result.
-    pub(crate) fn rolled(&self, player: PlayerId, sides: u32, natural: &[u32]) -> Vec<Event> {
+    pub(crate) fn rolled(&self, player: PlayerId, sides: u32) -> Vec<Event> {
         self.results
             .iter()
-            .zip(natural)
+            .zip(&self.natural)
             .map(|(result, shown)| Event::DieRolled {
                 player,
                 sides,
@@ -129,28 +144,35 @@ pub(crate) fn r6402_change(
     sides: u32,
     rolled: &[u32],
 ) -> Result<Result<R6402Changed, Run>, ResolveError> {
-    r6402_change_in((cx.state(), cx.journal()), player, sides, rolled)
+    r6402_change_in((cx.state(), cx.journal()), player, sides, rolled, true)
 }
 
 /// `r6402_change` over a state and the answers given so far: a roll made outside a resolution, as a cost is paid
-/// (`CostItem::R114RollDie`), keeps its answers in the announcement.
+/// (`CostItem::R114RollDie`), keeps its answers in the announcement, and the roll to visit Attractions in the game's.
+/// With `mana` false no reroll that costs mana is offered (`r706_dice::r706_reroll`).
 pub(crate) fn r6402_change_in(
     (state, journal): (&GameState, &[(PlayerId, Choice)]),
     player: PlayerId,
     sides: u32,
     rolled: &[u32],
+    mana: bool,
 ) -> Result<Result<R6402Changed, Run>, ResolveError> {
-    let mut changed = R6402Changed {
-        results: rolled.to_vec(),
-        events: Vec::new(),
-        asked: 0,
-    };
+    let mut changed = R6402Changed::new(rolled);
     if rolled.is_empty() {
         return Ok(Ok(changed));
     }
-    // The roll is replaced by one that lets them exchange (CR 614.1a), so the exchanges come before any change made
-    // after it.
+    // A die added with a roll ignored replaces the roll (CR 706.6), and so does one that lets them exchange (CR 614.1a),
+    // so both come before any change made after it; rerolls come before changes by an amount (CR 706.2b).
+    if let Err(ask) = crate::r706_dice::r706_ignore((state, journal), player, sides, &mut changed)?
+    {
+        return Ok(Err(ask));
+    }
     if let Err(ask) = r113_exchange((state, journal), player, sides, &mut changed)? {
+        return Ok(Err(ask));
+    }
+    if let Err(ask) =
+        crate::r706_dice::r706_reroll((state, journal), player, sides, &mut changed, mana)?
+    {
         return Ok(Err(ask));
     }
     let mut spent = 0;

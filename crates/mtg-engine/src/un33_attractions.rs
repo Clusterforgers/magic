@@ -33,6 +33,8 @@ pub struct AttractionCard {
 pub struct Attractions {
     pub(crate) decks: BTreeMap<PlayerId, Vec<ObjectId>>,
     pub(crate) lights: BTreeMap<ObjectId, Lights>,
+    /// The answers given so far to the questions of the turn-based roll to visit while it asks (CR 706.2b, 706.6).
+    pub(crate) r706_visit: Option<Vec<(PlayerId, crate::choose::Choice)>>,
 }
 
 impl Attractions {
@@ -127,44 +129,91 @@ pub(crate) fn open_events(state: &GameState, player: PlayerId, count: usize) -> 
         .collect()
 }
 
-/// The player rolls to visit their Attractions (CR 701.52a): a six-sided die from the game's random stream, then the
-/// roll and the Attractions it visits.
-pub(crate) fn roll_events(state: &GameState, player: PlayerId) -> Vec<Event> {
-    let rolled = crate::resolve::prim::roll_dice::rolls(state, player, 6, 1);
-    let result = rolled.last().copied().unwrap_or(0);
-    let mut events: Vec<Event> = rolled
-        .iter()
-        .map(|result| Event::DieRolled {
-            player,
-            sides: 6,
-            result: *result,
-            natural: None,
-        })
-        .collect();
+/// The player rolls to visit their Attractions (CR 701.52a): a six-sided die from the game's random stream, changed by
+/// the rules that change a roll with the answers of `journal` (`r6402_change_roll`), then the roll and the Attractions
+/// it visits. `Err` is the next question.
+pub(crate) fn roll_events(
+    state: &GameState,
+    player: PlayerId,
+    journal: &[(PlayerId, crate::choose::Choice)],
+) -> Result<Vec<Event>, Box<crate::resolve::Run>> {
+    let natural = crate::resolve::prim::roll_dice::rolls(state, player, 6, 1);
+    let changed = match crate::resolve::prim::r6402_change_roll::r6402_change_in(
+        (state, journal),
+        player,
+        6,
+        &natural,
+        true,
+    ) {
+        Ok(Ok(changed)) => changed,
+        Ok(Err(ask)) => return Err(Box::new(ask)),
+        // An answer that doesn't fit leaves the roll as it fell.
+        Err(_) => crate::resolve::prim::r6402_change_roll::R6402Changed::new(&natural),
+    };
+    let result = changed.results.last().copied().unwrap_or(0);
+    let mut events = changed.events.clone();
+    events.extend(changed.rolled(player, 6));
     events.push(Event::RolledToVisit {
         player,
         result,
         visited: visited(state, player, result),
     });
     events.extend(crate::phasing::r112_visit_releases(state, player, result));
-    events
+    Ok(events)
 }
 
-/// The turn-based roll as the active player's precombat main phase begins, when they control an Attraction (CR 505.5).
-pub(crate) fn precombat(state: &GameState) -> Vec<Event> {
+/// What the turn-based roll to visit comes to.
+pub(crate) enum Visit {
+    /// The events of the roll, none when the player controls no Attraction.
+    Rolled(Vec<Event>),
+    /// The roll asks: before the first question the step pauses (`Event::R706VisitAsks`), then each question is asked.
+    Asks(Box<Option<crate::decision::Decision>>),
+}
+
+/// The turn-based roll as the active player's precombat main phase begins, when they control an Attraction (CR 505.5),
+/// with the answers given so far while it asks.
+pub(crate) fn precombat(state: &GameState) -> Visit {
     let Some(active) = state.active_player() else {
-        return Vec::new();
+        return Visit::Rolled(Vec::new());
     };
     let controls = state
         .zone(Zone::Battlefield)
         .iter()
         .filter_map(|id| state.object(*id))
         .any(|object| object.controller() == active && is_attraction(state, object));
-    if controls {
-        roll_events(state, active)
-    } else {
-        Vec::new()
+    if !controls {
+        return Visit::Rolled(Vec::new());
     }
+    let journal = state.un33.r706_visit.as_deref();
+    match roll_events(state, active, journal.unwrap_or_default()) {
+        Ok(events) => Visit::Rolled(events),
+        Err(run) => match *run {
+            crate::resolve::Run::Ask(decision) if journal.is_some() => {
+                Visit::Asks(Box::new(Some(decision)))
+            }
+            _ => Visit::Asks(Box::new(None)),
+        },
+    }
+}
+
+/// Whether the turn-based roll to visit is asking its questions.
+pub(crate) fn r706_visiting(state: &GameState) -> bool {
+    state.un33.r706_visit.is_some()
+}
+
+/// Folds an answer to a question of the turn-based roll to visit.
+pub(crate) fn r706_fold_answer(
+    state: &mut GameState,
+    player: PlayerId,
+    choice: &crate::choose::Choice,
+) -> Result<(), EngineError> {
+    state
+        .un33
+        .r706_visit
+        .as_mut()
+        .ok_or_else(|| invalid("an answer outside any resolution or roll"))?
+        .push((player, choice.clone()));
+    Ok(())
 }
 
 /// Folds a shuffle of an Attraction deck: the same cards in a new order.
@@ -194,6 +243,7 @@ pub(crate) fn fold_rolled(state: &mut GameState, player: PlayerId, visited: &[Ob
         Tally::AttractionsVisited,
         u32::try_from(visited.len()).unwrap_or(u32::MAX),
     );
+    state.un33.r706_visit = None;
 }
 
 /// A card that leaves the command zone leaves its owner's Attraction deck.
