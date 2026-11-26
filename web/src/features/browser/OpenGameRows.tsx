@@ -257,13 +257,13 @@ function GameCard({
             <h3
               id={hostId(game)}
               className={cn(
-                'font-display text-base font-semibold break-words',
+                'font-display text-base font-semibold [overflow-wrap:anywhere]',
                 dim ? 'text-muted-foreground' : 'text-foreground',
               )}
             >
               {game.host}
             </h3>
-            <p className="text-sm break-words text-muted-foreground">
+            <p className="text-sm [overflow-wrap:anywhere] text-muted-foreground">
               {formatName(game.format)} · Your own deck · <Age game={game} fetchedAt={fetchedAt} now={now} />
             </p>
           </div>

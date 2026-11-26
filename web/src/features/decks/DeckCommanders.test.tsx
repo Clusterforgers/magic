@@ -1,4 +1,4 @@
-// Goal: a deck of the list shows each of its commanders (a partner or Background too) as a picture and a name, a deck without any shows none, and the client refuses a list whose commanders are not cards.
+// Goal: a deck of the list shows each of its commanders (a partner or Background too) as a picture and a name (the picture naming nothing while it loads), a deck without any shows none, and the client refuses a list whose commanders are not cards.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { createDecksApi } from '@/net/decks'
@@ -23,6 +23,10 @@ describe('the commanders of a deck in the list', () => {
       .getByRole('list', { name: 'Commanders' })
       .querySelectorAll('[data-commander] [data-slot="card-name"]')
     expect([...names].map((item) => item.textContent)).toEqual([TYMNA.name, THRASIOS.name])
+    // The name stands beside the picture, so a picture that has not loaded does not name it again in its 40 px box.
+    const commanders = within(partners).getByRole('list', { name: 'Commanders' })
+    const pictures = [...commanders.querySelectorAll('[data-slot="card-image"]')]
+    expect(pictures.map((picture) => picture.textContent)).toEqual(['', ''])
     expect(within(burn).queryByRole('list', { name: 'Commanders' })).toBeNull()
   })
 })

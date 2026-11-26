@@ -10,6 +10,7 @@ import { combatRoleOf, rowOf } from './cardModel'
 import type { CombatRole, RowKind } from './cardModel'
 import { defaultFocus } from './layout'
 import type { BossSides } from './layout'
+import type { BannerInput } from './turnText'
 
 /** One shared empty list, so "nothing" is the same value every time. */
 export const NO_IDS: readonly ObjectId[] = []
@@ -179,6 +180,21 @@ export function turnTeammate(state: PlayState): PlayerId | undefined {
   const view = state.view
   if (view === null || view.house_rules?.teams?.mode !== 'two_headed_giant') return undefined
   return teammates(view.house_rules.teams, view.turn.active)[0]
+}
+
+/** Where the game is, as a replay's strip says it (`replayLine`). */
+export function bannerInputOf(state: PlayState): BannerInput {
+  const view = state.view
+  return {
+    stage: view?.stage ?? 'PreGame',
+    turn: view?.turn.number ?? 0,
+    round: view?.turn.round ?? 0,
+    active: view?.turn.active ?? 0,
+    step: view?.turn.step ?? 'Untap',
+    left: turnLeft(state),
+    teammate: turnTeammate(state),
+    party: turnParty(state),
+  }
 }
 
 /**

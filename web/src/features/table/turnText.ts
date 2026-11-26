@@ -143,6 +143,15 @@ export function badgeText(input: BannerInput, viewer: PlayerId | null, name: Nam
   return `${who}${controlWords(input, viewer, name)} · Round ${input.round} · ${STEP_LABEL[input.step]}`
 }
 
+/**
+ * The strip's line in a replay, where nobody is waited for: whose turn it is and its step, "Bo's turn · Declare
+ * blockers", in the third person from any seat, or what the game is doing before and after its turns ("Opening hands").
+ */
+export function replayLine(input: BannerInput, name: Names): string {
+  if (input.stage !== 'Turns') return bannerText(input, name)
+  return `${badgeParts(badgeText(input, null, name)).who} · ${STEP_LABEL[input.step]}`
+}
+
 /** The badge's words split into whose turn it is, which never shrinks, and the rest (" · Round 3 · Combat"), which may. */
 export function badgeParts(text: string): { who: string; rest: string } {
   const at = text.indexOf(' · ')

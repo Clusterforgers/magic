@@ -46,6 +46,7 @@ import { BossChip, SpiritMark } from './campaign/CampaignMarks'
 import { GhostIcon } from 'lucide-react'
 import { WaitingMark } from './WaitingMark'
 import { waitingMarkText } from './waitingMarkText'
+import { useIsReplay } from './tableOptions'
 
 interface SeatTileProps {
   seat: PlayerId
@@ -86,7 +87,8 @@ export const SeatTile = memo(function SeatTile({ seat, focused, onFocusSeat, lin
     useStable((state) => (player === undefined ? [] : seatEffects(player, state.objectsById, name, namer))),
   )
   // The tile is one button, so its name carries the mark's words too.
-  const waiting = usePlay((state) => waitingMarkText(state, seat, namer))
+  const replay = useIsReplay()
+  const waiting = usePlay((state) => (replay ? null : waitingMarkText(state, seat, namer)))
   if (player === undefined) return null
   const eliminated = player.lost !== null
   const away = !eliminated && !player.connected

@@ -1,4 +1,4 @@
-// Goal: the replay page loads a finished game and walks it with first, back, play, forward and last, plays on by itself one step every PLAY_STEP_MS until the end, turns the table to any seat, sends the session cookie, never offers an action at the table, and says why when there is no replay or no connection.
+// Goal: the replay page loads a finished game and walks it with first, back, play, forward and last, plays on by itself one step every PLAY_STEP_MS until the end, turns the table to any seat, sends the session cookie, never offers an action at the table, says whose turn and step it is in the strip with no wait on any layout, and says why when there is no replay or no connection.
 import { act, fireEvent, screen } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { EventBatch, Replay } from '@/protocol/generated'
@@ -6,6 +6,9 @@ import { jsonResponse, fakeFetch } from '@/test-utils/fakeFetch'
 import { renderInRouter } from '@/test-utils/router'
 import { TEST_VIEWPORT } from '@/test-utils/tableHarness'
 import { lobbyStart } from '@/test-utils/transcripts'
+import { bannerText, STEP_LABEL } from '@/features/table/turnText'
+import { commanderReplay, duelReplay } from './dev/fixture'
+import { createCursor } from './replayModel'
 import { PLAY_STEP_MS, ReplayPage } from './ReplayPage'
 
 const steps: EventBatch[] = lobbyStart.messages.flatMap((message) =>
@@ -74,6 +77,38 @@ describe('the replay page', () => {
     expect(screen.getByLabelText('Seen from')).toHaveValue('1')
     expect(at()).toBe(`1 / ${steps.length}`)
   })
+
+  const PHONE = { width: 390, height: 844 }
+  const strips = [duelReplay, commanderReplay].flatMap((make) =>
+    [TEST_VIEWPORT, PHONE].flatMap((viewport) => {
+      const game = make()
+      return [0, 1].flatMap((seat) =>
+        [0, 2, game.steps.length - 1].map((start) => ({ game, viewport, seat, start })),
+      )
+    }),
+  )
+
+  it.each(strips)(
+    'says whose turn and step it is, never a wait ($game.names.length seats, $viewport.width px, seat $seat, step $start)',
+    async ({ game, viewport, seat, start }) => {
+      const server = fakeFetch(() => jsonResponse(200, game))
+      await renderInRouter(
+        <ReplayPage game={GAME} fetch={server.fetch} options={{ viewport }} start={start} />,
+      )
+      await screen.findByRole('toolbar', { name: 'Replay' })
+      fireEvent.change(screen.getByLabelText('Seen from'), { target: { value: String(seat) } })
+      const view = createCursor(game.steps)?.(start).view
+      if (view === undefined) throw new Error('no first step')
+      const line = document.querySelector('[data-slot="waiting-line"]')
+      const want =
+        view.stage === 'Turns'
+          ? `${game.names[view.turn.active]}'s turn · ${STEP_LABEL[view.turn.step]}`
+          : bannerText({ stage: view.stage, turn: 0, round: 0, active: 0, step: 'Untap' }, () => '')
+      expect(line?.textContent).toBe(want)
+      expect(document.querySelector('[data-slot="waiting-mark"]')).toBeNull()
+      expect(document.querySelector('[data-region="shared"]')?.textContent).not.toMatch(/waiting/i)
+    },
+  )
 
   it.each([
     [() => jsonResponse(404, { error: 'not_found', message: 'no such resource' }), 'No replay for this game'],
