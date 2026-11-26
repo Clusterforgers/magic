@@ -573,6 +573,7 @@ const RUNS: &[&str] = &[
     "Duration.DuringItsControllersNextTurn",
     "Duration.WhileHasCounter",
     "Duration.WhileEnchanted",
+    "Duration.R6112bWhileAttached",
     "Duration.WhileTapped",
     "Rule.Duration.WhileTapped",
     "Duration.WhileMonarch",

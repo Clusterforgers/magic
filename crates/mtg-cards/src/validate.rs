@@ -5884,6 +5884,10 @@ impl Walker<'_> {
                     w.at("duration", |w| w.condition(condition));
                     w.scope.in_static = in_static;
                 }
+                if let Duration::R6112bWhileAttached(by) = duration {
+                    w.uses("Duration", "R6112bWhileAttached");
+                    w.at("duration", |w| w.reference(by, Kind::Object));
+                }
                 if *duration == Duration::WhileSourceTapped {
                     w.uses("Duration", "WhileSourceTapped");
                 }

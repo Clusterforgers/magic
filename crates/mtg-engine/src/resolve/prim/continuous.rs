@@ -201,7 +201,20 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         };
         modifications.push(modification);
     }
-    let marked = crate::effects::r109_mark_duration(state, duration);
+    let mut marked = crate::effects::r109_mark_duration(state, duration);
+    // The attachment the effect follows is fixed as the object it is now (CR 611.2b).
+    if let mtg_cards::modify::Duration::R6112bWhileAttached(by) = &marked {
+        let fixed = cx
+            .scope
+            .objects(by)?
+            .first()
+            .map(|attachment| attachment.id);
+        if let Some(attachment) = fixed {
+            marked = mtg_cards::modify::Duration::R6112bWhileAttached(Box::new(Ref::R111Object(
+                attachment,
+            )));
+        }
+    }
     let duration = &marked;
     let anchor = anchor(cx, duration)?;
     let mut made = 0u64;

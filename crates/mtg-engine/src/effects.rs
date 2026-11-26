@@ -720,6 +720,7 @@ pub(crate) fn lasts(
         | Duration::WhileHasCounter(_)
         | Duration::WhileEnchanted
         | Duration::WhileMonarch(_)
+        | Duration::R6112bWhileAttached(_)
         | Duration::WhileSourceAttached => false,
         Duration::UntilCastFromExile => !source.is_some_and(|source| cast_from_exile(state, source)),
     }
@@ -947,6 +948,7 @@ impl ContinuousEffect {
         match duration {
             Duration::WhileHasCounter(kind) => self.holds_counter(state, kind),
             Duration::WhileEnchanted => self.stays_enchanted(state),
+            Duration::R6112bWhileAttached(by) => self.r6112b_stays_attached(state, by),
             Duration::WhileTapped => match &self.selector {
                 Selector::Objects(named) => r5509_stays_tapped(state, named),
                 Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
@@ -991,6 +993,24 @@ impl ContinuousEffect {
                             aura.bestowed() || aura.card().subtypes.iter().any(|s| s.0 == "Aura")
                         })
                     })
+            }),
+            Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
+        }
+    }
+
+    /// Whether the attachment an `R6112bWhileAttached` effect follows, fixed as the object it was when the effect began
+    /// (`Ref::R111Object`), is still on the battlefield attached to every object the effect names (CR 611.2b); an
+    /// effect of a group, or one whose attachment was never fixed, follows none.
+    fn r6112b_stays_attached(&self, state: &GameState, by: &mtg_cards::refs::Ref) -> bool {
+        let mtg_cards::refs::Ref::R111Object(attachment) = by else {
+            return false;
+        };
+        match &self.selector {
+            Selector::Objects(named) => named.iter().all(|r| {
+                state
+                    .object(r.id)
+                    .is_some_and(|o| o.counter() == r.counter && o.zone() == Zone::Battlefield)
+                    && state.attachments_of(r.id).contains(attachment)
             }),
             Selector::AllCreatures | Selector::CreaturesControlledBy(_) => false,
         }

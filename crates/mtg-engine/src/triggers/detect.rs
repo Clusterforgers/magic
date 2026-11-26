@@ -2726,12 +2726,18 @@ fn matching_permanents(
             },
         ) => {
             let (attachment, host) = (object(*attachment)?, object(*host)?);
-            (picks(what, attachment)? && picks(to, host)?).then(|| {
-                cause(
-                    state,
-                    vec![Target::Object(attachment), Target::Object(host)],
-                )
-            })
+            let found = cause(
+                state,
+                vec![Target::Object(attachment), Target::Object(host)],
+            );
+            // The permanent is judged with the attachment known, so "with mana value less than or equal to that
+            // Aura's mana value" reads the Aura as `TriggeringFirst`.
+            let judged = Scope {
+                cause: Some(&found),
+                ..scope.clone()
+            };
+            let to_ok = judged.selects(to, host).ok()?;
+            (picks(what, attachment)? && to_ok).then_some(found)
         }
         // The permanent it left is the triggering object, while it is still one ("sacrifice that permanent").
         (

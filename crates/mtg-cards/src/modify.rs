@@ -472,6 +472,10 @@ pub enum Duration {
     /// power remains less than or equal to this creature's power"), read with each object of the effect as `Affected`:
     /// it ends the first time the condition fails and does not come back. Only a continuous effect lasts this way.
     R113While(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<Condition>),
+    /// For as long as the object the reference names, read as the effect begins, stays attached to each object of the
+    /// effect ("gain control of that permanent for as long as that Aura is attached to it", CR 611.2b): it ends the first
+    /// time it is not, and never begins when it is not attached then. Only a continuous effect lasts this way.
+    R6112bWhileAttached(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Box<Ref>),
     /// Without end (until the object or the game is gone).
     Forever,
     /// Until the controller of the effect pays this mana as a special action, any time they have priority ("you may pay

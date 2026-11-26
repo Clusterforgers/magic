@@ -1,15 +1,23 @@
 //! Goal: the p164 cards play whole, at two to four seats, and are `Verified` with the engine's own capabilities: Chorus
 //! of the Conclave lets its controller pay any amount of mana as they cast a creature spell, the creature entering with
-//! that many more +1/+1 counters, and offers nothing for other spells or other players; each game replays to its state.
+//! that many more +1/+1 counters, and offers nothing for other spells or other players; Eriette, the Beguiler takes an
+//! opponent's permanent her controller's Aura enchants when its mana value is at most the Aura's, for as long as the
+//! Aura stays on it; each game replays to its state.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
+use std::sync::Arc;
+
+use mtg_cards::CardDefinition;
+use mtg_cards::ability::Ability;
 use mtg_cards::value::CounterKind;
+use mtg_core::card::CardType;
+use mtg_core::color::Color;
 use mtg_core::ids::PlayerId;
 use mtg_engine::choose::NumberChoice;
 use mtg_engine::decision::{Answer, Decision, DecisionKind, PayChoice, PriorityAction};
 use mtg_engine::turn::Step;
 use mtg_engine::zones::Zone;
-use mtg_testkit::cards::{bear, forest, instant, island};
+use mtg_testkit::cards::{bear, cost, creature, forest, instant, island, plains};
 use mtg_testkit::corpus::card;
 use mtg_testkit::{Driver, Scenario, ready};
 use rstest::rstest;
@@ -84,6 +92,7 @@ fn plus_counters(driver: &Driver, seat: usize, name: &str) -> u32 {
 
 #[rstest]
 #[case("Chorus of the Conclave")]
+#[case("Eriette, the Beguiler")]
 fn p164_the_cards_are_verified(#[case] name: &str) {
     let support = mtg_testkit::corpus::corpus()
         .unwrap()
@@ -151,5 +160,71 @@ fn chorus_of_the_conclave_offers_nothing_to_an_opponent(#[values(2, 3, 4)] seats
     let asked = settle(&mut driver, 1, &number(2));
     assert!(asked.is_empty(), "{asked:?}");
     assert_eq!(plus_counters(&driver, 1, "Grizzly Bears"), 0);
+    replays(&driver);
+}
+
+/// An instant for {0}: "Destroy target enchantment."
+fn shatter_aura() -> Arc<CardDefinition> {
+    let json = r#"{"Spell":{"targets":[{"what":{"Object":[{"Type":"Enchantment"}]}}],"effects":[{"Destroy":{"what":{"Target":0}}}]}}"#;
+    Arc::new(
+        CardDefinition::new("Shatter Aura")
+            .with_type(CardType::Instant)
+            .with_mana_cost(cost(0, &[]))
+            .with_rules(serde_json::from_str::<Ability>(json).unwrap()),
+    )
+}
+
+fn controller(driver: &Driver, name: &str) -> PlayerId {
+    mtg_engine::characteristics::controller_of(driver.state(), driver.id_of(name).unwrap()).unwrap()
+}
+
+#[rstest]
+#[case::cheaper(1, true)]
+#[case::as_costly(2, true)]
+#[case::costlier(3, false)]
+fn eriette_takes_what_her_auras_enchant_while_they_stay(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] value: u32,
+    #[case] taken: bool,
+) {
+    let victim = creature("Victim", value - 1, &[Color::Green], 2, 2);
+    let mut board = vec![ready(card("Eriette, the Beguiler").unwrap())];
+    board.extend((0..4).map(|_| ready(plains())));
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, board)
+        .battlefield(seats - 1, [ready(victim)])
+        .hand(0, [card("Pacifism").unwrap(), shatter_aura()]);
+    let mut driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
+    let target = driver.target_named("Victim").unwrap();
+    driver.cast_at("Pacifism", &[target]).unwrap();
+    settle(&mut driver, 0, &|_| None);
+    let owner = pid(seats - 1);
+    let expected = if taken { pid(0) } else { owner };
+    assert_eq!(controller(&driver, "Victim"), expected);
+    // The Aura leaves, and the control it held ends with it.
+    let aura = driver.target_named("Pacifism").unwrap();
+    driver.cast_at("Shatter Aura", &[aura]).unwrap();
+    settle(&mut driver, 0, &|_| None);
+    assert_eq!(controller(&driver, "Victim"), owner);
+    replays(&driver);
+}
+
+#[rstest]
+fn eriette_ignores_an_aura_on_her_controllers_own_permanent(#[values(2, 3, 4)] seats: usize) {
+    let mut board = vec![
+        ready(card("Eriette, the Beguiler").unwrap()),
+        ready(creature("Pet", 0, &[Color::Green], 1, 1)),
+    ];
+    board.extend((0..2).map(|_| ready(plains())));
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, board)
+        .hand(0, [card("Pacifism").unwrap()]);
+    let mut driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
+    let target = driver.target_named("Pet").unwrap();
+    driver.cast_at("Pacifism", &[target]).unwrap();
+    settle(&mut driver, 0, &|_| None);
+    assert_eq!(controller(&driver, "Pet"), pid(0));
     replays(&driver);
 }
