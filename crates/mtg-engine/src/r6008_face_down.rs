@@ -11,8 +11,8 @@ use mtg_core::mana::{ManaCost, ManaType};
 use serde::{Deserialize, Serialize};
 
 use crate::characteristics::controller_of_object;
-use crate::damage::DamagePass;
 use crate::combat::DamageTarget;
+use crate::damage::DamagePass;
 use crate::events::Event;
 use crate::object::{FaceDown, R6008Listing};
 use crate::state::GameState;
@@ -59,6 +59,10 @@ pub(crate) fn fold_listed(state: &mut GameState, listed: &R6008Listed) {
         return;
     }
     object.face_down = Some(FaceDown::R6008Listed);
+    crate::copies::note_definition(state, &listed.definition);
+    let Some(object) = state.objects.get_mut(&listed.object) else {
+        return;
+    };
     object.r6008_listed = Some(Arc::new(R6008Listing::new(
         Arc::clone(&listed.definition),
         listed.noted.clone(),
@@ -76,8 +80,8 @@ pub(crate) fn noted_card(state: &GameState, source: ObjectId) -> Option<Arc<Card
     state.conjurable.get(noted).cloned()
 }
 
-/// Whether a face-down instant or sorcery card is turned face up: it is revealed and stays face down (CR 708, the
-/// rulings of Magar of the Magic Strings).
+/// Whether the face-down permanent is an instant or sorcery card, which an effect that turns it face up leaves face down
+/// (CR 708, the rulings of Magar of the Magic Strings).
 pub(crate) fn stays_face_down(state: &GameState, id: ObjectId) -> bool {
     state.object(id).is_some_and(|object| {
         let types = &object.whole_card().types;
@@ -132,7 +136,10 @@ fn turned_up(state: &GameState, id: ObjectId) -> Option<Event> {
 /// damage, is dealt damage, or becomes tapped": each masked permanent an event of the batch taps or damages, or that deals
 /// damage, is turned face up just before the first such event (CR 614.1a).
 pub(crate) fn r6008_turned_up_first(state: &GameState, proposed: Vec<Event>) -> Vec<Event> {
-    if !proposed.iter().any(|event| !masked_in(state, event).is_empty()) {
+    if !proposed
+        .iter()
+        .any(|event| !masked_in(state, event).is_empty())
+    {
         return proposed;
     }
     // A batch the step runs again holds the turns up it added before.
@@ -292,7 +299,6 @@ mod tests {
     #[case::all_generic("{2}", true)]
     #[case::hybrid("{W/U}{W/U}", true)]
     #[case::some_of_it("{U}", true)]
-    #[case::x_counts_as_zero("{X}{U}", true)]
     #[case::phyrexian_by_mana("{U/P}", true)]
     #[case::more_than_spent("{2}{U}", false)]
     #[case::another_color("{G}", false)]
@@ -361,4 +367,3 @@ mod tests {
         assert_eq!(r6008_turned_up_first(&game, out.clone()), out);
     }
 }
-

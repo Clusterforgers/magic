@@ -48,6 +48,7 @@ mod exerted_view;
 mod exile_open;
 mod extra_turn_view;
 mod faces_view;
+mod fd1_face_down_view;
 mod foretell_view;
 mod forge_wire;
 mod gives_view;

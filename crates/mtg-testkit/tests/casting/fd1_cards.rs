@@ -76,7 +76,6 @@ fn settle(driver: &mut Driver, yes: bool, pick: &dyn Fn(&Decision) -> Option<Ans
     panic!("the game did not settle");
 }
 
-
 /// A creature card of this name and mana cost, a `power`/`power` with vigilance when `vigilant`.
 fn beast(name: &str, cost: &str, power: i32, vigilant: bool) -> Arc<CardDefinition> {
     let keywords = if vigilant {
@@ -188,26 +187,90 @@ fn turned_up(driver: &Driver, id: ObjectId) -> bool {
 
 #[rstest]
 #[case::tapped_to_attack(false)]
-#[case::assigning_combat_damage(true)]
+#[case::a_vigilant_card_taps_face_down(true)]
 fn a_masked_creature_attacks_as_what_it_is(
     #[values(2, 3, 4)] seats: usize,
     #[case] vigilant: bool,
 ) {
-    let mut driver = masked_table(seats, 4, vec![beast("Hidden Beast", "{2}{U}{U}", 5, vigilant)]);
+    let mut driver = masked_table(
+        seats,
+        4,
+        vec![beast("Hidden Beast", "{2}{U}{U}", 5, vigilant)],
+    );
     assert!(mask(&mut driver, 4));
     let id = face_down_on_battlefield(&driver).unwrap();
     let turn = u32::try_from(seats).unwrap() + 1;
     driver.idle_until(turn, Step::DeclareAttackers).unwrap();
     driver
-        .answer(Answer::DeclareAttackers(vec![(id, AttackTarget::Player(pid(1)))]))
+        .answer(Answer::DeclareAttackers(vec![(
+            id,
+            AttackTarget::Player(pid(1)),
+        )]))
         .unwrap();
-    let object = driver.state().object(id).unwrap();
-    // Tapping to attack turns it face up; with vigilance it attacks face down until it would assign its damage.
-    assert_eq!(object.face_down().is_none(), !vigilant);
+    // Tapping to attack turns it face up: face down it is a 2/2 with no vigilance, whatever the card has.
+    assert!(driver.state().object(id).unwrap().face_down().is_none());
     driver.idle_until(turn, Step::Main2).unwrap();
     assert!(driver.state().object(id).unwrap().face_down().is_none());
     assert!(turned_up(&driver, id));
-    assert_eq!(driver.state().player(pid(1)).unwrap().life(), 15, "it dealt 5");
+    assert_eq!(
+        driver.state().player(pid(1)).unwrap().life(),
+        15,
+        "it dealt 5"
+    );
+    replays(&driver);
+}
+
+#[rstest]
+fn a_masked_blocker_is_turned_face_up_as_it_would_assign_combat_damage(
+    #[values(2, 3, 4)] seats: usize,
+) {
+    let mut board = vec![ready(card("Illusionary Mask").unwrap())];
+    board.extend((0..4).map(|_| ready(island())));
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(0, board)
+        .battlefield(
+            1,
+            [ready(mtg_testkit::cards::free_creature("Raider", 3, 3))],
+        )
+        .hand(0, [beast("Hidden Beast", "{2}{U}{U}", 5, false)]);
+    let mut driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
+    assert!(mask(&mut driver, 4));
+    let id = face_down_on_battlefield(&driver).unwrap();
+    let raider = driver.id_of("Raider").unwrap();
+    driver.idle_until(2, Step::DeclareAttackers).unwrap();
+    driver
+        .answer(Answer::DeclareAttackers(vec![(
+            raider,
+            AttackTarget::Player(pid(0)),
+        )]))
+        .unwrap();
+    for _ in 0..20 {
+        let decision = driver.decision().unwrap().clone();
+        if matches!(decision.kind, DecisionKind::DeclareBlockers(_)) && decision.player == pid(0) {
+            break;
+        }
+        driver.answer(Driver::passive_answer(&decision)).unwrap();
+    }
+    driver
+        .answer(Answer::DeclareBlockers(vec![(id, raider)]))
+        .unwrap();
+    assert!(
+        driver.state().object(id).unwrap().face_down().is_some(),
+        "blocking taps nothing"
+    );
+    driver.idle_until(2, Step::Main2).unwrap();
+    let beast = driver.state().object(id).unwrap();
+    assert!(beast.face_down().is_none());
+    // As a 5/5 it kills the 3/3 and survives it.
+    assert_eq!(beast.zone(), Zone::Battlefield);
+    assert_eq!(beast.permanent().unwrap().damage(), 3);
+    assert!(
+        driver
+            .state()
+            .object(raider)
+            .is_none_or(|raider| raider.zone() != Zone::Battlefield)
+    );
     replays(&driver);
 }
 
@@ -263,7 +326,9 @@ fn magar(seats: usize) -> (Driver, ObjectId) {
         .graveyard(0, [study()])
         .hand(0, [card("Murder").unwrap()]);
     let mut driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
-    driver.begin_activation("Magar of the Magic Strings").unwrap();
+    driver
+        .begin_activation("Magar of the Magic Strings")
+        .unwrap();
     settle(&mut driver, true, &|_| None);
     let id = face_down_on_battlefield(&driver).unwrap();
     (driver, id)
@@ -296,14 +361,21 @@ fn magar_s_creature_casts_a_copy_of_the_noted_card_when_it_deals_combat_damage(
     let turn = u32::try_from(seats).unwrap() + 1;
     driver.idle_until(turn, Step::DeclareAttackers).unwrap();
     driver
-        .answer(Answer::DeclareAttackers(vec![(id, AttackTarget::Player(pid(1)))]))
+        .answer(Answer::DeclareAttackers(vec![(
+            id,
+            AttackTarget::Player(pid(1)),
+        )]))
         .unwrap();
     let hand = driver.state().zone(Zone::Hand(pid(0))).len();
     driver.pass_until(Step::CombatDamage).unwrap();
     settle(&mut driver, takes, &|_| None);
     assert_eq!(driver.state().player(pid(1)).unwrap().life(), 17);
     let object = driver.state().object(id).unwrap();
-    assert_eq!(object.face_down(), Some(FaceDown::R6008Listed), "it stays face down");
+    assert_eq!(
+        object.face_down(),
+        Some(FaceDown::R6008Listed),
+        "it stays face down"
+    );
     let drawn = usize::from(takes);
     assert_eq!(driver.state().zone(Zone::Hand(pid(0))).len(), hand + drawn);
     // The copy ceased to exist once it resolved; the card itself stays on the battlefield.
@@ -315,12 +387,11 @@ fn magar_s_creature_casts_a_copy_of_the_noted_card_when_it_deals_combat_damage(
 fn magar_s_creature_is_exiled_instead_of_dying(#[values(2, 3, 4)] seats: usize) {
     let (mut driver, id) = magar(seats);
     let card = driver.state().object(id).unwrap().whole_card().name.clone();
+    let target = mtg_engine::choose::Target::Object(driver.state().object(id).unwrap().reference());
     driver.begin_cast("Murder").unwrap();
     settle(&mut driver, true, &|decision| match &decision.kind {
-        DecisionKind::ChooseTargets(options) if options.legal.contains(&mtg_engine::choose::Target::Object(id)) => {
-            Some(Answer::ChooseTargets(TargetChoice::Targets(vec![
-                mtg_engine::choose::Target::Object(id),
-            ])))
+        DecisionKind::ChooseTargets(options) if options.legal.contains(&target) => {
+            Some(Answer::ChooseTargets(TargetChoice::Targets(vec![target])))
         }
         _ => None,
     });

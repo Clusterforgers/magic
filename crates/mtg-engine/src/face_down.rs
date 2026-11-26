@@ -75,8 +75,8 @@ impl FaceDown {
         }
     }
 
-    /// Whether the characteristics of an object that lies face down this way are public: every seat reads a 2/2 creature
-    /// and only the card behind it is hidden.
+    /// Whether the characteristics of an object that lies face down this way are public: every seat reads the face-down
+    /// creature (a 2/2, or what an effect listed) and only the card behind it is hidden.
     pub fn shows_characteristics(self) -> bool {
         self == FaceDown::R6008Listed || self.characteristics().is_some()
     }

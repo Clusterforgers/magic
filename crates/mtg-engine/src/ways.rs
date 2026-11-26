@@ -1411,10 +1411,8 @@ pub(crate) fn announceable_in(
     matches!(
         way,
         Some(CastWay::Overload | CastWay::FaceDown | CastWay::R6008FaceDown)
-    )
-        || (spell_ability(state, id)
-            .is_none_or(|(_, rules)| announceable(state, player, id, &rules))
-            && attach::announceable(state, player, id))
+    ) || (spell_ability(state, id).is_none_or(|(_, rules)| announceable(state, player, id, &rules))
+        && attach::announceable(state, player, id))
 }
 
 /// Whether `player` can cast `id` now in some way: at a time the way allows, with targets to announce and mana to pay
