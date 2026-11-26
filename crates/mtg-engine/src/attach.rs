@@ -408,6 +408,15 @@ pub(crate) fn is_aura_spell(state: &GameState, id: ObjectId) -> bool {
         && spell_target(state, id).is_some()
 }
 
+/// Whether `id` is an Aura card being cast or on the stack as a spell, whose target is what it will enchant: the targets
+/// it announces skip what can't be enchanted (CR 303.4a).
+pub(crate) fn r3034_aura_spell(state: &GameState, id: ObjectId) -> bool {
+    state
+        .object(id)
+        .is_some_and(|object| object.zone() != Zone::Battlefield)
+        && spell_target(state, id).is_some()
+}
+
 /// What the Aura spell `id` is going to enchant: the target it announced, if that is still legal as it resolves
 /// (CR 608.2b).
 pub(crate) fn spell_host(state: &GameState, id: ObjectId) -> Option<Host> {

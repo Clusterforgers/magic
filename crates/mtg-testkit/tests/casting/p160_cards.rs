@@ -186,7 +186,12 @@ fn close_encounter_deals_the_power_of_what_was_chosen(
     let mut seen = offered.into_inner();
     seen.sort_unstable();
     expected.sort_unstable();
-    assert_eq!(seen, expected, "only the creature and the warped card are offered");
+    // A single candidate is taken without a question.
+    if expected.len() > 1 {
+        assert_eq!(seen, expected, "only the creature and the warped card are offered");
+    } else {
+        assert!(seen.is_empty() || seen == expected);
+    }
     assert_eq!(p160_damage(&driver, wall), if warped { 2 } else { 3 });
     p160_replays(&driver);
 }
@@ -267,6 +272,9 @@ fn master_warcraft_chooses_the_attackers_of_another_player_who_aims_them(
             ],
         )
         .hand(0, [card("Master Warcraft").unwrap()]);
+    let scenario = (2..seats).fold(scenario, |scenario, seat| {
+        scenario.battlefield(seat, [ready(free_creature("Sentry", 1, 1))])
+    });
     let mut driver = Driver::from_scenario(p160_libraries(scenario, seats)).unwrap();
     p160_until_priority(&mut driver, 0);
     driver.begin_cast("Master Warcraft").unwrap();
@@ -314,7 +322,7 @@ fn master_warcraft_chooses_the_attackers_of_another_player_who_aims_them(
         assert_eq!(options.required, chosen);
         // Leaving a chosen creature out is refused.
         assert!(driver.answer(Answer::DeclareAttackers(Vec::new())).is_err());
-        let last = pid(seats - 1);
+        let last = pid(if seats == 2 { 0 } else { seats - 1 });
         let aims = options
             .attackers
             .iter()

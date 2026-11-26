@@ -563,7 +563,15 @@ object: ObjectId, } } | { "R6400Unblocked": {
 /**
  * The attacker.
  */
-attacker: ObjectId, } } | { "R6400Blocks": { 
+attacker: ObjectId, } } | { "R5081AttackersChosen": { 
+/**
+ * Who chose.
+ */
+chooser: PlayerId, 
+/**
+ * The creatures that attack; none for no attack.
+ */
+attackers: Array<ObjectId>, } } | { "R6400Blocks": { 
 /**
  * The blocker.
  */
