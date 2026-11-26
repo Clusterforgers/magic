@@ -743,3 +743,21 @@ fn five_seats_where_one_player_loses_twice_in_a_batch_play_to_their_end() {
     let outcome = play_game(game_under(5, 6171, &house), 6171);
     assert!(outcome.is_ok(), "{:?}", outcome.err());
 }
+
+/// The input the proptest above found: an automatic payment of `{1}{S}` tapped a land that adds two mana for the `{1}`
+/// beside a snow land, and the check read `{S}` as generic and refused the floating surplus.
+#[test]
+fn five_seats_of_four_copies_in_any_colour_under_a_tax_of_seven_play_to_their_end() {
+    let house = HouseRules {
+        commander_tax: Some(7),
+        deck: DeckRules {
+            singleton: Some(false),
+            color_identity: Some(false),
+            max_copies: Some(4),
+            ..DeckRules::default()
+        },
+        ..HouseRules::default()
+    };
+    let outcome = play_game(game_under(5, 8176, &house), 8176);
+    assert!(outcome.is_ok(), "{:?}", outcome.err());
+}

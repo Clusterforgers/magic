@@ -86,7 +86,7 @@
   "scryfall_set_uri": "https://scryfall.com/sets/unk?utm_source=api",
   "rulings_uri": "https://api.scryfall.com/cards/df891f42-3a3d-4791-a036-74307c7cb0de/rulings",
   "prints_search_uri": "https://api.scryfall.com/cards/search?order=released&q=oracleid%3Abbb4643a-4bc6-4860-95e5-6f69cd1aebbe&unique=prints",
-  "collector_number": "UU11",
+  "collector_number": "20250210",
   "digital": false,
   "rarity": "uncommon",
   "card_back_id": "0aeebaf5-8c7d-4636-9e82-8c27447861f7",
