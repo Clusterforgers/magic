@@ -332,7 +332,9 @@ fn declare_attackers(state: &GameState) -> Progress {
                 None if !options.attackers.is_empty() => decider = chooser,
                 None => {}
                 Some(chosen) => {
-                    options.attackers.retain(|option| chosen.contains(&option.object));
+                    options
+                        .attackers
+                        .retain(|option| chosen.contains(&option.object));
                     options.required = options
                         .attackers
                         .iter()

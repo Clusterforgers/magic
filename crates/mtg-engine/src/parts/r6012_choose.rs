@@ -5,7 +5,7 @@
 use mtg_cards::refs::{Pred, Selector, ZoneKind};
 use mtg_core::ids::ObjectId;
 
-use super::{Kind, Part, Pick, Payer};
+use super::{Kind, Part, Payer, Pick};
 use crate::characteristics::controller_of;
 use crate::zones::Zone;
 

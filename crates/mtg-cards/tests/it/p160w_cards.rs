@@ -38,7 +38,11 @@ fn p160w_verdict(name: &str, text: &str) -> Verdict {
 #[case("Ghostly Flame")]
 #[case("Guardian Beast")]
 fn p160w_reads_back_whole(#[case] name: &str) {
-    assert_eq!(p160w_verdict(name, &p160w_file(name)), Verdict::Accepted, "{name}");
+    assert_eq!(
+        p160w_verdict(name, &p160w_file(name)),
+        Verdict::Accepted,
+        "{name}"
+    );
 }
 
 #[rstest]

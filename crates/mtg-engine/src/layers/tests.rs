@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 37] = [
+const MODIFICATIONS: [&str; 39] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -181,6 +181,8 @@ const MODIFICATIONS: [&str; 37] = [
     r#"{"SetController":"Opponents"}"#,
     r#""CantAttack""#,
     r#""CantBlock""#,
+    r#""R1012ControlKept""#,
+    r#""R3034CantBeEnchanted""#,
     r#""DoesntUntap""#,
     r#""CantBeTurnedFaceUp""#,
     r#""CantBeBlocked""#,
@@ -328,6 +330,8 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::CantAttackOwner(_)
             | mtg_cards::modify::Modification::CantBeBlockedUnlessAttackingOwner
             | mtg_cards::modify::Modification::CantBlock
+            | mtg_cards::modify::Modification::R1012ControlKept
+            | mtg_cards::modify::Modification::R3034CantBeEnchanted
             | mtg_cards::modify::Modification::DoesntUntap
             | mtg_cards::modify::Modification::R6700KeepsLastLoyalty
             | mtg_cards::modify::Modification::CantBeTurnedFaceUp

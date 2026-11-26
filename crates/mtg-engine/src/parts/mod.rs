@@ -473,7 +473,9 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
             )
         }
         CostItem::Behold { .. } => behold_pick(item)?,
-        CostItem::R6012ChooseOrExiled { filter, exiled } => r6012_choose::r6012_pick(filter, exiled),
+        CostItem::R6012ChooseOrExiled { filter, exiled } => {
+            r6012_choose::r6012_pick(filter, exiled)
+        }
         CostItem::ExiledToGraveyard { filter, count } => {
             pick(Kind::ExiledToGraveyard, filter, count, item)?
         }

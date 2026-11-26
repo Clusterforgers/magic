@@ -4023,7 +4023,10 @@ pub fn r5081_attack_chooser(state: &GameState) -> Option<PlayerId> {
 
 /// Whether a rule makes the source `dealer` a colorless source of damage (CR 609.7): what looks at the damage it deals
 /// reads it without colors. The source is judged as `source` names it, as it is or as it last existed.
-pub(crate) fn r6097_colorless_damage(state: &GameState, source: crate::keywords::Source<'_>) -> bool {
+pub(crate) fn r6097_colorless_damage(
+    state: &GameState,
+    source: crate::keywords::Source<'_>,
+) -> bool {
     state.rules().r6097_colorless.iter().any(|rule| {
         let mut scope = Scope::announcing(state, rule.controller, rule.source);
         scope.snapshots = source.snapshots.to_vec();

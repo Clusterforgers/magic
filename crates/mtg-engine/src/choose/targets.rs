@@ -400,8 +400,8 @@ pub(crate) fn legal_from(
             !crate::w17b_statics::w17b_shielded_in_graveyard(state, object.id)
                 && !forbidden_target(state, Target::Object(*object), source)
                 && !r377_walls_shut_out(state, &spec.what, object.id)
-                && !(crate::attach::r3034_aura_spell(state, source.id)
-                    && crate::characteristics::r3034_cant_be_enchanted(state, object.id))
+                && (!crate::attach::r3034_aura_spell(state, source.id)
+                    || !crate::characteristics::r3034_cant_be_enchanted(state, object.id))
                 && !keywords::protects(state, object.id, source.id, controller, by)
                 && !keywords::protected_from(state, keywords::Holder::Object(object.id), origin)
         }

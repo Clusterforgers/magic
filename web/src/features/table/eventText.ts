@@ -1566,9 +1566,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
   if ('R5081AttackersChosen' in event) {
     const { chooser, attackers } = event.R5081AttackersChosen
     if (attackers.length === 0) return line(`${n.seat(chooser)} chooses that no creature attacks`)
-    return line(
-      `${n.seat(chooser)} chooses ${joinWords(attackers.map((id) => n.card(id)))} to attack`,
-    )
+    return line(`${n.seat(chooser)} chooses ${joinWords(attackers.map((id) => n.card(id)))} to attack`)
   }
   if ('AttackChoicesRefused' in event) {
     return line(

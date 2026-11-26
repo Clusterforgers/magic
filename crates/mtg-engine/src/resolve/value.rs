@@ -2142,7 +2142,7 @@ impl<'a> Scope<'a> {
             return Ok(false);
         };
         if self.r6097_colorless == Some(reference) {
-            seen.chars.to_mut().colors = Default::default();
+            seen.chars.to_mut().colors = mtg_core::color::ColorSet::default();
         }
         for pred in &selector.0 {
             if !self.pred(pred, reference, &seen)? {
