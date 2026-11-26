@@ -312,6 +312,38 @@
   ]
  },
  {
+  "id": "warband",
+  "name": "Warband",
+  "kind": "Reinforcement",
+  "type_line": "Boss — Reinforcement",
+  "text": "Creatures you control get +1/+1.",
+  "art": "reinforcements",
+  "abilities": [
+   {
+    "Static": {
+     "affected": {
+      "Each": [
+       {
+        "Type": "Creature"
+       },
+       {
+        "ControlledBy": "You"
+       }
+      ]
+     },
+     "mods": [
+      {
+       "ModifyPT": {
+        "power": 1,
+        "toughness": 1
+       }
+      }
+     ]
+    }
+   }
+  ]
+ },
+ {
   "id": "ember_idol",
   "name": "Ember Idol",
   "kind": "Relic",

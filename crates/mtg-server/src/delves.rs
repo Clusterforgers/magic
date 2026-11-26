@@ -744,7 +744,7 @@ pub(crate) async fn content_of() -> Result<Json<DelveContent>, ApiError> {
                 innate: mtg_campaign::innate::innate_id(&boss.innate, 1),
                 round_phases: boss.round_phases.clone(),
                 life: (
-                    mtg_campaign::Scale::boss_life(1),
+                    mtg_campaign::Scale::boss_life(1, mtg_campaign::run::CONTENT),
                     mtg_campaign::scale::BOSS_LIFE_PER_HERO,
                 ),
                 art: BossArtView {

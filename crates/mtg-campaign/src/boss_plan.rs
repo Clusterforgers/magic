@@ -42,7 +42,7 @@ impl Run {
         Ok(BossSeat {
             boss: boss.id.clone(),
             name: boss.name.clone(),
-            life: Scale::boss_life(heroes),
+            life: Scale::boss_life(heroes, self.content),
             hand: HAND,
             brain: Brain::Hard,
             deck: deck.cards.clone(),
