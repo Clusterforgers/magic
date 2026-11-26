@@ -60,6 +60,8 @@ export interface Feed {
 export interface FeedOptions {
   /** The viewer was passing on its own request (a yield), which explains its passes better than the table does. */
   yielding?: boolean
+  /** A replay: the banner names every turn in the third person, whatever seat the replay is seen from. */
+  replay?: boolean
 }
 
 /** The most step names a skip note lists before it counts the rest. */
@@ -176,7 +178,7 @@ export function deriveFeed(
 
   const changed = was.number !== now.number || was.active !== now.active
   const left = now.active_left === true
-  const yours = now.active === viewer && !left
+  const yours = now.active === viewer && !left && options.replay !== true
   const banner: BannerCue | null =
     changed && stage === 'Turns' && result === null
       ? {
@@ -220,23 +222,24 @@ const isEmpty = (feed: Feed): boolean =>
   feed.banner === null && feed.lines.length === 0 && feed.skipped.length === 0
 
 // Each of the cues asks about the same batch, so the answer is kept for the state it was worked out for.
-const worked = new WeakMap<PlayState, { prev: PlayState; feed: Feed | null }>()
+const worked = new WeakMap<PlayState, { prev: PlayState; replay: boolean; feed: Feed | null }>()
 
 /**
  * The feed of the change from `prev` to `next`, or null when it was not a batch (a snapshot, a decision, a chat line)
- * or the batch means nothing to the cues.
+ * or the batch means nothing to the cues. `replay` names every turn in the third person (`FeedOptions.replay`).
  */
-export function feedBetween(prev: PlayState, next: PlayState, names: SeatNames): Feed | null {
+export function feedBetween(prev: PlayState, next: PlayState, names: SeatNames, replay = false): Feed | null {
   const hit = worked.get(next)
-  if (hit !== undefined && hit.prev === prev) return hit.feed
+  if (hit !== undefined && hit.prev === prev && hit.replay === replay) return hit.feed
   const step = batchBetween(prev, next)
   let feed: Feed | null = null
   if (step !== null) {
     const derived = deriveFeed(step.before, step.after, step.events, names, {
       yielding: prev.yielding !== null || next.yielding !== null,
+      replay,
     })
     feed = isEmpty(derived) ? null : derived
   }
-  worked.set(next, { prev, feed })
+  worked.set(next, { prev, replay, feed })
   return feed
 }
