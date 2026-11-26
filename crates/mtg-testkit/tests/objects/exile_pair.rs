@@ -1,4 +1,4 @@
-//! Goal: the two-trigger exile of Journey to Nowhere, as the compiler reads it from the Oracle text, plays whole at tables of two, three and four seats: the creature waits in exile while the enchantment stays, returns as a new object when it leaves, never leaves the battlefield when the enchantment is gone before its trigger resolves, and the game replays from its events.
+//! Goal: the two linked triggers of Journey to Nowhere, as the compiler reads them from the Oracle text, play whole at tables of two, three and four seats: the creature waits in exile while the enchantment stays, returns as a new object when it leaves, stays exiled for good when the enchantment is gone before its enter trigger resolves, and the game replays from its events.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
@@ -112,10 +112,15 @@ fn the_creature_waits_in_exile_and_returns_as_a_new_object(
     resolve(&mut driver, seats);
     let held = driver.state().object(bear).unwrap();
     assert_eq!(held.zone(), Zone::Exile);
-    assert!(held.exiled_until().is_some(), "linked to the enchantment");
+    assert!(
+        held.exiled_until().is_none(),
+        "exiled for good, linked by memory"
+    );
     assert!(in_play(&driver, "Journey to Nowhere"));
     bounce_the_enchantment(&mut driver, seats);
     assert!(!in_play(&driver, "Journey to Nowhere"));
+    assert_eq!(driver.state().stack().len(), 1, "the leave trigger waits");
+    resolve(&mut driver, seats);
     let back = driver.state().object(bear).unwrap();
     assert_eq!(back.zone(), Zone::Battlefield, "the Bear came back");
     assert!(back.counter() > before + 1, "as a new object");
@@ -127,20 +132,22 @@ fn the_creature_waits_in_exile_and_returns_as_a_new_object(
 }
 
 #[rstest]
-fn an_enchantment_gone_before_its_trigger_resolves_exiles_nothing(
+fn an_enchantment_gone_before_its_trigger_resolves_exiles_the_creature_for_good(
     #[values(2, 3, 4)] seats: usize,
 ) -> Result<(), ScriptError> {
     let mut driver = table(seats)?;
     let bear = driver.id_of("Bear")?;
-    let counter = driver.state().object(bear).unwrap().counter();
     cast_at_the_bear(&mut driver, seats);
     bounce_the_enchantment(&mut driver, seats);
     assert!(!in_play(&driver, "Journey to Nowhere"));
+    // The leave trigger resolves first and returns nothing; the enter trigger then exiles the Bear (CR 610.3c rulings).
     resolve(&mut driver, seats);
+    resolve(&mut driver, seats);
+    assert_eq!(driver.state().stack().len(), 0);
     let bear = driver.state().object(bear).unwrap();
-    assert_eq!(bear.zone(), Zone::Battlefield);
-    assert_eq!(bear.counter(), counter, "the Bear never left");
-    assert_eq!(driver.state().zone(Zone::Exile).len(), 0);
+    assert_eq!(bear.zone(), Zone::Exile, "the Bear stays in exile");
+    assert!(!in_play(&driver, "Bear"));
+    assert_eq!(driver.state().zone(Zone::Exile).len(), 1);
     assert_replays(&driver);
     Ok(())
 }
