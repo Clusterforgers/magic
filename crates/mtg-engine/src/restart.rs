@@ -109,6 +109,7 @@ pub(crate) fn fold(state: &mut GameState, by: PlayerId, kept: &[ObjectId]) {
     state.looked_by_hand.clear();
     state.looked_face_down.clear();
     state.commander_colors.clear();
+    state.circled.clear();
     state.revealed_by_hand.clear();
     state.notes.clear();
     state.memory = crate::memory::Memory::new();

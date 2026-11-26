@@ -235,6 +235,9 @@ fn types_of(
             }
             // No color was chosen without a draft.
             ManaProduced::DraftedColors => {}
+            ManaProduced::Circled => {
+                found.extend(crate::circled::circled(state, id).into_iter().map(mana_of));
+            }
             ManaProduced::Devotion => {
                 let scope = Scope::announcing(state, controller, object.reference());
                 found.extend(

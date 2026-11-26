@@ -1,0 +1,43 @@
+{
+  "oracle_id": "d32345c1-ed20-4bfc-a5fa-6ac7b99542ec",
+  "name": "Rod of Absorption",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Rod of Absorption",
+      "oracle_fingerprint": "1a10334b32f8ddb26531ecab2a3ab54c",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "SpellCast": { "what": [{ "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] }] }
+            },
+            "effects": [
+              {
+                "Shield": {
+                  "when": { "R6503Resolves": { "what": [{ "Is": "Triggering" }] } },
+                  "by": { "Instead": [{ "Exile": { "what": "Triggering" } }] },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap", "SacrificeSelf"],
+            "effects": [
+              {
+                "P160CastWithin": {
+                  "from": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "total": "X",
+                  "free": true
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

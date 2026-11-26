@@ -105,6 +105,7 @@ pub(super) fn move_object(
     {
         object.face_down = None;
     }
+    object.r6008_listed = None;
     (object.adventure, object.plotted) = (None, None);
     object.r110_foretell_cost = None;
     object.exiled_until = None;
@@ -605,6 +606,9 @@ fn spell_cast(
         }
         if choices.way == Some(CastWay::FaceDown) {
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
+        }
+        if choices.way == Some(CastWay::R6008FaceDown) {
+            spell.face_down = Some(FaceDown::R6008Masked);
         }
     }
     let (held_as_cast, counted_as_cast) = held_as_cast(state, player, object);

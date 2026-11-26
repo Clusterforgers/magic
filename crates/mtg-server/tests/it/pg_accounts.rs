@@ -834,7 +834,7 @@ async fn the_registration_limit_of_the_environment_holds(pool: PgPool) {
         .auth
         .limits;
         let server = start_with(&pool, |config| {
-            config.auth.limits.register_per_ip = limits.register_per_ip
+            config.auth.limits.register_per_ip = limits.register_per_ip;
         })
         .await;
         for n in 0..=allowed {

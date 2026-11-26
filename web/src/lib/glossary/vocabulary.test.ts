@@ -43,6 +43,7 @@ const CAST_WAYS: Record<CastWay, string> = {
   Harmonize: 'Harmonize',
   R116BeamMeUp: 'Beam me up',
   R122SuspendCost: 'Suspend',
+  R6008FaceDown: 'Face down',
   Cleave: 'Cleave',
   Alternative: 'Alternative cost',
 }
@@ -57,6 +58,8 @@ const FACE_DOWN: Record<FaceDownKind, string> = {
   Hideaway: 'Hideaway',
   Held: 'Face down',
   Sealed: 'Face down',
+  R6008Listed: 'Face down',
+  R6008Masked: 'Face down',
   Attraction: 'Attraction',
 }
 

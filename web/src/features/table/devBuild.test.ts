@@ -1,4 +1,4 @@
-// Goal: the production build contains nothing of the dev table, dev lobby, dev precons, dev unvalidated and dev read fixtures (their marker text, card names and seat names are in no output file), while a build with DEV on does contain them, so the check could fail.
+// Goal: the production build contains nothing of the dev table, dev lobby, dev precons, dev unvalidated, dev read, dev decks, dev Play and dev replay fixtures (their marker text, card names and seat names are in no output file), while a build with DEV on does contain them, so the check could fail.
 import { execFile } from 'node:child_process'
 import { mkdtemp, readdir, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
@@ -11,6 +11,9 @@ import { PRECONS_FIXTURE_MARKER } from '@/features/precons/dev/fixture'
 import { BULK_READS_FIXTURE_MARKER } from '@/features/bulk-reads/dev/fixture'
 import { READS_FIXTURE_MARKER } from '@/features/reads/dev/fixture'
 import { SUPPORT_FIXTURE_MARKER } from '@/features/cardSupport/dev/fixture'
+import { DECKS_FIXTURE_MARKER, LONG_DECK_NAME } from '@/features/decks/dev/fixture'
+import { LONG_HOST, PLAY_FIXTURE_MARKER } from '@/features/browser/dev/fixture'
+import { REPLAY_FIXTURE_MARKER } from '@/features/replay/dev/fixture'
 import { COMMANDERS } from './dev/cards'
 import { FIXTURE_MARKER } from './dev/fixture'
 
@@ -48,6 +51,11 @@ const FIXTURE_TRACES = [
   'Tidecaller of the Long Shoal',
   UNVALIDATED_FIXTURE_MARKER,
   'Wolfeschlegelsteinhausenbergerdo',
+  DECKS_FIXTURE_MARKER,
+  LONG_DECK_NAME,
+  PLAY_FIXTURE_MARKER,
+  LONG_HOST,
+  REPLAY_FIXTURE_MARKER,
 ]
 const filesWith = (files: Map<string, string>, text: string): string[] =>
   [...files].filter(([, content]) => content.includes(text)).map(([name]) => name)
@@ -76,7 +84,8 @@ describe('the dev table route in a build', () => {
   it('puts the fixture in a chunk of its own when DEV is on, which is how the check above can fail', async () => {
     const [, development] = await builds
     const [name] = filesWith(development, FIXTURE_MARKER)
-    expect(name).toMatch(/DevTableRoute/)
+    // The dev table and the dev replay share the table fixture, so it may stand in a chunk of its own beside both.
+    expect(name).toMatch(/DevTableRoute|^\/assets\/fixture-/)
     expect(filesWith(development, COMMANDERS[0].name).length).toBeGreaterThan(0)
     const [lobby] = filesWith(development, LOBBY_FIXTURE_MARKER)
     expect(lobby).toMatch(/DevLobbyRoute/)
@@ -88,5 +97,8 @@ describe('the dev table route in a build', () => {
     expect(reads).toMatch(/DevReadRoute/)
     const [bulk] = filesWith(development, BULK_READS_FIXTURE_MARKER)
     expect(bulk).toMatch(/DevBulkReadRoute/)
+    expect(filesWith(development, DECKS_FIXTURE_MARKER)[0]).toMatch(/DevDecksRoute/)
+    expect(filesWith(development, PLAY_FIXTURE_MARKER)[0]).toMatch(/DevPlayRoute/)
+    expect(filesWith(development, REPLAY_FIXTURE_MARKER)[0]).toMatch(/DevReplayRoute/)
   }, 90_000)
 })

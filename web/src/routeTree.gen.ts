@@ -30,11 +30,14 @@ import { Route as DecksUnvalidatedRouteImport } from './routes/decks_.unvalidate
 import { Route as DelvesDelveIdRouteImport } from './routes/delves_.$delveId'
 import { Route as DevAccountsRouteImport } from './routes/dev.accounts'
 import { Route as DevBuilderRouteImport } from './routes/dev.builder'
+import { Route as DevDecksRouteImport } from './routes/dev.decks'
 import { Route as DevDelveRouteImport } from './routes/dev.delve'
 import { Route as DevLobbyRouteImport } from './routes/dev.lobby'
+import { Route as DevPlayRouteImport } from './routes/dev.play'
 import { Route as DevPreconsRouteImport } from './routes/dev.precons'
 import { Route as DevReadRouteImport } from './routes/dev.read'
 import { Route as DevReadBulkRouteImport } from './routes/dev.read-bulk'
+import { Route as DevReplayRouteImport } from './routes/dev.replay'
 import { Route as DevSupportRouteImport } from './routes/dev.support'
 import { Route as DevTableRouteImport } from './routes/dev.table'
 import { Route as DevUnvalidatedRouteImport } from './routes/dev.unvalidated'
@@ -152,6 +155,11 @@ const DevBuilderRoute = DevBuilderRouteImport.update({
   path: '/dev/builder',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DevDecksRoute = DevDecksRouteImport.update({
+  id: '/dev/decks',
+  path: '/dev/decks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DevDelveRoute = DevDelveRouteImport.update({
   id: '/dev/delve',
   path: '/dev/delve',
@@ -160,6 +168,11 @@ const DevDelveRoute = DevDelveRouteImport.update({
 const DevLobbyRoute = DevLobbyRouteImport.update({
   id: '/dev/lobby',
   path: '/dev/lobby',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevPlayRoute = DevPlayRouteImport.update({
+  id: '/dev/play',
+  path: '/dev/play',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevPreconsRoute = DevPreconsRouteImport.update({
@@ -175,6 +188,11 @@ const DevReadRoute = DevReadRouteImport.update({
 const DevReadBulkRoute = DevReadBulkRouteImport.update({
   id: '/dev/read-bulk',
   path: '/dev/read-bulk',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevReplayRoute = DevReplayRouteImport.update({
+  id: '/dev/replay',
+  path: '/dev/replay',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DevSupportRoute = DevSupportRouteImport.update({
@@ -255,11 +273,14 @@ export interface FileRoutesByFullPath {
   '/delves/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
+  '/dev/decks': typeof DevDecksRoute
   '/dev/delve': typeof DevDelveRoute
   '/dev/lobby': typeof DevLobbyRoute
+  '/dev/play': typeof DevPlayRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/replay': typeof DevReplayRoute
   '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
@@ -294,11 +315,14 @@ export interface FileRoutesByTo {
   '/delves/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
+  '/dev/decks': typeof DevDecksRoute
   '/dev/delve': typeof DevDelveRoute
   '/dev/lobby': typeof DevLobbyRoute
+  '/dev/play': typeof DevPlayRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/replay': typeof DevReplayRoute
   '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
@@ -334,11 +358,14 @@ export interface FileRoutesById {
   '/delves_/$delveId': typeof DelvesDelveIdRoute
   '/dev/accounts': typeof DevAccountsRoute
   '/dev/builder': typeof DevBuilderRoute
+  '/dev/decks': typeof DevDecksRoute
   '/dev/delve': typeof DevDelveRoute
   '/dev/lobby': typeof DevLobbyRoute
+  '/dev/play': typeof DevPlayRoute
   '/dev/precons': typeof DevPreconsRoute
   '/dev/read': typeof DevReadRoute
   '/dev/read-bulk': typeof DevReadBulkRoute
+  '/dev/replay': typeof DevReplayRoute
   '/dev/support': typeof DevSupportRoute
   '/dev/table': typeof DevTableRoute
   '/dev/unvalidated': typeof DevUnvalidatedRoute
@@ -375,11 +402,14 @@ export interface FileRouteTypes {
     | '/delves/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
+    | '/dev/decks'
     | '/dev/delve'
     | '/dev/lobby'
+    | '/dev/play'
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/replay'
     | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
@@ -414,11 +444,14 @@ export interface FileRouteTypes {
     | '/delves/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
+    | '/dev/decks'
     | '/dev/delve'
     | '/dev/lobby'
+    | '/dev/play'
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/replay'
     | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
@@ -453,11 +486,14 @@ export interface FileRouteTypes {
     | '/delves_/$delveId'
     | '/dev/accounts'
     | '/dev/builder'
+    | '/dev/decks'
     | '/dev/delve'
     | '/dev/lobby'
+    | '/dev/play'
     | '/dev/precons'
     | '/dev/read'
     | '/dev/read-bulk'
+    | '/dev/replay'
     | '/dev/support'
     | '/dev/table'
     | '/dev/unvalidated'
@@ -493,11 +529,14 @@ export interface RootRouteChildren {
   DelvesDelveIdRoute: typeof DelvesDelveIdRoute
   DevAccountsRoute: typeof DevAccountsRoute
   DevBuilderRoute: typeof DevBuilderRoute
+  DevDecksRoute: typeof DevDecksRoute
   DevDelveRoute: typeof DevDelveRoute
   DevLobbyRoute: typeof DevLobbyRoute
+  DevPlayRoute: typeof DevPlayRoute
   DevPreconsRoute: typeof DevPreconsRoute
   DevReadRoute: typeof DevReadRoute
   DevReadBulkRoute: typeof DevReadBulkRoute
+  DevReplayRoute: typeof DevReplayRoute
   DevSupportRoute: typeof DevSupportRoute
   DevTableRoute: typeof DevTableRoute
   DevUnvalidatedRoute: typeof DevUnvalidatedRoute
@@ -660,6 +699,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevBuilderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/dev/decks': {
+      id: '/dev/decks'
+      path: '/dev/decks'
+      fullPath: '/dev/decks'
+      preLoaderRoute: typeof DevDecksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/dev/delve': {
       id: '/dev/delve'
       path: '/dev/delve'
@@ -672,6 +718,13 @@ declare module '@tanstack/react-router' {
       path: '/dev/lobby'
       fullPath: '/dev/lobby'
       preLoaderRoute: typeof DevLobbyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev/play': {
+      id: '/dev/play'
+      path: '/dev/play'
+      fullPath: '/dev/play'
+      preLoaderRoute: typeof DevPlayRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev/precons': {
@@ -693,6 +746,13 @@ declare module '@tanstack/react-router' {
       path: '/dev/read-bulk'
       fullPath: '/dev/read-bulk'
       preLoaderRoute: typeof DevReadBulkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dev/replay': {
+      id: '/dev/replay'
+      path: '/dev/replay'
+      fullPath: '/dev/replay'
+      preLoaderRoute: typeof DevReplayRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dev/support': {
@@ -797,11 +857,14 @@ const rootRouteChildren: RootRouteChildren = {
   DelvesDelveIdRoute: DelvesDelveIdRoute,
   DevAccountsRoute: DevAccountsRoute,
   DevBuilderRoute: DevBuilderRoute,
+  DevDecksRoute: DevDecksRoute,
   DevDelveRoute: DevDelveRoute,
   DevLobbyRoute: DevLobbyRoute,
+  DevPlayRoute: DevPlayRoute,
   DevPreconsRoute: DevPreconsRoute,
   DevReadRoute: DevReadRoute,
   DevReadBulkRoute: DevReadBulkRoute,
+  DevReplayRoute: DevReplayRoute,
   DevSupportRoute: DevSupportRoute,
   DevTableRoute: DevTableRoute,
   DevUnvalidatedRoute: DevUnvalidatedRoute,

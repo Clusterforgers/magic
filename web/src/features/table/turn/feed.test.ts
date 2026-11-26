@@ -1,4 +1,4 @@
-// Goal: the turn feed turns a batch into the cues the table draws (a banner when the turn or the active seat changes, the steps that went by without a window, and at most three ticker lines: the skip note, the viewer's own reason and the newest event worth reading) from the game before it, the game after it and its events alone, explains only the viewer's own skips, and never names a card the viewer alone could see.
+// Goal: the turn feed turns a batch into the cues the table draws (a banner when the turn or the active seat changes, the steps that went by without a window, and at most three ticker lines: the skip note, the viewer's own reason and the newest event worth reading) from the game before it, the game after it and its events alone, explains only the viewer's own skips, names every turn in the third person in a replay, and never names a card the viewer alone could see.
 import { describe, expect, it } from 'vitest'
 import { must } from '@/test-utils/batches'
 import {
@@ -150,6 +150,28 @@ describe('the feed of a batch', () => {
     const feed = deriveFeed(momentAt(at(5, 1, 'Main1')), momentAt(at(5, 1, 'Main1')), quiet, nameOf)
     expect(feed).toEqual({ banner: null, lines: [], skipped: [], announcement: '' })
   })
+})
+
+describe('the banner in a replay', () => {
+  it.each<[number, boolean, boolean, string]>([
+    [0, false, true, 'Your turn'],
+    [1, false, false, "Bo's turn"],
+    [0, true, false, "Alice's turn"],
+    [1, true, false, "Bo's turn"],
+  ])(
+    "names seat %i's turn (replay %s), seen from seat 0, in the third person in a replay",
+    (active, replay, yours, who) => {
+      const feed = deriveFeed(
+        momentAt(at(6, 1 - active, 'End')),
+        momentAt(at(7, active, 'Main1')),
+        passTurn(7, active),
+        nameOf,
+        { replay },
+      )
+      expect(feed.banner).toEqual({ yours, who, turn: 7, round: 4 })
+      expect(feed.announcement.startsWith(`${who}, round 4, turn 7`)).toBe(true)
+    },
+  )
 })
 
 describe('the ticker lines', () => {

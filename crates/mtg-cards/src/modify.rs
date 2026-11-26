@@ -190,6 +190,9 @@ pub enum Modification {
     /// 605.1a), as `GainAbilitiesOf` gives them: "has all activated abilities of lands your opponents control except mana
     /// abilities".
     R111GainNonManaAbilitiesOf(Ref),
+    /// The object has the loyalty abilities of the objects the reference names (layer 6, CR 606.3), as `GainAbilitiesOf` gives
+    /// the activated ones: "has all loyalty abilities of all other planeswalkers on the battlefield".
+    P160GainLoyaltyAbilitiesOf(Ref),
     /// The object has the activated and triggered abilities printed on the cards the reference names, wherever they are
     /// (layer 6): "~ has all activated and triggered abilities of the last chosen card".
     R6702GainActivatedAndTriggeredOf(Ref),
@@ -317,6 +320,7 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
             | Modification::R111GainNonManaAbilitiesOf(_)
+            | Modification::P160GainLoyaltyAbilitiesOf(_)
             | Modification::R6702GainActivatedAndTriggeredOf(_)
             | Modification::R114StickerAbilitiesOf(_)
             | Modification::LoseThisAbility

@@ -175,6 +175,22 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         under: Option<Ref>,
     },
+    /// The battlefield face down under its owner's control with the characteristics the effect lists (CR 708.2): a creature
+    /// of this power and toughness with these abilities and nothing else ("It's a 3/3 creature with ..."), which are its
+    /// copiable values; an instant or sorcery card enters too.
+    R6008FaceDownAs {
+        /// Its power.
+        power: i32,
+        /// Its toughness.
+        toughness: i32,
+        /// Its abilities.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        rules: Vec<crate::ability::Ability>,
+        /// The card's name is noted on the permanent ("Note the name of ..."), for `Effect::R6008CopyNoted`; a copy of
+        /// the permanent does not know it.
+        #[serde(default, skip_serializing_if = "is_false")]
+        note_name: bool,
+    },
     /// Its owner's library.
     Library {
         /// Top, bottom or shuffled in.
@@ -263,6 +279,9 @@ pub enum Produce {
     /// One mana of any color chosen as the controller drafted cards named like the source ("Add one mana of any color
     /// chosen as you drafted cards named ~"); none in a game without a draft, where no color was chosen (Paliano ruling).
     DraftedColors,
+    /// One mana of either of the colors circled for the source as its deck was built (`Ability::CircleColors`), those of
+    /// the permanent it copies for a copy; none when no color was circled ("Add one mana of either of the circled colors").
+    Circled,
     /// One more mana of each type for each unspent mana of that type in the player's pool, restricted mana counted too;
     /// the mana added has no restriction ("Double the amount of each type of unspent mana you have", Doubling Cube
     /// rulings; the type of mana is its color or colorless).
@@ -1542,6 +1561,16 @@ pub enum Effect {
         /// Its abilities.
         abilities: Vec<crate::ability::Ability>,
     },
+    /// Until end of turn each player named has these abilities, written as on a permanent ("Until end of turn, any time
+    /// you could activate a mana ability, you may pay 1 life. If you do, add {C}."): they are held by an emblem in the
+    /// player's command zone that ceases to exist in the cleanup step.
+    R6051PlayerGains {
+        /// Who gains them.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The abilities.
+        abilities: Vec<crate::ability::Ability>,
+    },
     /// A Spirit returns to life (`docs/delves.md`, Spirits): each player named who is a Spirit loses its haunt emblem, is a
     /// living player again with this life total and draws this many cards; anyone else is unchanged.
     Revive {
@@ -1789,6 +1818,26 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         must: bool,
     },
+    /// The player may cast spells from among the cards `from` names, one at a time in the order they choose, while what
+    /// they cast stays within the budget (CR 608.2g): at most `most` spells, and mana values, as the cards were, adding up
+    /// to at most `total` ("any number of spells from among cards exiled with this artifact with total mana value X or
+    /// less", "up to three of the copies").
+    P160CastWithin {
+        /// Who casts them.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The cards cast from.
+        from: Ref,
+        /// The most spells cast; any number when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        most: Option<Amount>,
+        /// The most their mana values add up to; any total when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        total: Option<Amount>,
+        /// They are cast without paying their mana costs (CR 118.9).
+        #[serde(default, skip_serializing_if = "is_false")]
+        free: bool,
+    },
     /// The player copies a card in exile (CR 707.12) and binds the copy: a token card in exile that its owner may cast
     /// (`CastFromZone`) and that ceases to exist as soon as it is anywhere but on the stack (CR 704.5e).
     CopyCard {
@@ -1810,6 +1859,17 @@ pub enum Effect {
         who: Ref,
         /// The name the card's name was chosen under (`ChooseValue` of `ValueKind::OptionsNotNoted`).
         chosen: String,
+        /// The name the copy is bound to, as the object it becomes in exile.
+        #[serde(rename = "as")]
+        bind: String,
+    },
+    /// The player creates a copy of the card with the name noted on the source (`Destination::R6008FaceDownAs` with
+    /// `note_name`: "create a copy of the card with the noted name") and binds it as `CopyCard` binds its copies: a token
+    /// card in exile. A source that noted no name, such as a copy of the permanent, makes no copy and binds nothing.
+    R6008CopyNoted {
+        /// Who owns the copy.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
         /// The name the copy is bound to, as the object it becomes in exile.
         #[serde(rename = "as")]
         bind: String,

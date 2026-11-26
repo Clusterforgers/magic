@@ -44,6 +44,7 @@ import type { ObjectId } from "./ObjectId";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
 import type { PutOnStack } from "./PutOnStack";
+import type { R6008Listed } from "./R6008Listed";
 import type { Remembered } from "./Remembered";
 import type { ResolutionOutcome } from "./ResolutionOutcome";
 import type { Restricted } from "./Restricted";
@@ -1050,7 +1051,7 @@ object: ObjectId, } } | { "Harnessed": {
 /**
  * The permanent.
  */
-object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "CopyCeased": { 
+object: ObjectId, } } | { "BecameCopy": BecameCopy } | { "SpellCopied": SpellCopy } | { "CardCopied": CardCopy } | { "R6008Listed": R6008Listed } | { "CopyCeased": { 
 /**
  * The copy.
  */
@@ -1496,7 +1497,23 @@ object: ObjectId,
 /**
  * The color.
  */
-color: Color, } } | { "FirstDrawRevealed": { 
+color: Color, } } | { "R6051EmblemEnded": { 
+/**
+ * The emblem.
+ */
+object: ObjectId, } } | { "ColorsCircled": { 
+/**
+ * Who circled them.
+ */
+player: PlayerId, 
+/**
+ * The card.
+ */
+object: ObjectId, 
+/**
+ * The colors circled.
+ */
+colors: Array<Color>, } } | { "FirstDrawRevealed": { 
 /**
  * Who revealed it.
  */

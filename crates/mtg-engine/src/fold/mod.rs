@@ -276,6 +276,10 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::CardCopied(copy) => crate::copies::fold_card(state, copy),
+        Event::R6008Listed(listed) => {
+            crate::r6008_face_down::fold_listed(state, listed);
+            Ok(())
+        }
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::TargetsChanged(change) => crate::retargeted::fold(state, change),
@@ -748,6 +752,11 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::CommanderColorChosen { object, color, .. } => {
             state.commander_colors.retain(|(card, _)| card != object);
             state.commander_colors.push((*object, *color));
+        }
+        Event::R6051EmblemEnded { object } => crate::w6b_emblems::r6051_fold_ended(state, *object)?,
+        Event::ColorsCircled { object, colors, .. } => {
+            state.circled.retain(|(card, _)| card != object);
+            state.circled.push((*object, colors.clone()));
         }
         Event::FaceDownLooked { object, player } => {
             crate::sight::look_face_down(state, *player, *object);
@@ -1339,6 +1348,7 @@ fn turn_face_up(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> 
         return Err(invalid(format!("{id:?} is not face down")));
     }
     object.face_down = None;
+    object.r6008_listed = None;
     Ok(())
 }
 

@@ -620,6 +620,7 @@ Crypt of Agadeem
 Cryptbreaker
 Cryptcaller Chariot
 Cryptic Gateway
+Cryptic Spires
 Crystal Barricade
 Crystal Quarry
 Crystal Spray
@@ -1446,6 +1447,7 @@ Illicit Shipment
 Illuminate History
 Illusion Spinners
 Illusion of Choice
+Illusionary Mask
 Illusionist's Gambit
 Illusory Ambusher
 Illustrious Wanderglyph
@@ -1759,6 +1761,7 @@ Mabel, Bitter Recluse
 Mace of the Valiant
 Machine God's Effigy
 Maestros Theater
+Magar of the Magic Strings
 Mage Hunter
 Magewright's Stone
 Magical Hack
@@ -2243,6 +2246,7 @@ Prize Wall
 Prizefight
 Profane Command
 Professional Face-Breaker
+Professor Hojo
 Professor of Symbology
 Proficient Pyrodancer
 Propaganda
@@ -2371,6 +2375,7 @@ Renewing Dawn
 Renounce
 Repeal
 Replication Technique
+Reprieve
 Reprocess
 Repulse
 Rescue Retriever
@@ -2433,6 +2438,7 @@ Road Rage
 Roaring Furnace // Steaming Sauna
 Rob the Archives
 Rocksteady, Mutant Marauder
+Rod of Absorption
 Rogue Refiner
 Rogue's Passage
 Roku's Mastery
@@ -2720,6 +2726,7 @@ Spectral Shift
 Spectral Steel
 Speedway Fanatic
 Spellbreaker Behemoth
+Spellscorn Coven // Take It Back
 Spelltwine
 Spellweaver Volute
 Sphere of Safety
@@ -3440,6 +3447,7 @@ Xenosquirrels
 Xu-Ifit, Osteoharmonist
 Yahenni, Undying Partisan
 Yasharn, Implacable Earth
+Yavimaya Bloomsage // Channel
 Yavimaya Elder
 Ydwen Efreet
 Yenna, Redtooth Regent

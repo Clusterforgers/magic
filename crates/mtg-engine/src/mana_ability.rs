@@ -376,6 +376,10 @@ fn rule_mana(
             }
             // No color was chosen without a draft: no way to add mana.
             ManaProduced::Instead { .. } | ManaProduced::DraftedColors => Vec::new(),
+            ManaProduced::Circled => crate::circled::circled(state, id)
+                .into_iter()
+                .map(|color| vec![crate::mana_kinds::mana_of(color)])
+                .collect(),
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
             ManaProduced::AnyCombination { count, among } => {
                 let counts: Vec<u32> = match x_most {
@@ -648,6 +652,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         }
     }
     found.extend(hand_options(state, player));
+    found.extend(r6051_emblem_options(state, player));
     // The replacement comes first: the mana a triggered mana ability adds is not mana the permanent produced (CR 605.1b).
     let found = crate::mana_replace::fold(state, player, found);
     mana_bonus::fold(state, player, found)
@@ -667,6 +672,24 @@ fn hand_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         }
         let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());
         for mana in rule_mana(state, player, id, printed, true) {
+            found.extend(mana.options);
+        }
+    }
+    found
+}
+
+/// The mana abilities of the emblems in `player`'s command zone ("any time you could activate a mana ability, you may
+/// pay 1 life. If you do, add {C}."): sources of a payment and of priority, which no tap limits.
+fn r6051_emblem_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
+    let mut found = Vec::new();
+    for &id in state.zone(Zone::Command(player)) {
+        let emblem = state
+            .object(id)
+            .is_some_and(|object| object.kind() == crate::object::ObjectKind::Emblem);
+        if !emblem || mana_forbidden(state, player, id, false) {
+            continue;
+        }
+        for mana in rule_mana(state, player, id, 0, true) {
             found.extend(mana.options);
         }
     }

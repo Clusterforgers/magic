@@ -1205,6 +1205,7 @@ impl<'a> Walker<'a> {
             | Pred::Stickered
             | Pred::WithSticker(_)
             | Pred::Harnessed
+            | Pred::R6008PaidBySpent
             | Pred::FoughtSinceYourLastUpkeep { .. }
             | Pred::DoubleFaced
             | Pred::Transformed
@@ -1706,6 +1707,7 @@ impl<'a> Walker<'a> {
                         | crate::value::TallyEvent::Blocked
                         | crate::value::TallyEvent::Activated
                         | crate::value::TallyEvent::KindActivated(_)
+                        | crate::value::TallyEvent::R6024ActivatedTargeting
                         | crate::value::TallyEvent::CountersPut
                         | crate::value::TallyEvent::PlusOneCountersPut
                 ) {
@@ -2218,8 +2220,13 @@ impl<'a> Walker<'a> {
                         w.at("count", |w| w.amount(count));
                     }
                     CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
-                    CostItem::ExileTotalValue { filter, .. } => {
+                    CostItem::ExileTotalValue {
+                        filter, symbols, ..
+                    } => {
                         w.at("filter", |w| w.selector(filter));
+                        if symbols.is_some() {
+                            w.uses("Cost", "ExileTotalValue.Symbols");
+                        }
                     }
                     CostItem::OneOf(costs) => w.alternatives(costs),
                     CostItem::Discard { count, filter } => {
@@ -3174,6 +3181,7 @@ impl<'a> Walker<'a> {
             }
             Modification::GainAbilitiesOf(from)
             | Modification::R111GainNonManaAbilitiesOf(from)
+            | Modification::P160GainLoyaltyAbilitiesOf(from)
             | Modification::R6702GainActivatedAndTriggeredOf(from)
             | Modification::R114StickerAbilitiesOf(from)
             | Modification::SetCreatureTypesOf(from) => {
@@ -3951,6 +3959,20 @@ impl Walker<'_> {
             Destination::BattlefieldEnchanting { only } => {
                 self.at("only", |w| w.selector(only));
             }
+            // The abilities it lists are its own on the battlefield, checked as granted ones are.
+            Destination::R6008FaceDownAs {
+                power,
+                toughness,
+                rules,
+                ..
+            } => {
+                if *power < 0 || *toughness < 1 {
+                    self.problem("a face-down creature lists a power of at least 0 and a toughness of at least 1");
+                }
+                for (i, rule) in rules.iter().enumerate() {
+                    self.at(format!("rules[{i}]"), |w| w.granted(rule));
+                }
+            }
             // The changes are continuous effects of the resolving ability, so a static ability they give may give
             // abilities in turn, as one `Effect::Continuous` gives.
             Destination::R6502BattlefieldAs {
@@ -4555,6 +4577,7 @@ impl Walker<'_> {
             | Produce::CommanderIdentity(_)
             | Produce::Devotion
             | Produce::DraftedColors
+            | Produce::Circled
             | Produce::R6501UnspentDoubled
             | Produce::R112Noted { .. }
             | Produce::R112OneOfCount { .. }
@@ -4674,6 +4697,13 @@ impl Walker<'_> {
             } => {
                 self.uses("Effect", "Move.Battlefield");
                 self.uses("Effect", "Move.FaceDown");
+            }
+            Effect::Move {
+                to: Destination::R6008FaceDownAs { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.R6008FaceDownAs");
             }
             Effect::Move {
                 to:
@@ -5016,6 +5046,10 @@ impl Walker<'_> {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::R6008CopyNoted { who, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
             Effect::Parade { what } => w.at("what", |w| w.selector(what)),
             Effect::PutSticker { who, on, up_to, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -5141,16 +5175,39 @@ impl Walker<'_> {
                             | CastWay::Miracle
                             | CastWay::Suspend
                             | CastWay::R122SuspendCost
+                            | CastWay::R6008FaceDown
                     )
                 {
-                    w.problem("only madness, miracle and suspend are cast for a way of their own");
+                    w.problem("only madness, miracle, suspend and a face-down cast by an effect are cast for a way of their own");
                 }
                 if *way == Some(CastWay::R122SuspendCost) {
                     w.uses("CastWay", "R122SuspendCost");
                 }
+                if *way == Some(CastWay::R6008FaceDown) {
+                    if !*free {
+                        w.problem("a card cast face down by an effect is cast free");
+                    }
+                    w.uses("CastWay", "R6008FaceDown");
+                }
                 w.effect_list("otherwise", otherwise, false);
                 if let Some(name) = bind {
                     w.bind(name, Kind::Object);
+                }
+            }
+            Effect::P160CastWithin {
+                who,
+                from,
+                most,
+                total,
+                ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("from", |w| w.reference(from, Kind::Object));
+                if let Some(most) = most {
+                    w.at("most", |w| w.amount(most));
+                }
+                if let Some(total) = total {
+                    w.at("total", |w| w.amount(total));
                 }
             }
             Effect::Bind { what, bind, adds } => {
@@ -5324,7 +5381,8 @@ impl Walker<'_> {
                 w.at("count", |w| w.amount(count));
                 w.effect_list("at_end", at_end, false);
             }
-            Effect::CreateEmblem { who, abilities } => w.w6b_emblem(who, abilities),
+            Effect::CreateEmblem { who, abilities }
+            | Effect::R6051PlayerGains { who, abilities } => w.w6b_emblem(who, abilities),
             Effect::AddPhase { phases } => {
                 if phases.is_empty() {
                     w.problem("an added phase list names no phase");
@@ -6849,6 +6907,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.selector(what));
             }
             Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
+            Ability::CircleColors(_) => w.uses("Ability", "CircleColors"),
             Ability::R115MulliganExile => w.uses("Ability", "R115MulliganExile"),
             Ability::R120DiscardAnyTime => w.uses("Ability", "R120DiscardAnyTime"),
             Ability::Sticker(sticker) => w.sticker(sticker),
@@ -7646,6 +7705,9 @@ impl Walker<'_> {
                 if *caused_own {
                     self.uses("LifeGain", "CausedOwn");
                 }
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            ReplaceWhen::R1193LifeReducedTo { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             ReplaceWhen::LifeLoss { who }

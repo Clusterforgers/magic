@@ -18,7 +18,7 @@ interface Stop {
   open?: { press: string; shows: string }
   /** Held to every screen of `SCREENS`; the other stops to the `core` ones. */
   every?: true
-  /** Shown to an account: the header then has every tab (Decks, My games, Tournaments, Delves, Review cards). */
+  /** Shown to an account: the header then has every tab of an account, in its row or under More. */
   account?: true
 }
 
@@ -211,7 +211,7 @@ for (const stop of STOPS) {
     }
     await page.goto(stop.url)
     await page.locator(stop.ready).first().waitFor()
-    if (stop.account === true) await page.locator('nav[aria-label="Main"] a[href="/delves"]').waitFor()
+    if (stop.account === true) await page.locator('nav[aria-label="Account"] button').waitFor()
     // The dev route's own tools are for looking at the table, not part of it.
     await page.addStyleTag({ content: '[data-dev-tool] { display: none !important; }' })
     const ask: ReachAsk = {

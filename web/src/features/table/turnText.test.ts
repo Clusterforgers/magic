@@ -15,6 +15,7 @@ import {
   decisionName,
   describeMulligan,
   priorityText,
+  replayLine,
   STEP_LABEL,
   WAIT_PHRASE,
   waitingOn,
@@ -167,6 +168,42 @@ describe('badgeText', () => {
   ])('says what the game is doing in stage %s, whoever is looking', (stage, text) => {
     expect(badgeText({ stage, turn: 0, round: 0, active: 0, step: 'Untap' }, 0, name)).toBe(text)
     expect(badgeText({ stage, turn: 0, round: 0, active: 0, step: 'Untap' }, 1, name)).toBe(text)
+  })
+})
+
+describe('replayLine', () => {
+  const turn = (active: number, step: Step): BannerInput => ({
+    stage: 'Turns',
+    turn: 5,
+    round: 3,
+    active,
+    step,
+  })
+
+  it.each(STEPS.flatMap((step) => [0, 1, 3].map((active) => [active, step] as const)))(
+    "names seat %i's turn and the %s step, never a wait",
+    (active, step) => {
+      const text = replayLine(turn(active, step), name)
+      expect(text).toBe(`${name(active)}'s turn · ${STEP_LABEL[step]}`)
+      expect(text).not.toMatch(/wait/i)
+    },
+  )
+
+  it.each<[Partial<BannerInput>, string]>([
+    [{ teammate: 1 }, "Alice and Bo's turn · Precombat main"],
+    [{ party: [0, 1, 2] }, "The party's turn · Precombat main"],
+    [{ left: true }, 'Alice left · Precombat main'],
+    [{ controlledBy: 2 }, "Alice's turn · Precombat main"],
+  ])('says whose turn it is in the house rules and odd turns (%o)', (extra, text) => {
+    expect(replayLine({ ...turn(0, 'Main1'), ...extra }, name)).toBe(text)
+  })
+
+  it.each<[Stage, string]>([
+    ['PreGame', 'Setting up the game'],
+    ['Mulligan', 'Opening hands'],
+    ['Finished', 'The game is over'],
+  ])('says what the game is doing in stage %s', (stage, text) => {
+    expect(replayLine({ stage, turn: 0, round: 0, active: 0, step: 'Untap' }, name)).toBe(text)
   })
 })
 

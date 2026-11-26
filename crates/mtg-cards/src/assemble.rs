@@ -465,6 +465,8 @@ pub enum ManaProduced<'a> {
     AnyColorAmong(&'a Selector),
     /// One mana of a colour chosen in a booster draft; none without a draft.
     DraftedColors,
+    /// One mana of one of the colors circled for the source as its deck was built, picked when activated.
+    Circled,
     /// Mana of one colour picked when activated, as many as the controller's devotion to it, counted when it is offered.
     Devotion,
 }
@@ -514,6 +516,7 @@ impl<'a> ManaProduced<'a> {
             Produce::EachColorAmong(among) => ManaProduced::EachColorAmong(among),
             Produce::AnyColorAmong(among) => ManaProduced::AnyColorAmong(among),
             Produce::DraftedColors => ManaProduced::DraftedColors,
+            Produce::Circled => ManaProduced::Circled,
             Produce::Devotion => ManaProduced::Devotion,
             Produce::OfTapped
             | Produce::CostOf(_)
@@ -548,6 +551,7 @@ impl ManaProduced<'_> {
             | ManaProduced::OrChosenColor(_)
             | ManaProduced::EachColorAmong(_)
             | ManaProduced::AnyColorAmong(_)
+            | ManaProduced::Circled
             | ManaProduced::Devotion => 1,
             // No colour was chosen without a draft.
             ManaProduced::DraftedColors => 0,
@@ -772,7 +776,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         condition,
         limit,
         by: Activators::Controller,
-        from: from @ (ZoneKind::Battlefield | ZoneKind::Hand),
+        from: from @ (ZoneKind::Battlefield | ZoneKind::Hand | ZoneKind::Command),
         targets,
         effects,
     } = ability

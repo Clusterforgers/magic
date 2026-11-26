@@ -645,8 +645,11 @@ fn produced_wordings(texts: &mut Vec<String>) {
 pub fn written_variants(ability: &Ability) -> Vec<String> {
     // A choice whose chosen objects differ in a quality is worded only with that rule.
     if let Some(mut texts) = super::r4709_differ::r4709_differ_texts(ability, written_variants) {
+        super::p159_wholes::p159_add_wholes(ability, &mut texts);
         super::r123_02_wholes::r123_02_add_wholes(ability, &mut texts);
         super::p158_wholes::p158_add_wholes(ability, &mut texts);
+        super::p160_wholes::p160_add_wholes(ability, &mut texts);
+        super::fd1_wholes::fd1_add_wholes(ability, &mut texts);
         return texts;
     }
     // A permission with riders is worded only as the permission without them and its riders.
@@ -756,8 +759,11 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::r120_02_wholes::r120_02_add_wholes(ability, &mut texts);
     super::r121_02_wholes::r121_02_add_wholes(ability, &mut texts);
     super::r122_02_wholes::r122_02_add_wholes(ability, &mut texts);
+    super::p159_wholes::p159_add_wholes(ability, &mut texts);
     super::r123_02_wholes::r123_02_add_wholes(ability, &mut texts);
     super::p158_wholes::p158_add_wholes(ability, &mut texts);
+    super::p160_wholes::p160_add_wholes(ability, &mut texts);
+    super::fd1_wholes::fd1_add_wholes(ability, &mut texts);
     super::r116_01_wholes::r116_01_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);

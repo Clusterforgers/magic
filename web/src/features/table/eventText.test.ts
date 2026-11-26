@@ -36,6 +36,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { CommanderColorChosen: { player: 1, object: 3, color: 'Blue' } },
     'Bo chooses blue for Forest',
   ],
+  ColorsCircled: [
+    { ColorsCircled: { player: 1, object: 3, colors: ['White', 'Blue'] } },
+    'Bo circles white and blue on Forest',
+  ],
   LibraryShuffled: [{ LibraryShuffled: { player: 0, order: [] } }, 'Ana shuffles their library'],
   R111GraveyardOrdered: [
     { R111GraveyardOrdered: { player: 1, order: [3, 4] } },
@@ -155,6 +159,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MonarchChanged: [{ MonarchChanged: { player: 1 } }, 'Bo becomes the monarch'],
   EmblemCreated: [{ EmblemCreated: { object: 9, owner: 1 } }, 'Bo gets an emblem'],
+  R6051EmblemEnded: [{ R6051EmblemEnded: { object: 9 } }, 'An emblem that lasted the turn ends'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],
@@ -247,6 +252,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   TurnedFaceDown: [{ TurnedFaceDown: { object: 3, player: 1 } }, 'Bo turns Forest face down'],
+  R6008Listed: [
+    { R6008Listed: { object: 4, noted: 'Lightning Bolt' } },
+    'Lightning Bolt lies face down as the creature an effect lists, noting the name Lightning Bolt',
+  ],
   FaceDownLooked: [{ FaceDownLooked: { object: 3, player: 1 } }, 'Bo looks at Forest'],
   FirstDrawRevealed: [
     { FirstDrawRevealed: { player: 1, card: 3, sources: [1] } },

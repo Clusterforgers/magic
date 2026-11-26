@@ -24,7 +24,7 @@ pub(super) fn specs(ctx: &Ctx<'_>, choices: &Choices) -> Vec<TargetSpec> {
     // An overloaded spell has no targets: each object that could be one is affected (CR 702.96). A spell cast face down
     // is a 2/2 creature spell with no abilities and no subtypes, an Aura's enchant included (CR 708.2a, 702.37c).
     if choices.way == Some(CastWay::Overload)
-        || (choices.way == Some(CastWay::FaceDown) && matches!(ctx.what, What::Spell(_)))
+        || (choices.way.is_some_and(CastWay::casts_face_down) && matches!(ctx.what, What::Spell(_)))
     {
         return Vec::new();
     }
