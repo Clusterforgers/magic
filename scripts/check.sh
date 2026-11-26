@@ -10,7 +10,8 @@
 # leaves a stamp in ~/.cache/mtg-check; every worktree with that content skips it unless --force.
 # Test binaries and the web checks run side by side within a thread budget: the cores (MTG_TEST_THREADS) split among
 # the checks running, the biggest binary first with the most threads (RUST_TEST_THREADS fixes them); a binary is killed
-# after MTG_TEST_TIMEOUT minutes (default 40; a float is fine). CARGO_BUILD_JOBS (default 4) bounds the compiles.
+# after MTG_TEST_TIMEOUT minutes (default 40; a float is fine). Outside gate the heaviest binaries (MTG_ALONE_UNITS)
+# run one at a time on the whole share after the rest. CARGO_BUILD_JOBS (default 4) bounds the compiles.
 # Each Postgres test binary gets a throwaway server (docker); without docker or with MTG_PG_SHARED=1 they share
 # DATABASE_URL one at a time under a machine-wide lock.
 set -euo pipefail
@@ -40,7 +41,7 @@ if [[ "$mode" != affected && "$mode" != gate ]] && ((${#revs[@]} || list)); then
   echo "BASE and --list belong to the affected and gate modes" >&2
   exit 2
 fi
-[[ "$mode" != gate ]] || gate=1
+if [[ "$mode" == gate ]]; then gate=1; else run_alone=1; fi
 
 phases=("fmt" "web format" "clippy" "check" "script tests" "test build" "tests" "lock wait" "web")
 declare -A secs=()

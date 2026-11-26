@@ -16,7 +16,7 @@ use super::selectors::{Form, phrase_text};
 
 /// Wordings of one attack trigger: a player attacks a player when one or more creatures attack that player, and the
 /// creatures you control attack only your opponents (CR 508.1b).
-const SAME: [(&str, &str); 3] = [
+const SAME: [(&str, &str); 4] = [
     (
         "Whenever a player attacks you,",
         "Whenever one or more creatures attack you,",
@@ -27,6 +27,10 @@ const SAME: [(&str, &str); 3] = [
     ),
     (
         " you control attack one of your opponents,",
+        " you control attack a player,",
+    ),
+    (
+        " you control attack an opponent,",
         " you control attack a player,",
     ),
 ];

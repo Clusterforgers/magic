@@ -1,0 +1,34 @@
+{
+  "oracle_id": "da81d8ad-b2f8-4d7c-bc41-749c95c967b5",
+  "name": "Caller of the Untamed",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Caller of the Untamed",
+      "oracle_fingerprint": "44489f692de57c8d1f6959a6c28c3039",
+      "abilities": [
+        { "Rule": { "rule": { "Draft": "ExileDraftedCreature" } } },
+        {
+          "Activated": {
+            "cost": ["Tap", { "Mana": "{X}" }],
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Exile" },
+                      { "Drafted": "ExiledWith" },
+                      { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } }
+                    ]
+                  },
+                  "as": "card"
+                }
+              },
+              { "CreateToken": { "token": { "CopyOf": { "of": { "Bound": "card" } } } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

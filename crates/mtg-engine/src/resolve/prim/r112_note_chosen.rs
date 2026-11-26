@@ -10,7 +10,7 @@ use crate::object::Chosen;
 use crate::resolve::{Cx, ResolveError, Run};
 use crate::zones::Zone;
 
-/// Logs the creature type chosen under the name as a word the source noted; nothing when none was chosen or the
+/// Logs the creature type or word chosen under the name as a word the source noted; nothing when none was chosen or the
 /// source has left the battlefield.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::R112NoteChosen(name) = effect else {
@@ -22,6 +22,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     });
     let word = match cx.scope.chosen_value(name) {
         Some(Chosen::CreatureType(subtype)) if present => Some(subtype.0.clone()),
+        Some(Chosen::Word(word)) if present => Some(word.clone()),
         _ => None,
     };
     Ok(Run::events(

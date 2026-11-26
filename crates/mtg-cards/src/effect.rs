@@ -511,6 +511,9 @@ pub enum ValueKind {
     /// One of the creature types of the first object the reference names that the source has not noted
     /// (`Effect::R112NoteChosen`): "note one of its creature types that hasn't been noted for Volo's Journal".
     R113CreatureTypeOfNotNoted(crate::refs::Ref),
+    /// One of these words that the source has not noted (`Effect::R112NoteChosen`): "choose a card name that hasn't been
+    /// chosen from among Disenchant, Braingeyser, ..."; nothing is chosen once every word is noted.
+    OptionsNotNoted(Vec<String>),
     /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
     Letter,
     /// One of the spells the player `caster` names cast this turn that the selector matches as cast ("one of those sorcery
@@ -1794,6 +1797,19 @@ pub enum Effect {
         who: Ref,
         /// The card copied.
         what: Ref,
+        /// The name the copy is bound to, as the object it becomes in exile.
+        #[serde(rename = "as")]
+        bind: String,
+    },
+    /// The player creates a copy of the card with the name the resolution chose from outside the game (Garth One-Eye:
+    /// "Create a copy of the card with the chosen name") and binds it: a token card in exile, as `CopyCard` makes, taken
+    /// from the cards the game can conjure.
+    CopyNamedCard {
+        /// Who owns the copy.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The name the card's name was chosen under (`ChooseValue` of `ValueKind::OptionsNotNoted`).
+        chosen: String,
         /// The name the copy is bound to, as the object it becomes in exile.
         #[serde(rename = "as")]
         bind: String,

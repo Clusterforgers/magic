@@ -1134,6 +1134,7 @@ Garruk Wildspeaker
 Garruk's Packleader
 Garruk's Uprising
 Garruk, Primal Hunter
+Garth One-Eye
 Garza's Assassin
 Gaseous Anomaly
 Gastal Raider
@@ -1353,6 +1354,7 @@ Heartwood Storyteller
 Hedron Archive
 Hei Bai, Spirit of Balance
 Heidar, Rimewind Master
+Heirloom Epic
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellish Rebuke
@@ -3022,6 +3024,7 @@ The Torment of Gollum
 The Toymaker's Trap
 The Traveler
 The Underworld Cookbook
+The Unluckiest Planeswalker
 The Valeyard
 The War Doctor
 The Warring Triad
@@ -3434,6 +3437,7 @@ Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Xenosquirrels
+Xu-Ifit, Osteoharmonist
 Yahenni, Undying Partisan
 Yasharn, Implacable Earth
 Yavimaya Elder

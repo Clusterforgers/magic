@@ -17,6 +17,7 @@ mod render;
 mod repair;
 mod ri23_skipped;
 mod rmt0_cleave;
+mod un34_sheet_pairs;
 
 pub use merge::{MergeRefusal, merge, refusal};
 pub(crate) use pairing::pair_card;

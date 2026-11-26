@@ -1077,6 +1077,11 @@ fn return_card(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
     } else if permanent {
         r.need("to its owner's hand")?;
         r.it = Some(what.clone());
+    } else if selector.0.contains(&Pred::Spell)
+        && !selector.0.iter().any(|pred| matches!(pred, Pred::In(_)))
+    {
+        // A spell on the stack goes to its owner's hand too ("return target spell to its owner's hand").
+        r.need("to its owner's hand")?;
     } else {
         return None;
     }

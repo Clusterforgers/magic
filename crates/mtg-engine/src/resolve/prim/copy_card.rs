@@ -54,6 +54,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             of: card.reference(),
             owner,
             definition: Arc::new(card.card().copiable()),
+            outside: false,
         })));
         // A new object: its zone-change counter starts at 0.
         copies.push(Target::Object(ObjectRef {
@@ -64,6 +65,54 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     Ok(Run::Done {
         events,
         bound: vec![(bind.clone(), copies)],
+        snapshots: Vec::new(),
+        next: Next::Sibling,
+    })
+}
+
+/// `Effect::CopyNamedCard`: the card of the name the resolution chose, taken from the cards the game can conjure, is copied into a token card in
+/// exile owned by the player `who` names, bound as `CopyCard` binds its copies; a name the game cannot resolve makes no
+/// copy, nor does a choice that chose nothing (every name noted), and binds nothing.
+pub(super) fn run_named(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
+    let Effect::CopyNamedCard { who, chosen, bind } = effect else {
+        return Err(wrong_effect("CopyNamedCard"));
+    };
+    let state = cx.state();
+    let name = match cx.scope.chosen_value(chosen) {
+        Some(crate::object::Chosen::Word(name)) => Some(name.as_str()),
+        _ => None,
+    };
+    let owner = cx
+        .scope
+        .players(who)?
+        .into_iter()
+        .find(|player| state.is_alive(*player));
+    let (Some(owner), Some(definition)) = (owner, name.and_then(|name| state.conjurable.get(name)))
+    else {
+        return Ok(Run::Done {
+            events: Vec::new(),
+            bound: vec![(bind.clone(), Vec::new())],
+            snapshots: Vec::new(),
+            next: Next::Sibling,
+        });
+    };
+    let object = state.next_object();
+    let event = Event::CardCopied(Box::new(CardCopy {
+        object,
+        of: cx.scope.source,
+        owner,
+        definition: Arc::new(definition.copiable()),
+        outside: true,
+    }));
+    Ok(Run::Done {
+        events: vec![event],
+        bound: vec![(
+            bind.clone(),
+            vec![Target::Object(ObjectRef {
+                id: object,
+                counter: 0,
+            })],
+        )],
         snapshots: Vec::new(),
         next: Next::Sibling,
     })

@@ -313,6 +313,19 @@ pub(crate) fn r114_unused(state: &GameState, player: PlayerId) -> Vec<(StickerAt
 pub fn sticker_text(sticker: &Sticker) -> String {
     let what = match sticker {
         Sticker::Name { words, .. } => format!("\u{201c}{words}\u{201d}"),
+        Sticker::Ability { ability, .. }
+            if mtg_cards::compile::sticker_keywords(ability).len() > 1 =>
+        {
+            // A run of keywords is written as the sheet prints it ("Vigilance, reach").
+            let words: Option<Vec<String>> = mtg_cards::compile::sticker_keywords(ability)
+                .into_iter()
+                .map(mtg_cards::compile::keyword_text)
+                .collect();
+            words.map_or_else(
+                || "an ability".to_owned(),
+                |words| capitalized(&words.join(", ")),
+            )
+        }
         Sticker::Ability { ability, .. } => {
             // A keyword has no sentence of its own: it is written as the keyword ("Flying").
             mtg_cards::compile::render_ability(ability)

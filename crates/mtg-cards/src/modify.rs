@@ -524,8 +524,9 @@ pub struct CastPermission {
     /// What a spell cast through it gets: "If you cast a spell this way, that artifact enters tapped."
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub riders: Vec<CastRider>,
-    /// At most this many of the objects `only` names may be cast or played through it, all told, within the turn ("Until
-    /// end of turn, you may play one of those cards"); any number when absent.
+    /// At most this many of the objects `only` names may be cast or played through it, all told, while it lasts ("Until
+    /// end of turn, you may play one of those cards", "You may play up to two of those cards until the end of your next
+    /// turn"); any number when absent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
 }
@@ -1302,6 +1303,10 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// The loyalty abilities of the permanent with this rule may be activated twice each turn rather than only once
+    /// (CR 606.3): "You may activate the loyalty abilities of ~ twice each turn rather than only once." (Urza,
+    /// Planeswalker); twice in all with `LoyaltyTwice`.
+    P158LoyaltyTwiceThis,
     /// For each planeswalker the players control, they may activate one of its loyalty abilities once more this turn
     /// as though none had been activated (CR 606.3): each such rule raises the allowance by one (The Chain Veil).
     R6600LoyaltyOnceMore(Ref),

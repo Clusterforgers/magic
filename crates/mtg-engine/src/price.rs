@@ -46,6 +46,8 @@ pub(crate) struct Price {
     pub(crate) waterbend: u32,
     /// How many `{X}` are waterbend costs ("Waterbend {X}").
     pub(crate) waterbend_x: u32,
+    /// What helps pay that part: artifacts and creatures for a waterbend, creatures alone for `CostItem::CreaturesHelpPay`.
+    pub(crate) helpers: crate::help::Helpers,
     /// The other parts, in the order the cost prints them: life, counters removed, the objects the player picks.
     pub(crate) parts: Vec<Part>,
     /// The parts are paid for a spell being cast: the card itself is never picked for them.
@@ -96,6 +98,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Forage => "Cost.Forage",
         CostItem::Craft { .. } => "Cost.Craft",
         CostItem::Waterbend(_) => "Cost.Waterbend",
+        CostItem::CreaturesHelpPay(_) => "Cost.CreaturesHelpPay",
         CostItem::ExiledToGraveyard { .. } => "Cost.ExiledToGraveyard",
         CostItem::RemoveCounters { .. } => "Cost.RemoveCounters",
         CostItem::PutCounters { .. } => "Cost.PutCounters",
@@ -239,6 +242,7 @@ impl Price {
         let mut x = 0u32;
         let mut waterbend = 0u32;
         let mut waterbend_x = 0u32;
+        let mut helpers = crate::help::Helpers::Waterbend;
         let mut parts = Vec::new();
         let mut x_color = None;
         let mut changes = Vec::new();
@@ -289,7 +293,14 @@ impl Price {
                     waterbend = waterbend.saturating_add(number);
                     symbols.push(ManaSymbol::Generic(number));
                 }
-                CostItem::Waterbend(_) => return Err(unpaid(item)),
+                CostItem::CreaturesHelpPay(Amount::Fixed(number)) if waterbend_ok => {
+                    let number = u32::try_from(*number).unwrap_or(0);
+                    mana = true;
+                    helpers = crate::help::Helpers::Creatures;
+                    waterbend = waterbend.saturating_add(number);
+                    symbols.push(ManaSymbol::Generic(number));
+                }
+                CostItem::Waterbend(_) | CostItem::CreaturesHelpPay(_) => return Err(unpaid(item)),
                 CostItem::Mana(part) => {
                     mana = true;
                     x = x.saturating_add(u32::from(part.x()));
@@ -310,6 +321,7 @@ impl Price {
             x_color,
             waterbend,
             waterbend_x,
+            helpers,
             parts,
             casting: false,
             changes,
@@ -613,6 +625,7 @@ mod tests {
                 x_color: None,
                 waterbend: 0,
                 waterbend_x: 0,
+                helpers: crate::help::Helpers::Waterbend,
                 parts: Vec::new(),
                 casting: false,
                 pays: crate::r4707_pay_costs::PaysFor::Cost,
