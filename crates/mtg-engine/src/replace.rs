@@ -81,6 +81,7 @@ pub fn process(
     journal: &[(PlayerId, Choice)],
 ) -> Result<Processed, EngineError> {
     let proposed = crate::prohibit::filter(state, proposed);
+    let proposed = crate::r6008_face_down::r6008_turned_up_first(state, proposed);
     if !(state.possible.replacements
         || state.possible.protection
         || crate::rule_flips::r_moves_possible(state))

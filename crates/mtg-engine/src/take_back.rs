@@ -405,6 +405,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::BecameCopy(_)
         | Event::SpellCopied(_)
         | Event::CardCopied(_)
+        | Event::R6008Listed(_)
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
         | Event::TargetsChanged(_)

@@ -1,0 +1,74 @@
+{
+  "oracle_id": "f6fee76b-5c34-4e95-962d-d2b38fcef540",
+  "name": "Magar of the Magic Strings",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Magar of the Magic Strings",
+      "oracle_fingerprint": "951c7a286c49e254ed641ec883020030",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{1}{B}{R}",
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "In": "Graveyard" },
+                    { "OwnedBy": "You" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              {
+                "Move": {
+                  "what": { "Target": 0 },
+                  "to": {
+                    "R6008FaceDownAs": {
+                      "power": 3,
+                      "toughness": 3,
+                      "rules": [
+                        {
+                          "Triggered": {
+                            "when": {
+                              "DealsDamage": {
+                                "source": ["This"],
+                                "to": "EachPlayer",
+                                "combat": true
+                              }
+                            },
+                            "effects": [
+                              {
+                                "May": {
+                                  "effects": [
+                                    { "R6008CopyNoted": { "as": "copy" } },
+                                    {
+                                      "CastFromZone": { "what": { "Bound": "copy" }, "free": true }
+                                    }
+                                  ]
+                                }
+                              }
+                            ]
+                          }
+                        },
+                        {
+                          "Replacement": {
+                            "when": { "ZoneChange": { "what": ["This"], "from": "Battlefield" } },
+                            "by": { "MoveTo": "Exile" }
+                          }
+                        }
+                      ],
+                      "note_name": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

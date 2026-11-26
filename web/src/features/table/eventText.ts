@@ -1367,6 +1367,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(
       `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
     )
+  if ('R6008Listed' in event) {
+    const { object, noted } = event.R6008Listed
+    const note = noted ? `, noting the name ${noted}` : ''
+    return line(`${n.card(object)} lies face down as the creature an effect lists${note}`)
+  }
   if ('FirstDrawRevealed' in event) {
     const { player, card } = event.FirstDrawRevealed
     return line(`${n.seat(player)} reveals ${n.card(card)} as the first card they drew this turn`)

@@ -583,6 +583,8 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ClassLevelGained { .. }
         | Event::TurnedFaceUp { .. }
         | Event::TurnedFaceDown { .. }
+        // The listed characteristics are public, and the noted name was a card every seat saw in a graveyard.
+        | Event::R6008Listed(_)
         // Which permanent is public; what it is, the view tells the looker alone (`may_look_at`).
         | Event::FaceDownLooked { .. }
         // The color of a commander is public, as the card is.

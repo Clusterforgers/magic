@@ -154,6 +154,7 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
         Pred::Solved => "solved",
         Pred::Stickered => "stickered",
         Pred::Harnessed => "harnessed",
+        Pred::R6008PaidBySpent => "whose mana cost the mana spent could pay",
         Pred::FoughtSinceYourLastUpkeep { .. } => "in combat since your last upkeep",
         Pred::DoubleFaced => "double-faced",
         Pred::Transformed => "transformed",

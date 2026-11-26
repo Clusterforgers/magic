@@ -89,6 +89,7 @@ mod exile_cast_among;
 mod exile_hand_mana;
 mod extra_costs;
 mod f25_ripple;
+mod fd1_cards;
 mod fe1o_cost_parts;
 mod fix14_kicked_target;
 mod fix14_mana_tax;
