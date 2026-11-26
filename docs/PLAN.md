@@ -24,6 +24,7 @@ A Cargo workspace in which each crate has one responsibility and the engine has 
 | `mtg-cli` | Fetch and ingest card data, compile, coverage, Forge translator |
 | `mtg-protocol` | Client-server messages and per-seat state views; TypeScript types generated with ts-rs |
 | `mtg-server` | axum REST and WebSocket, auth, lobbies, game actors, sqlx persistence |
+| `mtg-campaign` | Delves, the co-op boss rush ([delves.md](delves.md)): content, floor generator, runs as a fold of events, fight plans, bot choices between fights; no IO |
 | `mtg-testkit` | Scenario DSL, synthetic cards, invariant checkers, bot players |
 | `web/` | React client: Vite, Tailwind + shadcn/ui, TanStack Router, zustand, dnd-kit, Motion |
 

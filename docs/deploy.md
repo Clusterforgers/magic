@@ -48,7 +48,7 @@ The rollout in step 3 makes the new account an admin; a name taken off the list 
 
 ## Backups
 
-A CronJob dumps the database every night onto its own volume next to the database on queen and keeps the newest 14 (restore and copy-out: the manifests repo's `docs/magic.md`). Copy a dump off the machine from time to time (roadmap item d1c).
+A CronJob dumps the database every night onto its own volume next to the database on queen and keeps the newest 14 (restore and copy-out: the manifests repo's `docs/magic.md`). Copy a dump off the machine from time to time.
 
 ## Card data
 
