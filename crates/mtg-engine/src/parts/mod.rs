@@ -89,8 +89,8 @@ pub(crate) enum Kind {
     Evidence,
     /// Cards in the payer's graveyard are exiled, with at least `Pick.count` card types among them.
     R5511CardTypes,
-    /// Cards of the filter in the payer's graveyard are exiled, with total mana value at least `Pick.count`.
-    R6703TotalValue,
+    /// Cards of the filter in the payer's graveyard are exiled, with total mana value at least `Pick.count`, or with at least that many mana symbols of the color among their mana costs.
+    R6703TotalValue(Option<mtg_core::color::Color>),
     /// A creature the payer controls gets that many -1/-1 counters.
     Blight(u32),
     /// A permanent the payer controls is chosen, or a card in their hand is revealed; then exiled when the flag is set.
@@ -420,9 +420,13 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
                 false,
             )
         }
-        CostItem::ExileTotalValue { filter, total } => (
+        CostItem::ExileTotalValue {
+            filter,
+            total,
+            symbols,
+        } => (
             Part::Pick(Pick {
-                kind: Kind::R6703TotalValue,
+                kind: Kind::R6703TotalValue(*symbols),
                 filter: filter.clone(),
                 count: usize::try_from(*total).unwrap_or(usize::MAX),
                 reads_x: false,
@@ -818,7 +822,7 @@ impl Part {
                 Kind::Exile | Kind::ExileAny => "Cost.ExileFromGraveyard",
                 Kind::Evidence => "Cost.CollectEvidence",
                 Kind::R5511CardTypes => "Cost.ExileCardTypes",
-                Kind::R6703TotalValue => "Cost.ExileTotalValue",
+                Kind::R6703TotalValue(_) => "Cost.ExileTotalValue",
                 Kind::Blight(_) => "Cost.Blight",
                 Kind::Behold(_) => "Cost.Behold",
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
@@ -931,7 +935,7 @@ impl Part {
             Part::Pick(pick)
                 if matches!(
                     pick.kind,
-                    Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue
+                    Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue(_)
                 ) =>
             {
                 let found = pick.candidates(payer);
@@ -1102,7 +1106,7 @@ pub(crate) fn photographed(
                 | Kind::Exile
                 | Kind::ExileAny
                 | Kind::Evidence
-                | Kind::R6703TotalValue
+                | Kind::R6703TotalValue(_)
                 | Kind::R5511CardTypes
                 | Kind::Forage
                 | Kind::Craft
@@ -1208,7 +1212,7 @@ impl Kind {
             | Kind::ExileAny
             | Kind::Evidence
             | Kind::R5511CardTypes
-            | Kind::R6703TotalValue
+            | Kind::R6703TotalValue(_)
             | Kind::Behold(true)
             | Kind::R113BottomAny
             | Kind::ToLibrary(..)
@@ -1248,12 +1252,20 @@ impl Pick {
         self.kind == Kind::Counter && c11c_counter_picks::c11c_kind(&self.filter).is_none()
     }
 
+    /// The color whose mana symbols a total pick counts, if it counts symbols rather than mana value.
+    pub(crate) const fn p160_symbols(&self) -> Option<mtg_core::color::Color> {
+        match self.kind {
+            Kind::R6703TotalValue(symbols) => symbols,
+            _ => None,
+        }
+    }
+
     /// The objects the player may pick for this part.
     pub(crate) fn candidates(&self, payer: &Payer<'_>) -> Vec<ObjectId> {
         let mut found = match self.kind {
             Kind::Sacrifice => sacrifice::candidates(payer, &self.filter),
             Kind::Discard => discard::candidates(payer, &self.filter),
-            Kind::Exile | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue => {
+            Kind::Exile | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue(_) => {
                 exile::candidates(payer, &self.filter)
             }
             Kind::ExileHand => exile_hand::candidates(payer, &self.filter),
@@ -1287,7 +1299,7 @@ impl Pick {
             Kind::Discard => crate::prohibit::may_discard(payer.state, payer.player, *id),
             Kind::Exile
             | Kind::R5511CardTypes
-            | Kind::R6703TotalValue
+            | Kind::R6703TotalValue(_)
             | Kind::ExileHand
             | Kind::ExileAny
             | Kind::ExilePermanent
@@ -1319,8 +1331,8 @@ impl Pick {
         match self.kind {
             Kind::TapPower => usize::try_from(tap::total_power(state, candidates, self.r122_crew))
                 .is_ok_and(|total| total < self.count),
-            Kind::Evidence | Kind::R6703TotalValue => {
-                usize::try_from(evidence::total_value(state, candidates))
+            Kind::Evidence | Kind::R6703TotalValue(_) => {
+                usize::try_from(evidence::p160_total(state, candidates, self.p160_symbols()))
                     .is_ok_and(|total| total < self.count)
             }
             Kind::R5511CardTypes => {
@@ -1350,9 +1362,9 @@ impl Pick {
         }
         let alone = match self.kind {
             Kind::TapPower | Kind::R5511CardTypes => candidates.len() == 1,
-            Kind::Evidence | Kind::R6703TotalValue => {
+            Kind::Evidence | Kind::R6703TotalValue(_) => {
                 candidates.len() == 1
-                    || usize::try_from(evidence::total_value(state, candidates))
+                    || usize::try_from(evidence::p160_total(state, candidates, self.p160_symbols()))
                         .is_ok_and(|total| total == self.count)
             }
             Kind::Forage => forage::alone(state, candidates),
@@ -1413,7 +1425,7 @@ impl Pick {
     pub(crate) fn bounds(&self, offered: usize) -> (u32, u32) {
         if matches!(
             self.kind,
-            Kind::TapPower | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue
+            Kind::TapPower | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue(_)
         ) {
             return (1, u32::try_from(offered).unwrap_or(u32::MAX));
         }
@@ -1463,8 +1475,8 @@ impl Pick {
                 let got = tap::total_power(state, picked, self.r122_crew);
                 (got < needed).then_some(IllegalAnswer::TooLittlePower { needed, got })
             }
-            Kind::Evidence | Kind::R6703TotalValue => {
-                let got = evidence::total_value(state, picked);
+            Kind::Evidence | Kind::R6703TotalValue(_) => {
+                let got = evidence::p160_total(state, picked, self.p160_symbols());
                 (got < needed).then_some(IllegalAnswer::TooLittleValue { needed, got })
             }
             Kind::R5511CardTypes => {
@@ -1511,7 +1523,9 @@ impl Pick {
             Kind::Counter => c11c_counter_picks::c11c_text(&self.filter, self.count),
             Kind::ExileAny => exile::text_any(&self.filter, self.count),
             Kind::Evidence => evidence::text(self.count),
-            Kind::R6703TotalValue => evidence::r6703_text(&self.filter, self.count),
+            Kind::R6703TotalValue(symbols) => {
+                evidence::r6703_text(&self.filter, self.count, symbols)
+            }
             Kind::R5511CardTypes => r5511_card_types::r5511_text(self.count),
             Kind::Blight(count) => blight::text(count),
             Kind::Behold(exile) => behold::text(&self.filter, self.count, exile),
@@ -1566,7 +1580,7 @@ impl Pick {
             Kind::Return => bounce::event(state, object),
             Kind::Untap => Some(untap::event(object)),
             Kind::Counter => c11c_counter_picks::c11c_event(state, &self.filter, object, kinds),
-            Kind::ExileAny | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue => {
+            Kind::ExileAny | Kind::Evidence | Kind::R5511CardTypes | Kind::R6703TotalValue(_) => {
                 exile::event(state, object)
             }
             Kind::Behold(_) => behold::event(state, player, object),

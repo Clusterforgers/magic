@@ -2373,6 +2373,7 @@ Renewing Dawn
 Renounce
 Repeal
 Replication Technique
+Reprieve
 Reprocess
 Repulse
 Rescue Retriever
@@ -2722,6 +2723,7 @@ Spectral Shift
 Spectral Steel
 Speedway Fanatic
 Spellbreaker Behemoth
+Spellscorn Coven // Take It Back
 Spelltwine
 Spellweaver Volute
 Sphere of Safety
