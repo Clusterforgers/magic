@@ -53,6 +53,7 @@ impl Pass<'_> {
 
     /// Asks for the two cards (or none), then for the one copied; puts the exiles before the entering, the copy effect
     /// and the counters after it. Nobody is asked when fewer than two cards can be exiled.
+    #[allow(clippy::too_many_lines)]
     pub(super) fn r7071_exile_two(
         &mut self,
         at: usize,
@@ -139,7 +140,7 @@ impl Pass<'_> {
             .and_then(|chars| chars.power)
             .unwrap_or(0);
         let copy = Self::r109_copy_of(&scope, object, (copied_ref, values), (&[], &[]), None)?;
-        let exiles: Vec<Slot> = exiled
+        let moves: Vec<Slot> = exiled
             .iter()
             .filter_map(|id| {
                 let from = self.state.object(*id)?.zone();
@@ -151,8 +152,8 @@ impl Pass<'_> {
                 })))
             })
             .collect();
-        let made = exiles.len();
-        self.slots.splice(at..at, exiles);
+        let made = moves.len();
+        self.slots.splice(at..at, moves);
         let entering = at + made;
         if let Some(slot) = self.slots.get_mut(entering) {
             slot.applied.clone_from(&applied);

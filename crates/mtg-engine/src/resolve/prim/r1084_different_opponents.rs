@@ -30,7 +30,7 @@ fn give(cx: &Cx<'_>, what: &mtg_cards::refs::Ref) -> Result<Run, Stop> {
         .live_objects(what)?
         .into_iter()
         .filter(|object| object.zone() == Zone::Battlefield)
-        .map(|object| object.reference())
+        .map(crate::object::GameObject::reference)
         .collect();
     let mut left: Vec<PlayerId> = state.opponents_of(me);
     let mut questions = Questions::new(cx);

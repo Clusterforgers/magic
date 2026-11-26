@@ -23,6 +23,6 @@ impl Pass<'_> {
                         .is_some_and(|chars| chars.types.contains(*kind))
                 })
             })
-            .fold(CardTypes::default(), |set, kind| set.with(kind))
+            .fold(CardTypes::default(), CardTypes::with)
     }
 }
