@@ -19,6 +19,7 @@ export function useCueOptions(): { on: boolean; slow: number } {
  */
 export function useTurnFeed(onFeed: (feed: Feed) => void): void {
   const { on } = useCueOptions()
+  const replay = useContext(TableOptionsContext).replay === true
   const { session } = useGame()
   const name = useSeatNamer()
   const latest = useRef({ onFeed, name })
@@ -28,8 +29,8 @@ export function useTurnFeed(onFeed: (feed: Feed) => void): void {
   useEffect(() => {
     if (!on) return undefined
     return session.store.subscribe((next, prev) => {
-      const feed = feedBetween(prev, next, latest.current.name)
+      const feed = feedBetween(prev, next, latest.current.name, replay)
       if (feed !== null) latest.current.onFeed(feed)
     })
-  }, [on, session])
+  }, [on, replay, session])
 }
