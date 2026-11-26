@@ -1,6 +1,7 @@
-//! Goal: endless Delves works end to end on Postgres: a player and a bot ally clear the first floor and the run waits
-//! on the cleared floor with what a descent changes; the player's vote to descend (the healthy bot agrees) gives the
-//! final boss's loot, and once it is answered floor 2 starts with a new ladder, a heart back and the next fight made,
+//! Goal: endless Delves works end to end on Postgres for a lone player, a pair and a party of four: the player and
+//! bot allies clear the first floor (an event's card cost answered as the web answers it) and the run waits on the
+//! cleared floor with what a descent changes; the player's vote to descend (healthy bots agree) gives the final boss's
+//! loot, and once it is answered floor 2 starts with a new ladder, a heart back and the next fight made,
 //! whose intro shows the innate at the deeper level, in the other theme whose boss the fight is; a floor vote out of
 //! turn is refused.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
@@ -53,20 +54,30 @@ async fn win_fight(pool: &PgPool, id: &str, heroes: usize) {
     .unwrap();
 }
 
-/// The player's answer to their first offer: a rest at a campfire, leaving a shop or the Mirror Pool, else the first
-/// choice.
-fn answer(offer: &Value) -> Value {
+/// The player's answer to their first offer: a rest at a campfire, leaving a shop or the Mirror Pool, giving up the
+/// first card the view lists when an event costs one, else the first choice.
+fn answer(offer: &Value, view: &Value) -> Value {
     if offer.get("Campfire").is_some() {
         json!("Rest")
     } else if offer.get("Shop").is_some() || offer == "Duplicate" {
         json!("Skip")
+    } else if offer == "Discard" {
+        let card = view["mirror"][0].clone();
+        assert!(card.is_string(), "a card to give up: {view}");
+        json!({ "Discard": card })
     } else {
         json!({"Take": 0})
     }
 }
 
 /// Plays the floor to its end: wins each fight, answers each offer and votes for the first camp.
-async fn clear_floor(server: &TestServer, pool: &PgPool, id: &str, who: &Browser) -> Value {
+async fn clear_floor(
+    server: &TestServer,
+    pool: &PgPool,
+    id: &str,
+    who: &Browser,
+    heroes: usize,
+) -> Value {
     for _ in 0..80 {
         let view = read(server, id, who).await;
         let run = &view["run"];
@@ -74,7 +85,7 @@ async fn clear_floor(server: &TestServer, pool: &PgPool, id: &str, who: &Browser
             return view;
         }
         if run["status"]["Fight"]["game"].is_string() {
-            win_fight(pool, id, 2).await;
+            win_fight(pool, id, heroes).await;
         } else if run["status"] == "Room" {
             let offer = run["heroes"][0]["offers"][0].clone();
             if !offer.is_null() {
@@ -82,7 +93,7 @@ async fn clear_floor(server: &TestServer, pool: &PgPool, id: &str, who: &Browser
                     server,
                     id,
                     who,
-                    json!({"kind": "pick", "pick": answer(&offer)}),
+                    json!({"kind": "pick", "pick": answer(&offer, &view)}),
                 )
                 .await;
             }
@@ -98,35 +109,41 @@ async fn clear_floor(server: &TestServer, pool: &PgPool, id: &str, who: &Browser
 }
 
 #[sqlx::test(migrations = false)]
+async fn a_lone_player_clears_a_floor_and_descends(pool: PgPool) {
+    descend(pool, 0).await;
+}
+
+#[sqlx::test(migrations = false)]
 async fn the_party_clears_a_floor_and_descends(pool: PgPool) {
-    let server = pg_commander::start(&pool).await;
-    let host = register(server.addr, "diver", PASSWORD).await;
+    descend(pool, 1).await;
+}
+
+#[sqlx::test(migrations = false)]
+async fn a_party_of_four_clears_a_floor_and_descends(pool: PgPool) {
+    descend(pool, 3).await;
+}
+
+/// Opens a run on the fixed seed with `allies` bots, every hero on the same deck, refuses a floor vote in the lobby
+/// and starts it; gives the run's id.
+async fn open(server: &TestServer, host: &Browser, allies: usize) -> String {
     let body = json!({"heat": 1, "seed": "DEEP"});
-    let created = call(&server, "POST", "/api/delves", &host, Some(body)).await;
+    let created = call(server, "POST", "/api/delves", host, Some(body)).await;
     assert_eq!(created.status, 201, "{}", created.text());
     let id = created.json()["id"].as_str().unwrap().to_owned();
-    act(
-        &server,
-        &id,
-        &host,
-        json!({"kind": "add_bot", "level": "Normal"}),
-    )
-    .await;
-    for hero in 0..2 {
+    for _ in 0..allies {
+        let bot = json!({"kind": "add_bot", "level": "Normal"});
+        act(server, &id, host, bot).await;
+    }
+    for hero in 0..=allies {
         let deck = pg_commander::on(pg_commander::BEAST);
-        act(
-            &server,
-            &id,
-            &host,
-            json!({"kind": "choose_deck", "hero": hero, "deck": deck}),
-        )
-        .await;
+        let choose = json!({"kind": "choose_deck", "hero": hero, "deck": deck});
+        act(server, &id, host, choose).await;
     }
     let early = call(
-        &server,
+        server,
         "POST",
         &format!("/api/delves/{id}/act"),
-        &host,
+        host,
         Some(json!({"kind": "floor_vote", "descend": true})),
     )
     .await;
@@ -136,9 +153,17 @@ async fn the_party_clears_a_floor_and_descends(pool: PgPool) {
         "no floor vote in the lobby: {}",
         early.text()
     );
-    act(&server, &id, &host, json!({"kind": "start"})).await;
+    act(server, &id, host, json!({"kind": "start"})).await;
+    id
+}
 
-    let cleared = clear_floor(&server, &pool, &id, &host).await;
+/// A player and `allies` bots clear floor 1 on the same seed and descend into floor 2.
+async fn descend(pool: PgPool, allies: usize) {
+    let server = pg_commander::start(&pool).await;
+    let host = register(server.addr, "diver", PASSWORD).await;
+    let id = open(&server, &host, allies).await;
+
+    let cleared = clear_floor(&server, &pool, &id, &host, allies + 1).await;
     let run = &cleared["run"];
     assert_eq!(
         (run["floor"].as_u64(), run["floors_cleared"].as_u64()),
@@ -177,7 +202,7 @@ async fn the_party_clears_a_floor_and_descends(pool: PgPool) {
         if offer.is_null() {
             break;
         }
-        let pick = json!({"kind": "pick", "pick": answer(&offer)});
+        let pick = json!({"kind": "pick", "pick": answer(&offer, &after)});
         after = act(&server, &id, &host, pick).await;
     }
     let run = &after["run"];
