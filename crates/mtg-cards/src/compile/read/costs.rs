@@ -368,12 +368,27 @@ fn r6703_total_value(r: &mut Reader<'_>) -> Option<CostItem> {
     let mut filter = phrase(r, Form::Targets)?;
     without(&mut filter, &Pred::In(ZoneKind::Graveyard))?;
     without(&mut filter, &Pred::OwnedBy(Ref::You))?;
-    r.words("with total mana value").then_some(())?;
-    let total = r.take_word()?.parse::<u32>().ok()?;
-    r.words("or greater").then_some(())?;
+    let filter = kinds_only(filter)?;
+    if r.words("with total mana value") {
+        let total = r.take_word()?.parse::<u32>().ok()?;
+        r.words("or greater").then_some(())?;
+        return Some(CostItem::ExileTotalValue {
+            filter,
+            total,
+            symbols: None,
+        });
+    }
+    // "with fifteen or more black mana symbols among their mana costs" (Baron Helmut Zemo).
+    r.word("with").then_some(())?;
+    let total = number_word(r.take_word()?)?;
+    r.words("or more").then_some(())?;
+    let color = super::selectors::color(r.take_word()?)?;
+    r.words("mana symbols among their mana costs")
+        .then_some(())?;
     Some(CostItem::ExileTotalValue {
-        filter: kinds_only(filter)?,
+        filter,
         total,
+        symbols: Some(color),
     })
 }
 
@@ -802,14 +817,25 @@ fn item_text(item: &CostItem) -> Option<String> {
                 .extend([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
             format!("Exile {}", taken_text(&said, count)?)
         }
-        CostItem::ExileTotalValue { filter, total } => {
+        CostItem::ExileTotalValue {
+            filter,
+            total,
+            symbols,
+        } => {
             let mut said = filter.clone();
             said.0
                 .extend([Pred::In(ZoneKind::Graveyard), Pred::OwnedBy(Ref::You)]);
-            format!(
-                "Exile any number of {} with total mana value {total} or greater",
-                phrase_text(&said, Form::Targets)?
-            )
+            let cards = phrase_text(&said, Form::Targets)?;
+            match symbols {
+                None => {
+                    format!("Exile any number of {cards} with total mana value {total} or greater")
+                }
+                Some(color) => format!(
+                    "Exile any number of {cards} with {} or more {} mana symbols among their mana costs",
+                    count_word(*total)?,
+                    super::selectors::color_name(*color)
+                ),
+            }
         }
         CostItem::ExileFromHand { filter, count } => {
             let mut said = filter.clone();

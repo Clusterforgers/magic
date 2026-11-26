@@ -64,6 +64,19 @@ function DropdownMenuItem({
   )
 }
 
+function DropdownMenuLinkItem({
+  className,
+  ...props
+}: MenuPrimitive.LinkItem.Props) {
+  return (
+    <MenuPrimitive.LinkItem
+      data-slot="dropdown-menu-link-item"
+      className={cn(ITEM, className)}
+      {...props}
+    />
+  )
+}
+
 function DropdownMenuGroup(props: MenuPrimitive.Group.Props) {
   return <MenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
 }
@@ -147,6 +160,7 @@ export {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuLinkItem,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
