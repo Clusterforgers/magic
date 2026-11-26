@@ -511,7 +511,7 @@ mod tests {
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
         {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"FaceDownPile":{"what":"This","then":"Manifest"}}, {"BecomeForetold":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"P160CastWithin":{"from":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn", "R117EndCombat", {"R117AnotherOfKind":{"on":"This"}},
         {"ChangeTargets":{"what":"This","to":"Another"}},
-        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}}, {"CopyNamedCard":{"chosen":"name","as":"copy"}}, {"R6008CopyNoted":{"as":"copy"}},
+        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}}, {"CopyNamedCard":{"chosen":"name","as":"copy"}}, {"R6008CopyNoted":{"as":"copy"}}, {"R406TurnUpExiled":{"what":"This","as":"turned"}}, {"R707ExileSpell":{"what":"This","as":"card","player_as":"player"}}, {"R707PutBack":{"who":"You","what":"This"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"R6602CreateAttached":{"token":{"Named":"wicked_role"},"to":"This"}},
@@ -559,7 +559,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 178, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 181, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -715,6 +715,9 @@ mod tests {
         "Effect.CopyCard",
         "Effect.CopyNamedCard",
         "Effect.R6008CopyNoted",
+        "Effect.R406TurnUpExiled",
+        "Effect.R707ExileSpell",
+        "Effect.R707PutBack",
         "Effect.BecomeCopy",
         "Effect.CreateToken",
         "Effect.R6602CreateAttached",

@@ -366,6 +366,7 @@ const RUNS: &[&str] = &[
     "Cost.OneOf.Pay",
     "Cost.OneOf.Activated",
     "Cost.XAtLeast.Way",
+    "Cost.XAtLeast.Spell",
     "Ability.R115MulliganExile",
     "Ability.R120DiscardAnyTime",
     "Ability.ManaAbility.Other",
@@ -1963,6 +1964,7 @@ mod tests {
     #[case::paying_one_of_several_costs("Cost.OneOf.Pay", true)]
     #[case::r115_choosing_between_costs_of_an_activation("Cost.OneOf.Activated", true)]
     #[case::r115_a_least_x_of_a_way("Cost.XAtLeast.Way", true)]
+    #[case::r107_a_least_x_of_a_spell("Cost.XAtLeast.Spell", true)]
     #[case::r115_counters_among_by_x_in_a_flashback_cost(
         "Keyword.Flashback.Cost.RemoveCountersAmong.X",
         true

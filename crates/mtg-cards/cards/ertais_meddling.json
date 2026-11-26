@@ -24,6 +24,7 @@
                 "DelayedTrigger": {
                   "when": { "StepBegins": { "step": "Upkeep", "whose": { "Bound": "player" } } },
                   "once": false,
+                  "until": "Forever",
                   "intervening_if": {
                     "Matches": { "subject": { "Bound": "card" }, "selector": [{ "In": "Exile" }] }
                   },

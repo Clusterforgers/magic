@@ -2326,6 +2326,9 @@ impl<'a> Walker<'a> {
                         // announces its X ("you may pay one or more {E}").
                         if w.r115_least_way {
                             w.uses("Cost", "XAtLeast.Way");
+                        } else if w.r5523_spell_cap {
+                            // "X can't be 0." of a spell: the least X of every cast of it.
+                            w.uses("Cost", "XAtLeast.Spell");
                         } else if !w.activated_cost && (!w.r306_paying || !w.x_free) {
                             w.uses("Cost", "XAtLeast.Elsewhere");
                         }
@@ -9692,7 +9695,11 @@ mod tests {
         let ability: Ability = serde_json::from_str(json).unwrap();
         let used = used_primitives(&ability);
         assert_eq!(used.contains("Cost.XAtLeast.Way"), way, "{used:?}");
-        assert_eq!(used.contains("Cost.XAtLeast.Elsewhere"), !way, "{used:?}");
+        assert_eq!(
+            used.contains("Cost.XAtLeast.Elsewhere") || used.contains("Cost.XAtLeast.Spell"),
+            !way,
+            "{used:?}"
+        );
     }
 
     const ALL_MINE: &str = r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#;

@@ -147,6 +147,28 @@ fn exiled(driver: &Driver) -> Vec<ObjectId> {
     driver.state().zone(Zone::Exile).to_vec()
 }
 
+#[rstest]
+fn p162_cards_are_verified_with_the_engines_capabilities(
+    #[values(
+        "Parallel Thoughts",
+        "Piracy",
+        "Land Equilibrium",
+        "Ertai's Meddling",
+        "Grimoire Thief",
+        "Vulcan Mind-Meld",
+        "Sahir, Visitor in Darkness"
+    )]
+    name: &str,
+) {
+    let record = mtg_testkit::corpus::corpus().unwrap().support(name).unwrap();
+    assert_eq!(
+        record.support,
+        mtg_cards::support::Support::Verified,
+        "{name}: {:?}",
+        record.clauses
+    );
+}
+
 // --- Sahir, Visitor in Darkness ---
 
 fn sahir_table(seats: usize, hand: Vec<Arc<CardDefinition>>) -> Driver {
@@ -252,10 +274,9 @@ fn thief_table(seats: usize, hand: Vec<Arc<CardDefinition>>) -> Driver {
         .hand(0, hand);
     let scenario = libraries(scenario, seats);
     // Seat 1's top card shares its name with a burn spell seat 0 holds.
-    let mut foe: Vec<Arc<CardDefinition>> = (0..9)
-        .map(|at| free_creature(&format!("Card 1-{at}"), 1, 1))
-        .collect();
-    foe.push(burn("Shock", 2));
+    // The top of a library is its first card.
+    let mut foe: Vec<Arc<CardDefinition>> = vec![burn("Shock", 2)];
+    foe.extend((0..9).map(|at| free_creature(&format!("Card 1-{at}"), 1, 1)));
     Driver::from_scenario(scenario.library(1, foe)).unwrap()
 }
 
@@ -325,11 +346,8 @@ fn vulcan_mind_meld_has_each_player_exile_the_others_cards_to_play(#[values(2, 3
         .battlefield(0, vec![ready(island()), ready(island())])
         .hand(0, vec![card("Vulcan Mind-Meld").unwrap()]);
     let scenario = libraries(scenario, seats);
-    let mut foe: Vec<Arc<CardDefinition>> = (0..8)
-        .map(|at| free_creature(&format!("Card 1-{at}"), 1, 1))
-        .collect();
-    foe.push(burn("Red Bolt", 1));
-    foe.push(mountain());
+    let mut foe: Vec<Arc<CardDefinition>> = vec![burn("Red Bolt", 1), mountain()];
+    foe.extend((0..8).map(|at| free_creature(&format!("Card 1-{at}"), 1, 1)));
     let mut driver = Driver::from_scenario(scenario.library(1, foe)).unwrap();
     let mine = *driver.state().zone(Zone::Library(pid(0))).last().unwrap();
     let theirs: Vec<ObjectId> = driver
@@ -341,10 +359,9 @@ fn vulcan_mind_meld_has_each_player_exile_the_others_cards_to_play(#[values(2, 3
         .copied()
         .collect();
     let foe_target = driver.target_player(1);
-    driver.cast_tapping("Vulcan Mind-Meld", &["Island"]).unwrap();
-    if matches!(driver.decision().unwrap().kind, DecisionKind::ChooseTargets(_)) {
-        driver.choose_targets(&[foe_target]).unwrap();
-    }
+    driver.begin_cast("Vulcan Mind-Meld").unwrap();
+    driver.choose_targets(&[foe_target]).unwrap();
+    driver.pay_tapping(&["Island"], 0).unwrap();
     settle(&mut driver, true, &none);
     let state = driver.state();
     assert_eq!(state.zone(Zone::Exile).len(), 3);
@@ -644,17 +661,15 @@ fn meddling_table(seats: usize, islands: usize) -> Driver {
 /// Casts Bolt at seat 1, then Ertai's Meddling for `x` at the Bolt; the Meddling resolves.
 fn meddle(driver: &mut Driver, x: u32) -> ObjectId {
     let foe = driver.target_player(1);
-    driver.cast_tapping("Bolt", &["Mountain"]).ok();
-    if matches!(driver.decision().unwrap().kind, DecisionKind::ChooseTargets(_)) {
-        driver.choose_targets(&[foe]).unwrap();
-        driver.answer(Answer::PayMana(PayChoice::Auto)).unwrap();
-    }
+    driver.begin_cast("Bolt").unwrap();
+    driver.choose_targets(&[foe]).unwrap();
+    driver.pay_tapping(&["Mountain"], 0).unwrap();
     let bolt = *driver.state().stack().last().unwrap();
     driver.begin_cast("Ertai's Meddling").unwrap();
     for _ in 0..10 {
         match &driver.decision().unwrap().kind {
             DecisionKind::ChooseNumber(options) => {
-                assert!(options.min >= 1, "X can't be 0");
+                assert!(options.min >= 1, "X can't be 0: {options:?}");
                 driver
                     .answer(Answer::ChooseNumber(mtg_engine::choose::NumberChoice::Number(x)))
                     .unwrap();
