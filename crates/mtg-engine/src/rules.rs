@@ -307,6 +307,23 @@ pub enum Rule {
     /// A rule about planar dice or planeswalking (Ichor Elixir, Susan Foreman): no game the engine plays has a planar
     /// deck, so it changes nothing.
     Planar,
+    /// The players may pay `cost` to reroll dice right after they roll (`GameRule::R706Reroll`).
+    R706Reroll {
+        /// Whose rolls.
+        players: Vec<PlayerId>,
+        /// The permanent with the rule: it counts the once-each-turn use.
+        source: ObjectRef,
+        /// What a reroll costs.
+        #[cfg_attr(feature = "ts", ts(type = "string"))]
+        cost: mtg_core::mana::ManaCost,
+        /// Only once each turn for the permanent.
+        once: bool,
+    },
+    /// The next roll of the players has one die more and the rule's controller chooses the roll ignored
+    /// (`GameRule::R706IgnoreChosen`); read from the rule changes themselves, which the roll ends.
+    R706IgnoreChosen(Vec<PlayerId>),
+    /// Blocks are declared as piles this turn (`GameRule::R509BlockPiles`).
+    R509BlockPiles,
     /// The players keep unspent mana of the type (every type when absent) as steps and phases end (CR 500.4).
     KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
     /// Unspent mana the players would lose becomes mana of the type instead.
@@ -1064,6 +1081,10 @@ pub(crate) struct RulesInForce {
     r6402_change_roll: Vec<R6402RollChanger>,
     /// The rules that let a player exchange a result with a number a permanent stored, in timestamp order.
     r113_exchange_roll: Vec<R113RollExchanger>,
+    /// The rules that let a player reroll dice after they roll, in timestamp order.
+    r706_reroll: Vec<R706Reroller>,
+    /// Whether blocks are declared as piles this turn.
+    r509_block_piles: bool,
     /// The permanents that note the mana value of each card put into exile, in timestamp order.
     r113_note_exiled: Vec<ObjectRef>,
     /// The sticker kickers each player's spells may be paid for, one for each rule, in timestamp order.
@@ -1700,6 +1721,20 @@ impl RulesInForce {
                     once: *once,
                 })),
             Rule::R113NoteExiled { source } => self.r113_note_exiled.push(*source),
+            Rule::R706Reroll {
+                players,
+                source,
+                cost,
+                once,
+            } => self
+                .r706_reroll
+                .extend(players.iter().map(|player| R706Reroller {
+                    player: *player,
+                    source: *source,
+                    cost: cost.clone(),
+                    once: *once,
+                })),
+            Rule::R509BlockPiles => self.r509_block_piles = true,
             Rule::R114StickerKicker {
                 players,
                 source,
@@ -1993,6 +2028,7 @@ impl RulesInForce {
             | Rule::R114PayToDo { .. }
             | Rule::R6600AdaptsFresh(_)
             | Rule::Planar
+            | Rule::R706IgnoreChosen(_)
             | Rule::SpellCost { .. }
             | Rule::R112SpellsGain { .. }
             | Rule::PreventDamage(_)
@@ -2356,6 +2392,14 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
             slot: slot.clone(),
         },
         GameRule::ExtraPlanarDie(_) | GameRule::PlaneswalkLookTwo(_) => Rule::Planar,
+        GameRule::R706Reroll { who, cost, once } => Rule::R706Reroll {
+            players: scope.players(who)?,
+            source: scope.source,
+            cost: cost.rest().clone(),
+            once: *once,
+        },
+        GameRule::R706IgnoreChosen(who) => Rule::R706IgnoreChosen(scope.players(who)?),
+        GameRule::R509BlockPiles => Rule::R509BlockPiles,
         GameRule::KeepUnspentMana { who, mana } => {
             Rule::KeepUnspentMana(scope.players(who)?, *mana)
         }
@@ -2705,6 +2749,8 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ExtraDie(players)
         | Rule::R6402ChangeRoll { players, .. }
         | Rule::R113ExchangeRoll { players, .. }
+        | Rule::R706Reroll { players, .. }
+        | Rule::R706IgnoreChosen(players)
         | Rule::R114StickerKicker { players, .. }
         | Rule::KeepUnspentMana(players, _)
         | Rule::UnspentManaBecomes(players, _)
@@ -2774,6 +2820,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::R5081ChoosesAttackers(_)
         | Rule::R6097ColorlessDamage(_)
         | Rule::R113NoteExiled { .. }
+        | Rule::R509BlockPiles
         | Rule::P158LoyaltyTwiceThis(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
@@ -2955,6 +3002,8 @@ static NONE: RulesInForce = RulesInForce {
     extra_die: Vec::new(),
     r6402_change_roll: Vec::new(),
     r113_exchange_roll: Vec::new(),
+    r706_reroll: Vec::new(),
+    r509_block_piles: false,
     r113_note_exiled: Vec::new(),
     r114_sticker_kickers: Vec::new(),
     keep_mana: Vec::new(),
@@ -3869,6 +3918,50 @@ pub(crate) struct R6402RollChanger {
     pub(crate) by: u32,
     /// Only once each turn for the permanent.
     pub(crate) once: bool,
+}
+
+/// A rule that lets one player reroll dice after they roll (`Rule::R706Reroll`), for that player.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct R706Reroller {
+    /// Whose rolls.
+    pub(crate) player: PlayerId,
+    /// The permanent with the rule.
+    pub(crate) source: ObjectRef,
+    /// What a reroll costs.
+    pub(crate) cost: mtg_core::mana::ManaCost,
+    /// Only once each turn for the permanent.
+    pub(crate) once: bool,
+}
+
+/// The rules that let `player` reroll dice after they roll, in timestamp order.
+pub(crate) fn r706_rerollers(state: &GameState, player: PlayerId) -> Vec<R706Reroller> {
+    state
+        .rules()
+        .r706_reroll
+        .iter()
+        .filter(|reroller| reroller.player == player)
+        .cloned()
+        .collect()
+}
+
+/// The rule changes in force that add a die to `player`'s next roll and let their controller ignore one
+/// (`Rule::R706IgnoreChosen`), in timestamp order: each change with its controller and source.
+pub(crate) fn r706_ignorers(
+    state: &GameState,
+    player: PlayerId,
+) -> Vec<(mtg_core::ids::EffectId, PlayerId, Option<ObjectRef>)> {
+    state
+        .rule_effects()
+        .iter()
+        .filter(|effect| effect.is_active(state))
+        .filter(|effect| matches!(&effect.rule, Rule::R706IgnoreChosen(players) if players.contains(&player)))
+        .map(|effect| (effect.id, effect.controller, effect.source))
+        .collect()
+}
+
+/// Whether blocks are declared as piles this turn (`Rule::R509BlockPiles`).
+pub(crate) fn r509_block_piles(state: &GameState) -> bool {
+    state.rules().r509_block_piles
 }
 
 /// The rules that let `player` change a result after they roll, in timestamp order.

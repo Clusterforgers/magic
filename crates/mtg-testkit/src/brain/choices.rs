@@ -202,8 +202,38 @@ pub fn quick_choice(engine: &Engine, decision: &Decision, random: &mut RandomBot
                 || random.choose_in(decision, engine.state()),
                 |at| Answer::ChooseOption(OptionChoice(at)),
             ),
+        // High results are taken as better: low dice are rerolled, and an opponent's best roll is the one ignored.
+        DecisionKind::R706ChooseDice(options) => Answer::R706ChooseDice(
+            options.favoured(seen.is_teammate(options.roller) || options.roller == decision.player),
+        ),
+        DecisionKind::R509BlockPiles(options) => Answer::R509BlockPiles(safe_piles(&seen, options)),
         _ => random.choose_in(decision, engine.state()),
     }
+}
+
+/// Piles of the creatures that survive blocking any of the attackers (toughness above each attacker's power), spread
+/// over the piles: a block at random is worth making only with a creature that does not die to it.
+fn safe_piles(
+    seen: &Seen<'_>,
+    options: &mtg_engine::r509_piles::R509PilesOptions,
+) -> Vec<Vec<mtg_core::ids::ObjectId>> {
+    let strongest = options
+        .attackers
+        .iter()
+        .filter_map(|id| seen.chars(*id))
+        .map(|chars| chars.power.unwrap_or(0))
+        .max()
+        .unwrap_or(0);
+    let safe: Vec<mtg_core::ids::ObjectId> = options
+        .creatures
+        .iter()
+        .map(|creature| creature.object)
+        .filter(|id| {
+            seen.chars(*id)
+                .is_some_and(|chars| chars.toughness.unwrap_or(0) > strongest)
+        })
+        .collect();
+    options.spread(&safe)
 }
 
 /// Among colour options, the colour of the opposing spell or ability nearest the top of the stack, else the colour

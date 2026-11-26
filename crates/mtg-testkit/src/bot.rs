@@ -881,6 +881,19 @@ impl RandomBot {
             DecisionKind::Loop(options) => {
                 crate::loop_answer::loop_answer(decision.player, options)
             }
+            DecisionKind::R706ChooseDice(options) => {
+                // Between the bounds, at random.
+                let spread = options.max.saturating_sub(options.min) + 1;
+                let wanted = options.min + self.rng.index(spread);
+                let dice: Vec<usize> = (0..options.results.len()).collect();
+                Answer::R706ChooseDice(self.pick(&dice, wanted))
+            }
+            DecisionKind::R509BlockPiles(options) => {
+                let creatures: Vec<ObjectId> = options.creatures.iter().map(|c| c.object).collect();
+                let count = self.rng.index(creatures.len() + 1);
+                let chosen = self.subset(&creatures, count);
+                Answer::R509BlockPiles(options.spread(&chosen))
+            }
         }
     }
 

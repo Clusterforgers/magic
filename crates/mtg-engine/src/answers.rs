@@ -324,6 +324,12 @@ pub(crate) fn handle(
         (DecisionKind::ChooseReplacement(options), Answer::ChooseReplacement(choice)) => {
             choose::replacement_answer(player, options, choice)
         }
+        (DecisionKind::R706ChooseDice(options), Answer::R706ChooseDice(dice)) => {
+            crate::r706_dice::r706_answer(player, options, &dice, pending.is_some())
+        }
+        (DecisionKind::R509BlockPiles(options), Answer::R509BlockPiles(piles)) => {
+            crate::r509_piles::r509_answer(state, player, options, piles)
+        }
         (kind, Answer::Undo) => undo(pending.is_some(), kind),
         (kind, answer) => Err(IllegalAnswer::WrongKind {
             expected: kind.name(),

@@ -1313,6 +1313,43 @@ pub enum Event {
         /// The result after it.
         to: u32,
     },
+    /// A player rerolled dice of the roll they just made through a permanent's rule (`Rule::R706Reroll`, CR 706.2b): the
+    /// cost is paid in the same batch and the rule counts as used this turn. Each reroll spends a substream of the
+    /// generator; the roll is logged after it with the new results.
+    R706DiceRerolled {
+        /// Who rolled.
+        player: PlayerId,
+        /// The permanent whose rule rerolled the dice.
+        source: ObjectRef,
+        /// The results rerolled, before the reroll.
+        from: Vec<u32>,
+    },
+    /// A player chose which roll of another player's roll to ignore (`Rule::R706IgnoreChosen`, CR 706.6): the ignored
+    /// roll never happened and triggers nothing, it spends the substream it came from, and the rule change ends.
+    R706DieIgnored {
+        /// Who rolled.
+        roller: PlayerId,
+        /// Who chose.
+        chooser: PlayerId,
+        /// The rule change that added the die.
+        effect: EffectId,
+        /// The result ignored.
+        result: u32,
+    },
+    /// The turn-based roll to visit Attractions asks questions (CR 505.5, 706.2b): the step waits for the answers, which
+    /// the game keeps until the roll is logged.
+    R706VisitAsks {
+        /// Who rolls.
+        player: PlayerId,
+    },
+    /// Each pile a defending player made is assigned to an attacker at random (`Rule::R509BlockPiles`), with the next
+    /// substream of the generator: each attacker with the creatures of the pile it got. The blocks follow.
+    R509PilesAssigned {
+        /// The defending player.
+        player: PlayerId,
+        /// Each attacker and its pile.
+        piles: Vec<(ObjectId, Vec<ObjectId>)>,
+    },
     /// A player put the cards of their graveyard in an order they chose (CR 404.2).
     R111GraveyardOrdered {
         /// Whose graveyard.
@@ -1892,6 +1929,10 @@ impl Event {
             | Event::R115CountersPutBy { .. }
             | Event::DieRolled { .. }
             | Event::R6402DieChanged { .. }
+            | Event::R706DiceRerolled { .. }
+            | Event::R706DieIgnored { .. }
+            | Event::R706VisitAsks { .. }
+            | Event::R509PilesAssigned { .. }
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }
             | Event::VotesFinished { .. }

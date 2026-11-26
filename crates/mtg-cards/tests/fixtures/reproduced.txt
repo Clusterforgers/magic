@@ -193,6 +193,7 @@ Balduvian Shaman
 Balduvian Warlord
 Balefang the Unslayable
 Baleful Strix
+Bamboozling Beeble
 Bandit's Haul
 Bane of Progress
 Banish to Another Universe
@@ -417,6 +418,7 @@ Call to Arms
 Caller of the Claw
 Caller of the Hunt
 Caller of the Pack
+Camouflage
 Canoptek Tomb Sentinel
 Canopy Vista
 Caprichrome
@@ -1936,6 +1938,7 @@ Molten Slagheap
 Momo, Rambunctious Rascal
 Mona Lisa, Science Geek
 Monastery Swiftspear
+Monitor Monitor
 Monk of the Open Hand
 Monk's Fist
 Moon-Boy, Dino Rider

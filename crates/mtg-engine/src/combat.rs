@@ -669,19 +669,24 @@ pub(crate) fn defending_players(state: &GameState) -> Vec<PlayerId> {
         .collect()
 }
 
+/// The attacking creatures for whom `player` is the defending player, in the order they attack.
+pub(crate) fn r509_attackers_of(state: &GameState, player: PlayerId) -> Vec<ObjectId> {
+    state
+        .combat()
+        .attackers()
+        .iter()
+        .filter(|a| a.defender(state).is_some_and(|d| defends(state, d, player)))
+        .map(Attacker::object)
+        .collect()
+}
+
 /// Every creature `player` may block with and what each may block.
 ///
 /// An attacker that needs several blockers (menace) is offered only while enough of `player`'s creatures could
 /// block it, so a creature that could only join a block that cannot be made is not offered for it.
 #[allow(clippy::too_many_lines)]
 pub(crate) fn block_options(state: &GameState, player: PlayerId) -> BlockOptions {
-    let blockable: Vec<ObjectId> = state
-        .combat()
-        .attackers()
-        .iter()
-        .filter(|a| a.defender(state).is_some_and(|d| defends(state, d, player)))
-        .map(Attacker::object)
-        .collect();
+    let blockable = r509_attackers_of(state, player);
     let (candidates, able) = block_pairs(state, player, &blockable);
     let most = block_limit(state, player);
     // Whether each attacker can be blocked at all, by index into `blockable`.

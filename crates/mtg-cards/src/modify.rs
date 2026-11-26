@@ -1259,6 +1259,28 @@ pub enum GameRule {
         /// The memory slot of the permanent.
         slot: String,
     },
+    /// "Once each turn, you may pay {1} to reroll one or more dice you rolled." (CR 706.2b, the rulings of Monitor
+    /// Monitor): right after a player in the group rolls, they may pay `cost` and reroll any of the dice of that roll; the
+    /// new results replace the old ones, and rerolls apply before changes by an amount.
+    R706Reroll {
+        /// Whose rolls.
+        who: Ref,
+        /// What a reroll costs; no `{X}`.
+        cost: ManaCostX,
+        /// Only once each turn for the permanent.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        once: bool,
+    },
+    /// "The next time target player would roll one or more dice this turn, instead they roll that many dice plus one and
+    /// you choose one of those rolls to ignore." (CR 706.6): the next roll of a player in the group has one die more, the
+    /// rule's controller chooses the roll ignored, and the rule ends.
+    R706IgnoreChosen(Ref),
+    /// "This turn, instead of declaring blockers, each defending player chooses any number of creatures they control and
+    /// divides them into a number of piles equal to the number of attacking creatures for whom that player is the
+    /// defending player." (Camouflage, CR 509.1): each defending player divides creatures into one pile per attacker (a
+    /// creature that can block additional creatures into as many more), the piles go to the attackers at random, and each
+    /// creature in a pile that can block that pile's attacker does so.
+    R509BlockPiles,
     /// "Creature spells you cast have sticker kicker {1}." (CR 123, the Wicker Picker rulings): as a player in the group
     /// casts a spell of `spells`, they may pay `cost` in addition, once for each such rule; for each payment they get a
     /// ticket and may put a sticker on the spell just before it becomes cast. A spell paid for it counts as kicked for

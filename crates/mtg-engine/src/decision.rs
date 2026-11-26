@@ -77,6 +77,10 @@ pub enum DecisionKind {
     ChooseReplacement(ReplacementOptions),
     /// Repeat a loop a number of times or stop it (CR 732): asked of the player whose choice drives it.
     Loop(crate::loops::LoopOptions),
+    /// Choose dice of a roll just made: which to reroll, or which roll to ignore (CR 706.2b, 706.6).
+    R706ChooseDice(crate::r706_dice::R706DiceOptions),
+    /// Divide creatures into piles instead of declaring blockers (`Rule::R509BlockPiles`, CR 509.1).
+    R509BlockPiles(crate::r509_piles::R509PilesOptions),
 }
 
 impl DecisionKind {
@@ -120,6 +124,8 @@ impl DecisionKind {
             DecisionKind::OrderTriggers(_) => "order-triggers",
             DecisionKind::ChooseReplacement(_) => "choose-replacement",
             DecisionKind::Loop(_) => "loop",
+            DecisionKind::R706ChooseDice(_) => "r706-choose-dice",
+            DecisionKind::R509BlockPiles(_) => "r509-block-piles",
         }
     }
 }
@@ -1147,6 +1153,10 @@ pub enum Answer {
     ChooseReplacement(ReplacementChoice),
     /// The answer to a loop offer.
     Loop(crate::loops::LoopAnswer),
+    /// The dice chosen, by position in the roll.
+    R706ChooseDice(Vec<usize>),
+    /// The piles, one for each attacker offered, in that order.
+    R509BlockPiles(Vec<Vec<ObjectId>>),
     /// Back out of the spell or ability being announced at a step that allows it (`DecisionKind::can_undo`): nothing
     /// is paid or moved until the payment, so the card stays where it was and no mana is spent (CR 601.2, 727.1).
     Undo,
@@ -1178,6 +1188,8 @@ impl Answer {
             Answer::OrderTriggers(_) => "order-triggers",
             Answer::ChooseReplacement(_) => "choose-replacement",
             Answer::Loop(_) => "loop",
+            Answer::R706ChooseDice(_) => "r706-choose-dice",
+            Answer::R509BlockPiles(_) => "r509-block-piles",
             Answer::Undo => "undo",
         }
     }

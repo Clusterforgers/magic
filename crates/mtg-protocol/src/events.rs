@@ -558,6 +558,10 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::R115CountersPutBy { .. }
         | Event::DieRolled { .. }
         | Event::R6402DieChanged { .. }
+        | Event::R706DiceRerolled { .. }
+        | Event::R706DieIgnored { .. }
+        | Event::R706VisitAsks { .. }
+        | Event::R509PilesAssigned { .. }
         | Event::RolledToVisit { .. }
         | Event::PrizeClaimed { .. }
         | Event::StickerSheetsChosen { .. }

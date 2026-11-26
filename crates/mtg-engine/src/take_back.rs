@@ -282,6 +282,9 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::AttractionDeckShuffled { .. } => Some(R::LibraryShuffled),
         Event::DieRolled { .. }
         | Event::R6402DieChanged { .. }
+        | Event::R706DiceRerolled { .. }
+        | Event::R706DieIgnored { .. }
+        | Event::R509PilesAssigned { .. }
         | Event::CoinFlipped { .. }
         | Event::ChosenAtRandom { .. }
         | Event::PlayersChosenAtRandom { .. }
@@ -328,6 +331,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::AnnouncementRewound { .. }
         | Event::ManaUndone { .. }
         | Event::PriorityGranted { .. }
+        | Event::R706VisitAsks { .. }
         | Event::PriorityPassed { .. }
         | Event::LandPlayed { .. }
         | Event::SpellCast { .. }

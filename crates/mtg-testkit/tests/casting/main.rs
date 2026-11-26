@@ -150,6 +150,7 @@ mod p160_cards;
 mod p160w_cards;
 mod p162_cards;
 mod p163_cards;
+mod p166_cards;
 mod pay_parts;
 mod pay_unless;
 mod persistent_mana;

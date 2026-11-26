@@ -705,6 +705,17 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::R6402DieChanged { source, .. } => {
             state.tally_object(*source, None, Tally::R6402Changed);
         }
+        // A reroll and an ignored roll spend the substreams their dice came from.
+        Event::R706DiceRerolled { source, from, .. } => {
+            state.rng_index += u64::try_from(from.len()).unwrap_or(0);
+            state.tally_object(*source, None, Tally::R706Rerolled);
+        }
+        Event::R706DieIgnored { effect, .. } => {
+            state.rng_index += 1;
+            crate::rules::fold_expired(state, *effect)?;
+        }
+        Event::R509PilesAssigned { .. } => state.rng_index += 1,
+        Event::R706VisitAsks { .. } => state.un33.r706_visit = Some(Vec::new()),
         Event::DieRolled { player, result, .. } => {
             crate::r6401_history::r6401_note_roll(state, *result);
             c11e_draw_random(state, event);
