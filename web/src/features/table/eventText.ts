@@ -1086,7 +1086,9 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, object, colors } = event.ColorsCircled
     const named = colors.map((color) => color.toLowerCase())
     const listed =
-      named.length > 1 ? `${named.slice(0, -1).join(', ')} and ${named[named.length - 1]}` : (named[0] ?? 'no colors')
+      named.length > 1
+        ? `${named.slice(0, -1).join(', ')} and ${named[named.length - 1]}`
+        : (named[0] ?? 'no colors')
     return line(`${n.seat(player)} circles ${listed} on ${n.card(object)}`)
   }
   if ('LibraryShuffled' in event)
