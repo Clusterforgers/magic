@@ -48,6 +48,7 @@ pub fn exile_top(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         bind: IMPULSE.to_owned(),
         sealed: false,
         bottom: false,
+        r406_held_by: None,
     }])
 }
 
@@ -466,6 +467,7 @@ pub fn text(effect: &Effect) -> Option<String> {
             count,
             sealed,
             bottom: false,
+            r406_held_by: None,
             ..
         } => {
             let face = if *sealed { " face down" } else { "" };
@@ -477,6 +479,7 @@ pub fn text(effect: &Effect) -> Option<String> {
             count,
             sealed: false,
             bottom: false,
+            r406_held_by: None,
             ..
         } => format!("exile {} of that player's library", top_text(count)?),
         Effect::ExileUntil {

@@ -1,0 +1,41 @@
+{
+  "oracle_id": "a067233b-cff0-45ae-89d9-377e94fcf3b3",
+  "name": "Grimoire Thief",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Grimoire Thief",
+      "oracle_fingerprint": "9544a5c66c76d5aeb6f0b7a19a9ec9fe",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "Tapped": { "what": ["This"] } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              { "ExileTop": { "who": { "Target": 0 }, "count": 3, "as": "exiled", "sealed": true } }
+            ]
+          }
+        },
+        { "Rule": { "rule": { "LookAtExiled": { "what": [{ "ExiledWith": "This" }] } } } },
+        {
+          "Activated": {
+            "cost": [{ "Mana": "{U}" }, "SacrificeSelf"],
+            "effects": [
+              {
+                "R406TurnUpExiled": {
+                  "what": { "Each": [{ "In": "Exile" }, { "ExiledWith": "This" }] },
+                  "as": "turned"
+                }
+              },
+              {
+                "Counter": {
+                  "what": { "Each": ["Spell", { "SharesName": { "Bound": "turned" } }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

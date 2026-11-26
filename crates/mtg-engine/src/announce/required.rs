@@ -68,7 +68,8 @@ fn variants_at(
             continue;
         };
         // "Spend only black mana on X" pays nothing: it colors the mana of the X (`price::spell_x_color`); "X can't be
-        // greater than ..." pays nothing either: it caps the X announced (`announce::r5523_x_cap`).
+        // greater than ..." pays nothing either: it caps the X announced (`announce::r5523_x_cap`). "X can't be 0." pays
+        // nothing: it sets the least X announced (`announce::x`).
         if cost.0.iter().all(|item| {
             matches!(
                 item,
@@ -76,6 +77,7 @@ fn variants_at(
                     | CostItem::R113XHybrid(..)
                     | CostItem::R112XOneEachColor
                     | CostItem::XAtMost(_)
+                    | CostItem::XAtLeast(_)
                     | CostItem::XIs(_)
                     | CostItem::R121XIsPerOpponent(_)
                     | CostItem::R110ChooseNumber { .. }

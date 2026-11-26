@@ -1533,6 +1533,18 @@ pub enum GameRule {
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),
+    /// The players may tap lands they don't control for mana (CR 605.1a, 602.2): they activate the mana abilities with
+    /// {T} in their costs of untapped lands other players control as though they controlled them, and the mana goes to
+    /// their own pool with the restrictions listed ("Until end of turn, you may tap lands you don't control for mana.
+    /// Spend this mana only to cast spells.").
+    R605TapOthersLands {
+        /// The players who may tap them; the controller of the rule when absent.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What the mana may be spent on; anything when empty.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        only: Vec<crate::spend::SpendOn>,
+    },
     /// `SpendOnlyFrom` for one way of casting the card only: "You may pay {R}{G} rather than pay this spell's mana cost.
     /// Spend only mana produced by Treasures to cast it this way."
     R112SpendOnlyFromWay {

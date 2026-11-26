@@ -428,9 +428,30 @@ fn least_x_chosen(ctx: &Ctx<'_>, choices: &Choices) -> u32 {
     let Some(Ability::Activated { cost, .. }) = ctx.ability else {
         // "If you cast this spell this way, X can't be 0." sets the least X of a way (`ways::r115_way_least_x`).
         let way = ways::r115_way_least_x(ctx.state, ctx.source, choices.way);
-        return super::optional::chosen_least_x(ctx, choices).max(way);
+        return super::optional::chosen_least_x(ctx, choices)
+            .max(way)
+            .max(r107_spell_least_x(ctx));
     };
     least_of(cost)
+}
+
+/// The least X a spell's required additional cost sets ("X can't be 0.", Ertai's Meddling): it holds for every way the
+/// spell is cast, so a cast without paying its mana cost, which sets X to 0, is not offered (CR 107.3).
+fn r107_spell_least_x(ctx: &Ctx<'_>) -> u32 {
+    let Some(card) = ctx.state.object(ctx.source) else {
+        return 0;
+    };
+    crate::ability_reader::printed_rules(card.card())
+        .filter_map(|rule| match &**rule {
+            Ability::AdditionalCost {
+                cost,
+                required: true,
+                ..
+            } => Some(least_of(cost)),
+            _ => None,
+        })
+        .max()
+        .unwrap_or(0)
 }
 
 /// The least X the activated ability's `cost` allows (`least_x`).

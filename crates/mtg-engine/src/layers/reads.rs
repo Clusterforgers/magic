@@ -329,7 +329,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::R114ChosenObject
         | Ref::R6702CraftedWith
         | Ref::R6602FromYou => Traits::NONE,
-        Ref::Remembered { on, .. } => reads_of_ref(on),
+        Ref::Remembered { on, .. } | Ref::R406PileTop { on } => reads_of_ref(on),
         Ref::LastExiledWith { on, filter } => reads_of_ref(on).or(reads_of_selector(filter)),
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
             Traits::CONTROL.or(reads_of_ref(inner))
