@@ -177,6 +177,7 @@ impl Gives {
             | Modification::AddSupertype(_)
             | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
+            | Modification::R2051RemoveSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::AddAllCreatureTypes => GivenRule::ChangeTypes,

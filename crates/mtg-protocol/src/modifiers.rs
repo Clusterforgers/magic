@@ -365,6 +365,7 @@ fn add(phrase: &mut Phrase, modification: &Modification, host: &str) {
         Modification::AddSupertype(supertype) => format!("Is {supertype:?}"),
         Modification::RemoveSupertype(supertype) => format!("Is not {supertype:?}"),
         Modification::AddSubtype(subtype) => format!("Is also {}", subtype.0),
+        Modification::R2051RemoveSubtype(subtype) => format!("Is not {}", subtype.0),
         Modification::SetCreatureTypes(subtypes) | Modification::SetLandTypes(subtypes) => {
             let names: Vec<&str> = subtypes.iter().map(|s| s.0.as_str()).collect();
             format!("Is {}", names.join(" "))

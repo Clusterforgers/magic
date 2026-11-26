@@ -117,6 +117,10 @@ pub enum Ref {
     /// The player in this seat (0 is the first): written by the engine as a resolution fixes "the chosen player" into a
     /// keyword it grants ("gain protection from the chosen player"), never by a card file.
     R110Seat(u8),
+    /// In an ability a resolution grants, the one player the reference names as that resolution runs, fixed into the
+    /// ability for as long as it lasts ("gains 'At the beginning of that player's upkeep, this enchantment deals 1 damage
+    /// to that player'", CR 611.2c); nobody when it names no player or several.
+    R6112FixedPlayer(Box<Ref>),
     /// The controller of the last source the selector matches, as it was then, that dealt damage to "you" this turn ("the
     /// controller of the last red instant or sorcery spell that dealt damage to you this turn"); nobody when none did.
     R111LastDamagedYou(Selector),

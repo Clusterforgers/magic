@@ -1523,6 +1523,14 @@ impl<'a> Scope<'a> {
     }
 
     /// The player of a seat fixed by an effect, while still in the game.
+    /// The one player the inner reference names now (the reference not fixed yet); nobody for none or several.
+    fn r6112_fixed_player(&self, inner: &Ref) -> Result<Vec<Target>, ResolveError> {
+        Ok(match self.refs(inner)?.as_slice() {
+            [player @ Target::Player(_)] => vec![*player],
+            _ => Vec::new(),
+        })
+    }
+
     fn r110_seat(&self, seat: u8) -> Vec<Target> {
         let player = PlayerId::from_index(usize::from(seat));
         if self.state.is_alive(player) {
@@ -1542,11 +1550,13 @@ impl<'a> Scope<'a> {
     }
 
     /// The players and objects a reference names, in the order the rules process them.
+    #[allow(clippy::too_many_lines)] // one arm for every reference
     pub fn refs(&self, reference: &Ref) -> Result<Vec<Target>, ResolveError> {
         let state = self.state;
         Ok(match reference {
             Ref::You => vec![Target::Player(self.controller)],
             Ref::R110Seat(seat) => self.r110_seat(*seat),
+            Ref::R6112FixedPlayer(inner) => self.r6112_fixed_player(inner)?,
             Ref::R111LastDamagedYou(by) => self.r111_last_damaged_you(by)?,
             Ref::R111BlockedController { of, by } => self.r111_blocked_controller(of, by)?,
             Ref::R111Object(id) => crate::r111_triggering::r111_object(state, *id),
@@ -2348,10 +2358,18 @@ impl<'a> Scope<'a> {
             }
             Pred::EnchantableBy(auras) => {
                 seen.zone == Zone::Battlefield
-                    && self
-                        .objects(auras)?
-                        .iter()
-                        .any(|aura| crate::attach::legal_host(state, aura.id, reference.id))
+                    && self.objects(auras)?.iter().any(|aura| {
+                        // A card that is not on the battlefield is judged as it would enter ("a creature that this card
+                        // could enchant", Takklemaggot in its graveyard).
+                        let entering = state
+                            .object(aura.id)
+                            .is_some_and(|card| card.zone() != Zone::Battlefield);
+                        if entering {
+                            crate::attach::legal_host_entering(state, aura.id, reference.id)
+                        } else {
+                            crate::attach::legal_host(state, aura.id, reference.id)
+                        }
+                    })
             }
             Pred::SharesSubtype(named) => self.shares_subtype(named, seen)?,
             Pred::SharesCreatureTypeWithEach(named) => {

@@ -282,8 +282,12 @@ fn printed_keyword_names(card: &CardDefinition) -> Vec<String> {
     names
 }
 
-/// What the card prints, then what effects gave it; nothing for an ability on the stack.
-fn shown_subtypes(card: &CardDefinition, now: &[Subtype], printed: bool) -> Vec<Subtype> {
+/// What the card prints, then what effects gave it, less what effects took away; nothing for an ability on the stack.
+fn shown_subtypes(
+    card: &CardDefinition,
+    (now, removed): (&[Subtype], &[Subtype]),
+    printed: bool,
+) -> Vec<Subtype> {
     if !printed {
         return Vec::new();
     }
@@ -294,6 +298,7 @@ fn shown_subtypes(card: &CardDefinition, now: &[Subtype], printed: bool) -> Vec<
         .cloned()
         .collect();
     all.extend(given);
+    all.retain(|subtype| !removed.contains(subtype));
     all
 }
 
@@ -578,7 +583,7 @@ impl ObjectView {
                 .filter(|_| printed)
                 .collect(),
             types: type_list(chars.types),
-            subtypes: shown_subtypes(card, &chars.subtypes, printed),
+            subtypes: shown_subtypes(card, (&chars.subtypes, &chars.subtypes_removed), printed),
             colors: chars.colors.iter().collect(),
             power: chars.power,
             toughness: chars.toughness,

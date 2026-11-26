@@ -17,6 +17,7 @@ pub(super) fn ep24_retarget_text(effect: &Effect, spec: &TargetSpec) -> Option<S
         what: Ref::Target(0),
         to,
         onto,
+        r115_who: None,
     } = effect
     else {
         return None;

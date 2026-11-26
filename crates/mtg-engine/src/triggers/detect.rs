@@ -56,6 +56,15 @@ enum Happened {
     },
     /// A spell or ability was put onto the stack under the player's control.
     R5503Stacked { object: ObjectId, player: PlayerId },
+    /// A player chose one or more targets for the spell or ability (CR 115.1); `changed` when they were new targets of
+    /// one on the stack (CR 115.7).
+    R115TargetsChosen {
+        object: ObjectId,
+        player: PlayerId,
+        changed: bool,
+    },
+    /// A player lost the game (CR 104.3).
+    R1043Lost { player: PlayerId },
     /// An object moved between zones.
     Moved {
         object: ObjectId,
@@ -760,6 +769,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                         .map(|player| Happened::R116Dilemma { player }),
                 );
                 found.extend(targeted(look, choices, (*object, *player)));
+                found.extend(r115_chosen(choices, *object, *player, false));
             }
             Event::AbilityPutOnStack(put) => {
                 found.push(Happened::R5503Stacked {
@@ -772,6 +782,7 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                         .map(|player| Happened::R116Dilemma { player }),
                 );
                 found.extend(targeted(look, &put.choices, (put.object, put.controller)));
+                found.extend(r115_chosen(&put.choices, put.object, put.controller, false));
             }
             Event::SpellCopied(copy) => {
                 found.push(Happened::R5503Stacked {
@@ -805,7 +816,14 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     ..Choices::default()
                 };
                 found.extend(targeted(look, &new, (change.object.id, change.controller)));
+                found.extend(r115_chosen(
+                    &change.choices,
+                    change.object.id,
+                    change.controller,
+                    true,
+                ));
             }
+            Event::PlayerLost { player, .. } => found.push(Happened::R1043Lost { player: *player }),
             Event::StepBegan { step } => found.push(Happened::Step {
                 step: *step,
                 active: post.turn().active(),
@@ -1934,6 +1952,17 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                 ..
             },
         ) => player_targeted((who, by), (*targeted, *caster), scope),
+        (
+            TriggerPattern::R115ChoosesTargets { quiet_own_name },
+            Happened::R115TargetsChosen {
+                object,
+                player,
+                changed,
+            },
+        ) => r115_targets_chosen(*quiet_own_name, (*object, *player, *changed), scope),
+        (TriggerPattern::R1043Loses { who, controlled }, Happened::R1043Lost { player }) => {
+            r1043_lost((who, controlled), *player, scope)
+        }
         _ => matching_event(pattern, happened, scope),
     }
 }
@@ -3567,6 +3596,81 @@ fn r120_random_matching(
         .then(|| counted(scope.state, vec![Target::Player(subject)], 0))
 }
 
+/// That `player` chose targets for `object` (CR 115.1): nothing when its choices name none.
+fn r115_chosen(
+    choices: &Choices,
+    object: ObjectId,
+    player: PlayerId,
+    changed: bool,
+) -> Option<Happened> {
+    choices
+        .targets
+        .iter()
+        .any(|chosen| !chosen.is_empty())
+        .then_some(Happened::R115TargetsChosen {
+            object,
+            player,
+            changed,
+        })
+}
+
+/// A player who lost the game, with the permanents they controlled as they lost that `controlled` matches (CR 800.4a):
+/// the player first, then each permanent, as the subjects of the cause.
+fn r1043_lost(
+    (who, controlled): (&Ref, &Selector),
+    player: PlayerId,
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    if !scope.players(who).ok()?.contains(&player) {
+        return None;
+    }
+    let mut subjects = vec![Target::Player(player)];
+    for id in state.zone(Zone::Battlefield) {
+        let Some(permanent) = state.object(*id) else {
+            continue;
+        };
+        if crate::characteristics::controller_of_object(state, permanent) == player
+            && scope.selects(controlled, permanent.reference()).ok()?
+        {
+            subjects.push(Target::Object(permanent.reference()));
+        }
+    }
+    Some(cause(state, subjects))
+}
+
+/// The spell or ability whose targets a player chose, unless `quiet_own_name` and the change was made by an ability of a
+/// permanent with the name of the source (Psychic Battle). The subjects are the spell or ability and its controller.
+fn r115_targets_chosen(
+    quiet_own_name: bool,
+    (object, player, changed): (ObjectId, PlayerId, bool),
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    if quiet_own_name && changed {
+        let name = |id: ObjectId| {
+            state
+                .object(id)
+                .or_else(|| state.ceased.get(&id))
+                .map(|o| o.card().name.clone())
+        };
+        let own = name(scope.source.id);
+        let by_ability = state
+            .resolving()
+            .and_then(|resolving| state.object(resolving.object()))
+            .filter(|resolving| resolving.kind() == crate::object::ObjectKind::Ability)
+            .and_then(|resolving| resolving.ability())
+            .and_then(|ability| name(ability.source().id));
+        if own.is_some() && own == by_ability {
+            return None;
+        }
+    }
+    let reference = state.object(object)?.reference();
+    Some(cause(
+        state,
+        vec![Target::Object(reference), Target::Player(player)],
+    ))
+}
 #[cfg(test)]
 mod tests {
     //! Goal: each pattern of the card DSL triggers on the event it names and on nothing else, judged against the state the rules say (before the event for what leaves the battlefield, after it for the rest), with the right controller, cause and snapshot; one event triggers an ability once however many of its patterns it fits, several events trigger it several times, a limit and an intervening "if" hold it back, and a delayed trigger fires on the next event it names.

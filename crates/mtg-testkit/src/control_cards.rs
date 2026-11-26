@@ -93,6 +93,7 @@ pub fn spell_thief(name: &str) -> Arc<CardDefinition> {
                         what: Ref::Target(0),
                         to: NewTargets::Choose,
                         onto: None,
+                        r115_who: None,
                     },
                 ],
             }),

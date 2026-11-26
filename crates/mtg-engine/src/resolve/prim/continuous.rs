@@ -522,6 +522,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             ));
         }
         Wanted::AddSubtype(subtype) => Modification::AddSubtype(subtype.clone()),
+        Wanted::R2051RemoveSubtype(subtype) => Modification::R2051RemoveSubtype(subtype.clone()),
         Wanted::SetCreatureTypes(types) => Modification::SetCreatureTypes(types.clone()),
         // The creature types the other object has now (Duplicant reads the last creature card it exiled).
         Wanted::SetCreatureTypesOf(from) => {

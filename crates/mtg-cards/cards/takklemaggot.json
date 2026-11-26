@@ -1,7 +1,7 @@
 {
   "oracle_id": "31d01633-86f8-4a3f-9c28-f6968e056ba3",
   "name": "Takklemaggot",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Takklemaggot",
@@ -15,9 +15,85 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 122, "end": 556 }
+          "Triggered": {
+            "when": {
+              "ZoneChange": {
+                "what": [{ "Is": "Attached" }],
+                "from": "Battlefield",
+                "to": "Graveyard"
+              }
+            },
+            "effects": [
+              {
+                "Choose": {
+                  "who": { "ControllerOf": "Triggering" },
+                  "from": { "Each": [{ "Type": "Creature" }, { "EnchantableBy": "This" }] },
+                  "as": "host"
+                }
+              },
+              {
+                "If": {
+                  "condition": {
+                    "CountOf": {
+                      "subject": { "Bound": "host" },
+                      "selector": [],
+                      "op": "Ge",
+                      "right": 1
+                    }
+                  },
+                  "then": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": {
+                          "BattlefieldAttached": { "to": { "Bound": "host" }, "under": "You" }
+                        }
+                      }
+                    }
+                  ],
+                  "otherwise": [
+                    {
+                      "Move": {
+                        "what": "This",
+                        "to": {
+                          "R6502BattlefieldAs": {
+                            "becomes": [
+                              { "R2051RemoveSubtype": "Aura" },
+                              { "RemoveKeyword": { "Enchant": [{ "Type": "Creature" }] } },
+                              {
+                                "GrantAbility": {
+                                  "Triggered": {
+                                    "when": {
+                                      "StepBegins": {
+                                        "step": "Upkeep",
+                                        "whose": {
+                                          "R6112FixedPlayer": { "ControllerOf": "Triggering" }
+                                        }
+                                      }
+                                    },
+                                    "effects": [
+                                      {
+                                        "DealDamage": {
+                                          "to": {
+                                            "R6112FixedPlayer": { "ControllerOf": "Triggering" }
+                                          },
+                                          "amount": 1
+                                        }
+                                      }
+                                    ]
+                                  }
+                                }
+                              }
+                            ],
+                            "under": "You"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

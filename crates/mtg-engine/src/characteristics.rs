@@ -33,6 +33,10 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Supertype>>", optional))]
     pub supertypes_removed: Vec<Supertype>,
+    /// The subtypes effects took away, printed ones included ("as a non-Aura enchantment", CR 205.1b).
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<Vec<Subtype>>", optional))]
+    pub subtypes_removed: Vec<Subtype>,
     /// An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
@@ -119,6 +123,9 @@ impl Characteristics {
         if let Some((first, second)) = subtype.two_word_land() {
             return self.has_subtype(printed, &first) && self.has_subtype(printed, &second);
         }
+        if self.subtypes_removed.contains(subtype) {
+            return false;
+        }
         self.subtypes.contains(subtype)
             || (self.all_creature_types && subtype.is_creature_type())
             || (printed.contains(subtype)
@@ -133,6 +140,7 @@ impl Characteristics {
             subtypes: Vec::new(),
             supertypes: Vec::new(),
             supertypes_removed: Vec::new(),
+            subtypes_removed: Vec::new(),
             creature_types_set: false,
             land_types_set: false,
             all_creature_types: false,
@@ -540,6 +548,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         },
         supertypes: Vec::new(),
         supertypes_removed: Vec::new(),
+        subtypes_removed: Vec::new(),
         creature_types_set: false,
         land_types_set: false,
         all_creature_types: false,

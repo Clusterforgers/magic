@@ -270,6 +270,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::ThisAbility
             | mtg_cards::modify::Modification::SetLoyalty(_)
             | mtg_cards::modify::Modification::AddSubtype(_)
+            | mtg_cards::modify::Modification::R2051RemoveSubtype(_)
             | mtg_cards::modify::Modification::SetCreatureTypes(_)
             | mtg_cards::modify::Modification::SetLandTypes(_)
             | mtg_cards::modify::Modification::AddAllCreatureTypes

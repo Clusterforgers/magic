@@ -749,6 +749,11 @@ impl<'a> Walker<'a> {
                 self.reference(of, Kind::Player);
                 self.expect(Kind::Player, want);
             }
+            Ref::R6112FixedPlayer(inner) => {
+                self.uses("Ref", "R6112FixedPlayer");
+                self.reference(inner, Kind::Player);
+                self.expect(Kind::Player, want);
+            }
             Ref::R6602FromYou => self.expect(Kind::Player, want),
             Ref::Remembered { on, .. } => {
                 self.reference(on, Kind::Object);
@@ -3284,6 +3289,7 @@ impl<'a> Walker<'a> {
             | Modification::ThisAbility
             | Modification::SetLoyalty(_)
             | Modification::AddSubtype(_)
+            | Modification::R2051RemoveSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetLandTypes(_)
             | Modification::SetLandTypesChosen(_)
@@ -3495,6 +3501,10 @@ impl<'a> Walker<'a> {
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("by", |w| w.selector(by));
             }
+            TriggerPattern::R1043Loses { who, controlled } => {
+                self.at("who", |w| w.reference(who, Kind::Player));
+                self.at("controlled", |w| w.selector(controlled));
+            }
             TriggerPattern::SpellCast { what, by }
             | TriggerPattern::SpellCopied { what, by }
             | TriggerPattern::Sacrificed { what, by }
@@ -3515,6 +3525,7 @@ impl<'a> Walker<'a> {
             | TriggerPattern::DoorUnlocked { .. }
             | TriggerPattern::Visit {}
             | TriggerPattern::Prize {}
+            | TriggerPattern::R115ChoosesTargets { .. }
             | TriggerPattern::PhaseBegins {} => {}
             TriggerPattern::DealtExcess { what, .. } => self.at("what", |w| w.selector(what)),
             TriggerPattern::DealsToughnessDamage { source, .. }
@@ -4017,6 +4028,12 @@ impl Walker<'_> {
                     self.at("under", |w| w.reference(who, Kind::Player));
                 }
             }
+            Destination::R122BattlefieldNoted { noted } => {
+                self.uses("Move", "R122BattlefieldNoted");
+                if self.scope.lookup(noted).is_none() {
+                    self.problem(format!("`{noted}` names no note of counters made before"));
+                }
+            }
             Destination::BattlefieldEnchanting { only } => {
                 self.at("only", |w| w.selector(only));
             }
@@ -4040,7 +4057,11 @@ impl Walker<'_> {
                 becomes,
                 r110_counters,
                 r122_typed_counters,
+                under,
             } => {
+                if let Some(who) = under {
+                    self.at("under", |w| w.reference(who, Kind::Player));
+                }
                 let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, true);
                 // Counters alone are a return "with X +1/+1 counters on it" that changes nothing else.
                 if !becomes.is_empty()
@@ -4285,6 +4306,7 @@ impl Walker<'_> {
     fn kind_of(&self, r: &Ref) -> Kind {
         match r {
             Ref::R110Seat(_)
+            | Ref::R6112FixedPlayer(_)
             | Ref::R111LastDamagedYou(_)
             | Ref::R111BlockedController { .. }
             | Ref::R115Causer
@@ -4917,6 +4939,14 @@ impl Walker<'_> {
             Effect::R123ExileContest { who, bind } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("as", |w| w.bind(bind, Kind::Player));
+            }
+            Effect::R115RevealContest { who, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("as", |w| w.bind(bind, Kind::Player));
+            }
+            Effect::R122NoteCounters { what, bind } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("as", |w| w.bind(bind, Kind::Object));
             }
             Effect::BecomeForetold { what } => w.at("what", |w| w.reference(what, Kind::Object)),
             Effect::FaceDownPile {
@@ -5891,7 +5921,16 @@ impl Walker<'_> {
                     w.uses("CopySpell", "EachPlayer");
                 }
             }
-            Effect::ChangeTargets { what, to, onto } => {
+            Effect::ChangeTargets {
+                what,
+                to,
+                onto,
+                r115_who,
+            } => {
+                if let Some(who) = r115_who {
+                    w.uses("ChangeTargets", "R115Who");
+                    w.at("r115_who", |w| w.reference(who, Kind::Player));
+                }
                 w.at("what", |w| w.reference(what, Kind::Object));
                 if *to == NewTargets::Random {
                     w.uses("NewTargets", "Random");

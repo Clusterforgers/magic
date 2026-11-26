@@ -183,6 +183,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             };
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
         }
+        Destination::R122BattlefieldNoted { noted } => {
+            let counters = super::r122_note_counters::r122_noted(cx.scope.bindings, noted);
+            let entry = Entry {
+                tapped: true,
+                counters: &counters,
+                ..Entry::plain()
+            };
+            return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
+        }
         Destination::BattlefieldFaceDown { under } => {
             let entry = Entry::face_down(entering_under(cx, under.as_ref())?);
             return Stop::settle(onto_battlefield(cx, what, &objects, &entry));
@@ -239,6 +248,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             becomes,
             r110_counters,
             r122_typed_counters,
+            under,
         } => {
             let becomes = super::r6502_enters_as::lowered(cx, becomes)?;
             // "with X additional +1/+1 counters on it": the counters are counted as the cards move (CR 122.6).
@@ -253,6 +263,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 typed.push((filter.clone(), kind.clone(), count));
             }
             let entry = Entry {
+                under: entering_under(cx, under.as_ref())?,
                 counters: &counters,
                 becomes: &becomes,
                 r122_typed: &typed,

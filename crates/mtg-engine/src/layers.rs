@@ -544,6 +544,7 @@ impl Held {
             | Modification::AddSupertype(_)
             | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
+            | Modification::R2051RemoveSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::GrantText(_)
             | Modification::AddNameWords(_)
@@ -883,6 +884,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
         | Wanted::AddSubtype(_)
+        | Wanted::R2051RemoveSubtype(_)
         | Wanted::SetCreatureTypes(_)
         | Wanted::SetCreatureTypesOf(_)
         | Wanted::SetLandTypesNthChosen(_)

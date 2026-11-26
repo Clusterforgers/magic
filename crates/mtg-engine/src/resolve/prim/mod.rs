@@ -117,8 +117,10 @@ mod p160_cast_within;
 mod pair;
 mod r111_order_graveyard;
 mod r112_double_x;
+mod r115_reveal_contest;
 mod r117_another_of_kind;
 mod r117_end_combat;
+pub(crate) mod r122_note_counters;
 mod r123_contest;
 mod r301b_exchange_toughness;
 mod r372_gain_suspend;
@@ -401,6 +403,8 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::GainSuspend { .. } => r372_gain_suspend::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
         Effect::R123ExileContest { .. } => r123_contest::run(cx, effect),
+        Effect::R115RevealContest { .. } => r115_reveal_contest::run(cx, effect),
+        Effect::R122NoteCounters { .. } => r122_note_counters::run(cx, effect),
         Effect::EndTurn => Ok(end_turn::run(cx)),
         Effect::R117EndCombat => Ok(r117_end_combat::run(cx)),
         Effect::AddPhase { .. } => add_phase::run(cx, effect),
@@ -545,7 +549,8 @@ mod tests {
         {"VillainousChoice":{"who":"Opponents","first":[],"second":[]}},
         {"Either":{"first":[],"second":[]}},
         {"OneOf":{"options":[[],[],[]]}},
-        {"ChooseWords":{"words":["silence","snitch"],"secret":true}}
+        {"ChooseWords":{"words":["silence","snitch"],"secret":true}},
+        {"R122NoteCounters":{"what":"This","as":"noted"}}, {"R115RevealContest":{"as":"winner"}}
     ]"#;
 
     fn tag(effect: &Effect) -> String {
@@ -564,7 +569,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 182, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 184, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -781,5 +786,7 @@ mod tests {
         "Effect.Either",
         "Effect.OneOf",
         "Effect.ChooseWords",
+        "Effect.R122NoteCounters",
+        "Effect.R115RevealContest",
     ];
 }

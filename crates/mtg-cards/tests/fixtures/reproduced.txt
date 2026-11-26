@@ -949,6 +949,7 @@ Eris, Roar of the Storm
 Errand of Duty
 Esix, Fractal Bloom
 Essence Bottle
+Essence Flare
 Etched Oracle
 Eternal Dragon
 Eternal Taskmaster
@@ -1376,6 +1377,7 @@ Hellkite Igniter
 Hellkite Overlord
 Hellkite Tyrant
 Helm of Chatzuk
+Helm of Possession
 Helm of the Host
 Hemmer, Fixing What Is Broken
 Hengegate Pathway // Mistgate Pathway
@@ -1409,6 +1411,7 @@ High Market
 Highspire Artisan
 Hinterland Harbor
 History of Benalia
+Hivis of the Scale
 Hoarder's Greed
 Hobgoblin Captain
 Hogaak, Arisen Necropolis
@@ -1767,6 +1770,7 @@ Lumen-Class Frigate
 Lunar Rejection
 Lurching Rotbeast
 Luxurious Locomotive
+Lwaxana Troi, Charming Guest
 Lyra Dawnbringer
 M'Baku, Jabari Chieftain
 MACH-1, Swooping Scoundrel
@@ -1921,6 +1925,7 @@ Misery Charm
 Mishra's Workshop
 Mishra, Excavation Prodigy
 Misleading Signpost
+Miss Highwater
 Mist Dancer
 Mistmeadow Skulk
 Misty Mountains Raider
@@ -2076,6 +2081,7 @@ Ogre Slumlord
 Ohran Yeti
 Ojer Axonil, Deepest Might // Temple of Power
 Okiba Reckoner Raid // Nezumi Road Captain
+Old Man of the Sea
 Old Stickfingers
 Olinda the Oblivious
 Olivia's Wrath
@@ -2276,6 +2282,7 @@ Prosperous Innkeeper
 Protean Hulk
 Protective Sphere
 Proven Combatant
+Psychic Battle
 Psychic Impetus
 Psychic Paper
 Psychic Puppetry
@@ -2477,6 +2484,7 @@ Rowan, Scion of War
 Rowdy Research
 Rowdy Snowballers
 Rowen
+Rubinia Soulsinger
 Ruby Medallion
 Ruby, Daring Tracker
 Rugged Prairie
@@ -2937,6 +2945,7 @@ Tainted Isle
 Tainted Remedy
 Tainted Wood
 Takeno, Samurai General
+Takklemaggot
 Talas Lookout
 Talisman of Conviction
 Talisman of Dominance
@@ -2959,6 +2968,7 @@ Tatyova, Benthic Druid
 Taurean Mauler
 Tavern Ruffian // Tavern Smasher
 Tavern Scoundrel
+Tawnos's Coffin
 Tazri, Stalwart Survivor
 Teach by Example
 Teacher's Pest
@@ -3042,6 +3052,7 @@ The Muckslinger Gang
 The Mycosynth Gardens
 The Needs of the Many
 The Odd Acorn Gang
+The Pandorica
 The Parting of the Ways
 The Prismatic Piper
 The Promise of Kahless
@@ -3287,6 +3298,7 @@ Vault 75: Middle School
 Vault of the Archangel
 Vazi, Keen Negotiator
 Vedalken Engineer
+Vedalken Shackles
 Vedalken Squirrel-Whacker
 Vengeance Mission
 Vengeful Dead
@@ -3419,6 +3431,7 @@ Wilderland Scrounger
 Wilderness Elemental
 Will Riker, First in the Field
 Will of the Sultai
+Willow Satyr
 Wilt-Leaf Liege
 Windborn Muse
 Windbrisk Heights

@@ -27,6 +27,10 @@ supertypes?: Array<Supertype>,
  */
 supertypes_removed?: Array<Supertype>, 
 /**
+ * The subtypes effects took away, printed ones included ("as a non-Aura enchantment", CR 205.1b).
+ */
+subtypes_removed?: Array<Subtype>, 
+/**
  * An effect replaced the creature types: the printed ones no longer count, only those in `subtypes` do.
  */
 creature_types_set?: boolean, 

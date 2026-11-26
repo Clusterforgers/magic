@@ -487,6 +487,7 @@ mod tests {
             subtypes: Vec::new(),
             supertypes: Vec::new(),
             supertypes_removed: Vec::new(),
+            subtypes_removed: Vec::new(),
             creature_types_set: false,
             land_types_set: false,
             all_creature_types: false,

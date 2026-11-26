@@ -60,6 +60,7 @@ pub(super) fn who(ctx: &Ctx, reference: &Ref) -> String {
         Ref::R4700OtherChosen => "the other chosen player".to_owned(),
         Ref::R115Causer => "that player".to_owned(),
         Ref::R110Seat(seat) => format!("the player in seat {seat}"),
+        Ref::R6112FixedPlayer(inner) => who(ctx, inner),
         Ref::R111LastDamagedYou(_) => {
             "the controller of the last source that dealt damage to you this turn".to_owned()
         }
@@ -727,6 +728,12 @@ pub(super) fn duration(value: &Duration) -> String {
         }
         Duration::R6700UntilEndOfTheirNextTurn(_) => {
             "until the end of that player's next turn".to_owned()
+        }
+        Duration::R122WhilePlayerHasCounter(_, counter) => {
+            format!(
+                "for as long as that player has a {} counter",
+                counter.name()
+            )
         }
         Duration::R113While(_) => "for as long as its condition holds".to_owned(),
         Duration::R6112bWhileAttached(_) => {
