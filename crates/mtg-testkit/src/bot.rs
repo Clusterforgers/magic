@@ -2,6 +2,7 @@
 
 use std::hash::{Hash, Hasher};
 
+use mtg_cards::spend::SpendOn;
 use mtg_core::color::Color;
 use mtg_core::ids::ObjectId;
 use mtg_core::mana::{ManaCost, ManaType, PHYREXIAN_LIFE, Resolution};
@@ -344,6 +345,19 @@ impl Supply {
         match self {
             Supply::Floating(m) | Supply::Tap(_, m) => *m,
             Supply::Restricted(unit) => unit.mana,
+        }
+    }
+
+    /// Whether the mana may pay a generic part: such mana of CR 112 (a unit or a source that adds it) may not.
+    fn pays_generic(&self, options: &PayOptions) -> bool {
+        match self {
+            Supply::Floating(_) => true,
+            Supply::Restricted(unit) => !unit.only.contains(&SpendOn::R112NotGeneric),
+            Supply::Tap(source, mana) => !options.sources.iter().any(|o| {
+                o.source == *source
+                    && o.produces == *mana
+                    && o.only.contains(&SpendOn::R112NotGeneric)
+            }),
         }
     }
 }
@@ -1226,11 +1240,14 @@ impl RandomBot {
             }
             let slot = &mut needs[mana.index()];
             let used = (*slot).min(count);
-            if used == 0 && generic == 0 {
+            let generic_too = item.pays_generic(options);
+            if used == 0 && (generic == 0 || !generic_too) {
                 continue;
             }
             *slot -= used;
-            generic = generic.saturating_sub(count - used);
+            if generic_too {
+                generic = generic.saturating_sub(count - used);
+            }
             match item {
                 Supply::Floating(m) => payment.pool.push(m),
                 Supply::Restricted(unit) => payment.restricted.push(unit),
@@ -1287,10 +1304,8 @@ impl RandomBot {
             }
         }
         for _ in 0..cost.generic() {
-            if supply.is_empty() {
-                return None;
-            }
-            take(&mut supply, 0, &mut chosen);
+            let pos = supply.iter().position(|s| s.pays_generic(options))?;
+            take(&mut supply, pos, &mut chosen);
         }
         let mut payment = Payment::default();
         for item in chosen {
