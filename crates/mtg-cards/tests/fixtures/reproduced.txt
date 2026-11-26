@@ -654,6 +654,7 @@ Cut of the Profits
 Cut the Earthly Bond
 Cybermen Squadron
 Cyclonic Rift
+Cyclopean Tomb
 Cytoshape
 Círdan the Shipwright
 Dack Fayden, Helping Hand
@@ -2712,6 +2713,7 @@ Soltari Foot Soldier
 Songs of the Damned
 Soraya the Falconer
 Soul Burn
+Soul Echo
 Soul Immolation
 Soul Manipulation
 Soul Shepherd
@@ -2919,6 +2921,7 @@ Szadek, Lord of Secrets
 T'Pol, Vulcan Representative
 Tabaxi Toucaneers
 Tah-Crop Skirmisher
+Tahngarth, First Mate
 Taii Wakeen, Perfect Shot
 Tainted Adversary
 Tainted Field

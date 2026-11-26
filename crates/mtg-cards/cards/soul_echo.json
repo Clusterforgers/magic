@@ -1,0 +1,65 @@
+{
+  "oracle_id": "8bc5546e-554f-430d-80b1-99578b5ea188",
+  "name": "Soul Echo",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Soul Echo",
+      "oracle_fingerprint": "931338ee6b5b65fda11e2da709a49a13",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": { "Enters": { "what": ["This"] } },
+            "by": { "WithCounters": { "counter": { "Other": "echo" }, "count": "X" } }
+          }
+        },
+        { "Rule": { "rule": { "CantLoseGame": { "who": "You", "life_only": true } } } },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "Upkeep", "whose": "You" } },
+            "targets": [{ "what": "Opponent" }],
+            "effects": [
+              {
+                "If": {
+                  "condition": {
+                    "Matches": {
+                      "subject": "This",
+                      "selector": [{ "Not": { "HasCounter": { "Other": "echo" } } }]
+                    }
+                  },
+                  "then": [{ "Sacrifice": { "filter": ["This"] } }],
+                  "otherwise": [
+                    {
+                      "May": {
+                        "who": { "Target": 0 },
+                        "effects": [
+                          {
+                            "Shield": {
+                              "when": { "Damage": { "to": "You" } },
+                              "by": {
+                                "Instead": [
+                                  {
+                                    "RemoveCounters": {
+                                      "from": "This",
+                                      "counter": { "Other": "echo" },
+                                      "count": "Triggering"
+                                    }
+                                  }
+                                ]
+                              },
+                              "duration": "UntilYourNextUpkeep"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

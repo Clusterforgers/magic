@@ -67,6 +67,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Attach { .. }
         | Effect::Unattach { .. }
         | Effect::JoinAttack { .. }
+        | Effect::R5084JoinTheirAttack { .. }
         | Effect::MyriadCopies { .. }
         | Effect::Transform { .. }
         | Effect::Flip { .. }

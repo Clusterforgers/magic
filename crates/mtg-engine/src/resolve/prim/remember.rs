@@ -9,13 +9,15 @@ use crate::memory::{Held, Remembered};
 use crate::resolve::{Cx, ResolveError, Run};
 
 /// `Remember` adds the objects `what` names (still the objects named) to the slot of the source; `Forget` empties the slot.
-/// A source that has left its zone remembers no objects, since its memory ended with it. `RememberValue` adds a number.
+/// A source that has left its zone remembers no objects, since its memory ended with it, unless one of its delayed
+/// triggers still waits. `RememberValue` adds a number.
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let source = cx.scope.source;
     let here = cx
         .state()
         .object(source.id)
-        .is_some_and(|object| object.counter() == source.counter);
+        .is_some_and(|object| object.counter() == source.counter)
+        || r6072_kept_by_delayed(cx.state(), source);
     let change = match effect {
         Effect::Remember {
             what,
@@ -96,6 +98,18 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Vec::new()
     };
     Ok(Run::events(events))
+}
+
+/// Whether a delayed trigger of a source that has left still waits (CR 603.7, 607.2): its memory lives on with that trigger
+/// ("a land that a mire counter was put onto with this artifact" after it went to the graveyard), so it may still remember.
+fn r6072_kept_by_delayed(
+    state: &crate::state::GameState,
+    source: crate::object::ObjectRef,
+) -> bool {
+    state
+        .delayed()
+        .iter()
+        .any(|delayed| delayed.source == source)
 }
 
 /// `Remember` with `per`: the objects `what` names join the slot kept for each player `per` names (`memory::player_slot`).
