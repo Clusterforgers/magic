@@ -193,6 +193,8 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
         "can't be blocked unless it's attacking its owner or a permanent its owner controls",
       CantBeTurnedFaceUp: "can't be turned face up",
       R119CantBeBeamedUp: "can't be beamed up",
+      R1012ControlKept: "can't come under another player's control",
+      R3034CantBeEnchanted: "can't be enchanted",
       BlockedByAll: "can't be blocked unless all creatures defending player controls block it",
       AddAllCreatureTypes: `${becomes} every creature type`,
       R612ExchangeTextBoxes: `${group ? 'exchange their text boxes' : 'exchanges its text box'}`,
@@ -1560,6 +1562,13 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, attackers } = event.AttackersChosen
     if (attackers.length === 0) return quiet(`${n.seat(player)} chooses no attackers`)
     return quiet(`${n.seat(player)} chooses to attack ${attackClauses(attackers, n)}`)
+  }
+  if ('R5081AttackersChosen' in event) {
+    const { chooser, attackers } = event.R5081AttackersChosen
+    if (attackers.length === 0) return line(`${n.seat(chooser)} chooses that no creature attacks`)
+    return line(
+      `${n.seat(chooser)} chooses ${joinWords(attackers.map((id) => n.card(id)))} to attack`,
+    )
   }
   if ('AttackChoicesRefused' in event) {
     return line(

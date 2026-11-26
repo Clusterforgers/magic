@@ -521,6 +521,7 @@ Cloak and Phaser
 Clockwork Droid
 Clone
 Clone Legion
+Close Encounter
 Close Quarters
 Cloud Sprite
 Cloudfin Raptor
@@ -1169,6 +1170,7 @@ Ghitu Fire
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Dancers
+Ghostly Flame
 Ghostly Prison
 Ghoulcaller Gisa
 Giant Beaver
@@ -1304,6 +1306,7 @@ Guard Gomazoa
 Guardian Angel
 Guardian Archon
 Guardian Augmenter
+Guardian Beast
 Guardian Gladewalker
 Guidelight Matrix
 Guiding Voice
@@ -1804,6 +1807,7 @@ Marshmist Titan
 Martial Coup
 Martok, Hero of the Empire
 Martyr of Dusk
+Martyrdom
 Marvo, Deep Operative
 Marwyn, the Nurturer
 Mask of Griselbrand
@@ -1812,6 +1816,7 @@ Mask of Riddles
 Mass Diminish
 Master Thief
 Master Trinketeer
+Master Warcraft
 Master of Dark Rites
 Master of Etherium
 Master of Pearls
@@ -2373,6 +2378,7 @@ Renewing Dawn
 Renounce
 Repeal
 Replication Technique
+Reprieve
 Reprocess
 Repulse
 Rescue Retriever
@@ -2722,6 +2728,7 @@ Spectral Shift
 Spectral Steel
 Speedway Fanatic
 Spellbreaker Behemoth
+Spellscorn Coven // Take It Back
 Spelltwine
 Spellweaver Volute
 Sphere of Safety

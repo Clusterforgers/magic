@@ -76,7 +76,7 @@ pub(super) fn candidates(payer: &Payer<'_>, filter: &Selector) -> Vec<ObjectId> 
 pub(super) fn text(filter: &Selector) -> String {
     let (permanent, exiled) = halves(filter);
     format!(
-        "Choose {} you control or {} you own in exile",
+        "Choose {} you control or {} card you own in exile",
         crate::wording::subject(&permanent),
         crate::wording::subject(&exiled)
     )
@@ -97,5 +97,9 @@ mod tests {
         };
         assert_eq!(halves(&pick.filter), (creature, warped));
         assert_eq!(pick.count, 1);
+        assert_eq!(
+            text(&pick.filter),
+            "Choose a creature you control or a warped creature card you own in exile"
+        );
     }
 }

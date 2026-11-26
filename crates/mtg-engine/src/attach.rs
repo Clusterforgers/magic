@@ -129,7 +129,13 @@ fn judged_host(state: &GameState, attachment: ObjectId, host: ObjectId, in_play:
         return false;
     };
     let allowed = match kind_of(state, attachment) {
-        Some(Kind::Aura) => !chars.is_creature() && may_enchant(state, object, target),
+        // A permanent that can't be enchanted keeps an Aura already attached to it (Guardian Beast).
+        Some(Kind::Aura) => {
+            !chars.is_creature()
+                && may_enchant(state, object, target)
+                && (state.host_of(attachment) == Some(host)
+                    || !crate::characteristics::r3034_cant_be_enchanted(state, host))
+        }
         Some(Kind::Equipment) => {
             (!chars.is_creature() || has_reconfigure(state, attachment)) && host_chars.is_creature()
         }
