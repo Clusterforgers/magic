@@ -19,7 +19,7 @@ use crate::zones::{Placement, Zone};
 
 /// The cards exiled to pay the craft cost of the resolving ability when that ability returns its own exiled source to
 /// the battlefield (CR 702.167c), as they are in exile; nothing for any other move.
-fn r6702_craft_materials(state: &GameState, id: ObjectId) -> Vec<ObjectRef> {
+pub(crate) fn r6702_craft_materials(state: &GameState, id: ObjectId) -> Vec<ObjectRef> {
     let Some(resolving) = state.resolving.as_ref() else {
         return Vec::new();
     };
@@ -105,12 +105,14 @@ pub(super) fn move_object(
     {
         object.face_down = None;
     }
+    object.r6008_listed = None;
     (object.adventure, object.plotted) = (None, None);
     object.r110_foretell_cost = None;
     object.exiled_until = None;
     object.exiled_from_hand = None;
     object.encoded_on = None;
     object.haunting = None;
+    object.r707_kept = None;
     object.monarch_wait = None;
     object.forget_cast(from, to);
     // What the spell paid for stays with the permanent it becomes, for its abilities to read; a sticker kicker is no cost
@@ -421,8 +423,8 @@ fn land_played(
     if from != Zone::Hand(player) {
         state.tally(player, Tally::R5522PlayedNotFromHand);
     }
-    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
-        state.tally_object(source, None, used);
+    if let Some(key) = crate::rules::r5503_limit_use(state, player, object, from) {
+        *state.p158_limit_uses.entry(key).or_default() += 1;
     }
     move_object(state, object, Zone::Battlefield, Placement::Top)?;
     set_controller(state, object, player);
@@ -507,8 +509,8 @@ fn note_permission_used(
     if let Some(source) = crate::rules::c11b_once_source(state, player, object, from, way) {
         state.tally_object(source, None, Tally::C11bOnceUsed);
     }
-    if let Some((source, used)) = crate::rules::r5503_limit_use(state, player, object, from) {
-        state.tally_object(source, None, used);
+    if let Some(key) = crate::rules::r5503_limit_use(state, player, object, from) {
+        *state.p158_limit_uses.entry(key).or_default() += 1;
     }
 }
 
@@ -606,6 +608,9 @@ fn spell_cast(
         if choices.way == Some(CastWay::FaceDown) {
             spell.face_down = Some(FaceDown::cast_as(&spell.def));
         }
+        if choices.way == Some(CastWay::R6008FaceDown) {
+            spell.face_down = Some(FaceDown::R6008Masked);
+        }
     }
     let (held_as_cast, counted_as_cast) = held_as_cast(state, player, object);
     if let Some(spell) = state.objects.get_mut(&object) {
@@ -632,6 +637,33 @@ fn spell_cast(
         spell.whole_card().layout == Layout::Adventure && spell.face() == Some(1)
     });
     if choices.way.is_some_and(CastWay::exiles_the_spell) || bought_back || adventure {
+        state.possible.replacements = true;
+    }
+    reset_passes(state);
+    Ok(())
+}
+
+/// A card in exile goes onto the stack as a copy of the spell it kept (CR 707.10): its choices come back, the player
+/// controls it, and nothing counts it as cast. A way that exiles the spell as it leaves the stack (flashback) still does.
+pub(super) fn r707_put_back(
+    state: &mut GameState,
+    object: ObjectId,
+    player: PlayerId,
+) -> Result<(), EngineError> {
+    expect_in(state, object, Zone::Exile)?;
+    let kept = state
+        .objects
+        .get_mut(&object)
+        .and_then(|card| card.r707_kept.take())
+        .ok_or_else(|| invalid(format!("{object:?} keeps no spell")))?;
+    move_object(state, object, Zone::Stack, Placement::Top)?;
+    set_controller(state, object, player);
+    let (choices, _) = *kept;
+    let exiles = choices.way.is_some_and(CastWay::exiles_the_spell);
+    if let Some(spell) = state.objects.get_mut(&object) {
+        spell.choices = choices;
+    }
+    if exiles {
         state.possible.replacements = true;
     }
     reset_passes(state);

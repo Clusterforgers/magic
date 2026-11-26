@@ -84,10 +84,11 @@ export function tellBlocked(
 
 /**
  * Whether a press on `card` should say the game waits on another seat: a card of the viewer's own hand while the viewer
- * has no decision and another seat has one (public: the table shows whom it waits for).
+ * has no decision and another seat has one (public: the table shows whom it waits for). Never for a spectator or a
+ * replay, who plays nothing.
  */
 export function waitsForOthers(state: PlayState, card: ObjectId): boolean {
-  if (state.pending !== null || state.seat === null) return false
+  if (state.pending !== null || state.seat === null || state.view?.spectator === true) return false
   const zone = state.objectsById[card]?.zone
   const inHand = zone !== undefined && typeof zone === 'object' && 'Hand' in zone && zone.Hand === state.seat
   return inHand && waitingOn(state).kind === 'others'

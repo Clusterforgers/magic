@@ -453,6 +453,9 @@ pub const FOUNDRY_FROM: u32 = 11;
 /// The least Heat of a run that meets the Ember Foundry.
 pub const FOUNDRY_HEAT: u8 = 3;
 
+/// The content generation the Gloamwood joins in; a run of an earlier one never meets it.
+pub const GLOAMWOOD_FROM: u32 = 18;
+
 /// A dungeon theme: its bosses, events and the cards its rewards offer.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -713,11 +716,13 @@ pub fn content() -> Result<&'static Content, CampaignError> {
                     include_str!("../content/rework_spire.json"),
                     include_str!("../content/rework_warrens_b.json"),
                     include_str!("../content/rework_foundry.json"),
+                    include_str!("../content/rework_gloamwood.json"),
                 ],
                 &[
                     include_str!("../content/warrens.json"),
                     include_str!("../content/spire.json"),
                     include_str!("../content/foundry.json"),
+                    include_str!("../content/gloamwood.json"),
                 ],
                 include_str!("../content/modifiers.json"),
             )

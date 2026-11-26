@@ -1,0 +1,49 @@
+{
+  "oracle_id": "6866f0a4-5fe6-40d9-bbfc-6f116f4e415d",
+  "name": "Q, Stacking the Deck",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Q, Stacking the Deck",
+      "oracle_fingerprint": "7a33c58d400a7f168fbd4535994682c5",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Shuffle": {} },
+              {
+                "ExileUntil": {
+                  "filter": [{ "Not": { "Type": "Land" } }],
+                  "as": "found",
+                  "exiled_as": "exiled"
+                }
+              },
+              {
+                "Continuous": {
+                  "affected": { "Bound": "found" },
+                  "mods": [
+                    {
+                      "GrantAbility": {
+                        "Activated": {
+                          "cost": [{ "ExileFromHand": { "filter": [] } }],
+                          "condition": "YourTurn",
+                          "from": "Exile",
+                          "effects": [
+                            { "CopyCard": { "what": "This", "as": "copy" } },
+                            { "CastFromZone": { "what": { "Bound": "copy" } } }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "duration": "Forever"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

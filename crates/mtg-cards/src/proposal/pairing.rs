@@ -111,6 +111,12 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
             rule: crate::modify::GameRule::Draft(_),
             ..
         } => &[ClauseKind::Static, ClauseKind::Spell],
+        // "X can't be 0." on an instant or sorcery is a line of the spell's text (Ertai's Meddling).
+        Ability::AdditionalCost { cost, .. }
+            if matches!(cost.0.as_slice(), [crate::cost::CostItem::XAtLeast(_)]) =>
+        {
+            &[ClauseKind::Static, ClauseKind::Spell]
+        }
         Ability::Replacement { .. }
         | Ability::Rule { .. }
         | Ability::Static { .. }
@@ -124,6 +130,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::R115MulliganExile
         | Ability::R120DiscardAnyTime
         | Ability::OpeningHand
+        | Ability::CircleColors(_)
         | Ability::OpeningHandWith { .. }
         | Ability::Sticker(_)
         | Ability::CostModifier { .. } => &[ClauseKind::Static],
@@ -336,6 +343,7 @@ impl<'a> Pairer<'a> {
 
     fn run(mut self) -> Paired {
         self.manual();
+        self.un34_stickers();
         self.rmt0_cleave();
         self.keywords();
         self.r301_keyword_rules();
@@ -445,6 +453,36 @@ impl<'a> Pairer<'a> {
             shown = shown.replace(name.as_str(), "~");
         }
         shown != variant && same_written_text(&shown, text)
+    }
+
+    /// The stickers of a sticker sheet: each printed one stands for its "{TK}... — ..." line, the free ones for none.
+    fn un34_stickers(&mut self) {
+        let abilities = self.abilities;
+        for (at, ability) in abilities.iter().enumerate() {
+            let Ability::Sticker(sticker) = ability else {
+                continue;
+            };
+            if self.taken[at] {
+                continue;
+            }
+            if super::un34_sheet_pairs::is_unprinted(sticker) {
+                self.taken[at] = true;
+                continue;
+            }
+            let found = self.slots.iter().position(|slot| {
+                slot.state.is_none()
+                    && super::un34_sheet_pairs::stands_for(
+                        sticker,
+                        &slot.clause.text,
+                        |variant, rest| {
+                            self.same(variant, rest) || self.same(stripped(variant), stripped(rest))
+                        },
+                    )
+            });
+            if let Some(slot) = found {
+                self.settle(at, slot, ClauseState::Reads { ability: at });
+            }
+        }
     }
 
     /// The clauses a `Manual` ability of the proposal leaves to the table.
@@ -1141,11 +1179,13 @@ impl<'a> Pairer<'a> {
 
     /// The clauses a spell ability reads as one text: its spell and modal lines, else those with the lines the compiler
     /// takes for statics ("Metalcraft — If you control three or more artifacts, exile that creature."), which a whole
-    /// wording of the spell then has to name.
+    /// wording of the spell then has to name; or with a line the compiler takes for a trigger, the delayed trigger the spell
+    /// sets up ("At the beginning of each of that player's upkeeps, ...", Ertai's Meddling), named the same way.
     fn c11f_spell_slots(&self, written: &[String], rolls: bool) -> Vec<usize> {
         let spell = [ClauseKind::Spell, ClauseKind::Modal];
         let wider = [ClauseKind::Spell, ClauseKind::Modal, ClauseKind::Static];
-        for kinds in [&spell[..], &wider[..]] {
+        let delayed = [ClauseKind::Spell, ClauseKind::Modal, ClauseKind::Triggered];
+        for kinds in [&spell[..], &wider[..], &delayed[..]] {
             let mut open = self.open_slots(kinds);
             if rolls {
                 // The rows of a die roll's table are read after the roll (`tables`).

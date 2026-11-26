@@ -1,4 +1,5 @@
-import { createContext } from 'react'
+import { createContext, useContext } from 'react'
+import type { ReactNode } from 'react'
 import type { PlayerId } from '@/protocol/generated'
 import type { TableMode, Viewport } from './layout'
 import type { SideTab } from './sideCounts'
@@ -32,6 +33,8 @@ export interface TableOptions {
   attackBadges?: boolean
   /** The side tab to show once the table is up, after a decision has brought the Stack tab forward (the dev table's `?side=log`). */
   sideTab?: SideTab
+  /** A replay: the strip says whose turn and step it is and no pod carries a waiting mark, since nobody is waited for. */
+  replay?: boolean
 }
 
 /** Whether the pods carry attack badges when `TableOptions.attackBadges` is left out. */
@@ -49,8 +52,16 @@ export const TOUR_BY_DEFAULT = import.meta.env.MODE !== 'test'
 /** Provide a `TableOptions` around `GameTable`; without one the table picks its own start. */
 export const TableOptionsContext = createContext<TableOptions>({})
 
+/** Whether the table around the caller shows a replay (`TableOptions.replay`). */
+export function useIsReplay(): boolean {
+  return useContext(TableOptionsContext).replay === true
+}
+
 /**
  * Seats the layout counts as the viewer's party besides their teammates in the house rules (boss mode: the heroes
  * below), whose attacks and the attacks at them draw strong; null where it names none.
  */
 export const AttackLinesContext = createContext<readonly PlayerId[] | null>(null)
+
+/** What a spectator's table draws where the pass controls stand: a replay's own controls; "Watching" when null. */
+export const SpectatorControlsContext = createContext<ReactNode>(null)

@@ -64,6 +64,17 @@ pub(crate) fn lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
     rules.chain(mana).collect()
 }
 
+/// The loyalty abilities printed on a card, each with its index among its rules, which an object that has "all loyalty
+/// abilities of" it gains (`Modification::P160GainLoyaltyAbilitiesOf`).
+pub(crate) fn p160_loyalty_lendable(card: &CardDefinition) -> Vec<(usize, Arc<Ability>)> {
+    card.rules
+        .iter()
+        .enumerate()
+        .filter(|(_, rules)| matches!(***rules, Ability::Loyalty { .. }))
+        .map(|(index, rules)| (index, Arc::clone(rules)))
+        .collect()
+}
+
 /// The plain mana abilities printed on a card (a basic land's own), which a permanent that has its abilities lends
 /// after its rules (`r111_lent`).
 pub(crate) fn r111_printed_mana(card: &CardDefinition) -> &[AbilityDef] {
@@ -183,10 +194,17 @@ pub(crate) fn definition_works_elsewhere(definition: &CardDefinition) -> bool {
 /// Whether a card with this definition prints an activated ability that players other than its controller may activate
 /// (`GameState::possible`).
 pub(crate) fn definition_lets_others_activate(definition: &CardDefinition) -> bool {
-    definition
-        .rules
-        .iter()
-        .any(|rules| matches!(&**rules, Ability::Activated { by, .. } if !by.is_controller()))
+    definition.rules.iter().any(|rules| {
+        matches!(&**rules, Ability::Activated { by, .. } if !by.is_controller())
+            || r6022_grants_granter_only(rules)
+    })
+}
+
+/// Whether the rules give an ability only the player who gave it may activate (`Activators::R6022Granter`), which that
+/// player may hold on a permanent another player controls; read once per card as the game is set up.
+fn r6022_grants_granter_only(rules: &Ability) -> bool {
+    !matches!(rules, Ability::Activated { .. } | Ability::Keyword(_))
+        && serde_json::to_string(rules).is_ok_and(|json| json.contains(r#""by":"R6022Granter""#))
 }
 
 /// The abilities that the keywords printed on `object`, which is not on the battlefield, add and that work from the
@@ -290,6 +308,14 @@ pub(crate) fn definition_sets_commander_color(definition: &CardDefinition) -> bo
     definition.rules.iter().any(|rules| {
         matches!(&**rules, Ability::Static { mods, .. }
             if mods.contains(&WantedModification::SetCommanderColor))
+    })
+}
+
+/// How many colors a card with this definition circles as its deck is built (`Ability::CircleColors`); none without it.
+pub(crate) fn definition_circles_colors(definition: &CardDefinition) -> Option<u32> {
+    definition.rules.iter().find_map(|rules| match &**rules {
+        Ability::CircleColors(count) => Some(*count),
+        _ => None,
     })
 }
 

@@ -31,6 +31,7 @@ pub(super) fn label(ability: &Ability) -> String {
             "opening-hand ability".to_owned()
         }
         Ability::R115MulliganExile => "mulligan-time ability".to_owned(),
+        Ability::CircleColors(_) => "deck-building choice".to_owned(),
         Ability::R120DiscardAnyTime => "special action".to_owned(),
         Ability::Sticker(_) => "sticker".to_owned(),
         Ability::Keyword(keyword) => format!("keyword {}", parts::keyword(&ctx, keyword)),
@@ -319,6 +320,10 @@ fn costs(ability: &Ability, depth: u8, out: &mut Vec<Step>) {
         Ability::OpeningHand | Ability::OpeningHandWith { .. } => out.push(Step::new(
             depth,
             "may begin the game on the battlefield if in the opening hand".to_owned(),
+        )),
+        Ability::CircleColors(count) => out.push(Step::new(
+            depth,
+            format!("{count} colors are circled for it as the deck is built"),
         )),
         Ability::R115MulliganExile => out.push(Step::new(
             depth,

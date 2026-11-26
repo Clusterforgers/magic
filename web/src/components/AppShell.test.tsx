@@ -59,10 +59,11 @@ describe('the main navigation', () => {
     expect(links.map((link) => link.getAttribute('href'))).toEqual(['/', '/precons', '/new'])
   })
 
-  it('keeps the tabs in a strip that scrolls sideways, with Create outside it, so no tab runs under the buttons', async () => {
+  it('keeps the tabs in a strip that takes the room left, never scrolls, with Create outside it', async () => {
     await open('/', true)
     const strip = mainNav().querySelector('[data-slot="nav-tabs"]')
-    expect(strip).toHaveClass('min-w-0', 'overflow-x-auto')
+    expect(strip).toHaveClass('min-w-0', 'flex-1')
+    expect(strip).not.toHaveClass('overflow-x-auto')
     const create = within(mainNav()).getByRole('link', { name: 'Create' })
     expect(strip?.contains(create)).toBe(false)
     expect(create).toHaveClass('shrink-0')
@@ -71,6 +72,7 @@ describe('the main navigation', () => {
         .getAllByRole('link')
         .filter((link) => strip?.contains(link)),
     ).toHaveLength(8)
+    expect(within(mainNav()).queryByRole('button', { name: /^More pages/ })).toBeNull()
   })
 
   it('adds Decks, My games, Tournaments, Delves, Review cards and Card support, between Precons and Create, for an account', async () => {
@@ -188,6 +190,112 @@ describe('the Review cards tab', () => {
     const app = await openWith([])
     await app.settle()
     expect(screen.queryByRole('link', { name: /wait for your read/ })).toBeNull()
+  })
+})
+
+describe('the More menu of a row too narrow for the tabs', () => {
+  /** Every measured tab and the More button 100 px wide, in a strip of `room` px. */
+  function narrow(room: number) {
+    vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      const width = this.hasAttribute('data-measure') ? 100 : 0
+      return { x: 0, y: 0, left: 0, top: 0, right: width, bottom: 0, width, height: 0, toJSON: () => ({}) }
+    })
+    vi.spyOn(Element.prototype, 'clientWidth', 'get').mockImplementation(function (this: Element) {
+      return this.getAttribute('data-slot') === 'nav-tabs' ? room : 0
+    })
+  }
+  const more = () => within(mainNav()).getByRole('button', { name: /^More pages/ })
+  const rowNames = () =>
+    within(mainNav())
+      .getAllByRole('link')
+      .map((link) => link.textContent)
+
+  it.each([
+    [
+      450,
+      ['Play', 'Precons', 'Decks', 'Create'],
+      ['My games', 'Tournaments', 'Delves', 'Review cards', 'Card support'],
+    ],
+    [
+      750,
+      ['Play', 'Precons', 'Decks', 'My games', 'Tournaments', 'Delves', 'Create'],
+      ['Review cards', 'Card support'],
+    ],
+    [
+      150,
+      ['Create'],
+      ['Play', 'Precons', 'Decks', 'My games', 'Tournaments', 'Delves', 'Review cards', 'Card support'],
+    ],
+  ])('in %i px keeps the tabs that fit in order and lists the rest under More', async (room, row, menu) => {
+    narrow(room)
+    const app = await open('/', true)
+    await waitFor(() => expect(rowNames()).toEqual(row))
+    await app.user.click(more())
+    const items = await screen.findAllByRole('menuitem')
+    expect(items.map((item) => item.textContent)).toEqual(menu)
+  })
+
+  it('shows every tab and no More where they all fit', async () => {
+    narrow(900)
+    await open('/', true)
+    await waitFor(() => expect(rowNames()).toHaveLength(9))
+    expect(within(mainNav()).queryByRole('button', { name: /^More pages/ })).toBeNull()
+  })
+
+  it('opens a page from the menu without a reload, closes, and marks More while that page is open', async () => {
+    narrow(450)
+    const app = await open('/', true)
+    await waitFor(() => expect(more()).toHaveAccessibleName('More pages'))
+    expect(more()).not.toHaveAttribute('data-current')
+    await app.user.click(more())
+    await app.user.click(await screen.findByRole('menuitem', { name: 'Delves' }))
+    await waitFor(() => expect(app.router.state.location.pathname).toBe('/delves'))
+    await waitFor(() => expect(screen.queryByRole('menu')).toBeNull())
+    expect(more()).toHaveAttribute('data-current')
+    expect(more()).toHaveAccessibleName('More pages, the current page is one of them')
+    await app.user.click(more())
+    expect(await screen.findByRole('menuitem', { name: 'Delves' })).toHaveAttribute('aria-current', 'page')
+  })
+
+  it('is operable from the keyboard: Enter opens it on the first page, Escape closes it back on the button', async () => {
+    narrow(450)
+    const app = await open('/', true)
+    await waitFor(() => expect(more()).toBeInTheDocument())
+    more().focus()
+    await app.user.keyboard('{Enter}')
+    const first = await screen.findByRole('menuitem', { name: 'My games' })
+    await waitFor(() => expect(first).toHaveFocus())
+    await app.user.keyboard('{ArrowDown}')
+    expect(screen.getByRole('menuitem', { name: 'Tournaments' })).toHaveFocus()
+    await app.user.keyboard('{Escape}')
+    await waitFor(() => expect(screen.queryByRole('menu')).toBeNull())
+    expect(more()).toHaveFocus()
+  })
+
+  it('counts the cards to read on More while Review cards is in it', async () => {
+    narrow(450)
+    await renderApp('/', {
+      accounts: { users: { [ADA.username]: ADA.password }, signedIn: ADA.username },
+      rest: {
+        reads: () =>
+          jsonResponse(200, {
+            title: '',
+            cards: [
+              {
+                oracle_id: 'a',
+                name: 'a',
+                read_hash: 'h',
+                state: 'pending',
+                differs: 0,
+                rank: null,
+                in_decks: true,
+              },
+            ],
+          }),
+      },
+    })
+    await waitFor(() => expect(more()).toHaveAccessibleName('More pages, 1 card to read'))
+    expect(more()).toHaveTextContent('1')
   })
 })
 

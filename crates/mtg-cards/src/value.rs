@@ -191,9 +191,18 @@ pub enum CastWay {
     /// For its suspend cost rather than its mana cost, from a hand, by an effect ("If you do, pay its suspend cost rather
     /// than its mana cost"): no time counters, no haste (CR 118.9).
     R122SuspendCost,
+    /// Face down as a 2/2 creature spell, by an effect and free ("cast that card face down as a 2/2 creature spell without
+    /// paying its mana cost"): the permanent is turned face up before it deals or is dealt damage or becomes tapped.
+    R6008FaceDown,
 }
 
 impl CastWay {
+    /// Whether a spell cast this way is cast face down as a 2/2 creature spell (CR 708.4): for its morph or disguise, or
+    /// by an effect.
+    pub const fn casts_face_down(self) -> bool {
+        matches!(self, CastWay::FaceDown | CastWay::R6008FaceDown)
+    }
+
     /// Whether the way pays another cost in place of the mana cost (CR 118.9); jump-start and retrace add a cost to it.
     pub const fn replaces_cost(self) -> bool {
         !matches!(
@@ -526,6 +535,10 @@ pub enum TallyEvent {
     Blocked,
     /// An ability was activated, a mana ability excepted (the source of the ability).
     Activated,
+    /// An activated ability with a target was activated, a mana ability excepted (each object it targets, as it was then,
+    /// for the player who activated it): "the first activated ability you activate during your turn that targets a
+    /// creature you control".
+    R6024ActivatedTargeting,
     /// Counters were put on a permanent or a card in exile by a spell or ability (the object; an amount counts the
     /// counters put, for the player who controlled the spell or ability).
     CountersPut,
@@ -2267,6 +2280,9 @@ pub enum Condition {
     NeitherDayNorNight,
     /// The referenced permanents are controlled by the controller and came under their control since their last turn began (echo, CR 702.30a): read in the upkeep, once that turn has begun.
     NewlyControlled(Ref),
+    /// A requirement made the referenced creature attack in the combat in progress (goad, "attacks each combat if able",
+    /// CR 508.1d), as attackers were declared: "if that creature had to attack this combat".
+    P158HadToAttack(Ref),
     /// The turn is in this step or main phase: "Activate only during the declare blockers step" (with `YourTurn` for
     /// "during your upkeep").
     Step(Step),
@@ -2421,6 +2437,7 @@ mod tests {
     #[case::harmonize(CastWay::Harmonize, true)]
     #[case::r116_beam_me_up(CastWay::R116BeamMeUp, true)]
     #[case::r122_suspend_cost(CastWay::R122SuspendCost, true)]
+    #[case::r6008_face_down(CastWay::R6008FaceDown, true)]
     #[case::r301_offering_adds_to_the_cost(CastWay::Offering, false)]
     #[case::mutate(CastWay::Mutate, true)]
     #[case::face_down(CastWay::FaceDown, true)]

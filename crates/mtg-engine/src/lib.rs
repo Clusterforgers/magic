@@ -19,6 +19,7 @@ mod c11a_less;
 mod c7_untap;
 mod cant_named;
 mod cast;
+mod circled;
 mod combat_quirks;
 mod commanders;
 pub mod cost_colors;
@@ -202,9 +203,11 @@ mod r5502_blocked_by_one;
 mod r5516_damage;
 mod r5522_history;
 mod r6001_blocked_by_many;
+pub mod r6008_face_down;
 mod r6018_plot_less;
 mod r6100_history;
 mod r6703_ignore;
+pub mod r707_spells;
 mod redeal;
 pub mod replace;
 pub mod resolve;
@@ -263,6 +266,7 @@ mod r111_triggering;
 mod r111_way_riders;
 mod r112_spells_gain;
 mod r112_untap_type;
+mod r702185_warped;
 #[cfg(test)]
 mod w9c_saturation;
 

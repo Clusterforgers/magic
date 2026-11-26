@@ -36,6 +36,7 @@ const RUNS: &[&str] = &[
     "CostModifier.ManaLife",
     "CostModifier.R122ReduceOrGeneric",
     "CastWay.R122SuspendCost",
+    "CastWay.R6008FaceDown",
     "Ability.By",
     "Ability.From",
     "Ability.Sorcery",
@@ -113,6 +114,7 @@ const RUNS: &[&str] = &[
     "Trigger.R120RandomAction",
     "Trigger.R120AssistedCast",
     "Trigger.R120DealsExactly",
+    "Trigger.R603Exactly",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
     "Trigger.ResolvedToGraveyard",
@@ -223,12 +225,15 @@ const RUNS: &[&str] = &[
     "Cost.R6702ExileTotalX",
     "Cost.ExileCardTypes",
     "Cost.ExileTotalValue",
+    "Cost.ExileTotalValue.Symbols",
     "Cost.GenericOf",
     "Cost.Blight",
     "Cost.Behold",
+    "Cost.R6012ChooseOrExiled",
     "Cost.ToLibrary",
     "Cost.Forage",
     "Cost.Waterbend",
+    "Cost.CreaturesHelpPay",
     "Cost.XAtLeast",
     "Ability.Loyalty.Condition",
     "ReplaceWhen.R6503Resolves",
@@ -292,6 +297,7 @@ const RUNS: &[&str] = &[
     "Effect.Move.Transformed",
     "Effect.Move.Attached",
     "Effect.Move.FaceDown",
+    "Effect.Move.R6008FaceDownAs",
     "Effect.Move.Enchanting",
     "Effect.Move.R6502As",
     "Effect.Move.Command",
@@ -307,12 +313,20 @@ const RUNS: &[&str] = &[
     "Effect.Forget",
     "Effect.RememberValue",
     "Effect.CopyCard",
+    "Effect.CopyNamedCard",
+    "Effect.R6008CopyNoted",
     "Effect.Manifest",
     "Effect.Cloak",
     "Effect.FaceDownPile",
+    "Effect.FaceDownPile.R406Kept",
+    "Effect.R406TurnUpExiled",
+    "Effect.R707ExileSpell",
+    "Effect.R707PutBack",
+    "Effect.ExileTop.R406HeldBy",
     "Effect.BecomeForetold",
     "Effect.CastFromZone",
     "Effect.CastFromZone.Transformed",
+    "Effect.P160CastWithin",
     "Effect.Destroy",
     "Effect.Exile",
     "Effect.Sacrifice",
@@ -341,6 +355,8 @@ const RUNS: &[&str] = &[
     "Effect.AddMana.EachColorAmong",
     "Effect.AddMana.AnyColorAmong",
     "Effect.AddMana.DraftedColors",
+    "Effect.AddMana.Circled",
+    "Ability.CircleColors",
     "Effect.AddMana.Devotion",
     "Effect.AddMana.Enters",
     "Effect.AddMana.OfTapped",
@@ -351,6 +367,7 @@ const RUNS: &[&str] = &[
     "Cost.OneOf.Pay",
     "Cost.OneOf.Activated",
     "Cost.XAtLeast.Way",
+    "Cost.XAtLeast.Spell",
     "Ability.R115MulliganExile",
     "Ability.R120DiscardAnyTime",
     "Ability.ManaAbility.Other",
@@ -469,6 +486,7 @@ const RUNS: &[&str] = &[
     "Trigger.TakesInitiative",
     "Condition.Initiative",
     "Effect.CreateEmblem",
+    "Effect.R6051PlayerGains",
     "Condition.Monarch",
     "Condition.ExtraTurn",
     "Condition.MonarchAtTurnStart",
@@ -483,6 +501,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.R118PayOrGraveyard.ExileX",
     "ReplaceBy.R118PayOrGraveyard.CounterEach",
     "ReplaceBy.EntersPrepared",
+    "ReplaceBy.R614EntersThen",
     "ReplaceBy.R122TappedAndAttacking",
     "ReplaceBy.ChooseWord",
     "ReplaceBy.OpponentChooses",
@@ -518,6 +537,7 @@ const RUNS: &[&str] = &[
     "Effect.Continuous",
     "Effect.ExchangeControl",
     "Effect.R6401PassControl",
+    "Effect.R1084ToDifferentOpponents",
     "Effect.R6602CreateAttached",
     "Effect.R6702Distribute",
     "Effect.R6702CountersPerVote",
@@ -536,12 +556,14 @@ const RUNS: &[&str] = &[
     "Condition.R119StartingDeck",
     "Condition.R119ShareCardType",
     "Ref.R115Causer",
+    "Ref.R406PileTop",
     "Condition.R111AttackedLastCombat",
     "Condition.R111DamagedThisTurnBy",
     "Ref.R111LastDamagedYou",
     "Ref.R111BlockedController",
     "ValueKind.R111SpellDamage",
     "ValueKind.R113CreatureTypeOfNotNoted",
+    "ValueKind.OptionsNotNoted",
     "Rule.Cant.R111AttackPlayer",
     "Rule.Cant.R111CastOrPlay",
     "Rule.Cant.R118Attack",
@@ -601,6 +623,8 @@ const RUNS: &[&str] = &[
     "Rule.R6400CombatCost",
     "Rule.R6400ChoosesBlocks",
     "Rule.R6400ChoosesVotes",
+    "Rule.R5081ChoosesAttackers",
+    "Rule.R6097ColorlessDamage",
     "Rule.AttackLimit",
     "Rule.AttackLimitAt",
     "Rule.BlockLimit",
@@ -672,6 +696,7 @@ const RUNS: &[&str] = &[
     "Rule.ExileFound",
     "Rule.NoMaxHandSize",
     "Rule.LoyaltyTwice",
+    "Rule.P158LoyaltyTwiceThis",
     "Rule.R6600LoyaltyOnceMore",
     "Rule.R6600AdaptsFresh",
     "Rule.R6603LoyaltyAgain",
@@ -799,6 +824,7 @@ const RUNS: &[&str] = &[
     "Mod.R6702GainActivatedAndTriggeredOf",
     "Mod.R114StickerAbilitiesOf",
     "Mod.R111GainNonManaAbilitiesOf",
+    "Mod.P160GainLoyaltyAbilitiesOf",
     "Mod.LoseAbilities",
     "Mod.LoseAbilitiesExceptMana",
     "Mod.LoseThisAbility",
@@ -810,6 +836,8 @@ const RUNS: &[&str] = &[
     "Mod.CantAttackOwner",
     "Mod.CantBeBlockedUnlessAttackingOwner",
     "Mod.CantBlock",
+    "Mod.R1012ControlKept",
+    "Mod.R3034CantBeEnchanted",
     "Mod.DoesntUntap",
     "Mod.R6700KeepsLastLoyalty",
     "Mod.CantBeTurnedFaceUp",
@@ -1085,6 +1113,7 @@ const RUNS: &[&str] = &[
     "Ability.Replacement",
     "Ability.CostModifier",
     "ReplaceWhen.TokenCreation",
+    "ReplaceWhen.R1193LifeReducedTo",
     "ReplaceWhen.Damage",
     "ReplaceWhen.R123DamageByTargeting",
     "ReplaceWhen.R6001DamageBetweenChosen",
@@ -1112,6 +1141,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Draw.ExceptDrawStep",
     "ReplaceWhen.Draw.First",
     "ReplaceWhen.Enters",
+    "ReplaceWhen.R614PutOnto",
     "ReplaceWhen.Explores",
     "ReplaceWhen.Connives",
     "ReplaceWhen.Proliferates",
@@ -1181,6 +1211,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.Instead.PaysLife",
     "ReplaceBy.Instead.R115CastsResolving",
     "ReplaceBy.BeholdOrTapped",
+    "ReplaceBy.R7071ExileTwoAsCopy",
     "ReplaceBy.PayOrGraveyard",
     "ReplaceBy.AsCopy",
     "Keyword.Partner",
@@ -1318,6 +1349,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.UmbraArmor",
     "ReplaceBy.Regenerate",
     "Condition.NewlyControlled",
+    "Condition.P158HadToAttack",
     "Condition.Level",
     "Condition.Searched",
     "Condition.Step",
@@ -1354,11 +1386,13 @@ const RUNS: &[&str] = &[
     "Rule.R111CastWayFrom",
     "Nth.R6018HitPlayer",
     "Rule.SpendOnlyFrom",
+    "Rule.R605TapOthersLands",
     "Rule.R112SpendOnlyFromWay",
     "Pred.Modified",
     "Pred.RingBearer",
     "Pred.HasAdventure",
     "Pred.HasAbility",
+    "Pred.R702185Warped",
     "Pred.Drafted",
     "Pred.R6600OnlyControllersColor",
     "Pred.Apart",
@@ -1938,6 +1972,7 @@ mod tests {
     #[case::paying_one_of_several_costs("Cost.OneOf.Pay", true)]
     #[case::r115_choosing_between_costs_of_an_activation("Cost.OneOf.Activated", true)]
     #[case::r115_a_least_x_of_a_way("Cost.XAtLeast.Way", true)]
+    #[case::r107_a_least_x_of_a_spell("Cost.XAtLeast.Spell", true)]
     #[case::r115_counters_among_by_x_in_a_flashback_cost(
         "Keyword.Flashback.Cost.RemoveCountersAmong.X",
         true
@@ -2018,6 +2053,16 @@ mod tests {
     #[case::r120_random_action_triggers("Trigger.R120RandomAction", true)]
     #[case::r120_assisted_cast_triggers("Trigger.R120AssistedCast", true)]
     #[case::r120_deals_exactly_triggers("Trigger.R120DealsExactly", true)]
+    #[case::r603_exactly_triggers("Trigger.R603Exactly", true)]
+    #[case::r406_kept_pile("Effect.FaceDownPile.R406Kept", true)]
+    #[case::r406_pile_top("Ref.R406PileTop", true)]
+    #[case::r406_turning_up_exiled("Effect.R406TurnUpExiled", true)]
+    #[case::r406_held_by_the_exiler("Effect.ExileTop.R406HeldBy", true)]
+    #[case::r707_exiling_a_spell("Effect.R707ExileSpell", true)]
+    #[case::r707_putting_it_back("Effect.R707PutBack", true)]
+    #[case::r605_tapping_lands_of_others("Rule.R605TapOthersLands", true)]
+    #[case::r614_put_onto("ReplaceWhen.R614PutOnto", true)]
+    #[case::r614_enters_then("ReplaceBy.R614EntersThen", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::resolved_to_graveyard("Trigger.ResolvedToGraveyard", true)]

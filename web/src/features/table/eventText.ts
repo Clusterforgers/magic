@@ -193,6 +193,8 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
         "can't be blocked unless it's attacking its owner or a permanent its owner controls",
       CantBeTurnedFaceUp: "can't be turned face up",
       R119CantBeBeamedUp: "can't be beamed up",
+      R1012ControlKept: "can't come under another player's control",
+      R3034CantBeEnchanted: "can't be enchanted",
       BlockedByAll: "can't be blocked unless all creatures defending player controls block it",
       AddAllCreatureTypes: `${becomes} every creature type`,
       R612ExchangeTextBoxes: `${group ? 'exchange their text boxes' : 'exchanges its text box'}`,
@@ -1082,6 +1084,15 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, object, color } = event.CommanderColorChosen
     return line(`${n.seat(player)} chooses ${color.toLowerCase()} for ${n.card(object)}`)
   }
+  if ('ColorsCircled' in event) {
+    const { player, object, colors } = event.ColorsCircled
+    const named = colors.map((color) => color.toLowerCase())
+    const listed =
+      named.length > 1
+        ? `${named.slice(0, -1).join(', ')} and ${named[named.length - 1]}`
+        : (named[0] ?? 'no colors')
+    return line(`${n.seat(player)} circles ${listed} on ${n.card(object)}`)
+  }
   if ('LibraryShuffled' in event)
     return quiet(`${n.seat(event.LibraryShuffled.player)} shuffles their library`)
   if ('AttractionDeckShuffled' in event)
@@ -1214,6 +1225,7 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(`It becomes ${event.DayNightChanged.to === 'Day' ? 'day' : 'night'}`)
   if ('MonarchChanged' in event) return line(`${n.seat(event.MonarchChanged.player)} becomes the monarch`)
   if ('EmblemCreated' in event) return line(`${n.seat(event.EmblemCreated.owner)} gets an emblem`)
+  if ('R6051EmblemEnded' in event) return quiet('An emblem that lasted the turn ends')
   if ('Proliferated' in event) return line(`${n.seat(event.Proliferated.player)} proliferates`)
   if ('Learned' in event) return line(`${n.seat(event.Learned.player)} learns`)
   if ('EvidenceCollected' in event) return line(`${n.seat(event.EvidenceCollected.player)} collects evidence`)
@@ -1357,6 +1369,17 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     return line(
       `${n.seat(event.TurnedFaceDown.player)} turns ${n.card(event.TurnedFaceDown.object)} face down`,
     )
+  if ('R6008Listed' in event) {
+    const { object, noted } = event.R6008Listed
+    const note = noted ? `, noting the name ${noted}` : ''
+    return line(`${n.card(object)} lies face down as the creature an effect lists${note}`)
+  }
+  if ('R406TurnedUp' in event) return line(`${n.card(event.R406TurnedUp.object)} is turned face up in exile`)
+  if ('R707Kept' in event) return line(`${n.card(event.R707Kept.object)} waits in exile as the spell it was`)
+  if ('R707PutBack' in event) {
+    const { object, player } = event.R707PutBack
+    return line(`${n.seat(player)} puts ${n.card(object)} back onto the stack as the spell it was`)
+  }
   if ('FirstDrawRevealed' in event) {
     const { player, card } = event.FirstDrawRevealed
     return line(`${n.seat(player)} reveals ${n.card(card)} as the first card they drew this turn`)
@@ -1550,6 +1573,11 @@ function describePublic(event: Event, n: EventNames, context?: EventContext): Lo
     const { player, attackers } = event.AttackersChosen
     if (attackers.length === 0) return quiet(`${n.seat(player)} chooses no attackers`)
     return quiet(`${n.seat(player)} chooses to attack ${attackClauses(attackers, n)}`)
+  }
+  if ('R5081AttackersChosen' in event) {
+    const { chooser, attackers } = event.R5081AttackersChosen
+    if (attackers.length === 0) return line(`${n.seat(chooser)} chooses that no creature attacks`)
+    return line(`${n.seat(chooser)} chooses ${joinWords(attackers.map((id) => n.card(id)))} to attack`)
   }
   if ('AttackChoicesRefused' in event) {
     return line(

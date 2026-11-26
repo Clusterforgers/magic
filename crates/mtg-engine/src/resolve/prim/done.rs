@@ -71,6 +71,9 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::Transform { .. }
         | Effect::Flip { .. }
         | Effect::TurnFaceUp { .. }
+        | Effect::R406TurnUpExiled { .. }
+        | Effect::R707ExileSpell { .. }
+        | Effect::R707PutBack { .. }
         | Effect::TurnFaceDown { .. }
         | Effect::R6701TurnFaceDownHorror { .. }
         | Effect::Harness { .. }
@@ -91,6 +94,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::RestartGame { .. }
         | Effect::RingTempts { .. }
         | Effect::CreateEmblem { .. }
+        | Effect::R6051PlayerGains { .. }
         | Effect::Revive { .. }
         | Effect::BecomeDayNight { .. }
         | Effect::Amass { .. }
@@ -140,12 +144,15 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::R114CopySpellOnto { .. }
         | Effect::CopyAbility { .. }
         | Effect::CopyCard { .. }
+        | Effect::CopyNamedCard { .. }
+        | Effect::R6008CopyNoted { .. }
         | Effect::BecomeCopy { .. }
         | Effect::CreateToken { .. }
         | Effect::R6602CreateAttached { .. }
         | Effect::Continuous { .. }
         | Effect::ExchangeControl { .. }
         | Effect::R6401PassControl { .. }
+        | Effect::R1084ToDifferentOpponents { .. }
         | Effect::R6702Distribute { .. }
         | Effect::R6702CountersPerVote { .. }
         | Effect::R110RemovePutThisWay { .. }
@@ -192,6 +199,7 @@ fn reports(effect: &Effect) -> Reports {
         | Effect::If { .. } | Effect::Modal { .. } | Effect::RepeatEach { .. } | Effect::Together { .. } | Effect::RollDice { .. }
         | Effect::FlipCoin { .. } | Effect::Clash { .. } | Effect::Vote { .. } | Effect::ChooseNumbers { .. } | Effect::ChooseWords { .. } | Effect::BidLife { .. } | Effect::VillainousChoice { .. }
         | Effect::R119BindSpliced { .. }
+        | Effect::P160CastWithin { .. }
         | Effect::R120ChooseEachColor { .. }
         | Effect::ChooseValue { .. } | Effect::Let { .. } | Effect::Bind { .. } | Effect::RepeatWhile { .. } | Effect::SeparatePiles { .. }
         | Effect::R112Piles { .. } | Effect::R112RerollStored { .. }

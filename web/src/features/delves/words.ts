@@ -2,9 +2,6 @@
 import { DelveError } from '@/net/delves'
 import type { Timers } from '@/protocol/generated'
 
-/** How often the run page reads the run again, in milliseconds. */
-export const POLL_MS = 4000
-
 export function errorText(error: unknown): string {
   return error instanceof DelveError ? error.message : 'Something went wrong. Try again.'
 }

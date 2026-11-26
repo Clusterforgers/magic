@@ -7,3 +7,4 @@
 cc d4cdace15444155faa2c29ce909a3f7670f11a71d815e9b31103969e052ace36 # shrinks to which = [14, 0]
 cc 21e1ea7cbe778679ecda27cac5e6c231bfa02c4e55474cdf0c435275eb5d4f46 # shrinks to which = [14]
 cc d7fc45d8580b55dcfde52250f181331ae07c87768261d575790bbd769454bd83 # shrinks to which = [33]
+cc d70ec1155459dab4e532d5e6d060e96d2add1fd2bb0d9e5eaf83678d4d76583f # shrinks to which = [14, 17]

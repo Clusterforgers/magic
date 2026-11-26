@@ -47,6 +47,9 @@ pub enum Activators {
     /// The controller of the permanent it is attached to ("Only the controller of the enchanted creature may activate
     /// this ability"); nobody while it is attached to nothing.
     R113AttachedController,
+    /// The player whose resolved spell or ability gave the ability for a time (`Ref::Granter`): "Only you may activate this
+    /// ability" in the words a spell grants (CR 602.2); nobody for an ability the object has of its own.
+    R6022Granter,
 }
 
 impl Activators {
@@ -547,6 +550,10 @@ pub enum Ability {
     /// "You may discard this card any time you could cast an instant." (CR 116.2): a special action of the player whose
     /// hand holds the card, offered whenever they hold priority; the discard uses no stack.
     R120DiscardAnyTime,
+    /// "As you create your deck, circle two of the colors below.": a choice made as the deck is built, asked of the owner
+    /// for each copy before the game begins; the colors are public, part of the copiable values of the card and read by
+    /// `Produce::Circled`. The number is how many colors are circled.
+    CircleColors(u32),
     /// "If this card is in your opening hand, you may begin the game with it on the battlefield." (CR 103.6): the card
     /// is asked about once its owner has kept a hand.
     OpeningHand,

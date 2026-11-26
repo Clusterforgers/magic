@@ -460,6 +460,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::AttackersDeclared { .. }
         | Event::AttackersChosen { .. }
         | Event::AttackChoicesRefused { .. }
+        | Event::R5081AttackersChosen { .. }
         | Event::FocusShifted { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
@@ -501,6 +502,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CountersChanged(_)
         | Event::TokenCreated(_)
         | Event::EmblemCreated(_)
+        | Event::R6051EmblemEnded { .. }
         | Event::Ventured(_)
         | Event::DungeonCompleted { .. }
         | Event::InitiativeTaken { .. }
@@ -582,10 +584,17 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::ClassLevelGained { .. }
         | Event::TurnedFaceUp { .. }
         | Event::TurnedFaceDown { .. }
+        // The listed characteristics are public, and the noted name was a card every seat saw in a graveyard.
+        | Event::R6008Listed(_)
+        // A card turned face up in exile is public from then on; a kept spell is the spell every seat saw on the stack.
+        | Event::R406TurnedUp { .. }
+        | Event::R707Kept(_)
+        | Event::R707PutBack { .. }
         // Which permanent is public; what it is, the view tells the looker alone (`may_look_at`).
         | Event::FaceDownLooked { .. }
         // The color of a commander is public, as the card is.
         | Event::CommanderColorChosen { .. }
+        | Event::ColorsCircled { .. }
         | Event::DoorUnlocked { .. }
         | Event::DoorLocked { .. }
         | Event::Mutated { .. }

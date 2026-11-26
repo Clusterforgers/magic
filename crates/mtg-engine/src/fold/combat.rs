@@ -263,6 +263,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             state.combat.attack_refusals.push(reason.clone());
         }
         Event::FocusShifted { .. } => {}
+        Event::R5081AttackersChosen { attackers, .. } => {
+            if state.combat.attackers_declared || state.combat.r5081_chosen.is_some() {
+                return Err(invalid("the attackers were already chosen"));
+            }
+            state.combat.r5081_chosen = Some(attackers.clone());
+        }
         Event::AttackersDeclared { attackers, .. } => {
             state.combat.attack_picks.clear();
             if state.combat.attackers_declared {
@@ -274,6 +280,9 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
                 )));
             }
             crate::r5522_history::r5522_note_could_attack(state);
+            let declared: Vec<mtg_core::ids::ObjectId> =
+                attackers.iter().map(|(object, _)| *object).collect();
+            crate::combat::p158_note_had_to_attack(state, &declared);
             state.combat.attackers = attackers
                 .iter()
                 .map(|(object, target)| Attacker {

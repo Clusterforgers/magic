@@ -167,12 +167,41 @@ pub struct CombatState {
     pub(crate) attack_picks: Vec<crate::party_attacks::AttackPick>,
     /// Why the team's chosen attacks were refused, each time they were this combat.
     pub(crate) attack_refusals: Vec<String>,
+    /// The creatures another player chose to attack this combat (`Event::R5081AttackersChosen`), which the active player
+    /// then declares; none until that player has chosen.
+    pub(crate) r5081_chosen: Option<Vec<ObjectId>>,
     /// Every (attacker, blocker) pair that blocked this combat, those that left combat included.
     pub(crate) r6400_blocked_by: Vec<(ObjectId, ObjectId)>,
     /// Every (creature, creature it enlisted) of this combat (CR 702.154a), which "it enlisted a creature this combat" reads.
     pub(crate) r114_enlisted: Vec<(ObjectId, ObjectId)>,
     /// The total power each player attacked with this combat, each attacker as it was declared (CR 508.1; pack tactics).
     pub(crate) r115_attack_power: Vec<(PlayerId, u32)>,
+    /// The attackers a requirement made attack as they were declared (goad, "attacks each combat if able", one paired
+    /// with a player or planeswalker), which "if that creature had to attack this combat" reads.
+    pub(crate) p158_had_to_attack: Vec<ObjectId>,
+}
+
+/// Notes each of `attackers` that a requirement made attack as it is declared (CR 508.1d): it was goaded, must attack
+/// each combat, or must attack a player or planeswalker.
+pub(crate) fn p158_note_had_to_attack(state: &mut GameState, attackers: &[ObjectId]) {
+    let had: Vec<ObjectId> = attackers
+        .iter()
+        .copied()
+        .filter(|object| {
+            must_attack(state, *object)
+                || !goaded_by(state, *object).is_empty()
+                || !must_attack_players(state, *object).is_empty()
+                || !crate::rules::must_attack_at(state, *object).is_empty()
+        })
+        .collect();
+    state.combat.p158_had_to_attack = had;
+}
+
+impl CombatState {
+    /// Whether a requirement made `object` attack this combat as attackers were declared.
+    pub fn p158_had_to_attack(&self, object: ObjectId) -> bool {
+        self.p158_had_to_attack.contains(&object)
+    }
 }
 
 /// Adds the power `attacker` has as it is declared to the total `player` attacked with this combat; a negative power adds

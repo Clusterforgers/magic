@@ -703,6 +703,10 @@ pub(super) fn replace_when(ctx: &Ctx, when: &ReplaceWhen) -> String {
             phrase::who(ctx, who)
         ),
         ReplaceWhen::LifeLoss { who } => format!("{} would lose life", phrase::who(ctx, who)),
+        ReplaceWhen::R1193LifeReducedTo { who, at_most } => format!(
+            "{} life total would be reduced to {at_most} or less",
+            phrase::whose(ctx, who)
+        ),
         ReplaceWhen::Mill { who } => {
             format!("{} would mill one or more cards", phrase::who(ctx, who))
         }

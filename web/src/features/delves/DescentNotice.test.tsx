@@ -63,23 +63,26 @@ describe('the run page on a new theme', () => {
     expect(document.querySelector('[data-delve-theme]')).toHaveAttribute('data-delve-theme', 'spire')
   })
 
-  it('names the Ember Foundry and takes its look', async () => {
+  it.each([
+    ['The Ember Foundry', 'foundry', 'the Ember Foundry'],
+    ['The Gloamwood', 'gloamwood', 'the Gloamwood'],
+  ])('names %s and takes its look', async (theme, id, words) => {
     const view = delveView(
-      { theme: 'The Ember Foundry' },
+      { theme },
       {
         status: 'Map',
         at: 0,
         cleared: [],
         floor: 2,
         floors_cleared: 1,
-        floor_theme: 'foundry',
+        floor_theme: id,
         theme_from: 'spire',
       },
     )
     await renderInRouter(
       <DelvePage id="d1" client={fakeDelves(view)} loadDecks={pickerDecks} find={async () => null} />,
     )
-    expect(await screen.findByText('The party descends into the Ember Foundry')).toBeInTheDocument()
-    expect(document.querySelector('[data-delve-theme]')).toHaveAttribute('data-delve-theme', 'foundry')
+    expect(await screen.findByText(`The party descends into ${words}`)).toBeInTheDocument()
+    expect(document.querySelector('[data-delve-theme]')).toHaveAttribute('data-delve-theme', id)
   })
 })

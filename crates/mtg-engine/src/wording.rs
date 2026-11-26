@@ -154,6 +154,7 @@ fn state_word(pred: &Pred) -> Option<&'static str> {
         Pred::Solved => "solved",
         Pred::Stickered => "stickered",
         Pred::Harnessed => "harnessed",
+        Pred::R6008PaidBySpent => "whose mana cost the mana spent could pay",
         Pred::FoughtSinceYourLastUpkeep { .. } => "in combat since your last upkeep",
         Pred::DoubleFaced => "double-faced",
         Pred::Transformed => "transformed",
@@ -180,6 +181,7 @@ pub(crate) fn phrase(selector: &Selector) -> (String, String) {
             Pred::Supertype(supertype) => adjectives.push(lower(supertype)),
             Pred::Color(color) => adjectives.push(lower(color)),
             Pred::Colorless => adjectives.push("colorless".to_owned()),
+            Pred::R702185Warped => adjectives.push("warped".to_owned()),
             Pred::Token => adjectives.push("token".to_owned()),
             Pred::Commander => nouns.push("commander".to_owned()),
             Pred::Spell => nouns.push("spell".to_owned()),
@@ -1268,6 +1270,9 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{}, caused by a spell or ability", clause(inner).0),
             false,
         ),
+        TriggerPattern::R603Exactly { event, amount } => {
+            (format!("{} (exactly {amount})", clause(event).0), false)
+        }
         TriggerPattern::R111AbilityTriggered { cause, of_it } => (
             format!(
                 "{} causes a triggered ability{} to trigger",

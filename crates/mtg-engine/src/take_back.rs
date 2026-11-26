@@ -253,7 +253,9 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
             Some(R::CardDrawn)
         }
         Event::ZoneChanged { from, .. } if hidden_from(*from, player) => Some(R::CardRevealed),
-        Event::Revealed(_)
+        // A card face down in exile that its controller could not see is shown to every seat.
+        Event::R406TurnedUp { .. }
+        | Event::Revealed(_)
         | Event::FirstDrawRevealed { .. }
         | Event::FaceDownLooked { .. }
         | Event::LibraryLooked(_)
@@ -342,6 +344,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::AttackersDeclared { .. }
         | Event::AttackersChosen { .. }
         | Event::AttackChoicesRefused { .. }
+        | Event::R5081AttackersChosen { .. }
         | Event::FocusShifted { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
@@ -379,6 +382,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::CountersChanged(_)
         | Event::TokenCreated(_)
         | Event::EmblemCreated { .. }
+        | Event::R6051EmblemEnded { .. }
         | Event::CardConjured(_)
         | Event::Entered { .. }
         | Event::Attached { .. }
@@ -404,6 +408,9 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::BecameCopy(_)
         | Event::SpellCopied(_)
         | Event::CardCopied(_)
+        | Event::R6008Listed(_)
+        | Event::R707Kept(_)
+        | Event::R707PutBack { .. }
         | Event::CopyCeased { .. }
         | Event::AbilityCopied(_)
         | Event::TargetsChanged(_)
@@ -428,6 +435,7 @@ fn class(event: &Event, player: PlayerId) -> Option<TakeBackRefusal> {
         | Event::R6401Mentored { .. }
         | Event::UpkeepSettled { .. }
         | Event::CommanderColorChosen { .. }
+        | Event::ColorsCircled { .. }
         | Event::Foraged { .. }
         | Event::R115CountersPutBy { .. }
         | Event::PrizeClaimed { .. }

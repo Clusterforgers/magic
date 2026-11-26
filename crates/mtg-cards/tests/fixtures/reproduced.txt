@@ -455,6 +455,7 @@ Celebrate the Harvest
 Celestial Archon
 Celestial Colonnade
 Celestial Crusader
+Celestial Reunion
 Cemetery Reaper
 Cemetery Tampering
 Centaur of Attention
@@ -521,6 +522,7 @@ Cloak and Phaser
 Clockwork Droid
 Clone
 Clone Legion
+Close Encounter
 Close Quarters
 Cloud Sprite
 Cloudfin Raptor
@@ -620,6 +622,7 @@ Crypt of Agadeem
 Cryptbreaker
 Cryptcaller Chariot
 Cryptic Gateway
+Cryptic Spires
 Crystal Barricade
 Crystal Quarry
 Crystal Spray
@@ -653,6 +656,7 @@ Cybermen Squadron
 Cyclonic Rift
 Cytoshape
 Círdan the Shipwright
+Dack Fayden, Helping Hand
 Dalek Squadron
 Damocles Base, Sword of Kang
 Dampen Thought
@@ -1134,6 +1138,7 @@ Garruk Wildspeaker
 Garruk's Packleader
 Garruk's Uprising
 Garruk, Primal Hunter
+Garth One-Eye
 Garza's Assassin
 Gaseous Anomaly
 Gastal Raider
@@ -1167,6 +1172,7 @@ Ghitu Fire
 Ghost Quarter
 Ghostblade Eidolon
 Ghostly Dancers
+Ghostly Flame
 Ghostly Prison
 Ghoulcaller Gisa
 Giant Beaver
@@ -1288,6 +1294,7 @@ Grim Flayer
 Grim Haruspex
 Grim Initiate
 Grime Gorger
+Grimoire Thief
 Grisly Salvage
 Grizzlegom, Hurloon Hero
 Grothama, All-Devouring
@@ -1302,6 +1309,7 @@ Guard Gomazoa
 Guardian Angel
 Guardian Archon
 Guardian Augmenter
+Guardian Beast
 Guardian Gladewalker
 Guidelight Matrix
 Guiding Voice
@@ -1353,6 +1361,7 @@ Heartwood Storyteller
 Hedron Archive
 Hei Bai, Spirit of Balance
 Heidar, Rimewind Master
+Heirloom Epic
 Heliod, God of the Sun
 Heliod, Sun-Crowned
 Hellish Rebuke
@@ -1444,6 +1453,7 @@ Illicit Shipment
 Illuminate History
 Illusion Spinners
 Illusion of Choice
+Illusionary Mask
 Illusionist's Gambit
 Illusory Ambusher
 Illustrious Wanderglyph
@@ -1650,6 +1660,7 @@ Kuroki, Thief of Talents
 Kydele, Chosen of Kruphix
 Kyler, Sigardian Emissary
 L'Rell, Fierce Visionary
+Land Equilibrium
 Land Grant
 Landslide
 Lantern Flare
@@ -1757,6 +1768,7 @@ Mabel, Bitter Recluse
 Mace of the Valiant
 Machine God's Effigy
 Maestros Theater
+Magar of the Magic Strings
 Mage Hunter
 Magewright's Stone
 Magical Hack
@@ -1801,14 +1813,17 @@ Marshmist Titan
 Martial Coup
 Martok, Hero of the Empire
 Martyr of Dusk
+Martyrdom
 Marvo, Deep Operative
 Marwyn, the Nurturer
 Mask of Griselbrand
 Mask of Memory
 Mask of Riddles
 Mass Diminish
+Massimo, the Magician
 Master Thief
 Master Trinketeer
+Master Warcraft
 Master of Dark Rites
 Master of Etherium
 Master of Pearls
@@ -2114,6 +2129,7 @@ Panther Habit
 Panther Robot
 Paradise Druid
 Paradise Plume
+Parallel Thoughts
 Parasitic Grasp
 Pardic Firecat
 Parhelion Patrol
@@ -2176,6 +2192,7 @@ Pillar of the Paruns
 Pinion Feast
 Piper of the Swarm
 Pippin, Warden of Isengard
+Piracy
 Pit Fight
 Pitiless Carnage
 Pixie Guide
@@ -2241,6 +2258,7 @@ Prize Wall
 Prizefight
 Profane Command
 Professional Face-Breaker
+Professor Hojo
 Professor of Symbology
 Proficient Pyrodancer
 Propaganda
@@ -2267,6 +2285,7 @@ Pygmy Kavu
 Pygmy Troll
 Pyramids
 Pyreswipe Hawk
+Q, Stacking the Deck
 Q, Your Illustrious Host
 Qasali Pridemage
 Qasali Slingers
@@ -2369,6 +2388,7 @@ Renewing Dawn
 Renounce
 Repeal
 Replication Technique
+Reprieve
 Reprocess
 Repulse
 Rescue Retriever
@@ -2431,6 +2451,7 @@ Road Rage
 Roaring Furnace // Steaming Sauna
 Rob the Archives
 Rocksteady, Mutant Marauder
+Rod of Absorption
 Rogue Refiner
 Rogue's Passage
 Roku's Mastery
@@ -2718,6 +2739,7 @@ Spectral Shift
 Spectral Steel
 Speedway Fanatic
 Spellbreaker Behemoth
+Spellscorn Coven // Take It Back
 Spelltwine
 Spellweaver Volute
 Sphere of Safety
@@ -3001,6 +3023,7 @@ The Locust God
 The Madcap Jester
 The Mechanist, Aerial Artisan
 The Mightstone and Weakstone
+The Mimeoplasm
 The Modern Age // Vector Glider
 The Moment
 The Most Dangerous Gamer
@@ -3022,6 +3045,7 @@ The Torment of Gollum
 The Toymaker's Trap
 The Traveler
 The Underworld Cookbook
+The Unluckiest Planeswalker
 The Valeyard
 The War Doctor
 The Warring Triad
@@ -3320,6 +3344,7 @@ Vow of Lightning
 Vow of Malice
 Vow of Torment
 Vow of Wildness
+Vulcan Mind-Meld
 Vulshok Factory
 Vulshok Splitter
 Võx, Child of the Collective
@@ -3434,8 +3459,10 @@ Wurmwall Sweeper
 Wyll, Blade of Frontiers
 Wyrm's Crossing Patrol
 Xenosquirrels
+Xu-Ifit, Osteoharmonist
 Yahenni, Undying Partisan
 Yasharn, Implacable Earth
+Yavimaya Bloomsage // Channel
 Yavimaya Elder
 Ydwen Efreet
 Yenna, Redtooth Regent

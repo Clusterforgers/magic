@@ -560,6 +560,14 @@ pub enum Event {
         /// The attacker.
         attacker: ObjectId,
     },
+    /// A player other than the active player chose which creatures attack this combat (CR 508.1a, "You choose which
+    /// creatures attack this turn"); the active player then declares them, choosing what each attacks.
+    R5081AttackersChosen {
+        /// Who chose.
+        chooser: PlayerId,
+        /// The creatures that attack; none for no attack.
+        attackers: Vec<ObjectId>,
+    },
     /// A creature began to block an attacking creature without being declared (CR 509.1h): "then it blocks an
     /// attacking creature of your choice".
     R6400Blocks {
@@ -1079,6 +1087,22 @@ pub enum Event {
     /// A card in exile was copied (CR 707.12): the copy is a token card in exile that its owner may cast, and it ceases to
     /// exist once it is anywhere but on the stack.
     CardCopied(Box<CardCopy>),
+    /// A card put onto the battlefield face down took the characteristics an effect listed (CR 708.2).
+    R6008Listed(Box<crate::r6008_face_down::R6008Listed>),
+    /// A card lying face down in exile was turned face up, for every seat to see (CR 406.3).
+    R406TurnedUp {
+        /// The card.
+        object: ObjectId,
+    },
+    /// A card exiled from the stack keeps the spell it was, for a later put back (`Effect::R707ExileSpell`, CR 707.10).
+    R707Kept(Box<crate::r707_spells::R707Kept>),
+    /// A player put a card from exile onto the stack as a copy of the spell it kept (CR 707.10): not cast.
+    R707PutBack {
+        /// The card, as it is in exile.
+        object: ObjectId,
+        /// Who controls the spell.
+        player: PlayerId,
+    },
     /// A copy of a card ceased to exist in a zone other than the stack (CR 704.5e).
     CopyCeased {
         /// The copy.
@@ -1491,6 +1515,21 @@ pub enum Event {
         /// The color.
         color: mtg_core::color::Color,
     },
+    /// An emblem that held abilities a player had until end of turn ceased to exist in the cleanup step.
+    R6051EmblemEnded {
+        /// The emblem.
+        object: ObjectId,
+    },
+    /// An owner circled colors for a card before the game began ("As you create your deck, circle two of the colors
+    /// below."): public, and read by the card's mana ability in every zone.
+    ColorsCircled {
+        /// Who circled them.
+        player: PlayerId,
+        /// The card.
+        object: ObjectId,
+        /// The colors circled.
+        colors: Vec<mtg_core::color::Color>,
+    },
     /// A player revealed the first card they drew this turn as they drew it, through the `RevealFirstDraw` rules of
     /// these sources; a `Revealed` of the card comes just before it. Abilities "whenever you reveal ... this way" of
     /// those sources trigger on it.
@@ -1796,6 +1835,7 @@ impl Event {
             Event::LibraryShuffled { .. }
             | Event::AttackersChosen { .. }
             | Event::AttackChoicesRefused { .. }
+            | Event::R5081AttackersChosen { .. }
             | Event::FocusShifted { .. }
             | Event::SpiritRevived { .. }
             | Event::AttractionDeckShuffled { .. }
@@ -1812,6 +1852,7 @@ impl Event {
             | Event::DamagePrevented { .. }
             | Event::FirstPlayerChosen { .. }
             | Event::CommanderColorChosen { .. }
+            | Event::ColorsCircled { .. }
             | Event::GameRestarted { .. }
             | Event::MulliganPhaseBegan
             | Event::MulliganDeclared { .. }
@@ -1942,12 +1983,16 @@ impl Event {
             Event::Melded(melded) => vec![melded.object],
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
+            Event::R6008Listed(listed) => vec![listed.object],
+            Event::R707Kept(kept) => vec![kept.object],
             Event::AbilityCopied(copy) => vec![copy.object],
             Event::TargetsChanged(change) => vec![change.object.id],
             Event::R112XChanged { object, .. } => vec![object.id],
             Event::Remembered(change) => vec![change.source.id],
             Event::AbilityPutOnStack(put) => vec![put.object],
             Event::LandPlayed { object, .. }
+            | Event::R406TurnedUp { object }
+            | Event::R707PutBack { object, .. }
             | Event::SpellCast { object, .. }
             | Event::CompanionBrought { object, .. }
             | Event::ZoneChanged { object, .. }
@@ -2006,6 +2051,7 @@ impl Event {
             | Event::CreatureDied { object, .. }
             | Event::CopyEnded { object, .. }
             | Event::CopyCeased { object }
+            | Event::R6051EmblemEnded { object }
             // The spell of a merge is part of the permanent and no object of its own after the event.
             | Event::Mutated { object, .. }
             | Event::CardParted { permanent: object, .. }

@@ -1,0 +1,23 @@
+{
+  "oracle_id": "6a461ca3-7923-4df4-9f15-4072545da117",
+  "name": "Ghostly Flame",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Ghostly Flame",
+      "oracle_fingerprint": "858dccd134948584d6baa6943884a2d8",
+      "abilities": [
+        {
+          "Rule": {
+            "rule": {
+              "R6097ColorlessDamage": [
+                { "AnyOf": [{ "Color": "Black" }, { "Color": "Red" }] },
+                { "AnyOf": [{ "In": "Battlefield" }, "Spell"] }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

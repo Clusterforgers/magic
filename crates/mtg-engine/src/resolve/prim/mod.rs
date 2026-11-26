@@ -33,6 +33,7 @@ mod crewed;
 mod join_attack;
 mod l31a_performed;
 mod let_amount;
+mod r1084_different_opponents;
 mod r110_moves;
 pub(crate) mod r110_remove_put;
 mod r114_copy_onto;
@@ -112,6 +113,7 @@ mod monstrosity;
 mod move_counters;
 mod moved_as;
 mod one_of;
+mod p160_cast_within;
 mod pair;
 mod r111_order_graveyard;
 mod r112_double_x;
@@ -172,6 +174,7 @@ mod r120_02_each_color;
 pub(crate) mod r6402_change_roll;
 pub(crate) mod r6502_enters_as;
 mod r6701_remove_among;
+mod r707_spells;
 mod regenerate;
 mod remove_counters;
 mod remove_from_combat;
@@ -255,6 +258,8 @@ fn fe1n(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::ChangeTargets { .. } => change_targets::run(cx, effect),
         Effect::CopyAbility { .. } => copy_ability::run(cx, effect),
         Effect::CopyCard { .. } => copy_card::run(cx, effect),
+        Effect::CopyNamedCard { .. } => copy_card::run_named(cx, effect),
+        Effect::R6008CopyNoted { .. } => copy_card::run_noted(cx, effect),
         Effect::BecomeCopy { .. } => become_copy::run(cx, effect),
         _ => Err(wrong_effect("dispatch")),
     }
@@ -321,6 +326,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),
         Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
+        Effect::R406TurnUpExiled { .. } => r707_spells::r406_run_turn_up(cx, effect),
+        Effect::R707ExileSpell { .. } => r707_spells::run_exile(cx, effect),
+        Effect::R707PutBack { .. } => r707_spells::run_put_back(cx, effect),
         Effect::TurnFaceDown { .. } | Effect::R6701TurnFaceDownHorror { .. } => {
             rmt8_turn_down::run(cx, effect)
         }
@@ -342,7 +350,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         }
         Effect::RestartGame { .. } => restart_game::run(cx, effect),
         Effect::RingTempts { .. } => ring_tempts::run(cx, effect),
-        Effect::CreateEmblem { .. } => w6b_create_emblem::run(cx, effect),
+        Effect::CreateEmblem { .. } | Effect::R6051PlayerGains { .. } => {
+            w6b_create_emblem::run(cx, effect)
+        }
         Effect::Revive { .. } => revive::run(cx, effect),
         Effect::BecomeDayNight { .. } => become_day_night::run(cx, effect),
         Effect::Amass { .. } => amass::run(cx, effect),
@@ -384,6 +394,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::RevealUntil { .. } => reveal_until::run(cx, effect),
         Effect::ExileTop { .. } => exile_top::run(cx, effect),
         Effect::CastFromZone { .. } => cast_from_zone::run(cx, effect),
+        Effect::P160CastWithin { .. } => p160_cast_within::run(cx, effect),
         Effect::TimeTravel { .. } => time_travel::run(cx, effect),
         Effect::GainSuspend { .. } => r372_gain_suspend::run(cx, effect),
         Effect::ExtraTurn { .. } => extra_turn::run(cx, effect),
@@ -398,6 +409,7 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Continuous { .. } => continuous::run(cx, effect),
         Effect::ExchangeControl { .. } => w6e_exchange::run(cx, effect),
         Effect::R6401PassControl { .. } => r6401_pass_control::run(cx, effect),
+        Effect::R1084ToDifferentOpponents { .. } => r1084_different_opponents::run(cx, effect),
         Effect::R6702Distribute { .. } => r6702_distribute::run(cx, effect),
         Effect::R6702CountersPerVote { .. } => r6702_per_vote::run(cx, effect),
         Effect::R110RemovePutThisWay { .. } => r110_remove_put::run(cx, effect),
@@ -499,15 +511,16 @@ mod tests {
         {"ControlPlayer":{"who":"Opponents"}}, {"RestartGame":{"keep":[]}},
         {"BecomeMonarch":{}}, {"ReduceSpeed":{"who":"You"}}, {"RingTempts":{}}, {"CreateEmblem":{"abilities":[]}}, {"BecomeDayNight":{"to":"Night"}}, {"Amass":{"subtype":"Orc","count":1}}, {"Empower":{"count":1}}, {"ChooseWithin":{"from":"This","within":{"TotalPowerAtMost":1},"as":"kept"}}, {"Incubate":{"count":1}}, {"Conjure":{"name":"Island","zone":"Hand"}}, {"Meld":{"with":[{"Named":"Bruna"}],"into":"Brisela"}}, "AuraSwap", "R6501RedistributeLife", {"Seek":{"filter":[]}}, {"Venture":{}}, {"OpenAttraction":{}}, {"RollToVisit":{}}, {"PutSticker":{"on":[]}}, {"Parade":{"what":[]}}, {"ClaimPrize":{}}, {"TakeInitiative":{}}, {"Monstrosity":{"count":1}}, {"Renown":{"count":1}}, {"Exploit":{}}, {"Enlist":{"what":"This"}}, {"BecomeLevel":{"level":2}},
         {"Adapt":{"count":1}}, {"Bolster":{"count":1}}, {"Fabricate":{"count":1}}, {"Learn":{}}, {"Crewed":{}}, {"Explore":{"what":"This"}}, {"Connive":{"what":"This"}},
-        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"FaceDownPile":{"what":"This","then":"Manifest"}}, {"BecomeForetold":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn", "R117EndCombat", {"R117AnotherOfKind":{"on":"This"}},
+        {"ExileUntil":{"filter":[],"as":"found","exiled_as":"exiled"}}, {"RevealUntil":{"filter":[],"as":"found","revealed_as":"revealed"}}, {"ExileTop":{"as":"top"}}, {"ExileHidden":{"what":"This"}}, {"Encode":{"what":"This","on":"This"}}, {"Remember":{"what":"This","slot":"s"}}, {"Forget":{"slot":"s"}}, {"Manifest":{}}, {"Cloak":{}}, {"FaceDownPile":{"what":"This","then":"Manifest"}}, {"BecomeForetold":{"what":"This"}}, {"CastFromZone":{"what":"This"}}, {"P160CastWithin":{"from":"This"}}, {"TimeTravel":{}}, {"GainSuspend":{"what":"This"}}, {"ExtraTurn":{}}, "EndTurn", "R117EndCombat", {"R117AnotherOfKind":{"on":"This"}},
         {"ChangeTargets":{"what":"This","to":"Another"}},
-        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}},
+        {"CopySpell":{"what":"This"}}, {"CopyAbility":{"what":"This"}}, {"CopyCard":{"what":"This","as":"copy"}}, {"CopyNamedCard":{"chosen":"name","as":"copy"}}, {"R6008CopyNoted":{"as":"copy"}}, {"R406TurnUpExiled":{"what":"This","as":"turned"}}, {"R707ExileSpell":{"what":"This","as":"card","player_as":"player"}}, {"R707PutBack":{"who":"You","what":"This"}},
         {"BecomeCopy":{"what":"This","of":"This","duration":"UntilEndOfTurn"}},
         {"CreateToken":{"token":{"Named":"treasure"}}},
         {"R6602CreateAttached":{"token":{"Named":"wicked_role"},"to":"This"}},
         {"Continuous":{"affected":"This","mods":[{"ModifyPT":{"power":1,"toughness":1}}],"duration":"UntilEndOfTurn"}},
         {"ExchangeControl":{"what":["This"],"duration":"Forever"}},
         {"R6401PassControl":{"side":"Left","what":[],"pick":"All"}},
+        {"R1084ToDifferentOpponents":{"what":"This"}},
         {"R6702Distribute":{"among":"This","counter":{"Other":"stun"},"count":3}},
         {"R6702CountersPerVote":{"tally":"votes","counter":{"Other":"stun"}}},
         {"R110ChooseSecretly":"Opponent"},
@@ -549,7 +562,7 @@ mod tests {
     #[test]
     fn the_capabilities_name_exactly_the_effects_that_run() {
         let effects: Vec<Effect> = serde_json::from_str(EFFECTS).unwrap();
-        assert_eq!(effects.len(), 175, "one sample for each variant of Effect");
+        assert_eq!(effects.len(), 182, "one sample for each variant of Effect");
         let game = state(
             vec![vec![], vec![]],
             vec![vec![creature("Bear", 2, 2)], vec![]],
@@ -692,6 +705,7 @@ mod tests {
         "Effect.FaceDownPile",
         "Effect.BecomeForetold",
         "Effect.CastFromZone",
+        "Effect.P160CastWithin",
         "Effect.TimeTravel",
         "Effect.GainSuspend",
         "Effect.ExtraTurn",
@@ -702,12 +716,18 @@ mod tests {
         "Effect.CopySpell",
         "Effect.CopyAbility",
         "Effect.CopyCard",
+        "Effect.CopyNamedCard",
+        "Effect.R6008CopyNoted",
+        "Effect.R406TurnUpExiled",
+        "Effect.R707ExileSpell",
+        "Effect.R707PutBack",
         "Effect.BecomeCopy",
         "Effect.CreateToken",
         "Effect.R6602CreateAttached",
         "Effect.Continuous",
         "Effect.ExchangeControl",
         "Effect.R6401PassControl",
+        "Effect.R1084ToDifferentOpponents",
         "Effect.R6702Distribute",
         "Effect.R6702CountersPerVote",
         "Effect.R110ChooseSecretly",

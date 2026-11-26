@@ -94,6 +94,8 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         | Modification::CantAttackOwner { .. }
         | Modification::CantBeBlockedUnlessAttackingOwner
         | Modification::CantBlock
+        | Modification::R1012ControlKept
+        | Modification::R3034CantBeEnchanted
         | Modification::DoesntUntap
         | Modification::R6700KeepsLastLoyalty
         | Modification::CantBeTurnedFaceUp
@@ -156,6 +158,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         Wanted::GrantAbility(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::R111GainNonManaAbilitiesOf(_)
+        | Wanted::P160GainLoyaltyAbilitiesOf(_)
         | Wanted::R6702GainActivatedAndTriggeredOf(_) => Traits::ACTIVATED,
         Wanted::SetController(_) => Traits::CONTROL,
         Wanted::SetPT { .. }
@@ -175,6 +178,8 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
+        | Wanted::R1012ControlKept
+        | Wanted::R3034CantBeEnchanted
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
@@ -205,6 +210,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         Wanted::SetController(who)
         | Wanted::GainAbilitiesOf(who)
         | Wanted::R111GainNonManaAbilitiesOf(who)
+        | Wanted::P160GainLoyaltyAbilitiesOf(who)
         | Wanted::R6702GainActivatedAndTriggeredOf(who) => reads_of_ref(who).or(Traits::ACTIVATED),
         // Only which objects the reference names is read: the stickers on them are no characteristic.
         Wanted::R114StickerAbilitiesOf(who) => reads_of_ref(who),
@@ -263,6 +269,8 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
+        | Wanted::R1012ControlKept
+        | Wanted::R3034CantBeEnchanted
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
@@ -321,7 +329,7 @@ pub(crate) fn reads_of_ref(reference: &Ref) -> Traits {
         | Ref::R114ChosenObject
         | Ref::R6702CraftedWith
         | Ref::R6602FromYou => Traits::NONE,
-        Ref::Remembered { on, .. } => reads_of_ref(on),
+        Ref::Remembered { on, .. } | Ref::R406PileTop { on } => reads_of_ref(on),
         Ref::LastExiledWith { on, filter } => reads_of_ref(on).or(reads_of_selector(filter)),
         Ref::ControllerOf(inner) | Ref::OrController(inner) => {
             Traits::CONTROL.or(reads_of_ref(inner))
@@ -357,6 +365,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::Token
         | Pred::Commander
         | Pred::Spell
+        | Pred::R702185Warped
         | Pred::Dungeon
         | Pred::Emblem
         | Pred::Ability(_)
@@ -399,6 +408,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::CounterCount { .. }
         | Pred::CanEnchantSource
         | Pred::XInCost
+        | Pred::R6008PaidBySpent
         | Pred::PhyrexianInCost
         | Pred::GenericCost(_)
         | Pred::SingleTarget
@@ -700,6 +710,7 @@ pub(crate) fn reads_of_condition(condition: &Condition) -> Traits {
         Condition::YourTurn | Condition::PaidToIgnore => Traits::CONTROL,
         Condition::PaidToIgnoreBy(who) => reads_of_ref(who).or(Traits::CONTROL),
         Condition::NewlyControlled(what) => reads_of_ref(what).or(Traits::CONTROL),
+        Condition::P158HadToAttack(what) => reads_of_ref(what),
         Condition::AttackedThisTurnBy { player, .. } => reads_of_ref(player),
         Condition::Exploited { by, what } => reads_of_ref(by).or(reads_of_ref(what)),
         Condition::DamagedThisGameBy { .. }

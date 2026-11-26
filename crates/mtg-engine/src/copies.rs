@@ -301,6 +301,10 @@ pub struct CardCopy {
     /// The copiable values of the card.
     #[cfg_attr(feature = "ts", ts(skip))]
     pub definition: Arc<CardDefinition>,
+    /// The card is named from outside the game (`Effect::CopyNamedCard`): `of` is the source that made the copy.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub outside: bool,
 }
 
 /// An activated or triggered ability was copied (CR 707.10): the copy is an ability on the stack above the original,
@@ -412,14 +416,15 @@ pub(crate) fn fold_card(state: &mut GameState, copy: &CardCopy) -> Result<(), En
             copy.owner
         )));
     }
-    let copied = state.objects.get(&copy.of.id).is_some_and(|card| {
-        card.counter() == copy.of.counter
-            && ((matches!(
-                card.zone(),
-                Zone::Exile | Zone::Hand(_) | Zone::Graveyard(_)
-            ) && card.kind() == ObjectKind::Card)
-                || card.permanent().is_some_and(PermanentState::prepared))
-    });
+    let copied = copy.outside
+        || state.objects.get(&copy.of.id).is_some_and(|card| {
+            card.counter() == copy.of.counter
+                && ((matches!(
+                    card.zone(),
+                    Zone::Exile | Zone::Hand(_) | Zone::Graveyard(_)
+                ) && card.kind() == ObjectKind::Card)
+                    || card.permanent().is_some_and(PermanentState::prepared))
+        });
     if !copied {
         return Err(invalid(format!(
             "{:?} is not a card in exile, a hand or a graveyard or a prepared permanent",

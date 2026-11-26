@@ -50,6 +50,7 @@ pub(crate) fn copy_of(
         of: permanent.reference(),
         owner: player,
         definition: Arc::new(face.copiable()),
+        outside: false,
     }));
     Some((event, object))
 }

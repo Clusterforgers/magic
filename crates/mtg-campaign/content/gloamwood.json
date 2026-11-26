@@ -1,0 +1,1254 @@
+{
+ "id": "gloamwood",
+ "name": "The Gloamwood",
+ "text": "Past the last village the trees close overhead and the sun never quite sets. Witches, beasts and the restless dead keep the old paths, and something older waits at the heart of the wood.",
+ "bosses": [
+  {
+   "id": "lumen_lantern",
+   "name": "Sister Lumen, the Lantern Saint",
+   "colors": "W",
+   "since": 18,
+   "deck_file": "fdc-calling-all-angels.json",
+   "innate": "lumen_guiding_light",
+   "round_phases": [
+    "lumen_lanterns_lit",
+    "lumen_endless_dusk"
+   ],
+   "satchel": [
+    {
+     "card": "Swords to Plowshares",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Valorous Stance",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Generous Gift",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Fumigate",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Follow my lantern. It is the only light in this wood that has never lied.",
+   "art": {
+    "card": "Linvala, the Preserver",
+    "oracle_id": "64f5689d-504d-40e9-bdb5-36dcefd257e2"
+   }
+  },
+  {
+   "id": "fennick_mists",
+   "name": "Old Fennick, the Mist-Weaver",
+   "colors": "U",
+   "since": 18,
+   "deck_file": "c14-peer-through-time.json",
+   "innate": "fennick_mistbound",
+   "round_phases": [
+    "fennick_fog_rolls_in",
+    "fennick_lost_paths"
+   ],
+   "satchel": [
+    {
+     "card": "Snap",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Counterspell",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Frantic Search",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Whelming Wave",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Every path here leads back to me. I spun them that way.",
+   "art": {
+    "card": "Sea Gate Oracle",
+    "oracle_id": "b333c194-d285-4dfb-984c-57b7e88393af"
+   }
+  },
+  {
+   "id": "hollis_barrow",
+   "name": "Hollis Graves, the Barrow Warden",
+   "colors": "B",
+   "since": 18,
+   "deck_file": "fdc-wretched-ranks.json",
+   "innate": "hollis_restless_dead",
+   "round_phases": [
+    "hollis_barrows_open",
+    "hollis_grave_chill"
+   ],
+   "satchel": [
+    {
+     "card": "Murder",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Cemetery Recruitment",
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 1
+     }
+    },
+    {
+     "card": "Night's Whisper",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Zombie Apocalypse",
+     "cue": {
+      "when": "graveyard",
+      "creatures": 3
+     }
+    }
+   ],
+   "line": "Nobody buried in my barrows stays buried for long.",
+   "art": {
+    "card": "Cemetery Reaper",
+    "oracle_id": "70fa209f-5e79-44de-81ce-1d8d0d8c1006"
+   }
+  },
+  {
+   "id": "cinderwick_wisp",
+   "name": "Jack Cinderwick, the Will-o'-Wisp",
+   "colors": "R",
+   "since": 18,
+   "deck_file": "sld-goblin-storm.json",
+   "innate": "cinderwick_wisplight",
+   "round_phases": [
+    "cinderwick_marsh_fire",
+    "cinderwick_wisps_dance"
+   ],
+   "satchel": [
+    {
+     "card": "Lightning Bolt",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 3
+     }
+    },
+    {
+     "card": "Faithless Looting",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Fiery Temper",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 3
+     }
+    },
+    {
+     "card": "Chain Reaction",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "Come closer, come closer. The light is just a little further on.",
+   "art": {
+    "card": "Redcap Gutter-Dweller",
+    "oracle_id": "ada48353-4c86-44d6-83a5-e7e3c703b948"
+   }
+  },
+  {
+   "id": "bramblehorn_stag",
+   "name": "Bramblehorn, the Elder Stag",
+   "colors": "G",
+   "since": 18,
+   "deck_file": "fdc-tramplesaurus-rex.json",
+   "innate": "bramblehorn_wild_hunt",
+   "round_phases": [
+    "bramblehorn_hunt_gathers",
+    "bramblehorn_old_growth"
+   ],
+   "satchel": [
+    {
+     "card": "Beast Within",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Harmonize",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Giant Growth",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Overrun",
+     "cue": {
+      "when": "lethal",
+      "reach": 3
+     }
+    }
+   ],
+   "line": "The hunt has run through this wood since before your kind had names.",
+   "art": {
+    "card": "Dungrove Elder",
+    "oracle_id": "32083c9f-04c6-4b6f-9e24-cc8f3cae3e3e"
+   }
+  },
+  {
+   "id": "pale_choir",
+   "name": "The Pale Choir",
+   "colors": "WU",
+   "since": 18,
+   "deck_file": "voc-spirit-squadron.json",
+   "innate": "pale_choir_dirge",
+   "round_phases": [
+    "pale_choir_chorus_swells",
+    "pale_choir_last_verse"
+   ],
+   "satchel": [
+    {
+     "card": "Momentary Blink",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "No More Lies",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Brainstorm",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Supreme Verdict",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Sing with us. Everyone who stays long enough does.",
+   "art": {
+    "card": "Rhoda, Geist Avenger",
+    "oracle_id": "3579e40c-6ec5-4927-8252-5a188db400ab"
+   }
+  },
+  {
+   "id": "nightshade_thief",
+   "name": "Mistress Nightshade, Thief of Names",
+   "colors": "UB",
+   "since": 18,
+   "deck_file": "znc-sneak-attack.json",
+   "innate": "nightshade_stolen_names",
+   "round_phases": [
+    "nightshade_court_of_whispers",
+    "nightshade_unseen"
+   ],
+   "satchel": [
+    {
+     "card": "Peppersmoke",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 1
+     }
+    },
+    {
+     "card": "Syphon Mind",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Stolen by the Fae",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Aetherize",
+     "cue": {
+      "when": "combat"
+     }
+    }
+   ],
+   "line": "Tell me your name, traveller. I promise to keep it safe.",
+   "art": {
+    "card": "Notion Thief",
+    "oracle_id": "f8dab16e-1d50-443e-9431-8b6f1cf61c9c"
+   }
+  },
+  {
+   "id": "grizel_bonfire",
+   "name": "Grizel, the Bonfire Witch",
+   "colors": "BR",
+   "since": 18,
+   "deck_file": "afc-planar-portal.json",
+   "innate": "grizel_bonfire_hex",
+   "round_phases": [
+    "grizel_cauldron_boils",
+    "grizel_witchs_bargain"
+   ],
+   "satchel": [
+    {
+     "card": "Kolaghan's Command",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Price of Fame",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Rakdos Charm",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Fiery Confluence",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "Every fire needs feeding, dearie. Step a little nearer.",
+   "art": {
+    "card": "Chittering Witch",
+    "oracle_id": "8b1aa532-4f19-407e-83a5-13b3160ad8c2"
+   }
+  },
+  {
+   "id": "gnarl_howler",
+   "name": "Old Gnarl, the Moon-Howler",
+   "colors": "RG",
+   "since": 18,
+   "deck_file": "nec-upgrades-unleashed.json",
+   "innate": "gnarl_moon_hunger",
+   "round_phases": [
+    "gnarl_moon_rises",
+    "gnarl_the_hunt"
+   ],
+   "satchel": [
+    {
+     "card": "Destructive Revelry",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Arc Lightning",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 3
+     }
+    },
+    {
+     "card": "Surge of Strength",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Chandra's Ignition",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "When the moon is full the whole wood is hungry.",
+   "art": {
+    "card": "Taurean Mauler",
+    "oracle_id": "fd5ee26c-cc54-4dc0-b611-5cda14354a5e"
+   }
+  },
+  {
+   "id": "hawthorn_hedge",
+   "name": "Mother Hawthorn, the Hedge Witch",
+   "colors": "GW",
+   "since": 18,
+   "deck_file": "mic-coven-counters.json",
+   "innate": "hawthorn_hedge_blessing",
+   "round_phases": [
+    "hawthorn_thorns_close",
+    "hawthorn_heartwood"
+   ],
+   "satchel": [
+    {
+     "card": "Dromoka's Command",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Path to Exile",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Tamiyo's Safekeeping",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Martial Coup",
+     "cue": {
+      "when": "mana",
+      "mana": 7
+     }
+    }
+   ],
+   "line": "My hedge keeps the wood out of the village. Or the village in.",
+   "art": {
+    "card": "Juniper Order Ranger",
+    "oracle_id": "18ca77c9-e7d2-4afc-a72b-98772578fad7"
+   }
+  },
+  {
+   "id": "morrow_chapel",
+   "name": "Abbess Morrow of the Bleeding Chapel",
+   "colors": "WB",
+   "since": 18,
+   "deck_file": "lcc-blood-rites.json",
+   "innate": "morrow_blood_vespers",
+   "round_phases": [
+    "morrow_penance",
+    "morrow_night_mass"
+   ],
+   "satchel": [
+    {
+     "card": "Vanishing Verse",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Heartless Act",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 5
+     }
+    },
+    {
+     "card": "Vampire's Zeal",
+     "reusable": true,
+     "cue": {
+      "when": "combat"
+     }
+    },
+    {
+     "card": "Olivia's Wrath",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    }
+   ],
+   "line": "Kneel, pilgrim. The chapel takes its tithe in red.",
+   "art": {
+    "card": "Mavren Fein, Dusk Apostle",
+    "oracle_id": "1b94a11b-21b0-4465-a520-69608f022fb4"
+   }
+  },
+  {
+   "id": "orrin_owltower",
+   "name": "Magister Orrin of the Owl Tower",
+   "colors": "UR",
+   "since": 18,
+   "deck_file": "c15-seize-control.json",
+   "innate": "orrin_owl_post",
+   "round_phases": [
+    "orrin_starfall",
+    "orrin_night_flight"
+   ],
+   "satchel": [
+    {
+     "card": "Electrolyze",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 1
+     }
+    },
+    {
+     "card": "Swan Song",
+     "reusable": true,
+     "cue": {
+      "when": "counter",
+      "mana_value": 4
+     }
+    },
+    {
+     "card": "Expressive Iteration",
+     "reusable": true,
+     "cue": {
+      "when": "mana",
+      "mana": 4
+     }
+    },
+    {
+     "card": "Thunderous Wrath",
+     "cue": {
+      "when": "kill",
+      "toughness": 5
+     }
+    }
+   ],
+   "line": "The stars told me you would come. They did not say you would leave.",
+   "art": {
+    "card": "Talrand, Sky Summoner",
+    "oracle_id": "ea1eb902-a23c-44ff-9169-19baf71de238"
+   }
+  },
+  {
+   "id": "burdock_hollow",
+   "name": "Granny Burdock of the Mushroom Hollow",
+   "colors": "BG",
+   "since": 18,
+   "deck_file": "blc-squirreled-away.json",
+   "innate": "burdock_mushroom_compost",
+   "round_phases": [
+    "burdock_fairy_ring",
+    "burdock_spore_bloom"
+   ],
+   "satchel": [
+    {
+     "card": "Maelstrom Pulse",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Village Rites",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    },
+    {
+     "card": "Witherbloom Charm",
+     "reusable": true,
+     "cue": {
+      "when": "hand_low",
+      "cards": 2
+     }
+    },
+    {
+     "card": "Second Harvest",
+     "cue": {
+      "when": "board",
+      "creatures": 6
+     }
+    }
+   ],
+   "line": "Everything rots, love. Then everything grows.",
+   "art": {
+    "card": "Deep Forest Hermit",
+    "oracle_id": "80e9a42e-f4f4-4bfc-91a2-ad124737dca2"
+   }
+  },
+  {
+   "id": "mossbeard_sage",
+   "name": "Mossbeard, the Toad-Sage",
+   "colors": "GU",
+   "since": 18,
+   "deck_file": "c15-swell-the-host.json",
+   "innate": "mossbeard_toads_gift",
+   "round_phases": [
+    "mossbeard_bog_holds",
+    "mossbeard_moss_cloak"
+   ],
+   "satchel": [
+    {
+     "card": "Simic Charm",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Growth Spiral",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 4
+     }
+    },
+    {
+     "card": "Rapid Hybridization",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "River's Rebuke",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Sit a while in the bog. Nobody here is in any hurry.",
+   "art": {
+    "card": "Great Oak Guardian",
+    "oracle_id": "5dba7746-c087-4ec1-92ca-ab9882dea24d"
+   }
+  },
+  {
+   "id": "corvane_witchfinder",
+   "name": "Witchfinder Corvane",
+   "colors": "WR",
+   "since": 18,
+   "deck_file": "mkc-blame-game.json",
+   "innate": "corvane_torchlight",
+   "round_phases": [
+    "corvane_pyres_lit",
+    "corvane_zeal"
+   ],
+   "satchel": [
+    {
+     "card": "Justice Strike",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": true
+     }
+    },
+    {
+     "card": "Boros Charm",
+     "reusable": true,
+     "cue": {
+      "when": "protect"
+     }
+    },
+    {
+     "card": "Wear // Tear",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Storm's Wrath",
+     "cue": {
+      "when": "behind_on_board",
+      "power": 8
+     }
+    }
+   ],
+   "line": "Only a witch would walk this wood at dusk. Hold still.",
+   "art": {
+    "card": "Keeper of the Accord",
+    "oracle_id": "49b9a3ac-d245-431a-bf40-64d1b8dc2b91"
+   }
+  },
+  {
+   "id": "nettlewick_hag",
+   "name": "Mother Nettlewick, the Hollow Hag",
+   "final": true,
+   "colors": "BG",
+   "since": 18,
+   "deck_file": "dsc-death-toll.json",
+   "innate": "nettlewick_hags_due",
+   "round_phases": [
+    "nettlewick_cauldron",
+    "nettlewick_hollow_moon"
+   ],
+   "satchel": [
+    {
+     "card": "Assassin's Trophy",
+     "reusable": true,
+     "cue": {
+      "when": "eyed",
+      "creature": false
+     }
+    },
+    {
+     "card": "Victimize",
+     "reusable": true,
+     "cue": {
+      "when": "graveyard",
+      "creatures": 2
+     }
+    },
+    {
+     "card": "Golgari Charm",
+     "reusable": true,
+     "cue": {
+      "when": "behind_on_board",
+      "power": 4
+     }
+    },
+    {
+     "card": "Living Death",
+     "cue": {
+      "when": "graveyard",
+      "creatures": 4
+     }
+    }
+   ],
+   "line": "Every witch in this wood learned at my cauldron. Every one of them still owes me.",
+   "art": {
+    "card": "Old Stickfingers",
+    "oracle_id": "1d85eec2-80db-466c-bd48-d2a12866e8bd"
+   }
+  },
+  {
+   "id": "antlered_king",
+   "name": "The Antlered King",
+   "final": true,
+   "colors": "WRG",
+   "since": 18,
+   "deck_file": "lcc-veloci-ramp-tor.json",
+   "innate": "antlered_rut",
+   "round_phases": [
+    "antlered_herd_answers",
+    "antlered_crown"
+   ],
+   "satchel": [
+    {
+     "card": "Savage Stomp",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 4
+     }
+    },
+    {
+     "card": "Mizzium Mortars",
+     "reusable": true,
+     "cue": {
+      "when": "kill",
+      "toughness": 4
+     }
+    },
+    {
+     "card": "Thunderherd Migration",
+     "reusable": true,
+     "cue": {
+      "when": "early_turns",
+      "turns": 4
+     }
+    },
+    {
+     "card": "Rishkar's Expertise",
+     "cue": {
+      "when": "hand_low",
+      "cards": 3
+     }
+    }
+   ],
+   "line": "This wood was mine before the first axe. It will be mine after the last.",
+   "art": {
+    "card": "Regal Behemoth",
+    "oracle_id": "797c2b1c-c373-4735-b397-f561559c7c61"
+   }
+  }
+ ],
+ "events": [
+  {
+   "id": "witchs_cottage",
+   "since": 18,
+   "title": "The Witch's Cottage",
+   "text": "A cottage of gingerbread and sugar-glass stands in a clearing. The table is laid, and nobody is home.",
+   "options": [
+    {
+     "label": "Eat from the table",
+     "outcomes": [
+      {
+       "Life": -6
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Trade a card for a charm on the shelf",
+     "outcomes": [
+      "LoseCard",
+      {
+       "RelicOf": "Common"
+      }
+     ]
+    },
+    {
+     "label": "Warm yourself by the oven and go",
+     "outcomes": [
+      {
+       "Life": 6
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "fairy_ring",
+   "since": 18,
+   "title": "The Fairy Ring",
+   "text": "A perfect circle of pale mushrooms glows in the dusk. Whatever steps inside is weighed, and paid for.",
+   "options": [
+    {
+     "label": "Step into the ring",
+     "outcomes": [
+      {
+       "MaxLife": -5
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Leave a relic for the fae",
+     "outcomes": [
+      "LoseRelic",
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Pick the mushrooms and sell them",
+     "outcomes": [
+      {
+       "Gold": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wishing_well",
+   "since": 18,
+   "title": "The Wishing Well",
+   "text": "A mossy well answers wishes in the voice of whoever made them. It keeps what falls in.",
+   "options": [
+    {
+     "label": "Wish for a second of something",
+     "outcomes": [
+      {
+       "Life": -5
+      },
+      "Duplicate"
+     ]
+    },
+    {
+     "label": "Drop a card in for coin",
+     "outcomes": [
+      "LoseCard",
+      {
+       "Gold": 40
+      }
+     ]
+    },
+    {
+     "label": "Drink from the bucket",
+     "outcomes": [
+      {
+       "Life": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "hanging_tree",
+   "since": 18,
+   "title": "The Hanging Tree",
+   "text": "An old oak hung with lanterns, bones and a rusted crown. The tree gives to those who give it something back.",
+   "options": [
+    {
+     "label": "Give it your blood",
+     "outcomes": [
+      {
+       "Life": -12
+      },
+      {
+       "RelicOf": "Rare"
+      }
+     ]
+    },
+    {
+     "label": "Give it everything",
+     "outcomes": [
+      {
+       "MaxLife": -10
+      },
+      {
+       "RelicOf": "Mythic"
+      }
+     ]
+    },
+    {
+     "label": "Take the coins from its roots",
+     "outcomes": [
+      {
+       "Gold": 20
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "wayside_peddler",
+   "since": 18,
+   "title": "The Wayside Peddler",
+   "text": "A peddler with a lantern and a cart full of oddities waits at the crossroads, as if expecting you.",
+   "options": [
+    {
+     "label": "Buy what she offers",
+     "outcomes": [
+      {
+       "Gold": -30
+      },
+      "CardPick"
+     ]
+    },
+    {
+     "label": "Carry her cart through the bog",
+     "outcomes": [
+      {
+       "Life": -4
+      },
+      {
+       "Gold": 40
+      }
+     ]
+    },
+    {
+     "label": "Wish her good evening",
+     "outcomes": [
+      {
+       "Life": 5
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "pool": [
+  [
+   "Swords to Plowshares",
+   "W"
+  ],
+  [
+   "Path to Exile",
+   "W"
+  ],
+  [
+   "Valorous Stance",
+   "W"
+  ],
+  [
+   "Banishing Light",
+   "W"
+  ],
+  [
+   "Ajani's Pridemate",
+   "W"
+  ],
+  [
+   "Brainstorm",
+   "U"
+  ],
+  [
+   "Ponder",
+   "U"
+  ],
+  [
+   "Counterspell",
+   "U"
+  ],
+  [
+   "Mulldrifter",
+   "U"
+  ],
+  [
+   "Night's Whisper",
+   "B"
+  ],
+  [
+   "Feed the Swarm",
+   "B"
+  ],
+  [
+   "Reanimate",
+   "B"
+  ],
+  [
+   "Doom Blade",
+   "B"
+  ],
+  [
+   "Village Rites",
+   "B"
+  ],
+  [
+   "Lightning Bolt",
+   "R"
+  ],
+  [
+   "Fiery Temper",
+   "R"
+  ],
+  [
+   "Thrill of Possibility",
+   "R"
+  ],
+  [
+   "Chaos Warp",
+   "R"
+  ],
+  [
+   "Lignify",
+   "G"
+  ],
+  [
+   "Prey Upon",
+   "G"
+  ],
+  [
+   "Rancor",
+   "G"
+  ],
+  [
+   "Eternal Witness",
+   "G"
+  ],
+  [
+   "Llanowar Elves",
+   "G"
+  ],
+  [
+   "Beast Within",
+   "G"
+  ],
+  [
+   "Harmonize",
+   "G"
+  ],
+  [
+   "Kodama's Reach",
+   "G"
+  ],
+  [
+   "Witherbloom Charm",
+   "BG"
+  ],
+  [
+   "Maelstrom Pulse",
+   "BG"
+  ],
+  [
+   "Putrefy",
+   "BG"
+  ],
+  [
+   "Rakdos Charm",
+   "BR"
+  ],
+  [
+   "Simic Charm",
+   "UG"
+  ],
+  [
+   "Growth Spiral",
+   "UG"
+  ],
+  [
+   "Dromoka's Command",
+   "WG"
+  ],
+  [
+   "Vanishing Verse",
+   "WB"
+  ],
+  [
+   "Electrolyze",
+   "UR"
+  ],
+  [
+   "Boros Charm",
+   "WR"
+  ],
+  [
+   "Sol Ring",
+   ""
+  ],
+  [
+   "Arcane Signet",
+   ""
+  ],
+  [
+   "Mind Stone",
+   ""
+  ],
+  [
+   "Wayfarer's Bauble",
+   ""
+  ],
+  [
+   "Swiftfoot Boots",
+   ""
+  ],
+  [
+   "Fellwar Stone",
+   ""
+  ],
+  [
+   "Burnished Hart",
+   ""
+  ],
+  [
+   "Solemn Simulacrum",
+   ""
+  ]
+ ],
+ "pool_types": {
+  "Swords to Plowshares": "Instant",
+  "Path to Exile": "Instant",
+  "Valorous Stance": "Instant",
+  "Banishing Light": "Enchantment",
+  "Ajani's Pridemate": "Creature — Cat Soldier",
+  "Brainstorm": "Instant",
+  "Ponder": "Sorcery",
+  "Counterspell": "Instant",
+  "Mulldrifter": "Creature — Elemental",
+  "Night's Whisper": "Sorcery",
+  "Feed the Swarm": "Sorcery",
+  "Reanimate": "Sorcery",
+  "Doom Blade": "Instant",
+  "Village Rites": "Instant",
+  "Lightning Bolt": "Instant",
+  "Fiery Temper": "Instant",
+  "Thrill of Possibility": "Instant",
+  "Chaos Warp": "Instant",
+  "Lignify": "Kindred Enchantment — Treefolk Aura",
+  "Prey Upon": "Sorcery",
+  "Rancor": "Enchantment — Aura",
+  "Eternal Witness": "Creature — Human Shaman",
+  "Llanowar Elves": "Creature — Elf Druid",
+  "Beast Within": "Instant",
+  "Harmonize": "Sorcery",
+  "Kodama's Reach": "Sorcery — Arcane",
+  "Witherbloom Charm": "Instant",
+  "Maelstrom Pulse": "Sorcery",
+  "Putrefy": "Instant",
+  "Rakdos Charm": "Instant",
+  "Simic Charm": "Instant",
+  "Growth Spiral": "Instant",
+  "Dromoka's Command": "Instant",
+  "Vanishing Verse": "Instant",
+  "Electrolyze": "Instant",
+  "Boros Charm": "Instant",
+  "Sol Ring": "Artifact",
+  "Arcane Signet": "Artifact",
+  "Mind Stone": "Artifact",
+  "Wayfarer's Bauble": "Artifact",
+  "Swiftfoot Boots": "Artifact — Equipment",
+  "Fellwar Stone": "Artifact",
+  "Burnished Hart": "Artifact Creature — Elk",
+  "Solemn Simulacrum": "Artifact Creature — Golem"
+ }
+}

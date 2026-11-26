@@ -60,6 +60,7 @@ mod tests {
             filter: mtg_cards::refs::Selector::default(),
             count: mtg_cards::value::Amount::X,
             least: None,
+            alike: None,
         }
     }
 

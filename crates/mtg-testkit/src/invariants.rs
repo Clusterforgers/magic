@@ -230,9 +230,11 @@ pub fn check_decision(engine: &Engine) -> Result<(), Violation> {
                 decision.player
             )));
         }
-        // Under shared team turns each player of the active team chooses their own attacks (CR 805).
+        // Under shared team turns each player of the active team chooses their own attacks (CR 805); a rule may give
+        // the choice of attackers to another player (CR 508.1a).
         if matches!(decision.kind, DecisionKind::DeclareAttackers(_))
             && (state.active_player().is_none() || !state.is_active(decision.player))
+            && mtg_engine::rules::r5081_attack_chooser(state) != Some(decision.player)
         {
             return Err(Violation::Bookkeeping(format!(
                 "{:?} is asked for attackers but it is not their turn",
@@ -1508,7 +1510,7 @@ impl InvariantChecker {
         } else {
             0
         };
-        let limit = mtg_engine::rules::loyalty_activations(&self.shadow, player) + more;
+        let limit = mtg_engine::rules::loyalty_activations(&self.shadow, player, source) + more;
         let entry = self.loyalty_turns.entry(source).or_insert((number, 0));
         if entry.0 != number {
             *entry = (number, 0);

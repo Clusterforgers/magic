@@ -404,7 +404,12 @@ struct Shared {
     throttle: Throttle,
     /// How bot seats answer: their delay and the server's thinking slots.
     bots: crate::bots::BotPace,
+    /// The id of each recorded game once its end is written, for whoever settles what hangs on it.
+    ended: tokio::sync::broadcast::Sender<GameId>,
 }
+
+/// Ended games a listener may fall behind by before it misses some.
+const ENDED: usize = 64;
 
 /// The games of one server, by id. Cheap to clone.
 #[derive(Clone)]
@@ -452,8 +457,14 @@ impl Registry {
                     delay: config.bot_delay,
                     thinkers: crate::bots::Thinkers::new(config.bot_thinkers),
                 },
+                ended: tokio::sync::broadcast::channel(ENDED).0,
             }),
         }
+    }
+
+    /// Hears of each recorded game whose end is written from now on (a Delves fight settles its run by it).
+    pub(crate) fn ended_games(&self) -> tokio::sync::broadcast::Receiver<GameId> {
+        self.shared.ended.subscribe()
     }
 
     /// What starts the fetching of a game's pictures; none without a card database.
@@ -810,7 +821,8 @@ impl Registry {
         records.insert(id, recipe, meta, &rows).await?;
         let recorder = Recorder::new(records.clone(), id, vec![false; slots.len()], false)
             .with_warmer(self.warmer(), recipe.card_art())
-            .with_reads(self.read_repo(), recipe.reads.clone());
+            .with_reads(self.read_repo(), recipe.reads.clone())
+            .with_ended(self.shared.ended.clone());
         let spawned = spawn_named(
             id,
             setup,

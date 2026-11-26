@@ -1,0 +1,42 @@
+{
+  "oracle_id": "05ac866d-0405-4d25-986a-c10fcfc097e6",
+  "name": "Illusionary Mask",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Illusionary Mask",
+      "oracle_fingerprint": "d864c9193498d08470393bf29d679395",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": "{X}",
+            "timing": "Sorcery",
+            "effects": [
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "In": "Hand" },
+                      { "OwnedBy": "You" },
+                      { "Type": "Creature" },
+                      "R6008PaidBySpent"
+                    ]
+                  },
+                  "count": { "min": 0, "max": 1 },
+                  "as": "card"
+                }
+              },
+              {
+                "CastFromZone": {
+                  "what": { "Bound": "card" },
+                  "free": true,
+                  "way": "R6008FaceDown"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

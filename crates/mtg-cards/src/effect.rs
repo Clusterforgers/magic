@@ -175,6 +175,22 @@ pub enum Destination {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         under: Option<Ref>,
     },
+    /// The battlefield face down under its owner's control with the characteristics the effect lists (CR 708.2): a creature
+    /// of this power and toughness with these abilities and nothing else ("It's a 3/3 creature with ..."), which are its
+    /// copiable values; an instant or sorcery card enters too.
+    R6008FaceDownAs {
+        /// Its power.
+        power: i32,
+        /// Its toughness.
+        toughness: i32,
+        /// Its abilities.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        rules: Vec<crate::ability::Ability>,
+        /// The card's name is noted on the permanent ("Note the name of ..."), for `Effect::R6008CopyNoted`; a copy of
+        /// the permanent does not know it.
+        #[serde(default, skip_serializing_if = "is_false")]
+        note_name: bool,
+    },
     /// Its owner's library.
     Library {
         /// Top, bottom or shuffled in.
@@ -263,6 +279,9 @@ pub enum Produce {
     /// One mana of any color chosen as the controller drafted cards named like the source ("Add one mana of any color
     /// chosen as you drafted cards named ~"); none in a game without a draft, where no color was chosen (Paliano ruling).
     DraftedColors,
+    /// One mana of either of the colors circled for the source as its deck was built (`Ability::CircleColors`), those of
+    /// the permanent it copies for a copy; none when no color was circled ("Add one mana of either of the circled colors").
+    Circled,
     /// One more mana of each type for each unspent mana of that type in the player's pool, restricted mana counted too;
     /// the mana added has no restriction ("Double the amount of each type of unspent mana you have", Doubling Cube
     /// rulings; the type of mana is its color or colorless).
@@ -470,6 +489,9 @@ pub enum PileFate {
     },
     /// "put it back on top of your library".
     OnTop,
+    /// The pile stays in exile face down, for no player to look at (CR 406.3), and the source keeps it in its shuffled
+    /// order ("exile them in a face-down pile, and shuffle that pile"): `Ref::R406PileTop` reads its top card.
+    R406Kept,
 }
 
 /// What an `Effect::ChooseValue` asks a player for.
@@ -511,6 +533,9 @@ pub enum ValueKind {
     /// One of the creature types of the first object the reference names that the source has not noted
     /// (`Effect::R112NoteChosen`): "note one of its creature types that hasn't been noted for Volo's Journal".
     R113CreatureTypeOfNotNoted(crate::refs::Ref),
+    /// One of these words that the source has not noted (`Effect::R112NoteChosen`): "choose a card name that hasn't been
+    /// chosen from among Disenchant, Braingeyser, ..."; nothing is chosen once every word is noted.
+    OptionsNotNoted(Vec<String>),
     /// A letter of the English alphabet ("choose a letter"), remembered as a word of one lowercase letter.
     Letter,
     /// One of the spells the player `caster` names cast this turn that the selector matches as cast ("one of those sorcery
@@ -1321,6 +1346,38 @@ pub enum Effect {
         /// What is turned.
         what: Ref,
     },
+    /// The controller of each spell `what` names exiles it, and its card keeps the spell as it was: its modes, targets, X,
+    /// optional costs and the way it was cast (CR 707.10), for `R707PutBack` ("Target spell's controller exiles it"). A copy
+    /// of a spell ceases to exist instead (CR 707.10a). The cards are bound to `as`, as they are in exile, and the
+    /// controllers of the spells to `player_as`.
+    R707ExileSpell {
+        /// The spells exiled.
+        what: Ref,
+        /// The name the cards exiled are bound to.
+        #[serde(rename = "as")]
+        bind: String,
+        /// The name the controllers of the spells are bound to.
+        player_as: String,
+    },
+    /// The player puts each card in exile `what` names that an `R707ExileSpell` kept a spell for onto the stack as a copy
+    /// of that original spell, with its choices, under their control (CR 707.10): it is not cast, so nothing that
+    /// triggers on a cast triggers ("the player puts it onto the stack as a copy of the original spell").
+    R707PutBack {
+        /// Who puts it onto the stack and controls it.
+        who: Ref,
+        /// The cards put back.
+        what: Ref,
+    },
+    /// Turns the cards lying face down in exile that `what` names face up, for every player to see (CR 406.3): "Turn all
+    /// cards exiled with ~ face up." A card face up already, or in another zone, is passed over. The cards turned are
+    /// bound to the name, as they are then.
+    R406TurnUpExiled {
+        /// What is turned.
+        what: Ref,
+        /// The name the cards turned are bound to.
+        #[serde(rename = "as")]
+        bind: String,
+    },
     /// Turns face-up permanents face down as 2/2 morphs (CR 708.2a).
     TurnFaceDown {
         /// What is turned.
@@ -1539,6 +1596,16 @@ pub enum Effect {
         /// Its abilities.
         abilities: Vec<crate::ability::Ability>,
     },
+    /// Until end of turn each player named has these abilities, written as on a permanent ("Until end of turn, any time
+    /// you could activate a mana ability, you may pay 1 life. If you do, add {C}."): they are held by an emblem in the
+    /// player's command zone that ceases to exist in the cleanup step.
+    R6051PlayerGains {
+        /// Who gains them.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The abilities.
+        abilities: Vec<crate::ability::Ability>,
+    },
     /// A Spirit returns to life (`docs/delves.md`, Spirits): each player named who is a Spirit loses its haunt emblem, is a
     /// living player again with this life total and draws this many cards; anyone else is unchanged.
     Revive {
@@ -1746,6 +1813,10 @@ pub enum Effect {
         /// of your library").
         #[serde(default, skip_serializing_if = "std::ops::Not::not")]
         bottom: bool,
+        /// The cards lie face down and only this player, who exiles them, may look at them (CR 406.3): "Target opponent
+        /// looks at the top card of your library, then exiles it face down"; never with `sealed`.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r406_held_by: Option<Ref>,
     },
     /// The player may cast a card during the resolution, without waiting for priority (CR 608.2g); `otherwise` is
     /// done when they do not.
@@ -1786,6 +1857,26 @@ pub enum Effect {
         #[serde(default, skip_serializing_if = "is_false")]
         must: bool,
     },
+    /// The player may cast spells from among the cards `from` names, one at a time in the order they choose, while what
+    /// they cast stays within the budget (CR 608.2g): at most `most` spells, and mana values, as the cards were, adding up
+    /// to at most `total` ("any number of spells from among cards exiled with this artifact with total mana value X or
+    /// less", "up to three of the copies").
+    P160CastWithin {
+        /// Who casts them.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The cards cast from.
+        from: Ref,
+        /// The most spells cast; any number when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        most: Option<Amount>,
+        /// The most their mana values add up to; any total when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        total: Option<Amount>,
+        /// They are cast without paying their mana costs (CR 118.9).
+        #[serde(default, skip_serializing_if = "is_false")]
+        free: bool,
+    },
     /// The player copies a card in exile (CR 707.12) and binds the copy: a token card in exile that its owner may cast
     /// (`CastFromZone`) and that ceases to exist as soon as it is anywhere but on the stack (CR 704.5e).
     CopyCard {
@@ -1794,6 +1885,30 @@ pub enum Effect {
         who: Ref,
         /// The card copied.
         what: Ref,
+        /// The name the copy is bound to, as the object it becomes in exile.
+        #[serde(rename = "as")]
+        bind: String,
+    },
+    /// The player creates a copy of the card with the name the resolution chose from outside the game (Garth One-Eye:
+    /// "Create a copy of the card with the chosen name") and binds it: a token card in exile, as `CopyCard` makes, taken
+    /// from the cards the game can conjure.
+    CopyNamedCard {
+        /// Who owns the copy.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The name the card's name was chosen under (`ChooseValue` of `ValueKind::OptionsNotNoted`).
+        chosen: String,
+        /// The name the copy is bound to, as the object it becomes in exile.
+        #[serde(rename = "as")]
+        bind: String,
+    },
+    /// The player creates a copy of the card with the name noted on the source (`Destination::R6008FaceDownAs` with
+    /// `note_name`: "create a copy of the card with the noted name") and binds it as `CopyCard` binds its copies: a token
+    /// card in exile. A source that noted no name, such as a copy of the permanent, makes no copy and binds nothing.
+    R6008CopyNoted {
+        /// Who owns the copy.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
         /// The name the copy is bound to, as the object it becomes in exile.
         #[serde(rename = "as")]
         bind: String,
@@ -2459,6 +2574,14 @@ pub enum Effect {
         /// Which of them pass.
         pick: R6401Pick,
     },
+    /// For each permanent the reference names the controller chooses a different opponent, and each opponent gains
+    /// control of the permanent chosen for them, for good (CR 108.4, 613.1b): "For each of those permanents, choose a
+    /// different opponent. Each opponent gains control of the permanent for which they were chosen." Permanents beyond
+    /// the number of opponents stay where they are.
+    R1084ToDifferentOpponents {
+        /// The permanents given away.
+        what: Ref,
+    },
     /// The controller distributes counters among any number of the permanents the reference names as the effect resolves,
     /// at least one on each chosen ("distribute three stun counters among any number of tapped creatures your opponents
     /// control"); none when it names none.
@@ -3011,6 +3134,7 @@ pub fn impulse(count: Amount, duration: Duration) -> Vec<Effect> {
             bind: IMPULSE.to_owned(),
             sealed: false,
             bottom: false,
+            r406_held_by: None,
         },
         Effect::Rule {
             rule: GameRule::MayCast(CastPermission {

@@ -1,0 +1,38 @@
+{
+  "oracle_id": "d8c4312e-03ae-43f3-b92c-4adb6875534c",
+  "name": "Garth One-Eye",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Garth One-Eye",
+      "oracle_fingerprint": "682fb541db3baa68e7cb9188594e4c0d",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": ["Tap"],
+            "effects": [
+              {
+                "ChooseValue": {
+                  "kind": {
+                    "OptionsNotNoted": [
+                      "Disenchant",
+                      "Braingeyser",
+                      "Terror",
+                      "Shivan Dragon",
+                      "Regrowth",
+                      "Black Lotus"
+                    ]
+                  },
+                  "as": "name"
+                }
+              },
+              { "R112NoteChosen": "name" },
+              { "CopyNamedCard": { "chosen": "name", "as": "copy" } },
+              { "CastFromZone": { "what": { "Bound": "copy" } } }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

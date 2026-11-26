@@ -108,6 +108,16 @@ fn w11a_declare(
         return crate::party_attacks::answer(state, player, options, attackers, extras);
     }
     check_attackers(options, &attackers)?;
+    // The player a rule lets choose the attackers names them; the active player declares them after (CR 508.1a).
+    if state.active_player() != Some(player)
+        && crate::rules::r5081_attack_chooser(state) == Some(player)
+        && state.combat().r5081_chosen.is_none()
+    {
+        return Ok(Outcome::Events(vec![Event::R5081AttackersChosen {
+            chooser: player,
+            attackers: attackers.iter().map(|(object, _)| *object).collect(),
+        }]));
+    }
     crate::w11a_exert::w11a_check_exert(options, &attackers, &extras.exert)?;
     crate::r114_enlist::r114_check_enlist(options, &attackers, &extras.r114_enlist)?;
     crate::keywords::banding::check_bands(state, &attackers, &extras.bands)?;
@@ -296,11 +306,11 @@ pub(crate) fn handle(
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
             choose::yes_no_answer(player, options, choice)
         }
-        // In the opening the only question of options is a commander's color.
+        // In the opening the questions of options are a commander's color and the colors circled for a card.
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice))
             if state.stage() == Stage::Mulligan =>
         {
-            crate::r404_commander_color::answer(player, options, choice)
+            crate::circled::opening_answer(state, player, options, choice)
         }
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice)) => {
             option_or_untap(state, player, options, choice, pending.is_some())

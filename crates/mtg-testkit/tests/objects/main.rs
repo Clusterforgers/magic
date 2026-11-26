@@ -132,6 +132,7 @@ mod top_of_library;
 mod transform;
 mod umbra_armor;
 mod un33_attractions;
+mod un34_compiled_sheets;
 mod un34_stickers;
 mod w10b_phasing;
 mod w13b_mill_rad;

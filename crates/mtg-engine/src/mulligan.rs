@@ -491,6 +491,10 @@ pub(crate) fn open_decisions(state: &GameState) -> Vec<Decision> {
     if let Some(question) = crate::r404_commander_color::question(state) {
         return vec![question];
     }
+    // So are the colors circled for a card as its deck was built.
+    if let Some(question) = crate::circled::question(state) {
+        return vec![question];
+    }
     let mut asked: Vec<Decision> = state
         .turn_order_from(state.first_player())
         .into_iter()
@@ -521,6 +525,9 @@ pub(crate) fn next(state: &GameState) -> Progress {
 
     // A commander's color is chosen before the game begins, before any hand is dealt.
     if let Some(decision) = crate::r404_commander_color::question(state) {
+        return Progress::Decide(decision);
+    }
+    if let Some(decision) = crate::circled::question(state) {
         return Progress::Decide(decision);
     }
     let needs_hand = with_status(|s| s == MulliganStatus::NeedsHand);

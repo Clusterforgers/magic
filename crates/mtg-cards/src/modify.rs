@@ -190,6 +190,9 @@ pub enum Modification {
     /// 605.1a), as `GainAbilitiesOf` gives them: "has all activated abilities of lands your opponents control except mana
     /// abilities".
     R111GainNonManaAbilitiesOf(Ref),
+    /// The object has the loyalty abilities of the objects the reference names (layer 6, CR 606.3), as `GainAbilitiesOf` gives
+    /// the activated ones: "has all loyalty abilities of all other planeswalkers on the battlefield".
+    P160GainLoyaltyAbilitiesOf(Ref),
     /// The object has the activated and triggered abilities printed on the cards the reference names, wherever they are
     /// (layer 6): "~ has all activated and triggered abilities of the last chosen card".
     R6702GainActivatedAndTriggeredOf(Ref),
@@ -209,6 +212,13 @@ pub enum Modification {
     LosePrinted(Arc<Ability>),
     /// Changes the controller to the player (layer 2).
     SetController(Ref),
+    /// Players other than the object's controller can't gain control of it (a restriction, no layer): an effect that would
+    /// give another player control does not apply to it while this holds ("other players can't gain control of them").
+    R1012ControlKept,
+    /// The object can't be enchanted (a restriction, no layer): an Aura can't be attached to it or target it as it is
+    /// cast, while an Aura already attached stays ("can't be enchanted ... This effect doesn't remove Auras already
+    /// attached").
+    R3034CantBeEnchanted,
     /// The object can't attack (a restriction, no layer).
     CantAttack,
     /// The object can't attack the controller of the effect or ability ("you"), the planeswalkers they control or both
@@ -317,6 +327,7 @@ impl Modification {
             | Modification::GrantAbility(_)
             | Modification::GainAbilitiesOf(_)
             | Modification::R111GainNonManaAbilitiesOf(_)
+            | Modification::P160GainLoyaltyAbilitiesOf(_)
             | Modification::R6702GainActivatedAndTriggeredOf(_)
             | Modification::R114StickerAbilitiesOf(_)
             | Modification::LoseThisAbility
@@ -334,6 +345,8 @@ impl Modification {
             | Modification::R6601CantAttackPlayers(_)
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
@@ -524,8 +537,9 @@ pub struct CastPermission {
     /// What a spell cast through it gets: "If you cast a spell this way, that artifact enters tapped."
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub riders: Vec<CastRider>,
-    /// At most this many of the objects `only` names may be cast or played through it, all told, within the turn ("Until
-    /// end of turn, you may play one of those cards"); any number when absent.
+    /// At most this many of the objects `only` names may be cast or played through it, all told, while it lasts ("Until
+    /// end of turn, you may play one of those cards", "You may play up to two of those cards until the end of your next
+    /// turn"); any number when absent.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub limit: Option<u32>,
 }
@@ -993,6 +1007,17 @@ pub enum GameRule {
         )]
         whose: Ref,
     },
+    /// The player `chooser` names chooses which creatures attack (CR 508.1a): "You choose which creatures attack this
+    /// turn." The active player still chooses what each of them attacks (CR 508.1b) and pays the costs to attack; the
+    /// declaration obeys every restriction and requirement.
+    R5081ChoosesAttackers {
+        /// Who chooses the attackers instead.
+        chooser: Ref,
+    },
+    /// The sources the selector picks deal damage as colorless sources (CR 609.7): "Black and/or red permanents and spells
+    /// are colorless sources of damage." Only what looks at the damage (protection, prevention by the source's color)
+    /// reads them so; the sources keep their colors otherwise.
+    R6097ColorlessDamage(Selector),
     /// The player `chooser` names casts every ballot of each vote, for each player (CR 701.38): "You choose how each
     /// player votes this turn."; each vote still counts as that player's.
     R6400ChoosesVotes {
@@ -1302,6 +1327,10 @@ pub enum GameRule {
     /// The players may activate the loyalty abilities of planeswalkers they control twice each turn rather than only
     /// once (CR 606.3).
     LoyaltyTwice(Ref),
+    /// The loyalty abilities of the permanent with this rule may be activated twice each turn rather than only once
+    /// (CR 606.3): "You may activate the loyalty abilities of ~ twice each turn rather than only once." (Urza,
+    /// Planeswalker); twice in all with `LoyaltyTwice`.
+    P158LoyaltyTwiceThis,
     /// For each planeswalker the players control, they may activate one of its loyalty abilities once more this turn
     /// as though none had been activated (CR 606.3): each such rule raises the allowance by one (The Chain Veil).
     R6600LoyaltyOnceMore(Ref),
@@ -1504,6 +1533,18 @@ pub enum GameRule {
     /// "Spend only mana produced by basic lands to cast this spell.": the cast of the card spends only mana whose source
     /// the filter holds for, from the pool or from mana abilities of such sources; no `from`.
     SpendOnlyFrom(crate::spend::SpendFilter),
+    /// The players may tap lands they don't control for mana (CR 605.1a, 602.2): they activate the mana abilities with
+    /// {T} in their costs of untapped lands other players control as though they controlled them, and the mana goes to
+    /// their own pool with the restrictions listed ("Until end of turn, you may tap lands you don't control for mana.
+    /// Spend this mana only to cast spells.").
+    R605TapOthersLands {
+        /// The players who may tap them; the controller of the rule when absent.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// What the mana may be spent on; anything when empty.
+        #[serde(default, skip_serializing_if = "Vec::is_empty")]
+        only: Vec<crate::spend::SpendOn>,
+    },
     /// `SpendOnlyFrom` for one way of casting the card only: "You may pay {R}{G} rather than pay this spell's mana cost.
     /// Spend only mana produced by Treasures to cast it this way."
     R112SpendOnlyFromWay {

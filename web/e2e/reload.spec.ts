@@ -107,7 +107,8 @@ for (const seats of [2, 4]) {
         before.length * 0.1,
       )
       expect(
-        after.some((line) => /^play: Ada (plays|casts) /.test(line)),
+        // The log names its reader "You".
+        after.some((line) => /^play: You (play|cast) /.test(line)),
         "Ada's own plays",
       ).toBe(true)
       for (const player of players) expect(player.errors, `${player.name}'s page errors`).toEqual([])

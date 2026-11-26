@@ -5,7 +5,7 @@
 //! reinforcement (the theme's supplies stay); from `THEME_RELICS_FROM` a theme may cap its bosses' relics, the
 //! Warrens at three; from `THEME_REINFORCEMENTS_FROM` a theme may cap its bosses' reinforcements, each further one
 //! coming as supplies, the Warrens at one; from `PARTY_SCALE_FROM` each hero after the third brings a Warband in place
-//! of a reinforcement, so one to three heroes meet the boss of generation 17.
+//! of a reinforcement, so one to three heroes meet the boss of the generation before.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS, RELIC_OFFSET};
 use mtg_campaign::content::FOUNDRY_FROM;
@@ -436,13 +436,13 @@ proptest! {
 
 #[rstest]
 fn a_party_of_four_to_six_meets_warbands_in_place_of_reinforcements(
-    #[values(("warrens", 1), ("spire", 1), ("foundry", 3))] theme: (&str, u8),
+    #[values(("warrens", 1), ("spire", 1), ("foundry", 3), ("gloamwood", 1))] theme: (&str, u8),
     #[values(1, 2, 3, 4, 5, 6)] heroes: u8,
 ) {
     let (theme, heat) = theme;
     let content = content().unwrap();
     assert_eq!(content.card(WARBAND).unwrap().kind, CardKind::Reinforcement);
-    let old = first_boss(theme, heroes, heat, THEME_REINFORCEMENTS_FROM);
+    let old = first_boss(theme, heroes, heat, PARTY_SCALE_FROM - 1);
     let mut now = first_boss(theme, heroes, heat, CONTENT);
     let three = first_boss(theme, heroes.min(3), heat, CONTENT);
     let beyond = usize::from(heroes).saturating_sub(PARTY_BASE);
@@ -464,7 +464,7 @@ fn a_party_of_four_to_six_meets_warbands_in_place_of_reinforcements(
         now.sheet(content).unwrap().relics.len(),
         now.relics.len() + now.reinforcements.len()
     );
-    // Up to three heroes the boss is the one of generation 17; beyond, it differs only in its reinforcements.
+    // Up to three heroes the boss is the one of the generation before; beyond, it differs only in its reinforcements.
     if beyond == 0 {
         assert_eq!(now, old);
     }

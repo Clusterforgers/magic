@@ -7,6 +7,7 @@ import { useSeatNamer } from './names'
 import { isYourTurn, turnLeft, turnParty, turnTeammate } from './selectors'
 import { PhaseTag } from './turn/PhaseTag'
 import { usePhase } from './turn/usePhase'
+import { useIsReplay } from './tableOptions'
 import { badgeParts, badgeText, badgeTitle } from './turnText'
 
 // Whole class names, so Tailwind can see them. The phase's colour fills the badge on your turn and tints it on another's.
@@ -22,6 +23,7 @@ const partySeats = (joined: string): number[] => (joined === '' ? [] : joined.sp
  * Whose turn it is and in which step, always in the top bar: "Your turn · Round 3 · Precombat main", "Bo's turn · Round 3 ·
  * Declare blockers" (the turn number is in its tooltip and in `data-turn`), and what the game is doing before and after
  * its turns ("Opening hands"). During the turns the phase's icon and name stand at its left in the phase's colour (`PhaseTag`): filled for your own turn, tinted for another's.
+ * A replay names every turn in the third person and tints it, whatever seat it is seen from, as its strip does.
  * The heading of the table's moment, plain text and not a live region; `data-slot="banner"` is where scripts read it.
  */
 export function TurnBadge() {
@@ -39,8 +41,10 @@ export function TurnBadge() {
       party: turnParty(state).join(','),
     })),
   )
-  const seat = usePlay((state) => state.seat)
-  const yours = usePlay(isYourTurn)
+  const replay = useIsReplay()
+  const storeSeat = usePlay((state) => state.seat)
+  const seat = replay ? null : storeSeat
+  const yours = usePlay(isYourTurn) && !replay
   const phase = usePhase()
   const { who, rest } = badgeParts(badgeText({ ...input, party: partySeats(input.party) }, seat, name))
   return (

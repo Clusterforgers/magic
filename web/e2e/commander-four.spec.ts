@@ -41,25 +41,30 @@ interface Table {
   /** Entries in the game log. */
   log: number
   over: boolean
+  /** The viewer's own seat lost: its page keeps its pod at no life. */
+  out: boolean
 }
 
 /** Runs in the page: the turn badge, the life of each seat's pod or tile, and the number of log lines. */
 function tableOf(me: string): Table {
   const banner = document.querySelector('[data-slot="banner"]')?.textContent ?? ''
+  const lifeOf = (pod: Element | null): string =>
+    /-?\d+/.exec(pod?.querySelector('[data-slot="life"]')?.textContent ?? '')?.[0] ?? '?'
+  const own = lifeOf(document.querySelector('[data-you]'))
   const lives = Array.from(
     document.querySelectorAll<HTMLElement>('section[data-seat], button[data-tile-seat]'),
   )
-    .map((pod) => {
-      const seat = pod.dataset['seat'] ?? pod.dataset['tileSeat'] ?? '?'
-      const life = /-?\d+/.exec(pod.querySelector('[data-slot="life"]')?.textContent ?? '')?.[0] ?? '?'
-      return `${seat}:${life}`
-    })
+    .map((pod) => ({ seat: pod.dataset['seat'] ?? pod.dataset['tileSeat'] ?? '?', life: lifeOf(pod) }))
+    // A seat that lost leaves the other tables, while its own page keeps its pod: it counts on none.
+    .filter(({ life }) => life === '?' || Number(life) > 0)
+    .map(({ seat, life }) => `${seat}:${life}`)
     .sort()
   return {
     turn: banner.replace(/^Your turn/, `${me}'s turn`),
     lives,
     log: document.querySelectorAll('[role="log"] li').length,
     over: document.querySelector('#over-title') !== null,
+    out: own !== '?' && Number(own) <= 0,
   }
 }
 
@@ -151,7 +156,7 @@ class Seen4 {
       )
       .toMatch(/^(same|over)$/)
     if (turn > 1) {
-      const least = Math.min(...tables.map((table) => table.log))
+      const least = Math.min(...tables.filter((table) => !table.out).map((table) => table.log))
       this.leastLog = Math.min(this.leastLog, least)
       this.logs = { first: this.logs?.first ?? least, last: least }
     }

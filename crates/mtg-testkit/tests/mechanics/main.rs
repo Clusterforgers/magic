@@ -2,6 +2,7 @@
 
 mod activation_moments;
 mod affected_amounts;
+mod belanna_scrapper;
 mod binding_eyes;
 mod bz39_blast_zone;
 mod c10_any_cards;
@@ -105,6 +106,7 @@ mod mayhem;
 mod object_nth;
 mod observed_stasis;
 mod owner_left;
+mod p158_creatures_help;
 mod paid_reads;
 mod performed_after;
 mod prepare;

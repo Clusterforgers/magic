@@ -217,6 +217,11 @@ pub enum Rule {
     /// The player casts every ballot of each vote, each still counting as its voter's (CR 701.38); the last rule in
     /// force applies.
     R6400ChoosesVotes(PlayerId),
+    /// The player chooses which creatures attack, the active player what each attacks (CR 508.1a); the last rule in
+    /// force applies.
+    R5081ChoosesAttackers(PlayerId),
+    /// The sources the selector picks are colorless sources of damage (CR 609.7), judged when the damage would be dealt.
+    R6097ColorlessDamage(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Selector),
     /// The players get an additional vote (CR 701.38d).
     ExtraVote(Vec<PlayerId>),
     /// The turn order runs the other way round the table.
@@ -358,6 +363,8 @@ pub enum Rule {
     NoMaxHandSize(Vec<PlayerId>),
     /// The players may activate each of their planeswalkers' loyalty abilities twice each turn (CR 606.3).
     LoyaltyTwice(Vec<PlayerId>),
+    /// The loyalty abilities of the permanent may be activated twice each turn (Urza, Planeswalker; CR 606.3).
+    P158LoyaltyTwiceThis(ObjectRef),
     /// The players may activate one loyalty ability of each of their planeswalkers once more this turn (CR 606.3).
     R6600LoyaltyOnceMore(Vec<PlayerId>),
     /// The next time each creature adapts, it adapts as though it had no +1/+1 counters (CR 701.46a); read by the adapt.
@@ -469,6 +476,13 @@ pub enum Rule {
     R6500ZeroLoyaltyStays(Vec<PlayerId>),
     /// The players may look at the top card of their library any time.
     LookAtTop(Vec<PlayerId>),
+    /// The players may tap lands they don't control for mana, the mana spent only as `only` says (`GameRule::R605TapOthersLands`).
+    R605TapOthersLands {
+        /// The players.
+        players: Vec<PlayerId>,
+        /// What the mana may be spent on; anything when empty.
+        only: Vec<mtg_cards::spend::SpendOn>,
+    },
     /// The players may look at the face-down cards in exile the selector picks (CR 406.3).
     LookAtExiled {
         /// The players who may look.
@@ -1017,6 +1031,10 @@ pub(crate) struct RulesInForce {
     r6400_block_choosers: BTreeMap<PlayerId, PlayerId>,
     /// The player who casts every ballot, the last in force winning.
     r6400_vote_chooser: Option<PlayerId>,
+    /// Who chooses the attackers, if a rule says another player does (CR 508.1a).
+    r5081_attack_chooser: Option<PlayerId>,
+    /// The rules that make sources colorless sources of damage (CR 609.7).
+    r6097_colorless: Vec<Unpreventable>,
     /// The players who get an additional vote (CR 701.38d), once for each rule that gives one.
     extra_vote: Vec<PlayerId>,
     /// How many rules reverse the turn order; an odd count runs it the other way.
@@ -1077,6 +1095,8 @@ pub(crate) struct RulesInForce {
     no_hand_limit: BTreeSet<PlayerId>,
     /// The players who may activate each planeswalker's loyalty abilities twice each turn.
     loyalty_twice: BTreeSet<PlayerId>,
+    /// The planeswalkers whose loyalty abilities may be activated twice each turn.
+    p158_loyalty_twice: Vec<ObjectRef>,
     /// For each player, how many more loyalty activations of each of their planeswalkers the rules in force allow.
     loyalty_once_more: BTreeMap<PlayerId, u32>,
     /// The loyalty abilities that may be activated more times this turn, with how many more each rule allows.
@@ -1103,6 +1123,7 @@ pub(crate) struct RulesInForce {
     /// The players whose planeswalkers stay with 0 loyalty (`R6500ZeroLoyaltyStays`).
     r6500_zero_loyalty: BTreeSet<PlayerId>,
     look_top: BTreeSet<PlayerId>,
+    r605_tap_others: Vec<(PlayerId, Vec<mtg_cards::spend::SpendOn>)>,
     extra_lands: BTreeMap<PlayerId, u32>,
     again: Vec<Again>,
     max_hand: BTreeMap<PlayerId, u32>,
@@ -1276,11 +1297,12 @@ impl Cast {
                 && state.object_tallied(self.source, None, Tally::C11bOnceUsed) == 0)
     }
 
-    /// Whether a permission with a limit has room for another card this turn (`Tally::R5503LimitUsed` of its source,
-    /// keyed by the first object it names). Any other permission always has.
+    /// Whether a permission with a limit has room for another card while it lasts (its uses counted by its source and
+    /// the first object it names, over every turn it spans). Any other permission always has.
     fn r5503_open(&self, state: &GameState) -> bool {
         self.limit.is_none_or(|limit| {
-            state.object_tallied(self.source, None, Tally::R5503LimitUsed(self.r5503_key())) < limit
+            let key = (self.source, self.r5503_key());
+            state.p158_limit_uses.get(&key).copied().unwrap_or(0) < limit
         })
     }
 
@@ -1616,6 +1638,17 @@ impl RulesInForce {
                 }
             }
             Rule::R6400ChoosesVotes(chooser) => self.r6400_vote_chooser = Some(*chooser),
+            Rule::R5081ChoosesAttackers(chooser) => self.r5081_attack_chooser = Some(*chooser),
+            Rule::R6097ColorlessDamage(from) => {
+                if let Some(source) = source {
+                    self.r6097_colorless.push(Unpreventable {
+                        controller,
+                        source,
+                        from: from.clone(),
+                        combat: None,
+                    });
+                }
+            }
             Rule::ExtraVote(players) => self.extra_vote.extend(players),
             Rule::ReverseTurnOrder => self.r376_reversals += 1,
             Rule::AttackOnlyNearest(left) => self.r376_nearest.extend(left),
@@ -1758,6 +1791,7 @@ impl RulesInForce {
                 .extend(players.iter().map(|player| (*player, controller))),
             Rule::NoMaxHandSize(players) => self.no_hand_limit.extend(players),
             Rule::LoyaltyTwice(players) => self.loyalty_twice.extend(players),
+            Rule::P158LoyaltyTwiceThis(permanent) => self.p158_loyalty_twice.push(*permanent),
             Rule::R6600LoyaltyOnceMore(players) => {
                 for player in players {
                     let more = self.loyalty_once_more.entry(*player).or_default();
@@ -1832,6 +1866,9 @@ impl RulesInForce {
                 }
             }
             Rule::LookAtTop(players) => self.look_top.extend(players),
+            Rule::R605TapOthersLands { players, only } => self
+                .r605_tap_others
+                .extend(players.iter().map(|player| (*player, only.clone()))),
             Rule::LookAtExiled { who, what, only } => {
                 if let Some(source) = source {
                     self.looks.push(Look {
@@ -2260,6 +2297,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         GameRule::R6400ChoosesVotes { chooser } => {
             Rule::R6400ChoosesVotes(one_player(scope, chooser)?)
         }
+        GameRule::R5081ChoosesAttackers { chooser } => {
+            Rule::R5081ChoosesAttackers(one_player(scope, chooser)?)
+        }
+        GameRule::R6097ColorlessDamage(from) => Rule::R6097ColorlessDamage(from.clone()),
         GameRule::ExtraVote(who) => Rule::ExtraVote(scope.players(who)?),
         GameRule::ReverseTurnOrder => Rule::ReverseTurnOrder,
         GameRule::AttackOnlyNearest(side) => {
@@ -2417,6 +2458,10 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         | GameRule::AbilitiesAsThoughHaste(_)
         | GameRule::UntapDuring { .. } => lower_option(scope, wanted)?,
         GameRule::LookAtTopAnyTime(who) => Rule::LookAtTop(scope.players(who)?),
+        GameRule::R605TapOthersLands { who, only } => Rule::R605TapOthersLands {
+            players: scope.players(who)?,
+            only: only.clone(),
+        },
         GameRule::R112UntapChosenType(who) => Rule::R112UntapChosenType(scope.players(who)?),
         GameRule::UntapLimit { who, what, count } => Rule::UntapLimit {
             who: scope.players(who)?,
@@ -2437,6 +2482,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::NoMaxHandSize(who) => Rule::NoMaxHandSize(scope.players(who)?),
         GameRule::LoyaltyTwice(who) => Rule::LoyaltyTwice(scope.players(who)?),
+        GameRule::P158LoyaltyTwiceThis => Rule::P158LoyaltyTwiceThis(scope.source),
         GameRule::R6600LoyaltyOnceMore(who) => Rule::R6600LoyaltyOnceMore(scope.players(who)?),
         GameRule::R6603LoyaltyAgain(times) => r6603_lower_loyalty_again(scope, *times)?,
         GameRule::EchoRather(cost) => Rule::EchoRather {
@@ -2673,6 +2719,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::ControlSearches(players)
         | Rule::ExileFound(players)
         | Rule::LookAtTop(players)
+        | Rule::R605TapOthersLands { players, .. }
         | Rule::SkipDrawStep(players)
         | Rule::R6007ExhaustAgain(players)
         | Rule::R122CascadeLand(players)
@@ -2724,7 +2771,10 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::RevealFirstDraw { .. }
         | Rule::UntapRemovesCounters(_)
         | Rule::R6400ChoosesVotes(_)
-        | Rule::R113NoteExiled { .. } => false,
+        | Rule::R5081ChoosesAttackers(_)
+        | Rule::R6097ColorlessDamage(_)
+        | Rule::R113NoteExiled { .. }
+        | Rule::P158LoyaltyTwiceThis(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
         Rule::PreventDamage(shield) => {
@@ -2888,6 +2938,8 @@ static NONE: RulesInForce = RulesInForce {
     vote_again: BTreeSet::new(),
     r6400_block_choosers: BTreeMap::new(),
     r6400_vote_chooser: None,
+    r5081_attack_chooser: None,
+    r6097_colorless: Vec::new(),
     extra_vote: Vec::new(),
     r376_reversals: 0,
     r376_nearest: Vec::new(),
@@ -2920,6 +2972,7 @@ static NONE: RulesInForce = RulesInForce {
     exile_found: Vec::new(),
     no_hand_limit: BTreeSet::new(),
     loyalty_twice: BTreeSet::new(),
+    p158_loyalty_twice: Vec::new(),
     loyalty_once_more: BTreeMap::new(),
     r6603_loyalty_again: Vec::new(),
     echo_rather: Vec::new(),
@@ -2934,6 +2987,7 @@ static NONE: RulesInForce = RulesInForce {
     r6500_caps: Vec::new(),
     r6500_zero_loyalty: BTreeSet::new(),
     look_top: BTreeSet::new(),
+    r605_tap_others: Vec::new(),
     extra_lands: BTreeMap::new(),
     again: Vec::new(),
     max_hand: BTreeMap::new(),
@@ -3490,14 +3544,16 @@ pub fn r6603_loyalty_again(state: &GameState, permanent: ObjectRef, ability: usi
 }
 
 /// How many times each turn `player` may activate the loyalty abilities of one planeswalker they control: twice under a
-/// rule that allows it (Oath of Teferi), else once (CR 606.3), and once more for each rule that grants one more
-/// activation this turn (The Chain Veil).
-pub fn loyalty_activations(state: &GameState, player: PlayerId) -> u32 {
-    let base: u32 = if state.rules().loyalty_twice.contains(&player) {
-        2
-    } else {
-        1
-    };
+/// rule that allows it (Oath of Teferi) or under one of `permanent` itself (Urza, Planeswalker), else once (CR 606.3), and
+/// once more for each rule that grants one more activation this turn (The Chain Veil).
+pub fn loyalty_activations(state: &GameState, player: PlayerId, permanent: ObjectRef) -> u32 {
+    let rules = state.rules();
+    let base: u32 =
+        if rules.loyalty_twice.contains(&player) || rules.p158_loyalty_twice.contains(&permanent) {
+            2
+        } else {
+            1
+        };
     let more = state
         .rules()
         .loyalty_once_more
@@ -3612,6 +3668,20 @@ pub(crate) fn skips_draw_step(state: &GameState, player: PlayerId) -> bool {
 /// Whether `player` has no maximum hand size: the one place cleanup reads this rule, beside the house rule's limit.
 pub(crate) fn no_max_hand_size(state: &GameState, player: PlayerId) -> bool {
     state.rules().no_hand_limit.contains(&player)
+}
+
+/// What the mana `player` gets by tapping a land another player controls may be spent on, when a rule lets them tap such
+/// lands for mana (`Rule::R605TapOthersLands`); a rule with no restriction wins over one with some.
+pub(crate) fn r605_tap_others(
+    state: &GameState,
+    player: PlayerId,
+) -> Option<Vec<mtg_cards::spend::SpendOn>> {
+    let granted = &state.rules().r605_tap_others;
+    let mine = || granted.iter().filter(|(who, _)| *who == player);
+    mine()
+        .find(|(_, only)| only.is_empty())
+        .or_else(|| mine().next())
+        .map(|(_, only)| only.clone())
 }
 
 /// Whether `player` may look at the top card of their library any time: the one place the sight of a seat reads this
@@ -3973,6 +4043,28 @@ pub fn r6400_vote_chooser(state: &GameState) -> Option<PlayerId> {
     state.rules().r6400_vote_chooser
 }
 
+/// The player who chooses which creatures attack in place of the active player (CR 508.1a), if a rule says another
+/// player does.
+pub fn r5081_attack_chooser(state: &GameState) -> Option<PlayerId> {
+    state
+        .rules()
+        .r5081_attack_chooser
+        .filter(|chooser| Some(*chooser) != state.active_player() && state.is_alive(*chooser))
+}
+
+/// Whether a rule makes the source `dealer` a colorless source of damage (CR 609.7): what looks at the damage it deals
+/// reads it without colors. The source is judged as `source` names it, as it is or as it last existed.
+pub(crate) fn r6097_colorless_damage(
+    state: &GameState,
+    source: crate::keywords::Source<'_>,
+) -> bool {
+    state.rules().r6097_colorless.iter().any(|rule| {
+        let mut scope = Scope::announcing(state, rule.controller, rule.source);
+        scope.snapshots = source.snapshots.to_vec();
+        scope.selects(&rule.from, source.object).unwrap_or(false)
+    })
+}
+
 /// The one player `who` names: the first, or an error for none.
 fn one_player(scope: &Scope<'_>, who: &Ref) -> Result<PlayerId, ResolveError> {
     scope
@@ -4063,15 +4155,15 @@ pub(crate) fn cast_permissions(state: &GameState) -> &[Cast] {
     &state.rules().casts
 }
 
-/// The source and the tally a cast or land play of `card` by `player` from `from` uses up: that of the first permission with
-/// a limit that covers it, when no permission without one for that zone does. None for a card from a hand or the command
-/// zone.
+/// The source and key of the limited permission a cast or land play of `card` by `player` from `from` uses up: the first
+/// permission with a limit that covers it, when no permission without one for that zone does. None for a card from a
+/// hand or the command zone.
 pub(crate) fn r5503_limit_use(
     state: &GameState,
     player: PlayerId,
     card: ObjectId,
     from: Zone,
-) -> Option<(ObjectRef, Tally)> {
+) -> Option<(ObjectRef, ObjectRef)> {
     if matches!(from, Zone::Hand(_) | Zone::Command(_)) {
         return None;
     }
@@ -4084,9 +4176,7 @@ pub(crate) fn r5503_limit_use(
     if covering.iter().any(|cast| cast.limit.is_none()) {
         return None;
     }
-    covering
-        .first()
-        .map(|cast| (cast.source, Tally::R5503LimitUsed(cast.r5503_key())))
+    covering.first().map(|cast| (cast.source, cast.r5503_key()))
 }
 
 /// The source of the permission that works once each turn which a cast of `card` by `player` from `from` for `way` uses

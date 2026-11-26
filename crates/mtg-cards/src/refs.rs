@@ -182,6 +182,13 @@ pub enum Ref {
         /// The name of the memory.
         slot: String,
     },
+    /// The top card of the face-down pile the object `on` names exiled and keeps (`PileFate::R406Kept`): the first card of
+    /// the pile in its shuffled order that is still in exile ("the top card of the pile you exiled"); none once the pile is
+    /// empty.
+    R406PileTop {
+        /// The object whose pile is read.
+        on: Box<Ref>,
+    },
     /// The card the object `on` names exiled last among those that match `filter`, while it is still in exile ("the last
     /// creature card exiled with it", Duplicant).
     LastExiledWith {
@@ -424,6 +431,9 @@ pub enum Pred {
     Commander,
     /// Is a spell on the stack.
     Spell,
+    /// Is a warped card (CR 702.185): a card in exile that its own warp ability exiled and that its owner may still cast
+    /// from there ("a warped creature card you own in exile").
+    R702185Warped,
     /// Is an activated or a triggered ability on the stack (a mana ability never is one).
     Ability(AbilityKind),
     /// Is an ability on the stack whose source matches the selector ("activated ability from an artifact source"): the
@@ -459,6 +469,10 @@ pub enum Pred {
     WithSticker(crate::ability::StickerKind),
     /// Is a harnessed permanent: its ∞ ability works.
     Harnessed,
+    /// Has a mana cost that some or all of the mana spent on the resolving ability could pay, an {X} in it counting as 0
+    /// ("a creature card in your hand whose mana cost could be paid by some amount of, or all of, the mana you spent on
+    /// {X}"): the amount and the types of that mana count. A card without a mana cost matches none.
+    R6008PaidBySpent,
     /// Attacked, blocked or became blocked (as marked) since your last upkeep.
     FoughtSinceYourLastUpkeep {
         /// It attacked.

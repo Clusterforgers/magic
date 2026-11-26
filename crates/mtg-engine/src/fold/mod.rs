@@ -46,6 +46,7 @@ mod w21a_atoms;
 #[cfg(test)]
 mod zone_tally;
 mod zones;
+pub(crate) use zones::r6702_craft_materials;
 
 use std::collections::BTreeSet;
 
@@ -164,6 +165,7 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::AttackersDeclared { .. }
         | Event::AttackersChosen { .. }
         | Event::AttackChoicesRefused { .. }
+        | Event::R5081AttackersChosen { .. }
         | Event::FocusShifted { .. }
         | Event::BandFormed { .. }
         | Event::BlockersDeclared { .. }
@@ -276,6 +278,19 @@ fn fold_event(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
         Event::BecameCopy(copy) => crate::copies::fold(state, copy),
         Event::SpellCopied(copy) => crate::copies::fold_spell(state, copy),
         Event::CardCopied(copy) => crate::copies::fold_card(state, copy),
+        Event::R6008Listed(listed) => {
+            crate::r6008_face_down::fold_listed(state, listed);
+            Ok(())
+        }
+        Event::R406TurnedUp { object } => {
+            crate::r707_spells::r406_fold_turned_up(state, *object);
+            Ok(())
+        }
+        Event::R707Kept(kept) => {
+            crate::r707_spells::fold_kept(state, kept);
+            Ok(())
+        }
+        Event::R707PutBack { object, player } => zones::r707_put_back(state, *object, *player),
         Event::CopyCeased { object } => crate::copies::fold_card_ceased(state, *object),
         Event::AbilityCopied(copy) => crate::copies::fold_ability(state, copy),
         Event::TargetsChanged(change) => crate::retargeted::fold(state, change),
@@ -749,6 +764,11 @@ fn apply_misc(state: &mut GameState, event: &Event) -> Result<(), EngineError> {
             state.commander_colors.retain(|(card, _)| card != object);
             state.commander_colors.push((*object, *color));
         }
+        Event::R6051EmblemEnded { object } => crate::w6b_emblems::r6051_fold_ended(state, *object)?,
+        Event::ColorsCircled { object, colors, .. } => {
+            state.circled.retain(|(card, _)| card != object);
+            state.circled.push((*object, colors.clone()));
+        }
         Event::FaceDownLooked { object, player } => {
             crate::sight::look_face_down(state, *player, *object);
         }
@@ -879,6 +899,13 @@ pub(crate) fn create_effect(
     }
     state.next_effect = state.next_effect.max(effect.id.0 + 1);
     state.next_timestamp = state.next_timestamp.max(effect.timestamp + 1);
+    // A card given an ability that works outside the battlefield ("That nonland card gains 'Exile a card from your hand:
+    // ... only if this card is exiled'") is looked at there from now on.
+    if let Modification::GrantAbility(granted) = &effect.modification
+        && crate::ability_reader::works_from(granted).is_some_and(|from| !from.is_battlefield())
+    {
+        state.possible.elsewhere = true;
+    }
     if matches!(
         &effect.modification,
         Modification::AddKeyword(
@@ -1339,6 +1366,7 @@ fn turn_face_up(state: &mut GameState, id: ObjectId) -> Result<(), EngineError> 
         return Err(invalid(format!("{id:?} is not face down")));
     }
     object.face_down = None;
+    object.r6008_listed = None;
     Ok(())
 }
 

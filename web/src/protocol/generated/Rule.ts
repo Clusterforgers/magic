@@ -8,6 +8,7 @@ import type { ManaCost } from "./ManaCost";
 import type { ManaType } from "./ManaType";
 import type { ObjectRef } from "./ObjectRef";
 import type { PlayerId } from "./PlayerId";
+import type { SpendOn } from "./SpendOn";
 import type { Target } from "./Target";
 
 /**
@@ -147,7 +148,7 @@ chooser: PlayerId,
 /**
  * Whose blocks.
  */
-whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "SameNameLimit": { 
+whose: Array<PlayerId>, } } | { "R6400ChoosesVotes": PlayerId } | { "R5081ChoosesAttackers": PlayerId } | { "R6097ColorlessDamage": unknown } | { "ExtraVote": Array<PlayerId> } | "ReverseTurnOrder" | { "AttackOnlyNearest": boolean | null } | { "SkipExtraTurns": Array<PlayerId> } | { "PowerUpAgain": Array<ObjectRef> } | { "FlipTwoCoins": Array<PlayerId> } | { "SameNameLimit": { 
 /**
  * The players.
  */
@@ -247,7 +248,7 @@ spells: unknown,
 /**
  * With `spells`, the permanents whose abilities it is also for.
  */
-abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "R119PlaysRevealed": Array<ObjectRef> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "R6600LoyaltyOnceMore": Array<PlayerId> } | { "R6600AdaptsFresh": Array<ObjectRef> } | { "R6603LoyaltyAgain": { 
+abilities: unknown, } } | { "RevealTop": Array<PlayerId> } | { "RevealHand": Array<PlayerId> } | { "R119PlaysRevealed": Array<ObjectRef> } | { "ControlSearches": Array<PlayerId> } | { "ExileFound": Array<PlayerId> } | { "NoMaxHandSize": Array<PlayerId> } | { "LoyaltyTwice": Array<PlayerId> } | { "P158LoyaltyTwiceThis": ObjectRef } | { "R6600LoyaltyOnceMore": Array<PlayerId> } | { "R6600AdaptsFresh": Array<ObjectRef> } | { "R6603LoyaltyAgain": { 
 /**
  * The planeswalker.
  */
@@ -327,7 +328,15 @@ counter: CounterKind,
 /**
  * The most they may have.
  */
-most: number, } } | { "R6500ZeroLoyaltyStays": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "LookAtExiled": { 
+most: number, } } | { "R6500ZeroLoyaltyStays": Array<PlayerId> } | { "LookAtTop": Array<PlayerId> } | { "R605TapOthersLands": { 
+/**
+ * The players.
+ */
+players: Array<PlayerId>, 
+/**
+ * What the mana may be spent on; anything when empty.
+ */
+only: Array<SpendOn>, } } | { "LookAtExiled": { 
 /**
  * The players who may look.
  */

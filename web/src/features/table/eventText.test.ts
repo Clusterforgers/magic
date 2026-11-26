@@ -36,6 +36,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { CommanderColorChosen: { player: 1, object: 3, color: 'Blue' } },
     'Bo chooses blue for Forest',
   ],
+  ColorsCircled: [
+    { ColorsCircled: { player: 1, object: 3, colors: ['White', 'Blue'] } },
+    'Bo circles white and blue on Forest',
+  ],
   LibraryShuffled: [{ LibraryShuffled: { player: 0, order: [] } }, 'Ana shuffles their library'],
   R111GraveyardOrdered: [
     { R111GraveyardOrdered: { player: 1, order: [3, 4] } },
@@ -155,6 +159,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   DayNightChanged: [{ DayNightChanged: { to: 'Night' } }, 'It becomes night'],
   MonarchChanged: [{ MonarchChanged: { player: 1 } }, 'Bo becomes the monarch'],
   EmblemCreated: [{ EmblemCreated: { object: 9, owner: 1 } }, 'Bo gets an emblem'],
+  R6051EmblemEnded: [{ R6051EmblemEnded: { object: 9 } }, 'An emblem that lasted the turn ends'],
   Proliferated: [{ Proliferated: { player: 1 } }, 'Bo proliferates'],
   Learned: [{ Learned: { player: 1 } }, 'Bo learns'],
   EvidenceCollected: [{ EvidenceCollected: { player: 1 } }, 'Bo collects evidence'],
@@ -247,6 +252,16 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   ],
   TurnedFaceUp: [{ TurnedFaceUp: { object: 3, player: 1 } }, 'Bo turns Forest face up'],
   TurnedFaceDown: [{ TurnedFaceDown: { object: 3, player: 1 } }, 'Bo turns Forest face down'],
+  R6008Listed: [
+    { R6008Listed: { object: 4, noted: 'Lightning Bolt' } },
+    'Lightning Bolt lies face down as the creature an effect lists, noting the name Lightning Bolt',
+  ],
+  R406TurnedUp: [{ R406TurnedUp: { object: 3 } }, 'Forest is turned face up in exile'],
+  R707Kept: [{ R707Kept: { object: 3, controller: 1 } }, 'Forest waits in exile as the spell it was'],
+  R707PutBack: [
+    { R707PutBack: { object: 3, player: 1 } },
+    'Bo puts Forest back onto the stack as the spell it was',
+  ],
   FaceDownLooked: [{ FaceDownLooked: { object: 3, player: 1 } }, 'Bo looks at Forest'],
   FirstDrawRevealed: [
     { FirstDrawRevealed: { player: 1, card: 3, sources: [1] } },
@@ -369,6 +384,10 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   AttackersChosen: [
     { AttackersChosen: { player: 1, attackers: [[1, { Player: 0 }]] } },
     'Bo chooses to attack Ana with Grizzly Bears',
+  ],
+  R5081AttackersChosen: [
+    { R5081AttackersChosen: { chooser: 0, attackers: [1, 2] } },
+    'Ana chooses Grizzly Bears and Hill Giant to attack',
   ],
   AttackChoicesRefused: [
     { AttackChoicesRefused: { reason: 'a creature can’t attack alone' } },
@@ -1207,6 +1226,11 @@ describe('events with more than one shape', () => {
       "Hill Giant can't be turned face up until end of turn",
     ],
     [effect(objects(2), 'R119CantBeBeamedUp', 'Forever'), "Hill Giant can't be beamed up"],
+    [effect(objects(2), 'R3034CantBeEnchanted', 'Forever'), "Hill Giant can't be enchanted"],
+    [
+      effect(objects(2), 'R1012ControlKept', 'Forever'),
+      "Hill Giant can't come under another player's control",
+    ],
     [
       effect(objects(2), 'AddAllCreatureTypes', 'UntilEndOfTurn'),
       'Hill Giant becomes every creature type until end of turn',

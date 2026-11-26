@@ -631,7 +631,7 @@ fn waterbend_help(
     if price.tap || price.moves_source() {
         barred.push(source);
     }
-    crate::help::waterbend(state, player, &barred)
+    crate::help::waterbend(state, player, &barred, price.helpers)
 }
 
 /// The mana that cost modifiers add to a loyalty ability (CR 606.4, 601.2f) against the mana at hand, when `player`
@@ -715,7 +715,7 @@ fn stack_abilities(state: &GameState, player: PlayerId) -> Vec<AbilityRef> {
                     Activators::Anyone => true,
                     Activators::Opponents => state.is_opponent(controller, player),
                     Activators::Owner => object.owner() == player,
-                    Activators::R113AttachedController => false,
+                    Activators::R113AttachedController | Activators::R6022Granter => false,
                 },
                 _ => false,
             };
@@ -763,6 +763,9 @@ pub(crate) fn abilities_now(
                 Activators::R113AttachedController => state
                     .host_of(id)
                     .is_some_and(|host| controller_of(state, host) == Some(player)),
+                Activators::R6022Granter => {
+                    crate::abilities::effect_controller(state, address.source) == Some(player)
+                }
             };
             if !allowed {
                 continue;

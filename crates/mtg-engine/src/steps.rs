@@ -324,7 +324,25 @@ fn declare_attackers(state: &GameState) -> Progress {
             }
             return Progress::Decide(question);
         }
-        let options = attack_options(state, active);
+        let mut options = attack_options(state, active);
+        // Another player chooses the attackers first (CR 508.1a); the active player then declares them.
+        let mut decider = active;
+        if let Some(chooser) = crate::rules::r5081_attack_chooser(state) {
+            match &state.combat().r5081_chosen {
+                None if !options.attackers.is_empty() => decider = chooser,
+                None => {}
+                Some(chosen) => {
+                    options
+                        .attackers
+                        .retain(|option| chosen.contains(&option.object));
+                    options.required = options
+                        .attackers
+                        .iter()
+                        .map(|option| option.object)
+                        .collect();
+                }
+            }
+        }
         if options.attackers.is_empty() {
             return Progress::Events(vec![
                 Event::NothingToDo {
@@ -338,7 +356,7 @@ fn declare_attackers(state: &GameState) -> Progress {
             ]);
         }
         return Progress::Decide(Decision {
-            player: active,
+            player: decider,
             kind: DecisionKind::DeclareAttackers(options),
         });
     }
@@ -386,6 +404,10 @@ pub(crate) fn r6400_declaring(state: &GameState, decider: PlayerId) -> PlayerId 
 }
 
 fn combat_damage(state: &GameState, pass: DamagePass) -> Progress {
+    let turned = crate::r6008_face_down::r6008_assigning(state, pass);
+    if !turned.is_empty() {
+        return Progress::Events(turned);
+    }
     if let Some((player, options)) = pending_assignment(state, pass) {
         return Progress::Decide(Decision {
             player,
@@ -627,6 +649,7 @@ fn wear_off(state: &GameState) -> Vec<Event> {
             .filter(|e| ends_with_turn(state, &e.duration, e.turn, e.controller))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
+    events.extend(crate::w6b_emblems::r6051_ended(state));
     // "Until end of turn" copy effects end with the other effects of the turn (CR 514.2).
     events.extend(
         state

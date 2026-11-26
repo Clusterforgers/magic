@@ -727,6 +727,7 @@ impl GameState {
             day_night: None,
             seat_turns: std::collections::BTreeMap::new(),
             cast_names: std::collections::BTreeMap::new(),
+            p158_limit_uses: std::collections::BTreeMap::new(),
             r5522: Box::new(crate::r5522_history::R5522Game {
                 r119_deck_sizes: r119_deck_sizes(setup),
                 ..Default::default()
@@ -764,6 +765,8 @@ impl GameState {
             looked_by_hand: Vec::new(),
             looked_face_down: Vec::new(),
             commander_colors: Vec::new(),
+            circled: Vec::new(),
+            r6051_emblems: Vec::new(),
             revealed_by_hand: Vec::new(),
             notes: Vec::new(),
             memory: crate::memory::Memory::new(),

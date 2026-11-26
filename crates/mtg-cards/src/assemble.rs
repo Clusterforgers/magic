@@ -465,6 +465,8 @@ pub enum ManaProduced<'a> {
     AnyColorAmong(&'a Selector),
     /// One mana of a colour chosen in a booster draft; none without a draft.
     DraftedColors,
+    /// One mana of one of the colors circled for the source as its deck was built, picked when activated.
+    Circled,
     /// Mana of one colour picked when activated, as many as the controller's devotion to it, counted when it is offered.
     Devotion,
 }
@@ -514,6 +516,7 @@ impl<'a> ManaProduced<'a> {
             Produce::EachColorAmong(among) => ManaProduced::EachColorAmong(among),
             Produce::AnyColorAmong(among) => ManaProduced::AnyColorAmong(among),
             Produce::DraftedColors => ManaProduced::DraftedColors,
+            Produce::Circled => ManaProduced::Circled,
             Produce::Devotion => ManaProduced::Devotion,
             Produce::OfTapped
             | Produce::CostOf(_)
@@ -548,6 +551,7 @@ impl ManaProduced<'_> {
             | ManaProduced::OrChosenColor(_)
             | ManaProduced::EachColorAmong(_)
             | ManaProduced::AnyColorAmong(_)
+            | ManaProduced::Circled
             | ManaProduced::Devotion => 1,
             // No colour was chosen without a draft.
             ManaProduced::DraftedColors => 0,
@@ -772,7 +776,7 @@ pub fn mana_shape(ability: &Ability) -> Option<ManaShape<'_>> {
         condition,
         limit,
         by: Activators::Controller,
-        from: from @ (ZoneKind::Battlefield | ZoneKind::Hand),
+        from: from @ (ZoneKind::Battlefield | ZoneKind::Hand | ZoneKind::Command),
         targets,
         effects,
     } = ability
@@ -1143,8 +1147,12 @@ fn card_type_of(word: &str) -> Option<CardType> {
 }
 
 fn read_type_line(line: &str) -> TypeLine {
-    let (head, tail) = line.split_once('\u{2014}').unwrap_or((line, ""));
     let mut read = TypeLine::default();
+    // A sticker sheet stays outside the game (CR 123): it has no card type to apply.
+    if line == "Stickers" {
+        return read;
+    }
+    let (head, tail) = line.split_once('\u{2014}').unwrap_or((line, ""));
     for word in head.split_whitespace() {
         if let Some(supertype) = supertype_of(word) {
             read.supertypes.insert(supertype);
@@ -1378,6 +1386,7 @@ mod tests {
     #[case::old_tribal("Tribal Instant \u{2014} Goblin", &[], &["Kindred", "Instant"], &["Goblin"])]
     #[case::two_word_type("Legendary Creature \u{2014} Time Lord Doctor", &["Legendary"], &["Creature"], &["Time Lord", "Doctor"])]
     #[case::empty("", &[], &[], &[])]
+    #[case::sticker_sheet("Stickers", &[], &[], &[])]
     fn type_lines_read_into_supertypes_types_and_subtypes(
         #[case] line: &str,
         #[case] supertypes: &[&str],

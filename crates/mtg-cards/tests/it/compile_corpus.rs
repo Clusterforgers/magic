@@ -616,6 +616,12 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             Ability::Loyalty { .. } => &[ClauseKind::Loyalty],
             // On an instant or sorcery a rule of the draft is a spell line (Garbage Fire).
             _ if is_draft_rule(ability) => &[ClauseKind::Static, ClauseKind::Spell],
+            // "X can't be 0." of an instant or sorcery is a spell line (Ertai's Meddling).
+            Ability::AdditionalCost { cost, .. }
+                if matches!(cost.0.as_slice(), [mtg_cards::cost::CostItem::XAtLeast(_)]) =>
+            {
+                &[ClauseKind::Static, ClauseKind::Spell]
+            }
             Ability::Replacement { .. }
             | Ability::Rule { .. }
             | Ability::Static { .. }
@@ -625,6 +631,7 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             | Ability::CastOnly { .. }
             | Ability::CantTargetAsCast { .. }
             | Ability::OpeningHand
+            | Ability::CircleColors(_)
             | Ability::R115MulliganExile
             | Ability::R120DiscardAnyTime
             | Ability::OpeningHandWith { .. }
@@ -649,7 +656,31 @@ fn unwritten(printed: &PrintedCard, compiled: &Compiled, by_hand: &Card) -> (usi
             })
             .collect();
         let mut wanted = if matches!(ability, Ability::Spell { .. }) {
-            vec![lines.join("\n"), without_die_rows(&lines)]
+            // The spell lines with the delayed trigger it sets up, less the lines the face's other abilities write
+            // ("X can't be 0.", Ertai's Meddling), as the pairing reads them.
+            let others: Vec<String> = listed
+                .iter()
+                .filter(|(other, rule)| *other == face && !std::ptr::eq(*rule, ability))
+                .flat_map(|(_, rule)| written_variants(rule))
+                .collect();
+            let delayed: Vec<&str> = compiled
+                .clauses
+                .iter()
+                .filter(|clause| {
+                    clause.face == face
+                        && matches!(
+                            clause.kind,
+                            ClauseKind::Spell | ClauseKind::Modal | ClauseKind::Triggered
+                        )
+                })
+                .map(|clause| clause.text.as_str())
+                .filter(|line| !others.iter().any(|other| other == line))
+                .collect();
+            vec![
+                lines.join("\n"),
+                without_die_rows(&lines),
+                delayed.join("\n"),
+            ]
         } else {
             lines.iter().map(|line| (*line).to_owned()).collect()
         };

@@ -150,6 +150,56 @@ pub enum FaceDown {
     /// A card of an Attraction deck (CR 717.2), face down in its owner's command zone: it keeps its own characteristics
     /// and no player may look at it until it is opened.
     Attraction,
+    /// A card an effect put onto the battlefield face down with the characteristics it lists (CR 708.2,
+    /// `GameObject::r6008_listed`): only its controller may look at it.
+    R6008Listed,
+    /// A spell cast face down as a 2/2 creature by an effect (`CastWay::R6008FaceDown`), and the permanent it becomes: as a
+    /// morph, and turned face up before it assigns or deals damage, is dealt damage or becomes tapped.
+    R6008Masked,
+}
+
+/// The characteristics an effect listed for a face-down permanent (CR 708.2) and the name it noted on it.
+#[derive(Debug, Clone)]
+pub struct R6008Listing {
+    definition: Arc<CardDefinition>,
+    fingerprint: u64,
+    noted: Option<String>,
+}
+
+impl R6008Listing {
+    /// The listing of these characteristics, with the name noted when there is one.
+    pub(crate) fn new(definition: Arc<CardDefinition>, noted: Option<String>) -> Self {
+        R6008Listing {
+            fingerprint: stable_hash(&*definition),
+            definition,
+            noted,
+        }
+    }
+
+    /// The characteristics, which are the permanent's copiable values.
+    pub fn definition(&self) -> &CardDefinition {
+        &self.definition
+    }
+
+    /// The name noted on the permanent, which a copy of it does not know.
+    pub fn noted(&self) -> Option<&str> {
+        self.noted.as_deref()
+    }
+}
+
+impl PartialEq for R6008Listing {
+    fn eq(&self, other: &Self) -> bool {
+        self.fingerprint == other.fingerprint && self.noted == other.noted
+    }
+}
+
+impl Eq for R6008Listing {}
+
+impl Hash for R6008Listing {
+    fn hash<H: Hasher>(&self, state: &mut H) {
+        self.fingerprint.hash(state);
+        self.noted.hash(state);
+    }
 }
 
 impl FaceDown {
@@ -165,7 +215,9 @@ impl FaceDown {
             | FaceDown::Disguise
             | FaceDown::Manifest
             | FaceDown::Cloak
-            | FaceDown::R6701Horror => controller == viewer,
+            | FaceDown::R6701Horror
+            | FaceDown::R6008Listed
+            | FaceDown::R6008Masked => controller == viewer,
         }
     }
 }
@@ -511,6 +563,8 @@ pub struct GameObject {
     pub(crate) card_counters: BTreeMap<CounterKind, u32>,
     /// Why the object lies face down, or `None` when it lies face up.
     pub(crate) face_down: Option<FaceDown>,
+    /// The characteristics an effect listed for it while it lies face down as `FaceDown::R6008Listed`; cleared with it.
+    pub(crate) r6008_listed: Option<Arc<R6008Listing>>,
     /// The player who may cast the card from exile as the permanent card of an Adventure it was exiled "on" (CR 715.4); a zone change clears it.
     pub(crate) adventure: Option<PlayerId>,
     /// The number of the turn the card was plotted in (CR 702.170), while it lies face up in exile; a zone change clears it.
@@ -533,6 +587,9 @@ pub struct GameObject {
     /// The creature a card in exile haunts (CR 702.55), as it was when the card was exiled; a zone change of the card
     /// clears it.
     pub(crate) haunting: Option<ObjectRef>,
+    /// The spell a card in exile was, kept by `Effect::R707ExileSpell` for `Effect::R707PutBack` (CR 707.10): its choices and
+    /// the player who controlled it; a zone change clears it.
+    pub(crate) r707_kept: Option<Box<(Choices, PlayerId)>>,
     /// The spell was cast from its owner's hand (rebound reads it); a zone change clears it.
     pub(crate) cast_from_hand: bool,
     /// The spell was cast from a graveyard (aftermath reads it); a zone change clears it.
@@ -600,6 +657,7 @@ impl GameObject {
             counter: 0,
             card_counters: BTreeMap::new(),
             face_down: None,
+            r6008_listed: None,
             adventure: None,
             plotted: None,
             r110_foretell_cost: None,
@@ -607,6 +665,7 @@ impl GameObject {
             exiled_from_hand: None,
             encoded_on: None,
             haunting: None,
+            r707_kept: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -644,6 +703,7 @@ impl GameObject {
             counter: 0,
             card_counters: BTreeMap::new(),
             face_down: None,
+            r6008_listed: None,
             adventure: None,
             plotted: None,
             r110_foretell_cost: None,
@@ -651,6 +711,7 @@ impl GameObject {
             exiled_from_hand: None,
             encoded_on: None,
             haunting: None,
+            r707_kept: None,
             monarch_wait: None,
             cast_from_hand: false,
             cast_from_graveyard: false,
@@ -812,7 +873,7 @@ impl GameObject {
         if let Some(merged) = self.merged() {
             return merged.definition();
         }
-        if let Some(shown) = self.face_down.and_then(FaceDown::characteristics) {
+        if let Some(shown) = self.face_down_shown() {
             return shown;
         }
         if let Some(room) = self
@@ -989,7 +1050,7 @@ impl GameObject {
             copy.shown().type_set()
         } else if let Some(merged) = self.merged() {
             merged.definition().type_set()
-        } else if let Some(shown) = self.face_down.and_then(FaceDown::characteristics) {
+        } else if let Some(shown) = self.face_down_shown() {
             shown.type_set()
         } else {
             match self.face() {
@@ -1035,6 +1096,22 @@ impl GameObject {
         self.face_down
     }
 
+    /// The characteristics the object reads as while it lies face down (CR 708.2): those the rules give the way it lies,
+    /// or those an effect listed for it; `None` for a card that keeps its own.
+    fn face_down_shown(&self) -> Option<&CardDefinition> {
+        match self.face_down? {
+            FaceDown::R6008Listed => self.r6008_listed.as_deref().map(R6008Listing::definition),
+            how => how.characteristics(),
+        }
+    }
+
+    /// The characteristics and the noted name an effect listed for the face-down permanent (`FaceDown::R6008Listed`).
+    pub fn r6008_listed(&self) -> Option<&R6008Listing> {
+        self.r6008_listed
+            .as_deref()
+            .filter(|_| self.face_down == Some(FaceDown::R6008Listed))
+    }
+
     /// Permanent state when on the battlefield.
     pub const fn permanent(&self) -> Option<&PermanentState> {
         self.permanent.as_ref()
@@ -1051,6 +1128,7 @@ impl PartialEq for GameObject {
             && self.permanent == other.permanent
             && self.card_counters == other.card_counters
             && self.face_down == other.face_down
+            && self.r6008_listed == other.r6008_listed
             && self.adventure == other.adventure
             && self.plotted == other.plotted
             && self.r110_foretell_cost == other.r110_foretell_cost
@@ -1058,6 +1136,7 @@ impl PartialEq for GameObject {
             && self.exiled_from_hand == other.exiled_from_hand
             && self.encoded_on == other.encoded_on
             && self.haunting == other.haunting
+            && self.r707_kept == other.r707_kept
             && self.monarch_wait == other.monarch_wait
             && self.cast_from_hand == other.cast_from_hand
             && self.cast_from_graveyard == other.cast_from_graveyard
@@ -1087,6 +1166,10 @@ impl Hash for GameObject {
         self.permanent.hash(state);
         self.card_counters.hash(state);
         self.face_down.hash(state);
+        // Left out while it is off, so the hash of a game that lists nothing stays what it was.
+        if let Some(listing) = &self.r6008_listed {
+            listing.hash(state);
+        }
         self.adventure.hash(state);
         self.plotted.hash(state);
         if let Some(until) = self.exiled_until {
@@ -1105,6 +1188,9 @@ impl Hash for GameObject {
         }
         if let Some(haunted) = self.haunting {
             haunted.hash(state);
+        }
+        if let Some(kept) = &self.r707_kept {
+            kept.hash(state);
         }
         if let Some(wait) = self.monarch_wait {
             wait.hash(state);

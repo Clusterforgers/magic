@@ -351,7 +351,7 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
 }
 
 /// The target specifications and bound names an ability body can see.
-#[derive(Default)]
+#[derive(Default, Clone)]
 // Each flag is a separate place a reference may stand in.
 #[allow(clippy::struct_excessive_bools)]
 struct Scope {
@@ -505,6 +505,9 @@ struct Walker<'a> {
     /// The values chosen before an emblem is made, which its abilities may read: the engine writes them in as the
     /// emblem is made.
     r4702_emblem_values: BTreeSet<String>,
+    /// The object names bound around an ability an effect grants, which its `SameCard` may name: the engine fixes them as
+    /// the grant begins (CR 611.2c).
+    r6112_granted_outer: Option<Scope>,
     /// Where the walk stands in an effect list, for "if you do".
     after: After,
     /// The effect before the one being walked is a `May`, whose acceptance "if you do" asks about.
@@ -556,6 +559,7 @@ impl<'a> Walker<'a> {
             r121_copy_grant: false,
             r6701_spell_grant: false,
             r4702_emblem_values: BTreeSet::new(),
+            r6112_granted_outer: None,
             after: After::Nothing,
             after_may: false,
             face: 0,
@@ -633,6 +637,12 @@ impl<'a> Walker<'a> {
             }
             ValueKind::Options(words) if words.len() < 2 => {
                 self.problem("a choice of words needs at least two");
+            }
+            ValueKind::OptionsNotNoted(words) => {
+                self.uses("ValueKind", "OptionsNotNoted");
+                if words.len() < 2 {
+                    self.problem("a choice of words needs at least two");
+                }
             }
             ValueKind::CardTypeOf(kinds) if kinds.len() < 2 => {
                 self.problem("a choice of card types needs at least two");
@@ -752,6 +762,11 @@ impl<'a> Walker<'a> {
             Ref::LastExiledWith { on, filter } => {
                 self.reference(on, Kind::Object);
                 self.at("filter", |w| w.selector(filter));
+                self.expect(Kind::Object, want);
+            }
+            Ref::R406PileTop { on } => {
+                self.uses("Ref", "R406PileTop");
+                self.reference(on, Kind::Object);
                 self.expect(Kind::Object, want);
             }
             Ref::Paid => {
@@ -991,6 +1006,7 @@ impl<'a> Walker<'a> {
             }
             Pred::Subtype(subtype) => self.known_subtype(subtype),
             Pred::HasAbility(_) => self.uses("Pred", "HasAbility"),
+            Pred::R702185Warped => self.uses("Pred", "R702185Warped"),
             Pred::Drafted(_) => self.uses("Pred", "Drafted"),
             Pred::ControlledBy(r)
             | Pred::OwnedBy(r)
@@ -1013,6 +1029,13 @@ impl<'a> Walker<'a> {
                 self.reference(r, Kind::Object);
                 self.scope.tests -= 1;
             }
+            Pred::SameCard(Ref::Bound(name))
+                if self.scope.lookup(name).is_none()
+                    && self.r6112_granted_outer.as_ref().is_some_and(|outer| {
+                        outer
+                            .lookup(name)
+                            .is_some_and(|kind| kind.fits(Kind::Object))
+                    }) => {}
             Pred::Is(r)
             | Pred::SourceOf(r)
             | Pred::SharesSubtype(r)
@@ -1199,6 +1222,7 @@ impl<'a> Walker<'a> {
             | Pred::Stickered
             | Pred::WithSticker(_)
             | Pred::Harnessed
+            | Pred::R6008PaidBySpent
             | Pred::FoughtSinceYourLastUpkeep { .. }
             | Pred::DoubleFaced
             | Pred::Transformed
@@ -1700,6 +1724,7 @@ impl<'a> Walker<'a> {
                         | crate::value::TallyEvent::Blocked
                         | crate::value::TallyEvent::Activated
                         | crate::value::TallyEvent::KindActivated(_)
+                        | crate::value::TallyEvent::R6024ActivatedTargeting
                         | crate::value::TallyEvent::CountersPut
                         | crate::value::TallyEvent::PlusOneCountersPut
                 ) {
@@ -2013,6 +2038,10 @@ impl<'a> Walker<'a> {
                 self.uses("Condition", "NewlyControlled");
                 self.at("NewlyControlled", |w| w.reference(what, Kind::Object));
             }
+            Condition::P158HadToAttack(what) => {
+                self.uses("Condition", "P158HadToAttack");
+                self.at("P158HadToAttack", |w| w.reference(what, Kind::Object));
+            }
             Condition::Level { of, .. } => {
                 self.uses("Condition", "Level");
                 self.at("Level", |w| w.reference(of, Kind::Object));
@@ -2208,8 +2237,17 @@ impl<'a> Walker<'a> {
                         w.at("count", |w| w.amount(count));
                     }
                     CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
-                    CostItem::ExileTotalValue { filter, .. } => {
+                    CostItem::R6012ChooseOrExiled { filter, exiled } => {
                         w.at("filter", |w| w.selector(filter));
+                        w.at("exiled", |w| w.selector(exiled));
+                    }
+                    CostItem::ExileTotalValue {
+                        filter, symbols, ..
+                    } => {
+                        w.at("filter", |w| w.selector(filter));
+                        if symbols.is_some() {
+                            w.uses("Cost", "ExileTotalValue.Symbols");
+                        }
                     }
                     CostItem::OneOf(costs) => w.alternatives(costs),
                     CostItem::Discard { count, filter } => {
@@ -2249,6 +2287,7 @@ impl<'a> Walker<'a> {
                     | CostItem::R6702CollectEvidenceX
                     | CostItem::ExileCardTypes(_)
                     | CostItem::Waterbend(_)
+                    | CostItem::CreaturesHelpPay(_)
                     | CostItem::OthersGainLife(_)
                     | CostItem::OpponentGainsLife(_)
                     | CostItem::GetPoison(_)
@@ -2303,6 +2342,9 @@ impl<'a> Walker<'a> {
                         // announces its X ("you may pay one or more {E}").
                         if w.r115_least_way {
                             w.uses("Cost", "XAtLeast.Way");
+                        } else if w.r5523_spell_cap {
+                            // "X can't be 0." of a spell: the least X of every cast of it.
+                            w.uses("Cost", "XAtLeast.Spell");
                         } else if !w.activated_cost && (!w.r306_paying || !w.x_free) {
                             w.uses("Cost", "XAtLeast.Elsewhere");
                         }
@@ -2732,6 +2774,7 @@ impl<'a> Walker<'a> {
                     | CostItem::Craft { .. }
                     | CostItem::Forage
                     | CostItem::Waterbend(_)
+                    | CostItem::CreaturesHelpPay(_)
             ) {
                 self.uses(kind, &format!("{prefix}.{}", tag_of(item)));
             }
@@ -3162,6 +3205,7 @@ impl<'a> Walker<'a> {
             }
             Modification::GainAbilitiesOf(from)
             | Modification::R111GainNonManaAbilitiesOf(from)
+            | Modification::P160GainLoyaltyAbilitiesOf(from)
             | Modification::R6702GainActivatedAndTriggeredOf(from)
             | Modification::R114StickerAbilitiesOf(from)
             | Modification::SetCreatureTypesOf(from) => {
@@ -3259,6 +3303,8 @@ impl<'a> Walker<'a> {
             | Modification::CantAttackOwner(_)
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
@@ -3307,10 +3353,12 @@ impl<'a> Walker<'a> {
             }
         }
         let scope = std::mem::take(&mut self.scope);
+        let outer = self.r6112_granted_outer.replace(scope.clone());
         let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, false);
         self.nested += 1;
         self.at("GrantAbility", |w| w.ability(granted));
         self.nested -= 1;
+        self.r6112_granted_outer = outer;
         self.r6701_effect_grant = effect_grant;
         self.scope = scope;
     }
@@ -3593,7 +3641,34 @@ impl<'a> Walker<'a> {
                 }
                 self.at("inner", |w| w.trigger_pattern(inner));
             }
+            TriggerPattern::R603Exactly { event, amount } => {
+                let plain = |pattern: &TriggerPattern| {
+                    matches!(
+                        pattern,
+                        TriggerPattern::DealsDamage { .. }
+                            | TriggerPattern::LifeLost { .. }
+                            | TriggerPattern::LifeGained { .. }
+                    )
+                };
+                let fits = match &**event {
+                    TriggerPattern::Caused { inner, .. } => plain(inner),
+                    other => plain(other),
+                };
+                if !fits {
+                    self.problem("an exact amount is of damage, life lost or life gained");
+                }
+                if *amount == 0 {
+                    self.problem("an exact amount is at least 1");
+                }
+                self.at("event", |w| w.trigger_pattern(event));
+            }
         }
+    }
+
+    /// "a player would put a permanent onto the battlefield": the permanent and the players.
+    fn r614_put_onto(&mut self, what: &Selector, by: &Ref) {
+        self.at("what", |w| w.selector(what));
+        self.at("by", |w| w.reference(by, Kind::Player));
     }
 
     /// "is attached to": the attachment and what it is attached to.
@@ -3939,6 +4014,20 @@ impl Walker<'_> {
             Destination::BattlefieldEnchanting { only } => {
                 self.at("only", |w| w.selector(only));
             }
+            // The abilities it lists are its own on the battlefield, checked as granted ones are.
+            Destination::R6008FaceDownAs {
+                power,
+                toughness,
+                rules,
+                ..
+            } => {
+                if *power < 0 || *toughness < 1 {
+                    self.problem("a face-down creature lists a power of at least 0 and a toughness of at least 1");
+                }
+                for (i, rule) in rules.iter().enumerate() {
+                    self.at(format!("rules[{i}]"), |w| w.granted(rule));
+                }
+            }
             // The changes are continuous effects of the resolving ability, so a static ability they give may give
             // abilities in turn, as one `Effect::Continuous` gives.
             Destination::R6502BattlefieldAs {
@@ -4223,6 +4312,7 @@ impl Walker<'_> {
             | Ref::R6602FromYou => Kind::Player,
             Ref::Affected
             | Ref::LastExiledWith { .. }
+            | Ref::R406PileTop { .. }
             | Ref::Delved
             | Ref::R114ChosenObject
             | Ref::R6702CraftedWith
@@ -4543,6 +4633,7 @@ impl Walker<'_> {
             | Produce::CommanderIdentity(_)
             | Produce::Devotion
             | Produce::DraftedColors
+            | Produce::Circled
             | Produce::R6501UnspentDoubled
             | Produce::R112Noted { .. }
             | Produce::R112OneOfCount { .. }
@@ -4664,6 +4755,13 @@ impl Walker<'_> {
                 self.uses("Effect", "Move.FaceDown");
             }
             Effect::Move {
+                to: Destination::R6008FaceDownAs { .. },
+                ..
+            } => {
+                self.uses("Effect", "Move.Battlefield");
+                self.uses("Effect", "Move.R6008FaceDownAs");
+            }
+            Effect::Move {
                 to:
                     Destination::Library {
                         place: Place::Top,
@@ -4769,12 +4867,45 @@ impl Walker<'_> {
                     w.scope.numbers.insert(format!("{name}~moved"));
                 }
             }
-            Effect::LookAtTop { who, count, bind }
-            | Effect::ExileTop {
-                who, count, bind, ..
+            Effect::LookAtTop { who, count, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
+            Effect::ExileTop {
+                who,
+                count,
+                bind,
+                sealed,
+                r406_held_by,
+                ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+                if let Some(looker) = r406_held_by {
+                    if *sealed {
+                        w.problem("cards one player exiles to look at are not sealed");
+                    }
+                    w.uses("Effect", "ExileTop.R406HeldBy");
+                    w.at("r406_held_by", |w| w.reference(looker, Kind::Player));
+                }
+            }
+            Effect::R707ExileSpell {
+                what,
+                bind,
+                player_as,
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+                w.at("player_as", |w| w.bind(player_as, Kind::Player));
+            }
+            Effect::R707PutBack { who, what } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Effect::R406TurnUpExiled { what, bind } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
             Effect::R123ExileContest { who, bind } => {
@@ -4782,9 +4913,14 @@ impl Walker<'_> {
                 w.at("as", |w| w.bind(bind, Kind::Player));
             }
             Effect::BecomeForetold { what } => w.at("what", |w| w.reference(what, Kind::Object)),
-            Effect::FaceDownPile { what, top, .. } => {
+            Effect::FaceDownPile {
+                what, top, then, ..
+            } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("top", |w| w.amount(top));
+                if *then == crate::effect::PileFate::R406Kept {
+                    w.uses("Effect", "FaceDownPile.R406Kept");
+                }
             }
             Effect::Manifest {
                 who,
@@ -4999,6 +5135,15 @@ impl Walker<'_> {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
+            Effect::CopyNamedCard { who, chosen, bind } => {
+                w.chosen_as(chosen);
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
+            Effect::R6008CopyNoted { who, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
             Effect::Parade { what } => w.at("what", |w| w.selector(what)),
             Effect::PutSticker { who, on, up_to, .. } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
@@ -5124,16 +5269,39 @@ impl Walker<'_> {
                             | CastWay::Miracle
                             | CastWay::Suspend
                             | CastWay::R122SuspendCost
+                            | CastWay::R6008FaceDown
                     )
                 {
-                    w.problem("only madness, miracle and suspend are cast for a way of their own");
+                    w.problem("only madness, miracle, suspend and a face-down cast by an effect are cast for a way of their own");
                 }
                 if *way == Some(CastWay::R122SuspendCost) {
                     w.uses("CastWay", "R122SuspendCost");
                 }
+                if *way == Some(CastWay::R6008FaceDown) {
+                    if !*free {
+                        w.problem("a card cast face down by an effect is cast free");
+                    }
+                    w.uses("CastWay", "R6008FaceDown");
+                }
                 w.effect_list("otherwise", otherwise, false);
                 if let Some(name) = bind {
                     w.bind(name, Kind::Object);
+                }
+            }
+            Effect::P160CastWithin {
+                who,
+                from,
+                most,
+                total,
+                ..
+            } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("from", |w| w.reference(from, Kind::Object));
+                if let Some(most) = most {
+                    w.at("most", |w| w.amount(most));
+                }
+                if let Some(total) = total {
+                    w.at("total", |w| w.amount(total));
                 }
             }
             Effect::Bind { what, bind, adds } => {
@@ -5307,7 +5475,8 @@ impl Walker<'_> {
                 w.at("count", |w| w.amount(count));
                 w.effect_list("at_end", at_end, false);
             }
-            Effect::CreateEmblem { who, abilities } => w.w6b_emblem(who, abilities),
+            Effect::CreateEmblem { who, abilities }
+            | Effect::R6051PlayerGains { who, abilities } => w.w6b_emblem(who, abilities),
             Effect::AddPhase { phases } => {
                 if phases.is_empty() {
                     w.problem("an added phase list names no phase");
@@ -5841,6 +6010,9 @@ impl Walker<'_> {
             }
             Effect::R6401PassControl { what, .. } => {
                 w.at("what", |w| w.selector(what));
+            }
+            Effect::R1084ToDifferentOpponents { what } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
             }
             Effect::R6702CountersPerVote { tally, .. } => {
                 w.at("tally", |w| w.reference(&Ref::Bound(tally.clone()), Kind::Either));
@@ -6832,6 +7004,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.selector(what));
             }
             Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
+            Ability::CircleColors(_) => w.uses("Ability", "CircleColors"),
             Ability::R115MulliganExile => w.uses("Ability", "R115MulliganExile"),
             Ability::R120DiscardAnyTime => w.uses("Ability", "R120DiscardAnyTime"),
             Ability::Sticker(sticker) => w.sticker(sticker),
@@ -6926,7 +7099,11 @@ impl Walker<'_> {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
                 w.at("whose", |w| w.reference(whose, Kind::Player));
             }),
-            GameRule::R6400ChoosesVotes { chooser } => self.at(tag, |w| {
+            GameRule::R6097ColorlessDamage(source) => {
+                self.at(tag, |w| w.at("source", |w| w.selector(source)));
+            }
+            GameRule::R6400ChoosesVotes { chooser }
+            | GameRule::R5081ChoosesAttackers { chooser } => self.at(tag, |w| {
                 w.at("chooser", |w| w.reference(chooser, Kind::Player));
             }),
             GameRule::R6500CounterCap { what, .. } => self.at(tag, |w| {
@@ -7217,7 +7394,9 @@ impl Walker<'_> {
             | GameRule::RevealFirstDraw { .. }
             | GameRule::SpendOnlyFrom(_)
             | GameRule::R112SpendOnlyFromWay { .. }
-            | GameRule::R113NoteExiledManaValue => {}
+            | GameRule::R113NoteExiledManaValue
+            | GameRule::P158LoyaltyTwiceThis => {}
+            GameRule::R605TapOthersLands { who, .. } => self.reference(who, Kind::Player),
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }
@@ -7590,6 +7769,7 @@ impl Walker<'_> {
             | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
             }
+            ReplaceWhen::R614PutOnto { what, by } => self.r614_put_onto(what, by),
             ReplaceWhen::R115BeginStep { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
             }
@@ -7628,6 +7808,9 @@ impl Walker<'_> {
                 if *caused_own {
                     self.uses("LifeGain", "CausedOwn");
                 }
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            ReplaceWhen::R1193LifeReducedTo { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             ReplaceWhen::LifeLoss { who }
@@ -8116,6 +8299,7 @@ impl Walker<'_> {
             | ReplaceBy::RevealOrTapped(_)
             | ReplaceBy::R6007RevealOrControl { .. }
             | ReplaceBy::BeholdOrTapped(_)
+            | ReplaceBy::R7071ExileTwoAsCopy { .. }
             | ReplaceBy::Tribute(_)
             | ReplaceBy::Amplify(_)
             | ReplaceBy::MayWithCounters { .. }
@@ -8148,6 +8332,18 @@ impl Walker<'_> {
                     self.problem("needs at least one effect");
                 }
                 self.effect_list("AsEnters", effects, false);
+            }
+            ReplaceBy::R614EntersThen(effects) => {
+                if !matches!(
+                    when,
+                    ReplaceWhen::Enters { .. } | ReplaceWhen::R614PutOnto { .. }
+                ) {
+                    self.problem("only a permanent that would enter enters then has effects");
+                }
+                if effects.is_empty() {
+                    self.problem("needs at least one effect");
+                }
+                self.effect_list("R614EntersThen", effects, false);
             }
             ReplaceBy::ChooseAfter { first, choice } => {
                 if !enters {
@@ -8221,6 +8417,7 @@ impl Walker<'_> {
             }
             ReplaceBy::RevealOrTapped(of)
             | ReplaceBy::BeholdOrTapped(of)
+            | ReplaceBy::R7071ExileTwoAsCopy { of }
             | ReplaceBy::R6007RevealOrControl { of, .. } => {
                 self.at("of", |w| w.selector(of));
             }
@@ -8479,6 +8676,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::ExileTotalValue { .. }
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
+                | CostItem::R6012ChooseOrExiled { .. }
                 | CostItem::ExiledToGraveyard { .. }
                 | CostItem::ToLibrary { .. }
                 | CostItem::Craft { .. }
@@ -8918,6 +9116,14 @@ fn has_keyword(card: &Card, printed: &PrintedCard, keyword: &str, granted: &[Key
             && card.abilities().any(|(_, ability)| r116_picks_by_x(ability)))
         || card.abilities().any(|(face, ability)| match ability {
             Ability::Keyword(k) => lists(k, keyword),
+            // A sticker sheet lists the keywords of its ability stickers.
+            Ability::Sticker(crate::ability::Sticker::Ability { ability, .. })
+                if crate::compile::sticker_keywords(ability)
+                    .into_iter()
+                    .any(|k| lists(k, keyword)) =>
+            {
+                true
+            }
             ability if mentions_keyword(ability, keyword) => true,
             Ability::Manual { span, .. } => printed
                 .faces
@@ -9522,7 +9728,11 @@ mod tests {
         let ability: Ability = serde_json::from_str(json).unwrap();
         let used = used_primitives(&ability);
         assert_eq!(used.contains("Cost.XAtLeast.Way"), way, "{used:?}");
-        assert_eq!(used.contains("Cost.XAtLeast.Elsewhere"), !way, "{used:?}");
+        assert_eq!(
+            used.contains("Cost.XAtLeast.Elsewhere") || used.contains("Cost.XAtLeast.Spell"),
+            !way,
+            "{used:?}"
+        );
     }
 
     const ALL_MINE: &str = r#"{"Each":[{"Type":"Creature"},{"ControlledBy":"You"}]}"#;

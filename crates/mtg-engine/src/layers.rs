@@ -562,6 +562,8 @@ impl Held {
             | Modification::CantAttackOwner { .. }
             | Modification::CantBeBlockedUnlessAttackingOwner
             | Modification::CantBlock
+            | Modification::R1012ControlKept
+            | Modification::R3034CantBeEnchanted
             | Modification::DoesntUntap
             | Modification::R6700KeepsLastLoyalty
             | Modification::CantBeTurnedFaceUp
@@ -909,6 +911,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::LosePrinted(_)
         | Wanted::GainAbilitiesOf(_)
         | Wanted::R111GainNonManaAbilitiesOf(_)
+        | Wanted::P160GainLoyaltyAbilitiesOf(_)
         | Wanted::R6702GainActivatedAndTriggeredOf(_)
         | Wanted::R114StickerAbilitiesOf(_)
         | Wanted::LoseAbilities
@@ -925,6 +928,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::CantAttackOwner(_)
         | Wanted::CantBeBlockedUnlessAttackingOwner
         | Wanted::CantBlock
+        | Wanted::R1012ControlKept
+        | Wanted::R3034CantBeEnchanted
         | Wanted::DoesntUntap
         | Wanted::R6700KeepsLastLoyalty
         | Wanted::CantBeTurnedFaceUp
@@ -1640,6 +1645,10 @@ impl<'a> Pass<'a> {
         let Some(foot) = self.footprint(view, cand) else {
             return false;
         };
+        let kept = match foot.modification {
+            Modification::SetController(taker) => self.r1012_kept(view, taker),
+            _ => BTreeSet::new(),
+        };
         if let Source::Static(this) = &cand.what {
             self.started.entry(this.address).or_insert_with(|| Started {
                 holder: this.holder,
@@ -1664,6 +1673,9 @@ impl<'a> Pass<'a> {
         }
         let exchanged = self.r612_text_boxes(&foot);
         for id in &foot.set {
+            if kept.contains(id) {
+                continue;
+            }
             if matches!(foot.modification, Modification::R612ExchangeTextBoxes)
                 && !exchanged.contains_key(id)
             {
@@ -1683,6 +1695,34 @@ impl<'a> Pass<'a> {
         matches!(&foot.modification, Modification::GrantAbility(granted)
             if matches!(&**granted, Ability::Static { .. }))
             && !foot.set.is_empty()
+    }
+
+    /// The objects `taker` can't gain control of (`Modification::R1012ControlKept`): those a static ability that keeps
+    /// control affects in the world so far, while its source's controller, who keeps them, is another player. The
+    /// restriction is read here, as the control layer applies, from what the earlier effects of the layer left.
+    fn r1012_kept(&self, view: View<'_>, taker: PlayerId) -> BTreeSet<ObjectId> {
+        let mut kept = BTreeSet::new();
+        for cand in self.candidates(None) {
+            let Source::Static(this) = &cand.what else {
+                continue;
+            };
+            let keeps = matches!(&*this.body, Ability::Static { mods, .. }
+                if matches!(mods.get(this.index), Some(Wanted::R1012ControlKept)));
+            let Some(keeper) = view.get(this.holder.id).map(|held| held.controller) else {
+                continue;
+            };
+            if !keeps || keeper == taker {
+                continue;
+            }
+            if let Some(foot) = self.static_footprint(view, this) {
+                kept.extend(
+                    foot.set
+                        .into_iter()
+                        .filter(|id| view.get(*id).is_some_and(|held| held.controller == keeper)),
+                );
+            }
+        }
+        kept
     }
 
     /// The text box each of the two objects of an exchange takes from the other (CR 612.1), read from their copiable values

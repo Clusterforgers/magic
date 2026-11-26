@@ -109,12 +109,17 @@ pub enum ConfigError {
     /// `MTG_TEST_HOOKS` is not `1`, `0`, `true` or `false`.
     #[error("MTG_TEST_HOOKS must be 1 or 0, got {0:?}")]
     BadTestHooks(String),
+    /// `MTG_REGISTER_PER_IP` is not a whole number from 1 to 100000.
+    #[error("MTG_REGISTER_PER_IP must be a whole number from 1 to 100000, got {0:?}")]
+    BadRegisterPerIp(String),
 }
 
 /// How long the Learn course's bot waits before each answer when `MTG_TUTORIAL_BEAT_MS` is unset.
 pub const TUTORIAL_BEAT: Duration = Duration::from_millis(700);
 /// The longest beat `MTG_TUTORIAL_BEAT_MS` accepts, in milliseconds.
 const MAX_TUTORIAL_BEAT_MS: u64 = 5_000;
+/// Most registrations `MTG_REGISTER_PER_IP` may allow an address in one window.
+const MAX_REGISTER_PER_IP: u32 = 100_000;
 /// Most reverse proxies `MTG_TRUSTED_PROXIES` may name.
 const MAX_TRUSTED_PROXIES: usize = 16;
 
@@ -137,7 +142,7 @@ pub struct AttemptLimits {
     pub login_per_ip: u32,
     /// Logins for one username that fail before it is turned away, whoever sends them.
     pub login_per_username: u32,
-    /// Registrations one address may try.
+    /// Registrations one address may try (`MTG_REGISTER_PER_IP`; only the browser tests' server raises it).
     pub register_per_ip: u32,
     /// Accounts one admin may make, set a password for or remove through the admin routes inside `window`, so they
     /// cannot be used to burn CPU on password hashes. Counted apart from `register_per_ip`.
@@ -391,7 +396,7 @@ impl ServerConfig {
     /// Reads `MTG_BIND`, `MTG_ALLOWED_ORIGINS`, `MTG_MAX_GAMES`, `MTG_BOT_THINKERS`, `MTG_IDLE_CLOSE_SECS`, `MTG_AUTO_PASS`, `MTG_RESPONSE_SECS`,
     /// `MTG_BLOCK_SECS`, `MTG_THINK_SECS`, `MTG_ACTIVE_SECS`, `MTG_EXTENSION_SECS`, `MTG_CLOCK_GRACE_SECS`,
     /// `MTG_DWELL_MS`, `MTG_REGISTRATION`, `MTG_ADMIN_USERNAME`, `MTG_COOKIE_SECURE`, `MTG_TRUSTED_PROXIES`, `MTG_SEED`,
-    /// `MTG_TEST_HOOKS`, `MTG_TUTORIAL_BEAT_MS`, `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
+    /// `MTG_REGISTER_PER_IP`, `MTG_TEST_HOOKS`, `MTG_TUTORIAL_BEAT_MS`, `MTG_IMAGE_CACHE` and `MTG_IMAGE_CACHE_MIB` from the process environment.
     pub fn from_env() -> Result<ServerConfig, ConfigError> {
         ServerConfig::from_lookup(|key| {
             std::env::var_os(key).map(|value| value.to_string_lossy().into_owned())
@@ -480,6 +485,12 @@ impl ServerConfig {
             config.auth.trusted_proxies = match text.trim().parse::<usize>() {
                 Ok(n) if n <= MAX_TRUSTED_PROXIES => n,
                 _ => return Err(ConfigError::BadTrustedProxies(text)),
+            };
+        }
+        if let Some(text) = get("MTG_REGISTER_PER_IP") {
+            config.auth.limits.register_per_ip = match text.trim().parse::<u32>() {
+                Ok(n) if (1..=MAX_REGISTER_PER_IP).contains(&n) => n,
+                _ => return Err(ConfigError::BadRegisterPerIp(text)),
             };
         }
         if let Some(text) = get("MTG_SEED") {
@@ -944,6 +955,29 @@ mod tests {
         assert_eq!(
             load(&[("MTG_TRUSTED_PROXIES", text)]),
             Err(ConfigError::BadTrustedProxies(text.to_owned()))
+        );
+    }
+
+    #[rstest]
+    #[case(&[], 10)]
+    #[case(&[("MTG_REGISTER_PER_IP", "  ")], 10)]
+    #[case(&[("MTG_TEST_HOOKS", "1")], 10)]
+    #[case(&[("MTG_REGISTER_PER_IP", "1")], 1)]
+    #[case(&[("MTG_REGISTER_PER_IP", " 1000 ")], 1000)]
+    #[case(&[("MTG_REGISTER_PER_IP", "100000")], 100_000)]
+    fn registration_limits(#[case] pairs: &[(&str, &str)], #[case] expected: u32) {
+        assert_eq!(load(pairs).unwrap().auth.limits.register_per_ip, expected);
+    }
+
+    #[rstest]
+    #[case("0")]
+    #[case("100001")]
+    #[case("-1")]
+    #[case("ten")]
+    fn bad_registration_limits(#[case] text: &str) {
+        assert_eq!(
+            load(&[("MTG_REGISTER_PER_IP", text)]),
+            Err(ConfigError::BadRegisterPerIp(text.to_owned()))
         );
     }
 

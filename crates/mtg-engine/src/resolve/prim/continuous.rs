@@ -16,6 +16,7 @@ use crate::choose::{ChoiceOption, OptionChooser, Optioned, pick_options};
 use crate::effects::{Borrowed, ContinuousEffect, Modification, Selector};
 use crate::events::Event;
 use crate::object::{Chosen, GameObject, ObjectRef};
+use crate::r111_lent::Lend;
 use crate::resolve::{Cx, ResolveError, Run, Scope};
 use crate::text_change::TextWord;
 use crate::zones::Zone;
@@ -108,6 +109,7 @@ fn named_objects(
     let r112_works_in_exile = mods.iter().all(|wanted| {
         matches!(wanted, Wanted::GrantAbility(granted)
             if matches!(&**granted, mtg_cards::ability::Ability::Triggered { from: mtg_cards::refs::ZoneKind::Exile, .. }
+                | mtg_cards::ability::Ability::Activated { from: mtg_cards::refs::ZoneKind::Exile, .. }
                 | mtg_cards::ability::Ability::CostModifier { .. }))
     });
     Ok(cx
@@ -360,11 +362,11 @@ fn chosen_in(scope: &Scope<'_>, keyword: &Keyword) -> Keyword {
 
 /// The activated abilities the objects `from` names have now (`r111_lent`): a permanent's as the layers have made it so
 /// far (granted ones and its land types' mana abilities included), a card elsewhere as printed (and the mana ability of a
-/// basic land). `with_mana` false leaves the mana abilities out.
+/// basic land). `lend` says which of them are given.
 fn borrowed(
     scope: &Scope<'_>,
     from: &mtg_cards::refs::Ref,
-    with_mana: bool,
+    lend: Lend,
 ) -> Result<Vec<Borrowed>, ResolveError> {
     let mut found = Vec::new();
     for donor in scope.objects(from)? {
@@ -383,12 +385,17 @@ fn borrowed(
                     object.card(),
                     &abilities,
                     &held.chars.abilities,
-                    with_mana,
+                    lend,
                 ));
             }
             Some(None) => {
-                for (index, body) in crate::ability_reader::lendable(object.card()) {
-                    if with_mana || !body.is_mana_ability() {
+                let printed = if lend == Lend::P160Loyalty {
+                    crate::ability_reader::p160_loyalty_lendable(object.card())
+                } else {
+                    crate::ability_reader::lendable(object.card())
+                };
+                for (index, body) in printed {
+                    if lend != Lend::NonMana || !body.is_mana_ability() {
                         found.push(Borrowed {
                             donor: donor.id,
                             index,
@@ -398,7 +405,7 @@ fn borrowed(
                     }
                 }
             }
-            None => found.extend(crate::r111_lent::lent_now(scope.state, donor.id, with_mana)),
+            None => found.extend(crate::r111_lent::lent_now(scope.state, donor.id, lend)),
         }
     }
     Ok(found)
@@ -410,7 +417,7 @@ fn r6702_borrowed_with_triggers(
     scope: &Scope<'_>,
     from: &mtg_cards::refs::Ref,
 ) -> Result<Vec<Borrowed>, ResolveError> {
-    let mut found = borrowed(scope, from, true)?;
+    let mut found = borrowed(scope, from, Lend::Activated)?;
     for donor in scope.objects(from)? {
         let Some(object) = scope.state.object(donor.id) else {
             continue;
@@ -588,15 +595,22 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::LockKeyword(keyword) => Modification::LockKeyword(keyword.clone()),
         Wanted::RemoveKeyword(keyword) => Modification::RemoveKeyword(keyword.clone()),
         Wanted::RemoveKeywordKind(kind) => Modification::RemoveKeywordKind(*kind),
-        Wanted::GrantAbility(granted) => Modification::GrantAbility(Arc::clone(granted)),
+        Wanted::GrantAbility(granted) => {
+            Modification::GrantAbility(super::rule::r6112_fixed_ability(scope, granted))
+        }
         Wanted::LoseAbilities => Modification::LoseAbilities,
         Wanted::LoseAbilitiesExceptMana => Modification::LoseAbilitiesExceptMana,
         Wanted::LoseThisAbility | Wanted::LosePrinted(_) | Wanted::R707CopyOf { .. } => {
             return Err(not_resolving());
         }
-        Wanted::GainAbilitiesOf(from) => Modification::GainAbilities(borrowed(scope, from, true)?),
+        Wanted::GainAbilitiesOf(from) => {
+            Modification::GainAbilities(borrowed(scope, from, Lend::Activated)?)
+        }
         Wanted::R111GainNonManaAbilitiesOf(from) => {
-            Modification::GainAbilities(borrowed(scope, from, false)?)
+            Modification::GainAbilities(borrowed(scope, from, Lend::NonMana)?)
+        }
+        Wanted::P160GainLoyaltyAbilitiesOf(from) => {
+            Modification::GainAbilities(borrowed(scope, from, Lend::P160Loyalty)?)
         }
         Wanted::R6702GainActivatedAndTriggeredOf(from) => {
             Modification::GainAbilities(r6702_borrowed_with_triggers(scope, from)?)
@@ -643,6 +657,8 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
             Modification::CantBeBlockedUnlessAttackingOwner
         }
         Wanted::CantBlock => Modification::CantBlock,
+        Wanted::R1012ControlKept => Modification::R1012ControlKept,
+        Wanted::R3034CantBeEnchanted => Modification::R3034CantBeEnchanted,
         Wanted::DoesntUntap => Modification::DoesntUntap,
         Wanted::R6700KeepsLastLoyalty => Modification::R6700KeepsLastLoyalty,
         Wanted::CantBeTurnedFaceUp => Modification::CantBeTurnedFaceUp,

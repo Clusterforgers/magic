@@ -81,6 +81,7 @@ pub fn process(
     journal: &[(PlayerId, Choice)],
 ) -> Result<Processed, EngineError> {
     let proposed = crate::prohibit::filter(state, proposed);
+    let proposed = crate::r6008_face_down::r6008_turned_up_first(state, proposed);
     if !(state.possible.replacements
         || state.possible.protection
         || crate::rule_flips::r_moves_possible(state))
@@ -189,7 +190,8 @@ pub(crate) fn protection_of(
     if !state.possible.protection {
         return None;
     }
-    let source = keywords::Source::live(state, dealer)?;
+    let mut source = keywords::Source::live(state, dealer)?;
+    source.r6097_colorless = crate::rules::r6097_colorless_damage(state, source);
     let (holder, controller) = match target {
         DamageTarget::Player(player) => (Holder::Player(player), player),
         DamageTarget::Object(object) => (
@@ -198,6 +200,21 @@ pub(crate) fn protection_of(
         ),
     };
     keywords::protected_from(state, holder, source).then_some((source.object, controller))
+}
+
+/// Makes `scope` judge the damage source `dealer` without colors when a rule makes it a colorless source of damage
+/// (CR 609.7): what prevents or replaces damage by the color of its source reads the damage so.
+fn r6097_judged(state: &GameState, scope: &mut Scope<'_>, dealer: ObjectRef) {
+    if crate::rules::r6097_colorless_damage(
+        state,
+        keywords::Source {
+            object: dealer,
+            snapshots: &[],
+            r6097_colorless: false,
+        },
+    ) {
+        scope.r6097_colorless = Some(dealer);
+    }
 }
 
 /// Whether combat damage is being dealt: the damage steps with nothing resolving.
@@ -741,6 +758,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::R6105Uncycled { what }
         | ReplaceWhen::R115UntapStep { what }
         | ReplaceWhen::R6603Transforms { what }
+        | ReplaceWhen::R614PutOnto { what, .. }
         | ReplaceWhen::BecomesAttached { what } => only_this(what),
         ReplaceWhen::Damage { to, .. } | ReplaceWhen::CountersPut { on: to, .. } => {
             matches!(to, Some(Ref::This))
@@ -751,6 +769,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
         | ReplaceWhen::LifeLoss { .. }
+        | ReplaceWhen::R1193LifeReducedTo { .. }
         | ReplaceWhen::R115BeginStep { .. }
         | ReplaceWhen::R115LifePay { .. }
         | ReplaceWhen::LoseGame { .. }
@@ -891,6 +910,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::R109EntersAttached(_)
         | ReplaceBy::R612MayExchangeTextBoxes(_)
         | ReplaceBy::BeholdOrTapped(_)
+        | ReplaceBy::R7071ExileTwoAsCopy { .. }
         | ReplaceBy::PayOrGraveyard { .. }
         | ReplaceBy::Devour { .. }
         | ReplaceBy::DayIfNeither
@@ -909,6 +929,7 @@ fn applies_to(by: &ReplaceBy, unit: &Unit) -> bool {
         | ReplaceBy::ChooseAfter { .. }
         | ReplaceBy::AsCopy { .. } => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::AsEnters(_) => matches!(unit, Unit::Enter { .. } | Unit::Transform { .. }),
+        ReplaceBy::R614EntersThen(_) => matches!(unit, Unit::Enter { .. }),
         ReplaceBy::R6603AttachToPlayer => matches!(unit, Unit::Transform { .. }),
         ReplaceBy::R114ChooseObject(_) => matches!(unit, Unit::Enter { .. } | Unit::Attach { .. }),
         ReplaceBy::Choose(_) => matches!(
@@ -1377,6 +1398,8 @@ impl Pass<'_> {
                     let Some(reference) = self.reference(*dealer) else {
                         return Ok(false);
                     };
+                    let mut scope = scope.clone();
+                    r6097_judged(self.state, &mut scope, reference);
                     if !scope.selects(from, reference)? {
                         return Ok(false);
                     }
@@ -1504,7 +1527,7 @@ impl Pass<'_> {
                     }
             }
             (
-                ReplaceWhen::LifeLoss { who },
+                ReplaceWhen::LifeLoss { who } | ReplaceWhen::R1193LifeReducedTo { who, .. },
                 Unit::LifeLoss { player }
                 | Unit::Damage {
                     target: DamageTarget::Player(player),
@@ -1610,6 +1633,13 @@ impl Pass<'_> {
                 };
                 scope.selects(what, reference)?
             }
+            (ReplaceWhen::R614PutOnto { what, by }, Unit::Enter { object, controller }) => {
+                let Some(reference) = self.reference(*object) else {
+                    return Ok(false);
+                };
+                let putter = r614_enters_then::r614_putter(self.state, *controller);
+                scope.selects(what, reference)? && scope.players(by)?.contains(&putter)
+            }
             _ => false,
         })
     }
@@ -1680,6 +1710,7 @@ impl Pass<'_> {
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
+                || !step.r1193_reaches(at, when, &unit)
                 || !step.r5517_caused_own(at, when, &unit)
                 || (r5515_returns_as_new(step.state, source, &unit)
                     && !step.r109_is_entering_token(source.object.id))
@@ -2367,7 +2398,8 @@ impl Pass<'_> {
         let (Some(maker), Some(reference)) = (effect.source, self.reference(dealer)) else {
             return Ok(false);
         };
-        let scope = Scope::announcing(self.state, effect.controller, maker);
+        let mut scope = Scope::announcing(self.state, effect.controller, maker);
+        r6097_judged(self.state, &mut scope, reference);
         Ok(scope.selects(&shield.source, reference)?)
     }
 
@@ -2844,6 +2876,21 @@ impl Pass<'_> {
                 let asked = self.w5d_instead(at, candidate, by, effects, &unit, applied);
                 return Ok(asked.map_or(Applied::Done, Applied::Ask));
             }
+            (
+                ReplaceBy::Instead(effects),
+                Unit::LifeLoss { player }
+                | Unit::Damage {
+                    target: DamageTarget::Player(player),
+                    ..
+                },
+            ) if self.r1193_is_life_reduction(candidate) => {
+                let at = self.r1193_absorb(at, *player, &applied);
+                let asked = self.w5d_instead(at, candidate, by, effects, &unit, applied);
+                if asked.is_none() {
+                    self.r1193_kept(at);
+                }
+                return Ok(asked.map_or(Applied::Done, Applied::Ask));
+            }
             (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _)
             | (ReplaceBy::PreventAnd(effects), Unit::Damage { .. })
             | (ReplaceBy::PreventCountedAnd { effects, .. }, Unit::Damage { .. }) => {
@@ -2992,6 +3039,9 @@ impl Pass<'_> {
             ReplaceBy::BeholdOrTapped(of) => {
                 self.reveal_or_tapped(at, candidate, (of, true), (object, controller), applied)
             }
+            ReplaceBy::R7071ExileTwoAsCopy { of } => {
+                self.r7071_exile_two(at, candidate, of, (object, controller), applied)
+            }
             ReplaceBy::R109EntersAttached(to) => {
                 self.r109_enters_attached(at, candidate, to, (object, controller), applied)
             }
@@ -3020,6 +3070,10 @@ impl Pass<'_> {
             ReplaceBy::AsEnters(effects) => {
                 let unit = Unit::Enter { object, controller };
                 Ok(self.r304_as_enters(at, candidate, effects, &unit, applied))
+            }
+            ReplaceBy::R614EntersThen(effects) => {
+                let unit = Unit::Enter { object, controller };
+                Ok(self.r614_enters_then(at, candidate, effects, &unit, applied))
             }
             ReplaceBy::AsEntersWith {
                 effects,
@@ -4524,7 +4578,12 @@ impl Pass<'_> {
                     Some(Chosen::R6700PlaneswalkerType(Subtype(name)))
                 }
                 ChoiceOption::Label(name)
-                    if matches!(kind, EntersChoice::CardType | EntersChoice::CardTypeOf(_)) =>
+                    if matches!(
+                        kind,
+                        EntersChoice::CardType
+                            | EntersChoice::CardTypeOf(_)
+                            | EntersChoice::R702CraftedSharedType
+                    ) =>
                 {
                     values::CARD_TYPES
                         .into_iter()
@@ -4582,6 +4641,9 @@ impl Pass<'_> {
             EntersChoice::R6700PlaneswalkerType => values::r6700_planeswalker_types(),
             EntersChoice::CardType => values::card_types(),
             EntersChoice::CardTypeOf(set) => values::card_types_of(set),
+            EntersChoice::R702CraftedSharedType => {
+                values::card_types_of(self.r702_crafted_shared_types(source))
+            }
             EntersChoice::BasicLandType => values::basic_land_types(),
             // Two different types in order: "Plains, then Island" is Plains first.
             EntersChoice::TwoBasicLandTypes => {
@@ -4678,6 +4740,7 @@ fn entering_question(kind: EntersChoice) -> String {
         | EntersChoice::NonbasicLandCardName
         | EntersChoice::RevealedNonlandName
         | EntersChoice::CardType
+        | EntersChoice::R702CraftedSharedType
         | EntersChoice::CardTypeOf(_) => "Choose a card type.".to_owned(),
         EntersChoice::Number { .. }
         | EntersChoice::Colors(_)
@@ -4705,6 +4768,7 @@ fn zone_word(zone: Zone) -> &'static str {
 mod cost_counters;
 mod day;
 mod r304_as_enters;
+mod r614_enters_then;
 
 /// An exception of a copy as it enters with its base power and toughness worked out now ("its power and toughness are
 /// equal to this creature's power and toughness", CR 707.9b): the amounts are read before the copy begins.
@@ -4728,6 +4792,7 @@ fn r6104_worked_out(
 }
 
 mod r109_next_batch;
+mod r1193_life;
 #[cfg(test)]
 mod r304_skip;
 pub(crate) mod r406_actions;
@@ -4741,6 +4806,8 @@ pub(crate) mod r5516_learns;
 mod r5517_life;
 mod r5517_under;
 pub(crate) mod r6700_draws;
+mod r702_crafted_types;
+mod r7071_exile_two;
 mod rmt5_next;
 use rmt5_next::rmt5_next_as_instead;
 mod e19_mill;

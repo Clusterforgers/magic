@@ -163,7 +163,7 @@ fn leaves(game: &mut GameState, name: &str) {
 }
 
 /// The modifications the engine runs.
-const MODIFICATIONS: [&str; 36] = [
+const MODIFICATIONS: [&str; 37] = [
     r#"{"ModifyPT":{"power":2,"toughness":-1}}"#,
     r#"{"SetPT":{"power":5,"toughness":1}}"#,
     r#""SwitchPT""#,
@@ -199,6 +199,7 @@ const MODIFICATIONS: [&str; 36] = [
     r#"{"BlocksAdditionalPer":2}"#,
     r#""R6700KeepsLastLoyalty""#,
     r#"{"R111GainNonManaAbilitiesOf":{"Each":[{"Type":"Creature"},{"In":"Graveyard"}]}}"#,
+    r#"{"P160GainLoyaltyAbilitiesOf":{"Each":[{"Type":"Planeswalker"},"Other"]}}"#,
     r#""R119CantBeBeamedUp""#,
 ];
 
@@ -304,6 +305,7 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::GrantAbility(_)
             | mtg_cards::modify::Modification::GainAbilitiesOf(_)
             | mtg_cards::modify::Modification::R111GainNonManaAbilitiesOf(_)
+            | mtg_cards::modify::Modification::P160GainLoyaltyAbilitiesOf(_)
             | mtg_cards::modify::Modification::R6702GainActivatedAndTriggeredOf(_)
             // The stickers on other objects (`r114_04_stickers` tests it).
             | mtg_cards::modify::Modification::R114StickerAbilitiesOf(_)
@@ -326,6 +328,8 @@ fn the_table_of_modifications_has_every_variant_of_the_dsl() {
             | mtg_cards::modify::Modification::CantAttackOwner(_)
             | mtg_cards::modify::Modification::CantBeBlockedUnlessAttackingOwner
             | mtg_cards::modify::Modification::CantBlock
+            | mtg_cards::modify::Modification::R1012ControlKept
+            | mtg_cards::modify::Modification::R3034CantBeEnchanted
             | mtg_cards::modify::Modification::DoesntUntap
             | mtg_cards::modify::Modification::R6700KeepsLastLoyalty
             | mtg_cards::modify::Modification::CantBeTurnedFaceUp

@@ -1,6 +1,6 @@
-//! Goal: a repeat over the opponents that chooses one of the permanents that just arrived and gives it to the opponent of
-//! the pass (Dack Fayden, Helping Hand) hands each opponent a different one of them at 2 to 4 seats, none stays with the
-//! controller, and the goad on them holds under the new controller.
+//! Goal: the permanents that just arrived are given one to each opponent, a different opponent for each (Dack Fayden,
+//! Helping Hand, `Effect::R1084ToDifferentOpponents`), at 2 to 4 seats; none stays with the controller, and the goad on
+//! them holds under the new controller.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -18,11 +18,11 @@ use rstest::rstest;
 
 use crate::common::{on_battlefield, pid};
 
-const DRAFT: &str = include_str!("../../../mtg-cli/drafts/dack_fayden_helping_hand.json");
+const RULES: &str = include_str!("../../../mtg-cards/cards/dack_fayden_helping_hand.json");
 
-/// A free creature with the draft's enters trigger.
+/// A free creature with the enters trigger of the rules file.
 fn dack() -> Arc<CardDefinition> {
-    let card: Card = serde_json::from_str(DRAFT).unwrap();
+    let card: Card = serde_json::from_str(RULES).unwrap();
     let rule = serde_json::to_value(&card.faces[0].abilities[0]).unwrap();
     let ability: Ability = serde_json::from_value(rule).unwrap();
     Arc::new((*free_creature("Dack", 3, 2)).clone().with_rules(ability))

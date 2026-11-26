@@ -376,6 +376,10 @@ fn rule_mana(
             }
             // No color was chosen without a draft: no way to add mana.
             ManaProduced::Instead { .. } | ManaProduced::DraftedColors => Vec::new(),
+            ManaProduced::Circled => crate::circled::circled(state, id)
+                .into_iter()
+                .map(|color| vec![crate::mana_kinds::mana_of(color)])
+                .collect(),
             ManaProduced::OneOf(types) => types.iter().map(|t| vec![*t]).collect(),
             ManaProduced::AnyCombination { count, among } => {
                 let counts: Vec<u32> = match x_most {
@@ -587,15 +591,25 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         let Some(perm) = object.permanent() else {
             continue;
         };
-        if controller_of_object(state, object) != player {
-            continue;
-        }
+        let others = controller_of_object(state, object) != player;
+        // "You may tap lands you don't control for mana" (CR 605.1a): only a land, and only its abilities with {T}.
+        let r605_only = if others {
+            match crate::rules::r605_tap_others(state, player) {
+                Some(only) => only,
+                None => continue,
+            }
+        } else {
+            Vec::new()
+        };
         if mana_forbidden(state, player, id, false) {
             continue;
         }
         let Some(chars) = characteristics(state, id) else {
             continue;
         };
+        if others && !chars.types.contains(CardType::Land) {
+            continue;
+        }
         let sick = chars.is_creature() && keywords::sick_for_abilities(state, id);
         let can_tap = !perm.tapped() && !sick && !mana_forbidden(state, player, id, true);
         let first = found.len();
@@ -636,8 +650,13 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
             }
         }
         for mana in rule_mana(state, player, id, chars.abilities.len(), true) {
-            if !mana.tap || can_tap {
+            if (!mana.tap && !others) || (mana.tap && can_tap) {
                 found.extend(mana.options);
+            }
+        }
+        if others {
+            for option in &mut found[first..] {
+                option.only.extend(r605_only.iter().cloned());
             }
         }
         // An automatic payment taps lands before an artifact or a creature that is no land.
@@ -648,6 +667,7 @@ pub(crate) fn options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         }
     }
     found.extend(hand_options(state, player));
+    found.extend(r6051_emblem_options(state, player));
     // The replacement comes first: the mana a triggered mana ability adds is not mana the permanent produced (CR 605.1b).
     let found = crate::mana_replace::fold(state, player, found);
     mana_bonus::fold(state, player, found)
@@ -667,6 +687,24 @@ fn hand_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
         }
         let printed = characteristics(state, id).map_or(0, |chars| chars.abilities.len());
         for mana in rule_mana(state, player, id, printed, true) {
+            found.extend(mana.options);
+        }
+    }
+    found
+}
+
+/// The mana abilities of the emblems in `player`'s command zone ("any time you could activate a mana ability, you may
+/// pay 1 life. If you do, add {C}."): sources of a payment and of priority, which no tap limits.
+fn r6051_emblem_options(state: &GameState, player: PlayerId) -> Vec<ManaOption> {
+    let mut found = Vec::new();
+    for &id in state.zone(Zone::Command(player)) {
+        let emblem = state
+            .object(id)
+            .is_some_and(|object| object.kind() == crate::object::ObjectKind::Emblem);
+        if !emblem || mana_forbidden(state, player, id, false) {
+            continue;
+        }
+        for mana in rule_mana(state, player, id, 0, true) {
             found.extend(mana.options);
         }
     }

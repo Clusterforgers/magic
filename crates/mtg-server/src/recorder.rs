@@ -33,6 +33,8 @@ pub(crate) struct Recorder {
     verdicts: Option<ReadRepo>,
     /// The draft each card that runs on a read plays on in this game, by oracle id.
     reads: BTreeMap<String, String>,
+    /// Told the game's id once its end is written.
+    ended: Option<tokio::sync::broadcast::Sender<GameId>>,
 }
 
 impl Recorder {
@@ -53,7 +55,15 @@ impl Recorder {
             art: Vec::new(),
             verdicts: None,
             reads: BTreeMap::new(),
+            ended: None,
         }
+    }
+
+    /// The same recorder that tells `ended` the game's id once its end is written.
+    #[must_use]
+    pub(crate) fn with_ended(mut self, ended: tokio::sync::broadcast::Sender<GameId>) -> Recorder {
+        self.ended = Some(ended);
+        self
     }
 
     /// The same recorder that starts the fetching of a game's pictures with `warmer` when the game
@@ -171,6 +181,10 @@ impl Recorder {
     pub(crate) async fn finished(&self, result: GameResult) {
         if let Err(error) = self.records.mark_finished(self.game, result).await {
             tracing::warn!(game = %self.game, %error, "could not record the game ending");
+        }
+        if let Some(ended) = &self.ended {
+            // Nobody listening is no error.
+            let _ = ended.send(self.game);
         }
     }
 }

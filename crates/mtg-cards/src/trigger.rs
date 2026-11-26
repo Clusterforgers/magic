@@ -930,6 +930,16 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         source: Selector,
     },
+    /// The event, of exactly this amount (CR 603.2): "whenever a source you control deals exactly 1 damage to you",
+    /// "causes you to lose exactly 1 life". The amount is the damage one source deals to one recipient, or the life one
+    /// event takes (the life damage takes is that damage's, named by `DealsDamage`); the event is `DealsDamage`, `LifeLost` or
+    /// `LifeGained`, alone or inside a `Caused`.
+    R603Exactly {
+        /// The event.
+        event: Box<TriggerPattern>,
+        /// The amount it must be.
+        amount: u32,
+    },
 }
 
 /// The event a replacement effect replaces (CR 614). Each variant is one kind of event the engine's replacement step
@@ -1079,6 +1089,17 @@ pub enum ReplaceWhen {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
     },
+    /// A player's life total would be reduced to `at_most` or less by a loss of life or by damage (CR 119.3): "If your
+    /// life total would be reduced to 0 or less". The events of one batch are one reduction, judged by the total they
+    /// leave; with `Instead` none of them takes life (damage is still dealt) and the effects happen in their place.
+    R1193LifeReducedTo {
+        /// Whose life total.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The total it would be reduced to or below.
+        #[serde(default)]
+        at_most: i32,
+    },
     /// A player would pay life while their library has at least that many cards in it (CR 119.4, 614.1): "If you would
     /// pay life while your library has at least that many cards in it, exile that many cards from the top of your library
     /// instead." `Amount::Triggering` is the life; a player still pays only life they have.
@@ -1155,6 +1176,15 @@ pub enum ReplaceWhen {
     Enters {
         /// The permanent that would enter.
         what: Selector,
+    },
+    /// A player `by` names would put a card matching the selector onto the battlefield (CR 614.1), under anyone's control:
+    /// the player who plays it, or who controls the spell or ability that puts it there, or else the player it would enter
+    /// under. `Ref::R115Causer` is that player ("that player instead puts that land onto the battlefield").
+    R614PutOnto {
+        /// The permanent that would enter.
+        what: Selector,
+        /// The players who would put it there.
+        by: Ref,
     },
     /// An Aura, Equipment or Fortification matching the selector would become attached to a permanent (CR 701.3): "As
     /// this Equipment becomes attached to a creature, choose a color." Only `Choose` or `R114ChooseObject`; one attached
@@ -1267,6 +1297,9 @@ pub enum EntersChoice {
     CardType,
     /// One of these card types ("choose artifact, creature, enchantment, instant, or sorcery").
     CardTypeOf(mtg_core::card::CardTypes),
+    /// A card type every card used to craft the permanent shares, as they are in exile (CR 702.167c: "choose a card type
+    /// shared among two exiled cards used to craft it").
+    R702CraftedSharedType,
     /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
     BasicLandType,
     /// Two different basic land types, in order ("choose two basic land types"): the first and the second chosen.
@@ -1560,6 +1593,14 @@ pub enum ReplaceBy {
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),
+    /// As the permanent enters, its controller may exile two cards the selector names; if they do, it enters as a copy
+    /// of one of them, chosen by them, with as many additional +1/+1 counters as the other card's power (CR 707.9, 614.1c):
+    /// "you may exile two creature cards from graveyards. If you do, it enters as a copy of one of those cards with a
+    /// number of additional +1/+1 counters on it equal to the power of the other card."
+    R7071ExileTwoAsCopy {
+        /// What may be exiled.
+        of: Selector,
+    },
     /// As the permanent would enter, its controller pays the cost (a sacrifice or a discard); if they don't (or can't),
     /// it is put into its owner's graveyard instead ("If ~ would enter, sacrifice two untapped lands instead. If you do,
     /// put ~ onto the battlefield. If you don't, put it into its owner's graveyard").
@@ -1659,6 +1700,10 @@ pub enum ReplaceBy {
     WithKindsOn(Ref),
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
+    /// The permanent enters as it would, then these effects happen as part of the same event, before any player could act
+    /// (CR 614.1a): "that player instead puts that land onto the battlefield then sacrifices a land of their choice". Their
+    /// questions go to the players they name; only an `Enters` or an `R614PutOnto` uses it.
+    R614EntersThen(Vec<crate::effect::Effect>),
     /// The creature enters tapped and attacking a player, planeswalker or battle its controller chooses as it enters
     /// (CR 508.4): "If a creature you control would enter while you control an attacking creature, instead it enters
     /// tapped and attacking." It was never declared as an attacker. Only `Enters`.

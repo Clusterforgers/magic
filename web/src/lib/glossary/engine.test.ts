@@ -96,6 +96,7 @@ const EFFECTS: Record<string, string> = {
   RingTempts: 'The Ring tempts you',
   TakeInitiative: 'Initiative',
   CreateEmblem: 'Emblem',
+  R6051PlayerGains: 'Emblem',
   BecomeDayNight: 'Day and night',
   Amass: 'Amass',
   Empower: 'Empower Jace',
@@ -115,7 +116,10 @@ const EFFECTS: Record<string, string> = {
   Explore: 'Explore',
   Connive: 'Connive',
   CastFromZone: 'Cast',
+  P160CastWithin: 'Cast',
   CopyCard: 'Copy',
+  CopyNamedCard: 'Copy',
+  R6008CopyNoted: 'Copy',
   CopySpell: 'Copy',
   CopyAbility: 'Copy',
   BecomeCopy: 'Copy',
@@ -150,12 +154,13 @@ const ORDINARY_EFFECTS =
   Move LoseUnspentMana PutBeneathTop BecomeBlocked FaceDownPile ExileHidden Remember Forget RememberValue Balance AddMana
   SpellEntersWith JoinAttack Revive Parade ExileUntil RevealUntil ExileTop Performed EndTurn AddStep RepeatWhile
   SeparatePiles RepeatEach ChooseWords ChooseNumbers BidLife Either OneOf ChangeTargets Rule Reattack If Together May Pay
-  R6400Block AuraSwap Meld R6401PassControl R6501RedistributeLife R6602CreateAttached
+  R6400Block AuraSwap Meld R6401PassControl R1084ToDifferentOpponents R6501RedistributeLife R6602CreateAttached
   R6701RemoveAmong R6701TurnFaceDownHorror R6701ControlCombat R6702Distribute R6702CountersPerVote
   PayAnyTimes StillResolves Bind Let R110RemovePutThisWay R110MoveEachKindMissing R110MoveOneOrMore R110ChooseSecretly R111KeepChosen R112NoteManaSpent
   R110AddCombatAfterFirst R111OrderGraveyard R112DoubleX R112NoteChosen R123XBecomes R123ExileContest
   R112GuessNumber R112Piles R112RollStore R112RerollStored R113PhaseIn R114StoreValue R114CopySpellOnto
-  R115ExchangeBlocks R115ExchangeBlockers R115JoinBlock R115SkipStep R117EndCombat R119ActivateLandMana R119DrainMana R119BindSpliced R120ChooseEachColor`)
+  R115ExchangeBlocks R115ExchangeBlockers R115JoinBlock R115SkipStep R117EndCombat R119ActivateLandMana R119DrainMana R119BindSpliced R120ChooseEachColor
+  R406TurnUpExiled R707ExileSpell R707PutBack`)
 
 /** The `CostItem` variants that are keyword actions or the words of one, by lexicon term. */
 const COSTS: Record<string, string> = {
@@ -192,6 +197,7 @@ const COSTS: Record<string, string> = {
   Blight: 'Blight',
   Behold: 'Behold',
   Waterbend: 'Waterbend',
+  CreaturesHelpPay: 'Tap',
   Forage: 'Forage',
   Craft: 'Craft',
   R114RollDie: 'Roll a die',
@@ -199,7 +205,7 @@ const COSTS: Record<string, string> = {
 
 const ORDINARY_COSTS =
   names(`Mana PayLife Draw ManaCostOf OwnManaCost OwnManaValue OwnManaCostLess ReturnToHand AlikeFromHand
-  DamageToYou OthersGainLife OpponentGainsLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor R113XHybrid R112XOneEachColor R112ExileFromOneGraveyard R113BottomFromOneGraveyard ChosenColorOnly XAtMost XIs R121XIsPerOpponent OneOf Changed R6702ExileTotalX ExileTotalValue R110ControllerDraws R110RevealChosen R110Choose R110ChooseNumber`)
+  DamageToYou OthersGainLife OpponentGainsLife GenericOf ExiledToGraveyard ToLibrary XAtLeast XColor R113XHybrid R112XOneEachColor R112ExileFromOneGraveyard R113BottomFromOneGraveyard ChosenColorOnly XAtMost XIs R121XIsPerOpponent OneOf Changed R6702ExileTotalX ExileTotalValue R110ControllerDraws R110RevealChosen R110Choose R110ChooseNumber R6012ChooseOrExiled`)
 
 /** The `TriggerPattern` variants that name a keyword action, designation or rules term, by lexicon term. */
 const TRIGGERS: Record<string, string> = {
@@ -270,7 +276,7 @@ const ORDINARY_TRIGGERS =
   names(`ZoneChange ZoneChangeExcept ResolvedToGraveyard Attacks AttacksAlone AttacksPlayer
   AttacksPlayerOrPlaneswalker PlayerAttacked PlayerAttacks BecomesTarget PlayerBecomesTarget PutOnStack FirstDrawRevealed
   Drew Blocks BecomesBlocked Unblocked GroupAttacks GroupAttacksAt StepBegins State Did AnyOf Batch Nth Caused R6701WhileActivating R109WhileCasting DealsToughnessDamage PhaseBegins
-  R110ThatCombatBegins R111AbilityTriggered R120RandomAction R120AssistedCast R120DealsExactly`)
+  R110ThatCombatBegins R111AbilityTriggered R120RandomAction R120AssistedCast R120DealsExactly R603Exactly`)
 
 /** The fields of the player view that are a designation, a status or a counter the rules define, by lexicon term. */
 const PLAYER_FIELDS: Record<string, string> = {

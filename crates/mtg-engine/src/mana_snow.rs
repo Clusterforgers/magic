@@ -40,6 +40,20 @@ impl Choice {
         payment.taps.extend(self.paid.taps.clone());
         payment
     }
+
+    /// `payment` without the snow mana set aside, or `None` when it does not spend all of that mana.
+    pub(crate) fn rest_of(&self, payment: &Payment) -> Option<Payment> {
+        let mut rest = payment.clone();
+        for unit in &self.paid.restricted {
+            let at = rest.restricted.iter().position(|u| u == unit)?;
+            rest.restricted.remove(at);
+        }
+        for tap in &self.paid.taps {
+            let at = rest.taps.iter().position(|t| t == tap)?;
+            rest.taps.remove(at);
+        }
+        Some(rest)
+    }
 }
 
 /// Every way to set aside `count` snow mana that `spend` allows, up to a budget, the fewest taps first.

@@ -254,6 +254,10 @@ pub enum CostItem {
         filter: Selector,
         /// The least total mana value.
         total: u32,
+        /// The total counts the mana symbols of this color among their mana costs instead ("with fifteen or more black
+        /// mana symbols among their mana costs"; a hybrid symbol counts once for each of its colors).
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        symbols: Option<mtg_core::color::Color>,
     },
     /// Blight (Lorwyn Eclipsed): put that many -1/-1 counters on a creature the payer controls and picks.
     Blight(Amount),
@@ -293,6 +297,10 @@ pub enum CostItem {
     /// Waterbend (Avatar): that much generic mana (`X` is the number announced for the cost), which the payer may pay in
     /// part by tapping untapped artifacts and creatures they control, each paying {1}.
     Waterbend(Amount),
+    /// That much generic mana of an activated ability, which the payer may pay in part by tapping untapped creatures they
+    /// control, each paying {1} (Heirloom Epic: "For each mana in this ability's activation cost, you may tap an untapped
+    /// creature you control rather than pay that mana"); paying it is not waterbending.
+    CreaturesHelpPay(Amount),
     /// The X announced for the cost is at least this much ("X can't be 0"); pays nothing itself.
     XAtLeast(u32),
     /// "Spend only black mana on X." (CR 107.3): the mana paid for the X announced for the cost is of this color; pays
@@ -341,6 +349,16 @@ pub enum CostItem {
     /// spell is announced; it pays nothing itself. The spell and the permanent it becomes read it as the value the source
     /// chose (`Pred::ChosenSubtype`). Only a spell holds it, as a required `AdditionalCost`.
     R110Choose(crate::trigger::EntersChoice),
+    /// "As an additional cost to cast this spell, choose a creature you control or a warped creature card you own in
+    /// exile." (CR 601.2b): the caster chooses one permanent they control that `filter` selects or one card they own in
+    /// exile that `exiled` selects; it pays nothing itself, and the spell reads the choice as `Ref::Paid`, the
+    /// permanent as it is on resolution or as it last existed.
+    R6012ChooseOrExiled {
+        /// Which permanents the caster controls may be chosen.
+        filter: Selector,
+        /// Which cards the caster owns in exile may be chosen.
+        exiled: Selector,
+    },
     /// "As an additional cost to cast this spell, choose a number between 0 and 5." (CR 601.2b): the caster announces the
     /// number as the X of the spell, from `least` to `most`; it pays nothing itself. Only a spell with no `{X}` holds it, as a
     /// required `AdditionalCost`, and reads it as `Amount::X` ("where X is the chosen number").
@@ -365,6 +383,9 @@ pub enum CostItem {
         /// The least X when the count is X (1 when absent).
         #[serde(default, skip_serializing_if = "Option::is_none")]
         least: Option<u32>,
+        /// What the materials have in common as a set ("Craft with two that share a card type"); nothing when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        alike: Option<Alike>,
     },
     /// One of these costs, chosen by the caster as the spell is announced ("discard a card or pay 3 life"): the only item of
     /// the required additional cost of a spell.
@@ -394,6 +415,11 @@ pub enum Alike {
     ShareColor,
     /// They all lie in one graveyard: they have the same owner.
     R112SameOwner,
+    /// They all have one card type in common (CR 702.167a: "two that share a card type").
+    R702ShareCardType,
+    /// They all have one creature type in common: a pick of the creature type chosen with the same cost, before it is
+    /// chosen (CR 601.2b).
+    R6012ShareCreatureType,
 }
 
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.
@@ -412,7 +438,8 @@ impl CostItem {
             | CostItem::DamageToYou(amount)
             | CostItem::ExileTop(amount)
             | CostItem::Blight(amount)
-            | CostItem::Waterbend(amount) => Some(amount),
+            | CostItem::Waterbend(amount)
+            | CostItem::CreaturesHelpPay(amount) => Some(amount),
             CostItem::RemoveCounters { count, .. }
             | CostItem::RemoveCountersAmong { count, .. }
             | CostItem::PutCounters { count, .. }
@@ -455,7 +482,8 @@ impl Cost {
             | CostItem::DamageToYou(amount)
             | CostItem::ExileTop(amount)
             | CostItem::Blight(amount)
-            | CostItem::Waterbend(amount) => *amount == Amount::X,
+            | CostItem::Waterbend(amount)
+            | CostItem::CreaturesHelpPay(amount) => *amount == Amount::X,
             CostItem::RemoveCountersAmong { count, .. }
             | CostItem::PutCounters { count, .. }
             | CostItem::SpendCounters { count, .. }
@@ -560,6 +588,7 @@ mod tests {
     #[case::forage(Cost(vec![CostItem::Forage]), r#"["Forage"]"#)]
     #[case::waterbend(Cost(vec![CostItem::Waterbend(Amount::Fixed(3))]), r#"[{"Waterbend":3}]"#)]
     #[case::waterbend_x(Cost(vec![CostItem::Waterbend(Amount::X)]), r#"[{"Waterbend":"X"}]"#)]
+    #[case::creatures_help_pay(Cost(vec![CostItem::CreaturesHelpPay(Amount::Fixed(4))]), r#"[{"CreaturesHelpPay":4}]"#)]
     #[case::evidence_x(Cost(vec![CostItem::R6702CollectEvidenceX]), r#"["R6702CollectEvidenceX"]"#)]
     #[case::sacrifice_up_to(
         Cost(vec![CostItem::R6702SacrificeUpTo { filter: Selector::default(), most: 3 }]),
