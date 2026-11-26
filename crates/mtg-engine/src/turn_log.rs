@@ -151,6 +151,7 @@ pub(crate) const fn is_record(event: TallyEvent) -> bool {
             | TallyEvent::Blocked
             | TallyEvent::Activated
             | TallyEvent::KindActivated(_)
+            | TallyEvent::R6024ActivatedTargeting
             | TallyEvent::CountersPut
             | TallyEvent::PlusOneCountersPut
     )

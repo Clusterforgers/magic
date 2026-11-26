@@ -1700,6 +1700,7 @@ impl<'a> Walker<'a> {
                         | crate::value::TallyEvent::Blocked
                         | crate::value::TallyEvent::Activated
                         | crate::value::TallyEvent::KindActivated(_)
+                        | crate::value::TallyEvent::R6024ActivatedTargeting
                         | crate::value::TallyEvent::CountersPut
                         | crate::value::TallyEvent::PlusOneCountersPut
                 ) {
@@ -4543,6 +4544,7 @@ impl Walker<'_> {
             | Produce::CommanderIdentity(_)
             | Produce::Devotion
             | Produce::DraftedColors
+            | Produce::Circled
             | Produce::R6501UnspentDoubled
             | Produce::R112Noted { .. }
             | Produce::R112OneOfCount { .. }
@@ -5307,7 +5309,8 @@ impl Walker<'_> {
                 w.at("count", |w| w.amount(count));
                 w.effect_list("at_end", at_end, false);
             }
-            Effect::CreateEmblem { who, abilities } => w.w6b_emblem(who, abilities),
+            Effect::CreateEmblem { who, abilities }
+            | Effect::R6051PlayerGains { who, abilities } => w.w6b_emblem(who, abilities),
             Effect::AddPhase { phases } => {
                 if phases.is_empty() {
                     w.problem("an added phase list names no phase");
@@ -6832,6 +6835,7 @@ impl Walker<'_> {
                 w.at("what", |w| w.selector(what));
             }
             Ability::OpeningHand | Ability::OpeningHandWith { .. } => {}
+            Ability::CircleColors(_) => w.uses("Ability", "CircleColors"),
             Ability::R115MulliganExile => w.uses("Ability", "R115MulliganExile"),
             Ability::R120DiscardAnyTime => w.uses("Ability", "R120DiscardAnyTime"),
             Ability::Sticker(sticker) => w.sticker(sticker),
@@ -7628,6 +7632,9 @@ impl Walker<'_> {
                 if *caused_own {
                     self.uses("LifeGain", "CausedOwn");
                 }
+                self.at("who", |w| w.reference(who, Kind::Player));
+            }
+            ReplaceWhen::R1193LifeReducedTo { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
             ReplaceWhen::LifeLoss { who }

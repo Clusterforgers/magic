@@ -124,6 +124,7 @@ fn kinds_of(ability: &Ability) -> &'static [ClauseKind] {
         | Ability::R115MulliganExile
         | Ability::R120DiscardAnyTime
         | Ability::OpeningHand
+        | Ability::CircleColors(_)
         | Ability::OpeningHandWith { .. }
         | Ability::Sticker(_)
         | Ability::CostModifier { .. } => &[ClauseKind::Static],

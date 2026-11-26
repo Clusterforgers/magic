@@ -263,6 +263,9 @@ pub enum Produce {
     /// One mana of any color chosen as the controller drafted cards named like the source ("Add one mana of any color
     /// chosen as you drafted cards named ~"); none in a game without a draft, where no color was chosen (Paliano ruling).
     DraftedColors,
+    /// One mana of either of the colors circled for the source as its deck was built (`Ability::CircleColors`), those of
+    /// the permanent it copies for a copy; none when no color was circled ("Add one mana of either of the circled colors").
+    Circled,
     /// One more mana of each type for each unspent mana of that type in the player's pool, restricted mana counted too;
     /// the mana added has no restriction ("Double the amount of each type of unspent mana you have", Doubling Cube
     /// rulings; the type of mana is its color or colorless).
@@ -1537,6 +1540,16 @@ pub enum Effect {
         #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
         who: Ref,
         /// Its abilities.
+        abilities: Vec<crate::ability::Ability>,
+    },
+    /// Until end of turn each player named has these abilities, written as on a permanent ("Until end of turn, any time
+    /// you could activate a mana ability, you may pay 1 life. If you do, add {C}."): they are held by an emblem in the
+    /// player's command zone that ceases to exist in the cleanup step.
+    R6051PlayerGains {
+        /// Who gains them.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The abilities.
         abilities: Vec<crate::ability::Ability>,
     },
     /// A Spirit returns to life (`docs/delves.md`, Spirits): each player named who is a Spirit loses its haunt emblem, is a

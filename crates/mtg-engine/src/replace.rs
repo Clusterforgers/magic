@@ -751,6 +751,7 @@ fn is_self(when: &ReplaceWhen) -> bool {
         | ReplaceWhen::Mill { .. }
         | ReplaceWhen::LifeGain { .. }
         | ReplaceWhen::LifeLoss { .. }
+        | ReplaceWhen::R1193LifeReducedTo { .. }
         | ReplaceWhen::R115BeginStep { .. }
         | ReplaceWhen::R115LifePay { .. }
         | ReplaceWhen::LoseGame { .. }
@@ -1504,6 +1505,15 @@ impl Pass<'_> {
                     }
             }
             (
+                ReplaceWhen::R1193LifeReducedTo { who, .. },
+                Unit::LifeLoss { player }
+                | Unit::Damage {
+                    target: DamageTarget::Player(player),
+                    loses_life: true,
+                    ..
+                },
+            ) => scope.players(who)?.contains(player),
+            (
                 ReplaceWhen::LifeLoss { who },
                 Unit::LifeLoss { player }
                 | Unit::Damage {
@@ -1680,6 +1690,7 @@ impl Pass<'_> {
                 || (unpreventable && Action::Replace(by.clone()).prevents())
                 || matches!(by, ReplaceBy::Dredge(cards) if !step.can_dredge(at, source.object.id, *cards))
                 || !step.c6_blk_matches(at, source, when, &unit)?
+                || !step.r1193_reaches(at, when, &unit)
                 || !step.r5517_caused_own(at, when, &unit)
                 || (r5515_returns_as_new(step.state, source, &unit)
                     && !step.r109_is_entering_token(source.object.id))
@@ -2842,6 +2853,21 @@ impl Pass<'_> {
             {
                 let at = self.r6603_one_draw(at, *player);
                 let asked = self.w5d_instead(at, candidate, by, effects, &unit, applied);
+                return Ok(asked.map_or(Applied::Done, Applied::Ask));
+            }
+            (
+                ReplaceBy::Instead(effects),
+                Unit::LifeLoss { player }
+                | Unit::Damage {
+                    target: DamageTarget::Player(player),
+                    ..
+                },
+            ) if self.r1193_is_life_reduction(candidate) => {
+                let at = self.r1193_absorb(at, *player, &applied);
+                let asked = self.w5d_instead(at, candidate, by, effects, &unit, applied);
+                if asked.is_none() {
+                    self.r1193_kept(at);
+                }
                 return Ok(asked.map_or(Applied::Done, Applied::Ask));
             }
             (ReplaceBy::Instead(effects) | ReplaceBy::Plus(effects), _)
@@ -4738,6 +4764,7 @@ mod r5504_look;
 mod r5507_counters;
 pub(crate) mod r5516_copies;
 pub(crate) mod r5516_learns;
+mod r1193_life;
 mod r5517_life;
 mod r5517_under;
 pub(crate) mod r6700_draws;

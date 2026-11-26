@@ -479,10 +479,6 @@ fn clause_spans_cut_out_the_sentences_they_name() {
     }
     let expected = [
         (
-            "Cryptic Spires",
-            "As you create your deck, circle two of the colors below.",
-        ),
-        (
             "Yotia Declares War",
             "II \u{2014} Tap any number of untapped artifacts you control. When you do, this Saga deals that much damage to target creature or planeswalker.",
         ),

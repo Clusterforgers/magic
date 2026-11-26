@@ -82,6 +82,7 @@ mod r377_skips;
 mod r379_since;
 mod r401_riders;
 mod r404_commander_color;
+mod circled;
 mod r4701_boast;
 mod r4707_pay_costs;
 mod r5512_until_cast;

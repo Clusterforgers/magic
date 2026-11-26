@@ -501,6 +501,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::CountersChanged(_)
         | Event::TokenCreated(_)
         | Event::EmblemCreated(_)
+        | Event::R6051EmblemEnded { .. }
         | Event::Ventured(_)
         | Event::DungeonCompleted { .. }
         | Event::InitiativeTaken { .. }
@@ -586,6 +587,7 @@ fn redact(before: &GameState, event: &Event, viewer: PlayerId) -> Option<HiddenE
         | Event::FaceDownLooked { .. }
         // The color of a commander is public, as the card is.
         | Event::CommanderColorChosen { .. }
+        | Event::ColorsCircled { .. }
         | Event::DoorUnlocked { .. }
         | Event::DoorLocked { .. }
         | Event::Mutated { .. }

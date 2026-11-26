@@ -627,6 +627,7 @@ fn wear_off(state: &GameState) -> Vec<Event> {
             .filter(|e| ends_with_turn(state, &e.duration, e.turn, e.controller))
             .map(|e| Event::RuleExpired { id: e.id }),
     );
+    events.extend(crate::w6b_emblems::r6051_ended(state));
     // "Until end of turn" copy effects end with the other effects of the turn (CR 514.2).
     events.extend(
         state

@@ -296,7 +296,12 @@ pub(crate) fn handle(
         (DecisionKind::YesNo(options), Answer::YesNo(choice)) => {
             choose::yes_no_answer(player, options, choice)
         }
-        // In the opening the only question of options is a commander's color.
+        // In the opening the questions of options are a commander's color and the colors circled for a card.
+        (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice))
+            if state.stage() == Stage::Mulligan && options.text == crate::circled::ASKED =>
+        {
+            crate::circled::answer(state, player, options, choice)
+        }
         (DecisionKind::ChooseOption(options), Answer::ChooseOption(choice))
             if state.stage() == Stage::Mulligan =>
         {
