@@ -43,6 +43,9 @@ const accountServers: Extract<PlaywrightTestConfig['webServer'], unknown[]> =
             MTG_SEED: ACCOUNTS_SEED,
             // Serves the boss's concession `delves.spec.ts` uses to end a fight; a production server never sets it.
             MTG_TEST_HOOKS: '1',
+            // Every spec registers its accounts from 127.0.0.1, so a full run passes the 10 an address may make in
+            // 15 minutes; a production server keeps that limit (`pg_accounts.rs`).
+            MTG_REGISTER_PER_IP: '10000',
           },
           url: `${ACCOUNTS_SERVER_URL}/healthz`,
           reuseExistingServer,

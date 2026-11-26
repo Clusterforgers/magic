@@ -287,6 +287,28 @@ const primary = (page: Page): Locator => page.locator('[data-region="controls"] 
 const endTurn = (page: Page): Locator =>
   page.locator('[data-region="controls"] [data-slot="secondary-action"]')
 const card = (page: Page, id: string): Locator => page.locator(`button[data-object-id="${id}"]`)
+
+/**
+ * Presses `target` at a point where it lies on top, as a player presses the part of a card they see: a land of a
+ * fanned pile shows only its name line above the next, so its centre belongs to the card over it.
+ */
+export async function pressShown(target: Locator): Promise<void> {
+  await target.scrollIntoViewIfNeeded()
+  const point = await target.evaluate((element) => {
+    const box = element.getBoundingClientRect()
+    for (const down of [0.5, 0.08, 0.2, 0.8, 0.92]) {
+      for (const across of [0.5, 0.2, 0.8]) {
+        const x = box.left + box.width * across
+        const y = box.top + box.height * down
+        const hit = document.elementFromPoint(x, y)
+        if (hit !== null && element.contains(hit)) return { x, y }
+      }
+    }
+    return null
+  })
+  if (point === null) await target.click()
+  else await target.page().mouse.click(point.x, point.y)
+}
 const enabled = (seen: Seen, label: string): boolean =>
   seen.buttons.some((control) => control.label === label && !control.disabled)
 
@@ -558,7 +580,7 @@ const ANSWERS: Record<string, (turn: Turn) => Promise<string>> = {
       names.push(((await target.getAttribute('aria-label')) ?? (await target.textContent()) ?? '').trim())
       // One target, or up to one, answers on its press: there is no Confirm to wait for.
       const onPress = (await confirm.count()) === 0
-      await target.click()
+      await pressShown(target)
       if (onPress) return `targets ${names.join(', ')}`
       if (await confirm.isEnabled()) break
     }

@@ -26,6 +26,9 @@ pub(super) fn choose_type_texts(kind: EntersChoice) -> Vec<String> {
         EntersChoice::CardType => vec!["a card type".to_owned()],
         EntersChoice::BasicLandType => vec!["a basic land type".to_owned()],
         EntersChoice::CardTypeOf(set) => type_list_texts(set),
+        EntersChoice::R702CraftedSharedType => {
+            vec!["a card type shared among two exiled cards used to craft it".to_owned()]
+        }
         _ => return Vec::new(),
     };
     what.into_iter()

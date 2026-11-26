@@ -50,6 +50,7 @@ mod counter_actions;
 mod counter_mana;
 mod counting_costs;
 mod created_others;
+mod cx8_cards;
 mod dice_results;
 mod discard_casts;
 mod dk1d_disturb;

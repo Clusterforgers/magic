@@ -1,4 +1,4 @@
-//! Goal: accounts work end to end over real HTTP on Postgres: sign up, sign in, who-am-I and sign out with a session cookie that has exactly the documented attributes; usernames and passwords are validated at their limits and unique ignoring case; only hashes and digests are stored; a failed login says nothing about whether the username exists; guessing is throttled per username and per address; registration can be closed; sessions end by expiry, logout or replacement; foreign sites change nothing; a server without a database says so; and neither passwords nor tokens reach the logs.
+//! Goal: accounts work end to end over real HTTP on Postgres: sign up, sign in, who-am-I and sign out with a session cookie that has exactly the documented attributes; usernames and passwords are validated at their limits and unique ignoring case; only hashes and digests are stored; a failed login says nothing about whether the username exists; guessing is throttled per username and per address; registrations keep ten an address unless `MTG_REGISTER_PER_IP` raises it; registration can be closed; sessions end by expiry, logout or replacement; foreign sites change nothing; a server without a database says so; and neither passwords nor tokens reach the logs.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use crate::common;
@@ -813,6 +813,42 @@ async fn registrations_are_throttled_per_address_and_refused_ones_do_not_count(p
     assert_eq!(count(&pool, "users").await, 2);
     // Logging in is a different budget.
     login(server.addr, "first", PASSWORD).await;
+}
+
+/// The production environment keeps ten registrations an address; only `MTG_REGISTER_PER_IP` (the browser tests'
+/// server) raises it, and the test hooks alone do not.
+#[sqlx::test(migrations = false)]
+async fn the_registration_limit_of_the_environment_holds(pool: PgPool) {
+    let cases: [(&[(&str, &str)], usize); 3] = [
+        (&[], 10),
+        (&[("MTG_TEST_HOOKS", "1")], 10),
+        (&[("MTG_REGISTER_PER_IP", "12")], 12),
+    ];
+    for (case, (env, allowed)) in cases.into_iter().enumerate() {
+        let limits = ServerConfig::from_lookup(|key| {
+            env.iter()
+                .find(|(name, _)| *name == key)
+                .map(|(_, value)| (*value).to_owned())
+        })
+        .unwrap()
+        .auth
+        .limits;
+        let server = start_with(&pool, |config| {
+            config.auth.limits.register_per_ip = limits.register_per_ip;
+        })
+        .await;
+        for n in 0..=allowed {
+            let reply = post(
+                &server,
+                "/api/auth/register",
+                &credentials(&format!("limit{case}n{n}"), PASSWORD),
+                &[],
+            )
+            .await;
+            let expected = if n < allowed { 201 } else { 429 };
+            assert_eq!(reply.status, expected, "case {case}, registration {n}");
+        }
+    }
 }
 
 #[sqlx::test(migrations = false)]

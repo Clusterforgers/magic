@@ -107,6 +107,50 @@ fn fixed_choices(scope: &Scope<'_>, rule: &GameRule) -> GameRule {
     serde_json::from_value(value).unwrap_or_else(|_| rule.clone())
 }
 
+/// The granted ability with each `SameCard` it names fixed to the object its name holds now (CR 611.2c): "that creature
+/// gains 'Whenever this creature deals combat damage to a player, copy the exiled card'" keeps naming the card this
+/// resolution exiled after the resolution is over.
+pub(super) fn r6112_fixed_ability(
+    scope: &Scope<'_>,
+    granted: &std::sync::Arc<mtg_cards::ability::Ability>,
+) -> std::sync::Arc<mtg_cards::ability::Ability> {
+    fn walk(scope: &Scope<'_>, value: &mut Value) -> bool {
+        match value {
+            Value::Object(fields) => {
+                if fields.len() == 1
+                    && let Some(named) = fields.get("SameCard")
+                    && let Ok(named) = serde_json::from_value::<mtg_cards::refs::Ref>(named.clone())
+                    && !matches!(named, mtg_cards::refs::Ref::R111Object(_))
+                    && let Ok([object]) = scope.objects(&named).as_deref()
+                {
+                    fields.insert(
+                        "SameCard".to_owned(),
+                        serde_json::json!({ "R111Object": object.id }),
+                    );
+                    return true;
+                }
+                let mut any = false;
+                for inner in fields.values_mut() {
+                    any |= walk(scope, inner);
+                }
+                any
+            }
+            Value::Array(items) => items
+                .iter_mut()
+                .fold(false, |any, item| walk(scope, item) | any),
+            _ => false,
+        }
+    }
+    let Ok(mut value) = serde_json::to_value(&**granted) else {
+        return std::sync::Arc::clone(granted);
+    };
+    if !walk(scope, &mut value) {
+        return std::sync::Arc::clone(granted);
+    }
+    serde_json::from_value(value)
+        .map_or_else(|_| std::sync::Arc::clone(granted), std::sync::Arc::new)
+}
+
 /// Writes the chosen values into `value`; whether it wrote any.
 pub(super) fn fix(scope: &Scope<'_>, value: &mut Value) -> bool {
     match value {
@@ -156,6 +200,19 @@ pub(super) fn fix(scope: &Scope<'_>, value: &mut Value) -> bool {
                 any |= fix(scope, item);
             }
             any
+        }
+        // "The next spell you cast this turn of the chosen type": the card type the source chose as it entered.
+        Value::String(word) if word == "ChosenSubtype" => {
+            let Some(Chosen::CardType(kind)) = scope.entered_choice() else {
+                return false;
+            };
+            match serde_json::to_value(Pred::Type(*kind)) {
+                Ok(written) => {
+                    *value = written;
+                    true
+                }
+                Err(_) => false,
+            }
         }
         _ => false,
     }
