@@ -72,8 +72,8 @@ pub const CROWN_CASCADE_FROM: u32 = 16;
 /// The content generation from which a theme may cap its bosses' reinforcements, each one beyond the cap coming as
 /// Supplies (`Theme::boss_reinforcements_most`, `Scale::theme_reinforcements`).
 pub const THEME_REINFORCEMENTS_FROM: u32 = 17;
-/// The content generation from which each hero after the third brings the boss a Warband and more life in place of a
-/// reinforcement (`Scale::theme_reinforcements`, `Scale::boss_life`).
+/// The content generation from which each hero after the third brings the boss a Warband in place of a reinforcement
+/// (`Scale::theme_reinforcements`).
 pub const PARTY_SCALE_FROM: u32 = 18;
 /// The content generation from which each descent leads into another open theme (`Content::next_theme`).
 pub const THEMES_FROM: u32 = 9;
@@ -1672,7 +1672,7 @@ impl Run {
         let Ok(theme) = self.theme(content) else {
             return Vec::new();
         };
-        let life = crate::scale::Scale::boss_life(self.heroes.len(), self.content);
+        let life = crate::scale::Scale::boss_life(self.heroes.len());
         self.map
             .nodes
             .iter()

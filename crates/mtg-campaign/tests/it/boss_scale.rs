@@ -4,8 +4,8 @@
 //! bosses against two or more heroes, and from `REINFORCEMENTS_FADE_FROM` a boss with the most relics brings no
 //! reinforcement (the theme's supplies stay); from `THEME_RELICS_FROM` a theme may cap its bosses' relics, the
 //! Warrens at three; from `THEME_REINFORCEMENTS_FROM` a theme may cap its bosses' reinforcements, each further one
-//! coming as supplies, the Warrens at one; from `PARTY_SCALE_FROM` each hero after the third brings a Warband and more
-//! life in place of a reinforcement, so one to three heroes meet the boss of generation 17.
+//! coming as supplies, the Warrens at one; from `PARTY_SCALE_FROM` each hero after the third brings a Warband in place
+//! of a reinforcement, so one to three heroes meet the boss of generation 17.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS, RELIC_OFFSET};
 use mtg_campaign::content::FOUNDRY_FROM;
@@ -14,7 +14,7 @@ use mtg_campaign::run::{
     THEME_REINFORCEMENTS_FROM, THEME_RELICS_FROM, THEME_SUPPLIES_FROM,
 };
 use mtg_campaign::scale::{
-    BOSS_LIFE_BEYOND, FADE_RELICS, MOST, PARTY_BASE, REINFORCEMENT, SUPPLIES, WARBAND,
+    FADE_RELICS, MOST, PARTY_BASE, REINFORCEMENT, SUPPLIES, WARBAND, WARBANDS,
 };
 use mtg_campaign::{CardKind, HeroDeck, Run, RunEvent, Scale, content};
 use proptest::prelude::*;
@@ -120,7 +120,7 @@ fn the_fight_plan_carries_the_reinforcements_by_party_size(
     };
     assert_eq!(boss.reinforcements.len(), extra);
     assert_eq!(boss.relics.len(), boss_relics::count(0, 1, version));
-    assert_eq!(boss.life, Scale::boss_life(heroes, version));
+    assert_eq!(boss.life, Scale::boss_life(heroes));
     // Each reinforcement is an emblem from the start and named on the sheet beside the relics.
     let emblems = boss.emblems();
     assert_eq!(
@@ -413,7 +413,7 @@ fn a_warrens_boss_brings_one_reinforcement_and_supplies_for_the_rest(
 
 proptest! {
     #[test]
-    fn heroes_after_the_third_bring_a_warband_only_from_its_generation(
+    fn heroes_after_the_third_bring_warbands_only_from_their_generation(
         heroes in 1usize..9,
         generation in 0u32..24,
         supplies in 0usize..3,
@@ -422,24 +422,20 @@ proptest! {
     ) {
         let now = Scale::theme_reinforcements(heroes, generation, (supplies, most), relics);
         let warbands = now.iter().filter(|card| *card == WARBAND).count();
-        let old_life = Scale::boss_life(heroes, THEME_REINFORCEMENTS_FROM);
         if generation >= PARTY_SCALE_FROM {
-            // The reinforcements of three heroes, faded and capped alike, and a Warband for each further hero.
+            // The reinforcements of three heroes, faded and capped alike, and the Warbands of the further heroes.
             let three = Scale::theme_reinforcements(heroes.min(PARTY_BASE), generation, (supplies, most), relics);
             let beyond = heroes.min(MOST).saturating_sub(PARTY_BASE);
-            prop_assert_eq!(warbands, beyond);
-            prop_assert_eq!(&now[..now.len() - beyond], &three[..]);
-            let more = BOSS_LIFE_BEYOND * i32::try_from(beyond).unwrap();
-            prop_assert_eq!(Scale::boss_life(heroes, generation), old_life + more);
+            prop_assert_eq!(warbands, WARBANDS[beyond]);
+            prop_assert_eq!(&now[..now.len() - warbands], &three[..]);
         } else {
             prop_assert_eq!(warbands, 0);
-            prop_assert_eq!(Scale::boss_life(heroes, generation), old_life);
         }
     }
 }
 
 #[rstest]
-fn a_party_of_four_to_six_meets_a_warband_for_each_hero_after_the_third(
+fn a_party_of_four_to_six_meets_warbands_in_place_of_reinforcements(
     #[values(("warrens", 1), ("spire", 1), ("foundry", 3))] theme: (&str, u8),
     #[values(1, 2, 3, 4, 5, 6)] heroes: u8,
 ) {
@@ -456,25 +452,22 @@ fn a_party_of_four_to_six_meets_a_warband_for_each_hero_after_the_third(
             .filter(|card| *card == id)
             .count()
     };
-    assert_eq!(count(&now, WARBAND), beyond);
+    assert_eq!(count(&now, WARBAND), WARBANDS[beyond]);
     assert_eq!(count(&now, REINFORCEMENT), count(&three, REINFORCEMENT));
     assert_eq!(count(&now, SUPPLIES), count(&three, SUPPLIES));
-    let more = BOSS_LIFE_BEYOND * i32::try_from(beyond).unwrap();
-    assert_eq!(now.life, old.life + more);
     // Each Warband is an emblem from the start, named on the sheet with the other reinforcements.
     assert_eq!(
         now.emblems().iter().filter(|id| *id == WARBAND).count(),
-        beyond
+        WARBANDS[beyond]
     );
     assert_eq!(
         now.sheet(content).unwrap().relics.len(),
         now.relics.len() + now.reinforcements.len()
     );
-    // Up to three heroes the boss is the one of generation 17; beyond, it differs only in reinforcements and life.
+    // Up to three heroes the boss is the one of generation 17; beyond, it differs only in its reinforcements.
     if beyond == 0 {
         assert_eq!(now, old);
     }
     now.reinforcements.clone_from(&old.reinforcements);
-    now.life = old.life;
     assert_eq!(now, old);
 }

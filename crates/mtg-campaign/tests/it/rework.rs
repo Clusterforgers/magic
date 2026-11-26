@@ -8,8 +8,8 @@ use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS};
 use mtg_campaign::content::{Content, FOUNDRY_FROM, Rarity};
 use mtg_campaign::modifiers::{self, EncounterModifier};
 use mtg_campaign::relics::DeckMakeup;
-use mtg_campaign::run::{CONTENT, PARTY_SCALE_FROM, THEME_REINFORCEMENTS_FROM};
-use mtg_campaign::scale::{BOSS_LIFE_BEYOND, PHASE_ROUNDS};
+use mtg_campaign::run::CONTENT;
+use mtg_campaign::scale::PHASE_ROUNDS;
 use mtg_campaign::{Brain, Run, RunEvent, Scale, content};
 use proptest::prelude::*;
 use rstest::rstest;
@@ -46,14 +46,12 @@ fn innate_level_and_relic_count_follow_the_tables(#[values(0, 1, 2)] heat: u8) {
 }
 
 #[rstest]
-#[case(1, [40, 40])]
-#[case(2, [55, 55])]
-#[case(3, [70, 70])]
-#[case(4, [85, 85 + BOSS_LIFE_BEYOND])]
-#[case(6, [115, 115 + 3 * BOSS_LIFE_BEYOND])]
-fn life_grows_with_the_party_only(#[case] heroes: usize, #[case] life: [i32; 2]) {
-    let generations = [THEME_REINFORCEMENTS_FROM, PARTY_SCALE_FROM];
-    assert_eq!(generations.map(|g| Scale::boss_life(heroes, g)), life);
+#[case(1, 40)]
+#[case(2, 55)]
+#[case(4, 85)]
+#[case(6, 115)]
+fn life_grows_with_the_party_only(#[case] heroes: usize, #[case] life: i32) {
+    assert_eq!(Scale::boss_life(heroes), life);
 }
 
 #[rstest]
@@ -215,7 +213,7 @@ fn a_reworked_fight_plan_holds_only_the_reworked_parts(
     let plan = run.fight_plan(content).unwrap().unwrap();
     let boss = &plan.boss;
     let rework = boss;
-    assert_eq!(boss.life, Scale::boss_life(heroes, CONTENT));
+    assert_eq!(boss.life, Scale::boss_life(heroes));
     assert_eq!(boss.brain, Brain::Hard);
     assert!(rework.modifier.is_some());
     assert_eq!(rework.relics.len(), boss_relics::count(0, heat, CONTENT));

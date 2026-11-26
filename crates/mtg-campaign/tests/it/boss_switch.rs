@@ -65,7 +65,7 @@ fn a_new_run_builds_the_reworked_fight(
     assert_eq!(plan.seats(), heroes + 1);
     assert_eq!(
         (boss.life, boss.brain),
-        (Scale::boss_life(heroes, CONTENT), Brain::Hard)
+        (Scale::boss_life(heroes), Brain::Hard)
     );
     let spec = content.theme(&run.theme).unwrap().boss(&boss.boss).unwrap();
     let precon = content.deck(&spec.deck_file).unwrap();
