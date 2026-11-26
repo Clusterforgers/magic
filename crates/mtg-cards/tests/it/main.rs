@@ -16,6 +16,7 @@ mod compile_faults;
 mod compile_real;
 mod compile_shapes;
 mod corpus;
+mod cx8_cards;
 mod decisions;
 mod deck_companion;
 mod deck_read;

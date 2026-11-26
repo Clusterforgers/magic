@@ -154,7 +154,7 @@ const ORDINARY_EFFECTS =
   Move LoseUnspentMana PutBeneathTop BecomeBlocked FaceDownPile ExileHidden Remember Forget RememberValue Balance AddMana
   SpellEntersWith JoinAttack R5084JoinTheirAttack Revive Parade ExileUntil RevealUntil ExileTop Performed EndTurn AddStep RepeatWhile
   SeparatePiles RepeatEach ChooseWords ChooseNumbers BidLife Either OneOf ChangeTargets Rule Reattack If Together May Pay
-  R6400Block AuraSwap Meld R6401PassControl R6501RedistributeLife R6602CreateAttached
+  R6400Block AuraSwap Meld R6401PassControl R1084ToDifferentOpponents R6501RedistributeLife R6602CreateAttached
   R6701RemoveAmong R6701TurnFaceDownHorror R6701ControlCombat R6702Distribute R6702CountersPerVote
   PayAnyTimes StillResolves Bind Let R110RemovePutThisWay R110MoveEachKindMissing R110MoveOneOrMore R110ChooseSecretly R111KeepChosen R112NoteManaSpent
   R110AddCombatAfterFirst R111OrderGraveyard R112DoubleX R112NoteChosen R123XBecomes R123ExileContest

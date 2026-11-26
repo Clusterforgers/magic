@@ -476,6 +476,7 @@ fn relic() -> Arc<CardDefinition> {
             filter: Selector(vec![Pred::Type(CardType::Creature)]),
             count: Amount::X,
             least: None,
+            alike: None,
         },
     ])));
     let front = CardDefinition::new("Relic Engine")

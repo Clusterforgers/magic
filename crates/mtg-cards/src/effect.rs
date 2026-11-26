@@ -2543,6 +2543,14 @@ pub enum Effect {
         /// Which of them pass.
         pick: R6401Pick,
     },
+    /// For each permanent the reference names the controller chooses a different opponent, and each opponent gains
+    /// control of the permanent chosen for them, for good (CR 108.4, 613.1b): "For each of those permanents, choose a
+    /// different opponent. Each opponent gains control of the permanent for which they were chosen." Permanents beyond
+    /// the number of opponents stay where they are.
+    R1084ToDifferentOpponents {
+        /// The permanents given away.
+        what: Ref,
+    },
     /// The controller distributes counters among any number of the permanents the reference names as the effect resolves,
     /// at least one on each chosen ("distribute three stun counters among any number of tapped creatures your opponents
     /// control"); none when it names none.

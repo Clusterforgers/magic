@@ -383,6 +383,9 @@ pub enum CostItem {
         /// The least X when the count is X (1 when absent).
         #[serde(default, skip_serializing_if = "Option::is_none")]
         least: Option<u32>,
+        /// What the materials have in common as a set ("Craft with two that share a card type"); nothing when absent.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        alike: Option<Alike>,
     },
     /// One of these costs, chosen by the caster as the spell is announced ("discard a card or pay 3 life"): the only item of
     /// the required additional cost of a spell.
@@ -412,6 +415,11 @@ pub enum Alike {
     ShareColor,
     /// They all lie in one graveyard: they have the same owner.
     R112SameOwner,
+    /// They all have one card type in common (CR 702.167a: "two that share a card type").
+    R702ShareCardType,
+    /// They all have one creature type in common: a pick of the creature type chosen with the same cost, before it is
+    /// chosen (CR 601.2b).
+    R6012ShareCreatureType,
 }
 
 /// The parts of a cost, paid together; a cost of one mana part is written as its mana text.

@@ -351,7 +351,7 @@ fn w5d_skipped(effects: &[Effect]) -> BTreeSet<&'static str> {
 }
 
 /// The target specifications and bound names an ability body can see.
-#[derive(Default)]
+#[derive(Default, Clone)]
 // Each flag is a separate place a reference may stand in.
 #[allow(clippy::struct_excessive_bools)]
 struct Scope {
@@ -505,6 +505,9 @@ struct Walker<'a> {
     /// The values chosen before an emblem is made, which its abilities may read: the engine writes them in as the
     /// emblem is made.
     r4702_emblem_values: BTreeSet<String>,
+    /// The object names bound around an ability an effect grants, which its `SameCard` may name: the engine fixes them as
+    /// the grant begins (CR 611.2c).
+    r6112_granted_outer: Option<Scope>,
     /// Where the walk stands in an effect list, for "if you do".
     after: After,
     /// The effect before the one being walked is a `May`, whose acceptance "if you do" asks about.
@@ -556,6 +559,7 @@ impl<'a> Walker<'a> {
             r121_copy_grant: false,
             r6701_spell_grant: false,
             r4702_emblem_values: BTreeSet::new(),
+            r6112_granted_outer: None,
             after: After::Nothing,
             after_may: false,
             face: 0,
@@ -1020,6 +1024,13 @@ impl<'a> Walker<'a> {
                 self.reference(r, Kind::Object);
                 self.scope.tests -= 1;
             }
+            Pred::SameCard(Ref::Bound(name))
+                if self.scope.lookup(name).is_none()
+                    && self.r6112_granted_outer.as_ref().is_some_and(|outer| {
+                        outer
+                            .lookup(name)
+                            .is_some_and(|kind| kind.fits(Kind::Object))
+                    }) => {}
             Pred::Is(r)
             | Pred::SourceOf(r)
             | Pred::SharesSubtype(r)
@@ -3334,10 +3345,12 @@ impl<'a> Walker<'a> {
             }
         }
         let scope = std::mem::take(&mut self.scope);
+        let outer = self.r6112_granted_outer.replace(scope.clone());
         let effect_grant = std::mem::replace(&mut self.r6701_effect_grant, false);
         self.nested += 1;
         self.at("GrantAbility", |w| w.ability(granted));
         self.nested -= 1;
+        self.r6112_granted_outer = outer;
         self.r6701_effect_grant = effect_grant;
         self.scope = scope;
     }
@@ -5925,6 +5938,9 @@ impl Walker<'_> {
             Effect::R6401PassControl { what, .. } => {
                 w.at("what", |w| w.selector(what));
             }
+            Effect::R1084ToDifferentOpponents { what } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
             Effect::R6702CountersPerVote { tally, .. } => {
                 w.at("tally", |w| w.reference(&Ref::Bound(tally.clone()), Kind::Either));
             }
@@ -8208,6 +8224,7 @@ impl Walker<'_> {
             | ReplaceBy::RevealOrTapped(_)
             | ReplaceBy::R6007RevealOrControl { .. }
             | ReplaceBy::BeholdOrTapped(_)
+            | ReplaceBy::R7071ExileTwoAsCopy { .. }
             | ReplaceBy::Tribute(_)
             | ReplaceBy::Amplify(_)
             | ReplaceBy::MayWithCounters { .. }
@@ -8313,6 +8330,7 @@ impl Walker<'_> {
             }
             ReplaceBy::RevealOrTapped(of)
             | ReplaceBy::BeholdOrTapped(of)
+            | ReplaceBy::R7071ExileTwoAsCopy { of }
             | ReplaceBy::R6007RevealOrControl { of, .. } => {
                 self.at("of", |w| w.selector(of));
             }
