@@ -16,6 +16,7 @@ use crate::ways;
 /// runs again (`Next::Again`) with the card tried. A pass with nothing to offer, or no card chosen, ends the effect.
 /// The cards tried are bound under a name of the step, and the spells cast and their mana values, as the cards were
 /// before the cast, are kept numbers of the resolution, so a game rebuilt from its log asks the same questions.
+#[allow(clippy::too_many_lines)] // the budget, the offer, the cast and the pass after it
 pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let Effect::P160CastWithin {
         who,
@@ -111,7 +112,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 .map_or(0, |card| i64::from(card.whole_card().mana_value()));
             let reference = state
                 .object(*card)
-                .map(|object| object.reference())
+                .map(crate::object::GameObject::reference)
                 .ok_or_else(|| unexpected("a card that is gone"))?;
             let mut grown = tried.clone();
             grown.push(Target::Object(reference));

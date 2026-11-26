@@ -394,7 +394,9 @@ fn bolas_plus_one_has_each_opponent_exile_a_card(
         };
         let wanted = options.from.iter().copied().find(|id| {
             let in_hand = matches!(
-                driver_state.object(*id).map(|o| o.zone()),
+                driver_state
+                    .object(*id)
+                    .map(mtg_engine::object::GameObject::zone),
                 Some(Zone::Hand(_))
             );
             in_hand == from_hand

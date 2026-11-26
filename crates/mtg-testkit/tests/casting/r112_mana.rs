@@ -530,3 +530,36 @@ fn r112_protective_sphere_offers_sources_of_the_spent_colors(
     assert_eq!(found, offered);
     Ok(())
 }
+
+/// A seeded bot pays with Jegantha's floating mana in the pool: each payment it offers is accepted, so it never spends
+/// that mana on a generic part.
+#[rstest]
+#[case::generic_only(&[ManaSymbol::Generic(3)])]
+#[case::generic_and_colored(&[ManaSymbol::Generic(2), R, G])]
+fn r112_a_bot_pays_no_generic_part_with_jegantha_mana(
+    #[values(2, 3)] seats: usize,
+    #[case] symbols: &[ManaSymbol],
+) -> Result<(), ScriptError> {
+    let mut manual = 0;
+    for seed in 0..48 {
+        let mut driver = jegantha(seats, 3, symbols)?;
+        driver.tap_for_mana("Jegantha, the Wellspring")?;
+        driver.begin_cast("Paid One")?;
+        let mut bot = mtg_testkit::RandomBot::new(seed, 0);
+        while let Ok(decision) = driver.decision() {
+            if !matches!(decision.kind, DecisionKind::PayMana(_)) {
+                break;
+            }
+            let answer = bot.choose(&decision.clone());
+            manual += usize::from(matches!(
+                answer,
+                Answer::PayMana(mtg_engine::decision::PayChoice::Manual(_))
+            ));
+            driver
+                .answer(answer.clone())
+                .unwrap_or_else(|e| panic!("seed {seed}: {answer:?} refused: {e}"));
+        }
+    }
+    assert!(manual > 0, "no seed paid by hand");
+    Ok(())
+}

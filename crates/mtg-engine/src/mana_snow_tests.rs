@@ -45,7 +45,14 @@ fn pool(snow: &[ManaType], plain: &[ManaType]) -> ManaPool {
     pool
 }
 
-use ManaType::{Colorless, Green, Red};
+/// A land at `id` that taps for two `mana`.
+fn pair(id: u64, mana: ManaType) -> ManaOption {
+    let mut option = land(id, mana, false);
+    option.count = 2;
+    option
+}
+
+use ManaType::{Colorless, Green, Red, White};
 
 #[rstest]
 #[case::snow_land_pays("{S}", &[land(1, Green, true)], &[], true)]
@@ -59,6 +66,9 @@ use ManaType::{Colorless, Green, Red};
 #[case::floating_snow("{S}", &[], &[(Red, true)], true)]
 #[case::floating_plain_mana("{S}", &[], &[(Red, false)], false)]
 #[case::floating_and_tapped("{S}{R}", &[land(1, Red, false)], &[(Green, true)], true)]
+#[case::two_mana_for_the_generic_part("{1}{S}", &[pair(1, White), land(2, Colorless, true)], &[], true)]
+#[case::two_mana_beside_a_single_land("{1}{S}", &[pair(1, White), land(2, Colorless, true), land(3, Green, false)], &[], true)]
+#[case::two_mana_for_two_generic("{2}{S}", &[pair(1, White), land(2, Colorless, true)], &[], true)]
 fn a_snow_cost_needs_snow_mana(
     #[case] text: &str,
     #[case] lands: &[ManaOption],
@@ -133,4 +143,37 @@ fn colorless_snow_is_still_snow() {
         LIFE,
         &Spend::other()
     ));
+}
+
+/// A source of two mana for the generic part and a snow land for `{S}`: the surplus floats, whichever is named first.
+#[rstest]
+#[case::snow_last(&[1, 2])]
+#[case::snow_first(&[2, 1])]
+fn a_snow_payment_by_hand_may_float_a_surplus(#[case] order: &[u64]) {
+    let lands = [pair(1, White), land(2, Colorless, true)];
+    let by_hand = Payment {
+        taps: order
+            .iter()
+            .map(|id| {
+                lands
+                    .iter()
+                    .find(|l| l.source.object.0 == *id)
+                    .unwrap()
+                    .source
+            })
+            .collect(),
+        ..Payment::default()
+    };
+    let spent = check_payment(
+        &cost("{1}{S}"),
+        &ManaPool::default(),
+        &lands,
+        &[],
+        LIFE,
+        &Spend::other(),
+        &by_hand,
+    )
+    .unwrap();
+    assert_eq!(spent_snow(&spent), 1);
+    assert_eq!(spent.mana.len(), 2);
 }
