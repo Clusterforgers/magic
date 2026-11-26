@@ -3261,6 +3261,7 @@ impl<'a> Walker<'a> {
             | Modification::RemoveSupertype(_)
             | Modification::AddSupertype(_)
             | Modification::SetName(_)
+            | Modification::R2013AllCreatureNames
             | Modification::ThisAbility
             | Modification::SetLoyalty(_)
             | Modification::AddSubtype(_)

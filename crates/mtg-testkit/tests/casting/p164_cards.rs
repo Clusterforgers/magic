@@ -95,6 +95,7 @@ fn plus_counters(driver: &Driver, seat: usize, name: &str) -> u32 {
 #[case("Chorus of the Conclave")]
 #[case("Eriette, the Beguiler")]
 #[case("Equinox")]
+#[case("Spy Kit")]
 fn p164_the_cards_are_verified(#[case] name: &str) {
     let support = mtg_testkit::corpus::corpus()
         .unwrap()
@@ -323,5 +324,58 @@ fn equinox_counters_only_a_spell_that_would_destroy_its_controllers_land(
         .iter()
         .any(|event| matches!(event, Event::ResolutionBegan { object } if *object == spell));
     assert_eq!(!resolved, countered);
+    replays(&driver);
+}
+
+/// A legendary 2/2 for {2}.
+fn legend(name: &str) -> Arc<CardDefinition> {
+    let mut card = (*creature(name, 2, &[], 2, 2)).clone();
+    card.supertypes.insert(mtg_core::card::Supertype::Legendary);
+    Arc::new(card)
+}
+
+#[rstest]
+#[case::a_nonlegendary_creature_card("Grizzly Bears", true)]
+#[case::a_legendary_creature_card("Old Hero", false)]
+#[case::a_noncreature_card("Shock", false)]
+#[case::no_card_of_the_game("Nobody", false)]
+fn spy_kit_gives_every_nonlegendary_creature_cards_name(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] named: &str,
+    #[case] destroyed: bool,
+) {
+    let json = format!(
+        r#"{{"Spell":{{"effects":[{{"Destroy":{{"what":{{"Each":[{{"Type":"Creature"}},{{"Named":"{named}"}}]}}}}}}]}}}}"#
+    );
+    let scenario = Scenario::new(seats)
+        .at(1, 0, Step::Main1)
+        .battlefield(
+            0,
+            [
+                ready(creature("Agent", 0, &[], 1, 1)),
+                attached_to(ready(card("Spy Kit").unwrap()), 0, 0),
+                ready(creature("Bystander", 0, &[], 1, 1)),
+            ],
+        )
+        .battlefield(seats - 1, [ready(legend("Old Hero"))])
+        .hand(
+            0,
+            [sorcery("Purge", &json), bear(), instant("Shock", 0, &[])],
+        );
+    let mut driver = Driver::from_scenario(libraries(scenario, seats)).unwrap();
+    let agent = driver.id_of("Agent").unwrap();
+    let chars = mtg_engine::characteristics::characteristics(driver.state(), agent).unwrap();
+    assert_eq!((chars.power, chars.toughness), (Some(2), Some(2)));
+    driver.cast("Purge").unwrap();
+    settle(&mut driver, 0, &|_| None);
+    let on_battlefield = |name: &str| {
+        driver
+            .state()
+            .zone(Zone::Battlefield)
+            .iter()
+            .any(|id| driver.state().object(*id).unwrap().card().name == name)
+    };
+    assert_eq!(!on_battlefield("Agent"), destroyed);
+    assert!(on_battlefield("Bystander"));
     replays(&driver);
 }

@@ -510,6 +510,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         Wanted::AddSupertype(supertype) => Modification::AddSupertype(*supertype),
         Wanted::RemoveSupertype(supertype) => Modification::RemoveSupertype(*supertype),
         Wanted::SetName(name) => Modification::SetName(name.clone()),
+        Wanted::R2013AllCreatureNames => Modification::R2013AllCreatureNames,
         Wanted::ThisAbility | Wanted::SetLoyalty(_) => {
             return Err(ResolveError::Unsupported(
                 "Mod.ThisAbility outside the exceptions of a copy",

@@ -87,6 +87,7 @@ pub(crate) fn writes(modification: &Modification) -> Traits {
         // A name read by no other effect of the engine's: words added to it change nothing another effect reads.
         Modification::AddNameWords(_)
         | Modification::SetName(_)
+        | Modification::R2013AllCreatureNames
         | Modification::GrantText(_)
         | Modification::CantAttack
         | Modification::CantAttackYou { .. }
@@ -169,6 +170,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         // A static copy is no part of the layers: housekeeping begins and ends it (`r707_static_copies`).
         Wanted::R707CopyOf { .. }
         | Wanted::SetName(_)
+        | Wanted::R2013AllCreatureNames
         | Wanted::R121SetChosenName
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)
@@ -229,6 +231,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::RemoveSupertype(_)
         | Wanted::AddSupertype(_)
         | Wanted::SetName(_)
+        | Wanted::R2013AllCreatureNames
         | Wanted::R121SetChosenName
         | Wanted::ThisAbility
         | Wanted::SetLoyalty(_)

@@ -781,6 +781,7 @@ const RUNS: &[&str] = &[
     "Mod.RemoveSupertype",
     "Mod.AddSupertype",
     "Mod.SetName",
+    "Mod.R2013AllCreatureNames",
     "Mod.ThisAbility",
     "Mod.SetLoyalty",
     "Mod.AddSubtype",

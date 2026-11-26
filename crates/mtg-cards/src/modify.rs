@@ -56,6 +56,9 @@ pub enum Modification {
     /// Names the copiable values of a copy: "except its name is Lazav, Dimir Mastermind" (layer 1); as the change of a
     /// static ability or an effect it replaces the name (layer 3): "named Legitimate Businessperson".
     SetName(String),
+    /// Gives it every name of a nonlegendary creature card in addition to its own (layer 3, the Spy Kit rulings): a name
+    /// check passes for the name of any such card, front or back face, and never for a token's name.
+    R2013AllCreatureNames,
     /// Gives the copiable values of a copy the ability that is resolving: "except it has this ability". Only the
     /// exceptions of a `BecomeCopy` have it.
     ThisAbility,
@@ -286,6 +289,7 @@ impl Modification {
         match self {
             Modification::AddSupertype(_)
             | Modification::SetName(_)
+            | Modification::R2013AllCreatureNames
             | Modification::ThisAbility
             | Modification::SetLoyalty(_)
             | Modification::R707CopyOf { .. } => Some("1"),

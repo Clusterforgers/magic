@@ -62,6 +62,10 @@ pub struct Characteristics {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     #[cfg_attr(feature = "ts", ts(optional))]
     pub name_set: Option<String>,
+    /// An effect gave it every name of a nonlegendary creature card in addition to its own (layer 3, Spy Kit).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(as = "Option<bool>", optional))]
+    pub r2013_all_names: bool,
 }
 
 impl Characteristics {
@@ -114,6 +118,7 @@ impl Characteristics {
             abilities: Vec::new(),
             name_words: Vec::new(),
             name_set: None,
+            r2013_all_names: false,
         }
     }
 }
@@ -520,6 +525,7 @@ pub(crate) fn base(object: &GameObject) -> Characteristics {
         abilities: card.abilities.clone(),
         name_words: Vec::new(),
         name_set: None,
+        r2013_all_names: false,
     }
 }
 

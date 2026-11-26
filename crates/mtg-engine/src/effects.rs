@@ -166,6 +166,8 @@ pub enum Modification {
     /// Replaces the name (layer 3): "named Legitimate Businessperson". Name stickers put on before it are gone with the
     /// old name.
     SetName(String),
+    /// Gives it every name of a nonlegendary creature card in addition to its own (layer 3, the Spy Kit rulings).
+    R2013AllCreatureNames,
     /// A line of text the table follows by hand (layer 6): it changes nothing the engine runs and `granted_text` lists it.
     GrantText(String),
     /// Adds colours to the ones it has (layer 5).
@@ -355,6 +357,7 @@ impl Modification {
             | Modification::R612ExchangeTextBoxes
             | Modification::R612TextBoxOf(_)
             | Modification::AddNameWords(_)
+            | Modification::R2013AllCreatureNames
             | Modification::SetName(_) => Layer::Text,
             Modification::AddType(_)
             | Modification::RemoveType(_)
@@ -410,6 +413,7 @@ impl Modification {
         match self {
             Modification::AddNameWords(words) => chars.name_words.push(words.clone()),
             Modification::SetName(name) => chars.set_name(name),
+            Modification::R2013AllCreatureNames => chars.r2013_all_names = true,
             Modification::AddType(ty) => chars.types = chars.types.with(*ty),
             Modification::RemoveType(ty) => chars.types = without(chars.types, *ty),
             Modification::SetTypes(types) => set_types(chars, *types),

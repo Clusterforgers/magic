@@ -548,6 +548,7 @@ impl Held {
             | Modification::GrantText(_)
             | Modification::AddNameWords(_)
             | Modification::SetName(_)
+            | Modification::R2013AllCreatureNames
             | Modification::AddAllCreatureTypes
             | Modification::SetColors(_)
             | Modification::AddColors(_)
@@ -872,6 +873,7 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
         | Wanted::ChangeTextChosenTo { .. }
         | Wanted::R612ExchangeTextBoxes
         | Wanted::SetName(_)
+        | Wanted::R2013AllCreatureNames
         | Wanted::R121SetChosenName => Layer::Text,
         Wanted::AddType(_)
         | Wanted::RemoveType(_)
