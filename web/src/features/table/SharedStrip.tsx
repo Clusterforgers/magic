@@ -121,7 +121,8 @@ export function SharedStrip({ inset = 0 }: { inset?: number }) {
         <div data-slot="strip-row" className="flex min-w-0 flex-1 items-center gap-x-3">
           <div
             data-slot="strip-stack"
-            className="flex min-w-0 shrink-[4] items-center overflow-hidden flex-1"
+            // Folded chips keep room for the top chip and "+N more" ("+N" on a phone) whole; the status line truncates first.
+            className="flex min-w-0 shrink-[4] items-center overflow-hidden flex-1 has-data-[slot=stack-more]:min-w-28 sm:has-data-[slot=stack-more]:min-w-48 max-sm:[&_[data-slot=stack-more-word]]:sr-only"
           >
             <StackChips />
           </div>
