@@ -21,9 +21,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         bind,
         sealed,
         bottom,
+        r406_held_by,
     } = effect
     else {
         return Err(wrong_effect("ExileTop"));
+    };
+    // The player who exiles them face down to look at them alone: the first the reference names.
+    let looker = match r406_held_by {
+        Some(who) => cx.scope.players(who)?.into_iter().next(),
+        None => None,
     };
     let wanted = usize::try_from(cx.scope.amount(count)?.max(0)).unwrap_or(usize::MAX);
     let state = cx.state();
@@ -46,7 +52,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 object: id,
                 from: Zone::Library(owner),
                 to: Zone::Exile,
-                cause: if *sealed {
+                cause: if let Some(looker) = looker {
+                    ZoneCause::Held {
+                        by: cx.scope.source,
+                        looker,
+                    }
+                } else if *sealed {
                     ZoneCause::Sealed {
                         by: cx.scope.source,
                     }

@@ -256,6 +256,15 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
     { R6008Listed: { object: 4, noted: 'Lightning Bolt' } },
     'Lightning Bolt lies face down as the creature an effect lists, noting the name Lightning Bolt',
   ],
+  R406TurnedUp: [{ R406TurnedUp: { object: 3 } }, 'Forest is turned face up in exile'],
+  R707Kept: [
+    { R707Kept: { object: 3, controller: 1 } },
+    'Forest waits in exile as the spell it was',
+  ],
+  R707PutBack: [
+    { R707PutBack: { object: 3, player: 1 } },
+    'Bo puts Forest back onto the stack as the spell it was',
+  ],
   FaceDownLooked: [{ FaceDownLooked: { object: 3, player: 1 } }, 'Bo looks at Forest'],
   FirstDrawRevealed: [
     { FirstDrawRevealed: { player: 1, card: 3, sources: [1] } },

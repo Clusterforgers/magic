@@ -2133,6 +2133,11 @@ fn matching_event(
                 .flatten()
                 .map(|cause| r115_with_causer(cause, scope))
         }
+        (TriggerPattern::R603Exactly { event, amount }, happened) => {
+            (happened.amount() == *amount && !matches!(happened, Happened::Batch(_)))
+                .then(|| matching(event, happened, scope))
+                .flatten()
+        }
         (TriggerPattern::R111AbilityTriggered { .. }, happened) => {
             r111_on_trigger::r111_matching(pattern, happened, scope)
         }

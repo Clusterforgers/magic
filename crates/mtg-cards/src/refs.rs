@@ -182,6 +182,13 @@ pub enum Ref {
         /// The name of the memory.
         slot: String,
     },
+    /// The top card of the face-down pile the object `on` names exiled and keeps (`PileFate::R406Kept`): the first card of
+    /// the pile in its shuffled order that is still in exile ("the top card of the pile you exiled"); none once the pile is
+    /// empty.
+    R406PileTop {
+        /// The object whose pile is read.
+        on: Box<Ref>,
+    },
     /// The card the object `on` names exiled last among those that match `filter`, while it is still in exile ("the last
     /// creature card exiled with it", Duplicant).
     LastExiledWith {

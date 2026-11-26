@@ -1,0 +1,35 @@
+{
+  "oracle_id": "a3711453-b17d-4b1c-b726-9b41f36d07ab",
+  "name": "Land Equilibrium",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Land Equilibrium",
+      "oracle_fingerprint": "de934bb81713eba847c7eea7f920b021",
+      "abilities": [
+        {
+          "Replacement": {
+            "when": {
+              "R614PutOnto": {
+                "what": [{ "Type": "Land" }],
+                "by": {
+                  "PlayersWhere": {
+                    "who": "Opponents",
+                    "test": {
+                      "Compare": {
+                        "left": { "Count": [{ "Type": "Land" }, { "ControlledBy": "You" }] },
+                        "op": "Ge",
+                        "right": { "Count": [{ "Type": "Land" }, { "ControlledBy": { "ControllerOf": "This" } }] }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "by": { "R614EntersThen": [{ "Sacrifice": { "who": "R115Causer", "filter": [{ "Type": "Land" }] } }] }
+          }
+        }
+      ]
+    }
+  ]
+}

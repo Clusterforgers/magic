@@ -930,6 +930,15 @@ pub enum TriggerPattern {
         #[serde(default, skip_serializing_if = "Selector::is_empty")]
         source: Selector,
     },
+    /// The event, of exactly this amount (CR 603.2): "whenever a source you control deals exactly 1 damage to you",
+    /// "causes you to lose exactly 1 life". The amount is the damage one source deals to one recipient, or the life one
+    /// event takes; the event is `DealsDamage`, `LifeLost` or `LifeGained`, alone or inside a `Caused`.
+    R603Exactly {
+        /// The event.
+        event: Box<TriggerPattern>,
+        /// The amount it must be.
+        amount: u32,
+    },
 }
 
 /// The event a replacement effect replaces (CR 614). Each variant is one kind of event the engine's replacement step
@@ -1166,6 +1175,15 @@ pub enum ReplaceWhen {
     Enters {
         /// The permanent that would enter.
         what: Selector,
+    },
+    /// A player `by` names would put a card matching the selector onto the battlefield (CR 614.1), under anyone's control:
+    /// the player who plays it, or who controls the spell or ability that puts it there, or else the player it would enter
+    /// under. `Ref::R115Causer` is that player ("that player instead puts that land onto the battlefield").
+    R614PutOnto {
+        /// The permanent that would enter.
+        what: Selector,
+        /// The players who would put it there.
+        by: Ref,
     },
     /// An Aura, Equipment or Fortification matching the selector would become attached to a permanent (CR 701.3): "As
     /// this Equipment becomes attached to a creature, choose a color." Only `Choose` or `R114ChooseObject`; one attached
@@ -1670,6 +1688,10 @@ pub enum ReplaceBy {
     WithKindsOn(Ref),
     /// The permanent enters prepared (a prepare card; its controller may then cast a copy of its spell face).
     EntersPrepared,
+    /// The permanent enters as it would, then these effects happen as part of the same event, before any player could act
+    /// (CR 614.1a): "that player instead puts that land onto the battlefield then sacrifices a land of their choice". Their
+    /// questions go to the players they name; only an `Enters` or an `R614PutOnto` uses it.
+    R614EntersThen(Vec<crate::effect::Effect>),
     /// The creature enters tapped and attacking a player, planeswalker or battle its controller chooses as it enters
     /// (CR 508.4): "If a creature you control would enter while you control an attacking creature, instead it enters
     /// tapped and attacking." It was never declared as an attacker. Only `Enters`.

@@ -1493,6 +1493,23 @@ impl<'a> Scope<'a> {
         Ok(found)
     }
 
+    /// The top card of the face-down pile each source keeps (`PileFate::R406Kept`): the first card of it, in its
+    /// shuffled order, that is still the card in exile it became.
+    fn r406_pile_top(&self, on: &Ref) -> Result<Vec<Target>, ResolveError> {
+        let mut found = Vec::new();
+        for source in self.objects(on)? {
+            let top = crate::memory::recall(self.state, source, crate::memory::R406_PILE_SLOT)
+                .into_iter()
+                .find(|card| {
+                    self.state
+                        .object(card.id)
+                        .is_some_and(|object| object.zone() == crate::zones::Zone::Exile)
+                });
+            found.extend(top.map(Target::Object));
+        }
+        Ok(found)
+    }
+
     /// The player of a seat fixed by an effect, while still in the game.
     fn r110_seat(&self, seat: u8) -> Vec<Target> {
         let player = PlayerId::from_index(usize::from(seat));
@@ -1599,6 +1616,7 @@ impl<'a> Scope<'a> {
             Ref::R6702CraftedWith => self.r6702_crafted_with(),
             Ref::Remembered { on, slot } => self.remembered(on, slot)?,
             Ref::LastExiledWith { on, filter } => self.r5511_last_exiled(on, filter)?,
+            Ref::R406PileTop { on } => self.r406_pile_top(on)?,
             Ref::Arrived { of, zone } => self.arrived(of, *zone)?,
             Ref::Departed(of) => self.departed_of(of)?,
             Ref::SourceOf(of) => self.r302b_sources(of)?,

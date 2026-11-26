@@ -760,6 +760,11 @@ impl<'a> Walker<'a> {
                 self.at("filter", |w| w.selector(filter));
                 self.expect(Kind::Object, want);
             }
+            Ref::R406PileTop { on } => {
+                self.uses("Ref", "R406PileTop");
+                self.reference(on, Kind::Object);
+                self.expect(Kind::Object, want);
+            }
             Ref::Paid => {
                 if !self.pays_objects {
                     self.problem("`Paid` needs a cost that takes objects: a sacrifice, a discard, an exile or a tap");
@@ -3613,6 +3618,27 @@ impl<'a> Walker<'a> {
                 }
                 self.at("inner", |w| w.trigger_pattern(inner));
             }
+            TriggerPattern::R603Exactly { event, amount } => {
+                let plain = |pattern: &TriggerPattern| {
+                    matches!(
+                        pattern,
+                        TriggerPattern::DealsDamage { .. }
+                            | TriggerPattern::LifeLost { .. }
+                            | TriggerPattern::LifeGained { .. }
+                    )
+                };
+                let fits = match &**event {
+                    TriggerPattern::Caused { inner, .. } => plain(inner),
+                    other => plain(other),
+                };
+                if !fits {
+                    self.problem("an exact amount is of damage, life lost or life gained");
+                }
+                if *amount == 0 {
+                    self.problem("an exact amount is at least 1");
+                }
+                self.at("event", |w| w.trigger_pattern(event));
+            }
         }
     }
 
@@ -4257,6 +4283,7 @@ impl Walker<'_> {
             | Ref::R6602FromYou => Kind::Player,
             Ref::Affected
             | Ref::LastExiledWith { .. }
+            | Ref::R406PileTop { .. }
             | Ref::Delved
             | Ref::R114ChosenObject
             | Ref::R6702CraftedWith
@@ -4811,12 +4838,45 @@ impl Walker<'_> {
                     w.scope.numbers.insert(format!("{name}~moved"));
                 }
             }
-            Effect::LookAtTop { who, count, bind }
-            | Effect::ExileTop {
-                who, count, bind, ..
+            Effect::LookAtTop { who, count, bind } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("count", |w| w.amount(count));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+            }
+            Effect::ExileTop {
+                who,
+                count,
+                bind,
+                sealed,
+                r406_held_by,
+                ..
             } => {
                 w.at("who", |w| w.reference(who, Kind::Player));
                 w.at("count", |w| w.amount(count));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+                if let Some(looker) = r406_held_by {
+                    if *sealed {
+                        w.problem("cards one player exiles to look at are not sealed");
+                    }
+                    w.uses("Effect", "ExileTop.R406HeldBy");
+                    w.at("r406_held_by", |w| w.reference(looker, Kind::Player));
+                }
+            }
+            Effect::R707ExileSpell {
+                what,
+                bind,
+                player_as,
+            } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
+                w.at("as", |w| w.bind(bind, Kind::Object));
+                w.at("player_as", |w| w.bind(player_as, Kind::Player));
+            }
+            Effect::R707PutBack { who, what } => {
+                w.at("who", |w| w.reference(who, Kind::Player));
+                w.at("what", |w| w.reference(what, Kind::Object));
+            }
+            Effect::R406TurnUpExiled { what, bind } => {
+                w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("as", |w| w.bind(bind, Kind::Object));
             }
             Effect::R123ExileContest { who, bind } => {
@@ -4824,9 +4884,14 @@ impl Walker<'_> {
                 w.at("as", |w| w.bind(bind, Kind::Player));
             }
             Effect::BecomeForetold { what } => w.at("what", |w| w.reference(what, Kind::Object)),
-            Effect::FaceDownPile { what, top, .. } => {
+            Effect::FaceDownPile {
+                what, top, then, ..
+            } => {
                 w.at("what", |w| w.reference(what, Kind::Object));
                 w.at("top", |w| w.amount(top));
+                if *then == crate::effect::PileFate::R406Kept {
+                    w.uses("Effect", "FaceDownPile.R406Kept");
+                }
             }
             Effect::Manifest {
                 who,
@@ -7295,6 +7360,7 @@ impl Walker<'_> {
             | GameRule::R112SpendOnlyFromWay { .. }
             | GameRule::R113NoteExiledManaValue
             | GameRule::P158LoyaltyTwiceThis => {}
+            GameRule::R605TapOthersLands { who, .. } => self.reference(who, Kind::Player),
             GameRule::R111PlotFromLibraryTop(what) | GameRule::R111CastWayFrom { what, .. } => {
                 self.selector(what);
             }
@@ -7666,6 +7732,10 @@ impl Walker<'_> {
             | ReplaceWhen::R6603Transforms { what }
             | ReplaceWhen::BecomesAttached { what } => {
                 self.at("what", |w| w.selector(what));
+            }
+            ReplaceWhen::R614PutOnto { what, by } => {
+                self.at("what", |w| w.selector(what));
+                self.at("by", |w| w.reference(by, Kind::Player));
             }
             ReplaceWhen::R115BeginStep { whose, .. } => {
                 self.at("whose", |w| w.reference(whose, Kind::Player));
@@ -8228,6 +8298,18 @@ impl Walker<'_> {
                     self.problem("needs at least one effect");
                 }
                 self.effect_list("AsEnters", effects, false);
+            }
+            ReplaceBy::R614EntersThen(effects) => {
+                if !matches!(
+                    when,
+                    ReplaceWhen::Enters { .. } | ReplaceWhen::R614PutOnto { .. }
+                ) {
+                    self.problem("only a permanent that would enter enters then has effects");
+                }
+                if effects.is_empty() {
+                    self.problem("needs at least one effect");
+                }
+                self.effect_list("R614EntersThen", effects, false);
             }
             ReplaceBy::ChooseAfter { first, choice } => {
                 if !enters {

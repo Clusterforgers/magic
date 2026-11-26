@@ -26,6 +26,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
             bind,
             sealed: false,
             bottom: false,
+            r406_held_by: None,
         },
         Effect::RepeatEach {
             over: Ref::Bound(over),

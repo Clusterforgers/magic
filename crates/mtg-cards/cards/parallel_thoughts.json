@@ -1,0 +1,33 @@
+{
+  "oracle_id": "2daee7cb-6736-4aa6-9921-0371c1abe69f",
+  "name": "Parallel Thoughts",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Parallel Thoughts",
+      "oracle_fingerprint": "db11122a7601478d80b9b163dcc68b36",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+            "effects": [
+              { "Search": { "filter": [], "count": { "min": 7, "max": 7 }, "as": "found" } },
+              { "FaceDownPile": { "what": { "Bound": "found" }, "then": "R406Kept" } },
+              { "Shuffle": {} }
+            ]
+          }
+        },
+        {
+          "Replacement": {
+            "when": { "Draw": {} },
+            "by": {
+              "Instead": [
+                { "May": { "effects": [{ "Move": { "what": { "R406PileTop": { "on": "This" } }, "to": "Hand" } }] } }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

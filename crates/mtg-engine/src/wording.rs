@@ -1269,6 +1269,9 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             format!("{}, caused by a spell or ability", clause(inner).0),
             false,
         ),
+        TriggerPattern::R603Exactly { event, amount } => {
+            (format!("{} (exactly {amount})", clause(event).0), false)
+        }
         TriggerPattern::R111AbilityTriggered { cause, of_it } => (
             format!(
                 "{} causes a triggered ability{} to trigger",

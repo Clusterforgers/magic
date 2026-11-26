@@ -12,6 +12,10 @@ use crate::object::ObjectRef;
 use crate::state::GameState;
 use crate::zones::Zone;
 
+/// The slot of a source's memory that holds the face-down pile it keeps (`PileFate::R406Kept`), in its shuffled order; a
+/// card file cannot name it.
+pub(crate) const R406_PILE_SLOT: &str = "~r406 pile";
+
 /// The slot of a source's memory that holds the mana it noted, one number per mana (`ManaType::index`).
 pub(crate) const R112_NOTED_SLOT: &str = "r112 noted mana";
 

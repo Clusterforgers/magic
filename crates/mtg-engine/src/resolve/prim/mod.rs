@@ -174,6 +174,7 @@ pub(crate) mod r6402_change_roll;
 pub(crate) mod r6502_enters_as;
 mod r6701_remove_among;
 mod regenerate;
+mod r707_spells;
 mod remove_counters;
 mod remove_from_combat;
 mod repeat_each;
@@ -324,6 +325,9 @@ fn dispatch(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Effect::Transform { .. } => transform::run(cx, effect),
         Effect::Flip { .. } => flip::run(cx, effect),
         Effect::TurnFaceUp { .. } => turn_up::run(cx, effect),
+        Effect::R406TurnUpExiled { .. } => r707_spells::r406_run_turn_up(cx, effect),
+        Effect::R707ExileSpell { .. } => r707_spells::run_exile(cx, effect),
+        Effect::R707PutBack { .. } => r707_spells::run_put_back(cx, effect),
         Effect::TurnFaceDown { .. } | Effect::R6701TurnFaceDownHorror { .. } => {
             rmt8_turn_down::run(cx, effect)
         }

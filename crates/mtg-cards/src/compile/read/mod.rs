@@ -123,6 +123,7 @@ mod event_wordings;
 mod exiled_kind;
 mod facts;
 mod fd1_wholes;
+mod p162_wholes;
 mod fix16_kicked;
 mod fix23_dice;
 mod fix32_animate;
@@ -947,6 +948,9 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
         return Some(found);
     }
     if let Some(found) = p160_wholes::p160_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = p162_wholes::p162_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = fd1_wholes::fd1_whole_read(text) {

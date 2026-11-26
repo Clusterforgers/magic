@@ -1081,6 +1081,20 @@ pub enum Event {
     CardCopied(Box<CardCopy>),
     /// A card put onto the battlefield face down took the characteristics an effect listed (CR 708.2).
     R6008Listed(Box<crate::r6008_face_down::R6008Listed>),
+    /// A card lying face down in exile was turned face up, for every seat to see (CR 406.3).
+    R406TurnedUp {
+        /// The card.
+        object: ObjectId,
+    },
+    /// A card exiled from the stack keeps the spell it was, for a later put back (`Effect::R707ExileSpell`, CR 707.10).
+    R707Kept(Box<crate::r707_spells::R707Kept>),
+    /// A player put a card from exile onto the stack as a copy of the spell it kept (CR 707.10): not cast.
+    R707PutBack {
+        /// The card, as it is in exile.
+        object: ObjectId,
+        /// Who controls the spell.
+        player: PlayerId,
+    },
     /// A copy of a card ceased to exist in a zone other than the stack (CR 704.5e).
     CopyCeased {
         /// The copy.
@@ -1961,6 +1975,8 @@ impl Event {
             Event::SpellCopied(copy) => vec![copy.object],
             Event::CardCopied(copy) => vec![copy.object],
             Event::R6008Listed(listed) => vec![listed.object],
+            Event::R406TurnedUp { object } | Event::R707PutBack { object, .. } => vec![*object],
+            Event::R707Kept(kept) => vec![kept.object],
             Event::AbilityCopied(copy) => vec![copy.object],
             Event::TargetsChanged(change) => vec![change.object.id],
             Event::R112XChanged { object, .. } => vec![object.id],

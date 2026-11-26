@@ -114,6 +114,7 @@ const RUNS: &[&str] = &[
     "Trigger.R120RandomAction",
     "Trigger.R120AssistedCast",
     "Trigger.R120DealsExactly",
+    "Trigger.R603Exactly",
     "Trigger.Surveilled",
     "Trigger.ZoneChangeExcept",
     "Trigger.ResolvedToGraveyard",
@@ -316,6 +317,11 @@ const RUNS: &[&str] = &[
     "Effect.Manifest",
     "Effect.Cloak",
     "Effect.FaceDownPile",
+    "Effect.FaceDownPile.R406Kept",
+    "Effect.R406TurnUpExiled",
+    "Effect.R707ExileSpell",
+    "Effect.R707PutBack",
+    "Effect.ExileTop.R406HeldBy",
     "Effect.BecomeForetold",
     "Effect.CastFromZone",
     "Effect.CastFromZone.Transformed",
@@ -493,6 +499,7 @@ const RUNS: &[&str] = &[
     "ReplaceBy.R118PayOrGraveyard.ExileX",
     "ReplaceBy.R118PayOrGraveyard.CounterEach",
     "ReplaceBy.EntersPrepared",
+    "ReplaceBy.R614EntersThen",
     "ReplaceBy.R122TappedAndAttacking",
     "ReplaceBy.ChooseWord",
     "ReplaceBy.OpponentChooses",
@@ -546,6 +553,7 @@ const RUNS: &[&str] = &[
     "Condition.R119StartingDeck",
     "Condition.R119ShareCardType",
     "Ref.R115Causer",
+    "Ref.R406PileTop",
     "Condition.R111AttackedLastCombat",
     "Condition.R111DamagedThisTurnBy",
     "Ref.R111LastDamagedYou",
@@ -1126,6 +1134,7 @@ const RUNS: &[&str] = &[
     "ReplaceWhen.Draw.ExceptDrawStep",
     "ReplaceWhen.Draw.First",
     "ReplaceWhen.Enters",
+    "ReplaceWhen.R614PutOnto",
     "ReplaceWhen.Explores",
     "ReplaceWhen.Connives",
     "ReplaceWhen.Proliferates",
@@ -1369,6 +1378,7 @@ const RUNS: &[&str] = &[
     "Rule.R111CastWayFrom",
     "Nth.R6018HitPlayer",
     "Rule.SpendOnlyFrom",
+    "Rule.R605TapOthersLands",
     "Rule.R112SpendOnlyFromWay",
     "Pred.Modified",
     "Pred.RingBearer",
@@ -2033,6 +2043,16 @@ mod tests {
     #[case::r120_random_action_triggers("Trigger.R120RandomAction", true)]
     #[case::r120_assisted_cast_triggers("Trigger.R120AssistedCast", true)]
     #[case::r120_deals_exactly_triggers("Trigger.R120DealsExactly", true)]
+    #[case::r603_exactly_triggers("Trigger.R603Exactly", true)]
+    #[case::r406_kept_pile("Effect.FaceDownPile.R406Kept", true)]
+    #[case::r406_pile_top("Ref.R406PileTop", true)]
+    #[case::r406_turning_up_exiled("Effect.R406TurnUpExiled", true)]
+    #[case::r406_held_by_the_exiler("Effect.ExileTop.R406HeldBy", true)]
+    #[case::r707_exiling_a_spell("Effect.R707ExileSpell", true)]
+    #[case::r707_putting_it_back("Effect.R707PutBack", true)]
+    #[case::r605_tapping_lands_of_others("Rule.R605TapOthersLands", true)]
+    #[case::r614_put_onto("ReplaceWhen.R614PutOnto", true)]
+    #[case::r614_enters_then("ReplaceBy.R614EntersThen", true)]
     #[case::surveil_triggers("Trigger.Surveilled", true)]
     #[case::zone_changes_from_elsewhere("Trigger.ZoneChangeExcept", true)]
     #[case::resolved_to_graveyard("Trigger.ResolvedToGraveyard", true)]
