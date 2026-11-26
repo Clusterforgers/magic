@@ -1,0 +1,19 @@
+{
+  "oracle_id": "9cf44db4-627a-4197-9588-6da72e41f03d",
+  "name": "Camouflage",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Camouflage",
+      "oracle_fingerprint": "d640dcbb712448a5f9a7e4276e1fb017",
+      "abilities": [
+        { "CastOnly": { "condition": { "All": [{ "Step": "DeclareAttackers" }, "YourTurn"] } } },
+        {
+          "Spell": {
+            "effects": [{ "Rule": { "rule": "R509BlockPiles", "duration": "UntilEndOfTurn" } }]
+          }
+        }
+      ]
+    }
+  ]
+}

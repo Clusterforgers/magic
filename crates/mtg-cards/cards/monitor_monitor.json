@@ -1,7 +1,7 @@
 {
   "oracle_id": "f59fe075-f507-4a2c-a65c-725ff3084bd0",
   "name": "Monitor Monitor",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Monitor Monitor",
@@ -13,12 +13,7 @@
             "effects": [{ "OpenAttraction": {} }]
           }
         },
-        {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 112, "end": 182 }
-          }
-        }
+        { "Rule": { "rule": { "R706Reroll": { "who": "You", "cost": "{1}", "once": true } } } }
       ]
     }
   ]

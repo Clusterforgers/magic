@@ -37,7 +37,7 @@ pub(super) fn run_store(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveErro
         Err(ask) => return Ok(ask),
     };
     let mut events = changed.events.clone();
-    events.extend(changed.rolled(player, *sides, &natural));
+    events.extend(changed.rolled(player, *sides));
     events.push(store(cx, slot, &changed.results));
     Ok(Run::events(events))
 }

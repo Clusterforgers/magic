@@ -819,6 +819,10 @@ pub enum DecisionName {
     ChooseReplacement,
     /// Repeat a loop a number of times or stop it.
     Loop,
+    /// Choose dice of a roll: which to reroll, or which roll to ignore.
+    R706ChooseDice,
+    /// Divide creatures into piles instead of declaring blockers.
+    R509BlockPiles,
 }
 
 impl DecisionName {
@@ -848,6 +852,8 @@ impl DecisionName {
             DecisionKind::OrderTriggers(_) => DecisionName::OrderTriggers,
             DecisionKind::ChooseReplacement(_) => DecisionName::ChooseReplacement,
             DecisionKind::Loop(_) => DecisionName::Loop,
+            DecisionKind::R706ChooseDice(_) => DecisionName::R706ChooseDice,
+            DecisionKind::R509BlockPiles(_) => DecisionName::R509BlockPiles,
         }
     }
 }

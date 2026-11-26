@@ -69,6 +69,12 @@ pub(super) fn apply(state: &mut GameState, event: &Event) -> Result<(), EngineEr
             Ok(())
         }
         Event::ResolutionBegan { object } => begin(state, *object),
+        Event::ChoiceMade { player, choice }
+            if state.resolving.is_none() && crate::un33_attractions::r706_visiting(state) =>
+        {
+            crate::un33_attractions::r706_fold_answer(state, *player, choice)?;
+            Ok(())
+        }
         Event::ChoiceMade { player, choice } => {
             resolving_mut(state)?
                 .journal

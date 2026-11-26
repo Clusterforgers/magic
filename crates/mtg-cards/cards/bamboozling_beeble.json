@@ -1,7 +1,7 @@
 {
   "oracle_id": "b8645fe4-884b-4511-b138-ea4ba2eee943",
   "name": "Bamboozling Beeble",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Bamboozling Beeble",
@@ -9,9 +9,17 @@
       "abilities": [
         { "Keyword": { "Protection": [{ "Subtype": "Robot" }] } },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 23, "end": 186 }
+          "Activated": {
+            "cost": [{ "Mana": "{1}" }, "Tap"],
+            "targets": [{ "what": "Player" }],
+            "effects": [
+              {
+                "Rule": {
+                  "rule": { "R706IgnoreChosen": { "Target": 0 } },
+                  "duration": "UntilEndOfTurn"
+                }
+              }
+            ]
           }
         }
       ]

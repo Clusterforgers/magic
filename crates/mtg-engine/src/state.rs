@@ -119,6 +119,8 @@ pub(crate) enum Tally {
     R6402Rolled(u32),
     /// A die's result changed through a permanent's rule (counted for the permanent: "Do this only once each turn").
     R6402Changed,
+    /// Dice rerolled through a permanent's rule (counted for the permanent: "Once each turn").
+    R706Rerolled,
     /// A card drawn.
     Drawn,
     /// A venture into the dungeon (counted for the player).

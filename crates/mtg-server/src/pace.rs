@@ -155,8 +155,9 @@ impl Class {
             | DecisionKind::ChooseCosts(_)
             | DecisionKind::ChooseCards(_)
             | DecisionKind::OrderCards(_)
-            | DecisionKind::Scry(_) => Class::Response,
-            DecisionKind::DeclareBlockers(_) => Class::Blocks,
+            | DecisionKind::Scry(_)
+            | DecisionKind::R706ChooseDice(_) => Class::Response,
+            DecisionKind::DeclareBlockers(_) | DecisionKind::R509BlockPiles(_) => Class::Blocks,
             DecisionKind::PayMana(_)
             | DecisionKind::AssignDamage(_)
             | DecisionKind::DeclareAttackers(_)
@@ -386,6 +387,11 @@ pub(crate) fn fallback(decision: &Decision) -> Option<Answer> {
         DecisionKind::AssignDamage(options) => damage_in_order(options).map(Answer::AssignDamage),
         DecisionKind::Discard(options) => {
             Some(Answer::Discard(first_of_hand(&options.hand, options.count)))
+        }
+        // No reroll, the first roll ignored, every pile empty.
+        DecisionKind::R706ChooseDice(options) => Some(Answer::R706ChooseDice(options.passive())),
+        DecisionKind::R509BlockPiles(options) => {
+            Some(Answer::R509BlockPiles(options.empty_piles()))
         }
     }
 }
