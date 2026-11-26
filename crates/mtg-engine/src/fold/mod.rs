@@ -46,6 +46,7 @@ mod w21a_atoms;
 #[cfg(test)]
 mod zone_tally;
 mod zones;
+pub(crate) use zones::r6702_craft_materials;
 
 use std::collections::BTreeSet;
 

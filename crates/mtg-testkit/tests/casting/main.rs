@@ -144,6 +144,7 @@ mod own_cost;
 mod p158_cards;
 mod p158_limited_plays;
 mod p159_cards;
+mod cx8_cards;
 mod pay_parts;
 mod pay_unless;
 mod persistent_mana;

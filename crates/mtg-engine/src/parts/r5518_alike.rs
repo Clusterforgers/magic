@@ -21,6 +21,11 @@ fn r5518_colors(state: &GameState, id: ObjectId) -> ColorSet {
         .map_or(ColorSet::default(), |chars| chars.colors)
 }
 
+/// The card types of a card or permanent as it is now, none for one that is gone.
+fn r702_types(state: &GameState, id: ObjectId) -> mtg_core::card::CardTypes {
+    crate::characteristics::characteristics(state, id).map_or(mtg_core::card::CardTypes::default(), |chars| chars.types)
+}
+
 /// Whether `cards` are alike as `alike` says: all of one name, or all of one color among them.
 pub(super) fn r5518_alike(state: &GameState, cards: &[ObjectId], alike: Alike) -> bool {
     match alike {
@@ -34,6 +39,11 @@ pub(super) fn r5518_alike(state: &GameState, cards: &[ObjectId], alike: Alike) -
             cards
                 .iter()
                 .all(|id| r5518_colors(state, *id).contains(color))
+        }),
+        Alike::R702ShareCardType => crate::choose::values::CARD_TYPES.into_iter().any(|kind| {
+            cards
+                .iter()
+                .all(|id| r702_types(state, *id).contains(kind))
         }),
         Alike::R112SameOwner => {
             let mut owners = cards.iter().map(|id| r112_owner(state, *id));
@@ -71,6 +81,13 @@ pub(super) fn r5518_has_set(
                 .count()
                 >= count
         }),
+        Alike::R702ShareCardType => crate::choose::values::CARD_TYPES.into_iter().any(|kind| {
+            candidates
+                .iter()
+                .filter(|id| r702_types(state, **id).contains(kind))
+                .count()
+                >= count
+        }),
         Alike::R112SameOwner => candidates.iter().any(|first| {
             let owner = r112_owner(state, *first);
             owner.is_some()
@@ -88,6 +105,7 @@ pub(super) const fn r5518_words(alike: Alike) -> &'static str {
     match alike {
         Alike::SameName => " with the same name",
         Alike::ShareColor => " that share a color",
+        Alike::R702ShareCardType => " that share a card type",
         Alike::R112SameOwner => " from a single graveyard",
     }
 }

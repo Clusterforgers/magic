@@ -484,8 +484,12 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
             filter,
             count,
             least,
+            alike,
         } => {
             let (mut part, x) = pick(Kind::Craft, filter, count, item)?;
+            if let Part::Pick(pick) = &mut part {
+                pick.alike = *alike;
+            }
             // Before X is announced the part stands for the fewest materials it may take, so a cost with fewer than
             // that is never offered (CR 702.167a).
             if x && let Part::Pick(pick) = &mut part {
@@ -1441,6 +1445,7 @@ impl Pick {
                 Alike::SameName => "cards with the same name",
                 Alike::ShareColor => "cards that share a color",
                 Alike::R112SameOwner => "cards from a single graveyard",
+                Alike::R702ShareCardType => "cards that share a card type",
             }));
         }
         if self.r4709_rule().is_some() {

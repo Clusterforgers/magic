@@ -1170,6 +1170,18 @@ fn craft(rest: &str) -> Option<Keyword> {
     let (materials, price) = words.split_at(at);
     let mana = ManaCostX::from_str(price.trim()).ok()?;
     let materials = materials.trim();
+    // "Craft with two that share a card type {6}": any two other objects, alike as a set.
+    if materials == "two that share a card type" {
+        return Some(Keyword::Craft(Cost(vec![
+            CostItem::Mana(mana),
+            CostItem::Craft {
+                filter: Selector(vec![Pred::Other]),
+                count: Amount::Fixed(2),
+                least: None,
+                alike: Some(crate::cost::Alike::R702ShareCardType),
+            },
+        ])));
+    }
     let (count, noun) = if let Some(noun) = materials.strip_prefix("one or more ") {
         (Amount::X, noun)
     } else {
@@ -1204,6 +1216,7 @@ fn craft(rest: &str) -> Option<Keyword> {
             filter: Selector(vec![kind, Pred::Other]),
             count,
             least: None,
+            alike: None,
         },
     ])))
 }
@@ -1725,8 +1738,8 @@ mod tests {
     #[case::awaken_big("Awaken 6\u{2014}{6}{U}{U}{U}", Keyword::Awaken { count: 6, cost: mana("{6}{U}{U}{U}") })]
     #[case::gravestorm("Gravestorm", Keyword::Gravestorm)]
     #[case::assist("Assist", Keyword::Assist)]
-    #[case::craft_x("Craft with one or more creatures {2}{B}{B}", Keyword::Craft(Cost(vec![CostItem::Mana("{2}{B}{B}".parse().unwrap()), CostItem::Craft { filter: Selector(vec![Pred::Type(CardType::Creature), Pred::Other]), count: Amount::X, least: None }])))]
-    #[case::craft_one("Craft with artifact {3}{W}", Keyword::Craft(Cost(vec![CostItem::Mana("{3}{W}".parse().unwrap()), CostItem::Craft { filter: Selector(vec![Pred::Type(CardType::Artifact), Pred::Other]), count: Amount::one(), least: None }])))]
+    #[case::craft_x("Craft with one or more creatures {2}{B}{B}", Keyword::Craft(Cost(vec![CostItem::Mana("{2}{B}{B}".parse().unwrap()), CostItem::Craft { filter: Selector(vec![Pred::Type(CardType::Creature), Pred::Other]), count: Amount::X, least: None, alike: None }])))]
+    #[case::craft_one("Craft with artifact {3}{W}", Keyword::Craft(Cost(vec![CostItem::Mana("{3}{W}".parse().unwrap()), CostItem::Craft { filter: Selector(vec![Pred::Type(CardType::Artifact), Pred::Other]), count: Amount::one(), least: None, alike: None }])))]
     #[case::sunburst("Sunburst", Keyword::Sunburst)]
     #[case::eternalize_with_a_life_cost(
         "Eternalize—Pay 3 life.",
@@ -2290,6 +2303,7 @@ mod tests {
             "Cleave {1}{R}",
             "Fortify {3}",
             "Craft with one or more creatures {2}{B}{B}",
+            "Craft with two that share a card type {6}",
             "Plainscycling {2}",
             "Companion \u{2014} Each nonland card in your starting deck has a different name.",
             "Fox offering",

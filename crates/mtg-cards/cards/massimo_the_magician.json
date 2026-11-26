@@ -1,0 +1,86 @@
+{
+  "oracle_id": "aa27c281-b909-4274-8216-6fd0be78b3c9",
+  "name": "Massimo, the Magician",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Massimo, the Magician",
+      "oracle_fingerprint": "84d5460681b735b9a33205917f2512b6",
+      "abilities": [
+        {
+          "Triggered": {
+            "when": {
+              "AnyOf": [
+                { "ZoneChange": { "what": ["This"], "to": "Battlefield" } },
+                {
+                  "ZoneChange": {
+                    "what": [{ "Type": "Creature" }, "Other", { "ControlledBy": "You" }],
+                    "to": "Battlefield"
+                  }
+                }
+              ]
+            },
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": 1 } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    {
+                      "Continuous": {
+                        "affected": "Triggering",
+                        "mods": [
+                          {
+                            "GrantAbility": {
+                              "Triggered": {
+                                "when": {
+                                  "DealsDamage": {
+                                    "source": ["This"],
+                                    "to": "EachPlayer",
+                                    "combat": true
+                                  }
+                                },
+                                "effects": [
+                                  {
+                                    "CopyCard": {
+                                      "what": {
+                                        "Each": [
+                                          { "In": "Exile" },
+                                          { "SameCard": { "Bound": "exiled" } }
+                                        ]
+                                      },
+                                      "as": "copy"
+                                    }
+                                  },
+                                  { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                                ]
+                              }
+                            }
+                          }
+                        ],
+                        "duration": "Forever"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

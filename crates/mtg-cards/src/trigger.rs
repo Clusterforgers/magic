@@ -1278,6 +1278,9 @@ pub enum EntersChoice {
     CardType,
     /// One of these card types ("choose artifact, creature, enchantment, instant, or sorcery").
     CardTypeOf(mtg_core::card::CardTypes),
+    /// A card type every card used to craft the permanent shares, as they are in exile (CR 702.167c: "choose a card type
+    /// shared among two exiled cards used to craft it").
+    R702CraftedSharedType,
     /// A basic land type (CR 205.3i: Plains, Island, Swamp, Mountain or Forest).
     BasicLandType,
     /// Two different basic land types, in order ("choose two basic land types"): the first and the second chosen.
@@ -1571,6 +1574,14 @@ pub enum ReplaceBy {
     /// As the permanent enters, its controller may behold what the selector names: choose such a permanent they control
     /// or reveal such a card from their hand; if they don't (or can't) it enters tapped ("you may behold a Jace").
     BeholdOrTapped(Selector),
+    /// As the permanent enters, its controller may exile two cards the selector names; if they do, it enters as a copy
+    /// of one of them, chosen by them, with as many additional +1/+1 counters as the other card's power (CR 707.9, 614.1c):
+    /// "you may exile two creature cards from graveyards. If you do, it enters as a copy of one of those cards with a
+    /// number of additional +1/+1 counters on it equal to the power of the other card."
+    R7071ExileTwoAsCopy {
+        /// What may be exiled.
+        of: Selector,
+    },
     /// As the permanent would enter, its controller pays the cost (a sacrifice or a discard); if they don't (or can't),
     /// it is put into its owner's graveyard instead ("If ~ would enter, sacrifice two untapped lands instead. If you do,
     /// put ~ onto the battlefield. If you don't, put it into its owner's graveyard").

@@ -68,6 +68,7 @@ mod r280_cards;
 mod r280_writers;
 mod r282_cards;
 mod r283_cards;
+mod cx8_cards;
 mod r284_writers;
 mod r286_cards;
 mod r287_writers;
