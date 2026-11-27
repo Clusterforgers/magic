@@ -150,7 +150,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 
 - [ ] (dl3d) Delves at four to six heroes measured over 30 fights a cell, on the Ember Foundry, the Gloamwood and at a deeper depth (the Spire against six heroes won 75 % of 8)
 - [ ] (dl3a) Boss personalities: each boss weighs threats its own way (the healer, the biggest board, the combo) within the spotlight's cap
-- [ ] (dl2d) Each hero gives up the permanents an attack tax takes (sacrifice a land) for their own creatures in the party's combined attack, not the leader
 - [ ] (dl8c) The boss side's targeted spells say in the log why they leave the eyed hero, as its attacks do
 - [ ] (dl4a) Bot allies temper and buy commander upgrades, and the simulator's heroes bring their commander facts
 - [ ] (dl4b) Bot allies see their deck list, so they can give up a deck card for an event's cost and not only a Satchel card

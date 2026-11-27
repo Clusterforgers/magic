@@ -17,7 +17,9 @@ use mtg_core::mana::ManaCost;
 
 use mtg_cards::cost::CostItem;
 
-use crate::announce::r6400_combat_costs::{r6400_events, r6400_next, r6400_parts, r6400_payable};
+use crate::announce::r6400_combat_costs::{
+    R6400Share, r6400_parts, r6400_shares_events, r6400_shares_next, r6400_shares_payable,
+};
 use crate::announce::{Done, Next};
 use crate::answers::Outcome;
 use crate::cast::payment_decision;
@@ -184,14 +186,34 @@ pub(crate) fn made(
             });
         }
     }
-    events.extend(r6400_events(
+    events.extend(r6400_shares_events(
         state,
-        player,
-        &declared(attackers),
-        &other_parts(state, attackers),
+        &part_shares(state, player, attackers),
         picked,
     )?);
     Some(events)
+}
+
+/// The parts of an attack beyond mana and life by who pays them: each teammate of a team's attack for their own
+/// creatures in turn order, then the attacking player for theirs (CR 508.1g-h).
+fn part_shares(
+    state: &GameState,
+    player: PlayerId,
+    attackers: &[(ObjectId, AttackTarget)],
+) -> Vec<R6400Share> {
+    let mut shares = shares(state, player, attackers);
+    shares.sort_by_key(|(paying, _)| (*paying == player, *paying));
+    shares
+        .into_iter()
+        .filter_map(|(paying, own)| {
+            let parts = other_parts(state, &own);
+            (!parts.is_empty()).then_some(R6400Share {
+                player: paying,
+                source: own.first()?.0,
+                parts,
+            })
+        })
+        .collect()
 }
 
 /// The creatures of a declaration.
@@ -343,6 +365,23 @@ fn check_share(
     Ok(())
 }
 
+/// Whether every player can give up the permanents the attack takes for their own creatures.
+fn check_parts(
+    state: &GameState,
+    player: PlayerId,
+    attackers: &[(ObjectId, AttackTarget)],
+) -> Result<(), EngineError> {
+    if r6400_shares_payable(
+        state,
+        &declared(attackers),
+        &part_shares(state, player, attackers),
+    ) {
+        Ok(())
+    } else {
+        Err(IllegalAnswer::AttackUnaffordable("the permanents it takes".to_owned()).into())
+    }
+}
+
 /// Whether `player` can pay for their own choice `own` of a team's attack, checked as they choose, so a choice only
 /// its own player can mend is refused to them (CR 508.1h).
 pub(crate) fn check_pick(
@@ -350,7 +389,8 @@ pub(crate) fn check_pick(
     player: PlayerId,
     own: &[(ObjectId, AttackTarget)],
 ) -> Result<(), EngineError> {
-    check_share(state, (player, player), own, own)
+    check_share(state, (player, player), own, own)?;
+    check_parts(state, player, own)
 }
 
 /// What a declared attack does: with nothing to pay it is made, else it is paid for first (CR 508.1h) or, if a player
@@ -364,11 +404,8 @@ pub(crate) fn declare(
     for (paying, own) in shares(state, player, &attackers) {
         check_share(state, (player, paying), &attackers, &own)?;
     }
-    let parts = other_parts(state, &attackers);
-    if !r6400_payable(state, player, &declared(&attackers), &parts) {
-        return Err(IllegalAnswer::AttackUnaffordable("the permanents it takes".to_owned()).into());
-    }
-    if total(state, &attackers).symbols().is_empty() && parts.is_empty() {
+    check_parts(state, player, &attackers)?;
+    if total(state, &attackers).symbols().is_empty() && other_parts(state, &attackers).is_empty() {
         let events = made(
             state,
             player,
@@ -382,7 +419,8 @@ pub(crate) fn declare(
     Ok(Outcome::BeginAttack(player, attackers, extras))
 }
 
-/// The decision of an attack that waits for its payment: the permanents its other costs take, then `PayMana` of each
+/// The decision of an attack that waits for its payment: the permanents its other costs take, each player picking those
+/// of their own creatures, then `PayMana` of each
 /// teammate for their own creatures of a team's attack, then `PayMana` of the attacking player for theirs, each of
 /// which can be backed out of. An attack that can no longer be paid is dropped.
 pub(crate) fn next(
@@ -391,9 +429,9 @@ pub(crate) fn next(
     (attackers, extras): (&[(ObjectId, AttackTarget)], &AttackExtras),
     picks: (&mut Choices, &mut Done),
 ) -> Next {
-    let parts = other_parts(state, attackers);
+    let parts = part_shares(state, player, attackers);
     let (choices, done) = picks;
-    if let Some(next) = r6400_next(state, player, &declared(attackers), &parts, (choices, done)) {
+    if let Some(next) = r6400_shares_next(state, &declared(attackers), &parts, (choices, done)) {
         return next;
     }
     if let Some((mate, own)) = teammates(state, player, attackers).get(usize::from(done.party_paid))
