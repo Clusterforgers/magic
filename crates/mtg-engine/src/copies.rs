@@ -268,6 +268,10 @@ pub struct SpellCopy {
     #[serde(default, skip_serializing_if = "Choices::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Choices>", optional))]
     pub choices: Choices,
+    /// The controller chose new targets for the copy (CR 707.10c), which is choosing targets (CR 115.1).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub chose_targets: bool,
     /// The spell had left the stack: the copy is made from what a delayed trigger kept of it (epic, CR 702.50a).
     #[serde(default, skip_serializing_if = "std::ops::Not::not")]
     #[cfg_attr(feature = "ts", ts(skip))]
@@ -322,6 +326,10 @@ pub struct AbilityCopy {
     #[serde(default, skip_serializing_if = "Choices::is_empty")]
     #[cfg_attr(feature = "ts", ts(as = "Option<Choices>", optional))]
     pub choices: Choices,
+    /// The controller chose new targets for the copy (CR 707.10c), which is choosing targets (CR 115.1).
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    #[cfg_attr(feature = "ts", ts(skip))]
+    pub chose_targets: bool,
 }
 
 /// Folds the event: the permanent takes the copy effect, which replaces any earlier one.

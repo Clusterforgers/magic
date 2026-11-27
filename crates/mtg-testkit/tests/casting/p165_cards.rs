@@ -2,9 +2,10 @@
 //! tapped with the counters noted and the Auras attached once the Coffin untaps; Takklemaggot, when its creature dies,
 //! returns attached to a creature that creature's controller chooses, or as a non-Aura enchantment that deals 1 damage to
 //! that player at each of their upkeeps; Psychic Battle lets the player who reveals the greatest mana value change the
-//! targets just chosen, a tie changes nothing and its own change does not trigger it again; Miss Highwater's deal draws a
-//! fresh seven with a contract counter, and the player's loss gives her controller copies of their artifacts and
-//! creatures; each game replays and each card is Verified with the engine's capabilities.
+//! targets just chosen, a tie changes nothing, its own change does not trigger it again and a copy given new targets
+//! triggers it; Miss Highwater's deal draws a fresh seven with a contract counter (an empty hand discarded counts), and
+//! the player's loss gives her controller copies of their artifacts and creatures; each game replays and each card is
+//! Verified with the engine's capabilities.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use mtg_cards::value::CounterKind;
@@ -337,12 +338,95 @@ fn psychic_battle_lets_the_greatest_reveal_change_the_targets(
     p165_replays(&driver);
 }
 
+/// The times Psychic Battle's ability triggered.
+fn p165_battles(driver: &Driver) -> usize {
+    driver
+        .engine()
+        .events()
+        .iter()
+        .filter(|event| {
+            matches!(event, mtg_engine::events::Event::AbilityTriggered(triggered)
+                if driver.state().object(triggered.source.id).is_some_and(|source| source.card().name == "Psychic Battle"))
+        })
+        .count()
+}
+
 #[rstest]
-#[case::declined(false)]
-#[case::accepted(true)]
+#[case::twincast_new_targets("Twincast", true)]
+#[case::twincast_same_targets("Twincast", false)]
+#[case::reverberate_new_targets("Reverberate", true)]
+#[case::reverberate_same_targets("Reverberate", false)]
+fn psychic_battle_triggers_on_a_copy_given_new_targets(
+    #[values(2, 3, 4)] seats: usize,
+    #[case] copier: &str,
+    #[case] new_targets: bool,
+) {
+    let mut scenario = Scenario::new(seats)
+        .at(2, 1, Step::Main1)
+        .battlefield(
+            0,
+            [
+                ready(card("Psychic Battle").unwrap()),
+                ready(free_creature("Bear", 2, 2)),
+                ready(free_creature("Cub", 2, 2)),
+            ],
+        )
+        .battlefield(
+            1,
+            [mountain(), mountain(), mountain(), island(), island()].map(ready),
+        )
+        .hand(1, [card("Lightning Bolt").unwrap(), card(copier).unwrap()]);
+    // Every reveal ties, so no target changes and each trigger only counts.
+    for seat in 0..seats {
+        scenario = p165_topped(scenario, seat, 2);
+    }
+    let mut driver = Driver::from_scenario(scenario).unwrap();
+    let cub = driver.id_of("Cub").unwrap();
+    let bear = driver.target_named("Bear").unwrap();
+    let to_cub = driver.target_named("Cub").unwrap();
+    driver.cast_at("Lightning Bolt", &[bear]).unwrap();
+    let bolt = driver
+        .state()
+        .stack()
+        .iter()
+        .copied()
+        .find(|id| driver.state().object(*id).unwrap().card().name == "Lightning Bolt")
+        .unwrap();
+    let bolt = mtg_engine::choose::Target::Object(driver.state().object(bolt).unwrap().reference());
+    driver.cast_at(copier, &[bolt]).unwrap();
+    p165_run(
+        &mut driver,
+        80,
+        &|_, decision| match &decision.kind {
+            DecisionKind::YesNo(_) => Some(Answer::YesNo(YesNoChoice(new_targets))),
+            DecisionKind::ChooseTargets(options) if !options.can_cancel => {
+                Some(Answer::ChooseTargets(TargetChoice::Targets(vec![to_cub])))
+            }
+            _ => None,
+        },
+        &|driver| driver.state().stack().is_empty(),
+    );
+    assert_eq!(
+        p165_battles(&driver),
+        2 + usize::from(new_targets),
+        "the spell, the copier and a copy given new targets each trigger it"
+    );
+    assert_eq!(
+        matches!(p165_zone(&driver, cub), Some(Zone::Graveyard(_))),
+        new_targets
+    );
+    p165_replays(&driver);
+}
+
+#[rstest]
+#[case::declined(false, 2)]
+#[case::accepted(true, 2)]
+#[case::accepted_with_an_empty_hand(true, 0)]
+#[case::declined_with_an_empty_hand(false, 0)]
 fn miss_highwater_offers_a_fresh_seven_for_a_contract(
     #[values(2, 3, 4)] seats: usize,
     #[case] deal: bool,
+    #[case] held: usize,
 ) {
     let contract = CounterKind::Other("contract".into());
     let scenario = Scenario::new(seats)
@@ -357,7 +441,7 @@ fn miss_highwater_offers_a_fresh_seven_for_a_contract(
                 ready(island()),
             ],
         )
-        .hand(1, [island(), island()]);
+        .hand(1, vec![island(); held]);
     let mut driver = Driver::from_scenario(p165_libraries(scenario, seats)).unwrap();
     driver.pass_until(Step::DeclareAttackers).unwrap();
     driver.attack(&[("Miss Highwater", 1)]).unwrap();
@@ -379,7 +463,11 @@ fn miss_highwater_offers_a_fresh_seven_for_a_contract(
         .player(pid(1))
         .unwrap()
         .counters_of(&contract);
-    assert_eq!(hand, if deal { 7 } else { 2 });
+    assert_eq!(
+        hand,
+        if deal { 7 } else { held },
+        "an empty hand discarded still counts"
+    );
     assert_eq!(counters, u32::from(deal));
     if seats > 2 {
         driver.concede(PlayerId(1)).unwrap();

@@ -5,7 +5,7 @@ use mtg_core::ids::PlayerId;
 
 use super::wrong_effect;
 use crate::choose::{Said, Target, pick_yes_no};
-use crate::resolve::{Cx, Next, ResolveError, Run};
+use crate::resolve::{Bindings, Cx, Next, ResolveError, Run};
 use crate::wording;
 
 /// The name under which the `May` at `position` binds whether it was accepted, which a following `If` of `Performed`
@@ -14,6 +14,24 @@ use crate::wording;
 pub(super) fn performed_name(position: &[usize]) -> String {
     let path: Vec<String> = position.iter().map(ToString::to_string).collect();
     format!("?performed {}", path.join("."))
+}
+
+/// Whether the step at `position` did what it says, for an "if you do" after it: no when it bound nothing under its
+/// name (a `May` declined, a sacrifice that took nothing) or when a step directly inside its `May` did nothing ("you
+/// may sacrifice a creature" with none to sacrifice); `None` when it reported nothing either way.
+pub(super) fn was_done(bindings: &Bindings, position: &[usize]) -> Option<bool> {
+    let name = performed_name(position);
+    let inside = format!("{name}.0.");
+    let inside_failed = bindings.iter().any(|(bound, who)| {
+        who.is_empty()
+            && bound
+                .strip_prefix(&inside)
+                .is_some_and(|rest| !rest.contains('.'))
+    });
+    match bindings.get(&name) {
+        Some(who) => Some(!who.is_empty() && !inside_failed),
+        None => inside_failed.then_some(false),
+    }
 }
 
 /// The players the effect names who are still in the game are asked in turn order whether they will, until one says

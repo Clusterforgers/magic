@@ -47,14 +47,15 @@ pub(super) enum Retargeted {
 /// Nobody is asked when no target of the original could be another one. Otherwise the controller of the copy is asked
 /// whether to choose new targets (No keeps every target of the original, legal or not, CR 707.10c), then
 /// `ChooseTargets` for each specification that has another choice, for as many targets as the original had. The answers
-/// are read in order from `answers`, the rest of the journal of the step.
+/// are read in order from `answers`, the rest of the journal of the step. The flag says whether the controller chose new
+/// targets (answered Yes), which the copy event records for "whenever a player chooses targets" (CR 115.1).
 pub(super) fn retarget(
     cx: &Cx<'_>,
     player: PlayerId,
     answers: &mut Iter<'_, (PlayerId, Choice)>,
     original: Original<'_>,
     may_choose: bool,
-) -> Result<Retargeted, ResolveError> {
+) -> Result<(Retargeted, bool), ResolveError> {
     let mut copy = original.choices.clone();
     copy.forget_cost_picks();
     let way = if may_choose {
@@ -62,7 +63,13 @@ pub(super) fn retarget(
     } else {
         Way::Keep
     };
-    ask(cx, (player, player), answers, (original, 0), copy, way)
+    let first = answers.clone().next();
+    let before = answers.len();
+    let done = ask(cx, (player, player), answers, (original, 0), copy, way)?;
+    let chose = matches!(done, Retargeted::Done(_))
+        && answers.len() < before
+        && first.is_some_and(|(who, answer)| *who == player && *answer == Choice::YesNo(true));
+    Ok((done, chose))
 }
 
 /// How the targets of an object change.
