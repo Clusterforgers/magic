@@ -576,6 +576,7 @@ pub(crate) fn began_turn(state: &GameState, duration: &Duration, controller: Pla
     let before_end = state.is_active(controller) && turn.step() < Step::End;
     let before_attacks = state.is_active(controller) && turn.step() < Step::DeclareAttackers;
     if (*duration == Duration::UntilYourNextEndStep && before_end)
+        || (*duration == Duration::R513UntilNextEndStep && turn.step() < Step::End)
         || (*duration == Duration::UntilItsControllersNextCombatEnds && before_attacks)
     {
         turn.number().saturating_sub(1)
@@ -651,6 +652,8 @@ pub(crate) fn lasts(
                     && state.is_active(controller)
                     && turn.step() >= Step::End)
         }
+        // Begun before this turn's end step, it carries the turn before (`began_turn`), so that end step ends it.
+        Duration::R513UntilNextEndStep => !(turn.number() > began && turn.step() >= Step::End),
         Duration::UntilEndOfCombat => turn.number() == began && turn.step() <= Step::EndCombat,
         // It applies only while its combat phase is under way (`r109_in_that_combat`) and ends with the turn.
         Duration::R109ThatCombat(_) => turn.number() == began,

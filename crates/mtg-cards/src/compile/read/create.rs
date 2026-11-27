@@ -524,6 +524,8 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                     sizeless: false,
                 })
         }
+        // Written only whole (`p158_wholes`).
+        TokenRef::P158WithTriggersOf { .. } => None,
         TokenRef::Custom(spec) | TokenRef::Sized { token: spec, .. } => {
             let sizeless = matches!(token, TokenRef::Custom(_))
                 && spec.power.is_none()

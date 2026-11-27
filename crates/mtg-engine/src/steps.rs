@@ -552,6 +552,9 @@ fn leave_step_from(state: &GameState, step: Step) -> Vec<Event> {
         ));
     }
     events.push(Event::StepBegan { step: next });
+    if next == Step::End {
+        events.extend(crate::r513_copy_ends::r513_copies_ending(state));
+    }
     events
 }
 
@@ -688,6 +691,7 @@ fn wear_off(state: &GameState) -> Vec<Event> {
                 attached_by: None,
                 r6104_tapped: None,
                 r707_static: None,
+                r513_end_step: false,
             }),
     );
     events

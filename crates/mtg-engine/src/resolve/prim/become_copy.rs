@@ -68,6 +68,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         Duration::UntilEndOfTurn => (true, None),
         Duration::Forever | Duration::WhileSourceAttached | Duration::WhileTapped => (false, None),
         Duration::UntilYourNextTurn => (false, Some(cx.controller())),
+        Duration::R513UntilNextEndStep => (false, None),
         _ => return Err(ResolveError::Unsupported("Copy.Duration")),
     };
     // "For as long as this Equipment remains attached to it": a permanent it is no longer attached to is not changed.
@@ -121,6 +122,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     r6104_while_tapped: (*duration == Duration::WhileTapped).then_some(original),
                     r707_static: None,
                     r115_until_face_down: false,
+                    r513_until_end_step: *duration == Duration::R513UntilNextEndStep,
                 }));
             }
         }

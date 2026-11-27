@@ -286,6 +286,7 @@ pub(crate) fn r115_turned_up_copy(
         r6104_while_tapped: None,
         r707_static: None,
         r115_until_face_down: true,
+        r513_until_end_step: false,
     }))
 }
 

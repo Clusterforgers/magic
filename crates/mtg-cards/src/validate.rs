@@ -4130,7 +4130,12 @@ impl Walker<'_> {
                 self.at("of", |w| w.reference(of, Kind::Object));
                 self.ep23_token_copy_exceptions(except);
             }
-            TokenRef::R4700OfChosen { size } => {
+                TokenRef::P158WithTriggersOf { token, of } => {
+                self.at("token", |w| w.token_spec(token, false));
+                self.at("of", |w| w.reference(of, Kind::Object));
+                self.uses("Effect", "CreateToken.P158WithTriggersOf");
+            }
+        TokenRef::R4700OfChosen { size } => {
                 self.at("size", |w| w.amount(size));
                 self.uses("Effect", "CreateToken.R4700OfChosen");
             }

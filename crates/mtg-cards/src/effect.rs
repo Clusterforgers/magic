@@ -411,6 +411,15 @@ pub enum TokenRef {
         #[serde(default, skip_serializing_if = "is_false")]
         no_mana_cost: bool,
     },
+    /// A described token that also has every triggered ability the cards `of` names print, as they are now, as part of
+    /// its copiable values ("Create Vecna, a legendary 8/8 black Zombie God creature token with indestructible and all
+    /// triggered abilities of the exiled cards").
+    P158WithTriggersOf {
+        /// The token without the abilities it takes.
+        token: Box<TokenSpec>,
+        /// The cards whose triggered abilities it has.
+        of: Ref,
+    },
 }
 
 /// What damage beyond lethal does (CR 120.10): damage dealt to a creature, planeswalker or battle beyond what is lethal to it.

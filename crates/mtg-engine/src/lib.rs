@@ -15,6 +15,7 @@ pub mod battle;
 pub mod block_tax;
 pub mod boss_sheet;
 mod c10_xp_copy_ends;
+mod r513_copy_ends;
 mod c11a_less;
 mod c7_untap;
 mod cant_named;

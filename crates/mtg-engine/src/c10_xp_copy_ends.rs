@@ -23,6 +23,7 @@ pub(crate) fn c10_xp_copies_ending(state: &GameState, active: PlayerId) -> Vec<E
                     attached_by: None,
                     r6104_tapped: None,
                     r707_static: None,
+                    r513_end_step: false,
                 });
             }
         }
