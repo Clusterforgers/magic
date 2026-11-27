@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { CSSProperties, ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { useStore } from 'zustand'
@@ -15,7 +15,7 @@ import { holdPreview } from '@/features/table/preview'
 import type { Decision, ObjectId } from '@/protocol/generated'
 import type { PlayState } from '@/play/store'
 import { cn } from '@/lib/utils'
-import { ANCHORS, FIXED_ANCHORS, cardRef } from './anchors'
+import { ANCHORS, cardRef } from './anchors'
 import type { AnchorId, Target } from './anchors'
 import { coachPlace } from './coachPlace'
 import type { Place } from './coachPlace'
@@ -24,25 +24,18 @@ import { lessonFacts } from './facts'
 import type { Facts } from './facts'
 import { stepFits } from './gate'
 import type { LessonSession } from './lessonSession'
-import { boxOf, enabled, resolve, shownAnchors } from './resolve'
-import type { Box, CardLookup } from './resolve'
+import { Light } from './coachLight'
+import { CARD_W, RING_PAD, grown, look, useCardSize, useLooking } from './coachLook'
+import { enabled, resolve } from './resolve'
+import type { CardLookup } from './resolve'
 import { advance, anchorLabel, litOf, shown as shownStep, textParts } from './step'
 import type { Lesson, LessonStep, TextPart } from './step'
-import './coach.css'
 
-/** How often the coach measures the page again, in ms. */
-const LOOK_MS = 150
 /** How long a do step may wait without its place before the coach says it lost it, in ms. */
 const LOST_MS = 3000
 /** How long a held input's reason shows, and the done tick, in ms. */
 const REFUSED_MS = 3000
 const TICK_MS = 300
-/** The ring stands this far outside the lit element, in px. */
-const RING_PAD = 4
-/** The width of the coach card on a wide window, in px. */
-const CARD_W = 300
-/** Under this width the card is a bar across the window. */
-const PHONE_W = 640
 
 /** What a coach does at the lesson's edges. */
 export interface CoachProps {
@@ -89,87 +82,6 @@ function wordsOf(element: HTMLElement): string {
     hint.remove()
   const text = (copy.textContent ?? '').replace(/\s+/g, ' ').trim()
   return text !== '' ? text : (element.getAttribute('aria-label') ?? '')
-}
-
-/** One measured look at the page: each lit target's element and box, the opener used, and the anchors shown. */
-interface Look {
-  lit: { target: Target; box: Box; via: AnchorId | null; element: HTMLElement }[]
-  missing: Target[]
-  clear: Box[]
-  phone: { top: number; bottom: number } | undefined
-  window: { width: number; height: number }
-  shown: ReadonlySet<AnchorId>
-  coarse: boolean
-}
-
-const CLEAR = [
-  '[data-coach="ask"]',
-  '[data-coach="pass.primary"]',
-  '[data-slot="decision-sheet"]',
-  '[data-slot="decision-detail"]',
-  '[data-coach="preview"]',
-]
-
-/** Measures the page for `targets`. */
-function look(targets: readonly Target[], lookup: CardLookup): Look {
-  const lit: Look['lit'] = []
-  const missing: Target[] = []
-  for (const target of targets) {
-    const found = resolve(target, lookup)
-    if (found.kind === 'found')
-      lit.push({ target, box: boxOf(found.element), via: found.via, element: found.element })
-    else {
-      if (found.kind === 'many' && import.meta.env.DEV)
-        console.error(`coach: ${target} resolves to ${found.count}`)
-      missing.push(target)
-    }
-  }
-  const clear = CLEAR.flatMap((selector) =>
-    [...document.querySelectorAll<HTMLElement>(selector)].map(boxOf).filter((box) => box.width > 0),
-  )
-  const width = window.innerWidth
-  const height = window.innerHeight
-  const bar = document.querySelector('[data-region="bar"]')
-  // On a phone the card may lie over the hand, never over the decision bar under it (its answers are kept clear).
-  const below =
-    document.querySelector('[data-region="controls"]') ?? document.querySelector('[data-region="hand"]')
-  const phone =
-    width < PHONE_W
-      ? {
-          top: bar === null ? 0 : bar.getBoundingClientRect().bottom,
-          bottom: below === null ? height : below.getBoundingClientRect().top,
-        }
-      : undefined
-  return {
-    lit,
-    missing,
-    clear,
-    phone,
-    window: { width, height },
-    shown: shownAnchors(FIXED_ANCHORS),
-    coarse: window.matchMedia?.('(pointer: coarse)').matches === true,
-  }
-}
-
-/** The box `box` grown by `pad` on every side. */
-const grown = (box: Box, pad: number): Box => ({
-  x: box.x - pad,
-  y: box.y - pad,
-  width: box.width + 2 * pad,
-  height: box.height + 2 * pad,
-})
-
-/** The scrim over the table with a hole at each lit box; it takes no pointer. */
-function Scrim({ holes, size }: { holes: readonly Box[]; size: { width: number; height: number } }) {
-  const path = [
-    `M0 0H${size.width}V${size.height}H0Z`,
-    ...holes.map((box) => `M${box.x} ${box.y}v${box.height}h${box.width}v${-box.height}Z`),
-  ].join('')
-  return (
-    <svg aria-hidden="true" className="pointer-events-none fixed inset-0 size-full" data-slot="coach-scrim">
-      <path d={path} fillRule="evenodd" className="fill-scrim opacity-60" />
-    </svg>
-  )
 }
 
 /** A step's words: names of buttons in bold, lexicon terms as links. */
@@ -221,12 +133,11 @@ export function Coach({
   const [press, setPress] = useState(0)
   const [playOn, setPlayOn] = useState(false)
   const [folded, setFolded] = useState(false)
-  const [, setTick] = useState(0)
   const [ticked, setTicked] = useState<number | null>(null)
   const [lostSince, setLostSince] = useState<number | null>(null)
   const [now, setNow] = useState(() => Date.now())
   const card = useRef<HTMLDivElement>(null)
-  const [cardSize, setCardSize] = useState({ width: CARD_W, height: 160 })
+  const cardSize = useCardSize(card)
 
   const lookup = useMemo<CardLookup>(
     () => ({ objects: state.objectsById, usable: usableIds(state.pending?.decision ?? null) }),
@@ -283,19 +194,8 @@ export function Coach({
   pageShown.current = page.shown
 
   // Measures again while anything moves, and on every resize.
-  useEffect(() => {
-    if (ended || playOn) return undefined
-    const timer = window.setInterval(() => {
-      setTick((value) => value + 1)
-      setNow(Date.now())
-    }, LOOK_MS)
-    const resize = (): void => setTick((value) => value + 1)
-    window.addEventListener('resize', resize)
-    return () => {
-      window.clearInterval(timer)
-      window.removeEventListener('resize', resize)
-    }
-  }, [ended, playOn])
+  const tickNow = useCallback(() => setNow(Date.now()), [])
+  useLooking(!ended && !playOn, tickNow)
 
   // A press inside the lit element moves to the step's next press.
   const litElement = page.lit[0]?.element ?? null
@@ -339,15 +239,6 @@ export function Coach({
     setLostSince((since) => (astray ? (since ?? Date.now()) : null))
   }, [astray])
   const lost = !playOn && lostSince !== null && now - lostSince >= LOST_MS
-
-  useLayoutEffect(() => {
-    const element = card.current
-    // The open card's size places it: a folded bar keeps the size it had open, or folding and unfolding would chase each other.
-    if (element === null || element.dataset['folded'] !== undefined) return
-    const { width, height } = element.getBoundingClientRect()
-    if (Math.abs(width - cardSize.width) > 1 || Math.abs(height - cardSize.height) > 1)
-      setCardSize({ width, height })
-  })
 
   if (playOn) return null
 
@@ -452,8 +343,6 @@ export function Coach({
       )
   }
 
-  const pointer = rings[0]
-  const below = pointer !== undefined && pointer.y < 24
   const style: CSSProperties = bar
     ? { left: place.x, top: place.y, width: page.window.width - 16 }
     : { left: place.x, top: place.y, width: Math.min(CARD_W, page.window.width - 16) }
@@ -471,28 +360,7 @@ export function Coach({
       data-coach-moment={`${facts.turn}:${facts.step ?? ''}:${facts.decision ?? ''}:${state.pending?.id ?? ''}`}
       className="pointer-events-none fixed inset-0 z-[60]"
     >
-      <Scrim holes={rings} size={page.window} />
-      {rings.map((ring, at) => (
-        <div
-          key={`${page.lit[at]?.target ?? at}`}
-          aria-hidden="true"
-          data-slot="coach-ring"
-          className="coach-ring pointer-events-none fixed rounded-lg"
-          style={{ left: ring.x, top: ring.y, width: ring.width, height: ring.height }}
-        />
-      ))}
-      {pointer === undefined ? null : (
-        <div
-          aria-hidden="true"
-          data-slot="coach-pointer"
-          data-side={below ? 'below' : 'above'}
-          className="coach-pointer pointer-events-none fixed size-0"
-          style={{
-            left: pointer.x + pointer.width / 2 - 8,
-            top: below ? pointer.y + pointer.height + 4 : pointer.y - 14,
-          }}
-        />
-      )}
+      <Light rings={rings} targets={page.lit.map((each) => each.target)} size={page.window} />
       <section
         ref={card}
         aria-label={`Lesson: ${lesson.title}`}
