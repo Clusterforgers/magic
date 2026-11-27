@@ -270,6 +270,7 @@ fn seat(innate: &str, relics: Vec<String>) -> mtg_campaign::BossSeat {
         reinforcements: Vec::new(),
         round_phases: Vec::new(),
         satchel: Vec::new(),
+        personality: mtg_core::personality::Personality::Watchful,
     }
 }
 

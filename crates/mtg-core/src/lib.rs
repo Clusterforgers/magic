@@ -7,5 +7,6 @@ pub mod cue;
 pub mod house;
 pub mod ids;
 pub mod mana;
+pub mod personality;
 pub mod subtypes;
 pub mod teams;

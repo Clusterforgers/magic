@@ -1,13 +1,14 @@
 //! Goal: at two, three and four seats every seat sees the same reworked boss view: innate with its level, modifier,
 //! relics, both phases by round with the countdown to the next (which moves on as a phase begins), and the boss's
 //! Satchel (public) with each card's reusable or once mark and its tax after a cast; a seat without a boss leaves the
-//! field out of its JSON.
+//! field out of its JSON; the boss names its personality with whom it hunts.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::sync::Arc;
 
 use mtg_cards::CardDefinition;
 use mtg_core::ids::PlayerId;
+use mtg_core::personality::Personality;
 use mtg_engine::boss_sheet::{BossSheet, SheetCard};
 use mtg_engine::phases::{BossPhase, PhaseStart};
 use mtg_engine::turn::Step;
@@ -59,10 +60,16 @@ fn scenario(seats: usize) -> Scenario {
     };
     Scenario::new(seats)
         .boss_sheet(BOSS, sheet)
+        .personality(BOSS, personality_at(seats))
         .phases(BOSS, [phase("The Nest Stirs", 2), phase("Plague Tide", 3)])
         .satchel_reusable(BOSS, [card("Lightning Bolt").unwrap()])
         .satchel(BOSS, [card("Giant Growth").unwrap()])
         .battlefield(BOSS, (0..3).map(|_| ready(mountain())))
+}
+
+/// The boss's personality at `seats` seats: the default at two.
+fn personality_at(seats: usize) -> Personality {
+    Personality::ALL[(seats - 2) % Personality::ALL.len()]
 }
 
 /// The boss view of every seat, checked to be the same for each viewer.
@@ -97,6 +104,14 @@ fn every_seat_sees_the_reworked_boss(#[values(2, 3, 4)] seats: usize) -> Result<
     assert_eq!(
         view.modifier.as_ref().map(|m| m.name.as_str()),
         Some("Deep Pockets")
+    );
+    let personality = personality_at(seats);
+    assert_eq!(
+        view.personality,
+        Some(BossPartView {
+            name: personality.name().into(),
+            text: personality.text().into(),
+        })
     );
     assert_eq!(view.relics.len(), 2, "copies stack");
     assert!(view.relics.iter().all(|r| *r

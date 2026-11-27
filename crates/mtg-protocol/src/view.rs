@@ -565,6 +565,10 @@ pub struct BossView {
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     #[ts(as = "Option<Vec<BossSatchelView>>", optional)]
     pub satchel: Vec<BossSatchelView>,
+    /// Its personality, how it weighs the heroes' threat when it eyes one: its name and whom it hunts.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    #[ts(optional)]
+    pub personality: Option<BossPartView>,
 }
 
 /// One effect of a reworked boss: a card's name and rules text (public).

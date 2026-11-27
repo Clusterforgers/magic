@@ -16,6 +16,7 @@ mod gloamwood_innates;
 mod modifiers;
 mod mythic_cards;
 mod old_runs;
+mod personality;
 mod rarity;
 mod relic_cards;
 mod relic_self_harm;

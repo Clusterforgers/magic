@@ -48,6 +48,7 @@ pub(crate) fn setup(
             satchel_reusable: Vec::new(),
             opening_lands: None,
             boss_sheet: None,
+            personality: mtg_core::personality::Personality::Watchful,
             held: Vec::new(),
             spirit: None,
             phases: Vec::new(),

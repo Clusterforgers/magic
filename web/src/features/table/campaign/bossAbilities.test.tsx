@@ -1,4 +1,4 @@
-// Goal: a boss's abilities come from its public view (innate with its level, modifier, relics, phases by round) in reading order with a one-line summary each, the table's bar shows them as chips named for the boss, and the log names an ability of a boss's command zone as the boss's.
+// Goal: a boss's abilities come from its public view (innate with its level, modifier, relics, phases by round, personality) in reading order with a one-line summary each, the table's bar shows them as chips named for the boss, and the log names an ability of a boss's command zone as the boss's.
 import { screen, within } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import type { ObjectView, PlayerView } from '@/protocol/generated'
@@ -10,7 +10,7 @@ import { describeEvent } from '../eventText'
 import { bossAbilities, bossOwner, summaryOf } from './bossAbilities'
 
 describe('bossAbilities', () => {
-  it('reads the boss view in order: innate, modifier, relics, then the phases', () => {
+  it('reads the boss view in order: innate, modifier, relics, the phases, then the personality', () => {
     const fixture = withBoss(buildFixture({ seats: 4 }), 0, 2)
     const boss = fixture.view.players.find((player) => player.boss !== undefined)
     if (boss === undefined) throw new Error('no boss')
@@ -21,6 +21,7 @@ describe('bossAbilities', () => {
       'relic',
       'phase',
       'next-phase',
+      'personality',
     ])
     expect(abilities[0]?.when).toBe('Level III')
     expect(abilities[2]?.name).toBe('Whetstone ×2')

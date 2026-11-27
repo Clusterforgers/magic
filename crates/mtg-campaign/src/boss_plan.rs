@@ -63,6 +63,11 @@ impl Run {
                 .zip(PHASE_ROUNDS)
                 .collect(),
             satchel: boss.satchel.clone(),
+            personality: if self.content >= crate::run::PERSONALITY_FROM {
+                boss.personality
+            } else {
+                mtg_core::personality::Personality::Watchful
+            },
         })
     }
 }
