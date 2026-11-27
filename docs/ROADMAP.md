@@ -84,7 +84,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (db1) Game event commits take milliseconds instead of 1 to 1.8 s on the replicated volume, by an owner-chosen fix: a larger `shared_buffers`, `synchronous_commit` off for event writes, or a local volume (`docs/performance.md`, Deck lists)
-- [ ] (pl2r) `commander-four.spec.ts` passes: a span 24 px wide is cut off sideways on several seats' pages of the four-seat precon table, at the opening hands and through the first turns
 - [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 - [ ] (ln1) The Help menu's table tour runs on the Learn coach and its anchors instead of `TourCard` and CSS selectors
