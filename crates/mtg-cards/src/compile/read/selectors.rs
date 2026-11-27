@@ -638,9 +638,6 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if r.words("you control") {
         return Some(Pred::ControlledBy(Ref::You));
     }
-    if let Some(pred) = r.attempt(super::lx1a_exiles::lx1a_suffix) {
-        return Some(pred);
-    }
     // "enchantment card that isn't a God": a subtype it doesn't have.
     if !form.plural()
         && let Some(name) = r.attempt(|r| {
@@ -658,7 +655,7 @@ pub(super) fn suffix(r: &mut Reader<'_>, form: Form) -> Option<Pred> {
     if let Some(pred) = others_control(r, form) {
         return Some(pred);
     }
-    if let Some(pred) = this_turn_suffix(r) {
+    if let Some(pred) = this_turn_suffix(r).or_else(|| super::lx1a_exiles::lx1a_suffix(r)) {
         return Some(pred);
     }
     if r.words("enchanted player controls") {

@@ -138,9 +138,11 @@ pub(super) fn is_grouped(what: &Targetable) -> bool {
 
 /// "not named ~": an object without the card's own name (CR 201.2), as a phrase ends.
 pub(super) fn lx1a_suffix(r: &mut Reader<'_>) -> Option<Pred> {
-    r.need("not named")?;
-    r.source().then_some(())?;
-    Some(Pred::Not(Box::new(Pred::SharesName(Ref::This))))
+    r.attempt(|r| {
+        r.need("not named")?;
+        r.source().then_some(())?;
+        Some(Pred::Not(Box::new(Pred::SharesName(Ref::This))))
+    })
 }
 
 /// The words of [`lx1a_suffix`].
@@ -252,6 +254,9 @@ pub(super) fn lx1a_rule_read(text: &str) -> Option<Ability> {
         .map(|(_, ability)| ability)
 }
 
+/// The end of the one-sentence pick from a revealed hand.
+const JOINED: &str = " from it and exile that card";
+
 /// Adds the words of a cast prohibition, and the other wordings of a card picked from a revealed hand: "target
 /// opponent reveals their hand and you choose a nonland card from it. Exile that card." and "... from it. Exile that
 /// card.".
@@ -261,7 +266,6 @@ pub(super) fn lx1a_wordings(ability: &Ability, texts: &mut Vec<String>) {
             texts.push(words);
         }
     }
-    const JOINED: &str = " from it and exile that card";
     let mut more = Vec::new();
     for text in texts.iter() {
         if !text.contains(" reveals their hand. You choose ") || !text.contains(JOINED) {
