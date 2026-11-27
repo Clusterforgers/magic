@@ -798,6 +798,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                     &copy.choices,
                     (copy.object, copy.controller),
                 ));
+                found.extend(r115_copy_chosen(
+                    copy.chose_targets,
+                    &copy.choices,
+                    (copy.object, copy.controller),
+                ));
             }
             Event::AbilityCopied(copy) => {
                 found.push(Happened::R5503Stacked {
@@ -806,6 +811,11 @@ fn happenings(pre: &GameState, events: &[Event], post: &GameState) -> Vec<Happen
                 });
                 found.extend(targeted(
                     look,
+                    &copy.choices,
+                    (copy.object, copy.controller),
+                ));
+                found.extend(r115_copy_chosen(
+                    copy.chose_targets,
                     &copy.choices,
                     (copy.object, copy.controller),
                 ));
@@ -3612,6 +3622,18 @@ fn r115_chosen(
             player,
             changed,
         })
+}
+
+/// The controller of a copy chose new targets for it (CR 707.10c): choosing targets as `r115_chosen` (CR 115.1). A copy
+/// that kept the targets of the original chose none.
+fn r115_copy_chosen(
+    chose: bool,
+    choices: &Choices,
+    (object, player): (ObjectId, PlayerId),
+) -> Option<Happened> {
+    chose
+        .then(|| r115_chosen(choices, object, player, false))
+        .flatten()
 }
 
 /// A player who lost the game, with the permanents they controlled as they lost that `controlled` matches (CR 800.4a):

@@ -72,7 +72,7 @@ impl Seen {
                 Event::ZoneChanged {
                     object,
                     from: Zone::Battlefield,
-                    cause: ZoneCause::StateBased,
+                    cause: ZoneCause::StateBased(_),
                     ..
                 } => {
                     if is_aura(game, *object) {

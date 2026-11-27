@@ -77,6 +77,44 @@ pub enum DeathCause {
     ZeroToughness,
 }
 
+/// Which state-based action put a permanent into its owner's graveyard (CR 704.5).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
+#[cfg_attr(feature = "ts", derive(ts_rs::TS))]
+pub enum StateRule {
+    /// A creature died, and why (CR 704.5f, 704.5g, 704.5h).
+    Died(DeathCause),
+    /// A planeswalker had no loyalty counters (CR 704.5i).
+    ZeroLoyalty,
+    /// Its controller kept another legendary permanent of the same name (CR 704.5j).
+    LegendRule,
+    /// An Aura was attached to nothing or to something it may not enchant (CR 704.5m).
+    UnattachedAura,
+    /// A battle had no defense counters (CR 704.5v).
+    ZeroDefense,
+    /// A newer Role of the same controller was on the same permanent (CR 704.5y).
+    ExtraRole,
+    /// A state-based action the event does not name.
+    Unnamed,
+}
+
+/// Reads a zone cause, taking the bare `"StateBased"` of a log that names no rule as `StateBased(Unnamed)`.
+fn zone_cause<'de, D: serde::Deserializer<'de>>(deserializer: D) -> Result<ZoneCause, D::Error> {
+    #[derive(Deserialize)]
+    #[serde(untagged)]
+    enum Stored {
+        Cause(ZoneCause),
+        Bare(Bare),
+    }
+    #[derive(Deserialize)]
+    enum Bare {
+        StateBased,
+    }
+    Ok(match Stored::deserialize(deserializer)? {
+        Stored::Cause(cause) => cause,
+        Stored::Bare(Bare::StateBased) => ZoneCause::StateBased(StateRule::Unnamed),
+    })
+}
+
 /// A fact about the game; folding the full list over the initial setup yields the game state.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "ts", derive(ts_rs::TS))]
@@ -853,6 +891,7 @@ pub enum Event {
         /// Where it went.
         to: Zone,
         /// Why.
+        #[serde(deserialize_with = "zone_cause")]
         cause: ZoneCause,
     },
     /// A player gained life.
@@ -1826,8 +1865,8 @@ pub enum ZoneCause {
     Countered,
     /// It was milled (CR 701.17).
     Milled,
-    /// A state-based action put it into its owner's graveyard (CR 704.5i, 704.5j, 704.5m).
-    StateBased,
+    /// A state-based action put it into its owner's graveyard (CR 704.5), and which one.
+    StateBased(StateRule),
     /// It was discarded and a replacement effect sent it somewhere other than the graveyard (CR 701.9).
     Discarded,
     /// It was played as its owner's land and a replacement effect put it here instead of onto the battlefield: the land

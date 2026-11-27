@@ -55,7 +55,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 ability.rules(),
                 selector,
             )?;
-            planned.extend(choices.into_iter().map(|choices| (*object, choices)));
+            planned.extend(choices.into_iter().map(|choices| (*object, choices, false)));
             continue;
         }
         for _ in 0..copies {
@@ -68,8 +68,8 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 cause: ability.cause(),
             };
             match retarget(cx, cx.controller(), &mut answers, original, *new_targets)? {
-                Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
-                Retargeted::Done(choices) => planned.push((*object, choices)),
+                (Retargeted::Ask(decision), _) => return Ok(Run::Ask(decision)),
+                (Retargeted::Done(choices), chose) => planned.push((*object, choices, chose)),
             }
         }
     }
@@ -81,12 +81,13 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let first = cx.state().next_object().get();
     let events = (first..)
         .zip(planned)
-        .map(|(id, (object, choices))| {
+        .map(|(id, (object, choices, chose_targets))| {
             Event::AbilityCopied(Box::new(AbilityCopy {
                 object: ObjectId(id),
                 of: object.reference(),
                 controller: cx.controller(),
                 choices,
+                chose_targets,
             }))
         })
         .collect();

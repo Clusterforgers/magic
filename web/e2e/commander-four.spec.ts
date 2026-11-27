@@ -38,8 +38,8 @@ interface Table {
   turn: string
   /** Each pod's seat and life. */
   lives: string[]
-  /** Entries in the game log. */
-  log: number
+  /** Entries in the game log; null while a decision has brought the Stack tab forward, so the log is not in the page. */
+  log: number | null
   over: boolean
   /** The viewer's own seat lost: its page keeps its pod at no life. */
   out: boolean
@@ -62,7 +62,10 @@ function tableOf(me: string): Table {
   return {
     turn: banner.replace(/^Your turn/, `${me}'s turn`),
     lives,
-    log: document.querySelectorAll('[role="log"] li').length,
+    log:
+      document.querySelector('[role="log"][aria-label="Game log"]') === null
+        ? null
+        : document.querySelectorAll('[role="log"][aria-label="Game log"] li').length,
     over: document.querySelector('#over-title') !== null,
     out: own !== '?' && Number(own) <= 0,
   }
@@ -155,8 +158,9 @@ class Seen4 {
         { message: `the four seats read different turns or lives at turn ${turn}`, timeout: 10_000 },
       )
       .toMatch(/^(same|over)$/)
-    if (turn > 1) {
-      const least = Math.min(...tables.filter((table) => !table.out).map((table) => table.log))
+    const logs = tables.flatMap((table) => (table.out || table.log === null ? [] : [table.log]))
+    if (turn > 1 && logs.length > 0) {
+      const least = Math.min(...logs)
       this.leastLog = Math.min(this.leastLog, least)
       this.logs = { first: this.logs?.first ?? least, last: least }
     }

@@ -3,7 +3,7 @@
 use mtg_cards::effect::Effect;
 use mtg_cards::value::Condition;
 
-use super::may::performed_name;
+use super::may::was_done;
 use super::wrong_effect;
 use crate::resolve::{Cx, Next, ResolveError, Run};
 
@@ -36,8 +36,8 @@ fn decided(cx: &Cx<'_>, condition: &Condition) -> Condition {
     }
 }
 
-/// Whether the effect before the running `If` in its list is a `May` that was accepted: the step of the `May` bound
-/// its answer under the name of its position (`may::performed_name`). Nothing before it, or no `May`, is no.
+/// Whether the effect before the running `If` in its list did what it says (`may::was_done`): a `May` accepted whose
+/// own steps took something. Nothing before it, or a step that reports nothing, is no.
 fn performed(cx: &Cx<'_>) -> bool {
     let position = cx.resolving.position();
     let Some((last, holder)) = position.split_last() else {
@@ -47,10 +47,7 @@ fn performed(cx: &Cx<'_>) -> bool {
         return false;
     };
     let before = [holder, &[before]].concat();
-    cx.scope
-        .bindings
-        .get(&performed_name(&before))
-        .is_some_and(|accepted| !accepted.is_empty())
+    was_done(cx.scope.bindings, &before).unwrap_or(false)
 }
 
 #[cfg(test)]
@@ -61,6 +58,7 @@ mod tests {
 
     use super::*;
     use crate::fixtures::{creature, state};
+    use crate::resolve::prim::may::performed_name;
     use crate::resolve::{Resolving, Scope, tree};
     use crate::state::GameState;
     use crate::zones::Zone;
@@ -328,6 +326,11 @@ mod tests {
     #[case::inside_a_branch_accepted(r#""Performed""#, "2.0.1", &[("2.0.0", true)], 0)]
     #[case::inside_a_branch_declined(r#""Performed""#, "2.0.1", &[("2.0.0", false), ("0", true)], 1)]
     #[case::a_may_of_the_outer_list_is_not_inside(r#""Performed""#, "2.0.1", &[("1", true)], 1)]
+    #[case::accepted_but_its_step_did_nothing(r#""Performed""#, "1", &[("0", true), ("0.0.0", false)], 1)]
+    #[case::accepted_and_its_steps_did(r#""Performed""#, "1", &[("0", true), ("0.0.0", true), ("0.0.1", true)], 0)]
+    #[case::one_of_its_steps_did_nothing(r#""Performed""#, "1", &[("0", true), ("0.0.0", true), ("0.0.1", false)], 1)]
+    #[case::a_step_nested_deeper_does_not_count(r#""Performed""#, "1", &[("0", true), ("0.0.0.0.1", false)], 0)]
+    #[case::a_step_of_another_may_does_not_count(r#""Performed""#, "2", &[("0.0.0", false), ("1", true)], 0)]
     #[case::not_accepted(r#"{"Not":"Performed"}"#, "1", &[("0", true)], 1)]
     #[case::not_declined(r#"{"Not":"Performed"}"#, "1", &[("0", false)], 0)]
     #[case::all_accepted(r#"{"All":["Performed","YourTurn"]}"#, "1", &[("0", true)], 0)]

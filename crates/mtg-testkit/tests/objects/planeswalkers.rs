@@ -206,7 +206,7 @@ fn a_planeswalker_that_paid_its_last_loyalty_goes_to_the_graveyard_by_a_state_ba
             event,
             Event::ZoneChanged {
                 to: Zone::Graveyard(_),
-                cause: ZoneCause::StateBased,
+                cause: ZoneCause::StateBased(_),
                 ..
             }
         )

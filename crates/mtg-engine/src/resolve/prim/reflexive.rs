@@ -4,7 +4,7 @@ use mtg_cards::effect::Effect;
 use mtg_cards::trigger::TriggerPattern;
 
 use super::delayed_trigger::{Origin, origin};
-use super::may::performed_name;
+use super::may::was_done;
 use super::wrong_effect;
 use crate::abilities::Cause;
 use crate::events::Event;
@@ -122,19 +122,7 @@ fn before_was_done(cx: &Cx<'_>) -> bool {
         return true;
     };
     let before = [holder, &[before]].concat();
-    let bindings = &cx.scope.bindings;
-    let name = performed_name(&before);
-    if bindings.get(&name).is_some_and(Vec::is_empty) {
-        return false;
-    }
-    // The steps directly inside a `May` report on their own: one that did nothing leaves nothing to follow up.
-    let inside = format!("{name}.0.");
-    !bindings.iter().any(|(bound, who)| {
-        who.is_empty()
-            && bound
-                .strip_prefix(&inside)
-                .is_some_and(|rest| !rest.contains('.'))
-    })
+    was_done(cx.scope.bindings, &before).unwrap_or(true)
 }
 
 /// The unique vowels of the name sticker the step before put on when it put stickers on ("When you do, up to X target

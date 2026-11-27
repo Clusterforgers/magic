@@ -13,7 +13,7 @@ use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::{Target, legal_targets, options_for};
 use crate::effects::Modification;
 use crate::error::EngineError;
-use crate::events::{Event, ZoneCause};
+use crate::events::{Event, StateRule, ZoneCause};
 use crate::fold::invalid;
 use crate::keywords::{self, Holder, keywords_of};
 use crate::object::{GameObject, ObjectKind};
@@ -650,7 +650,7 @@ pub(crate) fn state_based(state: &GameState, leaving: &[ObjectId]) -> Vec<Event>
                 object: id,
                 from: Zone::Battlefield,
                 to: Zone::Graveyard(object.owner()),
-                cause: ZoneCause::StateBased,
+                cause: ZoneCause::StateBased(StateRule::UnattachedAura),
             }),
             Some(Kind::Equipment | Kind::Fortification) if attached && !legal() => {
                 events.push(Event::Unattached { object: id });
@@ -695,7 +695,7 @@ fn roles(state: &GameState, leaving: &[ObjectId]) -> Vec<Event> {
                     object: id,
                     from: Zone::Battlefield,
                     to: Zone::Graveyard(object.owner()),
-                    cause: ZoneCause::StateBased,
+                    cause: ZoneCause::StateBased(StateRule::ExtraRole),
                 });
             }
         }
@@ -909,7 +909,7 @@ mod tests {
                 Event::ZoneChanged {
                     object,
                     to: Zone::Graveyard(_),
-                    cause: ZoneCause::StateBased,
+                    cause: ZoneCause::StateBased(_),
                     ..
                 } => (game.object(*object).unwrap().card().name.clone(), true),
                 Event::Unattached { object } => {

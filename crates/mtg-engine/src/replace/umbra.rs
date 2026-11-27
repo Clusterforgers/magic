@@ -11,7 +11,7 @@ use rstest::rstest;
 use super::{Processed, process};
 use crate::choose::Choice;
 use crate::decision::DecisionKind;
-use crate::events::{DeathCause, Event, ZoneCause};
+use crate::events::{DeathCause, Event, StateRule, ZoneCause};
 use crate::fixtures::{creature, state};
 use crate::fold::apply_event;
 use crate::rules::{Rule, RuleEffect};
@@ -149,7 +149,7 @@ fn a_death_by_damage_is_replaced_the_same_way(
 #[rstest]
 #[case::sacrificed(ZoneCause::Sacrificed)]
 #[case::exiled(ZoneCause::Exiled)]
-#[case::state_based(ZoneCause::StateBased)]
+#[case::state_based(ZoneCause::StateBased(StateRule::LegendRule))]
 #[case::bounced(ZoneCause::Moved)]
 fn a_move_that_is_no_destruction_is_not_replaced(
     #[values(2, 3, 4)] seats: usize,

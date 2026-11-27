@@ -778,6 +778,7 @@ pub fn written_variants(ability: &Ability) -> Vec<String> {
     super::p164_wholes::p164_add_wholes(ability, &mut texts);
     super::fd1_wholes::fd1_add_wholes(ability, &mut texts);
     super::p162_wholes::p162_add_wholes(ability, &mut texts);
+    super::lx1_wholes::lx1_add_wholes(ability, &mut texts);
     super::r116_01_wholes::r116_01_add_wholes(ability, &mut texts);
     super::r110_02_wholes::r110_02_add_wholes(ability, &mut texts);
     super::r6702_wholes::r6702_add_wholes(ability, &mut texts);
@@ -853,6 +854,11 @@ fn written_anew(ability: &Ability) -> Vec<String> {
     }
     // A target with a morph ability and a skip of each opponent read as a twin's words; no twin has the shape left.
     super::l292_twins::l292_twin_wordings(ability, written_variants, &mut texts);
+    for text in crate::compile::linked::return_wordings(ability) {
+        if !texts.contains(&text) {
+            texts.push(text);
+        }
+    }
     // "S1. If C, instead S2." for a step and its replacement (r7c); the twin has no pair left, so this recurses once.
     if let Some(joined) = super::r7c_when::r7c_instead(ability) {
         for text in written_variants(&joined) {

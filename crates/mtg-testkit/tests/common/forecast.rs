@@ -64,7 +64,7 @@ pub fn disagreement(
             Event::ZoneChanged {
                 object,
                 from: mtg_engine::zones::Zone::Battlefield,
-                cause: mtg_engine::events::ZoneCause::StateBased,
+                cause: mtg_engine::events::ZoneCause::StateBased(_),
                 ..
             } if forecast.creatures.iter().any(|c| c.object == *object) => {
                 died.insert(*object);

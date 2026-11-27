@@ -1,0 +1,5 @@
+[
+[{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Choose":{"from":{"Each":[{"Type":"Land"},{"ControlledBy":"You"}]},"as":"exiled_card"}},{"Exile":{"what":{"Bound":"exiled_card"}}}]}},"When ~ enters, exile a land you control."]
+, [{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Choose":{"from":"Opponents","as":"opponent"}},{"Choose":{"who":{"Bound":"opponent"},"from":{"Each":[{"ControlledBy":"You"},"Other"]},"as":"exiled_card"}},{"Exile":{"what":{"Bound":"exiled_card"}}}]}},"When ~ enters, an opponent chooses a permanent you control other than this creature and exiles it."]
+, [{"Triggered":{"when":{"ZoneChange":{"what":["This"],"to":"Battlefield"}},"effects":[{"Pay":{"cost":[{"ExilePermanents":{"filter":[{"Type":"Creature"},{"ControlledBy":"You"},"Other"]}}],"unpaid":[{"Sacrifice":{"filter":["This"]}}]}}]}},"When ~ enters, sacrifice it unless you exile a creature you control other than this creature."]
+]

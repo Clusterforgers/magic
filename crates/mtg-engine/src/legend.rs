@@ -11,7 +11,7 @@ use crate::characteristics::controller_of_object;
 use crate::choose::{CardsChoice, CardsOptions, check_cards};
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
-use crate::events::{Event, ZoneCause};
+use crate::events::{Event, StateRule, ZoneCause};
 use crate::state::GameState;
 use crate::zones::Zone;
 
@@ -114,7 +114,7 @@ pub(crate) fn answer(
             object: object.id(),
             from: Zone::Battlefield,
             to: Zone::Graveyard(object.owner()),
-            cause: ZoneCause::StateBased,
+            cause: ZoneCause::StateBased(StateRule::LegendRule),
         })
         .collect();
     Ok(Outcome::Events(events))
@@ -272,7 +272,7 @@ mod tests {
                 object,
                 from: Zone::Battlefield,
                 to: Zone::Graveyard(PlayerId(0)),
-                cause: ZoneCause::StateBased,
+                cause: ZoneCause::StateBased(StateRule::LegendRule),
             })
             .collect();
         assert_eq!(events, expected);
