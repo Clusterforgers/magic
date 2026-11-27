@@ -410,6 +410,7 @@ Rules that change how the game is played rather than the objects in it (`Effect:
 - `Prohibited::PhaseOut` keeps a permanent and what is attached to it from phasing out (`prohibit.rs`).
 - `AttackOptions::required_attack` and `BlockOptions::required_blocks` declare only what the rules require, for the bots, the server's clock and the testkit's passive seats.
 - A library top played revealed (`GameState::revealed_top`) is shown to every seat; `Rule::LookAtTop` to its owner alone.
+- Exile memory outlives its source on the exiled card: a look `Rule::LookAtExiled` grants at a face-down card in exile is kept for that player (`GameState.looked_face_down`, `sight::r406_keep_looks` before each event that can end the rule) while the card stays that object, after the source leaves or changes control (Grimoire Thief rulings).
 - `GameRule::LifeTotalCantChange` (CR 119.7) stops gain, loss, lifelink and mana burn.
 - A `MayCast` from its owner's hand for the card itself (`flash`) is gathered with the hand's rules and holds while its condition does; with `additional` costs (MayFlashCost) it is used only when a sorcery-speed cast is impossible, and the cast pays the extra.
 - `CantLoseGame.life_only` spares only the loss for 0 or less life (CR 704.5a).
