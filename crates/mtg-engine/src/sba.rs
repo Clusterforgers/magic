@@ -8,7 +8,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use crate::characteristics::{characteristics, controller_of_object};
 use crate::choose::Target;
 use crate::counters::CountersChanged;
-use crate::events::{DeathCause, Event, ZoneCause};
+use crate::events::{DeathCause, Event, StateRule, ZoneCause};
 use crate::keywords;
 use crate::mulligan::shuffled;
 use crate::object::{GameObject, PermanentState};
@@ -183,7 +183,7 @@ pub(crate) fn check(state: &GameState) -> Vec<Event> {
                 object: id,
                 from: Zone::Battlefield,
                 to: Zone::Graveyard(object.owner()),
-                cause: ZoneCause::StateBased,
+                cause: ZoneCause::StateBased(StateRule::ZeroLoyalty),
             });
             continue;
         }
@@ -636,7 +636,7 @@ mod tests {
             object: walker,
             from: Zone::Battlefield,
             to: Zone::Graveyard(PlayerId(0)),
-            cause: ZoneCause::StateBased,
+            cause: ZoneCause::StateBased(StateRule::ZeroLoyalty),
         };
         assert_eq!(
             events.contains(&for_loyalty),

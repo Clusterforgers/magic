@@ -4544,7 +4544,7 @@ mod tests {
 
     use super::*;
     use crate::counters::CountersChanged;
-    use crate::events::{Event, ZoneCause};
+    use crate::events::{Event, StateRule, ZoneCause};
     use crate::fixtures::state;
     use crate::fold::apply_event;
     use crate::snapshot::snapshot;
@@ -5504,7 +5504,7 @@ mod tests {
                 object: old.id,
                 from: Zone::Battlefield,
                 to: Zone::Graveyard(PlayerId(0)),
-                cause: ZoneCause::StateBased,
+                cause: ZoneCause::StateBased(StateRule::ZeroLoyalty),
             },
         )
         .unwrap();

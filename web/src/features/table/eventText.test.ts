@@ -8,6 +8,7 @@ import type {
   HiddenEvent,
   RuleEffect,
   Snapshot,
+  StateRule,
 } from '@/protocol/generated'
 import { describeEvent, joinWords } from './eventText'
 import type { EventNames } from './eventText'
@@ -769,9 +770,32 @@ const MORE: [Event, string][] = [
     { CountersChanged: { on: { Object: { id: 1, counter: 1 } }, counter: 'loyalty', delta: -1 } },
     'Grizzly Bears loses a loyalty counter',
   ],
+  ...(
+    [
+      ['Unnamed', ''],
+      ['ZeroLoyalty', ' (0 loyalty)'],
+      ['LegendRule', ' (legend rule)'],
+      ['UnattachedAura', ' (Aura not attached)'],
+      ['ZeroDefense', ' (0 defense)'],
+      ['ExtraRole', ' (a newer Role)'],
+      [{ Died: 'ZeroToughness' }, ' (0 toughness)'],
+      [{ Died: 'LethalDamage' }, ' (lethal damage)'],
+      [{ Died: 'Deathtouch' }, ' (deathtouch)'],
+    ] satisfies [StateRule, string][]
+  ).map(([rule, why]): [Event, string] => [
+    { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: { StateBased: rule } } },
+    `Grizzly Bears is put into the graveyard${why}`,
+  ]),
   [
-    { ZoneChanged: { object: 1, from: 'Battlefield', to: { Graveyard: 0 }, cause: 'StateBased' } },
-    'Grizzly Bears is put into the graveyard',
+    {
+      ZoneChanged: {
+        object: 1,
+        from: 'Battlefield',
+        to: 'Exile',
+        cause: { StateBased: { Died: 'LethalDamage' } },
+      },
+    },
+    'Grizzly Bears is put into exile (lethal damage)',
   ],
 ]
 

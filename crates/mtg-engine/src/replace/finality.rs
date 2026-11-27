@@ -52,7 +52,7 @@ mod tests {
     use super::super::{Processed, process};
     use crate::choose::Target;
     use crate::counters::CountersChanged;
-    use crate::events::{DeathCause, Event, ZoneCause};
+    use crate::events::{DeathCause, Event, StateRule, ZoneCause};
     use crate::fixtures::{creature, state};
     use crate::fold::apply_event;
     use crate::state::GameState;
@@ -130,7 +130,7 @@ mod tests {
     #[rstest]
     #[case::destroyed(ZoneCause::Destroyed)]
     #[case::sacrificed(ZoneCause::Sacrificed)]
-    #[case::state_based(ZoneCause::StateBased)]
+    #[case::state_based(ZoneCause::StateBased(StateRule::LegendRule))]
     fn a_permanent_with_a_finality_counter_that_would_go_to_the_graveyard_is_exiled(
         #[values("Bear", "Token")] name: &str,
         #[case] cause: ZoneCause,
@@ -151,7 +151,12 @@ mod tests {
         let result = run(&table, died);
         assert_eq!(
             result,
-            [moved(&table, "Bear", Zone::Exile, ZoneCause::StateBased)]
+            [moved(
+                &table,
+                "Bear",
+                Zone::Exile,
+                ZoneCause::StateBased(StateRule::Died(DeathCause::LethalDamage))
+            )]
         );
     }
 

@@ -115,6 +115,7 @@ Seat rules for Delves fights (`docs/delves.md`), each set up in `PlayerSetup`:
 - `concede` is legal at any time (CR 104.3a): `PlayerLost { Conceded }`, then the normal elimination (the player's objects leave at once, even mid-resolution, control effects they gave end, what they still control is exiled, the game ends at one player). A half-finished cast is dropped.
 - A turn whose active player has left goes on without one (CR 800.4): `GameState::active_player` is `None` while `TurnState::active` keeps the seat. Untap, draw, attack declaration and the hand-size discard are skipped, priority starts with the next player (`active_or_next`), cleanup ends the until-end-of-turn effects, and the next turn goes to the next player; `TurnView.active_left` shows it.
 - An effect whose duration has ended stops applying at once; the later `EffectExpired` only prunes it.
+- A state-based move to the graveyard names its rule: `ZoneCause::StateBased(StateRule)` (0 loyalty, legend rule, unattached Aura, 0 defense, extra Role, or a death with its `DeathCause`, `sba_rule_tests.rs`); a stored bare `"StateBased"` reads as `StateRule::Unnamed`.
 
 ### Take-backs
 

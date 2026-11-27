@@ -188,7 +188,7 @@ fn the_state_based_actions_keep_an_aura_only_on_a_player_it_may_enchant(
             Event::ZoneChanged {
                 object,
                 to: Zone::Graveyard(owner),
-                cause: ZoneCause::StateBased,
+                cause: ZoneCause::StateBased(_),
                 ..
             } => {
                 assert_eq!(*owner, ME);

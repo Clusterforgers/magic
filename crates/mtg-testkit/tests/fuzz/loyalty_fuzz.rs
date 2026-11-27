@@ -95,7 +95,7 @@ impl Seen {
                 } if Self::is_walker(game, *object) => self.damage_to_walkers += 1,
                 Event::ZoneChanged {
                     object,
-                    cause: ZoneCause::StateBased,
+                    cause: ZoneCause::StateBased(_),
                     ..
                 } if Self::is_walker(game, *object) => self.died_of_damage_or_cost += 1,
                 Event::AttackersDeclared { attackers, .. } => {

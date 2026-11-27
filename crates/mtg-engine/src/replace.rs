@@ -49,7 +49,7 @@ use crate::copies::{BecameCopy, copiable_values, may_be_copied};
 use crate::counters::CountersChanged;
 use crate::decision::{Decision, DecisionKind};
 use crate::error::EngineError;
-use crate::events::{DeathCause, Event, ResolutionOutcome, ZoneCause};
+use crate::events::{DeathCause, Event, ResolutionOutcome, StateRule, ZoneCause};
 use crate::keywords::{self, Holder, OptionalKind};
 use crate::object::{Chosen, GameObject, ObjectKind, ObjectRef};
 use crate::resolve::{Scope, zone_kind};
@@ -3571,7 +3571,9 @@ impl Pass<'_> {
         };
         let events: Vec<Event> = match event {
             Event::ZoneChanged { cause, .. } => vec![moved(cause)],
-            Event::CreatureDied { .. } => vec![moved(ZoneCause::StateBased)],
+            Event::CreatureDied { cause, .. } => {
+                vec![moved(ZoneCause::StateBased(StateRule::Died(cause)))]
+            }
             Event::CardDiscarded { .. } => vec![moved(ZoneCause::Discarded)],
             Event::CardDrawn { .. } => vec![moved(ZoneCause::Moved)],
             Event::SpellResolved { .. } => {

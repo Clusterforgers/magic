@@ -155,7 +155,7 @@ fn when_the_germ_dies_the_equipment_stays_and_equips_another_creature(
         e,
         Event::ZoneChanged {
             from: Zone::Battlefield,
-            cause: ZoneCause::Destroyed | ZoneCause::StateBased,
+            cause: ZoneCause::Destroyed | ZoneCause::StateBased(_),
             ..
         } | Event::CreatureDied { .. }
     )));
