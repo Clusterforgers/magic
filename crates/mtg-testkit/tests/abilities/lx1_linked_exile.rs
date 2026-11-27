@@ -157,13 +157,19 @@ fn the_card_exiled_on_entering_returns_when_the_card_leaves(
     let target = driver.target_named("Wormfang")?;
     driver.cast_at("Smite", &[target])?;
     play_out(&mut driver, pick, yes, &mut Vec::new())?;
-    assert!(sorted(&driver, Zone::Exile).is_empty());
+    assert_eq!(sorted(&driver, Zone::Exile), Vec::<String>::new());
     assert_eq!(
         sorted(&driver, Zone::Battlefield),
         ["Alpha", "Beta", "Forest", "Gamma", "Island"]
     );
     let back = driver.id_of(pick)?;
-    assert_eq!(driver.state().object(back).map(|o| o.owner()), Some(pid(0)));
+    assert_eq!(
+        driver
+            .state()
+            .object(back)
+            .map(mtg_engine::object::GameObject::owner),
+        Some(pid(0))
+    );
     let state = replay(driver.engine().setup(), driver.engine().events()).unwrap();
     assert_eq!(state.state_hash(), driver.state().state_hash());
     Ok(())
@@ -183,7 +189,7 @@ fn a_drake_kept_by_no_exile_is_sacrificed_and_returns_nothing() -> Result<(), Sc
     driver.cast("Wormfang")?;
     play_out(&mut driver, "Alpha", false, &mut Vec::new())?;
     assert_eq!(sorted(&driver, Zone::Battlefield), ["Alpha"]);
-    assert!(sorted(&driver, Zone::Exile).is_empty());
+    assert_eq!(sorted(&driver, Zone::Exile), Vec::<String>::new());
     assert_eq!(sorted(&driver, Zone::Graveyard(pid(0))), ["Wormfang"]);
     Ok(())
 }
