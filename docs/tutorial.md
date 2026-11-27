@@ -182,7 +182,7 @@ The cursor is the first step that is not done, with `read` steps counted as done
 
 ## Table tour
 
-The Help menu's "Table tour" (`features/table/tour`) walks a seated player round a live table in eleven read steps (`tourSteps.ts`), and starts by itself once per browser. It uses the coach's light and card without a lesson or a gate.
+The Help menu's "Table tour" (`features/table/tour`) walks a seated player round a live table in eleven read steps (`tourSteps.ts`), and starts by itself once per browser. `TourCoach` draws it with the coach's light and card, without a lesson or a gate, and loads with the first step.
 
 - A step names its anchors in order (`at`); the first that resolves is lit, so one step serves every layout: `own.mana` falls back to `own.pod` in a cramped pod, `board:*` to `hand:*` on an empty board. Every anchor it names is drawn once at two and four seats.
 - A step with a side tab (the log, Commands) brings the tab up first and folds a rail or sheet it opened when the tour ends.
