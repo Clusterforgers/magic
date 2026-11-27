@@ -134,6 +134,56 @@ pub(crate) fn look_face_down(state: &mut GameState, seat: PlayerId, object: Obje
     state.looked_face_down = kept;
 }
 
+/// Keeps each look a rule grants now at a face-down card in exile, so the player goes on looking at that card while it
+/// stays in exile after the rule ends (Grimoire Thief leaves or changes control). Runs before each event that can end
+/// such a rule.
+pub(crate) fn r406_keep_looks(state: &mut GameState) {
+    let face_down: Vec<ObjectId> = state
+        .zone(Zone::Exile)
+        .iter()
+        .copied()
+        .filter(|id| {
+            state
+                .object(*id)
+                .is_some_and(|card| card.face_down().is_some())
+        })
+        .collect();
+    if face_down.is_empty() || !crate::rules::r406_exile_looks(state) {
+        return;
+    }
+    let players: Vec<PlayerId> = state.alive_players().collect();
+    let mut granted = Vec::new();
+    for id in face_down {
+        let Some(card) = state.object(id) else {
+            continue;
+        };
+        for viewer in &players {
+            let kept = (*viewer, card.reference());
+            if !state.looked_face_down.contains(&kept)
+                && crate::rules::grants_look(state, *viewer, card)
+            {
+                granted.push(kept);
+            }
+        }
+    }
+    if granted.is_empty() {
+        return;
+    }
+    let still = |state: &GameState, card: &ObjectRef| {
+        state
+            .object(card.id)
+            .is_some_and(|found| found.reference() == *card)
+    };
+    let mut kept: Vec<_> = state
+        .looked_face_down
+        .iter()
+        .filter(|(_, card)| still(state, card))
+        .copied()
+        .collect();
+    kept.extend(granted);
+    state.looked_face_down = kept;
+}
+
 /// Records that `seat` looked at the top `count` cards of its library by hand, and forgets what it looked at before
 /// that is no longer the object it was or no longer in the library.
 pub(crate) fn look_by_hand(state: &mut GameState, seat: PlayerId, count: u32) {

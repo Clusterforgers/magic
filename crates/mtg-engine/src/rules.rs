@@ -4255,6 +4255,11 @@ pub(crate) fn damage_cant_be_prevented(state: &GameState, dealer: ObjectId, comb
     })
 }
 
+/// Whether a rule in force lets some player look at face-down cards in exile (`sight::r406_keep_looks`).
+pub(crate) fn r406_exile_looks(state: &GameState) -> bool {
+    !state.rules().looks.is_empty()
+}
+
 /// Whether a rule in force lets `viewer` look at `card`, a face-down card in exile (CR 406.3) or a face-down permanent
 /// (CR 708.5): the one place the sight of a seat reads these rules.
 pub(crate) fn grants_look(state: &GameState, viewer: PlayerId, card: &GameObject) -> bool {
