@@ -193,7 +193,6 @@ fn a_card_chosen_from_the_hand_is_bound_and_put_onto_the_battlefield() {
     "Put target creature card from a graveyard onto the battlefield."
 )]
 #[case::to_its_owners_hand("Return target creature card from a graveyard to its owner's hand.")]
-#[case::a_single_graveyard("Exile up to two target cards from a single graveyard.")]
 #[case::a_hand("Exile target player's hand.")]
 #[case::a_counter_the_rules_give_an_effect_to(
     "Return target creature card from your graveyard to the battlefield with a shield counter on it."

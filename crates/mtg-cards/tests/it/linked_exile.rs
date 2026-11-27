@@ -1,4 +1,4 @@
-//! Goal: the two triggers of Oblivion Ring, Fiend Hunter, the Wormfang cards, Icy Prison and the other exile-and-return cards stay two linked abilities, an exile for good (a target, a choice of the controller or of an opponent, or the exile that keeps the card) and a return of what the card exiled to the battlefield, a hand or a graveyard, that read back as the printed text and are Verified, while "until ~ leaves" stays one exile, and a return trigger without such an exile before it stays with the table.
+//! Goal: the two triggers of Oblivion Ring, Fiend Hunter, the Wormfang cards, Icy Prison and the other exile-and-return cards stay two linked abilities, an exile for good (a target, a choice of the controller or of an opponent, the exile that keeps the card, a pick from a revealed hand, cards from a single graveyard, creatures from the battlefield and/or graveyards, or a target with its namesakes, beside the cast prohibition on the exiled name) and a return of what the card exiled to the battlefield, a hand or a graveyard, that read back as the printed text and are Verified, while "until ~ leaves" stays one exile, and a return trigger without such an exile before it stays with the table.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -126,6 +126,42 @@ fn exile_durations(abilities: &[Ability]) -> Vec<Option<Duration>> {
     "90646d77-9b35-4f87-94ee-255c9f150456",
     "Creature — Beast",
     "When this creature enters, exile all lands.\nWhen this creature leaves the battlefield, return the exiled cards to the battlefield tapped under their owners' control."
+)]
+#[case::tidehollow_sculler(
+    "Tidehollow Sculler",
+    "51b55057-8b14-4277-894b-4813b4f7eb39",
+    "Artifact Creature — Zombie",
+    "When this creature enters, target opponent reveals their hand and you choose a nonland card from it. Exile that card.\nWhen this creature leaves the battlefield, return the exiled card to its owner's hand."
+)]
+#[case::mesmeric_fiend(
+    "Mesmeric Fiend",
+    "fb46b300-8a39-40d2-8bc7-31b90c822e22",
+    "Creature — Nightmare Horror",
+    "When this creature enters, target opponent reveals their hand and you choose a nonland card from it. Exile that card.\nWhen this creature leaves the battlefield, return the exiled card to its owner's hand."
+)]
+#[case::gravegouger(
+    "Gravegouger",
+    "2677c0d9-1251-478e-b157-072859c593a9",
+    "Creature — Nightmare Horror",
+    "When this creature enters, exile up to two target cards from a single graveyard.\nWhen this creature leaves the battlefield, return the exiled cards to their owner's graveyard."
+)]
+#[case::detention_sphere(
+    "Detention Sphere",
+    "0a0b376d-7824-4ba5-8bc9-bc0be12800c5",
+    "Enchantment",
+    "When this enchantment enters, you may exile target nonland permanent not named Detention Sphere and all other permanents with the same name as that permanent.\nWhen this enchantment leaves the battlefield, return the exiled cards to the battlefield under their owner's control."
+)]
+#[case::angel_of_serenity(
+    "Angel of Serenity",
+    "f4ce6078-8c7b-4f68-b324-13130c63a983",
+    "Creature — Angel",
+    "Flying\nWhen this creature enters, you may exile up to three other target creatures from the battlefield and/or creature cards from graveyards.\nWhen this creature leaves the battlefield, return the exiled cards to their owners' hands."
+)]
+#[case::ashioks_erasure(
+    "Ashiok's Erasure",
+    "13cf3ef7-d88e-4cc7-a4d8-cedc671f356a",
+    "Enchantment",
+    "Flash\nWhen this enchantment enters, exile target spell.\nYour opponents can't cast spells with the same name as the exiled card.\nWhen this enchantment leaves the battlefield, return the exiled card to its owner's hand."
 )]
 #[case::wormfang_behemoth(
     "Wormfang Behemoth",
@@ -276,4 +312,86 @@ fn the_return_moves_the_exiled_cards_where_the_wording_says(#[case] words: &str,
         r#"{"Each":[{"In":"Exile"},{"ExiledWith":"This"}]}"#
     );
     verified(made, &printed);
+}
+
+#[rstest]
+#[case::namesakes_destroyed(
+    "Sorcery",
+    "Destroy target nonland permanent and all other permanents with the same name as that permanent."
+)]
+#[case::creature_namesakes_exiled(
+    "Instant",
+    "Exile target creature and all other creatures with the same name as that creature."
+)]
+#[case::up_to_three_from_one_graveyard(
+    "Sorcery",
+    "Exile up to three target cards from a single graveyard."
+)]
+#[case::two_creature_cards_from_one_graveyard(
+    "Sorcery",
+    "Exile two target creature cards from a single graveyard."
+)]
+#[case::several_from_graveyards("Sorcery", "Exile up to two target cards from graveyards.")]
+#[case::hand_pick_in_three_sentences(
+    "Sorcery",
+    "Target opponent reveals their hand. You choose a nonland card from it. Exile that card."
+)]
+#[case::hand_pick_joined(
+    "Sorcery",
+    "Target player reveals their hand and you choose a creature card from it. Exile that card."
+)]
+#[case::battlefield_and_graveyards(
+    "Sorcery",
+    "Exile up to two target creatures from the battlefield and/or creature cards from graveyards."
+)]
+#[case::players_cannot_cast_the_name(
+    "Enchantment",
+    "When this enchantment enters, exile target nonland permanent.\nPlayers can't cast spells with the same name as the exiled card."
+)]
+#[case::a_card_exiled_with_it(
+    "Enchantment",
+    "When this enchantment enters, exile target creature an opponent controls until this enchantment leaves the battlefield.\nYour opponents can't cast spells with the same name as a card exiled with this enchantment."
+)]
+fn the_linked_wordings_read_whole_and_back_as_printed(#[case] type_line: &str, #[case] text: &str) {
+    let printed = card(
+        "Test Warden",
+        "4457ed35-7c10-48c8-9776-456485fdf070",
+        type_line,
+        text,
+    );
+    let compiled = compile(&printed);
+    let made = compiled.card.as_ref().expect("the card compiles");
+    assert_eq!(made.impl_status, ImplStatus::Full, "{compiled:?}");
+    let differs = differing(made, &printed);
+    assert!(differs.is_empty(), "{differs:?}");
+    verified(made, &printed);
+}
+
+#[rstest]
+#[case::namesakes_of_another_kind(
+    "Destroy target nonland permanent and all other creatures with the same name as that permanent."
+)]
+#[case::namesakes_of_several_targets(
+    "Destroy two target creatures and all other creatures with the same name as that creature."
+)]
+#[case::a_single_library("Exile up to two target cards from a single library.")]
+#[case::one_from_a_single_graveyard("Exile target card from a single graveyard.")]
+#[case::the_battlefield_alone(
+    "Exile up to two target creatures from the battlefield and/or creatures."
+)]
+#[case::the_hand_pick_misworded(
+    "Target opponent reveals their hand and you choose a nonland card from it. Exile this card."
+)]
+fn a_near_miss_of_the_linked_wordings_stays_with_the_table(#[case] text: &str) {
+    let printed = card(
+        "Test Warden",
+        "4457ed35-7c10-48c8-9776-456485fdf070",
+        "Sorcery",
+        text,
+    );
+    let compiled = compile(&printed);
+    assert!(
+        compiled.clauses.iter().any(|clause| !clause.read),
+        "{compiled:?}"
+    );
 }

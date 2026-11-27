@@ -73,11 +73,16 @@ pub(super) fn l292_hand_reads(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
         return Some(random_reveal(who));
     }
     r.need("reveals their hand")?;
-    r.punct('.').then_some(())?;
+    // "... and you choose a nonland card from it. Exile that card." says the same steps (Tidehollow Sculler).
+    (r.punct('.') || r.word("and")).then_some(())?;
     r.need("you choose")?;
     (r.word("a") || r.word("an")).then_some(())?;
     let Selector(preds) = phrase_in(r, Form::Count, true)?;
-    r.need("from it and exile that card")?;
+    r.need("from it")?;
+    if !r.words("and exile that card") {
+        r.punct('.').then_some(())?;
+        r.need("exile that card")?;
+    }
     Some(chosen_exile(&who, preds))
 }
 

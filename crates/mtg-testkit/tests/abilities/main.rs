@@ -53,6 +53,7 @@ mod life_floor_triggers;
 mod lords;
 mod loyalty_counter_replacements;
 mod lx1_linked_exile;
+mod lx1a_linked_exile;
 mod mana_abilities;
 mod mana_cost_abilities;
 mod memory_after_leaving;
