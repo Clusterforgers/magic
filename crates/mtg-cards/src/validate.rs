@@ -1046,6 +1046,7 @@ impl<'a> Walker<'a> {
             | Pred::SharesSubtype(r)
             | Pred::SharesCreatureTypeWithEach(r)
             | Pred::ExiledWith(r)
+            | Pred::P170LeftExileWith(r)
             | Pred::R114ExiledByThem(r)
             | Pred::R114EnlistedBy(r)
             | Pred::EncodedWith(r)
@@ -3545,7 +3546,6 @@ impl<'a> Walker<'a> {
             | TriggerPattern::TakesInitiative { who }
             | TriggerPattern::Ventured { who, .. }
             | TriggerPattern::RolledToVisit { who }
-            | TriggerPattern::VisitedAttraction { who }
             | TriggerPattern::ClaimedPrize { who }
             | TriggerPattern::OpenedAttraction { who }
             | TriggerPattern::PlayerAttacked { who }
@@ -3566,7 +3566,9 @@ impl<'a> Walker<'a> {
             | TriggerPattern::PlayerCountersPut { who, .. } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
             }
-            TriggerPattern::Drew { who, what, .. } | TriggerPattern::Did { who, what, .. } => {
+            TriggerPattern::Drew { who, what, .. }
+            | TriggerPattern::Did { who, what, .. }
+            | TriggerPattern::VisitedAttraction { who, what } => {
                 self.at("who", |w| w.reference(who, Kind::Player));
                 self.at("what", |w| w.selector(what));
             }

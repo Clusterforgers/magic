@@ -298,7 +298,10 @@ enum Happened {
         mentored: ObjectId,
     },
     /// A player visited an Attraction, once for each visited.
-    VisitedAttraction { player: PlayerId },
+    VisitedAttraction {
+        player: PlayerId,
+        attraction: ObjectId,
+    },
     /// A campaign phase of a player began, its emblem the new object.
     PhaseBegan { player: PlayerId, emblem: ObjectId },
     /// A player claimed the prize of an Attraction.
@@ -1544,7 +1547,10 @@ fn about_players_and_permanents(
             found.extend(
                 visited
                     .iter()
-                    .map(|_| Happened::VisitedAttraction { player: *player }),
+                    .map(|attraction| Happened::VisitedAttraction {
+                        player: *player,
+                        attraction: *attraction,
+                    }),
             );
         }
         Event::PhaseBegan { player, emblem } => found.push(Happened::PhaseBegan {
@@ -2109,8 +2115,15 @@ fn matching_player_action(
         (TriggerPattern::RolledToVisit { who }, Happened::RolledToVisit { player, result }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], *result))
         }
+        (
+            TriggerPattern::VisitedAttraction { who, what },
+            Happened::VisitedAttraction { player, attraction },
+        ) => {
+            let visited = state.object(*attraction).map(GameObject::reference)?;
+            (by(who, player) && (what.is_empty() || scope.selects(what, visited).ok()?))
+                .then(|| counted(state, vec![Target::Player(*player)], 0))
+        }
         (TriggerPattern::OpenedAttraction { who }, Happened::OpenedAttraction { player })
-        | (TriggerPattern::VisitedAttraction { who }, Happened::VisitedAttraction { player })
         | (TriggerPattern::ClaimedPrize { who }, Happened::PrizeClaimed { player, .. }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))
         }

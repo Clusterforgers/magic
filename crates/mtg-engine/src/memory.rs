@@ -347,6 +347,27 @@ pub(crate) fn exiled_by(source: ObjectRef, events: &[Event], state: &GameState) 
     })
 }
 
+/// Whether the source remembers `object` in the slot as it was one zone change ago: the object left the zone it was
+/// remembered in with its latest zone change.
+pub(crate) fn p170_held_before(
+    state: &GameState,
+    source: ObjectRef,
+    slot: &str,
+    object: ObjectRef,
+) -> bool {
+    let Some(counter) = object.counter.checked_sub(1) else {
+        return false;
+    };
+    let before = ObjectRef {
+        id: object.id,
+        counter,
+    };
+    state
+        .memory
+        .get(&(source, slot.to_owned()))
+        .is_some_and(|held| held.iter().any(|held| *held == Held::Object(before)))
+}
+
 /// The objects the source remembers in the slot that are still the objects remembered.
 pub(crate) fn recall(state: &GameState, source: ObjectRef, slot: &str) -> Vec<ObjectRef> {
     state

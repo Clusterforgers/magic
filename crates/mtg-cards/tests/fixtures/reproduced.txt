@@ -1982,6 +1982,7 @@ Muzzio, Visionary Architect
 Mycoloth
 Myr Retriever
 Myr Superion
+Myra the Magnificent
 Myriad Landscape
 Mystic Confluence
 Mystic Gate
@@ -1991,6 +1992,7 @@ Mystic Snake
 Nadier's Nightblade
 Nagging Thoughts
 Nahiri's Binding
+Nakaya Shade
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
 Nameless Race
@@ -2552,6 +2554,7 @@ Scheming Aspirant
 Scion of Calamity
 Scion of Oona
 Scorn-Blade Berserker
+Scotty, Miracle Worker
 Scrabbling Claws
 Scrapshooter
 Screeching Scorchbeast

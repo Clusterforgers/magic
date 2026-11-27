@@ -825,9 +825,14 @@ fn clause(pattern: &TriggerPattern) -> (String, bool) {
             let (name, s) = who(by);
             (format!("{name} open{s} an Attraction"), false)
         }
-        TriggerPattern::VisitedAttraction { who: by } => {
+        TriggerPattern::VisitedAttraction { who: by, what } => {
             let (name, s) = who(by);
-            (format!("{name} visit{s} an Attraction"), false)
+            let which = if what.is_empty() {
+                "an Attraction"
+            } else {
+                "that Attraction"
+            };
+            (format!("{name} visit{s} {which}"), false)
         }
         TriggerPattern::Prize {} => ("you claim the prize of this Attraction".to_owned(), true),
         TriggerPattern::PhaseBegins {} => ("this phase begins".to_owned(), true),

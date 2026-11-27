@@ -72,7 +72,7 @@ Attractions (CR 717, `un33_attractions.rs`) are implemented once in the engine; 
 - Rolling to visit (CR 701.52) is a `DieRolled` (with `GameRule::ExtraDie`) and `RolledToVisit` naming the player's Attractions with the result lit; each visit ability triggers (CR 702.159a) and counts in `TurnTally::AttractionsVisited`. The active player rolls as the precombat main phase begins while controlling an Attraction (CR 505.5), after Saga counters and rad mill.
 - The junkyard (CR 717.6): an Attraction card that would go to a hand, library or graveyard goes to its owner's command zone face up instead (`Origin::Junkyard`, applying again to the same event). A token or copy has no lights and goes where it would.
 - The table sees the deck as a count (`PlayerView.attraction_deck`) and the lights of every visible Attraction (`ObjectView.lights`).
-- A roll triggers `VisitedAttraction` once per Attraction visited; `Effect::ClaimPrize` is `PrizeClaimed`, which triggers that Attraction's `Prize` abilities and every `ClaimedPrize`.
+- A roll triggers `VisitedAttraction` once per Attraction visited, its `what` naming the Attraction ("whenever you visit it", Myra the Magnificent); `Effect::ClaimPrize` is `PrizeClaimed`, which triggers that Attraction's `Prize` abilities and every `ClaimedPrize`.
 
 ## Stickers
 

@@ -1,7 +1,7 @@
 {
   "oracle_id": "4f0c3154-1917-4bb5-9ba2-446943a88808",
   "name": "Myra the Magnificent",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Myra the Magnificent",
@@ -22,9 +22,61 @@
           }
         },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 82, "end": 424 }
+          "Activated": {
+            "cost": [{ "Mana": "{X}" }, "Tap"],
+            "targets": [
+              {
+                "what": {
+                  "Object": [
+                    { "AnyOf": [{ "Type": "Instant" }, { "Type": "Sorcery" }] },
+                    { "Compare": { "stat": "ManaValue", "op": "Eq", "to": "X" } },
+                    { "OwnedBy": "You" },
+                    { "In": "Graveyard" }
+                  ]
+                }
+              }
+            ],
+            "effects": [
+              { "Exile": { "what": { "Target": 0 }, "as": "exiled" } },
+              {
+                "Choose": {
+                  "from": {
+                    "Each": [
+                      { "Subtype": "Attraction" },
+                      { "ControlledBy": "You" },
+                      { "Not": { "HasCounter": { "Other": "midway" } } }
+                    ]
+                  },
+                  "as": "attraction"
+                }
+              },
+              {
+                "PutCounters": { "on": { "Bound": "attraction" }, "counter": { "Other": "midway" } }
+              },
+              {
+                "DelayedTrigger": {
+                  "when": {
+                    "VisitedAttraction": {
+                      "who": "You",
+                      "what": [{ "Is": { "Bound": "attraction" } }]
+                    }
+                  },
+                  "once": false,
+                  "until": "Forever",
+                  "effects": [
+                    {
+                      "CopyCard": {
+                        "what": {
+                          "Each": [{ "In": "Exile" }, { "SameCard": { "Bound": "exiled" } }]
+                        },
+                        "as": "copy"
+                      }
+                    },
+                    { "CastFromZone": { "what": { "Bound": "copy" }, "free": true } }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

@@ -46,6 +46,7 @@ mod p163_cards;
 mod p164_cards;
 mod p165_cards;
 mod p166_cards;
+mod p170_cards;
 mod partial;
 mod partial_draft;
 mod player_words;
