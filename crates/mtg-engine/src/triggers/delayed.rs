@@ -193,7 +193,9 @@ impl Delayed {
                     && state.is_active(self.controller)
                     && turn.step() >= Step::End
             }
-            Duration::R513UntilNextEndStep => turn.number() != self.turn && turn.step() >= Step::End,
+            Duration::R513UntilNextEndStep => {
+                turn.number() != self.turn && turn.step() >= Step::End
+            }
             Duration::UntilYourNextUpkeep => {
                 turn.number() != self.turn
                     && state.is_active(self.controller)

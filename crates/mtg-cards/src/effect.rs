@@ -417,8 +417,9 @@ pub enum TokenRef {
     P158WithTriggersOf {
         /// The token without the abilities it takes.
         token: Box<TokenSpec>,
-        /// The cards whose triggered abilities it has.
-        of: Ref,
+        /// The cards whose triggered abilities it has, each reference read in turn ("the exiled cards": those the cost
+        /// exiled and the source itself).
+        of: Vec<Ref>,
     },
 }
 

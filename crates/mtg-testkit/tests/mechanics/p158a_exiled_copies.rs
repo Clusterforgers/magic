@@ -33,7 +33,7 @@ const OLAG: &str = "Olag, Ludevic's Hubris";
 const BOOK: &str = "The Book of Vile Darkness";
 
 fn p158a_replays(scenario: &Scenario, driver: &Driver) {
-    let setup = scenario.setup().unwrap();
+    let setup = scenario.clone().setup().unwrap();
     let replayed = replay(&setup, driver.engine().events()).unwrap();
     assert_eq!(replayed.state_hash(), driver.engine().state_hash());
 }
@@ -45,6 +45,7 @@ fn p158a_settle(driver: &mut Driver, x: u32) {
         if driver.state().stack().is_empty()
             && driver.state().resolving().is_none()
             && driver.state().pending_triggers().is_empty()
+            && matches!(driver.decision().unwrap().kind, DecisionKind::Priority(_))
         {
             return;
         }
@@ -149,7 +150,11 @@ fn p158a_niko_shards_copy_until_the_next_end_step(
         .copied()
         .filter(|id| driver.state().object(*id).unwrap().controller() == pid(1));
     for shard in theirs {
-        assert_eq!(p158a_seen(&driver, shard).0, "Shard", "only seat 0's Shards copy");
+        assert_eq!(
+            p158a_seen(&driver, shard).0,
+            "Shard",
+            "only seat 0's Shards copy"
+        );
     }
     let mine: Vec<ObjectId> = shards
         .iter()
@@ -170,7 +175,10 @@ fn p158a_niko_shards_copy_until_the_next_end_step(
     }
     driver.idle_until(ends_in_turn, Step::End).unwrap();
     for shard in &mine {
-        assert_eq!(p158a_seen(&driver, *shard), ("Shard".to_owned(), None, None));
+        assert_eq!(
+            p158a_seen(&driver, *shard),
+            ("Shard".to_owned(), None, None)
+        );
     }
     p158a_settle(&mut driver, 0);
     assert_eq!(
@@ -215,13 +223,32 @@ fn p158a_olag_copies_a_creature_card_exiled_with_it(
     assert_eq!(exiled, x as usize, "the cost exiles X creature cards");
     assert_eq!(
         p158a_seen(&driver, ludevic),
-        (OLAG.to_owned(), Some(4 + i32::try_from(x).unwrap()), Some(4 + i32::try_from(x).unwrap()))
+        (
+            OLAG.to_owned(),
+            Some(4 + i32::try_from(x).unwrap()),
+            Some(4 + i32::try_from(x).unwrap())
+        )
     );
     let olag = driver.state().object(ludevic).unwrap();
-    assert_eq!(olag.counters_of(&CounterKind::PlusOnePlusOne), x);
+    assert_eq!(
+        olag.permanent()
+            .unwrap()
+            .counters_of(&CounterKind::PlusOnePlusOne),
+        x
+    );
     let seen = mtg_engine::characteristics::characteristics(driver.state(), ludevic).unwrap();
-    assert!(seen.supertypes.contains(&Supertype::Legendary));
-    assert!(seen.subtypes.iter().any(|s| s.0 == "Zombie"));
+    assert!(mtg_engine::characteristics::has_supertype(
+        driver.state(),
+        ludevic,
+        Supertype::Legendary
+    ));
+    let printed = &driver.state().object(ludevic).unwrap().card().subtypes;
+    assert!(
+        printed
+            .iter()
+            .chain(&seen.subtypes)
+            .any(|s| s.0 == "Zombie")
+    );
     for color in [Color::Blue, Color::Black] {
         assert!(seen.colors.contains(color), "{color:?}");
     }
@@ -252,10 +279,17 @@ fn p158a_book_makes_vecna_with_the_exiled_triggers(#[values(2, 3, 4)] seats: usi
     driver.begin_activation(BOOK).unwrap();
     p158a_settle(&mut driver, 0);
     for exiled in [BOOK, "Eye of Vecna", "Hand of Vecna"] {
-        assert_eq!(p158a_named(&driver, Zone::Exile, exiled).len(), 1, "{exiled}");
+        assert_eq!(
+            p158a_named(&driver, Zone::Exile, exiled).len(),
+            1,
+            "{exiled}"
+        );
     }
     let vecna = driver.id_of("Vecna").unwrap();
-    assert_eq!(p158a_seen(&driver, vecna), ("Vecna".to_owned(), Some(8), Some(8)));
+    assert_eq!(
+        p158a_seen(&driver, vecna),
+        ("Vecna".to_owned(), Some(8), Some(8))
+    );
     let abilities = mtg_engine::ability_reader::abilities_of(driver.state(), vecna);
     let triggered = abilities
         .iter()

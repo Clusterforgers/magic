@@ -1241,6 +1241,26 @@ mod tests {
     }
 
     #[rstest]
+    #[case::r513_this_turns_end_step_waits((3, ME, Step::Main1), (3, ME, Step::Main2), true)]
+    #[case::r513_this_turns_end_step_ends_it((3, ME, Step::Main1), (3, ME, Step::End), false)]
+    #[case::r513_another_seats_end_step_ends_it((4, FOE, Step::Main1), (4, FOE, Step::End), false)]
+    #[case::r513_begun_in_an_end_step_lasts_through_it((3, ME, Step::End), (3, ME, Step::Cleanup), true)]
+    #[case::r513_begun_in_an_end_step_through_the_next_turn((3, ME, Step::End), (4, FOE, Step::Main2), true)]
+    #[case::r513_begun_in_an_end_step_ends_at_the_next((3, ME, Step::End), (4, FOE, Step::End), false)]
+    fn r513_until_the_next_end_step_of_any_player(
+        #[case] began: (u32, PlayerId, Step),
+        #[case] now: (u32, PlayerId, Step),
+        #[case] active: bool,
+    ) {
+        let duration = Duration::R513UntilNextEndStep;
+        let mut game = game();
+        at(&mut game, began.0, began.1, began.2);
+        let turn = began_turn(&game, &duration, ME);
+        at(&mut game, now.0, now.1, now.2);
+        assert_eq!(lasts(&game, &duration, turn, ME, None), active);
+    }
+
+    #[rstest]
     #[case::end_of_turn_in_the_turn(Duration::UntilEndOfTurn, (3, ME), true)]
     #[case::end_of_turn_in_a_later_turn(Duration::UntilEndOfTurn, (4, FOE), true)]
     #[case::forever(Duration::Forever, (3, ME), false)]

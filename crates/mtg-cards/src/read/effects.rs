@@ -671,7 +671,10 @@ fn token_text(ctx: &Ctx, token: &TokenRef) -> String {
         TokenRef::P158WithTriggersOf { token, of } => format!(
             "{} with all triggered abilities of {}",
             spec_text(ctx, token),
-            phrase::who(ctx, of)
+            of.iter()
+                .map(|named| phrase::who(ctx, named))
+                .collect::<Vec<_>>()
+                .join(" and ")
         ),
     }
 }
