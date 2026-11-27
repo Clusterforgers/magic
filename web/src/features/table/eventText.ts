@@ -347,6 +347,7 @@ function durationWords(
     UntilYourNextUpkeep: " until their controller's next upkeep",
     UntilEndOfYourNextUpkeep: " until the end of their controller's next upkeep",
     UntilYourNextEndStep: " until their controller's next end step",
+    R513UntilNextEndStep: ' until the next end step',
     UntilEndOfYourNextTurn: " until the end of their controller's next turn",
     DuringItsControllersNextTurn: " during its controller's next turn",
     UntilItsControllersNextCombatEnds: " during its controller's next combat phase",

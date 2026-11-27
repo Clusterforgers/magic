@@ -1448,6 +1448,10 @@ describe('events with more than one shape', () => {
       "Hill Giant is goaded until their controller's next end step",
     ],
     [
+      effect(objects(2), { Goaded: { by: 1 } }, 'R513UntilNextEndStep'),
+      'Hill Giant is goaded until the next end step',
+    ],
+    [
       effect(objects(2), { Goaded: { by: 1 } }, 'UntilYourNextTurn'),
       "Hill Giant is goaded until their controller's next turn",
     ],
