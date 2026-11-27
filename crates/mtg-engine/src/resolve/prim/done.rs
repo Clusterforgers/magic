@@ -1,6 +1,8 @@
-//! "If you do" after an effect that is not a "may": whether the effect took something away.
+//! "If you do" after an effect that is not a "may": whether the effect took something away (or discarded a whole hand).
 
 use mtg_cards::effect::Effect;
+use mtg_cards::refs::{Pred, Selector, ZoneKind};
+use mtg_cards::value::Amount;
 
 use super::may::performed_name;
 use crate::choose::Target;
@@ -233,7 +235,7 @@ pub(super) fn report(cx: &Cx<'_>, effect: &Effect, mut run: Run) -> Run {
         }
         let did = match kind {
             Reports::Paid => matches!(next, Next::Enter(0)),
-            _ => !events.is_empty(),
+            _ => !events.is_empty() || discards_whole_hands(effect),
         };
         let who = if did {
             vec![Target::Player(cx.scope.controller)]
@@ -243,6 +245,23 @@ pub(super) fn report(cx: &Cx<'_>, effect: &Effect, mut run: Run) -> Run {
         bound.push((performed_name(cx.resolving.position()), who));
     }
     run
+}
+
+/// Whether the effect discards whole hands ("discard your hand", "each player discards their hand"): it counts as done
+/// even when the hands are empty, since a player may discard a hand of zero cards (Snort, Jackdaw rulings).
+fn discards_whole_hands(effect: &Effect) -> bool {
+    let Effect::Discard {
+        count: Amount::Count(Selector(preds)),
+        filter: None,
+        optional: false,
+        ..
+    } = effect
+    else {
+        return false;
+    };
+    preds.len() == 2
+        && preds.contains(&Pred::In(ZoneKind::Hand))
+        && preds.iter().any(|pred| matches!(pred, Pred::OwnedBy(_)))
 }
 
 #[cfg(test)]
@@ -305,6 +324,22 @@ mod tests {
     #[case::the_card_sacrificed_itself(r#"{"Sacrifice":{"filter":["This"]}}"#, Some(true))]
     #[case::life_gained(r#"{"GainLife":{"amount":1}}"#, Some(true))]
     #[case::nothing_to_discard(r#"{"Discard":{}}"#, Some(false))]
+    #[case::an_empty_hand_discarded_whole(
+        r#"{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]}}}"#,
+        Some(true)
+    )]
+    #[case::each_empty_hand_discarded_whole(
+        r#"{"Discard":{"who":"EachPlayer","count":{"Count":[{"In":"Hand"},{"OwnedBy":"EachPlayer"}]}}}"#,
+        Some(true)
+    )]
+    #[case::no_card_of_the_kind_in_the_hand(
+        r#"{"Discard":{"count":{"Count":[{"In":"Hand"},{"OwnedBy":"You"}]},"filter":[{"Type":"Creature"}]}}"#,
+        Some(false)
+    )]
+    #[case::a_count_of_other_cards(
+        r#"{"Discard":{"count":{"Count":[{"In":"Battlefield"},{"OwnedBy":"You"}]}}}"#,
+        Some(false)
+    )]
     #[case::a_structural_effect_binds_nothing(r#"{"If":{"condition":"YourTurn","then":[]}}"#, None)]
     fn an_effect_that_takes_something_reports_whether_it_did(
         #[case] json: &str,

@@ -82,7 +82,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             let choices =
                 each_target_choices(cx, (player, *each_player), spell, ability, selector)?;
             made = u32::try_from(choices.len()).unwrap_or(u32::MAX);
-            planned.extend(choices.into_iter().map(|choices| (*spell, choices)));
+            planned.extend(choices.into_iter().map(|choices| (*spell, choices, false)));
             if made == 0 {
                 continue;
             }
@@ -100,7 +100,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             // An added copy may always get new targets.
             let new_targets = *new_targets || n >= made;
             // A permanent spell with no target announces what the original did.
-            let choices = if let Some(ability) = &target_rules {
+            let (choices, chose) = if let Some(ability) = &target_rules {
                 let original = Original {
                     id: spell.id(),
                     name: spell.card().name.as_str(),
@@ -110,15 +110,15 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                     cause: None,
                 };
                 match retarget(cx, player, &mut answers, original, new_targets)? {
-                    Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
-                    Retargeted::Done(choices) => choices,
+                    (Retargeted::Ask(decision), _) => return Ok(Run::Ask(decision)),
+                    (Retargeted::Done(choices), chose) => (choices, chose),
                 }
             } else {
                 let mut choices = spell.choices().clone();
                 choices.forget_cost_picks();
-                choices
+                (choices, false)
             };
-            planned.push((*spell, choices));
+            planned.push((*spell, choices, chose));
         }
     }
     if answers.next().is_some() {
@@ -127,7 +127,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         ));
     }
     let mut events = Vec::with_capacity(planned.len());
-    for (id, (spell, mut choices)) in (state.next_object().get()..).zip(planned) {
+    for (id, (spell, mut choices, chose_targets)) in (state.next_object().get()..).zip(planned) {
         let mut definition = spell.card().copiable();
         for modification in except {
             if !definition.except(&r116_fixed(cx, modification)?) {
@@ -142,6 +142,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             controller: player,
             definition: Arc::new(definition),
             choices,
+            chose_targets,
             left: false,
         })));
     }
@@ -244,7 +245,7 @@ fn copy_kept(
         0
     };
     for n in 0..total {
-        let choices = if let Some(ability) = ability {
+        let planned_copy = if let Some(ability) = ability {
             let original = Original {
                 id: kept.of.id,
                 name: kept.definition.name.as_str(),
@@ -260,13 +261,13 @@ fn copy_kept(
                 original,
                 new_targets || n >= copies,
             )? {
-                Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
-                Retargeted::Done(choices) => choices,
+                (Retargeted::Ask(decision), _) => return Ok(Run::Ask(decision)),
+                (Retargeted::Done(choices), chose) => (choices, chose),
             }
         } else {
-            kept.choices.clone()
+            (kept.choices.clone(), false)
         };
-        planned.push(choices);
+        planned.push(planned_copy);
     }
     if answers.next().is_some() {
         return Err(ResolveError::Invalid(
@@ -276,13 +277,14 @@ fn copy_kept(
     let definition = Arc::new(definition);
     let events = (state.next_object().get()..)
         .zip(planned)
-        .map(|(id, choices)| {
+        .map(|(id, (choices, chose_targets))| {
             Event::SpellCopied(Box::new(SpellCopy {
                 object: ObjectId(id),
                 of: kept.of,
                 controller: player,
                 definition: Arc::clone(&definition),
                 choices,
+                chose_targets,
                 left: true,
             }))
         })

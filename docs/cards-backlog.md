@@ -17,8 +17,6 @@ Open card, compiler and wording items by code area; the rules of `docs/ROADMAP.m
 - [ ] (r378d) Turn history: damage by sources of a name (Blazing Effigy); `turn_log.rs`, `turn_summary.rs`
 - [ ] (p158a) Engine pieces of pack p158 still open: copies of exiled cards for a duration or for good (Niko, Olag); a token with the triggered abilities of exiled cards (The Book of Vile Darkness)
 - [ ] (p158b) Engine pieces of pack158-other still open: "unattach an Equipment from ~" as a cost whose mana value is the divided damage (Captain America, First Avenger), a play of a card exiled with the source as a trigger (Prowl), beam me up (Scotty, Miracle Worker)
-- [ ] (p165a) Psychic Battle triggers on a copy of a spell or ability whose controller chooses new targets (the copy event records that choice); `triggers/detect.rs`, `resolve/prim/copy_spell.rs`
-- [ ] (p165b) "If they do" after "they may discard their hand" follows the rule for an empty hand instead of counting every yes (Miss Highwater); `validate.rs` (Performed after `May`), `resolve/prim/may.rs`
 - [ ] (cx8a) Valki, God of Lies // Tibalt, Cosmic Impostor: a creature card exiled from each opponent's revealed hand until Valki leaves, {X} becoming a copy of one with mana value X, and Tibalt's emblem playing the cards exiled with that Tibalt after it left (exile memory kept for the emblem, mana as any color); Myra the Magnificent: a midway counter on a chosen Attraction and a visit of that Attraction copying the exiled card while it stays; `memory.rs`, `w6b_emblems.rs`, `un33_attractions.rs`
 - [ ] (p162a) A look at face-down exiled cards that a player keeps once granted, after the source leaves or changes control (Grimoire Thief rulings): `LookAtExiled` grants it only to the current controller
 

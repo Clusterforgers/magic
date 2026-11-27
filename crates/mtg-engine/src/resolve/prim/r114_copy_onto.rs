@@ -74,7 +74,7 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
         let mut choices = sole.retargeted(seen.choices, to);
         choices.face = None;
         let definition = Arc::new(definition);
-        planned.push((named, Arc::clone(&definition), choices, left));
+        planned.push((named, Arc::clone(&definition), (choices, false), left));
         // A copy of a spell may be replaced by more copies, each with new targets (Twinning Staff).
         let added = crate::replace::r5516_copies::r5516_added_copies(state, player)?;
         for _ in 0..added {
@@ -86,12 +86,12 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
                 origin: seen.origin,
                 cause: None,
             };
-            let mut choices = match retarget(cx, player, &mut answers, original, true)? {
-                Retargeted::Ask(decision) => return Ok(Run::Ask(decision)),
-                Retargeted::Done(choices) => choices,
+            let (mut choices, chose) = match retarget(cx, player, &mut answers, original, true)? {
+                (Retargeted::Ask(decision), _) => return Ok(Run::Ask(decision)),
+                (Retargeted::Done(choices), chose) => (choices, chose),
             };
             choices.face = None;
-            planned.push((named, Arc::clone(&definition), choices, left));
+            planned.push((named, Arc::clone(&definition), (choices, chose), left));
         }
     }
     if answers.next().is_some() {
@@ -101,13 +101,14 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     }
     let events = (state.next_object().get()..)
         .zip(planned)
-        .map(|(id, (of, definition, choices, left))| {
+        .map(|(id, (of, definition, (choices, chose_targets), left))| {
             Event::SpellCopied(Box::new(SpellCopy {
                 object: ObjectId(id),
                 of,
                 controller: player,
                 definition,
                 choices,
+                chose_targets,
                 left,
             }))
         })
