@@ -2029,6 +2029,23 @@ fn player_targeted(
 }
 
 /// What `pattern` finds in the player actions of a game: a venture, a die roll, a crime and the mana spent in a turn.
+/// A visit of `attraction` by `player` against "whenever `who` visit(s) `what`" (any Attraction when `what` is empty).
+fn p170_visited(
+    who: &Ref,
+    what: &mtg_cards::refs::Selector,
+    player: PlayerId,
+    attraction: ObjectId,
+    scope: &Scope<'_>,
+) -> Option<Cause> {
+    let state = scope.state;
+    let visited = state.object(attraction).map(GameObject::reference)?;
+    let by = scope.players(who).is_ok_and(|p| p.contains(&player));
+    (by && (what.is_empty() || scope.selects(what, visited).ok()?))
+        .then(|| counted(state, vec![Target::Player(player)], 0))
+}
+
+// One arm for each player action a trigger waits for.
+#[allow(clippy::too_many_lines)]
 fn matching_player_action(
     pattern: &TriggerPattern,
     happened: &Happened,
@@ -2118,11 +2135,7 @@ fn matching_player_action(
         (
             TriggerPattern::VisitedAttraction { who, what },
             Happened::VisitedAttraction { player, attraction },
-        ) => {
-            let visited = state.object(*attraction).map(GameObject::reference)?;
-            (by(who, player) && (what.is_empty() || scope.selects(what, visited).ok()?))
-                .then(|| counted(state, vec![Target::Player(*player)], 0))
-        }
+        ) => p170_visited(who, what, *player, *attraction, scope),
         (TriggerPattern::OpenedAttraction { who }, Happened::OpenedAttraction { player })
         | (TriggerPattern::ClaimedPrize { who }, Happened::PrizeClaimed { player, .. }) => {
             by(who, player).then(|| counted(state, vec![Target::Player(*player)], 0))

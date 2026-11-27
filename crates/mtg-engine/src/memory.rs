@@ -365,7 +365,7 @@ pub(crate) fn p170_held_before(
     state
         .memory
         .get(&(source, slot.to_owned()))
-        .is_some_and(|held| held.iter().any(|held| *held == Held::Object(before)))
+        .is_some_and(|held| held.contains(&Held::Object(before)))
 }
 
 /// The objects the source remembers in the slot that are still the objects remembered.
