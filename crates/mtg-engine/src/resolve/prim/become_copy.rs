@@ -66,9 +66,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
     let state = cx.state();
     let (until_end_of_turn, until_next_turn_of) = match duration {
         Duration::UntilEndOfTurn => (true, None),
-        Duration::Forever | Duration::WhileSourceAttached | Duration::WhileTapped => (false, None),
+        Duration::Forever
+        | Duration::WhileSourceAttached
+        | Duration::WhileTapped
+        | Duration::R513UntilNextEndStep => (false, None),
         Duration::UntilYourNextTurn => (false, Some(cx.controller())),
-        Duration::R513UntilNextEndStep => (false, None),
         _ => return Err(ResolveError::Unsupported("Copy.Duration")),
     };
     // "For as long as this Equipment remains attached to it": a permanent it is no longer attached to is not changed.

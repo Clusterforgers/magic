@@ -524,8 +524,6 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                     sizeless: false,
                 })
         }
-        // Written only whole (`p158_wholes`).
-        TokenRef::P158WithTriggersOf { .. } => None,
         TokenRef::Custom(spec) | TokenRef::Sized { token: spec, .. } => {
             let sizeless = matches!(token, TokenRef::Custom(_))
                 && spec.power.is_none()
@@ -573,7 +571,10 @@ fn token_text(token: &TokenRef) -> Option<Described> {
                 sizeless,
             })
         }
-        TokenRef::CopyOf { .. } | TokenRef::R4700OfChosen { .. } => None,
+        // Vecna is written only whole (`p158_wholes`).
+        TokenRef::CopyOf { .. }
+        | TokenRef::R4700OfChosen { .. }
+        | TokenRef::P158WithTriggersOf { .. } => None,
     }
 }
 
