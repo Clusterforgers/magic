@@ -117,7 +117,6 @@ Ordered by scripts freed per piece (`mtg-cli translate-forge`, `forge-check`). `
 
 ## Compiler wordings
 
-- [ ] (lx1a) The enter exiles linked to "return the exiled card" still left by hand: a pick from a revealed hand (Tidehollow Sculler, Mesmeric Fiend), cards from a single graveyard (Gravegouger), the same-name exile (Detention Sphere), permanents and graveyard cards together (Angel of Serenity) and the name rule of Ashiok's Erasure; `compile/linked.rs`
 - [ ] (dl1) The four Delves boss deck cards on the content test's pending list play automatically: Leonin Relic-Warder (its compiled linked triggers read back as printed: a corpus card), Wayta, Trainer Prodigy (an activation's reduction counts its own targets), Ripples of Potential (proliferate binds the permanents it put counters on), Plumb the Forbidden (its draft lacks "copy this spell for each creature sacrificed this way", and the checker files that sentence under the additional cost).
 - [ ] (dl2) The 146 boss deck cards that play from Forge or read drafts reach the test corpus, so the simulator plays them: a corpus that loads approved drafts, or drafts the checker accepts.
 - [ ] (t16c) The follow-up of a destroy read and written by the compiler ("If an artifact is destroyed this way, its controller draws a card" as an `If` of `Performed`; the checker writes it, the compiler does not read it); frees Acolyte Hybrid
