@@ -1,4 +1,4 @@
-//! Goal: the two triggers of Oblivion Ring, Journey to Nowhere, Fiend Hunter and Leonin Relic-Warder stay two linked abilities, an exile for good and a return of what the card exiled, that read back as the printed text and are Verified, while "until ~ leaves" stays one exile, and a return trigger without such an exile before it stays with the table.
+//! Goal: the two triggers of Oblivion Ring, Fiend Hunter, the Wormfang cards, Icy Prison and the other exile-and-return cards stay two linked abilities, an exile for good (a target, a choice of the controller or of an opponent, or the exile that keeps the card) and a return of what the card exiled to the battlefield, a hand or a graveyard, that read back as the printed text and are Verified, while "until ~ leaves" stays one exile, and a return trigger without such an exile before it stays with the table.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeSet;
@@ -85,6 +85,54 @@ fn exile_durations(abilities: &[Ability]) -> Vec<Option<Duration>> {
     "Creature — Nightmare Beast",
     "When this creature enters, exile target land.\nWhen this creature leaves the battlefield, return the exiled card to the battlefield under its owner's control."
 )]
+#[case::wormfang_newt(
+    "Wormfang Newt",
+    "be014a79-5550-4f79-8789-b4d6783d7ec8",
+    "Creature — Nightmare Salamander Beast",
+    "When this creature enters, exile a land you control.\nWhen this creature leaves the battlefield, return the exiled card to the battlefield under its owner's control."
+)]
+#[case::wormfang_turtle(
+    "Wormfang Turtle",
+    "771f9ba4-6c65-4497-ad48-869994435556",
+    "Creature — Nightmare Turtle Beast",
+    "When this creature enters, exile a land you control.\nWhen this creature leaves the battlefield, return the exiled card to the battlefield under its owner's control."
+)]
+#[case::wormfang_crab(
+    "Wormfang Crab",
+    "4216f9ce-bdd9-4213-8c3f-e2ef4cd848f9",
+    "Creature — Nightmare Crab",
+    "This creature can't be blocked.\nWhen this creature enters, an opponent chooses a permanent you control other than this creature and exiles it.\nWhen this creature leaves the battlefield, return the exiled card to the battlefield under its owner's control."
+)]
+#[case::wormfang_drake(
+    "Wormfang Drake",
+    "d37c4e77-5023-4d13-9cfe-a43f513364bf",
+    "Creature — Nightmare Drake",
+    "Flying\nWhen this creature enters, sacrifice it unless you exile a creature you control other than this creature.\nWhen this creature leaves the battlefield, return the exiled card to the battlefield under its owner's control."
+)]
+#[case::icy_prison(
+    "Icy Prison",
+    "d4e2cc1a-4212-4284-9ebe-d3c40931de50",
+    "Enchantment",
+    "When this enchantment enters, exile target creature.\nAt the beginning of your upkeep, sacrifice this enchantment unless any player pays {3}.\nWhen this enchantment leaves the battlefield, return the exiled card to the battlefield under its owner's control."
+)]
+#[case::petradon(
+    "Petradon",
+    "ef2e711f-7362-4eed-8f91-f3d653e7f434",
+    "Creature — Nightmare Beast",
+    "When this creature enters, exile two target lands.\nWhen this creature leaves the battlefield, return the exiled cards to the battlefield under their owners' control.\n{R}: This creature gets +1/+0 until end of turn."
+)]
+#[case::realm_razer(
+    "Realm Razer",
+    "90646d77-9b35-4f87-94ee-255c9f150456",
+    "Creature — Beast",
+    "When this creature enters, exile all lands.\nWhen this creature leaves the battlefield, return the exiled cards to the battlefield tapped under their owners' control."
+)]
+#[case::wormfang_behemoth(
+    "Wormfang Behemoth",
+    "77a000de-76d9-44f8-9789-875aa9f576e7",
+    "Creature — Nightmare Fish Beast",
+    "When this creature enters, exile all cards from your hand.\nWhen this creature leaves the battlefield, return the exiled cards to their owner's hand."
+)]
 fn the_enter_and_leave_triggers_are_two_linked_abilities_that_read_back_as_the_card(
     #[case] name: &str,
     #[case] oracle_id: &str,
@@ -103,7 +151,11 @@ fn the_enter_and_leave_triggers_are_two_linked_abilities_that_read_back_as_the_c
         "{:?}",
         made.faces[0]
     );
-    assert_eq!(exile_durations(&made.faces[0].abilities), vec![None]);
+    assert!(
+        exile_durations(&made.faces[0].abilities)
+            .iter()
+            .all(Option::is_none)
+    );
     let differs = differing(made, &printed);
     assert!(differs.is_empty(), "{differs:?}");
     verified(made, &printed);
@@ -181,4 +233,47 @@ fn a_return_trigger_without_the_exile_of_the_card_stays_with_the_table(
         .collect::<Vec<_>>();
     assert_eq!(returns.len(), 1, "{compiled:?}");
     assert!(!returns[0].read, "{compiled:?} ({RETURN})");
+}
+
+#[rstest]
+#[case::battlefield(
+    "the exiled card to the battlefield under its owner's control",
+    r#"{"Battlefield":{}}"#
+)]
+#[case::battlefield_theirs(
+    "the exiled cards to the battlefield under their owners' control",
+    r#"{"Battlefield":{}}"#
+)]
+#[case::battlefield_tapped(
+    "the exiled cards to the battlefield tapped under their owners' control",
+    r#"{"Battlefield":{"tapped":true}}"#
+)]
+#[case::hand("the exiled card to its owner's hand", r#""Hand""#)]
+#[case::hands("the exiled cards to their owners' hands", r#""Hand""#)]
+#[case::graveyard("the exiled cards to their owner's graveyard", r#""Graveyard""#)]
+fn the_return_moves_the_exiled_cards_where_the_wording_says(#[case] words: &str, #[case] to: &str) {
+    let text = format!(
+        "When this creature enters, exile target creature.\nWhen this creature leaves the battlefield, return {words}."
+    );
+    let printed = card(
+        "Test Warden",
+        "4457ed35-7c10-48c8-9776-456485fdf070",
+        "Creature — Spirit",
+        &text,
+    );
+    let compiled = compile(&printed);
+    let made = compiled.card.as_ref().expect("the card compiles");
+    assert_eq!(made.impl_status, ImplStatus::Full, "{compiled:?}");
+    let Effect::Move {
+        what, to: moved, ..
+    } = &made.faces[0].abilities[1].effects()[0]
+    else {
+        panic!("{:?}", made.faces[0].abilities[1]);
+    };
+    assert_eq!(*moved, serde_json::from_str(to).unwrap());
+    assert_eq!(
+        serde_json::to_string(what).unwrap(),
+        r#"{"Each":[{"In":"Exile"},{"ExiledWith":"This"}]}"#
+    );
+    verified(made, &printed);
 }

@@ -149,6 +149,9 @@ pub fn unless(r: &mut Reader<'_>, unpaid: &[Effect]) -> Option<(Ref, Cost)> {
         countered.then(|| Ref::ControllerOf(Box::new(Ref::Target(0))))?
     } else if r.that_player && r.words("that player") {
         Ref::Triggering
+    } else if r.words("any player") {
+        // The players are asked in turn order until one pays (`Effect::Pay`).
+        Ref::EachPlayer
     } else if r.words("you") {
         // A player who pays so that a counter or a choice they made does not happen is not one the table reads.
         let nonsense = unpaid
