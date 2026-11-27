@@ -54,9 +54,13 @@ const PROWL: &str = "Prowl, Stoic Strategist // Prowl, Pursuit Vehicle";
 
 #[rstest]
 #[case::scotty_any_turn("Scotty, Miracle Worker", r#""YourTurn", "#, "")]
-#[case::scotty_returns_himself("Scotty, Miracle Worker", r#", { "Not": { "Is": "Granter" } }"#, "")]
+#[case::scotty_returns_himself(
+    "Scotty, Miracle Worker",
+    r#"{ "Not": { "Is": "Granter" } }"#,
+    r#""Other""#
+)]
 #[case::scotty_from_exile("Scotty, Miracle Worker", r#""In": "Graveyard""#, r#""In": "Exile""#)]
-#[case::prowl_untapped(PROWL, r#""Other", "Tapped","#, r#""Other","#)]
+#[case::prowl_untapped(PROWL, r#""Tapped","#, "")]
 #[case::prowl_you_play(PROWL, r#""who": { "OwnerOf": { "Bound": "exiled" } },"#, "")]
 #[case::prowl_any_spell(
     PROWL,
@@ -71,8 +75,8 @@ const PROWL: &str = "Prowl, Stoic Strategist // Prowl, Pursuit Vehicle";
 )]
 #[case::myra_any_attraction(
     "Myra the Magnificent",
-    r#", "what": [{ "Is": { "Bound": "attraction" } }]"#,
-    ""
+    r#""what": [{ "Is": { "Bound": "attraction" } }]"#,
+    r#""what": []"#
 )]
 #[case::myra_once("Myra the Magnificent", r#""once": false,"#, "")]
 fn p170_a_near_miss_does_not_read_back(#[case] name: &str, #[case] from: &str, #[case] to: &str) {
