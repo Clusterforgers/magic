@@ -266,8 +266,20 @@ pub(crate) fn ability_word_len(line: &str) -> Option<usize> {
             || r6e_descend(word)
             || r286_numbered_name(word))
         && !word.starts_with("Choose");
+    let is_word = is_word || lc4_ellipsis_word(word);
     let end = at + DASH.len();
     (is_word && end < line.len()).then_some(end)
+}
+
+/// Whether the text is an ability word split by an ellipsis across two abilities ("Throw ..." and "... Catch").
+fn lc4_ellipsis_word(word: &str) -> bool {
+    let rest = word
+        .strip_suffix(" ...")
+        .or_else(|| word.strip_prefix("... "))
+        .unwrap_or_default();
+    rest.chars().next().is_some_and(char::is_uppercase)
+        && rest.chars().count() <= 36
+        && w20b_ability_letters(rest)
 }
 
 /// A saga chapter: roman numerals, then a dash.
@@ -641,6 +653,22 @@ mod tests {
     #[case::a_word_without_a_stop("I AM. TALKING! \u{2014} Whenever ~ attacks, draw a card.", None)]
     #[case::a_sentence_before_the_dash("Flying. Haste \u{2014} draw a card.", None)]
     fn r372_a_flavour_name_of_stopped_words(#[case] line: &str, #[case] expected: Option<usize>) {
+        assert_eq!(ability_word_len(line), expected);
+    }
+
+    #[rstest]
+    #[case::opening_half("Throw ... \u{2014} {3}: Draw a card.", Some(14))]
+    #[case::closing_half(
+        "... Catch \u{2014} At the beginning of combat, draw a card.",
+        Some(14)
+    )]
+    #[case::a_lower_case_word("... catch \u{2014} draw a card.", None)]
+    #[case::a_bare_ellipsis("... \u{2014} draw a card.", None)]
+    #[case::dots_inside("Throw...Catch \u{2014} draw a card.", None)]
+    fn lc4_an_ability_word_split_by_an_ellipsis(
+        #[case] line: &str,
+        #[case] expected: Option<usize>,
+    ) {
         assert_eq!(ability_word_len(line), expected);
     }
 }

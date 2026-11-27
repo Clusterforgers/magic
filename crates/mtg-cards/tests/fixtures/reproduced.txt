@@ -39,6 +39,7 @@ Aethersnatch
 Agate Instigator
 Agate-Blade Assassin
 Agatha's Soul Cauldron
+Agent Maria Hill
 Aggravated Assault
 Agrus Kos, Eternal Soldier
 Ainok Bond-Kin
@@ -423,6 +424,7 @@ Canoptek Tomb Sentinel
 Canopy Vista
 Caprichrome
 Capsize
+Captain America, First Avenger
 Captain America, Unbowed
 Captain Benjamin Sisko
 Captain Marvel, Apex Avenger
@@ -1633,6 +1635,7 @@ Knight of Dusk's Shadow
 Knight of the Last Breath
 Knights of the Black Rose
 Knowledge Is Power
+Knowledge Vault
 Kodama of the East Tree
 Kodama of the West Tree
 Kodama's Might
@@ -1991,6 +1994,7 @@ Mystic Snake
 Nadier's Nightblade
 Nagging Thoughts
 Nahiri's Binding
+Nakaya Shade
 Naktamun Lorespinner // Wheel of Fortune
 Nameless Inversion
 Nameless Race
@@ -2919,6 +2923,7 @@ Swift Kick
 Swiftfoot Boots
 Swiftwater Cliffs
 Swinging Ship
+Swirl the Mists
 Switcheroo
 Sword of Body and Mind
 Sword of Vengeance

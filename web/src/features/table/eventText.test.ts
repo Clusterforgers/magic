@@ -1339,6 +1339,18 @@ describe('events with more than one shape', () => {
     [
       effect(
         objects(2),
+        { ChangeText: { from: { Color: 'Black' }, to: { Subtype: 'Island' } } },
+        'UntilEndOfTurn',
+      ),
+      'Hill Giant has "black" changed to "Island" in its text until end of turn',
+    ],
+    [
+      effect(objects(2), { ChangeText: { from: 'Lc4EveryColor', to: { Color: 'Green' } } }, 'UntilEndOfTurn'),
+      'Hill Giant has every color word changed to "green" in its text until end of turn',
+    ],
+    [
+      effect(
+        objects(2),
         {
           R114StickerAbilities: [{ at: { player: 0, sheet: 0, sticker: 1 }, body: { Keyword: 'Flying' } }],
         },

@@ -2659,6 +2659,7 @@ impl<'a> Scope<'a> {
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::Lc4PaidWith(_)
             | Pred::SingleTarget
             | Pred::R113CopyOf(_)
             | Pred::GreatestAmong { .. }

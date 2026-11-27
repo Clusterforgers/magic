@@ -20,6 +20,7 @@ mod exile_hand;
 mod exile_top;
 mod exiled;
 pub(crate) mod forage;
+mod lc4_unattach;
 mod life;
 pub(crate) mod mill;
 pub(crate) mod r109_opponent_life;
@@ -109,6 +110,8 @@ pub(crate) enum Kind {
     ExiledToGraveyard,
     /// A permanent the payer controls or a card they own in exile is chosen, and stays as it is (`CostItem::R6012ChooseOrExiled`).
     R6012Choose,
+    /// A permanent the filter names is unattached from what it is attached to (`CostItem::Lc4UnattachFrom`).
+    Lc4Unattach,
 }
 
 /// A part of the cost that takes objects the player picks.
@@ -476,6 +479,7 @@ fn read_more(item: &CostItem) -> Result<Option<(Part, bool)>, &'static str> {
         CostItem::R6012ChooseOrExiled { filter, exiled } => {
             r6012_choose::r6012_pick(filter, exiled)
         }
+        CostItem::Lc4UnattachFrom { filter } => lc4_unattach::lc4_pick(filter),
         CostItem::ExiledToGraveyard { filter, count } => {
             pick(Kind::ExiledToGraveyard, filter, count, item)?
         }
@@ -836,6 +840,7 @@ impl Part {
                 Kind::Blight(_) => "Cost.Blight",
                 Kind::Behold(_) => "Cost.Behold",
                 Kind::R6012Choose => "Cost.R6012ChooseOrExiled",
+                Kind::Lc4Unattach => "Cost.Lc4UnattachFrom",
                 Kind::ToLibrary(..) => "Cost.ToLibrary",
                 Kind::R113BottomAny => "Cost.R113BottomFromOneGraveyard",
                 Kind::Forage => "Cost.Forage",
@@ -1126,6 +1131,7 @@ pub(crate) fn photographed(
                 | Kind::Reveal
                 | Kind::Behold(true)
                 | Kind::R6012Choose
+                | Kind::Lc4Unattach
         ) {
             shots.extend(picked.iter().filter_map(|id| snapshot(state, *id)));
         }
@@ -1214,6 +1220,7 @@ impl Kind {
             | Kind::Counter
             | Kind::Blight(_)
             | Kind::Behold(false)
+            | Kind::Lc4Unattach
             | Kind::R6012Choose => false,
             Kind::Sacrifice
             | Kind::Discard
@@ -1294,6 +1301,7 @@ impl Pick {
             Kind::ExileAny | Kind::R113BottomAny => exile::candidates_any(payer, &self.filter),
             Kind::Behold(_) => behold::candidates(payer, &self.filter),
             Kind::R6012Choose => r6012_choose::candidates(payer, &self.filter),
+            Kind::Lc4Unattach => lc4_unattach::candidates(payer, &self.filter),
             Kind::ToLibrary(from, _) => to_library::candidates(payer, from, &self.filter),
             Kind::Forage => forage::candidates(payer),
             Kind::Craft => exile::craft_candidates(payer, &self.filter),
@@ -1546,6 +1554,7 @@ impl Pick {
             Kind::Blight(count) => blight::text(count),
             Kind::Behold(exile) => behold::text(&self.filter, self.count, exile),
             Kind::R6012Choose => r6012_choose::text(&self.filter),
+            Kind::Lc4Unattach => lc4_unattach::text(&self.filter),
             Kind::ToLibrary(from, bottom) => {
                 to_library::text(from, &self.filter, self.count, bottom)
             }
@@ -1603,6 +1612,7 @@ impl Pick {
             Kind::Behold(_) => behold::event(state, player, object),
             Kind::Forage => forage::event(state, object),
             Kind::ExiledToGraveyard => exiled::event(state, object),
+            Kind::Lc4Unattach => Some(crate::events::Event::Unattached { object }),
             Kind::Blight(_) | Kind::ToLibrary(..) | Kind::R113BottomAny | Kind::R6012Choose => None,
         }
     }

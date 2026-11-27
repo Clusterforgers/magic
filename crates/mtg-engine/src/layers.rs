@@ -871,7 +871,8 @@ fn layer_of(wanted: &Wanted, defining: bool) -> Option<Layer> {
     Some(match wanted {
         Wanted::SetController(_) => Layer::Control,
         Wanted::ChangeTextChosen { .. }
-        | Wanted::ChangeTextChosenTo { .. }
+                | Wanted::Lc4ChosenColorWords
+| Wanted::ChangeTextChosenTo { .. }
         | Wanted::R612ExchangeTextBoxes
         | Wanted::SetName(_)
         | Wanted::R2013AllCreatureNames

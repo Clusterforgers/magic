@@ -5,4 +5,4 @@ import type { Subtype } from "./Subtype";
 /**
  * One word a text change replaces or writes.
  */
-export type TextWord = { "Color": Color } | { "Subtype": Subtype };
+export type TextWord = { "Color": Color } | { "Subtype": Subtype } | "Lc4EveryColor";

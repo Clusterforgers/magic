@@ -1,0 +1,22 @@
+{
+  "oracle_id": "eed742c3-006f-475c-aa62-41f971d328cb",
+  "name": "Swirl the Mists",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Swirl the Mists",
+      "oracle_fingerprint": "6a12908b7f4e203c0f581a5814ff14b7",
+      "abilities": [
+        {
+          "Replacement": { "when": { "Enters": { "what": ["This"] } }, "by": { "Choose": "Color" } }
+        },
+        {
+          "Static": {
+            "affected": { "Each": [{ "AnyOf": ["Spell", { "In": "Battlefield" }] }] },
+            "mods": ["Lc4ChosenColorWords"]
+          }
+        }
+      ]
+    }
+  ]
+}

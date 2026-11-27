@@ -307,6 +307,10 @@ fn entered(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, ResolveEr
         (Wanted::AddChosenColor, Some(Chosen::Color(color))) => {
             Ok(Modification::AddColors(std::iter::once(*color).collect()))
         }
+        (Wanted::Lc4ChosenColorWords, Some(Chosen::Color(color))) => Ok(Modification::ChangeText {
+            from: crate::text_change::TextWord::Lc4EveryColor,
+            to: crate::text_change::TextWord::Color(*color),
+        }),
         (Wanted::R6001AddChosenAbilities, Some(Chosen::Words(words))) => {
             Ok(Modification::AddKeywords(
                 words
@@ -587,6 +591,7 @@ pub(crate) fn lower(scope: &Scope<'_>, wanted: &Wanted) -> Result<Modification, 
         | Wanted::SetChosenColor
         | Wanted::AddChosenColor
         | Wanted::R6001AddChosenAbilities
+        | Wanted::Lc4ChosenColorWords
         | Wanted::R121SetChosenName => entered(scope, wanted)?,
         // The color its owner chose for it as a commander, read by its id in any zone; none was chosen for another card.
         Wanted::SetCommanderColor => {

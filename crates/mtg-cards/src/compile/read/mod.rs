@@ -166,6 +166,7 @@ mod l31d_x_color;
 mod l32a_paid;
 mod land_types;
 mod lands;
+mod lc4_wholes;
 mod leave_combat;
 mod levels;
 mod library;
@@ -949,6 +950,9 @@ fn clause_read(text: &str, kind: ClauseKind, x_free: bool, own: &Own) -> Option<
         return Some(found);
     }
     if let Some(found) = p165_wholes::p165_whole_read(text) {
+        return Some(found);
+    }
+    if let Some(found) = lc4_wholes::lc4_whole_read(text) {
         return Some(found);
     }
     if let Some(found) = lx1_wholes::lx1_whole_read(text) {

@@ -95,6 +95,7 @@ const fn unpaid(item: &CostItem) -> &'static str {
         CostItem::Blight(_) => "Cost.Blight",
         CostItem::Behold { .. } => "Cost.Behold",
         CostItem::R6012ChooseOrExiled { .. } => "Cost.R6012ChooseOrExiled",
+        CostItem::Lc4UnattachFrom { .. } => "Cost.Lc4UnattachFrom",
         CostItem::ToLibrary { .. } => "Cost.ToLibrary",
         CostItem::Forage => "Cost.Forage",
         CostItem::Craft { .. } => "Cost.Craft",

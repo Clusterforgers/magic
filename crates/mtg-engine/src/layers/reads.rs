@@ -133,6 +133,7 @@ pub(crate) fn writes_of_wanted(wanted: &Wanted) -> Traits {
         | Wanted::AddLandTypeChosen(_)
         | Wanted::ChangeTextChosen { .. }
         | Wanted::ChangeTextChosenTo { .. }
+        | Wanted::Lc4ChosenColorWords
         | Wanted::R612ExchangeTextBoxes => Traits::SUBTYPES
             .or(Traits::KEYWORDS)
             .or(Traits::RULES)
@@ -254,6 +255,7 @@ pub(crate) fn reads_of_modification(wanted: &Wanted) -> Traits {
         | Wanted::SetChosenColor
         | Wanted::AddChosenColor
         | Wanted::R6001AddChosenAbilities
+        | Wanted::Lc4ChosenColorWords
         | Wanted::SetCommanderColor
         | Wanted::AddAllCreatureTypes
         | Wanted::SetColors(_)
@@ -467,6 +469,7 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::BandedWith(who)
         | Pred::Blocks(who)
         | Pred::TargetedBy(who)
+        | Pred::Lc4PaidWith(who)
         | Pred::R113CopyOf(who)
         | Pred::R114CouldTarget(who)
         | Pred::TargetsPlayer(who)

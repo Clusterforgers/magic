@@ -1,0 +1,45 @@
+{
+  "oracle_id": "7d038055-035d-4698-b6b6-e2859bf2f1d1",
+  "name": "Captain America, First Avenger",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Captain America, First Avenger",
+      "oracle_fingerprint": "6eb842b52e234125d6586e79a1517cbf",
+      "abilities": [
+        {
+          "Activated": {
+            "cost": [
+              { "Mana": "{3}" },
+              {
+                "Lc4UnattachFrom": {
+                  "filter": [{ "Subtype": "Equipment" }, { "AttachedTo": "This" }]
+                }
+              }
+            ],
+            "targets": [
+              {
+                "what": "AnyTarget",
+                "bounds": { "min": 1, "max": 3 },
+                "divide": { "Stat": { "of": "Paid", "stat": "ManaValue" } }
+              }
+            ],
+            "effects": [{ "DealDamage": { "to": { "Target": 0 }, "amount": "Divided" } }]
+          }
+        },
+        {
+          "Triggered": {
+            "when": { "StepBegins": { "step": "BeginCombat", "whose": "You" } },
+            "targets": [
+              {
+                "what": { "Object": [{ "Subtype": "Equipment" }, { "ControlledBy": "You" }] },
+                "bounds": { "min": 0, "max": 1 }
+              }
+            ],
+            "effects": [{ "Attach": { "what": { "Target": 0 }, "to": "This" } }]
+          }
+        }
+      ]
+    }
+  ]
+}
