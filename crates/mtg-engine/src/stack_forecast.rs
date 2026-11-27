@@ -416,7 +416,7 @@ fn fate(events: &[Event], id: ObjectId) -> Option<Fate> {
             cause,
         } if *object == id => match (cause, to) {
             (ZoneCause::Destroyed | ZoneCause::Buried, _) => Some(Fate::Destroyed),
-            (ZoneCause::StateBased, _) => Some(Fate::Dies),
+            (ZoneCause::StateBased(_), _) => Some(Fate::Dies),
             (ZoneCause::Sacrificed, _) => Some(Fate::Sacrificed),
             (ZoneCause::Countered, _) => Some(Fate::Countered),
             (_, Zone::Exile) => Some(Fate::Exiled),

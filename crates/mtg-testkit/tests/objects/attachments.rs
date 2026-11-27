@@ -403,7 +403,7 @@ fn the_state_based_actions_of_attachments_keep_each_one_where_it_may_be(
             matches!(
                 event,
                 Event::ZoneChanged {
-                    cause: ZoneCause::StateBased,
+                    cause: ZoneCause::StateBased(_),
                     from: Zone::Battlefield,
                     ..
                 }
@@ -476,7 +476,7 @@ fn an_aura_whose_host_left_goes_to_the_graveyard_in_the_pass_after_the_host_does
             matches!(
                 e,
                 Event::ZoneChanged {
-                    cause: ZoneCause::StateBased,
+                    cause: ZoneCause::StateBased(_),
                     ..
                 }
             )

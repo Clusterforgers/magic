@@ -13,7 +13,7 @@ use super::{Processed, process};
 use crate::choose::{Choice, ChoiceOption, Target};
 use crate::combat::DamageTarget;
 use crate::decision::DecisionKind;
-use crate::events::{DeathCause, Event, ZoneCause};
+use crate::events::{DeathCause, Event, StateRule, ZoneCause};
 use crate::fixtures::{creature, state};
 use crate::fold::apply_event;
 use crate::rules::{DamageShield, Rule, RuleEffect};
@@ -796,7 +796,7 @@ fn a_destruction_is_replaced_by_regeneration_and_uses_the_shield_up() {
 #[case::buried(ZoneCause::Buried, false)]
 #[case::sacrificed(ZoneCause::Sacrificed, false)]
 #[case::exiled(ZoneCause::Exiled, false)]
-#[case::state_based(ZoneCause::StateBased, false)]
+#[case::state_based(ZoneCause::StateBased(StateRule::LegendRule), false)]
 fn a_move_is_regenerated_when_it_is_a_destruction_that_can_be_regenerated(
     #[values(2, 3, 4)] seats: usize,
     #[case] cause: ZoneCause,

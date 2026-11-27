@@ -230,6 +230,8 @@ mod rule_options;
 pub mod rules;
 mod same_name;
 pub mod satchel;
+#[cfg(test)]
+mod sba_rule_tests;
 pub mod schemes;
 pub mod setup;
 pub mod sight;

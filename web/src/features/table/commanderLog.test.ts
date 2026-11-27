@@ -93,7 +93,14 @@ describe('the lines of the return choice', () => {
       'Atraxa is destroyed and returns to the command zone',
     ],
     [
-      { ZoneChanged: { object: ATRAXA, from: 'Battlefield', to: { Command: 0 }, cause: 'StateBased' } },
+      {
+        ZoneChanged: {
+          object: ATRAXA,
+          from: 'Battlefield',
+          to: { Command: 0 },
+          cause: { StateBased: 'Unnamed' },
+        },
+      },
       'Atraxa returns to the command zone',
     ],
     [{ CommanderStayed: { object: ATRAXA } }, 'Atraxa stays out of the command zone'],

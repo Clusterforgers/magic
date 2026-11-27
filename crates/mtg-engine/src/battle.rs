@@ -13,7 +13,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 
 use crate::choose::Target;
 use crate::counters::CountersChanged;
-use crate::events::{Event, ZoneCause};
+use crate::events::{Event, StateRule, ZoneCause};
 use crate::object::{Chosen, GameObject, ObjectRef};
 use crate::state::GameState;
 use crate::zones::Zone;
@@ -89,7 +89,7 @@ pub(crate) fn state_based(state: &GameState, gone: &[ObjectId]) -> Vec<Event> {
             object: object.id(),
             from: Zone::Battlefield,
             to: Zone::Graveyard(object.owner()),
-            cause: ZoneCause::StateBased,
+            cause: ZoneCause::StateBased(StateRule::ZeroDefense),
         })
         .collect()
 }

@@ -15,6 +15,7 @@ Wire protocol of `mtg-protocol`: messages, per-seat state projection, hidden-inf
 - A spectator is a viewer that is no seat: `spectator_viewer(state)` is the number of seats, which names no seat, and any viewer id past the last seat gets the same view. `TableView.spectator` is true in every table it gets. It sees every public zone, object and event a seat sees and no seat's hidden cards (no hand unless the table has open hands, a teammate's hand neither, since a spectator is on no team; no library, only counts).
 - `project_events(before, events, viewers, from_seq)` returns one `EventBatch` per viewer:
   - `events`: `EventView::Public | Hidden`, one per log event, for the log and animations. A client never folds them.
+  - A state-based move to the graveyard carries its `StateRule`; the log line names it ("Crystalline Resonance is put into the graveyard (0 loyalty)").
   - `table`: the whole `TableView` after the last event. It replaces the client's copy.
   - `objects`: every visible object that is new to the viewer or differs from how they saw it before.
   - `gone`: ids the viewer could see before the batch and cannot see after it.

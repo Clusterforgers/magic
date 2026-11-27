@@ -408,6 +408,7 @@ export type { SpentFrom } from "./SpentFrom";
 export type { StackStops } from "./StackStops";
 export type { Stage } from "./Stage";
 export type { StandingView } from "./StandingView";
+export type { StateRule } from "./StateRule";
 export type { StateView } from "./StateView";
 export type { Status } from "./Status";
 export type { Step } from "./Step";

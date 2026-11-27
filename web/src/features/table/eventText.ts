@@ -23,6 +23,7 @@ import type {
   ObjectRef,
   PlayerId,
   RuleEffect,
+  StateRule,
   Target,
   TextWord,
   Zone,
@@ -791,6 +792,7 @@ const BECAUSE: Record<
     | { Manifested: unknown }
     | { Cloaked: unknown }
     | { PutFaceDown: unknown }
+    | { StateBased: unknown }
   >,
   string
 > = {
@@ -801,7 +803,6 @@ const BECAUSE: Record<
   Exiled: 'is exiled',
   Countered: 'is countered',
   Milled: 'is milled',
-  StateBased: 'is put into the graveyard',
   Discarded: 'is discarded',
   Foretold: 'is foretold',
   Plotted: 'is plotted',
@@ -809,8 +810,29 @@ const BECAUSE: Record<
   LandPlayed: 'is played and put into the graveyard',
 }
 
-/** The words for a cause that carries a player or a permanent. */
-function objectCause(cause: Extract<ZoneCause, object>): string {
+/** The state-based action that put a permanent into the graveyard, in parentheses (CR 704.5). */
+const STATE_RULE: Record<Exclude<StateRule, { Died: unknown }>, string> = {
+  ZeroLoyalty: ' (0 loyalty)',
+  LegendRule: ' (legend rule)',
+  UnattachedAura: ' (Aura not attached)',
+  ZeroDefense: ' (0 defense)',
+  ExtraRole: ' (a newer Role)',
+  Unnamed: '',
+}
+
+const STATE_DEATH: Record<DeathCause, string> = {
+  LethalDamage: ' (lethal damage)',
+  Deathtouch: ' (deathtouch)',
+  ZeroToughness: ' (0 toughness)',
+}
+
+/** The words for a cause that carries a player, a permanent or a state-based rule. */
+function objectCause(cause: Extract<ZoneCause, object>, to: Zone, n: EventNames): string {
+  if ('StateBased' in cause) {
+    const rule = cause.StateBased
+    const where = typeof to !== 'string' && 'Graveyard' in to ? 'the graveyard' : zoneWord(to, n)
+    return `is put into ${where}${typeof rule === 'object' ? STATE_DEATH[rule.Died] : STATE_RULE[rule]}`
+  }
   if ('Hideaway' in cause || 'Held' in cause || 'Sealed' in cause) return 'is exiled face down'
   if ('Encoded' in cause) return 'is exiled encoded on a creature'
   if ('Haunting' in cause) return 'is exiled haunting a creature'
@@ -996,16 +1018,13 @@ function describePipeline(event: PipelineEvent, n: EventNames, context?: EventCo
     }
     if (typeof to !== 'string' && 'Command' in to) {
       // A commander that goes home: the answer to the return question, or a move the question replaced.
-      const how =
-        cause === 'Moved' || cause === 'StateBased' || typeof cause === 'object'
-          ? ''
-          : `${BECAUSE[cause]} and `
+      const how = cause === 'Moved' || typeof cause === 'object' ? '' : `${BECAUSE[cause]} and `
       return line(`${n.card(object)} ${how}returns to the command zone`)
     }
     return line(
       cause === 'Moved'
         ? `${n.card(object)} moves to ${zoneWord(to, n)}`
-        : `${n.card(object)} ${typeof cause === 'object' ? objectCause(cause) : BECAUSE[cause]}`,
+        : `${n.card(object)} ${typeof cause === 'object' ? objectCause(cause, to, n) : BECAUSE[cause]}`,
     )
   }
   if ('LifeGained' in event)

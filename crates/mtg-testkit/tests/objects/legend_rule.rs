@@ -14,7 +14,7 @@ use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_engine::choose::{CardsChoice, Target};
 use mtg_engine::decision::{Answer, DecisionKind};
 use mtg_engine::error::IllegalAnswer;
-use mtg_engine::events::ZoneCause;
+use mtg_engine::events::{StateRule, ZoneCause};
 use mtg_engine::zones::Zone;
 use mtg_engine::{Engine, EngineError, Event, characteristics, replay};
 use mtg_testkit::attach_cards::{legendary_bear, legendary_ogre};
@@ -102,7 +102,7 @@ fn the_controller_of_two_to_four_copies_chooses_one_and_the_rest_go_to_the_grave
                 object,
                 from: Zone::Battlefield,
                 to: Zone::Graveyard(owner),
-                cause: ZoneCause::StateBased,
+                cause: ZoneCause::StateBased(StateRule::LegendRule),
             } if *owner == pid(0) => Some(*object),
             _ => None,
         })
@@ -209,7 +209,7 @@ fn a_legend_is_put_into_the_graveyard_not_destroyed_so_indestructible_does_not_s
     assert!(events.iter().any(|event| matches!(
         event,
         Event::ZoneChanged {
-            cause: ZoneCause::StateBased,
+            cause: ZoneCause::StateBased(StateRule::LegendRule),
             to: Zone::Graveyard(_),
             ..
         }
