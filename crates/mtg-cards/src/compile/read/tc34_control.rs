@@ -34,6 +34,7 @@ pub(super) fn tc34_take_spell(r: &mut Reader<'_>) -> Option<Vec<Effect>> {
             what,
             to: NewTargets::Choose,
             onto: None,
+            r115_who: None,
         },
     ])
 }

@@ -227,6 +227,17 @@ pub enum Destination {
         /// Counters it enters with only when it matches the selector, counted as it moves.
         #[serde(default, skip_serializing_if = "Vec::is_empty")]
         r122_typed_counters: Vec<(Selector, CounterKind, Amount)>,
+        /// Enters under this player's control; its owner's when absent ("return this card to the battlefield under your
+        /// control as a non-Aura enchantment").
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        under: Option<Ref>,
+    },
+    /// The battlefield under its owner's control, tapped, with the number and kind of counters an earlier
+    /// `Effect::R122NoteCounters` noted under the name ("return that exiled card to the battlefield under its owner's
+    /// control tapped with the noted number and kind of counters on it", CR 122.6).
+    R122BattlefieldNoted {
+        /// The name of the note.
+        noted: String,
     },
     /// The battlefield under its owner's control, where an Aura enters attached only to a permanent the selector matches
     /// among those it may enchant, chosen by its controller, and stays where it was when there is none ("Only creatures
@@ -1325,6 +1336,30 @@ pub enum Effect {
     R5084JoinTheirAttack {
         /// The creature that joins the attack.
         what: Ref,
+    },
+    /// Notes the number and kind of counters on the object `what` names under the name, as it is now ("Note the number
+    /// and kind of counters that were on that creature"); `Destination::R122BattlefieldNoted` puts them back, also from a
+    /// delayed trigger the resolution sets up (CR 603.7c).
+    R122NoteCounters {
+        /// The object whose counters are noted.
+        what: Ref,
+        /// The name of the note.
+        #[serde(rename = "as")]
+        bind: String,
+    },
+    /// Each player `who` names reveals the top card of their library; the one player who revealed the card with the
+    /// greatest mana value is bound to the name, and nobody when two or more tie for it or no card is revealed (a player
+    /// with an empty library reveals nothing).
+    R115RevealContest {
+        /// Who reveals.
+        #[serde(
+            default = "Ref::each_player",
+            skip_serializing_if = "Ref::is_each_player"
+        )]
+        who: Ref,
+        /// The name the winner is bound to.
+        #[serde(rename = "as")]
+        bind: String,
     },
     /// For each attacking creature `of` names (CR 702.116a), creates for every opponent of its controller other than the player it attacks a token copy of it, tapped and attacking that opponent; the tokens are never declared as attackers (CR 508.4).
     MyriadCopies {
@@ -2520,6 +2555,10 @@ pub enum Effect {
         /// The object a target changes to (`One` only).
         #[serde(default, skip_serializing_if = "Option::is_none")]
         onto: Option<Ref>,
+        /// The player who chooses the new targets, in place of the effect's controller ("The player who reveals the card
+        /// with the greatest mana value may change the target or targets"); nothing changes when it names nobody.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        r115_who: Option<Ref>,
     },
     /// "You may exchange this permanent with an Aura card in your hand" (aura swap, CR 702.65): the controller may pick
     /// an Aura card in their hand that could enchant what the source is attached to; the source goes to its owner's hand

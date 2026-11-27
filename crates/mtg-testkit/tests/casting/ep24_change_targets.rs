@@ -40,6 +40,7 @@ fn skite() -> Arc<CardDefinition> {
                     what: Ref::Target(0),
                     to: NewTargets::One,
                     onto: Some(Ref::This),
+                    r115_who: None,
                 }],
             }),
     )

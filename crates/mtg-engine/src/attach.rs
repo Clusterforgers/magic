@@ -59,15 +59,15 @@ pub(crate) fn kind_of(state: &GameState, id: ObjectId) -> Option<Kind> {
     }
     // The subtypes effects gave a permanent are held by the layers, which a pass over the battlefield reads in place; a
     // card an effect names elsewhere is held there too (a card about to enter as an Aura, `r6502_enters_as`).
-    let given = state
-        .layers()
-        .get(id)
-        .map(|held| held.chars.subtypes.as_slice());
+    let held = state.layers().get(id).map(|held| &held.chars);
     let has = |subtypes: &[Subtype], name: &str| subtypes.iter().any(|s| s.0 == name);
     KINDS
         .iter()
         .find(|(name, _)| {
-            has(&object.card().subtypes, name) || given.is_some_and(|given| has(given, name))
+            let removed = held.is_some_and(|chars| has(&chars.subtypes_removed, name));
+            !removed
+                && (has(&object.card().subtypes, name)
+                    || held.is_some_and(|chars| has(&chars.subtypes, name)))
         })
         .map(|(_, kind)| *kind)
 }

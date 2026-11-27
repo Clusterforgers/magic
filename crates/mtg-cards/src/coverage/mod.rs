@@ -21,8 +21,8 @@ use crate::builtin;
 use crate::card::{Card, ImplStatus};
 use crate::compile::{Compiled, compile};
 use crate::draft::ReadState;
-use crate::load::{Library, Source, canonical, slug};
-use crate::support::{Caps, PrintedCard, Support, support};
+use crate::load::{GeneratedRules, Library, Source, canonical};
+use crate::support::{Caps, PrintedCard, READBACK_DIFFERS, Support, SupportRecord, support};
 use crate::validate::{check_printed, used_primitives};
 
 /// What the report says of a printed gap that lies on a face the engine does not play.
@@ -436,18 +436,8 @@ fn judge_rules(
         let blockers = blockers_of(Some(card), state, printed, &compiled, caps);
         (RulesSource::HandWritten, state, blockers)
     } else if let Some(card) = &compiled.card {
-        match checked_library(card, printed, context) {
-            Some(library) => {
-                let state = library.support(printed, caps).support;
-                let blockers = blockers_of(Some(card), state, printed, &compiled, caps);
-                (RulesSource::Compiled, state, blockers)
-            }
-            None => (
-                RulesSource::Compiled,
-                Support::Manual,
-                BTreeSet::from([Blocker::Rules("invalid".to_owned())]),
-            ),
-        }
+        let (state, blockers) = judge_compiled(card, printed, &compiled, context);
+        (RulesSource::Compiled, state, blockers)
     } else {
         let state = support(None, printed, caps).support;
         let blockers = blockers_of(None, state, printed, &compiled, caps);
@@ -455,19 +445,52 @@ fn judge_rules(
     }
 }
 
-/// The library of one compiled card next to the predefined tokens, as the server would load its
-/// stored rules; `None` when the rules do not validate or do not match the imported card.
+/// The state compiled rules `card` earn as the server decides them (`Library::support` over a generated row), and what
+/// holds it back: rules that read back as other text are `Manual` with the blocker `rules: readback:Differs`.
+fn judge_compiled(
+    card: &Card,
+    printed: &PrintedCard,
+    compiled: &Compiled,
+    context: &Context<'_>,
+) -> (Support, BTreeSet<Blocker>) {
+    let Some(library) = checked_library(card, printed, context) else {
+        return (
+            Support::Manual,
+            BTreeSet::from([Blocker::Rules("invalid".to_owned())]),
+        );
+    };
+    let record = library.support(printed, context.caps);
+    let blockers = if read_back_differs(&record) {
+        BTreeSet::from([Blocker::Rules(READBACK_DIFFERS.to_owned())])
+    } else {
+        blockers_of(Some(card), record.support, printed, compiled, context.caps)
+    };
+    (record.support, blockers)
+}
+
+/// The library of one compiled card next to the predefined tokens, loaded as the server loads its stored rules: a
+/// generated row, so [`Library::support`] holds back rules that read back as other text. `None` when the rules do not
+/// validate or do not match the imported card.
 fn checked_library(card: &Card, printed: &PrintedCard, context: &Context<'_>) -> Option<Library> {
-    let mut sources = context.tokens.clone();
-    sources.push(Source {
-        path: format!("cards/{}.json", slug(&card.name)),
-        text: canonical(card),
-    });
-    let library = Library::from_sources(&sources).ok()?;
+    let row = GeneratedRules {
+        oracle_id: card.oracle_id.clone(),
+        rules: serde_json::to_value(card).ok()?,
+    };
+    let (library, left_out) = Library::from_sources(&context.tokens)
+        .ok()?
+        .with_generated(&[row]);
     let tokens: BTreeSet<String> = library.tokens().map(|token| token.id.clone()).collect();
-    check_printed(card, printed, &context.names, &tokens)
-        .is_empty()
+    (left_out.is_empty() && check_printed(card, printed, &context.names, &tokens).is_empty())
         .then_some(library)
+}
+
+/// Whether `record` holds the card back because its rules read back as other text than the card.
+fn read_back_differs(record: &SupportRecord) -> bool {
+    record.support == Support::Manual
+        && record
+            .clauses
+            .iter()
+            .any(|clause| clause.reason.starts_with(READBACK_DIFFERS))
 }
 
 /// What keeps a card of state `state` from `Verified`: its unread clauses, the primitives of its

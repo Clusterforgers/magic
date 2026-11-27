@@ -66,6 +66,8 @@ pub enum Modification {
     SetLoyalty(Amount),
     /// Adds a subtype (layer 4).
     AddSubtype(Subtype),
+    /// Removes a subtype (layer 4): "as a non-Aura enchantment" (CR 205.1b).
+    R2051RemoveSubtype(Subtype),
     /// Replaces the creature types with these (layer 4): "becomes a red Weird" (CR 205.1b).
     SetCreatureTypes(Vec<Subtype>),
     /// Gives each of the listed keywords that one of the objects the reference names has, with the variant it has
@@ -303,6 +305,7 @@ impl Modification {
             | Modification::SetTypes(_)
             | Modification::RemoveSupertype(_)
             | Modification::AddSubtype(_)
+            | Modification::R2051RemoveSubtype(_)
             | Modification::SetCreatureTypes(_)
             | Modification::SetCreatureTypesOf(_)
             | Modification::SetLandTypesNthChosen(_)
@@ -472,6 +475,13 @@ pub enum Duration {
     /// ("until the end of defending player's next turn, that player gets two rad counters whenever they cast a spell"):
     /// it ends with the first turn of theirs that ends after the turn it began in. Only a delayed trigger lasts this way.
     R6700UntilEndOfTheirNextTurn(#[cfg_attr(feature = "ts", ts(type = "unknown"))] Ref),
+    /// For as long as the player the reference names, a name the resolution bound to that player, has a counter of the
+    /// kind ("For as long as they have a contract counter, when they lose the game, ..."): it ends the first time they have
+    /// none and does not come back. Only a delayed trigger lasts this way.
+    R122WhilePlayerHasCounter(
+        #[cfg_attr(feature = "ts", ts(type = "unknown"))] Ref,
+        CounterKind,
+    ),
     /// For as long as the condition holds (CR 611.2b: "for as long as this creature remains tapped and that creature's
     /// power remains less than or equal to this creature's power"), read with each object of the effect as `Affected`:
     /// it ends the first time the condition fails and does not come back. Only a continuous effect lasts this way.

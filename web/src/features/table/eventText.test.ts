@@ -1334,6 +1334,7 @@ describe('events with more than one shape', () => {
       effect(objects(2), { AddSubtype: 'Elf' }, 'UntilEndOfTurn'),
       'Hill Giant becomes Elf too until end of turn',
     ],
+    [effect(objects(2), { R2051RemoveSubtype: 'Aura' }, 'Forever'), 'Hill Giant loses Aura'],
     [
       effect(objects(2), { SetCreatureTypes: ['Weird'] }, 'UntilEndOfTurn'),
       'Hill Giant becomes Weird until end of turn',

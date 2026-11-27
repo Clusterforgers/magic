@@ -131,6 +131,26 @@ pub enum TriggerPattern {
         /// The player attacked.
         at: Ref,
     },
+    /// A player loses the game (CR 104.3, 800.4a): "when they lose the game, for each artifact and creature they
+    /// controlled, ...". `TriggeringPlayer` is the player and `Triggering` the permanents they controlled as they lost
+    /// that `controlled` matches, as they were then.
+    R1043Loses {
+        /// Who loses.
+        #[serde(default = "Ref::you", skip_serializing_if = "Ref::is_you")]
+        who: Ref,
+        /// The permanents of theirs it names.
+        #[serde(default, skip_serializing_if = "Selector::is_empty")]
+        controlled: Selector,
+    },
+    /// A player chooses one or more targets for a spell or ability (CR 115.1, 601.2c, 115.7): as it is cast, activated or
+    /// put on the stack, or as its targets change; `Triggering` is the spell or ability and `TriggeringPlayer` its
+    /// controller. With `quiet_own_name`, a change of targets by an ability of a permanent with the same name as the
+    /// source does not trigger it ("Changing targets this way doesn't trigger abilities of permanents named ~").
+    R115ChoosesTargets {
+        /// A change of targets by an ability of a permanent with the source's name does not trigger it.
+        #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+        quiet_own_name: bool,
+    },
     /// An object matching the selector becomes the target of a spell or ability.
     BecomesTarget {
         /// The object targeted.

@@ -1,7 +1,7 @@
 {
   "oracle_id": "75d7f864-1240-43f5-8dd5-a5f7577bfa5b",
   "name": "Miss Highwater",
-  "impl_status": "Partial",
+  "impl_status": "Full",
   "faces": [
     {
       "name": "Miss Highwater",
@@ -9,9 +9,78 @@
       "abilities": [
         { "Keyword": "Menace" },
         {
-          "Manual": {
-            "reason": "you apply this clause by hand",
-            "span": { "start": 7, "end": 344 }
+          "Triggered": {
+            "when": {
+              "DealsDamage": {
+                "source": ["This"],
+                "to": {
+                  "PlayersWhere": {
+                    "who": "EachPlayer",
+                    "test": {
+                      "Compare": {
+                        "left": { "Counters": { "on": "You", "counter": { "Other": "contract" } } },
+                        "op": "Eq",
+                        "right": 0
+                      }
+                    }
+                  }
+                },
+                "combat": true
+              }
+            },
+            "effects": [
+              { "Bind": { "what": "Triggering", "as": "contracted" } },
+              {
+                "May": {
+                  "who": { "Bound": "contracted" },
+                  "effects": [
+                    {
+                      "Discard": {
+                        "who": { "Bound": "contracted" },
+                        "count": {
+                          "Count": [{ "In": "Hand" }, { "OwnedBy": { "Bound": "contracted" } }]
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "If": {
+                  "condition": "Performed",
+                  "then": [
+                    { "Draw": { "who": { "Bound": "contracted" }, "count": 7 } },
+                    {
+                      "PutCounters": {
+                        "on": { "Bound": "contracted" },
+                        "counter": { "Other": "contract" }
+                      }
+                    },
+                    {
+                      "DelayedTrigger": {
+                        "when": {
+                          "R1043Loses": {
+                            "who": { "Bound": "contracted" },
+                            "controlled": [
+                              { "AnyOf": [{ "Type": "Artifact" }, { "Type": "Creature" }] }
+                            ]
+                          }
+                        },
+                        "until": {
+                          "R122WhilePlayerHasCounter": [
+                            { "Bound": "contracted" },
+                            { "Other": "contract" }
+                          ]
+                        },
+                        "effects": [
+                          { "CreateToken": { "token": { "CopyOf": { "of": "Triggering" } } } }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]

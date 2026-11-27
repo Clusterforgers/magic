@@ -157,7 +157,7 @@ const ORDINARY_EFFECTS =
   R6400Block AuraSwap Meld R6401PassControl R1084ToDifferentOpponents R6501RedistributeLife R6602CreateAttached
   R6701RemoveAmong R6701TurnFaceDownHorror R6701ControlCombat R6702Distribute R6702CountersPerVote
   PayAnyTimes StillResolves Bind Let R110RemovePutThisWay R110MoveEachKindMissing R110MoveOneOrMore R110ChooseSecretly R111KeepChosen R112NoteManaSpent
-  R110AddCombatAfterFirst R111OrderGraveyard R112DoubleX R112NoteChosen R123XBecomes R123ExileContest
+  R110AddCombatAfterFirst R111OrderGraveyard R112DoubleX R112NoteChosen R123XBecomes R123ExileContest R115RevealContest R122NoteCounters
   R112GuessNumber R112Piles R112RollStore R112RerollStored R113PhaseIn R114StoreValue R114CopySpellOnto
   R115ExchangeBlocks R115ExchangeBlockers R115JoinBlock R115SkipStep R117EndCombat R119ActivateLandMana R119DrainMana R119BindSpliced R120ChooseEachColor
   R406TurnUpExiled R707ExileSpell R707PutBack`)
@@ -274,7 +274,7 @@ const TRIGGERS: Record<string, string> = {
 
 const ORDINARY_TRIGGERS =
   names(`ZoneChange ZoneChangeExcept ResolvedToGraveyard Attacks AttacksAlone AttacksPlayer
-  AttacksPlayerOrPlaneswalker PlayerAttacked PlayerAttacks BecomesTarget PlayerBecomesTarget PutOnStack FirstDrawRevealed
+  AttacksPlayerOrPlaneswalker PlayerAttacked PlayerAttacks BecomesTarget PlayerBecomesTarget R115ChoosesTargets R1043Loses PutOnStack FirstDrawRevealed
   Drew Blocks BecomesBlocked Unblocked GroupAttacks GroupAttacksAt StepBegins State Did AnyOf Batch Nth Caused R6701WhileActivating R109WhileCasting DealsToughnessDamage PhaseBegins
   R110ThatCombatBegins R111AbilityTriggered R120RandomAction R120AssistedCast R120DealsExactly R603Exactly`)
 

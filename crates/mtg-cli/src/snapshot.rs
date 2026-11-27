@@ -267,6 +267,9 @@ pub fn plain_words(blocker: &Blocker) -> String {
             "stale" => "Its Oracle text changed since its rules were written".to_owned(),
             "unplayable" => "The engine cannot host this card".to_owned(),
             "no rules" => "No rules yet".to_owned(),
+            mtg_cards::support::READBACK_DIFFERS => {
+                "Its rules read back as other text than the card".to_owned()
+            }
             other => capitalized(other),
         },
     }
@@ -417,6 +420,7 @@ mod tests {
     #[case(Blocker::Rules("invalid".into()), "Its rules do not pass the checks")]
     #[case(Blocker::Rules("no rules".into()), "No rules yet")]
     #[case(Blocker::Rules("unplayable".into()), "The engine cannot host this card")]
+    #[case(Blocker::Rules("readback:Differs".into()), "Its rules read back as other text than the card")]
     fn blockers_read_in_plain_words(#[case] blocker: Blocker, #[case] words: &str) {
         assert_eq!(plain_words(&blocker), words);
     }

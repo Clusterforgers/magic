@@ -7,7 +7,7 @@ use mtg_cards::ability::{Ability, Timing};
 use mtg_cards::keyword::Keyword;
 use mtg_cards::spend::ManaLasts;
 use mtg_cards::value::CounterKind;
-use mtg_core::card::{CardType, Supertype};
+use mtg_core::card::{CardType, Subtype, Supertype};
 use mtg_core::ids::{ObjectId, PlayerId};
 use mtg_core::mana::ManaType;
 use mtg_engine::abilities::AbilityRef;
@@ -339,17 +339,13 @@ fn check_attachments_settled(state: &GameState) -> Result<(), Violation> {
         let Some(object) = state.object(id).filter(|o| state.is_alive(o.controller())) else {
             continue;
         };
-        // An effect may give the subtype (an enchantment that becomes an Aura, CR 205.1b).
-        let derived = characteristics(state, id)
-            .map(|chars| chars.subtypes)
-            .unwrap_or_default();
+        // An effect may give the subtype (an enchantment that becomes an Aura, CR 205.1b) or take it away.
+        let chars = characteristics(state, id);
         let printed = |name: &str| {
-            object
-                .card()
-                .subtypes
-                .iter()
-                .chain(&derived)
-                .any(|s| s.0 == name)
+            chars.as_ref().map_or_else(
+                || object.card().subtypes.iter().any(|s| s.0 == name),
+                |chars| chars.has_subtype(&object.card().subtypes, &Subtype(name.to_owned())),
+            )
         };
         let attached = object.permanent().and_then(PermanentState::attached_to);
         let enchanted = state.player_host_of(id);
