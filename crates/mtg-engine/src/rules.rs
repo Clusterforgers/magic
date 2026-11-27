@@ -5315,7 +5315,7 @@ mod tests {
     #[case::not_at_what_another_exiled(Some("{}"), false, &[])]
     #[case::each_player(Some(r#"{"who":"EachPlayer"}"#), true, &[0, 1, 2, 3])]
     #[case::opponents(Some(r#"{"who":"Opponents"}"#), true, &[1, 2, 3])]
-    fn a_sealed_card_is_looked_at_only_through_a_grant_while_the_grant_is_in_force(
+    fn a_sealed_card_is_looked_at_only_through_a_grant_kept_after_the_grant_ends(
         #[values(2, 3, 4)] seats: usize,
         #[case] grant: Option<&str>,
         #[case] by_holder: bool,
@@ -5342,8 +5342,8 @@ mod tests {
             .filter(|seat| *seat < seats)
             .collect();
         assert_eq!(sees(&game), expected);
-        // The grant ends with the holder: the card is sealed for every seat again.
+        // The holder leaves: whoever the grant let look keeps looking while the card stays in exile.
         leaves(&mut game, "Holder");
-        assert_eq!(sees(&game), Vec::<usize>::new());
+        assert_eq!(sees(&game), expected);
     }
 }
