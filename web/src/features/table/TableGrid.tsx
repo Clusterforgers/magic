@@ -1,6 +1,8 @@
 import type { CSSProperties, ReactNode, Ref } from 'react'
 import { usePlay } from '@/features/game/gameContext'
 import { cn } from '@/lib/utils'
+import { anchor } from '@/features/learn/anchors'
+import type { CoachMark } from '@/features/learn/anchors'
 import { gridColumns, gridRows, mainColumns, tableAreas } from './layout'
 import type { Regions } from './layout'
 import { openingPlace, useOpeningInOverlay } from './prompt/choiceOverlay'
@@ -43,15 +45,19 @@ function Area({
   area,
   className,
   style,
+  mark,
   children,
 }: {
   area: string
   className?: string
   style?: CSSProperties
+  /** The coach's anchor of the area. */
+  mark?: CoachMark
   children: ReactNode
 }) {
   return (
     <div
+      {...mark}
       data-area={area}
       style={{ gridArea: area, ...style }}
       className={cn('grid min-h-0 min-w-0 grid-cols-[minmax(0,1fr)] grid-rows-[minmax(0,1fr)]', className)}
@@ -118,7 +124,7 @@ export function TableGrid({
         className="felt grid min-h-0 min-w-0"
       >
         <Area area="bar">{bar}</Area>
-        <Area area="opponents" className="p-2">
+        <Area area="opponents" className="p-2" mark={anchor('opponents')}>
           {opponents}
         </Area>
         <Area area="shared" className="px-2">

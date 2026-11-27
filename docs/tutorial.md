@@ -25,7 +25,7 @@ The Learn page shows the course as a numbered path with the next lesson as its o
 | 6 | `commander` | Commander | 40 life, the command zone, casting the commander, returning it to the command zone, commander tax, commander damage |
 | 7 | `help` | Finding help | the card preview, keywords, the log, the rules lexicon, the Commands tab, the table menu |
 
-The lessons replace the guided game and the table tour of the Learn page. The manual-panel lesson runs on the same coach and anchors.
+The lessons replace the guided game and the table tour of the Learn page. The manual-panel lesson and the Help menu's table tour run on the same coach and anchors.
 
 ## Scripted table
 
@@ -180,6 +180,15 @@ The cursor is the first step that is not done, with `read` steps counted as done
 | `commands` | read | `side.tab.commands` | nothing | A few cards are not automatic yet. The Commands tab plays them by hand; "The manual panel" shows how. | Next |
 | `menu` | read | `table.menu` | nothing | Layout, theme, card images, the order of your hand and Concede are in the menu. | Finish |
 
+## Table tour
+
+The Help menu's "Table tour" (`features/table/tour`) walks a seated player round a live table in eleven read steps (`tourSteps.ts`), and starts by itself once per browser. It uses the coach's light and card without a lesson or a gate.
+
+- A step names its anchors in order (`at`); the first that resolves is lit, so one step serves every layout: `own.mana` falls back to `own.pod` in a cramped pod, `board:*` to `hand:*` on an empty board. Every anchor it names is drawn once at two and four seats.
+- A step with a side tab (the log, Commands) brings the tab up first and folds a rail or sheet it opened when the tour ends.
+- The card shows "Table tour", the step dots (on a phone "n of 11" in a bar), the title and text, and Skip tour, Back and Next (Done on the last); the arrow keys and Escape do the same. The table under the tour takes no presses.
+- Tests: `tour.test.tsx` (word limits, registry anchors, one lit anchor per step at two and four seats, the walk, the keys, the tabs) and `e2e/help-tour.spec.ts` (every step at 1400, 1024 and 390 px with two and four seats: the card inside the window, the ring on the lit anchor).
+
 ## Anchors
 
 `web/src/features/learn/anchors.ts` is the registry: every anchor's id, what it names, a default label and its opener. An element carries its anchor as `data-coach="<id>"` through `anchor(id)`, typed by the registry; a zone that holds cards carries `data-coach-zone` and a card is found in it by `data-object-id`.
@@ -189,6 +198,8 @@ The cursor is the first step that is not done, with `read` steps counted as done
 | `opening.hand`, `opening.keep`, `opening.mulligan` | the opening hand's cards and its two answers | |
 | `own.pod`, `own.life`, `own.board`, `own.graveyard` | the learner's panel, life total, board and graveyard | |
 | `own.lands` | the learner's lands | `own.lands-chip` (a phone folds lands) |
+| `own.mana` | the learner's untapped sources and mana pool (absent in a cramped pod) | |
+| `opponents`, `shared` | the opponents' area and the middle bar | |
 | `opp.pod`, `opp.life`, `opp.board`, `opp.graveyard` | the same of the bot | |
 | `turn.badge`, `turn.ladder` | the turn badge and the step ladder | `turn.badge` opens the ladder under 1024 px |
 | `band`, `band.question`, `stack` | the drawn prompt band, its question, the stack chips | |
@@ -201,7 +212,7 @@ The cursor is the first step that is not done, with `read` steps counted as done
 | `side.tab.log`, `side.tab.commands`, `log`, `commands` | side tabs and their panels | `side.open` on a rail or a phone; a panel's tab opens the panel |
 | `help.menu`, `help.lexicon`, `lexicon`, `lexicon.close`, `table.menu` | Help, its lexicon entry, the lexicon dialog and its close button, the table menu | `help.menu` opens its entries |
 | `preview`, `preview.keywords` | the card preview and its keyword list | |
-| card refs `hand:<name>`, `command:<name>`, `board:<name>`, `opp:<name>`, `stack:<name>` | the first card of that name in that zone that the pending decision can use, else the first | |
+| card refs `hand:<name>`, `command:<name>`, `board:<name>`, `opp:<name>`, `stack:<name>` | the first card of that name (`*`: any card) in that zone that the pending decision can use, else the first | |
 
 - An anchor resolves to exactly one drawn element: inside the window, with a size, and on top at its centre. None or several is an error in development and in tests; in production the coach centres its card and lights nothing.
 - A hidden anchor with an opener lights the opener instead, and its text line reads "Open {opener's label} first". Steps therefore name the same anchor in every layout; only the registry knows that a phone reaches the log through the side sheet.
@@ -222,7 +233,7 @@ The gate is a teaching aid of the client. The server runs an ordinary game and c
 
 ## Coach
 
-`features/learn/Coach.tsx` draws over the table in one layer that takes no pointer except on its own card.
+`features/learn/Coach.tsx` draws over the table in one layer that takes no pointer except on its own card; its light (`coachLight.tsx`) and its measuring and placing (`coachLook.ts`, `coachPlace`) also draw the table tour.
 
 - Light: a scrim of 40 % over the table with a hole at each lit box, a 3 px ring in the coach colour (`--coach`, a hue no table ring uses) that pulses twice and rests, and a pointer beside the ring that bobs toward it. A press step lights one box; a read step at most two.
 - Card: the lesson's name and dots for its steps, the step's title, its text, and one foot line: Next for a read step, "Your move" with the action for a do step, "Watch" for a watch step. A menu holds Leave lesson, Restart lesson and Play on without the coach. Back returns to earlier read steps.

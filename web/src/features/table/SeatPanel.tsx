@@ -169,6 +169,7 @@ export const SeatPanel = memo(function SeatPanel({
   const player = usePlay((state) => playerOf(state, seat))
   const coach = useSeatAnchor(seat, 'pod')
   const graveyardCoach = useSeatAnchor(seat, 'graveyard')
+  const manaCoach = useSeatAnchor(seat, 'mana')
   const exile = usePlay(useShallow((state) => exileOf(state, seat)))
   const commanders = usePlay(useShallow((state) => commandCardsOf(state, seat)))
   const flags = usePlay(
@@ -540,7 +541,7 @@ export const SeatPanel = memo(function SeatPanel({
               />
             </div>
             {cramped ? null : (
-              <div className="col-span-full grid grid-cols-[minmax(0,1fr)] gap-0.5">
+              <div {...manaCoach} className="col-span-full grid grid-cols-[minmax(0,1fr)] gap-0.5">
                 {/* Room for the pool is kept under the name, so nothing moves when mana floats. */}
                 <div
                   data-slot="mana-slot"

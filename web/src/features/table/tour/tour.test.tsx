@@ -1,59 +1,60 @@
-// Goal: the table tour starts once by itself, walks every step with Next, Back, Skip and the keys, brings up the side tab a step explains, and its card always fits beside the lit part.
-import { act, screen } from '@testing-library/react'
+// Goal: the table tour's steps name only registry anchors within the coach's word limits, each step lights exactly one drawn anchor of its own on a two-seat and a four-seat table, and the tour starts once by itself, walks with Next, Back, Skip tour and the keys, brings up the side tab a step explains and ends with Done.
+import { act, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { renderTable } from '@/test-utils/tableHarness'
-import { GAP, MARGIN, placeCard, spotlight } from '@/components/tour/tourPlace'
-import type { Box } from '@/components/tour/tourPlace'
+import { buildFixture } from '@/features/table/dev/fixture'
+import { cardRef } from '@/features/learn/anchors'
+import { TEXT_MAX, TITLE_MAX, knownTarget } from '@/features/learn/step'
 import { endTour, moveTour, startTour, TOUR_SEEN_KEY, tourSeen, tourStore } from './tourStore'
 import { TOUR } from './tourSteps'
 
-const VIEW = { width: 1400, height: 900 }
-const CARD = { width: 352, height: 180 }
+const at = (id: string): number => TOUR.findIndex((step) => step.id === id)
 
-const inside = (place: { left: number; top: number }, view = VIEW): boolean =>
-  place.left >= MARGIN &&
-  place.top >= MARGIN &&
-  place.left + CARD.width <= view.width - MARGIN &&
-  place.top + CARD.height <= view.height - MARGIN
-
-describe('placeCard', () => {
-  it.each<[string, Box | null, string]>([
-    ['no target', null, 'centre'],
-    ['the top bar', { left: 1300, top: 0, width: 40, height: 44 }, 'below'],
-    ['the hand', { left: 0, top: 700, width: 1100, height: 200 }, 'above'],
-    ['a tall side column', { left: 0, top: 0, width: 300, height: 900 }, 'right'],
-    ['a tall column on the right', { left: 1100, top: 0, width: 300, height: 900 }, 'left'],
-    ['the whole window', { left: 0, top: 0, width: 1400, height: 900 }, 'over'],
-  ])('puts the card of %s on the %s side, inside the window', (_name, target, side) => {
-    const place = placeCard(target, CARD, VIEW)
-    expect(place.side).toBe(side)
-    expect(inside(place)).toBe(true)
-  })
-
-  it('keeps the gap to a target it sits under', () => {
-    const target = { left: 500, top: 100, width: 200, height: 60 }
-    expect(placeCard(target, CARD, VIEW).top).toBe(target.top + target.height + GAP)
-  })
-
-  it.each([[{ width: 390, height: 844 }], [{ width: 844, height: 390 }]])(
-    'stays inside a %o window',
-    (view) => {
-      const card = { width: view.width - 2 * MARGIN, height: 200 }
-      const place = placeCard({ left: 0, top: 0, width: view.width, height: view.height }, card, view)
-      expect(place.left).toBe(MARGIN)
-      expect(place.top + card.height).toBeLessThanOrEqual(view.height - MARGIN)
+describe('the tour steps', () => {
+  it.each(TOUR.map((step) => [step.id, step] as const))(
+    '%s names registry anchors in few words',
+    (_, step) => {
+      expect(step.title.length).toBeLessThanOrEqual(TITLE_MAX)
+      expect(step.text.length).toBeLessThanOrEqual(TEXT_MAX)
+      for (const target of step.at) expect(knownTarget(target)).toBe(true)
     },
   )
+
+  it('lights a part of the table at every step but the welcome', () => {
+    expect(TOUR.filter((step) => step.at.length === 0).map((step) => step.id)).toEqual(['welcome'])
+  })
 })
 
-describe('spotlight', () => {
-  it('grows the target and cuts it to the window', () => {
-    expect(spotlight({ left: 0, top: 10, width: 100, height: 50 }, VIEW)).toEqual({
-      left: 0,
-      top: 6,
-      width: 104,
-      height: 58,
+describe('the lit anchors', () => {
+  beforeEach(() => {
+    // jsdom lays nothing out: every element is drawn inside the window, so the anchor's presence decides.
+    vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(
+      () => new DOMRect(10, 60, 120, 80),
+    )
+  })
+  afterEach(() => vi.restoreAllMocks())
+
+  const cases = [2, 4].flatMap((seats) =>
+    TOUR.filter((step) => step.at.length > 0).map((step) => [seats, step.id] as const),
+  )
+  it.each(cases)('at %i seats the %s step lights one of its own anchors', async (seats, id) => {
+    renderTable({
+      fixture: buildFixture({ seats, permanents: 2 }),
+      options: { viewport: { width: 1600, height: 1000 } },
     })
+    act(() => tourStore.setState({ step: at(id) }))
+    const step = TOUR[at(id)]
+    const root = await screen.findByRole('dialog', { name: step?.title ?? '' })
+    const tour = root.closest<HTMLElement>('[data-slot="table-tour"]')
+    await waitFor(() => expect(tour?.dataset['coachLit']).toBe(step?.at[0]))
+    const lit = step?.at[0] ?? ''
+    const ref = cardRef(lit)
+    const found =
+      ref === null
+        ? document.querySelectorAll(`[data-coach="${lit}"]`)
+        : document.querySelectorAll(`[data-coach-zone="${ref.zone}"]`)
+    expect(found).toHaveLength(1)
+    expect(document.querySelectorAll('[data-slot="coach-ring"]')).toHaveLength(1)
   })
 })
 
@@ -112,7 +113,7 @@ describe('TableTour', () => {
     act(startTour)
     await user.click(await screen.findByRole('button', { name: 'Next' }))
     expect(screen.getByRole('dialog', { name: 'Your hand' })).toBeInTheDocument()
-    expect(screen.getByText(`Step 2 of ${TOUR.length}`)).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: `Step 2 of ${TOUR.length}` })).toBeInTheDocument()
     await user.keyboard('{ArrowRight}')
     expect(screen.getByRole('dialog', { name: 'Your battlefield' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Back' }))
@@ -122,12 +123,20 @@ describe('TableTour', () => {
     expect(tourSeen()).toBe(true)
   })
 
+  it('ends at Skip tour', async () => {
+    const { user } = renderTable({ seats: 2 })
+    act(startTour)
+    await user.click(await screen.findByRole('button', { name: 'Skip tour' }))
+    expect(tourStore.getState().step).toBeNull()
+    expect(tourSeen()).toBe(true)
+  })
+
   it.each([
     ['log', 'Log'],
     ['manual', 'Commands'],
   ])('brings up the side tab of the %s step', async (id, tab) => {
     renderTable({ seats: 2, options: { viewport: { width: 1600, height: 1000 } } })
-    act(() => tourStore.setState({ step: TOUR.findIndex((step) => step.id === id) }))
+    act(() => tourStore.setState({ step: at(id) }))
     expect(await screen.findByRole('tab', { name: tab, selected: true })).toBeInTheDocument()
   })
 

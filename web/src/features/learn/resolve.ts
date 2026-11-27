@@ -60,14 +60,14 @@ export interface CardLookup {
   usable: ReadonlySet<ObjectId>
 }
 
-/** The drawn card called `name` in `zone`'s element: the first the decision can use, else the first. */
+/** The drawn card called `name` (any card for `*`) in `zone`'s element: the first the decision can use, else the first. */
 function card(zone: string, name: string, lookup: CardLookup, doc: Document): HTMLElement[] {
   // A prompt that lays its cards out to choose from (a target on a phone) is where that card is pressed.
   const offered = [
     ...doc.querySelectorAll<HTMLElement>('[data-slot="card-choices"] button[data-candidate]'),
   ].filter(
     (each) =>
-      lookup.objects[Number(each.dataset['candidate'])]?.name === name &&
+      (name === '*' || lookup.objects[Number(each.dataset['candidate'])]?.name === name) &&
       drawn(each, doc.defaultView ?? window),
   )
   if (offered[0] !== undefined && zone !== 'hand' && zone !== 'command') return [offered[0]]
@@ -79,7 +79,7 @@ function card(zone: string, name: string, lookup: CardLookup, doc: Document): HT
       const outer = each.parentElement?.closest(`[data-object-id="${each.dataset['objectId']}"]`)
       if (outer !== null && outer !== undefined && element.contains(outer)) return false
       const id = Number(each.dataset['objectId'])
-      return lookup.objects[id]?.name === name && drawn(each, doc.defaultView ?? window)
+      return (name === '*' || lookup.objects[id]?.name === name) && drawn(each, doc.defaultView ?? window)
     }),
   )
   const usable = cards.filter((each) => lookup.usable.has(Number(each.dataset['objectId'])))

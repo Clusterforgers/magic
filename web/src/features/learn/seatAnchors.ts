@@ -4,7 +4,7 @@ import { anchor } from './anchors'
 import type { AnchorId } from './anchors'
 
 /** The parts of a seat the coach can light. */
-export type SeatPart = 'pod' | 'life' | 'board' | 'graveyard' | 'lands' | 'lands-chip'
+export type SeatPart = 'pod' | 'life' | 'board' | 'graveyard' | 'lands' | 'lands-chip' | 'mana'
 
 type Mark = { 'data-coach': AnchorId }
 
@@ -16,6 +16,7 @@ const PARTS: Record<SeatPart, { own: Mark; opp: Mark | null }> = {
   graveyard: { own: anchor('own.graveyard'), opp: anchor('opp.graveyard') },
   lands: { own: anchor('own.lands'), opp: null },
   'lands-chip': { own: anchor('own.lands-chip'), opp: null },
+  mana: { own: anchor('own.mana'), opp: null },
 }
 
 /** The props that mark `seat`'s `part` for the coach: the own seat's or an opponent's anchor; nothing for a spectator. */
