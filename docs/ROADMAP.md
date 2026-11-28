@@ -130,6 +130,7 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (ts1m) A workspace-hack crate (cargo-hakari) fixes the dependency features, so every package selection shares one build and `cargo test -p mtg-engine` in a warm worktree compiles nothing (now 86 s; `Cargo.toml`, `crates/`; no dependency)
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
 - [ ] (t5b) The `mtg-testkit` `it` binary needs fewer test-seconds: over 90% is `Engine::apply` (`priority_options` 36%, `triggers::detect` 24%, `layers::compute` 14%, whole-object clones), so the next cut is in the engine; opt-level 3 for `mtg-cards` and mimalloc save about 5% and slow every rebuild, so they are not adopted
+- [ ] (t1b) `pg_card_rules::the_precon_list_and_the_precon_view_follow_the_compiled_rules` (mtg-server) is stable under parallel load: it reads a card as `manual_play` instead of `verified` when the batch runs beside other suites
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load
 - [ ] (t3c) DSL amounts for what an earlier effect did and for the mana value a cost took, and a partner by creature type (Foul-Tongue Shriek, The Knight of Land Drops)
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand (`docs/deck-check.md`)
