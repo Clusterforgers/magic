@@ -24,6 +24,7 @@ mod deck_pictures;
 mod env_seed;
 mod full_games;
 mod game_close;
+mod go_back_consent;
 mod go_backs;
 mod house_rules;
 mod idle_dwell;

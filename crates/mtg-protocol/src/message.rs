@@ -359,10 +359,19 @@ pub enum ClientMessage {
         /// True to agree.
         approve: bool,
     },
-    /// Takes back this seat's passes to the earlier step [`ServerMessage::GoBackOffer`] names; no one is asked.
+    /// Takes back this seat's passes to the earlier step [`ServerMessage::GoBackOffer`] names.
     ///
-    /// Refused with [`ServerMessage::GoBackRefused`] when something irreversible happened since.
+    /// Refused with [`ServerMessage::GoBackRefused`] when something irreversible happened since, and with
+    /// `Error{BadMessage}` while this seat's request is open. When other people passed since, each of them is asked
+    /// first ([`ServerMessage::GoBackAsked`]); otherwise it happens at once.
     GoBack,
+    /// This seat's answer to the open go-back request it is asked about.
+    GoBackVote {
+        /// True to agree.
+        approve: bool,
+    },
+    /// Withdraws this seat's open go-back request.
+    CancelGoBack,
     /// Sets or clears one of this seat's stops: a step at which the seat asks to be given priority.
     ///
     /// Only a step where a player gets priority can hold a stop. `Untap` and `Cleanup` are refused, set or
@@ -639,6 +648,22 @@ pub enum ServerMessage {
         /// Why.
         reason: GoBackRefusal,
     },
+    /// A go-back request is open, or its waiting list changed; sent to every seat.
+    GoBackAsked {
+        /// The step and who asks.
+        offer: GoBackOffer,
+        /// The seats whose answer is still awaited.
+        waiting: Vec<PlayerId>,
+        /// Milliseconds left before the request counts as declined.
+        deadline_ms: u64,
+    },
+    /// The open go-back request ended; sent to every seat.
+    GoBackEnded {
+        /// What was asked.
+        offer: GoBackOffer,
+        /// How it ended.
+        outcome: TakeBackOutcome,
+    },
     /// This seat's yield changed (see [`ClientMessage::Yield`]).
     ///
     /// Sent whenever it starts, is replaced or ends, after the events of the step that changed it and before
@@ -878,7 +903,7 @@ impl DecisionName {
     }
 }
 
-/// How a take-back request ended.
+/// How a request to the table ended: a take-back or a go-back.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, TS)]
 #[serde(tag = "type")]
 pub enum TakeBackOutcome {

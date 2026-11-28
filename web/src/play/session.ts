@@ -138,6 +138,12 @@ export interface Session {
   goBack(): boolean
   /** Clears the go-back refusal. */
   dismissGoBackRefusal(): void
+  /** Answers the open go-back request; the seat leaves `waiting` at once. False when the socket is not open. */
+  voteGoBack(approve: boolean): boolean
+  /** Withdraws this seat's open go-back request. False when the socket is not open. */
+  cancelGoBack(): boolean
+  /** Clears the notice of how a go-back request ended. */
+  dismissGoBackNotice(): void
   /** Says `text` to the table (trimmed, at most `MAX_CHAT_CHARS` characters). */
   chat(text: string): boolean
   /** Asks the server for a fresh snapshot; the escape hatch when the game looks stuck. */
@@ -286,6 +292,7 @@ export function createSession(deps: SessionDeps): Session {
           takeBackRequest: null,
           goBackOffer: null,
           goBackRefused: null,
+          goBackRequest: null,
         })
         // A spectator holds no seat, so it has no settings to bring the server up to date with.
         if (deps.watch !== true) {
@@ -367,6 +374,7 @@ export function createSession(deps: SessionDeps): Session {
           takeBackOffer: null,
           takeBackRequest: null,
           goBackOffer: null,
+          goBackRequest: null,
         })
         return
       case 'GoBackOffer':
@@ -374,6 +382,20 @@ export function createSession(deps: SessionDeps): Session {
         return
       case 'GoBackRefused':
         setState({ goBackRefused: message.reason })
+        return
+      case 'GoBackAsked':
+        setState({
+          goBackRequest: {
+            offer: message.offer,
+            waiting: message.waiting,
+            deadlineMs: message.deadline_ms,
+            at: Date.now(),
+          },
+          goBackNotice: null,
+        })
+        return
+      case 'GoBackEnded':
+        setState({ goBackRequest: null, goBackNotice: { offer: message.offer, outcome: message.outcome } })
         return
       case 'TakeBackOffer':
         setState({ takeBackOffer: message.offer })
@@ -738,6 +760,18 @@ export function createSession(deps: SessionDeps): Session {
       return true
     },
     dismissGoBackRefusal: () => setState({ goBackRefused: null }),
+    voteGoBack(approve) {
+      if (!socket.send({ type: 'GoBackVote', approve })) return false
+      // The seat has answered; the server's next word on the request says the same.
+      setState(({ goBackRequest: request, seat }) =>
+        request === null
+          ? {}
+          : { goBackRequest: { ...request, waiting: request.waiting.filter((at) => at !== seat) } },
+      )
+      return true
+    },
+    cancelGoBack: () => socket.send({ type: 'CancelGoBack' }),
+    dismissGoBackNotice: () => setState({ goBackNotice: null }),
     voteTakeBack(approve) {
       if (!socket.send({ type: 'TakeBackVote', approve })) return false
       // The seat has answered; the server's next word on the request says the same.

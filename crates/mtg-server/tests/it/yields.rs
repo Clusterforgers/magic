@@ -212,7 +212,9 @@ fn shape(message: &ServerMessage) -> String {
         | ServerMessage::TakeBackEnded { .. }
         | ServerMessage::TakeBackRefused { .. }
         | ServerMessage::GoBackOffer { .. }
-        | ServerMessage::GoBackRefused { .. } => "take-back".into(),
+        | ServerMessage::GoBackRefused { .. }
+        | ServerMessage::GoBackAsked { .. }
+        | ServerMessage::GoBackEnded { .. } => "take-back".into(),
     }
 }
 

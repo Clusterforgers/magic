@@ -97,6 +97,8 @@ const MESSAGE_TYPES: Record<ServerMessage['type'], true> = {
   TakeBackRefused: true,
   GoBackOffer: true,
   GoBackRefused: true,
+  GoBackAsked: true,
+  GoBackEnded: true,
   EndedByAdmin: true,
   DecksRevealed: true,
   DeckPictures: true,
@@ -873,6 +875,16 @@ function build(type: ServerMessage['type'], v: Record<string, unknown>): Built {
     case 'GoBackRefused':
       if (!isGoBackRefusal(v.reason)) return '"reason" is not a known go-back refusal'
       return { type, reason: v.reason }
+    case 'GoBackAsked':
+      if (!isGoBackOffer(v.offer)) return '"offer" must be a go-back offer (player, step, active, at)'
+      if (!isIdList(v.waiting)) return '"waiting" must be a list of seats'
+      if (!isCount(v.deadline_ms)) return '"deadline_ms" must be a whole number'
+      return { type, offer: v.offer, waiting: v.waiting, deadline_ms: v.deadline_ms }
+    case 'GoBackEnded':
+      if (!isGoBackOffer(v.offer)) return '"offer" must be a go-back offer (player, step, active, at)'
+      if (!isTakeBackOutcome(v.outcome))
+        return '"outcome" must be Approved, Declined or TimedOut with a seat, or Withdrawn'
+      return { type, offer: v.offer, outcome: v.outcome }
     case 'EndedByAdmin':
       if (v.reason !== undefined && !isText(v.reason)) return '"reason" must be text when present'
       return v.reason === undefined ? { type } : { type, reason: v.reason }

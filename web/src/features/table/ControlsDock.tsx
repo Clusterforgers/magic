@@ -241,7 +241,9 @@ function useDockFit(
         if (held !== null) return box.clientHeight > held + 1 ? null : held
         return zone.scrollHeight > zone.clientHeight + 1 ? box.clientHeight : null
       })
-      setLeast(Math.min(zone.scrollHeight, UPPER_MOST_PX))
+      // A request to the table is a question to answer: it holds the room it needs, never scrolled away.
+      const asked = zone.querySelector('[data-request]') !== null
+      setLeast(asked ? zone.scrollHeight : Math.min(zone.scrollHeight, UPPER_MOST_PX))
     }
     measure()
     const sizes = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null
@@ -250,8 +252,9 @@ function useDockFit(
     // A take-back or yield line that comes or goes changes what the full form needs: try it again.
     const content =
       typeof MutationObserver === 'function' ? new MutationObserver(() => setTightAt(null)) : null
-    for (const slot of zone.querySelectorAll('[data-slot="take-back-slot"], [data-slot="yield-slot"]'))
-      content?.observe(slot, { childList: true })
+    const slots = '[data-slot="take-back-slot"], [data-slot="go-back-slot"], [data-slot="yield-slot"]'
+    for (const slot of zone.querySelectorAll(slots))
+      content?.observe(slot, { childList: true, subtree: true })
     return () => {
       sizes?.disconnect()
       content?.disconnect()

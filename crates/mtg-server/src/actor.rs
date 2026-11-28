@@ -584,6 +584,10 @@ impl<S: EventStore> GameActor<S> {
                 self.end_through_yield(seat);
                 return self.go_back(seat).await;
             }
+            ClientMessage::GoBackVote { approve } => {
+                return self.vote_go_back(seat, approve).await;
+            }
+            ClientMessage::CancelGoBack => self.cancel_go_back(seat),
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),
                 Phase::Lobby { .. } => self.refuse(seat, not_started()),

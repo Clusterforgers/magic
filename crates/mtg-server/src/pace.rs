@@ -571,10 +571,10 @@ impl<S: EventStore> GameActor<S> {
             Phase::Running(running) => running.due(),
             Phase::Lobby { .. } => None,
         };
-        match (clock, self.take_back_due()) {
-            (Some(clock), Some(take_back)) => Some(clock.min(take_back)),
-            (clock, take_back) => clock.or(take_back),
-        }
+        [clock, self.take_back_due(), self.go_back_due()]
+            .into_iter()
+            .flatten()
+            .min()
     }
 
     /// Answers for the seat whose clock ran out, with a pass or no blocks, as if the seat had, unless the seat holds an
@@ -583,7 +583,7 @@ impl<S: EventStore> GameActor<S> {
     /// sent like the seat's own, as a batch of its own. A fallback the engine refuses concedes the seat, so no decision holds the
     /// table for ever.
     pub(crate) async fn expire(&mut self) -> Result<(), Fatal> {
-        if self.take_back_expired() {
+        if self.take_back_expired() || self.go_back_expired() {
             return Ok(());
         }
         let Phase::Running(running) = &mut self.phase else {
