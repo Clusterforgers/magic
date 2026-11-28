@@ -9,6 +9,7 @@ use mtg_engine::forecast::CombatForecast;
 use mtg_engine::manual::ManualAction;
 use mtg_engine::stack_forecast::ForecastChange;
 use mtg_engine::state::GameResult;
+use mtg_engine::go_back::{GoBackOffer, GoBackRefusal};
 use mtg_engine::take_back::{TakeBackOffer, TakeBackRefusal};
 use mtg_engine::turn::Step;
 use mtg_engine::{Answer, Decision, DecisionKind};
@@ -358,6 +359,10 @@ pub enum ClientMessage {
         /// True to agree.
         approve: bool,
     },
+    /// Takes back this seat's passes to the earlier step [`ServerMessage::GoBackOffer`] names; no one is asked.
+    ///
+    /// Refused with [`ServerMessage::GoBackRefused`] when something irreversible happened since.
+    GoBack,
     /// Sets or clears one of this seat's stops: a step at which the seat asks to be given priority.
     ///
     /// Only a step where a player gets priority can hold a stop. `Untap` and `Cleanup` are refused, set or
@@ -621,6 +626,18 @@ pub enum ServerMessage {
     TakeBackRefused {
         /// Why.
         reason: TakeBackRefusal,
+    },
+    /// The earlier step this seat may go back to now (see [`ClientMessage::GoBack`]); `None` when none.
+    ///
+    /// Sent when it changes, after the events of the step that changed it.
+    GoBackOffer {
+        /// The step and the seat's pass there.
+        offer: Option<GoBackOffer>,
+    },
+    /// This seat's `GoBack` was refused; nothing changed.
+    GoBackRefused {
+        /// Why.
+        reason: GoBackRefusal,
     },
     /// This seat's yield changed (see [`ClientMessage::Yield`]).
     ///

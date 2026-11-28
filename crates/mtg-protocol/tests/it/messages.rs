@@ -36,6 +36,7 @@ use mtg_engine::snapshot::snapshot;
 use mtg_engine::spend::Spend;
 use mtg_engine::stack_forecast::{Change, Fate, ForecastChange, Forecasted};
 use mtg_engine::state::GameResult;
+use mtg_engine::go_back::{GoBackOffer, GoBackRefusal};
 use mtg_engine::take_back::{TakeBackKind, TakeBackOffer, TakeBackRefusal};
 use mtg_engine::tokens::TokenCreated;
 use mtg_engine::triggers::{DelayedId, Triggered};
@@ -117,6 +118,7 @@ fn client_index(message: &ClientMessage) -> usize {
         ClientMessage::CancelAutoSkip { .. } => 20,
         ClientMessage::TakeBack => 21,
         ClientMessage::TakeBackVote { .. } => 22,
+        ClientMessage::GoBack => 23,
     }
 }
 
@@ -150,6 +152,8 @@ fn server_index(message: &ServerMessage) -> usize {
         ServerMessage::EndedByAdmin { .. } => 24,
         ServerMessage::DecksRevealed { .. } => 25,
         ServerMessage::DeckPictures { .. } => 26,
+        ServerMessage::GoBackOffer { .. } => 27,
+        ServerMessage::GoBackRefused { .. } => 28,
     }
 }
 
@@ -663,6 +667,7 @@ fn client_samples() -> Vec<ClientMessage> {
         ClientMessage::TakeBack,
         ClientMessage::TakeBackVote { approve: true },
         ClientMessage::TakeBackVote { approve: false },
+        ClientMessage::GoBack,
         ClientMessage::Join {
             protocol_version: PROTOCOL_VERSION,
             game: "table-1".into(),
@@ -983,6 +988,18 @@ fn server_samples() -> Vec<ServerMessage> {
     }
     out.push(ServerMessage::TakeBackRefused {
         reason: TakeBackRefusal::CardDrawn,
+    });
+    out.push(ServerMessage::GoBackOffer {
+        offer: Some(GoBackOffer {
+            player: PlayerId(0),
+            step: Step::Main1,
+            active: PlayerId(1),
+            at: 41,
+        }),
+    });
+    out.push(ServerMessage::GoBackOffer { offer: None });
+    out.push(ServerMessage::GoBackRefused {
+        reason: GoBackRefusal::Declared,
     });
     out.push(ServerMessage::Deciding {
         seats: vec![

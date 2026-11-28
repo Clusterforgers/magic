@@ -134,6 +134,10 @@ export interface Session {
   voteTakeBack(approve: boolean): boolean
   /** Clears the take-back notice. */
   dismissTakeBackNotice(): void
+  /** Takes back this seat's passes to the step `goBackOffer` names. False when the socket is not open. */
+  goBack(): boolean
+  /** Clears the go-back refusal. */
+  dismissGoBackRefusal(): void
   /** Says `text` to the table (trimmed, at most `MAX_CHAT_CHARS` characters). */
   chat(text: string): boolean
   /** Asks the server for a fresh snapshot; the escape hatch when the game looks stuck. */
@@ -280,6 +284,8 @@ export function createSession(deps: SessionDeps): Session {
           // The server tells a joining seat its offer and the open request again.
           takeBackOffer: null,
           takeBackRequest: null,
+          goBackOffer: null,
+          goBackRefused: null,
         })
         // A spectator holds no seat, so it has no settings to bring the server up to date with.
         if (deps.watch !== true) {
@@ -360,7 +366,14 @@ export function createSession(deps: SessionDeps): Session {
           castWhenAsked: null,
           takeBackOffer: null,
           takeBackRequest: null,
+          goBackOffer: null,
         })
+        return
+      case 'GoBackOffer':
+        setState({ goBackOffer: message.offer })
+        return
+      case 'GoBackRefused':
+        setState({ goBackRefused: message.reason })
         return
       case 'TakeBackOffer':
         setState({ takeBackOffer: message.offer })
@@ -719,6 +732,12 @@ export function createSession(deps: SessionDeps): Session {
     },
     cancelYield: () => socket.send({ type: 'CancelYield' }),
     takeBack: () => socket.send({ type: 'TakeBack' }),
+    goBack() {
+      if (!socket.send({ type: 'GoBack' })) return false
+      setState({ goBackRefused: null })
+      return true
+    },
+    dismissGoBackRefusal: () => setState({ goBackRefused: null }),
     voteTakeBack(approve) {
       if (!socket.send({ type: 'TakeBackVote', approve })) return false
       // The seat has answered; the server's next word on the request says the same.

@@ -36,6 +36,9 @@ pub enum EngineError {
     /// The last action cannot be taken back; nothing changed.
     #[error("cannot take back: {0}")]
     TakeBack(#[from] crate::take_back::TakeBackRefusal),
+    /// The player cannot go back a step; nothing changed.
+    #[error("cannot go back: {0}")]
+    GoBack(#[from] crate::go_back::GoBackRefusal),
 }
 
 /// Why an answer could not be previewed with [`Engine::preview_forecast`](crate::engine::Engine::preview_forecast).

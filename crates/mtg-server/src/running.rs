@@ -794,6 +794,11 @@ impl Running {
         self.step(seat, false, |engine| engine.take_back(seat))
     }
 
+    /// Takes `seat` back to its pass at log position `at` (`Engine::go_back`).
+    pub(crate) fn go_back(&mut self, seat: PlayerId, at: u64) -> Result<Step, EngineError> {
+        self.step(seat, false, |engine| engine.go_back(seat, at))
+    }
+
     /// Removes `seat` from the game.
     pub(crate) fn concede(&mut self, seat: PlayerId) -> Result<Step, Rejection> {
         self.step(seat, true, |engine| engine.concede(seat))

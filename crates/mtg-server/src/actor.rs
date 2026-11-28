@@ -230,6 +230,7 @@ fn launch<S: EventStore>(
         recorder,
         decks,
         take_backs: crate::take_backs::TakeBacks::default(),
+        go_backs: crate::go_backs::GoBacks::default(),
         glance,
     };
     actor.publish_glance();
@@ -279,6 +280,8 @@ pub(crate) struct GameActor<S> {
     pub(crate) presence: Presence,
     /// The open take-back request and what each seat may take back.
     pub(crate) take_backs: crate::take_backs::TakeBacks,
+    /// The passes each seat sent itself, which it may go back to.
+    pub(crate) go_backs: crate::go_backs::GoBacks,
     /// Where the status is published between commands, for lists that must not wait on the actor
     /// ([`GameHandle::glance`]).
     pub(crate) glance: watch::Sender<Option<GameStatus>>,
@@ -341,6 +344,7 @@ impl<S: EventStore> GameActor<S> {
             Command::Join { seat, reply } => self.join(seat, reply).await,
             Command::Watch { reply } => self.watch(reply),
             Command::Message { seat, message } => return self.message(seat, message).await,
+            Command::Bot { seat } => self.go_backs.mark_bot(seat),
             Command::Leave { seat } => {
                 let was_here = self.seats.connected().contains(&seat);
                 self.seats.detach(seat);
@@ -513,6 +517,7 @@ impl<S: EventStore> GameActor<S> {
                 self.seats.send(seat, message);
             }
             self.take_back_sync(seat);
+            self.go_back_sync(seat);
         }
     }
 
@@ -577,6 +582,10 @@ impl<S: EventStore> GameActor<S> {
             }
             ClientMessage::TakeBackVote { approve } => {
                 return self.vote_take_back(seat, approve).await;
+            }
+            ClientMessage::GoBack => {
+                self.end_through_yield(seat);
+                return self.go_back(seat).await;
             }
             ClientMessage::Resync => match self.phase {
                 Phase::Running(_) => self.sync(seat),

@@ -435,6 +435,7 @@ async fn run_seat(handle: GameHandle, seat: PlayerId, mut brain: BotBrain, pace:
         let Ok(mut inbox) = handle.join(seat).await else {
             return;
         };
+        handle.mark_bot(seat).await;
         // In a lobby this readies the seat; in a running game the table refuses it, which changes nothing.
         if handle.send(seat, ClientMessage::Ready).await.is_err() {
             return;

@@ -357,6 +357,7 @@ const PUBLIC: Record<VariantName<Event>, [Event, string]> = {
   PriorityPassed: [{ PriorityPassed: { player: 1 } }, 'Bo passes priority'],
   LandPlayed: [{ LandPlayed: { player: 0, object: 3 } }, 'Ana plays Forest'],
   TookBack: [{ TookBack: { player: 0, kind: 'Cast', name: 'Shock' } }, 'Ana took back casting Shock'],
+  WentBack: [{ WentBack: { player: 1, step: 'End', active: 0 } }, "Bo went back to Ana's end step"],
   LoopRepeated: [
     {
       LoopRepeated: {
