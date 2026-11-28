@@ -1,6 +1,4 @@
 import type { Target } from '@/features/learn/anchors'
-import { resolve } from '@/features/learn/resolve'
-import type { CardLookup } from '@/features/learn/resolve'
 import type { SideTab } from '../sideCounts'
 
 /** One stop of the table tour: what it explains and the part of the table it lights. */
@@ -87,9 +85,3 @@ export const TOUR: readonly TourStep[] = [
     at: ['help.menu'],
   },
 ]
-
-/** What `step` lights now: the first of its anchors that resolves to a drawn element (or its opener), else nothing. */
-export function tourTarget(step: TourStep, lookup: CardLookup, doc: Document = document): Target[] {
-  const found = step.at.find((target) => resolve(target, lookup, doc).kind === 'found')
-  return found === undefined ? [] : [found]
-}

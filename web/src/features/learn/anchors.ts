@@ -24,7 +24,7 @@ export const STOP_STEPS = [
 
 type StopStep = (typeof STOP_STEPS)[number]
 
-/** The anchors with a fixed id, in the registry's order. */
+/** The anchors with a fixed id, in the registry's order: the table's, then the pages' of the page tours. */
 const FIXED = {
   'opening.hand': { label: 'your opening hand' },
   'opening.keep': { label: 'Keep' },
@@ -85,6 +85,32 @@ const FIXED = {
   'table.menu': { label: 'the table menu' },
   preview: { label: 'the card preview' },
   'preview.keywords': { label: 'the keywords' },
+  'lexicon.search': { label: 'the search' },
+  'lexicon.kinds': { label: 'the kinds' },
+  'lexicon.entry': { label: 'an entry' },
+  'decks.page': { label: 'the Decks page' },
+  'decks.list': { label: 'your decks' },
+  'decks.import': { label: 'Import deck' },
+  'decks.new': { label: 'New deck' },
+  'builder.search': { label: 'the card search' },
+  'builder.deck': { label: 'the deck' },
+  'builder.check': { label: 'the deck check' },
+  'builder.save': { label: 'the save bar' },
+  'create.game': { label: 'the format and seats' },
+  'create.options': { label: 'the rules and visibility' },
+  'create.footer': { label: 'Create' },
+  'lobby.invite': { label: 'the invite' },
+  'lobby.game': { label: 'the seats' },
+  'lobby.deck': { label: 'your deck' },
+  'lobby.chooser': { label: 'the deck chooser' },
+  'lobby.ready': { label: 'Ready' },
+  'review.page': { label: 'Review cards' },
+  'review.queue': { label: 'the cards that wait' },
+  'review.read': { label: 'the card under review' },
+  'review.check': { label: 'the card to check' },
+  'review.empty': { label: 'the empty queue' },
+  'review.verdict': { label: 'the verdict' },
+  'review.actions': { label: 'the check' },
 } as const satisfies Record<string, AnchorInfo>
 
 /** An anchor with a fixed id. */

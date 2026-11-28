@@ -8,6 +8,7 @@ import {
   ListIcon,
 } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { EmptyState } from '@/components/EmptyState'
 import { Kbd } from '@/components/Kbd'
 import { Loading } from '@/components/Loading'
@@ -383,7 +384,10 @@ export function ReadView({
   const checksLeft = items.filter((item) => item.kind === 'check' && !done.has(item.id)).length
   return (
     <section aria-labelledby="read-title" className="grid gap-4">
-      <header className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+      <header
+        className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3"
+        {...anchor('review.queue')}
+      >
         <div className="grid min-w-0 flex-[1_1_20rem] gap-2">
           <h1 id="read-title" className="text-2xl font-semibold tracking-tight break-words">
             {words.heading}
@@ -455,6 +459,7 @@ export function ReadView({
       ) : items.length === 0 || finished ? (
         <EmptyState
           icon={BookOpenIcon}
+          mark={anchor('review.empty')}
           title={finished ? 'Every card is reviewed' : 'Nothing to review'}
           action={<BackLink target={target} />}
         >
