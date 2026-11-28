@@ -15,7 +15,9 @@
         },
         {
           "Replacement": {
-            "when": { "P170bAssembles": { "what": [{ "Subtype": "Rigger" }, { "ControlledBy": "You" }] } },
+            "when": {
+              "P170bAssembles": { "what": [{ "Subtype": "Rigger" }, { "ControlledBy": "You" }] }
+            },
             "by": { "Multiply": 2 }
           }
         }
