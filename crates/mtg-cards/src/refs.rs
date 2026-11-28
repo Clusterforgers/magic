@@ -794,6 +794,9 @@ pub enum Pred {
     Kicked,
     /// Is a spell, or a permanent that entered as a spell, cast with an additional cost paid (bargain, casualty, gift; CR 601.2b).
     AdditionalCostPaid,
+    /// Is a spell on the stack whose announced cost tapped or took the object the reference names ("becomes tapped to pay a
+    /// teamwork cost").
+    Lc4PaidWith(Ref),
     /// Is a modal spell (CR 700.2): its spell ability chooses modes as it is cast ("a modal spell"); a modal double-faced
     /// card is not one for that.
     R112Modal,

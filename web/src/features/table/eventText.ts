@@ -292,9 +292,14 @@ function modificationWords(modification: Modification, group: boolean, n: EventN
     return `can't attack ${whom}`
   }
   if ('ChangeText' in modification) {
-    const word = (text: TextWord) => ('Color' in text ? text.Color.toLowerCase() : text.Subtype)
+    const word = (text: TextWord) =>
+      text === 'Lc4EveryColor'
+        ? 'every color word'
+        : 'Color' in text
+          ? `"${text.Color.toLowerCase()}"`
+          : `"${text.Subtype}"`
     const { from, to } = modification.ChangeText
-    return `${group ? 'have' : 'has'} "${word(from)}" changed to "${word(to)}" in ${group ? 'their' : 'its'} text`
+    return `${group ? 'have' : 'has'} ${word(from)} changed to ${word(to)} in ${group ? 'their' : 'its'} text`
   }
   if ('SetName' in modification) {
     return `${group ? 'are' : 'is'} named ${modification.SetName}`

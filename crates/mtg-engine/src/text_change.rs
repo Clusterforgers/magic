@@ -1,5 +1,6 @@
 //! Text-changing effects (CR 612): "change the text of target spell or permanent by replacing all instances of one color
-//! word with another" (Sleight of Mind, Mind Bend, Magical Hack, Artificial Evolution).
+//! word with another" (Sleight of Mind, Mind Bend, Magical Hack, Artificial Evolution), and every color word changed to the
+//! chosen one (Swirl the Mists).
 //!
 //! A text change is a modification of layer 3 (`Modification::ChangeText`): the layers rewrite the abilities and the
 //! keywords an object has and the subtypes of its type line before any later layer reads them, so a static ability, a
@@ -24,6 +25,8 @@ pub enum TextWord {
     Color(Color),
     /// A basic land type or a creature type ("Swamp", "Goblin").
     Subtype(Subtype),
+    /// Every color word, as the word replaced: "all instances of color words ... are changed to the chosen color word".
+    Lc4EveryColor,
 }
 
 impl TextWord {
@@ -32,6 +35,7 @@ impl TextWord {
         match self {
             TextWord::Color(color) => serde_json::to_value(color).unwrap_or(Value::Null),
             TextWord::Subtype(subtype) => Value::String(subtype.0.clone()),
+            TextWord::Lc4EveryColor => Value::Null,
         }
     }
 
@@ -39,7 +43,10 @@ impl TextWord {
     pub fn same_kind(&self, other: &TextWord) -> bool {
         matches!(
             (self, other),
-            (TextWord::Color(_), TextWord::Color(_)) | (TextWord::Subtype(_), TextWord::Subtype(_))
+            (
+                TextWord::Color(_) | TextWord::Lc4EveryColor,
+                TextWord::Color(_)
+            ) | (TextWord::Subtype(_), TextWord::Subtype(_))
         )
     }
 }
@@ -85,7 +92,20 @@ fn changed<T: Serialize + for<'de> Deserialize<'de>>(
         return None;
     }
     let mut tree = serde_json::to_value(item).ok()?;
-    if !rewrite(&mut tree, &from.value(), &to.value()) {
+    let froms: Vec<TextWord> = match from {
+        TextWord::Lc4EveryColor => Color::ALL
+            .into_iter()
+            .map(TextWord::Color)
+            .filter(|word| word != to)
+            .collect(),
+        word => vec![word.clone()],
+    };
+    // Each word is rewritten, so the changes are gathered before they are asked about.
+    let rewritten: Vec<bool> = froms
+        .iter()
+        .map(|word| rewrite(&mut tree, &word.value(), &to.value()))
+        .collect();
+    if !rewritten.contains(&true) {
         return None;
     }
     serde_json::from_value(tree).ok()
@@ -191,6 +211,34 @@ mod tests {
         let before: Keyword = serde_json::from_str(before).unwrap();
         let after: Keyword = serde_json::from_str(after).unwrap();
         assert_eq!(keyword(&before, &from, &to), after);
+    }
+
+    #[rstest]
+    #[case::two_colors_to_one(
+        r#"{"Static":{"affected":{"Each":[{"AnyOf":[{"Color":"Black"},{"Color":"White"}]}]},"mods":[{"AddKeyword":"Flying"}]}}"#,
+        r#"{"Static":{"affected":{"Each":[{"AnyOf":[{"Color":"Green"},{"Color":"Green"}]}]},"mods":[{"AddKeyword":"Flying"}]}}"#
+    )]
+    #[case::the_chosen_word_stays(
+        r#"{"Static":{"affected":{"Each":[{"Color":"Green"},{"Not":{"Color":"Red"}}]},"mods":[{"AddKeyword":"Flying"}]}}"#,
+        r#"{"Static":{"affected":{"Each":[{"Color":"Green"},{"Not":{"Color":"Green"}}]},"mods":[{"AddKeyword":"Flying"}]}}"#
+    )]
+    fn every_color_word_becomes_the_chosen_one(#[case] before: &str, #[case] after: &str) {
+        assert_eq!(
+            ability(&rules(before), &TextWord::Lc4EveryColor, &GREEN),
+            rules(after)
+        );
+    }
+
+    #[rstest]
+    #[case::only_the_chosen_word(r#"{"Protection":[{"Color":"Green"}]}"#)]
+    #[case::a_land_type(r#"{"Landwalk":[{"Subtype":"Swamp"}]}"#)]
+    fn every_color_word_leaves_the_rest(#[case] before: &str) {
+        let before: Keyword = serde_json::from_str(before).unwrap();
+        assert_eq!(keyword(&before, &TextWord::Lc4EveryColor, &GREEN), before);
+        assert_eq!(
+            keyword(&before, &TextWord::Lc4EveryColor, &land("Island")),
+            before
+        );
     }
 
     #[test]

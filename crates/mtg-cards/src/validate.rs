@@ -932,6 +932,10 @@ impl<'a> Walker<'a> {
                 self.uses("Pred", "TargetedBy");
                 self.reference(who, Kind::Object);
             }
+            Pred::Lc4PaidWith(who) => {
+                self.uses("Pred", "Lc4PaidWith");
+                self.reference(who, Kind::Object);
+            }
             Pred::R113CopyOf(who) => {
                 self.uses("Pred", "R113CopyOf");
                 self.reference(who, Kind::Object);
@@ -1157,6 +1161,7 @@ impl<'a> Walker<'a> {
             | Pred::BandedWith(_)
             | Pred::Blocks(_)
             | Pred::TargetedBy(_)
+            | Pred::Lc4PaidWith(_)
             | Pred::R113CopyOf(_)
             | Pred::R114CouldTarget(_)
             | Pred::R114TargetsOnlyOne(_)
@@ -2246,7 +2251,9 @@ impl<'a> Walker<'a> {
                         w.at("filter", |w| w.selector(filter));
                         w.at("count", |w| w.amount(count));
                     }
-                    CostItem::ExileSpell { filter } => w.at("filter", |w| w.selector(filter)),
+                    CostItem::ExileSpell { filter } | CostItem::Lc4UnattachFrom { filter } => {
+                        w.at("filter", |w| w.selector(filter));
+                    }
                     CostItem::R6012ChooseOrExiled { filter, exiled } => {
                         w.at("filter", |w| w.selector(filter));
                         w.at("exiled", |w| w.selector(exiled));
@@ -3269,6 +3276,7 @@ impl<'a> Walker<'a> {
             Modification::AddChosenSubtype
             | Modification::SetChosenColor
             | Modification::AddChosenColor
+            | Modification::Lc4ChosenColorWords
             | Modification::R6001AddChosenAbilities
             | Modification::R121SetChosenName
             | Modification::SetLandTypesNthChosen(_) => {
@@ -8746,6 +8754,7 @@ fn picks(cost: &Cost) -> bool {
                 | CostItem::Blight(_)
                 | CostItem::Behold { .. }
                 | CostItem::R6012ChooseOrExiled { .. }
+                | CostItem::Lc4UnattachFrom { .. }
                 | CostItem::ExiledToGraveyard { .. }
                 | CostItem::ToLibrary { .. }
                 | CostItem::Craft { .. }

@@ -152,6 +152,10 @@ pub enum Modification {
     /// Adds the colour the source chose as it entered to the colours it has (layer 5): "are the chosen color in addition
     /// to their other colors". Only a static ability has it; with no colour chosen it changes nothing.
     AddChosenColor,
+    /// Changes every color word of the text to the color the source chose as it entered (layer 3, CR 612): "All instances
+    /// of color words in the text of spells and permanents are changed to the chosen color word". Only a static ability
+    /// has it; with no colour chosen it changes nothing.
+    Lc4ChosenColorWords,
     /// Adds each ability the source chose as it entered from among first strike, vigilance, and lifelink (layer 6):
     /// "have each of the chosen abilities". Only a static ability has it; with nothing chosen it changes nothing.
     R6001AddChosenAbilities,
@@ -297,6 +301,7 @@ impl Modification {
             | Modification::R707CopyOf { .. } => Some("1"),
             Modification::SetController(_) => Some("2"),
             Modification::ChangeTextChosen { .. }
+            | Modification::Lc4ChosenColorWords
             | Modification::ChangeTextChosenTo { .. }
             | Modification::R612ExchangeTextBoxes
             | Modification::R121SetChosenName => Some("3"),

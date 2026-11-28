@@ -214,6 +214,12 @@ pub enum CostItem {
     /// Unattach the source, an Equipment or Aura attached to a permanent (CR 701.3d); in an ability an Equipment or Aura
     /// gives the permanent it is attached to, that Equipment or Aura ("{T}, Unattach Shuriken: ...").
     Unattach,
+    /// Unattach a permanent the selector names from what it is attached to (CR 701.3d): "Unattach an Equipment from
+    /// Captain America"; the payer picks one, and the ability reads it as `Ref::Paid`.
+    Lc4UnattachFrom {
+        /// Which attached permanents may be unattached.
+        filter: Selector,
+    },
     /// The payer has the source's controller draw this many cards ("unless any opponent has you draw a card"): always
     /// payable, the draws are the controller's.
     R110ControllerDraws(u32),
