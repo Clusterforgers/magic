@@ -1,5 +1,6 @@
 import { CircleAlertIcon, EyeIcon } from 'lucide-react'
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog'
@@ -177,6 +178,7 @@ export function DeckChooser({
       ref={root}
       aria-labelledby="deck-title"
       data-slot="deck-chooser"
+      {...anchor('lobby.chooser')}
       className="flex min-h-0 flex-1 flex-col gap-3"
     >
       <div className="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">

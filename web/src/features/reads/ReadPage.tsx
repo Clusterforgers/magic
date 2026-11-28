@@ -1,4 +1,5 @@
 import { Navigate } from '@tanstack/react-router'
+import { anchor } from '@/features/learn/anchors'
 import { Loading } from '@/components/Loading'
 import { PageShell } from '@/components/PageShell'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -30,7 +31,11 @@ interface ReadPageProps {
 function Notice({ children, action }: { children: string; action?: React.ReactNode }) {
   return (
     <PageShell width="wide">
-      <section aria-labelledby="read-title" className="grid justify-items-start gap-3">
+      <section
+        aria-labelledby="read-title"
+        className="grid justify-items-start gap-3"
+        {...anchor('review.page')}
+      >
         <h1 id="read-title" className="text-2xl font-semibold tracking-tight">
           Review cards
         </h1>

@@ -1,4 +1,5 @@
 import type { MouseEvent, ReactNode } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { Button } from '@/components/ui/button'
 import { readyState } from './lobbyModel'
 import type { ReadyFacts } from './lobbyModel'
@@ -18,6 +19,7 @@ export function ReadyBar({ onToggle, children, ...facts }: ReadyBarProps) {
   return (
     <div
       data-slot="ready-bar"
+      {...anchor('lobby.ready')}
       // The page's gutter bleed stays below 1000 px: `sm:` sorts after an arbitrary `min-[1000px]:` and would win.
       className="grid gap-2 px-4 py-3 max-[999px]:sticky max-[999px]:bottom-0 max-[999px]:z-10 max-[999px]:-mx-4 max-[999px]:border-t max-[999px]:bg-background max-[999px]:sm:-mx-6 max-[999px]:sm:px-6 min-[1000px]:rounded-xl min-[1000px]:border min-[1000px]:bg-card"
     >

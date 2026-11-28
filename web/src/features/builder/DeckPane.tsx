@@ -9,6 +9,7 @@ import {
 import { useId, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { Ref } from 'react'
 import { Link } from '@tanstack/react-router'
+import { anchor } from '@/features/learn/anchors'
 import { EmptyState } from '@/components/EmptyState'
 import { Pill } from '@/components/Pill'
 import { Alert, AlertDescription } from '@/components/ui/alert'
@@ -165,7 +166,12 @@ export function DeckPane({
     </EmptyState>
   )
   return (
-    <section aria-label="Deck" data-view={view} className={cn('surface min-h-0 flex-col', className)}>
+    <section
+      aria-label="Deck"
+      {...anchor('builder.deck')}
+      data-view={view}
+      className={cn('surface min-h-0 flex-col', className)}
+    >
       <Tabs
         value={view}
         onValueChange={(next) => {

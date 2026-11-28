@@ -3,6 +3,7 @@ import { CircleAlertIcon } from 'lucide-react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import type { MouseEvent } from 'react'
 import { useShallow } from 'zustand/react/shallow'
+import { anchor } from '@/features/learn/anchors'
 import { PageShell } from '@/components/PageShell'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -192,6 +193,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
     >
       <div
         data-slot="lobby-game"
+        {...anchor('lobby.game')}
         className="grid min-w-0 grid-cols-1 gap-4 min-[1000px]:col-start-1 min-[1000px]:row-start-1"
       >
         <div>
@@ -314,6 +316,7 @@ export function Lobby({ api, decks, token, precons = sharedPrecons }: LobbyProps
       {/* On a phone this wrapper takes no box of its own, so the Ready bar can stick to the bottom of the page. */}
       <div
         data-slot="lobby-deck"
+        {...anchor('lobby.deck')}
         className="contents min-[1000px]:col-start-2 min-[1000px]:row-span-2 min-[1000px]:row-start-1 min-[1000px]:sticky min-[1000px]:top-6 min-[1000px]:flex min-[1000px]:h-[calc(100dvh-7.5rem)] min-[1000px]:min-h-136 min-[1000px]:flex-col min-[1000px]:gap-3"
       >
         {seat === null || !editable ? null : (
