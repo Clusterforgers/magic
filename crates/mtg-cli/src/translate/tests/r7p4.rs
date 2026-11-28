@@ -27,8 +27,7 @@ fn abilities(text: &str) -> Vec<Value> {
     out.faces
         .into_iter()
         .next()
-        .map(|face| face.abilities)
-        .unwrap_or_default()
+        .map_or_default(|face| face.abilities)
 }
 
 fn gaps(text: &str) -> Vec<String> {

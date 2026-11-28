@@ -72,8 +72,7 @@ fn bound(driver: &Driver, options: &AttackOptions, name: &str) -> (bool, Vec<Att
         .attackers
         .iter()
         .find(|option| option.object == id)
-        .map(|option| option.defenders.clone())
-        .unwrap_or_default();
+        .map_or_default(|option| option.defenders.clone());
     (options.required.contains(&id), defenders)
 }
 

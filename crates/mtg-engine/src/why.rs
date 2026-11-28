@@ -64,8 +64,7 @@ pub(crate) fn split_second(state: &GameState) -> Option<Why> {
         spell,
         name: state
             .object(spell)
-            .map(|object| object.card().name.clone())
-            .unwrap_or_default(),
+            .map_or_default(|object| object.card().name.clone()),
     })
 }
 

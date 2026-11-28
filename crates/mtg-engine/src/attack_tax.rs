@@ -155,8 +155,7 @@ fn own_share(
     shares(state, player, attackers)
         .into_iter()
         .find(|(paying, _)| *paying == player)
-        .map(|(_, own)| own)
-        .unwrap_or_default()
+        .map_or_default(|(_, own)| own)
 }
 
 /// The events of an attack declared and paid for: the teammates' payments of a team's attack (`paid`), the

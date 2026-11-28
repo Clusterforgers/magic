@@ -510,11 +510,7 @@ impl<S: EventStore> GameActor<S> {
         let opening = engine.events().to_vec();
         match self.persist(&before, &opening, 0).await {
             Ok(batches) => {
-                let public = self
-                    .decks
-                    .as_ref()
-                    .map(SeatDecks::public_seats)
-                    .unwrap_or_default();
+                let public = self.decks.as_ref().map_or_default(SeatDecks::public_seats);
                 let mut running = Running::new(engine, self.pace)
                     .with_manual_play(manual_play)
                     .with_public_lists(public);

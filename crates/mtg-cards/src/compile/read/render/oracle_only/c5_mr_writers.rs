@@ -27,8 +27,7 @@ fn c5_mr_twin(json: &str, from: &str, to: &str) -> Vec<String> {
         return Vec::new();
     }
     serde_json::from_str::<Ability>(&json.replacen(from, to, 1))
-        .map(|plain| super::super::written_variants(&plain))
-        .unwrap_or_default()
+        .map_or_default(|plain| super::super::written_variants(&plain))
 }
 
 /// The wordings of the twin with each `from` of the pairs changed to its `to`, in order; none when one is missing.
@@ -41,8 +40,7 @@ fn c5_mr_twin_all(json: &str, pairs: &[(&str, &str)]) -> Vec<String> {
         twin = twin.replacen(from, to, 1);
     }
     serde_json::from_str::<Ability>(&twin)
-        .map(|plain| super::super::written_variants(&plain))
-        .unwrap_or_default()
+        .map_or_default(|plain| super::super::written_variants(&plain))
 }
 
 /// The texts that hold `from`, with it written as `to`.

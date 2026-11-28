@@ -127,8 +127,7 @@ fn lowered(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| first.to_lowercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_lowercase().chain(chars).collect())
 }
 
 /// The keyword line the abilities from the first one on write, and how many of them it takes: the equip abilities, one for

@@ -75,8 +75,7 @@ pub(super) fn r7c_condition_texts(condition: &Condition) -> Vec<String> {
             op: Cmp::Ge,
             right: Amount::Fixed(number),
         } => u32::try_from(*number)
-            .map(quantity_texts)
-            .unwrap_or_default()
+            .map_or_default(quantity_texts)
             .iter()
             .map(|words| format!("{words} or more mana was spent to cast that spell"))
             .collect(),
@@ -109,7 +108,5 @@ fn negated(condition: &Condition) -> Option<Condition> {
 
 /// The wordings after "unless" of the condition of a step: those of the condition that does not hold.
 pub(super) fn r7c_unless_texts(condition: &Condition) -> Vec<String> {
-    negated(condition)
-        .map(|other| w4a_condition_texts(&other))
-        .unwrap_or_default()
+    negated(condition).map_or_default(|other| w4a_condition_texts(&other))
 }

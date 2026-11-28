@@ -92,11 +92,9 @@ pub(crate) fn r5515_power_up_again_texts(ability: &Ability) -> Vec<String> {
     else {
         return Vec::new();
     };
-    super::selectors::phrase_text(which, super::selectors::Form::All)
-        .map(|what| {
-            vec![format!(
-                "Each power-up ability of {what} can be activated an additional time."
-            )]
-        })
-        .unwrap_or_default()
+    super::selectors::phrase_text(which, super::selectors::Form::All).map_or_default(|what| {
+        vec![format!(
+            "Each power-up ability of {what} can be activated an additional time."
+        )]
+    })
 }

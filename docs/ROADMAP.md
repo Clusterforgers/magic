@@ -85,7 +85,6 @@ Items that touch the running game come first; the play-session findings (pf) lea
 
 - [ ] (d1b) The release script's steps as a GitHub Actions workflow on a published release, so a release needs no dev machine (`docs/deploy.md`)
 - [ ] (db1) Game event commits take milliseconds instead of 1 to 1.8 s on the replicated volume, by an owner-chosen fix: a larger `shared_buffers`, `synchronous_commit` off for event writes, or a local volume (`docs/performance.md`, Deck lists)
-- [ ] (pf9j) The view tests' seat loops iterate instead of indexing, and the `needless_range_loop` and `map_unwrap_or` allowances Rust 1.100 needed are dropped
 - [ ] (lp2a) A loop that makes a permanent each cycle runs thousands of iterations in one shortcut: the trigger scan, the target lists and the state-based actions of each step no longer read every permanent
 
 ## M5 Table and prompts
@@ -129,7 +128,6 @@ Open card, compiler and wording items: `docs/cards-backlog.md`.
 - [ ] (ts1m) A workspace-hack crate (cargo-hakari) fixes the dependency features, so every package selection shares one build and `cargo test -p mtg-engine` in a warm worktree compiles nothing (now 86 s; `Cargo.toml`, `crates/`; no dependency)
 - [ ] (dep) Cargo and web dependencies are current; the piece runs alone between rounds (`docs/agents.md`)
 - [ ] (t5b) The `mtg-testkit` `it` binary needs fewer test-seconds: over 90% is `Engine::apply` (`priority_options` 36%, `triggers::detect` 24%, `layers::compute` 14%, whole-object clones), so the next cut is in the engine; opt-level 3 for `mtg-cards` and mimalloc save about 5% and slow every rebuild, so they are not adopted
-- [ ] (t5d) The test bot retries a refused pick of objects that share a creature type (`Alike::R6012ShareCreatureType`) as it does for a shared card type (`crates/mtg-testkit/src/bot.rs`, `apply_answer`)
 - [ ] (t1) The `mtg-cli` `fetch_scryfall` tests are stable under parallel load
 - [ ] (t3c) DSL amounts for what an earlier effect did and for the mana value a cost took, and a partner by creature type (Foul-Tongue Shriek, The Knight of Land Drops)
 - [ ] Coverage dashboard in the web over `Library::support`: states, reasons and clause spans per card, ranked by saved-deck demand (`docs/deck-check.md`)

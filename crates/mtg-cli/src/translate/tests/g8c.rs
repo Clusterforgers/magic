@@ -166,8 +166,7 @@ fn g8c_you_and_another_player_each_draw(#[case] line: &str, #[case] other: Optio
     let effects = ability
         .get("Spell")
         .or_else(|| ability.get("Triggered"))
-        .map(|inner| inner["effects"].clone())
-        .unwrap_or_default();
+        .map_or_default(|inner| inner["effects"].clone());
     assert_eq!(
         effects,
         json!([

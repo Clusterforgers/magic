@@ -279,15 +279,12 @@ impl Survey {
             .map(|(group, cards)| {
                 // A key that nearly every card of a group carries is a parameter of the verb, not a variation of it.
                 let own = cards.len();
-                let mut group_keys: Vec<(String, usize)> = keys
-                    .get(group)
-                    .map(|map| {
-                        map.iter()
-                            .map(|(k, v)| (k.clone(), v.len()))
-                            .filter(|(_, n)| own < DEFINING_MIN_CARDS || n * 10 < own * 9)
-                            .collect()
-                    })
-                    .unwrap_or_default();
+                let mut group_keys: Vec<(String, usize)> = keys.get(group).map_or_default(|map| {
+                    map.iter()
+                        .map(|(k, v)| (k.clone(), v.len()))
+                        .filter(|(_, n)| own < DEFINING_MIN_CARDS || n * 10 < own * 9)
+                        .collect()
+                });
                 group_keys.sort_by(|a, b| b.1.cmp(&a.1).then_with(|| a.0.cmp(&b.0)));
                 Group {
                     kind: group.0,

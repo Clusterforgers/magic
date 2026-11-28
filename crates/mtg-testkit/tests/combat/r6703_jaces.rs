@@ -70,8 +70,7 @@ fn defenders(
                     .attackers
                     .iter()
                     .find(|option| option.object == bear)
-                    .map(|option| option.defenders.clone())
-                    .unwrap_or_default();
+                    .map_or_default(|option| option.defenders.clone());
                 return Ok((driver, found));
             }
             DecisionKind::PayMana(_) => {

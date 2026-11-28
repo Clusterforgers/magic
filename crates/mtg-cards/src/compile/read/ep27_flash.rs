@@ -94,8 +94,7 @@ pub(super) fn ep27_flash_texts(
         let mut chars = text.chars();
         chars
             .next()
-            .map(|first| first.to_uppercase().chain(chars).collect::<String>())
-            .unwrap_or_default()
+            .map_or_default(|first| first.to_uppercase().chain(chars).collect::<String>())
     };
     let mut out = Vec::new();
     for held in &long {

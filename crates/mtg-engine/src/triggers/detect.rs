@@ -1894,8 +1894,7 @@ fn matching(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) ->
                     // "If mana from a Treasure was spent to cast it" stays readable after the spell resolves.
                     cause.r113_spent_from = state
                         .object(reference.id)
-                        .map(|spell| spell.mana_spent_from().to_vec())
-                        .unwrap_or_default();
+                        .map_or_default(|spell| spell.mana_spent_from().to_vec());
                     cause
                 },
             )
@@ -3018,12 +3017,10 @@ fn causes(pattern: &TriggerPattern, happened: &Happened, scope: &Scope<'_>) -> V
         // "Whenever a +1/+1 counter is removed from ~" triggers once for each counter removed (CR 603.2c), each with
         // an amount of one; "one or more counters" is a `Batch`.
         (TriggerPattern::CountersRemoved { .. }, Happened::Counters { delta, .. }) => {
-            matching(pattern, happened, scope)
-                .map(|cause| {
-                    let one = Cause { amount: 1, ..cause };
-                    (0..delta.unsigned_abs()).map(|_| one.clone()).collect()
-                })
-                .unwrap_or_default()
+            matching(pattern, happened, scope).map_or_default(|cause| {
+                let one = Cause { amount: 1, ..cause };
+                (0..delta.unsigned_abs()).map(|_| one.clone()).collect()
+            })
         }
         _ => matching(pattern, happened, scope).into_iter().collect(),
     }

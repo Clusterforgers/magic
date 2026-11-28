@@ -96,10 +96,7 @@ fn other_checked_repeats_are_gaps(#[case] keys: &str, #[case] gap: &str) {
 )]
 fn a_dig_until_moves_the_found_and_the_rest(#[case] keys: &str, #[case] after: Value) {
     let found = effects(&spell(&format!("DigUntil | {keys}"), ""));
-    let steps = found
-        .as_array()
-        .map(|list| list[1..].to_vec())
-        .unwrap_or_default();
+    let steps = found.as_array().map_or_default(|list| list[1..].to_vec());
     assert_eq!(Value::Array(steps), after);
 }
 

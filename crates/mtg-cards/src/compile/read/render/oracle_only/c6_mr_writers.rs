@@ -23,8 +23,7 @@ pub(super) fn add(ability: &Ability, texts: &mut Vec<String>) {
 /// The wordings the checker accepts for the ability written as `json`; none when it is no ability.
 fn c6_mr_written(json: &str) -> Vec<String> {
     serde_json::from_str::<Ability>(json)
-        .map(|plain| super::super::written_variants(&plain))
-        .unwrap_or_default()
+        .map_or_default(|plain| super::super::written_variants(&plain))
 }
 
 /// The wordings of the twin with each `from` of the pairs changed to its `to`, in order; none when one is missing.

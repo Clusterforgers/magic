@@ -252,8 +252,7 @@ mod tests {
         assert_eq!(body["system"][0]["cache_control"]["type"], "ephemeral");
         let roles: Vec<&str> = body["messages"]
             .as_array()
-            .map(|all| all.iter().filter_map(|m| m["role"].as_str()).collect())
-            .unwrap_or_default();
+            .map_or_default(|all| all.iter().filter_map(|m| m["role"].as_str()).collect());
         assert_eq!(roles, ["user", "assistant", "user"]);
         assert_eq!(body["messages"][2]["content"], "fix");
     }

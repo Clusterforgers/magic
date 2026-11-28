@@ -267,8 +267,7 @@ fn counter_actions(text: &str) -> Option<String> {
             let mut chars = words.chars();
             chars
                 .next()
-                .map(|first| first.to_uppercase().chain(chars).collect())
-                .unwrap_or_default()
+                .map_or_default(|first| first.to_uppercase().chain(chars).collect())
         } else {
             words
         };

@@ -176,8 +176,7 @@ fn w11d_ventured(
         room_name: dungeon
             .rooms
             .get(usize::from(room))
-            .map(|r| r.name.clone())
-            .unwrap_or_default(),
+            .map_or_default(|r| r.name.clone()),
         definition,
     }))
 }

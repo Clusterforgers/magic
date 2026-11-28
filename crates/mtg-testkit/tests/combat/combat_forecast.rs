@@ -168,7 +168,7 @@ fn the_forecast_equals_the_damage_that_follows(
                     .attackers
                     .iter()
                     .find(|a| a.attacker == options.attacker)
-                    .map(|a| {
+                    .map_or_default(|a| {
                         a.deals
                             .iter()
                             .filter_map(|h| match h.target {
@@ -176,8 +176,7 @@ fn the_forecast_equals_the_damage_that_follows(
                                 DamageTarget::Player(_) => None,
                             })
                             .collect()
-                    })
-                    .unwrap_or_default();
+                    });
                 mtg_engine::Answer::AssignDamage(split)
             }
             _ => mtg_engine::Answer::Priority(mtg_engine::decision::PriorityAction::Pass),

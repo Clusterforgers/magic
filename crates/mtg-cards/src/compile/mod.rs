@@ -725,8 +725,9 @@ fn own_face(face: &PrintedFace) -> read::Own {
         subtypes: face
             .type_line
             .split_once('\u{2014}')
-            .map(|(_, subtypes)| subtypes.split_whitespace().map(str::to_owned).collect())
-            .unwrap_or_default(),
+            .map_or_default(|(_, subtypes)| {
+                subtypes.split_whitespace().map(str::to_owned).collect()
+            }),
         power: number(&face.power),
         toughness: number(&face.toughness),
         creature_at: creature_at(face),

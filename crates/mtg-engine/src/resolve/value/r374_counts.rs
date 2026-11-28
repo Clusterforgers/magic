@@ -56,8 +56,7 @@ fn subtypes(seen: &Seen<'_>) -> Option<Vec<String>> {
     }
     let printed = seen
         .card
-        .map(|card| card.card().subtypes.clone())
-        .unwrap_or_default();
+        .map_or_default(|card| card.card().subtypes.clone());
     let mut found: BTreeSet<String> = BTreeSet::new();
     for subtype in printed.iter().chain(seen.chars.subtypes.iter()) {
         let held =
@@ -83,8 +82,7 @@ impl Scope<'_> {
                     .count();
                 let printed = seen
                     .card
-                    .map(|card| card.card().supertypes.clone())
-                    .unwrap_or_default();
+                    .map_or_default(|card| card.card().supertypes.clone());
                 let supertypes = SUPERTYPES
                     .iter()
                     .filter(|s| {

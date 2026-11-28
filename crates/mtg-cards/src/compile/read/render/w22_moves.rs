@@ -105,8 +105,7 @@ fn lead(verb: &str, opens: bool) -> String {
     let mut chars = verb.chars();
     chars
         .next()
-        .map(|first| format!("{}{}", first.to_uppercase(), chars.as_str()))
-        .unwrap_or_default()
+        .map_or_default(|first| format!("{}{}", first.to_uppercase(), chars.as_str()))
 }
 
 /// The card of an ability that puts itself into the library from the graveyard says so: "put this card from your

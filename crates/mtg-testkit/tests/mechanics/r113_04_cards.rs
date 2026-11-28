@@ -108,8 +108,10 @@ fn r113_id(driver: &Driver, name: &str) -> ObjectId {
         .find(|object| {
             object.card().name == name && object.kind() == mtg_engine::object::ObjectKind::Card
         })
-        .map(mtg_engine::object::GameObject::id)
-        .unwrap_or_else(|| panic!("{name} is in the game"))
+        .map_or_else(
+            || panic!("{name} is in the game"),
+            mtg_engine::object::GameObject::id,
+        )
 }
 
 fn r113_stats(driver: &Driver, name: &str) -> (i32, i32) {

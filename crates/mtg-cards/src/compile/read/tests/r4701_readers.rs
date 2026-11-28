@@ -64,8 +64,7 @@ fn r4701_flash_near_misses_are_no_behold_or_tap(#[case] text: &str) {
         let items = permission
             .additional
             .as_ref()
-            .map(|cost| cost.0.as_slice())
-            .unwrap_or_default();
+            .map_or_default(|cost| cost.0.as_slice());
         assert!(
             !items.iter().any(held)
                 || !same_text(&render_variants(read.as_ref().unwrap())[0], text),

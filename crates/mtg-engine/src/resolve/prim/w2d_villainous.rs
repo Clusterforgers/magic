@@ -26,15 +26,13 @@ pub(super) fn w2d_label(effects: &[Effect], fallback: &str) -> ChoiceOption {
     };
     let text = match asked.strip_suffix('?') {
         Some(text) if !text.is_empty() => text.to_owned(),
-        _ => sentence()
-            .map(|text| {
-                let mut text = text.trim_end_matches('.').to_owned();
-                if let Some(first) = text.get_mut(..1) {
-                    first.make_ascii_uppercase();
-                }
-                text
-            })
-            .unwrap_or_default(),
+        _ => sentence().map_or_default(|text| {
+            let mut text = text.trim_end_matches('.').to_owned();
+            if let Some(first) = text.get_mut(..1) {
+                first.make_ascii_uppercase();
+            }
+            text
+        }),
     };
     ChoiceOption::Label(if text.is_empty() {
         fallback.to_owned()

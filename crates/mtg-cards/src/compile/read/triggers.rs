@@ -1738,7 +1738,7 @@ fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Surveilled { who } => (who, "surveil", None),
         _ => return None,
     };
-    let n = n.map(|n| format!(" {n}")).unwrap_or_default();
+    let n = n.map_or_default(|n| format!(" {n}"));
     Some(format!("Whenever {}{n}", player_verb(who, verb)?))
 }
 

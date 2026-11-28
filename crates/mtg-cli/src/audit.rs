@@ -171,8 +171,7 @@ fn face_block(entry: &Entry<'_>, index: usize, face: &PrintedFace) -> String {
         .card
         .as_ref()
         .and_then(|card| card.faces.get(index))
-        .map(|face| face.abilities.as_slice())
-        .unwrap_or_default();
+        .map_or_default(|face| face.abilities.as_slice());
     let mut next = abilities.iter();
     let mut spell_shown = false;
     for clause in &clauses {

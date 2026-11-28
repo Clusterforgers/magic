@@ -1086,8 +1086,7 @@ pub(super) fn lowered(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| first.to_lowercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_lowercase().chain(chars).collect())
 }
 
 /// The sentences an additional cost is written as: the cost's own words, and "blight N" for a blight alone (CR 701.66).

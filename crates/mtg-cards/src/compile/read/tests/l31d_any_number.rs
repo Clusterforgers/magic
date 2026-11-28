@@ -19,8 +19,7 @@ fn l31d_probe() {
         println!(
             "== {text}\n  read: {}",
             read.as_ref()
-                .map(|a| serde_json::to_string(a).unwrap_or_default())
-                .unwrap_or_default()
+                .map_or_default(|a| serde_json::to_string(a).unwrap_or_default())
         );
         if let Some(read) = read {
             for written in written_variants(&read) {

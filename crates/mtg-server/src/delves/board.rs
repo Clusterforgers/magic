@@ -157,8 +157,7 @@ pub(crate) async fn leaderboard(
         };
         // A run that no longer folds is left off the board rather than failing it.
         let folded = Run::replay(content, &header.theme, header.seed, header.heat, &log)
-            .map(|folded| marks(&folded, header.heat, &run.stamp))
-            .unwrap_or_default();
+            .map_or_default(|folded| marks(&folded, header.heat, &run.stamp));
         cache.insert(header.id, (run.stamp.clone(), folded));
     }
     let live: HashSet<Uuid> = started.iter().map(|run| run.header.id).collect();

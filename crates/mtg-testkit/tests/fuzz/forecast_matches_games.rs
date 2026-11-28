@@ -42,7 +42,7 @@ fn play(players: usize, seed: u64) -> Result<Coverage, String> {
                     .attackers
                     .iter()
                     .find(|a| a.attacker == options.attacker)
-                    .map(|a| {
+                    .map_or_default(|a| {
                         a.deals
                             .iter()
                             .filter_map(|h| match h.target {
@@ -50,8 +50,7 @@ fn play(players: usize, seed: u64) -> Result<Coverage, String> {
                                 DamageTarget::Player(_) => None,
                             })
                             .collect()
-                    })
-                    .unwrap_or_default();
+                    });
                 Answer::AssignDamage(division)
             }
             _ => bots[decision.player.index()].choose(&decision),

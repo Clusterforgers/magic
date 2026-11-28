@@ -53,16 +53,14 @@ fn read_record(text: &str) -> Result<CardRecord, String> {
 
 /// The slugs of the `.json` files of a directory, sorted.
 fn slugs_in(dir: &Path) -> Vec<String> {
-    let mut slugs: Vec<String> = fs::read_dir(dir)
-        .map(|entries| {
-            entries
-                .filter_map(Result::ok)
-                .map(|entry| entry.path())
-                .filter(|path| path.is_file() && path.extension().is_some_and(|e| e == "json"))
-                .filter_map(|path| Some(path.file_stem()?.to_str()?.to_owned()))
-                .collect()
-        })
-        .unwrap_or_default();
+    let mut slugs: Vec<String> = fs::read_dir(dir).map_or_default(|entries| {
+        entries
+            .filter_map(Result::ok)
+            .map(|entry| entry.path())
+            .filter(|path| path.is_file() && path.extension().is_some_and(|e| e == "json"))
+            .filter_map(|path| Some(path.file_stem()?.to_str()?.to_owned()))
+            .collect()
+    });
     slugs.sort();
     slugs
 }

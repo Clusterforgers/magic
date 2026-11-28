@@ -292,8 +292,7 @@ pub(crate) fn goaded_by(state: &GameState, id: ObjectId) -> Vec<PlayerId> {
         .object(id)
         .filter(|object| object.zone() == Zone::Battlefield)
         .and_then(|object| state.layers().get(object.id()))
-        .map(|held| goaders(held).collect())
-        .unwrap_or_default()
+        .map_or_default(|held| goaders(held).collect())
 }
 
 /// The players whose goad effects have applied to what is held of a permanent, in the order they applied: what a
@@ -399,7 +398,7 @@ impl<'a> BlockSide<'a> {
         let limits = object
             .filter(|object| object.zone() == Zone::Battlefield)
             .and_then(|object| state.layers().get(object.id()))
-            .map(|held| {
+            .map_or_default(|held| {
                 held.applied
                     .iter()
                     .map(|applied| &applied.modification)
@@ -413,8 +412,7 @@ impl<'a> BlockSide<'a> {
                         )
                     })
                     .collect()
-            })
-            .unwrap_or_default();
+            });
         BlockSide {
             reference: object.map(GameObject::reference),
             at_owner: object.is_some_and(|object| attacks_owner(state, object)),
@@ -487,8 +485,7 @@ pub(crate) fn blocker_limits(state: &GameState, id: ObjectId) -> (usize, Option<
         .object(id)
         .filter(|object| object.zone() == Zone::Battlefield)
         .and_then(|object| state.layers().get(object.id()))
-        .map(|held| held.applied.as_slice())
-        .unwrap_or_default();
+        .map_or_default(|held| held.applied.as_slice());
     for applied in applied {
         match applied.modification {
             Modification::MinBlockers(count) => least = least.max(count as usize),

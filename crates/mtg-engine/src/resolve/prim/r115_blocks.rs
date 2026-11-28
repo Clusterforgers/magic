@@ -31,8 +31,7 @@ fn blockers_of(state: &GameState, attacker: ObjectId) -> Vec<ObjectId> {
         .attackers()
         .iter()
         .find(|attack| attack.object() == attacker)
-        .map(|attack| attack.blockers.clone())
-        .unwrap_or_default()
+        .map_or_default(|attack| attack.blockers.clone())
 }
 
 /// Whether `blocker` could block every attacker of `attackers` (those it blocks already included), all at once: its

@@ -64,8 +64,7 @@ pub fn render(report: &Report, popularity: &Popularity) -> String {
             .blockers
             .iter()
             .next()
-            .map(|blocker| cut(&blocker.label(), BLOCKER_WIDTH))
-            .unwrap_or_default();
+            .map_or_default(|blocker| cut(&blocker.label(), BLOCKER_WIDTH));
         let line = format!(
             "{rank:>6}  {:<10}  {:<name_width$}  {blocker}",
             result.bucket().name(),

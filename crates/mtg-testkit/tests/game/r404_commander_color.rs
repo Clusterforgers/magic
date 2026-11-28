@@ -70,9 +70,9 @@ fn each_owner_chooses_a_color_for_their_commander_before_the_hands(
     );
     setup.validate_decks = false;
     // Seat 0's and seat 1's commanders ask; the last seat's does not.
-    for seat in 0..seats {
+    for (seat, player) in setup.players.iter_mut().enumerate() {
         let asks = seat + 1 < seats;
-        setup.players[seat].commanders = vec![piper(&format!("Piper {seat}"), asks)];
+        player.commanders = vec![piper(&format!("Piper {seat}"), asks)];
     }
     let mut driver = Driver::new(Engine::new(setup.clone()).unwrap()).unwrap();
     let mut asked = Vec::new();

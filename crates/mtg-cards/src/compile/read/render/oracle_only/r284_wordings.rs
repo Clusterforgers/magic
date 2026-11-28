@@ -410,8 +410,7 @@ fn while_attacked_with(value: &Value) -> Vec<String> {
                 let mut letters = text.chars();
                 let head = letters
                     .next()
-                    .map(|c| c.to_lowercase().to_string())
-                    .unwrap_or_default();
+                    .map_or_default(|c| c.to_lowercase().to_string());
                 format!("{head}{}", letters.as_str())
             } else {
                 text

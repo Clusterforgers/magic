@@ -715,9 +715,7 @@ pub fn text(effect: &Effect, per: bool) -> Option<String> {
     }
     let (number, single, tail) = quantity_text(count, &what, per)?;
     let noun = if single { "token" } else { "tokens" };
-    let named = name
-        .map(|name| format!(" named {name}"))
-        .unwrap_or_default();
+    let named = name.map_or_default(|name| format!(" named {name}"));
     Some(format!(
         "{verb} {number} {what} {noun}{}{}{}{tail}",
         if sizeless { &named } else { &with },

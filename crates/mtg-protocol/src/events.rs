@@ -1127,8 +1127,7 @@ fn note_names(state: &GameState, viewer: PlayerId, names: &mut BTreeMap<ObjectId
 fn shown_now(state: &GameState) -> Vec<Shown> {
     state
         .resolving()
-        .map(|resolving| resolving.shown().to_vec())
-        .unwrap_or_default()
+        .map_or_default(|resolving| resolving.shown().to_vec())
 }
 
 /// Adds to each viewer's sightings the cards shown to them since `known`, as they see them now (the first sighting of

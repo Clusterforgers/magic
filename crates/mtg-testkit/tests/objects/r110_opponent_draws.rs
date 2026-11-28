@@ -103,12 +103,12 @@ fn development_makes_a_token_unless_an_opponent_has_you_draw(
         hand - 1 + drawn
     );
     // Every opponent is asked each round until one agrees.
-    for seat in 1..seats {
+    for (seat, rounds) in asked.iter().enumerate().take(seats).skip(1) {
         let expected = match agreeing {
             Some(yes) if seat > yes => 0,
             _ => 3,
         };
-        assert_eq!(asked[seat], expected, "seat {seat}");
+        assert_eq!(*rounds, expected, "seat {seat}");
     }
     replays(&driver, &setup);
     Ok(())

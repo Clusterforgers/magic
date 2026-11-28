@@ -101,8 +101,7 @@ fn cost_head(body: &Value, written: fn(&Ability) -> Vec<String>) -> Option<Strin
 /// graveyard written from its twin that asks for a Swamp, the condition's last part changed.
 fn upkeep_above(body: &Value, written: fn(&Ability) -> Vec<String>) -> Vec<String> {
     upkeep_above_text(body, written)
-        .map(|text| vec![text.replace("this card.", "~."), text])
-        .unwrap_or_default()
+        .map_or_default(|text| vec![text.replace("this card.", "~."), text])
 }
 
 /// [`upkeep_above`] with the card called "this card".

@@ -56,8 +56,7 @@ pub fn verify_gzip(path: &Path) -> io::Result<()> {
 pub fn write_atomic(path: &Path, bytes: &[u8]) -> io::Result<()> {
     let mut name = path
         .file_name()
-        .map(std::ffi::OsStr::to_os_string)
-        .unwrap_or_default();
+        .map_or_default(std::ffi::OsStr::to_os_string);
     name.push(format!(".tmp-{}", std::process::id()));
     let temporary: PathBuf = path.with_file_name(name);
     let written = File::create(&temporary).and_then(|mut file| {

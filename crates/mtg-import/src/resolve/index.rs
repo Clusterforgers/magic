@@ -119,7 +119,7 @@ fn named_of<'a>(
     key: &str,
     slot: usize,
 ) -> Vec<&'a NamedPrinting> {
-    let printings = table.get(key).map(Vec::as_slice).unwrap_or_default();
+    let printings = table.get(key).map_or_default(Vec::as_slice);
     printings.iter().filter(|p| p.slot == slot).collect()
 }
 

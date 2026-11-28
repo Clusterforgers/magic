@@ -114,8 +114,7 @@ fn r5523_probe_outside() {
         return;
     };
     let rules: Vec<String> = std::env::var("R5523_RULES")
-        .map(|rules| rules.split('|').map(str::to_owned).collect())
-        .unwrap_or_default();
+        .map_or_default(|rules| rules.split('|').map(str::to_owned).collect());
     let names = r5523_names(&common::printed());
     let tokens = Library::from_sources(&common::token_sources()).unwrap();
     for (at, path) in list.split('|').enumerate() {
