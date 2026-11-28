@@ -841,8 +841,7 @@ pub(crate) fn r6400_could_block(state: &GameState, blocker: ObjectId) -> Vec<Obj
     candidates
         .into_iter()
         .find(|(object, _)| *object == blocker)
-        .map(|(_, indices)| indices.into_iter().map(|index| blockable[index]).collect())
-        .unwrap_or_default()
+        .map_or_default(|(_, indices)| indices.into_iter().map(|index| blockable[index]).collect())
 }
 
 /// The blockers among `blockers` that can't block alone.

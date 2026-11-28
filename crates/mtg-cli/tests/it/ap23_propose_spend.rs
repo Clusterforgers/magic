@@ -535,10 +535,7 @@ impl BatchMock {
     }
 
     fn posts(&self) -> Vec<Vec<Value>> {
-        self.posted
-            .lock()
-            .map(|posted| posted.clone())
-            .unwrap_or_default()
+        self.posted.lock().map_or_default(|posted| posted.clone())
     }
 
     async fn serve(

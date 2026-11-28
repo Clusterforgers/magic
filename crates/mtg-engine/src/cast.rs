@@ -441,7 +441,7 @@ fn payment_events(
         }
         if let Event::SpellCast { choices, .. } = event {
             // The mana a helper paid with assist was spent to cast it too (CR 702.132a, 601.2h).
-            let mut all = choices.spent.take().map(|held| *held).unwrap_or_default();
+            let mut all = choices.spent.take().map_or_default(|held| *held);
             all.extend(spent.mana.iter().copied());
             choices.spent = (!all.is_empty()).then(|| Box::new(all));
             // The spell remembers the creatures that convoked it, as they are now (CR 702.51).
@@ -512,12 +512,10 @@ fn payment_events(
             .iter()
             .enumerate()
             .position(|(at, o)| !claimed[at] && o.source == option.source);
-        let picked = at
-            .map(|at| {
-                claimed[at] = true;
-                std::mem::take(&mut taken[at])
-            })
-            .unwrap_or_default();
+        let picked = at.map_or_default(|at| {
+            claimed[at] = true;
+            std::mem::take(&mut taken[at])
+        });
         events.extend(activate(option, &picked)?);
     }
     events.extend(later);

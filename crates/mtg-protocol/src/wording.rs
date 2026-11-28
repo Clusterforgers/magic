@@ -96,10 +96,10 @@ pub fn activated_views(
             .unwrap_or_else(|| ActivatedView {
                 ability: None,
                 cost: match &*rules {
-                    Ability::Activated { cost, .. } => render_cost(cost)
-                        .map(|text| named(&text, name))
-                        .unwrap_or_default(),
-                    _ => loyalty.map(loyalty_text).unwrap_or_default(),
+                    Ability::Activated { cost, .. } => {
+                        render_cost(cost).map_or_default(|text| named(&text, name))
+                    }
+                    _ => loyalty.map_or_default(loyalty_text),
                 },
                 effect: keyword
                     .clone()
@@ -121,8 +121,7 @@ pub fn activated_views(
             view.ways = made
                 .iter()
                 .find(|(at, _)| *at == address)
-                .map(|(_, options)| options.iter().map(way_of).collect())
-                .unwrap_or_default();
+                .map_or_default(|(_, options)| options.iter().map(way_of).collect());
         }
         views.push(view);
     }

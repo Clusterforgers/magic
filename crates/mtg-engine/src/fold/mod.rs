@@ -1217,6 +1217,9 @@ fn c6_kw_fold_rest(state: &mut GameState, event: &Event) -> Result<(), EngineErr
             crate::p170b_contraptions::fold_cranked(state);
             Ok(())
         }
+        Event::P170bReassembled { moved, .. } => {
+            crate::p170b_contraptions::fold_reassembled(state, *moved)
+        }
         Event::RolledToVisit {
             player, visited, ..
         } => {

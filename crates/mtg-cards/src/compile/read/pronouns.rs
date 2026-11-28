@@ -69,8 +69,7 @@ pub(super) fn of_the_group(ability: &Ability, texts: &mut Vec<String>) {
         let mut letters = plural.chars();
         let capital: String = letters
             .next()
-            .map(|first| first.to_uppercase().chain(letters).collect())
-            .unwrap_or_default();
+            .map_or_default(|first| first.to_uppercase().chain(letters).collect());
         let (named, those) = (format!(". {capital} "), format!(". Those {noun} "));
         for text in texts.iter() {
             if text.contains(&format!("each {single}")) && text.contains(&named) {

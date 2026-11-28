@@ -1339,8 +1339,7 @@ pub(crate) fn keyword_trigger(keyword: &str, said: &str) -> String {
     let mut letters = said.chars();
     let rest: String = letters
         .next()
-        .map(|first| first.to_lowercase().chain(letters).collect())
-        .unwrap_or_default();
+        .map_or_default(|first| first.to_lowercase().chain(letters).collect());
     format!("{keyword}: {rest}")
 }
 

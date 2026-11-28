@@ -102,8 +102,7 @@ pub(crate) fn lent_now(state: &GameState, donor: ObjectId, lend: Lend) -> Vec<Bo
     };
     let held = crate::ability_reader::abilities_of(state, donor);
     let mana = crate::characteristics::characteristics(state, donor)
-        .map(|chars| chars.abilities)
-        .unwrap_or_default();
+        .map_or_default(|chars| chars.abilities);
     lent(donor, object.card(), &held, &mana, lend)
 }
 

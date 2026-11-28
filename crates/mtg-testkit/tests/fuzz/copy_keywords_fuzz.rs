@@ -31,8 +31,7 @@ impl Seen {
             engine
                 .state()
                 .object(id)
-                .map(|object| object.card().name.clone())
-                .unwrap_or_default()
+                .map_or_default(|object| object.card().name.clone())
         };
         for event in events {
             match event {

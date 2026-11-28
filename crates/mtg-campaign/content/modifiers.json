@@ -1,7 +1,6 @@
 [
   {"id": "mirror_hall", "not_with": ["skrix_nest", "grimgut_court", "vex_crypt", "hollowmere_belfry", "sahrra_pride", "leviathan", "fog_bell", "kelp_shepherd", "spawning_shoal", "drowned_admiral"]},
   {"id": "living_stone"},
-  {"id": "waking_earth", "not_with": ["vex_crypt", "seraphine_spire", "korrath_wilds", "ozrith_observatory", "ysolde_reef", "hollowmere_belfry", "valdric_manor", "vorthana_hive", "leviathan", "lamplighter", "drowned_abbess", "salt_magistrate", "storm_herald", "maelstrom", "brine_hag", "magma_vent"]},
   {"id": "bloodlust", "not_with": ["siren_queen", "aurenne_bastion"]},
   {"id": "twin_flames"},
   {"id": "overflowing_mana"},

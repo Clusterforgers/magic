@@ -53,7 +53,7 @@ async fn as_user(
     path: &str,
     body: Option<&Value>,
 ) -> Reply {
-    let text = body.map(Value::to_string).unwrap_or_default();
+    let text = body.map_or_default(Value::to_string);
     who.send(server.addr, method, path, &text, &[]).await
 }
 

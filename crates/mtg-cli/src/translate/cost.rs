@@ -289,18 +289,16 @@ fn worded_by_cost(ctx: &Ctx) -> String {
         (!symbols.is_empty()).then_some(symbols)
     });
     let lines: Vec<&str> = all.split("\\n").collect();
-    let own: Vec<&str> = mana
-        .map(|mana| {
-            lines
-                .iter()
-                .copied()
-                .filter(|l| {
-                    l.strip_prefix(&mana)
-                        .is_some_and(|rest| rest.starts_with([',', ':']))
-                })
-                .collect()
-        })
-        .unwrap_or_default();
+    let own: Vec<&str> = mana.map_or_default(|mana| {
+        lines
+            .iter()
+            .copied()
+            .filter(|l| {
+                l.strip_prefix(&mana)
+                    .is_some_and(|rest| rest.starts_with([',', ':']))
+            })
+            .collect()
+    });
     if own.is_empty() {
         return all.replace("\\n", " ");
     }

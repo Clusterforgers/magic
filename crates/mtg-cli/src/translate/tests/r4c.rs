@@ -110,8 +110,7 @@ fn an_exiled_card_is_played_for_the_duration_the_line_names(
     ));
     let text = abilities(&script)
         .first()
-        .map(ToString::to_string)
-        .unwrap_or_default();
+        .map_or_default(ToString::to_string);
     match found {
         Some(word) => assert!(text.contains(word), "{text} {:?}", gaps(&script)),
         None => assert!(gaps(&script).contains(&format!("duration:{duration}"))),

@@ -74,6 +74,5 @@ fn w4f_capital(word: &str) -> String {
     let mut chars = word.chars();
     chars
         .next()
-        .map(|first| first.to_uppercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_uppercase().chain(chars).collect())
 }

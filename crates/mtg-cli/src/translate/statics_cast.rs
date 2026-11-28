@@ -59,8 +59,7 @@ pub fn ep27_self_flash_written(ability: &Value, description: Option<&str>) -> Tr
     }
     let printed = description.unwrap_or_default().replace("CARDNAME", "~");
     let written = serde_json::from_value::<mtg_cards::ability::Ability>(ability.clone())
-        .map(|rules| mtg_cards::compile::render_variants(&rules))
-        .unwrap_or_default();
+        .map_or_default(|rules| mtg_cards::compile::render_variants(&rules));
     if written
         .iter()
         .any(|text| mtg_cards::compile::same_text(text, &printed))

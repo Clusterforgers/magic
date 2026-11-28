@@ -147,7 +147,7 @@ pub fn table(rows: &[Row], total: usize, quick: bool) -> String {
         "time (UTC)", "card", "read", "account", "verdict"
     );
     for row in rows {
-        let note = row.note.as_deref().map(one_line).unwrap_or_default();
+        let note = row.note.as_deref().map_or_default(one_line);
         let line = format!(
             "{:<19}  {:<name_width$}  {:<8}  {:<36}  {:<7}  {}",
             row.at.format("%Y-%m-%d %H:%M:%S"),

@@ -36,8 +36,7 @@ fn sqlstate(error: &sqlx::Error) -> String {
     error
         .as_database_error()
         .and_then(sqlx::error::DatabaseError::code)
-        .map(std::borrow::Cow::into_owned)
-        .unwrap_or_default()
+        .map_or_default(std::borrow::Cow::into_owned)
 }
 
 #[sqlx::test]

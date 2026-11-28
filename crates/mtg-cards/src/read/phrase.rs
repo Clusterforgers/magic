@@ -444,10 +444,7 @@ fn sum(ctx: &Ctx, parts: &[Amount]) -> String {
         Amount::Fixed(number) if *number < 0 => (" - ", number.unsigned_abs().to_string()),
         other => (" + ", amount(ctx, other)),
     });
-    let first = parts
-        .first()
-        .map(|part| amount(ctx, part))
-        .unwrap_or_default();
+    let first = parts.first().map_or_default(|part| amount(ctx, part));
     shown.next();
     shown.fold(first, |text, (sign, part)| format!("{text}{sign}{part}"))
 }

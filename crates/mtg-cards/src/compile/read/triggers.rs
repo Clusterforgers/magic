@@ -702,6 +702,9 @@ fn player_event(r: &mut Reader<'_>) -> Option<TriggerPattern> {
         draw_event(r, by, whose)
     } else if verb == "reveal" {
         super::r4708_reveal::r4708_revealed(r, &by)
+    } else if verb == "crank" && by == Ref::You && r.word("this") && r.name() == Some("Contraption")
+    {
+        Some(TriggerPattern::P170bCranked {})
     } else if verb == if third { "discards" } else { "discard" } {
         if r.words("one or more") {
             let batch = super::dk27_batches::dk27_discarded_batch(r, by)?;
@@ -1735,7 +1738,7 @@ fn w9a_player_action_text(pattern: &TriggerPattern) -> Option<String> {
         TriggerPattern::Surveilled { who } => (who, "surveil", None),
         _ => return None,
     };
-    let n = n.map(|n| format!(" {n}")).unwrap_or_default();
+    let n = n.map_or_default(|n| format!(" {n}"));
     Some(format!("Whenever {}{n}", player_verb(who, verb)?))
 }
 
@@ -1818,6 +1821,7 @@ pub fn pattern_text(pattern: &TriggerPattern) -> Option<String> {
         | TriggerPattern::VisitedAttraction { .. }
         | TriggerPattern::ClaimedPrize { .. } => super::un33_attractions::un33_event_text(pattern),
         TriggerPattern::DoorUnlocked { .. } => super::dk1c5_rooms::dk1c5_door_text(pattern),
+        TriggerPattern::P170bCranked {} => Some("Whenever you crank this Contraption".to_owned()),
         TriggerPattern::ZoneChange {
             what,
             from: Some(ZoneKind::Battlefield),

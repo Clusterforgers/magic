@@ -372,15 +372,14 @@ pub(crate) fn legal_from(
     // A reflexive trigger reads what the payment before it took (`Ref::Paid`).
     let paid: crate::resolve::Bindings = cause
         .filter(|cause| !cause.r111_paid.is_empty())
-        .map(|cause| {
+        .map_or_default(|cause| {
             [(
                 crate::resolve::R5520_PAID.to_owned(),
                 cause.r111_paid.clone(),
             )]
             .into_iter()
             .collect()
-        })
-        .unwrap_or_default();
+        });
     if !paid.is_empty() {
         scope.bindings = &paid;
     }

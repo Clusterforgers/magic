@@ -67,8 +67,7 @@ pub(crate) fn r5522_name(driver: &Driver, target: &Target) -> String {
     target
         .object()
         .and_then(|object| driver.state().object(object.id))
-        .map(|object| object.card().name.clone())
-        .unwrap_or_default()
+        .map_or_default(|object| object.card().name.clone())
 }
 
 /// Whether a permanent of the name is on the battlefield.

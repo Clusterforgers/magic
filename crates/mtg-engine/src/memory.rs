@@ -453,7 +453,7 @@ pub(crate) fn r112_noted_words(state: &GameState, source: ObjectRef) -> Vec<Stri
     state
         .memory
         .get(&(source, R112_NOTED_WORDS_SLOT.to_owned()))
-        .map(|held| {
+        .map_or_default(|held| {
             held.iter()
                 .filter_map(|one| match one {
                     Held::R112Word(word) => Some(word.clone()),
@@ -461,7 +461,6 @@ pub(crate) fn r112_noted_words(state: &GameState, source: ObjectRef) -> Vec<Stri
                 })
                 .collect()
         })
-        .unwrap_or_default()
 }
 #[cfg(test)]
 mod tests {

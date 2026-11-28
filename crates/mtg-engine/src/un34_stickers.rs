@@ -231,16 +231,12 @@ impl GameState {
         let Some(brought) = self.un34.brought.get(&player) else {
             return Vec::new();
         };
-        self.un34
-            .chosen
-            .get(&player)
-            .map(|chosen| {
-                chosen
-                    .iter()
-                    .filter_map(|at| brought.get(*at).map(|sheet| (*at, sheet)))
-                    .collect()
-            })
-            .unwrap_or_default()
+        self.un34.chosen.get(&player).map_or_default(|chosen| {
+            chosen
+                .iter()
+                .filter_map(|at| brought.get(*at).map(|sheet| (*at, sheet)))
+                .collect()
+        })
     }
 
     /// The sticker at `at`, if the seat brought it.

@@ -1456,6 +1456,14 @@ pub enum Event {
         /// The Contraptions cranked; none when the player chose none.
         contraptions: Vec<ObjectId>,
     },
+    /// The active player answered the reassembly as their end step began: the Contraption they moved and its new
+    /// sprocket, 1 to 3, or none when they kept each where it was.
+    P170bReassembled {
+        /// Who reassembled.
+        player: PlayerId,
+        /// The Contraption moved and the sprocket it is on now.
+        moved: Option<(ObjectId, u8)>,
+    },
     /// A player rolled to visit their Attractions (CR 701.52a): the result of the `DieRolled` before it and the
     /// Attractions with that number lit up, each visited.
     RolledToVisit {
@@ -2030,6 +2038,7 @@ impl Event {
             | Event::P170bAssembled { .. }
             | Event::P170bSprocketMoved { .. }
             | Event::P170bCranked { .. }
+            | Event::P170bReassembled { .. }
             | Event::P170aSectorsLost
             | Event::CoinFlipped { .. }
             | Event::Clashed { .. }

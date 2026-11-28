@@ -69,12 +69,11 @@ pub(super) fn ep29_flash_texts(
         // "by tapping three untapped creatures you control with flying in addition to paying its other costs".
         [tap @ CostItem::TapPermanents { .. }] => super::costs::text(&Cost(vec![tap.clone()]))
             .and_then(|said| said.strip_prefix("Tap ").map(str::to_owned))
-            .map(|rest| {
+            .map_or_default(|rest| {
                 vec![format!(
                     "You may cast ~ as though it had flash by tapping {rest} in addition to paying its other costs"
                 )]
-            })
-            .unwrap_or_default(),
+            }),
         _ => Vec::new(),
     }
 }

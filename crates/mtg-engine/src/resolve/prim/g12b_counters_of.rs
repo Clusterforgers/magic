@@ -44,13 +44,11 @@ pub(super) fn run(cx: &Cx<'_>, effect: &Effect) -> Result<Run, ResolveError> {
             Target::Player(player) => cx
                 .state()
                 .player(player)
-                .map(|p| p.counters().map(|(kind, n)| (kind.clone(), n)).collect())
-                .unwrap_or_default(),
+                .map_or_default(|p| p.counters().map(|(kind, n)| (kind.clone(), n)).collect()),
             Target::Object(object) => cx
                 .scope
                 .seen(object)
-                .map(|seen| seen.counters.g12b_kinds())
-                .unwrap_or_default(),
+                .map_or_default(|seen| seen.counters.g12b_kinds()),
         };
         for (kind, n) in held {
             match kinds.iter_mut().find(|(found, _)| *found == kind) {

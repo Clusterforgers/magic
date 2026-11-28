@@ -146,23 +146,19 @@ impl Stops {
 
     /// The stops `seat` holds, once each with its `keep`: own side first and each side in turn order.
     pub(crate) fn stops(&self, seat: PlayerId) -> Vec<Stop> {
-        self.seats
-            .get(seat.index())
-            .map(|held| {
-                held.stops
-                    .iter()
-                    .map(|(&(side, step), &keep)| Stop { side, step, keep })
-                    .collect()
-            })
-            .unwrap_or_default()
+        self.seats.get(seat.index()).map_or_default(|held| {
+            held.stops
+                .iter()
+                .map(|(&(side, step), &keep)| Stop { side, step, keep })
+                .collect()
+        })
     }
 
     /// `seat`'s Full Control mode.
     pub(crate) fn full_control(&self, seat: PlayerId) -> FullControlMode {
         self.seats
             .get(seat.index())
-            .map(|held| held.full_control)
-            .unwrap_or_default()
+            .map_or_default(|held| held.full_control)
     }
 
     /// Whether `seat` ends its own turns by hand ([`mtg_protocol::ClientMessage::EndTurnByHand`]).
@@ -183,8 +179,7 @@ impl Stops {
     pub(crate) fn auto_choices(&self, seat: PlayerId) -> AutoChoices {
         self.seats
             .get(seat.index())
-            .map(|held| held.auto_choices)
-            .unwrap_or_default()
+            .map_or_default(|held| held.auto_choices)
     }
 
     /// Sets the decisions the server answers for `seat`.
@@ -198,8 +193,7 @@ impl Stops {
     pub(crate) fn auto_yields(&self, seat: PlayerId) -> Vec<AutoYield> {
         self.seats
             .get(seat.index())
-            .map(|held| held.auto_yields.iter().cloned().collect())
-            .unwrap_or_default()
+            .map_or_default(|held| held.auto_yields.iter().cloned().collect())
     }
 
     /// Whether `seat` lets the ability with key `ability` resolve unasked.
@@ -224,8 +218,7 @@ impl Stops {
     pub(crate) fn auto_skips(&self, seat: PlayerId) -> Vec<AutoSkip> {
         self.seats
             .get(seat.index())
-            .map(|held| held.auto_skips.values().cloned().collect())
-            .unwrap_or_default()
+            .map_or_default(|held| held.auto_skips.values().cloned().collect())
     }
 
     /// The rule `seat` holds with the key of `rule`.

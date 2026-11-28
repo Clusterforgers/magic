@@ -52,7 +52,7 @@ pub(crate) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) 
             .map_or(&[][..], |rules| rules.abilities.as_slice());
         let of_face: Vec<&Clause> = clauses.iter().filter(|c| c.face == face).collect();
         let creature_at = printed.faces.get(face).and_then(creature_at);
-        let names = printed.faces.get(face).map(own_names).unwrap_or_default();
+        let names = printed.faces.get(face).map_or_default(own_names);
         let attachment = printed
             .faces
             .get(face)
@@ -65,8 +65,7 @@ pub(crate) fn pair_card(card: &Card, clauses: &[Clause], printed: &PrintedCard) 
         let cleaved = printed
             .faces
             .get(face)
-            .map(crate::compile::cleaved_lines)
-            .unwrap_or_default();
+            .map_or_default(crate::compile::cleaved_lines);
         let mut pairing = Pairer::new(face, abilities, &of_face, (creature_at, names, attachment));
         pairing.cleaved = cleaved;
         let found = pairing.run();

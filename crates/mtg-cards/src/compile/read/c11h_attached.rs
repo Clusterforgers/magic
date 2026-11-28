@@ -105,14 +105,12 @@ pub(super) fn c11h_texts(condition: &Condition) -> Vec<String> {
         },
         // A single state word of a creature is written by `as_long_as::state_texts`.
         _ if c11h_state_text(pred).is_some() => {
-            return c11h_state_text(pred)
-                .map(|state| {
-                    C11H_ATTACHED[2..]
-                        .iter()
-                        .map(|noun| format!("{noun} is {state}"))
-                        .collect()
-                })
-                .unwrap_or_default();
+            return c11h_state_text(pred).map_or_default(|state| {
+                C11H_ATTACHED[2..]
+                    .iter()
+                    .map(|noun| format!("{noun} is {state}"))
+                    .collect()
+            });
         }
         _ => single_texts(&Selector(vec![pred.clone()]))
             .into_iter()

@@ -203,14 +203,12 @@ fn run_line(run: &ImportRun) -> String {
     };
     let took = run
         .finished_at
-        .map(|end| format!(", {:.1} s", (end - run.started_at).as_seconds_f64()))
-        .unwrap_or_default();
+        .map_or_default(|end| format!(", {:.1} s", (end - run.started_at).as_seconds_f64()));
     let skipped = run.counts["skipped"]["count"].as_u64().unwrap_or(0);
     let input = run
         .input
         .as_deref()
-        .map(|input| format!(", input {}", short(input)))
-        .unwrap_or_default();
+        .map_or_default(|input| format!(", input {}", short(input)));
     format!(
         "#{} {} {started} {how}{took}{}{input}",
         run.id,

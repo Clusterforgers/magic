@@ -115,8 +115,7 @@ fn every_pack_card_reads_back_as_its_printed_text() {
                             .rules
                             .as_ref()
                             .and_then(|card| card.faces[clause.face].abilities.get(*ability))
-                            .map(|it| serde_json::to_string(it).unwrap())
-                            .unwrap_or_default()
+                            .map_or_default(|it| serde_json::to_string(it).unwrap())
                     ),
                     state => format!("  {:?} {} => {state:?}", clause.kind, clause.text),
                 })

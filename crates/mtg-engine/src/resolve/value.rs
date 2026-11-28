@@ -1445,8 +1445,7 @@ impl<'a> Scope<'a> {
             .state
             .object(self.source.id)
             .filter(|object| object.counter() == self.source.counter)
-            .map(|object| object.delved().to_vec())
-            .unwrap_or_default();
+            .map_or_default(|object| object.delved().to_vec());
         delved
             .into_iter()
             .filter(|card| {
@@ -1465,8 +1464,7 @@ impl<'a> Scope<'a> {
             .object(self.source.id)
             .filter(|object| object.counter() == self.source.counter)
             .and_then(|object| object.permanent.as_ref())
-            .map(|permanent| permanent.r6702_crafted.clone())
-            .unwrap_or_default()
+            .map_or_default(|permanent| permanent.r6702_crafted.clone())
             .into_iter()
             .filter(|card| {
                 self.state.object(card.id).is_some_and(|object| {
@@ -2315,10 +2313,7 @@ impl<'a> Scope<'a> {
         seen: &Seen<'_>,
     ) -> Result<bool, ResolveError> {
         let types = |one: &Seen<'_>| -> (Vec<Subtype>, bool, Vec<Subtype>) {
-            let printed = one
-                .card
-                .map(|c| c.card().subtypes.clone())
-                .unwrap_or_default();
+            let printed = one.card.map_or_default(|c| c.card().subtypes.clone());
             let listed = one
                 .chars
                 .subtypes
@@ -3222,8 +3217,7 @@ impl<'a> Scope<'a> {
                 let name = self
                     .state
                     .source_object(self.source.id)
-                    .map(|source| source.card().name.clone())
-                    .unwrap_or_default();
+                    .map_or_default(|source| source.card().name.clone());
                 self.players(who)?
                     .into_iter()
                     .map(|player| {

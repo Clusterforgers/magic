@@ -19,8 +19,7 @@ fn abilities(text: &str) -> Vec<Value> {
         .faces
         .into_iter()
         .next()
-        .map(|face| face.abilities)
-        .unwrap_or_default()
+        .map_or_default(|face| face.abilities)
 }
 
 fn find<'a>(found: &'a [Value], pointer: &str) -> Option<&'a Value> {

@@ -1,8 +1,9 @@
 //! Goal: the reworked boss follows the design's tables: the innate level and the relic count by depth and Heat, the
 //! life by party size, the rare and mythic odds, all never falling as depth or Heat grow; innates load as five level
-//! cards; an encounter modifier is never drawn for a boss it must not meet and a retried fight keeps it; a boss never
-//! brings a relic that names teammates; a fight plan of the rework generation holds exactly the reworked parts; and the
-//! boss seat carries the sheet that names them, its innate at its level.
+//! cards; an encounter modifier is never drawn for a boss it must not meet and a retried fight keeps it, and a stored
+//! fight that names a retired modifier still plays it; a boss never brings a relic that names teammates; a fight plan
+//! of the rework generation holds exactly the reworked parts; and the boss seat carries the sheet that names them, its
+//! innate at its level.
 
 use mtg_campaign::boss_relics::{self, MOST_BOSS_RELICS};
 use mtg_campaign::content::{Content, FOUNDRY_FROM, Rarity};
@@ -253,6 +254,38 @@ fn a_reworked_boss_seat_takes_the_opening_land_rule_and_its_emblems(#[values(1, 
             .all(|p| p.opening_lands.is_none())
     );
     assert_eq!(boss.emblems.len(), plan.boss.emblems().len());
+}
+
+#[rstest]
+#[case::retired("waking_earth")]
+#[case::in_the_pool("bloodlust")]
+fn a_stored_fight_still_plays_the_modifier_it_rolled(#[case] stored_id: &str) {
+    use mtg_engine::GameSetup;
+    use mtg_engine::format::Commander;
+    use std::sync::Arc;
+    let content = content().unwrap();
+    let plan = reworked_run(2, 0).fight_plan(content).unwrap().unwrap();
+    let mut json = serde_json::to_value(&plan).unwrap();
+    json["boss"]["modifier"] = stored_id.into();
+    let stored: mtg_campaign::FightPlan = serde_json::from_value(json).unwrap();
+    assert_eq!(stored.boss.modifier.as_deref(), Some(stored_id));
+    let card = content.card(stored_id).unwrap();
+    let sheet = stored.boss.sheet(content).unwrap();
+    assert_eq!(sheet.modifier.unwrap().name, card.name);
+    let mut decks: Vec<Vec<_>> = (0..2)
+        .map(|_| {
+            (0..40)
+                .map(|_| mtg_testkit::cards::land(mtg_core::color::Color::Green))
+                .collect()
+        })
+        .collect();
+    decks.push(crate::common::boss_deck(&stored));
+    let setup = stored
+        .apply(content, GameSetup::new(Arc::new(Commander), 4, decks))
+        .unwrap();
+    let emblems = &setup.players[2].emblems;
+    assert_eq!(emblems.len(), stored.boss.emblems().len());
+    assert!(emblems.iter().any(|emblem| emblem.name == card.name));
 }
 
 /// A boss seat whose innate is `innate` and whose relics are `relics`.

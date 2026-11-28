@@ -25,8 +25,7 @@ pub(super) fn r5516_lower_first(text: &str) -> String {
     let mut chars = text.chars();
     chars
         .next()
-        .map(|first| first.to_lowercase().chain(chars).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_lowercase().chain(chars).collect())
 }
 
 /// The wordings of the trigger's steps after "When you do, ": each lowered, and with "~" as their subject also with a

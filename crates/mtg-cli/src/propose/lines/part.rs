@@ -200,8 +200,7 @@ pub fn shape(kind: Kind) -> String {
         let required: Vec<&str> = payload
             .get("required")
             .and_then(Value::as_array)
-            .map(|all| all.iter().filter_map(Value::as_str).collect())
-            .unwrap_or_default();
+            .map_or_default(|all| all.iter().filter_map(Value::as_str).collect());
         match fields {
             Some(fields) => {
                 let parts: Vec<String> = fields

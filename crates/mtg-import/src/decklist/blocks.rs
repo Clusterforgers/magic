@@ -75,7 +75,7 @@ impl Blocks {
     }
 
     /// A blank line ends a command-zone block and, as the dialect says, moves on from the main deck, a sideboard, the
-    /// Attraction deck or the sticker sheets.
+    /// Attraction deck, the Contraption deck or the sticker sheets.
     pub fn on_blank(&mut self) {
         if self.entries_in_block == 0 {
             return;
@@ -87,7 +87,11 @@ impl Blocks {
             }
             (
                 Place::In(
-                    Section::Main | Section::Sideboard | Section::Attractions | Section::Stickers,
+                    Section::Main
+                    | Section::Sideboard
+                    | Section::Attractions
+                    | Section::Contraptions
+                    | Section::Stickers,
                 )
                 | Place::Ignored(_),
                 BlankLines::CommandZoneLast,

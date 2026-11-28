@@ -316,8 +316,8 @@ fn r123_timesifter_gives_the_extra_turn_to_the_greatest_mana_value(
     let mut scenario = Scenario::new(seats)
         .battlefield(0, [ready(card("Timesifter").unwrap())])
         .at(2, 0, Step::Untap);
-    for seat in 0..seats {
-        let mut library = vec![r123_valued(tops[seat])];
+    for (seat, top) in tops.iter().enumerate().take(seats) {
+        let mut library = vec![r123_valued(*top)];
         library.extend(seconds.get(seat).map(|value| r123_valued(*value)));
         library.extend((0..3).map(|_| forest()));
         scenario = scenario.library(seat, library);

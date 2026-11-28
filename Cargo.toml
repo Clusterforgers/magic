@@ -71,10 +71,6 @@ must_use_candidate = "allow"
 missing_errors_doc = "allow"
 # Timeouts and clocks are written in seconds, as their settings are.
 duration_suboptimal_units = "allow"
-# Rust 1.100 widened it to `.map(f).unwrap_or_default()`, which reads as plainly as `map_or_default`.
-map_unwrap_or = "allow"
-# Rust 1.100 widened it to loops that index several tables by seat, the common shape of the view tests.
-needless_range_loop = "allow"
 
 # Line tables keep panic backtraces readable; full debug info made `target/` and every test link several times larger.
 [profile.dev]

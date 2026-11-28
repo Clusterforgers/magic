@@ -39,8 +39,8 @@ fn every_seat_sees_the_satchel_apart_from_the_command_zone(#[values(2, 3, 4)] se
         let objects = mtg_protocol::StateView::for_player(driver.state(), seat(viewer)).objects;
         let object = objects.iter().find(|o| o.id == grizzly).unwrap();
         assert_eq!(object.name, "Grizzly");
-        for other in 1..seats {
-            let json = serde_json::to_value(&view.players[other]).unwrap();
+        for other in view.players.iter().skip(1) {
+            let json = serde_json::to_value(other).unwrap();
             assert!(json.get("satchel").is_none(), "left out while empty");
         }
     }

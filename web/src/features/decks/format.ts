@@ -136,6 +136,7 @@ const ZONE_PHRASE: Readonly<Record<DeckZone, (count: number) => string>> = {
   commander: (count) => plural(count, 'commander'),
   companion: (count) => plural(count, 'companion'),
   attractions: (count) => plural(count, 'Attraction'),
+  contraptions: (count) => plural(count, 'Contraption'),
   stickers: (count) => plural(count, 'sticker sheet'),
 }
 

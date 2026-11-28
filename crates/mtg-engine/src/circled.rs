@@ -46,9 +46,7 @@ pub(crate) fn circled(state: &GameState, id: ObjectId) -> Vec<Color> {
         match copied {
             Some(of) if of != at => at = of,
             _ => {
-                return circled_on(state, at)
-                    .map(<[Color]>::to_vec)
-                    .unwrap_or_default();
+                return circled_on(state, at).map_or_default(<[Color]>::to_vec);
             }
         }
     }

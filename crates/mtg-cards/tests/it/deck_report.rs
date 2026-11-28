@@ -1,4 +1,4 @@
-//! Goal: the deck check reports every support state with its reasons, spans and quoted words per zone (the whole text of a card left whole to the table), counts the sideboard and every other zone toward the state, applies the rules of Commander, the constructed formats and freeform exactly, derives hashes that move with the deck and with coverage and with nothing else, and keeps its wire shape.
+//! Goal: the deck check reports every support state with its reasons, spans and quoted words per zone (the whole text of a card left whole to the table), counts the sideboard and every other zone toward the state, applies the rules of Commander, the constructed formats and freeform exactly, warns on an Attraction or Contraption deck that is short, names a card twice or holds a stranger, derives hashes that move with the deck and with coverage and with nothing else, and keeps its wire shape.
 #![allow(clippy::unwrap_used, clippy::expect_used)]
 
 use std::collections::BTreeMap;
@@ -52,6 +52,7 @@ const fn spec(n: u32, name: &'static str, type_line: &'static str, identity: &'s
 fn specs() -> Vec<Spec> {
     let mut all = base_specs();
     all.extend(pairing_specs());
+    all.extend(contraption_specs());
     all
 }
 
@@ -1080,4 +1081,58 @@ fn a_card_the_database_lacks_quotes_nothing() {
     assert_eq!(card.support, Support::Unplayable);
     assert!(card.reasons.iter().all(|reason| reason.quote.is_empty()));
     assert_eq!(card.whole_text, None);
+}
+
+/// The names of the test Contraptions.
+const GIZMOS: [&str; 16] = [
+    "Gizmo A", "Gizmo B", "Gizmo C", "Gizmo D", "Gizmo E", "Gizmo F", "Gizmo G", "Gizmo H",
+    "Gizmo I", "Gizmo J", "Gizmo K", "Gizmo L", "Gizmo M", "Gizmo N", "Gizmo O", "Gizmo P",
+];
+
+fn contraption_specs() -> Vec<Spec> {
+    (500..)
+        .zip(GIZMOS)
+        .map(|(n, name)| spec(n, name, "Artifact \u{2014} Contraption", ""))
+        .collect()
+}
+
+#[rstest]
+#[case::no_contraption_deck(0, 0, false, 0)]
+#[case::fifteen_names(15, 0, false, 0)]
+#[case::sixteen_names(16, 0, false, 0)]
+#[case::fourteen_names(14, 0, false, 1)]
+#[case::fifteen_cards_a_name_twice(14, 1, false, 1)]
+#[case::short_and_a_name_twice(3, 1, false, 2)]
+#[case::a_card_that_is_no_contraption(15, 0, true, 1)]
+fn a_contraption_deck_under_fifteen_cards_with_a_name_twice_or_a_stranger_is_a_warning(
+    #[case] distinct: usize,
+    #[case] extra: u32,
+    #[case] stranger: bool,
+    #[case] warnings: usize,
+    #[values("freeform", "commander", "modern")] format: &str,
+) {
+    let mut lines = match format {
+        "commander" => atraxa(50, 49, &[]),
+        "modern" => sixty(&[]),
+        _ => vec![line(Main, "Forest", 1)],
+    };
+    lines.extend(GIZMOS.iter().take(distinct).enumerate().map(|(at, name)| {
+        let count = if at == 0 { 1 + extra } else { 1 };
+        line(DeckZone::Contraptions, name, count)
+    }));
+    if stranger {
+        lines.push(line(DeckZone::Contraptions, "Sol Ring", 1));
+    }
+    let found = report(format, &lines);
+    let contraption: Vec<_> = found
+        .legality
+        .iter()
+        .filter(|issue| issue.code == IssueCode::ContraptionDeck)
+        .collect();
+    assert_eq!(contraption.len(), warnings, "{:#?}", found.legality);
+    assert!(
+        contraption
+            .iter()
+            .all(|issue| issue.zone == Some(DeckZone::Contraptions))
+    );
 }

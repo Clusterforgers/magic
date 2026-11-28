@@ -66,8 +66,7 @@ fn capital(verb: &str) -> String {
     let mut letters = verb.chars();
     letters
         .next()
-        .map(|first| first.to_uppercase().chain(letters).collect())
-        .unwrap_or_default()
+        .map_or_default(|first| first.to_uppercase().chain(letters).collect())
 }
 
 /// The selector without the comparison of the number of colors with five, and the words that comparison says.

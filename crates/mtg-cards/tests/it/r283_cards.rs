@@ -156,7 +156,7 @@ fn probe() {
         let printed = common::printed_of(&record);
         names.insert(printed.name.to_lowercase());
         let compiled = compile(&printed);
-        let compiled_text = compiled.card.as_ref().map(canonical).unwrap_or_default();
+        let compiled_text = compiled.card.as_ref().map_or_default(canonical);
         let file = std::path::Path::new(&rules).join(format!("{stem}.json"));
         let (source, proposal) = match std::fs::read_to_string(&file) {
             Ok(own) => ("file", own),

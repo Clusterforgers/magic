@@ -66,7 +66,7 @@ fn r401_a_permission_with_riders_reads_and_writes_back(
 #[case::no_permission("Draw a card. If you cast a spell this way, that artifact enters tapped.")]
 fn r401_near_misses_stay_unread(#[case] text: &str) {
     let read = clause(text, ClauseKind::Static, false);
-    let written = read.as_ref().map(render_variants).unwrap_or_default();
+    let written = read.as_ref().map_or_default(render_variants);
     assert!(
         !written.iter().any(|w| same_text(w, text)),
         "{text}: {read:?}"

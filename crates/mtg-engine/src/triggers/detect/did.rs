@@ -613,10 +613,7 @@ fn activated(
         return found;
     }
     let on_stack = activated_on_stack(post, source, index, origin);
-    let kinds = rules
-        .as_deref()
-        .map(Action::activation_kinds)
-        .unwrap_or_default();
+    let kinds = rules.as_deref().map_or_default(Action::activation_kinds);
     let loyalty = rules
         .as_deref()
         .is_some_and(|rules| matches!(rules, Ability::Loyalty { .. }));
@@ -632,8 +629,7 @@ fn activated(
     // The mana the activation spent, which the ability on the stack keeps (CR 601.2h, 602.2b).
     let spent: Vec<mtg_cards::spend::SpentFrom> = on_stack
         .and_then(|id| post.object(id))
-        .map(|object| object.choices.spent_from().to_vec())
-        .unwrap_or_default();
+        .map_or_default(|object| object.choices.spent_from().to_vec());
     [Action::Activated, Action::ActivatedAny]
         .into_iter()
         .chain(kinds)

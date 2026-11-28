@@ -80,8 +80,8 @@ fn an_unverified_card_says_so_to_every_seat_that_sees_it_and_a_read_one_does_not
         scenario = scenario.library(other, vec![forest(); 4]);
     }
     let table = Table::new(scenario);
-    for seat in 0..seat_count {
-        let named = |name: &str| table.views[seat].objects.iter().find(|o| o.name == name);
+    for (seat, view) in table.views.iter().enumerate().take(seat_count) {
+        let named = |name: &str| view.objects.iter().find(|o| o.name == name);
         let unread = named("Unread draft").unwrap();
         assert!(unread.read && unread.unverified, "seat {seat}");
         let json = serde_json::to_value(unread).unwrap();
@@ -96,7 +96,7 @@ fn an_unverified_card_says_so_to_every_seat_that_sees_it_and_a_read_one_does_not
                 .is_none(),
             "left out while false"
         );
-        let hidden = table.views[seat]
+        let hidden = view
             .objects
             .iter()
             .any(|o| o.name.is_empty() && o.unverified);

@@ -1,4 +1,4 @@
-//! Goal: stored decks read back exactly as saved (lines in order, printings, the by-hand mark, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, an owner's distinct cards span every deck of its own and no other while the cards of all decks list each card once, a removed printing leaves the card, and the database refuses what the server would not send.
+//! Goal: stored decks read back exactly as saved (lines in order and every zone, the Contraption deck among them, printings, the by-hand mark, notes, the stored check, UTC timestamps), one owner never sees, replaces or deletes another's deck, the cap on decks per owner holds under racing creations, lines cascade with their deck, an owner's distinct cards span every deck of its own and no other while the cards of all decks list each card once, a removed printing leaves the card, and the database refuses what the server would not send.
 
 use crate::common;
 
@@ -68,6 +68,9 @@ async fn a_deck_reads_back_exactly_as_it_was_saved(pool: PgPool) {
             },
             line(DeckZone::Commander, "Atraxa, Praetors' Voice", 1),
             line(DeckZone::Companion, "Sol Ring", 1),
+            line(DeckZone::Attractions, "Shock", 1),
+            line(DeckZone::Contraptions, "Sol Ring", 1),
+            line(DeckZone::Stickers, "Shock", 1),
             // The same card twice in a zone, as two printings would be.
             line(DeckZone::Main, "Mountain", 3),
         ],

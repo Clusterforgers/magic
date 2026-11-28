@@ -1398,7 +1398,15 @@ sprocket: number,
 /**
  * The Contraptions cranked; none when the player chose none.
  */
-contraptions: Array<ObjectId>, } } | { "RolledToVisit": { 
+contraptions: Array<ObjectId>, } } | { "P170bReassembled": { 
+/**
+ * Who reassembled.
+ */
+player: PlayerId, 
+/**
+ * The Contraption moved and the sprocket it is on now.
+ */
+moved: [ObjectId, number] | null, } } | { "RolledToVisit": { 
 /**
  * Who rolled.
  */
