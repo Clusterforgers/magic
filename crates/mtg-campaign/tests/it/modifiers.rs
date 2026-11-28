@@ -1,6 +1,7 @@
 //! Goal: every encounter modifier of the pool loads from the content and does what its rule says at a table of two
-//! heroes and the boss, its emblem on the boss's seat; the pool holds the 23 modifiers, each with a card; and the draw
-//! never pairs a modifier with a boss its `not_with` names.
+//! heroes and the boss, its emblem on the boss's seat, a retired one (out of the pool, its card kept for stored games)
+//! included; the pool holds the 22 modifiers, each with a card; and the draw never pairs a modifier with a boss its
+//! `not_with` names and never draws a retired one.
 
 use std::collections::BTreeSet;
 use std::sync::Arc;
@@ -396,7 +397,7 @@ type Check = fn(Scenario) -> Result<(), ScriptError>;
 #[rstest]
 #[case::mirror_hall("mirror_hall", mirror_hall)]
 #[case::living_stone("living_stone", living_stone)]
-#[case::waking_earth("waking_earth", waking_earth)]
+#[case::waking_earth_retired("waking_earth", waking_earth)]
 #[case::bloodlust("bloodlust", bloodlust)]
 #[case::twin_flames("twin_flames", twin_flames)]
 #[case::overflowing_mana("overflowing_mana", overflowing_mana)]
@@ -422,10 +423,20 @@ fn each_modifier_does_what_it_says(#[case] id: &str, #[case] check: Check) {
 }
 
 #[test]
-fn the_pool_holds_the_23_modifiers_each_with_its_card() {
+fn the_pool_holds_the_22_modifiers_each_with_its_card() {
     let content = content().unwrap();
     let ids: BTreeSet<&str> = content.modifiers.iter().map(|m| m.id.as_str()).collect();
-    assert_eq!((ids.len(), content.modifiers.len()), (23, 23));
+    assert_eq!((ids.len(), content.modifiers.len()), (22, 22));
+    // A retired modifier is out of the pool but its card stays for the stored games that rolled it.
+    for retired in modifiers::RETIRED {
+        assert!(!ids.contains(retired));
+        let card = content.cards.get(retired).unwrap();
+        assert_eq!(card.kind, CardKind::Encounter, "{retired}");
+        assert!(
+            !card.abilities.is_empty() && !card.text.is_empty(),
+            "{retired}"
+        );
+    }
     for id in ids {
         let card = content.cards.get(id).unwrap();
         assert_eq!(card.kind, CardKind::Encounter, "{id}");
@@ -456,6 +467,7 @@ proptest! {
         for boss in bosses() {
             let drawn = modifiers::draw(pool, &boss, seed, floor, room).unwrap();
             prop_assert!(!drawn.not_with.contains(&boss), "{} with {}", drawn.id, boss);
+            prop_assert!(!modifiers::RETIRED.contains(&drawn.id.as_str()), "{} drawn", drawn.id);
         }
     }
 }

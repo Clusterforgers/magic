@@ -154,13 +154,12 @@ A dusk-bound forest of witches, beasts and the restless dead, open at every Heat
 
 ### Encounter modifiers
 
-Each modifier is an emblem on the boss's seat whose rule binds every player alike unless it names the heroes; most copy the rule a Verified card runs. The Spire bosses go by their ids in `not_with` (`siren_queen`, `fog_bell`, …).
+Each modifier is an emblem on the boss's seat whose rule binds every player alike unless it names the heroes; most copy the rule a Verified card runs. The Spire bosses go by their ids in `not_with` (`siren_queen`, `fog_bell`, …). A retired modifier (`modifiers::RETIRED`: Waking Earth, lands are 1/1 creatures too) is out of the pool and never rolled, but its card stays, so stored games that rolled it replay and play unchanged.
 
 | Modifier | Rule | Never with |
 |---|---|---|
 | Mirror Hall | No one controls more than five creatures of one name; the newest beyond five are sacrificed. | Skrix, Grimgut, Vex, Hollowmere, Sahrra, the Leviathan, the Fog Bell, the Kelp Shepherd, the Spawning Shoal, the Drowned Admiral |
 | Living Stone | Artifacts have "{T}: Add {C}." | |
-| Waking Earth | Lands are 1/1 creatures too (Kormus Bell). | Vex, Seraphine, Korrath, Ozrith, Ysolde, Hollowmere, Valdric, Vorthana, the Leviathan, the Lamplighter, the Drowned Abbess, the Salt Magistrate, the Storm Herald, the Maelstrom, the Brine Hag, the Magma Vent |
 | Bloodlust | Creatures have double strike and attack each combat (Avatar of Slaughter). | the Siren Queen, Aurenne |
 | Twin Flames | Damage is doubled (Furnace of Rath). | |
 | Overflowing Mana | A land tapped for mana adds one more of a type it made. | |
