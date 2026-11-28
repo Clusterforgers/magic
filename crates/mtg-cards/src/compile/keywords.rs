@@ -131,6 +131,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("jump-start", Params::None),
     ("training", Params::None),
     ("read ahead", Params::None),
+    ("space sculptor", Params::None),
     ("exploit", Params::None),
     ("ascend", Params::None),
     ("storied", Params::None),
