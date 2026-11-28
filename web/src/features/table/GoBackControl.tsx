@@ -28,7 +28,7 @@ import { useNow } from './useNow'
  */
 export function GoBackControl() {
   const { session } = useGame()
-  const { offer, refused, request, notice, me, online, playing } = usePlay(
+  const { offer, refused, request, notice, me, online, playing, takeBack } = usePlay(
     useShallow((state) => ({
       offer: state.goBackOffer,
       refused: state.goBackRefused,
@@ -37,11 +37,14 @@ export function GoBackControl() {
       me: state.seat,
       online: state.status === 'open',
       playing: state.phase === 'playing',
+      takeBack: state.takeBackOffer !== null,
     })),
   )
   const seat = useSeatNamer()
   const form = useDockForm()
   const canGo = offer !== null && playing && online && offer.player === me && request === null
+  // A phone's line holds the take-back, the stops and the Stack chip too: beside a take-back the button is its icon.
+  const iconOnly = form === 'compact' && takeBack
 
   useEffect(() => {
     if (refused === null) return
@@ -100,11 +103,12 @@ export function GoBackControl() {
           variant="outline"
           className="max-w-full max-sm:h-9 max-sm:px-3"
           aria-keyshortcuts={GO_BACK_KEY}
+          aria-label={iconOnly ? goBackLabel(offer.step) : undefined}
           title={`${goBackLabel(offer.step)} (${GO_BACK_KEY})`}
           onClick={() => session.goBack()}
         >
           <Undo2 aria-hidden className="size-4 shrink-0" />
-          <span className="min-w-0 truncate">{goBackLabel(offer.step)}</span>
+          {iconOnly ? null : <span className="min-w-0 truncate">{goBackLabel(offer.step)}</span>}
           {form === 'full' ? <KeyHint>⌫</KeyHint> : null}
         </Button>
       )}
@@ -129,7 +133,7 @@ function GoBackRequestLine({
   const compact = useDockForm() === 'compact'
   const left = `${secondsLeft(request, now)} s${compact ? '' : ' left'}`
   const clock = (
-    <span data-slot="go-back-clock" className="text-muted-foreground tabular-nums">
+    <span data-slot="go-back-clock" className="shrink-0 whitespace-nowrap text-muted-foreground tabular-nums">
       {left}
     </span>
   )
@@ -140,9 +144,12 @@ function GoBackRequestLine({
         role="group"
         aria-label="Go-back request"
         data-request
-        className="flex max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-1 text-sm"
+        className={cn(
+          'flex max-w-full min-w-0 items-center justify-end gap-x-2 gap-y-1 text-sm',
+          compact ? 'flex-nowrap' : 'flex-wrap',
+        )}
       >
-        <p title={ask} className={compact ? undefined : 'basis-full text-right'}>
+        <p title={ask} className={compact ? 'min-w-0 truncate' : 'basis-full text-right'}>
           {compact ? `${seat(request.offer.player)}: ${goBackLabel(request.offer.step)}?` : ask}
         </p>
         {clock}
@@ -161,9 +168,15 @@ function GoBackRequestLine({
       <div
         data-slot="go-back-waiting"
         data-request
-        className="flex max-w-full flex-wrap items-center justify-end gap-x-2 gap-y-1 text-sm"
+        className={cn(
+          'flex max-w-full min-w-0 items-center justify-end gap-x-2 gap-y-1 text-sm',
+          compact ? 'flex-nowrap' : 'flex-wrap',
+        )}
       >
-        <p className={cn('text-muted-foreground', !compact && 'basis-full text-right')} title={ask}>
+        <p
+          className={cn('text-muted-foreground', compact ? 'min-w-0 truncate' : 'basis-full text-right')}
+          title={ask}
+        >
           {waiting}
         </p>
         {clock}
@@ -174,7 +187,11 @@ function GoBackRequestLine({
     )
   }
   return (
-    <p data-slot="go-back-waiting" data-request className="text-sm text-muted-foreground">
+    <p
+      data-slot="go-back-waiting"
+      data-request
+      className={cn('text-sm text-muted-foreground', compact && 'truncate')}
+    >
       {ask}. {waiting} {clock}
     </p>
   )
