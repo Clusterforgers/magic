@@ -70,8 +70,8 @@ export function statusGlyph(chip: StatusChip): Glyph {
   if (merged !== null) return { icon: Layers, text: countText(Number(merged[1])), words }
   const level = /^Level (\d+)$/.exec(chip.label)
   if (level !== null) return { icon: null, text: `L${countText(Number(level[1]))}`, words }
-  const sprocket = /^Sprocket (\d)$/.exec(chip.label)
-  if (sprocket !== null) return { icon: Cog, text: sprocket[1], words: `On sprocket ${sprocket[1]}` }
+  const sprocket = /^Sprocket (\d)$/.exec(chip.label)?.[1]
+  if (sprocket !== undefined) return { icon: Cog, text: sprocket, words: `On sprocket ${sprocket}` }
   return { icon: STATUS_ICON[chip.label] ?? CircleDot, text: '', words }
 }
 
