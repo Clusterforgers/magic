@@ -54,6 +54,7 @@ export const DECISION_LABEL: Record<DecisionName, string> = {
   Loop: 'Repeat a loop',
   R706ChooseDice: 'Choose dice',
   R509BlockPiles: 'Divide blockers into piles',
+  P170aAssignSectors: 'Assign sectors',
 }
 
 /** The name of a decision kind; a new kind stops compiling here until it is named. A kind a newer server sends is `Unknown`. */
@@ -81,6 +82,7 @@ export function decisionName(kind: DecisionKind): DecisionName | 'Unknown' {
   if ('Loop' in kind) return 'Loop'
   if ('R706ChooseDice' in kind) return 'R706ChooseDice'
   if ('R509BlockPiles' in kind) return 'R509BlockPiles'
+  if ('P170aAssignSectors' in kind) return 'P170aAssignSectors'
   if ('Discard' in kind) return 'Discard'
   void (kind satisfies never)
   return 'Unknown'
@@ -267,6 +269,7 @@ export const WAIT_PHRASE: Record<DecisionName, string> = {
   Loop: 'to choose how many times a loop repeats',
   R706ChooseDice: 'to choose dice',
   R509BlockPiles: 'to divide blockers into piles',
+  P170aAssignSectors: 'to assign sectors',
 }
 
 /** Whether `name` is a decision this page knows (a newer server may name one it does not). */

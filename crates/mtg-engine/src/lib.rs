@@ -167,6 +167,7 @@ pub mod modifiers;
 pub mod monarch;
 pub mod object;
 pub mod opening_lands;
+pub mod p170a_sectors;
 mod party;
 mod party_attacks;
 pub mod phases;

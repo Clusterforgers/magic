@@ -34,6 +34,7 @@ const ASKED_BY_GAME: ReadonlySet<string> = new Set([
   'DeclareAttackers',
   'DeclareBlockers',
   'R509BlockPiles',
+  'P170aAssignSectors',
 ])
 
 /** Short details that stand beside the question in every home. */

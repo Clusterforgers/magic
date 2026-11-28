@@ -1,0 +1,47 @@
+{
+  "oracle_id": "cfca44cb-8ca5-4ebb-bd5c-b621eca41944",
+  "name": "Space Beleren",
+  "impl_status": "Full",
+  "faces": [
+    {
+      "name": "Space Beleren",
+      "oracle_fingerprint": "289a3343ad4902191d6d2c3316e406b3",
+      "abilities": [
+        { "Keyword": "SpaceSculptor" },
+        {
+          "Loyalty": {
+            "cost": { "Plus": 1 },
+            "effects": [{ "Rule": { "rule": "P170aSectorBlocks", "duration": "UntilEndOfTurn" } }]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 1 },
+            "effects": [
+              { "ChooseValue": { "kind": "P170aSector", "as": "sector" } },
+              {
+                "PutCounters": {
+                  "on": { "Each": [{ "Type": "Creature" }, { "P170aInSector": "sector" }] },
+                  "counter": "+1/+1"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "Loyalty": {
+            "cost": { "Minus": 5 },
+            "effects": [
+              { "ChooseValue": { "kind": "P170aSector", "as": "sector" } },
+              {
+                "Destroy": {
+                  "what": { "Each": [{ "Type": "Creature" }, { "P170aInSector": "sector" }] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

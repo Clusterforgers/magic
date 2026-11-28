@@ -131,6 +131,7 @@ const KEYWORDS: &[(&str, Params)] = &[
     ("jump-start", Params::None),
     ("training", Params::None),
     ("read ahead", Params::None),
+    ("space sculptor", Params::None),
     ("exploit", Params::None),
     ("ascend", Params::None),
     ("storied", Params::None),
@@ -859,6 +860,7 @@ fn plain(name: &str) -> Option<Keyword> {
         "gravestorm" => Keyword::Gravestorm,
         "epic" => Keyword::Epic,
         "banding" => Keyword::Banding,
+        "space sculptor" => Keyword::SpaceSculptor,
         "assist" => Keyword::Assist,
         "sunburst" => Keyword::Sunburst,
         "demonstrate" => Keyword::Demonstrate,
@@ -1649,6 +1651,7 @@ mod tests {
     #[case::ripple("Ripple 4", Keyword::Ripple(4))]
     #[case::epic("Epic", Keyword::Epic)]
     #[case::banding("Banding", Keyword::Banding)]
+    #[case::space_sculptor("Space sculptor", Keyword::SpaceSculptor)]
     #[case::bands_with_other_legendary("Bands with other legendary creatures", Keyword::BandsWithOther(Selector(vec![Pred::Type(CardType::Creature), Pred::Supertype(Supertype::Legendary)])))]
     #[case::splice_onto_arcane("Splice onto Arcane {1}{R}", Keyword::Splice { onto: SpliceOnto::Arcane, cost: mana("{1}{R}") })]
     #[case::splice_onto_instants("Splice onto instant or sorcery {2}{U}", Keyword::Splice { onto: SpliceOnto::InstantOrSorcery, cost: mana("{2}{U}") })]
@@ -2298,6 +2301,7 @@ mod tests {
             "Ripple 4",
             "Epic",
             "Banding",
+            "Space sculptor",
             "Bands with other Dinosaurs",
             "Splice onto Arcane {1}{R}",
             "Cleave {1}{R}",

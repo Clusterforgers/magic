@@ -1,5 +1,6 @@
 import { BookOpenIcon, CheckIcon, XIcon } from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { Kbd } from '@/components/Kbd'
 import { Loading } from '@/components/Loading'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -111,7 +112,7 @@ function VerdictBar({ card, ready, sending, send, reload, keys, className }: Ver
   }
 
   return (
-    <div data-slot="read-verdict" className={cn('grid gap-3', className)}>
+    <div data-slot="read-verdict" {...anchor('review.verdict')} className={cn('grid gap-3', className)}>
       <p aria-live="polite" className="text-sm text-muted-foreground">
         {ready
           ? 'Does the game do what the card says?'
@@ -285,15 +286,17 @@ export function ReadCardView({
       />
     </>
   )
+  const mark = anchor('review.read')
   if (!picture) {
     return (
-      <article data-slot="read-card" data-oracle-id={card.oracle_id} className="grid gap-4">
+      <article {...mark} data-slot="read-card" data-oracle-id={card.oracle_id} className="grid gap-4">
         {body}
       </article>
     )
   }
   return (
     <article
+      {...mark}
       data-slot="read-card"
       data-oracle-id={card.oracle_id}
       className="grid gap-4 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:items-start md:gap-6"

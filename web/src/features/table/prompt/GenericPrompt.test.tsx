@@ -268,6 +268,18 @@ const ROWS: Row[] = [
     0,
     { R509BlockPiles: [[], []] },
   ],
+  [
+    'P170aAssignSectors',
+    { P170aAssignSectors: { creatures: [mine, other], text: 'Assign.' } },
+    ['Spread over the sectors'],
+    0,
+    {
+      P170aAssignSectors: [
+        [mine, 'Alpha'],
+        [other, 'Beta'],
+      ],
+    },
+  ],
 ]
 
 const buttons = (): string[] =>

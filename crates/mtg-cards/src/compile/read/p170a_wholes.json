@@ -1,0 +1,7 @@
+[
+[{"Keyword":"SpaceSculptor"},"~ sculptor"]
+,
+[{"Loyalty":{"cost":{"Plus":1},"effects":[{"Rule":{"rule":"P170aSectorBlocks","duration":"UntilEndOfTurn"}}]}},"+1: Creatures in each sector can be blocked this turn only by creatures in the same sector."]
+, [{"Loyalty":{"cost":{"Minus":1},"effects":[{"ChooseValue":{"kind":"P170aSector","as":"sector"}},{"PutCounters":{"on":{"Each":[{"Type":"Creature"},{"P170aInSector":"sector"}]},"counter":"+1/+1"}}]}},"−1: Put a +1/+1 counter on each creature in the sector of your choice."]
+, [{"Loyalty":{"cost":{"Minus":5},"effects":[{"ChooseValue":{"kind":"P170aSector","as":"sector"}},{"Destroy":{"what":{"Each":[{"Type":"Creature"},{"P170aInSector":"sector"}]}}}]}},"−5: Destroy all creatures in the sector of your choice."]
+]

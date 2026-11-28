@@ -248,7 +248,7 @@ cost: string,
 /**
  * Only once each turn for the permanent.
  */
-once: boolean, } } | { "R706IgnoreChosen": Array<PlayerId> } | "R509BlockPiles" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
+once: boolean, } } | { "R706IgnoreChosen": Array<PlayerId> } | "R509BlockPiles" | "P170aSectorBlocks" | { "KeepUnspentMana": [Array<PlayerId>, ManaType | null] } | { "UnspentManaBecomes": [Array<PlayerId>, ManaType] } | { "DrawLimit": [Array<PlayerId>, number] } | { "PayLifeForMana": [Array<PlayerId>, unknown] } | { "PayLifeForOneSymbol": { 
 /**
  * The players.
  */

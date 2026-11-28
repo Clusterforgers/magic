@@ -3,4 +3,4 @@
 /**
  * The kind of a decision without its options, named as the variant of `DecisionKind`.
  */
-export type DecisionName = "Mulligan" | "BottomCards" | "Priority" | "PayMana" | "DeclareAttackers" | "DeclareBlockers" | "AssignDamage" | "Discard" | "ChooseTargets" | "ChooseMode" | "ChooseNumber" | "ChooseName" | "DivideAmount" | "ChooseCards" | "OrderCards" | "Scry" | "YesNo" | "ChooseOption" | "ChooseCosts" | "OrderTriggers" | "ChooseReplacement" | "Loop" | "R706ChooseDice" | "R509BlockPiles";
+export type DecisionName = "Mulligan" | "BottomCards" | "Priority" | "PayMana" | "DeclareAttackers" | "DeclareBlockers" | "AssignDamage" | "Discard" | "ChooseTargets" | "ChooseMode" | "ChooseNumber" | "ChooseName" | "DivideAmount" | "ChooseCards" | "OrderCards" | "Scry" | "YesNo" | "ChooseOption" | "ChooseCosts" | "OrderTriggers" | "ChooseReplacement" | "Loop" | "R706ChooseDice" | "R509BlockPiles" | "P170aAssignSectors";

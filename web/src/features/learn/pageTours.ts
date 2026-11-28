@@ -1,6 +1,16 @@
 import { createStore } from 'zustand/vanilla'
-import type { TourStop } from '@/components/tour/TourCard'
+import type { Target } from './anchors'
 import type { TutorialId } from './tutorials'
+
+/** One stop of a page tour: what it explains and the anchors it may light, the first drawn winning; none centres it. */
+export interface TourStop {
+  id: string
+  /** At most 28 characters. */
+  title: string
+  /** At most 160 characters. */
+  text: string
+  at: readonly Target[]
+}
 
 /** One part of a page tour: the page it runs on and its stops. */
 export interface TourPart {
@@ -37,19 +47,19 @@ export const PAGE_TOURS: readonly PageTour[] = [
             id: 'decks',
             title: 'Your decks',
             text: 'Every deck of your account, with its format and how much of it the game plays automatically.',
-            targets: ['[aria-label="Your decks"]', '[aria-labelledby="decks-title"]'],
+            at: ['decks.list', 'decks.page'],
           },
           {
             id: 'import',
             title: 'Import a list',
             text: 'Paste a list from Arena, MTG Online, Moxfield or Archidekt. Unknown lines are named, and nothing is ever refused.',
-            targets: ['[data-tour="import-deck"]'],
+            at: ['decks.import'],
           },
           {
             id: 'new',
             title: 'Start a new deck',
             text: 'An empty deck with a name and a format. It opens in the builder.',
-            targets: ['[data-tour="new-deck"]'],
+            at: ['decks.new'],
           },
         ],
       },
@@ -61,25 +71,25 @@ export const PAGE_TOURS: readonly PageTour[] = [
             id: 'search',
             title: 'Find cards',
             text: 'Search by name, type or rules text and filter by color. Add a card with its plus button; Shift adds four.',
-            targets: ['[aria-label="Card search"]'],
+            at: ['builder.search'],
           },
           {
             id: 'deck',
             title: 'The deck',
             text: 'The deck by zone with counts, the commander slot of a Commander deck, and its views: list, pictures and stats.',
-            targets: ['section[aria-label="Deck"]'],
+            at: ['builder.deck'],
           },
           {
             id: 'check',
             title: 'The deck check',
             text: 'How many cards run automatically, which wait for a read and which you play by hand. Legality only warns; every card stays usable.',
-            targets: ['[data-slot="deck-check"]'],
+            at: ['builder.check'],
           },
           {
             id: 'save',
             title: 'Save',
             text: 'Changes stay yours until you save. Leaving with unsaved changes asks first.',
-            targets: ['[data-slot="save-bar"]'],
+            at: ['builder.save'],
           },
         ],
       },
@@ -97,19 +107,19 @@ export const PAGE_TOURS: readonly PageTour[] = [
             id: 'format',
             title: 'Format and seats',
             text: 'Commander or Normal, and how many seats the table has. Everyone else joins an open seat.',
-            targets: ['[data-slot="create-game-column"]', '[data-slot="format-field"]'],
+            at: ['create.game'],
           },
           {
             id: 'options',
             title: 'Rules and visibility',
             text: 'House rules change the format’s numbers. A public game is listed on the Play page; an invite game is reached by its link and code.',
-            targets: ['[data-slot="create-options-column"]', '[data-slot="house-rules"]'],
+            at: ['create.options'],
           },
           {
             id: 'create',
             title: 'Create',
             text: 'Create opens the lobby. The tour goes on there.',
-            targets: ['[data-slot="create-footer"]'],
+            at: ['create.footer'],
           },
         ],
       },
@@ -121,25 +131,25 @@ export const PAGE_TOURS: readonly PageTour[] = [
             id: 'invite',
             title: 'Invite',
             text: 'Send the link or the code to your friends. Each join takes an open seat.',
-            targets: ['[data-slot="join-invite"]', '[data-slot="lobby-game"]'],
+            at: ['lobby.invite', 'lobby.game'],
           },
           {
             id: 'seats',
             title: 'The seats',
             text: 'Who sits where, whether they are connected, their deck and whether they are ready. The host can remove a player.',
-            targets: ['[data-slot="lobby-game"]'],
+            at: ['lobby.game'],
           },
           {
             id: 'deck',
             title: 'Your deck',
             text: 'Choose a deck of yours or a precon. Its check says what runs automatically at this table.',
-            targets: ['[data-slot="lobby-deck"]', '[data-slot="deck-chooser"]'],
+            at: ['lobby.deck', 'lobby.chooser'],
           },
           {
             id: 'ready',
             title: 'Ready',
             text: 'Press Ready when your deck is set. The game starts when every seat is ready.',
-            targets: ['[data-slot="ready-bar"]'],
+            at: ['lobby.ready'],
           },
         ],
       },
@@ -157,19 +167,19 @@ export const PAGE_TOURS: readonly PageTour[] = [
             id: 'queue',
             title: 'What waits',
             text: 'A card waiting for your read runs on rules the game drafted and nobody verified yet; a card to check is one you play partly by hand.',
-            targets: ['[aria-labelledby="read-title"] header', '[aria-labelledby="read-title"]'],
+            at: ['review.queue', 'review.page'],
           },
           {
             id: 'card',
             title: 'Read a card',
             text: 'Each line of the printed text sits beside the game’s words for it. Compare them line by line.',
-            targets: ['[data-slot="read-card"]', '[data-slot="check-card"]', '[data-slot="empty-state"]'],
+            at: ['review.read', 'review.check', 'review.empty'],
           },
           {
             id: 'verdict',
             title: 'Your verdict',
             text: 'Reads right or Reads wrong with a note. Each verdict opens the next card; C, W, J and K do the same from the keyboard.',
-            targets: ['[data-slot="read-verdict"]', '[data-slot="check-actions"]'],
+            at: ['review.verdict', 'review.actions'],
           },
         ],
       },
@@ -187,25 +197,25 @@ export const PAGE_TOURS: readonly PageTour[] = [
             id: 'search',
             title: 'Search',
             text: 'Type a name such as “trample”, or what it does, such as “can’t be blocked”.',
-            targets: ['[data-slot="lexicon"] input[type="search"]', '[data-slot="lexicon"]'],
+            at: ['lexicon.search', 'lexicon'],
           },
           {
             id: 'kinds',
             title: 'Kinds',
             text: 'Show only keyword abilities, keyword actions, ability words or rules terms. Each button counts its matches.',
-            targets: ['[data-slot="lexicon"] [role="group"]'],
+            at: ['lexicon.kinds'],
           },
           {
             id: 'entry',
             title: 'An entry',
             text: 'The term and its reminder text. An underlined word opens its own entry.',
-            targets: ['[data-slot="lexicon-entry"]', '[data-slot="lexicon"]'],
+            at: ['lexicon.entry', 'lexicon'],
           },
           {
             id: 'table',
             title: 'At the table',
             text: 'The question mark in the table’s top bar opens the lexicon; underlined words on cards and in the log show their rules on hover.',
-            targets: [],
+            at: [],
           },
         ],
       },

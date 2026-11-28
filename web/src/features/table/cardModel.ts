@@ -393,6 +393,7 @@ export function statusChips(object: ObjectView, role: CombatRole | null): Status
   if (state?.exerted === true) add('identity', 'Exerted')
   if (state?.prepared === true) add('identity', 'Prepared')
   if (state?.suspected === true) add('identity', 'Suspected')
+  if (state?.sector !== undefined) add('identity', `${state.sector} sector`)
   if (state?.solved === true) add('identity', 'Solved')
   if (state?.level !== undefined) add('identity', `Level ${state.level}`)
   const stickers = object.stickers?.length ?? 0
@@ -429,6 +430,7 @@ export function statusWords(object: ObjectView, role: CombatRole | null, links: 
   if (state?.exerted === true) words.push('exerted')
   if (state?.prepared === true) words.push('prepared')
   if (state?.suspected === true) words.push('suspected')
+  if (state?.sector !== undefined) words.push(`in the ${state.sector.toLowerCase()} sector`)
   if (state?.level !== undefined) words.push(`level ${state.level}`)
   if ((object.stickers?.length ?? 0) > 0) words.push(`stickers: ${(object.stickers ?? []).join('; ')}`)
   if (isUnattached(object)) words.push('unattached')

@@ -485,6 +485,16 @@ pub(crate) fn definition_has_ascend(definition: &CardDefinition) -> bool {
     })
 }
 
+/// Whether a card with this definition has space sculptor, so the game watches the sectors (`GameState::possible`).
+pub(crate) fn p170a_definition_has_space_sculptor(definition: &CardDefinition) -> bool {
+    definition.rules.iter().any(|rules| {
+        matches!(
+            **rules,
+            Ability::Keyword(mtg_cards::keyword::Keyword::SpaceSculptor)
+        )
+    })
+}
+
 /// Whether a card with this definition has storied, so the game watches for the enduring story (`GameState::possible`).
 pub(crate) fn definition_has_storied(definition: &CardDefinition) -> bool {
     definition.rules.iter().any(|rules| {

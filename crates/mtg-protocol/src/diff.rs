@@ -81,6 +81,7 @@ mod tests {
                 exerted: false,
                 level: None,
                 doors: None,
+                sector: None,
             }),
             face_down: false,
             face: None,

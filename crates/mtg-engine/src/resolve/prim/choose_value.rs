@@ -394,6 +394,10 @@ fn options(kind: &ValueKind) -> Vec<ChoiceOption> {
                 .collect()
         }
         ValueKind::Options(words) => words.iter().cloned().map(ChoiceOption::Label).collect(),
+        ValueKind::P170aSector => crate::p170a_sectors::Sector::ALL
+            .iter()
+            .map(|sector| ChoiceOption::Label(sector.word().to_owned()))
+            .collect(),
         ValueKind::Letter => ('a'..='z')
             .map(|letter| ChoiceOption::Label(letter.to_string()))
             .collect(),
@@ -495,6 +499,7 @@ fn question(kind: &ValueKind) -> String {
             format!("Choose one that hasn't been chosen: {}.", words.join(", "))
         }
         ValueKind::Letter => "Choose a letter.".to_owned(),
+        ValueKind::P170aSector => "Choose a sector: alpha, beta or gamma.".to_owned(),
         ValueKind::Number(..) => "Choose a number.".to_owned(),
         ValueKind::R111SpellDamage { .. } => "Choose one of those spells.".to_owned(),
     }
@@ -540,9 +545,10 @@ fn value(kind: &ValueKind, option: &ChoiceOption, like: Option<&Chosen>) -> Opti
                 .find(|card_type: &CardType| format!("{card_type:?}") == *name)
                 .map(Chosen::CardType)
         }
-        (ValueKind::Options(_) | ValueKind::OptionsNotNoted(_), ChoiceOption::Label(word)) => {
-            Some(Chosen::Word(word.clone()))
-        }
+        (
+            ValueKind::Options(_) | ValueKind::OptionsNotNoted(_) | ValueKind::P170aSector,
+            ChoiceOption::Label(word),
+        ) => Some(Chosen::Word(word.clone())),
         (ValueKind::Letter, ChoiceOption::Label(word))
             if word.len() == 1 && word.chars().all(|c| c.is_ascii_lowercase()) =>
         {

@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useEffect, useId, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { EmptyState } from '@/components/EmptyState'
 import { Loading } from '@/components/Loading'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
@@ -205,7 +206,11 @@ export function SearchPane({
   }
 
   return (
-    <section aria-label="Card search" className={cn('surface min-h-0 flex-col gap-3 p-3', className)}>
+    <section
+      aria-label="Card search"
+      {...anchor('builder.search')}
+      className={cn('surface min-h-0 flex-col gap-3 p-3', className)}
+    >
       <div className="relative">
         <SearchIcon
           aria-hidden="true"

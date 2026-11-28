@@ -452,7 +452,8 @@ fn reads_of_pred(pred: &Pred) -> Traits {
         | Pred::BlockedThisTurn(_)
         | Pred::DealtDamageThisTurn(_)
         | Pred::R6100DamagedThisGameBy(_)
-        | Pred::EnteredSinceLastTurn(_) => Traits::NONE,
+        | Pred::EnteredSinceLastTurn(_)
+        | Pred::P170aInSector(_) => Traits::NONE,
         Pred::WasCast { by, .. } => by.as_ref().map_or(Traits::NONE, reads_of_ref),
         Pred::DidThisTurn { by, to, .. } => by
             .iter()

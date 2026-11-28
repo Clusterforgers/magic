@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { LoaderCircleIcon, TriangleAlertIcon } from 'lucide-react'
 import { useId } from 'react'
 import type { ReactNode } from 'react'
+import { anchor } from '@/features/learn/anchors'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select'
@@ -66,7 +67,11 @@ export function CheckBar({
   const checking = status === 'checking'
   const checked = status === 'current' && source === 'draft'
   return (
-    <div data-slot="deck-check" className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+    <div
+      data-slot="deck-check"
+      {...anchor('builder.check')}
+      className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2"
+    >
       <div className="flex min-w-0 flex-wrap items-baseline gap-x-2">
         <p data-slot="check-counts" className="text-sm font-medium tabular-nums">
           {countsText(counts)}

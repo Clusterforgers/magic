@@ -81,6 +81,8 @@ pub enum DecisionKind {
     R706ChooseDice(crate::r706_dice::R706DiceOptions),
     /// Divide creatures into piles instead of declaring blockers (`Rule::R509BlockPiles`, CR 509.1).
     R509BlockPiles(crate::r509_piles::R509PilesOptions),
+    /// Assign creatures that are in no sector to sectors of space sculptor (`p170a_sectors`).
+    P170aAssignSectors(crate::p170a_sectors::P170aSectorsOptions),
 }
 
 impl DecisionKind {
@@ -126,6 +128,7 @@ impl DecisionKind {
             DecisionKind::Loop(_) => "loop",
             DecisionKind::R706ChooseDice(_) => "r706-choose-dice",
             DecisionKind::R509BlockPiles(_) => "r509-block-piles",
+            DecisionKind::P170aAssignSectors(_) => "p170a-assign-sectors",
         }
     }
 }
@@ -1157,6 +1160,8 @@ pub enum Answer {
     R706ChooseDice(Vec<usize>),
     /// The piles, one for each attacker offered, in that order.
     R509BlockPiles(Vec<Vec<ObjectId>>),
+    /// Each creature offered with the sector it is assigned to.
+    P170aAssignSectors(Vec<(ObjectId, crate::p170a_sectors::Sector)>),
     /// Back out of the spell or ability being announced at a step that allows it (`DecisionKind::can_undo`): nothing
     /// is paid or moved until the payment, so the card stays where it was and no mana is spent (CR 601.2, 727.1).
     Undo,
@@ -1190,6 +1195,7 @@ impl Answer {
             Answer::Loop(_) => "loop",
             Answer::R706ChooseDice(_) => "r706-choose-dice",
             Answer::R509BlockPiles(_) => "r509-block-piles",
+            Answer::P170aAssignSectors(_) => "p170a-assign-sectors",
             Answer::Undo => "undo",
         }
     }

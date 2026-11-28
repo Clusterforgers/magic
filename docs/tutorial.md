@@ -25,7 +25,7 @@ The Learn page shows the course as a numbered path with the next lesson as its o
 | 6 | `commander` | Commander | 40 life, the command zone, casting the commander, returning it to the command zone, commander tax, commander damage |
 | 7 | `help` | Finding help | the card preview, keywords, the log, the rules lexicon, the Commands tab, the table menu |
 
-The lessons replace the guided game and the table tour of the Learn page. The manual-panel lesson and the Help menu's table tour run on the same coach and anchors.
+The lessons replace the guided game and the table tour of the Learn page. The manual-panel lesson, the Help menu's table tour and the page tours run on the same coach and anchors.
 
 ## Scripted table
 
@@ -189,6 +189,15 @@ The Help menu's "Table tour" (`features/table/tour`) walks a seated player round
 - The card shows "Table tour", the step dots (on a phone "n of 11" in a bar), the title and text, and Skip tour, Back and Next (Done on the last); the arrow keys and Escape do the same. The table under the tour takes no presses.
 - Tests: `tour.test.tsx` (word limits, registry anchors, one lit anchor per step at two and four seats, the walk, the keys, the tabs) and `e2e/help-tour.spec.ts` (every step at 1400, 1024 and 390 px with two and four seats: the card inside the window, the ring on the lit anchor).
 
+## Page tours
+
+The page tours of "The app" (`pageTours.ts`, [web.md](web.md), Learn) run on the same coach card and light (`CoachTour`), drawn by `PageTourHost` over every page.
+
+- A stop names page anchors in order (`at`), the first drawn lit: `decks.*`, `builder.*`, `create.*`, `lobby.*`, `review.*` and `lexicon.*` in the registry. A stop whose anchors are all absent (a signed-out page) centres the card unlit; a lit part outside the window is scrolled into it first.
+- The page under the tour stays usable: the layer takes no pointer but on its card, the card is no modal dialog and the arrow keys stay the page's. The card shows the tour's name, the stop dots and End tour, Back and Next (Done on the last); on a phone it is a bar under the app's header.
+- A part that runs on another page shows "Continue the tour" with where to go and "Waiting for the page" in place of Next.
+- Tests: `PageTourHost.test.tsx` (word limits, registry anchors, the first drawn anchor lit, the page left usable, the lead, Done) and `e2e/help-tour.spec.ts` (the lexicon tour and Create a game at 1400 and 390 px: the ring on each lit anchor, the card inside the window, the lead).
+
 ## Anchors
 
 `web/src/features/learn/anchors.ts` is the registry: every anchor's id, what it names, a default label and its opener. An element carries its anchor as `data-coach="<id>"` through `anchor(id)`, typed by the registry; a zone that holds cards carries `data-coach-zone` and a card is found in it by `data-object-id`.
@@ -233,7 +242,7 @@ The gate is a teaching aid of the client. The server runs an ordinary game and c
 
 ## Coach
 
-`features/learn/Coach.tsx` draws over the table in one layer that takes no pointer except on its own card; its light (`coachLight.tsx`) and its measuring and placing (`coachLook.ts`, `coachPlace`) also draw the table tour.
+`features/learn/Coach.tsx` draws over the table in one layer that takes no pointer except on its own card; its light (`coachLight.tsx`) and its measuring and placing (`coachLook.ts`, `coachPlace`) also draw the tours (`CoachTour`).
 
 - Light: a scrim of 40 % over the table with a hole at each lit box, a 3 px ring in the coach colour (`--coach`, a hue no table ring uses) that pulses twice and rests, and a pointer beside the ring that bobs toward it. A press step lights one box; a read step at most two.
 - Card: the lesson's name and dots for its steps, the step's title, its text, and one foot line: Next for a read step, "Your move" with the action for a do step, "Watch" for a watch step. A menu holds Leave lesson, Restart lesson and Play on without the coach. Back returns to earlier read steps.

@@ -335,6 +335,8 @@ pub enum Rule {
     R706IgnoreChosen(Vec<PlayerId>),
     /// Blocks are declared as piles this turn (`GameRule::R509BlockPiles`).
     R509BlockPiles,
+    /// A creature in a sector can be blocked only by creatures in the same sector (`GameRule::P170aSectorBlocks`).
+    P170aSectorBlocks,
     /// The players keep unspent mana of the type (every type when absent) as steps and phases end (CR 500.4).
     KeepUnspentMana(Vec<PlayerId>, Option<ManaType>),
     /// Unspent mana the players would lose becomes mana of the type instead.
@@ -1020,6 +1022,8 @@ pub(crate) struct ManaRule {
 }
 
 /// The rules in force in a state.
+// Independent rules in force, not the states of one machine.
+#[allow(clippy::struct_excessive_bools)]
 #[derive(Debug, Default)]
 pub(crate) struct RulesInForce {
     /// The combat permissions and requirements of `combat_quirks`.
@@ -1096,6 +1100,8 @@ pub(crate) struct RulesInForce {
     r706_reroll: Vec<R706Reroller>,
     /// Whether blocks are declared as piles this turn.
     r509_block_piles: bool,
+    /// Whether a creature in a sector can be blocked only by creatures in the same sector.
+    p170a_sector_blocks: bool,
     /// The permanents that note the mana value of each card put into exile, in timestamp order.
     r113_note_exiled: Vec<ObjectRef>,
     /// The sticker kickers each player's spells may be paid for, one for each rule, in timestamp order.
@@ -1749,6 +1755,7 @@ impl RulesInForce {
                     once: *once,
                 })),
             Rule::R509BlockPiles => self.r509_block_piles = true,
+            Rule::P170aSectorBlocks => self.p170a_sector_blocks = true,
             Rule::R114StickerKicker {
                 players,
                 source,
@@ -2428,6 +2435,7 @@ pub(crate) fn lower_rule(scope: &Scope<'_>, wanted: &GameRule) -> Result<Rule, R
         },
         GameRule::R706IgnoreChosen(who) => Rule::R706IgnoreChosen(scope.players(who)?),
         GameRule::R509BlockPiles => Rule::R509BlockPiles,
+        GameRule::P170aSectorBlocks => Rule::P170aSectorBlocks,
         GameRule::KeepUnspentMana { who, mana } => {
             Rule::KeepUnspentMana(scope.players(who)?, *mana)
         }
@@ -2854,6 +2862,7 @@ pub(crate) fn names_nothing(rule: &Rule) -> bool {
         | Rule::R6097ColorlessDamage(_)
         | Rule::R113NoteExiled { .. }
         | Rule::R509BlockPiles
+        | Rule::P170aSectorBlocks
         | Rule::P158LoyaltyTwiceThis(_) => false,
         Rule::Planar => true,
         Rule::AttackOnlyNearest(left) => left.is_none(),
@@ -3037,6 +3046,7 @@ static NONE: RulesInForce = RulesInForce {
     r113_exchange_roll: Vec::new(),
     r706_reroll: Vec::new(),
     r509_block_piles: false,
+    p170a_sector_blocks: false,
     r113_note_exiled: Vec::new(),
     r114_sticker_kickers: Vec::new(),
     r6012f_any_amount: Vec::new(),
@@ -3996,6 +4006,11 @@ pub(crate) fn r706_ignorers(
 /// Whether blocks are declared as piles this turn (`Rule::R509BlockPiles`).
 pub(crate) fn r509_block_piles(state: &GameState) -> bool {
     state.rules().r509_block_piles
+}
+
+/// Whether a creature in a sector can be blocked only by creatures in the same sector (`Rule::P170aSectorBlocks`).
+pub(crate) fn p170a_sector_blocks(state: &GameState) -> bool {
+    state.rules().p170a_sector_blocks
 }
 
 /// The rules that let `player` change a result after they roll, in timestamp order.
