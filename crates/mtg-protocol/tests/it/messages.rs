@@ -56,8 +56,8 @@ use serde::Serialize;
 use serde::de::DeserializeOwned;
 use serde_json::json;
 
-const CLIENT_VARIANTS: usize = 23;
-const SERVER_VARIANTS: usize = 27;
+const CLIENT_VARIANTS: usize = 24;
+const SERVER_VARIANTS: usize = 29;
 
 const YIELDS: [YieldUntil; 3] = [
     YieldUntil::Resolve,
